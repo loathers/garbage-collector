@@ -20694,9 +20694,6 @@ var PostFreeFightTasks = [{
 }];
 ;// CONCATENATED MODULE: ./src/tasks/dailyItems.ts
 var dailyItems_templateObject, dailyItems_templateObject2, dailyItems_templateObject3, dailyItems_templateObject4, dailyItems_templateObject5, dailyItems_templateObject6, dailyItems_templateObject7, dailyItems_templateObject8, dailyItems_templateObject9, dailyItems_templateObject10, dailyItems_templateObject11, dailyItems_templateObject12, dailyItems_templateObject13, dailyItems_templateObject14, dailyItems_templateObject15, dailyItems_templateObject16, dailyItems_templateObject17, dailyItems_templateObject18, dailyItems_templateObject19, dailyItems_templateObject20, dailyItems_templateObject21, dailyItems_templateObject22, dailyItems_templateObject23, dailyItems_templateObject24, dailyItems_templateObject25, dailyItems_templateObject26, dailyItems_templateObject27, dailyItems_templateObject28, dailyItems_templateObject29, dailyItems_templateObject30, dailyItems_templateObject31, dailyItems_templateObject32, dailyItems_templateObject33, dailyItems_templateObject34, dailyItems_templateObject35, dailyItems_templateObject36, dailyItems_templateObject37, dailyItems_templateObject38, dailyItems_templateObject39, dailyItems_templateObject40, dailyItems_templateObject41, dailyItems_templateObject42, dailyItems_templateObject43, dailyItems_templateObject44, dailyItems_templateObject45, dailyItems_templateObject46, dailyItems_templateObject47, dailyItems_templateObject48, dailyItems_templateObject49, dailyItems_templateObject50, dailyItems_templateObject51, dailyItems_templateObject52, dailyItems_templateObject53, dailyItems_templateObject54, dailyItems_templateObject55, dailyItems_templateObject56, dailyItems_templateObject57, dailyItems_templateObject58, dailyItems_templateObject59, dailyItems_templateObject60, dailyItems_templateObject61, dailyItems_templateObject62, dailyItems_templateObject63, dailyItems_templateObject64, dailyItems_templateObject65, dailyItems_templateObject66, dailyItems_templateObject67, dailyItems_templateObject68, dailyItems_templateObject69, dailyItems_templateObject70, dailyItems_templateObject71, dailyItems_templateObject72, dailyItems_templateObject73, dailyItems_templateObject74, dailyItems_templateObject75, dailyItems_templateObject76, dailyItems_templateObject77, dailyItems_templateObject78;
-function dailyItems_defineProperty(obj, key, value) { key = dailyItems_toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function dailyItems_toPropertyKey(arg) { var key = dailyItems_toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function dailyItems_toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function dailyItems_toConsumableArray(arr) { return dailyItems_arrayWithoutHoles(arr) || dailyItems_iterableToArray(arr) || dailyItems_unsupportedIterableToArray(arr) || dailyItems_nonIterableSpread(); }
 function dailyItems_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function dailyItems_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
@@ -20992,7 +20989,9 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
   ready: () => lib_have(template_string_$item(dailyItems_templateObject76 || (dailyItems_templateObject76 = dailyItems_taggedTemplateLiteral(["S.I.T. Course Completion Certificate"])))),
   completed: () => property_get("_sitCourseCompleted", true) || lib_have($skill(dailyItems_templateObject77 || (dailyItems_templateObject77 = dailyItems_taggedTemplateLiteral(["Insectologist"])))),
   do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(dailyItems_templateObject78 || (dailyItems_templateObject78 = dailyItems_taggedTemplateLiteral(["S.I.T. Course Completion Certificate"])))),
-  choices: dailyItems_defineProperty({}, 1494, 2)
+  choices: {
+    1494: 2
+  }
 }]);
 ;// CONCATENATED MODULE: ./src/tasks/dailyVolcano.ts
 var dailyVolcano_templateObject, dailyVolcano_templateObject2, dailyVolcano_templateObject3, dailyVolcano_templateObject4, dailyVolcano_templateObject5, dailyVolcano_templateObject6, dailyVolcano_templateObject7, dailyVolcano_templateObject8, dailyVolcano_templateObject9;
@@ -21413,9 +21412,6 @@ function runGarboTasks(tasks) {
 }
 ;// CONCATENATED MODULE: ./src/tasks/ascending.ts
 var ascending_templateObject, ascending_templateObject2, ascending_templateObject3, ascending_templateObject4, ascending_templateObject5, ascending_templateObject6, ascending_templateObject7, ascending_templateObject8, ascending_templateObject9, ascending_templateObject10, ascending_templateObject11, ascending_templateObject12, ascending_templateObject13, ascending_templateObject14;
-function ascending_defineProperty(obj, key, value) { key = ascending_toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function ascending_toPropertyKey(arg) { var key = ascending_toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
-function ascending_toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function ascending_toConsumableArray(arr) { return ascending_arrayWithoutHoles(arr) || ascending_iterableToArray(arr) || ascending_unsupportedIterableToArray(arr) || ascending_nonIterableSpread(); }
 function ascending_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function ascending_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return ascending_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return ascending_arrayLikeToArray(o, minLen); }
@@ -21439,7 +21435,9 @@ var AscendingTasks = [{
     (0,external_kolmafia_namespaceObject.useSkill)($skill(ascending_templateObject4 || (ascending_templateObject4 = ascending_taggedTemplateLiteral(["Lock Picking"]))));
     if ((0,external_kolmafia_namespaceObject.handlingChoice)()) (0,external_kolmafia_namespaceObject.runChoice)(-1);
   },
-  choices: ascending_defineProperty({}, 1414, () => bestLockPickChoice())
+  choices: {
+    1414: () => bestLockPickChoice()
+  }
 }].concat(ascending_toConsumableArray([{
   key: template_string_$item(ascending_templateObject5 || (ascending_templateObject5 = ascending_taggedTemplateLiteral(["Boris's key"]))),
   lime: template_string_$item(ascending_templateObject6 || (ascending_templateObject6 = ascending_taggedTemplateLiteral(["Boris's key lime"])))
