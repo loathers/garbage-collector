@@ -155,65 +155,65 @@ export type WandererLocation = { location: Location; targets: WandererTarget[]; 
 
 const quartetChoice = get("lastQuartetRequest", 0) !== 0 ? get("lastQuartetRequest") : 4;
 export const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
-  [$location`The Spooky Forest`, { [502]: 2, [505]: 2 }],
-  [$location`Guano Junction`, { [1427]: 1 }],
-  [$location`The Hidden Apartment Building`, { [780]: 6, [1578]: 6 }],
-  [$location`The Black Forest`, { [923]: 1, [924]: 1 }],
-  [$location`LavaCo™ Lamp Factory`, { [1091]: 9 }],
-  [$location`The Haunted Laboratory`, { [884]: 6 }],
-  [$location`The Haunted Nursery`, { [885]: 6 }],
-  [$location`The Haunted Storage Room`, { [886]: 6 }],
-  [$location`The Haunted Ballroom`, { [106]: 3, [90]: quartetChoice }], // Skip, and Choose currently playing song, or skip
-  [$location`The Haunted Library`, { [163]: 4, [888]: 4, [889]: 5 }],
-  [$location`The Haunted Gallery`, { [89]: 6, [91]: 2 }],
-  [$location`The Hidden Park`, { [789]: 6 }],
-  [$location`A Mob of Zeppelin Protesters`, { [1432]: 1, [856]: 2, [857]: 2, [858]: 2 }],
-  [$location`A-Boo Peak`, { [1430]: 2 }],
-  [$location`Sloppy Seconds Diner`, { [919]: 6 }],
-  [$location`VYKEA`, { [1115]: 6 }],
+  [$location`The Spooky Forest`, { 502: 2, 505: 2 }],
+  [$location`Guano Junction`, { 1427: 1 }],
+  [$location`The Hidden Apartment Building`, { 780: 6, 1578: 6 }],
+  [$location`The Black Forest`, { 923: 1, 924: 1 }],
+  [$location`LavaCo™ Lamp Factory`, { 1091: 9 }],
+  [$location`The Haunted Laboratory`, { 884: 6 }],
+  [$location`The Haunted Nursery`, { 885: 6 }],
+  [$location`The Haunted Storage Room`, { 886: 6 }],
+  [$location`The Haunted Ballroom`, { 106: 3, 90: quartetChoice }], // Skip, and Choose currently playing song, or skip
+  [$location`The Haunted Library`, { 163: 4, 888: 4, 889: 5 }],
+  [$location`The Haunted Gallery`, { 89: 6, 91: 2 }],
+  [$location`The Hidden Park`, { 789: 6 }],
+  [$location`A Mob of Zeppelin Protesters`, { 1432: 1, 856: 2, 857: 2, 858: 2 }],
+  [$location`A-Boo Peak`, { 1430: 2 }],
+  [$location`Sloppy Seconds Diner`, { 919: 6 }],
+  [$location`VYKEA`, { 1115: 6 }],
   [
     $location`The Castle in the Clouds in the Sky (Basement)`,
     {
-      [670]: 4,
-      [671]: 4,
-      [672]: 1,
+      670: 4,
+      671: 4,
+      672: 1,
     },
   ],
   [
     $location`The Haunted Bedroom`,
     {
-      [876]: 1, // old leather wallet, 500 meat
-      [877]: 1, // old coin purse, 500 meat
-      [878]: 1, // 400-600 meat
-      [879]: 2, // grouchy spirit
-      [880]: 2, // a dumb 75 meat club
+      876: 1, // old leather wallet, 500 meat
+      877: 1, // old coin purse, 500 meat
+      878: 1, // 400-600 meat
+      879: 2, // grouchy spirit
+      880: 2, // a dumb 75 meat club
     },
   ],
-  [$location`The Copperhead Club`, { [855]: 4 }],
-  [$location`The Haunted Bathroom`, { [882]: 2 }], // skip; it's the towel adventure but we don't want towels
+  [$location`The Copperhead Club`, { 855: 4 }],
+  [$location`The Haunted Bathroom`, { 882: 2 }], // skip; it's the towel adventure but we don't want towels
   [
     $location`The Castle in the Clouds in the Sky (Top Floor)`,
     {
-      [1431]: 1,
-      [675]: 4, // Go to Steampunk choice
-      [676]: 4, // Go to Punk Rock choice
-      [677]: 1, // Fight Steam Punk Giant
-      [678]: 3, // Go to Steampunk choice
+      1431: 1,
+      675: 4, // Go to Steampunk choice
+      676: 4, // Go to Punk Rock choice
+      677: 1, // Fight Steam Punk Giant
+      678: 3, // Go to Steampunk choice
     },
   ],
   [
     $location`The Castle in the Clouds in the Sky (Ground Floor)`,
     {
-      [672]: 3, // Skip
-      [673]: 3, // Skip
-      [674]: 3, // Skip
-      [1026]: 3, // Skip
+      672: 3, // Skip
+      673: 3, // Skip
+      674: 3, // Skip
+      1026: 3, // Skip
     },
   ],
-  [$location`The Hidden Office Building`, { [786]: 6 }],
-  [$location`Cobb's Knob Barracks`, { [522]: 2 }], // skip
-  [$location`The Penultimate Fantasy Airship`, { [178]: 2, [182]: 1 }], // Skip, and Fight random enemy
-  [$location`The Haiku Dungeon`, { [297]: 3 }], // skip
+  [$location`The Hidden Office Building`, { 786: 6 }],
+  [$location`Cobb's Knob Barracks`, { 522: 2 }], // skip
+  [$location`The Penultimate Fantasy Airship`, { 178: 2, 182: 1 }], // Skip, and Fight random enemy
+  [$location`The Haiku Dungeon`, { 297: 3 }], // skip
 ]);
 
 export function defaultFactory(): WandererTarget[] {
