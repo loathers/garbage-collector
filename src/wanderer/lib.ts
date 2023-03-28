@@ -153,7 +153,7 @@ export type WandererFactory = (
 ) => WandererTarget[];
 export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
 
-const quartetChoice = get("lastQuartetRequest", 0) !== 0 ? get("lastQuartetRequest") : 4;
+const quartetChoice = get("lastQuartetRequest") || 4;
 export const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
   [$location`The Spooky Forest`, { [502]: 2, [505]: 2 }],
   [$location`Guano Junction`, { [1427]: 1 }],

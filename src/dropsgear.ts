@@ -145,8 +145,8 @@ function sweatpants(equipMode: BonusEquipMode) {
   if (!have($item`designer sweatpants`) || equipMode === "embezzler") return new Map();
 
   const needSweat =
-    (!globalOptions.ascend && get("sweat", 0) < 75) ||
-    get("sweat", 0) < 25 * (3 - get("_sweatOutSomeBoozeUsed", 0));
+    (!globalOptions.ascend && get("sweat") < 75) ||
+    get("sweat") < 25 * (3 - get("_sweatOutSomeBoozeUsed"));
 
   if (!needSweat) return new Map();
 

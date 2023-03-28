@@ -407,7 +407,7 @@ export function realmAvailable(identifier: RealmType): boolean {
   } else if (identifier === "pirate") {
     return get(`_prToday`) || get(`prAlways`);
   }
-  return get(`_${identifier}AirportToday`, false) || get(`${identifier}AirportAlways`, false);
+  return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
 }
 
 export function formatNumber(num: number): string {
