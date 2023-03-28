@@ -1389,11 +1389,6 @@ const freeFightSources = [
     },
     true
   ),
-  new FreeFight(
-    () => (have($item`molehill mountain`) && !get("_molehillMountainUsed") ? 1 : 0),
-    () => withMacro(Macro.basicCombat(), () => use($item`molehill mountain`)),
-    true
-  ),
 ];
 
 const freeRunFightSources = [
