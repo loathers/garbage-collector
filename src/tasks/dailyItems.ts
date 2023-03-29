@@ -6,6 +6,7 @@ import {
   getClanLounge,
   Item,
   itemPockets,
+  mallPrice,
   meatPockets,
   pickedPockets,
   pocketItems,
@@ -24,17 +25,24 @@ import {
   $skill,
   $skills,
   ChateauMantegna,
+  ClosedCircuitPayphone,
   get,
   have,
   SourceTerminal,
   sum,
+  withChoice,
 } from "libram";
+import { acquire } from "../acquire";
+import { globalOptions } from "../config";
+import { embezzlerCount } from "../embezzler";
 import { doingExtrovermectin } from "../extrovermectin";
 import { coinmasterPrice, maxBy } from "../lib";
+import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../session";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
+let _shouldClearRufusQuest: boolean | null = null;
 
 function drawBestCards(): void {
   const cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
@@ -308,6 +316,28 @@ export const DailyItemTasks: Task[] = [
       completed: () => get("_sitCourseCompleted", true) || have($skill`Insectologist`),
       do: () => use($item`S.I.T. Course Completion Certificate`),
       choices: { 1494: 2 },
+    },
+    {
+      name: "Clear Existing Rufus Quest",
+      completed: () => get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
+      do: (): void => {
+        const value = rufusPotion.value(embezzlerCount());
+        const price = rufusPotion.price(false);
+        _shouldClearRufusQuest = value.some(
+          (value) =>
+            (!globalOptions.nobarf || value.name === "embezzler") && value.value - price > 0
+        );
+        if (_shouldClearRufusQuest) {
+          const target = ClosedCircuitPayphone.rufusTarget() as Item;
+          if (get("rufusQuestType") === "items") {
+            if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
+              withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+            }
+          } else if (get("rufusQuestType") === "artifact") {
+            if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          }
+        }
+      },
     },
   ],
 ];

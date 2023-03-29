@@ -386,7 +386,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   return total;
 }
 
-const rufusPotion = new Potion($item`closed-circuit pay phone`, {
+export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   providesDoubleDuration: false,
   canDouble: false,
   effect: $effect`Shadow Waters`,
