@@ -467,10 +467,10 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   let filters = 3 - get("currentMojoFilters");
-  // save some spleen the first two extro, which are worth a lot
+  // save some spleen for the first three extros, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
   const extroSpleenSpace = hasMonsterReplacers()
-    ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
+    ? 6 - Math.min(6, 2 * get("beGregariousCharges"))
     : 0;
   const synthCastsToCoverRun =
     globalOptions.nobarf || !have($skill`Sweet Synthesis`)
@@ -479,17 +479,26 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
           0,
           Math.round((estimatedGarboTurns() - haveEffect($effect`Synthesis: Greed`)) / 30)
         );
-  const fullnessAvailable = fullnessLimit() - myFullness() + toInt(haveDistentionPill);
+  const fullnessAvailable = Math.max(
+    0,
+    fullnessLimit() -
+      myFullness() +
+      toInt(haveDistentionPill) -
+      2 * toInt(!get("deepDishOfLegendEaten")) - // 2 fullness reserved for deep dish of legend
+      2 // subtract 2 for Boris Bread and Jumping Horseradish
+  );
   const inebrietyAvailable =
     myLevel() >= 13
       ? inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable
       : 0;
   const spleenAvailable = currentSpleenLeft + filters;
-  const organsAvailable = fullnessAvailable + inebrietyAvailable + spleenAvailable;
+  const organsAvailable =
+    Math.floor(fullnessAvailable / 5) * 5 + // can only clean stomach in multiples of 5
+    Math.floor(inebrietyAvailable / 5) * 5 + // can only clean liver in multiples of 5
+    spleenAvailable;
 
   const cleanableSpleen = organsAvailable - synthCastsToCoverRun - extroSpleenSpace;
-  const sufficientOrgansFor = (yachtzees: number) =>
-    cleanableSpleen >= yachtzees + (havePYECCharge ? 5 : 0);
+  const sufficientOrgansFor = (yachtzees: number) => cleanableSpleen >= yachtzees;
 
   const possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
   const jellyYachtzeeTurns = possibleJellyYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
