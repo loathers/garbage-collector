@@ -1400,11 +1400,6 @@ const freeFightSources = [
     },
     true
   ),
-  new FreeFight(
-    () => (have($item`molehill mountain`) && !get("_molehillMountainUsed") ? 1 : 0),
-    () => withMacro(Macro.basicCombat(), () => use($item`molehill mountain`)),
-    true
-  ),
 ];
 
 const freeRunFightSources = [
@@ -1416,8 +1411,8 @@ const freeRunFightSources = [
       questStep("questL11MacGuffin") > -1,
     (runSource: ActionSource) => {
       propertyManager.setChoices({
-        [923]: 1, // go to the blackberries in All Around the Map
-        [924]: 1, // fight a blackberry bush, so that we can freerun
+        923: 1, // go to the blackberries in All Around the Map
+        924: 1, // fight a blackberry bush, so that we can freerun
       });
       garboAdventure($location`The Black Forest`, runSource.macro);
     },
@@ -1433,8 +1428,8 @@ const freeRunFightSources = [
       questStep("questL02Larva") > -1,
     (runSource: ActionSource) => {
       propertyManager.setChoices({
-        [502]: 2, // go towards the stream in Arboreal Respite, so we can skip adventure
-        [505]: 2, // skip adventure
+        502: 2, // go towards the stream in Arboreal Respite, so we can skip adventure
+        505: 2, // skip adventure
       });
       garboAdventure($location`The Spooky Forest`, runSource.macro);
     },
