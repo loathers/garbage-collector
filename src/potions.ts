@@ -446,7 +446,9 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
       if (have($item`Rufus's shadow lodestone`)) {
         withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
       }
-      if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
+      if (myAdventures() < myAdv || get("lastAdventure") !== "Like a Loded Stone") {
+        throw new Error("Failed to acquire Shadow Waters");
+      }
     }
     setLocation($location.none); // Reset location to not affect mafia's item drop calculations
     return 0;
