@@ -186,7 +186,11 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
     use($item`redwood rain stick`);
   }
   const beachHeadsUsed: number | string = get("_beachHeadsUsed");
-  if (have($item`Beach Comb`) && !beachHeadsUsed.toString().split(",").includes("10")) {
+  if (
+    have($item`Beach Comb`) &&
+    get("_freeBeachWalksUsed") < 11 &&
+    !beachHeadsUsed.toString().split(",").includes("10")
+  ) {
     mood.effect($effect`Do I Know You From Somewhere?`);
   }
   if (Witchess.have() && !get("_witchessBuff")) {
