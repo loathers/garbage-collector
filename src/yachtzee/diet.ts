@@ -470,7 +470,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   // save some spleen for the first three extros, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
   const extroSpleenSpace = hasMonsterReplacers()
-    ? 6 - Math.min(6, 2 * get("beGregariousCharges"))
+    ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
     : 0;
   const synthCastsToCoverRun =
     globalOptions.nobarf || !have($skill`Sweet Synthesis`)
@@ -569,7 +569,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   let slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
   let jelliesToChew = Math.max(0, yachtzeeTurns - freeNCs());
 
-  const extrosToChew = extroSpleenSpace / 2;
   const synthToUse = synthCasts;
   const cologneToChew = cologne;
 
@@ -726,7 +725,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const regularEntries: [string, number][] = [
     ["extra-greasy slider", slidersToEat],
     ["jar of fermented pickle juice", pickleJuiceToDrink],
-    ["Extrovermectin™", extrosToChew],
     ["synthesis", synthToUse],
     ["mojo filter", filters],
     ["beggin' cologne", cologneToChew],
@@ -791,7 +789,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     1.2 * toastPrice * toastsToEat
   );
   acquire(toastsToEat, $item`munchies pill`, 2.66 * VOA, false);
-  acquire(extrosToChew, $item`Extrovermectin™`, 100000);
   acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice);
   acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice);
   acquire(cologneToChew, $item`beggin' cologne`, 2 * colognePrice);
