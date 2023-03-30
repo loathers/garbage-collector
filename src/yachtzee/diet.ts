@@ -467,7 +467,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   let filters = 3 - get("currentMojoFilters");
-  // save some spleen for the first three extros, which are worth a lot
+  // save some spleen for the first two extros, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
   const extroSpleenSpace = hasMonsterReplacers()
     ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
