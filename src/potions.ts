@@ -419,8 +419,10 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     return averagePrice;
   },
   acquire: (qty: number) => {
-    equip($slot`weapon`, $item.none);
-    equip($slot`off-hand`, $item`Drunkula's wineglass`);
+    if (myInebriety() > inebrietyLimit()) {
+      equip($slot`weapon`, $item.none);
+      equip($slot`off-hand`, $item`Drunkula's wineglass`);
+    }
     for (let iteration = 0; iteration < qty; iteration++) {
       // Grab a lodestone if we don't have one
       if (!have($item`Rufus's shadow lodestone`)) {
