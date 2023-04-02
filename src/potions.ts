@@ -16,8 +16,8 @@ import {
   itemAmount,
   itemType,
   mallPrice,
-  myAdventures,
   myInebriety,
+  myTurncount,
   numericModifier,
   print,
   retrievePrice,
@@ -392,6 +392,8 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   effect: $effect`Shadow Waters`,
   duration: 30,
   price: (historical: boolean) => {
+    if (!have($item`closed-circuit pay phone`)) return Infinity;
+
     const target = ClosedCircuitPayphone.rufusTarget();
     const haveItemQuest = get("rufusQuestType") === "items";
     const haveArtifact = get("rufusQuestType") === "artifact" && have(target as Item);
@@ -442,11 +444,11 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
       }
 
       // Grab the buff from the NC
-      const myAdv = myAdventures();
+      const curTurncount = myTurncount();
       if (have($item`Rufus's shadow lodestone`)) {
         withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
       }
-      if (myAdventures() < myAdv || get("lastEncounter") !== "Like a Loded Stone") {
+      if (myTurncount() > curTurncount || get("lastEncounter") !== "Like a Loded Stone") {
         throw new Error("Failed to acquire Shadow Waters");
       }
     }
@@ -478,7 +480,7 @@ export const farmingPotions = [
     .filter((potion) => potion.bonusMeat() > 0),
   ...wishPotions,
   new Potion($item`papier-mâché toothpicks`),
-  rufusPotion,
+  ...(have($item`closed-circuit pay phone`) ? [rufusPotion] : []),
 ];
 
 export function doublingPotions(embezzlers: number): Potion[] {
