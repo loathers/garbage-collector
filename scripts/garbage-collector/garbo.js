@@ -16709,7 +16709,9 @@ var rufusPotion = new Potion(template_string_$item(potions_templateObject9 || (p
       if (lib_have(template_string_$item(potions_templateObject21 || (potions_templateObject21 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"]))))) {
         withChoice(1500, 2, () => (0,external_kolmafia_namespaceObject.adv1)(bestShadowRift(), -1, ""));
       }
-      if ((0,external_kolmafia_namespaceObject.myAdventures)() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
+      if ((0,external_kolmafia_namespaceObject.myAdventures)() < myAdv || property_get("lastEncounter") !== "Like a Loded Stone") {
+        throw new Error("Failed to acquire Shadow Waters");
+      }
     }
     (0,external_kolmafia_namespaceObject.setLocation)($location.none); // Reset location to not affect mafia's item drop calculations
     return 0;
@@ -20216,7 +20218,9 @@ var FreeFight = /*#__PURE__*/function () {
         freeFightMood.apply(void 0, fights_toConsumableArray(effects)).execute();
         freeFightOutfit(this.options.requirements ? Requirement.merge(this.options.requirements()) : undefined);
         safeRestore();
+        var myAdv = (0,external_kolmafia_namespaceObject.myAdventures)();
         withMacro(combat_Macro.basicCombat(), this.run);
+        if ((0,external_kolmafia_namespaceObject.myAdventures)() < myAdv) throw new Error("The last fight was not free!");
         postCombatActions();
         // Slot in our Professor Thesis if it's become available
         if (!lib_have(template_string_$effect(fights_templateObject77 || (fights_templateObject77 = fights_taggedTemplateLiteral(["Feeling Lost"]))))) deliverThesisIfAble();
@@ -20262,7 +20266,9 @@ var FreeRunFight = /*#__PURE__*/function (_FreeFight) {
         freeFightOutfit(Requirement.merge([].concat(fights_toConsumableArray(_this2.options.requirements ? _this2.options.requirements() : []), fights_toConsumableArray(runSource.constraints.equipmentRequirements ? [runSource.constraints.equipmentRequirements()] : []))));
         freeFightMood.apply(void 0, fights_toConsumableArray((_this2$options$effect = (_this2$options$effect2 = (_this2$options2 = _this2.options).effects) === null || _this2$options$effect2 === void 0 ? void 0 : _this2$options$effect2.call(_this2$options2)) !== null && _this2$options$effect !== void 0 ? _this2$options$effect : []));
         safeRestore();
+        var myAdv = (0,external_kolmafia_namespaceObject.myAdventures)();
         withMacro(combat_Macro.step(runSource.macro), () => _this2.freeRun(runSource));
+        if ((0,external_kolmafia_namespaceObject.myAdventures)() < myAdv) throw new Error("The last runaway was not free!");
         postCombatActions();
       };
       while (this.isAvailable()) {
