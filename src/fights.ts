@@ -564,7 +564,9 @@ class FreeFight {
         this.options.requirements ? Requirement.merge(this.options.requirements()) : undefined
       );
       safeRestore();
+      const myAdv = myAdventures();
       withMacro(Macro.basicCombat(), this.run);
+      if (myAdventures() < myAdv) throw new Error("The last fight was not free!");
       postCombatActions();
       // Slot in our Professor Thesis if it's become available
       if (!have($effect`Feeling Lost`)) deliverThesisIfAble();
@@ -613,7 +615,9 @@ class FreeRunFight extends FreeFight {
       );
       freeFightMood(...(this.options.effects?.() ?? []));
       safeRestore();
+      const myAdv = myAdventures();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
+      if (myAdventures() < myAdv) throw new Error("The last runaway was not free!");
       postCombatActions();
     }
   }
