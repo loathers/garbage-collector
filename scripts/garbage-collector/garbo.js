@@ -16321,7 +16321,7 @@ function toasterGaze() {
   }
 }
 ;// CONCATENATED MODULE: ./src/potions.ts
-var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8, potions_templateObject9, potions_templateObject10, potions_templateObject11, potions_templateObject12, potions_templateObject13, potions_templateObject14, potions_templateObject15, potions_templateObject16, potions_templateObject17, potions_templateObject18, potions_templateObject19, potions_templateObject20, potions_templateObject21, potions_templateObject22, potions_templateObject23, potions_templateObject24, potions_templateObject25, potions_templateObject26, potions_templateObject27, potions_templateObject28, potions_templateObject29, potions_templateObject30;
+var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8, potions_templateObject9, potions_templateObject10, potions_templateObject11, potions_templateObject12, potions_templateObject13, potions_templateObject14, potions_templateObject15, potions_templateObject16, potions_templateObject17, potions_templateObject18, potions_templateObject19, potions_templateObject20, potions_templateObject21, potions_templateObject22, potions_templateObject23, potions_templateObject24, potions_templateObject25, potions_templateObject26, potions_templateObject27, potions_templateObject28, potions_templateObject29, potions_templateObject30, potions_templateObject31, potions_templateObject32;
 function potions_slicedToArray(arr, i) { return potions_arrayWithHoles(arr) || potions_iterableToArrayLimit(arr, i) || potions_unsupportedIterableToArray(arr, i) || potions_nonIterableRest(); }
 function potions_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function potions_iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
@@ -16663,33 +16663,34 @@ var rufusPotion = new Potion(template_string_$item(potions_templateObject9 || (p
   effect: template_string_$effect(potions_templateObject10 || (potions_templateObject10 = potions_taggedTemplateLiteral(["Shadow Waters"]))),
   duration: 30,
   price: historical => {
+    if (!lib_have(template_string_$item(potions_templateObject11 || (potions_templateObject11 = potions_taggedTemplateLiteral(["closed-circuit pay phone"]))))) return Infinity;
     var target = rufusTarget();
     var haveItemQuest = property_get("rufusQuestType") === "items";
     var haveArtifact = property_get("rufusQuestType") === "artifact" && lib_have(target);
 
     // We will only buff up if we can complete the item quest
-    if (!(!target || haveItemQuest || haveArtifact || lib_have(template_string_$item(potions_templateObject11 || (potions_templateObject11 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"])))))) {
+    if (!(!target || haveItemQuest || haveArtifact || lib_have(template_string_$item(potions_templateObject12 || (potions_templateObject12 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"])))))) {
       return Infinity;
     }
 
     // If we are overdrunk, we will need to be able to grab the NC (with a wineglass)
-    if ((0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && (!lib_have(template_string_$item(potions_templateObject12 || (potions_templateObject12 = potions_taggedTemplateLiteral(["Drunkula's wineglass"])))) || !(0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(potions_templateObject13 || (potions_templateObject13 = potions_taggedTemplateLiteral(["Drunkula's wineglass"])))))) {
+    if ((0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && (!lib_have(template_string_$item(potions_templateObject13 || (potions_templateObject13 = potions_taggedTemplateLiteral(["Drunkula's wineglass"])))) || !(0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(potions_templateObject14 || (potions_templateObject14 = potions_taggedTemplateLiteral(["Drunkula's wineglass"])))))) {
       return Infinity;
     }
 
     // We consider the average price of the shadow items to not get gated behind an expensive one
-    var shadowItems = template_string_$items(potions_templateObject14 || (potions_templateObject14 = potions_taggedTemplateLiteral(["shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar"])));
+    var shadowItems = template_string_$items(potions_templateObject15 || (potions_templateObject15 = potions_taggedTemplateLiteral(["shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar"])));
     var averagePrice = utils_sum(shadowItems, it => historical && (0,external_kolmafia_namespaceObject.historicalAge)(it) < 14 ? (0,external_kolmafia_namespaceObject.historicalPrice)(it) : (0,external_kolmafia_namespaceObject.mallPrice)(it)) / shadowItems.length;
     return averagePrice;
   },
   acquire: qty => {
     if ((0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)()) {
-      (0,external_kolmafia_namespaceObject.equip)($slot(potions_templateObject15 || (potions_templateObject15 = potions_taggedTemplateLiteral(["weapon"]))), template_string_$item.none);
-      (0,external_kolmafia_namespaceObject.equip)($slot(potions_templateObject16 || (potions_templateObject16 = potions_taggedTemplateLiteral(["off-hand"]))), template_string_$item(potions_templateObject17 || (potions_templateObject17 = potions_taggedTemplateLiteral(["Drunkula's wineglass"]))));
+      (0,external_kolmafia_namespaceObject.equip)($slot(potions_templateObject16 || (potions_templateObject16 = potions_taggedTemplateLiteral(["weapon"]))), template_string_$item.none);
+      (0,external_kolmafia_namespaceObject.equip)($slot(potions_templateObject17 || (potions_templateObject17 = potions_taggedTemplateLiteral(["off-hand"]))), template_string_$item(potions_templateObject18 || (potions_templateObject18 = potions_taggedTemplateLiteral(["Drunkula's wineglass"]))));
     }
     for (var iteration = 0; iteration < qty; iteration++) {
       // Grab a lodestone if we don't have one
-      if (!lib_have(template_string_$item(potions_templateObject18 || (potions_templateObject18 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"]))))) {
+      if (!lib_have(template_string_$item(potions_templateObject19 || (potions_templateObject19 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"]))))) {
         // If we currently have no quest, acquire one
         chooseQuest(() => 3);
 
@@ -16697,19 +16698,19 @@ var rufusPotion = new Potion(template_string_$item(potions_templateObject9 || (p
         var target = rufusTarget();
         if (property_get("rufusQuestType") === "items") {
           if (acquire(3, target, 2 * (0,external_kolmafia_namespaceObject.mallPrice)(target), false, 100000)) {
-            withChoice(1498, 1, () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(potions_templateObject19 || (potions_templateObject19 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))));
+            withChoice(1498, 1, () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(potions_templateObject20 || (potions_templateObject20 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))));
           } else break;
         } else if (property_get("rufusQuestType") === "artifact") {
-          if (lib_have(target)) withChoice(1498, 1, () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(potions_templateObject20 || (potions_templateObject20 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))));else break;
+          if (lib_have(target)) withChoice(1498, 1, () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(potions_templateObject21 || (potions_templateObject21 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))));else break;
         }
       }
 
       // Grab the buff from the NC
-      var myAdv = (0,external_kolmafia_namespaceObject.myAdventures)();
-      if (lib_have(template_string_$item(potions_templateObject21 || (potions_templateObject21 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"]))))) {
+      var curTurncount = (0,external_kolmafia_namespaceObject.myTurncount)();
+      if (lib_have(template_string_$item(potions_templateObject22 || (potions_templateObject22 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"]))))) {
         withChoice(1500, 2, () => (0,external_kolmafia_namespaceObject.adv1)(bestShadowRift(), -1, ""));
       }
-      if ((0,external_kolmafia_namespaceObject.myAdventures)() < myAdv || property_get("lastEncounter") !== "Like a Loded Stone") {
+      if ((0,external_kolmafia_namespaceObject.myTurncount)() > curTurncount || property_get("lastEncounter") !== "Like a Loded Stone") {
         throw new Error("Failed to acquire Shadow Waters");
       }
     }
@@ -16720,13 +16721,13 @@ var rufusPotion = new Potion(template_string_$item(potions_templateObject9 || (p
     return false;
   }
 });
-var wishPotions = external_kolmafia_namespaceObject.Effect.all().filter(effect => !effect.attributes.includes("nohookah")).map(effect => new Potion(template_string_$item(potions_templateObject22 || (potions_templateObject22 = potions_taggedTemplateLiteral(["pocket wish"]))), {
+var wishPotions = external_kolmafia_namespaceObject.Effect.all().filter(effect => !effect.attributes.includes("nohookah")).map(effect => new Potion(template_string_$item(potions_templateObject23 || (potions_templateObject23 = potions_taggedTemplateLiteral(["pocket wish"]))), {
   effect: effect,
   canDouble: false,
   duration: 20,
   use: quantity => new Array(quantity).fill(0).every(() => (0,external_kolmafia_namespaceObject.cliExecute)("genie effect ".concat(effect)))
 }));
-var farmingPotions = [].concat(potions_toConsumableArray(external_kolmafia_namespaceObject.Item.all().filter(item => item.tradeable && !banned.includes(item) && (0,external_kolmafia_namespaceObject.itemType)(item) === "potion").map(item => new Potion(item)).filter(potion => potion.bonusMeat() > 0)), potions_toConsumableArray(wishPotions), [new Potion(template_string_$item(potions_templateObject23 || (potions_templateObject23 = potions_taggedTemplateLiteral(["papier-m\xE2ch\xE9 toothpicks"])))), rufusPotion]);
+var farmingPotions = [].concat(potions_toConsumableArray(external_kolmafia_namespaceObject.Item.all().filter(item => item.tradeable && !banned.includes(item) && (0,external_kolmafia_namespaceObject.itemType)(item) === "potion").map(item => new Potion(item)).filter(potion => potion.bonusMeat() > 0)), potions_toConsumableArray(wishPotions), [new Potion(template_string_$item(potions_templateObject24 || (potions_templateObject24 = potions_taggedTemplateLiteral(["papier-m\xE2ch\xE9 toothpicks"]))))], potions_toConsumableArray(lib_have(template_string_$item(potions_templateObject25 || (potions_templateObject25 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))) ? [rufusPotion] : []));
 function doublingPotions(embezzlers) {
   return farmingPotions.filter(potion => potion.doubleDuration().gross(embezzlers) / potion.price(true) > 0.5).map(potion => {
     return {
@@ -16747,7 +16748,7 @@ function potionSetup(embezzlersOnly) {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   var embezzlers = embezzlerCount();
-  if (lib_have(template_string_$item(potions_templateObject24 || (potions_templateObject24 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !property_get("_freePillKeeperUsed")) {
+  if (lib_have(template_string_$item(potions_templateObject26 || (potions_templateObject26 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !property_get("_freePillKeeperUsed")) {
     var possibleDoublingPotions = doublingPotions(embezzlers);
     var bestPotion = possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
     if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
@@ -16792,7 +16793,7 @@ function potionSetup(embezzlersOnly) {
     for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
       var potion = _step4.value;
       var _effect = potion.effect();
-      if (!excludedEffects.has(_effect) && !(failedWishes.includes(_effect) && potion.potion === template_string_$item(potions_templateObject25 || (potions_templateObject25 = potions_taggedTemplateLiteral(["pocket wish"])))) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
+      if (!excludedEffects.has(_effect) && !(failedWishes.includes(_effect) && potion.potion === template_string_$item(potions_templateObject27 || (potions_templateObject27 = potions_taggedTemplateLiteral(["pocket wish"])))) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
         var _mutuallyExclusive$ge3;
         var _iterator6 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
           _step6;
@@ -16822,7 +16823,7 @@ function potionSetup(embezzlersOnly) {
  * @param embezzlers Do we want to account for embezzlers when calculating the value of bathroom finance?
  */
 function bathroomFinance(embezzlers) {
-  if (lib_have(template_string_$effect(potions_templateObject26 || (potions_templateObject26 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return;
+  if (lib_have(template_string_$effect(potions_templateObject28 || (potions_templateObject28 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return;
 
   // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
   var averageEmbezzlerGross = (baseMeat + 750) * 2 * (embezzlers + 1) / 2 / 100;
@@ -16832,7 +16833,7 @@ function bathroomFinance(embezzlers) {
   // Average meat % for tourists is sum of arithmetic series, 2 * sum(embezzlers + 1 -> 100)
   var averageTouristGross = baseMeat * 2 * (100 + embezzlers + 1) / 2 / 100;
   var touristGross = averageTouristGross * tourists;
-  var greenspan = template_string_$item(potions_templateObject27 || (potions_templateObject27 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
+  var greenspan = template_string_$item(potions_templateObject29 || (potions_templateObject29 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
   if (touristGross + embezzlerGross > (0,external_kolmafia_namespaceObject.mallPrice)(greenspan)) {
     acquire(1, greenspan, touristGross + embezzlerGross, false);
     if ((0,external_kolmafia_namespaceObject.itemAmount)(greenspan) > 0) {
@@ -16960,7 +16961,7 @@ var VariableMeatPotion = /*#__PURE__*/function () {
   return VariableMeatPotion;
 }();
 function variableMeatPotionsSetup(yachtzees, embezzlers) {
-  var potions = [new VariableMeatPotion(template_string_$item(potions_templateObject28 || (potions_templateObject28 = potions_taggedTemplateLiteral(["love song of sugary cuteness"]))), 20, 2), new VariableMeatPotion(template_string_$item(potions_templateObject29 || (potions_templateObject29 = potions_taggedTemplateLiteral(["pulled yellow taffy"]))), 50, 2)].concat(potions_toConsumableArray(config_globalOptions.prefs.candydish ? [new VariableMeatPotion(template_string_$item(potions_templateObject30 || (potions_templateObject30 = potions_taggedTemplateLiteral(["porcelain candy dish"]))), 500, 1)] : []));
+  var potions = [new VariableMeatPotion(template_string_$item(potions_templateObject30 || (potions_templateObject30 = potions_taggedTemplateLiteral(["love song of sugary cuteness"]))), 20, 2), new VariableMeatPotion(template_string_$item(potions_templateObject31 || (potions_templateObject31 = potions_taggedTemplateLiteral(["pulled yellow taffy"]))), 50, 2)].concat(potions_toConsumableArray(config_globalOptions.prefs.candydish ? [new VariableMeatPotion(template_string_$item(potions_templateObject32 || (potions_templateObject32 = potions_taggedTemplateLiteral(["porcelain candy dish"]))), 500, 1)] : []));
   var excludedEffects = new Set();
   var _iterator9 = potions_createForOfIteratorHelper(getActiveEffects()),
     _step9;
@@ -20218,9 +20219,9 @@ var FreeFight = /*#__PURE__*/function () {
         freeFightMood.apply(void 0, fights_toConsumableArray(effects)).execute();
         freeFightOutfit(this.options.requirements ? Requirement.merge(this.options.requirements()) : undefined);
         safeRestore();
-        var myAdv = (0,external_kolmafia_namespaceObject.myAdventures)();
+        var curTurncount = (0,external_kolmafia_namespaceObject.myTurncount)();
         withMacro(combat_Macro.basicCombat(), this.run);
-        if ((0,external_kolmafia_namespaceObject.myAdventures)() < myAdv) throw new Error("The last fight was not free!");
+        if ((0,external_kolmafia_namespaceObject.myTurncount)() > curTurncount) throw new Error("The last fight was not free!");
         postCombatActions();
         // Slot in our Professor Thesis if it's become available
         if (!lib_have(template_string_$effect(fights_templateObject77 || (fights_templateObject77 = fights_taggedTemplateLiteral(["Feeling Lost"]))))) deliverThesisIfAble();
@@ -20266,9 +20267,9 @@ var FreeRunFight = /*#__PURE__*/function (_FreeFight) {
         freeFightOutfit(Requirement.merge([].concat(fights_toConsumableArray(_this2.options.requirements ? _this2.options.requirements() : []), fights_toConsumableArray(runSource.constraints.equipmentRequirements ? [runSource.constraints.equipmentRequirements()] : []))));
         freeFightMood.apply(void 0, fights_toConsumableArray((_this2$options$effect = (_this2$options$effect2 = (_this2$options2 = _this2.options).effects) === null || _this2$options$effect2 === void 0 ? void 0 : _this2$options$effect2.call(_this2$options2)) !== null && _this2$options$effect !== void 0 ? _this2$options$effect : []));
         safeRestore();
-        var myAdv = (0,external_kolmafia_namespaceObject.myAdventures)();
+        var curTurncount = (0,external_kolmafia_namespaceObject.myTurncount)();
         withMacro(combat_Macro.step(runSource.macro), () => _this2.freeRun(runSource));
-        if ((0,external_kolmafia_namespaceObject.myAdventures)() < myAdv) throw new Error("The last runaway was not free!");
+        if ((0,external_kolmafia_namespaceObject.myTurncount)() > curTurncount) throw new Error("The last runaway was not free!");
         postCombatActions();
       };
       while (this.isAvailable()) {
