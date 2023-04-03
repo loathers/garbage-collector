@@ -479,17 +479,28 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
           0,
           Math.round((estimatedGarboTurns() - haveEffect($effect`Synthesis: Greed`)) / 30)
         );
-  const fullnessAvailable = Math.max(
-    0,
-    fullnessLimit() -
-      myFullness() +
-      toInt(haveDistentionPill) -
-      2 * toInt(!get("deepDishOfLegendEaten")) - // 2 fullness reserved for deep dish of legend
-      2 // subtract 2 for Boris Bread and Jumping Horseradish
-  );
+  const reservedFullness =
+    2 * toInt(!get("deepDishOfLegendEaten")) + // to be consumed in yachtzee
+    2 * toInt(!get("calzoneOfLegendEaten") && globalOptions.ascend) + // to be consumed post-yachtzee
+    2 * toInt(!get("pizzaOfLegendEaten") && globalOptions.ascend) + // to be consumed post-yachtzee
+    2; // subtract 2 for Boris Bread and Jumping Horseradish
+  const fullnessAvailable =
+    myLevel() >= 13
+      ? Math.max(0, fullnessLimit() - myFullness() + toInt(haveDistentionPill) - reservedFullness)
+      : 0;
+  const reservedInebriety = globalOptions.ascend
+    ? Math.max(0, itemAmount($item`astral pilsner`) - toInt(get("_mimeArmyShotglassUsed")))
+    : 0;
   const inebrietyAvailable =
     myLevel() >= 13
-      ? inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable
+      ? Math.max(
+          0,
+          inebrietyLimit() -
+            myInebriety() +
+            syntheticPillsAvailable +
+            sweatOutsAvailable -
+            reservedInebriety
+        )
       : 0;
   const spleenAvailable = currentSpleenLeft + filters;
   const organsAvailable =
