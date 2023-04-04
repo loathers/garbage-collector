@@ -597,6 +597,5 @@ export function bestShadowRift(): Location {
       throw new Error("Failed to find a suitable Shadow Rift to adventure in");
     }
   }
-  // Mafia bug disallows adv1($location`Shadow Rift (<exact location>)`, -1, "") when overdrunk
-  return myInebriety() > inebrietyLimit() ? $location`Shadow Rift` : _bestShadowRift;
+  return _bestShadowRift;
 }

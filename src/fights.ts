@@ -518,6 +518,7 @@ type FreeFightOptions = {
   macroAllowsFamiliarActions?: boolean;
 };
 
+let consecutiveNonFreeFights = 0;
 class FreeFight {
   available: () => number | boolean;
   run: () => void;
@@ -566,7 +567,9 @@ class FreeFight {
       safeRestore();
       const curTurncount = myTurncount();
       withMacro(Macro.basicCombat(), this.run);
-      if (myTurncount() > curTurncount) throw new Error("The last fight was not free!");
+      if (myTurncount() > curTurncount) consecutiveNonFreeFights++;
+      else consecutiveNonFreeFights = 0;
+      if (consecutiveNonFreeFights >= 5) throw new Error("The last 5 FreeRunFights were not free!");
       postCombatActions();
       // Slot in our Professor Thesis if it's become available
       if (!have($effect`Feeling Lost`)) deliverThesisIfAble();
@@ -617,7 +620,9 @@ class FreeRunFight extends FreeFight {
       safeRestore();
       const curTurncount = myTurncount();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
-      if (myTurncount() > curTurncount) throw new Error("The last runaway was not free!");
+      if (myTurncount() > curTurncount) consecutiveNonFreeFights++;
+      else consecutiveNonFreeFights = 0;
+      if (consecutiveNonFreeFights >= 5) throw new Error("The last 5 FreeRunFights were not free!");
       postCombatActions();
     }
   }
