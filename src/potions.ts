@@ -92,7 +92,10 @@ function getValidWishString(effect: Effect): string {
     const validSubstrings = Array.from(
       effect.name.toLowerCase().match(RegExp(/[\w ]+/g)) ?? []
     ).filter((s) => !allOtherNoHookahEffectNames.some((name) => name.includes(s)));
-    validWishString.set(effect, validSubstrings.length > 0 ? validSubstrings.pop() ?? "" : "");
+    validWishString.set(
+      effect,
+      (validSubstrings.length > 0 ? validSubstrings.pop() ?? "" : "").trim()
+    );
   }
   return validWishString.get(effect) ?? "";
 }
