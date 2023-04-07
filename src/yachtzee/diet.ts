@@ -395,9 +395,6 @@ function yachtzeeDietScheduler(
   }
 
   // Print diet schedule
-  print(`Fullness:    ${myFullness()}/${fullnessLimit() + toInt(haveDistentionPill)}`, "blue");
-  print(`Drunkenness: ${myInebriety()}/${inebrietyLimit()}`, "blue");
-  print(`Spleen Use:  ${mySpleenUse()}/${spleenLimit()}`, "blue");
   print("Diet schedule:", "blue");
   for (const entry of dietSchedule) print(`Use ${entry.quantity} ${entry.name}`, "blue");
 
@@ -447,6 +444,19 @@ function yachtzeeDietScheduler(
     }
   }
 
+  print("Expected Organs Post-Yachtzee:");
+  print(
+    `Fullness:   ${myFullness()}/${fullnessLimit() + toInt(haveDistentionPill)} -> ${fullness}/${
+      fullnessLimit() + toInt(haveDistentionPill)
+    }`,
+    "blue"
+  );
+  print(
+    `Inebriety:  ${myInebriety()}/${inebrietyLimit()} -> ${drunkenness}/${inebrietyLimit()}`,
+    "blue"
+  );
+  print(`Spleen Use: ${mySpleenUse()}/${spleenLimit()} -> ${spleenUse}/${spleenLimit()}`, "blue");
+
   return dietSchedule;
 }
 
@@ -467,17 +477,17 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   let filters = 3 - get("currentMojoFilters");
-  // save some spleen for the first two extros, which are worth a lot
+  // save some spleen for the first three extros, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
   const extroSpleenSpace = hasMonsterReplacers()
-    ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
+    ? 6 - Math.min(6, 2 * get("beGregariousCharges"))
     : 0;
   const synthCastsToCoverRun =
     globalOptions.nobarf || !have($skill`Sweet Synthesis`)
       ? 0
       : Math.max(
           0,
-          Math.round((estimatedGarboTurns() - haveEffect($effect`Synthesis: Greed`)) / 30)
+          Math.ceil((estimatedGarboTurns() - haveEffect($effect`Synthesis: Greed`)) / 30)
         );
   const reservedFullness =
     2 * toInt(!get("deepDishOfLegendEaten")) + // to be consumed in yachtzee
@@ -509,9 +519,14 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     spleenAvailable;
 
   const cleanableSpleen = organsAvailable - synthCastsToCoverRun - extroSpleenSpace;
-  const sufficientOrgansFor = (yachtzees: number) => cleanableSpleen >= yachtzees;
+  const sufficientOrgansFor = (yachtzees: number) =>
+    cleanableSpleen >= yachtzees && // We can actually hit this many yachtzees
+    Math.floor((organsAvailable - extroSpleenSpace - yachtzees) / 5) * 5 >= synthCastsToCoverRun; // We must be able to cast enough turns of synth using cleansers
 
-  const possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
+  const possibleJellyYachtzeeTurns = Array(15)
+    .fill(0)
+    .map((_, i) => 2 * (i + 1))
+    .reverse();
   const jellyYachtzeeTurns = possibleJellyYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
 
   const fishyPipeTurnsAvailable =
