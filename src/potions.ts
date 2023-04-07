@@ -21,8 +21,10 @@ import {
   numericModifier,
   print,
   retrievePrice,
+  runChoice,
   setLocation,
   use,
+  visitUrl,
 } from "kolmafia";
 import {
   $effect,
@@ -41,6 +43,7 @@ import {
   have,
   isSong,
   Mood,
+  set,
   sum,
   sumNumbers,
   withChoice,
@@ -78,6 +81,24 @@ for (const effectGroup of mutuallyExclusiveList) {
     ]);
   }
 }
+
+const allNoHookahEffects = Effect.all().filter((effect) => !effect.attributes.includes("nohookah"));
+const validWishString: Map<Effect, string> = new Map();
+function getValidWishString(effect: Effect): string {
+  if (!validWishString.has(effect)) {
+    const allOtherNoHookahEffectNames = allNoHookahEffects
+      .filter((e) => e !== effect)
+      .map((e) => e.name.toLowerCase());
+    const validSubstrings = Array.from(
+      effect.name.toLowerCase().match(RegExp(/[\w ]+/g)) ?? []
+    ).filter((s) => !allOtherNoHookahEffectNames.some((name) => name.includes(s)));
+    validWishString.set(effect, validSubstrings.length > 0 ? validSubstrings.pop() ?? "" : "");
+  }
+  return validWishString.get(effect) ?? "";
+}
+const validWishes = allNoHookahEffects.filter((effect) => {
+  return getValidWishString(effect)?.length > 0;
+});
 
 function retrieveUntradeablePrice(it: Item) {
   return retrievePrice(it, availableAmount(it) + 1) - autosellPrice(it) * availableAmount(it);
@@ -460,18 +481,64 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   },
 });
 
-export const wishPotions = Effect.all()
-  .filter((effect) => !effect.attributes.includes("nohookah"))
+export const wishPotions = validWishes.map(
+  (effect) =>
+    new Potion($item`pocket wish`, {
+      effect,
+      canDouble: false,
+      duration: 20,
+      use: (quantity: number) =>
+        new Array(quantity).fill(0).every(() => {
+          const s = getValidWishString(effect);
+          if (s === "") return;
+          cliExecute(`genie effect ${s}`);
+        }),
+    })
+);
+
+export const pawPotions = validWishes
   .map(
     (effect) =>
-      new Potion($item`pocket wish`, {
+      // eslint-disable-next-line libram/verify-constants
+      new Potion($item`cursed monkey's paw`, {
         effect,
         canDouble: false,
-        duration: 20,
-        use: (quantity: number) =>
-          new Array(quantity).fill(0).every(() => cliExecute(`genie effect ${effect}`)),
+        price: () =>
+          get("_pawWishes", 0) >= 5 ||
+          // eslint-disable-next-line libram/verify-constants
+          !have($item`cursed monkey's paw`) ||
+          failedWishes.includes(effect)
+            ? Infinity
+            : 0,
+        duration: 30,
+        acquire: () => (get("_pawWishes", 0) >= 5 ? 0 : 1),
+        use: () => {
+          if (
+            get("_pawWishes", 0) >= 5 ||
+            // eslint-disable-next-line libram/verify-constants
+            !have($item`cursed monkey's paw`) ||
+            failedWishes.includes(effect)
+          ) {
+            return false;
+          }
+
+          const s = getValidWishString(effect);
+          if (s === "") return false;
+
+          const currentEffectTurns = haveEffect(effect);
+          visitUrl("main.php?action=cmonk&pwd");
+          runChoice(1, `wish=${s}`);
+          visitUrl("main.php");
+          if (haveEffect(effect) <= currentEffectTurns) {
+            failedWishes.push(effect);
+            return false;
+          }
+          set("_pawWishes", get("_pawWishes, 0") + 1);
+          return true;
+        },
       })
-  );
+  )
+  .filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100); // Filter for faster sorting
 
 export const farmingPotions = [
   ...Item.all()
@@ -544,6 +611,30 @@ export function potionSetup(embezzlersOnly: boolean): void {
   }
 
   variableMeatPotionsSetup(0, embezzlers);
+
+  // Use paw wishes
+  while (get("_pawWishes", 0) < 5) {
+    // Sort the paw potions by the profits of a single wish, then use the best one
+    if (
+      !pawPotions
+        .filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100)
+        .sort((a, b) => {
+          const aValue = a
+            .value(embezzlers)
+            .sort((l, r) => (r.quantity > 0 ? r.value : 0) - (l.quantity > 0 ? l.value : 0));
+          const bValue = b
+            .value(embezzlers)
+            .sort((l, r) => (r.quantity > 0 ? r.value : 0) - (l.quantity > 0 ? l.value : 0));
+          return (
+            (bValue.length > 0 ? bValue[0].value : 0) - (aValue.length > 0 ? aValue[0].value : 0)
+          );
+        })
+        .some((potion) => potion.use(1))
+    ) {
+      break;
+    }
+  }
+
   completedPotionSetup = true;
 }
 
