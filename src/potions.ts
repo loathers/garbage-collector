@@ -533,7 +533,7 @@ export const pawPotions = validWishes
             failedWishes.push(effect);
             return false;
           }
-          set("_pawWishes", get("_pawWishes, 0") + 1);
+          set("_pawWishes", get("_pawWishes", 0) + 1);
           return true;
         },
       })
