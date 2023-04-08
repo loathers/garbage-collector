@@ -60,6 +60,7 @@ import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
+import { dietCompleted } from "./diet";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -559,6 +560,20 @@ export function doublingPotions(embezzlers: number): Potion[] {
     .map((pair) => pair.potion);
 }
 
+export function usePawWishes(singleUseValuation: (potion: Potion) => number): void {
+  while (get("_pawWishes", 0) < 5) {
+    // Sort the paw potions by the profits of a single wish, then use the best one
+    if (
+      !pawPotions
+        .filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100)
+        .sort((a, b) => singleUseValuation(b) - singleUseValuation(a))
+        .some((potion) => potion.use(1))
+    ) {
+      break;
+    }
+  }
+}
+
 let completedPotionSetup = false;
 export function potionSetupCompleted(): boolean {
   return completedPotionSetup;
@@ -611,25 +626,15 @@ export function potionSetup(embezzlersOnly: boolean): void {
 
   variableMeatPotionsSetup(0, embezzlers);
 
-  // Use paw wishes
-  while (get("_monkeyPawWishesUsed", 0) < 5) {
-    // Sort the paw potions by the profits of a single wish, then use the best one
-    if (
-      !pawPotions
-        .filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100)
-        .sort((a, b) => {
-          const bestValues = [a, b].map((potion) => {
-            const value = potion.value(embezzlers);
-            return value.length > 0
-              ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
-              : 0;
-          });
-          return bestValues[1] - bestValues[0];
-        })
-        .some((potion) => potion.use(1))
-    ) {
-      break;
-    }
+  // Use paw wishes only after we're done with dieting (this includes yachtzee's diet)
+  // Yachtzee will determine its own desired wishes
+  if (dietCompleted()) {
+    usePawWishes((potion) => {
+      const value = potion.value(embezzlers);
+      return value.length > 0
+        ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
+        : 0;
+    });
   }
 
   completedPotionSetup = true;

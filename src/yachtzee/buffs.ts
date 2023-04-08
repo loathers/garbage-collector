@@ -30,6 +30,7 @@ import {
   farmingPotions,
   mutuallyExclusive,
   Potion,
+  usePawWishes,
   variableMeatPotionsSetup,
 } from "../potions";
 import { garboValue } from "../session";
@@ -120,8 +121,7 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
           yachtzeeTurns && yachtzeePotionProfits(potion, yachtzeeTurns) > 0
     )
     .sort(
-      (left, right) =>
-        yachtzeePotionProfits(right, yachtzeeTurns) - yachtzeePotionProfits(left, yachtzeeTurns)
+      (a, b) => yachtzeePotionProfits(b, yachtzeeTurns) - yachtzeePotionProfits(a, yachtzeeTurns)
     );
 
   for (const potion of testPotions) {
@@ -192,6 +192,7 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
   if (!simOnly) {
     variableMeatPotionsSetup(yachtzeeTurns, expectedEmbezzlers);
     executeNextDietStep(true);
+    usePawWishes((potion) => yachtzeePotionProfits(potion, yachtzeeTurns));
     if (pyecAvailable()) {
       maximize("MP", false);
       if (have($item`Platinum Yendorian Express Card`)) {
