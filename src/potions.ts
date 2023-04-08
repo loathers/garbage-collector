@@ -43,7 +43,6 @@ import {
   have,
   isSong,
   Mood,
-  set,
   sum,
   sumNumbers,
   withChoice,
@@ -92,10 +91,7 @@ function getValidWishString(effect: Effect): string {
     const validSubstrings = Array.from(
       effect.name.toLowerCase().match(RegExp(/[\w ]+/g)) ?? []
     ).filter((s) => !allOtherNoHookahEffectNames.some((name) => name.includes(s)));
-    validWishString.set(
-      effect,
-      (validSubstrings.length > 0 ? validSubstrings.pop() ?? "" : "").trim()
-    );
+    validWishString.set(effect, validSubstrings[0]?.trim() ?? "");
   }
   return validWishString.get(effect) ?? "";
 }
@@ -490,12 +486,13 @@ export const wishPotions = validWishes.map(
       effect,
       canDouble: false,
       duration: 20,
-      use: (quantity: number) =>
-        new Array(quantity).fill(0).every(() => {
-          const s = getValidWishString(effect);
-          if (s === "") return;
+      use: (quantity: number) => {
+        const s = getValidWishString(effect);
+        if (!s) return false;
+        return new Array(quantity).fill(0).every(() => {
           cliExecute(`genie effect ${s}`);
-        }),
+        });
+      },
     })
 );
 
@@ -507,17 +504,17 @@ export const pawPotions = validWishes
         effect,
         canDouble: false,
         price: () =>
-          get("_pawWishes", 0) >= 5 ||
+          get("_monkeyPawWishesUsed", 0) >= 5 ||
           // eslint-disable-next-line libram/verify-constants
           !have($item`cursed monkey's paw`) ||
           failedWishes.includes(effect)
             ? Infinity
             : 0,
         duration: 30,
-        acquire: () => (get("_pawWishes", 0) >= 5 ? 0 : 1),
+        acquire: () => (get("_monkeyPawWishesUsed", 0) >= 5 ? 0 : 1),
         use: () => {
           if (
-            get("_pawWishes", 0) >= 5 ||
+            get("_monkeyPawWishesUsed", 0) >= 5 ||
             // eslint-disable-next-line libram/verify-constants
             !have($item`cursed monkey's paw`) ||
             failedWishes.includes(effect)
@@ -526,7 +523,7 @@ export const pawPotions = validWishes
           }
 
           const s = getValidWishString(effect);
-          if (s === "") return false;
+          if (!s) return false;
 
           const currentEffectTurns = haveEffect(effect);
           visitUrl("main.php?action=cmonk&pwd");
@@ -536,7 +533,6 @@ export const pawPotions = validWishes
             failedWishes.push(effect);
             return false;
           }
-          set("_pawWishes", get("_pawWishes", 0) + 1);
           return true;
         },
       })
@@ -616,21 +612,26 @@ export function potionSetup(embezzlersOnly: boolean): void {
   variableMeatPotionsSetup(0, embezzlers);
 
   // Use paw wishes
-  while (get("_pawWishes", 0) < 5) {
+  while (get("_monkeyPawWishesUsed", 0) < 5) {
     // Sort the paw potions by the profits of a single wish, then use the best one
+    maxBy(
+      pawPotions.filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100),
+      (potion) => {
+        const value = potion.value(embezzlers);
+        return value.length > 0 ? maxBy(value, (v) => (v.quantity > 0 ? v.value : 0)).value : 0;
+      }
+    );
     if (
       !pawPotions
         .filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100)
         .sort((a, b) => {
-          const aValue = a
-            .value(embezzlers)
-            .sort((l, r) => (r.quantity > 0 ? r.value : 0) - (l.quantity > 0 ? l.value : 0));
-          const bValue = b
-            .value(embezzlers)
-            .sort((l, r) => (r.quantity > 0 ? r.value : 0) - (l.quantity > 0 ? l.value : 0));
-          return (
-            (bValue.length > 0 ? bValue[0].value : 0) - (aValue.length > 0 ? aValue[0].value : 0)
-          );
+          const bestValues = [a, b].map((potion) => {
+            const value = potion.value(embezzlers);
+            return value.length > 0
+              ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
+              : 0;
+          });
+          return bestValues[1] - bestValues[0];
         })
         .some((potion) => potion.use(1))
     ) {
