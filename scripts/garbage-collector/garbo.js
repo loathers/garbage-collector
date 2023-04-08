@@ -24593,6 +24593,7 @@ function generateTurnsAtEndOfDay() {
   deliverThesisIfAble();
   if (lib_have(template_string_$item(barfTurn_templateObject82 || (barfTurn_templateObject82 = barfTurn_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"])))) && (lib_have(template_string_$item(barfTurn_templateObject83 || (barfTurn_templateObject83 = barfTurn_taggedTemplateLiteral(["magical sausage"])))) || lib_have(template_string_$item(barfTurn_templateObject84 || (barfTurn_templateObject84 = barfTurn_taggedTemplateLiteral(["magical sausage casing"]))))) && property_get("_sausagesEaten") < 23) {
     var available = utils_clamp(23 - property_get("_sausagesEaten"), 0, (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(barfTurn_templateObject85 || (barfTurn_templateObject85 = barfTurn_taggedTemplateLiteral(["magical sausage"])))) + (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(barfTurn_templateObject86 || (barfTurn_templateObject86 = barfTurn_taggedTemplateLiteral(["magical sausage casing"])))));
+    (0,external_kolmafia_namespaceObject.maximize)("MP", false);
     (0,external_kolmafia_namespaceObject.eat)(available, template_string_$item(barfTurn_templateObject87 || (barfTurn_templateObject87 = barfTurn_taggedTemplateLiteral(["magical sausage"]))));
   }
   if (lib_have(template_string_$item(barfTurn_templateObject88 || (barfTurn_templateObject88 = barfTurn_taggedTemplateLiteral(["designer sweatpants"])))) && (0,external_kolmafia_namespaceObject.myAdventures)() === 1 + config_globalOptions.saveTurns && !config_globalOptions.nodiet) {
