@@ -7,6 +7,7 @@ import {
   itemAmount,
   Location,
   mallPrice,
+  maximize,
   myAdventures,
   myInebriety,
   myLevel,
@@ -521,6 +522,7 @@ function generateTurnsAtEndOfDay(): void {
       0,
       itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`)
     );
+    maximize("MP", false);
     eat(available, $item`magical sausage`);
   }
 
