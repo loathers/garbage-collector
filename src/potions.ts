@@ -614,13 +614,6 @@ export function potionSetup(embezzlersOnly: boolean): void {
   // Use paw wishes
   while (get("_monkeyPawWishesUsed", 0) < 5) {
     // Sort the paw potions by the profits of a single wish, then use the best one
-    maxBy(
-      pawPotions.filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100),
-      (potion) => {
-        const value = potion.value(embezzlers);
-        return value.length > 0 ? maxBy(value, (v) => (v.quantity > 0 ? v.value : 0)).value : 0;
-      }
-    );
     if (
       !pawPotions
         .filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100)
