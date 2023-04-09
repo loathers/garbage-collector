@@ -30,7 +30,6 @@ import {
   farmingPotions,
   mutuallyExclusive,
   Potion,
-  usePawWishes,
   variableMeatPotionsSetup,
 } from "../potions";
 import { garboValue } from "../session";
@@ -192,7 +191,6 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
   if (!simOnly) {
     variableMeatPotionsSetup(yachtzeeTurns, expectedEmbezzlers);
     executeNextDietStep(true);
-    usePawWishes((potion) => yachtzeePotionProfits(potion, yachtzeeTurns));
     if (pyecAvailable()) {
       maximize("MP", false);
       if (have($item`Platinum Yendorian Express Card`)) {

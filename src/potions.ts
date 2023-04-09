@@ -60,7 +60,6 @@ import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
-import { dietCompleted } from "./diet";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -84,7 +83,7 @@ for (const effectGroup of mutuallyExclusiveList) {
 
 const allNoHookahEffects = Effect.all().filter((effect) => !effect.attributes.includes("nohookah"));
 const validWishString: Map<Effect, string> = new Map();
-function getValidWishString(effect: Effect): string {
+function getValidWishString(effect: Effect): string | undefined {
   if (!validWishString.has(effect)) {
     const allOtherNoHookahEffectNames = allNoHookahEffects
       .filter((e) => e !== effect)
@@ -92,13 +91,15 @@ function getValidWishString(effect: Effect): string {
     const validSubstrings = Array.from(
       effect.name.toLowerCase().match(RegExp(/[\w ]+/g)) ?? []
     ).filter((s) => !allOtherNoHookahEffectNames.some((name) => name.includes(s)));
-    validWishString.set(effect, validSubstrings[0]?.trim() ?? "");
+    validWishString.set(effect, validSubstrings[0]?.trim());
   }
-  return validWishString.get(effect) ?? "";
+  return validWishString.get(effect);
 }
-const validWishes = allNoHookahEffects.filter((effect) => {
-  return getValidWishString(effect)?.length > 0;
-});
+const validWishes = allNoHookahEffects
+  .filter((effect) => getValidWishString(effect))
+  .filter(
+    (effect) => (globalOptions.prefs.yachtzeechain ? effect !== $effect`Eau d' Clochard` : true) // hardcoded heuristics
+  );
 
 function retrieveUntradeablePrice(it: Item) {
   return retrievePrice(it, availableAmount(it) + 1) - autosellPrice(it) * availableAmount(it);
@@ -490,9 +491,12 @@ export const wishPotions = validWishes.map(
       use: (quantity: number) => {
         const s = getValidWishString(effect);
         if (!s) return false;
-        return new Array(quantity).fill(0).every(() => {
-          cliExecute(`genie effect ${s}`);
-        });
+
+        for (let i = 0; i < quantity; i++) {
+          const madeValidWish = cliExecute(`genie effect ${s}`);
+          if (!madeValidWish) return false;
+        }
+        return true;
       },
     })
 );
@@ -500,23 +504,20 @@ export const wishPotions = validWishes.map(
 export const pawPotions = validWishes
   .map(
     (effect) =>
-      // eslint-disable-next-line libram/verify-constants
       new Potion($item`cursed monkey's paw`, {
         effect,
         canDouble: false,
         price: () =>
           get("_monkeyPawWishesUsed", 0) >= 5 ||
-          // eslint-disable-next-line libram/verify-constants
           !have($item`cursed monkey's paw`) ||
           failedWishes.includes(effect)
-            ? Infinity
+            ? 2 ** 100 // Something large but non-infinite for sorting reasons
             : 0,
         duration: 30,
         acquire: () => (get("_monkeyPawWishesUsed", 0) >= 5 ? 0 : 1),
         use: () => {
           if (
             get("_monkeyPawWishesUsed", 0) >= 5 ||
-            // eslint-disable-next-line libram/verify-constants
             !have($item`cursed monkey's paw`) ||
             failedWishes.includes(effect)
           ) {
@@ -563,14 +564,10 @@ export function doublingPotions(embezzlers: number): Potion[] {
 export function usePawWishes(singleUseValuation: (potion: Potion) => number): void {
   while (get("_pawWishes", 0) < 5) {
     // Sort the paw potions by the profits of a single wish, then use the best one
-    if (
-      !pawPotions
-        .filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100)
-        .sort((a, b) => singleUseValuation(b) - singleUseValuation(a))
-        .some((potion) => potion.use(1))
-    ) {
-      break;
-    }
+    const madeValidWish = pawPotions
+      .sort((a, b) => singleUseValuation(b) - singleUseValuation(a))
+      .some((potion) => potion.use(1));
+    if (!madeValidWish) return;
   }
 }
 
@@ -597,6 +594,13 @@ export function potionSetup(embezzlersOnly: boolean): void {
       bestPotion.use(1);
     }
   }
+
+  usePawWishes((potion) => {
+    const value = potion.value(embezzlers);
+    return value.length > 0
+      ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
+      : 0;
+  });
 
   // Only test potions which are reasonably close to being profitable using historical price.
   const testPotions = farmingPotions.filter(
@@ -625,18 +629,6 @@ export function potionSetup(embezzlersOnly: boolean): void {
   }
 
   variableMeatPotionsSetup(0, embezzlers);
-
-  // Use paw wishes only after we're done with dieting (this includes yachtzee's diet)
-  // Yachtzee will determine its own desired wishes
-  if (dietCompleted()) {
-    usePawWishes((potion) => {
-      const value = potion.value(embezzlers);
-      return value.length > 0
-        ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
-        : 0;
-    });
-  }
-
   completedPotionSetup = true;
 }
 
