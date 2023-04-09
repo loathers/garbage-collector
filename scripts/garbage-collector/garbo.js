@@ -15393,7 +15393,7 @@ function unlock(loc, value) {
   if ((0,external_kolmafia_namespaceObject.buy)(1, unlockableZone.unlocker, value) === 0) return false;
   return (0,external_kolmafia_namespaceObject.use)(unlockableZone.unlocker);
 }
-var backupSkiplist = $locations(wanderer_lib_templateObject15 || (wanderer_lib_templateObject15 = wanderer_lib_taggedTemplateLiteral(["The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux"])));
+var backupSkiplist = $locations(wanderer_lib_templateObject15 || (wanderer_lib_templateObject15 = wanderer_lib_taggedTemplateLiteral(["The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux, Professor Jacking's Huge-A-Ma-tron"])));
 
 // These are locations where all non-combats have skips or lead to a combat.
 var backupSafelist = $locations(wanderer_lib_templateObject16 || (wanderer_lib_templateObject16 = wanderer_lib_taggedTemplateLiteral(["The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters"])));
