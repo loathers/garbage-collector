@@ -155,7 +155,7 @@ export class Potion {
   }
 
   meatDrop(): number {
-    setLocation($location.none);
+    setLocation($location`The Overgrown Lot`);
     return (
       getModifier("Meat Drop", this.effect()) +
       2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
@@ -452,7 +452,7 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
         throw new Error("Failed to acquire Shadow Waters and spent a turn!");
       }
     }
-    setLocation($location.none); // Reset location to not affect mafia's item drop calculations
+    setLocation($location`The Overgrown Lot`); // Reset location to not affect mafia's item drop calculations
     return 0;
   },
   use: () => {

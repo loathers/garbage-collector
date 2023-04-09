@@ -203,7 +203,7 @@ const secondChainMacro = () =>
   ).abort();
 
 function embezzlerSetup() {
-  setLocation($location.none);
+  setLocation($location`The Overgrown Lot`);
   potionSetup(false);
   maximize("MP", false);
   meatMood(true, 750 + baseMeat).execute(embezzlerCount());
@@ -1393,7 +1393,7 @@ const freeFightSources = [
       adv1(bestShadowRift(), -1, "");
       if (get("encountersUntilSRChoice") === 0) adv1(bestShadowRift(), -1, ""); // grab the NC
       if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice") !== 0) {
-        setLocation($location.none); // Reset location to not affect mafia's item drop calculations
+        setLocation($location`The Overgrown Lot`); // Reset location to not affect mafia's item drop calculations
       }
     },
     true
