@@ -342,7 +342,7 @@ export const DailyItemTasks: Task[] = [
         });
         if (!bestRift) abort("Failed to choose rift for Shadow Forest");
         const value =
-          (6 *
+          (((6 + 9) / 2) *
             sum(getMonsters(bestRift), (m) =>
               sum(itemDropsArray(m), ({ drop }) => garboValue(drop))
             )) /
