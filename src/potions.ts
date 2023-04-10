@@ -3,18 +3,22 @@ import {
   adv1,
   autosellPrice,
   availableAmount,
+  canAdventure,
   canEquip,
   cliExecute,
   Effect,
   effectModifier,
   equip,
+  getMonsters,
   haveEffect,
   historicalAge,
   historicalPrice,
   inebrietyLimit,
   Item,
   itemAmount,
+  itemDropsArray,
   itemType,
+  Location,
   mallPrice,
   myInebriety,
   myTurncount,
@@ -81,25 +85,61 @@ for (const effectGroup of mutuallyExclusiveList) {
   }
 }
 
-const allNoHookahEffects = Effect.all().filter((effect) => !effect.attributes.includes("nohookah"));
-const validWishString: Map<Effect, string> = new Map();
-function getValidWishString(effect: Effect): string | undefined {
-  if (!validWishString.has(effect)) {
-    const allOtherNoHookahEffectNames = allNoHookahEffects
-      .filter((e) => e !== effect)
-      .map((e) => e.name.toLowerCase());
-    const validSubstrings = Array.from(
-      effect.name.toLowerCase().match(RegExp(/[\w ]+/g)) ?? []
-    ).filter((s) => !allOtherNoHookahEffectNames.some((name) => name.includes(s)));
-    validWishString.set(effect, validSubstrings[0]?.trim());
-  }
-  return validWishString.get(effect);
-}
-const validWishes = allNoHookahEffects
-  .filter((effect) => getValidWishString(effect))
-  .filter(
-    (effect) => (globalOptions.prefs.yachtzeechain ? effect !== $effect`Eau d' Clochard` : true) // hardcoded heuristics
-  );
+const INVALID_CHARS_REGEX = /[.',]/g;
+
+const wishableEffects = Effect.all().filter((e) => !e.attributes.includes("nohookah"));
+const wishableEffectData = wishableEffects.map((e) => {
+  const name = e.name.toLowerCase();
+  const splitName = name.split(INVALID_CHARS_REGEX);
+  return { e, name, splitName };
+});
+
+const invalidWishStrings = wishableEffectData
+  .filter(({ name }) => name.match(INVALID_CHARS_REGEX))
+  .filter(({ name, splitName }) =>
+    splitName.every((s) =>
+      wishableEffectData.some((n) => n.name !== name && n.splitName.some((x) => x.includes(s)))
+    )
+  )
+  .map(({ name }) => name);
+
+const availableItems = [
+  ...new Set(
+    Location.all()
+      .filter((l) => canAdventure(l))
+      .map((l) =>
+        getMonsters(l)
+          .filter((m) => m.copyable)
+          .map((m) => itemDropsArray(m).filter(({ rate }) => rate > 1))
+          .flat()
+      )
+      .flat()
+      .map(({ drop }) => drop)
+  ),
+].map((i) => i.name);
+
+const validPawWishes: Map<Effect, string> = new Map(
+  wishableEffectData
+    .filter(
+      ({ e, name }) =>
+        !invalidWishStrings.includes(name) &&
+        (globalOptions.prefs.yachtzeechain ? e !== $effect`Eau d' Clochard` : true) // hardcoded heuristics
+    )
+    .map(({ e, name, splitName }) => {
+      if (!name.match(INVALID_CHARS_REGEX)) return [e, name];
+
+      return [
+        e,
+        splitName.filter(
+          (s) =>
+            !availableItems.includes(s) &&
+            !wishableEffectData.some(
+              (n) => n.name !== name && n.splitName.some((x) => x.includes(s))
+            )
+        )[0],
+      ];
+    })
+);
 
 function retrieveUntradeablePrice(it: Item) {
   return retrievePrice(it, availableAmount(it) + 1) - autosellPrice(it) * availableAmount(it);
@@ -482,18 +522,15 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   },
 });
 
-export const wishPotions = validWishes.map(
+export const wishPotions = wishableEffects.map(
   (effect) =>
     new Potion($item`pocket wish`, {
       effect,
       canDouble: false,
       duration: 20,
       use: (quantity: number) => {
-        const s = getValidWishString(effect);
-        if (!s) return false;
-
         for (let i = 0; i < quantity; i++) {
-          const madeValidWish = cliExecute(`genie effect ${s}`);
+          const madeValidWish = cliExecute(`genie effect ${effect}`);
           if (!madeValidWish) return false;
         }
         return true;
@@ -501,7 +538,7 @@ export const wishPotions = validWishes.map(
     })
 );
 
-export const pawPotions = validWishes
+export const pawPotions = Array.from(validPawWishes.keys())
   .map(
     (effect) =>
       new Potion($item`cursed monkey's paw`, {
@@ -524,7 +561,7 @@ export const pawPotions = validWishes
             return false;
           }
 
-          const s = getValidWishString(effect);
+          const s = validPawWishes.get(effect);
           if (!s) return false;
 
           const currentEffectTurns = haveEffect(effect);
