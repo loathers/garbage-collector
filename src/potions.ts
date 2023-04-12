@@ -122,7 +122,8 @@ const validPawWishes: Map<Effect, string> = new Map(
     .filter(
       ({ e, name }) =>
         !invalidWishStrings.includes(name) &&
-        (globalOptions.prefs.yachtzeechain ? e !== $effect`Eau d' Clochard` : true) // hardcoded heuristics
+        (globalOptions.prefs.yachtzeechain ? e !== $effect`Eau d' Clochard` : true) && // hardcoded heuristics
+        (ClosedCircuitPayphone.have() ? e !== $effect`Shadow Waters` : true)
     )
     .map(({ e, name, splitName }) => {
       if (!name.match(INVALID_CHARS_REGEX)) return [e, name];
