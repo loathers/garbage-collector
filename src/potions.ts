@@ -20,15 +20,14 @@ import {
   itemType,
   Location,
   mallPrice,
+  monkeyPaw,
   myInebriety,
   myTurncount,
   numericModifier,
   print,
   retrievePrice,
-  runChoice,
   setLocation,
   use,
-  visitUrl,
 } from "kolmafia";
 import {
   $effect,
@@ -254,7 +253,7 @@ export class Potion {
     const duration = Math.max(this.effectDuration(), maxTurns ?? 0);
     // Number of embezzlers this will actually be in effect for.
     const embezzlersApplied = Math.max(
-      Math.min(duration, embezzlers) - haveEffect(this.effect()),
+      Math.min(duration, embezzlers - haveEffect(this.effect())),
       0
     );
 
@@ -357,7 +356,7 @@ export class Potion {
     // compute the value of covering embezzlers
     const embezzlerTurns = Math.max(0, embezzlers - startingTurns);
     const embezzlerQuantity = this.usesToCover(embezzlerTurns, false);
-    const embezzlerValue = embezzlerQuantity ? this.gross(embezzlerTurns) : 0;
+    const embezzlerValue = embezzlerQuantity ? this.gross(embezzlers) : 0;
 
     values.push({
       name: "embezzler",
@@ -387,7 +386,7 @@ export class Potion {
       const barfQuantity = this.usesToCover(remainingTurns, !ascending);
       values.push({ name: "barf", quantity: limitFunction(barfQuantity), value: this.gross(0) });
 
-      if (globalOptions.ascend && this.overage(remainingTurns, barfQuantity) < 0) {
+      if (ascending && this.overage(remainingTurns, barfQuantity) < 0) {
         const ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
         values.push({
           name: "ascending",
@@ -539,6 +538,7 @@ export const wishPotions = wishableEffects.map(
 );
 
 export const pawPotions = Array.from(validPawWishes.keys())
+  .filter((effect) => numericModifier(effect, "Meat Drop") >= 100)
   .map(
     (effect) =>
       new Potion($item`cursed monkey's paw`, {
@@ -564,11 +564,7 @@ export const pawPotions = Array.from(validPawWishes.keys())
           const s = validPawWishes.get(effect);
           if (!s) return false;
 
-          const currentEffectTurns = haveEffect(effect);
-          visitUrl("main.php?action=cmonk&pwd");
-          runChoice(1, `wish=${s}`);
-          visitUrl("main.php");
-          if (haveEffect(effect) <= currentEffectTurns) {
+          if (!monkeyPaw(effect)) {
             failedWishes.push(effect);
             return false;
           }
