@@ -16,8 +16,8 @@ import {
   itemAmount,
   itemType,
   mallPrice,
-  myAdventures,
   myInebriety,
+  myTurncount,
   numericModifier,
   print,
   retrievePrice,
@@ -155,7 +155,7 @@ export class Potion {
   }
 
   meatDrop(): number {
-    setLocation($location.none);
+    setLocation($location`Friar Ceremony Location`);
     return (
       getModifier("Meat Drop", this.effect()) +
       2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
@@ -392,6 +392,8 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   effect: $effect`Shadow Waters`,
   duration: 30,
   price: (historical: boolean) => {
+    if (!have($item`closed-circuit pay phone`)) return Infinity;
+
     const target = ClosedCircuitPayphone.rufusTarget();
     const haveItemQuest = get("rufusQuestType") === "items" && target instanceof Item;
     const haveArtifact =
@@ -420,8 +422,10 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     return averagePrice;
   },
   acquire: (qty: number) => {
-    equip($slot`weapon`, $item.none);
-    equip($slot`off-hand`, $item`Drunkula's wineglass`);
+    if (myInebriety() > inebrietyLimit()) {
+      equip($slot`weapon`, $item.none);
+      equip($slot`off-hand`, $item`Drunkula's wineglass`);
+    }
     for (let iteration = 0; iteration < qty; iteration++) {
       // Grab a lodestone if we don't have one
       if (!have($item`Rufus's shadow lodestone`)) {
@@ -441,13 +445,15 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
       }
 
       // Grab the buff from the NC
-      const myAdv = myAdventures();
+      const curTurncount = myTurncount();
       if (have($item`Rufus's shadow lodestone`)) {
         withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
       }
-      if (myAdventures() !== myAdv) throw new Error("Failed to acquire Shadow Waters");
+      if (myTurncount() > curTurncount) {
+        throw new Error("Failed to acquire Shadow Waters and spent a turn!");
+      }
     }
-    setLocation($location.none); // Reset location to not affect mafia's item drop calculations
+    setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
     return 0;
   },
   use: () => {
@@ -475,7 +481,7 @@ export const farmingPotions = [
     .filter((potion) => potion.bonusMeat() > 0),
   ...wishPotions,
   new Potion($item`papier-mâché toothpicks`),
-  rufusPotion,
+  ...(have($item`closed-circuit pay phone`) ? [rufusPotion] : []),
 ];
 
 export function doublingPotions(embezzlers: number): Potion[] {

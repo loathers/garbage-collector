@@ -2,6 +2,7 @@ import { Task } from "grimoire-kolmafia";
 import {
   adv1,
   canadiaAvailable,
+  canEquip,
   changeMcd,
   cliExecute,
   currentMcd,
@@ -419,14 +420,13 @@ export const DailyTasks: Task[] = [
   {
     name: "Beach Comb Buff",
     ready: () => have($item`Beach Comb`) || have($item`driftwood beach comb`),
-    completed: () =>
-      get("_beachHeadsUsed").split(",").includes("10") || get("_freeBeachWalksUsed") >= 11,
+    completed: () => !BeachComb.headAvailable("FAMILIAR") || BeachComb.freeCombs() < 1,
     do: () => BeachComb.tryHead($effect`Do I Know You From Somewhere?`),
   },
   {
     name: "Beach Comb Free Walks",
     ready: () => have($item`Beach Comb`) || have($item`driftwood beach comb`),
-    completed: () => get("_freeBeachWalksUsed") >= 11,
+    completed: () => BeachComb.freeCombs() < 1,
     do: () => cliExecute(`combo ${11 - get("_freeBeachWalksUsed")}`),
   },
   {
@@ -510,7 +510,12 @@ export const DailyTasks: Task[] = [
     completed: () => have($effect`Eldritch Attunement`),
     do: () => adv1($location`Generic Summer Holiday Swimming!`),
     acquire: [{ item: $item`water wings` }],
-    outfit: { acc1: $item`water wings` },
+    outfit: () =>
+      myInebriety() > inebrietyLimit() &&
+      have($item`Drunkula's wineglass`) &&
+      canEquip($item`Drunkula's wineglass`)
+        ? { offhand: $item`Drunkula's wineglass`, acc1: $item`water wings` }
+        : { acc1: $item`water wings` },
   },
   {
     name: "Check Neverending Party Quest",
@@ -519,6 +524,12 @@ export const DailyTasks: Task[] = [
       get("_questPartyFair") === "unstarted",
     completed: () => get("_questPartyFair") !== "unstarted",
     do: () => nepQuest(),
+    outfit: () =>
+      myInebriety() > inebrietyLimit() &&
+      have($item`Drunkula's wineglass`) &&
+      canEquip($item`Drunkula's wineglass`)
+        ? { offhand: $item`Drunkula's wineglass` }
+        : {},
   },
   {
     name: "Check Barf Mountain Quest",

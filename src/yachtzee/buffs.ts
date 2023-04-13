@@ -6,6 +6,7 @@ import {
   maximize,
   myMeat,
   print,
+  setLocation,
   toInt,
   use,
 } from "kolmafia";
@@ -13,6 +14,7 @@ import {
   $effect,
   $item,
   $items,
+  $location,
   clamp,
   get,
   getActiveEffects,
@@ -68,6 +70,8 @@ export function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): nu
 }
 
 export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
+  setLocation($location`Friar Ceremony Location`);
+
   let totalProfits = 0;
   const PYECOffset = pyecAvailable() ? 5 : 0;
   const excludedEffects = new Set<Effect>();

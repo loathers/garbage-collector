@@ -204,7 +204,7 @@ const secondChainMacro = () =>
   ).abort();
 
 function embezzlerSetup() {
-  setLocation($location.none);
+  setLocation($location`Friar Ceremony Location`);
   potionSetup(false);
   maximize("MP", false);
   meatMood(true, 750 + baseMeat).execute(embezzlerCount());
@@ -519,6 +519,7 @@ type FreeFightOptions = {
   macroAllowsFamiliarActions?: boolean;
 };
 
+let consecutiveNonFreeFights = 0;
 class FreeFight {
   available: () => number | boolean;
   run: () => void;
@@ -565,7 +566,11 @@ class FreeFight {
         this.options.requirements ? Requirement.merge(this.options.requirements()) : undefined
       );
       safeRestore();
+      const curTurncount = myTurncount();
       withMacro(Macro.basicCombat(), this.run);
+      if (myTurncount() > curTurncount) consecutiveNonFreeFights++;
+      else consecutiveNonFreeFights = 0;
+      if (consecutiveNonFreeFights >= 5) throw new Error("The last 5 FreeRunFights were not free!");
       postCombatActions();
       // Slot in our Professor Thesis if it's become available
       if (!have($effect`Feeling Lost`)) deliverThesisIfAble();
@@ -614,7 +619,11 @@ class FreeRunFight extends FreeFight {
       );
       freeFightMood(...(this.options.effects?.() ?? []));
       safeRestore();
+      const curTurncount = myTurncount();
       withMacro(Macro.step(runSource.macro), () => this.freeRun(runSource));
+      if (myTurncount() > curTurncount) consecutiveNonFreeFights++;
+      else consecutiveNonFreeFights = 0;
+      if (consecutiveNonFreeFights >= 5) throw new Error("The last 5 FreeRunFights were not free!");
       postCombatActions();
     }
   }
@@ -1383,6 +1392,7 @@ const freeFightSources = [
         ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
       adv1(bestShadowRift(), -1, "");
+
       if (get("encountersUntilSRChoice", 0) === 0) {
         if (ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
           ClosedCircuitPayphone.chooseQuest(() => 2);
@@ -1395,7 +1405,7 @@ const freeFightSources = [
       }
 
       if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
-        setLocation($location.none); // Reset location to not affect mafia's item drop calculations
+        setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
       }
     },
     true

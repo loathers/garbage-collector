@@ -395,9 +395,6 @@ function yachtzeeDietScheduler(
   }
 
   // Print diet schedule
-  print(`Fullness:    ${myFullness()}/${fullnessLimit() + toInt(haveDistentionPill)}`, "blue");
-  print(`Drunkenness: ${myInebriety()}/${inebrietyLimit()}`, "blue");
-  print(`Spleen Use:  ${mySpleenUse()}/${spleenLimit()}`, "blue");
   print("Diet schedule:", "blue");
   for (const entry of dietSchedule) print(`Use ${entry.quantity} ${entry.name}`, "blue");
 
@@ -447,6 +444,19 @@ function yachtzeeDietScheduler(
     }
   }
 
+  print("Expected Organs Post-Yachtzee:");
+  print(
+    `Fullness:   ${myFullness()}/${fullnessLimit() + toInt(haveDistentionPill)} -> ${fullness}/${
+      fullnessLimit() + toInt(haveDistentionPill)
+    }`,
+    "blue"
+  );
+  print(
+    `Inebriety:  ${myInebriety()}/${inebrietyLimit()} -> ${drunkenness}/${inebrietyLimit()}`,
+    "blue"
+  );
+  print(`Spleen Use: ${mySpleenUse()}/${spleenLimit()} -> ${spleenUse}/${spleenLimit()}`, "blue");
+
   return dietSchedule;
 }
 
@@ -467,31 +477,56 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   let filters = 3 - get("currentMojoFilters");
-  // save some spleen the first two extro, which are worth a lot
+  // save some spleen for the first three extros, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
   const extroSpleenSpace = hasMonsterReplacers()
-    ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
+    ? 6 - Math.min(6, 2 * get("beGregariousCharges"))
     : 0;
   const synthCastsToCoverRun =
     globalOptions.nobarf || !have($skill`Sweet Synthesis`)
       ? 0
       : Math.max(
           0,
-          Math.round((estimatedGarboTurns() - haveEffect($effect`Synthesis: Greed`)) / 30)
+          Math.ceil((estimatedGarboTurns() - haveEffect($effect`Synthesis: Greed`)) / 30)
         );
-  const fullnessAvailable = fullnessLimit() - myFullness() + toInt(haveDistentionPill);
+  const reservedFullness =
+    2 * toInt(!get("deepDishOfLegendEaten")) + // to be consumed in yachtzee
+    2 * toInt(!get("calzoneOfLegendEaten") && globalOptions.ascend) + // to be consumed post-yachtzee
+    2 * toInt(!get("pizzaOfLegendEaten") && globalOptions.ascend) + // to be consumed post-yachtzee
+    2; // subtract 2 for Boris Bread and Jumping Horseradish
+  const fullnessAvailable =
+    myLevel() >= 13
+      ? Math.max(0, fullnessLimit() - myFullness() + toInt(haveDistentionPill) - reservedFullness)
+      : 0;
+  const reservedInebriety = globalOptions.ascend
+    ? Math.max(0, itemAmount($item`astral pilsner`) - toInt(get("_mimeArmyShotglassUsed")))
+    : 0;
   const inebrietyAvailable =
     myLevel() >= 13
-      ? inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable
+      ? Math.max(
+          0,
+          inebrietyLimit() -
+            myInebriety() +
+            syntheticPillsAvailable +
+            sweatOutsAvailable -
+            reservedInebriety
+        )
       : 0;
   const spleenAvailable = currentSpleenLeft + filters;
-  const organsAvailable = fullnessAvailable + inebrietyAvailable + spleenAvailable;
+  const organsAvailable =
+    Math.floor(fullnessAvailable / 5) * 5 + // can only clean stomach in multiples of 5
+    Math.floor(inebrietyAvailable / 5) * 5 + // can only clean liver in multiples of 5
+    spleenAvailable;
 
   const cleanableSpleen = organsAvailable - synthCastsToCoverRun - extroSpleenSpace;
   const sufficientOrgansFor = (yachtzees: number) =>
-    cleanableSpleen >= yachtzees + (havePYECCharge ? 5 : 0);
+    cleanableSpleen >= yachtzees && // We can actually hit this many yachtzees
+    Math.floor((organsAvailable - extroSpleenSpace - yachtzees) / 5) * 5 >= synthCastsToCoverRun; // We must be able to cast enough turns of synth using cleansers
 
-  const possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
+  const possibleJellyYachtzeeTurns = Array(15)
+    .fill(0)
+    .map((_, i) => 2 * (i + 1))
+    .reverse();
   const jellyYachtzeeTurns = possibleJellyYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
 
   const fishyPipeTurnsAvailable =
@@ -560,7 +595,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   let slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
   let jelliesToChew = Math.max(0, yachtzeeTurns - freeNCs());
 
-  const extrosToChew = extroSpleenSpace / 2;
   const synthToUse = synthCasts;
   const cologneToChew = cologne;
 
@@ -717,7 +751,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const regularEntries: [string, number][] = [
     ["extra-greasy slider", slidersToEat],
     ["jar of fermented pickle juice", pickleJuiceToDrink],
-    ["Extrovermectin™", extrosToChew],
     ["synthesis", synthToUse],
     ["mojo filter", filters],
     ["beggin' cologne", cologneToChew],
@@ -782,7 +815,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     1.2 * toastPrice * toastsToEat
   );
   acquire(toastsToEat, $item`munchies pill`, 2.66 * VOA, false);
-  acquire(extrosToChew, $item`Extrovermectin™`, 100000);
   acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice);
   acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice);
   acquire(cologneToChew, $item`beggin' cologne`, 2 * colognePrice);
