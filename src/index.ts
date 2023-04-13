@@ -245,6 +245,7 @@ export function main(argString = ""): void {
       autoGarish: true,
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
+      shadowLabyrinthGoal: "effects",
     });
     runDiet();
     propertyManager.resetAll();
