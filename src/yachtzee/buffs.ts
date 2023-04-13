@@ -72,7 +72,7 @@ const doublingValue = (potion: Potion, yachtzeeTurns: number) =>
   Math.min(
     potion.price(false),
     yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) -
-      yachtzeePotionProfits(potion, yachtzeeTurns)
+      Math.max(0, yachtzeePotionProfits(potion, yachtzeeTurns))
   );
 
 export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {

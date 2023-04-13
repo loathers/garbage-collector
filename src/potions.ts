@@ -116,8 +116,7 @@ const validPawWishes: Map<Effect, string> = new Map(
     .filter(
       ({ e, name }) =>
         !invalidWishStrings.includes(name) &&
-        (globalOptions.prefs.yachtzeechain ? e !== $effect`Eau d' Clochard` : true) && // hardcoded heuristics
-        (ClosedCircuitPayphone.have() ? e !== $effect`Shadow Waters` : true)
+        (globalOptions.prefs.yachtzeechain ? e !== $effect`Eau d' Clochard` : true) // hardcoded heuristics
     )
     .map(({ e, name, splitName }) => {
       if (!name.match(INVALID_CHARS_REGEX)) return [e, name];
@@ -623,18 +622,12 @@ export function potionSetup(embezzlersOnly: boolean): void {
     }
   }
 
-  usePawWishes((potion) => {
-    const value = potion.value(embezzlers);
-    return value.length > 0
-      ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
-      : 0;
-  });
-
   // Only test potions which are reasonably close to being profitable using historical price.
   const testPotions = farmingPotions.filter(
     (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5
   );
-  testPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+  const nonWishTestPotions = testPotions.filter((potion) => potion.potion !== $item`pocket wish`);
+  nonWishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
 
   const excludedEffects = new Set<Effect>();
   for (const effect of getActiveEffects()) {
@@ -643,11 +636,30 @@ export function potionSetup(embezzlersOnly: boolean): void {
     }
   }
 
-  for (const potion of testPotions) {
+  for (const potion of nonWishTestPotions) {
+    const effect = potion.effect();
+    if (!excludedEffects.has(effect) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
+      for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+        excludedEffects.add(excluded);
+      }
+    }
+  }
+
+  usePawWishes((potion) => {
+    const value = potion.value(embezzlers);
+    return value.length > 0
+      ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
+      : 0;
+  });
+
+  const wishTestPotions = testPotions.filter((potion) => potion.potion === $item`pocket wish`);
+  wishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+
+  for (const potion of wishTestPotions) {
     const effect = potion.effect();
     if (
       !excludedEffects.has(effect) &&
-      !(failedWishes.includes(effect) && potion.potion === $item`pocket wish`) &&
+      !failedWishes.includes(effect) &&
       useAsValuable(potion, embezzlers, embezzlersOnly) > 0
     ) {
       for (const excluded of mutuallyExclusive.get(effect) ?? []) {
