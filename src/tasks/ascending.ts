@@ -1,8 +1,8 @@
 import { Task } from "grimoire-kolmafia";
 import { create, handlingChoice, runChoice, toInt, useSkill } from "kolmafia";
-import { $familiar, $item, $items, $skill, get, have } from "libram";
+import { $familiar, $item, $items, $skill, get, have, maxBy } from "libram";
 import { globalOptions } from "../config";
-import { freeCrafts, maxBy } from "../lib";
+import { freeCrafts } from "../lib";
 import { garboValue } from "../session";
 
 function bestLockPickChoice(): number {

@@ -26,11 +26,12 @@ import {
   ChateauMantegna,
   get,
   have,
+  maxBy,
   SourceTerminal,
   sum,
 } from "libram";
 import { doingExtrovermectin } from "../extrovermectin";
-import { coinmasterPrice, maxBy } from "../lib";
+import { coinmasterPrice } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;

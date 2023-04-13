@@ -19,6 +19,7 @@ import {
   getActiveSongs,
   have,
   isSong,
+  maxBy,
   Mood,
   set,
 } from "libram";
@@ -67,6 +68,13 @@ export function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): nu
   return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
 }
 
+const doublingValue = (potion: Potion, yachtzeeTurns: number) =>
+  Math.min(
+    potion.price(false),
+    yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) -
+      yachtzeePotionProfits(potion, yachtzeeTurns)
+  );
+
 export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
   let totalProfits = 0;
   const PYECOffset = pyecAvailable() ? 5 : 0;
@@ -75,21 +83,18 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
   shrugIrrelevantSongs();
 
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
-    const doublingPotions = farmingPotions
-      .filter(
-        (potion) =>
-          potion.canDouble &&
-          haveEffect(potion.effect()) + PYECOffset * (have(potion.effect()) ? 1 : 0) <
-            yachtzeeTurns &&
-          yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 &&
-          potion.price(true) < myMeat()
-      )
-      .sort(
-        (left, right) =>
-          yachtzeePotionProfits(right.doubleDuration(), yachtzeeTurns) -
-          yachtzeePotionProfits(left.doubleDuration(), yachtzeeTurns)
-      );
-    const bestPotion = doublingPotions.length > 0 ? doublingPotions[0].doubleDuration() : undefined;
+    const doublingPotions = farmingPotions.filter(
+      (potion) =>
+        potion.canDouble &&
+        haveEffect(potion.effect()) + PYECOffset * (have(potion.effect()) ? 1 : 0) <
+          yachtzeeTurns &&
+        yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 &&
+        potion.price(true) < myMeat()
+    );
+    const bestPotion =
+      doublingPotions.length > 0
+        ? maxBy(doublingPotions, (potion) => doublingValue(potion, yachtzeeTurns))
+        : undefined;
     if (bestPotion) {
       const profit = yachtzeePotionProfits(bestPotion, yachtzeeTurns);
       const price = bestPotion.price(true);

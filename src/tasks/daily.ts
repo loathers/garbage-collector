@@ -44,6 +44,7 @@ import {
   get,
   getModifier,
   have,
+  maxBy,
   Pantogram,
   set,
   SongBoom,
@@ -55,7 +56,7 @@ import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
+import { baseMeat, HIGHLIGHT } from "../lib";
 import { garboValue } from "../session";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 

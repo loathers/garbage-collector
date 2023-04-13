@@ -45,20 +45,14 @@ import {
   getModifier,
   have,
   isSong,
+  maxBy,
   Mood,
   sum,
   sumNumbers,
   withChoice,
 } from "libram";
 import { acquire } from "./acquire";
-import {
-  baseMeat,
-  bestShadowRift,
-  HIGHLIGHT,
-  maxBy,
-  pillkeeperOpportunityCost,
-  turnsToNC,
-} from "./lib";
+import { baseMeat, bestShadowRift, HIGHLIGHT, pillkeeperOpportunityCost, turnsToNC } from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
