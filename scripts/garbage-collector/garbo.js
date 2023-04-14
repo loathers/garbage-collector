@@ -24671,6 +24671,12 @@ function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(27149);
   checkGithubVersion();
+  if ((0,external_kolmafia_namespaceObject.currentRound)() > 0) {
+    (0,external_kolmafia_namespaceObject.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
+  }
+  if ((0,external_kolmafia_namespaceObject.handlingChoice)()) {
+    (0,external_kolmafia_namespaceObject.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.");
+  }
   Args.fill(config_globalOptions, argString);
   if (config_globalOptions.version) return; // Since we always print the version, all done!
   if (config_globalOptions.help) {
