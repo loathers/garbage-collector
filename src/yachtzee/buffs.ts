@@ -96,7 +96,7 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
         ? maxBy(doublingPotions, (potion) => doublingValue(potion, yachtzeeTurns))
         : undefined;
     if (bestPotion) {
-      const profit = yachtzeePotionProfits(bestPotion, yachtzeeTurns);
+      const profit = yachtzeePotionProfits(bestPotion.doubleDuration(), yachtzeeTurns);
       const price = bestPotion.price(true);
       totalProfits += profit;
       print(`Determined that ${bestPotion.potion} was the best potion to double`, "blue");
