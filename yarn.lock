@@ -2460,10 +2460,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libram@^0.7.15:
-  version "0.7.15"
-  resolved "https://registry.yarnpkg.com/libram/-/libram-0.7.15.tgz#c7c4b5a9adfc1af334384c17176f1fda6c4e24ce"
-  integrity sha512-+ZybJTdnBUaFBOmRz+W9T/pidC3eDKLWclhm/8MZgI2uURgFMhZjYZajdyFRiZcqzpsRmM6TORx1/cjss9ijRQ==
+libram@^0.7.16:
+  version "0.7.16"
+  resolved "https://registry.yarnpkg.com/libram/-/libram-0.7.16.tgz#6e73cbcac038b46b6e4327b427f092bb0eb12b91"
+  integrity sha512-E8oEBxt7McalGPoaMTXqBf1wCktufUM/e0FQV7yYwRqH80ADASQQJKaY3Jxjhewbwt8g6x8VsyXhSkpuHAJkkg==
 
 loader-runner@^4.2.0:
   version "4.3.0"
