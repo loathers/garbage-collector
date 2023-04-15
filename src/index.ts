@@ -379,6 +379,7 @@ export function main(argString = ""): void {
         )
       );
     }
+    propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
 
     safeRestore();
 
