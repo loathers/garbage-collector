@@ -39,6 +39,7 @@ import {
   $slot,
   clamp,
   ClosedCircuitPayphone,
+  CursedMonkeyPaw,
   get,
   getActiveEffects,
   getActiveSongs,
@@ -539,24 +540,21 @@ export const pawPotions = Array.from(validPawWishes.keys())
         effect,
         canDouble: false,
         price: () =>
-          get("_monkeyPawWishesUsed", 0) >= 5 ||
-          !have($item`cursed monkey's paw`) ||
-          failedWishes.includes(effect)
+          !CursedMonkeyPaw.have() || CursedMonkeyPaw.wishes() === 0 || failedWishes.includes(effect)
             ? 2 ** 100 // Something large but non-infinite for sorting reasons
             : 0,
         duration: 30,
-        acquire: () => (get("_monkeyPawWishesUsed", 0) >= 5 ? 0 : 1),
+        acquire: () => (CursedMonkeyPaw.wishes() ? 1 : 0),
         use: () => {
           if (
-            get("_monkeyPawWishesUsed", 0) >= 5 ||
-            !have($item`cursed monkey's paw`) ||
+            !CursedMonkeyPaw.have() ||
+            CursedMonkeyPaw.wishes() === 0 ||
             failedWishes.includes(effect)
           ) {
             return false;
           }
 
-          const s = validPawWishes.get(effect);
-          if (!s) return false;
+          if (!CursedMonkeyPaw.isWishable(effect)) return false;
 
           if (!monkeyPaw(effect)) {
             failedWishes.push(effect);
@@ -565,8 +563,7 @@ export const pawPotions = Array.from(validPawWishes.keys())
           return true;
         },
       })
-  )
-  .filter((potion) => numericModifier(potion.effect(), "Meat Drop") >= 100); // Filter for faster sorting
+  );
 
 export const farmingPotions = [
   ...Item.all()
@@ -589,7 +586,7 @@ export function doublingPotions(embezzlers: number): Potion[] {
 }
 
 export function usePawWishes(singleUseValuation: (potion: Potion) => number): void {
-  while (get("_pawWishes", 0) < 5) {
+  while (CursedMonkeyPaw.wishes() > 0) {
     // Sort the paw potions by the profits of a single wish, then use the best one
     const madeValidWish = pawPotions
       .sort((a, b) => singleUseValuation(b) - singleUseValuation(a))
