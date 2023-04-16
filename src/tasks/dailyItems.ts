@@ -9,6 +9,7 @@ import {
   Item,
   itemDropsArray,
   itemPockets,
+  mallPrice,
   meatPockets,
   pickedPockets,
   pocketItems,
@@ -35,15 +36,19 @@ import {
   questStep,
   SourceTerminal,
   sum,
+  withChoice,
 } from "libram";
-import { chooseRift } from "libram/dist/resources/2023/ClosedCircuitPayphone";
 import { acquire } from "../acquire";
+import { globalOptions } from "../config";
+import { embezzlerCount } from "../embezzler";
+import { rufusPotion } from "../potions";
 import { doingExtrovermectin } from "../extrovermectin";
 import { coinmasterPrice } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
+let _shouldClearRufusQuest: boolean | null = null;
 
 function drawBestCards(): void {
   const cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
@@ -320,6 +325,28 @@ export const DailyItemTasks: Task[] = [
       choices: { 1494: 2 },
     },
     {
+      name: "Clear Existing Rufus Quest",
+      completed: () => get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
+      do: (): void => {
+        const value = rufusPotion.value(embezzlerCount());
+        const price = rufusPotion.price(false);
+        _shouldClearRufusQuest = value.some(
+          (value) =>
+            (!globalOptions.nobarf || value.name === "embezzler") && value.value - price > 0
+        );
+        if (_shouldClearRufusQuest) {
+          const target = ClosedCircuitPayphone.rufusTarget() as Item;
+          if (get("rufusQuestType") === "items") {
+            if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
+              withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+            }
+          } else if (get("rufusQuestType") === "artifact") {
+            if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          }
+        }
+      },
+    },
+    {
       name: "Accept Rufus Quest for Forest",
       ready: () => ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget(),
       completed: () => get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`),
@@ -336,7 +363,7 @@ export const DailyItemTasks: Task[] = [
         get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`) || triedForest,
       do: () => {
         const target = ClosedCircuitPayphone.rufusTarget();
-        const bestRift = chooseRift({
+        const bestRift = ClosedCircuitPayphone.chooseRift({
           canAdventure: true,
           sortBy: (l) =>
             sum(getMonsters(l), (m) => sum(itemDropsArray(m), ({ drop }) => garboValue(drop))),
@@ -367,7 +394,7 @@ export const DailyItemTasks: Task[] = [
       ready: () => have($item`Rufus's shadow lodestone`),
       completed: () => get("_shadowForestLooted"),
       do: () =>
-        chooseRift({
+        ClosedCircuitPayphone.chooseRift({
           canAdventure: true,
           sortBy: (l) =>
             sum(getMonsters(l), (m) => sum(itemDropsArray(m), ({ drop }) => garboValue(drop))),

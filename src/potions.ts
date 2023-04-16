@@ -442,7 +442,7 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   return total;
 }
 
-const rufusPotion = new Potion($item`closed-circuit pay phone`, {
+export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   providesDoubleDuration: false,
   canDouble: false,
   effect: $effect`Shadow Waters`,
@@ -451,8 +451,9 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     if (!have($item`closed-circuit pay phone`)) return Infinity;
 
     const target = ClosedCircuitPayphone.rufusTarget();
-    const haveItemQuest = get("rufusQuestType") === "items";
-    const haveArtifact = get("rufusQuestType") === "artifact" && have(target as Item);
+    const haveItemQuest = get("rufusQuestType") === "items" && target instanceof Item;
+    const haveArtifact =
+      get("rufusQuestType") === "artifact" && target instanceof Item && have(target);
 
     // We will only buff up if we can complete the item quest
     if (!(!target || haveItemQuest || haveArtifact || have($item`Rufus's shadow lodestone`))) {

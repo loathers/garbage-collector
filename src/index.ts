@@ -392,6 +392,7 @@ export function main(argString = ""): void {
         )
       );
     }
+    propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
 
     safeRestore();
 
@@ -465,7 +466,6 @@ export function main(argString = ""): void {
         });
 
         // 2. do some embezzler stuff
-        potionSetup(globalOptions.nobarf);
         freeFights();
         postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
         yachtzeeChain();
