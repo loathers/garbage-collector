@@ -57,6 +57,7 @@ import {
   getRemainingLiver,
   have,
   Kmail,
+  maxBy,
   maximizeCached,
   MayoClinic,
   MenuItem,
@@ -74,7 +75,6 @@ import {
   baseMeat,
   EMBEZZLER_MULTIPLIER,
   HIGHLIGHT,
-  maxBy,
   realmAvailable,
   userConfirmDialog,
 } from "./lib";

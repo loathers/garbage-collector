@@ -31,6 +31,7 @@ import {
   ClosedCircuitPayphone,
   get,
   have,
+  maxBy,
   questStep,
   SourceTerminal,
   sum,
@@ -38,7 +39,7 @@ import {
 import { chooseRift } from "libram/dist/resources/2023/ClosedCircuitPayphone";
 import { acquire } from "../acquire";
 import { doingExtrovermectin } from "../extrovermectin";
-import { coinmasterPrice, maxBy } from "../lib";
+import { coinmasterPrice } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;

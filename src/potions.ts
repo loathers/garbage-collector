@@ -3,19 +3,24 @@ import {
   adv1,
   autosellPrice,
   availableAmount,
+  canAdventure,
   canEquip,
   cliExecute,
   Effect,
   effectModifier,
   equip,
+  getMonsters,
   haveEffect,
   historicalAge,
   historicalPrice,
   inebrietyLimit,
   Item,
   itemAmount,
+  itemDropsArray,
   itemType,
+  Location,
   mallPrice,
+  monkeyPaw,
   myInebriety,
   myTurncount,
   numericModifier,
@@ -34,26 +39,21 @@ import {
   $slot,
   clamp,
   ClosedCircuitPayphone,
+  CursedMonkeyPaw,
   get,
   getActiveEffects,
   getActiveSongs,
   getModifier,
   have,
   isSong,
+  maxBy,
   Mood,
   sum,
   sumNumbers,
   withChoice,
 } from "libram";
 import { acquire } from "./acquire";
-import {
-  baseMeat,
-  bestShadowRift,
-  HIGHLIGHT,
-  maxBy,
-  pillkeeperOpportunityCost,
-  turnsToNC,
-} from "./lib";
+import { baseMeat, bestShadowRift, HIGHLIGHT, pillkeeperOpportunityCost, turnsToNC } from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
@@ -78,6 +78,62 @@ for (const effectGroup of mutuallyExclusiveList) {
     ]);
   }
 }
+
+const INVALID_CHARS_REGEX = /[.',]/g;
+
+const wishableEffects = Effect.all().filter((e) => !e.attributes.includes("nohookah"));
+const wishableEffectData = wishableEffects.map((e) => {
+  const name = e.name.toLowerCase();
+  const splitName = name.split(INVALID_CHARS_REGEX);
+  return { e, name, splitName };
+});
+
+const invalidWishStrings = wishableEffectData
+  .filter(({ name }) => name.match(INVALID_CHARS_REGEX))
+  .filter(({ name, splitName }) =>
+    splitName.every((s) =>
+      wishableEffectData.some((n) => n.name !== name && n.splitName.some((x) => x.includes(s)))
+    )
+  )
+  .map(({ name }) => name);
+
+const availableItems = [
+  ...new Set(
+    Location.all()
+      .filter((l) => canAdventure(l))
+      .map((l) =>
+        getMonsters(l)
+          .filter((m) => m.copyable)
+          .map((m) => itemDropsArray(m).filter(({ rate }) => rate > 1))
+          .flat()
+      )
+      .flat()
+      .map(({ drop }) => drop)
+  ),
+].map((i) => i.name);
+
+const validPawWishes: Map<Effect, string> = new Map(
+  wishableEffectData
+    .filter(
+      ({ e, name }) =>
+        !invalidWishStrings.includes(name) &&
+        (globalOptions.prefs.yachtzeechain ? e !== $effect`Eau d' Clochard` : true) // hardcoded heuristics
+    )
+    .map(({ e, name, splitName }) => {
+      if (!name.match(INVALID_CHARS_REGEX)) return [e, name];
+
+      return [
+        e,
+        splitName.filter(
+          (s) =>
+            !availableItems.includes(s) &&
+            !wishableEffectData.some(
+              (n) => n.name !== name && n.splitName.some((x) => x.includes(s))
+            )
+        )[0],
+      ];
+    })
+);
 
 function retrieveUntradeablePrice(it: Item) {
   return retrievePrice(it, availableAmount(it) + 1) - autosellPrice(it) * availableAmount(it);
@@ -192,7 +248,7 @@ export class Potion {
     const duration = Math.max(this.effectDuration(), maxTurns ?? 0);
     // Number of embezzlers this will actually be in effect for.
     const embezzlersApplied = Math.max(
-      Math.min(duration, embezzlers) - haveEffect(this.effect()),
+      Math.min(duration, embezzlers - haveEffect(this.effect())),
       0
     );
 
@@ -295,7 +351,7 @@ export class Potion {
     // compute the value of covering embezzlers
     const embezzlerTurns = Math.max(0, embezzlers - startingTurns);
     const embezzlerQuantity = this.usesToCover(embezzlerTurns, false);
-    const embezzlerValue = embezzlerQuantity ? this.gross(embezzlerTurns) : 0;
+    const embezzlerValue = embezzlerQuantity ? this.gross(embezzlers) : 0;
 
     values.push({
       name: "embezzler",
@@ -325,7 +381,7 @@ export class Potion {
       const barfQuantity = this.usesToCover(remainingTurns, !ascending);
       values.push({ name: "barf", quantity: limitFunction(barfQuantity), value: this.gross(0) });
 
-      if (globalOptions.ascend && this.overage(remainingTurns, barfQuantity) < 0) {
+      if (ascending && this.overage(remainingTurns, barfQuantity) < 0) {
         const ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
         values.push({
           name: "ascending",
@@ -460,16 +516,52 @@ const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   },
 });
 
-export const wishPotions = Effect.all()
-  .filter((effect) => !effect.attributes.includes("nohookah"))
+export const wishPotions = wishableEffects.map(
+  (effect) =>
+    new Potion($item`pocket wish`, {
+      effect,
+      canDouble: false,
+      duration: 20,
+      use: (quantity: number) => {
+        for (let i = 0; i < quantity; i++) {
+          const madeValidWish = cliExecute(`genie effect ${effect}`);
+          if (!madeValidWish) return false;
+        }
+        return true;
+      },
+    })
+);
+
+export const pawPotions = Array.from(validPawWishes.keys())
+  .filter((effect) => numericModifier(effect, "Meat Drop") >= 100)
   .map(
     (effect) =>
-      new Potion($item`pocket wish`, {
+      new Potion($item`cursed monkey's paw`, {
         effect,
         canDouble: false,
-        duration: 20,
-        use: (quantity: number) =>
-          new Array(quantity).fill(0).every(() => cliExecute(`genie effect ${effect}`)),
+        price: () =>
+          !CursedMonkeyPaw.have() || CursedMonkeyPaw.wishes() === 0 || failedWishes.includes(effect)
+            ? 2 ** 100 // Something large but non-infinite for sorting reasons
+            : 0,
+        duration: 30,
+        acquire: () => (CursedMonkeyPaw.wishes() ? 1 : 0),
+        use: () => {
+          if (
+            !CursedMonkeyPaw.have() ||
+            CursedMonkeyPaw.wishes() === 0 ||
+            failedWishes.includes(effect)
+          ) {
+            return false;
+          }
+
+          if (!CursedMonkeyPaw.isWishable(effect)) return false;
+
+          if (!monkeyPaw(effect)) {
+            failedWishes.push(effect);
+            return false;
+          }
+          return true;
+        },
       })
   );
 
@@ -491,6 +583,16 @@ export function doublingPotions(embezzlers: number): Potion[] {
     })
     .sort((a, b) => b.value - a.value)
     .map((pair) => pair.potion);
+}
+
+export function usePawWishes(singleUseValuation: (potion: Potion) => number): void {
+  while (CursedMonkeyPaw.wishes() > 0) {
+    // Sort the paw potions by the profits of a single wish, then use the best one
+    const madeValidWish = pawPotions
+      .sort((a, b) => singleUseValuation(b) - singleUseValuation(a))
+      .some((potion) => potion.use(1));
+    if (!madeValidWish) return;
+  }
 }
 
 let completedPotionSetup = false;
@@ -521,7 +623,8 @@ export function potionSetup(embezzlersOnly: boolean): void {
   const testPotions = farmingPotions.filter(
     (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5
   );
-  testPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+  const nonWishTestPotions = testPotions.filter((potion) => potion.potion !== $item`pocket wish`);
+  nonWishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
 
   const excludedEffects = new Set<Effect>();
   for (const effect of getActiveEffects()) {
@@ -530,11 +633,30 @@ export function potionSetup(embezzlersOnly: boolean): void {
     }
   }
 
-  for (const potion of testPotions) {
+  for (const potion of nonWishTestPotions) {
+    const effect = potion.effect();
+    if (!excludedEffects.has(effect) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
+      for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+        excludedEffects.add(excluded);
+      }
+    }
+  }
+
+  usePawWishes((potion) => {
+    const value = potion.value(embezzlers);
+    return value.length > 0
+      ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
+      : 0;
+  });
+
+  const wishTestPotions = testPotions.filter((potion) => potion.potion === $item`pocket wish`);
+  wishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+
+  for (const potion of wishTestPotions) {
     const effect = potion.effect();
     if (
       !excludedEffects.has(effect) &&
-      !(failedWishes.includes(effect) && potion.potion === $item`pocket wish`) &&
+      !failedWishes.includes(effect) &&
       useAsValuable(potion, embezzlers, embezzlersOnly) > 0
     ) {
       for (const excluded of mutuallyExclusive.get(effect) ?? []) {

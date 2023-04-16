@@ -24,12 +24,13 @@ import {
   get,
   getBanishedMonsters,
   have,
+  maxBy,
   property,
   Requirement,
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { latteActionSourceFinderConstraints, ltbRun, maxBy, setChoice } from "./lib";
+import { latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
 import { garboAdventure, Macro } from "./combat";
 import { embezzlerMacro } from "./embezzler";
 import { acquire } from "./acquire";

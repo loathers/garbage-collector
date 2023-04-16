@@ -1,6 +1,12 @@
 import { Familiar, inebrietyLimit, myInebriety } from "kolmafia";
-import { $familiar, $item, findFairyMultiplier, findLeprechaunMultiplier, have } from "libram";
-import { maxBy } from "../lib";
+import {
+  $familiar,
+  $item,
+  findFairyMultiplier,
+  findLeprechaunMultiplier,
+  have,
+  maxBy,
+} from "libram";
 
 let fam: Familiar;
 

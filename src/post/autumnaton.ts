@@ -1,4 +1,3 @@
-import { maxBy } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../turns";
 import {
@@ -9,7 +8,7 @@ import {
   Location,
   toMonster,
 } from "kolmafia";
-import { $items, AutumnAton, get, sum } from "libram";
+import { $items, AutumnAton, get, maxBy, sum } from "libram";
 import { globalOptions } from "../config";
 
 export default function bestAutumnatonLocation(locations: Location[]): Location {

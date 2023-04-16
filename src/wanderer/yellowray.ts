@@ -5,7 +5,7 @@ import {
   Location,
   toMonster,
 } from "kolmafia";
-import { SourceTerminal, sum } from "libram";
+import { maxBy, SourceTerminal, sum } from "libram";
 import { freeFightFamiliarData } from "../familiar/freeFightFamiliar";
 import { garboValue } from "../session";
 import {
@@ -16,7 +16,6 @@ import {
   UnlockableZones,
   WandererTarget,
 } from "./lib";
-import { maxBy } from "../lib";
 
 function averageYrValue(location: Location) {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];

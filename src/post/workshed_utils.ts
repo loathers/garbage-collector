@@ -7,9 +7,9 @@ import {
   toItem,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, get, set, sum, TrainSet } from "libram";
+import { $item, $items, get, maxBy, set, sum, TrainSet } from "libram";
 import { globalOptions } from "../config";
-import { GarboItemLists, maxBy, today } from "../lib";
+import { GarboItemLists, today } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
 
 function candyFactoryValue(): number {

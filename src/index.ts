@@ -45,6 +45,7 @@ import {
   have,
   haveInCampground,
   JuneCleaver,
+  maxBy,
   set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
@@ -55,7 +56,6 @@ import {
   bestJuneCleaverOption,
   checkGithubVersion,
   HIGHLIGHT,
-  maxBy,
   printLog,
   propertyManager,
   questStep,
@@ -101,7 +101,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27149);
+  sinceKolmafiaRevision(27321);
   checkGithubVersion();
 
   if (currentRound() > 0) {
