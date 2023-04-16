@@ -14204,7 +14204,6 @@ var experienceFamiliars_templateObject, experienceFamiliars_templateObject2, exp
 function experienceFamiliars_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
-
 var experienceFamiliars = [{
   familiar: $familiar(experienceFamiliars_templateObject || (experienceFamiliars_templateObject = experienceFamiliars_taggedTemplateLiteral(["Pocket Professor"]))),
   used: "_thesisDelivered",
@@ -14243,7 +14242,7 @@ function getExperienceFamiliarLimit(fam) {
     return familiar === fam;
   });
   if (!lib_have(fam) || !target) return 0;
-  return (400 - familiar.experience) / 5;
+  return (400 - fam.experience) / 5;
 }
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2017/Robortender.js
 var Robortender_templateObject, Robortender_templateObject2, Robortender_templateObject3, Robortender_templateObject4, Robortender_templateObject5, Robortender_templateObject6, Robortender_templateObject7, Robortender_templateObject8, Robortender_templateObject9, Robortender_templateObject10, Robortender_templateObject11, Robortender_templateObject12, Robortender_templateObject13, Robortender_templateObject14, Robortender_templateObject15, Robortender_templateObject16, Robortender_templateObject17, Robortender_templateObject18, Robortender_templateObject19, Robortender_templateObject20, Robortender_templateObject21, Robortender_templateObject22, Robortender_templateObject23, Robortender_templateObject24, Robortender_templateObject25, Robortender_templateObject26, Robortender_templateObject27, Robortender_templateObject28, Robortender_templateObject29, Robortender_templateObject30, Robortender_templateObject31, Robortender_templateObject32, Robortender_templateObject33, Robortender_templateObject34, Robortender_templateObject35, Robortender_templateObject36, Robortender_templateObject37;
