@@ -20942,9 +20942,6 @@ new FreeFight(() => !lib_have(template_string_$item(_templateObject311 || (_temp
 
   return false; // We have to spend turns to get the artifact or kill the boss
 }, () => {
-  propertyManager.set({
-    shadowLabyrinthGoal: "effects"
-  });
   if (!property_get("_shadowAffinityToday") && !rufusTarget()) {
     chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
   }
@@ -22637,6 +22634,9 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
         return garboValue(drop);
       }))
     })) !== null && _ClosedCircuitPayphon !== void 0 ? _ClosedCircuitPayphon : (0,external_kolmafia_namespaceObject.abort)("Failed to find appropriate rift for Shadow Forest");
+  },
+  choices: {
+    1500: 3
   }
 }]);
 ;// CONCATENATED MODULE: ./src/tasks/dailyVolcano.ts
