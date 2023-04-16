@@ -3,10 +3,9 @@ import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../turns";
 import {
   appearanceRates,
   availableAmount,
-  getLocationMonsters,
+  getMonsters,
   itemDropsArray,
   Location,
-  toMonster,
 } from "kolmafia";
 import { $items, AutumnAton, get, maxBy, sum } from "libram";
 import { globalOptions } from "../config";
@@ -22,9 +21,9 @@ function averageAutumnatonValue(
 ): number {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   const rates = appearanceRates(location);
-  const monsters = Object.keys(getLocationMonsters(location))
-    .map((m) => toMonster(m))
-    .filter((m) => !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0);
+  const monsters = getMonsters(location).filter(
+    (m) => !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0
+  );
 
   if (monsters.length === 0) {
     return 0;
