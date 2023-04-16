@@ -1942,7 +1942,7 @@ module.exports = parent;
 
 /***/ }),
 
-/***/ 6542:
+/***/ 9565:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -2728,12 +2728,12 @@ function makeByXFunction(source) {
  * Flattens an array. Basically replacing Array.prototype.flat for which Rhino doesn't yet have an implementation
  *
  * @param arr Array to flatten
- * @param depth Level to flatten
+ * @param depth Number of layers to flatten by; Infinity for a fully flat array
  * @returns Flattened array
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function flat(arr) {
-  var depth = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  var depth = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Infinity;
   var flatArray = [];
   var _iterator3 = _createForOfIteratorHelper(arr),
     _step3;
@@ -11594,7 +11594,7 @@ function pillkeeperOpportunityCost() {
     can: realmAvailable("sleaze"),
     value: 40000
   }].filter(x => x.can);
-  var alternateUse = alternateUses.length ? lib_maxBy(alternateUses, "value") : undefined;
+  var alternateUse = alternateUses.length ? maxBy(alternateUses, "value") : undefined;
   var alternateUseValue = alternateUse === null || alternateUse === void 0 ? void 0 : alternateUse.value;
   if (!alternateUseValue) return 0;
   if (!canTreasury) return alternateUseValue;
@@ -11780,7 +11780,7 @@ function valueJuneCleaverOption(result) {
 }
 function bestJuneCleaverOption(id) {
   var options = [1, 2, 3];
-  return lib_maxBy(options, option => valueJuneCleaverOption(juneCleaverChoiceValues[id][option]));
+  return maxBy(options, option => valueJuneCleaverOption(juneCleaverChoiceValues[id][option]));
 }
 var romanticMonsterImpossible = () => counter_get("Romantic Monster Window end") === Infinity || counter_get("Romantic Monster Window begin") > 0 && counter_get("Romantic Monster window begin") !== Infinity || property_get("_romanticFightsLeft") <= 0;
 function sober() {
@@ -11788,37 +11788,6 @@ function sober() {
 }
 function freeCrafts() {
   return (lib_have($skill(lib_templateObject35 || (lib_templateObject35 = lib_taggedTemplateLiteral(["Rapid Prototyping"])))) ? 5 - property_get("_rapidPrototypingUsed") : 0) + (lib_have($skill(lib_templateObject36 || (lib_templateObject36 = lib_taggedTemplateLiteral(["Expert Corner-Cutter"])))) ? 5 - property_get("_expertCornerCutterUsed") : 0);
-}
-
-/**
- * Find the best element of an array, where "best" is defined by some given criteria.
- * @param array The array to traverse and find the best element of.
- * @param optimizer Either a key on the objects we're looking at that corresponds to numerical values, or a function for mapping these objects to numbers. Essentially, some way of assigning value to the elements of the array.
- * @param reverse Make this true to find the worst element of the array, and false to find the best. Defaults to false.
- */
-
-function lib_maxBy(array, optimizer) {
-  var reverse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  if (!array.length) throw new Error("Don't call maxBy on an empty array!");
-  if (typeof optimizer === "function") {
-    return lib_toConsumableArray(array).reduce((_ref2, other) => {
-      var value = _ref2.value,
-        item = _ref2.item;
-      var otherValue = optimizer(other);
-      return value >= otherValue !== reverse ? {
-        value: value,
-        item: item
-      } : {
-        value: otherValue,
-        item: other
-      };
-    }, {
-      item: array[0],
-      value: optimizer(array[0])
-    }).item;
-  } else {
-    return array.reduce((a, b) => a[optimizer] >= b[optimizer] !== reverse ? a : b);
-  }
 }
 var asArray = singleOrArray => Array.isArray(singleOrArray) ? singleOrArray : [singleOrArray];
 var _bestShadowRift = null;
@@ -11832,9 +11801,9 @@ function bestShadowRift() {
         // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
         var dropModifier = 1 + (0,external_kolmafia_namespaceObject.numericModifier)("Item Drop") / 100;
         return utils_sum((0,external_kolmafia_namespaceObject.getMonsters)(l), m => {
-          return utils_sum((0,external_kolmafia_namespaceObject.itemDropsArray)(m), _ref3 => {
-            var drop = _ref3.drop,
-              rate = _ref3.rate;
+          return utils_sum((0,external_kolmafia_namespaceObject.itemDropsArray)(m), _ref2 => {
+            var drop = _ref2.drop,
+              rate = _ref2.rate;
             return garboValue(drop) * clamp(rate * dropModifier / 100, 0, 1);
           });
         });
@@ -12356,6 +12325,129 @@ mood_defineProperty(Mood, "defaultOptions", {
   reserveMp: 0,
   useNativeRestores: false
 });
+;// CONCATENATED MODULE: ./node_modules/libram/dist/resources/2023/CursedMonkeyPaw.js
+var CursedMonkeyPaw_templateObject;
+function CursedMonkeyPaw_construct(Parent, args, Class) { if (CursedMonkeyPaw_isNativeReflectConstruct()) { CursedMonkeyPaw_construct = Reflect.construct.bind(); } else { CursedMonkeyPaw_construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) CursedMonkeyPaw_setPrototypeOf(instance, Class.prototype); return instance; }; } return CursedMonkeyPaw_construct.apply(null, arguments); }
+function CursedMonkeyPaw_isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function CursedMonkeyPaw_setPrototypeOf(o, p) { CursedMonkeyPaw_setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return CursedMonkeyPaw_setPrototypeOf(o, p); }
+function CursedMonkeyPaw_toConsumableArray(arr) { return CursedMonkeyPaw_arrayWithoutHoles(arr) || CursedMonkeyPaw_iterableToArray(arr) || CursedMonkeyPaw_unsupportedIterableToArray(arr) || CursedMonkeyPaw_nonIterableSpread(); }
+function CursedMonkeyPaw_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function CursedMonkeyPaw_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return CursedMonkeyPaw_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return CursedMonkeyPaw_arrayLikeToArray(o, minLen); }
+function CursedMonkeyPaw_iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function CursedMonkeyPaw_arrayWithoutHoles(arr) { if (Array.isArray(arr)) return CursedMonkeyPaw_arrayLikeToArray(arr); }
+function CursedMonkeyPaw_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function CursedMonkeyPaw_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+
+
+
+
+var CursedMonkeyPaw_item = template_string_$item(CursedMonkeyPaw_templateObject || (CursedMonkeyPaw_templateObject = CursedMonkeyPaw_taggedTemplateLiteral(["cursed monkey's paw"])));
+/**
+ * @returns Whether or not we currently `have` the cursed monkey's paw
+ */
+function CursedMonkeyPaw_have() {
+  return lib_have(CursedMonkeyPaw_item);
+}
+/**
+ * @returns The number of monkey paw wishes we have remaining
+ */
+function wishes() {
+  return clamp(5 - property_get("_monkeyPawWishesUsed"), 0, 5);
+}
+/**
+ * @returns A set of all items we expect to be able to wish; this doesn't actually constitute all items
+ */
+function wishableItems() {
+  return CursedMonkeyPaw_construct(Set, CursedMonkeyPaw_toConsumableArray(flat(external_kolmafia_namespaceObject.Location.all().filter(l => (0,external_kolmafia_namespaceObject.canAdventure)(l)).map(l => (0,external_kolmafia_namespaceObject.getMonsters)(l).filter(m => m.copyable).map(m => (0,external_kolmafia_namespaceObject.itemDropsArray)(m).filter(_ref => {
+    var type = _ref.type,
+      rate = _ref.rate,
+      drop = _ref.drop;
+    return !drop.quest && (type !== "c" || rate >= 1);
+  } // Remove random roll drops
+  ).map(_ref2 => {
+    var drop = _ref2.drop;
+    return drop;
+  }))))));
+}
+var INVALID_CHARACTERS = /[^a-z\d -]/g;
+var _unwishableEffects;
+function unwishableEffects() {
+  // This is the set of all names of genie-wishable effects, split into the maximal substrings we can actually submit
+  var names = external_kolmafia_namespaceObject.Effect.all().filter(e => !e.attributes.includes("nohookah")).map(e => {
+    var name = e.name.toLowerCase();
+    return {
+      name: name,
+      splitName: name.split(INVALID_CHARACTERS)
+    };
+  });
+  return names.filter(_ref3 => {
+    var name = _ref3.name,
+      splitName = _ref3.splitName;
+    return (
+      // Any effect that doesn't contain an INVALID_CHARACTER is fine
+      splitName.length > 1 &&
+      // To be unwishable, there can't be any substrings that uniquely match a genie-wishable effect
+      splitName.every(s =>
+      // So we check every maximal substring against every one of our genie-wishable effects, excluding the effect we're currently looking at
+      // if one of the substrings matches a substring associated with another effect, we're screwed.
+      names.some(_ref4 => {
+        var n = _ref4.name;
+        return n !== name && n.includes(s);
+      }))
+    );
+  }).map(_ref5 => {
+    var name = _ref5.name;
+    return (0,external_kolmafia_namespaceObject.toEffect)(name);
+  });
+}
+/**
+ * @returns An Array consisting of all genie-wishable Effects that are not Monkey-wishable
+ */
+function getUnwishableEffects() {
+  var _unwishableEffects2;
+  return (_unwishableEffects2 = _unwishableEffects) !== null && _unwishableEffects2 !== void 0 ? _unwishableEffects2 : _unwishableEffects = unwishableEffects();
+}
+/**
+ * Decides if we expect that a given Item or Effect can be wished for.
+ * May be slow for Effects;
+ *
+ * @param wish The Item or Effect in question
+ * @returns Whether we expect it can be wished for
+ */
+function isWishable(wish) {
+  if (wish instanceof external_kolmafia_namespaceObject.Item) {
+    return wishableItems().has(wish);
+  } else {
+    if (wish.attributes.includes("nohookah")) return false;
+    if (!wish.name.match(/[.,']/)) return true;
+    return !getUnwishableEffects().includes(wish);
+  }
+}
+/**
+ * Wish for a given Item or Effect.
+ * If it's an item, will `prepareForAdventure`; if an item is available in multiple locations this will pick the first one.
+ *
+ * @param wish The Item or Effect to wish for
+ * @returns Whether we succeeded in this endeavor
+ */
+function wishFor(wish) {
+  if (wishes() <= 0) return false;
+  if (wish instanceof Effect) return monkeyPaw(wish);
+  var locations = Location.all().filter(l => canAdventure(l) && getMonsters(l).some(m => m.copyable && itemDropsArray(m).some(_ref6 => {
+    var drop = _ref6.drop;
+    return drop === wish;
+  })));
+  try {
+    if (locations.length) {
+      cliExecute("checkpoint");
+      prepareForAdventure(locations[0]);
+    }
+    return monkeyPaw(wish);
+  } finally {
+    if (locations.length) cliExecute("outfit checkpoint");
+  }
+}
 ;// CONCATENATED MODULE: ./node_modules/libram/dist/Copier.js
 function Copier_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, Copier_toPropertyKey(descriptor.key), descriptor); } }
 function Copier_createClass(Constructor, protoProps, staticProps) { if (protoProps) Copier_defineProperties(Constructor.prototype, protoProps); if (staticProps) Copier_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -13613,7 +13705,6 @@ var meatFamiliar_templateObject, meatFamiliar_templateObject2, meatFamiliar_temp
 function meatFamiliar_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
-
 var fam;
 function findBestLeprechauns() {
   var validFamiliars = external_kolmafia_namespaceObject.Familiar.all().filter(f => lib_have(f) && f !== $familiar(meatFamiliar_templateObject || (meatFamiliar_templateObject = meatFamiliar_taggedTemplateLiteral(["Ghost of Crimbo Commerce"]))));
@@ -13624,7 +13715,7 @@ function findBestLeprechauns() {
   return validFamiliars.slice(0, firstBadLeprechaun);
 }
 function findBestLeprechaun() {
-  return lib_maxBy(findBestLeprechauns(), findFairyMultiplier);
+  return maxBy(findBestLeprechauns(), findFairyMultiplier);
 }
 function setBestLeprechaunAsMeatFamiliar() {
   fam = findBestLeprechaun();
@@ -14422,7 +14513,7 @@ function barfFamiliar() {
     }
   }
   if (viableMenu.length === 0) return meatFamiliar();
-  var best = lib_maxBy(viableMenu, totalFamiliarValue);
+  var best = maxBy(viableMenu, totalFamiliarValue);
   var familiarPrintout = x => "(expected value of ".concat(x.expectedValue.toFixed(1), " from familiar drops, ").concat(familiarAbilityValue(x.familiar).toFixed(1), " from familiar abilities and ").concat(x.outfitValue.toFixed(1), " from outfit)");
   (0,external_kolmafia_namespaceObject.print)("Choosing to use ".concat(best.familiar, " ").concat(familiarPrintout(best), " over ").concat(meatFamiliarEntry.familiar, " ").concat(familiarPrintout(meatFamiliarEntry), "."), HIGHLIGHT);
   return best.familiar;
@@ -14458,7 +14549,6 @@ function itemFamiliar_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = st
 
 
 
-
 var bestNonCheerleaderFairy;
 function bestFairy() {
   if (lib_have($familiar(itemFamiliar_templateObject || (itemFamiliar_templateObject = itemFamiliar_taggedTemplateLiteral(["Trick-or-Treating Tot"])))) && lib_have(template_string_$item(itemFamiliar_templateObject2 || (itemFamiliar_templateObject2 = itemFamiliar_taggedTemplateLiteral(["li'l ninja costume"]))))) {
@@ -14466,7 +14556,7 @@ function bestFairy() {
   }
   if (!bestNonCheerleaderFairy) {
     var viableFairies = external_kolmafia_namespaceObject.Familiar.all().filter(f => lib_have(f) && findFairyMultiplier(f) && f !== $familiar(itemFamiliar_templateObject4 || (itemFamiliar_templateObject4 = itemFamiliar_taggedTemplateLiteral(["Steam-Powered Cheerleader"]))) && !f.physicalDamage && !f.elementalDamage);
-    var highestFairyMult = findFairyMultiplier(lib_maxBy(viableFairies, findFairyMultiplier));
+    var highestFairyMult = findFairyMultiplier(maxBy(viableFairies, findFairyMultiplier));
     var goodFairies = viableFairies.filter(f => findFairyMultiplier(f) === highestFairyMult);
     if (lib_have($familiar(itemFamiliar_templateObject5 || (itemFamiliar_templateObject5 = itemFamiliar_taggedTemplateLiteral(["Reagnimated Gnome"])))) && !lib_have(template_string_$item(itemFamiliar_templateObject6 || (itemFamiliar_templateObject6 = itemFamiliar_taggedTemplateLiteral(["gnomish housemaid's kgnee"])))) && !property_get("_garbo_triedForKgnee", false)) {
       var current = (0,external_kolmafia_namespaceObject.myFamiliar)();
@@ -14487,7 +14577,7 @@ function bestFairy() {
       leprechaunMultiplier: 0,
       limit: "none"
     }]);
-    bestNonCheerleaderFairy = lib_maxBy(goodFairies, f => {
+    bestNonCheerleaderFairy = maxBy(goodFairies, f => {
       var _bonuses$find$expecte, _bonuses$find;
       return (_bonuses$find$expecte = (_bonuses$find = bonuses.find(_ref => {
         var familiar = _ref.familiar;
@@ -15044,7 +15134,7 @@ function initializeDireWarren() {
       garboAdventure($location(extrovermectin_templateObject62 || (extrovermectin_templateObject62 = extrovermectin_taggedTemplateLiteral(["The Dire Warren"]))), combat_Macro.if_($monster(extrovermectin_templateObject63 || (extrovermectin_templateObject63 = extrovermectin_taggedTemplateLiteral(["fluffy bunny"]))), combat_Macro.skill($skill(extrovermectin_templateObject64 || (extrovermectin_templateObject64 = extrovermectin_taggedTemplateLiteral(["Batter Up!"]))))).step(embezzlerMacro()));
     } while ((0,external_kolmafia_namespaceObject.myFury)() >= 5 && banishedMonsters.get($skill(extrovermectin_templateObject60 || (extrovermectin_templateObject60 = extrovermectin_taggedTemplateLiteral(["Batter Up!"])))) !== $monster(extrovermectin_templateObject61 || (extrovermectin_templateObject61 = extrovermectin_taggedTemplateLiteral(["fluffy bunny"]))));
   } else {
-    var banish = lib_maxBy(options, external_kolmafia_namespaceObject.mallPrice, true);
+    var banish = maxBy(options, external_kolmafia_namespaceObject.mallPrice, true);
     acquire(1, banish, 50000, true);
     do {
       garboAdventure($location(extrovermectin_templateObject65 || (extrovermectin_templateObject65 = extrovermectin_taggedTemplateLiteral(["The Dire Warren"]))), combat_Macro.if_($monster(extrovermectin_templateObject66 || (extrovermectin_templateObject66 = extrovermectin_taggedTemplateLiteral(["fluffy bunny"]))), combat_Macro.item(banish)).step(embezzlerMacro()));
@@ -15720,7 +15810,6 @@ function yellowray_arrayLikeToArray(arr, len) { if (len == null || len > arr.len
 
 
 
-
 function averageYrValue(location) {
   var badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   var rates = (0,external_kolmafia_namespaceObject.appearanceRates)(location);
@@ -15763,7 +15852,7 @@ function yellowRayFactory(type, locationSkiplist) {
   if (type === "yellow ray") {
     var validLocations = external_kolmafia_namespaceObject.Location.all().filter(location => canWander(location, "yellow ray") && canAdventureOrUnlock(location));
     var locationValues = yrValues();
-    var bestZones = new Set([lib_maxBy(validLocations, l => {
+    var bestZones = new Set([maxBy(validLocations, l => {
       var _locationValues$get;
       return (_locationValues$get = locationValues.get(l)) !== null && _locationValues$get !== void 0 ? _locationValues$get : 0;
     })]);
@@ -15773,7 +15862,7 @@ function yellowRayFactory(type, locationSkiplist) {
       var _loop = function _loop() {
         var unlockableZone = _step2.value;
         var extraLocations = external_kolmafia_namespaceObject.Location.all().filter(l => l.zone === unlockableZone.zone && !locationSkiplist.includes(l));
-        bestZones.add(lib_maxBy(extraLocations, l => {
+        bestZones.add(maxBy(extraLocations, l => {
           var _locationValues$get3;
           return (_locationValues$get3 = locationValues.get(l)) !== null && _locationValues$get3 !== void 0 ? _locationValues$get3 : 0;
         }));
@@ -15852,7 +15941,7 @@ function bestWander(type, locationSkiplist, nameSkiplist) {
   if (possibleLocations.size === 0) {
     throw "Could not determine a wander target!";
   }
-  return lib_maxBy(wanderer_toConsumableArray(possibleLocations.values()), "value");
+  return maxBy(wanderer_toConsumableArray(possibleLocations.values()), "value");
 }
 
 /**
@@ -16339,7 +16428,7 @@ function toasterGaze() {
   }
 }
 ;// CONCATENATED MODULE: ./src/potions.ts
-var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8, potions_templateObject9, potions_templateObject10, potions_templateObject11, potions_templateObject12, potions_templateObject13, potions_templateObject14, potions_templateObject15, potions_templateObject16, potions_templateObject17, potions_templateObject18, potions_templateObject19, potions_templateObject20, potions_templateObject21, potions_templateObject22, potions_templateObject23, potions_templateObject24, potions_templateObject25, potions_templateObject26, potions_templateObject27, potions_templateObject28, potions_templateObject29, potions_templateObject30, potions_templateObject31, potions_templateObject32, potions_templateObject33, potions_templateObject34;
+var potions_templateObject, potions_templateObject2, potions_templateObject3, potions_templateObject4, potions_templateObject5, potions_templateObject6, potions_templateObject7, potions_templateObject8, potions_templateObject9, potions_templateObject10, potions_templateObject11, potions_templateObject12, potions_templateObject13, potions_templateObject14, potions_templateObject15, potions_templateObject16, potions_templateObject17, potions_templateObject18, potions_templateObject19, potions_templateObject20, potions_templateObject21, potions_templateObject22, potions_templateObject23, potions_templateObject24, potions_templateObject25, potions_templateObject26, potions_templateObject27, potions_templateObject28, potions_templateObject29, potions_templateObject30, potions_templateObject31, potions_templateObject32, potions_templateObject33, potions_templateObject34, potions_templateObject35, potions_templateObject36, potions_templateObject37;
 function potions_slicedToArray(arr, i) { return potions_arrayWithHoles(arr) || potions_iterableToArrayLimit(arr, i) || potions_unsupportedIterableToArray(arr, i) || potions_nonIterableRest(); }
 function potions_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function potions_iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
@@ -16390,6 +16479,47 @@ for (var _i = 0, _mutuallyExclusiveLis = mutuallyExclusiveList; _i < _mutuallyEx
     _iterator.f();
   }
 }
+var INVALID_CHARS_REGEX = /[.',]/g;
+var wishableEffects = external_kolmafia_namespaceObject.Effect.all().filter(e => !e.attributes.includes("nohookah"));
+var wishableEffectData = wishableEffects.map(e => {
+  var name = e.name.toLowerCase();
+  var splitName = name.split(INVALID_CHARS_REGEX);
+  return {
+    e: e,
+    name: name,
+    splitName: splitName
+  };
+});
+var invalidWishStrings = wishableEffectData.filter(_ref => {
+  var name = _ref.name;
+  return name.match(INVALID_CHARS_REGEX);
+}).filter(_ref2 => {
+  var name = _ref2.name,
+    splitName = _ref2.splitName;
+  return splitName.every(s => wishableEffectData.some(n => n.name !== name && n.splitName.some(x => x.includes(s))));
+}).map(_ref3 => {
+  var name = _ref3.name;
+  return name;
+});
+var availableItems = potions_toConsumableArray(new Set(external_kolmafia_namespaceObject.Location.all().filter(l => (0,external_kolmafia_namespaceObject.canAdventure)(l)).map(l => (0,external_kolmafia_namespaceObject.getMonsters)(l).filter(m => m.copyable).map(m => (0,external_kolmafia_namespaceObject.itemDropsArray)(m).filter(_ref4 => {
+  var rate = _ref4.rate;
+  return rate > 1;
+})).flat()).flat().map(_ref5 => {
+  var drop = _ref5.drop;
+  return drop;
+}))).map(i => i.name);
+var validPawWishes = new Map(wishableEffectData.filter(_ref6 => {
+  var e = _ref6.e,
+    name = _ref6.name;
+  return !invalidWishStrings.includes(name) && (config_globalOptions.prefs.yachtzeechain ? e !== template_string_$effect(potions_templateObject6 || (potions_templateObject6 = potions_taggedTemplateLiteral(["Eau d' Clochard"]))) : true);
+} // hardcoded heuristics
+).map(_ref7 => {
+  var e = _ref7.e,
+    name = _ref7.name,
+    splitName = _ref7.splitName;
+  if (!name.match(INVALID_CHARS_REGEX)) return [e, name];
+  return [e, splitName.filter(s => !availableItems.includes(s) && !wishableEffectData.some(n => n.name !== name && n.splitName.some(x => x.includes(s))))[0]];
+}));
 function retrieveUntradeablePrice(it) {
   return (0,external_kolmafia_namespaceObject.retrievePrice)(it, (0,external_kolmafia_namespaceObject.availableAmount)(it) + 1) - (0,external_kolmafia_namespaceObject.autosellPrice)(it) * (0,external_kolmafia_namespaceObject.availableAmount)(it);
 }
@@ -16446,7 +16576,7 @@ var Potion = /*#__PURE__*/function () {
   }, {
     key: "meatDrop",
     value: function meatDrop() {
-      (0,external_kolmafia_namespaceObject.setLocation)($location(potions_templateObject6 || (potions_templateObject6 = potions_taggedTemplateLiteral(["Friar Ceremony Location"]))));
+      (0,external_kolmafia_namespaceObject.setLocation)($location(potions_templateObject7 || (potions_templateObject7 = potions_taggedTemplateLiteral(["Friar Ceremony Location"]))));
       return modifier_get("Meat Drop", this.effect()) + 2 * (usingPurse() ? modifier_get("Smithsness", this.effect()) : 0);
     }
   }, {
@@ -16457,7 +16587,7 @@ var Potion = /*#__PURE__*/function () {
   }, {
     key: "bonusMeat",
     value: function bonusMeat() {
-      var familiarMultiplier = lib_have($familiar(potions_templateObject7 || (potions_templateObject7 = potions_taggedTemplateLiteral(["Robortender"])))) ? 2 : lib_have($familiar(potions_templateObject8 || (potions_templateObject8 = potions_taggedTemplateLiteral(["Hobo Monkey"])))) ? 1.25 : 1;
+      var familiarMultiplier = lib_have($familiar(potions_templateObject8 || (potions_templateObject8 = potions_taggedTemplateLiteral(["Robortender"])))) ? 2 : lib_have($familiar(potions_templateObject9 || (potions_templateObject9 = potions_taggedTemplateLiteral(["Hobo Monkey"])))) ? 1.25 : 1;
 
       // Assume base weight of 100 pounds. This is off but close enough.
       var assumedBaseWeight = 100;
@@ -16471,7 +16601,7 @@ var Potion = /*#__PURE__*/function () {
       var bonusMeat = this.bonusMeat();
       var duration = Math.max(this.effectDuration(), maxTurns !== null && maxTurns !== void 0 ? maxTurns : 0);
       // Number of embezzlers this will actually be in effect for.
-      var embezzlersApplied = Math.max(Math.min(duration, embezzlers) - (0,external_kolmafia_namespaceObject.haveEffect)(this.effect()), 0);
+      var embezzlersApplied = Math.max(Math.min(duration, embezzlers - (0,external_kolmafia_namespaceObject.haveEffect)(this.effect())), 0);
       return bonusMeat / 100 * (baseMeat * duration + 750 * embezzlersApplied);
     }
   }, {
@@ -16539,15 +16669,15 @@ var Potion = /*#__PURE__*/function () {
       var ascending = config_globalOptions.ascend;
       var totalTurns = turns !== null && turns !== void 0 ? turns : estimatedGarboTurns();
       var values = [];
-      var limitFunction = limit ? quantity => clamp(limit - utils_sum(values, _ref => {
-        var quantity = _ref.quantity;
+      var limitFunction = limit ? quantity => clamp(limit - utils_sum(values, _ref8 => {
+        var quantity = _ref8.quantity;
         return quantity;
       }), 0, quantity) : quantity => quantity;
 
       // compute the value of covering embezzlers
       var embezzlerTurns = Math.max(0, embezzlers - startingTurns);
       var embezzlerQuantity = this.usesToCover(embezzlerTurns, false);
-      var embezzlerValue = embezzlerQuantity ? this.gross(embezzlerTurns) : 0;
+      var embezzlerValue = embezzlerQuantity ? this.gross(embezzlers) : 0;
       values.push({
         name: "embezzler",
         quantity: limitFunction(embezzlerQuantity),
@@ -16574,7 +16704,7 @@ var Potion = /*#__PURE__*/function () {
           quantity: limitFunction(barfQuantity),
           value: this.gross(0)
         });
-        if (config_globalOptions.ascend && this.overage(remainingTurns, barfQuantity) < 0) {
+        if (ascending && this.overage(remainingTurns, barfQuantity) < 0) {
           var ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
           values.push({
             name: "ascending",
@@ -16603,7 +16733,7 @@ var Potion = /*#__PURE__*/function () {
       var effectTurns = (0,external_kolmafia_namespaceObject.haveEffect)(this.effect());
       var result = this._use(quantity);
       // If we tried wishing but failed, no longer try this wish in the future
-      if (this.potion === template_string_$item(potions_templateObject9 || (potions_templateObject9 = potions_taggedTemplateLiteral(["pocket wish"]))) && (0,external_kolmafia_namespaceObject.haveEffect)(this.effect()) <= effectTurns) {
+      if (this.potion === template_string_$item(potions_templateObject10 || (potions_templateObject10 = potions_taggedTemplateLiteral(["pocket wish"]))) && (0,external_kolmafia_namespaceObject.haveEffect)(this.effect()) <= effectTurns) {
         failedWishes.push(this.effect());
       }
       return result;
@@ -16675,40 +16805,40 @@ function useAsValuable(potion, embezzlers, embezzlersOnly) {
   }
   return total;
 }
-var rufusPotion = new Potion(template_string_$item(potions_templateObject10 || (potions_templateObject10 = potions_taggedTemplateLiteral(["closed-circuit pay phone"]))), {
+var rufusPotion = new Potion(template_string_$item(potions_templateObject11 || (potions_templateObject11 = potions_taggedTemplateLiteral(["closed-circuit pay phone"]))), {
   providesDoubleDuration: false,
   canDouble: false,
-  effect: template_string_$effect(potions_templateObject11 || (potions_templateObject11 = potions_taggedTemplateLiteral(["Shadow Waters"]))),
+  effect: template_string_$effect(potions_templateObject12 || (potions_templateObject12 = potions_taggedTemplateLiteral(["Shadow Waters"]))),
   duration: 30,
   price: historical => {
-    if (!lib_have(template_string_$item(potions_templateObject12 || (potions_templateObject12 = potions_taggedTemplateLiteral(["closed-circuit pay phone"]))))) return Infinity;
+    if (!lib_have(template_string_$item(potions_templateObject13 || (potions_templateObject13 = potions_taggedTemplateLiteral(["closed-circuit pay phone"]))))) return Infinity;
     var target = rufusTarget();
     var haveItemQuest = property_get("rufusQuestType") === "items";
     var haveArtifact = property_get("rufusQuestType") === "artifact" && lib_have(target);
 
     // We will only buff up if we can complete the item quest
-    if (!(!target || haveItemQuest || haveArtifact || lib_have(template_string_$item(potions_templateObject13 || (potions_templateObject13 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"])))))) {
+    if (!(!target || haveItemQuest || haveArtifact || lib_have(template_string_$item(potions_templateObject14 || (potions_templateObject14 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"])))))) {
       return Infinity;
     }
 
     // If we are overdrunk, we will need to be able to grab the NC (with a wineglass)
-    if ((0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && (!lib_have(template_string_$item(potions_templateObject14 || (potions_templateObject14 = potions_taggedTemplateLiteral(["Drunkula's wineglass"])))) || !(0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(potions_templateObject15 || (potions_templateObject15 = potions_taggedTemplateLiteral(["Drunkula's wineglass"])))))) {
+    if ((0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && (!lib_have(template_string_$item(potions_templateObject15 || (potions_templateObject15 = potions_taggedTemplateLiteral(["Drunkula's wineglass"])))) || !(0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(potions_templateObject16 || (potions_templateObject16 = potions_taggedTemplateLiteral(["Drunkula's wineglass"])))))) {
       return Infinity;
     }
 
     // We consider the average price of the shadow items to not get gated behind an expensive one
-    var shadowItems = template_string_$items(potions_templateObject16 || (potions_templateObject16 = potions_taggedTemplateLiteral(["shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar"])));
+    var shadowItems = template_string_$items(potions_templateObject17 || (potions_templateObject17 = potions_taggedTemplateLiteral(["shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar"])));
     var averagePrice = utils_sum(shadowItems, it => historical && (0,external_kolmafia_namespaceObject.historicalAge)(it) < 14 ? (0,external_kolmafia_namespaceObject.historicalPrice)(it) : (0,external_kolmafia_namespaceObject.mallPrice)(it)) / shadowItems.length;
     return averagePrice;
   },
   acquire: qty => {
     if ((0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)()) {
-      (0,external_kolmafia_namespaceObject.equip)($slot(potions_templateObject17 || (potions_templateObject17 = potions_taggedTemplateLiteral(["weapon"]))), template_string_$item.none);
-      (0,external_kolmafia_namespaceObject.equip)($slot(potions_templateObject18 || (potions_templateObject18 = potions_taggedTemplateLiteral(["off-hand"]))), template_string_$item(potions_templateObject19 || (potions_templateObject19 = potions_taggedTemplateLiteral(["Drunkula's wineglass"]))));
+      (0,external_kolmafia_namespaceObject.equip)($slot(potions_templateObject18 || (potions_templateObject18 = potions_taggedTemplateLiteral(["weapon"]))), template_string_$item.none);
+      (0,external_kolmafia_namespaceObject.equip)($slot(potions_templateObject19 || (potions_templateObject19 = potions_taggedTemplateLiteral(["off-hand"]))), template_string_$item(potions_templateObject20 || (potions_templateObject20 = potions_taggedTemplateLiteral(["Drunkula's wineglass"]))));
     }
     for (var iteration = 0; iteration < qty; iteration++) {
       // Grab a lodestone if we don't have one
-      if (!lib_have(template_string_$item(potions_templateObject20 || (potions_templateObject20 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"]))))) {
+      if (!lib_have(template_string_$item(potions_templateObject21 || (potions_templateObject21 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"]))))) {
         // If we currently have no quest, acquire one
         chooseQuest(() => 3);
 
@@ -16716,36 +16846,61 @@ var rufusPotion = new Potion(template_string_$item(potions_templateObject10 || (
         var target = rufusTarget();
         if (property_get("rufusQuestType") === "items") {
           if (acquire(3, target, 2 * (0,external_kolmafia_namespaceObject.mallPrice)(target), false, 100000)) {
-            withChoice(1498, 1, () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(potions_templateObject21 || (potions_templateObject21 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))));
+            withChoice(1498, 1, () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(potions_templateObject22 || (potions_templateObject22 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))));
           } else break;
         } else if (property_get("rufusQuestType") === "artifact") {
-          if (lib_have(target)) withChoice(1498, 1, () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(potions_templateObject22 || (potions_templateObject22 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))));else break;
+          if (lib_have(target)) withChoice(1498, 1, () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(potions_templateObject23 || (potions_templateObject23 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))));else break;
         }
       }
 
       // Grab the buff from the NC
       var curTurncount = (0,external_kolmafia_namespaceObject.myTurncount)();
-      if (lib_have(template_string_$item(potions_templateObject23 || (potions_templateObject23 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"]))))) {
+      if (lib_have(template_string_$item(potions_templateObject24 || (potions_templateObject24 = potions_taggedTemplateLiteral(["Rufus's shadow lodestone"]))))) {
         withChoice(1500, 2, () => (0,external_kolmafia_namespaceObject.adv1)(bestShadowRift(), -1, ""));
       }
       if ((0,external_kolmafia_namespaceObject.myTurncount)() > curTurncount) {
         throw new Error("Failed to acquire Shadow Waters and spent a turn!");
       }
     }
-    (0,external_kolmafia_namespaceObject.setLocation)($location(potions_templateObject24 || (potions_templateObject24 = potions_taggedTemplateLiteral(["Friar Ceremony Location"])))); // Reset location to not affect mafia's item drop calculations
+    (0,external_kolmafia_namespaceObject.setLocation)($location(potions_templateObject25 || (potions_templateObject25 = potions_taggedTemplateLiteral(["Friar Ceremony Location"])))); // Reset location to not affect mafia's item drop calculations
     return 0;
   },
   use: () => {
     return false;
   }
 });
-var wishPotions = external_kolmafia_namespaceObject.Effect.all().filter(effect => !effect.attributes.includes("nohookah")).map(effect => new Potion(template_string_$item(potions_templateObject25 || (potions_templateObject25 = potions_taggedTemplateLiteral(["pocket wish"]))), {
+var wishPotions = wishableEffects.map(effect => new Potion(template_string_$item(potions_templateObject26 || (potions_templateObject26 = potions_taggedTemplateLiteral(["pocket wish"]))), {
   effect: effect,
   canDouble: false,
   duration: 20,
-  use: quantity => new Array(quantity).fill(0).every(() => (0,external_kolmafia_namespaceObject.cliExecute)("genie effect ".concat(effect)))
+  use: quantity => {
+    for (var i = 0; i < quantity; i++) {
+      var madeValidWish = (0,external_kolmafia_namespaceObject.cliExecute)("genie effect ".concat(effect));
+      if (!madeValidWish) return false;
+    }
+    return true;
+  }
 }));
-var farmingPotions = [].concat(potions_toConsumableArray(external_kolmafia_namespaceObject.Item.all().filter(item => item.tradeable && !banned.includes(item) && (0,external_kolmafia_namespaceObject.itemType)(item) === "potion").map(item => new Potion(item)).filter(potion => potion.bonusMeat() > 0)), potions_toConsumableArray(wishPotions), [new Potion(template_string_$item(potions_templateObject26 || (potions_templateObject26 = potions_taggedTemplateLiteral(["papier-m\xE2ch\xE9 toothpicks"]))))], potions_toConsumableArray(lib_have(template_string_$item(potions_templateObject27 || (potions_templateObject27 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))) ? [rufusPotion] : []));
+var pawPotions = Array.from(validPawWishes.keys()).filter(effect => (0,external_kolmafia_namespaceObject.numericModifier)(effect, "Meat Drop") >= 100).map(effect => new Potion(template_string_$item(potions_templateObject27 || (potions_templateObject27 = potions_taggedTemplateLiteral(["cursed monkey's paw"]))), {
+  effect: effect,
+  canDouble: false,
+  price: () => !CursedMonkeyPaw_have() || wishes() === 0 || failedWishes.includes(effect) ? Math.pow(2, 100) // Something large but non-infinite for sorting reasons
+  : 0,
+  duration: 30,
+  acquire: () => wishes() ? 1 : 0,
+  use: () => {
+    if (!CursedMonkeyPaw_have() || wishes() === 0 || failedWishes.includes(effect)) {
+      return false;
+    }
+    if (!isWishable(effect)) return false;
+    if (!(0,external_kolmafia_namespaceObject.monkeyPaw)(effect)) {
+      failedWishes.push(effect);
+      return false;
+    }
+    return true;
+  }
+}));
+var farmingPotions = [].concat(potions_toConsumableArray(external_kolmafia_namespaceObject.Item.all().filter(item => item.tradeable && !banned.includes(item) && (0,external_kolmafia_namespaceObject.itemType)(item) === "potion").map(item => new Potion(item)).filter(potion => potion.bonusMeat() > 0)), potions_toConsumableArray(wishPotions), [new Potion(template_string_$item(potions_templateObject28 || (potions_templateObject28 = potions_taggedTemplateLiteral(["papier-m\xE2ch\xE9 toothpicks"]))))], potions_toConsumableArray(lib_have(template_string_$item(potions_templateObject29 || (potions_templateObject29 = potions_taggedTemplateLiteral(["closed-circuit pay phone"])))) ? [rufusPotion] : []));
 function doublingPotions(embezzlers) {
   return farmingPotions.filter(potion => potion.doubleDuration().gross(embezzlers) / potion.price(true) > 0.5).map(potion => {
     return {
@@ -16753,6 +16908,13 @@ function doublingPotions(embezzlers) {
       value: potion.doublingValue(embezzlers)
     };
   }).sort((a, b) => b.value - a.value).map(pair => pair.potion);
+}
+function usePawWishes(singleUseValuation) {
+  while (wishes() > 0) {
+    // Sort the paw potions by the profits of a single wish, then use the best one
+    var madeValidWish = pawPotions.sort((a, b) => singleUseValuation(b) - singleUseValuation(a)).some(potion => potion.use(1));
+    if (!madeValidWish) return;
+  }
 }
 var completedPotionSetup = false;
 function potionSetupCompleted() {
@@ -16766,7 +16928,7 @@ function potionSetup(embezzlersOnly) {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   var embezzlers = embezzlerCount();
-  if (lib_have(template_string_$item(potions_templateObject28 || (potions_templateObject28 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !property_get("_freePillKeeperUsed")) {
+  if (lib_have(template_string_$item(potions_templateObject30 || (potions_templateObject30 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !property_get("_freePillKeeperUsed")) {
     var possibleDoublingPotions = doublingPotions(embezzlers);
     var bestPotion = possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
     if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
@@ -16779,7 +16941,8 @@ function potionSetup(embezzlersOnly) {
 
   // Only test potions which are reasonably close to being profitable using historical price.
   var testPotions = farmingPotions.filter(potion => potion.gross(embezzlers) / potion.price(true) > 0.5);
-  testPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+  var nonWishTestPotions = testPotions.filter(potion => potion.potion !== template_string_$item(potions_templateObject31 || (potions_templateObject31 = potions_taggedTemplateLiteral(["pocket wish"]))));
+  nonWishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
   var excludedEffects = new Set();
   var _iterator3 = potions_createForOfIteratorHelper(getActiveEffects()),
     _step3;
@@ -16787,17 +16950,17 @@ function potionSetup(embezzlersOnly) {
     for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
       var _mutuallyExclusive$ge2;
       var effect = _step3.value;
-      var _iterator5 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge2 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge2 !== void 0 ? _mutuallyExclusive$ge2 : []),
-        _step5;
+      var _iterator6 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge2 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge2 !== void 0 ? _mutuallyExclusive$ge2 : []),
+        _step6;
       try {
-        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-          var excluded = _step5.value;
+        for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+          var excluded = _step6.value;
           excludedEffects.add(excluded);
         }
       } catch (err) {
-        _iterator5.e(err);
+        _iterator6.e(err);
       } finally {
-        _iterator5.f();
+        _iterator6.f();
       }
     }
   } catch (err) {
@@ -16805,25 +16968,25 @@ function potionSetup(embezzlersOnly) {
   } finally {
     _iterator3.f();
   }
-  var _iterator4 = potions_createForOfIteratorHelper(testPotions),
+  var _iterator4 = potions_createForOfIteratorHelper(nonWishTestPotions),
     _step4;
   try {
     for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-      var potion = _step4.value;
-      var _effect = potion.effect();
-      if (!excludedEffects.has(_effect) && !(failedWishes.includes(_effect) && potion.potion === template_string_$item(potions_templateObject29 || (potions_templateObject29 = potions_taggedTemplateLiteral(["pocket wish"])))) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
+      var _potion = _step4.value;
+      var _effect = _potion.effect();
+      if (!excludedEffects.has(_effect) && useAsValuable(_potion, embezzlers, embezzlersOnly) > 0) {
         var _mutuallyExclusive$ge3;
-        var _iterator6 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
-          _step6;
+        var _iterator7 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
+          _step7;
         try {
-          for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
-            var _excluded = _step6.value;
+          for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+            var _excluded = _step7.value;
             excludedEffects.add(_excluded);
           }
         } catch (err) {
-          _iterator6.e(err);
+          _iterator7.e(err);
         } finally {
-          _iterator6.f();
+          _iterator7.f();
         }
       }
     }
@@ -16831,6 +16994,43 @@ function potionSetup(embezzlersOnly) {
     _iterator4.e(err);
   } finally {
     _iterator4.f();
+  }
+  usePawWishes(potion => {
+    var value = potion.value(embezzlers);
+    return value.length > 0 ? maxBy(value, _ref9 => {
+      var quantity = _ref9.quantity,
+        value = _ref9.value;
+      return quantity > 0 ? value : 0;
+    }).value : 0;
+  });
+  var wishTestPotions = testPotions.filter(potion => potion.potion === template_string_$item(potions_templateObject32 || (potions_templateObject32 = potions_taggedTemplateLiteral(["pocket wish"]))));
+  wishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+  var _iterator5 = potions_createForOfIteratorHelper(wishTestPotions),
+    _step5;
+  try {
+    for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+      var _potion2 = _step5.value;
+      var _effect2 = _potion2.effect();
+      if (!excludedEffects.has(_effect2) && !failedWishes.includes(_effect2) && useAsValuable(_potion2, embezzlers, embezzlersOnly) > 0) {
+        var _mutuallyExclusive$ge4;
+        var _iterator8 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge4 = mutuallyExclusive.get(_effect2)) !== null && _mutuallyExclusive$ge4 !== void 0 ? _mutuallyExclusive$ge4 : []),
+          _step8;
+        try {
+          for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+            var _excluded2 = _step8.value;
+            excludedEffects.add(_excluded2);
+          }
+        } catch (err) {
+          _iterator8.e(err);
+        } finally {
+          _iterator8.f();
+        }
+      }
+    }
+  } catch (err) {
+    _iterator5.e(err);
+  } finally {
+    _iterator5.f();
   }
   variableMeatPotionsSetup(0, embezzlers);
   completedPotionSetup = true;
@@ -16841,7 +17041,7 @@ function potionSetup(embezzlersOnly) {
  * @param embezzlers Do we want to account for embezzlers when calculating the value of bathroom finance?
  */
 function bathroomFinance(embezzlers) {
-  if (lib_have(template_string_$effect(potions_templateObject30 || (potions_templateObject30 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return;
+  if (lib_have(template_string_$effect(potions_templateObject33 || (potions_templateObject33 = potions_taggedTemplateLiteral(["Buy!  Sell!  Buy!  Sell!"]))))) return;
 
   // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
   var averageEmbezzlerGross = (baseMeat + 750) * 2 * (embezzlers + 1) / 2 / 100;
@@ -16851,7 +17051,7 @@ function bathroomFinance(embezzlers) {
   // Average meat % for tourists is sum of arithmetic series, 2 * sum(embezzlers + 1 -> 100)
   var averageTouristGross = baseMeat * 2 * (100 + embezzlers + 1) / 2 / 100;
   var touristGross = averageTouristGross * tourists;
-  var greenspan = template_string_$item(potions_templateObject31 || (potions_templateObject31 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
+  var greenspan = template_string_$item(potions_templateObject34 || (potions_templateObject34 = potions_taggedTemplateLiteral(["Uncle Greenspan's Bathroom Finance Guide"])));
   if (touristGross + embezzlerGross > (0,external_kolmafia_namespaceObject.mallPrice)(greenspan)) {
     acquire(1, greenspan, touristGross + embezzlerGross, false);
     if ((0,external_kolmafia_namespaceObject.itemAmount)(greenspan) > 0) {
@@ -16906,16 +17106,16 @@ var VariableMeatPotion = /*#__PURE__*/function () {
       var considerEmbezzlers = embezzlers > 0 ? [0, embezzlers] : [0];
       for (var _i2 = 0, _arr = [Math.floor, Math.ceil]; _i2 < _arr.length; _i2++) {
         var fn = _arr[_i2];
-        var _iterator7 = potions_createForOfIteratorHelper(considerSoftcap),
-          _step7;
+        var _iterator9 = potions_createForOfIteratorHelper(considerSoftcap),
+          _step9;
         try {
-          for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
-            var sc = _step7.value;
-            var _iterator8 = potions_createForOfIteratorHelper(considerEmbezzlers),
-              _step8;
+          for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+            var sc = _step9.value;
+            var _iterator10 = potions_createForOfIteratorHelper(considerEmbezzlers),
+              _step10;
             try {
-              for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
-                var em = _step8.value;
+              for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
+                var em = _step10.value;
                 var considerBarfTurns = em === embezzlers && barfTurns > 0 ? [0, barfTurns] : [0];
                 for (var _i3 = 0, _considerBarfTurns = considerBarfTurns; _i3 < _considerBarfTurns.length; _i3++) {
                   var bt = _considerBarfTurns[_i3];
@@ -16926,22 +17126,22 @@ var VariableMeatPotion = /*#__PURE__*/function () {
                 }
               }
             } catch (err) {
-              _iterator8.e(err);
+              _iterator10.e(err);
             } finally {
-              _iterator8.f();
+              _iterator10.f();
             }
           }
         } catch (err) {
-          _iterator7.e(err);
+          _iterator9.e(err);
         } finally {
-          _iterator7.f();
+          _iterator9.f();
         }
       }
       var profitsFromPotions = potionAmountsToConsider.map(quantity => ({
         quantity: quantity,
         value: this.valueNPotions(quantity, yachtzees, embezzlers, barfTurns)
       }));
-      var bestOption = lib_maxBy(profitsFromPotions, "value");
+      var bestOption = maxBy(profitsFromPotions, "value");
       if (bestOption.value > 0) {
         (0,external_kolmafia_namespaceObject.print)("Expected to profit ".concat(bestOption.value.toFixed(2), " from ").concat(bestOption.quantity, " ").concat(this.potion.plural), "blue");
         var ascendingOverlap = config_globalOptions.ascend || config_globalOptions.nobarf ? 0 : this.softcap / this.duration;
@@ -16979,60 +17179,60 @@ var VariableMeatPotion = /*#__PURE__*/function () {
   return VariableMeatPotion;
 }();
 function variableMeatPotionsSetup(yachtzees, embezzlers) {
-  var potions = [new VariableMeatPotion(template_string_$item(potions_templateObject32 || (potions_templateObject32 = potions_taggedTemplateLiteral(["love song of sugary cuteness"]))), 20, 2), new VariableMeatPotion(template_string_$item(potions_templateObject33 || (potions_templateObject33 = potions_taggedTemplateLiteral(["pulled yellow taffy"]))), 50, 2)].concat(potions_toConsumableArray(config_globalOptions.prefs.candydish ? [new VariableMeatPotion(template_string_$item(potions_templateObject34 || (potions_templateObject34 = potions_taggedTemplateLiteral(["porcelain candy dish"]))), 500, 1)] : []));
+  var potions = [new VariableMeatPotion(template_string_$item(potions_templateObject35 || (potions_templateObject35 = potions_taggedTemplateLiteral(["love song of sugary cuteness"]))), 20, 2), new VariableMeatPotion(template_string_$item(potions_templateObject36 || (potions_templateObject36 = potions_taggedTemplateLiteral(["pulled yellow taffy"]))), 50, 2)].concat(potions_toConsumableArray(config_globalOptions.prefs.candydish ? [new VariableMeatPotion(template_string_$item(potions_templateObject37 || (potions_templateObject37 = potions_taggedTemplateLiteral(["porcelain candy dish"]))), 500, 1)] : []));
   var excludedEffects = new Set();
-  var _iterator9 = potions_createForOfIteratorHelper(getActiveEffects()),
-    _step9;
+  var _iterator11 = potions_createForOfIteratorHelper(getActiveEffects()),
+    _step11;
   try {
-    for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
-      var _mutuallyExclusive$ge4;
-      var effect = _step9.value;
-      var _iterator11 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge4 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge4 !== void 0 ? _mutuallyExclusive$ge4 : []),
-        _step11;
+    for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
+      var _mutuallyExclusive$ge5;
+      var effect = _step11.value;
+      var _iterator13 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge5 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge5 !== void 0 ? _mutuallyExclusive$ge5 : []),
+        _step13;
       try {
-        for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
-          var excluded = _step11.value;
+        for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
+          var excluded = _step13.value;
           excludedEffects.add(excluded);
         }
       } catch (err) {
-        _iterator11.e(err);
+        _iterator13.e(err);
       } finally {
-        _iterator11.f();
+        _iterator13.f();
       }
     }
   } catch (err) {
-    _iterator9.e(err);
+    _iterator11.e(err);
   } finally {
-    _iterator9.f();
+    _iterator11.f();
   }
-  var _iterator10 = potions_createForOfIteratorHelper(potions),
-    _step10;
+  var _iterator12 = potions_createForOfIteratorHelper(potions),
+    _step12;
   try {
-    for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
-      var potion = _step10.value;
-      var _effect2 = (0,external_kolmafia_namespaceObject.effectModifier)(potion.potion, "Effect");
-      var n = excludedEffects.has(_effect2) ? 0 : potion.getOptimalNumberToUse(yachtzees, embezzlers);
+    for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
+      var _potion3 = _step12.value;
+      var _effect3 = (0,external_kolmafia_namespaceObject.effectModifier)(_potion3.potion, "Effect");
+      var n = excludedEffects.has(_effect3) ? 0 : _potion3.getOptimalNumberToUse(yachtzees, embezzlers);
       if (n > 0) {
-        var _mutuallyExclusive$ge5;
-        potion.use(n);
-        var _iterator12 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge5 = mutuallyExclusive.get(_effect2)) !== null && _mutuallyExclusive$ge5 !== void 0 ? _mutuallyExclusive$ge5 : []),
-          _step12;
+        var _mutuallyExclusive$ge6;
+        _potion3.use(n);
+        var _iterator14 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge6 = mutuallyExclusive.get(_effect3)) !== null && _mutuallyExclusive$ge6 !== void 0 ? _mutuallyExclusive$ge6 : []),
+          _step14;
         try {
-          for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
-            var _excluded2 = _step12.value;
-            excludedEffects.add(_excluded2);
+          for (_iterator14.s(); !(_step14 = _iterator14.n()).done;) {
+            var _excluded3 = _step14.value;
+            excludedEffects.add(_excluded3);
           }
         } catch (err) {
-          _iterator12.e(err);
+          _iterator14.e(err);
         } finally {
-          _iterator12.f();
+          _iterator14.f();
         }
       }
     }
   } catch (err) {
-    _iterator10.e(err);
+    _iterator12.e(err);
   } finally {
-    _iterator10.f();
+    _iterator12.f();
   }
 }
 ;// CONCATENATED MODULE: ./src/session.ts
@@ -17966,7 +18166,7 @@ function nonOrganAdventures() {
         value: chocExpVal(i, choc)
       };
     });
-    var best = lib_maxBy(chocoVals, "value");
+    var best = maxBy(chocoVals, "value");
     if (best.value > 0) {
       acquire(1, best.choco, best.value + (0,external_kolmafia_namespaceObject.mallPrice)(best.choco), false);
       (0,external_kolmafia_namespaceObject.use)(1, best.choco);
@@ -18009,7 +18209,7 @@ var saladFork = template_string_$item(src_diet_templateObject45 || (src_diet_tem
 var frostyMug = template_string_$item(src_diet_templateObject46 || (src_diet_templateObject46 = src_diet_taggedTemplateLiteral(["Frosty's frosty mug"])));
 var spleenCleaners = new Map([[template_string_$item(src_diet_templateObject47 || (src_diet_templateObject47 = src_diet_taggedTemplateLiteral(["extra-greasy slider"]))), 5], [template_string_$item(src_diet_templateObject48 || (src_diet_templateObject48 = src_diet_taggedTemplateLiteral(["jar of fermented pickle juice"]))), 5], [template_string_$item(diet_templateObject49 || (diet_templateObject49 = src_diet_taggedTemplateLiteral(["mojo filter"]))), 1]]);
 var stomachLiverCleaners = new Map([[template_string_$item(diet_templateObject50 || (diet_templateObject50 = src_diet_taggedTemplateLiteral(["spice melange"]))), [-3, -3]], [template_string_$item(diet_templateObject51 || (diet_templateObject51 = src_diet_taggedTemplateLiteral(["synthetic dog hair pill"]))), [0, -1]], [template_string_$item(diet_templateObject52 || (diet_templateObject52 = src_diet_taggedTemplateLiteral(["cuppa Sobrie tea"]))), [0, -1]], [template_string_$item(diet_templateObject53 || (diet_templateObject53 = src_diet_taggedTemplateLiteral(["designer sweatpants"]))), [0, -1]]]);
-var mallMin = items => lib_maxBy(items, external_kolmafia_namespaceObject.mallPrice, true);
+var mallMin = items => maxBy(items, external_kolmafia_namespaceObject.mallPrice, true);
 
 /**
  * Generate a basic menu of high-yield items to consider
@@ -18104,7 +18304,7 @@ function bestConsumable(organType) {
       value: (buffValue + advValue - (0,external_kolmafia_namespaceObject.mallPrice)(edible)) / organSpace
     };
   });
-  var best = lib_maxBy(organList, "value");
+  var best = maxBy(organList, "value");
   return best;
 }
 function gregariousCount() {
@@ -19085,9 +19285,8 @@ function autumnaton_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = stri
 
 
 
-
 function bestAutumnatonLocation(locations) {
-  return lib_maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
+  return maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
 }
 function averageAutumnatonValue(location, acuityOverride, slotOverride) {
   var badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
@@ -19174,12 +19373,12 @@ function makeUpgradeValuator(fullLocations, currentBestLocation) {
         profit: 0
       };
     }
-    var bestLocationContainingUpgrade = lib_maxBy(upgradeLocations, averageAutumnatonValue);
+    var bestLocationContainingUpgrade = maxBy(upgradeLocations, averageAutumnatonValue);
     switch (upgrade) {
       case "periscope":
       case "radardish":
         {
-          var bestLocationWithInstalledUpgrade = lib_maxBy(fullLocations, loc => averageAutumnatonValue(loc, visualAcuity() + 1));
+          var bestLocationWithInstalledUpgrade = maxBy(fullLocations, loc => averageAutumnatonValue(loc, visualAcuity() + 1));
           return {
             upgrade: upgrade,
             profit: profitFromExtraAcuity(bestLocationContainingUpgrade, bestLocationWithInstalledUpgrade)
@@ -19196,7 +19395,7 @@ function makeUpgradeValuator(fullLocations, currentBestLocation) {
       case "rightarm1":
       case "leftarm1":
         {
-          var _bestLocationWithInstalledUpgrade = lib_maxBy(fullLocations, loc => averageAutumnatonValue(loc, undefined, zoneItems() + 1));
+          var _bestLocationWithInstalledUpgrade = maxBy(fullLocations, loc => averageAutumnatonValue(loc, undefined, zoneItems() + 1));
           return {
             upgrade: upgrade,
             profit: profitFromExtraArm(bestLocationContainingUpgrade, _bestLocationWithInstalledUpgrade)
@@ -19230,10 +19429,10 @@ function mostValuableUpgrade(fullLocations) {
   if (acquirableUpgrades.length === 0) {
     return validLocations;
   }
-  var currentBestLocation = lib_maxBy(validLocations, averageAutumnatonValue);
+  var currentBestLocation = maxBy(validLocations, averageAutumnatonValue);
   var currentExpectedProfit = averageAutumnatonValue(currentBestLocation) * expectedRemainingExpeditions();
   var upgradeValuations = acquirableUpgrades.map(makeUpgradeValuator(validLocations, currentBestLocation));
-  var _maxBy = lib_maxBy(upgradeValuations, "profit"),
+  var _maxBy = maxBy(upgradeValuations, "profit"),
     highestValueUpgrade = _maxBy.upgrade,
     profitFromBestUpgrade = _maxBy.profit;
   if (profitFromBestUpgrade > currentExpectedProfit) {
@@ -19637,7 +19836,7 @@ function valueOffset(offset) {
 var bestOffset = null;
 function getBestOffset() {
   var _bestOffset;
-  return (_bestOffset = bestOffset) !== null && _bestOffset !== void 0 ? _bestOffset : bestOffset = lib_maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset);
+  return (_bestOffset = bestOffset) !== null && _bestOffset !== void 0 ? _bestOffset : bestOffset = maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset);
 }
 function getPrioritizedStations() {
   return getBestCycle().slice(0, getBestOffset() - 1);
@@ -19670,7 +19869,7 @@ function grabMedicine() {
     var item = (0,external_kolmafia_namespaceObject.descToItem)(match[1]);
     itemChoices.set(item, i);
   }
-  var bestItem = lib_maxBy(workshed_utils_toConsumableArray(itemChoices.keys()), garboValue);
+  var bestItem = maxBy(workshed_utils_toConsumableArray(itemChoices.keys()), garboValue);
   var bestChoice = itemChoices.get(bestItem);
   if (bestChoice && bestChoice > 0) {
     (0,external_kolmafia_namespaceObject.visitUrl)("campground.php?action=workshed");
@@ -20159,7 +20358,7 @@ var witchessPieces = [{
   drop: template_string_$item(fights_templateObject56 || (fights_templateObject56 = fights_taggedTemplateLiteral(["Greek fire"])))
 }];
 function bestWitchessPiece() {
-  return lib_maxBy(witchessPieces, _ref => {
+  return maxBy(witchessPieces, _ref => {
     var drop = _ref.drop;
     return garboValue(drop);
   }).piece;
@@ -21261,7 +21460,7 @@ function getBestItemStealZone() {
     // We have to divide hugs by 2 - will likely use a banish as a free run so we will be alternating zones.
     return zone.dropRate * garboValue(zone.item) * (vorticesAvail + hugsAvail / 2) - zone.openCost();
   };
-  return targets.length ? lib_maxBy(targets, value) : null;
+  return targets.length ? maxBy(targets, value) : null;
 }
 function setupItemStealZones() {
   // Haunted Library is full of free noncombats
@@ -21428,7 +21627,7 @@ function yachtzee() {
       success = _arr$_i.success;
     if (available) {
       var familiarOptions = external_kolmafia_namespaceObject.Familiar.all().filter(familiar => lib_have(familiar) && familiar.underwater && familiar !== $familiar(_templateObject556 || (_templateObject556 = fights_taggedTemplateLiteral(["Robortender"]))));
-      var familiarChoice = familiarOptions.length ? lib_maxBy(familiarOptions, findLeprechaunMultiplier) : $familiar.none;
+      var familiarChoice = familiarOptions.length ? maxBy(familiarOptions, findLeprechaunMultiplier) : $familiar.none;
       (0,external_kolmafia_namespaceObject.useFamiliar)(familiarChoice);
       var underwaterBreathingGear = waterBreathingEquipment.find(item => lib_have(item));
       if (!underwaterBreathingGear) return;
@@ -21680,7 +21879,7 @@ function voterSetup() {
   var votingMonsterPriority = voterValueTable.sort((a, b) => b.value - a.value).map(element => element.monster.name);
   var monsterVote = votingMonsterPriority.indexOf(property_get("_voteMonster1")) < votingMonsterPriority.indexOf(property_get("_voteMonster2")) ? 1 : 2;
   var voteLocalPriorityArr = [[0, initPriority.get(property_get("_voteLocal1")) || (property_get("_voteLocal1").indexOf("-") === -1 ? 1 : -1)], [1, initPriority.get(property_get("_voteLocal2")) || (property_get("_voteLocal2").indexOf("-") === -1 ? 1 : -1)], [2, initPriority.get(property_get("_voteLocal3")) || (property_get("_voteLocal3").indexOf("-") === -1 ? 1 : -1)], [3, initPriority.get(property_get("_voteLocal4")) || (property_get("_voteLocal4").indexOf("-") === -1 ? 1 : -1)]];
-  var init = lib_maxBy(voteLocalPriorityArr, 1)[0];
+  var init = maxBy(voteLocalPriorityArr, 1)[0];
   (0,external_kolmafia_namespaceObject.visitUrl)("choice.php?option=1&whichchoice=1331&g=".concat(monsterVote, "&local[]=").concat(init, "&local[]=").concat(init));
 }
 function daily_pantogram() {
@@ -22030,7 +22229,7 @@ function bestVykeaLevel() {
     return estimatedGarboTurns() * baseMeat * 0.1 * level - (5 * (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(postFreeFight_templateObject || (postFreeFight_templateObject = postFreeFight_taggedTemplateLiteral(["VYKEA rail"])))) + dowelCost * (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(postFreeFight_templateObject2 || (postFreeFight_templateObject2 = postFreeFight_taggedTemplateLiteral(["VYKEA dowel"])))) + 5 * (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(postFreeFight_templateObject3 || (postFreeFight_templateObject3 = postFreeFight_taggedTemplateLiteral(["VYKEA plank"])))) + 1 * (0,external_kolmafia_namespaceObject.mallPrice)(template_string_$item(postFreeFight_templateObject4 || (postFreeFight_templateObject4 = postFreeFight_taggedTemplateLiteral(["VYKEA instructions"])))));
   };
   if (vykeas.some(vykea => vykeaProfit(vykea) > 0)) {
-    return lib_maxBy(vykeas, vykeaProfit).level;
+    return maxBy(vykeas, vykeaProfit).level;
   }
   return 0;
 }
@@ -22136,7 +22335,7 @@ function drawBestCards() {
   }
 }
 function bestExtrude() {
-  return lib_maxBy(template_string_$items(dailyItems_templateObject15 || (dailyItems_templateObject15 = dailyItems_taggedTemplateLiteral(["browser cookie, hacked gibson"]))), garboValue);
+  return maxBy(template_string_$items(dailyItems_templateObject15 || (dailyItems_templateObject15 = dailyItems_taggedTemplateLiteral(["browser cookie, hacked gibson"]))), garboValue);
 }
 function pickCargoPocket() {
   var picked = (0,external_kolmafia_namespaceObject.pickedPockets)();
@@ -22172,7 +22371,7 @@ function pickCargoPocket() {
     }
   }
   if (pockets.length > 0) {
-    (0,external_kolmafia_namespaceObject.cliExecute)("cargo ".concat(Math.trunc(lib_maxBy(pockets, 1)[0])));
+    (0,external_kolmafia_namespaceObject.cliExecute)("cargo ".concat(Math.trunc(maxBy(pockets, 1)[0])));
   }
 }
 var triedForest = false;
@@ -22302,7 +22501,7 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
   completed: () => property_get("_pottedTeaTreeUsed"),
   do: () => {
     var teas = template_string_$items(dailyItems_templateObject67 || (dailyItems_templateObject67 = dailyItems_taggedTemplateLiteral(["cuppa Activi tea, cuppa Alacri tea, cuppa Boo tea, cuppa Chari tea, cuppa Craft tea, cuppa Cruel tea, cuppa Dexteri tea, cuppa Feroci tea, cuppa Flamibili tea, cuppa Flexibili tea, cuppa Frost tea, cuppa Gill tea, cuppa Impregnabili tea, cuppa Improprie tea, cuppa Insani tea, cuppa Irritabili tea, cuppa Loyal tea, cuppa Mana tea, cuppa Mediocri tea, cuppa Monstrosi tea, cuppa Morbidi tea, cuppa Nas tea, cuppa Net tea, cuppa Neuroplastici tea, cuppa Obscuri tea, cuppa Physicali tea, cuppa Proprie tea, cuppa Royal tea, cuppa Serendipi tea, cuppa Sobrie tea, cuppa Toast tea, cuppa Twen tea, cuppa Uncertain tea, cuppa Vitali tea, cuppa Voraci tea, cuppa Wit tea, cuppa Yet tea"])));
-    var bestTea = lib_maxBy(teas, garboValue);
+    var bestTea = maxBy(teas, garboValue);
     var shakeVal = 3 * garboAverageValue.apply(void 0, dailyItems_toConsumableArray(teas));
     var teaAction = shakeVal > garboValue(bestTea) ? "shake" : bestTea.name;
     (0,external_kolmafia_namespaceObject.cliExecute)("teatree ".concat(teaAction));
@@ -22441,7 +22640,7 @@ function checkVolcanoQuest() {
   (0,external_kolmafia_namespaceObject.print)("Checking volcano quest", HIGHLIGHT);
   (0,external_kolmafia_namespaceObject.visitUrl)("place.php?whichplace=airport_hot&action=airport4_questhub");
   var volcoinoValue = garboValue(template_string_$item(dailyVolcano_templateObject4 || (dailyVolcano_templateObject4 = dailyVolcano_taggedTemplateLiteral(["Volcoino"]))));
-  var bestItem = lib_maxBy([{
+  var bestItem = maxBy([{
     item: (_property$getItem = getItem("_volcanoItem1")) !== null && _property$getItem !== void 0 ? _property$getItem : template_string_$item.none,
     quantity: property_get("_volcanoItemCount1"),
     choice: 1
@@ -22863,7 +23062,7 @@ function ascending_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strin
 
 
 function bestLockPickChoice() {
-  return 1 + (0,external_kolmafia_namespaceObject.toInt)(lib_maxBy(template_string_$items(ascending_templateObject || (ascending_templateObject = ascending_taggedTemplateLiteral(["Boris's key lime, Jarlsberg's key lime, Sneaky Pete's key lime"]))), garboValue)) - (0,external_kolmafia_namespaceObject.toInt)(template_string_$item(ascending_templateObject2 || (ascending_templateObject2 = ascending_taggedTemplateLiteral(["Boris's key lime"]))));
+  return 1 + (0,external_kolmafia_namespaceObject.toInt)(maxBy(template_string_$items(ascending_templateObject || (ascending_templateObject = ascending_taggedTemplateLiteral(["Boris's key lime, Jarlsberg's key lime, Sneaky Pete's key lime"]))), garboValue)) - (0,external_kolmafia_namespaceObject.toInt)(template_string_$item(ascending_templateObject2 || (ascending_templateObject2 = ascending_taggedTemplateLiteral(["Boris's key lime"]))));
 }
 var AscendingTasks = [{
   name: "Lock Picking",
@@ -23045,7 +23244,7 @@ function getBestWaterBreathingEquipment(yachtzeeTurns) {
   var bestWaterBreathingEquipment = waterBreathingEquipment.some(item => (0,external_kolmafia_namespaceObject.haveEquipped)(item)) ? {
     item: template_string_$item.none,
     cost: 0
-  } : lib_maxBy(waterBreathingEquipmentCosts, "cost", true);
+  } : maxBy(waterBreathingEquipmentCosts, "cost", true);
   return bestWaterBreathingEquipment;
 }
 function prepareOutfitAndFamiliar() {
@@ -23055,7 +23254,7 @@ function prepareOutfitAndFamiliar() {
   }
   maximizeMeat();
   if (!(0,external_kolmafia_namespaceObject.myFamiliar)().underwater) {
-    (0,external_kolmafia_namespaceObject.equip)($slot(yachtzee_outfit_templateObject6 || (yachtzee_outfit_templateObject6 = yachtzee_outfit_taggedTemplateLiteral(["familiar"]))), lib_maxBy(familiarWaterBreathingEquipment.filter(it => lib_have(it)), eq => modifier_get("Familiar Weight", eq)));
+    (0,external_kolmafia_namespaceObject.equip)($slot(yachtzee_outfit_templateObject6 || (yachtzee_outfit_templateObject6 = yachtzee_outfit_taggedTemplateLiteral(["familiar"]))), maxBy(familiarWaterBreathingEquipment.filter(it => lib_have(it)), eq => modifier_get("Familiar Weight", eq)));
   }
 }
 function stickerSetup(expectedYachts) {
@@ -23252,7 +23451,7 @@ function optimizeForFishy(yachtzeeTurns, setup) {
       if (haveFishyPipe && (0,external_kolmafia_namespaceObject.haveEffect)(template_string_$effect(fishy_templateObject70 || (fishy_templateObject70 = fishy_taggedTemplateLiteral(["Fishy"])))) < yachtzeeTurns) (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(fishy_templateObject71 || (fishy_templateObject71 = fishy_taggedTemplateLiteral(["fishy pipe"]))));
     }
   }];
-  var bestFishySource = lib_maxBy(fishySources.filter(source => source.turns + (0,external_kolmafia_namespaceObject.haveEffect)(template_string_$effect(fishy_templateObject72 || (fishy_templateObject72 = fishy_taggedTemplateLiteral(["Fishy"])))) >= yachtzeeTurns), "cost", true);
+  var bestFishySource = maxBy(fishySources.filter(source => source.turns + (0,external_kolmafia_namespaceObject.haveEffect)(template_string_$effect(fishy_templateObject72 || (fishy_templateObject72 = fishy_taggedTemplateLiteral(["Fishy"])))) >= yachtzeeTurns), "cost", true);
   (0,external_kolmafia_namespaceObject.print)("Cost of viable Fishy sources:", "blue");
   fishySources.filter(source => source.turns + (0,external_kolmafia_namespaceObject.haveEffect)(template_string_$effect(fishy_templateObject73 || (fishy_templateObject73 = fishy_taggedTemplateLiteral(["Fishy"])))) >= yachtzeeTurns).forEach(source => {
     (0,external_kolmafia_namespaceObject.print)("".concat(source.name, " (").concat(source.cost, ")"), "blue");
@@ -24037,6 +24236,7 @@ function yachtzeePotionProfits(potion, yachtzeeTurns) {
   var barfValue = barfTurns * baseMeat * turnsToNC / (turnsToNC + 1);
   return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
 }
+var doublingValue = (potion, yachtzeeTurns) => Math.min(potion.price(false), yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) - Math.max(0, yachtzeePotionProfits(potion, yachtzeeTurns)));
 function yachtzeePotionSetup(yachtzeeTurns, simOnly) {
   (0,external_kolmafia_namespaceObject.setLocation)($location(buffs_templateObject || (buffs_templateObject = buffs_taggedTemplateLiteral(["Friar Ceremony Location"]))));
   var totalProfits = 0;
@@ -24044,10 +24244,10 @@ function yachtzeePotionSetup(yachtzeeTurns, simOnly) {
   var excludedEffects = new Set();
   shrugIrrelevantSongs();
   if (lib_have(template_string_$item(buffs_templateObject2 || (buffs_templateObject2 = buffs_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !property_get("_freePillKeeperUsed")) {
-    var doublingPotions = farmingPotions.filter(potion => potion.canDouble && (0,external_kolmafia_namespaceObject.haveEffect)(potion.effect()) + PYECOffset * (lib_have(potion.effect()) ? 1 : 0) < yachtzeeTurns && yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 && potion.price(true) < (0,external_kolmafia_namespaceObject.myMeat)()).sort((left, right) => yachtzeePotionProfits(right.doubleDuration(), yachtzeeTurns) - yachtzeePotionProfits(left.doubleDuration(), yachtzeeTurns));
-    var bestPotion = doublingPotions.length > 0 ? doublingPotions[0].doubleDuration() : undefined;
+    var doublingPotions = farmingPotions.filter(potion => potion.canDouble && (0,external_kolmafia_namespaceObject.haveEffect)(potion.effect()) + PYECOffset * (lib_have(potion.effect()) ? 1 : 0) < yachtzeeTurns && yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 && potion.price(true) < (0,external_kolmafia_namespaceObject.myMeat)());
+    var bestPotion = doublingPotions.length > 0 ? maxBy(doublingPotions, potion => doublingValue(potion, yachtzeeTurns)) : undefined;
     if (bestPotion) {
-      var profit = yachtzeePotionProfits(bestPotion, yachtzeeTurns);
+      var profit = yachtzeePotionProfits(bestPotion.doubleDuration(), yachtzeeTurns);
       var price = bestPotion.price(true);
       totalProfits += profit;
       (0,external_kolmafia_namespaceObject.print)("Determined that ".concat(bestPotion.potion, " was the best potion to double"), "blue");
@@ -24083,7 +24283,7 @@ function yachtzeePotionSetup(yachtzeeTurns, simOnly) {
   } finally {
     _iterator.f();
   }
-  var testPotions = farmingPotions.filter(potion => (0,external_kolmafia_namespaceObject.haveEffect)(potion.effect()) + PYECOffset * (0,external_kolmafia_namespaceObject.toInt)((0,external_kolmafia_namespaceObject.haveEffect)(potion.effect()) > 0) < yachtzeeTurns && yachtzeePotionProfits(potion, yachtzeeTurns) > 0).sort((left, right) => yachtzeePotionProfits(right, yachtzeeTurns) - yachtzeePotionProfits(left, yachtzeeTurns));
+  var testPotions = farmingPotions.filter(potion => (0,external_kolmafia_namespaceObject.haveEffect)(potion.effect()) + PYECOffset * (0,external_kolmafia_namespaceObject.toInt)((0,external_kolmafia_namespaceObject.haveEffect)(potion.effect()) > 0) < yachtzeeTurns && yachtzeePotionProfits(potion, yachtzeeTurns) > 0).sort((a, b) => yachtzeePotionProfits(b, yachtzeeTurns) - yachtzeePotionProfits(a, yachtzeeTurns));
   var _iterator2 = buffs_createForOfIteratorHelper(testPotions),
     _step2;
   try {
@@ -24744,7 +24944,7 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(27149);
+  sinceKolmafiaRevision(27321);
   checkGithubVersion();
   if ((0,external_kolmafia_namespaceObject.currentRound)() > 0) {
     (0,external_kolmafia_namespaceObject.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
@@ -24922,7 +25122,7 @@ function main() {
           choiceId: choiceId
         };
       });
-      bestHalloweiner = lib_maxBy(halloweinerOptions, "price").choiceId;
+      bestHalloweiner = maxBy(halloweinerOptions, "price").choiceId;
     }
     propertyManager.setChoices({
       1106: 3,
@@ -25110,7 +25310,7 @@ function main() {
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 6542);
+/******/ 	var __webpack_exports__ = __webpack_require__(__webpack_require__.s = 9565);
 /******/ 	var __webpack_export_target__ = exports;
 /******/ 	for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
 /******/ 	if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
