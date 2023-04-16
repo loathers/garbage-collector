@@ -1387,6 +1387,7 @@ const freeFightSources = [
       return false; // We have to spend turns to get the artifact or kill the boss
     },
     () => {
+      if (have($item`Rufus's shadow lodestone`)) setChoice(1500, 2)
       if (!get("_shadowAffinityToday") && !ClosedCircuitPayphone.rufusTarget()) {
         ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
