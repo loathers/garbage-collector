@@ -350,7 +350,7 @@ export const DailyItemTasks: Task[] = [
       name: "Accept Rufus Quest for Forest",
       ready: () => ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget(),
       completed: () => get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`),
-      do: () => ClosedCircuitPayphone.chooseQuest(() => 2),
+      do: () => ClosedCircuitPayphone.chooseQuest(() => 3),
     },
     {
       name: "Acquire Rufus Items",
