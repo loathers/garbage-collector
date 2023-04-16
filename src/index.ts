@@ -1,11 +1,14 @@
 import {
+  abort,
   availableAmount,
   buy,
   canEquip,
   cliExecute,
+  currentRound,
   getCampground,
   getClanName,
   guildStoreAvailable,
+  handlingChoice,
   inebrietyLimit,
   Item,
   logprint,
@@ -100,6 +103,15 @@ export function canContinue(): boolean {
 export function main(argString = ""): void {
   sinceKolmafiaRevision(27321);
   checkGithubVersion();
+
+  if (currentRound() > 0) {
+    abort("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
+  }
+  if (handlingChoice()) {
+    abort(
+      "It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure."
+    );
+  }
 
   Args.fill(globalOptions, argString);
   if (globalOptions.version) return; // Since we always print the version, all done!
@@ -245,6 +257,7 @@ export function main(argString = ""): void {
       autoGarish: true,
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
+      shadowLabyrinthGoal: "effects",
     });
     runDiet();
     propertyManager.resetAll();

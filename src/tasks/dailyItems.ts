@@ -1,15 +1,19 @@
 import { AcquireItem, Task } from "grimoire-kolmafia";
 import {
+  abort,
   buy,
   cliExecute,
   getCampground,
   getClanLounge,
+  getMonsters,
   Item,
+  itemDropsArray,
   itemPockets,
   meatPockets,
   pickedPockets,
   pocketItems,
   pocketMeat,
+  print,
   runChoice,
   scrapPockets,
   toItem,
@@ -24,12 +28,16 @@ import {
   $skill,
   $skills,
   ChateauMantegna,
+  ClosedCircuitPayphone,
   get,
   have,
   maxBy,
+  questStep,
   SourceTerminal,
   sum,
 } from "libram";
+import { chooseRift } from "libram/dist/resources/2023/ClosedCircuitPayphone";
+import { acquire } from "../acquire";
 import { doingExtrovermectin } from "../extrovermectin";
 import { coinmasterPrice } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
@@ -106,6 +114,7 @@ function pickCargoPocket(): void {
   }
 }
 
+let triedForest = false;
 export const DailyItemTasks: Task[] = [
   ...SummonTomes.map(
     (skill) =>
@@ -309,6 +318,60 @@ export const DailyItemTasks: Task[] = [
       completed: () => get("_sitCourseCompleted") || have($skill`Insectologist`),
       do: () => use($item`S.I.T. Course Completion Certificate`),
       choices: { 1494: 2 },
+    },
+    {
+      name: "Accept Rufus Quest for Forest",
+      ready: () => ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget(),
+      completed: () => get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`),
+      do: () => ClosedCircuitPayphone.chooseQuest(() => 2),
+    },
+    {
+      name: "Acquire Rufus Items",
+      ready: () => {
+        if (!ClosedCircuitPayphone.have()) return false;
+        const target = ClosedCircuitPayphone.rufusTarget();
+        return target instanceof Item && target.tradeable;
+      },
+      completed: () =>
+        get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`) || triedForest,
+      do: () => {
+        const target = ClosedCircuitPayphone.rufusTarget();
+        const bestRift = chooseRift({
+          canAdventure: true,
+          sortBy: (l) =>
+            sum(getMonsters(l), (m) => sum(itemDropsArray(m), ({ drop }) => garboValue(drop))),
+        });
+        if (!bestRift) abort("Failed to choose rift for Shadow Forest");
+        const value =
+          (((6 + 9) / 2) *
+            sum(getMonsters(bestRift), (m) =>
+              sum(itemDropsArray(m), ({ drop }) => garboValue(drop))
+            )) /
+          3;
+        if (target instanceof Item && target.tradeable) {
+          if (acquire(3, target, value) < 3) {
+            print(`Our Rufus quest is ${target}, which costs too much to do the Forest!`, "red");
+          }
+          triedForest = true;
+        }
+      },
+    },
+    {
+      name: "Turn In Rufus Quest for Forest",
+      ready: () => questStep("questRufus") === 1,
+      completed: () => get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`),
+      do: () => ClosedCircuitPayphone.submitQuest(),
+    },
+    {
+      name: "Shadow Forest",
+      ready: () => have($item`Rufus's shadow lodestone`),
+      completed: () => get("_shadowForestLooted"),
+      do: () =>
+        chooseRift({
+          canAdventure: true,
+          sortBy: (l) =>
+            sum(getMonsters(l), (m) => sum(itemDropsArray(m), ({ drop }) => garboValue(drop))),
+        }) ?? abort("Failed to find appropriate rift for Shadow Forest"),
     },
   ],
 ];
