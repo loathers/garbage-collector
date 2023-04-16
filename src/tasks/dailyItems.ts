@@ -399,6 +399,9 @@ export const DailyItemTasks: Task[] = [
           sortBy: (l) =>
             sum(getMonsters(l), (m) => sum(itemDropsArray(m), ({ drop }) => garboValue(drop))),
         }) ?? abort("Failed to find appropriate rift for Shadow Forest"),
+      choices: {
+        1500: 3,
+      },
     },
   ],
 ];
