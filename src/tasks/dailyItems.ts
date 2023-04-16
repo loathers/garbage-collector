@@ -42,7 +42,6 @@ import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { rufusPotion } from "../potions";
-import { chooseRift } from "libram/dist/resources/2023/ClosedCircuitPayphone";
 import { doingExtrovermectin } from "../extrovermectin";
 import { coinmasterPrice } from "../lib";
 import { garboAverageValue, garboValue } from "../session";
@@ -364,7 +363,7 @@ export const DailyItemTasks: Task[] = [
         get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`) || triedForest,
       do: () => {
         const target = ClosedCircuitPayphone.rufusTarget();
-        const bestRift = chooseRift({
+        const bestRift = ClosedCircuitPayphone.chooseRift({
           canAdventure: true,
           sortBy: (l) =>
             sum(getMonsters(l), (m) => sum(itemDropsArray(m), ({ drop }) => garboValue(drop))),
@@ -395,7 +394,7 @@ export const DailyItemTasks: Task[] = [
       ready: () => have($item`Rufus's shadow lodestone`),
       completed: () => get("_shadowForestLooted"),
       do: () =>
-        chooseRift({
+        ClosedCircuitPayphone.chooseRift({
           canAdventure: true,
           sortBy: (l) =>
             sum(getMonsters(l), (m) => sum(itemDropsArray(m), ({ drop }) => garboValue(drop))),
