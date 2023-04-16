@@ -1379,7 +1379,7 @@ const freeFightSources = [
       if (get("rufusQuestType") === "items") {
         return false; // We deemed it unprofitable to complete the quest in potionSetup
       }
-      if (get("encountersUntilSRChoice", 0) === 0) {
+      if (get("encountersUntilSRChoice") === 0) {
         // Target is either an artifact or a boss
         return true; // Get the artifact or kill the boss immediately for free
       }
