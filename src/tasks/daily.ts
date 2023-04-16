@@ -1,4 +1,4 @@
-import { Task } from "grimoire-kolmafia";
+import { OutfitSpec, Task } from "grimoire-kolmafia";
 import {
   adv1,
   canadiaAvailable,
@@ -525,12 +525,22 @@ export const DailyTasks: Task[] = [
       get("_questPartyFair") === "unstarted",
     completed: () => get("_questPartyFair") !== "unstarted",
     do: () => nepQuest(),
-    outfit: () =>
-      myInebriety() > inebrietyLimit() &&
-      have($item`Drunkula's wineglass`) &&
-      canEquip($item`Drunkula's wineglass`)
-        ? { offhand: $item`Drunkula's wineglass` }
-        : {},
+    outfit: (): OutfitSpec => {
+      const specs: OutfitSpec = { avoid: $items`` };
+      if (
+        myInebriety() > inebrietyLimit() &&
+        have($item`Drunkula's wineglass`) &&
+        canEquip($item`Drunkula's wineglass`)
+      ) {
+        specs.offhand = $item`Drunkula's wineglass`;
+      }
+
+      if (have($item`June cleaver`) && get("_juneCleaverFightsLeft") <= 0) {
+        specs.avoid?.concat($items`June cleaver`);
+      }
+
+      return specs;
+    },
   },
   {
     name: "Check Barf Mountain Quest",
