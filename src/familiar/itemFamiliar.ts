@@ -1,6 +1,5 @@
 import { Familiar, myFamiliar, runChoice, useFamiliar, visitUrl } from "kolmafia";
-import { $familiar, $item, findFairyMultiplier, get, have, set } from "libram";
-import { maxBy } from "../lib";
+import { $familiar, $item, findFairyMultiplier, get, have, maxBy, set } from "libram";
 import { menu } from "./freeFightFamiliar";
 
 let bestNonCheerleaderFairy: Familiar;

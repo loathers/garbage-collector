@@ -18,12 +18,13 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  maxBy,
   Requirement,
   sum,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
-import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
+import { baseMeat, HIGHLIGHT } from "../lib";
 import { meatOutfit } from "../outfit";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";

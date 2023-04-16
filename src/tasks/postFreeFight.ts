@@ -1,7 +1,7 @@
 import { Task } from "grimoire-kolmafia";
 import { cliExecute, mallPrice, myClass, myThrall, use, useSkill } from "kolmafia";
-import { $class, $item, $skill, $thrall, get, have } from "libram";
-import { baseMeat, maxBy } from "../lib";
+import { $class, $item, $skill, $thrall, get, have, maxBy } from "libram";
+import { baseMeat } from "../lib";
 import { estimatedGarboTurns } from "../turns";
 
 function bestVykeaLevel(): number {

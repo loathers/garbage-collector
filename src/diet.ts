@@ -57,6 +57,7 @@ import {
   getRemainingLiver,
   have,
   Kmail,
+  maxBy,
   maximizeCached,
   MayoClinic,
   MenuItem,
@@ -74,7 +75,6 @@ import {
   baseMeat,
   EMBEZZLER_MULTIPLIER,
   HIGHLIGHT,
-  maxBy,
   realmAvailable,
   userConfirmDialog,
 } from "./lib";
@@ -396,7 +396,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`designer sweatpants`, {
       size: -1,
       organ: "booze",
-      maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed", 0), Math.floor(get("sweat", 0) / 25)),
+      maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed"), Math.floor(get("sweat") / 25)),
     }),
   ];
 }
