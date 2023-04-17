@@ -1,12 +1,6 @@
 import { garboAverageValue, garboValue } from "../session";
 import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../turns";
-import {
-  appearanceRates,
-  availableAmount,
-  getMonsters,
-  itemDropsArray,
-  Location,
-} from "kolmafia";
+import { appearanceRates, availableAmount, getMonsters, itemDropsArray, Location } from "kolmafia";
 import { $items, AutumnAton, get, maxBy, sum } from "libram";
 import { globalOptions } from "../config";
 

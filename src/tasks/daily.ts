@@ -529,8 +529,8 @@ export const DailyTasks: Task[] = [
       myInebriety() > inebrietyLimit() &&
       have($item`Drunkula's wineglass`) &&
       canEquip($item`Drunkula's wineglass`)
-        ? { offhand: $item`Drunkula's wineglass` }
-        : {},
+        ? { offhand: $item`Drunkula's wineglass`, avoid: $items`June cleaver` }
+        : { avoid: $items`June cleaver` },
   },
   {
     name: "Check Barf Mountain Quest",
