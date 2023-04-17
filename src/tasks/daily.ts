@@ -515,8 +515,12 @@ export const DailyTasks: Task[] = [
       myInebriety() > inebrietyLimit() &&
       have($item`Drunkula's wineglass`) &&
       canEquip($item`Drunkula's wineglass`)
-        ? { offhand: $item`Drunkula's wineglass`, acc1: $item`water wings` }
-        : { acc1: $item`water wings` },
+        ? {
+            offhand: $item`Drunkula's wineglass`,
+            acc1: $item`water wings`,
+            avoid: $items`June cleaver`,
+          }
+        : { acc1: $item`water wings`, avoid: $items`June cleaver` },
   },
   {
     name: "Check Neverending Party Quest",
@@ -529,8 +533,8 @@ export const DailyTasks: Task[] = [
       myInebriety() > inebrietyLimit() &&
       have($item`Drunkula's wineglass`) &&
       canEquip($item`Drunkula's wineglass`)
-        ? { offhand: $item`Drunkula's wineglass` }
-        : {},
+        ? { offhand: $item`Drunkula's wineglass`, avoid: $items`June cleaver` }
+        : { avoid: $items`June cleaver` },
   },
   {
     name: "Check Barf Mountain Quest",
