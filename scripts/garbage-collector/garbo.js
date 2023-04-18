@@ -20732,10 +20732,15 @@ var pygmyBanishHandlers = [{
   limit: 0,
   item: template_string_$item(fights_templateObject86 || (fights_templateObject86 = fights_taggedTemplateLiteral(["tennis ball"])))
 }];
-var pygmyMacro = combat_Macro.step.apply(combat_Macro, fights_toConsumableArray(pygmyBanishHandlers.map(_ref3 => {
-  var pygmy = _ref3.pygmy,
-    skill = _ref3.skill,
-    item = _ref3.item;
+var sniffSources = ["_gallapagosMonster", "olfactedMonster", "_latteMonster", "motifMonster", "longConMonster"];
+var pygmySniffed = () => sniffSources.some(source => pygmyBanishHandlers.some(_ref3 => {
+  var pygmy = _ref3.pygmy;
+  return pygmy === property_get(source);
+}));
+var pygmyMacro = combat_Macro.step.apply(combat_Macro, fights_toConsumableArray(pygmyBanishHandlers.map(_ref4 => {
+  var pygmy = _ref4.pygmy,
+    skill = _ref4.skill,
+    item = _ref4.item;
   return combat_Macro.if_(pygmy, skill ? combat_Macro.trySkill(skill).item(item) : combat_Macro.item(item));
 }))).if_($monster(fights_templateObject87 || (fights_templateObject87 = fights_taggedTemplateLiteral(["drunk pygmy"]))), combat_Macro.trySkill($skill(fights_templateObject88 || (fights_templateObject88 = fights_taggedTemplateLiteral(["Extract"])))).trySkill($skill(fights_templateObject89 || (fights_templateObject89 = fights_taggedTemplateLiteral(["Sing Along"]))))).ifHolidayWanderer(combat_Macro.basicCombat()).abort();
 function getStenchLocation() {
@@ -20869,7 +20874,7 @@ new FreeFight(() => {
   macroAllowsFamiliarActions: false
 }),
 // Initial 9 Pygmy fights
-new FreeFight(() => property_get("questL11Worship") !== "unstarted" && bowlOfScorpionsAvailable() ? clamp(9 - property_get("_drunkPygmyBanishes"), 0, 9) : 0, () => {
+new FreeFight(() => property_get("questL11Worship") !== "unstarted" && bowlOfScorpionsAvailable() && !pygmySniffed() ? clamp(9 - property_get("_drunkPygmyBanishes"), 0, 9) : 0, () => {
   (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(fights_templateObject187 || (fights_templateObject187 = fights_taggedTemplateLiteral(["bowling ball"])))), template_string_$item(fights_templateObject188 || (fights_templateObject188 = fights_taggedTemplateLiteral(["bowling ball"]))));
   (0,external_kolmafia_namespaceObject.retrieveItem)(clamp(9 - property_get("_drunkPygmyBanishes"), 0, 9), template_string_$item(fights_templateObject189 || (fights_templateObject189 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
   (0,external_kolmafia_namespaceObject.retrieveItem)(template_string_$item(fights_templateObject190 || (fights_templateObject190 = fights_taggedTemplateLiteral(["Louder Than Bomb"]))));
@@ -20878,26 +20883,26 @@ new FreeFight(() => property_get("questL11Worship") !== "unstarted" && bowlOfSco
   garboAdventure($location(fights_templateObject193 || (fights_templateObject193 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]))), pygmyMacro);
 }, true, {
   cost: () => {
-    var banishers = pygmyBanishHandlers.filter(_ref4 => {
-      var skill = _ref4.skill,
-        check = _ref4.check,
-        limit = _ref4.limit;
+    var banishers = pygmyBanishHandlers.filter(_ref5 => {
+      var skill = _ref5.skill,
+        check = _ref5.check,
+        limit = _ref5.limit;
       return !skill || !lib_have(skill) || check && property_get(check) >= limit;
-    }).map(_ref5 => {
-      var item = _ref5.item;
+    }).map(_ref6 => {
+      var item = _ref6.item;
       return item;
     });
     return (0,external_kolmafia_namespaceObject.retrievePrice)(template_string_$item(fights_templateObject194 || (fights_templateObject194 = fights_taggedTemplateLiteral(["Bowl of Scorpions"])))) + utils_sum(banishers, external_kolmafia_namespaceObject.mallPrice) / 11;
   }
 }),
 // 10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
-new FreeFight(() => property_get("questL11Worship") !== "unstarted" && property_get("_drunkPygmyBanishes") === 9, () => {
+new FreeFight(() => property_get("questL11Worship") !== "unstarted" && property_get("_drunkPygmyBanishes") === 9 && !pygmySniffed(), () => {
   (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(fights_templateObject195 || (fights_templateObject195 = fights_taggedTemplateLiteral(["bowling ball"])))), template_string_$item(fights_templateObject196 || (fights_templateObject196 = fights_taggedTemplateLiteral(["bowling ball"]))));
   (0,external_kolmafia_namespaceObject.retrieveItem)(template_string_$item(fights_templateObject197 || (fights_templateObject197 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
   garboAdventure($location(fights_templateObject198 || (fights_templateObject198 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]))), pygmyMacro);
 }, true, pygmyOptions(template_string_$items(fights_templateObject199 || (fights_templateObject199 = fights_taggedTemplateLiteral(["miniature crystal ball"]))).filter(item => lib_have(item)))),
 // 11th pygmy fight if we lack a saber
-new FreeFight(() => property_get("questL11Worship") !== "unstarted" && property_get("_drunkPygmyBanishes") === 10 && (!lib_have(template_string_$item(fights_templateObject200 || (fights_templateObject200 = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) || crateStrategy() === "Saber"), () => {
+new FreeFight(() => property_get("questL11Worship") !== "unstarted" && property_get("_drunkPygmyBanishes") === 10 && (!lib_have(template_string_$item(fights_templateObject200 || (fights_templateObject200 = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))) || crateStrategy() === "Saber") && !pygmySniffed(), () => {
   (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(fights_templateObject201 || (fights_templateObject201 = fights_taggedTemplateLiteral(["bowling ball"])))), template_string_$item(fights_templateObject202 || (fights_templateObject202 = fights_taggedTemplateLiteral(["bowling ball"]))));
   (0,external_kolmafia_namespaceObject.retrieveItem)(template_string_$item(fights_templateObject203 || (fights_templateObject203 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
   garboAdventureAuto($location(fights_templateObject204 || (fights_templateObject204 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]))), pygmyMacro);
@@ -20908,7 +20913,7 @@ new FreeFight(() => {
   var saberedMonster = property_get("_saberForceMonster");
   var wrongPygmySabered = saberedMonster && $monsters(fights_templateObject206 || (fights_templateObject206 = fights_taggedTemplateLiteral(["pygmy orderlies, pygmy bowler, pygmy janitor"]))).includes(saberedMonster);
   var drunksCanAppear = property_get("_drunkPygmyBanishes") === 10 || saberedMonster === $monster(fights_templateObject207 || (fights_templateObject207 = fights_taggedTemplateLiteral(["drunk pygmy"]))) && property_get("_saberForceMonsterCount");
-  return property_get("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && drunksCanAppear;
+  return property_get("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && drunksCanAppear && !pygmySniffed();
 }, () => {
   if ((property_get("_saberForceMonster") !== $monster(fights_templateObject208 || (fights_templateObject208 = fights_taggedTemplateLiteral(["drunk pygmy"]))) || property_get("_saberForceMonsterCount") === 1) && property_get("_saberForceUses") < 5) {
     (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(fights_templateObject209 || (fights_templateObject209 = fights_taggedTemplateLiteral(["bowling ball"])))), template_string_$item(fights_templateObject210 || (fights_templateObject210 = fights_taggedTemplateLiteral(["bowling ball"]))));
@@ -20922,7 +20927,7 @@ new FreeFight(() => {
   }
 }, false, pygmyOptions(template_string_$items(_templateObject220 || (_templateObject220 = fights_taggedTemplateLiteral(["Fourth of May Cosplay Saber"]))))),
 // Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
-new FreeFight(() => property_get("questL11Worship") !== "unstarted" && ponder().get($location(_templateObject221 || (_templateObject221 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"])))) === $monster(_templateObject222 || (_templateObject222 = fights_taggedTemplateLiteral(["drunk pygmy"]))) && property_get("_drunkPygmyBanishes") >= 11, () => {
+new FreeFight(() => property_get("questL11Worship") !== "unstarted" && ponder().get($location(_templateObject221 || (_templateObject221 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"])))) === $monster(_templateObject222 || (_templateObject222 = fights_taggedTemplateLiteral(["drunk pygmy"]))) && property_get("_drunkPygmyBanishes") >= 11 && !pygmySniffed(), () => {
   (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(_templateObject223 || (_templateObject223 = fights_taggedTemplateLiteral(["bowling ball"])))), template_string_$item(_templateObject224 || (_templateObject224 = fights_taggedTemplateLiteral(["bowling ball"]))));
   (0,external_kolmafia_namespaceObject.retrieveItem)(1, template_string_$item(_templateObject225 || (_templateObject225 = fights_taggedTemplateLiteral(["Bowl of Scorpions"]))));
   garboAdventure($location(_templateObject226 || (_templateObject226 = fights_taggedTemplateLiteral(["The Hidden Bowling Alley"]))), combat_Macro.if_($monster(_templateObject227 || (_templateObject227 = fights_taggedTemplateLiteral(["drunk pygmy"]))), pygmyMacro).abort());
@@ -21645,14 +21650,14 @@ var freeKills = [{
   macro: template_string_$item(_templateObject538 || (_templateObject538 = fights_taggedTemplateLiteral(["replica bat-oomerang"]))),
   used: () => property_get("_usedReplicaBatoomerang") >= 3
 }];
-var canUseSource = _ref6 => {
-  var source = _ref6.source,
-    macro = _ref6.macro,
-    used = _ref6.used;
+var canUseSource = _ref7 => {
+  var source = _ref7.source,
+    macro = _ref7.macro,
+    used = _ref7.used;
   return lib_have(source !== null && source !== void 0 ? source : macro) && !used();
 };
-var toRequirement = _ref7 => {
-  var source = _ref7.source;
+var toRequirement = _ref8 => {
+  var source = _ref8.source;
   return source ? new Requirement([], {
     forceEquip: [source]
   }) : new Requirement([], {});
@@ -21704,9 +21709,9 @@ function killRobortCreaturesForFree() {
   }
 }
 var isFree = monster => monster.attributes.includes("FREE");
-var valueDrops = monster => utils_sum((0,external_kolmafia_namespaceObject.itemDropsArray)(monster), _ref8 => {
-  var drop = _ref8.drop,
-    rate = _ref8.rate;
+var valueDrops = monster => utils_sum((0,external_kolmafia_namespaceObject.itemDropsArray)(monster), _ref9 => {
+  var drop = _ref9.drop,
+    rate = _ref9.rate;
   return garboValue(drop, true) * rate / 100;
 });
 var locketMonster = () => findMonster(isFree, valueDrops);
