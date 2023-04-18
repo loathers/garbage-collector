@@ -163,6 +163,7 @@ import { garboValue } from "./session";
 import { bestConsumable } from "./diet";
 import { wanderWhere } from "./wanderer";
 import { globalOptions } from "./config";
+import { MonsterProperty } from "libram/dist/propertyTypes";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -653,6 +654,16 @@ const pygmyBanishHandlers = [
   },
 ] as const;
 
+const sniffSources: MonsterProperty[] = [
+  "_gallapagosMonster",
+  "olfactedMonster",
+  "_latteMonster",
+  "motifMonster",
+  "longConMonster",
+];
+const pygmySniffed = () =>
+  sniffSources.some((source) => pygmyBanishHandlers.some(({ pygmy }) => pygmy === get(source)));
+
 const pygmyMacro = Macro.step(
   ...pygmyBanishHandlers.map(({ pygmy, skill, item }) =>
     Macro.if_(pygmy, skill ? Macro.trySkill(skill).item(item) : Macro.item(item))
@@ -975,7 +986,7 @@ const freeFightSources = [
   // Initial 9 Pygmy fights
   new FreeFight(
     () =>
-      get("questL11Worship") !== "unstarted" && bowlOfScorpionsAvailable()
+      get("questL11Worship") !== "unstarted" && bowlOfScorpionsAvailable() && !pygmySniffed()
         ? clamp(9 - get("_drunkPygmyBanishes"), 0, 9)
         : 0,
     () => {
@@ -1001,7 +1012,8 @@ const freeFightSources = [
 
   // 10th Pygmy fight. If we have an orb, equip it for this fight, to save for later
   new FreeFight(
-    () => get("questL11Worship") !== "unstarted" && get("_drunkPygmyBanishes") === 9,
+    () =>
+      get("questL11Worship") !== "unstarted" && get("_drunkPygmyBanishes") === 9 && !pygmySniffed(),
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
@@ -1015,7 +1027,8 @@ const freeFightSources = [
     () =>
       get("questL11Worship") !== "unstarted" &&
       get("_drunkPygmyBanishes") === 10 &&
-      (!have($item`Fourth of May Cosplay Saber`) || crateStrategy() === "Saber"),
+      (!have($item`Fourth of May Cosplay Saber`) || crateStrategy() === "Saber") &&
+      !pygmySniffed(),
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem($item`Bowl of Scorpions`);
@@ -1040,7 +1053,11 @@ const freeFightSources = [
         get("_drunkPygmyBanishes") === 10 ||
         (saberedMonster === $monster`drunk pygmy` && get("_saberForceMonsterCount"));
       return (
-        get("questL11Worship") !== "unstarted" && rightTime && !wrongPygmySabered && drunksCanAppear
+        get("questL11Worship") !== "unstarted" &&
+        rightTime &&
+        !wrongPygmySabered &&
+        drunksCanAppear &&
+        !pygmySniffed()
       );
     },
     () => {
@@ -1068,7 +1085,8 @@ const freeFightSources = [
     () =>
       get("questL11Worship") !== "unstarted" &&
       CrystalBall.ponder().get($location`The Hidden Bowling Alley`) === $monster`drunk pygmy` &&
-      get("_drunkPygmyBanishes") >= 11,
+      get("_drunkPygmyBanishes") >= 11 &&
+      !pygmySniffed(),
     () => {
       putCloset(itemAmount($item`bowling ball`), $item`bowling ball`);
       retrieveItem(1, $item`Bowl of Scorpions`);
