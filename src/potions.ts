@@ -211,7 +211,6 @@ export class Potion {
   }
 
   meatDrop(): number {
-    setLocation($location`Friar Ceremony Location`);
     return (
       getModifier("Meat Drop", this.effect()) +
       2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
