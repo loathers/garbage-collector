@@ -14,6 +14,7 @@ import {
   myInebriety,
   numericModifier,
   retrieveItem,
+  setLocation,
   toInt,
   toSlot,
   totalTurnsPlayed,
@@ -165,6 +166,7 @@ export function tryFillLatte(): boolean {
 
 export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?: boolean): void {
   const equipMode = embezzlerUp ? "embezzler" : "barf";
+  if (equipMode === "barf") setLocation($location`Barf Mountain`);
   const bjornChoice = pickBjorn(equipMode);
 
   const parameters = [...(requirement?.maximizeParameters ?? []), "-tie"];
