@@ -1428,6 +1428,57 @@ const freeFightSources = [
     },
     true
   ),
+  // Use NC forcers to complete shadow quests
+  new FreeFight(
+    () => {
+      if (!have($item`closed-circuit pay phone`)) return false;
+      if (globalOptions.prefs.yachtzeechain) return false; // NCs are better when yachtzeeing, probably
+      if (!ClosedCircuitPayphone.rufusTarget()) return true;
+
+      if (get("rufusQuestType") === "items") {
+        return false; // NCs don't help with item quests
+      }
+
+      // Check NC-forcers
+      if (get("encountersUntilSRChoice") === 0) {
+        // NC is forced natively
+        return true;
+      }
+
+      if (have($item`Clara's bell`) && !get("_claraBellUsed")) {
+        return true;
+      }
+
+      // TODO: Figure out Spikolodon logic for the shadow realm
+
+      return false; // Can't force any NCs for shadow waters
+    },
+    () => {
+      if (have($item`Rufus's shadow lodestone`)) {
+        setChoice(1500, 2);
+        adv1(bestShadowRift(), -1, "");
+      }
+      if (ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
+        ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
+      }
+
+      if (get("encountersUntilSRChoice", 0) === 0) {
+        // If there's no need to force an NC... do nothing?
+      } else if (have($item`Clara's bell`) && !get("_claraBellUsed")) {
+        use($item`Clara's bell`);
+      }
+      adv1(bestShadowRift(), -1, "");
+
+      if (questStep("questRufus") === 1) {
+        withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+      }
+
+      if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
+        setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
+      }
+    },
+    true
+  ),
 ];
 
 const freeRunFightSources = [
