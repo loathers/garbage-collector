@@ -1433,7 +1433,6 @@ const freeFightSources = [
     () => {
       if (!have($item`closed-circuit pay phone`)) return false;
       if (globalOptions.prefs.yachtzeechain) return false; // NCs are better when yachtzeeing, probably
-      if (!ClosedCircuitPayphone.rufusTarget()) return true;
 
       if (get("rufusQuestType") === "items") {
         return false; // NCs don't help with item quests
@@ -1449,7 +1448,9 @@ const freeFightSources = [
         return true;
       }
 
-      // TODO: Figure out Spikolodon logic for the shadow realm
+      if (have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5) {
+        return true;
+      }
 
       return false; // Can't force any NCs for shadow waters
     },
@@ -1466,6 +1467,10 @@ const freeFightSources = [
         // If there's no need to force an NC... do nothing?
       } else if (have($item`Clara's bell`) && !get("_claraBellUsed")) {
         use($item`Clara's bell`);
+      } else if (have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5) {
+        // TODO: Figure out Spikolodon logic for the shadow realm
+      } else {
+        return; // Uh oh something went wrong
       }
       adv1(bestShadowRift(), -1, "");
 
