@@ -1768,7 +1768,7 @@ const freeRunFightSources = [
       get("rufusQuestType") !== "items" &&
       !have($effect`Shadow Affinity`) &&
       get("encountersUntilSRChoice") > 0,
-      (runSource: ActionSource) => garboAdventure(bestShadowRift(), runSource.macro)
+    (runSource: ActionSource) => garboAdventure(bestShadowRift(), runSource.macro)
   ),
   // Try for an ultra-rare with mayfly runs ;)
   new FreeRunFight(
