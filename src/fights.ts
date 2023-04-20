@@ -1477,7 +1477,7 @@ const freeFightSources = [
         setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
       }
     },
-    true
+    false
   ),
 ];
 
