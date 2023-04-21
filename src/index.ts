@@ -104,6 +104,8 @@ export function main(argString = ""): void {
   sinceKolmafiaRevision(27321);
   checkGithubVersion();
 
+  // Hit up main.php to get out of easily escapable choices
+  visitUrl("main.php");
   if (currentRound() > 0) {
     abort("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
   }
