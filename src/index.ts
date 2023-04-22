@@ -240,6 +240,9 @@ export function main(argString = ""): void {
   const completedProperty = "_garboCompleted";
   set(completedProperty, "");
 
+  // re-align sweat (useful for diet and outfit)
+  visitUrl(`desc_item.php?whichitem=${$item`designer sweatpants`.descid}`);
+
   startSession();
   if (!globalOptions.nobarf && !globalOptions.simdiet) {
     ensureBarfAccess();
