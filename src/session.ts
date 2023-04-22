@@ -136,6 +136,16 @@ const specialValueLookup = new Map<Item, () => number>([
       ),
   ],
   [$item`fake hand`, () => 50000],
+  [
+    $item`psychoanalytic jar`,
+    () =>
+      // Exclude jick because he's rate-limited
+      Math.max(
+        ...$items`jar of psychoses (The Meatsmith), jar of psychoses (The Captain of the Gourd), jar of psychoses (The Crackpot Mystic), jar of psychoses (The Pretentious Artist), jar of psychoses (The Old Man), jar of psychoses (The Suspicious-Looking Guy)`.map(
+          (jar) => garboValue(jar)
+        )
+      ),
+  ],
 ]);
 
 function printSession(session: Session): void {
