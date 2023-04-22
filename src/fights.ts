@@ -1444,7 +1444,7 @@ const freeFightSources = [
         return true;
       }
 
-      if (have($item`Clara's bell`) && !get("_claraBellUsed")) {
+      if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
         return true;
       }
 
@@ -1465,7 +1465,8 @@ const freeFightSources = [
 
       if (get("encountersUntilSRChoice", 0) === 0) {
         // If there's no need to force an NC... do nothing?
-      } else if (have($item`Clara's bell`) && !get("_claraBellUsed")) {
+      } else if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+        globalOptions.clarasBellClaimed = true;
         use($item`Clara's bell`);
       } else if (have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5) {
         // TODO: Figure out Spikolodon logic for the shadow realm
@@ -1479,7 +1480,7 @@ const freeFightSources = [
       }
 
       if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
-        setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
+        setLocation($location.none); // Reset location to not affect mafia's item drop calculations
       }
     },
     false
