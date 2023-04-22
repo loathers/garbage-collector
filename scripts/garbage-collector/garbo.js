@@ -25100,6 +25100,9 @@ function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   sinceKolmafiaRevision(27321);
   checkGithubVersion();
+
+  // Hit up main.php to get out of easily escapable choices
+  (0,external_kolmafia_namespaceObject.visitUrl)("main.php");
   if ((0,external_kolmafia_namespaceObject.currentRound)() > 0) {
     (0,external_kolmafia_namespaceObject.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
   }
