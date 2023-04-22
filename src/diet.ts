@@ -1034,8 +1034,10 @@ export function runDiet(): void {
 
     MenuItem.defaultPriceFunction = (item: Item) => {
       const itemRetrievePrice = retrievePrice(item);
+      const itemMallPrice = mallPrice(item) > 0 ? mallPrice(item) : Infinity;
       const itemNpcPrice = npcPrice(item) > 0 ? npcPrice(item) : Infinity;
-      return Math.min(itemRetrievePrice, itemNpcPrice);
+      const bestPrice = Math.min(itemRetrievePrice, itemMallPrice, itemNpcPrice);
+      return bestPrice === Infinity && !item.tradeable && have(item) ? 0 : bestPrice; // Handle unpurchaseable items like distention pills
     };
 
     const dietBuilder = computeDiet();
