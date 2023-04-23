@@ -24,6 +24,7 @@ import {
   myFamiliar,
   myHp,
   myInebriety,
+  myLocation,
   myMaxhp,
   myMaxmp,
   myMp,
@@ -561,4 +562,14 @@ export function bestShadowRift(): Location {
     }
   }
   return _bestShadowRift;
+}
+
+export function withLocation<T>(location: Location, action: () => T): T {
+  const start = myLocation();
+  try {
+    setLocation(location);
+    return action();
+  } finally {
+    setLocation(start);
+  }
 }
