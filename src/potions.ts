@@ -517,7 +517,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
         throw new Error("Failed to acquire Shadow Waters and spent a turn!");
       }
     }
-    setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
+    setLocation($location.none); // Reset location to not affect mafia's item drop calculations
     return 0;
   },
   use: () => {
