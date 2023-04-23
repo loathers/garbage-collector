@@ -10,7 +10,6 @@ import {
   myClass,
   myFullness,
   numericModifier,
-  setLocation,
   toSlot,
 } from "kolmafia";
 import {
@@ -52,6 +51,7 @@ import {
   juneCleaverChoiceValues,
   realmAvailable,
   valueJuneCleaverOption,
+  withLocation,
 } from "./lib";
 import { garboAverageValue, garboValue } from "./session";
 import { estimatedGarboTurns, remainingUserTurns } from "./turns";
@@ -422,32 +422,33 @@ export function usingThumbRing(): boolean {
     const gear = bonusAccessories("barf");
     const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
-    setLocation($location`Barf Mountain`);
-    const meatAccessories = Item.all()
-      .filter(
-        (item) => have(item) && toSlot(item) === $slot`acc1` && getModifier("Meat Drop", item) > 0
-      )
-      .map((item) => [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [Item, number]);
+    cachedUsingThumbRing = withLocation($location`Barf Mountain`, () => {
+      const meatAccessories = Item.all()
+        .filter(
+          (item) => have(item) && toSlot(item) === $slot`acc1` && getModifier("Meat Drop", item) > 0
+        )
+        .map((item) => [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [Item, number]);
 
-    const accessoryValues = new Map<Item, number>(accessoryBonuses);
-    for (const [accessory, value] of meatAccessories) {
-      accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
-    }
+      const accessoryValues = new Map<Item, number>(accessoryBonuses);
+      for (const [accessory, value] of meatAccessories) {
+        accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
+      }
 
-    if (
-      have($item`mafia pointer finger ring`) &&
-      ((myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) ||
-        have($item`haiku katana`) ||
-        have($item`Operation Patriot Shield`) ||
-        have($item`unwrapped knock-off retro superhero cape`) ||
-        have($skill`Head in the Game`))
-    ) {
-      accessoryValues.set($item`mafia pointer finger ring`, 500);
-    }
-    const bestAccessories = [...accessoryValues.entries()]
-      .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
-      .map(([item]) => item);
-    cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
+      if (
+        have($item`mafia pointer finger ring`) &&
+        ((myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) ||
+          have($item`haiku katana`) ||
+          have($item`Operation Patriot Shield`) ||
+          have($item`unwrapped knock-off retro superhero cape`) ||
+          have($skill`Head in the Game`))
+      ) {
+        accessoryValues.set($item`mafia pointer finger ring`, 500);
+      }
+      const bestAccessories = [...accessoryValues.entries()]
+        .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
+        .map(([item]) => item);
+      return bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
+    });
   }
   return cachedUsingThumbRing;
 }

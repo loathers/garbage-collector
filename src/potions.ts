@@ -53,7 +53,14 @@ import {
   withChoice,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, bestShadowRift, HIGHLIGHT, pillkeeperOpportunityCost, turnsToNC } from "./lib";
+import {
+  baseMeat,
+  bestShadowRift,
+  HIGHLIGHT,
+  pillkeeperOpportunityCost,
+  turnsToNC,
+  withLocation,
+} from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
@@ -211,10 +218,11 @@ export class Potion {
   }
 
   meatDrop(): number {
-    setLocation($location`Friar Ceremony Location`);
-    return (
-      getModifier("Meat Drop", this.effect()) +
-      2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
+    return withLocation(
+      $location.none,
+      () =>
+        getModifier("Meat Drop", this.effect()) +
+        2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
     );
   }
 
@@ -509,7 +517,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
         throw new Error("Failed to acquire Shadow Waters and spent a turn!");
       }
     }
-    setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
+    setLocation($location.none); // Reset location to not affect mafia's item drop calculations
     return 0;
   },
   use: () => {

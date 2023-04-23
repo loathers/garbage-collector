@@ -24,6 +24,7 @@ import {
   myFamiliar,
   myHp,
   myInebriety,
+  myLocation,
   myMaxhp,
   myMaxmp,
   myMp,
@@ -541,24 +542,35 @@ export const asArray = <T>(singleOrArray: T | T[]): T[] =>
 let _bestShadowRift: Location | null = null;
 export function bestShadowRift(): Location {
   if (!_bestShadowRift) {
-    _bestShadowRift = ClosedCircuitPayphone.chooseRift({
-      canAdventure: true,
-      sortBy: (l: Location) => {
-        setLocation(l);
-        // We probably aren't capping item drops with the penalty
-        // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
-        const dropModifier = 1 + numericModifier("Item Drop") / 100;
-        return sum(getMonsters(l), (m) => {
-          return sum(
-            itemDropsArray(m),
-            ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1)
-          );
-        });
-      },
-    });
+    _bestShadowRift = withLocation($location`Shadow Rift`, () =>
+      ClosedCircuitPayphone.chooseRift({
+        canAdventure: true,
+        sortBy: (l: Location) => {
+          // We probably aren't capping item drops with the penalty
+          // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
+          const dropModifier = 1 + numericModifier("Item Drop") / 100;
+          return sum(getMonsters(l), (m) => {
+            return sum(
+              itemDropsArray(m),
+              ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1)
+            );
+          });
+        },
+      })
+    );
     if (!_bestShadowRift) {
       throw new Error("Failed to find a suitable Shadow Rift to adventure in");
     }
   }
   return _bestShadowRift;
+}
+
+export function withLocation<T>(location: Location, action: () => T): T {
+  const start = myLocation();
+  try {
+    setLocation(location);
+    return action();
+  } finally {
+    setLocation(start);
+  }
 }
