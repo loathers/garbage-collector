@@ -40,6 +40,7 @@ import {
   $skill,
   $slots,
   Clan,
+  examine,
   get,
   getFoldGroup,
   have,
@@ -241,7 +242,7 @@ export function main(argString = ""): void {
   set(completedProperty, "");
 
   // re-align sweat (useful for diet and outfit)
-  visitUrl(`desc_item.php?whichitem=${$item`designer sweatpants`.descid}`);
+  examine($item`designer sweatpants`);
 
   startSession();
   if (!globalOptions.nobarf && !globalOptions.simdiet) {
