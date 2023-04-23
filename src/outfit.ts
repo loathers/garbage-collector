@@ -165,7 +165,11 @@ export function tryFillLatte(): boolean {
 
 export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?: boolean): void {
   const equipMode = embezzlerUp ? "embezzler" : "barf";
-  const location = embezzlerUp ? $location.none : $location`Barf Mountain`;
+  const location = sea
+    ? $location`The Briny Deeps`
+    : embezzlerUp
+    ? $location.none
+    : $location`Barf Mountain`;
   withLocation(location, () => {
     const bjornChoice = pickBjorn(equipMode);
 
