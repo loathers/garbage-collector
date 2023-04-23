@@ -16701,7 +16701,7 @@ var Potion = /*#__PURE__*/function () {
   }, {
     key: "meatDrop",
     value: function meatDrop() {
-      return withLocation($location.none, () => modifier_get("Meat Drop", this.effect()) + 2 * (usingPurse() ? modifier_get("Smithsness", this.effect()) : 0));
+      return modifier_get("Meat Drop", this.effect()) + 2 * (usingPurse() ? modifier_get("Smithsness", this.effect()) : 0);
     }
   }, {
     key: "familiarWeight",
@@ -17051,113 +17051,115 @@ function potionSetupCompleted() {
 function potionSetup(embezzlersOnly) {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
-  var embezzlers = embezzlerCount();
-  if (lib_have(template_string_$item(potions_templateObject28 || (potions_templateObject28 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !property_get("_freePillKeeperUsed")) {
-    var possibleDoublingPotions = doublingPotions(embezzlers);
-    var bestPotion = possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
-    if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
-      (0,external_kolmafia_namespaceObject.print)("Determined that ".concat(bestPotion.potion, " was the best potion to double"), HIGHLIGHT);
-      (0,external_kolmafia_namespaceObject.cliExecute)("pillkeeper extend");
-      bestPotion.acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
-      bestPotion.use(1);
+  withLocation($location.none, () => {
+    var embezzlers = embezzlerCount();
+    if (lib_have(template_string_$item(potions_templateObject28 || (potions_templateObject28 = potions_taggedTemplateLiteral(["Eight Days a Week Pill Keeper"])))) && !property_get("_freePillKeeperUsed")) {
+      var possibleDoublingPotions = doublingPotions(embezzlers);
+      var bestPotion = possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
+      if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
+        (0,external_kolmafia_namespaceObject.print)("Determined that ".concat(bestPotion.potion, " was the best potion to double"), HIGHLIGHT);
+        (0,external_kolmafia_namespaceObject.cliExecute)("pillkeeper extend");
+        bestPotion.acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
+        bestPotion.use(1);
+      }
     }
-  }
 
-  // Only test potions which are reasonably close to being profitable using historical price.
-  var testPotions = farmingPotions.filter(potion => potion.gross(embezzlers) / potion.price(true) > 0.5);
-  var nonWishTestPotions = testPotions.filter(potion => potion.potion !== template_string_$item(potions_templateObject29 || (potions_templateObject29 = potions_taggedTemplateLiteral(["pocket wish"]))));
-  nonWishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
-  var excludedEffects = new Set();
-  var _iterator3 = potions_createForOfIteratorHelper(getActiveEffects()),
-    _step3;
-  try {
-    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-      var _mutuallyExclusive$ge2;
-      var effect = _step3.value;
-      var _iterator6 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge2 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge2 !== void 0 ? _mutuallyExclusive$ge2 : []),
-        _step6;
-      try {
-        for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
-          var excluded = _step6.value;
-          excludedEffects.add(excluded);
-        }
-      } catch (err) {
-        _iterator6.e(err);
-      } finally {
-        _iterator6.f();
-      }
-    }
-  } catch (err) {
-    _iterator3.e(err);
-  } finally {
-    _iterator3.f();
-  }
-  var _iterator4 = potions_createForOfIteratorHelper(nonWishTestPotions),
-    _step4;
-  try {
-    for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-      var _potion = _step4.value;
-      var _effect = _potion.effect();
-      if (!excludedEffects.has(_effect) && useAsValuable(_potion, embezzlers, embezzlersOnly) > 0) {
-        var _mutuallyExclusive$ge3;
-        var _iterator7 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
-          _step7;
+    // Only test potions which are reasonably close to being profitable using historical price.
+    var testPotions = farmingPotions.filter(potion => potion.gross(embezzlers) / potion.price(true) > 0.5);
+    var nonWishTestPotions = testPotions.filter(potion => potion.potion !== template_string_$item(potions_templateObject29 || (potions_templateObject29 = potions_taggedTemplateLiteral(["pocket wish"]))));
+    nonWishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+    var excludedEffects = new Set();
+    var _iterator3 = potions_createForOfIteratorHelper(getActiveEffects()),
+      _step3;
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var _mutuallyExclusive$ge2;
+        var effect = _step3.value;
+        var _iterator6 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge2 = mutuallyExclusive.get(effect)) !== null && _mutuallyExclusive$ge2 !== void 0 ? _mutuallyExclusive$ge2 : []),
+          _step6;
         try {
-          for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
-            var _excluded = _step7.value;
-            excludedEffects.add(_excluded);
+          for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+            var excluded = _step6.value;
+            excludedEffects.add(excluded);
           }
         } catch (err) {
-          _iterator7.e(err);
+          _iterator6.e(err);
         } finally {
-          _iterator7.f();
+          _iterator6.f();
         }
       }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
     }
-  } catch (err) {
-    _iterator4.e(err);
-  } finally {
-    _iterator4.f();
-  }
-  usePawWishes(potion => {
-    var value = potion.value(embezzlers);
-    return value.length > 0 ? maxBy(value, _ref9 => {
-      var quantity = _ref9.quantity,
-        value = _ref9.value;
-      return quantity > 0 ? value : 0;
-    }).value : 0;
+    var _iterator4 = potions_createForOfIteratorHelper(nonWishTestPotions),
+      _step4;
+    try {
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var _potion = _step4.value;
+        var _effect = _potion.effect();
+        if (!excludedEffects.has(_effect) && useAsValuable(_potion, embezzlers, embezzlersOnly) > 0) {
+          var _mutuallyExclusive$ge3;
+          var _iterator7 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge3 = mutuallyExclusive.get(_effect)) !== null && _mutuallyExclusive$ge3 !== void 0 ? _mutuallyExclusive$ge3 : []),
+            _step7;
+          try {
+            for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+              var _excluded = _step7.value;
+              excludedEffects.add(_excluded);
+            }
+          } catch (err) {
+            _iterator7.e(err);
+          } finally {
+            _iterator7.f();
+          }
+        }
+      }
+    } catch (err) {
+      _iterator4.e(err);
+    } finally {
+      _iterator4.f();
+    }
+    usePawWishes(potion => {
+      var value = potion.value(embezzlers);
+      return value.length > 0 ? maxBy(value, _ref9 => {
+        var quantity = _ref9.quantity,
+          value = _ref9.value;
+        return quantity > 0 ? value : 0;
+      }).value : 0;
+    });
+    var wishTestPotions = testPotions.filter(potion => potion.potion === template_string_$item(potions_templateObject30 || (potions_templateObject30 = potions_taggedTemplateLiteral(["pocket wish"]))));
+    wishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+    var _iterator5 = potions_createForOfIteratorHelper(wishTestPotions),
+      _step5;
+    try {
+      for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+        var _potion2 = _step5.value;
+        var _effect2 = _potion2.effect();
+        if (!excludedEffects.has(_effect2) && !failedWishes.includes(_effect2) && useAsValuable(_potion2, embezzlers, embezzlersOnly) > 0) {
+          var _mutuallyExclusive$ge4;
+          var _iterator8 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge4 = mutuallyExclusive.get(_effect2)) !== null && _mutuallyExclusive$ge4 !== void 0 ? _mutuallyExclusive$ge4 : []),
+            _step8;
+          try {
+            for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+              var _excluded2 = _step8.value;
+              excludedEffects.add(_excluded2);
+            }
+          } catch (err) {
+            _iterator8.e(err);
+          } finally {
+            _iterator8.f();
+          }
+        }
+      }
+    } catch (err) {
+      _iterator5.e(err);
+    } finally {
+      _iterator5.f();
+    }
+    variableMeatPotionsSetup(0, embezzlers);
+    completedPotionSetup = true;
   });
-  var wishTestPotions = testPotions.filter(potion => potion.potion === template_string_$item(potions_templateObject30 || (potions_templateObject30 = potions_taggedTemplateLiteral(["pocket wish"]))));
-  wishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
-  var _iterator5 = potions_createForOfIteratorHelper(wishTestPotions),
-    _step5;
-  try {
-    for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-      var _potion2 = _step5.value;
-      var _effect2 = _potion2.effect();
-      if (!excludedEffects.has(_effect2) && !failedWishes.includes(_effect2) && useAsValuable(_potion2, embezzlers, embezzlersOnly) > 0) {
-        var _mutuallyExclusive$ge4;
-        var _iterator8 = potions_createForOfIteratorHelper((_mutuallyExclusive$ge4 = mutuallyExclusive.get(_effect2)) !== null && _mutuallyExclusive$ge4 !== void 0 ? _mutuallyExclusive$ge4 : []),
-          _step8;
-        try {
-          for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
-            var _excluded2 = _step8.value;
-            excludedEffects.add(_excluded2);
-          }
-        } catch (err) {
-          _iterator8.e(err);
-        } finally {
-          _iterator8.f();
-        }
-      }
-    }
-  } catch (err) {
-    _iterator5.e(err);
-  } finally {
-    _iterator5.f();
-  }
-  variableMeatPotionsSetup(0, embezzlers);
-  completedPotionSetup = true;
 }
 
 /**
