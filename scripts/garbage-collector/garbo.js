@@ -15611,7 +15611,8 @@ var UnlockableZones = [{
 function underwater(location) {
   return location.environment === "underwater";
 }
-var canAdventureOrUnlockSkipList = [].concat(wanderer_lib_toConsumableArray($locations(wanderer_lib_templateObject11 || (wanderer_lib_templateObject11 = wanderer_lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island"])))), wanderer_lib_toConsumableArray(external_kolmafia_namespaceObject.Location.all().filter(l => ["Clan Basement", "Psychoses"].includes(l.parent))));
+var ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm"];
+var canAdventureOrUnlockSkipList = [].concat(wanderer_lib_toConsumableArray($locations(wanderer_lib_templateObject11 || (wanderer_lib_templateObject11 = wanderer_lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island"])))), wanderer_lib_toConsumableArray(external_kolmafia_namespaceObject.Location.all().filter(l => ILLEGAL_PARENTS.includes(l.parent))));
 function canAdventureOrUnlock(loc) {
   var skiplist = wanderer_lib_toConsumableArray(canAdventureOrUnlockSkipList);
   if (!lib_have(template_string_$item(wanderer_lib_templateObject12 || (wanderer_lib_templateObject12 = wanderer_lib_taggedTemplateLiteral(["repaid diaper"])))) && lib_have(template_string_$item(wanderer_lib_templateObject13 || (wanderer_lib_templateObject13 = wanderer_lib_taggedTemplateLiteral(["Great Wolf's beastly trousers"]))))) {
@@ -22390,7 +22391,14 @@ var PostFreeFightTasks = [{
   name: "Configure Thrall",
   ready: () => (0,external_kolmafia_namespaceObject.myClass)() === $class(postFreeFight_templateObject6 || (postFreeFight_templateObject6 = postFreeFight_taggedTemplateLiteral(["Pastamancer"]))) && lib_have($skill(postFreeFight_templateObject7 || (postFreeFight_templateObject7 = postFreeFight_taggedTemplateLiteral(["Bind Lasagmbie"])))),
   completed: () => (0,external_kolmafia_namespaceObject.myThrall)() === $thrall(postFreeFight_templateObject8 || (postFreeFight_templateObject8 = postFreeFight_taggedTemplateLiteral(["Lasagmbie"]))),
-  do: () => (0,external_kolmafia_namespaceObject.useSkill)($skill(postFreeFight_templateObject9 || (postFreeFight_templateObject9 = postFreeFight_taggedTemplateLiteral(["Bind Lasagmbie"]))))
+  do: () => (0,external_kolmafia_namespaceObject.useSkill)($skill(postFreeFight_templateObject9 || (postFreeFight_templateObject9 = postFreeFight_taggedTemplateLiteral(["Bind Lasagmbie"])))),
+  outfit: () => {
+    if ((0,external_kolmafia_namespaceObject.myMaxmp)() >= 200) return {};
+    return {
+      modifier: "MP"
+    };
+  },
+  prepare: () => (0,external_kolmafia_namespaceObject.restoreMp)(200)
 }, {
   name: "Level Up Thrall",
   ready: () => (0,external_kolmafia_namespaceObject.myClass)() === $class(postFreeFight_templateObject10 || (postFreeFight_templateObject10 = postFreeFight_taggedTemplateLiteral(["Pastamancer"]))) && lib_have(template_string_$item(postFreeFight_templateObject11 || (postFreeFight_templateObject11 = postFreeFight_taggedTemplateLiteral(["experimental carbon fiber pasta additive"])))) && (0,external_kolmafia_namespaceObject.myThrall)() !== $thrall.none,
