@@ -1431,28 +1431,29 @@ const freeFightSources = [
   // Use NC forcers to complete shadow quests
   new FreeFight(
     () => {
-      if (!have($item`closed-circuit pay phone`)) return false;
-      if (globalOptions.prefs.yachtzeechain) return false; // NCs are better when yachtzeeing, probably
+      if (!have($item`closed-circuit pay phone`)) return 0;
+      if (globalOptions.prefs.yachtzeechain) return 0; // NCs are better when yachtzeeing, probably
 
       if (get("rufusQuestType") === "items") {
-        return false; // NCs don't help with item quests
+        return 0; // NCs don't help with item quests
       }
 
+      let numFights = 0;
       // Check NC-forcers
       if (get("encountersUntilSRChoice") === 0) {
         // NC is forced natively
-        return true;
+        numFights++;
       }
 
       if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
-        return true;
+        numFights++;
       }
 
       if (have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5) {
-        return true;
+        numFights += 5 - get("_spikolodonSpikeUses");
       }
 
-      return false; // Can't force any NCs for shadow waters
+      return numFights;
     },
     () => {
       if (have($item`Rufus's shadow lodestone`)) {
