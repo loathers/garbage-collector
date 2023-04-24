@@ -22789,8 +22789,6 @@ function dailyVolcano_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = st
 function volcanoItemValue(_ref) {
   var quantity = _ref.quantity,
     item = _ref.item;
-  var basePrice = (0,external_kolmafia_namespaceObject.retrievePrice)(item, quantity);
-  if (basePrice >= 0) return basePrice;
   if (item === template_string_$item(dailyVolcano_templateObject || (dailyVolcano_templateObject = dailyVolcano_taggedTemplateLiteral(["fused fuse"])))) {
     // Check if clara's bell is available and unused
     if (!lib_have(template_string_$item(dailyVolcano_templateObject2 || (dailyVolcano_templateObject2 = dailyVolcano_taggedTemplateLiteral(["Clara's bell"])))) || config_globalOptions.clarasBellClaimed) return Infinity;
@@ -22802,7 +22800,8 @@ function volcanoItemValue(_ref) {
       return quantity * property_get("valueOfAdventure");
     }
   }
-  return Infinity;
+  if (!item.tradeable) return Infinity;
+  return quantity * (0,external_kolmafia_namespaceObject.retrievePrice)(item);
 }
 function checkVolcanoQuest() {
   var _property$getItem, _property$getItem2, _property$getItem3;
