@@ -15611,7 +15611,8 @@ var UnlockableZones = [{
 function underwater(location) {
   return location.environment === "underwater";
 }
-var canAdventureOrUnlockSkipList = [].concat(wanderer_lib_toConsumableArray($locations(wanderer_lib_templateObject11 || (wanderer_lib_templateObject11 = wanderer_lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island"])))), wanderer_lib_toConsumableArray(external_kolmafia_namespaceObject.Location.all().filter(l => ["Clan Basement", "Psychoses"].includes(l.parent))));
+var ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm"];
+var canAdventureOrUnlockSkipList = [].concat(wanderer_lib_toConsumableArray($locations(wanderer_lib_templateObject11 || (wanderer_lib_templateObject11 = wanderer_lib_taggedTemplateLiteral(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island"])))), wanderer_lib_toConsumableArray(external_kolmafia_namespaceObject.Location.all().filter(l => ILLEGAL_PARENTS.includes(l.parent))));
 function canAdventureOrUnlock(loc) {
   var skiplist = wanderer_lib_toConsumableArray(canAdventureOrUnlockSkipList);
   if (!lib_have(template_string_$item(wanderer_lib_templateObject12 || (wanderer_lib_templateObject12 = wanderer_lib_taggedTemplateLiteral(["repaid diaper"])))) && lib_have(template_string_$item(wanderer_lib_templateObject13 || (wanderer_lib_templateObject13 = wanderer_lib_taggedTemplateLiteral(["Great Wolf's beastly trousers"]))))) {
@@ -17746,6 +17747,7 @@ var StashManager = /*#__PURE__*/function () {
   }, {
     key: "putBack",
     value: function putBack() {
+      var _this = this;
       for (var _len3 = arguments.length, items = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
         items[_key3] = arguments[_key3];
       }
@@ -17754,15 +17756,18 @@ var StashManager = /*#__PURE__*/function () {
         var _Macro$if_;
         (0,external_kolmafia_namespaceObject.print)("In fight, trying to get away to return items to stash...", HIGHLIGHT);
         (_Macro$if_ = combat_Macro.if_($monster(clan_templateObject2 || (clan_templateObject2 = clan_taggedTemplateLiteral(["Knob Goblin Embezzler"]))), combat_Macro.attack().repeat())).tryItem.apply(_Macro$if_, clan_toConsumableArray(template_string_$items(clan_templateObject3 || (clan_templateObject3 = clan_taggedTemplateLiteral(["Louder Than Bomb, divine champagne popper"]))))).step("runaway").submit();
-      } else if ((0,external_kolmafia_namespaceObject.handlingChoice)()) {
-        (0,external_kolmafia_namespaceObject.print)("I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash:", "red");
-        items.forEach(item => (0,external_kolmafia_namespaceObject.print)("".concat(item.name, ","), "red"));
+      } else {
+        (0,external_kolmafia_namespaceObject.visitUrl)("main.php");
+        if ((0,external_kolmafia_namespaceObject.handlingChoice)()) {
+          (0,external_kolmafia_namespaceObject.print)("I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash:", "red");
+          items.forEach(item => (0,external_kolmafia_namespaceObject.print)("".concat(item.name, ","), "red"));
+        }
       }
       withClan(this.clanIdOrName, () => {
-        for (var _i2 = 0, _items2 = items; _i2 < _items2.length; _i2++) {
+        var _loop = function _loop() {
           var _this$taken$get2;
           var item = _items2[_i2];
-          var count = (_this$taken$get2 = this.taken.get(item)) !== null && _this$taken$get2 !== void 0 ? _this$taken$get2 : 0;
+          var count = (_this$taken$get2 = _this.taken.get(item)) !== null && _this$taken$get2 !== void 0 ? _this$taken$get2 : 0;
           if (count > 0) {
             (0,external_kolmafia_namespaceObject.retrieveItem)(count, item);
             if (item === template_string_$item(clan_templateObject4 || (clan_templateObject4 = clan_taggedTemplateLiteral(["Buddy Bjorn"])))) {
@@ -17773,15 +17778,22 @@ var StashManager = /*#__PURE__*/function () {
               (0,external_kolmafia_namespaceObject.visitUrl)("desc_item.php?whichitem=".concat(template_string_$item(clan_templateObject7 || (clan_templateObject7 = clan_taggedTemplateLiteral(["Crown of Thrones"]))).descid));
               (0,external_kolmafia_namespaceObject.enthroneFamiliar)($familiar.none);
             }
-            if ((0,external_kolmafia_namespaceObject.putStash)(count, item)) {
+            if ((0,external_kolmafia_namespaceObject.equippedAmount)(item) > 0) {
+              var slots = external_kolmafia_namespaceObject.Slot.all().filter(s => (0,external_kolmafia_namespaceObject.equippedItem)(s) === item);
+              slots.forEach(s => (0,external_kolmafia_namespaceObject.equip)(s, template_string_$item.none));
+            }
+            if ((0,external_kolmafia_namespaceObject.itemAmount)(item) >= count && (0,external_kolmafia_namespaceObject.putStash)(count, item)) {
               var index = stashItems.indexOf(item);
               if (index >= 0) stashItems.splice(stashItems.indexOf(item), 1);
               (0,external_kolmafia_namespaceObject.print)("Returned ".concat(item.name, " to stash in ").concat((0,external_kolmafia_namespaceObject.getClanName)(), "."), HIGHLIGHT);
-              this.taken.delete(item);
+              _this.taken.delete(item);
             } else {
               throw "Failed to return ".concat(item.name, " to stash.");
             }
           }
+        };
+        for (var _i2 = 0, _items2 = items; _i2 < _items2.length; _i2++) {
+          _loop();
         }
       });
     }
