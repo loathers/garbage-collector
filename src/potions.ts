@@ -481,7 +481,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     const shadowItems = $items`shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar`;
     const getPrice = (item: Item): number =>
       3 * (historical && historicalAge(item) < 14 ? historicalPrice(item) : mallPrice(item));
-    const avgSpeculativePrice = sum(shadowItems, (it) => getPrice(it)) / shadowItems.length;
+    const avgSpeculativePrice = sum(shadowItems, getPrice) / shadowItems.length;
 
     if (haveItemQuest) return avgSpeculativePrice;
 
@@ -497,7 +497,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     }
 
     const knownPrice = getPrice(Item.get(get("rufusDesiredItems")));
-    const futureQuests = estimatedGarboTurns() / 30 - 1;
+    const futureQuests = (estimatedGarboTurns() - haveEffect($effect`Shadow Waters`)) / 30 - 1;
     if (futureQuests <= 0) return knownPrice;
     const averagePrice = (knownPrice + futureQuests * avgSpeculativePrice) / (1 + futureQuests);
 
