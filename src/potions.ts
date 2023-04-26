@@ -10,6 +10,7 @@ import {
   effectModifier,
   equip,
   getMonsters,
+  handlingChoice,
   haveEffect,
   historicalAge,
   historicalPrice,
@@ -26,6 +27,7 @@ import {
   numericModifier,
   print,
   retrievePrice,
+  runChoice,
   setLocation,
   use,
 } from "kolmafia";
@@ -40,6 +42,7 @@ import {
   clamp,
   ClosedCircuitPayphone,
   CursedMonkeyPaw,
+  directlyUse,
   get,
   getActiveEffects,
   getActiveSongs,
@@ -476,10 +479,27 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
 
     // We consider the average price of the shadow items to not get gated behind an expensive one
     const shadowItems = $items`shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar`;
-    const averagePrice =
-      sum(shadowItems, (it) =>
-        historical && historicalAge(it) < 14 ? historicalPrice(it) : mallPrice(it)
-      ) / shadowItems.length;
+    const getPrice = (item: Item): number =>
+      3 * (historical && historicalAge(item) < 14 ? historicalPrice(item) : mallPrice(item));
+    const avgSpeculativePrice = sum(shadowItems, (it) => getPrice(it)) / shadowItems.length;
+
+    if (haveItemQuest) return avgSpeculativePrice;
+
+    if (get("rufusDesiredItems") === "") {
+      directlyUse($item`closed-circuit pay phone`);
+      runChoice(6);
+      if (handlingChoice()) {
+        throw `Stuck in the closed-circuit pay phone dialogue? Please manually hang up and re-run`;
+      }
+      if (get("rufusDesiredItems") === "") {
+        throw `Could not determine the next closed-circuit payphone item quest. Try manually handing in a quest to continue.`;
+      }
+    }
+
+    const knownPrice = getPrice(Item.get(get("rufusDesiredItems")));
+    const futureQuests = estimatedGarboTurns() / 30 - 1;
+    if (futureQuests <= 0) return knownPrice;
+    const averagePrice = (knownPrice + futureQuests * avgSpeculativePrice) / (1 + futureQuests);
 
     return averagePrice;
   },
