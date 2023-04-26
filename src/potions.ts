@@ -27,7 +27,6 @@ import {
   numericModifier,
   print,
   retrievePrice,
-  runChoice,
   setLocation,
   use,
 } from "kolmafia";
@@ -42,7 +41,6 @@ import {
   clamp,
   ClosedCircuitPayphone,
   CursedMonkeyPaw,
-  directlyUse,
   get,
   getActiveEffects,
   getActiveSongs,
@@ -486,8 +484,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     if (haveItemQuest) return avgSpeculativePrice;
 
     if (get("rufusDesiredItems") === "") {
-      directlyUse($item`closed-circuit pay phone`);
-      runChoice(6);
+      withChoice(1497, 6, () => use($item`closed-circuit pay phone`));
       if (handlingChoice()) {
         throw `Stuck in the closed-circuit pay phone dialogue? Please manually hang up and re-run`;
       }
