@@ -2259,16 +2259,18 @@ const itemStealZones = [
     openCost: () => 0,
     preReq: null,
   },
-  {
-    location: $location`Shadow Rift`,
-    monster: $monster`shadow slab`,
-    item: $item`shadow brick`,
-    requireMapTheMonsters: false,
-    dropRate: 1,
-    isOpen: () => ["pyramid", "hiddencity", "cemetery"].includes(get("shadowRiftIngress")),
-    openCost: () => 0,
-    preReq: null,
-  },
+  ...$locations`Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary)`.map(
+    (location) => ({
+      location,
+      monster: $monster`shadow slab`,
+      item: $item`shadow brick`,
+      requireMapTheMonsters: false,
+      dropRate: 1,
+      isOpen: () => canAdventure(location),
+      openCost: () => 0,
+      preReq: null,
+    })
+  ),
 ] as ItemStealZone[];
 
 function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
