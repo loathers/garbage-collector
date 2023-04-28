@@ -2,6 +2,7 @@ import { Task } from "grimoire-kolmafia";
 import {
   adv1,
   canadiaAvailable,
+  canAdventure,
   canEquip,
   changeMcd,
   cliExecute,
@@ -9,11 +10,13 @@ import {
   gamedayToInt,
   getClanLounge,
   gnomadsAvailable,
+  handlingChoice,
   holiday,
   inebrietyLimit,
   Item,
   itemAmount,
   mallPrice,
+  myAscensions,
   myClass,
   myDaycount,
   myHash,
@@ -354,6 +357,23 @@ export const DailyTasks: Task[] = [
       visitUrl("main.php?latte=1", false);
       latteRefreshed = true;
     },
+  },
+  {
+    name: "Unlock Cemetery",
+    ready: () => get("lastGuildStoreOpen") >= myAscensions(),
+    completed: () => canAdventure($location`The Unquiet Garves`),
+    do: () => visitUrl("guild.php?place=scg"),
+    limit: { tries: 3 }, // Sometimes need to cycle through some dialogue
+  },
+  {
+    name: "Unlock Woods",
+    ready: () => have($item`bitchin' meatcar`),
+    completed: () => canAdventure($location`The Spooky Forest`),
+    do: (): void => {
+      visitUrl("guild.php?place=paco");
+      if (handlingChoice()) runChoice(1);
+    },
+    limit: { tries: 3 }, // Sometimes need to cycle through some dialogue
   },
   {
     name: "Configure I Voted! Sticker",
