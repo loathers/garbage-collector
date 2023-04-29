@@ -363,7 +363,7 @@ export const DailyTasks: Task[] = [
     ready: () => get("lastGuildStoreOpen") >= myAscensions(),
     completed: () => canAdventure($location`The Unquiet Garves`),
     do: () => visitUrl("guild.php?place=scg"),
-    limit: { tries: 3 }, // Sometimes need to cycle through some dialogue
+    limit: { soft: 3 }, // Sometimes need to cycle through some dialogue
   },
   {
     name: "Unlock Woods",
@@ -373,7 +373,7 @@ export const DailyTasks: Task[] = [
       visitUrl("guild.php?place=paco");
       if (handlingChoice()) runChoice(1);
     },
-    limit: { tries: 3 }, // Sometimes need to cycle through some dialogue
+    limit: { soft: 3 }, // Sometimes need to cycle through some dialogue
   },
   {
     name: "Configure I Voted! Sticker",
