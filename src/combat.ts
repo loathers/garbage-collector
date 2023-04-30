@@ -526,7 +526,14 @@ export class Macro extends StrictMacro {
         .while_("hasskill Cannelloni Cannon", Macro.skill($skill`Cannelloni Cannon`))
         .while_("hasskill Wave of Sauce", Macro.skill($skill`Wave of Sauce`))
         .while_("hasskill Saucestorm", Macro.skill($skill`Saucestorm`))
-        .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
+        .while_(
+          "hasskill Northern Explosion && snarfblat 567",
+          Macro.skill($skill`Northern Explosion`)
+        )
+        .while_(
+          "hasskill Lunging Thrust-Smack && !snarfblat 567",
+          Macro.skill($skill`Lunging Thrust-Smack`)
+        )
         .attack()
         .repeat()
     );
