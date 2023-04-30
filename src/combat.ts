@@ -518,7 +518,10 @@ export class Macro extends StrictMacro {
         .tryHaveSkill($skill`Become a Wolf`)
         .externalIf(
           !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
-          Macro.while_("!pastround 24 && !hppercentbelow 25 && !missed 1", Macro.attack())
+          Macro.while_(
+            "!pastround 24 && !hppercentbelow 25 && !missed 1 && !snarfblat 567",
+            Macro.attack()
+          )
         )
         // Using while_ here in case you run out of mp
         .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
