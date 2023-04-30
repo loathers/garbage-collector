@@ -66,7 +66,7 @@ import {
 import { meatMood, useBuffExtenders } from "./mood";
 import postCombatActions from "./post";
 import { stashItems, withStash, withVIPClan } from "./clan";
-import { dailySetup, postFreeFightDailySetup } from "./dailies";
+import { dailySetup } from "./dailies";
 import { potionSetup } from "./potions";
 import { endSession, garboAverageValue, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
@@ -473,7 +473,6 @@ export function main(argString = ""): void {
 
         // 2. do some embezzler stuff
         freeFights();
-        postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
         yachtzeeChain();
         dailyFights();
 

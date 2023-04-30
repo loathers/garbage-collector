@@ -164,6 +164,7 @@ import { bestConsumable } from "./diet";
 import { wanderWhere } from "./wanderer";
 import { globalOptions } from "./config";
 import { MonsterProperty } from "libram/dist/propertyTypes";
+import { postFreeFightDailySetup } from "./dailies";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -2043,6 +2044,7 @@ export function freeFights(): void {
   }
 
   tryFillLatte();
+  postFreeFightDailySetup();
 }
 
 function setNepQuestChoicesAndPrepItems() {
