@@ -545,6 +545,7 @@ export function bestShadowRift(): Location {
     _bestShadowRift = withLocation($location`Shadow Rift`, () =>
       ClosedCircuitPayphone.chooseRift({
         canAdventure: true,
+        otherFilter: (l: Location) => l !== $location`Shadow Rift (The 8-Bit Realm)`,
         sortBy: (l: Location) => {
           // We probably aren't capping item drops with the penalty
           // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
