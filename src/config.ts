@@ -190,6 +190,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "If you're a very high level, what HP threshold should garbo aim to maintain?",
           default: 2000,
         }),
+        shadowRiftMacro: Args.string({
+          setting: "garbo_shadowRiftCombatMacro",
+          help: "If set, garbo will use this combat macro when adventuring in the Shadow Rift. Leave blank to disable",
+          default: "",
+          hidden: true,
+        }),
       }
     ),
     /*

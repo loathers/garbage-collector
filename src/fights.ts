@@ -1409,13 +1409,13 @@ const freeFightSources = [
       if (!get("_shadowAffinityToday") && !ClosedCircuitPayphone.rufusTarget()) {
         ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
-      adv1(bestShadowRift(), -1, "");
+      adv1(bestShadowRift(), -1, globalOptions.prefs.shadowRiftMacro);
 
       if (get("encountersUntilSRChoice", 0) === 0) {
         if (ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
           ClosedCircuitPayphone.chooseQuest(() => 2);
         }
-        adv1(bestShadowRift(), -1, ""); // grab the NC
+        adv1(bestShadowRift(), -1, globalOptions.prefs.shadowRiftMacro); // grab the NC
       }
 
       if (questStep("questRufus") === 1) {
