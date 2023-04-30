@@ -33,6 +33,7 @@ import {
   setAutoAttack,
   setCcs,
   Skill,
+  toInt,
   visitUrl,
   writeCcs,
 } from "kolmafia";
@@ -510,6 +511,7 @@ export class Macro extends StrictMacro {
   }
 
   kill(): Macro {
+    const riftId = toInt($location`Shadow Rift`);
     return (
       this.externalIf(
         myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
@@ -519,7 +521,7 @@ export class Macro extends StrictMacro {
         .externalIf(
           !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
           Macro.while_(
-            "!pastround 24 && !hppercentbelow 25 && !missed 1 && !snarfblat 567",
+            `!pastround 24 && !hppercentbelow 25 && !missed 1 && !snarfblat ${riftId}`,
             Macro.attack()
           )
         )
@@ -530,11 +532,11 @@ export class Macro extends StrictMacro {
         .while_("hasskill Wave of Sauce", Macro.skill($skill`Wave of Sauce`))
         .while_("hasskill Saucestorm", Macro.skill($skill`Saucestorm`))
         .while_(
-          "hasskill Northern Explosion && snarfblat 567",
+          `hasskill Northern Explosion && snarfblat ${riftId}`,
           Macro.skill($skill`Northern Explosion`)
         )
         .while_(
-          "hasskill Lunging Thrust-Smack && !snarfblat 567",
+          `hasskill Lunging Thrust-Smack && !snarfblat ${riftId}`,
           Macro.skill($skill`Lunging Thrust-Smack`)
         )
         .attack()
