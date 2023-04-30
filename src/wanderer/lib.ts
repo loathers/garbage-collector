@@ -156,7 +156,7 @@ export type WandererLocation = { location: Location; targets: WandererTarget[]; 
 
 const quartetChoice = get("lastQuartetRequest") || 4;
 export const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
-  [$location`The Spooky Forest`, { 502: 2, 505: 2 }],
+  [$location`The Spooky Forest`, { 502: 3, 506: 3, 507: 3 }],
   [$location`Guano Junction`, { 1427: 1 }],
   [$location`The Hidden Apartment Building`, { 780: 6, 1578: 6 }],
   [$location`The Black Forest`, { 923: 1, 924: 1 }],
