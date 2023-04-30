@@ -3,7 +3,7 @@ import { CrownOfThrones, findFairyMultiplier, findLeprechaunMultiplier, sum } fr
 import { garboValue } from "../session";
 import { BonusEquipMode, useLimitedDrops, valueOfItem, valueOfMeat } from "./lib";
 
-export function valueBjornModifiers(
+function valueBjornModifiers(
   mode: BonusEquipMode,
   familiar: Familiar
 ): (ridingFamiliar: Familiar) => number {
@@ -29,11 +29,25 @@ function dropsValueFunction(drops: Item[] | Map<Item, number>): number {
     : sum([...drops.entries()], ([item, quantity]) => quantity * garboValue(item));
 }
 
+export function valueRider(
+  mode: BonusEquipMode,
+  familiar: Familiar,
+  rider: CrownOfThrones.FamiliarRider
+): number {
+  const valueOfDrops =
+    rider.dropPredicate?.() ?? true
+      ? rider.probability *
+        (typeof rider.drops === "number" ? rider.drops : dropsValueFunction(rider.drops))
+      : 0;
+  const valueOfModifier = valueBjornModifiers(mode, familiar)(rider.familiar);
+  return valueOfDrops + valueOfModifier;
+}
+
 export function chooseBjorn(
   mode: BonusEquipMode,
   familiar: Familiar,
   sim = false
-): CrownOfThrones.FamiliarRider {
+): CrownOfThrones.FamiliarRider & { value: number } {
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   const fairyMultiplier = findFairyMultiplier(familiar);
   const ignoreLimitedDrops = sim || !useLimitedDrops(mode);
@@ -54,5 +68,12 @@ export function chooseBjorn(
 
   if (!result) throw new Error(`Unable to choose rider for key ${key}`);
 
-  return result;
+  return {
+    ...result,
+    value: CrownOfThrones.valueRider(
+      result,
+      valueBjornModifiers(mode, familiar),
+      dropsValueFunction
+    ),
+  };
 }

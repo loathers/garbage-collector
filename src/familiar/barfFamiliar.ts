@@ -6,7 +6,6 @@ import {
   numericModifier,
   print,
   Slot,
-  useFamiliar,
   weightAdjustment,
 } from "kolmafia";
 import {
@@ -19,13 +18,12 @@ import {
   get,
   getModifier,
   maxBy,
-  Requirement,
   sum,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
 import { baseMeat, HIGHLIGHT } from "../lib";
-import { meatOutfit } from "../outfit";
+import barfOutfit from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
@@ -51,17 +49,13 @@ function getCachedOutfitValues(fam: Familiar) {
   const currentValue = outfitCache.get(lepMult);
   if (currentValue) return currentValue;
 
-  useFamiliar(fam);
-  meatOutfit(
-    false,
-    new Requirement([], {
-      // If we don't include the li'l pirate costume as a preventEquip, we could
-      // double-count the value of the pirate costume between here and constantvalue.ts,
-      // and we could apply the value of the pirate costume to every 0x leprechaun. Other items are
-      // included as strong, temporary bonuses that go away quickly in a user's BarfDay.
-      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
-    })
-  );
+  barfOutfit(
+    {
+      familiar: fam,
+      avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
+    },
+    true
+  ).dress();
 
   const outfit = outfitSlots.map((slot) => equippedItem(slot));
   const bonuses = bonusGear("barf", false);
