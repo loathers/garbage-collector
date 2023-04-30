@@ -11513,7 +11513,7 @@ function submitQuest() {
   return false;
 }
 ;// CONCATENATED MODULE: ./src/lib.ts
-var lib_templateObject, lib_templateObject2, lib_templateObject3, lib_templateObject4, lib_templateObject5, lib_templateObject6, lib_templateObject7, lib_templateObject8, lib_templateObject9, lib_templateObject10, lib_templateObject11, lib_templateObject12, lib_templateObject13, lib_templateObject14, lib_templateObject15, lib_templateObject16, lib_templateObject17, lib_templateObject18, lib_templateObject19, lib_templateObject20, lib_templateObject21, lib_templateObject22, lib_templateObject23, lib_templateObject24, lib_templateObject25, lib_templateObject26, lib_templateObject27, lib_templateObject28, lib_templateObject29, lib_templateObject30, lib_templateObject31, lib_templateObject32, lib_templateObject33, lib_templateObject34, lib_templateObject35, lib_templateObject36, lib_templateObject37;
+var lib_templateObject, lib_templateObject2, lib_templateObject3, lib_templateObject4, lib_templateObject5, lib_templateObject6, lib_templateObject7, lib_templateObject8, lib_templateObject9, lib_templateObject10, lib_templateObject11, lib_templateObject12, lib_templateObject13, lib_templateObject14, lib_templateObject15, lib_templateObject16, lib_templateObject17, lib_templateObject18, lib_templateObject19, lib_templateObject20, lib_templateObject21, lib_templateObject22, lib_templateObject23, lib_templateObject24, lib_templateObject25, lib_templateObject26, lib_templateObject27, lib_templateObject28, lib_templateObject29, lib_templateObject30, lib_templateObject31, lib_templateObject32, lib_templateObject33, lib_templateObject34, lib_templateObject35, lib_templateObject36, lib_templateObject37, lib_templateObject38;
 function src_lib_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = src_lib_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function lib_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 function lib_toConsumableArray(arr) { return lib_arrayWithoutHoles(arr) || lib_iterableToArray(arr) || src_lib_unsupportedIterableToArray(arr) || lib_nonIterableSpread(); }
@@ -11909,6 +11909,7 @@ function bestShadowRift() {
   if (!_bestShadowRift) {
     _bestShadowRift = withLocation($location(lib_templateObject37 || (lib_templateObject37 = lib_taggedTemplateLiteral(["Shadow Rift"]))), () => chooseRift({
       canAdventure: true,
+      otherFilter: l => l !== $location(lib_templateObject38 || (lib_templateObject38 = lib_taggedTemplateLiteral(["Shadow Rift (The 8-Bit Realm)"]))),
       sortBy: l => {
         // We probably aren't capping item drops with the penalty
         // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
@@ -15554,7 +15555,7 @@ function expectedReward() {
   }
 }
 ;// CONCATENATED MODULE: ./src/wanderer/lib.ts
-var wanderer_lib_templateObject, wanderer_lib_templateObject2, wanderer_lib_templateObject3, wanderer_lib_templateObject4, wanderer_lib_templateObject5, wanderer_lib_templateObject6, wanderer_lib_templateObject7, wanderer_lib_templateObject8, wanderer_lib_templateObject9, wanderer_lib_templateObject10, wanderer_lib_templateObject11, wanderer_lib_templateObject12, wanderer_lib_templateObject13, wanderer_lib_templateObject14, wanderer_lib_templateObject15, wanderer_lib_templateObject16, wanderer_lib_templateObject17, wanderer_lib_templateObject18, wanderer_lib_templateObject19, wanderer_lib_templateObject20, wanderer_lib_templateObject21, wanderer_lib_templateObject22, wanderer_lib_templateObject23, wanderer_lib_templateObject24, wanderer_lib_templateObject25, wanderer_lib_templateObject26, wanderer_lib_templateObject27, wanderer_lib_templateObject28, wanderer_lib_templateObject29, wanderer_lib_templateObject30, wanderer_lib_templateObject31, wanderer_lib_templateObject32, wanderer_lib_templateObject33, wanderer_lib_templateObject34, wanderer_lib_templateObject35, wanderer_lib_templateObject36, wanderer_lib_templateObject37, lib_templateObject38, lib_templateObject39, lib_templateObject40, lib_templateObject41, lib_templateObject42, lib_templateObject43, lib_templateObject44, lib_templateObject45, lib_templateObject46, lib_templateObject47, lib_templateObject48, lib_templateObject49, lib_templateObject50, lib_templateObject51, lib_templateObject52;
+var wanderer_lib_templateObject, wanderer_lib_templateObject2, wanderer_lib_templateObject3, wanderer_lib_templateObject4, wanderer_lib_templateObject5, wanderer_lib_templateObject6, wanderer_lib_templateObject7, wanderer_lib_templateObject8, wanderer_lib_templateObject9, wanderer_lib_templateObject10, wanderer_lib_templateObject11, wanderer_lib_templateObject12, wanderer_lib_templateObject13, wanderer_lib_templateObject14, wanderer_lib_templateObject15, wanderer_lib_templateObject16, wanderer_lib_templateObject17, wanderer_lib_templateObject18, wanderer_lib_templateObject19, wanderer_lib_templateObject20, wanderer_lib_templateObject21, wanderer_lib_templateObject22, wanderer_lib_templateObject23, wanderer_lib_templateObject24, wanderer_lib_templateObject25, wanderer_lib_templateObject26, wanderer_lib_templateObject27, wanderer_lib_templateObject28, wanderer_lib_templateObject29, wanderer_lib_templateObject30, wanderer_lib_templateObject31, wanderer_lib_templateObject32, wanderer_lib_templateObject33, wanderer_lib_templateObject34, wanderer_lib_templateObject35, wanderer_lib_templateObject36, wanderer_lib_templateObject37, wanderer_lib_templateObject38, lib_templateObject39, lib_templateObject40, lib_templateObject41, lib_templateObject42, lib_templateObject43, lib_templateObject44, lib_templateObject45, lib_templateObject46, lib_templateObject47, lib_templateObject48, lib_templateObject49, lib_templateObject50, lib_templateObject51, lib_templateObject52;
 function wanderer_lib_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, wanderer_lib_toPropertyKey(descriptor.key), descriptor); } }
 function wanderer_lib_createClass(Constructor, protoProps, staticProps) { if (protoProps) wanderer_lib_defineProperties(Constructor.prototype, protoProps); if (staticProps) wanderer_lib_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function wanderer_lib_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -15737,7 +15738,7 @@ var unsupportedChoices = new Map([[$location(wanderer_lib_templateObject20 || (w
   879: 2,
   // grouchy spirit
   880: 2 // a dumb 75 meat club
-}], [$location(lib_templateObject38 || (lib_templateObject38 = wanderer_lib_taggedTemplateLiteral(["The Copperhead Club"]))), {
+}], [$location(wanderer_lib_templateObject38 || (wanderer_lib_templateObject38 = wanderer_lib_taggedTemplateLiteral(["The Copperhead Club"]))), {
   855: 4
 }], [$location(lib_templateObject39 || (lib_templateObject39 = wanderer_lib_taggedTemplateLiteral(["The Haunted Bathroom"]))), {
   882: 2
@@ -21597,16 +21598,16 @@ var itemStealZones = [{
   isOpen: () => property_get("lastTempleUnlock") === (0,external_kolmafia_namespaceObject.myAscensions)(),
   openCost: () => 0,
   preReq: null
-}, {
-  location: $location(_templateObject516 || (_templateObject516 = fights_taggedTemplateLiteral(["Shadow Rift"]))),
+}].concat(fights_toConsumableArray($locations(_templateObject516 || (_templateObject516 = fights_taggedTemplateLiteral(["Shadow Rift (The Ancient Buried Pyramid), Shadow Rift (The Hidden City), Shadow Rift (The Misspelled Cemetary)"]))).map(location => ({
+  location: location,
   monster: $monster(_templateObject517 || (_templateObject517 = fights_taggedTemplateLiteral(["shadow slab"]))),
   item: template_string_$item(_templateObject518 || (_templateObject518 = fights_taggedTemplateLiteral(["shadow brick"]))),
   requireMapTheMonsters: false,
   dropRate: 1,
-  isOpen: () => ["pyramid", "hiddencity", "cemetery"].includes(property_get("shadowRiftIngress")),
+  isOpen: () => (0,external_kolmafia_namespaceObject.canAdventure)(location),
   openCost: () => 0,
   preReq: null
-}];
+}))));
 function getBestItemStealZone() {
   var mappingMonster = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
   var targets = itemStealZones.filter(zone => zone.isOpen() && (mappingMonster || !zone.requireMapTheMonsters) && asArray(zone.monster).some(m => !(0,external_kolmafia_namespaceObject.isBanished)(m) || property_get("olfactedMonster") === m || property_get("_gallapagosMonster") === m));
