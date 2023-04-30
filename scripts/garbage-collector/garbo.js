@@ -15682,8 +15682,9 @@ function WandererTarget(name, location, value) {
 });
 var quartetChoice = property_get("lastQuartetRequest") || 4;
 var unsupportedChoices = new Map([[$location(wanderer_lib_templateObject20 || (wanderer_lib_templateObject20 = wanderer_lib_taggedTemplateLiteral(["The Spooky Forest"]))), {
-  502: 2,
-  505: 2
+  502: 3,
+  506: 3,
+  507: 3
 }], [$location(wanderer_lib_templateObject21 || (wanderer_lib_templateObject21 = wanderer_lib_taggedTemplateLiteral(["Guano Junction"]))), {
   1427: 1
 }], [$location(wanderer_lib_templateObject22 || (wanderer_lib_templateObject22 = wanderer_lib_taggedTemplateLiteral(["The Hidden Apartment Building"]))), {
