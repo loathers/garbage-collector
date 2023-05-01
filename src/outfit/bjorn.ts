@@ -47,7 +47,7 @@ export function chooseBjorn(
   mode: BonusEquipMode,
   familiar: Familiar,
   sim = false
-): CrownOfThrones.FamiliarRider & { value: number } {
+): { familiar: Familiar; value: number } {
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   const fairyMultiplier = findFairyMultiplier(familiar);
   const ignoreLimitedDrops = sim || !useLimitedDrops(mode);
@@ -69,7 +69,7 @@ export function chooseBjorn(
   if (!result) throw new Error(`Unable to choose rider for key ${key}`);
 
   return {
-    ...result,
+    familiar: result.familiar,
     value: CrownOfThrones.valueRider(
       result,
       valueBjornModifiers(mode, familiar),

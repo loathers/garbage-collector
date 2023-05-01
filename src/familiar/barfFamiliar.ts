@@ -23,7 +23,7 @@ import {
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../dropsgear";
 import { baseMeat, HIGHLIGHT } from "../lib";
-import barfOutfit from "../outfit/barf";
+import { barfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";

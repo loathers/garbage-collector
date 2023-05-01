@@ -18,7 +18,6 @@ import {
   totalTurnsPlayed,
   toUrl,
   use,
-  useFamiliar,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -35,13 +34,11 @@ import {
   get,
   getModifier,
   have,
-  Requirement,
   SourceTerminal,
 } from "libram";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { computeDiet, consumeDiet } from "./diet";
-import { barfFamiliar, freeFightFamiliar, meatFamiliar } from "./familiar";
 import { deliverThesisIfAble } from "./fights";
 import {
   EMBEZZLER_MULTIPLIER,
@@ -55,9 +52,10 @@ import {
 } from "./lib";
 import { meatMood } from "./mood";
 import {
+  barfOutfit,
+  embezzlerOutfit,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
-  meatOutfit,
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
@@ -67,20 +65,6 @@ import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
 import { drunkSafeWander, wanderWhere } from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
-
-type EmbezzlerPrepOptions = {
-  requirements?: Requirement;
-  sea?: boolean;
-};
-function embezzlerPrep(options: EmbezzlerPrepOptions = {}) {
-  useFamiliar(meatFamiliar());
-  meatOutfit(true, options.requirements, options.sea);
-}
-
-function freeFightPrep(requirements?: Requirement) {
-  useFamiliar(freeFightFamiliar());
-  freeFightOutfit(requirements);
-}
 
 function logEmbezzler(encounterType: string) {
   const isDigitize = encounterType === "Digitize Wanderer";
@@ -167,10 +151,8 @@ const turns: AdventureAction[] = [
       if (steveRoom && canAdventure(steveRoom) && steveRoom !== ghostLocation) {
         const fightingSteve = steveRoom === $location`The Haunted Laboratory`;
         // Technically drops 500 meat, but that's close enough for me.
-        const drunkRequirement = sober()
-          ? undefined
-          : new Requirement([], { forceEquip: $items`Drunkula's wineglass` });
-        if (fightingSteve) embezzlerPrep({ requirements: drunkRequirement });
+        const drunkSpec = sober() ? {} : { offhand: $item`Drunkula's wineglass` };
+        if (fightingSteve) embezzlerOutfit(drunkSpec).dress();
         const plan = steveAdventures.get(steveRoom);
         if (plan) {
           withMacro(
@@ -201,14 +183,9 @@ const turns: AdventureAction[] = [
     execute: () => {
       const ghostLocation = get("ghostLocation");
       if (!ghostLocation) return false;
-      freeFightPrep(
-        new Requirement(
-          ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [],
-          {
-            forceEquip: $items`protonic accelerator pack`,
-          }
-        )
-      );
+      const modifier = ghostLocation === $location`The Icy Peak` ? ["Cold Resistance 5 min"] : [];
+      freeFightOutfit({ modifier, back: $item`protonic accelerator pack` }).dress();
+
       garboAdventure(ghostLocation, Macro.ghostBustin());
       return get("questPAGhost") === "unstarted";
     },
@@ -227,17 +204,15 @@ const turns: AdventureAction[] = [
     execute: () => {
       const isGhost = get("_voteMonster") === $monster`angry ghost`;
       const isMutant = get("_voteMonster") === $monster`terrible mutant`;
-      freeFightPrep(
-        new Requirement([], {
-          forceEquip: [
-            $item`"I Voted!" sticker`,
-            ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : []),
-            ...(!have($item`mutant crown`) && isMutant
-              ? $items`mutant arm, mutant legs`.filter((i) => have(i))
-              : []),
-          ],
-        })
-      );
+      freeFightOutfit({
+        equip: [
+          $item`"I Voted!" sticker`,
+          ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : []),
+          ...(!have($item`mutant crown`) && isMutant
+            ? $items`mutant arm, mutant legs`.filter((i) => have(i))
+            : []),
+        ],
+      }).dress();
       garboAdventureAuto(
         isGhost ? drunkSafeWander("wanderer") : wanderWhere("wanderer"),
         Macro.basicCombat()
@@ -261,7 +236,7 @@ const turns: AdventureAction[] = [
 
       if (underwater) retrieveItem($item`pulled green taffy`);
 
-      isEmbezzler ? embezzlerPrep({ sea: underwater }) : freeFightPrep();
+      isEmbezzler ? embezzlerOutfit({}, targetLocation).dress() : freeFightOutfit().dress();
       garboAdventureAuto(
         targetLocation,
         Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(),
@@ -284,7 +259,7 @@ const turns: AdventureAction[] = [
     name: "Guaranteed Kramco",
     available: () => kramcoGuaranteed() && romanticMonsterImpossible(),
     execute: () => {
-      freeFightPrep(new Requirement([], { forceEquip: $items`Kramco Sausage-o-Matic™` }));
+      freeFightOutfit({ offhand: $item`Kramco Sausage-o-Matic™` }).dress();
       garboAdventureAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
       return !kramcoGuaranteed();
     },
@@ -298,7 +273,7 @@ const turns: AdventureAction[] = [
       get("cursedMagnifyingGlassCount") === 13 &&
       get("_voidFreeFights") < 5,
     execute: () => {
-      freeFightPrep(new Requirement([], { forceEquip: $items`cursed magnifying glass` }));
+      freeFightOutfit({ offhand: $item`cursed magnifying glass` }).dress();
       garboAdventureAuto(drunkSafeWander("wanderer"), Macro.basicCombat());
       return get("cursedMagnifyingGlassCount") === 0;
     },
@@ -310,7 +285,7 @@ const turns: AdventureAction[] = [
     available: () =>
       have($item`envyfish egg`) && get("envyfishMonster") === embezzler && !get("_envyfishEggUsed"),
     execute: () => {
-      embezzlerPrep();
+      embezzlerOutfit().dress();
       withMacro(Macro.meatKill(), () => use($item`envyfish egg`), true);
       return get("_envyfishEggUsed");
     },
@@ -327,9 +302,7 @@ const turns: AdventureAction[] = [
       const usingDuplicate = SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
 
       const location = wanderWhere("yellow ray");
-      const familiar = freeFightFamiliar({ location, allowAttackFamiliars: !usingDuplicate });
-      useFamiliar(familiar);
-      freeFightOutfit();
+      freeFightOutfit({}, { location, allowAttackFamiliars: !usingDuplicate }).dress();
       if (usingDuplicate) {
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
       }
@@ -356,9 +329,10 @@ const turns: AdventureAction[] = [
       const usingDuplicate = SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
 
       const location = wanderWhere("yellow ray");
-      const familiar = freeFightFamiliar({ location, allowAttackFamiliars: !usingDuplicate });
-      useFamiliar(familiar);
-      freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
+      freeFightOutfit(
+        { shirt: $items`Jurassic Parka` },
+        { location, allowAttackFamiliars: !usingDuplicate }
+      ).dress();
       cliExecute("parka dilophosaur");
       if (usingDuplicate) {
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
@@ -384,9 +358,7 @@ const turns: AdventureAction[] = [
       romanticMonsterImpossible(),
     execute: () => {
       const location = wanderWhere("backup");
-      const familiar = freeFightFamiliar({ location });
-      useFamiliar(familiar);
-      freeFightOutfit();
+      freeFightOutfit({}, { location }).dress();
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
         .skill($skill`Free-For-All`);
@@ -407,11 +379,11 @@ const turns: AdventureAction[] = [
       const usingDuplicate = SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
 
       const location = wanderWhere("yellow ray");
-      const familiar = freeFightFamiliar({ location });
-      useFamiliar(familiar);
       if (usingDuplicate) {
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
       }
+
+      freeFightOutfit({}, { location, allowAttackFamiliars: !usingDuplicate }).dress();
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
         .externalIf(usingDuplicate, Macro.trySkill($skill`Duplicate`))
@@ -450,12 +422,8 @@ const turns: AdventureAction[] = [
     name: "Barf",
     available: () => true,
     execute: () => {
-      useFamiliar(barfFamiliar());
       const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
-      meatOutfit(
-        false,
-        lubing ? new Requirement([], { forceEquip: $items`lube-shoes` }) : undefined
-      );
+      barfOutfit(lubing ? { equip: $items`lube-shoes` } : {}).dress();
       garboAdventureAuto(
         $location`Barf Mountain`,
         Macro.meatKill(),

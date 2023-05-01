@@ -1,6 +1,5 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
-  availableAmount,
   cliExecute,
   inebrietyLimit,
   Item,
@@ -24,7 +23,7 @@ import {
 import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
-import { bestBjornalike, BonusEquipMode, valueOfItem, valueOfMeat } from "./lib";
+import { bestBjornalike, BonusEquipMode, cleaverCheck, valueOfItem, valueOfMeat } from "./lib";
 
 function chooseGun({ familiar }: Outfit) {
   if (familiar === $familiar`Robortender` && have($item`love`)) return $item`love`;
@@ -83,8 +82,8 @@ const POINTER_RING_SPECS: (
   },
 ];
 
-export default function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
-  if (availableAmount($item`June cleaver`) > 1) cliExecute("refresh inventory");
+export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
+  cleaverCheck();
   const outfit = Outfit.from(
     spec,
     new Error(`Failed to construct outfit from spec ${toJson(spec)}!`)
@@ -124,6 +123,8 @@ export default function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   const bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
     outfit.setBonus(bjornalike, bjornChoice.value);
+    const other = $items`Buddy Bjorn, Crown of Thrones`.filter((i) => i !== bjornalike)[0];
+    outfit.avoid.push(other);
 
     switch (bjornalike) {
       case $item`Buddy Bjorn`:
