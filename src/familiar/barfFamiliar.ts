@@ -21,7 +21,7 @@ import {
   sum,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
-import { bonusGear } from "../dropsgear";
+import { BonusEquipMode, bonusGear } from "../outfit";
 import { baseMeat, HIGHLIGHT } from "../lib";
 import { barfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
@@ -58,7 +58,7 @@ function getCachedOutfitValues(fam: Familiar) {
   ).dress();
 
   const outfit = outfitSlots.map((slot) => equippedItem(slot));
-  const bonuses = bonusGear("barf", false);
+  const bonuses = bonusGear(BonusEquipMode.EMBEZZLER, false);
 
   const values = {
     weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),

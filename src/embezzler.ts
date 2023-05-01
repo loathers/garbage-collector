@@ -1,3 +1,4 @@
+import { OutfitSpec } from "grimoire-kolmafia";
 import {
   booleanModifier,
   canAdventure,
@@ -38,7 +39,6 @@ import {
   have,
   property,
   questStep,
-  Requirement,
   set,
   SourceTerminal,
   sum,
@@ -64,14 +64,14 @@ const embezzler = $monster`Knob Goblin Embezzler`;
 /**
  * Configure the behavior of the fights in use in different parts of the fight engine
  * @interface EmbezzlerFightConfigOptions
- * @member {Requirement[]?} requirements maximizer requirements to use for this fight (defaults to empty)
+ * @member {OutfitSpec} spec maximizer requirements to use for this fight (defaults to empty)
  * @member {draggableFight?} draggable if this fight can be pulled into another zone and what kind of draggable it is (defaults to undefined)
  * @member {boolean?} canInitializeWandererCounters if this fight can be used to initialize wanderers (defaults to false)
  * @member {boolean?} gregariousReplace if this is a "monster replacement" fight - pulls another monster from the CSV (defautls to false)
  * @member {boolean?} wrongEncounterName if mafia does not update the lastEncounter properly when doing this fight (defaults to value of gregariousReplace)
  */
 interface EmbezzlerFightConfigOptions {
-  requirements?: Requirement[];
+  spec?: OutfitSpec;
   draggable?: DraggableFight;
   canInitializeWandererCounters?: boolean;
   wrongEncounterName?: boolean;
@@ -111,7 +111,7 @@ export class EmbezzlerFight {
   available: () => boolean;
   potential: () => number;
   execute: (options: EmbezzlerFightRunOptions) => void;
-  requirements: Requirement[];
+  spec: OutfitSpec;
   draggable?: DraggableFight;
   canInitializeWandererCounters: boolean;
   wrongEncounterName: boolean;
@@ -155,7 +155,7 @@ export class EmbezzlerFight {
     this.available = available;
     this.potential = potential;
     this.execute = execute;
-    this.requirements = options.requirements ?? [];
+    this.spec = options.spec ?? {};
     this.draggable = options.draggable;
     this.canInitializeWandererCounters = options.canInitializeWandererCounters ?? false;
     this.gregariousReplace = options.gregariousReplace ?? false;
@@ -589,7 +589,7 @@ export const conditionalSources = [
       if (!doingExtrovermectin()) set("_garbo_doneGregging", true);
     },
     {
-      requirements: [new Requirement([], { forceEquip: $items`miniature crystal ball` })],
+      spec: { equip: $items`miniature crystal ball` },
       canInitializeWandererCounters: true,
     }
   ),
@@ -678,7 +678,7 @@ export const conditionalSources = [
       if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
     },
     {
-      requirements: [new Requirement([], { forceEquip: $items`Powerful Glove` })],
+      spec: { equip: $items`Powerful Glove` },
       gregariousReplace: true,
     }
   ),
@@ -726,11 +726,9 @@ export const conditionalSources = [
       garboAdventure($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
     },
     {
-      requirements: [
-        new Requirement([], {
-          forceEquip: $items`miniature crystal ball`.filter((item) => have(item)),
-        }),
-      ],
+      spec: {
+        equip: $items`miniature crystal ball`.filter((item) => have(item)),
+      },
       canInitializeWandererCounters: true,
     }
   ),
@@ -756,12 +754,7 @@ export const conditionalSources = [
       );
     },
     {
-      requirements: [
-        new Requirement([], {
-          forceEquip: $items`backup camera`,
-          bonusEquip: new Map([[$item`backup camera`, 5000]]),
-        }),
-      ],
+      spec: { equip: $items`backup camera`, modes: { backupcamera: "meat"}},
       draggable: "backup",
       wrongEncounterName: true,
       canInitializeWandererCounters: true,

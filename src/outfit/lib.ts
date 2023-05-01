@@ -1,18 +1,34 @@
-import { Outfit } from "grimoire-kolmafia";
+import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
   availableAmount,
+  canAdventure,
   canEquip,
   cliExecute,
   equippedItem,
+  inebrietyLimit,
   Item,
   mallPrice,
   myClass,
+  myInebriety,
   numericModifier,
   toInt,
   toSlot,
   visitUrl,
 } from "kolmafia";
-import { $class, $item, $items, $slots, findLeprechaunMultiplier, get, have, SongBoom } from "libram";
+import {
+  $class,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $slots,
+  ActionSource,
+  findLeprechaunMultiplier,
+  get,
+  have,
+  Requirement,
+  SongBoom,
+} from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
@@ -137,3 +153,39 @@ export function tryFillLatte(): boolean {
     numericModifier($item`latte lovers member's mug`, "Meat Drop") === 40
   );
 }
+
+export function toSpec(source?: ActionSource | Requirement): OutfitSpec {
+  if (!source) return {};
+  if (source instanceof Requirement) {
+    const result: OutfitSpec = {};
+    if (source.maximizeParameters.length) result.modifier = source.maximizeParameters;
+    if (source.maximizeOptions.forceEquip) {
+      result.equip = source.maximizeOptions.forceEquip;
+    }
+    if (source.maximizeOptions.preventEquip) {
+      result.avoid = source.maximizeOptions.preventEquip;
+    }
+
+    return result;
+  } else {
+    const req = source.constraints.equipmentRequirements?.();
+    const spec: OutfitSpec = req ? toSpec(req) : {};
+    const familiar = source.constraints.familiar?.();
+    if (familiar) spec.familiar = familiar;
+    return spec;
+  }
+}
+
+
+let cachedUsingPurse: boolean | null = null;
+export function usingPurse(): boolean {
+  if (cachedUsingPurse === null) {
+    cachedUsingPurse =
+      myInebriety() <= inebrietyLimit() &&
+      (!have($item`latte lovers member's mug`) ||
+        (!have($familiar`Robortender`) && !have($familiar`Hobo Monkey`)) ||
+        !canAdventure($location`The Black Forest`));
+  }
+  return cachedUsingPurse;
+}
+
