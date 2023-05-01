@@ -15633,9 +15633,9 @@ function unlock(loc, value) {
 var backupSkiplist = $locations(wanderer_lib_templateObject15 || (wanderer_lib_templateObject15 = wanderer_lib_taggedTemplateLiteral(["The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux, Professor Jacking's Huge-A-Ma-tron"])));
 
 // These are locations where all non-combats have skips or lead to a combat.
-var backupSafelist = $locations(wanderer_lib_templateObject16 || (wanderer_lib_templateObject16 = wanderer_lib_taggedTemplateLiteral(["The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters"])));
+var backupSafelist = $locations(wanderer_lib_templateObject16 || (wanderer_lib_templateObject16 = wanderer_lib_taggedTemplateLiteral(["The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters, The Upper Chamber"])));
 // These are locations where all non-combats are skippable
-var yellowRaySafelist = $locations(wanderer_lib_templateObject17 || (wanderer_lib_templateObject17 = wanderer_lib_taggedTemplateLiteral(["The Haunted Gallery, The Haunted Ballroom, The Haunted Library, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters"])));
+var yellowRaySafelist = $locations(wanderer_lib_templateObject17 || (wanderer_lib_templateObject17 = wanderer_lib_taggedTemplateLiteral(["The Haunted Gallery, The Haunted Ballroom, The Haunted Library, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters, The Upper Chamber"])));
 function canWanderTypeBackup(location) {
   return !backupSkiplist.includes(location) && (location.combatPercent >= 100 || backupSafelist.includes(location));
 }
