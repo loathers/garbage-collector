@@ -1389,6 +1389,79 @@ const freeFightSources = [
       macroAllowsFamiliarActions: false,
     }
   ),
+  // Use NC forcers to complete shadow quests
+  new FreeFight(
+    () => {
+      if (!have($item`closed-circuit pay phone`)) return false;
+      if (globalOptions.prefs.yachtzeechain) return false; // NCs are better when yachtzeeing, probably
+
+      if (get("rufusQuestType") === "items") {
+        return false; // NCs don't help with item quests
+      }
+
+      // Check NC-forcers
+      if (get("encountersUntilSRChoice") === 0) {
+        // NC is forced natively
+        return true;
+      }
+
+      if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+        return true;
+      }
+
+      if (have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5) {
+        if (
+          have($effect`Shadow Affinity`) ||
+          (!get("_shadowAffinityToday") && questStep("questRufus") === -1)
+        ) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+    () => {
+      if (have($item`Rufus's shadow lodestone`)) {
+        setChoice(1500, 2);
+        adv1(bestShadowRift(), -1, "");
+      }
+      if (ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
+        ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
+      }
+
+      if (get("encountersUntilSRChoice", 0) === 0) {
+        // If there's no need to force an NC... do nothing?
+      } else if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+        globalOptions.clarasBellClaimed = true;
+        use($item`Clara's bell`);
+      } else if (
+        have($item`Jurassic Parka`) &&
+        get("_spikolodonSpikeUses") < 5 &&
+        have($effect`Shadow Affinity`)
+      ) {
+        freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
+        cliExecute("parka spikolodon");
+        const macro = Macro.skill($skill`Launch spikolodon spikes`).meatKill();
+        // Adventure until we use spikes
+        const startingSpikes = get("_spikolodonSpikeUses");
+        do {
+          garboAdventureAuto(bestShadowRift(), macro);
+        } while (get("_spikolodonSpikeUses") === startingSpikes);
+      } else {
+        return; // Uh oh something went wrong
+      }
+      adv1(bestShadowRift(), -1, "");
+
+      if (questStep("questRufus") === 1) {
+        withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+      }
+
+      if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
+        setLocation($location.none); // Reset location to not affect mafia's item drop calculations
+      }
+    },
+    false
+  ),
   new FreeFight(
     () => {
       if (!have($item`closed-circuit pay phone`)) return false;
@@ -1424,68 +1497,10 @@ const freeFightSources = [
       }
 
       if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
-        setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
-      }
-    },
-    true
-  ),
-  // Use NC forcers to complete shadow quests
-  new FreeFight(
-    () => {
-      if (!have($item`closed-circuit pay phone`)) return 0;
-      if (globalOptions.prefs.yachtzeechain) return 0; // NCs are better when yachtzeeing, probably
-
-      if (get("rufusQuestType") === "items") {
-        return 0; // NCs don't help with item quests
-      }
-
-      let numFights = 0;
-      // Check NC-forcers
-      if (get("encountersUntilSRChoice") === 0) {
-        // NC is forced natively
-        numFights++;
-      }
-
-      if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
-        numFights++;
-      }
-
-      if (have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5) {
-        numFights += 5 - get("_spikolodonSpikeUses");
-      }
-
-      return numFights;
-    },
-    () => {
-      if (have($item`Rufus's shadow lodestone`)) {
-        setChoice(1500, 2);
-        adv1(bestShadowRift(), -1, "");
-      }
-      if (ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
-        ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
-      }
-
-      if (get("encountersUntilSRChoice", 0) === 0) {
-        // If there's no need to force an NC... do nothing?
-      } else if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
-        globalOptions.clarasBellClaimed = true;
-        use($item`Clara's bell`);
-      } else if (have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5) {
-        // TODO: Figure out Spikolodon logic for the shadow realm
-      } else {
-        return; // Uh oh something went wrong
-      }
-      adv1(bestShadowRift(), -1, "");
-
-      if (questStep("questRufus") === 1) {
-        withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
-      }
-
-      if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
         setLocation($location.none); // Reset location to not affect mafia's item drop calculations
       }
     },
-    false
+    true
   ),
 ];
 
