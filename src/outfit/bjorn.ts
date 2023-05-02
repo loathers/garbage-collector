@@ -1,5 +1,11 @@
 import { Familiar, Item } from "kolmafia";
-import { CrownOfThrones, findFairyMultiplier, findLeprechaunMultiplier, sum } from "libram";
+import {
+  CrownOfThrones,
+  findFairyMultiplier,
+  findLeprechaunMultiplier,
+  sum,
+  sumNumbers,
+} from "libram";
 import { garboValue } from "../session";
 import { BonusEquipMode, useLimitedDrops, valueOfItem, valueOfMeat } from "./lib";
 
@@ -25,8 +31,9 @@ function valueBjornModifiers(
 
 function dropsValueFunction(drops: Item[] | Map<Item, number>): number {
   return Array.isArray(drops)
-    ? sum(drops, garboValue)
-    : sum([...drops.entries()], ([item, quantity]) => quantity * garboValue(item));
+    ? sum(drops, garboValue) / drops.length
+    : sum([...drops.entries()], ([item, quantity]) => quantity * garboValue(item)) /
+        sumNumbers([...drops.values()]);
 }
 
 export function valueRider(
