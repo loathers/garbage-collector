@@ -30,8 +30,6 @@ import { garboValue } from "../session";
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
 function volcanoItemValue({ quantity, item }: VolcanoItem): number {
-  const basePrice = retrievePrice(item, quantity);
-  if (basePrice >= 0) return basePrice;
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
     if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) return Infinity;
@@ -43,7 +41,9 @@ function volcanoItemValue({ quantity, item }: VolcanoItem): number {
       return quantity * get("valueOfAdventure");
     }
   }
-  return Infinity;
+
+  if (!item.tradeable) return Infinity;
+  return quantity * retrievePrice(item);
 }
 
 function checkVolcanoQuest() {

@@ -53,7 +53,14 @@ import {
   withChoice,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, bestShadowRift, HIGHLIGHT, pillkeeperOpportunityCost, turnsToNC } from "./lib";
+import {
+  baseMeat,
+  bestShadowRift,
+  HIGHLIGHT,
+  pillkeeperOpportunityCost,
+  turnsToNC,
+  withLocation,
+} from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
@@ -211,7 +218,6 @@ export class Potion {
   }
 
   meatDrop(): number {
-    setLocation($location`Friar Ceremony Location`);
     return (
       getModifier("Meat Drop", this.effect()) +
       2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
@@ -509,7 +515,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
         throw new Error("Failed to acquire Shadow Waters and spent a turn!");
       }
     }
-    setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
+    setLocation($location.none); // Reset location to not affect mafia's item drop calculations
     return 0;
   },
   use: () => {
@@ -607,67 +613,70 @@ export function potionSetupCompleted(): boolean {
 export function potionSetup(embezzlersOnly: boolean): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
-  const embezzlers = embezzlerCount();
+  withLocation($location.none, () => {
+    const embezzlers = embezzlerCount();
 
-  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
-    const possibleDoublingPotions = doublingPotions(embezzlers);
-    const bestPotion = possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
-    if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
-      print(`Determined that ${bestPotion.potion} was the best potion to double`, HIGHLIGHT);
-      cliExecute("pillkeeper extend");
-      bestPotion.acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
-      bestPotion.use(1);
+    if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
+      const possibleDoublingPotions = doublingPotions(embezzlers);
+      const bestPotion =
+        possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
+      if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
+        print(`Determined that ${bestPotion.potion} was the best potion to double`, HIGHLIGHT);
+        cliExecute("pillkeeper extend");
+        bestPotion.acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
+        bestPotion.use(1);
+      }
     }
-  }
 
-  // Only test potions which are reasonably close to being profitable using historical price.
-  const testPotions = farmingPotions.filter(
-    (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5
-  );
-  const nonWishTestPotions = testPotions.filter((potion) => potion.potion !== $item`pocket wish`);
-  nonWishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+    // Only test potions which are reasonably close to being profitable using historical price.
+    const testPotions = farmingPotions.filter(
+      (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5
+    );
+    const nonWishTestPotions = testPotions.filter((potion) => potion.potion !== $item`pocket wish`);
+    nonWishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
 
-  const excludedEffects = new Set<Effect>();
-  for (const effect of getActiveEffects()) {
-    for (const excluded of mutuallyExclusive.get(effect) ?? []) {
-      excludedEffects.add(excluded);
-    }
-  }
-
-  for (const potion of nonWishTestPotions) {
-    const effect = potion.effect();
-    if (!excludedEffects.has(effect) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
+    const excludedEffects = new Set<Effect>();
+    for (const effect of getActiveEffects()) {
       for (const excluded of mutuallyExclusive.get(effect) ?? []) {
         excludedEffects.add(excluded);
       }
     }
-  }
 
-  usePawWishes((potion) => {
-    const value = potion.value(embezzlers);
-    return value.length > 0
-      ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
-      : 0;
+    for (const potion of nonWishTestPotions) {
+      const effect = potion.effect();
+      if (!excludedEffects.has(effect) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
+        for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+          excludedEffects.add(excluded);
+        }
+      }
+    }
+
+    usePawWishes((potion) => {
+      const value = potion.value(embezzlers);
+      return value.length > 0
+        ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
+        : 0;
+    });
+
+    const wishTestPotions = testPotions.filter((potion) => potion.potion === $item`pocket wish`);
+    wishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+
+    for (const potion of wishTestPotions) {
+      const effect = potion.effect();
+      if (
+        !excludedEffects.has(effect) &&
+        !failedWishes.includes(effect) &&
+        useAsValuable(potion, embezzlers, embezzlersOnly) > 0
+      ) {
+        for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+          excludedEffects.add(excluded);
+        }
+      }
+    }
+
+    variableMeatPotionsSetup(0, embezzlers);
+    completedPotionSetup = true;
   });
-
-  const wishTestPotions = testPotions.filter((potion) => potion.potion === $item`pocket wish`);
-  wishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
-
-  for (const potion of wishTestPotions) {
-    const effect = potion.effect();
-    if (
-      !excludedEffects.has(effect) &&
-      !failedWishes.includes(effect) &&
-      useAsValuable(potion, embezzlers, embezzlersOnly) > 0
-    ) {
-      for (const excluded of mutuallyExclusive.get(effect) ?? []) {
-        excludedEffects.add(excluded);
-      }
-    }
-  }
-
-  variableMeatPotionsSetup(0, embezzlers);
-  completedPotionSetup = true;
 }
 
 /**

@@ -78,7 +78,7 @@ const doublingValue = (potion: Potion, yachtzeeTurns: number) =>
   );
 
 export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
-  setLocation($location`Friar Ceremony Location`);
+  setLocation($location.none);
 
   let totalProfits = 0;
   const PYECOffset = pyecAvailable() ? 5 : 0;

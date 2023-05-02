@@ -25,6 +25,7 @@ import {
 } from "libram";
 import { garboAdventure, Macro } from "../combat";
 import { globalOptions } from "../config";
+import { postFreeFightDailySetup } from "../dailies";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
@@ -151,4 +152,5 @@ export function yachtzeeChain(): void {
     prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed
   }
   freeRunFights();
+  postFreeFightDailySetup();
 }

@@ -25,6 +25,7 @@ import {
   myLevel,
   myMaxhp,
   mySpleenUse,
+  npcPrice,
   print,
   retrievePrice,
   sellsItem,
@@ -1032,8 +1033,12 @@ export function runDiet(): void {
     }
 
     MenuItem.defaultPriceFunction = (item: Item) => {
-      const itemRetrievePrice = retrievePrice(item);
-      return itemRetrievePrice > 0 ? itemRetrievePrice : item.tradeable ? mallPrice(item) : 0;
+      const itemRetrievePrice =
+        retrievePrice(item) < Number.MAX_SAFE_INTEGER ? retrievePrice(item) : Infinity;
+      const itemMallPrice = mallPrice(item) > 0 ? mallPrice(item) : Infinity;
+      const itemNpcPrice = npcPrice(item) > 0 ? npcPrice(item) : Infinity;
+      const bestPrice = Math.min(itemRetrievePrice, itemMallPrice, itemNpcPrice);
+      return bestPrice === Infinity && !item.tradeable && have(item) ? 0 : bestPrice; // Handle unpurchaseable items like distention pills
     };
 
     const dietBuilder = computeDiet();

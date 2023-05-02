@@ -40,6 +40,7 @@ import {
   $skill,
   $slots,
   Clan,
+  examine,
   get,
   getFoldGroup,
   have,
@@ -65,7 +66,7 @@ import {
 import { meatMood, useBuffExtenders } from "./mood";
 import postCombatActions from "./post";
 import { stashItems, withStash, withVIPClan } from "./clan";
-import { dailySetup, postFreeFightDailySetup } from "./dailies";
+import { dailySetup } from "./dailies";
 import { potionSetup } from "./potions";
 import { endSession, garboAverageValue, startSession } from "./session";
 import { yachtzeeChain } from "./yachtzee";
@@ -104,6 +105,8 @@ export function main(argString = ""): void {
   sinceKolmafiaRevision(27321);
   checkGithubVersion();
 
+  // Hit up main.php to get out of easily escapable choices
+  visitUrl("main.php");
   if (currentRound() > 0) {
     abort("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
   }
@@ -239,6 +242,9 @@ export function main(argString = ""): void {
 
   const completedProperty = "_garboCompleted";
   set(completedProperty, "");
+
+  // re-align sweat (useful for diet and outfit)
+  examine($item`designer sweatpants`);
 
   startSession();
   if (!globalOptions.nobarf && !globalOptions.simdiet) {
@@ -467,7 +473,6 @@ export function main(argString = ""): void {
 
         // 2. do some embezzler stuff
         freeFights();
-        postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
         yachtzeeChain();
         dailyFights();
 

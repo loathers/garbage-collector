@@ -33,6 +33,7 @@ import {
   setAutoAttack,
   setCcs,
   Skill,
+  toInt,
   visitUrl,
   writeCcs,
 } from "kolmafia";
@@ -510,6 +511,7 @@ export class Macro extends StrictMacro {
   }
 
   kill(): Macro {
+    const riftId = toInt($location`Shadow Rift`);
     return (
       this.externalIf(
         myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
@@ -518,7 +520,10 @@ export class Macro extends StrictMacro {
         .tryHaveSkill($skill`Become a Wolf`)
         .externalIf(
           !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
-          Macro.while_("!pastround 24 && !hppercentbelow 25 && !missed 1", Macro.attack())
+          Macro.while_(
+            `!pastround 24 && !hppercentbelow 25 && !missed 1 && !snarfblat ${riftId}`,
+            Macro.attack()
+          )
         )
         // Using while_ here in case you run out of mp
         .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
@@ -526,7 +531,14 @@ export class Macro extends StrictMacro {
         .while_("hasskill Cannelloni Cannon", Macro.skill($skill`Cannelloni Cannon`))
         .while_("hasskill Wave of Sauce", Macro.skill($skill`Wave of Sauce`))
         .while_("hasskill Saucestorm", Macro.skill($skill`Saucestorm`))
-        .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
+        .while_(
+          `hasskill Northern Explosion && snarfblat ${riftId}`,
+          Macro.skill($skill`Northern Explosion`)
+        )
+        .while_(
+          `hasskill Lunging Thrust-Smack && !snarfblat ${riftId}`,
+          Macro.skill($skill`Lunging Thrust-Smack`)
+        )
         .attack()
         .repeat()
     );
