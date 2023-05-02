@@ -176,7 +176,6 @@ export function toSpec(source?: ActionSource | Requirement): OutfitSpec {
   }
 }
 
-
 let cachedUsingPurse: boolean | null = null;
 export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {
@@ -188,4 +187,3 @@ export function usingPurse(): boolean {
   }
   return cachedUsingPurse;
 }
-

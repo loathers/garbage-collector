@@ -754,7 +754,7 @@ export const conditionalSources = [
       );
     },
     {
-      spec: { equip: $items`backup camera`, modes: { backupcamera: "meat"}},
+      spec: { equip: $items`backup camera`, modes: { backupcamera: "meat" } },
       draggable: "backup",
       wrongEncounterName: true,
       canInitializeWandererCounters: true,
