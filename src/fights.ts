@@ -1441,7 +1441,7 @@ const freeFightSources = [
       ) {
         freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
         cliExecute("parka spikolodon");
-        const macro = Macro.skill($skill`Launch spikolodon spikes`).meatKill();
+        const macro = Macro.skill($skill`Launch spikolodon spikes`).basicCombat();
         // Adventure until we use spikes
         const startingSpikes = get("_spikolodonSpikeUses");
         do {
@@ -1450,6 +1450,8 @@ const freeFightSources = [
       } else {
         return; // Uh oh something went wrong
       }
+
+      // Grab artifact via NC
       adv1(bestShadowRift(), -1, "");
 
       if (questStep("questRufus") === 1) {
