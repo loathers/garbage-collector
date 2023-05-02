@@ -238,7 +238,7 @@ function embezzlerSetup() {
       const run = tryFindFreeRun() ?? ltbRun();
       if (!run) break;
       run.constraints.preparation?.();
-      freeFightOutfit(toSpec(run));
+      freeFightOutfit(toSpec(run)).dress();
       garboAdventure($location`The Hidden Temple`, run.macro);
     }
   }
@@ -324,14 +324,12 @@ function startWandererCounter() {
         print("You still have gregs active, so we're going to wear your meat outfit.");
         run = ltbRun();
         run.constraints.preparation?.();
-        useFamiliar(meatFamiliar());
         embezzlerOutfit().dress();
       } else {
         print("You do not have gregs active, so this is a regular free run.");
         run = tryFindFreeRun() ?? ltbRun();
-        useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar({ canChooseMacro: false }));
         run.constraints.preparation?.();
-        freeFightOutfit(toSpec(run));
+        freeFightOutfit(toSpec(run)).dress();
       }
       garboAdventure(
         $location`The Haunted Kitchen`,
@@ -387,7 +385,7 @@ export function dailyFights(): void {
           {
             property: "_garbo_meatChain",
             macro: firstChainMacro,
-            goalMaximize: (spec: OutfitSpec) => embezzlerOutfit(spec),
+            goalMaximize: (spec: OutfitSpec) => embezzlerOutfit(spec).dress(),
           },
           {
             property: "_garbo_weightChain",
@@ -396,7 +394,7 @@ export function dailyFights(): void {
               Outfit.from(
                 { ...spec, modifier: ["Familiar Weight"] },
                 new Error(`Unable to build outfit for weight chain!`)
-              ),
+              ).dress(),
           },
         ];
 
@@ -572,7 +570,7 @@ class FreeFight {
       const noncombat = !!this.options?.noncombat?.();
       const effects = this.options.effects?.() ?? [];
       freeFightMood(...effects).execute();
-      freeFightOutfit(this.getSpec(noncombat));
+      freeFightOutfit(this.getSpec(noncombat)).dress();
       safeRestore();
       const curTurncount = myTurncount();
       withMacro(Macro.basicCombat(), this.run);
@@ -619,7 +617,7 @@ class FreeRunFight extends FreeFight {
         new Error(`Failed to build outfit from ${toJson(initialSpec)}`)
       );
       mergingOutfit.equip(toSpec(runSource));
-      freeFightOutfit(mergingOutfit.spec());
+      freeFightOutfit(mergingOutfit.spec()).dress();
       freeFightMood(...(this.options.effects?.() ?? []));
       safeRestore();
       const curTurncount = myTurncount();
@@ -2053,7 +2051,7 @@ export function deliverThesisIfAble(): void {
 
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
-  freeFightOutfit({ modifier: ["100 Muscle"] });
+  freeFightOutfit({ modifier: ["100 Muscle"] }).dress();
   safeRestore();
 
   if (
@@ -2372,7 +2370,7 @@ function killRobortCreaturesForFree() {
       setChoice(855, 4);
       garboAdventure($location`The Copperhead Club`, Macro.abort());
     }
-    freeFightOutfit(freeKill.spec);
+    freeFightOutfit(freeKill.spec).dress();
     withMacro(
       freeKill.macro instanceof Item ? Macro.item(freeKill.macro) : Macro.skill(freeKill.macro),
       () => {
@@ -2399,7 +2397,7 @@ function killRobortCreaturesForFree() {
       useFamiliar($familiar`Robortender`);
     }
 
-    freeFightOutfit(roboTarget.attributes.includes("FREE") ? {} : freeKill.spec);
+    freeFightOutfit(roboTarget.attributes.includes("FREE") ? {} : freeKill.spec).dress();
     withMacro(
       isFree(roboTarget)
         ? Macro.basicCombat()

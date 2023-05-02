@@ -88,7 +88,7 @@ export function useSpikolodonSpikes(): void {
     (canJelly ? $familiar`Space Jellyfish` : freeFightFamiliar({ allowAttackFamiliars: false }));
   useFamiliar(familiar);
   run.constraints.preparation?.();
-  freeFightOutfit({ shirt: $item`Jurassic Parka`, ...toSpec(run) });
+  freeFightOutfit({ shirt: $item`Jurassic Parka`, ...toSpec(run) }).dress();
   cliExecute("parka spikolodon");
 
   const targetZone = canJelly
