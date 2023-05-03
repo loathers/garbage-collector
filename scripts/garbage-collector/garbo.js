@@ -16956,7 +16956,7 @@ var rufusPotion = new Potion(template_string_$item(potions_templateObject10 || (
     // We consider the average price of the shadow items to not get gated behind an expensive one
     var shadowItems = template_string_$items(potions_templateObject16 || (potions_templateObject16 = potions_taggedTemplateLiteral(["shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar"])));
     var averagePrice = utils_sum(shadowItems, it => historical && (0,external_kolmafia_namespaceObject.historicalAge)(it) < 14 ? (0,external_kolmafia_namespaceObject.historicalPrice)(it) : (0,external_kolmafia_namespaceObject.mallPrice)(it)) / shadowItems.length;
-    return averagePrice;
+    return 3 * averagePrice;
   },
   acquire: qty => {
     if ((0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)()) {
