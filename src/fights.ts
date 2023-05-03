@@ -1406,7 +1406,7 @@ const freeFightSources = [
       return false; // We have to spend turns to get the artifact or kill the boss
     },
     () => {
-      if (have($item`Rufus's shadow lodestone`)) setChoice(1500, 2);
+      setChoice(1500, 2);
       if (!get("_shadowAffinityToday") && !ClosedCircuitPayphone.rufusTarget()) {
         ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
@@ -1421,6 +1421,10 @@ const freeFightSources = [
 
       if (questStep("questRufus") === 1) {
         withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+      }
+
+      if (have($item`Rufus's shadow lodestone`)) {
+        adv1(bestShadowRift(), -1, "");
       }
 
       if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
@@ -2185,9 +2189,9 @@ type ItemStealZone = {
   requireMapTheMonsters: boolean; // When a zone has a choice we want to avoid
   isOpen: () => boolean;
   openCost: () => number;
-  preReq: () => void;
+  preReq: null | (() => void);
 };
-const itemStealZones = [
+const itemStealZones: ItemStealZone[] = [
   {
     location: $location`The Deep Dark Jungle`,
     monster: $monster`smoke monster`,
@@ -2231,7 +2235,7 @@ const itemStealZones = [
     isOpen: () => true,
     openCost: () =>
       !have($effect`Absinthe-Minded`) ? mallPrice($item`tiny bottle of absinthe`) : 0,
-    preReq: () => {
+    preReq: (): void => {
       if (!have($effect`Absinthe-Minded`)) {
         if (!have($item`tiny bottle of absinthe`)) buy(1, $item`tiny bottle of absinthe`);
         use($item`tiny bottle of absinthe`);
@@ -2268,12 +2272,13 @@ const itemStealZones = [
       item: $item`shadow brick`,
       requireMapTheMonsters: false,
       dropRate: 1,
+      maximize: [],
       isOpen: () => canAdventure(location),
       openCost: () => 0,
       preReq: null,
     })
   ),
-] as ItemStealZone[];
+];
 
 function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
   const targets = itemStealZones.filter(
