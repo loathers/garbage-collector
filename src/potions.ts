@@ -481,7 +481,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
         historical && historicalAge(it) < 14 ? historicalPrice(it) : mallPrice(it)
       ) / shadowItems.length;
 
-    return averagePrice;
+    return 3 * averagePrice;
   },
   acquire: (qty: number) => {
     if (myInebriety() > inebrietyLimit()) {
