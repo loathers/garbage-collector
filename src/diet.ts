@@ -399,7 +399,7 @@ function menu(): MenuItem<Note>[] {
       organ: "booze",
       maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed"), Math.floor(get("sweat") / 25)),
     }),
-  ];
+  ].filter((item) => item.price() < Infinity) as MenuItem<Note>[];
 }
 
 export function bestConsumable(
