@@ -3,6 +3,7 @@ import {
   cliExecute,
   drink,
   eat,
+  equip,
   fullnessLimit,
   haveEffect,
   inebrietyLimit,
@@ -25,6 +26,7 @@ import {
   $effect,
   $item,
   $skill,
+  $slot,
   clamp,
   get,
   getActiveSongs,
@@ -41,7 +43,14 @@ import synthesize from "../synthesis";
 import { estimatedGarboTurns } from "../turns";
 import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
-import { freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
+import {
+  cinchNCs,
+  freeNCs,
+  freeRest,
+  pyecAvailable,
+  shrugIrrelevantSongs,
+  useSpikolodonSpikes,
+} from "./lib";
 
 class YachtzeeDietEntry<T> {
   name: string;
@@ -147,6 +156,13 @@ class YachtzeeDietUtils {
         eat(n, $item`Deep Dish of Legend`);
       }),
       new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, useSpikolodonSpikes),
+      new YachtzeeDietEntry("cinch fiesta", 0, 0, 0, 0, () => {
+        equip($slot`acc3`, $item`Cincho de Mayo`);
+        while (get("_cinchUsed", 0) > 40) {
+          if (!freeRest()) throw new Error("We are out of free rests!");
+        }
+        useSkill($skill`Cincho: Fiesta Exit`);
+      }),
     ];
     if (action) this.dietArray.forEach((entry) => (entry.action = action));
   }
@@ -528,13 +544,9 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     .map((_, i) => 2 * (i + 1))
     .reverse();
   const jellyYachtzeeTurns = possibleJellyYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
+  const canNCChain = freeNCs() > 0;
 
-  const fishyPipeTurnsAvailable =
-    haveEffect($effect`Fishy`) + (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0);
-  const canParkaChain =
-    fishyPipeTurnsAvailable + (fishyPipeTurnsAvailable > 0 && pyecAvailable() ? 5 : 0) >= freeNCs();
-
-  if (jellyYachtzeeTurns === 0 && !canParkaChain) {
+  if (jellyYachtzeeTurns === 0 && !canNCChain) {
     print("Determined that there are no suitable number of turns to chain yachtzees", "red");
     return false;
   }
@@ -729,7 +741,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   }
   if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly && jellyYachtzeeTurns > 0) {
     // If we can't parka-chain, then return early
-    if (!canParkaChain) {
+    if (!canNCChain) {
       print("Running extros is more profitable than chaining yachtzees", "red");
       return false; // We should do extros instead since they are more valuable
     }
@@ -765,6 +777,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       ["toast with stench jelly", toastsToEat],
       ["clara's bell", have($item`Clara's bell`) && !globalOptions.clarasBellClaimed ? 1 : 0],
       ["jurassic parka", have($item`Jurassic Parka`) ? 5 - get("_spikolodonSpikeUses") : 0],
+      ["cinch fiesta", cinchNCs()],
     ] as [string, number][]
   ).map(([name, qty]) => [
     name,

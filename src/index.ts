@@ -321,6 +321,25 @@ export function main(argString = ""): void {
       ? 100000
       : get("maximizerCombinationLimit");
 
+    const bannedAutoRestorers = have($item`Cincho de Mayo`)
+      ? [
+          "sleep on your clan sofa",
+          "rest in your campaway tent",
+          "rest at the chateau",
+          "rest at your campground",
+          "free rest",
+        ]
+      : [];
+
+    const hpItems = get("hpAutoRecoveryItems")
+      .split(";")
+      .filter((s) => !bannedAutoRestorers.includes(s))
+      .join(";");
+    const mpItems = get("mpAutoRecoveryItems")
+      .split(";")
+      .filter((s) => !bannedAutoRestorers.includes(s))
+      .join(";");
+
     propertyManager.set({
       logPreferenceChange: true,
       logPreferenceChangeFilter: [
@@ -350,6 +369,8 @@ export function main(argString = ""): void {
       hpAutoRecoveryTarget: 0.0,
       mpAutoRecovery: -0.05,
       mpAutoRecoveryTarget: 0.0,
+      hpAutoRecoveryItems: hpItems,
+      mpAutoRecoveryItems: mpItems,
       afterAdventureScript: "",
       betweenBattleScript: "",
       choiceAdventureScript: "",
