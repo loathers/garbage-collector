@@ -74,7 +74,9 @@ export function shrugIrrelevantSongs(): void {
 
 export function cinchNCs(): number {
   if (!have($item`Cincho de Mayo`)) return 0;
-  const cinchRestored = Array(100).map((_, i) => clamp(50 - 5 * i, 5, 30));
+  const cinchRestored = Array(100)
+    .fill(0)
+    .map((_, i) => clamp(50 - 5 * i, 5, 30));
   const cinchRestsUsed = get("_cinchoRests", 0);
   const freeRestsLeft = Math.max(0, totalFreeRests() - get("timesRested"));
   const useableCinch =

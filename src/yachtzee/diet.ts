@@ -259,7 +259,8 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
     if (name.length === 0) continue;
     else if (
       !stenchJellyConsumed &&
-      (name.includes("stench jelly") || ["clara's bell", "jurassic parka"].includes(name))
+      (name.includes("stench jelly") ||
+        ["clara's bell", "jurassic parka", "cinch fiesta"].includes(name))
     ) {
       if (stopBeforeJellies) dietUtil.addToPref(1, name);
       else {
