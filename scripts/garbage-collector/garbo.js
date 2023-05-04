@@ -21334,7 +21334,7 @@ var DailyItemTasks = [].concat(dailyItems_toConsumableArray(SummonTomes.map(skil
       return garboValue(drop);
     })) / 3;
     if (target instanceof external_kolmafia_namespaceObject.Item && target.tradeable) {
-      if (acquire(3, target, value) < 3) {
+      if (acquire(3, target, value, false) < 3) {
         (0,external_kolmafia_namespaceObject.print)("Our Rufus quest is ".concat(target, ", which costs too much to do the Forest!"), "red");
       }
       triedForest = true;
