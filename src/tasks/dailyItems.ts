@@ -376,7 +376,7 @@ export const DailyItemTasks: Task[] = [
             )) /
           3;
         if (target instanceof Item && target.tradeable) {
-          if (acquire(3, target, value) < 3) {
+          if (acquire(3, target, value, false) < 3) {
             print(`Our Rufus quest is ${target}, which costs too much to do the Forest!`, "red");
           }
           triedForest = true;
