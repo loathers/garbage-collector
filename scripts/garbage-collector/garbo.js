@@ -18413,7 +18413,7 @@ function diet_menu() {
     size: -1,
     organ: "booze",
     maximum: Math.min(3 - property_get("_sweatOutSomeBoozeUsed"), Math.floor(property_get("sweat") / 25))
-  })]);
+  })]).filter(item => item.price() < Infinity);
 }
 function bestConsumable(organType) {
   var levelRestrict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -18824,13 +18824,12 @@ function runDiet() {
       (0,external_kolmafia_namespaceObject.useFamiliar)($familiar.none);
     }
     MenuItem.defaultPriceFunction = item => {
-      var itemRetrievePrice = (0,external_kolmafia_namespaceObject.retrievePrice)(item) < Number.MAX_SAFE_INTEGER ? (0,external_kolmafia_namespaceObject.retrievePrice)(item) : Infinity;
-      var itemMallPrice = (0,external_kolmafia_namespaceObject.mallPrice)(item) > 0 ? (0,external_kolmafia_namespaceObject.mallPrice)(item) : Infinity;
-      var itemNpcPrice = (0,external_kolmafia_namespaceObject.npcPrice)(item) > 0 ? (0,external_kolmafia_namespaceObject.npcPrice)(item) : Infinity;
-      var bestPrice = Math.min(itemRetrievePrice, itemMallPrice, itemNpcPrice);
-      return bestPrice === Infinity && !item.tradeable && lib_have(item) ? 0 : bestPrice; // Handle unpurchaseable items like distention pills
+      var prices = [(0,external_kolmafia_namespaceObject.retrievePrice)(item), (0,external_kolmafia_namespaceObject.mallPrice)(item), (0,external_kolmafia_namespaceObject.npcPrice)(item)].filter(p => p > 0 && p < Number.MAX_SAFE_INTEGER);
+      if (prices.length > 0) {
+        return Math.min.apply(Math, src_diet_toConsumableArray(prices));
+      }
+      return !item.tradeable && lib_have(item) ? 0 : Infinity;
     };
-
     var dietBuilder = computeDiet();
     if (config_globalOptions.simdiet) {
       (0,external_kolmafia_namespaceObject.print)("===== SIMULATED DIET =====");
