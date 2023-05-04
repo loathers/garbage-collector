@@ -159,7 +159,7 @@ export function toSpec(source?: ActionSource | Requirement): OutfitSpec {
   if (source instanceof Requirement) {
     const result: OutfitSpec = {};
     if (source.maximizeParameters.length) result.modifier = source.maximizeParameters;
-    if (source.maximizeOptions.forceEquip) {
+    if (source.maximizeOptions.forceEquip?.length) {
       result.equip = source.maximizeOptions.forceEquip;
     }
     if (source.maximizeOptions.preventEquip) {
