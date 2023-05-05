@@ -130,7 +130,7 @@ export function freeRest(): boolean {
   if (get("timesRested") >= totalFreeRests()) return false;
 
   if (get("chateauAvailable")) {
-    visitUrl("place.php?whichplace=chateau&action=chateau_restbox");
+    visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
   } else if (get("getawayCampsiteUnlocked")) {
     visitUrl("place.php?whichplace=campaway&action=campaway_tentclick");
   } else {
