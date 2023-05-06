@@ -721,7 +721,8 @@ const freeFightSources = [
     }
   ),
   new FreeFight(
-    () => (thesisReady() ? 0 : molemanReady() ? 1 : 0),
+    () =>
+      molemanReady() && (get("_thesisDelivered") || !have($familiar`Pocket Professor`)) ? 1 : 0,
     () => withMacro(Macro.basicCombat(), () => use($item`molehill mountain`)),
     true
   ),
@@ -1300,7 +1301,9 @@ const freeFightSources = [
         ? clamp(
             10 -
               get("_neverendingPartyFreeTurns") -
-              (get("_thesisDelivered") || !have($familiar`Pocket Professor`) ? 0 : 1),
+              (!molemanReady() && !get("_thesisDelivered") && have($familiar`Pocket Professor`)
+                ? 1
+                : 0),
             0,
             10
           )
@@ -2102,6 +2105,7 @@ export function deliverThesisIfAble(): void {
   let requiredMuscle = requiredThesisHP / 0.75 - 5;
   if (molemanReady()) {
     requiredMuscle = requiredThesisHP / 1.5 - 15;
+    thesisLocation = $location`Noob Cave`; // We can trivially always adventure here
   } else if (
     (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
     questStep("_questPartyFair") < 999
@@ -2137,7 +2141,7 @@ export function deliverThesisIfAble(): void {
   cliExecute(`gain ${requiredMuscle} muscle`);
 
   if (molemanReady()) {
-    withMacro(Macro.skill($skill`deliver your thesis!`), () => use($item`molehill mountain`));
+    withMacro(Macro.skill($skill`deliver your thesis!`), () => use($item`molehill mountain`), true);
   } else {
     garboAdventure(thesisLocation, Macro.skill($skill`deliver your thesis!`));
   }
