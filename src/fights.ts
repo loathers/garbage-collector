@@ -1423,13 +1423,9 @@ const freeFightSources = [
       }
 
       // Potentially force an NC
-      let ncForced = false;
-      if (!globalOptions.prefs.yachtzeechain && get("rufusQuestType") !== "items") {
-        // Forced naturally
-        if (get("encountersUntilSRChoice", 1) === 0) {
-          ncForced = true;
-          // Clara's bell
-        } else if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+      let ncForced = get("encountersUntilSRChoice", 1) === 0;
+      if (!ncForced && !globalOptions.prefs.yachtzeechain && get("rufusQuestType") !== "items") {
+        if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
           globalOptions.clarasBellClaimed = true;
           use($item`Clara's bell`);
           ncForced = true;
