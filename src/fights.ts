@@ -1458,6 +1458,11 @@ const freeFightSources = [
         withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
       }
 
+      if (have($item`Rufus's shadow lodestone`)) {
+        setChoice(1500, 2); // Turn in lodestone if you have it
+        adv1(bestShadowRift(), -1, "");
+      }
+
       if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
         setLocation($location.none); // Reset location to not affect mafia's item drop calculations
       }
