@@ -26,6 +26,7 @@ import {
   Monster,
   myAdventures,
   myAscensions,
+  myBuffedstat,
   myClass,
   myFamiliar,
   myInebriety,
@@ -699,6 +700,10 @@ function bowlOfScorpionsAvailable() {
   }
 }
 
+function molemanReady() {
+  return have($item`molehill mountain`) && !get("_molehillMountainUsed");
+}
+
 const freeFightSources = [
   new FreeFight(
     () =>
@@ -716,7 +721,7 @@ const freeFightSources = [
     }
   ),
   new FreeFight(
-    () => (have($item`molehill mountain`) && !get("_molehillMountainUsed") ? 1 : 0),
+    () => (thesisReady() ? 0 : molemanReady() ? 1 : 0),
     () => withMacro(Macro.basicCombat(), () => use($item`molehill mountain`)),
     true
   ),
@@ -2086,16 +2091,38 @@ function thesisReady(): boolean {
 
 export function deliverThesisIfAble(): void {
   if (!thesisReady()) return;
-  const thesisInNEP =
-    (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
-    questStep("_questPartyFair") < 999;
-
   useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
   freeFightOutfit(new Requirement(["100 muscle"], {}));
   safeRestore();
 
+  const requiredThesisHP = 1296;
+
+  let thesisLocation = $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`;
+  let requiredMuscle = requiredThesisHP / 0.75 - 5;
+  if (molemanReady()) {
+    requiredMuscle = requiredThesisHP / 1.5 - 15;
+  } else if (
+    (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
+    questStep("_questPartyFair") < 999
+  ) {
+    // Set up NEP if we haven't yet
+    setNepQuestChoicesAndPrepItems();
+    thesisLocation = $location`The Neverending Party`;
+    requiredMuscle = requiredThesisHP / 0.75 + 10;
+  }
+  // if running nobarf, might not have access to Uncle Gator's. Space is cheaper.
+  else if (!canAdventure(thesisLocation)) {
+    if (!have($item`transporter transponder`)) {
+      acquire(1, $item`transporter transponder`, 10000);
+    }
+    use($item`transporter transponder`);
+    thesisLocation = $location`Hamburglaris Shield Generator`;
+    requiredMuscle = requiredThesisHP / 0.75 - 1;
+  }
+
   if (
+    myBuffedstat($stat`Muscle`) < requiredMuscle &&
     have($item`Powerful Glove`) &&
     !have($effect`Triple-Sized`) &&
     get("_powerfulGloveBatteryPowerUsed") <= 95 &&
@@ -2107,24 +2134,13 @@ export function deliverThesisIfAble(): void {
     ensureEffect($effect`Triple-Sized`);
     outfit("checkpoint");
   }
-  cliExecute("gain 1800 muscle");
+  cliExecute(`gain ${requiredMuscle} muscle`);
 
-  let thesisLocation = $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`;
-  if (thesisInNEP) {
-    // Set up NEP if we haven't yet
-    setNepQuestChoicesAndPrepItems();
-    thesisLocation = $location`The Neverending Party`;
+  if (molemanReady()) {
+    withMacro(Macro.skill($skill`deliver your thesis!`), () => use($item`molehill mountain`));
+  } else {
+    garboAdventure(thesisLocation, Macro.skill($skill`deliver your thesis!`));
   }
-  // if running nobarf, might not have access to Uncle Gator's. Space is cheaper.
-  else if (!canAdventure(thesisLocation)) {
-    if (!have($item`transporter transponder`)) {
-      acquire(1, $item`transporter transponder`, 10000);
-    }
-    use($item`transporter transponder`);
-    thesisLocation = $location`Hamburglaris Shield Generator`;
-  }
-
-  garboAdventure(thesisLocation, Macro.skill($skill`deliver your thesis!`));
   postCombatActions();
 }
 
