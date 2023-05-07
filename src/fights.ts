@@ -1439,25 +1439,31 @@ const freeFightSources = [
       // Potentially force an NC
       let ncForced = get("encountersUntilSRChoice", 1) === 0;
       if (!ncForced && !globalOptions.prefs.yachtzeechain && get("rufusQuestType") !== "items") {
+        // Clara's bell
         if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
           globalOptions.clarasBellClaimed = true;
           use($item`Clara's bell`);
           ncForced = true;
+
           // Jurassic parka
         } else if (
           have($item`Jurassic Parka`) &&
           get("_spikolodonSpikeUses") < 5 &&
-          have($effect`Shadow Affinity`)
+          have($effect`Shadow Affinity`) &&
+          get("encountersUntilSRChoice", 11) >= 2
         ) {
           freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
           cliExecute("parka spikolodon");
           const macro = Macro.skill($skill`Launch spikolodon spikes`).basicCombat();
           // Adventure until we use spikes
           const startingSpikes = get("_spikolodonSpikeUses");
-          do {
-            garboAdventureAuto(bestShadowRift(), macro);
-          } while (get("_spikolodonSpikeUses") === startingSpikes);
+          garboAdventureAuto(bestShadowRift(), macro);
+          if (get("_spikolodonSpikeUses") !== startingSpikes + 1) {
+            throw new Error("Failed to use spikolodon spikes");
+          }
           ncForced = true;
+
+          // Cincho
         } else if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
           while (get("_cinchUsed", 0) > 40) {
             if (!freeRest()) throw new Error("We are out of free rests!");
