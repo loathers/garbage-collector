@@ -6,7 +6,7 @@ import {
   sum,
   sumNumbers,
 } from "libram";
-import { garboValue } from "../session";
+import { garboAverageValue, garboValue } from "../session";
 import { BonusEquipMode, useLimitedDrops, valueOfItem, valueOfMeat } from "./lib";
 
 function valueBjornModifiers(
@@ -31,7 +31,7 @@ function valueBjornModifiers(
 
 function dropsValueFunction(drops: Item[] | Map<Item, number>): number {
   return Array.isArray(drops)
-    ? sum(drops, garboValue) / drops.length
+    ? garboAverageValue(...drops)
     : sum([...drops.entries()], ([item, quantity]) => quantity * garboValue(item)) /
         sumNumbers([...drops.values()]);
 }

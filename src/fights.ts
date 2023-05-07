@@ -607,7 +607,7 @@ class FreeRunFight extends FreeFight {
     while (this.isAvailable()) {
       const initialSpec = undelay(this.options.spec ?? {});
       const constraints = {
-        noFamiliar: () => ("familiar" in initialSpec),
+        noFamiliar: () => "familiar" in initialSpec,
         ...this.constraints,
       };
       const runSource = tryFindFreeRun(constraints);
