@@ -43,14 +43,8 @@ import synthesize from "../synthesis";
 import { estimatedGarboTurns } from "../turns";
 import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
-import {
-  cinchNCs,
-  freeNCs,
-  freeRest,
-  pyecAvailable,
-  shrugIrrelevantSongs,
-  useSpikolodonSpikes,
-} from "./lib";
+import { cinchNCs, freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
+import { freeRest } from "../lib";
 
 class YachtzeeDietEntry<T> {
   name: string;

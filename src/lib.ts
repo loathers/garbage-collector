@@ -41,6 +41,7 @@ import {
   soulsauceCost,
   todayToString,
   toSlot,
+  totalFreeRests,
   toUrl,
   use,
   useFamiliar,
@@ -77,6 +78,7 @@ import {
   set,
   SongBoom,
   sum,
+  sumNumbers,
   uneffect,
 } from "libram";
 import { globalOptions } from "./config";
@@ -574,4 +576,32 @@ export function withLocation<T>(location: Location, action: () => T): T {
   } finally {
     setLocation(start);
   }
+}
+
+export function useableCinch(): number {
+  if (!have($item`Cincho de Mayo`)) return 0;
+  const cinchRestored = Array(100)
+    .fill(0)
+    .map((_, i) => clamp(50 - 5 * i, 5, 30));
+  const cinchRestsUsed = get("_cinchoRests", 0);
+  const freeRestsLeft = Math.max(0, totalFreeRests() - get("timesRested"));
+  return (
+    100 -
+    get("_cinchUsed", 0) +
+    sumNumbers(cinchRestored.slice(cinchRestsUsed, cinchRestsUsed + freeRestsLeft))
+  );
+}
+
+export function freeRest(): boolean {
+  if (get("timesRested") >= totalFreeRests()) return false;
+
+  if (get("chateauAvailable")) {
+    visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
+  } else if (get("getawayCampsiteUnlocked")) {
+    visitUrl("place.php?whichplace=campaway&action=campaway_tentclick");
+  } else {
+    visitUrl("campground.php?action=rest");
+  }
+
+  return true;
 }

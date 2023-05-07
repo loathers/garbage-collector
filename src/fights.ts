@@ -54,6 +54,7 @@ import {
   toInt,
   toItem,
   toMonster,
+  totalFreeRests,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -127,6 +128,7 @@ import {
   embezzlerLog,
   ESTIMATED_OVERDRUNK_TURNS,
   expectedEmbezzlerProfit,
+  freeRest,
   HIGHLIGHT,
   kramcoGuaranteed,
   latteActionSourceFinderConstraints,
@@ -141,6 +143,7 @@ import {
   safeRestore,
   setChoice,
   today,
+  useableCinch,
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
@@ -1418,7 +1421,11 @@ const freeFightSources = [
       if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
         return true;
       }
-      // TODO: Cinch, and also spikolodon if we want to use those on non-shadow combats
+
+      // TODO: Calculate this against using the +5 fam weight buff
+      if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
+        return true;
+      }
       return false; // It costs turns to do anything else here
     },
     () => {
@@ -1451,6 +1458,12 @@ const freeFightSources = [
           do {
             garboAdventureAuto(bestShadowRift(), macro);
           } while (get("_spikolodonSpikeUses") === startingSpikes);
+          ncForced = true;
+        } else if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
+          while (get("_cinchUsed", 0) > 40) {
+            if (!freeRest()) throw new Error("We are out of free rests!");
+          }
+          useSkill($skill`Cincho: Fiesta Exit`);
           ncForced = true;
         }
       }
