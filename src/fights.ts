@@ -1442,7 +1442,7 @@ const freeFightSources = [
         // Clara's bell
         if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
           globalOptions.clarasBellClaimed = true;
-          use($item`Clara's bell`);
+          if (!use($item`Clara's bell`)) throw new Error("Couldn't use Clara's bell");
           ncForced = true;
 
           // Jurassic parka
