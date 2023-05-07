@@ -54,7 +54,6 @@ import {
   toInt,
   toItem,
   toMonster,
-  totalFreeRests,
   totalTurnsPlayed,
   use,
   useFamiliar,
