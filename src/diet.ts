@@ -399,7 +399,7 @@ function menu(): MenuItem<Note>[] {
       organ: "booze",
       maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed"), Math.floor(get("sweat") / 25)),
     }),
-  ];
+  ].filter((item) => item.price() < Infinity) as MenuItem<Note>[];
 }
 
 export function bestConsumable(
@@ -1033,12 +1033,13 @@ export function runDiet(): void {
     }
 
     MenuItem.defaultPriceFunction = (item: Item) => {
-      const itemRetrievePrice =
-        retrievePrice(item) < Number.MAX_SAFE_INTEGER ? retrievePrice(item) : Infinity;
-      const itemMallPrice = mallPrice(item) > 0 ? mallPrice(item) : Infinity;
-      const itemNpcPrice = npcPrice(item) > 0 ? npcPrice(item) : Infinity;
-      const bestPrice = Math.min(itemRetrievePrice, itemMallPrice, itemNpcPrice);
-      return bestPrice === Infinity && !item.tradeable && have(item) ? 0 : bestPrice; // Handle unpurchaseable items like distention pills
+      const prices = [retrievePrice(item), mallPrice(item), npcPrice(item)].filter(
+        (p) => p > 0 && p < Number.MAX_SAFE_INTEGER
+      );
+      if (prices.length > 0) {
+        return Math.min(...prices);
+      }
+      return !item.tradeable && have(item) ? 0 : Infinity;
     };
 
     const dietBuilder = computeDiet();

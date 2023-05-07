@@ -274,7 +274,7 @@ export function meatOutfit(embezzlerUp: boolean, requirement?: Requirement, sea?
       CombatLoversLocket.have() &&
       !CombatLoversLocket.unlockedLocketMonsters().includes($monster`Knob Goblin Embezzler`)
     ) {
-      forceEquip.push(CombatLoversLocket.locket);
+      forceEquip.push($item`combat lover's locket`);
     }
 
     const bjornAlike = bestBjornalike(forceEquip);
