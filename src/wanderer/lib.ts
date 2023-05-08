@@ -106,7 +106,7 @@ function canWanderTypeYellowRay(location: Location): boolean {
   );
 }
 
-const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak`;
+const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Rogue Windmill`;
 function canWanderTypeWander(location: Location): boolean {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
