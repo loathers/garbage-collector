@@ -21,11 +21,12 @@ function considerAbandon(locationSkiplist: Location[]) {
   );
 
   if (
+    Guzzlr.canAbandon() &&
     // consider abandoning
-    !location || // if mafia faled to track the location correctly
-    locationSkiplist.includes(location) ||
-    !canAdventureOrUnlock(location) || // or the zone is marked as "generally cannot adv"
-    (globalOptions.ascend && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
+    (!location || // if mafia failed to track the location correctly
+      locationSkiplist.includes(location) ||
+      !canAdventureOrUnlock(location) || // or the zone is marked as "generally cannot adv"
+      (globalOptions.ascend && wandererTurnsAvailableToday(location) < remaningTurns)) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
     Guzzlr.abandon();
