@@ -1,4 +1,4 @@
-import { buy, craftType, Location, print, retrieveItem } from "kolmafia";
+import { buy, craftType, Location, mallPrice, print, retrieveItem } from "kolmafia";
 import { $item, get, Guzzlr, have } from "libram";
 import { globalOptions } from "../config";
 import { freeCrafts } from "../lib";
@@ -79,24 +79,31 @@ export function guzzlrFactory(
     if (location !== null) {
       const guzzlrBooze =
         Guzzlr.getTier() === "platinum" ? Guzzlr.getCheapestPlatinumCocktail() : Guzzlr.getBooze();
-      return [
-        new WandererTarget("Guzzlr", location, guzzlrValue(Guzzlr.getTier()), () => {
-          if (!guzzlrBooze) {
-            // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze
-            return false;
-          }
+      return guzzlrBooze
+        ? [
+            new WandererTarget(
+              "Guzzlr",
+              location,
+              guzzlrValue(Guzzlr.getTier()) - mallPrice(guzzlrBooze),
+              () => {
+                if (!guzzlrBooze) {
+                  // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze
+                  return false;
+                }
 
-          if (!have(guzzlrBooze)) {
-            const fancy = guzzlrBooze && craftType(guzzlrBooze).includes("fancy");
-            if (guzzlrBooze && (!fancy || (fancy && freeCrafts() > 0))) {
-              retrieveItem(guzzlrBooze);
-            } else if (guzzlrBooze) {
-              buy(1, guzzlrBooze, guzzlrValue(Guzzlr.getTier()));
-            }
-          }
-          return have(guzzlrBooze);
-        }),
-      ];
+                if (!have(guzzlrBooze)) {
+                  const fancy = guzzlrBooze && craftType(guzzlrBooze).includes("fancy");
+                  if (guzzlrBooze && (!fancy || (fancy && freeCrafts() > 0))) {
+                    retrieveItem(guzzlrBooze);
+                  } else if (guzzlrBooze) {
+                    buy(1, guzzlrBooze, guzzlrValue(Guzzlr.getTier()));
+                  }
+                }
+                return have(guzzlrBooze);
+              }
+            ),
+          ]
+        : [];
     }
   }
   return [];
