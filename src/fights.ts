@@ -1465,6 +1465,7 @@ const freeFightSources = [
 
           // Cincho
         } else if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
+          equip($slot`acc3`, $item`Cincho de Mayo`);
           while (get("_cinchUsed", 0) > 40) {
             if (!freeRest()) throw new Error("We are out of free rests!");
           }
