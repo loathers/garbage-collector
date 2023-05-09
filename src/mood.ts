@@ -187,7 +187,7 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
     use($item`redwood rain stick`);
   }
 
-  if (have($item`Beach Comb`) && BeachComb.freeCombs() > 0 && BeachComb.headAvailable("FAMILIAR")) {
+  if (BeachComb.freeCombs() > 0 && BeachComb.headAvailable("FAMILIAR")) {
     mood.effect($effect`Do I Know You From Somewhere?`);
   }
   if (Witchess.have() && !get("_witchessBuff")) {

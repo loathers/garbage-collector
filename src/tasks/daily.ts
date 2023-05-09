@@ -440,13 +440,13 @@ export const DailyTasks: Task[] = [
   },
   {
     name: "Beach Comb Buff",
-    ready: () => have($item`Beach Comb`) || have($item`driftwood beach comb`),
+    ready: () => BeachComb.available(),
     completed: () => !BeachComb.headAvailable("FAMILIAR") || BeachComb.freeCombs() < 1,
     do: () => BeachComb.tryHead($effect`Do I Know You From Somewhere?`),
   },
   {
     name: "Beach Comb Free Walks",
-    ready: () => have($item`Beach Comb`) || have($item`driftwood beach comb`),
+    ready: () => BeachComb.available(),
     completed: () => BeachComb.freeCombs() < 1,
     do: () => cliExecute(`combo ${11 - get("_freeBeachWalksUsed")}`),
   },
