@@ -1,4 +1,4 @@
-import { cliExecute, Effect, Item, totalFreeRests, useFamiliar, visitUrl } from "kolmafia";
+import { cliExecute, Effect, Item, totalFreeRests, visitUrl } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -103,9 +103,8 @@ export function useSpikolodonSpikes(): void {
   const familiar =
     run.constraints.familiar?.() ??
     (canJelly ? $familiar`Space Jellyfish` : freeFightFamiliar({ allowAttackFamiliars: false }));
-  useFamiliar(familiar);
   run.constraints.preparation?.();
-  freeFightOutfit({ shirt: $item`Jurassic Parka`, ...toSpec(run) }).dress();
+  freeFightOutfit({ shirt: $item`Jurassic Parka`, ...toSpec(run), familiar }).dress();
   cliExecute("parka spikolodon");
 
   const targetZone = canJelly
