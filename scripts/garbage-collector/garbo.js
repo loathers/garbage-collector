@@ -15726,7 +15726,7 @@ function canWanderTypeYellowRay(location) {
   }
   return !backupSkiplist.includes(location) && (location.combatPercent >= 100 || yellowRaySafelist.includes(location));
 }
-var wandererSkiplist = $locations(wanderer_lib_templateObject19 || (wanderer_lib_templateObject19 = wanderer_lib_taggedTemplateLiteral(["The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Rogue Windmill"])));
+var wandererSkiplist = $locations(wanderer_lib_templateObject19 || (wanderer_lib_templateObject19 = wanderer_lib_taggedTemplateLiteral(["The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome"])));
 function canWanderTypeWander(location) {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
