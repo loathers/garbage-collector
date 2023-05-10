@@ -479,19 +479,16 @@ export function dailyFights(): void {
           if (weWantToSaberCrates) saberCrateIfSafe();
         }
 
-        const underwater = nextFight.location().environment === "underwater";
-
-        const romanticFamiliar = $familiars`Obtuse Angel, Reanimated Reanimator`.find(have);
-        if (romanticFamiliar && get("_badlyRomanticArrows") === 0 && !underwater) {
-          useFamiliar(romanticFamiliar);
-        } else {
-          useFamiliar(meatFamiliar());
-        }
-
         const location = nextFight.location();
+        const underwater = location.environment === "underwater";
+
+        const familiar =
+          get("_badlyRomanticArrows") === 0 && !underwater
+            ? $familiars`Obtuse Angel, Reanimated Reanimator`.find(have) ?? meatFamiliar()
+            : meatFamiliar();
 
         setLocation(location);
-        embezzlerOutfit(nextFight.spec, location).dress();
+        embezzlerOutfit({ ...nextFight.spec, familiar }).dress();
 
         nextFight.run();
         postCombatActions();
