@@ -2054,9 +2054,8 @@ function thesisReady(): boolean {
 
 export function deliverThesisIfAble(): void {
   if (!thesisReady()) return;
-  useFamiliar($familiar`Pocket Professor`);
   freeFightMood().execute();
-  freeFightOutfit({ modifier: ["100 Muscle"] }).dress();
+  freeFightOutfit({ modifier: ["100 Muscle"], familiar: $familiar`Pocket Professor` }).dress();
   safeRestore();
 
   const requiredThesisHP = 1296;
