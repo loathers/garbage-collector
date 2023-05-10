@@ -15913,13 +15913,13 @@ function considerAbandon(locationSkiplist) {
   var location = Guzzlr_getLocation();
   var remaningTurns = Math.ceil((100 - property_get("guzzlrDeliveryProgress")) / (10 - property_get("_guzzlrDeliveries")));
   (0,external_kolmafia_namespaceObject.print)("Got guzzlr quest ".concat(getTier(), " at ").concat(Guzzlr_getLocation(), " with remaining turns ").concat(remaningTurns));
-  if (
+  if (canAbandon() && (
   // consider abandoning
   !location ||
-  // if mafia faled to track the location correctly
+  // if mafia failed to track the location correctly
   locationSkiplist.includes(location) || !canAdventureOrUnlock(location) ||
   // or the zone is marked as "generally cannot adv"
-  config_globalOptions.ascend && wandererTurnsAvailableToday(location) < remaningTurns // or ascending and not enough turns to finish
+  config_globalOptions.ascend && wandererTurnsAvailableToday(location) < remaningTurns) // or ascending and not enough turns to finish
   ) {
     (0,external_kolmafia_namespaceObject.print)("Abandoning...");
     abandon();
@@ -15961,7 +15961,7 @@ function guzzlrFactory(_type, locationSkiplist) {
     var location = Guzzlr_getLocation();
     if (location !== null) {
       var guzzlrBooze = getTier() === "platinum" ? getCheapestPlatinumCocktail() : getBooze();
-      return [new WandererTarget("Guzzlr", location, guzzlrValue(getTier()), () => {
+      return guzzlrBooze ? [new WandererTarget("Guzzlr", location, guzzlrValue(getTier()) - (0,external_kolmafia_namespaceObject.mallPrice)(guzzlrBooze), () => {
         if (!guzzlrBooze) {
           // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze
           return false;
@@ -15975,7 +15975,7 @@ function guzzlrFactory(_type, locationSkiplist) {
           }
         }
         return lib_have(guzzlrBooze);
-      })];
+      })] : [];
     }
   }
   return [];
