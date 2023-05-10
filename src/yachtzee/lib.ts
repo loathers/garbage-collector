@@ -1,4 +1,4 @@
-import { cliExecute, Effect, Item, useFamiliar } from "kolmafia";
+import { cliExecute, Effect, Item, totalFreeRests, useFamiliar, visitUrl } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -6,6 +6,7 @@ import {
   $items,
   $location,
   $skill,
+  clamp,
   get,
   getActiveSongs,
   getModifier,
@@ -13,6 +14,7 @@ import {
   Mood,
   set,
   sum,
+  sumNumbers,
   tryFindFreeRun,
 } from "libram";
 import { withStash } from "../clan";
@@ -69,9 +71,24 @@ export function shrugIrrelevantSongs(): void {
   cliExecute("shrug phat loot");
 }
 
+export function cinchNCs(): number {
+  if (!have($item`Cincho de Mayo`)) return 0;
+  const cinchRestored = Array(100)
+    .fill(0)
+    .map((_, i) => clamp(50 - 5 * i, 5, 30));
+  const cinchRestsUsed = get("_cinchoRests", 0);
+  const freeRestsLeft = Math.max(0, totalFreeRests() - get("timesRested"));
+  const useableCinch =
+    100 -
+    get("_cinchUsed", 0) +
+    sumNumbers(cinchRestored.slice(cinchRestsUsed, cinchRestsUsed + freeRestsLeft));
+  return Math.floor(useableCinch / 60);
+}
+
 export const freeNCs = (): number =>
   (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed ? 1 : 0) +
-  (have($item`Jurassic Parka`) ? 5 - get("_spikolodonSpikeUses") : 0);
+  (have($item`Jurassic Parka`) ? 5 - get("_spikolodonSpikeUses") : 0) +
+  cinchNCs();
 
 export function yachtzeeBuffValue(obj: Item | Effect): number {
   return (2000 * (getModifier("Meat Drop", obj) + getModifier("Familiar Weight", obj) * 2.5)) / 100;
@@ -103,4 +120,18 @@ export function useSpikolodonSpikes(): void {
   } while (get("_spikolodonSpikeUses") === startingSpikes);
 
   postCombatActions();
+}
+
+export function freeRest(): boolean {
+  if (get("timesRested") >= totalFreeRests()) return false;
+
+  if (get("chateauAvailable")) {
+    visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
+  } else if (get("getawayCampsiteUnlocked")) {
+    visitUrl("place.php?whichplace=campaway&action=campaway_tentclick");
+  } else {
+    visitUrl("campground.php?action=rest");
+  }
+
+  return true;
 }

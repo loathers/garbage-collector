@@ -146,6 +146,16 @@ const specialValueLookup = new Map<Item, () => number>([
         )
       ),
   ],
+  // Exclude tradeable worksheds
+  [$item`Little Geneticist DNA-Splicing Lab`, () => 0],
+  [$item`portable Mayo Clinic`, () => 0],
+  [$item`snow machine`, () => 0],
+  [$item`warbear auto-anvil`, () => 0],
+  [$item`warbear chemistry lab`, () => 0],
+  [$item`warbear high-efficiency still`, () => 0],
+  [$item`warbear induction oven`, () => 0],
+  [$item`warbear jackhammer drill press`, () => 0],
+  [$item`warbear LP-ROM burner`, () => 0],
 ]);
 
 function printSession(session: Session): void {
