@@ -23,7 +23,14 @@ import {
 import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
-import { bestBjornalike, BonusEquipMode, cleaverCheck, validateGarbageFoldable, valueOfItem, valueOfMeat } from "./lib";
+import {
+  bestBjornalike,
+  BonusEquipMode,
+  cleaverCheck,
+  validateGarbageFoldable,
+  valueOfItem,
+  valueOfMeat,
+} from "./lib";
 
 function chooseGun({ familiar }: Outfit) {
   if (familiar === $familiar`Robortender` && have($item`love`)) return $item`love`;
