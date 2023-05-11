@@ -4,7 +4,7 @@ import { $familiar, $familiars, $item, $items, get } from "libram";
 import { freeFightFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
-import { BonusEquipMode, cleaverCheck } from "./lib";
+import { BonusEquipMode, cleaverCheck, validateGarbageFoldable } from "./lib";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
@@ -18,6 +18,8 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
     spec,
     new Error(`Failed to construct outfit from spec ${toJson(spec)}!`)
   );
+
+  validateGarbageFoldable(outfit);
 
   outfit.familiar ??= freeFightFamiliar(options);
   const mode =

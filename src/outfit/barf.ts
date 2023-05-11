@@ -23,7 +23,7 @@ import {
 import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
-import { bestBjornalike, BonusEquipMode, cleaverCheck, valueOfItem, valueOfMeat } from "./lib";
+import { bestBjornalike, BonusEquipMode, cleaverCheck, validateGarbageFoldable, valueOfItem, valueOfMeat } from "./lib";
 
 function chooseGun({ familiar }: Outfit) {
   if (familiar === $familiar`Robortender` && have($item`love`)) return $item`love`;
@@ -88,6 +88,8 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
     spec,
     new Error(`Failed to construct outfit from spec ${toJson(spec)}!`)
   );
+
+  validateGarbageFoldable(outfit);
 
   outfit.familiar ??= barfFamiliar();
 

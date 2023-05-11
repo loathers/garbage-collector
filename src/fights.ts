@@ -2373,7 +2373,6 @@ function findFreeKill() {
 
 function killRobortCreaturesForFree() {
   if (!have($familiar`Robortender`)) return;
-  useFamiliar($familiar`Robortender`);
 
   const currentHeads = availableAmount($item`fish head`);
   let freeKill = findFreeKill();
@@ -2387,7 +2386,7 @@ function killRobortCreaturesForFree() {
       setChoice(855, 4);
       garboAdventure($location`The Copperhead Club`, Macro.abort());
     }
-    freeFightOutfit(freeKill.spec).dress();
+    freeFightOutfit({ ...freeKill.spec, familiar: $familiar`Robortender` }).dress();
     withMacro(
       freeKill.macro instanceof Item ? Macro.item(freeKill.macro) : Macro.skill(freeKill.macro),
       () => {
@@ -2408,13 +2407,14 @@ function killRobortCreaturesForFree() {
 
     if (!roboTarget) break;
     const regularTarget = CombatLoversLocket.findMonster(() => true, valueDrops);
-    if (regularTarget === roboTarget) {
-      useFamiliar(freeFightFamiliar({ canChooseMacro: roboTarget.attributes.includes("FREE") }));
-    } else {
-      useFamiliar($familiar`Robortender`);
-    }
+    const familiar =
+      regularTarget === roboTarget
+        ? freeFightFamiliar({ canChooseMacro: roboTarget.attributes.includes("FREE") })
+        : $familiar`Robortender`;
 
-    freeFightOutfit(roboTarget.attributes.includes("FREE") ? {} : freeKill.spec).dress();
+    freeFightOutfit(
+      roboTarget.attributes.includes("FREE") ? { familiar } : { ...freeKill.spec, familiar }
+    ).dress();
     withMacro(
       isFree(roboTarget)
         ? Macro.basicCombat()

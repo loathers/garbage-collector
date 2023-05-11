@@ -9,6 +9,7 @@ import {
   BonusEquipMode,
   familiarWaterBreathingEquipment,
   useUPCsIfNeeded,
+  validateGarbageFoldable,
   valueOfMeat,
   waterBreathingEquipment,
 } from "./lib";
@@ -18,6 +19,8 @@ export function embezzlerOutfit(spec: OutfitSpec = {}, target = $location.none):
     spec,
     new Error(`Failed to construct outfit from spec ${toJson(spec)}`)
   );
+
+  validateGarbageFoldable(outfit);
 
   outfit.modifier.push(`${valueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`, "-tie");
   outfit.familiar ??= meatFamiliar();

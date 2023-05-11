@@ -25,6 +25,7 @@ import {
   ActionSource,
   findLeprechaunMultiplier,
   get,
+  getFoldGroup,
   have,
   Requirement,
   SongBoom,
@@ -186,4 +187,19 @@ export function usingPurse(): boolean {
         !canAdventure($location`The Black Forest`));
   }
   return cachedUsingPurse;
+}
+
+export function validateGarbageFoldable(outfit: Outfit): void {
+  const garbageEquips = [...outfit.equips.values()].filter((i) =>
+    getFoldGroup(i).includes($item`January's Garbage Tote`)
+  );
+  if (garbageEquips.length > 1) {
+    throw new Error(
+      `Trying to simultaneously equip ${garbageEquips.join(", ")}, which is clearly illegal!`
+    );
+  }
+  if (garbageEquips.length) {
+    const garbageEquip = garbageEquips[0];
+    if (!have(garbageEquip)) cliExecute(`fold ${garbageEquip}`);
+  }
 }
