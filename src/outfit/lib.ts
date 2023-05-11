@@ -189,17 +189,17 @@ export function usingPurse(): boolean {
   return cachedUsingPurse;
 }
 
-export function validateGarbageFoldable(outfit: Outfit): void {
-  const garbageEquips = [...outfit.equips.values()].filter((i) =>
-    getFoldGroup(i).includes($item`January's Garbage Tote`)
-  );
-  if (garbageEquips.length > 1) {
-    throw new Error(
-      `Trying to simultaneously equip ${garbageEquips.join(", ")}, which is clearly illegal!`
-    );
-  }
-  if (garbageEquips.length) {
-    const garbageEquip = garbageEquips[0];
-    if (!have(garbageEquip)) cliExecute(`fold ${garbageEquip}`);
+export function validateGarbageFoldable(spec: OutfitSpec): void {
+  const garbageItems = getFoldGroup($item`January's Garbage Tote`);
+  for (const garbageItem of garbageItems) {
+    if (
+      Object.values(spec).some(
+        (specEntry) =>
+          specEntry === garbageItem || (Array.isArray(specEntry) && specEntry.includes(garbageItem))
+      )
+    ) {
+      if (!have(garbageItem)) cliExecute(`fold ${garbageItem}`);
+      break;
+    }
   }
 }

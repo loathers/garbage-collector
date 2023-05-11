@@ -7,6 +7,7 @@ import { bonusGear } from "./dropsgear";
 import {
   bestBjornalike,
   BonusEquipMode,
+  cleaverCheck,
   familiarWaterBreathingEquipment,
   useUPCsIfNeeded,
   validateGarbageFoldable,
@@ -15,12 +16,13 @@ import {
 } from "./lib";
 
 export function embezzlerOutfit(spec: OutfitSpec = {}, target = $location.none): Outfit {
+  cleaverCheck();
+  validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
     new Error(`Failed to construct outfit from spec ${toJson(spec)}`)
   );
 
-  validateGarbageFoldable(outfit);
 
   outfit.modifier.push(`${valueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`, "-tie");
   outfit.familiar ??= meatFamiliar();

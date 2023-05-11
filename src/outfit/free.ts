@@ -14,12 +14,11 @@ type MenuOptions = {
 };
 export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}): Outfit {
   cleaverCheck();
+  validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
     new Error(`Failed to construct outfit from spec ${toJson(spec)}!`)
   );
-
-  validateGarbageFoldable(outfit);
 
   outfit.familiar ??= freeFightFamiliar(options);
   const mode =

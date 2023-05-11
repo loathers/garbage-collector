@@ -84,12 +84,11 @@ const POINTER_RING_SPECS: (
 
 export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   cleaverCheck();
+  validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
     new Error(`Failed to construct outfit from spec ${toJson(spec)}!`)
   );
-
-  validateGarbageFoldable(outfit);
 
   outfit.familiar ??= barfFamiliar();
 
