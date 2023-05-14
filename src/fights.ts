@@ -9,6 +9,7 @@ import {
   create,
   Effect,
   equip,
+  equippedItem,
   Familiar,
   getAutoAttack,
   getCampground,
@@ -1436,57 +1437,21 @@ const freeFightSources = [
         ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
 
-      // Potentially force an NC
-      let ncForced = get("encountersUntilSRChoice", 1) === 0;
-      if (!ncForced && !globalOptions.prefs.yachtzeechain && get("rufusQuestType") !== "items") {
-        // Clara's bell
-        if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
-          globalOptions.clarasBellClaimed = true;
-          if (!use($item`Clara's bell`)) throw new Error("Couldn't use Clara's bell");
-          ncForced = true;
+      runShadowRiftTurn();
 
-          // Jurassic parka
-        } else if (
-          have($item`Jurassic Parka`) &&
-          get("_spikolodonSpikeUses") < 5 &&
-          have($effect`Shadow Affinity`) &&
-          get("encountersUntilSRChoice", 11) >= 2
-        ) {
-          freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
-          cliExecute("parka spikolodon");
-          const macro = Macro.skill($skill`Launch spikolodon spikes`).basicCombat();
-          // Adventure until we use spikes
-          const startingSpikes = get("_spikolodonSpikeUses");
-          garboAdventureAuto(bestShadowRift(), macro);
-          if (get("_spikolodonSpikeUses") !== startingSpikes + 1) {
-            throw new Error("Failed to use spikolodon spikes");
-          }
-          ncForced = true;
-
-          // Cincho
-        } else if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
-          equip($slot`acc3`, $item`Cincho de Mayo`);
-          while (get("_cinchUsed", 0) > 40) {
-            if (!freeRest()) throw new Error("We are out of free rests!");
-          }
-          useSkill($skill`Cincho: Fiesta Exit`);
-          ncForced = true;
+      if (get("encountersUntilSRChoice", 0) === 0) {
+        if (ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
+          ClosedCircuitPayphone.chooseQuest(() => 2);
         }
+        adv1(bestShadowRift(), -1, ""); // grab the NC
       }
-
-      // If you forced an NC, make sure you have a quest to do
-      if (ncForced && ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
-        ClosedCircuitPayphone.chooseQuest(() => 2);
-      }
-
-      adv1(bestShadowRift(), -1, "");
 
       if (questStep("questRufus") === 1) {
         withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
       }
 
       if (have($item`Rufus's shadow lodestone`)) {
-        setChoice(1500, 2); // Turn in lodestone if you have it
+        setChoice(1500, 2); // Check for lodestone at the end again
         adv1(bestShadowRift(), -1, "");
       }
 
@@ -2641,5 +2606,43 @@ function yachtzee(): void {
       }
       return;
     }
+  }
+}
+
+function runShadowRiftTurn(): void {
+  // we can probably have a better name
+  if (get("encountersUntilSRChoice") === 0) return;
+  if (globalOptions.prefs.yachtzeechain || get("rufusQuestType") === "items") {
+    adv1(bestShadowRift(), -1, ""); // We shouldn't be using NC forcers
+    return;
+  }
+
+  if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+    globalOptions.clarasBellClaimed = true;
+    use($item`Clara's bell`);
+    // Not the most elegant solution, but we need a way to communicate that an NC is forced
+    set("encountersUntilSRChoice", 0);
+  } else if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
+    const lastAcc = equippedItem($slot`acc3`);
+    equip($slot`acc3`, $item`Cincho de Mayo`);
+    while (get("_cinchUsed", 0) > 40) {
+      if (!freeRest()) throw new Error("We are out of free rests!");
+    }
+    useSkill($skill`Cincho: Fiesta Exit`);
+    set("encountersUntilSRChoice", 0);
+    equip($slot`acc3`, lastAcc); // Re-equip last item
+  } else if (
+    have($item`Jurassic Parka`) &&
+    get("_spikolodonSpikeUses") < 5 &&
+    have($effect`Shadow Affinity`) &&
+    get("encountersUntilSRChoice") >= 2
+  ) {
+    freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
+    cliExecute("parka spikolodon");
+    const macro = Macro.skill($skill`Launch spikolodon spikes`).basicCombat();
+    garboAdventureAuto(bestShadowRift(), macro);
+    set("encountersUntilSRChoice", 0);
+  } else {
+    adv1(bestShadowRift(), -1, ""); // We wanted to use NC forcers, but none are suitable now
   }
 }
