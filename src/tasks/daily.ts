@@ -1,6 +1,7 @@
 import { Task } from "grimoire-kolmafia";
 import {
   adv1,
+  availableChoiceOptions,
   canadiaAvailable,
   canAdventure,
   canEquip,
@@ -43,6 +44,7 @@ import {
   $monster,
   $slot,
   BeachComb,
+  directlyUse,
   findLeprechaunMultiplier,
   get,
   getModifier,
@@ -162,6 +164,73 @@ function voterSetup(): void {
   const init = maxBy(voteLocalPriorityArr, 1)[0];
 
   visitUrl(`choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${init}&local[]=${init}`);
+}
+
+function chibiBuffAvailable(): boolean {
+  if (!have($item`ChibiBuddy™ (on)`) && !have($item`ChibiBuddy™ (off)`)) return false;
+  // We need to name our buddy when we turn it on!
+  const chibiNames = [
+    "Oliver",
+    "Neil",
+    "William",
+    "Guillermo",
+    "Aaron",
+    "Isobel",
+    "Pope Gregory",
+    "Harvey Keitel",
+    "Angel Olsen",
+    "The Olsen Twins",
+    "Maryam Mirzakhani",
+    "Shrek",
+    "Donkey",
+    "Fiona",
+    "Fargus",
+    "SSBBHax",
+    "Frasier Crane",
+    "Brendan Fraser",
+    "Professor Plum",
+    "John H. Conway",
+    "John B. Conway",
+    "Butts McGruff",
+    "Samuel Gaus",
+    "Gamuel Sauce",
+    "Axis Shadowbaenimus",
+    "Dale Cooper",
+    "G",
+    "Twink",
+    "Alice",
+    "Mädchen Amick",
+    "Peter Falk",
+  ];
+  // It is possible our Buddy died after rollover, and will turn to (off) after using it
+  // It is also possible we ascended with a Buddy(on) in which case it will reset immediately without the choice adventure on use
+  if (have($item`ChibiBuddy™ (on)`)) {
+    directlyUse($item`ChibiBuddy™ (on)`);
+    if (handlingChoice()) {
+      // This is the choice option for chibi chat
+      if (availableChoiceOptions()[5]) return true;
+      // Exit the choice, if our buddy died, this will give us back a buddy (off)
+      runChoice(7);
+    }
+  }
+  // Mafia does not currently see the item change if our buddy died
+  cliExecute("refresh inventory");
+  // If we only have an (off) chibibuddy (whether from the beginning, or we just turned it off)
+  // Turn it back on and confirm availability of the buff
+  if (have($item`ChibiBuddy™ (off)`) && !have($item`ChibiBuddy™ (on)`)) {
+    directlyUse($item`ChibiBuddy™ (off)`);
+    if (handlingChoice()) {
+      // Naming
+      const chibiName = chibiNames[Math.floor(Math.random() * chibiNames.length)];
+      runChoice(1, `&chibiname=${chibiName}`);
+    }
+    // We should now have our fresh buddy
+    if (handlingChoice()) {
+      if (availableChoiceOptions()[5]) return true;
+      runChoice(7);
+    }
+  }
+  return false;
 }
 
 function pantogram(): void {
@@ -349,6 +418,19 @@ export function configureSnojo(): void {
 }
 
 export const DailyTasks: Task[] = [
+  {
+    name: "Chibi Buddy",
+    ready: () => chibiBuffAvailable(),
+    completed: () => have($effect`ChibiChanged™`),
+    do: (): void => {
+      directlyUse($item`ChibiBuddy™ (on)`);
+      if (handlingChoice()) {
+        // Chibi chat
+        runChoice(5);
+        runChoice(7);
+      }
+    },
+  },
   {
     name: "Refresh Latte",
     ready: () => have($item`latte lovers member's mug`),
