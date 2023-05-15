@@ -170,37 +170,12 @@ function chibiBuffAvailable(): boolean {
   if (!have($item`ChibiBuddy™ (on)`) && !have($item`ChibiBuddy™ (off)`)) return false;
   // We need to name our buddy when we turn it on!
   const chibiNames = [
-    "Oliver",
-    "Neil",
-    "William",
-    "Guillermo",
-    "Aaron",
-    "Isobel",
-    "Pope Gregory",
-    "Harvey Keitel",
-    "Angel Olsen",
-    "The Olsen Twins",
-    "Maryam Mirzakhani",
-    "Shrek",
-    "Donkey",
-    "Fiona",
-    "Fargus",
     "SSBBHax",
     "Frasier Crane",
-    "Brendan Fraser",
-    "Professor Plum",
-    "John H. Conway",
-    "John B. Conway",
-    "Butts McGruff",
-    "Samuel Gaus",
+    "William",
     "Gamuel Sauce",
     "Axis Shadowbaenimus",
     "Dale Cooper",
-    "G",
-    "Twink",
-    "Alice",
-    "Mädchen Amick",
-    "Peter Falk",
   ];
   // It is possible our Buddy died after rollover, and will turn to (off) after using it
   // It is also possible we ascended with a Buddy(on) in which case it will reset immediately without the choice adventure on use
