@@ -185,6 +185,7 @@ function chibiSetup(): void {
       // This is the choice option for chibi chat
       if (availableChoiceOptions()[5]) {
         runChoice(5);
+        runChoice(7);
         return;
       }
       // Exit the choice, if our buddy died, this will give us back a buddy (off)
@@ -206,7 +207,6 @@ function chibiSetup(): void {
     if (handlingChoice()) {
       if (availableChoiceOptions()[5]) {
         runChoice(5);
-        return;
       }
       runChoice(7);
     }
