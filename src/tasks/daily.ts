@@ -166,8 +166,8 @@ function voterSetup(): void {
   visitUrl(`choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${init}&local[]=${init}`);
 }
 
-function chibiBuffAvailable(): boolean {
-  if (!have($item`ChibiBuddy™ (on)`) && !have($item`ChibiBuddy™ (off)`)) return false;
+function chibiSetup(): void {
+  if (!have($item`ChibiBuddy™ (on)`) && !have($item`ChibiBuddy™ (off)`)) return;
   // We need to name our buddy when we turn it on!
   const chibiNames = [
     "SSBBHax",
@@ -183,7 +183,10 @@ function chibiBuffAvailable(): boolean {
     directlyUse($item`ChibiBuddy™ (on)`);
     if (handlingChoice()) {
       // This is the choice option for chibi chat
-      if (availableChoiceOptions()[5]) return true;
+      if (availableChoiceOptions()[5]) {
+        runChoice(5);
+        return;
+      }
       // Exit the choice, if our buddy died, this will give us back a buddy (off)
       runChoice(7);
     }
@@ -201,11 +204,13 @@ function chibiBuffAvailable(): boolean {
     }
     // We should now have our fresh buddy
     if (handlingChoice()) {
-      if (availableChoiceOptions()[5]) return true;
+      if (availableChoiceOptions()[5]) {
+        runChoice(5);
+        return;
+      }
       runChoice(7);
     }
   }
-  return false;
 }
 
 function pantogram(): void {
@@ -395,16 +400,9 @@ export function configureSnojo(): void {
 export const DailyTasks: Task[] = [
   {
     name: "Chibi Buddy",
-    ready: () => chibiBuffAvailable(),
+    ready: () => have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`),
     completed: () => have($effect`ChibiChanged™`),
-    do: (): void => {
-      directlyUse($item`ChibiBuddy™ (on)`);
-      if (handlingChoice()) {
-        // Chibi chat
-        runChoice(5);
-        runChoice(7);
-      }
-    },
+    do: () => chibiSetup(),
   },
   {
     name: "Refresh Latte",
