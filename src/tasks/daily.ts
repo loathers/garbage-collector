@@ -403,6 +403,7 @@ export const DailyTasks: Task[] = [
     ready: () => have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`),
     completed: () => have($effect`ChibiChanged™`),
     do: () => chibiSetup(),
+    limit: { soft: 1 },
   },
   {
     name: "Refresh Latte",
