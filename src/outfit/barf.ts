@@ -4,6 +4,7 @@ import {
   inebrietyLimit,
   Item,
   myClass,
+  myFamiliar,
   myFury,
   myInebriety,
   retrieveItem,
@@ -54,7 +55,7 @@ function gunSpec(outfit: Outfit) {
     available: true,
     items: {
       back: $item`unwrapped knock-off retro superhero cape`,
-      equip: [gun],
+      weapon: gun,
       modes: {
         retrocape: ["robot", "kill"],
       },
@@ -89,6 +90,8 @@ const POINTER_RING_SPECS: (
   },
 ];
 
+const trueInebrietyLimit = () => inebrietyLimit() - (myFamiliar() === $familiar`Stooper` ? 1 : 0);
+
 export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);
@@ -107,7 +110,7 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
     "-tie"
   );
 
-  if (myInebriety() > inebrietyLimit()) {
+  if (myInebriety() > trueInebrietyLimit()) {
     if (!outfit.equip($item`Drunkula's wineglass`)) {
       throw new Error("We're overdrunk but have found ourself unable to equip a wineglass!");
     }

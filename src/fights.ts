@@ -425,9 +425,9 @@ export function dailyFights(): void {
             }
           }
 
-          const profSpec = {
+          const profSpec: OutfitSpec = {
             familiar: $familiar`Pocket Professor`,
-            equip: $items`Pocket Professor memory chip`.filter((i) => have(i)),
+            famequip: $items`Pocket Professor memory chip`.filter((i) => have(i)),
           };
 
           goalMaximize({ ...profSpec, ...fightSource.spec });

@@ -1,6 +1,6 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { canEquip, toJson } from "kolmafia";
-import { $item, $items, $location, have } from "libram";
+import { toJson } from "kolmafia";
+import { $item, $items, $location } from "libram";
 import { meatFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
@@ -31,12 +31,10 @@ export function embezzlerOutfit(spec: OutfitSpec = {}, target = $location.none):
   const underwater = target.environment === "underwater";
   if (underwater) {
     if (!outfit.familiar.underwater) {
-      const familiarEquip = familiarWaterBreathingEquipment.find((item) => have(item));
-      if (familiarEquip) outfit.equip(familiarEquip);
+      outfit.equipFirst(familiarWaterBreathingEquipment);
     }
 
-    const airEquip = waterBreathingEquipment.find((item) => have(item) && canEquip(item));
-    if (!airEquip || !outfit.equip(airEquip)) outfit.modifier.push("sea");
+    if (!outfit.equipFirst(waterBreathingEquipment)) outfit.modifier.push("sea");
   }
 
   useUPCsIfNeeded(outfit);
@@ -54,7 +52,7 @@ export function embezzlerOutfit(spec: OutfitSpec = {}, target = $location.none):
         outfit.bjornify(bjornChoice.familiar);
         break;
       case $item`Crown of Thrones`:
-        outfit.bjornify(bjornChoice.familiar);
+        outfit.enthrone(bjornChoice.familiar);
         break;
     }
   }
