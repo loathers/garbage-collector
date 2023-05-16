@@ -1,11 +1,14 @@
 import {
+  cliExecute,
   equippedItem,
   Familiar,
   familiarWeight,
   Item,
+  myFamiliar,
   numericModifier,
   print,
   Slot,
+  useFamiliar,
   weightAdjustment,
 } from "kolmafia";
 import {
@@ -45,29 +48,36 @@ const outfitCache = new Map<number, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
 function getCachedOutfitValues(fam: Familiar) {
+  const current = myFamiliar();
+  cliExecute("checkpoint");
+
   const lepMult = findLeprechaunMultiplier(fam);
   const currentValue = outfitCache.get(lepMult);
   if (currentValue) return currentValue;
+  try {
+    barfOutfit(
+      {
+        familiar: fam,
+        avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
+      },
+      true
+    ).dress();
 
-  barfOutfit(
-    {
-      familiar: fam,
-      avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
-    },
-    true
-  ).dress();
+    const outfit = outfitSlots.map((slot) => equippedItem(slot));
+    const bonuses = bonusGear(BonusEquipMode.EMBEZZLER, false);
 
-  const outfit = outfitSlots.map((slot) => equippedItem(slot));
-  const bonuses = bonusGear(BonusEquipMode.EMBEZZLER, false);
-
-  const values = {
-    weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
-    meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
-    item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
-    bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
-  };
-  outfitCache.set(lepMult, values);
-  return values;
+    const values = {
+      weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
+      meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
+      item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
+      bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
+    };
+    outfitCache.set(lepMult, values);
+    return values;
+  } finally {
+    useFamiliar(current);
+    cliExecute("outfit checkpoint");
+  }
 }
 
 type MarginalFamiliar = GeneralFamiliar & { outfitWeight: number; outfitValue: number };
