@@ -192,8 +192,6 @@ function chibiSetup(): void {
       runChoice(7);
     }
   }
-  // Mafia does not currently see the item change if our buddy died
-  cliExecute("refresh inventory");
   // If we only have an (off) chibibuddy (whether from the beginning, or we just turned it off)
   // Turn it back on and confirm availability of the buff
   if (have($item`ChibiBuddy™ (off)`) && !have($item`ChibiBuddy™ (on)`)) {
@@ -400,8 +398,10 @@ export function configureSnojo(): void {
 export const DailyTasks: Task[] = [
   {
     name: "Chibi Buddy",
-    ready: () => have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`),
-    completed: () => have($effect`ChibiChanged™`),
+    ready: () =>
+      get("_chibiChanged", true) &&
+      (have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`)),
+    completed: () => get("_chibiChanged", true),
     do: chibiSetup,
     limit: { soft: 1 },
   },
