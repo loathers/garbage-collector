@@ -399,7 +399,7 @@ export const DailyTasks: Task[] = [
   {
     name: "Chibi Buddy",
     ready: () =>
-      get("_chibiChanged", true) &&
+      !get("_chibiChanged", true) &&
       (have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`)),
     completed: () => get("_chibiChanged", true),
     do: chibiSetup,
