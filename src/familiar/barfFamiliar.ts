@@ -1,8 +1,10 @@
 import {
+  cliExecute,
   equippedItem,
   Familiar,
   familiarWeight,
   Item,
+  myFamiliar,
   numericModifier,
   print,
   Slot,
@@ -19,13 +21,12 @@ import {
   get,
   getModifier,
   maxBy,
-  Requirement,
   sum,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
-import { bonusGear } from "../dropsgear";
+import { BonusEquipMode, bonusGear } from "../outfit";
 import { baseMeat, HIGHLIGHT } from "../lib";
-import { meatOutfit } from "../outfit";
+import { barfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
@@ -47,33 +48,36 @@ const outfitCache = new Map<number, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
 function getCachedOutfitValues(fam: Familiar) {
+  const current = myFamiliar();
+  cliExecute("checkpoint");
+
   const lepMult = findLeprechaunMultiplier(fam);
   const currentValue = outfitCache.get(lepMult);
   if (currentValue) return currentValue;
+  try {
+    barfOutfit(
+      {
+        familiar: fam,
+        avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
+      },
+      true
+    ).dress();
 
-  useFamiliar(fam);
-  meatOutfit(
-    false,
-    new Requirement([], {
-      // If we don't include the li'l pirate costume as a preventEquip, we could
-      // double-count the value of the pirate costume between here and constantvalue.ts,
-      // and we could apply the value of the pirate costume to every 0x leprechaun. Other items are
-      // included as strong, temporary bonuses that go away quickly in a user's BarfDay.
-      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
-    })
-  );
+    const outfit = outfitSlots.map((slot) => equippedItem(slot));
+    const bonuses = bonusGear(BonusEquipMode.EMBEZZLER, false);
 
-  const outfit = outfitSlots.map((slot) => equippedItem(slot));
-  const bonuses = bonusGear("barf", false);
-
-  const values = {
-    weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
-    meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
-    item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
-    bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
-  };
-  outfitCache.set(lepMult, values);
-  return values;
+    const values = {
+      weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
+      meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
+      item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
+      bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
+    };
+    outfitCache.set(lepMult, values);
+    return values;
+  } finally {
+    useFamiliar(current);
+    cliExecute("outfit checkpoint");
+  }
 }
 
 type MarginalFamiliar = GeneralFamiliar & { outfitWeight: number; outfitValue: number };

@@ -9,7 +9,8 @@ import {
 } from "kolmafia";
 import { $familiar, $item, clamp, Counter, get, have, SourceTerminal } from "libram";
 import { globalOptions } from "./config";
-import { usingThumbRing } from "./dropsgear";
+// Dumb circular import stuff
+import { usingThumbRing } from "./outfit/dropsgear";
 import { embezzlerCount } from "./embezzler";
 import { ESTIMATED_OVERDRUNK_TURNS } from "./lib";
 

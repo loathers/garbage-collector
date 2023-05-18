@@ -1,5 +1,4 @@
 import {
-  canEquip,
   equippedItem,
   fullnessLimit,
   getWorkshed,
@@ -10,6 +9,7 @@ import {
   myClass,
   myFullness,
   numericModifier,
+  setLocation,
   toSlot,
 } from "kolmafia";
 import {
@@ -24,92 +24,31 @@ import {
   $slots,
   clamp,
   DaylightShavings,
-  findFairyMultiplier,
-  findLeprechaunMultiplier,
   get,
   getAverageAdventures,
   getFoldGroup,
   getModifier,
   have,
   JuneCleaver,
-  Modifiers,
   sum,
   sumNumbers,
 } from "libram";
-import {
-  createRiderMode,
-  FamiliarRider,
-  pickRider,
-} from "libram/dist/resources/2010/CrownOfThrones";
-import { globalOptions } from "./config";
-import { mallMin } from "./diet";
-import { meatFamiliar } from "./familiar";
+import { globalOptions } from "../config";
+import { mallMin } from "../diet";
 import {
   baseMeat,
   bestJuneCleaverOption,
-  BonusEquipMode,
   juneCleaverChoiceValues,
   realmAvailable,
   valueJuneCleaverOption,
-  withLocation,
-} from "./lib";
-import { garboAverageValue, garboValue } from "./session";
-import { estimatedGarboTurns, remainingUserTurns } from "./turns";
-
-/**
- * Determine the meat value of the modifier bonuses a particular bjorned familiar grants
- * @param mode The BonusEquipMode of this fight: "free", "dmt", "embezzler", or "barf"
- * @param modifiers An object containing any and all modifier-value pairs that the potential familiar choice grants
- * @returns The meat value of the modifier bonuses given that mode
- */
-export function valueBjornModifiers(mode: BonusEquipMode, modifiers: Modifiers): number {
-  const weight = modifiers["Familiar Weight"] ?? 0;
-  const meat = modifiers["Meat Drop"] ?? 0;
-  const item = modifiers["Item Drop"] ?? 0;
-
-  const meatValue =
-    (!["dmt", "free"].includes(mode) ? (baseMeat + mode === "embezzler" ? 750 : 0) : 0) / 100;
-  const itemValue = mode === "barf" ? 0.72 : 0;
-
-  const lepMult = findLeprechaunMultiplier(meatFamiliar());
-  const lepBonus = weight * (2 * lepMult + Math.sqrt(lepMult));
-  const fairyMult = findFairyMultiplier(meatFamiliar());
-  const fairyBonus = weight * (fairyMult + Math.sqrt(fairyMult) / 2);
-
-  const bjornMeatDropValue = meatValue * (meat + lepBonus);
-  const bjornItemDropValue = itemValue * (item + fairyBonus);
-
-  return bjornMeatDropValue + bjornItemDropValue;
-}
-
-createRiderMode("free", (modifiers: Modifiers) => valueBjornModifiers("free", modifiers), false);
-createRiderMode(
-  "embezzler",
-  (modifiers: Modifiers) => valueBjornModifiers("embezzler", modifiers),
-  true
-);
-createRiderMode("dmt", (modifiers: Modifiers) => valueBjornModifiers("dmt", modifiers), true);
-createRiderMode(
-  "barf",
-  (modifiers: Modifiers) => valueBjornModifiers("barf", modifiers),
-  false,
-  true
-);
-
-/**
- * Determines the best familiar to bjornify given a particular fight mode
- * @param mode The BonusEquipMode of this fight: "free", "dmt", "embezzler", or "barf"
- * @returns The best familiar to bjornify given this fight mode
- */
-export function pickBjorn(mode: BonusEquipMode = "free"): FamiliarRider {
-  const attempt = pickRider(mode);
-  if (attempt) return attempt;
-  throw new Error("Unable to make a sensible bjorn decision");
-}
+} from "../lib";
+import { garboAverageValue, garboValue } from "../session";
+import { estimatedGarboTurns, remainingUserTurns } from "../turns";
+import { BonusEquipMode, isFree, useLimitedDrops, valueOfMeat } from "./lib";
 
 const pantsgivingBonuses = new Map<number, number>();
-function pantsgiving() {
-  if (!have($item`Pantsgiving`)) return new Map<Item, number>();
+function pantsgiving(mode: BonusEquipMode) {
+  if (!have($item`Pantsgiving`) || !useLimitedDrops(mode)) return new Map<Item, number>();
   const count = get("_pantsgivingCount");
   const turnArray = [5, 50, 500, 5000];
   const index =
@@ -141,8 +80,8 @@ function pantsgiving() {
   return new Map<Item, number>([[$item`Pantsgiving`, pantsgivingBonus]]);
 }
 
-function sweatpants(equipMode: BonusEquipMode) {
-  if (!have($item`designer sweatpants`) || equipMode === "embezzler") return new Map();
+function sweatpants(mode: BonusEquipMode) {
+  if (!have($item`designer sweatpants`) || mode === BonusEquipMode.EMBEZZLER) return new Map();
 
   const needSweat =
     (!globalOptions.ascend && get("sweat") < 75) ||
@@ -175,7 +114,7 @@ function cheeses(mode: BonusEquipMode) {
     !globalOptions.ascend &&
     get("_stinkyCheeseCount") < 100 &&
     estimatedGarboTurns() >= 100 - get("_stinkyCheeseCount") &&
-    mode !== "embezzler"
+    mode !== BonusEquipMode.EMBEZZLER
     ? new Map<Item, number>(
         getFoldGroup($item`stinky cheese diaper`)
           .filter((item) => toSlot(item) !== $slot`weapon`)
@@ -187,8 +126,8 @@ function cheeses(mode: BonusEquipMode) {
     : [];
 }
 
-function mafiaThumbRing(equipMode: BonusEquipMode) {
-  if (!have($item`mafia thumb ring`) || ["free", "dmt"].some((mode) => mode === equipMode)) {
+function mafiaThumbRing(mode: BonusEquipMode) {
+  if (!have($item`mafia thumb ring`) || isFree(mode)) {
     return new Map<Item, number>([]);
   }
 
@@ -197,9 +136,9 @@ function mafiaThumbRing(equipMode: BonusEquipMode) {
   ]);
 }
 
-function luckyGoldRing(equipMode: BonusEquipMode) {
+function luckyGoldRing(mode: BonusEquipMode) {
   // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
-  if (!have($item`lucky gold ring`) || equipMode === "dmt") {
+  if (!have($item`lucky gold ring`) || mode === BonusEquipMode.DMT) {
     return new Map<Item, number>([]);
   }
 
@@ -267,21 +206,17 @@ function bagOfManyConfections() {
   ]);
 }
 
-function snowSuit(equipMode: BonusEquipMode) {
+function snowSuit(mode: BonusEquipMode) {
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (
-    !have($item`Snow Suit`) ||
-    get("_carrotNoseDrops") >= 3 ||
-    ["embezzler", "dmt"].some((mode) => mode === equipMode)
-  ) {
+  if (!have($item`Snow Suit`) || get("_carrotNoseDrops") >= 3 || !useLimitedDrops(mode)) {
     return new Map<Item, number>([]);
   }
 
   return new Map<Item, number>([[$item`Snow Suit`, garboValue($item`carrot nose`) / 10]]);
 }
 
-function mayflowerBouquet(equipMode: BonusEquipMode) {
+function mayflowerBouquet(mode: BonusEquipMode) {
   // +40% meat drop 12.5% of the time (effectively 5%)
   // Drops flowers 50% of the time, wiki says 5-10 a day.
   // Theorized that flower drop rate drops off but no info on wiki.
@@ -290,11 +225,11 @@ function mayflowerBouquet(equipMode: BonusEquipMode) {
 
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!have($item`Mayflower bouquet`) || ["embezzler", "dmt"].some((mode) => mode === equipMode)) {
+  if (!have($item`Mayflower bouquet`) || !useLimitedDrops(mode)) {
     return new Map<Item, number>([]);
   }
 
-  const sporadicMeatBonus = (40 * 0.125 * (equipMode === "barf" ? baseMeat : 0)) / 100;
+  const sporadicMeatBonus = (40 * 0.125 * valueOfMeat(mode)) / 100;
   const averageFlowerValue =
     garboAverageValue(
       ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`
@@ -312,15 +247,14 @@ This is separate from bonusGear to prevent circular references
 bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
 If this isn't separated from bonusGear(), usingThumbRing() will call bonusGear(), creating a dangerous loop
 */
-function bonusAccessories(equipMode: BonusEquipMode): Map<Item, number> {
+function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([
-    ...mafiaThumbRing(equipMode),
-    ...luckyGoldRing(equipMode),
+    ...mafiaThumbRing(mode),
+    ...luckyGoldRing(mode),
     ...mrCheengsSpectacles(),
     ...mrScreegesSpectacles(),
   ]);
 }
-
 export function magnifyingGlass(): Map<Item, number> {
   if (
     !have($item`cursed magnifying glass`) ||
@@ -336,53 +270,28 @@ export function magnifyingGlass(): Map<Item, number> {
 }
 
 export function bonusGear(
-  equipMode: BonusEquipMode,
+  mode: BonusEquipMode,
   valueCircumstantialBonus = true
 ): Map<Item, number> {
   return new Map<Item, number>([
-    ...cheeses(equipMode),
-    ...bonusAccessories(equipMode),
+    ...cheeses(mode),
+    ...bonusAccessories(mode),
     ...pantogramPants(),
     ...bagOfManyConfections(),
-    ...stickers(equipMode),
+    ...stickers(mode),
     ...powerGlove(),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
-          ...(!["embezzler", "dmt"].includes(equipMode) ? pantsgiving() : []),
-          ...sweatpants(equipMode),
+          ...pantsgiving(mode),
+          ...sweatpants(mode),
           ...shavingBonus(),
-          ...snowSuit(equipMode),
-          ...mayflowerBouquet(equipMode),
-          ...(equipMode === "barf" ? magnifyingGlass() : []),
-          ...juneCleaver(equipMode),
+          ...snowSuit(mode),
+          ...mayflowerBouquet(mode),
+          ...(mode === BonusEquipMode.BARF ? magnifyingGlass() : []),
+          ...juneCleaver(mode),
         ])
       : []),
   ]);
-}
-
-export function bestBjornalike(existingForceEquips: Item[]): Item | undefined {
-  const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`;
-  const slots = bjornalikes
-    .map((bjornalike) => toSlot(bjornalike))
-    .filter((slot) => !existingForceEquips.some((equipment) => toSlot(equipment) === slot));
-  if (!slots.length) return undefined;
-  if (slots.length < 2 || bjornalikes.some((thing) => !have(thing))) {
-    return bjornalikes.find((thing) => have(thing) && slots.includes(toSlot(thing)));
-  }
-
-  const hasStrongLep = findLeprechaunMultiplier(meatFamiliar()) >= 2;
-  const goodRobortHats = $items`crumpled felt fedora`;
-  if (myClass() === $class`Turtle Tamer`) goodRobortHats.push($item`warbear foil hat`);
-  if (numericModifier($item`shining star cap`, "Familiar Weight") === 10) {
-    goodRobortHats.push($item`shining star cap`);
-  }
-  if (
-    have($item`carpe`) &&
-    (!hasStrongLep || !goodRobortHats.some((hat) => have(hat) && canEquip(hat)))
-  ) {
-    return $item`Crown of Thrones`;
-  }
-  return $item`Buddy Bjorn`;
 }
 
 function shavingBonus(): Map<Item, number> {
@@ -419,42 +328,41 @@ export function usingThumbRing(): boolean {
     return false;
   }
   if (cachedUsingThumbRing === null) {
-    const gear = bonusAccessories("barf");
+    const gear = bonusAccessories(BonusEquipMode.BARF);
     const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
-    cachedUsingThumbRing = withLocation($location`Barf Mountain`, () => {
-      const meatAccessories = Item.all()
-        .filter(
-          (item) => have(item) && toSlot(item) === $slot`acc1` && getModifier("Meat Drop", item) > 0
-        )
-        .map((item) => [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [Item, number]);
+    setLocation($location`Barf Mountain`);
+    const meatAccessories = Item.all()
+      .filter(
+        (item) => have(item) && toSlot(item) === $slot`acc1` && getModifier("Meat Drop", item) > 0
+      )
+      .map((item) => [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [Item, number]);
 
-      const accessoryValues = new Map<Item, number>(accessoryBonuses);
-      for (const [accessory, value] of meatAccessories) {
-        accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
-      }
+    const accessoryValues = new Map<Item, number>(accessoryBonuses);
+    for (const [accessory, value] of meatAccessories) {
+      accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
+    }
 
-      if (
-        have($item`mafia pointer finger ring`) &&
-        ((myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) ||
-          have($item`haiku katana`) ||
-          have($item`Operation Patriot Shield`) ||
-          have($item`unwrapped knock-off retro superhero cape`) ||
-          have($skill`Head in the Game`))
-      ) {
-        accessoryValues.set($item`mafia pointer finger ring`, 500);
-      }
-      const bestAccessories = [...accessoryValues.entries()]
-        .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
-        .map(([item]) => item);
-      return bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
-    });
+    if (
+      have($item`mafia pointer finger ring`) &&
+      ((myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) ||
+        have($item`haiku katana`) ||
+        have($item`Operation Patriot Shield`) ||
+        have($item`unwrapped knock-off retro superhero cape`) ||
+        have($skill`Head in the Game`))
+    ) {
+      accessoryValues.set($item`mafia pointer finger ring`, 500);
+    }
+    const bestAccessories = [...accessoryValues.entries()]
+      .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
+      .map(([item]) => item);
+    cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
   }
   return cachedUsingThumbRing;
 }
 
 let juneCleaverEV: number | null = null;
-function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
+function juneCleaver(mode: BonusEquipMode): Map<Item, number> {
   const estimatedJuneCleaverTurns = remainingUserTurns() + estimatedGarboTurns();
   if (
     !have($item`June cleaver`) ||
@@ -493,12 +401,14 @@ function juneCleaver(equipMode: BonusEquipMode): Map<Item, number> {
     juneCleaverEV = queueEV + availEV;
   }
 
-  const interval = equipMode === "embezzler" ? 30 : JuneCleaver.getInterval();
+  const interval = mode === BonusEquipMode.EMBEZZLER ? 30 : JuneCleaver.getInterval();
   return new Map<Item, number>([[$item`June cleaver`, juneCleaverEV / interval]]);
 }
 
-function stickers(equipMode: BonusEquipMode): Map<Item, number> {
-  if (equipMode === "embezzler") return new Map();
+function stickers(mode: BonusEquipMode): Map<Item, number> {
+  // This function represents the _cost_ of using stickers
+  // Embezzlers are the best monster to use them on, so there's functionally no cost
+  if (mode === BonusEquipMode.EMBEZZLER) return new Map();
 
   const cost = sumNumbers(
     $slots`sticker1, sticker2, sticker3`.map((s) => mallPrice(equippedItem(s)) / 20)
