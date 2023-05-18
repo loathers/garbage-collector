@@ -24,11 +24,6 @@ function bestFamUnderwaterGear(fam: Familiar): Item {
 
 export function bestYachtzeeFamiliar(): Familiar {
   const haveUnderwaterFamEquipment = familiarWaterBreathingEquipment.some((item) => have(item));
-  const famWt =
-    familiarWeight(myFamiliar()) +
-    weightAdjustment() -
-    numericModifier(equippedItem($slot`familiar`), "Familiar Weight");
-
   const sortedUnderwaterFamiliars = Familiar.all()
     .filter(
       (fam) =>
@@ -40,14 +35,14 @@ export function bestYachtzeeFamiliar(): Familiar {
     )
     .sort(
       (left, right) =>
-        numericModifier(right, "Meat Drop", famWt, bestFamUnderwaterGear(right)) -
-        numericModifier(left, "Meat Drop", famWt, bestFamUnderwaterGear(left))
+        numericModifier(right, "Meat Drop", familiarWeight(right) + weightAdjustment(), bestFamUnderwaterGear(right)) -
+        numericModifier(left, "Meat Drop", familiarWeight(left) + weightAdjustment(), bestFamUnderwaterGear(left))
     );
 
   print(`Familiar bonus meat%:`, "blue");
   sortedUnderwaterFamiliars.forEach((fam) => {
     print(
-      `${fam} (${numericModifier(fam, "Meat Drop", famWt, bestFamUnderwaterGear(fam)).toFixed(
+      `${fam} (${numericModifier(fam, "Meat Drop", familiarWeight(fam) + weightAdjustment(), bestFamUnderwaterGear(fam)).toFixed(
         2
       )}%)`,
       "blue"
