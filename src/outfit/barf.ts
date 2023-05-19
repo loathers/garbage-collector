@@ -84,7 +84,7 @@ const POINTER_RING_SPECS: (
     available: true,
     items: $items`haiku katana, mafia pointer finger ring`,
   },
-  gunSpec(outfit),
+  () => gunSpec(outfit),
   {
     available: true,
     items: $items`Operation Patriot Shield, mafia pointer finger ring`,
