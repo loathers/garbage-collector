@@ -14758,11 +14758,11 @@ var MEAT_DROP_VALUE = baseMeat / 100;
 var barfFamiliar_outfitCache = new Map();
 var barfFamiliar_outfitSlots = $slots(barfFamiliar_templateObject || (barfFamiliar_templateObject = barfFamiliar_taggedTemplateLiteral(["hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar"])));
 function getCachedOutfitValues(fam) {
-  var current = (0,external_kolmafia_namespaceObject.myFamiliar)();
-  (0,external_kolmafia_namespaceObject.cliExecute)("checkpoint");
   var lepMult = findLeprechaunMultiplier(fam);
   var currentValue = barfFamiliar_outfitCache.get(lepMult);
   if (currentValue) return currentValue;
+  var current = (0,external_kolmafia_namespaceObject.myFamiliar)();
+  (0,external_kolmafia_namespaceObject.cliExecute)("checkpoint");
   try {
     barfOutfit({
       familiar: fam,
