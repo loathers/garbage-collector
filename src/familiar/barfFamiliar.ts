@@ -48,12 +48,12 @@ const outfitCache = new Map<number, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
 function getCachedOutfitValues(fam: Familiar) {
-  const current = myFamiliar();
-  cliExecute("checkpoint");
-
   const lepMult = findLeprechaunMultiplier(fam);
   const currentValue = outfitCache.get(lepMult);
   if (currentValue) return currentValue;
+
+  const current = myFamiliar();
+  cliExecute("checkpoint");
   try {
     barfOutfit(
       {
