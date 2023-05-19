@@ -1,4 +1,4 @@
-import { cliExecute, Effect, Item, useFamiliar } from "kolmafia";
+import { cliExecute, Effect, Item, totalFreeRests, visitUrl } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -11,7 +11,6 @@ import {
   getModifier,
   have,
   Mood,
-  Requirement,
   set,
   sum,
   tryFindFreeRun,
@@ -22,7 +21,7 @@ import { globalOptions } from "../config";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
 import { ltbRun, realmAvailable, useableCinch } from "../lib";
-import { freeFightOutfit } from "../outfit";
+import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
 
 const ignoredSources = [
@@ -92,12 +91,8 @@ export function useSpikolodonSpikes(): void {
   const familiar =
     run.constraints.familiar?.() ??
     (canJelly ? $familiar`Space Jellyfish` : freeFightFamiliar({ allowAttackFamiliars: false }));
-  useFamiliar(familiar);
-  const mergedRequirements = new Requirement([], { forceEquip: $items`Jurassic Parka` }).merge(
-    run.constraints.equipmentRequirements?.() ?? new Requirement([], {})
-  );
   run.constraints.preparation?.();
-  freeFightOutfit(mergedRequirements);
+  freeFightOutfit({ shirt: $item`Jurassic Parka`, ...toSpec(run), familiar }).dress();
   cliExecute("parka spikolodon");
 
   const targetZone = canJelly
