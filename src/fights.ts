@@ -2587,7 +2587,7 @@ function runShadowRiftTurn(): void {
     have($effect`Shadow Affinity`) &&
     get("encountersUntilSRChoice") >= 2
   ) {
-    freeFightOutfit(new Requirement([], { forceEquip: $items`Jurassic Parka` }));
+    freeFightOutfit({ shirt: $item`Jurassic Parka` }).dress();
     cliExecute("parka spikolodon");
     const macro = Macro.skill($skill`Launch spikolodon spikes`).basicCombat();
     garboAdventureAuto(bestShadowRift(), macro);

@@ -1,4 +1,4 @@
-import { cliExecute, Effect, Item, totalFreeRests, visitUrl } from "kolmafia";
+import { cliExecute, Effect, Item } from "kolmafia";
 import {
   $effect,
   $familiar,
