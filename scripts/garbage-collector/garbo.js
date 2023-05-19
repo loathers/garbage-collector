@@ -22358,7 +22358,7 @@ function dailyFights() {
         (0,external_kolmafia_namespaceObject.setLocation)(location);
         embezzlerOutfit(fights_objectSpread(fights_objectSpread({}, nextFight.spec), {}, {
           familiar: familiar
-        })).dress();
+        }), location).dress();
         nextFight.run();
         postCombatActions();
         (0,external_kolmafia_namespaceObject.print)("Finished ".concat(nextFight.name));
