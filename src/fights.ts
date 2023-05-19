@@ -488,7 +488,7 @@ export function dailyFights(): void {
             : meatFamiliar();
 
         setLocation(location);
-        embezzlerOutfit({ ...nextFight.spec, familiar }).dress();
+        embezzlerOutfit({ ...nextFight.spec, familiar }, location).dress();
 
         nextFight.run();
         postCombatActions();
