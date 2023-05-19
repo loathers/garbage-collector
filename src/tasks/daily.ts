@@ -1,7 +1,6 @@
 import { Task } from "grimoire-kolmafia";
 import {
   adv1,
-  availableChoiceOptions,
   canadiaAvailable,
   canAdventure,
   canEquip,
@@ -44,7 +43,6 @@ import {
   $monster,
   $slot,
   BeachComb,
-  directlyUse,
   findLeprechaunMultiplier,
   get,
   getModifier,
