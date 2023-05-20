@@ -1,14 +1,12 @@
 import {
-  equippedItem,
   Familiar,
   familiarWeight,
   Item,
-  myFamiliar,
   numericModifier,
   print,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $item, $slot, findLeprechaunMultiplier, have } from "libram";
+import { $effect, $familiar, $item, findLeprechaunMultiplier, have } from "libram";
 import { familiarWaterBreathingEquipment } from "../outfit";
 
 function bestFamUnderwaterGear(fam: Familiar): Item {
