@@ -668,7 +668,7 @@ const pygmyMacro = Macro.step(
     Macro.if_(pygmy, skill ? Macro.trySkill(skill).item(item) : Macro.item(item))
   )
 )
-  .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySkill($skill`Sing Along`))
+  .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySingAlong())
   .ifHolidayWanderer(Macro.basicCombat())
   .abort();
 
@@ -1112,7 +1112,7 @@ const freeFightSources = [
     () => {
       retrieveItem($item`Bowl of Scorpions`);
       Macro.trySkill($skill`Extract`)
-        .trySkill($skill`Sing Along`)
+        .trySingAlong()
         .setAutoAttack();
       visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
       runChoice(1);
@@ -1793,7 +1793,7 @@ const freeKillSources = [
     () => {
       ensureBeachAccess();
       withMacro(
-        Macro.trySkill($skill`Sing Along`)
+        Macro.trySingAlong()
           .tryHaveSkill($skill`Otoscope`)
           .trySkill($skill`Chest X-Ray`),
         () => use($item`drum machine`)
@@ -1812,7 +1812,7 @@ const freeKillSources = [
     () => {
       ensureBeachAccess();
       withMacro(
-        Macro.trySkill($skill`Sing Along`)
+        Macro.trySingAlong()
           .tryHaveSkill($skill`Otoscope`)
           .trySkill($skill`Gingerbread Mob Hit`),
         () => use($item`drum machine`)
@@ -1831,7 +1831,7 @@ const freeKillSources = [
     () => {
       ensureBeachAccess();
       withMacro(
-        Macro.trySkill($skill`Sing Along`)
+        Macro.trySingAlong()
           .tryHaveSkill($skill`Otoscope`)
           .trySkill($skill`Shattering Punch`),
         () => use($item`drum machine`)
@@ -1850,7 +1850,7 @@ const freeKillSources = [
     () => {
       ensureBeachAccess();
       withMacro(
-        Macro.trySkill($skill`Sing Along`)
+        Macro.trySingAlong()
           .tryHaveSkill($skill`Otoscope`)
           .item($item`replica bat-oomerang`),
         () => use($item`drum machine`)
@@ -1870,7 +1870,7 @@ const freeKillSources = [
       ensureBeachAccess();
       AsdonMartin.fillTo(100);
       withMacro(
-        Macro.trySkill($skill`Sing Along`)
+        Macro.trySingAlong()
           .tryHaveSkill($skill`Otoscope`)
           .skill($skill`Asdon Martin: Missile Launcher`),
         () => use($item`drum machine`)
@@ -1889,7 +1889,7 @@ const freeKillSources = [
     () => {
       ensureBeachAccess();
       withMacro(
-        Macro.trySkill($skill`Sing Along`)
+        Macro.trySingAlong()
           .tryHaveSkill($skill`Otoscope`)
           .skill($skill`Shocking Lick`),
         () => use($item`drum machine`)
@@ -1909,7 +1909,7 @@ const freeKillSources = [
       ensureBeachAccess();
       cliExecute("parka dilophosaur");
       withMacro(
-        Macro.trySkill($skill`Sing Along`)
+        Macro.trySingAlong()
           .tryHaveSkill($skill`Otoscope`)
           .trySkill($skill`Spit jurassic acid`),
         () => use($item`drum machine`)
