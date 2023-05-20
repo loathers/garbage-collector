@@ -21,6 +21,12 @@ function bestFamUnderwaterGear(fam: Familiar): Item {
     : $item`little bitty bathysphere`;
 }
 
+function getBuffedFamiliarWeight(fam: Familiar): number {
+  // returns the buffed weight of the given familiar. Doesn't count any equipment on the given familiar.
+  const weight = familiarWeight(fam) + weightAdjustment() - numericModifier(equippedItem($slot`familiar`), "Familiar Weight");
+  return fam.feasted ? weight + 10 : weight;
+}
+
 export function bestYachtzeeFamiliar(): Familiar {
   const haveUnderwaterFamEquipment = familiarWaterBreathingEquipment.some((item) => have(item));
   const sortedUnderwaterFamiliars = Familiar.all()
@@ -34,14 +40,14 @@ export function bestYachtzeeFamiliar(): Familiar {
     )
     .sort(
       (left, right) =>
-        numericModifier(right, "Meat Drop", familiarWeight(right) + weightAdjustment() - numericModifier(equippedItem($slot`familiar`), "Familiar Weight"), bestFamUnderwaterGear(right)) -
-        numericModifier(left, "Meat Drop", familiarWeight(left) + weightAdjustment() - numericModifier(equippedItem($slot`familiar`), "Familiar Weight"), bestFamUnderwaterGear(left))
+        numericModifier(right, "Meat Drop", getBuffedFamiliarWeight(right), bestFamUnderwaterGear(right)) -
+        numericModifier(left, "Meat Drop", getBuffedFamiliarWeight(left), bestFamUnderwaterGear(left))
     );
 
   print(`Familiar bonus meat%:`, "blue");
   sortedUnderwaterFamiliars.forEach((fam) => {
     print(
-      `${fam} (${numericModifier(fam, "Meat Drop", familiarWeight(fam) + weightAdjustment() - numericModifier(equippedItem($slot`familiar`), "Familiar Weight"), bestFamUnderwaterGear(fam)).toFixed(
+      `${fam} (${numericModifier(fam, "Meat Drop", getBuffedFamiliarWeight(fam), bestFamUnderwaterGear(fam)).toFixed(
         2
       )}%)`,
       "blue"
