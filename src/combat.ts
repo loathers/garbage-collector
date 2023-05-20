@@ -314,7 +314,9 @@ export class Macro extends StrictMacro {
         Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Long Con`))
       )
       .externalIf(
-        have($skill`Motif`) && !have($effect`Everything Looks Blue`),
+        get("motifMonster") !== $monster`garbage tourist` &&
+          have($skill`Motif`) &&
+          !have($effect`Everything Looks Blue`),
         Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Motif`))
       )
       .externalIf(
