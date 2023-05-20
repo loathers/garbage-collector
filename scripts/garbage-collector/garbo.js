@@ -20747,7 +20747,7 @@ function makePantsFromObject(pants) {
   return makePants(pants.alignment, pants.element, pants.leftSac, pants.middleSac, pants.rightSac);
 }
 ;// CONCATENATED MODULE: ./src/tasks/daily.ts
-var daily_templateObject, daily_templateObject2, daily_templateObject3, daily_templateObject4, daily_templateObject5, daily_templateObject6, daily_templateObject7, daily_templateObject8, daily_templateObject9, daily_templateObject10, daily_templateObject11, daily_templateObject12, daily_templateObject13, daily_templateObject14, daily_templateObject15, daily_templateObject16, daily_templateObject17, daily_templateObject18, daily_templateObject19, daily_templateObject20, daily_templateObject21, daily_templateObject22, daily_templateObject23, daily_templateObject24, daily_templateObject25, daily_templateObject26, daily_templateObject27, daily_templateObject28, daily_templateObject29, daily_templateObject30, daily_templateObject31, daily_templateObject32, daily_templateObject33, daily_templateObject34, daily_templateObject35, daily_templateObject36, daily_templateObject37, daily_templateObject38, daily_templateObject39, daily_templateObject40, daily_templateObject41, daily_templateObject42, daily_templateObject43, daily_templateObject44, daily_templateObject45, daily_templateObject46, daily_templateObject47, daily_templateObject48, daily_templateObject49, daily_templateObject50, daily_templateObject51, daily_templateObject52, daily_templateObject53, daily_templateObject54, daily_templateObject55, daily_templateObject56, daily_templateObject57, daily_templateObject58, daily_templateObject59, daily_templateObject60, daily_templateObject61, daily_templateObject62, daily_templateObject63, daily_templateObject64, daily_templateObject65, daily_templateObject66, daily_templateObject67, daily_templateObject68, daily_templateObject69, daily_templateObject70, daily_templateObject71, daily_templateObject72, daily_templateObject73, daily_templateObject74, daily_templateObject75, daily_templateObject76, daily_templateObject77, daily_templateObject78, daily_templateObject79, daily_templateObject80, daily_templateObject81, daily_templateObject82, daily_templateObject83, daily_templateObject84, daily_templateObject85;
+var daily_templateObject, daily_templateObject2, daily_templateObject3, daily_templateObject4, daily_templateObject5, daily_templateObject6, daily_templateObject7, daily_templateObject8, daily_templateObject9, daily_templateObject10, daily_templateObject11, daily_templateObject12, daily_templateObject13, daily_templateObject14, daily_templateObject15, daily_templateObject16, daily_templateObject17, daily_templateObject18, daily_templateObject19, daily_templateObject20, daily_templateObject21, daily_templateObject22, daily_templateObject23, daily_templateObject24, daily_templateObject25, daily_templateObject26, daily_templateObject27, daily_templateObject28, daily_templateObject29, daily_templateObject30, daily_templateObject31, daily_templateObject32, daily_templateObject33, daily_templateObject34, daily_templateObject35, daily_templateObject36, daily_templateObject37, daily_templateObject38, daily_templateObject39, daily_templateObject40, daily_templateObject41, daily_templateObject42, daily_templateObject43, daily_templateObject44, daily_templateObject45, daily_templateObject46, daily_templateObject47, daily_templateObject48, daily_templateObject49, daily_templateObject50, daily_templateObject51, daily_templateObject52, daily_templateObject53, daily_templateObject54, daily_templateObject55, daily_templateObject56, daily_templateObject57, daily_templateObject58, daily_templateObject59, daily_templateObject60, daily_templateObject61, daily_templateObject62, daily_templateObject63, daily_templateObject64, daily_templateObject65, daily_templateObject66, daily_templateObject67, daily_templateObject68, daily_templateObject69, daily_templateObject70, daily_templateObject71, daily_templateObject72, daily_templateObject73, daily_templateObject74, daily_templateObject75, daily_templateObject76, daily_templateObject77, daily_templateObject78, daily_templateObject79, daily_templateObject80, daily_templateObject81, daily_templateObject82, daily_templateObject83, daily_templateObject84, daily_templateObject85, daily_templateObject86, daily_templateObject87;
 function daily_slicedToArray(arr, i) { return daily_arrayWithHoles(arr) || daily_iterableToArrayLimit(arr, i) || daily_unsupportedIterableToArray(arr, i) || daily_nonIterableRest(); }
 function daily_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function daily_iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
@@ -20956,8 +20956,16 @@ function configureSnojo() {
   }
 }
 var DailyTasks = [{
+  name: "Chibi Buddy",
+  ready: () => lib_have(template_string_$item(daily_templateObject37 || (daily_templateObject37 = daily_taggedTemplateLiteral(["ChibiBuddy\u2122 (on)"])))) || lib_have(template_string_$item(daily_templateObject38 || (daily_templateObject38 = daily_taggedTemplateLiteral(["ChibiBuddy\u2122 (off)"])))),
+  completed: () => property_get("_chibiChanged", true),
+  do: () => (0,external_kolmafia_namespaceObject.cliExecute)("chibi chat"),
+  limit: {
+    soft: 1
+  }
+}, {
   name: "Refresh Latte",
-  ready: () => lib_have(template_string_$item(daily_templateObject37 || (daily_templateObject37 = daily_taggedTemplateLiteral(["latte lovers member's mug"])))),
+  ready: () => lib_have(template_string_$item(daily_templateObject39 || (daily_templateObject39 = daily_taggedTemplateLiteral(["latte lovers member's mug"])))),
   completed: () => latteRefreshed,
   do: () => {
     (0,external_kolmafia_namespaceObject.visitUrl)("main.php?latte=1", false);
@@ -20966,15 +20974,15 @@ var DailyTasks = [{
 }, {
   name: "Unlock Cemetery",
   ready: () => property_get("lastGuildStoreOpen") >= (0,external_kolmafia_namespaceObject.myAscensions)(),
-  completed: () => (0,external_kolmafia_namespaceObject.canAdventure)($location(daily_templateObject38 || (daily_templateObject38 = daily_taggedTemplateLiteral(["The Unquiet Garves"])))),
+  completed: () => (0,external_kolmafia_namespaceObject.canAdventure)($location(daily_templateObject40 || (daily_templateObject40 = daily_taggedTemplateLiteral(["The Unquiet Garves"])))),
   do: () => (0,external_kolmafia_namespaceObject.visitUrl)("guild.php?place=scg"),
   limit: {
     soft: 3
   } // Sometimes need to cycle through some dialogue
 }, {
   name: "Unlock Woods",
-  ready: () => lib_have(template_string_$item(daily_templateObject39 || (daily_templateObject39 = daily_taggedTemplateLiteral(["bitchin' meatcar"])))),
-  completed: () => (0,external_kolmafia_namespaceObject.canAdventure)($location(daily_templateObject40 || (daily_templateObject40 = daily_taggedTemplateLiteral(["The Spooky Forest"])))),
+  ready: () => lib_have(template_string_$item(daily_templateObject41 || (daily_templateObject41 = daily_taggedTemplateLiteral(["bitchin' meatcar"])))),
+  completed: () => (0,external_kolmafia_namespaceObject.canAdventure)($location(daily_templateObject42 || (daily_templateObject42 = daily_taggedTemplateLiteral(["The Spooky Forest"])))),
   do: () => {
     (0,external_kolmafia_namespaceObject.visitUrl)("guild.php?place=paco");
     if ((0,external_kolmafia_namespaceObject.handlingChoice)()) (0,external_kolmafia_namespaceObject.runChoice)(1);
@@ -20985,16 +20993,16 @@ var DailyTasks = [{
 }, {
   name: "Configure I Voted! Sticker",
   ready: () => true,
-  completed: () => lib_have(template_string_$item(daily_templateObject41 || (daily_templateObject41 = daily_taggedTemplateLiteral(["\"I Voted!\" sticker"])))),
-  do: () => voterSetup()
+  completed: () => lib_have(template_string_$item(daily_templateObject43 || (daily_templateObject43 = daily_taggedTemplateLiteral(["\"I Voted!\" sticker"])))),
+  do: voterSetup
 }, {
   name: "Configure Pantogram",
   ready: () => Pantogram_have(),
   completed: () => havePants(),
-  do: () => daily_pantogram()
+  do: daily_pantogram
 }, {
   name: "Configure Fourth of May Cosplay Saber",
-  ready: () => lib_have(template_string_$item(daily_templateObject42 || (daily_templateObject42 = daily_taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))),
+  ready: () => lib_have(template_string_$item(daily_templateObject44 || (daily_templateObject44 = daily_taggedTemplateLiteral(["Fourth of May Cosplay Saber"])))),
   completed: () => property_get("_saberMod") !== 0,
   do: () => {
     (0,external_kolmafia_namespaceObject.visitUrl)("main.php?action=may4");
@@ -21003,7 +21011,7 @@ var DailyTasks = [{
   }
 }, {
   name: "Bastille Battalion",
-  ready: () => lib_have(template_string_$item(daily_templateObject43 || (daily_templateObject43 = daily_taggedTemplateLiteral(["Bastille Battalion control rig"])))),
+  ready: () => lib_have(template_string_$item(daily_templateObject45 || (daily_templateObject45 = daily_taggedTemplateLiteral(["Bastille Battalion control rig"])))),
   completed: () => property_get("_bastilleGames") !== 0,
   do: () => (0,external_kolmafia_namespaceObject.cliExecute)("bastille myst brutalist gesture")
 }, {
@@ -21035,22 +21043,22 @@ var DailyTasks = [{
   do: () => (0,external_kolmafia_namespaceObject.cliExecute)("horsery dark")
 }, {
   name: "Beach Comb One-Day",
-  ready: () => lib_have(template_string_$item(daily_templateObject44 || (daily_templateObject44 = daily_taggedTemplateLiteral(["piece of driftwood"])))) && !lib_have(template_string_$item(daily_templateObject45 || (daily_templateObject45 = daily_taggedTemplateLiteral(["Beach Comb"])))),
-  completed: () => lib_have(template_string_$item(daily_templateObject46 || (daily_templateObject46 = daily_taggedTemplateLiteral(["driftwood beach comb"])))),
-  do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(daily_templateObject47 || (daily_templateObject47 = daily_taggedTemplateLiteral(["piece of driftwood"]))))
+  ready: () => lib_have(template_string_$item(daily_templateObject46 || (daily_templateObject46 = daily_taggedTemplateLiteral(["piece of driftwood"])))) && !lib_have(template_string_$item(daily_templateObject47 || (daily_templateObject47 = daily_taggedTemplateLiteral(["Beach Comb"])))),
+  completed: () => lib_have(template_string_$item(daily_templateObject48 || (daily_templateObject48 = daily_taggedTemplateLiteral(["driftwood beach comb"])))),
+  do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(daily_templateObject49 || (daily_templateObject49 = daily_taggedTemplateLiteral(["piece of driftwood"]))))
 }, {
   name: "Beach Comb Buff",
-  ready: () => lib_have(template_string_$item(daily_templateObject48 || (daily_templateObject48 = daily_taggedTemplateLiteral(["Beach Comb"])))) || lib_have(template_string_$item(daily_templateObject49 || (daily_templateObject49 = daily_taggedTemplateLiteral(["driftwood beach comb"])))),
+  ready: () => lib_have(template_string_$item(daily_templateObject50 || (daily_templateObject50 = daily_taggedTemplateLiteral(["Beach Comb"])))) || lib_have(template_string_$item(daily_templateObject51 || (daily_templateObject51 = daily_taggedTemplateLiteral(["driftwood beach comb"])))),
   completed: () => !headAvailable("FAMILIAR") || freeCombs() < 1,
-  do: () => tryHead(template_string_$effect(daily_templateObject50 || (daily_templateObject50 = daily_taggedTemplateLiteral(["Do I Know You From Somewhere?"]))))
+  do: () => tryHead(template_string_$effect(daily_templateObject52 || (daily_templateObject52 = daily_taggedTemplateLiteral(["Do I Know You From Somewhere?"]))))
 }, {
   name: "Beach Comb Free Walks",
-  ready: () => lib_have(template_string_$item(daily_templateObject51 || (daily_templateObject51 = daily_taggedTemplateLiteral(["Beach Comb"])))) || lib_have(template_string_$item(daily_templateObject52 || (daily_templateObject52 = daily_taggedTemplateLiteral(["driftwood beach comb"])))),
+  ready: () => lib_have(template_string_$item(daily_templateObject53 || (daily_templateObject53 = daily_taggedTemplateLiteral(["Beach Comb"])))) || lib_have(template_string_$item(daily_templateObject54 || (daily_templateObject54 = daily_taggedTemplateLiteral(["driftwood beach comb"])))),
   completed: () => freeCombs() < 1,
   do: () => (0,external_kolmafia_namespaceObject.cliExecute)("combo ".concat(11 - property_get("_freeBeachWalksUsed")))
 }, {
   name: "Clan Fortune Buff",
-  ready: () => lib_have(template_string_$item(daily_templateObject53 || (daily_templateObject53 = daily_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && (0,external_kolmafia_namespaceObject.getClanLounge)()["Clan Carnival Game"] !== undefined,
+  ready: () => lib_have(template_string_$item(daily_templateObject55 || (daily_templateObject55 = daily_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && (0,external_kolmafia_namespaceObject.getClanLounge)()["Clan Carnival Game"] !== undefined,
   completed: () => property_get("_clanFortuneBuffUsed"),
   do: () => (0,external_kolmafia_namespaceObject.cliExecute)("fortune buff meat")
 }, {
@@ -21062,7 +21070,7 @@ var DailyTasks = [{
   name: "Source Terminal Enhance",
   ready: () => SourceTerminal_have(),
   completed: () => enhanceUsesRemaining() === 0,
-  do: () => enhance(template_string_$effect(daily_templateObject54 || (daily_templateObject54 = daily_taggedTemplateLiteral(["meat.enh"])))),
+  do: () => enhance(template_string_$effect(daily_templateObject56 || (daily_templateObject56 = daily_taggedTemplateLiteral(["meat.enh"])))),
   limit: {
     soft: 3
   }
@@ -21070,16 +21078,16 @@ var DailyTasks = [{
   name: "Source Terminal Enquire",
   ready: () => SourceTerminal_have(),
   completed: () => property_get("sourceTerminalEnquiry") === "familiar.enq",
-  do: () => enquiry(template_string_$effect(daily_templateObject55 || (daily_templateObject55 = daily_taggedTemplateLiteral(["familiar.enq"]))))
+  do: () => enquiry(template_string_$effect(daily_templateObject57 || (daily_templateObject57 = daily_taggedTemplateLiteral(["familiar.enq"]))))
 }, {
   name: "Mad Tea Party Buff",
   ready: () => !property_get("_madTeaParty"),
   completed: () => property_get("_madTeaParty"),
   do: () => (0,external_kolmafia_namespaceObject.cliExecute)("hatter 22"),
   acquire: [{
-    item: template_string_$item(daily_templateObject56 || (daily_templateObject56 = daily_taggedTemplateLiteral(["filthy knitted dread sack"])))
+    item: template_string_$item(daily_templateObject58 || (daily_templateObject58 = daily_taggedTemplateLiteral(["filthy knitted dread sack"])))
   }],
-  effects: [template_string_$effect(daily_templateObject57 || (daily_templateObject57 = daily_taggedTemplateLiteral(["Down the Rabbit Hole"])))]
+  effects: [template_string_$effect(daily_templateObject59 || (daily_templateObject59 = daily_taggedTemplateLiteral(["Down the Rabbit Hole"])))]
 }, {
   name: "SongBoom Buff",
   ready: () => SongBoom_have() && songChangesLeft() > 0 && (0,external_kolmafia_namespaceObject.myInebriety)() <= (0,external_kolmafia_namespaceObject.inebrietyLimit)(),
@@ -21092,61 +21100,61 @@ var DailyTasks = [{
   do: () => setSong("Food Vibrations")
 }, {
   name: "Set Mind Control Device",
-  ready: () => (0,external_kolmafia_namespaceObject.canadiaAvailable)() || (0,external_kolmafia_namespaceObject.gnomadsAvailable)() || lib_have(template_string_$item(daily_templateObject58 || (daily_templateObject58 = daily_taggedTemplateLiteral(["detuned radio"])))),
+  ready: () => (0,external_kolmafia_namespaceObject.canadiaAvailable)() || (0,external_kolmafia_namespaceObject.gnomadsAvailable)() || lib_have(template_string_$item(daily_templateObject60 || (daily_templateObject60 = daily_taggedTemplateLiteral(["detuned radio"])))),
   completed: () => (0,external_kolmafia_namespaceObject.currentMcd)() === ((0,external_kolmafia_namespaceObject.canadiaAvailable)() ? 11 : 10),
   do: () => (0,external_kolmafia_namespaceObject.changeMcd)((0,external_kolmafia_namespaceObject.canadiaAvailable)() ? 11 : 10)
 }, {
   name: "Implement [glitch season reward name]",
-  ready: () => lib_have(template_string_$item(daily_templateObject59 || (daily_templateObject59 = daily_taggedTemplateLiteral(["[glitch season reward name]"])))),
+  ready: () => lib_have(template_string_$item(daily_templateObject61 || (daily_templateObject61 = daily_taggedTemplateLiteral(["[glitch season reward name]"])))),
   completed: () => property_get("_glitchItemImplemented"),
-  do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(daily_templateObject60 || (daily_templateObject60 = daily_taggedTemplateLiteral(["[glitch season reward name]"]))))
+  do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(daily_templateObject62 || (daily_templateObject62 = daily_taggedTemplateLiteral(["[glitch season reward name]"]))))
 }, {
   name: "Use BittyCar MeatCart",
   ready: () => property_get("_bittycar") !== "meatcar",
   completed: () => property_get("_bittycar") === "meatcar",
-  do: () => withStash([template_string_$item(daily_templateObject61 || (daily_templateObject61 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))], () => (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(daily_templateObject62 || (daily_templateObject62 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))))
+  do: () => withStash([template_string_$item(daily_templateObject63 || (daily_templateObject63 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))], () => (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(daily_templateObject64 || (daily_templateObject64 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))))
 }, {
   name: "Use BittyCar SoulCar",
   ready: () => property_get("_bittycar") !== "meatcar" && property_get("_bittycar") !== "soulcar",
   completed: () => property_get("_bittycar") === "soulcar",
-  do: () => withStash([template_string_$item(daily_templateObject63 || (daily_templateObject63 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))], () => (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(daily_templateObject64 || (daily_templateObject64 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))))
+  do: () => withStash([template_string_$item(daily_templateObject65 || (daily_templateObject65 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))], () => (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(daily_templateObject66 || (daily_templateObject66 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))))
 }, {
   name: "Holiday Eldritch Attunement",
-  ready: () => (0,external_kolmafia_namespaceObject.holiday)() === "Generic Summer Holiday" && !lib_have(template_string_$effect(daily_templateObject65 || (daily_templateObject65 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))) && estimatedTentacles() * config_globalOptions.prefs.valueOfFreeFight > property_get("valueOfAdventure"),
-  completed: () => lib_have(template_string_$effect(daily_templateObject66 || (daily_templateObject66 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))),
-  do: () => (0,external_kolmafia_namespaceObject.adv1)($location(daily_templateObject67 || (daily_templateObject67 = daily_taggedTemplateLiteral(["Generic Summer Holiday Swimming!"])))),
+  ready: () => (0,external_kolmafia_namespaceObject.holiday)() === "Generic Summer Holiday" && !lib_have(template_string_$effect(daily_templateObject67 || (daily_templateObject67 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))) && estimatedTentacles() * config_globalOptions.prefs.valueOfFreeFight > property_get("valueOfAdventure"),
+  completed: () => lib_have(template_string_$effect(daily_templateObject68 || (daily_templateObject68 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))),
+  do: () => (0,external_kolmafia_namespaceObject.adv1)($location(daily_templateObject69 || (daily_templateObject69 = daily_taggedTemplateLiteral(["Generic Summer Holiday Swimming!"])))),
   acquire: [{
-    item: template_string_$item(daily_templateObject68 || (daily_templateObject68 = daily_taggedTemplateLiteral(["water wings"])))
+    item: template_string_$item(daily_templateObject70 || (daily_templateObject70 = daily_taggedTemplateLiteral(["water wings"])))
   }],
-  outfit: () => (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && lib_have(template_string_$item(daily_templateObject69 || (daily_templateObject69 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) && (0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(daily_templateObject70 || (daily_templateObject70 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) ? {
-    offhand: template_string_$item(daily_templateObject71 || (daily_templateObject71 = daily_taggedTemplateLiteral(["Drunkula's wineglass"]))),
-    acc1: template_string_$item(daily_templateObject72 || (daily_templateObject72 = daily_taggedTemplateLiteral(["water wings"]))),
-    avoid: template_string_$items(daily_templateObject73 || (daily_templateObject73 = daily_taggedTemplateLiteral(["June cleaver"])))
-  } : {
+  outfit: () => (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && lib_have(template_string_$item(daily_templateObject71 || (daily_templateObject71 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) && (0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(daily_templateObject72 || (daily_templateObject72 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) ? {
+    offhand: template_string_$item(daily_templateObject73 || (daily_templateObject73 = daily_taggedTemplateLiteral(["Drunkula's wineglass"]))),
     acc1: template_string_$item(daily_templateObject74 || (daily_templateObject74 = daily_taggedTemplateLiteral(["water wings"]))),
     avoid: template_string_$items(daily_templateObject75 || (daily_templateObject75 = daily_taggedTemplateLiteral(["June cleaver"])))
+  } : {
+    acc1: template_string_$item(daily_templateObject76 || (daily_templateObject76 = daily_taggedTemplateLiteral(["water wings"]))),
+    avoid: template_string_$items(daily_templateObject77 || (daily_templateObject77 = daily_taggedTemplateLiteral(["June cleaver"])))
   }
 }, {
   name: "Check Neverending Party Quest",
   ready: () => (property_get("neverendingPartyAlways") || property_get("_neverendingPartyToday")) && property_get("_questPartyFair") === "unstarted",
   completed: () => property_get("_questPartyFair") !== "unstarted",
-  do: () => nepQuest(),
-  outfit: () => (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && lib_have(template_string_$item(daily_templateObject76 || (daily_templateObject76 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) && (0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(daily_templateObject77 || (daily_templateObject77 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) ? {
-    offhand: template_string_$item(daily_templateObject78 || (daily_templateObject78 = daily_taggedTemplateLiteral(["Drunkula's wineglass"]))),
-    avoid: template_string_$items(daily_templateObject79 || (daily_templateObject79 = daily_taggedTemplateLiteral(["June cleaver"])))
+  do: nepQuest,
+  outfit: () => (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && lib_have(template_string_$item(daily_templateObject78 || (daily_templateObject78 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) && (0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(daily_templateObject79 || (daily_templateObject79 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) ? {
+    offhand: template_string_$item(daily_templateObject80 || (daily_templateObject80 = daily_taggedTemplateLiteral(["Drunkula's wineglass"]))),
+    avoid: template_string_$items(daily_templateObject81 || (daily_templateObject81 = daily_taggedTemplateLiteral(["June cleaver"])))
   } : {
-    avoid: template_string_$items(daily_templateObject80 || (daily_templateObject80 = daily_taggedTemplateLiteral(["June cleaver"])))
+    avoid: template_string_$items(daily_templateObject82 || (daily_templateObject82 = daily_taggedTemplateLiteral(["June cleaver"])))
   }
 }, {
   name: "Check Barf Mountain Quest",
   ready: () => property_get("stenchAirportAlways") || property_get("_stenchAirportToday"),
   completed: () => !attemptCompletingBarfQuest,
-  do: () => checkBarfQuest()
+  do: checkBarfQuest
 }, {
   name: "Configure Snojo",
   ready: () => property_get("snojoAvailable") && property_get("_snojoFreeFights") < 10,
   completed: () => snojoConfigured,
-  do: () => configureSnojo()
+  do: configureSnojo
 },
 // Final tasks
 {
@@ -21156,9 +21164,9 @@ var DailyTasks = [{
   do: () => closetItems.forEach(item => (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(item), item))
 }, {
   name: "Closet Hobo Nickels",
-  ready: () => lib_have($familiar(daily_templateObject81 || (daily_templateObject81 = daily_taggedTemplateLiteral(["Hobo Monkey"])))) || lib_have(template_string_$item(daily_templateObject82 || (daily_templateObject82 = daily_taggedTemplateLiteral(["hobo nickel"]))), 1000),
-  completed: () => (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(daily_templateObject83 || (daily_templateObject83 = daily_taggedTemplateLiteral(["hobo nickel"])))) === 0,
-  do: () => (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(daily_templateObject84 || (daily_templateObject84 = daily_taggedTemplateLiteral(["hobo nickel"])))), template_string_$item(daily_templateObject85 || (daily_templateObject85 = daily_taggedTemplateLiteral(["hobo nickel"]))))
+  ready: () => lib_have($familiar(daily_templateObject83 || (daily_templateObject83 = daily_taggedTemplateLiteral(["Hobo Monkey"])))) || lib_have(template_string_$item(daily_templateObject84 || (daily_templateObject84 = daily_taggedTemplateLiteral(["hobo nickel"]))), 1000),
+  completed: () => (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(daily_templateObject85 || (daily_templateObject85 = daily_taggedTemplateLiteral(["hobo nickel"])))) === 0,
+  do: () => (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(daily_templateObject86 || (daily_templateObject86 = daily_taggedTemplateLiteral(["hobo nickel"])))), template_string_$item(daily_templateObject87 || (daily_templateObject87 = daily_taggedTemplateLiteral(["hobo nickel"]))))
 }, {
   name: "Retrieve Items",
   ready: () => retrieveItems.some(item => (0,external_kolmafia_namespaceObject.itemAmount)(item) === 0),
@@ -25453,7 +25461,7 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(27339);
+  sinceKolmafiaRevision(27360);
   checkGithubVersion();
 
   // Hit up main.php to get out of easily escapable choices
