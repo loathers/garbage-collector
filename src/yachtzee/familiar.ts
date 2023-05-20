@@ -1,4 +1,5 @@
 import {
+  equippedItem,
   Familiar,
   familiarWeight,
   Item,
@@ -6,7 +7,7 @@ import {
   print,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $item, findLeprechaunMultiplier, have } from "libram";
+import { $effect, $familiar, $item, $slot, findLeprechaunMultiplier, have } from "libram";
 import { familiarWaterBreathingEquipment } from "../outfit";
 
 function bestFamUnderwaterGear(fam: Familiar): Item {
@@ -33,14 +34,14 @@ export function bestYachtzeeFamiliar(): Familiar {
     )
     .sort(
       (left, right) =>
-        numericModifier(right, "Meat Drop", familiarWeight(right) + weightAdjustment(), bestFamUnderwaterGear(right)) -
-        numericModifier(left, "Meat Drop", familiarWeight(left) + weightAdjustment(), bestFamUnderwaterGear(left))
+        numericModifier(right, "Meat Drop", familiarWeight(right) + weightAdjustment() - numericModifier(equippedItem($slot`familiar`), "Familiar Weight"), bestFamUnderwaterGear(right)) -
+        numericModifier(left, "Meat Drop", familiarWeight(left) + weightAdjustment() - numericModifier(equippedItem($slot`familiar`), "Familiar Weight"), bestFamUnderwaterGear(left))
     );
 
   print(`Familiar bonus meat%:`, "blue");
   sortedUnderwaterFamiliars.forEach((fam) => {
     print(
-      `${fam} (${numericModifier(fam, "Meat Drop", familiarWeight(fam) + weightAdjustment(), bestFamUnderwaterGear(fam)).toFixed(
+      `${fam} (${numericModifier(fam, "Meat Drop", familiarWeight(fam) + weightAdjustment() - numericModifier(equippedItem($slot`familiar`), "Familiar Weight"), bestFamUnderwaterGear(fam)).toFixed(
         2
       )}%)`,
       "blue"
