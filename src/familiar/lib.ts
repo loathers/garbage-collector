@@ -10,7 +10,7 @@ import {
 } from "kolmafia";
 import { $effect, $familiar, $item, $skill, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
-import { ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
+import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 export type GeneralFamiliar = {
@@ -32,7 +32,6 @@ export function timeToMeatify(): boolean {
 
   // Check Wanderers
   const totalTurns = totalTurnsPlayed();
-  const baseMeat = have($item`SongBoom™ BoomBox`) ? 275 : 250;
   const usingLatte =
     have($item`latte lovers member's mug`) &&
     get("latteModifier").split(",").includes("Meat Drop: 40");
