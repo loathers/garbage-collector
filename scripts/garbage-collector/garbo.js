@@ -13094,7 +13094,7 @@ function useLimitedDrops(mode) {
   return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
 }
 function valueOfMeat(mode) {
-  return isFree(mode) ? 0 : (250 + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0) + (song() === "Total Eclipse of Your Meat" ? 25 : 0)) / 100;
+  return isFree(mode) ? 0 : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
 }
 function valueOfItem(mode) {
   return mode === BonusEquipMode.BARF ? 0.72 : 0;
@@ -13559,7 +13559,7 @@ function potentialNonOrganAdventures() {
   return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
 }
 ;// CONCATENATED MODULE: ./src/familiar/lib.ts
-var familiar_lib_templateObject, familiar_lib_templateObject2, familiar_lib_templateObject3, familiar_lib_templateObject4, familiar_lib_templateObject5, familiar_lib_templateObject6, familiar_lib_templateObject7, familiar_lib_templateObject8, familiar_lib_templateObject9, familiar_lib_templateObject10, familiar_lib_templateObject11, familiar_lib_templateObject12, familiar_lib_templateObject13;
+var familiar_lib_templateObject, familiar_lib_templateObject2, familiar_lib_templateObject3, familiar_lib_templateObject4, familiar_lib_templateObject5, familiar_lib_templateObject6, familiar_lib_templateObject7, familiar_lib_templateObject8, familiar_lib_templateObject9, familiar_lib_templateObject10, familiar_lib_templateObject11, familiar_lib_templateObject12;
 function familiar_lib_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 
@@ -13573,11 +13573,10 @@ function timeToMeatify() {
 
   // Check Wanderers
   var totalTurns = (0,external_kolmafia_namespaceObject.totalTurnsPlayed)();
-  var baseMeat = lib_have(template_string_$item(familiar_lib_templateObject3 || (familiar_lib_templateObject3 = familiar_lib_taggedTemplateLiteral(["SongBoom\u2122 BoomBox"])))) ? 275 : 250;
-  var usingLatte = lib_have(template_string_$item(familiar_lib_templateObject4 || (familiar_lib_templateObject4 = familiar_lib_taggedTemplateLiteral(["latte lovers member's mug"])))) && property_get("latteModifier").split(",").includes("Meat Drop: 40");
-  var nextProtonicGhost = lib_have(template_string_$item(familiar_lib_templateObject5 || (familiar_lib_templateObject5 = familiar_lib_taggedTemplateLiteral(["protonic accelerator pack"])))) ? Math.max(1, property_get("nextParanormalActivity") - totalTurns) : Infinity;
-  var nextVoteMonster = lib_have(template_string_$item(familiar_lib_templateObject6 || (familiar_lib_templateObject6 = familiar_lib_taggedTemplateLiteral(["\"I Voted!\" sticker"])))) && property_get("_voteFreeFights") < 3 ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;
-  var nextVoidMonster = lib_have(template_string_$item(familiar_lib_templateObject7 || (familiar_lib_templateObject7 = familiar_lib_taggedTemplateLiteral(["cursed magnifying glass"])))) && property_get("_voidFreeFights") < 5 && config_globalOptions.prefs.valueOfFreeFight / 13 > baseMeat * (usingLatte ? 0.75 : 0.6) ? -property_get("cursedMagnifyingGlassCount") % 13 : Infinity;
+  var usingLatte = lib_have(template_string_$item(familiar_lib_templateObject3 || (familiar_lib_templateObject3 = familiar_lib_taggedTemplateLiteral(["latte lovers member's mug"])))) && property_get("latteModifier").split(",").includes("Meat Drop: 40");
+  var nextProtonicGhost = lib_have(template_string_$item(familiar_lib_templateObject4 || (familiar_lib_templateObject4 = familiar_lib_taggedTemplateLiteral(["protonic accelerator pack"])))) ? Math.max(1, property_get("nextParanormalActivity") - totalTurns) : Infinity;
+  var nextVoteMonster = lib_have(template_string_$item(familiar_lib_templateObject5 || (familiar_lib_templateObject5 = familiar_lib_taggedTemplateLiteral(["\"I Voted!\" sticker"])))) && property_get("_voteFreeFights") < 3 ? Math.max(0, (totalTurns % 11 - 1) % 11) : Infinity;
+  var nextVoidMonster = lib_have(template_string_$item(familiar_lib_templateObject6 || (familiar_lib_templateObject6 = familiar_lib_taggedTemplateLiteral(["cursed magnifying glass"])))) && property_get("_voidFreeFights") < 5 && config_globalOptions.prefs.valueOfFreeFight / 13 > baseMeat * (usingLatte ? 0.75 : 0.6) ? -property_get("cursedMagnifyingGlassCount") % 13 : Infinity;
 
   // If any of the above are 0, then
   // (1) We should be fighting a free fight
@@ -13587,14 +13586,14 @@ function timeToMeatify() {
   var delay = Math.min(nextProtonicGhost, nextVoteMonster === 0 ? property_get("_voteFreeFights") < 2 ? 11 : Infinity : nextVoteMonster, nextVoidMonster === 0 ? 13 : nextVoidMonster);
   if (delay < (0,external_kolmafia_namespaceObject.myAdventures)()) return false;
   // We can wait for the next free fight
-  else if (freeFightNow || $familiar(familiar_lib_templateObject8 || (familiar_lib_templateObject8 = familiar_lib_taggedTemplateLiteral(["Grey Goose"]))).experience >= 121) return true;
+  else if (freeFightNow || $familiar(familiar_lib_templateObject7 || (familiar_lib_templateObject7 = familiar_lib_taggedTemplateLiteral(["Grey Goose"]))).experience >= 121) return true;
   return false;
 }
 function pocketProfessorLectures() {
-  return 2 + Math.ceil(Math.sqrt((0,external_kolmafia_namespaceObject.familiarWeight)($familiar(familiar_lib_templateObject9 || (familiar_lib_templateObject9 = familiar_lib_taggedTemplateLiteral(["Pocket Professor"])))) + (0,external_kolmafia_namespaceObject.weightAdjustment)()));
+  return 2 + Math.ceil(Math.sqrt((0,external_kolmafia_namespaceObject.familiarWeight)($familiar(familiar_lib_templateObject8 || (familiar_lib_templateObject8 = familiar_lib_taggedTemplateLiteral(["Pocket Professor"])))) + (0,external_kolmafia_namespaceObject.weightAdjustment)()));
 }
 function canOpenRedPresent() {
-  return lib_have($familiar(familiar_lib_templateObject10 || (familiar_lib_templateObject10 = familiar_lib_taggedTemplateLiteral(["Crimbo Shrub"])))) && !lib_have(template_string_$effect(familiar_lib_templateObject11 || (familiar_lib_templateObject11 = familiar_lib_taggedTemplateLiteral(["Everything Looks Red"])))) && !lib_have(template_string_$skill(familiar_lib_templateObject12 || (familiar_lib_templateObject12 = familiar_lib_taggedTemplateLiteral(["Free-For-All"])))) && property_get("shrubGifts") === "meat" && (0,external_kolmafia_namespaceObject.myInebriety)() <= (0,external_kolmafia_namespaceObject.inebrietyLimit)();
+  return lib_have($familiar(familiar_lib_templateObject9 || (familiar_lib_templateObject9 = familiar_lib_taggedTemplateLiteral(["Crimbo Shrub"])))) && !lib_have(template_string_$effect(familiar_lib_templateObject10 || (familiar_lib_templateObject10 = familiar_lib_taggedTemplateLiteral(["Everything Looks Red"])))) && !lib_have(template_string_$skill(familiar_lib_templateObject11 || (familiar_lib_templateObject11 = familiar_lib_taggedTemplateLiteral(["Free-For-All"])))) && property_get("shrubGifts") === "meat" && (0,external_kolmafia_namespaceObject.myInebriety)() <= (0,external_kolmafia_namespaceObject.inebrietyLimit)();
 }
 
 /**
@@ -13604,7 +13603,7 @@ function canOpenRedPresent() {
 function turnsAvailable() {
   var baseTurns = estimatedGarboTurns();
   var digitizes = digitizedMonstersRemaining();
-  var mapTurns = config_globalOptions.ascend ? clamp((0,external_kolmafia_namespaceObject.availableAmount)(template_string_$item(familiar_lib_templateObject13 || (familiar_lib_templateObject13 = familiar_lib_taggedTemplateLiteral(["Map to Safety Shelter Grimace Prime"])))), 0, ESTIMATED_OVERDRUNK_TURNS) : 0;
+  var mapTurns = config_globalOptions.ascend ? clamp((0,external_kolmafia_namespaceObject.availableAmount)(template_string_$item(familiar_lib_templateObject12 || (familiar_lib_templateObject12 = familiar_lib_taggedTemplateLiteral(["Map to Safety Shelter Grimace Prime"])))), 0, ESTIMATED_OVERDRUNK_TURNS) : 0;
   var barfTurns = baseTurns - digitizes - mapTurns;
   var barfCombatRate = 1 - 1 / turnsToNC;
   return barfTurns * barfCombatRate;
