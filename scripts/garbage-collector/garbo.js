@@ -18232,7 +18232,7 @@ function fightPiece(piece) {
   return (0,external_kolmafia_namespaceObject.runCombat)();
 }
 ;// CONCATENATED MODULE: ./src/mood.ts
-var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, mood_templateObject11, mood_templateObject12, mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17, mood_templateObject18, mood_templateObject19, mood_templateObject20, mood_templateObject21, mood_templateObject22, mood_templateObject23, mood_templateObject24, mood_templateObject25, mood_templateObject26, mood_templateObject27, mood_templateObject28, mood_templateObject29, mood_templateObject30, mood_templateObject31, mood_templateObject32, mood_templateObject33, mood_templateObject34, mood_templateObject35, mood_templateObject36, mood_templateObject37, mood_templateObject38, mood_templateObject39, mood_templateObject40, mood_templateObject41, mood_templateObject42, mood_templateObject43, mood_templateObject44, mood_templateObject45, mood_templateObject46, mood_templateObject47, mood_templateObject48, mood_templateObject49, mood_templateObject50, mood_templateObject51, mood_templateObject52, mood_templateObject53, mood_templateObject54, mood_templateObject55, mood_templateObject56, mood_templateObject57, mood_templateObject58, mood_templateObject59, mood_templateObject60, mood_templateObject61, mood_templateObject62, mood_templateObject63, mood_templateObject64, mood_templateObject65, mood_templateObject66, mood_templateObject67, mood_templateObject68, mood_templateObject69, mood_templateObject70, mood_templateObject71, mood_templateObject72, mood_templateObject73, mood_templateObject74, mood_templateObject75, mood_templateObject76, mood_templateObject77, mood_templateObject78, mood_templateObject79, mood_templateObject80, mood_templateObject81, mood_templateObject82, mood_templateObject83, mood_templateObject84;
+var src_mood_templateObject, src_mood_templateObject2, src_mood_templateObject3, src_mood_templateObject4, src_mood_templateObject5, src_mood_templateObject6, src_mood_templateObject7, src_mood_templateObject8, src_mood_templateObject9, src_mood_templateObject10, mood_templateObject11, mood_templateObject12, mood_templateObject13, mood_templateObject14, mood_templateObject15, mood_templateObject16, mood_templateObject17, mood_templateObject18, mood_templateObject19, mood_templateObject20, mood_templateObject21, mood_templateObject22, mood_templateObject23, mood_templateObject24, mood_templateObject25, mood_templateObject26, mood_templateObject27, mood_templateObject28, mood_templateObject29, mood_templateObject30, mood_templateObject31, mood_templateObject32, mood_templateObject33, mood_templateObject34, mood_templateObject35, mood_templateObject36, mood_templateObject37, mood_templateObject38, mood_templateObject39, mood_templateObject40, mood_templateObject41, mood_templateObject42, mood_templateObject43, mood_templateObject44, mood_templateObject45, mood_templateObject46, mood_templateObject47, mood_templateObject48, mood_templateObject49, mood_templateObject50, mood_templateObject51, mood_templateObject52, mood_templateObject53, mood_templateObject54, mood_templateObject55, mood_templateObject56, mood_templateObject57, mood_templateObject58, mood_templateObject59, mood_templateObject60, mood_templateObject61, mood_templateObject62, mood_templateObject63, mood_templateObject64, mood_templateObject65, mood_templateObject66, mood_templateObject67, mood_templateObject68, mood_templateObject69, mood_templateObject70, mood_templateObject71, mood_templateObject72, mood_templateObject73, mood_templateObject74, mood_templateObject75, mood_templateObject76, mood_templateObject77, mood_templateObject78, mood_templateObject79, mood_templateObject80, mood_templateObject81, mood_templateObject82, mood_templateObject83;
 function mood_toConsumableArray(arr) { return mood_arrayWithoutHoles(arr) || mood_iterableToArray(arr) || src_mood_unsupportedIterableToArray(arr) || mood_nonIterableSpread(); }
 function mood_nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function src_mood_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return src_mood_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return src_mood_arrayLikeToArray(o, minLen); }
@@ -18356,23 +18356,23 @@ function freeFightMood() {
   if (lib_have(template_string_$item(mood_templateObject62 || (mood_templateObject62 = src_mood_taggedTemplateLiteral(["redwood rain stick"])))) && !property_get("_redwoodRainStickUsed")) {
     (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject63 || (mood_templateObject63 = src_mood_taggedTemplateLiteral(["redwood rain stick"]))));
   }
-  if (lib_have(template_string_$item(mood_templateObject64 || (mood_templateObject64 = src_mood_taggedTemplateLiteral(["Beach Comb"])))) && freeCombs() > 0 && headAvailable("FAMILIAR")) {
-    mood.effect(template_string_$effect(mood_templateObject65 || (mood_templateObject65 = src_mood_taggedTemplateLiteral(["Do I Know You From Somewhere?"]))));
+  if (freeCombs() > 0 && headAvailable("FAMILIAR")) {
+    mood.effect(template_string_$effect(mood_templateObject64 || (mood_templateObject64 = src_mood_taggedTemplateLiteral(["Do I Know You From Somewhere?"]))));
   }
   if (Witchess_have() && !property_get("_witchessBuff")) {
-    mood.effect(template_string_$effect(mood_templateObject66 || (mood_templateObject66 = src_mood_taggedTemplateLiteral(["Puzzle Champ"]))));
+    mood.effect(template_string_$effect(mood_templateObject65 || (mood_templateObject65 = src_mood_taggedTemplateLiteral(["Puzzle Champ"]))));
   }
   if (lib_questStep("questL06Friar") === 999 && !property_get("friarsBlessingReceived")) {
     (0,external_kolmafia_namespaceObject.cliExecute)("friars familiar");
   }
-  if (lib_have(template_string_$item(mood_templateObject67 || (mood_templateObject67 = src_mood_taggedTemplateLiteral(["The Legendary Beat"])))) && !property_get("_legendaryBeat")) {
-    (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject68 || (mood_templateObject68 = src_mood_taggedTemplateLiteral(["The Legendary Beat"]))));
+  if (lib_have(template_string_$item(mood_templateObject66 || (mood_templateObject66 = src_mood_taggedTemplateLiteral(["The Legendary Beat"])))) && !property_get("_legendaryBeat")) {
+    (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject67 || (mood_templateObject67 = src_mood_taggedTemplateLiteral(["The Legendary Beat"]))));
   }
-  if (lib_have(template_string_$item(mood_templateObject69 || (mood_templateObject69 = src_mood_taggedTemplateLiteral(["portable steam unit"])))) && !property_get("_portableSteamUnitUsed", false)) {
-    (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject70 || (mood_templateObject70 = src_mood_taggedTemplateLiteral(["portable steam unit"]))));
+  if (lib_have(template_string_$item(mood_templateObject68 || (mood_templateObject68 = src_mood_taggedTemplateLiteral(["portable steam unit"])))) && !property_get("_portableSteamUnitUsed", false)) {
+    (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject69 || (mood_templateObject69 = src_mood_taggedTemplateLiteral(["portable steam unit"]))));
   }
   shrugBadEffects.apply(void 0, additionalEffects);
-  if ((0,external_kolmafia_namespaceObject.getWorkshed)() === template_string_$item(mood_templateObject71 || (mood_templateObject71 = src_mood_taggedTemplateLiteral(["Asdon Martin keyfob"])))) mood.drive(Driving.Observantly);
+  if ((0,external_kolmafia_namespaceObject.getWorkshed)() === template_string_$item(mood_templateObject70 || (mood_templateObject70 = src_mood_taggedTemplateLiteral(["Asdon Martin keyfob"])))) mood.drive(Driving.Observantly);
   return mood;
 }
 
@@ -18380,24 +18380,24 @@ function freeFightMood() {
  * Use buff extenders like PYEC and Bag o Tricks
  */
 function useBuffExtenders() {
-  withStash(template_string_$items(mood_templateObject72 || (mood_templateObject72 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card, Bag o' Tricks"]))), () => {
-    if (lib_have(template_string_$item(mood_templateObject73 || (mood_templateObject73 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) && !property_get("expressCardUsed")) {
+  withStash(template_string_$items(mood_templateObject71 || (mood_templateObject71 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card, Bag o' Tricks"]))), () => {
+    if (lib_have(template_string_$item(mood_templateObject72 || (mood_templateObject72 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card"])))) && !property_get("expressCardUsed")) {
       burnLibrams();
-      (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject74 || (mood_templateObject74 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
+      (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject73 || (mood_templateObject73 = src_mood_taggedTemplateLiteral(["Platinum Yendorian Express Card"]))));
     }
-    if (lib_have(template_string_$item(mood_templateObject75 || (mood_templateObject75 = src_mood_taggedTemplateLiteral(["Bag o' Tricks"])))) && !property_get("_bagOTricksUsed")) {
-      (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject76 || (mood_templateObject76 = src_mood_taggedTemplateLiteral(["Bag o' Tricks"]))));
+    if (lib_have(template_string_$item(mood_templateObject74 || (mood_templateObject74 = src_mood_taggedTemplateLiteral(["Bag o' Tricks"])))) && !property_get("_bagOTricksUsed")) {
+      (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject75 || (mood_templateObject75 = src_mood_taggedTemplateLiteral(["Bag o' Tricks"]))));
     }
   });
-  if (lib_have(template_string_$item(mood_templateObject77 || (mood_templateObject77 = src_mood_taggedTemplateLiteral(["License to Chill"])))) && !property_get("_licenseToChillUsed")) {
+  if (lib_have(template_string_$item(mood_templateObject76 || (mood_templateObject76 = src_mood_taggedTemplateLiteral(["License to Chill"])))) && !property_get("_licenseToChillUsed")) {
     burnLibrams();
-    (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject78 || (mood_templateObject78 = src_mood_taggedTemplateLiteral(["License to Chill"]))));
+    (0,external_kolmafia_namespaceObject.use)(template_string_$item(mood_templateObject77 || (mood_templateObject77 = src_mood_taggedTemplateLiteral(["License to Chill"]))));
   }
 }
-var stings = [].concat(mood_toConsumableArray($effects(mood_templateObject79 || (mood_templateObject79 = src_mood_taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [template_string_$effect(mood_templateObject80 || (mood_templateObject80 = src_mood_taggedTemplateLiteral(["Burning, Man"]))), template_string_$effect(mood_templateObject81 || (mood_templateObject81 = src_mood_taggedTemplateLiteral(["Yes, Can Haz"])))]);
-var textAlteringEffects = $effects(mood_templateObject82 || (mood_templateObject82 = src_mood_taggedTemplateLiteral(["Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo"])));
-var teleportEffects = $effects(mood_templateObject83 || (mood_templateObject83 = src_mood_taggedTemplateLiteral(["Teleportitis, Feeling Lost, Funday!"])));
-var otherwiseBadEffects = $effects(mood_templateObject84 || (mood_templateObject84 = src_mood_taggedTemplateLiteral(["Temporary Blindness"])));
+var stings = [].concat(mood_toConsumableArray($effects(mood_templateObject78 || (mood_templateObject78 = src_mood_taggedTemplateLiteral(["Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jaba\xF1ero Saucesphere, Jalape\xF1o Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous"])))), [template_string_$effect(mood_templateObject79 || (mood_templateObject79 = src_mood_taggedTemplateLiteral(["Burning, Man"]))), template_string_$effect(mood_templateObject80 || (mood_templateObject80 = src_mood_taggedTemplateLiteral(["Yes, Can Haz"])))]);
+var textAlteringEffects = $effects(mood_templateObject81 || (mood_templateObject81 = src_mood_taggedTemplateLiteral(["Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo"])));
+var teleportEffects = $effects(mood_templateObject82 || (mood_templateObject82 = src_mood_taggedTemplateLiteral(["Teleportitis, Feeling Lost, Funday!"])));
+var otherwiseBadEffects = $effects(mood_templateObject83 || (mood_templateObject83 = src_mood_taggedTemplateLiteral(["Temporary Blindness"])));
 function shrugBadEffects() {
   for (var _len2 = arguments.length, exclude = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
     exclude[_key2] = arguments[_key2];
@@ -18630,6 +18630,23 @@ var saladFork = template_string_$item(src_diet_templateObject45 || (src_diet_tem
 var frostyMug = template_string_$item(src_diet_templateObject46 || (src_diet_templateObject46 = src_diet_taggedTemplateLiteral(["Frosty's frosty mug"])));
 var spleenCleaners = new Map([[template_string_$item(src_diet_templateObject47 || (src_diet_templateObject47 = src_diet_taggedTemplateLiteral(["extra-greasy slider"]))), 5], [template_string_$item(src_diet_templateObject48 || (src_diet_templateObject48 = src_diet_taggedTemplateLiteral(["jar of fermented pickle juice"]))), 5], [template_string_$item(diet_templateObject49 || (diet_templateObject49 = src_diet_taggedTemplateLiteral(["mojo filter"]))), 1]]);
 var stomachLiverCleaners = new Map([[template_string_$item(diet_templateObject50 || (diet_templateObject50 = src_diet_taggedTemplateLiteral(["spice melange"]))), [-3, -3]], [template_string_$item(diet_templateObject51 || (diet_templateObject51 = src_diet_taggedTemplateLiteral(["synthetic dog hair pill"]))), [0, -1]], [template_string_$item(diet_templateObject52 || (diet_templateObject52 = src_diet_taggedTemplateLiteral(["cuppa Sobrie tea"]))), [0, -1]], [template_string_$item(diet_templateObject53 || (diet_templateObject53 = src_diet_taggedTemplateLiteral(["designer sweatpants"]))), [0, -1]]]);
+function legendaryPizzaToMenu(pizzas, maker) {
+  var canCookLegendaryPizza = pizza => {
+    var recipes = [pizza].concat(src_diet_toConsumableArray(template_string_$items(diet_templateObject54 || (diet_templateObject54 = src_diet_taggedTemplateLiteral(["roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread"]))))).map(i => (0,external_kolmafia_namespaceObject.toInt)(i));
+    return !recipes.some(id => property_get("unknownRecipe".concat(id), true));
+  };
+  return pizzas.filter(_ref => {
+    var item = _ref.item,
+      pref = _ref.pref;
+    return !property_get(pref, true) && canCookLegendaryPizza(item);
+  }).map(_ref2 => {
+    var item = _ref2.item;
+    return maker({
+      item: item,
+      price: 2 * utils_sum(template_string_$items(diet_templateObject55 || (diet_templateObject55 = src_diet_taggedTemplateLiteral(["Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris"]))), ingredientCost)
+    });
+  });
+}
 var mallMin = items => maxBy(items, external_kolmafia_namespaceObject.mallPrice, true);
 
 /**
@@ -18637,56 +18654,66 @@ var mallMin = items => maxBy(items, external_kolmafia_namespaceObject.mallPrice,
  * @returns basic menu
  */
 function diet_menu() {
-  var spaghettiBreakfast = lib_have(template_string_$item(diet_templateObject54 || (diet_templateObject54 = src_diet_taggedTemplateLiteral(["spaghetti breakfast"])))) && (0,external_kolmafia_namespaceObject.myFullness)() === 0 && property_get("_timeSpinnerFoodAvailable") === "" && !property_get("_spaghettiBreakfastEaten") ? 1 : 0;
+  var spaghettiBreakfast = lib_have(template_string_$item(diet_templateObject56 || (diet_templateObject56 = src_diet_taggedTemplateLiteral(["spaghetti breakfast"])))) && (0,external_kolmafia_namespaceObject.myFullness)() === 0 && property_get("_timeSpinnerFoodAvailable") === "" && !property_get("_spaghettiBreakfastEaten") ? 1 : 0;
 
   /*
    * generated in mafia with an account that has super human cocktail crafting
    *  > js Item.all().filter((item) => item.inebriety > 0 && item.quality === "EPIC" && getIngredients(item)["mushroom fermenting powder]).join(", ")
    */
-  var complexMushroomWines = template_string_$items(diet_templateObject55 || (diet_templateObject55 = src_diet_taggedTemplateLiteral(["overpowering mushroom wine, complex mushroom wine, smooth mushroom wine, blood-red mushroom wine, buzzing mushroom wine, swirling mushroom wine"])));
+  var complexMushroomWines = template_string_$items(diet_templateObject57 || (diet_templateObject57 = src_diet_taggedTemplateLiteral(["overpowering mushroom wine, complex mushroom wine, smooth mushroom wine, blood-red mushroom wine, buzzing mushroom wine, swirling mushroom wine"])));
   /*
    * generated in mafia with:
    *  > js Item.all().filter((item) => item.inebriety > 0 && getIngredients(item)["perfect ice cube"]).join(", ")
    */
-  var perfectDrinks = template_string_$items(diet_templateObject56 || (diet_templateObject56 = src_diet_taggedTemplateLiteral(["perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma"])));
+  var perfectDrinks = template_string_$items(diet_templateObject58 || (diet_templateObject58 = src_diet_taggedTemplateLiteral(["perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma"])));
   /*
    * generated in mafia with an account that has Transcendental Noodlecraft
    *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
    */
-  var lasagnas = template_string_$items(diet_templateObject57 || (diet_templateObject57 = src_diet_taggedTemplateLiteral(["fishy fish lasagna, gnat lasagna, long pork lasagna"])));
+  var lasagnas = template_string_$items(diet_templateObject59 || (diet_templateObject59 = src_diet_taggedTemplateLiteral(["fishy fish lasagna, gnat lasagna, long pork lasagna"])));
 
   /*
    * standardSpleenItem indicates a spleen item of size 4 with an adventure yield of 5-10. Taken from the wiki. They are all functionally equivalent.
    */
-  var standardSpleenItems = template_string_$items(diet_templateObject58 || (diet_templateObject58 = src_diet_taggedTemplateLiteral(["agua de vida, gooey paste, oily paste, ectoplasmic paste, greasy paste, bug paste, hippy paste, orc paste, demonic paste, indescribably horrible paste, fishy paste, goblin paste, pirate paste, chlorophyll paste, strange paste, Mer-kin paste, slimy paste, penguin paste, elemental paste, cosmic paste, hobo paste, Crimbo paste, groose grease, Unconscious Collective Dream Jar, grim fairy tale, powdered gold"])));
-  var smallEpics = [].concat(src_diet_toConsumableArray(template_string_$items(diet_templateObject59 || (diet_templateObject59 = src_diet_taggedTemplateLiteral(["meteoreo, ice rice"])))), [template_string_$item(diet_templateObject60 || (diet_templateObject60 = src_diet_taggedTemplateLiteral(["Tea, Earl Grey, Hot"])))]);
-  var boxingDayCareItems = template_string_$items(diet_templateObject61 || (diet_templateObject61 = src_diet_taggedTemplateLiteral(["glass of raw eggs, punch-drunk punch"]))).filter(item => lib_have(item));
-  var pilsners = template_string_$items(diet_templateObject62 || (diet_templateObject62 = src_diet_taggedTemplateLiteral(["astral pilsner"]))).filter(item => config_globalOptions.ascend && lib_have(item));
+  var standardSpleenItems = template_string_$items(diet_templateObject60 || (diet_templateObject60 = src_diet_taggedTemplateLiteral(["agua de vida, gooey paste, oily paste, ectoplasmic paste, greasy paste, bug paste, hippy paste, orc paste, demonic paste, indescribably horrible paste, fishy paste, goblin paste, pirate paste, chlorophyll paste, strange paste, Mer-kin paste, slimy paste, penguin paste, elemental paste, cosmic paste, hobo paste, Crimbo paste, groose grease, Unconscious Collective Dream Jar, grim fairy tale, powdered gold"])));
+  var smallEpics = [].concat(src_diet_toConsumableArray(template_string_$items(diet_templateObject61 || (diet_templateObject61 = src_diet_taggedTemplateLiteral(["meteoreo, ice rice"])))), [template_string_$item(diet_templateObject62 || (diet_templateObject62 = src_diet_taggedTemplateLiteral(["Tea, Earl Grey, Hot"])))]);
+  var boxingDayCareItems = template_string_$items(diet_templateObject63 || (diet_templateObject63 = src_diet_taggedTemplateLiteral(["glass of raw eggs, punch-drunk punch"]))).filter(item => lib_have(item));
+  var pilsners = template_string_$items(diet_templateObject64 || (diet_templateObject64 = src_diet_taggedTemplateLiteral(["astral pilsner"]))).filter(item => lib_have(item));
   var limitedItems = [].concat(src_diet_toConsumableArray(boxingDayCareItems), src_diet_toConsumableArray(pilsners)).map(item => new MenuItem(item, {
     maximum: (0,external_kolmafia_namespaceObject.availableAmount)(item)
   }));
+  var legendaryPizzas = legendaryPizzaToMenu([{
+    item: template_string_$item(diet_templateObject65 || (diet_templateObject65 = src_diet_taggedTemplateLiteral(["Calzone of Legend"]))),
+    pref: "calzoneOfLegendEaten"
+  }, {
+    item: template_string_$item(diet_templateObject66 || (diet_templateObject66 = src_diet_taggedTemplateLiteral(["Pizza of Legend"]))),
+    pref: "pizzaOfLegendEaten"
+  }], out => new MenuItem(out.item, {
+    maximum: 1,
+    priceOverride: out.price
+  }));
   return [
   // FOOD
-  new MenuItem(template_string_$item(diet_templateObject63 || (diet_templateObject63 = src_diet_taggedTemplateLiteral(["Dreadsylvanian cold pocket"])))), new MenuItem(template_string_$item(diet_templateObject64 || (diet_templateObject64 = src_diet_taggedTemplateLiteral(["Dreadsylvanian hot pocket"])))), new MenuItem(template_string_$item(diet_templateObject65 || (diet_templateObject65 = src_diet_taggedTemplateLiteral(["Dreadsylvanian sleaze pocket"])))), new MenuItem(template_string_$item(diet_templateObject66 || (diet_templateObject66 = src_diet_taggedTemplateLiteral(["Dreadsylvanian stink pocket"])))), new MenuItem(template_string_$item(diet_templateObject67 || (diet_templateObject67 = src_diet_taggedTemplateLiteral(["Dreadsylvanian spooky pocket"])))), new MenuItem(template_string_$item(diet_templateObject68 || (diet_templateObject68 = src_diet_taggedTemplateLiteral(["tin cup of mulligan stew"])))), new MenuItem(template_string_$item(diet_templateObject69 || (diet_templateObject69 = src_diet_taggedTemplateLiteral(["frozen banquet"])))), new MenuItem(template_string_$item(diet_templateObject70 || (diet_templateObject70 = src_diet_taggedTemplateLiteral(["deviled egg"])))), new MenuItem(template_string_$item(diet_templateObject71 || (diet_templateObject71 = src_diet_taggedTemplateLiteral(["spaghetti breakfast"]))), {
+  new MenuItem(template_string_$item(diet_templateObject67 || (diet_templateObject67 = src_diet_taggedTemplateLiteral(["Dreadsylvanian cold pocket"])))), new MenuItem(template_string_$item(diet_templateObject68 || (diet_templateObject68 = src_diet_taggedTemplateLiteral(["Dreadsylvanian hot pocket"])))), new MenuItem(template_string_$item(diet_templateObject69 || (diet_templateObject69 = src_diet_taggedTemplateLiteral(["Dreadsylvanian sleaze pocket"])))), new MenuItem(template_string_$item(diet_templateObject70 || (diet_templateObject70 = src_diet_taggedTemplateLiteral(["Dreadsylvanian stink pocket"])))), new MenuItem(template_string_$item(diet_templateObject71 || (diet_templateObject71 = src_diet_taggedTemplateLiteral(["Dreadsylvanian spooky pocket"])))), new MenuItem(template_string_$item(diet_templateObject72 || (diet_templateObject72 = src_diet_taggedTemplateLiteral(["tin cup of mulligan stew"])))), new MenuItem(template_string_$item(diet_templateObject73 || (diet_templateObject73 = src_diet_taggedTemplateLiteral(["frozen banquet"])))), new MenuItem(template_string_$item(diet_templateObject74 || (diet_templateObject74 = src_diet_taggedTemplateLiteral(["deviled egg"])))), new MenuItem(template_string_$item(diet_templateObject75 || (diet_templateObject75 = src_diet_taggedTemplateLiteral(["spaghetti breakfast"]))), {
     maximum: spaghettiBreakfast
-  }), new MenuItem(template_string_$item(diet_templateObject72 || (diet_templateObject72 = src_diet_taggedTemplateLiteral(["extra-greasy slider"])))), new MenuItem(mallMin(lasagnas)), new MenuItem(mallMin(smallEpics)), new MenuItem(template_string_$item(diet_templateObject73 || (diet_templateObject73 = src_diet_taggedTemplateLiteral(["green hamhock"])))),
+  }), new MenuItem(template_string_$item(diet_templateObject76 || (diet_templateObject76 = src_diet_taggedTemplateLiteral(["extra-greasy slider"])))), new MenuItem(mallMin(lasagnas)), new MenuItem(mallMin(smallEpics)), new MenuItem(template_string_$item(diet_templateObject77 || (diet_templateObject77 = src_diet_taggedTemplateLiteral(["green hamhock"]))))].concat(src_diet_toConsumableArray(legendaryPizzas.flat()), [
   // BOOZE
-  new MenuItem(template_string_$item(diet_templateObject74 || (diet_templateObject74 = src_diet_taggedTemplateLiteral(["elemental caipiroska"])))), new MenuItem(template_string_$item(diet_templateObject75 || (diet_templateObject75 = src_diet_taggedTemplateLiteral(["moreltini"])))), new MenuItem(template_string_$item(diet_templateObject76 || (diet_templateObject76 = src_diet_taggedTemplateLiteral(["Dreadsylvanian cold-fashioned"])))), new MenuItem(template_string_$item(diet_templateObject77 || (diet_templateObject77 = src_diet_taggedTemplateLiteral(["Dreadsylvanian dank and stormy"])))), new MenuItem(template_string_$item(diet_templateObject78 || (diet_templateObject78 = src_diet_taggedTemplateLiteral(["Dreadsylvanian grimlet"])))), new MenuItem(template_string_$item(diet_templateObject79 || (diet_templateObject79 = src_diet_taggedTemplateLiteral(["Dreadsylvanian hot toddy"])))), new MenuItem(template_string_$item(diet_templateObject80 || (diet_templateObject80 = src_diet_taggedTemplateLiteral(["Dreadsylvanian slithery nipple"])))), new MenuItem(template_string_$item(diet_templateObject81 || (diet_templateObject81 = src_diet_taggedTemplateLiteral(["Hodgman's blanket"])))), new MenuItem(template_string_$item(diet_templateObject82 || (diet_templateObject82 = src_diet_taggedTemplateLiteral(["Sacramento wine"])))), new MenuItem(template_string_$item(diet_templateObject83 || (diet_templateObject83 = src_diet_taggedTemplateLiteral(["iced plum wine"])))), new MenuItem(template_string_$item(diet_templateObject84 || (diet_templateObject84 = src_diet_taggedTemplateLiteral(["splendid martini"])))), new MenuItem(template_string_$item(diet_templateObject85 || (diet_templateObject85 = src_diet_taggedTemplateLiteral(["Eye and a Twist"])))), new MenuItem(template_string_$item(diet_templateObject86 || (diet_templateObject86 = src_diet_taggedTemplateLiteral(["jar of fermented pickle juice"])))), new MenuItem(mallMin(complexMushroomWines)), new MenuItem(mallMin(perfectDrinks)), new MenuItem(template_string_$item(diet_templateObject87 || (diet_templateObject87 = src_diet_taggedTemplateLiteral(["green eggnog"])))),
+  new MenuItem(template_string_$item(diet_templateObject78 || (diet_templateObject78 = src_diet_taggedTemplateLiteral(["elemental caipiroska"])))), new MenuItem(template_string_$item(diet_templateObject79 || (diet_templateObject79 = src_diet_taggedTemplateLiteral(["moreltini"])))), new MenuItem(template_string_$item(diet_templateObject80 || (diet_templateObject80 = src_diet_taggedTemplateLiteral(["Dreadsylvanian cold-fashioned"])))), new MenuItem(template_string_$item(diet_templateObject81 || (diet_templateObject81 = src_diet_taggedTemplateLiteral(["Dreadsylvanian dank and stormy"])))), new MenuItem(template_string_$item(diet_templateObject82 || (diet_templateObject82 = src_diet_taggedTemplateLiteral(["Dreadsylvanian grimlet"])))), new MenuItem(template_string_$item(diet_templateObject83 || (diet_templateObject83 = src_diet_taggedTemplateLiteral(["Dreadsylvanian hot toddy"])))), new MenuItem(template_string_$item(diet_templateObject84 || (diet_templateObject84 = src_diet_taggedTemplateLiteral(["Dreadsylvanian slithery nipple"])))), new MenuItem(template_string_$item(diet_templateObject85 || (diet_templateObject85 = src_diet_taggedTemplateLiteral(["Hodgman's blanket"])))), new MenuItem(template_string_$item(diet_templateObject86 || (diet_templateObject86 = src_diet_taggedTemplateLiteral(["Sacramento wine"])))), new MenuItem(template_string_$item(diet_templateObject87 || (diet_templateObject87 = src_diet_taggedTemplateLiteral(["iced plum wine"])))), new MenuItem(template_string_$item(diet_templateObject88 || (diet_templateObject88 = src_diet_taggedTemplateLiteral(["splendid martini"])))), new MenuItem(template_string_$item(diet_templateObject89 || (diet_templateObject89 = src_diet_taggedTemplateLiteral(["Eye and a Twist"])))), new MenuItem(template_string_$item(diet_templateObject90 || (diet_templateObject90 = src_diet_taggedTemplateLiteral(["jar of fermented pickle juice"])))), new MenuItem(mallMin(complexMushroomWines)), new MenuItem(mallMin(perfectDrinks)), new MenuItem(template_string_$item(diet_templateObject91 || (diet_templateObject91 = src_diet_taggedTemplateLiteral(["green eggnog"])))),
   // SPLEEN
-  new MenuItem(template_string_$item(diet_templateObject88 || (diet_templateObject88 = src_diet_taggedTemplateLiteral(["octolus oculus"])))), new MenuItem(template_string_$item(diet_templateObject89 || (diet_templateObject89 = src_diet_taggedTemplateLiteral(["prismatic wad"])))), new MenuItem(template_string_$item(diet_templateObject90 || (diet_templateObject90 = src_diet_taggedTemplateLiteral(["transdermal smoke patch"])))), new MenuItem(template_string_$item(diet_templateObject91 || (diet_templateObject91 = src_diet_taggedTemplateLiteral(["antimatter wad"])))), new MenuItem(template_string_$item(diet_templateObject92 || (diet_templateObject92 = src_diet_taggedTemplateLiteral(["voodoo snuff"])))), new MenuItem(template_string_$item(diet_templateObject93 || (diet_templateObject93 = src_diet_taggedTemplateLiteral(["blood-drive sticker"])))), new MenuItem(mallMin(standardSpleenItems)), new MenuItem(mallMin(template_string_$items(diet_templateObject94 || (diet_templateObject94 = src_diet_taggedTemplateLiteral(["not-a-pipe, glimmering roc feather"])))))].concat(src_diet_toConsumableArray(limitedItems), [
+  new MenuItem(template_string_$item(diet_templateObject92 || (diet_templateObject92 = src_diet_taggedTemplateLiteral(["octolus oculus"])))), new MenuItem(template_string_$item(diet_templateObject93 || (diet_templateObject93 = src_diet_taggedTemplateLiteral(["prismatic wad"])))), new MenuItem(template_string_$item(diet_templateObject94 || (diet_templateObject94 = src_diet_taggedTemplateLiteral(["transdermal smoke patch"])))), new MenuItem(template_string_$item(diet_templateObject95 || (diet_templateObject95 = src_diet_taggedTemplateLiteral(["antimatter wad"])))), new MenuItem(template_string_$item(diet_templateObject96 || (diet_templateObject96 = src_diet_taggedTemplateLiteral(["voodoo snuff"])))), new MenuItem(template_string_$item(diet_templateObject97 || (diet_templateObject97 = src_diet_taggedTemplateLiteral(["blood-drive sticker"])))), new MenuItem(mallMin(standardSpleenItems)), new MenuItem(mallMin(template_string_$items(diet_templateObject98 || (diet_templateObject98 = src_diet_taggedTemplateLiteral(["not-a-pipe, glimmering roc feather"])))))], src_diet_toConsumableArray(limitedItems), [
   // HELPERS
-  new MenuItem(template_string_$item(diet_templateObject95 || (diet_templateObject95 = src_diet_taggedTemplateLiteral(["distention pill"])))), new MenuItem(template_string_$item(diet_templateObject96 || (diet_templateObject96 = src_diet_taggedTemplateLiteral(["cuppa Voraci tea"])))), new MenuItem(diet_Mayo.flex), new MenuItem(diet_Mayo.zapine), new MenuItem(template_string_$item(diet_templateObject97 || (diet_templateObject97 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))), new MenuItem(saladFork), new MenuItem(frostyMug), new MenuItem(template_string_$item(diet_templateObject98 || (diet_templateObject98 = src_diet_taggedTemplateLiteral(["mojo filter"])))), new MenuItem(template_string_$item(diet_templateObject99 || (diet_templateObject99 = src_diet_taggedTemplateLiteral(["pocket wish"]))), {
+  new MenuItem(template_string_$item(diet_templateObject99 || (diet_templateObject99 = src_diet_taggedTemplateLiteral(["distention pill"])))), new MenuItem(template_string_$item(diet_templateObject100 || (diet_templateObject100 = src_diet_taggedTemplateLiteral(["cuppa Voraci tea"])))), new MenuItem(diet_Mayo.flex), new MenuItem(diet_Mayo.zapine), new MenuItem(template_string_$item(diet_templateObject101 || (diet_templateObject101 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))), new MenuItem(saladFork), new MenuItem(frostyMug), new MenuItem(template_string_$item(diet_templateObject102 || (diet_templateObject102 = src_diet_taggedTemplateLiteral(["mojo filter"])))), new MenuItem(template_string_$item(diet_templateObject103 || (diet_templateObject103 = src_diet_taggedTemplateLiteral(["pocket wish"]))), {
     maximum: 1,
-    effect: template_string_$effect(diet_templateObject100 || (diet_templateObject100 = src_diet_taggedTemplateLiteral(["Refined Palate"])))
-  }), new MenuItem(template_string_$item(diet_templateObject101 || (diet_templateObject101 = src_diet_taggedTemplateLiteral(["toasted brie"]))), {
+    effect: template_string_$effect(diet_templateObject104 || (diet_templateObject104 = src_diet_taggedTemplateLiteral(["Refined Palate"])))
+  }), new MenuItem(template_string_$item(diet_templateObject105 || (diet_templateObject105 = src_diet_taggedTemplateLiteral(["toasted brie"]))), {
     maximum: 1
-  }), new MenuItem(template_string_$item(diet_templateObject102 || (diet_templateObject102 = src_diet_taggedTemplateLiteral(["potion of the field gar"]))), {
+  }), new MenuItem(template_string_$item(diet_templateObject106 || (diet_templateObject106 = src_diet_taggedTemplateLiteral(["potion of the field gar"]))), {
     maximum: 1
-  })], src_diet_toConsumableArray(src_diet_toConsumableArray(stomachLiverCleaners.keys()).map(item => new MenuItem(item))), [new MenuItem(template_string_$item(diet_templateObject103 || (diet_templateObject103 = src_diet_taggedTemplateLiteral(["sweet tooth"]))), {
+  })], src_diet_toConsumableArray(src_diet_toConsumableArray(stomachLiverCleaners.keys()).map(item => new MenuItem(item))), [new MenuItem(template_string_$item(diet_templateObject107 || (diet_templateObject107 = src_diet_taggedTemplateLiteral(["sweet tooth"]))), {
     size: -1,
     organ: "food",
     maximum: 1
-  }), new MenuItem(template_string_$item(diet_templateObject104 || (diet_templateObject104 = src_diet_taggedTemplateLiteral(["designer sweatpants"]))), {
+  }), new MenuItem(template_string_$item(diet_templateObject108 || (diet_templateObject108 = src_diet_taggedTemplateLiteral(["designer sweatpants"]))), {
     size: -1,
     organ: "booze",
     maximum: Math.min(3 - property_get("_sweatOutSomeBoozeUsed"), Math.floor(property_get("sweat") / 25))
@@ -18729,7 +18756,7 @@ function bestConsumable(organType) {
   return best;
 }
 function gregariousCount() {
-  var gregariousCharges = property_get("beGregariousCharges") + (property_get("beGregariousFightsLeft") > 0 && property_get("beGregariousMonster") === $monster(diet_templateObject105 || (diet_templateObject105 = src_diet_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) ? 1 : 0);
+  var gregariousCharges = property_get("beGregariousCharges") + (property_get("beGregariousFightsLeft") > 0 && property_get("beGregariousMonster") === $monster(diet_templateObject109 || (diet_templateObject109 = src_diet_taggedTemplateLiteral(["Knob Goblin Embezzler"]))) ? 1 : 0);
   var gregariousFightsPerCharge = expectedGregs();
   // remove and preserve the last index - that is the marginal count of gregarious fights
   var marginalGregariousFights = gregariousFightsPerCharge.splice(gregariousFightsPerCharge.length - 1, 1)[0];
@@ -18744,10 +18771,10 @@ function copiers() {
   var _gregariousCount = gregariousCount(),
     expectedGregariousFights = _gregariousCount.expectedGregariousFights,
     marginalGregariousFights = _gregariousCount.marginalGregariousFights;
-  var extros = (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() ? [] : [].concat(src_diet_toConsumableArray(expectedGregariousFights.map(embezzlers => new MenuItem(template_string_$item(diet_templateObject106 || (diet_templateObject106 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
+  var extros = (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() ? [] : [].concat(src_diet_toConsumableArray(expectedGregariousFights.map(embezzlers => new MenuItem(template_string_$item(diet_templateObject110 || (diet_templateObject110 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
     additionalValue: embezzlers * embezzlerDifferential,
     maximum: 1
-  }))), [new MenuItem(template_string_$item(diet_templateObject107 || (diet_templateObject107 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
+  }))), [new MenuItem(template_string_$item(diet_templateObject111 || (diet_templateObject111 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"]))), {
     additionalValue: marginalGregariousFights * embezzlerDifferential
   })]);
   return src_diet_toConsumableArray(extros);
@@ -18758,10 +18785,10 @@ function countCopies(diet) {
 
   // returns an array of expected counts for number of greg copies to fight per pill use
   // the last value is how much you expect to fight per pill
-  var extros = utils_sum(diet.entries, _ref => {
-    var menuItems = _ref.menuItems,
-      quantity = _ref.quantity;
-    return menuItems.some(menuItem => menuItem.item === template_string_$item(diet_templateObject108 || (diet_templateObject108 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"])))) ? quantity : 0;
+  var extros = utils_sum(diet.entries, _ref3 => {
+    var menuItems = _ref3.menuItems,
+      quantity = _ref3.quantity;
+    return menuItems.some(menuItem => menuItem.item === template_string_$item(diet_templateObject112 || (diet_templateObject112 = src_diet_taggedTemplateLiteral(["Extrovermectin\u2122"])))) ? quantity : 0;
   });
   var _gregariousCount2 = gregariousCount(),
     expectedGregariousFights = _gregariousCount2.expectedGregariousFights,
@@ -18812,31 +18839,26 @@ function potionMenu(baseMenu, embezzlers, turns) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     return limitedPotion(potion, undefined, options);
   }
-  var speakeasy = template_string_$item(diet_templateObject109 || (diet_templateObject109 = src_diet_taggedTemplateLiteral(["Clan speakeasy"])));
+  var speakeasy = template_string_$item(diet_templateObject113 || (diet_templateObject113 = src_diet_taggedTemplateLiteral(["Clan speakeasy"])));
   var hasSpeakeasy = (0,external_kolmafia_namespaceObject.getClanLounge)()["".concat(speakeasy)];
-  var twiceHauntedPrice = Math.min(ingredientCost(template_string_$item(diet_templateObject110 || (diet_templateObject110 = src_diet_taggedTemplateLiteral(["haunted orange"])))), ingredientCost(template_string_$item(diet_templateObject111 || (diet_templateObject111 = src_diet_taggedTemplateLiteral(["orange"])))) + ingredientCost(template_string_$item(diet_templateObject112 || (diet_templateObject112 = src_diet_taggedTemplateLiteral(["ghostly ectoplasm"]))))) + Math.min(ingredientCost(template_string_$item(diet_templateObject113 || (diet_templateObject113 = src_diet_taggedTemplateLiteral(["haunted bottle of vodka"])))), ingredientCost(template_string_$item(diet_templateObject114 || (diet_templateObject114 = src_diet_taggedTemplateLiteral(["bottle of vodka"])))) + ingredientCost(template_string_$item(diet_templateObject115 || (diet_templateObject115 = src_diet_taggedTemplateLiteral(["ghostly ectoplasm"])))));
-  var campfireHotdog = property_get("getawayCampsiteUnlocked") ? potion(template_string_$item(diet_templateObject116 || (diet_templateObject116 = src_diet_taggedTemplateLiteral(["campfire hot dog"]))), {
-    price: ingredientCost(template_string_$item(diet_templateObject117 || (diet_templateObject117 = src_diet_taggedTemplateLiteral(["stick of firewood"]))))
+  var twiceHauntedPrice = Math.min(ingredientCost(template_string_$item(diet_templateObject114 || (diet_templateObject114 = src_diet_taggedTemplateLiteral(["haunted orange"])))), ingredientCost(template_string_$item(diet_templateObject115 || (diet_templateObject115 = src_diet_taggedTemplateLiteral(["orange"])))) + ingredientCost(template_string_$item(diet_templateObject116 || (diet_templateObject116 = src_diet_taggedTemplateLiteral(["ghostly ectoplasm"]))))) + Math.min(ingredientCost(template_string_$item(diet_templateObject117 || (diet_templateObject117 = src_diet_taggedTemplateLiteral(["haunted bottle of vodka"])))), ingredientCost(template_string_$item(diet_templateObject118 || (diet_templateObject118 = src_diet_taggedTemplateLiteral(["bottle of vodka"])))) + ingredientCost(template_string_$item(diet_templateObject119 || (diet_templateObject119 = src_diet_taggedTemplateLiteral(["ghostly ectoplasm"])))));
+  var campfireHotdog = property_get("getawayCampsiteUnlocked") ? potion(template_string_$item(diet_templateObject120 || (diet_templateObject120 = src_diet_taggedTemplateLiteral(["campfire hot dog"]))), {
+    price: ingredientCost(template_string_$item(diet_templateObject121 || (diet_templateObject121 = src_diet_taggedTemplateLiteral(["stick of firewood"]))))
   }) : [];
-  var foodCone = realmAvailable("stench") || config_globalOptions.simdiet && !config_globalOptions.nobarf ? limitedPotion(template_string_$item(diet_templateObject118 || (diet_templateObject118 = src_diet_taggedTemplateLiteral(["Dinsey food-cone"]))), Math.floor((0,external_kolmafia_namespaceObject.availableAmount)(template_string_$item(diet_templateObject119 || (diet_templateObject119 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"])))) / 2), {
-    price: 2 * garboValue(template_string_$item(diet_templateObject120 || (diet_templateObject120 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"]))))
+  var foodCone = realmAvailable("stench") || config_globalOptions.simdiet && !config_globalOptions.nobarf ? limitedPotion(template_string_$item(diet_templateObject122 || (diet_templateObject122 = src_diet_taggedTemplateLiteral(["Dinsey food-cone"]))), Math.floor((0,external_kolmafia_namespaceObject.availableAmount)(template_string_$item(diet_templateObject123 || (diet_templateObject123 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"])))) / 2), {
+    price: 2 * garboValue(template_string_$item(diet_templateObject124 || (diet_templateObject124 = src_diet_taggedTemplateLiteral(["FunFunds\u2122"]))))
   }) : [];
   var borisBread = !property_get("unknownRecipe10978") // this property is true if you don't know the recipe, false if you do
-  ? potion(template_string_$item(diet_templateObject121 || (diet_templateObject121 = src_diet_taggedTemplateLiteral(["Boris's bread"]))), {
-    price: 2 * ingredientCost(template_string_$item(diet_templateObject122 || (diet_templateObject122 = src_diet_taggedTemplateLiteral(["Yeast of Boris"]))))
+  ? potion(template_string_$item(diet_templateObject125 || (diet_templateObject125 = src_diet_taggedTemplateLiteral(["Boris's bread"]))), {
+    price: 2 * ingredientCost(template_string_$item(diet_templateObject126 || (diet_templateObject126 = src_diet_taggedTemplateLiteral(["Yeast of Boris"]))))
   }) : [];
-
-  // Replace string with BooleanProperty later
-  var ofLegendPotion = (item, prefName) => {
-    if (property_get(prefName, true)) return [];
-    var recipes = [item].concat(src_diet_toConsumableArray(template_string_$items(diet_templateObject123 || (diet_templateObject123 = src_diet_taggedTemplateLiteral(["roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread"]))))).map(i => (0,external_kolmafia_namespaceObject.toInt)(i));
-    if (recipes.some(id => property_get("unknownRecipe".concat(id), true))) return [];
-    return limitedPotion(item, 1, {
-      price: 2 * utils_sum(template_string_$items(diet_templateObject124 || (diet_templateObject124 = src_diet_taggedTemplateLiteral(["Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris"]))), ingredientCost)
-    });
-  };
-  var ofLegendMenuItems = config_globalOptions.ascend ? [].concat(src_diet_toConsumableArray(ofLegendPotion(template_string_$item(diet_templateObject125 || (diet_templateObject125 = src_diet_taggedTemplateLiteral(["Calzone of Legend"]))), "calzoneOfLegendEaten")), src_diet_toConsumableArray(ofLegendPotion(template_string_$item(diet_templateObject126 || (diet_templateObject126 = src_diet_taggedTemplateLiteral(["Pizza of Legend"]))), "pizzaOfLegendEaten")), src_diet_toConsumableArray(ofLegendPotion(template_string_$item(diet_templateObject127 || (diet_templateObject127 = src_diet_taggedTemplateLiteral(["Deep Dish of Legend"]))), "deepDishOfLegendEaten"))) : [];
-  return [].concat(src_diet_toConsumableArray(baseMenu), src_diet_toConsumableArray(copiers()), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject128 || (diet_templateObject128 = src_diet_taggedTemplateLiteral(["jumping horseradish"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject129 || (diet_templateObject129 = src_diet_taggedTemplateLiteral(["tempura cauliflower"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject130 || (diet_templateObject130 = src_diet_taggedTemplateLiteral(["sea truffle"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject131 || (diet_templateObject131 = src_diet_taggedTemplateLiteral(["tempura broccoli"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject132 || (diet_templateObject132 = src_diet_taggedTemplateLiteral(["Miserable Pie"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject133 || (diet_templateObject133 = src_diet_taggedTemplateLiteral(["Every Day is Like This Sundae"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject134 || (diet_templateObject134 = src_diet_taggedTemplateLiteral(["bowl of mummy guts"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject135 || (diet_templateObject135 = src_diet_taggedTemplateLiteral(["haunted Hell ramen"]))))), src_diet_toConsumableArray(campfireHotdog), src_diet_toConsumableArray(foodCone), src_diet_toConsumableArray(borisBread), src_diet_toConsumableArray(ofLegendMenuItems), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject136 || (diet_templateObject136 = src_diet_taggedTemplateLiteral(["dirt julep"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject137 || (diet_templateObject137 = src_diet_taggedTemplateLiteral(["Ambitious Turkey"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject138 || (diet_templateObject138 = src_diet_taggedTemplateLiteral(["Friendly Turkey"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject139 || (diet_templateObject139 = src_diet_taggedTemplateLiteral(["vintage smart drink"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject140 || (diet_templateObject140 = src_diet_taggedTemplateLiteral(["Strikes Again Bigmouth"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject141 || (diet_templateObject141 = src_diet_taggedTemplateLiteral(["Irish Coffee, English Heart"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject142 || (diet_templateObject142 = src_diet_taggedTemplateLiteral(["Jack-O-Lantern beer"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject143 || (diet_templateObject143 = src_diet_taggedTemplateLiteral(["Amnesiac Ale"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject144 || (diet_templateObject144 = src_diet_taggedTemplateLiteral(["mentholated wine"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject145 || (diet_templateObject145 = src_diet_taggedTemplateLiteral(["Feliz Navidad"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject146 || (diet_templateObject146 = src_diet_taggedTemplateLiteral(["broberry brogurt"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject147 || (diet_templateObject147 = src_diet_taggedTemplateLiteral(["haunted martini"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject148 || (diet_templateObject148 = src_diet_taggedTemplateLiteral(["twice-haunted screwdriver"]))), {
+  var deepDish = legendaryPizzaToMenu([{
+    item: template_string_$item(diet_templateObject127 || (diet_templateObject127 = src_diet_taggedTemplateLiteral(["Deep Dish of Legend"]))),
+    pref: "deepDishOfLegendEaten"
+  }], out => limitedPotion(out.item, 1, {
+    price: out.price
+  }));
+  return [].concat(src_diet_toConsumableArray(baseMenu), src_diet_toConsumableArray(copiers()), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject128 || (diet_templateObject128 = src_diet_taggedTemplateLiteral(["jumping horseradish"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject129 || (diet_templateObject129 = src_diet_taggedTemplateLiteral(["tempura cauliflower"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject130 || (diet_templateObject130 = src_diet_taggedTemplateLiteral(["sea truffle"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject131 || (diet_templateObject131 = src_diet_taggedTemplateLiteral(["tempura broccoli"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject132 || (diet_templateObject132 = src_diet_taggedTemplateLiteral(["Miserable Pie"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject133 || (diet_templateObject133 = src_diet_taggedTemplateLiteral(["Every Day is Like This Sundae"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject134 || (diet_templateObject134 = src_diet_taggedTemplateLiteral(["bowl of mummy guts"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject135 || (diet_templateObject135 = src_diet_taggedTemplateLiteral(["haunted Hell ramen"]))))), src_diet_toConsumableArray(campfireHotdog), src_diet_toConsumableArray(foodCone), src_diet_toConsumableArray(borisBread), src_diet_toConsumableArray(deepDish.flat()), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject136 || (diet_templateObject136 = src_diet_taggedTemplateLiteral(["dirt julep"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject137 || (diet_templateObject137 = src_diet_taggedTemplateLiteral(["Ambitious Turkey"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject138 || (diet_templateObject138 = src_diet_taggedTemplateLiteral(["Friendly Turkey"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject139 || (diet_templateObject139 = src_diet_taggedTemplateLiteral(["vintage smart drink"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject140 || (diet_templateObject140 = src_diet_taggedTemplateLiteral(["Strikes Again Bigmouth"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject141 || (diet_templateObject141 = src_diet_taggedTemplateLiteral(["Irish Coffee, English Heart"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject142 || (diet_templateObject142 = src_diet_taggedTemplateLiteral(["Jack-O-Lantern beer"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject143 || (diet_templateObject143 = src_diet_taggedTemplateLiteral(["Amnesiac Ale"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject144 || (diet_templateObject144 = src_diet_taggedTemplateLiteral(["mentholated wine"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject145 || (diet_templateObject145 = src_diet_taggedTemplateLiteral(["Feliz Navidad"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject146 || (diet_templateObject146 = src_diet_taggedTemplateLiteral(["broberry brogurt"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject147 || (diet_templateObject147 = src_diet_taggedTemplateLiteral(["haunted martini"]))))), src_diet_toConsumableArray(potion(template_string_$item(diet_templateObject148 || (diet_templateObject148 = src_diet_taggedTemplateLiteral(["twice-haunted screwdriver"]))), {
     price: twiceHauntedPrice
   })), src_diet_toConsumableArray(limitedPotion(template_string_$item(diet_templateObject149 || (diet_templateObject149 = src_diet_taggedTemplateLiteral(["high-end ginger wine"]))), (0,external_kolmafia_namespaceObject.availableAmount)(template_string_$item(diet_templateObject150 || (diet_templateObject150 = src_diet_taggedTemplateLiteral(["high-end ginger wine"])))))), src_diet_toConsumableArray(limitedPotion(template_string_$item(diet_templateObject151 || (diet_templateObject151 = src_diet_taggedTemplateLiteral(["Hot Socks"]))), hasSpeakeasy ? 3 : 0, {
     price: 5000
@@ -18943,9 +18965,9 @@ function consumeDiet(diet, name) {
   (0,external_kolmafia_namespaceObject.print)();
   printDiet(diet, name);
   (0,external_kolmafia_namespaceObject.print)();
-  var seasoningCount = utils_sum(diet.entries, _ref2 => {
-    var menuItems = _ref2.menuItems,
-      quantity = _ref2.quantity;
+  var seasoningCount = utils_sum(diet.entries, _ref4 => {
+    var menuItems = _ref4.menuItems,
+      quantity = _ref4.quantity;
     return menuItems.some(menuItem => menuItem.item === template_string_$item(diet_templateObject179 || (diet_templateObject179 = src_diet_taggedTemplateLiteral(["Special Seasoning"])))) ? quantity : 0;
   });
   acquire(seasoningCount, template_string_$item(diet_templateObject180 || (diet_templateObject180 = src_diet_taggedTemplateLiteral(["Special Seasoning"]))), MPA);
@@ -18955,8 +18977,8 @@ function consumeDiet(diet, name) {
   var lastOrgans = [-1, -1, -1];
   var capacities = () => [(0,external_kolmafia_namespaceObject.fullnessLimit)(), (0,external_kolmafia_namespaceObject.inebrietyLimit)(), (0,external_kolmafia_namespaceObject.spleenLimit)()];
   var lastCapacities = [-1, -1, -1];
-  var currentQuantity = utils_sum(diet.entries, _ref3 => {
-    var quantity = _ref3.quantity;
+  var currentQuantity = utils_sum(diet.entries, _ref5 => {
+    var quantity = _ref5.quantity;
     return quantity;
   });
   var lastQuantity = -1;
@@ -19085,8 +19107,8 @@ function consumeDiet(diet, name) {
     } finally {
       _iterator2.f();
     }
-    currentQuantity = utils_sum(diet.entries, _ref4 => {
-      var quantity = _ref4.quantity;
+    currentQuantity = utils_sum(diet.entries, _ref6 => {
+      var quantity = _ref6.quantity;
       return quantity;
     });
   }
@@ -20786,7 +20808,7 @@ function makePantsFromObject(pants) {
   return makePants(pants.alignment, pants.element, pants.leftSac, pants.middleSac, pants.rightSac);
 }
 ;// CONCATENATED MODULE: ./src/tasks/daily.ts
-var daily_templateObject, daily_templateObject2, daily_templateObject3, daily_templateObject4, daily_templateObject5, daily_templateObject6, daily_templateObject7, daily_templateObject8, daily_templateObject9, daily_templateObject10, daily_templateObject11, daily_templateObject12, daily_templateObject13, daily_templateObject14, daily_templateObject15, daily_templateObject16, daily_templateObject17, daily_templateObject18, daily_templateObject19, daily_templateObject20, daily_templateObject21, daily_templateObject22, daily_templateObject23, daily_templateObject24, daily_templateObject25, daily_templateObject26, daily_templateObject27, daily_templateObject28, daily_templateObject29, daily_templateObject30, daily_templateObject31, daily_templateObject32, daily_templateObject33, daily_templateObject34, daily_templateObject35, daily_templateObject36, daily_templateObject37, daily_templateObject38, daily_templateObject39, daily_templateObject40, daily_templateObject41, daily_templateObject42, daily_templateObject43, daily_templateObject44, daily_templateObject45, daily_templateObject46, daily_templateObject47, daily_templateObject48, daily_templateObject49, daily_templateObject50, daily_templateObject51, daily_templateObject52, daily_templateObject53, daily_templateObject54, daily_templateObject55, daily_templateObject56, daily_templateObject57, daily_templateObject58, daily_templateObject59, daily_templateObject60, daily_templateObject61, daily_templateObject62, daily_templateObject63, daily_templateObject64, daily_templateObject65, daily_templateObject66, daily_templateObject67, daily_templateObject68, daily_templateObject69, daily_templateObject70, daily_templateObject71, daily_templateObject72, daily_templateObject73, daily_templateObject74, daily_templateObject75, daily_templateObject76, daily_templateObject77, daily_templateObject78, daily_templateObject79, daily_templateObject80, daily_templateObject81, daily_templateObject82, daily_templateObject83, daily_templateObject84, daily_templateObject85, daily_templateObject86, daily_templateObject87;
+var daily_templateObject, daily_templateObject2, daily_templateObject3, daily_templateObject4, daily_templateObject5, daily_templateObject6, daily_templateObject7, daily_templateObject8, daily_templateObject9, daily_templateObject10, daily_templateObject11, daily_templateObject12, daily_templateObject13, daily_templateObject14, daily_templateObject15, daily_templateObject16, daily_templateObject17, daily_templateObject18, daily_templateObject19, daily_templateObject20, daily_templateObject21, daily_templateObject22, daily_templateObject23, daily_templateObject24, daily_templateObject25, daily_templateObject26, daily_templateObject27, daily_templateObject28, daily_templateObject29, daily_templateObject30, daily_templateObject31, daily_templateObject32, daily_templateObject33, daily_templateObject34, daily_templateObject35, daily_templateObject36, daily_templateObject37, daily_templateObject38, daily_templateObject39, daily_templateObject40, daily_templateObject41, daily_templateObject42, daily_templateObject43, daily_templateObject44, daily_templateObject45, daily_templateObject46, daily_templateObject47, daily_templateObject48, daily_templateObject49, daily_templateObject50, daily_templateObject51, daily_templateObject52, daily_templateObject53, daily_templateObject54, daily_templateObject55, daily_templateObject56, daily_templateObject57, daily_templateObject58, daily_templateObject59, daily_templateObject60, daily_templateObject61, daily_templateObject62, daily_templateObject63, daily_templateObject64, daily_templateObject65, daily_templateObject66, daily_templateObject67, daily_templateObject68, daily_templateObject69, daily_templateObject70, daily_templateObject71, daily_templateObject72, daily_templateObject73, daily_templateObject74, daily_templateObject75, daily_templateObject76, daily_templateObject77, daily_templateObject78, daily_templateObject79, daily_templateObject80, daily_templateObject81, daily_templateObject82, daily_templateObject83;
 function daily_slicedToArray(arr, i) { return daily_arrayWithHoles(arr) || daily_iterableToArrayLimit(arr, i) || daily_unsupportedIterableToArray(arr, i) || daily_nonIterableRest(); }
 function daily_nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function daily_iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
@@ -21087,17 +21109,17 @@ var DailyTasks = [{
   do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(daily_templateObject49 || (daily_templateObject49 = daily_taggedTemplateLiteral(["piece of driftwood"]))))
 }, {
   name: "Beach Comb Buff",
-  ready: () => lib_have(template_string_$item(daily_templateObject50 || (daily_templateObject50 = daily_taggedTemplateLiteral(["Beach Comb"])))) || lib_have(template_string_$item(daily_templateObject51 || (daily_templateObject51 = daily_taggedTemplateLiteral(["driftwood beach comb"])))),
+  ready: () => available(),
   completed: () => !headAvailable("FAMILIAR") || freeCombs() < 1,
-  do: () => tryHead(template_string_$effect(daily_templateObject52 || (daily_templateObject52 = daily_taggedTemplateLiteral(["Do I Know You From Somewhere?"]))))
+  do: () => tryHead(template_string_$effect(daily_templateObject50 || (daily_templateObject50 = daily_taggedTemplateLiteral(["Do I Know You From Somewhere?"]))))
 }, {
   name: "Beach Comb Free Walks",
-  ready: () => lib_have(template_string_$item(daily_templateObject53 || (daily_templateObject53 = daily_taggedTemplateLiteral(["Beach Comb"])))) || lib_have(template_string_$item(daily_templateObject54 || (daily_templateObject54 = daily_taggedTemplateLiteral(["driftwood beach comb"])))),
+  ready: () => available(),
   completed: () => freeCombs() < 1,
   do: () => (0,external_kolmafia_namespaceObject.cliExecute)("combo ".concat(11 - property_get("_freeBeachWalksUsed")))
 }, {
   name: "Clan Fortune Buff",
-  ready: () => lib_have(template_string_$item(daily_templateObject55 || (daily_templateObject55 = daily_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && (0,external_kolmafia_namespaceObject.getClanLounge)()["Clan Carnival Game"] !== undefined,
+  ready: () => lib_have(template_string_$item(daily_templateObject51 || (daily_templateObject51 = daily_taggedTemplateLiteral(["Clan VIP Lounge key"])))) && (0,external_kolmafia_namespaceObject.getClanLounge)()["Clan Carnival Game"] !== undefined,
   completed: () => property_get("_clanFortuneBuffUsed"),
   do: () => (0,external_kolmafia_namespaceObject.cliExecute)("fortune buff meat")
 }, {
@@ -21109,7 +21131,7 @@ var DailyTasks = [{
   name: "Source Terminal Enhance",
   ready: () => SourceTerminal_have(),
   completed: () => enhanceUsesRemaining() === 0,
-  do: () => enhance(template_string_$effect(daily_templateObject56 || (daily_templateObject56 = daily_taggedTemplateLiteral(["meat.enh"])))),
+  do: () => enhance(template_string_$effect(daily_templateObject52 || (daily_templateObject52 = daily_taggedTemplateLiteral(["meat.enh"])))),
   limit: {
     soft: 3
   }
@@ -21117,16 +21139,16 @@ var DailyTasks = [{
   name: "Source Terminal Enquire",
   ready: () => SourceTerminal_have(),
   completed: () => property_get("sourceTerminalEnquiry") === "familiar.enq",
-  do: () => enquiry(template_string_$effect(daily_templateObject57 || (daily_templateObject57 = daily_taggedTemplateLiteral(["familiar.enq"]))))
+  do: () => enquiry(template_string_$effect(daily_templateObject53 || (daily_templateObject53 = daily_taggedTemplateLiteral(["familiar.enq"]))))
 }, {
   name: "Mad Tea Party Buff",
   ready: () => !property_get("_madTeaParty"),
   completed: () => property_get("_madTeaParty"),
   do: () => (0,external_kolmafia_namespaceObject.cliExecute)("hatter 22"),
   acquire: [{
-    item: template_string_$item(daily_templateObject58 || (daily_templateObject58 = daily_taggedTemplateLiteral(["filthy knitted dread sack"])))
+    item: template_string_$item(daily_templateObject54 || (daily_templateObject54 = daily_taggedTemplateLiteral(["filthy knitted dread sack"])))
   }],
-  effects: [template_string_$effect(daily_templateObject59 || (daily_templateObject59 = daily_taggedTemplateLiteral(["Down the Rabbit Hole"])))]
+  effects: [template_string_$effect(daily_templateObject55 || (daily_templateObject55 = daily_taggedTemplateLiteral(["Down the Rabbit Hole"])))]
 }, {
   name: "SongBoom Buff",
   ready: () => SongBoom_have() && songChangesLeft() > 0 && (0,external_kolmafia_namespaceObject.myInebriety)() <= (0,external_kolmafia_namespaceObject.inebrietyLimit)(),
@@ -21139,50 +21161,50 @@ var DailyTasks = [{
   do: () => setSong("Food Vibrations")
 }, {
   name: "Set Mind Control Device",
-  ready: () => (0,external_kolmafia_namespaceObject.canadiaAvailable)() || (0,external_kolmafia_namespaceObject.gnomadsAvailable)() || lib_have(template_string_$item(daily_templateObject60 || (daily_templateObject60 = daily_taggedTemplateLiteral(["detuned radio"])))),
+  ready: () => (0,external_kolmafia_namespaceObject.canadiaAvailable)() || (0,external_kolmafia_namespaceObject.gnomadsAvailable)() || lib_have(template_string_$item(daily_templateObject56 || (daily_templateObject56 = daily_taggedTemplateLiteral(["detuned radio"])))),
   completed: () => (0,external_kolmafia_namespaceObject.currentMcd)() === ((0,external_kolmafia_namespaceObject.canadiaAvailable)() ? 11 : 10),
   do: () => (0,external_kolmafia_namespaceObject.changeMcd)((0,external_kolmafia_namespaceObject.canadiaAvailable)() ? 11 : 10)
 }, {
   name: "Implement [glitch season reward name]",
-  ready: () => lib_have(template_string_$item(daily_templateObject61 || (daily_templateObject61 = daily_taggedTemplateLiteral(["[glitch season reward name]"])))),
+  ready: () => lib_have(template_string_$item(daily_templateObject57 || (daily_templateObject57 = daily_taggedTemplateLiteral(["[glitch season reward name]"])))),
   completed: () => property_get("_glitchItemImplemented"),
-  do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(daily_templateObject62 || (daily_templateObject62 = daily_taggedTemplateLiteral(["[glitch season reward name]"]))))
+  do: () => (0,external_kolmafia_namespaceObject.use)(template_string_$item(daily_templateObject58 || (daily_templateObject58 = daily_taggedTemplateLiteral(["[glitch season reward name]"]))))
 }, {
   name: "Use BittyCar MeatCart",
   ready: () => property_get("_bittycar") !== "meatcar",
   completed: () => property_get("_bittycar") === "meatcar",
-  do: () => withStash([template_string_$item(daily_templateObject63 || (daily_templateObject63 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))], () => (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(daily_templateObject64 || (daily_templateObject64 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))))
+  do: () => withStash([template_string_$item(daily_templateObject59 || (daily_templateObject59 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))], () => (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(daily_templateObject60 || (daily_templateObject60 = daily_taggedTemplateLiteral(["BittyCar MeatCar"])))))
 }, {
   name: "Use BittyCar SoulCar",
   ready: () => property_get("_bittycar") !== "meatcar" && property_get("_bittycar") !== "soulcar",
   completed: () => property_get("_bittycar") === "soulcar",
-  do: () => withStash([template_string_$item(daily_templateObject65 || (daily_templateObject65 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))], () => (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(daily_templateObject66 || (daily_templateObject66 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))))
+  do: () => withStash([template_string_$item(daily_templateObject61 || (daily_templateObject61 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))], () => (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(daily_templateObject62 || (daily_templateObject62 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))))
 }, {
   name: "Holiday Eldritch Attunement",
-  ready: () => (0,external_kolmafia_namespaceObject.holiday)() === "Generic Summer Holiday" && !lib_have(template_string_$effect(daily_templateObject67 || (daily_templateObject67 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))) && estimatedTentacles() * config_globalOptions.prefs.valueOfFreeFight > property_get("valueOfAdventure"),
-  completed: () => lib_have(template_string_$effect(daily_templateObject68 || (daily_templateObject68 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))),
-  do: () => (0,external_kolmafia_namespaceObject.adv1)($location(daily_templateObject69 || (daily_templateObject69 = daily_taggedTemplateLiteral(["Generic Summer Holiday Swimming!"])))),
+  ready: () => (0,external_kolmafia_namespaceObject.holiday)() === "Generic Summer Holiday" && !lib_have(template_string_$effect(daily_templateObject63 || (daily_templateObject63 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))) && estimatedTentacles() * config_globalOptions.prefs.valueOfFreeFight > property_get("valueOfAdventure"),
+  completed: () => lib_have(template_string_$effect(daily_templateObject64 || (daily_templateObject64 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))),
+  do: () => (0,external_kolmafia_namespaceObject.adv1)($location(daily_templateObject65 || (daily_templateObject65 = daily_taggedTemplateLiteral(["Generic Summer Holiday Swimming!"])))),
   acquire: [{
-    item: template_string_$item(daily_templateObject70 || (daily_templateObject70 = daily_taggedTemplateLiteral(["water wings"])))
+    item: template_string_$item(daily_templateObject66 || (daily_templateObject66 = daily_taggedTemplateLiteral(["water wings"])))
   }],
-  outfit: () => (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && lib_have(template_string_$item(daily_templateObject71 || (daily_templateObject71 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) && (0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(daily_templateObject72 || (daily_templateObject72 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) ? {
-    offhand: template_string_$item(daily_templateObject73 || (daily_templateObject73 = daily_taggedTemplateLiteral(["Drunkula's wineglass"]))),
-    acc1: template_string_$item(daily_templateObject74 || (daily_templateObject74 = daily_taggedTemplateLiteral(["water wings"]))),
-    avoid: template_string_$items(daily_templateObject75 || (daily_templateObject75 = daily_taggedTemplateLiteral(["June cleaver"])))
+  outfit: () => (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && lib_have(template_string_$item(daily_templateObject67 || (daily_templateObject67 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) && (0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(daily_templateObject68 || (daily_templateObject68 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) ? {
+    offhand: template_string_$item(daily_templateObject69 || (daily_templateObject69 = daily_taggedTemplateLiteral(["Drunkula's wineglass"]))),
+    acc1: template_string_$item(daily_templateObject70 || (daily_templateObject70 = daily_taggedTemplateLiteral(["water wings"]))),
+    avoid: template_string_$items(daily_templateObject71 || (daily_templateObject71 = daily_taggedTemplateLiteral(["June cleaver"])))
   } : {
-    acc1: template_string_$item(daily_templateObject76 || (daily_templateObject76 = daily_taggedTemplateLiteral(["water wings"]))),
-    avoid: template_string_$items(daily_templateObject77 || (daily_templateObject77 = daily_taggedTemplateLiteral(["June cleaver"])))
+    acc1: template_string_$item(daily_templateObject72 || (daily_templateObject72 = daily_taggedTemplateLiteral(["water wings"]))),
+    avoid: template_string_$items(daily_templateObject73 || (daily_templateObject73 = daily_taggedTemplateLiteral(["June cleaver"])))
   }
 }, {
   name: "Check Neverending Party Quest",
   ready: () => (property_get("neverendingPartyAlways") || property_get("_neverendingPartyToday")) && property_get("_questPartyFair") === "unstarted",
   completed: () => property_get("_questPartyFair") !== "unstarted",
   do: nepQuest,
-  outfit: () => (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && lib_have(template_string_$item(daily_templateObject78 || (daily_templateObject78 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) && (0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(daily_templateObject79 || (daily_templateObject79 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) ? {
-    offhand: template_string_$item(daily_templateObject80 || (daily_templateObject80 = daily_taggedTemplateLiteral(["Drunkula's wineglass"]))),
-    avoid: template_string_$items(daily_templateObject81 || (daily_templateObject81 = daily_taggedTemplateLiteral(["June cleaver"])))
+  outfit: () => (0,external_kolmafia_namespaceObject.myInebriety)() > (0,external_kolmafia_namespaceObject.inebrietyLimit)() && lib_have(template_string_$item(daily_templateObject74 || (daily_templateObject74 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) && (0,external_kolmafia_namespaceObject.canEquip)(template_string_$item(daily_templateObject75 || (daily_templateObject75 = daily_taggedTemplateLiteral(["Drunkula's wineglass"])))) ? {
+    offhand: template_string_$item(daily_templateObject76 || (daily_templateObject76 = daily_taggedTemplateLiteral(["Drunkula's wineglass"]))),
+    avoid: template_string_$items(daily_templateObject77 || (daily_templateObject77 = daily_taggedTemplateLiteral(["June cleaver"])))
   } : {
-    avoid: template_string_$items(daily_templateObject82 || (daily_templateObject82 = daily_taggedTemplateLiteral(["June cleaver"])))
+    avoid: template_string_$items(daily_templateObject78 || (daily_templateObject78 = daily_taggedTemplateLiteral(["June cleaver"])))
   }
 }, {
   name: "Check Barf Mountain Quest",
@@ -21203,9 +21225,9 @@ var DailyTasks = [{
   do: () => closetItems.forEach(item => (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(item), item))
 }, {
   name: "Closet Hobo Nickels",
-  ready: () => lib_have($familiar(daily_templateObject83 || (daily_templateObject83 = daily_taggedTemplateLiteral(["Hobo Monkey"])))) || lib_have(template_string_$item(daily_templateObject84 || (daily_templateObject84 = daily_taggedTemplateLiteral(["hobo nickel"]))), 1000),
-  completed: () => (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(daily_templateObject85 || (daily_templateObject85 = daily_taggedTemplateLiteral(["hobo nickel"])))) === 0,
-  do: () => (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(daily_templateObject86 || (daily_templateObject86 = daily_taggedTemplateLiteral(["hobo nickel"])))), template_string_$item(daily_templateObject87 || (daily_templateObject87 = daily_taggedTemplateLiteral(["hobo nickel"]))))
+  ready: () => lib_have($familiar(daily_templateObject79 || (daily_templateObject79 = daily_taggedTemplateLiteral(["Hobo Monkey"])))) || lib_have(template_string_$item(daily_templateObject80 || (daily_templateObject80 = daily_taggedTemplateLiteral(["hobo nickel"]))), 1000),
+  completed: () => (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(daily_templateObject81 || (daily_templateObject81 = daily_taggedTemplateLiteral(["hobo nickel"])))) === 0,
+  do: () => (0,external_kolmafia_namespaceObject.putCloset)((0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(daily_templateObject82 || (daily_templateObject82 = daily_taggedTemplateLiteral(["hobo nickel"])))), template_string_$item(daily_templateObject83 || (daily_templateObject83 = daily_taggedTemplateLiteral(["hobo nickel"]))))
 }, {
   name: "Retrieve Items",
   ready: () => retrieveItems.some(item => (0,external_kolmafia_namespaceObject.itemAmount)(item) === 0),
@@ -24540,13 +24562,13 @@ function yachtzeeChainDiet(simOnly) {
   var synthCastsToCoverRun = config_globalOptions.nobarf || !lib_have(template_string_$skill(yachtzee_diet_templateObject44 || (yachtzee_diet_templateObject44 = yachtzee_diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? 0 : Math.max(0, Math.ceil((estimatedGarboTurns() - (0,external_kolmafia_namespaceObject.haveEffect)(template_string_$effect(yachtzee_diet_templateObject45 || (yachtzee_diet_templateObject45 = yachtzee_diet_taggedTemplateLiteral(["Synthesis: Greed"]))))) / 30));
   var reservedFullness = 2 * (0,external_kolmafia_namespaceObject.toInt)(!property_get("deepDishOfLegendEaten")) +
   // to be consumed in yachtzee
-  2 * (0,external_kolmafia_namespaceObject.toInt)(!property_get("calzoneOfLegendEaten") && config_globalOptions.ascend) +
+  2 * (0,external_kolmafia_namespaceObject.toInt)(!property_get("calzoneOfLegendEaten")) +
   // to be consumed post-yachtzee
-  2 * (0,external_kolmafia_namespaceObject.toInt)(!property_get("pizzaOfLegendEaten") && config_globalOptions.ascend) +
+  2 * (0,external_kolmafia_namespaceObject.toInt)(!property_get("pizzaOfLegendEaten")) +
   // to be consumed post-yachtzee
   2; // subtract 2 for Boris Bread and Jumping Horseradish
   var fullnessAvailable = (0,external_kolmafia_namespaceObject.myLevel)() >= 13 ? Math.max(0, (0,external_kolmafia_namespaceObject.fullnessLimit)() - (0,external_kolmafia_namespaceObject.myFullness)() + (0,external_kolmafia_namespaceObject.toInt)(haveDistentionPill) - reservedFullness) : 0;
-  var reservedInebriety = config_globalOptions.ascend ? Math.max(0, (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(yachtzee_diet_templateObject46 || (yachtzee_diet_templateObject46 = yachtzee_diet_taggedTemplateLiteral(["astral pilsner"])))) - (0,external_kolmafia_namespaceObject.toInt)(property_get("_mimeArmyShotglassUsed"))) : 0;
+  var reservedInebriety = Math.max(0, (0,external_kolmafia_namespaceObject.itemAmount)(template_string_$item(yachtzee_diet_templateObject46 || (yachtzee_diet_templateObject46 = yachtzee_diet_taggedTemplateLiteral(["astral pilsner"])))) - (0,external_kolmafia_namespaceObject.toInt)(property_get("_mimeArmyShotglassUsed")));
   var inebrietyAvailable = (0,external_kolmafia_namespaceObject.myLevel)() >= 13 ? Math.max(0, (0,external_kolmafia_namespaceObject.inebrietyLimit)() - (0,external_kolmafia_namespaceObject.myInebriety)() + syntheticPillsAvailable + sweatOutsAvailable - reservedInebriety) : 0;
   var spleenAvailable = currentSpleenLeft + filters;
   var organsAvailable = Math.floor(fullnessAvailable / 5) * 5 +
@@ -24650,7 +24672,7 @@ function yachtzeeChainDiet(simOnly) {
   // Opportunistically fit in Deep Dish of Legend only if we have enough stomach space
   var pizzaAdditionalAdvPerFullness = 24 / 2 - 31.5 / 5;
   var deepDishValue = yachtzeePotionProfits(new Potion(template_string_$item(yachtzee_diet_templateObject65 || (yachtzee_diet_templateObject65 = yachtzee_diet_taggedTemplateLiteral(["Deep Dish of Legend"])))), yachtzeeTurns) + pizzaAdditionalAdvPerFullness * 2 * VOA;
-  var deepDishPizzas = config_globalOptions.ascend && !property_get("deepDishOfLegendEaten") && deepDishValue > (0,external_kolmafia_namespaceObject.retrievePrice)(template_string_$item(yachtzee_diet_templateObject66 || (yachtzee_diet_templateObject66 = yachtzee_diet_taggedTemplateLiteral(["Deep Dish of Legend"])))) && !property_get("unknownRecipe11000") && !property_get("unknownRecipe10988") && !property_get("unknownRecipe10978") && (0,external_kolmafia_namespaceObject.myFullness)() + 2 + slidersToEat * 5 + toastsToEat + horseradishes + borisBreads <= (0,external_kolmafia_namespaceObject.fullnessLimit)() + (0,external_kolmafia_namespaceObject.toInt)(haveDistentionPill) ? 1 : 0;
+  var deepDishPizzas = !property_get("deepDishOfLegendEaten") && deepDishValue > (0,external_kolmafia_namespaceObject.retrievePrice)(template_string_$item(yachtzee_diet_templateObject66 || (yachtzee_diet_templateObject66 = yachtzee_diet_taggedTemplateLiteral(["Deep Dish of Legend"])))) && !property_get("unknownRecipe11000") && !property_get("unknownRecipe10988") && !property_get("unknownRecipe10978") && (0,external_kolmafia_namespaceObject.myFullness)() + 2 + slidersToEat * 5 + toastsToEat + horseradishes + borisBreads <= (0,external_kolmafia_namespaceObject.fullnessLimit)() + (0,external_kolmafia_namespaceObject.toInt)(haveDistentionPill) ? 1 : 0;
   var earlyMeatDropsEstimate = (0,external_kolmafia_namespaceObject.numericModifier)("Meat Drop") + (!lib_have(template_string_$effect(yachtzee_diet_templateObject67 || (yachtzee_diet_templateObject67 = yachtzee_diet_taggedTemplateLiteral(["Synthesis: Greed"])))) && lib_have(template_string_$skill(yachtzee_diet_templateObject68 || (yachtzee_diet_templateObject68 = yachtzee_diet_taggedTemplateLiteral(["Sweet Synthesis"])))) ? 300 : 0) + ((0,external_kolmafia_namespaceObject.visitUrl)("forestvillage.php").includes("friarcottage.gif") ? 60 : 0);
 
   // Some iffy calculations here
