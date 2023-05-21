@@ -14155,7 +14155,7 @@ var POINTER_RING_SPECS = outfit => [{
 }, {
   available: true,
   items: template_string_$items(barf_templateObject16 || (barf_templateObject16 = barf_taggedTemplateLiteral(["haiku katana, mafia pointer finger ring"])))
-}, gunSpec(outfit), {
+}, () => gunSpec(outfit), {
   available: true,
   items: template_string_$items(barf_templateObject17 || (barf_templateObject17 = barf_taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))
 }];
@@ -14182,9 +14182,10 @@ function barfOutfit() {
       _step;
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var _step$value = _step.value,
-          available = _step$value.available,
-          items = _step$value.items;
+        var _spec = _step.value;
+        var _undelay = undelay(_spec),
+          available = _undelay.available,
+          items = _undelay.items;
         if (available && outfit.tryEquip(items)) break;
       }
     } catch (err) {
