@@ -295,6 +295,26 @@ function canCookLegendaryPizza(pizza: Item): boolean {
   return !recipes.some((id) => get(`unknownRecipe${id}`, true));
 }
 
+function legendaryPizzaToMenu(
+  pizzas: { item: Item; pref: string }[],
+  maker: (out: { item: Item; limit: number; price: number }) => MenuItem<Note>
+) {
+  return pizzas
+    .filter(({ item, pref }) => !get(pref, true) && canCookLegendaryPizza(item))
+    .map(({ item }) =>
+      maker({
+        item,
+        limit: 1,
+        price:
+          2 *
+          sum(
+            $items`Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris`,
+            ingredientCost
+          ),
+      })
+    );
+}
+
 export const mallMin: (items: Item[]) => Item = (items: Item[]) => maxBy(items, mallPrice, true);
 
 /**
@@ -341,15 +361,13 @@ function menu(): MenuItem<Note>[] {
     (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
   );
 
-  const legendaryPizzas = [
-    { pizza: $item`Pizza of Legend`, pref: "pizzaOfLegendEaten" },
-    { pizza: $item`Calzone of Legend`, pref: "calzoneOfLegendEaten" },
-  ]
-    .filter(({ pizza, pref }) => {
-      if (get(pref)) return false;
-      return canCookLegendaryPizza(pizza);
-    })
-    .map(({ pizza }) => new MenuItem(pizza));
+  const legendaryPizzas = legendaryPizzaToMenu(
+    [
+      { item: $item`Calzone of Legend`, pref: "calzoneOfLegendEaten" },
+      { item: $item`Pizza of Legend`, pref: "pizzaOfLegendEaten" },
+    ],
+    (out) => new MenuItem<Note>(out.item, { priceOverride: out.price })
+  );
 
   return [
     // FOOD
@@ -608,18 +626,11 @@ export function potionMenu(
     ? potion($item`Boris's bread`, { price: 2 * ingredientCost($item`Yeast of Boris`) })
     : [];
 
-  const deepDish = get("deepDishOfLegendEaten")
-    ? []
-    : !canCookLegendaryPizza($item`Deep Dish of Legend`)
-    ? []
-    : limitedPotion($item`Deep Dish of Legend`, 1, {
-        price:
-          2 *
-          sum(
-            $items`Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris`,
-            ingredientCost
-          ),
-      });
+  const deepDish = legendaryPizzaToMenu(
+    [{ item: $item`Deep Dish of Legend`, pref: "deepDishOfLegendEaten" }],
+    (out: { item: Item; limit: number; price: number }) =>
+      limitedPotion(out.item, 1, { price: out.price })[0]
+  );
 
   return [
     ...baseMenu,
