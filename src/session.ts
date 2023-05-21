@@ -146,20 +146,21 @@ const specialValueLookup = new Map<Item, () => number>([
         )
       ),
   ],
-  // Exclude tradeable worksheds
-  [$item`Little Geneticist DNA-Splicing Lab`, () => 0],
-  [$item`portable Mayo Clinic`, () => 0],
-  [$item`snow machine`, () => 0],
-  [$item`warbear auto-anvil`, () => 0],
-  [$item`warbear chemistry lab`, () => 0],
-  [$item`warbear high-efficiency still`, () => 0],
-  [$item`warbear induction oven`, () => 0],
-  [$item`warbear jackhammer drill press`, () => 0],
-  [$item`warbear LP-ROM burner`, () => 0],
-  // and ChibiBuddy
-  [$item`ChibiBuddy™ (on)`, () => 0],
-  [$item`ChibiBuddy™ (off)`, () => 0],
 ]);
+
+const exclusions = [
+  // For tradeable items which can be "consumed" infinitely
+  $item`Little Geneticist DNA-Splicing Lab`,
+  $item`portable Mayo Clinic`,
+  $item`snow machine`,
+  $item`warbear auto-anvil`,
+  $item`warbear chemistry lab`,
+  $item`warbear high-efficiency still`,
+  $item`warbear induction oven`,
+  $item`warbear jackhammer drill press`,
+  $item`warbear LP-ROM burner`,
+  $item`ChibiBuddy™ (off)`,
+];
 
 function printSession(session: Session): void {
   const value = session.value(garboValue);
@@ -199,6 +200,7 @@ function garboSaleValue(item: Item, useHistorical: boolean): number {
 const garboRegularValueCache = new Map<Item, number>();
 const garboHistoricalValueCache = new Map<Item, number>();
 export function garboValue(item: Item, useHistorical = false): number {
+  if (exclusions.includes(item)) return 0;
   useHistorical ||= globalOptions.quick;
   const cachedValue =
     garboRegularValueCache.get(item) ??
