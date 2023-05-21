@@ -21,7 +21,7 @@
     "core-js": "^3.8.0",
     "grimoire-kolmafia": "^0.3.18",
     "kolmafia": "^5.27339.0",
-    "libram": "^0.8.0",
+    "libram": "^0.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
