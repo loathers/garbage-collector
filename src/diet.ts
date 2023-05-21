@@ -347,7 +347,7 @@ function menu(): MenuItem<Note>[] {
     { pizza: $item`Calzone of Legend`, pref: "calzoneOfLegendEaten" },
   ]
     .filter(({ pizza, pref }) => {
-      if (!get(pref)) return false;
+      if (get(pref)) return false;
       return canCookPizza(pizza);
     })
     .map(({ pizza }) => new MenuItem(pizza));
