@@ -328,7 +328,7 @@ function menu(): MenuItem<Note>[] {
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
     have(item)
   );
-  const pilsners = $items`astral pilsner`.filter((item) => globalOptions.ascend && have(item));
+  const pilsners = $items`astral pilsner`.filter((item) => have(item));
   const limitedItems = [...boxingDayCareItems, ...pilsners].map(
     (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
   );
@@ -607,13 +607,11 @@ export function potionMenu(
     });
   };
 
-  const ofLegendMenuItems = globalOptions.ascend
-    ? [
-        ...ofLegendPotion($item`Calzone of Legend`, "calzoneOfLegendEaten"),
-        ...ofLegendPotion($item`Pizza of Legend`, "pizzaOfLegendEaten"),
-        ...ofLegendPotion($item`Deep Dish of Legend`, "deepDishOfLegendEaten"),
-      ]
-    : [];
+  const ofLegendMenuItems = [
+    ...ofLegendPotion($item`Calzone of Legend`, "calzoneOfLegendEaten"),
+    ...ofLegendPotion($item`Pizza of Legend`, "pizzaOfLegendEaten"),
+    ...ofLegendPotion($item`Deep Dish of Legend`, "deepDishOfLegendEaten"),
+  ];
 
   return [
     ...baseMenu,

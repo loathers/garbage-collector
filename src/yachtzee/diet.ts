@@ -508,16 +508,17 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
         );
   const reservedFullness =
     2 * toInt(!get("deepDishOfLegendEaten")) + // to be consumed in yachtzee
-    2 * toInt(!get("calzoneOfLegendEaten") && globalOptions.ascend) + // to be consumed post-yachtzee
-    2 * toInt(!get("pizzaOfLegendEaten") && globalOptions.ascend) + // to be consumed post-yachtzee
+    2 * toInt(!get("calzoneOfLegendEaten")) + // to be consumed post-yachtzee
+    2 * toInt(!get("pizzaOfLegendEaten")) + // to be consumed post-yachtzee
     2; // subtract 2 for Boris Bread and Jumping Horseradish
   const fullnessAvailable =
     myLevel() >= 13
       ? Math.max(0, fullnessLimit() - myFullness() + toInt(haveDistentionPill) - reservedFullness)
       : 0;
-  const reservedInebriety = globalOptions.ascend
-    ? Math.max(0, itemAmount($item`astral pilsner`) - toInt(get("_mimeArmyShotglassUsed")))
-    : 0;
+  const reservedInebriety = Math.max(
+    0,
+    itemAmount($item`astral pilsner`) - toInt(get("_mimeArmyShotglassUsed"))
+  );
   const inebrietyAvailable =
     myLevel() >= 13
       ? Math.max(
@@ -682,7 +683,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     yachtzeePotionProfits(new Potion($item`Deep Dish of Legend`), yachtzeeTurns) +
     pizzaAdditionalAdvPerFullness * 2 * VOA;
   const deepDishPizzas =
-    globalOptions.ascend &&
     !get("deepDishOfLegendEaten") &&
     deepDishValue > retrievePrice($item`Deep Dish of Legend`) &&
     !get("unknownRecipe11000") &&
