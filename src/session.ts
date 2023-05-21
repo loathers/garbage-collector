@@ -150,15 +150,6 @@ const specialValueLookup = new Map<Item, () => number>([
 
 const exclusions = new Set([
   // For tradeable items which can be "consumed" infinitely
-  $item`Little Geneticist DNA-Splicing Lab`,
-  $item`portable Mayo Clinic`,
-  $item`snow machine`,
-  $item`warbear auto-anvil`,
-  $item`warbear chemistry lab`,
-  $item`warbear high-efficiency still`,
-  $item`warbear induction oven`,
-  $item`warbear jackhammer drill press`,
-  $item`warbear LP-ROM burner`,
   $item`ChibiBuddy™ (off)`,
 ]);
 
