@@ -84,7 +84,6 @@ import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
-import { BooleanProperty } from "libram/dist/propertyTypes";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -288,6 +287,15 @@ const stomachLiverCleaners = new Map([
   [$item`designer sweatpants`, [0, -1]],
 ]);
 
+function canCookPizza(pizza: Item): boolean {
+  const recipes = [
+    pizza,
+    ...$items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`,
+  ].map((i) => toInt(i));
+  if (recipes.some((id) => get(`unknownRecipe${id}`, true))) return false;
+  return true;
+}
+
 export const mallMin: (items: Item[]) => Item = (items: Item[]) => maxBy(items, mallPrice, true);
 
 /**
@@ -338,7 +346,10 @@ function menu(): MenuItem<Note>[] {
     { pizza: $item`Pizza of Legend`, pref: "pizzaOfLegendEaten" },
     { pizza: $item`Calzone of Legend`, pref: "calzoneOfLegendEaten" },
   ]
-    .filter(({ pref }) => !get(pref))
+    .filter(({ pizza, pref }) => {
+      if (!get(pref)) return false;
+      return canCookPizza(pizza);
+    })
     .map(({ pizza }) => new MenuItem(pizza));
 
   return [
@@ -598,22 +609,18 @@ export function potionMenu(
     ? potion($item`Boris's bread`, { price: 2 * ingredientCost($item`Yeast of Boris`) })
     : [];
 
-  const ofLegendPotion = (item: Item, pref: BooleanProperty) => {
-    if (get(pref)) return [];
-
-    const recipes = [
-      item,
-      ...$items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`,
-    ].map((i) => toInt(i));
-
-    if (recipes.some((id) => get(`unknownRecipe${id}`, true))) return [];
-
-    return limitedPotion(item, 1, {
-      price:
-        2 *
-        sum($items`Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris`, ingredientCost),
-    });
-  };
+  const deepDish = get("deepDishOfLegendEaten")
+    ? []
+    : !canCookPizza($item`Deep Dish of Legend`)
+    ? []
+    : limitedPotion($item`Deep Dish of Legend`, 1, {
+        price:
+          2 *
+          sum(
+            $items`Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris`,
+            ingredientCost
+          ),
+      });
 
   return [
     ...baseMenu,
@@ -631,7 +638,7 @@ export function potionMenu(
     ...campfireHotdog,
     ...foodCone,
     ...borisBread,
-    ...ofLegendPotion($item`Deep Dish of Legend`, "deepDishOfLegendEaten"),
+    ...deepDish,
 
     // BOOZE POTIONS
     ...potion($item`dirt julep`),
