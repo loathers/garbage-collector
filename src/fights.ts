@@ -354,15 +354,13 @@ function bestWitchessPiece() {
   return maxBy(witchessPieces, ({ drop }) => garboValue(drop)).piece;
 }
 
-function pygmyOptions(forceEquip: Item[] = []) {
+function pygmyOptions(equip: Item[] = []): FreeFightOptions {
   return {
-    requirements: () => [
-      new Requirement([], {
-        forceEquip,
-        preventEquip: $items`Staff of Queso Escusado, stinky cheese sword`,
-        bonusEquip: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
-      }),
-    ],
+    spec: () => ({
+      equip,
+      avoid: $items`Staff of Queso Escusado, stinky cheese sword`,
+      bonuses: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
+    }),
     macroAllowsFamiliarActions: false,
   };
 }
