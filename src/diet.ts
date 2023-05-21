@@ -289,7 +289,7 @@ const stomachLiverCleaners = new Map([
 
 function legendaryPizzaToMenu(
   pizzas: { item: Item; pref: string }[],
-  maker: (out: { item: Item; price: number }) => MenuItem<Note>
+  maker: (out: { item: Item; price: number }) => MenuItem<Note> | MenuItem<Note>[]
 ) {
   const canCookLegendaryPizza = (pizza: Item): boolean => {
     const recipes = [
@@ -364,7 +364,7 @@ function menu(): MenuItem<Note>[] {
       { item: $item`Calzone of Legend`, pref: "calzoneOfLegendEaten" },
       { item: $item`Pizza of Legend`, pref: "pizzaOfLegendEaten" },
     ],
-    (out) => new MenuItem<Note>(out.item, { priceOverride: out.price })
+    (out) => new MenuItem<Note>(out.item, { maximum: 1, priceOverride: out.price })
   );
 
   return [
@@ -382,7 +382,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(mallMin(lasagnas)),
     new MenuItem(mallMin(smallEpics)),
     new MenuItem($item`green hamhock`),
-    ...legendaryPizzas,
+    ...legendaryPizzas.flat(),
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -626,7 +626,7 @@ export function potionMenu(
 
   const deepDish = legendaryPizzaToMenu(
     [{ item: $item`Deep Dish of Legend`, pref: "deepDishOfLegendEaten" }],
-    (out: { item: Item; price: number }) => limitedPotion(out.item, 1, { price: out.price })[0]
+    (out: { item: Item; price: number }) => limitedPotion(out.item, 1, { price: out.price })
   );
 
   return [
@@ -645,7 +645,7 @@ export function potionMenu(
     ...campfireHotdog,
     ...foodCone,
     ...borisBread,
-    ...deepDish,
+    ...deepDish.flat(),
 
     // BOOZE POTIONS
     ...potion($item`dirt julep`),
