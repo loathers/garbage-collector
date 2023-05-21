@@ -17,9 +17,11 @@ import {
   $item,
   $items,
   $skill,
+  Delayed,
   get,
   getKramcoWandererChance,
   have,
+  undelay,
 } from "libram";
 import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
@@ -65,7 +67,7 @@ function gunSpec(outfit: Outfit) {
 
 const POINTER_RING_SPECS: (
   outfit: Outfit
-) => { available: boolean; items: Item[] | OutfitSpec }[] = (outfit: Outfit) => [
+) => Delayed<{ available: boolean; items: Item[] | OutfitSpec }>[] = (outfit: Outfit) => [
   {
     available: have($skill`Furious Wallop`) && myFury() > 0,
     items: $items`mafia pointer finger ring`,
@@ -80,10 +82,9 @@ const POINTER_RING_SPECS: (
   },
   {
     available: true,
-
     items: $items`haiku katana, mafia pointer finger ring`,
   },
-  gunSpec(outfit),
+  () => gunSpec(outfit),
   {
     available: true,
     items: $items`Operation Patriot Shield, mafia pointer finger ring`,
@@ -123,7 +124,8 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
       outfit.equip($item`protonic accelerator pack`);
     }
 
-    for (const { available, items } of POINTER_RING_SPECS(outfit)) {
+    for (const spec of POINTER_RING_SPECS(outfit)) {
+      const { available, items } = undelay(spec);
       if (available && outfit.tryEquip(items)) break;
     }
   }
