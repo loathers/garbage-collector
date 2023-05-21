@@ -292,8 +292,7 @@ function canCookLegendaryPizza(pizza: Item): boolean {
     pizza,
     ...$items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`,
   ].map((i) => toInt(i));
-  if (recipes.some((id) => get(`unknownRecipe${id}`, true))) return false;
-  return true;
+  return !recipes.some((id) => get(`unknownRecipe${id}`));
 }
 
 export const mallMin: (items: Item[]) => Item = (items: Item[]) => maxBy(items, mallPrice, true);
