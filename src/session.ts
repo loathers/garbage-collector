@@ -156,6 +156,9 @@ const specialValueLookup = new Map<Item, () => number>([
   [$item`warbear induction oven`, () => 0],
   [$item`warbear jackhammer drill press`, () => 0],
   [$item`warbear LP-ROM burner`, () => 0],
+  // and ChibiBuddy
+  [$item`ChibiBuddy™ (on)`, () => 0],
+  [$item`ChibiBuddy™ (off)`, () => 0],
 ]);
 
 function printSession(session: Session): void {
