@@ -287,18 +287,17 @@ const stomachLiverCleaners = new Map([
   [$item`designer sweatpants`, [0, -1]],
 ]);
 
-function canCookLegendaryPizza(pizza: Item): boolean {
-  const recipes = [
-    pizza,
-    ...$items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`,
-  ].map((i) => toInt(i));
-  return !recipes.some((id) => get(`unknownRecipe${id}`, true));
-}
-
 function legendaryPizzaToMenu(
   pizzas: { item: Item; pref: string }[],
   maker: (out: { item: Item; price: number }) => MenuItem<Note>
 ) {
+  const canCookLegendaryPizza = (pizza: Item): boolean => {
+    const recipes = [
+      pizza,
+      ...$items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`,
+    ].map((i) => toInt(i));
+    return !recipes.some((id) => get(`unknownRecipe${id}`, true));
+  };
   return pizzas
     .filter(({ item, pref }) => !get(pref, true) && canCookLegendaryPizza(item))
     .map(({ item }) =>
