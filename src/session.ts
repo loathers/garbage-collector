@@ -148,7 +148,7 @@ const specialValueLookup = new Map<Item, () => number>([
   ],
 ]);
 
-const exclusions = [
+const exclusions = new Set([
   // For tradeable items which can be "consumed" infinitely
   $item`Little Geneticist DNA-Splicing Lab`,
   $item`portable Mayo Clinic`,
@@ -160,7 +160,7 @@ const exclusions = [
   $item`warbear jackhammer drill press`,
   $item`warbear LP-ROM burner`,
   $item`ChibiBuddy™ (off)`,
-];
+]);
 
 function printSession(session: Session): void {
   const value = session.value(garboValue);
@@ -200,7 +200,7 @@ function garboSaleValue(item: Item, useHistorical: boolean): number {
 const garboRegularValueCache = new Map<Item, number>();
 const garboHistoricalValueCache = new Map<Item, number>();
 export function garboValue(item: Item, useHistorical = false): number {
-  if (exclusions.includes(item)) return 0;
+  if (exclusions.has(item)) return 0;
   useHistorical ||= globalOptions.quick;
   const cachedValue =
     garboRegularValueCache.get(item) ??
