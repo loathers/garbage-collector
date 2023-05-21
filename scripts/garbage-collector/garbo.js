@@ -22272,13 +22272,13 @@ function bestWitchessPiece() {
   }).piece;
 }
 function pygmyOptions() {
-  var forceEquip = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var equip = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   return {
-    requirements: () => [new Requirement([], {
-      forceEquip: forceEquip,
-      preventEquip: template_string_$items(fights_templateObject57 || (fights_templateObject57 = fights_taggedTemplateLiteral(["Staff of Queso Escusado, stinky cheese sword"]))),
-      bonusEquip: new Map([[template_string_$item(fights_templateObject58 || (fights_templateObject58 = fights_taggedTemplateLiteral(["garbage sticker"]))), 100]].concat(fights_toConsumableArray(magnifyingGlass())))
-    })],
+    spec: () => ({
+      equip: equip,
+      avoid: template_string_$items(fights_templateObject57 || (fights_templateObject57 = fights_taggedTemplateLiteral(["Staff of Queso Escusado, stinky cheese sword"]))),
+      bonuses: new Map([[template_string_$item(fights_templateObject58 || (fights_templateObject58 = fights_taggedTemplateLiteral(["garbage sticker"]))), 100]].concat(fights_toConsumableArray(magnifyingGlass())))
+    }),
     macroAllowsFamiliarActions: false
   };
 }
