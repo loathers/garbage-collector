@@ -84,6 +84,7 @@ import { Potion, PotionTier } from "./potions";
 import { garboValue } from "./session";
 import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
+import { BooleanProperty } from "libram/dist/propertyTypes";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -333,6 +334,13 @@ function menu(): MenuItem<Note>[] {
     (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
   );
 
+  const legendaryPizzas = [
+    { pizza: $item`Pizza of Legend`, pref: "pizzaOfLegendEaten" },
+    { pizza: $item`Calzone of Legend`, pref: "calzoneOfLegendEaten" },
+  ]
+    .filter(({ pref }) => !get(pref))
+    .map(({ pizza }) => new MenuItem(pizza));
+
   return [
     // FOOD
     new MenuItem($item`Dreadsylvanian cold pocket`),
@@ -348,6 +356,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(mallMin(lasagnas)),
     new MenuItem(mallMin(smallEpics)),
     new MenuItem($item`green hamhock`),
+    ...legendaryPizzas,
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -589,9 +598,8 @@ export function potionMenu(
     ? potion($item`Boris's bread`, { price: 2 * ingredientCost($item`Yeast of Boris`) })
     : [];
 
-  // Replace string with BooleanProperty later
-  const ofLegendPotion = (item: Item, prefName: string) => {
-    if (get(prefName, true)) return [];
+  const ofLegendPotion = (item: Item, pref: BooleanProperty) => {
+    if (get(pref)) return [];
 
     const recipes = [
       item,
@@ -606,12 +614,6 @@ export function potionMenu(
         sum($items`Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris`, ingredientCost),
     });
   };
-
-  const ofLegendMenuItems = [
-    ...ofLegendPotion($item`Calzone of Legend`, "calzoneOfLegendEaten"),
-    ...ofLegendPotion($item`Pizza of Legend`, "pizzaOfLegendEaten"),
-    ...ofLegendPotion($item`Deep Dish of Legend`, "deepDishOfLegendEaten"),
-  ];
 
   return [
     ...baseMenu,
@@ -629,7 +631,7 @@ export function potionMenu(
     ...campfireHotdog,
     ...foodCone,
     ...borisBread,
-    ...ofLegendMenuItems,
+    ...ofLegendPotion($item`Deep Dish of Legend`, "deepDishOfLegendEaten"),
 
     // BOOZE POTIONS
     ...potion($item`dirt julep`),
