@@ -28,7 +28,6 @@ import {
   getFoldGroup,
   have,
   Requirement,
-  SongBoom,
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
@@ -53,12 +52,7 @@ export function useLimitedDrops(mode: BonusEquipMode): boolean {
 }
 
 export function valueOfMeat(mode: BonusEquipMode): number {
-  return isFree(mode)
-    ? 0
-    : (250 +
-        (mode === BonusEquipMode.EMBEZZLER ? 750 : 0) +
-        (SongBoom.song() === "Total Eclipse of Your Meat" ? 25 : 0)) /
-        100;
+  return isFree(mode) ? 0 : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
 }
 
 export function valueOfItem(mode: BonusEquipMode): number {

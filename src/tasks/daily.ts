@@ -350,6 +350,13 @@ export function configureSnojo(): void {
 
 export const DailyTasks: Task[] = [
   {
+    name: "Chibi Buddy",
+    ready: () => have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`),
+    completed: () => get("_chibiChanged", true),
+    do: () => cliExecute("chibi chat"),
+    limit: { soft: 1 },
+  },
+  {
     name: "Refresh Latte",
     ready: () => have($item`latte lovers member's mug`),
     completed: () => latteRefreshed,
@@ -379,13 +386,13 @@ export const DailyTasks: Task[] = [
     name: "Configure I Voted! Sticker",
     ready: () => true,
     completed: () => have($item`"I Voted!" sticker`),
-    do: () => voterSetup(),
+    do: voterSetup,
   },
   {
     name: "Configure Pantogram",
     ready: () => Pantogram.have(),
     completed: () => Pantogram.havePants(),
-    do: () => pantogram(),
+    do: pantogram,
   },
   {
     name: "Configure Fourth of May Cosplay Saber",
@@ -548,7 +555,7 @@ export const DailyTasks: Task[] = [
       (get("neverendingPartyAlways") || get("_neverendingPartyToday")) &&
       get("_questPartyFair") === "unstarted",
     completed: () => get("_questPartyFair") !== "unstarted",
-    do: () => nepQuest(),
+    do: nepQuest,
     outfit: () =>
       myInebriety() > inebrietyLimit() &&
       have($item`Drunkula's wineglass`) &&
@@ -560,13 +567,13 @@ export const DailyTasks: Task[] = [
     name: "Check Barf Mountain Quest",
     ready: () => get("stenchAirportAlways") || get("_stenchAirportToday"),
     completed: () => !attemptCompletingBarfQuest,
-    do: () => checkBarfQuest(),
+    do: checkBarfQuest,
   },
   {
     name: "Configure Snojo",
     ready: () => get("snojoAvailable") && get("_snojoFreeFights") < 10,
     completed: () => snojoConfigured,
-    do: () => configureSnojo(),
+    do: configureSnojo,
   },
   // Final tasks
   {
