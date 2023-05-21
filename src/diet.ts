@@ -297,14 +297,13 @@ function canCookLegendaryPizza(pizza: Item): boolean {
 
 function legendaryPizzaToMenu(
   pizzas: { item: Item; pref: string }[],
-  maker: (out: { item: Item; limit: number; price: number }) => MenuItem<Note>
+  maker: (out: { item: Item; price: number }) => MenuItem<Note>
 ) {
   return pizzas
     .filter(({ item, pref }) => !get(pref, true) && canCookLegendaryPizza(item))
     .map(({ item }) =>
       maker({
         item,
-        limit: 1,
         price:
           2 *
           sum(
@@ -628,8 +627,7 @@ export function potionMenu(
 
   const deepDish = legendaryPizzaToMenu(
     [{ item: $item`Deep Dish of Legend`, pref: "deepDishOfLegendEaten" }],
-    (out: { item: Item; limit: number; price: number }) =>
-      limitedPotion(out.item, 1, { price: out.price })[0]
+    (out: { item: Item; price: number }) => limitedPotion(out.item, 1, { price: out.price })[0]
   );
 
   return [
