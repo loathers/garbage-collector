@@ -287,7 +287,7 @@ const stomachLiverCleaners = new Map([
   [$item`designer sweatpants`, [0, -1]],
 ]);
 
-function canCookPizza(pizza: Item): boolean {
+function canCookLegendaryPizza(pizza: Item): boolean {
   const recipes = [
     pizza,
     ...$items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`,
@@ -348,7 +348,7 @@ function menu(): MenuItem<Note>[] {
   ]
     .filter(({ pizza, pref }) => {
       if (get(pref)) return false;
-      return canCookPizza(pizza);
+      return canCookLegendaryPizza(pizza);
     })
     .map(({ pizza }) => new MenuItem(pizza));
 
@@ -611,7 +611,7 @@ export function potionMenu(
 
   const deepDish = get("deepDishOfLegendEaten")
     ? []
-    : !canCookPizza($item`Deep Dish of Legend`)
+    : !canCookLegendaryPizza($item`Deep Dish of Legend`)
     ? []
     : limitedPotion($item`Deep Dish of Legend`, 1, {
         price:
