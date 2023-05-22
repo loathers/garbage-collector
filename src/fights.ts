@@ -410,23 +410,22 @@ export function dailyFights(): void {
             if (weWantToSaberCrates) saberCrateIfSafe();
           }
 
+          const chip = $item`Pocket Professor memory chip`;
+          const jacks = $item`box of Familiar Jacks`;
           useFamiliar($familiar`Pocket Professor`);
-          if (!have($item`Pocket Professor memory chip`)) {
-            if (
-              mallPrice($item`box of Familiar Jacks`) <
-              mallPrice($item`Pocket Professor memory chip`)
-            ) {
-              retrieveItem($item`box of Familiar Jacks`);
-              use($item`box of Familiar Jacks`);
+          if (!have(chip)) {
+            if (mallPrice(jacks) < mallPrice(chip)) {
+              retrieveItem(jacks);
+              use(jacks);
             } else {
-              retrieveItem($item`Pocket Professor memory chip`);
+              retrieveItem(chip);
             }
           }
 
-          const profSpec: OutfitSpec = {
-            familiar: $familiar`Pocket Professor`,
-            famequip: $items`Pocket Professor memory chip`.filter((i) => have(i)),
-          };
+          const profSpec: OutfitSpec = { familiar: $familiar`Pocket Professor` };
+          if (have(chip)) {
+            profSpec.famequip = chip;
+          }
 
           goalMaximize({ ...profSpec, ...fightSource.spec });
 
