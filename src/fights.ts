@@ -424,7 +424,7 @@ export function dailyFights(): void {
 
           const profSpec: OutfitSpec = { familiar: $familiar`Pocket Professor` };
           if (have(chip)) {
-            profSpec.famequip = [chip];
+            profSpec.famequip = chip;
           }
 
           goalMaximize({ ...profSpec, ...fightSource.spec });
