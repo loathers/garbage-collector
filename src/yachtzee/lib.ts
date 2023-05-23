@@ -1,4 +1,16 @@
-import { cliExecute, Effect, Item, totalFreeRests, visitUrl } from "kolmafia";
+import {
+  cliExecute,
+  Effect,
+  Item,
+  mpCost,
+  myHp,
+  myMaxhp,
+  myMaxmp,
+  myMp,
+  totalFreeRests,
+  useSkill,
+  visitUrl,
+} from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -6,11 +18,13 @@ import {
   $items,
   $location,
   $skill,
+  $skills,
   clamp,
   get,
   getActiveSongs,
   getModifier,
   have,
+  maxBy,
   Mood,
   set,
   sum,
@@ -123,6 +137,16 @@ export function useSpikolodonSpikes(): void {
 
 export function freeRest(): boolean {
   if (get("timesRested") >= totalFreeRests()) return false;
+
+  if (myHp() >= myMaxhp() && myMp() >= myMaxmp()) {
+    // burn some mp so that we can rest
+    const bestSkill = maxBy(
+      $skills``.filter((sk) => have(sk) && mpCost(sk) >= 1),
+      (sk) => -mpCost(sk)
+    ); // are there any other skills that cost mana which we should blacklist?
+    // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
+    useSkill(bestSkill);
+  }
 
   if (get("chateauAvailable")) {
     visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
