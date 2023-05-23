@@ -78,7 +78,6 @@ import {
   set,
   SongBoom,
   sum,
-  sumNumbers,
   uneffect,
 } from "libram";
 import { globalOptions } from "./config";
@@ -576,21 +575,6 @@ export function withLocation<T>(location: Location, action: () => T): T {
   } finally {
     setLocation(start);
   }
-}
-
-export function useableCinch(): number {
-  if (!have($item`Cincho de Mayo`)) return 0;
-  const cinchRestored = Array(100)
-    .fill(0)
-    .map((_, i) => clamp(50 - 5 * i, 5, 30));
-  const cinchRestsUsed = get("_cinchoRests", 0);
-  // TODO: If you have chateau, consider profitability of switching to free rest fan?
-  const freeRestsLeft = Math.max(0, totalFreeRests() - get("timesRested"));
-  return (
-    100 -
-    get("_cinchUsed", 0) +
-    sumNumbers(cinchRestored.slice(cinchRestsUsed, cinchRestsUsed + freeRestsLeft))
-  );
 }
 
 export function freeRest(): boolean {
