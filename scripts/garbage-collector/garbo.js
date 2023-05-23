@@ -14099,7 +14099,7 @@ function chooseBjorn(mode, familiar) {
   };
 }
 ;// CONCATENATED MODULE: ./src/outfit/barf.ts
-var barf_templateObject, barf_templateObject2, barf_templateObject3, barf_templateObject4, barf_templateObject5, barf_templateObject6, barf_templateObject7, barf_templateObject8, barf_templateObject9, barf_templateObject10, barf_templateObject11, barf_templateObject12, barf_templateObject13, barf_templateObject14, barf_templateObject15, barf_templateObject16, barf_templateObject17, barf_templateObject18, barf_templateObject19, barf_templateObject20, barf_templateObject21, barf_templateObject22, barf_templateObject23, barf_templateObject24, barf_templateObject25;
+var barf_templateObject, barf_templateObject2, barf_templateObject3, barf_templateObject4, barf_templateObject5, barf_templateObject6, barf_templateObject7, barf_templateObject8, barf_templateObject9, barf_templateObject10, barf_templateObject11, barf_templateObject12, barf_templateObject13, barf_templateObject14, barf_templateObject15, barf_templateObject16, barf_templateObject17, barf_templateObject18, barf_templateObject19, barf_templateObject20, barf_templateObject21, barf_templateObject22, barf_templateObject23, barf_templateObject24, barf_templateObject25, barf_templateObject26;
 function barf_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = barf_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function barf_unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return barf_arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return barf_arrayLikeToArray(o, minLen); }
 function barf_arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
@@ -14137,6 +14137,7 @@ function gunSpec(outfit) {
     items: {
       back: template_string_$item(barf_templateObject9 || (barf_templateObject9 = barf_taggedTemplateLiteral(["unwrapped knock-off retro superhero cape"]))),
       weapon: gun,
+      equip: template_string_$items(barf_templateObject10 || (barf_templateObject10 = barf_taggedTemplateLiteral(["mafia pointer finger ring"]))),
       modes: {
         retrocape: ["robot", "kill"]
       }
@@ -14144,22 +14145,22 @@ function gunSpec(outfit) {
   };
 }
 var POINTER_RING_SPECS = outfit => [{
-  available: lib_have(template_string_$skill(barf_templateObject10 || (barf_templateObject10 = barf_taggedTemplateLiteral(["Furious Wallop"])))) && (0,external_kolmafia_namespaceObject.myFury)() > 0,
-  items: template_string_$items(barf_templateObject11 || (barf_templateObject11 = barf_taggedTemplateLiteral(["mafia pointer finger ring"])))
+  available: lib_have(template_string_$skill(barf_templateObject11 || (barf_templateObject11 = barf_taggedTemplateLiteral(["Furious Wallop"])))) && (0,external_kolmafia_namespaceObject.myFury)() > 0,
+  items: template_string_$items(barf_templateObject12 || (barf_templateObject12 = barf_taggedTemplateLiteral(["mafia pointer finger ring"])))
 }, {
-  available: lib_have(template_string_$skill(barf_templateObject12 || (barf_templateObject12 = barf_taggedTemplateLiteral(["Head in the Game"])))),
-  items: template_string_$items(barf_templateObject13 || (barf_templateObject13 = barf_taggedTemplateLiteral(["mafia pointer finger ring"])))
+  available: lib_have(template_string_$skill(barf_templateObject13 || (barf_templateObject13 = barf_taggedTemplateLiteral(["Head in the Game"])))),
+  items: template_string_$items(barf_templateObject14 || (barf_templateObject14 = barf_taggedTemplateLiteral(["mafia pointer finger ring"])))
 }, {
-  available: (0,external_kolmafia_namespaceObject.myClass)() === $class(barf_templateObject14 || (barf_templateObject14 = barf_taggedTemplateLiteral(["Turtle Tamer"]))),
-  items: template_string_$items(barf_templateObject15 || (barf_templateObject15 = barf_taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))
+  available: (0,external_kolmafia_namespaceObject.myClass)() === $class(barf_templateObject15 || (barf_templateObject15 = barf_taggedTemplateLiteral(["Turtle Tamer"]))),
+  items: template_string_$items(barf_templateObject16 || (barf_templateObject16 = barf_taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))
 }, {
   available: true,
-  items: template_string_$items(barf_templateObject16 || (barf_templateObject16 = barf_taggedTemplateLiteral(["haiku katana, mafia pointer finger ring"])))
+  items: template_string_$items(barf_templateObject17 || (barf_templateObject17 = barf_taggedTemplateLiteral(["haiku katana, mafia pointer finger ring"])))
 }, () => gunSpec(outfit), {
   available: true,
-  items: template_string_$items(barf_templateObject17 || (barf_templateObject17 = barf_taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))
+  items: template_string_$items(barf_templateObject18 || (barf_templateObject18 = barf_taggedTemplateLiteral(["Operation Patriot Shield, mafia pointer finger ring"])))
 }];
-var trueInebrietyLimit = () => (0,external_kolmafia_namespaceObject.inebrietyLimit)() - ((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(barf_templateObject18 || (barf_templateObject18 = barf_taggedTemplateLiteral(["Stooper"]))) ? 1 : 0);
+var trueInebrietyLimit = () => (0,external_kolmafia_namespaceObject.inebrietyLimit)() - ((0,external_kolmafia_namespaceObject.myFamiliar)() === $familiar(barf_templateObject19 || (barf_templateObject19 = barf_taggedTemplateLiteral(["Stooper"]))) ? 1 : 0);
 function barfOutfit() {
   var _outfit$familiar;
   var spec = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -14171,12 +14172,12 @@ function barfOutfit() {
   var bjornChoice = chooseBjorn(BonusEquipMode.BARF, outfit.familiar, sim);
   outfit.modifier.push("".concat(valueOfMeat(BonusEquipMode.BARF), " Meat Drop"), "".concat(valueOfItem(BonusEquipMode.BARF), " Item Drop"), "-tie");
   if ((0,external_kolmafia_namespaceObject.myInebriety)() > trueInebrietyLimit()) {
-    if (!outfit.equip(template_string_$item(barf_templateObject19 || (barf_templateObject19 = barf_taggedTemplateLiteral(["Drunkula's wineglass"]))))) {
+    if (!outfit.equip(template_string_$item(barf_templateObject20 || (barf_templateObject20 = barf_taggedTemplateLiteral(["Drunkula's wineglass"]))))) {
       throw new Error("We're overdrunk but have found ourself unable to equip a wineglass!");
     }
   } else {
-    if (lib_have(template_string_$item(barf_templateObject20 || (barf_templateObject20 = barf_taggedTemplateLiteral(["protonic accelerator pack"])))) && property_get("questPAGhost") === "unstarted" && property_get("nextParanormalActivity") <= (0,external_kolmafia_namespaceObject.totalTurnsPlayed)()) {
-      outfit.equip(template_string_$item(barf_templateObject21 || (barf_templateObject21 = barf_taggedTemplateLiteral(["protonic accelerator pack"]))));
+    if (lib_have(template_string_$item(barf_templateObject21 || (barf_templateObject21 = barf_taggedTemplateLiteral(["protonic accelerator pack"])))) && property_get("questPAGhost") === "unstarted" && property_get("nextParanormalActivity") <= (0,external_kolmafia_namespaceObject.totalTurnsPlayed)()) {
+      outfit.equip(template_string_$item(barf_templateObject22 || (barf_templateObject22 = barf_taggedTemplateLiteral(["protonic accelerator pack"]))));
     }
     var _iterator = barf_createForOfIteratorHelper(POINTER_RING_SPECS(outfit)),
       _step;
@@ -14194,18 +14195,18 @@ function barfOutfit() {
       _iterator.f();
     }
   }
-  if (getKramcoWandererChance() > 0.05) outfit.equip(template_string_$item(barf_templateObject22 || (barf_templateObject22 = barf_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]))));
+  if (getKramcoWandererChance() > 0.05) outfit.equip(template_string_$item(barf_templateObject23 || (barf_templateObject23 = barf_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]))));
   outfit.bonuses = bonusGear(BonusEquipMode.BARF, sim);
   var bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
     outfit.setBonus(bjornalike, bjornChoice.value);
-    var other = template_string_$items(barf_templateObject23 || (barf_templateObject23 = barf_taggedTemplateLiteral(["Buddy Bjorn, Crown of Thrones"]))).filter(i => i !== bjornalike)[0];
+    var other = template_string_$items(barf_templateObject24 || (barf_templateObject24 = barf_taggedTemplateLiteral(["Buddy Bjorn, Crown of Thrones"]))).filter(i => i !== bjornalike)[0];
     outfit.avoid.push(other);
     switch (bjornalike) {
-      case template_string_$item(barf_templateObject24 || (barf_templateObject24 = barf_taggedTemplateLiteral(["Buddy Bjorn"]))):
+      case template_string_$item(barf_templateObject25 || (barf_templateObject25 = barf_taggedTemplateLiteral(["Buddy Bjorn"]))):
         outfit.bjornify(bjornChoice.familiar);
         break;
-      case template_string_$item(barf_templateObject25 || (barf_templateObject25 = barf_taggedTemplateLiteral(["Crown of Thrones"]))):
+      case template_string_$item(barf_templateObject26 || (barf_templateObject26 = barf_taggedTemplateLiteral(["Crown of Thrones"]))):
         outfit.enthrone(bjornChoice.familiar);
         break;
     }
