@@ -9,6 +9,7 @@ import {
   create,
   Effect,
   equip,
+  equippedItem,
   Familiar,
   getAutoAttack,
   getCampground,
@@ -131,6 +132,7 @@ import {
   embezzlerLog,
   ESTIMATED_OVERDRUNK_TURNS,
   expectedEmbezzlerProfit,
+  freeRest,
   HIGHLIGHT,
   kramcoGuaranteed,
   latteActionSourceFinderConstraints,
@@ -145,6 +147,7 @@ import {
   safeRestore,
   setChoice,
   today,
+  useableCinch,
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
@@ -1384,25 +1387,42 @@ const freeFightSources = [
   new FreeFight(
     () => {
       if (!have($item`closed-circuit pay phone`)) return false;
+      // Check if we have or can get Shadow Affinity
       if (have($effect`Shadow Affinity`)) return true;
-      if (get("_shadowAffinityToday")) return false;
+      if (!get("_shadowAffinityToday") && !ClosedCircuitPayphone.rufusTarget()) return true;
 
-      if (!ClosedCircuitPayphone.rufusTarget()) return true;
-      if (get("rufusQuestType") === "items") {
+      if (get("rufusQuestType") === "items" || get("rufusQuestType") === "entity") {
+        // TODO: Skip bosses for now, until we can fight them
         return false; // We deemed it unprofitable to complete the quest in potionSetup
       }
       if (get("encountersUntilSRChoice") === 0) {
         // Target is either an artifact or a boss
         return true; // Get the artifact or kill the boss immediately for free
       }
-      return false; // We have to spend turns to get the artifact or kill the boss
+
+      // Consider forcing noncombats below:
+      if (globalOptions.prefs.yachtzeechain) return false; // NCs are better when yachtzeeing, probably
+      // TODO: With the KoL update, is there a function for checking if an NC is already forced?
+      if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+        return true;
+      }
+
+      // TODO: Calculate forcing for shadow waters against using the +5 fam weight buff
+      if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
+        return true;
+      }
+      return false; // It costs turns to do anything else here
     },
     () => {
-      if (have($item`Rufus's shadow lodestone`)) setChoice(1500, 2);
+      if (have($item`Rufus's shadow lodestone`)) {
+        setChoice(1500, 2); // Turn in lodestone if you have it
+        adv1(bestShadowRift(), -1, "");
+      }
       if (!get("_shadowAffinityToday") && !ClosedCircuitPayphone.rufusTarget()) {
         ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
       }
-      adv1(bestShadowRift(), -1, "");
+
+      runShadowRiftTurn();
 
       if (get("encountersUntilSRChoice", 0) === 0) {
         if (ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
@@ -1415,8 +1435,13 @@ const freeFightSources = [
         withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
       }
 
+      if (have($item`Rufus's shadow lodestone`)) {
+        setChoice(1500, 2); // Check for lodestone at the end again
+        adv1(bestShadowRift(), -1, "");
+      }
+
       if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
-        setLocation($location`Friar Ceremony Location`); // Reset location to not affect mafia's item drop calculations
+        setLocation($location.none); // Reset location to not affect mafia's item drop calculations
       }
     },
     true
@@ -1743,6 +1768,15 @@ const freeRunFightSources = [
         }
       },
     }
+  ),
+  // Try to accelerate the shadow nc, if you're able to do a quest
+  new FreeRunFight(
+    () =>
+      have($item`closed-circuit pay phone`) &&
+      get("rufusQuestType") !== "items" &&
+      !have($effect`Shadow Affinity`) &&
+      get("encountersUntilSRChoice") > 0,
+    (runSource: ActionSource) => garboAdventure(bestShadowRift(), runSource.macro)
   ),
   // Try for an ultra-rare with mayfly runs ;)
   new FreeRunFight(
@@ -2520,5 +2554,47 @@ function yachtzee(): void {
       }
       return;
     }
+  }
+}
+
+function runShadowRiftTurn(): void {
+  // we can probably have a better name
+  if (get("encountersUntilSRChoice") === 0) return;
+  if (
+    globalOptions.prefs.yachtzeechain ||
+    get("rufusQuestType") === "items" ||
+    get("rufusQuestType") === "entity" // We can't handle bosses... yet
+  ) {
+    adv1(bestShadowRift(), -1, ""); // We shouldn't be using NC forcers
+    return;
+  }
+
+  if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+    globalOptions.clarasBellClaimed = true;
+    use($item`Clara's bell`);
+    // Not the most elegant solution, but we need a way to communicate that an NC is forced
+    set("encountersUntilSRChoice", 0);
+  } else if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
+    const lastAcc = equippedItem($slot`acc3`);
+    equip($slot`acc3`, $item`Cincho de Mayo`);
+    while (get("_cinchUsed", 0) > 40) {
+      if (!freeRest()) throw new Error("We are out of free rests!");
+    }
+    useSkill($skill`Cincho: Fiesta Exit`);
+    set("encountersUntilSRChoice", 0);
+    equip($slot`acc3`, lastAcc); // Re-equip last item
+  } else if (
+    have($item`Jurassic Parka`) &&
+    get("_spikolodonSpikeUses") < 5 &&
+    have($effect`Shadow Affinity`) &&
+    get("encountersUntilSRChoice") >= 2
+  ) {
+    freeFightOutfit({ shirt: $item`Jurassic Parka` }).dress();
+    cliExecute("parka spikolodon");
+    const macro = Macro.skill($skill`Launch spikolodon spikes`).basicCombat();
+    garboAdventureAuto(bestShadowRift(), macro);
+    set("encountersUntilSRChoice", 0);
+  } else {
+    adv1(bestShadowRift(), -1, ""); // We wanted to use NC forcers, but none are suitable now
   }
 }

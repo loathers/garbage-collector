@@ -1,4 +1,4 @@
-import { cliExecute, Effect, Item, totalFreeRests, visitUrl } from "kolmafia";
+import { cliExecute, Effect, Item } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -6,7 +6,6 @@ import {
   $items,
   $location,
   $skill,
-  clamp,
   get,
   getActiveSongs,
   getModifier,
@@ -14,7 +13,6 @@ import {
   Mood,
   set,
   sum,
-  sumNumbers,
   tryFindFreeRun,
 } from "libram";
 import { withStash } from "../clan";
@@ -22,7 +20,7 @@ import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
-import { ltbRun, realmAvailable } from "../lib";
+import { ltbRun, realmAvailable, useableCinch } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
 
@@ -72,17 +70,7 @@ export function shrugIrrelevantSongs(): void {
 }
 
 export function cinchNCs(): number {
-  if (!have($item`Cincho de Mayo`)) return 0;
-  const cinchRestored = Array(100)
-    .fill(0)
-    .map((_, i) => clamp(50 - 5 * i, 5, 30));
-  const cinchRestsUsed = get("_cinchoRests", 0);
-  const freeRestsLeft = Math.max(0, totalFreeRests() - get("timesRested"));
-  const useableCinch =
-    100 -
-    get("_cinchUsed", 0) +
-    sumNumbers(cinchRestored.slice(cinchRestsUsed, cinchRestsUsed + freeRestsLeft));
-  return Math.floor(useableCinch / 60);
+  return Math.floor(useableCinch() / 60);
 }
 
 export const freeNCs = (): number =>
@@ -119,18 +107,4 @@ export function useSpikolodonSpikes(): void {
   } while (get("_spikolodonSpikeUses") === startingSpikes);
 
   postCombatActions();
-}
-
-export function freeRest(): boolean {
-  if (get("timesRested") >= totalFreeRests()) return false;
-
-  if (get("chateauAvailable")) {
-    visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
-  } else if (get("getawayCampsiteUnlocked")) {
-    visitUrl("place.php?whichplace=campaway&action=campaway_tentclick");
-  } else {
-    visitUrl("campground.php?action=rest");
-  }
-
-  return true;
 }
