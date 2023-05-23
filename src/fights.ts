@@ -1394,7 +1394,8 @@ const freeFightSources = [
       if (have($effect`Shadow Affinity`)) return true;
       if (!get("_shadowAffinityToday") && !ClosedCircuitPayphone.rufusTarget()) return true;
 
-      if (get("rufusQuestType") === "items") {
+      if (get("rufusQuestType") === "items" || get("rufusQuestType") === "entity") {
+        // TODO: Skip bosses for now, until we can fight them
         return false; // We deemed it unprofitable to complete the quest in potionSetup
       }
       if (get("encountersUntilSRChoice") === 0) {
@@ -2562,7 +2563,11 @@ function yachtzee(): void {
 function runShadowRiftTurn(): void {
   // we can probably have a better name
   if (get("encountersUntilSRChoice") === 0) return;
-  if (globalOptions.prefs.yachtzeechain || get("rufusQuestType") === "items") {
+  if (
+    globalOptions.prefs.yachtzeechain ||
+    get("rufusQuestType") === "items" ||
+    get("rufusQuestType") === "entity" // We can't handle bosses... yet
+  ) {
     adv1(bestShadowRift(), -1, ""); // We shouldn't be using NC forcers
     return;
   }
