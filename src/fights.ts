@@ -1408,7 +1408,7 @@ const freeFightSources = [
       }
 
       // TODO: Calculate forcing for shadow waters against using the +5 fam weight buff
-      if (CinchoDeMayo.have() && CinchoDeMayo.totalAvailableCinch()) {
+      if (CinchoDeMayo.have() && CinchoDeMayo.totalAvailableCinch() >= 60) {
         return true;
       }
       return false; // It costs turns to do anything else here
