@@ -58,6 +58,7 @@ function gunSpec(outfit: Outfit) {
     items: {
       back: $item`unwrapped knock-off retro superhero cape`,
       weapon: gun,
+      acc3: $item`mafia pointer finger ring`,
       modes: {
         retrocape: ["robot", "kill"],
       },
