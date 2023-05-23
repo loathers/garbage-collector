@@ -584,6 +584,7 @@ export function useableCinch(): number {
     .fill(0)
     .map((_, i) => clamp(50 - 5 * i, 5, 30));
   const cinchRestsUsed = get("_cinchoRests", 0);
+  // TODO: If you have chateau, consider profitability of switching to free rest fan?
   const freeRestsLeft = Math.max(0, totalFreeRests() - get("timesRested"));
   return (
     100 -

@@ -1410,7 +1410,7 @@ const freeFightSources = [
         return true;
       }
 
-      // TODO: Calculate this against using the +5 fam weight buff
+      // TODO: Calculate forcing for shadow waters against using the +5 fam weight buff
       if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
         return true;
       }
