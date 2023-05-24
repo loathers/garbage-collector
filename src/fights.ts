@@ -86,6 +86,7 @@ import {
   ActionSource,
   AsdonMartin,
   ChateauMantegna,
+  CinchoDeMayo,
   clamp,
   ClosedCircuitPayphone,
   CombatLoversLocket,
@@ -147,7 +148,6 @@ import {
   safeRestore,
   setChoice,
   today,
-  useableCinch,
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
@@ -1408,7 +1408,7 @@ const freeFightSources = [
       }
 
       // TODO: Calculate forcing for shadow waters against using the +5 fam weight buff
-      if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
+      if (CinchoDeMayo.have() && CinchoDeMayo.totalAvailableCinch() >= 60) {
         return true;
       }
       return false; // It costs turns to do anything else here
@@ -2574,10 +2574,10 @@ function runShadowRiftTurn(): void {
     use($item`Clara's bell`);
     // Not the most elegant solution, but we need a way to communicate that an NC is forced
     set("encountersUntilSRChoice", 0);
-  } else if (have($item`Cincho de Mayo`) && useableCinch() >= 60) {
+  } else if (CinchoDeMayo.have() && CinchoDeMayo.totalAvailableCinch() >= 60) {
     const lastAcc = equippedItem($slot`acc3`);
     equip($slot`acc3`, $item`Cincho de Mayo`);
-    while (get("_cinchUsed", 0) > 40) {
+    while (CinchoDeMayo.currentCinch() < 60) {
       if (!freeRest()) throw new Error("We are out of free rests!");
     }
     useSkill($skill`Cincho: Fiesta Exit`);

@@ -6,6 +6,7 @@ import {
   $items,
   $location,
   $skill,
+  CinchoDeMayo,
   get,
   getActiveSongs,
   getModifier,
@@ -20,7 +21,7 @@ import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
-import { ltbRun, realmAvailable, useableCinch } from "../lib";
+import { ltbRun, realmAvailable } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
 
@@ -70,7 +71,7 @@ export function shrugIrrelevantSongs(): void {
 }
 
 export function cinchNCs(): number {
-  return Math.floor(useableCinch() / 60);
+  return Math.floor(CinchoDeMayo.totalAvailableCinch() / 60);
 }
 
 export const freeNCs = (): number =>

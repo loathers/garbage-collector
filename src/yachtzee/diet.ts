@@ -27,6 +27,7 @@ import {
   $item,
   $skill,
   $slot,
+  CinchoDeMayo,
   clamp,
   get,
   getActiveSongs,
@@ -152,7 +153,7 @@ class YachtzeeDietUtils {
       new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, useSpikolodonSpikes),
       new YachtzeeDietEntry("cinch fiesta", 0, 0, 0, 0, () => {
         equip($slot`acc3`, $item`Cincho de Mayo`);
-        while (get("_cinchUsed", 0) > 40) {
+        while (CinchoDeMayo.currentCinch() < 60) {
           if (!freeRest()) throw new Error("We are out of free rests!");
         }
         useSkill($skill`Cincho: Fiesta Exit`);
