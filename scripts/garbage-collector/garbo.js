@@ -23848,7 +23848,7 @@ function shrugIrrelevantSongs() {
   (0,external_kolmafia_namespaceObject.cliExecute)("shrug phat loot");
 }
 function cinchNCs() {
-  return Math.floor(totalAvailableCinch() / 60);
+  return CinchoDeMayo_have() ? Math.floor(totalAvailableCinch() / 60) : 0;
 }
 var freeNCs = () => (lib_have(template_string_$item(yachtzee_lib_templateObject8 || (yachtzee_lib_templateObject8 = yachtzee_lib_taggedTemplateLiteral(["Clara's bell"])))) && !config_globalOptions.clarasBellClaimed ? 1 : 0) + (lib_have(template_string_$item(yachtzee_lib_templateObject9 || (yachtzee_lib_templateObject9 = yachtzee_lib_taggedTemplateLiteral(["Jurassic Parka"])))) ? 5 - property_get("_spikolodonSpikeUses") : 0) + cinchNCs();
 function yachtzeeBuffValue(obj) {
