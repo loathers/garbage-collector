@@ -71,7 +71,7 @@ export function shrugIrrelevantSongs(): void {
 }
 
 export function cinchNCs(): number {
-  return Math.floor(CinchoDeMayo.totalAvailableCinch() / 60);
+  return CinchoDeMayo.have() ? Math.floor(CinchoDeMayo.totalAvailableCinch() / 60) : 0;
 }
 
 export const freeNCs = (): number =>
