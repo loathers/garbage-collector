@@ -14207,7 +14207,7 @@ function barfOutfit() {
     }
   }
   if (getKramcoWandererChance() > 0.05) outfit.equip(template_string_$item(barf_templateObject23 || (barf_templateObject23 = barf_taggedTemplateLiteral(["Kramco Sausage-o-Matic\u2122"]))));
-  outfit.bonuses = bonusGear(BonusEquipMode.BARF, sim);
+  outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
   var bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
     outfit.setBonus(bjornalike, bjornChoice.value);
