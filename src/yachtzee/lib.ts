@@ -15,6 +15,7 @@ import {
   set,
   sum,
   tryFindFreeRun,
+  withChoices,
 } from "libram";
 import { withStash } from "../clan";
 import { garboAdventureAuto, Macro } from "../combat";
@@ -24,6 +25,7 @@ import { freeFightFamiliar } from "../familiar";
 import { ltbRun, realmAvailable } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
+import { unsupportedChoices } from "../wanderer/lib";
 
 const ignoredSources = [
   "Orb Prediction",
@@ -103,9 +105,14 @@ export function useSpikolodonSpikes(): void {
     .skill($skill`Launch spikolodon spikes`)
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
-  do {
-    garboAdventureAuto(targetZone, macro);
-  } while (get("_spikolodonSpikeUses") === startingSpikes);
+
+  const ncSkipper = unsupportedChoices.get(targetZone) ?? {};
+
+  withChoices(ncSkipper, () => {
+    do {
+      garboAdventureAuto(targetZone, macro);
+    } while (get("_spikolodonSpikeUses") === startingSpikes);
+  });
 
   postCombatActions();
 }
