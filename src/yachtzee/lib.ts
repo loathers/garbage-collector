@@ -7,6 +7,7 @@ import {
   myMaxhp,
   myMaxmp,
   myMp,
+  Skill,
   totalFreeRests,
   useSkill,
   visitUrl,
@@ -18,7 +19,6 @@ import {
   $items,
   $location,
   $skill,
-  $skills,
   clamp,
   get,
   getActiveSongs,
@@ -141,7 +141,7 @@ export function freeRest(): boolean {
   if (myHp() >= myMaxhp() && myMp() >= myMaxmp()) {
     // burn some mp so that we can rest
     const bestSkill = maxBy(
-      $skills.all().filter((sk) => have(sk) && mpCost(sk) >= 1),
+      Skill.all().filter((sk) => have(sk) && mpCost(sk) >= 1),
       (sk) => -mpCost(sk)
     ); // are there any other skills that cost mana which we should blacklist?
     // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
