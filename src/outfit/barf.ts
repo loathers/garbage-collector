@@ -58,6 +58,7 @@ function gunSpec(outfit: Outfit) {
     items: {
       back: $item`unwrapped knock-off retro superhero cape`,
       weapon: gun,
+      equip: $items`mafia pointer finger ring`,
       modes: {
         retrocape: ["robot", "kill"],
       },
@@ -132,7 +133,7 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
 
   if (getKramcoWandererChance() > 0.05) outfit.equip($item`Kramco Sausage-o-Matic™`);
 
-  outfit.bonuses = bonusGear(BonusEquipMode.BARF, sim);
+  outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
   const bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
     outfit.setBonus(bjornalike, bjornChoice.value);
