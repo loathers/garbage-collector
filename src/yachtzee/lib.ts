@@ -9,6 +9,7 @@ import {
   myMp,
   Skill,
   totalFreeRests,
+  use,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -39,6 +40,7 @@ import { freeFightFamiliar } from "../familiar";
 import { ltbRun, realmAvailable } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
+import { acquire } from "../acquire";
 
 const ignoredSources = [
   "Orb Prediction",
@@ -139,13 +141,17 @@ export function freeRest(): boolean {
   if (get("timesRested") >= totalFreeRests()) return false;
 
   if (myHp() >= myMaxhp() && myMp() >= myMaxmp()) {
-    // burn some mp so that we can rest
-    const bestSkill = maxBy(
-      Skill.all().filter((sk) => have(sk) && mpCost(sk) >= 1),
-      (sk) => -mpCost(sk)
-    ); // are there any other skills that cost mana which we should blacklist?
-    // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
-    useSkill(bestSkill);
+    if (acquire(1, $item`awful poetry journal`, 10000, false)) {
+      use($item`awful poetry journal`);
+    } else {
+      // burn some mp so that we can rest
+      const bestSkill = maxBy(
+        Skill.all().filter((sk) => have(sk) && mpCost(sk) >= 1),
+        (sk) => -mpCost(sk)
+      ); // are there any other skills that cost mana which we should blacklist?
+      // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
+      useSkill(bestSkill);
+    }
   }
 
   if (get("chateauAvailable")) {
