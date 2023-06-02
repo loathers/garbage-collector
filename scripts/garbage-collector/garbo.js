@@ -25879,7 +25879,9 @@ function main() {
 
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
-        var preventEquip = template_string_$items(src_templateObject30 || (src_templateObject30 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball, stinky fannypack, dice-shaped backpack"])));
+
+        // eslint-disable-next-line libram/verify-constants
+        var preventEquip = template_string_$items(src_templateObject30 || (src_templateObject30 = src_taggedTemplateLiteral(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball, stinky fannypack, dice-shaped backpack, Amulet of Perpetual Darkness"])));
         if (config_globalOptions.quick) {
           // Brimstone equipment explodes the number of maximize combinations
           preventEquip.push.apply(preventEquip, src_toConsumableArray(template_string_$items(src_templateObject31 || (src_templateObject31 = src_taggedTemplateLiteral(["Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret"])))));
