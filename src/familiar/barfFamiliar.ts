@@ -4,11 +4,14 @@ import {
   Familiar,
   familiarWeight,
   Item,
+  mallPrice,
   myFamiliar,
   numericModifier,
   print,
   Slot,
+  toInt,
   useFamiliar,
+  visitUrl,
   weightAdjustment,
 } from "kolmafia";
 import {
@@ -20,8 +23,10 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  have,
   maxBy,
   sum,
+  sumNumbers,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { BonusEquipMode, bonusGear } from "../outfit";
@@ -33,6 +38,8 @@ import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
+import { acquire } from "../acquire";
+import { garboValue } from "../session";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat / 100;
@@ -152,6 +159,55 @@ export function barfFamiliar(): Familiar {
   if (!meatFamiliarEntry) throw new Error("Something went wrong when initializing familiars!");
 
   const meatFamiliarValue = totalFamiliarValue(meatFamiliarEntry);
+
+  // Consider making a comma jellyfish
+  if (
+    !have($familiar`Space Jellyfish`) &&
+    have($familiar`Comma Chameleon`) &&
+    get("commaFamiliar") !== $familiar`Space Jellyfish`
+  ) {
+    const potentialJellyfishTurns = Math.min(40, turnsAvailable());
+    const jellyPrice = garboValue($item`stench jelly`);
+    const commaJellyfishValue =
+      sumNumbers(
+        [
+          1.0,
+          1.0 / 2.0,
+          1.0 / 3.0,
+          1.0 / 4.0,
+          1.0 / 5.0,
+          ...Array(100)
+            .fill(0)
+            .map(() => 1.0 / 20.0),
+        ]
+          .map((val) => (val * jellyPrice > meatFamiliarValue ? val * jellyPrice : 0))
+          .splice(
+            get("_spaceJellyfishDrops"),
+            get("_spaceJellyfishDrops") + potentialJellyfishTurns
+          )
+      ) -
+      potentialJellyfishTurns * meatFamiliarValue;
+
+    if (commaJellyfishValue >= mallPrice($item`space jellybicycle`)) {
+      if (acquire(1, $item`space jellybicycle`, commaJellyfishValue, false)) {
+        useFamiliar($familiar`Comma Chameleon`);
+        visitUrl(
+          `inv_equip.php?which=2&action=equip&whichitem=${toInt($item`space jellybicycle`)}&pwd`
+        );
+        visitUrl("charpane.php");
+        fullMenu.push(
+          menu({
+            canChooseMacro: true,
+            location: $location`Barf Mountain`,
+            includeExperienceFamiliars: false,
+          })
+            .filter((f) => f.familiar === $familiar`Comma Chameleon`)
+            .map(calculateOutfitValue)[0]
+        );
+      }
+    }
+  }
+
   const viableMenu = fullMenu.filter((f) => totalFamiliarValue(f) > meatFamiliarValue);
 
   if (viableMenu.every(({ limit }) => limit !== "none")) {

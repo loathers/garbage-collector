@@ -70,7 +70,10 @@ export function timeToMeatify(): boolean {
 }
 
 export function pocketProfessorLectures(): number {
-  return 2 + Math.ceil(Math.sqrt(familiarWeight($familiar`Pocket Professor`) + weightAdjustment()));
+  const prof = have($familiar`Pocket Professor`)
+    ? $familiar`Pocket Professor`
+    : $familiar`Comma Chameleon`;
+  return 2 + Math.ceil(Math.sqrt(familiarWeight(prof) + weightAdjustment()));
 }
 
 export function canOpenRedPresent(): boolean {
