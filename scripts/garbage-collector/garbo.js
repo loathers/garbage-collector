@@ -11625,7 +11625,7 @@ function submitQuest() {
   return false;
 }
 ;// CONCATENATED MODULE: ./src/lib.ts
-var lib_templateObject, lib_templateObject2, lib_templateObject3, lib_templateObject4, lib_templateObject5, lib_templateObject6, lib_templateObject7, lib_templateObject8, lib_templateObject9, lib_templateObject10, lib_templateObject11, lib_templateObject12, lib_templateObject13, lib_templateObject14, lib_templateObject15, lib_templateObject16, lib_templateObject17, lib_templateObject18, lib_templateObject19, lib_templateObject20, lib_templateObject21, lib_templateObject22, lib_templateObject23, lib_templateObject24, lib_templateObject25, lib_templateObject26, lib_templateObject27, lib_templateObject28, lib_templateObject29, lib_templateObject30, lib_templateObject31, lib_templateObject32, lib_templateObject33, lib_templateObject34, lib_templateObject35, lib_templateObject36, lib_templateObject37, lib_templateObject38;
+var lib_templateObject, lib_templateObject2, lib_templateObject3, lib_templateObject4, lib_templateObject5, lib_templateObject6, lib_templateObject7, lib_templateObject8, lib_templateObject9, lib_templateObject10, lib_templateObject11, lib_templateObject12, lib_templateObject13, lib_templateObject14, lib_templateObject15, lib_templateObject16, lib_templateObject17, lib_templateObject18, lib_templateObject19, lib_templateObject20, lib_templateObject21, lib_templateObject22, lib_templateObject23, lib_templateObject24, lib_templateObject25, lib_templateObject26, lib_templateObject27, lib_templateObject28, lib_templateObject29, lib_templateObject30, lib_templateObject31, lib_templateObject32, lib_templateObject33, lib_templateObject34, lib_templateObject35, lib_templateObject36, lib_templateObject37, lib_templateObject38, lib_templateObject39, lib_templateObject40;
 function src_lib_createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = src_lib_unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function lib_taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 function lib_toConsumableArray(arr) { return lib_arrayWithoutHoles(arr) || lib_iterableToArray(arr) || src_lib_unsupportedIterableToArray(arr) || lib_nonIterableSpread(); }
@@ -11637,6 +11637,7 @@ function src_lib_arrayLikeToArray(arr, len) { if (len == null || len > arr.lengt
 function lib_defineProperty(obj, key, value) { key = src_lib_toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function src_lib_toPropertyKey(arg) { var key = src_lib_toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function src_lib_toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
 
 
 
@@ -12052,6 +12053,16 @@ function withLocation(location, action) {
 }
 function freeRest() {
   if (property_get("timesRested") >= (0,external_kolmafia_namespaceObject.totalFreeRests)()) return false;
+  if ((0,external_kolmafia_namespaceObject.myHp)() >= (0,external_kolmafia_namespaceObject.myMaxhp)() && (0,external_kolmafia_namespaceObject.myMp)() >= (0,external_kolmafia_namespaceObject.myMaxmp)()) {
+    if (acquire(1, template_string_$item(lib_templateObject39 || (lib_templateObject39 = lib_taggedTemplateLiteral(["awful poetry journal"]))), 10000, false)) {
+      (0,external_kolmafia_namespaceObject.use)(template_string_$item(lib_templateObject40 || (lib_templateObject40 = lib_taggedTemplateLiteral(["awful poetry journal"]))));
+    } else {
+      // burn some mp so that we can rest
+      var bestSkill = maxBy(external_kolmafia_namespaceObject.Skill.all().filter(sk => lib_have(sk) && (0,external_kolmafia_namespaceObject.mpCost)(sk) >= 1), sk => -(0,external_kolmafia_namespaceObject.mpCost)(sk)); // are there any other skills that cost mana which we should blacklist?
+      // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
+      (0,external_kolmafia_namespaceObject.useSkill)(bestSkill);
+    }
+  }
   if (property_get("chateauAvailable")) {
     (0,external_kolmafia_namespaceObject.visitUrl)("place.php?whichplace=chateau&action=chateau_restlabelfree");
   } else if (property_get("getawayCampsiteUnlocked")) {
@@ -15835,7 +15846,7 @@ function expectedReward() {
   }
 }
 ;// CONCATENATED MODULE: ./src/wanderer/lib.ts
-var wanderer_lib_templateObject, wanderer_lib_templateObject2, wanderer_lib_templateObject3, wanderer_lib_templateObject4, wanderer_lib_templateObject5, wanderer_lib_templateObject6, wanderer_lib_templateObject7, wanderer_lib_templateObject8, wanderer_lib_templateObject9, wanderer_lib_templateObject10, wanderer_lib_templateObject11, wanderer_lib_templateObject12, wanderer_lib_templateObject13, wanderer_lib_templateObject14, wanderer_lib_templateObject15, wanderer_lib_templateObject16, wanderer_lib_templateObject17, wanderer_lib_templateObject18, wanderer_lib_templateObject19, wanderer_lib_templateObject20, wanderer_lib_templateObject21, wanderer_lib_templateObject22, wanderer_lib_templateObject23, wanderer_lib_templateObject24, wanderer_lib_templateObject25, wanderer_lib_templateObject26, wanderer_lib_templateObject27, wanderer_lib_templateObject28, wanderer_lib_templateObject29, wanderer_lib_templateObject30, wanderer_lib_templateObject31, wanderer_lib_templateObject32, wanderer_lib_templateObject33, wanderer_lib_templateObject34, wanderer_lib_templateObject35, wanderer_lib_templateObject36, wanderer_lib_templateObject37, wanderer_lib_templateObject38, lib_templateObject39, lib_templateObject40, lib_templateObject41, lib_templateObject42, lib_templateObject43, lib_templateObject44, lib_templateObject45, lib_templateObject46, lib_templateObject47, lib_templateObject48, lib_templateObject49, lib_templateObject50, lib_templateObject51, lib_templateObject52;
+var wanderer_lib_templateObject, wanderer_lib_templateObject2, wanderer_lib_templateObject3, wanderer_lib_templateObject4, wanderer_lib_templateObject5, wanderer_lib_templateObject6, wanderer_lib_templateObject7, wanderer_lib_templateObject8, wanderer_lib_templateObject9, wanderer_lib_templateObject10, wanderer_lib_templateObject11, wanderer_lib_templateObject12, wanderer_lib_templateObject13, wanderer_lib_templateObject14, wanderer_lib_templateObject15, wanderer_lib_templateObject16, wanderer_lib_templateObject17, wanderer_lib_templateObject18, wanderer_lib_templateObject19, wanderer_lib_templateObject20, wanderer_lib_templateObject21, wanderer_lib_templateObject22, wanderer_lib_templateObject23, wanderer_lib_templateObject24, wanderer_lib_templateObject25, wanderer_lib_templateObject26, wanderer_lib_templateObject27, wanderer_lib_templateObject28, wanderer_lib_templateObject29, wanderer_lib_templateObject30, wanderer_lib_templateObject31, wanderer_lib_templateObject32, wanderer_lib_templateObject33, wanderer_lib_templateObject34, wanderer_lib_templateObject35, wanderer_lib_templateObject36, wanderer_lib_templateObject37, wanderer_lib_templateObject38, wanderer_lib_templateObject39, wanderer_lib_templateObject40, lib_templateObject41, lib_templateObject42, lib_templateObject43, lib_templateObject44, lib_templateObject45, lib_templateObject46, lib_templateObject47, lib_templateObject48, lib_templateObject49, lib_templateObject50, lib_templateObject51, lib_templateObject52;
 function wanderer_lib_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, wanderer_lib_toPropertyKey(descriptor.key), descriptor); } }
 function wanderer_lib_createClass(Constructor, protoProps, staticProps) { if (protoProps) wanderer_lib_defineProperties(Constructor.prototype, protoProps); if (staticProps) wanderer_lib_defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function wanderer_lib_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -16020,11 +16031,11 @@ var unsupportedChoices = new Map([[$location(wanderer_lib_templateObject20 || (w
   880: 2 // a dumb 75 meat club
 }], [$location(wanderer_lib_templateObject38 || (wanderer_lib_templateObject38 = wanderer_lib_taggedTemplateLiteral(["The Copperhead Club"]))), {
   855: 4
-}], [$location(lib_templateObject39 || (lib_templateObject39 = wanderer_lib_taggedTemplateLiteral(["The Haunted Bathroom"]))), {
+}], [$location(wanderer_lib_templateObject39 || (wanderer_lib_templateObject39 = wanderer_lib_taggedTemplateLiteral(["The Haunted Bathroom"]))), {
   882: 2
 }],
 // skip; it's the towel adventure but we don't want towels
-[$location(lib_templateObject40 || (lib_templateObject40 = wanderer_lib_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Top Floor)"]))), {
+[$location(wanderer_lib_templateObject40 || (wanderer_lib_templateObject40 = wanderer_lib_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Top Floor)"]))), {
   1431: 1,
   675: 4,
   // Go to Steampunk choice
