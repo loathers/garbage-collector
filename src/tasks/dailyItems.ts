@@ -149,6 +149,21 @@ export const DailyItemTasks: Task[] = [
       },
     },
     {
+      name: "2002 Mr. Store",
+      // eslint-disable-next-line libram/verify-constants
+      ready: () => have($item`2002 Mr. Store Catalog`),
+      completed: () =>
+        get("availableMrStore2002Credits", 0) > 0 && get("_2002MrStoreCreditsCollected", false),
+      do: (): void => {
+        const bestItem = maxBy(
+          // eslint-disable-next-line libram/verify-constants
+          $items`Spooky VHS Tape, "I survived Y2K" T-Shirt, Letter from Carrie Bradshaw, pro skateboard, Mr. Accessaturday, Meat Butler, Loathing Idol Microphone, Charter: Nellyville, Manual of Secret Door Detection, Flash Liquidizer Ultra Dousing Accessory, Amulet of Perpetual Darkness, Giant black monolith`,
+          garboValue
+        );
+        buy($coinmaster`Mr. Store 2002`, get("availableMrStore2002Credits", 0), bestItem);
+      },
+    },
+    {
       name: "Chateau Mantegna Desk",
       ready: () => ChateauMantegna.have(),
       completed: () => get("_chateauDeskHarvested"),
