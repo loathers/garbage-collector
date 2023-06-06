@@ -154,7 +154,7 @@ export const DailyItemTasks: Task[] = [
       // eslint-disable-next-line libram/verify-constants
       ready: () => have($item`2002 Mr. Store Catalog`),
       completed: () =>
-        get("availableMrStore2002Credits", 0) === 0 && get("_2002MrStoreCreditsCollected", false),
+        get("availableMrStore2002Credits", 0) === 0 && get("_2002MrStoreCreditsCollected", true),
       do: (): void => {
         const bestItem = maxBy(
           Item.all().filter((i) => sellsItem($coinmaster`Mr. Store 2002`, i)),
