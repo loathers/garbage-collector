@@ -1788,14 +1788,27 @@ const freeRunFightSources = [
       garboAdventure(
         $location`Cobb's Knob Menagerie, Level 1`,
         Macro.if_($monster`QuickBASIC elemental`, Macro.basicCombat())
-          .if_($monster`BASIC Elemental`, Macro.trySkill($skill`Summon Mayfly Swarm`))
+          .if_(
+            $monster`BASIC Elemental`,
+            Macro.step("pickpocket").trySkill($skill`Summon Mayfly Swarm`)
+          )
           .step(runSource.macro)
       );
     },
     {
-      spec: {
-        equip: $items`mayfly bait necklace`,
-        bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
+      spec: () => {
+        const canPickPocket = myPrimestat() === $stat`Moxie`;
+        const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
+          (item) => have(item) && canEquip(item)
+        );
+        const spec: OutfitSpec = {
+          equip: $items`mayfly bait necklace`,
+          bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
+        };
+        if (!canPickPocket && bestPickpocketItem) spec.equip?.push(bestPickpocketItem);
+        if (canPickPocket || bestPickpocketItem) spec.modifier = ["10 Pickpocket Chance"];
+
+        return spec;
       },
     }
   ),
