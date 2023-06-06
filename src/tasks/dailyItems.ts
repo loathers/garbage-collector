@@ -17,6 +17,7 @@ import {
   print,
   runChoice,
   scrapPockets,
+  sellsItem,
   toItem,
   use,
   useSkill,
@@ -156,8 +157,7 @@ export const DailyItemTasks: Task[] = [
         get("availableMrStore2002Credits", 0) === 0 && get("_2002MrStoreCreditsCollected", false),
       do: (): void => {
         const bestItem = maxBy(
-          // eslint-disable-next-line libram/verify-constants
-          $items`Spooky VHS Tape, "I survived Y2K" T-Shirt, Letter from Carrie Bradshaw, pro skateboard, Mr. Accessaturday, Meat Butler, Loathing Idol Microphone, Charter: Nellyville, Manual of Secret Door Detection, Flash Liquidizer Ultra Dousing Accessory, Amulet of Perpetual Darkness, Giant black monolith`,
+          Item.all().filter((i) => sellsItem($coinmaster`Mr. Store 2002`, i)),
           garboValue
         );
         buy($coinmaster`Mr. Store 2002`, get("availableMrStore2002Credits", 0), bestItem);
