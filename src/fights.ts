@@ -116,7 +116,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
-import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
+import { garboAdventure, garboAdventureAuto, Macro, maxPassiveDamage, withMacro } from "./combat";
 import {
   bestFairy,
   freeFightFamiliar,
@@ -1783,6 +1783,7 @@ const freeRunFightSources = [
     () =>
       have($item`mayfly bait necklace`) &&
       canAdventure($location`Cobb's Knob Menagerie, Level 1`) &&
+      maxPassiveDamage() < 39 + numericModifier("Monster Level") &&
       get("_mayflySummons") < 30,
     (runSource: ActionSource) => {
       garboAdventure(
@@ -1804,6 +1805,7 @@ const freeRunFightSources = [
         const spec: OutfitSpec = {
           equip: $items`mayfly bait necklace`,
           bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
+          familiar: freeFightFamiliar({ allowAttackFamiliars: false }),
         };
         if (!canPickPocket && bestPickpocketItem) spec.equip?.push(bestPickpocketItem);
         if (canPickPocket || bestPickpocketItem) spec.modifier = ["10 Pickpocket Chance"];
