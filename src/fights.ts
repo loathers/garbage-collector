@@ -1737,6 +1737,55 @@ const freeRunFightSources = [
       },
     }
   ),
+  // Try for an ultra-rare with mayfly runs ;)
+  new FreeRunFight(
+    () =>
+      have($item`mayfly bait necklace`) &&
+      canAdventure($location`Cobb's Knob Menagerie, Level 1`) &&
+      // Max combat length is 4 rounds, Basic elementals have 40 HP base
+      4 * maxPassiveDamage() < 39 + numericModifier("Monster Level") &&
+      get("_mayflySummons") < 30,
+    (runSource: ActionSource) => {
+      garboAdventure(
+        $location`Cobb's Knob Menagerie, Level 1`,
+        Macro.if_($monster`QuickBASIC elemental`, Macro.basicCombat())
+          .if_(
+            $monster`BASIC Elemental`,
+            Macro.step("pickpocket")
+              .externalIf(
+                have($skill`Transcendent Olfaction`) && get("_olfactionsUsed") < 1,
+                Macro.trySkill($skill`Transcendent Olfaction`)
+              )
+              .externalIf(
+                have($skill`Gallapagosian Mating Call`) &&
+                  get("_gallapagosMonster") !== $monster`BASIC Elemental`,
+                Macro.skill($skill`Gallapagosian Mating Call`)
+              )
+              .trySkill($skill`Summon Mayfly Swarm`)
+          )
+          .if_($monster`Fruit Golem`, Macro.trySkill($skill`Feel Hatred`))
+          .if_($monster`Knob Goblin Mutant`, Macro.trySkill($skill`Snokebomb`))
+          .step(runSource.macro)
+      );
+    },
+    {
+      spec: () => {
+        const canPickPocket = myPrimestat() === $stat`Moxie`;
+        const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
+          (item) => have(item) && canEquip(item)
+        );
+        const spec: OutfitSpec = {
+          equip: $items`mayfly bait necklace`,
+          bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
+          familiar: freeFightFamiliar({ allowAttackFamiliars: false }),
+        };
+        if (!canPickPocket && bestPickpocketItem) spec.equip?.push(bestPickpocketItem);
+        if (canPickPocket || bestPickpocketItem) spec.modifier = ["10 Pickpocket Chance"];
+
+        return spec;
+      },
+    }
+  ),
   // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
   new FreeRunFight(
     () =>
@@ -1777,42 +1826,6 @@ const freeRunFightSources = [
       !have($effect`Shadow Affinity`) &&
       get("encountersUntilSRChoice") > 0,
     (runSource: ActionSource) => garboAdventure(bestShadowRift(), runSource.macro)
-  ),
-  // Try for an ultra-rare with mayfly runs ;)
-  new FreeRunFight(
-    () =>
-      have($item`mayfly bait necklace`) &&
-      canAdventure($location`Cobb's Knob Menagerie, Level 1`) &&
-      maxPassiveDamage() < 39 + numericModifier("Monster Level") &&
-      get("_mayflySummons") < 30,
-    (runSource: ActionSource) => {
-      garboAdventure(
-        $location`Cobb's Knob Menagerie, Level 1`,
-        Macro.if_($monster`QuickBASIC elemental`, Macro.basicCombat())
-          .if_(
-            $monster`BASIC Elemental`,
-            Macro.step("pickpocket").trySkill($skill`Summon Mayfly Swarm`)
-          )
-          .step(runSource.macro)
-      );
-    },
-    {
-      spec: () => {
-        const canPickPocket = myPrimestat() === $stat`Moxie`;
-        const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
-          (item) => have(item) && canEquip(item)
-        );
-        const spec: OutfitSpec = {
-          equip: $items`mayfly bait necklace`,
-          bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
-          familiar: freeFightFamiliar({ allowAttackFamiliars: false }),
-        };
-        if (!canPickPocket && bestPickpocketItem) spec.equip?.push(bestPickpocketItem);
-        if (canPickPocket || bestPickpocketItem) spec.modifier = ["10 Pickpocket Chance"];
-
-        return spec;
-      },
-    }
   ),
 ];
 
