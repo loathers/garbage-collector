@@ -1774,13 +1774,17 @@ const freeRunFightSources = [
         const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
           (item) => have(item) && canEquip(item)
         );
+        // Base drop is 30%, so 1% pickpocket gives .003
+        const pickPocketValue = 0.003 * garboValue($item`GOTO`);
         const spec: OutfitSpec = {
           equip: $items`mayfly bait necklace`,
           bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
           familiar: freeFightFamiliar({ allowAttackFamiliars: false }),
         };
         if (!canPickPocket && bestPickpocketItem) spec.equip?.push(bestPickpocketItem);
-        if (canPickPocket || bestPickpocketItem) spec.modifier = ["10 Pickpocket Chance"];
+        if (canPickPocket || bestPickpocketItem) {
+          spec.modifier = [`${pickPocketValue} Pickpocket Chance`];
+        }
 
         return spec;
       },
