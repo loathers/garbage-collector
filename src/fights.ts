@@ -116,7 +116,14 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
-import { garboAdventure, garboAdventureAuto, Macro, maxPassiveDamage, withMacro } from "./combat";
+import {
+  garboAdventure,
+  garboAdventureAuto,
+  Macro,
+  maxPassiveDamage,
+  monsterManuelAvailable,
+  withMacro,
+} from "./combat";
 import {
   bestFairy,
   freeFightFamiliar,
@@ -1737,29 +1744,29 @@ const freeRunFightSources = [
       },
     }
   ),
-  // Try for an ultra-rare with mayfly runs ;)
+  // Try for an ultra-rare with mayfly runs and pickpocket if we have a manuel to detect monster hp ;)
   new FreeRunFight(
     () =>
+      monsterManuelAvailable() &&
       have($item`mayfly bait necklace`) &&
       canAdventure($location`Cobb's Knob Menagerie, Level 1`) &&
-      // Max combat length is 4 rounds, Basic elementals have 40 HP base
-      4 * maxPassiveDamage() < 39 + numericModifier("Monster Level") &&
       get("_mayflySummons") < 30,
     (runSource: ActionSource) => {
+      const willSurvivePassive = `monsterhpabove ${maxPassiveDamage()}`;
       garboAdventure(
         $location`Cobb's Knob Menagerie, Level 1`,
         Macro.if_($monster`QuickBASIC elemental`, Macro.basicCombat())
           .if_(
             $monster`BASIC Elemental`,
-            Macro.step("pickpocket")
+            Macro.if_(willSurvivePassive, Macro.step("pickpocket"))
               .externalIf(
                 have($skill`Transcendent Olfaction`) && get("_olfactionsUsed") < 1,
-                Macro.trySkill($skill`Transcendent Olfaction`)
+                Macro.if_(willSurvivePassive, Macro.trySkill($skill`Transcendent Olfaction`))
               )
               .externalIf(
                 have($skill`Gallapagosian Mating Call`) &&
                   get("_gallapagosMonster") !== $monster`BASIC Elemental`,
-                Macro.skill($skill`Gallapagosian Mating Call`)
+                Macro.if_(willSurvivePassive, Macro.skill($skill`Gallapagosian Mating Call`))
               )
               .trySkill($skill`Summon Mayfly Swarm`)
           )
@@ -1819,6 +1826,27 @@ const freeRunFightSources = [
         } else {
           return { familiar: $familiar`Artistic Goth Kid` };
         }
+      },
+    }
+  ),
+  // Try for an ultra-rare with mayfly runs if we didn't have a manuel ;)
+  new FreeRunFight(
+    () =>
+      have($item`mayfly bait necklace`) &&
+      canAdventure($location`Cobb's Knob Menagerie, Level 1`) &&
+      get("_mayflySummons") < 30,
+    (runSource: ActionSource) => {
+      garboAdventure(
+        $location`Cobb's Knob Menagerie, Level 1`,
+        Macro.if_($monster`QuickBASIC elemental`, Macro.basicCombat())
+          .if_($monster`BASIC Elemental`, Macro.trySkill($skill`Summon Mayfly Swarm`))
+          .step(runSource.macro)
+      );
+    },
+    {
+      spec: {
+        equip: $items`mayfly bait necklace`,
+        bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
       },
     }
   ),
