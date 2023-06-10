@@ -16016,9 +16016,9 @@ var unsupportedChoices = new Map([[$location(wanderer_lib_templateObject20 || (w
 }], [$location(wanderer_lib_templateObject35 || (wanderer_lib_templateObject35 = wanderer_lib_taggedTemplateLiteral(["VYKEA"]))), {
   1115: 6
 }], [$location(wanderer_lib_templateObject36 || (wanderer_lib_templateObject36 = wanderer_lib_taggedTemplateLiteral(["The Castle in the Clouds in the Sky (Basement)"]))), {
+  669: 1,
   670: 4,
-  671: 4,
-  672: 1
+  671: 4
 }], [$location(wanderer_lib_templateObject37 || (wanderer_lib_templateObject37 = wanderer_lib_taggedTemplateLiteral(["The Haunted Bedroom"]))), {
   876: 1,
   // old leather wallet, 500 meat
