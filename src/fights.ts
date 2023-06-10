@@ -1829,6 +1829,15 @@ const freeRunFightSources = [
       },
     }
   ),
+  // Try to accelerate the shadow nc, if you're able to do a quest
+  new FreeRunFight(
+    () =>
+      have($item`closed-circuit pay phone`) &&
+      get("rufusQuestType") !== "items" &&
+      !have($effect`Shadow Affinity`) &&
+      get("encountersUntilSRChoice") > 0,
+    (runSource: ActionSource) => garboAdventure(bestShadowRift(), runSource.macro)
+  ),
   // Try for an ultra-rare with mayfly runs if we didn't have a manuel ;)
   new FreeRunFight(
     () =>
@@ -1849,15 +1858,6 @@ const freeRunFightSources = [
         bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
       },
     }
-  ),
-  // Try to accelerate the shadow nc, if you're able to do a quest
-  new FreeRunFight(
-    () =>
-      have($item`closed-circuit pay phone`) &&
-      get("rufusQuestType") !== "items" &&
-      !have($effect`Shadow Affinity`) &&
-      get("encountersUntilSRChoice") > 0,
-    (runSource: ActionSource) => garboAdventure(bestShadowRift(), runSource.macro)
   ),
 ];
 
