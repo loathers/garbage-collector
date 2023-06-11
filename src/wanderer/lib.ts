@@ -175,9 +175,9 @@ export const unsupportedChoices = new Map<Location, { [choice: number]: number |
   [
     $location`The Castle in the Clouds in the Sky (Basement)`,
     {
+      669: 1,
       670: 4,
       671: 4,
-      672: 1,
     },
   ],
   [
