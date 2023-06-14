@@ -35,7 +35,6 @@ import {
   myLevel,
   myMaxhp,
   myPath,
-  myPrimestat,
   myThrall,
   myTurncount,
   numericModifier,
@@ -976,7 +975,8 @@ const freeFightSources = [
     false,
     {
       spec: () => {
-        const canPickPocket = myPrimestat() === $stat`Moxie`;
+        const canPickPocket =
+          myClass() === $class`Accordion Thief` || myClass() === $class`Disco Bandit`;
         const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
           (item) => have(item) && canEquip(item)
         );
@@ -1777,7 +1777,8 @@ const freeRunFightSources = [
     },
     {
       spec: () => {
-        const canPickPocket = myPrimestat() === $stat`Moxie`;
+        const canPickPocket =
+          myClass() === $class`Accordion Thief` || myClass() === $class`Disco Bandit`;
         const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
           (item) => have(item) && canEquip(item)
         );
