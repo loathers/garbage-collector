@@ -46,7 +46,7 @@ import {
 import { garboAverageValue, garboValue } from "../session";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { BonusEquipMode, isFree, useLimitedDrops, valueOfMeat } from "./lib";
-import { monsterManuelAvailable } from "../combat";
+import { maxPassiveDamage, monsterManuelAvailable } from "../combat";
 import { felizValue } from "../tasks/dailyFamiliars";
 
 const pantsgivingBonuses = new Map<number, number>();
@@ -169,17 +169,19 @@ function luckyGoldRing(mode: BonusEquipMode) {
 }
 
 function cinchoDeMayo(mode: BonusEquipMode) {
-  // Ignore for DMT? Requires specific combat stuff, so probably weird there
-  // Require manuel to make sure we don't kill during stasis
-  // Also require that we've either finished yachtzee, or aren't doing it in the first place
   if (
     !have($item`Cincho de Mayo`) ||
-    mode === BonusEquipMode.DMT ||
-    !monsterManuelAvailable() ||
     CinchoDeMayo.totalAvailableCinch() === 0 ||
     CinchoDeMayo.currentCinch() === 0 ||
+    // Ignore for DMT? Requires specific combat stuff, so probably weird there
+    mode === BonusEquipMode.DMT ||
+    // Require manuel to make sure we don't kill during stasis
+    !monsterManuelAvailable() ||
+    // Require that we've either finished yachtzee, or aren't doing it in the first place, cinch better used there
     !get("_garboYachtzeeChainCompleted") ||
-    globalOptions.prefs.yachtzeechain === true
+    globalOptions.prefs.yachtzeechain === true ||
+    // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
+    maxPassiveDamage() >= 50
   ) {
     return new Map<Item, number>([]);
   }
