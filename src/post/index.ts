@@ -20,6 +20,7 @@ import {
   $skill,
   $slot,
   AutumnAton,
+  CinchoDeMayo,
   FloristFriar,
   get,
   getRemainingStomach,
@@ -35,6 +36,7 @@ import { globalOptions } from "../config";
 import { computeDiet, consumeDiet } from "../diet";
 import {
   bestJuneCleaverOption,
+  freeRest,
   juneCleaverChoiceValues,
   safeInterrupt,
   safeRestore,
@@ -171,6 +173,17 @@ function funguySpores() {
   }
 }
 
+function refillCinch() {
+  if (!CinchoDeMayo.have()) return;
+
+  if (get("_garboYachtzeeChainCompleted") || globalOptions.prefs.yachtzeechain === false) {
+    const restorableCinch = 100 - CinchoDeMayo.currentCinch();
+    while (restorableCinch > CinchoDeMayo.cinchRestoredBy()) {
+      if (!freeRest()) throw new Error("We are out of free rests!");
+    }
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
   closetStuff();
   juneCleave();
@@ -182,6 +195,7 @@ export default function postCombatActions(skipDiet = false): void {
   floristFriars();
   handleWorkshed();
   safeInterrupt();
+  refillCinch();
   safeRestore();
   updateMallPrices();
   stillsuit();

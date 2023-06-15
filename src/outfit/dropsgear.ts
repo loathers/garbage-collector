@@ -22,6 +22,7 @@ import {
   $skill,
   $slot,
   $slots,
+  CinchoDeMayo,
   clamp,
   DaylightShavings,
   get,
@@ -45,6 +46,8 @@ import {
 import { garboAverageValue, garboValue } from "../session";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { BonusEquipMode, isFree, useLimitedDrops, valueOfMeat } from "./lib";
+import { monsterManuelAvailable } from "../combat";
+import { felizValue } from "../tasks/dailyFamiliars";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -165,6 +168,26 @@ function luckyGoldRing(mode: BonusEquipMode) {
   ]);
 }
 
+function cinchoDeMayo(mode: BonusEquipMode) {
+  // Ignore for DMT? Requires specific combat stuff, so probably weird there
+  // Require manuel to make sure we don't kill during stasis
+  // Also require that we've either finished yachtzee, or aren't doing it in the first place
+  if (
+    !have($item`Cincho de Mayo`) ||
+    mode === BonusEquipMode.DMT ||
+    !monsterManuelAvailable() ||
+    CinchoDeMayo.totalAvailableCinch() === 0 ||
+    CinchoDeMayo.currentCinch() === 0 ||
+    !get("_garboYachtzeeChainCompleted") ||
+    globalOptions.prefs.yachtzeechain === true
+  ) {
+    return new Map<Item, number>([]);
+  }
+
+  // Account for a single use of Projectile Pinata, which gives 3x Robortender candies
+  return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
+}
+
 function mrCheengsSpectacles() {
   if (!have($item`Mr. Cheeng's spectacles`)) {
     return new Map<Item, number>([]);
@@ -253,6 +276,7 @@ function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
     ...luckyGoldRing(mode),
     ...mrCheengsSpectacles(),
     ...mrScreegesSpectacles(),
+    ...cinchoDeMayo(mode),
   ]);
 }
 export function magnifyingGlass(): Map<Item, number> {
