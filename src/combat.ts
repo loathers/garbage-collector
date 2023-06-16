@@ -389,7 +389,7 @@ export class Macro extends StrictMacro {
     const stasisItem = $items`facsimile dictionary, dictionary, seal tooth`.find(checkGet);
     const canPinata =
       CinchoDeMayo.have() && CinchoDeMayo.currentCinch() >= 5 && monsterManuelAvailable();
-    const pinataCasts = Math.floor(CinchoDeMayo.currentCinch() / 5);
+    const pinataCastsAvailable = Math.floor(CinchoDeMayo.currentCinch() / 5);
 
     // We retrieve a seal tooth at the start of the day, so this is just to make sure nothing has gone awry.
     if (!stasisItem) throw new Error("Acquire a seal tooth and run garbo again.");
@@ -471,8 +471,11 @@ export class Macro extends StrictMacro {
           Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`))
         )
         .externalIf(
-          haveEquipped($item`Cincho de Mayo`) && pinataCasts > 0 && canPinata,
-          Macro.while_(`${hpCheckCincho}`, Macro.tryHaveSkill($skill`Cincho: Projectile Piñata`))
+          haveEquipped($item`Cincho de Mayo`) && canPinata && pinataCastsAvailable > 0,
+          Macro.while_(
+            `${hpCheckCincho} && hasskill 7442`,
+            Macro.trySkill($skill`Cincho: Projectile Piñata`)
+          )
         )
         .externalIf(
           have($item`porquoise-handled sixgun`),
@@ -537,7 +540,10 @@ export class Macro extends StrictMacro {
   kill(): Macro {
     const riftId = toInt($location`Shadow Rift`);
     const doingYachtzee = globalOptions.prefs.yachtzeechain;
-    const canPinata = CinchoDeMayo.have() && CinchoDeMayo.currentCinch() >= 5;
+    const canPinata =
+      CinchoDeMayo.have() &&
+      haveEquipped($item`Cincho de Mayo`) &&
+      CinchoDeMayo.currentCinch() >= 5;
     return (
       this.externalIf(
         myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
@@ -546,7 +552,7 @@ export class Macro extends StrictMacro {
         .externalIf(
           !doingYachtzee && canPinata,
           Macro.while_(
-            `!pastround 24 && !hppercentbelow 25`,
+            `hasskill 7442 && !pastround 24 && !hppercentbelow 25`,
             Macro.trySkill($skill`Cincho: Projectile Piñata`)
           )
         )
