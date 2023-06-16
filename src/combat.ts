@@ -387,9 +387,8 @@ export class Macro extends StrictMacro {
 
     const checkGet = (i: Item) => have(i) && (itemAmount(i) > 0 || retrieveItem(i));
     const stasisItem = $items`facsimile dictionary, dictionary, seal tooth`.find(checkGet);
-    const canPinata =
-      CinchoDeMayo.have() && CinchoDeMayo.currentCinch() >= 5 && monsterManuelAvailable();
     const pinataCastsAvailable = Math.floor(CinchoDeMayo.currentCinch() / 5);
+    const canPinata = CinchoDeMayo.have() && pinataCastsAvailable > 0 && monsterManuelAvailable();
 
     // We retrieve a seal tooth at the start of the day, so this is just to make sure nothing has gone awry.
     if (!stasisItem) throw new Error("Acquire a seal tooth and run garbo again.");
@@ -471,7 +470,7 @@ export class Macro extends StrictMacro {
           Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`))
         )
         .externalIf(
-          haveEquipped($item`Cincho de Mayo`) && canPinata && pinataCastsAvailable > 0,
+          haveEquipped($item`Cincho de Mayo`) && canPinata,
           Macro.while_(
             `${hpCheckCincho} && hasskill 7442`,
             Macro.trySkill($skill`Cincho: Projectile Piñata`)
@@ -540,10 +539,7 @@ export class Macro extends StrictMacro {
   kill(): Macro {
     const riftId = toInt($location`Shadow Rift`);
     const doingYachtzee = globalOptions.prefs.yachtzeechain;
-    const canPinata =
-      CinchoDeMayo.have() &&
-      haveEquipped($item`Cincho de Mayo`) &&
-      CinchoDeMayo.currentCinch() >= 5;
+    const canPinata = haveEquipped($item`Cincho de Mayo`) && CinchoDeMayo.currentCinch() >= 5;
     return (
       this.externalIf(
         myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
