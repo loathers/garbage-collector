@@ -823,7 +823,8 @@ const freeFightSources = [
       get("garbo_fightGlitch", false),
     () =>
       withMacro(
-        Macro.trySkill($skill`Shadow Noodles`)
+        Macro.trySkill($skill`Curse of Marinara`)
+          .trySkill($skill`Shadow Noodles`)
           .trySkill($skill`Entangling Noodles`)
           .trySkill($skill`Summon Love Gnats`)
           .trySkill($skill`Frost Bite`)
