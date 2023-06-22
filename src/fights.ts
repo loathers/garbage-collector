@@ -1687,12 +1687,11 @@ const freeRunFightSources = [
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) === 19 &&
       (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     () => {
-      const choice = itemAmount($item`sprinkles`) > 300 ? 2 : 1;
       propertyManager.setChoices({
         1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
         1215: 1, // Gingerbread Civic Center advance clock
         1209: 2, // enter the gallery at Upscale Midnight
-        1214: choice, // get fancy chocolate sculpture OR High-End ginger wine
+        1214: 1, // get High-End ginger wine
       });
       const best = bestConsumable("booze", true, $items`high-end ginger wine, astral pilsner`);
       const gingerWineValue =
@@ -1700,7 +1699,6 @@ const freeRunFightSources = [
           getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure")) /
         2;
       const valueDif = gingerWineValue - best.value;
-      print(`Gingerbread wine value = ${valueDif}`);
       if (
         haveOutfit("gingerbread best") &&
         (availableAmount($item`sprinkles`) < 5 ||
