@@ -818,6 +818,40 @@ const freeFightSources = [
   new FreeFight(
     () =>
       have($item`[glitch season reward name]`) &&
+      have($item`unwrapped knock-off retro superhero cape`) &&
+      !get("_glitchMonsterFights") &&
+      get("garbo_fightGlitch", false),
+    () =>
+      withMacro(
+        Macro.trySkill($skill`Shadow Noodles`)
+          .trySkill($skill`Entangling Noodles`)
+          .trySkill($skill`Summon Love Gnats`)
+          .trySkill($skill`Frost Bite`)
+          .trySkill($skill`Soul Bubble`)
+          .tryItem($item`Rain-Doh blue balls`)
+          .skill($skill`Blow a Robo-Kiss`)
+          .repeat(),
+        () => {
+          restoreHp(myMaxhp());
+          if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+          retrieveItem($item`[glitch season reward name]`);
+          visitUrl("inv_eat.php?pwd&whichitem=10207");
+          runCombat();
+        }
+      ),
+    true,
+    {
+      spec: {
+        back: $items`unwrapped knock-off retro superhero cape`,
+        modes: { retrocape: ["robot", "kiss"] },
+      },
+      macroAllowsFamiliarActions: false,
+    }
+  ),
+
+  new FreeFight(
+    () =>
+      have($item`[glitch season reward name]`) &&
       !get("_glitchMonsterFights") &&
       get("garbo_fightGlitch", false),
     () =>
@@ -1652,11 +1686,12 @@ const freeRunFightSources = [
       get("_gingerbreadCityTurns") + (get("_gingerbreadClockAdvanced") ? 5 : 0) === 19 &&
       (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     () => {
+      const choice = itemAmount($item`sprinkles`) > 300 ? 2 : 1;
       propertyManager.setChoices({
         1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
         1215: 1, // Gingerbread Civic Center advance clock
         1209: 2, // enter the gallery at Upscale Midnight
-        1214: 1, // get High-End ginger wine
+        1214: choice, // get fancy chocolate sculpture OR High-End ginger wine
       });
       const best = bestConsumable("booze", true, $items`high-end ginger wine, astral pilsner`);
       const gingerWineValue =
@@ -1664,6 +1699,7 @@ const freeRunFightSources = [
           getAverageAdventures($item`high-end ginger wine`) * get("valueOfAdventure")) /
         2;
       const valueDif = gingerWineValue - best.value;
+      print(`Gingerbread wine value = ${valueDif}`);
       if (
         haveOutfit("gingerbread best") &&
         (availableAmount($item`sprinkles`) < 5 ||
