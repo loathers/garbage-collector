@@ -36,6 +36,7 @@ import {
   myMaxhp,
   myPath,
   myPrimestat,
+  mySoulsauce,
   myThrall,
   myTurncount,
   numericModifier,
@@ -701,6 +702,16 @@ function molemanReady() {
   return have($item`molehill mountain`) && !get("_molehillMountainUsed");
 }
 
+const stunDurations = new Map<Skill | Item, Delayed<number>>([
+  [$skill`Blood Bubble`, 1],
+  [$skill`Entangling Noodles`, () => (myClass() === $class`Pastamancer` ? 2 : 0)],
+  [$skill`Frost Bite`, 2],
+  [$skill`Shadow Noodles`, 3],
+  [$skill`Soul Bubble`, () => (mySoulsauce() >= 5 ? 3 : 0)],
+  [$skill`Summon Love Gnats`, 2],
+  [$item`Rain-Doh blue balls`, 2],
+]);
+
 const freeFightSources = [
   new FreeFight(
     () =>
@@ -820,7 +831,11 @@ const freeFightSources = [
       have($item`[glitch season reward name]`) &&
       have($item`unwrapped knock-off retro superhero cape`) &&
       !get("_glitchMonsterFights") &&
-      get("garbo_fightGlitch", false),
+      get("garbo_fightGlitch", false) &&
+      Array.from(stunDurations).reduce(
+        (sum, [thing, duration]) => sum + (have(thing) ? undelay(duration) : 0),
+        0
+      ) >= 5,
     () =>
       withMacro(
         Macro.trySkill($skill`Curse of Marinara`)
