@@ -24333,7 +24333,7 @@ function castOde(turns) {
 
   // If we have the polka of plenty skill, we can re-buff up later
   // Else, get rid of chorale which is the most inefficient song
-  if (lib_getActiveSongs.length === (lib_have(template_string_$skill(yachtzee_diet_templateObject21 || (yachtzee_diet_templateObject21 = yachtzee_diet_taggedTemplateLiteral(["Mariachi Memory"])))) ? 4 : 3)) {
+  if (getSongCount() - (0,external_kolmafia_namespaceObject.toInt)(lib_have(template_string_$effect(yachtzee_diet_templateObject21 || (yachtzee_diet_templateObject21 = yachtzee_diet_taggedTemplateLiteral(["Ode to Booze"]))))) >= getSongLimit()) {
     if (lib_have(template_string_$skill(yachtzee_diet_templateObject22 || (yachtzee_diet_templateObject22 = yachtzee_diet_taggedTemplateLiteral(["The Polka of Plenty"]))))) (0,external_kolmafia_namespaceObject.cliExecute)("shrug ".concat(template_string_$effect(yachtzee_diet_templateObject23 || (yachtzee_diet_templateObject23 = yachtzee_diet_taggedTemplateLiteral(["Polka of Plenty"])))));else (0,external_kolmafia_namespaceObject.cliExecute)("shrug ".concat(template_string_$effect(yachtzee_diet_templateObject24 || (yachtzee_diet_templateObject24 = yachtzee_diet_taggedTemplateLiteral(["Chorale of Companionship"])))));
   }
   while ((0,external_kolmafia_namespaceObject.haveEffect)(template_string_$effect(yachtzee_diet_templateObject25 || (yachtzee_diet_templateObject25 = yachtzee_diet_taggedTemplateLiteral(["Ode to Booze"])))) < turns) {
