@@ -171,7 +171,6 @@ function luckyGoldRing(mode: BonusEquipMode) {
 function cinchoDeMayo(mode: BonusEquipMode) {
   if (
     !have($item`Cincho de Mayo`) ||
-    CinchoDeMayo.totalAvailableCinch() === 0 ||
     CinchoDeMayo.currentCinch() === 0 ||
     // Ignore for DMT? Requires specific combat stuff, so probably weird there
     mode === BonusEquipMode.DMT ||
