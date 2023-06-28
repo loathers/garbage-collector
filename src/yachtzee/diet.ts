@@ -30,8 +30,9 @@ import {
   CinchoDeMayo,
   clamp,
   get,
-  getActiveSongs,
   getAverageAdventures,
+  getSongCount,
+  getSongLimit,
   have,
   set,
 } from "libram";
@@ -234,7 +235,7 @@ function castOde(turns: number): boolean {
 
   // If we have the polka of plenty skill, we can re-buff up later
   // Else, get rid of chorale which is the most inefficient song
-  if (getActiveSongs.length === (have($skill`Mariachi Memory`) ? 4 : 3)) {
+  if (getSongCount() - toInt(have($effect`Ode to Booze`)) >= getSongLimit()) {
     if (have($skill`The Polka of Plenty`)) cliExecute(`shrug ${$effect`Polka of Plenty`}`);
     else cliExecute(`shrug ${$effect`Chorale of Companionship`}`);
   }
