@@ -144,7 +144,7 @@ class YachtzeeDietUtils {
       }),
       new YachtzeeDietEntry("bottle of Greedy Dog", 0, 0, 3, 0, (n: number) => {
         ensureConsumable("bottle of Greedy Dog", n, 0, 3, 0);
-        eat(n, $item`bottle of Greedy Dog`);
+        drink(n, $item`bottle of Greedy Dog`);
       }),
       new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => {
         use($item`Clara's bell`);
