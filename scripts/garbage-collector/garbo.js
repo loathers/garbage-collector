@@ -24273,7 +24273,7 @@ var YachtzeeDietUtils = /*#__PURE__*/function () {
       (0,external_kolmafia_namespaceObject.eat)(n, template_string_$item(yachtzee_diet_templateObject14 || (yachtzee_diet_templateObject14 = yachtzee_diet_taggedTemplateLiteral(["Boris's bread"]))));
     }), new YachtzeeDietEntry("bottle of Greedy Dog", 0, 0, 3, 0, n => {
       ensureConsumable("bottle of Greedy Dog", n, 0, 3, 0);
-      (0,external_kolmafia_namespaceObject.eat)(n, template_string_$item(yachtzee_diet_templateObject15 || (yachtzee_diet_templateObject15 = yachtzee_diet_taggedTemplateLiteral(["bottle of Greedy Dog"]))));
+      (0,external_kolmafia_namespaceObject.drink)(n, template_string_$item(yachtzee_diet_templateObject15 || (yachtzee_diet_templateObject15 = yachtzee_diet_taggedTemplateLiteral(["bottle of Greedy Dog"]))));
     }), new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => {
       (0,external_kolmafia_namespaceObject.use)(template_string_$item(yachtzee_diet_templateObject16 || (yachtzee_diet_templateObject16 = yachtzee_diet_taggedTemplateLiteral(["Clara's bell"]))));
       config_globalOptions.clarasBellClaimed = true;
