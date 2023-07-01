@@ -704,7 +704,10 @@ function molemanReady() {
 
 const stunDurations = new Map<Skill | Item, Delayed<number>>([
   [$skill`Blood Bubble`, 1],
-  [$skill`Entangling Noodles`, () => (myClass() === $class`Pastamancer` ? 1 : 0)],
+  [
+    $skill`Entangling Noodles`,
+    () => (myClass() === $class`Pastamancer` && !have($skill`Shadow Noodles`) ? 1 : 0),
+  ],
   [$skill`Frost Bite`, 1],
   [$skill`Shadow Noodles`, 2],
   [$skill`Soul Bubble`, () => (mySoulsauce() >= 5 ? 2 : 0)],
