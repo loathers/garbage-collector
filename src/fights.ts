@@ -35,7 +35,6 @@ import {
   myLevel,
   myMaxhp,
   myPath,
-  myPrimestat,
   myThrall,
   myTurncount,
   numericModifier,
@@ -116,7 +115,14 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
-import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
+import {
+  garboAdventure,
+  garboAdventureAuto,
+  Macro,
+  maxPassiveDamage,
+  monsterManuelAvailable,
+  withMacro,
+} from "./combat";
 import {
   bestFairy,
   freeFightFamiliar,
@@ -969,7 +975,8 @@ const freeFightSources = [
     false,
     {
       spec: () => {
-        const canPickPocket = myPrimestat() === $stat`Moxie`;
+        const canPickPocket =
+          myClass() === $class`Accordion Thief` || myClass() === $class`Disco Bandit`;
         const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
           (item) => have(item) && canEquip(item)
         );
@@ -1737,6 +1744,60 @@ const freeRunFightSources = [
       },
     }
   ),
+  // Try for an ultra-rare with mayfly runs and pickpocket if we have a manuel to detect monster hp ;)
+  new FreeRunFight(
+    () =>
+      monsterManuelAvailable() &&
+      have($item`mayfly bait necklace`) &&
+      canAdventure($location`Cobb's Knob Menagerie, Level 1`) &&
+      get("_mayflySummons") < 30,
+    (runSource: ActionSource) => {
+      const willSurvivePassive = `monsterhpabove ${maxPassiveDamage()}`;
+      garboAdventure(
+        $location`Cobb's Knob Menagerie, Level 1`,
+        Macro.if_($monster`QuickBASIC elemental`, Macro.basicCombat())
+          .if_(
+            $monster`BASIC Elemental`,
+            Macro.if_(willSurvivePassive, Macro.step("pickpocket"))
+              .externalIf(
+                have($skill`Transcendent Olfaction`) && get("_olfactionsUsed") < 1,
+                Macro.if_(willSurvivePassive, Macro.trySkill($skill`Transcendent Olfaction`))
+              )
+              .externalIf(
+                have($skill`Gallapagosian Mating Call`) &&
+                  get("_gallapagosMonster") !== $monster`BASIC Elemental`,
+                Macro.if_(willSurvivePassive, Macro.skill($skill`Gallapagosian Mating Call`))
+              )
+              .trySkill($skill`Summon Mayfly Swarm`)
+          )
+          .if_($monster`Fruit Golem`, Macro.trySkill($skill`Feel Hatred`))
+          .if_($monster`Knob Goblin Mutant`, Macro.trySkill($skill`Snokebomb`))
+          .step(runSource.macro)
+      );
+    },
+    {
+      spec: () => {
+        const canPickPocket =
+          myClass() === $class`Accordion Thief` || myClass() === $class`Disco Bandit`;
+        const bestPickpocketItem = $items`tiny black hole, mime army infiltration glove`.find(
+          (item) => have(item) && canEquip(item)
+        );
+        // Base drop is 30%, so 1% pickpocket gives .003
+        const pickPocketValue = 0.003 * garboValue($item`GOTO`);
+        const spec: OutfitSpec = {
+          equip: $items`mayfly bait necklace`,
+          bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
+          familiar: freeFightFamiliar({ allowAttackFamiliars: false }),
+        };
+        if (!canPickPocket && bestPickpocketItem) spec.equip?.push(bestPickpocketItem);
+        if (canPickPocket || bestPickpocketItem) {
+          spec.modifier = [`${pickPocketValue} Pickpocket Chance`];
+        }
+
+        return spec;
+      },
+    }
+  ),
   // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
   new FreeRunFight(
     () =>
@@ -1778,7 +1839,7 @@ const freeRunFightSources = [
       get("encountersUntilSRChoice") > 0,
     (runSource: ActionSource) => garboAdventure(bestShadowRift(), runSource.macro)
   ),
-  // Try for an ultra-rare with mayfly runs ;)
+  // Try for an ultra-rare with mayfly runs if we didn't have a manuel ;)
   new FreeRunFight(
     () =>
       have($item`mayfly bait necklace`) &&
