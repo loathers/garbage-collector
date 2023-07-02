@@ -1508,6 +1508,31 @@ const freeRunFightSources = [
   ),
   new FreeRunFight(
     () =>
+      (!globalOptions.nobarf || globalOptions.prefs.yachtzeechain) &&
+      // eslint-disable-next-line libram/verify-constants
+      have($familiar`Patriotic Eagle`) &&
+      // eslint-disable-next-line libram/verify-constants
+      !have($effect`Citizen of a Zone`),
+    (runSource: ActionSource) => {
+      const location = globalOptions.prefs.yachtzeechain
+        ? $location`The Fun-Guy Mansion`
+        : $location`Barf Mountain`;
+      garboAdventure(
+        location,
+        // eslint-disable-next-line libram/verify-constants
+        Macro.skill($skill`%fn, let's pledge allegiance to a Zone`).step(runSource.macro)
+      );
+    },
+    {
+      spec: {
+        // eslint-disable-next-line libram/verify-constants
+        familiar: $familiar`Patriotic Eagle`,
+        modifier: ["ml 100 max", "-familiar weight"],
+      },
+    }
+  ),
+  new FreeRunFight(
+    () =>
       have($familiar`Space Jellyfish`) &&
       get("_spaceJellyfishDrops") < 5 &&
       getStenchLocation() !== $location.none,
