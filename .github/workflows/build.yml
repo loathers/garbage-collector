@@ -54,6 +54,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.node-version }}
+      - env:
+        MESSAGE: ${{github.event.commits[0].message}}
       - run: |
           git config user.name "O.A.F."
           git config user.email "<>"
@@ -80,6 +82,6 @@ jobs:
           git add images/
           git add dependencies.txt
           {
-            git commit -m "${{github.event.commits[0].message}}"
+            git commit -m "$MESSAGE"
             git push origin release
           } || exit 0
