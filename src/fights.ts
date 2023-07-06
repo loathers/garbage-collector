@@ -710,6 +710,20 @@ const stunDurations = new Map<Skill | Item, Delayed<number>>([
   ],
   [$skill`Frost Bite`, 1],
   [$skill`Shadow Noodles`, 2],
+  [
+    $skill`Shell Up`,
+    () => {
+      if (myClass() !== $class`Turtle Tamer`) return 0;
+      for (const [effect, duration] of new Map([
+        [$effect`Glorious Blessing of the Storm Tortoise`, 4],
+        [$effect`Grand Blessing of the Storm Tortoise`, 3],
+        [$effect`Blessing of the Storm Tortoise`, 2],
+      ])) {
+        if (have(effect)) return duration;
+      }
+      return 0;
+    },
+  ],
   [$skill`Soul Bubble`, () => (mySoulsauce() >= 5 ? 2 : 0)],
   [$skill`Summon Love Gnats`, 1],
   [$item`Rain-Doh blue balls`, 1],
