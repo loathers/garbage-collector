@@ -21249,7 +21249,7 @@ var DailyTasks = [{
   do: () => withStash([template_string_$item(daily_templateObject61 || (daily_templateObject61 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))], () => (0,external_kolmafia_namespaceObject.use)(1, template_string_$item(daily_templateObject62 || (daily_templateObject62 = daily_taggedTemplateLiteral(["BittyCar SoulCar"])))))
 }, {
   name: "Holiday Eldritch Attunement",
-  ready: () => (0,external_kolmafia_namespaceObject.holiday)() === "Generic Summer Holiday" && !lib_have(template_string_$effect(daily_templateObject63 || (daily_templateObject63 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))) && estimatedTentacles() * config_globalOptions.prefs.valueOfFreeFight > property_get("valueOfAdventure"),
+  ready: () => (0,external_kolmafia_namespaceObject.holiday)().includes("Generic Summer Holiday") && !lib_have(template_string_$effect(daily_templateObject63 || (daily_templateObject63 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))) && estimatedTentacles() * config_globalOptions.prefs.valueOfFreeFight > property_get("valueOfAdventure"),
   completed: () => lib_have(template_string_$effect(daily_templateObject64 || (daily_templateObject64 = daily_taggedTemplateLiteral(["Eldritch Attunement"])))),
   do: () => (0,external_kolmafia_namespaceObject.adv1)($location(daily_templateObject65 || (daily_templateObject65 = daily_taggedTemplateLiteral(["Generic Summer Holiday Swimming!"])))),
   acquire: [{
