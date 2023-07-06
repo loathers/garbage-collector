@@ -76,7 +76,7 @@ import { Args } from "grimoire-kolmafia";
 import { globalOptions } from "./config";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
-const TICKET_MAX_PRICE = 500000;
+const TICKET_MAX_PRICE = 500001;
 
 function ensureBarfAccess() {
   if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
@@ -97,7 +97,8 @@ function ensureBarfAccess() {
 export function canContinue(): boolean {
   return (
     myAdventures() > globalOptions.saveTurns &&
-    (globalOptions.stopTurncount === null || myTurncount() < globalOptions.stopTurncount)
+    (globalOptions.stopTurncount === null ||
+      myTurncount() < globalOptions.stopTurncount)
   );
 }
 
@@ -108,7 +109,9 @@ export function main(argString = ""): void {
   // Hit up main.php to get out of easily escapable choices
   visitUrl("main.php");
   if (currentRound() > 0) {
-    abort("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
+    abort(
+      "It seems like you're a bit busy right now. Don't run garbo when you're in combat!"
+    );
   }
   if (handlingChoice()) {
     abort(
@@ -194,7 +197,10 @@ export function main(argString = ""): void {
     }
   }
   if (globalOptions.returnstash) {
-    set("garboStashItems", stashItems.map((item) => toInt(item).toFixed(0)).join(","));
+    set(
+      "garboStashItems",
+      stashItems.map((item) => toInt(item).toFixed(0)).join(",")
+    );
     return;
   }
 
@@ -203,19 +209,29 @@ export function main(argString = ""): void {
       myClass()
     )
   ) {
-    throw new Error("Garbo does not support this class. It barely supports WOL/SOL avatar classes");
+    throw new Error(
+      "Garbo does not support this class. It barely supports WOL/SOL avatar classes"
+    );
   }
 
-  if (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75)) {
+  if (
+    !get("kingLiberated") ||
+    myLevel() < 13 ||
+    Stat.all().some((s) => myBasestat(s) < 75)
+  ) {
     if (globalOptions.prefs.skipAscensionCheck) {
-      logprint("This player is a silly goose, who ignored our warnings about being underleveled.");
+      logprint(
+        "This player is a silly goose, who ignored our warnings about being underleveled."
+      );
     } else {
       const proceedRegardless = userConfirmDialog(
         "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
         true
       );
       if (!proceedRegardless) {
-        throw new Error("User interrupt requested. Stopping Garbage Collector.");
+        throw new Error(
+          "User interrupt requested. Stopping Garbage Collector."
+        );
       } else {
         logprint(
           "This player is a silly goose, who ignored our warnings about being underleveled."
@@ -224,16 +240,23 @@ export function main(argString = ""): void {
     }
   }
 
-  if (globalOptions.prefs.valueOfAdventure && globalOptions.prefs.valueOfAdventure <= 3500) {
+  if (
+    globalOptions.prefs.valueOfAdventure &&
+    globalOptions.prefs.valueOfAdventure <= 3500
+  ) {
     throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
   }
-  if (globalOptions.prefs.valueOfAdventure && globalOptions.prefs.valueOfAdventure >= 10000) {
+  if (
+    globalOptions.prefs.valueOfAdventure &&
+    globalOptions.prefs.valueOfAdventure >= 10000
+  ) {
     throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is definitely incorrect. Please set it to your reliable marginal turn value.`;
   }
 
   if (
     myInebriety() > inebrietyLimit() &&
-    (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
+    (!have($item`Drunkula's wineglass`) ||
+      !canEquip($item`Drunkula's wineglass`))
   ) {
     throw new Error(
       "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it."
@@ -276,10 +299,12 @@ export function main(argString = ""): void {
   );
   if (
     startingGarden &&
-    !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) &&
+    !$items`packet of tall grass seeds, packet of mushroom spores`.includes(
+      startingGarden
+    ) &&
     getCampground()[startingGarden.name] &&
-    $items`packet of tall grass seeds, packet of mushroom spores`.some((gardenSeed) =>
-      have(gardenSeed)
+    $items`packet of tall grass seeds, packet of mushroom spores`.some(
+      (gardenSeed) => have(gardenSeed)
     )
   ) {
     if (startingGarden === $item`packet of rock seeds`) {
@@ -302,7 +327,10 @@ export function main(argString = ""): void {
   try {
     print("Collecting garbage!", HIGHLIGHT);
     if (globalOptions.stopTurncount !== null) {
-      print(`Stopping in ${globalOptions.stopTurncount - myTurncount()}`, HIGHLIGHT);
+      print(
+        `Stopping in ${globalOptions.stopTurncount - myTurncount()}`,
+        HIGHLIGHT
+      );
     }
     print();
 
@@ -315,7 +343,10 @@ export function main(argString = ""): void {
     }
 
     setAutoAttack(0);
-    visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`, true);
+    visitUrl(
+      `account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`,
+      true
+    );
 
     const maximizerCombinationLimit = globalOptions.quick
       ? 100000
@@ -394,7 +425,10 @@ export function main(argString = ""): void {
         [
           [$items`bowl of eyeballs, bowl of mummy guts, bowl of maggots`, 1],
           [$items`blood and blood, Jack-O-Lantern beer, zombie`, 2],
-          [$items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`, 3],
+          [
+            $items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`,
+            3,
+          ],
         ] as [Item[], number][]
       ).map(([halloweinerOption, choiceId]) => {
         return {
@@ -415,7 +449,10 @@ export function main(argString = ""): void {
     if (JuneCleaver.have()) {
       propertyManager.setChoices(
         Object.fromEntries(
-          JuneCleaver.choices.map((choice) => [choice, bestJuneCleaverOption(choice)])
+          JuneCleaver.choices.map((choice) => [
+            choice,
+            bestJuneCleaverOption(choice),
+          ])
         )
       );
     }
@@ -462,14 +499,18 @@ export function main(argString = ""): void {
     withStash(stashItems, () => {
       withVIPClan(() => {
         // 0. diet stuff.
-        if (globalOptions.nodiet || get("_garboYachtzeeChainCompleted", false)) {
+        if (
+          globalOptions.nodiet ||
+          get("_garboYachtzeeChainCompleted", false)
+        ) {
           print("We should not be yachtzee chaining", "red");
           globalOptions.prefs.yachtzeechain = false;
         }
 
         if (
           !globalOptions.nodiet &&
-          (!globalOptions.prefs.yachtzeechain || get("_garboYachtzeeChainCompleted", false))
+          (!globalOptions.prefs.yachtzeechain ||
+            get("_garboYachtzeeChainCompleted", false))
         ) {
           runDiet();
         } else if (!globalOptions.simdiet) {
@@ -531,8 +572,14 @@ export function main(argString = ""): void {
     });
   } finally {
     propertyManager.resetAll();
-    set("garboStashItems", stashItems.map((item) => toInt(item).toFixed(0)).join(","));
-    visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
+    set(
+      "garboStashItems",
+      stashItems.map((item) => toInt(item).toFixed(0)).join(",")
+    );
+    visitUrl(
+      `account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`,
+      true
+    );
     if (startingGarden && have(startingGarden)) use(startingGarden);
     printEmbezzlerLog();
     endSession();
