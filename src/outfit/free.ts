@@ -23,11 +23,14 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
   outfit.familiar ??= freeFightFamiliar(options);
   const mode =
     outfit.familiar === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
-  outfit.modifier.push(
-    $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
-      ? "Familiar Experience"
-      : "Familiar Weight"
-  );
+
+  if (outfit.familiar !== $familiar`Patriotic Eagle`) {
+    outfit.modifier.push(
+      $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
+        ? "Familiar Experience"
+        : "Familiar Weight"
+    );
+  }
 
   const bjornChoice = chooseBjorn(mode, outfit.familiar);
 
