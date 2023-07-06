@@ -17,7 +17,7 @@
       "script": "lint",
       "problemMatcher": [],
       "label": "npm: lint",
-      "detail": "eslint src && prettier --check .",
+      "detail": "yarn run lint",
       "group": {
         "kind": "test",
         "isDefault": true
