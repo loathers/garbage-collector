@@ -532,7 +532,7 @@ export const DailyTasks: Task[] = [
   {
     name: "Holiday Eldritch Attunement",
     ready: () =>
-      holiday() === "Generic Summer Holiday" &&
+      holiday().includes("Generic Summer Holiday") &&
       !have($effect`Eldritch Attunement`) &&
       estimatedTentacles() * globalOptions.prefs.valueOfFreeFight > get("valueOfAdventure"),
     completed: () => have($effect`Eldritch Attunement`),
