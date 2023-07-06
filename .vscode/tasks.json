@@ -10,7 +10,7 @@
       },
       "problemMatcher": [],
       "label": "npm: build",
-      "detail": "yarn run build:types && yarn run build:js"
+      "detail": "yarn run build"
     },
     {
       "type": "npm",
