@@ -151,7 +151,6 @@ export const DailyItemTasks: Task[] = [
     },
     {
       name: "2002 Mr. Store",
-      // eslint-disable-next-line libram/verify-constants
       ready: () => have($item`2002 Mr. Store Catalog`),
       completed: () =>
         get("availableMrStore2002Credits", 0) === 0 && get("_2002MrStoreCreditsCollected", true),
