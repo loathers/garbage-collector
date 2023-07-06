@@ -24,6 +24,7 @@ export function embezzlerOutfit(spec: OutfitSpec = {}, target = $location.none):
   );
 
   outfit.modifier.push(`${valueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`, "-tie");
+  outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
   outfit.familiar ??= meatFamiliar();
 
   const bjornChoice = chooseBjorn(BonusEquipMode.EMBEZZLER, outfit.familiar);
