@@ -54,8 +54,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ env.node-version }}
-      - env:
-        MESSAGE: ${{github.event.commits[0].message}}
       - run: |
           git config user.name "O.A.F."
           git config user.email "<>"
@@ -75,7 +73,9 @@ jobs:
           mv mafiafiles/data ./data
           mv mafiafiles/dependencies.txt dependencies.txt
           mv mafiafiles/images ./images
-      - run: |
+      - env:
+          MESSAGE: ${{github.event.commits[0].message}}
+        run: |
           git add scripts/
           git add data/
           git add relay/
