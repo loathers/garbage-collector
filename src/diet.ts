@@ -660,6 +660,7 @@ export function potionMenu(
     ...potion($item`Feliz Navidad`),
     ...potion($item`broberry brogurt`),
     ...potion($item`haunted martini`),
+    ...potion($item`bottle of Greedy Dog`),
     ...potion($item`twice-haunted screwdriver`, { price: twiceHauntedPrice }),
     ...limitedPotion($item`high-end ginger wine`, availableAmount($item`high-end ginger wine`)),
     ...limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, { price: 5000 }),
