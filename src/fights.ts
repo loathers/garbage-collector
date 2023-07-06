@@ -1455,6 +1455,31 @@ const freeFightSources = [
   ),
 ];
 
+const priorityFreeRunFightSources = [
+  new FreeRunFight(
+    () =>
+      have($familiar`Patriotic Eagle`) &&
+      !have($effect`Citizen of a Zone`) &&
+      $locations`Barf Mountain, The Fun-Guy Mansion`.some((l) => canAdventure(l)),
+    (runSource: ActionSource) => {
+      const location = canAdventure($location`Barf Mountain`)
+        ? $location`Barf Mountain`
+        : $location`The Fun-Guy Mansion`;
+      garboAdventure(
+        location,
+        Macro.skill($skill`%fn, let's pledge allegiance to a Zone`).step(runSource.macro)
+      );
+    },
+    {
+      spec: {
+        familiar: $familiar`Patriotic Eagle`,
+        famequip: $items`little bitty bathysphere, das boot`,
+        modifier: ["ml 100 max", "-familiar weight"],
+      },
+    }
+  ),
+];
+
 const freeRunFightSources = [
   // Unlock Latte ingredients
   new FreeRunFight(
@@ -1505,28 +1530,6 @@ const freeRunFightSources = [
       spec: { equip: $items`latte lovers member's mug` },
     },
     latteActionSourceFinderConstraints
-  ),
-  new FreeRunFight(
-    () =>
-      (!globalOptions.nobarf || globalOptions.prefs.yachtzeechain) &&
-      have($familiar`Patriotic Eagle`) &&
-      !have($effect`Citizen of a Zone`),
-    (runSource: ActionSource) => {
-      const location = globalOptions.prefs.yachtzeechain
-        ? $location`The Fun-Guy Mansion`
-        : $location`Barf Mountain`;
-      garboAdventure(
-        location,
-        Macro.skill($skill`%fn, let's pledge allegiance to a Zone`).step(runSource.macro)
-      );
-    },
-    {
-      spec: {
-        familiar: $familiar`Patriotic Eagle`,
-        famequip: $item`little bitty bathysphere`,
-        modifier: ["ml 100 max", "-familiar weight"],
-      },
-    }
   ),
   new FreeRunFight(
     () =>
@@ -2040,7 +2043,6 @@ const freeKillSources = [
 
 export function freeRunFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
-  if (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted", false)) return;
   if (
     get("beGregariousFightsLeft") > 0 &&
     get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
@@ -2053,13 +2055,21 @@ export function freeRunFights(): void {
     1324: 5, // Fight a random partier
   });
 
+  const onlyPriorityRuns =
+    globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted", false);
+
   const stashRun = stashAmount($item`navel ring of navel gazing`)
     ? $items`navel ring of navel gazing`
     : stashAmount($item`Greatest American Pants`)
     ? $items`Greatest American Pants`
     : [];
   refreshStash();
+
   withStash(stashRun, () => {
+    for (const priorityRunFight of priorityFreeRunFightSources) {
+      priorityRunFight.runAll();
+    }
+    if (onlyPriorityRuns) return;
     for (const freeRunFightSource of freeRunFightSources) {
       freeRunFightSource.runAll();
     }
