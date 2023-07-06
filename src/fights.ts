@@ -859,6 +859,7 @@ const freeFightSources = [
     () =>
       withMacro(
         Macro.trySkill($skill`Curse of Marinara`)
+          .trySkill($skill`Shell Up`)
           .trySkill($skill`Shadow Noodles`)
           .trySkill($skill`Entangling Noodles`)
           .trySkill($skill`Summon Love Gnats`)
