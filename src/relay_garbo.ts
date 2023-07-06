@@ -1,25 +1,6 @@
 import { fileToBuffer, formField, formFields, writeln } from "kolmafia";
 import { get, set } from "libram";
 
-const charMap: Map<string, string> = new Map([
-  ["<", "\\u003C"],
-  [">", "\\u003E"],
-  ["/", "\\u002F"],
-  ["\\", "\\\\"],
-  ["\b", "\\b"],
-  ["\f", "\\f"],
-  ["\n", "\\n"],
-  ["\r", "\\r"],
-  ["\t", "\\t"],
-  ["\0", "\\0"],
-  ["\u2028", "\\u2028"],
-  ["\u2029", "\\u2029"],
-]);
-
-function escapeUnsafeChars(str: string) {
-  return str.replace(/[<>\b\f\n\r\t\0\u2028\u2029]/g, (x) => charMap.get(x) ?? "");
-}
-
 export function main(): void {
   const updatedSettings: Array<{ name: string; value: string }> = [];
   // handle updating values
@@ -53,12 +34,10 @@ export function main(): void {
 
   // add script that react calls when loaded to get kol data
   writeln(
-    `let getData = function(callback) {callback(${escapeUnsafeChars(
-      JSON.stringify({
-        settings: settings,
-        updatedSettings: updatedSettings,
-      })
-    )})}`
+    `let getData = function(callback) {callback(${JSON.stringify({
+      settings: settings,
+      updatedSettings: updatedSettings,
+    })})}`
   );
 
   // close notifications when they are clicked on
