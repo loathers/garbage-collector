@@ -721,6 +721,13 @@ function relay_garbo_arrayLikeToArray(arr, len) {
 }
 
 
+var charMap = new Map([["<", "\\u003C"], [">", "\\u003E"], ["/", "\\u002F"], ["\\", "\\\\"], ["\b", "\\b"], ["\f", "\\f"], ["\n", "\\n"], ["\r", "\\r"], ["\t", "\\t"], ["\0", "\\0"], ["\u2028", "\\u2028"], ["\u2029", "\\u2029"]]);
+function escapeUnsafeChars(str) {
+  return str.replace(/[<>\b\f\n\r\t\0\u2028\u2029]/g, x => {
+    var _charMap$get;
+    return (_charMap$get = charMap.get(x)) !== null && _charMap$get !== void 0 ? _charMap$get : "";
+  });
+}
 function main() {
   var updatedSettings = [];
   // handle updating values
@@ -758,10 +765,10 @@ function main() {
   (0,external_kolmafia_namespaceObject.writeln)("<script>");
 
   // add script that react calls when loaded to get kol data
-  (0,external_kolmafia_namespaceObject.writeln)("let getData = function(callback) {callback(".concat(JSON.stringify({
+  (0,external_kolmafia_namespaceObject.writeln)("let getData = function(callback) {callback(".concat(escapeUnsafeChars(JSON.stringify({
     settings: settings,
     updatedSettings: updatedSettings
-  }), ")}"));
+  })), ")}"));
 
   // close notifications when they are clicked on
   (0,external_kolmafia_namespaceObject.writeln)("document.onclick = (e) => {\n    if(e.target.classList.contains('notification')) e.target.remove();\n  }");
