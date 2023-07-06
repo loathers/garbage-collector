@@ -1474,7 +1474,7 @@ const priorityFreeRunFightSources = [
       spec: {
         familiar: $familiar`Patriotic Eagle`,
         famequip: $items`little bitty bathysphere, das boot`,
-        modifier: ["ml 100 max", "-familiar weight"],
+        modifier: ["ML 100 Max", "-Familiar Weight"],
       },
     }
   ),
