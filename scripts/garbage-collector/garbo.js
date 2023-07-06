@@ -23782,8 +23782,9 @@ function killRobortCreaturesForFree() {
 var fights_isFree = monster => monster.attributes.includes("FREE");
 var valueDrops = monster => utils_sum((0,external_kolmafia_namespaceObject.itemDropsArray)(monster), _ref8 => {
   var drop = _ref8.drop,
-    rate = _ref8.rate;
-  return garboValue(drop, true) * rate / 100;
+    rate = _ref8.rate,
+    type = _ref8.type;
+  return !["c", "0", "p"].includes(type) ? garboValue(drop, true) * rate / 100 : 0;
 });
 var locketMonster = () => findMonster(fights_isFree, valueDrops);
 function estimatedFreeFights() {
