@@ -24,7 +24,9 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
   const mode =
     outfit.familiar === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   outfit.modifier.push(
-    $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
+    outfit.familiar === $familiar`Patriotic Eagle`
+      ? ""
+      : $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
       ? "Familiar Experience"
       : "Familiar Weight"
   );
