@@ -25711,7 +25711,7 @@ function main() {
         var clanIdOrName = config_globalOptions.prefs.stashClan;
         var parsedClanIdOrName = clanIdOrName !== "none" ? clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName : null;
         if (parsedClanIdOrName) {
-          Clan["with"](parsedClanIdOrName, () => {
+          Clan.with(parsedClanIdOrName, () => {
             for (var _i = 0, _arr = src_toConsumableArray(stashItems); _i < _arr.length; _i++) {
               var item = _arr[_i];
               if (getFoldGroup(item).some(item => lib_have(item))) {
