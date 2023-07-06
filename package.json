@@ -20,7 +20,8 @@
     "kolmafia": "^5.27339.0",
     "libram": "^0.8.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.8",
