@@ -857,7 +857,7 @@ const freeFightSources = [
           retrieveItem($item`[glitch season reward name]`);
           if (
             get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
-            2000
+            400
           ) {
             retrieveItem($item`gas can`, 2);
           }
