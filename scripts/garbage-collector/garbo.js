@@ -26021,7 +26021,7 @@ function main() {
     endSession();
     printLog(HIGHLIGHT);
   }
-  _set(completedProperty, "garbo ".concat(argString));
+  _set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
 }
 
 /***/ })
