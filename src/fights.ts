@@ -1475,6 +1475,7 @@ const priorityFreeRunFightSources = [
         familiar: $familiar`Patriotic Eagle`,
         famequip: $items`little bitty bathysphere, das boot`,
         modifier: ["ML 100 Max", "-Familiar Weight"],
+        avoid: $items`Drunkula's wineglass`,
       },
     }
   ),
