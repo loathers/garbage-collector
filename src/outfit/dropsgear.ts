@@ -177,7 +177,7 @@ function cinchoDeMayo(mode: BonusEquipMode) {
     // Require manuel to make sure we don't kill during stasis
     !monsterManuelAvailable() ||
     // Require that we've either finished yachtzee, or aren't doing it in the first place, cinch better used there
-    (!get("_garboYachtzeeChainCompleted") && globalOptions.prefs.yachtzeechain === true) ||
+    (!get("_garboYachtzeeChainCompleted") && globalOptions.prefs.yachtzeechain) ||
     // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
     maxPassiveDamage() >= 50
   ) {
