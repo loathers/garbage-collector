@@ -177,11 +177,13 @@ function refillCinch() {
   if (!CinchoDeMayo.have()) return;
 
   if (get("_garboYachtzeeChainCompleted") || !globalOptions.prefs.yachtzeechain) {
-    const missingCinch = 100 - CinchoDeMayo.currentCinch();
+    const missingCinch = () => {
+      return 100 - CinchoDeMayo.currentCinch();
+    };
     // Only rest if we'll get full value out of the cinch
     // If our current cinch is less than the total available, it means we have free rests left.
     while (
-      missingCinch > CinchoDeMayo.cinchRestoredBy() &&
+      missingCinch() > CinchoDeMayo.cinchRestoredBy() &&
       CinchoDeMayo.currentCinch() < CinchoDeMayo.totalAvailableCinch()
     ) {
       if (!freeRest()) break;
