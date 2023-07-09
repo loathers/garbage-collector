@@ -176,7 +176,7 @@ function funguySpores() {
 function refillCinch() {
   if (!CinchoDeMayo.have()) return;
 
-  if (get("_garboYachtzeeChainCompleted") || globalOptions.prefs.yachtzeechain === false) {
+  if (get("_garboYachtzeeChainCompleted") || !globalOptions.prefs.yachtzeechain) {
     const restorableCinch = 100 - CinchoDeMayo.currentCinch();
     // Only rest if we'll get full value out of the cinch
     // If our current cinch is less than the total available, it means we have free rests left.
