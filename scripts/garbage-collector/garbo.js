@@ -18657,7 +18657,7 @@ function nonOrganAdventures() {
     acquire(casts, template_string_$item(src_diet_templateObject40 || (src_diet_templateObject40 = src_diet_taggedTemplateLiteral(["blue mana"]))), 3 * MPA);
     (0,external_kolmafia_namespaceObject.useSkill)(casts, template_string_$skill(src_diet_templateObject41 || (src_diet_templateObject41 = src_diet_taggedTemplateLiteral(["Ancestral Recall"]))));
   }
-  if (config_globalOptions.ascend) useIfUnused(template_string_$item(src_diet_templateObject42 || (src_diet_templateObject42 = src_diet_taggedTemplateLiteral(["borrowed time"]))), "_borrowedTimeUsed", 5 * MPA);
+  if (config_globalOptions.ascend) useIfUnused(template_string_$item(src_diet_templateObject42 || (src_diet_templateObject42 = src_diet_taggedTemplateLiteral(["borrowed time"]))), "_borrowedTimeUsed", 20 * MPA);
 }
 function pillCheck() {
   if (!property_get("_distentionPillUsed")) {
