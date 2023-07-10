@@ -41,7 +41,7 @@
     "@typescript-eslint/parser": "^4.28.3",
     "babel-loader": "^9.1.2",
     "copyfiles": "^2.4.1",
-    "css-loader": "^6.2.0",
+    "css-loader": "^6.8.1",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-libram": "^0.2.32",
