@@ -1,6 +1,6 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
-import { $item, $items, get } from "libram";
+import { $familiar, $item, $items, get } from "libram";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -129,6 +129,10 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       stringToWorkshedItem,
       "Item"
     ),
+    sweatyFam: Args.familiar({
+      default: $familiar`Blood-Faced Volleyball`,
+      help: "The bill to make sweaty. And by 'bill' I mean 'familiar.'"
+    }),
     prefs: Args.group(
       "You can manually set the properties below, but it's recommended that you use the relay interface (dropdown menu at the top left in the browser)",
       {

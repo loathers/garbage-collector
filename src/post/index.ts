@@ -4,6 +4,7 @@ import {
   itemAmount,
   mallPrice,
   myAdventures,
+  myFamiliar,
   myLevel,
   myLocation,
   putCloset,
@@ -13,7 +14,6 @@ import {
 } from "kolmafia";
 import {
   $effect,
-  $familiar,
   $item,
   $items,
   $location,
@@ -137,8 +137,10 @@ function juneCleave(): void {
 
 function stillsuit() {
   if (itemAmount($item`tiny stillsuit`)) {
-    const familiarTarget = $familiar`Blood-Faced Volleyball`;
-    if (have(familiarTarget)) equip(familiarTarget, $item`tiny stillsuit`);
+    const familiarTarget = globalOptions.sweatyFam;
+    if (have(familiarTarget) && myFamiliar() !== familiarTarget) {
+      equip(familiarTarget, $item`tiny stillsuit`);
+    }
   }
 }
 
