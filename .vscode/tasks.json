@@ -10,14 +10,14 @@
       },
       "problemMatcher": [],
       "label": "npm: build",
-      "detail": "yarn run build:types && yarn run build:js"
+      "detail": "yarn run build"
     },
     {
       "type": "npm",
       "script": "lint",
       "problemMatcher": [],
       "label": "npm: lint",
-      "detail": "eslint src && prettier --check .",
+      "detail": "yarn run lint",
       "group": {
         "kind": "test",
         "isDefault": true
