@@ -32482,6 +32482,9 @@ function useSpikolodonSpikes() {
   var targetZone = canJelly ? $location(_templateObject1347 || (_templateObject1347 = _taggedTemplateLiteral79(["Pirates of the Garbage Barges"]))) : $location(_templateObject1440 || (_templateObject1440 = _taggedTemplateLiteral79(["Sloppy Seconds Diner"])));
   var macro = Macro2.familiarActions().skill($skill(_templateObject1537 || (_templateObject1537 = _taggedTemplateLiteral79(["Launch spikolodon spikes"])))).step(run.macro);
   var startingSpikes = get("_spikolodonSpikeUses");
+  var ncSkipper = unsupportedChoices.get(targetZone);
+  if (ncSkipper)
+    propertyManager.setChoices(ncSkipper);
   do {
     garboAdventureAuto(targetZone, macro);
   } while (get("_spikolodonSpikeUses") === startingSpikes);
