@@ -3,7 +3,7 @@ import { create, handlingChoice, runChoice, toInt, useSkill } from "kolmafia";
 import { $familiar, $item, $items, $skill, get, have, maxBy } from "libram";
 import { globalOptions } from "../config";
 import { freeCrafts } from "../lib";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 
 function bestLockPickChoice(): number {
   return (

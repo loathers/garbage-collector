@@ -60,7 +60,7 @@ import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;

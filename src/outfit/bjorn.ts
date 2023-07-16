@@ -6,7 +6,7 @@ import {
   sum,
   sumNumbers,
 } from "libram";
-import { garboAverageValue, garboValue } from "../session";
+import { garboAverageValue, garboValue } from "../value";
 import { BonusEquipMode, useLimitedDrops, valueOfItem, valueOfMeat } from "./lib";
 
 function valueBjornModifiers(

@@ -1,3 +1,4 @@
+import { Args } from "grimoire-kolmafia";
 import {
   abort,
   availableAmount,
@@ -51,6 +52,10 @@ import {
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
 } from "libram";
+import barfTurn from "./barfTurn";
+import { stashItems, withStash, withVIPClan } from "./clan";
+import { globalOptions } from "./config";
+import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
@@ -65,15 +70,11 @@ import {
 } from "./lib";
 import { meatMood, useBuffExtenders } from "./mood";
 import postCombatActions from "./post";
-import { stashItems, withStash, withVIPClan } from "./clan";
-import { dailySetup } from "./dailies";
 import { potionSetup } from "./potions";
-import { endSession, garboAverageValue, startSession } from "./session";
-import { yachtzeeChain } from "./yachtzee";
-import barfTurn from "./barfTurn";
+import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
-import { Args } from "grimoire-kolmafia";
-import { globalOptions } from "./config";
+import { garboAverageValue } from "./value";
+import { yachtzeeChain } from "./yachtzee";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;

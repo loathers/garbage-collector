@@ -2,7 +2,7 @@ import { buy, craftType, Location, mallPrice, print, retrieveItem } from "kolmaf
 import { $item, get, Guzzlr, have } from "libram";
 import { globalOptions } from "../config";
 import { freeCrafts } from "../lib";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import {
   canAdventureOrUnlock,
   DraggableFight,

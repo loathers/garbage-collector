@@ -25,7 +25,7 @@ import {
 } from "libram";
 import { globalOptions } from "../config";
 import { HIGHLIGHT, logMessage, realmAvailable } from "../lib";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 

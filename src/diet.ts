@@ -81,9 +81,9 @@ import {
 } from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
-import { garboValue } from "./session";
 import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
+import { garboValue } from "./value";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);

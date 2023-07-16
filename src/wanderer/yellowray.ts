@@ -1,7 +1,7 @@
 import { appearanceRates, getMonsters, itemDropsArray, Location } from "kolmafia";
 import { maxBy, SourceTerminal, sum } from "libram";
 import { freeFightFamiliarData } from "../familiar/freeFightFamiliar";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import {
   canAdventureOrUnlock,
   canWander,

@@ -81,9 +81,9 @@ import {
   sum,
   uneffect,
 } from "libram";
-import { globalOptions } from "./config";
-import { garboValue } from "./session";
 import { acquire } from "./acquire";
+import { globalOptions } from "./config";
+import { garboValue } from "./value";
 
 export const embezzlerLog: {
   initialEmbezzlersFought: number;
@@ -515,7 +515,7 @@ export function valueJuneCleaverOption(result: Item | number): number {
   return result instanceof Item ? garboValue(result) : result;
 }
 
-export function bestJuneCleaverOption(id: (typeof JuneCleaver.choices)[number]): 1 | 2 | 3 {
+export function bestJuneCleaverOption(id: typeof JuneCleaver.choices[number]): 1 | 2 | 3 {
   const options = [1, 2, 3] as const;
   return maxBy(options, (option) => valueJuneCleaverOption(juneCleaverChoiceValues[id][option]));
 }
