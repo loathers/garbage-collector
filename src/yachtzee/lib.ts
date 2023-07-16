@@ -15,14 +15,13 @@ import {
   set,
   sum,
   tryFindFreeRun,
-  withChoices,
 } from "libram";
 import { withStash } from "../clan";
 import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
-import { ltbRun, realmAvailable } from "../lib";
+import { ltbRun, propertyManager, realmAvailable } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
 import { unsupportedChoices } from "../wanderer/lib";
@@ -106,13 +105,12 @@ export function useSpikolodonSpikes(): void {
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
 
-  const ncSkipper = unsupportedChoices.get(targetZone) ?? {};
+  const ncSkipper = unsupportedChoices.get(targetZone);
+  if (ncSkipper) propertyManager.setChoices(ncSkipper);
 
-  withChoices(ncSkipper, () => {
-    do {
-      garboAdventureAuto(targetZone, macro);
-    } while (get("_spikolodonSpikeUses") === startingSpikes);
-  });
+  do {
+    garboAdventureAuto(targetZone, macro);
+  } while (get("_spikolodonSpikeUses") === startingSpikes);
 
   postCombatActions();
 }
