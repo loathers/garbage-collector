@@ -35,6 +35,7 @@ import {
   myLevel,
   myMaxhp,
   myPath,
+  mySoulsauce,
   myThrall,
   myTurncount,
   numericModifier,
@@ -707,6 +708,33 @@ function molemanReady() {
   return have($item`molehill mountain`) && !get("_molehillMountainUsed");
 }
 
+const stunDurations = new Map<Skill | Item, Delayed<number>>([
+  [$skill`Blood Bubble`, 1],
+  [
+    $skill`Entangling Noodles`,
+    () => (myClass() === $class`Pastamancer` && !have($skill`Shadow Noodles`) ? 1 : 0),
+  ],
+  [$skill`Frost Bite`, 1],
+  [$skill`Shadow Noodles`, 2],
+  [
+    $skill`Shell Up`,
+    () => {
+      if (myClass() !== $class`Turtle Tamer`) return 0;
+      for (const [effect, duration] of new Map([
+        [$effect`Glorious Blessing of the Storm Tortoise`, 4],
+        [$effect`Grand Blessing of the Storm Tortoise`, 3],
+        [$effect`Blessing of the Storm Tortoise`, 2],
+      ])) {
+        if (have(effect)) return duration;
+      }
+      return 0;
+    },
+  ],
+  [$skill`Soul Bubble`, () => (mySoulsauce() >= 5 ? 2 : 0)],
+  [$skill`Summon Love Gnats`, 1],
+  [$item`Rain-Doh blue balls`, 1],
+]);
+
 const freeFightSources = [
   new FreeFight(
     () =>
@@ -824,6 +852,43 @@ const freeFightSources = [
   new FreeFight(
     () =>
       have($item`[glitch season reward name]`) &&
+      have($item`unwrapped knock-off retro superhero cape`) &&
+      !get("_glitchMonsterFights") &&
+      get("garbo_fightGlitch", false) &&
+      sum([...stunDurations], ([thing, duration]) => (have(thing) ? undelay(duration) : 0)) >= 5,
+    () =>
+      withMacro(
+        Macro.trySkill($skill`Curse of Marinara`)
+          .trySkill($skill`Shell Up`)
+          .trySkill($skill`Shadow Noodles`)
+          .trySkill($skill`Entangling Noodles`)
+          .trySkill($skill`Summon Love Gnats`)
+          .trySkill($skill`Frost Bite`)
+          .trySkill($skill`Soul Bubble`)
+          .tryItem($item`Rain-Doh blue balls`)
+          .skill($skill`Blow a Robo-Kiss`)
+          .repeat(),
+        () => {
+          restoreHp(myMaxhp());
+          if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+          retrieveItem($item`[glitch season reward name]`);
+          visitUrl("inv_eat.php?pwd&whichitem=10207");
+          runCombat();
+        }
+      ),
+    true,
+    {
+      spec: {
+        back: $items`unwrapped knock-off retro superhero cape`,
+        modes: { retrocape: ["robot", "kiss"] },
+      },
+      macroAllowsFamiliarActions: false,
+    }
+  ),
+
+  new FreeFight(
+    () =>
+      have($item`[glitch season reward name]`) &&
       !get("_glitchMonsterFights") &&
       get("garbo_fightGlitch", false),
     () =>
@@ -833,7 +898,7 @@ const freeFightSources = [
           .trySkill($skill`Shadow Noodles`)
           .externalIf(
             get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
-              2000,
+              400,
             Macro.item([$item`gas can`, $item`gas can`])
           )
           .externalIf(
@@ -857,7 +922,7 @@ const freeFightSources = [
           retrieveItem($item`[glitch season reward name]`);
           if (
             get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
-            2000
+            400
           ) {
             retrieveItem($item`gas can`, 2);
           }
@@ -1475,6 +1540,7 @@ const priorityFreeRunFightSources = [
         familiar: $familiar`Patriotic Eagle`,
         famequip: $items`little bitty bathysphere, das boot`,
         modifier: ["ML 100 Max", "-Familiar Weight"],
+        avoid: $items`Drunkula's wineglass`,
       },
     }
   ),
@@ -2567,7 +2633,9 @@ function killRobortCreaturesForFree() {
 
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 const valueDrops = (monster: Monster) =>
-  sum(itemDropsArray(monster), ({ drop, rate }) => (garboValue(drop, true) * rate) / 100);
+  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
+    !["c", "0", "p"].includes(type) ? (garboValue(drop, true) * rate) / 100 : 0
+  );
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 
 export function estimatedFreeFights(): number {

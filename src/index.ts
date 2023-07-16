@@ -537,5 +537,5 @@ export function main(argString = ""): void {
     endSession();
     printLog(HIGHLIGHT);
   }
-  set(completedProperty, `garbo ${argString}`);
+  set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
 }
