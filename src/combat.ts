@@ -50,6 +50,7 @@ import {
   $skill,
   $slot,
   $thralls,
+  CinchoDeMayo,
   Counter,
   get,
   have,
@@ -386,6 +387,8 @@ export class Macro extends StrictMacro {
 
     const checkGet = (i: Item) => have(i) && (itemAmount(i) > 0 || retrieveItem(i));
     const stasisItem = $items`facsimile dictionary, dictionary, seal tooth`.find(checkGet);
+    const pinataCastsAvailable = Math.floor(CinchoDeMayo.currentCinch() / 5);
+    const canPinata = CinchoDeMayo.have() && pinataCastsAvailable > 0 && monsterManuelAvailable();
 
     // We retrieve a seal tooth at the start of the day, so this is just to make sure nothing has gone awry.
     if (!stasisItem) throw new Error("Acquire a seal tooth and run garbo again.");
@@ -401,6 +404,10 @@ export class Macro extends StrictMacro {
     // Same story but for the sixgun shot, which wants 40 more HP if possible
     const hpCheckSixgun = checkPassive
       ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage + 40}`
+      : "!hppercentbelow 25";
+    // Same story but for Cincho's projectile pinata, which wants 50 more HP if possible
+    const hpCheckCincho = checkPassive
+      ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage + 50}`
       : "!hppercentbelow 25";
 
     // Determine how long we'll be stasising for
@@ -461,6 +468,13 @@ export class Macro extends StrictMacro {
         .externalIf(
           haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10,
           Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`))
+        )
+        .externalIf(
+          haveEquipped($item`Cincho de Mayo`) && canPinata,
+          Macro.while_(
+            `${hpCheckCincho} && hasskill 7442`,
+            Macro.trySkill($skill`Cincho: Projectile Piñata`)
+          )
         )
         .externalIf(
           have($item`porquoise-handled sixgun`),
@@ -524,11 +538,20 @@ export class Macro extends StrictMacro {
 
   kill(): Macro {
     const riftId = toInt($location`Shadow Rift`);
+    const doingYachtzee = globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted");
+    const canPinata = haveEquipped($item`Cincho de Mayo`) && CinchoDeMayo.currentCinch() >= 5;
     return (
       this.externalIf(
         myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
         Macro.trySkill($skill`Curse of Weaksauce`)
       )
+        .externalIf(
+          !doingYachtzee && canPinata,
+          Macro.while_(
+            `hasskill 7442 && !pastround 24 && !hppercentbelow 25`,
+            Macro.trySkill($skill`Cincho: Projectile Piñata`)
+          )
+        )
         .tryHaveSkill($skill`Become a Wolf`)
         .externalIf(
           !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
