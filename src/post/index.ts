@@ -20,7 +20,6 @@ import {
   $skill,
   $slot,
   AutumnAton,
-  CinchoDeMayo,
   FloristFriar,
   get,
   getRemainingStomach,
@@ -36,7 +35,6 @@ import { globalOptions } from "../config";
 import { computeDiet, consumeDiet } from "../diet";
 import {
   bestJuneCleaverOption,
-  freeRest,
   juneCleaverChoiceValues,
   safeInterrupt,
   safeRestore,
@@ -173,24 +171,6 @@ function funguySpores() {
   }
 }
 
-function refillCinch() {
-  if (!CinchoDeMayo.have()) return;
-
-  if (get("_garboYachtzeeChainCompleted") || !globalOptions.prefs.yachtzeechain) {
-    const missingCinch = () => {
-      return 100 - CinchoDeMayo.currentCinch();
-    };
-    // Only rest if we'll get full value out of the cinch
-    // If our current cinch is less than the total available, it means we have free rests left.
-    while (
-      missingCinch() > CinchoDeMayo.cinchRestoredBy() &&
-      CinchoDeMayo.currentCinch() < CinchoDeMayo.totalAvailableCinch()
-    ) {
-      if (!freeRest()) break;
-    }
-  }
-}
-
 export default function postCombatActions(skipDiet = false): void {
   closetStuff();
   juneCleave();
@@ -202,7 +182,6 @@ export default function postCombatActions(skipDiet = false): void {
   floristFriars();
   handleWorkshed();
   safeInterrupt();
-  refillCinch();
   safeRestore();
   updateMallPrices();
   stillsuit();

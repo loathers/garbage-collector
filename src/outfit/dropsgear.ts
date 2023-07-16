@@ -22,7 +22,6 @@ import {
   $skill,
   $slot,
   $slots,
-  CinchoDeMayo,
   clamp,
   DaylightShavings,
   get,
@@ -46,8 +45,6 @@ import {
 import { garboAverageValue, garboValue } from "../session";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { BonusEquipMode, isFree, useLimitedDrops, valueOfMeat } from "./lib";
-import { maxPassiveDamage, monsterManuelAvailable } from "../combat";
-import { felizValue } from "../tasks/dailyFamiliars";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -168,26 +165,6 @@ function luckyGoldRing(mode: BonusEquipMode) {
   ]);
 }
 
-function cinchoDeMayo(mode: BonusEquipMode) {
-  if (
-    !have($item`Cincho de Mayo`) ||
-    CinchoDeMayo.currentCinch() === 0 ||
-    // Ignore for DMT? Requires specific combat stuff, so probably weird there
-    mode === BonusEquipMode.DMT ||
-    // Require manuel to make sure we don't kill during stasis
-    !monsterManuelAvailable() ||
-    // Require that we've either finished yachtzee, or aren't doing it in the first place, cinch better used there
-    (!get("_garboYachtzeeChainCompleted") && globalOptions.prefs.yachtzeechain) ||
-    // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
-    maxPassiveDamage() >= 50
-  ) {
-    return new Map<Item, number>([]);
-  }
-
-  // Account for a single use of Projectile Pinata, which gives 3x Robortender candies
-  return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
-}
-
 function mrCheengsSpectacles() {
   if (!have($item`Mr. Cheeng's spectacles`)) {
     return new Map<Item, number>([]);
@@ -276,7 +253,6 @@ function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
     ...luckyGoldRing(mode),
     ...mrCheengsSpectacles(),
     ...mrScreegesSpectacles(),
-    ...cinchoDeMayo(mode),
   ]);
 }
 export function magnifyingGlass(): Map<Item, number> {
