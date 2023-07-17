@@ -23,7 +23,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.14.8",
+    "@babel/cli": "^7.22.9",
     "@babel/compat-data": "^7.17.0",
     "@babel/core": "^7.17.0",
     "@babel/plugin-proposal-class-properties": "^7.14.5",
