@@ -30,6 +30,7 @@ import { baseMeat } from "../lib";
 import { familiarWaterBreathingEquipment, useUPCs, waterBreathingEquipment } from "../outfit";
 import { bestYachtzeeFamiliar } from "./familiar";
 import { expectedEmbezzlers, yachtzeeBuffValue } from "./lib";
+import { globalOptions } from "../config";
 
 export const maximizeMeat = (): boolean =>
   new Requirement(
@@ -67,7 +68,8 @@ export function prepareOutfitAndFamiliar(): void {
   useFamiliar(bestYachtzeeFamiliar());
   if (
     !get("_feastedFamiliars").includes(myFamiliar().toString()) &&
-    get("_feastedFamiliars").split(";").length < 5
+    get("_feastedFamiliars").split(";").length < 5 &&
+    globalOptions.prefs.stashClan !== "none"
   ) {
     withStash($items`moveable feast`, () => use($item`moveable feast`));
   }
