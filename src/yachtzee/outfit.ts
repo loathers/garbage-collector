@@ -69,8 +69,8 @@ export function prepareOutfitAndFamiliar(): void {
   if (
     !get("_feastedFamiliars").includes(myFamiliar().toString()) &&
     get("_feastedFamiliars").split(";").length < 5 &&
-    globalOptions.prefs.stashClan !== "none" &&
-    !have($item`moveable feast`)
+    (globalOptions.prefs.stashClan !== "none" ||
+    have($item`moveable feast`))
   ) {
     withStash($items`moveable feast`, () => use($item`moveable feast`));
   }
