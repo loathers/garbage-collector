@@ -29,7 +29,6 @@ import {
   withProperty,
 } from "libram";
 import { acquire } from "../acquire";
-import bestAutumnatonLocation from "./autumnaton";
 import { garboAdventure, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { computeDiet, consumeDiet } from "../diet";
@@ -42,8 +41,10 @@ import {
   valueJuneCleaverOption,
 } from "../lib";
 import { teleportEffects } from "../mood";
-import { garboAverageValue, garboValue, sessionSinceStart } from "../session";
+import { sessionSinceStart } from "../session";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
+import { garboAverageValue, garboValue } from "../value";
+import bestAutumnatonLocation from "./autumnaton";
 import handleWorkshed from "./workshed";
 
 function closetStuff(): void {

@@ -42,7 +42,7 @@ import {
   realmAvailable,
   valueJuneCleaverOption,
 } from "../lib";
-import { garboAverageValue, garboValue } from "../session";
+import { garboAverageValue, garboValue } from "../value";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { BonusEquipMode, isFree, useLimitedDrops, valueOfMeat } from "./lib";
 

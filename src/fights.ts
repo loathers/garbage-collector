@@ -1,3 +1,4 @@
+import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
   adv1,
   availableAmount,
@@ -114,6 +115,7 @@ import {
   Witchess,
   withChoice,
 } from "libram";
+import { MonsterProperty } from "libram/dist/propertyTypes";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import {
@@ -124,6 +126,21 @@ import {
   monsterManuelAvailable,
   withMacro,
 } from "./combat";
+import { globalOptions } from "./config";
+import { postFreeFightDailySetup } from "./dailies";
+import { bestConsumable } from "./diet";
+import {
+  embezzlerCount,
+  embezzlerMacro,
+  embezzlerSources,
+  getNextEmbezzlerFight,
+} from "./embezzler";
+import {
+  crateStrategy,
+  doingExtrovermectin,
+  initializeExtrovermectinZones,
+  saberCrateIfSafe,
+} from "./extrovermectin";
 import {
   bestFairy,
   freeFightFamiliar,
@@ -161,32 +178,15 @@ import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
 import {
   embezzlerOutfit,
   freeFightOutfit,
+  magnifyingGlass,
   toSpec,
   tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
-import { bathroomFinance, potionSetup } from "./potions";
-import {
-  embezzlerCount,
-  embezzlerMacro,
-  embezzlerSources,
-  getNextEmbezzlerFight,
-} from "./embezzler";
 import postCombatActions from "./post";
-import {
-  crateStrategy,
-  doingExtrovermectin,
-  initializeExtrovermectinZones,
-  saberCrateIfSafe,
-} from "./extrovermectin";
-import { magnifyingGlass } from "./outfit";
-import { garboValue } from "./session";
-import { bestConsumable } from "./diet";
+import { bathroomFinance, potionSetup } from "./potions";
+import { garboValue } from "./value";
 import { wanderWhere } from "./wanderer";
-import { globalOptions } from "./config";
-import { MonsterProperty } from "libram/dist/propertyTypes";
-import { postFreeFightDailySetup } from "./dailies";
-import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 
 const firstChainMacro = () =>
   Macro.if_(

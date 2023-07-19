@@ -35,7 +35,7 @@ import {
   Potion,
   variableMeatPotionsSetup,
 } from "../potions";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import { executeNextDietStep } from "./diet";
 import { expectedEmbezzlers, pyecAvailable, shrugIrrelevantSongs } from "./lib";
 

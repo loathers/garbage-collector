@@ -81,9 +81,9 @@ import {
   sum,
   uneffect,
 } from "libram";
-import { globalOptions } from "./config";
-import { garboValue } from "./session";
 import { acquire } from "./acquire";
+import { globalOptions } from "./config";
+import { garboValue } from "./value";
 
 export const embezzlerLog: {
   initialEmbezzlersFought: number;

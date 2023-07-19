@@ -40,7 +40,7 @@ import {
   turnsToNC,
   userConfirmDialog,
 } from "../lib";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import { estimatedGarboTurns } from "../turns";
 
 function newarkValue(): number {

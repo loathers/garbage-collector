@@ -17,7 +17,7 @@ import {
   takeStorage,
 } from "kolmafia";
 import { get, withProperty } from "libram";
-import { garboValue } from "./session";
+import { garboValue } from "./value";
 
 export const priceCaps: { [index: string]: number } = {
   "cuppa Voraci tea": 200000,
