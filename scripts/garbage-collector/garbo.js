@@ -24297,8 +24297,10 @@ function freeFightOutfit() {
   }
   var bjornChoice = chooseBjorn(mode, outfit3.familiar);
   if (get("_vampyreCloakeFormUses") < 10)
-    outfit3.equip($item(_templateObject471 || (_templateObject471 = _taggedTemplateLiteral47(["vampyric cloake"]))));
-  outfit3.bonuses = bonusGear(mode);
+    outfit3.setBonus($item(_templateObject471 || (_templateObject471 = _taggedTemplateLiteral47(["vampyric cloake"]))), 500);
+  bonusGear(mode).forEach(function(value, item9) {
+    return outfit3.addBonus(item9, value);
+  });
   if (outfit3.familiar !== $familiar(_templateObject558 || (_templateObject558 = _taggedTemplateLiteral47(["Grey Goose"]))))
     outfit3.setBonus($item(_templateObject647 || (_templateObject647 = _taggedTemplateLiteral47(["tiny stillsuit"]))), 500);
   var bjornalike = $items(_templateObject741 || (_templateObject741 = _taggedTemplateLiteral47(["Crown of Thrones, Buddy Bjorn"]))).find(function(item9) {
