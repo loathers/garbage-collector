@@ -5,29 +5,23 @@ import { HIGHLIGHT, safeInterrupt } from "../lib";
 /** A base engine for Garbo!
  * Runs extra logic before executing all tasks.
  */
-export class BaseGarboEngine extends Engine {
+export class BaseGarboEngine<T extends Task = Task> extends Engine<never, T> {
   // Check for interrupt before executing a task
-  execute(task: Task): void {
+  execute(task: T): void {
     safeInterrupt();
     super.execute(task);
   }
 }
 
+export type SafeGarboTask = Task & { tryLimit?: number };
+
 /**
  * A safe engine for Garbo!
  * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
  */
-export class SafeGarboEngine extends BaseGarboEngine {
-  // Garbo treats soft limits as completed, and continues on.
-  markAttempt(task: Task<never>): void {
-    super.markAttempt(task);
-
-    if (task.completed()) return;
-    const limit = task.limit?.soft || 1;
-    if (this.attempts[task.name] >= limit) {
-      task.completed = () => true;
-      print(`Task ${task.name} did not complete within ${limit} attempts. Skipping.`, HIGHLIGHT);
-    }
+export class SafeGarboEngine<T extends SafeGarboTask = SafeGarboTask> extends BaseGarboEngine<T> {
+  available(task: T): boolean {
+    return super.available(task) && !(task.tryLimit && this.attempts[task.name] >= task.tryLimit);
   }
 }
 
