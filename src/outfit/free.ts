@@ -35,13 +35,13 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
   const bjornChoice = chooseBjorn(mode, outfit.familiar);
 
   if (get("_vampyreCloakeFormUses") < 10) outfit.setBonus($item`vampyric cloake`, 500);
-  outfit.addBonuses(bonusGear(mode));
+  bonusGear(mode).forEach((value, item) => outfit.addBonus(item, value));
 
   if (outfit.familiar !== $familiar`Grey Goose`) outfit.setBonus($item`tiny stillsuit`, 500);
 
   const bjornalike = $items`Crown of Thrones, Buddy Bjorn`.find((item) => outfit.canEquip(item));
   if (bjornalike) {
-    outfit.addBonus(bjornalike, bjornChoice.value);
+    outfit.setBonus(bjornalike, bjornChoice.value);
     const other = $items`Buddy Bjorn, Crown of Thrones`.filter((i) => i !== bjornalike)[0];
     outfit.avoid.push(other);
 
