@@ -1,15 +1,19 @@
-import { Engine, Task } from "grimoire-kolmafia";
+import { Engine, StrictCombatTask } from "grimoire-kolmafia";
 import { print } from "kolmafia";
 import { HIGHLIGHT, safeInterrupt } from "../lib";
+import wanderer from "../wanderer";
+
+export type GarboTask = StrictCombatTask & { sobriety?: "drunk" | "sober" };
 
 /** A base engine for Garbo!
  * Runs extra logic before executing all tasks.
  */
-export class BaseGarboEngine extends Engine {
+export class BaseGarboEngine extends Engine<never, GarboTask> {
   // Check for interrupt before executing a task
-  execute(task: Task): void {
+  execute(task: GarboTask): void {
     safeInterrupt();
     super.execute(task);
+    wanderer.clear();
   }
 }
 
@@ -19,7 +23,7 @@ export class BaseGarboEngine extends Engine {
  */
 export class SafeGarboEngine extends BaseGarboEngine {
   // Garbo treats soft limits as completed, and continues on.
-  markAttempt(task: Task<never>): void {
+  markAttempt(task: GarboTask): void {
     super.markAttempt(task);
 
     if (task.completed()) return;
@@ -31,7 +35,7 @@ export class SafeGarboEngine extends BaseGarboEngine {
   }
 }
 
-export function runSafeGarboTasks(tasks: Task[]): void {
+export function runSafeGarboTasks(tasks: GarboTask[]): void {
   const engine = new SafeGarboEngine(tasks);
 
   try {
@@ -41,7 +45,7 @@ export function runSafeGarboTasks(tasks: Task[]): void {
   }
 }
 
-export function runGarboTasks(tasks: Task[]): void {
+export function runGarboTasks(tasks: GarboTask[]): void {
   const engine = new BaseGarboEngine(tasks);
 
   try {
