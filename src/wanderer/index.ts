@@ -1,4 +1,4 @@
-import { inebrietyLimit, Location, myInebriety, print } from "kolmafia";
+import { Location, print } from "kolmafia";
 import { $location, get, maxBy } from "libram";
 import { HIGHLIGHT, sober } from "../lib";
 import { guzzlrFactory } from "./guzzlr";
@@ -23,7 +23,7 @@ const wanderFactories: WandererFactory[] = [
   guzzlrFactory,
 ];
 
-export function bestWander(
+function bestWander(
   type: DraggableFight,
   locationSkiplist: Location[],
   nameSkiplist: string[]
@@ -64,7 +64,7 @@ export function bestWander(
  * @param locationSkiplist Any locations that should be skipped because they could not be unlocked
  * @returns A location at which to wander
  */
-export function wanderWhere(
+function wanderWhere(
   type: DraggableFight,
   nameSkiplist: string[] = [],
   locationSkiplist: Location[] = []
@@ -92,10 +92,6 @@ export function wanderWhere(
 
     return candidate.location;
   }
-}
-
-export function drunkSafeWander(type: DraggableFight): Location {
-  return sober() ? wanderWhere(type) : $location`Drunken Stupor`;
 }
 
 class WandererManager {
@@ -164,10 +160,9 @@ class WandererManager {
   targets: Partial<{ [x in DraggableFight]: Location }> = {};
 
   getTarget(draggableFight: DraggableFight, drunkSafe?: boolean): Location {
-    return drunkSafe && myInebriety() > inebrietyLimit()
-      ? $location`Drunken Stupor`
-      : this.targets[draggableFight] ??
-          (this.targets[draggableFight] = wanderWhere(draggableFight));
+    return sober() || !drunkSafe
+      ? (this.targets[draggableFight] ??= wanderWhere(draggableFight))
+      : $location`Drunken Stupor`;
   }
 
   getChoices(
