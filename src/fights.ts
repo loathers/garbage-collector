@@ -1957,9 +1957,7 @@ function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   const copy = { ...spec, equip: [...(spec.equip ?? [])] };
   const haveChampagne = have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0;
   // Effective drop rate of spice melange is 0.1, each 1% item drop increases the chance by 0.1/10000
-  // This bonus is multiplied by 2 because we always have squint. Further multiplied if we have champagne.
-  const itemDropBonus =
-    (0.1 / 10000) * garboValue($item`spice melange`) * 2 * (haveChampagne ? 2 : 1);
+  const itemDropBonus = (0.1 / 10000) * garboValue($item`spice melange`);
   copy.modifier = [`${itemDropBonus} Item Drop 10000 max`];
   if (haveChampagne) {
     copy.equip?.push($item`broken champagne bottle`);
