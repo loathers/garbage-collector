@@ -1,4 +1,4 @@
-import { Location, print } from "kolmafia";
+import { Location, print, totalTurnsPlayed } from "kolmafia";
 import { $location, get, maxBy } from "libram";
 import { HIGHLIGHT, sober } from "../lib";
 import { guzzlrFactory } from "./guzzlr";
@@ -157,9 +157,15 @@ class WandererManager {
     [$location`The Penultimate Fantasy Airship`, { 178: 2, 182: 1 }], // Skip, and Fight random enemy
     [$location`The Haiku Dungeon`, { 297: 3 }], // skip
   ]);
+
+  cacheKey = "";
   targets: Partial<{ [x in DraggableFight]: Location }> = {};
 
   getTarget(draggableFight: DraggableFight, drunkSafe?: boolean): Location {
+    const newKey = `${totalTurnsPlayed()};${get("familiarSweat")}`;
+    if (this.cacheKey !== newKey) this.clear();
+    this.cacheKey = newKey;
+
     return sober() || !drunkSafe
       ? (this.targets[draggableFight] ??= wanderWhere(draggableFight))
       : $location`Drunken Stupor`;
@@ -177,4 +183,6 @@ class WandererManager {
   }
 }
 
-export const wandererManager = new WandererManager();
+const wandererManager = new WandererManager();
+
+export default wandererManager;
