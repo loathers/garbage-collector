@@ -22844,7 +22844,7 @@ function checkGithubVersion() {
   if (true) {
     (0, import_kolmafia50.print)("Skipping version check for custom build");
   } else {
-    if ((0, import_kolmafia50.gitAtHead)("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
+    if ((0, import_kolmafia50.gitAtHead)("loathers-garbage-collector-release") || (0, import_kolmafia50.gitAtHead)("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
       (0, import_kolmafia50.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       var _gitBranches$find;
@@ -22853,7 +22853,7 @@ function checkGithubVersion() {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.commit;
       (0, import_kolmafia50.print)("Garbo is out of date. Please run 'git update!'", "red");
-      (0, import_kolmafia50.print)("Local Version: ".concat((0, import_kolmafia50.gitInfo)("Loathing-Associates-Scripting-Society-garbage-collector-release").commit, "."));
+      (0, import_kolmafia50.print)("Local Version: ".concat((0, import_kolmafia50.gitInfo)("loathers-garbage-collector-release").commit || (0, import_kolmafia50.gitInfo)("Loathing-Associates-Scripting-Society-garbage-collector-release").commit, "."));
       (0, import_kolmafia50.print)("Release Version: ".concat(releaseCommit === null || releaseCommit === void 0 ? void 0 : releaseCommit.sha, "."));
     }
   }
