@@ -1,9 +1,9 @@
-import { Task } from "grimoire-kolmafia";
 import { create, handlingChoice, runChoice, toInt, useSkill } from "kolmafia";
 import { $familiar, $item, $items, $skill, get, have, maxBy } from "libram";
 import { globalOptions } from "../config";
 import { freeCrafts } from "../lib";
 import { garboValue } from "../value";
+import { GarboTask } from "./engine";
 
 function bestLockPickChoice(): number {
   return (
@@ -15,7 +15,7 @@ function bestLockPickChoice(): number {
   );
 }
 
-export const AscendingTasks: Task[] = [
+export const AscendingTasks: GarboTask[] = [
   {
     name: "Lock Picking",
     ready: () => have($skill`Lock Picking`) && globalOptions.ascend,
@@ -24,7 +24,7 @@ export const AscendingTasks: Task[] = [
       useSkill($skill`Lock Picking`);
       if (handlingChoice()) runChoice(-1);
     },
-    choices: { 1414: () => bestLockPickChoice() },
+    choices: { 1414: bestLockPickChoice },
   },
   ...[
     {

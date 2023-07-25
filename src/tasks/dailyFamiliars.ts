@@ -1,4 +1,3 @@
-import { Task } from "grimoire-kolmafia";
 import {
   abort,
   cliExecute,
@@ -42,6 +41,7 @@ import {
 } from "../lib";
 import { garboValue } from "../value";
 import { estimatedGarboTurns } from "../turns";
+import { GarboTask } from "./engine";
 
 function newarkValue(): number {
   const lastCalculated = get("garbo_newarkValueDate", 0);
@@ -140,7 +140,7 @@ export function prepRobortender(): void {
   }
 }
 
-export const DailyFamiliarTasks: Task[] = [
+export const DailyFamiliarTasks: GarboTask[] = [
   {
     name: "Prepare Shorter-Order Cook",
     ready: () => have($familiar`Shorter-Order Cook`) && have($item`blue plate`),
@@ -151,7 +151,8 @@ export const DailyFamiliarTasks: Task[] = [
     name: "Prepare Robortender",
     ready: () => have($familiar`Robortender`),
     completed: () => get("_roboDrinks").toLowerCase().includes("drive-by shooting"),
-    do: () => prepRobortender(),
+    do: prepRobortender,
+    tryOnce: true,
   },
   {
     name: "Acquire amulet coin",
@@ -218,5 +219,6 @@ export const DailyFamiliarTasks: Task[] = [
         }
       });
     },
+    tryOnce: true,
   },
 ];
