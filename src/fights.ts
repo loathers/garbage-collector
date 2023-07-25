@@ -1955,7 +1955,9 @@ const freeRunFightSources = [
 
 function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   const copy = { ...spec, equip: [...(spec.equip ?? [])] };
-  copy.modifier = ["100 Item Drop"];
+  // Effective drop rate of spice melange is 0.1, each 1% item drop increases the chance by 0.1/10000
+  const itemDropBonus = (0.1 / 10000) * garboValue($item`spice melange`);
+  copy.modifier = [`${itemDropBonus.toFixed(2)} Item Drop 10000 max`];
   if (have($item`January's Garbage Tote`) && get("garbageChampagneCharge") > 0) {
     copy.equip?.push($item`broken champagne bottle`);
   }
