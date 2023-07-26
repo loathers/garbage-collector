@@ -173,7 +173,6 @@ export class EmbezzlerFight {
     } else {
       this.execute(new EmbezzlerFightRunOptions(fightMacro, undefined, options.useAuto));
     }
-    wanderer.clear();
   }
 
   location(location?: Location): Location {
