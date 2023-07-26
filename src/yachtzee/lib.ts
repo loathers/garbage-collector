@@ -34,7 +34,7 @@ const ignoredSources = [
 ];
 export const expectedEmbezzlers = sum(
   embezzlerSources.filter((source: EmbezzlerFight) => !ignoredSources.includes(source.name)),
-  (source: EmbezzlerFight) => source.potential()
+  (source: EmbezzlerFight) => source.potential(),
 );
 
 export function pyecAvailable(): boolean {
@@ -47,7 +47,7 @@ export function pyecAvailable(): boolean {
         ? true
         : withStash($items`Platinum Yendorian Express Card`, () => {
             return have($item`Platinum Yendorian Express Card`);
-          })
+          }),
     );
   }
   return get("_PYECAvailable", false);

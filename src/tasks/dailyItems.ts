@@ -95,7 +95,7 @@ function pickCargoPocket(): void {
     if (pocket in items) {
       value += sum(
         Object.entries(pocketItems(pocket)),
-        ([item, count]) => garboValue(toItem(item), true) * count
+        ([item, count]) => garboValue(toItem(item), true) * count,
       );
     }
     if (pocket in meats) {
@@ -129,7 +129,7 @@ export const DailyItemTasks: Task[] = [
         ready: () => have(skill),
         completed: () => skill.dailylimit === 0,
         do: () => useSkill(skill, skill.dailylimit),
-      }
+      },
   ),
   ...[
     {
@@ -157,7 +157,7 @@ export const DailyItemTasks: Task[] = [
       do: (): void => {
         const bestItem = maxBy(
           Item.all().filter((i) => sellsItem($coinmaster`Mr. Store 2002`, i)),
-          garboValue
+          garboValue,
         );
         buy($coinmaster`Mr. Store 2002`, get("availableMrStore2002Credits", 0), bestItem);
       },
@@ -346,7 +346,7 @@ export const DailyItemTasks: Task[] = [
         const price = rufusPotion.price(false);
         _shouldClearRufusQuest = value.some(
           (value) =>
-            (!globalOptions.nobarf || value.name === "embezzler") && value.value - price > 0
+            (!globalOptions.nobarf || value.name === "embezzler") && value.value - price > 0,
         );
         if (_shouldClearRufusQuest) {
           const target = ClosedCircuitPayphone.rufusTarget() as Item;
@@ -386,7 +386,7 @@ export const DailyItemTasks: Task[] = [
         const value =
           (((6 + 9) / 2) *
             sum(getMonsters(bestRift), (m) =>
-              sum(itemDropsArray(m), ({ drop }) => garboValue(drop))
+              sum(itemDropsArray(m), ({ drop }) => garboValue(drop)),
             )) /
           3;
         if (target instanceof Item && target.tradeable) {

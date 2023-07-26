@@ -20,7 +20,7 @@ export function embezzlerOutfit(spec: OutfitSpec = {}, target = $location.none):
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}`)
+    new Error(`Failed to construct outfit from spec ${toJson(spec)}`),
   );
 
   outfit.modifier.push(`${valueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`, "-tie");

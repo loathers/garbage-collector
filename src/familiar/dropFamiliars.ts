@@ -150,7 +150,7 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
     additionalValue: () =>
       (3 *
         garboAverageValue(
-          ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`
+          ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`,
         )) /
       11,
   },
@@ -166,7 +166,7 @@ export default function getDropFamiliars(): GeneralFamiliar[] {
     .map(valueStandardDropFamiliar)
     .filter(
       ({ familiar, expectedValue, leprechaunMultiplier }) =>
-        have(familiar) && (expectedValue || leprechaunMultiplier)
+        have(familiar) && (expectedValue || leprechaunMultiplier),
     );
 }
 

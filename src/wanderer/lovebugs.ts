@@ -14,7 +14,8 @@ const LovebugTargets: LovebugTarget[] = [
 export function lovebugsFactory(): WandererTarget[] {
   if (get("lovebugsUnlocked")) {
     return LovebugTargets.filter((t) => realmAvailable(t.element)).map(
-      (t) => new WandererTarget(`Lovebugs ${t.location}`, t.location, garboValue(t.currency) * 0.05)
+      (t) =>
+        new WandererTarget(`Lovebugs ${t.location}`, t.location, garboValue(t.currency) * 0.05),
     );
   }
   return [];

@@ -23,4 +23,4 @@ repos:
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@^2.3.1
+          - prettier@^3.0.0

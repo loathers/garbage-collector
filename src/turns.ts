@@ -44,7 +44,7 @@ export function estimatedGarboTurns(): number {
             potentialInebrietyAdventures() +
             potentialNonOrganAdventures() -
             yachtzeeTurns,
-          0
+          0,
         )
       : 0;
 
@@ -81,7 +81,7 @@ export function estimatedGarboTurns(): number {
 export function remainingUserTurns(): number {
   const dietAdventures = Math.max(
     potentialFullnessAdventures() + potentialInebrietyAdventures() + potentialNonOrganAdventures(),
-    0
+    0,
   );
   const turns = myAdventures() + dietAdventures - estimatedGarboTurns() + globalOptions.saveTurns;
   return turns;

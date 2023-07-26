@@ -59,7 +59,7 @@ export function timeToMeatify(): boolean {
   const delay = Math.min(
     nextProtonicGhost,
     nextVoteMonster === 0 ? (get("_voteFreeFights") < 2 ? 11 : Infinity) : nextVoteMonster,
-    nextVoidMonster === 0 ? 13 : nextVoidMonster
+    nextVoidMonster === 0 ? 13 : nextVoidMonster,
   );
 
   if (delay < myAdventures()) return false;
@@ -94,7 +94,7 @@ export function turnsAvailable(): number {
     ? clamp(
         availableAmount($item`Map to Safety Shelter Grimace Prime`),
         0,
-        ESTIMATED_OVERDRUNK_TURNS
+        ESTIMATED_OVERDRUNK_TURNS,
       )
     : 0;
 

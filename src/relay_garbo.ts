@@ -57,8 +57,8 @@ export function main(): void {
       JSON.stringify({
         settings: settings,
         updatedSettings: updatedSettings,
-      })
-    )})}`
+      }),
+    )})}`,
   );
 
   // close notifications when they are clicked on
