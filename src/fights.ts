@@ -127,7 +127,7 @@ import {
   withMacro,
 } from "./combat";
 import { globalOptions } from "./config";
-import { postFreeFightDailySetup } from "./dailies";
+import { postFreeFightDailySetup } from "./dailiespost";
 import { bestConsumable } from "./diet";
 import { embezzlerCount, embezzlerSources, getNextEmbezzlerFight } from "./embezzler";
 import {

@@ -1,5 +1,4 @@
 import { DailyTasks } from "./tasks/daily";
-import { PostFreeFightTasks } from "./tasks/postFreeFight";
 import { DailyItemTasks } from "./tasks/dailyItems";
 import { DailyVolcanoTasks } from "./tasks/dailyVolcano";
 import { DailyFamiliarTasks } from "./tasks/dailyFamiliars";
@@ -14,8 +13,4 @@ export function dailySetup(): void {
     ...DailyTasks,
     ...AscendingTasks,
   ]);
-}
-
-export function postFreeFightDailySetup(): void {
-  runSafeGarboTasks(PostFreeFightTasks);
 }

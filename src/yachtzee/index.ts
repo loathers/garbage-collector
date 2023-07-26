@@ -25,7 +25,7 @@ import {
 } from "libram";
 import { garboAdventure, Macro } from "../combat";
 import { globalOptions } from "../config";
-import { postFreeFightDailySetup } from "../dailies";
+import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
