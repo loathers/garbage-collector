@@ -39604,7 +39604,7 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "";
-  sinceKolmafiaRevision(27442);
+  sinceKolmafiaRevision(27493);
   checkGithubVersion();
   (0, import_kolmafia97.visitUrl)("main.php");
   if ((0, import_kolmafia97.currentRound)() > 0) {
