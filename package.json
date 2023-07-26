@@ -10,7 +10,8 @@
     "watch": "node esbuild/build-all.mjs --watch",
     "deploy": "copyfiles --up 1 --exclude \"**/dependencies.txt\" \"KoLmafia/**/*\" \"mafia/**/*\"",
     "lint": "eslint src && prettier --check .",
-    "lint:fix": "eslint src --fix && prettier --check --write ."
+    "lint:fix": "eslint src --fix && prettier --check --write .",
+    "madge": "madge --circular ./src/index.ts ./relay/** ./src/**"
   },
   "author": "",
   "license": "MIT",
@@ -43,6 +44,7 @@
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-libram": "^0.2.32",
+    "madge": "^6.1.0",
     "prettier": "^3.0.0",
     "sass": "^1.53.0",
     "typescript": "^5.1.6",
