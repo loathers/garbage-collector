@@ -161,7 +161,7 @@ class WandererManager {
   cacheKey = "";
   targets: Partial<{ [x in DraggableFight]: Location }> = {};
 
-  getTarget(draggableFight: DraggableFight, drunkSafe?: boolean): Location {
+  getTarget(draggableFight: DraggableFight, drunkSafe = true): Location {
     const newKey = `${totalTurnsPlayed()};${get("familiarSweat")}`;
     if (this.cacheKey !== newKey) this.clear();
     this.cacheKey = newKey;
@@ -173,7 +173,7 @@ class WandererManager {
 
   getChoices(
     draggableFight: DraggableFight,
-    drunkSafe?: boolean
+    drunkSafe = true,
   ): { [choice: number]: string | number } {
     return this.unsupportedChoices.get(this.getTarget(draggableFight, drunkSafe)) ?? {};
   }

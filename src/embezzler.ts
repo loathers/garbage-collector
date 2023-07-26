@@ -57,7 +57,7 @@ import {
   WISH_VALUE,
 } from "./lib";
 import { waterBreathingEquipment } from "./outfit";
-import { DraggableFight, wanderWhere } from "./wanderer";
+import wanderer, { DraggableFight } from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -173,6 +173,7 @@ export class EmbezzlerFight {
     } else {
       this.execute(new EmbezzlerFightRunOptions(fightMacro, undefined, options.useAuto));
     }
+    wanderer.clear();
   }
 
   location(location?: Location): Location {
@@ -189,7 +190,7 @@ export class EmbezzlerFight {
       (this.draggable && !suggestion) ||
       (this.draggable === "backup" && suggestion && suggestion.combatPercent < 100)
     ) {
-      return wanderWhere(this.draggable);
+      return wanderer.getTarget(this.draggable);
     }
     return suggestion ?? $location`Noob Cave`;
   }
