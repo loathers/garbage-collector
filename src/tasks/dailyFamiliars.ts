@@ -152,7 +152,6 @@ export const DailyFamiliarTasks: GarboTask[] = [
     ready: () => have($familiar`Robortender`),
     completed: () => get("_roboDrinks").toLowerCase().includes("drive-by shooting"),
     do: prepRobortender,
-    tryOnce: true,
   },
   {
     name: "Acquire amulet coin",
@@ -219,6 +218,5 @@ export const DailyFamiliarTasks: GarboTask[] = [
         }
       });
     },
-    tryOnce: true,
   },
 ];

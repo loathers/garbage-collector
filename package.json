@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "core-js": "^3.8.0",
-    "grimoire-kolmafia": "^0.3.20",
+    "grimoire-kolmafia": "^0.3.21",
     "kolmafia": "^5.27339.0",
     "libram": "^0.8.4",
     "react": "^18.2.0",

@@ -1,8 +1,8 @@
-import { Engine, StrictCombatTask } from "grimoire-kolmafia";
+import { Engine, EngineOptions, StrictCombatTask } from "grimoire-kolmafia";
 import { safeInterrupt } from "../lib";
 import wanderer from "../wanderer";
 
-export type GarboTask = StrictCombatTask & { sobriety?: "drunk" | "sober"; tryOnce?: boolean };
+export type GarboTask = StrictCombatTask & { sobriety?: "drunk" | "sober" };
 
 /** A base engine for Garbo!
  * Runs extra logic before executing all tasks.
@@ -16,14 +16,15 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   }
 }
 
+const SAFE_OPTIONS = new EngineOptions();
+SAFE_OPTIONS.default_task_options = { limit: { skip: 1 } };
+
 /**
  * A safe engine for Garbo!
  * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
  */
 export class SafeGarboEngine extends BaseGarboEngine {
-  available(task: GarboTask): boolean {
-    return super.available(task) && (!task.tryOnce || this.attempts[task.name] >= 1);
-  }
+  options = SAFE_OPTIONS;
 }
 
 export function runSafeGarboTasks(tasks: GarboTask[]): void {

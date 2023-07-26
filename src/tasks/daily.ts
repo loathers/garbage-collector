@@ -353,7 +353,6 @@ export const DailyTasks: GarboTask[] = [
     ready: () => have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`),
     completed: () => get("_chibiChanged", true),
     do: () => cliExecute("chibi chat"),
-    tryOnce: true,
   },
   {
     name: "Refresh Latte",
@@ -363,7 +362,6 @@ export const DailyTasks: GarboTask[] = [
       visitUrl("main.php?latte=1", false);
       latteRefreshed = true;
     },
-    tryOnce: true,
   },
   {
     name: "Unlock Cemetery",
@@ -386,14 +384,12 @@ export const DailyTasks: GarboTask[] = [
     name: "Configure I Voted! Sticker",
     completed: () => have($item`"I Voted!" sticker`),
     do: voterSetup,
-    tryOnce: true,
   },
   {
     name: "Configure Pantogram",
     ready: () => Pantogram.have(),
     completed: () => Pantogram.havePants(),
     do: pantogram,
-    tryOnce: true,
   },
   {
     name: "Configure Fourth of May Cosplay Saber",
@@ -430,7 +426,6 @@ export const DailyTasks: GarboTask[] = [
     do: (): void => {
       visitUrl("place.php?whichplace=town_right");
     },
-    tryOnce: true,
   },
   {
     name: "Prepare Horsery",
