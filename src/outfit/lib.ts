@@ -135,7 +135,7 @@ export function tryFillLatte(): boolean {
   ) {
     const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
     const latteIngredients = goodLatteIngredients.filter((ingredient) =>
-      get("latteUnlocks").includes(ingredient)
+      get("latteUnlocks").includes(ingredient),
     );
     if (latteIngredients.length < 3) latteIngredients.push("pumpkin");
     if (latteIngredients.length < 3) latteIngredients.push("vanilla");
@@ -189,7 +189,8 @@ export function validateGarbageFoldable(spec: OutfitSpec): void {
     if (
       Object.values(spec).some(
         (specEntry) =>
-          specEntry === garbageItem || (Array.isArray(specEntry) && specEntry.includes(garbageItem))
+          specEntry === garbageItem ||
+          (Array.isArray(specEntry) && specEntry.includes(garbageItem)),
       )
     ) {
       if (!have(garbageItem)) cliExecute(`fold ${garbageItem}`);

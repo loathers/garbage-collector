@@ -17,8 +17,8 @@ Promise.all(
           if (code !== 0) reject(new Error(`Worker stopped with exit code ${code}`));
           else resolve();
         });
-      })
-  )
+      }),
+  ),
 ).catch((e) => {
   console.error(e);
   process.exit(1);

@@ -37,7 +37,7 @@ export function acquire(
   maxPrice?: number,
   throwOnFail = true,
   maxAggregateCost?: number,
-  tryRetrievingUntradeable = false
+  tryRetrievingUntradeable = false,
 ): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if ((!item.tradeable && !tryRetrievingUntradeable) || (maxPrice !== undefined && maxPrice <= 0)) {

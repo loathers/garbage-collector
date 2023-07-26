@@ -189,7 +189,7 @@ export function mapMonster(location: Location, monster: Monster): void {
   }
 
   const fightPage = visitUrl(
-    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`
+    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`,
   );
   if (!fightPage.includes(monster.name)) {
     throw "Something went wrong starting the fight.";
@@ -286,7 +286,7 @@ export function printHelpMenu(): void {
     return `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${croppedDescription}</pre></td></tr>`;
   });
   printHtml(
-    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`
+    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`,
   );
 }
 
@@ -353,7 +353,7 @@ export function safeRestore(): void {
       uneffect($effect`Beaten Up`);
     } else {
       throw new Error(
-        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready."
+        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.",
       );
     }
   }
@@ -394,7 +394,7 @@ export function checkGithubVersion(): void {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
-        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
+        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`),
       );
       const releaseCommit = gitBranches.find((branchInfo) => branchInfo.name === "release")?.commit;
       print("Garbo is out of date. Please run 'git update!'", "red");
@@ -402,7 +402,7 @@ export function checkGithubVersion(): void {
         `Local Version: ${
           gitInfo("loathers-garbage-collector-release").commit ||
           gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release").commit
-        }.`
+        }.`,
       );
       print(`Release Version: ${releaseCommit?.sha}.`);
     }
@@ -426,7 +426,7 @@ export function formatNumber(num: number): string {
 export function getChoiceOption(partialText: string): number {
   if (handlingChoice()) {
     const findResults = Object.entries(availableChoiceOptions()).find(
-      (value) => value[1].indexOf(partialText) > -1
+      (value) => value[1].indexOf(partialText) > -1,
     );
     if (findResults) {
       return parseInt(findResults[0]);
@@ -560,11 +560,11 @@ export function bestShadowRift(): Location {
           return sum(getMonsters(l), (m) => {
             return sum(
               itemDropsArray(m),
-              ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1)
+              ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1),
             );
           });
         },
-      })
+      }),
     );
     if (!_bestShadowRift) {
       throw new Error("Failed to find a suitable Shadow Rift to adventure in");
@@ -593,7 +593,7 @@ export function freeRest(): boolean {
       // burn some mp so that we can rest
       const bestSkill = maxBy(
         Skill.all().filter((sk) => have(sk) && mpCost(sk) >= 1),
-        (sk) => -mpCost(sk)
+        (sk) => -mpCost(sk),
       ); // are there any other skills that cost mana which we should blacklist?
       // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
       useSkill(bestSkill);

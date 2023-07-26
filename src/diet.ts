@@ -119,7 +119,7 @@ function drinkSafe(qty: number, item: Item) {
     if (castTurns > 0) {
       useSkill(
         $skill`The Ode to Booze`,
-        Math.ceil(castTurns / turnsPerCast($skill`The Ode to Booze`))
+        Math.ceil(castTurns / turnsPerCast($skill`The Ode to Booze`)),
       );
     }
   }
@@ -222,7 +222,7 @@ export function nonOrganAdventures(): void {
   useIfUnused(
     $item`fancy chocolate sculpture`,
     get("_chocolateSculpturesUsed") > 0,
-    5 * MPA + 5000
+    5 * MPA + 5000,
   );
   useIfUnused($item`essential tofu`, "_essentialTofuUsed", 5 * MPA);
 
@@ -253,8 +253,8 @@ function pillCheck(): void {
         userConfirmDialog(
           "You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)",
           false,
-          15000
-        )
+          15000,
+        ),
       );
     }
   }
@@ -266,8 +266,8 @@ function pillCheck(): void {
         userConfirmDialog(
           "You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)",
           false,
-          15000
-        )
+          15000,
+        ),
       );
     }
   }
@@ -289,7 +289,7 @@ const stomachLiverCleaners = new Map([
 
 function legendaryPizzaToMenu(
   pizzas: { item: Item; pref: string }[],
-  maker: (out: { item: Item; price: number }) => MenuItem<Note> | MenuItem<Note>[]
+  maker: (out: { item: Item; price: number }) => MenuItem<Note> | MenuItem<Note>[],
 ) {
   const canCookLegendaryPizza = (pizza: Item): boolean => {
     const recipes = [
@@ -307,9 +307,9 @@ function legendaryPizzaToMenu(
           2 *
           sum(
             $items`Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris`,
-            ingredientCost
+            ingredientCost,
           ),
-      })
+      }),
     );
 }
 
@@ -352,11 +352,11 @@ function menu(): MenuItem<Note>[] {
   const smallEpics = [...$items`meteoreo, ice rice`, $item`Tea, Earl Grey, Hot`];
 
   const boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter((item) =>
-    have(item)
+    have(item),
   );
   const pilsners = $items`astral pilsner`.filter((item) => have(item));
   const limitedItems = [...boxingDayCareItems, ...pilsners].map(
-    (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) })
+    (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) }),
   );
 
   const legendaryPizzas = legendaryPizzaToMenu(
@@ -364,7 +364,7 @@ function menu(): MenuItem<Note>[] {
       { item: $item`Calzone of Legend`, pref: "calzoneOfLegendEaten" },
       { item: $item`Pizza of Legend`, pref: "pizzaOfLegendEaten" },
     ],
-    (out) => new MenuItem<Note>(out.item, { maximum: 1, priceOverride: out.price })
+    (out) => new MenuItem<Note>(out.item, { maximum: 1, priceOverride: out.price }),
   );
 
   return [
@@ -441,7 +441,7 @@ export function bestConsumable(
   organType: "booze" | "food" | "spleen",
   levelRestrict = true,
   restrictList?: Item | Item[],
-  maxSize?: number
+  maxSize?: number,
 ): { edible: Item; value: number } {
   const fullMenu = potionMenu(menu(), 0, 0);
   let organMenu = fullMenu.filter((menuItem) => itemType(menuItem.item) === organType);
@@ -490,7 +490,7 @@ function gregariousCount(): {
   // remove and preserve the last index - that is the marginal count of gregarious fights
   const marginalGregariousFights = gregariousFightsPerCharge.splice(
     gregariousFightsPerCharge.length - 1,
-    1
+    1,
   )[0];
 
   const expectedGregariousFights = gregariousFightsPerCharge.slice(gregariousCharges);
@@ -513,7 +513,7 @@ function copiers(): MenuItem<Note>[] {
               new MenuItem<Note>($item`Extrovermectin™`, {
                 additionalValue: embezzlers * embezzlerDifferential,
                 maximum: 1,
-              })
+              }),
           ),
           new MenuItem<Note>($item`Extrovermectin™`, {
             additionalValue: marginalGregariousFights * embezzlerDifferential,
@@ -529,7 +529,7 @@ function countCopies(diet: Diet<Note>): number {
   // returns an array of expected counts for number of greg copies to fight per pill use
   // the last value is how much you expect to fight per pill
   const extros = sum(diet.entries, ({ menuItems, quantity }) =>
-    menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`) ? quantity : 0
+    menuItems.some((menuItem) => menuItem.item === $item`Extrovermectin™`) ? quantity : 0,
   );
   const { expectedGregariousFights, marginalGregariousFights } = gregariousCount();
 
@@ -562,12 +562,12 @@ function ingredientCost(item: Item): number {
 export function potionMenu(
   baseMenu: MenuItem<Note>[],
   embezzlers: number,
-  turns: number
+  turns: number,
 ): MenuItem<Note>[] {
   function limitedPotion(
     input: Item | Potion,
     limit?: number,
-    options: { price?: number; organ?: "spleen item" | "booze" | "food"; size?: number } = {}
+    options: { price?: number; organ?: "spleen item" | "booze" | "food"; size?: number } = {},
   ): MenuItem<Note>[] {
     if (limit === 0) {
       return [];
@@ -589,7 +589,7 @@ export function potionMenu(
           size: options.size,
           data: tier.name,
           mayo,
-        })
+        }),
     );
   }
   function potion(potion: Item | Potion, options = {}): MenuItem<Note>[] {
@@ -602,11 +602,11 @@ export function potionMenu(
   const twiceHauntedPrice =
     Math.min(
       ingredientCost($item`haunted orange`),
-      ingredientCost($item`orange`) + ingredientCost($item`ghostly ectoplasm`)
+      ingredientCost($item`orange`) + ingredientCost($item`ghostly ectoplasm`),
     ) +
     Math.min(
       ingredientCost($item`haunted bottle of vodka`),
-      ingredientCost($item`bottle of vodka`) + ingredientCost($item`ghostly ectoplasm`)
+      ingredientCost($item`bottle of vodka`) + ingredientCost($item`ghostly ectoplasm`),
     );
 
   const campfireHotdog = get("getawayCampsiteUnlocked")
@@ -626,7 +626,7 @@ export function potionMenu(
 
   const deepDish = legendaryPizzaToMenu(
     [{ item: $item`Deep Dish of Legend`, pref: "deepDishOfLegendEaten" }],
-    (out: { item: Item; price: number }) => limitedPotion(out.item, 1, { price: out.price })
+    (out: { item: Item; price: number }) => limitedPotion(out.item, 1, { price: out.price }),
   );
 
   return [
@@ -698,7 +698,7 @@ export function potionMenu(
             size: 1,
             organ: "spleen item",
             price: 0,
-          }
+          },
         )
       : []),
   ];
@@ -713,12 +713,12 @@ function balanceMenu(baseMenu: MenuItem<Note>[], dietPlanner: DietPlanner): Menu
     menu: MenuItem<Note>[],
     iterations: number,
     embezzlers: number,
-    adventures: number
+    adventures: number,
   ): MenuItem<Note>[] {
     const fullMenu = potionMenu(
       menu,
       baseEmbezzlers + embezzlers,
-      estimatedGarboTurns() + adventures
+      estimatedGarboTurns() + adventures,
     );
     if (iterations <= 0) {
       return fullMenu;
@@ -728,7 +728,7 @@ function balanceMenu(baseMenu: MenuItem<Note>[], dietPlanner: DietPlanner): Menu
         menu,
         iterations - 1,
         countCopies(balancingDiet),
-        balancingDiet.expectedAdventures()
+        balancingDiet.expectedAdventures(),
       );
     }
   }
@@ -762,17 +762,17 @@ export function computeDiet(): {
           menu().filter(
             (menuItem) =>
               !priceCaps[menuItem.item.name] ||
-              priceCaps[menuItem.item.name] >= mallPrice(menuItem.item)
+              priceCaps[menuItem.item.name] >= mallPrice(menuItem.item),
           ),
-          fullDietPlanner
-        )
+          fullDietPlanner,
+        ),
       ),
     shotglass: () =>
       shotglassDietPlanner(
         balanceMenu(
           menu().filter((menuItem) => itemType(menuItem.item) === "booze" && menuItem.size === 1),
-          shotglassDietPlanner
-        )
+          shotglassDietPlanner,
+        ),
       ),
     pantsgiving: () =>
       pantsgivingDietPlanner(
@@ -780,17 +780,17 @@ export function computeDiet(): {
           menu().filter(
             (menuItem) =>
               (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
-              [Mayo.flex, Mayo.zapine, $item`Special Seasoning`].includes(menuItem.item)
+              [Mayo.flex, Mayo.zapine, $item`Special Seasoning`].includes(menuItem.item),
           ),
-          pantsgivingDietPlanner
-        )
+          pantsgivingDietPlanner,
+        ),
       ),
     sweatpants: () =>
       sweatpantsDietPlanner(
         balanceMenu(
           menu().filter((menuItem) => itemType(menuItem.item) === "booze" && menuItem.size <= 3),
-          sweatpantsDietPlanner
-        )
+          sweatpantsDietPlanner,
+        ),
       ),
   };
 }
@@ -818,7 +818,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
       ? ` (additional value: ${target.additionalValue})`
       : "";
     const valuestr = `value: ${Math.floor(
-      dietEntry.expectedValue(MPA, diet)
+      dietEntry.expectedValue(MPA, diet),
     )}${addvalstr} price: ${Math.floor(dietEntry.expectedPrice())}`;
     print(`${dietEntry.quantity}${maxstr} ${target}${datastr}${helpersstr} ${valuestr}`);
   }
@@ -826,7 +826,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   const totalCost = diet.expectedPrice();
   const netValue = totalValue - totalCost;
   print(
-    `Assuming MPA of ${MPA}, Total Cost ${totalCost}, Total Value ${totalValue}, Net Value ${netValue}`
+    `Assuming MPA of ${MPA}, Total Cost ${totalCost}, Total Value ${totalValue}, Net Value ${netValue}`,
   );
 }
 
@@ -860,7 +860,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   print();
 
   const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
-    menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`) ? quantity : 0
+    menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`) ? quantity : 0,
   );
   acquire(seasoningCount, $item`Special Seasoning`, MPA);
 
@@ -904,7 +904,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         } else if (menuItem.organ && menuItem.size > 0) {
           countToConsume = Math.min(
             countToConsume,
-            Math.floor(capacity[menuItem.organ] / menuItem.size)
+            Math.floor(capacity[menuItem.organ] / menuItem.size),
           );
         }
         logprint(`Based on organ size, planning to consume ${countToConsume}.`);
@@ -915,7 +915,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           countToConsume = Math.min(
             fullness < 0 ? Math.floor(-myFullness() / fullness) : quantity,
             inebriety < 0 ? Math.floor(-myInebriety() / inebriety) : quantity,
-            countToConsume
+            countToConsume,
           );
           logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
         }
@@ -999,13 +999,13 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
               if (coinmasterPrice < regularPrice) {
                 const amountToBuy = Math.min(
                   amountNeeded,
-                  Math.floor(itemAmount($item`Beach Buck`))
+                  Math.floor(itemAmount($item`Beach Buck`)),
                 );
                 buy($coinmaster`The Frozen Brogurt Stand`, amountToBuy, $item`broberry brogurt`);
               }
               buy(
                 countToConsume - availableAmount($item`broberry brogurt`),
-                $item`broberry brogurt`
+                $item`broberry brogurt`,
               );
             }
             consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
@@ -1049,7 +1049,7 @@ export function runDiet(): void {
 
     MenuItem.defaultPriceFunction = (item: Item) => {
       const prices = [retrievePrice(item), mallPrice(item), npcPrice(item)].filter(
-        (p) => p > 0 && p < Number.MAX_SAFE_INTEGER
+        (p) => p > 0 && p < Number.MAX_SAFE_INTEGER,
       );
       if (prices.length > 0) {
         return Math.min(...prices);

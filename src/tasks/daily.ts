@@ -100,7 +100,7 @@ function voterSetup(): void {
       Object.keys(votingBoothInitiatives(myClass(), myPath(), myDaycount())).map((init) => {
         const val = initPriority.get(init) ?? 0;
         return [init, val];
-      })
+      }),
     );
 
     const initiativeValue = 2 * Math.max(...availableInitiatives.values());
@@ -188,7 +188,7 @@ function pantogram(): void {
       (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) * estimatedGarboTurns();
   }
   const cloverPrice = Math.min(
-    ...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item))
+    ...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item)),
   );
   if (cloverPrice + mallPrice($item`porquoise`) > pantogramValue) {
     return;
@@ -202,7 +202,7 @@ function pantogram(): void {
     "Sleaze Resistance: 2",
     "MP Regen Max: 15",
     "Drops Items: true",
-    "Meat Drop: 60"
+    "Meat Drop: 60",
   );
 }
 
@@ -234,7 +234,7 @@ export function completeBarfQuest(): void {
         `The cost of 20 toxic globules (${globuleCosts}) is less than the profits expected from 3 FunFunds™ (${
           3 * garboValue($item`FunFunds™`)
         }). Proceeding to acquire toxic globules.`,
-        "green"
+        "green",
       );
       attemptCompletingBarfQuest =
         acquire(20, $item`toxic globule`, (1.5 * globuleCosts) / 20, false) >= 20;
@@ -244,7 +244,7 @@ export function completeBarfQuest(): void {
         `The cost of 20 toxic globules (${globuleCosts}) exceeds the profits expected from 3 FunFunds™ (${
           3 * garboValue($item`FunFunds™`)
         }). Consider farming some globules yourself.`,
-        "red"
+        "red",
       );
     }
   }
@@ -320,13 +320,13 @@ export function configureSnojo(): void {
         (7 * garboValue($item`ancient medicinal herbs`) +
           garboValue($item`training scroll:  Shattering Punch`)) /
           5,
-        1
+        1,
       );
     }
     if (get("snojoMysticalityWins") < 50) {
       options.set(
         (7 * garboValue($item`ice rice`) + garboValue($item`training scroll:  Snokebomb`)) / 5,
-        2
+        2,
       );
     }
     if (get("snojoMoxieWins") < 50) {
@@ -334,7 +334,7 @@ export function configureSnojo(): void {
         (7 * garboValue($item`iced plum wine`) +
           garboValue($item`training scroll:  Shivering Monkey Technique`)) /
           5,
-        3
+        3,
       );
     }
   }

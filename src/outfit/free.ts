@@ -17,7 +17,7 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`)
+    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
   );
 
   outfit.familiar ??= freeFightFamiliar(options);
@@ -28,7 +28,7 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
     outfit.modifier.push(
       $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
         ? "Familiar Experience"
-        : "Familiar Weight"
+        : "Familiar Weight",
     );
   }
 
