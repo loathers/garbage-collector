@@ -6,6 +6,6 @@ import "./css/App.scss";
 getData((data: Data) => {
   render(
     React.createElement(App, { updatedSettings: data.updatedSettings, settings: data.settings }),
-    document.getElementById("root")
+    document.getElementById("root"),
   );
 });

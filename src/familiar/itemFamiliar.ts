@@ -16,7 +16,7 @@ export function bestFairy(): Familiar {
         findFairyMultiplier(f) &&
         f !== $familiar`Steam-Powered Cheerleader` &&
         !f.physicalDamage &&
-        !f.elementalDamage
+        !f.elementalDamage,
     );
 
     const highestFairyMult = findFairyMultiplier(maxBy(viableFairies, findFairyMultiplier));
@@ -51,7 +51,7 @@ export function bestFairy(): Familiar {
 
     bestNonCheerleaderFairy = maxBy(
       goodFairies,
-      (f) => bonuses.find(({ familiar }) => familiar === f)?.expectedValue ?? 0
+      (f) => bonuses.find(({ familiar }) => familiar === f)?.expectedValue ?? 0,
     );
   }
 

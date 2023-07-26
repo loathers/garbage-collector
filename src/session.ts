@@ -62,9 +62,9 @@ export function endSession(printLog = true): void {
   const message = (head: string, meat: number, items: number) =>
     print(
       `${head}, you generated ${formatNumber(meat + items)} meat, with ${formatNumber(
-        meat
+        meat,
       )} raw meat and ${formatNumber(items)} from items`,
-      HIGHLIGHT
+      HIGHLIGHT,
     );
 
   const { meat, items, itemDetails } = sessionSinceStart().value(garboValue);

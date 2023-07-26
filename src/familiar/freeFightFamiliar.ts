@@ -84,7 +84,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
 
   if (!allowAttackFamiliars) {
     return familiarMenu.filter(
-      (fam) => !(fam.familiar.physicalDamage || fam.familiar.elementalDamage)
+      (fam) => !(fam.familiar.physicalDamage || fam.familiar.elementalDamage),
     );
   }
 

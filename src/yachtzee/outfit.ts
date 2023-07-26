@@ -43,7 +43,7 @@ export const maximizeMeat = (): boolean =>
     ],
     {
       preventEquip: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
-    }
+    },
   ).maximize();
 
 export function getBestWaterBreathingEquipment(yachtzeeTurns: number): {
@@ -77,8 +77,8 @@ export function prepareOutfitAndFamiliar(): void {
       $slot`familiar`,
       maxBy(
         familiarWaterBreathingEquipment.filter((it) => have(it)),
-        (eq) => getModifier("Familiar Weight", eq)
-      )
+        (eq) => getModifier("Familiar Weight", eq),
+      ),
     );
   }
 }
