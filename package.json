@@ -29,7 +29,7 @@
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/plugin-proposal-decorators": "^7.14.5",
     "@babel/plugin-proposal-object-rest-spread": "^7.14.7",
-    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-env": "^7.22.9",
     "@babel/preset-react": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
     "@types/react": "^18.2.15",
