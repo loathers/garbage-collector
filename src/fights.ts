@@ -129,12 +129,7 @@ import {
 import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailies";
 import { bestConsumable } from "./diet";
-import {
-  embezzlerCount,
-  embezzlerMacro,
-  embezzlerSources,
-  getNextEmbezzlerFight,
-} from "./embezzler";
+import { embezzlerCount, embezzlerSources, getNextEmbezzlerFight } from "./embezzler";
 import {
   crateStrategy,
   doingExtrovermectin,
@@ -344,7 +339,7 @@ function startWandererCounter() {
       }
       garboAdventure(
         $location`The Haunted Kitchen`,
-        Macro.if_($monster`Knob Goblin Embezzler`, embezzlerMacro()).step(run.macro),
+        Macro.if_($monster`Knob Goblin Embezzler`, Macro.embezzler()).step(run.macro),
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||

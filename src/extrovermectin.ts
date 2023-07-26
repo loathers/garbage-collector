@@ -32,7 +32,6 @@ import {
 import { freeFightFamiliar } from "./familiar";
 import { latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
 import { garboAdventure, Macro } from "./combat";
-import { embezzlerMacro } from "./embezzler";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 
@@ -252,7 +251,7 @@ function initializeDireWarren(): void {
     do {
       garboAdventure(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).step(embezzlerMacro()),
+        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).embezzler(),
       );
     } while (myFury() >= 5 && banishedMonsters.get($skill`Batter Up!`) !== $monster`fluffy bunny`);
   } else {
@@ -261,7 +260,7 @@ function initializeDireWarren(): void {
     do {
       garboAdventure(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(embezzlerMacro()),
+        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).embezzler(),
       );
     } while (
       "fluffy bunny" !== get("lastEncounter") &&

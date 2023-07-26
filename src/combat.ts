@@ -653,6 +653,41 @@ export class Macro extends StrictMacro {
   static ghostBustin(): Macro {
     return new Macro().ghostBustin();
   }
+
+  embezzler(): Macro {
+    const embezzler = $monster`Knob Goblin Embezzler`;
+    return this.if_(
+      embezzler,
+      Macro.if_($location`The Briny Deeps`, Macro.tryCopier($item`pulled green taffy`))
+        .externalIf(
+          myFamiliar() === $familiar`Reanimated Reanimator`,
+          Macro.trySkill($skill`Wink at`),
+        )
+        .externalIf(
+          myFamiliar() === $familiar`Obtuse Angel`,
+          Macro.trySkill($skill`Fire a badly romantic arrow`),
+        )
+        .externalIf(
+          get("beGregariousCharges") > 0 &&
+            (get("beGregariousMonster") !== embezzler || get("beGregariousFightsLeft") === 0),
+          Macro.trySkill($skill`Be Gregarious`),
+        )
+        .externalIf(
+          SourceTerminal.getDigitizeMonster() !== embezzler || shouldRedigitize(),
+          Macro.tryCopier($skill`Digitize`),
+        )
+        .tryCopier($item`Spooky Putty sheet`)
+        .tryCopier($item`Rain-Doh black box`)
+        .tryCopier($item`4-d camera`)
+        .tryCopier($item`unfinished ice sculpture`)
+        .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
+        .meatKill(),
+    ).abortWithMsg(`Expected ${embezzler} but encountered something else.`);
+  }
+
+  static embezzler(): Macro {
+    return new Macro().embezzler();
+  }
 }
 
 function customizeMacro<M extends StrictMacro>(macro: M) {
