@@ -122,7 +122,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
         acquire(
           1,
           $item`powdered candy sushi set`,
-          1.2 * mallPrice($item`powdered candy sushi set`)
+          1.2 * mallPrice($item`powdered candy sushi set`),
         );
         if (!have($item`powdered candy sushi set`)) {
           throw new Error("Unable to obtain powdered candy sushi set");
@@ -215,7 +215,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
         if (get("lastAdventure") !== "The Brinier Deepers") {
           print(
             "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
-            "red"
+            "red",
           );
         }
         if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
@@ -239,7 +239,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
   const bestFishySource = maxBy(
     fishySources.filter((source) => source.turns + haveEffect($effect`Fishy`) >= yachtzeeTurns),
     "cost",
-    true
+    true,
   );
 
   print("Cost of viable Fishy sources:", "blue");

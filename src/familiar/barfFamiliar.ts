@@ -60,7 +60,7 @@ function getCachedOutfitValues(fam: Familiar) {
         familiar: fam,
         avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
       },
-      true
+      true,
     ).dress();
 
     const outfit = outfitSlots.map((slot) => equippedItem(slot));
@@ -106,7 +106,7 @@ function totalFamiliarValue({ expectedValue, outfitValue, familiar }: MarginalFa
 
 function turnsNeededForFamiliar(
   { familiar, limit, outfitValue }: MarginalFamiliar,
-  baselineToCompareAgainst: MarginalFamiliar
+  baselineToCompareAgainst: MarginalFamiliar,
 ): number {
   switch (limit) {
     case "drops":
@@ -114,9 +114,9 @@ function turnsNeededForFamiliar(
         getAllDrops(familiar).filter(
           ({ expectedValue }) =>
             outfitValue + familiarAbilityValue(familiar) + expectedValue >
-            totalFamiliarValue(baselineToCompareAgainst)
+            totalFamiliarValue(baselineToCompareAgainst),
         ),
-        ({ expectedTurns }) => expectedTurns
+        ({ expectedTurns }) => expectedTurns,
       );
 
     case "experience":
@@ -156,12 +156,12 @@ export function barfFamiliar(): Familiar {
 
   if (viableMenu.every(({ limit }) => limit !== "none")) {
     const turnsNeeded = sum(viableMenu, (option: MarginalFamiliar) =>
-      turnsNeededForFamiliar(option, meatFamiliarEntry)
+      turnsNeededForFamiliar(option, meatFamiliarEntry),
     );
 
     if (turnsNeeded < turnsAvailable()) {
       const shrubAvailable = viableMenu.some(
-        ({ familiar }) => familiar === $familiar`Crimbo Shrub`
+        ({ familiar }) => familiar === $familiar`Crimbo Shrub`,
       );
       return shrubAvailable ? $familiar`Crimbo Shrub` : meatFamiliar();
     }
@@ -173,14 +173,14 @@ export function barfFamiliar(): Familiar {
 
   const familiarPrintout = (x: MarginalFamiliar) =>
     `(expected value of ${x.expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(
-      x.familiar
+      x.familiar,
     ).toFixed(1)} from familiar abilities and ${x.outfitValue.toFixed(1)} from outfit)`;
 
   print(
     `Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${
       meatFamiliarEntry.familiar
     } ${familiarPrintout(meatFamiliarEntry)}.`,
-    HIGHLIGHT
+    HIGHLIGHT,
   );
 
   return best.familiar;
@@ -201,9 +201,9 @@ function getSpecialFamiliarLimit({
         getAllJellyfishDrops().filter(
           ({ expectedValue }) =>
             outfitValue + familiarAbilityValue(familiar) + expectedValue >
-            totalFamiliarValue(baselineToCompareAgainst)
+            totalFamiliarValue(baselineToCompareAgainst),
         ),
-        ({ turnsAtValue }) => turnsAtValue
+        ({ turnsAtValue }) => turnsAtValue,
       );
 
     case $familiar`Crimbo Shrub`:

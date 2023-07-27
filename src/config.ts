@@ -43,7 +43,7 @@ function stringToWorkshedItem(s: string): Item | null {
       toInitials(item.name.toLowerCase()) === lowerCaseWorkshed ||
       item.name.toLowerCase().includes(lowerCaseWorkshed) ||
       stripString(item.name.toLowerCase()).includes(strippedWorkshed) ||
-      aliases.some((alias) => alias === lowerCaseWorkshed)
+      aliases.some((alias) => alias === lowerCaseWorkshed),
   );
 
   // grimoire catches the errors and throws its own errors
@@ -121,13 +121,13 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
                 `${[...aliases, toInitials(item.name.toLowerCase())]
                   .filter((alias) => alias !== "")
                   .join(", ")}`,
-              ] as [Item, string]
+              ] as [Item, string],
           ),
           [null, "leave this field blank"],
         ],
       },
       stringToWorkshedItem,
-      "Item"
+      "Item",
     ),
     prefs: Args.group(
       "You can manually set the properties below, but it's recommended that you use the relay interface (dropdown menu at the top left in the browser)",
@@ -190,7 +190,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "If you're a very high level, what HP threshold should garbo aim to maintain?",
           default: 2000,
         }),
-      }
+      },
     ),
     /*
       Hidden preferences, CLI input ignored
@@ -201,14 +201,14 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     triedToUnlockHiddenTavern: Args.custom<boolean>(
       { hidden: true, default: false },
       () => false,
-      ""
+      "",
     ),
     wishAnswer: Args.custom<boolean>({ hidden: true, default: false }, () => false, ""),
     clarasBellClaimed: Args.custom<boolean>(
       { hidden: true, setting: "_claraBellUsed" },
       () => get("_claraBellUsed"),
-      ""
+      "",
     ),
   },
-  { positionalArgs: ["turns"] }
+  { positionalArgs: ["turns"] },
 );

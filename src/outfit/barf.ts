@@ -67,7 +67,7 @@ function gunSpec(outfit: Outfit) {
 }
 
 const POINTER_RING_SPECS: (
-  outfit: Outfit
+  outfit: Outfit,
 ) => Delayed<{ available: boolean; items: Item[] | OutfitSpec }>[] = (outfit: Outfit) => [
   {
     available: have($skill`Furious Wallop`) && myFury() > 0,
@@ -99,7 +99,7 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`)
+    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
   );
 
   outfit.familiar ??= barfFamiliar();
@@ -109,7 +109,7 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   outfit.modifier.push(
     `${valueOfMeat(BonusEquipMode.BARF)} Meat Drop`,
     `${valueOfItem(BonusEquipMode.BARF)} Item Drop`,
-    "-tie"
+    "-tie",
   );
 
   if (myInebriety() > trueInebrietyLimit()) {

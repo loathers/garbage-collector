@@ -51,7 +51,7 @@ function newarkValue(): number {
     ];
     set(
       "garbo_newarkValue",
-      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0)
+      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0),
     );
     set("garbo_newarkValueDate", today);
   }
@@ -66,7 +66,7 @@ function felizValue(): number {
     ];
     set(
       "garbo_felizValue",
-      (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0)
+      (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0),
     );
     set("garbo_felizValueDate", today);
   }
@@ -124,11 +124,11 @@ export function prepRobortender(): void {
         if (
           !userConfirmDialog(
             `Garbo cannot find a reasonably priced drive-by-shooting (price cap: ${priceCap}), and will not be using your robortender. Is that cool with you?`,
-            true
+            true,
           )
         ) {
           abort(
-            "Alright, then, I guess you should try to find a reasonbly priced drive-by-shooting. Or do different things with your day."
+            "Alright, then, I guess you should try to find a reasonbly priced drive-by-shooting. Or do different things with your day.",
           );
         }
         break;
@@ -186,7 +186,7 @@ export const DailyFamiliarTasks: GarboTask[] = [
         myPrimestat().toString(),
         "Stench Damage",
         hippyStoneBroken() ? "PvP Fights" : "HP Regen",
-        "Red Ray"
+        "Red Ray",
       ),
     outfit: { familiar: $familiar`Crimbo Shrub` },
   },

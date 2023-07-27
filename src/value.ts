@@ -38,28 +38,28 @@ const specialValueLookup = new Map<Item, () => number>([
       Math.max(
         garboValue($item`mushroom tea`) - garboValue($item`soda water`),
         garboValue($item`mushroom whiskey`) - garboValue($item`fermenting powder`),
-        garboValue($item`mushroom filet`)
+        garboValue($item`mushroom filet`),
       ),
   ],
   [
     $item`little firkin`,
     () =>
       garboAverageValue(
-        ...$items`martini, screwdriver, strawberry daiquiri, margarita, vodka martini, tequila sunrise, bottle of Amontillado, barrel-aged martini, barrel gun`
+        ...$items`martini, screwdriver, strawberry daiquiri, margarita, vodka martini, tequila sunrise, bottle of Amontillado, barrel-aged martini, barrel gun`,
       ),
   ],
   [
     $item`normal barrel`,
     () =>
       garboAverageValue(
-        ...$items`a little sump'm sump'm, pink pony, rockin' wagon, roll in the hay, slip 'n' slide, slap and tickle`
+        ...$items`a little sump'm sump'm, pink pony, rockin' wagon, roll in the hay, slip 'n' slide, slap and tickle`,
       ),
   ],
   [
     $item`big tun`,
     () =>
       garboAverageValue(
-        ...$items`gibson, gin and tonic, mimosette, tequila sunset, vodka and tonic, zmobie`
+        ...$items`gibson, gin and tonic, mimosette, tequila sunset, vodka and tonic, zmobie`,
       ),
   ],
   [
@@ -70,42 +70,42 @@ const specialValueLookup = new Map<Item, () => number>([
     $item`dusty barrel`,
     () =>
       garboAverageValue(
-        ...$items`spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito`
+        ...$items`spicy bean burrito, spicy enchanted bean burrito, spicy jumping bean burrito`,
       ),
   ],
   [
     $item`disintegrating barrel`,
     () =>
       garboAverageValue(
-        ...$items`insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito`
+        ...$items`insanely spicy bean burrito, insanely spicy enchanted bean burrito, insanely spicy jumping bean burrito`,
       ),
   ],
   [
     $item`moist barrel`,
     () =>
       garboAverageValue(
-        ...$items`cast, concentrated magicalness pill, enchanted barbell, giant moxie weed, Mountain Stream soda`
+        ...$items`cast, concentrated magicalness pill, enchanted barbell, giant moxie weed, Mountain Stream soda`,
       ),
   ],
   [
     $item`rotting barrel`,
     () =>
       garboAverageValue(
-        ...$items`Doc Galaktik's Ailment Ointment, extra-strength strongness elixir, jug-o-magicalness, Marquis de Poivre soda, suntan lotion of moxiousness`
+        ...$items`Doc Galaktik's Ailment Ointment, extra-strength strongness elixir, jug-o-magicalness, Marquis de Poivre soda, suntan lotion of moxiousness`,
       ),
   ],
   [
     $item`mouldering barrel`,
     () =>
       garboAverageValue(
-        ...$items`creepy ginger ale, haunted battery, scroll of drastic healing, synthetic marrow, the funk`
+        ...$items`creepy ginger ale, haunted battery, scroll of drastic healing, synthetic marrow, the funk`,
       ),
   ],
   [
     $item`barnacled barrel`,
     () =>
       garboAverageValue(
-        ...$items`Alewife™ Ale, bazookafish bubble gum, beefy fish meat, eel battery, glistening fish meat, ink bladder, pufferfish spine, shark cartilage, slick fish meat, slug of rum, slug of shochu, slug of vodka, temporary teardrop tattoo`
+        ...$items`Alewife™ Ale, bazookafish bubble gum, beefy fish meat, eel battery, glistening fish meat, ink bladder, pufferfish spine, shark cartilage, slick fish meat, slug of rum, slug of shochu, slug of vodka, temporary teardrop tattoo`,
       ),
   ],
   [$item`fake hand`, () => 50000],
@@ -115,8 +115,8 @@ const specialValueLookup = new Map<Item, () => number>([
       // Exclude jick because he's rate-limited
       Math.max(
         ...$items`jar of psychoses (The Meatsmith), jar of psychoses (The Captain of the Gourd), jar of psychoses (The Crackpot Mystic), jar of psychoses (The Pretentious Artist), jar of psychoses (The Old Man), jar of psychoses (The Suspicious-Looking Guy)`.map(
-          (jar) => garboValue(jar)
-        )
+          (jar) => garboValue(jar),
+        ),
       ),
   ],
 ]);

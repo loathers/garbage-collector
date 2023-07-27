@@ -81,7 +81,7 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | Eight Days a Week Pill Keeper            | Accessory          | Used to double the next potion.                                                    |
 | Guzzlr tablet                            | Accessory          | Garbo uses Guzzlr to extract a bit of value from wanderers, by gaining guzzlrbucks |
 | Kremlin's Greatest Briefcase             | Accessory          | Banish, buffs, & martinis                                                          |
-| Lil' Doctor™ bag                         | Accessory          | Banish and 3 Free Insta-kills per day                                              |
+| Lil' Doctor™ bag                        | Accessory          | Banish and 3 Free Insta-kills per day                                              |
 | mayfly bait necklace                     | Accessory          | Used to snag a few more funfunds & freerun from BASIC elementals                   |
 | Powerful Glove                           | Accessory          | Monster Replacer; used in concert w/ Extrovermectin for additional Embezzlers      |
 | protonic accelerator pack                | Back               | Bust Ghosts for free fights & profit                                               |
@@ -148,11 +148,11 @@ So, to reiterate: please, _do not_ take this as a "suggested IOTMs to buy" list.
 | mumming trunk                            | Item               | Add +meat & +item to a few familiars for the rest of the day                       |
 | pantogram                                | Item               | Sacrifice for pants with specific enchantments.                                    |
 | replica bat-oomerang                     | Item               | 3 Free Insta-kills per day                                                         |
-| SongBoom™ BoomBox                        | Item               | Increase Meat Drops                                                                |
+| SongBoom™ BoomBox                       | Item               | Increase Meat Drops                                                                |
 | stinky cheese ball                       | Item               | Rollover adventures, Banish, meat/item drops                                       |
 | Time-Spinner                             | Item               | Copier                                                                             |
 | cursed magnifying glass                  | Off-hand           | Free Fights                                                                        |
-| Kramco Sausage-o-Matic™                  | Off-hand           | Extra adventures & a few free fights every day; 13-16 depending on turns played    |
+| Kramco Sausage-o-Matic™                 | Off-hand           | Extra adventures & a few free fights every day; 13-16 depending on turns played    |
 | latte lovers member's mug                | Off-hand           | Fill your mug for various enchantments (+5 fam / 40% meat / 20% item).             |
 | Cargo Cultist Shorts                     | Pants              | Grab a valuable item, once per day                                                 |
 | designer sweatpants                      | Pants              | Reduce 3x drunkenness per day                                                      |

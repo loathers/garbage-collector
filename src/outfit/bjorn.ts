@@ -11,7 +11,7 @@ import { BonusEquipMode, useLimitedDrops, valueOfItem, valueOfMeat } from "./lib
 
 function valueBjornModifiers(
   mode: BonusEquipMode,
-  familiar: Familiar
+  familiar: Familiar,
 ): (ridingFamiliar: Familiar) => number {
   const meatValue = valueOfMeat(mode);
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
@@ -39,7 +39,7 @@ function dropsValueFunction(drops: Item[] | Map<Item, number>): number {
 export function valueRider(
   mode: BonusEquipMode,
   familiar: Familiar,
-  rider: CrownOfThrones.FamiliarRider
+  rider: CrownOfThrones.FamiliarRider,
 ): number {
   const valueOfDrops =
     rider.dropPredicate?.() ?? true
@@ -53,14 +53,14 @@ export function valueRider(
 export function chooseBjorn(
   mode: BonusEquipMode,
   familiar: Familiar,
-  sim = false
+  sim = false,
 ): { familiar: Familiar; value: number } {
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   const fairyMultiplier = findFairyMultiplier(familiar);
   const ignoreLimitedDrops = sim || !useLimitedDrops(mode);
 
   const key = `Leprechaun:${leprechaunMultiplier.toFixed(2)};Fairy:${fairyMultiplier.toFixed(
-    2
+    2,
   )};ignoreLimitedDrops:${ignoreLimitedDrops}`;
 
   if (!CrownOfThrones.hasRiderMode(key)) {
@@ -80,7 +80,7 @@ export function chooseBjorn(
     value: CrownOfThrones.valueRider(
       result,
       valueBjornModifiers(mode, familiar),
-      dropsValueFunction
+      dropsValueFunction,
     ),
   };
 }

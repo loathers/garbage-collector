@@ -57,7 +57,7 @@ function floristFriars(): void {
     return;
   }
   [FloristFriar.StealingMagnolia, FloristFriar.AloeGuvnor, FloristFriar.PitcherPlant].forEach(
-    (flower) => flower.plant()
+    (flower) => flower.plant(),
   );
 }
 
@@ -106,7 +106,7 @@ function skipJuneCleaverChoices(): void {
       .sort(
         (a, b) =>
           valueJuneCleaverOption(juneCleaverChoiceValues[a][bestJuneCleaverOption(a)]) -
-          valueJuneCleaverOption(juneCleaverChoiceValues[b][bestJuneCleaverOption(b)])
+          valueJuneCleaverOption(juneCleaverChoiceValues[b][bestJuneCleaverOption(b)]),
       )
       .splice(0, 3);
   }
@@ -128,7 +128,7 @@ function juneCleave(): void {
     withProperty("recoveryScript", "", () => {
       garboAdventure(
         $location`Noob Cave`,
-        Macro.abortWithMsg(`Expected June Cleaver non-combat but ended up in combat.`)
+        Macro.abortWithMsg(`Expected June Cleaver non-combat but ended up in combat.`),
       );
       if (["Poetic Justice", "Lost and Found"].includes(get("lastEncounter"))) {
         uneffect($effect`Beaten Up`);
@@ -158,11 +158,11 @@ function funguySpores() {
     const value =
       0.75 *
         garboAverageValue(
-          ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`
+          ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`,
         ) +
       0.25 *
         garboAverageValue(
-          ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`
+          ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`,
         );
     if (
       mallPrice($item`Fun-Guy spore`) < value &&

@@ -26,7 +26,7 @@ const wanderFactories: WandererFactory[] = [
 function bestWander(
   type: DraggableFight,
   locationSkiplist: Location[],
-  nameSkiplist: string[]
+  nameSkiplist: string[],
 ): WandererLocation {
   const possibleLocations = new Map<Location, WandererLocation>();
 
@@ -67,7 +67,7 @@ function bestWander(
 function wanderWhere(
   type: DraggableFight,
   nameSkiplist: string[] = [],
-  locationSkiplist: Location[] = []
+  locationSkiplist: Location[] = [],
 ): Location {
   const candidate = bestWander(type, locationSkiplist, nameSkiplist);
   const failed = candidate.targets.filter((target) => !target.prepareTurn());
@@ -83,7 +83,7 @@ function wanderWhere(
     return wanderWhere(
       type,
       [...nameSkiplist, ...failed.map((target) => target.name)],
-      [...locationSkiplist, ...badLocation]
+      [...locationSkiplist, ...badLocation],
     );
   } else {
     const targets = candidate.targets.map((t) => t.name).join("; ");

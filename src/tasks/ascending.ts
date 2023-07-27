@@ -9,7 +9,7 @@ function bestLockPickChoice(): number {
   return (
     1 +
     toInt(
-      maxBy($items`Boris's key lime, Jarlsberg's key lime, Sneaky Pete's key lime`, garboValue)
+      maxBy($items`Boris's key lime, Jarlsberg's key lime, Sneaky Pete's key lime`, garboValue),
     ) -
     toInt($item`Boris's key lime`)
   );
