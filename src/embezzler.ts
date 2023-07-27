@@ -10,7 +10,6 @@ import {
   Location,
   mallPrice,
   myAdventures,
-  myFamiliar,
   myHash,
   print,
   retrieveItem,
@@ -44,7 +43,7 @@ import {
   sum,
 } from "libram";
 import { acquire } from "./acquire";
-import { garboAdventure, garboAdventureAuto, Macro, shouldRedigitize, withMacro } from "./combat";
+import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
 import {
@@ -165,7 +164,7 @@ export class EmbezzlerFight {
   run(options: { macro?: Macro; location?: Location; useAuto?: boolean } = {}): void {
     if (!this.available() || !myAdventures()) return;
     print(`Now running Embezzler fight: ${this.name}. Stay tuned for details.`);
-    const fightMacro = options.macro ?? embezzlerMacro();
+    const fightMacro = options.macro ?? Macro.embezzler();
     if (this.draggable) {
       this.execute(
         new EmbezzlerFightRunOptions(fightMacro, this.location(options.location), options.useAuto),
@@ -231,35 +230,6 @@ function faxEmbezzler(): void {
     throw new Error("Failed to acquire photocopied Knob Goblin Embezzler.");
   }
 }
-
-export const embezzlerMacro = (): Macro =>
-  Macro.if_(
-    embezzler,
-    Macro.if_($location`The Briny Deeps`, Macro.tryCopier($item`pulled green taffy`))
-      .externalIf(
-        myFamiliar() === $familiar`Reanimated Reanimator`,
-        Macro.trySkill($skill`Wink at`),
-      )
-      .externalIf(
-        myFamiliar() === $familiar`Obtuse Angel`,
-        Macro.trySkill($skill`Fire a badly romantic arrow`),
-      )
-      .externalIf(
-        get("beGregariousCharges") > 0 &&
-          (get("beGregariousMonster") !== embezzler || get("beGregariousFightsLeft") === 0),
-        Macro.trySkill($skill`Be Gregarious`),
-      )
-      .externalIf(
-        SourceTerminal.getDigitizeMonster() !== embezzler || shouldRedigitize(),
-        Macro.tryCopier($skill`Digitize`),
-      )
-      .tryCopier($item`Spooky Putty sheet`)
-      .tryCopier($item`Rain-Doh black box`)
-      .tryCopier($item`4-d camera`)
-      .tryCopier($item`unfinished ice sculpture`)
-      .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
-      .meatKill(),
-  ).abortWithMsg(`Expected ${embezzler} but encountered something else.`);
 
 const wandererFailsafeMacro = () =>
   Macro.externalIf(
