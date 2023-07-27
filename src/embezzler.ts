@@ -52,6 +52,7 @@ import {
   EMBEZZLER_MULTIPLIER,
   HIGHLIGHT,
   ltbRun,
+  propertyManager,
   setChoice,
   userConfirmDialog,
   WISH_VALUE,
@@ -189,6 +190,7 @@ export class EmbezzlerFight {
       (this.draggable && !suggestion) ||
       (this.draggable === "backup" && suggestion && suggestion.combatPercent < 100)
     ) {
+     propertyManager.setChoices(wanderer.getChoices(this.draggable))
       return wanderer.getTarget(this.draggable);
     }
     return suggestion ?? $location`Noob Cave`;
