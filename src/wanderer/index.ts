@@ -1,4 +1,4 @@
-import { Location, print, totalTurnsPlayed } from "kolmafia";
+import { Location, myTotalTurnsSpent, print, totalTurnsPlayed } from "kolmafia";
 import { $location, get, maxBy } from "libram";
 import { HIGHLIGHT, sober } from "../lib";
 import { guzzlrFactory } from "./guzzlr";
@@ -162,7 +162,7 @@ class WandererManager {
   targets: Partial<{ [x in DraggableFight]: Location }> = {};
 
   getTarget(draggableFight: DraggableFight, drunkSafe = true): Location {
-    const newKey = `${totalTurnsPlayed()};${get("familiarSweat")}`;
+    const newKey = `${myTotalTurnsSpent()};${totalTurnsPlayed()};${get("familiarSweat")}`;
     if (this.cacheKey !== newKey) this.clear();
     this.cacheKey = newKey;
 
