@@ -24,7 +24,7 @@ import { freeFightFamiliar } from "../familiar";
 import { ltbRun, propertyManager, realmAvailable } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
-import { unsupportedChoices } from "../wanderer/lib";
+import wanderer from "../wanderer";
 
 const ignoredSources = [
   "Orb Prediction",
@@ -105,7 +105,7 @@ export function useSpikolodonSpikes(): void {
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
 
-  const ncSkipper = unsupportedChoices.get(targetZone);
+  const ncSkipper = wanderer.unsupportedChoices.get(targetZone);
   if (ncSkipper) propertyManager.setChoices(ncSkipper);
 
   do {
