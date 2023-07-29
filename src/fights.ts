@@ -97,6 +97,7 @@ import {
   ensureEffect,
   FindActionSourceConstraints,
   findLeprechaunMultiplier,
+  FloristFriar,
   get,
   getAverageAdventures,
   getFoldGroup,
@@ -2701,11 +2702,8 @@ function yachtzee(): void {
       setChoice(918, getUMD ? 1 : 2);
 
       garboAdventureAuto($location`The Sunken Party Yacht`, Macro.abort());
-      if (
-        visitUrl("forestvillage.php").includes("friarcottage.gif") &&
-        !get("_floristPlantsUsed").split(",").includes("Crookweed")
-      ) {
-        cliExecute("florist plant Crookweed");
+      if (FloristFriar.have() && FloristFriar.Crookweed.available()) {
+        FloristFriar.Crookweed.plant();
       }
       if (get("lastEncounter") === "Yacht, See?") {
         garboAdventureAuto($location`The Sunken Party Yacht`, Macro.abort());

@@ -10,13 +10,13 @@ import {
   myTurncount,
   print,
   useSkill,
-  visitUrl,
 } from "kolmafia";
 import {
   $effect,
   $item,
   $location,
   $skill,
+  FloristFriar,
   get,
   getActiveSongs,
   have,
@@ -125,12 +125,8 @@ function _yachtzeeChain(): void {
       set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) - 1);
       set("_stenchJellyUsed", false);
     }
-    if (
-      plantCrookweed &&
-      visitUrl("forestvillage.php").includes("friarcottage.gif") &&
-      !get("_floristPlantsUsed").split(",").includes("Crookweed")
-    ) {
-      cliExecute("florist plant Crookweed");
+    if (plantCrookweed && FloristFriar.have() && FloristFriar.Crookweed.available()) {
+      FloristFriar.Crookweed.plant();
     }
     plantCrookweed = false;
 
