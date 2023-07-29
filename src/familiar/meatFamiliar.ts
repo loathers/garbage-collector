@@ -1,12 +1,5 @@
-import { Familiar, inebrietyLimit, myInebriety } from "kolmafia";
-import {
-  $familiar,
-  $item,
-  findFairyMultiplier,
-  findLeprechaunMultiplier,
-  have,
-  maxBy,
-} from "libram";
+import { Familiar } from "kolmafia";
+import { $familiar, findFairyMultiplier, findLeprechaunMultiplier, have, maxBy } from "libram";
 
 let fam: Familiar;
 
@@ -36,13 +29,7 @@ export function setBestLeprechaunAsMeatFamiliar(): void {
 
 export function meatFamiliar(): Familiar {
   if (!fam) {
-    if (
-      myInebriety() > inebrietyLimit() &&
-      have($familiar`Trick-or-Treating Tot`) &&
-      have($item`li'l pirate costume`)
-    ) {
-      fam = $familiar`Trick-or-Treating Tot`;
-    } else if (have($familiar`Robortender`)) {
+    if (have($familiar`Robortender`)) {
       fam = $familiar`Robortender`;
     } else {
       setBestLeprechaunAsMeatFamiliar();
