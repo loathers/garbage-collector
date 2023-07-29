@@ -21332,36 +21332,6 @@ function _arrayWithHoles18(arr) {
   if (Array.isArray(arr))
     return arr;
 }
-function ownKeys9(object, enumerableOnly) {
-  var keys = Object.keys(object);
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    enumerableOnly && (symbols = symbols.filter(function(sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    })), keys.push.apply(keys, symbols);
-  }
-  return keys;
-}
-function _objectSpread9(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = null != arguments[i] ? arguments[i] : {};
-    i % 2 ? ownKeys9(Object(source), true).forEach(function(key) {
-      _defineProperty19(target, key, source[key]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys9(Object(source)).forEach(function(key) {
-      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-    });
-  }
-  return target;
-}
-function _defineProperty19(obj, key, value) {
-  key = _toPropertyKey22(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
 function _createForOfIteratorHelper15(o, allowArrayLike) {
   var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
   if (!it) {
@@ -21421,6 +21391,36 @@ function _arrayLikeToArray27(arr, len) {
     arr2[i] = arr[i];
   return arr2;
 }
+function ownKeys9(object, enumerableOnly) {
+  var keys = Object.keys(object);
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    enumerableOnly && (symbols = symbols.filter(function(sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    })), keys.push.apply(keys, symbols);
+  }
+  return keys;
+}
+function _objectSpread9(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = null != arguments[i] ? arguments[i] : {};
+    i % 2 ? ownKeys9(Object(source), true).forEach(function(key) {
+      _defineProperty19(target, key, source[key]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys9(Object(source)).forEach(function(key) {
+      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+    });
+  }
+  return target;
+}
+function _defineProperty19(obj, key, value) {
+  key = _toPropertyKey22(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
 function _defineProperties19(target, props) {
   for (var i = 0; i < props.length; i++) {
     var descriptor = props[i];
@@ -21466,14 +21466,17 @@ var EngineOptions = /* @__PURE__ */ _createClass19(function EngineOptions2() {
 var grimoireCCS = "grimoire_macro";
 var Engine = /* @__PURE__ */ function() {
   function Engine2(tasks, options) {
+    var _this = this;
     _classCallCheck19(this, Engine2);
     this.attempts = {};
     this.propertyManager = new PropertiesManager();
     this.tasks_by_name = /* @__PURE__ */ new Map();
     this.cachedCcsContents = "";
-    this.tasks = tasks;
     this.options = options !== null && options !== void 0 ? options : {};
-    var _iterator = _createForOfIteratorHelper15(tasks), _step;
+    this.tasks = tasks.map(function(task2) {
+      return _objectSpread9(_objectSpread9({}, _this.options.default_task_options), task2);
+    });
+    var _iterator = _createForOfIteratorHelper15(this.tasks), _step;
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done; ) {
         var task = _step.value;
@@ -21559,11 +21562,10 @@ var Engine = /* @__PURE__ */ function() {
      */
   }, {
     key: "execute",
-    value: function execute(rawTask) {
+    value: function execute(task) {
       var _a, _b, _c, _d, _e;
       (0, import_kolmafia46.print)("");
-      (0, import_kolmafia46.print)("Executing ".concat(rawTask.name), "blue");
-      var task = _objectSpread9(_objectSpread9({}, this.options.default_task_options), rawTask);
+      (0, import_kolmafia46.print)("Executing ".concat(task.name), "blue");
       var postcondition = (_b = (_a = task.limit) === null || _a === void 0 ? void 0 : _a.guard) === null || _b === void 0 ? void 0 : _b.call(_a);
       this.acquireItems(task);
       this.acquireEffects(task);
@@ -31044,15 +31046,6 @@ var PostFreeFightTasks = [{
 }];
 
 // src/tasks/engine.ts
-function _defineProperty28(obj, key, value) {
-  key = _toPropertyKey32(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
 function _classCallCheck26(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -31201,24 +31194,18 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
   }]);
   return BaseGarboEngine2;
 }(Engine);
-var SAFE_OPTIONS = new EngineOptions();
-SAFE_OPTIONS.default_task_options = {
-  limit: {
-    skip: 1
-  }
-};
 var SafeGarboEngine = /* @__PURE__ */ function(_BaseGarboEngine) {
   _inherits8(SafeGarboEngine2, _BaseGarboEngine);
   var _super2 = _createSuper7(SafeGarboEngine2);
-  function SafeGarboEngine2() {
-    var _this;
+  function SafeGarboEngine2(tasks) {
     _classCallCheck26(this, SafeGarboEngine2);
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-    _this = _super2.call.apply(_super2, [this].concat(args));
-    _defineProperty28(_assertThisInitialized7(_this), "options", SAFE_OPTIONS);
-    return _this;
+    var options = new EngineOptions();
+    options.default_task_options = {
+      limit: {
+        skip: 1
+      }
+    };
+    return _super2.call(this, tasks, options);
   }
   return _createClass26(SafeGarboEngine2);
 }(BaseGarboEngine);
@@ -31767,7 +31754,7 @@ function _createClass27(Constructor, protoProps, staticProps) {
   Object.defineProperty(Constructor, "prototype", { writable: false });
   return Constructor;
 }
-function _defineProperty29(obj, key, value) {
+function _defineProperty28(obj, key, value) {
   key = _toPropertyKey33(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
@@ -31796,10 +31783,10 @@ var GarboWorkshed = /* @__PURE__ */ function() {
   function GarboWorkshed2(options) {
     var _options$minTurns;
     _classCallCheck27(this, GarboWorkshed2);
-    _defineProperty29(this, "workshed", void 0);
-    _defineProperty29(this, "done", void 0);
-    _defineProperty29(this, "action", void 0);
-    _defineProperty29(this, "minTurns", void 0);
+    _defineProperty28(this, "workshed", void 0);
+    _defineProperty28(this, "done", void 0);
+    _defineProperty28(this, "action", void 0);
+    _defineProperty28(this, "minTurns", void 0);
     this.workshed = options.workshed;
     if (options.done)
       this.done = options.done;
@@ -31863,8 +31850,8 @@ var GarboWorkshed = /* @__PURE__ */ function() {
   }]);
   return GarboWorkshed2;
 }();
-_defineProperty29(GarboWorkshed, "_nextWorkshed", null);
-_defineProperty29(GarboWorkshed, "_currentWorkshed", null);
+_defineProperty28(GarboWorkshed, "_nextWorkshed", null);
+_defineProperty28(GarboWorkshed, "_currentWorkshed", null);
 var _attemptedMakingTonics = false;
 var worksheds = [new GarboWorkshed({
   workshed: $item(_templateObject708 || (_templateObject708 = _taggedTemplateLiteral71(["model train set"]))),
@@ -32995,14 +32982,14 @@ function _objectSpread12(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = null != arguments[i] ? arguments[i] : {};
     i % 2 ? ownKeys12(Object(source), true).forEach(function(key) {
-      _defineProperty30(target, key, source[key]);
+      _defineProperty29(target, key, source[key]);
     }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys12(Object(source)).forEach(function(key) {
       Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
     });
   }
   return target;
 }
-function _defineProperty30(obj, key, value) {
+function _defineProperty29(obj, key, value) {
   key = _toPropertyKey34(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
@@ -33328,10 +33315,10 @@ var FreeFight = /* @__PURE__ */ function() {
   function FreeFight2(available3, run, tentacle) {
     var options = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
     _classCallCheck28(this, FreeFight2);
-    _defineProperty30(this, "available", void 0);
-    _defineProperty30(this, "run", void 0);
-    _defineProperty30(this, "tentacle", void 0);
-    _defineProperty30(this, "options", void 0);
+    _defineProperty29(this, "available", void 0);
+    _defineProperty29(this, "run", void 0);
+    _defineProperty29(this, "tentacle", void 0);
+    _defineProperty29(this, "options", void 0);
     this.available = available3;
     this.run = run;
     this.tentacle = tentacle;
@@ -33399,8 +33386,8 @@ var FreeRunFight = /* @__PURE__ */ function(_FreeFight) {
     }, false, _objectSpread12(_objectSpread12({}, options), {}, {
       macroAllowsFamiliarActions: false
     }));
-    _defineProperty30(_assertThisInitialized8(_this), "freeRun", void 0);
-    _defineProperty30(_assertThisInitialized8(_this), "constraints", void 0);
+    _defineProperty29(_assertThisInitialized8(_this), "freeRun", void 0);
+    _defineProperty29(_assertThisInitialized8(_this), "constraints", void 0);
     _this.freeRun = run;
     _this.constraints = freeRunPicker;
     return _this;
@@ -37811,14 +37798,14 @@ function _objectSpread13(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = null != arguments[i] ? arguments[i] : {};
     i % 2 ? ownKeys13(Object(source), true).forEach(function(key) {
-      _defineProperty31(target, key, source[key]);
+      _defineProperty30(target, key, source[key]);
     }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys13(Object(source)).forEach(function(key) {
       Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
     });
   }
   return target;
 }
-function _defineProperty31(obj, key, value) {
+function _defineProperty30(obj, key, value) {
   key = _toPropertyKey35(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
@@ -38631,7 +38618,7 @@ function _classCallCheck29(instance, Constructor) {
     throw new TypeError("Cannot call a class as a function");
   }
 }
-function _defineProperty32(obj, key, value) {
+function _defineProperty31(obj, key, value) {
   key = _toPropertyKey36(key);
   if (key in obj) {
     Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
@@ -38658,12 +38645,12 @@ function _toPrimitive36(input, hint) {
 }
 var YachtzeeDietEntry = /* @__PURE__ */ _createClass29(function YachtzeeDietEntry2(name, quantity, fullness, drunkenness, spleen, action) {
   _classCallCheck29(this, YachtzeeDietEntry2);
-  _defineProperty32(this, "name", void 0);
-  _defineProperty32(this, "quantity", void 0);
-  _defineProperty32(this, "fullness", void 0);
-  _defineProperty32(this, "drunkenness", void 0);
-  _defineProperty32(this, "spleen", void 0);
-  _defineProperty32(this, "action", void 0);
+  _defineProperty31(this, "name", void 0);
+  _defineProperty31(this, "quantity", void 0);
+  _defineProperty31(this, "fullness", void 0);
+  _defineProperty31(this, "drunkenness", void 0);
+  _defineProperty31(this, "spleen", void 0);
+  _defineProperty31(this, "action", void 0);
   this.name = name;
   this.quantity = quantity;
   this.fullness = fullness;
@@ -38683,9 +38670,9 @@ function ensureConsumable(name, n, fullness, inebriety, spleenUse) {
 var YachtzeeDietUtils = /* @__PURE__ */ function() {
   function YachtzeeDietUtils2(action) {
     _classCallCheck29(this, YachtzeeDietUtils2);
-    _defineProperty32(this, "dietArray", void 0);
-    _defineProperty32(this, "pref", void 0);
-    _defineProperty32(this, "originalPref", void 0);
+    _defineProperty31(this, "dietArray", void 0);
+    _defineProperty31(this, "pref", void 0);
+    _defineProperty31(this, "originalPref", void 0);
     this.originalPref = !get("_garboYachtzeeChainDiet") ? "" : get("_garboYachtzeeChainDiet");
     this.pref = "";
     this.dietArray = [new YachtzeeDietEntry("extra-greasy slider", 0, 5, 0, -5, function(n) {
