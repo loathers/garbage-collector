@@ -9,13 +9,13 @@ import {
   gamedayToInt,
   getClanLounge,
   gnomadsAvailable,
+  guildStoreAvailable,
   handlingChoice,
   holiday,
   inebrietyLimit,
   Item,
   itemAmount,
   mallPrice,
-  myAscensions,
   myClass,
   myDaycount,
   myHash,
@@ -366,20 +366,20 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Unlock Cemetery",
-    ready: () => get("lastGuildStoreOpen") >= myAscensions(),
+    ready: () => guildStoreAvailable(),
     completed: () => canAdventure($location`The Unquiet Garves`),
     do: () => visitUrl("guild.php?place=scg"),
-    limit: { soft: 3 }, // Sometimes need to cycle through some dialogue
+    limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
   },
   {
     name: "Unlock Woods",
-    ready: () => have($item`bitchin' meatcar`),
+    ready: () => guildStoreAvailable() && have($item`bitchin' meatcar`),
     completed: () => canAdventure($location`The Spooky Forest`),
     do: (): void => {
       visitUrl("guild.php?place=paco");
       if (handlingChoice()) runChoice(1);
     },
-    limit: { soft: 3 }, // Sometimes need to cycle through some dialogue
+    limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
   },
   {
     name: "Configure I Voted! Sticker",
@@ -419,7 +419,7 @@ const DailyTasks: GarboTask[] = [
     ready: () => get("getawayCampsiteUnlocked"),
     completed: () => get("_campAwayCloudBuffs") + get("_campAwaySmileBuffs") === 4,
     do: () => visitUrl("place.php?whichplace=campaway&action=campaway_sky"),
-    limit: { soft: 4 },
+    limit: { skip: 4 },
   },
   {
     name: "Verify Horsery",
@@ -471,7 +471,7 @@ const DailyTasks: GarboTask[] = [
     ready: () => SourceTerminal.have(),
     completed: () => SourceTerminal.enhanceUsesRemaining() === 0,
     do: () => SourceTerminal.enhance($effect`meat.enh`),
-    limit: { soft: 3 },
+    limit: { skip: 3 },
   },
   {
     name: "Source Terminal Enquire",
