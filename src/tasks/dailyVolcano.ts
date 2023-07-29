@@ -106,7 +106,7 @@ const DailyVolcanoTasks: GarboTask[] = [
     outfit: { modifier: "disco style" },
   },
   {
-    name: "Free Volcano Mining",
+    name: "Free Mining",
     ready: () => realmAvailable("hot") && have($skill`Unaccompanied Miner`),
     completed: () => get("_unaccompaniedMinerUsed") >= 5,
     do: () => cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`),
