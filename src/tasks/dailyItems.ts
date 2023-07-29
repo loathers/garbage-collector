@@ -1,4 +1,4 @@
-import { AcquireItem } from "grimoire-kolmafia";
+import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   abort,
   buy,
@@ -122,7 +122,7 @@ function pickCargoPocket(): void {
 }
 
 let triedForest = false;
-export const DailyItemTasks: GarboTask[] = [
+const DailyItemTasks: GarboTask[] = [
   ...SummonTomes.map(
     (skill) =>
       <GarboTask>{
@@ -420,3 +420,8 @@ export const DailyItemTasks: GarboTask[] = [
     },
   ],
 ];
+
+export const DailyItemsQuest: Quest<GarboTask> = {
+  name: "Daily Items",
+  tasks: DailyItemTasks,
+};

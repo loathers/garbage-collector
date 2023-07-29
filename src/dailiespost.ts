@@ -1,6 +1,6 @@
-import { PostFreeFightTasks } from "./tasks/postFreeFight";
-import { runSafeGarboTasks } from "./tasks/engine";
+import { PostFreeFightQuest } from "./tasks/postFreeFight";
+import { runSafeGarboQuests } from "./tasks/engine";
 
 export function postFreeFightDailySetup(): void {
-  runSafeGarboTasks(PostFreeFightTasks);
+  runSafeGarboQuests([PostFreeFightQuest]);
 }

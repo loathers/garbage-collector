@@ -4,6 +4,7 @@ import { globalOptions } from "../config";
 import { freeCrafts } from "../lib";
 import { garboValue } from "../value";
 import { GarboTask } from "./engine";
+import { Quest } from "grimoire-kolmafia";
 
 function bestLockPickChoice(): number {
   return (
@@ -15,7 +16,7 @@ function bestLockPickChoice(): number {
   );
 }
 
-export const AscendingTasks: GarboTask[] = [
+const AscendingTasks: GarboTask[] = [
   {
     name: "Lock Picking",
     ready: () => have($skill`Lock Picking`) && globalOptions.ascend,
@@ -53,3 +54,8 @@ export const AscendingTasks: GarboTask[] = [
       get("hasChef"),
   })),
 ];
+
+export const AscendingQuest: Quest<GarboTask> = {
+  name: "Ascend",
+  tasks: AscendingTasks,
+};

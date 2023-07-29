@@ -42,6 +42,7 @@ import {
 import { garboValue } from "../value";
 import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
+import { Quest } from "grimoire-kolmafia";
 
 function newarkValue(): number {
   const lastCalculated = get("garbo_newarkValueDate", 0);
@@ -140,7 +141,7 @@ export function prepRobortender(): void {
   }
 }
 
-export const DailyFamiliarTasks: GarboTask[] = [
+const DailyFamiliarTasks: GarboTask[] = [
   {
     name: "Prepare Shorter-Order Cook",
     ready: () => have($familiar`Shorter-Order Cook`) && have($item`blue plate`),
@@ -220,3 +221,8 @@ export const DailyFamiliarTasks: GarboTask[] = [
     },
   },
 ];
+
+export const DailyFamiliarsQuest: Quest<GarboTask> = {
+  name: "Daily Familiars",
+  tasks: DailyFamiliarTasks,
+};

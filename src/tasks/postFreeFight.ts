@@ -1,4 +1,4 @@
-import { OutfitSpec, Task } from "grimoire-kolmafia";
+import { OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
   cliExecute,
   mallPrice,
@@ -12,6 +12,7 @@ import {
 import { $class, $item, $skill, $thrall, get, have, maxBy } from "libram";
 import { baseMeat } from "../lib";
 import { estimatedGarboTurns } from "../turns";
+import { GarboTask } from "./engine";
 
 function bestVykeaLevel(): number {
   const vykeas = [
@@ -36,7 +37,7 @@ function bestVykeaLevel(): number {
   return 0;
 }
 
-export const PostFreeFightTasks: Task[] = [
+const PostFreeFightTasks: GarboTask[] = [
   {
     name: "Configure Vykea",
     ready: () => get("_VYKEACompanionLevel") === 0 && bestVykeaLevel() > 0,
@@ -65,3 +66,8 @@ export const PostFreeFightTasks: Task[] = [
     do: () => use($item`experimental carbon fiber pasta additive`),
   },
 ];
+
+export const PostFreeFightQuest: Quest<GarboTask> = {
+  name: "Post Free Fight",
+  tasks: PostFreeFightTasks,
+};

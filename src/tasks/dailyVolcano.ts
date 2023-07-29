@@ -1,4 +1,4 @@
-import { AcquireItem } from "grimoire-kolmafia";
+import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   cliExecute,
   Item,
@@ -84,7 +84,7 @@ function checkVolcanoQuest() {
   }
 }
 
-export const DailyVolcanoTasks: GarboTask[] = [
+const DailyVolcanoTasks: GarboTask[] = [
   {
     name: "Volcano Quest",
     ready: () => realmAvailable("hot"),
@@ -121,3 +121,8 @@ export const DailyVolcanoTasks: GarboTask[] = [
     },
   },
 ];
+
+export const VolcanoQuest: Quest<GarboTask> = {
+  name: "Volcano",
+  tasks: DailyVolcanoTasks,
+};

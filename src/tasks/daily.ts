@@ -62,6 +62,7 @@ import { baseMeat, HIGHLIGHT } from "../lib";
 import { garboValue } from "../value";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
+import { Quest } from "grimoire-kolmafia";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
@@ -347,7 +348,7 @@ export function configureSnojo(): void {
   }
 }
 
-export const DailyTasks: GarboTask[] = [
+const DailyTasks: GarboTask[] = [
   {
     name: "Chibi Buddy",
     ready: () => have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`),
@@ -590,3 +591,8 @@ export const DailyTasks: GarboTask[] = [
     do: () => retrieveItems.forEach((item) => retrieveItem(item)),
   },
 ];
+
+export const DailyQuest: Quest<GarboTask> = {
+  name: "Daily",
+  tasks: DailyTasks,
+};
