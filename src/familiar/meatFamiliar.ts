@@ -1,11 +1,5 @@
 import { Familiar } from "kolmafia";
-import {
-  $familiar,
-  findFairyMultiplier,
-  findLeprechaunMultiplier,
-  have,
-  maxBy,
-} from "libram";
+import { $familiar, findFairyMultiplier, findLeprechaunMultiplier, have, maxBy } from "libram";
 
 let fam: Familiar;
 
