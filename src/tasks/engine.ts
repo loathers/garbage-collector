@@ -22,9 +22,9 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
  */
 export class SafeGarboEngine extends BaseGarboEngine {
   constructor(tasks: GarboTask[]) {
-    super(tasks);
-    this.options = new EngineOptions();
-    this.options.default_task_options = { limit: { skip: 1 } };
+    const options = new EngineOptions();
+    options.default_task_options = { limit: { skip: 1 } };
+    super(tasks, options);
   }
 }
 
