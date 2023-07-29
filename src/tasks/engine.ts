@@ -16,15 +16,16 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   }
 }
 
-const SAFE_OPTIONS = new EngineOptions();
-SAFE_OPTIONS.default_task_options = { limit: { skip: 1 } };
-
 /**
  * A safe engine for Garbo!
  * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
  */
 export class SafeGarboEngine extends BaseGarboEngine {
-  options = SAFE_OPTIONS;
+  constructor(tasks: GarboTask[]) {
+    super(tasks);
+    this.options = new EngineOptions();
+    this.options.default_task_options = { limit: { skip: 1 } };
+  }
 }
 
 export function runSafeGarboTasks(tasks: GarboTask[]): void {
