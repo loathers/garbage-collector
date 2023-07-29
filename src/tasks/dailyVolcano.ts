@@ -86,7 +86,7 @@ function checkVolcanoQuest() {
 
 const DailyVolcanoTasks: GarboTask[] = [
   {
-    name: "Volcano Quest",
+    name: "Quest",
     ready: () => realmAvailable("hot"),
     completed: () => get("_volcanoItemRedeemed"),
     do: checkVolcanoQuest,
