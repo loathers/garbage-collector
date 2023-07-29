@@ -182,7 +182,7 @@ import {
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
 import { garboValue } from "./value";
-import { wanderWhere } from "./wanderer";
+import wanderer from "./wanderer";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1192,7 +1192,10 @@ const freeFightSources = [
 
   new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => adv1(wanderWhere("wanderer"), -1, ""),
+    () => {
+      propertyManager.setChoices(wanderer.getChoices("wanderer"));
+      adv1(wanderer.getTarget("wanderer"), -1, "");
+    },
     true,
     {
       spec: { offhand: $item`Kramco Sausage-o-Matic™` },
@@ -1891,7 +1894,8 @@ const freeRunFightSources = [
       get("_hipsterAdv") < 7 &&
       (have($familiar`Mini-Hipster`) || have($familiar`Artistic Goth Kid`)),
     (runSource: ActionSource) => {
-      const targetLocation = wanderWhere("backup");
+      propertyManager.setChoices(wanderer.getChoices("backup"));
+      const targetLocation = wanderer.getTarget("backup");
       garboAdventure(
         targetLocation,
         Macro.if_(
@@ -2300,9 +2304,10 @@ export function doSausage(): void {
   let currentTurncount;
   do {
     currentTurncount = myTurncount();
+    propertyManager.setChoices(wanderer.getChoices("wanderer"));
     const goblin = $monster`sausage goblin`;
     garboAdventureAuto(
-      wanderWhere("wanderer"),
+      wanderer.getTarget("wanderer"),
       Macro.if_(goblin, Macro.basicCombat())
         .ifHolidayWanderer(Macro.basicCombat())
         .abortWithMsg(`Expected ${goblin} but got something else.`),
@@ -2505,7 +2510,8 @@ function voidMonster(): void {
   }
 
   freeFightOutfit({ equip: $items`cursed magnifying glass` }).dress();
-  garboAdventure(wanderWhere("wanderer"), Macro.basicCombat());
+  propertyManager.setChoices(wanderer.getChoices("wanderer"));
+  garboAdventure(wanderer.getTarget("wanderer"), Macro.basicCombat());
   postCombatActions();
 }
 

@@ -1,4 +1,4 @@
-import { AcquireItem, Task } from "grimoire-kolmafia";
+import { AcquireItem } from "grimoire-kolmafia";
 import {
   cliExecute,
   Item,
@@ -26,6 +26,7 @@ import {
 import { globalOptions } from "../config";
 import { HIGHLIGHT, logMessage, realmAvailable } from "../lib";
 import { garboValue } from "../value";
+import { GarboTask } from "./engine";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
@@ -83,12 +84,12 @@ function checkVolcanoQuest() {
   }
 }
 
-export const DailyVolcanoTasks: Task[] = [
+export const DailyVolcanoTasks: GarboTask[] = [
   {
     name: "Volcano Quest",
     ready: () => realmAvailable("hot"),
     completed: () => get("_volcanoItemRedeemed"),
-    do: () => checkVolcanoQuest(),
+    do: checkVolcanoQuest,
   },
   {
     name: "Free Volcoino",

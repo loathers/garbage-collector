@@ -1,4 +1,4 @@
-import { AcquireItem, Task } from "grimoire-kolmafia";
+import { AcquireItem } from "grimoire-kolmafia";
 import {
   abort,
   buy,
@@ -46,6 +46,7 @@ import { doingExtrovermectin } from "../extrovermectin";
 import { coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../value";
+import { GarboTask } from "./engine";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
@@ -121,10 +122,10 @@ function pickCargoPocket(): void {
 }
 
 let triedForest = false;
-export const DailyItemTasks: Task[] = [
+export const DailyItemTasks: GarboTask[] = [
   ...SummonTomes.map(
     (skill) =>
-      <Task>{
+      <GarboTask>{
         name: `{skill}`,
         ready: () => have(skill),
         completed: () => skill.dailylimit === 0,
@@ -192,7 +193,7 @@ export const DailyItemTasks: Task[] = [
       name: "Cheat Deck of Every Card",
       ready: () => have($item`Deck of Every Card`),
       completed: () => Math.floor(3 - get("_deckCardsDrawn") / 5) === 0,
-      do: () => drawBestCards(),
+      do: drawBestCards,
     },
     {
       name: "Source Terminal Extrude",
@@ -297,7 +298,7 @@ export const DailyItemTasks: Task[] = [
       name: "Cargo Shorts Pocket",
       ready: () => have($item`Cargo Cultist Shorts`),
       completed: () => get("_cargoPocketEmptied"),
-      do: () => pickCargoPocket(),
+      do: pickCargoPocket,
     },
     {
       name: "Time-Spinner Gin",

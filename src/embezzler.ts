@@ -51,12 +51,13 @@ import {
   EMBEZZLER_MULTIPLIER,
   HIGHLIGHT,
   ltbRun,
+  propertyManager,
   setChoice,
   userConfirmDialog,
   WISH_VALUE,
 } from "./lib";
 import { waterBreathingEquipment } from "./outfit";
-import { DraggableFight, wanderWhere } from "./wanderer";
+import wanderer, { DraggableFight } from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -188,7 +189,8 @@ export class EmbezzlerFight {
       (this.draggable && !suggestion) ||
       (this.draggable === "backup" && suggestion && suggestion.combatPercent < 100)
     ) {
-      return wanderWhere(this.draggable);
+      propertyManager.setChoices(wanderer.getChoices(this.draggable));
+      return wanderer.getTarget(this.draggable);
     }
     return suggestion ?? $location`Noob Cave`;
   }

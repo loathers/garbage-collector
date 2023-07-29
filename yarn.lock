@@ -2420,10 +2420,10 @@ graphemer@^1.4.0:
   resolved "https://registry.yarnpkg.com/graphemer/-/graphemer-1.4.0.tgz#fb2f1d55e0e3a1849aeffc90c4fa0dd53a0e66c6"
   integrity sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==
 
-grimoire-kolmafia@0.3.18:
-  version "0.3.18"
-  resolved "https://registry.yarnpkg.com/grimoire-kolmafia/-/grimoire-kolmafia-0.3.18.tgz#363e5a5ca7fcb2c81a325c51ca100236491e4e70"
-  integrity sha512-+zVTiIPlS2MTNQcBNfto1C3g0B/8L00k+1HcUd09Ui3QwoCkdyA+0owMfbWUgfZxKHgDarPOdoVcLWRN12poag==
+grimoire-kolmafia@^0.3.21:
+  version "0.3.21"
+  resolved "https://registry.yarnpkg.com/grimoire-kolmafia/-/grimoire-kolmafia-0.3.21.tgz#3f9ca60ecd2acd9a2c11753d8a052c66205d7373"
+  integrity sha512-hmaphYwJAhas5dbWsjBb2Nrbjb9FLWc8ykAoZo7SFsgVyfdcXCk9v1wWRZFSfPNDupIdwTccP3REgpiyle0mLQ==
   dependencies:
     core-js "^3.16.4"
 
@@ -2640,10 +2640,10 @@ json5@^2.2.2:
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
   integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
 
-kolmafia@^5.27493.0:
-  version "5.27493.0"
-  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.27493.0.tgz#81763a8e14ea713f44e09ba74095447c56ffabf2"
-  integrity sha512-yFAbiX6mDYCzMvfQlfobVufNYerw+C59G8a6USd5y3PAB45f0aTNkbzvEm07Gd/rxrH0cMJLLucUfcBvvc1vVQ==
+kolmafia@^5.27495.0:
+  version "5.27495.0"
+  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.27495.0.tgz#8bbc243f0c9edd44fed8aaad72cab01f9d5cfdfb"
+  integrity sha512-hqD15RhCIfpMeD7RYq0KkH1V+2Myc+omaNDZrEpmXyTMNYl/rdoTtjR5Sqb1mzD43z2GOND8Exn+qVdGA+3QPA==
 
 levn@^0.4.1:
   version "0.4.1"

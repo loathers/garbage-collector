@@ -1,4 +1,3 @@
-import { Task } from "grimoire-kolmafia";
 import {
   adv1,
   canadiaAvailable,
@@ -62,12 +61,12 @@ import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";
 import { garboValue } from "../value";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import { GarboTask } from "./engine";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 
 let latteRefreshed = false;
-let horseryRefreshed = false;
 let attemptCompletingBarfQuest = true;
 let snojoConfigured = false;
 
@@ -348,13 +347,12 @@ export function configureSnojo(): void {
   }
 }
 
-export const DailyTasks: Task[] = [
+export const DailyTasks: GarboTask[] = [
   {
     name: "Chibi Buddy",
     ready: () => have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`),
     completed: () => get("_chibiChanged", true),
     do: () => cliExecute("chibi chat"),
-    limit: { soft: 1 },
   },
   {
     name: "Refresh Latte",
@@ -384,7 +382,6 @@ export const DailyTasks: Task[] = [
   },
   {
     name: "Configure I Voted! Sticker",
-    ready: () => true,
     completed: () => have($item`"I Voted!" sticker`),
     do: voterSetup,
   },
@@ -425,11 +422,9 @@ export const DailyTasks: Task[] = [
   },
   {
     name: "Verify Horsery",
-    ready: () => true,
-    completed: () => horseryRefreshed || get("horseryAvailable"),
+    completed: () => get("horseryAvailable"),
     do: (): void => {
       visitUrl("place.php?whichplace=town_right");
-      horseryRefreshed = true;
     },
   },
   {
