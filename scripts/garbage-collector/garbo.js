@@ -34759,8 +34759,8 @@ function yachtzee() {
       garboValue($item(_templateObject6172 || (_templateObject6172 = _taggedTemplateLiteral73(["Ultimate Mind Destroyer"])))) >= 2e3 * (1 + (0, import_kolmafia83.numericModifier)("meat drop") / 100) && (!lastUMDDate || today - Date.parse(lastUMDDate) >= 1e3 * 60 * 60 * 24 * 7);
       setChoice(918, getUMD ? 1 : 2);
       garboAdventureAuto($location(_templateObject6182 || (_templateObject6182 = _taggedTemplateLiteral73(["The Sunken Party Yacht"]))), Macro2.abort());
-      if ((0, import_kolmafia83.visitUrl)("forestvillage.php").includes("friarcottage.gif") && !get("_floristPlantsUsed").split(",").includes("Crookweed")) {
-        (0, import_kolmafia83.cliExecute)("florist plant Crookweed");
+      if (Florist_exports.have() && Florist_exports.Crookweed.available()) {
+        Florist_exports.Crookweed.plant();
       }
       if (get("lastEncounter") === "Yacht, See?") {
         garboAdventureAuto($location(_templateObject6192 || (_templateObject6192 = _taggedTemplateLiteral73(["The Sunken Party Yacht"]))), Macro2.abort());
@@ -39450,8 +39450,8 @@ function _yachtzeeChain() {
       _set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) - 1);
       _set("_stenchJellyUsed", false);
     }
-    if (plantCrookweed && (0, import_kolmafia96.visitUrl)("forestvillage.php").includes("friarcottage.gif") && !get("_floristPlantsUsed").split(",").includes("Crookweed")) {
-      (0, import_kolmafia96.cliExecute)("florist plant Crookweed");
+    if (plantCrookweed && Florist_exports.have() && Florist_exports.Crookweed.available()) {
+      Florist_exports.Crookweed.plant();
     }
     plantCrookweed = false;
     doSausage();
