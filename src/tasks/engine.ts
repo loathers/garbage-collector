@@ -1,4 +1,4 @@
-import { Engine, EngineOptions, StrictCombatTask } from "grimoire-kolmafia";
+import { Engine, EngineOptions, getTasks, Quest, StrictCombatTask } from "grimoire-kolmafia";
 import { safeInterrupt } from "../lib";
 import wanderer from "../wanderer";
 
@@ -38,6 +38,10 @@ export function runSafeGarboTasks(tasks: GarboTask[]): void {
   }
 }
 
+export function runSafeGarboQuests(quests: Quest<GarboTask>[]): void {
+  runSafeGarboTasks(getTasks(quests));
+}
+
 export function runGarboTasks(tasks: GarboTask[]): void {
   const engine = new BaseGarboEngine(tasks);
 
@@ -46,4 +50,8 @@ export function runGarboTasks(tasks: GarboTask[]): void {
   } finally {
     engine.destruct();
   }
+}
+
+export function runGarboQuests(quests: Quest<GarboTask>[]): void {
+  runGarboTasks(getTasks(quests));
 }

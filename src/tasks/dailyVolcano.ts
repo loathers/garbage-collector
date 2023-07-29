@@ -1,4 +1,4 @@
-import { AcquireItem } from "grimoire-kolmafia";
+import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   cliExecute,
   Item,
@@ -84,9 +84,9 @@ function checkVolcanoQuest() {
   }
 }
 
-export const DailyVolcanoTasks: GarboTask[] = [
+const DailyVolcanoTasks: GarboTask[] = [
   {
-    name: "Volcano Quest",
+    name: "Quest",
     ready: () => realmAvailable("hot"),
     completed: () => get("_volcanoItemRedeemed"),
     do: checkVolcanoQuest,
@@ -106,7 +106,7 @@ export const DailyVolcanoTasks: GarboTask[] = [
     outfit: { modifier: "disco style" },
   },
   {
-    name: "Free Volcano Mining",
+    name: "Free Mining",
     ready: () => realmAvailable("hot") && have($skill`Unaccompanied Miner`),
     completed: () => get("_unaccompaniedMinerUsed") >= 5,
     do: () => cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`),
@@ -121,3 +121,8 @@ export const DailyVolcanoTasks: GarboTask[] = [
     },
   },
 ];
+
+export const VolcanoQuest: Quest<GarboTask> = {
+  name: "Volcano",
+  tasks: DailyVolcanoTasks,
+};

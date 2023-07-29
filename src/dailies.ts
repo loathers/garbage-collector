@@ -1,16 +1,16 @@
-import { DailyTasks } from "./tasks/daily";
-import { DailyItemTasks } from "./tasks/dailyItems";
-import { DailyVolcanoTasks } from "./tasks/dailyVolcano";
-import { DailyFamiliarTasks } from "./tasks/dailyFamiliars";
-import { runSafeGarboTasks } from "./tasks/engine";
-import { AscendingTasks } from "./tasks/ascending";
+import { DailyQuest } from "./tasks/daily";
+import { DailyItemsQuest } from "./tasks/dailyItems";
+import { VolcanoQuest } from "./tasks/dailyVolcano";
+import { DailyFamiliarsQuest } from "./tasks/dailyFamiliars";
+import { runSafeGarboQuests } from "./tasks/engine";
+import { AscendingQuest } from "./tasks/ascending";
 
 export function dailySetup(): void {
-  runSafeGarboTasks([
-    ...DailyFamiliarTasks,
-    ...DailyItemTasks,
-    ...DailyVolcanoTasks,
-    ...DailyTasks,
-    ...AscendingTasks,
+  runSafeGarboQuests([
+    DailyFamiliarsQuest,
+    DailyItemsQuest,
+    VolcanoQuest,
+    DailyQuest,
+    AscendingQuest,
   ]);
 }

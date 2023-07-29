@@ -1,4 +1,4 @@
-import { AcquireItem } from "grimoire-kolmafia";
+import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   abort,
   buy,
@@ -122,7 +122,7 @@ function pickCargoPocket(): void {
 }
 
 let triedForest = false;
-export const DailyItemTasks: GarboTask[] = [
+const DailyItemTasks: GarboTask[] = [
   ...SummonTomes.map(
     (skill) =>
       <GarboTask>{
@@ -203,7 +203,7 @@ export const DailyItemTasks: GarboTask[] = [
         garboValue(bestExtrude()) < garboValue($item`Source essence`) * 10,
       do: () => SourceTerminal.extrude(bestExtrude()),
       acquire: [{ item: $item`Source essence`, num: 10 }],
-      limit: { soft: 3 },
+      limit: { skip: 3 },
     },
     {
       name: "Internet Meme Shop viral video",
@@ -262,7 +262,7 @@ export const DailyItemTasks: GarboTask[] = [
       ready: () => have($skill`Request Sandwich`),
       completed: () => get("_requestSandwichSucceeded"),
       do: () => useSkill($skill`Request Sandwich`),
-      limit: { soft: 10 },
+      limit: { skip: 10 },
     },
     {
       name: "Demand Sandwich",
@@ -420,3 +420,8 @@ export const DailyItemTasks: GarboTask[] = [
     },
   ],
 ];
+
+export const DailyItemsQuest: Quest<GarboTask> = {
+  name: "Daily Items",
+  tasks: DailyItemTasks,
+};
