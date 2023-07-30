@@ -78,7 +78,6 @@ import {
   $monster,
   $monsters,
   $path,
-  $phyla,
   $phylum,
   $skill,
   $slot,
@@ -86,7 +85,6 @@ import {
   $thrall,
   ActionSource,
   AsdonMartin,
-  ChateauMantegna,
   CinchoDeMayo,
   clamp,
   ClosedCircuitPayphone,
@@ -110,7 +108,6 @@ import {
   SourceTerminal,
   sum,
   tryFindFreeRun,
-  TunnelOfLove,
   undelay,
   uneffect,
   Witchess,
@@ -732,60 +729,6 @@ const stunDurations = new Map<Skill | Item, Delayed<number>>([
 ]);
 
 const freeFightSources = [
-  new FreeFight(
-    () =>
-      have($item`protonic accelerator pack`) &&
-      get("questPAGhost") !== "unstarted" &&
-      get("ghostLocation") !== null,
-    () => {
-      const ghostLocation = get("ghostLocation");
-      if (!ghostLocation) return;
-      garboAdventure(ghostLocation, Macro.ghostBustin());
-    },
-    true,
-    {
-      spec: { back: $item`protonic accelerator pack` },
-    },
-  ),
-  new FreeFight(
-    () =>
-      molemanReady() && (get("_thesisDelivered") || !have($familiar`Pocket Professor`)) ? 1 : 0,
-    () => withMacro(Macro.basicCombat(), () => use($item`molehill mountain`)),
-    true,
-  ),
-  new FreeFight(
-    () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
-    () => {
-      TunnelOfLove.fightAll(
-        "LOV Epaulettes",
-        "Open Heart Surgery",
-        "LOV Extraterrestrial Chocolate",
-      );
-    },
-    false,
-    {
-      macroAllowsFamiliarActions: true,
-    },
-  ),
-
-  new FreeFight(
-    () =>
-      ChateauMantegna.have() &&
-      !ChateauMantegna.paintingFought() &&
-      (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ?? false),
-    () => ChateauMantegna.fightPainting(),
-    true,
-    {
-      spec: () =>
-        have($familiar`Robortender`) &&
-        $phyla`elf, fish, hobo, penguin, constellation`.some(
-          (phylum) => phylum === ChateauMantegna.paintingMonster()?.phylum,
-        )
-          ? { familiar: $familiar`Robortender` }
-          : {},
-    },
-  ),
-
   new FreeFight(
     () => get("questL02Larva") !== "unstarted" && !get("_eldritchTentacleFought"),
     () => {
