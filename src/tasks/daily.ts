@@ -484,7 +484,8 @@ const DailyTasks: GarboTask[] = [
     name: "Clan pool table",
     ready: () => getClanLounge()["Clan pool table"] !== undefined,
     completed: () => get("_poolGames") >= 3,
-    do: () => cliExecute("pool aggressive;".repeat(3 - get("_poolGames"))),
+    do: () => cliExecute("pool aggressive"),
+    limit: { skip: 3 },
   },
   {
     name: "Daycare",
