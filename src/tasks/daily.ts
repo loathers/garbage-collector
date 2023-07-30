@@ -464,15 +464,9 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: $item`defective Game Grid token`.name,
-    completed: () => get("_defectiveTokenUsed") || get("_garbo_defectiveTokenAttempted", false),
-    do: () => {
-      set("_garbo_defectiveTokenAttempted", true);
-      withStash($items`defective Game Grid token`, () => {
-        if (have($item`defective Game Grid token`)) {
-          use($item`defective Game Grid token`);
-        }
-      });
-    },
+    completed: () => get("_defectiveTokenUsed"),
+    do: () =>
+      withStash([$item`defective Game Grid token`], () => use(1, $item`defective Game Grid token`)),
   },
   {
     name: $item`Glenn's golden dice`.name,
