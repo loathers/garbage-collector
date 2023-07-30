@@ -48,9 +48,11 @@ import {
   have,
   maxBy,
   Pantogram,
+  questStep,
   set,
   SongBoom,
   SourceTerminal,
+  Witchess,
 } from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
@@ -459,6 +461,66 @@ const DailyTasks: GarboTask[] = [
       have($item`Clan VIP Lounge key`) && getClanLounge()["Clan Carnival Game"] !== undefined,
     completed: () => get("_clanFortuneBuffUsed"),
     do: () => cliExecute("fortune buff meat"),
+  },
+  {
+    name: $item`defective Game Grid token`.name,
+    completed: () => get("_defectiveTokenUsed") || get("_garbo_defectiveTokenAttempted", false),
+    do: () => {
+      set("_garbo_defectiveTokenAttempted", true);
+      withStash($items`defective Game Grid token`, () => {
+        if (have($item`defective Game Grid token`)) {
+          use($item`defective Game Grid token`);
+        }
+      });
+    },
+  },
+  {
+    name: $item`Glenn's golden dice`.name,
+    ready: () => have($item`Glenn's golden dice`),
+    completed: () => get("_glennGoldenDiceUsed"),
+    do: () => use($item`Glenn's golden dice`),
+  },
+  {
+    name: "Clan pool table",
+    ready: () => getClanLounge()["Clan pool table"] !== undefined,
+    completed: () => get("_poolGames") >= 3,
+    do: () => cliExecute("pool aggressive;".repeat(3 - get("_poolGames"))),
+  },
+  {
+    name: "Daycare",
+    ready: () => get("daycareOpen") || get("_daycareToday"),
+    completed: () => get("_daycareSpa"),
+    do: () => cliExecute("daycare mysticality"),
+  },
+  {
+    name: $item`redwood rain stick`.name,
+    ready: () => have($item`redwood rain stick`),
+    completed: () => get("_redwoodRainStickUsed"),
+    do: () => use($item`redwood rain stick`),
+  },
+  {
+    name: "Witchess Puzzle Champ",
+    ready: () => Witchess.have(),
+    completed: () => get("_witchessBuff"),
+    do: () => cliExecute("up Puzzle Champ"),
+  },
+  {
+    name: "Friar's Blessing",
+    ready: () => questStep("questL06Friar") === 999,
+    completed: () => get("friarsBlessingReceived"),
+    do: () => cliExecute("friars familiar"),
+  },
+  {
+    name: $item`The Legendary Beat`.name,
+    ready: () => have($item`The Legendary Beat`),
+    completed: () => get("_legendaryBeat"),
+    do: () => use($item`The Legendary Beat`),
+  },
+  {
+    name: $item`portable steam unit`.name,
+    ready: () => have($item`portable steam unit`),
+    completed: () => get("_portableSteamUnitUsed"),
+    do: () => use($item`portable steam unit`),
   },
   {
     name: "Summon Demon",
