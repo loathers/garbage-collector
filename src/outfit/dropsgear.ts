@@ -39,6 +39,7 @@ import {
 } from "../lib";
 import { garboAverageValue, garboValue } from "../value";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
+import { bonusAccessories } from "./dropsgearAccessories";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
