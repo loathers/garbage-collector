@@ -6,14 +6,13 @@ import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import {
   bestBjornalike,
-  BonusEquipMode,
   cleaverCheck,
   familiarWaterBreathingEquipment,
   useUPCsIfNeeded,
   validateGarbageFoldable,
-  valueOfMeat,
   waterBreathingEquipment,
 } from "./lib";
+import { BonusEquipMode, valueOfMeat } from "../lib";
 
 export function embezzlerOutfit(spec: OutfitSpec = {}, target = $location.none): Outfit {
   cleaverCheck();
