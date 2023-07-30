@@ -33,9 +33,9 @@ import {
   bestJuneCleaverOption,
   BonusEquipMode,
   juneCleaverChoiceValues,
-  useLimitedDrops,
+  modeUseLimitedDrops,
+  modeValueOfMeat,
   valueJuneCleaverOption,
-  valueOfMeat,
 } from "../lib";
 import { garboAverageValue, garboValue } from "../value";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
@@ -43,7 +43,7 @@ import { bonusAccessories } from "./dropsgearAccessories";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
-  if (!have($item`Pantsgiving`) || !useLimitedDrops(mode)) return new Map<Item, number>();
+  if (!have($item`Pantsgiving`) || !modeUseLimitedDrops(mode)) return new Map<Item, number>();
   const count = get("_pantsgivingCount");
   const turnArray = [5, 50, 500, 5000];
   const index =
@@ -147,7 +147,7 @@ function bagOfManyConfections() {
 function snowSuit(mode: BonusEquipMode) {
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!have($item`Snow Suit`) || get("_carrotNoseDrops") >= 3 || !useLimitedDrops(mode)) {
+  if (!have($item`Snow Suit`) || get("_carrotNoseDrops") >= 3 || !modeUseLimitedDrops(mode)) {
     return new Map<Item, number>([]);
   }
 
@@ -163,11 +163,11 @@ function mayflowerBouquet(mode: BonusEquipMode) {
 
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!have($item`Mayflower bouquet`) || !useLimitedDrops(mode)) {
+  if (!have($item`Mayflower bouquet`) || !modeUseLimitedDrops(mode)) {
     return new Map<Item, number>([]);
   }
 
-  const sporadicMeatBonus = (40 * 0.125 * valueOfMeat(mode)) / 100;
+  const sporadicMeatBonus = (40 * 0.125 * modeValueOfMeat(mode)) / 100;
   const averageFlowerValue =
     garboAverageValue(
       ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`,

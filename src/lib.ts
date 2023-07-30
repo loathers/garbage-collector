@@ -102,19 +102,19 @@ export enum BonusEquipMode {
   BARF,
 }
 
-export function isFree(mode: BonusEquipMode): boolean {
+export function modeIsFree(mode: BonusEquipMode): boolean {
   return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
 }
 
-export function useLimitedDrops(mode: BonusEquipMode): boolean {
+export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
   return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
 }
 
-export function valueOfMeat(mode: BonusEquipMode): number {
-  return isFree(mode) ? 0 : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
+export function modeValueOfMeat(mode: BonusEquipMode): number {
+  return modeIsFree(mode) ? 0 : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
 }
 
-export function valueOfItem(mode: BonusEquipMode): number {
+export function modeValueOfItem(mode: BonusEquipMode): number {
   return mode === BonusEquipMode.BARF ? 0.72 : 0;
 }
 

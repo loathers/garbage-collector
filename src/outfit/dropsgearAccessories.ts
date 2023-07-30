@@ -10,11 +10,11 @@ import {
   have,
   sumNumbers,
 } from "libram";
-import { baseMeat, BonusEquipMode, isFree, realmAvailable } from "../lib";
+import { baseMeat, BonusEquipMode, modeIsFree, realmAvailable } from "../lib";
 import { garboValue } from "../value";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
-  if (!have($item`mafia thumb ring`) || isFree(mode)) {
+  if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
     return new Map<Item, number>([]);
   }
 
