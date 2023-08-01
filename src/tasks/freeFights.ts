@@ -39,6 +39,8 @@ import {
 import { garboValue } from "../value";
 import { globalOptions } from "../config";
 import { acquire } from "../acquire";
+import wanderer from "../wanderer";
+import { propertyManager } from "../lib";
 
 type GarboFreeFightTask = GarboTask & { combatCount?: () => number; tentacle?: boolean };
 
@@ -175,7 +177,18 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // BRICKO
   // Grimacia
   // Pygmys
-  // First sausage goblin
+  {
+    name: $item`Kramco Sausage-o-Matic™`.name,
+    ready: () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
+    completed: () => get("_sausageFights") > 0,
+    do: () => {
+      propertyManager.setChoices(wanderer.getChoices("wanderer")); // todo: use choices
+      return wanderer.getTarget("wanderer");
+    },
+    combat: new CombatStrategy().autoattack(Macro.basicCombat()),
+    outfit: freeFightOutfit({ offhand: $item`Kramco Sausage-o-Matic™` }),
+    tentacle: true,
+  },
   // glark cable
   // mushroom garden
   // portscan
@@ -286,6 +299,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combatCount: () => clamp(3 - CombatLoversLocket.reminiscesLeft(), 0, 3),
   },
   // li'l ninja costume
+  // closed-circuit pay phone
 ];
 
 export function expectedFights(): number {

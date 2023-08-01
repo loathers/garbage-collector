@@ -1070,18 +1070,6 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => {
-      propertyManager.setChoices(wanderer.getChoices("wanderer"));
-      adv1(wanderer.getTarget("wanderer"), -1, "");
-    },
-    true,
-    {
-      spec: { offhand: $item`Kramco Sausage-o-Matic™` },
-    },
-  ),
-
-  new FreeFight(
     () =>
       get("questL11Ron") === "finished"
         ? clamp(5 - get("_glarkCableUses"), 0, itemAmount($item`glark cable`))
