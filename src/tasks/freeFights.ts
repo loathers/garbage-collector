@@ -1,8 +1,8 @@
 import { CombatStrategy, Quest } from "grimoire-kolmafia";
-import { GarboTask } from "./tasks/engine";
+import { GarboTask } from "./engine";
 import { $familiar, $item, $phyla, ChateauMantegna, get, have, TunnelOfLove } from "libram";
-import { Macro } from "./combat";
-import { freeFightOutfit } from "./outfit";
+import { Macro } from "../combat";
+import { freeFightOutfit } from "../outfit";
 import { use } from "kolmafia";
 
 function molemanReady() {
