@@ -95,7 +95,28 @@ export const embezzlerLog: {
   sources: [],
 };
 
-export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
+export enum BonusEquipMode {
+  FREE,
+  EMBEZZLER,
+  DMT,
+  BARF,
+}
+
+export function modeIsFree(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
+}
+
+export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
+}
+
+export function modeValueOfMeat(mode: BonusEquipMode): number {
+  return modeIsFree(mode) ? 0 : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
+}
+
+export function modeValueOfItem(mode: BonusEquipMode): number {
+  return mode === BonusEquipMode.BARF ? 0.72 : 0;
+}
 
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";

@@ -7,18 +7,18 @@ import {
   sumNumbers,
 } from "libram";
 import { garboAverageValue, garboValue } from "../value";
-import { BonusEquipMode, useLimitedDrops, valueOfItem, valueOfMeat } from "./lib";
+import { BonusEquipMode, modeUseLimitedDrops, modeValueOfItem, modeValueOfMeat } from "../lib";
 
 function valueBjornModifiers(
   mode: BonusEquipMode,
   familiar: Familiar,
 ): (ridingFamiliar: Familiar) => number {
-  const meatValue = valueOfMeat(mode);
+  const meatValue = modeValueOfMeat(mode);
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   const leprechaunCoefficient =
     meatValue * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier));
 
-  const itemValue = valueOfItem(mode);
+  const itemValue = modeValueOfItem(mode);
   const fairyMultiplier = findFairyMultiplier(familiar);
   const fairyCoefficient = itemValue * (fairyMultiplier + Math.sqrt(fairyMultiplier) / 2);
 
@@ -57,7 +57,7 @@ export function chooseBjorn(
 ): { familiar: Familiar; value: number } {
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   const fairyMultiplier = findFairyMultiplier(familiar);
-  const ignoreLimitedDrops = sim || !useLimitedDrops(mode);
+  const ignoreLimitedDrops = sim || !modeUseLimitedDrops(mode);
 
   const key = `Leprechaun:${leprechaunMultiplier.toFixed(2)};Fairy:${fairyMultiplier.toFixed(
     2,

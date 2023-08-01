@@ -13,8 +13,8 @@ repos:
     hooks:
       - id: eslint
         additional_dependencies:
-          - eslint@^8.45.0
-          - eslint-config-prettier@^8.3.0
+          - eslint@^8.46.0
+          - eslint-config-prettier@^8.9.0
           - eslint-plugin-libram@^0.2.32
         files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
         types: [file]

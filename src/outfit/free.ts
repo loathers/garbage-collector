@@ -4,7 +4,8 @@ import { $familiar, $familiars, $item, $items, get } from "libram";
 import { freeFightFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
-import { BonusEquipMode, cleaverCheck, validateGarbageFoldable } from "./lib";
+import { cleaverCheck, validateGarbageFoldable } from "./lib";
+import { BonusEquipMode } from "../lib";
 
 type MenuOptions = {
   canChooseMacro?: boolean;

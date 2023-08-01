@@ -26,14 +26,8 @@ import {
 import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
-import {
-  bestBjornalike,
-  BonusEquipMode,
-  cleaverCheck,
-  validateGarbageFoldable,
-  valueOfItem,
-  valueOfMeat,
-} from "./lib";
+import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
+import { BonusEquipMode, modeValueOfItem, modeValueOfMeat } from "../lib";
 
 function chooseGun({ familiar }: Outfit) {
   if (familiar === $familiar`Robortender` && have($item`love`)) return $item`love`;
@@ -107,8 +101,8 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, outfit.familiar, sim);
 
   outfit.modifier.push(
-    `${valueOfMeat(BonusEquipMode.BARF)} Meat Drop`,
-    `${valueOfItem(BonusEquipMode.BARF)} Item Drop`,
+    `${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`,
+    `${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`,
     "-tie",
   );
 

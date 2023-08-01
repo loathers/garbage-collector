@@ -6,14 +6,13 @@ import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import {
   bestBjornalike,
-  BonusEquipMode,
   cleaverCheck,
   familiarWaterBreathingEquipment,
   useUPCsIfNeeded,
   validateGarbageFoldable,
-  valueOfMeat,
   waterBreathingEquipment,
 } from "./lib";
+import { BonusEquipMode, modeValueOfMeat } from "../lib";
 
 export function embezzlerOutfit(spec: OutfitSpec = {}, target = $location.none): Outfit {
   cleaverCheck();
@@ -23,7 +22,7 @@ export function embezzlerOutfit(spec: OutfitSpec = {}, target = $location.none):
     new Error(`Failed to construct outfit from spec ${toJson(spec)}`),
   );
 
-  outfit.modifier.push(`${valueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`, "-tie");
+  outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`, "-tie");
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
   outfit.familiar ??= meatFamiliar();
 
