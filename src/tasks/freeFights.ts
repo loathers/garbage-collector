@@ -299,7 +299,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combatCount: () => clamp(3 - CombatLoversLocket.reminiscesLeft(), 0, 3),
   },
   // li'l ninja costume
-  // closed-circuit pay phone
+  // closed-circuit pay phone (make into it's own Quest)
 ];
 
 export function expectedFights(): number {
