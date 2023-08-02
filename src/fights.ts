@@ -787,7 +787,9 @@ const freeFightSources = [
   ),
 
   new FreeFight(
-    () => get("questL02Larva") !== "unstarted" && !get("_eldritchTentacleFought"),
+    () =>
+      (get("questL02Larva") !== "unstarted" || get("questG01Meatcar") === "finished") &&
+      !get("_eldritchTentacleFought"),
     () => {
       const haveEldritchEssence = itemAmount($item`eldritch essence`) !== 0;
       visitUrl("place.php?whichplace=forestvillage&action=fv_scientist", false);
