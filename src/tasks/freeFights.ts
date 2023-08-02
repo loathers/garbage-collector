@@ -308,15 +308,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
 ];
 
 export function expectedFights(): number {
-  return FreeFightTasks.filter((obj) => (obj.ready?.() ?? true) && !obj.completed()).reduce(
-    (acc, obj) => {
-      return (
-        acc +
-        (obj.combatCount?.() ?? 1) *
-          (obj?.tentacle === true && have($effect`Eldritch Attunement`) ? 2 : 1)
-      );
-    },
-    0,
+  const availableFights = FreeFightTasks.filter(
+    (task) => (task.ready?.() ?? true) && !task.completed(),
+  );
+  return sum(
+    availableFights,
+    ({ combatCount, tentacle }) => (combatCount?.() ?? 1) * (tentacle ? 2 : 1),
   );
 }
 
