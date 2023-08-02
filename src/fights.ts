@@ -716,15 +716,6 @@ const stunDurations = new Map<Skill | Item, Delayed<number>>([
 
 const freeFightSources = [
   new FreeFight(
-    () => clamp(3 - get("_lynyrdSnareUses"), 0, 3),
-    () => use($item`lynyrd snare`),
-    true,
-    {
-      cost: () => mallPrice($item`lynyrd snare`),
-    },
-  ),
-
-  new FreeFight(
     () =>
       have($item`[glitch season reward name]`) &&
       have($item`unwrapped knock-off retro superhero cape`) &&

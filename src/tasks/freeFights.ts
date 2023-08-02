@@ -42,7 +42,11 @@ import { acquire } from "../acquire";
 import wanderer from "../wanderer";
 import { propertyManager } from "../lib";
 
-type GarboFreeFightTask = GarboTask & { combatCount?: () => number; tentacle?: boolean };
+type GarboFreeFightTask = GarboTask & {
+  combatCount?: () => number; // 1 if unset
+  cost?: () => number; // free if unset
+  tentacle?: boolean; // if a tentacle fight can follow
+};
 
 function molemanReady() {
   return have($item`molehill mountain`) && !get("_molehillMountainUsed");
@@ -171,6 +175,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
     outfit: freeFightOutfit(),
     combatCount: () => clamp(3 - get("_lynyrdSnareUses"), 0, 3),
+    cost: () => mallPrice($item`lynyrd snare`),
   },
   // [glitch season reward name]
   // seals
