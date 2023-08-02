@@ -61,7 +61,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
-import { completeBarfQuest } from "./tasks/daily";
+import { completeBarfQuest } from "./tasks/dailies/daily";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
 import wanderer from "./wanderer";
 

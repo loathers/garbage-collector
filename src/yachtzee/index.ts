@@ -33,7 +33,7 @@ import { baseMeat, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";
-import { prepRobortender } from "../tasks/dailyFamiliars";
+import { prepRobortender } from "../tasks/dailies/dailyFamiliars";
 import { yachtzeePotionSetup } from "./buffs";
 import { executeNextDietStep, yachtzeeChainDiet } from "./diet";
 import { pyecAvailable, shrugIrrelevantSongs } from "./lib";

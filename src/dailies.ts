@@ -1,7 +1,7 @@
-import { DailyQuest } from "./tasks/daily";
-import { DailyItemsQuest } from "./tasks/dailyItems";
-import { VolcanoQuest } from "./tasks/dailyVolcano";
-import { DailyFamiliarsQuest } from "./tasks/dailyFamiliars";
+import { DailyQuest } from "./tasks/dailies/daily";
+import { DailyItemsQuest } from "./tasks/dailies/dailyItems";
+import { VolcanoQuest } from "./tasks/dailies/dailyVolcano";
+import { DailyFamiliarsQuest } from "./tasks/dailies/dailyFamiliars";
 import { runSafeGarboQuests } from "./tasks/engine";
 import { AscendingQuest } from "./tasks/dailies/ascending";
 

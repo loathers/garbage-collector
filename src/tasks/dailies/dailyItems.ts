@@ -39,14 +39,14 @@ import {
   sum,
   withChoice,
 } from "libram";
-import { acquire } from "../acquire";
-import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
-import { doingExtrovermectin } from "../extrovermectin";
-import { coinmasterPrice } from "../lib";
-import { rufusPotion } from "../potions";
-import { garboAverageValue, garboValue } from "../value";
-import { GarboTask } from "./engine";
+import { acquire } from "../../acquire";
+import { globalOptions } from "../../config";
+import { embezzlerCount } from "../../embezzler";
+import { doingExtrovermectin } from "../../extrovermectin";
+import { coinmasterPrice } from "../../lib";
+import { rufusPotion } from "../../potions";
+import { garboAverageValue, garboValue } from "../../value";
+import { GarboTask } from "../engine";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;

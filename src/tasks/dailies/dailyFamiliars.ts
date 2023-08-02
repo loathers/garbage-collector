@@ -26,10 +26,10 @@ import {
   sum,
   withProperty,
 } from "libram";
-import { withStash } from "../clan";
-import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
-import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
+import { withStash } from "../../clan";
+import { globalOptions } from "../../config";
+import { embezzlerCount } from "../../embezzler";
+import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../../familiar";
 import {
   baseMeat,
   garbageTouristRatio,
@@ -38,10 +38,10 @@ import {
   tryFeast,
   turnsToNC,
   userConfirmDialog,
-} from "../lib";
-import { garboValue } from "../value";
-import { estimatedGarboTurns } from "../turns";
-import { GarboTask } from "./engine";
+} from "../../lib";
+import { garboValue } from "../../value";
+import { estimatedGarboTurns } from "../../turns";
+import { GarboTask } from "../engine";
 import { Quest } from "grimoire-kolmafia";
 
 function newarkValue(): number {

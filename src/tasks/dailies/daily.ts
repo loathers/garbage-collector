@@ -54,16 +54,16 @@ import {
   SourceTerminal,
   Witchess,
 } from "libram";
-import { acquire } from "../acquire";
-import { withStash } from "../clan";
-import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
-import { meatFamiliar } from "../familiar";
-import { estimatedTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT } from "../lib";
-import { garboValue } from "../value";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
-import { GarboTask } from "./engine";
+import { acquire } from "../../acquire";
+import { withStash } from "../../clan";
+import { globalOptions } from "../../config";
+import { embezzlerCount } from "../../embezzler";
+import { meatFamiliar } from "../../familiar";
+import { estimatedTentacles } from "../../fights";
+import { baseMeat, HIGHLIGHT } from "../../lib";
+import { garboValue } from "../../value";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "../../turns";
+import { GarboTask } from "../engine";
 import { Quest } from "grimoire-kolmafia";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;

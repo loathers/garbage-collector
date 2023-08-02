@@ -23,10 +23,10 @@ import {
   uneffect,
   withProperty,
 } from "libram";
-import { globalOptions } from "../config";
-import { HIGHLIGHT, logMessage, realmAvailable } from "../lib";
-import { garboValue } from "../value";
-import { GarboTask } from "./engine";
+import { globalOptions } from "../../config";
+import { HIGHLIGHT, logMessage, realmAvailable } from "../../lib";
+import { garboValue } from "../../value";
+import { GarboTask } from "../engine";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 

@@ -111,14 +111,15 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     do: ChateauMantegna.fightPainting,
     tentacle: true,
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
-    outfit: () => freeFightOutfit(
-      have($familiar`Robortender`) &&
-        $phyla`elf, fish, hobo, penguin, constellation`.some(
-          (phylum) => phylum === ChateauMantegna.paintingMonster()?.phylum,
-        )
-        ? { familiar: $familiar`Robortender` }
-        : {},
-    ),
+    outfit: () =>
+      freeFightOutfit(
+        have($familiar`Robortender`) &&
+          $phyla`elf, fish, hobo, penguin, constellation`.some(
+            (phylum) => phylum === ChateauMantegna.paintingMonster()?.phylum,
+          )
+          ? { familiar: $familiar`Robortender` }
+          : {},
+      ),
   },
   {
     name: "Eldritch Tentacle",
@@ -205,16 +206,17 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     choices: { 1310: !have($item`God Lobster's Crown`) ? 1 : 2 }, // god lob equipment, then stats
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
-    outfit: () => freeFightOutfit({
-      familiar: $familiar`God Lobster`,
-      bonuses: new Map<Item, number>([
-        [$item`God Lobster's Scepter`, 1000],
-        [$item`God Lobster's Ring`, 2000],
-        [$item`God Lobster's Rod`, 3000],
-        [$item`God Lobster's Robe`, 4000],
-        [$item`God Lobster's Crown`, 5000],
-      ]),
-    }),
+    outfit: () =>
+      freeFightOutfit({
+        familiar: $familiar`God Lobster`,
+        bonuses: new Map<Item, number>([
+          [$item`God Lobster's Scepter`, 1000],
+          [$item`God Lobster's Ring`, 2000],
+          [$item`God Lobster's Rod`, 3000],
+          [$item`God Lobster's Robe`, 4000],
+          [$item`God Lobster's Crown`, 5000],
+        ]),
+      }),
     combatCount: () => clamp(5 - get("_godLobsterFights"), 0, 5),
     tentacle: false,
   },
@@ -292,9 +294,8 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       if (!monster) return;
       CombatLoversLocket.reminisce(monster);
     },
-    outfit: () => freeFightOutfit(
-      have($familiar`Robortender`) ? { familiar: $familiar`Robortender` } : {},
-    ),
+    outfit: () =>
+      freeFightOutfit(have($familiar`Robortender`) ? { familiar: $familiar`Robortender` } : {}),
     tentacle: true,
     combatCount: () => clamp(3 - CombatLoversLocket.reminiscesLeft(), 0, 3),
   },
