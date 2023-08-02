@@ -84,7 +84,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     completed: () => !molemanReady(),
     do: () => use($item`molehill mountain`),
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
-    outfit: () => freeFightOutfit(),
+    outfit: freeFightOutfit,
     tentacle: true,
   },
   {
@@ -99,7 +99,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       ),
     // TODO: Get drops
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
-    outfit: () => freeFightOutfit(),
+    outfit: freeFightOutfit,
     combatCount: () => 3,
   },
   {
@@ -131,7 +131,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       runChoice(haveEldritchEssence ? 2 : 1);
     },
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
-    outfit: () => freeFightOutfit(),
+    outfit: freeFightOutfit,
     tentacle: false,
   },
   {
@@ -159,7 +159,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           .repeat(),
       ).basicCombat(),
     ),
-    outfit: () => freeFightOutfit(),
+    outfit: freeFightOutfit,
     tentacle: false,
   },
   {
@@ -168,7 +168,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     completed: () => get("_lynyrdSnareUses") >= 3,
     do: () => use($item`lynyrd snare`),
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
-    outfit: () => freeFightOutfit(),
+    outfit: freeFightOutfit,
     combatCount: () => clamp(3 - get("_lynyrdSnareUses"), 0, 3),
     cost: () => mallPrice($item`lynyrd snare`),
   },
@@ -259,7 +259,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     completed: () => Witchess.fightsDone() >= 5,
     do: () => Witchess.fightPiece(bestWitchessPiece()),
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
-    outfit: () => freeFightOutfit(),
+    outfit: freeFightOutfit,
     tentacle: true,
   },
   {
@@ -268,7 +268,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     completed: () => get("_snojoFreeFights") >= 10,
     do: () => $location`The X-32-F Combat Training Snowman`,
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
-    outfit: () => freeFightOutfit(),
+    outfit: freeFightOutfit,
     tentacle: false,
     combatCount: () => clamp(10 - get("_snojoFreeFights"), 0, 10),
   },
@@ -279,7 +279,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     completed: () => get("_speakeasyFreeFights") >= 3,
     do: () => $location`An Unusually Quiet Barroom Brawl`,
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
-    outfit: () => freeFightOutfit(),
+    outfit: freeFightOutfit,
     tentacle: true,
     combatCount: () => clamp(3 - get("_speakeasyFreeFights"), 0, 3),
   },
