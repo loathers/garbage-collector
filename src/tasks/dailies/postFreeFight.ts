@@ -10,9 +10,9 @@ import {
   useSkill,
 } from "kolmafia";
 import { $class, $item, $skill, $thrall, get, have, maxBy } from "libram";
-import { baseMeat } from "../lib";
-import { estimatedGarboTurns } from "../turns";
-import { GarboTask } from "./engine";
+import { baseMeat } from "../../lib";
+import { estimatedGarboTurns } from "../../turns";
+import { GarboTask } from "../engine";
 
 function bestVykeaLevel(): number {
   const vykeas = [

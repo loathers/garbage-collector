@@ -1,5 +1,5 @@
 import { CombatStrategy, Quest } from "grimoire-kolmafia";
-import { GarboTask } from "./engine";
+import { GarboTask } from "../engine";
 import {
   $effect,
   $familiar,
@@ -19,8 +19,8 @@ import {
   uneffect,
   Witchess,
 } from "libram";
-import { Macro } from "../combat";
-import { freeFightOutfit } from "../outfit";
+import { Macro } from "../../combat";
+import { freeFightOutfit } from "../../outfit";
 import {
   handlingChoice,
   Item,
@@ -36,11 +36,11 @@ import {
   useSkill,
   visitUrl,
 } from "kolmafia";
-import { garboValue } from "../value";
-import { globalOptions } from "../config";
-import { acquire } from "../acquire";
-import wanderer from "../wanderer";
-import { propertyManager } from "../lib";
+import { garboValue } from "../../value";
+import { globalOptions } from "../../config";
+import { acquire } from "../../acquire";
+import wanderer from "../../wanderer";
+import { propertyManager } from "../../lib";
 
 type GarboFreeFightTask = GarboTask & {
   combatCount?: () => number; // 1 if unset
