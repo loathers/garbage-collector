@@ -52,15 +52,10 @@ function molemanReady() {
   return have($item`molehill mountain`) && !get("_molehillMountainUsed");
 }
 
-const witchessPieces = [
-  { piece: $monster`Witchess Bishop`, drop: $item`Sacramento wine` },
-  { piece: $monster`Witchess Knight`, drop: $item`jumping horseradish` },
-  { piece: $monster`Witchess Pawn`, drop: $item`armored prawn` },
-  { piece: $monster`Witchess Rook`, drop: $item`Greek fire` },
-];
-
 function bestWitchessPiece() {
-  return maxBy(witchessPieces, ({ drop }) => garboValue(drop)).piece;
+  return maxBy(Witchess.pieces, (monster) =>
+    sum(itemDropsArray(monster), ({ drop }) => garboValue(drop)),
+  );
 }
 
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
