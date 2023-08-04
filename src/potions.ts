@@ -27,6 +27,7 @@ import {
   print,
   retrievePrice,
   setLocation,
+  toSkill,
   use,
 } from "kolmafia";
 import {
@@ -520,6 +521,22 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   },
   use: () => {
     return false;
+  },
+});
+
+export const augustPotion = new Potion($item`august scepter`, {
+  providesDoubleDuration: false,
+  canDouble: false,
+  effect: $effect`Incredibly Well Lit`,
+  duration: 30,
+  price: () => {
+    if (!have($item`august scepter`)) return Infinity;
+
+    return 0;
+  },
+  acquire: () => (have(toSkill(7458)) ? 1 : 0),
+  use: () => {
+    return false; // TODO: i don't fully understand what needs to go in here from
   },
 });
 

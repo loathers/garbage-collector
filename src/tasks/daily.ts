@@ -60,7 +60,7 @@ import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
-import { averageEmbezzlerNet, baseMeat, HIGHLIGHT } from "../lib";
+import { baseMeat, HIGHLIGHT } from "../lib";
 import { garboAverageValue, garboValue } from "../value";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
@@ -358,7 +358,7 @@ const oysters = $items`brilliant oyster egg, gleaming oyster egg, glistening oys
 
 const augustSkillValues = new Map([
   [7452, 3 * MPA], // Mountain
-  [7453, averageEmbezzlerNet()], // Lucky - TODO: should this be EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") ?
+  [7453, 0], // canAdventure($location`Cobb's Knob Treasury`) ? averageEmbezzlerNet() : 0], // Lucky - TODO: should this be EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") ?
   [7454, garboValue($item`watermelon`)], // watermelon
   [7455, 3 * garboValue($item`water balloon`)], // water baloon
   [7456, 3 * garboAverageValue(...oysters)], // oysters
@@ -368,14 +368,14 @@ const augustSkillValues = new Map([
       Math.max(0, 30 - expectedEmbezzlers) * baseMeat,
   ], // Lighthouse Buff
   [7459, globalOptions.prefs.valueOfFreeFight], // freefight Cats
-  [7464, globalOptions.ascend ? 0 : 5 * MPA], // offhanders
+  [7464, globalOptions.ascend ? 0 : 5 * MPA + (have($familiar`Left-Hand Man`) ? 5 * MPA : 0)], // offhanders
   [7467, bestConsumable("food", true, undefined, 1).value], // -1 fullness
   [7469, 0], // serendipity - free junk
   [7473, globalOptions.prefs.valueOfFreeFight], // freefight tooth
   [7475, 3 * garboValue($item`waffle`)], // waffle
   [7476, garboValue($item`banana split`)], // banana split
   [7480, 3 * garboValue($item`Mrs. Rush`)], // mrs rush
-  [7482, garboValue($item`bottle of Cabernet Sauvignon`)], // cabernet sauvignon
+  [7482, 2 * garboValue($item`bottle of Cabernet Sauvignon`)], // cabernet sauvignon
 ]);
 
 export function bestScepterSkills() {}
