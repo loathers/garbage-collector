@@ -60,11 +60,13 @@ import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT } from "../lib";
-import { garboValue } from "../value";
+import { averageEmbezzlerNet, baseMeat, HIGHLIGHT } from "../lib";
+import { garboAverageValue, garboValue } from "../value";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
+import { expectedEmbezzlers } from "../yachtzee/lib";
+import { bestConsumable } from "../diet";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
@@ -349,6 +351,34 @@ export function configureSnojo(): void {
     snojoConfigured = true;
   }
 }
+
+const MPA = get("valueOfAdventure");
+
+const oysters = $items`brilliant oyster egg, gleaming oyster egg, glistening oyster egg, lustrous oyster egg, magnificent oyster egg, pearlescent oyster egg, scintillating oyster egg`;
+
+const augustSkillValues = new Map([
+  [7452, 3 * MPA], // Mountain
+  [7453, averageEmbezzlerNet()], // Lucky - TODO: should this be EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") ?
+  [7454, garboValue($item`watermelon`)], // watermelon
+  [7455, 3 * garboValue($item`water balloon`)], // water baloon
+  [7456, 3 * garboAverageValue(...oysters)], // oysters
+  [
+    7458,
+    Math.min(30, expectedEmbezzlers) * (baseMeat + 750) +
+      Math.max(0, 30 - expectedEmbezzlers) * baseMeat,
+  ], // Lighthouse Buff
+  [7459, globalOptions.prefs.valueOfFreeFight], // freefight Cats
+  [7464, globalOptions.ascend ? 0 : 5 * MPA], // offhanders
+  [7467, bestConsumable("food", true, undefined, 1).value], // -1 fullness
+  [7469, 0], // serendipity - free junk
+  [7473, globalOptions.prefs.valueOfFreeFight], // freefight tooth
+  [7475, 3 * garboValue($item`waffle`)], // waffle
+  [7476, garboValue($item`banana split`)], // banana split
+  [7480, 3 * garboValue($item`Mrs. Rush`)], // mrs rush
+  [7482, garboValue($item`bottle of Cabernet Sauvignon`)], // cabernet sauvignon
+]);
+
+export function bestScepterSkills() {}
 
 const DailyTasks: GarboTask[] = [
   {
