@@ -64,7 +64,8 @@ const valueDrops = (monster: Monster) =>
     !["c", "0", "p"].includes(type) ? (garboValue(drop, true) * rate) / 100 : 0,
   );
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
-const locketsToSave = () => CombatLoversLocket.availableLocketMonsters().includes($monster`Knob Goblin Embezzler`) ? 1 : 0
+const locketsToSave = () =>
+  CombatLoversLocket.availableLocketMonsters().includes($monster`Knob Goblin Embezzler`) ? 1 : 0;
 
 const FreeFightTasks: GarboFreeFightTask[] = [
   {
@@ -264,7 +265,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
     outfit: freeFightOutfit,
     tentacle: true,
-    combatCount: () => clamp(5 - Witchess.fightsDone(), 0, 5)
+    combatCount: () => clamp(5 - Witchess.fightsDone(), 0, 5),
   },
   {
     name: "Snojo",
