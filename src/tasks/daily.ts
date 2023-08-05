@@ -27,6 +27,10 @@ import {
   retrieveItem,
   retrievePrice,
   runChoice,
+  Skill,
+  todayToString,
+  toInt,
+  toSkill,
   toSlot,
   toUrl,
   use,
@@ -356,29 +360,41 @@ const MPA = get("valueOfAdventure");
 
 const oysters = $items`brilliant oyster egg, gleaming oyster egg, glistening oyster egg, lustrous oyster egg, magnificent oyster egg, pearlescent oyster egg, scintillating oyster egg`;
 
-const augustSkillValues = new Map([
-  [7452, 3 * MPA], // Mountain
-  [7453, 0], // canAdventure($location`Cobb's Knob Treasury`) ? averageEmbezzlerNet() : 0], // Lucky - TODO: should this be EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") ?
-  [7454, garboValue($item`watermelon`)], // watermelon
-  [7455, 3 * garboValue($item`water balloon`)], // water baloon
-  [7456, 3 * garboAverageValue(...oysters)], // oysters
-  [
-    7458,
-    Math.min(30, expectedEmbezzlers) * (baseMeat + 750) +
-      Math.max(0, 30 - expectedEmbezzlers) * baseMeat,
-  ], // Lighthouse Buff
-  [7459, globalOptions.prefs.valueOfFreeFight], // freefight Cats
-  [7464, globalOptions.ascend ? 0 : 5 * MPA + (have($familiar`Left-Hand Man`) ? 5 * MPA : 0)], // offhanders
-  [7467, bestConsumable("food", true, undefined, 1).value], // -1 fullness
-  [7469, 0], // serendipity - free junk
-  [7473, globalOptions.prefs.valueOfFreeFight], // freefight tooth
-  [7475, 3 * garboValue($item`waffle`)], // waffle
-  [7476, garboValue($item`banana split`)], // banana split
-  [7480, 3 * garboValue($item`Mrs. Rush`)], // mrs rush
-  [7482, 2 * garboValue($item`bottle of Cabernet Sauvignon`)], // cabernet sauvignon
-]);
+export function bestScepterSkills(): Skill[] {
+  const date = toInt(todayToString().slice(-2));
 
-export function bestScepterSkills() {}
+  const augustSkillValues = [
+    { skill: 7452, value: 3 * MPA }, // Mountain
+    { skill: 7453, value: 0 }, // canAdventure($location`Cobb's Knob Treasury`) ? averageEmbezzlerNet() : 0], // Lucky - TODO: should this be EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") ?
+    { skill: 7454, value: garboValue($item`watermelon`) }, // watermelon
+    { skill: 7455, value: 3 * garboValue($item`water balloon`) }, // water baloon
+    { skill: 7456, value: 3 * garboAverageValue(...oysters) }, // oysters
+    {
+      skill: 7458,
+      value:
+        Math.min(30, expectedEmbezzlers) * (baseMeat + 750) +
+        Math.max(0, 30 - expectedEmbezzlers) * baseMeat,
+    }, // Lighthouse Buff
+    { skill: 7459, value: globalOptions.prefs.valueOfFreeFight }, // freefight Cats
+    {
+      skill: 7464,
+      value: globalOptions.ascend ? 0 : 5 * MPA + (have($familiar`Left-Hand Man`) ? 5 * MPA : 0),
+    }, // offhanders
+    { skill: 7467, value: bestConsumable("food", true, undefined, 1).value }, // -1 fullness
+    { skill: 7469, value: 0 }, // serendipity - free junk
+    { skill: 7473, value: globalOptions.prefs.valueOfFreeFight }, // freefight tooth
+    { skill: 7475, value: 3 * garboValue($item`waffle`) }, // waffle
+    { skill: 7476, value: garboValue($item`banana split`) }, // banana split
+    { skill: 7480, value: 3 * garboValue($item`Mrs. Rush`) }, // mrs rush
+    { skill: 7482, value: 2 * garboValue($item`bottle of Cabernet Sauvignon`) }, // cabernet sauvignon
+  ];
+
+  return augustSkillValues
+    .filter((element) => element.skill - 7451 !== date)
+    .sort((a, b) => b.value - a.value)
+    .map((element) => toSkill(element.skill))
+    .slice(0, 5);
+}
 
 const DailyTasks: GarboTask[] = [
   {
