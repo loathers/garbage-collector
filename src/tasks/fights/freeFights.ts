@@ -64,6 +64,7 @@ const valueDrops = (monster: Monster) =>
     !["c", "0", "p"].includes(type) ? (garboValue(drop, true) * rate) / 100 : 0,
   );
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
+const locketsToSave = () => CombatLoversLocket.availableLocketMonsters().includes($monster`Knob Goblin Embezzler`) ? 1 : 0
 
 const FreeFightTasks: GarboFreeFightTask[] = [
   {
@@ -217,7 +218,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           [$item`God Lobster's Crown`, 5000],
         ]),
       }),
-    combatCount: () => clamp(5 - get("_godLobsterFights"), 0, 5),
+    combatCount: () => clamp(3 - get("_godLobsterFights"), 0, 3),
     tentacle: false,
   },
   {
@@ -263,6 +264,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combat: new CombatStrategy().autoattack(Macro.basicCombat()),
     outfit: freeFightOutfit,
     tentacle: true,
+    combatCount: () => clamp(5 - Witchess.fightsDone(), 0, 5)
   },
   {
     name: "Snojo",
@@ -288,7 +290,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   {
     name: "Reminisce",
     ready: () => CombatLoversLocket.have() && locketMonster() !== null,
-    completed: () => CombatLoversLocket.reminiscesLeft() === 0,
+    completed: () => CombatLoversLocket.reminiscesLeft() <= locketsToSave(),
     do: () => {
       const monster = locketMonster();
       if (!monster) return;
@@ -297,7 +299,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     outfit: () =>
       freeFightOutfit(have($familiar`Robortender`) ? { familiar: $familiar`Robortender` } : {}),
     tentacle: true,
-    combatCount: () => clamp(3 - CombatLoversLocket.reminiscesLeft(), 0, 3),
+    combatCount: () => clamp(3 - CombatLoversLocket.reminiscesLeft() - locketsToSave(), 0, 3),
   },
   // li'l ninja costume
   // closed-circuit pay phone (make into it's own Quest)
