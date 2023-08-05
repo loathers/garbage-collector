@@ -361,11 +361,11 @@ const MPA = get("valueOfAdventure");
 const oysters = $items`brilliant oyster egg, gleaming oyster egg, glistening oyster egg, lustrous oyster egg, magnificent oyster egg, pearlescent oyster egg, scintillating oyster egg`;
 
 export function bestScepterSkills(): Skill[] {
-  const date = toInt(todayToString().slice(-2));
+  const date = toInt(todayToString().slice(-2)); // TODO: this may be based on local time despite what mafiawiki says
 
   const augustSkillValues = [
     { skill: 7452, value: 3 * MPA }, // Mountain
-    { skill: 7453, value: 0 }, // canAdventure($location`Cobb's Knob Treasury`) ? averageEmbezzlerNet() : 0], // Lucky - TODO: should this be EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") ?
+    { skill: 7453, value: 0 }, // TODO: need to implement using lucky for embezzlers. canAdventure($location`Cobb's Knob Treasury`) ? averageEmbezzlerNet() : 0], // Lucky - TODO: should this be EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") ?
     { skill: 7454, value: garboValue($item`watermelon`) }, // watermelon
     { skill: 7455, value: 3 * garboValue($item`water balloon`) }, // water baloon
     { skill: 7456, value: 3 * garboAverageValue(...oysters) }, // oysters
