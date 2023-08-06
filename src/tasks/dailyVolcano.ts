@@ -27,6 +27,7 @@ import { globalOptions } from "../config";
 import { HIGHLIGHT, logMessage, realmAvailable } from "../lib";
 import { garboValue } from "../value";
 import { GarboTask } from "./engine";
+import { bestConsumable } from "../diet";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
@@ -92,12 +93,14 @@ const DailyVolcanoTasks: GarboTask[] = [
     do: checkVolcanoQuest,
   },
   {
-    name: "Free Volcoino",
+    name: "Inferno Disco",
     ready: () => realmAvailable("hot"),
     completed: () => get("_infernoDiscoVisited"),
     do: (): void => {
+      const bestFiller = bestConsumable("booze", false, undefined, 1).value;
+
       visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
-      runChoice(7);
+      runChoice(bestFiller > garboValue($item`Volcoino`) ? 5 : 7);
     },
     acquire: () =>
       $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.map(
