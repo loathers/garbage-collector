@@ -1783,8 +1783,7 @@ const freeRunFightSources = [
     () =>
       ((have($item`industrial fire extinguisher`) && get("_fireExtinguisherCharge") >= 10) ||
         (have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11) ||
-        // Might want to wait until _mildEvilPerpetrated is treated as an int to merge
-        (have($skill`Perpetrate Mild Evil`) && toInt(get("_mildEvilPerpetrated")) < 3)) &&
+        (have($skill`Perpetrate Mild Evil`) && get("_mildEvilPerpetrated") < 3)) &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
       getBestItemStealZone(true) !== null,
     (runSource: ActionSource) => {
