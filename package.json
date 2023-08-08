@@ -46,7 +46,7 @@
     "eslint-plugin-libram": "^0.2.33",
     "madge": "^6.1.0",
     "prettier": "^3.0.0",
-    "sass": "^1.53.0",
+    "sass": "^1.64.2",
     "typescript": "^5.1.6",
     "uuid": "^9.0.0"
   }
