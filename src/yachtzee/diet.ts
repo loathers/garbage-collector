@@ -267,6 +267,13 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
         const entry = dietUtil.dietArray.find((entry) => entry.name === name);
         if (entry) {
           if (entry.fullness > 0) {
+            if (
+              have($skill`Aug. 16th: Roller Coaster Day!`) &&
+              !get("_aug16Cast") &&
+              myFullness() > 0
+            ) {
+              useSkill($skill`Aug. 16th: Roller Coaster Day!`);
+            }
             if (!get("_milkOfMagnesiumUsed")) {
               acquire(1, $item`milk of magnesium`, 5 * VOA);
               use(1, $item`milk of magnesium`);
@@ -491,6 +498,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   );
   const syntheticPillsAvailable =
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
+  const lostStomachAvailable =
+    have($skill`Aug. 16th: Roller Coaster Day!`) && !get("_aug16Cast") ? 1 : 0;
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   let filters = 3 - get("currentMojoFilters");
@@ -513,7 +522,14 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     2; // subtract 2 for Boris Bread and Jumping Horseradish
   const fullnessAvailable =
     myLevel() >= 13
-      ? Math.max(0, fullnessLimit() - myFullness() + toInt(haveDistentionPill) - reservedFullness)
+      ? Math.max(
+          0,
+          fullnessLimit() -
+            myFullness() +
+            toInt(haveDistentionPill) +
+            lostStomachAvailable -
+            reservedFullness,
+        )
       : 0;
   const reservedInebriety = Math.max(
     0,
@@ -663,24 +679,27 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     return false;
   }
 
+  // We might be doing this at the risk of getting insufficient organ space for synth after
   const horseradishes =
     mallPrice($item`jumping horseradish`) <= 60000 &&
     haveEffect($effect`Kicked in the Sinuses`) < yachtzeeTurns &&
-    myFullness() + 1 + slidersToEat * 5 + toastsToEat <= fullnessLimit() + toInt(haveDistentionPill)
+    myFullness() + 1 + slidersToEat * 5 + toastsToEat - lostStomachAvailable <=
+      fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
   const borisBreads =
     !get("unknownRecipe10978") &&
     retrievePrice($item`Boris's bread`) <= 60000 &&
     haveEffect($effect`Inspired Chef`) < yachtzeeTurns &&
-    myFullness() + 1 + slidersToEat * 5 + toastsToEat + horseradishes <=
+    myFullness() + 1 + slidersToEat * 5 + toastsToEat + horseradishes - lostStomachAvailable <=
       fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
   const greedyDogs =
     mallPrice($item`bottle of Greedy Dog`) <= 60000 &&
     haveEffect($effect`Covetin' Drunk`) < yachtzeeTurns &&
-    myInebriety() + 3 + pickleJuiceToDrink * 5 <= inebrietyLimit()
+    myInebriety() + 3 + pickleJuiceToDrink * 5 - sweatOutsAvailable - syntheticPillsAvailable <=
+      inebrietyLimit()
       ? 1
       : 0;
   // Opportunistically fit in Deep Dish of Legend only if we have enough stomach space
@@ -694,7 +713,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     !get("unknownRecipe11000") &&
     !get("unknownRecipe10988") &&
     !get("unknownRecipe10978") &&
-    myFullness() + 2 + slidersToEat * 5 + toastsToEat + horseradishes + borisBreads <=
+    myFullness() +
+      2 +
+      slidersToEat * 5 +
+      toastsToEat +
+      horseradishes +
+      borisBreads -
+      lostStomachAvailable <=
       fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
@@ -730,13 +755,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const extroValuePerSpleen = 6 * VOA - extroPrice / 2;
   const jellyValuePerSpleen =
     (earlyMeatDropsEstimate * 2000) / 100 -
+    fishyCost / yachtzeeTurns -
     (jelliesBulkPrice +
       toastsToEat * toastPrice +
-      fishyCost +
       slidersToEat * slidersExcessCost +
       pickleJuiceToDrink * pickleJuiceExcessCost -
       higherBaseMeatProfits) /
-      yachtzeeTurns;
+      jelliesToChew;
 
   print(`Early Meat Drop Modifier: ${earlyMeatDropsEstimate}%`);
   print(`Extro value per spleen: ${extroValuePerSpleen}`);
