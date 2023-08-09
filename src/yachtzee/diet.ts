@@ -575,13 +575,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   // Plan our diet
 
-  const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
-  const pickleJuice =
-    myLevel() >= 13
-      ? Math.floor(
-          (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5,
-        )
-      : 0;
+  const sliders = Math.floor(fullnessAvailable / 5);
+  const pickleJuice = myLevel() >= 13 ? Math.floor(inebrietyAvailable / 5) : 0;
 
   const reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
   const synthTurnsWanted = reqSynthTurns - haveEffect($effect`Synthesis: Greed`);
@@ -653,8 +648,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     while (
       pickleJuiceToDrink > 0 &&
       jelliesToChew >= 5 &&
-      myFullness() + slidersToEat * 5 + toastsToEat + 5 <=
-        fullnessLimit() + (haveDistentionPill ? 1 : 0) - 1
+      slidersToEat * 5 + toastsToEat + 5 <= fullnessAvailable - 1
     ) {
       toastsToEat += 5;
       jelliesToChew -= 5;
@@ -679,27 +673,23 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     return false;
   }
 
-  // We might be doing this at the risk of getting insufficient organ space for synth after
   const horseradishes =
     mallPrice($item`jumping horseradish`) <= 60000 &&
     haveEffect($effect`Kicked in the Sinuses`) < yachtzeeTurns &&
-    myFullness() + 1 + slidersToEat * 5 + toastsToEat - lostStomachAvailable <=
-      fullnessLimit() + toInt(haveDistentionPill)
+    1 + slidersToEat * 5 + toastsToEat <= fullnessAvailable
       ? 1
       : 0;
   const borisBreads =
     !get("unknownRecipe10978") &&
     retrievePrice($item`Boris's bread`) <= 60000 &&
     haveEffect($effect`Inspired Chef`) < yachtzeeTurns &&
-    myFullness() + 1 + slidersToEat * 5 + toastsToEat + horseradishes - lostStomachAvailable <=
-      fullnessLimit() + toInt(haveDistentionPill)
+    1 + slidersToEat * 5 + toastsToEat + horseradishes <= fullnessAvailable
       ? 1
       : 0;
   const greedyDogs =
     mallPrice($item`bottle of Greedy Dog`) <= 60000 &&
     haveEffect($effect`Covetin' Drunk`) < yachtzeeTurns &&
-    myInebriety() + 3 + pickleJuiceToDrink * 5 - sweatOutsAvailable - syntheticPillsAvailable <=
-      inebrietyLimit()
+    3 + pickleJuiceToDrink * 5 <= inebrietyAvailable
       ? 1
       : 0;
   // Opportunistically fit in Deep Dish of Legend only if we have enough stomach space
@@ -713,14 +703,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     !get("unknownRecipe11000") &&
     !get("unknownRecipe10988") &&
     !get("unknownRecipe10978") &&
-    myFullness() +
-      2 +
-      slidersToEat * 5 +
-      toastsToEat +
-      horseradishes +
-      borisBreads -
-      lostStomachAvailable <=
-      fullnessLimit() + toInt(haveDistentionPill)
+    2 + slidersToEat * 5 + toastsToEat + horseradishes + borisBreads <= fullnessAvailable
       ? 1
       : 0;
 
