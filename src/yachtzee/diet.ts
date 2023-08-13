@@ -45,7 +45,14 @@ import synthesize from "../synthesis";
 import { estimatedGarboTurns } from "../turns";
 import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
-import { cinchNCs, freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
+import {
+  acquiringOffhandRemarkable,
+  cinchNCs,
+  freeNCs,
+  pyecAvailable,
+  shrugIrrelevantSongs,
+  useSpikolodonSpikes,
+} from "./lib";
 import { freeRest } from "../lib";
 
 class YachtzeeDietEntry<T> {
@@ -499,7 +506,11 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const syntheticPillsAvailable =
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
   const lostStomachAvailable =
-    have($skill`Aug. 16th: Roller Coaster Day!`) && !get("_aug16Cast") ? 1 : 0;
+    have($skill`Aug. 16th: Roller Coaster Day!`) &&
+    !get("_aug16Cast") &&
+    get("_augSkillsCast") <= 3 + toInt(!acquiringOffhandRemarkable) // No need to save a charge if we aren't acquiring Offhand Remarkable
+      ? 1
+      : 0;
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   let filters = 3 - get("currentMojoFilters");
