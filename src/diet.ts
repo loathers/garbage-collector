@@ -28,6 +28,7 @@ import {
   npcPrice,
   print,
   retrievePrice,
+  runChoice,
   sellsItem,
   setProperty,
   spleenLimit,
@@ -37,6 +38,7 @@ import {
   use,
   useFamiliar,
   useSkill,
+  visitUrl,
   wait,
 } from "kolmafia";
 import {
@@ -84,6 +86,7 @@ import { Potion, PotionTier } from "./potions";
 import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./value";
+import { bestFiller } from "./tasks/dailyVolcano";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -433,6 +436,16 @@ function menu(): MenuItem<Note>[] {
       size: -1,
       organ: "booze",
       maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed"), Math.floor(get("sweat") / 25)),
+    }),
+    new MenuItem($item`smooth velvet hat`, {
+      size: -1,
+      organ: "booze",
+      maximum:
+        realmAvailable("hot") &&
+        bestFiller > garboValue($item`Volcoino`) &&
+        !get("_infernoDiscoVisited")
+          ? 1
+          : 0,
     }),
   ].filter((item) => item.price() < Infinity) as MenuItem<Note>[];
 }
@@ -1017,6 +1030,14 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
             for (let n = 1; n <= countToConsume; n++) {
               useSkill($skill`Sweat Out Some Booze`);
             }
+          },
+        ],
+        [
+          $item`smooth velvet hat`,
+          () => {
+            // TODO: Need to put on the smooth velvet outfit here (or at last 4 pieces of it), not sure how to go about that.
+            visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
+            runChoice(5);
           },
         ],
       ]);

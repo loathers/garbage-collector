@@ -85,6 +85,8 @@ function checkVolcanoQuest() {
   }
 }
 
+export const bestFiller = bestConsumable("booze", false, undefined, 1).value;
+
 const DailyVolcanoTasks: GarboTask[] = [
   {
     name: "Quest",
@@ -95,12 +97,12 @@ const DailyVolcanoTasks: GarboTask[] = [
   {
     name: "Inferno Disco",
     ready: () => realmAvailable("hot"),
-    completed: () => get("_infernoDiscoVisited"),
+    completed: () => get("_infernoDiscoVisited") || bestFiller > garboValue($item`Volcoino`),
     do: (): void => {
-      const bestFiller = bestConsumable("booze", false, undefined, 1).value;
-
-      visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
-      runChoice(bestFiller > garboValue($item`Volcoino`) ? 5 : 7);
+      if (bestFiller < garboValue($item`Volcoino`)) {
+        visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
+        runChoice(7);
+      }
     },
     acquire: () =>
       $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.map(
