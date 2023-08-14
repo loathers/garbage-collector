@@ -28,7 +28,6 @@ import {
   npcPrice,
   print,
   retrievePrice,
-  runChoice,
   sellsItem,
   setProperty,
   spleenLimit,
@@ -38,7 +37,6 @@ import {
   use,
   useFamiliar,
   useSkill,
-  visitUrl,
   wait,
 } from "kolmafia";
 import {
@@ -86,7 +84,8 @@ import { Potion, PotionTier } from "./potions";
 import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./value";
-import { bestFiller } from "./tasks/dailyVolcano";
+import { bestFiller, DietVolcanoQuest } from "./tasks/dailyVolcano";
+import { runSafeGarboQuests } from "./tasks/engine";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -1035,9 +1034,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         [
           $item`smooth velvet hat`,
           () => {
-            // TODO: Need to put on the smooth velvet outfit here (or at last 4 pieces of it), not sure how to go about that.
-            visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
-            runChoice(5);
+            runSafeGarboQuests([DietVolcanoQuest]);
           },
         ],
       ]);
