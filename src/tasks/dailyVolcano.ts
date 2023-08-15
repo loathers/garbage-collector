@@ -127,29 +127,7 @@ const DailyVolcanoTasks: GarboTask[] = [
   },
 ];
 
-const DietVolcanoTasks: GarboTask[] = [
-  {
-    name: "Inferno Disco",
-    ready: () => realmAvailable("hot"),
-    completed: () => get("_infernoDiscoVisited"),
-    do: (): void => {
-      visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
-      runChoice(5);
-    },
-    acquire: () =>
-      $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.map(
-        (x) => <AcquireItem>{ item: x },
-      ),
-    outfit: { modifier: "disco style" },
-  },
-];
-
 export const VolcanoQuest: Quest<GarboTask> = {
   name: "Volcano",
   tasks: DailyVolcanoTasks,
-};
-
-export const DietVolcanoQuest: Quest<GarboTask> = {
-  name: "Volcano",
-  tasks: DietVolcanoTasks,
 };
