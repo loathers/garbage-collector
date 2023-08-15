@@ -8,6 +8,7 @@ import {
   eat,
   Element,
   elementalResistance,
+  equip,
   fullnessLimit,
   getClanLounge,
   getProperty,
@@ -26,6 +27,7 @@ import {
   myMaxhp,
   mySpleenUse,
   npcPrice,
+  outfit,
   print,
   retrievePrice,
   runChoice,
@@ -1035,9 +1037,17 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         [
           $item`smooth velvet hat`,
           () => {
-            // TODO: Need to put on the smooth velvet outfit here (or at last 4 pieces of it), not sure how to go about that.
+            cliExecute("checkpoint");
+            outfit("birthday suit");
+            $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.forEach(
+              (item) => {
+                acquire(1, item);
+                equip(item);
+              },
+            );
             visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
             runChoice(5);
+            outfit("checkpoint");
           },
         ],
       ]);
