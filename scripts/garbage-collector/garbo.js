@@ -21051,7 +21051,7 @@ var Outfit = /* @__PURE__ */ function() {
      */
   }, {
     key: "canEquip",
-    value: function canEquip12(thing, slot) {
+    value: function canEquip14(thing, slot) {
       var outfit3 = this.clone();
       return outfit3.equip(thing, slot);
     }
@@ -29691,7 +29691,7 @@ var EmbezzlerFight = /* @__PURE__ */ function() {
 }();
 function checkUnderwater() {
   if (questStep("questS01OldGuy") >= 0 && !(get("_envyfishEggUsed") || have($item(_templateObject680 || (_templateObject680 = _taggedTemplateLiteral63(["envyfish egg"]))))) && (get("_garbo_weightChain", false) || !have($familiar(_templateObject758 || (_templateObject758 = _taggedTemplateLiteral63(["Pocket Professor"]))))) && ((0, import_kolmafia71.booleanModifier)("Adventure Underwater") || waterBreathingEquipment.some(function(item9) {
-    return have(item9);
+    return have(item9) && (0, import_kolmafia71.canEquip)(item9);
   })) && (have($effect(_templateObject851 || (_templateObject851 = _taggedTemplateLiteral63(["Fishy"])))) || have($item(_templateObject946 || (_templateObject946 = _taggedTemplateLiteral63(["fishy pipe"])))) && !get("_fishyPipeUsed"))) {
     if (!have($effect(_templateObject1039 || (_templateObject1039 = _taggedTemplateLiteral63(["Fishy"])))) && !get("_fishyPipeUsed"))
       (0, import_kolmafia71.use)($item(_templateObject1134 || (_templateObject1134 = _taggedTemplateLiteral63(["fishy pipe"]))));
@@ -35290,7 +35290,7 @@ function yachtzee() {
       var familiarChoice = familiarOptions.length ? maxBy(familiarOptions, findLeprechaunMultiplier) : $familiar.none;
       (0, import_kolmafia83.useFamiliar)(familiarChoice);
       var underwaterBreathingGear = waterBreathingEquipment.find(function(item9) {
-        return have(item9);
+        return have(item9) && (0, import_kolmafia83.canEquip)(item9);
       });
       if (!underwaterBreathingGear)
         return;
@@ -36492,7 +36492,7 @@ function shouldGoUnderwater() {
     (0, import_kolmafia85.visitUrl)("place.php?whichplace=sea_oldman&action=oldman_oldman");
   }
   if (!get2("Adventure Underwater") && waterBreathingEquipment.every(function(item9) {
-    return !have(item9);
+    return !have(item9) || !(0, import_kolmafia85.canEquip)(item9);
   })) {
     return false;
   }
