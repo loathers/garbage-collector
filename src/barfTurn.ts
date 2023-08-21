@@ -1,6 +1,7 @@
 import {
   availableAmount,
   canAdventure,
+  canEquip,
   cliExecute,
   currentRound,
   eat,
@@ -83,7 +84,7 @@ function shouldGoUnderwater(): boolean {
 
   if (
     !getModifier("Adventure Underwater") &&
-    waterBreathingEquipment.every((item) => !have(item))
+    waterBreathingEquipment.every((item) => !have(item) || !canEquip(item))
   ) {
     return false;
   }
