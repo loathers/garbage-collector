@@ -1,6 +1,7 @@
 import { CombatStrategy, Quest } from "grimoire-kolmafia";
 import { GarboTask } from "../engine";
 import {
+  $class,
   $effect,
   $familiar,
   $item,
@@ -22,19 +23,26 @@ import {
 import { Macro } from "../../combat";
 import { freeFightOutfit } from "../../outfit";
 import {
+  availableAmount,
+  canEquip,
+  guildStoreAvailable,
   handlingChoice,
   Item,
   itemAmount,
   itemDropsArray,
+  itemType,
   mallPrice,
   Monster,
+  myClass,
   myMaxhp,
   restoreHp,
+  retrieveItem,
   runChoice,
   runCombat,
   use,
   useSkill,
   visitUrl,
+  weaponHands,
 } from "kolmafia";
 import { garboValue } from "../../value";
 import { globalOptions } from "../../config";
@@ -66,6 +74,16 @@ const valueDrops = (monster: Monster) =>
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 const locketsToSave = () =>
   CombatLoversLocket.availableLocketMonsters().includes($monster`Knob Goblin Embezzler`) ? 1 : 0;
+
+const maxSealsAvailable = () => (retrieveItem(1, $item`Claw of the Infernal Seal`) ? 10 : 5);
+
+function sealsAvailable(): number {
+  const max = maxSealsAvailable();
+  const available = guildStoreAvailable()
+    ? Infinity
+    : Math.floor(availableAmount($item`seal-blubber candle`) / 3);
+  return Math.min(max, available);
+}
 
 const FreeFightTasks: GarboFreeFightTask[] = [
   {
@@ -176,7 +194,29 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     cost: () => mallPrice($item`lynyrd snare`),
   },
   // [glitch season reward name]
-  // seals
+  {
+    name: "Hellseals",
+    ready: () => myClass() === $class`Seal Clubber`,
+    completed: () => sealsAvailable() <= 0,
+    do: () => {
+      const [figurine, candlesNeeded] = guildStoreAvailable()
+        ? [$item`figurine of a wretched-looking seal`, 1]
+        : [$item`figurine of an ancient seal`, 3];
+      retrieveItem(1, figurine);
+      retrieveItem(candlesNeeded, $item`seal-blubber candle`);
+      use(figurine);
+    },
+    outfit: () => {
+      const clubs = Item.all().filter((i) => have(i) && canEquip(i) && itemType(i) === "club");
+      const club =
+        clubs.find((i) => weaponHands(i) === 1) ??
+        clubs.find((i) => weaponHands(i) === 2) ??
+        $item`seal-clubbing club`;
+      retrieveItem(club);
+      return freeFightOutfit({ weapon: club });
+    },
+    combatCount: sealsAvailable,
+  },
   // BRICKO
   // Grimacia
   // Pygmys
