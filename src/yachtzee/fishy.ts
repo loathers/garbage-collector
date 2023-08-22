@@ -8,12 +8,16 @@ import {
   haveEquipped,
   mallPrice,
   print,
+  toInt,
   use,
+  useSkill,
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $location,
+  $skill,
   get,
   getActiveEffects,
   have,
@@ -24,7 +28,7 @@ import {
 import { acquire } from "../acquire";
 import { garboAdventure, Macro } from "../combat";
 import { safeRestore } from "../lib";
-import { pyecAvailable, yachtzeeBuffValue } from "./lib";
+import { acquiringOffhandRemarkable, pyecAvailable, yachtzeeBuffValue } from "./lib";
 import { getBestWaterBreathingEquipment } from "./outfit";
 
 function fishyCloverAdventureOpportunityCost(pipe: boolean) {
@@ -194,7 +198,51 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
       },
     },
     {
-      name: "The Haggling",
+      name: "The Haggling (August Scepter)",
+      turns: 50 + (haveFishyPipe ? 10 : 0),
+      cost: canAdventure($location`The Brinier Deepers`)
+        ? (have($effect`Lucky!`)
+            ? 0
+            : have($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`) &&
+              !get("_aug2Cast") &&
+              get("_augSkillsCast") <=
+                2 +
+                  toInt(get("_aug16Cast")) + // No need to save a charge for stomache cleansing if we've already used the skill
+                  toInt(!acquiringOffhandRemarkable) // No need to save a charge if we aren't acquiring Offhand Remarkable
+            ? 0
+            : Infinity) +
+          get("valueOfAdventure") +
+          bestWaterBreathingEquipment.cost +
+          fishyCloverAdventureOpportunityCost(haveFishyPipe)
+        : Infinity,
+      action: () => {
+        if (!have($effect`Lucky!`)) {
+          if (have($familiar`Left-Hand Man`)) {
+            equip($familiar`Left-Hand Man`, $item.none); // Ensure that our scepter is not equipped on lefty
+          }
+          useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
+          if (!have($effect`Lucky!`)) {
+            throw new Error("Failed to acquire Lucky! from August Scepter");
+          }
+        }
+        if (haveFishyPipe) use(1, $item`fishy pipe`);
+        garboAdventure($location`The Brinier Deepers`, Macro.abort());
+        if (get("lastAdventure") !== "The Brinier Deepers") {
+          print(
+            "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
+            "red",
+          );
+        }
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
+        if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
+          throw new Error("Failed to get fishy from clover adv");
+        }
+      },
+    },
+    {
+      name: "The Haggling (Clover)",
       turns: 50 + (haveFishyPipe ? 10 : 0),
       cost: canAdventure($location`The Brinier Deepers`)
         ? (have($effect`Lucky!`) ? 0 : mallPrice($item`11-leaf clover`)) +

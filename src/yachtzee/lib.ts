@@ -1,4 +1,4 @@
-import { cliExecute, Effect, Item } from "kolmafia";
+import { cliExecute, Effect, Item, todayToString, toInt } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -114,3 +114,9 @@ export function useSpikolodonSpikes(): void {
 
   postCombatActions();
 }
+
+// Save a charge for Offhand Remarkable if ...
+export const acquiringOffhandRemarkable =
+  !get("_aug13Cast") && // we haven't casted the skill yet
+  !globalOptions.ascend && // we are aren't ascending
+  toInt(todayToString().slice(-2)) !== 13; // the skill isn't a free-cast today
