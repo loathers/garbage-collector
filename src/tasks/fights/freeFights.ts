@@ -215,9 +215,26 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       retrieveItem(club);
       return freeFightOutfit({ weapon: club });
     },
+    combat: new CombatStrategy().autoattack(
+      Macro.startCombat()
+        .trySkill($skill`Furious Wallop`)
+        .while_("hasskill Lunging Thrust-Smack", Macro.skill($skill`Lunging Thrust-Smack`))
+        .while_("hasskill Thrust-Smack", Macro.skill($skill`Thrust-Smack`))
+        .while_("hasskill Lunge Smack", Macro.skill($skill`Lunge Smack`))
+        .attack()
+        .repeat(),
+    ),
     combatCount: sealsAvailable,
   },
-  // BRICKO
+  {
+    name: "BRICKO",
+    completed: () => get("_brickoFights") >= 10,
+    do: () => use($item`BRICKO ooze`),
+    cost: () => mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
+    outfit: () => freeFightOutfit({}, { canChooseMacro: false }),
+    combat: new CombatStrategy().autoattack(Macro.basicCombat()),
+    combatCount: () => clamp(10 - get("_brickoFights"), 0, 10),
+  },
   // Grimacia
   // Pygmys
   {
