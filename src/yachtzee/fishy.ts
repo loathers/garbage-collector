@@ -14,6 +14,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $location,
   $skill,
@@ -216,6 +217,9 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
         : Infinity,
       action: () => {
         if (!have($effect`Lucky!`)) {
+          if (have($familiar`Left-Hand Man`)) {
+            equip($familiar`Left-Hand Man`, $item.none); // Ensure that our scepter is not equipped on lefty
+          }
           useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
           if (!have($effect`Lucky!`)) {
             throw new Error("Failed to acquire Lucky! from August Scepter");
