@@ -62,6 +62,7 @@ import {
   waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
+import { trackBarfSessionStatistics } from "./session";
 import { completeBarfQuest } from "./tasks/daily";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
 import wanderer from "./wanderer";
@@ -475,6 +476,7 @@ function runTurn() {
 }
 
 export default function barfTurn(): void {
+  trackBarfSessionStatistics();
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
   tryFillLatte();
