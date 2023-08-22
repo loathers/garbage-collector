@@ -150,6 +150,7 @@ import {
   bestShadowRift,
   burnLibrams,
   dogOrHolidayWanderer,
+  EMBEZZLER_MULTIPLIER,
   embezzlerLog,
   ESTIMATED_OVERDRUNK_TURNS,
   expectedEmbezzlerProfit,
@@ -385,7 +386,7 @@ export function dailyFights(): void {
       embezzlerSetup();
 
       // PROFESSOR COPIES
-      if (have($familiar`Pocket Professor`)) {
+      if (have($familiar`Pocket Professor`) || have($familiar`Comma Chameleon`)) {
         const potentialPocketProfessorLectures = [
           {
             property: "_garbo_meatChain",
@@ -418,18 +419,42 @@ export function dailyFights(): void {
 
           const chip = $item`Pocket Professor memory chip`;
           const jacks = $item`box of Familiar Jacks`;
-          useFamiliar($familiar`Pocket Professor`);
-          if (!have(chip)) {
-            if (mallPrice(jacks) < mallPrice(chip)) {
-              retrieveItem(jacks);
-              use(jacks);
-            } else {
-              retrieveItem(chip);
+          useFamiliar(
+            have($familiar`Pocket Professor`)
+              ? $familiar`Pocket Professor`
+              : $familiar`Comma Chameleon`
+          );
+          if (myFamiliar() === $familiar`Pocket Professor`) {
+            if (!have(chip)) {
+              if (mallPrice(jacks) < mallPrice(chip)) {
+                retrieveItem(jacks);
+                use(jacks);
+              } else {
+                retrieveItem(chip);
+              }
+            }
+          } else {
+            if (get("commaFamiliar") !== $familiar`Pocket Professor`) {
+              if (!have(chip)) {
+                acquire(
+                  1,
+                  chip,
+                  EMBEZZLER_MULTIPLIER() *
+                    get("valueOfAdventure") *
+                    Math.min(40, pocketProfessorLectures() - get("_pocketProfessorLectures"))
+                );
+              }
+              visitUrl(`inv_equip.php?which=2&action=equip&whichitem=${toInt(chip)}&pwd`);
+              visitUrl("charpane.php");
             }
           }
 
-          const profSpec: OutfitSpec = { familiar: $familiar`Pocket Professor` };
-          if (have(chip)) {
+          const profSpec: OutfitSpec = {
+            familiar: have($familiar`Pocket Professor`)
+              ? $familiar`Pocket Professor`
+              : $familiar`Comma Chameleon`,
+          };
+          if (have(chip) && myFamiliar() === $familiar`Pocket Professor`) {
             profSpec.famequip = chip;
           }
 

@@ -69,6 +69,19 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         limit: "special",
       });
     }
+
+    if (location.zone === "Dinseylandfill" && have($familiar`Comma Chameleon`)) {
+      familiarMenu.push({
+        familiar: $familiar`Comma Chameleon`,
+        expectedValue:
+          get("commaFamiliar") === $familiar`Space Jellyfish`
+            ? garboValue($item`stench jelly`) /
+              (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20)
+            : 0,
+        leprechaunMultiplier: 0,
+        limit: "special",
+      });
+    }
   }
 
   const meatFam = meatFamiliar();
@@ -92,7 +105,12 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
 }
 
 export function getAllJellyfishDrops(): { expectedValue: number; turnsAtValue: number }[] {
-  if (!have($familiar`Space Jellyfish`)) return [{ expectedValue: 0, turnsAtValue: 0 }];
+  if (
+    !have($familiar`Space Jellyfish`) &&
+    (!have($familiar`Comma Chameleon`) || get("commaFamiliar") !== $familiar`Space Jellyfish`)
+  ) {
+    return [{ expectedValue: 0, turnsAtValue: 0 }];
+  }
 
   const current = get("_spaceJellyfishDrops");
   const returnValue = [];
