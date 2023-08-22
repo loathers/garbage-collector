@@ -1,8 +1,18 @@
-import { Task } from "grimoire-kolmafia";
-import { cliExecute, mallPrice, myClass, myThrall, use, useSkill } from "kolmafia";
-import { $class, $item, $skill, $thrall, get, have } from "libram";
-import { baseMeat, maxBy } from "../lib";
+import { OutfitSpec, Quest } from "grimoire-kolmafia";
+import {
+  cliExecute,
+  mallPrice,
+  myClass,
+  myMaxmp,
+  myThrall,
+  restoreMp,
+  use,
+  useSkill,
+} from "kolmafia";
+import { $class, $item, $skill, $thrall, get, have, maxBy } from "libram";
+import { baseMeat } from "../lib";
 import { estimatedGarboTurns } from "../turns";
+import { GarboTask } from "./engine";
 
 function bestVykeaLevel(): number {
   const vykeas = [
@@ -27,7 +37,7 @@ function bestVykeaLevel(): number {
   return 0;
 }
 
-export const PostFreeFightTasks: Task[] = [
+const PostFreeFightTasks: GarboTask[] = [
   {
     name: "Configure Vykea",
     ready: () => get("_VYKEACompanionLevel") === 0 && bestVykeaLevel() > 0,
@@ -40,6 +50,11 @@ export const PostFreeFightTasks: Task[] = [
     ready: () => myClass() === $class`Pastamancer` && have($skill`Bind Lasagmbie`),
     completed: () => myThrall() === $thrall`Lasagmbie`,
     do: () => useSkill($skill`Bind Lasagmbie`),
+    outfit: (): OutfitSpec => {
+      if (myMaxmp() >= 200) return {};
+      return { modifier: "MP" };
+    },
+    prepare: () => restoreMp(200),
   },
   {
     name: "Level Up Thrall",
@@ -51,3 +66,8 @@ export const PostFreeFightTasks: Task[] = [
     do: () => use($item`experimental carbon fiber pasta additive`),
   },
 ];
+
+export const PostFreeFightQuest: Quest<GarboTask> = {
+  name: "Post Free Fight",
+  tasks: PostFreeFightTasks,
+};

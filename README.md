@@ -39,7 +39,7 @@ Consult [this page](ITEMS.md) for a list of various items that are useful to hav
 To install the script, use the following command in the KoLMafia CLI.
 
 ```text
-git checkout https://github.com/Loathing-Associates-Scripting-Society/garbage-collector.git release
+git checkout https://github.com/loathers/garbage-collector.git release
 ```
 
 Before running Garbage Collector, there are a few tasks you must do.

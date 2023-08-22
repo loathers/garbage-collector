@@ -1,11 +1,15 @@
+import { Args } from "grimoire-kolmafia";
 import {
+  abort,
   availableAmount,
   buy,
   canEquip,
   cliExecute,
+  currentRound,
   getCampground,
   getClanName,
   guildStoreAvailable,
+  handlingChoice,
   inebrietyLimit,
   Item,
   logprint,
@@ -37,22 +41,27 @@ import {
   $skill,
   $slots,
   Clan,
+  examine,
   get,
   getFoldGroup,
   have,
   haveInCampground,
   JuneCleaver,
+  maxBy,
   set,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
 } from "libram";
+import barfTurn from "./barfTurn";
+import { stashItems, withStash, withVIPClan } from "./clan";
+import { globalOptions } from "./config";
+import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
   HIGHLIGHT,
-  maxBy,
   printLog,
   propertyManager,
   questStep,
@@ -61,15 +70,11 @@ import {
 } from "./lib";
 import { meatMood, useBuffExtenders } from "./mood";
 import postCombatActions from "./post";
-import { stashItems, withStash, withVIPClan } from "./clan";
-import { dailySetup, postFreeFightDailySetup } from "./dailies";
 import { potionSetup } from "./potions";
-import { endSession, garboAverageValue, startSession } from "./session";
-import { yachtzeeChain } from "./yachtzee";
-import barfTurn from "./barfTurn";
+import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
-import { Args } from "grimoire-kolmafia";
-import { globalOptions } from "./config";
+import { garboAverageValue } from "./value";
+import { yachtzeeChain } from "./yachtzee";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -98,8 +103,19 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27149);
+  sinceKolmafiaRevision(27495);
   checkGithubVersion();
+
+  // Hit up main.php to get out of easily escapable choices
+  visitUrl("main.php");
+  if (currentRound() > 0) {
+    abort("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
+  }
+  if (handlingChoice()) {
+    abort(
+      "It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.",
+    );
+  }
 
   Args.fill(globalOptions, argString);
   if (globalOptions.version) return; // Since we always print the version, all done!
@@ -119,7 +135,7 @@ export function main(argString = ""): void {
   if (globalOptions.prefs.autoUserConfirm) {
     print(
       "I have set auto-confirm to true and accept all ramifications that come with that.",
-      "red"
+      "red",
     );
   }
 
@@ -130,7 +146,7 @@ export function main(argString = ""): void {
         `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
           .map((item) => item.name)
           .join(", ")}. Would you like us to return these to the stash now?`,
-        true
+        true,
       )
     ) {
       startSession();
@@ -171,23 +187,24 @@ export function main(argString = ""): void {
       if (
         userConfirmDialog(
           "Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?",
-          true
+          true,
         )
       ) {
         stashItems.splice(0);
       }
     }
   }
-  if (globalOptions.returnstash) return;
+  if (globalOptions.returnstash) {
+    set("garboStashItems", stashItems.map((item) => toInt(item).toFixed(0)).join(","));
+    return;
+  }
 
   if (
-    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger`.includes(
-      myClass()
+    !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger, Pig Skinner, Cheese Wizard, Jazz Agent`.includes(
+      myClass(),
     )
   ) {
-    throw new Error(
-      "Garbo does not support non-WOL avatar classes. It barely supports WOL avatar classes"
-    );
+    throw new Error("Garbo does not support this class. It barely supports WOL/SOL avatar classes");
   }
 
   if (!get("kingLiberated") || myLevel() < 13 || Stat.all().some((s) => myBasestat(s) < 75)) {
@@ -196,13 +213,13 @@ export function main(argString = ""): void {
     } else {
       const proceedRegardless = userConfirmDialog(
         "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
-        true
+        true,
       );
       if (!proceedRegardless) {
         throw new Error("User interrupt requested. Stopping Garbage Collector.");
       } else {
         logprint(
-          "This player is a silly goose, who ignored our warnings about being underleveled."
+          "This player is a silly goose, who ignored our warnings about being underleveled.",
         );
       }
     }
@@ -220,12 +237,15 @@ export function main(argString = ""): void {
     (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
   ) {
     throw new Error(
-      "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it."
+      "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it.",
     );
   }
 
   const completedProperty = "_garboCompleted";
   set(completedProperty, "");
+
+  // re-align sweat (useful for diet and outfit)
+  examine($item`designer sweatpants`);
 
   startSession();
   if (!globalOptions.nobarf && !globalOptions.simdiet) {
@@ -244,6 +264,7 @@ export function main(argString = ""): void {
       autoGarish: true,
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
+      shadowLabyrinthGoal: "effects",
     });
     runDiet();
     propertyManager.resetAll();
@@ -252,14 +273,14 @@ export function main(argString = ""): void {
 
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds`;
   const startingGarden = gardens.find((garden) =>
-    Object.getOwnPropertyNames(getCampground()).includes(garden.name)
+    Object.getOwnPropertyNames(getCampground()).includes(garden.name),
   );
   if (
     startingGarden &&
     !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) &&
     getCampground()[startingGarden.name] &&
     $items`packet of tall grass seeds, packet of mushroom spores`.some((gardenSeed) =>
-      have(gardenSeed)
+      have(gardenSeed),
     )
   ) {
     if (startingGarden === $item`packet of rock seeds`) {
@@ -274,7 +295,7 @@ export function main(argString = ""): void {
   const aaBossFlag =
     xpath(
       visitUrl("account.php?tab=combat"),
-      `//*[@id="opt_flag_aabosses"]/label/input[@type='checkbox']@checked`
+      `//*[@id="opt_flag_aabosses"]/label/input[@type='checkbox']@checked`,
     )[0] === "checked"
       ? 1
       : 0;
@@ -300,6 +321,25 @@ export function main(argString = ""): void {
     const maximizerCombinationLimit = globalOptions.quick
       ? 100000
       : get("maximizerCombinationLimit");
+
+    const bannedAutoRestorers = have($item`Cincho de Mayo`)
+      ? [
+          "sleep on your clan sofa",
+          "rest in your campaway tent",
+          "rest at the chateau",
+          "rest at your campground",
+          "free rest",
+        ]
+      : [];
+
+    const hpItems = get("hpAutoRecoveryItems")
+      .split(";")
+      .filter((s) => !bannedAutoRestorers.includes(s))
+      .join(";");
+    const mpItems = get("mpAutoRecoveryItems")
+      .split(";")
+      .filter((s) => !bannedAutoRestorers.includes(s))
+      .join(";");
 
     propertyManager.set({
       logPreferenceChange: true,
@@ -330,6 +370,8 @@ export function main(argString = ""): void {
       hpAutoRecoveryTarget: 0.0,
       mpAutoRecovery: -0.05,
       mpAutoRecoveryTarget: 0.0,
+      hpAutoRecoveryItems: hpItems,
+      mpAutoRecoveryItems: mpItems,
       afterAdventureScript: "",
       betweenBattleScript: "",
       choiceAdventureScript: "",
@@ -374,10 +416,11 @@ export function main(argString = ""): void {
     if (JuneCleaver.have()) {
       propertyManager.setChoices(
         Object.fromEntries(
-          JuneCleaver.choices.map((choice) => [choice, bestJuneCleaverOption(choice)])
-        )
+          JuneCleaver.choices.map((choice) => [choice, bestJuneCleaverOption(choice)]),
+        ),
       );
     }
+    propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
 
     safeRestore();
 
@@ -408,7 +451,8 @@ export function main(argString = ""): void {
     const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring`;
     if (
       myInebriety() <= inebrietyLimit() &&
-      (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`))
+      (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`)) &&
+      !have($skill`Head in the Game`)
     ) {
       stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
     }
@@ -436,11 +480,11 @@ export function main(argString = ""): void {
         // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
         dailySetup();
 
-        const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack, dice-shaped backpack`;
+        const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack, dice-shaped backpack, Amulet of Perpetual Darkness`;
         if (globalOptions.quick) {
           // Brimstone equipment explodes the number of maximize combinations
           preventEquip.push(
-            ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`
+            ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`,
           );
         }
 
@@ -451,7 +495,6 @@ export function main(argString = ""): void {
 
         // 2. do some embezzler stuff
         freeFights();
-        postFreeFightDailySetup(); // setup stuff that can interfere with free fights (VYKEA)
         yachtzeeChain();
         dailyFights();
 
@@ -477,7 +520,7 @@ export function main(argString = ""): void {
               buy(
                 $coinmaster`The Dinsey Company Store`,
                 1,
-                $item`one-day ticket to Dinseylandfill`
+                $item`one-day ticket to Dinseylandfill`,
               );
             }
           } finally {
@@ -495,5 +538,5 @@ export function main(argString = ""): void {
     endSession();
     printLog(HIGHLIGHT);
   }
-  set(completedProperty, `garbo ${argString}`);
+  set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
 }

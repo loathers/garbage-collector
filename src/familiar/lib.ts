@@ -8,9 +8,9 @@ import {
   totalTurnsPlayed,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $item, clamp, get, have } from "libram";
+import { $effect, $familiar, $item, $skill, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
-import { ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
+import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 export type GeneralFamiliar = {
@@ -32,7 +32,6 @@ export function timeToMeatify(): boolean {
 
   // Check Wanderers
   const totalTurns = totalTurnsPlayed();
-  const baseMeat = have($item`SongBoom™ BoomBox`) ? 275 : 250;
   const usingLatte =
     have($item`latte lovers member's mug`) &&
     get("latteModifier").split(",").includes("Meat Drop: 40");
@@ -60,7 +59,7 @@ export function timeToMeatify(): boolean {
   const delay = Math.min(
     nextProtonicGhost,
     nextVoteMonster === 0 ? (get("_voteFreeFights") < 2 ? 11 : Infinity) : nextVoteMonster,
-    nextVoidMonster === 0 ? 13 : nextVoidMonster
+    nextVoidMonster === 0 ? 13 : nextVoidMonster,
   );
 
   if (delay < myAdventures()) return false;
@@ -78,6 +77,7 @@ export function canOpenRedPresent(): boolean {
   return (
     have($familiar`Crimbo Shrub`) &&
     !have($effect`Everything Looks Red`) &&
+    !have($skill`Free-For-All`) &&
     get("shrubGifts") === "meat" &&
     myInebriety() <= inebrietyLimit()
   );
@@ -94,7 +94,7 @@ export function turnsAvailable(): number {
     ? clamp(
         availableAmount($item`Map to Safety Shelter Grimace Prime`),
         0,
-        ESTIMATED_OVERDRUNK_TURNS
+        ESTIMATED_OVERDRUNK_TURNS,
       )
     : 0;
 

@@ -12,7 +12,7 @@ import {
   Robortender,
 } from "libram";
 import { baseMeat } from "../lib";
-import { garboAverageValue, garboValue } from "../session";
+import { garboAverageValue, garboValue } from "../value";
 import { GeneralFamiliar } from "./lib";
 
 type ConstantValueFamiliar = {
@@ -39,7 +39,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     familiar: $familiar`Shorter-Order Cook`,
     value: () =>
       garboAverageValue(
-        ...$items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`
+        ...$items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`,
       ) / 11, // 9 with blue plate
   },
   {
@@ -84,7 +84,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     familiar: $familiar`Garbage Fire`,
     value: () =>
       garboAverageValue(
-        ...$items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`
+        ...$items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`,
       ) / clamp(30 - get("garbageFireProgress"), 1, 30),
   },
   {
@@ -92,7 +92,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: () =>
       (3 *
         garboAverageValue(
-          ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`
+          ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`,
         )) /
       11,
   },

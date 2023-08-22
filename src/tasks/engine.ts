@@ -1,15 +1,18 @@
-import { Engine, Task } from "grimoire-kolmafia";
-import { print } from "kolmafia";
-import { HIGHLIGHT, safeInterrupt } from "../lib";
+import { Engine, EngineOptions, getTasks, Quest, StrictCombatTask } from "grimoire-kolmafia";
+import { safeInterrupt } from "../lib";
+import wanderer from "../wanderer";
+
+export type GarboTask = StrictCombatTask & { sobriety?: "drunk" | "sober" };
 
 /** A base engine for Garbo!
  * Runs extra logic before executing all tasks.
  */
-export class BaseGarboEngine extends Engine {
+export class BaseGarboEngine extends Engine<never, GarboTask> {
   // Check for interrupt before executing a task
-  execute(task: Task): void {
+  execute(task: GarboTask): void {
     safeInterrupt();
     super.execute(task);
+    wanderer.clear();
   }
 }
 
@@ -18,20 +21,14 @@ export class BaseGarboEngine extends Engine {
  * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
  */
 export class SafeGarboEngine extends BaseGarboEngine {
-  // Garbo treats soft limits as completed, and continues on.
-  markAttempt(task: Task<never>): void {
-    super.markAttempt(task);
-
-    if (task.completed()) return;
-    const limit = task.limit?.soft || 1;
-    if (this.attempts[task.name] >= limit) {
-      task.completed = () => true;
-      print(`Task ${task.name} did not complete within ${limit} attempts. Skipping.`, HIGHLIGHT);
-    }
+  constructor(tasks: GarboTask[]) {
+    const options = new EngineOptions();
+    options.default_task_options = { limit: { skip: 1 } };
+    super(tasks, options);
   }
 }
 
-export function runSafeGarboTasks(tasks: Task[]): void {
+export function runSafeGarboTasks(tasks: GarboTask[]): void {
   const engine = new SafeGarboEngine(tasks);
 
   try {
@@ -41,7 +38,11 @@ export function runSafeGarboTasks(tasks: Task[]): void {
   }
 }
 
-export function runGarboTasks(tasks: Task[]): void {
+export function runSafeGarboQuests(quests: Quest<GarboTask>[]): void {
+  runSafeGarboTasks(getTasks(quests));
+}
+
+export function runGarboTasks(tasks: GarboTask[]): void {
   const engine = new BaseGarboEngine(tasks);
 
   try {
@@ -49,4 +50,8 @@ export function runGarboTasks(tasks: Task[]): void {
   } finally {
     engine.destruct();
   }
+}
+
+export function runGarboQuests(quests: Quest<GarboTask>[]): void {
+  runGarboTasks(getTasks(quests));
 }

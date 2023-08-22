@@ -24,14 +24,14 @@ import {
   get,
   getBanishedMonsters,
   have,
+  maxBy,
   property,
   Requirement,
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { latteActionSourceFinderConstraints, ltbRun, maxBy, setChoice } from "./lib";
+import { latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
 import { garboAdventure, Macro } from "./combat";
-import { embezzlerMacro } from "./embezzler";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 
@@ -124,7 +124,7 @@ export function saberCrateIfSafe(): void {
       Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
         .if_($monster`sausage goblin`, Macro.kill())
         .ifHolidayWanderer(run.macro)
-        .abort()
+        .abort(),
     );
   } while (
     [
@@ -180,7 +180,7 @@ function initializeCrates(): void {
         .trySkill($skill`Offer Latte to Opponent`)
         .externalIf(
           get("_gallapagosMonster") !== $monster`crate` && have($skill`Gallapagosian Mating Call`),
-          Macro.trySkill($skill`Gallapagosian Mating Call`)
+          Macro.trySkill($skill`Gallapagosian Mating Call`),
         )
         .trySkill($skill`Use the Force`)
         .step(run.macro);
@@ -191,7 +191,7 @@ function initializeCrates(): void {
       run.constraints.preparation?.();
       new Requirement(["100 Monster Level"], {
         forceEquip: $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter((item) =>
-          have(item)
+          have(item),
         ),
         preventEquip: $items`carnivorous potted plant`,
       })
@@ -201,7 +201,7 @@ function initializeCrates(): void {
         $location`Noob Cave`,
         Macro.if_($monster`crate`, macro)
           .ifHolidayWanderer(run.macro)
-          .abort()
+          .abort(),
       );
       visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
     } else if (
@@ -240,7 +240,7 @@ function initializeDireWarren(): void {
           have(i) &&
           canEquip(i) &&
           weaponHands(i) === 2 &&
-          (itemType(i) === "club" || (have($effect`Iron Palms`) && itemType(i) === "sword"))
+          (itemType(i) === "club" || (have($effect`Iron Palms`) && itemType(i) === "sword")),
       ) ?? $item`amok putter`;
     retrieveItem(availableClub);
     new Requirement(["100 Monster Level"], {
@@ -251,7 +251,7 @@ function initializeDireWarren(): void {
     do {
       garboAdventure(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).step(embezzlerMacro())
+        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).embezzler(),
       );
     } while (myFury() >= 5 && banishedMonsters.get($skill`Batter Up!`) !== $monster`fluffy bunny`);
   } else {
@@ -260,7 +260,7 @@ function initializeDireWarren(): void {
     do {
       garboAdventure(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).step(embezzlerMacro())
+        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).embezzler(),
       );
     } while (
       "fluffy bunny" !== get("lastEncounter") &&

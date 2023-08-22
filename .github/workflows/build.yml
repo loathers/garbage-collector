@@ -11,7 +11,7 @@ on:
 
 env:
   # Default version of Node.js for jobs
-  node-version: "12"
+  node-version: "18"
 
 jobs:
   test:
@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ["12", "14", "16"]
+        node-version: ["18"]
 
     steps:
       - uses: actions/checkout@v2
@@ -73,13 +73,15 @@ jobs:
           mv mafiafiles/data ./data
           mv mafiafiles/dependencies.txt dependencies.txt
           mv mafiafiles/images ./images
-      - run: |
+      - env:
+          MESSAGE: ${{github.event.commits[0].message}}
+        run: |
           git add scripts/
           git add data/
           git add relay/
           git add images/
           git add dependencies.txt
           {
-            git commit -m "${{github.event.commits[0].message}}"
+            git commit -m "$MESSAGE"
             git push origin release
           } || exit 0

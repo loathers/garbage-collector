@@ -1,8 +1,10 @@
 import {
+  cliExecute,
   equippedItem,
   Familiar,
   familiarWeight,
   Item,
+  myFamiliar,
   numericModifier,
   print,
   Slot,
@@ -18,20 +20,21 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
-  Requirement,
+  maxBy,
   sum,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
-import { bonusGear } from "../dropsgear";
-import { baseMeat, HIGHLIGHT, maxBy } from "../lib";
-import { meatOutfit } from "../outfit";
-import { garboValue, setMarginalFamiliarsExcessValue } from "../session";
+import { bonusGear } from "../outfit";
+import { baseMeat, BonusEquipMode, HIGHLIGHT } from "../lib";
+import { barfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
+import { setMarginalFamiliarsExcessValue } from "../session";
+import { garboValue } from "../value";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat / 100;
@@ -51,29 +54,32 @@ function getCachedOutfitValues(fam: Familiar) {
   const currentValue = outfitCache.get(lepMult);
   if (currentValue) return currentValue;
 
-  useFamiliar(fam);
-  meatOutfit(
-    false,
-    new Requirement([], {
-      // If we don't include the li'l pirate costume as a preventEquip, we could
-      // double-count the value of the pirate costume between here and constantvalue.ts,
-      // and we could apply the value of the pirate costume to every 0x leprechaun. Other items are
-      // included as strong, temporary bonuses that go away quickly in a user's BarfDay.
-      preventEquip: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
-    })
-  );
+  const current = myFamiliar();
+  cliExecute("checkpoint");
+  try {
+    barfOutfit(
+      {
+        familiar: fam,
+        avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
+      },
+      true,
+    ).dress();
 
-  const outfit = outfitSlots.map((slot) => equippedItem(slot));
-  const bonuses = bonusGear("barf", false);
+    const outfit = outfitSlots.map((slot) => equippedItem(slot));
+    const bonuses = bonusGear(BonusEquipMode.EMBEZZLER, false);
 
-  const values = {
-    weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
-    meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
-    item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
-    bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
-  };
-  outfitCache.set(lepMult, values);
-  return values;
+    const values = {
+      weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
+      meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
+      item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
+      bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
+    };
+    outfitCache.set(lepMult, values);
+    return values;
+  } finally {
+    useFamiliar(current);
+    cliExecute("outfit checkpoint");
+  }
 }
 
 type MarginalFamiliar = GeneralFamiliar & { outfitWeight: number; outfitValue: number };
@@ -102,7 +108,7 @@ function totalFamiliarValue({ expectedValue, outfitValue, familiar }: MarginalFa
 
 function turnsNeededForFamiliar(
   { familiar, limit, outfitValue }: MarginalFamiliar,
-  baselineToCompareAgainst: MarginalFamiliar
+  baselineToCompareAgainst: MarginalFamiliar,
 ): number {
   switch (limit) {
     case "drops":
@@ -110,9 +116,9 @@ function turnsNeededForFamiliar(
         getAllDrops(familiar).filter(
           ({ expectedValue }) =>
             outfitValue + familiarAbilityValue(familiar) + expectedValue >
-            totalFamiliarValue(baselineToCompareAgainst)
+            totalFamiliarValue(baselineToCompareAgainst),
         ),
-        ({ expectedTurns }) => expectedTurns
+        ({ expectedTurns }) => expectedTurns,
       );
 
     case "experience":
@@ -152,12 +158,12 @@ export function barfFamiliar(): Familiar {
 
   if (viableMenu.every(({ limit }) => limit !== "none")) {
     const turnsNeeded = sum(viableMenu, (option: MarginalFamiliar) =>
-      turnsNeededForFamiliar(option, meatFamiliarEntry)
+      turnsNeededForFamiliar(option, meatFamiliarEntry),
     );
 
     if (turnsNeeded < turnsAvailable()) {
       const shrubAvailable = viableMenu.some(
-        ({ familiar }) => familiar === $familiar`Crimbo Shrub`
+        ({ familiar }) => familiar === $familiar`Crimbo Shrub`,
       );
       return shrubAvailable ? $familiar`Crimbo Shrub` : meatFamiliar();
     }
@@ -183,20 +189,20 @@ export function barfFamiliar(): Familiar {
       best.outfitValue +
       familiarAbilityValue(best.familiar) -
       Math.max(meatFamiliarValue, jellyfishValue),
-    0
+    0,
   );
   setMarginalFamiliarsExcessValue(excessValue);
 
   const familiarPrintout = (x: MarginalFamiliar) =>
     `(expected value of ${x.expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(
-      x.familiar
+      x.familiar,
     ).toFixed(1)} from familiar abilities and ${x.outfitValue.toFixed(1)} from outfit)`;
 
   print(
     `Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${
       meatFamiliarEntry.familiar
     } ${familiarPrintout(meatFamiliarEntry)}.`,
-    HIGHLIGHT
+    HIGHLIGHT,
   );
 
   return best.familiar;
@@ -217,9 +223,9 @@ function getSpecialFamiliarLimit({
         getAllJellyfishDrops().filter(
           ({ expectedValue }) =>
             outfitValue + familiarAbilityValue(familiar) + expectedValue >
-            totalFamiliarValue(baselineToCompareAgainst)
+            totalFamiliarValue(baselineToCompareAgainst),
         ),
-        ({ turnsAtValue }) => turnsAtValue
+        ({ turnsAtValue }) => turnsAtValue,
       );
 
     case $familiar`Crimbo Shrub`:

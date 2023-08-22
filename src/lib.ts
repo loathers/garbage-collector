@@ -8,6 +8,7 @@ import {
   fileToBuffer,
   gametimeToInt,
   getLocketMonsters,
+  getMonsters,
   gitAtHead,
   gitInfo,
   handlingChoice,
@@ -15,6 +16,7 @@ import {
   inebrietyLimit,
   isDarkMode,
   Item,
+  itemDropsArray,
   Location,
   meatDropModifier,
   Monster,
@@ -22,20 +24,25 @@ import {
   myFamiliar,
   myHp,
   myInebriety,
+  myLocation,
   myMaxhp,
   myMaxmp,
   myMp,
   mySoulsauce,
   myTurncount,
+  numericModifier,
   print,
   printHtml,
   restoreHp,
   restoreMp,
   runChoice,
   runCombat,
+  setLocation,
+  Skill,
   soulsauceCost,
   todayToString,
   toSlot,
+  totalFreeRests,
   toUrl,
   use,
   useFamiliar,
@@ -55,6 +62,8 @@ import {
   ActionSource,
   bestLibramToCast,
   ChateauMantegna,
+  clamp,
+  ClosedCircuitPayphone,
   CombatLoversLocket,
   Counter,
   ensureFreeRun,
@@ -64,6 +73,7 @@ import {
   have,
   JuneCleaver,
   Macro,
+  maxBy,
   PropertiesManager,
   property,
   set,
@@ -71,8 +81,9 @@ import {
   sum,
   uneffect,
 } from "libram";
+import { acquire } from "./acquire";
 import { globalOptions } from "./config";
-import { garboValue } from "./session";
+import { garboValue } from "./value";
 
 export const embezzlerLog: {
   initialEmbezzlersFought: number;
@@ -84,7 +95,28 @@ export const embezzlerLog: {
   sources: [],
 };
 
-export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
+export enum BonusEquipMode {
+  FREE,
+  EMBEZZLER,
+  DMT,
+  BARF,
+}
+
+export function modeIsFree(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
+}
+
+export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
+}
+
+export function modeValueOfMeat(mode: BonusEquipMode): number {
+  return modeIsFree(mode) ? 0 : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
+}
+
+export function modeValueOfItem(mode: BonusEquipMode): number {
+  return mode === BonusEquipMode.BARF ? 0.72 : 0;
+}
 
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
@@ -178,7 +210,7 @@ export function mapMonster(location: Location, monster: Monster): void {
   }
 
   const fightPage = visitUrl(
-    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`
+    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`,
   );
   if (!fightPage.includes(monster.name)) {
     throw "Something went wrong starting the fight.";
@@ -275,7 +307,7 @@ export function printHelpMenu(): void {
     return `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${croppedDescription}</pre></td></tr>`;
   });
   printHtml(
-    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`
+    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`,
   );
 }
 
@@ -342,7 +374,7 @@ export function safeRestore(): void {
       uneffect($effect`Beaten Up`);
     } else {
       throw new Error(
-        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready."
+        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.",
       );
     }
   }
@@ -376,18 +408,22 @@ export function checkGithubVersion(): void {
   if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
     print("Skipping version check for custom build");
   } else {
-    if (gitAtHead("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
+    if (
+      gitAtHead("loathers-garbage-collector-release") ||
+      gitAtHead("Loathing-Associates-Scripting-Society-garbage-collector-release")
+    ) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
-        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
+        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`),
       );
       const releaseCommit = gitBranches.find((branchInfo) => branchInfo.name === "release")?.commit;
       print("Garbo is out of date. Please run 'git update!'", "red");
       print(
         `Local Version: ${
+          gitInfo("loathers-garbage-collector-release").commit ||
           gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release").commit
-        }.`
+        }.`,
       );
       print(`Release Version: ${releaseCommit?.sha}.`);
     }
@@ -401,7 +437,7 @@ export function realmAvailable(identifier: RealmType): boolean {
   } else if (identifier === "pirate") {
     return get(`_prToday`) || get(`prAlways`);
   }
-  return get(`_${identifier}AirportToday`, false) || get(`${identifier}AirportAlways`, false);
+  return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
 }
 
 export function formatNumber(num: number): string {
@@ -411,7 +447,7 @@ export function formatNumber(num: number): string {
 export function getChoiceOption(partialText: string): number {
   if (handlingChoice()) {
     const findResults = Object.entries(availableChoiceOptions()).find(
-      (value) => value[1].indexOf(partialText) > -1
+      (value) => value[1].indexOf(partialText) > -1,
     );
     if (findResults) {
       return parseInt(findResults[0]);
@@ -526,45 +562,72 @@ export function freeCrafts(): number {
   );
 }
 
-/**
- * Find the best element of an array, where "best" is defined by some given criteria.
- * @param array The array to traverse and find the best element of.
- * @param optimizer Either a key on the objects we're looking at that corresponds to numerical values, or a function for mapping these objects to numbers. Essentially, some way of assigning value to the elements of the array.
- * @param reverse Make this true to find the worst element of the array, and false to find the best. Defaults to false.
- */
-export function maxBy<T>(
-  array: T[] | readonly T[],
-  optimizer: (element: T) => number,
-  reverse?: boolean
-): T;
-export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
-  array: T[] | readonly T[],
-  key: S,
-  reverse?: boolean
-): T;
-export function maxBy<S extends string | number | symbol, T extends { [x in S]: number }>(
-  array: T[] | readonly T[],
-  optimizer: ((element: T) => number) | S,
-  reverse = false
-): T {
-  if (!array.length) throw new Error("Don't call maxBy on an empty array!");
-
-  if (typeof optimizer === "function") {
-    return [...array].reduce(
-      ({ value, item }, other) => {
-        const otherValue = optimizer(other);
-        return value >= otherValue !== reverse
-          ? { value, item }
-          : { value: otherValue, item: other };
-      },
-      { item: array[0], value: optimizer(array[0]) }
-    ).item;
-  } else {
-    return array.reduce((a, b) => (a[optimizer] >= b[optimizer] !== reverse ? a : b));
-  }
-}
-
 export type GarboItemLists = { Newark: string[]; "Feliz Navidad": string[]; trainset: string[] };
 
 export const asArray = <T>(singleOrArray: T | T[]): T[] =>
   Array.isArray(singleOrArray) ? singleOrArray : [singleOrArray];
+
+let _bestShadowRift: Location | null = null;
+export function bestShadowRift(): Location {
+  if (!_bestShadowRift) {
+    _bestShadowRift = withLocation($location`Shadow Rift`, () =>
+      ClosedCircuitPayphone.chooseRift({
+        canAdventure: true,
+        otherFilter: (l: Location) => l !== $location`Shadow Rift (The 8-Bit Realm)`,
+        sortBy: (l: Location) => {
+          // We probably aren't capping item drops with the penalty
+          // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
+          const dropModifier = 1 + numericModifier("Item Drop") / 100;
+          return sum(getMonsters(l), (m) => {
+            return sum(
+              itemDropsArray(m),
+              ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1),
+            );
+          });
+        },
+      }),
+    );
+    if (!_bestShadowRift) {
+      throw new Error("Failed to find a suitable Shadow Rift to adventure in");
+    }
+  }
+  return _bestShadowRift;
+}
+
+export function withLocation<T>(location: Location, action: () => T): T {
+  const start = myLocation();
+  try {
+    setLocation(location);
+    return action();
+  } finally {
+    setLocation(start);
+  }
+}
+
+export function freeRest(): boolean {
+  if (get("timesRested") >= totalFreeRests()) return false;
+
+  if (myHp() >= myMaxhp() && myMp() >= myMaxmp()) {
+    if (acquire(1, $item`awful poetry journal`, 10000, false)) {
+      use($item`awful poetry journal`);
+    } else {
+      // burn some mp so that we can rest
+      const bestSkill = maxBy(
+        Skill.all().filter((sk) => have(sk) && mpCost(sk) >= 1),
+        (sk) => -mpCost(sk),
+      ); // are there any other skills that cost mana which we should blacklist?
+      // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
+      useSkill(bestSkill);
+    }
+  }
+
+  if (get("chateauAvailable")) {
+    visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
+  } else if (get("getawayCampsiteUnlocked")) {
+    visitUrl("place.php?whichplace=campaway&action=campaway_tentclick");
+  } else {
+    visitUrl("campground.php?action=rest");
+  }
+
+  return true;
+}

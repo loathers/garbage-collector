@@ -1,4 +1,4 @@
-import { AcquireItem, Task } from "grimoire-kolmafia";
+import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   cliExecute,
   Item,
@@ -18,19 +18,19 @@ import {
   $skill,
   get,
   have,
+  maxBy,
   property,
   uneffect,
   withProperty,
 } from "libram";
 import { globalOptions } from "../config";
-import { HIGHLIGHT, logMessage, maxBy, realmAvailable } from "../lib";
-import { garboValue } from "../session";
+import { HIGHLIGHT, logMessage, realmAvailable } from "../lib";
+import { garboValue } from "../value";
+import { GarboTask } from "./engine";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
 function volcanoItemValue({ quantity, item }: VolcanoItem): number {
-  const basePrice = retrievePrice(item, quantity);
-  if (basePrice >= 0) return basePrice;
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
     if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) return Infinity;
@@ -42,7 +42,9 @@ function volcanoItemValue({ quantity, item }: VolcanoItem): number {
       return quantity * get("valueOfAdventure");
     }
   }
-  return Infinity;
+
+  if (!item.tradeable) return Infinity;
+  return quantity * retrievePrice(item);
 }
 
 function checkVolcanoQuest() {
@@ -68,26 +70,26 @@ function checkVolcanoQuest() {
       },
     ],
     volcanoItemValue,
-    true
+    true,
   );
   if (bestItem.item === $item`fused fuse`) {
     globalOptions.clarasBellClaimed = true;
     logMessage("Grab a fused fused with your clara's bell charge while overdrunk!");
   } else if (volcanoItemValue(bestItem) < volcoinoValue) {
     withProperty("autoBuyPriceLimit", volcoinoValue, () =>
-      retrieveItem(bestItem.item, bestItem.quantity)
+      retrieveItem(bestItem.item, bestItem.quantity),
     );
     visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
     runChoice(bestItem.choice);
   }
 }
 
-export const DailyVolcanoTasks: Task[] = [
+const DailyVolcanoTasks: GarboTask[] = [
   {
-    name: "Volcano Quest",
+    name: "Quest",
     ready: () => realmAvailable("hot"),
     completed: () => get("_volcanoItemRedeemed"),
-    do: () => checkVolcanoQuest(),
+    do: checkVolcanoQuest,
   },
   {
     name: "Free Volcoino",
@@ -99,12 +101,12 @@ export const DailyVolcanoTasks: Task[] = [
     },
     acquire: () =>
       $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.map(
-        (x) => <AcquireItem>{ item: x }
+        (x) => <AcquireItem>{ item: x },
       ),
     outfit: { modifier: "disco style" },
   },
   {
-    name: "Free Volcano Mining",
+    name: "Free Mining",
     ready: () => realmAvailable("hot") && have($skill`Unaccompanied Miner`),
     completed: () => get("_unaccompaniedMinerUsed") >= 5,
     do: () => cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`),
@@ -119,3 +121,8 @@ export const DailyVolcanoTasks: Task[] = [
     },
   },
 ];
+
+export const VolcanoQuest: Quest<GarboTask> = {
+  name: "Volcano",
+  tasks: DailyVolcanoTasks,
+};

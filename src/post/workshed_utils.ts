@@ -7,10 +7,10 @@ import {
   toItem,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, get, set, sum, TrainSet } from "libram";
+import { $item, $items, get, maxBy, set, sum, TrainSet } from "libram";
 import { globalOptions } from "../config";
-import { GarboItemLists, maxBy, today } from "../lib";
-import { garboAverageValue, garboValue } from "../session";
+import { GarboItemLists, today } from "../lib";
+import { garboAverageValue, garboValue } from "../value";
 
 function candyFactoryValue(): number {
   const lastCalculated = get("garbo_candyFactoryValueDate", 0);
@@ -39,14 +39,14 @@ const GOOD_TRAIN_STATIONS = [
     value: () =>
       2 *
       garboAverageValue(
-        ...$items`bottle of gin, bottle of vodka, bottle of whiskey, bottle of rum, bottle of tequila, boxed wine`
+        ...$items`bottle of gin, bottle of vodka, bottle of whiskey, bottle of rum, bottle of tequila, boxed wine`,
       ),
   },
   {
     piece: TrainSet.Station.ORE_HOPPER,
     value: () =>
       garboAverageValue(
-        ...$items`linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore`
+        ...$items`linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore`,
       ),
   },
 ];
@@ -57,7 +57,7 @@ function getBestCycle(): TrainSet.Cycle {
     const cycle = [
       TrainSet.Station.COAL_HOPPER,
       ...GOOD_TRAIN_STATIONS.sort(({ value: a }, { value: b }) => b() - a()).map(
-        ({ piece }) => piece
+        ({ piece }) => piece,
       ),
       TrainSet.Station.TOWER_FIZZY,
       TrainSet.Station.VIEWING_PLATFORM,

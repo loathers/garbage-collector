@@ -3,6 +3,7 @@ import {
   cliExecute,
   drink,
   eat,
+  equip,
   fullnessLimit,
   haveEffect,
   inebrietyLimit,
@@ -25,10 +26,13 @@ import {
   $effect,
   $item,
   $skill,
+  $slot,
+  CinchoDeMayo,
   clamp,
   get,
-  getActiveSongs,
   getAverageAdventures,
+  getSongCount,
+  getSongLimit,
   have,
   set,
 } from "libram";
@@ -36,12 +40,13 @@ import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { hasMonsterReplacers } from "../extrovermectin";
 import { Potion } from "../potions";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import synthesize from "../synthesis";
 import { estimatedGarboTurns } from "../turns";
 import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
-import { freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
+import { cinchNCs, freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
+import { freeRest } from "../lib";
 
 class YachtzeeDietEntry<T> {
   name: string;
@@ -57,7 +62,7 @@ class YachtzeeDietEntry<T> {
     fullness: number,
     drunkenness: number,
     spleen: number,
-    action: (n: number, name?: string) => T
+    action: (n: number, name?: string) => T,
   ) {
     this.name = name;
     this.quantity = quantity;
@@ -73,7 +78,7 @@ function ensureConsumable(
   n: number,
   fullness: number,
   inebriety: number,
-  spleenUse: number
+  spleenUse: number,
 ): void {
   if (myFullness() + n * fullness > fullnessLimit()) {
     throw new Error(`Eating ${n} ${name} exceeds our stomach capacity!`);
@@ -138,6 +143,10 @@ class YachtzeeDietUtils {
         ensureConsumable("Boris's bread", n, 1, 0, 0);
         eat(n, $item`Boris's bread`);
       }),
+      new YachtzeeDietEntry("bottle of Greedy Dog", 0, 0, 3, 0, (n: number) => {
+        ensureConsumable("bottle of Greedy Dog", n, 0, 3, 0);
+        drink(n, $item`bottle of Greedy Dog`);
+      }),
       new YachtzeeDietEntry("clara's bell", 0, 0, 0, 0, () => {
         use($item`Clara's bell`);
         globalOptions.clarasBellClaimed = true;
@@ -147,6 +156,13 @@ class YachtzeeDietUtils {
         eat(n, $item`Deep Dish of Legend`);
       }),
       new YachtzeeDietEntry("jurassic parka", 0, 0, 0, 0, useSpikolodonSpikes),
+      new YachtzeeDietEntry("cinch fiesta", 0, 0, 0, 0, () => {
+        equip($slot`acc3`, $item`Cincho de Mayo`);
+        while (CinchoDeMayo.currentCinch() < 60) {
+          if (!freeRest()) throw new Error("We are out of free rests!");
+        }
+        useSkill($skill`Cincho: Fiesta Exit`);
+      }),
     ];
     if (action) this.dietArray.forEach((entry) => (entry.action = action));
   }
@@ -154,7 +170,7 @@ class YachtzeeDietUtils {
   public setDietEntry(
     name: string,
     qty?: number,
-    action?: (n: number, name?: string) => void
+    action?: (n: number, name?: string) => void,
   ): void {
     this.dietArray.forEach((entry) => {
       if (entry.name === name) {
@@ -191,8 +207,8 @@ function splitDietEntry(entry: YachtzeeDietEntry<void>): Array<YachtzeeDietEntry
         entry.fullness,
         entry.drunkenness,
         entry.spleen,
-        entry.action
-      )
+        entry.action,
+      ),
     );
   }
   return entries;
@@ -200,7 +216,7 @@ function splitDietEntry(entry: YachtzeeDietEntry<void>): Array<YachtzeeDietEntry
 
 function combineDietEntries(
   left: YachtzeeDietEntry<void>,
-  right: YachtzeeDietEntry<void>
+  right: YachtzeeDietEntry<void>,
 ): YachtzeeDietEntry<void> {
   return new YachtzeeDietEntry(
     left.name,
@@ -208,7 +224,7 @@ function combineDietEntries(
     left.fullness,
     left.drunkenness,
     left.spleen,
-    left.action
+    left.action,
   );
 }
 
@@ -219,7 +235,7 @@ function castOde(turns: number): boolean {
 
   // If we have the polka of plenty skill, we can re-buff up later
   // Else, get rid of chorale which is the most inefficient song
-  if (getActiveSongs.length === (have($skill`Mariachi Memory`) ? 4 : 3)) {
+  if (getSongCount() - toInt(have($effect`Ode to Booze`)) >= getSongLimit()) {
     if (have($skill`The Polka of Plenty`)) cliExecute(`shrug ${$effect`Polka of Plenty`}`);
     else cliExecute(`shrug ${$effect`Chorale of Companionship`}`);
   }
@@ -243,7 +259,8 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
     if (name.length === 0) continue;
     else if (
       !stenchJellyConsumed &&
-      (name.includes("stench jelly") || ["clara's bell", "jurassic parka"].includes(name))
+      (name.includes("stench jelly") ||
+        ["clara's bell", "jurassic parka", "cinch fiesta"].includes(name))
     ) {
       if (stopBeforeJellies) dietUtil.addToPref(1, name);
       else {
@@ -276,7 +293,10 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
               use(1, $item`synthetic dog hair pill`);
             }
           }
-          if (myFullness() + entry.fullness > fullnessLimit()) {
+          if (
+            myFullness() + entry.fullness >
+            fullnessLimit() + (!get("_distentionPillUsed") && have($item`distention pill`) ? 1 : 0)
+          ) {
             throw new Error(`consuming ${entry.name} will exceed our fullness limit`);
           } else if (myInebriety() + entry.drunkenness > inebrietyLimit()) {
             throw new Error(`consuming ${entry.name} will exceed our inebriety limit`);
@@ -307,7 +327,7 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
 }
 
 function yachtzeeDietScheduler(
-  menu: Array<YachtzeeDietEntry<void>>
+  menu: Array<YachtzeeDietEntry<void>>,
 ): Array<YachtzeeDietEntry<void>> {
   const dietSchedule = new Array<YachtzeeDietEntry<void>>();
   const remainingMenu = new Array<YachtzeeDietEntry<void>>();
@@ -392,9 +412,6 @@ function yachtzeeDietScheduler(
   }
 
   // Print diet schedule
-  print(`Fullness:    ${myFullness()}/${fullnessLimit() + toInt(haveDistentionPill)}`, "blue");
-  print(`Drunkenness: ${myInebriety()}/${inebrietyLimit()}`, "blue");
-  print(`Spleen Use:  ${mySpleenUse()}/${spleenLimit()}`, "blue");
   print("Diet schedule:", "blue");
   for (const entry of dietSchedule) print(`Use ${entry.quantity} ${entry.name}`, "blue");
 
@@ -405,42 +422,57 @@ function yachtzeeDietScheduler(
   let sweatOutsAvailable = clamp(
     Math.floor(get("sweat") / 25),
     0,
-    3 - get("_sweatOutSomeBoozeUsed")
+    3 - get("_sweatOutSomeBoozeUsed"),
   );
   let syntheticPillsAvailable =
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
   for (const entry of dietSchedule) {
     fullness += entry.quantity * entry.fullness;
-    drunkenness += entry.quantity * entry.drunkenness;
+    for (let i = 0; i < entry.quantity; i++) {
+      while (drunkenness > 0 && sweatOutsAvailable > 0) {
+        drunkenness -= 1;
+        sweatOutsAvailable -= 1;
+      }
+      if (drunkenness > 0 && syntheticPillsAvailable > 0) {
+        drunkenness -= 1;
+        syntheticPillsAvailable -= 1;
+      }
+      drunkenness += entry.drunkenness;
+    }
     spleenUse += entry.quantity * entry.spleen;
     if (fullness > fullnessLimit() + toInt(haveDistentionPill)) {
       throw new Error(
         `Error in diet schedule: Overeating ${entry.quantity} ${entry.name} to ${fullness}/${
           fullnessLimit() + toInt(haveDistentionPill)
-        }`
+        }`,
       );
     } else if (drunkenness > inebrietyLimit()) {
       throw new Error(
         `Error in diet schedule: Overdrinking ${entry.quantity} ${
           entry.name
-        } to ${drunkenness}/${inebrietyLimit()}`
+        } to ${drunkenness}/${inebrietyLimit()}`,
       );
     } else if (spleenUse > spleenLimit()) {
       throw new Error(
         `Error in diet schedule: Overspleening ${entry.quantity} ${
           entry.name
-        } to ${spleenUse}/${spleenLimit()}`
+        } to ${spleenUse}/${spleenLimit()}`,
       );
     }
-    while (drunkenness > 0 && sweatOutsAvailable > 0) {
-      drunkenness -= 1;
-      sweatOutsAvailable -= 1;
-    }
-    if (drunkenness > 0 && syntheticPillsAvailable > 0) {
-      drunkenness -= 1;
-      syntheticPillsAvailable -= 1;
-    }
   }
+
+  print("Expected Organs Post-Yachtzee:");
+  print(
+    `Fullness:   ${myFullness()}/${fullnessLimit() + toInt(haveDistentionPill)} -> ${fullness}/${
+      fullnessLimit() + toInt(haveDistentionPill)
+    }`,
+    "blue",
+  );
+  print(
+    `Inebriety:  ${myInebriety()}/${inebrietyLimit()} -> ${drunkenness}/${inebrietyLimit()}`,
+    "blue",
+  );
+  print(`Spleen Use: ${mySpleenUse()}/${spleenLimit()} -> ${spleenUse}/${spleenLimit()}`, "blue");
 
   return dietSchedule;
 }
@@ -455,46 +487,68 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const sweatOutsAvailable = clamp(
     Math.floor(get("sweat") / 25),
     0,
-    3 - get("_sweatOutSomeBoozeUsed")
+    3 - get("_sweatOutSomeBoozeUsed"),
   );
   const syntheticPillsAvailable =
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   let filters = 3 - get("currentMojoFilters");
-  // save some spleen the first two extro, which are worth a lot
+  // save some spleen for the first three extros, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
   const extroSpleenSpace = hasMonsterReplacers()
-    ? 4 - Math.min(4, 2 * get("beGregariousCharges"))
+    ? 6 - Math.min(6, 2 * get("beGregariousCharges"))
     : 0;
   const synthCastsToCoverRun =
     globalOptions.nobarf || !have($skill`Sweet Synthesis`)
       ? 0
       : Math.max(
           0,
-          Math.round((estimatedGarboTurns() - haveEffect($effect`Synthesis: Greed`)) / 30)
+          Math.ceil((estimatedGarboTurns() - haveEffect($effect`Synthesis: Greed`)) / 30),
         );
-  const fullnessAvailable = fullnessLimit() - myFullness() + toInt(haveDistentionPill);
+  const reservedFullness =
+    2 * toInt(!get("deepDishOfLegendEaten")) + // to be consumed in yachtzee
+    2 * toInt(!get("calzoneOfLegendEaten")) + // to be consumed post-yachtzee
+    2 * toInt(!get("pizzaOfLegendEaten")) + // to be consumed post-yachtzee
+    2; // subtract 2 for Boris Bread and Jumping Horseradish
+  const fullnessAvailable =
+    myLevel() >= 13
+      ? Math.max(0, fullnessLimit() - myFullness() + toInt(haveDistentionPill) - reservedFullness)
+      : 0;
+  const reservedInebriety = Math.max(
+    0,
+    itemAmount($item`astral pilsner`) - toInt(get("_mimeArmyShotglassUsed")),
+  );
   const inebrietyAvailable =
     myLevel() >= 13
-      ? inebrietyLimit() - myInebriety() + syntheticPillsAvailable + sweatOutsAvailable
+      ? Math.max(
+          0,
+          inebrietyLimit() -
+            myInebriety() +
+            syntheticPillsAvailable +
+            sweatOutsAvailable -
+            reservedInebriety,
+        )
       : 0;
   const spleenAvailable = currentSpleenLeft + filters;
-  const organsAvailable = fullnessAvailable + inebrietyAvailable + spleenAvailable;
+  const organsAvailable =
+    Math.floor(fullnessAvailable / 5) * 5 + // can only clean stomach in multiples of 5
+    Math.floor(inebrietyAvailable / 5) * 5 + // can only clean liver in multiples of 5
+    spleenAvailable;
 
   const cleanableSpleen = organsAvailable - synthCastsToCoverRun - extroSpleenSpace;
   const sufficientOrgansFor = (yachtzees: number) =>
-    cleanableSpleen >= yachtzees + (havePYECCharge ? 5 : 0);
+    cleanableSpleen >= yachtzees && // We can actually hit this many yachtzees
+    Math.floor((organsAvailable - extroSpleenSpace - yachtzees) / 5) * 5 >= synthCastsToCoverRun; // We must be able to cast enough turns of synth using cleansers
 
-  const possibleJellyYachtzeeTurns = [35, 30, 25, 20, 15, 10];
+  const possibleJellyYachtzeeTurns = Array(15)
+    .fill(0)
+    .map((_, i) => 2 * (i + 1))
+    .reverse();
   const jellyYachtzeeTurns = possibleJellyYachtzeeTurns.find(sufficientOrgansFor) ?? 0;
+  const canNCChain = freeNCs() > 0;
 
-  const fishyPipeTurnsAvailable =
-    haveEffect($effect`Fishy`) + (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0);
-  const canParkaChain =
-    fishyPipeTurnsAvailable + (fishyPipeTurnsAvailable > 0 && pyecAvailable() ? 5 : 0) >= freeNCs();
-
-  if (jellyYachtzeeTurns === 0 && !canParkaChain) {
+  if (jellyYachtzeeTurns === 0 && !canNCChain) {
     print("Determined that there are no suitable number of turns to chain yachtzees", "red");
     return false;
   }
@@ -509,7 +563,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const pickleJuice =
     myLevel() >= 13
       ? Math.floor(
-          (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5
+          (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5,
         )
       : 0;
 
@@ -555,7 +609,6 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   let slidersToEat = clamp(Math.ceil(spleenToClean / 5) - pickleJuiceToDrink, 0, sliders);
   let jelliesToChew = Math.max(0, yachtzeeTurns - freeNCs());
 
-  const extrosToChew = extroSpleenSpace / 2;
   const synthToUse = synthCasts;
   const cologneToChew = cologne;
 
@@ -565,7 +618,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const jellyPickleCosts = jellyPrice + pickleJuicePrice / 5;
   const toastPrice = Math.min(
     mallPrice($item`toast with stench jelly`),
-    jellyPrice + mallPrice($item`toast`)
+    jellyPrice + mallPrice($item`toast`),
   );
 
   const sliderAdventuresPerFull = getAverageAdventures($item`extra-greasy slider`) / 5;
@@ -624,13 +677,18 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       fullnessLimit() + toInt(haveDistentionPill)
       ? 1
       : 0;
+  const greedyDogs =
+    mallPrice($item`bottle of Greedy Dog`) <= 60000 &&
+    haveEffect($effect`Covetin' Drunk`) < yachtzeeTurns &&
+    myInebriety() + 3 + pickleJuiceToDrink * 5 <= inebrietyLimit()
+      ? 1
+      : 0;
   // Opportunistically fit in Deep Dish of Legend only if we have enough stomach space
   const pizzaAdditionalAdvPerFullness = 24 / 2 - 31.5 / 5;
   const deepDishValue =
     yachtzeePotionProfits(new Potion($item`Deep Dish of Legend`), yachtzeeTurns) +
     pizzaAdditionalAdvPerFullness * 2 * VOA;
   const deepDishPizzas =
-    globalOptions.ascend &&
     !get("deepDishOfLegendEaten") &&
     deepDishValue > retrievePrice($item`Deep Dish of Legend`) &&
     !get("unknownRecipe11000") &&
@@ -664,7 +722,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     yachtzeePotionSetup(yachtzeeTurns, true) +
     cologneToChew * ((yachtzeeTurns + 60 + 5 * toInt(havePYECCharge)) * 1000 - colognePrice) +
     (horseradishes > 0 ? yachtzeeTurns * 1000 : 0) +
-    (borisBreads > 0 ? yachtzeeTurns * 1000 : 0);
+    (borisBreads > 0 ? yachtzeeTurns * 1000 : 0) +
+    (greedyDogs > 0 ? yachtzeeTurns * 2000 : 0);
 
   // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
   // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
@@ -685,12 +744,12 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   if (simOnly) {
     print(
       `Jelly value estimates are wildly off for simulations because we have not properly buffed up yet`,
-      "orange"
+      "orange",
     );
   }
   if (jellyValuePerSpleen < extroValuePerSpleen && !simOnly && jellyYachtzeeTurns > 0) {
     // If we can't parka-chain, then return early
-    if (!canParkaChain) {
+    if (!canNCChain) {
       print("Running extros is more profitable than chaining yachtzees", "red");
       return false; // We should do extros instead since they are more valuable
     }
@@ -712,12 +771,12 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const regularEntries: [string, number][] = [
     ["extra-greasy slider", slidersToEat],
     ["jar of fermented pickle juice", pickleJuiceToDrink],
-    ["Extrovermectin™", extrosToChew],
     ["synthesis", synthToUse],
     ["mojo filter", filters],
     ["beggin' cologne", cologneToChew],
     ["jumping horseradish", horseradishes],
     ["Boris's bread", borisBreads],
+    ["bottle of Greedy Dog", greedyDogs],
     ["Deep Dish of Legend", deepDishPizzas],
   ];
 
@@ -727,6 +786,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
       ["toast with stench jelly", toastsToEat],
       ["clara's bell", have($item`Clara's bell`) && !globalOptions.clarasBellClaimed ? 1 : 0],
       ["jurassic parka", have($item`Jurassic Parka`) ? 5 - get("_spikolodonSpikeUses") : 0],
+      ["cinch fiesta", cinchNCs()],
     ] as [string, number][]
   ).map(([name, qty]) => [
     name,
@@ -756,8 +816,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     throw new Error(
       `We are only able to obtain up to ${get(
         "_stenchJellyChargeTarget",
-        0
-      )}/${yachtzeeTurns} turns of jelly charges!`
+        0,
+      )}/${yachtzeeTurns} turns of jelly charges!`,
     );
   }
 
@@ -767,23 +827,23 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     $item`stench jelly`,
     (2 * jelliesBulkPrice) / jelliesToChew,
     true,
-    1.2 * jelliesBulkPrice // Bulk jelly purchases may cost > 1m in the future
+    1.2 * jelliesBulkPrice, // Bulk jelly purchases may cost > 1m in the future
   );
   acquire(
     toastsToEat,
     $item`toast with stench jelly`,
     2 * toastPrice,
     true,
-    1.2 * toastPrice * toastsToEat
+    1.2 * toastPrice * toastsToEat,
   );
   acquire(toastsToEat, $item`munchies pill`, 2.66 * VOA, false);
-  acquire(extrosToChew, $item`Extrovermectin™`, 100000);
   acquire(pickleJuiceToDrink, $item`jar of fermented pickle juice`, maxPickleJuicePrice);
   acquire(slidersToEat, $item`extra-greasy slider`, maxSliderPrice);
   acquire(cologneToChew, $item`beggin' cologne`, 2 * colognePrice);
   acquire(filters, $item`mojo filter`, 2 * mallPrice($item`mojo filter`));
   acquire(horseradishes, $item`jumping horseradish`, 60000);
   acquire(borisBreads, $item`Boris's bread`, 60000);
+  acquire(greedyDogs, $item`bottle of Greedy Dog`, 60000);
   acquire(deepDishPizzas, $item`Deep Dish of Legend`, 1.2 * deepDishValue);
 
   // Get fishy turns

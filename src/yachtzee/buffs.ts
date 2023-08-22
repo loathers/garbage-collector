@@ -6,6 +6,7 @@ import {
   maximize,
   myMeat,
   print,
+  setLocation,
   toInt,
   use,
 } from "kolmafia";
@@ -13,12 +14,14 @@ import {
   $effect,
   $item,
   $items,
+  $location,
   clamp,
   get,
   getActiveEffects,
   getActiveSongs,
   have,
   isSong,
+  maxBy,
   Mood,
   set,
 } from "libram";
@@ -32,7 +35,7 @@ import {
   Potion,
   variableMeatPotionsSetup,
 } from "../potions";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import { executeNextDietStep } from "./diet";
 import { expectedEmbezzlers, pyecAvailable, shrugIrrelevantSongs } from "./lib";
 
@@ -47,17 +50,17 @@ export function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): nu
   const effectiveYachtzeeTurns = Math.max(
     Math.min(
       yachtzeeTurns - haveEffect(potion.effect()) - existingOffset,
-      potion.effectDuration() + extraOffset
+      potion.effectDuration() + extraOffset,
     ),
-    0
+    0,
   );
   const embezzlerTurns = Math.min(
     expectedEmbezzlers,
-    Math.max(potion.effectDuration() + extraOffset - effectiveYachtzeeTurns, 0)
+    Math.max(potion.effectDuration() + extraOffset - effectiveYachtzeeTurns, 0),
   );
   const barfTurns = Math.max(
     potion.effectDuration() + extraOffset - effectiveYachtzeeTurns - embezzlerTurns,
-    0
+    0,
   );
   const embezzlerValue = embezzlerTurns > 0 ? potion.gross(embezzlerTurns) : 0;
   const yachtzeeValue =
@@ -67,7 +70,16 @@ export function yachtzeePotionProfits(potion: Potion, yachtzeeTurns: number): nu
   return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
 }
 
+const doublingValue = (potion: Potion, yachtzeeTurns: number) =>
+  Math.min(
+    potion.price(false),
+    yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) -
+      Math.max(0, yachtzeePotionProfits(potion, yachtzeeTurns)),
+  );
+
 export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): number {
+  setLocation($location.none);
+
   let totalProfits = 0;
   const PYECOffset = pyecAvailable() ? 5 : 0;
   const excludedEffects = new Set<Effect>();
@@ -75,29 +87,26 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
   shrugIrrelevantSongs();
 
   if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
-    const doublingPotions = farmingPotions
-      .filter(
-        (potion) =>
-          potion.canDouble &&
-          haveEffect(potion.effect()) + PYECOffset * (have(potion.effect()) ? 1 : 0) <
-            yachtzeeTurns &&
-          yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 &&
-          potion.price(true) < myMeat()
-      )
-      .sort(
-        (left, right) =>
-          yachtzeePotionProfits(right.doubleDuration(), yachtzeeTurns) -
-          yachtzeePotionProfits(left.doubleDuration(), yachtzeeTurns)
-      );
-    const bestPotion = doublingPotions.length > 0 ? doublingPotions[0].doubleDuration() : undefined;
+    const doublingPotions = farmingPotions.filter(
+      (potion) =>
+        potion.canDouble &&
+        haveEffect(potion.effect()) + PYECOffset * (have(potion.effect()) ? 1 : 0) <
+          yachtzeeTurns &&
+        yachtzeePotionProfits(potion.doubleDuration(), yachtzeeTurns) > 0 &&
+        potion.price(true) < myMeat(),
+    );
+    const bestPotion =
+      doublingPotions.length > 0
+        ? maxBy(doublingPotions, (potion) => doublingValue(potion, yachtzeeTurns))
+        : undefined;
     if (bestPotion) {
-      const profit = yachtzeePotionProfits(bestPotion, yachtzeeTurns);
+      const profit = yachtzeePotionProfits(bestPotion.doubleDuration(), yachtzeeTurns);
       const price = bestPotion.price(true);
       totalProfits += profit;
       print(`Determined that ${bestPotion.potion} was the best potion to double`, "blue");
       print(
         `Expected to profit ${profit} meat from doubling 1 ${bestPotion.potion} @ price ${price} meat`,
-        "blue"
+        "blue",
       );
       if (!simOnly) {
         cliExecute("pillkeeper extend");
@@ -117,11 +126,10 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
     .filter(
       (potion) =>
         haveEffect(potion.effect()) + PYECOffset * toInt(haveEffect(potion.effect()) > 0) <
-          yachtzeeTurns && yachtzeePotionProfits(potion, yachtzeeTurns) > 0
+          yachtzeeTurns && yachtzeePotionProfits(potion, yachtzeeTurns) > 0,
     )
     .sort(
-      (left, right) =>
-        yachtzeePotionProfits(right, yachtzeeTurns) - yachtzeePotionProfits(left, yachtzeeTurns)
+      (a, b) => yachtzeePotionProfits(b, yachtzeeTurns) - yachtzeePotionProfits(a, yachtzeeTurns),
     );
 
   for (const potion of testPotions) {
@@ -143,10 +151,10 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
         const nPotions = have(effect)
           ? clamp(
               Math.floor(
-                (yachtzeeTurns - haveEffect(effect) - PYECOffset) / potion.effectDuration()
+                (yachtzeeTurns - haveEffect(effect) - PYECOffset) / potion.effectDuration(),
               ),
               1,
-              Math.max(1, yachtzeeTurns - PYECOffset)
+              Math.max(1, yachtzeeTurns - PYECOffset),
             )
           : 1;
 
@@ -155,7 +163,7 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
           `Expected to profit ${nPotions * profit} meat from using ${nPotions} ${
             potion.potion
           } @ price ${price} meat each`,
-          "blue"
+          "blue",
         );
         if (!simOnly) {
           acquire(nPotions, potion.potion, profit + price, false);
@@ -236,7 +244,7 @@ export function yachtzeePotionSetup(yachtzeeTurns: number, simOnly?: boolean): n
     if (profit > 0) {
       print(
         `Expected to profit ${profit} meat from using 1 Uncle Greenspan's Bathroom Finance Guide @ price ${price} meat`,
-        "blue"
+        "blue",
       );
       acquire(1, $item`Uncle Greenspan's Bathroom Finance Guide`, greenspanValue, false);
       if (have($item`Uncle Greenspan's Bathroom Finance Guide`)) {

@@ -10,13 +10,13 @@ import {
   myTurncount,
   print,
   useSkill,
-  visitUrl,
 } from "kolmafia";
 import {
   $effect,
   $item,
   $location,
   $skill,
+  FloristFriar,
   get,
   getActiveSongs,
   have,
@@ -25,6 +25,7 @@ import {
 } from "libram";
 import { garboAdventure, Macro } from "../combat";
 import { globalOptions } from "../config";
+import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
@@ -50,7 +51,7 @@ function _yachtzeeChain(): void {
 
   maximize("MP", false);
   meatMood(false, 750 + baseMeat).execute(embezzlerCount());
-  potionSetup(false); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
+  potionSetup(globalOptions.nobarf); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();
 
@@ -96,7 +97,7 @@ function _yachtzeeChain(): void {
     prepareOutfitAndFamiliar();
     if (!have($effect`Really Deep Breath`)) {
       const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(
-        Math.min(jellyTurns, fishyTurns)
+        Math.min(jellyTurns, fishyTurns),
       );
       if (bestWaterBreathingEquipment.item !== $item.none) equip(bestWaterBreathingEquipment.item);
       if (
@@ -124,12 +125,8 @@ function _yachtzeeChain(): void {
       set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) - 1);
       set("_stenchJellyUsed", false);
     }
-    if (
-      plantCrookweed &&
-      visitUrl("forestvillage.php").includes("friarcottage.gif") &&
-      !get("_floristPlantsUsed").split(",").includes("Crookweed")
-    ) {
-      cliExecute("florist plant Crookweed");
+    if (plantCrookweed && FloristFriar.have() && FloristFriar.Crookweed.available()) {
+      FloristFriar.Crookweed.plant();
     }
     plantCrookweed = false;
 
@@ -151,4 +148,5 @@ export function yachtzeeChain(): void {
     prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed
   }
   freeRunFights();
+  postFreeFightDailySetup();
 }

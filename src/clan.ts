@@ -3,14 +3,19 @@ import {
   bjornifyFamiliar,
   cliExecute,
   enthroneFamiliar,
+  equip,
+  equippedAmount,
+  equippedItem,
   getClanId,
   getClanName,
   handlingChoice,
   Item,
+  itemAmount,
   print,
   putStash,
   refreshStash,
   retrieveItem,
+  Slot,
   stashAmount,
   takeStash,
   toItem,
@@ -46,7 +51,7 @@ export function withVIPClan<T>(action: () => T): T {
       userConfirmDialog(
         "The preference 'garbo_vipClan' is not set. Use the current clan as a VIP clan? (Defaults to yes in 15 seconds)",
         true,
-        15000
+        15000,
       )
     ) {
       clanIdOrName = getClanId();
@@ -87,7 +92,7 @@ export class StashManager {
         `Stash access is disabled. Ignoring request to borrow "${items
           .map((value) => value.name)
           .join(", ")}" from clan stash.`,
-        HIGHLIGHT
+        HIGHLIGHT,
       );
       return;
     }
@@ -115,7 +120,7 @@ export class StashManager {
                   `Failed to take ${
                     fold.name
                   } from the stash. Do you have stash access in ${getClanName()}?`,
-                  "red"
+                  "red",
                 );
               }
             }
@@ -145,18 +150,22 @@ export class StashManager {
         .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
         .step("runaway")
         .submit();
-    } else if (handlingChoice()) {
-      print(
-        `I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash:`,
-        "red"
-      );
-      items.forEach((item) => print(`${item.name},`, "red"));
+    } else {
+      visitUrl("main.php");
+      if (handlingChoice()) {
+        print(
+          `I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash:`,
+          "red",
+        );
+        items.forEach((item) => print(`${item.name},`, "red"));
+      }
     }
     withClan(this.clanIdOrName, () => {
       for (const item of items) {
         const count = this.taken.get(item) ?? 0;
         if (count > 0) {
           retrieveItem(count, item);
+
           if (item === $item`Buddy Bjorn`) {
             visitUrl(`desc_item.php?whichitem=${$item`Buddy Bjorn`.descid}`);
             bjornifyFamiliar($familiar.none);
@@ -165,7 +174,13 @@ export class StashManager {
             visitUrl(`desc_item.php?whichitem=${$item`Crown of Thrones`.descid}`);
             enthroneFamiliar($familiar.none);
           }
-          if (putStash(count, item)) {
+
+          if (equippedAmount(item) > 0) {
+            const slots = Slot.all().filter((s) => equippedItem(s) === item);
+            slots.forEach((s) => equip(s, $item.none));
+          }
+
+          if (itemAmount(item) >= count && putStash(count, item)) {
             const index = stashItems.indexOf(item);
             if (index >= 0) stashItems.splice(stashItems.indexOf(item), 1);
             print(`Returned ${item.name} to stash in ${getClanName()}.`, HIGHLIGHT);

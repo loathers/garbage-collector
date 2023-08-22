@@ -20,12 +20,13 @@ import {
   get,
   getModifier,
   have,
+  maxBy,
   Requirement,
 } from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { meatFamiliar } from "../familiar";
-import { baseMeat, maxBy } from "../lib";
+import { baseMeat } from "../lib";
 import { familiarWaterBreathingEquipment, useUPCs, waterBreathingEquipment } from "../outfit";
 import { bestYachtzeeFamiliar } from "./familiar";
 import { expectedEmbezzlers, yachtzeeBuffValue } from "./lib";
@@ -42,7 +43,7 @@ export const maximizeMeat = (): boolean =>
     ],
     {
       preventEquip: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
-    }
+    },
   ).maximize();
 
 export function getBestWaterBreathingEquipment(yachtzeeTurns: number): {
@@ -76,8 +77,8 @@ export function prepareOutfitAndFamiliar(): void {
       $slot`familiar`,
       maxBy(
         familiarWaterBreathingEquipment.filter((it) => have(it)),
-        (eq) => getModifier("Familiar Weight", eq)
-      )
+        (eq) => getModifier("Familiar Weight", eq),
+      ),
     );
   }
 }

@@ -1,17 +1,28 @@
 import "core-js/modules/es.object.from-entries";
 import {
+  adv1,
   autosellPrice,
   availableAmount,
+  canAdventure,
+  canEquip,
   cliExecute,
   Effect,
   effectModifier,
+  equip,
+  getMonsters,
   haveEffect,
   historicalAge,
   historicalPrice,
+  inebrietyLimit,
   Item,
   itemAmount,
+  itemDropsArray,
   itemType,
+  Location,
   mallPrice,
+  monkeyPaw,
+  myInebriety,
+  myTurncount,
   numericModifier,
   print,
   retrievePrice,
@@ -25,19 +36,31 @@ import {
   $item,
   $items,
   $location,
+  $slot,
   clamp,
+  ClosedCircuitPayphone,
+  CursedMonkeyPaw,
   get,
   getActiveEffects,
   getActiveSongs,
   getModifier,
   have,
   isSong,
+  maxBy,
   Mood,
   sum,
   sumNumbers,
+  withChoice,
 } from "libram";
 import { acquire } from "./acquire";
-import { baseMeat, HIGHLIGHT, maxBy, pillkeeperOpportunityCost, turnsToNC } from "./lib";
+import {
+  baseMeat,
+  bestShadowRift,
+  HIGHLIGHT,
+  pillkeeperOpportunityCost,
+  turnsToNC,
+  withLocation,
+} from "./lib";
 import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
@@ -63,6 +86,62 @@ for (const effectGroup of mutuallyExclusiveList) {
   }
 }
 
+const INVALID_CHARS_REGEX = /[.',]/g;
+
+const wishableEffects = Effect.all().filter((e) => !e.attributes.includes("nohookah"));
+const wishableEffectData = wishableEffects.map((e) => {
+  const name = e.name.toLowerCase();
+  const splitName = name.split(INVALID_CHARS_REGEX);
+  return { e, name, splitName };
+});
+
+const invalidWishStrings = wishableEffectData
+  .filter(({ name }) => name.match(INVALID_CHARS_REGEX))
+  .filter(({ name, splitName }) =>
+    splitName.every((s) =>
+      wishableEffectData.some((n) => n.name !== name && n.splitName.some((x) => x.includes(s))),
+    ),
+  )
+  .map(({ name }) => name);
+
+const availableItems = [
+  ...new Set(
+    Location.all()
+      .filter((l) => canAdventure(l))
+      .map((l) =>
+        getMonsters(l)
+          .filter((m) => m.copyable)
+          .map((m) => itemDropsArray(m).filter(({ rate }) => rate > 1))
+          .flat(),
+      )
+      .flat()
+      .map(({ drop }) => drop),
+  ),
+].map((i) => i.name);
+
+const validPawWishes: Map<Effect, string> = new Map(
+  wishableEffectData
+    .filter(
+      ({ e, name }) =>
+        !invalidWishStrings.includes(name) &&
+        (globalOptions.prefs.yachtzeechain ? e !== $effect`Eau d' Clochard` : true), // hardcoded heuristics
+    )
+    .map(({ e, name, splitName }) => {
+      if (!name.match(INVALID_CHARS_REGEX)) return [e, name];
+
+      return [
+        e,
+        splitName.filter(
+          (s) =>
+            !availableItems.includes(s) &&
+            !wishableEffectData.some(
+              (n) => n.name !== name && n.splitName.some((x) => x.includes(s)),
+            ),
+        )[0],
+      ];
+    }),
+);
+
 function retrieveUntradeablePrice(it: Item) {
   return retrievePrice(it, availableAmount(it) + 1) - autosellPrice(it) * availableAmount(it);
 }
@@ -70,10 +149,18 @@ function retrieveUntradeablePrice(it: Item) {
 export interface PotionOptions {
   providesDoubleDuration?: boolean;
   canDouble?: boolean;
-  considerBarf?: boolean;
   effect?: Effect;
   duration?: number;
+  price?: (historical: boolean) => number;
   use?: (quantity: number) => boolean;
+  acquire?: (
+    qty: number,
+    item: Item,
+    maxPrice?: number | undefined,
+    throwOnFail?: boolean,
+    maxAggregateCost?: number | undefined,
+    tryRetrievingUntradeable?: boolean,
+  ) => number;
 }
 
 export class Potion {
@@ -82,7 +169,16 @@ export class Potion {
   canDouble: boolean;
   overrideEffect?: Effect;
   overrideDuration?: number;
+  priceOverride?: (historical: boolean) => number;
   useOverride?: (quantity: number) => boolean;
+  acquire: (
+    qty: number,
+    item: Item,
+    maxPrice?: number | undefined,
+    throwOnFail?: boolean,
+    maxAggregateCost?: number | undefined,
+    tryRetrievingUntradeable?: boolean,
+  ) => number;
 
   constructor(potion: Item, options: PotionOptions = {}) {
     this.potion = potion;
@@ -90,7 +186,9 @@ export class Potion {
     this.canDouble = options.canDouble ?? true;
     this.overrideDuration = options.duration;
     this.overrideEffect = options.effect;
+    this.priceOverride = options.price;
     this.useOverride = options.use;
+    this.acquire = options.acquire ?? acquire;
   }
 
   doubleDuration(): Potion {
@@ -100,7 +198,9 @@ export class Potion {
         canDouble: this.canDouble,
         duration: this.overrideDuration,
         effect: this.overrideEffect,
+        price: this.priceOverride,
         use: this.useOverride,
+        acquire: this.acquire,
       });
     }
     return this;
@@ -118,7 +218,6 @@ export class Potion {
   }
 
   meatDrop(): number {
-    setLocation($location`none`);
     return (
       getModifier("Meat Drop", this.effect()) +
       2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
@@ -155,8 +254,8 @@ export class Potion {
     const duration = Math.max(this.effectDuration(), maxTurns ?? 0);
     // Number of embezzlers this will actually be in effect for.
     const embezzlersApplied = Math.max(
-      Math.min(duration, embezzlers) - haveEffect(this.effect()),
-      0
+      Math.min(duration, embezzlers - haveEffect(this.effect())),
+      0,
     );
 
     return (bonusMeat / 100) * (baseMeat * duration + 750 * embezzlersApplied);
@@ -167,6 +266,7 @@ export class Potion {
   }
 
   price(historical: boolean): number {
+    if (this.priceOverride) return this.priceOverride(historical);
     // If asked for historical, and age < 14 days, use historical.
     // If potion is not tradeable, use retrievePrice instead
     return this.potion.tradeable
@@ -188,7 +288,7 @@ export class Potion {
     return Math.min(
       Math.max(this.doubleDuration().net(embezzlers, historical), 0) -
         Math.max(this.net(embezzlers, historical), 0),
-      this.price(true)
+      this.price(true),
     );
   }
 
@@ -240,7 +340,7 @@ export class Potion {
   value(
     embezzlers: number,
     turns?: number,
-    limit?: number
+    limit?: number,
   ): { name: PotionTier; quantity: number; value: number }[] {
     const startingTurns = haveEffect(this.effect());
     const ascending = globalOptions.ascend;
@@ -257,7 +357,7 @@ export class Potion {
     // compute the value of covering embezzlers
     const embezzlerTurns = Math.max(0, embezzlers - startingTurns);
     const embezzlerQuantity = this.usesToCover(embezzlerTurns, false);
-    const embezzlerValue = embezzlerQuantity ? this.gross(embezzlerTurns) : 0;
+    const embezzlerValue = embezzlerQuantity ? this.gross(embezzlers) : 0;
 
     values.push({
       name: "embezzler",
@@ -287,7 +387,7 @@ export class Potion {
       const barfQuantity = this.usesToCover(remainingTurns, !ascending);
       values.push({ name: "barf", quantity: limitFunction(barfQuantity), value: this.gross(0) });
 
-      if (globalOptions.ascend && this.overage(remainingTurns, barfQuantity) < 0) {
+      if (ascending && this.overage(remainingTurns, barfQuantity) < 0) {
         const ascendingTurns = Math.max(0, remainingTurns - barfQuantity * this.effectDuration());
         values.push({
           name: "ascending",
@@ -327,8 +427,8 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   const price = potion.price(false);
   const amountsAcquired = value.map((value) =>
     (!embezzlersOnly || value.name === "embezzler") && value.value - price > 0
-      ? acquire(value.quantity, potion.potion, value.value, false, undefined, true)
-      : 0
+      ? potion.acquire(value.quantity, potion.potion, value.value, false, undefined, true)
+      : 0,
   );
 
   const total = sumNumbers(amountsAcquired);
@@ -348,17 +448,128 @@ function useAsValuable(potion: Potion, embezzlers: number, embezzlersOnly: boole
   return total;
 }
 
-export const wishPotions = Effect.all()
-  .filter((effect) => !effect.attributes.includes("nohookah"))
+export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
+  providesDoubleDuration: false,
+  canDouble: false,
+  effect: $effect`Shadow Waters`,
+  duration: 30,
+  price: (historical: boolean) => {
+    if (!have($item`closed-circuit pay phone`)) return Infinity;
+
+    const target = ClosedCircuitPayphone.rufusTarget();
+    const haveItemQuest = get("rufusQuestType") === "items" && target instanceof Item;
+    const haveArtifact =
+      get("rufusQuestType") === "artifact" && target instanceof Item && have(target);
+
+    // We will only buff up if we can complete the item quest
+    if (!(!target || haveItemQuest || haveArtifact || have($item`Rufus's shadow lodestone`))) {
+      return Infinity;
+    }
+
+    // If we are overdrunk, we will need to be able to grab the NC (with a wineglass)
+    if (
+      myInebriety() > inebrietyLimit() &&
+      (!have($item`Drunkula's wineglass`) || !canEquip($item`Drunkula's wineglass`))
+    ) {
+      return Infinity;
+    }
+
+    // We consider the average price of the shadow items to not get gated behind an expensive one
+    const shadowItems = $items`shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar`;
+    const averagePrice =
+      sum(shadowItems, (it) =>
+        historical && historicalAge(it) < 14 ? historicalPrice(it) : mallPrice(it),
+      ) / shadowItems.length;
+
+    return 3 * averagePrice;
+  },
+  acquire: (qty: number) => {
+    if (myInebriety() > inebrietyLimit()) {
+      equip($slot`weapon`, $item.none);
+      equip($slot`off-hand`, $item`Drunkula's wineglass`);
+    }
+    for (let iteration = 0; iteration < qty; iteration++) {
+      // Grab a lodestone if we don't have one
+      if (!have($item`Rufus's shadow lodestone`)) {
+        // If we currently have no quest, acquire one
+        ClosedCircuitPayphone.chooseQuest(() => 3);
+
+        // If we need to acquire items, do so; then complete the quest
+        const target = ClosedCircuitPayphone.rufusTarget() as Item;
+        if (get("rufusQuestType") === "items") {
+          if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
+            withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          } else break;
+        } else if (get("rufusQuestType") === "artifact") {
+          if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          else break;
+        }
+      }
+
+      // Grab the buff from the NC
+      const curTurncount = myTurncount();
+      if (have($item`Rufus's shadow lodestone`)) {
+        withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
+      }
+      if (myTurncount() > curTurncount) {
+        throw new Error("Failed to acquire Shadow Waters and spent a turn!");
+      }
+    }
+    setLocation($location.none); // Reset location to not affect mafia's item drop calculations
+    return 0;
+  },
+  use: () => {
+    return false;
+  },
+});
+
+export const wishPotions = wishableEffects.map(
+  (effect) =>
+    new Potion($item`pocket wish`, {
+      effect,
+      canDouble: false,
+      duration: 20,
+      use: (quantity: number) => {
+        for (let i = 0; i < quantity; i++) {
+          const madeValidWish = cliExecute(`genie effect ${effect}`);
+          if (!madeValidWish) return false;
+        }
+        return true;
+      },
+    }),
+);
+
+export const pawPotions = Array.from(validPawWishes.keys())
+  .filter((effect) => numericModifier(effect, "Meat Drop") >= 100)
   .map(
     (effect) =>
-      new Potion($item`pocket wish`, {
+      new Potion($item`cursed monkey's paw`, {
         effect,
         canDouble: false,
-        duration: 20,
-        use: (quantity: number) =>
-          new Array(quantity).fill(0).every(() => cliExecute(`genie effect ${effect}`)),
-      })
+        price: () =>
+          !CursedMonkeyPaw.have() || CursedMonkeyPaw.wishes() === 0 || failedWishes.includes(effect)
+            ? 2 ** 100 // Something large but non-infinite for sorting reasons
+            : 0,
+        duration: 30,
+        acquire: () => (CursedMonkeyPaw.wishes() ? 1 : 0),
+        use: () => {
+          if (
+            !CursedMonkeyPaw.have() ||
+            CursedMonkeyPaw.wishes() === 0 ||
+            failedWishes.includes(effect)
+          ) {
+            return false;
+          }
+
+          if (!CursedMonkeyPaw.isWishable(effect)) return false;
+
+          if (!monkeyPaw(effect)) {
+            failedWishes.push(effect);
+            return false;
+          }
+          return true;
+        },
+      }),
   );
 
 export const farmingPotions = [
@@ -368,6 +579,7 @@ export const farmingPotions = [
     .filter((potion) => potion.bonusMeat() > 0),
   ...wishPotions,
   new Potion($item`papier-mâché toothpicks`),
+  ...(have($item`closed-circuit pay phone`) ? [rufusPotion] : []),
 ];
 
 export function doublingPotions(embezzlers: number): Potion[] {
@@ -380,58 +592,91 @@ export function doublingPotions(embezzlers: number): Potion[] {
     .map((pair) => pair.potion);
 }
 
+export function usePawWishes(singleUseValuation: (potion: Potion) => number): void {
+  while (CursedMonkeyPaw.wishes() > 0) {
+    // Sort the paw potions by the profits of a single wish, then use the best one
+    const madeValidWish = pawPotions
+      .sort((a, b) => singleUseValuation(b) - singleUseValuation(a))
+      .some((potion) => potion.use(1));
+    if (!madeValidWish) return;
+  }
+}
+
 let completedPotionSetup = false;
 export function potionSetupCompleted(): boolean {
   return completedPotionSetup;
 }
 /**
  * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
- * @param doEmbezzlers Do we account for embezzlers when deciding what potions are profitable?
+ * @param embezzlersOnly Are we valuing the potions only for embezzlers (noBarf)?
  */
 export function potionSetup(embezzlersOnly: boolean): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
-  const embezzlers = embezzlerCount();
+  withLocation($location.none, () => {
+    const embezzlers = embezzlerCount();
 
-  if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
-    const possibleDoublingPotions = doublingPotions(embezzlers);
-    const bestPotion = possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
-    if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
-      print(`Determined that ${bestPotion.potion} was the best potion to double`, HIGHLIGHT);
-      cliExecute("pillkeeper extend");
-      acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
-      bestPotion.use(1);
+    if (have($item`Eight Days a Week Pill Keeper`) && !get("_freePillKeeperUsed")) {
+      const possibleDoublingPotions = doublingPotions(embezzlers);
+      const bestPotion =
+        possibleDoublingPotions.length > 0 ? possibleDoublingPotions[0] : undefined;
+      if (bestPotion && bestPotion.doubleDuration().net(embezzlers) > pillkeeperOpportunityCost()) {
+        print(`Determined that ${bestPotion.potion} was the best potion to double`, HIGHLIGHT);
+        cliExecute("pillkeeper extend");
+        bestPotion.acquire(1, bestPotion.potion, bestPotion.doubleDuration().gross(embezzlers));
+        bestPotion.use(1);
+      }
     }
-  }
 
-  // Only test potions which are reasonably close to being profitable using historical price.
-  const testPotions = farmingPotions.filter(
-    (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5
-  );
-  testPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+    // Only test potions which are reasonably close to being profitable using historical price.
+    const testPotions = farmingPotions.filter(
+      (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5,
+    );
+    const nonWishTestPotions = testPotions.filter((potion) => potion.potion !== $item`pocket wish`);
+    nonWishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
 
-  const excludedEffects = new Set<Effect>();
-  for (const effect of getActiveEffects()) {
-    for (const excluded of mutuallyExclusive.get(effect) ?? []) {
-      excludedEffects.add(excluded);
-    }
-  }
-
-  for (const potion of testPotions) {
-    const effect = potion.effect();
-    if (
-      !excludedEffects.has(effect) &&
-      !(failedWishes.includes(effect) && potion.potion === $item`pocket wish`) &&
-      useAsValuable(potion, embezzlers, embezzlersOnly) > 0
-    ) {
+    const excludedEffects = new Set<Effect>();
+    for (const effect of getActiveEffects()) {
       for (const excluded of mutuallyExclusive.get(effect) ?? []) {
         excludedEffects.add(excluded);
       }
     }
-  }
 
-  variableMeatPotionsSetup(0, embezzlers);
-  completedPotionSetup = true;
+    for (const potion of nonWishTestPotions) {
+      const effect = potion.effect();
+      if (!excludedEffects.has(effect) && useAsValuable(potion, embezzlers, embezzlersOnly) > 0) {
+        for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+          excludedEffects.add(excluded);
+        }
+      }
+    }
+
+    usePawWishes((potion) => {
+      const value = potion.value(embezzlers);
+      return value.length > 0
+        ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0)).value
+        : 0;
+    });
+
+    const wishTestPotions = testPotions.filter((potion) => potion.potion === $item`pocket wish`);
+    wishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+
+    for (const potion of wishTestPotions) {
+      const effect = potion.effect();
+      if (
+        !excludedEffects.has(effect) &&
+        !failedWishes.includes(effect) &&
+        useAsValuable(potion, embezzlers, embezzlersOnly) > 0
+      ) {
+        for (const excluded of mutuallyExclusive.get(effect) ?? []) {
+          excludedEffects.add(excluded);
+        }
+      }
+    }
+
+    variableMeatPotionsSetup(0, embezzlers);
+    completedPotionSetup = true;
+  });
 }
 
 /**
@@ -477,7 +722,7 @@ class VariableMeatPotion {
     softcap: number,
     meatBonusPerTurn: number,
     duration?: number,
-    effect?: Effect
+    effect?: Effect,
   ) {
     this.potion = potion;
     this.effect = effect ?? effectModifier(potion, "Effect");
@@ -493,7 +738,7 @@ class VariableMeatPotion {
       this.potion,
       (1.2 * retrievePrice(this.potion, quantity)) / quantity,
       false,
-      2000000
+      2000000,
     );
     if (availableAmount(this.potion) < quantity) return false;
     return use(quantity, this.potion);
@@ -540,7 +785,7 @@ class VariableMeatPotion {
         `Expected to profit ${bestOption.value.toFixed(2)} from ${bestOption.quantity} ${
           this.potion.plural
         }`,
-        "blue"
+        "blue",
       );
       const ascendingOverlap =
         globalOptions.ascend || globalOptions.nobarf ? 0 : this.softcap / this.duration;

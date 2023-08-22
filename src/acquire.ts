@@ -17,7 +17,7 @@ import {
   takeStorage,
 } from "kolmafia";
 import { get, withProperty } from "libram";
-import { garboValue } from "./session";
+import { garboValue } from "./value";
 
 export const priceCaps: { [index: string]: number } = {
   "cuppa Voraci tea": 200000,
@@ -37,7 +37,7 @@ export function acquire(
   maxPrice?: number,
   throwOnFail = true,
   maxAggregateCost?: number,
-  tryRetrievingUntradeable = false
+  tryRetrievingUntradeable = false,
 ): number {
   if (maxPrice === undefined) maxPrice = priceCaps[item.name];
   if ((!item.tradeable && !tryRetrievingUntradeable) || (maxPrice !== undefined && maxPrice <= 0)) {

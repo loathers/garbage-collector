@@ -87,7 +87,7 @@ const worksheds = [
       } else if (globalOptions.ascend && estimatedGarboTurns() <= 40) {
         print(
           "Refusing to reconfigure trainset, to save a reconfiguration for your upcoming ascension.",
-          HIGHLIGHT
+          HIGHLIGHT,
         );
         return;
       } else {
@@ -118,7 +118,7 @@ const worksheds = [
     action: () => {
       AsdonMartin.drive(
         $effect`Driving Observantly`,
-        estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
+        estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
       );
     },
   }),
@@ -145,24 +145,27 @@ const worksheds = [
     },
   }),
   ...$items`diabolic pizza cube, portable Mayo Clinic, warbear high-efficiency still, warbear induction oven`.map(
-    (item) => new GarboWorkshed({ workshed: item, done: dietCompleted })
+    (item) => new GarboWorkshed({ workshed: item, done: dietCompleted }),
   ),
   ...$items`warbear chemistry lab, warbear LP-ROM burner`.map(
-    (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted })
+    (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted }),
   ),
   ...$items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
-    (item) => new GarboWorkshed({ workshed: item })
+    (item) => new GarboWorkshed({ workshed: item }),
   ),
 ];
 
 export default function handleWorkshed(): void {
   GarboWorkshed.current?.use();
 
+  const safetyTurns = 25;
   if (
     !get("_workshedItemUsed") &&
     (GarboWorkshed.current?.canRemove() ?? true) &&
     GarboWorkshed.next &&
-    have(GarboWorkshed.next.workshed)
+    have(GarboWorkshed.next.workshed) &&
+    (!GarboWorkshed.next.minTurns ||
+      GarboWorkshed.next.minTurns + safetyTurns > estimatedGarboTurns())
   ) {
     GarboWorkshed.useNext();
     GarboWorkshed.current?.use();

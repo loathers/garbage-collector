@@ -3,7 +3,6 @@ import {
   Familiar,
   familiarWeight,
   Item,
-  myFamiliar,
   numericModifier,
   print,
   weightAdjustment,
@@ -22,13 +21,17 @@ function bestFamUnderwaterGear(fam: Familiar): Item {
     : $item`little bitty bathysphere`;
 }
 
-export function bestYachtzeeFamiliar(): Familiar {
-  const haveUnderwaterFamEquipment = familiarWaterBreathingEquipment.some((item) => have(item));
-  const famWt =
-    familiarWeight(myFamiliar()) +
+function getBuffedFamiliarWeight(fam: Familiar): number {
+  // returns the buffed weight of the given familiar. Doesn't count any equipment on the given familiar.
+  const weight =
+    familiarWeight(fam) +
     weightAdjustment() -
     numericModifier(equippedItem($slot`familiar`), "Familiar Weight");
+  return fam.feasted ? weight + 10 : weight;
+}
 
+export function bestYachtzeeFamiliar(): Familiar {
+  const haveUnderwaterFamEquipment = familiarWaterBreathingEquipment.some((item) => have(item));
   const sortedUnderwaterFamiliars = Familiar.all()
     .filter(
       (fam) =>
@@ -36,21 +39,34 @@ export function bestYachtzeeFamiliar(): Familiar {
         findLeprechaunMultiplier(fam) > 0 &&
         fam !== $familiar`Ghost of Crimbo Commerce` &&
         fam !== $familiar`Robortender` &&
-        (fam.underwater || haveUnderwaterFamEquipment)
+        (fam.underwater || haveUnderwaterFamEquipment),
     )
     .sort(
       (left, right) =>
-        numericModifier(right, "Meat Drop", famWt, bestFamUnderwaterGear(right)) -
-        numericModifier(left, "Meat Drop", famWt, bestFamUnderwaterGear(left))
+        numericModifier(
+          right,
+          "Meat Drop",
+          getBuffedFamiliarWeight(right),
+          bestFamUnderwaterGear(right),
+        ) -
+        numericModifier(
+          left,
+          "Meat Drop",
+          getBuffedFamiliarWeight(left),
+          bestFamUnderwaterGear(left),
+        ),
     );
 
   print(`Familiar bonus meat%:`, "blue");
   sortedUnderwaterFamiliars.forEach((fam) => {
     print(
-      `${fam} (${numericModifier(fam, "Meat Drop", famWt, bestFamUnderwaterGear(fam)).toFixed(
-        2
-      )}%)`,
-      "blue"
+      `${fam} (${numericModifier(
+        fam,
+        "Meat Drop",
+        getBuffedFamiliarWeight(fam),
+        bestFamUnderwaterGear(fam),
+      ).toFixed(2)}%)`,
+      "blue",
     );
   });
 

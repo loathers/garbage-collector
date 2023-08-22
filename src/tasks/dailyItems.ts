@@ -1,17 +1,23 @@
-import { AcquireItem, Task } from "grimoire-kolmafia";
+import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
+  abort,
   buy,
   cliExecute,
   getCampground,
   getClanLounge,
+  getMonsters,
   Item,
+  itemDropsArray,
   itemPockets,
+  mallPrice,
   meatPockets,
   pickedPockets,
   pocketItems,
   pocketMeat,
+  print,
   runChoice,
   scrapPockets,
+  sellsItem,
   toItem,
   use,
   useSkill,
@@ -24,17 +30,27 @@ import {
   $skill,
   $skills,
   ChateauMantegna,
+  ClosedCircuitPayphone,
   get,
   have,
+  maxBy,
+  questStep,
   SourceTerminal,
   sum,
+  withChoice,
 } from "libram";
+import { acquire } from "../acquire";
+import { globalOptions } from "../config";
+import { embezzlerCount } from "../embezzler";
 import { doingExtrovermectin } from "../extrovermectin";
-import { coinmasterPrice, maxBy } from "../lib";
-import { garboAverageValue, garboValue } from "../session";
+import { coinmasterPrice } from "../lib";
+import { rufusPotion } from "../potions";
+import { garboAverageValue, garboValue } from "../value";
+import { GarboTask } from "./engine";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
+let _shouldClearRufusQuest: boolean | null = null;
 
 function drawBestCards(): void {
   const cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
@@ -80,7 +96,7 @@ function pickCargoPocket(): void {
     if (pocket in items) {
       value += sum(
         Object.entries(pocketItems(pocket)),
-        ([item, count]) => garboValue(toItem(item), true) * count
+        ([item, count]) => garboValue(toItem(item), true) * count,
       );
     }
     if (pocket in meats) {
@@ -105,15 +121,16 @@ function pickCargoPocket(): void {
   }
 }
 
-export const DailyItemTasks: Task[] = [
+let triedForest = false;
+const DailyItemTasks: GarboTask[] = [
   ...SummonTomes.map(
     (skill) =>
-      <Task>{
+      <GarboTask>{
         name: `{skill}`,
         ready: () => have(skill),
         completed: () => skill.dailylimit === 0,
         do: () => useSkill(skill, skill.dailylimit),
-      }
+      },
   ),
   ...[
     {
@@ -131,6 +148,19 @@ export const DailyItemTasks: Task[] = [
         if (best !== $item.none) {
           cliExecute(`try; create ${$skill`Summon Clip Art`.dailylimit} ${best}`);
         }
+      },
+    },
+    {
+      name: "2002 Mr. Store",
+      ready: () => have($item`2002 Mr. Store Catalog`),
+      completed: () =>
+        get("availableMrStore2002Credits", 0) === 0 && get("_2002MrStoreCreditsCollected", true),
+      do: (): void => {
+        const bestItem = maxBy(
+          Item.all().filter((i) => sellsItem($coinmaster`Mr. Store 2002`, i)),
+          garboValue,
+        );
+        buy($coinmaster`Mr. Store 2002`, get("availableMrStore2002Credits", 0), bestItem);
       },
     },
     {
@@ -163,7 +193,7 @@ export const DailyItemTasks: Task[] = [
       name: "Cheat Deck of Every Card",
       ready: () => have($item`Deck of Every Card`),
       completed: () => Math.floor(3 - get("_deckCardsDrawn") / 5) === 0,
-      do: () => drawBestCards(),
+      do: drawBestCards,
     },
     {
       name: "Source Terminal Extrude",
@@ -173,7 +203,7 @@ export const DailyItemTasks: Task[] = [
         garboValue(bestExtrude()) < garboValue($item`Source essence`) * 10,
       do: () => SourceTerminal.extrude(bestExtrude()),
       acquire: [{ item: $item`Source essence`, num: 10 }],
-      limit: { soft: 3 },
+      limit: { skip: 3 },
     },
     {
       name: "Internet Meme Shop viral video",
@@ -232,7 +262,7 @@ export const DailyItemTasks: Task[] = [
       ready: () => have($skill`Request Sandwich`),
       completed: () => get("_requestSandwichSucceeded"),
       do: () => useSkill($skill`Request Sandwich`),
-      limit: { soft: 10 },
+      limit: { skip: 10 },
     },
     {
       name: "Demand Sandwich",
@@ -268,7 +298,7 @@ export const DailyItemTasks: Task[] = [
       name: "Cargo Shorts Pocket",
       ready: () => have($item`Cargo Cultist Shorts`),
       completed: () => get("_cargoPocketEmptied"),
-      do: () => pickCargoPocket(),
+      do: pickCargoPocket,
     },
     {
       name: "Time-Spinner Gin",
@@ -305,9 +335,93 @@ export const DailyItemTasks: Task[] = [
     {
       name: "Learn About Bugs",
       ready: () => have($item`S.I.T. Course Completion Certificate`),
-      completed: () => get("_sitCourseCompleted", true) || have($skill`Insectologist`),
+      completed: () => get("_sitCourseCompleted") || have($skill`Insectologist`),
       do: () => use($item`S.I.T. Course Completion Certificate`),
-      choices: { [1494]: 2 },
+      choices: { 1494: 2 },
+    },
+    {
+      name: "Clear Existing Rufus Quest",
+      completed: () => get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
+      do: (): void => {
+        const value = rufusPotion.value(embezzlerCount());
+        const price = rufusPotion.price(false);
+        _shouldClearRufusQuest = value.some(
+          (value) =>
+            (!globalOptions.nobarf || value.name === "embezzler") && value.value - price > 0,
+        );
+        if (_shouldClearRufusQuest) {
+          const target = ClosedCircuitPayphone.rufusTarget() as Item;
+          if (get("rufusQuestType") === "items") {
+            if (acquire(3, target, 2 * mallPrice(target), false, 100000)) {
+              withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+            }
+          } else if (get("rufusQuestType") === "artifact") {
+            if (have(target)) withChoice(1498, 1, () => use($item`closed-circuit pay phone`));
+          }
+        }
+      },
+    },
+    {
+      name: "Accept Rufus Quest for Forest",
+      ready: () => ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget(),
+      completed: () => get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`),
+      do: () => ClosedCircuitPayphone.chooseQuest(() => 3),
+    },
+    {
+      name: "Acquire Rufus Items",
+      ready: () => {
+        if (!ClosedCircuitPayphone.have()) return false;
+        const target = ClosedCircuitPayphone.rufusTarget();
+        return target instanceof Item && target.tradeable;
+      },
+      completed: () =>
+        get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`) || triedForest,
+      do: () => {
+        const target = ClosedCircuitPayphone.rufusTarget();
+        const bestRift = ClosedCircuitPayphone.chooseRift({
+          canAdventure: true,
+          sortBy: (l) =>
+            sum(getMonsters(l), (m) => sum(itemDropsArray(m), ({ drop }) => garboValue(drop))),
+        });
+        if (!bestRift) abort("Failed to choose rift for Shadow Forest");
+        const value =
+          (((6 + 9) / 2) *
+            sum(getMonsters(bestRift), (m) =>
+              sum(itemDropsArray(m), ({ drop }) => garboValue(drop)),
+            )) /
+          3;
+        if (target instanceof Item && target.tradeable) {
+          if (acquire(3, target, value, false) < 3) {
+            print(`Our Rufus quest is ${target}, which costs too much to do the Forest!`, "red");
+          }
+          triedForest = true;
+        }
+      },
+    },
+    {
+      name: "Turn In Rufus Quest for Forest",
+      ready: () => questStep("questRufus") === 1,
+      completed: () => get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`),
+      do: () => ClosedCircuitPayphone.submitQuest(),
+    },
+    {
+      name: "Shadow Forest",
+      ready: () => have($item`Rufus's shadow lodestone`),
+      completed: () => get("_shadowForestLooted"),
+      do: () =>
+        ClosedCircuitPayphone.chooseRift({
+          canAdventure: true,
+          sortBy: (l) =>
+            sum(getMonsters(l), (m) => sum(itemDropsArray(m), ({ drop }) => garboValue(drop))),
+        }) ?? abort("Failed to find appropriate rift for Shadow Forest"),
+      choices: {
+        1500: 3,
+      },
     },
   ],
 ];
+
+export const DailyItemsQuest: Quest<GarboTask> = {
+  name: "Daily Items",
+  tasks: DailyItemTasks,
+};

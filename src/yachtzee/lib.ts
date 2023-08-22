@@ -1,4 +1,4 @@
-import { cliExecute, Effect, Item, useFamiliar } from "kolmafia";
+import { cliExecute, Effect, Item } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -6,12 +6,12 @@ import {
   $items,
   $location,
   $skill,
+  CinchoDeMayo,
   get,
   getActiveSongs,
   getModifier,
   have,
   Mood,
-  Requirement,
   set,
   sum,
   tryFindFreeRun,
@@ -21,9 +21,10 @@ import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
-import { ltbRun, realmAvailable } from "../lib";
-import { freeFightOutfit } from "../outfit";
+import { ltbRun, propertyManager, realmAvailable } from "../lib";
+import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
+import wanderer from "../wanderer";
 
 const ignoredSources = [
   "Orb Prediction",
@@ -33,7 +34,7 @@ const ignoredSources = [
 ];
 export const expectedEmbezzlers = sum(
   embezzlerSources.filter((source: EmbezzlerFight) => !ignoredSources.includes(source.name)),
-  (source: EmbezzlerFight) => source.potential()
+  (source: EmbezzlerFight) => source.potential(),
 );
 
 export function pyecAvailable(): boolean {
@@ -46,7 +47,7 @@ export function pyecAvailable(): boolean {
         ? true
         : withStash($items`Platinum Yendorian Express Card`, () => {
             return have($item`Platinum Yendorian Express Card`);
-          })
+          }),
     );
   }
   return get("_PYECAvailable", false);
@@ -70,9 +71,14 @@ export function shrugIrrelevantSongs(): void {
   cliExecute("shrug phat loot");
 }
 
+export function cinchNCs(): number {
+  return CinchoDeMayo.have() ? Math.floor(CinchoDeMayo.totalAvailableCinch() / 60) : 0;
+}
+
 export const freeNCs = (): number =>
   (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed ? 1 : 0) +
-  (have($item`Jurassic Parka`) ? 5 - get("_spikolodonSpikeUses") : 0);
+  (have($item`Jurassic Parka`) ? 5 - get("_spikolodonSpikeUses") : 0) +
+  cinchNCs();
 
 export function yachtzeeBuffValue(obj: Item | Effect): number {
   return (2000 * (getModifier("Meat Drop", obj) + getModifier("Familiar Weight", obj) * 2.5)) / 100;
@@ -87,12 +93,8 @@ export function useSpikolodonSpikes(): void {
   const familiar =
     run.constraints.familiar?.() ??
     (canJelly ? $familiar`Space Jellyfish` : freeFightFamiliar({ allowAttackFamiliars: false }));
-  useFamiliar(familiar);
-  const mergedRequirements = new Requirement([], { forceEquip: $items`Jurassic Parka` }).merge(
-    run.constraints.equipmentRequirements?.() ?? new Requirement([], {})
-  );
   run.constraints.preparation?.();
-  freeFightOutfit(mergedRequirements);
+  freeFightOutfit({ shirt: $item`Jurassic Parka`, ...toSpec(run), familiar }).dress();
   cliExecute("parka spikolodon");
 
   const targetZone = canJelly
@@ -102,6 +104,10 @@ export function useSpikolodonSpikes(): void {
     .skill($skill`Launch spikolodon spikes`)
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
+
+  const ncSkipper = wanderer.unsupportedChoices.get(targetZone);
+  if (ncSkipper) propertyManager.setChoices(ncSkipper);
+
   do {
     garboAdventureAuto(targetZone, macro);
   } while (get("_spikolodonSpikeUses") === startingSpikes);
