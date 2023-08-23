@@ -73,6 +73,21 @@ let latteRefreshed = false;
 let attemptCompletingBarfQuest = true;
 let snojoConfigured = false;
 
+// For this valuation, we are using the rough approximated value of different 
+//   voting initiatives. They are relatively straghtforward:
+//
+//     - Meat Drop -- Add 30% meat to all fights
+//     - Item Drop -- Add the value of extra garbage bags
+//     - Advs      -- Add +1 of VOA
+//  ==== BELOW THIS LINE, THEY ARE PRIORITY RATHER THAN VALUATION ===========
+//     - FamXP     -- Helps level up your grey goose & pocket prof & robort, for loopers
+//     - ML        -- Helps stasis longer
+//     - Primestat -- Helps make combat easier
+//     - Exp       -- Technically helps you cast more librams,  maybe?
+//     - Meat -30% -- Lowers your meat drop; negative priority, so never used
+//     - Item -15% -- Lowers your item drop; negative priority, so never used
+//     - FamXP -2  -- Lowers your fam XP; negative priority, so never used
+
 function voterSetup(): void {
   const initPriority: Map<string, number> = new Map([
     [
