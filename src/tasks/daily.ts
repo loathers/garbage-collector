@@ -73,7 +73,7 @@ let latteRefreshed = false;
 let attemptCompletingBarfQuest = true;
 let snojoConfigured = false;
 
-// For this valuation, we are using the rough approximated value of different 
+// For this valuation, we are using the rough approximated value of different
 //   voting initiatives. They are relatively straghtforward:
 //
 //     - Meat Drop -- Add 30% meat to all fights
