@@ -157,9 +157,8 @@ function voterSetup(): void {
   const voteLocalPriorityArr = [1, 2, 3, 4].map((index) => ({
     urlString: index - 1,
     value:
-      initPriority.get(get(`_voteLocal${index}`)) ?? get(`_voteLocal${index}`).includes("-")
-        ? -1
-        : 1,
+      initPriority.get(get(`_voteLocal${index}`)) ??
+      (get(`_voteLocal${index}`).includes("-") ? -1 : 1),
   }));
 
   const init = maxBy(voteLocalPriorityArr, "value").urlString;
