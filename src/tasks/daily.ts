@@ -154,14 +154,15 @@ function voterSetup(): void {
       ? 1
       : 2;
 
-  const voteLocalPriorityArr = [
-    [0, initPriority.get(get("_voteLocal1")) || (get("_voteLocal1").indexOf("-") === -1 ? 1 : -1)],
-    [1, initPriority.get(get("_voteLocal2")) || (get("_voteLocal2").indexOf("-") === -1 ? 1 : -1)],
-    [2, initPriority.get(get("_voteLocal3")) || (get("_voteLocal3").indexOf("-") === -1 ? 1 : -1)],
-    [3, initPriority.get(get("_voteLocal4")) || (get("_voteLocal4").indexOf("-") === -1 ? 1 : -1)],
-  ] as const;
+  const voteLocalPriorityArr = [1, 2, 3, 4].map((index) => ({
+    urlString: index - 1,
+    value:
+      initPriority.get(get(`_voteLocal${index}`)) ?? get(`_voteLocal${index}`).includes("-")
+        ? -1
+        : 1,
+  }));
 
-  const init = maxBy(voteLocalPriorityArr, 1)[0];
+  const init = maxBy(voteLocalPriorityArr, "value").urlString;
 
   visitUrl(`choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${init}&local[]=${init}`);
 }
