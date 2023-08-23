@@ -1,6 +1,6 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Location, toJson } from "kolmafia";
-import { $familiar, $familiars, $item, $items, get } from "libram";
+import { $familiar, $familiars, $item, $items, get, Guzzlr } from "libram";
 import { freeFightFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
@@ -39,6 +39,17 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
   bonusGear(mode).forEach((value, item) => outfit.addBonus(item, value));
 
   if (outfit.familiar !== $familiar`Grey Goose`) outfit.setBonus($item`tiny stillsuit`, 500);
+
+  if (
+    options.location === Guzzlr.getLocation() &&
+    Guzzlr.turnsLeftOnQuest(false) === 1 &&
+    Guzzlr.haveBooze()
+  ) {
+    outfit.addBonus(
+      $item`Guzzlr pants`,
+      Guzzlr.expectedReward(true) - Guzzlr.expectedReward(false),
+    );
+  }
 
   const bjornalike = $items`Crown of Thrones, Buddy Bjorn`.find((item) => outfit.canEquip(item));
   if (bjornalike) {
