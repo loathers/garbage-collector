@@ -297,6 +297,10 @@ export class Macro extends StrictMacro {
       .trySingAlong()
       .familiarActions()
       .externalIf(
+        have($skill`Extract Oil`) && get("_oilExtracted") < 15,
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Extract Oil`)),
+      )
+      .externalIf(
         digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
           have($skill`Meteor Lore`) &&
           get("_meteorShowerUses") < 5,
