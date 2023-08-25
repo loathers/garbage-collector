@@ -14,8 +14,8 @@ repos:
       - id: eslint
         additional_dependencies:
           - eslint@^8.46.0
-          - eslint-config-prettier@^8.9.0
-          - eslint-plugin-libram@^0.2.32
+          - eslint-config-prettier@^9.0.0
+          - eslint-plugin-libram@^0.2.33
         files: \.[jt]sx?$ # *.js, *.jsx, *.ts and *.tsx
         types: [file]
   - repo: https://github.com/pre-commit/mirrors-prettier
