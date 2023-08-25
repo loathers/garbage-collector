@@ -11,7 +11,10 @@ import {
   WandererTarget,
 } from "./lib";
 
-function averageYrValue(location: Location) {
+// TODO: fix for estimated meat & item drop bonuses
+// this function assumes that you have no bonus item drop and no bonus meat drop,
+// which is an underestimate of actual value
+function averageLocationValue(location: Location, forceItems: boolean) {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
@@ -26,39 +29,44 @@ function averageYrValue(location: Location) {
       sum(monsters, (m) => {
         const items = itemDropsArray(m).filter((drop) => ["", "n"].includes(drop.type));
         const duplicateFactor = canDuplicate && !m.attributes.includes("NOCOPY") ? 2 : 1;
+        // some free kills don't cap at 1000 but just assume they all do
+        const meatDrop = Math.min(1000, (m.minMeat + m.maxMeat) / 2);
         return (
           duplicateFactor *
-          sum(items, (drop) => {
-            const yrRate = (drop.type === "" ? 100 : drop.rate) / 100;
-            return yrRate * garboValue(drop.drop, true);
-          })
+            sum(items, (drop) => {
+              const yrRate = (drop.type === "" && forceItems ? 100 : drop.rate) / 100;
+              return yrRate * garboValue(drop.drop, true);
+            }) +
+          meatDrop
         );
       }) / monsters.length
     );
   }
 }
 
-function yrValues(): Map<Location, number> {
+function dropValues(forceItems: boolean): Map<Location, number> {
   const values = new Map<Location, number>();
   for (const location of Location.all().filter((l) => canAdventureOrUnlock(l) && !underwater(l))) {
     values.set(
       location,
-      averageYrValue(location) + freeFightFamiliarData({ location }).expectedValue,
+      averageLocationValue(location, forceItems) +
+        freeFightFamiliarData({ location }).expectedValue,
     );
   }
   return values;
 }
 
-// Doing a free fight + yellow ray combination against a random enemy
-export function yellowRayFactory(
+// Doing a free fight against a random enemy
+// yellow ray is a special case
+export function freeKillFactory(
   type: DraggableFight,
   locationSkiplist: Location[],
 ): WandererTarget[] {
-  if (type === "yellow ray") {
+  if (type === "yellow ray" || type === "free kill") {
     const validLocations = Location.all().filter(
-      (location) => canWander(location, "yellow ray") && canAdventureOrUnlock(location),
+      (location) => canWander(location, type) && canAdventureOrUnlock(location),
     );
-    const locationValues = yrValues();
+    const locationValues = dropValues(type === "yellow ray");
 
     const bestZones = new Set<Location>([
       maxBy(validLocations, (l: Location) => locationValues.get(l) ?? 0),

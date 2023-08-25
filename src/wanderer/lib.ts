@@ -1,10 +1,10 @@
-import { buy, canAdventure, Item, Location, use } from "kolmafia";
+import { buy, canAdventure, Item, Location, myLightning, use } from "kolmafia";
 import { $effect, $item, $location, $locations, $skill, clamp, get, have, sum } from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
 import { realmAvailable } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
-export const draggableFights = ["backup", "wanderer", "yellow ray"] as const;
+export const draggableFights = ["backup", "wanderer", "yellow ray", "free kill"] as const;
 export type DraggableFight = (typeof draggableFights)[number];
 
 interface UnlockableZone {
@@ -97,7 +97,7 @@ function canWanderTypeBackup(location: Location): boolean {
   );
 }
 
-function canWanderTypeYellowRay(location: Location): boolean {
+function canWanderTypeFreekill(location: Location): boolean {
   if (location === $location`The Fun-Guy Mansion` && get("funGuyMansionKills", 0) >= 100) {
     return false;
   }
@@ -117,10 +117,11 @@ export function canWander(location: Location, type: DraggableFight): boolean {
   switch (type) {
     case "backup":
       return canWanderTypeBackup(location);
-    case "yellow ray":
-      return canWanderTypeYellowRay(location);
     case "wanderer":
       return canWanderTypeWander(location);
+    case "free kill":
+    case "yellow ray":
+      return canWanderTypeFreekill(location);
   }
 }
 
@@ -202,22 +203,32 @@ export function wandererTurnsAvailableToday(location: Location): number {
     backup: canWander(location, "backup"),
     wanderer: canWander(location, "wanderer"),
     "yellow ray": canWander(location, "yellow ray"),
+    "free kill": canWander(location, "free kill"),
   };
 
   const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
   const pigSkinnerRay =
-    canWanderCache["backup"] && have($skill`Free-For-All`)
+    canWanderCache["free kill"] && have($skill`Free-For-All`)
       ? Math.floor(estimatedGarboTurns() / 25)
       : 0;
+
+  // for lightning strike, it is hard to know how many combats we'll have
+  // since we don't know exactly how many turns we'll pick the pliers. just assume you have your starting lightning
+  const lightningStrike =
+    have($skill`Lightning Strike`) && canWanderCache["free kill"]
+      ? Math.floor(myLightning() / 20)
+      : 0;
   const yellowRayCooldown = have($skill`Fondeluge`) ? 50 : 100;
-  const yellowRay = canWanderCache["yellow ray"]
-    ? Math.floor(estimatedGarboTurns() / yellowRayCooldown)
-    : 0;
+  const yellowRay =
+    canWanderCache["yellow ray"] && (have($skill`Fondeluge`) || have($item`Jurassic Parka`))
+      ? Math.floor(estimatedGarboTurns() / yellowRayCooldown)
+      : 0;
+  const shockingLick = canWanderCache["yellow ray"] ? get("shockingLickCharges") : 0;
   const wanderers = sum(WanderingSources, (source) =>
     canWanderCache[source.type] && have(source.item)
       ? clamp(get(source.property), 0, source.max)
       : 0,
   );
 
-  return digitize + pigSkinnerRay + yellowRay + wanderers;
+  return digitize + pigSkinnerRay + lightningStrike + yellowRay + wanderers + shockingLick;
 }

@@ -6,6 +6,7 @@ import {
   Item,
   mallPrice,
   myFullness,
+  myPath,
   numericModifier,
   toSlot,
 } from "kolmafia";
@@ -14,6 +15,7 @@ import {
   $familiar,
   $item,
   $items,
+  $path,
   $slot,
   $slots,
   clamp,
@@ -194,6 +196,15 @@ export function magnifyingGlass(): Map<Item, number> {
   ]);
 }
 
+export function thorsPliers(): Map<Item, number> {
+  if (myPath() === $path`Heavy Rains` && have($item`Thor's Pliers`)) {
+    return new Map<Item, number>([
+      [$item`Thor's Pliers`, globalOptions.prefs.valueOfFreeFight / 20],
+    ]);
+  }
+  return new Map<Item, number>();
+}
+
 export function bonusGear(
   mode: BonusEquipMode,
   valueCircumstantialBonus = true,
@@ -213,6 +224,7 @@ export function bonusGear(
           ...snowSuit(mode),
           ...mayflowerBouquet(mode),
           ...(mode === BonusEquipMode.BARF ? magnifyingGlass() : []),
+          ...thorsPliers(),
           ...juneCleaver(mode),
         ])
       : []),

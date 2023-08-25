@@ -12,6 +12,8 @@ import {
   myAdventures,
   myInebriety,
   myLevel,
+  myLightning,
+  myRain,
   print,
   retrieveItem,
   runChoice,
@@ -287,6 +289,19 @@ const turns: AdventureAction[] = [
     sobriety: Sobriety.EITHER,
   },
   {
+    name: "Heavy Rains Rain Main",
+    available: () => have($skill`Rain Man`) && myRain() >= 50,
+    execute: () => {
+      const rain = myRain();
+      embezzlerOutfit().dress();
+      propertyManager.setChoice(970, `1&whichmonster=${embezzler.id}`);
+      withMacro(Macro.meatKill(), () => useSkill($skill`Rain Man`), true);
+      return rain - myRain() === 50;
+    },
+    spendsTurn: true,
+    sobriety: Sobriety.EITHER,
+  },
+  {
     name: "Envyfish Egg",
     available: () =>
       have($item`envyfish egg`) && get("envyfishMonster") === embezzler && !get("_envyfishEggUsed"),
@@ -371,6 +386,26 @@ const turns: AdventureAction[] = [
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
         .skill($skill`Free-For-All`);
+      garboAdventureAuto(location, macro);
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
+      }
+      return have($effect`Everything Looks Red`);
+    },
+    spendsTurn: false,
+    sobriety: Sobriety.SOBER,
+  },
+  {
+    name: "Heavy Rains Lightning Bolt",
+    available: () =>
+      have($skill`Lightning Strike`) && myLightning() > 20 && romanticMonsterImpossible(),
+    execute: () => {
+      propertyManager.setChoices(wanderer.getChoices("backup"));
+      const location = wanderer.getTarget("backup");
+      freeFightOutfit({}, { location }).dress();
+      const macro = Macro.if_(embezzler, Macro.meatKill())
+        .familiarActions()
+        .skill($skill`Lightning Strike`);
       garboAdventureAuto(location, macro);
       if (SourceTerminal.have()) {
         SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
