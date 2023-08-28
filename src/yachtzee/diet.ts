@@ -394,7 +394,8 @@ function yachtzeeDietScheduler(
       let spleenUse = mySpleenUse();
       while (
         idx < dietSchedule.length &&
-        (dietSchedule[idx].spleen >= 0 || // We only insert if there's a cleanser immediately after where we want to insert
+        ((dietSchedule[idx].spleen >= 0 && // We only insert if there's a cleanser immediately after where we want to insert
+          (entry.spleen >= 0 || spleenUse + dietSchedule[idx].spleen <= spleenLimit())) ||
           spleenUse + entry.spleen > spleenLimit() || // But don't insert if we will overshoot our spleen limit
           (idx > 0 &&
             dietSchedule[idx - 1].spleen < 0 &&
