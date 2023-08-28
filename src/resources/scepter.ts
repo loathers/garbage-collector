@@ -73,7 +73,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
       new Potion($item`august scepter`, {
         effect: $effect`Offhand Remarkable`,
         duration: 30,
-        effectValues: { meatDrop: 60 }, // Half a purse
+        effectValues: { meatDrop: 80 }, // Half a purse
       }).gross(embezzlerCount()) +
       (globalOptions.ascend
         ? 0
