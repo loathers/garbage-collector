@@ -39647,8 +39647,8 @@ function yachtzeeDietScheduler(menu3) {
         var entry = _step3.value;
         var _idx = 0;
         var _spleenUse = (0, import_kolmafia94.mySpleenUse)();
-        while (_idx < dietSchedule.length && (dietSchedule[_idx].spleen >= 0 || // We only insert if there's a cleanser immediately after where we want to insert
-        _spleenUse + entry.spleen > (0, import_kolmafia94.spleenLimit)() || // But don't insert if we will overshoot our spleen limit
+        while (_idx < dietSchedule.length && (dietSchedule[_idx].spleen >= 0 && // We only insert if there's a cleanser immediately after where we want to insert
+        (entry.spleen >= 0 || _spleenUse + dietSchedule[_idx].spleen <= (0, import_kolmafia94.spleenLimit)()) || _spleenUse + entry.spleen > (0, import_kolmafia94.spleenLimit)() || // But don't insert if we will overshoot our spleen limit
         _idx > 0 && dietSchedule[_idx - 1].spleen < 0 && _spleenUse + dietSchedule[_idx].spleen >= 0)) {
           var _dietSchedule$_idx$sp;
           _spleenUse += (_dietSchedule$_idx$sp = dietSchedule[_idx++].spleen) !== null && _dietSchedule$_idx$sp !== void 0 ? _dietSchedule$_idx$sp : 0;
@@ -40472,7 +40472,7 @@ function canContinue() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "";
-  sinceKolmafiaRevision(27495);
+  sinceKolmafiaRevision(27525);
   checkGithubVersion();
   (0, import_kolmafia97.visitUrl)("main.php");
   if ((0, import_kolmafia97.currentRound)() > 0) {
