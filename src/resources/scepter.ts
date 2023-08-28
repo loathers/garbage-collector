@@ -148,10 +148,11 @@ function getBestScepterSkills(): ScepterSkill[] {
 
 export function shouldAugustCast(skill: Skill) {
   return (
-    (getBestScepterSkills().some((s) => skill === s.skill) &&
+    AugustScepter.have() &&
+    ((getBestScepterSkills().some((s) => skill === s.skill) &&
       skill.dailylimit &&
       get("_augSkillsCast") < 5) ||
-    (AugustScepter.todaysSkill() === skill && !AugustScepter.getTodayCast())
+      (AugustScepter.todaysSkill() === skill && !AugustScepter.getTodayCast()))
   );
 }
 

@@ -19,6 +19,7 @@ import {
   toInt,
   toUrl,
   use,
+  useSkill,
   visitUrl,
   wait,
 } from "kolmafia";
@@ -59,6 +60,7 @@ import {
 } from "./lib";
 import { waterBreathingEquipment } from "./outfit";
 import wanderer, { DraggableFight } from "./wanderer";
+import { shouldAugustCast } from "./resources";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -282,6 +284,21 @@ export const chainStarters = [
     (options: EmbezzlerFightRunOptions) => {
       faxEmbezzler();
       withMacro(options.macro, () => use($item`photocopied monster`), options.useAuto);
+    },
+  ),
+  new EmbezzlerFight(
+    "Scepter Semirare",
+    () => shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
+    () => (shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`) ? 1 : 0),
+    (options: EmbezzlerFightRunOptions) => {
+      retrieveItem($item`august scepter`);
+      useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
+      if (!have($effect`Lucky!`)) {
+        set("_aug2Cast", true);
+        return;
+      }
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     },
   ),
   new EmbezzlerFight(
