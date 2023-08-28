@@ -419,7 +419,7 @@ const DailyItemTasks: GarboTask[] = [
         1500: 3,
       },
     },
-    ...augustSummonTasks()
+    ...augustSummonTasks(),
   ],
 ];
 
