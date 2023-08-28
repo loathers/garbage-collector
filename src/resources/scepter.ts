@@ -151,7 +151,7 @@ function getBestScepterSkills(): ScepterSkill[] {
     .splice(0, clamp(5 - get("_augSkillsCast"), 0, 5)));
 }
 
-function shouldCast(skill: Skill) {
+export function shouldAugustCast(skill: Skill) {
   return (
     (getBestScepterSkills().some((s) => skill === s.skill) &&
       skill.dailylimit &&
@@ -163,7 +163,7 @@ function shouldCast(skill: Skill) {
 function summonTask({ skill }: ScepterSkill) {
   return {
     name: skill.name,
-    completed: () => !shouldCast(skill),
+    completed: () => !shouldAugustCast(skill),
     do: () => useSkill(skill),
   };
 }
@@ -177,7 +177,7 @@ export function augustSummonTasks() {
 export function castAugustScepterBuffs() {
   if (AugustScepter.have()) {
     for (const { skill } of SKILL_OPTIONS.filter(
-      ({ skill, type }) => shouldCast(skill) && type === "buff",
+      ({ skill, type }) => shouldAugustCast(skill) && type === "buff",
     )) {
       useSkill(skill);
     }
@@ -185,7 +185,7 @@ export function castAugustScepterBuffs() {
     const today = SKILL_OPTIONS.find(({ skill }) => skill === AugustScepter.todaysSkill());
     if (today && !AugustScepter.getTodayCast()) useSkill(today.skill);
 
-    if (globalOptions.ascend && shouldCast($skill`Aug. 13th: Left/Off Hander's Day!`)) {
+    if (globalOptions.ascend && shouldAugustCast($skill`Aug. 13th: Left/Off Hander's Day!`)) {
       useSkill($skill`Aug. 13th: Left/Off Hander's Day!`);
     }
   }

@@ -8,7 +8,6 @@ import {
   haveEquipped,
   mallPrice,
   print,
-  toInt,
   use,
   useSkill,
 } from "kolmafia";
@@ -28,8 +27,9 @@ import {
 import { acquire } from "../acquire";
 import { garboAdventure, Macro } from "../combat";
 import { safeRestore } from "../lib";
-import { acquiringOffhandRemarkable, pyecAvailable, yachtzeeBuffValue } from "./lib";
+import { pyecAvailable, yachtzeeBuffValue } from "./lib";
 import { getBestWaterBreathingEquipment } from "./outfit";
+import { shouldAugustCast } from "../resources";
 
 function fishyCloverAdventureOpportunityCost(pipe: boolean) {
   const willBeFishy = pipe || have($effect`Fishy`);
@@ -203,12 +203,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
       cost: canAdventure($location`The Brinier Deepers`)
         ? (have($effect`Lucky!`)
             ? 0
-            : have($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`) &&
-              !get("_aug2Cast") &&
-              get("_augSkillsCast") <=
-                2 +
-                  toInt(get("_aug16Cast")) + // No need to save a charge for stomache cleansing if we've already used the skill
-                  toInt(!acquiringOffhandRemarkable) // No need to save a charge if we aren't acquiring Offhand Remarkable
+            : shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
             ? 0
             : Infinity) +
           get("valueOfAdventure") +
