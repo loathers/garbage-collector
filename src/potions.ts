@@ -65,7 +65,7 @@ import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
-import { castAugustScepterBuffs } from "./resources/scepter";
+import { castAugustScepterBuffs } from "./resources";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
