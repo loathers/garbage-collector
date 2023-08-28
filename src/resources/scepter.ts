@@ -18,7 +18,6 @@ import { EMBEZZLER_MULTIPLIER } from "../lib";
 import { Potion } from "../potions";
 import { garboAverageValue, garboValue } from "../value";
 import { canAdventure, canEquip, Item, myLevel, myMeat, Skill, toSlot, useSkill } from "kolmafia";
-import { doingExtrovermectin } from "../extrovermectin";
 
 type ScepterSkill = {
   skill: Skill;
@@ -26,11 +25,7 @@ type ScepterSkill = {
   type: "special" | "summon" | "buff";
 };
 const SKILL_OPTIONS: ScepterSkill[] = [
-  {
-    skill: $skill`Aug. 1st: Mountain Climbing Day!`,
-    value: () => (doingExtrovermectin() ? 3 * get("valueOfAdventure") : 0), // TODO: Meat drops
-    type: "special", // Want to specifically do before embezzlers
-  },
+  // August 1 deliberately omitted; does not trigger on monster replacers
   {
     skill: $skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`,
     value: () =>
