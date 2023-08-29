@@ -36,7 +36,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
   },
   {
     skill: $skill`Aug. 3rd: Watermelon Day!`,
-    value: () => 3 * garboValue($item`watermelon`),
+    value: () => garboValue($item`watermelon`),
     type: "summon",
   },
   {
@@ -178,7 +178,9 @@ export function castAugustScepterBuffs() {
       useSkill(skill);
     }
 
-    const today = SKILL_OPTIONS.find(({ skill }) => skill === AugustScepter.todaysSkill());
+    const today = SKILL_OPTIONS.find(
+      ({ skill, type }) => type === "buff" && skill === AugustScepter.todaysSkill(),
+    );
     if (today && !AugustScepter.getTodayCast()) useSkill(today.skill);
 
     if (globalOptions.ascend && shouldAugustCast($skill`Aug. 13th: Left/Off Hander's Day!`)) {
