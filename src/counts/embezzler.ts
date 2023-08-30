@@ -26,7 +26,7 @@ export function embezzlerCount(): number {
 
 type NameCountPair = [string, () => number];
 
-const embezzlerCounts = new Array<NameCountPair>(
+const embezzlerCounts: NameCountPair[] = [
   [
     "Chateau Painting",
     () =>
@@ -209,4 +209,4 @@ const embezzlerCounts = new Array<NameCountPair>(
         ? Math.min(15 - get("_pocketProfessorLectures"), 5)
         : 0,
   ],
-);
+];
