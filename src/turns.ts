@@ -13,6 +13,7 @@ import { globalOptions } from "./config";
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
 import { embezzlerCount } from "./counts/embezzler";
 import { ESTIMATED_OVERDRUNK_TURNS } from "./lib";
+import { augustScepterSpace } from "./iotms/august_scepter/lib";
 
 /**
  * Computes the estimated number of turns during which garbo will run
@@ -92,7 +93,7 @@ export const estimatedTurnsTomorrow = 400 + clamp((get("valueOfAdventure") - 400
 function potentialFullnessAdventures(): number {
   const distentionPillSpace = have($item`distention pill`) && !get("_distentionPillUsed") ? 1 : 0;
 
-  return (fullnessLimit() - myFullness() + distentionPillSpace) * 8;
+  return (fullnessLimit() - myFullness() + distentionPillSpace + augustScepterSpace()) * 8;
 }
 
 function potentialInebrietyAdventures(): number {

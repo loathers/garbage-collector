@@ -47,6 +47,8 @@ import { garboAverageValue, garboValue } from "../value";
 import bestAutumnatonLocation from "./autumnaton";
 import handleWorkshed from "./workshed";
 import wanderer from "../wanderer";
+import { shouldAugustCast } from "../iotms/august_scepter";
+import { canAugustCast } from "../iotms/august_scepter/lib";
 
 function closetStuff(): void {
   for (const i of $items`bowling ball, funky junk key`) putCloset(itemAmount(i), i);
@@ -82,6 +84,15 @@ function fillSweatyLiver(): void {
       useSkill($skill`Sweat Out Some Booze`);
     }
     consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
+  }
+}
+
+function fillAugustScepterStomach(): void {
+  if (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted", false)) return;
+
+  if (canAugustCast(16) && shouldAugustCast(16)) {
+    useSkill($skill`Aug. 16th: Roller Coaster Day!`);
+    consumeDiet(computeDiet().sweatpants(), "SCEPTER");
   }
 }
 
@@ -180,6 +191,7 @@ export default function postCombatActions(skipDiet = false): void {
   if (!skipDiet && !globalOptions.nodiet) {
     fillPantsgivingFullness();
     fillSweatyLiver();
+    fillAugustScepterStomach();
   }
   floristFriars();
   handleWorkshed();

@@ -56,6 +56,7 @@ import {
   getAverageAdventures,
   getModifier,
   getRemainingLiver,
+  getRemainingStomach,
   have,
   Kmail,
   maxBy,
@@ -84,6 +85,7 @@ import { Potion, PotionTier } from "./potions/potion";
 import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./value";
+import { augustScepterSpace } from "./iotms/august_scepter/lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -285,6 +287,7 @@ const stomachLiverCleaners = new Map([
   [$item`synthetic dog hair pill`, [0, -1]],
   [$item`cuppa Sobrie tea`, [0, -1]],
   [$item`designer sweatpants`, [0, -1]],
+  [$item`august scepter`, [-1, 0]],
 ]);
 
 function legendaryPizzaToMenu(
@@ -433,6 +436,11 @@ function menu(): MenuItem<Note>[] {
       size: -1,
       organ: "booze",
       maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed"), Math.floor(get("sweat") / 25)),
+    }),
+    new MenuItem($item`august scepter`, {
+      size: -1,
+      organ: "food",
+      maximum: augustScepterSpace(),
     }),
   ].filter((item) => item.price() < Infinity) as MenuItem<Note>[];
 }
@@ -741,6 +749,7 @@ export function computeDiet(): {
   shotglass: () => Diet<Note>;
   pantsgiving: () => Diet<Note>;
   sweatpants: () => Diet<Note>;
+  scepter: () => Diet<Note>;
 } {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
@@ -754,6 +763,8 @@ export function computeDiet(): {
   const sweatpantsDietPlanner = (menu: MenuItem<Note>[]) =>
     orEmpty(Diet.plan(MPA, menu, { booze: getRemainingLiver() }));
   // const shotglassFilter = (menuItem: MenuItem)
+  const scepterDietPlanner = (menu: MenuItem<Note>[]) =>
+    orEmpty(Diet.plan(MPA, menu, { food: getRemainingStomach() }));
 
   return {
     diet: () =>
@@ -792,10 +803,17 @@ export function computeDiet(): {
           sweatpantsDietPlanner,
         ),
       ),
+    scepter: () =>
+      scepterDietPlanner(
+        balanceMenu(
+          menu().filter((menuItem) => itemType(menuItem.item) === "food" && menuItem.size <= 1),
+          scepterDietPlanner,
+        ),
+      ),
   };
 }
 
-type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING" | "SWEATPANTS";
+type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "REMAINING" | "SWEATPANTS" | "SCEPTER";
 
 function printDiet(diet: Diet<Note>, name: DietName) {
   print(`===== ${name} DIET =====`);
@@ -1016,6 +1034,14 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           (countToConsume: number) => {
             for (let n = 1; n <= countToConsume; n++) {
               useSkill($skill`Sweat Out Some Booze`);
+            }
+          },
+        ],
+        [
+          $item`august scepter`,
+          (countToConsume: number) => {
+            for (let n = 1; n <= countToConsume; n++) {
+              useSkill($skill`Aug. 16th: Roller Coaster Day!`);
             }
           },
         ],

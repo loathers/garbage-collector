@@ -19,6 +19,7 @@ import {
   toInt,
   toUrl,
   use,
+  useSkill,
   visitUrl,
   wait,
 } from "kolmafia";
@@ -60,6 +61,8 @@ import {
 import { waterBreathingEquipment } from "./outfit";
 import wanderer, { DraggableFight } from "./wanderer";
 import { estimatedGarboTurns } from "./turns";
+import { shouldAugustCast } from "./iotms/august_scepter";
+import { canAugustCast } from "./iotms/august_scepter/lib";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -305,6 +308,29 @@ export const chainStarters = [
       if (!have($effect`Lucky!`)) {
         set("_freePillKeeperUsed", true);
         return;
+      }
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
+    },
+  ),
+  new EmbezzlerFight(
+    "August scepter Semirare",
+    () =>
+      canAugustCast(2) &&
+      shouldAugustCast(2) &&
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      !have($effect`Lucky!`),
+    () =>
+      canAugustCast(2) &&
+      shouldAugustCast(2) &&
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      !have($effect`Lucky!`)
+        ? 1
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
+      if (!have($effect`Lucky!`)) {
+        throw new Error("Failed to acquire Lucky! from August Scepter");
       }
       const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
@@ -653,6 +679,49 @@ export const conditionalSources = [
     },
     {
       spec: { equip: $items`Powerful Glove` },
+      gregariousReplace: true,
+    },
+  ),
+  new EmbezzlerFight(
+    "Waffle",
+    () =>
+      get("beGregariousMonster") === embezzler &&
+      get("beGregariousFightsLeft") > 0 &&
+      have($item`waffle`) &&
+      proceedWithOrb(),
+    () =>
+      ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
+        get("beGregariousCharges") > 0) &&
+      have($item`waffle`)
+        ? itemAmount($item`waffle`)
+        : 0,
+    (options: EmbezzlerFightRunOptions) => {
+      equipOrbIfDesired();
+
+      const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
+      const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
+      const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+      setChoice(1387, 2);
+
+      const macro = Macro.if_(
+        $monster`crate`,
+        Macro.externalIf(
+          crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
+          Macro.tryHaveSkill($skill`Transcendent Olfaction`),
+        )
+          .externalIf(
+            haveEquipped($item`Fourth of May Cosplay Saber`) &&
+              weWantToSaberCrates &&
+              get("_saberForceUses") < 5,
+            Macro.trySkill($skill`Use the Force`),
+          )
+          .tryItem($item`waffle`),
+      ).step(options.macro);
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+      adventureFunction($location`Noob Cave`, macro, macro);
+      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) toasterGaze();
+    },
+    {
       gregariousReplace: true,
     },
   ),

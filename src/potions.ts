@@ -24,6 +24,7 @@ import {
   print,
   setLocation,
   use,
+  useSkill,
 } from "kolmafia";
 import {
   $effect,
@@ -31,6 +32,7 @@ import {
   $item,
   $items,
   $location,
+  $skill,
   $slot,
   ClosedCircuitPayphone,
   CursedMonkeyPaw,
@@ -57,6 +59,8 @@ import { embezzlerCount } from "./counts/embezzler";
 import { failedWishes, Potion } from "./potions/potion";
 import { VariableMeatPotion } from "./potions/variable_meat_potion";
 import { globalOptions } from "./config";
+import { shouldAugustCast } from "./iotms/august_scepter";
+import { canAugustCast } from "./iotms/august_scepter/lib";
 
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
 
@@ -230,6 +234,23 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   },
   use: () => {
     return false;
+  },
+});
+
+export const augustPotion = new Potion($item`august scepter`, {
+  providesDoubleDuration: false,
+  canDouble: false,
+  effect: $effect`Incredibly Well Lit`,
+  duration: 30,
+  price: () => {
+    if (!have($item`august scepter`)) return Infinity;
+
+    return 0;
+  },
+  acquire: () => (canAugustCast(7) && shouldAugustCast(7) ? 1 : 0),
+  use: () => {
+    useSkill($skill`Aug. 7th: Lighthouse Day!`);
+    return true;
   },
 });
 
