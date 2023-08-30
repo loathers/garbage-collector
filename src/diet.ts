@@ -69,7 +69,7 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { embezzlerCount } from "./counts/embezzler";
+import { embezzlerCount } from "./counts";
 import { expectedGregs } from "./extrovermectin";
 import {
   arrayEquals,

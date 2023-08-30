@@ -57,13 +57,13 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../counts/embezzler";
+import { embezzlerCount } from "../counts";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";
 import { garboValue } from "../value";
 import { estimatedGarboTurns } from "../turns";
-import { digitizedMonstersRemaining } from "../counts/digitize";
+import { digitizedMonstersRemaining } from "../counts";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 

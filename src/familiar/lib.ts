@@ -12,7 +12,7 @@ import { $effect, $familiar, $item, $skill, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { estimatedGarboTurns } from "../turns";
-import { digitizedMonstersRemaining } from "../counts/digitize";
+import { digitizedMonstersRemaining } from "../counts";
 
 export type GeneralFamiliar = {
   familiar: Familiar;

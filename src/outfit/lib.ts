@@ -31,11 +31,11 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../counts/embezzler";
+import { embezzlerCount } from "../counts";
 import { meatFamiliar } from "../familiar";
 import { baseMeat } from "../lib";
 import { estimatedGarboTurns } from "../turns";
-import { digitizedMonstersRemaining } from "../counts/digitize";
+import { digitizedMonstersRemaining } from "../counts";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) => outfit.canEquip(item));

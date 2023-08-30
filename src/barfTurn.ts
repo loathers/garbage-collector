@@ -65,7 +65,7 @@ import postCombatActions from "./post";
 import { trackBarfSessionStatistics } from "./session";
 import { completeBarfQuest } from "./tasks/daily";
 import { estimatedGarboTurns } from "./turns";
-import { digitizedMonstersRemaining } from "./counts/digitize";
+import { digitizedMonstersRemaining } from "./counts";
 import wanderer from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;

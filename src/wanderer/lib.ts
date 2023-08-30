@@ -3,7 +3,7 @@ import { $effect, $item, $location, $locations, $skill, clamp, get, have, sum } 
 import { NumericProperty } from "libram/dist/propertyTypes";
 import { realmAvailable } from "../lib";
 import { estimatedGarboTurns } from "../turns";
-import { digitizedMonstersRemaining } from "../counts/digitize";
+import { digitizedMonstersRemaining } from "../counts";
 
 export const draggableFights = ["backup", "wanderer", "yellow ray"] as const;
 export type DraggableFight = (typeof draggableFights)[number];

@@ -59,7 +59,7 @@ import {
 } from "libram";
 import { globalOptions } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
-import { digitizedMonstersRemaining } from "./counts/digitize";
+import { digitizedMonstersRemaining } from "./counts";
 
 let monsterManuelCached: boolean | undefined = undefined;
 export function monsterManuelAvailable(): boolean {

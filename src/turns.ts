@@ -11,7 +11,7 @@ import { $familiar, $item, clamp, get, have } from "libram";
 import { globalOptions } from "./config";
 // Dumb circular import stuff
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
-import { embezzlerCount } from "./counts/embezzler";
+import { embezzlerCount } from "./counts";
 import { ESTIMATED_OVERDRUNK_TURNS } from "./lib";
 
 /**
