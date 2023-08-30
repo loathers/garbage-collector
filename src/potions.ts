@@ -55,7 +55,7 @@ import {
 } from "./lib";
 import { embezzlerCount } from "./counts/embezzler";
 import { failedWishes, Potion } from "./potions/potion";
-import { VariableMeatPotion } from "./potions/variable_meat_potion";
+import { VariableMeatPotion } from "./potions/variableMeatPotion";
 import { globalOptions } from "./config";
 
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
