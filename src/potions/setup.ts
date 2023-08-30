@@ -45,18 +45,18 @@ import {
   sumNumbers,
   withChoice,
 } from "libram";
-import { acquire } from "./acquire";
+import { acquire } from "../acquire";
 import {
   baseMeat,
   bestShadowRift,
   HIGHLIGHT,
   pillkeeperOpportunityCost,
   withLocation,
-} from "./lib";
-import { embezzlerCount } from "./counts/embezzler";
-import { failedWishes, Potion } from "./potions/potion";
-import { VariableMeatPotion } from "./potions/variableMeatPotion";
-import { globalOptions } from "./config";
+} from "../lib";
+import { embezzlerCount } from "../counts/embezzler";
+import { failedWishes, Potion } from "./potion";
+import { VariableMeatPotion } from "./variableMeatPotion";
+import { globalOptions } from "../config";
 
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
 
