@@ -41,7 +41,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { embezzlerCount } from "../counts/embezzler";
 import { doingExtrovermectin } from "../extrovermectin";
 import { coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";

@@ -31,7 +31,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { embezzlerCount } from "../counts/embezzler";
 import { meatFamiliar } from "../familiar";
 import { baseMeat } from "../lib";
 import { estimatedGarboTurns } from "../turns";

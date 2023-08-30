@@ -57,7 +57,7 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { embezzlerCount } from "../counts/embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";

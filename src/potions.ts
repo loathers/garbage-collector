@@ -53,7 +53,7 @@ import {
   pillkeeperOpportunityCost,
   withLocation,
 } from "./lib";
-import { embezzlerCount } from "./embezzler";
+import { embezzlerCount } from "./counts/embezzler";
 import { failedWishes, Potion } from "./potions/potion";
 import { VariableMeatPotion } from "./potions/variable_meat_potion";
 import { globalOptions } from "./config";

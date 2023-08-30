@@ -28,7 +28,7 @@ import {
 } from "libram";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { embezzlerCount } from "../counts/embezzler";
 import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,

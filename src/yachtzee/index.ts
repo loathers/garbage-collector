@@ -27,7 +27,7 @@ import { garboAdventure, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
-import { embezzlerCount } from "../embezzler";
+import { embezzlerCount } from "../counts/embezzler";
 import { doSausage, freeRunFights } from "../fights";
 import { baseMeat, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
