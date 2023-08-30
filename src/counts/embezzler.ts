@@ -24,11 +24,7 @@ export function embezzlerCount(): number {
   return sum(embezzlerCounts, (countEntry: NameCountPair) => countEntry[1]());
 }
 
-interface CountFunction {
-  (): number;
-}
-
-type NameCountPair = [string, CountFunction];
+type NameCountPair = [string, () => number];
 
 const embezzlerCounts = new Array<NameCountPair>(
   [
