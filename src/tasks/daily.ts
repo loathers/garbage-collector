@@ -62,7 +62,8 @@ import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";
 import { garboValue } from "../value";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import { estimatedGarboTurns } from "../turns";
+import { digitizedMonstersRemaining } from "../counts/digitize";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 
@@ -187,7 +188,9 @@ function pantogram(): void {
   if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
     const expectedBarfTurns = globalOptions.nobarf
       ? 0
-      : estimatedGarboTurns() - digitizedMonstersRemaining() - embezzlerCount();
+      : estimatedGarboTurns() -
+        digitizedMonstersRemaining(estimatedGarboTurns()) -
+        embezzlerCount();
     pantogramValue = 100 * expectedBarfTurns;
   } else {
     const lepMult = findLeprechaunMultiplier(meatFamiliar());

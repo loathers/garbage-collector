@@ -59,6 +59,7 @@ import {
 } from "./lib";
 import { waterBreathingEquipment } from "./outfit";
 import wanderer, { DraggableFight } from "./wanderer";
+import { estimatedGarboTurns } from "./turns";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -166,7 +167,7 @@ export class EmbezzlerFight {
   run(options: { macro?: Macro; location?: Location; useAuto?: boolean } = {}): void {
     if (!this.available() || !myAdventures()) return;
     print(`Now running Embezzler fight: ${this.name}. Stay tuned for details.`);
-    const fightMacro = options.macro ?? Macro.embezzler();
+    const fightMacro = options.macro ?? Macro.embezzler(estimatedGarboTurns());
     if (this.draggable) {
       this.execute(
         new EmbezzlerFightRunOptions(fightMacro, this.location(options.location), options.useAuto),

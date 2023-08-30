@@ -214,7 +214,7 @@ function initializeCrates(): void {
   } while (!["crate", "Using the Force"].includes(get("lastEncounter"))); // loop until we actually hit a crate
 }
 
-function initializeDireWarren(): void {
+function initializeDireWarren(turnCount: number): void {
   visitUrl("museum.php?action=icehouse");
 
   const banishedMonsters = getBanishedMonsters();
@@ -251,7 +251,7 @@ function initializeDireWarren(): void {
     do {
       garboAdventure(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).embezzler(),
+        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).embezzler(turnCount),
       );
     } while (myFury() >= 5 && banishedMonsters.get($skill`Batter Up!`) !== $monster`fluffy bunny`);
   } else {
@@ -260,7 +260,7 @@ function initializeDireWarren(): void {
     do {
       garboAdventure(
         $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).embezzler(),
+        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).embezzler(turnCount),
       );
     } while (
       "fluffy bunny" !== get("lastEncounter") &&
@@ -269,9 +269,9 @@ function initializeDireWarren(): void {
   }
 }
 
-export function initializeExtrovermectinZones(): void {
+export function initializeExtrovermectinZones(turnCount: number): void {
   if (get("beGregariousFightsLeft") === 0) {
     if (hasMonsterReplacers()) initializeCrates();
-    initializeDireWarren();
+    initializeDireWarren(turnCount);
   }
 }

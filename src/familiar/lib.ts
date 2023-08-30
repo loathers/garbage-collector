@@ -11,7 +11,8 @@ import {
 import { $effect, $familiar, $item, $skill, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import { estimatedGarboTurns } from "../turns";
+import { digitizedMonstersRemaining } from "../counts/digitize";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
@@ -89,7 +90,7 @@ export function canOpenRedPresent(): boolean {
  */
 export function turnsAvailable(): number {
   const baseTurns = estimatedGarboTurns();
-  const digitizes = digitizedMonstersRemaining();
+  const digitizes = digitizedMonstersRemaining(estimatedGarboTurns());
   const mapTurns = globalOptions.ascend
     ? clamp(
         availableAmount($item`Map to Safety Shelter Grimace Prime`),

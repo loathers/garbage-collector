@@ -64,7 +64,8 @@ import {
 import postCombatActions from "./post";
 import { trackBarfSessionStatistics } from "./session";
 import { completeBarfQuest } from "./tasks/daily";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
+import { estimatedGarboTurns } from "./turns";
+import { digitizedMonstersRemaining } from "./counts/digitize";
 import wanderer from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
@@ -243,13 +244,17 @@ const turns: AdventureAction[] = [
       isEmbezzler ? embezzlerOutfit({}, targetLocation).dress() : freeFightOutfit().dress();
       garboAdventureAuto(
         targetLocation,
-        Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(),
+        Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(
+          estimatedGarboTurns(),
+        ),
 
         // Hacky fix for when we fail init to embezzler, who are special monsters
         // Macro autoattacks fail when you lose the jump to special monsters
         Macro.if_(
           `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
-          Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(),
+          Macro.externalIf(underwater, Macro.item($item`pulled green taffy`)).meatKill(
+            estimatedGarboTurns(),
+          ),
         ).abortWithMsg(
           `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
         ),
@@ -292,7 +297,7 @@ const turns: AdventureAction[] = [
       have($item`envyfish egg`) && get("envyfishMonster") === embezzler && !get("_envyfishEggUsed"),
     execute: () => {
       embezzlerOutfit().dress();
-      withMacro(Macro.meatKill(), () => use($item`envyfish egg`), true);
+      withMacro(Macro.meatKill(estimatedGarboTurns()), () => use($item`envyfish egg`), true);
       return get("_envyfishEggUsed");
     },
     spendsTurn: true,
@@ -313,7 +318,7 @@ const turns: AdventureAction[] = [
       if (usingDuplicate) {
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
       }
-      const macro = Macro.if_(embezzler, Macro.meatKill())
+      const macro = Macro.if_(embezzler, Macro.meatKill(estimatedGarboTurns()))
         .familiarActions()
         .externalIf(usingDuplicate, Macro.trySkill($skill`Duplicate`))
         .skill($skill`Fondeluge`);
@@ -345,7 +350,7 @@ const turns: AdventureAction[] = [
       if (usingDuplicate) {
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
       }
-      const macro = Macro.if_(embezzler, Macro.meatKill())
+      const macro = Macro.if_(embezzler, Macro.meatKill(estimatedGarboTurns()))
         .familiarActions()
         .externalIf(usingDuplicate, Macro.trySkill($skill`Duplicate`))
         .skill($skill`Spit jurassic acid`);
@@ -368,7 +373,7 @@ const turns: AdventureAction[] = [
       propertyManager.setChoices(wanderer.getChoices("backup"));
       const location = wanderer.getTarget("backup");
       freeFightOutfit({}, { location }).dress();
-      const macro = Macro.if_(embezzler, Macro.meatKill())
+      const macro = Macro.if_(embezzler, Macro.meatKill(estimatedGarboTurns()))
         .familiarActions()
         .skill($skill`Free-For-All`);
       garboAdventureAuto(location, macro);
@@ -394,7 +399,7 @@ const turns: AdventureAction[] = [
       }
 
       freeFightOutfit({}, { location, allowAttackFamiliars: !usingDuplicate }).dress();
-      const macro = Macro.if_(embezzler, Macro.meatKill())
+      const macro = Macro.if_(embezzler, Macro.meatKill(estimatedGarboTurns()))
         .familiarActions()
         .externalIf(usingDuplicate, Macro.trySkill($skill`Duplicate`))
         .skill($skill`Shocking Lick`);
@@ -411,8 +416,11 @@ const turns: AdventureAction[] = [
     name: "Map for Pills",
     available: () =>
       globalOptions.ascend &&
-      clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
-        availableAmount($item`Map to Safety Shelter Grimace Prime`),
+      clamp(
+        myAdventures() - digitizedMonstersRemaining(estimatedGarboTurns()),
+        1,
+        myAdventures(),
+      ) <= availableAmount($item`Map to Safety Shelter Grimace Prime`),
     execute: () => {
       const choiceToSet =
         availableAmount($item`distention pill`) <
@@ -436,10 +444,10 @@ const turns: AdventureAction[] = [
       barfOutfit(lubing ? { equip: $items`lube-shoes` } : {}).dress();
       garboAdventureAuto(
         $location`Barf Mountain`,
-        Macro.meatKill(),
+        Macro.meatKill(estimatedGarboTurns()),
         Macro.if_(
           `(monsterid ${$monster`Knob Goblin Embezzler`.id}) && !gotjump && !(pastround 2)`,
-          Macro.meatKill(),
+          Macro.meatKill(estimatedGarboTurns()),
         ).abort(),
       );
       completeBarfQuest();

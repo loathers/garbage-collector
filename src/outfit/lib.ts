@@ -34,7 +34,8 @@ import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { baseMeat } from "../lib";
-import { digitizedMonstersRemaining } from "../turns";
+import { estimatedGarboTurns } from "../turns";
+import { digitizedMonstersRemaining } from "../counts/digitize";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) => outfit.canEquip(item));
@@ -83,7 +84,7 @@ const UPC = $item`scratch 'n' sniff UPC sticker`;
 export function useUPCsIfNeeded({ familiar }: Outfit): void {
   const currentWeapon = 25 * (familiar ? findLeprechaunMultiplier(familiar) : 0);
   const embezzlers = globalOptions.ascend
-    ? Math.min(20, embezzlerCount() || digitizedMonstersRemaining())
+    ? Math.min(20, embezzlerCount() || digitizedMonstersRemaining(estimatedGarboTurns()))
     : 20;
 
   const addedValueOfFullSword = (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;

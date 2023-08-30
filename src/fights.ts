@@ -183,6 +183,7 @@ import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
 import { garboValue } from "./value";
 import wanderer from "./wanderer";
+import { estimatedGarboTurns } from "./turns";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -200,7 +201,7 @@ const firstChainMacro = () =>
         .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`)),
     )
       .trySkill($skill`lecture on relativity`)
-      .meatKill(),
+      .meatKill(estimatedGarboTurns()),
   ).abort();
 
 const secondChainMacro = () =>
@@ -220,7 +221,7 @@ const secondChainMacro = () =>
           .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`)),
       )
       .trySkill($skill`lecture on relativity`)
-      .meatKill(),
+      .meatKill(estimatedGarboTurns()),
   ).abort();
 
 function embezzlerSetup() {
@@ -307,7 +308,7 @@ function embezzlerSetup() {
   }
 
   if (doingExtrovermectin()) {
-    initializeExtrovermectinZones();
+    initializeExtrovermectinZones(estimatedGarboTurns());
   }
 }
 
@@ -340,7 +341,9 @@ function startWandererCounter() {
       }
       garboAdventure(
         $location`The Haunted Kitchen`,
-        Macro.if_($monster`Knob Goblin Embezzler`, Macro.embezzler()).step(run.macro),
+        Macro.if_($monster`Knob Goblin Embezzler`, Macro.embezzler(estimatedGarboTurns())).step(
+          run.macro,
+        ),
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||

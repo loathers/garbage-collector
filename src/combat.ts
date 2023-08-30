@@ -59,7 +59,7 @@ import {
 } from "libram";
 import { globalOptions } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
-import { digitizedMonstersRemaining } from "./turns";
+import { digitizedMonstersRemaining } from "./counts/digitize";
 
 let monsterManuelCached: boolean | undefined = undefined;
 export function monsterManuelAvailable(): boolean {
@@ -276,7 +276,7 @@ export class Macro extends StrictMacro {
     return new Macro().tryCopier(itemOrSkill);
   }
 
-  meatKill(): Macro {
+  meatKill(turnCount: number): Macro {
     const sealClubberSetup = myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`);
     const opsSetup = equippedAmount($item`Operation Patriot Shield`) > 0;
     const katanaSetup = equippedAmount($item`haiku katana`) > 0;
@@ -301,7 +301,7 @@ export class Macro extends StrictMacro {
         Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Extract Oil`)),
       )
       .externalIf(
-        digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
+        digitizedMonstersRemaining(turnCount) <= 5 - get("_meteorShowerUses") &&
           have($skill`Meteor Lore`) &&
           get("_meteorShowerUses") < 5,
         Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`)),
@@ -378,8 +378,8 @@ export class Macro extends StrictMacro {
       .kill();
   }
 
-  static meatKill(): Macro {
-    return new Macro().meatKill();
+  static meatKill(turnCount: number): Macro {
+    return new Macro().meatKill(turnCount);
   }
 
   meatStasis(checkPassive: boolean): Macro {
@@ -658,7 +658,7 @@ export class Macro extends StrictMacro {
     return new Macro().ghostBustin();
   }
 
-  embezzler(): Macro {
+  embezzler(turnCount: number): Macro {
     const embezzler = $monster`Knob Goblin Embezzler`;
     return this.if_(
       embezzler,
@@ -685,12 +685,12 @@ export class Macro extends StrictMacro {
         .tryCopier($item`4-d camera`)
         .tryCopier($item`unfinished ice sculpture`)
         .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
-        .meatKill(),
+        .meatKill(turnCount),
     ).abortWithMsg(`Expected ${embezzler} but encountered something else.`);
   }
 
-  static embezzler(): Macro {
-    return new Macro().embezzler();
+  static embezzler(turnCount: number): Macro {
+    return new Macro().embezzler(turnCount);
   }
 }
 

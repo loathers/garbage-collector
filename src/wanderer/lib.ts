@@ -2,7 +2,8 @@ import { buy, canAdventure, Item, Location, use } from "kolmafia";
 import { $effect, $item, $location, $locations, $skill, clamp, get, have, sum } from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
 import { realmAvailable } from "../lib";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import { estimatedGarboTurns } from "../turns";
+import { digitizedMonstersRemaining } from "../counts/digitize";
 
 export const draggableFights = ["backup", "wanderer", "yellow ray"] as const;
 export type DraggableFight = (typeof draggableFights)[number];
@@ -204,7 +205,7 @@ export function wandererTurnsAvailableToday(location: Location): number {
     "yellow ray": canWander(location, "yellow ray"),
   };
 
-  const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
+  const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining(estimatedGarboTurns()) : 0;
   const pigSkinnerRay =
     canWanderCache["backup"] && have($skill`Free-For-All`)
       ? Math.floor(estimatedGarboTurns() / 25)
