@@ -1,4 +1,6 @@
 import {
+  autosellPrice,
+  availableAmount,
   availableChoiceOptions,
   canAdventure,
   choiceFollowsFight,
@@ -35,6 +37,7 @@ import {
   printHtml,
   restoreHp,
   restoreMp,
+  retrievePrice,
   runChoice,
   runCombat,
   setLocation,
@@ -630,4 +633,8 @@ export function freeRest(): boolean {
   }
 
   return true;
+}
+
+export function retrieveUntradeablePrice(it: Item) {
+  return retrievePrice(it, availableAmount(it) + 1) - autosellPrice(it) * availableAmount(it);
 }

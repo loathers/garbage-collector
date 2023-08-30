@@ -39,7 +39,7 @@ import {
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { hasMonsterReplacers } from "../extrovermectin";
-import { Potion } from "../potions";
+import { Potion } from "../potions/potion";
 import { garboValue } from "../value";
 import synthesize from "../synthesis";
 import { estimatedGarboTurns } from "../turns";

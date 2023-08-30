@@ -80,7 +80,7 @@ import {
   userConfirmDialog,
 } from "./lib";
 import { shrugBadEffects } from "./mood";
-import { Potion, PotionTier } from "./potions";
+import { Potion, PotionTier } from "./potions/potion";
 import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./value";

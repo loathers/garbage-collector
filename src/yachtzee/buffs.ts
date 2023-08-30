@@ -28,13 +28,8 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { baseMeat, burnLibrams, turnsToNC } from "../lib";
-import {
-  failedWishes,
-  farmingPotions,
-  mutuallyExclusive,
-  Potion,
-  variableMeatPotionsSetup,
-} from "../potions";
+import { failedWishes, Potion } from "../potions/potion";
+import { farmingPotions, mutuallyExclusive, variableMeatPotionsSetup } from "../potions";
 import { garboValue } from "../value";
 import { executeNextDietStep } from "./diet";
 import { expectedEmbezzlers, pyecAvailable, shrugIrrelevantSongs } from "./lib";
