@@ -28,7 +28,7 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { baseMeat, burnLibrams, turnsToNC } from "../lib";
-import { failedWishes, Potion } from "../potions/potion";
+import { failedWishes, Potion } from "../potions";
 import { farmingPotions, mutuallyExclusive, variableMeatPotionsSetup } from "../potions";
 import { garboValue } from "../value";
 import { executeNextDietStep } from "./diet";

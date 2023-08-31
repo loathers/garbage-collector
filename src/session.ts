@@ -10,7 +10,7 @@ import {
 import { $items, get, property, Session, set } from "libram";
 import { globalOptions } from "./config";
 import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
-import { failedWishes } from "./potions/potion";
+import { failedWishes } from "./potions";
 import { garboValue } from "./value";
 
 function printSession(session: Session): void {
