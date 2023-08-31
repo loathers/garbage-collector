@@ -24,10 +24,11 @@ export {
   Potion,
   potionSetup,
   potionSetupCompleted,
-  PotionTier,
   rufusPotion,
   usePawWishes,
   VariableMeatPotion,
   variableMeatPotionsSetup,
   wishPotions,
 };
+
+export type { PotionTier };
