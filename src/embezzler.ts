@@ -289,7 +289,7 @@ export const chainStarters = [
   new EmbezzlerFight(
     "Scepter Semirare",
     () => shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
-    () => (shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`) ? 1 : 0),
+    () => 0, // prevent circular reference
     (options: EmbezzlerFightRunOptions) => {
       retrieveItem($item`august scepter`);
       useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
