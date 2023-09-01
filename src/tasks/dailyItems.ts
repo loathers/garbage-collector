@@ -42,7 +42,7 @@ import {
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
-import { doingExtrovermectin } from "../extrovermectin";
+import { doingGregFight } from "../extrovermectin";
 import { coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../value";
@@ -304,7 +304,7 @@ const DailyItemTasks: GarboTask[] = [
       name: "Time-Spinner Gin",
       ready: () =>
         have($item`Time-Spinner`) &&
-        !doingExtrovermectin() &&
+        !doingGregFight() &&
         get("timeSpinnerMedals") >= 5 &&
         get("_timeSpinnerMinutesUsed") <= 8,
       completed: () => get("_timeSpinnerReplicatorUsed"),

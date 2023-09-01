@@ -375,6 +375,13 @@ export class Macro extends StrictMacro {
         myClass() === $class`Cheese Wizard` && myFamiliar().experience < 400,
         Macro.trySkill($skill`Stilton Splatter`),
       )
+      .externalIf(
+        have($skill`Recall Facts: %phylum Circadian Rhythms`) && !get("_circadianRhythmsRecalled"),
+        Macro.if_(
+          $monster`garbage tourist`,
+          Macro.trySkill($skill`Recall Facts: %phylum Circadian Rhythms`),
+        ),
+      )
       .kill();
   }
 
@@ -675,6 +682,15 @@ export class Macro extends StrictMacro {
           get("beGregariousCharges") > 0 &&
             (get("beGregariousMonster") !== embezzler || get("beGregariousFightsLeft") === 0),
           Macro.trySkill($skill`Be Gregarious`),
+        )
+        .externalIf(
+          // eslint-disable-next-line libram/verify-constants
+          have($skill`Recall Facts: Monster Habitats`) &&
+            get("_monsterHabitatsRecalled", 0) < 3 &&
+            (get("monsterHabitatsMonster", $monster`fluffy bunny`) !== embezzler ||
+              get("monsterHabitatsFightsLeft", 0) === 0),
+          // eslint-disable-next-line libram/verify-constants
+          Macro.trySkill($skill`Recall Facts: Monster Habitats`),
         )
         .externalIf(
           SourceTerminal.getDigitizeMonster() !== embezzler || shouldRedigitize(),

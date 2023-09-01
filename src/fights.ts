@@ -133,7 +133,7 @@ import { bestConsumable } from "./diet";
 import { embezzlerCount, embezzlerSources, getNextEmbezzlerFight } from "./embezzler";
 import {
   crateStrategy,
-  doingExtrovermectin,
+  doingGregFight,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
 } from "./extrovermectin";
@@ -306,7 +306,7 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (doingExtrovermectin()) {
+  if (doingGregFight()) {
     initializeExtrovermectinZones();
   }
 }
@@ -1174,7 +1174,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       have($item`Time-Spinner`) &&
-      !doingExtrovermectin() &&
+      !doingGregFight() &&
       $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") &&
       get("_timeSpinnerMinutesUsed") < 8,
     () => {
@@ -1230,7 +1230,7 @@ const freeFightSources = [
       garboAdventure(
         $location`Your Mushroom Garden`,
         Macro.externalIf(
-          !doingExtrovermectin(),
+          !doingGregFight(),
           Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
         ).basicCombat(),
       );
@@ -1245,7 +1245,7 @@ const freeFightSources = [
   // Portscan and mushroom garden
   new FreeFight(
     () =>
-      !doingExtrovermectin() &&
+      !doingGregFight() &&
       (have($item`packet of mushroom spores`) ||
         getCampground()["packet of mushroom spores"] !== undefined) &&
       Counter.get("portscan.edu") === 0 &&
@@ -1613,7 +1613,7 @@ const freeRunFightSources = [
   ),
   new FreeRunFight(
     () =>
-      !doingExtrovermectin() &&
+      !doingGregFight() &&
       have($familiar`Space Jellyfish`) &&
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
@@ -1635,7 +1635,7 @@ const freeRunFightSources = [
   ),
   new FreeRunFight(
     () =>
-      !doingExtrovermectin() &&
+      !doingGregFight() &&
       have($familiar`Space Jellyfish`) &&
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") < 91 &&
@@ -2282,7 +2282,7 @@ export function deliverThesisIfAble(): void {
     !have($effect`Triple-Sized`) &&
     get("_powerfulGloveBatteryPowerUsed") <= 95 &&
     // We only get triple-sized if it doesn't lose us a replace enemy use
-    (get("_powerfulGloveBatteryPowerUsed") % 10 === 5 || !doingExtrovermectin())
+    (get("_powerfulGloveBatteryPowerUsed") % 10 === 5 || !doingGregFight())
   ) {
     cliExecute("checkpoint");
     equip($slot`acc1`, $item`Powerful Glove`);
