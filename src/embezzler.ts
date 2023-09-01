@@ -46,7 +46,13 @@ import {
 import { acquire } from "./acquire";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
-import { crateStrategy, doingGregFight, equipOrbIfDesired } from "./extrovermectin";
+import {
+  crateStrategy,
+  doingGregFight,
+  equipOrbIfDesired,
+  gregReady,
+  possibleGregCrystalBall,
+} from "./extrovermectin";
 import {
   averageEmbezzlerNet,
   EMBEZZLER_MULTIPLIER,
@@ -598,13 +604,7 @@ export const conditionalSources = [
       have($item`miniature crystal ball`) &&
       !get("_garbo_doneGregging", false) &&
       CrystalBall.ponder().get($location`The Dire Warren`) === embezzler,
-    () =>
-      (have($item`miniature crystal ball`) ? 1 : 0) *
-      (get("beGregariousCharges") +
-        (get("beGregariousFightsLeft") > 0 ||
-        CrystalBall.ponder().get($location`The Dire Warren`) === embezzler
-          ? 1
-          : 0)),
+    () => possibleGregCrystalBall(),
     (options: EmbezzlerFightRunOptions) => {
       visitUrl("inventory.php?ponder=1");
       if (
@@ -625,8 +625,7 @@ export const conditionalSources = [
   new EmbezzlerFight(
     "Macrometeorite",
     () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") > 0 &&
+      gregReady() &&
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
       proceedWithOrb(),
@@ -669,8 +668,7 @@ export const conditionalSources = [
   new EmbezzlerFight(
     "Powerful Glove",
     () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") > 0 &&
+      gregReady() &&
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") <= 90 &&
       proceedWithOrb(),

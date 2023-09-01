@@ -35,6 +35,9 @@ import { garboAdventure, Macro } from "./combat";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 
+const embezzler = $monster`Knob Goblin Embezzler`;
+const crate = $monster`crate`;
+
 export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
   interface GregSource {
     copies: number;
@@ -43,17 +46,25 @@ export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
     extra: number;
   }
 
-  const baseGregs: GregSource[] = [
-    // eslint-disable-next-line libram/verify-constants
-    ...(have($skill`Recall Facts: Monster Habitats`)
-      ? new Array(3 - get("_monsterHabitatsRecalled", 0)).map(
-          (): GregSource => ({ copies: 5, skillSource: "habitat", replaces: 0, extra: 0 }),
-        )
-      : []),
-    ...new Array(50).map(
-      (): GregSource => ({ copies: 5, skillSource: "extro", replaces: 0, extra: 0 }),
-    ),
-  ];
+  const habitatCharges = have($skill`Recall Facts: Monster Habitats`)
+    ? 3 - get("_monsterHabitatsRecalled", 0)
+    : 0;
+
+  const habitatGregs: GregSource[] = new Array(habitatCharges).fill({
+    copies: 5,
+    skillSource: "habitat",
+    replaces: 0,
+    extra: 0,
+  });
+
+  const extroGregs = new Array(50).fill({
+    copies: 5,
+    skillSource: "extro",
+    replaces: 0,
+    extra: 0,
+  });
+
+  const baseGregs: GregSource[] = [...habitatGregs, ...extroGregs];
 
   const replacementsPerGreg = (source: GregSource) =>
     have($skill`Transcendent Olfaction`)
@@ -121,8 +132,7 @@ export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
   if (
     (have($skill`Transcendent Olfaction`) &&
       (property.getString("olfactedMonster") === "crate" || get("_olfactionsUsed") < 2)) ||
-    (have($skill`Long Con`) &&
-      (get("longConMonster") === $monster`crate` || get("_longConUsed") < 4))
+    (have($skill`Long Con`) && (get("longConMonster") === crate || get("_longConUsed") < 4))
   ) {
     return "Sniff";
   }
@@ -160,7 +170,7 @@ export function saberCrateIfSafe(): void {
     setChoice(1387, 2);
     garboAdventure(
       $location`Noob Cave`,
-      Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
+      Macro.if_(crate, Macro.skill($skill`Use the Force`))
         .if_($monster`sausage goblin`, Macro.kill())
         .ifHolidayWanderer(run.macro)
         .abort(),
@@ -181,9 +191,9 @@ export function saberCrateIfSafe(): void {
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
-    !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
+    !(get("_saberForceMonster") === crate && get("_saberForceMonsterCount") > 0) &&
     crateStrategy() !== "Sniff" &&
-    [undefined, $monster`crate`].includes(CrystalBall.ponder().get($location`Noob Cave`))
+    [undefined, crate].includes(CrystalBall.ponder().get($location`Noob Cave`))
   ) {
     equip($slot`familiar`, $item`miniature crystal ball`);
   }
@@ -206,8 +216,7 @@ function initializeCrates(): void {
           property.getString("longConMonster") !== "crate" ||
           get("_longConUsed") <= 0)) ||
       (crateStrategy() === "Orb" &&
-        ((get("_gallapagosMonster") !== $monster`crate` &&
-          have($skill`Gallapagosian Mating Call`)) ||
+        ((get("_gallapagosMonster") !== crate && have($skill`Gallapagosian Mating Call`)) ||
           (have($item`latte lovers member's mug`) && !get("_latteCopyUsed"))))
     ) {
       const run = tryFindFreeRun(latteActionSourceFinderConstraints) ?? ltbRun();
@@ -218,7 +227,7 @@ function initializeCrates(): void {
         .trySkill($skill`Long Con`)
         .trySkill($skill`Offer Latte to Opponent`)
         .externalIf(
-          get("_gallapagosMonster") !== $monster`crate` && have($skill`Gallapagosian Mating Call`),
+          get("_gallapagosMonster") !== crate && have($skill`Gallapagosian Mating Call`),
           Macro.trySkill($skill`Gallapagosian Mating Call`),
         )
         .trySkill($skill`Use the Force`)
@@ -238,14 +247,12 @@ function initializeCrates(): void {
         .maximize();
       garboAdventure(
         $location`Noob Cave`,
-        Macro.if_($monster`crate`, macro)
-          .ifHolidayWanderer(run.macro)
-          .abort(),
+        Macro.if_(crate, macro).ifHolidayWanderer(run.macro).abort(),
       );
       visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
     } else if (
       crateStrategy() === "Saber" &&
-      (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
+      (get("_saberForceMonster") !== crate || get("_saberForceMonsterCount") === 0) &&
       get("_saberForceUses") < 5
     ) {
       saberCrateIfSafe();
@@ -313,4 +320,30 @@ export function initializeExtrovermectinZones(): void {
     if (hasMonsterReplacers()) initializeCrates();
     initializeDireWarren();
   }
+}
+
+export function gregReady(): boolean {
+  return (
+    (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
+    (get("monsterHabitatsMonster") === embezzler && get("monsterHabitatsFightsLeft") > 0)
+  );
+}
+
+export function totalGregCharges(countPartial: boolean): number {
+  const extroPartial = get("beGregariousFightsLeft") > 0 ? 1 : 0;
+  const habitatPartial = get("monsterHabitatsFightsLeft") > 0 ? 1 : 0;
+
+  return (
+    get("beGregariousCharges") +
+    (have($skill`Recall Facts: Monster Habitats`) ? 3 - get("_monsterHabitatsRecalled") : 0) +
+    (countPartial ? extroPartial + habitatPartial : 0)
+  );
+}
+
+export function possibleGregCrystalBall(): number {
+  if (have($item`miniature crystal ball`)) {
+    const ponderCount = CrystalBall.ponder().get($location`The Dire Warren`) === embezzler ? 1 : 0;
+    return totalGregCharges(true) + ponderCount;
+  }
+  return 0;
 }
