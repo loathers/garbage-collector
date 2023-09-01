@@ -517,9 +517,10 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   let filters = 3 - get("currentMojoFilters");
   // save some spleen for the first three extros, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
-  const extroSpleenSpace = hasMonsterReplacers()
-    ? 6 - Math.min(6, 2 * get("beGregariousCharges"))
-    : 0;
+  const extroSpleenSpace =
+    hasMonsterReplacers() && !have($skill`Recall Facts: Monster Habitats`)
+      ? 6 - Math.min(6, 2 * get("beGregariousCharges"))
+      : 0;
   const synthCastsToCoverRun =
     globalOptions.nobarf || !have($skill`Sweet Synthesis`)
       ? 0
