@@ -87,7 +87,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
   },
   {
     skill: $skill`Aug. 18th: Serendipity Day!`,
-    value: () => 1000, // Dummy value; we should some day calculate this based on free fight count, careful to avoid circular imports
+    value: () => 3000, // Dummy value; we should some day calculate this based on free fight count, careful to avoid circular imports
     type: "buff",
   },
   {
