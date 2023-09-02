@@ -65,6 +65,7 @@ import { embezzlerCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
+import { castAugustScepterBuffs } from "./resources";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -161,6 +162,7 @@ export interface PotionOptions {
     maxAggregateCost?: number | undefined,
     tryRetrievingUntradeable?: boolean,
   ) => number;
+  effectValues?: Partial<{ meatDrop: number; itemDrop: number; famWeight: number }>;
 }
 
 export class Potion {
@@ -179,6 +181,7 @@ export class Potion {
     maxAggregateCost?: number | undefined,
     tryRetrievingUntradeable?: boolean,
   ) => number;
+  effectValues?: Partial<{ meatDrop: number; smithsness: number; famWeight: number }>;
 
   constructor(potion: Item, options: PotionOptions = {}) {
     this.potion = potion;
@@ -189,6 +192,7 @@ export class Potion {
     this.priceOverride = options.price;
     this.useOverride = options.use;
     this.acquire = options.acquire ?? acquire;
+    this.effectValues = options.effectValues;
   }
 
   doubleDuration(): Potion {
@@ -217,15 +221,19 @@ export class Potion {
     );
   }
 
+  smithsness(): number {
+    return this.effectValues?.smithsness ?? getModifier("Smithsness", this.effect());
+  }
+
   meatDrop(): number {
     return (
-      getModifier("Meat Drop", this.effect()) +
-      2 * (usingPurse() ? getModifier("Smithsness", this.effect()) : 0)
+      this.effectValues?.meatDrop ??
+      getModifier("Meat Drop", this.effect()) + 2 * (usingPurse() ? this.smithsness() : 0)
     );
   }
 
   familiarWeight(): number {
-    return getModifier("Familiar Weight", this.effect());
+    return this.effectValues?.famWeight ?? getModifier("Familiar Weight", this.effect());
   }
 
   bonusMeat(): number {
@@ -611,6 +619,7 @@ export function potionSetupCompleted(): boolean {
  * @param embezzlersOnly Are we valuing the potions only for embezzlers (noBarf)?
  */
 export function potionSetup(embezzlersOnly: boolean): void {
+  castAugustScepterBuffs();
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {

@@ -45,15 +45,9 @@ import synthesize from "../synthesis";
 import { estimatedGarboTurns } from "../turns";
 import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
-import {
-  acquiringOffhandRemarkable,
-  cinchNCs,
-  freeNCs,
-  pyecAvailable,
-  shrugIrrelevantSongs,
-  useSpikolodonSpikes,
-} from "./lib";
+import { cinchNCs, freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
 import { freeRest } from "../lib";
+import { shouldAugustCast } from "../resources";
 
 class YachtzeeDietEntry<T> {
   name: string;
@@ -274,11 +268,7 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
         const entry = dietUtil.dietArray.find((entry) => entry.name === name);
         if (entry) {
           if (entry.fullness > 0) {
-            if (
-              have($skill`Aug. 16th: Roller Coaster Day!`) &&
-              !get("_aug16Cast") &&
-              myFullness() > 0
-            ) {
+            if (shouldAugustCast($skill`Aug. 16th: Roller Coaster Day!`) && myFullness() > 0) {
               useSkill($skill`Aug. 16th: Roller Coaster Day!`);
             }
             if (!get("_milkOfMagnesiumUsed")) {
@@ -506,12 +496,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   );
   const syntheticPillsAvailable =
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
-  const lostStomachAvailable =
-    have($skill`Aug. 16th: Roller Coaster Day!`) &&
-    !get("_aug16Cast") &&
-    get("_augSkillsCast") <= 3 + toInt(!acquiringOffhandRemarkable) // No need to save a charge if we aren't acquiring Offhand Remarkable
-      ? 1
-      : 0;
+  const lostStomachAvailable = shouldAugustCast($skill`Aug. 16th: Roller Coaster Day!`) ? 1 : 0;
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   let filters = 3 - get("currentMojoFilters");
