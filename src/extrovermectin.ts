@@ -56,7 +56,7 @@ export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
   });
 
   const extroGregs = new Array(50).fill({
-    copies: 5,
+    copies: 3,
     skillSource: "extro",
     replaces: 0,
     extra: 0,
