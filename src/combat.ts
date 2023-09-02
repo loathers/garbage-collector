@@ -687,13 +687,13 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Recall Facts: Monster Habitats`),
         )
         .externalIf(
-          SourceTerminal.getDigitizeMonster() !== embezzler || shouldRedigitize(),
-          Macro.tryCopier($skill`Digitize`),
-        )
-        .externalIf(
           have($skill`Recall Facts: %phylum Circadian Rhythms`) &&
             !get("_circadianRhythmsRecalled"),
           Macro.trySkill($skill`Recall Facts: %phylum Circadian Rhythms`),
+        )
+        .externalIf(
+          SourceTerminal.getDigitizeMonster() !== embezzler || shouldRedigitize(),
+          Macro.tryCopier($skill`Digitize`),
         )
         .tryCopier($item`Spooky Putty sheet`)
         .tryCopier($item`Rain-Doh black box`)
