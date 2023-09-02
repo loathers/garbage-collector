@@ -23996,7 +23996,7 @@ function expectedGregs(skillSource) {
     extra: 0
   });
   var extroGregs = new Array(50).fill({
-    copies: 5,
+    copies: 3,
     skillSource: "extro",
     replaces: 0,
     extra: 0
@@ -30674,9 +30674,11 @@ function proceedWithOrb() {
   var strat = crateStrategy();
   if (!have($item(_templateObject1353 || (_templateObject1353 = _taggedTemplateLiteral65(["miniature crystal ball"])))) || strat !== "Orb")
     return true;
-  var gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
+  var gregFightNames = ["Macrometeorite", "Powerful Glove", "Habitats Monster", "Be Gregarious", "Orb Prediction"];
   if (CrystalBall_exports.ponder().get($location(_templateObject1363 || (_templateObject1363 = _taggedTemplateLiteral65(["Noob Cave"])))) === embezzler2 && embezzlerSources.filter(function(source) {
-    return !gregFightNames.includes(source.name);
+    return !gregFightNames.some(function(name) {
+      return source.name.includes(name);
+    });
   }).find(function(source) {
     return source.available();
   })) {
