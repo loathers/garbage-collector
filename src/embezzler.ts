@@ -152,7 +152,7 @@ export class EmbezzlerFight {
     available: () => boolean,
     potential: () => number,
     execute: (options: EmbezzlerFightRunOptions) => void,
-    options: EmbezzlerFightConfigOptions = {}
+    options: EmbezzlerFightConfigOptions = {},
   ) {
     this.name = name;
     this.available = available;
@@ -171,7 +171,7 @@ export class EmbezzlerFight {
     const fightMacro = options.macro ?? Macro.embezzler();
     if (this.draggable) {
       this.execute(
-        new EmbezzlerFightRunOptions(fightMacro, this.location(options.location), options.useAuto)
+        new EmbezzlerFightRunOptions(fightMacro, this.location(options.location), options.useAuto),
       );
     } else {
       this.execute(new EmbezzlerFightRunOptions(fightMacro, undefined, options.useAuto));
@@ -241,7 +241,7 @@ const wandererFailsafeMacro = () =>
     haveEquipped($item`backup camera`) &&
       get("_backUpUses") < 11 &&
       get("lastCopyableMonster") === embezzler,
-    Macro.if_(`!monsterid ${embezzler.id}`, Macro.skill($skill`Back-Up to your Last Enemy`))
+    Macro.if_(`!monsterid ${embezzler.id}`, Macro.skill($skill`Back-Up to your Last Enemy`)),
   );
 
 export const chainStarters = [
@@ -259,7 +259,7 @@ export const chainStarters = [
         : 0,
     (options: EmbezzlerFightRunOptions) => {
       withMacro(options.macro, () => ChateauMantegna.fightPainting(), options.useAuto);
-    }
+    },
   ),
   new EmbezzlerFight(
     "Combat Lover's Locket",
@@ -267,7 +267,7 @@ export const chainStarters = [
     () => (CombatLoversLocket.availableLocketMonsters().includes(embezzler) ? 1 : 0),
     (options: EmbezzlerFightRunOptions) => {
       withMacro(options.macro, () => CombatLoversLocket.reminisce(embezzler), options.useAuto);
-    }
+    },
   ),
   new EmbezzlerFight(
     "Fax",
@@ -284,7 +284,7 @@ export const chainStarters = [
     (options: EmbezzlerFightRunOptions) => {
       faxEmbezzler();
       withMacro(options.macro, () => use($item`photocopied monster`), options.useAuto);
-    }
+    },
   ),
   new EmbezzlerFight(
     "Scepter Semirare",
@@ -301,7 +301,7 @@ export const chainStarters = [
       }
       const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
-    }
+    },
   ),
   new EmbezzlerFight(
     "Pillkeeper Semirare",
@@ -326,7 +326,7 @@ export const chainStarters = [
       }
       const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
-    }
+    },
   ),
 ];
 
@@ -336,14 +336,14 @@ export const copySources = [
     () =>
       have($item`Time-Spinner`) &&
       $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some((location) =>
-        location.combatQueue.includes(embezzler.name)
+        location.combatQueue.includes(embezzler.name),
       ) &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
       have($item`Time-Spinner`) &&
       $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
         (location) =>
-          location.combatQueue.includes(embezzler.name) || get("beGregariousCharges") > 0
+          location.combatQueue.includes(embezzler.name) || get("beGregariousCharges") > 0,
       )
         ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
@@ -356,9 +356,9 @@ export const copySources = [
           visitUrl(`choice.php?whichchoice=1196&monid=${embezzler.id}&option=1`);
           runCombat();
         },
-        options.useAuto
+        options.useAuto,
       );
-    }
+    },
   ),
   new EmbezzlerFight(
     "Spooky Putty & Rain-Doh",
@@ -415,9 +415,9 @@ export const copySources = [
           if (have($item`Spooky Putty monster`)) return use($item`Spooky Putty monster`);
           return use($item`Rain-Doh box full of monster`);
         },
-        options.useAuto
+        options.useAuto,
       );
-    }
+    },
   ),
   new EmbezzlerFight(
     "4-d Camera",
@@ -429,7 +429,7 @@ export const copySources = [
         : 0,
     (options: EmbezzlerFightRunOptions) => {
       withMacro(options.macro, () => use($item`shaking 4-d camera`), options.useAuto);
-    }
+    },
   ),
   new EmbezzlerFight(
     "Ice Sculpture",
@@ -445,7 +445,7 @@ export const copySources = [
         : 0,
     (options: EmbezzlerFightRunOptions) => {
       withMacro(options.macro, () => use($item`ice sculpture`), options.useAuto);
-    }
+    },
   ),
   new EmbezzlerFight(
     "Green Taffy",
@@ -457,7 +457,7 @@ export const copySources = [
         : 0,
     (options: EmbezzlerFightRunOptions) => {
       withMacro(options.macro, () => use($item`envyfish egg`)), options.useAuto;
-    }
+    },
   ),
   new EmbezzlerFight(
     "Screencapped Monster",
@@ -470,7 +470,7 @@ export const copySources = [
         : 0,
     (options: EmbezzlerFightRunOptions) => {
       withMacro(options.macro, () => use($item`screencapped monster`), options.useAuto);
-    }
+    },
   ),
   new EmbezzlerFight(
     "Sticky Clay Homunculus",
@@ -482,7 +482,7 @@ export const copySources = [
         ? itemAmount($item`sticky clay homunculus`)
         : 0,
     (options: EmbezzlerFightRunOptions) =>
-      withMacro(options.macro, () => use($item`sticky clay homunculus`), options.useAuto)
+      withMacro(options.macro, () => use($item`sticky clay homunculus`), options.useAuto),
   ),
 ];
 
@@ -494,7 +494,7 @@ export const wanderSources = [
     (options: EmbezzlerFightRunOptions) => {
       const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
-    }
+    },
   ),
   new EmbezzlerFight(
     "Digitize",
@@ -506,12 +506,12 @@ export const wanderSources = [
       adventureFunction(
         options.location,
         wandererFailsafeMacro().step(options.macro),
-        wandererFailsafeMacro().step(options.macro)
+        wandererFailsafeMacro().step(options.macro),
       );
     },
     {
       draggable: "wanderer",
-    }
+    },
   ),
   new EmbezzlerFight(
     "Guaranteed Romantic Monster",
@@ -525,12 +525,12 @@ export const wanderSources = [
       adventureFunction(
         options.location,
         wandererFailsafeMacro().step(options.macro),
-        wandererFailsafeMacro().step(options.macro)
+        wandererFailsafeMacro().step(options.macro),
       );
     },
     {
       draggable: "wanderer",
-    }
+    },
   ),
   new EmbezzlerFight(
     "Enamorang",
@@ -545,12 +545,12 @@ export const wanderSources = [
       adventureFunction(
         options.location,
         wandererFailsafeMacro().step(options.macro),
-        wandererFailsafeMacro().step(options.macro)
+        wandererFailsafeMacro().step(options.macro),
       );
     },
     {
       draggable: "wanderer",
-    }
+    },
   ),
 ];
 
@@ -583,7 +583,7 @@ export const conditionalSources = [
     {
       spec: { equip: $items`miniature crystal ball` },
       canInitializeWandererCounters: true,
-    }
+    },
   ),
   new EmbezzlerFight(
     "Macrometeorite",
@@ -611,15 +611,15 @@ export const conditionalSources = [
         $monster`crate`,
         Macro.externalIf(
           crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
-          Macro.tryHaveSkill($skill`Transcendent Olfaction`)
+          Macro.tryHaveSkill($skill`Transcendent Olfaction`),
         )
           .externalIf(
             haveEquipped($item`Fourth of May Cosplay Saber`) &&
               weWantToSaberCrates &&
               get("_saberForceUses") < 5,
-            Macro.trySkill($skill`Use the Force`)
+            Macro.trySkill($skill`Use the Force`),
           )
-          .skill($skill`Macrometeorite`)
+          .skill($skill`Macrometeorite`),
       ).step(options.macro);
       const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
@@ -627,7 +627,7 @@ export const conditionalSources = [
     },
     {
       gregariousReplace: true,
-    }
+    },
   ),
   new EmbezzlerFight(
     "Powerful Glove",
@@ -655,15 +655,15 @@ export const conditionalSources = [
         $monster`crate`,
         Macro.externalIf(
           crateStrategy() !== "Saber" && !have($effect`On the Trail`) && get("_olfactionsUsed") < 2,
-          Macro.tryHaveSkill($skill`Transcendent Olfaction`)
+          Macro.tryHaveSkill($skill`Transcendent Olfaction`),
         )
           .externalIf(
             haveEquipped($item`Fourth of May Cosplay Saber`) &&
               weWantToSaberCrates &&
               get("_saberForceUses") < 5,
-            Macro.trySkill($skill`Use the Force`)
+            Macro.trySkill($skill`Use the Force`),
           )
-          .skill($skill`CHEAT CODE: Replace Enemy`)
+          .skill($skill`CHEAT CODE: Replace Enemy`),
       ).step(options.macro);
       const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
@@ -672,7 +672,7 @@ export const conditionalSources = [
     {
       spec: { equip: $items`Powerful Glove` },
       gregariousReplace: true,
-    }
+    },
   ),
   new EmbezzlerFight(
     "Be Gregarious",
@@ -690,7 +690,7 @@ export const conditionalSources = [
       adventureFunction(
         $location`The Dire Warren`,
         Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
-        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro)
+        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
       );
       // reset the crystal ball prediction by staring longingly at toast
       if (get("beGregariousFightsLeft") === 1 && have($item`miniature crystal ball`)) {
@@ -700,7 +700,7 @@ export const conditionalSources = [
     },
     {
       canInitializeWandererCounters: true,
-    }
+    },
   ),
   new EmbezzlerFight(
     "Be Gregarious (Set Up Crystal Ball)",
@@ -722,7 +722,7 @@ export const conditionalSources = [
         equip: $items`miniature crystal ball`.filter((item) => have(item)),
       },
       canInitializeWandererCounters: true,
-    }
+    },
   ),
   new EmbezzlerFight(
     "Backup",
@@ -737,12 +737,12 @@ export const conditionalSources = [
         options.location,
         Macro.if_(
           `!monsterid ${embezzler.id}`,
-          Macro.skill($skill`Back-Up to your Last Enemy`)
+          Macro.skill($skill`Back-Up to your Last Enemy`),
         ).step(options.macro),
         Macro.if_(
           `!monsterid ${embezzler.id}`,
-          Macro.skill($skill`Back-Up to your Last Enemy`)
-        ).step(options.macro)
+          Macro.skill($skill`Back-Up to your Last Enemy`),
+        ).step(options.macro),
       );
     },
     {
@@ -750,7 +750,7 @@ export const conditionalSources = [
       draggable: "backup",
       wrongEncounterName: true,
       canInitializeWandererCounters: true,
-    }
+    },
   ),
 ];
 
@@ -764,7 +764,7 @@ export const fakeSources = [
         : 0,
     () => {
       return;
-    }
+    },
   ),
   new EmbezzlerFight(
     "Professor WeightChain",
@@ -775,7 +775,7 @@ export const fakeSources = [
         : 0,
     () => {
       return;
-    }
+    },
   ),
 ];
 
@@ -804,7 +804,7 @@ export const emergencyChainStarters = [
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = userConfirmDialog(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`,
-        true
+        true,
       );
       return globalOptions.wishAnswer;
     },
@@ -812,7 +812,7 @@ export const emergencyChainStarters = [
     (options: EmbezzlerFightRunOptions) => {
       globalOptions.askedAboutWish = false;
       property.withProperty("autoSatisfyWithCloset", true, () =>
-        retrieveItem($item`11-leaf clover`)
+        retrieveItem($item`11-leaf clover`),
       );
       use($item`11-leaf clover`);
       if (have($effect`Lucky!`)) {
@@ -820,7 +820,7 @@ export const emergencyChainStarters = [
         adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
       }
       globalOptions.askedAboutWish = false;
-    }
+    },
   ),
   new EmbezzlerFight(
     "Pocket Wish (untapped potential)",
@@ -839,7 +839,7 @@ export const emergencyChainStarters = [
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = userConfirmDialog(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`,
-        true
+        true,
       );
       return globalOptions.wishAnswer;
     },
@@ -854,15 +854,15 @@ export const emergencyChainStarters = [
           visitUrl(
             "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
             true,
-            true
+            true,
           );
           visitUrl("main.php", false);
           runCombat();
           globalOptions.askedAboutWish = false;
         },
-        options.useAuto
+        options.useAuto,
       );
-    }
+    },
   ),
 ];
 
