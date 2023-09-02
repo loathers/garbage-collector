@@ -937,7 +937,13 @@ function proceedWithOrb(): boolean {
   if (!have($item`miniature crystal ball`) || strat !== "Orb") return true;
 
   // If we're using orb, we have a KGE prediction, and we can reset it, return false
-  const gregFightNames = ["Macrometeorite", "Powerful Glove", "Habitats Monster", "Be Gregarious", "Orb Prediction"];
+  const gregFightNames = [
+    "Macrometeorite",
+    "Powerful Glove",
+    "Habitats Monster",
+    "Be Gregarious",
+    "Orb Prediction",
+  ];
   if (
     CrystalBall.ponder().get($location`Noob Cave`) === embezzler &&
     embezzlerSources
