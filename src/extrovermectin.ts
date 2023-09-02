@@ -46,9 +46,7 @@ export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
     extra: number;
   }
 
-  const habitatCharges = have($skill`Recall Facts: Monster Habitats`)
-    ? 3 - get("_monsterHabitatsRecalled", 0)
-    : 0;
+  const habitatCharges = have($skill`Just the Facts`) ? 3 - get("_monsterHabitatsRecalled", 0) : 0;
 
   const habitatGregs: GregSource[] = new Array(habitatCharges).fill({
     copies: 5,
@@ -117,7 +115,7 @@ export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
 export function doingGregFight(): boolean {
   const extrovermectin = get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
   const habitat =
-    have($skill`Recall Facts: Monster Habitats`) &&
+    have($skill`Just the Facts`) &&
     (get("_monsterHabitatsRecalled") < 3 || get("monsterHabitatsFightsLeft") > 0);
 
   return (
@@ -335,7 +333,7 @@ export function totalGregCharges(countPartial: boolean): number {
 
   return (
     get("beGregariousCharges") +
-    (have($skill`Recall Facts: Monster Habitats`) ? 3 - get("_monsterHabitatsRecalled") : 0) +
+    (have($skill`Just the Facts`) ? 3 - get("_monsterHabitatsRecalled") : 0) +
     (countPartial ? extroPartial + habitatPartial : 0)
   );
 }

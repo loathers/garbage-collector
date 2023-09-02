@@ -668,7 +668,7 @@ export class Macro extends StrictMacro {
   embezzler(): Macro {
     const embezzler = $monster`Knob Goblin Embezzler`;
     const doneHabitat =
-      !have($skill`Recall Facts: Monster Habitats`) ||
+      !have($skill`Just the Facts`) ||
       (get("_monsterHabitatsRecalled") === 3 && get("monsterHabitatsFightsLeft") <= 1);
     return this.if_(
       embezzler,
@@ -688,7 +688,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Be Gregarious`),
         )
         .externalIf(
-          have($skill`Recall Facts: Monster Habitats`) &&
+          have($skill`Just the Facts`) &&
             get("_monsterHabitatsRecalled") < 3 &&
             (get("monsterHabitatsMonster") !== embezzler || get("monsterHabitatsFightsLeft") === 0),
           Macro.trySkill($skill`Recall Facts: Monster Habitats`),
