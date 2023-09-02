@@ -737,12 +737,10 @@ export const conditionalSources = [
   ),
   ...gregFights(
     "Habitats Monster",
-    // eslint-disable-next-line libram/verify-constants
     () => have($skill`Recall Facts: Monster Habitats`),
     "monsterHabitatsMonster",
     "monsterHabitatsFightsLeft",
     () =>
-      // eslint-disable-next-line libram/verify-constants
       have($skill`Recall Facts: Monster Habitats`)
         ? (3 - get("_monsterHabitatsRecalled")) * 5 + get("monsterHabitatsFightsLeft")
         : 0,
