@@ -493,7 +493,7 @@ function gregariousCount(): {
     get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
       ? 1
       : 0);
-  const gregariousFightsPerCharge = expectedGregs();
+  const gregariousFightsPerCharge = expectedGregs("extro");
   // remove and preserve the last index - that is the marginal count of gregarious fights
   const marginalGregariousFights = gregariousFightsPerCharge.splice(
     gregariousFightsPerCharge.length - 1,
