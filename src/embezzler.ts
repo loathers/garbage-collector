@@ -288,7 +288,9 @@ export const chainStarters = [
   ),
   new EmbezzlerFight(
     "Scepter Semirare",
-    () => shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
+    () =>
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
     () => 0, // prevent circular reference
     (options: EmbezzlerFightRunOptions) => {
       retrieveItem($item`august scepter`);
