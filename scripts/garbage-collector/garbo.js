@@ -40860,7 +40860,6 @@ function _yachtzeeChain() {
       }
     }
     garboAdventure($location(_templateObject1260 || (_templateObject1260 = _taggedTemplateLiteral90(["The Sunken Party Yacht"]))), Macro2.abort());
-    postCombatActions();
     if ((0, import_kolmafia98.myTurncount)() > turncount || (0, import_kolmafia98.haveEffect)($effect(_templateObject1358 || (_templateObject1358 = _taggedTemplateLiteral90(["Fishy"])))) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
@@ -40872,6 +40871,7 @@ function _yachtzeeChain() {
       Florist_exports.Crookweed.plant();
     }
     plantCrookweed = false;
+    postCombatActions();
     doSausage();
   }
   _set("choiceAdventure918", "");
