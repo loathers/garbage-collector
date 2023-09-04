@@ -5,6 +5,7 @@ import {
   $effect,
   $familiar,
   $item,
+  $items,
   $location,
   $monster,
   $phyla,
@@ -12,11 +13,14 @@ import {
   ChateauMantegna,
   clamp,
   CombatLoversLocket,
+  Delayed,
+  ensureEffect,
   get,
   have,
   maxBy,
   sum,
   TunnelOfLove,
+  undelay,
   uneffect,
   Witchess,
 } from "libram";
@@ -35,10 +39,12 @@ import {
   Monster,
   myClass,
   myMaxhp,
+  mySoulsauce,
   restoreHp,
   retrieveItem,
   runChoice,
   runCombat,
+  Skill,
   use,
   useSkill,
   visitUrl,
@@ -84,6 +90,33 @@ function sealsAvailable(): number {
     : Math.floor(availableAmount($item`seal-blubber candle`) / 3);
   return Math.min(max, available);
 }
+
+const stunDurations = new Map<Skill | Item, Delayed<number>>([
+  [$skill`Blood Bubble`, 1],
+  [
+    $skill`Entangling Noodles`,
+    () => (myClass() === $class`Pastamancer` && !have($skill`Shadow Noodles`) ? 1 : 0),
+  ],
+  [$skill`Frost Bite`, 1],
+  [$skill`Shadow Noodles`, 2],
+  [
+    $skill`Shell Up`,
+    () => {
+      if (myClass() !== $class`Turtle Tamer`) return 0;
+      for (const [effect, duration] of new Map([
+        [$effect`Glorious Blessing of the Storm Tortoise`, 4],
+        [$effect`Grand Blessing of the Storm Tortoise`, 3],
+        [$effect`Blessing of the Storm Tortoise`, 2],
+      ])) {
+        if (have(effect)) return duration;
+      }
+      return 0;
+    },
+  ],
+  [$skill`Soul Bubble`, () => (mySoulsauce() >= 5 ? 2 : 0)],
+  [$skill`Summon Love Gnats`, 1],
+  [$item`Rain-Doh blue balls`, 1],
+]);
 
 const FreeFightTasks: GarboFreeFightTask[] = [
   {
@@ -193,7 +226,104 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combatCount: () => clamp(3 - get("_lynyrdSnareUses"), 0, 3),
     cost: () => mallPrice($item`lynyrd snare`),
   },
-  // [glitch season reward name]
+  {
+    name: "[glitch season reward name]: retrocape edition",
+    ready: () =>
+      (globalOptions.prefs.fightGlitch ?? false) &&
+      have($item`unwrapped knock-off retro superhero cape`) &&
+      sum([...stunDurations], ([thing, duration]) => (have(thing) ? undelay(duration) : 0)) >= 5,
+    completed: () => !!get("_glitchMonsterFights"),
+    do: () => {
+      visitUrl("inv_eat.php?pwd&whichitem=10207");
+      runCombat();
+    },
+    combat: new CombatStrategy().autoattack(
+      Macro.trySkill($skill`Curse of Marinara`)
+        .trySkill($skill`Shell Up`)
+        .trySkill($skill`Shadow Noodles`)
+        .trySkill($skill`Entangling Noodles`)
+        .trySkill($skill`Summon Love Gnats`)
+        .trySkill($skill`Frost Bite`)
+        .trySkill($skill`Soul Bubble`)
+        .tryItem($item`Rain-Doh blue balls`)
+        .skill($skill`Blow a Robo-Kiss`)
+        .repeat(),
+    ),
+    outfit: () =>
+      freeFightOutfit(
+        {
+          back: $items`unwrapped knock-off retro superhero cape`,
+          modes: { retrocape: ["robot", "kiss"] },
+        },
+        { canChooseMacro: false },
+      ),
+    prepare: () => {
+      restoreHp(myMaxhp());
+      if (have($skill`Ruthless Efficiency`)) ensureEffect($effect`Ruthlessly Efficient`);
+      if (have($skill`Mathematical Precision`)) ensureEffect($effect`Mathematically Precise`);
+      if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+      retrieveItem($item`[glitch season reward name]`);
+      if (
+        get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
+        400
+      ) {
+        retrieveItem($item`gas can`, 2);
+      }
+    },
+  },
+  {
+    name: "[glitch season reward name]",
+    ready: () => globalOptions.prefs.fightGlitch ?? false,
+    completed: () => !!get("_glitchMonsterFights"),
+    do: () => {
+      visitUrl("inv_eat.php?pwd&whichitem=10207");
+      runCombat();
+    },
+    combat: new CombatStrategy().autoattack(
+      Macro.trySkill($skill`Curse of Marinara`)
+        .trySkill($skill`Conspiratorial Whispers`)
+        .trySkill($skill`Shadow Noodles`)
+        .externalIf(
+          get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
+            400,
+          Macro.item([$item`gas can`, $item`gas can`]),
+        )
+        .externalIf(
+          get("lovebugsUnlocked"),
+          Macro.trySkill($skill`Summon Love Gnats`).trySkill($skill`Summon Love Mosquito`),
+        )
+        .tryItem($item`train whistle`)
+        .trySkill($skill`Micrometeorite`)
+        .tryItem($item`Time-Spinner`)
+        .tryItem($item`little red book`)
+        .tryItem($item`Rain-Doh blue balls`)
+        .tryItem($item`Rain-Doh indigo cup`)
+        .trySkill($skill`Entangling Noodles`)
+        .trySkill($skill`Frost Bite`)
+        .kill(),
+    ),
+    outfit: () =>
+      freeFightOutfit(
+        {
+          modifier: ["1000 mainstat"],
+          avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
+        },
+        { canChooseMacro: false },
+      ),
+    prepare: () => {
+      restoreHp(myMaxhp());
+      if (have($skill`Ruthless Efficiency`)) ensureEffect($effect`Ruthlessly Efficient`);
+      if (have($skill`Mathematical Precision`)) ensureEffect($effect`Mathematically Precise`);
+      if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+      retrieveItem($item`[glitch season reward name]`);
+      if (
+        get("glitchItemImplementationCount") * itemAmount($item`[glitch season reward name]`) >=
+        400
+      ) {
+        retrieveItem($item`gas can`, 2);
+      }
+    },
+  },
   {
     name: "Hellseals",
     ready: () => myClass() === $class`Seal Clubber`,
