@@ -117,7 +117,6 @@ function _yachtzeeChain(): void {
       }
     }
     garboAdventure($location`The Sunken Party Yacht`, Macro.abort());
-    postCombatActions();
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
@@ -129,6 +128,7 @@ function _yachtzeeChain(): void {
       FloristFriar.Crookweed.plant();
     }
     plantCrookweed = false;
+    postCombatActions();
 
     doSausage();
   }
