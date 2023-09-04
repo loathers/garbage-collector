@@ -64,7 +64,7 @@ export function underwater(location: Location): boolean {
 }
 const ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm"];
 const canAdventureOrUnlockSkipList = [
-  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, Shadow Rift (The 8-Bit Realm), The Daily Dungeon`,
+  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, Shadow Rift (The 8-Bit Realm), The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis`,
   ...Location.all().filter((l) => ILLEGAL_PARENTS.includes(l.parent)),
 ];
 export function canAdventureOrUnlock(loc: Location): boolean {

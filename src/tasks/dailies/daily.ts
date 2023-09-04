@@ -73,6 +73,21 @@ let latteRefreshed = false;
 let attemptCompletingBarfQuest = true;
 let snojoConfigured = false;
 
+// For this valuation, we are using the rough approximated value of different
+//   voting initiatives. They are relatively straghtforward:
+//
+//     - Meat Drop -- Add 30% meat to all fights
+//     - Item Drop -- Add the value of extra garbage bags
+//     - Advs      -- Add +1 of VOA
+//  ==== BELOW THIS LINE, THEY ARE PRIORITY RATHER THAN VALUATION ===========
+//     - FamXP     -- Helps level up your grey goose & pocket prof & robort, for loopers
+//     - ML        -- Helps stasis longer
+//     - Primestat -- Helps make combat easier
+//     - Exp       -- Technically helps you cast more librams,  maybe?
+//     - Meat -30% -- Lowers your meat drop; negative priority, so never used
+//     - Item -15% -- Lowers your item drop; negative priority, so never used
+//     - FamXP -2  -- Lowers your fam XP; negative priority, so never used
+
 function voterSetup(): void {
   const initPriority: Map<string, number> = new Map([
     [
@@ -154,14 +169,14 @@ function voterSetup(): void {
       ? 1
       : 2;
 
-  const voteLocalPriorityArr = [
-    [0, initPriority.get(get("_voteLocal1")) || (get("_voteLocal1").indexOf("-") === -1 ? 1 : -1)],
-    [1, initPriority.get(get("_voteLocal2")) || (get("_voteLocal2").indexOf("-") === -1 ? 1 : -1)],
-    [2, initPriority.get(get("_voteLocal3")) || (get("_voteLocal3").indexOf("-") === -1 ? 1 : -1)],
-    [3, initPriority.get(get("_voteLocal4")) || (get("_voteLocal4").indexOf("-") === -1 ? 1 : -1)],
-  ] as const;
+  const voteLocalPriorityArr = [1, 2, 3, 4].map((index) => ({
+    urlString: index - 1,
+    value:
+      initPriority.get(get(`_voteLocal${index}`)) ??
+      (get(`_voteLocal${index}`).includes("-") ? -1 : 1),
+  }));
 
-  const init = maxBy(voteLocalPriorityArr, 1)[0];
+  const init = maxBy(voteLocalPriorityArr, "value").urlString;
 
   visitUrl(`choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${init}&local[]=${init}`);
 }

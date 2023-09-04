@@ -47,6 +47,7 @@ import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
 import { cinchNCs, freeNCs, pyecAvailable, shrugIrrelevantSongs, useSpikolodonSpikes } from "./lib";
 import { freeRest } from "../lib";
+import { shouldAugustCast } from "../resources";
 
 class YachtzeeDietEntry<T> {
   name: string;
@@ -267,6 +268,9 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
         const entry = dietUtil.dietArray.find((entry) => entry.name === name);
         if (entry) {
           if (entry.fullness > 0) {
+            if (shouldAugustCast($skill`Aug. 16th: Roller Coaster Day!`) && myFullness() > 0) {
+              useSkill($skill`Aug. 16th: Roller Coaster Day!`);
+            }
             if (!get("_milkOfMagnesiumUsed")) {
               acquire(1, $item`milk of magnesium`, 5 * VOA);
               use(1, $item`milk of magnesium`);
@@ -380,7 +384,8 @@ function yachtzeeDietScheduler(
       let spleenUse = mySpleenUse();
       while (
         idx < dietSchedule.length &&
-        (dietSchedule[idx].spleen >= 0 || // We only insert if there's a cleanser immediately after where we want to insert
+        ((dietSchedule[idx].spleen >= 0 && // We only insert if there's a cleanser immediately after where we want to insert
+          (entry.spleen >= 0 || spleenUse + dietSchedule[idx].spleen <= spleenLimit())) ||
           spleenUse + entry.spleen > spleenLimit() || // But don't insert if we will overshoot our spleen limit
           (idx > 0 &&
             dietSchedule[idx - 1].spleen < 0 &&
@@ -491,14 +496,16 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   );
   const syntheticPillsAvailable =
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`) ? 1 : 0;
+  const lostStomachAvailable = shouldAugustCast($skill`Aug. 16th: Roller Coaster Day!`) ? 1 : 0;
 
   const currentSpleenLeft = spleenLimit() - mySpleenUse();
   let filters = 3 - get("currentMojoFilters");
   // save some spleen for the first three extros, which are worth a lot
   // due to macrometeor and cheat code: replace enemy
-  const extroSpleenSpace = hasMonsterReplacers()
-    ? 6 - Math.min(6, 2 * get("beGregariousCharges"))
-    : 0;
+  const extroSpleenSpace =
+    hasMonsterReplacers() && !have($skill`Recall Facts: Monster Habitats`)
+      ? 6 - Math.min(6, 2 * get("beGregariousCharges"))
+      : 0;
   const synthCastsToCoverRun =
     globalOptions.nobarf || !have($skill`Sweet Synthesis`)
       ? 0
@@ -513,7 +520,14 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     2; // subtract 2 for Boris Bread and Jumping Horseradish
   const fullnessAvailable =
     myLevel() >= 13
-      ? Math.max(0, fullnessLimit() - myFullness() + toInt(haveDistentionPill) - reservedFullness)
+      ? Math.max(
+          0,
+          fullnessLimit() -
+            myFullness() +
+            toInt(haveDistentionPill) +
+            lostStomachAvailable -
+            reservedFullness,
+        )
       : 0;
   const reservedInebriety = Math.max(
     0,
@@ -559,13 +573,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
 
   // Plan our diet
 
-  const sliders = Math.floor((fullnessLimit() + toInt(haveDistentionPill) - myFullness()) / 5);
-  const pickleJuice =
-    myLevel() >= 13
-      ? Math.floor(
-          (inebrietyLimit() - myInebriety() + sweatOutsAvailable + syntheticPillsAvailable) / 5,
-        )
-      : 0;
+  const sliders = Math.floor(fullnessAvailable / 5);
+  const pickleJuice = myLevel() >= 13 ? Math.floor(inebrietyAvailable / 5) : 0;
 
   const reqSynthTurns = 30; // We will be left with max(0, 30 - yachtzeeTurns) after chaining
   const synthTurnsWanted = reqSynthTurns - haveEffect($effect`Synthesis: Greed`);
@@ -637,8 +646,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     while (
       pickleJuiceToDrink > 0 &&
       jelliesToChew >= 5 &&
-      myFullness() + slidersToEat * 5 + toastsToEat + 5 <=
-        fullnessLimit() + (haveDistentionPill ? 1 : 0) - 1
+      slidersToEat * 5 + toastsToEat + 5 <= fullnessAvailable - 1
     ) {
       toastsToEat += 5;
       jelliesToChew -= 5;
@@ -666,21 +674,20 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const horseradishes =
     mallPrice($item`jumping horseradish`) <= 60000 &&
     haveEffect($effect`Kicked in the Sinuses`) < yachtzeeTurns &&
-    myFullness() + 1 + slidersToEat * 5 + toastsToEat <= fullnessLimit() + toInt(haveDistentionPill)
+    1 + slidersToEat * 5 + toastsToEat <= fullnessAvailable
       ? 1
       : 0;
   const borisBreads =
     !get("unknownRecipe10978") &&
     retrievePrice($item`Boris's bread`) <= 60000 &&
     haveEffect($effect`Inspired Chef`) < yachtzeeTurns &&
-    myFullness() + 1 + slidersToEat * 5 + toastsToEat + horseradishes <=
-      fullnessLimit() + toInt(haveDistentionPill)
+    1 + slidersToEat * 5 + toastsToEat + horseradishes <= fullnessAvailable
       ? 1
       : 0;
   const greedyDogs =
     mallPrice($item`bottle of Greedy Dog`) <= 60000 &&
     haveEffect($effect`Covetin' Drunk`) < yachtzeeTurns &&
-    myInebriety() + 3 + pickleJuiceToDrink * 5 <= inebrietyLimit()
+    3 + pickleJuiceToDrink * 5 <= inebrietyAvailable
       ? 1
       : 0;
   // Opportunistically fit in Deep Dish of Legend only if we have enough stomach space
@@ -694,8 +701,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     !get("unknownRecipe11000") &&
     !get("unknownRecipe10988") &&
     !get("unknownRecipe10978") &&
-    myFullness() + 2 + slidersToEat * 5 + toastsToEat + horseradishes + borisBreads <=
-      fullnessLimit() + toInt(haveDistentionPill)
+    2 + slidersToEat * 5 + toastsToEat + horseradishes + borisBreads <= fullnessAvailable
       ? 1
       : 0;
 
@@ -730,13 +736,13 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const extroValuePerSpleen = 6 * VOA - extroPrice / 2;
   const jellyValuePerSpleen =
     (earlyMeatDropsEstimate * 2000) / 100 -
+    fishyCost / yachtzeeTurns -
     (jelliesBulkPrice +
       toastsToEat * toastPrice +
-      fishyCost +
       slidersToEat * slidersExcessCost +
       pickleJuiceToDrink * pickleJuiceExcessCost -
       higherBaseMeatProfits) /
-      yachtzeeTurns;
+      jelliesToChew;
 
   print(`Early Meat Drop Modifier: ${earlyMeatDropsEstimate}%`);
   print(`Extro value per spleen: ${extroValuePerSpleen}`);

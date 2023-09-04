@@ -42,11 +42,12 @@ import {
 import { acquire } from "../../acquire";
 import { globalOptions } from "../../config";
 import { embezzlerCount } from "../../embezzler";
-import { doingExtrovermectin } from "../../extrovermectin";
+import { doingGregFight } from "../../extrovermectin";
 import { coinmasterPrice } from "../../lib";
 import { rufusPotion } from "../../potions";
 import { garboAverageValue, garboValue } from "../../value";
 import { GarboTask } from "../engine";
+import { augustSummonTasks } from "../../resources";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
@@ -304,7 +305,7 @@ const DailyItemTasks: GarboTask[] = [
       name: "Time-Spinner Gin",
       ready: () =>
         have($item`Time-Spinner`) &&
-        !doingExtrovermectin() &&
+        !doingGregFight() &&
         get("timeSpinnerMedals") >= 5 &&
         get("_timeSpinnerMinutesUsed") <= 8,
       completed: () => get("_timeSpinnerReplicatorUsed"),
@@ -418,6 +419,7 @@ const DailyItemTasks: GarboTask[] = [
         1500: 3,
       },
     },
+    ...augustSummonTasks(),
   ],
 ];
 

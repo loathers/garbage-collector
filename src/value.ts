@@ -119,6 +119,19 @@ const specialValueLookup = new Map<Item, () => number>([
         ),
       ),
   ],
+  [
+    $item`warbear whosit`,
+    () =>
+      (0.35 *
+        garboAverageValue(
+          ...$items`warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner, warbear energy bracers, warbear exhaust manifold, warbear exo-arm, warbear foil hat, warbear laser beacon, warbear oil pan`,
+        ) +
+        0.65 *
+          garboAverageValue(
+            ...$items`warbear metalworking primer, warbear beeping telegram, warbear gyrocopter, warbear procedural hilarity drone, warbear robo-camouflage unit, warbear sequential gaiety distribution system`,
+          )) /
+      100,
+  ],
 ]);
 
 const exclusions = new Set([

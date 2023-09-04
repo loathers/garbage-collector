@@ -84,6 +84,7 @@ import { Potion, PotionTier } from "./potions";
 import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./value";
+import { shouldAugustCast } from "./resources";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -285,6 +286,7 @@ const stomachLiverCleaners = new Map([
   [$item`synthetic dog hair pill`, [0, -1]],
   [$item`cuppa Sobrie tea`, [0, -1]],
   [$item`designer sweatpants`, [0, -1]],
+  [$item`august scepter`, [-1, 0]],
 ]);
 
 function legendaryPizzaToMenu(
@@ -434,6 +436,11 @@ function menu(): MenuItem<Note>[] {
       organ: "booze",
       maximum: Math.min(3 - get("_sweatOutSomeBoozeUsed"), Math.floor(get("sweat") / 25)),
     }),
+    new MenuItem($item`august scepter`, {
+      size: -1,
+      organ: "food",
+      maximum: shouldAugustCast($skill`Aug. 16th: Roller Coaster Day!`) ? 1 : 0,
+    }),
   ].filter((item) => item.price() < Infinity) as MenuItem<Note>[];
 }
 
@@ -486,7 +493,7 @@ function gregariousCount(): {
     get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
       ? 1
       : 0);
-  const gregariousFightsPerCharge = expectedGregs();
+  const gregariousFightsPerCharge = expectedGregs("extro");
   // remove and preserve the last index - that is the marginal count of gregarious fights
   const marginalGregariousFights = gregariousFightsPerCharge.splice(
     gregariousFightsPerCharge.length - 1,
@@ -1019,6 +1026,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
             }
           },
         ],
+        [$item`august scepter`, () => useSkill($skill`Aug. 16th: Roller Coaster Day!`)],
       ]);
 
       for (const menuItem of menuItems) {

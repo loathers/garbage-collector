@@ -1,6 +1,7 @@
 import {
   availableAmount,
   canAdventure,
+  canEquip,
   cliExecute,
   currentRound,
   eat,
@@ -62,6 +63,7 @@ import {
 } from "./outfit";
 import postCombatActions from "./post";
 import { completeBarfQuest } from "./tasks/dailies/daily";
+import { trackBarfSessionStatistics } from "./session";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
 import wanderer from "./wanderer";
 
@@ -83,7 +85,7 @@ function shouldGoUnderwater(): boolean {
 
   if (
     !getModifier("Adventure Underwater") &&
-    waterBreathingEquipment.every((item) => !have(item))
+    waterBreathingEquipment.every((item) => !have(item) || !canEquip(item))
   ) {
     return false;
   }
@@ -474,6 +476,7 @@ function runTurn() {
 }
 
 export default function barfTurn(): void {
+  trackBarfSessionStatistics();
   if (SourceTerminal.have()) SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
 
   tryFillLatte();

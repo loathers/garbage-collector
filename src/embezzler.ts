@@ -2,6 +2,7 @@ import { OutfitSpec } from "grimoire-kolmafia";
 import {
   booleanModifier,
   canAdventure,
+  canEquip,
   chatPrivate,
   cliExecute,
   getClanLounge,
@@ -18,6 +19,7 @@ import {
   toInt,
   toUrl,
   use,
+  useSkill,
   visitUrl,
   wait,
 } from "kolmafia";
@@ -45,7 +47,13 @@ import {
 import { acquire } from "./acquire";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
-import { crateStrategy, doingExtrovermectin, equipOrbIfDesired } from "./extrovermectin";
+import {
+  crateStrategy,
+  doingGregFight,
+  equipOrbIfDesired,
+  gregReady,
+  possibleGregCrystalBall,
+} from "./extrovermectin";
 import {
   averageEmbezzlerNet,
   EMBEZZLER_MULTIPLIER,
@@ -58,6 +66,8 @@ import {
 } from "./lib";
 import { waterBreathingEquipment } from "./outfit";
 import wanderer, { DraggableFight } from "./wanderer";
+import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
+import { shouldAugustCast } from "./resources";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -203,7 +213,7 @@ function checkUnderwater() {
     !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
     (get("_garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
     (booleanModifier("Adventure Underwater") ||
-      waterBreathingEquipment.some((item) => have(item))) &&
+      waterBreathingEquipment.some((item) => have(item) && canEquip(item))) &&
     (have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed")))
   ) {
     if (!have($effect`Fishy`) && !get("_fishyPipeUsed")) use($item`fishy pipe`);
@@ -281,6 +291,23 @@ export const chainStarters = [
     (options: EmbezzlerFightRunOptions) => {
       faxEmbezzler();
       withMacro(options.macro, () => use($item`photocopied monster`), options.useAuto);
+    },
+  ),
+  new EmbezzlerFight(
+    "Scepter Semirare",
+    () =>
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
+    () => 0, // prevent circular reference
+    (options: EmbezzlerFightRunOptions) => {
+      retrieveItem($item`august scepter`);
+      useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
+      if (!have($effect`Lucky!`)) {
+        set("_aug2Cast", true);
+        return;
+      }
+      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+      adventureFunction($location`Cobb's Knob Treasury`, options.macro, options.macro);
     },
   ),
   new EmbezzlerFight(
@@ -534,6 +561,61 @@ export const wanderSources = [
   ),
 ];
 
+export const gregFights = (
+  name: string,
+  haveCheck: () => boolean,
+  monsterProp: MonsterProperty,
+  fightsProp: NumericProperty,
+  totalCharges: () => number,
+) => {
+  return [
+    new EmbezzlerFight(
+      name,
+      () =>
+        haveCheck() &&
+        get(monsterProp) === embezzler &&
+        get(fightsProp) > (have($item`miniature crystal ball`) ? 1 : 0),
+      () => (get(monsterProp) === embezzler ? totalCharges() : 0),
+      (options: EmbezzlerFightRunOptions) => {
+        const run = ltbRun();
+        run.constraints.preparation?.();
+        const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+        adventureFunction(
+          $location`The Dire Warren`,
+          Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
+          Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
+        );
+        // reset the crystal ball prediction by staring longingly at toast
+        if (get(fightsProp) === 1 && have($item`miniature crystal ball`)) {
+          const warrenPrediction = CrystalBall.ponder().get($location`The Dire Warren`);
+          if (warrenPrediction !== embezzler) toasterGaze();
+        }
+      },
+      {
+        canInitializeWandererCounters: true,
+      },
+    ),
+    new EmbezzlerFight(
+      `${name} (Set Up Crystal Ball)`,
+      () =>
+        get(monsterProp) === embezzler &&
+        get(fightsProp) === 1 &&
+        have($item`miniature crystal ball`) &&
+        !CrystalBall.ponder().get($location`The Dire Warren`),
+      () => ((get(monsterProp) === embezzler && get(fightsProp) > 0) || totalCharges() > 0 ? 1 : 0),
+      (options: EmbezzlerFightRunOptions) => {
+        garboAdventure($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
+      },
+      {
+        spec: {
+          equip: $items`miniature crystal ball`.filter((item) => have(item)),
+        },
+        canInitializeWandererCounters: true,
+      },
+    ),
+  ];
+};
+
 export const conditionalSources = [
   new EmbezzlerFight(
     "Orb Prediction",
@@ -541,13 +623,7 @@ export const conditionalSources = [
       have($item`miniature crystal ball`) &&
       !get("_garbo_doneGregging", false) &&
       CrystalBall.ponder().get($location`The Dire Warren`) === embezzler,
-    () =>
-      (have($item`miniature crystal ball`) ? 1 : 0) *
-      (get("beGregariousCharges") +
-        (get("beGregariousFightsLeft") > 0 ||
-        CrystalBall.ponder().get($location`The Dire Warren`) === embezzler
-          ? 1
-          : 0)),
+    () => possibleGregCrystalBall(),
     (options: EmbezzlerFightRunOptions) => {
       visitUrl("inventory.php?ponder=1");
       if (
@@ -558,7 +634,7 @@ export const conditionalSources = [
       const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
       adventureFunction($location`The Dire Warren`, options.macro, options.macro);
       toasterGaze();
-      if (!doingExtrovermectin()) set("_garbo_doneGregging", true);
+      if (!doingGregFight()) set("_garbo_doneGregging", true);
     },
     {
       spec: { equip: $items`miniature crystal ball` },
@@ -568,8 +644,7 @@ export const conditionalSources = [
   new EmbezzlerFight(
     "Macrometeorite",
     () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") > 0 &&
+      gregReady() &&
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
       proceedWithOrb(),
@@ -612,8 +687,7 @@ export const conditionalSources = [
   new EmbezzlerFight(
     "Powerful Glove",
     () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") > 0 &&
+      gregReady() &&
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") <= 90 &&
       proceedWithOrb(),
@@ -654,55 +728,22 @@ export const conditionalSources = [
       gregariousReplace: true,
     },
   ),
-  new EmbezzlerFight(
+  ...gregFights(
     "Be Gregarious",
-    () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") > (have($item`miniature crystal ball`) ? 1 : 0),
-    () =>
-      get("beGregariousMonster") === embezzler
-        ? get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
-        : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      const run = ltbRun();
-      run.constraints.preparation?.();
-      const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
-      adventureFunction(
-        $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
-        Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
-      );
-      // reset the crystal ball prediction by staring longingly at toast
-      if (get("beGregariousFightsLeft") === 1 && have($item`miniature crystal ball`)) {
-        const warrenPrediction = CrystalBall.ponder().get($location`The Dire Warren`);
-        if (warrenPrediction !== embezzler) toasterGaze();
-      }
-    },
-    {
-      canInitializeWandererCounters: true,
-    },
+    () => true, // we can always use extrovermectin
+    "beGregariousMonster",
+    "beGregariousFightsLeft",
+    () => get("beGregariousCharges") * 3 + get("beGregariousFightsLeft"),
   ),
-  new EmbezzlerFight(
-    "Be Gregarious (Set Up Crystal Ball)",
+  ...gregFights(
+    "Habitats Monster",
+    () => have($skill`Just the Facts`),
+    "monsterHabitatsMonster",
+    "monsterHabitatsFightsLeft",
     () =>
-      get("beGregariousMonster") === embezzler &&
-      get("beGregariousFightsLeft") === 1 &&
-      have($item`miniature crystal ball`) &&
-      !CrystalBall.ponder().get($location`The Dire Warren`),
-    () =>
-      (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
-      get("beGregariousCharges") > 0
-        ? 1
+      have($skill`Just the Facts`)
+        ? (3 - get("_monsterHabitatsRecalled")) * 5 + get("monsterHabitatsFightsLeft")
         : 0,
-    (options: EmbezzlerFightRunOptions) => {
-      garboAdventure($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
-    },
-    {
-      spec: {
-        equip: $items`miniature crystal ball`.filter((item) => have(item)),
-      },
-      canInitializeWandererCounters: true,
-    },
   ),
   new EmbezzlerFight(
     "Backup",
@@ -896,11 +937,17 @@ function proceedWithOrb(): boolean {
   if (!have($item`miniature crystal ball`) || strat !== "Orb") return true;
 
   // If we're using orb, we have a KGE prediction, and we can reset it, return false
-  const gregFightNames = ["Macrometeorite", "Powerful Glove", "Be Gregarious", "Orb Prediction"];
+  const gregFightNames = [
+    "Macrometeorite",
+    "Powerful Glove",
+    "Habitats Monster",
+    "Be Gregarious",
+    "Orb Prediction",
+  ];
   if (
     CrystalBall.ponder().get($location`Noob Cave`) === embezzler &&
     embezzlerSources
-      .filter((source) => !gregFightNames.includes(source.name))
+      .filter((source) => !gregFightNames.some((name) => source.name.includes(name)))
       .find((source) => source.available())
   ) {
     return false;

@@ -33,6 +33,8 @@ import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
+import { setMarginalFamiliarsExcessValue } from "../session";
+import { garboValue } from "../value";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat / 100;
@@ -167,9 +169,29 @@ export function barfFamiliar(): Familiar {
     }
   }
 
-  if (viableMenu.length === 0) return meatFamiliar();
+  if (viableMenu.length === 0) {
+    setMarginalFamiliarsExcessValue(0);
+    return meatFamiliar();
+  }
 
   const best = maxBy(viableMenu, totalFamiliarValue);
+
+  // Because we run marginal familiars at the end, our marginal MPA is inflated by best.expectedValue - meatFamiliarValue every turn
+  // Technically it's the nominalFamiliarValue, which for now is the max of meatFamiliar and jellyfish (if we have the jellyfish)
+  const jellyfish = fullMenu.find(({ familiar }) => familiar === $familiar`Space Jellyfish`);
+  const jellyfishValue = jellyfish
+    ? garboValue($item`stench jelly`) / 20 +
+      familiarAbilityValue(jellyfish.familiar) +
+      jellyfish.outfitValue
+    : 0;
+  const excessValue = Math.max(
+    best.expectedValue +
+      best.outfitValue +
+      familiarAbilityValue(best.familiar) -
+      Math.max(meatFamiliarValue, jellyfishValue),
+    0,
+  );
+  setMarginalFamiliarsExcessValue(excessValue);
 
   const familiarPrintout = (x: MarginalFamiliar) =>
     `(expected value of ${x.expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(

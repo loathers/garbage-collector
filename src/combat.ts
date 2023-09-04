@@ -297,6 +297,10 @@ export class Macro extends StrictMacro {
       .trySingAlong()
       .familiarActions()
       .externalIf(
+        have($skill`Extract Oil`) && get("_oilExtracted") < 15,
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Extract Oil`)),
+      )
+      .externalIf(
         digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
           have($skill`Meteor Lore`) &&
           get("_meteorShowerUses") < 5,
@@ -656,6 +660,9 @@ export class Macro extends StrictMacro {
 
   embezzler(): Macro {
     const embezzler = $monster`Knob Goblin Embezzler`;
+    const doneHabitat =
+      !have($skill`Just the Facts`) ||
+      (get("_monsterHabitatsRecalled") === 3 && get("monsterHabitatsFightsLeft") <= 1);
     return this.if_(
       embezzler,
       Macro.if_($location`The Briny Deeps`, Macro.tryCopier($item`pulled green taffy`))
@@ -668,9 +675,21 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Fire a badly romantic arrow`),
         )
         .externalIf(
-          get("beGregariousCharges") > 0 &&
+          doneHabitat &&
+            get("beGregariousCharges") > 0 &&
             (get("beGregariousMonster") !== embezzler || get("beGregariousFightsLeft") === 0),
           Macro.trySkill($skill`Be Gregarious`),
+        )
+        .externalIf(
+          have($skill`Just the Facts`) &&
+            get("_monsterHabitatsRecalled") < 3 &&
+            (get("monsterHabitatsMonster") !== embezzler || get("monsterHabitatsFightsLeft") === 0),
+          Macro.trySkill($skill`Recall Facts: Monster Habitats`),
+        )
+        .externalIf(
+          have($skill`Recall Facts: %phylum Circadian Rhythms`) &&
+            !get("_circadianRhythmsRecalled"),
+          Macro.trySkill($skill`Recall Facts: %phylum Circadian Rhythms`),
         )
         .externalIf(
           SourceTerminal.getDigitizeMonster() !== embezzler || shouldRedigitize(),

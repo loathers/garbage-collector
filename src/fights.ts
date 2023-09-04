@@ -127,7 +127,7 @@ import { bestConsumable } from "./diet";
 import { embezzlerCount, embezzlerSources, getNextEmbezzlerFight } from "./embezzler";
 import {
   crateStrategy,
-  doingExtrovermectin,
+  doingGregFight,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
 } from "./extrovermectin";
@@ -300,7 +300,7 @@ function embezzlerSetup() {
     visitUrl(`desc_item.php?whichitem=${$item`ice sculpture`.descid}`, false, false);
   }
 
-  if (doingExtrovermectin()) {
+  if (doingGregFight()) {
     initializeExtrovermectinZones();
   }
 }
@@ -1044,7 +1044,7 @@ const freeFightSources = [
   new FreeFight(
     () =>
       have($item`Time-Spinner`) &&
-      !doingExtrovermectin() &&
+      !doingGregFight() &&
       $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") &&
       get("_timeSpinnerMinutesUsed") < 8,
     () => {
@@ -1088,7 +1088,7 @@ const freeFightSources = [
       garboAdventure(
         $location`Your Mushroom Garden`,
         Macro.externalIf(
-          !doingExtrovermectin(),
+          !doingGregFight(),
           Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
         ).basicCombat(),
       );
@@ -1103,7 +1103,7 @@ const freeFightSources = [
   // Portscan and mushroom garden
   new FreeFight(
     () =>
-      !doingExtrovermectin() &&
+      !doingGregFight() &&
       (have($item`packet of mushroom spores`) ||
         getCampground()["packet of mushroom spores"] !== undefined) &&
       Counter.get("portscan.edu") === 0 &&
@@ -1363,7 +1363,7 @@ const freeRunFightSources = [
   ),
   new FreeRunFight(
     () =>
-      !doingExtrovermectin() &&
+      !doingGregFight() &&
       have($familiar`Space Jellyfish`) &&
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
@@ -1385,7 +1385,7 @@ const freeRunFightSources = [
   ),
   new FreeRunFight(
     () =>
-      !doingExtrovermectin() &&
+      !doingGregFight() &&
       have($familiar`Space Jellyfish`) &&
       have($item`Powerful Glove`) &&
       get("_powerfulGloveBatteryPowerUsed") < 91 &&
@@ -1532,7 +1532,8 @@ const freeRunFightSources = [
   new FreeRunFight(
     () =>
       ((have($item`industrial fire extinguisher`) && get("_fireExtinguisherCharge") >= 10) ||
-        (have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11)) &&
+        (have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11) ||
+        (have($skill`Perpetrate Mild Evil`) && get("_mildEvilPerpetrated") < 3)) &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
       getBestItemStealZone(true) !== null,
     (runSource: ActionSource) => {
@@ -1549,6 +1550,7 @@ const freeRunFightSources = [
       try {
         if (best.preReq) best.preReq();
         const vortex = $skill`Fire Extinguisher: Polar Vortex`;
+        const evil = $skill`Perpetrate Mild Evil`;
         const hasXO = myFamiliar() === $familiar`XO Skeleton`;
         if (myThrall() !== $thrall.none) useSkill($skill`Dismiss Pasta Thrall`);
         Macro.if_(monsters.map((m) => `!monsterid ${m.id}`).join(" && "), runSource.macro)
@@ -1558,6 +1560,7 @@ const freeRunFightSources = [
             Macro.step(itemStealOlfact(best)),
           )
           .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
+          .while_(`hasskill ${toInt(evil)}`, Macro.skill(evil))
           .step(runSource.macro)
           .setAutoAttack();
         if (mappingMonster) {
@@ -2029,7 +2032,7 @@ export function deliverThesisIfAble(): void {
     !have($effect`Triple-Sized`) &&
     get("_powerfulGloveBatteryPowerUsed") <= 95 &&
     // We only get triple-sized if it doesn't lose us a replace enemy use
-    (get("_powerfulGloveBatteryPowerUsed") % 10 === 5 || !doingExtrovermectin())
+    (get("_powerfulGloveBatteryPowerUsed") % 10 === 5 || !doingGregFight())
   ) {
     cliExecute("checkpoint");
     equip($slot`acc1`, $item`Powerful Glove`);
@@ -2438,7 +2441,9 @@ function yachtzee(): void {
         : $familiar.none;
       useFamiliar(familiarChoice);
 
-      const underwaterBreathingGear = waterBreathingEquipment.find((item) => have(item));
+      const underwaterBreathingGear = waterBreathingEquipment.find(
+        (item) => have(item) && canEquip(item),
+      );
       if (!underwaterBreathingGear) return;
       const equippedOutfit = new Requirement(["meat", "-tie"], {
         forceEquip: [underwaterBreathingGear],

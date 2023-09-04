@@ -35,55 +35,102 @@ import { garboAdventure, Macro } from "./combat";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 
-export function expectedGregs(): number[] {
-  const baseGregs = 3;
+const embezzler = $monster`Knob Goblin Embezzler`;
+const crate = $monster`crate`;
+
+export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
+  interface GregSource {
+    copies: number;
+    skillSource: "habitat" | "extro";
+    replaces: number;
+    extra: number;
+  }
+
+  const habitatCharges = have($skill`Just the Facts`) ? 3 - get("_monsterHabitatsRecalled", 0) : 0;
+
+  const habitatGregs: GregSource[] = new Array(habitatCharges).fill({
+    copies: 5,
+    skillSource: "habitat",
+    replaces: 0,
+    extra: 0,
+  });
+
+  const extroGregs = new Array(50).fill({
+    copies: 3,
+    skillSource: "extro",
+    replaces: 0,
+    extra: 0,
+  });
+
+  const baseGregs: GregSource[] = [...habitatGregs, ...extroGregs];
+
+  const replacementsPerGreg = (source: GregSource) =>
+    have($skill`Transcendent Olfaction`)
+      ? Math.floor((source.copies * 7) / 3)
+      : Math.floor((source.copies * 5) / 3);
+
   const timeSpunGregs = have($item`Time-Spinner`)
     ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
     : 0;
+
   const orbGregs = have($item`miniature crystal ball`) ? 1 : 0;
 
   const macrometeors = have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0;
   const replaceEnemies = have($item`Powerful Glove`)
     ? Math.floor((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
     : 0;
-  let totalMonsterReplacers = macrometeors + replaceEnemies;
 
-  const sabersLeft = have($item`Fourth of May Cosplay Saber`)
-    ? clamp(5 - get("_saberForceUses"), 0, 3)
-    : 0;
+  const firstReplaces = clamp(replacementsPerGreg(baseGregs[0]), 0, macrometeors + replaceEnemies);
+  const initialCast: { replacesLeft: number; sources: GregSource[] } = {
+    replacesLeft: macrometeors + replaceEnemies - firstReplaces,
+    sources: [
+      {
+        ...baseGregs[0],
+        replaces: firstReplaces,
+        extra: timeSpunGregs + orbGregs,
+      },
+    ],
+  };
 
-  const gregs = [];
-
-  // these are estimates based on intuition
-  const replacesPerGreg = have($skill`Transcendent Olfaction`) ? 7 : 5;
-  const firstReplaces = clamp(sabersLeft * 2 + replacesPerGreg, 0, totalMonsterReplacers);
-
-  gregs.push(baseGregs + orbGregs + timeSpunGregs + firstReplaces);
-  totalMonsterReplacers -= firstReplaces;
-  while (totalMonsterReplacers > 0) {
-    gregs.push(baseGregs + orbGregs + clamp(replacesPerGreg, 0, totalMonsterReplacers));
-    totalMonsterReplacers -= replacesPerGreg;
-  }
-  gregs.push(baseGregs + orbGregs);
-
-  return gregs;
+  return baseGregs
+    .slice(1)
+    .reduce((acc, curr): { replacesLeft: number; sources: GregSource[] } => {
+      const currentReplaces = clamp(replacementsPerGreg(curr), 0, acc.replacesLeft);
+      return {
+        replacesLeft: acc.replacesLeft - currentReplaces,
+        sources: [
+          ...acc.sources,
+          {
+            ...curr,
+            replaces: currentReplaces,
+            extra: orbGregs,
+          },
+        ],
+      };
+    }, initialCast)
+    .sources.filter((source) => source.skillSource === skillSource)
+    .map((source) => source.copies + source.replaces + source.extra);
 }
 
-export function doingExtrovermectin(): boolean {
+export function doingGregFight(): boolean {
+  const extrovermectin = get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
+  const habitat =
+    have($skill`Just the Facts`) &&
+    (get("_monsterHabitatsRecalled") < 3 || get("monsterHabitatsFightsLeft") > 0);
+
   return (
-    get("beGregariousCharges") > 0 ||
-    get("beGregariousFightsLeft") > 0 ||
+    extrovermectin ||
+    habitat ||
     (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted"))
   );
 }
 
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
-  if (!doingExtrovermectin()) return null;
+  if (!doingGregFight()) return null;
   if (
     (have($skill`Transcendent Olfaction`) &&
       (property.getString("olfactedMonster") === "crate" || get("_olfactionsUsed") < 2)) ||
-    (have($skill`Long Con`) &&
-      (get("longConMonster") === $monster`crate` || get("_longConUsed") < 4))
+    (have($skill`Long Con`) && (get("longConMonster") === crate || get("_longConUsed") < 4))
   ) {
     return "Sniff";
   }
@@ -121,7 +168,7 @@ export function saberCrateIfSafe(): void {
     setChoice(1387, 2);
     garboAdventure(
       $location`Noob Cave`,
-      Macro.if_($monster`crate`, Macro.skill($skill`Use the Force`))
+      Macro.if_(crate, Macro.skill($skill`Use the Force`))
         .if_($monster`sausage goblin`, Macro.kill())
         .ifHolidayWanderer(run.macro)
         .abort(),
@@ -142,9 +189,9 @@ export function saberCrateIfSafe(): void {
 export function equipOrbIfDesired(): void {
   if (
     have($item`miniature crystal ball`) &&
-    !(get("_saberForceMonster") === $monster`crate` && get("_saberForceMonsterCount") > 0) &&
+    !(get("_saberForceMonster") === crate && get("_saberForceMonsterCount") > 0) &&
     crateStrategy() !== "Sniff" &&
-    [undefined, $monster`crate`].includes(CrystalBall.ponder().get($location`Noob Cave`))
+    [undefined, crate].includes(CrystalBall.ponder().get($location`Noob Cave`))
   ) {
     equip($slot`familiar`, $item`miniature crystal ball`);
   }
@@ -167,8 +214,7 @@ function initializeCrates(): void {
           property.getString("longConMonster") !== "crate" ||
           get("_longConUsed") <= 0)) ||
       (crateStrategy() === "Orb" &&
-        ((get("_gallapagosMonster") !== $monster`crate` &&
-          have($skill`Gallapagosian Mating Call`)) ||
+        ((get("_gallapagosMonster") !== crate && have($skill`Gallapagosian Mating Call`)) ||
           (have($item`latte lovers member's mug`) && !get("_latteCopyUsed"))))
     ) {
       const run = tryFindFreeRun(latteActionSourceFinderConstraints) ?? ltbRun();
@@ -179,7 +225,7 @@ function initializeCrates(): void {
         .trySkill($skill`Long Con`)
         .trySkill($skill`Offer Latte to Opponent`)
         .externalIf(
-          get("_gallapagosMonster") !== $monster`crate` && have($skill`Gallapagosian Mating Call`),
+          get("_gallapagosMonster") !== crate && have($skill`Gallapagosian Mating Call`),
           Macro.trySkill($skill`Gallapagosian Mating Call`),
         )
         .trySkill($skill`Use the Force`)
@@ -199,14 +245,12 @@ function initializeCrates(): void {
         .maximize();
       garboAdventure(
         $location`Noob Cave`,
-        Macro.if_($monster`crate`, macro)
-          .ifHolidayWanderer(run.macro)
-          .abort(),
+        Macro.if_(crate, macro).ifHolidayWanderer(run.macro).abort(),
       );
       visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
     } else if (
       crateStrategy() === "Saber" &&
-      (get("_saberForceMonster") !== $monster`crate` || get("_saberForceMonsterCount") === 0) &&
+      (get("_saberForceMonster") !== crate || get("_saberForceMonsterCount") === 0) &&
       get("_saberForceUses") < 5
     ) {
       saberCrateIfSafe();
@@ -274,4 +318,30 @@ export function initializeExtrovermectinZones(): void {
     if (hasMonsterReplacers()) initializeCrates();
     initializeDireWarren();
   }
+}
+
+export function gregReady(): boolean {
+  return (
+    (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
+    (get("monsterHabitatsMonster") === embezzler && get("monsterHabitatsFightsLeft") > 0)
+  );
+}
+
+export function totalGregCharges(countPartial: boolean): number {
+  const extroPartial = get("beGregariousFightsLeft") > 0 ? 1 : 0;
+  const habitatPartial = get("monsterHabitatsFightsLeft") > 0 ? 1 : 0;
+
+  return (
+    get("beGregariousCharges") +
+    (have($skill`Just the Facts`) ? 3 - get("_monsterHabitatsRecalled") : 0) +
+    (countPartial ? extroPartial + habitatPartial : 0)
+  );
+}
+
+export function possibleGregCrystalBall(): number {
+  if (have($item`miniature crystal ball`)) {
+    const ponderCount = CrystalBall.ponder().get($location`The Dire Warren`) === embezzler ? 1 : 0;
+    return totalGregCharges(true) + ponderCount;
+  }
+  return 0;
 }
