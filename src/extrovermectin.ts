@@ -280,7 +280,7 @@ const MAX_BANISH_PRICE = 100000; // price of nanobrawny
 
 type Banish = {
   name: string;
-  macro: Macro;
+  macro: () => Macro;
   available: () => boolean;
   price?: () => number;
   prepare?: () => void;
@@ -289,7 +289,7 @@ type Banish = {
 const combatItem = (item: Item, maxPrice?: number): Banish => ({
   name: `${item}`,
   available: () => mallPrice(item) < (maxPrice ?? MAX_BANISH_PRICE),
-  macro: Macro.item(item),
+  macro: () => Macro.item(item),
   price: () => mallPrice(item),
   prepare: () => acquire(1, item, maxPrice ?? MAX_BANISH_PRICE), // put a sanity ceiling of 50k on the banish
 });
@@ -301,7 +301,7 @@ const longBanishes: Banish[] = [
   {
     name: "Batter Up!",
     available: () => myFury() > 5 && have($skill`Batter Up!`),
-    macro: Macro.skill($skill`Batter Up!`),
+    macro: () => Macro.skill($skill`Batter Up!`),
     prepare: () => {
       const club = getClub();
       new Requirement(["100 Monster Level"], {
@@ -311,21 +311,10 @@ const longBanishes: Banish[] = [
     },
   },
   {
-    name: "Mafia Middle Finger Ring",
-    available: () => have($item`mafia middle finger ring`) && !get("_mafiaMiddleFingerRingUsed"),
-    macro: Macro.skill($skill`Show them your ring`),
-    prepare: () => {
-      new Requirement(["100 Monster Level"], {
-        preventEquip: $items`carnivorous potted plant`,
-        forceEquip: [$item`mafia middle finger ring`],
-      }).maximize();
-    },
-  },
-  {
     name: "Nanobrawny",
     available: () => true,
     price: () => mallPrice($item`pocket wish`) * 2, // could be 3 if you are unlucky
-    macro: Macro.skill($skill`Unleash Nanites`),
+    macro: () => Macro.skill($skill`Unleash Nanites`),
     prepare: () => {
       while (haveEffect($effect`Nanobrawny`) < 40) {
         acquire(1, $item`pocket wish`, 50000);
@@ -346,12 +335,12 @@ function banishBunny(): void {
     ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
   ].filter((b) => b.available());
 
-  const banish = maxBy(banishes, (banish: Banish) => (banish.price ? banish.price() : 0), true);
+  const banish = maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
   do {
-    if (banish.prepare) banish.prepare();
+    banish.prepare?.();
     garboAdventure(
       $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, banish.macro).embezzler(),
+      Macro.if_($monster`fluffy bunny`, banish.macro()).embezzler(),
     );
   } while (
     "fluffy bunny" !== get("lastEncounter") &&
@@ -361,7 +350,7 @@ function banishBunny(): void {
 
 let updatedIceHouse = false;
 
-function initializeDireWarren(): void {
+export function initializeDireWarren(): void {
   if (!updatedIceHouse) {
     visitUrl("museum.php?action=icehouse");
     updatedIceHouse = true;
