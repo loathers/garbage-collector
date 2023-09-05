@@ -7,7 +7,11 @@ import {
   itemType,
   mallPrice,
   myFury,
+  Phylum,
   retrieveItem,
+  Skill,
+  toPhylum,
+  toSkill,
   useFamiliar,
   useSkill,
   visitUrl,
@@ -348,16 +352,27 @@ function banishBunny(): void {
   );
 }
 
-let updatedIceHouse = false;
+function getBanishedPhyla(): Map<Skill | Item, Phylum> {
+  const phylumBanish = new Map<Skill | Item, Phylum>();
+  const banishPart = get("banishedPhyla").split(":").slice(0, 2);
 
-export function initializeDireWarren(): void {
-  if (!updatedIceHouse) {
-    visitUrl("museum.php?action=icehouse");
-    updatedIceHouse = true;
+  if (banishPart.length === 2) {
+    const [skill, phylum] = banishPart;
+    // for now, the only phylum banish is Patriotic Screech, a skill
+    phylumBanish.set(toSkill(skill), toPhylum(phylum));
   }
 
+  return phylumBanish;
+}
+
+export function initializeDireWarren(): void {
+  visitUrl("museum.php?action=icehouse");
+
   const banishedMonsters = getBanishedMonsters();
+  const banishedPhyla = getBanishedPhyla();
+
   if ([...banishedMonsters.values()].find((m) => m === $monster`fluffy bunny`)) return;
+  if ([...banishedPhyla.values()].find((p) => p === $monster`fluffy bunny`.phylum)) return;
 
   banishBunny();
 }
