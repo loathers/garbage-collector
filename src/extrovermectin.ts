@@ -2,10 +2,10 @@ import {
   canEquip,
   cliExecute,
   equip,
+  haveEffect,
   Item,
   itemType,
   mallPrice,
-  myEffects,
   myFury,
   retrieveItem,
   useFamiliar,
@@ -328,7 +328,10 @@ function banishBunny(): void {
       price: () => mallPrice($item`pocket wish`) * 2, // could be 3 if you are unlucky
       macro: Macro.skill($skill`Unleash Nanites`),
       prepare: () => {
-        while ((myEffects()["Nanobrawny"] ?? 0) < 40) cliExecute(`genie effect Nanobrawny`);
+        while (haveEffect($effect`Nanobrawny`) < 40) {
+          acquire(1, $item`pocket wish`, 50000);
+          cliExecute(`genie effect Nanobrawny`);
+        }
       },
     },
   ];
