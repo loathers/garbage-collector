@@ -365,8 +365,8 @@ const turns: AdventureAction[] = [
       !have($effect`Everything Looks Red`) &&
       romanticMonsterImpossible(),
     execute: () => {
-      propertyManager.setChoices(wanderer.getChoices("backup"));
-      const location = wanderer.getTarget("backup");
+      propertyManager.setChoices(wanderer.getChoices("freefight"));
+      const location = wanderer.getTarget("freefight");
       freeFightOutfit({}, { location }).dress();
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()

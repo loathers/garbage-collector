@@ -12,13 +12,13 @@ import {
   WandererLocation,
 } from "./lib";
 import { lovebugsFactory } from "./lovebugs";
-import { yellowRayFactory } from "./yellowray";
+import { freefightFactory } from "./freefight";
 
 export type { DraggableFight };
 
 const wanderFactories: WandererFactory[] = [
   defaultFactory,
-  yellowRayFactory,
+  freefightFactory,
   lovebugsFactory,
   guzzlrFactory,
 ];
