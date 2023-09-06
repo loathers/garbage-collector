@@ -85,14 +85,16 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboValue } from "./value";
 
-export const embezzlerLog: {
+export const eventLog: {
   initialEmbezzlersFought: number;
   digitizedEmbezzlersFought: number;
-  sources: Array<string>;
+  embezzlerSources: Array<string>;
+  yachtzees: number;
 } = {
   initialEmbezzlersFought: 0,
   digitizedEmbezzlersFought: 0,
-  sources: [],
+  embezzlerSources: [],
+  yachtzees: 0,
 };
 
 export enum BonusEquipMode {
@@ -630,4 +632,44 @@ export function freeRest(): boolean {
   }
 
   return true;
+}
+
+export function printEventLog(): void {
+  if (resetDailyPreference("garboEmbezzlerDate")) {
+    property.set("garboEmbezzlerCount", 0);
+    property.set("garboEmbezzlerSources", "");
+    property.set("garboYachtzeeCount", 0);
+  }
+  const totalEmbezzlers =
+    property.getNumber("garboEmbezzlerCount", 0) +
+    eventLog.initialEmbezzlersFought +
+    eventLog.digitizedEmbezzlersFought;
+
+  const allEmbezzlerSources = property
+    .getString("garboEmbezzlerSources")
+    .split(",")
+    .filter((source) => source);
+  allEmbezzlerSources.push(...eventLog.embezzlerSources);
+
+  const yacthzeeCount = get("garboYachtzeeCount", 0) + eventLog.yachtzees;
+
+  property.set("garboEmbezzlerCount", totalEmbezzlers);
+  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
+  property.set("garboYachtzeeCount", yacthzeeCount);
+
+  print(
+    `You fought ${eventLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${eventLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+    HIGHLIGHT,
+  );
+  print(
+    `Including this, you have fought ${totalEmbezzlers} across all ascensions today`,
+    HIGHLIGHT,
+  );
+  if (yacthzeeCount > 0) {
+    print(`You explored the undersea yacht ${eventLog.yachtzees} times`, HIGHLIGHT);
+    print(
+      `Including this, you explored the undersea yacht ${yacthzeeCount} times across all ascensions today`,
+      HIGHLIGHT,
+    );
+  }
 }

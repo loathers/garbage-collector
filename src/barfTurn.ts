@@ -43,7 +43,7 @@ import { computeDiet, consumeDiet } from "./diet";
 import { deliverThesisIfAble } from "./fights";
 import {
   EMBEZZLER_MULTIPLIER,
-  embezzlerLog,
+  eventLog,
   kramcoGuaranteed,
   propertyManager,
   questStep,
@@ -71,8 +71,8 @@ const embezzler = $monster`Knob Goblin Embezzler`;
 
 function logEmbezzler(encounterType: string) {
   const isDigitize = encounterType === "Digitize Wanderer";
-  isDigitize ? embezzlerLog.digitizedEmbezzlersFought++ : embezzlerLog.initialEmbezzlersFought++;
-  embezzlerLog.sources.push(isDigitize ? "Digitize" : "Unknown Source");
+  isDigitize ? eventLog.digitizedEmbezzlersFought++ : eventLog.initialEmbezzlersFought++;
+  eventLog.embezzlerSources.push(isDigitize ? "Digitize" : "Unknown Source");
 }
 
 function shouldGoUnderwater(): boolean {
