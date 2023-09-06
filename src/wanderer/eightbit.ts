@@ -1,7 +1,7 @@
-import { canAdventure, Location, numericModifier } from "kolmafia";
+import { Location, numericModifier } from "kolmafia";
 import { DraggableFight } from ".";
 import { WandererTarget } from "./lib";
-import { $item, $location, clamp, get, NumericModifier } from "libram";
+import { $item, $location, clamp, get, have, NumericModifier } from "libram";
 import { garboValue } from "../value";
 import { globalOptions } from "../config";
 
@@ -58,7 +58,7 @@ export function eightbitFactory(
   locationSkiplist: Location[],
 ): WandererTarget[] {
   if (
-    canAdventure($location`The Spooky Forest`) &&
+    have($item`continuum transfunctioner`) &&
     type !== "backup" &&
     get("8BitScore") < FAT_LOOT_TOKEN_COST
   ) {

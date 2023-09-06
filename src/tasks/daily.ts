@@ -399,6 +399,23 @@ const DailyTasks: GarboTask[] = [
     limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
   },
   {
+    name: "Continuum Transfunctioner",
+    ready: () => canAdventure($location`The Spooky Forest`),
+    completed: () => have($item`continuum transfunctioner`),
+    do: (): void => {
+      // taken from autoscend
+      visitUrl("place.php?whichplace=woods");
+      visitUrl("place.php?whichplace=forestvillage&action=fv_mystic");
+      visitUrl(
+        "choice.php?pwd=&whichchoice=664&option=1&choiceform1=Sure%2C+old+man.++Tell+me+all+about+it.",
+      );
+      visitUrl(
+        "choice.php?pwd=&whichchoice=664&option=1&choiceform1=Against+my+better+judgment%2C+yes.",
+      );
+      visitUrl("choice.php?pwd=&whichchoice=664&option=1&choiceform1=Er,+sure,+I+guess+so...");
+    },
+  },
+  {
     name: "Configure I Voted! Sticker",
     completed: () => have($item`"I Voted!" sticker`),
     do: voterSetup,
