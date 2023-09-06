@@ -1,11 +1,17 @@
 import {
   canEquip,
+  cliExecute,
   equip,
+  haveEffect,
   Item,
   itemType,
   mallPrice,
   myFury,
+  Phylum,
   retrieveItem,
+  Skill,
+  toPhylum,
+  toSkill,
   useFamiliar,
   useSkill,
   visitUrl,
@@ -258,59 +264,117 @@ function initializeCrates(): void {
   } while (!["crate", "Using the Force"].includes(get("lastEncounter"))); // loop until we actually hit a crate
 }
 
-function initializeDireWarren(): void {
+function getClub() {
+  if (have($skill`Iron Palm Technique`) && !have($effect`Iron Palms`)) {
+    useSkill($skill`Iron Palm Technique`);
+  }
+  const availableClub =
+    Item.all().find(
+      (i) =>
+        have(i) &&
+        canEquip(i) &&
+        weaponHands(i) === 2 &&
+        (itemType(i) === "club" || (have($effect`Iron Palms`) && itemType(i) === "sword")),
+    ) ?? $item`amok putter`;
+  retrieveItem(availableClub);
+  return availableClub;
+}
+
+const MAX_BANISH_PRICE = 100000; // price of nanobrawny
+
+type Banish = {
+  name: string;
+  macro: () => Macro;
+  available: () => boolean;
+  price?: () => number;
+  prepare?: () => void;
+};
+
+const combatItem = (item: Item, maxPrice?: number): Banish => ({
+  name: `${item}`,
+  available: () => mallPrice(item) < (maxPrice ?? MAX_BANISH_PRICE),
+  macro: () => Macro.item(item),
+  price: () => mallPrice(item),
+  prepare: () => acquire(1, item, maxPrice ?? MAX_BANISH_PRICE), // put a sanity ceiling of 50k on the banish
+});
+
+const longBanishes: Banish[] = [
+  combatItem($item`human musk`),
+  combatItem($item`tryptophan dart`),
+  combatItem($item`Daily Affirmation: Be a Mind Master`),
+  {
+    name: "Batter Up!",
+    available: () => myFury() > 5 && have($skill`Batter Up!`),
+    macro: () => Macro.skill($skill`Batter Up!`),
+    prepare: () => {
+      const club = getClub();
+      new Requirement(["100 Monster Level"], {
+        preventEquip: $items`carnivorous potted plant`,
+        forceEquip: [club],
+      }).maximize();
+    },
+  },
+  {
+    name: "Nanobrawny",
+    available: () => true,
+    price: () => mallPrice($item`pocket wish`) * 2, // could be 3 if you are unlucky
+    macro: () => Macro.skill($skill`Unleash Nanites`),
+    prepare: () => {
+      while (haveEffect($effect`Nanobrawny`) < 40) {
+        acquire(1, $item`pocket wish`, 50000);
+        cliExecute(`genie effect Nanobrawny`);
+      }
+    },
+  },
+];
+
+const shortBanishes = [
+  combatItem($item`Louder Than Bomb`, 10000),
+  combatItem($item`tennis ball`, 10000),
+];
+
+function banishBunny(): void {
+  const banishes = [
+    ...longBanishes,
+    ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
+  ].filter((b) => b.available());
+
+  const banish = maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
+  do {
+    banish.prepare?.();
+    garboAdventure(
+      $location`The Dire Warren`,
+      Macro.if_($monster`fluffy bunny`, banish.macro()).embezzler(),
+    );
+  } while (
+    "fluffy bunny" !== get("lastEncounter") &&
+    !get("banishedMonsters").includes("fluffy bunny")
+  );
+}
+
+function getBanishedPhyla(): Map<Skill | Item, Phylum> {
+  const phylumBanish = new Map<Skill | Item, Phylum>();
+  const banishPart = get("banishedPhyla").split(":").slice(0, 2);
+
+  if (banishPart.length === 2) {
+    const [skill, phylum] = banishPart;
+    // for now, the only phylum banish is Patriotic Screech, a skill
+    phylumBanish.set(toSkill(skill), toPhylum(phylum));
+  }
+
+  return phylumBanish;
+}
+
+export function initializeDireWarren(): void {
   visitUrl("museum.php?action=icehouse");
 
   const banishedMonsters = getBanishedMonsters();
-  if (banishedMonsters.get($item`ice house`) === $monster`fluffy bunny`) return;
+  const banishedPhyla = getBanishedPhyla();
 
-  const options = $items`human musk, tryptophan dart, Daily Affirmation: Be a Mind Master`;
-  if (options.some((option) => banishedMonsters.get(option) === $monster`fluffy bunny`)) {
-    return;
-  }
-  if (banishedMonsters.get($skill`Batter Up!`) === $monster`fluffy bunny`) return;
+  if ([...banishedMonsters.values()].find((m) => m === $monster`fluffy bunny`)) return;
+  if ([...banishedPhyla.values()].find((p) => p === $monster`fluffy bunny`.phylum)) return;
 
-  if (!have($item`miniature crystal ball`)) {
-    options.push(...$items`Louder Than Bomb, tennis ball`);
-  }
-  const canBat = myFury() >= 5 && have($skill`Batter Up!`);
-  if (canBat) {
-    if (have($skill`Iron Palm Technique`) && !have($effect`Iron Palms`)) {
-      useSkill($skill`Iron Palm Technique`);
-    }
-    const availableClub =
-      Item.all().find(
-        (i) =>
-          have(i) &&
-          canEquip(i) &&
-          weaponHands(i) === 2 &&
-          (itemType(i) === "club" || (have($effect`Iron Palms`) && itemType(i) === "sword")),
-      ) ?? $item`amok putter`;
-    retrieveItem(availableClub);
-    new Requirement(["100 Monster Level"], {
-      preventEquip: $items`carnivorous potted plant`,
-      forceEquip: [availableClub],
-    }).maximize();
-
-    do {
-      garboAdventure(
-        $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Batter Up!`)).embezzler(),
-      );
-    } while (myFury() >= 5 && banishedMonsters.get($skill`Batter Up!`) !== $monster`fluffy bunny`);
-  } else {
-    const banish = maxBy(options, mallPrice, true);
-    acquire(1, banish, 50000, true);
-    do {
-      garboAdventure(
-        $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.item(banish)).embezzler(),
-      );
-    } while (
-      "fluffy bunny" !== get("lastEncounter") &&
-      !get("banishedMonsters").includes("fluffy bunny")
-    );
-  }
+  banishBunny();
 }
 
 export function initializeExtrovermectinZones(): void {

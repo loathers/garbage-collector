@@ -604,7 +604,12 @@ export const gregFights = (
         !CrystalBall.ponder().get($location`The Dire Warren`),
       () => ((get(monsterProp) === embezzler && get(fightsProp) > 0) || totalCharges() > 0 ? 1 : 0),
       (options: EmbezzlerFightRunOptions) => {
-        garboAdventure($location`The Dire Warren`, Macro.if_(embezzler, options.macro).abort());
+        const run = ltbRun();
+        run.constraints.preparation?.();
+        garboAdventure(
+          $location`The Dire Warren`,
+          Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
+        );
       },
       {
         spec: {
