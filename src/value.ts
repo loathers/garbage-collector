@@ -4,10 +4,12 @@ import {
   historicalAge,
   historicalPrice,
   Item,
+  Monster,
+  myClass,
   sellPrice,
   toInt,
 } from "kolmafia";
-import { $item, $items, getSaleValue, sum } from "libram";
+import { $class, $item, $items, getSaleValue, sum } from "libram";
 import { globalOptions } from "./config";
 
 const garboRegularValueCache = new Map<Item, number>();
@@ -132,6 +134,15 @@ const specialValueLookup = new Map<Item, () => number>([
           )) /
       100,
   ],
+  ...$items`worthless gewgaw, worthless knick-knack, worthless trinket`.map(
+    (i): [Item, () => number] => [
+      i,
+      currency(
+        ...$items`seal tooth, chisel, petrified noodles, jabañero pepper, banjo strings, hot buttered roll, wooden figurine, ketchup, catsup, volleyball`,
+        ...(myClass() === $class`Seal Clubber` ? $items`figurine of an ancient seal` : []),
+      ),
+    ],
+  ),
 ]);
 
 const exclusions = new Set([
@@ -194,4 +205,9 @@ export function garboValue(item: Item, useHistorical = false): number {
 
 export function garboAverageValue(...items: Item[]): number {
   return sum(items, garboValue) / items.length;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function bofaValue(_monster: Monster): number {
+  return 0;
 }
