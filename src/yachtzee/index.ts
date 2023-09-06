@@ -29,7 +29,7 @@ import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
-import { baseMeat, realmAvailable, safeRestore } from "../lib";
+import { baseMeat, eventLog, propertyManager, realmAvailable, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";
@@ -88,18 +88,20 @@ function _yachtzeeChain(): void {
   meatMood(false, 2000).execute(Math.min(jellyTurns, fishyTurns));
   safeRestore();
 
+  propertyManager.setChoice(918, 2);
   let plantCrookweed = true;
-  set("choiceAdventure918", 2);
   while (Math.min(jellyTurns, fishyTurns) > 0) {
     executeNextDietStep();
-    if (!get("_stenchJellyUsed", false)) throw new Error("We did not use stench jellies");
+    if (!get("noncombatForcerActive")) throw new Error("We did not use stench jellies");
     // Switch familiars in case changes in fam weight from buffs means our current familiar is no longer optimal
     prepareOutfitAndFamiliar();
     if (!have($effect`Really Deep Breath`)) {
       const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(
         Math.min(jellyTurns, fishyTurns),
       );
-      if (bestWaterBreathingEquipment.item !== $item.none) equip(bestWaterBreathingEquipment.item);
+      if (bestWaterBreathingEquipment.item !== $item.none) {
+        equip(bestWaterBreathingEquipment.item);
+      }
       if (
         haveEquipped($item`The Crown of Ed the Undying`) &&
         !booleanModifier("Adventure Underwater")
@@ -117,12 +119,12 @@ function _yachtzeeChain(): void {
       }
     }
     garboAdventure($location`The Sunken Party Yacht`, Macro.abort());
+    if (get("lastEncounter") === "Yachtzee!") eventLog.yachtzees += 1;
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
       turncount = myTurncount();
       set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) - 1);
-      set("_stenchJellyUsed", false);
     }
     if (plantCrookweed && FloristFriar.have() && FloristFriar.Crookweed.available()) {
       FloristFriar.Crookweed.plant();
@@ -132,7 +134,6 @@ function _yachtzeeChain(): void {
 
     doSausage();
   }
-  set("choiceAdventure918", "");
 }
 
 export function yachtzeeChain(): void {

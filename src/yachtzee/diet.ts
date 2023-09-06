@@ -248,7 +248,7 @@ function castOde(turns: number): boolean {
 }
 
 export function executeNextDietStep(stopBeforeJellies?: boolean): void {
-  if (get("_stenchJellyUsed", false)) return;
+  if (get("noncombatForcerActive")) return;
   print("Executing next diet steps", "blue");
   const dietUtil = new YachtzeeDietUtils();
   dietUtil.resetDietPref();
@@ -283,7 +283,6 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
         } else {
           throw new Error(`Could not find ${name} in dietArray`);
         }
-        set("_stenchJellyUsed", true);
       }
       stenchJellyConsumed = true;
     } else if (!stenchJellyConsumed) {

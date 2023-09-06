@@ -57,11 +57,12 @@ import { stashItems, withStash, withVIPClan } from "./clan";
 import { globalOptions } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
-import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
+import { dailyFights, freeFights } from "./fights";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
   HIGHLIGHT,
+  printEventLog,
   printLog,
   propertyManager,
   questStep,
@@ -534,7 +535,7 @@ export function main(argString = ""): void {
     set("garboStashItems", stashItems.map((item) => toInt(item).toFixed(0)).join(","));
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
-    printEmbezzlerLog();
+    printEventLog();
     endSession();
     printLog(HIGHLIGHT);
   }

@@ -150,8 +150,8 @@ import {
   bestShadowRift,
   burnLibrams,
   dogOrHolidayWanderer,
-  embezzlerLog,
   ESTIMATED_OVERDRUNK_TURNS,
+  eventLog,
   expectedEmbezzlerProfit,
   freeRest,
   HIGHLIGHT,
@@ -163,7 +163,6 @@ import {
   propertyManager,
   questStep,
   realmAvailable,
-  resetDailyPreference,
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
@@ -441,10 +440,9 @@ export function dailyFights(): void {
               macro: macro(),
               useAuto: false,
             });
-            embezzlerLog.initialEmbezzlersFought +=
-              1 + get("_pocketProfessorLectures") - startLectures;
-            embezzlerLog.sources.push(fightSource.name);
-            embezzlerLog.sources.push(
+            eventLog.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
+            eventLog.embezzlerSources.push(fightSource.name);
+            eventLog.embezzlerSources.push(
               ...new Array<string>(get("_pocketProfessorLectures") - startLectures).fill(
                 "Pocket Professor",
               ),
@@ -502,8 +500,8 @@ export function dailyFights(): void {
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
-          embezzlerLog.initialEmbezzlersFought++;
-          embezzlerLog.sources.push(nextFight.name);
+          eventLog.initialEmbezzlersFought++;
+          eventLog.embezzlerSources.push(nextFight.name);
         }
 
         nextFight = getNextEmbezzlerFight();
@@ -2518,34 +2516,6 @@ function voidMonster(): void {
   postCombatActions();
 }
 
-export function printEmbezzlerLog(): void {
-  if (resetDailyPreference("garboEmbezzlerDate")) {
-    property.set("garboEmbezzlerCount", 0);
-    property.set("garboEmbezzlerSources", "");
-  }
-  const totalEmbezzlers =
-    property.getNumber("garboEmbezzlerCount", 0) +
-    embezzlerLog.initialEmbezzlersFought +
-    embezzlerLog.digitizedEmbezzlersFought;
-
-  const allEmbezzlerSources = property
-    .getString("garboEmbezzlerSources")
-    .split(",")
-    .filter((source) => source);
-  allEmbezzlerSources.push(...embezzlerLog.sources);
-
-  property.set("garboEmbezzlerCount", totalEmbezzlers);
-  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
-
-  print(
-    `You fought ${embezzlerLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${embezzlerLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
-    HIGHLIGHT,
-  );
-  print(
-    `Including this, you have fought ${totalEmbezzlers} across all ascensions today`,
-    HIGHLIGHT,
-  );
-}
 type FreeKill = { spec?: OutfitSpec; macro: Skill | Item; used: () => boolean };
 const freeKills: FreeKill[] = [
   {
