@@ -23162,10 +23162,11 @@ function _toPrimitive24(input, hint) {
   }
   return (hint === "string" ? String : Number)(input);
 }
-var embezzlerLog = {
+var eventLog = {
   initialEmbezzlersFought: 0,
   digitizedEmbezzlersFought: 0,
-  sources: []
+  embezzlerSources: [],
+  yachtzees: 0
 };
 var BonusEquipMode = /* @__PURE__ */ function(BonusEquipMode2) {
   BonusEquipMode2[BonusEquipMode2["FREE"] = 0] = "FREE";
@@ -23598,6 +23599,28 @@ function freeRest() {
     (0, import_kolmafia51.visitUrl)("campground.php?action=rest");
   }
   return true;
+}
+function printEventLog() {
+  if (resetDailyPreference("garboEmbezzlerDate")) {
+    property_exports.set("garboEmbezzlerCount", 0);
+    property_exports.set("garboEmbezzlerSources", "");
+    property_exports.set("garboYachtzeeCount", 0);
+  }
+  var totalEmbezzlers = property_exports.getNumber("garboEmbezzlerCount", 0) + eventLog.initialEmbezzlersFought + eventLog.digitizedEmbezzlersFought;
+  var allEmbezzlerSources = property_exports.getString("garboEmbezzlerSources").split(",").filter(function(source) {
+    return source;
+  });
+  allEmbezzlerSources.push.apply(allEmbezzlerSources, _toConsumableArray20(eventLog.embezzlerSources));
+  var yacthzeeCount = get("garboYachtzeeCount", 0) + eventLog.yachtzees;
+  property_exports.set("garboEmbezzlerCount", totalEmbezzlers);
+  property_exports.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
+  property_exports.set("garboYachtzeeCount", yacthzeeCount);
+  (0, import_kolmafia51.print)("You fought ".concat(eventLog.initialEmbezzlersFought, " KGEs at the beginning of the day, and an additional ").concat(eventLog.digitizedEmbezzlersFought, " digitized KGEs throughout the day. Good work, probably!"), HIGHLIGHT);
+  (0, import_kolmafia51.print)("Including this, you have fought ".concat(totalEmbezzlers, " across all ascensions today"), HIGHLIGHT);
+  if (yacthzeeCount > 0) {
+    (0, import_kolmafia51.print)("You explored the undersea yacht ".concat(eventLog.yachtzees, " times"), HIGHLIGHT);
+    (0, import_kolmafia51.print)("Including this, you explored the undersea yacht ".concat(yacthzeeCount, " times across all ascensions today"), HIGHLIGHT);
+  }
 }
 
 // src/turns.ts
@@ -34409,15 +34432,15 @@ function dailyFights() {
           }
           goalMaximize(_objectSpread14(_objectSpread14({}, profSpec), fightSource.spec));
           if (get("_pocketProfessorLectures") < pocketProfessorLectures()) {
-            var _embezzlerLog$sources;
+            var _eventLog$embezzlerSo;
             var startLectures = get("_pocketProfessorLectures");
             fightSource.run({
               macro: macro(),
               useAuto: false
             });
-            embezzlerLog.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
-            embezzlerLog.sources.push(fightSource.name);
-            (_embezzlerLog$sources = embezzlerLog.sources).push.apply(_embezzlerLog$sources, _toConsumableArray44(new Array(get("_pocketProfessorLectures") - startLectures).fill("Pocket Professor")));
+            eventLog.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
+            eventLog.embezzlerSources.push(fightSource.name);
+            (_eventLog$embezzlerSo = eventLog.embezzlerSources).push.apply(_eventLog$embezzlerSo, _toConsumableArray44(new Array(get("_pocketProfessorLectures") - startLectures).fill("Pocket Professor")));
           }
           _set(_property, true);
           postCombatActions();
@@ -34455,8 +34478,8 @@ function dailyFights() {
         postCombatActions();
         (0, import_kolmafia85.print)("Finished ".concat(nextFight.name));
         if ((0, import_kolmafia85.totalTurnsPlayed)() - startTurns === 1 && get("lastCopyableMonster") === $monster(_templateObject7213 || (_templateObject7213 = _taggedTemplateLiteral77(["Knob Goblin Embezzler"]))) && (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler")) {
-          embezzlerLog.initialEmbezzlersFought++;
-          embezzlerLog.sources.push(nextFight.name);
+          eventLog.initialEmbezzlersFought++;
+          eventLog.embezzlerSources.push(nextFight.name);
         }
         nextFight = getNextEmbezzlerFight();
         if (romanticMonsterImpossible() && (!nextFight || !nextFight.draggable)) {
@@ -35966,21 +35989,6 @@ function voidMonster() {
   garboAdventure(wanderer_default.getTarget("wanderer"), Macro2.basicCombat());
   postCombatActions();
 }
-function printEmbezzlerLog() {
-  if (resetDailyPreference("garboEmbezzlerDate")) {
-    property_exports.set("garboEmbezzlerCount", 0);
-    property_exports.set("garboEmbezzlerSources", "");
-  }
-  var totalEmbezzlers = property_exports.getNumber("garboEmbezzlerCount", 0) + embezzlerLog.initialEmbezzlersFought + embezzlerLog.digitizedEmbezzlersFought;
-  var allEmbezzlerSources = property_exports.getString("garboEmbezzlerSources").split(",").filter(function(source) {
-    return source;
-  });
-  allEmbezzlerSources.push.apply(allEmbezzlerSources, _toConsumableArray44(embezzlerLog.sources));
-  property_exports.set("garboEmbezzlerCount", totalEmbezzlers);
-  property_exports.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
-  (0, import_kolmafia85.print)("You fought ".concat(embezzlerLog.initialEmbezzlersFought, " KGEs at the beginning of the day, and an additional ").concat(embezzlerLog.digitizedEmbezzlersFought, " digitized KGEs throughout the day. Good work, probably!"), HIGHLIGHT);
-  (0, import_kolmafia85.print)("Including this, you have fought ".concat(totalEmbezzlers, " across all ascensions today"), HIGHLIGHT);
-}
 var freeKills = [{
   spec: {
     equip: $items(_templateObject5914 || (_templateObject5914 = _taggedTemplateLiteral77(["The Jokester's gun"])))
@@ -37322,8 +37330,8 @@ function _taggedTemplateLiteral79(strings, raw) {
 var embezzler3 = $monster(_templateObject781 || (_templateObject781 = _taggedTemplateLiteral79(["Knob Goblin Embezzler"])));
 function logEmbezzler(encounterType) {
   var isDigitize = encounterType === "Digitize Wanderer";
-  isDigitize ? embezzlerLog.digitizedEmbezzlersFought++ : embezzlerLog.initialEmbezzlersFought++;
-  embezzlerLog.sources.push(isDigitize ? "Digitize" : "Unknown Source");
+  isDigitize ? eventLog.digitizedEmbezzlersFought++ : eventLog.initialEmbezzlersFought++;
+  eventLog.embezzlerSources.push(isDigitize ? "Digitize" : "Unknown Source");
 }
 function shouldGoUnderwater() {
   if (!sober())
@@ -40115,7 +40123,7 @@ function castOde(turns2) {
   return true;
 }
 function executeNextDietStep(stopBeforeJellies) {
-  if (get("_stenchJellyUsed", false))
+  if (get("noncombatForcerActive"))
     return;
   (0, import_kolmafia96.print)("Executing next diet steps", "blue");
   var dietUtil = new YachtzeeDietUtils();
@@ -40153,7 +40161,6 @@ function executeNextDietStep(stopBeforeJellies) {
           } else {
             throw new Error("Could not find ".concat(name, " in dietArray"));
           }
-          _set("_stenchJellyUsed", true);
         }
         stenchJellyConsumed = true;
       } else if (!stenchJellyConsumed) {
@@ -40956,17 +40963,18 @@ function _yachtzeeChain() {
   }
   meatMood(false, 2e3).execute(Math.min(jellyTurns, fishyTurns));
   safeRestore();
+  propertyManager.setChoice(918, 2);
   var plantCrookweed = true;
-  _set("choiceAdventure918", 2);
   while (Math.min(jellyTurns, fishyTurns) > 0) {
     executeNextDietStep();
-    if (!get("_stenchJellyUsed", false))
+    if (!get("noncombatForcerActive"))
       throw new Error("We did not use stench jellies");
     prepareOutfitAndFamiliar();
     if (!have($effect(_templateObject4151 || (_templateObject4151 = _taggedTemplateLiteral90(["Really Deep Breath"]))))) {
       var bestWaterBreathingEquipment = getBestWaterBreathingEquipment(Math.min(jellyTurns, fishyTurns));
-      if (bestWaterBreathingEquipment.item !== $item.none)
+      if (bestWaterBreathingEquipment.item !== $item.none) {
         (0, import_kolmafia98.equip)(bestWaterBreathingEquipment.item);
+      }
       if ((0, import_kolmafia98.haveEquipped)($item(_templateObject5146 || (_templateObject5146 = _taggedTemplateLiteral90(["The Crown of Ed the Undying"])))) && !(0, import_kolmafia98.booleanModifier)("Adventure Underwater")) {
         (0, import_kolmafia98.cliExecute)("edpiece fish");
       }
@@ -40979,12 +40987,13 @@ function _yachtzeeChain() {
       }
     }
     garboAdventure($location(_templateObject1260 || (_templateObject1260 = _taggedTemplateLiteral90(["The Sunken Party Yacht"]))), Macro2.abort());
+    if (get("lastEncounter") === "Yachtzee!")
+      eventLog.yachtzees += 1;
     if ((0, import_kolmafia98.myTurncount)() > turncount || (0, import_kolmafia98.haveEffect)($effect(_templateObject1358 || (_templateObject1358 = _taggedTemplateLiteral90(["Fishy"])))) < fishyTurns) {
       fishyTurns -= 1;
       jellyTurns -= 1;
       turncount = (0, import_kolmafia98.myTurncount)();
       _set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) - 1);
-      _set("_stenchJellyUsed", false);
     }
     if (plantCrookweed && Florist_exports.have() && Florist_exports.Crookweed.available()) {
       Florist_exports.Crookweed.plant();
@@ -40993,7 +41002,6 @@ function _yachtzeeChain() {
     postCombatActions();
     doSausage();
   }
-  _set("choiceAdventure918", "");
 }
 function yachtzeeChain() {
   if (!globalOptions.prefs.yachtzeechain)
@@ -41449,7 +41457,7 @@ function main() {
     (0, import_kolmafia99.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=".concat(aaBossFlag, "&action=Update"), true);
     if (startingGarden && have(startingGarden))
       (0, import_kolmafia99.use)(startingGarden);
-    printEmbezzlerLog();
+    printEventLog();
     endSession();
     printLog(HIGHLIGHT);
   }
