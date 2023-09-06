@@ -2511,8 +2511,7 @@ function voidMonster(): void {
   }
 
   freeFightOutfit({
-    equip: $items`cursed magnifying glass`,
-    equip: wanderer.getEquipment("wanderer"),
+    equip: [$item`cursed magnifying glass`, ...wanderer.getEquipment("wanderer")],
   }).dress();
   propertyManager.setChoices(wanderer.getChoices("wanderer"));
   garboAdventure(wanderer.getTarget("wanderer"), Macro.basicCombat());

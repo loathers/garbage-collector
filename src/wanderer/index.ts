@@ -13,6 +13,7 @@ import {
 } from "./lib";
 import { lovebugsFactory } from "./lovebugs";
 import { freefightFactory } from "./freefight";
+import { eightbitFactory } from "./eightbit";
 
 export type { DraggableFight };
 
@@ -21,6 +22,7 @@ const wanderFactories: WandererFactory[] = [
   freefightFactory,
   lovebugsFactory,
   guzzlrFactory,
+  eightbitFactory,
 ];
 
 function bestWander(
@@ -94,8 +96,8 @@ function wanderWhere(
   }
 }
 
-export type WanderWhereOptions = { drunkSafe?: boolean; allowEquipment?: boolean };
-const defaultWanderWhereOptions = {
+export type WanderOptions = { drunkSafe?: boolean; allowEquipment?: boolean };
+const defaultWanderOptions = {
   drunkSafe: true,
   allowEquipment: true,
 };
@@ -163,17 +165,18 @@ class WandererManager {
     [$location`The Penultimate Fantasy Airship`, { 178: 2, 182: 1 }], // Skip, and Fight random enemy
     [$location`The Haiku Dungeon`, { 297: 3 }], // skip
   ]);
-  equipment = new Map<Location, Item[]>(
-    Location.all()
+  equipment = new Map<Location, Item[]>([
+    ...Location.all()
       .filter((l) => l.zone === "The 8-Bit Realm")
-      .map((l) => [l, $items`continuum transfunctioner`]),
-  );
+      .map((l): [Location, Item[]] => [l, $items`continuum transfunctioner`]),
+    [$location`Shadow Rift (The 8-Bit Realm)`, $items`continuum transfunctioner`],
+  ]);
 
   cacheKey = "";
   targets: Partial<{ [x in DraggableFight]: Location }> = {};
 
-  getTarget(draggableFight: DraggableFight, options: WanderWhereOptions = {}): Location {
-    const { drunkSafe, allowEquipment } = { ...defaultWanderWhereOptions, ...options };
+  getTarget(draggableFight: DraggableFight, options: WanderOptions = {}): Location {
+    const { drunkSafe, allowEquipment } = { ...defaultWanderOptions, ...options };
     const newKey = `${myTotalTurnsSpent()};${totalTurnsPlayed()};${get("familiarSweat")}`;
     if (this.cacheKey !== newKey) this.clear();
     this.cacheKey = newKey;
@@ -187,7 +190,7 @@ class WandererManager {
 
   getChoices(
     draggableFight: DraggableFight,
-    options: WanderWhereOptions = {},
+    options: WanderOptions = {},
   ): { [choice: number]: string | number } {
     return this.unsupportedChoices.get(this.getTarget(draggableFight, options)) ?? {};
   }
@@ -198,7 +201,7 @@ class WandererManager {
 
   getEquipment(
     draggableFight: DraggableFight,
-    options: WanderWhereOptions = defaultWanderWhereOptions,
+    options: WanderOptions = defaultWanderOptions,
   ): Item[] {
     return this.equipment.get(this.getTarget(draggableFight, options)) ?? [];
   }
