@@ -1,5 +1,5 @@
-import { Location, myTotalTurnsSpent, print, totalTurnsPlayed } from "kolmafia";
-import { $location, get, maxBy } from "libram";
+import { Item, Location, myTotalTurnsSpent, print, totalTurnsPlayed } from "kolmafia";
+import { $items, $location, get, maxBy } from "libram";
 import { HIGHLIGHT, sober } from "../lib";
 import { guzzlrFactory } from "./guzzlr";
 import {
@@ -94,6 +94,12 @@ function wanderWhere(
   }
 }
 
+export type WanderWhereOptions = { drunkSafe?: boolean; allowEquipment?: boolean };
+const defaultWanderWhereOptions = {
+  drunkSafe: true,
+  allowEquipment: true,
+};
+
 class WandererManager {
   quartetChoice = get("lastQuartetRequest") || 4;
   unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
@@ -157,29 +163,44 @@ class WandererManager {
     [$location`The Penultimate Fantasy Airship`, { 178: 2, 182: 1 }], // Skip, and Fight random enemy
     [$location`The Haiku Dungeon`, { 297: 3 }], // skip
   ]);
+  equipment = new Map<Location, Item[]>(
+    Location.all()
+      .filter((l) => l.zone === "The 8-Bit Realm")
+      .map((l) => [l, $items`continuum transfunctioner`]),
+  );
 
   cacheKey = "";
   targets: Partial<{ [x in DraggableFight]: Location }> = {};
 
-  getTarget(draggableFight: DraggableFight, drunkSafe = true): Location {
+  getTarget(draggableFight: DraggableFight, options: WanderWhereOptions = {}): Location {
+    const { drunkSafe, allowEquipment } = { ...defaultWanderWhereOptions, ...options };
     const newKey = `${myTotalTurnsSpent()};${totalTurnsPlayed()};${get("familiarSweat")}`;
     if (this.cacheKey !== newKey) this.clear();
     this.cacheKey = newKey;
 
+    const locationSkipList = allowEquipment ? [] : [...this.equipment.keys()];
+
     return sober() || !drunkSafe
-      ? (this.targets[draggableFight] ??= wanderWhere(draggableFight))
+      ? (this.targets[draggableFight] ??= wanderWhere(draggableFight, [], locationSkipList))
       : $location`Drunken Stupor`;
   }
 
   getChoices(
     draggableFight: DraggableFight,
-    drunkSafe = true,
+    options: WanderWhereOptions = {},
   ): { [choice: number]: string | number } {
-    return this.unsupportedChoices.get(this.getTarget(draggableFight, drunkSafe)) ?? {};
+    return this.unsupportedChoices.get(this.getTarget(draggableFight, options)) ?? {};
   }
 
   clear(): void {
     this.targets = {};
+  }
+
+  getEquipment(
+    draggableFight: DraggableFight,
+    options: WanderWhereOptions = defaultWanderWhereOptions,
+  ): Item[] {
+    return this.equipment.get(this.getTarget(draggableFight, options)) ?? [];
   }
 }
 

@@ -1195,7 +1195,7 @@ const freeFightSources = [
     },
     true,
     {
-      spec: { offhand: $item`Kramco Sausage-o-Matic™` },
+      spec: { offhand: $item`Kramco Sausage-o-Matic™`, equip: wanderer.getEquipment("wanderer") },
     },
   ),
 
@@ -1906,6 +1906,7 @@ const freeRunFightSources = [
     },
     {
       spec: () => {
+        const equip = wanderer.getEquipment("backup");
         if (have($familiar`Mini-Hipster`)) {
           return {
             familiar: $familiar`Mini-Hipster`,
@@ -1914,9 +1915,10 @@ const freeRunFightSources = [
               [$item`chiptune guitar`, garboValue($item`ironic knit cap`)],
               [$item`fixed-gear bicycle`, garboValue($item`ironic oversized sunglasses`)],
             ]),
+            equip,
           };
         } else {
-          return { familiar: $familiar`Artistic Goth Kid` };
+          return { familiar: $familiar`Artistic Goth Kid`, equip };
         }
       },
     },
@@ -2305,6 +2307,9 @@ export function doSausage(): void {
   do {
     propertyManager.setChoices(wanderer.getChoices("wanderer"));
     const goblin = $monster`sausage goblin`;
+    freeFightOutfit({
+      equip: [$item`Kramco Sausage-o-Matic™`, ...wanderer.getEquipment("wanderer")],
+    }).dress();
     garboAdventureAuto(
       wanderer.getTarget("wanderer"),
       Macro.if_(goblin, Macro.basicCombat())
@@ -2505,7 +2510,10 @@ function voidMonster(): void {
     return;
   }
 
-  freeFightOutfit({ equip: $items`cursed magnifying glass` }).dress();
+  freeFightOutfit({
+    equip: $items`cursed magnifying glass`,
+    equip: wanderer.getEquipment("wanderer"),
+  }).dress();
   propertyManager.setChoices(wanderer.getChoices("wanderer"));
   garboAdventure(wanderer.getTarget("wanderer"), Macro.basicCombat());
   postCombatActions();

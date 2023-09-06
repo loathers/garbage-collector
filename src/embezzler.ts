@@ -201,8 +201,8 @@ export class EmbezzlerFight {
       (this.draggable && !suggestion) ||
       (this.draggable === "backup" && suggestion && suggestion.combatPercent < 100)
     ) {
-      propertyManager.setChoices(wanderer.getChoices(this.draggable));
-      return wanderer.getTarget(this.draggable);
+      propertyManager.setChoices(wanderer.getChoices(this.draggable, { allowEquipment: false }));
+      return wanderer.getTarget(this.draggable, { allowEquipment: false });
     }
     return suggestion ?? $location`Noob Cave`;
   }
