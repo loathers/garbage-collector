@@ -44,14 +44,14 @@ import { globalOptions } from "./config";
 const embezzler = $monster`Knob Goblin Embezzler`;
 const crate = $monster`crate`;
 
-export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
-  interface GregSource {
-    copies: number;
-    skillSource: "habitat" | "extro";
-    replaces: number;
-    extra: number;
-  }
+type GregSource = {
+  copies: number;
+  skillSource: "habitat" | "extro";
+  replaces: number;
+  extra: number;
+};
 
+export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
   const habitatCharges = have($skill`Just the Facts`) ? 3 - get("_monsterHabitatsRecalled", 0) : 0;
 
   const habitatGregs: GregSource[] = new Array(habitatCharges).fill({
