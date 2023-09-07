@@ -304,7 +304,7 @@ const longBanishes: Banish[] = [
   combatItem($item`Daily Affirmation: Be a Mind Master`),
   {
     name: "Batter Up!",
-    available: () => myFury() > 5 && have($skill`Batter Up!`),
+    available: () => myFury() >= 5 && have($skill`Batter Up!`),
     macro: () => Macro.skill($skill`Batter Up!`),
     prepare: () => {
       const club = getClub();
