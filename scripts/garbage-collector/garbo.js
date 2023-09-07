@@ -24206,7 +24206,7 @@ var combatItem = function(item9, maxPrice) {
 var longBanishes = [combatItem($item(_templateObject4510 || (_templateObject4510 = _taggedTemplateLiteral44(["human musk"])))), combatItem($item(_templateObject468 || (_templateObject468 = _taggedTemplateLiteral44(["tryptophan dart"])))), combatItem($item(_templateObject478 || (_templateObject478 = _taggedTemplateLiteral44(["Daily Affirmation: Be a Mind Master"])))), {
   name: "Batter Up!",
   available: function() {
-    return (0, import_kolmafia53.myFury)() > 5 && have($skill(_templateObject488 || (_templateObject488 = _taggedTemplateLiteral44(["Batter Up!"]))));
+    return (0, import_kolmafia53.myFury)() >= 5 && have($skill(_templateObject488 || (_templateObject488 = _taggedTemplateLiteral44(["Batter Up!"]))));
   },
   macro: function() {
     return Macro2.skill($skill(_templateObject498 || (_templateObject498 = _taggedTemplateLiteral44(["Batter Up!"]))));
