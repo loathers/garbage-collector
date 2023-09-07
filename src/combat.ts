@@ -677,13 +677,15 @@ export class Macro extends StrictMacro {
         .externalIf(
           doneHabitat &&
             get("beGregariousCharges") > 0 &&
-            (get("beGregariousMonster") !== embezzler || get("beGregariousFightsLeft") === 0),
+            (get("beGregariousMonster") !== embezzler ||
+              get("beGregariousFightsLeft") === (have($item`miniature crystal ball`) ? 0 : 1)),
           Macro.trySkill($skill`Be Gregarious`),
         )
         .externalIf(
           have($skill`Just the Facts`) &&
             get("_monsterHabitatsRecalled") < 3 &&
-            (get("monsterHabitatsMonster") !== embezzler || get("monsterHabitatsFightsLeft") === 0),
+            (get("monsterHabitatsMonster") !== embezzler ||
+              get("monsterHabitatsFightsLeft") === (have($item`miniature crystal ball`) ? 0 : 1)),
           Macro.trySkill($skill`Recall Facts: Monster Habitats`),
         )
         .externalIf(
