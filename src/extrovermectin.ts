@@ -49,7 +49,7 @@ type GregSource = {
   skillSource: "habitat" | "extro";
   replaces: number;
   extra: number;
-}
+};
 
 export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
   const habitatCharges = have($skill`Just the Facts`) ? 3 - get("_monsterHabitatsRecalled", 0) : 0;
