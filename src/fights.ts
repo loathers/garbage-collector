@@ -608,7 +608,17 @@ class FreeRunFight extends FreeFight {
       const constraints = {
         noFamiliar: () => "familiar" in initialSpec,
         allowedAction: (action: ActionSource) => {
-          if (action.source === $skill`Snokebomb` && get(`_snokebombUsed`) > 0) {
+          if (
+            action.source === $skill`Snokebomb` &&
+            get(`_snokebombUsed`) > 0 &&
+            get("_garboUsingFreeEmbezzlerBanish", false)
+          ) {
+            return false;
+          }
+          if (
+            action.source === $item`mafia middle finger ring` &&
+            get("_garboUsingFreeEmbezzlerBanish", false)
+          ) {
             return false;
           }
           return true;
