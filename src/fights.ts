@@ -615,9 +615,7 @@ class FreeRunFight extends FreeFight {
             [$item`mafia middle finger ring`, () => true],
           ]);
           const disallowUsage = props.get(action.source);
-          return (
-            !disallowUsage || !(disallowUsage() && get("_garboUsingFreeEmbezzlerBanish", false))
-          );
+          return !(disallowUsage?.() && get("_garboUsingFreeEmbezzlerBanish", false));
         },
         noFamiliar: () => "familiar" in initialSpec,
         ...this.constraints,
