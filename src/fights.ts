@@ -606,23 +606,20 @@ class FreeRunFight extends FreeFight {
     while (this.isAvailable()) {
       const initialSpec = undelay(this.options.spec ?? {});
       const constraints = {
-        noFamiliar: () => "familiar" in initialSpec,
         allowedAction: (action: ActionSource) => {
-          if (
-            action.source === $skill`Snokebomb` &&
-            get(`_snokebombUsed`) > 0 &&
-            get("_garboUsingFreeEmbezzlerBanish", false)
-          ) {
-            return false;
-          }
-          if (
-            action.source === $item`mafia middle finger ring` &&
-            get("_garboUsingFreeEmbezzlerBanish", false)
-          ) {
-            return false;
-          }
-          return true;
+          const props = new Map<
+            Item | Familiar | Skill | (Item | Familiar | Skill)[],
+            () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
+          >([
+            [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
+            [$item`mafia middle finger ring`, () => true],
+          ]);
+          const disallowUsage = props.get(action.source);
+          return (
+            !disallowUsage || !(disallowUsage() && get("_garboUsingFreeEmbezzlerBanish", false))
+          );
         },
+        noFamiliar: () => "familiar" in initialSpec,
         ...this.constraints,
       };
       const runSource = tryFindFreeRun(constraints);
