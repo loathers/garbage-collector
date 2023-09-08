@@ -607,6 +607,12 @@ class FreeRunFight extends FreeFight {
       const initialSpec = undelay(this.options.spec ?? {});
       const constraints = {
         noFamiliar: () => "familiar" in initialSpec,
+        allowedAction: (action: ActionSource) => {
+          if (action.source === $skill`Snokebomb` && get(`_snokebombUsed`) > 0) {
+            return false;
+          }
+          return true;
+        },
         ...this.constraints,
       };
       const runSource = tryFindFreeRun(constraints);

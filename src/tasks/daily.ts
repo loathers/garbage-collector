@@ -8,6 +8,7 @@ import {
   currentMcd,
   gamedayToInt,
   getClanLounge,
+  getProperty,
   gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
@@ -40,6 +41,7 @@ import {
   $items,
   $location,
   $monster,
+  $skill,
   $slot,
   BeachComb,
   findLeprechaunMultiplier,
@@ -57,7 +59,7 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { embezzlerCount, gregLikeFightCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";
@@ -365,6 +367,21 @@ export function configureSnojo(): void {
   }
 }
 
+function determineFreeEmbezzlerBanish(): void {
+  if (
+    gregLikeFightCount() < 120 &&
+    gregLikeFightCount() > 0 &&
+    have($item`mafia middle finger ring`) &&
+    !get("_mafiaMiddleFingerRingUsed") &&
+    have($skill`Snokebomb`) &&
+    get(`_snokebombUsed`) === 0
+  ) {
+    set("_garboUsingFreeEmbezzlerBanish", true);
+    return;
+  }
+  set("_garboUsingFreeEmbezzlerBanish", false);
+}
+
 const DailyTasks: GarboTask[] = [
   {
     name: "Chibi Buddy",
@@ -642,6 +659,11 @@ const DailyTasks: GarboTask[] = [
     ready: () => get("snojoAvailable") && get("_snojoFreeFights") < 10,
     completed: () => snojoConfigured,
     do: configureSnojo,
+  },
+  {
+    name: "Determine whether to use free banishers for embezzlers",
+    completed: () => getProperty("_garboUsingFreeEmbezzlerBanish") !== "",
+    do: determineFreeEmbezzlerBanish,
   },
   // Final tasks
   {

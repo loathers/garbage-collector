@@ -334,6 +334,21 @@ const shortBanishes = [
 ];
 
 function banishBunny(): void {
+  if (get("_garboUsingFreeEmbezzlerBanish")) {
+    do {
+      new Requirement(["100 Monster Level"], {
+        preventEquip: $items`carnivorous potted plant`,
+        forceEquip: $items`mafia middle finger ring`,
+      }).maximize();
+      garboAdventure(
+        $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Show them your ring`)).embezzler(),
+      );
+    } while (
+      "fluffy bunny" !== get("lastEncounter") &&
+      !get("banishedMonsters").includes("fluffy bunny")
+    );
+  }
   const banishes = [
     ...longBanishes,
     ...(!have($item`miniature crystal ball`) ? shortBanishes : []),

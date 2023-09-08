@@ -605,10 +605,13 @@ export const gregFights = (
       () => ((get(monsterProp) === embezzler && get(fightsProp) > 0) || totalCharges() > 0 ? 1 : 0),
       (options: EmbezzlerFightRunOptions) => {
         const run = ltbRun();
+        const runMacro = get(`_garboUsingFreeEmbezzlerBanish`)
+          ? Macro.skill($skill`Snokebomb`)
+          : ltbRun().macro;
         run.constraints.preparation?.();
         garboAdventure(
           $location`The Dire Warren`,
-          Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
+          Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
         );
       },
       {
@@ -620,6 +623,30 @@ export const gregFights = (
     ),
   ];
 };
+
+export const gregLikeSources = [
+  ...gregFights(
+    "Be Gregarious",
+    () => true, // we can always use extrovermectin
+    "beGregariousMonster",
+    "beGregariousFightsLeft",
+    () => get("beGregariousCharges") * 3 + get("beGregariousFightsLeft"),
+  ),
+  ...gregFights(
+    "Habitats Monster",
+    () => have($skill`Just the Facts`),
+    "monsterHabitatsMonster",
+    "monsterHabitatsFightsLeft",
+    () =>
+      have($skill`Just the Facts`)
+        ? (3 - get("_monsterHabitatsRecalled")) * 5 + get("monsterHabitatsFightsLeft")
+        : 0,
+  ),
+];
+
+export function gregLikeFightCount(): number {
+  return sum(gregLikeSources, (source: EmbezzlerFight) => source.potential());
+}
 
 export const conditionalSources = [
   new EmbezzlerFight(
