@@ -646,7 +646,7 @@ const pygmyBanishHandlers = [
     pygmy: $monster`pygmy bowler`,
     skill: $skill`Snokebomb`,
     check: "_snokebombUsed",
-    limit: 3,
+    limit: get("_garboUsingFreeEmbezzlerBanish", false) ? 1 : 3,
     item: $item`Louder Than Bomb`,
   },
   {
@@ -676,8 +676,11 @@ const pygmySniffed = () =>
   sniffSources.some((source) => pygmyBanishHandlers.some(({ pygmy }) => pygmy === get(source)));
 
 const pygmyMacro = Macro.step(
-  ...pygmyBanishHandlers.map(({ pygmy, skill, item }) =>
-    Macro.if_(pygmy, skill ? Macro.trySkill(skill).item(item) : Macro.item(item)),
+  ...pygmyBanishHandlers.map(({ pygmy, skill, item, check, limit }) =>
+    Macro.if_(
+      pygmy,
+      skill && get?.(check) < limit ? Macro.trySkill(skill).item(item) : Macro.item(item),
+    ),
   ),
 )
   .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySingAlong())
@@ -1024,6 +1027,7 @@ const freeFightSources = [
           retrieveItem(1, $item`Louder Than Bomb`);
           retrieveItem(1, $item`divine champagne popper`);
         }
+        const snokeLimit = get("_garboUsingFreeEmbezzlerBanish", false) ? 1 : 3;
         garboAdventure(
           $location`Domed City of Grimacia`,
           Macro.if_(
@@ -1032,7 +1036,12 @@ const freeFightSources = [
               $item`Louder Than Bomb`,
             ),
           )
-            .if_($monster`cat-alien`, Macro.trySkill($skill`Snokebomb`).tryItem($item`tennis ball`))
+            .if_(
+              $monster`cat-alien`,
+              get("_snokebombUsed") < snokeLimit
+                ? Macro.trySkill($skill`Snokebomb`).item($item`tennis ball`)
+                : Macro.item($item`tennis ball`),
+            )
             .if_(
               $monster`dog-alien`,
               Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`),
@@ -1872,8 +1881,6 @@ const freeRunFightSources = [
               )
               .trySkill($skill`Summon Mayfly Swarm`),
           )
-          .if_($monster`Fruit Golem`, Macro.trySkill($skill`Feel Hatred`))
-          .if_($monster`Knob Goblin Mutant`, Macro.trySkill($skill`Snokebomb`))
           .step(runSource.macro),
       );
     },
