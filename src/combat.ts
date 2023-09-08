@@ -477,8 +477,8 @@ export class Macro extends StrictMacro {
           haveEquipped($item`Cincho de Mayo`) && canPinata,
           Macro.while_(
             `${hpCheckCincho} && hasskill 7442`,
-            Macro.trySkill($skill`Cincho: Projectile Piñata`)
-          )
+            Macro.trySkill($skill`Cincho: Projectile Piñata`),
+          ),
         )
         .externalIf(
           have($item`porquoise-handled sixgun`),
@@ -553,8 +553,8 @@ export class Macro extends StrictMacro {
           !doingYachtzee && canPinata,
           Macro.while_(
             `hasskill 7442 && !pastround 24 && !hppercentbelow 25`,
-            Macro.trySkill($skill`Cincho: Projectile Piñata`)
-          )
+            Macro.trySkill($skill`Cincho: Projectile Piñata`),
+          ),
         )
         .tryHaveSkill($skill`Become a Wolf`)
         .externalIf(
