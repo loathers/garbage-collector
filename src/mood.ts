@@ -1,7 +1,6 @@
 import {
   cliExecute,
   Effect,
-  getClanLounge,
   getWorkshed,
   haveEffect,
   itemAmount,
@@ -20,15 +19,12 @@ import {
   $items,
   $skill,
   AsdonMartin,
-  BeachComb,
   get,
   have,
   Mood,
-  set,
   uneffect,
-  Witchess,
 } from "libram";
-import { baseMeat, burnLibrams, questStep, safeRestoreMpTarget, setChoice } from "./lib";
+import { baseMeat, burnLibrams, safeRestoreMpTarget, setChoice } from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
@@ -156,23 +152,6 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
     mood.effect(effect);
   }
 
-  if (!get("_garbo_defectiveTokenAttempted", false)) {
-    set("_garbo_defectiveTokenAttempted", true);
-    withStash($items`defective Game Grid token`, () => {
-      if (!get("_defectiveTokenUsed") && have($item`defective Game Grid token`)) {
-        use($item`defective Game Grid token`);
-      }
-    });
-  }
-
-  if (!get("_glennGoldenDiceUsed")) {
-    if (have($item`Glenn's golden dice`)) use($item`Glenn's golden dice`);
-  }
-
-  if (getClanLounge()["Clan pool table"] !== undefined) {
-    while (get("_poolGames") < 3) cliExecute("pool aggressive");
-  }
-
   if (haveEffect($effect`Blue Swayed`) < 50) {
     use(Math.ceil((50 - haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
   }
@@ -180,28 +159,6 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
 
   mood.skill($skill`Curiosity of Br'er Tarrypin`);
 
-  if ((get("daycareOpen") || get("_daycareToday")) && !get("_daycareSpa")) {
-    cliExecute("daycare mysticality");
-  }
-  if (have($item`redwood rain stick`) && !get("_redwoodRainStickUsed")) {
-    use($item`redwood rain stick`);
-  }
-
-  if (BeachComb.freeCombs() > 0 && BeachComb.headAvailable("FAMILIAR")) {
-    mood.effect($effect`Do I Know You From Somewhere?`);
-  }
-  if (Witchess.have() && !get("_witchessBuff")) {
-    mood.effect($effect`Puzzle Champ`);
-  }
-  if (questStep("questL06Friar") === 999 && !get("friarsBlessingReceived")) {
-    cliExecute("friars familiar");
-  }
-  if (have($item`The Legendary Beat`) && !get("_legendaryBeat")) {
-    use($item`The Legendary Beat`);
-  }
-  if (have($item`portable steam unit`) && !get("_portableSteamUnitUsed", false)) {
-    use($item`portable steam unit`);
-  }
   shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob`) mood.drive(AsdonMartin.Driving.Observantly);
@@ -242,6 +199,6 @@ export function shrugBadEffects(...exclude: Effect[]): void {
       if (have(effect) && !exclude.includes(effect)) {
         uneffect(effect);
       }
-    }
+    },
   );
 }

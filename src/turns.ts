@@ -10,7 +10,7 @@ import {
 import { $familiar, $item, clamp, Counter, get, have, SourceTerminal } from "libram";
 import { globalOptions } from "./config";
 // Dumb circular import stuff
-import { usingThumbRing } from "./outfit/dropsgear";
+import { usingThumbRing } from "./outfit/dropsgearAccessories";
 import { embezzlerCount } from "./embezzler";
 import { ESTIMATED_OVERDRUNK_TURNS } from "./lib";
 
@@ -44,7 +44,7 @@ export function estimatedGarboTurns(): number {
             potentialInebrietyAdventures() +
             potentialNonOrganAdventures() -
             yachtzeeTurns,
-          0
+          0,
         )
       : 0;
 
@@ -81,7 +81,7 @@ export function estimatedGarboTurns(): number {
 export function remainingUserTurns(): number {
   const dietAdventures = Math.max(
     potentialFullnessAdventures() + potentialInebrietyAdventures() + potentialNonOrganAdventures(),
-    0
+    0,
   );
   const turns = myAdventures() + dietAdventures - estimatedGarboTurns() + globalOptions.saveTurns;
   return turns;

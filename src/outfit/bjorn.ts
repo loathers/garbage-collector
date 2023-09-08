@@ -6,19 +6,19 @@ import {
   sum,
   sumNumbers,
 } from "libram";
-import { garboAverageValue, garboValue } from "../session";
-import { BonusEquipMode, useLimitedDrops, valueOfItem, valueOfMeat } from "./lib";
+import { garboAverageValue, garboValue } from "../value";
+import { BonusEquipMode, modeUseLimitedDrops, modeValueOfItem, modeValueOfMeat } from "../lib";
 
 function valueBjornModifiers(
   mode: BonusEquipMode,
-  familiar: Familiar
+  familiar: Familiar,
 ): (ridingFamiliar: Familiar) => number {
-  const meatValue = valueOfMeat(mode);
+  const meatValue = modeValueOfMeat(mode);
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   const leprechaunCoefficient =
     meatValue * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier));
 
-  const itemValue = valueOfItem(mode);
+  const itemValue = modeValueOfItem(mode);
   const fairyMultiplier = findFairyMultiplier(familiar);
   const fairyCoefficient = itemValue * (fairyMultiplier + Math.sqrt(fairyMultiplier) / 2);
 
@@ -39,7 +39,7 @@ function dropsValueFunction(drops: Item[] | Map<Item, number>): number {
 export function valueRider(
   mode: BonusEquipMode,
   familiar: Familiar,
-  rider: CrownOfThrones.FamiliarRider
+  rider: CrownOfThrones.FamiliarRider,
 ): number {
   const valueOfDrops =
     rider.dropPredicate?.() ?? true
@@ -53,14 +53,14 @@ export function valueRider(
 export function chooseBjorn(
   mode: BonusEquipMode,
   familiar: Familiar,
-  sim = false
+  sim = false,
 ): { familiar: Familiar; value: number } {
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   const fairyMultiplier = findFairyMultiplier(familiar);
-  const ignoreLimitedDrops = sim || !useLimitedDrops(mode);
+  const ignoreLimitedDrops = sim || !modeUseLimitedDrops(mode);
 
   const key = `Leprechaun:${leprechaunMultiplier.toFixed(2)};Fairy:${fairyMultiplier.toFixed(
-    2
+    2,
   )};ignoreLimitedDrops:${ignoreLimitedDrops}`;
 
   if (!CrownOfThrones.hasRiderMode(key)) {
@@ -80,7 +80,7 @@ export function chooseBjorn(
     value: CrownOfThrones.valueRider(
       result,
       valueBjornModifiers(mode, familiar),
-      dropsValueFunction
+      dropsValueFunction,
     ),
   };
 }

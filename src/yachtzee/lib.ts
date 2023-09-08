@@ -21,9 +21,10 @@ import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
-import { ltbRun, realmAvailable } from "../lib";
+import { ltbRun, propertyManager, realmAvailable } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
+import wanderer from "../wanderer";
 
 const ignoredSources = [
   "Orb Prediction",
@@ -33,7 +34,7 @@ const ignoredSources = [
 ];
 export const expectedEmbezzlers = sum(
   embezzlerSources.filter((source: EmbezzlerFight) => !ignoredSources.includes(source.name)),
-  (source: EmbezzlerFight) => source.potential()
+  (source: EmbezzlerFight) => source.potential(),
 );
 
 export function pyecAvailable(): boolean {
@@ -46,7 +47,7 @@ export function pyecAvailable(): boolean {
         ? true
         : withStash($items`Platinum Yendorian Express Card`, () => {
             return have($item`Platinum Yendorian Express Card`);
-          })
+          }),
     );
   }
   return get("_PYECAvailable", false);
@@ -103,6 +104,10 @@ export function useSpikolodonSpikes(): void {
     .skill($skill`Launch spikolodon spikes`)
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
+
+  const ncSkipper = wanderer.unsupportedChoices.get(targetZone);
+  if (ncSkipper) propertyManager.setChoices(ncSkipper);
+
   do {
     garboAdventureAuto(targetZone, macro);
   } while (get("_spikolodonSpikeUses") === startingSpikes);

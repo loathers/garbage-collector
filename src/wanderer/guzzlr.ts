@@ -2,7 +2,7 @@ import { buy, craftType, Location, mallPrice, print, retrieveItem } from "kolmaf
 import { $item, get, Guzzlr, have } from "libram";
 import { globalOptions } from "../config";
 import { freeCrafts } from "../lib";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import {
   canAdventureOrUnlock,
   DraggableFight,
@@ -13,11 +13,11 @@ import {
 function considerAbandon(locationSkiplist: Location[]) {
   const location = Guzzlr.getLocation();
   const remaningTurns = Math.ceil(
-    (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries"))
+    (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries")),
   );
 
   print(
-    `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`
+    `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`,
   );
 
   if (
@@ -71,7 +71,7 @@ function guzzlrValue(tier: "bronze" | "gold" | "platinum" | null) {
 
 export function guzzlrFactory(
   _type: DraggableFight,
-  locationSkiplist: Location[]
+  locationSkiplist: Location[],
 ): WandererTarget[] {
   if (Guzzlr.have()) {
     acceptGuzzlrQuest(locationSkiplist);
@@ -100,7 +100,7 @@ export function guzzlrFactory(
                   }
                 }
                 return have(guzzlrBooze);
-              }
+              },
             ),
           ]
         : [];

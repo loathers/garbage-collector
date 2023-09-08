@@ -1,4 +1,4 @@
-import { AcquireItem, Task } from "grimoire-kolmafia";
+import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   abort,
   buy,
@@ -42,10 +42,12 @@ import {
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
-import { rufusPotion } from "../potions";
-import { doingExtrovermectin } from "../extrovermectin";
+import { doingGregFight } from "../extrovermectin";
 import { coinmasterPrice } from "../lib";
-import { garboAverageValue, garboValue } from "../session";
+import { rufusPotion } from "../potions";
+import { garboAverageValue, garboValue } from "../value";
+import { GarboTask } from "./engine";
+import { augustSummonTasks } from "../resources";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
@@ -95,7 +97,7 @@ function pickCargoPocket(): void {
     if (pocket in items) {
       value += sum(
         Object.entries(pocketItems(pocket)),
-        ([item, count]) => garboValue(toItem(item), true) * count
+        ([item, count]) => garboValue(toItem(item), true) * count,
       );
     }
     if (pocket in meats) {
@@ -121,15 +123,15 @@ function pickCargoPocket(): void {
 }
 
 let triedForest = false;
-export const DailyItemTasks: Task[] = [
+const DailyItemTasks: GarboTask[] = [
   ...SummonTomes.map(
     (skill) =>
-      <Task>{
+      <GarboTask>{
         name: `{skill}`,
         ready: () => have(skill),
         completed: () => skill.dailylimit === 0,
         do: () => useSkill(skill, skill.dailylimit),
-      }
+      },
   ),
   ...[
     {
@@ -151,14 +153,13 @@ export const DailyItemTasks: Task[] = [
     },
     {
       name: "2002 Mr. Store",
-      // eslint-disable-next-line libram/verify-constants
       ready: () => have($item`2002 Mr. Store Catalog`),
       completed: () =>
         get("availableMrStore2002Credits", 0) === 0 && get("_2002MrStoreCreditsCollected", true),
       do: (): void => {
         const bestItem = maxBy(
           Item.all().filter((i) => sellsItem($coinmaster`Mr. Store 2002`, i)),
-          garboValue
+          garboValue,
         );
         buy($coinmaster`Mr. Store 2002`, get("availableMrStore2002Credits", 0), bestItem);
       },
@@ -193,7 +194,7 @@ export const DailyItemTasks: Task[] = [
       name: "Cheat Deck of Every Card",
       ready: () => have($item`Deck of Every Card`),
       completed: () => Math.floor(3 - get("_deckCardsDrawn") / 5) === 0,
-      do: () => drawBestCards(),
+      do: drawBestCards,
     },
     {
       name: "Source Terminal Extrude",
@@ -203,7 +204,7 @@ export const DailyItemTasks: Task[] = [
         garboValue(bestExtrude()) < garboValue($item`Source essence`) * 10,
       do: () => SourceTerminal.extrude(bestExtrude()),
       acquire: [{ item: $item`Source essence`, num: 10 }],
-      limit: { soft: 3 },
+      limit: { skip: 3 },
     },
     {
       name: "Internet Meme Shop viral video",
@@ -262,7 +263,7 @@ export const DailyItemTasks: Task[] = [
       ready: () => have($skill`Request Sandwich`),
       completed: () => get("_requestSandwichSucceeded"),
       do: () => useSkill($skill`Request Sandwich`),
-      limit: { soft: 10 },
+      limit: { skip: 10 },
     },
     {
       name: "Demand Sandwich",
@@ -298,13 +299,13 @@ export const DailyItemTasks: Task[] = [
       name: "Cargo Shorts Pocket",
       ready: () => have($item`Cargo Cultist Shorts`),
       completed: () => get("_cargoPocketEmptied"),
-      do: () => pickCargoPocket(),
+      do: pickCargoPocket,
     },
     {
       name: "Time-Spinner Gin",
       ready: () =>
         have($item`Time-Spinner`) &&
-        !doingExtrovermectin() &&
+        !doingGregFight() &&
         get("timeSpinnerMedals") >= 5 &&
         get("_timeSpinnerMinutesUsed") <= 8,
       completed: () => get("_timeSpinnerReplicatorUsed"),
@@ -347,7 +348,7 @@ export const DailyItemTasks: Task[] = [
         const price = rufusPotion.price(false);
         _shouldClearRufusQuest = value.some(
           (value) =>
-            (!globalOptions.nobarf || value.name === "embezzler") && value.value - price > 0
+            (!globalOptions.nobarf || value.name === "embezzler") && value.value - price > 0,
         );
         if (_shouldClearRufusQuest) {
           const target = ClosedCircuitPayphone.rufusTarget() as Item;
@@ -387,7 +388,7 @@ export const DailyItemTasks: Task[] = [
         const value =
           (((6 + 9) / 2) *
             sum(getMonsters(bestRift), (m) =>
-              sum(itemDropsArray(m), ({ drop }) => garboValue(drop))
+              sum(itemDropsArray(m), ({ drop }) => garboValue(drop)),
             )) /
           3;
         if (target instanceof Item && target.tradeable) {
@@ -418,5 +419,11 @@ export const DailyItemTasks: Task[] = [
         1500: 3,
       },
     },
+    ...augustSummonTasks(),
   ],
 ];
+
+export const DailyItemsQuest: Quest<GarboTask> = {
+  name: "Daily Items",
+  tasks: DailyItemTasks,
+};

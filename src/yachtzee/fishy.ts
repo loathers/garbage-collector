@@ -9,11 +9,14 @@ import {
   mallPrice,
   print,
   use,
+  useSkill,
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $location,
+  $skill,
   get,
   getActiveEffects,
   have,
@@ -26,6 +29,7 @@ import { garboAdventure, Macro } from "../combat";
 import { safeRestore } from "../lib";
 import { pyecAvailable, yachtzeeBuffValue } from "./lib";
 import { getBestWaterBreathingEquipment } from "./outfit";
+import { shouldAugustCast } from "../resources";
 
 function fishyCloverAdventureOpportunityCost(pipe: boolean) {
   const willBeFishy = pipe || have($effect`Fishy`);
@@ -122,7 +126,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
         acquire(
           1,
           $item`powdered candy sushi set`,
-          1.2 * mallPrice($item`powdered candy sushi set`)
+          1.2 * mallPrice($item`powdered candy sushi set`),
         );
         if (!have($item`powdered candy sushi set`)) {
           throw new Error("Unable to obtain powdered candy sushi set");
@@ -194,7 +198,46 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
       },
     },
     {
-      name: "The Haggling",
+      name: "The Haggling (August Scepter)",
+      turns: 50 + (haveFishyPipe ? 10 : 0),
+      cost: canAdventure($location`The Brinier Deepers`)
+        ? (have($effect`Lucky!`)
+            ? 0
+            : shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
+            ? 0
+            : Infinity) +
+          get("valueOfAdventure") +
+          bestWaterBreathingEquipment.cost +
+          fishyCloverAdventureOpportunityCost(haveFishyPipe)
+        : Infinity,
+      action: () => {
+        if (!have($effect`Lucky!`)) {
+          if (have($familiar`Left-Hand Man`)) {
+            equip($familiar`Left-Hand Man`, $item.none); // Ensure that our scepter is not equipped on lefty
+          }
+          useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
+          if (!have($effect`Lucky!`)) {
+            throw new Error("Failed to acquire Lucky! from August Scepter");
+          }
+        }
+        if (haveFishyPipe) use(1, $item`fishy pipe`);
+        garboAdventure($location`The Brinier Deepers`, Macro.abort());
+        if (get("lastAdventure") !== "The Brinier Deepers") {
+          print(
+            "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
+            "red",
+          );
+        }
+        if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
+          use(1, $item`fishy pipe`);
+        }
+        if (haveEffect($effect`Fishy`) < yachtzeeTurns) {
+          throw new Error("Failed to get fishy from clover adv");
+        }
+      },
+    },
+    {
+      name: "The Haggling (Clover)",
       turns: 50 + (haveFishyPipe ? 10 : 0),
       cost: canAdventure($location`The Brinier Deepers`)
         ? (have($effect`Lucky!`) ? 0 : mallPrice($item`11-leaf clover`)) +
@@ -215,7 +258,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
         if (get("lastAdventure") !== "The Brinier Deepers") {
           print(
             "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
-            "red"
+            "red",
           );
         }
         if (haveFishyPipe && haveEffect($effect`Fishy`) + adventureExtensionBonus < yachtzeeTurns) {
@@ -239,7 +282,7 @@ export function optimizeForFishy(yachtzeeTurns: number, setup?: boolean): number
   const bestFishySource = maxBy(
     fishySources.filter((source) => source.turns + haveEffect($effect`Fishy`) >= yachtzeeTurns),
     "cost",
-    true
+    true,
   );
 
   print("Cost of viable Fishy sources:", "blue");

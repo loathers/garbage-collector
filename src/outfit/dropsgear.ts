@@ -4,22 +4,16 @@ import {
   getWorkshed,
   haveEffect,
   Item,
-  itemAmount,
   mallPrice,
-  myClass,
   myFullness,
   numericModifier,
-  setLocation,
   toSlot,
 } from "kolmafia";
 import {
-  $class,
   $effect,
   $familiar,
   $item,
   $items,
-  $location,
-  $skill,
   $slot,
   $slots,
   CinchoDeMayo,
@@ -28,7 +22,6 @@ import {
   get,
   getAverageAdventures,
   getFoldGroup,
-  getModifier,
   have,
   JuneCleaver,
   sum,
@@ -39,19 +32,21 @@ import { mallMin } from "../diet";
 import {
   baseMeat,
   bestJuneCleaverOption,
+  BonusEquipMode,
   juneCleaverChoiceValues,
-  realmAvailable,
+  modeUseLimitedDrops,
+  modeValueOfMeat,
   valueJuneCleaverOption,
 } from "../lib";
-import { garboAverageValue, garboValue } from "../session";
+import { garboAverageValue, garboValue } from "../value";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
-import { BonusEquipMode, isFree, useLimitedDrops, valueOfMeat } from "./lib";
+import { bonusAccessories } from "./dropsgearAccessories";
 import { maxPassiveDamage, monsterManuelAvailable } from "../combat";
 import { felizValue } from "../tasks/dailyFamiliars";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
-  if (!have($item`Pantsgiving`) || !useLimitedDrops(mode)) return new Map<Item, number>();
+  if (!have($item`Pantsgiving`) || !modeUseLimitedDrops(mode)) return new Map<Item, number>();
   const count = get("_pantsgivingCount");
   const turnArray = [5, 50, 500, 5000];
   const index =
@@ -70,7 +65,7 @@ function pantsgiving(mode: BonusEquipMode) {
     ? clamp(
         estimatedGarboTurns() - (turns - count) - haveEffect($effect`Kicked in the Sinuses`),
         0,
-        expectedSinusTurns
+        expectedSinusTurns,
       )
     : expectedSinusTurns;
   const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
@@ -95,7 +90,7 @@ function sweatpants(mode: BonusEquipMode) {
   const VOA = get("valueOfAdventure");
 
   const bestPerfectDrink = mallMin(
-    $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`
+    $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`,
   );
   const perfectDrinkValuePerDrunk =
     ((getAverageAdventures(bestPerfectDrink) + 3) * VOA - mallPrice(bestPerfectDrink)) / 3;
@@ -107,7 +102,8 @@ function sweatpants(mode: BonusEquipMode) {
 
 const alternativePants = Item.all()
   .filter(
-    (item) => toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0
+    (item) =>
+      toSlot(item) === $slot`pants` && have(item) && numericModifier(item, "Adventures") > 0,
   )
   .map((pants) => numericModifier(pants, "Adventures"));
 const bestAdventuresFromPants = Math.max(0, ...alternativePants);
@@ -124,87 +120,9 @@ function cheeses(mode: BonusEquipMode) {
           .map((item) => [
             item,
             get("valueOfAdventure") * (10 - bestAdventuresFromPants) * (1 / 100),
-          ])
+          ]),
       )
     : [];
-}
-
-function mafiaThumbRing(mode: BonusEquipMode) {
-  if (!have($item`mafia thumb ring`) || isFree(mode)) {
-    return new Map<Item, number>([]);
-  }
-
-  return new Map<Item, number>([
-    [$item`mafia thumb ring`, (1 / 0.96 - 1) * get("valueOfAdventure")],
-  ]);
-}
-
-function luckyGoldRing(mode: BonusEquipMode) {
-  // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
-  if (!have($item`lucky gold ring`) || mode === BonusEquipMode.DMT) {
-    return new Map<Item, number>([]);
-  }
-
-  // Volcoino has a low drop rate which isn't accounted for here
-  // Overestimating until it drops is probably fine, don't @ me
-  const dropValues = [
-    100, // 80 - 120 meat
-    ...[
-      itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
-      itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
-      itemAmount($item`Freddy Kruegerand`) > 0 ? garboValue($item`Freddy Kruegerand`) : 0,
-      realmAvailable("sleaze") ? garboValue($item`Beach Buck`) : 0,
-      realmAvailable("spooky") ? garboValue($item`Coinspiracy`) : 0,
-      realmAvailable("stench") ? garboValue($item`FunFunds™`) : 0,
-      realmAvailable("hot") && !get("_luckyGoldRingVolcoino") ? garboValue($item`Volcoino`) : 0,
-      realmAvailable("cold") ? garboValue($item`Wal-Mart gift certificate`) : 0,
-      realmAvailable("fantasy") ? garboValue($item`Rubee™`) : 0,
-    ].filter((value) => value > 0),
-  ];
-
-  // Items drop every ~10 turns
-  return new Map<Item, number>([
-    [$item`lucky gold ring`, sumNumbers(dropValues) / dropValues.length / 10],
-  ]);
-}
-
-function cinchoDeMayo(mode: BonusEquipMode) {
-  if (
-    !have($item`Cincho de Mayo`) ||
-    CinchoDeMayo.currentCinch() === 0 ||
-    // Ignore for DMT? Requires specific combat stuff, so probably weird there
-    mode === BonusEquipMode.DMT ||
-    // Require manuel to make sure we don't kill during stasis
-    !monsterManuelAvailable() ||
-    // Require that we've either finished yachtzee, or aren't doing it in the first place, cinch better used there
-    (!get("_garboYachtzeeChainCompleted") && globalOptions.prefs.yachtzeechain) ||
-    // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
-    maxPassiveDamage() >= 50
-  ) {
-    return new Map<Item, number>([]);
-  }
-
-  // Account for a single use of Projectile Pinata, which gives 3x Robortender candies
-  return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
-}
-
-function mrCheengsSpectacles() {
-  if (!have($item`Mr. Cheeng's spectacles`)) {
-    return new Map<Item, number>([]);
-  }
-
-  // Items drop every 4 turns
-  // TODO: Possible drops are speculated to be any pvpable potion that will never be banned by standard
-  return new Map<Item, number>([[$item`Mr. Cheeng's spectacles`, 220]]);
-}
-
-function mrScreegesSpectacles() {
-  if (!have($item`Mr. Screege's spectacles`)) {
-    return new Map<Item, number>([]);
-  }
-
-  // TODO: Calculate actual bonus value (good luck!)
-  return new Map<Item, number>([[$item`Mr. Screege's spectacles`, 180]]);
 }
 
 function pantogramPants() {
@@ -232,7 +150,7 @@ function bagOfManyConfections() {
 function snowSuit(mode: BonusEquipMode) {
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!have($item`Snow Suit`) || get("_carrotNoseDrops") >= 3 || !useLimitedDrops(mode)) {
+  if (!have($item`Snow Suit`) || get("_carrotNoseDrops") >= 3 || !modeUseLimitedDrops(mode)) {
     return new Map<Item, number>([]);
   }
 
@@ -248,14 +166,14 @@ function mayflowerBouquet(mode: BonusEquipMode) {
 
   // Ignore for EMBEZZLER
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!have($item`Mayflower bouquet`) || !useLimitedDrops(mode)) {
+  if (!have($item`Mayflower bouquet`) || !modeUseLimitedDrops(mode)) {
     return new Map<Item, number>([]);
   }
 
-  const sporadicMeatBonus = (40 * 0.125 * valueOfMeat(mode)) / 100;
+  const sporadicMeatBonus = (40 * 0.125 * modeValueOfMeat(mode)) / 100;
   const averageFlowerValue =
     garboAverageValue(
-      ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`
+      ...$items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`,
     ) * Math.max(0.01, 0.5 - get("_mayflowerDrops") * 0.11);
   return new Map<Item, number>([
     [
@@ -265,20 +183,6 @@ function mayflowerBouquet(mode: BonusEquipMode) {
   ]);
 }
 
-/*
-This is separate from bonusGear to prevent circular references
-bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
-If this isn't separated from bonusGear(), usingThumbRing() will call bonusGear(), creating a dangerous loop
-*/
-function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
-  return new Map<Item, number>([
-    ...mafiaThumbRing(mode),
-    ...luckyGoldRing(mode),
-    ...mrCheengsSpectacles(),
-    ...mrScreegesSpectacles(),
-    ...cinchoDeMayo(mode),
-  ]);
-}
 export function magnifyingGlass(): Map<Item, number> {
   if (
     !have($item`cursed magnifying glass`) ||
@@ -295,7 +199,7 @@ export function magnifyingGlass(): Map<Item, number> {
 
 export function bonusGear(
   mode: BonusEquipMode,
-  valueCircumstantialBonus = true
+  valueCircumstantialBonus = true,
 ): Map<Item, number> {
   return new Map<Item, number>([
     ...cheeses(mode),
@@ -340,51 +244,6 @@ function shavingBonus(): Map<Item, number> {
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
 
-let cachedUsingThumbRing: boolean | null = null;
-/**
- * Calculates whether we expect to be wearing the thumb ring for most of the farming day.
- * This is used in functions that leverage projected turns; for instance, calculating the
- * number of turns of sweet synthesis required in our diet calcs or potion costs.
- * @returns boolean of whether we expect to be wearing the thumb ring for much of the day
- */
-export function usingThumbRing(): boolean {
-  if (!have($item`mafia thumb ring`)) {
-    return false;
-  }
-  if (cachedUsingThumbRing === null) {
-    const gear = bonusAccessories(BonusEquipMode.BARF);
-    const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
-
-    setLocation($location`Barf Mountain`);
-    const meatAccessories = Item.all()
-      .filter(
-        (item) => have(item) && toSlot(item) === $slot`acc1` && getModifier("Meat Drop", item) > 0
-      )
-      .map((item) => [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [Item, number]);
-
-    const accessoryValues = new Map<Item, number>(accessoryBonuses);
-    for (const [accessory, value] of meatAccessories) {
-      accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
-    }
-
-    if (
-      have($item`mafia pointer finger ring`) &&
-      ((myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) ||
-        have($item`haiku katana`) ||
-        have($item`Operation Patriot Shield`) ||
-        have($item`unwrapped knock-off retro superhero cape`) ||
-        have($skill`Head in the Game`))
-    ) {
-      accessoryValues.set($item`mafia pointer finger ring`, 500);
-    }
-    const bestAccessories = [...accessoryValues.entries()]
-      .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
-      .map(([item]) => item);
-    cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
-  }
-  return cachedUsingThumbRing;
-}
-
 let juneCleaverEV: number | null = null;
 function juneCleaver(mode: BonusEquipMode): Map<Item, number> {
   const estimatedJuneCleaverTurns = remainingUserTurns() + estimatedGarboTurns();
@@ -398,7 +257,7 @@ function juneCleaver(mode: BonusEquipMode): Map<Item, number> {
   if (!juneCleaverEV) {
     juneCleaverEV =
       sum([...JuneCleaver.choices], (choice) =>
-        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
+        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]),
       ) / JuneCleaver.choices.length;
   }
   // If we're ascending then the chances of hitting choices in the queue is reduced
@@ -409,12 +268,12 @@ function juneCleaver(mode: BonusEquipMode): Map<Item, number> {
   ) {
     const availEV =
       sum([...JuneCleaver.choicesAvailable()], (choice) =>
-        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])
+        valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]),
       ) / JuneCleaver.choicesAvailable().length;
     const queueEV =
       sum([...JuneCleaver.queue()], (choice) => {
         const choiceValue = valueJuneCleaverOption(
-          juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]
+          juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)],
         );
         const cleaverEncountersLeft = Math.floor(estimatedJuneCleaverTurns / 30);
         const encountersToQueueExit = 1 + JuneCleaver.queue().indexOf(choice);
@@ -435,7 +294,7 @@ function stickers(mode: BonusEquipMode): Map<Item, number> {
   if (mode === BonusEquipMode.EMBEZZLER) return new Map();
 
   const cost = sumNumbers(
-    $slots`sticker1, sticker2, sticker3`.map((s) => mallPrice(equippedItem(s)) / 20)
+    $slots`sticker1, sticker2, sticker3`.map((s) => mallPrice(equippedItem(s)) / 20),
   );
   return new Map([
     [$item`scratch 'n' sniff sword`, -1 * cost],

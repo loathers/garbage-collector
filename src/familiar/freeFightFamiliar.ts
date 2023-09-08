@@ -1,7 +1,7 @@
 import { Familiar, familiarWeight, inebrietyLimit, Location, myInebriety } from "kolmafia";
 import { $familiar, $item, $location, clamp, findLeprechaunMultiplier, get, have } from "libram";
 import { canOpenRedPresent } from ".";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
@@ -84,7 +84,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
 
   if (!allowAttackFamiliars) {
     return familiarMenu.filter(
-      (fam) => !(fam.familiar.physicalDamage || fam.familiar.elementalDamage)
+      (fam) => !(fam.familiar.physicalDamage || fam.familiar.elementalDamage),
     );
   }
 

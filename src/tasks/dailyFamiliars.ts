@@ -1,4 +1,3 @@
-import { Task } from "grimoire-kolmafia";
 import {
   abort,
   cliExecute,
@@ -40,8 +39,10 @@ import {
   turnsToNC,
   userConfirmDialog,
 } from "../lib";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import { estimatedGarboTurns } from "../turns";
+import { GarboTask } from "./engine";
+import { Quest } from "grimoire-kolmafia";
 
 function newarkValue(): number {
   const lastCalculated = get("garbo_newarkValueDate", 0);
@@ -51,7 +52,7 @@ function newarkValue(): number {
     ];
     set(
       "garbo_newarkValue",
-      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0)
+      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0),
     );
     set("garbo_newarkValueDate", today);
   }
@@ -66,7 +67,7 @@ export function felizValue(): number {
     ];
     set(
       "garbo_felizValue",
-      (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0)
+      (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0),
     );
     set("garbo_felizValueDate", today);
   }
@@ -124,11 +125,11 @@ export function prepRobortender(): void {
         if (
           !userConfirmDialog(
             `Garbo cannot find a reasonably priced drive-by-shooting (price cap: ${priceCap}), and will not be using your robortender. Is that cool with you?`,
-            true
+            true,
           )
         ) {
           abort(
-            "Alright, then, I guess you should try to find a reasonbly priced drive-by-shooting. Or do different things with your day."
+            "Alright, then, I guess you should try to find a reasonbly priced drive-by-shooting. Or do different things with your day.",
           );
         }
         break;
@@ -140,7 +141,7 @@ export function prepRobortender(): void {
   }
 }
 
-export const DailyFamiliarTasks: Task[] = [
+const DailyFamiliarTasks: GarboTask[] = [
   {
     name: "Prepare Shorter-Order Cook",
     ready: () => have($familiar`Shorter-Order Cook`) && have($item`blue plate`),
@@ -151,7 +152,7 @@ export const DailyFamiliarTasks: Task[] = [
     name: "Prepare Robortender",
     ready: () => have($familiar`Robortender`),
     completed: () => get("_roboDrinks").toLowerCase().includes("drive-by shooting"),
-    do: () => prepRobortender(),
+    do: prepRobortender,
   },
   {
     name: "Acquire amulet coin",
@@ -186,7 +187,7 @@ export const DailyFamiliarTasks: Task[] = [
         myPrimestat().toString(),
         "Stench Damage",
         hippyStoneBroken() ? "PvP Fights" : "HP Regen",
-        "Red Ray"
+        "Red Ray",
       ),
     outfit: { familiar: $familiar`Crimbo Shrub` },
   },
@@ -220,3 +221,8 @@ export const DailyFamiliarTasks: Task[] = [
     },
   },
 ];
+
+export const DailyFamiliarsQuest: Quest<GarboTask> = {
+  name: "Daily Familiars",
+  tasks: DailyFamiliarTasks,
+};

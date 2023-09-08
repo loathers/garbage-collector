@@ -30,7 +30,6 @@ import {
   withProperty,
 } from "libram";
 import { acquire } from "../acquire";
-import bestAutumnatonLocation from "./autumnaton";
 import { garboAdventure, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { computeDiet, consumeDiet } from "../diet";
@@ -44,9 +43,12 @@ import {
   valueJuneCleaverOption,
 } from "../lib";
 import { teleportEffects } from "../mood";
-import { garboAverageValue, garboValue, sessionSinceStart } from "../session";
+import { sessionSinceStart } from "../session";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
+import { garboAverageValue, garboValue } from "../value";
+import bestAutumnatonLocation from "./autumnaton";
 import handleWorkshed from "./workshed";
+import wanderer from "../wanderer";
 
 function closetStuff(): void {
   for (const i of $items`bowling ball, funky junk key`) putCloset(itemAmount(i), i);
@@ -57,7 +59,7 @@ function floristFriars(): void {
     return;
   }
   [FloristFriar.StealingMagnolia, FloristFriar.AloeGuvnor, FloristFriar.PitcherPlant].forEach(
-    (flower) => flower.plant()
+    (flower) => flower.plant(),
   );
 }
 
@@ -106,7 +108,7 @@ function skipJuneCleaverChoices(): void {
       .sort(
         (a, b) =>
           valueJuneCleaverOption(juneCleaverChoiceValues[a][bestJuneCleaverOption(a)]) -
-          valueJuneCleaverOption(juneCleaverChoiceValues[b][bestJuneCleaverOption(b)])
+          valueJuneCleaverOption(juneCleaverChoiceValues[b][bestJuneCleaverOption(b)]),
       )
       .splice(0, 3);
   }
@@ -128,7 +130,7 @@ function juneCleave(): void {
     withProperty("recoveryScript", "", () => {
       garboAdventure(
         $location`Noob Cave`,
-        Macro.abortWithMsg(`Expected June Cleaver non-combat but ended up in combat.`)
+        Macro.abortWithMsg(`Expected June Cleaver non-combat but ended up in combat.`),
       );
       if (["Poetic Justice", "Lost and Found"].includes(get("lastEncounter"))) {
         uneffect($effect`Beaten Up`);
@@ -158,11 +160,11 @@ function funguySpores() {
     const value =
       0.75 *
         garboAverageValue(
-          ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`
+          ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`,
         ) +
       0.25 *
         garboAverageValue(
-          ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`
+          ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`,
         );
     if (
       mallPrice($item`Fun-Guy spore`) < value &&
@@ -207,6 +209,7 @@ export default function postCombatActions(skipDiet = false): void {
   updateMallPrices();
   stillsuit();
   funguySpores();
+  wanderer.clear();
   if (
     globalOptions.ascend ||
     AutumnAton.turnsForQuest() < estimatedGarboTurns() + remainingUserTurns()

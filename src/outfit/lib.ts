@@ -36,29 +36,6 @@ import { meatFamiliar } from "../familiar";
 import { baseMeat } from "../lib";
 import { digitizedMonstersRemaining } from "../turns";
 
-export enum BonusEquipMode {
-  FREE,
-  EMBEZZLER,
-  DMT,
-  BARF,
-}
-
-export function isFree(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
-}
-
-export function useLimitedDrops(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
-}
-
-export function valueOfMeat(mode: BonusEquipMode): number {
-  return isFree(mode) ? 0 : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
-}
-
-export function valueOfItem(mode: BonusEquipMode): number {
-  return mode === BonusEquipMode.BARF ? 0.72 : 0;
-}
-
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) => outfit.canEquip(item));
   if (bjornalikes.length === 0) return null;
@@ -135,7 +112,7 @@ export function tryFillLatte(): boolean {
   ) {
     const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
     const latteIngredients = goodLatteIngredients.filter((ingredient) =>
-      get("latteUnlocks").includes(ingredient)
+      get("latteUnlocks").includes(ingredient),
     );
     if (latteIngredients.length < 3) latteIngredients.push("pumpkin");
     if (latteIngredients.length < 3) latteIngredients.push("vanilla");
@@ -189,7 +166,8 @@ export function validateGarbageFoldable(spec: OutfitSpec): void {
     if (
       Object.values(spec).some(
         (specEntry) =>
-          specEntry === garbageItem || (Array.isArray(specEntry) && specEntry.includes(garbageItem))
+          specEntry === garbageItem ||
+          (Array.isArray(specEntry) && specEntry.includes(garbageItem)),
       )
     ) {
       if (!have(garbageItem)) cliExecute(`fold ${garbageItem}`);

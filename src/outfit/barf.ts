@@ -26,14 +26,8 @@ import {
 import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
-import {
-  bestBjornalike,
-  BonusEquipMode,
-  cleaverCheck,
-  validateGarbageFoldable,
-  valueOfItem,
-  valueOfMeat,
-} from "./lib";
+import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
+import { BonusEquipMode, modeValueOfItem, modeValueOfMeat } from "../lib";
 
 function chooseGun({ familiar }: Outfit) {
   if (familiar === $familiar`Robortender` && have($item`love`)) return $item`love`;
@@ -67,7 +61,7 @@ function gunSpec(outfit: Outfit) {
 }
 
 const POINTER_RING_SPECS: (
-  outfit: Outfit
+  outfit: Outfit,
 ) => Delayed<{ available: boolean; items: Item[] | OutfitSpec }>[] = (outfit: Outfit) => [
   {
     available: have($skill`Furious Wallop`) && myFury() > 0,
@@ -99,7 +93,7 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`)
+    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
   );
 
   outfit.familiar ??= barfFamiliar();
@@ -107,9 +101,9 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, outfit.familiar, sim);
 
   outfit.modifier.push(
-    `${valueOfMeat(BonusEquipMode.BARF)} Meat Drop`,
-    `${valueOfItem(BonusEquipMode.BARF)} Item Drop`,
-    "-tie"
+    `${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`,
+    `${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`,
+    "-tie",
   );
 
   if (myInebriety() > trueInebrietyLimit()) {

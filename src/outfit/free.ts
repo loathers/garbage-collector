@@ -1,10 +1,11 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Location, toJson } from "kolmafia";
-import { $familiar, $familiars, $item, $items, get } from "libram";
+import { $familiar, $familiars, $item, $items, get, Guzzlr } from "libram";
 import { freeFightFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
-import { BonusEquipMode, cleaverCheck, validateGarbageFoldable } from "./lib";
+import { cleaverCheck, validateGarbageFoldable } from "./lib";
+import { BonusEquipMode } from "../lib";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
@@ -17,24 +18,38 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`)
+    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
   );
 
   outfit.familiar ??= freeFightFamiliar(options);
   const mode =
     outfit.familiar === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
-  outfit.modifier.push(
-    $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
-      ? "Familiar Experience"
-      : "Familiar Weight"
-  );
+
+  if (outfit.familiar !== $familiar`Patriotic Eagle`) {
+    outfit.modifier.push(
+      $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
+        ? "Familiar Experience"
+        : "Familiar Weight",
+    );
+  }
 
   const bjornChoice = chooseBjorn(mode, outfit.familiar);
 
-  if (get("_vampyreCloakeFormUses") < 10) outfit.equip($item`vampyric cloake`);
-  outfit.bonuses = bonusGear(mode);
+  if (get("_vampyreCloakeFormUses") < 10) outfit.setBonus($item`vampyric cloake`, 500);
+  bonusGear(mode).forEach((value, item) => outfit.addBonus(item, value));
 
   if (outfit.familiar !== $familiar`Grey Goose`) outfit.setBonus($item`tiny stillsuit`, 500);
+
+  if (
+    options.location === Guzzlr.getLocation() &&
+    Guzzlr.turnsLeftOnQuest(false) === 1 &&
+    Guzzlr.haveBooze()
+  ) {
+    outfit.addBonus(
+      $item`Guzzlr pants`,
+      Guzzlr.expectedReward(true) - Guzzlr.expectedReward(false),
+    );
+  }
 
   const bjornalike = $items`Crown of Thrones, Buddy Bjorn`.find((item) => outfit.canEquip(item));
   if (bjornalike) {

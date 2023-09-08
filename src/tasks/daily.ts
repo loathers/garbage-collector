@@ -1,4 +1,3 @@
-import { Task } from "grimoire-kolmafia";
 import {
   adv1,
   canadiaAvailable,
@@ -10,13 +9,13 @@ import {
   gamedayToInt,
   getClanLounge,
   gnomadsAvailable,
+  guildStoreAvailable,
   handlingChoice,
   holiday,
   inebrietyLimit,
   Item,
   itemAmount,
   mallPrice,
-  myAscensions,
   myClass,
   myDaycount,
   myHash,
@@ -49,9 +48,11 @@ import {
   have,
   maxBy,
   Pantogram,
+  questStep,
   set,
   SongBoom,
   SourceTerminal,
+  Witchess,
 } from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
@@ -60,16 +61,32 @@ import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";
-import { garboValue } from "../session";
+import { garboValue } from "../value";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import { GarboTask } from "./engine";
+import { Quest } from "grimoire-kolmafia";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 
 let latteRefreshed = false;
-let horseryRefreshed = false;
 let attemptCompletingBarfQuest = true;
 let snojoConfigured = false;
+
+// For this valuation, we are using the rough approximated value of different
+//   voting initiatives. They are relatively straghtforward:
+//
+//     - Meat Drop -- Add 30% meat to all fights
+//     - Item Drop -- Add the value of extra garbage bags
+//     - Advs      -- Add +1 of VOA
+//  ==== BELOW THIS LINE, THEY ARE PRIORITY RATHER THAN VALUATION ===========
+//     - FamXP     -- Helps level up your grey goose & pocket prof & robort, for loopers
+//     - ML        -- Helps stasis longer
+//     - Primestat -- Helps make combat easier
+//     - Exp       -- Technically helps you cast more librams,  maybe?
+//     - Meat -30% -- Lowers your meat drop; negative priority, so never used
+//     - Item -15% -- Lowers your item drop; negative priority, so never used
+//     - FamXP -2  -- Lowers your fam XP; negative priority, so never used
 
 function voterSetup(): void {
   const initPriority: Map<string, number> = new Map([
@@ -100,7 +117,7 @@ function voterSetup(): void {
       Object.keys(votingBoothInitiatives(myClass(), myPath(), myDaycount())).map((init) => {
         const val = initPriority.get(init) ?? 0;
         return [init, val];
-      })
+      }),
     );
 
     const initiativeValue = 2 * Math.max(...availableInitiatives.values());
@@ -152,14 +169,14 @@ function voterSetup(): void {
       ? 1
       : 2;
 
-  const voteLocalPriorityArr = [
-    [0, initPriority.get(get("_voteLocal1")) || (get("_voteLocal1").indexOf("-") === -1 ? 1 : -1)],
-    [1, initPriority.get(get("_voteLocal2")) || (get("_voteLocal2").indexOf("-") === -1 ? 1 : -1)],
-    [2, initPriority.get(get("_voteLocal3")) || (get("_voteLocal3").indexOf("-") === -1 ? 1 : -1)],
-    [3, initPriority.get(get("_voteLocal4")) || (get("_voteLocal4").indexOf("-") === -1 ? 1 : -1)],
-  ] as const;
+  const voteLocalPriorityArr = [1, 2, 3, 4].map((index) => ({
+    urlString: index - 1,
+    value:
+      initPriority.get(get(`_voteLocal${index}`)) ??
+      (get(`_voteLocal${index}`).includes("-") ? -1 : 1),
+  }));
 
-  const init = maxBy(voteLocalPriorityArr, 1)[0];
+  const init = maxBy(voteLocalPriorityArr, "value").urlString;
 
   visitUrl(`choice.php?option=1&whichchoice=1331&g=${monsterVote}&local[]=${init}&local[]=${init}`);
 }
@@ -188,7 +205,7 @@ function pantogram(): void {
       (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) * estimatedGarboTurns();
   }
   const cloverPrice = Math.min(
-    ...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item))
+    ...$items`ten-leaf clover, disassembled clover`.map((item) => mallPrice(item)),
   );
   if (cloverPrice + mallPrice($item`porquoise`) > pantogramValue) {
     return;
@@ -202,7 +219,7 @@ function pantogram(): void {
     "Sleaze Resistance: 2",
     "MP Regen Max: 15",
     "Drops Items: true",
-    "Meat Drop: 60"
+    "Meat Drop: 60",
   );
 }
 
@@ -234,7 +251,7 @@ export function completeBarfQuest(): void {
         `The cost of 20 toxic globules (${globuleCosts}) is less than the profits expected from 3 FunFunds™ (${
           3 * garboValue($item`FunFunds™`)
         }). Proceeding to acquire toxic globules.`,
-        "green"
+        "green",
       );
       attemptCompletingBarfQuest =
         acquire(20, $item`toxic globule`, (1.5 * globuleCosts) / 20, false) >= 20;
@@ -244,7 +261,7 @@ export function completeBarfQuest(): void {
         `The cost of 20 toxic globules (${globuleCosts}) exceeds the profits expected from 3 FunFunds™ (${
           3 * garboValue($item`FunFunds™`)
         }). Consider farming some globules yourself.`,
-        "red"
+        "red",
       );
     }
   }
@@ -320,13 +337,13 @@ export function configureSnojo(): void {
         (7 * garboValue($item`ancient medicinal herbs`) +
           garboValue($item`training scroll:  Shattering Punch`)) /
           5,
-        1
+        1,
       );
     }
     if (get("snojoMysticalityWins") < 50) {
       options.set(
         (7 * garboValue($item`ice rice`) + garboValue($item`training scroll:  Snokebomb`)) / 5,
-        2
+        2,
       );
     }
     if (get("snojoMoxieWins") < 50) {
@@ -334,7 +351,7 @@ export function configureSnojo(): void {
         (7 * garboValue($item`iced plum wine`) +
           garboValue($item`training scroll:  Shivering Monkey Technique`)) /
           5,
-        3
+        3,
       );
     }
   }
@@ -348,13 +365,12 @@ export function configureSnojo(): void {
   }
 }
 
-export const DailyTasks: Task[] = [
+const DailyTasks: GarboTask[] = [
   {
     name: "Chibi Buddy",
     ready: () => have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`),
     completed: () => get("_chibiChanged", true),
     do: () => cliExecute("chibi chat"),
-    limit: { soft: 1 },
   },
   {
     name: "Refresh Latte",
@@ -367,24 +383,23 @@ export const DailyTasks: Task[] = [
   },
   {
     name: "Unlock Cemetery",
-    ready: () => get("lastGuildStoreOpen") >= myAscensions(),
+    ready: () => guildStoreAvailable(),
     completed: () => canAdventure($location`The Unquiet Garves`),
     do: () => visitUrl("guild.php?place=scg"),
-    limit: { soft: 3 }, // Sometimes need to cycle through some dialogue
+    limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
   },
   {
     name: "Unlock Woods",
-    ready: () => have($item`bitchin' meatcar`),
+    ready: () => guildStoreAvailable() && have($item`bitchin' meatcar`),
     completed: () => canAdventure($location`The Spooky Forest`),
     do: (): void => {
       visitUrl("guild.php?place=paco");
       if (handlingChoice()) runChoice(1);
     },
-    limit: { soft: 3 }, // Sometimes need to cycle through some dialogue
+    limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
   },
   {
     name: "Configure I Voted! Sticker",
-    ready: () => true,
     completed: () => have($item`"I Voted!" sticker`),
     do: voterSetup,
   },
@@ -421,15 +436,13 @@ export const DailyTasks: Task[] = [
     ready: () => get("getawayCampsiteUnlocked"),
     completed: () => get("_campAwayCloudBuffs") + get("_campAwaySmileBuffs") === 4,
     do: () => visitUrl("place.php?whichplace=campaway&action=campaway_sky"),
-    limit: { soft: 4 },
+    limit: { skip: 4 },
   },
   {
     name: "Verify Horsery",
-    ready: () => true,
-    completed: () => horseryRefreshed || get("horseryAvailable"),
+    completed: () => get("horseryAvailable"),
     do: (): void => {
       visitUrl("place.php?whichplace=town_right");
-      horseryRefreshed = true;
     },
   },
   {
@@ -465,6 +478,61 @@ export const DailyTasks: Task[] = [
     do: () => cliExecute("fortune buff meat"),
   },
   {
+    name: $item`defective Game Grid token`.name,
+    completed: () => get("_defectiveTokenUsed"),
+    do: () =>
+      withStash([$item`defective Game Grid token`], () => use(1, $item`defective Game Grid token`)),
+  },
+  {
+    name: $item`Glenn's golden dice`.name,
+    ready: () => have($item`Glenn's golden dice`),
+    completed: () => get("_glennGoldenDiceUsed"),
+    do: () => use($item`Glenn's golden dice`),
+  },
+  {
+    name: "Clan pool table",
+    ready: () => getClanLounge()["Clan pool table"] !== undefined,
+    completed: () => get("_poolGames") >= 3,
+    do: () => cliExecute("pool aggressive"),
+    limit: { skip: 3 },
+  },
+  {
+    name: "Daycare",
+    ready: () => get("daycareOpen") || get("_daycareToday"),
+    completed: () => get("_daycareSpa"),
+    do: () => cliExecute("daycare mysticality"),
+  },
+  {
+    name: $item`redwood rain stick`.name,
+    ready: () => have($item`redwood rain stick`),
+    completed: () => get("_redwoodRainStickUsed"),
+    do: () => use($item`redwood rain stick`),
+  },
+  {
+    name: "Witchess Puzzle Champ",
+    ready: () => Witchess.have(),
+    completed: () => get("_witchessBuff"),
+    do: () => cliExecute("up Puzzle Champ"),
+  },
+  {
+    name: "Friar's Blessing",
+    ready: () => questStep("questL06Friar") === 999,
+    completed: () => get("friarsBlessingReceived"),
+    do: () => cliExecute("friars familiar"),
+  },
+  {
+    name: $item`The Legendary Beat`.name,
+    ready: () => have($item`The Legendary Beat`),
+    completed: () => get("_legendaryBeat"),
+    do: () => use($item`The Legendary Beat`),
+  },
+  {
+    name: $item`portable steam unit`.name,
+    ready: () => have($item`portable steam unit`),
+    completed: () => get("_portableSteamUnitUsed"),
+    do: () => use($item`portable steam unit`),
+  },
+  {
     name: "Summon Demon",
     ready: () => !!get("demonName2") && get("questL11Manor") === "finished",
     completed: () => get("demonSummoned"),
@@ -475,7 +543,7 @@ export const DailyTasks: Task[] = [
     ready: () => SourceTerminal.have(),
     completed: () => SourceTerminal.enhanceUsesRemaining() === 0,
     do: () => SourceTerminal.enhance($effect`meat.enh`),
-    limit: { soft: 3 },
+    limit: { skip: 3 },
   },
   {
     name: "Source Terminal Enquire",
@@ -532,7 +600,7 @@ export const DailyTasks: Task[] = [
   {
     name: "Holiday Eldritch Attunement",
     ready: () =>
-      holiday() === "Generic Summer Holiday" &&
+      holiday().includes("Generic Summer Holiday") &&
       !have($effect`Eldritch Attunement`) &&
       estimatedTentacles() * globalOptions.prefs.valueOfFreeFight > get("valueOfAdventure"),
     completed: () => have($effect`Eldritch Attunement`),
@@ -595,3 +663,8 @@ export const DailyTasks: Task[] = [
     do: () => retrieveItems.forEach((item) => retrieveItem(item)),
   },
 ];
+
+export const DailyQuest: Quest<GarboTask> = {
+  name: "Daily",
+  tasks: DailyTasks,
+};

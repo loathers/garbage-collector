@@ -6,6 +6,7 @@ module.exports = function (api) {
     exclude: [],
     presets: [
       "@babel/preset-typescript",
+      "@babel/preset-react",
       [
         "@babel/preset-env",
         {
@@ -16,6 +17,7 @@ module.exports = function (api) {
     plugins: [
       "@babel/plugin-proposal-class-properties",
       "@babel/plugin-proposal-object-rest-spread",
+      "babel-plugin-transform-scss",
     ],
   };
 };

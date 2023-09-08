@@ -81,21 +81,44 @@ import {
   sum,
   uneffect,
 } from "libram";
-import { globalOptions } from "./config";
-import { garboValue } from "./session";
 import { acquire } from "./acquire";
+import { globalOptions } from "./config";
+import { garboValue } from "./value";
 
-export const embezzlerLog: {
+export const eventLog: {
   initialEmbezzlersFought: number;
   digitizedEmbezzlersFought: number;
-  sources: Array<string>;
+  embezzlerSources: Array<string>;
+  yachtzees: number;
 } = {
   initialEmbezzlersFought: 0,
   digitizedEmbezzlersFought: 0,
-  sources: [],
+  embezzlerSources: [],
+  yachtzees: 0,
 };
 
-export type BonusEquipMode = "free" | "embezzler" | "dmt" | "barf";
+export enum BonusEquipMode {
+  FREE,
+  EMBEZZLER,
+  DMT,
+  BARF,
+}
+
+export function modeIsFree(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
+}
+
+export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
+}
+
+export function modeValueOfMeat(mode: BonusEquipMode): number {
+  return modeIsFree(mode) ? 0 : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
+}
+
+export function modeValueOfItem(mode: BonusEquipMode): number {
+  return mode === BonusEquipMode.BARF ? 0.72 : 0;
+}
 
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
@@ -189,7 +212,7 @@ export function mapMonster(location: Location, monster: Monster): void {
   }
 
   const fightPage = visitUrl(
-    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`
+    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`,
   );
   if (!fightPage.includes(monster.name)) {
     throw "Something went wrong starting the fight.";
@@ -286,7 +309,7 @@ export function printHelpMenu(): void {
     return `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${croppedDescription}</pre></td></tr>`;
   });
   printHtml(
-    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`
+    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(``)}</table>`,
   );
 }
 
@@ -353,7 +376,7 @@ export function safeRestore(): void {
       uneffect($effect`Beaten Up`);
     } else {
       throw new Error(
-        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready."
+        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.",
       );
     }
   }
@@ -387,18 +410,22 @@ export function checkGithubVersion(): void {
   if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
     print("Skipping version check for custom build");
   } else {
-    if (gitAtHead("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
+    if (
+      gitAtHead("loathers-garbage-collector-release") ||
+      gitAtHead("Loathing-Associates-Scripting-Society-garbage-collector-release")
+    ) {
       print("Garbo is up to date!", HIGHLIGHT);
     } else {
       const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
-        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`)
+        visitUrl(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`),
       );
       const releaseCommit = gitBranches.find((branchInfo) => branchInfo.name === "release")?.commit;
       print("Garbo is out of date. Please run 'git update!'", "red");
       print(
         `Local Version: ${
+          gitInfo("loathers-garbage-collector-release").commit ||
           gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release").commit
-        }.`
+        }.`,
       );
       print(`Release Version: ${releaseCommit?.sha}.`);
     }
@@ -422,7 +449,7 @@ export function formatNumber(num: number): string {
 export function getChoiceOption(partialText: string): number {
   if (handlingChoice()) {
     const findResults = Object.entries(availableChoiceOptions()).find(
-      (value) => value[1].indexOf(partialText) > -1
+      (value) => value[1].indexOf(partialText) > -1,
     );
     if (findResults) {
       return parseInt(findResults[0]);
@@ -556,11 +583,11 @@ export function bestShadowRift(): Location {
           return sum(getMonsters(l), (m) => {
             return sum(
               itemDropsArray(m),
-              ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1)
+              ({ drop, rate }) => garboValue(drop) * clamp((rate * dropModifier) / 100, 0, 1),
             );
           });
         },
-      })
+      }),
     );
     if (!_bestShadowRift) {
       throw new Error("Failed to find a suitable Shadow Rift to adventure in");
@@ -589,7 +616,7 @@ export function freeRest(): boolean {
       // burn some mp so that we can rest
       const bestSkill = maxBy(
         Skill.all().filter((sk) => have(sk) && mpCost(sk) >= 1),
-        (sk) => -mpCost(sk)
+        (sk) => -mpCost(sk),
       ); // are there any other skills that cost mana which we should blacklist?
       // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
       useSkill(bestSkill);
@@ -605,4 +632,44 @@ export function freeRest(): boolean {
   }
 
   return true;
+}
+
+export function printEventLog(): void {
+  if (resetDailyPreference("garboEmbezzlerDate")) {
+    property.set("garboEmbezzlerCount", 0);
+    property.set("garboEmbezzlerSources", "");
+    property.set("garboYachtzeeCount", 0);
+  }
+  const totalEmbezzlers =
+    property.getNumber("garboEmbezzlerCount", 0) +
+    eventLog.initialEmbezzlersFought +
+    eventLog.digitizedEmbezzlersFought;
+
+  const allEmbezzlerSources = property
+    .getString("garboEmbezzlerSources")
+    .split(",")
+    .filter((source) => source);
+  allEmbezzlerSources.push(...eventLog.embezzlerSources);
+
+  const yacthzeeCount = get("garboYachtzeeCount", 0) + eventLog.yachtzees;
+
+  property.set("garboEmbezzlerCount", totalEmbezzlers);
+  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
+  property.set("garboYachtzeeCount", yacthzeeCount);
+
+  print(
+    `You fought ${eventLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${eventLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+    HIGHLIGHT,
+  );
+  print(
+    `Including this, you have fought ${totalEmbezzlers} across all ascensions today`,
+    HIGHLIGHT,
+  );
+  if (yacthzeeCount > 0) {
+    print(`You explored the undersea yacht ${eventLog.yachtzees} times`, HIGHLIGHT);
+    print(
+      `Including this, you explored the undersea yacht ${yacthzeeCount} times across all ascensions today`,
+      HIGHLIGHT,
+    );
+  }
 }

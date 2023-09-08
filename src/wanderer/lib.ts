@@ -4,7 +4,8 @@ import { NumericProperty } from "libram/dist/propertyTypes";
 import { realmAvailable } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
-export type DraggableFight = "backup" | "wanderer" | "yellow ray";
+export const draggableFights = ["backup", "wanderer", "yellow ray", "freefight"] as const;
+export type DraggableFight = (typeof draggableFights)[number];
 
 interface UnlockableZone {
   zone: string;
@@ -63,7 +64,7 @@ export function underwater(location: Location): boolean {
 }
 const ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm"];
 const canAdventureOrUnlockSkipList = [
-  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, Shadow Rift (The 8-Bit Realm), The Daily Dungeon`,
+  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, Shadow Rift (The 8-Bit Realm), The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis`,
   ...Location.all().filter((l) => ILLEGAL_PARENTS.includes(l.parent)),
 ];
 export function canAdventureOrUnlock(loc: Location): boolean {
@@ -96,7 +97,7 @@ function canWanderTypeBackup(location: Location): boolean {
   );
 }
 
-function canWanderTypeYellowRay(location: Location): boolean {
+function canWanderTypeFreeFight(location: Location): boolean {
   if (location === $location`The Fun-Guy Mansion` && get("funGuyMansionKills", 0) >= 100) {
     return false;
   }
@@ -116,8 +117,9 @@ export function canWander(location: Location, type: DraggableFight): boolean {
   switch (type) {
     case "backup":
       return canWanderTypeBackup(location);
+    case "freefight":
     case "yellow ray":
-      return canWanderTypeYellowRay(location);
+      return canWanderTypeFreeFight(location);
     case "wanderer":
       return canWanderTypeWander(location);
   }
@@ -140,7 +142,7 @@ export class WandererTarget {
     name: string,
     location: Location,
     value: number,
-    prepareTurn: () => boolean = () => true
+    prepareTurn: () => boolean = () => true,
   ) {
     this.name = name;
     this.value = value;
@@ -150,72 +152,9 @@ export class WandererTarget {
 }
 export type WandererFactory = (
   type: DraggableFight,
-  locationSkiplist: Location[]
+  locationSkiplist: Location[],
 ) => WandererTarget[];
 export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
-
-const quartetChoice = get("lastQuartetRequest") || 4;
-export const unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
-  [$location`The Spooky Forest`, { 502: 2, 505: 2 }],
-  [$location`Guano Junction`, { 1427: 1 }],
-  [$location`The Hidden Apartment Building`, { 780: 6, 1578: 6 }],
-  [$location`The Black Forest`, { 923: 1, 924: 1 }],
-  [$location`LavaCo™ Lamp Factory`, { 1091: 9 }],
-  [$location`The Haunted Laboratory`, { 884: 6 }],
-  [$location`The Haunted Nursery`, { 885: 6 }],
-  [$location`The Haunted Storage Room`, { 886: 6 }],
-  [$location`The Haunted Ballroom`, { 106: 3, 90: quartetChoice }], // Skip, and Choose currently playing song, or skip
-  [$location`The Haunted Library`, { 163: 4, 888: 4, 889: 5 }],
-  [$location`The Haunted Gallery`, { 89: 6, 91: 2 }],
-  [$location`The Hidden Park`, { 789: 6 }],
-  [$location`A Mob of Zeppelin Protesters`, { 1432: 1, 856: 2, 857: 2, 858: 2 }],
-  [$location`A-Boo Peak`, { 1430: 2 }],
-  [$location`Sloppy Seconds Diner`, { 919: 6 }],
-  [$location`VYKEA`, { 1115: 6 }],
-  [
-    $location`The Castle in the Clouds in the Sky (Basement)`,
-    {
-      669: 1,
-      670: 4,
-      671: 4,
-    },
-  ],
-  [
-    $location`The Haunted Bedroom`,
-    {
-      876: 1, // old leather wallet, 500 meat
-      877: 1, // old coin purse, 500 meat
-      878: 1, // 400-600 meat
-      879: 2, // grouchy spirit
-      880: 2, // a dumb 75 meat club
-    },
-  ],
-  [$location`The Copperhead Club`, { 855: 4 }],
-  [$location`The Haunted Bathroom`, { 882: 2 }], // skip; it's the towel adventure but we don't want towels
-  [
-    $location`The Castle in the Clouds in the Sky (Top Floor)`,
-    {
-      1431: 1,
-      675: 4, // Go to Steampunk choice
-      676: 4, // Go to Punk Rock choice
-      677: 1, // Fight Steam Punk Giant
-      678: 3, // Go to Steampunk choice
-    },
-  ],
-  [
-    $location`The Castle in the Clouds in the Sky (Ground Floor)`,
-    {
-      672: 3, // Skip
-      673: 3, // Skip
-      674: 3, // Skip
-      1026: 3, // Skip
-    },
-  ],
-  [$location`The Hidden Office Building`, { 786: 6 }],
-  [$location`Cobb's Knob Barracks`, { 522: 2 }], // skip
-  [$location`The Penultimate Fantasy Airship`, { 178: 2, 182: 1 }], // Skip, and Fight random enemy
-  [$location`The Haiku Dungeon`, { 297: 3 }], // skip
-]);
 
 export function defaultFactory(): WandererTarget[] {
   return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
@@ -264,6 +203,7 @@ export function wandererTurnsAvailableToday(location: Location): number {
     backup: canWander(location, "backup"),
     wanderer: canWander(location, "wanderer"),
     "yellow ray": canWander(location, "yellow ray"),
+    freefight: canWander(location, "freefight"),
   };
 
   const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
@@ -278,7 +218,7 @@ export function wandererTurnsAvailableToday(location: Location): number {
   const wanderers = sum(WanderingSources, (source) =>
     canWanderCache[source.type] && have(source.item)
       ? clamp(get(source.property), 0, source.max)
-      : 0
+      : 0,
   );
 
   return digitize + pigSkinnerRay + yellowRay + wanderers;
