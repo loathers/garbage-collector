@@ -8,7 +8,6 @@ import {
   currentMcd,
   gamedayToInt,
   getClanLounge,
-  getProperty,
   gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
