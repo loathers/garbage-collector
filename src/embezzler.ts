@@ -605,7 +605,7 @@ export const gregFights = (
       () => ((get(monsterProp) === embezzler && get(fightsProp) > 0) || totalCharges() > 0 ? 1 : 0),
       (options: EmbezzlerFightRunOptions) => {
         const run = ltbRun();
-        const runMacro = get(`_garboUsingFreeEmbezzlerBanish`, false)
+        const runMacro = get("_garboUsingFreeEmbezzlerBanish", false)
           ? Macro.skill($skill`Snokebomb`)
           : ltbRun().macro;
         run.constraints.preparation?.();
