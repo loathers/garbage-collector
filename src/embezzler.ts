@@ -624,7 +624,7 @@ export const gregFights = (
   ];
 };
 
-export const gregLikeSources = [
+const gregLikeSources = [
   ...gregFights(
     "Be Gregarious",
     () => true, // we can always use extrovermectin
