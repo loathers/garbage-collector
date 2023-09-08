@@ -370,19 +370,16 @@ export function configureSnojo(): void {
 
 function determineFreeEmbezzlerBanish(): void {
   if (freeBanishesChecked) return;
-  if (
+  const useFreeBanishes =
     gregLikeFightCount() < 120 && // 60 turns of banish from mafia middle finger ring, and 30 x 2 from two snokebombs
     gregLikeFightCount() > 0 &&
     have($item`mafia middle finger ring`) &&
     !get("_mafiaMiddleFingerRingUsed") &&
     have($skill`Snokebomb`) &&
     get(`_snokebombUsed`) === 0
-  ) {
-    set("_garboUsingFreeEmbezzlerBanish", true);
-    freeBanishesChecked = true;
-    return;
-  }
-  set("_garboUsingFreeEmbezzlerBanish", false);
+      ? true
+      : false;
+  set("_garboUsingFreeEmbezzlerBanish", useFreeBanishes);
   freeBanishesChecked = true;
 }
 
