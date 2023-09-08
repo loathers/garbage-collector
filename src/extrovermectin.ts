@@ -36,7 +36,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
+import { freeRunConstraints, latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
 import { garboAdventure, Macro } from "./combat";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
@@ -161,7 +161,7 @@ export function saberCrateIfSafe(): void {
   if (!canSaber || !isSafeToSaber) return;
 
   do {
-    const run = tryFindFreeRun() ?? ltbRun();
+    const run = tryFindFreeRun(freeRunConstraints) ?? ltbRun();
 
     useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar({ canChooseMacro: false }));
     run.constraints.preparation?.();

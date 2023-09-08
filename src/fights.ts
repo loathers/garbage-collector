@@ -154,6 +154,7 @@ import {
   eventLog,
   expectedEmbezzlerProfit,
   freeRest,
+  freeRunConstraints,
   HIGHLIGHT,
   kramcoGuaranteed,
   latteActionSourceFinderConstraints,
@@ -241,7 +242,7 @@ function embezzlerSetup() {
     setChoice(582, 1);
     setChoice(579, 3);
     while (get("lastTempleAdventures") < myAscensions()) {
-      const run = tryFindFreeRun() ?? ltbRun();
+      const run = tryFindFreeRun(freeRunConstraints) ?? ltbRun();
       if (!run) break;
       run.constraints.preparation?.();
       freeFightOutfit(toSpec(run)).dress();
@@ -333,7 +334,7 @@ function startWandererCounter() {
         embezzlerOutfit().dress();
       } else {
         print("You do not have gregs active, so this is a regular free run.");
-        run = tryFindFreeRun() ?? ltbRun();
+        run = tryFindFreeRun(freeRunConstraints) ?? ltbRun();
         run.constraints.preparation?.();
         freeFightOutfit(toSpec(run)).dress();
       }

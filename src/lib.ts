@@ -477,14 +477,41 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
 
 export const latteActionSourceFinderConstraints = {
   allowedAction: (action: ActionSource): boolean => {
-    if (!have($item`latte lovers member's mug`)) return true;
+    const props = new Map<
+      Item | Familiar | Skill | (Item | Familiar | Skill)[],
+      () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
+    >([
+      [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
+      [$item`mafia middle finger ring`, () => true],
+    ]);
+    const disallowUsage = props.get(action.source);
+
+    if (!have($item`latte lovers member's mug`)) {
+      return !(disallowUsage?.() && get("_garboUsingFreeEmbezzlerBanish", false));
+    }
+
     const forceEquipsOtherThanLatte = (
       action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
     ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
     return (
       forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      sum(forceEquipsOtherThanLatte, weaponHands) < 2
+      sum(forceEquipsOtherThanLatte, weaponHands) < 2 &&
+      !(disallowUsage?.() && get("_garboUsingFreeEmbezzlerBanish", false))
     );
+  },
+};
+
+export const freeRunConstraints = {
+  allowedAction: (action: ActionSource) => {
+    const props = new Map<
+      Item | Familiar | Skill | (Item | Familiar | Skill)[],
+      () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
+    >([
+      [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
+      [$item`mafia middle finger ring`, () => true],
+    ]);
+    const disallowUsage = props.get(action.source);
+    return !(disallowUsage?.() && get("_garboUsingFreeEmbezzlerBanish", false));
   },
 };
 

@@ -21,7 +21,7 @@ import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
-import { ltbRun, propertyManager, realmAvailable } from "../lib";
+import { freeRunConstraints, ltbRun, propertyManager, realmAvailable } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
 import wanderer from "../wanderer";
@@ -86,7 +86,7 @@ export function yachtzeeBuffValue(obj: Item | Effect): number {
 
 export function useSpikolodonSpikes(): void {
   if (get("_spikolodonSpikeUses") >= 5) return;
-  const run = tryFindFreeRun() ?? ltbRun();
+  const run = tryFindFreeRun(freeRunConstraints) ?? ltbRun();
 
   const canJelly =
     have($familiar`Space Jellyfish`) && !run.constraints.familiar && realmAvailable("stench");
