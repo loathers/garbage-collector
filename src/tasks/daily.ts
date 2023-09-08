@@ -666,7 +666,7 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Determine whether to use free banishers for embezzlers",
-    completed: () => getProperty("_garboUsingFreeEmbezzlerBanish") !== "",
+    completed: () => freeBanishesChecked,
     do: determineFreeEmbezzlerBanish,
   },
   // Final tasks
