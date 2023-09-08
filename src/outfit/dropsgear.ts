@@ -16,7 +16,6 @@ import {
   $items,
   $slot,
   $slots,
-  CinchoDeMayo,
   clamp,
   DaylightShavings,
   get,
@@ -41,8 +40,6 @@ import {
 import { garboAverageValue, garboValue } from "../value";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { bonusAccessories } from "./dropsgearAccessories";
-import { maxPassiveDamage, monsterManuelAvailable } from "../combat";
-import { felizValue } from "../tasks/dailyFamiliars";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
