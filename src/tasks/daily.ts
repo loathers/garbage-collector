@@ -74,6 +74,7 @@ const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 let latteRefreshed = false;
 let attemptCompletingBarfQuest = true;
 let snojoConfigured = false;
+let freeBanishesChecked = false;
 
 // For this valuation, we are using the rough approximated value of different
 //   voting initiatives. They are relatively straghtforward:
@@ -368,6 +369,7 @@ export function configureSnojo(): void {
 }
 
 function determineFreeEmbezzlerBanish(): void {
+  if (freeBanishesChecked) return;
   if (
     gregLikeFightCount() < 120 &&
     gregLikeFightCount() > 0 &&
@@ -377,9 +379,11 @@ function determineFreeEmbezzlerBanish(): void {
     get(`_snokebombUsed`) === 0
   ) {
     set("_garboUsingFreeEmbezzlerBanish", true);
+    freeBanishesChecked = true;
     return;
   }
   set("_garboUsingFreeEmbezzlerBanish", false);
+  freeBanishesChecked = true;
 }
 
 const DailyTasks: GarboTask[] = [

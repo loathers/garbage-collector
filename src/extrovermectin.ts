@@ -334,7 +334,7 @@ const shortBanishes = [
 ];
 
 function banishBunny(): void {
-  if (get("_garboUsingFreeEmbezzlerBanish")) {
+  if (get("_garboUsingFreeEmbezzlerBanish", false)) {
     do {
       new Requirement(["100 Monster Level"], {
         preventEquip: $items`carnivorous potted plant`,
