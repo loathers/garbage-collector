@@ -45,6 +45,7 @@ import {
   BeachComb,
   findLeprechaunMultiplier,
   get,
+  getBanishedMonsters,
   getModifier,
   have,
   maxBy,
@@ -370,6 +371,7 @@ export function configureSnojo(): void {
 function determineFreeEmbezzlerBanish(): void {
   if (freeBanishesChecked) return;
   const useFreeBanishes =
+    getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
     gregLikeFightCount() < 120 && // 60 turns of banish from mafia middle finger ring, and 30 x 2 from two snokebombs
     gregLikeFightCount() > 0 &&
     have($item`mafia middle finger ring`) &&
