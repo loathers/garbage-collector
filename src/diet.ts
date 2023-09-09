@@ -114,8 +114,8 @@ function eatSafe(qty: number, item: Item) {
 
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
+  const odeTurns = qty * item.inebriety;
   if (have($skill`The Ode to Booze`)) {
-    const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
       useSkill(
@@ -123,6 +123,8 @@ function drinkSafe(qty: number, item: Item) {
         Math.ceil(castTurns / turnsPerCast($skill`The Ode to Booze`)),
       );
     }
+  } else {
+    cliExecute(`send to Buffy || ${odeTurns} The Ode to Booze; wait 10`);
   }
   if (!drink(qty, item)) throw "Failed to drink safely";
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {

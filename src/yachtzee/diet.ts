@@ -229,9 +229,7 @@ function combineDietEntries(
   );
 }
 
-function castOde(turns: number): boolean {
-  if (!have($skill`The Ode to Booze`)) return false;
-
+function castOde(turns: number): void {
   shrugIrrelevantSongs();
 
   // If we have the polka of plenty skill, we can re-buff up later
@@ -241,10 +239,13 @@ function castOde(turns: number): boolean {
     else cliExecute(`shrug ${$effect`Chorale of Companionship`}`);
   }
 
-  while (haveEffect($effect`Ode to Booze`) < turns) {
-    useSkill($skill`The Ode to Booze`);
+  if (!have($skill`The Ode to Booze`)) {
+    cliExecute(`send to Buffy || ${turns} The Ode to Booze; wait 10`);
+  } else {
+    while (haveEffect($effect`Ode to Booze`) < turns) {
+      useSkill($skill`The Ode to Booze`);
+    }
   }
-  return true;
 }
 
 export function executeNextDietStep(stopBeforeJellies?: boolean): void {
