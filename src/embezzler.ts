@@ -68,6 +68,7 @@ import { waterBreathingEquipment } from "./outfit";
 import wanderer, { DraggableFight } from "./wanderer";
 import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
 import { shouldAugustCast } from "./resources";
+import { garboValue } from "./value";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -578,7 +579,13 @@ export const gregFights = (
       () => (get(monsterProp) === embezzler ? totalCharges() : 0),
       (options: EmbezzlerFightRunOptions) => {
         const run = ltbRun();
-        run.constraints.preparation?.();
+        run.constraints.preparation?.();  
+        // if garbo is way too meat negative, hard abort because something bad is happening.
+        //   in my experience garbo can spend up to 1.5-2 mil on diet but if garbo is at -3mil
+        //   something very bad is happening and garbo should stop. 
+        if (garboValue < -3000000) {
+          abort("Garbo is spending way too much meat on freeruns; it probably thinks you have a greg that you don't. Setting beGregariousFightsLeft = 0 might fix Garbo. Or it might not! Who knows, in this life.");
+        }
         const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
         adventureFunction(
           $location`The Dire Warren`,
