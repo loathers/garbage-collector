@@ -585,7 +585,7 @@ export const gregFights = (
 
     if (get("lastEncounter") === $monster`fluffy bunny`.name && bunnyBanish) {
       abort(
-        `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${monsterProp} preference is assigned an incorrect value.`,
+        `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${monsterProp} preference is nonzero and should probably be zero.`,
       );
     }
   }
