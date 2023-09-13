@@ -46,7 +46,7 @@ export function main(): void {
     setting.value = get(setting.name);
   }
 
-  writeln('<head><link rel="stylesheet" href="/garbage-collector/main.css"></head>');
+  writeln('<head><link rel="stylesheet" href="/garbage-collector/garbage-collector.css"></head>');
   writeln('<div id="root"></div>');
 
   writeln("<script>");
