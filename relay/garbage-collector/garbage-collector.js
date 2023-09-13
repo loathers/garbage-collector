@@ -181,7 +181,7 @@
              * @protected
              * @final
              */
-            isMounted: function isMounted(publicInstance) {
+            isMounted: function(publicInstance) {
               return false;
             },
             /**
@@ -199,7 +199,7 @@
              * @param {?string} callerName name of the calling function in the public API.
              * @internal
              */
-            enqueueForceUpdate: function enqueueForceUpdate(publicInstance, callback, callerName) {
+            enqueueForceUpdate: function(publicInstance, callback, callerName) {
               warnNoop(publicInstance, "forceUpdate");
             },
             /**
@@ -215,7 +215,7 @@
              * @param {?string} callerName name of the calling function in the public API.
              * @internal
              */
-            enqueueReplaceState: function enqueueReplaceState(publicInstance, completeState, callback, callerName) {
+            enqueueReplaceState: function(publicInstance, completeState, callback, callerName) {
               warnNoop(publicInstance, "replaceState");
             },
             /**
@@ -230,7 +230,7 @@
              * @param {?string} Name of the calling function in the public API.
              * @internal
              */
-            enqueueSetState: function enqueueSetState(publicInstance, partialState, callback, callerName) {
+            enqueueSetState: function(publicInstance, partialState, callback, callerName) {
               warnNoop(publicInstance, "setState");
             }
           };
@@ -260,9 +260,9 @@
               isMounted: ["isMounted", "Instead, make sure to clean up subscriptions and pending requests in componentWillUnmount to prevent memory leaks."],
               replaceState: ["replaceState", "Refactor your code to use setState instead (see https://github.com/facebook/react/issues/3236)."]
             };
-            var defineDeprecationWarning = function defineDeprecationWarning2(methodName, info) {
+            var defineDeprecationWarning = function(methodName, info) {
               Object.defineProperty(Component.prototype, methodName, {
-                get: function get() {
+                get: function() {
                   warn("%s(...) is deprecated in plain JavaScript React classes. %s", info[0], info[1]);
                   return void 0;
                 }
@@ -432,7 +432,7 @@
             return config.key !== void 0;
           }
           function defineKeyPropWarningGetter(props, displayName) {
-            var warnAboutAccessingKey = function warnAboutAccessingKey2() {
+            var warnAboutAccessingKey = function() {
               {
                 if (!specialPropKeyWarningShown) {
                   specialPropKeyWarningShown = true;
@@ -447,7 +447,7 @@
             });
           }
           function defineRefPropWarningGetter(props, displayName) {
-            var warnAboutAccessingRef = function warnAboutAccessingRef2() {
+            var warnAboutAccessingRef = function() {
               {
                 if (!specialPropRefWarningShown) {
                   specialPropRefWarningShown = true;
@@ -472,7 +472,7 @@
               }
             }
           }
-          var ReactElement = function ReactElement2(type, key, ref, self, source, owner, props) {
+          var ReactElement = function(type, key, ref, self, source, owner, props) {
             var element = {
               // This tag allows us to uniquely identify this as a React Element
               $$typeof: REACT_ELEMENT_TYPE,
@@ -819,43 +819,43 @@
               };
               Object.defineProperties(Consumer, {
                 Provider: {
-                  get: function get() {
+                  get: function() {
                     if (!hasWarnedAboutUsingConsumerProvider) {
                       hasWarnedAboutUsingConsumerProvider = true;
                       error("Rendering <Context.Consumer.Provider> is not supported and will be removed in a future major release. Did you mean to render <Context.Provider> instead?");
                     }
                     return context.Provider;
                   },
-                  set: function set(_Provider) {
+                  set: function(_Provider) {
                     context.Provider = _Provider;
                   }
                 },
                 _currentValue: {
-                  get: function get() {
+                  get: function() {
                     return context._currentValue;
                   },
-                  set: function set(_currentValue) {
+                  set: function(_currentValue) {
                     context._currentValue = _currentValue;
                   }
                 },
                 _currentValue2: {
-                  get: function get() {
+                  get: function() {
                     return context._currentValue2;
                   },
-                  set: function set(_currentValue2) {
+                  set: function(_currentValue2) {
                     context._currentValue2 = _currentValue2;
                   }
                 },
                 _threadCount: {
-                  get: function get() {
+                  get: function() {
                     return context._threadCount;
                   },
-                  set: function set(_threadCount) {
+                  set: function(_threadCount) {
                     context._threadCount = _threadCount;
                   }
                 },
                 Consumer: {
-                  get: function get() {
+                  get: function() {
                     if (!hasWarnedAboutUsingNestedContextConsumers) {
                       hasWarnedAboutUsingNestedContextConsumers = true;
                       error("Rendering <Context.Consumer.Consumer> is not supported and will be removed in a future major release. Did you mean to render <Context.Consumer> instead?");
@@ -864,10 +864,10 @@
                   }
                 },
                 displayName: {
-                  get: function get() {
+                  get: function() {
                     return context.displayName;
                   },
-                  set: function set(displayName) {
+                  set: function(displayName) {
                     if (!hasWarnedAboutDisplayNameOnConsumer) {
                       warn("Setting `displayName` on Context.Consumer has no effect. You should set it directly on the context with Context.displayName = '%s'.", displayName);
                       hasWarnedAboutDisplayNameOnConsumer = true;
@@ -944,10 +944,10 @@
               Object.defineProperties(lazyType, {
                 defaultProps: {
                   configurable: true,
-                  get: function get() {
+                  get: function() {
                     return defaultProps;
                   },
-                  set: function set(newDefaultProps) {
+                  set: function(newDefaultProps) {
                     error("React.lazy(...): It is not supported to assign `defaultProps` to a lazy component import. Either specify them where the component is defined, or create a wrapping component around it.");
                     defaultProps = newDefaultProps;
                     Object.defineProperty(lazyType, "defaultProps", {
@@ -957,10 +957,10 @@
                 },
                 propTypes: {
                   configurable: true,
-                  get: function get() {
+                  get: function() {
                     return propTypes;
                   },
-                  set: function set(newPropTypes) {
+                  set: function(newPropTypes) {
                     error("React.lazy(...): It is not supported to assign `propTypes` to a lazy component import. Either specify them where the component is defined, or create a wrapping component around it.");
                     propTypes = newPropTypes;
                     Object.defineProperty(lazyType, "propTypes", {
@@ -998,10 +998,10 @@
               Object.defineProperty(elementType, "displayName", {
                 enumerable: false,
                 configurable: true,
-                get: function get() {
+                get: function() {
                   return ownName;
                 },
-                set: function set(name) {
+                set: function(name) {
                   ownName = name;
                   if (!render2.name && !render2.displayName) {
                     render2.displayName = name;
@@ -1049,10 +1049,10 @@
               Object.defineProperty(elementType, "displayName", {
                 enumerable: false,
                 configurable: true,
-                get: function get() {
+                get: function() {
                   return ownName;
                 },
-                set: function set(name) {
+                set: function(name) {
                   ownName = name;
                   if (!type.name && !type.displayName) {
                     type.displayName = name;
@@ -1264,11 +1264,11 @@
             }
             try {
               if (construct) {
-                var Fake = function Fake2() {
+                var Fake = function() {
                   throw Error();
                 };
                 Object.defineProperty(Fake.prototype, "props", {
-                  set: function set() {
+                  set: function() {
                     throw Error();
                   }
                 });
@@ -1637,7 +1637,7 @@
               }
               Object.defineProperty(validatedFactory, "type", {
                 enumerable: false,
-                get: function get() {
+                get: function() {
                   warn("Factory.type is deprecated. Access the class directly before passing it to createFactory.");
                   Object.defineProperty(this, "type", {
                     value: type
@@ -1687,7 +1687,7 @@
                 var nodeRequire = module && module[requireString];
                 enqueueTaskImpl = nodeRequire.call(module, "timers").setImmediate;
               } catch (_err) {
-                enqueueTaskImpl = function enqueueTaskImpl2(callback) {
+                enqueueTaskImpl = function(callback) {
                   {
                     if (didWarnAboutMessageChannel === false) {
                       didWarnAboutMessageChannel = true;
@@ -1735,7 +1735,7 @@
                 var thenableResult = result;
                 var wasAwaited = false;
                 var thenable = {
-                  then: function then(resolve, reject) {
+                  then: function(resolve, reject) {
                     wasAwaited = true;
                     thenableResult.then(function(returnValue2) {
                       popActScope(prevActScopeDepth);
@@ -1772,7 +1772,7 @@
                     ReactCurrentActQueue.current = null;
                   }
                   var _thenable = {
-                    then: function then(resolve, reject) {
+                    then: function(resolve, reject) {
                       if (ReactCurrentActQueue.current === null) {
                         ReactCurrentActQueue.current = [];
                         recursivelyFlushAsyncActWork(returnValue, resolve, reject);
@@ -1784,7 +1784,7 @@
                   return _thenable;
                 } else {
                   var _thenable2 = {
-                    then: function then(resolve, reject) {
+                    then: function(resolve, reject) {
                       resolve(returnValue);
                     }
                   };
@@ -2280,7 +2280,7 @@
               frameInterval = frameYieldMs;
             }
           }
-          var performWorkUntilDeadline = function performWorkUntilDeadline2() {
+          var performWorkUntilDeadline = function() {
             if (scheduledHostCallback !== null) {
               var currentTime = exports.unstable_now();
               startTime = currentTime;
@@ -2302,18 +2302,18 @@
           };
           var schedulePerformWorkUntilDeadline;
           if (typeof localSetImmediate === "function") {
-            schedulePerformWorkUntilDeadline = function schedulePerformWorkUntilDeadline2() {
+            schedulePerformWorkUntilDeadline = function() {
               localSetImmediate(performWorkUntilDeadline);
             };
           } else if (typeof MessageChannel !== "undefined") {
             var channel = new MessageChannel();
             var port = channel.port2;
             channel.port1.onmessage = performWorkUntilDeadline;
-            schedulePerformWorkUntilDeadline = function schedulePerformWorkUntilDeadline2() {
+            schedulePerformWorkUntilDeadline = function() {
               port.postMessage(null);
             };
           } else {
-            schedulePerformWorkUntilDeadline = function schedulePerformWorkUntilDeadline2() {
+            schedulePerformWorkUntilDeadline = function() {
               localSetTimeout(performWorkUntilDeadline, 0);
             };
           }
@@ -2861,7 +2861,7 @@
             );
           });
           var CAMELIZE = /[\-\:]([a-z])/g;
-          var capitalize = function capitalize2(token) {
+          var capitalize = function(token) {
             return token[1].toUpperCase();
           };
           [
@@ -3229,8 +3229,21 @@
                 prevGroup = console.group;
                 prevGroupCollapsed = console.groupCollapsed;
                 prevGroupEnd = console.groupEnd;
-                var props = { configurable: true, enumerable: true, value: disabledLog, writable: true };
-                Object.defineProperties(console, { info: props, log: props, warn: props, error: props, group: props, groupCollapsed: props, groupEnd: props });
+                var props = {
+                  configurable: true,
+                  enumerable: true,
+                  value: disabledLog,
+                  writable: true
+                };
+                Object.defineProperties(console, {
+                  info: props,
+                  log: props,
+                  warn: props,
+                  error: props,
+                  group: props,
+                  groupCollapsed: props,
+                  groupEnd: props
+                });
               }
               disabledDepth++;
             }
@@ -3239,8 +3252,34 @@
             {
               disabledDepth--;
               if (disabledDepth === 0) {
-                var props = { configurable: true, enumerable: true, writable: true };
-                Object.defineProperties(console, { log: assign({}, props, { value: prevLog }), info: assign({}, props, { value: prevInfo }), warn: assign({}, props, { value: prevWarn }), error: assign({}, props, { value: prevError }), group: assign({}, props, { value: prevGroup }), groupCollapsed: assign({}, props, { value: prevGroupCollapsed }), groupEnd: assign({}, props, { value: prevGroupEnd }) });
+                var props = {
+                  configurable: true,
+                  enumerable: true,
+                  writable: true
+                };
+                Object.defineProperties(console, {
+                  log: assign({}, props, {
+                    value: prevLog
+                  }),
+                  info: assign({}, props, {
+                    value: prevInfo
+                  }),
+                  warn: assign({}, props, {
+                    value: prevWarn
+                  }),
+                  error: assign({}, props, {
+                    value: prevError
+                  }),
+                  group: assign({}, props, {
+                    value: prevGroup
+                  }),
+                  groupCollapsed: assign({}, props, {
+                    value: prevGroupCollapsed
+                  }),
+                  groupEnd: assign({}, props, {
+                    value: prevGroupEnd
+                  })
+                });
               }
               if (disabledDepth < 0) {
                 error("disabledDepth fell below zero. This is a bug in React. Please file an issue.");
@@ -3290,12 +3329,14 @@
             }
             try {
               if (construct) {
-                var Fake = function Fake2() {
+                var Fake = function() {
                   throw Error();
                 };
-                Object.defineProperty(Fake.prototype, "props", { set: function set2() {
-                  throw Error();
-                } });
+                Object.defineProperty(Fake.prototype, "props", {
+                  set: function() {
+                    throw Error();
+                  }
+                });
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
@@ -3660,7 +3701,15 @@
                 return "";
             }
           }
-          var hasReadOnlyValue = { button: true, checkbox: true, image: true, hidden: true, radio: true, reset: true, submit: true };
+          var hasReadOnlyValue = {
+            button: true,
+            checkbox: true,
+            image: true,
+            hidden: true,
+            radio: true,
+            reset: true,
+            submit: true
+          };
           function checkControlledValueProps(tagName, props) {
             {
               if (!(hasReadOnlyValue[props.type] || props.onChange || props.onInput || props.readOnly || props.disabled || props.value == null)) {
@@ -3704,28 +3753,38 @@
             if (node.hasOwnProperty(valueField) || typeof descriptor === "undefined" || typeof descriptor.get !== "function" || typeof descriptor.set !== "function") {
               return;
             }
-            var _get = descriptor.get, _set = descriptor.set;
-            Object.defineProperty(node, valueField, { configurable: true, get: function get2() {
-              return _get.call(this);
-            }, set: function set2(value) {
-              {
-                checkFormFieldValueStringCoercion(value);
+            var get2 = descriptor.get, set2 = descriptor.set;
+            Object.defineProperty(node, valueField, {
+              configurable: true,
+              get: function() {
+                return get2.call(this);
+              },
+              set: function(value) {
+                {
+                  checkFormFieldValueStringCoercion(value);
+                }
+                currentValue = "" + value;
+                set2.call(this, value);
               }
-              currentValue = "" + value;
-              _set.call(this, value);
-            } });
-            Object.defineProperty(node, valueField, { enumerable: descriptor.enumerable });
-            var tracker = { getValue: function getValue() {
-              return currentValue;
-            }, setValue: function setValue(value) {
-              {
-                checkFormFieldValueStringCoercion(value);
+            });
+            Object.defineProperty(node, valueField, {
+              enumerable: descriptor.enumerable
+            });
+            var tracker = {
+              getValue: function() {
+                return currentValue;
+              },
+              setValue: function(value) {
+                {
+                  checkFormFieldValueStringCoercion(value);
+                }
+                currentValue = "" + value;
+              },
+              stopTracking: function() {
+                detachTracker(node);
+                delete node[valueField];
               }
-              currentValue = "" + value;
-            }, stopTracking: function stopTracking() {
-              detachTracker(node);
-              delete node[valueField];
-            } };
+            };
             return tracker;
           }
           function track(node) {
@@ -3772,7 +3831,12 @@
           function getHostProps(element, props) {
             var node = element;
             var checked = props.checked;
-            var hostProps = assign({}, props, { defaultChecked: void 0, defaultValue: void 0, value: void 0, checked: checked != null ? checked : node._wrapperState.initialChecked });
+            var hostProps = assign({}, props, {
+              defaultChecked: void 0,
+              defaultValue: void 0,
+              value: void 0,
+              checked: checked != null ? checked : node._wrapperState.initialChecked
+            });
             return hostProps;
           }
           function initWrapperState(element, props) {
@@ -3789,7 +3853,11 @@
             }
             var node = element;
             var defaultValue = props.defaultValue == null ? "" : props.defaultValue;
-            node._wrapperState = { initialChecked: props.checked != null ? props.checked : props.defaultChecked, initialValue: getToStringValue(props.value != null ? props.value : defaultValue), controlled: isControlled(props) };
+            node._wrapperState = {
+              initialChecked: props.checked != null ? props.checked : props.defaultChecked,
+              initialValue: getToStringValue(props.value != null ? props.value : defaultValue),
+              controlled: isControlled(props)
+            };
           }
           function updateChecked(element, props) {
             var node = element;
@@ -4023,14 +4091,18 @@
             }
           }
           function getHostProps$1(element, props) {
-            return assign({}, props, { value: void 0 });
+            return assign({}, props, {
+              value: void 0
+            });
           }
           function initWrapperState$1(element, props) {
             var node = element;
             {
               checkSelectPropTypes(props);
             }
-            node._wrapperState = { wasMultiple: !!props.multiple };
+            node._wrapperState = {
+              wasMultiple: !!props.multiple
+            };
             {
               if (props.value !== void 0 && props.defaultValue !== void 0 && !didWarnValueDefaultValue$1) {
                 error("Select elements must be either controlled or uncontrolled (specify either the value prop, or the defaultValue prop, but not both). Decide between using a controlled or uncontrolled select element and remove one of these props. More info: https://reactjs.org/link/controlled-components");
@@ -4076,7 +4148,11 @@
             if (props.dangerouslySetInnerHTML != null) {
               throw new Error("`dangerouslySetInnerHTML` does not make sense on <textarea>.");
             }
-            var hostProps = assign({}, props, { value: void 0, defaultValue: void 0, children: toString(node._wrapperState.initialValue) });
+            var hostProps = assign({}, props, {
+              value: void 0,
+              defaultValue: void 0,
+              children: toString(node._wrapperState.initialValue)
+            });
             return hostProps;
           }
           function initWrapperState$2(element, props) {
@@ -4113,7 +4189,9 @@
               }
               initialValue = defaultValue;
             }
-            node._wrapperState = { initialValue: getToStringValue(initialValue) };
+            node._wrapperState = {
+              initialValue: getToStringValue(initialValue)
+            };
           }
           function updateWrapper$1(element, props) {
             var node = element;
@@ -4166,7 +4244,7 @@
             }
             return parentNamespace;
           }
-          var createMicrosoftUnsafeLocalFunction = function createMicrosoftUnsafeLocalFunction2(func) {
+          var createMicrosoftUnsafeLocalFunction = function(func) {
             if (typeof MSApp !== "undefined" && MSApp.execUnsafeLocalFunction) {
               return function(arg0, arg1, arg2, arg3) {
                 MSApp.execUnsafeLocalFunction(function() {
@@ -4200,7 +4278,7 @@
           var COMMENT_NODE = 8;
           var DOCUMENT_NODE = 9;
           var DOCUMENT_FRAGMENT_NODE = 11;
-          var setTextContent = function setTextContent2(node, text) {
+          var setTextContent = function(node, text) {
             if (text) {
               var firstChild = node.firstChild;
               if (firstChild && firstChild === node.lastChild && firstChild.nodeType === TEXT_NODE) {
@@ -4210,7 +4288,55 @@
             }
             node.textContent = text;
           };
-          var shorthandToLonghand = { animation: ["animationDelay", "animationDirection", "animationDuration", "animationFillMode", "animationIterationCount", "animationName", "animationPlayState", "animationTimingFunction"], background: ["backgroundAttachment", "backgroundClip", "backgroundColor", "backgroundImage", "backgroundOrigin", "backgroundPositionX", "backgroundPositionY", "backgroundRepeat", "backgroundSize"], backgroundPosition: ["backgroundPositionX", "backgroundPositionY"], border: ["borderBottomColor", "borderBottomStyle", "borderBottomWidth", "borderImageOutset", "borderImageRepeat", "borderImageSlice", "borderImageSource", "borderImageWidth", "borderLeftColor", "borderLeftStyle", "borderLeftWidth", "borderRightColor", "borderRightStyle", "borderRightWidth", "borderTopColor", "borderTopStyle", "borderTopWidth"], borderBlockEnd: ["borderBlockEndColor", "borderBlockEndStyle", "borderBlockEndWidth"], borderBlockStart: ["borderBlockStartColor", "borderBlockStartStyle", "borderBlockStartWidth"], borderBottom: ["borderBottomColor", "borderBottomStyle", "borderBottomWidth"], borderColor: ["borderBottomColor", "borderLeftColor", "borderRightColor", "borderTopColor"], borderImage: ["borderImageOutset", "borderImageRepeat", "borderImageSlice", "borderImageSource", "borderImageWidth"], borderInlineEnd: ["borderInlineEndColor", "borderInlineEndStyle", "borderInlineEndWidth"], borderInlineStart: ["borderInlineStartColor", "borderInlineStartStyle", "borderInlineStartWidth"], borderLeft: ["borderLeftColor", "borderLeftStyle", "borderLeftWidth"], borderRadius: ["borderBottomLeftRadius", "borderBottomRightRadius", "borderTopLeftRadius", "borderTopRightRadius"], borderRight: ["borderRightColor", "borderRightStyle", "borderRightWidth"], borderStyle: ["borderBottomStyle", "borderLeftStyle", "borderRightStyle", "borderTopStyle"], borderTop: ["borderTopColor", "borderTopStyle", "borderTopWidth"], borderWidth: ["borderBottomWidth", "borderLeftWidth", "borderRightWidth", "borderTopWidth"], columnRule: ["columnRuleColor", "columnRuleStyle", "columnRuleWidth"], columns: ["columnCount", "columnWidth"], flex: ["flexBasis", "flexGrow", "flexShrink"], flexFlow: ["flexDirection", "flexWrap"], font: ["fontFamily", "fontFeatureSettings", "fontKerning", "fontLanguageOverride", "fontSize", "fontSizeAdjust", "fontStretch", "fontStyle", "fontVariant", "fontVariantAlternates", "fontVariantCaps", "fontVariantEastAsian", "fontVariantLigatures", "fontVariantNumeric", "fontVariantPosition", "fontWeight", "lineHeight"], fontVariant: ["fontVariantAlternates", "fontVariantCaps", "fontVariantEastAsian", "fontVariantLigatures", "fontVariantNumeric", "fontVariantPosition"], gap: ["columnGap", "rowGap"], grid: ["gridAutoColumns", "gridAutoFlow", "gridAutoRows", "gridTemplateAreas", "gridTemplateColumns", "gridTemplateRows"], gridArea: ["gridColumnEnd", "gridColumnStart", "gridRowEnd", "gridRowStart"], gridColumn: ["gridColumnEnd", "gridColumnStart"], gridColumnGap: ["columnGap"], gridGap: ["columnGap", "rowGap"], gridRow: ["gridRowEnd", "gridRowStart"], gridRowGap: ["rowGap"], gridTemplate: ["gridTemplateAreas", "gridTemplateColumns", "gridTemplateRows"], listStyle: ["listStyleImage", "listStylePosition", "listStyleType"], margin: ["marginBottom", "marginLeft", "marginRight", "marginTop"], marker: ["markerEnd", "markerMid", "markerStart"], mask: ["maskClip", "maskComposite", "maskImage", "maskMode", "maskOrigin", "maskPositionX", "maskPositionY", "maskRepeat", "maskSize"], maskPosition: ["maskPositionX", "maskPositionY"], outline: ["outlineColor", "outlineStyle", "outlineWidth"], overflow: ["overflowX", "overflowY"], padding: ["paddingBottom", "paddingLeft", "paddingRight", "paddingTop"], placeContent: ["alignContent", "justifyContent"], placeItems: ["alignItems", "justifyItems"], placeSelf: ["alignSelf", "justifySelf"], textDecoration: ["textDecorationColor", "textDecorationLine", "textDecorationStyle"], textEmphasis: ["textEmphasisColor", "textEmphasisStyle"], transition: ["transitionDelay", "transitionDuration", "transitionProperty", "transitionTimingFunction"], wordWrap: ["overflowWrap"] };
+          var shorthandToLonghand = {
+            animation: ["animationDelay", "animationDirection", "animationDuration", "animationFillMode", "animationIterationCount", "animationName", "animationPlayState", "animationTimingFunction"],
+            background: ["backgroundAttachment", "backgroundClip", "backgroundColor", "backgroundImage", "backgroundOrigin", "backgroundPositionX", "backgroundPositionY", "backgroundRepeat", "backgroundSize"],
+            backgroundPosition: ["backgroundPositionX", "backgroundPositionY"],
+            border: ["borderBottomColor", "borderBottomStyle", "borderBottomWidth", "borderImageOutset", "borderImageRepeat", "borderImageSlice", "borderImageSource", "borderImageWidth", "borderLeftColor", "borderLeftStyle", "borderLeftWidth", "borderRightColor", "borderRightStyle", "borderRightWidth", "borderTopColor", "borderTopStyle", "borderTopWidth"],
+            borderBlockEnd: ["borderBlockEndColor", "borderBlockEndStyle", "borderBlockEndWidth"],
+            borderBlockStart: ["borderBlockStartColor", "borderBlockStartStyle", "borderBlockStartWidth"],
+            borderBottom: ["borderBottomColor", "borderBottomStyle", "borderBottomWidth"],
+            borderColor: ["borderBottomColor", "borderLeftColor", "borderRightColor", "borderTopColor"],
+            borderImage: ["borderImageOutset", "borderImageRepeat", "borderImageSlice", "borderImageSource", "borderImageWidth"],
+            borderInlineEnd: ["borderInlineEndColor", "borderInlineEndStyle", "borderInlineEndWidth"],
+            borderInlineStart: ["borderInlineStartColor", "borderInlineStartStyle", "borderInlineStartWidth"],
+            borderLeft: ["borderLeftColor", "borderLeftStyle", "borderLeftWidth"],
+            borderRadius: ["borderBottomLeftRadius", "borderBottomRightRadius", "borderTopLeftRadius", "borderTopRightRadius"],
+            borderRight: ["borderRightColor", "borderRightStyle", "borderRightWidth"],
+            borderStyle: ["borderBottomStyle", "borderLeftStyle", "borderRightStyle", "borderTopStyle"],
+            borderTop: ["borderTopColor", "borderTopStyle", "borderTopWidth"],
+            borderWidth: ["borderBottomWidth", "borderLeftWidth", "borderRightWidth", "borderTopWidth"],
+            columnRule: ["columnRuleColor", "columnRuleStyle", "columnRuleWidth"],
+            columns: ["columnCount", "columnWidth"],
+            flex: ["flexBasis", "flexGrow", "flexShrink"],
+            flexFlow: ["flexDirection", "flexWrap"],
+            font: ["fontFamily", "fontFeatureSettings", "fontKerning", "fontLanguageOverride", "fontSize", "fontSizeAdjust", "fontStretch", "fontStyle", "fontVariant", "fontVariantAlternates", "fontVariantCaps", "fontVariantEastAsian", "fontVariantLigatures", "fontVariantNumeric", "fontVariantPosition", "fontWeight", "lineHeight"],
+            fontVariant: ["fontVariantAlternates", "fontVariantCaps", "fontVariantEastAsian", "fontVariantLigatures", "fontVariantNumeric", "fontVariantPosition"],
+            gap: ["columnGap", "rowGap"],
+            grid: ["gridAutoColumns", "gridAutoFlow", "gridAutoRows", "gridTemplateAreas", "gridTemplateColumns", "gridTemplateRows"],
+            gridArea: ["gridColumnEnd", "gridColumnStart", "gridRowEnd", "gridRowStart"],
+            gridColumn: ["gridColumnEnd", "gridColumnStart"],
+            gridColumnGap: ["columnGap"],
+            gridGap: ["columnGap", "rowGap"],
+            gridRow: ["gridRowEnd", "gridRowStart"],
+            gridRowGap: ["rowGap"],
+            gridTemplate: ["gridTemplateAreas", "gridTemplateColumns", "gridTemplateRows"],
+            listStyle: ["listStyleImage", "listStylePosition", "listStyleType"],
+            margin: ["marginBottom", "marginLeft", "marginRight", "marginTop"],
+            marker: ["markerEnd", "markerMid", "markerStart"],
+            mask: ["maskClip", "maskComposite", "maskImage", "maskMode", "maskOrigin", "maskPositionX", "maskPositionY", "maskRepeat", "maskSize"],
+            maskPosition: ["maskPositionX", "maskPositionY"],
+            outline: ["outlineColor", "outlineStyle", "outlineWidth"],
+            overflow: ["overflowX", "overflowY"],
+            padding: ["paddingBottom", "paddingLeft", "paddingRight", "paddingTop"],
+            placeContent: ["alignContent", "justifyContent"],
+            placeItems: ["alignItems", "justifyItems"],
+            placeSelf: ["alignSelf", "justifySelf"],
+            textDecoration: ["textDecorationColor", "textDecorationLine", "textDecorationStyle"],
+            textEmphasis: ["textEmphasisColor", "textEmphasisStyle"],
+            transition: ["transitionDelay", "transitionDuration", "transitionProperty", "transitionTimingFunction"],
+            wordWrap: ["overflowWrap"]
+          };
           var isUnitlessNumber = {
             animationIterationCount: true,
             aspectRatio: true,
@@ -4284,7 +4410,7 @@
           function hyphenateStyleName(name) {
             return name.replace(uppercasePattern, "-$1").toLowerCase().replace(msPattern, "-ms-");
           }
-          var warnValidStyle = function warnValidStyle2() {
+          var warnValidStyle = function() {
           };
           {
             var badVendoredStyleNamePattern = /^(?:webkit|moz|o)[A-Z]/;
@@ -4295,12 +4421,12 @@
             var warnedStyleValues = {};
             var warnedForNaNValue = false;
             var warnedForInfinityValue = false;
-            var camelize = function camelize2(string) {
+            var camelize = function(string) {
               return string.replace(hyphenPattern, function(_, character) {
                 return character.toUpperCase();
               });
             };
-            var warnHyphenatedStyleName = function warnHyphenatedStyleName2(name) {
+            var warnHyphenatedStyleName = function(name) {
               if (warnedStyleNames.hasOwnProperty(name) && warnedStyleNames[name]) {
                 return;
               }
@@ -4314,35 +4440,35 @@
                 camelize(name.replace(msPattern$1, "ms-"))
               );
             };
-            var warnBadVendoredStyleName = function warnBadVendoredStyleName2(name) {
+            var warnBadVendoredStyleName = function(name) {
               if (warnedStyleNames.hasOwnProperty(name) && warnedStyleNames[name]) {
                 return;
               }
               warnedStyleNames[name] = true;
               error("Unsupported vendor-prefixed style property %s. Did you mean %s?", name, name.charAt(0).toUpperCase() + name.slice(1));
             };
-            var warnStyleValueWithSemicolon = function warnStyleValueWithSemicolon2(name, value) {
+            var warnStyleValueWithSemicolon = function(name, value) {
               if (warnedStyleValues.hasOwnProperty(value) && warnedStyleValues[value]) {
                 return;
               }
               warnedStyleValues[value] = true;
               error(`Style property values shouldn't contain a semicolon. Try "%s: %s" instead.`, name, value.replace(badStyleValueWithSemicolonPattern, ""));
             };
-            var warnStyleValueIsNaN = function warnStyleValueIsNaN2(name, value) {
+            var warnStyleValueIsNaN = function(name, value) {
               if (warnedForNaNValue) {
                 return;
               }
               warnedForNaNValue = true;
               error("`NaN` is an invalid value for the `%s` css style property.", name);
             };
-            var warnStyleValueIsInfinity = function warnStyleValueIsInfinity2(name, value) {
+            var warnStyleValueIsInfinity = function(name, value) {
               if (warnedForInfinityValue) {
                 return;
               }
               warnedForInfinityValue = true;
               error("`Infinity` is an invalid value for the `%s` css style property.", name);
             };
-            warnValidStyle = function warnValidStyle2(name, value) {
+            warnValidStyle = function(name, value) {
               if (name.indexOf("-") > -1) {
                 warnHyphenatedStyleName(name);
               } else if (badVendoredStyleNamePattern.test(name)) {
@@ -4455,7 +4581,9 @@
             wbr: true
             // NOTE: menuitem's close tag should be omitted, but that causes problems.
           };
-          var voidElementTags = assign({ menuitem: true }, omittedCloseTags);
+          var voidElementTags = assign({
+            menuitem: true
+          }, omittedCloseTags);
           var HTML = "__html";
           function assertValidProps(tag, props) {
             if (!props) {
@@ -5128,7 +5256,7 @@
               }
             }
           }
-          var validateProperty$1 = function validateProperty$12() {
+          var validateProperty$1 = function() {
           };
           {
             var warnedProperties$1 = {};
@@ -5136,7 +5264,7 @@
             var INVALID_EVENT_NAME_REGEX = /^on[^A-Z]/;
             var rARIA$1 = new RegExp("^(aria)-[" + ATTRIBUTE_NAME_CHAR + "]*$");
             var rARIACamel$1 = new RegExp("^(aria)[A-Z][" + ATTRIBUTE_NAME_CHAR + "]*$");
-            validateProperty$1 = function validateProperty$12(tagName, name, value, eventRegistry) {
+            validateProperty$1 = function(tagName, name, value, eventRegistry) {
               if (hasOwnProperty.call(warnedProperties$1, name) && warnedProperties$1[name]) {
                 return true;
               }
@@ -5230,7 +5358,7 @@
               return true;
             };
           }
-          var warnUnknownProperties = function warnUnknownProperties2(type, props, eventRegistry) {
+          var warnUnknownProperties = function(type, props, eventRegistry) {
             {
               var unknownProps = [];
               for (var key in props) {
@@ -5335,10 +5463,10 @@
               }
             }
           }
-          var batchedUpdatesImpl = function batchedUpdatesImpl2(fn, bookkeeping) {
+          var batchedUpdatesImpl = function(fn, bookkeeping) {
             return fn(bookkeeping);
           };
-          var flushSyncImpl = function flushSyncImpl2() {
+          var flushSyncImpl = function() {
           };
           var isInsideEventHandler = false;
           function finishEventHandler() {
@@ -5407,9 +5535,11 @@
           if (canUseDOM) {
             try {
               var options = {};
-              Object.defineProperty(options, "passive", { get: function get2() {
-                passiveBrowserEventsSupported = true;
-              } });
+              Object.defineProperty(options, "passive", {
+                get: function() {
+                  passiveBrowserEventsSupported = true;
+                }
+              });
               window.addEventListener("test", options, options);
               window.removeEventListener("test", options, options);
             } catch (e) {
@@ -5497,10 +5627,12 @@
           var caughtError = null;
           var hasRethrowError = false;
           var rethrowError = null;
-          var reporter = { onError: function onError(error2) {
-            hasError = true;
-            caughtError = error2;
-          } };
+          var reporter = {
+            onError: function(error2) {
+              hasError = true;
+              caughtError = error2;
+            }
+          };
           function invokeGuardedCallback(name, func, context, a, b, c, d, e, f) {
             hasError = false;
             caughtError = null;
@@ -5893,7 +6025,10 @@
             }
             try {
               if (enableSchedulingProfiler) {
-                internals = assign({}, internals, { getLaneLabelMap, injectProfilingHooks });
+                internals = assign({}, internals, {
+                  getLaneLabelMap,
+                  injectProfilingHooks
+                });
               }
               rendererID = hook.inject(internals);
               injectedHook = hook;
@@ -6958,7 +7093,13 @@
             return discreteReplayableEvents.indexOf(eventType) > -1;
           }
           function createQueuedReplayableEvent(blockedOn, domEventName, eventSystemFlags, targetContainer, nativeEvent) {
-            return { blockedOn, domEventName, eventSystemFlags, nativeEvent, targetContainers: [targetContainer] };
+            return {
+              blockedOn,
+              domEventName,
+              eventSystemFlags,
+              nativeEvent,
+              targetContainers: [targetContainer]
+            };
           }
           function clearIfContinuousEvent(domEventName, nativeEvent) {
             switch (domEventName) {
@@ -7066,7 +7207,11 @@
           }
           function queueExplicitHydrationTarget(target) {
             var updatePriority = getCurrentUpdatePriority$1();
-            var queuedTarget = { blockedOn: null, target, priority: updatePriority };
+            var queuedTarget = {
+              blockedOn: null,
+              target,
+              priority: updatePriority
+            };
             var i = 0;
             for (; i < queuedExplicitHydrationTargets.length; i++) {
               if (!isHigherEventPriority(updatePriority, queuedExplicitHydrationTargets[i].priority)) {
@@ -7153,7 +7298,7 @@
             if (queuedMouse !== null) {
               scheduleCallbackIfUnblocked(queuedMouse, unblocked);
             }
-            var unblock = function unblock2(queuedEvent2) {
+            var unblock = function(queuedEvent2) {
               return scheduleCallbackIfUnblocked(queuedEvent2, unblocked);
             };
             queuedPointers.forEach(unblock);
@@ -7401,11 +7546,16 @@
             return listener;
           }
           function addEventCaptureListenerWithPassiveFlag(target, eventType, listener, passive) {
-            target.addEventListener(eventType, listener, { capture: true, passive });
+            target.addEventListener(eventType, listener, {
+              capture: true,
+              passive
+            });
             return listener;
           }
           function addEventBubbleListenerWithPassiveFlag(target, eventType, listener, passive) {
-            target.addEventListener(eventType, listener, { passive });
+            target.addEventListener(eventType, listener, {
+              passive
+            });
             return listener;
           }
           var root = null;
@@ -7506,7 +7656,7 @@
               return this;
             }
             assign(SyntheticBaseEvent.prototype, {
-              preventDefault: function preventDefault() {
+              preventDefault: function() {
                 this.defaultPrevented = true;
                 var event = this.nativeEvent;
                 if (!event) {
@@ -7519,7 +7669,7 @@
                 }
                 this.isDefaultPrevented = functionThatReturnsTrue;
               },
-              stopPropagation: function stopPropagation() {
+              stopPropagation: function() {
                 var event = this.nativeEvent;
                 if (!event) {
                   return;
@@ -7532,26 +7682,36 @@
                 this.isPropagationStopped = functionThatReturnsTrue;
               },
               /**
-              * We release all dispatched `SyntheticEvent`s after each event loop, adding
-              * them back into the pool. This allows a way to hold onto a reference that
-              * won't be added back into the pool.
-              */
-              persist: function persist() {
+               * We release all dispatched `SyntheticEvent`s after each event loop, adding
+               * them back into the pool. This allows a way to hold onto a reference that
+               * won't be added back into the pool.
+               */
+              persist: function() {
               },
               /**
-                 * Checks if this event should be released back into the pool.
-                 *
-                 * @return {boolean} True if this should not be released, false otherwise.
-                 */
+               * Checks if this event should be released back into the pool.
+               *
+               * @return {boolean} True if this should not be released, false otherwise.
+               */
               isPersistent: functionThatReturnsTrue
             });
             return SyntheticBaseEvent;
           }
-          var EventInterface = { eventPhase: 0, bubbles: 0, cancelable: 0, timeStamp: function timeStamp(event) {
-            return event.timeStamp || Date.now();
-          }, defaultPrevented: 0, isTrusted: 0 };
+          var EventInterface = {
+            eventPhase: 0,
+            bubbles: 0,
+            cancelable: 0,
+            timeStamp: function(event) {
+              return event.timeStamp || Date.now();
+            },
+            defaultPrevented: 0,
+            isTrusted: 0
+          };
           var SyntheticEvent = createSyntheticEvent(EventInterface);
-          var UIEventInterface = assign({}, EventInterface, { view: 0, detail: 0 });
+          var UIEventInterface = assign({}, EventInterface, {
+            view: 0,
+            detail: 0
+          });
           var SyntheticUIEvent = createSyntheticEvent(UIEventInterface);
           var lastMovementX;
           var lastMovementY;
@@ -7568,38 +7728,117 @@
               lastMouseEvent = event;
             }
           }
-          var MouseEventInterface = assign({}, UIEventInterface, { screenX: 0, screenY: 0, clientX: 0, clientY: 0, pageX: 0, pageY: 0, ctrlKey: 0, shiftKey: 0, altKey: 0, metaKey: 0, getModifierState: getEventModifierState, button: 0, buttons: 0, relatedTarget: function relatedTarget(event) {
-            if (event.relatedTarget === void 0)
-              return event.fromElement === event.srcElement ? event.toElement : event.fromElement;
-            return event.relatedTarget;
-          }, movementX: function movementX(event) {
-            if ("movementX" in event) {
-              return event.movementX;
+          var MouseEventInterface = assign({}, UIEventInterface, {
+            screenX: 0,
+            screenY: 0,
+            clientX: 0,
+            clientY: 0,
+            pageX: 0,
+            pageY: 0,
+            ctrlKey: 0,
+            shiftKey: 0,
+            altKey: 0,
+            metaKey: 0,
+            getModifierState: getEventModifierState,
+            button: 0,
+            buttons: 0,
+            relatedTarget: function(event) {
+              if (event.relatedTarget === void 0)
+                return event.fromElement === event.srcElement ? event.toElement : event.fromElement;
+              return event.relatedTarget;
+            },
+            movementX: function(event) {
+              if ("movementX" in event) {
+                return event.movementX;
+              }
+              updateMouseMovementPolyfillState(event);
+              return lastMovementX;
+            },
+            movementY: function(event) {
+              if ("movementY" in event) {
+                return event.movementY;
+              }
+              return lastMovementY;
             }
-            updateMouseMovementPolyfillState(event);
-            return lastMovementX;
-          }, movementY: function movementY(event) {
-            if ("movementY" in event) {
-              return event.movementY;
-            }
-            return lastMovementY;
-          } });
+          });
           var SyntheticMouseEvent = createSyntheticEvent(MouseEventInterface);
-          var DragEventInterface = assign({}, MouseEventInterface, { dataTransfer: 0 });
+          var DragEventInterface = assign({}, MouseEventInterface, {
+            dataTransfer: 0
+          });
           var SyntheticDragEvent = createSyntheticEvent(DragEventInterface);
-          var FocusEventInterface = assign({}, UIEventInterface, { relatedTarget: 0 });
+          var FocusEventInterface = assign({}, UIEventInterface, {
+            relatedTarget: 0
+          });
           var SyntheticFocusEvent = createSyntheticEvent(FocusEventInterface);
-          var AnimationEventInterface = assign({}, EventInterface, { animationName: 0, elapsedTime: 0, pseudoElement: 0 });
+          var AnimationEventInterface = assign({}, EventInterface, {
+            animationName: 0,
+            elapsedTime: 0,
+            pseudoElement: 0
+          });
           var SyntheticAnimationEvent = createSyntheticEvent(AnimationEventInterface);
-          var ClipboardEventInterface = assign({}, EventInterface, { clipboardData: function clipboardData(event) {
-            return "clipboardData" in event ? event.clipboardData : window.clipboardData;
-          } });
+          var ClipboardEventInterface = assign({}, EventInterface, {
+            clipboardData: function(event) {
+              return "clipboardData" in event ? event.clipboardData : window.clipboardData;
+            }
+          });
           var SyntheticClipboardEvent = createSyntheticEvent(ClipboardEventInterface);
-          var CompositionEventInterface = assign({}, EventInterface, { data: 0 });
+          var CompositionEventInterface = assign({}, EventInterface, {
+            data: 0
+          });
           var SyntheticCompositionEvent = createSyntheticEvent(CompositionEventInterface);
           var SyntheticInputEvent = SyntheticCompositionEvent;
-          var normalizeKey = { Esc: "Escape", Spacebar: " ", Left: "ArrowLeft", Up: "ArrowUp", Right: "ArrowRight", Down: "ArrowDown", Del: "Delete", Win: "OS", Menu: "ContextMenu", Apps: "ContextMenu", Scroll: "ScrollLock", MozPrintableKey: "Unidentified" };
-          var translateToKey = { "8": "Backspace", "9": "Tab", "12": "Clear", "13": "Enter", "16": "Shift", "17": "Control", "18": "Alt", "19": "Pause", "20": "CapsLock", "27": "Escape", "32": " ", "33": "PageUp", "34": "PageDown", "35": "End", "36": "Home", "37": "ArrowLeft", "38": "ArrowUp", "39": "ArrowRight", "40": "ArrowDown", "45": "Insert", "46": "Delete", "112": "F1", "113": "F2", "114": "F3", "115": "F4", "116": "F5", "117": "F6", "118": "F7", "119": "F8", "120": "F9", "121": "F10", "122": "F11", "123": "F12", "144": "NumLock", "145": "ScrollLock", "224": "Meta" };
+          var normalizeKey = {
+            Esc: "Escape",
+            Spacebar: " ",
+            Left: "ArrowLeft",
+            Up: "ArrowUp",
+            Right: "ArrowRight",
+            Down: "ArrowDown",
+            Del: "Delete",
+            Win: "OS",
+            Menu: "ContextMenu",
+            Apps: "ContextMenu",
+            Scroll: "ScrollLock",
+            MozPrintableKey: "Unidentified"
+          };
+          var translateToKey = {
+            "8": "Backspace",
+            "9": "Tab",
+            "12": "Clear",
+            "13": "Enter",
+            "16": "Shift",
+            "17": "Control",
+            "18": "Alt",
+            "19": "Pause",
+            "20": "CapsLock",
+            "27": "Escape",
+            "32": " ",
+            "33": "PageUp",
+            "34": "PageDown",
+            "35": "End",
+            "36": "Home",
+            "37": "ArrowLeft",
+            "38": "ArrowUp",
+            "39": "ArrowRight",
+            "40": "ArrowDown",
+            "45": "Insert",
+            "46": "Delete",
+            "112": "F1",
+            "113": "F2",
+            "114": "F3",
+            "115": "F4",
+            "116": "F5",
+            "117": "F6",
+            "118": "F7",
+            "119": "F8",
+            "120": "F9",
+            "121": "F10",
+            "122": "F11",
+            "123": "F12",
+            "144": "NumLock",
+            "145": "ScrollLock",
+            "224": "Meta"
+          };
           function getEventKey(nativeEvent) {
             if (nativeEvent.key) {
               var key = normalizeKey[nativeEvent.key] || nativeEvent.key;
@@ -7616,7 +7855,12 @@
             }
             return "";
           }
-          var modifierKeyToProp = { Alt: "altKey", Control: "ctrlKey", Meta: "metaKey", Shift: "shiftKey" };
+          var modifierKeyToProp = {
+            Alt: "altKey",
+            Control: "ctrlKey",
+            Meta: "metaKey",
+            Shift: "shiftKey"
+          };
           function modifierStateGetter(keyArg) {
             var syntheticEvent = this;
             var nativeEvent = syntheticEvent.nativeEvent;
@@ -7641,19 +7885,19 @@
             locale: 0,
             getModifierState: getEventModifierState,
             // Legacy Interface
-            charCode: function charCode(event) {
+            charCode: function(event) {
               if (event.type === "keypress") {
                 return getEventCharCode(event);
               }
               return 0;
             },
-            keyCode: function keyCode(event) {
+            keyCode: function(event) {
               if (event.type === "keydown" || event.type === "keyup") {
                 return event.keyCode;
               }
               return 0;
             },
-            which: function which(event) {
+            which: function(event) {
               if (event.type === "keypress") {
                 return getEventCharCode(event);
               }
@@ -7664,20 +7908,44 @@
             }
           });
           var SyntheticKeyboardEvent = createSyntheticEvent(KeyboardEventInterface);
-          var PointerEventInterface = assign({}, MouseEventInterface, { pointerId: 0, width: 0, height: 0, pressure: 0, tangentialPressure: 0, tiltX: 0, tiltY: 0, twist: 0, pointerType: 0, isPrimary: 0 });
+          var PointerEventInterface = assign({}, MouseEventInterface, {
+            pointerId: 0,
+            width: 0,
+            height: 0,
+            pressure: 0,
+            tangentialPressure: 0,
+            tiltX: 0,
+            tiltY: 0,
+            twist: 0,
+            pointerType: 0,
+            isPrimary: 0
+          });
           var SyntheticPointerEvent = createSyntheticEvent(PointerEventInterface);
-          var TouchEventInterface = assign({}, UIEventInterface, { touches: 0, targetTouches: 0, changedTouches: 0, altKey: 0, metaKey: 0, ctrlKey: 0, shiftKey: 0, getModifierState: getEventModifierState });
+          var TouchEventInterface = assign({}, UIEventInterface, {
+            touches: 0,
+            targetTouches: 0,
+            changedTouches: 0,
+            altKey: 0,
+            metaKey: 0,
+            ctrlKey: 0,
+            shiftKey: 0,
+            getModifierState: getEventModifierState
+          });
           var SyntheticTouchEvent = createSyntheticEvent(TouchEventInterface);
-          var TransitionEventInterface = assign({}, EventInterface, { propertyName: 0, elapsedTime: 0, pseudoElement: 0 });
+          var TransitionEventInterface = assign({}, EventInterface, {
+            propertyName: 0,
+            elapsedTime: 0,
+            pseudoElement: 0
+          });
           var SyntheticTransitionEvent = createSyntheticEvent(TransitionEventInterface);
           var WheelEventInterface = assign({}, MouseEventInterface, {
-            deltaX: function deltaX(event) {
+            deltaX: function(event) {
               return "deltaX" in event ? event.deltaX : (
                 // Fallback to `wheelDeltaX` for Webkit and normalize (right is positive).
                 "wheelDeltaX" in event ? -event.wheelDeltaX : 0
               );
             },
-            deltaY: function deltaY(event) {
+            deltaY: function(event) {
               return "deltaY" in event ? event.deltaY : (
                 // Fallback to `wheelDeltaY` for Webkit and normalize (down is positive).
                 "wheelDeltaY" in event ? -event.wheelDeltaY : (
@@ -7781,7 +8049,10 @@
             var listeners = accumulateTwoPhaseListeners(targetInst, eventType);
             if (listeners.length > 0) {
               var event = new SyntheticCompositionEvent(eventType, domEventName, null, nativeEvent, nativeEventTarget);
-              dispatchQueue.push({ event, listeners });
+              dispatchQueue.push({
+                event,
+                listeners
+              });
               if (fallbackData) {
                 event.data = fallbackData;
               } else {
@@ -7854,7 +8125,10 @@
             var listeners = accumulateTwoPhaseListeners(targetInst, "onBeforeInput");
             if (listeners.length > 0) {
               var event = new SyntheticInputEvent("onBeforeInput", "beforeinput", null, nativeEvent, nativeEventTarget);
-              dispatchQueue.push({ event, listeners });
+              dispatchQueue.push({
+                event,
+                listeners
+              });
               event.data = chars;
             }
           }
@@ -7862,7 +8136,23 @@
             extractCompositionEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
             extractBeforeInputEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
           }
-          var supportedInputTypes = { color: true, date: true, datetime: true, "datetime-local": true, email: true, month: true, number: true, password: true, range: true, search: true, tel: true, text: true, time: true, url: true, week: true };
+          var supportedInputTypes = {
+            color: true,
+            date: true,
+            datetime: true,
+            "datetime-local": true,
+            email: true,
+            month: true,
+            number: true,
+            password: true,
+            range: true,
+            search: true,
+            tel: true,
+            text: true,
+            time: true,
+            url: true,
+            week: true
+          };
           function isTextInputElement(elem) {
             var nodeName = elem && elem.nodeName && elem.nodeName.toLowerCase();
             if (nodeName === "input") {
@@ -7894,7 +8184,10 @@
             var listeners = accumulateTwoPhaseListeners(inst, "onChange");
             if (listeners.length > 0) {
               var event = new SyntheticEvent("onChange", "change", null, nativeEvent, target);
-              dispatchQueue.push({ event, listeners });
+              dispatchQueue.push({
+                event,
+                listeners
+              });
             }
           }
           var activeElement = null;
@@ -8133,7 +8426,10 @@
               if (node.nodeType === TEXT_NODE) {
                 nodeEnd = nodeStart + node.textContent.length;
                 if (nodeStart <= offset && nodeEnd >= offset) {
-                  return { node, offset: offset - nodeStart };
+                  return {
+                    node,
+                    offset: offset - nodeStart
+                  };
                 }
                 nodeStart = nodeEnd;
               }
@@ -8204,7 +8500,10 @@
             if (start === -1 || end === -1) {
               return null;
             }
-            return { start, end };
+            return {
+              start,
+              end
+            };
           }
           function setOffsets(node, offsets) {
             var doc = node.ownerDocument || document;
@@ -8288,7 +8587,10 @@
           }
           function getSelectionInformation() {
             var focusedElem = getActiveElementDeep();
-            return { focusedElem, selectionRange: hasSelectionCapabilities(focusedElem) ? getSelection(focusedElem) : null };
+            return {
+              focusedElem,
+              selectionRange: hasSelectionCapabilities(focusedElem) ? getSelection(focusedElem) : null
+            };
           }
           function restoreSelection(priorSelectionInformation) {
             var curFocusedElem = getActiveElementDeep();
@@ -8302,7 +8604,11 @@
               var ancestor = priorFocusedElem;
               while (ancestor = ancestor.parentNode) {
                 if (ancestor.nodeType === ELEMENT_NODE) {
-                  ancestors.push({ element: ancestor, left: ancestor.scrollLeft, top: ancestor.scrollTop });
+                  ancestors.push({
+                    element: ancestor,
+                    left: ancestor.scrollLeft,
+                    top: ancestor.scrollTop
+                  });
                 }
               }
               if (typeof priorFocusedElem.focus === "function") {
@@ -8318,11 +8624,17 @@
           function getSelection(input) {
             var selection;
             if ("selectionStart" in input) {
-              selection = { start: input.selectionStart, end: input.selectionEnd };
+              selection = {
+                start: input.selectionStart,
+                end: input.selectionEnd
+              };
             } else {
               selection = getOffsets(input);
             }
-            return selection || { start: 0, end: 0 };
+            return selection || {
+              start: 0,
+              end: 0
+            };
           }
           function setSelection(input, offsets) {
             var start = offsets.start;
@@ -8347,11 +8659,19 @@
           var mouseDown = false;
           function getSelection$1(node) {
             if ("selectionStart" in node && hasSelectionCapabilities(node)) {
-              return { start: node.selectionStart, end: node.selectionEnd };
+              return {
+                start: node.selectionStart,
+                end: node.selectionEnd
+              };
             } else {
               var win = node.ownerDocument && node.ownerDocument.defaultView || window;
               var selection = win.getSelection();
-              return { anchorNode: selection.anchorNode, anchorOffset: selection.anchorOffset, focusNode: selection.focusNode, focusOffset: selection.focusOffset };
+              return {
+                anchorNode: selection.anchorNode,
+                anchorOffset: selection.anchorOffset,
+                focusNode: selection.focusNode,
+                focusOffset: selection.focusOffset
+              };
             }
           }
           function getEventTargetDocument(eventTarget) {
@@ -8368,7 +8688,10 @@
               var listeners = accumulateTwoPhaseListeners(activeElementInst$1, "onSelect");
               if (listeners.length > 0) {
                 var event = new SyntheticEvent("onSelect", "select", null, nativeEvent, nativeEventTarget);
-                dispatchQueue.push({ event, listeners });
+                dispatchQueue.push({
+                  event,
+                  listeners
+                });
                 event.target = activeElement$1;
               }
             }
@@ -8413,7 +8736,12 @@
             prefixes2["Moz" + styleProp] = "moz" + eventName;
             return prefixes2;
           }
-          var vendorPrefixes = { animationend: makePrefixMap("Animation", "AnimationEnd"), animationiteration: makePrefixMap("Animation", "AnimationIteration"), animationstart: makePrefixMap("Animation", "AnimationStart"), transitionend: makePrefixMap("Transition", "TransitionEnd") };
+          var vendorPrefixes = {
+            animationend: makePrefixMap("Animation", "AnimationEnd"),
+            animationiteration: makePrefixMap("Animation", "AnimationIteration"),
+            animationstart: makePrefixMap("Animation", "AnimationStart"),
+            transitionend: makePrefixMap("Transition", "TransitionEnd")
+          };
           var prefixedEventNames = {};
           var style = {};
           if (canUseDOM) {
@@ -8564,7 +8892,10 @@
               var _listeners = accumulateSinglePhaseListeners(targetInst, reactName, nativeEvent.type, inCapturePhase, accumulateTargetOnly);
               if (_listeners.length > 0) {
                 var _event = new SyntheticEventCtor(reactName, reactEventType, null, nativeEvent, nativeEventTarget);
-                dispatchQueue.push({ event: _event, listeners: _listeners });
+                dispatchQueue.push({
+                  event: _event,
+                  listeners: _listeners
+                });
               }
             }
           }
@@ -8753,7 +9084,11 @@
             });
           }
           function createDispatchListener(instance, listener, currentTarget) {
-            return { instance, listener, currentTarget };
+            return {
+              instance,
+              listener,
+              currentTarget
+            };
           }
           function accumulateSinglePhaseListeners(targetFiber, reactName, nativeEventType, inCapturePhase, accumulateTargetOnly, nativeEvent) {
             var captureName = reactName !== null ? reactName + "Capture" : null;
@@ -8870,7 +9205,10 @@
               instance = instance.return;
             }
             if (listeners.length !== 0) {
-              dispatchQueue.push({ event, listeners });
+              dispatchQueue.push({
+                event,
+                listeners
+              });
             }
           }
           function accumulateEnterLeaveTwoPhaseListeners(dispatchQueue, leaveEvent, enterEvent, from, to) {
@@ -8911,13 +9249,16 @@
               // @see https://electronjs.org/docs/api/webview-tag
               webview: true
             };
-            validatePropertiesInDevelopment = function validatePropertiesInDevelopment2(type, props) {
+            validatePropertiesInDevelopment = function(type, props) {
               validateProperties(type, props);
               validateProperties$1(type, props);
-              validateProperties$2(type, props, { registrationNameDependencies, possibleRegistrationNames });
+              validateProperties$2(type, props, {
+                registrationNameDependencies,
+                possibleRegistrationNames
+              });
             };
             canDiffStyleForHydrationWarning = canUseDOM && !document.documentMode;
-            warnForPropDifference = function warnForPropDifference2(propName, serverValue, clientValue) {
+            warnForPropDifference = function(propName, serverValue, clientValue) {
               if (didWarnInvalidHydration) {
                 return;
               }
@@ -8929,7 +9270,7 @@
               didWarnInvalidHydration = true;
               error("Prop `%s` did not match. Server: %s Client: %s", propName, JSON.stringify(normalizedServerValue), JSON.stringify(normalizedClientValue));
             };
-            warnForExtraAttributes = function warnForExtraAttributes2(attributeNames) {
+            warnForExtraAttributes = function(attributeNames) {
               if (didWarnInvalidHydration) {
                 return;
               }
@@ -8940,14 +9281,14 @@
               });
               error("Extra attributes from the server: %s", names);
             };
-            warnForInvalidEventListener = function warnForInvalidEventListener2(registrationName, listener) {
+            warnForInvalidEventListener = function(registrationName, listener) {
               if (listener === false) {
                 error("Expected `%s` listener to be a function, instead got `false`.\n\nIf you used to conditionally omit it with %s={condition && value}, pass %s={condition ? value : undefined} instead.", registrationName, registrationName, registrationName);
               } else {
                 error("Expected `%s` listener to be a function, instead got a value of `%s` type.", registrationName, typeof listener);
               }
             };
-            normalizeHTML = function normalizeHTML2(parent, html) {
+            normalizeHTML = function(parent, html) {
               var testElement = parent.namespaceURI === HTML_NAMESPACE ? parent.ownerDocument.createElement(parent.tagName) : parent.ownerDocument.createElementNS(parent.namespaceURI, parent.tagName);
               testElement.innerHTML = html;
               return testElement.innerHTML;
@@ -9069,7 +9410,9 @@
                 var firstChild = div.firstChild;
                 domElement = div.removeChild(firstChild);
               } else if (typeof props.is === "string") {
-                domElement = ownerDocument.createElement(type, { is: props.is });
+                domElement = ownerDocument.createElement(type, {
+                  is: props.is
+                });
               } else {
                 domElement = ownerDocument.createElement(type);
                 if (type === "select") {
@@ -9599,9 +9942,9 @@
                 return;
             }
           }
-          var validateDOMNesting = function validateDOMNesting2() {
+          var validateDOMNesting = function() {
           };
-          var updatedAncestorInfo = function updatedAncestorInfo2() {
+          var updatedAncestorInfo = function() {
           };
           {
             var specialTags = ["address", "applet", "area", "article", "aside", "base", "basefont", "bgsound", "blockquote", "body", "br", "button", "caption", "center", "col", "colgroup", "dd", "details", "dir", "div", "dl", "dt", "embed", "fieldset", "figcaption", "figure", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "iframe", "img", "input", "isindex", "li", "link", "listing", "main", "marquee", "menu", "menuitem", "meta", "nav", "noembed", "noframes", "noscript", "object", "ol", "p", "param", "plaintext", "pre", "script", "section", "select", "source", "style", "summary", "table", "tbody", "td", "template", "textarea", "tfoot", "th", "thead", "title", "tr", "track", "ul", "wbr", "xmp"];
@@ -9624,10 +9967,21 @@
             ];
             var buttonScopeTags = inScopeTags.concat(["button"]);
             var impliedEndTags = ["dd", "dt", "li", "option", "optgroup", "p", "rp", "rt"];
-            var emptyAncestorInfo = { current: null, formTag: null, aTagInScope: null, buttonTagInScope: null, nobrTagInScope: null, pTagInButtonScope: null, listItemTagAutoclosing: null, dlItemTagAutoclosing: null };
-            updatedAncestorInfo = function updatedAncestorInfo2(oldInfo, tag) {
+            var emptyAncestorInfo = {
+              current: null,
+              formTag: null,
+              aTagInScope: null,
+              buttonTagInScope: null,
+              nobrTagInScope: null,
+              pTagInButtonScope: null,
+              listItemTagAutoclosing: null,
+              dlItemTagAutoclosing: null
+            };
+            updatedAncestorInfo = function(oldInfo, tag) {
               var ancestorInfo = assign({}, oldInfo || emptyAncestorInfo);
-              var info = { tag };
+              var info = {
+                tag
+              };
               if (inScopeTags.indexOf(tag) !== -1) {
                 ancestorInfo.aTagInScope = null;
                 ancestorInfo.buttonTagInScope = null;
@@ -9664,7 +10018,7 @@
               }
               return ancestorInfo;
             };
-            var isTagValidWithParent = function isTagValidWithParent2(tag, parentTag) {
+            var isTagValidWithParent = function(tag, parentTag) {
               switch (parentTag) {
                 case "select":
                   return tag === "option" || tag === "optgroup" || tag === "#text";
@@ -9720,7 +10074,7 @@
               }
               return true;
             };
-            var findInvalidAncestorForTag = function findInvalidAncestorForTag2(tag, ancestorInfo) {
+            var findInvalidAncestorForTag = function(tag, ancestorInfo) {
               switch (tag) {
                 case "address":
                 case "article":
@@ -9775,7 +10129,7 @@
               return null;
             };
             var didWarn$1 = {};
-            validateDOMNesting = function validateDOMNesting2(childTag, childText, ancestorInfo) {
+            validateDOMNesting = function(childTag, childText, ancestorInfo) {
               ancestorInfo = ancestorInfo || emptyAncestorInfo;
               var parentInfo = ancestorInfo.current;
               var parentTag = parentInfo && parentInfo.tag;
@@ -9851,7 +10205,10 @@
             {
               var validatedTag = type.toLowerCase();
               var ancestorInfo = updatedAncestorInfo(null, validatedTag);
-              return { namespace, ancestorInfo };
+              return {
+                namespace,
+                ancestorInfo
+              };
             }
           }
           function getChildHostContext(parentHostContext, type, rootContainerInstance) {
@@ -9859,7 +10216,10 @@
               var parentHostContextDev = parentHostContext;
               var namespace = getChildNamespace(parentHostContextDev.namespace, type);
               var ancestorInfo = updatedAncestorInfo(parentHostContextDev.ancestorInfo, type);
-              return { namespace, ancestorInfo };
+              return {
+                namespace,
+                ancestorInfo
+              };
             }
           }
           function getPublicInstance(instance) {
@@ -10116,7 +10476,11 @@
               }
             }
             {
-              return { message, digest, stack };
+              return {
+                message,
+                digest,
+                stack
+              };
             }
           }
           function registerSuspenseInstanceRetry(instance, callback) {
@@ -10448,7 +10812,9 @@
           }
           var index = -1;
           function createCursor(defaultValue) {
-            return { current: defaultValue };
+            return {
+              current: defaultValue
+            };
           }
           function pop(cursor, fiber) {
             if (index < 0) {
@@ -10787,7 +11153,10 @@
           function getSuspendedTreeContext() {
             warnIfNotHydrating();
             if (treeContextProvider !== null) {
-              return { id: treeContextId, overflow: treeContextOverflow };
+              return {
+                id: treeContextId,
+                overflow: treeContextOverflow
+              };
             } else {
               return null;
             }
@@ -11002,7 +11371,11 @@
               case SuspenseComponent: {
                 var suspenseInstance = canHydrateSuspenseInstance(nextInstance);
                 if (suspenseInstance !== null) {
-                  var suspenseState = { dehydrated: suspenseInstance, treeContext: getSuspendedTreeContext(), retryLane: OffscreenLane };
+                  var suspenseState = {
+                    dehydrated: suspenseInstance,
+                    treeContext: getSuspendedTreeContext(),
+                    retryLane: OffscreenLane
+                  };
                   fiber.memoizedState = suspenseState;
                   var dehydratedFragment = createFiberFromDehydratedFragment(suspenseInstance);
                   dehydratedFragment.return = fiber;
@@ -11197,14 +11570,20 @@
           function requestCurrentTransition() {
             return ReactCurrentBatchConfig$1.transition;
           }
-          var ReactStrictModeWarnings = { recordUnsafeLifecycleWarnings: function recordUnsafeLifecycleWarnings(fiber, instance) {
-          }, flushPendingUnsafeLifecycleWarnings: function flushPendingUnsafeLifecycleWarnings() {
-          }, recordLegacyContextWarning: function recordLegacyContextWarning(fiber, instance) {
-          }, flushLegacyContextWarning: function flushLegacyContextWarning() {
-          }, discardPendingWarnings: function discardPendingWarnings() {
-          } };
+          var ReactStrictModeWarnings = {
+            recordUnsafeLifecycleWarnings: function(fiber, instance) {
+            },
+            flushPendingUnsafeLifecycleWarnings: function() {
+            },
+            recordLegacyContextWarning: function(fiber, instance) {
+            },
+            flushLegacyContextWarning: function() {
+            },
+            discardPendingWarnings: function() {
+            }
+          };
           {
-            var findStrictRoot = function findStrictRoot2(fiber) {
+            var findStrictRoot = function(fiber) {
               var maybeStrictRoot = null;
               var node = fiber;
               while (node !== null) {
@@ -11215,7 +11594,7 @@
               }
               return maybeStrictRoot;
             };
-            var setToSortedString = function setToSortedString2(set2) {
+            var setToSortedString = function(set2) {
               var array = [];
               set2.forEach(function(value) {
                 array.push(value);
@@ -11564,7 +11943,7 @@
               }
             }
           }
-          function _readContext(context) {
+          function readContext(context) {
             {
               if (isDisallowedContextReadInDEV) {
                 error("Context can only be read while React is rendering. In classes, you can read it in the render method or getDerivedStateFromProps. In function components, you can read it directly in the function body, but not inside Hooks like useReducer() or useMemo().");
@@ -11574,13 +11953,20 @@
             if (lastFullyObservedContext === context)
               ;
             else {
-              var contextItem = { context, memoizedValue: value, next: null };
+              var contextItem = {
+                context,
+                memoizedValue: value,
+                next: null
+              };
               if (lastContextDependency === null) {
                 if (currentlyRenderingFiber === null) {
                   throw new Error("Context can only be read while React is rendering. In classes, you can read it in the render method or getDerivedStateFromProps. In function components, you can read it directly in the function body, but not inside Hooks like useReducer() or useMemo().");
                 }
                 lastContextDependency = contextItem;
-                currentlyRenderingFiber.dependencies = { lanes: NoLanes, firstContext: contextItem };
+                currentlyRenderingFiber.dependencies = {
+                  lanes: NoLanes,
+                  firstContext: contextItem
+                };
               } else {
                 lastContextDependency = lastContextDependency.next = contextItem;
               }
@@ -11701,19 +12087,42 @@
             currentlyProcessingQueue = null;
           }
           function initializeUpdateQueue(fiber) {
-            var queue = { baseState: fiber.memoizedState, firstBaseUpdate: null, lastBaseUpdate: null, shared: { pending: null, interleaved: null, lanes: NoLanes }, effects: null };
+            var queue = {
+              baseState: fiber.memoizedState,
+              firstBaseUpdate: null,
+              lastBaseUpdate: null,
+              shared: {
+                pending: null,
+                interleaved: null,
+                lanes: NoLanes
+              },
+              effects: null
+            };
             fiber.updateQueue = queue;
           }
           function cloneUpdateQueue(current2, workInProgress2) {
             var queue = workInProgress2.updateQueue;
             var currentQueue = current2.updateQueue;
             if (queue === currentQueue) {
-              var clone = { baseState: currentQueue.baseState, firstBaseUpdate: currentQueue.firstBaseUpdate, lastBaseUpdate: currentQueue.lastBaseUpdate, shared: currentQueue.shared, effects: currentQueue.effects };
+              var clone = {
+                baseState: currentQueue.baseState,
+                firstBaseUpdate: currentQueue.firstBaseUpdate,
+                lastBaseUpdate: currentQueue.lastBaseUpdate,
+                shared: currentQueue.shared,
+                effects: currentQueue.effects
+              };
               workInProgress2.updateQueue = clone;
             }
           }
           function createUpdate(eventTime, lane) {
-            var update = { eventTime, lane, tag: UpdateState, payload: null, callback: null, next: null };
+            var update = {
+              eventTime,
+              lane,
+              tag: UpdateState,
+              payload: null,
+              callback: null,
+              next: null
+            };
             return update;
           }
           function enqueueUpdate(fiber, update, lane) {
@@ -11768,7 +12177,14 @@
                 if (firstBaseUpdate !== null) {
                   var update = firstBaseUpdate;
                   do {
-                    var clone = { eventTime: update.eventTime, lane: update.lane, tag: update.tag, payload: update.payload, callback: update.callback, next: null };
+                    var clone = {
+                      eventTime: update.eventTime,
+                      lane: update.lane,
+                      tag: update.tag,
+                      payload: update.payload,
+                      callback: update.callback,
+                      next: null
+                    };
                     if (newLast === null) {
                       newFirst = newLast = clone;
                     } else {
@@ -11786,7 +12202,13 @@
                 } else {
                   newFirst = newLast = capturedUpdate;
                 }
-                queue = { baseState: currentQueue.baseState, firstBaseUpdate: newFirst, lastBaseUpdate: newLast, shared: currentQueue.shared, effects: currentQueue.effects };
+                queue = {
+                  baseState: currentQueue.baseState,
+                  firstBaseUpdate: newFirst,
+                  lastBaseUpdate: newLast,
+                  shared: currentQueue.shared,
+                  effects: currentQueue.effects
+                };
                 workInProgress2.updateQueue = queue;
                 return;
               }
@@ -11905,7 +12327,14 @@
                 var updateLane = update.lane;
                 var updateEventTime = update.eventTime;
                 if (!isSubsetOfLanes(renderLanes2, updateLane)) {
-                  var clone = { eventTime: updateEventTime, lane: updateLane, tag: update.tag, payload: update.payload, callback: update.callback, next: null };
+                  var clone = {
+                    eventTime: updateEventTime,
+                    lane: updateLane,
+                    tag: update.tag,
+                    payload: update.payload,
+                    callback: update.callback,
+                    next: null
+                  };
                   if (newLastBaseUpdate === null) {
                     newFirstBaseUpdate = newLastBaseUpdate = clone;
                     newBaseState = newState;
@@ -12029,7 +12458,7 @@
             didWarnAboutContextTypeAndContextTypes = /* @__PURE__ */ new Set();
             didWarnAboutInvalidateContextType = /* @__PURE__ */ new Set();
             var didWarnOnInvalidCallback = /* @__PURE__ */ new Set();
-            warnOnInvalidCallback = function warnOnInvalidCallback2(callback, callerName) {
+            warnOnInvalidCallback = function(callback, callerName) {
               if (callback === null || typeof callback === "function") {
                 return;
               }
@@ -12039,7 +12468,7 @@
                 error("%s(...): Expected the last optional `callback` argument to be a function. Instead received: %s.", callerName, callback);
               }
             };
-            warnOnUndefinedDerivedState = function warnOnUndefinedDerivedState2(type, partialState) {
+            warnOnUndefinedDerivedState = function(type, partialState) {
               if (partialState === void 0) {
                 var componentName = getComponentNameFromType(type) || "Component";
                 if (!didWarnAboutUndefinedDerivedState.has(componentName)) {
@@ -12048,9 +12477,12 @@
                 }
               }
             };
-            Object.defineProperty(fakeInternalInstance, "_processChildContext", { enumerable: false, value: function value() {
-              throw new Error("_processChildContext is not available in React 16+. This likely means you have multiple copies of React and are attempting to nest a React 15 tree inside a React 16 tree using unstable_renderSubtreeIntoContainer, which isn't supported. Try to make sure you have only one copy of React (and ideally, switch to ReactDOM.createPortal).");
-            } });
+            Object.defineProperty(fakeInternalInstance, "_processChildContext", {
+              enumerable: false,
+              value: function() {
+                throw new Error("_processChildContext is not available in React 16+. This likely means you have multiple copies of React and are attempting to nest a React 15 tree inside a React 16 tree using unstable_renderSubtreeIntoContainer, which isn't supported. Try to make sure you have only one copy of React (and ideally, switch to ReactDOM.createPortal).");
+              }
+            });
             Object.freeze(fakeInternalInstance);
           }
           function applyDerivedStateFromProps(workInProgress2, ctor, getDerivedStateFromProps, nextProps) {
@@ -12074,68 +12506,73 @@
               updateQueue.baseState = memoizedState;
             }
           }
-          var classComponentUpdater = { isMounted, enqueueSetState: function enqueueSetState(inst, payload, callback) {
-            var fiber = get(inst);
-            var eventTime = requestEventTime();
-            var lane = requestUpdateLane(fiber);
-            var update = createUpdate(eventTime, lane);
-            update.payload = payload;
-            if (callback !== void 0 && callback !== null) {
-              {
-                warnOnInvalidCallback(callback, "setState");
+          var classComponentUpdater = {
+            isMounted,
+            enqueueSetState: function(inst, payload, callback) {
+              var fiber = get(inst);
+              var eventTime = requestEventTime();
+              var lane = requestUpdateLane(fiber);
+              var update = createUpdate(eventTime, lane);
+              update.payload = payload;
+              if (callback !== void 0 && callback !== null) {
+                {
+                  warnOnInvalidCallback(callback, "setState");
+                }
+                update.callback = callback;
               }
-              update.callback = callback;
-            }
-            var root2 = enqueueUpdate(fiber, update, lane);
-            if (root2 !== null) {
-              scheduleUpdateOnFiber(root2, fiber, lane, eventTime);
-              entangleTransitions(root2, fiber, lane);
-            }
-            {
-              markStateUpdateScheduled(fiber, lane);
-            }
-          }, enqueueReplaceState: function enqueueReplaceState(inst, payload, callback) {
-            var fiber = get(inst);
-            var eventTime = requestEventTime();
-            var lane = requestUpdateLane(fiber);
-            var update = createUpdate(eventTime, lane);
-            update.tag = ReplaceState;
-            update.payload = payload;
-            if (callback !== void 0 && callback !== null) {
-              {
-                warnOnInvalidCallback(callback, "replaceState");
+              var root2 = enqueueUpdate(fiber, update, lane);
+              if (root2 !== null) {
+                scheduleUpdateOnFiber(root2, fiber, lane, eventTime);
+                entangleTransitions(root2, fiber, lane);
               }
-              update.callback = callback;
-            }
-            var root2 = enqueueUpdate(fiber, update, lane);
-            if (root2 !== null) {
-              scheduleUpdateOnFiber(root2, fiber, lane, eventTime);
-              entangleTransitions(root2, fiber, lane);
-            }
-            {
-              markStateUpdateScheduled(fiber, lane);
-            }
-          }, enqueueForceUpdate: function enqueueForceUpdate(inst, callback) {
-            var fiber = get(inst);
-            var eventTime = requestEventTime();
-            var lane = requestUpdateLane(fiber);
-            var update = createUpdate(eventTime, lane);
-            update.tag = ForceUpdate;
-            if (callback !== void 0 && callback !== null) {
               {
-                warnOnInvalidCallback(callback, "forceUpdate");
+                markStateUpdateScheduled(fiber, lane);
               }
-              update.callback = callback;
+            },
+            enqueueReplaceState: function(inst, payload, callback) {
+              var fiber = get(inst);
+              var eventTime = requestEventTime();
+              var lane = requestUpdateLane(fiber);
+              var update = createUpdate(eventTime, lane);
+              update.tag = ReplaceState;
+              update.payload = payload;
+              if (callback !== void 0 && callback !== null) {
+                {
+                  warnOnInvalidCallback(callback, "replaceState");
+                }
+                update.callback = callback;
+              }
+              var root2 = enqueueUpdate(fiber, update, lane);
+              if (root2 !== null) {
+                scheduleUpdateOnFiber(root2, fiber, lane, eventTime);
+                entangleTransitions(root2, fiber, lane);
+              }
+              {
+                markStateUpdateScheduled(fiber, lane);
+              }
+            },
+            enqueueForceUpdate: function(inst, callback) {
+              var fiber = get(inst);
+              var eventTime = requestEventTime();
+              var lane = requestUpdateLane(fiber);
+              var update = createUpdate(eventTime, lane);
+              update.tag = ForceUpdate;
+              if (callback !== void 0 && callback !== null) {
+                {
+                  warnOnInvalidCallback(callback, "forceUpdate");
+                }
+                update.callback = callback;
+              }
+              var root2 = enqueueUpdate(fiber, update, lane);
+              if (root2 !== null) {
+                scheduleUpdateOnFiber(root2, fiber, lane, eventTime);
+                entangleTransitions(root2, fiber, lane);
+              }
+              {
+                markForceUpdateScheduled(fiber, lane);
+              }
             }
-            var root2 = enqueueUpdate(fiber, update, lane);
-            if (root2 !== null) {
-              scheduleUpdateOnFiber(root2, fiber, lane, eventTime);
-              entangleTransitions(root2, fiber, lane);
-            }
-            {
-              markForceUpdateScheduled(fiber, lane);
-            }
-          } };
+          };
           function checkShouldComponentUpdate(workInProgress2, ctor, oldProps, newProps, oldState, newState, nextContext) {
             var instance = workInProgress2.stateNode;
             if (typeof instance.shouldComponentUpdate === "function") {
@@ -12278,7 +12715,7 @@
               }
             }
             if (typeof contextType === "object" && contextType !== null) {
-              context = _readContext(contextType);
+              context = readContext(contextType);
             } else {
               unmaskedContext = getUnmaskedContext(workInProgress2, ctor, true);
               var contextTypes = ctor.contextTypes;
@@ -12385,7 +12822,7 @@
             initializeUpdateQueue(workInProgress2);
             var contextType = ctor.contextType;
             if (typeof contextType === "object" && contextType !== null) {
-              instance.context = _readContext(contextType);
+              instance.context = readContext(contextType);
             } else {
               var unmaskedContext = getUnmaskedContext(workInProgress2, ctor, true);
               instance.context = getMaskedContext(workInProgress2, unmaskedContext);
@@ -12435,7 +12872,7 @@
             var contextType = ctor.contextType;
             var nextContext = emptyContextObject;
             if (typeof contextType === "object" && contextType !== null) {
-              nextContext = _readContext(contextType);
+              nextContext = readContext(contextType);
             } else {
               var nextLegacyUnmaskedContext = getUnmaskedContext(workInProgress2, ctor, true);
               nextContext = getMaskedContext(workInProgress2, nextLegacyUnmaskedContext);
@@ -12519,7 +12956,7 @@
             var contextType = ctor.contextType;
             var nextContext = emptyContextObject;
             if (typeof contextType === "object" && contextType !== null) {
-              nextContext = _readContext(contextType);
+              nextContext = readContext(contextType);
             } else {
               var nextUnmaskedContext = getUnmaskedContext(workInProgress2, ctor, true);
               nextContext = getMaskedContext(workInProgress2, nextUnmaskedContext);
@@ -12597,7 +13034,7 @@
           var didWarnAboutStringRefs;
           var ownerHasKeyUseWarning;
           var ownerHasFunctionTypeWarning;
-          var warnForMissingKey = function warnForMissingKey2(child, returnFiber) {
+          var warnForMissingKey = function(child, returnFiber) {
           };
           {
             didWarnAboutMaps = false;
@@ -12605,7 +13042,7 @@
             didWarnAboutStringRefs = {};
             ownerHasKeyUseWarning = {};
             ownerHasFunctionTypeWarning = {};
-            warnForMissingKey = function warnForMissingKey2(child, returnFiber) {
+            warnForMissingKey = function(child, returnFiber) {
               if (child === null || typeof child !== "object") {
                 return;
               }
@@ -12662,7 +13099,7 @@
                 if (current2 !== null && current2.ref !== null && typeof current2.ref === "function" && current2.ref._stringRef === stringRef) {
                   return current2.ref;
                 }
-                var ref = function ref2(value) {
+                var ref = function(value) {
                   var refs = resolvedInst.refs;
                   if (refs === emptyRefsObject) {
                     refs = resolvedInst.refs = {};
@@ -13729,7 +14166,13 @@
             localIdCounter = 0;
           }
           function mountWorkInProgressHook() {
-            var hook = { memoizedState: null, baseState: null, baseQueue: null, queue: null, next: null };
+            var hook = {
+              memoizedState: null,
+              baseState: null,
+              baseQueue: null,
+              queue: null,
+              next: null
+            };
             if (workInProgressHook === null) {
               currentlyRenderingFiber$1.memoizedState = workInProgressHook = hook;
             } else {
@@ -13764,7 +14207,13 @@
                 throw new Error("Rendered more hooks than during the previous render.");
               }
               currentHook = nextCurrentHook;
-              var newHook = { memoizedState: currentHook.memoizedState, baseState: currentHook.baseState, baseQueue: currentHook.baseQueue, queue: currentHook.queue, next: null };
+              var newHook = {
+                memoizedState: currentHook.memoizedState,
+                baseState: currentHook.baseState,
+                baseQueue: currentHook.baseQueue,
+                queue: currentHook.queue,
+                next: null
+              };
               if (workInProgressHook === null) {
                 currentlyRenderingFiber$1.memoizedState = workInProgressHook = newHook;
               } else {
@@ -13774,7 +14223,10 @@
             return workInProgressHook;
           }
           function createFunctionComponentUpdateQueue() {
-            return { lastEffect: null, stores: null };
+            return {
+              lastEffect: null,
+              stores: null
+            };
           }
           function basicStateReducer(state, action) {
             return typeof action === "function" ? action(state) : action;
@@ -13788,7 +14240,14 @@
               initialState = initialArg;
             }
             hook.memoizedState = hook.baseState = initialState;
-            var queue = { pending: null, interleaved: null, lanes: NoLanes, dispatch: null, lastRenderedReducer: reducer, lastRenderedState: initialState };
+            var queue = {
+              pending: null,
+              interleaved: null,
+              lanes: NoLanes,
+              dispatch: null,
+              lastRenderedReducer: reducer,
+              lastRenderedState: initialState
+            };
             hook.queue = queue;
             var dispatch = queue.dispatch = dispatchReducerAction.bind(null, currentlyRenderingFiber$1, queue);
             return [hook.memoizedState, dispatch];
@@ -13828,7 +14287,13 @@
               do {
                 var updateLane = update.lane;
                 if (!isSubsetOfLanes(renderLanes, updateLane)) {
-                  var clone = { lane: updateLane, action: update.action, hasEagerState: update.hasEagerState, eagerState: update.eagerState, next: null };
+                  var clone = {
+                    lane: updateLane,
+                    action: update.action,
+                    hasEagerState: update.hasEagerState,
+                    eagerState: update.eagerState,
+                    next: null
+                  };
                   if (newBaseQueueLast === null) {
                     newBaseQueueFirst = newBaseQueueLast = clone;
                     newBaseState = newState;
@@ -13966,7 +14431,10 @@
               }
             }
             hook.memoizedState = nextSnapshot;
-            var inst = { value: nextSnapshot, getSnapshot };
+            var inst = {
+              value: nextSnapshot,
+              getSnapshot
+            };
             hook.queue = inst;
             mountEffect(subscribeToStore.bind(null, fiber, inst, subscribe), [subscribe]);
             fiber.flags |= Passive;
@@ -14011,7 +14479,10 @@
           }
           function pushStoreConsistencyCheck(fiber, getSnapshot, renderedSnapshot) {
             fiber.flags |= StoreConsistency;
-            var check = { getSnapshot, value: renderedSnapshot };
+            var check = {
+              getSnapshot,
+              value: renderedSnapshot
+            };
             var componentUpdateQueue = currentlyRenderingFiber$1.updateQueue;
             if (componentUpdateQueue === null) {
               componentUpdateQueue = createFunctionComponentUpdateQueue();
@@ -14034,7 +14505,7 @@
             }
           }
           function subscribeToStore(fiber, inst, subscribe) {
-            var handleStoreChange = function handleStoreChange2() {
+            var handleStoreChange = function() {
               if (checkIfSnapshotChanged(inst)) {
                 forceStoreRerender(fiber);
               }
@@ -14063,7 +14534,14 @@
               initialState = initialState();
             }
             hook.memoizedState = hook.baseState = initialState;
-            var queue = { pending: null, interleaved: null, lanes: NoLanes, dispatch: null, lastRenderedReducer: basicStateReducer, lastRenderedState: initialState };
+            var queue = {
+              pending: null,
+              interleaved: null,
+              lanes: NoLanes,
+              dispatch: null,
+              lastRenderedReducer: basicStateReducer,
+              lastRenderedState: initialState
+            };
             hook.queue = queue;
             var dispatch = queue.dispatch = dispatchSetState.bind(null, currentlyRenderingFiber$1, queue);
             return [hook.memoizedState, dispatch];
@@ -14104,7 +14582,9 @@
           function mountRef(initialValue) {
             var hook = mountWorkInProgressHook();
             {
-              var _ref2 = { current: initialValue };
+              var _ref2 = {
+                current: initialValue
+              };
               hook.memoizedState = _ref2;
               return _ref2;
             }
@@ -14384,7 +14864,13 @@
               }
             }
             var lane = requestUpdateLane(fiber);
-            var update = { lane, action, hasEagerState: false, eagerState: null, next: null };
+            var update = {
+              lane,
+              action,
+              hasEagerState: false,
+              eagerState: null,
+              next: null
+            };
             if (isRenderPhaseUpdate(fiber)) {
               enqueueRenderPhaseUpdate(queue, update);
             } else {
@@ -14404,7 +14890,13 @@
               }
             }
             var lane = requestUpdateLane(fiber);
-            var update = { lane, action, hasEagerState: false, eagerState: null, next: null };
+            var update = {
+              lane,
+              action,
+              hasEagerState: false,
+              eagerState: null,
+              next: null
+            };
             if (isRenderPhaseUpdate(fiber)) {
               enqueueRenderPhaseUpdate(queue, update);
             } else {
@@ -14472,7 +14964,26 @@
               markStateUpdateScheduled(fiber, lane);
             }
           }
-          var ContextOnlyDispatcher = { readContext: _readContext, useCallback: throwInvalidHookError, useContext: throwInvalidHookError, useEffect: throwInvalidHookError, useImperativeHandle: throwInvalidHookError, useInsertionEffect: throwInvalidHookError, useLayoutEffect: throwInvalidHookError, useMemo: throwInvalidHookError, useReducer: throwInvalidHookError, useRef: throwInvalidHookError, useState: throwInvalidHookError, useDebugValue: throwInvalidHookError, useDeferredValue: throwInvalidHookError, useTransition: throwInvalidHookError, useMutableSource: throwInvalidHookError, useSyncExternalStore: throwInvalidHookError, useId: throwInvalidHookError, unstable_isNewReconciler: enableNewReconciler };
+          var ContextOnlyDispatcher = {
+            readContext,
+            useCallback: throwInvalidHookError,
+            useContext: throwInvalidHookError,
+            useEffect: throwInvalidHookError,
+            useImperativeHandle: throwInvalidHookError,
+            useInsertionEffect: throwInvalidHookError,
+            useLayoutEffect: throwInvalidHookError,
+            useMemo: throwInvalidHookError,
+            useReducer: throwInvalidHookError,
+            useRef: throwInvalidHookError,
+            useState: throwInvalidHookError,
+            useDebugValue: throwInvalidHookError,
+            useDeferredValue: throwInvalidHookError,
+            useTransition: throwInvalidHookError,
+            useMutableSource: throwInvalidHookError,
+            useSyncExternalStore: throwInvalidHookError,
+            useId: throwInvalidHookError,
+            unstable_isNewReconciler: enableNewReconciler
+          };
           var HooksDispatcherOnMountInDEV = null;
           var HooksDispatcherOnMountWithHookTypesInDEV = null;
           var HooksDispatcherOnUpdateInDEV = null;
@@ -14481,664 +14992,797 @@
           var InvalidNestedHooksDispatcherOnUpdateInDEV = null;
           var InvalidNestedHooksDispatcherOnRerenderInDEV = null;
           {
-            var warnInvalidContextAccess = function warnInvalidContextAccess2() {
+            var warnInvalidContextAccess = function() {
               error("Context can only be read while React is rendering. In classes, you can read it in the render method or getDerivedStateFromProps. In function components, you can read it directly in the function body, but not inside Hooks like useReducer() or useMemo().");
             };
-            var warnInvalidHookAccess = function warnInvalidHookAccess2() {
+            var warnInvalidHookAccess = function() {
               error("Do not call Hooks inside useEffect(...), useMemo(...), or other built-in Hooks. You can only call Hooks at the top level of your React function. For more information, see https://reactjs.org/link/rules-of-hooks");
             };
-            HooksDispatcherOnMountInDEV = { readContext: function readContext(context) {
-              return _readContext(context);
-            }, useCallback: function useCallback(callback, deps) {
-              currentHookNameInDev = "useCallback";
-              mountHookTypesDev();
-              checkDepsAreArrayDev(deps);
-              return mountCallback(callback, deps);
-            }, useContext: function useContext(context) {
-              currentHookNameInDev = "useContext";
-              mountHookTypesDev();
-              return _readContext(context);
-            }, useEffect: function useEffect(create, deps) {
-              currentHookNameInDev = "useEffect";
-              mountHookTypesDev();
-              checkDepsAreArrayDev(deps);
-              return mountEffect(create, deps);
-            }, useImperativeHandle: function useImperativeHandle(ref, create, deps) {
-              currentHookNameInDev = "useImperativeHandle";
-              mountHookTypesDev();
-              checkDepsAreArrayDev(deps);
-              return mountImperativeHandle(ref, create, deps);
-            }, useInsertionEffect: function useInsertionEffect(create, deps) {
-              currentHookNameInDev = "useInsertionEffect";
-              mountHookTypesDev();
-              checkDepsAreArrayDev(deps);
-              return mountInsertionEffect(create, deps);
-            }, useLayoutEffect: function useLayoutEffect(create, deps) {
-              currentHookNameInDev = "useLayoutEffect";
-              mountHookTypesDev();
-              checkDepsAreArrayDev(deps);
-              return mountLayoutEffect(create, deps);
-            }, useMemo: function useMemo(create, deps) {
-              currentHookNameInDev = "useMemo";
-              mountHookTypesDev();
-              checkDepsAreArrayDev(deps);
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
-              try {
-                return mountMemo(create, deps);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useReducer: function useReducer(reducer, initialArg, init) {
-              currentHookNameInDev = "useReducer";
-              mountHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
-              try {
-                return mountReducer(reducer, initialArg, init);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useRef: function useRef(initialValue) {
-              currentHookNameInDev = "useRef";
-              mountHookTypesDev();
-              return mountRef(initialValue);
-            }, useState: function useState2(initialState) {
-              currentHookNameInDev = "useState";
-              mountHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
-              try {
-                return mountState(initialState);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useDebugValue: function useDebugValue(value, formatterFn) {
-              currentHookNameInDev = "useDebugValue";
-              mountHookTypesDev();
-              return mountDebugValue();
-            }, useDeferredValue: function useDeferredValue(value) {
-              currentHookNameInDev = "useDeferredValue";
-              mountHookTypesDev();
-              return mountDeferredValue(value);
-            }, useTransition: function useTransition() {
-              currentHookNameInDev = "useTransition";
-              mountHookTypesDev();
-              return mountTransition();
-            }, useMutableSource: function useMutableSource(source, getSnapshot, subscribe) {
-              currentHookNameInDev = "useMutableSource";
-              mountHookTypesDev();
-              return mountMutableSource();
-            }, useSyncExternalStore: function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-              currentHookNameInDev = "useSyncExternalStore";
-              mountHookTypesDev();
-              return mountSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-            }, useId: function useId() {
-              currentHookNameInDev = "useId";
-              mountHookTypesDev();
-              return mountId();
-            }, unstable_isNewReconciler: enableNewReconciler };
-            HooksDispatcherOnMountWithHookTypesInDEV = { readContext: function readContext(context) {
-              return _readContext(context);
-            }, useCallback: function useCallback(callback, deps) {
-              currentHookNameInDev = "useCallback";
-              updateHookTypesDev();
-              return mountCallback(callback, deps);
-            }, useContext: function useContext(context) {
-              currentHookNameInDev = "useContext";
-              updateHookTypesDev();
-              return _readContext(context);
-            }, useEffect: function useEffect(create, deps) {
-              currentHookNameInDev = "useEffect";
-              updateHookTypesDev();
-              return mountEffect(create, deps);
-            }, useImperativeHandle: function useImperativeHandle(ref, create, deps) {
-              currentHookNameInDev = "useImperativeHandle";
-              updateHookTypesDev();
-              return mountImperativeHandle(ref, create, deps);
-            }, useInsertionEffect: function useInsertionEffect(create, deps) {
-              currentHookNameInDev = "useInsertionEffect";
-              updateHookTypesDev();
-              return mountInsertionEffect(create, deps);
-            }, useLayoutEffect: function useLayoutEffect(create, deps) {
-              currentHookNameInDev = "useLayoutEffect";
-              updateHookTypesDev();
-              return mountLayoutEffect(create, deps);
-            }, useMemo: function useMemo(create, deps) {
-              currentHookNameInDev = "useMemo";
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
-              try {
-                return mountMemo(create, deps);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useReducer: function useReducer(reducer, initialArg, init) {
-              currentHookNameInDev = "useReducer";
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
-              try {
-                return mountReducer(reducer, initialArg, init);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useRef: function useRef(initialValue) {
-              currentHookNameInDev = "useRef";
-              updateHookTypesDev();
-              return mountRef(initialValue);
-            }, useState: function useState2(initialState) {
-              currentHookNameInDev = "useState";
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
-              try {
-                return mountState(initialState);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useDebugValue: function useDebugValue(value, formatterFn) {
-              currentHookNameInDev = "useDebugValue";
-              updateHookTypesDev();
-              return mountDebugValue();
-            }, useDeferredValue: function useDeferredValue(value) {
-              currentHookNameInDev = "useDeferredValue";
-              updateHookTypesDev();
-              return mountDeferredValue(value);
-            }, useTransition: function useTransition() {
-              currentHookNameInDev = "useTransition";
-              updateHookTypesDev();
-              return mountTransition();
-            }, useMutableSource: function useMutableSource(source, getSnapshot, subscribe) {
-              currentHookNameInDev = "useMutableSource";
-              updateHookTypesDev();
-              return mountMutableSource();
-            }, useSyncExternalStore: function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-              currentHookNameInDev = "useSyncExternalStore";
-              updateHookTypesDev();
-              return mountSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-            }, useId: function useId() {
-              currentHookNameInDev = "useId";
-              updateHookTypesDev();
-              return mountId();
-            }, unstable_isNewReconciler: enableNewReconciler };
-            HooksDispatcherOnUpdateInDEV = { readContext: function readContext(context) {
-              return _readContext(context);
-            }, useCallback: function useCallback(callback, deps) {
-              currentHookNameInDev = "useCallback";
-              updateHookTypesDev();
-              return updateCallback(callback, deps);
-            }, useContext: function useContext(context) {
-              currentHookNameInDev = "useContext";
-              updateHookTypesDev();
-              return _readContext(context);
-            }, useEffect: function useEffect(create, deps) {
-              currentHookNameInDev = "useEffect";
-              updateHookTypesDev();
-              return updateEffect(create, deps);
-            }, useImperativeHandle: function useImperativeHandle(ref, create, deps) {
-              currentHookNameInDev = "useImperativeHandle";
-              updateHookTypesDev();
-              return updateImperativeHandle(ref, create, deps);
-            }, useInsertionEffect: function useInsertionEffect(create, deps) {
-              currentHookNameInDev = "useInsertionEffect";
-              updateHookTypesDev();
-              return updateInsertionEffect(create, deps);
-            }, useLayoutEffect: function useLayoutEffect(create, deps) {
-              currentHookNameInDev = "useLayoutEffect";
-              updateHookTypesDev();
-              return updateLayoutEffect(create, deps);
-            }, useMemo: function useMemo(create, deps) {
-              currentHookNameInDev = "useMemo";
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
-              try {
-                return updateMemo(create, deps);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useReducer: function useReducer(reducer, initialArg, init) {
-              currentHookNameInDev = "useReducer";
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
-              try {
-                return updateReducer(reducer, initialArg, init);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useRef: function useRef(initialValue) {
-              currentHookNameInDev = "useRef";
-              updateHookTypesDev();
-              return updateRef();
-            }, useState: function useState2(initialState) {
-              currentHookNameInDev = "useState";
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
-              try {
-                return updateState(initialState);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useDebugValue: function useDebugValue(value, formatterFn) {
-              currentHookNameInDev = "useDebugValue";
-              updateHookTypesDev();
-              return updateDebugValue();
-            }, useDeferredValue: function useDeferredValue(value) {
-              currentHookNameInDev = "useDeferredValue";
-              updateHookTypesDev();
-              return updateDeferredValue(value);
-            }, useTransition: function useTransition() {
-              currentHookNameInDev = "useTransition";
-              updateHookTypesDev();
-              return updateTransition();
-            }, useMutableSource: function useMutableSource(source, getSnapshot, subscribe) {
-              currentHookNameInDev = "useMutableSource";
-              updateHookTypesDev();
-              return updateMutableSource();
-            }, useSyncExternalStore: function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-              currentHookNameInDev = "useSyncExternalStore";
-              updateHookTypesDev();
-              return updateSyncExternalStore(subscribe, getSnapshot);
-            }, useId: function useId() {
-              currentHookNameInDev = "useId";
-              updateHookTypesDev();
-              return updateId();
-            }, unstable_isNewReconciler: enableNewReconciler };
-            HooksDispatcherOnRerenderInDEV = { readContext: function readContext(context) {
-              return _readContext(context);
-            }, useCallback: function useCallback(callback, deps) {
-              currentHookNameInDev = "useCallback";
-              updateHookTypesDev();
-              return updateCallback(callback, deps);
-            }, useContext: function useContext(context) {
-              currentHookNameInDev = "useContext";
-              updateHookTypesDev();
-              return _readContext(context);
-            }, useEffect: function useEffect(create, deps) {
-              currentHookNameInDev = "useEffect";
-              updateHookTypesDev();
-              return updateEffect(create, deps);
-            }, useImperativeHandle: function useImperativeHandle(ref, create, deps) {
-              currentHookNameInDev = "useImperativeHandle";
-              updateHookTypesDev();
-              return updateImperativeHandle(ref, create, deps);
-            }, useInsertionEffect: function useInsertionEffect(create, deps) {
-              currentHookNameInDev = "useInsertionEffect";
-              updateHookTypesDev();
-              return updateInsertionEffect(create, deps);
-            }, useLayoutEffect: function useLayoutEffect(create, deps) {
-              currentHookNameInDev = "useLayoutEffect";
-              updateHookTypesDev();
-              return updateLayoutEffect(create, deps);
-            }, useMemo: function useMemo(create, deps) {
-              currentHookNameInDev = "useMemo";
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnRerenderInDEV;
-              try {
-                return updateMemo(create, deps);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useReducer: function useReducer(reducer, initialArg, init) {
-              currentHookNameInDev = "useReducer";
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnRerenderInDEV;
-              try {
-                return rerenderReducer(reducer, initialArg, init);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useRef: function useRef(initialValue) {
-              currentHookNameInDev = "useRef";
-              updateHookTypesDev();
-              return updateRef();
-            }, useState: function useState2(initialState) {
-              currentHookNameInDev = "useState";
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnRerenderInDEV;
-              try {
-                return rerenderState(initialState);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useDebugValue: function useDebugValue(value, formatterFn) {
-              currentHookNameInDev = "useDebugValue";
-              updateHookTypesDev();
-              return updateDebugValue();
-            }, useDeferredValue: function useDeferredValue(value) {
-              currentHookNameInDev = "useDeferredValue";
-              updateHookTypesDev();
-              return rerenderDeferredValue(value);
-            }, useTransition: function useTransition() {
-              currentHookNameInDev = "useTransition";
-              updateHookTypesDev();
-              return rerenderTransition();
-            }, useMutableSource: function useMutableSource(source, getSnapshot, subscribe) {
-              currentHookNameInDev = "useMutableSource";
-              updateHookTypesDev();
-              return updateMutableSource();
-            }, useSyncExternalStore: function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-              currentHookNameInDev = "useSyncExternalStore";
-              updateHookTypesDev();
-              return updateSyncExternalStore(subscribe, getSnapshot);
-            }, useId: function useId() {
-              currentHookNameInDev = "useId";
-              updateHookTypesDev();
-              return updateId();
-            }, unstable_isNewReconciler: enableNewReconciler };
-            InvalidNestedHooksDispatcherOnMountInDEV = { readContext: function readContext(context) {
-              warnInvalidContextAccess();
-              return _readContext(context);
-            }, useCallback: function useCallback(callback, deps) {
-              currentHookNameInDev = "useCallback";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountCallback(callback, deps);
-            }, useContext: function useContext(context) {
-              currentHookNameInDev = "useContext";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return _readContext(context);
-            }, useEffect: function useEffect(create, deps) {
-              currentHookNameInDev = "useEffect";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountEffect(create, deps);
-            }, useImperativeHandle: function useImperativeHandle(ref, create, deps) {
-              currentHookNameInDev = "useImperativeHandle";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountImperativeHandle(ref, create, deps);
-            }, useInsertionEffect: function useInsertionEffect(create, deps) {
-              currentHookNameInDev = "useInsertionEffect";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountInsertionEffect(create, deps);
-            }, useLayoutEffect: function useLayoutEffect(create, deps) {
-              currentHookNameInDev = "useLayoutEffect";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountLayoutEffect(create, deps);
-            }, useMemo: function useMemo(create, deps) {
-              currentHookNameInDev = "useMemo";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
-              try {
-                return mountMemo(create, deps);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useReducer: function useReducer(reducer, initialArg, init) {
-              currentHookNameInDev = "useReducer";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
-              try {
-                return mountReducer(reducer, initialArg, init);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useRef: function useRef(initialValue) {
-              currentHookNameInDev = "useRef";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountRef(initialValue);
-            }, useState: function useState2(initialState) {
-              currentHookNameInDev = "useState";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
-              try {
-                return mountState(initialState);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useDebugValue: function useDebugValue(value, formatterFn) {
-              currentHookNameInDev = "useDebugValue";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountDebugValue();
-            }, useDeferredValue: function useDeferredValue(value) {
-              currentHookNameInDev = "useDeferredValue";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountDeferredValue(value);
-            }, useTransition: function useTransition() {
-              currentHookNameInDev = "useTransition";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountTransition();
-            }, useMutableSource: function useMutableSource(source, getSnapshot, subscribe) {
-              currentHookNameInDev = "useMutableSource";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountMutableSource();
-            }, useSyncExternalStore: function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-              currentHookNameInDev = "useSyncExternalStore";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-            }, useId: function useId() {
-              currentHookNameInDev = "useId";
-              warnInvalidHookAccess();
-              mountHookTypesDev();
-              return mountId();
-            }, unstable_isNewReconciler: enableNewReconciler };
-            InvalidNestedHooksDispatcherOnUpdateInDEV = { readContext: function readContext(context) {
-              warnInvalidContextAccess();
-              return _readContext(context);
-            }, useCallback: function useCallback(callback, deps) {
-              currentHookNameInDev = "useCallback";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateCallback(callback, deps);
-            }, useContext: function useContext(context) {
-              currentHookNameInDev = "useContext";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return _readContext(context);
-            }, useEffect: function useEffect(create, deps) {
-              currentHookNameInDev = "useEffect";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateEffect(create, deps);
-            }, useImperativeHandle: function useImperativeHandle(ref, create, deps) {
-              currentHookNameInDev = "useImperativeHandle";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateImperativeHandle(ref, create, deps);
-            }, useInsertionEffect: function useInsertionEffect(create, deps) {
-              currentHookNameInDev = "useInsertionEffect";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateInsertionEffect(create, deps);
-            }, useLayoutEffect: function useLayoutEffect(create, deps) {
-              currentHookNameInDev = "useLayoutEffect";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateLayoutEffect(create, deps);
-            }, useMemo: function useMemo(create, deps) {
-              currentHookNameInDev = "useMemo";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
-              try {
-                return updateMemo(create, deps);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useReducer: function useReducer(reducer, initialArg, init) {
-              currentHookNameInDev = "useReducer";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
-              try {
-                return updateReducer(reducer, initialArg, init);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useRef: function useRef(initialValue) {
-              currentHookNameInDev = "useRef";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateRef();
-            }, useState: function useState2(initialState) {
-              currentHookNameInDev = "useState";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
-              try {
-                return updateState(initialState);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useDebugValue: function useDebugValue(value, formatterFn) {
-              currentHookNameInDev = "useDebugValue";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateDebugValue();
-            }, useDeferredValue: function useDeferredValue(value) {
-              currentHookNameInDev = "useDeferredValue";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateDeferredValue(value);
-            }, useTransition: function useTransition() {
-              currentHookNameInDev = "useTransition";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateTransition();
-            }, useMutableSource: function useMutableSource(source, getSnapshot, subscribe) {
-              currentHookNameInDev = "useMutableSource";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateMutableSource();
-            }, useSyncExternalStore: function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-              currentHookNameInDev = "useSyncExternalStore";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateSyncExternalStore(subscribe, getSnapshot);
-            }, useId: function useId() {
-              currentHookNameInDev = "useId";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateId();
-            }, unstable_isNewReconciler: enableNewReconciler };
-            InvalidNestedHooksDispatcherOnRerenderInDEV = { readContext: function readContext(context) {
-              warnInvalidContextAccess();
-              return _readContext(context);
-            }, useCallback: function useCallback(callback, deps) {
-              currentHookNameInDev = "useCallback";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateCallback(callback, deps);
-            }, useContext: function useContext(context) {
-              currentHookNameInDev = "useContext";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return _readContext(context);
-            }, useEffect: function useEffect(create, deps) {
-              currentHookNameInDev = "useEffect";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateEffect(create, deps);
-            }, useImperativeHandle: function useImperativeHandle(ref, create, deps) {
-              currentHookNameInDev = "useImperativeHandle";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateImperativeHandle(ref, create, deps);
-            }, useInsertionEffect: function useInsertionEffect(create, deps) {
-              currentHookNameInDev = "useInsertionEffect";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateInsertionEffect(create, deps);
-            }, useLayoutEffect: function useLayoutEffect(create, deps) {
-              currentHookNameInDev = "useLayoutEffect";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateLayoutEffect(create, deps);
-            }, useMemo: function useMemo(create, deps) {
-              currentHookNameInDev = "useMemo";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
-              try {
-                return updateMemo(create, deps);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useReducer: function useReducer(reducer, initialArg, init) {
-              currentHookNameInDev = "useReducer";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
-              try {
-                return rerenderReducer(reducer, initialArg, init);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useRef: function useRef(initialValue) {
-              currentHookNameInDev = "useRef";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateRef();
-            }, useState: function useState2(initialState) {
-              currentHookNameInDev = "useState";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              var prevDispatcher = ReactCurrentDispatcher$1.current;
-              ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
-              try {
-                return rerenderState(initialState);
-              } finally {
-                ReactCurrentDispatcher$1.current = prevDispatcher;
-              }
-            }, useDebugValue: function useDebugValue(value, formatterFn) {
-              currentHookNameInDev = "useDebugValue";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateDebugValue();
-            }, useDeferredValue: function useDeferredValue(value) {
-              currentHookNameInDev = "useDeferredValue";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return rerenderDeferredValue(value);
-            }, useTransition: function useTransition() {
-              currentHookNameInDev = "useTransition";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return rerenderTransition();
-            }, useMutableSource: function useMutableSource(source, getSnapshot, subscribe) {
-              currentHookNameInDev = "useMutableSource";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateMutableSource();
-            }, useSyncExternalStore: function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-              currentHookNameInDev = "useSyncExternalStore";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateSyncExternalStore(subscribe, getSnapshot);
-            }, useId: function useId() {
-              currentHookNameInDev = "useId";
-              warnInvalidHookAccess();
-              updateHookTypesDev();
-              return updateId();
-            }, unstable_isNewReconciler: enableNewReconciler };
+            HooksDispatcherOnMountInDEV = {
+              readContext: function(context) {
+                return readContext(context);
+              },
+              useCallback: function(callback, deps) {
+                currentHookNameInDev = "useCallback";
+                mountHookTypesDev();
+                checkDepsAreArrayDev(deps);
+                return mountCallback(callback, deps);
+              },
+              useContext: function(context) {
+                currentHookNameInDev = "useContext";
+                mountHookTypesDev();
+                return readContext(context);
+              },
+              useEffect: function(create, deps) {
+                currentHookNameInDev = "useEffect";
+                mountHookTypesDev();
+                checkDepsAreArrayDev(deps);
+                return mountEffect(create, deps);
+              },
+              useImperativeHandle: function(ref, create, deps) {
+                currentHookNameInDev = "useImperativeHandle";
+                mountHookTypesDev();
+                checkDepsAreArrayDev(deps);
+                return mountImperativeHandle(ref, create, deps);
+              },
+              useInsertionEffect: function(create, deps) {
+                currentHookNameInDev = "useInsertionEffect";
+                mountHookTypesDev();
+                checkDepsAreArrayDev(deps);
+                return mountInsertionEffect(create, deps);
+              },
+              useLayoutEffect: function(create, deps) {
+                currentHookNameInDev = "useLayoutEffect";
+                mountHookTypesDev();
+                checkDepsAreArrayDev(deps);
+                return mountLayoutEffect(create, deps);
+              },
+              useMemo: function(create, deps) {
+                currentHookNameInDev = "useMemo";
+                mountHookTypesDev();
+                checkDepsAreArrayDev(deps);
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
+                try {
+                  return mountMemo(create, deps);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useReducer: function(reducer, initialArg, init) {
+                currentHookNameInDev = "useReducer";
+                mountHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
+                try {
+                  return mountReducer(reducer, initialArg, init);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useRef: function(initialValue) {
+                currentHookNameInDev = "useRef";
+                mountHookTypesDev();
+                return mountRef(initialValue);
+              },
+              useState: function(initialState) {
+                currentHookNameInDev = "useState";
+                mountHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
+                try {
+                  return mountState(initialState);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useDebugValue: function(value, formatterFn) {
+                currentHookNameInDev = "useDebugValue";
+                mountHookTypesDev();
+                return mountDebugValue();
+              },
+              useDeferredValue: function(value) {
+                currentHookNameInDev = "useDeferredValue";
+                mountHookTypesDev();
+                return mountDeferredValue(value);
+              },
+              useTransition: function() {
+                currentHookNameInDev = "useTransition";
+                mountHookTypesDev();
+                return mountTransition();
+              },
+              useMutableSource: function(source, getSnapshot, subscribe) {
+                currentHookNameInDev = "useMutableSource";
+                mountHookTypesDev();
+                return mountMutableSource();
+              },
+              useSyncExternalStore: function(subscribe, getSnapshot, getServerSnapshot) {
+                currentHookNameInDev = "useSyncExternalStore";
+                mountHookTypesDev();
+                return mountSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+              },
+              useId: function() {
+                currentHookNameInDev = "useId";
+                mountHookTypesDev();
+                return mountId();
+              },
+              unstable_isNewReconciler: enableNewReconciler
+            };
+            HooksDispatcherOnMountWithHookTypesInDEV = {
+              readContext: function(context) {
+                return readContext(context);
+              },
+              useCallback: function(callback, deps) {
+                currentHookNameInDev = "useCallback";
+                updateHookTypesDev();
+                return mountCallback(callback, deps);
+              },
+              useContext: function(context) {
+                currentHookNameInDev = "useContext";
+                updateHookTypesDev();
+                return readContext(context);
+              },
+              useEffect: function(create, deps) {
+                currentHookNameInDev = "useEffect";
+                updateHookTypesDev();
+                return mountEffect(create, deps);
+              },
+              useImperativeHandle: function(ref, create, deps) {
+                currentHookNameInDev = "useImperativeHandle";
+                updateHookTypesDev();
+                return mountImperativeHandle(ref, create, deps);
+              },
+              useInsertionEffect: function(create, deps) {
+                currentHookNameInDev = "useInsertionEffect";
+                updateHookTypesDev();
+                return mountInsertionEffect(create, deps);
+              },
+              useLayoutEffect: function(create, deps) {
+                currentHookNameInDev = "useLayoutEffect";
+                updateHookTypesDev();
+                return mountLayoutEffect(create, deps);
+              },
+              useMemo: function(create, deps) {
+                currentHookNameInDev = "useMemo";
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
+                try {
+                  return mountMemo(create, deps);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useReducer: function(reducer, initialArg, init) {
+                currentHookNameInDev = "useReducer";
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
+                try {
+                  return mountReducer(reducer, initialArg, init);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useRef: function(initialValue) {
+                currentHookNameInDev = "useRef";
+                updateHookTypesDev();
+                return mountRef(initialValue);
+              },
+              useState: function(initialState) {
+                currentHookNameInDev = "useState";
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
+                try {
+                  return mountState(initialState);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useDebugValue: function(value, formatterFn) {
+                currentHookNameInDev = "useDebugValue";
+                updateHookTypesDev();
+                return mountDebugValue();
+              },
+              useDeferredValue: function(value) {
+                currentHookNameInDev = "useDeferredValue";
+                updateHookTypesDev();
+                return mountDeferredValue(value);
+              },
+              useTransition: function() {
+                currentHookNameInDev = "useTransition";
+                updateHookTypesDev();
+                return mountTransition();
+              },
+              useMutableSource: function(source, getSnapshot, subscribe) {
+                currentHookNameInDev = "useMutableSource";
+                updateHookTypesDev();
+                return mountMutableSource();
+              },
+              useSyncExternalStore: function(subscribe, getSnapshot, getServerSnapshot) {
+                currentHookNameInDev = "useSyncExternalStore";
+                updateHookTypesDev();
+                return mountSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+              },
+              useId: function() {
+                currentHookNameInDev = "useId";
+                updateHookTypesDev();
+                return mountId();
+              },
+              unstable_isNewReconciler: enableNewReconciler
+            };
+            HooksDispatcherOnUpdateInDEV = {
+              readContext: function(context) {
+                return readContext(context);
+              },
+              useCallback: function(callback, deps) {
+                currentHookNameInDev = "useCallback";
+                updateHookTypesDev();
+                return updateCallback(callback, deps);
+              },
+              useContext: function(context) {
+                currentHookNameInDev = "useContext";
+                updateHookTypesDev();
+                return readContext(context);
+              },
+              useEffect: function(create, deps) {
+                currentHookNameInDev = "useEffect";
+                updateHookTypesDev();
+                return updateEffect(create, deps);
+              },
+              useImperativeHandle: function(ref, create, deps) {
+                currentHookNameInDev = "useImperativeHandle";
+                updateHookTypesDev();
+                return updateImperativeHandle(ref, create, deps);
+              },
+              useInsertionEffect: function(create, deps) {
+                currentHookNameInDev = "useInsertionEffect";
+                updateHookTypesDev();
+                return updateInsertionEffect(create, deps);
+              },
+              useLayoutEffect: function(create, deps) {
+                currentHookNameInDev = "useLayoutEffect";
+                updateHookTypesDev();
+                return updateLayoutEffect(create, deps);
+              },
+              useMemo: function(create, deps) {
+                currentHookNameInDev = "useMemo";
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+                try {
+                  return updateMemo(create, deps);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useReducer: function(reducer, initialArg, init) {
+                currentHookNameInDev = "useReducer";
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+                try {
+                  return updateReducer(reducer, initialArg, init);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useRef: function(initialValue) {
+                currentHookNameInDev = "useRef";
+                updateHookTypesDev();
+                return updateRef();
+              },
+              useState: function(initialState) {
+                currentHookNameInDev = "useState";
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+                try {
+                  return updateState(initialState);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useDebugValue: function(value, formatterFn) {
+                currentHookNameInDev = "useDebugValue";
+                updateHookTypesDev();
+                return updateDebugValue();
+              },
+              useDeferredValue: function(value) {
+                currentHookNameInDev = "useDeferredValue";
+                updateHookTypesDev();
+                return updateDeferredValue(value);
+              },
+              useTransition: function() {
+                currentHookNameInDev = "useTransition";
+                updateHookTypesDev();
+                return updateTransition();
+              },
+              useMutableSource: function(source, getSnapshot, subscribe) {
+                currentHookNameInDev = "useMutableSource";
+                updateHookTypesDev();
+                return updateMutableSource();
+              },
+              useSyncExternalStore: function(subscribe, getSnapshot, getServerSnapshot) {
+                currentHookNameInDev = "useSyncExternalStore";
+                updateHookTypesDev();
+                return updateSyncExternalStore(subscribe, getSnapshot);
+              },
+              useId: function() {
+                currentHookNameInDev = "useId";
+                updateHookTypesDev();
+                return updateId();
+              },
+              unstable_isNewReconciler: enableNewReconciler
+            };
+            HooksDispatcherOnRerenderInDEV = {
+              readContext: function(context) {
+                return readContext(context);
+              },
+              useCallback: function(callback, deps) {
+                currentHookNameInDev = "useCallback";
+                updateHookTypesDev();
+                return updateCallback(callback, deps);
+              },
+              useContext: function(context) {
+                currentHookNameInDev = "useContext";
+                updateHookTypesDev();
+                return readContext(context);
+              },
+              useEffect: function(create, deps) {
+                currentHookNameInDev = "useEffect";
+                updateHookTypesDev();
+                return updateEffect(create, deps);
+              },
+              useImperativeHandle: function(ref, create, deps) {
+                currentHookNameInDev = "useImperativeHandle";
+                updateHookTypesDev();
+                return updateImperativeHandle(ref, create, deps);
+              },
+              useInsertionEffect: function(create, deps) {
+                currentHookNameInDev = "useInsertionEffect";
+                updateHookTypesDev();
+                return updateInsertionEffect(create, deps);
+              },
+              useLayoutEffect: function(create, deps) {
+                currentHookNameInDev = "useLayoutEffect";
+                updateHookTypesDev();
+                return updateLayoutEffect(create, deps);
+              },
+              useMemo: function(create, deps) {
+                currentHookNameInDev = "useMemo";
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnRerenderInDEV;
+                try {
+                  return updateMemo(create, deps);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useReducer: function(reducer, initialArg, init) {
+                currentHookNameInDev = "useReducer";
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnRerenderInDEV;
+                try {
+                  return rerenderReducer(reducer, initialArg, init);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useRef: function(initialValue) {
+                currentHookNameInDev = "useRef";
+                updateHookTypesDev();
+                return updateRef();
+              },
+              useState: function(initialState) {
+                currentHookNameInDev = "useState";
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnRerenderInDEV;
+                try {
+                  return rerenderState(initialState);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useDebugValue: function(value, formatterFn) {
+                currentHookNameInDev = "useDebugValue";
+                updateHookTypesDev();
+                return updateDebugValue();
+              },
+              useDeferredValue: function(value) {
+                currentHookNameInDev = "useDeferredValue";
+                updateHookTypesDev();
+                return rerenderDeferredValue(value);
+              },
+              useTransition: function() {
+                currentHookNameInDev = "useTransition";
+                updateHookTypesDev();
+                return rerenderTransition();
+              },
+              useMutableSource: function(source, getSnapshot, subscribe) {
+                currentHookNameInDev = "useMutableSource";
+                updateHookTypesDev();
+                return updateMutableSource();
+              },
+              useSyncExternalStore: function(subscribe, getSnapshot, getServerSnapshot) {
+                currentHookNameInDev = "useSyncExternalStore";
+                updateHookTypesDev();
+                return updateSyncExternalStore(subscribe, getSnapshot);
+              },
+              useId: function() {
+                currentHookNameInDev = "useId";
+                updateHookTypesDev();
+                return updateId();
+              },
+              unstable_isNewReconciler: enableNewReconciler
+            };
+            InvalidNestedHooksDispatcherOnMountInDEV = {
+              readContext: function(context) {
+                warnInvalidContextAccess();
+                return readContext(context);
+              },
+              useCallback: function(callback, deps) {
+                currentHookNameInDev = "useCallback";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountCallback(callback, deps);
+              },
+              useContext: function(context) {
+                currentHookNameInDev = "useContext";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return readContext(context);
+              },
+              useEffect: function(create, deps) {
+                currentHookNameInDev = "useEffect";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountEffect(create, deps);
+              },
+              useImperativeHandle: function(ref, create, deps) {
+                currentHookNameInDev = "useImperativeHandle";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountImperativeHandle(ref, create, deps);
+              },
+              useInsertionEffect: function(create, deps) {
+                currentHookNameInDev = "useInsertionEffect";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountInsertionEffect(create, deps);
+              },
+              useLayoutEffect: function(create, deps) {
+                currentHookNameInDev = "useLayoutEffect";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountLayoutEffect(create, deps);
+              },
+              useMemo: function(create, deps) {
+                currentHookNameInDev = "useMemo";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
+                try {
+                  return mountMemo(create, deps);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useReducer: function(reducer, initialArg, init) {
+                currentHookNameInDev = "useReducer";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
+                try {
+                  return mountReducer(reducer, initialArg, init);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useRef: function(initialValue) {
+                currentHookNameInDev = "useRef";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountRef(initialValue);
+              },
+              useState: function(initialState) {
+                currentHookNameInDev = "useState";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
+                try {
+                  return mountState(initialState);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useDebugValue: function(value, formatterFn) {
+                currentHookNameInDev = "useDebugValue";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountDebugValue();
+              },
+              useDeferredValue: function(value) {
+                currentHookNameInDev = "useDeferredValue";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountDeferredValue(value);
+              },
+              useTransition: function() {
+                currentHookNameInDev = "useTransition";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountTransition();
+              },
+              useMutableSource: function(source, getSnapshot, subscribe) {
+                currentHookNameInDev = "useMutableSource";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountMutableSource();
+              },
+              useSyncExternalStore: function(subscribe, getSnapshot, getServerSnapshot) {
+                currentHookNameInDev = "useSyncExternalStore";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+              },
+              useId: function() {
+                currentHookNameInDev = "useId";
+                warnInvalidHookAccess();
+                mountHookTypesDev();
+                return mountId();
+              },
+              unstable_isNewReconciler: enableNewReconciler
+            };
+            InvalidNestedHooksDispatcherOnUpdateInDEV = {
+              readContext: function(context) {
+                warnInvalidContextAccess();
+                return readContext(context);
+              },
+              useCallback: function(callback, deps) {
+                currentHookNameInDev = "useCallback";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateCallback(callback, deps);
+              },
+              useContext: function(context) {
+                currentHookNameInDev = "useContext";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return readContext(context);
+              },
+              useEffect: function(create, deps) {
+                currentHookNameInDev = "useEffect";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateEffect(create, deps);
+              },
+              useImperativeHandle: function(ref, create, deps) {
+                currentHookNameInDev = "useImperativeHandle";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateImperativeHandle(ref, create, deps);
+              },
+              useInsertionEffect: function(create, deps) {
+                currentHookNameInDev = "useInsertionEffect";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateInsertionEffect(create, deps);
+              },
+              useLayoutEffect: function(create, deps) {
+                currentHookNameInDev = "useLayoutEffect";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateLayoutEffect(create, deps);
+              },
+              useMemo: function(create, deps) {
+                currentHookNameInDev = "useMemo";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+                try {
+                  return updateMemo(create, deps);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useReducer: function(reducer, initialArg, init) {
+                currentHookNameInDev = "useReducer";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+                try {
+                  return updateReducer(reducer, initialArg, init);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useRef: function(initialValue) {
+                currentHookNameInDev = "useRef";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateRef();
+              },
+              useState: function(initialState) {
+                currentHookNameInDev = "useState";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+                try {
+                  return updateState(initialState);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useDebugValue: function(value, formatterFn) {
+                currentHookNameInDev = "useDebugValue";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateDebugValue();
+              },
+              useDeferredValue: function(value) {
+                currentHookNameInDev = "useDeferredValue";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateDeferredValue(value);
+              },
+              useTransition: function() {
+                currentHookNameInDev = "useTransition";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateTransition();
+              },
+              useMutableSource: function(source, getSnapshot, subscribe) {
+                currentHookNameInDev = "useMutableSource";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateMutableSource();
+              },
+              useSyncExternalStore: function(subscribe, getSnapshot, getServerSnapshot) {
+                currentHookNameInDev = "useSyncExternalStore";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateSyncExternalStore(subscribe, getSnapshot);
+              },
+              useId: function() {
+                currentHookNameInDev = "useId";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateId();
+              },
+              unstable_isNewReconciler: enableNewReconciler
+            };
+            InvalidNestedHooksDispatcherOnRerenderInDEV = {
+              readContext: function(context) {
+                warnInvalidContextAccess();
+                return readContext(context);
+              },
+              useCallback: function(callback, deps) {
+                currentHookNameInDev = "useCallback";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateCallback(callback, deps);
+              },
+              useContext: function(context) {
+                currentHookNameInDev = "useContext";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return readContext(context);
+              },
+              useEffect: function(create, deps) {
+                currentHookNameInDev = "useEffect";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateEffect(create, deps);
+              },
+              useImperativeHandle: function(ref, create, deps) {
+                currentHookNameInDev = "useImperativeHandle";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateImperativeHandle(ref, create, deps);
+              },
+              useInsertionEffect: function(create, deps) {
+                currentHookNameInDev = "useInsertionEffect";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateInsertionEffect(create, deps);
+              },
+              useLayoutEffect: function(create, deps) {
+                currentHookNameInDev = "useLayoutEffect";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateLayoutEffect(create, deps);
+              },
+              useMemo: function(create, deps) {
+                currentHookNameInDev = "useMemo";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+                try {
+                  return updateMemo(create, deps);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useReducer: function(reducer, initialArg, init) {
+                currentHookNameInDev = "useReducer";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+                try {
+                  return rerenderReducer(reducer, initialArg, init);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useRef: function(initialValue) {
+                currentHookNameInDev = "useRef";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateRef();
+              },
+              useState: function(initialState) {
+                currentHookNameInDev = "useState";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                var prevDispatcher = ReactCurrentDispatcher$1.current;
+                ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
+                try {
+                  return rerenderState(initialState);
+                } finally {
+                  ReactCurrentDispatcher$1.current = prevDispatcher;
+                }
+              },
+              useDebugValue: function(value, formatterFn) {
+                currentHookNameInDev = "useDebugValue";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateDebugValue();
+              },
+              useDeferredValue: function(value) {
+                currentHookNameInDev = "useDeferredValue";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return rerenderDeferredValue(value);
+              },
+              useTransition: function() {
+                currentHookNameInDev = "useTransition";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return rerenderTransition();
+              },
+              useMutableSource: function(source, getSnapshot, subscribe) {
+                currentHookNameInDev = "useMutableSource";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateMutableSource();
+              },
+              useSyncExternalStore: function(subscribe, getSnapshot, getServerSnapshot) {
+                currentHookNameInDev = "useSyncExternalStore";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateSyncExternalStore(subscribe, getSnapshot);
+              },
+              useId: function() {
+                currentHookNameInDev = "useId";
+                warnInvalidHookAccess();
+                updateHookTypesDev();
+                return updateId();
+              },
+              unstable_isNewReconciler: enableNewReconciler
+            };
           }
           var now$1 = Scheduler.unstable_now;
           var commitTime = 0;
@@ -15250,10 +15894,20 @@
             }
           }
           function createCapturedValueAtFiber(value, source) {
-            return { value, source, stack: getStackByFiberInDevAndProd(source), digest: null };
+            return {
+              value,
+              source,
+              stack: getStackByFiberInDevAndProd(source),
+              digest: null
+            };
           }
           function createCapturedValue(value, digest, stack) {
-            return { value, source: null, stack: stack != null ? stack : null, digest: digest != null ? digest : null };
+            return {
+              value,
+              source: null,
+              stack: stack != null ? stack : null,
+              digest: digest != null ? digest : null
+            };
           }
           function showErrorDialog(boundary, errorInfo) {
             return true;
@@ -15299,7 +15953,9 @@
           function createRootErrorUpdate(fiber, errorInfo, lane) {
             var update = createUpdate(NoTimestamp, lane);
             update.tag = CaptureUpdate;
-            update.payload = { element: null };
+            update.payload = {
+              element: null
+            };
             var error2 = errorInfo.value;
             update.callback = function() {
               onUncaughtError(error2);
@@ -15335,7 +15991,9 @@
                 }
                 var error$12 = errorInfo.value;
                 var stack = errorInfo.stack;
-                this.componentDidCatch(error$12, { componentStack: stack !== null ? stack : "" });
+                this.componentDidCatch(error$12, {
+                  componentStack: stack !== null ? stack : ""
+                });
                 {
                   if (typeof getDerivedStateFromError !== "function") {
                     if (!includesSomeLane(fiber.lanes, SyncLane)) {
@@ -15711,7 +16369,11 @@
             var prevState = current2 !== null ? current2.memoizedState : null;
             if (nextProps.mode === "hidden" || enableLegacyHidden) {
               if ((workInProgress2.mode & ConcurrentMode) === NoMode) {
-                var nextState = { baseLanes: NoLanes, cachePool: null, transitions: null };
+                var nextState = {
+                  baseLanes: NoLanes,
+                  cachePool: null,
+                  transitions: null
+                };
                 workInProgress2.memoizedState = nextState;
                 pushRenderLanes(workInProgress2, renderLanes2);
               } else if (!includesSomeLane(renderLanes2, OffscreenLane)) {
@@ -15724,13 +16386,21 @@
                   nextBaseLanes = renderLanes2;
                 }
                 workInProgress2.lanes = workInProgress2.childLanes = laneToLanes(OffscreenLane);
-                var _nextState = { baseLanes: nextBaseLanes, cachePool: spawnedCachePool, transitions: null };
+                var _nextState = {
+                  baseLanes: nextBaseLanes,
+                  cachePool: spawnedCachePool,
+                  transitions: null
+                };
                 workInProgress2.memoizedState = _nextState;
                 workInProgress2.updateQueue = null;
                 pushRenderLanes(workInProgress2, nextBaseLanes);
                 return null;
               } else {
-                var _nextState2 = { baseLanes: NoLanes, cachePool: null, transitions: null };
+                var _nextState2 = {
+                  baseLanes: NoLanes,
+                  cachePool: null,
+                  transitions: null
+                };
                 workInProgress2.memoizedState = _nextState2;
                 var subtreeRenderLanes2 = prevState !== null ? prevState.baseLanes : renderLanes2;
                 pushRenderLanes(workInProgress2, subtreeRenderLanes2);
@@ -15977,7 +16647,13 @@
             var root2 = workInProgress2.stateNode;
             var nextChildren = nextState.element;
             if (prevState.isDehydrated) {
-              var overrideState = { element: nextChildren, isDehydrated: false, cache: nextState.cache, pendingSuspenseBoundaries: nextState.pendingSuspenseBoundaries, transitions: nextState.transitions };
+              var overrideState = {
+                element: nextChildren,
+                isDehydrated: false,
+                cache: nextState.cache,
+                pendingSuspenseBoundaries: nextState.pendingSuspenseBoundaries,
+                transitions: nextState.transitions
+              };
               var updateQueue = workInProgress2.updateQueue;
               updateQueue.baseState = overrideState;
               workInProgress2.memoizedState = overrideState;
@@ -16254,13 +16930,25 @@
               }
             }
           }
-          var SUSPENDED_MARKER = { dehydrated: null, treeContext: null, retryLane: NoLane };
+          var SUSPENDED_MARKER = {
+            dehydrated: null,
+            treeContext: null,
+            retryLane: NoLane
+          };
           function mountSuspenseOffscreenState(renderLanes2) {
-            return { baseLanes: renderLanes2, cachePool: getSuspendedCache(), transitions: null };
+            return {
+              baseLanes: renderLanes2,
+              cachePool: getSuspendedCache(),
+              transitions: null
+            };
           }
           function updateSuspenseOffscreenState(prevOffscreenState, renderLanes2) {
             var cachePool = null;
-            return { baseLanes: mergeLanes(prevOffscreenState.baseLanes, renderLanes2), cachePool, transitions: prevOffscreenState.transitions };
+            return {
+              baseLanes: mergeLanes(prevOffscreenState.baseLanes, renderLanes2),
+              cachePool,
+              transitions: prevOffscreenState.transitions
+            };
           }
           function shouldRemainOnFallback(suspenseContext, current2, workInProgress2, renderLanes2) {
             if (current2 !== null) {
@@ -16344,7 +17032,10 @@
           }
           function mountSuspensePrimaryChildren(workInProgress2, primaryChildren, renderLanes2) {
             var mode = workInProgress2.mode;
-            var primaryChildProps = { mode: "visible", children: primaryChildren };
+            var primaryChildProps = {
+              mode: "visible",
+              children: primaryChildren
+            };
             var primaryChildFragment = mountWorkInProgressOffscreenFiber(primaryChildProps, mode);
             primaryChildFragment.return = workInProgress2;
             workInProgress2.child = primaryChildFragment;
@@ -16353,7 +17044,10 @@
           function mountSuspenseFallbackChildren(workInProgress2, primaryChildren, fallbackChildren, renderLanes2) {
             var mode = workInProgress2.mode;
             var progressedPrimaryFragment = workInProgress2.child;
-            var primaryChildProps = { mode: "hidden", children: primaryChildren };
+            var primaryChildProps = {
+              mode: "hidden",
+              children: primaryChildren
+            };
             var primaryChildFragment;
             var fallbackChildFragment;
             if ((mode & ConcurrentMode) === NoMode && progressedPrimaryFragment !== null) {
@@ -16386,7 +17080,10 @@
           function updateSuspensePrimaryChildren(current2, workInProgress2, primaryChildren, renderLanes2) {
             var currentPrimaryChildFragment = current2.child;
             var currentFallbackChildFragment = currentPrimaryChildFragment.sibling;
-            var primaryChildFragment = updateWorkInProgressOffscreenFiber(currentPrimaryChildFragment, { mode: "visible", children: primaryChildren });
+            var primaryChildFragment = updateWorkInProgressOffscreenFiber(currentPrimaryChildFragment, {
+              mode: "visible",
+              children: primaryChildren
+            });
             if ((workInProgress2.mode & ConcurrentMode) === NoMode) {
               primaryChildFragment.lanes = renderLanes2;
             }
@@ -16408,7 +17105,10 @@
             var mode = workInProgress2.mode;
             var currentPrimaryChildFragment = current2.child;
             var currentFallbackChildFragment = currentPrimaryChildFragment.sibling;
-            var primaryChildProps = { mode: "hidden", children: primaryChildren };
+            var primaryChildProps = {
+              mode: "hidden",
+              children: primaryChildren
+            };
             var primaryChildFragment;
             if (
               // In legacy mode, we commit the primary tree as if it successfully
@@ -16463,7 +17163,10 @@
           }
           function mountSuspenseFallbackAfterRetryWithoutHydrating(current2, workInProgress2, primaryChildren, fallbackChildren, renderLanes2) {
             var fiberMode = workInProgress2.mode;
-            var primaryChildProps = { mode: "visible", children: primaryChildren };
+            var primaryChildProps = {
+              mode: "visible",
+              children: primaryChildren
+            };
             var primaryChildFragment = mountWorkInProgressOffscreenFiber(primaryChildProps, fiberMode);
             var fallbackChildFragment = createFiberFromFragment(fallbackChildren, fiberMode, renderLanes2, null);
             fallbackChildFragment.flags |= Placement;
@@ -16701,7 +17404,14 @@
           function initSuspenseListRenderState(workInProgress2, isBackwards, tail, lastContentRow, tailMode) {
             var renderState = workInProgress2.memoizedState;
             if (renderState === null) {
-              workInProgress2.memoizedState = { isBackwards, rendering: null, renderingStartTime: 0, last: lastContentRow, tail, tailMode };
+              workInProgress2.memoizedState = {
+                isBackwards,
+                rendering: null,
+                renderingStartTime: 0,
+                last: lastContentRow,
+                tail,
+                tailMode
+              };
             } else {
               renderState.isBackwards = isBackwards;
               renderState.rendering = null;
@@ -16872,7 +17582,7 @@
               }
             }
             prepareToReadContext(workInProgress2, renderLanes2);
-            var newValue = _readContext(context);
+            var newValue = readContext(context);
             {
               markComponentRenderStarted(workInProgress2);
             }
@@ -17195,7 +17905,7 @@
           var updateHostComponent$1;
           var updateHostText$1;
           {
-            appendAllChildren = function appendAllChildren2(parent, workInProgress2, needsVisibilityToggle, isHidden) {
+            appendAllChildren = function(parent, workInProgress2, needsVisibilityToggle, isHidden) {
               var node = workInProgress2.child;
               while (node !== null) {
                 if (node.tag === HostComponent || node.tag === HostText) {
@@ -17220,9 +17930,9 @@
                 node = node.sibling;
               }
             };
-            updateHostContainer = function updateHostContainer2(current2, workInProgress2) {
+            updateHostContainer = function(current2, workInProgress2) {
             };
-            updateHostComponent$1 = function updateHostComponent$12(current2, workInProgress2, type, newProps, rootContainerInstance) {
+            updateHostComponent$1 = function(current2, workInProgress2, type, newProps, rootContainerInstance) {
               var oldProps = current2.memoizedProps;
               if (oldProps === newProps) {
                 return;
@@ -17235,7 +17945,7 @@
                 markUpdate(workInProgress2);
               }
             };
-            updateHostText$1 = function updateHostText$12(current2, workInProgress2, oldText, newText) {
+            updateHostText$1 = function(current2, workInProgress2, oldText, newText) {
               if (oldText !== newText) {
                 markUpdate(workInProgress2);
               }
@@ -17857,7 +18567,7 @@
               clearCaughtError();
             }
           }
-          var callComponentWillUnmountWithTimer = function callComponentWillUnmountWithTimer2(current2, instance) {
+          var callComponentWillUnmountWithTimer = function(current2, instance) {
             instance.props = current2.memoizedProps;
             instance.state = current2.memoizedState;
             if (current2.mode & ProfileMode) {
@@ -20592,7 +21302,10 @@
                 var recoverableError = recoverableErrors[i];
                 var componentStack = recoverableError.stack;
                 var digest = recoverableError.digest;
-                onRecoverableError(recoverableError.value, { componentStack, digest });
+                onRecoverableError(recoverableError.value, {
+                  componentStack,
+                  digest
+                });
               }
             }
             if (hasUncaughtError) {
@@ -20936,7 +21649,7 @@
           var beginWork$1;
           {
             var dummyFiber = null;
-            beginWork$1 = function beginWork$12(current2, unitOfWork, lanes) {
+            beginWork$1 = function(current2, unitOfWork, lanes) {
               var originalWorkInProgressCopy = assignFiberPropertiesInDEV(dummyFiber, unitOfWork);
               try {
                 return beginWork(current2, unitOfWork, lanes);
@@ -21071,7 +21784,7 @@
           }
           var resolveFamily = null;
           var failedBoundaries = null;
-          var setRefreshHandler = function setRefreshHandler2(handler) {
+          var setRefreshHandler = function(handler) {
             {
               resolveFamily = handler;
             }
@@ -21101,7 +21814,10 @@
                 if (type !== null && type !== void 0 && typeof type.render === "function") {
                   var currentRender = resolveFunctionForHotReloading(type.render);
                   if (type.render !== currentRender) {
-                    var syntheticType = { $$typeof: REACT_FORWARD_REF_TYPE, render: currentRender };
+                    var syntheticType = {
+                      $$typeof: REACT_FORWARD_REF_TYPE,
+                      render: currentRender
+                    };
                     if (type.displayName !== void 0) {
                       syntheticType.displayName = type.displayName;
                     }
@@ -21180,7 +21896,7 @@
               failedBoundaries.add(fiber);
             }
           }
-          var scheduleRefresh = function scheduleRefresh2(root2, update) {
+          var scheduleRefresh = function(root2, update) {
             {
               if (resolveFamily === null) {
                 return;
@@ -21192,7 +21908,7 @@
               });
             }
           };
-          var scheduleRoot = function scheduleRoot2(root2, element) {
+          var scheduleRoot = function(root2, element) {
             {
               if (root2.context !== emptyContextObject) {
                 return;
@@ -21258,7 +21974,7 @@
               }
             }
           }
-          var findHostInstancesForRefresh = function findHostInstancesForRefresh2(root2, families) {
+          var findHostInstancesForRefresh = function(root2, families) {
             {
               var hostInstances = /* @__PURE__ */ new Set();
               var types = new Set(families.map(function(family) {
@@ -21408,7 +22124,7 @@
               }
             }
           }
-          var createFiber = function createFiber2(tag, pendingProps, key, mode) {
+          var createFiber = function(tag, pendingProps, key, mode) {
             return new FiberNode(tag, pendingProps, key, mode);
           };
           function shouldConstruct$1(Component) {
@@ -21465,7 +22181,10 @@
             workInProgress2.memoizedState = current2.memoizedState;
             workInProgress2.updateQueue = current2.updateQueue;
             var currentDependencies = current2.dependencies;
-            workInProgress2.dependencies = currentDependencies === null ? null : { lanes: currentDependencies.lanes, firstContext: currentDependencies.firstContext };
+            workInProgress2.dependencies = currentDependencies === null ? null : {
+              lanes: currentDependencies.lanes,
+              firstContext: currentDependencies.firstContext
+            };
             workInProgress2.sibling = current2.sibling;
             workInProgress2.index = current2.index;
             workInProgress2.ref = current2.ref;
@@ -21519,7 +22238,10 @@
               workInProgress2.updateQueue = current2.updateQueue;
               workInProgress2.type = current2.type;
               var currentDependencies = current2.dependencies;
-              workInProgress2.dependencies = currentDependencies === null ? null : { lanes: currentDependencies.lanes, firstContext: currentDependencies.firstContext };
+              workInProgress2.dependencies = currentDependencies === null ? null : {
+                lanes: currentDependencies.lanes,
+                firstContext: currentDependencies.firstContext
+              };
               {
                 workInProgress2.selfBaseDuration = current2.selfBaseDuration;
                 workInProgress2.treeBaseDuration = current2.treeBaseDuration;
@@ -21663,7 +22385,10 @@
             fiber.elementType = REACT_PROFILER_TYPE;
             fiber.lanes = lanes;
             {
-              fiber.stateNode = { effectDuration: 0, passiveEffectDuration: 0 };
+              fiber.stateNode = {
+                effectDuration: 0,
+                passiveEffectDuration: 0
+              };
             }
             return fiber;
           }
@@ -21683,7 +22408,9 @@
             var fiber = createFiber(OffscreenComponent, pendingProps, key, mode);
             fiber.elementType = REACT_OFFSCREEN_TYPE;
             fiber.lanes = lanes;
-            var primaryChildInstance = { isHidden: false };
+            var primaryChildInstance = {
+              isHidden: false
+            };
             fiber.stateNode = primaryChildInstance;
             return fiber;
           }
@@ -21935,7 +22662,9 @@
               }
             }
             var update = createUpdate(eventTime, lane);
-            update.payload = { element };
+            update.payload = {
+              element
+            };
             callback = callback === void 0 ? null : callback;
             if (callback !== null) {
               {
@@ -22032,13 +22761,13 @@
             }
             return hostFiber.stateNode;
           }
-          var shouldErrorImpl = function shouldErrorImpl2(fiber) {
+          var shouldErrorImpl = function(fiber) {
             return null;
           };
           function shouldError(fiber) {
             return shouldErrorImpl(fiber);
           }
-          var shouldSuspendImpl = function shouldSuspendImpl2(fiber) {
+          var shouldSuspendImpl = function(fiber) {
             return false;
           };
           function shouldSuspend(fiber) {
@@ -22054,7 +22783,7 @@
           var setErrorHandler = null;
           var setSuspenseHandler = null;
           {
-            var copyWithDeleteImpl = function copyWithDeleteImpl2(obj, path, index2) {
+            var copyWithDeleteImpl = function(obj, path, index2) {
               var key = path[index2];
               var updated = isArray(obj) ? obj.slice() : assign({}, obj);
               if (index2 + 1 === path.length) {
@@ -22065,13 +22794,13 @@
                 }
                 return updated;
               }
-              updated[key] = copyWithDeleteImpl2(obj[key], path, index2 + 1);
+              updated[key] = copyWithDeleteImpl(obj[key], path, index2 + 1);
               return updated;
             };
-            var copyWithDelete = function copyWithDelete2(obj, path) {
+            var copyWithDelete = function(obj, path) {
               return copyWithDeleteImpl(obj, path, 0);
             };
-            var copyWithRenameImpl = function copyWithRenameImpl2(obj, oldPath, newPath, index2) {
+            var copyWithRenameImpl = function(obj, oldPath, newPath, index2) {
               var oldKey = oldPath[index2];
               var updated = isArray(obj) ? obj.slice() : assign({}, obj);
               if (index2 + 1 === oldPath.length) {
@@ -22083,7 +22812,7 @@
                   delete updated[oldKey];
                 }
               } else {
-                updated[oldKey] = copyWithRenameImpl2(
+                updated[oldKey] = copyWithRenameImpl(
                   // $FlowFixMe number or string is fine here
                   obj[oldKey],
                   oldPath,
@@ -22093,7 +22822,7 @@
               }
               return updated;
             };
-            var copyWithRename = function copyWithRename2(obj, oldPath, newPath) {
+            var copyWithRename = function(obj, oldPath, newPath) {
               if (oldPath.length !== newPath.length) {
                 warn("copyWithRename() expects paths of the same length");
                 return;
@@ -22107,19 +22836,19 @@
               }
               return copyWithRenameImpl(obj, oldPath, newPath, 0);
             };
-            var copyWithSetImpl = function copyWithSetImpl2(obj, path, index2, value) {
+            var copyWithSetImpl = function(obj, path, index2, value) {
               if (index2 >= path.length) {
                 return value;
               }
               var key = path[index2];
               var updated = isArray(obj) ? obj.slice() : assign({}, obj);
-              updated[key] = copyWithSetImpl2(obj[key], path, index2 + 1, value);
+              updated[key] = copyWithSetImpl(obj[key], path, index2 + 1, value);
               return updated;
             };
-            var copyWithSet = function copyWithSet2(obj, path, value) {
+            var copyWithSet = function(obj, path, value) {
               return copyWithSetImpl(obj, path, 0, value);
             };
-            var findHook = function findHook2(fiber, id) {
+            var findHook = function(fiber, id) {
               var currentHook2 = fiber.memoizedState;
               while (currentHook2 !== null && id > 0) {
                 currentHook2 = currentHook2.next;
@@ -22127,7 +22856,7 @@
               }
               return currentHook2;
             };
-            overrideHookState = function overrideHookState2(fiber, id, path, value) {
+            overrideHookState = function(fiber, id, path, value) {
               var hook = findHook(fiber, id);
               if (hook !== null) {
                 var newState = copyWithSet(hook.memoizedState, path, value);
@@ -22140,7 +22869,7 @@
                 }
               }
             };
-            overrideHookStateDeletePath = function overrideHookStateDeletePath2(fiber, id, path) {
+            overrideHookStateDeletePath = function(fiber, id, path) {
               var hook = findHook(fiber, id);
               if (hook !== null) {
                 var newState = copyWithDelete(hook.memoizedState, path);
@@ -22153,7 +22882,7 @@
                 }
               }
             };
-            overrideHookStateRenamePath = function overrideHookStateRenamePath2(fiber, id, oldPath, newPath) {
+            overrideHookStateRenamePath = function(fiber, id, oldPath, newPath) {
               var hook = findHook(fiber, id);
               if (hook !== null) {
                 var newState = copyWithRename(hook.memoizedState, oldPath, newPath);
@@ -22166,7 +22895,7 @@
                 }
               }
             };
-            overrideProps = function overrideProps2(fiber, path, value) {
+            overrideProps = function(fiber, path, value) {
               fiber.pendingProps = copyWithSet(fiber.memoizedProps, path, value);
               if (fiber.alternate) {
                 fiber.alternate.pendingProps = fiber.pendingProps;
@@ -22176,7 +22905,7 @@
                 scheduleUpdateOnFiber(root2, fiber, SyncLane, NoTimestamp);
               }
             };
-            overridePropsDeletePath = function overridePropsDeletePath2(fiber, path) {
+            overridePropsDeletePath = function(fiber, path) {
               fiber.pendingProps = copyWithDelete(fiber.memoizedProps, path);
               if (fiber.alternate) {
                 fiber.alternate.pendingProps = fiber.pendingProps;
@@ -22186,7 +22915,7 @@
                 scheduleUpdateOnFiber(root2, fiber, SyncLane, NoTimestamp);
               }
             };
-            overridePropsRenamePath = function overridePropsRenamePath2(fiber, oldPath, newPath) {
+            overridePropsRenamePath = function(fiber, oldPath, newPath) {
               fiber.pendingProps = copyWithRename(fiber.memoizedProps, oldPath, newPath);
               if (fiber.alternate) {
                 fiber.alternate.pendingProps = fiber.pendingProps;
@@ -22196,16 +22925,16 @@
                 scheduleUpdateOnFiber(root2, fiber, SyncLane, NoTimestamp);
               }
             };
-            scheduleUpdate = function scheduleUpdate2(fiber) {
+            scheduleUpdate = function(fiber) {
               var root2 = enqueueConcurrentRenderForLane(fiber, SyncLane);
               if (root2 !== null) {
                 scheduleUpdateOnFiber(root2, fiber, SyncLane, NoTimestamp);
               }
             };
-            setErrorHandler = function setErrorHandler2(newShouldErrorImpl) {
+            setErrorHandler = function(newShouldErrorImpl) {
               shouldErrorImpl = newShouldErrorImpl;
             };
-            setSuspenseHandler = function setSuspenseHandler2(newShouldSuspendImpl) {
+            setSuspenseHandler = function(newShouldSuspendImpl) {
               shouldSuspendImpl = newShouldSuspendImpl;
             };
           }
@@ -22419,7 +23148,7 @@
           var ReactCurrentOwner$3 = ReactSharedInternals.ReactCurrentOwner;
           var topLevelUpdateWarnings;
           {
-            topLevelUpdateWarnings = function topLevelUpdateWarnings2(container) {
+            topLevelUpdateWarnings = function(container) {
               if (container._reactRootContainer && container.nodeType !== COMMENT_NODE) {
                 var hostInstance = findHostInstanceWithNoPortals(container._reactRootContainer.current);
                 if (hostInstance) {
@@ -22455,7 +23184,7 @@
             if (isHydrationContainer) {
               if (typeof callback === "function") {
                 var originalCallback = callback;
-                callback = function callback2() {
+                callback = function() {
                   var instance = getPublicRootInstance(root2);
                   originalCallback.call(instance);
                 };
@@ -22488,7 +23217,7 @@
               }
               if (typeof callback === "function") {
                 var _originalCallback = callback;
-                callback = function callback2() {
+                callback = function() {
                   var instance = getPublicRootInstance(_root);
                   _originalCallback.call(instance);
                 };
@@ -22536,7 +23265,7 @@
               root2 = maybeRoot;
               if (typeof callback === "function") {
                 var originalCallback = callback;
-                callback = function callback2() {
+                callback = function() {
                   var instance = getPublicRootInstance(root2);
                   originalCallback.call(instance);
                 };
@@ -22699,7 +23428,12 @@
             }
             return flushSync(fn);
           }
-          var foundDevTools = injectIntoDevTools({ findFiberByHostInstance: getClosestInstanceFromNode, bundleType: 1, version: ReactVersion, rendererPackageName: "react-dom" });
+          var foundDevTools = injectIntoDevTools({
+            findFiberByHostInstance: getClosestInstanceFromNode,
+            bundleType: 1,
+            version: ReactVersion,
+            rendererPackageName: "react-dom"
+          });
           {
             if (!foundDevTools && canUseDOM && window.top === window.self) {
               if (navigator.userAgent.indexOf("Chrome") > -1 && navigator.userAgent.indexOf("Edge") === -1 || navigator.userAgent.indexOf("Firefox") > -1) {
@@ -22782,30 +23516,30 @@
       arr2[i] = arr[i];
     return arr2;
   }
-  function _iterableToArrayLimit(arr, i) {
-    var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
-    if (null != _i) {
-      var _s, _e, _x, _r, _arr = [], _n = true, _d = false;
+  function _iterableToArrayLimit(r, l) {
+    var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+    if (null != t) {
+      var e, n, i, u, a = [], f = true, o = false;
       try {
-        if (_x = (_i = _i.call(arr)).next, 0 === i) {
-          if (Object(_i) !== _i)
+        if (i = (t = t.call(r)).next, 0 === l) {
+          if (Object(t) !== t)
             return;
-          _n = false;
+          f = false;
         } else
-          for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = true)
+          for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = true)
             ;
-      } catch (err) {
-        _d = true, _e = err;
+      } catch (r2) {
+        o = true, n = r2;
       } finally {
         try {
-          if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r))
+          if (!f && null != t.return && (u = t.return(), Object(u) !== u))
             return;
         } finally {
-          if (_d)
-            throw _e;
+          if (o)
+            throw n;
         }
       }
-      return _arr;
+      return a;
     }
   }
   function _arrayWithHoles(arr) {
@@ -22898,22 +23632,6 @@
   var App_default = App;
 
   // relay/index.ts
-  (function() {
-    if (typeof document === "undefined") {
-      return;
-    }
-    var styles = "#garbageCollectorContainer {\n  margin: 1rem;\n  font-family: Arial, Helvetica, sans-serif;\n}\n\n#notificationsContainer {\n  position: absolute;\n  width: 100%;\n  z-index: 999;\n}\n\nimg {\n  display: block;\n  margin: auto;\n}\n\ninput.stringPreference {\n  background-color: white;\n  border-radius: 5px;\n  border: 1px solid #121943;\n  height: 24px;\n}\n\ninput.interrupt {\n  width: 100%;\n  border-color: darkred;\n  background-color: #f1948a;\n  color: darkred;\n  margin: 10px 0px;\n}\n\ninput.interrupt:hover {\n  background-color: #f5867a;\n}\n\ninput.interrupt:active {\n  background-color: #f77163;\n}\n\ninput[type=submit] {\n  margin: auto;\n  display: block;\n  font-size: x-large;\n  padding: 5px 25px;\n  border-radius: 10px;\n}\n\n.notification {\n  border: 3px solid #00529b;\n  background-color: #bde5f8;\n  width: fit-content;\n  margin-right: auto;\n  margin-left: auto;\n  border-radius: 40px;\n  color: #00529b;\n  padding: 7px 60px;\n  animation: 2s fadeOut 5s 1 forwards;\n  cursor: pointer;\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  99% {\n    height: 100%;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\ntd {\n  padding: 0.5rem;\n}\n\n.toggle {\n  align-items: center;\n  border-radius: 100px;\n  display: flex;\n  font-weight: 700;\n  margin-bottom: 16px;\n}\n.toggle:last-of-type {\n  margin: 0;\n}\n\n.toggle__input {\n  clip: rect(0 0 0 0);\n  clip-path: inset(50%);\n  height: 1px;\n  overflow: hidden;\n  position: absolute;\n  white-space: nowrap;\n  width: 1px;\n}\n.toggle__input:not([disabled]):active + .toggle-track, .toggle__input:not([disabled]):focus + .toggle-track {\n  border: 1px solid transparent;\n  box-shadow: 0px 0px 0px 2px #121943;\n}\n.toggle__input:disabled + .toggle-track {\n  cursor: not-allowed;\n  opacity: 0.7;\n}\n\n.toggle-track {\n  background: white;\n  border: 1px solid #5a72b5;\n  border-radius: 100px;\n  cursor: pointer;\n  display: flex;\n  height: 30px;\n  margin: auto;\n  position: relative;\n  width: 60px;\n}\n\n.toggle-indicator {\n  align-items: center;\n  background: #121943;\n  border-radius: 24px;\n  bottom: 2px;\n  display: flex;\n  height: 24px;\n  justify-content: center;\n  left: 2px;\n  outline: solid 2px transparent;\n  position: absolute;\n  transition: 0.4s;\n  width: 24px;\n}\n\n.checkMark {\n  fill: #fff;\n  height: 20px;\n  width: 20px;\n  opacity: 0;\n  transition: opacity 0.4s ease-in-out;\n}\n\ninput[value=true] + .toggle-track .toggle-indicator {\n  background: #121943;\n  transform: translateX(30px);\n}\ninput[value=true] + .toggle-track .toggle-indicator .checkMark {\n  opacity: 1;\n  transition: opacity 0.4s ease-in-out;\n}\n\n@media screen and (-ms-high-contrast: active) {\n  .toggle-track {\n    border-radius: 0;\n  }\n}";
-    var fileName = "index_App_088fcbd6-1786-43f8-86f4-f7e3dd443140";
-    var element = document.querySelector("style[data-sass-component='index_App_088fcbd6-1786-43f8-86f4-f7e3dd443140']");
-    if (!element) {
-      var styleBlock = document.createElement("style");
-      styleBlock.innerHTML = styles;
-      styleBlock.setAttribute("data-sass-component", fileName);
-      document.head.appendChild(styleBlock);
-    } else {
-      element.innerHTML = styles;
-    }
-  })();
   getData((data) => {
     (0, import_react_dom.render)(/* @__PURE__ */ React4.createElement(App_default, {
       updatedSettings: data.updatedSettings,
@@ -22956,16 +23674,16 @@ react-dom/cjs/react-dom.development.js:
    * LICENSE file in the root directory of this source tree.
    *)
   (**
-  * Checks if an event is supported in the current execution environment.
-  *
-  * NOTE: This will not work correctly for non-generic events such as `change`,
-  * `reset`, `load`, `error`, and `select`.
-  *
-  * Borrows from Modernizr.
-  *
-  * @param {string} eventNameSuffix Event name, e.g. "click".
-  * @return {boolean} True if the event is supported.
-  * @internal
-  * @license Modernizr 3.0.0pre (Custom Build) | MIT
-  *)
+   * Checks if an event is supported in the current execution environment.
+   *
+   * NOTE: This will not work correctly for non-generic events such as `change`,
+   * `reset`, `load`, `error`, and `select`.
+   *
+   * Borrows from Modernizr.
+   *
+   * @param {string} eventNameSuffix Event name, e.g. "click".
+   * @return {boolean} True if the event is supported.
+   * @internal
+   * @license Modernizr 3.0.0pre (Custom Build) | MIT
+   *)
 */

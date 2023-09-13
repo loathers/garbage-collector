@@ -276,7 +276,7 @@ function main() {
   } finally {
     _iterator.f();
   }
-  (0, import_kolmafia2.writeln)('<head><link rel="stylesheet" href="/garbage-collector/main.css"></head>');
+  (0, import_kolmafia2.writeln)('<head><link rel="stylesheet" href="/garbage-collector/garbage-collector.css"></head>');
   (0, import_kolmafia2.writeln)('<div id="root"></div>');
   (0, import_kolmafia2.writeln)("<script>");
   (0, import_kolmafia2.writeln)("let getData = function(callback) {callback(".concat(escapeUnsafeChars(JSON.stringify({
