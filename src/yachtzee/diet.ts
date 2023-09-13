@@ -444,19 +444,19 @@ function yachtzeeDietScheduler(
       drunkenness += entry.drunkenness;
     }
     spleenUse += entry.quantity * entry.spleen;
-    if (fullness > fullnessLimit() + toInt(haveDistentionPill)) {
+    if (fullness > fullnessLimit() + toInt(haveDistentionPill) && entry.fullness > 0) {
       throw new Error(
         `Error in diet schedule: Overeating ${entry.quantity} ${entry.name} to ${fullness}/${
           fullnessLimit() + toInt(haveDistentionPill)
         }`,
       );
-    } else if (drunkenness > inebrietyLimit()) {
+    } else if (drunkenness > inebrietyLimit() && entry.drunkenness > 0) {
       throw new Error(
         `Error in diet schedule: Overdrinking ${entry.quantity} ${
           entry.name
         } to ${drunkenness}/${inebrietyLimit()}`,
       );
-    } else if (spleenUse > spleenLimit()) {
+    } else if (spleenUse > spleenLimit() && entry.spleen > 0) {
       throw new Error(
         `Error in diet schedule: Overspleening ${entry.quantity} ${
           entry.name
