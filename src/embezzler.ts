@@ -747,7 +747,7 @@ export const conditionalSources = [
     "monsterHabitatsFightsLeft",
     () =>
       have($skill`Just the Facts`)
-        ? (3 - get("_monsterHabitatsRecalled")) * 5 + get("monsterHabitatsFightsLeft")
+        ? (3 - get("_monsterHabitatsRecalled")) * 5 + get("_monsterHabitatsFightsLeft")
         : 0,
   ),
   new EmbezzlerFight(
