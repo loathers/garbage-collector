@@ -1,10 +1,12 @@
 :root {
-  --toggle-indicator-size: 24px; /* changing this number will resize the whole toggle */
+  /* changing this number will resize the whole toggle */
+  --toggle-indicator-size: 24px;
   --track-height: calc(var(--toggle-indicator-size) + 6);
   --track-width: calc(var(--toggle-indicator-size) * 2.5);
   --highContrastModeSupport: solid 2px transparent;
   --mid: #5a72b5;
-  --light: white; /* #e5efe9; */
+  /* #e5efe9; */
+  --light: white;
   --dark: #121943;
   --track-border: var(--mid);
   --track-background: var(--light);
