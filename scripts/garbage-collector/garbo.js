@@ -40406,11 +40406,11 @@ function yachtzeeDietScheduler(menu3) {
       drunkenness += _entry2.drunkenness;
     }
     spleenUse += _entry2.quantity * _entry2.spleen;
-    if (fullness > (0, import_kolmafia96.fullnessLimit)() + (0, import_kolmafia96.toInt)(haveDistentionPill)) {
+    if (fullness > (0, import_kolmafia96.fullnessLimit)() + (0, import_kolmafia96.toInt)(haveDistentionPill) && _entry2.fullness > 0) {
       throw new Error("Error in diet schedule: Overeating ".concat(_entry2.quantity, " ").concat(_entry2.name, " to ").concat(fullness, "/").concat((0, import_kolmafia96.fullnessLimit)() + (0, import_kolmafia96.toInt)(haveDistentionPill)));
-    } else if (drunkenness > (0, import_kolmafia96.inebrietyLimit)()) {
+    } else if (drunkenness > (0, import_kolmafia96.inebrietyLimit)() && _entry2.drunkenness > 0) {
       throw new Error("Error in diet schedule: Overdrinking ".concat(_entry2.quantity, " ").concat(_entry2.name, " to ").concat(drunkenness, "/").concat((0, import_kolmafia96.inebrietyLimit)()));
-    } else if (spleenUse > (0, import_kolmafia96.spleenLimit)()) {
+    } else if (spleenUse > (0, import_kolmafia96.spleenLimit)() && _entry2.spleen > 0) {
       throw new Error("Error in diet schedule: Overspleening ".concat(_entry2.quantity, " ").concat(_entry2.name, " to ").concat(spleenUse, "/").concat((0, import_kolmafia96.spleenLimit)()));
     }
   }
