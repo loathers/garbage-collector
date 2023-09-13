@@ -750,8 +750,8 @@ export const conditionalSources = [
   ...gregFights(
     "Habitats Monster",
     () => have($skill`Just the Facts`),
-    "monsterHabitatsMonster",
-    "monsterHabitatsFightsLeft",
+    "_monsterHabitatsMonster",
+    "_monsterHabitatsFightsLeft",
     () =>
       have($skill`Just the Facts`)
         ? (3 - get("_monsterHabitatsRecalled")) * 5 + get("_monsterHabitatsFightsLeft")
