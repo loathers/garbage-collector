@@ -30711,7 +30711,7 @@ var conditionalSources = [new EmbezzlerFight("Orb Prediction", function() {
   }
 )), _toConsumableArray37(gregFights("Habitats Monster", function() {
   return have($skill(_templateObject1173 || (_templateObject1173 = _taggedTemplateLiteral65(["Just the Facts"]))));
-}, "monsterHabitatsMonster", "monsterHabitatsFightsLeft", function() {
+}, "_monsterHabitatsMonster", "_monsterHabitatsFightsLeft", function() {
   return have($skill(_templateObject1183 || (_templateObject1183 = _taggedTemplateLiteral65(["Just the Facts"])))) ? (3 - get("_monsterHabitatsRecalled")) * 5 + get("_monsterHabitatsFightsLeft") : 0;
 })), [new EmbezzlerFight("Backup", function() {
   return get("lastCopyableMonster") === embezzler2 && have($item(_templateObject1193 || (_templateObject1193 = _taggedTemplateLiteral65(["backup camera"])))) && get("_backUpUses") < 11;
