@@ -45,7 +45,6 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-libram": "^0.3.1",
     "madge": "^6.1.0",
-    "path": "^0.12.7",
     "prettier": "^3.0.3",
     "sass": "^1.66.1",
     "typescript": "^5.2.2"
