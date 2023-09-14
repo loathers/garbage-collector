@@ -992,7 +992,7 @@ function embezzlerConfirmInvocation(msg: string): boolean {
   // If the incocatedCount has already reached or exceeded the default limit
   if (
     !globalOptions.prefs.autoUserConfirm ||
-    invocatedCount >= globalOptions.prefs.autoUserConfirm_embezzlerInvocationsCount
+    invocatedCount >= globalOptions.prefs.autoUserConfirm_embezzlerInvocationsThreshold
   ) {
     // userConfirmDialog is not called as
     // 1. If autoUserConfirm is true, it'd make the counter useless as it'll always return the default
