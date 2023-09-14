@@ -181,10 +181,14 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_buyPass",
           help: "Set to true to buy a Dinsey day pass with FunFunds at the end of the day, if possible.",
         }),
-        autoUserConfirmCount: Args.number({
-          setting: "garbo_autoUserConfirmCount",
-          help: "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive. Will confirm this many times before aborting.",
-          default: 3,
+        autoUserConfirm: Args.boolean({
+          setting: "garbo_autoUserConfirm",
+          help: "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive.",
+        }),
+        autoUserConfirm_embezzlerInvocationsCount: Args.number({
+          setting: "garbo_autoUserConfirm_embezzlerInvocationsCount",
+          help: "This is used in conjunction with autoUserConfirm, will use resources this many times automatically to invoke an embezzler before requesting user interference.",
+          default: 1,
         }),
         restoreHpTarget: Args.number({
           setting: "garbo_restoreHpTarget",
