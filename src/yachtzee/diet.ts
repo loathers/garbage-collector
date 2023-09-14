@@ -81,7 +81,7 @@ function ensureConsumable(
   inebriety: number,
   spleenUse: number,
 ): void {
-  if (myFullness() + n * fullness > fullnessLimit()) {
+  if (myFullness() + n * fullness > Math.max(fullnessLimit(), myFullness())) {
     throw new Error(`Eating ${n} ${name} exceeds our stomach capacity!`);
   } else if (myInebriety() + n * inebriety > inebrietyLimit()) {
     throw new Error(`Drinking ${n} ${name} exceeds our liver capacity!`);
