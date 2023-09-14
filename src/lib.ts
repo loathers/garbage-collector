@@ -6,6 +6,7 @@ import {
   eat,
   Familiar,
   fileToBuffer,
+  fullnessLimit,
   gametimeToInt,
   getLocketMonsters,
   getMonsters,
@@ -16,12 +17,14 @@ import {
   inebrietyLimit,
   isDarkMode,
   Item,
+  itemAmount,
   itemDropsArray,
   Location,
   meatDropModifier,
   Monster,
   mpCost,
   myFamiliar,
+  myFullness,
   myHp,
   myInebriety,
   myLocation,
@@ -362,6 +365,18 @@ export function burnLibrams(mpTarget = 0): void {
   }
 }
 
+export function howManySausagesCouldIEat() {
+  if (!have($item`Kramco Sausage-o-Matic™`)) return 0;
+  // You may be full but you can't be overfull
+  if (myFullness() > fullnessLimit()) return 0;
+
+  return clamp(
+    23 - get("_sausagesEaten"),
+    0,
+    itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`),
+  );
+}
+
 export function safeRestoreMpTarget(): number {
   //  If our max MP is close to 200, we could be restoring every turn even if we don't need to, avoid that case.
   if (Math.abs(myMaxmp() - 200) < 40) {
@@ -386,12 +401,7 @@ export function safeRestore(): void {
   const mpTarget = safeRestoreMpTarget();
   const shouldRestoreMp = () => myMp() < mpTarget;
 
-  if (
-    shouldRestoreMp() &&
-    have($item`Kramco Sausage-o-Matic™`) &&
-    (have($item`magical sausage`) || have($item`magical sausage casing`)) &&
-    get("_sausagesEaten") < 23
-  ) {
+  if (howManySausagesCouldIEat() > 0) {
     eat($item`magical sausage`);
   }
 
