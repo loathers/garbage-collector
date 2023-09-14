@@ -459,14 +459,17 @@ export function getChoiceOption(partialText: string): number {
 }
 
 /**
- * Confirmation dialog that supports automatic resolution via garbo_autoUserConfirm preference
+ * Confirmation dialog that supports automatic resolution via garbo_autoUserConfirmCount preference
  * @param msg string to display in confirmation dialog
  * @param defaultValue default answer if user doesn't provide one
  * @param timeOut time to show dialog before submitting default value
  * @returns answer to confirmation dialog
  */
 export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: number): boolean {
-  if (get("garbo_autoUserConfirm", false)) {
+  const confirmCount = get("_garbo_autoUserConfirmedCounter", get("garbo_autoUserConfirmCount", 3));
+
+  if (confirmCount > 0) {
+    set("_garbo_autoUserConfirmedCounter", confirmCount - 1);
     print(`Automatically selected ${defaultValue} for ${msg}`, "red");
     return defaultValue;
   }

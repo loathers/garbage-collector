@@ -47,9 +47,9 @@
     "description": "Should garbo prioritize capping your Guzzlr tablet over getting guzzlrbucks?"
   },
   {
-    "name": "garbo_autoUserConfirm",
-    "type": "boolean",
-    "description": "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive."
+    "name": "garbo_autoUserConfirmCount",
+    "defaultValue": 3,
+    "description": "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive. Will confirm this many times before aborting."
   },
   {
     "name": "garbo_IgnoreMarginalFamiliars",
