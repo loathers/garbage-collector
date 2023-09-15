@@ -22589,6 +22589,11 @@ var globalOptions = Args.create("garbo", 'This script is an automated turn-burni
       setting: "garbo_autoUserConfirm",
       help: "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive."
     }),
+    autoUserConfirm_embezzlerInvocationsThreshold: Args.number({
+      setting: "garbo_autoUserConfirm_embezzlerInvocationsThreshold",
+      help: "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source an embezzler for chaining before requesting user interference.",
+      default: 1
+    }),
     restoreHpTarget: Args.number({
       setting: "garbo_restoreHpTarget",
       help: "If you're a very high level, what HP threshold should garbo aim to maintain?",
@@ -23443,7 +23448,7 @@ function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
 function userConfirmDialog(msg, defaultValue, timeOut) {
-  if (get("garbo_autoUserConfirm", false)) {
+  if (globalOptions.prefs.autoUserConfirm) {
     (0, import_kolmafia51.print)("Automatically selected ".concat(defaultValue, " for ").concat(msg), "red");
     return defaultValue;
   }
@@ -30770,7 +30775,7 @@ var emergencyChainStarters = [
       return (0, import_kolmafia73.print)(text, HIGHLIGHT);
     });
     globalOptions.askedAboutWish = true;
-    globalOptions.wishAnswer = userConfirmDialog("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ").concat(averageEmbezzlerNet(), ", so we expect to earn ").concat(profit, " meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?"), true);
+    globalOptions.wishAnswer = embezzlerConfirmInvocation("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ").concat(averageEmbezzlerNet(), ", so we expect to earn ").concat(profit, " meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?"));
     return globalOptions.wishAnswer;
   }, function() {
     return 0;
@@ -30806,7 +30811,7 @@ var emergencyChainStarters = [
       return (0, import_kolmafia73.print)(text, HIGHLIGHT);
     });
     globalOptions.askedAboutWish = true;
-    globalOptions.wishAnswer = userConfirmDialog("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ").concat(averageEmbezzlerNet(), ", so we expect to earn ").concat(profit, " meat, after the cost of a wish. Should we wish for an Embezzler?"), true);
+    globalOptions.wishAnswer = embezzlerConfirmInvocation("Garbo has detected you have ".concat(potential, " potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ").concat(averageEmbezzlerNet(), ", so we expect to earn ").concat(profit, " meat, after the cost of a wish. Should we wish for an Embezzler?"));
     return globalOptions.wishAnswer;
   }, function() {
     return 0;
@@ -30891,6 +30896,14 @@ function toasterGaze() {
   } finally {
     (0, import_kolmafia73.visitUrl)("main.php");
   }
+}
+function embezzlerConfirmInvocation(msg) {
+  var invocatedCount = get("_garbo_autoUserConfirm_embezzlerInvocatedCount", 0);
+  if (!globalOptions.prefs.autoUserConfirm || invocatedCount >= globalOptions.prefs.autoUserConfirm_embezzlerInvocationsThreshold) {
+    return (0, import_kolmafia73.userConfirm)(msg);
+  }
+  _set("_garbo_autoUserConfirm_embezzlerInvocatedCount", invocatedCount + 1);
+  return true;
 }
 
 // src/turns.ts
