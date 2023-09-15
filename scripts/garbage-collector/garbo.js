@@ -5113,10 +5113,10 @@ var require_shared = __commonJS({
     (module2.exports = function(key, value) {
       return store[key] || (store[key] = value !== void 0 ? value : {});
     })("versions", []).push({
-      version: "3.32.1",
+      version: "3.32.2",
       mode: IS_PURE ? "pure" : "global",
       copyright: "\xA9 2014-2023 Denis Pushkarev (zloirock.ru)",
-      license: "https://github.com/zloirock/core-js/blob/v3.32.1/LICENSE",
+      license: "https://github.com/zloirock/core-js/blob/v3.32.2/LICENSE",
       source: "https://github.com/zloirock/core-js"
     });
   }
@@ -17799,9 +17799,10 @@ var DietPlanner = /* @__PURE__ */ function() {
         for (_iterator.s(); !(_step = _iterator.n()).done; ) {
           var _step$value = _slicedToArray14(_step.value, 2), organ = _step$value[0], size = _step$value[1];
           var current = organCapacitiesWithMap.get(organ);
-          if (current !== void 0) {
-            organCapacitiesWithMap.set(organ, current - size);
+          if (current === void 0) {
+            return this.planOrgansWithTrials(organCapacities, trialItems.slice(1), overrideModifiers);
           }
+          organCapacitiesWithMap.set(organ, current - size);
         }
       } catch (err) {
         _iterator.e(err);
