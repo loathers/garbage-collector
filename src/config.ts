@@ -185,6 +185,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_autoUserConfirm",
           help: "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive.",
         }),
+        autoUserConfirm_embezzlerInvocationsThreshold: Args.number({
+          setting: "garbo_autoUserConfirm_embezzlerInvocationsThreshold",
+          help: "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source an embezzler for chaining before requesting user interference.",
+          default: 1,
+        }),
         restoreHpTarget: Args.number({
           setting: "garbo_restoreHpTarget",
           help: "If you're a very high level, what HP threshold should garbo aim to maintain?",

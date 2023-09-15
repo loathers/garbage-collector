@@ -20,6 +20,7 @@ import {
   toInt,
   toUrl,
   use,
+  userConfirm,
   useSkill,
   visitUrl,
   wait,
@@ -63,7 +64,6 @@ import {
   ltbRun,
   propertyManager,
   setChoice,
-  userConfirmDialog,
   WISH_VALUE,
 } from "./lib";
 import { waterBreathingEquipment } from "./outfit";
@@ -835,9 +835,8 @@ export const emergencyChainStarters = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = userConfirmDialog(
+      globalOptions.wishAnswer = embezzlerConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`,
-        true,
       );
       return globalOptions.wishAnswer;
     },
@@ -870,9 +869,8 @@ export const emergencyChainStarters = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = userConfirmDialog(
+      globalOptions.wishAnswer = embezzlerConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`,
-        true,
       );
       return globalOptions.wishAnswer;
     },
@@ -985,4 +983,24 @@ function toasterGaze(): void {
   } finally {
     visitUrl("main.php");
   }
+}
+
+function embezzlerConfirmInvocation(msg: string): boolean {
+  const invocatedCount = get("_garbo_autoUserConfirm_embezzlerInvocatedCount", 0);
+
+  // If user does not have autoUserConfirm set to true
+  // If the incocatedCount has already reached or exceeded the default limit
+  if (
+    !globalOptions.prefs.autoUserConfirm ||
+    invocatedCount >= globalOptions.prefs.autoUserConfirm_embezzlerInvocationsThreshold
+  ) {
+    // userConfirmDialog is not called as
+    // 1. If autoUserConfirm is true, it'd make the counter useless as it'll always return the default
+    // 2. If autoUserConfirm is false, then it'll call userConfirm regardless
+    // The user should be consulted about this so that they can either raise the count or decline the option
+    return userConfirm(msg);
+  }
+
+  set("_garbo_autoUserConfirm_embezzlerInvocatedCount", invocatedCount + 1);
+  return true;
 }

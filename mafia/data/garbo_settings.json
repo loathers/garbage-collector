@@ -52,6 +52,11 @@
     "description": "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive."
   },
   {
+    "name": "garbo_autoUserConfirm_embezzlerInvocationsThreshold",
+    "defaultValue": 1,
+    "description": "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source an embezzler for chaining before requesting user interference."
+  },
+  {
     "name": "garbo_IgnoreMarginalFamiliars",
     "type": "boolean",
     "description": "Should garbo use only your meat familiar throughout your barf-turns, or should it also use drops familiars to maximize profit?"

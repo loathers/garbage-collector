@@ -466,7 +466,7 @@ export function getChoiceOption(partialText: string): number {
  * @returns answer to confirmation dialog
  */
 export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: number): boolean {
-  if (get("garbo_autoUserConfirm", false)) {
+  if (globalOptions.prefs.autoUserConfirm) {
     print(`Automatically selected ${defaultValue} for ${msg}`, "red");
     return defaultValue;
   }
