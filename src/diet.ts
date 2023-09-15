@@ -136,6 +136,9 @@ function chewSafe(qty: number, item: Item) {
 }
 
 function consumeSafe(qty: number, item: Item, additionalValue?: number, skipAcquire?: boolean) {
+  if (qty <= 0) {
+    throw `Trying to consume ${qty} of ${item.name}`
+  }
   const spleenCleaned = spleenCleaners.get(item);
   if (spleenCleaned && mySpleenUse() < spleenCleaned) {
     throw "No spleen to clear with this.";
@@ -900,9 +903,9 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
       let countToConsume = quantity;
 
       const capacity = {
-        food: fullnessLimit() - myFullness(),
-        booze: inebrietyLimit() - myInebriety(),
-        "spleen item": spleenLimit() - mySpleenUse(),
+        food: Math.max(0, fullnessLimit() - myFullness()),
+        booze: Math.max(0, inebrietyLimit() - myInebriety()),
+        "spleen item": Math.max(0, spleenLimit() - mySpleenUse()),
       };
       for (const menuItem of menuItems) {
         logprint(`Considering item ${menuItem.item}.`);
