@@ -401,7 +401,7 @@ export function safeRestore(): void {
   const mpTarget = safeRestoreMpTarget();
   const shouldRestoreMp = () => myMp() < mpTarget;
 
-  if (howManySausagesCouldIEat() > 0) {
+  if (shouldRestoreMp() && howManySausagesCouldIEat() > 0) {
     eat($item`magical sausage`);
   }
 
