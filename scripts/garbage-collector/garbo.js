@@ -35864,13 +35864,12 @@ function doSausage() {
   freeFightOutfit({
     equip: $items(_templateObject5442 || (_templateObject5442 = _taggedTemplateLiteral77(["Kramco Sausage-o-Matic\u2122"])))
   }).dress();
-  var currentTurncount;
+  var currentSausages = get("_sausageFights");
   do {
-    currentTurncount = (0, import_kolmafia85.myTurncount)();
     propertyManager.setChoices(wanderer_default.getChoices("wanderer"));
     var goblin = $monster(_templateObject5452 || (_templateObject5452 = _taggedTemplateLiteral77(["sausage goblin"])));
     garboAdventureAuto(wanderer_default.getTarget("wanderer"), Macro2.if_(goblin, Macro2.basicCombat()).ifHolidayWanderer(Macro2.basicCombat()).abortWithMsg("Expected ".concat(goblin, " but got something else.")));
-  } while (dogOrHolidayWanderer() || (0, import_kolmafia85.toMonster)(get("lastEncounter")) === $monster.none && currentTurncount === (0, import_kolmafia85.myTurncount)());
+  } while (get("_sausageFights") === currentSausages);
   if ((0, import_kolmafia85.getAutoAttack)() !== 0)
     (0, import_kolmafia85.setAutoAttack)(0);
   postCombatActions();
