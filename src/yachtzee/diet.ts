@@ -81,7 +81,7 @@ function ensureConsumable(
   inebriety: number,
   spleenUse: number,
 ): void {
-  if (myFullness() + n * fullness > fullnessLimit()) {
+  if (myFullness() + n * fullness > Math.max(fullnessLimit(), myFullness())) {
     throw new Error(`Eating ${n} ${name} exceeds our stomach capacity!`);
   } else if (myInebriety() + n * inebriety > inebrietyLimit()) {
     throw new Error(`Drinking ${n} ${name} exceeds our liver capacity!`);
@@ -298,7 +298,8 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
           }
           if (
             myFullness() + entry.fullness >
-            fullnessLimit() + (!get("_distentionPillUsed") && have($item`distention pill`) ? 1 : 0)
+            Math.max(fullnessLimit(), myFullness()) +
+              (!get("_distentionPillUsed") && have($item`distention pill`) ? 1 : 0)
           ) {
             throw new Error(`consuming ${entry.name} will exceed our fullness limit`);
           } else if (myInebriety() + entry.drunkenness > inebrietyLimit()) {
