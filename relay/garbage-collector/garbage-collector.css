@@ -1,7 +1,7 @@
 /* relay/App.css */
 :root {
   --toggle-indicator-size: 24px;
-  --track-height: calc(var(--toggle-indicator-size) + 6);
+  --track-height: calc(var(--toggle-indicator-size) + 6px);
   --track-width: calc(var(--toggle-indicator-size) * 2.5);
   --highContrastModeSupport: solid 2px transparent;
   --mid: #5a72b5;
