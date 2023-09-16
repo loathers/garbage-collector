@@ -30906,9 +30906,12 @@ function toasterGaze() {
   }
 }
 function embezzlerConfirmInvocation(msg) {
-  var invocatedCount = get("_garbo_autoUserConfirm_embezzlerInvocatedCount", 0);
-  if (!globalOptions.prefs.autoUserConfirm || invocatedCount >= globalOptions.prefs.autoUserConfirm_embezzlerInvocationsThreshold) {
+  if (!globalOptions.prefs.autoUserConfirm) {
     return (0, import_kolmafia73.userConfirm)(msg);
+  }
+  var invocatedCount = get("_garbo_autoUserConfirm_embezzlerInvocatedCount", 0);
+  if (invocatedCount >= globalOptions.prefs.autoUserConfirm_embezzlerInvocationsThreshold) {
+    return false;
   }
   _set("_garbo_autoUserConfirm_embezzlerInvocatedCount", invocatedCount + 1);
   return true;
