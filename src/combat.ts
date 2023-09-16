@@ -197,11 +197,11 @@ export class Macro extends StrictMacro {
   familiarActions(): Macro {
     return this.externalIf(
       myFamiliar() === $familiar`Grey Goose` && timeToMeatify(),
-      Macro.trySkill($skill`Meatify Matter`),
+      Macro.trySkill($skill`Meatify Matter`)
     )
       .externalIf(
         canOpenRedPresent() && myFamiliar() === $familiar`Crimbo Shrub`,
-        Macro.trySkill($skill`Open a Big Red Present`),
+        Macro.trySkill($skill`Open a Big Red Present`)
       )
       .externalIf(
         myFamiliar() === $familiar`Space Jellyfish`,
@@ -211,10 +211,10 @@ export class Macro extends StrictMacro {
             $locations`Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Toxic Teacups`
               .map((l) => getMonsters(l))
               .flat(),
-            Macro.trySkill($skill`Extract Jelly`),
+            Macro.trySkill($skill`Extract Jelly`)
           ),
-          Macro.trySkill($skill`Extract Jelly`),
-        ),
+          Macro.trySkill($skill`Extract Jelly`)
+        )
       );
   }
 
@@ -228,33 +228,33 @@ export class Macro extends StrictMacro {
         return this.externalIf(
           get("spookyPuttyCopiesMade") + Math.max(1, get("_raindohCopiesMade")) < 6 &&
             $items`Spooky Putty sheet, Spooky Putty monster`.some((item) => have(item)),
-          Macro.tryItem(itemOrSkill),
+          Macro.tryItem(itemOrSkill)
         );
       case $item`Rain-Doh black box`:
         return this.externalIf(
           get("_raindohCopiesMade") + Math.max(1, get("spookyPuttyCopiesMade")) < 6 &&
             $items`Rain-Doh black box, Rain-Doh box full of monster`.some((item) => have(item)),
-          Macro.tryItem(itemOrSkill),
+          Macro.tryItem(itemOrSkill)
         );
       case $item`4-d camera`:
         return this.externalIf(
           !get("_cameraUsed") && !have($item`shaking 4-d camera`),
-          Macro.tryHaveItem(itemOrSkill),
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`crappy camera`:
         return this.externalIf(
           !get("_crappyCameraUsed") && !have($item`shaking crappy camera`),
-          Macro.tryHaveItem(itemOrSkill),
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`unfinished ice sculpture`:
         return this.externalIf(
           !get("_iceSculptureUsed") && !have($item`ice sculpture`),
-          Macro.tryHaveItem(itemOrSkill),
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`pulled green taffy`:
         return this.externalIf(
           !get("_envyfishEggUsed") && !have($item`envyfish egg`),
-          Macro.tryHaveItem(itemOrSkill),
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $item`print screen button`:
         return this.tryHaveItem(itemOrSkill);
@@ -263,7 +263,7 @@ export class Macro extends StrictMacro {
       case $item`LOV Enamorang`:
         return this.externalIf(
           get("_enamorangs") < 5 && !get("enamorangMonster"),
-          Macro.tryHaveItem(itemOrSkill),
+          Macro.tryHaveItem(itemOrSkill)
         );
       case $skill`Digitize`:
         return this.externalIf(SourceTerminal.canDigitize(), Macro.trySkill(itemOrSkill));
@@ -293,53 +293,53 @@ export class Macro extends StrictMacro {
 
     return this.externalIf(
       shouldRedigitize(),
-      Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Digitize`)),
+      Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Digitize`))
     )
       .trySingAlong()
       .familiarActions()
       .externalIf(
         have($skill`Extract Oil`) && get("_oilExtracted") < 15,
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Extract Oil`)),
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Extract Oil`))
       )
       .externalIf(
         digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
           have($skill`Meteor Lore`) &&
           get("_meteorShowerUses") < 5,
-        Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`)),
+        Macro.if_($monster`Knob Goblin Embezzler`, Macro.trySkill($skill`Meteor Shower`))
       )
       .externalIf(
         get("cosmicBowlingBallReturnCombats") < 1,
-        Macro.trySkill($skill`Bowl Straight Up`),
+        Macro.trySkill($skill`Bowl Straight Up`)
       )
       .externalIf(
         have($skill`Transcendent Olfaction`) &&
           (get("olfactedMonster") !== $monster`garbage tourist` || !have($effect`On the Trail`)) &&
           get("_olfactionsUsed") < 3,
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Transcendent Olfaction`)),
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Transcendent Olfaction`))
       )
       .externalIf(
         get("_gallapagosMonster") !== $monster`garbage tourist` &&
           have($skill`Gallapagosian Mating Call`),
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Gallapagosian Mating Call`)),
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Gallapagosian Mating Call`))
       )
       .externalIf(
         get("longConMonster") !== $monster`garbage tourist` &&
           get("_longConUsed") < 5 &&
           have($skill`Long Con`),
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Long Con`)),
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Long Con`))
       )
       .externalIf(
         get("motifMonster") !== $monster`garbage tourist` &&
           have($skill`Motif`) &&
           !have($effect`Everything Looks Blue`),
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Motif`)),
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Motif`))
       )
       .externalIf(
         !get("_latteCopyUsed") &&
           (get("_latteMonster") !== $monster`garbage tourist` ||
             Counter.get("Latte Monster") > 30) &&
           have($item`latte lovers member's mug`),
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Offer Latte to Opponent`)),
+        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Offer Latte to Opponent`))
       )
       .externalIf(
         get("_feelNostalgicUsed") < 3 &&
@@ -347,8 +347,8 @@ export class Macro extends StrictMacro {
           have($skill`Feel Nostalgic`),
         Macro.if_(
           `!monsterid ${$monster`garbage tourist`.id}`,
-          Macro.trySkill($skill`Feel Nostalgic`),
-        ),
+          Macro.trySkill($skill`Feel Nostalgic`)
+        )
       )
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
       .meatStasis(willCrit)
@@ -356,10 +356,10 @@ export class Macro extends StrictMacro {
         hippyStoneBroken() && monsterManuelAvailable(),
         Macro.if_(
           `(monsterid 1758 || monsterid 1759 || monsterid 1760) && monsterhpbelow ${Math.floor(
-            (100 + numericModifier("Monster Level")) / 5,
+            (100 + numericModifier("Monster Level")) / 5
           )}`,
-          Macro.trySkill($skill`Feel Superior`),
-        ),
+          Macro.trySkill($skill`Feel Superior`)
+        )
       )
       .externalIf(sealClubberSetup, Macro.trySkill($skill`Furious Wallop`))
       .externalIf(opsSetup, Macro.attack())
@@ -370,11 +370,11 @@ export class Macro extends StrictMacro {
         myClass() === $class`Disco Bandit`,
         Macro.trySkill($skill`Disco Dance of Doom`)
           .trySkill($skill`Disco Dance II: Electric Boogaloo`)
-          .trySkill($skill`Disco Dance 3: Back in the Habit`),
+          .trySkill($skill`Disco Dance 3: Back in the Habit`)
       )
       .externalIf(
         myClass() === $class`Cheese Wizard` && myFamiliar().experience < 400,
-        Macro.trySkill($skill`Stilton Splatter`),
+        Macro.trySkill($skill`Stilton Splatter`)
       )
       .kill();
   }
@@ -451,40 +451,40 @@ export class Macro extends StrictMacro {
         have($item`Time-Spinner`),
         Macro.if_(
           `${hpCheck} && monstername sausage goblin`,
-          Macro.tryHaveItem($item`Time-Spinner`),
-        ),
+          Macro.tryHaveItem($item`Time-Spinner`)
+        )
       )
         .externalIf(
           have($skill`Meteor Lore`),
           Macro.if_(
             `${hpCheck} && monstername sausage goblin`,
-            Macro.tryHaveSkill($skill`Micrometeorite`),
-          ),
+            Macro.tryHaveSkill($skill`Micrometeorite`)
+          )
         )
         .externalIf(
           haveEquipped($item`Pantsgiving`),
-          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Pocket Crumbs`)),
+          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Pocket Crumbs`))
         )
         .externalIf(
           SourceTerminal.getSkills().includes($skill`Extract`),
-          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Extract`)),
+          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Extract`))
         )
         .externalIf(
           haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10,
-          Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`)),
+          Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`))
         )
         .externalIf(
           haveEquipped($item`Cincho de Mayo`) && canPinata,
           Macro.while_(
-            `${hpCheckCincho} && hasskill 7442`,
-            Macro.trySkill($skill`Cincho: Projectile Piñata`),
-          ),
+            `${hpCheckCincho} && hasskill ${$skill`Cincho: Projectile Piñata`.id}`,
+            Macro.trySkill($skill`Cincho: Projectile Piñata`)
+          )
         )
         .externalIf(
           have($item`porquoise-handled sixgun`),
-          Macro.if_(`${hpCheckSixgun}`, Macro.tryItem($item`porquoise-handled sixgun`)),
+          Macro.if_(`${hpCheckSixgun}`, Macro.tryItem($item`porquoise-handled sixgun`))
         )
-        .while_(`${hpCheck} && !pastround ${stasisRounds}`, Macro.item(stasisItem)),
+        .while_(`${hpCheck} && !pastround ${stasisRounds}`, Macro.item(stasisItem))
     );
   }
 
@@ -498,16 +498,16 @@ export class Macro extends StrictMacro {
       .familiarActions()
       .externalIf(
         get("cosmicBowlingBallReturnCombats") < 1,
-        Macro.trySkill($skill`Bowl Straight Up`),
+        Macro.trySkill($skill`Bowl Straight Up`)
       )
       .externalIf(
         haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10,
-        Macro.tryHaveSkill($skill`Become a Wolf`),
+        Macro.tryHaveSkill($skill`Become a Wolf`)
       )
       .externalIf(haveEquipped($item`Pantsgiving`), Macro.trySkill($skill`Pocket Crumbs`))
       .externalIf(
         SourceTerminal.getSkills().includes($skill`Extract`),
-        Macro.trySkill($skill`Extract`),
+        Macro.trySkill($skill`Extract`)
       )
       .tryHaveItem($item`porquoise-handled sixgun`)
       .externalIf(have($skill`Meteor Lore`), Macro.trySkill($skill`Micrometeorite`))
@@ -516,7 +516,7 @@ export class Macro extends StrictMacro {
       .tryHaveItem($item`Rain-Doh blue balls`)
       .externalIf(
         haveEquipped($item`Buddy Bjorn`) || haveEquipped($item`Crown of Thrones`),
-        Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item($item`seal tooth`)),
+        Macro.while_("!pastround 3 && !hppercentbelow 25", Macro.item($item`seal tooth`))
       )
       .externalIf(
         [
@@ -525,14 +525,14 @@ export class Macro extends StrictMacro {
           $familiar`Ninja Pirate Zombie Robot`,
           $familiar`Stocking Mimic`,
         ].some((familiar) => myFamiliar() === familiar),
-        Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item($item`seal tooth`)),
+        Macro.while_("!pastround 10 && !hppercentbelow 25", Macro.item($item`seal tooth`))
       )
       .externalIf(
         myFamiliar() === $familiar`Hobo Monkey`,
         Macro.while_(
           `!match "shoulder, and hands you some Meat." && !pastround 5 && !hppercentbelow 25`,
-          Macro.item($item`seal tooth`),
-        ),
+          Macro.item($item`seal tooth`)
+        )
       );
   }
 
@@ -547,22 +547,24 @@ export class Macro extends StrictMacro {
     return (
       this.externalIf(
         myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
-        Macro.trySkill($skill`Curse of Weaksauce`),
+        Macro.trySkill($skill`Curse of Weaksauce`)
       )
         .externalIf(
           !doingYachtzee && canPinata,
           Macro.while_(
-            `hasskill 7442 && !pastround 24 && !hppercentbelow 25`,
-            Macro.trySkill($skill`Cincho: Projectile Piñata`),
-          ),
+            `hasskill ${
+              $skill`Cincho: Projectile Piñata`.id
+            } && !pastround 24 && !hppercentbelow 25`,
+            Macro.trySkill($skill`Cincho: Projectile Piñata`)
+          )
         )
         .tryHaveSkill($skill`Become a Wolf`)
         .externalIf(
           !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
           Macro.while_(
             `!pastround 24 && !hppercentbelow 25 && !missed 1 && !snarfblat ${riftId}`,
-            Macro.attack(),
-          ),
+            Macro.attack()
+          )
         )
         // Using while_ here in case you run out of mp
         .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
@@ -572,11 +574,11 @@ export class Macro extends StrictMacro {
         .while_("hasskill Saucestorm", Macro.skill($skill`Saucestorm`))
         .while_(
           `hasskill Northern Explosion && snarfblat ${riftId}`,
-          Macro.skill($skill`Northern Explosion`),
+          Macro.skill($skill`Northern Explosion`)
         )
         .while_(
           `hasskill Lunging Thrust-Smack && !snarfblat ${riftId}`,
-          Macro.skill($skill`Lunging Thrust-Smack`),
+          Macro.skill($skill`Lunging Thrust-Smack`)
         )
         .attack()
         .repeat()
@@ -691,41 +693,41 @@ export class Macro extends StrictMacro {
       Macro.if_($location`The Briny Deeps`, Macro.tryCopier($item`pulled green taffy`))
         .externalIf(
           myFamiliar() === $familiar`Reanimated Reanimator`,
-          Macro.trySkill($skill`Wink at`),
+          Macro.trySkill($skill`Wink at`)
         )
         .externalIf(
           myFamiliar() === $familiar`Obtuse Angel`,
-          Macro.trySkill($skill`Fire a badly romantic arrow`),
+          Macro.trySkill($skill`Fire a badly romantic arrow`)
         )
         .externalIf(
           doneHabitat &&
             get("beGregariousCharges") > 0 &&
             (get("beGregariousMonster") !== embezzler ||
               get("beGregariousFightsLeft") === (have($item`miniature crystal ball`) ? 0 : 1)),
-          Macro.trySkill($skill`Be Gregarious`),
+          Macro.trySkill($skill`Be Gregarious`)
         )
         .externalIf(
           have($skill`Just the Facts`) &&
             get("_monsterHabitatsRecalled") < 3 &&
             (get("monsterHabitatsMonster") !== embezzler ||
               get("monsterHabitatsFightsLeft") === (have($item`miniature crystal ball`) ? 0 : 1)),
-          Macro.trySkill($skill`Recall Facts: Monster Habitats`),
+          Macro.trySkill($skill`Recall Facts: Monster Habitats`)
         )
         .externalIf(
           have($skill`Recall Facts: %phylum Circadian Rhythms`) &&
             !get("_circadianRhythmsRecalled"),
-          Macro.trySkill($skill`Recall Facts: %phylum Circadian Rhythms`),
+          Macro.trySkill($skill`Recall Facts: %phylum Circadian Rhythms`)
         )
         .externalIf(
           SourceTerminal.getDigitizeMonster() !== embezzler || shouldRedigitize(),
-          Macro.tryCopier($skill`Digitize`),
+          Macro.tryCopier($skill`Digitize`)
         )
         .tryCopier($item`Spooky Putty sheet`)
         .tryCopier($item`Rain-Doh black box`)
         .tryCopier($item`4-d camera`)
         .tryCopier($item`unfinished ice sculpture`)
         .externalIf(get("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`))
-        .meatKill(),
+        .meatKill()
     ).abortWithMsg(`Expected ${embezzler} but encountered something else.`);
   }
 
@@ -738,7 +740,7 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
   return Macro.if_($monsters`giant rubber spider, time-spinner prank`, Macro.kill())
     .externalIf(
       have($effect`Eldritch Attunement`),
-      Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat()),
+      Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
     )
     .ifHolidayWanderer(
       Macro.externalIf(
@@ -747,8 +749,8 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           myFamiliar() === meatFamiliar(),
         Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
-        Macro.basicCombat(),
-      ),
+        Macro.basicCombat()
+      )
     )
     .step(macro);
 }
@@ -811,7 +813,7 @@ export function garboAdventure<M extends StrictMacro>(loc: Location, macro: M): 
 export function garboAdventureAuto<M extends StrictMacro>(
   loc: Location,
   autoMacro: M,
-  nextMacro = Macro.abort(),
+  nextMacro = Macro.abort()
 ): void {
   autoMacro.setAutoAttack();
   makeCcs(nextMacro);
