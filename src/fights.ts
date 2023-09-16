@@ -157,7 +157,6 @@ import {
   freeRunConstraints,
   HIGHLIGHT,
   kramcoGuaranteed,
-  latteActionSourceFinderConstraints,
   logMessage,
   ltbRun,
   mapMonster,
@@ -242,7 +241,7 @@ function embezzlerSetup() {
     setChoice(582, 1);
     setChoice(579, 3);
     while (get("lastTempleAdventures") < myAscensions()) {
-      const run = tryFindFreeRun(freeRunConstraints) ?? ltbRun();
+      const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
       if (!run) break;
       run.constraints.preparation?.();
       freeFightOutfit(toSpec(run)).dress();
@@ -334,7 +333,7 @@ function startWandererCounter() {
         embezzlerOutfit().dress();
       } else {
         print("You do not have gregs active, so this is a regular free run.");
-        run = tryFindFreeRun(freeRunConstraints) ?? ltbRun();
+        run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
         run.constraints.preparation?.();
         freeFightOutfit(toSpec(run)).dress();
       }
@@ -607,17 +606,7 @@ class FreeRunFight extends FreeFight {
     while (this.isAvailable()) {
       const initialSpec = undelay(this.options.spec ?? {});
       const constraints = {
-        allowedAction: (action: ActionSource) => {
-          const props = new Map<
-            ActionSource["source"],
-            () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
-          >([
-            [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
-            [$item`mafia middle finger ring`, () => true],
-          ]);
-          const disallowUsage = props.get(action.source);
-          return !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false));
-        },
+        freeRunConstraints,
         noFamiliar: () => "familiar" in initialSpec,
         ...this.constraints,
       };
@@ -1582,7 +1571,7 @@ const freeRunFightSources = [
     {
       spec: { equip: $items`latte lovers member's mug` },
     },
-    latteActionSourceFinderConstraints,
+    freeRunConstraints(true),
   ),
   new FreeRunFight(
     () =>
@@ -1600,7 +1589,7 @@ const freeRunFightSources = [
     {
       spec: { equip: $items`latte lovers member's mug` },
     },
-    latteActionSourceFinderConstraints,
+    freeRunConstraints(true),
   ),
   new FreeRunFight(
     () =>
@@ -1614,7 +1603,7 @@ const freeRunFightSources = [
     {
       spec: { equip: $items`latte lovers member's mug` },
     },
-    latteActionSourceFinderConstraints,
+    freeRunConstraints(true),
   ),
   new FreeRunFight(
     () =>

@@ -36,7 +36,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { freeRunConstraints, latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
+import { freeRunConstraints, ltbRun, setChoice } from "./lib";
 import { garboAdventure, Macro } from "./combat";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
@@ -223,7 +223,7 @@ function initializeCrates(): void {
         ((get("_gallapagosMonster") !== crate && have($skill`Gallapagosian Mating Call`)) ||
           (have($item`latte lovers member's mug`) && !get("_latteCopyUsed"))))
     ) {
-      const run = tryFindFreeRun(latteActionSourceFinderConstraints) ?? ltbRun();
+      const run = tryFindFreeRun(freeRunConstraints(true)) ?? ltbRun();
       setChoice(1387, 2); // use the force, in case we decide to use that
 
       // Sniff the crate in as many ways as humanly possible

@@ -475,45 +475,35 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
   return userConfirm(msg);
 }
 
-export const latteActionSourceFinderConstraints = {
-  allowedAction: (action: ActionSource): boolean => {
-    const props = new Map<
-      ActionSource["source"],
-      () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
-    >([
-      [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
-      [$item`mafia middle finger ring`, () => true],
-    ]);
-    const disallowUsage = props.get(action.source);
+export function freeRunConstraints(latteActionSource: boolean): {
+  allowedAction: (action: ActionSource) => boolean;
+} {
+  return {
+    allowedAction: (action: ActionSource): boolean => {
+      const props = new Map<
+        ActionSource["source"],
+        () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
+      >([
+        [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
+        [$item`mafia middle finger ring`, () => true],
+      ]);
+      const disallowUsage = props.get(action.source);
 
-    if (!have($item`latte lovers member's mug`)) {
-      return !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false));
-    }
+      if (!have($item`latte lovers member's mug`) || !latteActionSource) {
+        return !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false));
+      }
 
-    const forceEquipsOtherThanLatte = (
-      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
-    ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
-    return (
-      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      sum(forceEquipsOtherThanLatte, weaponHands) < 2 &&
-      !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false))
-    );
-  },
-};
-
-export const freeRunConstraints = {
-  allowedAction: (action: ActionSource) => {
-    const props = new Map<
-      ActionSource["source"],
-      () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
-    >([
-      [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
-      [$item`mafia middle finger ring`, () => true],
-    ]);
-    const disallowUsage = props.get(action.source);
-    return !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false));
-  },
-};
+      const forceEquipsOtherThanLatte = (
+        action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
+      ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
+      return (
+        forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+        sum(forceEquipsOtherThanLatte, weaponHands) < 2 &&
+        !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false))
+      );
+    },
+  };
+}
 
 export const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5;
 
