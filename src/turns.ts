@@ -1,7 +1,6 @@
 import {
   fullnessLimit,
   inebrietyLimit,
-  itemAmount,
   myAdventures,
   myFullness,
   myInebriety,
@@ -12,7 +11,7 @@ import { globalOptions } from "./config";
 // Dumb circular import stuff
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
 import { embezzlerCount } from "./embezzler";
-import { ESTIMATED_OVERDRUNK_TURNS } from "./lib";
+import { ESTIMATED_OVERDRUNK_TURNS, howManySausagesCouldIEat } from "./lib";
 
 /**
  * Computes the estimated number of turns during which garbo will run
@@ -23,11 +22,7 @@ export function estimatedGarboTurns(): number {
   const pantsgivingAdventures = have($item`Pantsgiving`)
     ? Math.max(0, 2 - get("_pantsgivingFullness")) * 8
     : 0;
-  const potentialSausages =
-    itemAmount($item`magical sausage`) + itemAmount($item`magical sausage casing`);
-  const sausageAdventures = have($item`Kramco Sausage-o-Matic™`)
-    ? Math.min(potentialSausages, 23 - get("_sausagesEaten"))
-    : 0;
+  const sausageAdventures = howManySausagesCouldIEat();
   const thesisAdventures = have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
   const nightcapAdventures =
     globalOptions.ascend && myInebriety() <= inebrietyLimit() && have($item`Drunkula's wineglass`)
