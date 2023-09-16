@@ -377,9 +377,8 @@ function determineFreeEmbezzlerBanish(): void {
     have($item`mafia middle finger ring`) &&
     !get("_mafiaMiddleFingerRingUsed") &&
     have($skill`Snokebomb`) &&
-    get(`_snokebombUsed`) === 0
-      ? true
-      : false;
+    get(`_snokebombUsed`) === 0;
+
   set("_garboUsingFreeEmbezzlerBanish", useFreeBanishes);
   freeBanishesChecked = true;
 }
