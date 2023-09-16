@@ -678,9 +678,10 @@ const pygmySniffed = () =>
 
 const pygmyMacro = Macro.step(
   ...pygmyBanishHandlers.map(({ pygmy, skill, item, check, limit }) =>
-    Macro.if_(
-      pygmy,
-      skill && get?.(check) < limit ? Macro.trySkill(skill).item(item) : Macro.item(item),
+    Macro.externalIf(
+      (check ? get(check) : Infinity) < limit,
+      Macro.if_(pygmy, skill ? Macro.trySkill(skill).item(item) : Macro.item(item)),
+      Macro.if_(pygmy, Macro.item(item)),
     ),
   ),
 )
