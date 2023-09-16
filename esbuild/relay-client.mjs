@@ -6,5 +6,9 @@ export default {
     "garbage-collector": "relay/index.ts",
   },
   outdir: "KoLmafia/relay/garbage-collector",
-  plugins: [babel()],
+  plugins: [
+    babel({
+      filter: /\.tsx?$/,
+    }),
+  ],
 };

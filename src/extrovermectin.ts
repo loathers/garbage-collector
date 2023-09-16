@@ -122,7 +122,7 @@ export function doingGregFight(): boolean {
   const extrovermectin = get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
   const habitat =
     have($skill`Just the Facts`) &&
-    (get("_monsterHabitatsRecalled") < 3 || get("monsterHabitatsFightsLeft") > 0);
+    (get("_monsterHabitatsRecalled") < 3 || get("_monsterHabitatsFightsLeft") > 0);
 
   return (
     extrovermectin ||
@@ -402,13 +402,13 @@ export function initializeExtrovermectinZones(): void {
 export function gregReady(): boolean {
   return (
     (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
-    (get("monsterHabitatsMonster") === embezzler && get("monsterHabitatsFightsLeft") > 0)
+    (get("_monsterHabitatsMonster") === embezzler && get("_monsterHabitatsFightsLeft") > 0)
   );
 }
 
 export function totalGregCharges(countPartial: boolean): number {
   const extroPartial = get("beGregariousFightsLeft") > 0 ? 1 : 0;
-  const habitatPartial = get("monsterHabitatsFightsLeft") > 0 ? 1 : 0;
+  const habitatPartial = get("_monsterHabitatsFightsLeft") > 0 ? 1 : 0;
 
   return (
     get("beGregariousCharges") +
