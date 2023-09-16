@@ -504,7 +504,7 @@ export const latteActionSourceFinderConstraints = {
 export const freeRunConstraints = {
   allowedAction: (action: ActionSource) => {
     const props = new Map<
-      Item | Familiar | Skill | (Item | Familiar | Skill)[],
+      ActionSource["source"],
       () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
     >([
       [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
