@@ -375,7 +375,7 @@ function determineFreeBunnyBanish(): void {
     : (!get("_garbo_meatChain", false) ? Math.max(10 - get("_pocketProfessorLectures"), 0) : 0) +
       (!get("_garbo_weightChain", false) ? Math.min(15 - get("_pocketProfessorLectures"), 5) : 0);
   const expectedDigitizesDuringGregs =
-    SourceTerminal.have() && get("_sourceTerminalDigitizeUses") < 3 ? 3 : 0; // To encounter 3 digitize monsters it takes 91 adventures.
+    SourceTerminal.have() && get("_sourceTerminalDigitizeUses") < 3 ? 3 : 0; // To encounter 3 digitize monsters it takes 91 adventures. Just estimate we fight all 3 to be safe.
   const useFreeBanishes =
     getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
     // 60 turns of banish from mafia middle finger ring, and 30 x 2 from two snokebombs
