@@ -161,7 +161,7 @@ export function saberCrateIfSafe(): void {
   if (!canSaber || !isSafeToSaber) return;
 
   do {
-    const run = tryFindFreeRun(freeRunConstraints) ?? ltbRun();
+    const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
 
     useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar({ canChooseMacro: false }));
     run.constraints.preparation?.();

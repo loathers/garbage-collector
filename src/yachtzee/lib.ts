@@ -86,7 +86,7 @@ export function yachtzeeBuffValue(obj: Item | Effect): number {
 
 export function useSpikolodonSpikes(): void {
   if (get("_spikolodonSpikeUses") >= 5) return;
-  const run = tryFindFreeRun(freeRunConstraints) ?? ltbRun();
+  const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
 
   const canJelly =
     have($familiar`Space Jellyfish`) && !run.constraints.familiar && realmAvailable("stench");
