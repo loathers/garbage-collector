@@ -616,7 +616,7 @@ class FreeRunFight extends FreeFight {
             [$item`mafia middle finger ring`, () => true],
           ]);
           const disallowUsage = props.get(action.source);
-          return !(disallowUsage?.() && get("_garboUsingFreeEmbezzlerBanish", false));
+          return !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false));
         },
         noFamiliar: () => "familiar" in initialSpec,
         ...this.constraints,
@@ -647,7 +647,7 @@ const pygmyBanishHandlers = [
     pygmy: $monster`pygmy bowler`,
     skill: $skill`Snokebomb`,
     check: "_snokebombUsed",
-    limit: get("_garboUsingFreeEmbezzlerBanish", false) ? 1 : 3,
+    limit: get("_garboUsingFreeBunnyBanish", false) ? 1 : 3,
     item: $item`Louder Than Bomb`,
   },
   {
@@ -1028,7 +1028,7 @@ const freeFightSources = [
           retrieveItem(1, $item`Louder Than Bomb`);
           retrieveItem(1, $item`divine champagne popper`);
         }
-        const snokeLimit = get("_garboUsingFreeEmbezzlerBanish", false) ? 1 : 3;
+        const snokeLimit = get("_garboUsingFreeBunnyBanish", false) ? 1 : 3;
         garboAdventure(
           $location`Domed City of Grimacia`,
           Macro.if_(

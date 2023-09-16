@@ -368,7 +368,7 @@ export function configureSnojo(): void {
   }
 }
 
-function determineFreeEmbezzlerBanish(): void {
+function determineFreeBunnyBanish(): void {
   if (freeBanishesChecked) return;
   const useFreeBanishes =
     getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
@@ -379,7 +379,7 @@ function determineFreeEmbezzlerBanish(): void {
     have($skill`Snokebomb`) &&
     get(`_snokebombUsed`) === 0;
 
-  set("_garboUsingFreeEmbezzlerBanish", useFreeBanishes);
+  set("_garboUsingFreeBunnyBanish", useFreeBanishes);
   freeBanishesChecked = true;
 }
 

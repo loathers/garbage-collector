@@ -487,7 +487,7 @@ export const latteActionSourceFinderConstraints = {
     const disallowUsage = props.get(action.source);
 
     if (!have($item`latte lovers member's mug`)) {
-      return !(disallowUsage?.() && get("_garboUsingFreeEmbezzlerBanish", false));
+      return !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false));
     }
 
     const forceEquipsOtherThanLatte = (
@@ -496,7 +496,7 @@ export const latteActionSourceFinderConstraints = {
     return (
       forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
       sum(forceEquipsOtherThanLatte, weaponHands) < 2 &&
-      !(disallowUsage?.() && get("_garboUsingFreeEmbezzlerBanish", false))
+      !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false))
     );
   },
 };
@@ -511,7 +511,7 @@ export const freeRunConstraints = {
       [$item`mafia middle finger ring`, () => true],
     ]);
     const disallowUsage = props.get(action.source);
-    return !(disallowUsage?.() && get("_garboUsingFreeEmbezzlerBanish", false));
+    return !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false));
   },
 };
 
