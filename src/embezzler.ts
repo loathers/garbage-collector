@@ -986,19 +986,20 @@ function toasterGaze(): void {
 }
 
 function embezzlerConfirmInvocation(msg: string): boolean {
-  const invocatedCount = get("_garbo_autoUserConfirm_embezzlerInvocatedCount", 0);
-
   // If user does not have autoUserConfirm set to true
   // If the incocatedCount has already reached or exceeded the default limit
-  if (
-    !globalOptions.prefs.autoUserConfirm ||
-    invocatedCount >= globalOptions.prefs.autoUserConfirm_embezzlerInvocationsThreshold
-  ) {
+  if (!globalOptions.prefs.autoUserConfirm) {
     // userConfirmDialog is not called as
     // 1. If autoUserConfirm is true, it'd make the counter useless as it'll always return the default
     // 2. If autoUserConfirm is false, then it'll call userConfirm regardless
     // The user should be consulted about this so that they can either raise the count or decline the option
     return userConfirm(msg);
+  }
+
+  const invocatedCount = get("_garbo_autoUserConfirm_embezzlerInvocatedCount", 0);
+
+  if (invocatedCount >= globalOptions.prefs.autoUserConfirm_embezzlerInvocationsThreshold) {
+    return false;
   }
 
   set("_garbo_autoUserConfirm_embezzlerInvocatedCount", invocatedCount + 1);
