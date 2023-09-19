@@ -1,5 +1,16 @@
 import { Familiar, familiarWeight, inebrietyLimit, Location, myInebriety } from "kolmafia";
-import { $familiar, $item, $location, clamp, findLeprechaunMultiplier, get, have } from "libram";
+import {
+  $familiar,
+  $item,
+  $location,
+  $phylum,
+  $skill,
+  clamp,
+  findLeprechaunMultiplier,
+  get,
+  have,
+  Snapper,
+} from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../value";
 import getConstantValueFamiliars from "./constantValueFamiliars";
@@ -67,6 +78,25 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
           (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
         leprechaunMultiplier: 0,
         limit: "special",
+      });
+    }
+    if (
+      location === $location`Barf Mountain` &&
+      Snapper.have() &&
+      Snapper.getTrackedPhylum() === $phylum`dude`
+    ) {
+      // when running snapper, there are 4 dudes in the zone, and a variable number of nondudes
+      const dudeRate =
+        4 /
+        (4 + // 4 dudes
+          1 + // 1 garbage tourist
+          (have($skill`Transcendent Olfaction`) ? 3 : 0) +
+          (have($skill`Gallapagosian Mating Call`) ? 1 : 0));
+      familiarMenu.push({
+        familiar: $familiar`Red-Nosed Snapper`,
+        expectedValue: (dudeRate * garboValue($item`human musk`)) / 11,
+        leprechaunMultiplier: 0,
+        limit: "none",
       });
     }
   }

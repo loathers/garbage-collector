@@ -18,11 +18,13 @@ import {
   $familiars,
   $item,
   $items,
+  $phylum,
   CrimboShrub,
   get,
   have,
   Robortender,
   set,
+  Snapper,
   sum,
   withProperty,
 } from "libram";
@@ -226,6 +228,12 @@ const DailyFamiliarTasks: GarboTask[] = [
     completed: () =>
       !!get("garbo_felizValue", 0) || today - get("garbo_felizValueDate", 0) < 24 * 60 * 60 * 1000,
     do: () => felizValue,
+  },
+  {
+    name: "Snapper Hunts Dudes",
+    ready: () => Snapper.have(),
+    completed: () => Snapper.getTrackedPhylum() === $phylum`dude`,
+    do: () => Snapper.trackPhylum($phylum`dude`),
   },
 ];
 

@@ -106,6 +106,7 @@ import {
   Requirement,
   Robortender,
   set,
+  Snapper,
   SourceTerminal,
   sum,
   tryFindFreeRun,
@@ -994,7 +995,9 @@ const freeFightSources = [
   new FreeFight(
     () => (wantPills() ? 5 - get("_saberForceUses") : 0),
     () => {
-      if (have($familiar`Red-Nosed Snapper`)) cliExecute(`snapper ${$phylum`dude`}`);
+      if (Snapper.have() && Snapper.getTrackedPhylum() !== $phylum`dude`) {
+        Snapper.trackPhylum($phylum`dude`);
+      }
       setChoice(1387, 3);
       if (
         have($skill`Comprehensive Cartography`) &&
