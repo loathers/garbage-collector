@@ -3,6 +3,7 @@ import {
   $familiar,
   $item,
   $location,
+  $monsters,
   $phylum,
   $skill,
   clamp,
@@ -85,13 +86,34 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
       Snapper.have() &&
       Snapper.getTrackedPhylum() === $phylum`dude`
     ) {
-      // when running snapper, there are 4 dudes in the zone, and a variable number of nondudes
-      const dudeRate =
-        4 /
-        (4 + // 4 dudes
-          1 + // 1 garbage tourist
-          (have($skill`Transcendent Olfaction`) ? 3 : 0) +
-          (have($skill`Gallapagosian Mating Call`) ? 1 : 0));
+      /*
+      # E stands for olfacted Garbage Tourist, A is angry toursit, F is horrible tourist family
+      import itertools
+      def rate(q):
+        m = ["E"] * 5 + ["A"] * 2 + ["F"] * 2
+        options = list(itertools.product(m, m))
+        dude = [m for m in options if (m[0] in ["A", "F"] and m[0] not in q) or (m[1] in ["A", "F"] and m[0] in q and m[0] != "E")]
+        return len(dude) / 81
+      */
+
+      const dudes = $monsters`angry tourist, horrible tourist family`.filter((m) =>
+        $location`Barf Mountain`.combatQueue.includes(`${m}`),
+      ).length;
+
+      // if you don't have olfaction, just assume a simple rate calculation
+      const noOlfactRate = 4 / (1 + 4 + (have($skill`Gallapagosian Mating Call`) ? 1 : 0));
+
+      // when you have olfaction, you
+      // using the above python script, dude rate for number of dudes in queue is:
+      const olfactRate =
+        [
+          0.44, // 0 dudes = 44% chance
+          0.32, // 1 dude = 32% chance
+          0.19, // 2 dudes = 19% chance
+        ][dudes] ?? 0;
+
+      const dudeRate = have($skill`Transcendent Olfaction`) ? olfactRate : noOlfactRate;
+
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
         expectedValue: (dudeRate * garboValue($item`human musk`)) / 11,
