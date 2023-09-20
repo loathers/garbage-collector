@@ -589,14 +589,18 @@ export const gregFights = (
       );
     }
   }
+
+  const resourceIsOccupied = () =>
+    get(fightsProp) > 0 && ![null, embezzler].includes(get(monsterProp));
+
   return [
     new EmbezzlerFight(
       name,
       () =>
         haveCheck() &&
-        get(monsterProp) === embezzler &&
+        !resourceIsOccupied() &&
         get(fightsProp) > (have($item`miniature crystal ball`) ? 1 : 0),
-      () => (get(monsterProp) === embezzler ? totalCharges() : 0),
+      () => (!resourceIsOccupied() ? totalCharges() : 0),
       (options: EmbezzlerFightRunOptions) => {
         runGregFight(options);
         // reset the crystal ball prediction by staring longingly at toast
