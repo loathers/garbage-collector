@@ -30641,10 +30641,13 @@ var gregFights = function(name, haveCheck, monsterProp, fightsProp, totalCharges
       (0, import_kolmafia73.abort)("Fluffy bunny is supposedly banished by ".concat(bunnyBanish, ", but this appears not to be the case; the most likely issue is that your ").concat(monsterProp, " preference is nonzero and should probably be zero."));
     }
   }
+  var resourceIsOccupied = function() {
+    return get(fightsProp) > 0 && ![null, embezzler2].includes(get(monsterProp));
+  };
   return [new EmbezzlerFight(name, function() {
-    return haveCheck() && get(monsterProp) === embezzler2 && get(fightsProp) > (have($item(_templateObject8211 || (_templateObject8211 = _taggedTemplateLiteral65(["miniature crystal ball"])))) ? 1 : 0);
+    return haveCheck() && !resourceIsOccupied() && get(fightsProp) > (have($item(_templateObject8211 || (_templateObject8211 = _taggedTemplateLiteral65(["miniature crystal ball"])))) ? 1 : 0);
   }, function() {
-    return get(monsterProp) === embezzler2 ? totalCharges() : 0;
+    return !resourceIsOccupied() ? totalCharges() : 0;
   }, function(options) {
     runGregFight(options);
     if (get(fightsProp) === 1 && have($item(_templateObject8310 || (_templateObject8310 = _taggedTemplateLiteral65(["miniature crystal ball"]))))) {
