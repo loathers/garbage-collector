@@ -1,11 +1,9 @@
-import { Familiar, familiarWeight, inebrietyLimit, Location, myInebriety } from "kolmafia";
+import { Familiar, familiarWeight, inebrietyLimit, Location, Monster, myInebriety } from "kolmafia";
 import {
   $familiar,
   $item,
   $location,
-  $monsters,
   $phylum,
-  $skill,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -19,6 +17,7 @@ import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
+import { barfEncounterRate } from "../lib";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
@@ -86,33 +85,12 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
       Snapper.have() &&
       Snapper.getTrackedPhylum() === $phylum`dude`
     ) {
-      /*
-      # E stands for olfacted Garbage Tourist, A is angry toursit, F is horrible tourist family
-      import itertools
-      def rate(q):
-        m = ["E"] * 5 + ["A"] * 2 + ["F"] * 2
-        options = list(itertools.product(m, m))
-        dude = [m for m in options if (m[0] in ["A", "F"] and m[0] not in q) or (m[1] in ["A", "F"] and m[0] in q and m[0] != "E")]
-        return len(dude) / 81
-      */
-
-      const dudes = $monsters`angry tourist, horrible tourist family`.filter((m) =>
-        $location`Barf Mountain`.combatQueue.includes(`${m}`),
-      ).length;
-
-      // if you don't have olfaction, just assume a simple rate calculation
-      const noOlfactRate = 4 / (1 + 4 + (have($skill`Gallapagosian Mating Call`) ? 1 : 0));
-
-      // when you have olfaction, you
-      // using the above python script, dude rate for number of dudes in queue is:
-      const olfactRate =
-        [
-          0.44, // 0 dudes = 44% chance
-          0.32, // 1 dude = 32% chance
-          0.19, // 2 dudes = 19% chance
-        ][dudes] ?? 0;
-
-      const dudeRate = have($skill`Transcendent Olfaction`) ? olfactRate : noOlfactRate;
+      const encounterRate = barfEncounterRate({ snapper: true, snapperPhylum: $phylum`dude` });
+      const dudeRate = [...encounterRate.entries()].reduce(
+        (acc: number, entry: [Monster, number]) =>
+          entry[0].phylum === $phylum`dude` ? entry[1] + acc : acc,
+        0,
+      );
 
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
