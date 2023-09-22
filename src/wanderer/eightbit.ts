@@ -4,8 +4,7 @@ import { WandererTarget } from "./lib";
 import { $item, $location, get, have } from "libram";
 import { garboValue } from "../value";
 import { globalOptions } from "../config";
-
-const FAT_LOOT_TOKEN_COST = 20000;
+import { TREASURE_HOUSE_FAT_LOOT_TOKEN_COST } from "../lib";
 
 export const bonusColor = ["black", "blue", "green", "red"] as const;
 export type BonusColor = (typeof bonusColor)[number];
@@ -21,8 +20,8 @@ const locationColor: Record<BonusColor, Location> = {
 
 function value(color: BonusColor) {
   const denominator = globalOptions.ascend
-    ? get("8BitScore") - FAT_LOOT_TOKEN_COST
-    : FAT_LOOT_TOKEN_COST;
+    ? get("8BitScore") - TREASURE_HOUSE_FAT_LOOT_TOKEN_COST
+    : TREASURE_HOUSE_FAT_LOOT_TOKEN_COST;
   return (garboValue($item`fat loot token`) * eightBitPoints(locationColor[color])) / denominator;
 }
 
@@ -33,7 +32,7 @@ export function eightbitFactory(
   if (
     have($item`continuum transfunctioner`) &&
     type !== "backup" &&
-    get("8BitScore") < FAT_LOOT_TOKEN_COST
+    get("8BitScore") < TREASURE_HOUSE_FAT_LOOT_TOKEN_COST
   ) {
     return bonusColor
       .map((color) => new WandererTarget(`8-bit (${color})`, locationColor[color], value(color)))
