@@ -65,7 +65,7 @@ import postCombatActions from "./post";
 import { trackBarfSessionStatistics } from "./session";
 import { completeBarfQuest } from "./tasks/daily";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
-import wanderer from "./wanderer";
+import wanderer, { WanderOptions } from "./wanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -207,17 +207,22 @@ const turns: AdventureAction[] = [
     execute: () => {
       const isGhost = get("_voteMonster") === $monster`angry ghost`;
       const isMutant = get("_voteMonster") === $monster`terrible mutant`;
-      freeFightOutfit({
-        equip: [
-          $item`"I Voted!" sticker`,
-          ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : []),
-          ...(!have($item`mutant crown`) && isMutant
-            ? $items`mutant arm, mutant legs`.filter((i) => have(i))
-            : []),
-        ],
-      }).dress();
-      propertyManager.setChoices(wanderer.getChoices("wanderer", !isGhost));
-      garboAdventureAuto(wanderer.getTarget("wanderer", !isGhost), Macro.basicCombat());
+      const wanderOptions: WanderOptions = { wanderer: "wanderer", drunkSafe: !isGhost };
+
+      freeFightOutfit(
+        {
+          equip: [
+            $item`"I Voted!" sticker`,
+            ...(!sober() && !isGhost ? $items`Drunkula's wineglass` : []),
+            ...(!have($item`mutant crown`) && isMutant
+              ? $items`mutant arm, mutant legs`.filter((i) => have(i))
+              : []),
+          ],
+        },
+        { wanderOptions },
+      ).dress();
+      propertyManager.setChoices(wanderer.getChoices(wanderOptions));
+      garboAdventureAuto(wanderer.getTarget(wanderOptions), Macro.basicCombat());
       return get("lastVoteMonsterTurn") === totalTurnsPlayed();
     },
     spendsTurn: false,
@@ -235,7 +240,7 @@ const turns: AdventureAction[] = [
 
       const targetLocation = underwater
         ? $location`The Briny Deeps`
-        : wanderer.getTarget("wanderer");
+        : wanderer.getTarget({ wanderer: "wanderer", allowEquipment: false });
 
       if (underwater) retrieveItem($item`pulled green taffy`);
       else propertyManager.setChoices(wanderer.getChoices("wanderer"));
@@ -263,7 +268,12 @@ const turns: AdventureAction[] = [
     name: "Guaranteed Kramco",
     available: () => kramcoGuaranteed() && romanticMonsterImpossible(),
     execute: () => {
-      freeFightOutfit({ offhand: $item`Kramco Sausage-o-Matic™` }).dress();
+      freeFightOutfit(
+        {
+          offhand: $item`Kramco Sausage-o-Matic™`,
+        },
+        { wanderOptions: "wanderer" },
+      ).dress();
       propertyManager.setChoices(wanderer.getChoices("wanderer"));
       garboAdventureAuto(wanderer.getTarget("wanderer"), Macro.basicCombat());
       return !kramcoGuaranteed();
@@ -278,7 +288,12 @@ const turns: AdventureAction[] = [
       get("cursedMagnifyingGlassCount") === 13 &&
       get("_voidFreeFights") < 5,
     execute: () => {
-      freeFightOutfit({ offhand: $item`cursed magnifying glass` }).dress();
+      freeFightOutfit(
+        {
+          offhand: $item`cursed magnifying glass`,
+        },
+        { wanderOptions: "wanderer" },
+      ).dress();
       propertyManager.setChoices(wanderer.getChoices("wanderer"));
       garboAdventureAuto(wanderer.getTarget("wanderer"), Macro.basicCombat());
       return get("cursedMagnifyingGlassCount") === 0;
@@ -309,7 +324,10 @@ const turns: AdventureAction[] = [
 
       propertyManager.setChoices(wanderer.getChoices("yellow ray"));
       const location = wanderer.getTarget("yellow ray");
-      freeFightOutfit({}, { location, allowAttackFamiliars: !usingDuplicate }).dress();
+      freeFightOutfit(
+        {},
+        { location, allowAttackFamiliars: !usingDuplicate, wanderOptions: "yellow ray" },
+      ).dress();
       if (usingDuplicate) {
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
       }
@@ -339,7 +357,7 @@ const turns: AdventureAction[] = [
       const location = wanderer.getTarget("yellow ray");
       freeFightOutfit(
         { shirt: $items`Jurassic Parka` },
-        { location, allowAttackFamiliars: !usingDuplicate },
+        { location, allowAttackFamiliars: !usingDuplicate, wanderOptions: "yellow ray" },
       ).dress();
       cliExecute("parka dilophosaur");
       if (usingDuplicate) {
@@ -367,7 +385,7 @@ const turns: AdventureAction[] = [
     execute: () => {
       propertyManager.setChoices(wanderer.getChoices("freefight"));
       const location = wanderer.getTarget("freefight");
-      freeFightOutfit({}, { location }).dress();
+      freeFightOutfit({}, { location, wanderOptions: "freefight" }).dress();
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
         .skill($skill`Free-For-All`);
@@ -393,7 +411,10 @@ const turns: AdventureAction[] = [
         SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
       }
 
-      freeFightOutfit({}, { location, allowAttackFamiliars: !usingDuplicate }).dress();
+      freeFightOutfit(
+        {},
+        { location, allowAttackFamiliars: !usingDuplicate, wanderOptions: "yellow ray" },
+      ).dress();
       const macro = Macro.if_(embezzler, Macro.meatKill())
         .familiarActions()
         .externalIf(usingDuplicate, Macro.trySkill($skill`Duplicate`))

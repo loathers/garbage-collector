@@ -1,4 +1,5 @@
 import {
+  availableChoiceOptions,
   cliExecute,
   equip,
   itemAmount,
@@ -8,8 +9,10 @@ import {
   myLocation,
   putCloset,
   reverseNumberology,
+  runChoice,
   use,
   useSkill,
+  visitUrl,
 } from "kolmafia";
 import {
   $effect,
@@ -40,6 +43,7 @@ import {
   safeInterrupt,
   safeRestore,
   setChoice,
+  TREASURE_HOUSE_FAT_LOOT_TOKEN_COST,
   valueJuneCleaverOption,
 } from "../lib";
 import { teleportEffects } from "../mood";
@@ -193,6 +197,17 @@ function refillCinch() {
   }
 }
 
+let tokenBought = false;
+function eightBitFatLoot() {
+  if (!tokenBought && get("8BitScore") >= TREASURE_HOUSE_FAT_LOOT_TOKEN_COST) {
+    visitUrl("place.php?whichplace=8bit&action=8treasure");
+    if (availableChoiceOptions()[2]) {
+      runChoice(2);
+    }
+    tokenBought = true;
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
   closetStuff();
   juneCleave();
@@ -209,6 +224,7 @@ export default function postCombatActions(skipDiet = false): void {
   updateMallPrices();
   stillsuit();
   funguySpores();
+  eightBitFatLoot();
   wanderer.clear();
   if (
     globalOptions.ascend ||
