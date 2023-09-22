@@ -406,13 +406,9 @@ const DailyTasks: GarboTask[] = [
       // taken from autoscend
       visitUrl("place.php?whichplace=woods");
       visitUrl("place.php?whichplace=forestvillage&action=fv_mystic");
-      visitUrl(
-        "choice.php?pwd=&whichchoice=664&option=1&choiceform1=Sure%2C+old+man.++Tell+me+all+about+it.",
-      );
-      visitUrl(
-        "choice.php?pwd=&whichchoice=664&option=1&choiceform1=Against+my+better+judgment%2C+yes.",
-      );
-      visitUrl("choice.php?pwd=&whichchoice=664&option=1&choiceform1=Er,+sure,+I+guess+so...");
+      runChoice(1); // Sure, old man.  Tell me all about it
+      runChoice(1); // Against my better judgement, yes
+      runChoice(1); // Er, sure, I guess so
     },
   },
   {
