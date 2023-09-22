@@ -32,7 +32,7 @@ import { GarboTask } from "../tasks/engine";
 type ScepterSkill = {
   skill: Skill;
   value: () => number;
-  type: "special" | "summon" | "buff";
+  type: "special" | "summon" | "buff" | "fight";
 };
 const SKILL_OPTIONS: ScepterSkill[] = [
   // August 1 deliberately omitted; does not trigger on monster replacers
@@ -73,6 +73,11 @@ const SKILL_OPTIONS: ScepterSkill[] = [
     type: "buff",
   },
   {
+    skill: $skill`Aug. 8th: Cat Day!`,
+    value: () => globalOptions.prefs.valueOfFreeFight,
+    type: "fight",
+  },
+  {
     skill: $skill`Aug. 13th: Left/Off Hander's Day!`,
     value: () =>
       new Potion($item`august scepter`, {
@@ -100,6 +105,11 @@ const SKILL_OPTIONS: ScepterSkill[] = [
     skill: $skill`Aug. 18th: Serendipity Day!`,
     value: () => 3000, // Dummy value; we should some day calculate this based on free fight count, careful to avoid circular imports
     type: "buff",
+  },
+  {
+    skill: $skill`Aug. 22nd: Tooth Fairy Day!`,
+    value: () => globalOptions.prefs.valueOfFreeFight,
+    type: "fight",
   },
   {
     skill: $skill`Aug. 24th: Waffle Day!`,
