@@ -180,7 +180,7 @@ import {
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
 import { garboValue } from "./value";
-import wanderer from "./wanderer";
+import wanderer, { DraggableFight, WanderOptions } from "./wanderer";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -526,6 +526,7 @@ type FreeFightOptions = {
   // actions like meatifying matter, or crimbo shrub red raying.
   // Defaults to true.
   macroAllowsFamiliarActions?: boolean;
+  wandererOptions?: DraggableFight | WanderOptions;
 };
 
 let consecutiveNonFreeFights = 0;
@@ -568,7 +569,9 @@ class FreeFight {
       const noncombat = !!this.options?.noncombat?.();
       const effects = this.options.effects?.() ?? [];
       freeFightMood(...effects).execute();
-      freeFightOutfit(this.getSpec(noncombat)).dress();
+      freeFightOutfit(this.getSpec(noncombat), {
+        wanderOptions: this.options.wandererOptions,
+      }).dress();
       safeRestore();
       const curTurncount = myTurncount();
       withMacro(Macro.basicCombat(), this.run);
@@ -1195,7 +1198,8 @@ const freeFightSources = [
     },
     true,
     {
-      spec: { offhand: $item`Kramco Sausage-o-Matic™`, equip: wanderer.getEquipment("wanderer") },
+      spec: { offhand: $item`Kramco Sausage-o-Matic™` },
+      wandererOptions: "wanderer",
     },
   ),
 
@@ -1906,7 +1910,6 @@ const freeRunFightSources = [
     },
     {
       spec: () => {
-        const equip = wanderer.getEquipment("backup");
         if (have($familiar`Mini-Hipster`)) {
           return {
             familiar: $familiar`Mini-Hipster`,
@@ -1915,12 +1918,12 @@ const freeRunFightSources = [
               [$item`chiptune guitar`, garboValue($item`ironic knit cap`)],
               [$item`fixed-gear bicycle`, garboValue($item`ironic oversized sunglasses`)],
             ]),
-            equip,
           };
         } else {
-          return { familiar: $familiar`Artistic Goth Kid`, equip };
+          return { familiar: $familiar`Artistic Goth Kid` };
         }
       },
+      wandererOptions: "backup",
     },
   ),
   // Try to accelerate the shadow nc, if you're able to do a quest
@@ -2307,9 +2310,12 @@ export function doSausage(): void {
   do {
     propertyManager.setChoices(wanderer.getChoices("wanderer"));
     const goblin = $monster`sausage goblin`;
-    freeFightOutfit({
-      equip: [$item`Kramco Sausage-o-Matic™`, ...wanderer.getEquipment("wanderer")],
-    }).dress();
+    freeFightOutfit(
+      {
+        equip: $items`Kramco Sausage-o-Matic™`,
+      },
+      { wanderOptions: "wanderer" },
+    ).dress();
     garboAdventureAuto(
       wanderer.getTarget("wanderer"),
       Macro.if_(goblin, Macro.basicCombat())
@@ -2510,9 +2516,12 @@ function voidMonster(): void {
     return;
   }
 
-  freeFightOutfit({
-    equip: [$item`cursed magnifying glass`, ...wanderer.getEquipment("wanderer")],
-  }).dress();
+  freeFightOutfit(
+    {
+      equip: $items`cursed magnifying glass`,
+    },
+    { wanderOptions: "wanderer" },
+  ).dress();
   propertyManager.setChoices(wanderer.getChoices("wanderer"));
   garboAdventure(wanderer.getTarget("wanderer"), Macro.basicCombat());
   postCombatActions();

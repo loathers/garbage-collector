@@ -6,6 +6,9 @@ import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 export const draggableFights = ["backup", "wanderer", "yellow ray", "freefight"] as const;
 export type DraggableFight = (typeof draggableFights)[number];
+export function isDraggableFight<T>(fight: T | string): fight is DraggableFight {
+  return draggableFights.includes(fight as DraggableFight);
+}
 
 interface UnlockableZone {
   zone: string;

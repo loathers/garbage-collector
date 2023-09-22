@@ -7,6 +7,7 @@ import {
   canWander,
   defaultFactory,
   DraggableFight,
+  isDraggableFight,
   unlock,
   WandererFactory,
   WandererLocation,
@@ -96,7 +97,11 @@ function wanderWhere(
   }
 }
 
-export type WanderOptions = { drunkSafe?: boolean; allowEquipment?: boolean };
+export type WanderOptions = {
+  wanderer: DraggableFight;
+  drunkSafe?: boolean;
+  allowEquipment?: boolean;
+};
 const defaultWanderOptions = {
   drunkSafe: true,
   allowEquipment: true,
@@ -173,9 +178,12 @@ class WandererManager {
   ]);
 
   cacheKey = "";
-  targets: Partial<{ [x in DraggableFight]: Location }> = {};
+  targets: Partial<{ [x in `${DraggableFight}:${boolean}`]: Location }> = {};
 
-  getTarget(draggableFight: DraggableFight, options: WanderOptions = {}): Location {
+  getTarget(wanderer: DraggableFight | WanderOptions): Location {
+    const { draggableFight, options } = isDraggableFight(wanderer)
+      ? { draggableFight: wanderer, options: {} }
+      : { draggableFight: wanderer.wanderer, options: wanderer };
     const { drunkSafe, allowEquipment } = { ...defaultWanderOptions, ...options };
     const newKey = `${myTotalTurnsSpent()};${totalTurnsPlayed()};${get("familiarSweat")}`;
     if (this.cacheKey !== newKey) this.clear();
@@ -184,26 +192,24 @@ class WandererManager {
     const locationSkipList = allowEquipment ? [] : [...this.equipment.keys()];
 
     return sober() || !drunkSafe
-      ? (this.targets[draggableFight] ??= wanderWhere(draggableFight, [], locationSkipList))
+      ? (this.targets[`${draggableFight}:${allowEquipment}`] ??= wanderWhere(
+          draggableFight,
+          [],
+          locationSkipList,
+        ))
       : $location`Drunken Stupor`;
   }
 
-  getChoices(
-    draggableFight: DraggableFight,
-    options: WanderOptions = {},
-  ): { [choice: number]: string | number } {
-    return this.unsupportedChoices.get(this.getTarget(draggableFight, options)) ?? {};
+  getChoices(wanderer: DraggableFight | WanderOptions): { [choice: number]: string | number } {
+    return this.unsupportedChoices.get(this.getTarget(wanderer)) ?? {};
   }
 
   clear(): void {
     this.targets = {};
   }
 
-  getEquipment(
-    draggableFight: DraggableFight,
-    options: WanderOptions = defaultWanderOptions,
-  ): Item[] {
-    return this.equipment.get(this.getTarget(draggableFight, options)) ?? [];
+  getEquipment(wanderer: DraggableFight | WanderOptions): Item[] {
+    return this.equipment.get(this.getTarget(wanderer)) ?? [];
   }
 }
 
