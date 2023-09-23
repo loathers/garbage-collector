@@ -1,4 +1,4 @@
-import { Familiar, familiarWeight, weightAdjustment } from "kolmafia";
+import { Familiar, familiarWeight, holiday, weightAdjustment } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -95,6 +95,11 @@ const standardFamiliars: ConstantValueFamiliar[] = [
           ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`,
         )) /
       11,
+  },
+  {
+    familiar: $familiar`Patriotic Eagle`,
+    value: () =>
+      holiday().includes("Dependence Day") ? 0.05 * garboValue($item`souvenir flag`) : 0,
   },
 ];
 
