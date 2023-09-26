@@ -60,6 +60,7 @@ import {
 import {
   averageEmbezzlerNet,
   EMBEZZLER_MULTIPLIER,
+  getUsingFreeBunnyBanish,
   HIGHLIGHT,
   ltbRun,
   propertyManager,
@@ -573,9 +574,7 @@ export const gregFights = (
 ) => {
   function runGregFight(options: EmbezzlerFightRunOptions) {
     const run = ltbRun();
-    const runMacro = get("_garboUsingFreeBunnyBanish", false)
-      ? Macro.skill($skill`Snokebomb`)
-      : ltbRun().macro;
+    const runMacro = getUsingFreeBunnyBanish() ? Macro.skill($skill`Snokebomb`) : ltbRun().macro;
     run.constraints.preparation?.();
     const bunnyBanish = [...getBanishedMonsters().entries()].find(
       ([, monster]) => monster === $monster`fluffy bunny`,

@@ -71,6 +71,7 @@ import {
   Counter,
   ensureFreeRun,
   get,
+  getBanishedMonsters,
   getKramcoWandererChance,
   getTodaysHolidayWanderers,
   have,
@@ -81,12 +82,14 @@ import {
   property,
   set,
   SongBoom,
+  SourceTerminal,
   sum,
   uneffect,
 } from "libram";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboValue } from "./value";
+import { gregLikeFightCount } from "./embezzler";
 
 export const eventLog: {
   initialEmbezzlersFought: number;
@@ -485,22 +488,52 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
   return userConfirm(msg);
 }
 
+function determineFreeBunnyBanish(): boolean {
+  const expectedPocketProfFights = !have($familiar`Pocket Professor`)
+    ? 0
+    : (!get("_garbo_meatChain", false) ? Math.max(10 - get("_pocketProfessorLectures"), 0) : 0) +
+      (!get("_garbo_weightChain", false) ? Math.min(15 - get("_pocketProfessorLectures"), 5) : 0);
+  const expectedDigitizesDuringGregs =
+    SourceTerminal.have() && get("_sourceTerminalDigitizeUses") < 3 ? 3 : 0; // To encounter 3 digitize monsters it takes 91 adventures. Just estimate we fight all 3 to be safe.
+  const useFreeBanishes =
+    getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
+    // 60 turns of banish from mafia middle finger ring, and 30 x 2 from two snokebombs
+    // Account for our chain-starting fight as well as other embezzler sources that occur during our greg chain
+    1 + gregLikeFightCount() + expectedPocketProfFights + expectedDigitizesDuringGregs < 120 &&
+    gregLikeFightCount() > 0 &&
+    have($item`mafia middle finger ring`) &&
+    !get("_mafiaMiddleFingerRingUsed") &&
+    have($skill`Snokebomb`) &&
+    get(`_snokebombUsed`) === 0;
+
+  return useFreeBanishes;
+}
+
+let usingFreeBunnyBanish: boolean;
+export function getUsingFreeBunnyBanish(): boolean {
+  if (usingFreeBunnyBanish === undefined) {
+    usingFreeBunnyBanish = determineFreeBunnyBanish();
+  }
+  return usingFreeBunnyBanish;
+}
+
+const reservedBanishes = new Map<
+  ActionSource["source"],
+  () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
+>([
+  [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
+  [$item`mafia middle finger ring`, () => true],
+]);
+
 export function freeRunConstraints(latteActionSource: boolean): {
   allowedAction: (action: ActionSource) => boolean;
 } {
   return {
     allowedAction: (action: ActionSource): boolean => {
-      const props = new Map<
-        ActionSource["source"],
-        () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
-      >([
-        [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
-        [$item`mafia middle finger ring`, () => true],
-      ]);
-      const disallowUsage = props.get(action.source);
+      const disallowUsage = reservedBanishes.get(action.source);
 
       if (!have($item`latte lovers member's mug`) || !latteActionSource) {
-        return !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false));
+        return !(disallowUsage?.() && getUsingFreeBunnyBanish());
       }
 
       const forceEquipsOtherThanLatte = (
@@ -509,7 +542,7 @@ export function freeRunConstraints(latteActionSource: boolean): {
       return (
         forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
         sum(forceEquipsOtherThanLatte, weaponHands) < 2 &&
-        !(disallowUsage?.() && get("_garboUsingFreeBunnyBanish", false))
+        !(disallowUsage?.() && getUsingFreeBunnyBanish())
       );
     },
   };

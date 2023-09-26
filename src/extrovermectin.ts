@@ -36,7 +36,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { freeRunConstraints, ltbRun, setChoice } from "./lib";
+import { freeRunConstraints, getUsingFreeBunnyBanish, ltbRun, setChoice } from "./lib";
 import { garboAdventure, Macro } from "./combat";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
@@ -334,7 +334,7 @@ const shortBanishes = [
 ];
 
 function banishBunny(): void {
-  if (get("_garboUsingFreeBunnyBanish", false)) {
+  if (getUsingFreeBunnyBanish()) {
     do {
       new Requirement(["100 Monster Level"], {
         preventEquip: $items`carnivorous potted plant`,

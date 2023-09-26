@@ -40,12 +40,10 @@ import {
   $items,
   $location,
   $monster,
-  $skill,
   $slot,
   BeachComb,
   findLeprechaunMultiplier,
   get,
-  getBanishedMonsters,
   getModifier,
   have,
   maxBy,
@@ -59,7 +57,7 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { embezzlerCount, gregLikeFightCount } from "../embezzler";
+import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";
@@ -74,7 +72,6 @@ const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 let latteRefreshed = false;
 let attemptCompletingBarfQuest = true;
 let snojoConfigured = false;
-let freeBanishesChecked = false;
 
 // For this valuation, we are using the rough approximated value of different
 //   voting initiatives. They are relatively straghtforward:
@@ -368,29 +365,6 @@ export function configureSnojo(): void {
   }
 }
 
-function determineFreeBunnyBanish(): void {
-  if (freeBanishesChecked) return;
-  const expectedPocketProfFights = !have($familiar`Pocket Professor`)
-    ? 0
-    : (!get("_garbo_meatChain", false) ? Math.max(10 - get("_pocketProfessorLectures"), 0) : 0) +
-      (!get("_garbo_weightChain", false) ? Math.min(15 - get("_pocketProfessorLectures"), 5) : 0);
-  const expectedDigitizesDuringGregs =
-    SourceTerminal.have() && get("_sourceTerminalDigitizeUses") < 3 ? 3 : 0; // To encounter 3 digitize monsters it takes 91 adventures. Just estimate we fight all 3 to be safe.
-  const useFreeBanishes =
-    getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
-    // 60 turns of banish from mafia middle finger ring, and 30 x 2 from two snokebombs
-    // Account for our chain-starting fight as well as other embezzler sources that occur during our greg chain
-    1 + gregLikeFightCount() + expectedPocketProfFights + expectedDigitizesDuringGregs < 120 &&
-    gregLikeFightCount() > 0 &&
-    have($item`mafia middle finger ring`) &&
-    !get("_mafiaMiddleFingerRingUsed") &&
-    have($skill`Snokebomb`) &&
-    get(`_snokebombUsed`) === 0;
-
-  set("_garboUsingFreeBunnyBanish", useFreeBanishes);
-  freeBanishesChecked = true;
-}
-
 const DailyTasks: GarboTask[] = [
   {
     name: "Chibi Buddy",
@@ -681,11 +655,6 @@ const DailyTasks: GarboTask[] = [
     ready: () => get("snojoAvailable") && get("_snojoFreeFights") < 10,
     completed: () => snojoConfigured,
     do: configureSnojo,
-  },
-  {
-    name: "Determine whether to use free banishers for embezzlers",
-    completed: () => freeBanishesChecked,
-    do: determineFreeBunnyBanish,
   },
   // Final tasks
   {
