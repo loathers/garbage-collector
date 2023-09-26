@@ -3,8 +3,10 @@ import {
   adv1,
   availableAmount,
   buy,
+  canadiaAvailable,
   canAdventure,
   canEquip,
+  changeMcd,
   cliExecute,
   closetAmount,
   create,
@@ -14,6 +16,7 @@ import {
   Familiar,
   getAutoAttack,
   getCampground,
+  gnomadsAvailable,
   handlingChoice,
   haveEquipped,
   haveOutfit,
@@ -867,9 +870,18 @@ const freeFightSources = [
         () => {
           restoreHp(myMaxhp());
           if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+          if (
+            numericModifier("Monster Level") >= 50 &&
+            (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
+          ) {
+            changeMcd(0);
+          }
           retrieveItem($item`[glitch season reward name]`);
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
+          if (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`)) {
+            changeMcd(canadiaAvailable() ? 11 : 10);
+          }
         },
       ),
     true,
