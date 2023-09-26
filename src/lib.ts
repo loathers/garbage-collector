@@ -700,3 +700,5 @@ export function printEventLog(): void {
     );
   }
 }
+
+export const TREASURE_HOUSE_FAT_LOOT_TOKEN_COST = 20000;

@@ -6,18 +6,29 @@ import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
 import { BonusEquipMode } from "../lib";
+import wanderer, { DraggableFight, WanderOptions } from "../wanderer";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
   location?: Location;
   includeExperienceFamiliars?: boolean;
   allowAttackFamiliars?: boolean;
+  wanderOptions?: DraggableFight | WanderOptions;
 };
 export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}): Outfit {
   cleaverCheck();
-  validateGarbageFoldable(spec);
+
+  const { wanderOptions } = options;
+  const wanderedSpec: OutfitSpec = wanderOptions
+    ? {
+        ...spec,
+        equip: [...(spec.equip ?? []), ...wanderer.getEquipment(wanderOptions)],
+      }
+    : spec;
+
+  validateGarbageFoldable(wanderedSpec);
   const outfit = Outfit.from(
-    spec,
+    wanderedSpec,
     new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
   );
 
