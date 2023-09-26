@@ -871,7 +871,7 @@ const freeFightSources = [
           restoreHp(myMaxhp());
           if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
           if (
-            numericModifier("Monster Level") >= 50 &&
+            numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
             (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
           ) {
             changeMcd(0);
@@ -925,7 +925,7 @@ const freeFightSources = [
         () => {
           restoreHp(myMaxhp());
           if (
-            numericModifier("Monster Level") >= 50 &&
+            numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
             (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
           ) {
             changeMcd(0);
