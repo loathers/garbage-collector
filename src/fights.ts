@@ -924,6 +924,12 @@ const freeFightSources = [
           .kill(),
         () => {
           restoreHp(myMaxhp());
+          if (
+            numericModifier("Monster Level") >= 50 &&
+            (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
+          ) {
+            changeMcd(0);
+          }
           if (have($skill`Ruthless Efficiency`)) ensureEffect($effect`Ruthlessly Efficient`);
           if (have($skill`Mathematical Precision`)) ensureEffect($effect`Mathematically Precise`);
           if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
@@ -936,6 +942,9 @@ const freeFightSources = [
           }
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
+          if (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`)) {
+            changeMcd(canadiaAvailable() ? 11 : 10);
+          }
         },
       ),
     true,
