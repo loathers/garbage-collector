@@ -504,7 +504,7 @@ function determineFreeBunnyBanish(): boolean {
     have($item`mafia middle finger ring`) &&
     !get("_mafiaMiddleFingerRingUsed") &&
     have($skill`Snokebomb`) &&
-    get(`_snokebombUsed`) === 0;
+    get(`_snokebombUsed`) <= 1;
 
   return useFreeBanishes;
 }
