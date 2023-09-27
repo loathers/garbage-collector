@@ -403,8 +403,6 @@ const DailyTasks: GarboTask[] = [
     ready: () => canAdventure($location`The Spooky Forest`),
     completed: () => have($item`continuum transfunctioner`),
     do: (): void => {
-      // taken from autoscend
-      visitUrl("place.php?whichplace=woods");
       visitUrl("place.php?whichplace=forestvillage&action=fv_mystic");
       runChoice(1); // Sure, old man.  Tell me all about it
       runChoice(1); // Against my better judgement, yes

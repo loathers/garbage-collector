@@ -72,7 +72,7 @@ import {
 import { meatMood, useBuffExtenders } from "./mood";
 import postCombatActions from "./post";
 import { potionSetup } from "./potions";
-import { endSession, startSession } from "./session";
+import { endSession, tryStartSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { garboAverageValue } from "./value";
 import { yachtzeeChain } from "./yachtzee";
@@ -150,7 +150,7 @@ export function main(argString = ""): void {
         true,
       )
     ) {
-      startSession();
+      tryStartSession("full", true);
       try {
         const clanIdOrName = globalOptions.prefs.stashClan;
         const parsedClanIdOrName =
@@ -248,7 +248,7 @@ export function main(argString = ""): void {
   // re-align sweat (useful for diet and outfit)
   examine($item`designer sweatpants`);
 
-  startSession();
+  tryStartSession("full");
   if (!globalOptions.nobarf && !globalOptions.simdiet) {
     ensureBarfAccess();
   }
