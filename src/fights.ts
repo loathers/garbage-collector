@@ -889,6 +889,7 @@ const freeFightSources = [
       spec: {
         back: $items`unwrapped knock-off retro superhero cape`,
         modes: { retrocape: ["robot", "kiss"] },
+        avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
       },
       macroAllowsFamiliarActions: false,
     },
