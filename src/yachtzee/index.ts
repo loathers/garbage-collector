@@ -29,7 +29,7 @@ import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
-import { baseMeat, eventLog, propertyManager, realmAvailable, safeRestore } from "../lib";
+import { baseMeat, eventLog, propertyManager, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";
@@ -43,6 +43,7 @@ import {
   prepareOutfitAndFamiliar,
   stickerSetup,
 } from "./outfit";
+import { realmAvailable } from "../wanderer/lib";
 
 function _yachtzeeChain(): void {
   if (!canInteract()) return;

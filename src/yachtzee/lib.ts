@@ -21,10 +21,11 @@ import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { EmbezzlerFight, embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
-import { ltbRun, propertyManager, realmAvailable } from "../lib";
+import { ltbRun, propertyManager } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
-import wanderer from "../wanderer";
+import { wanderer } from "../garboWanderer";
+import { realmAvailable } from "../wanderer/lib";
 
 const ignoredSources = [
   "Orb Prediction",
@@ -105,7 +106,7 @@ export function useSpikolodonSpikes(): void {
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
 
-  const ncSkipper = wanderer.unsupportedChoices.get(targetZone);
+  const ncSkipper = wanderer().unsupportedChoices.get(targetZone);
   if (ncSkipper) propertyManager.setChoices(ncSkipper);
 
   do {

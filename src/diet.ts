@@ -71,20 +71,14 @@ import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
 import { embezzlerCount } from "./embezzler";
 import { expectedGregs } from "./extrovermectin";
-import {
-  arrayEquals,
-  baseMeat,
-  EMBEZZLER_MULTIPLIER,
-  HIGHLIGHT,
-  realmAvailable,
-  userConfirmDialog,
-} from "./lib";
+import { arrayEquals, baseMeat, EMBEZZLER_MULTIPLIER, HIGHLIGHT, userConfirmDialog } from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./value";
 import { shouldAugustCast } from "./resources";
+import { realmAvailable } from "./wanderer/lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);

@@ -11,10 +11,11 @@ import {
   have,
   sumNumbers,
 } from "libram";
-import { baseMeat, BonusEquipMode, modeIsFree, realmAvailable } from "../lib";
+import { baseMeat, BonusEquipMode, modeIsFree } from "../lib";
 import { garboValue } from "../value";
 import { maxPassiveDamage, monsterManuelAvailable } from "../combat";
 import { globalOptions } from "../config";
+import { realmAvailable } from "../wanderer/lib";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {

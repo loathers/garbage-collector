@@ -6,7 +6,8 @@ import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
 import { BonusEquipMode } from "../lib";
-import wanderer, { DraggableFight, WanderOptions } from "../wanderer";
+import { DraggableFight, WanderOptions } from "../wanderer";
+import { wanderer } from "../garboWanderer";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
@@ -22,7 +23,7 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
   const wanderedSpec: OutfitSpec = wanderOptions
     ? {
         ...spec,
-        equip: [...(spec.equip ?? []), ...wanderer.getEquipment(wanderOptions)],
+        equip: [...(spec.equip ?? []), ...wanderer().getEquipment(wanderOptions)],
       }
     : spec;
 

@@ -67,9 +67,10 @@ import {
   WISH_VALUE,
 } from "./lib";
 import { waterBreathingEquipment } from "./outfit";
-import wanderer, { DraggableFight } from "./wanderer";
+import { DraggableFight } from "./wanderer";
 import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
 import { shouldAugustCast } from "./resources";
+import { wanderer } from "./garboWanderer";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -202,8 +203,8 @@ export class EmbezzlerFight {
       (this.draggable === "backup" && suggestion && suggestion.combatPercent < 100)
     ) {
       const wanderOptions = { wanderer: this.draggable, allowEquipment: false };
-      propertyManager.setChoices(wanderer.getChoices(wanderOptions));
-      return wanderer.getTarget(wanderOptions);
+      propertyManager.setChoices(wanderer().getChoices(wanderOptions));
+      return wanderer().getTarget(wanderOptions);
     }
     return suggestion ?? $location`Noob Cave`;
   }

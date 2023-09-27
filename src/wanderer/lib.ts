@@ -1,7 +1,6 @@
-import { buy, canAdventure, Item, Location, use } from "kolmafia";
+import { buy, canAdventure, Effect, Item, Location, Monster, use } from "kolmafia";
 import { $effect, $item, $location, $locations, $skill, clamp, get, have, sum } from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
-import { realmAvailable } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 export const draggableFights = ["backup", "wanderer", "yellow ray", "freefight"] as const;
@@ -16,6 +15,22 @@ interface UnlockableZone {
   unlocker: Item;
   noInv: boolean;
 }
+
+export type WandererFactoryOptions = {
+  ascend: boolean;
+  getEstimatedRemainingTurns: () => number;
+  getFreeFightValue: (loc: Location) => number;
+  itemValue: (item: Item) => number;
+  effectValue: (effect: Effect, duration: number) => number;
+  prioritizeCappingGuzzlr: boolean;
+};
+
+export type WandererFactory = (
+  type: DraggableFight,
+  locationSkiplist: Location[],
+  options: WandererFactoryOptions,
+) => WandererTarget[];
+export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
 
 export const UnlockableZones: UnlockableZone[] = [
   {
@@ -153,11 +168,6 @@ export class WandererTarget {
     this.prepareTurn = prepareTurn;
   }
 }
-export type WandererFactory = (
-  type: DraggableFight,
-  locationSkiplist: Location[],
-) => WandererTarget[];
-export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
 
 export function defaultFactory(): WandererTarget[] {
   return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
@@ -225,4 +235,26 @@ export function wandererTurnsAvailableToday(location: Location): number {
   );
 
   return digitize + pigSkinnerRay + yellowRay + wanderers;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function bofaValue(options: WandererFactoryOptions, monster: Monster): number {
+  return 0;
+}
+
+export function freeCrafts(): number {
+  return (
+    (have($skill`Rapid Prototyping`) ? 5 - get("_rapidPrototypingUsed") : 0) +
+    (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
+  );
+}
+
+export type RealmType = "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate";
+export function realmAvailable(identifier: RealmType): boolean {
+  if (identifier === "fantasy") {
+    return get(`_frToday`) || get(`frAlways`);
+  } else if (identifier === "pirate") {
+    return get(`_prToday`) || get(`prAlways`);
+  }
+  return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
 }

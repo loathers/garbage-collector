@@ -87,6 +87,7 @@ import {
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboValue } from "./value";
+import { realmAvailable } from "./wanderer/lib";
 
 export const eventLog: {
   initialEmbezzlersFought: number;
@@ -442,16 +443,6 @@ export function checkGithubVersion(): void {
   }
 }
 
-export type RealmType = "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate";
-export function realmAvailable(identifier: RealmType): boolean {
-  if (identifier === "fantasy") {
-    return get(`_frToday`) || get(`frAlways`);
-  } else if (identifier === "pirate") {
-    return get(`_prToday`) || get(`prAlways`);
-  }
-  return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
-}
-
 export function formatNumber(num: number): string {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
@@ -567,13 +558,6 @@ export function sober(): boolean {
   return myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
 }
 
-export function freeCrafts(): number {
-  return (
-    (have($skill`Rapid Prototyping`) ? 5 - get("_rapidPrototypingUsed") : 0) +
-    (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
-  );
-}
-
 export type GarboItemLists = { Newark: string[]; "Feliz Navidad": string[]; trainset: string[] };
 
 export const asArray = <T>(singleOrArray: T | T[]): T[] =>
@@ -683,5 +667,3 @@ export function printEventLog(): void {
     );
   }
 }
-
-export const TREASURE_HOUSE_FAT_LOOT_TOKEN_COST = 20000;

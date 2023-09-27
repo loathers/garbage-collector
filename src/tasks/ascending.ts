@@ -1,10 +1,10 @@
 import { create, handlingChoice, runChoice, toInt, useSkill } from "kolmafia";
 import { $familiar, $item, $items, $skill, get, have, maxBy } from "libram";
 import { globalOptions } from "../config";
-import { freeCrafts } from "../lib";
 import { garboValue } from "../value";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
+import { freeCrafts } from "../wanderer/lib";
 
 function bestLockPickChoice(): number {
   return (

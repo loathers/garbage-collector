@@ -1,17 +1,21 @@
 import { appearanceRates, getMonsters, itemDropsArray, Location } from "kolmafia";
 import { clamp, maxBy, SourceTerminal, sum } from "libram";
-import { freeFightFamiliarData } from "../familiar/freeFightFamiliar";
-import { bofaValue, garboValue } from "../value";
 import {
+  bofaValue,
   canAdventureOrUnlock,
   canWander,
   DraggableFight,
   underwater,
   UnlockableZones,
+  WandererFactoryOptions,
   WandererTarget,
 } from "./lib";
 
-function averageYrValue(location: Location, forceItemDrops: boolean) {
+function averageYrValue(
+  location: Location,
+  forceItemDrops: boolean,
+  options: WandererFactoryOptions,
+) {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
@@ -33,20 +37,23 @@ function averageYrValue(location: Location, forceItemDrops: boolean) {
           duplicateFactor *
           sum(items, (drop) => {
             const yrRate = (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
-            return yrRate * garboValue(drop.drop, true);
+            return yrRate * options.itemValue(drop.drop);
           });
-        return itemDrop + meatDrop + bofaValue(m);
+        return itemDrop + meatDrop + bofaValue(options, m);
       }) / monsters.length
     );
   }
 }
 
-function monsterValues(forceItemDrops: boolean): Map<Location, number> {
+function monsterValues(
+  forceItemDrops: boolean,
+  options: WandererFactoryOptions,
+): Map<Location, number> {
   const values = new Map<Location, number>();
   for (const location of Location.all().filter((l) => canAdventureOrUnlock(l) && !underwater(l))) {
     values.set(
       location,
-      averageYrValue(location, forceItemDrops) + freeFightFamiliarData({ location }).expectedValue,
+      averageYrValue(location, forceItemDrops, options) + options.getFreeFightValue(location),
     );
   }
   return values;
@@ -56,12 +63,13 @@ function monsterValues(forceItemDrops: boolean): Map<Location, number> {
 export function freefightFactory(
   type: DraggableFight,
   locationSkiplist: Location[],
+  options: WandererFactoryOptions,
 ): WandererTarget[] {
   if (type === "yellow ray" || type === "freefight") {
     const validLocations = Location.all().filter(
       (location) => canWander(location, "yellow ray") && canAdventureOrUnlock(location),
     );
-    const locationValues = monsterValues(type === "yellow ray");
+    const locationValues = monsterValues(type === "yellow ray", options);
 
     const bestZones = new Set<Location>([
       maxBy(validLocations, (l: Location) => locationValues.get(l) ?? 0),
