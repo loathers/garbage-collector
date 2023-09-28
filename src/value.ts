@@ -8,16 +8,26 @@ import {
   sellPrice,
   toInt,
 } from "kolmafia";
-import { $class, $item, $items, getSaleValue, sum } from "libram";
+import { $class, $item, $items, Delayed, getSaleValue, sum, undelay } from "libram";
 
-export type ValueFunctions = {
-  value: (item: Item, useHistorical?: boolean) => number;
-  averageValue: (...items: Item[]) => number;
+type ItemQuantity = {
+  item: Item;
+  quantity: number;
 };
 
-export function makeValue(options: { quick: boolean } = { quick: false }): ValueFunctions {
+export type ValueFunctions = {
+  value: (item: Item | ItemQuantity, useHistorical?: boolean) => number;
+  averageValue: (...items: (Item | ItemQuantity)[]) => number;
+};
+
+export function makeValue(
+  options: { quick: boolean; itemValues?: Map<Item, Delayed<number>> } = { quick: false },
+): ValueFunctions {
   const regularValueCache = new Map<Item, number>();
   const historicalValueCache = new Map<Item, number>();
+  const inputValues: [Item, () => number][] = options.itemValues
+    ? [...options.itemValues.entries()].map(([item, val]) => [item, () => undelay(val)])
+    : [];
   const specialValueLookup = new Map<Item, () => number>([
     [
       $item`Freddy Kruegerand`,
@@ -109,7 +119,6 @@ export function makeValue(options: { quick: boolean } = { quick: false }): Value
           ...$items`Alewife™ Ale, bazookafish bubble gum, beefy fish meat, eel battery, glistening fish meat, ink bladder, pufferfish spine, shark cartilage, slick fish meat, slug of rum, slug of shochu, slug of vodka, temporary teardrop tattoo`,
         ),
     ],
-    [$item`fake hand`, () => 50000],
     [
       $item`psychoanalytic jar`,
       () =>
@@ -151,6 +160,7 @@ export function makeValue(options: { quick: boolean } = { quick: false }): Value
         ...$items`Boris's key, Jarlsberg's key, Sneaky Pete's key, Boris's ring, Jarlsberg's earring, Sneaky Pete's breath spray, potato sprout, sewing kit, Spellbook: Singer's Faithful Ocelot, Spellbook: Drescher's Annoying Noise, Spellbook: Walberg's Dim Bulb, dried gelatinous cube`,
       ),
     ],
+    ...inputValues,
   ]);
 
   const exclusions = new Set([
@@ -196,7 +206,9 @@ export function makeValue(options: { quick: boolean } = { quick: false }): Value
     return candyIdPrices;
   }
 
-  function value(item: Item, useHistorical = false): number {
+  function value(inputItem: Item | ItemQuantity, useHistorical = false): number {
+    const { item, quantity } =
+      inputItem instanceof Item ? { item: inputItem, quantity: 1 } : inputItem;
     if (exclusions.has(item)) return 0;
     useHistorical ||= options.quick;
     const cachedValue =
@@ -207,10 +219,10 @@ export function makeValue(options: { quick: boolean } = { quick: false }): Value
       (useHistorical ? historicalValueCache : regularValueCache).set(item, value);
       return value;
     }
-    return cachedValue;
+    return quantity * cachedValue;
   }
 
-  function averageValue(...items: Item[]): number {
+  function averageValue(...items: (Item | ItemQuantity)[]): number {
     return sum(items, value) / items.length;
   }
 
