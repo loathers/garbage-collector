@@ -24,7 +24,7 @@ function considerAbandon(options: WandererFactoryOptions, locationSkiplist: Loca
     (!location || // if mafia failed to track the location correctly
       locationSkiplist.includes(location) ||
       !canAdventureOrUnlock(location) || // or the zone is marked as "generally cannot adv"
-      (options.ascend && wandererTurnsAvailableToday(location) < remaningTurns)) // or ascending and not enough turns to finish
+      (options.ascend && wandererTurnsAvailableToday(options, location) < remaningTurns)) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
     Guzzlr.abandon();

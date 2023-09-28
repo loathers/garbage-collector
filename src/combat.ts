@@ -60,7 +60,7 @@ import {
 } from "libram";
 import { globalOptions } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
-import { digitizedMonstersRemaining } from "./turns";
+import { digitizedMonstersRemaining } from "./garboWanderer";
 
 let monsterManuelCached: boolean | undefined = undefined;
 export function monsterManuelAvailable(): boolean {

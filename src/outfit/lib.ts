@@ -34,7 +34,7 @@ import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { baseMeat } from "../lib";
-import { digitizedMonstersRemaining } from "../turns";
+import { digitizedMonstersRemaining } from "../garboWanderer";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) => outfit.canEquip(item));

@@ -20,6 +20,7 @@ import {
   get,
   getActiveSongs,
   have,
+  realmAvailable,
   set,
   uneffect,
 } from "libram";
@@ -43,7 +44,6 @@ import {
   prepareOutfitAndFamiliar,
   stickerSetup,
 } from "./outfit";
-import { realmAvailable } from "../wanderer/lib";
 
 function _yachtzeeChain(): void {
   if (!canInteract()) return;

@@ -1,7 +1,19 @@
 import { buy, canAdventure, Effect, Item, Location, Monster, use } from "kolmafia";
-import { $effect, $item, $location, $locations, $skill, clamp, get, have, sum } from "libram";
+import {
+  $effect,
+  $item,
+  $location,
+  $locations,
+  $skill,
+  clamp,
+  Counter,
+  get,
+  have,
+  realmAvailable,
+  SourceTerminal,
+  sum,
+} from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 export const draggableFights = ["backup", "wanderer", "yellow ray", "freefight"] as const;
 export type DraggableFight = (typeof draggableFights)[number];
@@ -18,8 +30,8 @@ interface UnlockableZone {
 
 export type WandererFactoryOptions = {
   ascend: boolean;
-  getEstimatedRemainingTurns: () => number;
-  getFreeFightValue: (loc: Location) => number;
+  estimatedTurns: () => number;
+  freeFightExtraValue: (loc: Location) => number;
   itemValue: (item: Item) => number;
   effectValue: (effect: Effect, duration: number) => number;
   prioritizeCappingGuzzlr: boolean;
@@ -211,7 +223,10 @@ const WanderingSources: WanderingSource[] = [
   },
 ];
 
-export function wandererTurnsAvailableToday(location: Location): number {
+export function wandererTurnsAvailableToday(
+  options: WandererFactoryOptions,
+  location: Location,
+): number {
   const canWanderCache: Record<DraggableFight, boolean> = {
     backup: canWander(location, "backup"),
     wanderer: canWander(location, "wanderer"),
@@ -219,14 +234,14 @@ export function wandererTurnsAvailableToday(location: Location): number {
     freefight: canWander(location, "freefight"),
   };
 
-  const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
+  const digitize = canWanderCache["backup"] ? wandererDigitizedMonstersRemaining(options) : 0;
   const pigSkinnerRay =
     canWanderCache["backup"] && have($skill`Free-For-All`)
-      ? Math.floor(estimatedGarboTurns() / 25)
+      ? Math.floor(options.estimatedTurns() / 25)
       : 0;
   const yellowRayCooldown = have($skill`Fondeluge`) ? 50 : 100;
   const yellowRay = canWanderCache["yellow ray"]
-    ? Math.floor(estimatedGarboTurns() / yellowRayCooldown)
+    ? Math.floor(options.estimatedTurns() / yellowRayCooldown)
     : 0;
   const wanderers = sum(WanderingSources, (source) =>
     canWanderCache[source.type] && have(source.item)
@@ -242,19 +257,27 @@ export function bofaValue(options: WandererFactoryOptions, monster: Monster): nu
   return 0;
 }
 
-export function freeCrafts(): number {
-  return (
-    (have($skill`Rapid Prototyping`) ? 5 - get("_rapidPrototypingUsed") : 0) +
-    (have($skill`Expert Corner-Cutter`) ? 5 - get("_expertCornerCutterUsed") : 0)
-  );
+function untangleDigitizes(turnCount: number, chunks: number): number {
+  const turnsPerChunk = turnCount / chunks;
+  const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
+  return Math.round(chunks * monstersPerChunk);
 }
 
-export type RealmType = "spooky" | "stench" | "hot" | "cold" | "sleaze" | "fantasy" | "pirate";
-export function realmAvailable(identifier: RealmType): boolean {
-  if (identifier === "fantasy") {
-    return get(`_frToday`) || get(`frAlways`);
-  } else if (identifier === "pirate") {
-    return get(`_prToday`) || get(`prAlways`);
+export function wandererDigitizedMonstersRemaining(options: WandererFactoryOptions): number {
+  if (!SourceTerminal.have()) return 0;
+
+  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
+  if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
+    return untangleDigitizes(options.estimatedTurns(), SourceTerminal.getMaximumDigitizeUses());
   }
-  return get(`_${identifier}AirportToday`) || get(`${identifier}AirportAlways`);
+
+  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
+
+  const turnsLeftAtNextMonster = options.estimatedTurns() - Counter.get("Digitize Monster");
+  if (turnsLeftAtNextMonster <= 0) return 0;
+  const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
+  return (
+    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
+    SourceTerminal.getDigitizeMonsterCount()
+  );
 }

@@ -11,12 +11,17 @@ export function wanderer(): WandererManager {
   if (!_wanderer) {
     _wanderer = new WandererManager({
       ascend: globalOptions.ascend,
-      getEstimatedRemainingTurns: estimatedGarboTurns,
+      estimatedTurns: estimatedGarboTurns,
       itemValue: garboValue,
       effectValue: () => 0,
       prioritizeCappingGuzzlr: get("garbo_prioritizeCappingGuzzlr", false),
-      getFreeFightValue: (location: Location) => freeFightFamiliarData({ location }).expectedValue,
+      freeFightExtraValue: (location: Location) =>
+        freeFightFamiliarData({ location }).expectedValue,
     });
   }
   return _wanderer;
+}
+
+export function digitizedMonstersRemaining(): number {
+  return wanderer().digitizedMonstersRemaining();
 }

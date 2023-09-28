@@ -1,6 +1,15 @@
-import { Item, Location, myTotalTurnsSpent, print, totalTurnsPlayed } from "kolmafia";
-import { $items, $location, get, maxBy } from "libram";
-import { HIGHLIGHT, sober } from "../lib";
+import {
+  inebrietyLimit,
+  isDarkMode,
+  Item,
+  Location,
+  myFamiliar,
+  myInebriety,
+  myTotalTurnsSpent,
+  print,
+  totalTurnsPlayed,
+} from "kolmafia";
+import { $familiar, $items, $location, get, maxBy } from "libram";
 import { guzzlrFactory } from "./guzzlr";
 import {
   canAdventureOrUnlock,
@@ -9,6 +18,7 @@ import {
   DraggableFight,
   isDraggableFight,
   unlock,
+  wandererDigitizedMonstersRemaining,
   WandererFactory,
   WandererFactoryOptions,
   WandererLocation,
@@ -18,6 +28,10 @@ import { freefightFactory } from "./freefight";
 import { eightbitFactory } from "./eightbit";
 
 export type { DraggableFight };
+
+function sober(): boolean {
+  return myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
+}
 
 const wanderFactories: WandererFactory[] = [
   defaultFactory,
@@ -95,7 +109,10 @@ function wanderWhere(
   } else {
     const targets = candidate.targets.map((t) => t.name).join("; ");
     const value = candidate.value.toFixed(2);
-    print(`Wandering at ${candidate.location} for expected value ${value} (${targets})`, HIGHLIGHT);
+    print(
+      `Wandering at ${candidate.location} for expected value ${value} (${targets})`,
+      isDarkMode() ? "yellow" : "blue",
+    );
 
     return candidate.location;
   }
@@ -219,5 +236,9 @@ export class WandererManager {
 
   getEquipment(wanderer: DraggableFight | WanderOptions): Item[] {
     return this.equipment.get(this.getTarget(wanderer)) ?? [];
+  }
+
+  digitizedMonstersRemaining(): number {
+    return wandererDigitizedMonstersRemaining(this.options);
   }
 }

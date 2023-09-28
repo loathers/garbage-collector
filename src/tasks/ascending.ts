@@ -1,10 +1,9 @@
 import { create, handlingChoice, runChoice, toInt, useSkill } from "kolmafia";
-import { $familiar, $item, $items, $skill, get, have, maxBy } from "libram";
+import { $item, $items, $skill, freeCrafts, get, have, maxBy } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../value";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
-import { freeCrafts } from "../wanderer/lib";
 
 function bestLockPickChoice(): number {
   return (
@@ -48,10 +47,7 @@ const AscendingTasks: GarboTask[] = [
     name: `Cook ${lime}`,
     completed: () => !have(key) || garboValue(lime) < garboValue($item`lime`),
     do: () => create(lime),
-    ready: () =>
-      (globalOptions.ascend &&
-        (freeCrafts() > 0 || (have($familiar`Cookbookbat`) && get("_cookbookbatCrafting") < 5))) ||
-      get("hasChef"),
+    ready: () => (globalOptions.ascend && freeCrafts("food") > 0) || get("hasChef"),
   })),
 ];
 

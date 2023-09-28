@@ -1,7 +1,6 @@
 import { eightBitPoints, Location } from "kolmafia";
 import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
 import { $item, $location, get, have } from "libram";
-import { garboValue } from "../value";
 
 export const bonusColor = ["black", "blue", "green", "red"] as const;
 export type BonusColor = (typeof bonusColor)[number];
@@ -16,11 +15,13 @@ const locationColor: Record<BonusColor, Location> = {
   red: $location`The Fungus Plains`,
 };
 
-function value(color: BonusColor, ascend: boolean) {
-  const denominator = ascend
+function value(color: BonusColor, options: WandererFactoryOptions) {
+  const denominator = options.ascend
     ? get("8BitScore") - TREASURE_HOUSE_FAT_LOOT_TOKEN_COST
     : TREASURE_HOUSE_FAT_LOOT_TOKEN_COST;
-  return (garboValue($item`fat loot token`) * eightBitPoints(locationColor[color])) / denominator;
+  return (
+    (options.itemValue($item`fat loot token`) * eightBitPoints(locationColor[color])) / denominator
+  );
 }
 
 export function eightbitFactory(
@@ -36,11 +37,7 @@ export function eightbitFactory(
     return bonusColor
       .map(
         (color) =>
-          new WandererTarget(
-            `8-bit (${color})`,
-            locationColor[color],
-            value(color, options.ascend),
-          ),
+          new WandererTarget(`8-bit (${color})`, locationColor[color], value(color, options)),
       )
       .filter((t) => !locationSkiplist.includes(t.location));
   }

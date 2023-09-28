@@ -53,7 +53,7 @@ function monsterValues(
   for (const location of Location.all().filter((l) => canAdventureOrUnlock(l) && !underwater(l))) {
     values.set(
       location,
-      averageYrValue(location, forceItemDrops, options) + options.getFreeFightValue(location),
+      averageYrValue(location, forceItemDrops, options) + options.freeFightExtraValue(location),
     );
   }
   return values;
