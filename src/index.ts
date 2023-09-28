@@ -74,8 +74,8 @@ import postCombatActions from "./post";
 import { potionSetup } from "./potions";
 import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
-import { garboAverageValue } from "./value";
 import { yachtzeeChain } from "./yachtzee";
+import { garboAverageValue } from "./garboValue";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -460,8 +460,6 @@ export function main(argString = ""): void {
     if (!have($item`Jurassic Parka`) && have($skill`Torso Awareness`)) {
       stashItems.push($item`origami pasties`);
     }
-
-    setHistoricalPriceDefault(globalOptions.quick);
 
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {

@@ -2,9 +2,9 @@ import { Location } from "kolmafia";
 import { globalOptions } from "./config";
 import { freeFightFamiliarData } from "./familiar/freeFightFamiliar";
 import { estimatedGarboTurns } from "./turns";
-import { garboValue } from "./value";
 import { WandererManager } from "./wanderer";
 import { get } from "libram";
+import { garboValue } from "./garboValue";
 
 let _wanderer: WandererManager | undefined;
 export function wanderer(): WandererManager {

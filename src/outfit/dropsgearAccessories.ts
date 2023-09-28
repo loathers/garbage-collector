@@ -13,7 +13,7 @@ import {
   sumNumbers,
 } from "libram";
 import { baseMeat, BonusEquipMode, modeIsFree } from "../lib";
-import { garboValue } from "../value";
+import { garboValue } from "../garboValue";
 import { maxPassiveDamage, monsterManuelAvailable } from "../combat";
 import { globalOptions } from "../config";
 

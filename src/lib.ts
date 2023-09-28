@@ -87,7 +87,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
-import { garboValue } from "./value";
+import { garboValue } from "./garboValue";
 
 export const eventLog: {
   initialEmbezzlersFought: number;

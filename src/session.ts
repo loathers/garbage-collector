@@ -11,7 +11,7 @@ import { $items, get, Session, set } from "libram";
 import { globalOptions } from "./config";
 import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
 import { failedWishes } from "./potions";
-import { garboValue } from "./value";
+import { garboValue } from "./garboValue";
 
 function printSession(session: Session): void {
   const value = session.value(garboValue);
