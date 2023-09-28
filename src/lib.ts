@@ -495,11 +495,21 @@ function determineFreeBunnyBanish(): boolean {
       (!get("_garbo_weightChain", false) ? Math.min(15 - get("_pocketProfessorLectures"), 5) : 0);
   const expectedDigitizesDuringGregs =
     SourceTerminal.have() && get("_sourceTerminalDigitizeUses") < 3 ? 3 : 0; // To encounter 3 digitize monsters it takes 91 adventures. Just estimate we fight all 3 to be safe.
+  const expectedReplacerFights =
+    (have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0) +
+    (have($item`Powerful Glove`)
+      ? Math.floor(100 - get("_powerfulGloveBatteryPowerUsed") / 10)
+      : 0);
   const useFreeBanishes =
     getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
     // 60 turns of banish from mafia middle finger ring, and 30 x 2 from two snokebombs
     // Account for our chain-starting fight as well as other embezzler sources that occur during our greg chain
-    1 + gregLikeFightCount() + expectedPocketProfFights + expectedDigitizesDuringGregs < 120 &&
+    1 +
+      gregLikeFightCount() +
+      expectedPocketProfFights +
+      expectedDigitizesDuringGregs +
+      expectedReplacerFights <
+      120 &&
     gregLikeFightCount() > 0 &&
     have($item`mafia middle finger ring`) &&
     !get("_mafiaMiddleFingerRingUsed") &&
