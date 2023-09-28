@@ -460,6 +460,9 @@ export function main(argString = ""): void {
     if (!have($item`Jurassic Parka`) && have($skill`Torso Awareness`)) {
       stashItems.push($item`origami pasties`);
     }
+
+    setHistoricalPriceDefault(globalOptions.quick);
+
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {

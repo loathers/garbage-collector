@@ -10,7 +10,6 @@ import {
   toInt,
 } from "kolmafia";
 import { $class, $item, $items, getSaleValue, sum } from "libram";
-import { globalOptions } from "./config";
 
 const garboRegularValueCache = new Map<Item, number>();
 
@@ -200,9 +199,14 @@ function complexCandy(): [Item, () => number][] {
   return candyIdPrices;
 }
 
+let quick = false;
+export function setHistoricalPriceDefault(val: boolean) {
+  quick = val;
+}
+
 export function garboValue(item: Item, useHistorical = false): number {
   if (exclusions.has(item)) return 0;
-  useHistorical ||= globalOptions.quick;
+  useHistorical ||= quick;
   const cachedValue =
     garboRegularValueCache.get(item) ??
     (useHistorical ? garboHistoricalValueCache.get(item) : undefined);
