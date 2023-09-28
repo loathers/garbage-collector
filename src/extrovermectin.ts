@@ -348,23 +348,24 @@ function banishBunny(): void {
       "fluffy bunny" !== get("lastEncounter") &&
       !get("banishedMonsters").includes("fluffy bunny")
     );
-  }
-  const banishes = [
-    ...longBanishes,
-    ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
-  ].filter((b) => b.available());
+  } else {
+    const banishes = [
+      ...longBanishes,
+      ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
+    ].filter((b) => b.available());
 
-  const banish = maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
-  do {
-    banish.prepare?.();
-    garboAdventure(
-      $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, banish.macro()).embezzler(),
+    const banish = maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
+    do {
+      banish.prepare?.();
+      garboAdventure(
+        $location`The Dire Warren`,
+        Macro.if_($monster`fluffy bunny`, banish.macro()).embezzler(),
+      );
+    } while (
+      "fluffy bunny" !== get("lastEncounter") &&
+      !get("banishedMonsters").includes("fluffy bunny")
     );
-  } while (
-    "fluffy bunny" !== get("lastEncounter") &&
-    !get("banishedMonsters").includes("fluffy bunny")
-  );
+  }
 }
 
 function getBanishedPhyla(): Map<Skill | Item, Phylum> {
