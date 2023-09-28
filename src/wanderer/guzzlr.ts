@@ -1,5 +1,5 @@
 import { buy, craftType, Location, mallPrice, print, retrieveItem } from "kolmafia";
-import { $item, get, Guzzlr, have } from "libram";
+import { $item, freeCrafts, get, Guzzlr, have } from "libram";
 import {
   canAdventureOrUnlock,
   DraggableFight,
@@ -92,7 +92,7 @@ export function guzzlrFactory(
 
                 if (!have(guzzlrBooze)) {
                   const fancy = guzzlrBooze && craftType(guzzlrBooze).includes("fancy");
-                  if (guzzlrBooze && (!fancy || (fancy && freeCrafts() > 0))) {
+                  if (guzzlrBooze && (!fancy || (fancy && freeCrafts("booze") > 0))) {
                     retrieveItem(guzzlrBooze);
                   } else if (guzzlrBooze) {
                     buy(1, guzzlrBooze, guzzlrValue(buckValue, Guzzlr.getTier()));

@@ -25,7 +25,6 @@ import { ltbRun, propertyManager } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
 import { wanderer } from "../garboWanderer";
-import { realmAvailable } from "../wanderer/lib";
 
 const ignoredSources = [
   "Orb Prediction",

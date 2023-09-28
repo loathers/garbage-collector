@@ -62,6 +62,7 @@ import {
   maximizeCached,
   MayoClinic,
   MenuItem,
+  realmAvailable,
   set,
   sum,
   sumNumbers,
@@ -78,7 +79,6 @@ import synthesize from "./synthesis";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./value";
 import { shouldAugustCast } from "./resources";
-import { realmAvailable } from "./wanderer/lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);

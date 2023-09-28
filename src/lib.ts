@@ -79,6 +79,7 @@ import {
   maxBy,
   PropertiesManager,
   property,
+  realmAvailable,
   set,
   SongBoom,
   sum,
@@ -87,7 +88,6 @@ import {
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboValue } from "./value";
-import { realmAvailable } from "./wanderer/lib";
 
 export const eventLog: {
   initialEmbezzlersFought: number;

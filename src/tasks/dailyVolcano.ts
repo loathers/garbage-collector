@@ -20,6 +20,7 @@ import {
   have,
   maxBy,
   property,
+  realmAvailable,
   uneffect,
   withProperty,
 } from "libram";
@@ -27,7 +28,6 @@ import { globalOptions } from "../config";
 import { HIGHLIGHT, logMessage } from "../lib";
 import { garboValue } from "../value";
 import { GarboTask } from "./engine";
-import { realmAvailable } from "../wanderer/lib";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 

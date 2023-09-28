@@ -9,13 +9,13 @@ import {
   get,
   getModifier,
   have,
+  lgrCurrencies,
   sumNumbers,
 } from "libram";
 import { baseMeat, BonusEquipMode, modeIsFree } from "../lib";
 import { garboValue } from "../value";
 import { maxPassiveDamage, monsterManuelAvailable } from "../combat";
 import { globalOptions } from "../config";
-import { realmAvailable } from "../wanderer/lib";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -41,12 +41,7 @@ function luckyGoldRing(mode: BonusEquipMode) {
       itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
       itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
       itemAmount($item`Freddy Kruegerand`) > 0 ? garboValue($item`Freddy Kruegerand`) : 0,
-      realmAvailable("sleaze") ? garboValue($item`Beach Buck`) : 0,
-      realmAvailable("spooky") ? garboValue($item`Coinspiracy`) : 0,
-      realmAvailable("stench") ? garboValue($item`FunFunds™`) : 0,
-      realmAvailable("hot") && !get("_luckyGoldRingVolcoino") ? garboValue($item`Volcoino`) : 0,
-      realmAvailable("cold") ? garboValue($item`Wal-Mart gift certificate`) : 0,
-      realmAvailable("fantasy") ? garboValue($item`Rubee™`) : 0,
+      ...lgrCurrencies().map((i) => garboValue(i)),
     ].filter((value) => value > 0),
   ];
 
