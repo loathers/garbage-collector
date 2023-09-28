@@ -32,6 +32,7 @@ import {
   myMaxmp,
   myMp,
   mySoulsauce,
+  mySpleenUse,
   myTurncount,
   numericModifier,
   print,
@@ -43,6 +44,7 @@ import {
   setLocation,
   Skill,
   soulsauceCost,
+  spleenLimit,
   todayToString,
   toSlot,
   totalFreeRests,
@@ -89,7 +91,6 @@ import {
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboValue } from "./value";
-import { gregLikeFightCount } from "./embezzler";
 
 export const eventLog: {
   initialEmbezzlersFought: number;
@@ -489,6 +490,11 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
 }
 
 function determineFreeBunnyBanish(): boolean {
+  const extraOrbFights = have($item`miniature crystal ball`) ? 1 : 0;
+  const possibleGregsFromSpleen =
+    Math.floor((spleenLimit() - mySpleenUse()) / 2) * (3 + extraOrbFights);
+  const currentAvailableGregs = get("beGregariousCharges") * (3 + extraOrbFights);
+  const habitatFights = (3 - get("_monsterHabitatsRecalled")) * (5 + extraOrbFights);
   const expectedPocketProfFights = !have($familiar`Pocket Professor`)
     ? 0
     : (!get("_garbo_meatChain", false) ? Math.max(10 - get("_pocketProfessorLectures"), 0) : 0) +
@@ -505,12 +511,14 @@ function determineFreeBunnyBanish(): boolean {
     // 60 turns of banish from mafia middle finger ring, and 30 x 2 from two snokebombs
     // Account for our chain-starting fight as well as other embezzler sources that occur during our greg chain
     1 +
-      gregLikeFightCount() +
+      possibleGregsFromSpleen +
+      currentAvailableGregs +
+      habitatFights +
       expectedPocketProfFights +
       expectedDigitizesDuringGregs +
       expectedReplacerFights <
       120 &&
-    gregLikeFightCount() > 0 &&
+    habitatFights + currentAvailableGregs + possibleGregsFromSpleen > 0 &&
     have($item`mafia middle finger ring`) &&
     !get("_mafiaMiddleFingerRingUsed") &&
     have($skill`Snokebomb`) &&

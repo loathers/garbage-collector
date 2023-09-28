@@ -635,30 +635,6 @@ export const gregFights = (
   ];
 };
 
-const gregLikeSources = [
-  ...gregFights(
-    "Be Gregarious",
-    () => true, // we can always use extrovermectin
-    "beGregariousMonster",
-    "beGregariousFightsLeft",
-    () => get("beGregariousCharges") * 3 + get("beGregariousFightsLeft"),
-  ),
-  ...gregFights(
-    "Habitats Monster",
-    () => have($skill`Just the Facts`),
-    "_monsterHabitatsMonster",
-    "_monsterHabitatsFightsLeft",
-    () =>
-      have($skill`Just the Facts`)
-        ? (3 - get("_monsterHabitatsRecalled")) * 5 + get("_monsterHabitatsFightsLeft")
-        : 0,
-  ),
-];
-
-export function gregLikeFightCount(): number {
-  return sum(gregLikeSources, (source: EmbezzlerFight) => source.potential());
-}
-
 export const conditionalSources = [
   new EmbezzlerFight(
     "Orb Prediction",
