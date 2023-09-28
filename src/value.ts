@@ -143,6 +143,18 @@ const specialValueLookup = new Map<Item, () => number>([
       ),
     ],
   ),
+  [$item`Boris's key`, () => garboValue($item`Boris's key lime`) - garboValue($item`lime`)],
+  [$item`Jarlsberg's key`, () => garboValue($item`Jarlsberg's key lime`) - garboValue($item`lime`)],
+  [
+    $item`Sneaky Pete's key`,
+    () => garboValue($item`Sneaky Pete's key lime`) - garboValue($item`lime`),
+  ],
+  [
+    $item`fat loot token`,
+    currency(
+      ...$items`Boris's key, Jarlsberg's key, Sneaky Pete's key, Boris's ring, Jarlsberg's earring, Sneaky Pete's breath spray, potato sprout, sewing kit, Spellbook: Singer's Faithful Ocelot, Spellbook: Drescher's Annoying Noise, Spellbook: Walberg's Dim Bulb, dried gelatinous cube`,
+    ),
+  ],
 ]);
 
 const exclusions = new Set([

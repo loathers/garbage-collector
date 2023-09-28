@@ -764,3 +764,5 @@ export function barfEncounterRate(options: {
   rateCache.set(cacheKey, encounterRate);
   return encounterRate;
 }
+
+export const TREASURE_HOUSE_FAT_LOOT_TOKEN_COST = 20000;
