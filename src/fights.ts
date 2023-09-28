@@ -3,8 +3,10 @@ import {
   adv1,
   availableAmount,
   buy,
+  canadiaAvailable,
   canAdventure,
   canEquip,
+  changeMcd,
   cliExecute,
   closetAmount,
   create,
@@ -14,6 +16,7 @@ import {
   Familiar,
   getAutoAttack,
   getCampground,
+  gnomadsAvailable,
   handlingChoice,
   haveEquipped,
   haveOutfit,
@@ -867,9 +870,18 @@ const freeFightSources = [
         () => {
           restoreHp(myMaxhp());
           if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+          if (
+            numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
+            (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
+          ) {
+            changeMcd(0);
+          }
           retrieveItem($item`[glitch season reward name]`);
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
+          if (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`)) {
+            changeMcd(canadiaAvailable() ? 11 : 10);
+          }
         },
       ),
     true,
@@ -877,6 +889,7 @@ const freeFightSources = [
       spec: {
         back: $items`unwrapped knock-off retro superhero cape`,
         modes: { retrocape: ["robot", "kiss"] },
+        avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
       },
       macroAllowsFamiliarActions: false,
     },
@@ -912,6 +925,12 @@ const freeFightSources = [
           .kill(),
         () => {
           restoreHp(myMaxhp());
+          if (
+            numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
+            (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
+          ) {
+            changeMcd(0);
+          }
           if (have($skill`Ruthless Efficiency`)) ensureEffect($effect`Ruthlessly Efficient`);
           if (have($skill`Mathematical Precision`)) ensureEffect($effect`Mathematically Precise`);
           if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
@@ -924,6 +943,9 @@ const freeFightSources = [
           }
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
+          if (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`)) {
+            changeMcd(canadiaAvailable() ? 11 : 10);
+          }
         },
       ),
     true,
