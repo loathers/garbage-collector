@@ -334,38 +334,29 @@ const shortBanishes = [
 ];
 
 function banishBunny(): void {
-  if (getUsingFreeBunnyBanish()) {
-    do {
-      new Requirement(["100 Monster Level"], {
-        preventEquip: $items`carnivorous potted plant`,
-        forceEquip: $items`mafia middle finger ring`,
-      }).maximize();
-      garboAdventure(
-        $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, Macro.skill($skill`Show them your ring`)).embezzler(),
-      );
-    } while (
-      "fluffy bunny" !== get("lastEncounter") &&
-      !get("banishedMonsters").includes("fluffy bunny")
-    );
-  } else {
-    const banishes = [
-      ...longBanishes,
-      ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
-    ].filter((b) => b.available());
+  const banishes = [
+    ...longBanishes,
+    ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
+  ].filter((b) => b.available());
 
-    const banish = maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
-    do {
-      banish.prepare?.();
-      garboAdventure(
-        $location`The Dire Warren`,
-        Macro.if_($monster`fluffy bunny`, banish.macro()).embezzler(),
-      );
-    } while (
-      "fluffy bunny" !== get("lastEncounter") &&
-      !get("banishedMonsters").includes("fluffy bunny")
+  const banish = maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
+  do {
+    banish.prepare?.();
+    garboAdventure(
+      $location`The Dire Warren`,
+      Macro.if_(
+        $monster`fluffy bunny`,
+        Macro.externalIf(
+          getUsingFreeBunnyBanish(),
+          Macro.skill($skill`Show them your ring`),
+          banish.macro(),
+        ),
+      ).embezzler(),
     );
-  }
+  } while (
+    "fluffy bunny" !== get("lastEncounter") &&
+    !get("banishedMonsters").includes("fluffy bunny")
+  );
 }
 
 function getBanishedPhyla(): Map<Skill | Item, Phylum> {
