@@ -24770,8 +24770,8 @@ var StashManager = /* @__PURE__ */ function() {
           try {
             for (_iterator.s(); !(_step = _iterator.n()).done; ) {
               var fold = _step.value;
-              try {
-                if ((0, import_kolmafia54.stashAmount)(fold) > 0) {
+              if ((0, import_kolmafia54.stashAmount)(fold) > 0) {
+                try {
                   if ((0, import_kolmafia54.takeStash)(1, fold)) {
                     var _this$taken$get;
                     (0, import_kolmafia54.print)("Took ".concat(fold.name, " from stash in ").concat((0, import_kolmafia54.getClanName)(), "."), HIGHLIGHT);
@@ -24783,9 +24783,9 @@ var StashManager = /* @__PURE__ */ function() {
                   } else {
                     (0, import_kolmafia54.print)("Failed to take ".concat(fold.name, " from the stash. Do you have stash access in ").concat((0, import_kolmafia54.getClanName)(), "?"), "red");
                   }
+                } catch (_unused) {
+                  (0, import_kolmafia54.print)("Failed to take ".concat(fold.name, " from stash in ").concat((0, import_kolmafia54.getClanName)(), "."), "red");
                 }
-              } catch (_unused) {
-                (0, import_kolmafia54.print)("Failed to take ".concat(fold.name, " from stash in ").concat((0, import_kolmafia54.getClanName)(), "."), "red");
               }
             }
           } catch (err) {
@@ -24795,7 +24795,6 @@ var StashManager = /* @__PURE__ */ function() {
           }
           if (have(item9))
             continue;
-          (0, import_kolmafia54.print)("Couldn't find ".concat(item9.name, " in clan stash for ").concat((0, import_kolmafia54.getClanName)(), "."), "red");
         }
       });
     }
