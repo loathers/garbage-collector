@@ -6,12 +6,16 @@ import {
   myInebriety,
   myTurncount,
 } from "kolmafia";
-import { $familiar, $item, clamp, Counter, get, have, SourceTerminal } from "libram";
+import { $familiar, $item, clamp, get, have } from "libram";
 import { globalOptions } from "./config";
 // Dumb circular import stuff
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
 import { embezzlerCount } from "./embezzler";
-import { ESTIMATED_OVERDRUNK_TURNS, howManySausagesCouldIEat } from "./lib";
+import {
+  digitizedMonstersRemainingForTurns,
+  ESTIMATED_OVERDRUNK_TURNS,
+  howManySausagesCouldIEat,
+} from "./lib";
 
 /**
  * Computes the estimated number of turns during which garbo will run
@@ -84,35 +88,6 @@ export function remainingUserTurns(): number {
 
 export const estimatedTurnsTomorrow = 400 + clamp((get("valueOfAdventure") - 4000) / 8, 0, 600);
 
-function untangleDigitizes(turnCount: number, chunks: number): number {
-  const turnsPerChunk = turnCount / chunks;
-  const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
-  return Math.round(chunks * monstersPerChunk);
-}
-
-/**
- *
- * @returns The number of digitized monsters that we expect to fight today
- */
-export function digitizedMonstersRemaining(): number {
-  if (!SourceTerminal.have()) return 0;
-
-  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
-  if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
-    return untangleDigitizes(estimatedGarboTurns(), SourceTerminal.getMaximumDigitizeUses());
-  }
-
-  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
-
-  const turnsLeftAtNextMonster = estimatedGarboTurns() - Counter.get("Digitize Monster");
-  if (turnsLeftAtNextMonster <= 0) return 0;
-  const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
-  return (
-    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
-    SourceTerminal.getDigitizeMonsterCount()
-  );
-}
-
 function potentialFullnessAdventures(): number {
   const distentionPillSpace = have($item`distention pill`) && !get("_distentionPillUsed") ? 1 : 0;
 
@@ -134,4 +109,8 @@ function potentialNonOrganAdventures(): number {
   const bufferAdventures = 30; // We don't know if garbo would decide to use melange/voraci tea/sweet tooth to get more adventures
 
   return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
+}
+
+export function digitizedMonstersRemaining() {
+  return digitizedMonstersRemainingForTurns(estimatedGarboTurns());
 }

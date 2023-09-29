@@ -34,7 +34,7 @@ import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { setMarginalFamiliarsExcessValue } from "../session";
-import { garboValue } from "../value";
+import { garboValue } from "../garboValue";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat / 100;

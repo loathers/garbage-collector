@@ -10,7 +10,7 @@ import {
 import { $item, $items, get, maxBy, set, sum, TrainSet } from "libram";
 import { globalOptions } from "../config";
 import { GarboItemLists, today } from "../lib";
-import { garboAverageValue, garboValue } from "../value";
+import { garboAverageValue, garboValue } from "../garboValue";
 
 function candyFactoryValue(): number {
   const lastCalculated = get("garbo_candyFactoryValueDate", 0);

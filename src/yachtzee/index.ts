@@ -20,6 +20,7 @@ import {
   get,
   getActiveSongs,
   have,
+  realmAvailable,
   set,
   uneffect,
 } from "libram";
@@ -29,7 +30,7 @@ import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
 import { embezzlerCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
-import { baseMeat, eventLog, propertyManager, realmAvailable, safeRestore } from "../lib";
+import { baseMeat, eventLog, propertyManager, safeRestore } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";

@@ -1,6 +1,6 @@
 import { Engine, EngineOptions, getTasks, Quest, StrictCombatTask } from "grimoire-kolmafia";
 import { safeInterrupt } from "../lib";
-import wanderer from "../wanderer";
+import { wanderer } from "../garboWanderer";
 
 export type GarboTask = StrictCombatTask & { sobriety?: "drunk" | "sober" };
 
@@ -12,7 +12,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   execute(task: GarboTask): void {
     safeInterrupt();
     super.execute(task);
-    wanderer.clear();
+    wanderer().clear();
   }
 }
 

@@ -16,7 +16,7 @@ import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { EMBEZZLER_MULTIPLIER } from "../lib";
 import { Potion } from "../potions";
-import { garboAverageValue, garboValue } from "../value";
+import { garboAverageValue, garboValue } from "../garboValue";
 import { canAdventure, canEquip, Item, myLevel, myMeat, Skill, toSlot, useSkill } from "kolmafia";
 
 type ScepterSkill = {
