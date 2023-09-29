@@ -6,7 +6,7 @@ import { WandererManager } from "./wanderer";
 import { $item, get } from "libram";
 import { garboValue } from "./garboValue";
 import { Potion } from "./potions";
-import { embezzlerCount } from "./embezzler";
+import { embezzlerCount } from "./embezzler/fights";
 
 let _wanderer: WandererManager | undefined;
 export function wanderer(): WandererManager {

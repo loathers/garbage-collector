@@ -20,7 +20,7 @@ import {
 import { withStash } from "../clan";
 import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
-import { EmbezzlerFight, embezzlerSources } from "../embezzler";
+import { embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
 import { ltbRun, propertyManager } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
@@ -34,8 +34,8 @@ const ignoredSources = [
   "11-leaf clover (untapped potential)",
 ];
 export const expectedEmbezzlers = sum(
-  embezzlerSources.filter((source: EmbezzlerFight) => !ignoredSources.includes(source.name)),
-  (source: EmbezzlerFight) => source.potential(),
+  embezzlerSources.filter((source) => !ignoredSources.includes(source.name)),
+  (source) => source.potential(),
 );
 
 export function pyecAvailable(): boolean {
