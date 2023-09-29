@@ -34,6 +34,7 @@ import {
   mySoulsauce,
   myTurncount,
   numericModifier,
+  Phylum,
   print,
   printHtml,
   restoreHp,
@@ -60,6 +61,8 @@ import {
   $item,
   $location,
   $monster,
+  $monsters,
+  $phylum,
   $skill,
   $slot,
   ActionSource,
@@ -80,6 +83,7 @@ import {
   PropertiesManager,
   property,
   set,
+  Snapper,
   SongBoom,
   sum,
   uneffect,
@@ -682,6 +686,83 @@ export function printEventLog(): void {
       HIGHLIGHT,
     );
   }
+}
+
+const rateCache = new Map<string, Map<Monster, number>>();
+
+export function barfEncounterRate(options: {
+  snapper?: boolean;
+  snapperPhylum?: Phylum;
+  olfact?: Monster;
+  longCon?: Monster;
+  motif?: Monster;
+  turtle?: Monster;
+  monkeyPoint?: Monster;
+  humanity?: boolean;
+}): Map<Monster, number> {
+  const olfact = options.olfact ?? get("olfactedMonster");
+  const longCon = options.longCon ?? get("longConMonster");
+  const motif = options.motif ?? get("motifMonster");
+  const turtle = options.turtle ?? get("_gallapagosMonster");
+  const monkeyPoint = options.monkeyPoint ?? get("monkeyPointMonster");
+  const snapper = options.snapper ?? myFamiliar() === $familiar`Red-Nosed Snapper`;
+  const snapperPhylum = options.snapperPhylum ?? Snapper.getTrackedPhylum();
+  const humanity = options.humanity ?? have($effect`Ew, The Humanity`);
+
+  const zoneMonsters = $monsters`garbage tourist, angry tourist, horrible tourist family`;
+  const encounterQueue = zoneMonsters.filter((m) =>
+    $location`Barf Mountain`.combatQueue.includes(`${m}`),
+  );
+
+  const cacheKey = [
+    olfact,
+    longCon,
+    motif,
+    turtle,
+    monkeyPoint,
+    snapper,
+    snapperPhylum,
+    humanity,
+    ...encounterQueue,
+  ]
+    .map((v) => `${v}`)
+    .join(":");
+
+  const cachedValue = rateCache.get(cacheKey);
+  if (cachedValue) {
+    return cachedValue;
+  }
+
+  const copies = (target: Monster | null, n: number): Monster[] =>
+    n === 0 ? [] : [...zoneMonsters.filter((m) => m === target), ...copies(target, n - 1)];
+
+  const monsterQueue = [
+    ...zoneMonsters,
+    ...copies(olfact, 3),
+    ...copies(longCon, 3),
+    ...copies(motif, 2),
+    ...copies(turtle, 1),
+    ...copies(monkeyPoint, 2),
+    ...zoneMonsters
+      .filter((m) => snapper && m.phylum === snapperPhylum)
+      .flatMap((m) => copies(m, 2)),
+    ...zoneMonsters
+      .filter((m) => humanity && m.phylum === $phylum`dude`)
+      .flatMap((m) => copies(m, 2)),
+  ];
+
+  const encounters = monsterQueue.flatMap((m) =>
+    monsterQueue.map((n) =>
+      // olfaction, longcon, and motif caus that monster to ignore queue rejection
+      olfact === m || longCon === m || motif === m || !encounterQueue.includes(m) ? m : n,
+    ),
+  );
+
+  const encounterRate = new Map<Monster, number>(
+    zoneMonsters.map((m) => [m, encounters.filter((n) => n === m).length / encounters.length]),
+  );
+  rateCache.set(cacheKey, encounterRate);
+  return encounterRate;
 }
 
 export const TREASURE_HOUSE_FAT_LOOT_TOKEN_COST = 20000;

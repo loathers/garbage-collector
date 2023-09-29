@@ -1,5 +1,15 @@
-import { Familiar, familiarWeight, inebrietyLimit, Location, myInebriety } from "kolmafia";
-import { $familiar, $item, $location, clamp, findLeprechaunMultiplier, get, have } from "libram";
+import { Familiar, familiarWeight, inebrietyLimit, Location, Monster, myInebriety } from "kolmafia";
+import {
+  $familiar,
+  $item,
+  $location,
+  $phylum,
+  clamp,
+  findLeprechaunMultiplier,
+  get,
+  have,
+  Snapper,
+} from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../value";
 import getConstantValueFamiliars from "./constantValueFamiliars";
@@ -7,6 +17,7 @@ import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
+import { barfEncounterRate } from "../lib";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
@@ -67,6 +78,25 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
           (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
         leprechaunMultiplier: 0,
         limit: "special",
+      });
+    }
+    if (
+      location === $location`Barf Mountain` &&
+      Snapper.have() &&
+      Snapper.getTrackedPhylum() === $phylum`dude`
+    ) {
+      const encounterRate = barfEncounterRate({ snapper: true, snapperPhylum: $phylum`dude` });
+      const dudeRate = [...encounterRate.entries()].reduce(
+        (acc: number, entry: [Monster, number]) =>
+          entry[0].phylum === $phylum`dude` ? entry[1] + acc : acc,
+        0,
+      );
+
+      familiarMenu.push({
+        familiar: $familiar`Red-Nosed Snapper`,
+        expectedValue: (dudeRate * garboValue($item`human musk`)) / 11,
+        leprechaunMultiplier: 0,
+        limit: "none",
       });
     }
   }
