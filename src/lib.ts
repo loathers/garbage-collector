@@ -493,8 +493,8 @@ function determineFreeBunnyBanish(): boolean {
   const extraOrbFights = have($item`miniature crystal ball`) ? 1 : 0;
   const possibleGregsFromSpleen =
     Math.floor((spleenLimit() - mySpleenUse()) / 2) * (3 + extraOrbFights);
-  const currentAvailableGregs = get("beGregariousCharges") * (3 + extraOrbFights);
-  const habitatFights = (3 - get("_monsterHabitatsRecalled")) * (5 + extraOrbFights);
+  const currentAvailableGregs = Math.max(0, get("beGregariousCharges") * (3 + extraOrbFights));
+  const habitatFights = clamp((3 - get("_monsterHabitatsRecalled")) * (5 + extraOrbFights), 0, 18);
   const expectedPocketProfFights = !have($familiar`Pocket Professor`)
     ? 0
     : (!get("_garbo_meatChain", false) ? Math.max(10 - get("_pocketProfessorLectures"), 0) : 0) +
