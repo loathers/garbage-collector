@@ -6,7 +6,7 @@ import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
 import { BonusEquipMode } from "../lib";
-import { DraggableFight, WanderOptions } from "../libgarbo/wanderer";
+import { DraggableFight, WanderOptions } from "../libgarbo";
 import { wanderer } from "../garboWanderer";
 
 type MenuOptions = {

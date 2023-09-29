@@ -22,7 +22,7 @@ import {
   wait,
 } from "kolmafia";
 import { embezzler, EmbezzlerFightConfigOptions, RunOptions } from "./lib";
-import { DraggableFight } from "../libgarbo/wanderer";
+import { DraggableFight } from "../libgarbo";
 import { OutfitSpec } from "grimoire-kolmafia";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "../combat";
 import {
