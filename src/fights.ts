@@ -178,7 +178,7 @@ import {
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
 import { garboValue } from "./garboValue";
-import { DraggableFight, WanderOptions } from "./wanderer";
+import { DraggableFight, WanderOptions } from "./libgarbo/wanderer";
 import { wanderer } from "./garboWanderer";
 import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";

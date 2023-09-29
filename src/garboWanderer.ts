@@ -2,7 +2,7 @@ import { Effect, Location } from "kolmafia";
 import { globalOptions } from "./config";
 import { freeFightFamiliarData } from "./familiar/freeFightFamiliar";
 import { estimatedGarboTurns } from "./turns";
-import { WandererManager } from "./wanderer";
+import { WandererManager } from "./libgarbo/wanderer";
 import { $item, get } from "libram";
 import { garboValue } from "./garboValue";
 import { Potion } from "./potions";

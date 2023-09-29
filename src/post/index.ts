@@ -52,7 +52,6 @@ import { garboAverageValue, garboValue } from "../garboValue";
 import bestAutumnatonLocation from "./autumnaton";
 import handleWorkshed from "./workshed";
 import { wanderer } from "../garboWanderer";
-import { TREASURE_HOUSE_FAT_LOOT_TOKEN_COST } from "../wanderer/eightbit";
 
 function closetStuff(): void {
   for (const i of $items`bowling ball, funky junk key`) putCloset(itemAmount(i), i);
@@ -199,7 +198,7 @@ function refillCinch() {
 
 let tokenBought = false;
 function eightBitFatLoot() {
-  if (!tokenBought && get("8BitScore") >= TREASURE_HOUSE_FAT_LOOT_TOKEN_COST) {
+  if (!tokenBought && get("8BitScore") >= 20000) {
     visitUrl("place.php?whichplace=8bit&action=8treasure");
     if (availableChoiceOptions()[2]) {
       runChoice(2);

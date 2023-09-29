@@ -1,6 +1,6 @@
 import { Item } from "kolmafia";
 import { globalOptions } from "./config";
-import { makeValue, ValueFunctions } from "./value";
+import { makeValue, ValueFunctions } from "./libgarbo";
 import { $item } from "libram";
 
 let _valueFunctions: ValueFunctions | undefined = undefined;
