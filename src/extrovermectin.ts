@@ -328,6 +328,18 @@ const longBanishes: Banish[] = [
   },
 ];
 
+const freeBunnyBanish: Banish = {
+  name: "Mafia Middle Finger Ring",
+  available: () => !get("_mafiaMiddleFingerRingUsed"),
+  macro: () => Macro.skill($skill`Show them your ring`),
+  prepare: () => {
+    new Requirement([], {
+      preventEquip: $items`carnivorous potted plant`,
+      forceEquip: [$item`mafia middle finger ring`],
+    }).maximize();
+  },
+};
+
 const shortBanishes = [
   combatItem($item`Louder Than Bomb`, 10000),
   combatItem($item`tennis ball`, 10000),
@@ -339,19 +351,14 @@ function banishBunny(): void {
     ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
   ].filter((b) => b.available());
 
-  const banish = maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
+  const banish = getUsingFreeBunnyBanish()
+    ? freeBunnyBanish
+    : maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
   do {
     banish.prepare?.();
     garboAdventure(
       $location`The Dire Warren`,
-      Macro.if_(
-        $monster`fluffy bunny`,
-        Macro.externalIf(
-          getUsingFreeBunnyBanish(),
-          Macro.skill($skill`Show them your ring`),
-          banish.macro(),
-        ),
-      ).embezzler(),
+      Macro.if_($monster`fluffy bunny`, banish.macro()).embezzler(),
     );
   } while (
     "fluffy bunny" !== get("lastEncounter") &&
