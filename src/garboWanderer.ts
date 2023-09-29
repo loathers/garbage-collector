@@ -7,6 +7,7 @@ import { $item, get } from "libram";
 import { garboValue } from "./garboValue";
 import { Potion } from "./potions";
 import { embezzlerCount } from "./embezzler/fights";
+import { digitizedMonstersRemainingForTurns } from "./lib";
 
 let _wanderer: WandererManager | undefined;
 export function wanderer(): WandererManager {
@@ -20,11 +21,8 @@ export function wanderer(): WandererManager {
       prioritizeCappingGuzzlr: get("garbo_prioritizeCappingGuzzlr", false),
       freeFightExtraValue: (location: Location) =>
         freeFightFamiliarData({ location }).expectedValue,
+      digitzesRemaining: digitizedMonstersRemainingForTurns,
     });
   }
   return _wanderer;
-}
-
-export function digitizedMonstersRemaining(): number {
-  return wanderer().digitizedMonstersRemaining();
 }

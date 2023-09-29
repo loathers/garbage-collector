@@ -11,7 +11,11 @@ import { globalOptions } from "./config";
 // Dumb circular import stuff
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
 import { embezzlerCount } from "./embezzler";
-import { ESTIMATED_OVERDRUNK_TURNS, howManySausagesCouldIEat } from "./lib";
+import {
+  digitizedMonstersRemainingForTurns,
+  ESTIMATED_OVERDRUNK_TURNS,
+  howManySausagesCouldIEat,
+} from "./lib";
 
 /**
  * Computes the estimated number of turns during which garbo will run
@@ -105,4 +109,8 @@ function potentialNonOrganAdventures(): number {
   const bufferAdventures = 30; // We don't know if garbo would decide to use melange/voraci tea/sweet tooth to get more adventures
 
   return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
+}
+
+export function digitizedMonstersRemaining() {
+  return digitizedMonstersRemainingForTurns(estimatedGarboTurns());
 }

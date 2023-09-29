@@ -6,11 +6,9 @@ import {
   $locations,
   $skill,
   clamp,
-  Counter,
   get,
   have,
   realmAvailable,
-  SourceTerminal,
   sum,
 } from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
@@ -35,6 +33,7 @@ export type WandererFactoryOptions = {
   itemValue: (item: Item) => number;
   effectValue: (effect: Effect, duration: number) => number;
   prioritizeCappingGuzzlr: boolean;
+  digitzesRemaining?: (turns: number) => number;
 };
 
 export type WandererFactory = (
@@ -234,7 +233,10 @@ export function wandererTurnsAvailableToday(
     freefight: canWander(location, "freefight"),
   };
 
-  const digitize = canWanderCache["backup"] ? wandererDigitizedMonstersRemaining(options) : 0;
+  const digitize =
+    canWanderCache["backup"] && options.digitzesRemaining
+      ? options.digitzesRemaining(options.estimatedTurns())
+      : 0;
   const pigSkinnerRay =
     canWanderCache["backup"] && have($skill`Free-For-All`)
       ? Math.floor(options.estimatedTurns() / 25)
@@ -255,29 +257,4 @@ export function wandererTurnsAvailableToday(
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function bofaValue(options: WandererFactoryOptions, monster: Monster): number {
   return 0;
-}
-
-function untangleDigitizes(turnCount: number, chunks: number): number {
-  const turnsPerChunk = turnCount / chunks;
-  const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
-  return Math.round(chunks * monstersPerChunk);
-}
-
-export function wandererDigitizedMonstersRemaining(options: WandererFactoryOptions): number {
-  if (!SourceTerminal.have()) return 0;
-
-  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
-  if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
-    return untangleDigitizes(options.estimatedTurns(), SourceTerminal.getMaximumDigitizeUses());
-  }
-
-  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
-
-  const turnsLeftAtNextMonster = options.estimatedTurns() - Counter.get("Digitize Monster");
-  if (turnsLeftAtNextMonster <= 0) return 0;
-  const turnsAtLastDigitize = turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
-  return (
-    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
-    SourceTerminal.getDigitizeMonsterCount()
-  );
 }

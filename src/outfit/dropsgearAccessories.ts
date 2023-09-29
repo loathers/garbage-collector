@@ -12,9 +12,14 @@ import {
   lgrCurrencies,
   sumNumbers,
 } from "libram";
-import { baseMeat, BonusEquipMode, modeIsFree } from "../lib";
+import {
+  baseMeat,
+  BonusEquipMode,
+  maxPassiveDamage,
+  modeIsFree,
+  monsterManuelAvailable,
+} from "../lib";
 import { garboValue } from "../garboValue";
-import { maxPassiveDamage, monsterManuelAvailable } from "../combat";
 import { globalOptions } from "../config";
 
 function mafiaThumbRing(mode: BonusEquipMode) {

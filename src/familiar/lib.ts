@@ -11,8 +11,7 @@ import {
 import { $effect, $familiar, $item, $skill, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
-import { estimatedGarboTurns } from "../turns";
-import { digitizedMonstersRemaining } from "../garboWanderer";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 export type GeneralFamiliar = {
   familiar: Familiar;

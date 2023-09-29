@@ -122,14 +122,7 @@ import {
 import { MonsterProperty } from "libram/dist/propertyTypes";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
-import {
-  garboAdventure,
-  garboAdventureAuto,
-  Macro,
-  maxPassiveDamage,
-  monsterManuelAvailable,
-  withMacro,
-} from "./combat";
+import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 import { bestConsumable } from "./diet";
@@ -163,6 +156,8 @@ import {
   logMessage,
   ltbRun,
   mapMonster,
+  maxPassiveDamage,
+  monsterManuelAvailable,
   propertyManager,
   questStep,
   romanticMonsterImpossible,

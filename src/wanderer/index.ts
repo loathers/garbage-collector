@@ -18,7 +18,6 @@ import {
   DraggableFight,
   isDraggableFight,
   unlock,
-  wandererDigitizedMonstersRemaining,
   WandererFactory,
   WandererFactoryOptions,
   WandererLocation,
@@ -236,9 +235,5 @@ export class WandererManager {
 
   getEquipment(wanderer: DraggableFight | WanderOptions): Item[] {
     return this.equipment.get(this.getTarget(wanderer)) ?? [];
-  }
-
-  digitizedMonstersRemaining(): number {
-    return wandererDigitizedMonstersRemaining(this.options);
   }
 }
