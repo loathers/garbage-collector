@@ -504,7 +504,7 @@ function determineFreeBunnyBanish(): boolean {
   const expectedReplacerFights =
     (have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0) +
     (have($item`Powerful Glove`)
-      ? Math.floor(100 - get("_powerfulGloveBatteryPowerUsed") / 10)
+      ? Math.floor((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
       : 0);
   const useFreeBanishes =
     getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&

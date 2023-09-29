@@ -930,7 +930,7 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
     const leftoverReplacers =
       (have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0) +
       (have($item`Powerful Glove`)
-        ? Math.floor(100 - get("_powerfulGloveBatteryPowerUsed") / 10)
+        ? Math.floor((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0);
     // we don't want to reset our orb with a gregarious fight; that defeats the purpose
     const skip =
