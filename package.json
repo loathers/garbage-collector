@@ -10,7 +10,7 @@
     "watch": "node esbuild/build-all.mjs --watch",
     "deploy": "copyfiles --up 1 --exclude \"**/dependencies.txt\" \"KoLmafia/**/*\" \"mafia/**/*\"",
     "check": "tsc",
-    "lint": "eslint src && prettier --check . && madge --circular ./src/index.ts ./relay/** ./src/**",
+    "lint": "eslint src && prettier --check .",
     "lint:fix": "eslint src --fix && prettier --check --write .",
     "madge": "madge --circular ./src/index.ts ./relay/** ./src/**"
   },
