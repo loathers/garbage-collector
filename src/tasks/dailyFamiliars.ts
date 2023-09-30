@@ -39,7 +39,7 @@ import {
   turnsToNC,
   userConfirmDialog,
 } from "../lib";
-import { garboValue } from "../value";
+import { garboValue } from "../garboValue";
 import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";

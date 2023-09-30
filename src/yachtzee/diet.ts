@@ -40,7 +40,7 @@ import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { hasMonsterReplacers } from "../extrovermectin";
 import { Potion } from "../potions";
-import { garboValue } from "../value";
+import { garboValue } from "../garboValue";
 import synthesize from "../synthesis";
 import { estimatedGarboTurns } from "../turns";
 import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";

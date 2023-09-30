@@ -7,11 +7,11 @@ import {
   todayToString,
   totalTurnsPlayed,
 } from "kolmafia";
-import { $items, get, property, Session, set } from "libram";
+import { $items, get, Session, set } from "libram";
 import { globalOptions } from "./config";
 import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
 import { failedWishes } from "./potions";
-import { garboValue } from "./value";
+import { garboValue } from "./garboValue";
 
 type SessionKey = "full" | "barf" | "marginal-start" | "marginal-end";
 const sessionFile = (key: SessionKey) => `garbo-${key}.json`;
@@ -137,22 +137,41 @@ function printMarginalSession(): void {
   );
 }
 
-export function endSession(printLog = true): void {
+const garboResultsProperties = [
+  "garboResultsMeat",
+  "garboResultsItems",
+  "garboResultsTurns",
+] as const;
+type GarboResultsProperty = (typeof garboResultsProperties)[number];
+
+function getGarboDaily(property: GarboResultsProperty): number {
+  return get(property, 0);
+}
+function setGarboDaily(property: GarboResultsProperty, value: number) {
+  set(property, value);
+}
+function resetGarboDaily() {
   if (resetDailyPreference("garboResultsDate")) {
-    set("garboResultsMeat", 0);
-    set("garboResultsItems", 0);
+    for (const prop of garboResultsProperties) {
+      setGarboDaily(prop, 0);
+    }
   }
-  const message = (head: string, meat: number, items: number) =>
+}
+
+export function endSession(printLog = true): void {
+  resetGarboDaily();
+  const message = (head: string, turns: number, meat: number, items: number) =>
     print(
-      `${head}, you generated ${formatNumber(meat + items)} meat, with ${formatNumber(
-        meat,
-      )} raw meat and ${formatNumber(items)} from items`,
+      `${head}, across ${formatNumber(turns)} turns you generated ${formatNumber(
+        meat + items,
+      )} meat, with ${formatNumber(meat)} raw meat and ${formatNumber(items)} from items`,
       HIGHLIGHT,
     );
 
-  const { meat, items, itemDetails } = sessionSinceStart().value(garboValue);
-  const totalMeat = meat + property.getNumber("garboResultsMeat", 0);
-  const totalItems = items + property.getNumber("garboResultsItems", 0);
+  const { meat, items, itemDetails, turns } = sessionSinceStart().value(garboValue);
+  const totalMeat = meat + getGarboDaily("garboResultsMeat");
+  const totalItems = items + getGarboDaily("garboResultsItems");
+  const totalTurns = turns + getGarboDaily("garboResultsTurns");
 
   if (printLog) {
     // list the top 3 gaining and top 3 losing items
@@ -164,12 +183,13 @@ export function endSession(printLog = true): void {
     }
   }
 
-  set("garboResultsMeat", totalMeat);
-  set("garboResultsItems", totalItems);
+  setGarboDaily("garboResultsMeat", totalMeat);
+  setGarboDaily("garboResultsItems", totalItems);
+  setGarboDaily("garboResultsTurns", totalTurns);
 
   if (printLog) {
-    message("This run of garbo", meat, items);
-    message("So far today", totalMeat, totalItems);
+    message("This run of garbo", turns, meat, items);
+    message("So far today", totalTurns, totalMeat, totalItems);
 
     printMarginalSession();
     if (globalOptions.quick) {

@@ -17,16 +17,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: ["18"]
-
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.node-version }}
+          cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn run check
       #- run: yarn run test TODO: Readd once we have tests
@@ -37,23 +34,52 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ env.node-version }}
+          cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn run lint
 
+  circular:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn run madge
+
+  verify-build:
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn run build
+
   build:
     runs-on: ubuntu-latest
-    needs: [test, lint]
+    needs: [test, lint, circular]
     if: github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ env.node-version }}
+          cache: yarn
       - run: |
           git config user.name "O.A.F."
           git config user.email "<>"

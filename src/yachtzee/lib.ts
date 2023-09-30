@@ -12,6 +12,7 @@ import {
   getModifier,
   have,
   Mood,
+  realmAvailable,
   set,
   sum,
   tryFindFreeRun,
@@ -19,12 +20,12 @@ import {
 import { withStash } from "../clan";
 import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
-import { EmbezzlerFight, embezzlerSources } from "../embezzler";
+import { embezzlerSources } from "../embezzler";
 import { freeFightFamiliar } from "../familiar";
-import { ltbRun, propertyManager, realmAvailable } from "../lib";
+import { ltbRun, propertyManager } from "../lib";
 import { freeFightOutfit, toSpec } from "../outfit";
 import postCombatActions from "../post";
-import wanderer from "../wanderer";
+import { wanderer } from "../garboWanderer";
 
 const ignoredSources = [
   "Orb Prediction",
@@ -33,8 +34,8 @@ const ignoredSources = [
   "11-leaf clover (untapped potential)",
 ];
 export const expectedEmbezzlers = sum(
-  embezzlerSources.filter((source: EmbezzlerFight) => !ignoredSources.includes(source.name)),
-  (source: EmbezzlerFight) => source.potential(),
+  embezzlerSources.filter((source) => !ignoredSources.includes(source.name)),
+  (source) => source.potential(),
 );
 
 export function pyecAvailable(): boolean {
@@ -105,7 +106,7 @@ export function useSpikolodonSpikes(): void {
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
 
-  const ncSkipper = wanderer.unsupportedChoices.get(targetZone);
+  const ncSkipper = wanderer().unsupportedChoices.get(targetZone);
   if (ncSkipper) propertyManager.setChoices(ncSkipper);
 
   do {

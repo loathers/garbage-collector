@@ -1,8 +1,17 @@
-import { buy, canAdventure, Item, Location, use } from "kolmafia";
-import { $effect, $item, $location, $locations, $skill, clamp, get, have, sum } from "libram";
+import { buy, canAdventure, Effect, Item, Location, Monster, use } from "kolmafia";
+import {
+  $effect,
+  $item,
+  $location,
+  $locations,
+  $skill,
+  clamp,
+  get,
+  have,
+  realmAvailable,
+  sum,
+} from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
-import { realmAvailable } from "../lib";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
 export const draggableFights = ["backup", "wanderer", "yellow ray", "freefight"] as const;
 export type DraggableFight = (typeof draggableFights)[number];
@@ -16,6 +25,23 @@ interface UnlockableZone {
   unlocker: Item;
   noInv: boolean;
 }
+
+export type WandererFactoryOptions = {
+  ascend: boolean;
+  estimatedTurns: () => number;
+  freeFightExtraValue: (loc: Location) => number;
+  itemValue: (item: Item) => number;
+  effectValue: (effect: Effect, duration: number) => number;
+  prioritizeCappingGuzzlr: boolean;
+  digitzesRemaining?: (turns: number) => number;
+};
+
+export type WandererFactory = (
+  type: DraggableFight,
+  locationSkiplist: Location[],
+  options: WandererFactoryOptions,
+) => WandererTarget[];
+export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
 
 export const UnlockableZones: UnlockableZone[] = [
   {
@@ -153,11 +179,6 @@ export class WandererTarget {
     this.prepareTurn = prepareTurn;
   }
 }
-export type WandererFactory = (
-  type: DraggableFight,
-  locationSkiplist: Location[],
-) => WandererTarget[];
-export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
 
 export function defaultFactory(): WandererTarget[] {
   return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
@@ -201,7 +222,10 @@ const WanderingSources: WanderingSource[] = [
   },
 ];
 
-export function wandererTurnsAvailableToday(location: Location): number {
+export function wandererTurnsAvailableToday(
+  options: WandererFactoryOptions,
+  location: Location,
+): number {
   const canWanderCache: Record<DraggableFight, boolean> = {
     backup: canWander(location, "backup"),
     wanderer: canWander(location, "wanderer"),
@@ -209,14 +233,17 @@ export function wandererTurnsAvailableToday(location: Location): number {
     freefight: canWander(location, "freefight"),
   };
 
-  const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
+  const digitize =
+    canWanderCache["backup"] && options.digitzesRemaining
+      ? options.digitzesRemaining(options.estimatedTurns())
+      : 0;
   const pigSkinnerRay =
     canWanderCache["backup"] && have($skill`Free-For-All`)
-      ? Math.floor(estimatedGarboTurns() / 25)
+      ? Math.floor(options.estimatedTurns() / 25)
       : 0;
   const yellowRayCooldown = have($skill`Fondeluge`) ? 50 : 100;
   const yellowRay = canWanderCache["yellow ray"]
-    ? Math.floor(estimatedGarboTurns() / yellowRayCooldown)
+    ? Math.floor(options.estimatedTurns() / yellowRayCooldown)
     : 0;
   const wanderers = sum(WanderingSources, (source) =>
     canWanderCache[source.type] && have(source.item)
@@ -225,4 +252,9 @@ export function wandererTurnsAvailableToday(location: Location): number {
   );
 
   return digitize + pigSkinnerRay + yellowRay + wanderers;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function bofaValue(options: WandererFactoryOptions, monster: Monster): number {
+  return 0;
 }

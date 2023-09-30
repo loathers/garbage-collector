@@ -1,7 +1,7 @@
 import { Familiar, familiarWeight, inebrietyLimit, Location, myInebriety } from "kolmafia";
 import { $familiar, $item, $location, clamp, findLeprechaunMultiplier, get, have } from "libram";
 import { canOpenRedPresent } from ".";
-import { garboValue } from "../value";
+import { garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";

@@ -12,7 +12,7 @@
     "check": "tsc",
     "lint": "eslint src && prettier --check .",
     "lint:fix": "eslint src --fix && prettier --check --write .",
-    "madge": "madge --circular ./src/index.ts ./relay/** ./src/**"
+    "madge": "madge --circular ./src/index.ts ./relay/index.ts"
   },
   "author": "",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "core-js": "^3.32.2",
     "grimoire-kolmafia": "^0.3.22",
     "kolmafia": "^5.27622.0",
-    "libram": "^0.8.12",
+    "libram": "^0.8.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -42,7 +42,7 @@
     "copyfiles": "^2.4.1",
     "esbuild": "^0.19.3",
     "esbuild-plugin-babel": "^0.2.3",
-    "eslint": "^8.49.0",
+    "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-libram": "^0.3.2",
     "madge": "^6.1.0",
