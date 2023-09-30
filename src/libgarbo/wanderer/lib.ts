@@ -1,7 +1,21 @@
-import { buy, canAdventure, Effect, Item, Location, Monster, use } from "kolmafia";
+import {
+  buy,
+  canAdventure,
+  Effect,
+  Item,
+  Location,
+  Monster,
+  myClass,
+  myPath,
+  numericFact,
+  toEffect,
+  toItem,
+  use,
+} from "kolmafia";
 import {
   $effect,
   $item,
+  $items,
   $location,
   $locations,
   $skill,
@@ -255,7 +269,24 @@ export function wandererTurnsAvailableToday(
   return digitize + pigSkinnerRay + yellowRay + wanderers;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const LIMITED_BOFA_DROPS = $items`pocket wish, tattered scrap of paper`;
 export function bofaValue(options: WandererFactoryOptions, monster: Monster): number {
-  return 0;
+  switch (monster.factType) {
+    case "item": {
+      const item = toItem(monster.fact);
+      if (
+        LIMITED_BOFA_DROPS.includes(item) &&
+        options.plentifulMonsters.some((monster) => toItem(monster.fact) === item)
+      ) {
+        return 0;
+      }
+      return options.itemValue(item);
+    }
+    case "effect": {
+      const effect = toEffect(monster.fact);
+      return options.effectValue(effect, numericFact(myClass(), myPath(), monster));
+    }
+    default:
+      return 0;
+  }
 }

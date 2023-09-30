@@ -2718,10 +2718,10 @@ json5@^2.2.3:
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
   integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
 
-kolmafia@^5.27598.0:
-  version "5.27598.0"
-  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.27598.0.tgz#6b364b0fd3e8f6b6cf7db4cb116bd62c7d1e8b09"
-  integrity sha512-K4iXfUe0g6N5PAV99YqWgEPu1ybxaRZ4EJyn+8Emy2KbaLY6/sbUKpMJVuACmKotCELcT7fF3LoDhapna/u7hQ==
+kolmafia@^5.27625.0:
+  version "5.27625.0"
+  resolved "https://registry.yarnpkg.com/kolmafia/-/kolmafia-5.27625.0.tgz#91f68bccf9ea66556289560b4aca9d57f6beb021"
+  integrity sha512-twC6p0f2jOhjsxgkMpy8Gl8puA+p3elx/olz0lBSEd6BLOk/7UdxkOqop2/aFhy3x00Av8Pj/SGEclBWEcz0qg==
 
 levn@^0.4.1:
   version "0.4.1"
