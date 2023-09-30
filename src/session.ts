@@ -64,7 +64,7 @@ export function sessionSinceStart(): Session {
   return Session.current();
 }
 
-const excess = { item: 0, meat: 0 };
+const excludeValue = { item: 0, meat: 0 };
 let thisTurnExcessFamiliar = 0;
 export function setMarginalFamiliarsExcessValue(val: number): void {
   thisTurnExcessFamiliar = Math.max(0, val);
@@ -89,7 +89,7 @@ export function trackBarfSessionStatistics(): void {
     (myAdventures() <= finalAdventures + 200 && myAdventures() > finalAdventures)
   ) {
     tryStartSession("marginal-start");
-    excess.item += thisTurnExcessFamiliar;
+    excludeValue.item += thisTurnExcessFamiliar;
 
     // after every barf turn, recalculate marginal-end
     startSession("marginal-end");
@@ -118,8 +118,11 @@ function printMarginalSession(): void {
       detail.value >= 5000 &&
       barfItemDetails.some((d) => d.item === detail.item && d.quantity <= 2));
 
-  const marginalSession = marginalEnd.diff(marginalStart);
-  const stats = marginalSession.computeMPA(garboValue, isOutlier, excess);
+  const stats = marginalEnd.computeMPA(marginalStart, {
+    value: garboValue,
+    isOutlier,
+    excludeValue,
+  });
 
   print(`Outliers:`, HIGHLIGHT);
   for (const detail of stats.outlierItems) {
