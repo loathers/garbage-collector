@@ -104,7 +104,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27593);
+  sinceKolmafiaRevision(27625);
   checkGithubVersion();
 
   // Hit up main.php to get out of easily escapable choices
