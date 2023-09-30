@@ -72,7 +72,9 @@ function _yachtzeeChain(): void {
     cliExecute(`closet put ${meatToCloset} meat`);
   }
   if (!yachtzeeChainDiet()) {
-    cliExecute(`closet take ${get("_yachtzeeChainClosetedMeat")} meat`);
+    if (get("_yachtzeeChainClosetedMeat", 0)) {
+      cliExecute(`closet take ${get("_yachtzeeChainClosetedMeat")} meat`);
+    }
     set("_yachtzeeChainClosetedMeat", 0);
     return;
   }
@@ -81,7 +83,9 @@ function _yachtzeeChain(): void {
   let turncount = myTurncount();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
   stickerSetup(Math.min(jellyTurns, fishyTurns));
-  cliExecute(`closet take ${get("_yachtzeeChainClosetedMeat")} meat`);
+  if (get("_yachtzeeChainClosetedMeat", 0)) {
+    cliExecute(`closet take ${get("_yachtzeeChainClosetedMeat")} meat`);
+  }
   set("_yachtzeeChainClosetedMeat", 0);
   if (haveEffect($effect`Beaten Up`)) {
     uneffect($effect`Beaten Up`);
