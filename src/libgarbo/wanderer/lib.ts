@@ -289,6 +289,9 @@ export function bofaValue(options: WandererFactoryOptions, monster: Monster): nu
       const duration = numericFact(myClass(), myPath(), monster);
       return options.effectValue(effect, duration);
     }
+    case "meat": {
+      return numericFact(myClass(), myPath(), monster);
+    }
     default:
       return 0;
   }
