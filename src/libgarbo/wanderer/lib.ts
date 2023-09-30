@@ -32,6 +32,7 @@ export type WandererFactoryOptions = {
   freeFightExtraValue: (loc: Location) => number;
   itemValue: (item: Item) => number;
   effectValue: (effect: Effect, duration: number) => number;
+  plentifulMonsters: Monster[];
   prioritizeCappingGuzzlr: boolean;
   digitzesRemaining?: (turns: number) => number;
 };
