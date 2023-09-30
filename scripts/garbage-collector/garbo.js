@@ -26583,7 +26583,7 @@ function getBestScepterSkills() {
   var _bestScepterSkills;
   return (_bestScepterSkills = bestScepterSkills) !== null && _bestScepterSkills !== void 0 ? _bestScepterSkills : bestScepterSkills = SKILL_OPTIONS.filter(function(_ref) {
     var skill = _ref.skill;
-    return AugustScepter_exports.todaysSkill() !== skill;
+    return AugustScepter_exports.todaysSkill() !== skill && skill.dailylimit > 0;
   }).sort(function(a, b) {
     return b.value() - a.value();
   }).splice(0, clamp(5 - get("_augSkillsCast"), 0, 5));
