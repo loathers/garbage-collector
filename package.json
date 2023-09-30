@@ -12,7 +12,7 @@
     "check": "tsc",
     "lint": "eslint src && prettier --check .",
     "lint:fix": "eslint src --fix && prettier --check --write .",
-    "madge": "madge --circular ./src/index.ts ./relay/** ./src/**"
+    "madge": "madge --circular ./src/index.ts ./relay/index.ts"
   },
   "author": "",
   "license": "MIT",
