@@ -41600,7 +41600,9 @@ function _yachtzeeChain() {
     (0, import_kolmafia101.cliExecute)("closet put ".concat(meatToCloset, " meat"));
   }
   if (!yachtzeeChainDiet()) {
-    (0, import_kolmafia101.cliExecute)("closet take ".concat(get("_yachtzeeChainClosetedMeat"), " meat"));
+    if (get("_yachtzeeChainClosetedMeat", 0)) {
+      (0, import_kolmafia101.cliExecute)("closet take ".concat(get("_yachtzeeChainClosetedMeat"), " meat"));
+    }
     _set("_yachtzeeChainClosetedMeat", 0);
     return;
   }
@@ -41609,7 +41611,9 @@ function _yachtzeeChain() {
   var turncount = (0, import_kolmafia101.myTurncount)();
   yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
   stickerSetup(Math.min(jellyTurns, fishyTurns));
-  (0, import_kolmafia101.cliExecute)("closet take ".concat(get("_yachtzeeChainClosetedMeat"), " meat"));
+  if (get("_yachtzeeChainClosetedMeat", 0)) {
+    (0, import_kolmafia101.cliExecute)("closet take ".concat(get("_yachtzeeChainClosetedMeat"), " meat"));
+  }
   _set("_yachtzeeChainClosetedMeat", 0);
   if ((0, import_kolmafia101.haveEffect)($effect(_templateObject2190 || (_templateObject2190 = _taggedTemplateLiteral94(["Beaten Up"]))))) {
     uneffect($effect(_templateObject3171 || (_templateObject3171 = _taggedTemplateLiteral94(["Beaten Up"]))));
