@@ -271,23 +271,26 @@ export function wandererTurnsAvailableToday(
 }
 
 const LIMITED_BOFA_DROPS = $items`pocket wish, tattered scrap of paper`;
-export function bofaValue(options: WandererFactoryOptions, monster: Monster): number {
+export function bofaValue(
+  { plentifulMonsters, itemValue, effectValue }: WandererFactoryOptions,
+  monster: Monster,
+): number {
   switch (monster.factType) {
     case "item": {
       const item = itemFact(myClass(), myPath(), monster);
       const quantity = numericFact(myClass(), myPath(), monster);
       if (
         LIMITED_BOFA_DROPS.includes(item) &&
-        options.plentifulMonsters.some((monster) => toItem(monster.fact) === item)
+        plentifulMonsters.some((monster) => toItem(monster.fact) === item)
       ) {
         return 0;
       }
-      return quantity * options.itemValue(item);
+      return quantity * itemValue(item);
     }
     case "effect": {
       const effect = effectFact(myClass(), myPath(), monster);
       const duration = numericFact(myClass(), myPath(), monster);
-      return options.effectValue(effect, duration);
+      return effectValue(effect, duration);
     }
     case "meat": {
       return numericFact(myClass(), myPath(), monster);
