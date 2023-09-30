@@ -4,6 +4,7 @@ import {
   Effect,
   effectFact,
   Item,
+  itemFact,
   Location,
   Monster,
   myClass,
@@ -273,18 +274,20 @@ const LIMITED_BOFA_DROPS = $items`pocket wish, tattered scrap of paper`;
 export function bofaValue(options: WandererFactoryOptions, monster: Monster): number {
   switch (monster.factType) {
     case "item": {
-      const item = toItem(monster.fact);
+      const item = itemFact(myClass(), myPath(), monster);
+      const quantity = numericFact(myClass(), myPath(), monster);
       if (
         LIMITED_BOFA_DROPS.includes(item) &&
         options.plentifulMonsters.some((monster) => toItem(monster.fact) === item)
       ) {
         return 0;
       }
-      return options.itemValue(item);
+      return quantity * options.itemValue(item);
     }
     case "effect": {
       const effect = effectFact(myClass(), myPath(), monster);
-      return options.effectValue(effect, numericFact(myClass(), myPath(), monster));
+      const duration = numericFact(myClass(), myPath(), monster);
+      return options.effectValue(effect, duration);
     }
     default:
       return 0;
