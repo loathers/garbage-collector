@@ -2,13 +2,13 @@ import {
   buy,
   canAdventure,
   Effect,
+  effectFact,
   Item,
   Location,
   Monster,
   myClass,
   myPath,
   numericFact,
-  toEffect,
   toItem,
   use,
 } from "kolmafia";
@@ -283,7 +283,7 @@ export function bofaValue(options: WandererFactoryOptions, monster: Monster): nu
       return options.itemValue(item);
     }
     case "effect": {
-      const effect = toEffect(monster.fact);
+      const effect = effectFact(myClass(), myPath(), monster);
       return options.effectValue(effect, numericFact(myClass(), myPath(), monster));
     }
     default:
