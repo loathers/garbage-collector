@@ -106,6 +106,7 @@ import {
   have,
   maxBy,
   property,
+  realmAvailable,
   Requirement,
   Robortender,
   set,
@@ -121,14 +122,7 @@ import {
 import { MonsterProperty } from "libram/dist/propertyTypes";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
-import {
-  garboAdventure,
-  garboAdventureAuto,
-  Macro,
-  maxPassiveDamage,
-  monsterManuelAvailable,
-  withMacro,
-} from "./combat";
+import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 import { bestConsumable } from "./diet";
@@ -163,9 +157,10 @@ import {
   logMessage,
   ltbRun,
   mapMonster,
+  maxPassiveDamage,
+  monsterManuelAvailable,
   propertyManager,
   questStep,
-  realmAvailable,
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
@@ -183,8 +178,11 @@ import {
 } from "./outfit";
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
-import { garboValue } from "./value";
-import wanderer, { DraggableFight, WanderOptions } from "./wanderer";
+import { garboValue } from "./garboValue";
+import { DraggableFight, WanderOptions } from "./libgarbo";
+import { wanderer } from "./garboWanderer";
+import { runEmbezzlerFight } from "./embezzler/execution";
+import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -439,7 +437,7 @@ export function dailyFights(): void {
 
           if (get("_pocketProfessorLectures") < pocketProfessorLectures()) {
             const startLectures = get("_pocketProfessorLectures");
-            fightSource.run({
+            runEmbezzlerFight(fightSource, {
               macro: macro(),
               useAuto: false,
             });
@@ -483,7 +481,7 @@ export function dailyFights(): void {
           if (weWantToSaberCrates) saberCrateIfSafe();
         }
 
-        const location = nextFight.location();
+        const location = new EmbezzlerFightRunOptions(nextFight).location;
         const underwater = location.environment === "underwater";
 
         const familiar =
@@ -494,7 +492,7 @@ export function dailyFights(): void {
         setLocation(location);
         embezzlerOutfit({ ...nextFight.spec, familiar }, location).dress();
 
-        nextFight.run();
+        runEmbezzlerFight(nextFight);
         postCombatActions();
 
         print(`Finished ${nextFight.name}`);
@@ -1227,8 +1225,8 @@ const freeFightSources = [
   new FreeFight(
     () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
     () => {
-      propertyManager.setChoices(wanderer.getChoices("wanderer"));
-      adv1(wanderer.getTarget("wanderer"), -1, "");
+      propertyManager.setChoices(wanderer().getChoices("wanderer"));
+      adv1(wanderer().getTarget("wanderer"), -1, "");
     },
     true,
     {
@@ -1930,8 +1928,8 @@ const freeRunFightSources = [
       get("_hipsterAdv") < 7 &&
       (have($familiar`Mini-Hipster`) || have($familiar`Artistic Goth Kid`)),
     (runSource: ActionSource) => {
-      propertyManager.setChoices(wanderer.getChoices("backup"));
-      const targetLocation = wanderer.getTarget("backup");
+      propertyManager.setChoices(wanderer().getChoices("backup"));
+      const targetLocation = wanderer().getTarget("backup");
       garboAdventure(
         targetLocation,
         Macro.if_(
@@ -2340,7 +2338,7 @@ export function doSausage(): void {
   freeFightOutfit({ equip: $items`Kramco Sausage-o-Matic™` }).dress();
   const currentSausages = get("_sausageFights");
   do {
-    propertyManager.setChoices(wanderer.getChoices("wanderer"));
+    propertyManager.setChoices(wanderer().getChoices("wanderer"));
     const goblin = $monster`sausage goblin`;
     freeFightOutfit(
       {
@@ -2349,7 +2347,7 @@ export function doSausage(): void {
       { wanderOptions: "wanderer" },
     ).dress();
     garboAdventureAuto(
-      wanderer.getTarget("wanderer"),
+      wanderer().getTarget("wanderer"),
       Macro.if_(goblin, Macro.basicCombat())
         .ifHolidayWanderer(Macro.basicCombat())
         .abortWithMsg(`Expected ${goblin} but got something else.`),
@@ -2554,8 +2552,8 @@ function voidMonster(): void {
     },
     { wanderOptions: "wanderer" },
   ).dress();
-  propertyManager.setChoices(wanderer.getChoices("wanderer"));
-  garboAdventure(wanderer.getTarget("wanderer"), Macro.basicCombat());
+  propertyManager.setChoices(wanderer().getChoices("wanderer"));
+  garboAdventure(wanderer().getTarget("wanderer"), Macro.basicCombat());
   postCombatActions();
 }
 

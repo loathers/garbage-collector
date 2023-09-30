@@ -12,7 +12,7 @@ import {
   Robortender,
 } from "libram";
 import { baseMeat } from "../lib";
-import { garboAverageValue, garboValue } from "../value";
+import { garboAverageValue, garboValue } from "../garboValue";
 import { GeneralFamiliar } from "./lib";
 
 type ConstantValueFamiliar = {

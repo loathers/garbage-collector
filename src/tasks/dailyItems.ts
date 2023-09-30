@@ -45,7 +45,7 @@ import { embezzlerCount } from "../embezzler";
 import { doingGregFight } from "../extrovermectin";
 import { coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
-import { garboAverageValue, garboValue } from "../value";
+import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
 import { augustSummonTasks } from "../resources";
 

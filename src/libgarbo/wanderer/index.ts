@@ -1,6 +1,15 @@
-import { Item, Location, myTotalTurnsSpent, print, totalTurnsPlayed } from "kolmafia";
-import { $items, $location, get, maxBy } from "libram";
-import { HIGHLIGHT, sober } from "../lib";
+import {
+  inebrietyLimit,
+  isDarkMode,
+  Item,
+  Location,
+  myFamiliar,
+  myInebriety,
+  myTotalTurnsSpent,
+  print,
+  totalTurnsPlayed,
+} from "kolmafia";
+import { $familiar, $items, $location, get, maxBy } from "libram";
 import { guzzlrFactory } from "./guzzlr";
 import {
   canAdventureOrUnlock,
@@ -10,6 +19,7 @@ import {
   isDraggableFight,
   unlock,
   WandererFactory,
+  WandererFactoryOptions,
   WandererLocation,
 } from "./lib";
 import { lovebugsFactory } from "./lovebugs";
@@ -17,6 +27,10 @@ import { freefightFactory } from "./freefight";
 import { eightbitFactory } from "./eightbit";
 
 export type { DraggableFight };
+
+function sober(): boolean {
+  return myInebriety() <= inebrietyLimit() + (myFamiliar() === $familiar`Stooper` ? -1 : 0);
+}
 
 const wanderFactories: WandererFactory[] = [
   defaultFactory,
@@ -30,11 +44,12 @@ function bestWander(
   type: DraggableFight,
   locationSkiplist: Location[],
   nameSkiplist: string[],
+  options: WandererFactoryOptions,
 ): WandererLocation {
   const possibleLocations = new Map<Location, WandererLocation>();
 
   for (const wanderFactory of wanderFactories) {
-    const wanderTargets = wanderFactory(type, locationSkiplist);
+    const wanderTargets = wanderFactory(type, locationSkiplist, options);
     for (const wanderTarget of wanderTargets) {
       if (
         !nameSkiplist.includes(wanderTarget.name) &&
@@ -68,11 +83,12 @@ function bestWander(
  * @returns A location at which to wander
  */
 function wanderWhere(
+  options: WandererFactoryOptions,
   type: DraggableFight,
   nameSkiplist: string[] = [],
   locationSkiplist: Location[] = [],
 ): Location {
-  const candidate = bestWander(type, locationSkiplist, nameSkiplist);
+  const candidate = bestWander(type, locationSkiplist, nameSkiplist, options);
   const failed = candidate.targets.filter((target) => !target.prepareTurn());
 
   const badLocation =
@@ -84,6 +100,7 @@ function wanderWhere(
 
   if (failed.length > 0 || badLocation.length > 0) {
     return wanderWhere(
+      options,
       type,
       [...nameSkiplist, ...failed.map((target) => target.name)],
       [...locationSkiplist, ...badLocation],
@@ -91,12 +108,14 @@ function wanderWhere(
   } else {
     const targets = candidate.targets.map((t) => t.name).join("; ");
     const value = candidate.value.toFixed(2);
-    print(`Wandering at ${candidate.location} for expected value ${value} (${targets})`, HIGHLIGHT);
+    print(
+      `Wandering at ${candidate.location} for expected value ${value} (${targets})`,
+      isDarkMode() ? "yellow" : "blue",
+    );
 
     return candidate.location;
   }
 }
-
 export type WanderOptions = {
   wanderer: DraggableFight;
   drunkSafe?: boolean;
@@ -107,7 +126,7 @@ const defaultWanderOptions = {
   allowEquipment: true,
 };
 
-class WandererManager {
+export class WandererManager {
   quartetChoice = get("lastQuartetRequest") || 4;
   unsupportedChoices = new Map<Location, { [choice: number]: number | string }>([
     [$location`The Spooky Forest`, { 502: 2, 505: 2 }],
@@ -179,6 +198,11 @@ class WandererManager {
 
   cacheKey = "";
   targets: Partial<{ [x in `${DraggableFight}:${boolean}`]: Location }> = {};
+  options: WandererFactoryOptions;
+
+  constructor(options: WandererFactoryOptions) {
+    this.options = options;
+  }
 
   getTarget(wanderer: DraggableFight | WanderOptions): Location {
     const { draggableFight, options } = isDraggableFight(wanderer)
@@ -193,6 +217,7 @@ class WandererManager {
 
     return sober() || !drunkSafe
       ? (this.targets[`${draggableFight}:${allowEquipment}`] ??= wanderWhere(
+          this.options,
           draggableFight,
           [],
           locationSkipList,
@@ -212,7 +237,3 @@ class WandererManager {
     return this.equipment.get(this.getTarget(wanderer)) ?? [];
   }
 }
-
-const wandererManager = new WandererManager();
-
-export default wandererManager;
