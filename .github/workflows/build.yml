@@ -24,7 +24,6 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
       - run: yarn install --frozen-lockfile
-      - run: yarn run build
       - run: yarn run check
       #- run: yarn run test TODO: Readd once we have tests
 
