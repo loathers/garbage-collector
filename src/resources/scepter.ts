@@ -16,7 +16,7 @@ import { globalOptions } from "../config";
 import { embezzlerCount } from "../embezzler";
 import { EMBEZZLER_MULTIPLIER } from "../lib";
 import { Potion } from "../potions";
-import { garboAverageValue, garboValue } from "../value";
+import { garboAverageValue, garboValue } from "../garboValue";
 import { canAdventure, canEquip, Item, myLevel, myMeat, Skill, toSlot, useSkill } from "kolmafia";
 
 type ScepterSkill = {
@@ -140,7 +140,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
 let bestScepterSkills: ScepterSkill[] | null = null;
 function getBestScepterSkills(): ScepterSkill[] {
   return (bestScepterSkills ??= SKILL_OPTIONS.filter(
-    ({ skill }) => AugustScepter.todaysSkill() !== skill,
+    ({ skill }) => AugustScepter.todaysSkill() !== skill && skill.dailylimit > 0,
   )
     .sort((a, b) => b.value() - a.value())
     .splice(0, clamp(5 - get("_augSkillsCast"), 0, 5)));

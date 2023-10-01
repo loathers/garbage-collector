@@ -1,6 +1,6 @@
 import { Familiar, Item } from "kolmafia";
 import { $familiar, $item, $items, findLeprechaunMultiplier, have } from "libram";
-import { garboAverageValue, garboValue } from "../value";
+import { garboAverageValue, garboValue } from "../garboValue";
 import { GeneralFamiliar } from "./lib";
 
 type StandardDropFamiliar = {

@@ -61,7 +61,7 @@ import { embezzlerCount } from "../../embezzler";
 import { meatFamiliar } from "../../familiar";
 import { estimatedTentacles } from "../../fights";
 import { baseMeat, HIGHLIGHT } from "../../lib";
-import { garboValue } from "../../value";
+import { garboValue } from "../../garboValue";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../../turns";
 import { GarboTask } from "../engine";
 import { Quest } from "grimoire-kolmafia";
@@ -397,6 +397,19 @@ const DailyTasks: GarboTask[] = [
       if (handlingChoice()) runChoice(1);
     },
     limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
+  },
+  {
+    name: "Continuum Transfunctioner",
+    ready: () => canAdventure($location`The Spooky Forest`),
+    completed: () => have($item`continuum transfunctioner`),
+    do: (): void => {
+      // taken from autoscend
+      visitUrl("place.php?whichplace=woods");
+      visitUrl("place.php?whichplace=forestvillage&action=fv_mystic");
+      runChoice(1); // Sure, old man.  Tell me all about it
+      runChoice(1); // Against my better judgement, yes
+      runChoice(1); // Er, sure, I guess so
+    },
   },
   {
     name: "Configure I Voted! Sticker",

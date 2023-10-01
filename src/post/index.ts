@@ -1,4 +1,5 @@
 import {
+  availableChoiceOptions,
   cliExecute,
   equip,
   itemAmount,
@@ -8,8 +9,10 @@ import {
   myLocation,
   putCloset,
   reverseNumberology,
+  runChoice,
   use,
   useSkill,
+  visitUrl,
 } from "kolmafia";
 import {
   $effect,
@@ -20,6 +23,7 @@ import {
   $skill,
   $slot,
   AutumnAton,
+  CinchoDeMayo,
   FloristFriar,
   get,
   getRemainingStomach,
@@ -34,6 +38,7 @@ import { globalOptions } from "../config";
 import { computeDiet, consumeDiet } from "../diet";
 import {
   bestJuneCleaverOption,
+  freeRest,
   juneCleaverChoiceValues,
   safeInterrupt,
   safeRestore,
@@ -43,10 +48,10 @@ import {
 import { teleportEffects } from "../mood";
 import { sessionSinceStart } from "../session";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
-import { garboAverageValue, garboValue } from "../value";
+import { garboAverageValue, garboValue } from "../garboValue";
 import bestAutumnatonLocation from "./autumnaton";
 import handleWorkshed from "./workshed";
-import wanderer from "../wanderer";
+import { wanderer } from "../garboWanderer";
 
 function closetStuff(): void {
   for (const i of $items`bowling ball, funky junk key`) putCloset(itemAmount(i), i);
@@ -173,6 +178,35 @@ function funguySpores() {
   }
 }
 
+function refillCinch() {
+  if (!CinchoDeMayo.have()) return;
+
+  if (get("_garboYachtzeeChainCompleted") || !globalOptions.prefs.yachtzeechain) {
+    const missingCinch = () => {
+      return 100 - CinchoDeMayo.currentCinch();
+    };
+    // Only rest if we'll get full value out of the cinch
+    // If our current cinch is less than the total available, it means we have free rests left.
+    while (
+      missingCinch() > CinchoDeMayo.cinchRestoredBy() &&
+      CinchoDeMayo.currentCinch() < CinchoDeMayo.totalAvailableCinch()
+    ) {
+      if (!freeRest()) break;
+    }
+  }
+}
+
+let tokenBought = false;
+function eightBitFatLoot() {
+  if (!tokenBought && get("8BitScore") >= 20000) {
+    visitUrl("place.php?whichplace=8bit&action=8treasure");
+    if (availableChoiceOptions()[2]) {
+      runChoice(2);
+    }
+    tokenBought = true;
+  }
+}
+
 export default function postCombatActions(skipDiet = false): void {
   closetStuff();
   juneCleave();
@@ -184,11 +218,13 @@ export default function postCombatActions(skipDiet = false): void {
   floristFriars();
   handleWorkshed();
   safeInterrupt();
+  refillCinch();
   safeRestore();
   updateMallPrices();
   stillsuit();
   funguySpores();
-  wanderer.clear();
+  eightBitFatLoot();
+  wanderer().clear();
   if (
     globalOptions.ascend ||
     AutumnAton.turnsForQuest() < estimatedGarboTurns() + remainingUserTurns()

@@ -20,12 +20,13 @@ import {
   have,
   maxBy,
   property,
+  realmAvailable,
   uneffect,
   withProperty,
 } from "libram";
 import { globalOptions } from "../../config";
-import { HIGHLIGHT, logMessage, realmAvailable } from "../../lib";
-import { garboValue } from "../../value";
+import { HIGHLIGHT, logMessage } from "../../lib";
+import { garboValue } from "../../garboValue";
 import { GarboTask } from "../engine";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };

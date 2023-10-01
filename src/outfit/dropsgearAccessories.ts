@@ -5,13 +5,22 @@ import {
   $location,
   $skill,
   $slot,
+  CinchoDeMayo,
   get,
   getModifier,
   have,
+  lgrCurrencies,
   sumNumbers,
 } from "libram";
-import { baseMeat, BonusEquipMode, modeIsFree, realmAvailable } from "../lib";
-import { garboValue } from "../value";
+import {
+  baseMeat,
+  BonusEquipMode,
+  maxPassiveDamage,
+  modeIsFree,
+  monsterManuelAvailable,
+} from "../lib";
+import { garboValue } from "../garboValue";
+import { globalOptions } from "../config";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -37,12 +46,7 @@ function luckyGoldRing(mode: BonusEquipMode) {
       itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
       itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
       itemAmount($item`Freddy Kruegerand`) > 0 ? garboValue($item`Freddy Kruegerand`) : 0,
-      realmAvailable("sleaze") ? garboValue($item`Beach Buck`) : 0,
-      realmAvailable("spooky") ? garboValue($item`Coinspiracy`) : 0,
-      realmAvailable("stench") ? garboValue($item`FunFunds™`) : 0,
-      realmAvailable("hot") && !get("_luckyGoldRingVolcoino") ? garboValue($item`Volcoino`) : 0,
-      realmAvailable("cold") ? garboValue($item`Wal-Mart gift certificate`) : 0,
-      realmAvailable("fantasy") ? garboValue($item`Rubee™`) : 0,
+      ...lgrCurrencies().map((i) => garboValue(i)),
     ].filter((value) => value > 0),
   ];
 
@@ -71,6 +75,26 @@ function mrScreegesSpectacles() {
   return new Map<Item, number>([[$item`Mr. Screege's spectacles`, 180]]);
 }
 
+function cinchoDeMayo(mode: BonusEquipMode) {
+  if (
+    !have($item`Cincho de Mayo`) ||
+    CinchoDeMayo.currentCinch() === 0 ||
+    // Ignore for DMT? Requires specific combat stuff, so probably weird there
+    mode === BonusEquipMode.DMT ||
+    // Require manuel to make sure we don't kill during stasis
+    !monsterManuelAvailable() ||
+    // Don't use Cincho if we're planning on doing yachtzees, and haven't completed them yet
+    (!get("_garboYachtzeeChainCompleted") && globalOptions.prefs.yachtzeechain) ||
+    // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
+    maxPassiveDamage() >= 50
+  ) {
+    return new Map<Item, number>([]);
+  }
+
+  // Account for a single use of Projectile Pinata, which gives 3x Robortender candies
+  return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * get("garbo_felizValue", 0)]]);
+}
+
 /*
 This is separate from bonusGear to prevent circular references
 bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
@@ -82,6 +106,7 @@ export function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
     ...luckyGoldRing(mode),
     ...mrCheengsSpectacles(),
     ...mrScreegesSpectacles(),
+    ...cinchoDeMayo(mode),
   ]);
 }
 

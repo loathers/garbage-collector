@@ -3,8 +3,10 @@ import {
   adv1,
   availableAmount,
   buy,
+  canadiaAvailable,
   canAdventure,
   canEquip,
+  changeMcd,
   cliExecute,
   closetAmount,
   create,
@@ -14,6 +16,7 @@ import {
   Familiar,
   getAutoAttack,
   getCampground,
+  gnomadsAvailable,
   haveEquipped,
   haveOutfit,
   inebrietyLimit,
@@ -56,7 +59,6 @@ import {
   toInt,
   toItem,
   toJson,
-  toMonster,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -101,6 +103,7 @@ import {
   have,
   maxBy,
   property,
+  realmAvailable,
   Requirement,
   Robortender,
   set,
@@ -113,14 +116,7 @@ import {
 import { MonsterProperty } from "libram/dist/propertyTypes";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
-import {
-  garboAdventure,
-  garboAdventureAuto,
-  Macro,
-  maxPassiveDamage,
-  monsterManuelAvailable,
-  withMacro,
-} from "./combat";
+import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 import { bestConsumable } from "./diet";
@@ -144,8 +140,8 @@ import {
   bestShadowRift,
   burnLibrams,
   dogOrHolidayWanderer,
-  embezzlerLog,
   ESTIMATED_OVERDRUNK_TURNS,
+  eventLog,
   expectedEmbezzlerProfit,
   freeRest,
   HIGHLIGHT,
@@ -154,10 +150,10 @@ import {
   logMessage,
   ltbRun,
   mapMonster,
+  maxPassiveDamage,
+  monsterManuelAvailable,
   propertyManager,
   questStep,
-  realmAvailable,
-  resetDailyPreference,
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
@@ -175,8 +171,11 @@ import {
 } from "./outfit";
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
-import { garboValue } from "./value";
-import wanderer from "./wanderer";
+import { garboValue } from "./garboValue";
+import { DraggableFight, WanderOptions } from "./libgarbo";
+import { wanderer } from "./garboWanderer";
+import { runEmbezzlerFight } from "./embezzler/execution";
+import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -420,14 +419,13 @@ export function dailyFights(): void {
 
           if (get("_pocketProfessorLectures") < pocketProfessorLectures()) {
             const startLectures = get("_pocketProfessorLectures");
-            fightSource.run({
+            runEmbezzlerFight(fightSource, {
               macro: macro(),
               useAuto: false,
             });
-            embezzlerLog.initialEmbezzlersFought +=
-              1 + get("_pocketProfessorLectures") - startLectures;
-            embezzlerLog.sources.push(fightSource.name);
-            embezzlerLog.sources.push(
+            eventLog.initialEmbezzlersFought += 1 + get("_pocketProfessorLectures") - startLectures;
+            eventLog.embezzlerSources.push(fightSource.name);
+            eventLog.embezzlerSources.push(
               ...new Array<string>(get("_pocketProfessorLectures") - startLectures).fill(
                 "Pocket Professor",
               ),
@@ -465,7 +463,7 @@ export function dailyFights(): void {
           if (weWantToSaberCrates) saberCrateIfSafe();
         }
 
-        const location = nextFight.location();
+        const location = new EmbezzlerFightRunOptions(nextFight).location;
         const underwater = location.environment === "underwater";
 
         const familiar =
@@ -476,7 +474,7 @@ export function dailyFights(): void {
         setLocation(location);
         embezzlerOutfit({ ...nextFight.spec, familiar }, location).dress();
 
-        nextFight.run();
+        runEmbezzlerFight(nextFight);
         postCombatActions();
 
         print(`Finished ${nextFight.name}`);
@@ -485,8 +483,8 @@ export function dailyFights(): void {
           get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
           (nextFight.wrongEncounterName || get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
-          embezzlerLog.initialEmbezzlersFought++;
-          embezzlerLog.sources.push(nextFight.name);
+          eventLog.initialEmbezzlersFought++;
+          eventLog.embezzlerSources.push(nextFight.name);
         }
 
         nextFight = getNextEmbezzlerFight();
@@ -512,6 +510,7 @@ type FreeFightOptions = {
   // actions like meatifying matter, or crimbo shrub red raying.
   // Defaults to true.
   macroAllowsFamiliarActions?: boolean;
+  wandererOptions?: DraggableFight | WanderOptions;
 };
 
 let consecutiveNonFreeFights = 0;
@@ -554,7 +553,9 @@ class FreeFight {
       const noncombat = !!this.options?.noncombat?.();
       const effects = this.options.effects?.() ?? [];
       freeFightMood(...effects).execute();
-      freeFightOutfit(this.getSpec(noncombat)).dress();
+      freeFightOutfit(this.getSpec(noncombat), {
+        wanderOptions: this.options.wandererOptions,
+      }).dress();
       safeRestore();
       const curTurncount = myTurncount();
       withMacro(Macro.basicCombat(), this.run);
@@ -737,9 +738,18 @@ const freeFightSources = [
         () => {
           restoreHp(myMaxhp());
           if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+          if (
+            numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
+            (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
+          ) {
+            changeMcd(0);
+          }
           retrieveItem($item`[glitch season reward name]`);
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
+          if (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`)) {
+            changeMcd(canadiaAvailable() ? 11 : 10);
+          }
         },
       ),
     true,
@@ -747,6 +757,7 @@ const freeFightSources = [
       spec: {
         back: $items`unwrapped knock-off retro superhero cape`,
         modes: { retrocape: ["robot", "kiss"] },
+        avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
       },
       macroAllowsFamiliarActions: false,
     },
@@ -782,6 +793,12 @@ const freeFightSources = [
           .kill(),
         () => {
           restoreHp(myMaxhp());
+          if (
+            numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
+            (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
+          ) {
+            changeMcd(0);
+          }
           if (have($skill`Ruthless Efficiency`)) ensureEffect($effect`Ruthlessly Efficient`);
           if (have($skill`Mathematical Precision`)) ensureEffect($effect`Mathematically Precise`);
           if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
@@ -794,6 +811,9 @@ const freeFightSources = [
           }
           visitUrl("inv_eat.php?pwd&whichitem=10207");
           runCombat();
+          if (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`)) {
+            changeMcd(canadiaAvailable() ? 11 : 10);
+          }
         },
       ),
     true,
@@ -1058,6 +1078,19 @@ const freeFightSources = [
     },
     true,
     pygmyOptions(),
+  ),
+
+  new FreeFight(
+    () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
+    () => {
+      propertyManager.setChoices(wanderer().getChoices("wanderer"));
+      adv1(wanderer().getTarget("wanderer"), -1, "");
+    },
+    true,
+    {
+      spec: { offhand: $item`Kramco Sausage-o-Matic™` },
+      wandererOptions: "wanderer",
+    },
   ),
 
   new FreeFight(
@@ -1647,8 +1680,8 @@ const freeRunFightSources = [
       get("_hipsterAdv") < 7 &&
       (have($familiar`Mini-Hipster`) || have($familiar`Artistic Goth Kid`)),
     (runSource: ActionSource) => {
-      propertyManager.setChoices(wanderer.getChoices("backup"));
-      const targetLocation = wanderer.getTarget("backup");
+      propertyManager.setChoices(wanderer().getChoices("backup"));
+      const targetLocation = wanderer().getTarget("backup");
       garboAdventure(
         targetLocation,
         Macro.if_(
@@ -1672,6 +1705,7 @@ const freeRunFightSources = [
           return { familiar: $familiar`Artistic Goth Kid` };
         }
       },
+      wandererOptions: "backup",
     },
   ),
   // Try to accelerate the shadow nc, if you're able to do a quest
@@ -2054,21 +2088,23 @@ export function doSausage(): void {
     return;
   }
   freeFightOutfit({ equip: $items`Kramco Sausage-o-Matic™` }).dress();
-  let currentTurncount;
+  const currentSausages = get("_sausageFights");
   do {
-    currentTurncount = myTurncount();
-    propertyManager.setChoices(wanderer.getChoices("wanderer"));
+    propertyManager.setChoices(wanderer().getChoices("wanderer"));
     const goblin = $monster`sausage goblin`;
+    freeFightOutfit(
+      {
+        equip: $items`Kramco Sausage-o-Matic™`,
+      },
+      { wanderOptions: "wanderer" },
+    ).dress();
     garboAdventureAuto(
-      wanderer.getTarget("wanderer"),
+      wanderer().getTarget("wanderer"),
       Macro.if_(goblin, Macro.basicCombat())
         .ifHolidayWanderer(Macro.basicCombat())
         .abortWithMsg(`Expected ${goblin} but got something else.`),
     );
-  } while (
-    dogOrHolidayWanderer() ||
-    (toMonster(get("lastEncounter")) === $monster.none && currentTurncount === myTurncount())
-  ); // Try again if we hit an NC that didn't take a turn
+  } while (get("_sausageFights") === currentSausages); // Try again if we hit an NC that didn't take a turn
   if (getAutoAttack() !== 0) setAutoAttack(0);
   postCombatActions();
 }
@@ -2262,40 +2298,17 @@ function voidMonster(): void {
     return;
   }
 
-  freeFightOutfit({ equip: $items`cursed magnifying glass` }).dress();
-  propertyManager.setChoices(wanderer.getChoices("wanderer"));
-  garboAdventure(wanderer.getTarget("wanderer"), Macro.basicCombat());
+  freeFightOutfit(
+    {
+      equip: $items`cursed magnifying glass`,
+    },
+    { wanderOptions: "wanderer" },
+  ).dress();
+  propertyManager.setChoices(wanderer().getChoices("wanderer"));
+  garboAdventure(wanderer().getTarget("wanderer"), Macro.basicCombat());
   postCombatActions();
 }
 
-export function printEmbezzlerLog(): void {
-  if (resetDailyPreference("garboEmbezzlerDate")) {
-    property.set("garboEmbezzlerCount", 0);
-    property.set("garboEmbezzlerSources", "");
-  }
-  const totalEmbezzlers =
-    property.getNumber("garboEmbezzlerCount", 0) +
-    embezzlerLog.initialEmbezzlersFought +
-    embezzlerLog.digitizedEmbezzlersFought;
-
-  const allEmbezzlerSources = property
-    .getString("garboEmbezzlerSources")
-    .split(",")
-    .filter((source) => source);
-  allEmbezzlerSources.push(...embezzlerLog.sources);
-
-  property.set("garboEmbezzlerCount", totalEmbezzlers);
-  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
-
-  print(
-    `You fought ${embezzlerLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${embezzlerLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
-    HIGHLIGHT,
-  );
-  print(
-    `Including this, you have fought ${totalEmbezzlers} across all ascensions today`,
-    HIGHLIGHT,
-  );
-}
 type FreeKill = { spec?: OutfitSpec; macro: Skill | Item; used: () => boolean };
 const freeKills: FreeKill[] = [
   {

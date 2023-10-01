@@ -37,7 +37,7 @@ import {
   modeValueOfMeat,
   valueJuneCleaverOption,
 } from "../lib";
-import { garboAverageValue, garboValue } from "../value";
+import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { bonusAccessories } from "./dropsgearAccessories";
 

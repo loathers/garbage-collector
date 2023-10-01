@@ -107,8 +107,8 @@ export class StashManager {
 
         refreshStash();
         for (const fold of foldArray) {
-          try {
-            if (stashAmount(fold) > 0) {
+          if (stashAmount(fold) > 0) {
+            try {
               if (takeStash(1, fold)) {
                 print(`Took ${fold.name} from stash in ${getClanName()}.`, HIGHLIGHT);
                 if (fold !== item) cliExecute(`fold ${item.name}`);
@@ -123,13 +123,12 @@ export class StashManager {
                   "red",
                 );
               }
+            } catch {
+              print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
             }
-          } catch {
-            print(`Failed to take ${fold.name} from stash in ${getClanName()}.`, "red");
           }
         }
         if (have(item)) continue;
-        print(`Couldn't find ${item.name} in clan stash for ${getClanName()}.`, "red");
       }
     });
   }

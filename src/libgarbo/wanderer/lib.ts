@@ -1,11 +1,23 @@
-import { buy, canAdventure, Item, Location, use } from "kolmafia";
-import { $effect, $item, $location, $locations, $skill, clamp, get, have, sum } from "libram";
+import { buy, canAdventure, Effect, Item, Location, Monster, use } from "kolmafia";
+import {
+  $effect,
+  $item,
+  $location,
+  $locations,
+  $skill,
+  clamp,
+  get,
+  have,
+  realmAvailable,
+  sum,
+} from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
-import { realmAvailable } from "../lib";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 
-export const draggableFights = ["backup", "wanderer", "yellow ray"] as const;
+export const draggableFights = ["backup", "wanderer", "yellow ray", "freefight"] as const;
 export type DraggableFight = (typeof draggableFights)[number];
+export function isDraggableFight<T>(fight: T | string): fight is DraggableFight {
+  return draggableFights.includes(fight as DraggableFight);
+}
 
 interface UnlockableZone {
   zone: string;
@@ -13,6 +25,23 @@ interface UnlockableZone {
   unlocker: Item;
   noInv: boolean;
 }
+
+export type WandererFactoryOptions = {
+  ascend: boolean;
+  estimatedTurns: () => number;
+  freeFightExtraValue: (loc: Location) => number;
+  itemValue: (item: Item) => number;
+  effectValue: (effect: Effect, duration: number) => number;
+  prioritizeCappingGuzzlr: boolean;
+  digitzesRemaining?: (turns: number) => number;
+};
+
+export type WandererFactory = (
+  type: DraggableFight,
+  locationSkiplist: Location[],
+  options: WandererFactoryOptions,
+) => WandererTarget[];
+export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
 
 export const UnlockableZones: UnlockableZone[] = [
   {
@@ -64,7 +93,7 @@ export function underwater(location: Location): boolean {
 }
 const ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm"];
 const canAdventureOrUnlockSkipList = [
-  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, 8-Bit Realm, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, Shadow Rift (The 8-Bit Realm), The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis`,
+  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis`,
   ...Location.all().filter((l) => ILLEGAL_PARENTS.includes(l.parent)),
 ];
 export function canAdventureOrUnlock(loc: Location): boolean {
@@ -97,7 +126,7 @@ function canWanderTypeBackup(location: Location): boolean {
   );
 }
 
-function canWanderTypeYellowRay(location: Location): boolean {
+function canWanderTypeFreeFight(location: Location): boolean {
   if (location === $location`The Fun-Guy Mansion` && get("funGuyMansionKills", 0) >= 100) {
     return false;
   }
@@ -117,8 +146,9 @@ export function canWander(location: Location, type: DraggableFight): boolean {
   switch (type) {
     case "backup":
       return canWanderTypeBackup(location);
+    case "freefight":
     case "yellow ray":
-      return canWanderTypeYellowRay(location);
+      return canWanderTypeFreeFight(location);
     case "wanderer":
       return canWanderTypeWander(location);
   }
@@ -149,11 +179,6 @@ export class WandererTarget {
     this.prepareTurn = prepareTurn;
   }
 }
-export type WandererFactory = (
-  type: DraggableFight,
-  locationSkiplist: Location[],
-) => WandererTarget[];
-export type WandererLocation = { location: Location; targets: WandererTarget[]; value: number };
 
 export function defaultFactory(): WandererTarget[] {
   return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
@@ -197,21 +222,28 @@ const WanderingSources: WanderingSource[] = [
   },
 ];
 
-export function wandererTurnsAvailableToday(location: Location): number {
+export function wandererTurnsAvailableToday(
+  options: WandererFactoryOptions,
+  location: Location,
+): number {
   const canWanderCache: Record<DraggableFight, boolean> = {
     backup: canWander(location, "backup"),
     wanderer: canWander(location, "wanderer"),
     "yellow ray": canWander(location, "yellow ray"),
+    freefight: canWander(location, "freefight"),
   };
 
-  const digitize = canWanderCache["backup"] ? digitizedMonstersRemaining() : 0;
+  const digitize =
+    canWanderCache["backup"] && options.digitzesRemaining
+      ? options.digitzesRemaining(options.estimatedTurns())
+      : 0;
   const pigSkinnerRay =
     canWanderCache["backup"] && have($skill`Free-For-All`)
-      ? Math.floor(estimatedGarboTurns() / 25)
+      ? Math.floor(options.estimatedTurns() / 25)
       : 0;
   const yellowRayCooldown = have($skill`Fondeluge`) ? 50 : 100;
   const yellowRay = canWanderCache["yellow ray"]
-    ? Math.floor(estimatedGarboTurns() / yellowRayCooldown)
+    ? Math.floor(options.estimatedTurns() / yellowRayCooldown)
     : 0;
   const wanderers = sum(WanderingSources, (source) =>
     canWanderCache[source.type] && have(source.item)
@@ -220,4 +252,9 @@ export function wandererTurnsAvailableToday(location: Location): number {
   );
 
   return digitize + pigSkinnerRay + yellowRay + wanderers;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function bofaValue(options: WandererFactoryOptions, monster: Monster): number {
+  return 0;
 }

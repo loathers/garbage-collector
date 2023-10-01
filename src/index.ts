@@ -57,11 +57,12 @@ import { stashItems, withStash, withVIPClan } from "./clan";
 import { globalOptions } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
-import { dailyFights, freeFights, printEmbezzlerLog } from "./fights";
+import { dailyFights, freeFights } from "./fights";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
   HIGHLIGHT,
+  printEventLog,
   printLog,
   propertyManager,
   questStep,
@@ -73,8 +74,8 @@ import postCombatActions from "./post";
 import { potionSetup } from "./potions";
 import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
-import { garboAverageValue } from "./value";
 import { yachtzeeChain } from "./yachtzee";
+import { garboAverageValue } from "./garboValue";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -103,7 +104,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27567);
+  sinceKolmafiaRevision(27593);
   checkGithubVersion();
 
   // Hit up main.php to get out of easily escapable choices
@@ -459,6 +460,7 @@ export function main(argString = ""): void {
     if (!have($item`Jurassic Parka`) && have($skill`Torso Awareness`)) {
       stashItems.push($item`origami pasties`);
     }
+
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {
@@ -534,7 +536,7 @@ export function main(argString = ""): void {
     set("garboStashItems", stashItems.map((item) => toInt(item).toFixed(0)).join(","));
     visitUrl(`account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`, true);
     if (startingGarden && have(startingGarden)) use(startingGarden);
-    printEmbezzlerLog();
+    printEventLog();
     endSession();
     printLog(HIGHLIGHT);
   }

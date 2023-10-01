@@ -39,7 +39,7 @@ import {
   turnsToNC,
   userConfirmDialog,
 } from "../../lib";
-import { garboValue } from "../../value";
+import { garboValue } from "../../garboValue";
 import { estimatedGarboTurns } from "../../turns";
 import { GarboTask } from "../engine";
 import { Quest } from "grimoire-kolmafia";
@@ -71,7 +71,7 @@ function felizValue(): number {
     );
     set("garbo_felizValueDate", today);
   }
-  return get("garbo_felizValue", 0) * 0.25 * estimatedGarboTurns();
+  return get("garbo_felizValue", 0);
 }
 
 function drivebyValue(): number {
@@ -106,7 +106,7 @@ export function prepRobortender(): void {
       priceCap: newarkValue(),
       mandatory: false,
     },
-    "Feliz Navidad": { priceCap: felizValue(), mandatory: false },
+    "Feliz Navidad": { priceCap: felizValue() * 0.25 * estimatedGarboTurns(), mandatory: false },
     "Bloody Nora": {
       priceCap: get("_envyfishEggUsed")
         ? (750 + baseMeat) * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
@@ -219,6 +219,13 @@ const DailyFamiliarTasks: GarboTask[] = [
         }
       });
     },
+  },
+  {
+    name: "Initialize Feliz for Cincho",
+    ready: () => have($item`Cincho de Mayo`) && !have($familiar`Robortender`),
+    completed: () =>
+      !!get("garbo_felizValue", 0) || today - get("garbo_felizValueDate", 0) < 24 * 60 * 60 * 1000,
+    do: () => felizValue,
   },
 ];
 

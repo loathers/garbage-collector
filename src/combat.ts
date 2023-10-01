@@ -4,8 +4,6 @@ import {
   choiceFollowsFight,
   equippedAmount,
   equippedItem,
-  Familiar,
-  familiarWeight,
   getAutoAttack,
   getMonsters,
   haveEquipped,
@@ -18,15 +16,11 @@ import {
   Location,
   mpCost,
   myAdventures,
-  myBjornedFamiliar,
   myClass,
-  myEnthronedFamiliar,
   myFamiliar,
   myFury,
-  myLocation,
   myMp,
   mySoulsauce,
-  myThrall,
   numericModifier,
   retrieveItem,
   runCombat,
@@ -49,7 +43,7 @@ import {
   $monsters,
   $skill,
   $slot,
-  $thralls,
+  CinchoDeMayo,
   Counter,
   get,
   have,
@@ -60,89 +54,7 @@ import {
 import { globalOptions } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
-
-let monsterManuelCached: boolean | undefined = undefined;
-export function monsterManuelAvailable(): boolean {
-  if (monsterManuelCached !== undefined) return Boolean(monsterManuelCached);
-  monsterManuelCached = visitUrl("questlog.php?which=3").includes("Monster Manuel");
-  return Boolean(monsterManuelCached);
-}
-
-function maxCarriedFamiliarDamage(familiar: Familiar): number {
-  // Only considering familiars we reasonably may carry
-  switch (familiar) {
-    // +5 to Familiar Weight
-    case $familiar`Animated Macaroni Duck`:
-      return 50;
-    case $familiar`Barrrnacle`:
-    case $familiar`Gelatinous Cubeling`:
-    case $familiar`Penguin Goodfella`:
-      return 30;
-    case $familiar`Misshapen Animal Skeleton`:
-      return 40 + numericModifier("Spooky Damage");
-
-    // +25% Meat from Monsters
-    case $familiar`Hobo Monkey`:
-      return 25;
-
-    // +20% Meat from Monsters
-    case $familiar`Grouper Groupie`:
-      // Double sleaze damage at Barf Mountain
-      return (
-        25 + numericModifier("Sleaze Damage") * (myLocation() === $location`Barf Mountain` ? 2 : 1)
-      );
-    case $familiar`Jitterbug`:
-      return 20;
-    case $familiar`Mutant Cactus Bud`:
-      // 25 poison damage (25+12+6+3+1)
-      return 47;
-    case $familiar`Robortender`:
-      return 20;
-  }
-
-  return 0;
-}
-
-function maxFamiliarDamage(familiar: Familiar): number {
-  switch (familiar) {
-    case $familiar`Cocoabo`:
-      return familiarWeight(familiar) + 3;
-    case $familiar`Feather Boa Constrictor`:
-      // Double sleaze damage at Barf Mountain
-      return (
-        familiarWeight(familiar) +
-        3 +
-        numericModifier("Sleaze Damage") * (myLocation() === $location`Barf Mountain` ? 2 : 1)
-      );
-    case $familiar`Ninja Pirate Zombie Robot`:
-      return Math.floor((familiarWeight(familiar) + 3) * 1.5);
-  }
-  return 0;
-}
-
-export function maxPassiveDamage(): number {
-  // Only considering passive damage sources we reasonably may have
-  const vykeaMaxDamage =
-    get("_VYKEACompanionLevel") > 0 ? 10 * get("_VYKEACompanionLevel") + 10 : 0;
-
-  // Lasagmbie does max 2*level damage while Vermincelli does max level + (1/2 * level) + (1/2 * 1/2 * level) + ...
-  const thrallMaxDamage =
-    myThrall().level >= 5 && $thralls`Lasagmbie,Vermincelli`.includes(myThrall())
-      ? myThrall().level * 2
-      : 0;
-
-  const crownMaxDamage = haveEquipped($item`Crown of Thrones`)
-    ? maxCarriedFamiliarDamage(myEnthronedFamiliar())
-    : 0;
-
-  const bjornMaxDamage = haveEquipped($item`Buddy Bjorn`)
-    ? maxCarriedFamiliarDamage(myBjornedFamiliar())
-    : 0;
-
-  const familiarMaxDamage = maxFamiliarDamage(myFamiliar());
-
-  return vykeaMaxDamage + thrallMaxDamage + crownMaxDamage + bjornMaxDamage + familiarMaxDamage;
-}
+import { maxPassiveDamage, monsterManuelAvailable } from "./lib";
 
 export function shouldRedigitize(): boolean {
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
@@ -390,6 +302,8 @@ export class Macro extends StrictMacro {
 
     const checkGet = (i: Item) => have(i) && (itemAmount(i) > 0 || retrieveItem(i));
     const stasisItem = $items`facsimile dictionary, dictionary, seal tooth`.find(checkGet);
+    const pinataCastsAvailable = Math.floor(CinchoDeMayo.currentCinch() / 5);
+    const canPinata = CinchoDeMayo.have() && pinataCastsAvailable > 0 && monsterManuelAvailable();
 
     // We retrieve a seal tooth at the start of the day, so this is just to make sure nothing has gone awry.
     if (!stasisItem) throw new Error("Acquire a seal tooth and run garbo again.");
@@ -405,6 +319,10 @@ export class Macro extends StrictMacro {
     // Same story but for the sixgun shot, which wants 40 more HP if possible
     const hpCheckSixgun = checkPassive
       ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage + 40}`
+      : "!hppercentbelow 25";
+    // Same story but for Cincho's projectile pinata, which wants 50 more HP if possible
+    const hpCheckCincho = checkPassive
+      ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage + 50}`
       : "!hppercentbelow 25";
 
     // Determine how long we'll be stasising for
@@ -465,6 +383,13 @@ export class Macro extends StrictMacro {
         .externalIf(
           haveEquipped($item`vampyric cloake`) && get("_vampyreCloakeFormUses") < 10,
           Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`)),
+        )
+        .externalIf(
+          haveEquipped($item`Cincho de Mayo`) && canPinata,
+          Macro.while_(
+            `${hpCheckCincho} && hasskill ${$skill`Cincho: Projectile Piñata`.id}`,
+            Macro.trySkill($skill`Cincho: Projectile Piñata`),
+          ),
         )
         .externalIf(
           have($item`porquoise-handled sixgun`),
@@ -528,11 +453,22 @@ export class Macro extends StrictMacro {
 
   kill(): Macro {
     const riftId = toInt($location`Shadow Rift`);
+    const doingYachtzee = globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted");
+    const canPinata = haveEquipped($item`Cincho de Mayo`) && CinchoDeMayo.currentCinch() >= 5;
     return (
       this.externalIf(
         myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
         Macro.trySkill($skill`Curse of Weaksauce`),
       )
+        .externalIf(
+          !doingYachtzee && canPinata,
+          Macro.while_(
+            `hasskill ${
+              $skill`Cincho: Projectile Piñata`.id
+            } && !pastround 24 && !hppercentbelow 25`,
+            Macro.trySkill($skill`Cincho: Projectile Piñata`),
+          ),
+        )
         .tryHaveSkill($skill`Become a Wolf`)
         .externalIf(
           !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
@@ -662,7 +598,7 @@ export class Macro extends StrictMacro {
     const embezzler = $monster`Knob Goblin Embezzler`;
     const doneHabitat =
       !have($skill`Just the Facts`) ||
-      (get("_monsterHabitatsRecalled") === 3 && get("monsterHabitatsFightsLeft") <= 1);
+      (get("_monsterHabitatsRecalled") === 3 && get("_monsterHabitatsFightsLeft") <= 1);
     return this.if_(
       embezzler,
       Macro.if_($location`The Briny Deeps`, Macro.tryCopier($item`pulled green taffy`))
@@ -677,13 +613,17 @@ export class Macro extends StrictMacro {
         .externalIf(
           doneHabitat &&
             get("beGregariousCharges") > 0 &&
-            (get("beGregariousMonster") !== embezzler || get("beGregariousFightsLeft") === 0),
+            (get("beGregariousMonster") !== embezzler || have($item`miniature crystal ball`)
+              ? get("beGregariousFightsLeft") === 0
+              : get("beGregariousFightsLeft") <= 1),
           Macro.trySkill($skill`Be Gregarious`),
         )
         .externalIf(
           have($skill`Just the Facts`) &&
             get("_monsterHabitatsRecalled") < 3 &&
-            (get("monsterHabitatsMonster") !== embezzler || get("monsterHabitatsFightsLeft") === 0),
+            (get("_monsterHabitatsMonster") !== embezzler || have($item`miniature crystal ball`)
+              ? get("_monsterHabitatsFightsLeft") === 0
+              : get("_monsterHabitatsFightsLeft") <= 1),
           Macro.trySkill($skill`Recall Facts: Monster Habitats`),
         )
         .externalIf(

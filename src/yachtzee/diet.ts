@@ -40,7 +40,7 @@ import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { hasMonsterReplacers } from "../extrovermectin";
 import { Potion } from "../potions";
-import { garboValue } from "../value";
+import { garboValue } from "../garboValue";
 import synthesize from "../synthesis";
 import { estimatedGarboTurns } from "../turns";
 import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
@@ -81,7 +81,7 @@ function ensureConsumable(
   inebriety: number,
   spleenUse: number,
 ): void {
-  if (myFullness() + n * fullness > fullnessLimit()) {
+  if (myFullness() + n * fullness > Math.max(fullnessLimit(), myFullness())) {
     throw new Error(`Eating ${n} ${name} exceeds our stomach capacity!`);
   } else if (myInebriety() + n * inebriety > inebrietyLimit()) {
     throw new Error(`Drinking ${n} ${name} exceeds our liver capacity!`);
@@ -248,7 +248,7 @@ function castOde(turns: number): boolean {
 }
 
 export function executeNextDietStep(stopBeforeJellies?: boolean): void {
-  if (get("_stenchJellyUsed", false)) return;
+  if (get("noncombatForcerActive")) return;
   print("Executing next diet steps", "blue");
   const dietUtil = new YachtzeeDietUtils();
   dietUtil.resetDietPref();
@@ -283,7 +283,6 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
         } else {
           throw new Error(`Could not find ${name} in dietArray`);
         }
-        set("_stenchJellyUsed", true);
       }
       stenchJellyConsumed = true;
     } else if (!stenchJellyConsumed) {
@@ -299,7 +298,8 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
           }
           if (
             myFullness() + entry.fullness >
-            fullnessLimit() + (!get("_distentionPillUsed") && have($item`distention pill`) ? 1 : 0)
+            Math.max(fullnessLimit(), myFullness()) +
+              (!get("_distentionPillUsed") && have($item`distention pill`) ? 1 : 0)
           ) {
             throw new Error(`consuming ${entry.name} will exceed our fullness limit`);
           } else if (myInebriety() + entry.drunkenness > inebrietyLimit()) {
@@ -445,19 +445,19 @@ function yachtzeeDietScheduler(
       drunkenness += entry.drunkenness;
     }
     spleenUse += entry.quantity * entry.spleen;
-    if (fullness > fullnessLimit() + toInt(haveDistentionPill)) {
+    if (fullness > fullnessLimit() + toInt(haveDistentionPill) && entry.fullness > 0) {
       throw new Error(
         `Error in diet schedule: Overeating ${entry.quantity} ${entry.name} to ${fullness}/${
           fullnessLimit() + toInt(haveDistentionPill)
         }`,
       );
-    } else if (drunkenness > inebrietyLimit()) {
+    } else if (drunkenness > inebrietyLimit() && entry.drunkenness > 0) {
       throw new Error(
         `Error in diet schedule: Overdrinking ${entry.quantity} ${
           entry.name
         } to ${drunkenness}/${inebrietyLimit()}`,
       );
-    } else if (spleenUse > spleenLimit()) {
+    } else if (spleenUse > spleenLimit() && entry.spleen > 0) {
       throw new Error(
         `Error in diet schedule: Overspleening ${entry.quantity} ${
           entry.name
