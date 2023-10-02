@@ -485,7 +485,7 @@ export function dailyFights(): void {
 
         const familiar =
           get("_badlyRomanticArrows") === 0 && !underwater
-            ? $familiars`Obtuse Angel, Reanimated Reanimator`.find(have) ?? meatFamiliar()
+            ? $familiars`Reanimated Reanimator, Obtuse Angel`.find(have) ?? meatFamiliar()
             : meatFamiliar();
 
         setLocation(location);
@@ -1516,7 +1516,7 @@ const freeFightSources = [
 
       runShadowRiftTurn();
 
-      if (get("encountersUntilSRChoice", 0) === 0) {
+      if (get("encountersUntilSRChoice") === 0 || get("noncombatForcerActive")) {
         if (ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget()) {
           ClosedCircuitPayphone.chooseQuest(() => 2);
         }
@@ -2740,8 +2740,6 @@ function runShadowRiftTurn(): void {
   if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
     globalOptions.clarasBellClaimed = true;
     use($item`Clara's bell`);
-    // Not the most elegant solution, but we need a way to communicate that an NC is forced
-    set("encountersUntilSRChoice", 0);
   } else if (CinchoDeMayo.have() && CinchoDeMayo.totalAvailableCinch() >= 60) {
     const lastAcc = equippedItem($slot`acc3`);
     equip($slot`acc3`, $item`Cincho de Mayo`);
@@ -2749,7 +2747,6 @@ function runShadowRiftTurn(): void {
       if (!freeRest()) throw new Error("We are out of free rests!");
     }
     useSkill($skill`Cincho: Fiesta Exit`);
-    set("encountersUntilSRChoice", 0);
     equip($slot`acc3`, lastAcc); // Re-equip last item
   } else if (
     have($item`Jurassic Parka`) &&
@@ -2761,7 +2758,6 @@ function runShadowRiftTurn(): void {
     cliExecute("parka spikolodon");
     const macro = Macro.skill($skill`Launch spikolodon spikes`).basicCombat();
     garboAdventureAuto(bestShadowRift(), macro);
-    set("encountersUntilSRChoice", 0);
   } else {
     adv1(bestShadowRift(), -1, ""); // We wanted to use NC forcers, but none are suitable now
   }
