@@ -482,14 +482,15 @@ export function dailyFights(): void {
 
         const location = new EmbezzlerFightRunOptions(nextFight).location;
         const underwater = location.environment === "underwater";
+        const shouldCopy = get("_badlyRomanticArrows") === 0 && !underwater;
 
-        const familiar =
-          get("_badlyRomanticArrows") === 0 && !underwater
-            ? $familiars`Reanimated Reanimator, Obtuse Angel`.find(have) ?? meatFamiliar()
-            : meatFamiliar();
+        const bestCopier = $familiars`Reanimated Reanimator, Obtuse Angel`.find(have);
+        const familiar = shouldCopy && bestCopier ? bestCopier : meatFamiliar();
+        const famSpec: OutfitSpec = { familiar };
+        if (familiar === $familiar`Obtuse Angel`) famSpec.famequip = $item`quake of arrows`;
 
         setLocation(location);
-        embezzlerOutfit({ ...nextFight.spec, familiar }, location).dress();
+        embezzlerOutfit({ ...nextFight.spec, ...famSpec }, location).dress();
 
         runEmbezzlerFight(nextFight);
         postCombatActions();
