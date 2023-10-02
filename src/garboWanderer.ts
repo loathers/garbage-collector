@@ -1,9 +1,9 @@
-import { Effect, Location } from "kolmafia";
+import { Effect, getMonsters, Location } from "kolmafia";
 import { globalOptions } from "./config";
 import { freeFightFamiliarData } from "./familiar/freeFightFamiliar";
 import { estimatedGarboTurns } from "./turns";
 import { WandererManager } from "./libgarbo";
-import { $item, get } from "libram";
+import { $item, $location, $monster, $monsters, get, have } from "libram";
 import { garboValue } from "./garboValue";
 import { Potion } from "./potions";
 import { embezzlerCount } from "./embezzler/fights";
@@ -22,6 +22,11 @@ export function wanderer(): WandererManager {
       freeFightExtraValue: (location: Location) =>
         freeFightFamiliarData({ location }).expectedValue,
       digitzesRemaining: digitizedMonstersRemainingForTurns,
+      plentifulMonsters: [
+        $monster`Knob Goblin Embezzler`,
+        ...(globalOptions.nobarf ? [] : getMonsters($location`Barf Mountain`)),
+        ...(have($item`Kramco Sausage-o-Matic™`) ? $monsters`sausage goblin` : []),
+      ],
     });
   }
   return _wanderer;

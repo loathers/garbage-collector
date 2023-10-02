@@ -1,7 +1,20 @@
-import { buy, canAdventure, Effect, Item, Location, Monster, use } from "kolmafia";
+import {
+  buy,
+  canAdventure,
+  Effect,
+  effectFact,
+  Item,
+  itemFact,
+  Location,
+  Monster,
+  numericFact,
+  toItem,
+  use,
+} from "kolmafia";
 import {
   $effect,
   $item,
+  $items,
   $location,
   $locations,
   $skill,
@@ -32,6 +45,7 @@ export type WandererFactoryOptions = {
   freeFightExtraValue: (loc: Location) => number;
   itemValue: (item: Item) => number;
   effectValue: (effect: Effect, duration: number) => number;
+  plentifulMonsters: Monster[];
   prioritizeCappingGuzzlr: boolean;
   digitzesRemaining?: (turns: number) => number;
 };
@@ -254,7 +268,32 @@ export function wandererTurnsAvailableToday(
   return digitize + pigSkinnerRay + yellowRay + wanderers;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function bofaValue(options: WandererFactoryOptions, monster: Monster): number {
-  return 0;
+const LIMITED_BOFA_DROPS = $items`pocket wish, tattered scrap of paper`;
+export function bofaValue(
+  { plentifulMonsters, itemValue, effectValue }: WandererFactoryOptions,
+  monster: Monster,
+): number {
+  switch (monster.factType) {
+    case "item": {
+      const item = itemFact(monster);
+      const quantity = numericFact(monster);
+      if (
+        LIMITED_BOFA_DROPS.includes(item) &&
+        plentifulMonsters.some((monster) => toItem(monster.fact) === item)
+      ) {
+        return 0;
+      }
+      return quantity * itemValue(item);
+    }
+    case "effect": {
+      const effect = effectFact(monster);
+      const duration = numericFact(monster);
+      return effectValue(effect, duration);
+    }
+    case "meat": {
+      return numericFact(monster);
+    }
+    default:
+      return 0;
+  }
 }
