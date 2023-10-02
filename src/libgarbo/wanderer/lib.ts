@@ -7,8 +7,6 @@ import {
   itemFact,
   Location,
   Monster,
-  myClass,
-  myPath,
   numericFact,
   toItem,
   use,
@@ -277,8 +275,8 @@ export function bofaValue(
 ): number {
   switch (monster.factType) {
     case "item": {
-      const item = itemFact(myClass(), myPath(), monster);
-      const quantity = numericFact(myClass(), myPath(), monster);
+      const item = itemFact(monster);
+      const quantity = numericFact(monster);
       if (
         LIMITED_BOFA_DROPS.includes(item) &&
         plentifulMonsters.some((monster) => toItem(monster.fact) === item)
@@ -288,12 +286,12 @@ export function bofaValue(
       return quantity * itemValue(item);
     }
     case "effect": {
-      const effect = effectFact(myClass(), myPath(), monster);
-      const duration = numericFact(myClass(), myPath(), monster);
+      const effect = effectFact(monster);
+      const duration = numericFact(monster);
       return effectValue(effect, duration);
     }
     case "meat": {
-      return numericFact(myClass(), myPath(), monster);
+      return numericFact(monster);
     }
     default:
       return 0;
