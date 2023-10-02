@@ -484,7 +484,7 @@ export function dailyFights(): void {
         const underwater = location.environment === "underwater";
         const shouldCopy = get("_badlyRomanticArrows") === 0 && !underwater;
 
-        const bestCopier = $familiars`Reanimated Reanimator, Obtuse Angel`.find(have);
+        const bestCopier = $familiars`Obtuse Angel, Reanimated Reanimator`.find(have);
         const familiar = shouldCopy && bestCopier ? bestCopier : meatFamiliar();
         const famSpec: OutfitSpec = { familiar };
         if (familiar === $familiar`Obtuse Angel`) famSpec.famequip = $item`quake of arrows`;
