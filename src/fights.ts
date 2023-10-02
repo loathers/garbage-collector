@@ -1532,7 +1532,7 @@ const freeFightSources = [
         adv1(bestShadowRift(), -1, "");
       }
 
-      if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice", 0) !== 0) {
+      if (!have($effect`Shadow Affinity`) && get("encountersUntilSRChoice") !== 0) {
         setLocation($location.none); // Reset location to not affect mafia's item drop calculations
       }
     },
