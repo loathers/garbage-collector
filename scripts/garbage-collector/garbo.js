@@ -23299,8 +23299,10 @@ function underwater(location) {
   return location.environment === "underwater";
 }
 var ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm"];
-var canAdventureOrUnlockSkipList = [].concat(_toConsumableArray20($locations(_templateObject1119 || (_templateObject1119 = _taggedTemplateLiteral42(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis"])))), _toConsumableArray20(import_kolmafia50.Location.all().filter(function(l) {
-  return ILLEGAL_PARENTS.includes(l.parent);
+var ILLEGAL_ZONES = ["The Drip"];
+var canAdventureOrUnlockSkipList = [].concat(_toConsumableArray20($locations(_templateObject1119 || (_templateObject1119 = _taggedTemplateLiteral42(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis"])))), _toConsumableArray20(import_kolmafia50.Location.all().filter(function(_ref) {
+  var parent = _ref.parent, zone = _ref.zone;
+  return ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone);
 })));
 function canAdventureOrUnlock(loc) {
   var skiplist = _toConsumableArray20(canAdventureOrUnlockSkipList);
@@ -23421,8 +23423,8 @@ function wandererTurnsAvailableToday(options, location) {
   return digitize + pigSkinnerRay + yellowRay + wanderers;
 }
 var LIMITED_BOFA_DROPS = $items(_templateObject2714 || (_templateObject2714 = _taggedTemplateLiteral42(["pocket wish, tattered scrap of paper"])));
-function bofaValue(_ref, monster) {
-  var plentifulMonsters = _ref.plentifulMonsters, itemValue = _ref.itemValue, effectValue = _ref.effectValue;
+function bofaValue(_ref2, monster) {
+  var plentifulMonsters = _ref2.plentifulMonsters, itemValue = _ref2.itemValue, effectValue = _ref2.effectValue;
   switch (monster.factType) {
     case "item": {
       var _item = (0, import_kolmafia50.itemFact)(monster);
