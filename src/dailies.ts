@@ -8,9 +8,9 @@ import { AscendingQuest } from "./tasks/ascending";
 export function dailySetup(): void {
   runSafeGarboQuests([
     DailyFamiliarsQuest,
+    DailyQuest,
     DailyItemsQuest,
     VolcanoQuest,
-    DailyQuest,
     AscendingQuest,
   ]);
 }
