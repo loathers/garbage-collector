@@ -6,6 +6,7 @@ import {
   getClanLounge,
   haveEquipped,
   itemAmount,
+  Location,
   mallPrice,
   myAdventures,
   myHash,
@@ -66,7 +67,7 @@ import {
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 
-export class EmbezzlerFight {
+export class EmbezzlerFight implements EmbezzlerFightConfigOptions {
   name: string;
   available: () => boolean;
   potential: () => number;
@@ -76,6 +77,7 @@ export class EmbezzlerFight {
   canInitializeWandererCounters: boolean;
   wrongEncounterName: boolean;
   gregariousReplace: boolean;
+  location?: Location;
 
   /**
    * This is the class that creates all the different ways to fight embezzlers
@@ -123,6 +125,7 @@ export class EmbezzlerFight {
     this.canInitializeWandererCounters = options.canInitializeWandererCounters ?? false;
     this.gregariousReplace = options.gregariousReplace ?? false;
     this.wrongEncounterName = options.wrongEncounterName ?? this.gregariousReplace;
+    this.location = options.location;
   }
 
   run(options: RunOptions): void {
