@@ -30898,6 +30898,7 @@ var EmbezzlerFight = /* @__PURE__ */ function() {
     _defineProperty29(this, "canInitializeWandererCounters", void 0);
     _defineProperty29(this, "wrongEncounterName", void 0);
     _defineProperty29(this, "gregariousReplace", void 0);
+    _defineProperty29(this, "location", void 0);
     this.name = name;
     this.available = available3;
     this.potential = potential;
@@ -30907,6 +30908,7 @@ var EmbezzlerFight = /* @__PURE__ */ function() {
     this.canInitializeWandererCounters = (_options$canInitializ = options.canInitializeWandererCounters) !== null && _options$canInitializ !== void 0 ? _options$canInitializ : false;
     this.gregariousReplace = (_options$gregariousRe = options.gregariousReplace) !== null && _options$gregariousRe !== void 0 ? _options$gregariousRe : false;
     this.wrongEncounterName = (_options$wrongEncount = options.wrongEncounterName) !== null && _options$wrongEncount !== void 0 ? _options$wrongEncount : this.gregariousReplace;
+    this.location = options.location;
   }
   _createClass24(EmbezzlerFight2, [{
     key: "run",
