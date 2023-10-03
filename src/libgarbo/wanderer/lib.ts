@@ -106,9 +106,12 @@ export function underwater(location: Location): boolean {
   return location.environment === "underwater";
 }
 const ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm"];
+const ILLEGAL_ZONES = ["The Drip"];
 const canAdventureOrUnlockSkipList = [
   ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis`,
-  ...Location.all().filter((l) => ILLEGAL_PARENTS.includes(l.parent)),
+  ...Location.all().filter(
+    ({ parent, zone }) => ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone),
+  ),
 ];
 export function canAdventureOrUnlock(loc: Location): boolean {
   const skiplist = [...canAdventureOrUnlockSkipList];
