@@ -48,7 +48,14 @@ import {
 } from "libram";
 import { shouldAugustCast } from "../resources";
 import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
-import { averageEmbezzlerNet, HIGHLIGHT, ltbRun, setChoice, WISH_VALUE } from "../lib";
+import {
+  averageEmbezzlerNet,
+  getUsingFreeBunnyBanish,
+  HIGHLIGHT,
+  ltbRun,
+  setChoice,
+  WISH_VALUE,
+} from "../lib";
 import {
   crateStrategy,
   doingGregFight,
@@ -461,6 +468,7 @@ const gregFights = (
 ) => {
   function runGregFight(options: RunOptions) {
     const run = ltbRun();
+    const runMacro = getUsingFreeBunnyBanish() ? Macro.skill($skill`Snokebomb`) : ltbRun().macro;
     run.constraints.preparation?.();
     const bunnyBanish = [...getBanishedMonsters().entries()].find(
       ([, monster]) => monster === $monster`fluffy bunny`,
@@ -468,8 +476,8 @@ const gregFights = (
     const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
     adventureFunction(
       $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
-      Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
+      Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
+      Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
     );
 
     if (get("lastEncounter") === $monster`fluffy bunny`.name && bunnyBanish) {
@@ -870,7 +878,7 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
     const leftoverReplacers =
       (have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0) +
       (have($item`Powerful Glove`)
-        ? Math.floor(100 - get("_powerfulGloveBatteryPowerUsed") / 10)
+        ? Math.floor((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0);
     // we don't want to reset our orb with a gregarious fight; that defeats the purpose
     const skip =

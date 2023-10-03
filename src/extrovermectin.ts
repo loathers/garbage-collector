@@ -36,7 +36,7 @@ import {
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { latteActionSourceFinderConstraints, ltbRun, setChoice } from "./lib";
+import { freeRunConstraints, getUsingFreeBunnyBanish, ltbRun, setChoice } from "./lib";
 import { garboAdventure, Macro } from "./combat";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
@@ -161,7 +161,7 @@ export function saberCrateIfSafe(): void {
   if (!canSaber || !isSafeToSaber) return;
 
   do {
-    const run = tryFindFreeRun() ?? ltbRun();
+    const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
 
     useFamiliar(run.constraints.familiar?.() ?? freeFightFamiliar({ canChooseMacro: false }));
     run.constraints.preparation?.();
@@ -223,7 +223,7 @@ function initializeCrates(): void {
         ((get("_gallapagosMonster") !== crate && have($skill`Gallapagosian Mating Call`)) ||
           (have($item`latte lovers member's mug`) && !get("_latteCopyUsed"))))
     ) {
-      const run = tryFindFreeRun(latteActionSourceFinderConstraints) ?? ltbRun();
+      const run = tryFindFreeRun(freeRunConstraints(true)) ?? ltbRun();
       setChoice(1387, 2); // use the force, in case we decide to use that
 
       // Sniff the crate in as many ways as humanly possible
@@ -328,6 +328,18 @@ const longBanishes: Banish[] = [
   },
 ];
 
+const freeBunnyBanish: Banish = {
+  name: "Mafia Middle Finger Ring",
+  available: () => !get("_mafiaMiddleFingerRingUsed"),
+  macro: () => Macro.skill($skill`Show them your ring`),
+  prepare: () => {
+    new Requirement([], {
+      preventEquip: $items`carnivorous potted plant`,
+      forceEquip: [$item`mafia middle finger ring`],
+    }).maximize();
+  },
+};
+
 const shortBanishes = [
   combatItem($item`Louder Than Bomb`, 10000),
   combatItem($item`tennis ball`, 10000),
@@ -339,7 +351,9 @@ function banishBunny(): void {
     ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
   ].filter((b) => b.available());
 
-  const banish = maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
+  const banish = getUsingFreeBunnyBanish()
+    ? freeBunnyBanish
+    : maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
   do {
     banish.prepare?.();
     garboAdventure(

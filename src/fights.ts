@@ -150,9 +150,10 @@ import {
   eventLog,
   expectedEmbezzlerProfit,
   freeRest,
+  freeRunConstraints,
+  getUsingFreeBunnyBanish,
   HIGHLIGHT,
   kramcoGuaranteed,
-  latteActionSourceFinderConstraints,
   logMessage,
   ltbRun,
   mapMonster,
@@ -241,7 +242,7 @@ function embezzlerSetup() {
     setChoice(582, 1);
     setChoice(579, 3);
     while (get("lastTempleAdventures") < myAscensions()) {
-      const run = tryFindFreeRun() ?? ltbRun();
+      const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
       if (!run) break;
       run.constraints.preparation?.();
       freeFightOutfit(toSpec(run)).dress();
@@ -333,7 +334,7 @@ function startWandererCounter() {
         embezzlerOutfit().dress();
       } else {
         print("You do not have gregs active, so this is a regular free run.");
-        run = tryFindFreeRun() ?? ltbRun();
+        run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
         run.constraints.preparation?.();
         freeFightOutfit(toSpec(run)).dress();
       }
@@ -610,6 +611,7 @@ class FreeRunFight extends FreeFight {
     while (this.isAvailable()) {
       const initialSpec = undelay(this.options.spec ?? {});
       const constraints = {
+        ...freeRunConstraints(false),
         noFamiliar: () => "familiar" in initialSpec,
         ...this.constraints,
       };
@@ -639,7 +641,7 @@ const pygmyBanishHandlers = [
     pygmy: $monster`pygmy bowler`,
     skill: $skill`Snokebomb`,
     check: "_snokebombUsed",
-    limit: 3,
+    limit: getUsingFreeBunnyBanish() ? 1 : 3,
     item: $item`Louder Than Bomb`,
   },
   {
@@ -669,8 +671,12 @@ const pygmySniffed = () =>
   sniffSources.some((source) => pygmyBanishHandlers.some(({ pygmy }) => pygmy === get(source)));
 
 const pygmyMacro = Macro.step(
-  ...pygmyBanishHandlers.map(({ pygmy, skill, item }) =>
-    Macro.if_(pygmy, skill ? Macro.trySkill(skill).item(item) : Macro.item(item)),
+  ...pygmyBanishHandlers.map(({ pygmy, skill, item, check, limit }) =>
+    Macro.externalIf(
+      (check ? get(check) : Infinity) < limit,
+      Macro.if_(pygmy, skill ? Macro.trySkill(skill).item(item) : Macro.item(item)),
+      Macro.if_(pygmy, Macro.item(item)),
+    ),
   ),
 )
   .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySingAlong())
@@ -1036,6 +1042,7 @@ const freeFightSources = [
           retrieveItem(1, $item`Louder Than Bomb`);
           retrieveItem(1, $item`divine champagne popper`);
         }
+        const snokeLimit = getUsingFreeBunnyBanish() ? 1 : 3;
         garboAdventure(
           $location`Domed City of Grimacia`,
           Macro.if_(
@@ -1044,7 +1051,12 @@ const freeFightSources = [
               $item`Louder Than Bomb`,
             ),
           )
-            .if_($monster`cat-alien`, Macro.trySkill($skill`Snokebomb`).tryItem($item`tennis ball`))
+            .if_(
+              $monster`cat-alien`,
+              get("_snokebombUsed") < snokeLimit
+                ? Macro.trySkill($skill`Snokebomb`).item($item`tennis ball`)
+                : Macro.item($item`tennis ball`),
+            )
             .if_(
               $monster`dog-alien`,
               Macro.trySkill($skill`Feel Hatred`).tryItem($item`divine champagne popper`),
@@ -1584,7 +1596,7 @@ const freeRunFightSources = [
     {
       spec: { equip: $items`latte lovers member's mug` },
     },
-    latteActionSourceFinderConstraints,
+    freeRunConstraints(true),
   ),
   new FreeRunFight(
     () =>
@@ -1602,7 +1614,7 @@ const freeRunFightSources = [
     {
       spec: { equip: $items`latte lovers member's mug` },
     },
-    latteActionSourceFinderConstraints,
+    freeRunConstraints(true),
   ),
   new FreeRunFight(
     () =>
@@ -1616,7 +1628,7 @@ const freeRunFightSources = [
     {
       spec: { equip: $items`latte lovers member's mug` },
     },
-    latteActionSourceFinderConstraints,
+    freeRunConstraints(true),
   ),
   new FreeRunFight(
     () =>
@@ -1885,8 +1897,6 @@ const freeRunFightSources = [
               )
               .trySkill($skill`Summon Mayfly Swarm`),
           )
-          .if_($monster`Fruit Golem`, Macro.trySkill($skill`Feel Hatred`))
-          .if_($monster`Knob Goblin Mutant`, Macro.trySkill($skill`Snokebomb`))
           .step(runSource.macro),
       );
     },
