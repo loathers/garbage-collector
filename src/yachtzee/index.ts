@@ -141,7 +141,7 @@ function _yachtzeeChain(): void {
   }
 }
 
-export function yachtzeeChain(): void {
+export function oldyachtzeeChain(): void {
   if (!globalOptions.prefs.yachtzeechain) return;
   if (get("_garboYachtzeeChainCompleted", false)) return;
   print("Running Yachtzee Chain", "purple");
@@ -155,4 +155,9 @@ export function yachtzeeChain(): void {
   }
   freeRunFights();
   postFreeFightDailySetup();
+}
+
+export function yachtzeeChain(): void {
+  if (!globalOptions.prefs.yachtzeechain) return;
+  print("As of 2023-10-03, Yachtzee has been nerfed.", "red");
 }
