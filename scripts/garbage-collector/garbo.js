@@ -24499,9 +24499,9 @@ function safeInterrupt() {
   }
 }
 function resetDailyPreference(trackingPreference) {
-  var today2 = (0, import_kolmafia56.todayToString)();
-  if (property_exports.getString(trackingPreference) !== today2) {
-    property_exports.set(trackingPreference, today2);
+  var today = (0, import_kolmafia56.todayToString)();
+  if (property_exports.getString(trackingPreference) !== today) {
+    property_exports.set(trackingPreference, today);
     return true;
   } else {
     return false;
@@ -24777,7 +24777,6 @@ function freeRunConstraints(latteActionSource) {
     }
   };
 }
-var today = Date.now() - (0, import_kolmafia56.gametimeToInt)() - 1e3 * 60 * 3.5;
 var olfactionCopies = have($skill(_templateObject3413 || (_templateObject3413 = _taggedTemplateLiteral48(["Transcendent Olfaction"])))) ? 3 : 0;
 var gallapagosCopies = have($skill(_templateObject3512 || (_templateObject3512 = _taggedTemplateLiteral48(["Gallapagosian Mating Call"])))) ? 1 : 0;
 var garbageTourists = 1 + olfactionCopies + gallapagosCopies;
@@ -25007,6 +25006,28 @@ function monsterManuelAvailable() {
   monsterManuelCached = (0, import_kolmafia56.visitUrl)("questlog.php?which=3").includes("Monster Manuel");
   return Boolean(monsterManuelCached);
 }
+function felizValue() {
+  var lastCalculated = new Date(get("garbo_felizValueDate", 0));
+  if (!get("garbo_felizValue", 0) || gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1e3) {
+    var felizDrops = JSON.parse((0, import_kolmafia56.fileToBuffer)("garbo_item_lists.json"))["Feliz Navidad"];
+    _set("garbo_felizValue", (sum(felizDrops, function(name) {
+      return garboValue((0, import_kolmafia56.toItem)(name));
+    }) / felizDrops.length).toFixed(0));
+    _set("garbo_felizValueDate", gameDay().getTime());
+  }
+  return get("garbo_felizValue", 0);
+}
+function newarkValue() {
+  var lastCalculated = new Date(get("garbo_newarkValueDate", 0));
+  if (!get("garbo_newarkValue", 0) || gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1e3) {
+    var newarkDrops = JSON.parse((0, import_kolmafia56.fileToBuffer)("garbo_item_lists.json"))["Newark"];
+    _set("garbo_newarkValue", (sum(newarkDrops, function(name) {
+      return garboValue((0, import_kolmafia56.toItem)(name));
+    }) / newarkDrops.length).toFixed(0));
+    _set("garbo_newarkValueDate", gameDay().getTime());
+  }
+  return get("garbo_newarkValue", 0);
+}
 
 // src/turns.ts
 var import_kolmafia78 = require("kolmafia");
@@ -25198,7 +25219,7 @@ function cinchoDeMayo(mode) {
   maxPassiveDamage() >= 50) {
     return /* @__PURE__ */ new Map([]);
   }
-  return /* @__PURE__ */ new Map([[$item(_templateObject1517 || (_templateObject1517 = _taggedTemplateLiteral49(["Cincho de Mayo"]))), 3 * get("garbo_felizValue", 0)]]);
+  return /* @__PURE__ */ new Map([[$item(_templateObject1517 || (_templateObject1517 = _taggedTemplateLiteral49(["Cincho de Mayo"]))), 3 * felizValue()]]);
 }
 function bonusAccessories(mode) {
   return new Map([].concat(_toConsumableArray24(mafiaThumbRing(mode)), _toConsumableArray24(luckyGoldRing(mode)), _toConsumableArray24(mrCheengsSpectacles()), _toConsumableArray24(mrScreegesSpectacles()), _toConsumableArray24(cinchoDeMayo(mode))));
@@ -26714,12 +26735,12 @@ function castAugustScepterBuffs() {
     } finally {
       _iterator.f();
     }
-    var today2 = SKILL_OPTIONS.find(function(_ref4) {
+    var today = SKILL_OPTIONS.find(function(_ref4) {
       var skill2 = _ref4.skill, type = _ref4.type;
       return type === "buff" && skill2 === AugustScepter_exports.todaysSkill();
     });
-    if (today2 && !AugustScepter_exports.getTodayCast())
-      (0, import_kolmafia61.useSkill)(today2.skill);
+    if (today && !AugustScepter_exports.getTodayCast())
+      (0, import_kolmafia61.useSkill)(today.skill);
     if (globalOptions.ascend && shouldAugustCast($skill(_templateObject3120 || (_templateObject3120 = _taggedTemplateLiteral53(["Aug. 13th: Left/Off Hander's Day!"]))))) {
       (0, import_kolmafia61.useSkill)($skill(_templateObject3217 || (_templateObject3217 = _taggedTemplateLiteral53(["Aug. 13th: Left/Off Hander's Day!"]))));
     }
@@ -29805,7 +29826,7 @@ var standardFamiliars = [{
 }, {
   familiar: $familiar(_templateObject1036 || (_templateObject1036 = _taggedTemplateLiteral61(["Robortender"]))),
   value: function() {
-    return garboValue($item(_templateObject1133 || (_templateObject1133 = _taggedTemplateLiteral61(["elemental sugarcube"])))) / 5 + (Robortender_exports.currentDrinks().includes($item(_templateObject1231 || (_templateObject1231 = _taggedTemplateLiteral61(["Feliz Navidad"])))) ? get("garbo_felizValue", 0) * 0.25 : 0) + (Robortender_exports.currentDrinks().includes($item(_templateObject1331 || (_templateObject1331 = _taggedTemplateLiteral61(["Newark"])))) ? get("garbo_newarkValue", 0) * 0.25 : 0);
+    return garboValue($item(_templateObject1133 || (_templateObject1133 = _taggedTemplateLiteral61(["elemental sugarcube"])))) / 5 + (Robortender_exports.currentDrinks().includes($item(_templateObject1231 || (_templateObject1231 = _taggedTemplateLiteral61(["Feliz Navidad"])))) ? felizValue() * 0.25 : 0) + (Robortender_exports.currentDrinks().includes($item(_templateObject1331 || (_templateObject1331 = _taggedTemplateLiteral61(["Newark"])))) ? newarkValue() * 0.25 : 0);
   }
 }, {
   familiar: $familiar(_templateObject1429 || (_templateObject1429 = _taggedTemplateLiteral61(["Twitching Space Critter"]))),
@@ -33439,14 +33460,14 @@ function _arrayLikeToArray57(arr, len) {
   return arr2;
 }
 function candyFactoryValue() {
-  var lastCalculated = get("garbo_candyFactoryValueDate", 0);
-  if (!get("garbo_candyFactoryValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1e3) {
+  var lastCalculated = new Date(get("garbo_candyFactoryValueDate", 0));
+  if (!get("garbo_candyFactoryValue", 0) || gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1e3) {
     var candyFactoryDrops = JSON.parse((0, import_kolmafia86.fileToBuffer)("garbo_item_lists.json"))["trainset"];
     var averageDropValue = sum(candyFactoryDrops, function(name) {
       return garboValue((0, import_kolmafia86.toItem)(name), true);
     }) / candyFactoryDrops.length;
     _set("garbo_candyFactoryValue", averageDropValue);
-    _set("garbo_candyFactoryValueDate", today);
+    _set("garbo_candyFactoryValueDate", gameDay().getTime());
   }
   return get("garbo_candyFactoryValue", 0);
 }
@@ -36902,7 +36923,7 @@ function yachtzee() {
         return;
       var lastUMDDate = property_exports.getString("umdLastObtained");
       var getUMD = !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
-      garboValue($item(_templateObject6242 || (_templateObject6242 = _taggedTemplateLiteral82(["Ultimate Mind Destroyer"])))) >= 2e3 * (1 + (0, import_kolmafia89.numericModifier)("meat drop") / 100) && (!lastUMDDate || today - Date.parse(lastUMDDate) >= 1e3 * 60 * 60 * 24 * 7);
+      garboValue($item(_templateObject6242 || (_templateObject6242 = _taggedTemplateLiteral82(["Ultimate Mind Destroyer"])))) >= 2e3 * (1 + (0, import_kolmafia89.numericModifier)("meat drop") / 100) && (!lastUMDDate || gameDay().getTime() - Date.parse(lastUMDDate) >= 1e3 * 60 * 60 * 24 * 7);
       setChoice(918, getUMD ? 1 : 2);
       garboAdventureAuto($location(_templateObject6252 || (_templateObject6252 = _taggedTemplateLiteral82(["The Sunken Party Yacht"]))), Macro2.abort());
       if (Florist_exports.have() && Florist_exports.Crookweed.available()) {
@@ -39416,8 +39437,6 @@ var _templateObject3161;
 var _templateObject3229;
 var _templateObject3328;
 var _templateObject3427;
-var _templateObject3526;
-var _templateObject3624;
 function _toConsumableArray50(arr) {
   return _arrayWithoutHoles50(arr) || _iterableToArray50(arr) || _unsupportedIterableToArray64(arr) || _nonIterableSpread50();
 }
@@ -39494,28 +39513,6 @@ function _taggedTemplateLiteral87(strings, raw) {
   }
   return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } }));
 }
-function newarkValue() {
-  var lastCalculated = get("garbo_newarkValueDate", 0);
-  if (!get("garbo_newarkValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1e3) {
-    var newarkDrops = JSON.parse((0, import_kolmafia94.fileToBuffer)("garbo_item_lists.json"))["Newark"];
-    _set("garbo_newarkValue", (sum(newarkDrops, function(name) {
-      return garboValue((0, import_kolmafia94.toItem)(name));
-    }) / newarkDrops.length).toFixed(0));
-    _set("garbo_newarkValueDate", today);
-  }
-  return get("garbo_newarkValue", 0) * 0.25 * estimatedGarboTurns();
-}
-function felizValue() {
-  var lastCalculated = get("garbo_felizValueDate", 0);
-  if (!get("garbo_felizValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1e3) {
-    var felizDrops = JSON.parse((0, import_kolmafia94.fileToBuffer)("garbo_item_lists.json"))["Feliz Navidad"];
-    _set("garbo_felizValue", (sum(felizDrops, function(name) {
-      return garboValue((0, import_kolmafia94.toItem)(name));
-    }) / felizDrops.length).toFixed(0));
-    _set("garbo_felizValueDate", today);
-  }
-  return get("garbo_felizValue", 0);
-}
 function drivebyValue() {
   var embezzlers = embezzlerCount();
   var tourists = (estimatedGarboTurns() - embezzlers) * turnsToNC / (turnsToNC + 1);
@@ -39541,7 +39538,7 @@ function prepRobortender() {
       mandatory: true
     },
     Newark: {
-      priceCap: newarkValue(),
+      priceCap: newarkValue() * 0.25 * estimatedGarboTurns(),
       mandatory: false
     },
     "Feliz Navidad": {
@@ -39706,17 +39703,6 @@ var DailyFamiliarTasks = [{
         [].concat(_toConsumableArray50($familiars(_templateObject3427 || (_templateObject3427 = _taggedTemplateLiteral87(["Pocket Professor, Frumious Bandersnatch, Pair of Stomping Boots"])))), [meatFamiliar()]).forEach(tryFeast);
       }
     });
-  }
-}, {
-  name: "Initialize Feliz for Cincho",
-  ready: function() {
-    return have($item(_templateObject3526 || (_templateObject3526 = _taggedTemplateLiteral87(["Cincho de Mayo"])))) && !have($familiar(_templateObject3624 || (_templateObject3624 = _taggedTemplateLiteral87(["Robortender"]))));
-  },
-  completed: function() {
-    return !!get("garbo_felizValue", 0) || today - get("garbo_felizValueDate", 0) < 24 * 60 * 60 * 1e3;
-  },
-  do: function() {
-    return felizValue;
   }
 }];
 var DailyFamiliarsQuest = {
@@ -39904,8 +39890,8 @@ var _templateObject3165;
 var _templateObject3230;
 var _templateObject3329;
 var _templateObject3428;
-var _templateObject3527;
-var _templateObject3625;
+var _templateObject3526;
+var _templateObject3624;
 function _slicedToArray30(arr, i) {
   return _arrayWithHoles30(arr) || _iterableToArrayLimit30(arr, i) || _unsupportedIterableToArray66(arr, i) || _nonIterableRest30();
 }
@@ -40289,7 +40275,7 @@ function main() {
             }
             if (globalOptions.prefs.buyPass && (0, import_kolmafia103.availableAmount)($item(_templateObject3329 || (_templateObject3329 = _taggedTemplateLiteral89(["FunFunds\u2122"])))) >= 20 && !have($item(_templateObject3428 || (_templateObject3428 = _taggedTemplateLiteral89(["one-day ticket to Dinseylandfill"]))))) {
               (0, import_kolmafia103.print)("Buying a one-day ticket", HIGHLIGHT);
-              (0, import_kolmafia103.buy)($coinmaster(_templateObject3527 || (_templateObject3527 = _taggedTemplateLiteral89(["The Dinsey Company Store"]))), 1, $item(_templateObject3625 || (_templateObject3625 = _taggedTemplateLiteral89(["one-day ticket to Dinseylandfill"]))));
+              (0, import_kolmafia103.buy)($coinmaster(_templateObject3526 || (_templateObject3526 = _taggedTemplateLiteral89(["The Dinsey Company Store"]))), 1, $item(_templateObject3624 || (_templateObject3624 = _taggedTemplateLiteral89(["one-day ticket to Dinseylandfill"]))));
             }
           } finally {
             (0, import_kolmafia103.setAutoAttack)(0);
