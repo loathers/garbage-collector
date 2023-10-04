@@ -8,7 +8,6 @@ import {
   familiarWeight,
   fileToBuffer,
   fullnessLimit,
-  gametimeToInt,
   getLocketMonsters,
   getMonsters,
   gitAtHead,
@@ -562,8 +561,6 @@ export function freeRunConstraints(latteActionSource: boolean): {
     },
   };
 }
-
-export const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5;
 
 // Barf setup info
 const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;

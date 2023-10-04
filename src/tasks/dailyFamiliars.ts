@@ -19,6 +19,7 @@ import {
   $item,
   $items,
   CrimboShrub,
+  gameDay,
   get,
   have,
   Robortender,
@@ -34,7 +35,6 @@ import {
   baseMeat,
   garbageTouristRatio,
   GarboItemLists,
-  today,
   tryFeast,
   turnsToNC,
   userConfirmDialog,
@@ -45,8 +45,11 @@ import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 
 function newarkValue(): number {
-  const lastCalculated = get("garbo_newarkValueDate", 0);
-  if (!get("garbo_newarkValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
+  const lastCalculated = new Date(get("garbo_newarkValueDate", 0));
+  if (
+    !get("garbo_newarkValue", 0) ||
+    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
+  ) {
     const newarkDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
       "Newark"
     ];
@@ -54,14 +57,17 @@ function newarkValue(): number {
       "garbo_newarkValue",
       (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0),
     );
-    set("garbo_newarkValueDate", today);
+    set("garbo_newarkValueDate", gameDay().getTime());
   }
   return get("garbo_newarkValue", 0) * 0.25 * estimatedGarboTurns();
 }
 
 function felizValue(): number {
-  const lastCalculated = get("garbo_felizValueDate", 0);
-  if (!get("garbo_felizValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
+  const lastCalculated = new Date(get("garbo_felizValueDate", 0));
+  if (
+    !get("garbo_felizValue", 0) ||
+    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
+  ) {
     const felizDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
       "Feliz Navidad"
     ];
@@ -69,7 +75,7 @@ function felizValue(): number {
       "garbo_felizValue",
       (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0),
     );
-    set("garbo_felizValueDate", today);
+    set("garbo_felizValueDate", gameDay().getTime());
   }
   return get("garbo_felizValue", 0);
 }
@@ -224,7 +230,8 @@ const DailyFamiliarTasks: GarboTask[] = [
     name: "Initialize Feliz for Cincho",
     ready: () => have($item`Cincho de Mayo`) && !have($familiar`Robortender`),
     completed: () =>
-      !!get("garbo_felizValue", 0) || today - get("garbo_felizValueDate", 0) < 24 * 60 * 60 * 1000,
+      !!get("garbo_felizValue", 0) ||
+      gameDay().getTime() - get("garbo_felizValueDate", 0) < 24 * 60 * 60 * 1000,
     do: () => felizValue,
   },
 ];
