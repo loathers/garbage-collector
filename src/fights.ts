@@ -2145,14 +2145,18 @@ const freeKillSources = [
   ),
 ];
 
+function embezzlersInProgress(): boolean {
+  return (
+    get("beGregariousFightsLeft") > 0 ||
+    get("_monsterHabitatsFightsLeft") > 0 ||
+    !romanticMonsterImpossible() ||
+    Counter.get("Digitize Monster") <= 0
+  );
+}
+
 export function freeRunFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
-  if (
-    get("beGregariousFightsLeft") > 0 &&
-    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
-  ) {
-    return;
-  }
+  if (embezzlersInProgress()) return;
 
   propertyManager.setChoices({
     1387: 2, // "You will go find two friends and meet me here."
@@ -2182,12 +2186,7 @@ export function freeRunFights(): void {
 
 export function freeFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
-  if (
-    get("beGregariousFightsLeft") > 0 &&
-    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
-  ) {
-    return;
-  }
+  if (embezzlersInProgress()) return;
 
   propertyManager.setChoices({
     1387: 2, // "You will go find two friends and meet me here."
