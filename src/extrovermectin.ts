@@ -9,6 +9,7 @@ import {
   myFury,
   Phylum,
   retrieveItem,
+  retrievePrice,
   Skill,
   toPhylum,
   toSkill,
@@ -359,29 +360,33 @@ const shortBanishes = [
   combatItem($item`tennis ball`, 10000),
 ];
 
+function iceHouseAllowed(): boolean {
+  if (!get("garboDisallowIceHouseNotify", false) || globalOptions.prefs.autoUserConfirm) {
+    return false;
+  }
+
+  if (
+    userConfirmDialog(
+      "Would you like to allow garbo to ice house a fluffy bunny? This saves significant costs on banishers in the long run.",
+      false,
+    )
+  ) {
+    return true;
+  }
+  set("garboDisallowIceHouseNotify", true);
+  return false;
+}
+
 function banishBunny(): void {
   const banishes = [
     ...longBanishes,
     ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
   ].filter((b) => b.available());
 
-  let usingIceHouseBanish = false;
-  if (
+  const usingIceHouseBanish =
     getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
-    !get("garboDisallowIceHouseNotify", false) &&
-    mallPrice($item`ice house`) < 1000000 // Sanity check value, it would still be worth if intact for long enough, but above this point starts getting weird
-  ) {
-    if (
-      userConfirmDialog(
-        "Would you like to allow garbo to ice house a fluffy bunny? This saves significant costs on banishers in the long run.",
-        false,
-      )
-    ) {
-      usingIceHouseBanish = true;
-    } else if (!globalOptions.prefs.autoUserConfirm) {
-      set("garboDisallowIceHouseNotify", true);
-    }
-  }
+    retrievePrice($item`ice house`) < 1000000 &&
+    iceHouseAllowed();
 
   const banish = usingIceHouseBanish
     ? iceHouseBanish
