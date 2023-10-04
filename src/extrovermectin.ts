@@ -371,12 +371,16 @@ function banishBunny(): void {
     !get("garboDisallowIceHouseNotify", false) &&
     mallPrice($item`ice house`) < 1000000 // Sanity check value, it would still be worth if intact for long enough, but above this point starts getting weird
   ) {
-    userConfirmDialog(
-      "Would you like to allow garbo to ice house a fluffy bunny? This saves significant costs on banishers in the long run.",
-      false,
-    )
-      ? (usingIceHouseBanish = true)
-      : set("garboDisallowIceHouseNotify", true);
+    if (
+      userConfirmDialog(
+        "Would you like to allow garbo to ice house a fluffy bunny? This saves significant costs on banishers in the long run.",
+        false,
+      )
+    ) {
+      usingIceHouseBanish = true;
+    } else if (!globalOptions.prefs.autoUserConfirm) {
+      set("garboDisallowIceHouseNotify", true);
+    }
   }
 
   const banish = usingIceHouseBanish
