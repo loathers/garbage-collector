@@ -407,6 +407,7 @@ const DailyItemTasks: GarboTask[] = [
     },
     {
       name: "Shadow Forest",
+      after: "Continuum Transfunctioner",
       ready: () => have($item`Rufus's shadow lodestone`),
       completed: () => get("_shadowForestLooted"),
       do: () =>
