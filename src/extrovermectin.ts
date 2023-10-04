@@ -348,7 +348,7 @@ const freeBunnyBanish: Banish = {
 };
 
 const iceHouseBanish: Banish = {
-  name: "Mafia Middle Finger Ring",
+  name: "Ice House",
   available: () => true,
   macro: () => Macro.item($item`ice house`),
   prepare: () => acquire(1, $item`ice house`, 1000000),
