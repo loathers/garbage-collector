@@ -373,7 +373,7 @@ function banishBunny(): void {
   ) {
     userConfirmDialog(
       "Would you like to allow garbo to ice house a fluffy bunny? This saves significant costs on banishers in the long run.",
-      true,
+      false,
     )
       ? (usingIceHouseBanish = true)
       : set("garboDisallowIceHouseNotify", true);
