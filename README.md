@@ -138,7 +138,7 @@ Garbo can run for a specified number of turns, or run until you have a specified
 
 Running Garbo `help` will print out simple help documentation and not run any turns.
 
-If you have issues with this script, please post about them in the #garbage-collector channel within the [Ascension Speed Society Discord](https://discord.gg/tbUCRT5), and someone will eventually (at some point) endeavor to solve them. Someday. Maybe.
+If you have issues with this script, please make a github issue!
 
 ## Frequent Questions
 
