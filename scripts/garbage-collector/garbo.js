@@ -40013,6 +40013,7 @@ function main() {
     (0, import_kolmafia103.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.");
   }
   Args.fill(globalOptions, argString);
+  globalOptions.prefs.yachtzeechain = false;
   if (globalOptions.version)
     return;
   if (globalOptions.help) {
