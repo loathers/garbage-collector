@@ -100,6 +100,7 @@ import {
   FindActionSourceConstraints,
   findLeprechaunMultiplier,
   FloristFriar,
+  gameDay,
   get,
   getAverageAdventures,
   getFoldGroup,
@@ -164,7 +165,6 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
-  today,
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
@@ -2720,7 +2720,7 @@ function yachtzee(): void {
         !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
         garboValue($item`Ultimate Mind Destroyer`) >=
           2000 * (1 + numericModifier("meat drop") / 100) &&
-        (!lastUMDDate || today - Date.parse(lastUMDDate) >= 1000 * 60 * 60 * 24 * 7);
+        (!lastUMDDate || gameDay().getTime() - Date.parse(lastUMDDate) >= 1000 * 60 * 60 * 24 * 7);
 
       setChoice(918, getUMD ? 1 : 2);
 
