@@ -368,8 +368,10 @@ function banishBunny(): void {
   let usingIceHouseBanish = false;
   if (
     getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
-    !get("garboDisallowIceHouseNotify", false && mallPrice($item`ice house`) < 1000000) // Sanity check value, it would still be worth if intact for long enough, but above this point starts getting weird
+    !get("garboDisallowIceHouseNotify", false) &&
+    mallPrice($item`ice house`) < 1000000
   ) {
+    // Sanity check value, it would still be worth if intact for long enough, but above this point starts getting weird
     userConfirmDialog(
       "Would you like to allow garbo to ice house a fluffy bunny? This saves significant costs on banishers in the long run.",
       true,
