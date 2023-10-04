@@ -39,7 +39,6 @@ import { freeFightFamiliar } from "./familiar";
 import { freeRunConstraints, getUsingFreeBunnyBanish, ltbRun, setChoice } from "./lib";
 import { garboAdventure, Macro } from "./combat";
 import { acquire } from "./acquire";
-import { globalOptions } from "./config";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 const crate = $monster`crate`;
@@ -124,11 +123,7 @@ export function doingGregFight(): boolean {
     have($skill`Just the Facts`) &&
     (get("_monsterHabitatsRecalled") < 3 || get("_monsterHabitatsFightsLeft") > 0);
 
-  return (
-    extrovermectin ||
-    habitat ||
-    (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted"))
-  );
+  return extrovermectin || habitat;
 }
 
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
