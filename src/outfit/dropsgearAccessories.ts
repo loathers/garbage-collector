@@ -15,6 +15,7 @@ import {
 import {
   baseMeat,
   BonusEquipMode,
+  felizValue,
   maxPassiveDamage,
   modeIsFree,
   monsterManuelAvailable,
@@ -92,7 +93,7 @@ function cinchoDeMayo(mode: BonusEquipMode) {
   }
 
   // Account for a single use of Projectile Pinata, which gives 3x Robortender candies
-  return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * get("garbo_felizValue", 0)]]);
+  return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
 }
 
 /*

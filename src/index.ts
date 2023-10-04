@@ -104,7 +104,7 @@ export function canContinue(): boolean {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27593);
+  sinceKolmafiaRevision(27628);
   checkGithubVersion();
 
   // Hit up main.php to get out of easily escapable choices
@@ -119,6 +119,7 @@ export function main(argString = ""): void {
   }
 
   Args.fill(globalOptions, argString);
+  globalOptions.prefs.yachtzeechain = false;
   if (globalOptions.version) return; // Since we always print the version, all done!
   if (globalOptions.help) {
     Args.showHelp(globalOptions);

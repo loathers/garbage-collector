@@ -3,7 +3,6 @@ import {
   cliExecute,
   equip,
   familiarEquippedEquipment,
-  fileToBuffer,
   hippyStoneBroken,
   itemAmount,
   myPrimestat,
@@ -22,8 +21,6 @@ import {
   get,
   have,
   Robortender,
-  set,
-  sum,
   withProperty,
 } from "libram";
 import { withStash } from "../clan";
@@ -32,47 +29,16 @@ import { embezzlerCount } from "../embezzler";
 import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,
+  felizValue,
   garbageTouristRatio,
-  GarboItemLists,
-  today,
+  newarkValue,
   tryFeast,
   turnsToNC,
   userConfirmDialog,
 } from "../lib";
-import { garboValue } from "../garboValue";
 import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
-
-function newarkValue(): number {
-  const lastCalculated = get("garbo_newarkValueDate", 0);
-  if (!get("garbo_newarkValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
-    const newarkDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
-      "Newark"
-    ];
-    set(
-      "garbo_newarkValue",
-      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0),
-    );
-    set("garbo_newarkValueDate", today);
-  }
-  return get("garbo_newarkValue", 0) * 0.25 * estimatedGarboTurns();
-}
-
-function felizValue(): number {
-  const lastCalculated = get("garbo_felizValueDate", 0);
-  if (!get("garbo_felizValue", 0) || today - lastCalculated > 7 * 24 * 60 * 60 * 1000) {
-    const felizDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
-      "Feliz Navidad"
-    ];
-    set(
-      "garbo_felizValue",
-      (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0),
-    );
-    set("garbo_felizValueDate", today);
-  }
-  return get("garbo_felizValue", 0);
-}
 
 function drivebyValue(): number {
   const embezzlers = embezzlerCount();
@@ -103,7 +69,7 @@ export function prepRobortender(): void {
   const roboDrinks = {
     "Drive-by shooting": { priceCap: drivebyValue(), mandatory: true },
     Newark: {
-      priceCap: newarkValue(),
+      priceCap: newarkValue() * 0.25 * estimatedGarboTurns(),
       mandatory: false,
     },
     "Feliz Navidad": { priceCap: felizValue() * 0.25 * estimatedGarboTurns(), mandatory: false },
@@ -219,13 +185,6 @@ const DailyFamiliarTasks: GarboTask[] = [
         }
       });
     },
-  },
-  {
-    name: "Initialize Feliz for Cincho",
-    ready: () => have($item`Cincho de Mayo`) && !have($familiar`Robortender`),
-    completed: () =>
-      !!get("garbo_felizValue", 0) || today - get("garbo_felizValueDate", 0) < 24 * 60 * 60 * 1000,
-    do: () => felizValue,
   },
 ];
 

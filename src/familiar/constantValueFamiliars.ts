@@ -11,7 +11,7 @@ import {
   have,
   Robortender,
 } from "libram";
-import { baseMeat } from "../lib";
+import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GeneralFamiliar } from "./lib";
 
@@ -46,12 +46,8 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     familiar: $familiar`Robortender`,
     value: () =>
       garboValue($item`elemental sugarcube`) / 5 +
-      (Robortender.currentDrinks().includes($item`Feliz Navidad`)
-        ? get("garbo_felizValue", 0) * 0.25
-        : 0) +
-      (Robortender.currentDrinks().includes($item`Newark`)
-        ? get("garbo_newarkValue", 0) * 0.25
-        : 0),
+      (Robortender.currentDrinks().includes($item`Feliz Navidad`) ? felizValue() * 0.25 : 0) +
+      (Robortender.currentDrinks().includes($item`Newark`) ? newarkValue() * 0.25 : 0),
   },
   {
     familiar: $familiar`Twitching Space Critter`,

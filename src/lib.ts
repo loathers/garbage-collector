@@ -8,7 +8,6 @@ import {
   familiarWeight,
   fileToBuffer,
   fullnessLimit,
-  gametimeToInt,
   getLocketMonsters,
   getMonsters,
   gitAtHead,
@@ -36,6 +35,7 @@ import {
   myMaxmp,
   myMp,
   mySoulsauce,
+  mySpleenUse,
   myThrall,
   myTurncount,
   numericModifier,
@@ -48,7 +48,9 @@ import {
   setLocation,
   Skill,
   soulsauceCost,
+  spleenLimit,
   todayToString,
+  toItem,
   toSlot,
   totalFreeRests,
   toUrl,
@@ -76,7 +78,9 @@ import {
   CombatLoversLocket,
   Counter,
   ensureFreeRun,
+  gameDay,
   get,
+  getBanishedMonsters,
   getKramcoWandererChance,
   getTodaysHolidayWanderers,
   have,
@@ -483,20 +487,82 @@ export function userConfirmDialog(msg: string, defaultValue: boolean, timeOut?: 
   return userConfirm(msg);
 }
 
-export const latteActionSourceFinderConstraints = {
-  allowedAction: (action: ActionSource): boolean => {
-    if (!have($item`latte lovers member's mug`)) return true;
-    const forceEquipsOtherThanLatte = (
-      action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
-    ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
-    return (
-      forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
-      sum(forceEquipsOtherThanLatte, weaponHands) < 2
-    );
-  },
-};
+function determineFreeBunnyBanish(): boolean {
+  const extraOrbFights = have($item`miniature crystal ball`) ? 1 : 0;
+  const possibleGregsFromSpleen =
+    Math.floor((spleenLimit() - mySpleenUse()) / 2) * (3 + extraOrbFights);
+  const currentAvailableGregs = Math.max(0, get("beGregariousCharges")) * (3 + extraOrbFights);
+  const habitatFights = (3 - clamp(get("_monsterHabitatsRecalled"), 0, 3)) * (5 + extraOrbFights);
+  const expectedPocketProfFights = !have($familiar`Pocket Professor`)
+    ? 0
+    : (!get("_garbo_meatChain", false) ? Math.max(10 - get("_pocketProfessorLectures"), 0) : 0) +
+      (!get("_garbo_weightChain", false) ? Math.min(15 - get("_pocketProfessorLectures"), 5) : 0);
+  const expectedDigitizesDuringGregs =
+    SourceTerminal.have() && get("_sourceTerminalDigitizeUses") < 3 ? 3 : 0; // To encounter 3 digitize monsters it takes 91 adventures. Just estimate we fight all 3 to be safe.
+  const expectedReplacerFights =
+    (have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0) +
+    (have($item`Powerful Glove`)
+      ? Math.floor((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
+      : 0);
+  const useFreeBanishes =
+    getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
+    // 60 turns of banish from mafia middle finger ring, and 30 x 2 from two snokebombs
+    // Account for our chain-starting fight as well as other embezzler sources that occur during our greg chain
+    1 +
+      possibleGregsFromSpleen +
+      currentAvailableGregs +
+      habitatFights +
+      expectedPocketProfFights +
+      expectedDigitizesDuringGregs +
+      expectedReplacerFights <
+      120 &&
+    habitatFights + currentAvailableGregs + possibleGregsFromSpleen > 0 &&
+    have($item`mafia middle finger ring`) &&
+    !get("_mafiaMiddleFingerRingUsed") &&
+    have($skill`Snokebomb`) &&
+    get(`_snokebombUsed`) <= 1;
 
-export const today = Date.now() - gametimeToInt() - 1000 * 60 * 3.5;
+  return useFreeBanishes;
+}
+
+let usingFreeBunnyBanish: boolean;
+export function getUsingFreeBunnyBanish(): boolean {
+  if (usingFreeBunnyBanish === undefined) {
+    usingFreeBunnyBanish = determineFreeBunnyBanish();
+  }
+  return usingFreeBunnyBanish;
+}
+
+const reservedBanishes = new Map<
+  ActionSource["source"],
+  () => boolean // function that returns true if we should disallow usage of the source while we're reserving embezzler banishers
+>([
+  [$skill`Snokebomb`, () => get(`_snokebombUsed`) > 0], // We intend to save at least 2 uses for embezzlers, so if we've already used one, disallow usage.
+  [$item`mafia middle finger ring`, () => true],
+]);
+
+export function freeRunConstraints(latteActionSource: boolean): {
+  allowedAction: (action: ActionSource) => boolean;
+} {
+  return {
+    allowedAction: (action: ActionSource): boolean => {
+      const disallowUsage = reservedBanishes.get(action.source);
+
+      if (!have($item`latte lovers member's mug`) || !latteActionSource) {
+        return !(disallowUsage?.() && getUsingFreeBunnyBanish());
+      }
+
+      const forceEquipsOtherThanLatte = (
+        action?.constraints?.equipmentRequirements?.().maximizeOptions.forceEquip ?? []
+      ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
+      return (
+        forceEquipsOtherThanLatte.every((equipment) => toSlot(equipment) !== $slot`off-hand`) &&
+        sum(forceEquipsOtherThanLatte, weaponHands) < 2 &&
+        !(disallowUsage?.() && getUsingFreeBunnyBanish())
+      );
+    },
+  };
+}
 
 // Barf setup info
 const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;
@@ -781,4 +847,40 @@ export function monsterManuelAvailable(): boolean {
   if (monsterManuelCached !== undefined) return Boolean(monsterManuelCached);
   monsterManuelCached = visitUrl("questlog.php?which=3").includes("Monster Manuel");
   return Boolean(monsterManuelCached);
+}
+
+export function felizValue(): number {
+  const lastCalculated = new Date(get("garbo_felizValueDate", 0));
+  if (
+    !get("garbo_felizValue", 0) ||
+    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
+  ) {
+    const felizDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
+      "Feliz Navidad"
+    ];
+    set(
+      "garbo_felizValue",
+      (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0),
+    );
+    set("garbo_felizValueDate", gameDay().getTime());
+  }
+  return get("garbo_felizValue", 0);
+}
+
+export function newarkValue(): number {
+  const lastCalculated = new Date(get("garbo_newarkValueDate", 0));
+  if (
+    !get("garbo_newarkValue", 0) ||
+    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
+  ) {
+    const newarkDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
+      "Newark"
+    ];
+    set(
+      "garbo_newarkValue",
+      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0),
+    );
+    set("garbo_newarkValueDate", gameDay().getTime());
+  }
+  return get("garbo_newarkValue", 0);
 }
