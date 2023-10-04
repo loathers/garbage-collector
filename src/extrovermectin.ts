@@ -33,10 +33,17 @@ import {
   maxBy,
   property,
   Requirement,
+  set,
   tryFindFreeRun,
 } from "libram";
 import { freeFightFamiliar } from "./familiar";
-import { freeRunConstraints, getUsingFreeBunnyBanish, ltbRun, setChoice } from "./lib";
+import {
+  freeRunConstraints,
+  getUsingFreeBunnyBanish,
+  ltbRun,
+  setChoice,
+  userConfirmDialog,
+} from "./lib";
 import { garboAdventure, Macro } from "./combat";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
@@ -340,6 +347,13 @@ const freeBunnyBanish: Banish = {
   },
 };
 
+const iceHouseBanish: Banish = {
+  name: "Mafia Middle Finger Ring",
+  available: () => true,
+  macro: () => Macro.item($item`ice house`),
+  prepare: () => acquire(1, $item`ice house`, 1000000),
+};
+
 const shortBanishes = [
   combatItem($item`Louder Than Bomb`, 10000),
   combatItem($item`tennis ball`, 10000),
@@ -351,7 +365,22 @@ function banishBunny(): void {
     ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
   ].filter((b) => b.available());
 
-  const banish = getUsingFreeBunnyBanish()
+  let usingIceHouseBanish = false;
+  if (
+    getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
+    !get("garboDisallowIceHouseNotify", false && mallPrice($item`ice house`) < 1000000) // Sanity check value, it would still be worth if intact for long enough, but above this point starts getting weird
+  ) {
+    userConfirmDialog(
+      "Would you like to allow garbo to ice house a fluffy bunny? This saves significant costs on banishers in the long run.",
+      true,
+    )
+      ? (usingIceHouseBanish = true)
+      : set("garboDisallowIceHouseNotify", true);
+  }
+
+  const banish = usingIceHouseBanish
+    ? iceHouseBanish
+    : getUsingFreeBunnyBanish()
     ? freeBunnyBanish
     : maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
   do {
