@@ -119,6 +119,7 @@ export function main(argString = ""): void {
   }
 
   Args.fill(globalOptions, argString);
+  globalOptions.prefs.yachtzeechain = false;
   if (globalOptions.version) return; // Since we always print the version, all done!
   if (globalOptions.help) {
     Args.showHelp(globalOptions);
