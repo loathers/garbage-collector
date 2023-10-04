@@ -50,6 +50,7 @@ import {
   soulsauceCost,
   spleenLimit,
   todayToString,
+  toItem,
   toSlot,
   totalFreeRests,
   toUrl,
@@ -77,6 +78,7 @@ import {
   CombatLoversLocket,
   Counter,
   ensureFreeRun,
+  gameDay,
   get,
   getBanishedMonsters,
   getKramcoWandererChance,
@@ -845,4 +847,40 @@ export function monsterManuelAvailable(): boolean {
   if (monsterManuelCached !== undefined) return Boolean(monsterManuelCached);
   monsterManuelCached = visitUrl("questlog.php?which=3").includes("Monster Manuel");
   return Boolean(monsterManuelCached);
+}
+
+export function felizValue(): number {
+  const lastCalculated = new Date(get("garbo_felizValueDate", 0));
+  if (
+    !get("garbo_felizValue", 0) ||
+    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
+  ) {
+    const felizDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
+      "Feliz Navidad"
+    ];
+    set(
+      "garbo_felizValue",
+      (sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length).toFixed(0),
+    );
+    set("garbo_felizValueDate", gameDay().getTime());
+  }
+  return get("garbo_felizValue", 0);
+}
+
+export function newarkValue(): number {
+  const lastCalculated = new Date(get("garbo_newarkValueDate", 0));
+  if (
+    !get("garbo_newarkValue", 0) ||
+    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
+  ) {
+    const newarkDrops = (JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists)[
+      "Newark"
+    ];
+    set(
+      "garbo_newarkValue",
+      (sum(newarkDrops, (name) => garboValue(toItem(name))) / newarkDrops.length).toFixed(0),
+    );
+    set("garbo_newarkValueDate", gameDay().getTime());
+  }
+  return get("garbo_newarkValue", 0);
 }
