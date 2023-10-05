@@ -39,7 +39,7 @@ Consult [this page](ITEMS.md) for a list of various items that are useful to hav
 To install the script, use the following command in the KoLMafia CLI.
 
 ```text
-git checkout https://github.com/loathers/garbage-collector.git release
+git checkout loathers/garbage-collector.git release
 ```
 
 Before running Garbage Collector, there are a few tasks you must do.
@@ -87,7 +87,7 @@ That being said, having garbo try to pull every single item it tries to use woul
 
 We aren't saying garbo won't work if you break prism and leave all of your stuff in Hagnk's. But we are saying that garbo is likely to run into errors, and when you report those errors, our response will inevitably be "you should pull all of your stuff from Hagnk's."
 
-One final note is that we aren't actively opposed to supporting people leaving their stuff in Hagnk's; if you do so, and you find yourself running into specific issues, feel free to [put in a PR](https://loathing-associates-scripting-society.github.io/KoL-Scripting-Resources/PR-Overview.html).
+One final note is that we aren't actively opposed to supporting people leaving their stuff in Hagnk's; if you do so, and you find yourself running into specific issues, feel free to [put in a PR](https://loathers.github.io/PR-Overview.html).
 
 ## Usage
 
@@ -138,7 +138,7 @@ Garbo can run for a specified number of turns, or run until you have a specified
 
 Running Garbo `help` will print out simple help documentation and not run any turns.
 
-If you have issues with this script, please make a github issue!
+If you have issues with this script, please [make a github issue](https://github.com/loathers/garbage-collector/issues)!
 
 ## Frequent Questions
 
@@ -174,4 +174,4 @@ Garbo will use your consumables and potions if it is deemed profitable to do so.
 
 > I was trying to click around the mall/campground/inventory/etc and then Garbo crashed, and now it is behaving strangely! Is this a bug?
 
-Garbo can be very fragile during some particular segments of the run and it is strongly recommended you do not click on anything while it is performing. This isn't a bug, Garbo is just pretty complex and the last thing either of us wants is to try looking for a bug that isn't there! Go make yourself a sandwich, do some chores, or relax and watch the meat number go up.
+Garbo can be very fragile during some particular segments of the run and it is strongly recommended you do not click on anything while it is performing. This isn't a bug, Garbo is just pretty complex and the last thing either of us wants is to try looking for a bug that isn't there! Go make yourself a sandwich, do some chores, or spend six hours reading random wikipedia pages.
