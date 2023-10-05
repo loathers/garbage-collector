@@ -361,7 +361,7 @@ const shortBanishes = [
 ];
 
 function iceHouseAllowed(): boolean {
-  if (!get("garboDisallowIceHouseNotify", false) || globalOptions.prefs.autoUserConfirm) {
+  if (get("garboDisallowIceHouseNotify", false) || globalOptions.prefs.autoUserConfirm) {
     return false;
   }
 
