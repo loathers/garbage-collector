@@ -5,6 +5,7 @@ import {
   cliExecute,
   getClanLounge,
   haveEquipped,
+  isBanished,
   itemAmount,
   Location,
   mallPrice,
@@ -473,9 +474,7 @@ const gregFights = (
     const run = ltbRun();
     const runMacro = getUsingFreeBunnyBanish() ? Macro.skill($skill`Snokebomb`) : ltbRun().macro;
     run.constraints.preparation?.();
-    const bunnyBanish = [...getBanishedMonsters().entries()].find(
-      ([, monster]) => monster === $monster`fluffy bunny`,
-    )?.[0];
+    const bunnyIsBanished = isBanished($monster`fluffy bunny`);
     const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
     adventureFunction(
       $location`The Dire Warren`,
@@ -483,7 +482,10 @@ const gregFights = (
       Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
     );
 
-    if (get("lastEncounter") === $monster`fluffy bunny`.name && bunnyBanish) {
+    if (get("lastEncounter") === $monster`fluffy bunny`.name && bunnyIsBanished) {
+      const bunnyBanish = [...getBanishedMonsters().entries()].find(
+        ([, monster]) => monster === $monster`fluffy bunny`,
+      )?.[0];
       abort(
         `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${monsterProp} preference is nonzero and should probably be zero.`,
       );
