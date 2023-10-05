@@ -6,6 +6,9 @@ labels: ""
 assignees: ""
 ---
 
+**Before Reporting**
+Ensure that KoLMafia and garbo are both up to date before reporting a bug. If you have installed mafia in a weird or non-standard way, let us know any details about that here. But also, if you've installed mafia in a weird or non-standard way, I'm telling you right now that that's your bug. Also, check existing github issues to see if this has already been reported. If it has, consider leaving a comment with any additional information you can give on _that_ issue, instead of making a new one.
+
 **Describe the bug**
 A clear and concise description of what the bug is. Be sure that the behavior you're describing _is_ a bug--garbo may do things you don't understand, but not understanding something isn't a reason to report it. You should also take that advice into your life outside KoL; the post-9/11 security state has taught is to be wary of our friends and neighbors in a way that is ultimately detrimental to society.
 
@@ -22,9 +25,6 @@ A clear and concise description of what you expected to happen.
 
 **Session Log**
 Attach a full KoLMafia session log from the day you encountered the bug. Include details about when in the log the bug occurred to help developers rapidly find the error. Copy and paste any associated red text printed to the gCLI during this error.
-
-**KoLMafia Version**
-Ensure that KoLMafia and garbo are both up to date before reporting a bug. If you have installed mafia in a weird or non-standard way, let us know any details about that here. But also, if you've installed mafia in a weird or non-standard way, I'm telling you right now that that's your bug.
 
 **Additional context**
 Add any other context about the problem here. Does this always happen post-loop, but never pre-loop? Did this start happening when you got some particular IotM?
