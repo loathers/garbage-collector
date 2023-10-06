@@ -13,7 +13,6 @@
     - [`ascend` flag](#ascend-flag)
     - [`nodiet` flag](#nodiet-flag)
     - [`simdiet` flag](#simdiet-flag)
-    - [`yachtzeechain` flag](#yachtzeechain-flag)
     - [`workshed` arg](#workshed-arg)
     - [`quick` flag](#quick-flag)
     - [Turncount](#turncount)
@@ -89,9 +88,13 @@ We aren't saying garbo won't work if you break prism and leave all of your stuff
 
 One final note is that we aren't actively opposed to supporting people leaving their stuff in Hagnk's; if you do so, and you find yourself running into specific issues, feel free to [put in a PR](https://loathers.github.io/PR-Overview.html).
 
+### Avoid playing outside mafia, or using another mafia install
+
+Garbo relies on Mafia as a source of truth about the game and about your player-state. Mafia, in turn, relies on watching you play your turns, and remembering certain actions you took, in order to act as that source of truth. If you play outside Mafia, or if you play in a different Mafia install than the one you operate garbo in, you risk creating a schism between the world as it is and the world as Mafia believes it to be. Garbo will base its decisions on the latter, the schism will become a chasm, and your items and meat will fill that chasm. Don't do it!
+
 ## Usage
 
-To invoke Garbage Collector, type `garbo` in the Mafia GCLI. In addition, you can use various flags to configure how Garbage Collector runs. Additionally, you can also specify the number of turns for garbo to run.
+To invoke Garbage Collector, type `garbo` in the Mafia GCLI. In addition, you can use various flags to configure how Garbage Collector runs, or specify the number of turns you want garbo to run. Typing `garbo help` in the CLI will print a helpful list of these arguments and flags and stuff. A typical garbo invocation for you might look like `garbo ascend workshed=mts` (if you're ascending, and want garbo to switch in the Model Train Set for you), or `garbo -1` (if you want garbo to save a turn at the end of running), or `garbo nodiet 69` (if you want garbo to only spend 69 turns, and not to diet).
 
 ### `nobarf` flag
 
@@ -112,10 +115,6 @@ _EXPERIMENTAL_ Garbo will not eat or drink anything as part of the run (includin
 ### `simdiet` flag
 
 Garbo will list the optimal diet it plans to consume computed from your defined mpa and current prices, and then exit.
-
-### `yachtzeechain` flag
-
-_EXPERIMENTAL_ Garbo will attempt to chain the Yachtzee! NC after all the free fights are completed, just before it attempts embezzlers. This command cannot be run in conjuction with the `nodiet` flag. Refer to `help` for more info on the requirements needed to run this.
 
 ### `workshed` arg
 
@@ -138,7 +137,7 @@ Garbo can run for a specified number of turns, or run until you have a specified
 
 Running Garbo `help` will print out simple help documentation and not run any turns.
 
-If you have issues with this script, please [make a github issue](https://github.com/loathers/garbage-collector/issues)!
+If you have issues with this script, please [file a bug report](BUGS.md)!
 
 ## Frequent Questions
 
