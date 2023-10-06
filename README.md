@@ -145,6 +145,10 @@ If you have issues with this script, please [file a bug report](BUGS.md)!
 
 Garbo will use your resources to earn meat everywhere possible such as the Hidden Bowling Alley, The Haunted Library, The Deep Dark Jungle, or The Ice Hotel. These generally won't cost a turn to do.
 
+> It has been X days since the new IotM was released. Are there any plans to add the support for it to Garbo?
+
+People who volunteer at Garbo during their free time have lives too. In addition, Items of the Month vary in complexity, and we can't support content that isn't fully spaded and included in Mafia. Chances are, someone sometime will add support for the new IotM if it is useful; [this person could even be you](https://loathers.github.io/PR-Overview.html)!
+
 > I'm in a clan with a loaded stash, can Garbo make use of the Pantsgiving that's sitting there waiting for me to pull it?
 
 When possible, Garbo will try to access a friendly clan stash to see if it can access certain items you don't have that can profitably augment farming -- things like a Movable Feast, a sheet of Spooky Putty, a Haiku Katana, etc. To set your stash clan, copy the name of your intended stash clan and run the following code (using BAFH as an example):

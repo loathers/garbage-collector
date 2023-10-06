@@ -7,7 +7,7 @@ assignees: ""
 ---
 
 **Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is, or the piece of content you'd like support added for and why. If that piece of content came out extremely recently (e.g., this month), you almost certainly shouldn't file this feature request unless the next section is going to be extremely detailed.
+A clear and concise description of what the problem is, or the piece of content you'd like support added for and why. If that piece of content came out extremely recently (e.g., this month), you almost certainly shouldn't file this feature request unless the next section is going to be extremely, extremely detailed--we're probably working on it!
 
 **Describe the solution you'd like**
 A description of what the best behavior should be, and how that might interact with various parts of the garbo codebase.
