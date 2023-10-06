@@ -39285,7 +39285,6 @@ var DailyItemTasks = [].concat(_toConsumableArray49(SummonTomes.map(function(ski
   ready: function() {
     return have($item(_templateObject877 || (_templateObject877 = _taggedTemplateLiteral85(["Rufus's shadow lodestone"]))));
   },
-  after: ["Daily/Continuum Transfunctioner"],
   completed: function() {
     return get("_shadowForestLooted");
   },
