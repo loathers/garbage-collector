@@ -1,13 +1,14 @@
 import { Engine, EngineOptions, getTasks, Quest, StrictCombatTask } from "grimoire-kolmafia";
 import { eventLog, safeInterrupt, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
-import { Delayed, get, undelay } from "libram";
+import { $skill, Delayed, get, SourceTerminal, undelay } from "libram";
 import { myTotalTurnsSpent, print } from "kolmafia";
 import postCombatActions from "../post";
 
 export type GarboTask = StrictCombatTask & {
   sobriety?: Delayed<"drunk" | "sober">;
   spendsTurn: Delayed<boolean>;
+  duplicate?: Delayed<boolean>;
 };
 
 function logEmbezzler(encounterType: string) {
@@ -34,6 +35,11 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   execute(task: GarboTask): void {
     safeInterrupt();
     const spentTurns = myTotalTurnsSpent();
+    const duplicate = undelay(task.duplicate);
+    const before = SourceTerminal.getSkills();
+    if (duplicate && SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0) {
+      SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
+    }
     super.execute(task);
     if (myTotalTurnsSpent() !== spentTurns) {
       postCombatActions();
@@ -44,6 +50,11 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
     if (foughtAnEmbezzler) logEmbezzler(task.name);
     wanderer().clear();
+    if (duplicate && SourceTerminal.have()) {
+      for (const skill of before) {
+        SourceTerminal.educate(skill);
+      }
+    }
   }
 }
 
