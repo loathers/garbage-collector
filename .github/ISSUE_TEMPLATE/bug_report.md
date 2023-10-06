@@ -10,7 +10,7 @@ assignees: ""
 Ensure that KoLMafia and garbo are both up to date before reporting a bug. If you have installed mafia in a weird or non-standard way, let us know any details about that here. But also, if you've installed mafia in a weird or non-standard way, I'm telling you right now that that's your bug. Also, check existing github issues to see if this has already been reported. If it has, consider leaving a comment with any additional information you can give on _that_ issue, instead of making a new one.
 
 **Describe the bug**
-A clear and concise description of what the bug is. Be sure that the behavior you're describing _is_ a bug--garbo may do things you don't understand, but not understanding something isn't a reason to report it. You should also take that advice into your life outside KoL; the post-9/11 security state has taught is to be wary of our friends and neighbors in a way that is ultimately detrimental to society.
+A clear and concise description of what the bug is. Be sure that the behavior you're describing _is_ a bug--garbo may do things you don't understand, but not understanding something isn't strictly a reason to report it.
 
 **To Reproduce**
 Steps to reproduce the behavior:
