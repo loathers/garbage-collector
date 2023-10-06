@@ -7,13 +7,13 @@ assignees: ""
 ---
 
 **Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+A clear and concise description of what the problem is, or the piece of content you'd like support added for and why. If that piece of content came out extremely recently (e.g., this month), you almost certainly shouldn't file this feature request unless the next section is going to be extremely detailed.
 
 **Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+A description of what the best behavior should be, and how that might interact with various parts of the garbo codebase.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**Describe alternatives and complications**
+A clear and concise description of any alternative implementations, or potential pitfalls for implementation.
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
