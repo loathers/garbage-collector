@@ -24,7 +24,7 @@ Garbo is a big, complicated script that often finds itself doing big, complicate
 Given all this, how can we know that something is a bug? We have a few rules of thumb:
 
 - In general, if Garbo is outside barf mountain and is not fighting a Knob Goblin Embezzler, it should probably not be spending turns.
-- Unfortunately, like all rules, this has exceptions. We may spend turns to convert Maps to Safety Shelter Grimacia Prime into pills, or we may hit a turn-taking superlikely in the Deep Dark Jungle, or any of a dozen other things.
+  - Unfortunately, like all rules, this has exceptions. We may spend turns to convert Maps to Safety Shelter Grimacia Prime into pills, or we may hit a turn-taking superlikely in the Deep Dark Jungle, or any of a dozen other things.
 - Garbo aborting is often, but not always, a bug. Obviously aborting is bad, but if garbo is not set up for success (e.g., it finds that the things Mafia believes are not true), it may abort to try to avoid making terrible decisions. The best way to decide if an abort is based on a garbo bug is to **read the associated error text**. Expanding and improving error text is something we're actively working on, so please don't let these efforts be in vain.
 - It turns out we actually only have two rules of thumb, which works out great given the limitations of human anatomy.
 
