@@ -25,6 +25,7 @@ const AscendingTasks: GarboTask[] = [
       if (handlingChoice()) runChoice(-1);
     },
     choices: { 1414: bestLockPickChoice },
+    spendsTurn: false,
   },
   ...[
     {
@@ -48,6 +49,7 @@ const AscendingTasks: GarboTask[] = [
     completed: () => !have(key) || garboValue(lime) < garboValue($item`lime`),
     do: () => create(lime),
     ready: () => (globalOptions.ascend && freeCrafts("food") > 0) || get("hasChef"),
+    spendsTurn: false,
   })),
 ];
 

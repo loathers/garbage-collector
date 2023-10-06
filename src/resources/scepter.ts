@@ -18,6 +18,7 @@ import { EMBEZZLER_MULTIPLIER } from "../lib";
 import { Potion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { canAdventure, canEquip, Item, myLevel, myMeat, Skill, toSlot, useSkill } from "kolmafia";
+import { GarboTask } from "../tasks/engine";
 
 type ScepterSkill = {
   skill: Skill;
@@ -156,15 +157,16 @@ export function shouldAugustCast(skill: Skill) {
   );
 }
 
-function summonTask({ skill }: ScepterSkill) {
+function summonTask({ skill }: ScepterSkill): GarboTask {
   return {
     name: skill.name,
     completed: () => !shouldAugustCast(skill),
     do: () => useSkill(skill),
+    spendsTurn: false,
   };
 }
 
-export function augustSummonTasks() {
+export function augustSummonTasks(): GarboTask[] {
   return AugustScepter.have()
     ? SKILL_OPTIONS.filter(({ type }) => type === "summon").map(summonTask)
     : [];

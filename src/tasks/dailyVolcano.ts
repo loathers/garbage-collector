@@ -91,6 +91,7 @@ const DailyVolcanoTasks: GarboTask[] = [
     ready: () => realmAvailable("hot"),
     completed: () => get("_volcanoItemRedeemed"),
     do: checkVolcanoQuest,
+    spendsTurn: false,
   },
   {
     name: "Free Volcoino",
@@ -105,6 +106,7 @@ const DailyVolcanoTasks: GarboTask[] = [
         (x) => <AcquireItem>{ item: x },
       ),
     outfit: { modifier: "disco style" },
+    spendsTurn: false,
   },
   {
     name: "Free Mining",
@@ -120,6 +122,7 @@ const DailyVolcanoTasks: GarboTask[] = [
         restoreHp(myMaxhp() * 0.9);
       }
     },
+    spendsTurn: false,
   },
 ];
 
