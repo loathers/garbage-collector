@@ -45,6 +45,7 @@ import {
   $slot,
   CinchoDeMayo,
   Counter,
+  Delayed,
   get,
   have,
   SongBoom,
@@ -55,6 +56,7 @@ import { globalOptions } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 import { embezzler, maxPassiveDamage, monsterManuelAvailable } from "./lib";
+import { CombatStrategy } from "grimoire-kolmafia";
 
 export function shouldRedigitize(): boolean {
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
@@ -730,4 +732,11 @@ export function garboAdventureAuto<M extends StrictMacro>(
   autoMacro.setAutoAttack();
   makeCcs(nextMacro);
   runCombatBy(() => adv1(loc, -1, ""));
+}
+
+export class GarboStrategy extends CombatStrategy {
+  constructor(autoattack: Delayed<Macro>, postAuto = autoattack) {
+    super();
+    this.autoattack(autoattack).macro(postAuto);
+  }
 }
