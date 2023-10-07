@@ -6,8 +6,8 @@ import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
 import { BonusEquipMode } from "../lib";
-import { DraggableFight, WanderOptions } from "../libgarbo";
 import { wanderer } from "../garboWanderer";
+import { WanderDetails } from "../libgarbo";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
@@ -15,7 +15,7 @@ type MenuOptions = {
   includeExperienceFamiliars?: boolean;
   allowAttackFamiliars?: boolean;
   duplicate?: boolean;
-  wanderOptions?: DraggableFight | WanderOptions;
+  wanderOptions?: WanderDetails;
 };
 export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}): Outfit {
   cleaverCheck();
