@@ -24,7 +24,7 @@ const AscendingTasks: GarboTask[] = [
       useSkill($skill`Lock Picking`);
       if (handlingChoice()) runChoice(-1);
     },
-    choices: { 1414: bestLockPickChoice },
+    choices: () => ({ 1414: bestLockPickChoice() }),
     spendsTurn: false,
   },
   ...[
