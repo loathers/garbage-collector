@@ -19,7 +19,7 @@
   "dependencies": {
     "core-js": "^3.32.2",
     "grimoire-kolmafia": "^0.3.22",
-    "kolmafia": "^5.27622.0",
+    "kolmafia": "^5.27628.0",
     "libram": "^0.8.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

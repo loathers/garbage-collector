@@ -5,7 +5,9 @@ import {
   cliExecute,
   getClanLounge,
   haveEquipped,
+  isBanished,
   itemAmount,
+  Location,
   mallPrice,
   myAdventures,
   myHash,
@@ -48,7 +50,14 @@ import {
 } from "libram";
 import { shouldAugustCast } from "../resources";
 import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
-import { averageEmbezzlerNet, HIGHLIGHT, ltbRun, setChoice, WISH_VALUE } from "../lib";
+import {
+  averageEmbezzlerNet,
+  getUsingFreeBunnyBanish,
+  HIGHLIGHT,
+  ltbRun,
+  setChoice,
+  WISH_VALUE,
+} from "../lib";
 import {
   crateStrategy,
   doingGregFight,
@@ -59,7 +68,7 @@ import {
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 
-export class EmbezzlerFight {
+export class EmbezzlerFight implements EmbezzlerFightConfigOptions {
   name: string;
   available: () => boolean;
   potential: () => number;
@@ -69,6 +78,7 @@ export class EmbezzlerFight {
   canInitializeWandererCounters: boolean;
   wrongEncounterName: boolean;
   gregariousReplace: boolean;
+  location?: Location;
 
   /**
    * This is the class that creates all the different ways to fight embezzlers
@@ -116,6 +126,7 @@ export class EmbezzlerFight {
     this.canInitializeWandererCounters = options.canInitializeWandererCounters ?? false;
     this.gregariousReplace = options.gregariousReplace ?? false;
     this.wrongEncounterName = options.wrongEncounterName ?? this.gregariousReplace;
+    this.location = options.location;
   }
 
   run(options: RunOptions): void {
@@ -461,18 +472,20 @@ const gregFights = (
 ) => {
   function runGregFight(options: RunOptions) {
     const run = ltbRun();
+    const runMacro = getUsingFreeBunnyBanish() ? Macro.skill($skill`Snokebomb`) : ltbRun().macro;
     run.constraints.preparation?.();
-    const bunnyBanish = [...getBanishedMonsters().entries()].find(
-      ([, monster]) => monster === $monster`fluffy bunny`,
-    )?.[0];
+    const bunnyIsBanished = isBanished($monster`fluffy bunny`);
     const adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
     adventureFunction(
       $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
-      Macro.if_($monster`fluffy bunny`, run.macro).step(options.macro),
+      Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
+      Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
     );
 
-    if (get("lastEncounter") === $monster`fluffy bunny`.name && bunnyBanish) {
+    if (get("lastEncounter") === $monster`fluffy bunny`.name && bunnyIsBanished) {
+      const bunnyBanish = [...getBanishedMonsters().entries()].find(
+        ([, monster]) => monster === $monster`fluffy bunny`,
+      )?.[0];
       abort(
         `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${monsterProp} preference is nonzero and should probably be zero.`,
       );
@@ -870,7 +883,7 @@ export function getNextEmbezzlerFight(): EmbezzlerFight | null {
     const leftoverReplacers =
       (have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0) +
       (have($item`Powerful Glove`)
-        ? Math.floor(100 - get("_powerfulGloveBatteryPowerUsed") / 10)
+        ? Math.floor((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0);
     // we don't want to reset our orb with a gregarious fight; that defeats the purpose
     const skip =
