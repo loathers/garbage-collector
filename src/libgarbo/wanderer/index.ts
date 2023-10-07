@@ -121,6 +121,9 @@ export type WanderOptions = {
   drunkSafe?: boolean;
   allowEquipment?: boolean;
 };
+
+export type WanderDetails = DraggableFight | WanderOptions;
+
 const defaultWanderOptions = {
   drunkSafe: true,
   allowEquipment: true,
@@ -204,7 +207,7 @@ export class WandererManager {
     this.options = options;
   }
 
-  getTarget(wanderer: DraggableFight | WanderOptions): Location {
+  getTarget(wanderer: WanderDetails): Location {
     const { draggableFight, options } = isDraggableFight(wanderer)
       ? { draggableFight: wanderer, options: {} }
       : { draggableFight: wanderer.wanderer, options: wanderer };
@@ -225,7 +228,7 @@ export class WandererManager {
       : $location`Drunken Stupor`;
   }
 
-  getChoices(wanderer: DraggableFight | WanderOptions): { [choice: number]: string | number } {
+  getChoices(wanderer: WanderDetails): { [choice: number]: string | number } {
     return this.unsupportedChoices.get(this.getTarget(wanderer)) ?? {};
   }
 
@@ -233,7 +236,7 @@ export class WandererManager {
     this.targets = {};
   }
 
-  getEquipment(wanderer: DraggableFight | WanderOptions): Item[] {
+  getEquipment(wanderer: WanderDetails): Item[] {
     return this.equipment.get(this.getTarget(wanderer)) ?? [];
   }
 }

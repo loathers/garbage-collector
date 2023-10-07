@@ -4,8 +4,9 @@ import { wanderer } from "../garboWanderer";
 import { $skill, Delayed, get, SourceTerminal, undelay } from "libram";
 import { myTotalTurnsSpent, print } from "kolmafia";
 import postCombatActions from "../post";
+import { GarboStrategy } from "../combat";
 
-export type GarboTask = StrictCombatTask & {
+export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober">;
   spendsTurn: Delayed<boolean>;
   duplicate?: Delayed<boolean>;
