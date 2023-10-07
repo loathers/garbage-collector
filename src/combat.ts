@@ -54,7 +54,7 @@ import {
 import { globalOptions } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
-import { maxPassiveDamage, monsterManuelAvailable } from "./lib";
+import { embezzler, maxPassiveDamage, monsterManuelAvailable } from "./lib";
 
 export function shouldRedigitize(): boolean {
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
@@ -595,7 +595,6 @@ export class Macro extends StrictMacro {
   }
 
   embezzler(): Macro {
-    const embezzler = $monster`Knob Goblin Embezzler`;
     const doneHabitat =
       !have($skill`Just the Facts`) ||
       (get("_monsterHabitatsRecalled") === 3 && get("_monsterHabitatsFightsLeft") <= 1);

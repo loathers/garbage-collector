@@ -36,9 +36,9 @@ import {
 } from "libram";
 import { garboAdventureAuto, Macro, withMacro } from "../combat";
 import { globalOptions } from "../config";
-import { embezzler } from "../embezzler/lib";
 import { wanderer } from "../garboWanderer";
 import {
+  embezzler,
   EMBEZZLER_MULTIPLIER,
   howManySausagesCouldIEat,
   kramcoGuaranteed,

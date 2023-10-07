@@ -100,6 +100,8 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboValue } from "./garboValue";
 
+export const embezzler = $monster`Knob Goblin Embezzler`;
+
 export const eventLog: {
   initialEmbezzlersFought: number;
   digitizedEmbezzlersFought: number;

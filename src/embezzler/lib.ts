@@ -1,11 +1,9 @@
 import { booleanModifier, canEquip, Location, use } from "kolmafia";
-import { $effect, $familiar, $item, $monster, get, have, questStep } from "libram";
+import { $effect, $familiar, $item, get, have, questStep } from "libram";
 import { waterBreathingEquipment } from "../outfit";
 import { DraggableFight } from "../libgarbo";
 import { OutfitSpec } from "grimoire-kolmafia";
 import { Macro } from "../combat";
-
-export const embezzler = $monster`Knob Goblin Embezzler`;
 
 /**
  * Configure the behavior of the fights in use in different parts of the fight engine

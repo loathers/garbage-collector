@@ -1,7 +1,7 @@
 import { haveEquipped, Location, mallPrice, retrieveItem } from "kolmafia";
 import { $item, $location, $skill, get } from "libram";
-import { EMBEZZLER_MULTIPLIER, propertyManager } from "../lib";
-import { checkUnderwater, embezzler, EmbezzlerFightConfigOptions, RunOptions } from "./lib";
+import { embezzler, EMBEZZLER_MULTIPLIER, propertyManager } from "../lib";
+import { checkUnderwater, EmbezzlerFightConfigOptions, RunOptions } from "./lib";
 import { Macro } from "../combat";
 import { wanderer } from "../garboWanderer";
 
