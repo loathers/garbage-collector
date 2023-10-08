@@ -82,6 +82,7 @@ function cinchoDeMayo(mode: BonusEquipMode) {
     CinchoDeMayo.currentCinch() === 0 ||
     // Ignore for DMT? Requires specific combat stuff, so probably weird there
     mode === BonusEquipMode.DMT ||
+    mode === BonusEquipMode.EMBEZZLER ||
     // Require manuel to make sure we don't kill during stasis
     !monsterManuelAvailable() ||
     // Don't use Cincho if we're planning on doing yachtzees, and haven't completed them yet
