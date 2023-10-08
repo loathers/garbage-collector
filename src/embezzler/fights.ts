@@ -617,7 +617,9 @@ export const conditionalSources = [
       proceedWithOrb(),
     () =>
       ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
-        get("beGregariousCharges") > 0) &&
+        get("beGregariousCharges") > 0 ||
+        (get("_monsterHabitatsMonster") === embezzler && get("_monsterHabitatsFightsLeft") > 0) ||
+        (have($skill`Just the Facts`) && get("_monsterHabitatsRecalled") < 3)) &&
       have($skill`Meteor Lore`)
         ? 10 - get("_macrometeoriteUses")
         : 0,
@@ -660,7 +662,9 @@ export const conditionalSources = [
       proceedWithOrb(),
     () =>
       ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
-        get("beGregariousCharges") > 0) &&
+        get("beGregariousCharges") > 0 ||
+        (get("_monsterHabitatsMonster") === embezzler && get("_monsterHabitatsFightsLeft") > 0) ||
+        (have($skill`Just the Facts`) && get("_monsterHabitatsRecalled") < 3)) &&
       have($item`Powerful Glove`)
         ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0,
