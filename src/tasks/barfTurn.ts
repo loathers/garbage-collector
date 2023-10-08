@@ -119,6 +119,8 @@ function shouldGoUnderwater(): boolean {
 
   if (have($item`envyfish egg`) || (globalOptions.ascend && get("_envyfishEggUsed"))) return false;
   if (!canAdventure($location`The Briny Deeps`)) return false;
+
+  // TODO: if you didn't digitize an embezzler, this equation may not be right
   if (mallPrice($item`pulled green taffy`) < EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) {
     return false;
   }
@@ -280,21 +282,6 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   {
-    name: "Void Monster",
-    ready: () => have($item`cursed magnifying glass`) && get("_voidFreeFights") < 5,
-    completed: () => get("cursedMagnifyingGlassCount") !== 13,
-    choices: () => wanderer().getChoices("wanderer"),
-    do: () => wanderer().getTarget("wanderer"),
-    outfit: () =>
-      freeFightOutfit(
-        {
-          offhand: $item`cursed magnifying glass`,
-        },
-        { wanderOptions: "wanderer" },
-      ),
-    spendsTurn: false,
-  },
-  {
     name: "Envyfish Egg",
     ready: () => have($item`envyfish egg`) && get("envyfishMonster") === embezzler,
     completed: () => get("_envyfishEggUsed"),
@@ -398,7 +385,7 @@ const BarfTurnTasks: GarboTask[] = [
       () => Macro.meatKill(),
       () =>
         Macro.if_(
-          `(monsterid ${$monster`Knob Goblin Embezzler`.id}) && !gotjump && !(pastround 2)`,
+          `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
           Macro.meatKill(),
         ).abort(),
     ),
