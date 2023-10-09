@@ -341,6 +341,7 @@ export class Macro extends StrictMacro {
     }
     if (
       myFamiliar() === $familiar`Hobo Monkey` ||
+      myFamiliar() === $familiar`Jill-of-All-Trades` ||
       haveEquipped($item`Buddy Bjorn`) ||
       haveEquipped($item`Crown of Thrones`) ||
       get("_bittycar")
