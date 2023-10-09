@@ -141,32 +141,6 @@ const BarfTurnTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Generate End of Day Turns",
-    completed: () => myAdventures() > 1 + globalOptions.saveTurns,
-    do: () => {
-      deliverThesisIfAble();
-
-      const sausages = howManySausagesCouldIEat();
-      if (sausages > 0) {
-        maximize("MP", false);
-        eat(sausages, $item`magical sausage`);
-      }
-
-      if (
-        have($item`designer sweatpants`) &&
-        myAdventures() === 1 + globalOptions.saveTurns &&
-        !globalOptions.nodiet
-      ) {
-        while (get("_sweatOutSomeBoozeUsed") < 3 && get("sweat") >= 25 && myInebriety() > 0) {
-          useSkill($skill`Sweat Out Some Booze`);
-        }
-        consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
-      }
-    },
-    sobriety: "sober",
-    spendsTurn: true,
-  },
-  {
     name: "Lights Out",
     ready: () =>
       canAdventure(get("nextSpookyravenStephenRoom") ?? $location`none`) &&
@@ -229,6 +203,37 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => get("lastVoteMonsterTurn") >= totalTurnsPlayed(),
     },
   ),
+  {
+    name: "Thesis",
+    ready: () => myAdventures() === 1 + globalOptions.saveTurns,
+    completed: () => get("_thesisDelivered"),
+    do: () => deliverThesisIfAble(),
+    sobriety: "sober",
+    spendsTurn: true,
+  },
+  {
+    name: "Sausage",
+    ready: () => myAdventures() === globalOptions.saveTurns,
+    completed: () => howManySausagesCouldIEat() === 0,
+    prepare: () => maximize("MP", false),
+    do: () => eat(howManySausagesCouldIEat(), $item`magical sausage`),
+    spendsTurn: false,
+  },
+  {
+    name: "Sweatpants",
+    ready: () =>
+      !globalOptions.nodiet &&
+      have($item`designer sweatpants`) &&
+      myAdventures() === globalOptions.saveTurns,
+    completed: () => get("_sweatOutSomeBoozeUsed") === 3,
+    do: () => {
+      while (get("_sweatOutSomeBoozeUsed") < 3 && get("sweat") >= 25 && myInebriety() > 0) {
+        useSkill($skill`Sweat Out Some Booze`);
+      }
+      consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
+    },
+    spendsTurn: false,
+  },
   {
     name: "Digitize Wanderer",
     completed: () => Counter.get("Digitize Monster") > 0,
@@ -314,6 +319,12 @@ const BarfTurnTasks: GarboTask[] = [
       name: "Spit Acid",
       ready: () => have($item`Jurassic Parka`) && romanticMonsterImpossible(),
       completed: () => have($effect`Everything Looks Yellow`),
+      combat: new GarboStrategy(() =>
+        Macro.if_(embezzler, Macro.meatKill())
+          .familiarActions()
+          .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
+          .skill($skill`Spit jurassic acid`),
+      ),
       sobriety: "sober",
       duplicate: true,
     },
@@ -375,7 +386,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
   {
     name: "Barf",
-    completed: () => false,
+    completed: () => myAdventures() === 0,
     outfit: () => {
       const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
       return barfOutfit(lubing ? { equip: $items`lube-shoes` } : {});
