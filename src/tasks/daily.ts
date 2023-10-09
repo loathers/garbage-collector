@@ -6,6 +6,7 @@ import {
   changeMcd,
   cliExecute,
   currentMcd,
+  floristAvailable,
   gamedayToInt,
   getClanLounge,
   gnomadsAvailable,
@@ -397,6 +398,16 @@ const DailyTasks: GarboTask[] = [
       if (handlingChoice()) runChoice(1);
     },
     limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
+  },
+  {
+    name: "Check Florist",
+    ready: () => get("ownsFloristFriar"),
+    completed: floristAvailable,
+    after: ["Daily/Unlock Woods"],
+    do: () => {
+      visitUrl("place.php?whichplace=forestvillage&action=fv_friar");
+      runChoice(4);
+    },
   },
   {
     name: "Continuum Transfunctioner",
