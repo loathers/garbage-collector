@@ -1,0 +1,93 @@
+# This workflow will do a clean install of node dependencies, build the source
+# code across multiple Node.js versions, and lint the project.
+
+name: Check and build garbo
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  # Default version of Node.js for jobs
+  node-version: "18"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace garbo run check
+      #- run: yarn run test TODO: Readd once we have tests
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace garbo run lint
+
+  circular-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace garbo run madge
+
+  verify-build:
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace garbo run build
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [test, lint, circular-dependencies]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn workspace garbo build
+      - run: yarn workspace garbo run copyStatic
+      - name: Deploy
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: release
+          FOLDER: packages/garbo/dist
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: ${{ github.event.commits[0].message }}

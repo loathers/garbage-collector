@@ -1,5 +1,0 @@
-# Generated bundles should not be formatted
-/node_modules/
-/KoLmafia/
-.DS_Store
-node_modules
