@@ -49,7 +49,13 @@ function luckyGoldRing(mode: BonusEquipMode) {
       itemAmount($item`Freddy Kruegerand`) > 0
         ? garboValue($item`Freddy Kruegerand`)
         : 0,
-      ...lgrCurrencies().map((i) => garboValue(i)),
+      ...lgrCurrencies().map((i) =>
+        i === $item`Volcoino` &&
+        mode === BonusEquipMode.EMBEZZLER &&
+        !globalOptions.nobarf // Volcoino drops once per day
+          ? 0
+          : garboValue(i)
+      ),
     ].filter((value) => value > 0),
   ];
 
