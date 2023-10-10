@@ -412,6 +412,7 @@ const DailyTasks: GarboTask[] = [
       visitUrl("place.php?whichplace=forestvillage&action=fv_friar");
       runChoice(4);
     },
+    spendsTurn: false,
   },
   {
     name: "Continuum Transfunctioner",
