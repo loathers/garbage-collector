@@ -6,7 +6,7 @@
   "main": "dist/scripts/garbage-collector/garbo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node --no-warnings --loader ts-node/esm/transpile-only ./build/index.mjs",
+    "build": "node --no-warnings --loader ts-node/esm/transpile-only ./build.mjs && yarn run copyStatic",
     "watch": "yarn build --watch",
     "copyStatic": "copyfiles --up 1 \"static/**/*\" dist",
     "check": "tsc",
@@ -20,10 +20,8 @@
     "core-js": "^3.32.2",
     "grimoire-kolmafia": "^0.3.23",
     "kolmafia": "^5.27628.0",
-    "libgarbo": "^0.0.1",
-    "libram": "^0.8.13",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "garbo-lib": "^0.0.1",
+    "libram": "^0.8.13"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
@@ -36,8 +34,6 @@
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.22.15",
     "@types/node": "^20.6.1",
-    "@types/react": "^18.2.21",
-    "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.0",
     "@typescript-eslint/parser": "^6.7.0",
     "copyfiles": "^2.4.1",

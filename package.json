@@ -5,6 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "format": "yarn workspaces run format"
+    "format": "yarn workspaces run format",
+    "build": "yarn workspaces run build"
   }
 }

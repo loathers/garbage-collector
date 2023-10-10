@@ -1,23 +1,5 @@
-import * as React from "react";
 import Setting from "./components/Setting";
-
-declare global {
-  function getData(callback: (data: Data) => void): void;
-  type SettingProp = {
-    name: string;
-    type: string;
-    description: string;
-    value: string | number | boolean;
-  };
-  type Data = {
-    settings: SettingProp[];
-    updatedSettings: UpdatedSetting[];
-  };
-  type UpdatedSetting = {
-    name: string;
-    value: string;
-  };
-}
+import garboGif from "./garbo.gif";
 
 function App({ settings, updatedSettings }: Data): JSX.Element {
   const preferences = settings.map((setting) => (
@@ -47,7 +29,7 @@ function App({ settings, updatedSettings }: Data): JSX.Element {
   return (
     <div id="garbageCollectorContainer">
       <div id="notificationsContainer">{updatedPreferences}</div>
-      <img src="/images/relayimages/garbo/garbo.gif" />
+      <img src={garboGif} />
       <form id="garboForm" action="" method="post">
         <input
           className="interrupt"

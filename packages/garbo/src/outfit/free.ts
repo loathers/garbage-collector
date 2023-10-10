@@ -9,7 +9,7 @@ import {
   Guzzlr,
   SourceTerminal,
 } from "libram";
-import { WanderDetails } from "libgarbo";
+import { WanderDetails } from "garbo-lib";
 
 import { freeFightFamiliar } from "../familiar";
 import { BonusEquipMode } from "../lib";

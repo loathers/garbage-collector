@@ -121,7 +121,7 @@ import {
   withChoice,
 } from "libram";
 import { MonsterProperty } from "libram/dist/propertyTypes";
-import { WanderDetails } from "libgarbo";
+import { WanderDetails } from "garbo-lib";
 
 import { acquire } from "./acquire";
 import { withStash } from "./clan";

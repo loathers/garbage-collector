@@ -36,7 +36,7 @@ import {
   undelay,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
-import { WanderDetails } from "libgarbo";
+import { WanderDetails } from "garbo-lib";
 
 import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";

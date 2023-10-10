@@ -1,4 +1,3 @@
-import * as React from "react";
 import BooleanInput from "./BooleanInput";
 
 function Setting(props: SettingProp): JSX.Element {
@@ -12,7 +11,7 @@ function Setting(props: SettingProp): JSX.Element {
           <input
             className="stringPreference"
             name={props.name}
-            defaultValue={props.value}
+            defaultValue={props.value.toString()}
           />
         )}
       </td>
