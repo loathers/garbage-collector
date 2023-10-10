@@ -18,6 +18,7 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $familiar,
   $item,
   $items,
   $location,
@@ -224,7 +225,8 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   {
     name: "Thesis",
-    ready: () => myAdventures() === 1 + globalOptions.saveTurns,
+    ready: () =>
+      have($familiar`Pocket Professor`) && myAdventures() === 1 + globalOptions.saveTurns,
     completed: () => get("_thesisDelivered"),
     do: () => deliverThesisIfAble(),
     sobriety: "sober",
@@ -232,7 +234,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
   {
     name: "Sausage",
-    ready: () => myAdventures() === globalOptions.saveTurns,
+    ready: () => myAdventures() <= 1 + globalOptions.saveTurns,
     completed: () => howManySausagesCouldIEat() === 0,
     prepare: () => maximize("MP", false),
     do: () => eat(howManySausagesCouldIEat(), $item`magical sausage`),
@@ -243,7 +245,7 @@ const BarfTurnTasks: GarboTask[] = [
     ready: () =>
       !globalOptions.nodiet &&
       have($item`designer sweatpants`) &&
-      myAdventures() === globalOptions.saveTurns,
+      myAdventures() <= 1 + globalOptions.saveTurns,
     completed: () => get("_sweatOutSomeBoozeUsed") === 3,
     do: () => {
       while (
@@ -446,4 +448,5 @@ const BarfTurnTasks: GarboTask[] = [
 export const BarfTurnQuest: Quest<GarboTask> = {
   name: "Barf Turn",
   tasks: BarfTurnTasks,
+  completed: () => myAdventures() === 0,
 };
