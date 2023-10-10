@@ -371,6 +371,7 @@ const DailyTasks: GarboTask[] = [
     ready: () => have($item`ChibiBuddy™ (on)`) || have($item`ChibiBuddy™ (off)`),
     completed: () => get("_chibiChanged", true),
     do: () => cliExecute("chibi chat"),
+    spendsTurn: false,
   },
   {
     name: "Refresh Latte",
@@ -380,6 +381,7 @@ const DailyTasks: GarboTask[] = [
       visitUrl("main.php?latte=1", false);
       latteRefreshed = true;
     },
+    spendsTurn: false,
   },
   {
     name: "Unlock Cemetery",
@@ -387,6 +389,7 @@ const DailyTasks: GarboTask[] = [
     completed: () => canAdventure($location`The Unquiet Garves`),
     do: () => visitUrl("guild.php?place=scg"),
     limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
+    spendsTurn: false,
   },
   {
     name: "Unlock Woods",
@@ -397,6 +400,7 @@ const DailyTasks: GarboTask[] = [
       if (handlingChoice()) runChoice(1);
     },
     limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
+    spendsTurn: false,
   },
   {
     name: "Continuum Transfunctioner",
@@ -410,17 +414,20 @@ const DailyTasks: GarboTask[] = [
       runChoice(1); // Against my better judgement, yes
       runChoice(1); // Er, sure, I guess so
     },
+    spendsTurn: false,
   },
   {
     name: "Configure I Voted! Sticker",
     completed: () => have($item`"I Voted!" sticker`),
     do: voterSetup,
+    spendsTurn: false,
   },
   {
     name: "Configure Pantogram",
     ready: () => Pantogram.have(),
     completed: () => Pantogram.havePants(),
     do: pantogram,
+    spendsTurn: false,
   },
   {
     name: "Configure Fourth of May Cosplay Saber",
@@ -431,18 +438,21 @@ const DailyTasks: GarboTask[] = [
       // Familiar weight
       runChoice(4);
     },
+    spendsTurn: false,
   },
   {
     name: "Bastille Battalion",
     ready: () => have($item`Bastille Battalion control rig`),
     completed: () => get("_bastilleGames") !== 0,
     do: () => cliExecute("bastille myst brutalist gesture"),
+    spendsTurn: false,
   },
   {
     name: "11th Precinct",
     ready: () => get("hasDetectiveSchool"),
     completed: () => get("_detectiveCasesCompleted") >= 3,
     do: () => cliExecute("Detective Solver.ash"),
+    spendsTurn: false,
   },
   {
     name: "Getaway Campsite Buffs",
@@ -450,6 +460,7 @@ const DailyTasks: GarboTask[] = [
     completed: () => get("_campAwayCloudBuffs") + get("_campAwaySmileBuffs") === 4,
     do: () => visitUrl("place.php?whichplace=campaway&action=campaway_sky"),
     limit: { skip: 4 },
+    spendsTurn: false,
   },
   {
     name: "Verify Horsery",
@@ -457,6 +468,7 @@ const DailyTasks: GarboTask[] = [
     do: (): void => {
       visitUrl("place.php?whichplace=town_right");
     },
+    spendsTurn: false,
   },
   {
     name: "Prepare Horsery",
@@ -464,24 +476,28 @@ const DailyTasks: GarboTask[] = [
     ready: () => get("horseryAvailable"),
     completed: () => get("_horsery") === "dark horse",
     do: () => cliExecute("horsery dark"),
+    spendsTurn: false,
   },
   {
     name: "Beach Comb One-Day",
     ready: () => have($item`piece of driftwood`) && !have($item`Beach Comb`),
     completed: () => have($item`driftwood beach comb`),
     do: () => use($item`piece of driftwood`),
+    spendsTurn: false,
   },
   {
     name: "Beach Comb Buff",
     ready: () => BeachComb.available(),
     completed: () => !BeachComb.headAvailable("FAMILIAR") || BeachComb.freeCombs() < 1,
     do: () => BeachComb.tryHead($effect`Do I Know You From Somewhere?`),
+    spendsTurn: false,
   },
   {
     name: "Beach Comb Free Walks",
     ready: () => BeachComb.available(),
     completed: () => BeachComb.freeCombs() < 1,
     do: () => cliExecute(`combo ${11 - get("_freeBeachWalksUsed")}`),
+    spendsTurn: false,
   },
   {
     name: "Clan Fortune Buff",
@@ -489,18 +505,21 @@ const DailyTasks: GarboTask[] = [
       have($item`Clan VIP Lounge key`) && getClanLounge()["Clan Carnival Game"] !== undefined,
     completed: () => get("_clanFortuneBuffUsed"),
     do: () => cliExecute("fortune buff meat"),
+    spendsTurn: false,
   },
   {
     name: $item`defective Game Grid token`.name,
     completed: () => get("_defectiveTokenUsed"),
     do: () =>
       withStash([$item`defective Game Grid token`], () => use(1, $item`defective Game Grid token`)),
+    spendsTurn: false,
   },
   {
     name: $item`Glenn's golden dice`.name,
     ready: () => have($item`Glenn's golden dice`),
     completed: () => get("_glennGoldenDiceUsed"),
     do: () => use($item`Glenn's golden dice`),
+    spendsTurn: false,
   },
   {
     name: "Clan pool table",
@@ -508,48 +527,56 @@ const DailyTasks: GarboTask[] = [
     completed: () => get("_poolGames") >= 3,
     do: () => cliExecute("pool aggressive"),
     limit: { skip: 3 },
+    spendsTurn: false,
   },
   {
     name: "Daycare",
     ready: () => get("daycareOpen") || get("_daycareToday"),
     completed: () => get("_daycareSpa"),
     do: () => cliExecute("daycare mysticality"),
+    spendsTurn: false,
   },
   {
     name: $item`redwood rain stick`.name,
     ready: () => have($item`redwood rain stick`),
     completed: () => get("_redwoodRainStickUsed"),
     do: () => use($item`redwood rain stick`),
+    spendsTurn: false,
   },
   {
     name: "Witchess Puzzle Champ",
     ready: () => Witchess.have(),
     completed: () => get("_witchessBuff"),
     do: () => cliExecute("up Puzzle Champ"),
+    spendsTurn: false,
   },
   {
     name: "Friar's Blessing",
     ready: () => questStep("questL06Friar") === 999,
     completed: () => get("friarsBlessingReceived"),
     do: () => cliExecute("friars familiar"),
+    spendsTurn: false,
   },
   {
     name: $item`The Legendary Beat`.name,
     ready: () => have($item`The Legendary Beat`),
     completed: () => get("_legendaryBeat"),
     do: () => use($item`The Legendary Beat`),
+    spendsTurn: false,
   },
   {
     name: $item`portable steam unit`.name,
     ready: () => have($item`portable steam unit`),
     completed: () => get("_portableSteamUnitUsed"),
     do: () => use($item`portable steam unit`),
+    spendsTurn: false,
   },
   {
     name: "Summon Demon",
     ready: () => !!get("demonName2") && get("questL11Manor") === "finished",
     completed: () => get("demonSummoned"),
     do: () => cliExecute("summon Preternatural Greed"),
+    spendsTurn: false,
   },
   {
     name: "Source Terminal Enhance",
@@ -557,12 +584,14 @@ const DailyTasks: GarboTask[] = [
     completed: () => SourceTerminal.enhanceUsesRemaining() === 0,
     do: () => SourceTerminal.enhance($effect`meat.enh`),
     limit: { skip: 3 },
+    spendsTurn: false,
   },
   {
     name: "Source Terminal Enquire",
     ready: () => SourceTerminal.have(),
     completed: () => get("sourceTerminalEnquiry") === "familiar.enq",
     do: () => SourceTerminal.enquiry($effect`familiar.enq`),
+    spendsTurn: false,
   },
   {
     name: "Mad Tea Party Buff",
@@ -571,6 +600,7 @@ const DailyTasks: GarboTask[] = [
     do: () => cliExecute("hatter 22"),
     acquire: [{ item: $item`filthy knitted dread sack` }],
     effects: [$effect`Down the Rabbit Hole`],
+    spendsTurn: false,
   },
   {
     name: "SongBoom Buff",
@@ -578,6 +608,7 @@ const DailyTasks: GarboTask[] = [
       SongBoom.have() && SongBoom.songChangesLeft() > 0 && myInebriety() <= inebrietyLimit(),
     completed: () => SongBoom.song() === "Total Eclipse of Your Meat",
     do: () => SongBoom.setSong("Total Eclipse of Your Meat"),
+    spendsTurn: false,
   },
   {
     name: "SongBoom Buff (Drunk)",
@@ -585,30 +616,35 @@ const DailyTasks: GarboTask[] = [
       SongBoom.have() && SongBoom.songChangesLeft() > 0 && myInebriety() > inebrietyLimit(),
     completed: () => SongBoom.song() === "Food Vibrations",
     do: () => SongBoom.setSong("Food Vibrations"),
+    spendsTurn: false,
   },
   {
     name: "Set Mind Control Device",
     ready: () => canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`),
     completed: () => currentMcd() === (canadiaAvailable() ? 11 : 10),
     do: () => changeMcd(canadiaAvailable() ? 11 : 10),
+    spendsTurn: false,
   },
   {
     name: "Implement [glitch season reward name]",
     ready: () => have($item`[glitch season reward name]`),
     completed: () => get("_glitchItemImplemented"),
     do: () => use($item`[glitch season reward name]`),
+    spendsTurn: false,
   },
   {
     name: "Use BittyCar MeatCart",
     ready: () => get("_bittycar") !== "meatcar",
     completed: () => get("_bittycar") === "meatcar",
     do: () => withStash([$item`BittyCar MeatCar`], () => use(1, $item`BittyCar MeatCar`)),
+    spendsTurn: false,
   },
   {
     name: "Use BittyCar SoulCar",
     ready: () => get("_bittycar") !== "meatcar" && get("_bittycar") !== "soulcar",
     completed: () => get("_bittycar") === "soulcar",
     do: () => withStash([$item`BittyCar SoulCar`], () => use(1, $item`BittyCar SoulCar`)),
+    spendsTurn: false,
   },
   {
     name: "Holiday Eldritch Attunement",
@@ -629,6 +665,7 @@ const DailyTasks: GarboTask[] = [
             avoid: $items`June cleaver`,
           }
         : { acc1: $item`water wings`, avoid: $items`June cleaver` },
+    spendsTurn: false,
   },
   {
     name: "Check Neverending Party Quest",
@@ -643,18 +680,21 @@ const DailyTasks: GarboTask[] = [
       canEquip($item`Drunkula's wineglass`)
         ? { offhand: $item`Drunkula's wineglass`, avoid: $items`June cleaver` }
         : { avoid: $items`June cleaver` },
+    spendsTurn: false,
   },
   {
     name: "Check Barf Mountain Quest",
     ready: () => get("stenchAirportAlways") || get("_stenchAirportToday"),
     completed: () => !attemptCompletingBarfQuest,
     do: checkBarfQuest,
+    spendsTurn: false,
   },
   {
     name: "Configure Snojo",
     ready: () => get("snojoAvailable") && get("_snojoFreeFights") < 10,
     completed: () => snojoConfigured,
     do: configureSnojo,
+    spendsTurn: false,
   },
   // Final tasks
   {
@@ -662,18 +702,21 @@ const DailyTasks: GarboTask[] = [
     ready: () => closetItems.some((item) => itemAmount(item)),
     completed: () => closetItems.every((item) => itemAmount(item) === 0),
     do: () => closetItems.forEach((item) => putCloset(itemAmount(item), item)),
+    spendsTurn: false,
   },
   {
     name: "Closet Hobo Nickels",
     ready: () => have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000),
     completed: () => itemAmount($item`hobo nickel`) === 0,
     do: () => putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`),
+    spendsTurn: false,
   },
   {
     name: "Retrieve Items",
     ready: () => retrieveItems.some((item) => itemAmount(item) === 0),
     completed: () => retrieveItems.every((item) => itemAmount(item) > 0),
     do: () => retrieveItems.forEach((item) => retrieveItem(item)),
+    spendsTurn: false,
   },
 ];
 

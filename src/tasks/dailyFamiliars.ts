@@ -113,12 +113,14 @@ const DailyFamiliarTasks: GarboTask[] = [
     ready: () => have($familiar`Shorter-Order Cook`) && have($item`blue plate`),
     completed: () => familiarEquippedEquipment($familiar`Shorter-Order Cook`) === $item`blue plate`,
     do: () => equip($familiar`Shorter-Order Cook`, $item`blue plate`),
+    spendsTurn: false,
   },
   {
     name: "Prepare Robortender",
     ready: () => have($familiar`Robortender`),
     completed: () => get("_roboDrinks").toLowerCase().includes("drive-by shooting"),
     do: prepRobortender,
+    spendsTurn: false,
   },
   {
     name: "Acquire amulet coin",
@@ -127,6 +129,7 @@ const DailyFamiliarTasks: GarboTask[] = [
     do: () => use($item`box of Familiar Jacks`),
     acquire: [{ item: $item`box of Familiar Jacks` }],
     outfit: { familiar: $familiar`Cornbeefadon` },
+    spendsTurn: false,
   },
   {
     // TODO: Consider other familiars?
@@ -134,6 +137,7 @@ const DailyFamiliarTasks: GarboTask[] = [
     ready: () => itemAmount($item`tiny stillsuit`) > 0 && have($familiar`Cornbeefadon`),
     completed: () => familiarEquippedEquipment($familiar`Cornbeefadon`) === $item`tiny stillsuit`,
     do: () => equip($familiar`Cornbeefadon`, $item`tiny stillsuit`),
+    spendsTurn: false,
   },
   {
     name: "Acquire box of old Crimbo decorations",
@@ -143,6 +147,7 @@ const DailyFamiliarTasks: GarboTask[] = [
       useFamiliar($familiar`Crimbo Shrub`);
     },
     outfit: { familiar: $familiar`Crimbo Shrub` },
+    spendsTurn: false,
   },
   {
     name: "Decorate Crimbo Shrub",
@@ -156,6 +161,7 @@ const DailyFamiliarTasks: GarboTask[] = [
         "Red Ray",
       ),
     outfit: { familiar: $familiar`Crimbo Shrub` },
+    spendsTurn: false,
   },
   {
     name: "Mummery Meat",
@@ -163,6 +169,7 @@ const DailyFamiliarTasks: GarboTask[] = [
     completed: () => get("_mummeryMods").includes("Meat Drop"),
     do: () => cliExecute("mummery meat"),
     outfit: { familiar: meatFamiliar() },
+    spendsTurn: false,
   },
   {
     name: "Mummery Item",
@@ -170,6 +177,7 @@ const DailyFamiliarTasks: GarboTask[] = [
     completed: () => get("_mummeryMods").includes("Item Drop"),
     do: () => cliExecute("mummery item"),
     outfit: { familiar: $familiar`Trick-or-Treating Tot` },
+    spendsTurn: false,
   },
   {
     name: "Moveable feast",
@@ -185,6 +193,7 @@ const DailyFamiliarTasks: GarboTask[] = [
         }
       });
     },
+    spendsTurn: false,
   },
 ];
 

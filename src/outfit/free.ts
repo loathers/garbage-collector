@@ -1,39 +1,37 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Location, toJson } from "kolmafia";
-import { $familiar, $familiars, $item, $items, get, Guzzlr } from "libram";
+import { $familiar, $familiars, $item, $items, get, Guzzlr, SourceTerminal } from "libram";
 import { freeFightFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
 import { BonusEquipMode } from "../lib";
-import { DraggableFight, WanderOptions } from "../libgarbo";
 import { wanderer } from "../garboWanderer";
+import { WanderDetails } from "../libgarbo";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
   location?: Location;
   includeExperienceFamiliars?: boolean;
   allowAttackFamiliars?: boolean;
-  wanderOptions?: DraggableFight | WanderOptions;
+  duplicate?: boolean;
+  wanderOptions?: WanderDetails;
 };
 export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}): Outfit {
   cleaverCheck();
 
-  const { wanderOptions } = options;
-  const wanderedSpec: OutfitSpec = wanderOptions
-    ? {
-        ...spec,
-        equip: [...(spec.equip ?? []), ...wanderer().getEquipment(wanderOptions)],
-      }
-    : spec;
+  const computedSpec = computeOutfitSpec(spec, options);
 
-  validateGarbageFoldable(wanderedSpec);
+  validateGarbageFoldable(computedSpec);
   const outfit = Outfit.from(
-    wanderedSpec,
+    computedSpec,
     new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
   );
 
-  outfit.familiar ??= freeFightFamiliar(options);
+  outfit.familiar ??= freeFightFamiliar({
+    ...options,
+    allowAttackFamiliars: computeAllowAttackFamiliars(options),
+  });
   const mode =
     outfit.familiar === $familiar`Machine Elf` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
 
@@ -53,7 +51,7 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
   if (outfit.familiar !== $familiar`Grey Goose`) outfit.setBonus($item`tiny stillsuit`, 500);
 
   if (
-    options.location === Guzzlr.getLocation() &&
+    computeLocation(options) === Guzzlr.getLocation() &&
     Guzzlr.turnsLeftOnQuest(false) === 1 &&
     Guzzlr.haveBooze()
   ) {
@@ -84,4 +82,34 @@ export function freeFightOutfit(spec: OutfitSpec = {}, options: MenuOptions = {}
   });
 
   return outfit;
+}
+
+function computeOutfitSpec(spec: OutfitSpec, options: MenuOptions): OutfitSpec {
+  if (options.wanderOptions) {
+    return {
+      ...spec,
+      equip: [...(spec.equip ?? []), ...wanderer().getEquipment(options.wanderOptions)],
+    };
+  }
+  return spec;
+}
+
+function computeLocation(options: MenuOptions): Location | undefined {
+  if (options.location) {
+    return options.location;
+  }
+  if (options.wanderOptions) {
+    return wanderer().getTarget(options.wanderOptions);
+  }
+  return undefined;
+}
+
+function computeAllowAttackFamiliars(options: MenuOptions): boolean | undefined {
+  if (options.allowAttackFamiliars !== undefined) {
+    return options.allowAttackFamiliars;
+  }
+  if (options.duplicate) {
+    return !SourceTerminal.have() || SourceTerminal.duplicateUsesRemaining() === 0;
+  }
+  return undefined;
 }

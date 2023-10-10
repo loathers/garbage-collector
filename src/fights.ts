@@ -179,7 +179,7 @@ import {
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
 import { garboValue } from "./garboValue";
-import { DraggableFight, WanderOptions } from "./libgarbo";
+import { WanderDetails } from "./libgarbo";
 import { wanderer } from "./garboWanderer";
 import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";
@@ -529,7 +529,7 @@ type FreeFightOptions = {
   // actions like meatifying matter, or crimbo shrub red raying.
   // Defaults to true.
   macroAllowsFamiliarActions?: boolean;
-  wandererOptions?: DraggableFight | WanderOptions;
+  wandererOptions?: WanderDetails;
 };
 
 let consecutiveNonFreeFights = 0;

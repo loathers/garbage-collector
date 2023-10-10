@@ -1,18 +1,61 @@
 import { Engine, EngineOptions, getTasks, Quest, StrictCombatTask } from "grimoire-kolmafia";
-import { safeInterrupt } from "../lib";
+import { eventLog, safeInterrupt, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
+import { $skill, Delayed, get, SourceTerminal, undelay } from "libram";
+import { myTotalTurnsSpent, print } from "kolmafia";
+import postCombatActions from "../post";
+import { GarboStrategy } from "../combat";
 
-export type GarboTask = StrictCombatTask & { sobriety?: "drunk" | "sober" };
+export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
+  sobriety?: Delayed<"drunk" | "sober">;
+  spendsTurn: Delayed<boolean>;
+  duplicate?: Delayed<boolean>;
+};
+
+function logEmbezzler(encounterType: string) {
+  const isDigitize = encounterType === "Digitize Wanderer";
+  isDigitize ? eventLog.digitizedEmbezzlersFought++ : eventLog.initialEmbezzlersFought++;
+  eventLog.embezzlerSources.push(isDigitize ? "Digitize" : "Unknown Source");
+}
 
 /** A base engine for Garbo!
  * Runs extra logic before executing all tasks.
  */
 export class BaseGarboEngine extends Engine<never, GarboTask> {
-  // Check for interrupt before executing a task
+  available(task: GarboTask): boolean {
+    const taskSober = undelay(task.sobriety);
+    if (taskSober) {
+      return (
+        ((taskSober === "drunk" && !sober()) || (taskSober === "sober" && sober())) &&
+        super.available(task)
+      );
+    }
+    return super.available(task);
+  }
+
   execute(task: GarboTask): void {
     safeInterrupt();
+    const spentTurns = myTotalTurnsSpent();
+    const duplicate = undelay(task.duplicate);
+    const before = SourceTerminal.getSkills();
+    if (duplicate && SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0) {
+      SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
+    }
     super.execute(task);
+    postCombatActions();
+    if (myTotalTurnsSpent() !== spentTurns) {
+      if (!undelay(task.spendsTurn)) {
+        print(`Task ${task.name} spent a turn but was marked as not spending turns`);
+      }
+    }
+    const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
+    if (foughtAnEmbezzler) logEmbezzler(task.name);
     wanderer().clear();
+    if (duplicate && SourceTerminal.have()) {
+      for (const skill of before) {
+        SourceTerminal.educate(skill);
+      }
+    }
   }
 }
 

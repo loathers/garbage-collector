@@ -23,7 +23,7 @@ import {
   visitUrl,
   wait,
 } from "kolmafia";
-import { embezzler, EmbezzlerFightConfigOptions, RunOptions } from "./lib";
+import { EmbezzlerFightConfigOptions, RunOptions } from "./lib";
 import { DraggableFight } from "../libgarbo";
 import { OutfitSpec } from "grimoire-kolmafia";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "../combat";
@@ -52,6 +52,7 @@ import { shouldAugustCast } from "../resources";
 import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
 import {
   averageEmbezzlerNet,
+  embezzler,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
   ltbRun,

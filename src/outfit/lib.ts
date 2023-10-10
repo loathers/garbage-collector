@@ -97,9 +97,8 @@ export function useUPCsIfNeeded({ familiar }: Outfit): void {
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
 
-// TODO: Make this not terrible, add MSG
-export function tryFillLatte(): boolean {
-  if (
+export function latteFilled(): boolean {
+  return !(
     have($item`latte lovers member's mug`) &&
     get("_latteRefillsUsed") < 3 &&
     (get("_latteCopyUsed") ||
@@ -109,7 +108,12 @@ export function tryFillLatte(): boolean {
           numericModifier($item`latte lovers member's mug`, "Meat Drop") !== 40 ||
           (get("latteUnlocks").includes("carrot") &&
             numericModifier($item`latte lovers member's mug`, "Item Drop") !== 20))))
-  ) {
+  );
+}
+
+// TODO: Make this not terrible, add MSG
+export function tryFillLatte(): boolean {
+  if (!latteFilled()) {
     const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
     const latteIngredients = goodLatteIngredients.filter((ingredient) =>
       get("latteUnlocks").includes(ingredient),
