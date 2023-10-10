@@ -35,6 +35,9 @@ import {
   SourceTerminal,
   undelay,
 } from "libram";
+import { OutfitSpec, Quest } from "grimoire-kolmafia";
+import { WanderDetails } from "libgarbo";
+
 import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
@@ -57,12 +60,11 @@ import {
   waterBreathingEquipment,
 } from "../outfit";
 import { digitizedMonstersRemaining } from "../turns";
-import { completeBarfQuest } from "./daily";
-import { GarboTask } from "./engine";
-import { OutfitSpec, Quest } from "grimoire-kolmafia";
 import { deliverThesisIfAble } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
-import { WanderDetails } from "../../../libgarbo/src";
+
+import { completeBarfQuest } from "./daily";
+import { GarboTask } from "./engine";
 
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
@@ -226,7 +228,8 @@ const BarfTurnTasks: GarboTask[] = [
   {
     name: "Thesis",
     ready: () =>
-      have($familiar`Pocket Professor`) && myAdventures() === 1 + globalOptions.saveTurns,
+      have($familiar`Pocket Professor`) &&
+      myAdventures() === 1 + globalOptions.saveTurns,
     completed: () => get("_thesisDelivered"),
     do: () => deliverThesisIfAble(),
     sobriety: "sober",

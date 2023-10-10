@@ -1,8 +1,9 @@
 import { Effect, getMonsters, Location } from "kolmafia";
+import { WandererManager } from "libgarbo";
+
 import { globalOptions } from "./config";
 import { freeFightFamiliarData } from "./familiar/freeFightFamiliar";
 import { estimatedGarboTurns } from "./turns";
-import { WandererManager } from "../../libgarbo/src";
 import { $item, $location, $monster, $monsters, get, have } from "libram";
 import { garboValue } from "./garboValue";
 import { Potion } from "./potions";

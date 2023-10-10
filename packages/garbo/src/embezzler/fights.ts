@@ -23,15 +23,8 @@ import {
   visitUrl,
   wait,
 } from "kolmafia";
-import { EmbezzlerFightConfigOptions, RunOptions } from "./lib";
-import { DraggableFight } from "../../../libgarbo/src";
+import { DraggableFight } from "libgarbo";
 import { OutfitSpec } from "grimoire-kolmafia";
-import {
-  garboAdventure,
-  garboAdventureAuto,
-  Macro,
-  withMacro,
-} from "../combat";
 import {
   $effect,
   $familiar,
@@ -53,8 +46,15 @@ import {
   SourceTerminal,
   sum,
 } from "libram";
-import { shouldAugustCast } from "../resources";
 import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
+
+import {
+  garboAdventure,
+  garboAdventureAuto,
+  Macro,
+  withMacro,
+} from "../combat";
+import { shouldAugustCast } from "../resources";
 import {
   averageEmbezzlerNet,
   embezzler,
@@ -73,6 +73,8 @@ import {
 } from "../extrovermectin";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
+
+import { EmbezzlerFightConfigOptions, RunOptions } from "./lib";
 
 export class EmbezzlerFight implements EmbezzlerFightConfigOptions {
   name: string;

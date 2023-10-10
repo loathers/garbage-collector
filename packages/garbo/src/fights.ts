@@ -121,6 +121,8 @@ import {
   withChoice,
 } from "libram";
 import { MonsterProperty } from "libram/dist/propertyTypes";
+import { WanderDetails } from "libgarbo";
+
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
@@ -183,7 +185,6 @@ import {
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
 import { garboValue } from "./garboValue";
-import { WanderDetails } from "../../libgarbo/src";
 import { wanderer } from "./garboWanderer";
 import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";

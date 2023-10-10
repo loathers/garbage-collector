@@ -9,13 +9,15 @@ import {
   Guzzlr,
   SourceTerminal,
 } from "libram";
+import { WanderDetails } from "libgarbo";
+
 import { freeFightFamiliar } from "../familiar";
+import { BonusEquipMode } from "../lib";
+import { wanderer } from "../garboWanderer";
+
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
-import { BonusEquipMode } from "../lib";
-import { wanderer } from "../garboWanderer";
-import { WanderDetails } from "../../../libgarbo/src";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
