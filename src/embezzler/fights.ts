@@ -616,12 +616,7 @@ export const conditionalSources = [
       have($skill`Meteor Lore`) &&
       get("_macrometeoriteUses") < 10 &&
       proceedWithOrb(),
-    () =>
-      ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
-        get("beGregariousCharges") > 0) &&
-      have($skill`Meteor Lore`)
-        ? 10 - get("_macrometeoriteUses")
-        : 0,
+    () => (doingGregFight() && have($skill`Meteor Lore`) ? 10 - get("_macrometeoriteUses") : 0),
     (options: RunOptions) => {
       equipOrbIfDesired();
 
@@ -660,9 +655,7 @@ export const conditionalSources = [
       get("_powerfulGloveBatteryPowerUsed") <= 90 &&
       proceedWithOrb(),
     () =>
-      ((get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0) ||
-        get("beGregariousCharges") > 0) &&
-      have($item`Powerful Glove`)
+      doingGregFight() && have($item`Powerful Glove`)
         ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
         : 0,
     (options: RunOptions) => {
