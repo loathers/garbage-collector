@@ -25200,7 +25200,7 @@ function mrScreegesSpectacles() {
 }
 function cinchoDeMayo(mode) {
   if (!have($item(_templateObject1419 || (_templateObject1419 = _taggedTemplateLiteral49(["Cincho de Mayo"])))) || CinchoDeMayo_exports.currentCinch() === 0 || // Ignore for DMT? Requires specific combat stuff, so probably weird there
-  mode === BonusEquipMode.DMT || // Require manuel to make sure we don't kill during stasis
+  mode === BonusEquipMode.DMT || mode === BonusEquipMode.EMBEZZLER || // Require manuel to make sure we don't kill during stasis
   !monsterManuelAvailable() || // Don't use Cincho if we're planning on doing yachtzees, and haven't completed them yet
   !get("_garboYachtzeeChainCompleted") && globalOptions.prefs.yachtzeechain || // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
   maxPassiveDamage() >= 50) {
@@ -30952,7 +30952,7 @@ var conditionalSources = [new EmbezzlerFight("Orb Prediction", function() {
 }), new EmbezzlerFight("Macrometeorite", function() {
   return gregReady() && have($skill(_templateObject883 || (_templateObject883 = _taggedTemplateLiteral67(["Meteor Lore"])))) && get("_macrometeoriteUses") < 10 && proceedWithOrb();
 }, function() {
-  return (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0 || get("beGregariousCharges") > 0) && have($skill(_templateObject893 || (_templateObject893 = _taggedTemplateLiteral67(["Meteor Lore"])))) ? 10 - get("_macrometeoriteUses") : 0;
+  return doingGregFight() && have($skill(_templateObject893 || (_templateObject893 = _taggedTemplateLiteral67(["Meteor Lore"])))) ? 10 - get("_macrometeoriteUses") : 0;
 }, function(options) {
   equipOrbIfDesired();
   var crateIsSabered = get("_saberForceMonster") === $monster(_templateObject903 || (_templateObject903 = _taggedTemplateLiteral67(["crate"])));
@@ -30969,7 +30969,7 @@ var conditionalSources = [new EmbezzlerFight("Orb Prediction", function() {
 }), new EmbezzlerFight("Powerful Glove", function() {
   return gregReady() && have($item(_templateObject993 || (_templateObject993 = _taggedTemplateLiteral67(["Powerful Glove"])))) && get("_powerfulGloveBatteryPowerUsed") <= 90 && proceedWithOrb();
 }, function() {
-  return (get("beGregariousMonster") === embezzler && get("beGregariousFightsLeft") > 0 || get("beGregariousCharges") > 0) && have($item(_templateObject1003 || (_templateObject1003 = _taggedTemplateLiteral67(["Powerful Glove"])))) ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10) : 0;
+  return doingGregFight() && have($item(_templateObject1003 || (_templateObject1003 = _taggedTemplateLiteral67(["Powerful Glove"])))) ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10) : 0;
 }, function(options) {
   equipOrbIfDesired();
   var crateIsSabered = get("_saberForceMonster") === $monster(_templateObject10111 || (_templateObject10111 = _taggedTemplateLiteral67(["crate"])));
@@ -37315,6 +37315,19 @@ var DailyTasks = [
       skip: 3
     },
     // Sometimes need to cycle through some dialogue
+    spendsTurn: false
+  },
+  {
+    name: "Check Florist",
+    ready: function() {
+      return get("ownsFloristFriar");
+    },
+    completed: import_kolmafia90.floristAvailable,
+    after: ["Daily/Unlock Woods"],
+    do: function() {
+      (0, import_kolmafia90.visitUrl)("place.php?whichplace=forestvillage&action=fv_friar");
+      (0, import_kolmafia90.runChoice)(4);
+    },
     spendsTurn: false
   },
   {
