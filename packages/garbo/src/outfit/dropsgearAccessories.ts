@@ -136,21 +136,21 @@ export function usingThumbRing(): boolean {
         (item) =>
           have(item) &&
           toSlot(item) === $slot`acc1` &&
-          getModifier("Meat Drop", item) > 0,
+          getModifier("Meat Drop", item) > 0
       )
       .map(
         (item) =>
           [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [
             Item,
             number,
-          ],
+          ]
       );
 
     const accessoryValues = new Map<Item, number>(accessoryBonuses);
     for (const [accessory, value] of meatAccessories) {
       accessoryValues.set(
         accessory,
-        value + (accessoryValues.get(accessory) ?? 0),
+        value + (accessoryValues.get(accessory) ?? 0)
       );
     }
 
