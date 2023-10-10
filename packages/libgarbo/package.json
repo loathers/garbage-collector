@@ -1,0 +1,14 @@
+{
+  "name": "libgarbo",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "A library for sequencing turns resource-optimally",
+  "main": "src/index.ts",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "kolmafia": "^5.27628.0",
+    "libram": "^0.8.13"
+  }
+}

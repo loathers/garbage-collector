@@ -13,7 +13,6 @@
     - [`ascend` flag](#ascend-flag)
     - [`nodiet` flag](#nodiet-flag)
     - [`simdiet` flag](#simdiet-flag)
-    - [`yachtzeechain` flag](#yachtzeechain-flag)
     - [`workshed` arg](#workshed-arg)
     - [`quick` flag](#quick-flag)
     - [Turncount](#turncount)
@@ -39,7 +38,7 @@ Consult [this page](ITEMS.md) for a list of various items that are useful to hav
 To install the script, use the following command in the KoLMafia CLI.
 
 ```text
-git checkout https://github.com/loathers/garbage-collector.git release
+git checkout loathers/garbage-collector.git release
 ```
 
 Before running Garbage Collector, there are a few tasks you must do.
@@ -87,11 +86,15 @@ That being said, having garbo try to pull every single item it tries to use woul
 
 We aren't saying garbo won't work if you break prism and leave all of your stuff in Hagnk's. But we are saying that garbo is likely to run into errors, and when you report those errors, our response will inevitably be "you should pull all of your stuff from Hagnk's."
 
-One final note is that we aren't actively opposed to supporting people leaving their stuff in Hagnk's; if you do so, and you find yourself running into specific issues, feel free to [put in a PR](https://loathing-associates-scripting-society.github.io/KoL-Scripting-Resources/PR-Overview.html).
+One final note is that we aren't actively opposed to supporting people leaving their stuff in Hagnk's; if you do so, and you find yourself running into specific issues, feel free to [put in a PR](https://loathers.github.io/PR-Overview.html).
+
+### Avoid playing outside mafia, or using another mafia install
+
+Garbo relies on Mafia as a source of truth about the game and about your player-state. Mafia, in turn, relies on watching you play your turns, and remembering certain actions you took, in order to act as that source of truth. If you play outside Mafia, or if you play in a different Mafia install than the one you operate garbo in, you risk creating a schism between the world as it is and the world as Mafia believes it to be. Garbo will base its decisions on the latter, the schism will become a chasm, and your items and meat will fill that chasm. Don't do it!
 
 ## Usage
 
-To invoke Garbage Collector, type `garbo` in the Mafia GCLI. In addition, you can use various flags to configure how Garbage Collector runs. Additionally, you can also specify the number of turns for garbo to run.
+To invoke Garbage Collector, type `garbo` in the Mafia GCLI. In addition, you can use various flags to configure how Garbage Collector runs, or specify the number of turns you want garbo to run. Typing `garbo help` in the CLI will print a helpful list of these arguments and flags and stuff. A typical garbo invocation for you might look like `garbo ascend workshed=mts` (if you're ascending, and want garbo to switch in the Model Train Set for you), or `garbo -1` (if you want garbo to save a turn at the end of running), or `garbo nodiet 69` (if you want garbo to only spend 69 turns, and not to diet).
 
 ### `nobarf` flag
 
@@ -112,10 +115,6 @@ _EXPERIMENTAL_ Garbo will not eat or drink anything as part of the run (includin
 ### `simdiet` flag
 
 Garbo will list the optimal diet it plans to consume computed from your defined mpa and current prices, and then exit.
-
-### `yachtzeechain` flag
-
-_EXPERIMENTAL_ Garbo will attempt to chain the Yachtzee! NC after all the free fights are completed, just before it attempts embezzlers. This command cannot be run in conjuction with the `nodiet` flag. Refer to `help` for more info on the requirements needed to run this.
 
 ### `workshed` arg
 
@@ -138,13 +137,17 @@ Garbo can run for a specified number of turns, or run until you have a specified
 
 Running Garbo `help` will print out simple help documentation and not run any turns.
 
-If you have issues with this script, please post about them in the #garbage-collector channel within the [Ascension Speed Society Discord](https://discord.gg/tbUCRT5), and someone will eventually (at some point) endeavor to solve them. Someday. Maybe.
+If you have issues with this script, please [file a bug report](BUGS.md)!
 
 ## Frequent Questions
 
 > Why is Garbo adventuring outside of Barf Mountain?
 
 Garbo will use your resources to earn meat everywhere possible such as the Hidden Bowling Alley, The Haunted Library, The Deep Dark Jungle, or The Ice Hotel. These generally won't cost a turn to do.
+
+> It has been X days since the new IotM was released. Are there any plans to add the support for it to Garbo?
+
+People who volunteer at Garbo during their free time have lives too. In addition, Items of the Month vary in complexity, and we can't support content that isn't fully spaded and included in Mafia. Chances are, someone sometime will add support for the new IotM if it is useful; [this person could even be you](https://loathers.github.io/PR-Overview.html)!
 
 > I'm in a clan with a loaded stash, can Garbo make use of the Pantsgiving that's sitting there waiting for me to pull it?
 
@@ -174,4 +177,4 @@ Garbo will use your consumables and potions if it is deemed profitable to do so.
 
 > I was trying to click around the mall/campground/inventory/etc and then Garbo crashed, and now it is behaving strangely! Is this a bug?
 
-Garbo can be very fragile during some particular segments of the run and it is strongly recommended you do not click on anything while it is performing. This isn't a bug, Garbo is just pretty complex and the last thing either of us wants is to try looking for a bug that isn't there! Go make yourself a sandwich, do some chores, or relax and watch the meat number go up.
+Garbo can be very fragile during some particular segments of the run and it is strongly recommended you do not click on anything while it is performing. This isn't a bug, Garbo is just pretty complex and the last thing either of us wants is to try looking for a bug that isn't there! Go make yourself a sandwich, do some chores, or spend six hours reading random wikipedia pages.
