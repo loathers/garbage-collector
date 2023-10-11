@@ -58,6 +58,7 @@ import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
 import {
+  allMallPrices,
   bestJuneCleaverOption,
   checkGithubVersion,
   HIGHLIGHT,
@@ -106,6 +107,7 @@ export function canContinue(): boolean {
 export function main(argString = ""): void {
   sinceKolmafiaRevision(27640);
   checkGithubVersion();
+  allMallPrices();
 
   // Hit up main.php to get out of easily escapable choices
   visitUrl("main.php");
