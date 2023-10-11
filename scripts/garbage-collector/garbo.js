@@ -22768,7 +22768,7 @@ var import_kolmafia56 = require("kolmafia");
 // src/acquire.ts
 var import_kolmafia55 = require("kolmafia");
 
-// ../libgarbo/src/value.ts
+// ../garbo-lib/src/value.ts
 var import_kolmafia49 = require("kolmafia");
 var _templateObject370;
 var _templateObject2102;
@@ -23100,13 +23100,13 @@ function makeValue() {
   };
 }
 
-// ../libgarbo/src/wanderer/index.ts
+// ../garbo-lib/src/wanderer/index.ts
 var import_kolmafia54 = require("kolmafia");
 
-// ../libgarbo/src/wanderer/guzzlr.ts
+// ../garbo-lib/src/wanderer/guzzlr.ts
 var import_kolmafia51 = require("kolmafia");
 
-// ../libgarbo/src/wanderer/lib.ts
+// ../garbo-lib/src/wanderer/lib.ts
 var import_kolmafia50 = require("kolmafia");
 var _templateObject380;
 var _templateObject2103;
@@ -23431,7 +23431,7 @@ function bofaValue(_ref2, monster) {
   }
 }
 
-// ../libgarbo/src/wanderer/guzzlr.ts
+// ../garbo-lib/src/wanderer/guzzlr.ts
 var _templateObject389;
 function _taggedTemplateLiteral43(strings, raw) {
   if (!raw) {
@@ -23505,7 +23505,7 @@ function guzzlrFactory(_type, locationSkiplist, options) {
   return [];
 }
 
-// ../libgarbo/src/wanderer/lovebugs.ts
+// ../garbo-lib/src/wanderer/lovebugs.ts
 var _templateObject390;
 var _templateObject2104;
 var _templateObject391;
@@ -23547,7 +23547,7 @@ function lovebugsFactory(_type, _locationSkiplist, options) {
   return [];
 }
 
-// ../libgarbo/src/wanderer/freefight.ts
+// ../garbo-lib/src/wanderer/freefight.ts
 var import_kolmafia52 = require("kolmafia");
 function _toConsumableArray21(arr) {
   return _arrayWithoutHoles21(arr) || _iterableToArray21(arr) || _unsupportedIterableToArray33(arr) || _nonIterableSpread21();
@@ -23705,7 +23705,7 @@ function freefightFactory(type, locationSkiplist, options) {
   return [];
 }
 
-// ../libgarbo/src/wanderer/eightbit.ts
+// ../garbo-lib/src/wanderer/eightbit.ts
 var import_kolmafia53 = require("kolmafia");
 var _templateObject399;
 var _templateObject2105;
@@ -23742,7 +23742,7 @@ function eightbitFactory(type, locationSkiplist, options) {
   return [];
 }
 
-// ../libgarbo/src/wanderer/index.ts
+// ../garbo-lib/src/wanderer/index.ts
 var _templateObject400;
 var _templateObject2106;
 var _templateObject3101;
