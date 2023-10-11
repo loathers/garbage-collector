@@ -5,10 +5,10 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "yarn workspaces foreach -p run build && yarn run combineFiles",
+    "build": "yarn workspaces foreach -ptv run build && yarn run combineFiles",
     "combineFiles": "copyfiles --up 2 \"packages/garbo/dist/**\" .; copyfiles --up 2 \"packages/garbo-relay/dist/**\" .",
-    "format": "yarn workspaces foreach -p run format",
-    "lint": " yarn workspaces foreach -p run lint"
+    "format": "yarn workspaces foreach -pv run format",
+    "lint": " yarn workspaces foreach -pv run lint"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
