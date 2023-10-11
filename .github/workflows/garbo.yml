@@ -72,6 +72,6 @@ jobs:
         env:
           REPO: self
           BRANCH: release
-          FOLDER: packages/garbo/dist
+          FOLDER: dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: ${{ github.event.commits[0].message }}
