@@ -25016,6 +25016,13 @@ function newarkValue() {
   }
   return get("garbo_newarkValue", 0);
 }
+function allMallPrices() {
+  var today = (0, import_kolmafia56.todayToString)();
+  if (import_kolmafia56.sessionStorage.getItem("allpricedate") !== today) {
+    (0, import_kolmafia56.mallPrices)("allitems");
+    import_kolmafia56.sessionStorage.setItem("allpricedate", today);
+  }
+}
 
 // src/turns.ts
 var import_kolmafia77 = require("kolmafia");
@@ -40301,6 +40308,7 @@ function main() {
   var argString = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "";
   sinceKolmafiaRevision(27640);
   checkGithubVersion();
+  allMallPrices();
   (0, import_kolmafia104.visitUrl)("main.php");
   if ((0, import_kolmafia104.currentRound)() > 0) {
     (0, import_kolmafia104.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
