@@ -234,6 +234,7 @@ const BarfTurnTasks: GarboTask[] = [
     do: () => deliverThesisIfAble(),
     sobriety: "sober",
     spendsTurn: true,
+    limit: { tries: 1 },
   },
   {
     name: "Sausage",
