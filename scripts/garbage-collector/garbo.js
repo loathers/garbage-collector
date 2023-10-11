@@ -33851,7 +33851,8 @@ function floristFriars() {
     return;
   }
   [Florist_exports.StealingMagnolia, Florist_exports.AloeGuvnor, Florist_exports.PitcherPlant].forEach(function(flower) {
-    return flower.plant();
+    if (flower.available())
+      flower.plant();
   });
 }
 function fillPantsgivingFullness() {
