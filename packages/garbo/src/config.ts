@@ -87,7 +87,17 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     }),
     quick: Args.flag({
       setting: "",
-      help: "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.",
+      help: "garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode. Sets quickcombat and quickgear.",
+      default: false,
+    }),
+    quickcombat: Args.flag({
+      setting: "",
+      help: "garbo will stasis in combat for 5 turns instead of 20, trading some potential profits for a faster run speed.",
+      default: false,
+    }),
+    quickgear: Args.flag({
+      setting: "",
+      help: "garbo will limit maximizer combinations and exclude some synergistic items, trading correctness for speed.",
       default: false,
     }),
     returnstash: Args.flag({
@@ -229,3 +239,17 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
   },
   { positionalArgs: ["turns"] },
 );
+
+type GlobalOptions = typeof globalOptions;
+
+export function isAnyQuick(opts: GlobalOptions): boolean {
+  return opts.quick || opts.quickgear || opts.quickcombat;
+}
+
+export function isQuickGear(opts: GlobalOptions): boolean {
+  return opts.quick || opts.quickgear;
+}
+
+export function isQuickCombat(opts: GlobalOptions): boolean {
+  return opts.quick || opts.quickcombat;
+}

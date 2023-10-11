@@ -52,7 +52,7 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
-import { globalOptions } from "./config";
+import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 import { embezzler, maxPassiveDamage, monsterManuelAvailable } from "./lib";
@@ -396,7 +396,7 @@ export class Macro extends StrictMacro {
       stasisRounds = 20;
     }
 
-    if (globalOptions.quick) {
+    if (isQuickCombat(globalOptions)) {
       // long fights can be very slow
       stasisRounds = Math.min(5, stasisRounds);
     }

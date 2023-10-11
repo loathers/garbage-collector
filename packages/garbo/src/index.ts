@@ -52,7 +52,7 @@ import {
   sinceKolmafiaRevision,
 } from "libram";
 import { stashItems, withStash, withVIPClan } from "./clan";
-import { globalOptions } from "./config";
+import { globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
@@ -343,7 +343,7 @@ export function main(argString = ""): void {
       true,
     );
 
-    const maximizerCombinationLimit = globalOptions.quick
+    const maximizerCombinationLimit = isQuickGear(globalOptions)
       ? 100000
       : get("maximizerCombinationLimit");
 
@@ -517,7 +517,7 @@ export function main(argString = ""): void {
         dailySetup();
 
         const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack, dice-shaped backpack, Amulet of Perpetual Darkness`;
-        if (globalOptions.quick) {
+        if (isQuickGear(globalOptions)) {
           // Brimstone equipment explodes the number of maximize combinations
           preventEquip.push(
             ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`,

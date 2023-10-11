@@ -1,14 +1,12 @@
 import { Item } from "kolmafia";
 import { makeValue, ValueFunctions } from "garbo-lib";
 
-import { globalOptions } from "./config";
 import { $item } from "libram";
 
 let _valueFunctions: ValueFunctions | undefined = undefined;
 function garboValueFunctions(): ValueFunctions {
   if (!_valueFunctions) {
     _valueFunctions = makeValue({
-      quick: globalOptions.quick,
       itemValues: new Map([[$item`fake hand`, 50000]]),
     });
   }

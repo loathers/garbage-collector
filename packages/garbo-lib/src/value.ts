@@ -29,9 +29,7 @@ export type ValueFunctions = {
 };
 
 export function makeValue(
-  options: { quick: boolean; itemValues?: Map<Item, Delayed<number>> } = {
-    quick: false,
-  },
+  options: { itemValues?: Map<Item, Delayed<number>> } = {},
 ): ValueFunctions {
   const regularValueCache = new Map<Item, number>();
   const historicalValueCache = new Map<Item, number>();
@@ -256,7 +254,6 @@ export function makeValue(
     const { item, quantity } =
       inputItem instanceof Item ? { item: inputItem, quantity: 1 } : inputItem;
     if (exclusions.has(item)) return 0;
-    useHistorical ||= options.quick;
     const cachedValue =
       regularValueCache.get(item) ??
       (useHistorical ? historicalValueCache.get(item) : undefined);

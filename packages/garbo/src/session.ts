@@ -8,7 +8,7 @@ import {
   totalTurnsPlayed,
 } from "kolmafia";
 import { $items, get, Session, set } from "libram";
-import { globalOptions } from "./config";
+import { globalOptions, isAnyQuick } from "./config";
 import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
 import { failedWishes } from "./potions";
 import { garboValue } from "./garboValue";
@@ -37,7 +37,7 @@ function printSession(session: Session): void {
   printProfit(highValue);
   print(` You lost meat on ${lowValue.length} items including:`);
   printProfit(lowValue);
-  if (globalOptions.quick) {
+  if (isAnyQuick(globalOptions)) {
     print("Quick mode was enabled, results may be less accurate than normal.");
   }
 }
@@ -309,7 +309,7 @@ export function endSession(printLog = true): void {
     message("So far today", totalTurns, totalMeat, totalItems);
 
     printMarginalSession();
-    if (globalOptions.quick) {
+    if (isAnyQuick(globalOptions)) {
       print(
         "Quick mode was enabled, results may be less accurate than normal.",
       );
