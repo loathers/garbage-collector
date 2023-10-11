@@ -39,7 +39,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn workspaces run lint
+      - run: yarn run lint
 
   circular-dependencies-script:
     runs-on: ubuntu-latest
