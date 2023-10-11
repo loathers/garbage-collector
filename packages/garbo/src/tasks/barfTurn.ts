@@ -229,7 +229,8 @@ const BarfTurnTasks: GarboTask[] = [
     name: "Thesis",
     ready: () =>
       have($familiar`Pocket Professor`) &&
-      myAdventures() === 1 + globalOptions.saveTurns,
+      myAdventures() === 1 + globalOptions.saveTurns &&
+      $familiar`Pocket Professor`.experience >= 400,
     completed: () => get("_thesisDelivered"),
     do: () => deliverThesisIfAble(),
     sobriety: "sober",
