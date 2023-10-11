@@ -54,7 +54,7 @@ function luckyGoldRing(mode: BonusEquipMode) {
         mode === BonusEquipMode.EMBEZZLER &&
         !globalOptions.nobarf // Volcoino drops once per day
           ? 0
-          : garboValue(i)
+          : garboValue(i),
       ),
     ].filter((value) => value > 0),
   ];
