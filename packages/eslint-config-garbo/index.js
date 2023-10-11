@@ -1,16 +1,16 @@
-{
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "libram"],
-  "extends": [
+module.exports = {
+  parser: "@typescript-eslint/parser",
+  plugins: ["@typescript-eslint", "libram"],
+  extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier"
+    "prettier",
   ],
-  "rules": {
+  rules: {
     "block-scoped-var": "error",
-    "curly": ["error", "multi-line"],
+    curly: ["error", "multi-line"],
     "eol-last": "error",
-    "eqeqeq": "error",
+    eqeqeq: "error",
     "no-trailing-spaces": "error",
     "no-var": "error",
     "prefer-arrow-callback": "error",
@@ -19,9 +19,9 @@
     "sort-imports": [
       "error",
       {
-        "ignoreCase": true,
-        "ignoreDeclarationSort": true
-      }
+        ignoreCase: true,
+        ignoreDeclarationSort: true,
+      },
     ],
     "spaced-comment": "error",
 
@@ -30,10 +30,10 @@
     "@typescript-eslint/no-unused-vars": "error",
 
     // eslint-plugin-libram
-    "libram/verify-constants": "error"
+    "libram/verify-constants": "error",
   },
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "sourceType": "module"
-  }
-}
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: "module",
+  },
+};

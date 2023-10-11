@@ -34,17 +34,17 @@
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.22.15",
     "@types/node": "^20.6.1",
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "@typescript-eslint/parser": "^6.7.0",
     "copyfiles": "^2.4.1",
     "esbuild": "^0.19.3",
     "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^8.50.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-libram": "^0.3.3",
+    "eslint-config-garbo": "^0.0.1",
     "madge": "^6.1.0",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-garbo"
   }
 }

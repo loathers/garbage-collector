@@ -28,7 +28,7 @@ jobs:
       - run: yarn workspace garbo run check
       #- run: yarn run test TODO: Readd once we have tests
 
-  lint-script:
+  lint-all:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +39,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn workspace garbo run lint
+      - run: yarn workspaces run lint
 
   circular-dependencies-script:
     runs-on: ubuntu-latest
@@ -54,13 +54,9 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn workspace garbo run madge
 
-  build-web:
+  deploy:
     runs-on: ubuntu-latest
-    needs: []
-
-  build-script:
-    runs-on: ubuntu-latest
-    needs: [test-script, lint-script, circular-dependencies-script]
+    needs: [test-script, lint-all, circular-dependencies-script]
     if: github.ref == 'refs/heads/main'
 
     steps:
@@ -72,15 +68,6 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn build
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [build-web, build-script]
-
-    steps:
-      - name: Combine files
-        run: |
-
       - uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
