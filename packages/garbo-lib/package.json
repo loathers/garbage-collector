@@ -1,0 +1,24 @@
+{
+  "name": "garbo-lib",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "A library for sequencing turns resource-optimally",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "echo \"Nothing to do\"",
+    "format": "eslint src --fix && prettier --write .",
+    "lint": "eslint src && prettier --check ."
+  },
+  "dependencies": {
+    "kolmafia": "^5.27628.0",
+    "libram": "^0.8.13"
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0",
+    "eslint-config-garbo": "^0.0.1",
+    "prettier": "^3.0.3"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-garbo"
+  }
+}

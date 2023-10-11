@@ -14,7 +14,7 @@ env:
   node-version: "18"
 
 jobs:
-  test:
+  test-script:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +28,7 @@ jobs:
       - run: yarn workspace garbo run check
       #- run: yarn run test TODO: Readd once we have tests
 
-  lint:
+  lint-all:
     runs-on: ubuntu-latest
 
     steps:
@@ -39,9 +39,9 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn workspace garbo run lint
+      - run: yarn run lint
 
-  circular-dependencies:
+  circular-dependencies-script:
     runs-on: ubuntu-latest
 
     steps:
@@ -54,23 +54,9 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn workspace garbo run madge
 
-  verify-build:
+  deploy:
     runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/main'
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.node-version }}
-          cache: yarn
-      - run: yarn install --frozen-lockfile
-      - run: yarn workspace garbo run build
-
-  build:
-    runs-on: ubuntu-latest
-    needs: [test, lint, circular-dependencies]
+    needs: [test-script, lint-all, circular-dependencies-script]
     if: github.ref == 'refs/heads/main'
 
     steps:
@@ -81,13 +67,11 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn workspace garbo build
-      - run: yarn workspace garbo run copyStatic
-      - name: Deploy
-        uses: s0/git-publish-subdir-action@develop
+      - run: yarn build
+      - uses: s0/git-publish-subdir-action@develop
         env:
           REPO: self
           BRANCH: release
-          FOLDER: packages/garbo/dist
+          FOLDER: dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MESSAGE: ${{ github.event.commits[0].message }}

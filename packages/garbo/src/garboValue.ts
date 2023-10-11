@@ -1,5 +1,5 @@
 import { Item } from "kolmafia";
-import { makeValue, ValueFunctions } from "libgarbo";
+import { makeValue, ValueFunctions } from "garbo-lib";
 
 import { globalOptions } from "./config";
 import { $item } from "libram";
