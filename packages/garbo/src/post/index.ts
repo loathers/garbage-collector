@@ -71,7 +71,9 @@ function floristFriars(): void {
     FloristFriar.StealingMagnolia,
     FloristFriar.AloeGuvnor,
     FloristFriar.PitcherPlant,
-  ].forEach((flower) => flower.plant());
+  ].forEach((flower) => {
+    if (flower.available()) flower.plant();
+  });
 }
 
 function fillPantsgivingFullness(): void {
