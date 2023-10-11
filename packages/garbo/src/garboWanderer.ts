@@ -1,5 +1,5 @@
 import { Effect, getMonsters, Location } from "kolmafia";
-import { WandererManager } from "libgarbo";
+import { WandererManager } from "garbo-lib";
 
 import { globalOptions } from "./config";
 import { freeFightFamiliarData } from "./familiar/freeFightFamiliar";

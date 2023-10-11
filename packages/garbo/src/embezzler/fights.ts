@@ -23,7 +23,7 @@ import {
   visitUrl,
   wait,
 } from "kolmafia";
-import { DraggableFight } from "libgarbo";
+import { DraggableFight } from "garbo-lib";
 import { OutfitSpec } from "grimoire-kolmafia";
 import {
   $effect,
