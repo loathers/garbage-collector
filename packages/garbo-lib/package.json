@@ -7,14 +7,7 @@
   "scripts": {
     "build": "echo \"Nothing to do\"",
     "format": "eslint src --fix && prettier --write .",
-    "lint": "eslint src && prettier --check .",
-    "pre-commit": "lint-staged"
-  },
-  "lintStaged": {
-    "*": [
-      "prettier --write --ignore-unknown",
-      "eslint --quiet --fix"
-    ]
+    "lint": "eslint src && prettier --check ."
   },
   "dependencies": {
     "kolmafia": "^5.27628.0",
@@ -23,7 +16,6 @@
   "devDependencies": {
     "eslint": "^8.50.0",
     "eslint-config-garbo": "^0.0.1",
-    "lint-staged": "^14.0.1",
     "prettier": "^3.0.3"
   },
   "eslintConfig": {

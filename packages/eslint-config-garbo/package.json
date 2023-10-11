@@ -7,13 +7,7 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "prettier --check .",
-    "build": "echo \"Nothing to do\"",
-    "pre-commit": "lint-staged"
-  },
-  "lintStaged": {
-    "*": [
-      "prettier --write --ignore-unknown"
-    ]
+    "build": "echo \"Nothing to do\""
   },
   "peerDependencies": {
     "eslint": "^8.50.0",
@@ -28,7 +22,6 @@
   },
   "devDependencies": {
     "eslint": "^8.50.0",
-    "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
     "typescript": ">=4.2.0"
   }

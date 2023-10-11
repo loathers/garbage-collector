@@ -8,14 +8,7 @@
     "build": "tsc && vite build && rm dist/**/index.html",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 && prettier --check .",
     "format": "prettier --write .",
-    "preview": "vite preview",
-    "pre-commit": "lint-staged"
-  },
-  "lintStaged": {
-    "*": [
-      "prettier --write --ignore-unknown",
-      "eslint --quiet --fix"
-    ]
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -30,7 +23,6 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
-    "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"

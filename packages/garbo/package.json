@@ -12,14 +12,7 @@
     "check": "tsc",
     "lint": "eslint src && prettier --check .",
     "format": "eslint src --fix && prettier --write .",
-    "madge": "madge --circular ./src/index.ts",
-    "pre-commit": "lint-staged"
-  },
-  "lintStaged": {
-    "*": [
-      "prettier --write --ignore-unknown",
-      "eslint --quiet --fix"
-    ]
+    "madge": "madge --circular ./src/index.ts"
   },
   "author": "",
   "license": "MIT",
@@ -43,7 +36,6 @@
     "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^8.50.0",
     "eslint-config-garbo": "^0.0.1",
-    "lint-staged": "^14.0.1",
     "madge": "^6.1.0",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",

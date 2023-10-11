@@ -8,14 +8,11 @@
     "build": "yarn workspaces foreach -ptv run build && yarn run combineFiles",
     "combineFiles": "copyfiles --up 2 \"packages/garbo/dist/**\" .; copyfiles --up 2 \"packages/garbo-relay/dist/**\" .",
     "format": "yarn workspaces foreach -pv run format",
-    "lint": " yarn workspaces foreach -pv run lint",
-    "pre-commit": "yarn workspaces foreach -pv run pre-commit",
-    "prepare": "husky install"
+    "lint": " yarn workspaces foreach -v run lint"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
     "eslint": "^8.50.0",
-    "husky": "^8.0.3",
     "prettier": "^3.0.3",
     "typescript": ">=4.2.0"
   },
