@@ -36,7 +36,7 @@ import {
   undelay,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
-import { WanderDetails } from "libgarbo";
+import { WanderDetails } from "garbo-lib";
 
 import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
@@ -229,7 +229,8 @@ const BarfTurnTasks: GarboTask[] = [
     name: "Thesis",
     ready: () =>
       have($familiar`Pocket Professor`) &&
-      myAdventures() === 1 + globalOptions.saveTurns,
+      myAdventures() === 1 + globalOptions.saveTurns &&
+      $familiar`Pocket Professor`.experience >= 400,
     completed: () => get("_thesisDelivered"),
     do: () => deliverThesisIfAble(),
     sobriety: "sober",

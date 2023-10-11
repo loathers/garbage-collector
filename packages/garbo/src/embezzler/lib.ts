@@ -1,6 +1,6 @@
 import { booleanModifier, canEquip, Location, use } from "kolmafia";
 import { $effect, $familiar, $item, get, have, questStep } from "libram";
-import { DraggableFight } from "libgarbo";
+import { DraggableFight } from "garbo-lib";
 import { OutfitSpec } from "grimoire-kolmafia";
 
 import { waterBreathingEquipment } from "../outfit";
