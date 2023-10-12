@@ -50,7 +50,7 @@ export function main(): void {
   }
 
   writeln(
-    '<head><link rel="stylesheet" href="/garbage-collector/garbage-collector.css"></head>',
+    '<head><link rel="stylesheet" href="/garbage-collector/index.css"></head>',
   );
   writeln('<div id="root"></div>');
 
@@ -74,5 +74,5 @@ export function main(): void {
   writeln("</script>");
 
   // include react scripts
-  writeln('<script src="./garbage-collector/garbage-collector.js"></script>');
+  writeln('<script src="./garbage-collector/index-collector.js"></script>');
 }
