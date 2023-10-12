@@ -38355,10 +38355,12 @@ var BarfTurnTasks = [{
       allowEquipment: false
     });
   },
-  choices: shouldGoUnderwater() ? {} : wanderer().getChoices({
-    wanderer: "wanderer",
-    allowEquipment: false
-  }),
+  choices: function() {
+    return shouldGoUnderwater() ? {} : wanderer().getChoices({
+      wanderer: "wanderer",
+      allowEquipment: false
+    });
+  },
   combat: new GarboStrategy(function() {
     return Macro2.externalIf(shouldGoUnderwater(), Macro2.item($item(_templateObject3621 || (_templateObject3621 = _taggedTemplateLiteral84(["pulled green taffy"]))))).meatKill();
   }, Macro2.if_("(monsterid ".concat(embezzler.id, ") && !gotjump && !(pastround 2)"), Macro2.externalIf(shouldGoUnderwater(), Macro2.item($item(_templateObject3721 || (_templateObject3721 = _taggedTemplateLiteral84(["pulled green taffy"]))))).meatKill()).abortWithMsg("Expected a digitized ".concat(SourceTerminal_exports.getDigitizeMonster(), ", but encountered something else."))),
