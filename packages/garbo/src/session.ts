@@ -37,9 +37,6 @@ function printSession(session: Session): void {
   printProfit(highValue);
   print(` You lost meat on ${lowValue.length} items including:`);
   printProfit(lowValue);
-  if (globalOptions.quick) {
-    print("Quick mode was enabled, results may be less accurate than normal.");
-  }
 }
 
 let session: Session | null = null;
@@ -309,11 +306,6 @@ export function endSession(printLog = true): void {
     message("So far today", totalTurns, totalMeat, totalItems);
 
     printMarginalSession();
-    if (globalOptions.quick) {
-      print(
-        "Quick mode was enabled, results may be less accurate than normal.",
-      );
-    }
   }
   if (globalOptions.loginvalidwishes) {
     if (failedWishes.length === 0) {

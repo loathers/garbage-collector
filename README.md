@@ -122,12 +122,13 @@ Garbo will determine when you are done with your current workshed, and automatic
 
 ### `quick` flag
 
-_EXPERIMENTAL_ Garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.
+Garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.
 
-- Many non-critical mall searches will instead check historical price with a max age of 1 week.
 - `maximizerCombinationLimit` will be set to 100000.
 - [Brimstone equipment](https://kol.coldfront.net/thekolwiki/index.php/Blasphemous_Bedizenment) will be ignored by the maximizer to reduce possible combinations.
 - Stasis at max 5 rounds, instead of up to 20.
+
+Use `quickgear` to only speed up the maximizer, and `quickcombat` to only speed up combat.
 
 ### Turncount
 
