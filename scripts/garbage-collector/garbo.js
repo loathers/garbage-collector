@@ -22618,7 +22618,17 @@ var globalOptions = Args.create("garbo", 'This script is an automated turn-burni
   }),
   quick: Args.flag({
     setting: "",
-    help: "*EXPERIMENTAL* garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode.",
+    help: "garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual profits may be less accurate in this mode. Sets quickcombat and quickgear.",
+    default: false
+  }),
+  quickcombat: Args.flag({
+    setting: "",
+    help: "garbo will stasis in combat for 5 turns instead of 20, trading some potential profits for a faster run speed.",
+    default: false
+  }),
+  quickgear: Args.flag({
+    setting: "",
+    help: "garbo will limit maximizer combinations and exclude some synergistic items, trading correctness for speed.",
     default: false
   }),
   returnstash: Args.flag({
@@ -22755,6 +22765,12 @@ var globalOptions = Args.create("garbo", 'This script is an automated turn-burni
 }, {
   positionalArgs: ["turns"]
 });
+function isQuickGear() {
+  return globalOptions.quick || globalOptions.quickgear;
+}
+function isQuickCombat() {
+  return globalOptions.quick || globalOptions.quickcombat;
+}
 
 // src/familiar/lib.ts
 var import_kolmafia78 = require("kolmafia");
@@ -22948,9 +22964,7 @@ function _arrayLikeToArray31(arr, len) {
   return arr2;
 }
 function makeValue() {
-  var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {
-    quick: false
-  };
+  var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
   var regularValueCache = /* @__PURE__ */ new Map();
   var historicalValueCache = /* @__PURE__ */ new Map();
   var inputValues = options.itemValues ? _toConsumableArray19(options.itemValues.entries()).map(function(_ref) {
@@ -23074,7 +23088,6 @@ function makeValue() {
     } : inputItem, item9 = _ref5.item, quantity = _ref5.quantity;
     if (exclusions.has(item9))
       return 0;
-    useHistorical || (useHistorical = options.quick);
     var cachedValue = (_regularValueCache$ge = regularValueCache.get(item9)) !== null && _regularValueCache$ge !== void 0 ? _regularValueCache$ge : useHistorical ? historicalValueCache.get(item9) : void 0;
     if (cachedValue === void 0) {
       var _specialValueCompute;
@@ -24168,7 +24181,6 @@ var _valueFunctions = void 0;
 function garboValueFunctions() {
   if (!_valueFunctions) {
     _valueFunctions = makeValue({
-      quick: globalOptions.quick,
       itemValues: /* @__PURE__ */ new Map([[$item(_templateObject401 || (_templateObject401 = _taggedTemplateLiteral47(["fake hand"]))), 5e4]])
     });
   }
@@ -31682,9 +31694,6 @@ function endSession() {
     message("This run of garbo", turns, meat, items);
     message("So far today", totalTurns, totalMeat, totalItems);
     printMarginalSession();
-    if (globalOptions.quick) {
-      (0, import_kolmafia79.print)("Quick mode was enabled, results may be less accurate than normal.");
-    }
   }
   if (globalOptions.loginvalidwishes) {
     if (failedWishes.length === 0) {
@@ -32455,7 +32464,7 @@ var Macro2 = /* @__PURE__ */ function(_StrictMacro) {
       if ((0, import_kolmafia82.myFamiliar)() === $familiar(_templateObject8411 || (_templateObject8411 = _taggedTemplateLiteral75(["Hobo Monkey"]))) || (0, import_kolmafia82.myFamiliar)() === $familiar(_templateObject8510 || (_templateObject8510 = _taggedTemplateLiteral75(["Jill-of-All-Trades"]))) || (0, import_kolmafia82.haveEquipped)($item(_templateObject864 || (_templateObject864 = _taggedTemplateLiteral75(["Buddy Bjorn"])))) || (0, import_kolmafia82.haveEquipped)($item(_templateObject874 || (_templateObject874 = _taggedTemplateLiteral75(["Crown of Thrones"])))) || get("_bittycar")) {
         stasisRounds = 20;
       }
-      if (globalOptions.quick) {
+      if (isQuickCombat()) {
         stasisRounds = Math.min(5, stasisRounds);
       }
       return this.if_("monstername angry tourist || monstername garbage tourist || monstername horrible tourist family || monstername Knob Goblin Embezzler || monstername sausage goblin", Macro3.externalIf(have($item(_templateObject884 || (_templateObject884 = _taggedTemplateLiteral75(["Time-Spinner"])))), Macro3.if_("".concat(hpCheck, " && monstername sausage goblin"), Macro3.tryHaveItem($item(_templateObject894 || (_templateObject894 = _taggedTemplateLiteral75(["Time-Spinner"])))))).externalIf(have($skill(_templateObject904 || (_templateObject904 = _taggedTemplateLiteral75(["Meteor Lore"])))), Macro3.if_("".concat(hpCheck, " && monstername sausage goblin"), Macro3.tryHaveSkill($skill(_templateObject9112 || (_templateObject9112 = _taggedTemplateLiteral75(["Micrometeorite"])))))).externalIf((0, import_kolmafia82.haveEquipped)($item(_templateObject9212 || (_templateObject9212 = _taggedTemplateLiteral75(["Pantsgiving"])))), Macro3.if_("".concat(hpCheck), Macro3.trySkill($skill(_templateObject9311 || (_templateObject9311 = _taggedTemplateLiteral75(["Pocket Crumbs"])))))).externalIf(SourceTerminal_exports.getSkills().includes($skill(_templateObject9410 || (_templateObject9410 = _taggedTemplateLiteral75(["Extract"])))), Macro3.if_("".concat(hpCheck), Macro3.trySkill($skill(_templateObject956 || (_templateObject956 = _taggedTemplateLiteral75(["Extract"])))))).externalIf((0, import_kolmafia82.haveEquipped)($item(_templateObject964 || (_templateObject964 = _taggedTemplateLiteral75(["vampyric cloake"])))) && get("_vampyreCloakeFormUses") < 10, Macro3.if_("".concat(hpCheck), Macro3.tryHaveSkill($skill(_templateObject974 || (_templateObject974 = _taggedTemplateLiteral75(["Become a Wolf"])))))).externalIf((0, import_kolmafia82.haveEquipped)($item(_templateObject984 || (_templateObject984 = _taggedTemplateLiteral75(["Cincho de Mayo"])))) && canPinata, Macro3.while_("".concat(hpCheckCincho, " && hasskill ").concat($skill(_templateObject994 || (_templateObject994 = _taggedTemplateLiteral75(["Cincho: Projectile Pi\xF1ata"]))).id), Macro3.trySkill($skill(_templateObject1004 || (_templateObject1004 = _taggedTemplateLiteral75(["Cincho: Projectile Pi\xF1ata"])))))).externalIf(have($item(_templateObject10112 || (_templateObject10112 = _taggedTemplateLiteral75(["porquoise-handled sixgun"])))), Macro3.if_("".concat(hpCheckSixgun), Macro3.tryItem($item(_templateObject10212 || (_templateObject10212 = _taggedTemplateLiteral75(["porquoise-handled sixgun"])))))).while_("".concat(hpCheck, " && !pastround ").concat(stasisRounds), Macro3.item(stasisItem)));
@@ -40456,7 +40465,7 @@ function main() {
     }
     (0, import_kolmafia104.setAutoAttack)(0);
     (0, import_kolmafia104.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true);
-    var maximizerCombinationLimit = globalOptions.quick ? 1e5 : get("maximizerCombinationLimit");
+    var maximizerCombinationLimit = isQuickGear() ? 1e5 : get("maximizerCombinationLimit");
     var bannedAutoRestorers = have($item(_templateObject1540 || (_templateObject1540 = _taggedTemplateLiteral90(["Cincho de Mayo"])))) ? ["sleep on your clan sofa", "rest in your campaway tent", "rest at the chateau", "rest at your campground", "free rest"] : [];
     var hpItems = get("hpAutoRecoveryItems").split(";").filter(function(s) {
       return !bannedAutoRestorers.includes(s);
@@ -40570,7 +40579,7 @@ function main() {
         }
         dailySetup();
         var preventEquip = $items(_templateObject3028 || (_templateObject3028 = _taggedTemplateLiteral90(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball, stinky fannypack, dice-shaped backpack, Amulet of Perpetual Darkness"])));
-        if (globalOptions.quick) {
+        if (isQuickGear()) {
           preventEquip.push.apply(preventEquip, _toConsumableArray52($items(_templateObject3165 || (_templateObject3165 = _taggedTemplateLiteral90(["Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret"])))));
         }
         setDefaultMaximizeOptions({
