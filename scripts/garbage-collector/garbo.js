@@ -6529,9 +6529,6 @@ var require_create_property = __commonJS({
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
-  canContinue: function() {
-    return canContinue;
-  },
   main: function() {
     return main;
   }
@@ -38166,6 +38163,9 @@ function wanderTask(details, spec, base) {
     })
   }, base);
 }
+function canContinue() {
+  return (0, import_kolmafia91.myAdventures)() > globalOptions.saveTurns && (globalOptions.stopTurncount === null || (0, import_kolmafia91.myTurncount)() < globalOptions.stopTurncount);
+}
 function shouldGoUnderwater() {
   if (!sober2())
     return false;
@@ -38503,7 +38503,7 @@ var BarfTurnQuest = {
   name: "Barf Turn",
   tasks: BarfTurnTasks,
   completed: function() {
-    return (0, import_kolmafia91.myAdventures)() === 0;
+    return !canContinue();
   }
 };
 
@@ -40301,9 +40301,6 @@ function ensureBarfAccess() {
     (0, import_kolmafia104.cliExecute)("refresh inv");
   }
 }
-function canContinue() {
-  return (0, import_kolmafia104.myAdventures)() > globalOptions.saveTurns && (globalOptions.stopTurncount === null || (0, import_kolmafia104.myTurncount)() < globalOptions.stopTurncount);
-}
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "";
   sinceKolmafiaRevision(27640);
@@ -40615,6 +40612,5 @@ function main() {
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  canContinue,
   main
 });
