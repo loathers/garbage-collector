@@ -64,8 +64,8 @@ import { digitizedMonstersRemaining } from "../turns";
 import { deliverThesisIfAble } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
 
-import { completeBarfQuest } from "./daily";
 import { GarboTask } from "./engine";
+import { completeBarfQuest } from "../resources/realm";
 
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
@@ -293,13 +293,9 @@ const BarfTurnTasks: GarboTask[] = [
       shouldGoUnderwater()
         ? $location`The Briny Deeps`
         : wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false }),
-    choices: () =>
-      shouldGoUnderwater()
-        ? {}
-        : wanderer().getChoices({
-            wanderer: "wanderer",
-            allowEquipment: false,
-          }),
+    choices: shouldGoUnderwater()
+      ? {}
+      : wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
     combat: new GarboStrategy(
       () =>
         Macro.externalIf(
