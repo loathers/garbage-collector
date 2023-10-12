@@ -34986,7 +34986,7 @@ function startWandererCounter() {
     }
     do {
       var run = void 0;
-      if (get("beGregariousFightsLeft") > 0) {
+      if (gregReady()) {
         var _run$constraints$prep2, _run$constraints2;
         (0, import_kolmafia89.print)("You still have gregs active, so we're going to wear your meat outfit.");
         run = ltbRun();
