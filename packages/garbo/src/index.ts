@@ -14,7 +14,6 @@ import {
   Item,
   logprint,
   maximize,
-  myAdventures,
   myBasestat,
   myClass,
   myGardenType,
@@ -94,14 +93,6 @@ function ensureBarfAccess() {
     runChoice(6);
     cliExecute("refresh inv");
   }
-}
-
-export function canContinue(): boolean {
-  return (
-    myAdventures() > globalOptions.saveTurns &&
-    (globalOptions.stopTurncount === null ||
-      myTurncount() < globalOptions.stopTurncount)
-  );
 }
 
 export function main(argString = ""): void {
