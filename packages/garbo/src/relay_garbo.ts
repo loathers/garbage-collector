@@ -58,7 +58,7 @@ export function main(): void {
 
   // add script that react calls when loaded to get kol data
   writeln(
-    `let getData = function(callback) {callback(${escapeUnsafeChars(
+    `window.getData = function(callback) {callback(${escapeUnsafeChars(
       JSON.stringify({
         settings: settings,
         updatedSettings: updatedSettings,
