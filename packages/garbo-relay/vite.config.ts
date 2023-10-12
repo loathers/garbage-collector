@@ -12,6 +12,7 @@ export default defineConfig({
         assetFileNames: "garbage-collector/[name].[ext]",
       },
     },
+    assetsInlineLimit: 100000,
   },
   plugins: [react()],
 });
