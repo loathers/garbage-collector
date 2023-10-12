@@ -7,6 +7,119 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      window.getData = function (callback) {
+        callback({
+          settings: [
+            {
+              name: "valueOfAdventure",
+              description: "What is a marginal barf turn worth to you?",
+              value: 7600,
+            },
+            {
+              name: "garbo_vipClan",
+              description:
+                "What is your vip clan? Set to current clan if you don't have access to one (And then get whitelisted to BAFH. It's free!).",
+              value: "90485",
+            },
+            {
+              name: "garbo_stashClan",
+              description:
+                "What is your stash clan? Set to 'none' to disable borrowing shared equipment from a clan stash.",
+              value: "Alliance From Heck",
+            },
+            {
+              name: "garbo_skipAscensionCheck",
+              type: "boolean",
+              description:
+                "Should skip verifying that your account has broken the prism? Set to true if you want to proceed regardless, and false if you'd like to be warned.",
+              value: "false",
+            },
+            {
+              name: "garbo_valueOfFreeFight",
+              defaultValue: 2000,
+              description:
+                "What is a free fight\run worth to you? (Default 2000).",
+              value: "4000",
+            },
+            {
+              name: "garbo_fightGlitch",
+              type: "boolean",
+              description:
+                "Should we fight the glitch season reward? This assumes you have access to many skills--Curse of Marinara, Conspiratorial Whispers, Shadow Noodles, and more.",
+              value: "false",
+            },
+            {
+              name: "garbo_buyPass",
+              type: "boolean",
+              description:
+                "Should a dinsey day pass be bought with FunFunds (if possible) at the end of the script?",
+              value: "true",
+            },
+            {
+              name: "garbo_yachtzeechain",
+              type: "boolean",
+              description:
+                "only diets after free fights, and attempts to estimate if Yachtzee! chaining is profitable for you. Requires Spring Break Beach access (it will not grab a one-day pass for you, but will make an attempt if one is used).",
+              value: "false",
+            },
+            {
+              name: "garbo_skipPillCheck",
+              type: "boolean",
+              description:
+                "Should skip prompting you to go acquire distention and synthetic dog hair pills? Set to true if you want to proceed without them, and false if you want to be reminded.",
+              value: "true",
+            },
+            {
+              name: "garbo_prioritizeCappingGuzzlr",
+              type: "boolean",
+              description:
+                "Should garbo prioritize capping your Guzzlr tablet over getting guzzlrbucks?",
+              value: "true",
+            },
+            {
+              name: "garbo_autoUserConfirm",
+              type: "boolean",
+              description:
+                "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive.",
+              value: "true",
+            },
+            {
+              name: "garbo_autoUserConfirm_embezzlerInvocationsThreshold",
+              defaultValue: 1,
+              description:
+                "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source an embezzler for chaining before requesting user interference.",
+              value: "",
+            },
+            {
+              name: "garbo_IgnoreMarginalFamiliars",
+              type: "boolean",
+              description:
+                "Should garbo use only your meat familiar throughout your barf-turns, or should it also use drops familiars to maximize profit?",
+              value: "false",
+            },
+            {
+              name: "garbo_restoreHpTarget",
+              defaultValue: 2000,
+              description:
+                "If you're a very high level, what HP threshold should garbo aim to maintain?",
+              value: "",
+            },
+            {
+              name: "garbo_embezzlerMultiplier",
+              defaultValue: 2.5,
+              description:
+                "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit",
+              value: "3",
+            },
+          ],
+          updatedSettings: [],
+        });
+      };
+      document.onclick = (e) => {
+        if (e.target.classList.contains("notification")) e.target.remove();
+      };
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

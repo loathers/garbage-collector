@@ -4,6 +4,7 @@ import garboGif from "./garbo.gif";
 function App({ settings, updatedSettings }: Data): JSX.Element {
   const preferences = settings.map((setting) => (
     <Setting
+      key={setting.name}
       value={setting.value}
       type={setting.type}
       name={setting.name}
@@ -38,7 +39,9 @@ function App({ settings, updatedSettings }: Data): JSX.Element {
           onClick={onInterruptClicked}
         />
         <input id="garboInterrupt" type="hidden" name="garbo_interrupt" />
-        <table>{preferences}</table>
+        <table>
+          <tbody>{preferences}</tbody>
+        </table>
         <input className="save" type="submit" value="Save Changes" />
       </form>
     </div>
