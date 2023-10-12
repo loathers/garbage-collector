@@ -17,9 +17,8 @@ import {
   getRemainingStomach,
   have,
   JuneCleaver,
-  Macro,
 } from "libram";
-import { GarboStrategy } from "../../combat";
+import { GarboStrategy, Macro } from "../../combat";
 import { globalOptions } from "../../config";
 import { computeDiet, consumeDiet } from "../../diet";
 import {
