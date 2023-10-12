@@ -1,4 +1,3 @@
-/* eslint-disable no-var, @typescript-eslint/ban-ts-comment */
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
@@ -21,6 +20,8 @@ declare global {
   };
   type GetData = (callback: (data: Data) => void) => void;
 
+  // Var is fine in a TypeScript declaration
+  /* eslint-disable-next-line no-var */
   var getData: GetData;
 }
 
