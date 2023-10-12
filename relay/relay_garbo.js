@@ -279,7 +279,7 @@ function main() {
   (0, import_kolmafia2.writeln)('<head><link rel="stylesheet" href="/garbage-collector/index.css"></head>');
   (0, import_kolmafia2.writeln)('<div id="root"></div>');
   (0, import_kolmafia2.writeln)("<script>");
-  (0, import_kolmafia2.writeln)("let getData = function(callback) {callback(".concat(escapeUnsafeChars(JSON.stringify({
+  (0, import_kolmafia2.writeln)("window.getData = function(callback) {callback(".concat(escapeUnsafeChars(JSON.stringify({
     settings: settings,
     updatedSettings: updatedSettings
   })), ")}"));
