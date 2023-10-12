@@ -37,7 +37,7 @@ function printSession(session: Session): void {
   printProfit(highValue);
   print(` You lost meat on ${lowValue.length} items including:`);
   printProfit(lowValue);
-  if (isAnyQuick(globalOptions)) {
+  if (isAnyQuick()) {
     print("Quick mode was enabled, results may be less accurate than normal.");
   }
 }
@@ -309,7 +309,7 @@ export function endSession(printLog = true): void {
     message("So far today", totalTurns, totalMeat, totalItems);
 
     printMarginalSession();
-    if (isAnyQuick(globalOptions)) {
+    if (isAnyQuick()) {
       print(
         "Quick mode was enabled, results may be less accurate than normal.",
       );
