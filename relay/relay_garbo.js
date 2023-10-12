@@ -285,7 +285,7 @@ function main() {
   })), ")}"));
   (0, import_kolmafia2.writeln)("document.onclick = (e) => {\n    if(e.target.classList.contains('notification')) e.target.remove();\n  }");
   (0, import_kolmafia2.writeln)("</script>");
-  (0, import_kolmafia2.writeln)('<script src="./garbage-collector/index-collector.js"></script>');
+  (0, import_kolmafia2.writeln)('<script src="./garbage-collector/index.js"></script>');
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
