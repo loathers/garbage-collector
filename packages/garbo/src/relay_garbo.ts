@@ -74,5 +74,5 @@ export function main(): void {
   writeln("</script>");
 
   // include react scripts
-  writeln('<script src="./garbage-collector/index-collector.js"></script>');
+  writeln('<script src="./garbage-collector/index.js"></script>');
 }
