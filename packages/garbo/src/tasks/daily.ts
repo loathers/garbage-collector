@@ -20,11 +20,14 @@ import {
   myClass,
   myDaycount,
   myHash,
+  myHp,
   myInebriety,
+  myMaxhp,
   myPath,
   myPrimestat,
   print,
   putCloset,
+  restoreHp,
   retrieveItem,
   retrievePrice,
   runChoice,
@@ -41,6 +44,7 @@ import {
   $items,
   $location,
   $monster,
+  $skill,
   $slot,
   BeachComb,
   findLeprechaunMultiplier,
@@ -50,9 +54,11 @@ import {
   maxBy,
   Pantogram,
   questStep,
+  realmAvailable,
   set,
   SongBoom,
   SourceTerminal,
+  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
@@ -65,7 +71,8 @@ import { baseMeat, HIGHLIGHT } from "../lib";
 import { garboValue } from "../garboValue";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
-import { Quest } from "grimoire-kolmafia";
+import { AcquireItem, Quest } from "grimoire-kolmafia";
+import { checkVolcanoQuest } from "../resources/volcano";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
@@ -769,6 +776,45 @@ const DailyTasks: GarboTask[] = [
     ready: () => retrieveItems.some((item) => itemAmount(item) === 0),
     completed: () => retrieveItems.every((item) => itemAmount(item) > 0),
     do: () => retrieveItems.forEach((item) => retrieveItem(item)),
+    spendsTurn: false,
+  },
+  {
+    name: "Volcano Quest",
+    ready: () => realmAvailable("hot"),
+    completed: () => get("_volcanoItemRedeemed"),
+    do: checkVolcanoQuest,
+    spendsTurn: false,
+  },
+  {
+    name: "Free Volcoino",
+    ready: () => realmAvailable("hot"),
+    completed: () => get("_infernoDiscoVisited"),
+    do: (): void => {
+      visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
+      runChoice(7);
+    },
+    acquire: () =>
+      $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.map(
+        (x) => <AcquireItem>{ item: x },
+      ),
+    outfit: { modifier: "disco style" },
+    spendsTurn: false,
+  },
+  {
+    name: "Free Volcano Mining",
+    ready: () => realmAvailable("hot") && have($skill`Unaccompanied Miner`),
+    completed: () => get("_unaccompaniedMinerUsed") >= 5,
+    do: () =>
+      cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`),
+    prepare: () => restoreHp(myMaxhp() * 0.9),
+    post: (): void => {
+      if (have($effect`Beaten Up`)) {
+        uneffect($effect`Beaten Up`);
+      }
+      if (myHp() < myMaxhp() * 0.5) {
+        restoreHp(myMaxhp() * 0.9);
+      }
+    },
     spendsTurn: false,
   },
 ];

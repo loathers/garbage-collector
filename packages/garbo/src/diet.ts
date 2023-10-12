@@ -71,7 +71,7 @@ import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
 import { embezzlerCount } from "./embezzler";
-import { expectedGregs } from "./extrovermectin";
+import { expectedGregs } from "./resources/extrovermectin";
 import {
   arrayEquals,
   baseMeat,
@@ -81,7 +81,7 @@ import {
 } from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
-import synthesize from "./synthesis";
+import synthesize from "./resources/synthesis";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./garboValue";
 import { shouldAugustCast } from "./resources";

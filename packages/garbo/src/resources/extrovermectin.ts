@@ -37,17 +37,17 @@ import {
   set,
   tryFindFreeRun,
 } from "libram";
-import { freeFightFamiliar } from "./familiar";
+import { freeFightFamiliar } from "../familiar";
 import {
   freeRunConstraints,
   getUsingFreeBunnyBanish,
   ltbRun,
   setChoice,
   userConfirmDialog,
-} from "./lib";
-import { garboAdventure, Macro } from "./combat";
-import { acquire } from "./acquire";
-import { globalOptions } from "./config";
+} from "../lib";
+import { garboAdventure, Macro } from "../combat";
+import { acquire } from "../acquire";
+import { globalOptions } from "../config";
 
 const embezzler = $monster`Knob Goblin Embezzler`;
 const crate = $monster`crate`;

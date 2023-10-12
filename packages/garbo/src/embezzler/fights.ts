@@ -70,7 +70,7 @@ import {
   equipOrbIfDesired,
   gregReady,
   possibleGregCrystalBall,
-} from "../extrovermectin";
+} from "../resources/extrovermectin";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 
