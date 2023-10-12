@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "license": "MIT",
   "description": "A library for sequencing turns resource-optimally",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "echo \"Nothing to do\"",
+    "build": "tsc && node --no-warnings --loader ts-node/esm/transpile-only ./build.mjs",
     "format": "eslint src --fix && prettier --write .",
     "lint": "eslint src && prettier --check .",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "prepublishOnly": "yarn run build"
   },
   "lint-staged": {
     "*": [
@@ -21,10 +22,21 @@
     "libram": "^0.8.13"
   },
   "devDependencies": {
+    "@babel/cli": "^7.22.15",
+    "@babel/compat-data": "^7.22.9",
+    "@babel/core": "^7.22.20",
+    "@babel/preset-env": "^7.22.15",
+    "@babel/preset-react": "^7.22.15",
+    "@babel/preset-typescript": "^7.22.15",
+    "@types/node": "^20.6.1",
+    "esbuild": "^0.19.3",
+    "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^8.50.0",
     "eslint-config-garbo": "^0.0.1",
     "lint-staged": "^14.0.1",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   },
   "eslintConfig": {
     "extends": "eslint-config-garbo"
