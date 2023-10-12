@@ -14,7 +14,6 @@ import {
   Item,
   logprint,
   maximize,
-  myAdventures,
   myBasestat,
   myClass,
   myGardenType,
@@ -58,6 +57,7 @@ import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
 import {
+  allMallPrices,
   bestJuneCleaverOption,
   checkGithubVersion,
   HIGHLIGHT,
@@ -95,17 +95,10 @@ function ensureBarfAccess() {
   }
 }
 
-export function canContinue(): boolean {
-  return (
-    myAdventures() > globalOptions.saveTurns &&
-    (globalOptions.stopTurncount === null ||
-      myTurncount() < globalOptions.stopTurncount)
-  );
-}
-
 export function main(argString = ""): void {
   sinceKolmafiaRevision(27640);
   checkGithubVersion();
+  allMallPrices();
 
   // Hit up main.php to get out of easily escapable choices
   visitUrl("main.php");
