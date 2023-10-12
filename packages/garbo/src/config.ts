@@ -240,12 +240,6 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
   { positionalArgs: ["turns"] },
 );
 
-export function isAnyQuick(): boolean {
-  return (
-    globalOptions.quick || globalOptions.quickgear || globalOptions.quickcombat
-  );
-}
-
 export function isQuickGear(): boolean {
   return globalOptions.quick || globalOptions.quickgear;
 }
