@@ -45301,7 +45301,7 @@ function _getPrototypeOf9(o) {
   return _getPrototypeOf9(o);
 }
 function logEmbezzler(encounterType) {
-  var isDigitize = encounterType === "Digitize Wanderer";
+  var isDigitize = encounterType.includes("Digitize Wanderer");
   isDigitize ? eventLog.digitizedEmbezzlersFought++ : eventLog.initialEmbezzlersFought++;
   eventLog.embezzlerSources.push(isDigitize ? "Digitize" : "Unknown Source");
 }
@@ -45325,7 +45325,7 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
     key: "execute",
     value: function execute(task) {
       safeInterrupt();
-      var spentTurns = (0, import_kolmafia115.myTotalTurnsSpent)();
+      var spentTurns = (0, import_kolmafia115.totalTurnsPlayed)();
       var duplicate = undelay(task.duplicate);
       var before = SourceTerminal_exports.getSkills();
       if (duplicate && SourceTerminal_exports.have() && SourceTerminal_exports.duplicateUsesRemaining() > 0) {
@@ -45333,7 +45333,7 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
       }
       _get2(_getPrototypeOf9(BaseGarboEngine2.prototype), "execute", this).call(this, task);
       postCombatActions();
-      if ((0, import_kolmafia115.myTotalTurnsSpent)() !== spentTurns) {
+      if ((0, import_kolmafia115.totalTurnsPlayed)() !== spentTurns) {
         if (!undelay(task.spendsTurn)) {
           (0, import_kolmafia115.print)("Task ".concat(task.name, " spent a turn but was marked as not spending turns"));
         }
