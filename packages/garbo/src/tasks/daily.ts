@@ -9,6 +9,7 @@ import {
   floristAvailable,
   gamedayToInt,
   getClanLounge,
+  getPlayerId,
   gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
@@ -626,7 +627,7 @@ const DailyTasks: GarboTask[] = [
     completed: () => get("_clanFortuneConsultUses") >= 3,
     do: (): void => {
       Clan.with("Bonus Adventures from Hell", () =>
-        cliExecute("fortune 3038166"),
+        cliExecute(`fortune ${getPlayerId("CheeseFax")}`),
       );
       wait(10);
     },
