@@ -25,6 +25,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: yarn
       - run: yarn install --frozen-lockfile
+      - run: yarn workspace garbo-lib build
       - run: yarn workspace garbo run check
       #- run: yarn run test TODO: Readd once we have tests
 
@@ -39,6 +40,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: yarn
       - run: yarn install --frozen-lockfile
+      - run: yarn workspace garbo-lib build
       - run: yarn run lint
 
   circular-dependencies-script:
@@ -52,6 +54,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: yarn
       - run: yarn install --frozen-lockfile
+      - run: yarn workspace garbo-lib build
       - run: yarn workspace garbo run madge
 
   deploy:
