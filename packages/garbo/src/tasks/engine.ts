@@ -8,7 +8,7 @@ import {
 import { eventLog, safeInterrupt, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
 import { $skill, Delayed, get, SourceTerminal, undelay } from "libram";
-import { myTotalTurnsSpent, print } from "kolmafia";
+import { print, totalTurnsPlayed } from "kolmafia";
 import postCombatActions from "../post";
 import { GarboStrategy } from "../combat";
 
@@ -19,7 +19,7 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
 };
 
 function logEmbezzler(encounterType: string) {
-  const isDigitize = encounterType === "Digitize Wanderer";
+  const isDigitize = encounterType.includes("Digitize Wanderer");
   isDigitize
     ? eventLog.digitizedEmbezzlersFought++
     : eventLog.initialEmbezzlersFought++;
@@ -44,7 +44,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
 
   execute(task: GarboTask): void {
     safeInterrupt();
-    const spentTurns = myTotalTurnsSpent();
+    const spentTurns = totalTurnsPlayed();
     const duplicate = undelay(task.duplicate);
     const before = SourceTerminal.getSkills();
     if (
@@ -56,7 +56,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     }
     super.execute(task);
     postCombatActions();
-    if (myTotalTurnsSpent() !== spentTurns) {
+    if (totalTurnsPlayed() !== spentTurns) {
       if (!undelay(task.spendsTurn)) {
         print(
           `Task ${task.name} spent a turn but was marked as not spending turns`,
