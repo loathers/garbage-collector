@@ -4258,6 +4258,10 @@ __metadata:
     libram: ^0.8.13
     lint-staged: ^14.0.1
     prettier: ^3.0.3
+    typescript: ^5.2.2
+  peerDependencies:
+    kolmafia: ^5.27628.0
+    libram: ^0.8.13
   languageName: unknown
   linkType: soft
 
