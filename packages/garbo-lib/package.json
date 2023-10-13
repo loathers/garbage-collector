@@ -6,7 +6,7 @@
   "description": "A library for sequencing turns resource-optimally",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && node --no-warnings --loader ts-node/esm/transpile-only ./build.mjs",
+    "build": "tsc",
     "format": "eslint src --fix && prettier --write .",
     "lint": "eslint src && prettier --check .",
     "pre-commit": "lint-staged",
@@ -18,25 +18,17 @@
       "eslint --quiet --fix"
     ]
   },
-  "dependencies": {
+  "peerDependencies": {
     "kolmafia": "^5.27628.0",
     "libram": "^0.8.13"
   },
   "devDependencies": {
-    "@babel/cli": "^7.22.15",
-    "@babel/compat-data": "^7.22.9",
-    "@babel/core": "^7.22.20",
-    "@babel/preset-env": "^7.22.15",
-    "@babel/preset-react": "^7.22.15",
-    "@babel/preset-typescript": "^7.22.15",
-    "@types/node": "^20.6.1",
-    "esbuild": "^0.19.3",
-    "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^8.50.0",
     "eslint-config-garbo": "^0.0.1",
+    "kolmafia": "^5.27628.0",
+    "libram": "^0.8.13",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
-    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "eslintConfig": {
