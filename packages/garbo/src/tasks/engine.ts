@@ -19,7 +19,7 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
 };
 
 function logEmbezzler(encounterType: string) {
-  const isDigitize = encounterType === "Digitize Wanderer";
+  const isDigitize = encounterType.includes("Digitize Wanderer");
   isDigitize
     ? eventLog.digitizedEmbezzlersFought++
     : eventLog.initialEmbezzlersFought++;
@@ -59,7 +59,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     if (myTotalTurnsSpent() !== spentTurns) {
       if (!undelay(task.spendsTurn)) {
         print(
-          `Task ${task.name} spent a turn but was marked as not spending turns`,
+          `Task ${task.name} spent a turn but was marked as not spending turns`
         );
       }
     }
