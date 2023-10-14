@@ -2,6 +2,7 @@ import {
   getWorkshed,
   haveEffect,
   Item,
+  myTotalTurnsSpent,
   totalTurnsPlayed,
   use,
   visitUrl,
@@ -91,14 +92,12 @@ class GarboWorkshed {
 }
 
 let _attemptedMakingTonics = false;
-
+let _lastCMCTurn = myTotalTurnsSpent();
 const worksheds = [
   new GarboWorkshed({
     workshed: $item`model train set`,
-    done: () => {
-      // We should always get value from the trainset, so we would never switch from it
-      return false;
-    },
+    // We should always get value from the trainset, so we would never switch from it
+    done: () => false,
     available: (): boolean => {
       if (!TrainSet.canConfigure()) return false;
       if (!get("trainsetConfiguration")) {
@@ -118,10 +117,12 @@ const worksheds = [
   new GarboWorkshed({
     workshed: $item`cold medicine cabinet`,
     done: () => get("_coldMedicineConsults") >= 5,
-    available: () => get("_nextColdMedicineConsult") <= totalTurnsPlayed(), // TODO: Ensure that we have a good expected cmc result
+    available: () =>
+      get("_nextColdMedicineConsult") <= totalTurnsPlayed() &&
+      myTotalTurnsSpent() !== _lastCMCTurn, // TODO: Ensure that we have a good expected cmc result
     action: () => {
-      if (get("_nextColdMedicineConsult") > totalTurnsPlayed()) return;
       grabMedicine();
+      _lastCMCTurn = myTotalTurnsSpent();
     },
     minTurns: 80,
   }),
@@ -179,8 +180,7 @@ function workshedTask(workshed: GarboWorkshed): GarboTask {
   return {
     name: `Workshed: ${workshed.workshed}`,
     completed: () => workshed.done?.() ?? true,
-    ready: () =>
-      getWorkshed() === workshed.workshed && (workshed.available() ?? true),
+    ready: () => getWorkshed() === workshed.workshed && workshed.available(),
     do: () => workshed?.use(),
     spendsTurn: false,
   };
