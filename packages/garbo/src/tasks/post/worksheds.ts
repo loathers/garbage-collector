@@ -193,13 +193,16 @@ export default function workshedTasks(): GarboTask[] {
     {
       name: "Swap Workshed",
       completed: () => get("_workshedItemUsed"),
-      ready: () =>
-        (GarboWorkshed.current?.canRemove() ?? true) &&
-        !!GarboWorkshed.next &&
-        have(GarboWorkshed.next.workshed) &&
-        (!GarboWorkshed.next.minTurns ||
+      ready: () => {
+        const canRemove = GarboWorkshed.current?.canRemove() ?? true;
+        const haveNext =
+          GarboWorkshed.next !== null && have(GarboWorkshed.next.workshed);
+        const enoughTurns =
+          !GarboWorkshed.next?.minTurns ||
           GarboWorkshed.next.minTurns + SAFETY_TURNS_THRESHOLD >
-            estimatedGarboTurns()),
+            estimatedGarboTurns();
+        return canRemove && haveNext && enoughTurns;
+      },
       do: () => GarboWorkshed.useNext(),
       spendsTurn: false,
     },
