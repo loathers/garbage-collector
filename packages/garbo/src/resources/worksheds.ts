@@ -1,34 +1,14 @@
 import {
   descToItem,
-  fileToBuffer,
   handlingChoice,
   Item,
   runChoice,
-  toItem,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, gameDay, get, maxBy, set, sum, TrainSet } from "libram";
+import { $item, $items, get, maxBy, sum, TrainSet } from "libram";
 import { globalOptions } from "../config";
-import { GarboItemLists } from "../lib";
+import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
-
-function candyFactoryValue(): number {
-  const lastCalculated = new Date(get("garbo_candyFactoryValueDate", 0));
-  if (
-    !get("garbo_candyFactoryValue", 0) ||
-    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
-  ) {
-    const candyFactoryDrops = (
-      JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists
-    )["trainset"];
-    const averageDropValue =
-      sum(candyFactoryDrops, (name) => garboValue(toItem(name), true)) /
-      candyFactoryDrops.length;
-    set("garbo_candyFactoryValue", averageDropValue);
-    set("garbo_candyFactoryValueDate", gameDay().getTime());
-  }
-  return get("garbo_candyFactoryValue", 0);
-}
 
 const GOOD_TRAIN_STATIONS = [
   { piece: TrainSet.Station.GAIN_MEAT, value: () => 900 },
