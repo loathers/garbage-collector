@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
           cache: yarn
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable --immutable-cache
       - run: yarn workspace garbo-lib build
       - run: yarn workspace garbo run check
       #- run: yarn run test TODO: Readd once we have tests
@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
           cache: yarn
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable --immutable-cache
       - run: yarn workspace garbo-lib build
       - run: yarn run lint
 
@@ -53,7 +53,7 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
           cache: yarn
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable --immutable-cache
       - run: yarn workspace garbo-lib build
       - run: yarn madge
 
@@ -69,7 +69,7 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
           cache: yarn
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable --immutable-cache
       - run: yarn build
       - uses: s0/git-publish-subdir-action@develop
         env:
