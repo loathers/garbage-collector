@@ -7,6 +7,7 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "prettier --check .",
+    "madge": "madge --circular . ./index.js",
     "build": "echo \"Nothing to do\"",
     "pre-commit": "lint-staged"
   },
@@ -29,6 +30,7 @@
   "devDependencies": {
     "eslint": "^8.50.0",
     "lint-staged": "^14.0.1",
+    "madge": "^6.1.0",
     "prettier": "^3.0.3",
     "typescript": ">=4.2.0"
   }
