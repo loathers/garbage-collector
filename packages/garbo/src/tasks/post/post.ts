@@ -1,16 +1,28 @@
 import {
+  availableChoiceOptions,
+  canAdventure,
   cliExecute,
   itemAmount,
+  mallPrice,
+  myAdventures,
+  myLevel,
   myLocation,
   putCloset,
   reverseNumberology,
+  runChoice,
+  totalFreeRests,
+  use,
   useSkill,
+  visitUrl,
 } from "kolmafia";
 import {
+  $effect,
   $item,
   $items,
   $location,
   $skill,
+  AutumnAton,
+  CinchoDeMayo,
   clamp,
   FloristFriar,
   get,
@@ -23,12 +35,18 @@ import { globalOptions } from "../../config";
 import { computeDiet, consumeDiet } from "../../diet";
 import {
   bestJuneCleaverOption,
+  freeRest,
   juneCleaverChoiceValues,
   valueJuneCleaverOption,
 } from "../../lib";
 import { teleportEffects } from "../../mood";
 import { GarboTask } from "../engine";
 import { Quest } from "grimoire-kolmafia";
+import bestAutumnatonLocation from "../../resources/autumnaton";
+import { estimatedGarboTurns, remainingUserTurns } from "../../turns";
+import { acquire } from "../../acquire";
+import { garboAverageValue } from "../../garboValue";
+import workshedTasks from "./worksheds";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 function closetStuff(): GarboTask {
@@ -146,17 +164,109 @@ function juneCleaver(): GarboTask {
   };
 }
 
+function fallbot(): GarboTask {
+  return {
+    name: "Autumn-Aton",
+    completed: () => !AutumnAton.available(),
+    ready: () =>
+      globalOptions.ascend ||
+      AutumnAton.turnsForQuest() < estimatedGarboTurns() + remainingUserTurns(),
+    do: () => {
+      AutumnAton.sendTo(bestAutumnatonLocation);
+    },
+    spendsTurn: false,
+  };
+}
+
+function refillCinch(): GarboTask {
+  return {
+    name: "Refill Cinch",
+    ready: () => CinchoDeMayo.have() && totalFreeRests() > get("timesRested"),
+    completed: () => CinchoDeMayo.currentCinch() >= 100,
+    do: () => {
+      const missingCinch = () => {
+        return 100 - CinchoDeMayo.currentCinch();
+      };
+      // Only rest if we'll get full value out of the cinch
+      // If our current cinch is less than the total available, it means we have free rests left.
+      while (
+        missingCinch() > CinchoDeMayo.cinchRestoredBy() &&
+        CinchoDeMayo.currentCinch() < CinchoDeMayo.totalAvailableCinch()
+      ) {
+        if (!freeRest()) break;
+      }
+    },
+    spendsTurn: false,
+  };
+}
+
+let tokenBought = false;
+function eightBitFatLoot(): GarboTask {
+  return {
+    name: "Check 8-Bit for Fat Loot",
+    completed: () => tokenBought,
+    ready: () =>
+      canAdventure($location`The Spooky Forest`) && get("8BitScore") >= 20_000,
+    do: () => {
+      visitUrl("place.php?whichplace=8bit&action=8treasure");
+      if (availableChoiceOptions()[2]) {
+        runChoice(2);
+      }
+      tokenBought = true;
+    },
+    spendsTurn: false,
+  };
+}
+
+let funguyWorthIt = true;
+
+function funGuySpores(): GarboTask {
+  return {
+    name: "Fun-Guy Spores",
+    ready: () =>
+      funguyWorthIt &&
+      myLevel() >= 15 &&
+      (!globalOptions.ascend || myAdventures() > 11) &&
+      get("dinseyRollercoasterNext"),
+    completed: () => have($effect`Mush-Mouth`),
+    do: () => {
+      // According to wiki, it has a 75% chance of being a stat mushroom and 25% chance of being another mushroom
+      const value =
+        0.75 *
+          garboAverageValue(
+            ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`,
+          ) +
+        0.25 *
+          garboAverageValue(
+            ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`,
+          );
+      if (
+        mallPrice($item`Fun-Guy spore`) < value &&
+        acquire(1, $item`Fun-Guy spore`, value, false) > 0
+      ) {
+        use($item`Fun-Guy spore`);
+      } else funguyWorthIt = false;
+    },
+    spendsTurn: false,
+  };
+}
+
 export function postQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
     completed,
     tasks: [
+      ...workshedTasks(),
+      fallbot(),
       closetStuff(),
       floristFriars(),
       numberology(),
       juneCleaver(),
       fillPantsgivingFullness(),
       fillSweatyLiver(),
+      funGuySpores(),
+      eightBitFatLoot(),
+      refillCinch(),
     ],
   };
 }
