@@ -43,7 +43,7 @@ jobs:
       - run: yarn workspace garbo-lib build
       - run: yarn run lint
 
-  circular-dependencies-script:
+  circular-dependencies-all:
     runs-on: ubuntu-latest
 
     steps:
@@ -55,11 +55,11 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn workspace garbo-lib build
-      - run: yarn workspace garbo run madge
+      - run: yarn madge
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [test-script, lint-all, circular-dependencies-script]
+    needs: [test-script, lint-all, circular-dependencies-all]
     if: github.ref == 'refs/heads/main'
 
     steps:
