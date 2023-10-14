@@ -4,7 +4,6 @@ import { DailyFamiliarsQuest } from "./dailyFamiliars";
 import { DailyItemsQuest } from "./dailyItems";
 import { PostFreeFightQuest } from "./postFreeFight";
 import { DailyQuest } from "./daily";
-import { VolcanoQuest } from "./dailyVolcano";
 import {
   runGarboQuests,
   runGarboTasks,
@@ -18,7 +17,6 @@ export {
   DailyFamiliarsQuest,
   DailyItemsQuest,
   DailyQuest,
-  VolcanoQuest,
   PostFreeFightQuest,
   runSafeGarboTasks,
   runSafeGarboQuests,

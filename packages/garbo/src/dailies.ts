@@ -4,7 +4,6 @@ import {
   DailyItemsQuest,
   DailyQuest,
   runSafeGarboQuests,
-  VolcanoQuest,
 } from "./tasks";
 
 export function dailySetup(): void {
@@ -12,7 +11,6 @@ export function dailySetup(): void {
     DailyFamiliarsQuest,
     DailyQuest,
     DailyItemsQuest,
-    VolcanoQuest,
     AscendingQuest,
   ]);
 }

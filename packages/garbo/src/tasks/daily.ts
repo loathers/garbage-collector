@@ -22,13 +22,15 @@ import {
   myClass,
   myDaycount,
   myHash,
+  myHp,
   myInebriety,
+  myMaxhp,
   myPath,
   myPrimestat,
   print,
   putCloset,
+  restoreHp,
   retrieveItem,
-  retrievePrice,
   runChoice,
   toSlot,
   toUrl,
@@ -44,6 +46,7 @@ import {
   $items,
   $location,
   $monster,
+  $skill,
   $slot,
   BeachComb,
   Clan,
@@ -54,9 +57,10 @@ import {
   maxBy,
   Pantogram,
   questStep,
-  set,
+  realmAvailable,
   SongBoom,
   SourceTerminal,
+  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
@@ -69,13 +73,17 @@ import { baseMeat, HIGHLIGHT } from "../lib";
 import { garboValue } from "../garboValue";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
-import { Quest } from "grimoire-kolmafia";
+import { AcquireItem, Quest } from "grimoire-kolmafia";
+import {
+  attemptCompletingBarfQuest,
+  checkBarfQuest,
+  checkVolcanoQuest,
+} from "../resources/realm";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 
 let latteRefreshed = false;
-let attemptCompletingBarfQuest = true;
 let snojoConfigured = false;
 
 // For this valuation, we are using the rough approximated value of different
@@ -254,94 +262,6 @@ function nepQuest(): void {
     print("Gerald/ine quest!", HIGHLIGHT);
     globalOptions.clarasBellClaimed = true;
   }
-}
-
-export function completeBarfQuest(): void {
-  if (!attemptCompletingBarfQuest) return;
-
-  if (get("questEStGiveMeFuel") === "started") {
-    const globuleCosts = retrievePrice($item`toxic globule`, 20);
-    if (globuleCosts < 3 * garboValue($item`FunFunds™`)) {
-      print(
-        `The cost of 20 toxic globules (${globuleCosts}) is less than the profits expected from 3 FunFunds™ (${
-          3 * garboValue($item`FunFunds™`)
-        }). Proceeding to acquire toxic globules.`,
-        "green",
-      );
-      attemptCompletingBarfQuest =
-        acquire(20, $item`toxic globule`, (1.5 * globuleCosts) / 20, false) >=
-        20;
-    } else {
-      attemptCompletingBarfQuest = false;
-      print(
-        `The cost of 20 toxic globules (${globuleCosts}) exceeds the profits expected from 3 FunFunds™ (${
-          3 * garboValue($item`FunFunds™`)
-        }). Consider farming some globules yourself.`,
-        "red",
-      );
-    }
-  }
-  if (
-    get("questEStSuperLuber") === "step2" ||
-    get("questEStGiveMeFuel") === "step1"
-  ) {
-    print("Completing Barf Quest", "blue");
-    visitUrl("place.php?whichplace=airport_stench&action=airport3_kiosk");
-    visitUrl("choice.php?whichchoice=1066&pwd&option=3");
-  }
-  return;
-}
-
-function checkBarfQuest(): void {
-  const page = visitUrl(
-    "place.php?whichplace=airport_stench&action=airport3_kiosk",
-  );
-
-  // If we are on an assignment, try completing and then return after
-  if (page.includes("Current Assignment")) {
-    return completeBarfQuest();
-  }
-
-  // If there are no available nor current assignments, then we are done for the day
-  if (!page.includes("Available Assignments")) {
-    // Reset prefs to unstarted just in case (since they do not automatically reset on rollover)
-    set("questEStSuperLuber", "unstarted");
-    set("questEStGiveMeFuel", "unstarted");
-    return;
-  }
-
-  const targets = globalOptions.nobarf
-    ? ["Electrical Maintenance"]
-    : ["Track Maintenance", "Electrical Maintenance"]; // In decreasing order of priority
-
-  // Page includes Track/Electrical Maintenance and we aren't on an assignment -> choose assignment
-  const quests = [
-    page
-      .match("(width=250>)(.*?)(value=1>)")?.[2]
-      ?.match("(<b>)(.*?)(</b>)")?.[2] ?? "",
-    page
-      .match("(value=1>)(.*?)(value=2>)")?.[2]
-      ?.match("(<b>)(.*?)(</b>)")?.[2] ?? "",
-  ];
-  print("Barf Quests Available:", "blue");
-  quests.forEach((quest) => print(quest, "blue"));
-
-  // If page does not include Track/Electrical Maintenance quest, return
-  if (!targets.some((target) => page.includes(target))) {
-    print("No suitable Barf Quests available.", "red");
-    return;
-  }
-
-  for (const target of targets) {
-    for (const [idx, qst] of quests.entries()) {
-      if (target === qst) {
-        print(`Accepting Barf Quest: ${qst}`, "blue");
-        visitUrl(`choice.php?whichchoice=1066&pwd&option=${idx + 1}`);
-        return completeBarfQuest();
-      }
-    }
-  }
-  return;
 }
 
 export function configureSnojo(): void {
@@ -761,7 +681,7 @@ const DailyTasks: GarboTask[] = [
   {
     name: "Check Barf Mountain Quest",
     ready: () => get("stenchAirportAlways") || get("_stenchAirportToday"),
-    completed: () => !attemptCompletingBarfQuest,
+    completed: () => !attemptCompletingBarfQuest(),
     do: checkBarfQuest,
     spendsTurn: false,
   },
@@ -792,6 +712,45 @@ const DailyTasks: GarboTask[] = [
     ready: () => retrieveItems.some((item) => itemAmount(item) === 0),
     completed: () => retrieveItems.every((item) => itemAmount(item) > 0),
     do: () => retrieveItems.forEach((item) => retrieveItem(item)),
+    spendsTurn: false,
+  },
+  {
+    name: "Volcano Quest",
+    ready: () => realmAvailable("hot"),
+    completed: () => get("_volcanoItemRedeemed"),
+    do: checkVolcanoQuest,
+    spendsTurn: false,
+  },
+  {
+    name: "Free Volcoino",
+    ready: () => realmAvailable("hot"),
+    completed: () => get("_infernoDiscoVisited"),
+    do: (): void => {
+      visitUrl("place.php?whichplace=airport_hot&action=airport4_zone1");
+      runChoice(7);
+    },
+    acquire: () =>
+      $items`smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants`.map(
+        (x) => <AcquireItem>{ item: x },
+      ),
+    outfit: { modifier: "disco style" },
+    spendsTurn: false,
+  },
+  {
+    name: "Free Volcano Mining",
+    ready: () => realmAvailable("hot") && have($skill`Unaccompanied Miner`),
+    completed: () => get("_unaccompaniedMinerUsed") >= 5,
+    do: () =>
+      cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`),
+    prepare: () => restoreHp(myMaxhp() * 0.9),
+    post: (): void => {
+      if (have($effect`Beaten Up`)) {
+        uneffect($effect`Beaten Up`);
+      }
+      if (myHp() < myMaxhp() * 0.5) {
+        restoreHp(myMaxhp() * 0.9);
+      }
+    },
     spendsTurn: false,
   },
 ];

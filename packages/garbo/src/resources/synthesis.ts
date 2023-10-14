@@ -8,7 +8,7 @@ import {
   sweetSynthesisResult,
 } from "kolmafia";
 import { $items, clamp } from "libram";
-import { shuffle } from "./lib";
+import { shuffle } from "../lib";
 
 const whitelist = $items`sugar shotgun, sugar shillelagh, sugar shank, sugar chapeau, sugar shorts, sugar shield, sugar shirt, Fudgie Roll`;
 export default function synthesize(casts: number, effect: Effect): void {
