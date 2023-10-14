@@ -28,6 +28,7 @@ import {
 } from "../../lib";
 import { teleportEffects } from "../../mood";
 import { GarboTask } from "../engine";
+import { Quest } from "grimoire-kolmafia";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 function closetStuff(): GarboTask {
@@ -54,7 +55,7 @@ function floristFriars(): GarboTask {
       BARF_PLANTS.some((flower) => flower.available()),
     do: () =>
       BARF_PLANTS.filter((flower) => flower.available()).forEach((flower) =>
-        flower.plant()
+        flower.plant(),
       ),
     spendsTurn: false,
   };
@@ -105,11 +106,11 @@ function getJuneCleaverskipChoices(): (typeof JuneCleaver.choices)[number][] {
         .sort(
           (a, b) =>
             valueJuneCleaverOption(
-              juneCleaverChoiceValues[a][bestJuneCleaverOption(a)]
+              juneCleaverChoiceValues[a][bestJuneCleaverOption(a)],
             ) -
             valueJuneCleaverOption(
-              juneCleaverChoiceValues[b][bestJuneCleaverOption(b)]
-            )
+              juneCleaverChoiceValues[b][bestJuneCleaverOption(b)],
+            ),
         )
         .splice(0, 3);
     }
@@ -125,7 +126,7 @@ const juneCleaverChoices = () =>
       getJuneCleaverskipChoices().includes(choice)
         ? 4
         : bestJuneCleaverOption(choice),
-    ])
+    ]),
   );
 
 function juneCleaver(): GarboTask {
@@ -137,10 +138,25 @@ function juneCleaver(): GarboTask {
     outfit: { weapon: $item`June cleaver` },
     combat: new GarboStrategy(
       Macro.abortWithMsg(
-        `Expected June Cleaver non-combat but ended up in combat.`
-      )
+        `Expected June Cleaver non-combat but ended up in combat.`,
+      ),
     ),
     choices: juneCleaverChoices,
     spendsTurn: false,
+  };
+}
+
+export function postQuest(completed?: () => boolean): Quest<GarboTask> {
+  return {
+    name: "Postcombat",
+    completed,
+    tasks: [
+      closetStuff(),
+      floristFriars(),
+      numberology(),
+      juneCleaver(),
+      fillPantsgivingFullness(),
+      fillSweatyLiver(),
+    ],
   };
 }

@@ -17,7 +17,7 @@ const GOOD_TRAIN_STATIONS = [
     piece: TrainSet.Station.TRACKSIDE_DINER,
     value: () =>
       garboAverageValue(
-        ...$items`bowl of cottage cheese, hot buttered roll, toast`
+        ...$items`bowl of cottage cheese, hot buttered roll, toast`,
       ),
   },
   { piece: TrainSet.Station.CANDY_FACTORY, value: candyFactoryValue },
@@ -26,14 +26,14 @@ const GOOD_TRAIN_STATIONS = [
     value: () =>
       2 *
       garboAverageValue(
-        ...$items`bottle of gin, bottle of vodka, bottle of whiskey, bottle of rum, bottle of tequila, boxed wine`
+        ...$items`bottle of gin, bottle of vodka, bottle of whiskey, bottle of rum, bottle of tequila, boxed wine`,
       ),
   },
   {
     piece: TrainSet.Station.ORE_HOPPER,
     value: () =>
       garboAverageValue(
-        ...$items`linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore`
+        ...$items`linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore`,
       ),
   },
 ];
@@ -44,7 +44,7 @@ function getBestCycle(): TrainSet.Cycle {
     const cycle = [
       TrainSet.Station.COAL_HOPPER,
       ...GOOD_TRAIN_STATIONS.sort(
-        ({ value: a }, { value: b }) => b() - a()
+        ({ value: a }, { value: b }) => b() - a(),
       ).map(({ piece }) => piece),
       TrainSet.Station.TOWER_FIZZY,
       TrainSet.Station.VIEWING_PLATFORM,

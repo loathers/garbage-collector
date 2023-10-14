@@ -139,7 +139,7 @@ const worksheds = [
       AsdonMartin.drive(
         $effect`Driving Observantly`,
         estimatedGarboTurns() +
-          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
+          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
       );
     },
   }),
@@ -166,13 +166,13 @@ const worksheds = [
     },
   }),
   ...$items`diabolic pizza cube, portable Mayo Clinic, warbear high-efficiency still, warbear induction oven`.map(
-    (item) => new GarboWorkshed({ workshed: item, done: dietCompleted })
+    (item) => new GarboWorkshed({ workshed: item, done: dietCompleted }),
   ),
   ...$items`warbear chemistry lab, warbear LP-ROM burner`.map(
-    (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted })
+    (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted }),
   ),
   ...$items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
-    (item) => new GarboWorkshed({ workshed: item })
+    (item) => new GarboWorkshed({ workshed: item }),
   ),
 ];
 
