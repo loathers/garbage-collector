@@ -13,7 +13,7 @@ import postCombatActions from "../post";
 import { GarboStrategy } from "../combat";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
-  sobriety?: Delayed<"drunk" | "sober">;
+  sobriety?: Delayed<"drunk" | "sober" | undefined>;
   spendsTurn: Delayed<boolean>;
   duplicate?: Delayed<boolean>;
 };
@@ -59,7 +59,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     if (totalTurnsPlayed() !== spentTurns) {
       if (!undelay(task.spendsTurn)) {
         print(
-          `Task ${task.name} spent a turn but was marked as not spending turns`,
+          `Task ${task.name} spent a turn but was marked as not spending turns`
         );
       }
     }
