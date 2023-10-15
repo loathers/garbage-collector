@@ -619,6 +619,7 @@ class FreeFight {
   }
 
   isAvailable(): boolean {
+    if (myAdventures() === 0) return false;
     const avail = this.available();
     return typeof avail === "number" ? avail > 0 : avail;
   }
