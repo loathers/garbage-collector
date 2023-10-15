@@ -232,6 +232,7 @@ const BarfTurnTasks: GarboTask[] = [
         totalTurnsPlayed() % 11 === 1 &&
         get("_voteFreeFights") < 3,
       completed: () => get("lastVoteMonsterTurn") >= totalTurnsPlayed(),
+      sobriety: () => (isGhost() ? "sober" : undefined),
     },
   ),
   {

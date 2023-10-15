@@ -13,7 +13,7 @@ import postCombatActions from "../post";
 import { GarboStrategy } from "../combat";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
-  sobriety?: Delayed<"drunk" | "sober">;
+  sobriety?: Delayed<"drunk" | "sober" | undefined>;
   spendsTurn: Delayed<boolean>;
   duplicate?: Delayed<boolean>;
 };
