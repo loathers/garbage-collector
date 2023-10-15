@@ -74,7 +74,7 @@ function floristFriars(): GarboPostTask {
       BARF_PLANTS.some((flower) => flower.available()),
     do: () =>
       BARF_PLANTS.filter((flower) => flower.available()).forEach((flower) =>
-        flower.plant()
+        flower.plant(),
       ),
     available: () =>
       FloristFriar.have() && BARF_PLANTS.some((flower) => flower.available()),
@@ -129,11 +129,11 @@ function getJuneCleaverskipChoices(): (typeof JuneCleaver.choices)[number][] {
         .sort(
           (a, b) =>
             valueJuneCleaverOption(
-              juneCleaverChoiceValues[a][bestJuneCleaverOption(a)]
+              juneCleaverChoiceValues[a][bestJuneCleaverOption(a)],
             ) -
             valueJuneCleaverOption(
-              juneCleaverChoiceValues[b][bestJuneCleaverOption(b)]
-            )
+              juneCleaverChoiceValues[b][bestJuneCleaverOption(b)],
+            ),
         )
         .splice(0, 3);
     }
@@ -149,7 +149,7 @@ const juneCleaverChoices = () =>
       getJuneCleaverskipChoices().includes(choice)
         ? 4
         : bestJuneCleaverOption(choice),
-    ])
+    ]),
   );
 
 function juneCleaver(): GarboPostTask {
@@ -161,8 +161,8 @@ function juneCleaver(): GarboPostTask {
     outfit: { weapon: $item`June cleaver` },
     combat: new GarboStrategy(
       Macro.abortWithMsg(
-        `Expected June Cleaver non-combat but ended up in combat.`
-      )
+        `Expected June Cleaver non-combat but ended up in combat.`,
+      ),
     ),
     choices: juneCleaverChoices,
     available: () => JuneCleaver.have(),
@@ -240,11 +240,11 @@ function funGuySpores(): GarboPostTask {
       const value =
         0.75 *
           garboAverageValue(
-            ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`
+            ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`,
           ) +
         0.25 *
           garboAverageValue(
-            ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`
+            ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`,
           );
       if (
         mallPrice($item`Fun-Guy spore`) < value &&

@@ -35,9 +35,6 @@ type WorkshedOptions = {
   available?: () => boolean;
 };
 class GarboWorkshed {
-  private static _nextWorkshed: GarboWorkshed | null = null;
-  private static _currentWorkshed: GarboWorkshed | null = null;
-
   workshed: Item;
   done?: () => boolean;
   action?: () => void;
@@ -67,14 +64,14 @@ class GarboWorkshed {
   }
 
   static get current(): GarboWorkshed | null {
-    GarboWorkshed._currentWorkshed ??= GarboWorkshed.get(getWorkshed());
-    return GarboWorkshed._currentWorkshed;
+    return GarboWorkshed.get(getWorkshed());
   }
 
   static get next(): GarboWorkshed | null {
-    if (get("_workshedItemUsed")) return null;
-    GarboWorkshed._nextWorkshed ??= GarboWorkshed.get(globalOptions.workshed);
-    return GarboWorkshed._nextWorkshed;
+    if (get("_workshedItemUsed") || getWorkshed() === globalOptions.workshed) {
+      return null;
+    }
+    return GarboWorkshed.get(globalOptions.workshed);
   }
 
   static useNext(): GarboWorkshed | null {
@@ -82,12 +79,8 @@ class GarboWorkshed {
     const next = GarboWorkshed.next;
     if (next && have(next.workshed)) {
       use(next.workshed);
-      if (GarboWorkshed.get(getWorkshed()) === next) {
-        GarboWorkshed._nextWorkshed = null;
-        GarboWorkshed._currentWorkshed = next;
-      }
     }
-    return GarboWorkshed._currentWorkshed;
+    return GarboWorkshed.current;
   }
 }
 
@@ -139,7 +132,7 @@ const worksheds = [
       AsdonMartin.drive(
         $effect`Driving Observantly`,
         estimatedGarboTurns() +
-          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
+          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
       );
     },
   }),
@@ -166,13 +159,13 @@ const worksheds = [
     },
   }),
   ...$items`diabolic pizza cube, portable Mayo Clinic, warbear high-efficiency still, warbear induction oven`.map(
-    (item) => new GarboWorkshed({ workshed: item, done: dietCompleted })
+    (item) => new GarboWorkshed({ workshed: item, done: dietCompleted }),
   ),
   ...$items`warbear chemistry lab, warbear LP-ROM burner`.map(
-    (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted })
+    (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted }),
   ),
   ...$items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
-    (item) => new GarboWorkshed({ workshed: item })
+    (item) => new GarboWorkshed({ workshed: item }),
   ),
 ];
 
@@ -184,7 +177,7 @@ function workshedTask(workshed: GarboWorkshed): GarboPostTask {
     do: () => workshed?.use(),
     available: () =>
       [GarboWorkshed.current?.workshed, GarboWorkshed.next?.workshed].includes(
-        workshed.workshed
+        workshed.workshed,
       ),
   };
 }
