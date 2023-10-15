@@ -66,6 +66,7 @@ import { computeDiet, consumeDiet } from "../diet";
 
 import { GarboTask } from "./engine";
 import { completeBarfQuest } from "../resources/realm";
+import { trackMarginalMpa } from "../session";
 
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
@@ -453,7 +454,10 @@ const BarfTurnTasks: GarboTask[] = [
           Macro.meatKill(),
         ).abort(),
     ),
-    post: () => completeBarfQuest(),
+    post: () => {
+      completeBarfQuest();
+      trackMarginalMpa();
+    },
     spendsTurn: true,
   },
 ];

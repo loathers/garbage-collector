@@ -1,50 +1,18 @@
-import {
-  inebrietyLimit,
-  Item,
-  myAdventures,
-  myInebriety,
-  print,
-  setProperty,
-  totalTurnsPlayed,
-} from "kolmafia";
+import { Item, print } from "kolmafia";
 import { $items, get, Session, set } from "libram";
 import { globalOptions } from "./config";
 import { formatNumber, HIGHLIGHT, resetDailyPreference } from "./lib";
 import { failedWishes } from "./potions";
 import { garboValue } from "./garboValue";
+import { estimatedGarboTurns } from "./turns";
 
-function printSession(session: Session): void {
-  const value = session.value(garboValue);
-  const printProfit = (
-    details: { item: Item; value: number; quantity: number }[],
-  ) => {
-    for (const { item, quantity, value } of details) {
-      print(`  ${item} (${quantity}) @ ${Math.floor(value)}`);
-    }
-  };
-  const lowValue = value.itemDetails
-    .filter((detail) => detail.value < 0)
-    .sort((a, b) => a.value - b.value);
-  const highValue = value.itemDetails
-    .filter((detail) => detail.value > 0)
-    .sort((a, b) => b.value - a.value);
-
-  print(`Total Session Value: ${value.total}`);
-  print(
-    `Of that, ${value.meat} came from meat and ${value.items} came from items`,
-  );
-  print(` You gained meat on ${highValue.length} items including:`);
-  printProfit(highValue);
-  print(` You lost meat on ${lowValue.length} items including:`);
-  printProfit(lowValue);
-}
-
-let session: Session | null = null;
+type SessionKey = "full" | "barf" | "meat-start" | "meat-end" | "item";
+const sessions: Map<SessionKey, Session> = new Map();
 /**
  * Start a new session, deleting any old session
  */
 export function startSession(): void {
-  session = Session.current();
+  sessions.set("full", Session.current());
 }
 
 /**
@@ -52,189 +20,115 @@ export function startSession(): void {
  * @returns The difference
  */
 export function sessionSinceStart(): Session {
+  const session = sessions.get("full");
   if (session) {
     return Session.current().diff(session);
   }
   return Session.current();
 }
 
-export function valueSession(): void {
-  printSession(Session.current());
-  Session.current().toFile("test.json");
+export function trackMarginalMpa() {
+  const barf = sessions.get("barf");
+  const current = Session.current();
+  if (!barf) {
+    sessions.set("barf", Session.current());
+  } else {
+    const turns = barf.diff(current).totalTurns;
+    // track items if we have run at least 100 turns in barf mountain or we have less than 200 turns left in barf mountain
+    const item = sessions.get("item");
+    if (!item && (turns > 100 || estimatedGarboTurns() <= 200)) {
+      sessions.set("item", current);
+    }
+    // start tracking meat if there are less than 75 turns left in barf mountain
+    const meatStart = sessions.get("meat-start");
+    if (!meatStart && estimatedGarboTurns() <= 75) {
+      sessions.set("meat-start", current);
+    }
+
+    // stop tracking meat if there are less than 25 turns left in barf moutain
+    const meatEnd = sessions.get("meat-end");
+    if (!meatEnd && estimatedGarboTurns() <= 25) {
+      sessions.set("meat-end", current);
+    }
+  }
 }
 
-let marginalSession: Session | null = null;
-let marginalSessionDiff: Session | null = null;
-let barfSession: Session | null = null;
-let barfSessionStartTurns = totalTurnsPlayed();
-let continueMeatTracking = true;
-let numTrackedItemTurns: number | null = null;
-let marginalFamiliarsExcessValue = 0;
-export function setMarginalFamiliarsExcessValue(val: number): void {
-  marginalFamiliarsExcessValue = Math.max(0, val);
-}
-let marginalFamiliarsExcessTotal = 0;
-
-// Hardcode a few outliers that we know aren't marginal
-// (e.g. those that have a drop limit which we would likely already cap)
-// Note that familiar drops (that have limits) are already handled above
 const outlierItemList = $items`Extrovermectin™, Volcoino, Poké-Gro fertilizer`;
 
-export function trackBarfSessionStatistics(): void {
-  // If we are overdrunk, don't track statistics
-  if (myInebriety() > inebrietyLimit()) return;
+function printMarginalSession() {
+  const barf = sessions.get("barf");
+  const meatStart = sessions.get("meat-start");
+  const meatEnd = sessions.get("meat-end");
+  const item = sessions.get("item");
 
-  // Start barfSession if we have not done so
-  if (!barfSession) {
-    barfSession = Session.current();
-    barfSessionStartTurns = totalTurnsPlayed();
-  }
+  // we can only print out marginal items if we've started tracking for marginal value
+  if (barf && meatStart && meatEnd) {
+    const { itemDetails: barfItemDetails } = barf.value(garboValue);
 
-  // Start tracking items if at least one of these is true
-  // 1) We have run at least 100 barf turns
-  // 2) We have less than 200 adv to run
-  if (
-    !marginalSession &&
-    (totalTurnsPlayed() - barfSessionStartTurns >= 100 ||
-      (myAdventures() <= 200 + 25 + globalOptions.saveTurns &&
-        myAdventures() > globalOptions.saveTurns + 25))
-  ) {
-    marginalSession = Session.current();
-    numTrackedItemTurns = myAdventures() - globalOptions.saveTurns - 25;
-  }
+    const isOutlier = (detail: {
+      item: Item;
+      value: number;
+      quantity: number;
+    }) =>
+      outlierItemList.includes(detail.item) ||
+      (detail.quantity === 1 &&
+        detail.value >= 5000 &&
+        barfItemDetails.some((d) => d.item === detail.item && d.quantity <= 2));
 
-  // Start tracking meat if we have less than 75 turns left
-  // Also create a backup tracker for items
+    const meatMpa = Session.computeMPA(meatStart, meatEnd, {
+      value: garboValue,
+      isOutlier,
+    });
 
-  if (marginalSession) {
-    marginalFamiliarsExcessTotal += marginalFamiliarsExcessValue;
-  }
-  marginalFamiliarsExcessValue = 0;
+    if (item) {
+      // MPA printout including maringal items
+      const itemMpa = Session.computeMPA(item, Session.current(), {
+        value: garboValue,
+        isOutlier,
+      });
 
-  if (
-    (!get("_garboMarginalMeatCheckpoint") || !get("_garboMarginalMeatTurns")) &&
-    myAdventures() - 25 - globalOptions.saveTurns <= 50 &&
-    myAdventures() > 25 + globalOptions.saveTurns
-  ) {
-    const { meat, items } = sessionSinceStart().value(garboValue);
-    const numTrackedMeatTurns = myAdventures() - 25 - globalOptions.saveTurns;
-    setProperty("_garboMarginalMeatCheckpoint", meat.toFixed(0));
-    setProperty(
-      "_garboMarginalItemCheckpoint",
-      (items - marginalFamiliarsExcessTotal).toFixed(0),
-    );
-    setProperty("_garboMarginalMeatTurns", numTrackedMeatTurns.toFixed(0));
-  }
-
-  // Stop tracking meat if we have less than 25 turns left
-  if (
-    get("_garboMarginalMeatCheckpoint") &&
-    get("_garboMarginalMeatTurns") &&
-    continueMeatTracking &&
-    myAdventures() - 25 - globalOptions.saveTurns <= 0
-  ) {
-    continueMeatTracking = false;
-    const { meat, items } = sessionSinceStart().value(garboValue);
-    const meatDiff = meat - get("_garboMarginalMeatCheckpoint", 0);
-    const itemDiff =
-      items -
-      marginalFamiliarsExcessTotal -
-      get("_garboMarginalItemCheckpoint", 0);
-    setProperty("_garboMarginalMeatValue", meatDiff.toFixed(0));
-    setProperty("_garboMarginalItemValue", itemDiff.toFixed(0));
-    if (marginalSession) {
-      marginalSessionDiff = Session.current().diff(marginalSession);
-    }
-  }
-}
-
-function printMarginalSession(): void {
-  if (
-    myInebriety() > inebrietyLimit() ||
-    myAdventures() > globalOptions.saveTurns
-  ) {
-    return;
-  }
-
-  if (get("_garboMarginalMeatValue") && get("_garboMarginalMeatTurns")) {
-    const meat = get("_garboMarginalMeatValue", 0);
-    const meatTurns = get("_garboMarginalMeatTurns", 0);
-
-    if (meatTurns <= 0) {
-      print("Error in estimating marginal MPA - meat turns tracked = 0", "red");
-      return;
-    }
-
-    const MPA = meat / meatTurns;
-
-    // Only evaluate item outliers if we have run a good number of turns (to reduce variance)
-    if (
-      marginalSessionDiff &&
-      barfSession &&
-      numTrackedItemTurns &&
-      numTrackedItemTurns >= Math.max(50, meatTurns)
-    ) {
-      const { items, itemDetails } = marginalSessionDiff.value(garboValue);
-      const barfItemDetails = Session.current()
-        .diff(barfSession)
-        .value(garboValue).itemDetails;
-      const outlierItemDetails = itemDetails
-        .filter(
-          (detail) =>
-            outlierItemList.includes(detail.item) ||
-            (detail.quantity === 1 &&
-              detail.value >= 5000 &&
-              barfItemDetails.some(
-                (d) => d.item === detail.item && d.quantity <= 2,
-              )),
-        )
-        .sort((a, b) => b.value - a.value);
       print(`Outliers:`, HIGHLIGHT);
-      let outlierItems = 0;
-      for (const detail of outlierItemDetails) {
+      for (const detail of itemMpa.outlierItems) {
         print(
           `${detail.quantity} ${detail.item} worth ${detail.value.toFixed(
             0,
           )} total`,
           HIGHLIGHT,
         );
-        outlierItems += detail.value;
       }
-      const outlierIPA =
-        (items - marginalFamiliarsExcessTotal) / numTrackedItemTurns;
-      const IPA =
-        (items - marginalFamiliarsExcessTotal - outlierItems) /
-        numTrackedItemTurns;
-      const totalOutlierMPA = MPA + outlierIPA;
-      const totalMPA = MPA + IPA;
+
+      const effectiveMpa =
+        itemMpa.mpa.effective - itemMpa.mpa.meat + meatMpa.mpa.meat;
+      const totalMpa = itemMpa.mpa.total - itemMpa.mpa.meat + meatMpa.mpa.meat;
+
       print(
         `Marginal MPA: ${formatNumber(
-          Math.round(MPA * 100) / 100,
+          Math.round(meatMpa.mpa.meat * 100) / 100,
         )} [raw] + ${formatNumber(
-          Math.round(IPA * 100) / 100,
+          Math.round(itemMpa.mpa.items * 100) / 100,
         )} [items] (${formatNumber(
-          Math.round(outlierIPA * 100) / 100,
+          Math.round((itemMpa.mpa.total - itemMpa.mpa.effective) * 100) / 100,
         )} [outliers]) = ${formatNumber(
-          Math.round(totalMPA * 100) / 100,
+          Math.round(effectiveMpa * 100) / 100,
         )} [total] (${formatNumber(
-          Math.round(totalOutlierMPA * 100) / 100,
+          Math.round(totalMpa * 100) / 100,
         )} [w/ outliers])`,
         HIGHLIGHT,
       );
-    } else if (get("_garboMarginalItemValue")) {
-      const items = get("_garboMarginalItemValue", 0);
-      const IPA = items / meatTurns;
-      const totalMPA = MPA + IPA;
+    } else {
+      // MPA printout excluding marginal items
       print(
         "Warning: Insufficient turns were run, so this estimate is subject to large variance. Be careful when using these values as is.",
         "red",
       );
       print(
         `Marginal MPA: ${formatNumber(
-          Math.round(MPA * 100) / 100,
+          Math.round(meatMpa.mpa.meat * 100) / 100,
         )} [raw] + ${formatNumber(
-          Math.round(IPA * 100) / 100,
-        )} [items] = ${formatNumber(Math.round(totalMPA * 100) / 100)} [total]`,
+          Math.round(meatMpa.mpa.items * 100) / 100,
+        )} [items] = ${formatNumber(
+          Math.round(meatMpa.mpa.total * 100) / 100,
+        )} [total]`,
         HIGHLIGHT,
       );
     }
