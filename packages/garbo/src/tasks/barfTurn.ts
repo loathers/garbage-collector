@@ -66,7 +66,7 @@ import { computeDiet, consumeDiet } from "../diet";
 
 import { GarboTask } from "./engine";
 import { completeBarfQuest } from "../resources/realm";
-import { trackMarginalMpa } from "../session";
+import { trackMarginalMpa, trackMarginalTurnExtraValue } from "../session";
 
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
@@ -443,7 +443,11 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => myAdventures() === 0,
     outfit: () => {
       const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
-      return barfOutfit(lubing ? { equip: $items`lube-shoes` } : {});
+      const { outfit, extraValue } = barfOutfit(
+        lubing ? { equip: $items`lube-shoes` } : {},
+      );
+      trackMarginalTurnExtraValue(extraValue);
+      return outfit;
     },
     do: () => $location`Barf Mountain`,
     combat: new GarboStrategy(

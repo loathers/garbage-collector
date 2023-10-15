@@ -27,6 +27,11 @@ export function sessionSinceStart(): Session {
   return Session.current();
 }
 
+let extraValue = 0;
+export function trackMarginalTurnExtraValue(additionalValue: number) {
+  extraValue += additionalValue;
+}
+
 export function trackMarginalMpa() {
   const barf = sessions.get("barf");
   const current = Session.current();
@@ -85,6 +90,7 @@ function printMarginalSession() {
       const itemMpa = Session.computeMPA(item, Session.current(), {
         value: garboValue,
         isOutlier,
+        excludeValue: { item: extraValue },
       });
 
       print(`Outliers:`, HIGHLIGHT);
