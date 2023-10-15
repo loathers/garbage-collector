@@ -1,23 +1,34 @@
 import { CombatStrategy, Quest } from "grimoire-kolmafia";
 import {
+  availableAmount,
+  canEquip,
+  guildStoreAvailable,
   handlingChoice,
   Item,
   itemAmount,
   itemDropsArray,
+  itemType,
   mallPrice,
   Monster,
+  myClass,
   myMaxhp,
+  mySoulsauce,
   restoreHp,
+  retrieveItem,
   runChoice,
   runCombat,
+  Skill,
   use,
   useSkill,
   visitUrl,
+  weaponHands,
 } from "kolmafia";
 import {
+  $class,
   $effect,
   $familiar,
   $item,
+  $items,
   $location,
   $monster,
   $phyla,
@@ -25,11 +36,14 @@ import {
   ChateauMantegna,
   clamp,
   CombatLoversLocket,
+  Delayed,
+  ensureEffect,
   get,
   have,
   maxBy,
   sum,
   TunnelOfLove,
+  undelay,
   uneffect,
   Witchess,
 } from "libram";
@@ -73,6 +87,47 @@ const locketsToSave = () =>
   )
     ? 1
     : 0;
+
+const maxSealsAvailable = () =>
+  retrieveItem(1, $item`Claw of the Infernal Seal`) ? 10 : 5;
+
+function sealsAvailable(): number {
+  const max = maxSealsAvailable();
+  const available = guildStoreAvailable()
+    ? Infinity
+    : Math.floor(availableAmount($item`seal-blubber candle`) / 3);
+  return Math.min(max, available);
+}
+
+const stunDurations = new Map<Skill | Item, Delayed<number>>([
+  [$skill`Blood Bubble`, 1],
+  [
+    $skill`Entangling Noodles`,
+    () =>
+      myClass() === $class`Pastamancer` && !have($skill`Shadow Noodles`)
+        ? 1
+        : 0,
+  ],
+  [$skill`Frost Bite`, 1],
+  [$skill`Shadow Noodles`, 2],
+  [
+    $skill`Shell Up`,
+    () => {
+      if (myClass() !== $class`Turtle Tamer`) return 0;
+      for (const [effect, duration] of new Map([
+        [$effect`Glorious Blessing of the Storm Tortoise`, 4],
+        [$effect`Grand Blessing of the Storm Tortoise`, 3],
+        [$effect`Blessing of the Storm Tortoise`, 2],
+      ])) {
+        if (have(effect)) return duration;
+      }
+      return 0;
+    },
+  ],
+  [$skill`Soul Bubble`, () => (mySoulsauce() >= 5 ? 2 : 0)],
+  [$skill`Summon Love Gnats`, 1],
+  [$item`Rain-Doh blue balls`, 1],
+]);
 
 const FreeFightTasks: GarboFreeFightTask[] = [
   {
@@ -196,8 +251,163 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     limit: { skip: 3 },
     tentacle: false,
   },
-  // glitch season reward name]
-  // Hellseals
+  {
+    ...DEFAULT_FREE_FIGHT_TASK,
+    name: "[glitch season reward name]: retrocape edition",
+    ready: () =>
+      (globalOptions.prefs.fightGlitch ?? false) &&
+      have($item`unwrapped knock-off retro superhero cape`) &&
+      sum([...stunDurations], ([thing, duration]) =>
+        have(thing) ? undelay(duration) : 0,
+      ) >= 5,
+    completed: () => !!get("_glitchMonsterFights"),
+    do: () => {
+      visitUrl("inv_eat.php?pwd&whichitem=10207");
+      runCombat();
+    },
+    combat: new CombatStrategy().autoattack(
+      Macro.trySkill($skill`Curse of Marinara`)
+        .trySkill($skill`Shell Up`)
+        .trySkill($skill`Shadow Noodles`)
+        .trySkill($skill`Entangling Noodles`)
+        .trySkill($skill`Summon Love Gnats`)
+        .trySkill($skill`Frost Bite`)
+        .trySkill($skill`Soul Bubble`)
+        .tryItem($item`Rain-Doh blue balls`)
+        .skill($skill`Blow a Robo-Kiss`)
+        .repeat(),
+    ),
+    outfit: () =>
+      freeFightOutfit(
+        {
+          back: $items`unwrapped knock-off retro superhero cape`,
+          modes: { retrocape: ["robot", "kiss"] },
+        },
+        { canChooseMacro: false },
+      ),
+    prepare: () => {
+      restoreHp(myMaxhp());
+      if (have($skill`Ruthless Efficiency`)) {
+        ensureEffect($effect`Ruthlessly Efficient`);
+      }
+      if (have($skill`Mathematical Precision`)) {
+        ensureEffect($effect`Mathematically Precise`);
+      }
+      if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+      retrieveItem($item`[glitch season reward name]`);
+      if (
+        get("glitchItemImplementationCount") *
+          itemAmount($item`[glitch season reward name]`) >=
+        400
+      ) {
+        retrieveItem($item`gas can`, 2);
+      }
+    },
+    tentacle: false,
+  },
+  {
+    ...DEFAULT_FREE_FIGHT_TASK,
+    name: "[glitch season reward name]",
+    ready: () => globalOptions.prefs.fightGlitch ?? false,
+    completed: () => !!get("_glitchMonsterFights"),
+    do: () => {
+      visitUrl("inv_eat.php?pwd&whichitem=10207");
+      runCombat();
+    },
+    combat: new CombatStrategy().autoattack(
+      Macro.trySkill($skill`Curse of Marinara`)
+        .trySkill($skill`Conspiratorial Whispers`)
+        .trySkill($skill`Shadow Noodles`)
+        .externalIf(
+          get("glitchItemImplementationCount") *
+            itemAmount($item`[glitch season reward name]`) >=
+            400,
+          Macro.item([$item`gas can`, $item`gas can`]),
+        )
+        .externalIf(
+          get("lovebugsUnlocked"),
+          Macro.trySkill($skill`Summon Love Gnats`).trySkill(
+            $skill`Summon Love Mosquito`,
+          ),
+        )
+        .tryItem($item`train whistle`)
+        .trySkill($skill`Micrometeorite`)
+        .tryItem($item`Time-Spinner`)
+        .tryItem($item`little red book`)
+        .tryItem($item`Rain-Doh blue balls`)
+        .tryItem($item`Rain-Doh indigo cup`)
+        .trySkill($skill`Entangling Noodles`)
+        .trySkill($skill`Frost Bite`)
+        .kill(),
+    ),
+    outfit: () =>
+      freeFightOutfit(
+        {
+          modifier: ["1000 mainstat"],
+          avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
+        },
+        { canChooseMacro: false },
+      ),
+    prepare: () => {
+      restoreHp(myMaxhp());
+      if (have($skill`Ruthless Efficiency`)) {
+        ensureEffect($effect`Ruthlessly Efficient`);
+      }
+      if (have($skill`Mathematical Precision`)) {
+        ensureEffect($effect`Mathematically Precise`);
+      }
+      if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+      retrieveItem($item`[glitch season reward name]`);
+      if (
+        get("glitchItemImplementationCount") *
+          itemAmount($item`[glitch season reward name]`) >=
+        400
+      ) {
+        retrieveItem($item`gas can`, 2);
+      }
+    },
+    tentacle: false,
+  },
+  {
+    ...DEFAULT_FREE_FIGHT_TASK,
+    name: "Hellseals",
+    ready: () => myClass() === $class`Seal Clubber`,
+    completed: () => sealsAvailable() <= 0,
+    do: () => {
+      const [figurine, candlesNeeded] = guildStoreAvailable()
+        ? [$item`figurine of a wretched-looking seal`, 1]
+        : [$item`figurine of an ancient seal`, 3];
+      retrieveItem(1, figurine);
+      retrieveItem(candlesNeeded, $item`seal-blubber candle`);
+      use(figurine);
+    },
+    outfit: () => {
+      const clubs = Item.all().filter(
+        (i) => have(i) && canEquip(i) && itemType(i) === "club",
+      );
+      const club =
+        clubs.find((i) => weaponHands(i) === 1) ??
+        clubs.find((i) => weaponHands(i) === 2) ??
+        $item`seal-clubbing club`;
+      retrieveItem(club);
+      return freeFightOutfit({ weapon: club });
+    },
+    combat: new CombatStrategy().autoattack(
+      Macro.startCombat()
+        .trySkill($skill`Furious Wallop`)
+        .while_(
+          "hasskill Lunging Thrust-Smack",
+          Macro.skill($skill`Lunging Thrust-Smack`),
+        )
+        .while_("hasskill Thrust-Smack", Macro.skill($skill`Thrust-Smack`))
+        .while_("hasskill Lunge Smack", Macro.skill($skill`Lunge Smack`))
+        .attack()
+        .repeat(),
+    ),
+    combatCount: sealsAvailable,
+    limit: { soft: 10 },
+    tentacle: false,
+  },
   {
     ...DEFAULT_FREE_FIGHT_TASK,
     name: "BRICKO",
@@ -212,8 +422,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     limit: { skip: 10 },
     tentacle: false,
   },
-  // First kramco
+  // First kramco (wanderer)
   // Grimacia
+  // Saber
   // Pygmys
   // glark cable
   // mushroom garden
@@ -375,13 +586,23 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // closed-circuit pay phone (make into it's own Quest)
 ];
 
-export function expectedFights(): number {
+export function expectedFreeFights(): number {
   const availableFights = FreeFightTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
   return sum(
     availableFights,
     ({ combatCount, tentacle }) => combatCount() * (tentacle ? 2 : 1),
+  );
+}
+
+export function possibleTentacleFights(): number {
+  const availableFights = FreeFightTasks.filter(
+    (task) => (task.ready?.() ?? true) && !task.completed(),
+  );
+  return sum(
+    availableFights,
+    ({ combatCount, tentacle }) => combatCount() * (tentacle ? 1 : 0),
   );
 }
 

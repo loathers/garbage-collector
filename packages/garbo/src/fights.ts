@@ -184,6 +184,7 @@ import { wanderer } from "./garboWanderer";
 import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { FreeFightQuest, runSafeGarboQuests } from "./tasks";
+import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -780,250 +781,7 @@ function molemanReady() {
   return have($item`molehill mountain`) && !get("_molehillMountainUsed");
 }
 
-const stunDurations = new Map<Skill | Item, Delayed<number>>([
-  [$skill`Blood Bubble`, 1],
-  [
-    $skill`Entangling Noodles`,
-    () =>
-      myClass() === $class`Pastamancer` && !have($skill`Shadow Noodles`)
-        ? 1
-        : 0,
-  ],
-  [$skill`Frost Bite`, 1],
-  [$skill`Shadow Noodles`, 2],
-  [
-    $skill`Shell Up`,
-    () => {
-      if (myClass() !== $class`Turtle Tamer`) return 0;
-      for (const [effect, duration] of new Map([
-        [$effect`Glorious Blessing of the Storm Tortoise`, 4],
-        [$effect`Grand Blessing of the Storm Tortoise`, 3],
-        [$effect`Blessing of the Storm Tortoise`, 2],
-      ])) {
-        if (have(effect)) return duration;
-      }
-      return 0;
-    },
-  ],
-  [$skill`Soul Bubble`, () => (mySoulsauce() >= 5 ? 2 : 0)],
-  [$skill`Summon Love Gnats`, 1],
-  [$item`Rain-Doh blue balls`, 1],
-]);
-
 const freeFightSources = [
-  new FreeFight(
-    () =>
-      have($item`protonic accelerator pack`) &&
-      get("questPAGhost") !== "unstarted" &&
-      get("ghostLocation") !== null,
-    () => {
-      const ghostLocation = get("ghostLocation");
-      if (!ghostLocation) return;
-      garboAdventure(ghostLocation, Macro.ghostBustin());
-    },
-    true,
-    {
-      spec: { back: $item`protonic accelerator pack` },
-    },
-  ),
-  new FreeFight(
-    () =>
-      molemanReady() &&
-      (get("_thesisDelivered") || !have($familiar`Pocket Professor`))
-        ? 1
-        : 0,
-    () => withMacro(Macro.basicCombat(), () => use($item`molehill mountain`)),
-    true,
-  ),
-  new FreeFight(
-    () =>
-      have($item`[glitch season reward name]`) &&
-      have($item`unwrapped knock-off retro superhero cape`) &&
-      !get("_glitchMonsterFights") &&
-      get("garbo_fightGlitch", false) &&
-      sum([...stunDurations], ([thing, duration]) =>
-        have(thing) ? undelay(duration) : 0,
-      ) >= 5,
-    () =>
-      withMacro(
-        Macro.trySkill($skill`Curse of Marinara`)
-          .trySkill($skill`Shell Up`)
-          .trySkill($skill`Shadow Noodles`)
-          .trySkill($skill`Entangling Noodles`)
-          .trySkill($skill`Summon Love Gnats`)
-          .trySkill($skill`Frost Bite`)
-          .trySkill($skill`Soul Bubble`)
-          .tryItem($item`Rain-Doh blue balls`)
-          .skill($skill`Blow a Robo-Kiss`)
-          .repeat(),
-        () => {
-          restoreHp(myMaxhp());
-          if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
-          if (
-            numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
-            (canadiaAvailable() ||
-              gnomadsAvailable() ||
-              have($item`detuned radio`))
-          ) {
-            changeMcd(0);
-          }
-          retrieveItem($item`[glitch season reward name]`);
-          visitUrl("inv_eat.php?pwd&whichitem=10207");
-          runCombat();
-          if (
-            canadiaAvailable() ||
-            gnomadsAvailable() ||
-            have($item`detuned radio`)
-          ) {
-            changeMcd(canadiaAvailable() ? 11 : 10);
-          }
-        },
-      ),
-    true,
-    {
-      spec: {
-        back: $items`unwrapped knock-off retro superhero cape`,
-        modes: { retrocape: ["robot", "kiss"] },
-        avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
-      },
-      macroAllowsFamiliarActions: false,
-    },
-  ),
-
-  new FreeFight(
-    () =>
-      have($item`[glitch season reward name]`) &&
-      !get("_glitchMonsterFights") &&
-      get("garbo_fightGlitch", false),
-    () =>
-      withMacro(
-        Macro.trySkill($skill`Curse of Marinara`)
-          .trySkill($skill`Conspiratorial Whispers`)
-          .trySkill($skill`Shadow Noodles`)
-          .externalIf(
-            get("glitchItemImplementationCount") *
-              itemAmount($item`[glitch season reward name]`) >=
-              400,
-            Macro.item([$item`gas can`, $item`gas can`]),
-          )
-          .externalIf(
-            get("lovebugsUnlocked"),
-            Macro.trySkill($skill`Summon Love Gnats`).trySkill(
-              $skill`Summon Love Mosquito`,
-            ),
-          )
-          .tryItem($item`train whistle`)
-          .trySkill($skill`Micrometeorite`)
-          .tryItem($item`Time-Spinner`)
-          .tryItem($item`little red book`)
-          .tryItem($item`Rain-Doh blue balls`)
-          .tryItem($item`Rain-Doh indigo cup`)
-          .trySkill($skill`Entangling Noodles`)
-          .trySkill($skill`Frost Bite`)
-          .kill(),
-        () => {
-          restoreHp(myMaxhp());
-          if (
-            numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
-            (canadiaAvailable() ||
-              gnomadsAvailable() ||
-              have($item`detuned radio`))
-          ) {
-            changeMcd(0);
-          }
-          if (have($skill`Ruthless Efficiency`)) {
-            ensureEffect($effect`Ruthlessly Efficient`);
-          }
-          if (have($skill`Mathematical Precision`)) {
-            ensureEffect($effect`Mathematically Precise`);
-          }
-          if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
-          retrieveItem($item`[glitch season reward name]`);
-          if (
-            get("glitchItemImplementationCount") *
-              itemAmount($item`[glitch season reward name]`) >=
-            400
-          ) {
-            retrieveItem($item`gas can`, 2);
-          }
-          visitUrl("inv_eat.php?pwd&whichitem=10207");
-          runCombat();
-          if (
-            canadiaAvailable() ||
-            gnomadsAvailable() ||
-            have($item`detuned radio`)
-          ) {
-            changeMcd(canadiaAvailable() ? 11 : 10);
-          }
-        },
-      ),
-    true,
-    {
-      spec: () => ({
-        modifiers: ["1000 mainstat"],
-        avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
-      }),
-      macroAllowsFamiliarActions: false,
-    },
-  ),
-
-  // 6	10	0	0	Infernal Seals	variety of items; must be Seal Clubber for 5, must also have Claw of the Infernal Seal in inventory for 10.
-  new FreeFight(
-    () => {
-      const maxSeals = retrieveItem(1, $item`Claw of the Infernal Seal`)
-        ? 10
-        : 5;
-      const maxSealsAvailable =
-        get("lastGuildStoreOpen") === myAscensions()
-          ? maxSeals
-          : Math.min(
-              maxSeals,
-              Math.floor(availableAmount($item`seal-blubber candle`) / 3),
-            );
-      return myClass() === $class`Seal Clubber`
-        ? Math.max(maxSealsAvailable - get("_sealsSummoned"), 0)
-        : 0;
-    },
-    () => {
-      const figurine =
-        get("lastGuildStoreOpen") === myAscensions()
-          ? $item`figurine of a wretched-looking seal`
-          : $item`figurine of an ancient seal`;
-      retrieveItem(1, figurine);
-      retrieveItem(
-        get("lastGuildStoreOpen") === myAscensions() ? 1 : 3,
-        $item`seal-blubber candle`,
-      );
-      withMacro(
-        Macro.startCombat()
-          .trySkill($skill`Furious Wallop`)
-          .while_(
-            "hasskill Lunging Thrust-Smack",
-            Macro.skill($skill`Lunging Thrust-Smack`),
-          )
-          .while_("hasskill Thrust-Smack", Macro.skill($skill`Thrust-Smack`))
-          .while_("hasskill Lunge Smack", Macro.skill($skill`Lunge Smack`))
-          .attack()
-          .repeat(),
-        () => use(figurine),
-      );
-    },
-    true,
-    {
-      spec: () => {
-        const clubs = Item.all().filter(
-          (i) => have(i) && canEquip(i) && itemType(i) === "club",
-        );
-        const club =
-          clubs.find((i) => weaponHands(i) === 1) ??
-          clubs.find((i) => weaponHands(i) === 2) ??
-          $item`seal-clubbing club`;
-        retrieveItem(club);
-        return { weapon: club };
-      },
-    },
-  ),
-
   new FreeFight(
     () => (wantPills() ? 5 - get("_saberForceUses") : 0),
     () => {
@@ -2808,17 +2566,21 @@ const valueDrops = (monster: Monster) =>
   );
 
 export function estimatedFreeFights(): number {
-  return sum(freeFightSources, (source: FreeFight) => {
-    const avail = source.available();
-    return typeof avail === "number" ? avail : toInt(avail);
-  });
+  return (
+    sum(freeFightSources, (source: FreeFight) => {
+      const avail = source.available();
+      return typeof avail === "number" ? avail : toInt(avail);
+    }) + expectedFreeFights()
+  );
 }
 
 export function estimatedTentacles(): number {
-  return sum(freeFightSources, (source: FreeFight) => {
-    const avail = source.tentacle ? source.available() : 0;
-    return typeof avail === "number" ? avail : toInt(avail);
-  });
+  return (
+    sum(freeFightSources, (source: FreeFight) => {
+      const avail = source.tentacle ? source.available() : 0;
+      return typeof avail === "number" ? avail : toInt(avail);
+    }) + possibleTentacleFights()
+  );
 }
 
 function yachtzee(): void {
