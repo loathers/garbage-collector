@@ -17,14 +17,12 @@ import {
   getAutoAttack,
   getCampground,
   gnomadsAvailable,
-  handlingChoice,
   haveEquipped,
   haveOutfit,
   inebrietyLimit,
   isBanished,
   Item,
   itemAmount,
-  itemDropsArray,
   itemType,
   Location,
   mallPrice,
@@ -80,7 +78,6 @@ import {
   $monster,
   $monsters,
   $path,
-  $phyla,
   $phylum,
   $skill,
   $slot,
@@ -88,7 +85,6 @@ import {
   $thrall,
   ActionSource,
   AsdonMartin,
-  ChateauMantegna,
   CinchoDeMayo,
   clamp,
   ClosedCircuitPayphone,
@@ -114,10 +110,7 @@ import {
   SourceTerminal,
   sum,
   tryFindFreeRun,
-  TunnelOfLove,
   undelay,
-  uneffect,
-  Witchess,
   withChoice,
 } from "libram";
 import { MonsterProperty } from "libram/dist/propertyTypes";
@@ -189,6 +182,7 @@ import { garboValue } from "./garboValue";
 import { wanderer } from "./garboWanderer";
 import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";
+import { FreeFightQuest, runSafeGarboQuests } from "./tasks";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -401,17 +395,6 @@ function startWandererCounter() {
       dogOrHolidayWanderer(["Lights Out in the Kitchen"])
     );
   }
-}
-
-const witchessPieces = [
-  { piece: $monster`Witchess Bishop`, drop: $item`Sacramento wine` },
-  { piece: $monster`Witchess Knight`, drop: $item`jumping horseradish` },
-  { piece: $monster`Witchess Pawn`, drop: $item`armored prawn` },
-  { piece: $monster`Witchess Rook`, drop: $item`Greek fire` },
-];
-
-function bestWitchessPiece() {
-  return maxBy(witchessPieces, ({ drop }) => garboValue(drop)).piece;
 }
 
 function pygmyOptions(equip: Item[] = []): FreeFightOptions {
@@ -852,106 +835,6 @@ const freeFightSources = [
     true,
   ),
   new FreeFight(
-    () => TunnelOfLove.have() && !TunnelOfLove.isUsed(),
-    () => {
-      TunnelOfLove.fightAll(
-        "LOV Epaulettes",
-        "Open Heart Surgery",
-        "LOV Extraterrestrial Chocolate",
-      );
-    },
-    false,
-    {
-      macroAllowsFamiliarActions: true,
-    },
-  ),
-
-  new FreeFight(
-    () =>
-      ChateauMantegna.have() &&
-      !ChateauMantegna.paintingFought() &&
-      (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ??
-        false),
-    () => ChateauMantegna.fightPainting(),
-    true,
-    {
-      spec: () =>
-        have($familiar`Robortender`) &&
-        $phyla`elf, fish, hobo, penguin, constellation`.some(
-          (phylum) => phylum === ChateauMantegna.paintingMonster()?.phylum,
-        )
-          ? { familiar: $familiar`Robortender` }
-          : {},
-    },
-  ),
-
-  new FreeFight(
-    () =>
-      get("questL02Larva") !== "unstarted" && !get("_eldritchTentacleFought"),
-    () => {
-      const haveEldritchEssence = itemAmount($item`eldritch essence`) !== 0;
-      visitUrl("place.php?whichplace=forestvillage&action=fv_scientist", false);
-      if (!handlingChoice()) throw "No choice?";
-      runChoice(haveEldritchEssence ? 2 : 1);
-    },
-    false,
-  ),
-
-  new FreeFight(
-    () => have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked"),
-    () => {
-      if (!have($effect`Crappily Disguised as a Waiter`)) {
-        const expectedIchors = 1;
-        const rate = 11 / 200;
-        const value =
-          expectedIchors * garboValue($item`eldritch ichor`) * rate -
-          mallPrice($item`crappy waiter disguise`);
-        if (value > 0) {
-          retrieveItem($item`crappy waiter disguise`);
-          use($item`crappy waiter disguise`);
-        }
-      }
-      withMacro(
-        Macro.if_(
-          $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`,
-          // Using while_ here in case you run out of mp
-          Macro.while_(
-            "hasskill Awesome Balls of Fire",
-            Macro.skill($skill`Awesome Balls of Fire`),
-          )
-            .while_("hasskill Eggsplosion", Macro.skill($skill`Eggsplosion`))
-            .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
-            .while_(
-              "hasskill Weapon of the Pastalord",
-              Macro.skill($skill`Weapon of the Pastalord`),
-            )
-            .while_(
-              "hasskill Lunging Thrust-Smack",
-              Macro.skill($skill`Lunging Thrust-Smack`),
-            )
-            .attack()
-            .repeat(),
-        ).basicCombat(),
-        () => {
-          useSkill($skill`Evoke Eldritch Horror`);
-          if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
-        },
-        false,
-      );
-    },
-    false,
-  ),
-
-  new FreeFight(
-    () => clamp(3 - get("_lynyrdSnareUses"), 0, 3),
-    () => use($item`lynyrd snare`),
-    true,
-    {
-      cost: () => mallPrice($item`lynyrd snare`),
-    },
-  ),
-
-  new FreeFight(
     () =>
       have($item`[glitch season reward name]`) &&
       have($item`unwrapped knock-off retro superhero cape`) &&
@@ -1137,18 +1020,6 @@ const freeFightSources = [
         retrieveItem(club);
         return { weapon: club };
       },
-    },
-  ),
-
-  new FreeFight(
-    () => clamp(10 - get("_brickoFights"), 0, 10),
-    () => use($item`BRICKO ooze`),
-    true,
-    {
-      cost: () =>
-        mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`),
-      // They just die too dang quickly
-      macroAllowsFamiliarActions: false,
     },
   ),
 
@@ -1496,130 +1367,6 @@ const freeFightSources = [
     },
     true,
   ),
-
-  new FreeFight(
-    () =>
-      have($familiar`God Lobster`)
-        ? clamp(3 - get("_godLobsterFights"), 0, 3)
-        : 0,
-    () => {
-      propertyManager.setChoices({
-        1310: !have($item`God Lobster's Crown`) ? 1 : 2, // god lob equipment, then stats
-      });
-      restoreHp(myMaxhp());
-      visitUrl("main.php?fightgodlobster=1");
-      runCombat();
-      visitUrl("choice.php");
-      if (handlingChoice()) runChoice(-1);
-    },
-    false,
-    {
-      spec: () => ({
-        familiar: $familiar`God Lobster`,
-        bonuses: new Map<Item, number>([
-          [$item`God Lobster's Scepter`, 1000],
-          [$item`God Lobster's Ring`, 2000],
-          [$item`God Lobster's Rod`, 3000],
-          [$item`God Lobster's Robe`, 4000],
-          [$item`God Lobster's Crown`, 5000],
-        ]),
-      }),
-    },
-  ),
-
-  new FreeFight(
-    () =>
-      have($familiar`Machine Elf`)
-        ? clamp(5 - get("_machineTunnelsAdv"), 0, 5)
-        : 0,
-    () => {
-      propertyManager.setChoices({
-        1119: 6, // escape DMT
-      });
-      const thought =
-        garboValue($item`abstraction: certainty`) >=
-        garboValue($item`abstraction: thought`);
-      const action =
-        garboValue($item`abstraction: joy`) >=
-        garboValue($item`abstraction: action`);
-      const sensation =
-        garboValue($item`abstraction: motion`) >=
-        garboValue($item`abstraction: sensation`);
-
-      if (thought) {
-        acquire(
-          1,
-          $item`abstraction: thought`,
-          garboValue($item`abstraction: certainty`),
-          false,
-        );
-      }
-      if (action) {
-        acquire(
-          1,
-          $item`abstraction: action`,
-          garboValue($item`abstraction: joy`),
-          false,
-        );
-      }
-      if (sensation) {
-        acquire(
-          1,
-          $item`abstraction: sensation`,
-          garboValue($item`abstraction: motion`),
-          false,
-        );
-      }
-      garboAdventure(
-        $location`The Deep Machine Tunnels`,
-        Macro.externalIf(
-          thought,
-          Macro.if_(
-            $monster`Perceiver of Sensations`,
-            Macro.tryItem($item`abstraction: thought`),
-          ),
-        )
-          .externalIf(
-            action,
-            Macro.if_(
-              $monster`Thinker of Thoughts`,
-              Macro.tryItem($item`abstraction: action`),
-            ),
-          )
-          .externalIf(
-            sensation,
-            Macro.if_(
-              $monster`Performer of Actions`,
-              Macro.tryItem($item`abstraction: sensation`),
-            ),
-          )
-          .basicCombat(),
-      );
-    },
-    false, // Marked like this as 2 DMT fights get overriden by tentacles.
-    {
-      spec: { familiar: $familiar`Machine Elf` },
-    },
-  ),
-
-  // 28	5	0	0	Witchess pieces	must have a Witchess Set; can copy for more
-  new FreeFight(
-    () => (Witchess.have() ? clamp(5 - Witchess.fightsDone(), 0, 5) : 0),
-    () => Witchess.fightPiece(bestWitchessPiece()),
-    true,
-  ),
-
-  new FreeFight(
-    () =>
-      get("snojoAvailable") &&
-      get("snojoSetting") !== null &&
-      clamp(10 - get("_snojoFreeFights"), 0, 10),
-    () => {
-      adv1($location`The X-32-F Combat Training Snowman`, -1, "");
-    },
-    false,
-  ),
-
   new FreeFight(
     () =>
       get("neverendingPartyAlways") && questStep("_questPartyFair") < 999
@@ -1655,31 +1402,6 @@ const freeFightSources = [
           ? $items`makeshift garbage shirt`
           : [],
       }),
-    },
-  ),
-
-  new FreeFight(
-    () => (get("ownsSpeakeasy") ? 3 - get("_speakeasyFreeFights") : 0),
-    () => adv1($location`An Unusually Quiet Barroom Brawl`, -1, ""),
-    true,
-  ),
-
-  new FreeFight(
-    () =>
-      CombatLoversLocket.have() &&
-      !!locketMonster() &&
-      CombatLoversLocket.reminiscesLeft() > 1,
-    () => {
-      const monster = locketMonster();
-      if (!monster) return;
-      CombatLoversLocket.reminisce(monster);
-    },
-    true,
-    {
-      spec: () =>
-        have($familiar`Robortender`)
-          ? { familiar: $familiar`Robortender` }
-          : {},
     },
   ),
 
@@ -2586,9 +2308,14 @@ export function freeFights(): void {
     );
   }
 
+  // TODO: Run unconverted free fights
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
   }
+
+  // TODO: Run grimorized free fights until all are converted
+  // TODO: freeFightMood()
+  runSafeGarboQuests([FreeFightQuest]);
 
   tryFillLatte();
   postFreeFightDailySetup();
@@ -3072,13 +2799,6 @@ function killRobortCreaturesForFree() {
     setBestLeprechaunAsMeatFamiliar();
   }
 }
-
-const isFree = (monster: Monster) => monster.attributes.includes("FREE");
-const valueDrops = (monster: Monster) =>
-  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
-    !["c", "0", "p"].includes(type) ? (garboValue(drop, true) * rate) / 100 : 0,
-  );
-const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 
 export function estimatedFreeFights(): number {
   return sum(freeFightSources, (source: FreeFight) => {

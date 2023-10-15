@@ -2,6 +2,7 @@ import { AscendingQuest } from "./ascending";
 import { BarfTurnQuest } from "./barfTurn";
 import { DailyFamiliarsQuest } from "./dailyFamiliars";
 import { DailyItemsQuest } from "./dailyItems";
+import { FreeFightQuest } from "./freeFight";
 import { PostFreeFightQuest } from "./postFreeFight";
 import { DailyQuest } from "./daily";
 import {
@@ -17,6 +18,7 @@ export {
   DailyFamiliarsQuest,
   DailyItemsQuest,
   DailyQuest,
+  FreeFightQuest,
   PostFreeFightQuest,
   runSafeGarboTasks,
   runSafeGarboQuests,
