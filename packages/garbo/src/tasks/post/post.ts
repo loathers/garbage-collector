@@ -29,6 +29,7 @@ import {
   getRemainingStomach,
   have,
   JuneCleaver,
+  undelay,
 } from "libram";
 import { GarboStrategy, Macro } from "../../combat";
 import { globalOptions } from "../../config";
@@ -40,21 +41,21 @@ import {
   valueJuneCleaverOption,
 } from "../../lib";
 import { teleportEffects } from "../../mood";
-import { GarboTask } from "../engine";
 import { Quest } from "grimoire-kolmafia";
 import bestAutumnatonLocation from "../../resources/autumnaton";
 import { estimatedGarboTurns, remainingUserTurns } from "../../turns";
 import { acquire } from "../../acquire";
 import { garboAverageValue } from "../../garboValue";
 import workshedTasks from "./worksheds";
+import { GarboPostTask } from "./lib";
+import { GarboTask } from "../engine";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
-function closetStuff(): GarboTask {
+function closetStuff(): GarboPostTask {
   return {
     name: "Closet Stuff",
     completed: () => STUFF_TO_CLOSET.every((i) => itemAmount(i) === 0),
     do: () => STUFF_TO_CLOSET.forEach((i) => putCloset(itemAmount(i), i)),
-    spendsTurn: false,
   };
 }
 
@@ -63,7 +64,7 @@ const BARF_PLANTS = [
   FloristFriar.AloeGuvnor,
   FloristFriar.PitcherPlant,
 ];
-function floristFriars(): GarboTask {
+function floristFriars(): GarboPostTask {
   return {
     name: "Florist Plants",
     completed: () => FloristFriar.isFull(),
@@ -73,23 +74,24 @@ function floristFriars(): GarboTask {
       BARF_PLANTS.some((flower) => flower.available()),
     do: () =>
       BARF_PLANTS.filter((flower) => flower.available()).forEach((flower) =>
-        flower.plant(),
+        flower.plant()
       ),
-    spendsTurn: false,
+    available: () =>
+      FloristFriar.have() && BARF_PLANTS.some((flower) => flower.available()),
   };
 }
 
-function fillPantsgivingFullness(): GarboTask {
+function fillPantsgivingFullness(): GarboPostTask {
   return {
     name: "Fill Pantsgiving Fullness",
     ready: () => !globalOptions.nodiet,
     completed: () => getRemainingStomach() <= 0,
     do: () => consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING"),
-    spendsTurn: false,
+    available: () => have($item`Pantsgiving`),
   };
 }
 
-function fillSweatyLiver(): GarboTask {
+function fillSweatyLiver(): GarboPostTask {
   return {
     name: "Fill Sweaty Liver",
     ready: () => have($item`designer sweatpants`) && !globalOptions.nodiet,
@@ -101,17 +103,20 @@ function fillSweatyLiver(): GarboTask {
       }
       consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
     },
-    spendsTurn: false,
+    available: () =>
+      have($item`designer sweatpants`) &&
+      !globalOptions.nodiet &&
+      get("_sweatOutSomeBoozeUsed") < 3,
   };
 }
 
-function numberology(): GarboTask {
+function numberology(): GarboPostTask {
   return {
     name: "Numberology",
     ready: () => Object.keys(reverseNumberology()).includes("69"),
     completed: () => get("_universeCalculated") >= get("skillLevel144"),
     do: () => cliExecute("numberology 69"),
-    spendsTurn: false,
+    available: () => get("_universeCalculated") < get("skillLevel144"),
   };
 }
 
@@ -124,11 +129,11 @@ function getJuneCleaverskipChoices(): (typeof JuneCleaver.choices)[number][] {
         .sort(
           (a, b) =>
             valueJuneCleaverOption(
-              juneCleaverChoiceValues[a][bestJuneCleaverOption(a)],
+              juneCleaverChoiceValues[a][bestJuneCleaverOption(a)]
             ) -
             valueJuneCleaverOption(
-              juneCleaverChoiceValues[b][bestJuneCleaverOption(b)],
-            ),
+              juneCleaverChoiceValues[b][bestJuneCleaverOption(b)]
+            )
         )
         .splice(0, 3);
     }
@@ -144,10 +149,10 @@ const juneCleaverChoices = () =>
       getJuneCleaverskipChoices().includes(choice)
         ? 4
         : bestJuneCleaverOption(choice),
-    ]),
+    ])
   );
 
-function juneCleaver(): GarboTask {
+function juneCleaver(): GarboPostTask {
   return {
     name: "June Cleaver",
     ready: () => JuneCleaver.have() && teleportEffects.every((e) => !have(e)),
@@ -156,15 +161,15 @@ function juneCleaver(): GarboTask {
     outfit: { weapon: $item`June cleaver` },
     combat: new GarboStrategy(
       Macro.abortWithMsg(
-        `Expected June Cleaver non-combat but ended up in combat.`,
-      ),
+        `Expected June Cleaver non-combat but ended up in combat.`
+      )
     ),
     choices: juneCleaverChoices,
-    spendsTurn: false,
+    available: () => JuneCleaver.have(),
   };
 }
 
-function fallbot(): GarboTask {
+function fallbot(): GarboPostTask {
   return {
     name: "Autumn-Aton",
     completed: () => !AutumnAton.available(),
@@ -174,11 +179,11 @@ function fallbot(): GarboTask {
     do: () => {
       AutumnAton.sendTo(bestAutumnatonLocation);
     },
-    spendsTurn: false,
+    available: () => AutumnAton.have(),
   };
 }
 
-function refillCinch(): GarboTask {
+function refillCinch(): GarboPostTask {
   return {
     name: "Refill Cinch",
     ready: () => CinchoDeMayo.have() && totalFreeRests() > get("timesRested"),
@@ -196,12 +201,13 @@ function refillCinch(): GarboTask {
         if (!freeRest()) break;
       }
     },
-    spendsTurn: false,
+    available: () =>
+      CinchoDeMayo.have() && totalFreeRests() > get("timesRested"),
   };
 }
 
 let tokenBought = false;
-function eightBitFatLoot(): GarboTask {
+function eightBitFatLoot(): GarboPostTask {
   return {
     name: "Check 8-Bit for Fat Loot",
     completed: () => tokenBought,
@@ -214,13 +220,13 @@ function eightBitFatLoot(): GarboTask {
       }
       tokenBought = true;
     },
-    spendsTurn: false,
+    available: () => tokenBought,
   };
 }
 
 let funguyWorthIt = true;
 
-function funGuySpores(): GarboTask {
+function funGuySpores(): GarboPostTask {
   return {
     name: "Fun-Guy Spores",
     ready: () =>
@@ -234,11 +240,11 @@ function funGuySpores(): GarboTask {
       const value =
         0.75 *
           garboAverageValue(
-            ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`,
+            ...$items`Boletus Broletus mushroom, Omphalotus Omphaloskepsis mushroom, Gyromitra Dynomita mushroom`
           ) +
         0.25 *
           garboAverageValue(
-            ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`,
+            ...$items`Helvella Haemophilia mushroom, Stemonitis Staticus mushroom, Tremella Tarantella mushroom`
           );
       if (
         mallPrice($item`Fun-Guy spore`) < value &&
@@ -247,7 +253,7 @@ function funGuySpores(): GarboTask {
         use($item`Fun-Guy spore`);
       } else funguyWorthIt = false;
     },
-    spendsTurn: false,
+    available: () => funguyWorthIt,
   };
 }
 
@@ -267,6 +273,8 @@ export function postQuest(completed?: () => boolean): Quest<GarboTask> {
       funGuySpores(),
       eightBitFatLoot(),
       refillCinch(),
-    ],
+    ]
+      .filter(({ available }) => undelay(available ?? true))
+      .map((task) => ({ ...task, spendsTurn: false })),
   };
 }

@@ -26,7 +26,7 @@ import {
   grabMedicine,
   rotateToOptimalCycle,
 } from "../../resources";
-import { GarboTask } from "../engine";
+import { GarboPostTask } from "./lib";
 type WorkshedOptions = {
   workshed: Item;
   done?: () => boolean;
@@ -139,7 +139,7 @@ const worksheds = [
       AsdonMartin.drive(
         $effect`Driving Observantly`,
         estimatedGarboTurns() +
-          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
+          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
   }),
@@ -166,28 +166,31 @@ const worksheds = [
     },
   }),
   ...$items`diabolic pizza cube, portable Mayo Clinic, warbear high-efficiency still, warbear induction oven`.map(
-    (item) => new GarboWorkshed({ workshed: item, done: dietCompleted }),
+    (item) => new GarboWorkshed({ workshed: item, done: dietCompleted })
   ),
   ...$items`warbear chemistry lab, warbear LP-ROM burner`.map(
-    (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted }),
+    (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted })
   ),
   ...$items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
-    (item) => new GarboWorkshed({ workshed: item }),
+    (item) => new GarboWorkshed({ workshed: item })
   ),
 ];
 
-function workshedTask(workshed: GarboWorkshed): GarboTask {
+function workshedTask(workshed: GarboWorkshed): GarboPostTask {
   return {
     name: `Workshed: ${workshed.workshed}`,
     completed: () => workshed.done?.() ?? true,
     ready: () => getWorkshed() === workshed.workshed && workshed.available(),
     do: () => workshed?.use(),
-    spendsTurn: false,
+    available: () =>
+      [GarboWorkshed.current?.workshed, GarboWorkshed.next?.workshed].includes(
+        workshed.workshed
+      ),
   };
 }
 
 const SAFETY_TURNS_THRESHOLD = 25;
-export default function workshedTasks(): GarboTask[] {
+export default function workshedTasks(): GarboPostTask[] {
   return [
     ...worksheds.map(workshedTask),
     {
@@ -204,7 +207,7 @@ export default function workshedTasks(): GarboTask[] {
         return canRemove && haveNext && enoughTurns;
       },
       do: () => GarboWorkshed.useNext(),
-      spendsTurn: false,
+      available: () => !get("_workshedItemUsed") && !!GarboWorkshed.next,
     },
   ];
 }
