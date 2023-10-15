@@ -40407,6 +40407,8 @@ var FreeFight = /* @__PURE__ */ function() {
   _createClass31(FreeFight2, [{
     key: "isAvailable",
     value: function isAvailable() {
+      if ((0, import_kolmafia108.myAdventures)() === 0)
+        return false;
       var avail = this.available();
       return typeof avail === "number" ? avail > 0 : avail;
     }
