@@ -39,6 +39,7 @@ import {
 import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
+import { acquire } from "../acquire";
 
 function drivebyValue(): number {
   const embezzlers = embezzlerCount();
@@ -140,11 +141,23 @@ const DailyFamiliarTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Acquire amulet coin",
+    name: "Acquire box of Familiar Jacks",
     ready: () => have($familiar`Cornbeefadon`),
+    completed: () =>
+      have($item`box of Familiar Jacks`) || have($item`amulet coin`),
+    do: () =>
+      // TODO: acquire max price calculation
+      acquire(1, $item`box of Familiar Jacks`, get("autoBuyPriceLimit")),
+    spendsTurn: false,
+  },
+  {
+    name: "Acquire amulet coin",
+    ready: () =>
+      have($familiar`Cornbeefadon`) && have($item`box of Familiar Jacks`),
     completed: () => have($item`amulet coin`),
-    do: () => use($item`box of Familiar Jacks`),
-    acquire: [{ item: $item`box of Familiar Jacks` }],
+    do: (): void => {
+      use($item`box of Familiar Jacks`);
+    },
     outfit: { familiar: $familiar`Cornbeefadon` },
     spendsTurn: false,
   },
