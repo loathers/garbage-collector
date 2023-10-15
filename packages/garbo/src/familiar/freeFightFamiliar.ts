@@ -139,17 +139,18 @@ export function getAllJellyfishDrops(): {
 
 export function freeFightFamiliarData(
   options: MenuOptions = {},
-): GeneralFamiliar {
-  const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
+): GeneralFamiliar | null {
+  const compareFamiliars = (a: GeneralFamiliar | null, b: GeneralFamiliar) => {
+    if (a === null) return b;
     if (a.expectedValue === b.expectedValue) {
       return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
     }
     return a.expectedValue > b.expectedValue ? a : b;
   };
 
-  return menu(options).reduce(compareFamiliars);
+  return menu(options).reduce(compareFamiliars, null);
 }
 
 export function freeFightFamiliar(options: MenuOptions = {}): Familiar {
-  return freeFightFamiliarData(options).familiar;
+  return freeFightFamiliarData(options)?.familiar ?? $familiar.none;
 }

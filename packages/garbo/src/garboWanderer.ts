@@ -21,7 +21,7 @@ export function wanderer(): WandererManager {
         new Potion($item.none, { effect, duration }).gross(embezzlerCount()),
       prioritizeCappingGuzzlr: get("garbo_prioritizeCappingGuzzlr", false),
       freeFightExtraValue: (location: Location) =>
-        freeFightFamiliarData({ location }).expectedValue,
+        freeFightFamiliarData({ location })?.expectedValue ?? 0,
       digitzesRemaining: digitizedMonstersRemainingForTurns,
       plentifulMonsters: [
         $monster`Knob Goblin Embezzler`,
