@@ -31,6 +31,14 @@ module.exports = {
 
     // eslint-plugin-libram
     "libram/verify-constants": "error",
+    "no-restricted-syntax": [
+      "error",
+      {
+        selector:
+          "CallExpression[callee.property.name='reduce'][arguments.length<2]",
+        message: "Provide initialValue to .reduce().",
+      },
+    ],
   },
   parserOptions: {
     ecmaVersion: 2020,
