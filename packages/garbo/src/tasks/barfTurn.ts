@@ -92,7 +92,7 @@ function wanderTask(
   spec: Delayed<OutfitSpec>,
   base: Omit<GarboTask, "outfit" | "do" | "choices" | "spendsTurn"> & {
     combat?: GarboStrategy;
-  }
+  },
 ): GarboTask {
   return {
     do: () => wanderer().getTarget(undelay(details)),
@@ -190,8 +190,8 @@ const BarfTurnTasks: GarboTask[] = [
     combat: new GarboStrategy(() =>
       Macro.if_(
         $monster`Stephen Spookyraven`,
-        Macro.basicCombat()
-      ).abortWithMsg("Expected to fight Stephen Spookyraven, but didn't!")
+        Macro.basicCombat(),
+      ).abortWithMsg("Expected to fight Stephen Spookyraven, but didn't!"),
     ),
   },
   {
@@ -233,7 +233,7 @@ const BarfTurnTasks: GarboTask[] = [
         get("_voteFreeFights") < 3,
       completed: () => get("lastVoteMonsterTurn") >= totalTurnsPlayed(),
       sobriety: () => (isGhost() ? "sober" : undefined),
-    }
+    },
   ),
   {
     name: "Thesis",
@@ -287,7 +287,7 @@ const BarfTurnTasks: GarboTask[] = [
             wanderer().getTarget({
               wanderer: "wanderer",
               allowEquipment: false,
-            })
+            }),
           )
         : freeFightOutfit(),
     do: () =>
@@ -305,17 +305,17 @@ const BarfTurnTasks: GarboTask[] = [
       () =>
         Macro.externalIf(
           shouldGoUnderwater(),
-          Macro.item($item`pulled green taffy`)
+          Macro.item($item`pulled green taffy`),
         ).meatKill(),
       Macro.if_(
         `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
         Macro.externalIf(
           shouldGoUnderwater(),
-          Macro.item($item`pulled green taffy`)
-        ).meatKill()
+          Macro.item($item`pulled green taffy`),
+        ).meatKill(),
       ).abortWithMsg(
-        `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`
-      )
+        `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
+      ),
     ),
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
@@ -329,7 +329,7 @@ const BarfTurnTasks: GarboTask[] = [
       name: "Guaranteed Kramco",
       ready: () => romanticMonsterImpossible(),
       completed: () => !kramcoGuaranteed(),
-    }
+    },
   ),
   wanderTask(
     "wanderer",
@@ -341,7 +341,7 @@ const BarfTurnTasks: GarboTask[] = [
       ready: () =>
         have($item`cursed magnifying glass`) && get("_voidFreeFights") < 5,
       completed: () => get("cursedMagnifyingGlassCount") !== 13,
-    }
+    },
   ),
   {
     name: "Envyfish Egg",
@@ -364,11 +364,11 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(embezzler, Macro.meatKill())
           .familiarActions()
           .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
-          .skill($skill`Fondeluge`)
+          .skill($skill`Fondeluge`),
       ),
       duplicate: true,
       sobriety: "sober",
-    }
+    },
   ),
   wanderTask(
     "yellow ray",
@@ -381,11 +381,11 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(embezzler, Macro.meatKill())
           .familiarActions()
           .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
-          .skill($skill`Spit jurassic acid`)
+          .skill($skill`Spit jurassic acid`),
       ),
       sobriety: "sober",
       duplicate: true,
-    }
+    },
   ),
   wanderTask(
     "freefight",
@@ -398,10 +398,10 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(embezzler, Macro.meatKill())
           .familiarActions()
           .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
-          .skill($skill`Free-For-All`)
+          .skill($skill`Free-For-All`),
       ),
       duplicate: true,
-    }
+    },
   ),
   wanderTask(
     "yellow ray",
@@ -414,11 +414,11 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(embezzler, Macro.meatKill())
           .familiarActions()
           .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
-          .skill($skill`Shocking Lick`)
+          .skill($skill`Shocking Lick`),
       ),
       duplicate: true,
       sobriety: "sober",
-    }
+    },
   ),
   {
     name: "Map for Pills",
@@ -455,8 +455,8 @@ const BarfTurnTasks: GarboTask[] = [
       () =>
         Macro.if_(
           `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
-          Macro.meatKill()
-        ).abort()
+          Macro.meatKill(),
+        ).abort(),
     ),
     post: () => completeBarfQuest(),
     spendsTurn: true,
