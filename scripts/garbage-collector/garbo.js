@@ -42713,6 +42713,9 @@ var BarfTurnTasks = [{
   },
   completed: function() {
     return get("lastVoteMonsterTurn") >= (0, import_kolmafia110.totalTurnsPlayed)();
+  },
+  sobriety: function() {
+    return isGhost() ? "sober" : void 0;
   }
 }), {
   name: "Thesis",
