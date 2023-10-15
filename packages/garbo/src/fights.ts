@@ -23,6 +23,7 @@ import {
   isBanished,
   Item,
   itemAmount,
+  itemDropsArray,
   itemType,
   Location,
   mallPrice,
@@ -2799,6 +2800,12 @@ function killRobortCreaturesForFree() {
     setBestLeprechaunAsMeatFamiliar();
   }
 }
+
+const isFree = (monster: Monster) => monster.attributes.includes("FREE");
+const valueDrops = (monster: Monster) =>
+  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
+    !["c", "0", "p"].includes(type) ? (garboValue(drop, true) * rate) / 100 : 0,
+  );
 
 export function estimatedFreeFights(): number {
   return sum(freeFightSources, (source: FreeFight) => {
