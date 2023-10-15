@@ -34002,12 +34002,19 @@ function getAllJellyfishDrops() {
 function freeFightFamiliarData() {
   var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
   var compareFamiliars = function(a, b) {
+    if (a === null)
+      return b;
     if (a.expectedValue === b.expectedValue) {
       return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
     }
     return a.expectedValue > b.expectedValue ? a : b;
   };
-  return menu2(options).reduce(compareFamiliars);
+  return menu2(options).reduce(compareFamiliars, {
+    familiar: $familiar.none,
+    expectedValue: 0,
+    leprechaunMultiplier: 0,
+    limit: "none"
+  });
 }
 function freeFightFamiliar() {
   var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
