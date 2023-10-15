@@ -23,14 +23,12 @@ export function faxMonster(monster: Monster): boolean {
   if (getClanLounge()["deluxe fax machine"] === undefined) return false;
   if (get("_photocopyUsed")) return false;
 
-  if (!get("_photocopyUsed")) {
+  if (checkFax(monster)) return true;
+  if (!canFaxbot(monster)) return false;
+  faxbot(monster);
+  for (let i = 0; i < 3; i++) {
+    wait(10);
     if (checkFax(monster)) return true;
-    if (!canFaxbot(monster)) return false;
-    faxbot(monster);
-    for (let i = 0; i < 3; i++) {
-      wait(10);
-      if (checkFax(monster)) return true;
-    }
   }
   return false;
 }
