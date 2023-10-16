@@ -461,7 +461,8 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     name: "Machine Elf",
     ready: () => have($familiar`Machine Elf`),
     completed: () => get("_machineTunnelsAdv") >= 5,
-    do: () => {
+    do: () => $location`The Deep Machine Tunnels`,
+    prepare: () => {
       if (
         garboValue($item`abstraction: certainty`) >=
         garboValue($item`abstraction: thought`)
@@ -495,7 +496,6 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           false,
         );
       }
-      return $location`The Deep Machine Tunnels`;
     },
     choices: { 1119: 6 }, // escape DMT
     combat: new GarboStrategy(
