@@ -15,7 +15,6 @@ import {
   runChoice,
   runCombat,
   toInt,
-  toUrl,
   use,
   userConfirm,
   useSkill,
@@ -515,22 +514,7 @@ export const wanderSources = [
 ];
 
 function toasterGaze(): void {
-  const shore = $location`The Shore, Inc. Travel Agency`;
-  const pass = $item`Desert Bus pass`;
-  if (!canAdventure(shore) && !have(pass)) {
-    retrieveItem(pass);
-  }
-  try {
-    const store = visitUrl(toUrl(shore));
-    if (!store.includes("Check out the gift shop")) {
-      print("Unable to stare longingly at toast");
-    }
-    runChoice(4);
-  } catch (e) {
-    print(`We ran into an issue when gazing at toast: ${e}.`, "red");
-  } finally {
-    visitUrl("main.php");
-  }
+  return;
 }
 
 const gregFights = (
