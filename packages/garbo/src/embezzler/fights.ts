@@ -513,6 +513,10 @@ export const wanderSources = [
   ),
 ];
 
+function toasterGaze(): void {
+  return;
+}
+
 const gregFights = (
   name: string,
   haveCheck: () => boolean,
@@ -560,7 +564,16 @@ const gregFights = (
         !resourceIsOccupied() &&
         get(fightsProp) > (have($item`miniature crystal ball`) ? 1 : 0),
       () => (!resourceIsOccupied() ? totalCharges() : 0),
-      runGregFight,
+      (options: RunOptions) => {
+        runGregFight(options);
+        // reset the crystal ball prediction by staring longingly at toast
+        if (get(fightsProp) === 1 && have($item`miniature crystal ball`)) {
+          const warrenPrediction = CrystalBall.ponder().get(
+            $location`The Dire Warren`,
+          );
+          if (warrenPrediction !== embezzler) toasterGaze();
+        }
+      },
       {
         canInitializeWandererCounters: true,
       },
@@ -664,6 +677,7 @@ export const conditionalSources = [
         options.macro,
         options.macro,
       );
+      toasterGaze();
       if (!doingGregFight()) set("_garbo_doneGregging", true);
     },
     {
@@ -710,6 +724,9 @@ export const conditionalSources = [
         ? garboAdventureAuto
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
+      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) {
+        toasterGaze();
+      }
     },
     {
       gregariousReplace: true,
@@ -754,6 +771,9 @@ export const conditionalSources = [
         ? garboAdventureAuto
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
+      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) {
+        toasterGaze();
+      }
     },
     {
       spec: { equip: $items`Powerful Glove` },
