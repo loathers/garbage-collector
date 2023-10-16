@@ -371,7 +371,8 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     ...DEFAULT_FREE_FIGHT_TASK,
     name: "Seal Clubbing",
     ready: () => myClass() === $class`Seal Clubber`,
-    completed: () => sealsAvailable() <= 0 || get("_sealsSummoned") >= maxSealsAvailable(),
+    completed: () =>
+      sealsAvailable() <= 0 || get("_sealsSummoned") >= maxSealsAvailable(),
     do: () => {
       const [figurine, candlesNeeded] = guildStoreAvailable()
         ? [$item`figurine of a wretched-looking seal`, 1]
