@@ -404,7 +404,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         .repeat(),
     ),
     combatCount: sealsAvailable,
-    limit: { soft: 10 },
+    limit: { skip: 10 },
     tentacle: false,
   },
   {
