@@ -175,6 +175,7 @@ import { garboValue } from "./garboValue";
 import { wanderer } from "./garboWanderer";
 import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";
+import { faxMonster } from "./resources/fax";
 import { FreeFightQuest, runSafeGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 
@@ -408,6 +409,9 @@ export function dailyFights(): void {
   if (getFoldGroup($item`Spooky Putty sheet`).some((item) => have(item))) {
     cliExecute("fold spooky putty sheet");
   }
+
+  // Fax an embezzler before starting, to prevent an abort in case the faxbot networks are down
+  faxMonster($monster`Knob Goblin Embezzler`);
 
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {

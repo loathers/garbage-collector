@@ -1,7 +1,6 @@
 import {
   abort,
   canAdventure,
-  chatPrivate,
   cliExecute,
   getClanLounge,
   haveEquipped,
@@ -21,7 +20,6 @@ import {
   userConfirm,
   useSkill,
   visitUrl,
-  wait,
 } from "kolmafia";
 import { DraggableFight } from "garbo-lib";
 import { OutfitSpec } from "grimoire-kolmafia";
@@ -148,27 +146,6 @@ export class EmbezzlerFight implements EmbezzlerFightConfigOptions {
   }
 }
 
-function checkFax(): boolean {
-  if (!have($item`photocopied monster`)) cliExecute("fax receive");
-  if (property.getString("photocopyMonster") === "Knob Goblin Embezzler") {
-    return true;
-  }
-  cliExecute("fax send");
-  return false;
-}
-
-function faxEmbezzler(): void {
-  if (!get("_photocopyUsed")) {
-    if (checkFax()) return;
-    chatPrivate("cheesefax", "Knob Goblin Embezzler");
-    for (let i = 0; i < 3; i++) {
-      wait(10);
-      if (checkFax()) return;
-    }
-    throw new Error("Failed to acquire photocopied Knob Goblin Embezzler.");
-  }
-}
-
 export const chainStarters = [
   new EmbezzlerFight(
     "Chateau Painting",
@@ -208,15 +185,18 @@ export const chainStarters = [
     () =>
       have($item`Clan VIP Lounge key`) &&
       !get("_photocopyUsed") &&
+      have($item`photocopied monster`) &&
+      property.getString("photocopyMonster") === "Knob Goblin Embezzler" &&
       getClanLounge()["deluxe fax machine"] !== undefined,
     () =>
       have($item`Clan VIP Lounge key`) &&
       !get("_photocopyUsed") &&
+      have($item`photocopied monster`) &&
+      property.getString("photocopyMonster") === "Knob Goblin Embezzler" &&
       getClanLounge()["deluxe fax machine"] !== undefined
         ? 1
         : 0,
     (options: RunOptions) => {
-      faxEmbezzler();
       withMacro(
         options.macro,
         () => use($item`photocopied monster`),
