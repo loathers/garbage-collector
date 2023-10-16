@@ -461,7 +461,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     name: "Machine Elf",
     ready: () => have($familiar`Machine Elf`),
     completed: () => get("_machineTunnelsAdv") >= 5,
-    do: () => $location`The Deep Machine Tunnels`,
+    do: $location`The Deep Machine Tunnels`,
     prepare: () => {
       if (
         garboValue($item`abstraction: certainty`) >=
@@ -545,7 +545,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     name: "The X-32-F Combat Training Snowman",
     ready: () => get("snojoAvailable"),
     completed: () => get("_snojoFreeFights") >= 10,
-    do: () => $location`The X-32-F Combat Training Snowman`,
+    do: $location`The X-32-F Combat Training Snowman`,
     tentacle: false,
     combatCount: () => clamp(10 - get("_snojoFreeFights"), 0, 10),
     limit: { skip: 10 },
@@ -556,7 +556,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     name: "An Unusually Quiet Barroom Brawl",
     ready: () => get("ownsSpeakeasy"),
     completed: () => get("_speakeasyFreeFights") >= 3,
-    do: () => $location`An Unusually Quiet Barroom Brawl`,
+    do: $location`An Unusually Quiet Barroom Brawl`,
     tentacle: true,
     combatCount: () => clamp(3 - get("_speakeasyFreeFights"), 0, 3),
     limit: { skip: 3 },
