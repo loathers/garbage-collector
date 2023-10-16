@@ -15,6 +15,7 @@ import {
   runChoice,
   runCombat,
   toInt,
+  toUrl,
   use,
   userConfirm,
   useSkill,
@@ -513,6 +514,25 @@ export const wanderSources = [
   ),
 ];
 
+function toasterGaze(): void {
+  const shore = $location`The Shore, Inc. Travel Agency`;
+  const pass = $item`Desert Bus pass`;
+  if (!canAdventure(shore) && !have(pass)) {
+    retrieveItem(pass);
+  }
+  try {
+    const store = visitUrl(toUrl(shore));
+    if (!store.includes("Check out the gift shop")) {
+      print("Unable to stare longingly at toast");
+    }
+    runChoice(4);
+  } catch (e) {
+    print(`We ran into an issue when gazing at toast: ${e}.`, "red");
+  } finally {
+    visitUrl("main.php");
+  }
+}
+
 const gregFights = (
   name: string,
   haveCheck: () => boolean,
@@ -560,7 +580,16 @@ const gregFights = (
         !resourceIsOccupied() &&
         get(fightsProp) > (have($item`miniature crystal ball`) ? 1 : 0),
       () => (!resourceIsOccupied() ? totalCharges() : 0),
-      runGregFight,
+      (options: RunOptions) => {
+        runGregFight(options);
+        // reset the crystal ball prediction by staring longingly at toast
+        if (get(fightsProp) === 1 && have($item`miniature crystal ball`)) {
+          const warrenPrediction = CrystalBall.ponder().get(
+            $location`The Dire Warren`,
+          );
+          if (warrenPrediction !== embezzler) toasterGaze();
+        }
+      },
       {
         canInitializeWandererCounters: true,
       },
@@ -664,6 +693,7 @@ export const conditionalSources = [
         options.macro,
         options.macro,
       );
+      toasterGaze();
       if (!doingGregFight()) set("_garbo_doneGregging", true);
     },
     {
@@ -710,6 +740,9 @@ export const conditionalSources = [
         ? garboAdventureAuto
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
+      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) {
+        toasterGaze();
+      }
     },
     {
       gregariousReplace: true,
@@ -754,6 +787,9 @@ export const conditionalSources = [
         ? garboAdventureAuto
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
+      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) {
+        toasterGaze();
+      }
     },
     {
       spec: { equip: $items`Powerful Glove` },
