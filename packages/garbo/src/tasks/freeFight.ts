@@ -564,7 +564,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // killRobortCreaturesForFree
   {
     ...DEFAULT_FREE_FIGHT_TASK,
-    name: $item`Combat Lover's Locket`.name,
+    name: $item`combat lover's locket`.name,
     ready: () => CombatLoversLocket.have() && locketMonster() !== null,
     completed: () => CombatLoversLocket.reminiscesLeft() <= locketsToSave(),
     do: () => {
