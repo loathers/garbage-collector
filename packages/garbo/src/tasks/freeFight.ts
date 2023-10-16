@@ -369,7 +369,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     ...DEFAULT_FREE_FIGHT_TASK,
-    name: "Hellseals",
+    name: "Seal Clubbing",
     ready: () => myClass() === $class`Seal Clubber`,
     completed: () => sealsAvailable() <= 0,
     do: () => {
@@ -542,7 +542,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     ...DEFAULT_FREE_FIGHT_TASK,
-    name: "Snojo",
+    name: "The X-32-F Combat Training Snowman",
     ready: () => get("snojoAvailable"),
     completed: () => get("_snojoFreeFights") >= 10,
     do: () => $location`The X-32-F Combat Training Snowman`,
@@ -553,7 +553,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // Neverending party
   {
     ...DEFAULT_FREE_FIGHT_TASK,
-    name: "Speakeasy",
+    name: "An Unusually Quiet Barroom Brawl",
     ready: () => get("ownsSpeakeasy"),
     completed: () => get("_speakeasyFreeFights") >= 3,
     do: () => $location`An Unusually Quiet Barroom Brawl`,
@@ -561,9 +561,10 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combatCount: () => clamp(3 - get("_speakeasyFreeFights"), 0, 3),
     limit: { skip: 3 },
   },
+  // killRobortCreaturesForFree
   {
     ...DEFAULT_FREE_FIGHT_TASK,
-    name: "Reminisce",
+    name: $item`Combat Lover's Locket`.name,
     ready: () => CombatLoversLocket.have() && locketMonster() !== null,
     completed: () => CombatLoversLocket.reminiscesLeft() <= locketsToSave(),
     do: () => {
