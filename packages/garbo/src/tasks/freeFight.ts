@@ -430,7 +430,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // portscan
   {
     ...DEFAULT_FREE_FIGHT_TASK,
-    name: $familiar`God Lobster`.name,
+    name: "God Lobster",
     ready: () => have($familiar`God Lobster`),
     completed: () => get("_godLobsterFights") >= 3,
     do: () => {
@@ -458,7 +458,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     ...DEFAULT_FREE_FIGHT_TASK,
-    name: $familiar`Machine Elf`.name,
+    name: "Machine Elf",
     ready: () => have($familiar`Machine Elf`),
     completed: () => get("_machineTunnelsAdv") >= 5,
     do: () => {
@@ -495,6 +495,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           false,
         );
       }
+      return $location`The Deep Machine Tunnels`;
     },
     choices: { 1119: 6 }, // escape DMT
     combat: new GarboStrategy(
