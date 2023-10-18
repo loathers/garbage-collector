@@ -1,7 +1,10 @@
 import { Quest } from "grimoire-kolmafia";
 import {
   availableAmount,
+  canadiaAvailable,
   canEquip,
+  changeMcd,
+  gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
   Item,
@@ -13,6 +16,7 @@ import {
   myClass,
   myMaxhp,
   mySoulsauce,
+  numericModifier,
   restoreHp,
   retrieveItem,
   runChoice,
@@ -281,6 +285,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         {
           back: $items`unwrapped knock-off retro superhero cape`,
           modes: { retrocape: ["robot", "kiss"] },
+          avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
         },
         { canChooseMacro: false },
       ),
@@ -295,11 +300,13 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
       retrieveItem($item`[glitch season reward name]`);
       if (
-        get("glitchItemImplementationCount") *
-          itemAmount($item`[glitch season reward name]`) >=
-        400
+        numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
+        (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
       ) {
-        retrieveItem($item`gas can`, 2);
+        changeMcd(0);
+      }
+      if (have($effect`Ur-Kel's Aria of Annoyance`)) {
+        uneffect($effect`Ur-Kel's Aria of Annoyance`);
       }
     },
     tentacle: false,
