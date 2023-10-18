@@ -46,7 +46,7 @@ import { coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
-import { augustSummonTasks } from "../resources";
+import { augustSummonTasks, freeCandyTasks } from "../resources";
 import { doingGregFight } from "../resources/extrovermectin";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
@@ -498,6 +498,7 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   ...augustSummonTasks(),
+  ...freeCandyTasks(),
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {
