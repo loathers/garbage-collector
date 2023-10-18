@@ -305,7 +305,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       ) {
         changeMcd(0);
       }
-      if (have($effect`Ur-Kel's Aria of Annoyance`)){
+      if (have($effect`Ur-Kel's Aria of Annoyance`)) {
         uneffect($effect`Ur-Kel's Aria of Annoyance`);
       }
     },
