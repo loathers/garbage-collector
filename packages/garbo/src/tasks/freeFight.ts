@@ -301,13 +301,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       retrieveItem($item`[glitch season reward name]`);
       if (
         numericModifier("Monster Level") >= 50 && // Above 50 ML, monsters resist stuns.
-        (canadiaAvailable() ||
-          gnomadsAvailable() ||
-          have($item`detuned radio`))
+        (canadiaAvailable() || gnomadsAvailable() || have($item`detuned radio`))
       ) {
         changeMcd(0);
       }
-      if(have($effect`Ur-Kel's Aria of Annoyance`)) uneffect($effect`Ur-Kel's Aria of Annoyance`);
+      if (have($effect`Ur-Kel's Aria of Annoyance`))
+        uneffect($effect`Ur-Kel's Aria of Annoyance`);
     },
     tentacle: false,
   },
