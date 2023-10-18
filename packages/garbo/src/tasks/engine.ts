@@ -6,7 +6,7 @@ import {
   Quest,
   StrictCombatTask,
 } from "grimoire-kolmafia";
-import { eventLog, safeInterrupt, sober } from "../lib";
+import { eventLog, safeInterrupt, safeRestore, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
 import {
   $familiar,
@@ -18,7 +18,6 @@ import {
   undelay,
 } from "libram";
 import { equip, itemAmount, print, totalTurnsPlayed } from "kolmafia";
-import postCombatActions from "../post";
 import { GarboStrategy } from "../combat";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
@@ -72,8 +71,8 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     ) {
       SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
     }
+    if ("combat" in task) safeRestore();
     super.execute(task);
-    postCombatActions();
     if (totalTurnsPlayed() !== spentTurns) {
       if (!undelay(task.spendsTurn)) {
         print(

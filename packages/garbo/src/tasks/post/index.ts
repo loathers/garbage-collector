@@ -257,7 +257,7 @@ function funGuySpores(): GarboPostTask {
   };
 }
 
-export function postQuest(completed?: () => boolean): Quest<GarboTask> {
+export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
     completed,
