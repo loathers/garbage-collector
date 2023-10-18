@@ -39415,52 +39415,6 @@ function _arrayWithoutHoles47(arr) {
   if (Array.isArray(arr))
     return _arrayLikeToArray68(arr);
 }
-function ownKeys16(e, r) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r && (o = o.filter(function(r2) {
-      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread16(e) {
-  for (var r = 1; r < arguments.length; r++) {
-    var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys16(Object(t), true).forEach(function(r2) {
-      _defineProperty38(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys16(Object(t)).forEach(function(r2) {
-      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-    });
-  }
-  return e;
-}
-function _defineProperty38(obj, key, value) {
-  key = _toPropertyKey42(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-function _toPropertyKey42(arg) {
-  var key = _toPrimitive42(arg, "string");
-  return typeof key === "symbol" ? key : String(key);
-}
-function _toPrimitive42(input, hint) {
-  if (typeof input !== "object" || input === null)
-    return input;
-  var prim = input[Symbol.toPrimitive];
-  if (prim !== void 0) {
-    var res = prim.call(input, hint || "default");
-    if (typeof res !== "object")
-      return res;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return (hint === "string" ? String : Number)(input);
-}
 function _slicedToArray30(arr, i) {
   return _arrayWithHoles30(arr) || _iterableToArrayLimit30(arr, i) || _unsupportedIterableToArray68(arr, i) || _nonIterableRest30();
 }
@@ -39562,6 +39516,52 @@ function _taggedTemplateLiteral100(strings, raw) {
   }
   return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } }));
 }
+function ownKeys16(e, r) {
+  var t = Object.keys(e);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e);
+    r && (o = o.filter(function(r2) {
+      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
+    })), t.push.apply(t, o);
+  }
+  return t;
+}
+function _objectSpread16(e) {
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {};
+    r % 2 ? ownKeys16(Object(t), true).forEach(function(r2) {
+      _defineProperty38(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys16(Object(t)).forEach(function(r2) {
+      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
+    });
+  }
+  return e;
+}
+function _defineProperty38(obj, key, value) {
+  key = _toPropertyKey42(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey42(arg) {
+  var key = _toPrimitive42(arg, "string");
+  return typeof key === "symbol" ? key : String(key);
+}
+function _toPrimitive42(input, hint) {
+  if (typeof input !== "object" || input === null)
+    return input;
+  var prim = input[Symbol.toPrimitive];
+  if (prim !== void 0) {
+    var res = prim.call(input, hint || "default");
+    if (typeof res !== "object")
+      return res;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return (hint === "string" ? String : Number)(input);
+}
 var DEFAULT_FREE_FIGHT_TASK = {
   // GarboTask
   combat: new GarboStrategy(Macro2.basicCombat()),
@@ -39572,6 +39572,14 @@ var DEFAULT_FREE_FIGHT_TASK = {
     return 1;
   }
 };
+function freeFightTask(fragment) {
+  var fullTask = _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), fragment);
+  return _objectSpread16(_objectSpread16({}, fullTask), {}, {
+    limit: {
+      skip: 5 + fullTask.combatCount()
+    }
+  });
+}
 function bestWitchessPiece() {
   return maxBy(Witchess_exports.pieces, function(monster) {
     return sum((0, import_kolmafia109.itemDropsArray)(monster), function(_ref) {
@@ -39625,7 +39633,7 @@ var stunDurations = /* @__PURE__ */ new Map([[$skill(_templateObject4144 || (_te
   return (0, import_kolmafia109.mySoulsauce)() >= 5 ? 2 : 0;
 }], [$skill(_templateObject1635 || (_templateObject1635 = _taggedTemplateLiteral100(["Summon Love Gnats"]))), 1], [$item(_templateObject1735 || (_templateObject1735 = _taggedTemplateLiteral100(["Rain-Doh blue balls"]))), 1]]);
 var FreeFightTasks = [
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  {
     name: $item(_templateObject1834 || (_templateObject1834 = _taggedTemplateLiteral100(["protonic accelerator pack"]))).name,
     ready: function() {
       return have($item(_templateObject1934 || (_templateObject1934 = _taggedTemplateLiteral100(["protonic accelerator pack"])))) && get("questPAGhost") !== "unstarted" && get("ghostLocation") !== null;
@@ -39643,8 +39651,8 @@ var FreeFightTasks = [
       });
     },
     tentacle: true
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: $item(_templateObject2185 || (_templateObject2185 = _taggedTemplateLiteral100(["molehill mountain"]))).name,
     ready: function() {
       return have($item(_templateObject2233 || (_templateObject2233 = _taggedTemplateLiteral100(["molehill mountain"])))) && (get("_thesisDelivered") || !have($familiar(_templateObject2331 || (_templateObject2331 = _taggedTemplateLiteral100(["Pocket Professor"])))));
@@ -39656,8 +39664,8 @@ var FreeFightTasks = [
       return (0, import_kolmafia109.use)($item(_templateObject2430 || (_templateObject2430 = _taggedTemplateLiteral100(["molehill mountain"]))));
     },
     tentacle: true
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "Tunnel of Love",
     ready: TunnelOfLove_exports.have,
     completed: TunnelOfLove_exports.isUsed,
@@ -39669,8 +39677,8 @@ var FreeFightTasks = [
       return 3;
     },
     tentacle: false
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "Chateau Mantegna",
     ready: function() {
       var _ChateauMantegna$pain, _ChateauMantegna$pain2;
@@ -39687,8 +39695,8 @@ var FreeFightTasks = [
       } : {});
     },
     tentacle: true
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "Eldritch Tentacle",
     ready: function() {
       return get("questL02Larva") !== "unstarted";
@@ -39704,8 +39712,8 @@ var FreeFightTasks = [
       (0, import_kolmafia109.runChoice)(haveEldritchEssence ? 2 : 1);
     },
     tentacle: false
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: $skill(_templateObject2923 || (_templateObject2923 = _taggedTemplateLiteral100(["Evoke Eldritch Horror"]))).name,
     ready: function() {
       return have($skill(_templateObject3023 || (_templateObject3023 = _taggedTemplateLiteral100(["Evoke Eldritch Horror"]))));
@@ -39727,8 +39735,8 @@ var FreeFightTasks = [
       Macro2.while_("hasskill Awesome Balls of Fire", Macro2.skill($skill(_templateObject3820 || (_templateObject3820 = _taggedTemplateLiteral100(["Awesome Balls of Fire"]))))).while_("hasskill Eggsplosion", Macro2.skill($skill(_templateObject3920 || (_templateObject3920 = _taggedTemplateLiteral100(["Eggsplosion"]))))).while_("hasskill Saucegeyser", Macro2.skill($skill(_templateObject4020 || (_templateObject4020 = _taggedTemplateLiteral100(["Saucegeyser"]))))).while_("hasskill Weapon of the Pastalord", Macro2.skill($skill(_templateObject4145 || (_templateObject4145 = _taggedTemplateLiteral100(["Weapon of the Pastalord"]))))).while_("hasskill Lunging Thrust-Smack", Macro2.skill($skill(_templateObject4220 || (_templateObject4220 = _taggedTemplateLiteral100(["Lunging Thrust-Smack"]))))).attack().repeat()
     ).basicCombat()),
     tentacle: false
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: $item(_templateObject4320 || (_templateObject4320 = _taggedTemplateLiteral100(["lynyrd snare"]))).name,
     ready: function() {
       return (0, import_kolmafia109.mallPrice)($item(_templateObject4419 || (_templateObject4419 = _taggedTemplateLiteral100(["lynyrd snare"])))) <= globalOptions.prefs.valueOfFreeFight;
@@ -39743,12 +39751,9 @@ var FreeFightTasks = [
     combatCount: function() {
       return clamp(3 - get("_lynyrdSnareUses"), 0, 3);
     },
-    limit: {
-      skip: 3
-    },
     tentacle: false
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "[glitch season reward name]: retrocape edition",
     ready: function() {
       var _globalOptions$prefs$;
@@ -39791,8 +39796,8 @@ var FreeFightTasks = [
       }
     },
     tentacle: false
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "[glitch season reward name]",
     ready: function() {
       var _globalOptions$prefs$2;
@@ -39830,8 +39835,8 @@ var FreeFightTasks = [
       }
     },
     tentacle: false
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "Seal Clubbing",
     ready: function() {
       return (0, import_kolmafia109.myClass)() === $class(_templateObject9213 || (_templateObject9213 = _taggedTemplateLiteral100(["Seal Clubber"])));
@@ -39862,12 +39867,9 @@ var FreeFightTasks = [
     },
     combat: new GarboStrategy(Macro2.startCombat().trySkill($skill(_templateObject976 || (_templateObject976 = _taggedTemplateLiteral100(["Furious Wallop"])))).while_("hasskill Lunging Thrust-Smack", Macro2.skill($skill(_templateObject985 || (_templateObject985 = _taggedTemplateLiteral100(["Lunging Thrust-Smack"]))))).while_("hasskill Thrust-Smack", Macro2.skill($skill(_templateObject995 || (_templateObject995 = _taggedTemplateLiteral100(["Thrust-Smack"]))))).while_("hasskill Lunge Smack", Macro2.skill($skill(_templateObject1005 || (_templateObject1005 = _taggedTemplateLiteral100(["Lunge Smack"]))))).attack().repeat()),
     combatCount: sealsAvailable,
-    limit: {
-      skip: 10
-    },
     tentacle: false
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "BRICKO",
     ready: function() {
       return (0, import_kolmafia109.mallPrice)($item(_templateObject10113 || (_templateObject10113 = _taggedTemplateLiteral100(["BRICKO eye brick"])))) + 2 * (0, import_kolmafia109.mallPrice)($item(_templateObject10213 || (_templateObject10213 = _taggedTemplateLiteral100(["BRICKO brick"])))) <= globalOptions.prefs.valueOfFreeFight;
@@ -39887,11 +39889,8 @@ var FreeFightTasks = [
     combatCount: function() {
       return clamp(10 - get("_brickoFights"), 0, 10);
     },
-    limit: {
-      skip: 10
-    },
     tentacle: false
-  }),
+  },
   // First kramco (wanderer)
   // Grimacia
   // Saber
@@ -39899,7 +39898,7 @@ var FreeFightTasks = [
   // glark cable
   // mushroom garden
   // portscan
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  {
     name: "God Lobster",
     ready: function() {
       return have($familiar(_templateObject10411 || (_templateObject10411 = _taggedTemplateLiteral100(["God Lobster"]))));
@@ -39915,8 +39914,10 @@ var FreeFightTasks = [
       if ((0, import_kolmafia109.handlingChoice)())
         (0, import_kolmafia109.runChoice)(-1);
     },
-    choices: {
-      1310: !have($item(_templateObject1057 || (_templateObject1057 = _taggedTemplateLiteral100(["God Lobster's Crown"])))) ? 1 : 2
+    choices: function() {
+      return {
+        1310: !have($item(_templateObject1057 || (_templateObject1057 = _taggedTemplateLiteral100(["God Lobster's Crown"])))) ? 1 : 2
+      };
     },
     // god lob equipment, then stats
     outfit: function() {
@@ -39928,12 +39929,9 @@ var FreeFightTasks = [
     combatCount: function() {
       return clamp(3 - get("_godLobsterFights"), 0, 3);
     },
-    limit: {
-      skip: 3
-    },
     tentacle: false
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "Machine Elf",
     ready: function() {
       return have($familiar(_templateObject11213 || (_templateObject11213 = _taggedTemplateLiteral100(["Machine Elf"]))));
@@ -39953,8 +39951,10 @@ var FreeFightTasks = [
         acquire(1, $item(_templateObject1248 || (_templateObject1248 = _taggedTemplateLiteral100(["abstraction: sensation"]))), garboValue($item(_templateObject1255 || (_templateObject1255 = _taggedTemplateLiteral100(["abstraction: motion"])))), false);
       }
     },
-    choices: {
-      1119: 6
+    choices: function() {
+      return {
+        1119: 6
+      };
     },
     // escape DMT
     combat: new GarboStrategy(Macro2.externalIf(garboValue($item(_templateObject1265 || (_templateObject1265 = _taggedTemplateLiteral100(["abstraction: certainty"])))) >= garboValue($item(_templateObject1274 || (_templateObject1274 = _taggedTemplateLiteral100(["abstraction: thought"])))), Macro2.if_($monster(_templateObject1284 || (_templateObject1284 = _taggedTemplateLiteral100(["Perceiver of Sensations"]))), Macro2.tryItem($item(_templateObject1294 || (_templateObject1294 = _taggedTemplateLiteral100(["abstraction: thought"])))))).externalIf(garboValue($item(_templateObject1304 || (_templateObject1304 = _taggedTemplateLiteral100(["abstraction: joy"])))) >= garboValue($item(_templateObject13112 || (_templateObject13112 = _taggedTemplateLiteral100(["abstraction: action"])))), Macro2.if_($monster(_templateObject13211 || (_templateObject13211 = _taggedTemplateLiteral100(["Thinker of Thoughts"]))), Macro2.tryItem($item(_templateObject13310 || (_templateObject13310 = _taggedTemplateLiteral100(["abstraction: action"])))))).externalIf(garboValue($item(_templateObject1345 || (_templateObject1345 = _taggedTemplateLiteral100(["abstraction: motion"])))) >= garboValue($item(_templateObject1354 || (_templateObject1354 = _taggedTemplateLiteral100(["abstraction: sensation"])))), Macro2.if_($monster(_templateObject1364 || (_templateObject1364 = _taggedTemplateLiteral100(["Performer of Actions"]))), Macro2.tryItem($item(_templateObject1374 || (_templateObject1374 = _taggedTemplateLiteral100(["abstraction: sensation"])))))).basicCombat()),
@@ -39967,12 +39967,9 @@ var FreeFightTasks = [
     // Marked like this as 2 DMT fights get overriden by tentacles (could add +1 combat)
     combatCount: function() {
       return clamp(5 - get("_machineTunnelsAdv"), 0, 5);
-    },
-    limit: {
-      skip: 5
     }
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "Witchess",
     ready: function() {
       return Witchess_exports.have();
@@ -39986,12 +39983,9 @@ var FreeFightTasks = [
     tentacle: true,
     combatCount: function() {
       return clamp(5 - Witchess_exports.fightsDone(), 0, 5);
-    },
-    limit: {
-      skip: 5
     }
-  }),
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  },
+  {
     name: "The X-32-F Combat Training Snowman",
     ready: function() {
       return get("snojoAvailable");
@@ -40003,13 +39997,10 @@ var FreeFightTasks = [
     tentacle: false,
     combatCount: function() {
       return clamp(10 - get("_snojoFreeFights"), 0, 10);
-    },
-    limit: {
-      skip: 10
     }
-  }),
+  },
   // Neverending party
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  {
     name: "An Unusually Quiet Barroom Brawl",
     ready: function() {
       return get("ownsSpeakeasy");
@@ -40021,13 +40012,10 @@ var FreeFightTasks = [
     tentacle: true,
     combatCount: function() {
       return clamp(3 - get("_speakeasyFreeFights"), 0, 3);
-    },
-    limit: {
-      skip: 3
     }
-  }),
+  },
   // killRobortCreaturesForFree
-  _objectSpread16(_objectSpread16({}, DEFAULT_FREE_FIGHT_TASK), {}, {
+  {
     name: $item(_templateObject14112 || (_templateObject14112 = _taggedTemplateLiteral100(["combat lover's locket"]))).name,
     ready: function() {
       return CombatLoversLocket_exports.have() && locketMonster() !== null;
@@ -40049,14 +40037,11 @@ var FreeFightTasks = [
     tentacle: true,
     combatCount: function() {
       return clamp(3 - CombatLoversLocket_exports.reminiscesLeft() - locketsToSave(), 0, 3);
-    },
-    limit: {
-      skip: 3
     }
-  })
+  }
   // li'l ninja costume
   // closed-circuit pay phone (make into it's own Quest)
-];
+].map(freeFightTask);
 function possibleTentacleFights() {
   var availableFights = FreeFightTasks.filter(function(task) {
     var _task$ready3, _task$ready4;
@@ -41998,7 +41983,7 @@ function freeFights() {
   } finally {
     _iterator4.f();
   }
-  runSafeGarboQuests([FreeFightQuest]);
+  runGarboQuests([FreeFightQuest]);
   tryFillLatte();
   postFreeFightDailySetup();
 }
