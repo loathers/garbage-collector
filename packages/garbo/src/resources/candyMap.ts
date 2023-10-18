@@ -10,6 +10,8 @@ import {
 import {
   canEquip,
   getOutfits,
+  mallPrice,
+  outfit,
   outfitPieces,
   outfitTreats,
   print,
@@ -19,9 +21,9 @@ import {
   visitUrl,
 } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
+import { garboValue } from "../garboValue";
 
 const HOUSE_NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-let treated = false;
 
 let blockHtml = "";
 
@@ -33,25 +35,23 @@ function getBlockHtml(): string {
 function treatValue(outfit: string): number {
   return sum(
     Object.entries(outfitTreats(outfit)),
-    ([candyName, probability]) => probability * getSaleValue(toItem(candyName))
+    ([candyName, probability]) => probability * garboValue(toItem(candyName))
   );
 }
 
 export function getTreatOutfit(): string {
-  if (!get("freecandy_treatOutfit")) {
-    const availableOutfits = getOutfits().filter((name) =>
-      outfitPieces(name).every((piece) => canEquip(piece))
-    );
+  const outfits = getOutfits();
+  const outfitsWithValues = outfits.map((outfit) => ({
+    outfit,
+    relativeValue: treatValue(outfit),
+}));
 
+const outfitWithHighestValue = outfitsWithValues.reduce((prev, current) => {
+  return prev.relativeValue > current.relativeValue ? prev : current;
+});
 
-    if (!availableOutfits.length) {
-      print("You don't seem to actually have any outfits available, my friend!");
-    }
-
-  }
-
-  return get("freecandy_treatOutfit");
-}
+  return outfitWithHighestValue.outfit;
+} //ChatGPT made this, I have no idea if it works!
 
 export function treatOutfit(): Outfit {
   const outfit = new Outfit();
@@ -66,7 +66,7 @@ export function treatOutfit(): Outfit {
   return outfit;
 }
 
-export function freeCandyValue(): number {
+export function candyRichBlockValue(): number {
     const outfitCandyValue = treatValue(getTreatOutfit());
     const totOutfitCandyMultiplier = have($familiar`Trick-or-Treating Tot`) ? 1.6 : 1;
     const bowlValue = (1 / 5) * getSaleValue($item`huge bowl of candy`);
@@ -75,12 +75,11 @@ export function freeCandyValue(): number {
       : 0;
 
     const outfitCandyTotal = 3 * outfitCandyValue * totOutfitCandyMultiplier;
-    let _baseAdventureValue = (1 / 5) * (outfitCandyTotal + bowlValue + prunetsValue);
-    return _baseAdventureValue;
+    return (outfitCandyTotal + bowlValue + prunetsValue);
 }
 
 function shouldAcquireCandyMap(): boolean {
-  if(freeCandyValue() < getSaleValue($item`map to a candy-rich block`))
+  if(candyRichBlockValue() < mallPrice($item`map to a candy-rich block`))
     return true;
   else
     return false;
@@ -89,9 +88,11 @@ function shouldAcquireCandyMap(): boolean {
 function useCandyMapTask(): GarboTask {
   return {
   name: "Acquire Candy Map",
-  completed: () => shouldAcquireCandyMap(),
+  ready: () => shouldAcquireCandyMap(),
+  completed: () => get("_mapToACandyRichBlockUsed"),
   do: (): void => {
     AcquireItem($item`map to a candy-rich block`)
+    use($item`map to a candy-rich block`)
   },
 };
 }
@@ -99,9 +100,7 @@ function useCandyMapTask(): GarboTask {
 function doCandyTreat(): GarboTask {
   return {
     name: "Treat",
-    ready: () => !treated,
-    completed: () => !have($item`map to a candy-rich block`) || get("_mapToACandyRichBlockUsed") 
-    || !getBlockHtml().match(/whichhouse=\d*>[^>]*?house_l/),
+    completed: () => get("_mapToACandyRichBlockUsed"),
     outfit: treatOutfit,
     do: (): void => {
       use($item`map to a candy-rich block`)
@@ -114,7 +113,6 @@ function doCandyTreat(): GarboTask {
           runChoice(2);
         }
       }
-      treated = true;
     },
   };
 }
