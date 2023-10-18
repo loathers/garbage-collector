@@ -38,19 +38,14 @@ function treatValue(outfit: string): number {
 }
 
 export function getTreatOutfit(): string {
-  if (!get("freecandy_treatOutfit")) {
-    const availableOutfits = getOutfits().filter((name) =>
-      outfitPieces(name).every((piece) => canEquip(piece))
-    );
+  const availableOutfits = getOutfits().filter((name) =>
+    outfitPieces(name).every((piece) => canEquip(piece))
+  );
 
-
-    if (!availableOutfits.length) {
-      print("You don't seem to actually have any outfits available, my friend!");
-    }
-
+  if (!availableOutfits.length) {
+    print("You don't seem to actually have any outfits available, my friend!");
   }
-
-  return get("freecandy_treatOutfit");
+  return maxBy(availableOutfits, treatValue);
 }
 
 export function treatOutfit(): Outfit {
