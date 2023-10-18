@@ -40,19 +40,18 @@ function treatValue(outfit: string): number {
 }
 
 export function getTreatOutfit(): string {
-  if (!get("freecandy_treatOutfit")) {
-    const availableOutfits = getOutfits().filter((name) =>
-      outfitPieces(name).every((piece) => canEquip(piece))
-    );
+  const outfits = getOutfits();
+  const outfitsWithValues = outfits.map((outfit) => ({
+    outfit,
+    relativeValue: treatValue(outfit),
+}));
 
+const outfitWithHighestValue = outfitsWithValues.reduce((prev, current) => {
+  return prev.relativeValue > current.relativeValue ? prev : current;
+});
 
-    if (!availableOutfits.length) {
-      print("You don't seem to actually have any outfits available, my friend!");
-    }
-
-  }
-
-  return get("freecandy_treatOutfit");
+  return outfitWithHighestValue.outfit;
+ //ChatGPT made this, I have no idea if it works!
 }
 
 export function treatOutfit(): Outfit {
