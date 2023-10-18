@@ -176,7 +176,7 @@ import { wanderer } from "./garboWanderer";
 import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { faxMonster } from "./resources/fax";
-import { FreeFightQuest, runSafeGarboQuests } from "./tasks";
+import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 
 const firstChainMacro = () =>
@@ -2070,7 +2070,7 @@ export function freeFights(): void {
 
   // TODO: Run grimorized free fights until all are converted
   // TODO: freeFightMood()
-  runSafeGarboQuests([FreeFightQuest]);
+  runGarboQuests([FreeFightQuest]);
 
   tryFillLatte();
   postFreeFightDailySetup();
