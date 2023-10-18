@@ -74,7 +74,12 @@ import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
-import { BarfTurnQuests, runGarboQuests, SetupEmbezzlerQuest } from "./tasks";
+import {
+  BarfTurnQuests,
+  PostQuest,
+  runGarboQuests,
+  SetupEmbezzlerQuest,
+} from "./tasks";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -111,12 +116,12 @@ export function main(argString = ""): void {
   visitUrl("main.php");
   if (currentRound() > 0) {
     abort(
-      "It seems like you're a bit busy right now. Don't run garbo when you're in combat!"
+      "It seems like you're a bit busy right now. Don't run garbo when you're in combat!",
     );
   }
   if (handlingChoice()) {
     abort(
-      "It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure."
+      "It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.",
     );
   }
 
@@ -133,7 +138,7 @@ export function main(argString = ""): void {
   if (globalOptions.prefs.autoUserConfirm) {
     print(
       "I have set auto-confirm to true and accept all ramifications that come with that.",
-      "red"
+      "red",
     );
   }
 
@@ -144,7 +149,7 @@ export function main(argString = ""): void {
         `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
           .map((item) => item.name)
           .join(", ")}. Would you like us to return these to the stash now?`,
-        true
+        true,
       )
     ) {
       startSession();
@@ -185,7 +190,7 @@ export function main(argString = ""): void {
       if (
         userConfirmDialog(
           "Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?",
-          true
+          true,
         )
       ) {
         stashItems.splice(0);
@@ -195,18 +200,18 @@ export function main(argString = ""): void {
   if (globalOptions.returnstash) {
     set(
       "garboStashItems",
-      stashItems.map((item) => toInt(item).toFixed(0)).join(",")
+      stashItems.map((item) => toInt(item).toFixed(0)).join(","),
     );
     return;
   }
 
   if (
     !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger, Pig Skinner, Cheese Wizard, Jazz Agent`.includes(
-      myClass()
+      myClass(),
     )
   ) {
     throw new Error(
-      "Garbo does not support this class. It barely supports WOL/SOL avatar classes"
+      "Garbo does not support this class. It barely supports WOL/SOL avatar classes",
     );
   }
 
@@ -217,20 +222,20 @@ export function main(argString = ""): void {
   ) {
     if (globalOptions.prefs.skipAscensionCheck) {
       logprint(
-        "This player is a silly goose, who ignored our warnings about being underleveled."
+        "This player is a silly goose, who ignored our warnings about being underleveled.",
       );
     } else {
       const proceedRegardless = userConfirmDialog(
         "Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?",
-        true
+        true,
       );
       if (!proceedRegardless) {
         throw new Error(
-          "User interrupt requested. Stopping Garbage Collector."
+          "User interrupt requested. Stopping Garbage Collector.",
         );
       } else {
         logprint(
-          "This player is a silly goose, who ignored our warnings about being underleveled."
+          "This player is a silly goose, who ignored our warnings about being underleveled.",
         );
       }
     }
@@ -255,7 +260,7 @@ export function main(argString = ""): void {
       !canEquip($item`Drunkula's wineglass`))
   ) {
     throw new Error(
-      "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it."
+      "Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it.",
     );
   }
 
@@ -291,16 +296,16 @@ export function main(argString = ""): void {
 
   const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds`;
   const startingGarden = gardens.find((garden) =>
-    Object.getOwnPropertyNames(getCampground()).includes(garden.name)
+    Object.getOwnPropertyNames(getCampground()).includes(garden.name),
   );
   if (
     startingGarden &&
     !$items`packet of tall grass seeds, packet of mushroom spores`.includes(
-      startingGarden
+      startingGarden,
     ) &&
     getCampground()[startingGarden.name] &&
     $items`packet of tall grass seeds, packet of mushroom spores`.some(
-      (gardenSeed) => have(gardenSeed)
+      (gardenSeed) => have(gardenSeed),
     )
   ) {
     if (startingGarden === $item`packet of rock seeds`) {
@@ -315,7 +320,7 @@ export function main(argString = ""): void {
   const aaBossFlag =
     xpath(
       visitUrl("account.php?tab=combat"),
-      `//*[@id="opt_flag_aabosses"]/label/input[@type='checkbox']@checked`
+      `//*[@id="opt_flag_aabosses"]/label/input[@type='checkbox']@checked`,
     )[0] === "checked"
       ? 1
       : 0;
@@ -325,7 +330,7 @@ export function main(argString = ""): void {
     if (globalOptions.stopTurncount !== null) {
       print(
         `Stopping in ${globalOptions.stopTurncount - myTurncount()}`,
-        HIGHLIGHT
+        HIGHLIGHT,
       );
     }
     print();
@@ -341,7 +346,7 @@ export function main(argString = ""): void {
     setAutoAttack(0);
     visitUrl(
       `account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`,
-      true
+      true,
     );
 
     const maximizerCombinationLimit = isQuickGear()
@@ -448,8 +453,8 @@ export function main(argString = ""): void {
           JuneCleaver.choices.map((choice) => [
             choice,
             bestJuneCleaverOption(choice),
-          ])
-        )
+          ]),
+        ),
       );
     }
     propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
@@ -521,7 +526,7 @@ export function main(argString = ""): void {
         if (isQuickGear()) {
           // Brimstone equipment explodes the number of maximize combinations
           preventEquip.push(
-            ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`
+            ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`,
           );
         }
 
@@ -555,7 +560,7 @@ export function main(argString = ""): void {
               buy(
                 $coinmaster`The Dinsey Company Store`,
                 1,
-                $item`one-day ticket to Dinseylandfill`
+                $item`one-day ticket to Dinseylandfill`,
               );
             }
           } finally {
@@ -568,11 +573,11 @@ export function main(argString = ""): void {
     propertyManager.resetAll();
     set(
       "garboStashItems",
-      stashItems.map((item) => toInt(item).toFixed(0)).join(",")
+      stashItems.map((item) => toInt(item).toFixed(0)).join(","),
     );
     visitUrl(
       `account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`,
-      true
+      true,
     );
     if (startingGarden && have(startingGarden)) use(startingGarden);
     printEventLog();
