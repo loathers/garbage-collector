@@ -110,5 +110,5 @@ function doCandyTreat(): GarboTask {
 }
 
 export function freeCandyTasks(): GarboTask[] {
-  return useCandyMapTask() + doCandyTreat();
+  return [useCandyMapTask(), doCandyTreat()];
 }
