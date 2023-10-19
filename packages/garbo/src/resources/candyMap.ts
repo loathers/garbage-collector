@@ -99,7 +99,6 @@ function doCandyTreat(): GarboTask {
     completed: () => get("_mapToACandyRichBlockUsed"),
     outfit: treatOutfit,
     do: (): void => {
-      use($item`map to a candy-rich block`)
       // We do all treat houses in a row as one task for speed reasons
       for (const house of HOUSE_NUMBERS) {
         if (getBlockHtml().match(RegExp(`whichhouse=${house}>[^>]*?house_l`))) {
