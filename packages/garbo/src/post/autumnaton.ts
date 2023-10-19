@@ -7,11 +7,11 @@ import {
   itemDropsArray,
   Location,
 } from "kolmafia";
-import { $items, AutumnAton, get, maxBy, sum } from "libram";
+import { $items, $location, AutumnAton, get, maxBy, sum } from "libram";
 import { globalOptions } from "../config";
 
 export default function bestAutumnatonLocation(
-  locations: Location[],
+  locations: Location[]
 ): Location {
   return maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
 }
@@ -19,17 +19,19 @@ export default function bestAutumnatonLocation(
 function averageAutumnatonValue(
   location: Location,
   acuityOverride?: number,
-  slotOverride?: number,
+  slotOverride?: number
 ): number {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
     (m) =>
-      !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
+      !badAttributes.some((s) => m.attributes.includes(s)) &&
+      rates[m.name] > 0 &&
+      location !== $location`The Daily Dungeon` // The Daily Dungeon has no native monsters
   );
 
   if (monsters.length === 0) {
-    return 0;
+    return seasonalItemValue(location); // We still get seasonal items, even if there are no monsters
   } else {
     const maximumDrops = slotOverride ?? AutumnAton.zoneItems();
     const acuityCutoff = 20 - (acuityOverride ?? AutumnAton.visualAcuity()) * 5;
@@ -49,7 +51,7 @@ function averageAutumnatonValue(
     const overallExpectedDropQuantity = sum(
       validDrops,
       ({ preAcuityExpectation, postAcuityExpectation }) =>
-        preAcuityExpectation + postAcuityExpectation,
+        preAcuityExpectation + postAcuityExpectation
     );
     const expectedCollectionValue = sum(
       validDrops,
@@ -59,7 +61,7 @@ function averageAutumnatonValue(
           (preAcuityExpectation + postAcuityExpectation) *
           Math.min(1, maximumDrops / overallExpectedDropQuantity);
         return adjustedDropAmount * value;
-      },
+      }
     );
     return seasonalItemValue(location) + expectedCollectionValue;
   }
@@ -67,7 +69,7 @@ function averageAutumnatonValue(
 
 function seasonalItemValue(
   location: Location,
-  seasonalOverride?: number,
+  seasonalOverride?: number
 ): number {
   // Find the value of the drops based on zone difficulty/type
   const autumnItems = $items`autumn leaf, AutumnFest ale, autumn breeze, autumn dollar, autumn years wisdom`;
@@ -101,8 +103,8 @@ function expectedRemainingExpeditions(legs = AutumnAton.legs()): number {
   const legOffsetFactor = 11 * Math.max(quests - legs - 1, 0);
   return Math.floor(
     Math.sqrt(
-      quests ** 2 + (2 * (availableAutumnatonTurns - legOffsetFactor)) / 11,
-    ),
+      quests ** 2 + (2 * (availableAutumnatonTurns - legOffsetFactor)) / 11
+    )
   );
 }
 
@@ -118,7 +120,7 @@ const profitRelevantUpgrades = [
 
 function profitFromExtraAcuity(
   bestLocationContainingUpgrade: Location,
-  bestLocationWithInstalledUpgrade: Location,
+  bestLocationWithInstalledUpgrade: Location
 ): number {
   return (
     averageAutumnatonValue(bestLocationContainingUpgrade) +
@@ -128,7 +130,7 @@ function profitFromExtraAcuity(
 }
 function profitFromExtraLeg(
   bestLocationContainingUpgrade: Location,
-  bestLocationWithInstalledUpgrade: Location,
+  bestLocationWithInstalledUpgrade: Location
 ): number {
   return (
     averageAutumnatonValue(bestLocationContainingUpgrade) +
@@ -138,7 +140,7 @@ function profitFromExtraLeg(
 }
 function profitFromExtraArm(
   bestLocationContainingUpgrade: Location,
-  bestLocationWithInstalledUpgrade: Location,
+  bestLocationWithInstalledUpgrade: Location
 ): number {
   return (
     averageAutumnatonValue(bestLocationContainingUpgrade) +
@@ -148,7 +150,7 @@ function profitFromExtraArm(
 }
 function profitFromExtraAutumnItem(
   bestLocationContainingUpgrade: Location,
-  bestLocationWithInstalledUpgrade: Location,
+  bestLocationWithInstalledUpgrade: Location
 ): number {
   return (
     averageAutumnatonValue(bestLocationContainingUpgrade) +
@@ -160,11 +162,11 @@ function profitFromExtraAutumnItem(
 
 function makeUpgradeValuator(
   fullLocations: Location[],
-  currentBestLocation: Location,
+  currentBestLocation: Location
 ) {
   return function (upgrade: AutumnAton.Upgrade) {
     const upgradeLocations = fullLocations.filter(
-      (location) => AutumnAton.getUniques(location)?.upgrade === upgrade,
+      (location) => AutumnAton.getUniques(location)?.upgrade === upgrade
     );
 
     if (!upgradeLocations.length) {
@@ -173,7 +175,7 @@ function makeUpgradeValuator(
 
     const bestLocationContainingUpgrade = maxBy(
       upgradeLocations,
-      averageAutumnatonValue,
+      averageAutumnatonValue
     );
 
     switch (upgrade) {
@@ -182,13 +184,13 @@ function makeUpgradeValuator(
         const bestLocationWithInstalledUpgrade = maxBy(
           fullLocations,
           (loc: Location) =>
-            averageAutumnatonValue(loc, AutumnAton.visualAcuity() + 1),
+            averageAutumnatonValue(loc, AutumnAton.visualAcuity() + 1)
         );
         return {
           upgrade,
           profit: profitFromExtraAcuity(
             bestLocationContainingUpgrade,
-            bestLocationWithInstalledUpgrade,
+            bestLocationWithInstalledUpgrade
           ),
         };
       }
@@ -198,7 +200,7 @@ function makeUpgradeValuator(
           upgrade,
           profit: profitFromExtraLeg(
             bestLocationContainingUpgrade,
-            currentBestLocation,
+            currentBestLocation
           ),
         };
       }
@@ -207,13 +209,13 @@ function makeUpgradeValuator(
         const bestLocationWithInstalledUpgrade = maxBy(
           fullLocations,
           (loc: Location) =>
-            averageAutumnatonValue(loc, undefined, AutumnAton.zoneItems() + 1),
+            averageAutumnatonValue(loc, undefined, AutumnAton.zoneItems() + 1)
         );
         return {
           upgrade,
           profit: profitFromExtraArm(
             bestLocationContainingUpgrade,
-            bestLocationWithInstalledUpgrade,
+            bestLocationWithInstalledUpgrade
           ),
         };
       }
@@ -222,7 +224,7 @@ function makeUpgradeValuator(
           upgrade,
           profit: profitFromExtraAutumnItem(
             bestLocationContainingUpgrade,
-            currentBestLocation,
+            currentBestLocation
           ),
         };
       }
@@ -235,7 +237,7 @@ function makeUpgradeValuator(
 
 function mostValuableUpgrade(fullLocations: Location[]): Location[] {
   const validLocations = fullLocations.filter(
-    (l) => l.parent !== "Clan Basement",
+    (l) => l.parent !== "Clan Basement"
   );
   // This function shouldn't be getting called if we don't have an expedition left
   if (expectedRemainingExpeditions() < 1) {
@@ -243,7 +245,7 @@ function mostValuableUpgrade(fullLocations: Location[]): Location[] {
   }
   const currentUpgrades = AutumnAton.currentUpgrades();
   const acquirableUpgrades = profitRelevantUpgrades.filter(
-    (upgrade) => !currentUpgrades.includes(upgrade),
+    (upgrade) => !currentUpgrades.includes(upgrade)
   );
 
   if (acquirableUpgrades.length === 0) {
@@ -256,18 +258,18 @@ function mostValuableUpgrade(fullLocations: Location[]): Location[] {
     expectedRemainingExpeditions();
 
   const upgradeValuations = acquirableUpgrades.map(
-    makeUpgradeValuator(validLocations, currentBestLocation),
+    makeUpgradeValuator(validLocations, currentBestLocation)
   );
 
   const { upgrade: highestValueUpgrade, profit: profitFromBestUpgrade } = maxBy(
     upgradeValuations,
-    "profit",
+    "profit"
   );
 
   if (profitFromBestUpgrade > currentExpectedProfit) {
     const upgradeLocations = validLocations.filter(
       (location) =>
-        AutumnAton.getUniques(location)?.upgrade === highestValueUpgrade,
+        AutumnAton.getUniques(location)?.upgrade === highestValueUpgrade
     );
     return upgradeLocations;
   } else {
