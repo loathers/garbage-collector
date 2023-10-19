@@ -75,10 +75,7 @@ export function candyRichBlockValue(): number {
 }
 
 function shouldAcquireCandyMap(): boolean {
-  if(candyRichBlockValue() < mallPrice($item`map to a candy-rich block`))
-    return true;
-  else
-    return false;
+  return candyRichBlockValue() < mallPrice($item`map to a candy-rich block`)
 }
 
 function useCandyMapTask(): GarboTask {
