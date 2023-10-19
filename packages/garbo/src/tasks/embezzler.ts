@@ -1,8 +1,9 @@
 import { Quest } from "grimoire-kolmafia";
-import { $item, $items, $location, get, set } from "libram";
+import { $item, $items, $location, CrystalBall, get, set } from "libram";
 import { GarboTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { getChangeLastAdvLocationMethod } from "../embezzler/lib";
+import { doingGregFight } from "../resources/extrovermectin";
 
 export const SetupEmbezzlerQuest: Quest<GarboTask> = {
   name: "SetupEmbezzler",
@@ -14,7 +15,10 @@ export const SetupEmbezzlerQuest: Quest<GarboTask> = {
       // walk away from any nc we can walk away from, skip boring doors, open the final chest
       choices: () => ({ 689: 1, 690: 2, 691: 2, 692: 8, 693: 3 }),
       acquire: [{ item: $item`ring of Detect Boring Doors` }],
-      ready: () => getChangeLastAdvLocationMethod() === "dailydungeon",
+      ready: () =>
+        getChangeLastAdvLocationMethod() === "dailydungeon" &&
+        CrystalBall.have() &&
+        doingGregFight(),
       completed: () =>
         get("dailyDungeonDone") ||
         ["It's Almost Certainly a Trap", "I Wanna Be a Door"].includes(
