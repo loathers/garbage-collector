@@ -522,6 +522,7 @@ function changeLastAdvLocation(): void {
   if (task.ready() && !task.completed()) {
     task.do();
   }
+  visitUrl("main.php");
 }
 
 const gregFights = (

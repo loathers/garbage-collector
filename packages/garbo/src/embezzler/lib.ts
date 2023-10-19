@@ -101,6 +101,8 @@ export function changeLastAdvLocationTask(): {
       return {
         ...base,
         do: () =>
+          // at this point, we're either at an NC we can walk away from or the whole DD is done
+          // only track the choices we need to walk away since hitting it when it is done does nothing
           withChoices({ 692: 8, 693: 3 }, () =>
             adv1($location`The Daily Dungeon`, -1, ""),
           ),

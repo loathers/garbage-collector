@@ -8,14 +8,18 @@ export const SetupEmbezzlerQuest: Quest<GarboTask> = {
   name: "SetupEmbezzler",
   tasks: [
     {
+      // Need the daily dungeon to either be totally finished or to be on a NC we can walk away from
       name: "Setup Daily Dungeon",
       outfit: { equip: $items`ring of Detect Boring Doors` },
-      choices: () => ({ 690: 2 }),
+      // walk away from any nc we can walk away from, skip boring doors, open the final chest
+      choices: () => ({ 689: 1, 690: 2, 691: 2, 692: 8, 693: 3 }),
       acquire: [{ item: $item`ring of Detect Boring Doors` }],
       ready: () => getChangeLastAdvLocationMethod() === "dailydungeon",
       completed: () =>
         get("dailyDungeonDone") ||
-        get("_lastDailyDungeonEncounter") === "It's Almost Certainly a Trap",
+        ["It's Almost Certainly a Trap", "I Wanna Be a Door"].includes(
+          get("_lastDailyDungeonEncounter"),
+        ),
       do: $location`The Daily Dungeon`,
       post: () => set("_lastDailyDungeonEncounter", get("lastEncounter")),
       spendsTurn: true,
