@@ -22,6 +22,7 @@ import {
 } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
 import { garboValue } from "../garboValue";
+import { acquire } from "../acquire";
 
 const HOUSE_NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
@@ -57,7 +58,6 @@ export function treatOutfit(): Outfit {
       print(`Could not equip all pieces of treat outfit: aborted on ${piece}`);
   }
 
-  outfit.equip($item`lucky Crimbo tiki necklace`);
   outfit.equip($familiar`Trick-or-Treating Tot`);
   return outfit;
 }
@@ -75,10 +75,7 @@ export function candyRichBlockValue(): number {
 }
 
 function shouldAcquireCandyMap(): boolean {
-  if(candyRichBlockValue() < mallPrice($item`map to a candy-rich block`))
-    return true;
-  else
-    return false;
+  return candyRichBlockValue() < mallPrice($item`map to a candy-rich block`);
 }
 
 function useCandyMapTask(): GarboTask {
@@ -87,7 +84,7 @@ function useCandyMapTask(): GarboTask {
   ready: () => shouldAcquireCandyMap(),
   completed: () => get("_mapToACandyRichBlockUsed"),
   do: (): void => {
-    AcquireItem($item`map to a candy-rich block`)
+    acquire(1, $item`map to a candy-rich block`, candyRichBlockValue() - 1)
     use($item`map to a candy-rich block`)
   },
 };
@@ -106,6 +103,7 @@ function doCandyTreat(): GarboTask {
         } else if (getBlockHtml().match(RegExp(`whichhouse=${house}>[^>]*?starhouse`))) {
           visitUrl(`choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`);
           runChoice(2);
+          visitUrl(`place.php?whichplace=town&action=town_trickortreat`);
         }
       }
     },
@@ -113,5 +111,5 @@ function doCandyTreat(): GarboTask {
 }
 
 export function freeCandyTasks(): GarboTask[] {
-  return useCandyMapTask() + doCandyTreat();
+  return [useCandyMapTask() + doCandyTreat()];
 }
