@@ -7,7 +7,7 @@ import {
   itemDropsArray,
   Location,
 } from "kolmafia";
-import { $items, $location, AutumnAton, get, maxBy, sum } from "libram";
+import { $items, $locations, AutumnAton, get, maxBy, sum } from "libram";
 import { globalOptions } from "../config";
 
 export default function bestAutumnatonLocation(
@@ -21,11 +21,12 @@ function averageAutumnatonValue(
   acuityOverride?: number,
   slotOverride?: number,
 ): number {
+  const locationBanlist = $locations`The Daily Dungeon`; // The Daily Dungeon has no native monsters
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
     (m) =>
-      location !== $location`The Daily Dungeon` && // The Daily Dungeon has no native monsters
+      locationBanlist.includes(location) &&
       !badAttributes.some((s) => m.attributes.includes(s)) &&
       rates[m.name] > 0,
   );
