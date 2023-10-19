@@ -26,7 +26,7 @@ function averageAutumnatonValue(
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
     (m) =>
-      locationBanlist.includes(location) &&
+      !locationBanlist.includes(location) &&
       !badAttributes.some((s) => m.attributes.includes(s)) &&
       rates[m.name] > 0,
   );
