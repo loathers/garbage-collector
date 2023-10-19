@@ -1,10 +1,29 @@
-import { booleanModifier, canEquip, Location, use } from "kolmafia";
-import { $effect, $familiar, $item, get, have, questStep } from "libram";
+import {
+  adv1,
+  booleanModifier,
+  canEquip,
+  Location,
+  myLocation,
+  use,
+} from "kolmafia";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $location,
+  CrystalBall,
+  get,
+  have,
+  questStep,
+  withChoice,
+  withChoices,
+} from "libram";
 import { DraggableFight } from "garbo-lib";
 import { OutfitSpec } from "grimoire-kolmafia";
 
 import { waterBreathingEquipment } from "../outfit";
 import { Macro } from "../combat";
+import { embezzler } from "../lib";
 
 /**
  * Configure the behavior of the fights in use in different parts of the fight engine
@@ -47,4 +66,44 @@ export function checkUnderwater(): boolean {
   }
 
   return false;
+}
+
+type ChangeLastAdvLocationMethod = "hiddencity" | "dailydungeon";
+export function getChangeLastAdvLocationMethod(): ChangeLastAdvLocationMethod {
+  if (questStep("questL11Worship") > 3) {
+    return "hiddencity";
+  } else {
+    return "dailydungeon";
+  }
+}
+
+// for now, return a psuedo task since embezzlers are not grimoirized
+export function changeLastAdvLocationTask(): {
+  ready: () => boolean;
+  completed: () => boolean;
+  do: () => void;
+} {
+  const base = {
+    ready: () =>
+      CrystalBall.ponder().get($location`The Dire Warren`) !== embezzler,
+    completed: () => myLocation() !== $location`The Dire Warren`,
+  };
+  switch (getChangeLastAdvLocationMethod()) {
+    case "hiddencity":
+      return {
+        ...base,
+        do: () =>
+          withChoice(785, 6, () =>
+            adv1($location`An Overgrown Shrine (Northeast)`, -1, ""),
+          ),
+      };
+    case "dailydungeon":
+      return {
+        ...base,
+        do: () =>
+          withChoices({ 692: 8, 693: 3 }, () =>
+            adv1($location`The Daily Dungeon`, -1, ""),
+          ),
+      };
+  }
 }

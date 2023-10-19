@@ -71,7 +71,11 @@ import {
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 
-import { EmbezzlerFightConfigOptions, RunOptions } from "./lib";
+import {
+  changeLastAdvLocationTask,
+  EmbezzlerFightConfigOptions,
+  RunOptions,
+} from "./lib";
 
 export class EmbezzlerFight implements EmbezzlerFightConfigOptions {
   name: string;
@@ -513,8 +517,11 @@ export const wanderSources = [
   ),
 ];
 
-function toasterGaze(): void {
-  return;
+function changeLastAdvLocation(): void {
+  const task = changeLastAdvLocationTask();
+  if (task.ready() && !task.completed()) {
+    task.do();
+  }
 }
 
 const gregFights = (
@@ -571,7 +578,7 @@ const gregFights = (
           const warrenPrediction = CrystalBall.ponder().get(
             $location`The Dire Warren`,
           );
-          if (warrenPrediction !== embezzler) toasterGaze();
+          if (warrenPrediction !== embezzler) changeLastAdvLocation();
         }
       },
       {
@@ -677,7 +684,7 @@ export const conditionalSources = [
         options.macro,
         options.macro,
       );
-      toasterGaze();
+      changeLastAdvLocation();
       if (!doingGregFight()) set("_garbo_doneGregging", true);
     },
     {
@@ -725,7 +732,7 @@ export const conditionalSources = [
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
       if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) {
-        toasterGaze();
+        changeLastAdvLocation();
       }
     },
     {
@@ -772,7 +779,7 @@ export const conditionalSources = [
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
       if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) {
-        toasterGaze();
+        changeLastAdvLocation();
       }
     },
     {
