@@ -39,7 +39,7 @@ export function getTreatOutfit(): string {
     outfitPieces(name).every((piece) => canEquip(piece)),
   );
   if (!availableOutfits.length) {
-    print("You don't seem to actually have any outfits available, my friend!");
+    print("You don't seem to actually have any trick-or-treat outfits available, my friend!");
   }
   return maxBy(availableOutfits, treatValue);
 }
