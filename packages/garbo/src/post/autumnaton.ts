@@ -6,9 +6,21 @@ import {
   getMonsters,
   itemDropsArray,
   Location,
+  setLocation,
 } from "kolmafia";
-import { $items, AutumnAton, get, maxBy, sum } from "libram";
+import {
+  $items,
+  $location,
+  $locations,
+  AutumnAton,
+  get,
+  maxBy,
+  sum,
+} from "libram";
 import { globalOptions } from "../config";
+
+const locationBanlist = $locations`The Daily Dungeon`; // The Daily Dungeon has no native monsters
+const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
 
 export default function bestAutumnatonLocation(
   locations: Location[],
@@ -21,15 +33,17 @@ function averageAutumnatonValue(
   acuityOverride?: number,
   slotOverride?: number,
 ): number {
-  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
+  if (location === $location`Shadow Rift`) setLocation($location`Shadow Rift`); // FIXME This bypasses a mafia bug where ingress is not updated
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
     (m) =>
-      !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
+      !locationBanlist.includes(location) &&
+      !badAttributes.some((s) => m.attributes.includes(s)) &&
+      rates[m.name] > 0,
   );
 
   if (monsters.length === 0) {
-    return 0;
+    return seasonalItemValue(location); // We still get seasonal items, even if there are no monsters
   } else {
     const maximumDrops = slotOverride ?? AutumnAton.zoneItems();
     const acuityCutoff = 20 - (acuityOverride ?? AutumnAton.visualAcuity()) * 5;
