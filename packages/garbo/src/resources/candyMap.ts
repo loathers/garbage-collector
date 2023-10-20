@@ -90,7 +90,7 @@ function useCandyMapTask(): GarboTask {
 function doCandyTreat(): GarboTask {
   return {
     name: "Treat",
-    completed: () => get("_mapToACandyRichBlockUsed"),
+    completed: () => !get("_mapToACandyRichBlockUsed") || holiday().includes("Halloween"),
     outfit: treatOutfit,
     do: (): void => {
       // We do all treat houses in a row as one task for speed reasons
