@@ -19,6 +19,9 @@ import {
 } from "libram";
 import { globalOptions } from "../config";
 
+const locationBanlist = $locations`The Daily Dungeon`; // The Daily Dungeon has no native monsters
+const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
+
 export default function bestAutumnatonLocation(
   locations: Location[],
 ): Location {
@@ -31,8 +34,6 @@ function averageAutumnatonValue(
   slotOverride?: number,
 ): number {
   if (location === $location`Shadow Rift`) setLocation($location`Shadow Rift`); // FIXME This bypasses a mafia bug where ingress is not updated
-  const locationBanlist = $locations`The Daily Dungeon`; // The Daily Dungeon has no native monsters
-  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
     (m) =>
