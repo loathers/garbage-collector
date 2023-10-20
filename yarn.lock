@@ -4928,17 +4928,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:latest":
-  version: 0.8.14
-  resolution: "libram@npm:0.8.14"
-  dependencies:
-    html-entities: ^2.4.0
-  peerDependencies:
-    kolmafia: ^5.26781.0
-  checksum: 342672a9a5f2b798c3493006b79c3cd9224a7cb4425960e218bc09244b7a48b4656b6535093cdbd37e93df88bbc4d6af3edb5395bc3a5fe624ef19714f50810a
-  languageName: node
-  linkType: hard
-
 "lilconfig@npm:2.1.0":
   version: 2.1.0
   resolution: "lilconfig@npm:2.1.0"
