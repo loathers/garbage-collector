@@ -189,25 +189,44 @@ const TurnGenTasks: GarboTask[] = [
   },
 ];
 
-const NonBarfTurnTasks: (GarboTask & { turns: Delayed<number> })[] = [
-  {
-    name: "Daily Dungeon",
+type AlternateTask = GarboTask & { turns: Delayed<number> };
+
+function dailyDungeon(additionalReady: () => boolean) {
+  return {
     completed: () => get("dailyDungeonDone"),
     ready: () =>
+      additionalReady() &&
       garboValue($item`fat loot token`) >
-      get("valueOfAdventure") * clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
+        get("valueOfAdventure") *
+          clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
     choices: () => ({ 689: 1, 690: 2, 691: 2, 692: 2, 693: 3 }),
     acquire:
       $items`ring of Detect Boring Doors, eleven-foot pole, Pick-O-Matic lockpicks`.map(
         (i) => ({ item: i }),
       ),
-
     outfit: () =>
       freeFightOutfit({ equip: $items`ring of Detect Boring Doors` }),
     do: $location`The Daily Dungeon`,
     combat: new GarboStrategy(Macro.kill()),
     turns: () => clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
     spendsTurn: true,
+  };
+}
+
+function willDrunkAdventure() {
+  return have($item`Drunkula's wineglass`) && globalOptions.ascend;
+}
+
+const NonBarfTurnTasks: AlternateTask[] = [
+  {
+    name: "Daily Dungeon (drunk)",
+    ...dailyDungeon(() => willDrunkAdventure()),
+    sobriety: "drunk",
+  },
+  {
+    name: "Daily Dungeon (sober)",
+    ...dailyDungeon(() => !willDrunkAdventure()),
+    sobriety: "sober",
   },
   {
     name: "Map for Pills",
