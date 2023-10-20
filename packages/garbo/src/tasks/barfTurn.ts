@@ -49,7 +49,6 @@ import {
   howManySausagesCouldIEat,
   kramcoGuaranteed,
   romanticMonsterImpossible,
-  setChoice,
   sober,
 } from "../lib";
 import {
@@ -194,7 +193,9 @@ const NonBarfTurnTasks: (GarboTask & { turns: Delayed<number> })[] = [
   {
     name: "Daily Dungeon",
     completed: () => get("dailyDungeonDone"),
-    ready: () => garboValue($item`fat loot token`) > get("valueOfAdventure"),
+    ready: () =>
+      garboValue($item`fat loot token`) >
+      get("valueOfAdventure") * clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
     choices: () => ({ 689: 1, 690: 2, 691: 2, 692: 2, 693: 3 }),
     acquire:
       $items`ring of Detect Boring Doors, eleven-foot pole, Pick-O-Matic lockpicks`.map(
@@ -212,14 +213,15 @@ const NonBarfTurnTasks: (GarboTask & { turns: Delayed<number> })[] = [
     name: "Map for Pills",
     completed: () =>
       availableAmount($item`Map to Safety Shelter Grimace Prime`) === 0,
-    do: () => {
-      const choiceToSet =
+    choices: () => ({
+      536:
         availableAmount($item`distention pill`) <
         availableAmount($item`synthetic dog hair pill`) +
           availableAmount($item`Map to Safety Shelter Grimace Prime`)
           ? 1
-          : 2;
-      setChoice(536, choiceToSet);
+          : 2,
+    }),
+    do: () => {
       ensureEffect($effect`Transpondent`);
       use($item`Map to Safety Shelter Grimace Prime`);
       return true;
