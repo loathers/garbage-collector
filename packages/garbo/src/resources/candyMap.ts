@@ -3,6 +3,7 @@ import { $familiar, $item, get, getSaleValue, have, maxBy, sum } from "libram";
 import {
   canEquip,
   getOutfits,
+  holiday,
   mallPrice,
   outfitPieces,
   outfitTreats,
@@ -83,6 +84,7 @@ function useCandyMapTask(): GarboTask {
       acquire(1, $item`map to a candy-rich block`, candyRichBlockValue() - 1);
       use($item`map to a candy-rich block`);
     },
+    limit: { tries: 1 },
     spendsTurn: false,
   };
 }
@@ -110,6 +112,7 @@ function doCandyTreat(): GarboTask {
         }
       }
     },
+    limit: { tries: 1 },
     spendsTurn: false,
     combat: new GarboStrategy(Macro.abort()),
   };

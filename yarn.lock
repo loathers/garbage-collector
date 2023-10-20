@@ -4309,7 +4309,7 @@ __metadata:
     garbo-lib: ^0.0.1
     grimoire-kolmafia: ^0.3.23
     kolmafia: ^5.27628.0
-    libram: latest
+    libram: ^0.8.13
     lint-staged: ^14.0.1
     madge: ^6.1.0
     prettier: ^3.0.3
