@@ -504,7 +504,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
           get("dinseyRollercoasterNext") && have($item`lube-shoes`);
         return barfOutfit(lubing ? { equip: $items`lube-shoes` } : {});
       },
-      do: () => $location`Barf Mountain`,
+      do: $location`Barf Mountain`,
       combat: new GarboStrategy(
         () => Macro.meatKill(),
         () =>
