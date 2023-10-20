@@ -71,7 +71,7 @@ export function candyRichBlockValue(): number {
 }
 
 function shouldAcquireCandyMap(): boolean {
-  return candyRichBlockValue() < mallPrice($item`map to a candy-rich block`);
+  return !holiday().includes("Halloween") && (candyRichBlockValue() < mallPrice($item`map to a candy-rich block`));
 }
 
 function useCandyMapTask(): GarboTask {
