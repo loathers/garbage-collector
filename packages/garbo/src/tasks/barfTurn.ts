@@ -488,7 +488,7 @@ export const NonBarfTurnQuest: Quest<GarboTask> = {
   name: "Non Barf Turn",
   tasks: NonBarfTurnTasks,
   completed: () =>
-    !canContinue() &&
+    !canContinue() ||
     clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) >=
       nonBarfTurns(),
 };
