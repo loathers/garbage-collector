@@ -85,7 +85,8 @@ export function changeLastAdvLocationTask(): {
 } {
   const base = {
     ready: () =>
-      CrystalBall.ponder().get($location`The Dire Warren`) !== globalOptions.target,
+      CrystalBall.ponder().get($location`The Dire Warren`) !==
+      globalOptions.target,
     completed: () => myLocation() !== $location`The Dire Warren`,
   };
   switch (getChangeLastAdvLocationMethod()) {

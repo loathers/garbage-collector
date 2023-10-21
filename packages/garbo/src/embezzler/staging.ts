@@ -1,6 +1,6 @@
 import { haveEquipped, Location, mallPrice, retrieveItem } from "kolmafia";
 import { $item, $location, $skill, get } from "libram";
-import { targetMonster, EMBEZZLER_MULTIPLIER, propertyManager } from "../lib";
+import { EMBEZZLER_MULTIPLIER, propertyManager, targetMonster } from "../lib";
 import {
   checkUnderwater,
   EmbezzlerFightConfigOptions,

@@ -211,8 +211,7 @@ const secondChainMacro = () =>
       .if_(
         "!hasskill Lecture on Relativity",
         Macro.externalIf(
-          get("_sourceTerminalDigitizeMonster") !==
-            globalOptions.target,
+          get("_sourceTerminalDigitizeMonster") !== globalOptions.target,
           Macro.tryCopier($skill`Digitize`),
         )
           .tryCopier($item`Spooky Putty sheet`)
@@ -381,9 +380,7 @@ function startWandererCounter() {
       }
       garboAdventure(
         $location`The Haunted Kitchen`,
-        Macro.if_(globalOptions.target, Macro.embezzler()).step(
-          run.macro,
-        ),
+        Macro.if_(globalOptions.target, Macro.embezzler()).step(run.macro),
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||

@@ -507,7 +507,8 @@ export function totalGregCharges(countPartial: boolean): number {
 export function possibleGregCrystalBall(): number {
   if (have($item`miniature crystal ball`)) {
     const ponderCount =
-      CrystalBall.ponder().get($location`The Dire Warren`) === globalOptions.target
+      CrystalBall.ponder().get($location`The Dire Warren`) ===
+      globalOptions.target
         ? 1
         : 0;
     return totalGregCharges(true) + ponderCount;

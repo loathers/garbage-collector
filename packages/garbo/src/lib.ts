@@ -981,5 +981,5 @@ export function allMallPrices() {
 }
 
 export function copyEmbezzler(): boolean {
-  return globalOptions.target === $monster`Knob Goblin Embezzler`
+  return globalOptions.target === $monster`Knob Goblin Embezzler`;
 }

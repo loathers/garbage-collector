@@ -171,9 +171,16 @@ export const chainStarters = [
   ),
   new EmbezzlerFight(
     "Combat Lover's Locket",
-    () => CombatLoversLocket.availableLocketMonsters().includes(globalOptions.target),
     () =>
-      CombatLoversLocket.availableLocketMonsters().includes(globalOptions.target) ? 1 : 0,
+      CombatLoversLocket.availableLocketMonsters().includes(
+        globalOptions.target,
+      ),
+    () =>
+      CombatLoversLocket.availableLocketMonsters().includes(
+        globalOptions.target,
+      )
+        ? 1
+        : 0,
     (options: RunOptions) => {
       withMacro(
         options.macro,
@@ -502,7 +509,8 @@ export const wanderSources = [
   new EmbezzlerFight(
     "Enamorang",
     () =>
-      Counter.get("Enamorang") <= 0 && get("enamorangMonster") === globalOptions.target,
+      Counter.get("Enamorang") <= 0 &&
+      get("enamorangMonster") === globalOptions.target,
     () =>
       (Counter.get("Enamorang") <= 0 &&
         get("enamorangMonster") === globalOptions.target) ||
@@ -561,7 +569,8 @@ const gregFights = (
   }
 
   const resourceIsOccupied = () =>
-    get(fightsProp) > 0 && ![null, globalOptions.target].includes(get(monsterProp));
+    get(fightsProp) > 0 &&
+    ![null, globalOptions.target].includes(get(monsterProp));
 
   return [
     new EmbezzlerFight(
@@ -578,7 +587,8 @@ const gregFights = (
           const warrenPrediction = CrystalBall.ponder().get(
             $location`The Dire Warren`,
           );
-          if (warrenPrediction !== globalOptions.target) changeLastAdvLocation();
+          if (warrenPrediction !== globalOptions.target)
+            changeLastAdvLocation();
         }
       },
       {
@@ -666,7 +676,8 @@ export const conditionalSources = [
     () =>
       have($item`miniature crystal ball`) &&
       !get("_garbo_doneGregging", false) &&
-      CrystalBall.ponder().get($location`The Dire Warren`) === globalOptions.target,
+      CrystalBall.ponder().get($location`The Dire Warren`) ===
+        globalOptions.target,
     () => possibleGregCrystalBall(),
     (options: RunOptions) => {
       visitUrl("inventory.php?ponder=1");
@@ -731,7 +742,9 @@ export const conditionalSources = [
         ? garboAdventureAuto
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
-      if (CrystalBall.ponder().get($location`Noob Cave`) === globalOptions.target) {
+      if (
+        CrystalBall.ponder().get($location`Noob Cave`) === globalOptions.target
+      ) {
         changeLastAdvLocation();
       }
     },
@@ -778,7 +791,9 @@ export const conditionalSources = [
         ? garboAdventureAuto
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
-      if (CrystalBall.ponder().get($location`Noob Cave`) === globalOptions.target) {
+      if (
+        CrystalBall.ponder().get($location`Noob Cave`) === globalOptions.target
+      ) {
         changeLastAdvLocation();
       }
     },

@@ -224,10 +224,7 @@ export class Macro extends StrictMacro {
 
     return this.externalIf(
       shouldRedigitize(),
-      Macro.if_(
-        globalOptions.target,
-        Macro.trySkill($skill`Digitize`),
-      ),
+      Macro.if_(globalOptions.target, Macro.trySkill($skill`Digitize`)),
     )
       .trySingAlong()
       .familiarActions()
@@ -242,10 +239,7 @@ export class Macro extends StrictMacro {
         digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
           have($skill`Meteor Lore`) &&
           get("_meteorShowerUses") < 5,
-        Macro.if_(
-          globalOptions.target,
-          Macro.trySkill($skill`Meteor Shower`),
-        ),
+        Macro.if_(globalOptions.target, Macro.trySkill($skill`Meteor Shower`)),
       )
       .externalIf(
         get("cosmicBowlingBallReturnCombats") < 1,
@@ -738,7 +732,9 @@ export class Macro extends StrictMacro {
           Macro.tryCopier($item`LOV Enamorang`),
         )
         .meatKill(),
-    ).abortWithMsg(`Expected ${globalOptions.target} but encountered something else.`);
+    ).abortWithMsg(
+      `Expected ${globalOptions.target} but encountered something else.`,
+    );
   }
 
   static embezzler(): Macro {

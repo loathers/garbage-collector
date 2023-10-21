@@ -79,7 +79,8 @@ const steveAdventures: Map<Location, number[]> = new Map([
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
 const digitizedEmbezzler = () =>
-  SourceTerminal.have() && SourceTerminal.getDigitizeMonster() === globalOptions.target;
+  SourceTerminal.have() &&
+  SourceTerminal.getDigitizeMonster() === globalOptions.target;
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
@@ -276,7 +277,8 @@ const BarfTurnTasks: GarboTask[] = [
     name: "Digitize Wanderer",
     completed: () => Counter.get("Digitize Monster") > 0,
     acquire: () =>
-      SourceTerminal.getDigitizeMonster() === globalOptions.target && shouldGoUnderwater()
+      SourceTerminal.getDigitizeMonster() === globalOptions.target &&
+      shouldGoUnderwater()
         ? [{ item: $item`pulled green taffy` }]
         : [],
     outfit: () =>
@@ -341,7 +343,8 @@ const BarfTurnTasks: GarboTask[] = [
   {
     name: "Envyfish Egg",
     ready: () =>
-      have($item`envyfish egg`) && get("envyfishMonster") === globalOptions.target,
+      have($item`envyfish egg`) &&
+      get("envyfishMonster") === globalOptions.target,
     completed: () => get("_envyfishEggUsed"),
     do: () => use($item`envyfish egg`),
     spendsTurn: true,
