@@ -43114,7 +43114,7 @@ function dailyDungeon(additionalReady) {
         690: 2,
         691: 2,
         692: 2,
-        693: 3
+        693: 2
       };
     },
     acquire: $items(_templateObject2236 || (_templateObject2236 = _taggedTemplateLiteral103(["ring of Detect Boring Doors, eleven-foot pole, Pick-O-Matic lockpicks"]))).map(function(i) {
