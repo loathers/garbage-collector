@@ -22,9 +22,9 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
 function logEmbezzler(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
   isDigitize
-    ? eventLog.digitizedTargetsFought++
-    : eventLog.initialTargetsFought++;
-  eventLog.targetSources.push(isDigitize ? "Digitize" : "Unknown Source");
+    ? eventLog.digitizedCopyTargetsFought++
+    : eventLog.initialCopyTargetsFought++;
+  eventLog.copyTargetSources.push(isDigitize ? "Digitize" : "Unknown Source");
 }
 
 /** A base engine for Garbo!

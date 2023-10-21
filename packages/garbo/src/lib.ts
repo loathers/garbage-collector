@@ -103,14 +103,14 @@ import { globalOptions } from "./config";
 import { garboValue } from "./garboValue";
 
 export const eventLog: {
-  initialTargetsFought: number;
-  digitizedTargetsFought: number;
-  targetSources: Array<string>;
+  initialCopyTargetsFought: number;
+  digitizedCopyTargetsFought: number;
+  copyTargetSources: Array<string>;
   yachtzees: number;
 } = {
-  initialTargetsFought: 0,
-  digitizedTargetsFought: 0,
-  targetSources: [],
+  initialCopyTargetsFought: 0,
+  digitizedCopyTargetsFought: 0,
+  copyTargetSources: [],
   yachtzees: 0,
 };
 
@@ -767,14 +767,14 @@ export function printEventLog(): void {
   }
   const totalEmbezzlers =
     property.getNumber("garboEmbezzlerCount", 0) +
-    eventLog.initialTargetsFought +
-    eventLog.digitizedTargetsFought;
+    eventLog.initialCopyTargetsFought +
+    eventLog.digitizedCopyTargetsFought;
 
   const allEmbezzlerSources = property
     .getString("garboEmbezzlerSources")
     .split(",")
     .filter((source) => source);
-  allEmbezzlerSources.push(...eventLog.targetSources);
+  allEmbezzlerSources.push(...eventLog.copyTargetSources);
 
   const yacthzeeCount = get("garboYachtzeeCount", 0) + eventLog.yachtzees;
 
@@ -783,7 +783,7 @@ export function printEventLog(): void {
   property.set("garboYachtzeeCount", yacthzeeCount);
 
   print(
-    `You fought ${eventLog.initialTargetsFought} ${globalOptions.target} at the beginning of the day, and an additional ${eventLog.digitizedTargetsFought} digitized ${globalOptions.target} throughout the day. Good work, probably!`,
+    `You fought ${eventLog.initialCopyTargetsFought} ${globalOptions.target} at the beginning of the day, and an additional ${eventLog.digitizedCopyTargetsFought} digitized ${globalOptions.target} throughout the day. Good work, probably!`,
     HIGHLIGHT,
   );
   print(
