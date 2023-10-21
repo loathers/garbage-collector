@@ -407,12 +407,12 @@ export function dailyFights(): void {
     cliExecute("fold spooky putty sheet");
   }
 
-  // Fax an embezzler before starting, to prevent an abort in case the faxbot networks are down
+  // Fax the copy target before starting, to prevent an abort in case the faxbot networks are down
   faxMonster(globalOptions.target);
 
   if (copyTargetSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
-      // check if user wants to wish for embezzler before doing setup
+      // check if user wants to wish for the copy target before doing setup
       if (!getNextCopyTargetFight()) return;
       embezzlerSetup();
 
