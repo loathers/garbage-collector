@@ -54,7 +54,6 @@ import {
 import { shouldAugustCast } from "../resources";
 import {
   averageEmbezzlerNet,
-  embezzler,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
   ltbRun,
@@ -155,11 +154,11 @@ export const chainStarters = [
     () =>
       ChateauMantegna.have() &&
       !ChateauMantegna.paintingFought() &&
-      ChateauMantegna.paintingMonster() === embezzler,
+      ChateauMantegna.paintingMonster() === globalOptions.target,
     () =>
       ChateauMantegna.have() &&
       !ChateauMantegna.paintingFought() &&
-      ChateauMantegna.paintingMonster() === embezzler
+      ChateauMantegna.paintingMonster() === globalOptions.target
         ? 1
         : 0,
     (options: RunOptions) => {
@@ -172,13 +171,13 @@ export const chainStarters = [
   ),
   new EmbezzlerFight(
     "Combat Lover's Locket",
-    () => CombatLoversLocket.availableLocketMonsters().includes(embezzler),
+    () => CombatLoversLocket.availableLocketMonsters().includes(globalOptions.target),
     () =>
-      CombatLoversLocket.availableLocketMonsters().includes(embezzler) ? 1 : 0,
+      CombatLoversLocket.availableLocketMonsters().includes(globalOptions.target) ? 1 : 0,
     (options: RunOptions) => {
       withMacro(
         options.macro,
-        () => CombatLoversLocket.reminisce(embezzler),
+        () => CombatLoversLocket.reminisce(globalOptions.target),
         options.useAuto,
       );
     },
@@ -269,14 +268,14 @@ export const copySources = [
     () =>
       have($item`Time-Spinner`) &&
       $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) => location.combatQueue.includes(embezzler.name),
+        (location) => location.combatQueue.includes(globalOptions.target.name),
       ) &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
       have($item`Time-Spinner`) &&
       $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
         (location) =>
-          location.combatQueue.includes(embezzler.name) ||
+          location.combatQueue.includes(globalOptions.target.name) ||
           get("beGregariousCharges") > 0,
       )
         ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
@@ -288,7 +287,7 @@ export const copySources = [
           visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
           runChoice(1);
           visitUrl(
-            `choice.php?whichchoice=1196&monid=${embezzler.id}&option=1`,
+            `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
           );
           runCombat();
         },
@@ -300,9 +299,9 @@ export const copySources = [
     "Spooky Putty & Rain-Doh",
     () =>
       (have($item`Spooky Putty monster`) &&
-        get("spookyPuttyMonster") === embezzler) ||
+        get("spookyPuttyMonster") === globalOptions.target) ||
       (have($item`Rain-Doh box full of monster`) &&
-        get("rainDohMonster") === embezzler),
+        get("rainDohMonster") === globalOptions.target),
     () => {
       const havePutty =
         have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`);
@@ -311,10 +310,10 @@ export const copySources = [
         have($item`Rain-Doh box full of monster`);
       const puttyLocked =
         have($item`Spooky Putty monster`) &&
-        get("spookyPuttyMonster") !== embezzler;
+        get("spookyPuttyMonster") !== globalOptions.target;
       const rainDohLocked =
         have($item`Rain-Doh box full of monster`) &&
-        get("rainDohMonster") !== embezzler;
+        get("rainDohMonster") !== globalOptions.target;
 
       if (havePutty && haveRainDoh) {
         if (puttyLocked && rainDohLocked) return 0;
@@ -375,11 +374,11 @@ export const copySources = [
     "4-d Camera",
     () =>
       have($item`shaking 4-d camera`) &&
-      get("cameraMonster") === embezzler &&
+      get("cameraMonster") === globalOptions.target &&
       !get("_cameraUsed"),
     () =>
       have($item`shaking 4-d camera`) &&
-      get("cameraMonster") === embezzler &&
+      get("cameraMonster") === globalOptions.target &&
       !get("_cameraUsed")
         ? 1
         : 0,
@@ -395,11 +394,11 @@ export const copySources = [
     "Ice Sculpture",
     () =>
       have($item`ice sculpture`) &&
-      get("iceSculptureMonster") === embezzler &&
+      get("iceSculptureMonster") === globalOptions.target &&
       !get("_iceSculptureUsed"),
     () =>
       have($item`ice sculpture`) &&
-      get("iceSculptureMonster") === embezzler &&
+      get("iceSculptureMonster") === globalOptions.target &&
       !get("_iceSculptureUsed")
         ? 1
         : 0,
@@ -415,11 +414,11 @@ export const copySources = [
     "Green Taffy",
     () =>
       have($item`envyfish egg`) &&
-      get("envyfishMonster") === embezzler &&
+      get("envyfishMonster") === globalOptions.target &&
       !get("_envyfishEggUsed"),
     () =>
       have($item`envyfish egg`) &&
-      get("envyfishMonster") === embezzler &&
+      get("envyfishMonster") === globalOptions.target &&
       !get("_envyfishEggUsed")
         ? 1
         : 0,
@@ -479,7 +478,7 @@ export const wanderSources = [
   new EmbezzlerFight(
     "Digitize",
     () =>
-      get("_sourceTerminalDigitizeMonster") === embezzler &&
+      get("_sourceTerminalDigitizeMonster") === globalOptions.target &&
       Counter.get("Digitize Monster") <= 0,
     () =>
       SourceTerminal.have() && SourceTerminal.getDigitizeUses() === 0 ? 1 : 0,
@@ -503,10 +502,10 @@ export const wanderSources = [
   new EmbezzlerFight(
     "Enamorang",
     () =>
-      Counter.get("Enamorang") <= 0 && get("enamorangMonster") === embezzler,
+      Counter.get("Enamorang") <= 0 && get("enamorangMonster") === globalOptions.target,
     () =>
       (Counter.get("Enamorang") <= 0 &&
-        get("enamorangMonster") === embezzler) ||
+        get("enamorangMonster") === globalOptions.target) ||
       (have($item`LOV Enamorang`) && !get("_enamorangs"))
         ? 1
         : 0,
@@ -562,7 +561,7 @@ const gregFights = (
   }
 
   const resourceIsOccupied = () =>
-    get(fightsProp) > 0 && ![null, embezzler].includes(get(monsterProp));
+    get(fightsProp) > 0 && ![null, globalOptions.target].includes(get(monsterProp));
 
   return [
     new EmbezzlerFight(
@@ -579,7 +578,7 @@ const gregFights = (
           const warrenPrediction = CrystalBall.ponder().get(
             $location`The Dire Warren`,
           );
-          if (warrenPrediction !== embezzler) changeLastAdvLocation();
+          if (warrenPrediction !== globalOptions.target) changeLastAdvLocation();
         }
       },
       {
@@ -589,12 +588,12 @@ const gregFights = (
     new EmbezzlerFight(
       `${name} (Set Up Crystal Ball)`,
       () =>
-        get(monsterProp) === embezzler &&
+        get(monsterProp) === globalOptions.target &&
         get(fightsProp) === 1 &&
         have($item`miniature crystal ball`) &&
         !CrystalBall.ponder().get($location`The Dire Warren`),
       () =>
-        (get(monsterProp) === embezzler && get(fightsProp) > 0) ||
+        (get(monsterProp) === globalOptions.target && get(fightsProp) > 0) ||
         totalCharges() > 0
           ? 1
           : 0,
@@ -648,7 +647,7 @@ function proceedWithOrb(): boolean {
     "Orb Prediction",
   ];
   if (
-    CrystalBall.ponder().get($location`Noob Cave`) === embezzler &&
+    CrystalBall.ponder().get($location`Noob Cave`) === globalOptions.target &&
     embezzlerSources
       .filter(
         (source) => !gregFightNames.some((name) => source.name.includes(name)),
@@ -667,13 +666,13 @@ export const conditionalSources = [
     () =>
       have($item`miniature crystal ball`) &&
       !get("_garbo_doneGregging", false) &&
-      CrystalBall.ponder().get($location`The Dire Warren`) === embezzler,
+      CrystalBall.ponder().get($location`The Dire Warren`) === globalOptions.target,
     () => possibleGregCrystalBall(),
     (options: RunOptions) => {
       visitUrl("inventory.php?ponder=1");
       if (
         CrystalBall.ponder().get($location`The Dire Warren`) !==
-        embezzler
+        globalOptions.target
       ) {
         return;
       }
@@ -732,7 +731,7 @@ export const conditionalSources = [
         ? garboAdventureAuto
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
-      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) {
+      if (CrystalBall.ponder().get($location`Noob Cave`) === globalOptions.target) {
         changeLastAdvLocation();
       }
     },
@@ -779,7 +778,7 @@ export const conditionalSources = [
         ? garboAdventureAuto
         : garboAdventure;
       adventureFunction($location`Noob Cave`, macro, macro);
-      if (CrystalBall.ponder().get($location`Noob Cave`) === embezzler) {
+      if (CrystalBall.ponder().get($location`Noob Cave`) === globalOptions.target) {
         changeLastAdvLocation();
       }
     },
@@ -792,7 +791,7 @@ export const conditionalSources = [
   new EmbezzlerFight(
     "Backup",
     () =>
-      get("lastCopyableMonster") === embezzler &&
+      get("lastCopyableMonster") === globalOptions.target &&
       have($item`backup camera`) &&
       get("_backUpUses") < 11,
     () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
@@ -803,11 +802,11 @@ export const conditionalSources = [
       adventureFunction(
         options.location,
         Macro.if_(
-          `!monsterid ${embezzler.id}`,
+          `!monsterid ${globalOptions.target.id}`,
           Macro.skill($skill`Back-Up to your Last Enemy`),
         ).step(options.macro),
         Macro.if_(
-          `!monsterid ${embezzler.id}`,
+          `!monsterid ${globalOptions.target.id}`,
           Macro.skill($skill`Back-Up to your Last Enemy`),
         ).step(options.macro),
       );

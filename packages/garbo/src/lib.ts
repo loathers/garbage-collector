@@ -102,8 +102,6 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboValue } from "./garboValue";
 
-export const embezzler = $monster`Knob Goblin Embezzler`;
-
 export const eventLog: {
   initialEmbezzlersFought: number;
   digitizedEmbezzlersFought: number;
@@ -368,9 +366,9 @@ export function pillkeeperOpportunityCost(): number {
   if (!canTreasury) return alternateUseValue;
 
   const canStartChain = [
-    CombatLoversLocket.have() && getLocketMonsters()[embezzler.name],
+    CombatLoversLocket.have() && getLocketMonsters()[globalOptions.target.name],
     ChateauMantegna.have() &&
-      ChateauMantegna.paintingMonster() === embezzler &&
+      ChateauMantegna.paintingMonster() === globalOptions.target &&
       !ChateauMantegna.paintingFought(),
     have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
   ].some((x) => x);
@@ -980,4 +978,8 @@ export function allMallPrices() {
     mallPrices("allitems");
     sessionStorage.setItem("allpricedate", today);
   }
+}
+
+export function copyEmbezzler(): boolean {
+  return globalOptions.target === $monster`Knob Goblin Embezzler`
 }

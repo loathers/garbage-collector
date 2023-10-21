@@ -1,6 +1,6 @@
 import { haveEquipped, Location, mallPrice, retrieveItem } from "kolmafia";
 import { $item, $location, $skill, get } from "libram";
-import { embezzler, EMBEZZLER_MULTIPLIER, propertyManager } from "../lib";
+import { targetMonster, EMBEZZLER_MULTIPLIER, propertyManager } from "../lib";
 import {
   checkUnderwater,
   EmbezzlerFightConfigOptions,
@@ -18,9 +18,9 @@ const wandererFailsafeMacro = () =>
   Macro.externalIf(
     haveEquipped($item`backup camera`) &&
       get("_backUpUses") < 11 &&
-      get("lastCopyableMonster") === embezzler,
+      get("lastCopyableMonster") === targetMonster,
     Macro.if_(
-      `!monsterid ${embezzler.id}`,
+      `!monsterid ${targetMonster.id}`,
       Macro.skill($skill`Back-Up to your Last Enemy`),
     ),
   );

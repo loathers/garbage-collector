@@ -140,7 +140,6 @@ import {
   bestShadowRift,
   burnLibrams,
   dogOrHolidayWanderer,
-  embezzler,
   ESTIMATED_OVERDRUNK_TURNS,
   eventLog,
   expectedEmbezzlerProfit,
@@ -182,11 +181,11 @@ import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 
 const firstChainMacro = () =>
   Macro.if_(
-    embezzler,
+    globalOptions.target,
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.externalIf(
-        SourceTerminal.getDigitizeMonster() !== embezzler,
+        SourceTerminal.getDigitizeMonster() !== globalOptions.target,
         Macro.tryCopier($skill`Digitize`),
       )
         .tryCopier($item`Spooky Putty sheet`)
@@ -204,7 +203,7 @@ const firstChainMacro = () =>
 
 const secondChainMacro = () =>
   Macro.if_(
-    embezzler,
+    globalOptions.target,
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.trySkill($skill`Meteor Shower`),
@@ -213,7 +212,7 @@ const secondChainMacro = () =>
         "!hasskill Lecture on Relativity",
         Macro.externalIf(
           get("_sourceTerminalDigitizeMonster") !==
-            embezzler,
+            globalOptions.target,
           Macro.tryCopier($skill`Digitize`),
         )
           .tryCopier($item`Spooky Putty sheet`)
@@ -382,7 +381,7 @@ function startWandererCounter() {
       }
       garboAdventure(
         $location`The Haunted Kitchen`,
-        Macro.if_(embezzler, Macro.embezzler()).step(
+        Macro.if_(globalOptions.target, Macro.embezzler()).step(
           run.macro,
         ),
       );
@@ -412,7 +411,7 @@ export function dailyFights(): void {
   }
 
   // Fax an embezzler before starting, to prevent an abort in case the faxbot networks are down
-  faxMonster(embezzler);
+  faxMonster(globalOptions.target);
 
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
@@ -544,7 +543,7 @@ export function dailyFights(): void {
         print(`Finished ${nextFight.name}`);
         if (
           totalTurnsPlayed() - startTurns === 1 &&
-          get("lastCopyableMonster") === embezzler &&
+          get("lastCopyableMonster") === globalOptions.target &&
           (nextFight.wrongEncounterName ||
             get("lastEncounter") === "Knob Goblin Embezzler")
         ) {

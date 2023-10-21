@@ -25,7 +25,6 @@ import {
   $familiar,
   $item,
   $items,
-  $monster,
   Clan,
   get,
   getFoldGroup,
@@ -34,7 +33,7 @@ import {
 } from "libram";
 import { Macro } from "./combat";
 import { globalOptions } from "./config";
-import { embezzler, HIGHLIGHT, userConfirmDialog } from "./lib";
+import { HIGHLIGHT, userConfirmDialog } from "./lib";
 
 export const stashItems = get("garboStashItems", "")
   .split(",")
@@ -166,7 +165,7 @@ export class StashManager {
         "In fight, trying to get away to return items to stash...",
         HIGHLIGHT,
       );
-      Macro.if_(embezzler, Macro.attack().repeat())
+      Macro.if_(globalOptions.target, Macro.attack().repeat())
         .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
         .step("runaway")
         .submit();

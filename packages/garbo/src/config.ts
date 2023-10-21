@@ -1,6 +1,6 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
-import { $item, $items, get } from "libram";
+import { $item, $items, $monster, get } from "libram";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -114,6 +114,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: 'terminate after the specified number of turns, e.g. "garbo 200" or "garbo turns=200" will terminate after 200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.',
       default: 0,
+    }),
+    target: Args.monster({
+      setting: "",
+      help: "The monster to use all copies on",
+      default: $monster`Knob Goblin Embezzler`
     }),
     version: Args.flag({
       setting: "",

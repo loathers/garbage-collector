@@ -8,7 +8,7 @@ import { $item, $location, $monsters, get, have } from "libram";
 import { garboValue } from "./garboValue";
 import { Potion } from "./potions";
 import { embezzlerCount } from "./embezzler/fights";
-import { digitizedMonstersRemainingForTurns, embezzler } from "./lib";
+import { digitizedMonstersRemainingForTurns } from "./lib";
 
 let _wanderer: WandererManager | undefined;
 export function wanderer(): WandererManager {
@@ -24,7 +24,7 @@ export function wanderer(): WandererManager {
         freeFightFamiliarData({ location }).expectedValue,
       digitzesRemaining: digitizedMonstersRemainingForTurns,
       plentifulMonsters: [
-        embezzler,
+        globalOptions.target,
         ...(globalOptions.nobarf ? [] : getMonsters($location`Barf Mountain`)),
         ...(have($item`Kramco Sausage-o-Matic™`)
           ? $monsters`sausage goblin`

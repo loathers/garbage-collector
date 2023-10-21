@@ -57,7 +57,6 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
-import { embezzler } from "../lib";
 
 type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
   combatCount: () => number;
@@ -96,7 +95,7 @@ const valueDrops = (monster: Monster) =>
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 const locketsToSave = () =>
   CombatLoversLocket.availableLocketMonsters().includes(
-    embezzler,
+    globalOptions.target,
   )
     ? 1
     : 0;
