@@ -4,6 +4,7 @@ import { GarboTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { getChangeLastAdvLocationMethod } from "../embezzler/lib";
 import { doingGregFight } from "../resources/extrovermectin";
+import { freeFightOutfit } from "../outfit";
 
 export const SetupEmbezzlerQuest: Quest<GarboTask> = {
   name: "SetupEmbezzler",
@@ -11,7 +12,8 @@ export const SetupEmbezzlerQuest: Quest<GarboTask> = {
     {
       // Need the daily dungeon to either be totally finished or to be on a NC we can walk away from
       name: "Setup Daily Dungeon",
-      outfit: { equip: $items`ring of Detect Boring Doors` },
+      outfit: () =>
+        freeFightOutfit({ equip: $items`ring of Detect Boring Doors` }),
       // walk away from any nc we can walk away from, skip boring doors, open the final chest
       choices: () => ({ 689: 1, 690: 2, 691: 2, 692: 8, 693: 3 }),
       acquire: [{ item: $item`ring of Detect Boring Doors` }],
