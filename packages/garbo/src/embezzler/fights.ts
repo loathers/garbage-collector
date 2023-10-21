@@ -963,7 +963,11 @@ export const emergencyChainStarters = [
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = embezzlerConfirmInvocation(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for an Embezzler?`,
+        `Garbo has detected you have ${potential} potential ways to copy a ${
+          globalOptions.target
+        }, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${
+          globalOptions.target
+        }?`,
       );
       return globalOptions.wishAnswer;
     },
@@ -980,7 +984,7 @@ export const emergencyChainStarters = [
             true,
           );
           visitUrl(
-            "choice.php?pwd&whichchoice=1267&option=1&wish=to fight a Knob Goblin Embezzler ",
+            `choice.php?pwd&whichchoice=1267&option=1&wish=to fight a ${globalOptions.target} `,
             true,
             true,
           );

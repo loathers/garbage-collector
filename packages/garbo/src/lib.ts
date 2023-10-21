@@ -979,7 +979,3 @@ export function allMallPrices() {
     sessionStorage.setItem("allpricedate", today);
   }
 }
-
-export function copyEmbezzler(): boolean {
-  return globalOptions.target === $monster`Knob Goblin Embezzler`;
-}
