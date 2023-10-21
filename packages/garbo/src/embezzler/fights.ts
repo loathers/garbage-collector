@@ -72,11 +72,11 @@ import { globalOptions } from "../config";
 
 import {
   changeLastAdvLocationTask,
-  EmbezzlerFightConfigOptions,
+  EmbezzlerFightConfigOptions as CopyTargetFightConfigOptions,
   RunOptions,
 } from "./lib";
 
-export class CopyTargetFight implements EmbezzlerFightConfigOptions {
+export class CopyTargetFight implements CopyTargetFightConfigOptions {
   name: string;
   available: () => boolean;
   potential: () => number;
@@ -89,8 +89,8 @@ export class CopyTargetFight implements EmbezzlerFightConfigOptions {
   location?: Location;
 
   /**
-   * This is the class that creates all the different ways to fight embezzlers
-   * @classdesc Embezzler Fight enc
+   * This is the class that creates all the different ways to fight copy targets
+   * @classdesc Copy Target Fight enc
    * @prop {string} name The name of the source of this fight, primarily used to identify special cases.
    * @prop {() => boolean} available Returns whether or not we can do this fight right now (this may change later in the day).
    * @prop {() => number} potential Returns the number of embezzlers we expect to be able to fight from this source given the current state of hte character
@@ -100,9 +100,9 @@ export class CopyTargetFight implements EmbezzlerFightConfigOptions {
    * @prop {EmbezzlerFightConfigOptions} options configuration options for this fight. see EmbezzlerFightConfigOptions for full details of all available options
    * @example
    * // suppose that we wanted to add a fight that will use print screens repeatedly, as long as we have them in our inventory
-   * new EmbezzlerFight(
+   * new CopyTargetFight(
    *  "Print Screen Monster",
-   *  () => have($item`screencapped monster`) && get('screencappedMonster') === embezzler, // in order to start this fight, a KGE must already be screen capped
+   *  () => have($item`screencapped monster`) && get('screencappedMonster') === globalOptions.target, // in order to start this fight, a KGE must already be screen capped
    *  () => availableAmount($item`screencapped monster`) + availableAmount($item`print screen button`) // the total of potential of this fight is the number of already copied KGE + the number of potentially copiable KGE
    *  () => (options: RunOptions) => {
    *    const macro = Macro
@@ -111,7 +111,7 @@ export class CopyTargetFight implements EmbezzlerFightConfigOptions {
    *    withMacro(macro, () => useItem($item`screen capped monster`));
    *  },
    *  {
-   *    canInitializeWnadererCounts: false; // this copy cannot be used to start wanderer counters, since the combats are not adv.php
+   *    canInitializeWandererCounts: false; // this copy cannot be used to start wanderer counters, since the combats are not adv.php
    *  }
    * )
    */
@@ -125,7 +125,7 @@ export class CopyTargetFight implements EmbezzlerFightConfigOptions {
         : garboAdventure;
       adventureFunction(options.location, options.macro, options.macro);
     },
-    options: EmbezzlerFightConfigOptions = {},
+    options: CopyTargetFightConfigOptions = {},
   ) {
     this.name = name;
     this.available = available;
@@ -143,7 +143,9 @@ export class CopyTargetFight implements EmbezzlerFightConfigOptions {
 
   run(options: RunOptions): void {
     if (!this.available() || !myAdventures()) return;
-    print(`Now running Embezzler fight: ${this.name}. Stay tuned for details.`);
+    print(
+      `Now running ${globalOptions.target} fight: ${this.name}. Stay tuned for details.`,
+    );
     this.execute(options);
   }
 }
@@ -861,7 +863,7 @@ export const fakeSources = [
   ),
 ];
 
-function embezzlerConfirmInvocation(msg: string): boolean {
+function copyTargetConfirmInvocation(msg: string): boolean {
   // If user does not have autoUserConfirm set to true
   // If the incocatedCount has already reached or exceeded the default limit
   if (!globalOptions.prefs.autoUserConfirm) {
@@ -889,14 +891,16 @@ function embezzlerConfirmInvocation(msg: string): boolean {
 }
 
 export const emergencyChainStarters = [
-  // These are very deliberately the last embezzler fights.
+  // These are very deliberately the last copy target fights.
   new CopyTargetFight(
     "11-leaf clover (untapped potential)",
     () => {
       const potential = Math.floor(copyTargetCount());
       if (potential < 1) return false;
-      if (!canAdventure($location`Cobb's Knob Treasury`)) {
-        return false;
+      if (globalOptions.target !== $monster`Knob Goblin Embezzler`) {
+        if (!canAdventure($location`Cobb's Knob Treasury`)) {
+          return false;
+        }
       }
       // Don't use clovers if wishes are available and cheaper
       if (
@@ -911,7 +915,7 @@ export const emergencyChainStarters = [
         mallPrice($item`11-leaf clover`);
       if (profit < 0) return false;
       print(
-        `You have the following embezzler-sources untapped right now:`,
+        `You have the following copy target sources untapped right now:`,
         HIGHLIGHT,
       );
       copyTargetSources
@@ -919,7 +923,7 @@ export const emergencyChainStarters = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = embezzlerConfirmInvocation(
+      globalOptions.wishAnswer = copyTargetConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`,
       );
       return globalOptions.wishAnswer;
@@ -962,7 +966,7 @@ export const emergencyChainStarters = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = embezzlerConfirmInvocation(
+      globalOptions.wishAnswer = copyTargetConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy a ${
           globalOptions.target
         }, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${
