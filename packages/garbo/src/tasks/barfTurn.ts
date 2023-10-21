@@ -204,8 +204,6 @@ function dailyDungeon(additionalReady: () => boolean) {
       $items`ring of Detect Boring Doors, eleven-foot pole, Pick-O-Matic lockpicks`.map(
         (i) => ({ item: i }),
       ),
-    outfit: () =>
-      freeFightOutfit({ equip: $items`ring of Detect Boring Doors` }),
     do: $location`The Daily Dungeon`,
     combat: new GarboStrategy(Macro.kill()),
     turns: () => clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
@@ -221,11 +219,20 @@ const NonBarfTurnTasks: AlternateTask[] = [
   {
     name: "Daily Dungeon (drunk)",
     ...dailyDungeon(() => willDrunkAdventure()),
+    outfit: () =>
+      freeFightOutfit({
+        offhand: $item`Drunkula's wineglass`,
+        equip: $items`ring of Detect Boring Doors`,
+      }),
     sobriety: "drunk",
   },
   {
     name: "Daily Dungeon (sober)",
     ...dailyDungeon(() => !willDrunkAdventure()),
+    outfit: () =>
+      freeFightOutfit({
+        equip: $items`ring of Detect Boring Doors`,
+      }),
     sobriety: "sober",
   },
   {
