@@ -542,7 +542,7 @@ export function dailyFights(): void {
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === globalOptions.target &&
           (nextFight.wrongEncounterName ||
-            get("lastEncounter") === "Knob Goblin Embezzler")
+            get("lastEncounter") === globalOptions.target.name)
         ) {
           eventLog.initialEmbezzlersFought++;
           eventLog.embezzlerSources.push(nextFight.name);

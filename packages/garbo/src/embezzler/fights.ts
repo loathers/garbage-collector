@@ -195,13 +195,13 @@ export const chainStarters = [
       have($item`Clan VIP Lounge key`) &&
       !get("_photocopyUsed") &&
       have($item`photocopied monster`) &&
-      property.getString("photocopyMonster") === "Knob Goblin Embezzler" &&
+      property.get("photocopyMonster") === globalOptions.target &&
       getClanLounge()["deluxe fax machine"] !== undefined,
     () =>
       have($item`Clan VIP Lounge key`) &&
       !get("_photocopyUsed") &&
       have($item`photocopied monster`) &&
-      property.getString("photocopyMonster") === "Knob Goblin Embezzler" &&
+      property.get("photocopyMonster") === globalOptions.target &&
       getClanLounge()["deluxe fax machine"] !== undefined
         ? 1
         : 0,
@@ -437,9 +437,9 @@ export const copySources = [
     "Screencapped Monster",
     () =>
       have($item`screencapped monster`) &&
-      property.getString("screencappedMonster") === "Knob Goblin Embezzler",
+      property.get("screencappedMonster") === globalOptions.target,
     () =>
-      property.getString("screencappedMonster") === "Knob Goblin Embezzler"
+      property.get("screencappedMonster") === globalOptions.target
         ? itemAmount($item`screencapped monster`)
         : 0,
     (options: RunOptions) => {
@@ -454,9 +454,9 @@ export const copySources = [
     "Sticky Clay Homunculus",
     () =>
       have($item`sticky clay homunculus`) &&
-      property.getString("crudeMonster") === "Knob Goblin Embezzler",
+      property.get("crudeMonster") === globalOptions.target,
     () =>
-      property.getString("crudeMonster") === "Knob Goblin Embezzler"
+      property.get("crudeMonster") === globalOptions.target
         ? itemAmount($item`sticky clay homunculus`)
         : 0,
     (options: RunOptions) =>
@@ -587,8 +587,9 @@ const gregFights = (
           const warrenPrediction = CrystalBall.ponder().get(
             $location`The Dire Warren`,
           );
-          if (warrenPrediction !== globalOptions.target)
+          if (warrenPrediction !== globalOptions.target) {
             changeLastAdvLocation();
+          }
         }
       },
       {

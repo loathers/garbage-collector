@@ -11,6 +11,7 @@ import { $skill, Delayed, get, SourceTerminal, undelay } from "libram";
 import { print, totalTurnsPlayed } from "kolmafia";
 import postCombatActions from "../post";
 import { GarboStrategy } from "../combat";
+import { globalOptions } from "../config";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
@@ -63,7 +64,8 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
         );
       }
     }
-    const foughtAnEmbezzler = get("lastEncounter") === "Knob Goblin Embezzler";
+    const foughtAnEmbezzler =
+      get("lastEncounter") === globalOptions.target.name;
     if (foughtAnEmbezzler) logEmbezzler(task.name);
     wanderer().clear();
     if (duplicate && SourceTerminal.have()) {

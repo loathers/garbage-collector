@@ -783,7 +783,7 @@ export function printEventLog(): void {
   property.set("garboYachtzeeCount", yacthzeeCount);
 
   print(
-    `You fought ${eventLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${eventLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+    `You fought ${eventLog.initialEmbezzlersFought} ${globalOptions.target} at the beginning of the day, and an additional ${eventLog.digitizedEmbezzlersFought} digitized ${globalOptions.target} throughout the day. Good work, probably!`,
     HIGHLIGHT,
   );
   print(
