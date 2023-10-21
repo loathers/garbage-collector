@@ -367,7 +367,6 @@ export function pillkeeperOpportunityCost(): number {
   if (!alternateUseValue) return 0;
   if (!canTreasury) return alternateUseValue;
 
-  const embezzler = $monster`Knob Goblin Embezzler`;
   const canStartChain = [
     CombatLoversLocket.have() && getLocketMonsters()[embezzler.name],
     ChateauMantegna.have() &&

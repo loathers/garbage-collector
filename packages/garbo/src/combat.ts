@@ -225,7 +225,7 @@ export class Macro extends StrictMacro {
     return this.externalIf(
       shouldRedigitize(),
       Macro.if_(
-        $monster`Knob Goblin Embezzler`,
+        embezzler,
         Macro.trySkill($skill`Digitize`),
       ),
     )
@@ -243,7 +243,7 @@ export class Macro extends StrictMacro {
           have($skill`Meteor Lore`) &&
           get("_meteorShowerUses") < 5,
         Macro.if_(
-          $monster`Knob Goblin Embezzler`,
+          embezzler,
           Macro.trySkill($skill`Meteor Shower`),
         ),
       )
@@ -759,7 +759,7 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
       Macro.externalIf(
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
-          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+          get("lastCopyableMonster") === embezzler &&
           myFamiliar() === meatFamiliar(),
         Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
         Macro.basicCombat(),

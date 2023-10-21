@@ -673,7 +673,7 @@ export const conditionalSources = [
       visitUrl("inventory.php?ponder=1");
       if (
         CrystalBall.ponder().get($location`The Dire Warren`) !==
-        $monster`Knob Goblin Embezzler`
+        embezzler
       ) {
         return;
       }

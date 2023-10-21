@@ -39,6 +39,7 @@ import {
 } from "libram";
 import { freeFightFamiliar } from "../familiar";
 import {
+  embezzler,
   freeRunConstraints,
   getUsingFreeBunnyBanish,
   ltbRun,
@@ -49,7 +50,6 @@ import { garboAdventure, Macro } from "../combat";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 
-const embezzler = $monster`Knob Goblin Embezzler`;
 const crate = $monster`crate`;
 
 type GregSource = {

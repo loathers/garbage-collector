@@ -140,6 +140,7 @@ import {
   bestShadowRift,
   burnLibrams,
   dogOrHolidayWanderer,
+  embezzler,
   ESTIMATED_OVERDRUNK_TURNS,
   eventLog,
   expectedEmbezzlerProfit,
@@ -181,11 +182,11 @@ import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 
 const firstChainMacro = () =>
   Macro.if_(
-    $monster`Knob Goblin Embezzler`,
+    embezzler,
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.externalIf(
-        SourceTerminal.getDigitizeMonster() !== $monster`Knob Goblin Embezzler`,
+        SourceTerminal.getDigitizeMonster() !== embezzler,
         Macro.tryCopier($skill`Digitize`),
       )
         .tryCopier($item`Spooky Putty sheet`)
@@ -203,7 +204,7 @@ const firstChainMacro = () =>
 
 const secondChainMacro = () =>
   Macro.if_(
-    $monster`Knob Goblin Embezzler`,
+    embezzler,
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.trySkill($skill`Meteor Shower`),
@@ -212,7 +213,7 @@ const secondChainMacro = () =>
         "!hasskill Lecture on Relativity",
         Macro.externalIf(
           get("_sourceTerminalDigitizeMonster") !==
-            $monster`Knob Goblin Embezzler`,
+            embezzler,
           Macro.tryCopier($skill`Digitize`),
         )
           .tryCopier($item`Spooky Putty sheet`)
@@ -381,7 +382,7 @@ function startWandererCounter() {
       }
       garboAdventure(
         $location`The Haunted Kitchen`,
-        Macro.if_($monster`Knob Goblin Embezzler`, Macro.embezzler()).step(
+        Macro.if_(embezzler, Macro.embezzler()).step(
           run.macro,
         ),
       );
@@ -411,7 +412,7 @@ export function dailyFights(): void {
   }
 
   // Fax an embezzler before starting, to prevent an abort in case the faxbot networks are down
-  faxMonster($monster`Knob Goblin Embezzler`);
+  faxMonster(embezzler);
 
   if (embezzlerSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
@@ -543,7 +544,7 @@ export function dailyFights(): void {
         print(`Finished ${nextFight.name}`);
         if (
           totalTurnsPlayed() - startTurns === 1 &&
-          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+          get("lastCopyableMonster") === embezzler &&
           (nextFight.wrongEncounterName ||
             get("lastEncounter") === "Knob Goblin Embezzler")
         ) {
