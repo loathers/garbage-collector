@@ -924,7 +924,11 @@ export const emergencyChainStarters = [
         .forEach((text) => print(text, HIGHLIGHT));
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = copyTargetConfirmInvocation(
-        `Garbo has detected you have ${potential} potential ways to copy an Embezzler, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for an Embezzler?`,
+        `Garbo has detected you have ${potential} potential ways to copy ${
+          globalOptions.target
+        }, but no way to start a fight with one. Current net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for ${
+          globalOptions.target
+        }?`,
       );
       return globalOptions.wishAnswer;
     },
@@ -958,7 +962,7 @@ export const emergencyChainStarters = [
       const profit = (potential + 1) * averageEmbezzlerNet() - WISH_VALUE;
       if (profit < 0) return false;
       print(
-        `You have the following embezzler-sources untapped right now:`,
+        `You have the following copy target sources untapped right now:`,
         HIGHLIGHT,
       );
       copyTargetSources
@@ -969,7 +973,9 @@ export const emergencyChainStarters = [
       globalOptions.wishAnswer = copyTargetConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy a ${
           globalOptions.target
-        }, but no way to start a fight with one. Current embezzler net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${
+        }, but no way to start a fight with one. Current ${
+          globalOptions.target
+        } net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${
           globalOptions.target
         }?`,
       );
