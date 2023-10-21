@@ -477,10 +477,10 @@ export function dailyFights(): void {
               macro: macro(),
               useAuto: false,
             });
-            eventLog.initialEmbezzlersFought +=
+            eventLog.initialTargetsFought +=
               1 + get("_pocketProfessorLectures") - startLectures;
-            eventLog.embezzlerSources.push(fightSource.name);
-            eventLog.embezzlerSources.push(
+            eventLog.targetSources.push(fightSource.name);
+            eventLog.targetSources.push(
               ...new Array<string>(
                 get("_pocketProfessorLectures") - startLectures,
               ).fill("Pocket Professor"),
@@ -544,8 +544,8 @@ export function dailyFights(): void {
           (nextFight.wrongEncounterName ||
             get("lastEncounter") === globalOptions.target.name)
         ) {
-          eventLog.initialEmbezzlersFought++;
-          eventLog.embezzlerSources.push(nextFight.name);
+          eventLog.initialTargetsFought++;
+          eventLog.targetSources.push(nextFight.name);
         }
 
         nextFight = getNextEmbezzlerFight();
