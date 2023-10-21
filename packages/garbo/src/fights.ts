@@ -116,9 +116,9 @@ import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 import { bestConsumable } from "./diet";
 import {
-  embezzlerCount,
-  embezzlerSources,
-  getNextEmbezzlerFight,
+  copyTargetCount,
+  copyTargetSources,
+  getNextCopyTargetFight,
 } from "./embezzler";
 import {
   crateStrategy,
@@ -231,7 +231,7 @@ function embezzlerSetup() {
   setLocation($location`Friar Ceremony Location`);
   potionSetup(false);
   maximize("MP", false);
-  meatMood(true, 750 + baseMeat).execute(embezzlerCount());
+  meatMood(true, 750 + baseMeat).execute(copyTargetCount());
   safeRestore();
   freeFightMood().execute(50);
   useBuffExtenders();
@@ -254,7 +254,7 @@ function embezzlerSetup() {
     }
   }
 
-  bathroomFinance(embezzlerCount());
+  bathroomFinance(copyTargetCount());
 
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
@@ -341,7 +341,7 @@ function embezzlerSetup() {
 }
 
 function startWandererCounter() {
-  const nextFight = getNextEmbezzlerFight();
+  const nextFight = getNextCopyTargetFight();
   if (
     !nextFight ||
     nextFight.canInitializeWandererCounters ||
@@ -410,10 +410,10 @@ export function dailyFights(): void {
   // Fax an embezzler before starting, to prevent an abort in case the faxbot networks are down
   faxMonster(globalOptions.target);
 
-  if (embezzlerSources.some((source) => source.potential())) {
+  if (copyTargetSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
       // check if user wants to wish for embezzler before doing setup
-      if (!getNextEmbezzlerFight()) return;
+      if (!getNextCopyTargetFight()) return;
       embezzlerSetup();
 
       // PROFESSOR COPIES
@@ -437,7 +437,7 @@ export function dailyFights(): void {
 
         for (const potentialLecture of potentialPocketProfessorLectures) {
           const { property, macro, goalMaximize } = potentialLecture;
-          const fightSource = getNextEmbezzlerFight();
+          const fightSource = getNextCopyTargetFight();
           if (!fightSource) return;
           if (get(property, false)) continue;
 
@@ -488,7 +488,7 @@ export function dailyFights(): void {
           }
           set(property, true);
           postCombatActions();
-          const predictedNextFight = getNextEmbezzlerFight();
+          const predictedNextFight = getNextCopyTargetFight();
           if (!predictedNextFight?.draggable) doSausage();
           doGhost();
           startWandererCounter();
@@ -498,7 +498,7 @@ export function dailyFights(): void {
       useFamiliar(meatFamiliar());
 
       // REMAINING EMBEZZLER FIGHTS
-      let nextFight = getNextEmbezzlerFight();
+      let nextFight = getNextCopyTargetFight();
       while (nextFight !== null && myAdventures()) {
         print(`Running fight ${nextFight.name}`);
         const startTurns = totalTurnsPlayed();
@@ -548,7 +548,7 @@ export function dailyFights(): void {
           eventLog.copyTargetSources.push(nextFight.name);
         }
 
-        nextFight = getNextEmbezzlerFight();
+        nextFight = getNextCopyTargetFight();
 
         if (
           romanticMonsterImpossible() &&

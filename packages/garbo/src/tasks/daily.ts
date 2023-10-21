@@ -66,7 +66,7 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { copyTargetCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { estimatedTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT } from "../lib";
@@ -106,14 +106,14 @@ function voterSetup(): void {
     [
       "Meat Drop: +30",
       0.3 *
-        ((baseMeat + 750) * embezzlerCount() +
-          baseMeat * (estimatedGarboTurns() - embezzlerCount())),
+        ((baseMeat + 750) * copyTargetCount() +
+          baseMeat * (estimatedGarboTurns() - copyTargetCount())),
     ],
     [
       "Item Drop: +15",
       0.15 *
-        (4 * 100 * 0.3 * embezzlerCount() +
-          3 * 200 * 0.15 * (estimatedGarboTurns() - embezzlerCount())),
+        (4 * 100 * 0.3 * copyTargetCount() +
+          3 * 200 * 0.15 * (estimatedGarboTurns() - copyTargetCount())),
     ],
     ["Adventures: +1", globalOptions.ascend ? 0 : get("valueOfAdventure")],
     ["Familiar Experience: +2", 8],
@@ -204,7 +204,9 @@ function pantogram(): void {
   if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
     const expectedBarfTurns = globalOptions.nobarf
       ? 0
-      : estimatedGarboTurns() - digitizedMonstersRemaining() - embezzlerCount();
+      : estimatedGarboTurns() -
+        digitizedMonstersRemaining() -
+        copyTargetCount();
     pantogramValue = 100 * expectedBarfTurns;
   } else {
     const lepMult = findLeprechaunMultiplier(meatFamiliar());

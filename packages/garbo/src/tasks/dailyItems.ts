@@ -41,7 +41,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { copyTargetCount } from "../embezzler";
 import { coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -402,7 +402,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
     do: (): void => {
-      const value = rufusPotion.value(embezzlerCount());
+      const value = rufusPotion.value(copyTargetCount());
       const price = rufusPotion.price(false);
       _shouldClearRufusQuest = value.some(
         (value) =>

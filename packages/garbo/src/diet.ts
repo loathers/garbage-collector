@@ -48,7 +48,6 @@ import {
   $familiar,
   $item,
   $items,
-  $monster,
   $skill,
   clamp,
   Diet,
@@ -70,7 +69,7 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { embezzlerCount } from "./embezzler";
+import { copyTargetCount } from "./embezzler";
 import { expectedGregs } from "./resources/extrovermectin";
 import {
   arrayEquals,
@@ -551,7 +550,7 @@ function gregariousCount(): {
   const gregariousCharges =
     get("beGregariousCharges") +
     (get("beGregariousFightsLeft") > 0 &&
-    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+    get("beGregariousMonster") === globalOptions.target
       ? 1
       : 0);
   const gregariousFightsPerCharge = expectedGregs("extro");
@@ -594,7 +593,7 @@ function copiers(): MenuItem<Note>[] {
 
 function countCopies(diet: Diet<Note>): number {
   // this only counts the copies not yet realized
-  // any copies already realized will be properly counted by embezzlerCount
+  // any copies already realized will be properly counted by copyTargetCount
 
   // returns an array of expected counts for number of greg copies to fight per pill use
   // the last value is how much you expect to fight per pill
@@ -810,7 +809,7 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseEmbezzlers = embezzlerCount();
+  const baseEmbezzlers = copyTargetCount();
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -921,7 +920,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
     (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
   );
 
-  const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
+  const embezzlers = Math.floor(copyTargetCount() + countCopies(diet));
   const adventures = Math.floor(
     estimatedGarboTurns() + diet.expectedAdventures(),
   );

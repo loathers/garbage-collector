@@ -76,7 +76,7 @@ import {
   RunOptions,
 } from "./lib";
 
-export class EmbezzlerFight implements EmbezzlerFightConfigOptions {
+export class CopyTargetFight implements EmbezzlerFightConfigOptions {
   name: string;
   available: () => boolean;
   potential: () => number;
@@ -149,7 +149,7 @@ export class EmbezzlerFight implements EmbezzlerFightConfigOptions {
 }
 
 export const chainStarters = [
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Chateau Painting",
     () =>
       ChateauMantegna.have() &&
@@ -169,7 +169,7 @@ export const chainStarters = [
       );
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Combat Lover's Locket",
     () =>
       CombatLoversLocket.availableLocketMonsters().includes(
@@ -189,7 +189,7 @@ export const chainStarters = [
       );
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Fax",
     () =>
       have($item`Clan VIP Lounge key`) &&
@@ -213,7 +213,7 @@ export const chainStarters = [
       );
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Scepter Semirare",
     () =>
       canAdventure($location`Cobb's Knob Treasury`) &&
@@ -236,7 +236,7 @@ export const chainStarters = [
       );
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Pillkeeper Semirare",
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
@@ -270,7 +270,7 @@ export const chainStarters = [
 ];
 
 export const copySources = [
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Time-Spinner",
     () =>
       have($item`Time-Spinner`) &&
@@ -302,7 +302,7 @@ export const copySources = [
       );
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Spooky Putty & Rain-Doh",
     () =>
       (have($item`Spooky Putty monster`) &&
@@ -377,7 +377,7 @@ export const copySources = [
       );
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "4-d Camera",
     () =>
       have($item`shaking 4-d camera`) &&
@@ -397,7 +397,7 @@ export const copySources = [
       );
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Ice Sculpture",
     () =>
       have($item`ice sculpture`) &&
@@ -417,7 +417,7 @@ export const copySources = [
       );
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Green Taffy",
     () =>
       have($item`envyfish egg`) &&
@@ -433,7 +433,7 @@ export const copySources = [
       withMacro(options.macro, () => use($item`envyfish egg`)), options.useAuto;
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Screencapped Monster",
     () =>
       have($item`screencapped monster`) &&
@@ -450,7 +450,7 @@ export const copySources = [
       );
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Sticky Clay Homunculus",
     () =>
       have($item`sticky clay homunculus`) &&
@@ -469,7 +469,7 @@ export const copySources = [
 ];
 
 export const wanderSources = [
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Lucky!",
     () =>
       canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`),
@@ -482,7 +482,7 @@ export const wanderSources = [
       location: $location`Cobb's Knob Treasury`,
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Digitize",
     () =>
       get("_sourceTerminalDigitizeMonster") === globalOptions.target &&
@@ -494,7 +494,7 @@ export const wanderSources = [
       draggable: "wanderer",
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Guaranteed Romantic Monster",
     () =>
       get("_romanticFightsLeft") > 0 &&
@@ -506,7 +506,7 @@ export const wanderSources = [
       draggable: "wanderer",
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Enamorang",
     () =>
       Counter.get("Enamorang") <= 0 &&
@@ -573,7 +573,7 @@ const gregFights = (
     ![null, globalOptions.target].includes(get(monsterProp));
 
   return [
-    new EmbezzlerFight(
+    new CopyTargetFight(
       name,
       () =>
         haveCheck() &&
@@ -596,7 +596,7 @@ const gregFights = (
         canInitializeWandererCounters: true,
       },
     ),
-    new EmbezzlerFight(
+    new CopyTargetFight(
       `${name} (Set Up Crystal Ball)`,
       () =>
         get(monsterProp) === globalOptions.target &&
@@ -659,7 +659,7 @@ function proceedWithOrb(): boolean {
   ];
   if (
     CrystalBall.ponder().get($location`Noob Cave`) === globalOptions.target &&
-    embezzlerSources
+    copyTargetSources
       .filter(
         (source) => !gregFightNames.some((name) => source.name.includes(name)),
       )
@@ -672,7 +672,7 @@ function proceedWithOrb(): boolean {
 }
 
 export const conditionalSources = [
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Orb Prediction",
     () =>
       have($item`miniature crystal ball`) &&
@@ -704,7 +704,7 @@ export const conditionalSources = [
       canInitializeWandererCounters: true,
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Macrometeorite",
     () =>
       gregReady() &&
@@ -753,7 +753,7 @@ export const conditionalSources = [
       gregariousReplace: true,
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Powerful Glove",
     () =>
       gregReady() &&
@@ -804,7 +804,7 @@ export const conditionalSources = [
     },
   ),
   ...gregLikeFights,
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Backup",
     () =>
       get("lastCopyableMonster") === globalOptions.target &&
@@ -837,7 +837,7 @@ export const conditionalSources = [
 ];
 
 export const fakeSources = [
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Professor MeatChain",
     () => false,
     () =>
@@ -848,7 +848,7 @@ export const fakeSources = [
       return;
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Professor WeightChain",
     () => false,
     () =>
@@ -890,10 +890,10 @@ function embezzlerConfirmInvocation(msg: string): boolean {
 
 export const emergencyChainStarters = [
   // These are very deliberately the last embezzler fights.
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "11-leaf clover (untapped potential)",
     () => {
-      const potential = Math.floor(embezzlerCount());
+      const potential = Math.floor(copyTargetCount());
       if (potential < 1) return false;
       if (!canAdventure($location`Cobb's Knob Treasury`)) {
         return false;
@@ -914,7 +914,7 @@ export const emergencyChainStarters = [
         `You have the following embezzler-sources untapped right now:`,
         HIGHLIGHT,
       );
-      embezzlerSources
+      copyTargetSources
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
@@ -944,10 +944,10 @@ export const emergencyChainStarters = [
       globalOptions.askedAboutWish = false;
     },
   ),
-  new EmbezzlerFight(
+  new CopyTargetFight(
     "Pocket Wish (untapped potential)",
     () => {
-      const potential = Math.floor(embezzlerCount());
+      const potential = Math.floor(copyTargetCount());
       if (potential < 1) return false;
       if (get("_genieFightsUsed") >= 3) return false;
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
@@ -957,7 +957,7 @@ export const emergencyChainStarters = [
         `You have the following embezzler-sources untapped right now:`,
         HIGHLIGHT,
       );
-      embezzlerSources
+      copyTargetSources
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
@@ -998,7 +998,7 @@ export const emergencyChainStarters = [
   ),
 ];
 
-export const embezzlerSources = [
+export const copyTargetSources = [
   ...wanderSources,
   ...conditionalSources,
   ...copySources,
@@ -1007,16 +1007,18 @@ export const embezzlerSources = [
   ...fakeSources,
 ];
 
-export function embezzlerCount(): number {
-  return sum(embezzlerSources, (source: EmbezzlerFight) => source.potential());
+export function copyTargetCount(): number {
+  return sum(copyTargetSources, (source: CopyTargetFight) =>
+    source.potential(),
+  );
 }
 
 /**
- * Gets next available embezzler fight. If there is no way to generate a fight, but copies are available,
- * the user is prompted to purchase a pocket wish to start the embezzler chain.
- * @returns the next available embezzler fight
+ * Gets next available copy target fight. If there is no way to generate a fight, but copies are available,
+ * the user is prompted to purchase a pocket wish to start the copy target chain.
+ * @returns the next available copy target fight
  */
-export function getNextEmbezzlerFight(): EmbezzlerFight | null {
+export function getNextCopyTargetFight(): CopyTargetFight | null {
   const wanderer = wanderSources.find((fight) => fight.available());
   if (wanderer) return wanderer;
   const conditional = conditionalSources.find((fight) => fight.available());

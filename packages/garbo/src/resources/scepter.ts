@@ -13,7 +13,7 @@ import {
   have,
 } from "libram";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { copyTargetCount } from "../embezzler";
 import { EMBEZZLER_MULTIPLIER } from "../lib";
 import { Potion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -69,7 +69,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
       new Potion($item`august scepter`, {
         effect: $effect`Incredibly Well Lit`,
         duration: 30,
-      }).gross(embezzlerCount()), // TODO: Yachtzee
+      }).gross(copyTargetCount()), // TODO: Yachtzee
     type: "buff",
   },
   {
@@ -79,7 +79,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
         effect: $effect`Offhand Remarkable`,
         duration: 30,
         effectValues: { meatDrop: 80 }, // Half a purse
-      }).gross(embezzlerCount()) +
+      }).gross(copyTargetCount()) +
       (globalOptions.ascend
         ? 0
         : (5 + (have($familiar`Left-Hand Man`) ? 5 : 0)) *
