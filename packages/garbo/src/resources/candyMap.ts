@@ -40,7 +40,7 @@ export function getTreatOutfit(): string {
   );
   if (!availableOutfits.length) {
     print(
-      "You don't seem to actually have any trick-or-treat outfits available, my friend!",
+      "You don't seem to actually have any trick-or-treating outfits available, my friend!",
     );
   }
   return maxBy(availableOutfits, treatValue);
@@ -48,10 +48,13 @@ export function getTreatOutfit(): string {
 
 export function treatOutfit(): Outfit {
   const outfit = new Outfit();
-  const pieces = outfitPieces(getTreatOutfit());
+  const bestTreatOutfit = getTreatOutfit();
+  const pieces = outfitPieces(bestTreatOutfit);
   for (const piece of pieces) {
     if (!outfit.equip(piece)) {
-      print(`Could not equip all pieces of treat outfit: aborted on ${piece}`);
+      print(
+        `Could not equip all pieces of trick-or-treating outfit ${bestTreatOutfit}: aborted on ${piece}`,
+      );
     }
   }
 
