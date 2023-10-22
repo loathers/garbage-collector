@@ -43113,7 +43113,7 @@ function dailyDungeon(additionalReady) {
         689: 1,
         690: 2,
         691: 2,
-        692: 2,
+        692: 3,
         693: 2
       };
     },
