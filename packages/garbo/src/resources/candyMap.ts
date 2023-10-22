@@ -79,7 +79,7 @@ export function candyRichBlockValue(): number {
 function shouldAcquireCandyMap(): boolean {
   return (
     !holiday().includes("Halloween") &&
-    candyRichBlockValue() < mallPrice($item`map to a candy-rich block`)
+    candyRichBlockValue() > mallPrice($item`map to a candy-rich block`)
   );
 }
 
