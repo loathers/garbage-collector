@@ -346,6 +346,7 @@ const DailyTasks: GarboTask[] = [
     do: (): void => {
       visitUrl("guild.php?place=paco");
       if (handlingChoice()) runChoice(1);
+      visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
     },
     limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
     spendsTurn: false,
@@ -356,6 +357,7 @@ const DailyTasks: GarboTask[] = [
     completed: floristAvailable,
     after: ["Daily/Unlock Woods"],
     do: () => {
+      visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
       visitUrl("place.php?whichplace=forestvillage&action=fv_friar");
       runChoice(4);
     },
