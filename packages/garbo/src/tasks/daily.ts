@@ -19,6 +19,7 @@ import {
   Item,
   itemAmount,
   mallPrice,
+  myAscensions,
   myClass,
   myDaycount,
   myHash,
@@ -367,13 +368,30 @@ const DailyTasks: GarboTask[] = [
     name: "Continuum Transfunctioner",
     ready: () => canAdventure($location`The Spooky Forest`),
     completed: () => have($item`continuum transfunctioner`),
+    after: ["Daily/Unlock Woods"],
     do: (): void => {
-      // taken from autoscend
-      visitUrl("place.php?whichplace=woods");
+      visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
       visitUrl("place.php?whichplace=forestvillage&action=fv_mystic");
       runChoice(1); // Sure, old man.  Tell me all about it
       runChoice(1); // Against my better judgement, yes
       runChoice(1); // Er, sure, I guess so
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Free Goofballs",
+    ready: () => canAdventure($location`The Spooky Forest`),
+    completed: () => get("lastGoofballBuy") === myAscensions(),
+    after: ["Daily/Unlock Woods"],
+    do: () => {
+      if (itemAmount($item`gloomy black mushroom`) > 0) {
+        putCloset(
+          itemAmount($item`gloomy black mushroom`),
+          $item`gloomy black mushroom`,
+        );
+      }
+      visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
+      visitUrl("tavern.php?action=buygoofballs");
     },
     spendsTurn: false,
   },
