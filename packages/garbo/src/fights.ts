@@ -2634,7 +2634,7 @@ function yachtzee(): void {
       const getUMD =
         !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
         garboValue($item`Ultimate Mind Destroyer`) >=
-          2000 * (1 + numericModifier("meat drop") / 100) &&
+          Math.min(20000, 2000 * (1 + numericModifier("meat drop") / 100)) &&
         (!lastUMDDate ||
           gameDay().getTime() - Date.parse(lastUMDDate) >=
             1000 * 60 * 60 * 24 * 7);
