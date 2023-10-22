@@ -199,7 +199,7 @@ function dailyDungeon(additionalReady: () => boolean) {
       garboValue($item`fat loot token`) >
         get("valueOfAdventure") *
           clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
-    choices: () => ({ 689: 1, 690: 2, 691: 2, 692: 2, 693: 2 }),
+    choices: () => ({ 689: 1, 690: 2, 691: 2, 692: 3, 693: 2 }),
     acquire:
       $items`ring of Detect Boring Doors, eleven-foot pole, Pick-O-Matic lockpicks`.map(
         (i) => ({ item: i }),
