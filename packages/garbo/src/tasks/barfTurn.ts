@@ -211,6 +211,30 @@ function dailyDungeon(additionalReady: () => boolean) {
   };
 }
 
+function vampOut(additionalReady: () => boolean) {
+  return {
+    ready: () =>
+      additionalReady() &&
+      have($item`plastic vampire fangs`) &&
+      garboValue($item`Interview With You (a Vampire)`) >
+        get("valueOfAdventure"),
+    completed: () => get("_interviewMasquerade"),
+    choices: () => ({
+      546: 12,
+    }),
+    do: () => {
+      visitUrl("place.php?whichplace=town&action=town_vampout");
+      runChoice(-1);
+    },
+    outfit: () =>
+      freeFightOutfit({
+        equip: $items`plastic vampire fangs`,
+      }),
+    spendsTurn: true,
+    turns: () => (get("_interviewMasquerade") ? 0 : 1),
+  };
+}
+
 function willDrunkAdventure() {
   return have($item`Drunkula's wineglass`) && globalOptions.ascend;
 }
@@ -233,6 +257,16 @@ const NonBarfTurnTasks: AlternateTask[] = [
       freeFightOutfit({
         equip: $items`ring of Detect Boring Doors`,
       }),
+    sobriety: "sober",
+  },
+  {
+    name: "Vamp Out (drunk)",
+    ...vampOut(() => willDrunkAdventure()),
+    sobriety: "drunk",
+  },
+  {
+    name: "Vamp Out (sober)",
+    ...vampOut(() => !willDrunkAdventure()),
     sobriety: "sober",
   },
   {
