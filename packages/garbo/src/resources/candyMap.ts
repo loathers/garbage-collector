@@ -86,10 +86,18 @@ function useCandyMapTask(): GarboTask {
     ready: () => shouldAcquireCandyMap(),
     completed: () => get("_mapToACandyRichBlockUsed"),
     do: (): void => {
-      acquire(1, $item`map to a candy-rich block`, candyRichBlockValue() - 1);
-      use($item`map to a candy-rich block`);
+      if (
+        acquire(
+          1,
+          $item`map to a candy-rich block`,
+          candyRichBlockValue() - 1,
+          false,
+        )
+      ) {
+        use($item`map to a candy-rich block`);
+      }
     },
-    limit: { tries: 1 },
+    limit: { skip: 1 },
     spendsTurn: false,
   };
 }
