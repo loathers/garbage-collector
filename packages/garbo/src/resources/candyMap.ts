@@ -39,7 +39,9 @@ export function getTreatOutfit(): string {
     outfitPieces(name).every((piece) => canEquip(piece)),
   );
   if (!availableOutfits.length) {
-    print("You don't seem to actually have any trick-or-treat outfits available, my friend!");
+    print(
+      "You don't seem to actually have any trick-or-treat outfits available, my friend!",
+    );
   }
   return maxBy(availableOutfits, treatValue);
 }
@@ -72,7 +74,10 @@ export function candyRichBlockValue(): number {
 }
 
 function shouldAcquireCandyMap(): boolean {
-  return !holiday().includes("Halloween") && (candyRichBlockValue() < mallPrice($item`map to a candy-rich block`));
+  return (
+    !holiday().includes("Halloween") &&
+    candyRichBlockValue() < mallPrice($item`map to a candy-rich block`)
+  );
 }
 
 function useCandyMapTask(): GarboTask {
@@ -92,7 +97,8 @@ function useCandyMapTask(): GarboTask {
 function doCandyTreat(): GarboTask {
   return {
     name: "Treat",
-    completed: () => !get("_mapToACandyRichBlockUsed") || holiday().includes("Halloween"),
+    completed: () =>
+      !get("_mapToACandyRichBlockUsed") || holiday().includes("Halloween"),
     outfit: treatOutfit,
     do: (): void => {
       // We do all treat houses in a row as one task for speed reasons
@@ -118,6 +124,6 @@ function doCandyTreat(): GarboTask {
   };
 }
 
-export function freeCandyTasks(): GarboTask[] {
+export function candyMapTasks(): GarboTask[] {
   return [useCandyMapTask(), doCandyTreat()];
 }
