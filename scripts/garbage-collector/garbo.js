@@ -43792,6 +43792,7 @@ var DailyTasks = [
       (0, import_kolmafia113.visitUrl)("guild.php?place=paco");
       if ((0, import_kolmafia113.handlingChoice)())
         (0, import_kolmafia113.runChoice)(1);
+      (0, import_kolmafia113.visitUrl)("woods.php");
     },
     limit: {
       skip: 3
@@ -43807,6 +43808,7 @@ var DailyTasks = [
     completed: import_kolmafia113.floristAvailable,
     after: ["Daily/Unlock Woods"],
     do: function() {
+      (0, import_kolmafia113.visitUrl)("woods.php");
       (0, import_kolmafia113.visitUrl)("place.php?whichplace=forestvillage&action=fv_friar");
       (0, import_kolmafia113.runChoice)(4);
     },
