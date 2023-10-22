@@ -6,6 +6,7 @@ import { DailyItemsQuest } from "./dailyItems";
 import { FreeFightQuest } from "./freeFight";
 import { PostFreeFightQuest } from "./postFreeFight";
 import { SetupEmbezzlerQuest } from "./embezzler";
+import { DailySeaQuest } from "./dailySea";
 import {
   runGarboQuests,
   runGarboTasks,
@@ -19,6 +20,7 @@ export {
   DailyFamiliarsQuest,
   DailyItemsQuest,
   DailyQuest,
+  DailySeaQuest,
   FreeFightQuest,
   PostFreeFightQuest,
   SetupEmbezzlerQuest,
