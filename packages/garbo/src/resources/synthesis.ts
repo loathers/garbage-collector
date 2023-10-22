@@ -35,7 +35,9 @@ export default function synthesize(casts: number, effect: Effect): void {
   const saveLimit = 1;
   const buyableCandies = $items
     .all()
-    .filter((i) => i.tradeable && i.candyType === "complex" && !blockList.has(i))
+    .filter(
+      (i) => i.tradeable && i.candyType === "complex" && !blockList.has(i),
+    )
     .sort((a, b) => mallPrice(a) - mallPrice(b))
     .slice(0, 50);
   const shuffledAllowlist = shuffle(allowList);
