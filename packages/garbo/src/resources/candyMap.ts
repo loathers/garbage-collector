@@ -112,7 +112,7 @@ function doCandyTreat(): GarboTask {
         }
       }
     },
-    limit: { tries: 1 },
+    limit: { skip: 1 },
     spendsTurn: false,
     combat: new GarboStrategy(Macro.abort()),
   };
