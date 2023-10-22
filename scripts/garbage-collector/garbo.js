@@ -42526,7 +42526,7 @@ function yachtzee() {
         return;
       var lastUMDDate = property_exports.getString("umdLastObtained");
       var getUMD = !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
-      garboValue($item(_templateObject4822 || (_templateObject4822 = _taggedTemplateLiteral101(["Ultimate Mind Destroyer"])))) >= 2e3 * (1 + (0, import_kolmafia110.numericModifier)("meat drop") / 100) && (!lastUMDDate || gameDay().getTime() - Date.parse(lastUMDDate) >= 1e3 * 60 * 60 * 24 * 7);
+      garboValue($item(_templateObject4822 || (_templateObject4822 = _taggedTemplateLiteral101(["Ultimate Mind Destroyer"])))) >= Math.min(2e4, 2e3 * (1 + (0, import_kolmafia110.numericModifier)("meat drop") / 100)) && (!lastUMDDate || gameDay().getTime() - Date.parse(lastUMDDate) >= 1e3 * 60 * 60 * 24 * 7);
       setChoice(918, getUMD ? 1 : 2);
       garboAdventureAuto($location(_templateObject4832 || (_templateObject4832 = _taggedTemplateLiteral101(["The Sunken Party Yacht"]))), Macro2.abort());
       if (Florist_exports.have() && Florist_exports.Crookweed.available()) {
