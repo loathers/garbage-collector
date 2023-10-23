@@ -11,7 +11,7 @@
     "lint": " yarn workspaces foreach -pv run lint",
     "pre-commit": "yarn workspaces foreach -v run pre-commit",
     "madge": "yarn workspaces foreach -v run madge",
-    "prepare": "husky install"
+    "postinstall": "husky install"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
