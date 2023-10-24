@@ -371,6 +371,7 @@ const POSSIBLE_SNEEGLEEB_DROPS = Item.all().filter(
     i.tradeable && i.discardable && (i.inebriety || i.fullness || i.potion),
 );
 let sneegleebDropValue: number;
+const SNEEGLEEB_DROP_RATE = 0.13;
 function sneegleebs(): Map<Item, number> {
   sneegleebDropValue ??=
     sum(POSSIBLE_SNEEGLEEB_DROPS, (item) =>
@@ -379,8 +380,11 @@ function sneegleebs(): Map<Item, number> {
   return new Map<Item, number>(
     (
       [
-        [$item`KoL Con 13 snowglobe`, sneegleebDropValue * 0.13],
-        [$item`can of mixed everything`, sneegleebDropValue * 0.065],
+        [$item`KoL Con 13 snowglobe`, sneegleebDropValue * SNEEGLEEB_DROP_RATE],
+        [
+          $item`can of mixed everything`,
+          (sneegleebDropValue * SNEEGLEEB_DROP_RATE) / 2,
+        ],
       ] as const
     ).filter(([item]) => have(item)),
   );
