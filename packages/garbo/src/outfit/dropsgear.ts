@@ -372,10 +372,11 @@ const POSSIBLE_SNEEGLEEB_DROPS = Item.all().filter(
 );
 let sneegleebDropValue: number;
 const SNEEGLEEB_DROP_RATE = 0.13;
+const MAX_SNEEGLEEB_PRICE = 100_000; // arbitrary, to help avoid outliers
 function sneegleebs(): Map<Item, number> {
   sneegleebDropValue ??=
     sum(POSSIBLE_SNEEGLEEB_DROPS, (item) =>
-      Math.min(garboValue(item), 100000),
+      Math.min(garboValue(item), MAX_SNEEGLEEB_PRICE),
     ) / POSSIBLE_SNEEGLEEB_DROPS.length;
   return new Map<Item, number>(
     (
