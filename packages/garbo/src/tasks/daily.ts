@@ -380,7 +380,9 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Free Goofballs",
-    ready: () => canAdventure($location`The Spooky Forest`),
+    ready: () =>
+      canAdventure($location`The Spooky Forest`) &&
+      get("questL03Rat") !== "unstarted",
     completed: () => get("lastGoofballBuy") === myAscensions(),
     after: ["Daily/Unlock Woods"],
     do: () => {
