@@ -370,16 +370,17 @@ const POSSIBLE_SNEEGLEEB_DROPS = Item.all().filter(
   (i) =>
     i.tradeable && i.discardable && (i.inebriety || i.fullness || i.potion),
 );
+let sneegleebDropValue: number;
 function sneegleebs(): Map<Item, number> {
-  const dropValue =
+  sneegleebDropValue ??=
     sum(POSSIBLE_SNEEGLEEB_DROPS, (item) =>
       Math.min(garboValue(item), 100000),
     ) / POSSIBLE_SNEEGLEEB_DROPS.length;
   return new Map<Item, number>(
     (
       [
-        [$item`KoL Con 13 snowglobe`, dropValue * 0.13],
-        [$item`can of mixed everything`, dropValue * 0.065],
+        [$item`KoL Con 13 snowglobe`, sneegleebDropValue * 0.13],
+        [$item`can of mixed everything`, sneegleebDropValue * 0.065],
       ] as const
     ).filter(([item]) => have(item)),
   );
