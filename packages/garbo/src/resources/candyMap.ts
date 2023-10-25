@@ -43,17 +43,17 @@ const trickHats = $items`invisible bag, witch hat, beholed bedsheet, wolfman mas
 function treatValue(outfit: string): number {
   return sum(
     Object.entries(outfitTreats(outfit)),
-    ([candyName, probability]) => probability * garboValue(toItem(candyName))
+    ([candyName, probability]) => probability * garboValue(toItem(candyName)),
   );
 }
 
 export function getTreatOutfit(): string {
   const availableOutfits = getOutfits().filter((name) =>
-    outfitPieces(name).every((piece) => canEquip(piece))
+    outfitPieces(name).every((piece) => canEquip(piece)),
   );
   if (!availableOutfits.length) {
     print(
-      "You don't seem to actually have any trick-or-treating outfits available, my friend!"
+      "You don't seem to actually have any trick-or-treating outfits available, my friend!",
     );
   }
   return maxBy(availableOutfits, treatValue);
@@ -66,7 +66,7 @@ export function treatOutfit(): Outfit {
   for (const piece of pieces) {
     if (!outfit.equip(piece)) {
       print(
-        `Could not equip all pieces of trick-or-treating outfit ${bestTreatOutfit}: aborted on ${piece}`
+        `Could not equip all pieces of trick-or-treating outfit ${bestTreatOutfit}: aborted on ${piece}`,
       );
     }
   }
@@ -108,7 +108,7 @@ function useCandyMapTask(): GarboTask {
           1,
           $item`map to a candy-rich block`,
           candyRichBlockValue() - 1,
-          false
+          false,
         )
       ) {
         withChoice(804, 2, () => use($item`map to a candy-rich block`));
@@ -134,14 +134,14 @@ function doCandyTreat(): GarboTask {
         if (getBlockHtml().match(RegExp(`whichhouse=${house}>[^>]*?house_l`))) {
           checkedHousesForTricking.push(house);
           visitUrl(
-            `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`
+            `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`,
           );
         } else if (
           getBlockHtml().match(RegExp(`whichhouse=${house}>[^>]*?starhouse`))
         ) {
           checkedHousesForTricking.push(house);
           visitUrl(
-            `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`
+            `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`,
           );
           runChoice(2);
           visitUrl(`place.php?whichplace=town&action=town_trickortreat`);
@@ -187,7 +187,7 @@ export function doCandyTrick(): GarboTask {
         if (getBlockHtml().match(RegExp(`whichhouse=${house}>[^>]*?house_d`))) {
           visitUrl(`place.php?whichplace=town&action=town_trickortreat`);
           visitUrl(
-            `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`
+            `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`,
           );
           return;
         }
@@ -197,7 +197,7 @@ export function doCandyTrick(): GarboTask {
       const hat = trickHats.find((hat) => have(hat));
       if (!hat) {
         throw new Error(
-          "We thought we had an appropriate hat for tricking, but we did not."
+          "We thought we had an appropriate hat for tricking, but we did not.",
         );
       }
       return freeFightOutfit({ hat });
