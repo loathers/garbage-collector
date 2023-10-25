@@ -8,6 +8,7 @@ import {
   maxBy,
   set,
   sum,
+  withChoice,
 } from "libram";
 import {
   canEquip,
@@ -19,6 +20,7 @@ import {
   print,
   runChoice,
   toItem,
+  use,
   visitUrl,
 } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
@@ -106,7 +108,7 @@ function useCandyMapTask(): GarboTask {
           false,
         )
       ) {
-        visitUrl("inv_use.php?pwd&whichitem=11337");
+        withChoice(804, 2, () => use($item`map to a candy-rich block`));
         set("_mapToACandyRichBlockUsed", "true");
       }
     },
