@@ -35904,7 +35904,10 @@ function useCandyMapTask() {
     },
     do: function() {
       if (acquire(1, $item(_templateObject860 || (_templateObject860 = _taggedTemplateLiteral85(["map to a candy-rich block"]))), candyRichBlockValue() - 1, false)) {
-        (0, import_kolmafia94.use)($item(_templateObject951 || (_templateObject951 = _taggedTemplateLiteral85(["map to a candy-rich block"]))));
+        withChoice(804, 2, function() {
+          return (0, import_kolmafia94.use)($item(_templateObject951 || (_templateObject951 = _taggedTemplateLiteral85(["map to a candy-rich block"]))));
+        });
+        _set("_mapToACandyRichBlockUsed", "true");
       }
     },
     limit: {
