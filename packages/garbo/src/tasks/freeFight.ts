@@ -57,6 +57,7 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
+import { doCandyTrick } from "../resources";
 
 type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
   combatCount: () => number;
@@ -574,6 +575,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combatCount: () =>
       clamp(3 - CombatLoversLocket.reminiscesLeft() - locketsToSave(), 0, 3),
   },
+  { ...doCandyTrick(), combatCount: () => 5, tentacle: true },
   // li'l ninja costume
   // closed-circuit pay phone (make into it's own Quest)
 ].map(freeFightTask);
