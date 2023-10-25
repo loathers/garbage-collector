@@ -1,5 +1,14 @@
 import { Outfit } from "grimoire-kolmafia";
-import { $familiar, $item, get, getSaleValue, have, maxBy, sum } from "libram";
+import {
+  $familiar,
+  $item,
+  get,
+  getSaleValue,
+  have,
+  maxBy,
+  set,
+  sum,
+} from "libram";
 import {
   canEquip,
   getOutfits,
@@ -10,7 +19,6 @@ import {
   print,
   runChoice,
   toItem,
-  use,
   visitUrl,
 } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
@@ -98,7 +106,8 @@ function useCandyMapTask(): GarboTask {
           false,
         )
       ) {
-        use($item`map to a candy-rich block`);
+        visitUrl("inv_use.php?pwd&whichitem=11337");
+        set("_mapToACandyRichBlockUsed", "true");
       }
     },
     limit: { skip: 1 },
