@@ -1,5 +1,15 @@
 import { Outfit } from "grimoire-kolmafia";
-import { $familiar, $item, get, getSaleValue, have, maxBy, sum } from "libram";
+import {
+  $familiar,
+  $item,
+  get,
+  getSaleValue,
+  have,
+  maxBy,
+  set,
+  sum,
+  withChoice,
+} from "libram";
 import {
   canEquip,
   getOutfits,
@@ -98,7 +108,8 @@ function useCandyMapTask(): GarboTask {
           false,
         )
       ) {
-        use($item`map to a candy-rich block`);
+        withChoice(804, 2, () => use($item`map to a candy-rich block`));
+        set("_mapToACandyRichBlockUsed", "true");
       }
     },
     limit: { skip: 1 },
