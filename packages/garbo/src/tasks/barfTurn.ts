@@ -10,6 +10,7 @@ import {
   myInebriety,
   myLevel,
   myTurncount,
+  outfitPieces,
   runChoice,
   totalTurnsPlayed,
   toUrl,
@@ -31,6 +32,7 @@ import {
   ensureEffect,
   get,
   getModifier,
+  GingerBread,
   have,
   questStep,
   SourceTerminal,
@@ -235,6 +237,28 @@ function vampOut(additionalReady: () => boolean) {
   };
 }
 
+function gingerbreadMidnight(additionalReady: () => boolean) {
+  return {
+    name: "Gingerbread Midnight",
+    ready: () =>
+      additionalReady() &&
+      outfitPieces("Gingerbread Best").every(
+        (piece) => have(piece) && canEquip(piece),
+      ) &&
+      GingerBread.availableLocations().includes(
+        $location`Gingerbread Upscale Retail District`,
+      ),
+    completed: () => GingerBread.minutesToMidnight() !== 0,
+    do: $location`Gingerbread Upscale Retail District`,
+    outfit: () => ({
+      equip: outfitPieces("Gingerbread Best"),
+      offhand: sober() ? undefined : $item`Drunkula's wineglass`,
+    }),
+    combat: new GarboStrategy(Macro.abort()),
+    spendsTurn: true,
+  };
+}
+
 function willDrunkAdventure() {
   return have($item`Drunkula's wineglass`) && globalOptions.ascend;
 }
@@ -268,6 +292,16 @@ const NonBarfTurnTasks: AlternateTask[] = [
     name: "Vamp Out (sober)",
     ...vampOut(() => !willDrunkAdventure()),
     sobriety: "sober",
+  },
+  {
+    ...gingerbreadMidnight(() => willDrunkAdventure()),
+    name: "Gingerbread Midnight (drunk)",
+    turns: () => (GingerBread.minutesToMidnight() === 0 ? 1 : 0),
+  },
+  {
+    ...gingerbreadMidnight(() => !willDrunkAdventure()),
+    name: "Gingerbread Midnight (sober)",
+    turns: () => (GingerBread.minutesToMidnight() === 0 ? 1 : 0),
   },
   {
     name: "Map for Pills",
@@ -523,6 +557,17 @@ const BarfTurnTasks: GarboTask[] = [
       sobriety: "sober",
     },
   ),
+  {
+    name: "Gingerbread Noon",
+    completed: () => GingerBread.minutesToNoon() !== 0,
+    do: $location`Gingerbread Train Station`,
+    choices: { 1204: 1 },
+    combat: new GarboStrategy(Macro.abort()),
+    outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+    spendsTurn: true,
+  },
+  // If extra adventures are unlocked, we want to finish midnight to re-open the zone ASAP
+  gingerbreadMidnight(() => get("gingerExtraAdventures")),
 ];
 
 function nonBarfTurns(): number {
