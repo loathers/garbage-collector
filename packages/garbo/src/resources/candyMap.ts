@@ -29,6 +29,7 @@ import { garboValue } from "../garboValue";
 import { acquire } from "../acquire";
 import { GarboStrategy, Macro } from "../combat";
 import { freeFightOutfit } from "../outfit";
+import { globalOptions } from "../config";
 
 const HOUSE_NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 const checkedHousesForTricking: number[] = [];
@@ -86,7 +87,12 @@ export function candyRichBlockValue(): number {
     : 0;
 
   const outfitCandyTotal = 3 * outfitCandyValue * totOutfitCandyMultiplier;
-  return outfitCandyTotal + bowlValue + prunetsValue;
+  return (
+    outfitCandyTotal +
+    bowlValue +
+    prunetsValue +
+    5 * globalOptions.prefs.valueOfFreeFight
+  );
 }
 
 function shouldAcquireCandyMap(): boolean {
