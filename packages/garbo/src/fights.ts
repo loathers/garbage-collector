@@ -93,6 +93,7 @@ import {
   get,
   getAverageAdventures,
   getFoldGroup,
+  GingerBread,
   have,
   maxBy,
   property,
@@ -1438,7 +1439,7 @@ const freeRunFightSources = [
   ),
   new FreeFight(
     () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
+      GingerBread.available() &&
       get("gingerAdvanceClockUnlocked") &&
       !get("_gingerbreadClockVisited") &&
       get("_gingerbreadCityTurns") <= 3,
@@ -1459,11 +1460,7 @@ const freeRunFightSources = [
     },
   ),
   new FreeRunFight(
-    () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) <
-        9,
+    () => GingerBread.available() && GingerBread.minutesToNoon() > 0,
     (runSource: ActionSource) => {
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
@@ -1485,11 +1482,7 @@ const freeRunFightSources = [
     },
   ),
   new FreeFight(
-    () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) ===
-        9,
+    () => GingerBread.available() && GingerBread.minutesToNoon() === 0,
     () => {
       propertyManager.setChoices({
         1204: 1, // Gingerbread Train Station Noon random candy
@@ -1508,13 +1501,9 @@ const freeRunFightSources = [
   ),
   new FreeRunFight(
     () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) >=
-        10 &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) <
-        19 &&
+      GingerBread.available() &&
+      GingerBread.minutesToMidnight() > 0 &&
+      GingerBread.minutesToNoon() < 0 &&
       (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     (runSource: ActionSource) => {
       propertyManager.setChoices({
@@ -1538,10 +1527,8 @@ const freeRunFightSources = [
   ),
   new FreeFight(
     () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) ===
-        19 &&
+      GingerBread.available() &&
+      GingerBread.minutesToMidnight() === 0 &&
       (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     () => {
       propertyManager.setChoices({

@@ -1,0 +1,67 @@
+import {
+  canEquip,
+  haveOutfit,
+  itemAmount,
+  Location,
+  outfitPieces,
+} from "kolmafia";
+import {
+  $item,
+  $items,
+  $location,
+  get,
+  getAverageAdventures,
+  have,
+  maxBy,
+} from "libram";
+import { bestConsumable } from "../diet";
+import { baseMeat } from "../lib";
+import { garboValue } from "../garboValue";
+
+const MIDNIGHTS = [
+  {
+    location: $location`Gingerbread Upscale Retail District`,
+    choices: { 1209: 2, 1214: 1 },
+    available: () =>
+      haveOutfit("gingerbread best") &&
+      outfitPieces("gingerbread best").every((piece) => canEquip(piece)) &&
+      itemAmount($item`high-end ginger wine`) < 11,
+    value: () => {
+      const best = bestConsumable(
+        "booze",
+        true,
+        $items`high-end ginger wine, astral pilsner`,
+      );
+      const gingerWineValue =
+        (0.5 * 30 * (baseMeat + 750) +
+          getAverageAdventures($item`high-end ginger wine`) *
+            get("valueOfAdventure")) /
+        2;
+      const valueDif = gingerWineValue - best.value;
+      return 2 * valueDif;
+    },
+  },
+  {
+    location: $location`Gingerbread Civic Center`,
+    choices: { 1203: 4 },
+    available: () => have($item`sprinkles`, 5),
+    value: () => 5 * garboValue($item`gingerbread cigarette`),
+  },
+] as const;
+
+const DEFAULT_MIDNIGHT = {
+  location: $location`Gingerbread Train Station`,
+  choices: { 1205: 1 },
+  value: () => 0,
+} as const;
+
+export function bestMidnightAvailable(): {
+  location: Location;
+  choices: { [x in number]: number };
+} {
+  const availableMidnights = [
+    ...MIDNIGHTS.filter(({ available }) => available()),
+    DEFAULT_MIDNIGHT,
+  ];
+  return maxBy(availableMidnights, ({ value }) => value());
+}
