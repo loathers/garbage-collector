@@ -26,7 +26,7 @@
   "dependencies": {
     "core-js": "^3.32.2",
     "garbo-lib": "^0.0.1",
-    "grimoire-kolmafia": "^0.3.23",
+    "grimoire-kolmafia": "^0.3.25",
     "kolmafia": "^5.27628.0",
     "libram": "^0.8.14"
   },
