@@ -12,6 +12,7 @@ import {
   equip,
   equippedItem,
   Familiar,
+  familiarEquippedEquipment,
   getAutoAttack,
   getCampground,
   haveEquipped,
@@ -63,7 +64,6 @@ import {
   $effect,
   $effects,
   $familiar,
-  $familiars,
   $item,
   $items,
   $location,
@@ -525,9 +525,19 @@ export function dailyFights(): void {
         const underwater = location.environment === "underwater";
         const shouldCopy = get("_badlyRomanticArrows") === 0 && !underwater;
 
-        const bestCopier = $familiars`Obtuse Angel, Reanimated Reanimator`.find(
-          have,
-        );
+        // use obtuse angel if have + have quake of arrows, otherwise reanimator
+        // quake of arrows is PvP-stealable and costs ~50k, so don't assume we have it
+        let bestCopier: Familiar | undefined;
+        if (
+          have($familiar`Obtuse Angel`) &&
+          (familiarEquippedEquipment($familiar`Obtuse Angel`) ===
+            $item`quake of arrows` ||
+            retrieveItem($item`quake of arrows`))
+        ) {
+          bestCopier = $familiar`Obtuse Angel`;
+        } else if (have($familiar`Reanimated Reanimator`)) {
+          bestCopier = $familiar`Reanimated Reanimator`;
+        }
         const familiar = shouldCopy && bestCopier ? bestCopier : meatFamiliar();
         const famSpec: OutfitSpec = { familiar };
         if (familiar === $familiar`Obtuse Angel`) {
