@@ -30010,14 +30010,14 @@ function safeRestore() {
   burnLibrams(mpTarget * 2);
 }
 function checkGithubVersion() {
-  if (true) {
+  if (false) {
     (0, import_kolmafia76.print)("Skipping version check for custom build");
   } else {
     if ((0, import_kolmafia76.gitAtHead)("loathers-garbage-collector-release") || (0, import_kolmafia76.gitAtHead)("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
       (0, import_kolmafia76.print)("Garbo is up to date!", HIGHLIGHT);
     } else {
       var _gitBranches$find;
-      var gitBranches = JSON.parse((0, import_kolmafia76.visitUrl)("https://api.github.com/repos/".concat("CustomBuild", "/branches")));
+      var gitBranches = JSON.parse((0, import_kolmafia76.visitUrl)("https://api.github.com/repos/".concat("loathers/garbage-collector", "/branches")));
       var releaseCommit = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.commit;
