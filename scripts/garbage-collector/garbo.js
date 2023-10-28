@@ -46801,14 +46801,6 @@ function main() {
   var argString = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "";
   sinceKolmafiaRevision(27640);
   checkGithubVersion();
-  allMallPrices();
-  (0, import_kolmafia128.visitUrl)("main.php");
-  if ((0, import_kolmafia128.currentRound)() > 0) {
-    (0, import_kolmafia128.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
-  }
-  if ((0, import_kolmafia128.handlingChoice)()) {
-    (0, import_kolmafia128.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.");
-  }
   Args.fill(globalOptions, argString);
   globalOptions.prefs.yachtzeechain = false;
   if (globalOptions.version)
@@ -46817,6 +46809,14 @@ function main() {
     Args.showHelp(globalOptions);
     return;
   }
+  (0, import_kolmafia128.visitUrl)("main.php");
+  if ((0, import_kolmafia128.currentRound)() > 0) {
+    (0, import_kolmafia128.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
+  }
+  if ((0, import_kolmafia128.handlingChoice)()) {
+    (0, import_kolmafia128.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.");
+  }
+  allMallPrices();
   if (globalOptions.turns) {
     if (globalOptions.turns >= 0) {
       globalOptions.stopTurncount = (0, import_kolmafia128.myTurncount)() + globalOptions.turns;
