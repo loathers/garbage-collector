@@ -10,8 +10,12 @@ const context = await esbuild.context({
   target: "rhino1.7.14",
   external: ["kolmafia"],
   define: {
-    "process.env.GITHUB_SHA": '"CustomBuild"',
-    "process.env.GITHUB_REPOSITORY": '"CustomBuild"',
+    "process.env.GITHUB_SHA": `"${
+      process.env?.["GITHUB_SHA"] ?? "CustomBuild"
+    }"`,
+    "process.env.GITHUB_REPOSITORY": `"${
+      process.env?.["GITHUB_REPOSITORY"] ?? "CustomBuild"
+    }"`,
   },
   entryPoints: {
     "scripts/garbage-collector/garbo": "src/index.ts",
