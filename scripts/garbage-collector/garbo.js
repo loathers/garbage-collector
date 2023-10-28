@@ -29111,6 +29111,7 @@ function getTasks(quests2) {
     var _loop = function _loop2() {
       var quest = _step.value;
       var questCompleted = quest.completed;
+      var questReady = quest.ready;
       var _iterator3 = _createForOfIteratorHelper21(quest.tasks), _step3;
       try {
         var _loop22 = function _loop23() {
@@ -29126,6 +29127,16 @@ function getTasks(quests2) {
             var taskCompleted = task2.completed;
             renamedTask.completed = function() {
               return questCompleted() || taskCompleted();
+            };
+          }
+          var taskReady = renamedTask.ready;
+          if (questReady !== void 0 && taskReady !== void 0) {
+            renamedTask.ready = function() {
+              return questReady() && taskReady();
+            };
+          } else if (questReady !== void 0) {
+            renamedTask.ready = function() {
+              return questReady();
             };
           }
           result.push(renamedTask);
@@ -43964,8 +43975,11 @@ var WandererQuest = {
 var NonBarfTurnQuest = {
   name: "Non Barf Turn",
   tasks: NonBarfTurnTasks,
+  ready: function() {
+    return clamp((0, import_kolmafia114.myAdventures)() - digitizedMonstersRemaining(), 1, (0, import_kolmafia114.myAdventures)()) <= nonBarfTurns() + globalOptions.saveTurns;
+  },
   completed: function() {
-    return !canContinue() || clamp((0, import_kolmafia114.myAdventures)() - digitizedMonstersRemaining(), 1, (0, import_kolmafia114.myAdventures)()) >= nonBarfTurns();
+    return !canContinue();
   }
 };
 var BarfTurnQuest = {
