@@ -35944,7 +35944,7 @@ function candyRichBlockValue() {
   var bowlValue = 1 / 5 * getSaleValue($item(_templateObject4131 || (_templateObject4131 = _taggedTemplateLiteral85(["huge bowl of candy"]))));
   var prunetsValue = have($familiar(_templateObject5119 || (_templateObject5119 = _taggedTemplateLiteral85(["Trick-or-Treating Tot"])))) ? 4 * 0.2 * getSaleValue($item(_templateObject6102 || (_templateObject6102 = _taggedTemplateLiteral85(["Prunets"])))) : 0;
   var outfitCandyTotal = 3 * outfitCandyValue * totOutfitCandyMultiplier;
-  return outfitCandyTotal + bowlValue + prunetsValue;
+  return outfitCandyTotal + bowlValue + prunetsValue + 5 * globalOptions.prefs.valueOfFreeFight;
 }
 function shouldAcquireCandyMap() {
   return !(0, import_kolmafia94.holiday)().includes("Halloween") && (0, import_kolmafia94.mallPrice)($item(_templateObject767 || (_templateObject767 = _taggedTemplateLiteral85(["map to a candy-rich block"])))) < 5e4 && // Sanity value to prevent mall shenanigans
