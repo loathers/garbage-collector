@@ -12,6 +12,7 @@ import {
   equip,
   equippedItem,
   Familiar,
+  familiarEquippedEquipment,
   getAutoAttack,
   getCampground,
   haveEquipped,
@@ -529,7 +530,9 @@ export function dailyFights(): void {
         let bestCopier: Familiar | undefined;
         if (
           have($familiar`Obtuse Angel`) &&
-          retrieveItem($item`quake of arrows`)
+          (familiarEquippedEquipment($familiar`Obtuse Angel`) ===
+            $item`quake of arrows` ||
+            retrieveItem($item`quake of arrows`))
         ) {
           bestCopier = $familiar`Obtuse Angel`;
         } else if (have($familiar`Reanimated Reanimator`)) {
