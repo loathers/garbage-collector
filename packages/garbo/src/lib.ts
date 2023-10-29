@@ -10,7 +10,6 @@ import {
   fullnessLimit,
   getLocketMonsters,
   getMonsters,
-  gitAtHead,
   gitInfo,
   handlingChoice,
   haveEquipped,
@@ -456,35 +455,41 @@ export function safeRestore(): void {
 export function checkGithubVersion(): void {
   if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
     print("Skipping version check for custom build");
-  } else {
-    if (
-      gitAtHead("loathers-garbage-collector-release") ||
-      gitAtHead(
-        "Loathing-Associates-Scripting-Society-garbage-collector-release",
-      )
-    ) {
+  } else if (process.env.GITHUB_REPOSITORY !== undefined) {
+    const localSHA =
+      gitInfo("loathers-garbage-collector-release").commit ||
+      gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release")
+        .commit;
+
+    // Query GitHub for latest release commit
+    const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
+      visitUrl(
+        `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`,
+      ),
+    );
+    const releaseSHA = gitBranches.find(
+      (branchInfo) => branchInfo.name === "release",
+    )?.commit?.sha;
+
+    print(
+      `Local Version: ${localSHA} (built from ${process.env.GITHUB_REF_NAME}@${process.env.GITHUB_SHA})`,
+    );
+    if (releaseSHA === localSHA) {
       print("Garbo is up to date!", HIGHLIGHT);
-    } else {
-      const gitBranches: { name: string; commit: { sha: string } }[] =
-        JSON.parse(
-          visitUrl(
-            `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`,
-          ),
-        );
-      const releaseCommit = gitBranches.find(
-        (branchInfo) => branchInfo.name === "release",
-      )?.commit;
-      print("Garbo is out of date. Please run 'git update!'", "red");
+    } else if (releaseSHA === undefined) {
       print(
-        `Local Version: ${
-          gitInfo("loathers-garbage-collector-release").commit ||
-          gitInfo(
-            "Loathing-Associates-Scripting-Society-garbage-collector-release",
-          ).commit
-        }.`,
+        "Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?",
+        HIGHLIGHT,
       );
-      print(`Release Version: ${releaseCommit?.sha}.`);
+    } else {
+      print(`Release Version: ${releaseSHA}`);
+      print("Garbo is out of date. Please run 'git update'!", "red");
     }
+  } else {
+    print(
+      "Garbo was built from an unknown repository, unable to check for update.",
+      HIGHLIGHT,
+    );
   }
 }
 
