@@ -25,7 +25,7 @@ const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
 export default function bestAutumnatonLocation(
   locations: Location[],
 ): Location {
-  return maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
+  return maxBy(bestLocationsByUpgrade(locations), averageAutumnatonValue);
 }
 
 function averageAutumnatonValue(
@@ -245,7 +245,7 @@ function makeUpgradeValuator(
   };
 }
 
-function mostValuableUpgrade(fullLocations: Location[]): Location[] {
+function bestLocationsByUpgrade(fullLocations: Location[]): Location[] {
   const validLocations = fullLocations.filter(
     (l) => l.parent !== "Clan Basement" && !locationBanlist.includes(l),
   );
