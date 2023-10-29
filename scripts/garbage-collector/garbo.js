@@ -30030,7 +30030,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia76.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("296bccd6b4ea55b069e11ca1c508f079a82b9e6b", ")"));
+    (0, import_kolmafia76.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ab7c4a730b6d793643895cdb1abd15685cfb9b9f", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia76.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -38958,14 +38958,14 @@ function _taggedTemplateLiteral97(strings, raw) {
 var locationBanlist = $locations(_templateObject798 || (_templateObject798 = _taggedTemplateLiteral97(["The Daily Dungeon"])));
 var badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
 function bestAutumnatonLocation(locations) {
-  return maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
+  return maxBy(bestLocationsByUpgrade(locations), averageAutumnatonValue);
 }
 function averageAutumnatonValue(location, acuityOverride, slotOverride) {
   if (location === $location(_templateObject2181 || (_templateObject2181 = _taggedTemplateLiteral97(["Shadow Rift"]))))
     (0, import_kolmafia106.setLocation)($location(_templateObject3161 || (_templateObject3161 = _taggedTemplateLiteral97(["Shadow Rift"]))));
   var rates = (0, import_kolmafia106.appearanceRates)(location);
   var monsters = (0, import_kolmafia106.getMonsters)(location).filter(function(m) {
-    return !locationBanlist.includes(location) && !badAttributes.some(function(s) {
+    return !badAttributes.some(function(s) {
       return m.attributes.includes(s);
     }) && rates[m.name] > 0;
   });
@@ -39088,9 +39088,9 @@ function makeUpgradeValuator(fullLocations, currentBestLocation) {
     }
   };
 }
-function mostValuableUpgrade(fullLocations) {
+function bestLocationsByUpgrade(fullLocations) {
   var validLocations = fullLocations.filter(function(l) {
-    return l.parent !== "Clan Basement";
+    return l.parent !== "Clan Basement" && !locationBanlist.includes(l);
   });
   if (expectedRemainingExpeditions() < 1) {
     return validLocations;
