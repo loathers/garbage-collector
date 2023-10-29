@@ -30023,19 +30023,24 @@ function safeRestore() {
 function checkGithubVersion() {
   if (false) {
     (0, import_kolmafia76.print)("Skipping version check for custom build");
-  } else {
-    if ((0, import_kolmafia76.gitAtHead)("loathers-garbage-collector-release") || (0, import_kolmafia76.gitAtHead)("Loathing-Associates-Scripting-Society-garbage-collector-release")) {
+  } else if (true) {
+    var _gitBranches$find;
+    var localSHA = (0, import_kolmafia76.gitInfo)("loathers-garbage-collector-release").commit || (0, import_kolmafia76.gitInfo)("Loathing-Associates-Scripting-Society-garbage-collector-release").commit;
+    var gitBranches = JSON.parse((0, import_kolmafia76.visitUrl)("https://api.github.com/repos/".concat("loathers/garbage-collector", "/branches")));
+    var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
+      return branchInfo.name === "release";
+    })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
+    (0, import_kolmafia76.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("296bccd6b4ea55b069e11ca1c508f079a82b9e6b", ")"));
+    if (releaseSHA === localSHA) {
       (0, import_kolmafia76.print)("Garbo is up to date!", HIGHLIGHT);
+    } else if (releaseSHA === void 0) {
+      (0, import_kolmafia76.print)("Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?", HIGHLIGHT);
     } else {
-      var _gitBranches$find;
-      var gitBranches = JSON.parse((0, import_kolmafia76.visitUrl)("https://api.github.com/repos/".concat("loathers/garbage-collector", "/branches")));
-      var releaseCommit = (_gitBranches$find = gitBranches.find(function(branchInfo) {
-        return branchInfo.name === "release";
-      })) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.commit;
-      (0, import_kolmafia76.print)("Garbo is out of date. Please run 'git update!'", "red");
-      (0, import_kolmafia76.print)("Local Version: ".concat((0, import_kolmafia76.gitInfo)("loathers-garbage-collector-release").commit || (0, import_kolmafia76.gitInfo)("Loathing-Associates-Scripting-Society-garbage-collector-release").commit, "."));
-      (0, import_kolmafia76.print)("Release Version: ".concat(releaseCommit === null || releaseCommit === void 0 ? void 0 : releaseCommit.sha, "."));
+      (0, import_kolmafia76.print)("Release Version: ".concat(releaseSHA));
+      (0, import_kolmafia76.print)("Garbo is out of date. Please run 'git update'!", "red");
     }
+  } else {
+    (0, import_kolmafia76.print)("Garbo was built from an unknown repository, unable to check for update.", HIGHLIGHT);
   }
 }
 function formatNumber(num) {
