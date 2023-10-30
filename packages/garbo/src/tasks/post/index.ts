@@ -192,7 +192,7 @@ function refillCinch(): GarboPostTask {
   return {
     name: "Refill Cinch",
     ready: () => CinchoDeMayo.have() && totalFreeRests() > get("timesRested"),
-    completed: () => CinchoDeMayo.currentCinch() >= 100,
+    completed: () => get("_cinchUsed") < CinchoDeMayo.cinchRestoredBy(),
     do: () => {
       const missingCinch = () => {
         return 100 - CinchoDeMayo.currentCinch();
