@@ -69,6 +69,7 @@ import { computeDiet, consumeDiet } from "../diet";
 import { GarboTask } from "./engine";
 import { completeBarfQuest } from "../resources/realm";
 import { garboValue } from "../garboValue";
+import { bestMidnightAvailable } from "../resources";
 
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
@@ -240,18 +241,16 @@ function vampOut(additionalReady: () => boolean) {
 function gingerbreadMidnight(additionalReady: () => boolean) {
   return {
     name: "Gingerbread Midnight",
-    ready: () =>
-      additionalReady() &&
-      outfitPieces("Gingerbread Best").every(
-        (piece) => have(piece) && canEquip(piece),
-      ) &&
-      GingerBread.availableLocations().includes(
-        $location`Gingerbread Upscale Retail District`,
-      ),
+    ready: additionalReady,
     completed: () => GingerBread.minutesToMidnight() !== 0,
-    do: $location`Gingerbread Upscale Retail District`,
+    do: () => bestMidnightAvailable().location,
+    choices: () => bestMidnightAvailable().choices,
     outfit: () => ({
-      equip: outfitPieces("Gingerbread Best"),
+      equip:
+        bestMidnightAvailable().location ===
+        $location`Gingerbread Upscale Retail District`
+          ? outfitPieces("Gingerbread Best")
+          : [],
       offhand: sober() ? undefined : $item`Drunkula's wineglass`,
     }),
     combat: new GarboStrategy(Macro.abort()),

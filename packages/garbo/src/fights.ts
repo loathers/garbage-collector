@@ -91,7 +91,6 @@ import {
   FloristFriar,
   gameDay,
   get,
-  getAverageAdventures,
   getFoldGroup,
   GingerBread,
   have,
@@ -115,7 +114,6 @@ import { withStash } from "./clan";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
-import { bestConsumable } from "./diet";
 import {
   embezzlerCount,
   embezzlerSources,
@@ -179,6 +177,7 @@ import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { faxMonster } from "./resources/fax";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
+import { bestMidnightAvailable } from "./resources";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1531,37 +1530,12 @@ const freeRunFightSources = [
       GingerBread.minutesToMidnight() === 0 &&
       (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     () => {
-      propertyManager.setChoices({
-        1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
-        1215: 1, // Gingerbread Civic Center advance clock
-        1209: 2, // enter the gallery at Upscale Midnight
-        1214: 1, // get High-End ginger wine
-      });
-      const best = bestConsumable(
-        "booze",
-        true,
-        $items`high-end ginger wine, astral pilsner`,
-      );
-      const gingerWineValue =
-        (0.5 * 30 * (baseMeat + 750) +
-          getAverageAdventures($item`high-end ginger wine`) *
-            get("valueOfAdventure")) /
-        2;
-      const valueDif = gingerWineValue - best.value;
-      if (
-        haveOutfit("gingerbread best") &&
-        (availableAmount($item`sprinkles`) < 5 ||
-          (valueDif * 2 > garboValue($item`gingerbread cigarette`) * 5 &&
-            itemAmount($item`high-end ginger wine`) < 11))
-      ) {
+      const { choices, location } = bestMidnightAvailable();
+      propertyManager.setChoices(choices);
+      if (location === $location`Gingerbread Upscale Retail District`) {
         outfit("gingerbread best");
-        garboAdventure(
-          $location`Gingerbread Upscale Retail District`,
-          Macro.abort(),
-        );
-      } else {
-        garboAdventure($location`Gingerbread Civic Center`, Macro.abort());
       }
+      garboAdventure(location, Macro.abort());
     },
     false,
     {
