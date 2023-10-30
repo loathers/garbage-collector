@@ -2,9 +2,11 @@ import {
   availableChoiceOptions,
   canAdventure,
   cliExecute,
+  inebrietyLimit,
   itemAmount,
   mallPrice,
   myAdventures,
+  myInebriety,
   myLevel,
   myLocation,
   putCloset,
@@ -157,7 +159,10 @@ function juneCleaver(): GarboPostTask {
     name: "June Cleaver",
     ready: () => JuneCleaver.have() && teleportEffects.every((e) => !have(e)),
     completed: () => get("_juneCleaverFightsLeft") > 0,
-    do: $location`Noob Cave`,
+    do: () =>
+      myInebriety() > inebrietyLimit()
+        ? $location`Drunken Stupor`
+        : $location`Noob Cave`,
     outfit: { weapon: $item`June cleaver` },
     combat: new GarboStrategy(
       Macro.abortWithMsg(
