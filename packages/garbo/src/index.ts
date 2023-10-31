@@ -74,7 +74,12 @@ import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
-import { BarfTurnQuests, runGarboQuests, SetupEmbezzlerQuest } from "./tasks";
+import {
+  BarfTurnQuests,
+  PostQuest,
+  runGarboQuests,
+  SetupEmbezzlerQuest,
+} from "./tasks";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -543,7 +548,7 @@ export function main(argString = ""): void {
           meatMood().execute(estimatedGarboTurns());
           useBuffExtenders();
           try {
-            runGarboQuests(BarfTurnQuests);
+            runGarboQuests([PostQuest(), ...BarfTurnQuests]);
 
             // buy one-day tickets with FunFunds if user desires
             if (

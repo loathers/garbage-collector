@@ -51,7 +51,6 @@ import {
   soulsauceCost,
   spleenLimit,
   todayToString,
-  toItem,
   toSlot,
   totalFreeRests,
   toUrl,
@@ -79,7 +78,6 @@ import {
   CombatLoversLocket,
   Counter,
   ensureFreeRun,
-  gameDay,
   get,
   getBanishedMonsters,
   getKramcoWandererChance,
@@ -99,7 +97,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
-import { garboValue } from "./garboValue";
+import { garboAverageValue, garboValue } from "./garboValue";
 
 export const embezzler = $monster`Knob Goblin Embezzler`;
 
@@ -939,45 +937,22 @@ export function monsterManuelAvailable(): boolean {
   return Boolean(monsterManuelCached);
 }
 
+const listItems: Partial<{ [key in keyof GarboItemLists]: Item[] }> = {};
+function getDropsList(key: keyof GarboItemLists) {
+  return (listItems[key] ??= (
+    JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists
+  )[key].map((i) => Item.get(i)));
+}
 export function felizValue(): number {
-  const lastCalculated = new Date(get("garbo_felizValueDate", 0));
-  if (
-    !get("garbo_felizValue", 0) ||
-    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
-  ) {
-    const felizDrops = (
-      JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists
-    )["Feliz Navidad"];
-    set(
-      "garbo_felizValue",
-      (
-        sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length
-      ).toFixed(0),
-    );
-    set("garbo_felizValueDate", gameDay().getTime());
-  }
-  return get("garbo_felizValue", 0);
+  return garboAverageValue(...getDropsList("Feliz Navidad"));
 }
 
 export function newarkValue(): number {
-  const lastCalculated = new Date(get("garbo_newarkValueDate", 0));
-  if (
-    !get("garbo_newarkValue", 0) ||
-    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
-  ) {
-    const newarkDrops = (
-      JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists
-    )["Newark"];
-    set(
-      "garbo_newarkValue",
-      (
-        sum(newarkDrops, (name) => garboValue(toItem(name))) /
-        newarkDrops.length
-      ).toFixed(0),
-    );
-    set("garbo_newarkValueDate", gameDay().getTime());
-  }
-  return get("garbo_newarkValue", 0);
+  return garboAverageValue(...getDropsList("Newark"));
+}
+
+export function candyFactoryValue(): number {
+  return garboAverageValue(...getDropsList("trainset"));
 }
 
 export function allMallPrices() {

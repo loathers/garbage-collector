@@ -178,6 +178,7 @@ import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { faxMonster } from "./resources/fax";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
+import { PostQuest } from "./tasks/post";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -2080,7 +2081,7 @@ export function freeFights(): void {
 
   // TODO: Run grimorized free fights until all are converted
   // TODO: freeFightMood()
-  runGarboQuests([FreeFightQuest]);
+  runGarboQuests([PostQuest(), FreeFightQuest]);
 
   tryFillLatte();
   postFreeFightDailySetup();
