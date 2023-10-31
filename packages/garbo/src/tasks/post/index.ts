@@ -200,7 +200,7 @@ function refillCinch(): GarboPostTask {
       // Only rest if we'll get full value out of the cinch
       // If our current cinch is less than the total available, it means we have free rests left.
       while (
-        missingCinch() > CinchoDeMayo.cinchRestoredBy() &&
+        missingCinch() >= CinchoDeMayo.cinchRestoredBy() &&
         CinchoDeMayo.currentCinch() < CinchoDeMayo.totalAvailableCinch()
       ) {
         if (!freeRest()) break;
