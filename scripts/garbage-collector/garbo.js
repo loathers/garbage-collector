@@ -30030,7 +30030,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia76.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("19a48584ac67f6ebcb572a4f7c81d57d075d7a8d", ")"));
+    (0, import_kolmafia76.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("bd5cd1261058f40b3d4a5b4e6c941e8a4512f260", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia76.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -39820,7 +39820,7 @@ function refillCinch() {
       var missingCinch = function() {
         return 100 - CinchoDeMayo_exports.currentCinch();
       };
-      while (missingCinch() > CinchoDeMayo_exports.cinchRestoredBy() && CinchoDeMayo_exports.currentCinch() < CinchoDeMayo_exports.totalAvailableCinch()) {
+      while (missingCinch() >= CinchoDeMayo_exports.cinchRestoredBy() && CinchoDeMayo_exports.currentCinch() < CinchoDeMayo_exports.totalAvailableCinch()) {
         if (!freeRest())
           break;
       }
