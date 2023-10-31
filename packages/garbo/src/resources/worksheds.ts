@@ -5,10 +5,11 @@ import {
   runChoice,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, get, maxBy, sum, TrainSet } from "libram";
+import { $item, $items, arrayEquals, get, maxBy, sum, TrainSet } from "libram";
 import { globalOptions } from "../config";
 import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
+import { estimatedGarboTurns } from "../turns";
 
 const GOOD_TRAIN_STATIONS = [
   { piece: TrainSet.Station.GAIN_MEAT, value: () => 900 },
@@ -87,6 +88,22 @@ function getRotatedCycle(): TrainSet.Cycle {
     newPieces[newPos] = defaultPieces[i];
   }
   return newPieces as TrainSet.Cycle;
+}
+
+export function trainNeedsRotating(): boolean {
+  if (!TrainSet.canConfigure()) return false;
+  if (!get("trainsetConfiguration")) {
+    // Visit the workshed to make sure it's actually empty, instead of us having not yet seen it this run
+    visitUrl("campground.php?action=workshed");
+    visitUrl("main.php");
+  }
+
+  if (!get("trainsetConfiguration")) return true;
+  if (arrayEquals(getRotatedCycle(), TrainSet.cycle())) return false;
+  if (globalOptions.ascend && estimatedGarboTurns() <= 40) return false;
+  const bestStations = getPrioritizedStations();
+  if (bestStations.includes(TrainSet.next())) return false;
+  return true;
 }
 
 export function rotateToOptimalCycle(): boolean {

@@ -7,24 +7,15 @@ import {
   use,
   visitUrl,
 } from "kolmafia";
-import {
-  $effect,
-  $item,
-  $items,
-  AsdonMartin,
-  DNALab,
-  get,
-  have,
-  TrainSet,
-} from "libram";
+import { $effect, $item, $items, AsdonMartin, DNALab, get, have } from "libram";
 import { dietCompleted } from "../../diet";
 import { globalOptions } from "../../config";
 import { potionSetupCompleted } from "../../potions";
 import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../../turns";
 import {
-  getPrioritizedStations,
   grabMedicine,
   rotateToOptimalCycle,
+  trainNeedsRotating,
 } from "../../resources";
 import { GarboPostTask } from "./lib";
 type WorkshedOptions = {
@@ -91,20 +82,7 @@ const worksheds = [
     workshed: $item`model train set`,
     // We should always get value from the trainset, so we would never switch from it
     done: () => false,
-    available: (): boolean => {
-      if (!TrainSet.canConfigure()) return false;
-      if (!get("trainsetConfiguration")) {
-        // Visit the workshed to make sure it's actually empty, instead of us having not yet seen it this run
-        visitUrl("campground.php?action=workshed");
-        visitUrl("main.php");
-      }
-
-      if (!get("trainsetConfiguration")) return true;
-      if (globalOptions.ascend && estimatedGarboTurns() <= 40) return false;
-      const bestStations = getPrioritizedStations();
-      if (bestStations.includes(TrainSet.next())) return false;
-      return true;
-    },
+    available: trainNeedsRotating,
     action: rotateToOptimalCycle,
   }),
   new GarboWorkshed({
