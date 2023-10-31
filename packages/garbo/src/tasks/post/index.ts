@@ -171,6 +171,14 @@ function juneCleaver(): GarboPostTask {
     ),
     choices: juneCleaverChoices,
     available: () => JuneCleaver.have(),
+    post: () => {
+      if (
+        ["Poetic Justice", "Lost and Found"].includes(get("lastEncounter")) &&
+        have($effect`Beaten Up`)
+      ) {
+        useSkill($skill`Tongue of the Walrus`);
+      }
+    },
   };
 }
 
