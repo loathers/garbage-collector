@@ -156,7 +156,7 @@ function doCandyTreat(): GarboTask {
       treated = true;
     },
     spendsTurn: false,
-    combat: new GarboStrategy(Macro.abort()),
+    combat: new GarboStrategy(() => Macro.abort()),
   };
 }
 
