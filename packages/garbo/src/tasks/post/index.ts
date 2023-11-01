@@ -166,7 +166,7 @@ function juneCleaver(): GarboPostTask {
         ? $location`Drunken Stupor`
         : $location`Noob Cave`,
     outfit: { weapon: $item`June cleaver` },
-    combat: new GarboStrategy(
+    combat: new GarboStrategy(() =>
       Macro.abortWithMsg(
         `Expected June Cleaver non-combat but ended up in combat.`,
       ),

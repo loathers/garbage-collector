@@ -29,7 +29,7 @@ export const SetupEmbezzlerQuest: Quest<GarboTask> = {
       do: $location`The Daily Dungeon`,
       post: () => set("_lastDailyDungeonEncounter", get("lastEncounter")),
       spendsTurn: true,
-      combat: new GarboStrategy(Macro.kill()),
+      combat: new GarboStrategy(() => Macro.kill()),
     },
   ],
 };
