@@ -10,4 +10,5 @@ dist
 !.yarn/versions
 
 .DS_Store
+.KoLmafia/*
 yarn-error.log*
