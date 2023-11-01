@@ -30030,7 +30030,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia76.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("805c32ff35a2bc0057e7fa996ba97c4884ce7731", ")"));
+    (0, import_kolmafia76.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2f5bb7735db95f3de714745bc22847ddf33aace4", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia76.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -36017,7 +36017,9 @@ function doCandyTreat() {
       treated = true;
     },
     spendsTurn: false,
-    combat: new GarboStrategy(Macro2.abort())
+    combat: new GarboStrategy(function() {
+      return Macro2.abort();
+    })
   };
 }
 var MAX_HAT_PRICE = 1e5;
@@ -39785,7 +39787,9 @@ function juneCleaver2() {
     outfit: {
       weapon: $item(_templateObject967 || (_templateObject967 = _taggedTemplateLiteral100(["June cleaver"])))
     },
-    combat: new GarboStrategy(Macro2.abortWithMsg("Expected June Cleaver non-combat but ended up in combat.")),
+    combat: new GarboStrategy(function() {
+      return Macro2.abortWithMsg("Expected June Cleaver non-combat but ended up in combat.");
+    }),
     choices: juneCleaverChoices,
     available: function() {
       return JuneCleaver_exports.have();
@@ -40265,7 +40269,9 @@ function _toPrimitive44(input, hint) {
 }
 var DEFAULT_FREE_FIGHT_TASK = {
   // GarboTask
-  combat: new GarboStrategy(Macro2.basicCombat()),
+  combat: new GarboStrategy(function() {
+    return Macro2.basicCombat();
+  }),
   outfit: freeFightOutfit,
   spendsTurn: false,
   // GarboFreeFightTask
@@ -40345,7 +40351,9 @@ var FreeFightTasks = [
     do: function() {
       return get("ghostLocation");
     },
-    combat: new GarboStrategy(Macro2.ghostBustin()),
+    combat: new GarboStrategy(function() {
+      return Macro2.ghostBustin();
+    }),
     outfit: function() {
       return freeFightOutfit({
         back: $item(_templateObject2034 || (_templateObject2034 = _taggedTemplateLiteral102(["protonic accelerator pack"])))
@@ -40430,11 +40438,13 @@ var FreeFightTasks = [
     effects: function() {
       return 11 / 200 * garboValue($item(_templateObject3421 || (_templateObject3421 = _taggedTemplateLiteral102(["eldritch ichor"])))) > (0, import_kolmafia111.mallPrice)($item(_templateObject3521 || (_templateObject3521 = _taggedTemplateLiteral102(["crappy waiter disguise"])))) ? [$effect(_templateObject3620 || (_templateObject3620 = _taggedTemplateLiteral102(["Crappily Disguised as a Waiter"])))] : [];
     },
-    combat: new GarboStrategy(Macro2.if_(
-      $monster(_templateObject3720 || (_templateObject3720 = _taggedTemplateLiteral102(["Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl"]))),
-      // Using while_ here in case you run out of mp
-      Macro2.while_("hasskill Awesome Balls of Fire", Macro2.skill($skill(_templateObject3820 || (_templateObject3820 = _taggedTemplateLiteral102(["Awesome Balls of Fire"]))))).while_("hasskill Eggsplosion", Macro2.skill($skill(_templateObject3920 || (_templateObject3920 = _taggedTemplateLiteral102(["Eggsplosion"]))))).while_("hasskill Saucegeyser", Macro2.skill($skill(_templateObject4020 || (_templateObject4020 = _taggedTemplateLiteral102(["Saucegeyser"]))))).while_("hasskill Weapon of the Pastalord", Macro2.skill($skill(_templateObject4150 || (_templateObject4150 = _taggedTemplateLiteral102(["Weapon of the Pastalord"]))))).while_("hasskill Lunging Thrust-Smack", Macro2.skill($skill(_templateObject4221 || (_templateObject4221 = _taggedTemplateLiteral102(["Lunging Thrust-Smack"]))))).attack().repeat()
-    ).basicCombat()),
+    combat: new GarboStrategy(function() {
+      return Macro2.if_(
+        $monster(_templateObject3720 || (_templateObject3720 = _taggedTemplateLiteral102(["Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl"]))),
+        // Using while_ here in case you run out of mp
+        Macro2.while_("hasskill Awesome Balls of Fire", Macro2.skill($skill(_templateObject3820 || (_templateObject3820 = _taggedTemplateLiteral102(["Awesome Balls of Fire"]))))).while_("hasskill Eggsplosion", Macro2.skill($skill(_templateObject3920 || (_templateObject3920 = _taggedTemplateLiteral102(["Eggsplosion"]))))).while_("hasskill Saucegeyser", Macro2.skill($skill(_templateObject4020 || (_templateObject4020 = _taggedTemplateLiteral102(["Saucegeyser"]))))).while_("hasskill Weapon of the Pastalord", Macro2.skill($skill(_templateObject4150 || (_templateObject4150 = _taggedTemplateLiteral102(["Weapon of the Pastalord"]))))).while_("hasskill Lunging Thrust-Smack", Macro2.skill($skill(_templateObject4221 || (_templateObject4221 = _taggedTemplateLiteral102(["Lunging Thrust-Smack"]))))).attack().repeat()
+      ).basicCombat();
+    }),
     tentacle: false
   },
   {
@@ -40448,7 +40458,9 @@ var FreeFightTasks = [
     do: function() {
       return (0, import_kolmafia111.use)($item(_templateObject4519 || (_templateObject4519 = _taggedTemplateLiteral102(["lynyrd snare"]))));
     },
-    combat: new GarboStrategy(Macro2.basicCombat()),
+    combat: new GarboStrategy(function() {
+      return Macro2.basicCombat();
+    }),
     combatCount: function() {
       return clamp(3 - get("_lynyrdSnareUses"), 0, 3);
     },
@@ -40470,7 +40482,9 @@ var FreeFightTasks = [
       (0, import_kolmafia111.visitUrl)("inv_eat.php?pwd&whichitem=10207");
       (0, import_kolmafia111.runCombat)();
     },
-    combat: new GarboStrategy(Macro2.trySkill($skill(_templateObject4719 || (_templateObject4719 = _taggedTemplateLiteral102(["Curse of Marinara"])))).trySkill($skill(_templateObject4819 || (_templateObject4819 = _taggedTemplateLiteral102(["Shell Up"])))).trySkill($skill(_templateObject4918 || (_templateObject4918 = _taggedTemplateLiteral102(["Shadow Noodles"])))).trySkill($skill(_templateObject5017 || (_templateObject5017 = _taggedTemplateLiteral102(["Entangling Noodles"])))).trySkill($skill(_templateObject5136 || (_templateObject5136 = _taggedTemplateLiteral102(["Summon Love Gnats"])))).trySkill($skill(_templateObject5219 || (_templateObject5219 = _taggedTemplateLiteral102(["Frost Bite"])))).trySkill($skill(_templateObject5319 || (_templateObject5319 = _taggedTemplateLiteral102(["Soul Bubble"])))).tryItem($item(_templateObject5419 || (_templateObject5419 = _taggedTemplateLiteral102(["Rain-Doh blue balls"])))).skill($skill(_templateObject5518 || (_templateObject5518 = _taggedTemplateLiteral102(["Blow a Robo-Kiss"])))).repeat()),
+    combat: new GarboStrategy(function() {
+      return Macro2.trySkill($skill(_templateObject4719 || (_templateObject4719 = _taggedTemplateLiteral102(["Curse of Marinara"])))).trySkill($skill(_templateObject4819 || (_templateObject4819 = _taggedTemplateLiteral102(["Shell Up"])))).trySkill($skill(_templateObject4918 || (_templateObject4918 = _taggedTemplateLiteral102(["Shadow Noodles"])))).trySkill($skill(_templateObject5017 || (_templateObject5017 = _taggedTemplateLiteral102(["Entangling Noodles"])))).trySkill($skill(_templateObject5136 || (_templateObject5136 = _taggedTemplateLiteral102(["Summon Love Gnats"])))).trySkill($skill(_templateObject5219 || (_templateObject5219 = _taggedTemplateLiteral102(["Frost Bite"])))).trySkill($skill(_templateObject5319 || (_templateObject5319 = _taggedTemplateLiteral102(["Soul Bubble"])))).tryItem($item(_templateObject5419 || (_templateObject5419 = _taggedTemplateLiteral102(["Rain-Doh blue balls"])))).skill($skill(_templateObject5518 || (_templateObject5518 = _taggedTemplateLiteral102(["Blow a Robo-Kiss"])))).repeat();
+    }),
     outfit: function() {
       return freeFightOutfit({
         back: $items(_templateObject5617 || (_templateObject5617 = _taggedTemplateLiteral102(["unwrapped knock-off retro superhero cape"]))),
@@ -40516,7 +40530,9 @@ var FreeFightTasks = [
       (0, import_kolmafia111.visitUrl)("inv_eat.php?pwd&whichitem=10207");
       (0, import_kolmafia111.runCombat)();
     },
-    combat: new GarboStrategy(Macro2.trySkill($skill(_templateObject6812 || (_templateObject6812 = _taggedTemplateLiteral102(["Curse of Marinara"])))).trySkill($skill(_templateObject6912 || (_templateObject6912 = _taggedTemplateLiteral102(["Conspiratorial Whispers"])))).trySkill($skill(_templateObject7012 || (_templateObject7012 = _taggedTemplateLiteral102(["Shadow Noodles"])))).externalIf(get("glitchItemImplementationCount") * (0, import_kolmafia111.itemAmount)($item(_templateObject7114 || (_templateObject7114 = _taggedTemplateLiteral102(["[glitch season reward name]"])))) >= 400, Macro2.item([$item(_templateObject7214 || (_templateObject7214 = _taggedTemplateLiteral102(["gas can"]))), $item(_templateObject7313 || (_templateObject7313 = _taggedTemplateLiteral102(["gas can"])))])).externalIf(get("lovebugsUnlocked"), Macro2.trySkill($skill(_templateObject7413 || (_templateObject7413 = _taggedTemplateLiteral102(["Summon Love Gnats"])))).trySkill($skill(_templateObject7512 || (_templateObject7512 = _taggedTemplateLiteral102(["Summon Love Mosquito"]))))).tryItem($item(_templateObject7612 || (_templateObject7612 = _taggedTemplateLiteral102(["train whistle"])))).trySkill($skill(_templateObject7711 || (_templateObject7711 = _taggedTemplateLiteral102(["Micrometeorite"])))).tryItem($item(_templateObject7810 || (_templateObject7810 = _taggedTemplateLiteral102(["Time-Spinner"])))).tryItem($item(_templateObject7910 || (_templateObject7910 = _taggedTemplateLiteral102(["little red book"])))).tryItem($item(_templateObject807 || (_templateObject807 = _taggedTemplateLiteral102(["Rain-Doh blue balls"])))).tryItem($item(_templateObject8113 || (_templateObject8113 = _taggedTemplateLiteral102(["Rain-Doh indigo cup"])))).trySkill($skill(_templateObject8213 || (_templateObject8213 = _taggedTemplateLiteral102(["Entangling Noodles"])))).trySkill($skill(_templateObject8313 || (_templateObject8313 = _taggedTemplateLiteral102(["Frost Bite"])))).kill()),
+    combat: new GarboStrategy(function() {
+      return Macro2.trySkill($skill(_templateObject6812 || (_templateObject6812 = _taggedTemplateLiteral102(["Curse of Marinara"])))).trySkill($skill(_templateObject6912 || (_templateObject6912 = _taggedTemplateLiteral102(["Conspiratorial Whispers"])))).trySkill($skill(_templateObject7012 || (_templateObject7012 = _taggedTemplateLiteral102(["Shadow Noodles"])))).externalIf(get("glitchItemImplementationCount") * (0, import_kolmafia111.itemAmount)($item(_templateObject7114 || (_templateObject7114 = _taggedTemplateLiteral102(["[glitch season reward name]"])))) >= 400, Macro2.item([$item(_templateObject7214 || (_templateObject7214 = _taggedTemplateLiteral102(["gas can"]))), $item(_templateObject7313 || (_templateObject7313 = _taggedTemplateLiteral102(["gas can"])))])).externalIf(get("lovebugsUnlocked"), Macro2.trySkill($skill(_templateObject7413 || (_templateObject7413 = _taggedTemplateLiteral102(["Summon Love Gnats"])))).trySkill($skill(_templateObject7512 || (_templateObject7512 = _taggedTemplateLiteral102(["Summon Love Mosquito"]))))).tryItem($item(_templateObject7612 || (_templateObject7612 = _taggedTemplateLiteral102(["train whistle"])))).trySkill($skill(_templateObject7711 || (_templateObject7711 = _taggedTemplateLiteral102(["Micrometeorite"])))).tryItem($item(_templateObject7810 || (_templateObject7810 = _taggedTemplateLiteral102(["Time-Spinner"])))).tryItem($item(_templateObject7910 || (_templateObject7910 = _taggedTemplateLiteral102(["little red book"])))).tryItem($item(_templateObject807 || (_templateObject807 = _taggedTemplateLiteral102(["Rain-Doh blue balls"])))).tryItem($item(_templateObject8113 || (_templateObject8113 = _taggedTemplateLiteral102(["Rain-Doh indigo cup"])))).trySkill($skill(_templateObject8213 || (_templateObject8213 = _taggedTemplateLiteral102(["Entangling Noodles"])))).trySkill($skill(_templateObject8313 || (_templateObject8313 = _taggedTemplateLiteral102(["Frost Bite"])))).kill();
+    }),
     outfit: function() {
       return freeFightOutfit({
         modifier: ["1000 mainstat"],
@@ -40571,7 +40587,9 @@ var FreeFightTasks = [
         weapon: club
       });
     },
-    combat: new GarboStrategy(Macro2.startCombat().trySkill($skill(_templateObject995 || (_templateObject995 = _taggedTemplateLiteral102(["Furious Wallop"])))).while_("hasskill Lunging Thrust-Smack", Macro2.skill($skill(_templateObject1005 || (_templateObject1005 = _taggedTemplateLiteral102(["Lunging Thrust-Smack"]))))).while_("hasskill Thrust-Smack", Macro2.skill($skill(_templateObject10113 || (_templateObject10113 = _taggedTemplateLiteral102(["Thrust-Smack"]))))).while_("hasskill Lunge Smack", Macro2.skill($skill(_templateObject10213 || (_templateObject10213 = _taggedTemplateLiteral102(["Lunge Smack"]))))).attack().repeat()),
+    combat: new GarboStrategy(function() {
+      return Macro2.startCombat().trySkill($skill(_templateObject995 || (_templateObject995 = _taggedTemplateLiteral102(["Furious Wallop"])))).while_("hasskill Lunging Thrust-Smack", Macro2.skill($skill(_templateObject1005 || (_templateObject1005 = _taggedTemplateLiteral102(["Lunging Thrust-Smack"]))))).while_("hasskill Thrust-Smack", Macro2.skill($skill(_templateObject10113 || (_templateObject10113 = _taggedTemplateLiteral102(["Thrust-Smack"]))))).while_("hasskill Lunge Smack", Macro2.skill($skill(_templateObject10213 || (_templateObject10213 = _taggedTemplateLiteral102(["Lunge Smack"]))))).attack().repeat();
+    }),
     combatCount: sealsAvailable,
     tentacle: false
   },
@@ -40591,7 +40609,9 @@ var FreeFightTasks = [
         canChooseMacro: false
       });
     },
-    combat: new GarboStrategy(Macro2.basicCombat()),
+    combat: new GarboStrategy(function() {
+      return Macro2.basicCombat();
+    }),
     combatCount: function() {
       return clamp(10 - get("_brickoFights"), 0, 10);
     },
@@ -40663,7 +40683,9 @@ var FreeFightTasks = [
       };
     },
     // escape DMT
-    combat: new GarboStrategy(Macro2.externalIf(garboValue($item(_templateObject1284 || (_templateObject1284 = _taggedTemplateLiteral102(["abstraction: certainty"])))) >= garboValue($item(_templateObject1294 || (_templateObject1294 = _taggedTemplateLiteral102(["abstraction: thought"])))), Macro2.if_($monster(_templateObject1304 || (_templateObject1304 = _taggedTemplateLiteral102(["Perceiver of Sensations"]))), Macro2.tryItem($item(_templateObject13112 || (_templateObject13112 = _taggedTemplateLiteral102(["abstraction: thought"])))))).externalIf(garboValue($item(_templateObject13211 || (_templateObject13211 = _taggedTemplateLiteral102(["abstraction: joy"])))) >= garboValue($item(_templateObject13311 || (_templateObject13311 = _taggedTemplateLiteral102(["abstraction: action"])))), Macro2.if_($monster(_templateObject1345 || (_templateObject1345 = _taggedTemplateLiteral102(["Thinker of Thoughts"]))), Macro2.tryItem($item(_templateObject1354 || (_templateObject1354 = _taggedTemplateLiteral102(["abstraction: action"])))))).externalIf(garboValue($item(_templateObject1364 || (_templateObject1364 = _taggedTemplateLiteral102(["abstraction: motion"])))) >= garboValue($item(_templateObject1374 || (_templateObject1374 = _taggedTemplateLiteral102(["abstraction: sensation"])))), Macro2.if_($monster(_templateObject1384 || (_templateObject1384 = _taggedTemplateLiteral102(["Performer of Actions"]))), Macro2.tryItem($item(_templateObject1394 || (_templateObject1394 = _taggedTemplateLiteral102(["abstraction: sensation"])))))).basicCombat()),
+    combat: new GarboStrategy(function() {
+      return Macro2.externalIf(garboValue($item(_templateObject1284 || (_templateObject1284 = _taggedTemplateLiteral102(["abstraction: certainty"])))) >= garboValue($item(_templateObject1294 || (_templateObject1294 = _taggedTemplateLiteral102(["abstraction: thought"])))), Macro2.if_($monster(_templateObject1304 || (_templateObject1304 = _taggedTemplateLiteral102(["Perceiver of Sensations"]))), Macro2.tryItem($item(_templateObject13112 || (_templateObject13112 = _taggedTemplateLiteral102(["abstraction: thought"])))))).externalIf(garboValue($item(_templateObject13211 || (_templateObject13211 = _taggedTemplateLiteral102(["abstraction: joy"])))) >= garboValue($item(_templateObject13311 || (_templateObject13311 = _taggedTemplateLiteral102(["abstraction: action"])))), Macro2.if_($monster(_templateObject1345 || (_templateObject1345 = _taggedTemplateLiteral102(["Thinker of Thoughts"]))), Macro2.tryItem($item(_templateObject1354 || (_templateObject1354 = _taggedTemplateLiteral102(["abstraction: action"])))))).externalIf(garboValue($item(_templateObject1364 || (_templateObject1364 = _taggedTemplateLiteral102(["abstraction: motion"])))) >= garboValue($item(_templateObject1374 || (_templateObject1374 = _taggedTemplateLiteral102(["abstraction: sensation"])))), Macro2.if_($monster(_templateObject1384 || (_templateObject1384 = _taggedTemplateLiteral102(["Performer of Actions"]))), Macro2.tryItem($item(_templateObject1394 || (_templateObject1394 = _taggedTemplateLiteral102(["abstraction: sensation"])))))).basicCombat();
+    }),
     outfit: function() {
       return freeFightOutfit({
         familiar: $familiar(_templateObject1404 || (_templateObject1404 = _taggedTemplateLiteral102(["Machine Elf"])))
@@ -43742,7 +43764,9 @@ function dailyDungeon(additionalReady) {
       };
     }),
     do: $location(_templateObject2335 || (_templateObject2335 = _taggedTemplateLiteral105(["The Daily Dungeon"]))),
-    combat: new GarboStrategy(Macro2.kill()),
+    combat: new GarboStrategy(function() {
+      return Macro2.kill();
+    }),
     turns: function() {
       return clamp(15 - get("_lastDailyDungeonRoom"), 0, 3);
     },
@@ -43972,7 +43996,9 @@ var BarfTurnTasks = [{
   },
   combat: new GarboStrategy(function() {
     return Macro2.externalIf(shouldGoUnderwater(), Macro2.item($item(_templateObject5321 || (_templateObject5321 = _taggedTemplateLiteral105(["pulled green taffy"]))))).meatKill();
-  }, Macro2.if_("(monsterid ".concat(embezzler.id, ") && !gotjump && !(pastround 2)"), Macro2.externalIf(shouldGoUnderwater(), Macro2.item($item(_templateObject5421 || (_templateObject5421 = _taggedTemplateLiteral105(["pulled green taffy"]))))).meatKill()).abortWithMsg("Expected a digitized ".concat(SourceTerminal_exports.getDigitizeMonster(), ", but encountered something else."))),
+  }, function() {
+    return Macro2.if_("(monsterid ".concat(embezzler.id, ") && !gotjump && !(pastround 2)"), Macro2.externalIf(shouldGoUnderwater(), Macro2.item($item(_templateObject5421 || (_templateObject5421 = _taggedTemplateLiteral105(["pulled green taffy"]))))).meatKill()).abortWithMsg("Expected a digitized ".concat(SourceTerminal_exports.getDigitizeMonster(), ", but encountered something else."));
+  }),
   spendsTurn: function() {
     var _SourceTerminal$getDi;
     return !((_SourceTerminal$getDi = SourceTerminal_exports.getDigitizeMonster()) !== null && _SourceTerminal$getDi !== void 0 && _SourceTerminal$getDi.attributes.includes("FREE"));
@@ -46387,7 +46413,9 @@ var SetupEmbezzlerQuest = {
       return _set("_lastDailyDungeonEncounter", get("lastEncounter"));
     },
     spendsTurn: true,
-    combat: new GarboStrategy(Macro2.kill())
+    combat: new GarboStrategy(function() {
+      return Macro2.kill();
+    })
   }]
 };
 
