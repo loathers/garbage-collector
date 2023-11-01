@@ -45,7 +45,6 @@ import {
   $slot,
   CinchoDeMayo,
   Counter,
-  Delayed,
   get,
   have,
   SongBoom,
@@ -843,7 +842,7 @@ export function garboAdventureAuto<M extends StrictMacro>(
 }
 
 export class GarboStrategy extends CombatStrategy {
-  constructor(autoattack: Delayed<Macro>, postAuto = autoattack) {
+  constructor(autoattack: () => Macro, postAuto = autoattack) {
     super();
     this.autoattack(autoattack).macro(postAuto);
   }
