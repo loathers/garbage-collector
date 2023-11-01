@@ -133,7 +133,7 @@ function doCandyTreat(): GarboTask {
     completed: () => treated,
     ready: () =>
       !holiday().includes("Halloween") && get("_mapToACandyRichBlockUsed"),
-    outfit: treatOutfit,
+    outfit: () => treatOutfit(),
     do: (): void => {
       // We do all treat houses in a row as one task for speed reasons
       for (const house of HOUSE_NUMBERS) {
