@@ -499,7 +499,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       }
     },
     choices: () => ({ 1119: 6 }), // escape DMT
-    combat: new GarboStrategy(
+    combat: new GarboStrategy(() =>
       Macro.externalIf(
         garboValue($item`abstraction: certainty`) >=
           garboValue($item`abstraction: thought`),
