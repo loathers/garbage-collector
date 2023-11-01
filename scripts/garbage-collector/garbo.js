@@ -30030,7 +30030,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia76.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7e39fe8a5f5b50ec941c46d28501ecf74b44d119", ")"));
+    (0, import_kolmafia76.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("805c32ff35a2bc0057e7fa996ba97c4884ce7731", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia76.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -39718,10 +39718,10 @@ function fillSweatyLiver() {
   return {
     name: "Fill Sweaty Liver",
     ready: function() {
-      return have($item(_templateObject4147 || (_templateObject4147 = _taggedTemplateLiteral100(["designer sweatpants"])))) && !globalOptions.nodiet;
+      return have($item(_templateObject4147 || (_templateObject4147 = _taggedTemplateLiteral100(["designer sweatpants"])))) && !globalOptions.nodiet && get("sweat") >= 25 * clamp(3 - get("_sweatOutSomeBoozeUsed"), 0, 3);
     },
     completed: function() {
-      return get("sweat") < 25 * clamp(3 - get("_sweatOutSomeBoozeUsed"), 0, 3);
+      return get("_sweatOutSomeBoozeUsed") >= 3;
     },
     do: function() {
       while (get("_sweatOutSomeBoozeUsed") < 3) {
