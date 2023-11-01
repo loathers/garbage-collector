@@ -25,7 +25,6 @@ import {
   $skill,
   AutumnAton,
   CinchoDeMayo,
-  clamp,
   FloristFriar,
   get,
   getRemainingStomach,
@@ -96,9 +95,11 @@ function fillPantsgivingFullness(): GarboPostTask {
 function fillSweatyLiver(): GarboPostTask {
   return {
     name: "Fill Sweaty Liver",
-    ready: () => have($item`designer sweatpants`) && !globalOptions.nodiet,
+    ready: () => get("sweat") >= 25,
     completed: () =>
-      get("sweat") < 25 * clamp(3 - get("_sweatOutSomeBoozeUsed"), 0, 3),
+      globalOptions.nodiet ||
+      !have($item`designer sweatpants`) ||
+      get("_sweatOutSomeBoozeUsed") >= 3,
     do: () => {
       while (get("_sweatOutSomeBoozeUsed") < 3) {
         useSkill($skill`Sweat Out Some Booze`);
