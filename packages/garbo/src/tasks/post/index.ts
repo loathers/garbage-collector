@@ -1,5 +1,4 @@
 import {
-  availableAmount,
   availableChoiceOptions,
   canAdventure,
   cliExecute,
@@ -278,7 +277,9 @@ function leafResin(): GarboPostTask {
   return {
     name: "Leaf Resin",
     available: !!getCampground()["A Guide to Burning Leaves"],
-    ready: () => availableAmount($item`inflammable leaf`) > 50,
+    ready: () =>
+      itemAmount($item`inflammable leaf`) > 50 &&
+      (estimatedGarboTurns() > 100 || !globalOptions.ascend),
     completed: () => have($effect`Resined`),
     acquire: () => [{ item: $item`distilled resin` }],
     do: () => use($item`distilled resin`),
