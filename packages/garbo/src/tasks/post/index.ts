@@ -1,7 +1,9 @@
 import {
+  availableAmount,
   availableChoiceOptions,
   canAdventure,
   cliExecute,
+  getCampground,
   inebrietyLimit,
   itemAmount,
   mallPrice,
@@ -272,6 +274,17 @@ function funGuySpores(): GarboPostTask {
   };
 }
 
+function leafResin(): GarboPostTask {
+  return {
+    name: "Leaf Resin",
+    available: !!getCampground()["A Guide to Burning Leaves"],
+    ready: () => availableAmount($item`inflammable leaf`) > 50,
+    completed: () => have($effect`Resined`),
+    acquire: () => [{ item: $item`distilled resin` }],
+    do: () => use($item`distilled resin`),
+  };
+}
+
 export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
@@ -288,6 +301,7 @@ export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
       funGuySpores(),
       eightBitFatLoot(),
       refillCinch(),
+      leafResin(),
     ]
       .filter(({ available }) => undelay(available ?? true))
       .map((task) => ({ ...task, spendsTurn: false })),
