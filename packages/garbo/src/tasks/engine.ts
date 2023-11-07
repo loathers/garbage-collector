@@ -59,6 +59,11 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     }
   }
 
+  prepare(task: GarboTask): void {
+    if ("combat" in task) safeRestore();
+    super.prepare?.(task);
+  }
+
   execute(task: GarboTask): void {
     safeInterrupt();
     const spentTurns = totalTurnsPlayed();
@@ -71,7 +76,6 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     ) {
       SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
     }
-    if ("combat" in task) safeRestore();
     super.execute(task);
     if (totalTurnsPlayed() !== spentTurns) {
       if (!undelay(task.spendsTurn)) {
