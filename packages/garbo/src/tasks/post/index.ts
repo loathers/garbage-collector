@@ -2,7 +2,6 @@ import {
   availableChoiceOptions,
   canAdventure,
   cliExecute,
-  getCampground,
   inebrietyLimit,
   itemAmount,
   mallPrice,
@@ -25,6 +24,7 @@ import {
   $location,
   $skill,
   AutumnAton,
+  BurningLeaves,
   CinchoDeMayo,
   clamp,
   FloristFriar,
@@ -276,12 +276,12 @@ function funGuySpores(): GarboPostTask {
 function leafResin(): GarboPostTask {
   return {
     name: "Leaf Resin",
-    available: !!getCampground()["A Guide to Burning Leaves"],
+    available: BurningLeaves.have(),
     ready: () =>
-      itemAmount($item`inflammable leaf`) > 50 &&
+      BurningLeaves.numberOfLeaves() > 75 &&
       (estimatedGarboTurns() > 100 || !globalOptions.ascend),
     completed: () => have($effect`Resined`),
-    acquire: () => [{ item: $item`distilled resin` }],
+    acquire: [{ item: $item`distilled resin` }],
     do: () => use($item`distilled resin`),
   };
 }
