@@ -24,6 +24,7 @@ import {
   $location,
   $skill,
   AutumnAton,
+  BurningLeaves,
   CinchoDeMayo,
   clamp,
   FloristFriar,
@@ -272,6 +273,19 @@ function funGuySpores(): GarboPostTask {
   };
 }
 
+function leafResin(): GarboPostTask {
+  return {
+    name: "Leaf Resin",
+    available: BurningLeaves.have(),
+    ready: () =>
+      BurningLeaves.numberOfLeaves() > 75 &&
+      (estimatedGarboTurns() > 100 || !globalOptions.ascend),
+    completed: () => have($effect`Resined`),
+    acquire: [{ item: $item`distilled resin` }],
+    do: () => use($item`distilled resin`),
+  };
+}
+
 export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
@@ -288,6 +302,7 @@ export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
       funGuySpores(),
       eightBitFatLoot(),
       refillCinch(),
+      leafResin(),
     ]
       .filter(({ available }) => undelay(available ?? true))
       .map((task) => ({ ...task, spendsTurn: false })),

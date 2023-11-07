@@ -27,7 +27,7 @@
     "eslint": "^8.50.0",
     "eslint-config-garbo": "^0.0.1",
     "kolmafia": "^5.27628.0",
-    "libram": "^0.8.14",
+    "libram": "^0.8.16",
     "lint-staged": "^14.0.1",
     "madge": "^6.1.0",
     "prettier": "^3.0.3",
