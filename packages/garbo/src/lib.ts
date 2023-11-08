@@ -175,7 +175,11 @@ export function safeInterrupt(): void {
     globalOptions.prefs.rolloverBuffer * 60 * 1000 <
     rollover() * 1000 - Date.now()
   ) {
-    set("garbo_interrupt", true);
+    throw new Error(
+      `Eep! It's a mere ${Math.round(
+        rollover() - Date.now() / 1000,
+      )} seconds until rollover!`,
+    );
   }
   if (get("garbo_interrupt", false)) {
     set("garbo_interrupt", false);
