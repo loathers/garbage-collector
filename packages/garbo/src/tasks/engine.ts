@@ -61,7 +61,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
 
   prepare(task: GarboTask): void {
     if ("combat" in task) safeRestore();
-    super.prepare?.(task);
+    super.prepare(task);
   }
 
   execute(task: GarboTask): void {
