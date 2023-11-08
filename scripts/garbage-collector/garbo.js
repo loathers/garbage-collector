@@ -30253,7 +30253,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e3406eeb77921660b595adf3f3fa22b1919e745d", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2ff5120d81f923fb2de5c8d1cac6ce49bec8634c", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -46967,6 +46967,13 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
       }
     }
   }, {
+    key: "prepare",
+    value: function prepare(task) {
+      if ("combat" in task)
+        safeRestore();
+      _get2(_getPrototypeOf9(BaseGarboEngine2.prototype), "prepare", this).call(this, task);
+    }
+  }, {
     key: "execute",
     value: function execute(task) {
       safeInterrupt();
@@ -46976,8 +46983,6 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
       if (duplicate && SourceTerminal_exports.have() && SourceTerminal_exports.duplicateUsesRemaining() > 0) {
         SourceTerminal_exports.educate([$skill(_templateObject4166 || (_templateObject4166 = _taggedTemplateLiteral114(["Extract"]))), $skill(_templateObject5150 || (_templateObject5150 = _taggedTemplateLiteral114(["Duplicate"])))]);
       }
-      if ("combat" in task)
-        safeRestore();
       _get2(_getPrototypeOf9(BaseGarboEngine2.prototype), "execute", this).call(this, task);
       if ((0, import_kolmafia122.totalTurnsPlayed)() !== spentTurns) {
         if (!undelay(task.spendsTurn)) {
