@@ -208,7 +208,7 @@ function dailyDungeon(additionalReady: () => boolean) {
         (i) => ({ item: i }),
       ),
     do: $location`The Daily Dungeon`,
-    combat: new GarboStrategy(Macro.kill()),
+    combat: new GarboStrategy(() => Macro.kill()),
     turns: () => clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
     spendsTurn: true,
   };
@@ -434,24 +434,29 @@ const BarfTurnTasks: GarboTask[] = [
       shouldGoUnderwater()
         ? $location`The Briny Deeps`
         : wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false }),
-    choices: shouldGoUnderwater()
-      ? {}
-      : wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
+    choices: () =>
+      shouldGoUnderwater()
+        ? {}
+        : wanderer().getChoices({
+            wanderer: "wanderer",
+            allowEquipment: false,
+          }),
     combat: new GarboStrategy(
       () =>
         Macro.externalIf(
           shouldGoUnderwater(),
           Macro.item($item`pulled green taffy`),
         ).meatKill(),
-      Macro.if_(
-        `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
-        Macro.externalIf(
-          shouldGoUnderwater(),
-          Macro.item($item`pulled green taffy`),
-        ).meatKill(),
-      ).abortWithMsg(
-        `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
-      ),
+      () =>
+        Macro.if_(
+          `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
+          Macro.externalIf(
+            shouldGoUnderwater(),
+            Macro.item($item`pulled green taffy`),
+          ).meatKill(),
+        ).abortWithMsg(
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
+        ),
     ),
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
@@ -593,10 +598,10 @@ export const WandererQuest: Quest<GarboTask> = {
 export const NonBarfTurnQuest: Quest<GarboTask> = {
   name: "Non Barf Turn",
   tasks: NonBarfTurnTasks,
-  completed: () =>
-    !canContinue() ||
-    clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) >=
-      nonBarfTurns(),
+  ready: () =>
+    clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
+    nonBarfTurns() + globalOptions.saveTurns,
+  completed: () => !canContinue(),
 };
 
 export const BarfTurnQuest: Quest<GarboTask> = {

@@ -516,10 +516,17 @@ const DailyTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Daycare",
+    name: "Daycare Buff",
     ready: () => get("daycareOpen") || get("_daycareToday"),
     completed: () => get("_daycareSpa"),
     do: () => cliExecute("daycare mysticality"),
+    spendsTurn: false,
+  },
+  {
+    name: "Daycare Free Scavenge",
+    ready: () => get("daycareOpen") || get("_daycareToday"),
+    completed: () => get("_daycareGymScavenges") > 0,
+    do: () => cliExecute("daycare scavenge free"),
     spendsTurn: false,
   },
   {

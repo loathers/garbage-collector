@@ -443,6 +443,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`Sacramento wine`),
     new MenuItem($item`iced plum wine`),
     new MenuItem($item`splendid martini`),
+    new MenuItem($item`low tide martini`),
     new MenuItem($item`Eye and a Twist`),
     new MenuItem($item`jar of fermented pickle juice`),
     new MenuItem(mallMin(complexMushroomWines)),
@@ -468,6 +469,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(Mayo.flex),
     new MenuItem(Mayo.zapine),
     new MenuItem($item`Special Seasoning`),
+    new MenuItem($item`whet stone`),
     new MenuItem(saladFork),
     new MenuItem(frostyMug),
     new MenuItem($item`mojo filter`),
@@ -886,9 +888,12 @@ export function computeDiet(): {
           menu().filter(
             (menuItem) =>
               (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
-              [Mayo.flex, Mayo.zapine, $item`Special Seasoning`].includes(
-                menuItem.item,
-              ),
+              [
+                Mayo.flex,
+                Mayo.zapine,
+                $item`Special Seasoning`,
+                $item`whet stone`,
+              ].includes(menuItem.item),
           ),
           pantsgivingDietPlanner,
         ),
