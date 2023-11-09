@@ -205,6 +205,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "If you're a very high level, what HP threshold should garbo aim to maintain?",
           default: 2000,
         }),
+        rolloverBuffer: Args.number({
+          setting: "garbo_rolloverBuffer",
+          help: "At how many minutes before Rollover should we terminate to let you get ready for bed?",
+          default: 5,
+        }),
       },
     ),
     /*

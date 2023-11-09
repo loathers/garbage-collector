@@ -43,6 +43,7 @@ import {
   printHtml,
   restoreHp,
   restoreMp,
+  rollover,
   runChoice,
   runCombat,
   sessionStorage,
@@ -167,6 +168,16 @@ export function expectedEmbezzlerProfit(): number {
 }
 
 export function safeInterrupt(): void {
+  if (
+    globalOptions.prefs.rolloverBuffer * 60 * 1000 <
+    rollover() * 1000 - Date.now()
+  ) {
+    throw new Error(
+      `Eep! It's a mere ${Math.round(
+        rollover() - Date.now() / 1000,
+      )} seconds until rollover!`,
+    );
+  }
   if (get("garbo_interrupt", false)) {
     set("garbo_interrupt", false);
     throw new Error("User interrupt requested. Stopping Garbage Collector.");
