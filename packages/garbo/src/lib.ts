@@ -169,7 +169,7 @@ export function expectedEmbezzlerProfit(): number {
 
 export function safeInterrupt(): void {
   if (
-    globalOptions.prefs.rolloverBuffer * 60 * 1000 <
+    globalOptions.prefs.rolloverBuffer * 60 * 1000 >
     rollover() * 1000 - Date.now()
   ) {
     throw new Error(
