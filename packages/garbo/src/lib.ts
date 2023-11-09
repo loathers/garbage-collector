@@ -38,6 +38,7 @@ import {
   mySpleenUse,
   myThrall,
   myTurncount,
+  now_to_int,
   numericModifier,
   print,
   printHtml,
@@ -168,14 +169,10 @@ export function expectedEmbezzlerProfit(): number {
 }
 
 export function safeInterrupt(): void {
-  if (
-    globalOptions.prefs.rolloverBuffer * 60 * 1000 >
-    rollover() * 1000 - Date.now()
-  ) {
+  const secondsToRollover = rollover() - (now_to_int() / 1000);
+  if (secondsToRollover < globalOptions.prefs.rolloverBuffer * 60) {
     throw new Error(
-      `Eep! It's a mere ${Math.round(
-        rollover() - Date.now() / 1000,
-      )} seconds until rollover!`,
+      `Eep! It's a mere ${secondsToRollover} seconds until rollover!`,
     );
   }
   if (get("garbo_interrupt", false)) {
