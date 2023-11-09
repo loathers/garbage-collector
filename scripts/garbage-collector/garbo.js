@@ -30039,7 +30039,7 @@ function expectedEmbezzlerProfit() {
   return averageEmbezzlerNet() - averageTouristNet();
 }
 function safeInterrupt() {
-  if (globalOptions.prefs.rolloverBuffer * 60 * 1e3 < (0, import_kolmafia78.rollover)() * 1e3 - Date.now()) {
+  if (globalOptions.prefs.rolloverBuffer * 60 * 1e3 > (0, import_kolmafia78.rollover)() * 1e3 - Date.now()) {
     throw new Error("Eep! It's a mere ".concat(Math.round((0, import_kolmafia78.rollover)() - Date.now() / 1e3), " seconds until rollover!"));
   }
   if (get("garbo_interrupt", false)) {
@@ -30261,7 +30261,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("20b88e496ea05f8f71319cd0c790c8c824d1a48a", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ad5f23d5c7cd3660450372db6fad06815c3a433c", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
