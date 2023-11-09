@@ -169,7 +169,7 @@ export function expectedEmbezzlerProfit(): number {
 }
 
 export function safeInterrupt(): void {
-  const secondsToRollover = rollover() - (now_to_int() / 1000);
+  const secondsToRollover = Math.round(rollover() - (now_to_int() / 1000));
   if (secondsToRollover < globalOptions.prefs.rolloverBuffer * 60) {
     throw new Error(
       `Eep! It's a mere ${secondsToRollover} seconds until rollover!`,
