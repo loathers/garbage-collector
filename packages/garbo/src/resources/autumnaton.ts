@@ -49,7 +49,7 @@ function averageAutumnatonValue(
       .map((m) => itemDropsArray(m))
       .flat()
       .map(({ rate, type, drop }) => ({
-        value: !["c", "0"].includes(type) ? garboValue(drop, true) : 0,
+        value: !["c", "0"].includes(type) ? garboValue(drop) : 0,
         preAcuityExpectation: ["c", "0", ""].includes(type)
           ? (2 * rate) / 100
           : 0,
@@ -95,7 +95,7 @@ function seasonalItemValue(
           availableAmount(autumnItem) > 0
           ? avgValueOfRandomAutumnItem
           : 0
-        : garboValue(autumnItem, true))
+        : garboValue(autumnItem))
     );
   } else {
     // If we're in a location without any uniques, we still get cowcatcher items
