@@ -160,7 +160,10 @@ const juneCleaverChoices = () =>
 function juneCleaver(): GarboPostTask {
   return {
     name: "June Cleaver",
-    ready: () => JuneCleaver.have() && teleportEffects.every((e) => !have(e)),
+    ready: () =>
+      JuneCleaver.have() &&
+      teleportEffects.every((e) => !have(e)) &&
+      myAdventures() > 0,
     completed: () => get("_juneCleaverFightsLeft") > 0,
     do: () =>
       myInebriety() > inebrietyLimit()
