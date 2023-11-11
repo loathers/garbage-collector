@@ -29738,8 +29738,7 @@ function garboValueFunctions() {
   return _valueFunctions;
 }
 function garboValue(item11) {
-  var useHistorical = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
-  return garboValueFunctions().value(item11, useHistorical);
+  return garboValueFunctions().value(item11);
 }
 function garboAverageValue() {
   var _garboValueFunctions;
@@ -30261,7 +30260,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("531b7c1f818c6f714a2888b7a377a2c3861c6cca", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("019c6071badd96ad20901855b74140662ccc5fcd", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -39358,7 +39357,7 @@ function averageAutumnatonValue(location, acuityOverride, slotOverride) {
     }).flat().map(function(_ref) {
       var rate = _ref.rate, type = _ref.type, drop = _ref.drop;
       return {
-        value: !["c", "0"].includes(type) ? garboValue(drop, true) : 0,
+        value: !["c", "0"].includes(type) ? garboValue(drop) : 0,
         preAcuityExpectation: ["c", "0", ""].includes(type) ? 2 * rate / 100 : 0,
         postAcuityExpectation: rate >= acuityCutoff && ["c", "0", ""].includes(type) ? 8 * rate / 100 : 0
       };
@@ -39386,7 +39385,7 @@ function seasonalItemValue(location, seasonalOverride) {
     return (seasonalItemDrops > 1 ? avgValueOfRandomAutumnItem : 0) + (autumnMeltables.includes(autumnItem) ? (
       // If we already have the meltable, then we get a random item, else value at 0
       (0, import_kolmafia109.availableAmount)(autumnItem) > 0 ? avgValueOfRandomAutumnItem : 0
-    ) : garboValue(autumnItem, true));
+    ) : garboValue(autumnItem));
   } else {
     return seasonalItemDrops > 1 ? avgValueOfRandomAutumnItem : 0;
   }
@@ -40558,7 +40557,7 @@ var isFree = function(monster) {
 var valueDrops = function(monster) {
   return sum((0, import_kolmafia113.itemDropsArray)(monster), function(_ref2) {
     var drop = _ref2.drop, rate = _ref2.rate, type = _ref2.type;
-    return !["c", "0", "p"].includes(type) ? garboValue(drop, true) * rate / 100 : 0;
+    return !["c", "0", "p"].includes(type) ? garboValue(drop) * rate / 100 : 0;
   });
 };
 var locketMonster = function() {
@@ -43369,7 +43368,7 @@ var isFree2 = function(monster) {
 var valueDrops2 = function(monster) {
   return sum((0, import_kolmafia114.itemDropsArray)(monster), function(_ref6) {
     var drop = _ref6.drop, rate = _ref6.rate, type = _ref6.type;
-    return !["c", "0", "p"].includes(type) ? garboValue(drop, true) * rate / 100 : 0;
+    return !["c", "0", "p"].includes(type) ? garboValue(drop) * rate / 100 : 0;
   });
 };
 function estimatedTentacles() {
@@ -46031,7 +46030,7 @@ function pickCargoPocket() {
     if (pocket in items) {
       value2 += sum(Object.entries((0, import_kolmafia119.pocketItems)(pocket)), function(_ref3) {
         var _ref4 = _slicedToArray35(_ref3, 2), item11 = _ref4[0], count = _ref4[1];
-        return garboValue((0, import_kolmafia119.toItem)(item11), true) * count;
+        return garboValue((0, import_kolmafia119.toItem)(item11)) * count;
       });
     }
     if (pocket in meats) {
