@@ -97,7 +97,7 @@ function pickCargoPocket(): void {
     if (pocket in items) {
       value += sum(
         Object.entries(pocketItems(pocket)),
-        ([item, count]) => garboValue(toItem(item), true) * count,
+        ([item, count]) => garboValue(toItem(item)) * count,
       );
     }
     if (pocket in meats) {

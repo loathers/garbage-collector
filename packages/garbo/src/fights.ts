@@ -2530,7 +2530,7 @@ function killRobortCreaturesForFree() {
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 const valueDrops = (monster: Monster) =>
   sum(itemDropsArray(monster), ({ drop, rate, type }) =>
-    !["c", "0", "p"].includes(type) ? (garboValue(drop, true) * rate) / 100 : 0,
+    !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
   );
 
 export function estimatedFreeFights(): number {

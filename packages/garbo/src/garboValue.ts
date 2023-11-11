@@ -13,8 +13,8 @@ function garboValueFunctions(): ValueFunctions {
   return _valueFunctions;
 }
 
-export function garboValue(item: Item, useHistorical = false): number {
-  return garboValueFunctions().value(item, useHistorical);
+export function garboValue(item: Item): number {
+  return garboValueFunctions().value(item);
 }
 
 export function garboAverageValue(...items: Item[]): number {
