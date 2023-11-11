@@ -29,6 +29,7 @@ import {
   $items,
   $skill,
   $skills,
+  BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
   get,
@@ -395,6 +396,16 @@ const DailyItemTasks: GarboTask[] = [
     completed: () => get("_sitCourseCompleted") || have($skill`Insectologist`),
     do: () => use($item`S.I.T. Course Completion Certificate`),
     choices: { 1494: 2 },
+    spendsTurn: false,
+  },
+  {
+    name: "Rake Leaves",
+    ready: () => BurningLeaves.have(),
+    completed: () => have($item`rake`),
+    do: () => {
+      visitUrl("campground.php?preaction=leaves");
+      visitUrl("main.php"); // Mafia not marking as can walk away
+    },
     spendsTurn: false,
   },
   {
