@@ -16,6 +16,7 @@ import {
   $items,
   $slot,
   $slots,
+  BurningLeaves,
   clamp,
   DaylightShavings,
   get,
@@ -247,6 +248,7 @@ export function bonusGear(
           ...mayflowerBouquet(mode),
           ...(mode === BonusEquipMode.BARF ? magnifyingGlass() : []),
           ...juneCleaver(mode),
+          ...rakeLeaves(mode),
         ])
       : []),
   ]);
@@ -332,6 +334,33 @@ function juneCleaver(mode: BonusEquipMode): Map<Item, number> {
     mode === BonusEquipMode.EMBEZZLER ? 30 : JuneCleaver.getInterval();
   return new Map<Item, number>([
     [$item`June cleaver`, juneCleaverEV / interval],
+  ]);
+}
+
+let rakeValue: number | null = null;
+function rakeLeaves(mode: BonusEquipMode): Map<Item, number> {
+  if (mode === BonusEquipMode.EMBEZZLER || !BurningLeaves.have()) {
+    return new Map();
+  }
+  if (rakeValue === null) {
+    let bestValue = 0;
+    BurningLeaves.burnFor.forEach((leaves, result) => {
+      if (result instanceof Item) {
+        const item = result as Item;
+        if (item.tradeable) {
+          const value = garboValue(item) / leaves;
+          if (value > bestValue) {
+            bestValue = value;
+          }
+        }
+      }
+    });
+    rakeValue = bestValue * 1.5; // 1-2 leaves per combat
+  }
+
+  return new Map<Item, number>([
+    [$item`rake`, rakeValue],
+    [$item`tiny rake`, rakeValue],
   ]);
 }
 
