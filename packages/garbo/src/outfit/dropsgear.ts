@@ -24,6 +24,7 @@ import {
   getFoldGroup,
   have,
   JuneCleaver,
+  maxBy,
   sum,
   sumNumbers,
 } from "libram";
@@ -343,19 +344,15 @@ function rakeLeaves(mode: BonusEquipMode): Map<Item, number> {
     return new Map();
   }
   if (rakeValue === null) {
-    let bestValue = 0;
-    BurningLeaves.burnFor.forEach((leaves, result) => {
-      if (result instanceof Item) {
-        const item = result as Item;
-        if (item.tradeable) {
-          const value = garboValue(item) / leaves;
-          if (value > bestValue) {
-            bestValue = value;
-          }
-        }
-      }
-    });
-    rakeValue = bestValue * 1.5; // 1-2 leaves per combat
+    const itemTargets = [...BurningLeaves.burnFor].filter(
+      (entry): entry is [Item, number] =>
+        entry[0] instanceof Item && entry[0].tradeable,
+    );
+    const [item, leaves] = maxBy(
+      itemTargets,
+      ([item, leaves]) => garboValue(item) / leaves,
+    );
+    rakeValue = (garboValue(item) / leaves) * 1.5; // 1-2 leaves per combat
   }
 
   return new Map<Item, number>([
