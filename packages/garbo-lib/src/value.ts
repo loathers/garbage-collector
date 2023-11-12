@@ -232,9 +232,12 @@ export function makeValue(
 
   function inflammableLeafCurrency(): () => number {
     if (!BurningLeaves.have()) return () => 0;
+    const ignored = $items`lit leaf lasso, day shortener`; // Ignore limited purchases
     const unitCost = [...BurningLeaves.burnFor].filter(
       (entry): entry is [Item, number] =>
-        entry[0] instanceof Item && entry[0].tradeable,
+        entry[0] instanceof Item &&
+        entry[0].tradeable &&
+        !ignored.includes(entry[0]),
     );
     return () =>
       Math.max(...unitCost.map(([item, cost]) => value(item) / cost));
