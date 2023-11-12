@@ -8,7 +8,6 @@ import {
   myAdventures,
   myInebriety,
   myLevel,
-  myLocation,
   putCloset,
   reverseNumberology,
   runChoice,
@@ -72,7 +71,7 @@ function floristFriars(): GarboPostTask {
     name: "Florist Plants",
     completed: () => FloristFriar.isFull(),
     ready: () =>
-      myLocation() === $location`Barf Mountain` &&
+      get("lastAdventure") === $location`Barf Mountain`.toString() &&
       FloristFriar.have() &&
       BARF_PLANTS.some((flower) => flower.available()),
     do: () =>
