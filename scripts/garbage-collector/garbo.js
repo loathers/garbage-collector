@@ -24717,7 +24717,7 @@ var require_lib2 = __commonJS({
     exports.underwater = underwater;
     var ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm"];
     var ILLEGAL_ZONES = ["The Drip"];
-    var canAdventureOrUnlockSkipList = [].concat(_toConsumableArray53((0, libram_1.$locations)(_templateObject1169 || (_templateObject1169 = _taggedTemplateLiteral116(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis"])))), _toConsumableArray53(kolmafia_1.Location.all().filter(function(_ref) {
+    var canAdventureOrUnlockSkipList = [].concat(_toConsumableArray53((0, libram_1.$locations)(_templateObject1169 || (_templateObject1169 = _taggedTemplateLiteral116(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, Frat House"])))), _toConsumableArray53(kolmafia_1.Location.all().filter(function(_ref) {
       var parent = _ref.parent, zone = _ref.zone;
       return ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone);
     })));
@@ -24746,7 +24746,7 @@ var require_lib2 = __commonJS({
     }
     exports.unlock = unlock;
     var backupSkiplist = (0, libram_1.$locations)(_templateObject1548 || (_templateObject1548 = _taggedTemplateLiteral116(["The Overgrown Lot, The Skeleton Store, The Mansion of Dr. Weirdeaux, Professor Jacking's Huge-A-Ma-tron"])));
-    var backupSafelist = (0, libram_1.$locations)(_templateObject1647 || (_templateObject1647 = _taggedTemplateLiteral116(["The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters, The Upper Chamber"])));
+    var backupSafelist = (0, libram_1.$locations)(_templateObject1647 || (_templateObject1647 = _taggedTemplateLiteral116(["The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters, The Upper Chamber, Frat House"])));
     var yellowRaySafelist = (0, libram_1.$locations)(_templateObject1747 || (_templateObject1747 = _taggedTemplateLiteral116(["The Haunted Gallery, The Haunted Ballroom, The Haunted Library, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters, The Upper Chamber"])));
     function canWanderTypeBackup(location) {
       return !backupSkiplist.includes(location) && (location.combatPercent >= 100 || backupSafelist.includes(location));
@@ -25270,6 +25270,7 @@ var require_wanderer = __commonJS({
     var _templateObject2933;
     var _templateObject3033;
     var _templateObject3191;
+    var _templateObject3235;
     function ownKeys22(e, r) {
       var t = Object.keys(e);
       if (Object.getOwnPropertySymbols) {
@@ -25599,14 +25600,17 @@ var require_wanderer = __commonJS({
           }],
           [(0, libram_1.$location)(_templateObject2737 || (_templateObject2737 = _taggedTemplateLiteral116(["The Haiku Dungeon"]))), {
             297: 3
+          }],
+          [(0, libram_1.$location)(_templateObject2835 || (_templateObject2835 = _taggedTemplateLiteral116(["Frat House"]))), {
+            1425: 4
           }]
-          // skip
+          // fight eXtreme Sports Orcs
         ]));
         _defineProperty43(this, "equipment", new Map([].concat(_toConsumableArray53(kolmafia_1.Location.all().filter(function(l) {
           return l.zone === "The 8-Bit Realm";
         }).map(function(l) {
-          return [l, (0, libram_1.$items)(_templateObject2835 || (_templateObject2835 = _taggedTemplateLiteral116(["continuum transfunctioner"])))];
-        })), [[(0, libram_1.$location)(_templateObject2933 || (_templateObject2933 = _taggedTemplateLiteral116(["Shadow Rift (The 8-Bit Realm)"]))), (0, libram_1.$items)(_templateObject3033 || (_templateObject3033 = _taggedTemplateLiteral116(["continuum transfunctioner"])))]])));
+          return [l, (0, libram_1.$items)(_templateObject2933 || (_templateObject2933 = _taggedTemplateLiteral116(["continuum transfunctioner"])))];
+        })), [[(0, libram_1.$location)(_templateObject3033 || (_templateObject3033 = _taggedTemplateLiteral116(["Shadow Rift (The 8-Bit Realm)"]))), (0, libram_1.$items)(_templateObject3191 || (_templateObject3191 = _taggedTemplateLiteral116(["continuum transfunctioner"])))]])));
         _defineProperty43(this, "cacheKey", "");
         _defineProperty43(this, "targets", {});
         _defineProperty43(this, "options", void 0);
@@ -25629,7 +25633,7 @@ var require_wanderer = __commonJS({
             this.clear();
           this.cacheKey = newKey;
           var locationSkipList = allowEquipment ? [] : _toConsumableArray53(this.equipment.keys());
-          return sober2() || !drunkSafe ? (_this$targets$_ref = (_this$targets = this.targets)[_ref2 = "".concat(draggableFight, ":").concat(allowEquipment)]) !== null && _this$targets$_ref !== void 0 ? _this$targets$_ref : _this$targets[_ref2] = wanderWhere(this.options, draggableFight, [], locationSkipList) : (0, libram_1.$location)(_templateObject3191 || (_templateObject3191 = _taggedTemplateLiteral116(["Drunken Stupor"])));
+          return sober2() || !drunkSafe ? (_this$targets$_ref = (_this$targets = this.targets)[_ref2 = "".concat(draggableFight, ":").concat(allowEquipment)]) !== null && _this$targets$_ref !== void 0 ? _this$targets$_ref : _this$targets[_ref2] = wanderWhere(this.options, draggableFight, [], locationSkipList) : (0, libram_1.$location)(_templateObject3235 || (_templateObject3235 = _taggedTemplateLiteral116(["Drunken Stupor"])));
         }
       }, {
         key: "getChoices",
@@ -30260,7 +30264,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("afcec104ed0126aefb89a73a33c756cb0a3f7207", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("650fdca20949766b246e2ab49906de0e8d099ef8", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
