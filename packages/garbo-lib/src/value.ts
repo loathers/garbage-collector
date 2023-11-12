@@ -12,6 +12,7 @@ import {
   $class,
   $item,
   $items,
+  BurningLeaves,
   Delayed,
   getSaleValue,
   sum,
@@ -196,6 +197,7 @@ export function makeValue(
         ...$items`Boris's key, Jarlsberg's key, Sneaky Pete's key, Boris's ring, Jarlsberg's earring, Sneaky Pete's breath spray, potato sprout, sewing kit, Spellbook: Singer's Faithful Ocelot, Spellbook: Drescher's Annoying Noise, Spellbook: Walberg's Dim Bulb, dried gelatinous cube`,
       ),
     ],
+    [$item`inflammable leaf`, inflammableLeafCurrency()],
     ...inputValues,
   ]);
 
@@ -224,6 +226,19 @@ export function makeValue(
         return [i, sellPrice(coinmaster, i)];
       }
     });
+    return () =>
+      Math.max(...unitCost.map(([item, cost]) => value(item) / cost));
+  }
+
+  function inflammableLeafCurrency(): () => number {
+    if (!BurningLeaves.have()) return () => 0;
+    const ignored = $items`lit leaf lasso, day shortener`; // Ignore limited purchases
+    const unitCost = [...BurningLeaves.burnFor].filter(
+      (entry): entry is [Item, number] =>
+        entry[0] instanceof Item &&
+        entry[0].tradeable &&
+        !ignored.includes(entry[0]),
+    );
     return () =>
       Math.max(...unitCost.map(([item, cost]) => value(item) / cost));
   }
