@@ -337,12 +337,11 @@ function juneCleaver(mode: BonusEquipMode): Map<Item, number> {
   ]);
 }
 
-let rakeValue: number | null = null;
 function rakeLeaves(mode: BonusEquipMode): Map<Item, number> {
   if (mode === BonusEquipMode.EMBEZZLER || !BurningLeaves.have()) {
     return new Map();
   }
-  if (rakeValue === null) rakeValue = garboValue($item`inflammable leaf`) * 1.5;
+  const rakeValue = garboValue($item`inflammable leaf`) * 1.5;
   return new Map<Item, number>([
     [$item`rake`, rakeValue],
     [$item`tiny rake`, rakeValue],
