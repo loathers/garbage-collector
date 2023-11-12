@@ -91,8 +91,8 @@ import {
   FloristFriar,
   gameDay,
   get,
-  getAverageAdventures,
   getFoldGroup,
+  GingerBread,
   have,
   maxBy,
   property,
@@ -114,7 +114,6 @@ import { withStash } from "./clan";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
-import { bestConsumable } from "./diet";
 import {
   embezzlerCount,
   embezzlerSources,
@@ -178,6 +177,7 @@ import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { faxMonster } from "./resources/fax";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
+import { bestMidnightAvailable } from "./resources";
 import { PostQuest } from "./tasks/post";
 
 const firstChainMacro = () =>
@@ -1449,7 +1449,7 @@ const freeRunFightSources = [
   ),
   new FreeFight(
     () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
+      GingerBread.available() &&
       get("gingerAdvanceClockUnlocked") &&
       !get("_gingerbreadClockVisited") &&
       get("_gingerbreadCityTurns") <= 3,
@@ -1470,11 +1470,7 @@ const freeRunFightSources = [
     },
   ),
   new FreeRunFight(
-    () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) <
-        9,
+    () => GingerBread.available() && GingerBread.minutesToNoon() > 0,
     (runSource: ActionSource) => {
       propertyManager.setChoices({
         1215: 1, // Gingerbread Civic Center advance clock
@@ -1496,11 +1492,7 @@ const freeRunFightSources = [
     },
   ),
   new FreeFight(
-    () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) ===
-        9,
+    () => GingerBread.available() && GingerBread.minutesToNoon() === 0,
     () => {
       propertyManager.setChoices({
         1204: 1, // Gingerbread Train Station Noon random candy
@@ -1519,13 +1511,9 @@ const freeRunFightSources = [
   ),
   new FreeRunFight(
     () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) >=
-        10 &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) <
-        19 &&
+      GingerBread.available() &&
+      GingerBread.minutesToMidnight() > 0 &&
+      GingerBread.minutesToNoon() < 0 &&
       (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     (runSource: ActionSource) => {
       propertyManager.setChoices({
@@ -1549,43 +1537,21 @@ const freeRunFightSources = [
   ),
   new FreeFight(
     () =>
-      (get("gingerbreadCityAvailable") || get("_gingerbreadCityToday")) &&
-      get("_gingerbreadCityTurns") +
-        (get("_gingerbreadClockAdvanced") ? 5 : 0) ===
-        19 &&
+      GingerBread.available() &&
+      GingerBread.minutesToMidnight() === 0 &&
       (availableAmount($item`sprinkles`) > 5 || haveOutfit("gingerbread best")),
     () => {
-      propertyManager.setChoices({
-        1203: 4, // Gingerbread Civic Center 5 gingerbread cigarettes
-        1215: 1, // Gingerbread Civic Center advance clock
-        1209: 2, // enter the gallery at Upscale Midnight
-        1214: 1, // get High-End ginger wine
-      });
-      const best = bestConsumable(
-        "booze",
-        true,
-        $items`high-end ginger wine, astral pilsner`,
-      );
-      const gingerWineValue =
-        (0.5 * 30 * (baseMeat + 750) +
-          getAverageAdventures($item`high-end ginger wine`) *
-            get("valueOfAdventure")) /
-        2;
-      const valueDif = gingerWineValue - best.value;
-      if (
-        haveOutfit("gingerbread best") &&
-        (availableAmount($item`sprinkles`) < 5 ||
-          (valueDif * 2 > garboValue($item`gingerbread cigarette`) * 5 &&
-            itemAmount($item`high-end ginger wine`) < 11))
-      ) {
+      const { choices, location } = bestMidnightAvailable();
+      propertyManager.setChoices(choices);
+      if (location === $location`Gingerbread Upscale Retail District`) {
         outfit("gingerbread best");
-        garboAdventure(
-          $location`Gingerbread Upscale Retail District`,
-          Macro.abort(),
-        );
-      } else {
-        garboAdventure($location`Gingerbread Civic Center`, Macro.abort());
       }
+      garboAdventure(
+        location,
+        Macro.abortWithMsg(
+          "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
+        ),
+      );
     },
     false,
     {

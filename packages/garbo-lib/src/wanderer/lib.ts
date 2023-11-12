@@ -20,6 +20,7 @@ import {
   $skill,
   clamp,
   get,
+  GingerBread,
   have,
   realmAvailable,
   sum,
@@ -133,6 +134,14 @@ export function canAdventureOrUnlock(loc: Location): boolean {
   ) {
     skiplist.push($location`The Icy Peak`);
   }
+
+  if (
+    GingerBread.minutesToNoon() === 0 ||
+    GingerBread.minutesToMidnight() === 0
+  ) {
+    skiplist.push(...GingerBread.LOCATIONS);
+  }
+
   const canUnlock = UnlockableZones.some(
     (z) => loc.zone === z.zone && (z.available() || !z.noInv),
   );
