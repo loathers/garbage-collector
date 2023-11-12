@@ -1546,7 +1546,12 @@ const freeRunFightSources = [
       if (location === $location`Gingerbread Upscale Retail District`) {
         outfit("gingerbread best");
       }
-      garboAdventure(location, Macro.abort());
+      garboAdventure(
+        location,
+        Macro.abortWithMsg(
+          "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
+        ),
+      );
     },
     false,
     {

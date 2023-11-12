@@ -253,7 +253,11 @@ function gingerbreadMidnight(additionalReady: () => boolean) {
           : [],
       offhand: sober() ? undefined : $item`Drunkula's wineglass`,
     }),
-    combat: new GarboStrategy(() => Macro.abort()),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg(
+        "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
+      ),
+    ),
     spendsTurn: true,
   };
 }
@@ -566,7 +570,11 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => GingerBread.minutesToNoon() !== 0,
     do: $location`Gingerbread Train Station`,
     choices: { 1204: 1 },
-    combat: new GarboStrategy(() => Macro.abort()),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg(
+        "We thought it was noon here in Gingerbread City, but we're in a fight!",
+      ),
+    ),
     outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
     spendsTurn: true,
   },

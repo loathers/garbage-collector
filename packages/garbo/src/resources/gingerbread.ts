@@ -11,6 +11,7 @@ import {
   $location,
   get,
   getAverageAdventures,
+  GingerBread,
   have,
   maxBy,
 } from "libram";
@@ -44,7 +45,7 @@ const MIDNIGHTS = [
   {
     location: $location`Gingerbread Civic Center`,
     choices: { 1203: 4 },
-    available: () => have($item`sprinkles`, 5),
+    available: () => have($item`sprinkles`, 5) && !GingerBread.canJudgeFudge(),
     value: () => 5 * garboValue($item`gingerbread cigarette`),
   },
 ] as const;

@@ -133,7 +133,12 @@ function _yachtzeeChain(): void {
         useSkill($skill`The Polka of Plenty`);
       }
     }
-    garboAdventure($location`The Sunken Party Yacht`, Macro.abort());
+    garboAdventure(
+      $location`The Sunken Party Yacht`,
+      Macro.abortWithMsg(
+        "We tried to Yachtzee it up, but are in a fight instad!",
+      ),
+    );
     if (get("lastEncounter") === "Yachtzee!") eventLog.yachtzees += 1;
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;
