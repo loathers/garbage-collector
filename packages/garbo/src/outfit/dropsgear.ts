@@ -16,6 +16,7 @@ import {
   $items,
   $slot,
   $slots,
+  BurningLeaves,
   clamp,
   DaylightShavings,
   get,
@@ -23,6 +24,7 @@ import {
   getFoldGroup,
   have,
   JuneCleaver,
+  maxBy,
   sum,
   sumNumbers,
 } from "libram";
@@ -247,6 +249,7 @@ export function bonusGear(
           ...mayflowerBouquet(mode),
           ...(mode === BonusEquipMode.BARF ? magnifyingGlass() : []),
           ...juneCleaver(mode),
+          ...rakeLeaves(mode),
         ])
       : []),
   ]);
@@ -332,6 +335,29 @@ function juneCleaver(mode: BonusEquipMode): Map<Item, number> {
     mode === BonusEquipMode.EMBEZZLER ? 30 : JuneCleaver.getInterval();
   return new Map<Item, number>([
     [$item`June cleaver`, juneCleaverEV / interval],
+  ]);
+}
+
+let rakeValue: number | null = null;
+function rakeLeaves(mode: BonusEquipMode): Map<Item, number> {
+  if (mode === BonusEquipMode.EMBEZZLER || !BurningLeaves.have()) {
+    return new Map();
+  }
+  if (rakeValue === null) {
+    const itemTargets = [...BurningLeaves.burnFor].filter(
+      (entry): entry is [Item, number] =>
+        entry[0] instanceof Item && entry[0].tradeable,
+    );
+    const [item, leaves] = maxBy(
+      itemTargets,
+      ([item, leaves]) => garboValue(item) / leaves,
+    );
+    rakeValue = (garboValue(item) / leaves) * 1.5; // 1-2 leaves per combat
+  }
+
+  return new Map<Item, number>([
+    [$item`rake`, rakeValue],
+    [$item`tiny rake`, rakeValue],
   ]);
 }
 
