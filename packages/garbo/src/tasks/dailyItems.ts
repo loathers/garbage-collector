@@ -7,6 +7,7 @@ import {
   getClanLounge,
   getMonsters,
   Item,
+  itemAmount,
   itemDropsArray,
   itemPockets,
   mallPrice,
@@ -405,6 +406,35 @@ const DailyItemTasks: GarboTask[] = [
     do: () => {
       visitUrl("campground.php?preaction=leaves");
       visitUrl("main.php"); // Mafia not marking as can walk away
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Burning Leaves lit leaf lasso",
+    ready: () =>
+      BurningLeaves.have() &&
+      itemAmount($item`inflammable leaf`) >=
+        BurningLeaves.burnFor.get($item`lit leaf lasso`)!,
+    completed: () => get("_leafLassosCrafted") >= 3,
+    do: () => {
+      BurningLeaves.burnLeaves(
+        BurningLeaves.burnFor.get($item`lit leaf lasso`)!,
+      );
+    },
+    limit: { skip: 3 },
+    spendsTurn: false,
+  },
+  {
+    name: "Burning Leaves day shortener",
+    ready: () =>
+      BurningLeaves.have() &&
+      itemAmount($item`inflammable leaf`) >=
+        BurningLeaves.burnFor.get($item`day shortener`)!,
+    completed: () => get("_leafDayShortenerCrafted"),
+    do: () => {
+      BurningLeaves.burnLeaves(
+        BurningLeaves.burnFor.get($item`day shortener`)!,
+      );
     },
     spendsTurn: false,
   },
