@@ -30285,7 +30285,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("da8cb82cca7bc39cad1693066597a52150ad7449", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("327f7ac93a2052ebc2912a576c8bdf67afb98740", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -39888,10 +39888,10 @@ function workshedTask(workshed) {
       return (_workshed$done = (_workshed$done2 = workshed.done) === null || _workshed$done2 === void 0 ? void 0 : _workshed$done2.call(workshed)) !== null && _workshed$done !== void 0 ? _workshed$done : true;
     },
     ready: function() {
-      return (0, import_kolmafia111.getWorkshed)() === workshed.workshed && workshed.available();
+      return (0, import_kolmafia111.getWorkshed)() === workshed.workshed && workshed.available() && !!workshed.action;
     },
     do: function() {
-      return workshed === null || workshed === void 0 ? void 0 : workshed.use();
+      return workshed.use();
     },
     available: function() {
       var _GarboWorkshed$curren, _GarboWorkshed$next2;
