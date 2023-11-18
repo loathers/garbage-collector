@@ -416,11 +416,7 @@ const DailyItemTasks: GarboTask[] = [
       itemAmount($item`inflammable leaf`) >=
         BurningLeaves.burnFor.get($item`lit leaf lasso`)!,
     completed: () => get("_leafLassosCrafted") >= 3,
-    do: () => {
-      BurningLeaves.burnLeaves(
-        BurningLeaves.burnFor.get($item`lit leaf lasso`)!,
-      );
-    },
+    do: () => BurningLeaves.burnSpecialLeaves($item`lit leaf lasso`),
     limit: { skip: 3 },
     spendsTurn: false,
   },
@@ -431,11 +427,7 @@ const DailyItemTasks: GarboTask[] = [
       itemAmount($item`inflammable leaf`) >=
         BurningLeaves.burnFor.get($item`day shortener`)!,
     completed: () => get("_leafDayShortenerCrafted"),
-    do: () => {
-      BurningLeaves.burnLeaves(
-        BurningLeaves.burnFor.get($item`day shortener`)!,
-      );
-    },
+    do: () => BurningLeaves.burnSpecialLeaves($item`day shortener`),
     spendsTurn: false,
   },
   {
