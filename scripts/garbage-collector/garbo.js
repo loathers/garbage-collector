@@ -30285,7 +30285,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("3c23cc95b07626d377b9cea54079602b90bd7507", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("85561a5f58935310eac4a23cd81408ef67ff435f", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -36585,6 +36585,24 @@ function getRotatedCycle() {
   }
   return newPieces;
 }
+function trainNeedsRotating() {
+  if (!TrainSet_exports.canConfigure())
+    return false;
+  if (!get("trainsetConfiguration")) {
+    (0, import_kolmafia98.visitUrl)("campground.php?action=workshed");
+    (0, import_kolmafia98.visitUrl)("main.php");
+  }
+  if (!get("trainsetConfiguration"))
+    return true;
+  if (arrayEquals(getRotatedCycle(), TrainSet_exports.cycle()))
+    return false;
+  if (globalOptions.ascend && estimatedGarboTurns() <= 40)
+    return false;
+  var bestStations = getPrioritizedStations();
+  if (bestStations.includes(TrainSet_exports.next()))
+    return false;
+  return true;
+}
 function rotateToOptimalCycle() {
   return TrainSet_exports.setConfiguration(getRotatedCycle());
 }
@@ -39808,22 +39826,7 @@ var worksheds = [new GarboWorkshed({
   done: function() {
     return false;
   },
-  available: function() {
-    if (!TrainSet_exports.canConfigure())
-      return false;
-    if (!get("trainsetConfiguration")) {
-      (0, import_kolmafia111.visitUrl)("campground.php?action=workshed");
-      (0, import_kolmafia111.visitUrl)("main.php");
-    }
-    if (!get("trainsetConfiguration"))
-      return true;
-    if (globalOptions.ascend && estimatedGarboTurns() <= 40)
-      return false;
-    var bestStations = getPrioritizedStations();
-    if (bestStations.includes(TrainSet_exports.next()))
-      return false;
-    return true;
-  },
+  available: trainNeedsRotating,
   action: rotateToOptimalCycle
 }), new GarboWorkshed({
   workshed: $item(_templateObject2187 || (_templateObject2187 = _taggedTemplateLiteral102(["cold medicine cabinet"]))),
