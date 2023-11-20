@@ -1396,6 +1396,7 @@ const freeRunFightSources = [
     () =>
       have($skill`Just the Facts`) &&
       get("_bookOfFactsWishes") < 3 &&
+      shouldDoBofaFishing() &&
       findFreeKill() !== null &&
       getBestBofaWishLocation() !== null &&
       unlock(
@@ -2746,4 +2747,26 @@ function getBestBofaWishLocation() {
     ),
     bofaWishMonsterRatio,
   );
+}
+
+function shouldDoBofaFishing() {
+  const plentifulMonsters = [
+    $monster`Knob Goblin Embezzler`,
+    ...(globalOptions.nobarf ? [] : getMonsters($location`Barf Mountain`)),
+    ...(have($item`Kramco Sausage-o-Matic™`) ? $monsters`sausage goblin` : []),
+    ...(get("questL11Worship") !== "unstarted" &&
+    bowlOfScorpionsAvailable() &&
+    !pygmySniffed() &&
+    clamp(9 - get("_drunkPygmyBanishes"), 0, 9) > 3
+      ? $monsters`drunk pygmy`
+      : []),
+  ];
+  if (
+    plentifulMonsters.some(
+      (monster) => itemFact(monster) === $item`pocket wish`,
+    )
+  ) {
+    return false;
+  }
+  return true;
 }
