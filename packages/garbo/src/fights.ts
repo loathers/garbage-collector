@@ -1,6 +1,7 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
   adv1,
+  appearanceRates,
   availableAmount,
   buy,
   canAdventure,
@@ -15,6 +16,7 @@ import {
   familiarEquippedEquipment,
   getAutoAttack,
   getCampground,
+  getMonsters,
   haveEquipped,
   haveOutfit,
   inebrietyLimit,
@@ -22,6 +24,7 @@ import {
   Item,
   itemAmount,
   itemDropsArray,
+  itemFact,
   Location,
   mallPrice,
   maximize,
@@ -179,6 +182,11 @@ import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 import { bestMidnightAvailable } from "./resources";
 import { PostQuest } from "./tasks/post";
+import {
+  canAdventureOrUnlock,
+  canWander,
+  unlock,
+} from "garbo-lib/dist/wanderer/lib";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1382,6 +1390,50 @@ const freeRunFightSources = [
       spec: { equip: $items`latte lovers member's mug` },
     },
     freeRunConstraints(true),
+  ),
+  // Use free runs and free kills to get our bofa wishes
+  new FreeRunFight(
+    () =>
+      have($skill`Just the Facts`) &&
+      get("_bookOfFactsWishes") < 3 &&
+      findFreeKill() !== null &&
+      getBestBofaWishLocation() !== null &&
+      unlock(
+        getBestBofaWishLocation(),
+        (3 - get("_bookOfFactsWishes")) * garboValue($item`pocket wish`),
+      ),
+    (runSource: ActionSource) => {
+      const best = getBestBofaWishLocation();
+      if (!best) throw `Bofa wish location should exist, but doesn't`;
+      const wishMonsters = getMonsters(best).filter(
+        (m) => itemFact(m) === $item`pocket wish`,
+      );
+      const freeKill = findFreeKill();
+      if (!freeKill) {
+        throw `We should have a free kill for bofa wishes, but don't`;
+      }
+      const freeKillMacro =
+        freeKill.macro instanceof Item
+          ? Macro.item(freeKill.macro)
+          : Macro.skill(freeKill.macro);
+      garboAdventure(
+        best,
+        Macro.if_(
+          wishMonsters.map((m) => `!monsterid ${m.id}`).join(" && "),
+          runSource.macro,
+        ).step(freeKillMacro),
+      );
+    },
+    {
+      spec: () => {
+        const freeKill = findFreeKill();
+        if (!freeKill) {
+          throw `We should have a free kill for bofa wishes, but don't`;
+        }
+        const spec: OutfitSpec = freeKill.spec ?? {};
+        return spec;
+      },
+    },
   ),
   // Fire Extinguisher on best available target.
   new FreeRunFight(
@@ -2666,4 +2718,32 @@ function runShadowRiftTurn(): void {
   } else {
     adv1(bestShadowRift(), -1, ""); // We wanted to use NC forcers, but none are suitable now
   }
+}
+
+function bofaWishMonsterRatio(location: Location) {
+  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
+  const rates = appearanceRates(location);
+  const monsters = getMonsters(location).filter(
+    (m) =>
+      !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
+  );
+
+  if (monsters.length === 0) {
+    return 0;
+  } else {
+    return (
+      sum(monsters, (m) => {
+        return itemFact(m) === $item`pocket wish` ? 1 : 0;
+      }) / monsters.length
+    );
+  }
+}
+
+function getBestBofaWishLocation() {
+  return maxBy(
+    Location.all().filter(
+      (l) => canAdventureOrUnlock(l) && canWander(l, "backup"),
+    ),
+    bofaWishMonsterRatio,
+  );
 }
