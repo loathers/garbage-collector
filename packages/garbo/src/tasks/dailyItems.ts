@@ -409,6 +409,27 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
+    name: "Burning Leaves lit leaf lasso",
+    ready: () =>
+      BurningLeaves.have() &&
+      BurningLeaves.numberOfLeaves() >=
+        BurningLeaves.burnFor.get($item`lit leaf lasso`)!,
+    completed: () => get("_leafLassosCrafted") >= 3,
+    do: () => BurningLeaves.burnSpecialLeaves($item`lit leaf lasso`),
+    limit: { skip: 3 },
+    spendsTurn: false,
+  },
+  {
+    name: "Burning Leaves day shortener",
+    ready: () =>
+      BurningLeaves.have() &&
+      BurningLeaves.numberOfLeaves() >=
+        BurningLeaves.burnFor.get($item`day shortener`)!,
+    completed: () => get("_leafDayShortenerCrafted"),
+    do: () => BurningLeaves.burnSpecialLeaves($item`day shortener`),
+    spendsTurn: false,
+  },
+  {
     name: "Clear Existing Rufus Quest",
     completed: () =>
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
