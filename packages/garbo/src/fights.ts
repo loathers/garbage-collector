@@ -1431,8 +1431,7 @@ const freeRunFightSources = [
         if (!freeKill) {
           throw `We should have a free kill for bofa wishes, but don't`;
         }
-        const spec: OutfitSpec = freeKill.spec ?? {};
-        return spec;
+        return freeKill.spec ?? {};
       },
     },
   ),
