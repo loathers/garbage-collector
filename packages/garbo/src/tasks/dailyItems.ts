@@ -82,14 +82,14 @@ function drawBestCards(): void {
 
 function bestLeafBurn(): Item {
   const ignored = $items`lit leaf lasso, day shortener`; // Ignore limited purchases
-  const leafItems = [...BurningLeaves.burnFor]
-    .filter(
-      (entry): entry is [Item, number] =>
-        entry[0] instanceof Item &&
-        entry[0].tradeable &&
-        !ignored.includes(entry[0]),
-    );
-  const valuePerLeaf = ([item, leaves]: [Item, number])=> garboValue(item) / leaves;
+  const leafItems = [...BurningLeaves.burnFor].filter(
+    (entry): entry is [Item, number] =>
+      entry[0] instanceof Item &&
+      entry[0].tradeable &&
+      !ignored.includes(entry[0]),
+  );
+  const valuePerLeaf = ([item, leaves]: [Item, number]) =>
+    garboValue(item) / leaves;
   return maxBy(leafItems, valuePerLeaf)[0];
 }
 
