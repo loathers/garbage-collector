@@ -88,13 +88,9 @@ function bestLeafBurn(): Item {
         entry[0] instanceof Item &&
         entry[0].tradeable &&
         !ignored.includes(entry[0]),
-    )
-    .map(([item]) => item);
-  const valuePerLeaf = (leafItem: Item): number => {
-    const leafCost = BurningLeaves.burnFor.get(leafItem)!;
-    return garboValue(leafItem) / leafCost;
-  };
-  return maxBy(leafItems, valuePerLeaf);
+    );
+  const valuePerLeaf = ([item, leaves]: [Item, number])=> garboValue(item) / leaves;
+  return maxBy(leafItems, valuePerLeaf)[0];
 }
 
 function bestExtrude(): Item {
