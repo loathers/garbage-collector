@@ -583,7 +583,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     ready: () =>
       BurningLeaves.have() &&
       BurningLeaves.numberOfLeaves() >=
-        BurningLeaves.burnFor.get($monster`flaming leaflet`)!,
+        (BurningLeaves.burnFor.get($monster`flaming leaflet`) ?? Infinity),
     completed: () => get("_leafMonstersFought") >= 5,
     do: () => BurningLeaves.burnSpecialLeaves($monster`flaming leaflet`),
     tentacle: true,
