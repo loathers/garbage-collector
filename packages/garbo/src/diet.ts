@@ -277,14 +277,19 @@ export function nonOrganAdventures(): void {
     useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 20 * MPA);
   }
 
-  while (get("_extraTimeUsed", 3) < 3) {
-    const extraTimeValue = (): number => {
-      const advs = [1, 3, 5][clamp(get("_extraTimeUsed", 3), 0, 3)];
+  if (get("_extraTimeUsed", 3) < 3) {
+    const extraTimeValue = (timesUsed: number): number => {
+      const advs = [1, 3, 5][3 - timesUsed];
       return advs * MPA;
     };
-    if (extraTimeValue() < mallPrice($item`extra time`)) break;
-    acquire(1, $item`extra time`, extraTimeValue());
-    use($item`extra time`);
+    const extraTimeRemaining = 2 - get("_extraTimeUsed", 3);
+    for (let i = extraTimeRemaining; i > 0; i--) {
+      if (extraTimeValue(i) > mallPrice($item`extra time`)) {
+        if (acquire(1, $item`extra time`, extraTimeValue(i), false)) {
+          use($item`extra time`);
+        }
+      } else break;
+    }
   }
 }
 
