@@ -37,6 +37,7 @@ import {
   $monster,
   $phyla,
   $skill,
+  BurningLeaves,
   ChateauMantegna,
   clamp,
   CombatLoversLocket,
@@ -576,6 +577,18 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       clamp(3 - CombatLoversLocket.reminiscesLeft() - locketsToSave(), 0, 3),
   },
   { ...doCandyTrick(), combatCount: () => 5, tentacle: true },
+  // leaf burning fights
+  {
+    name: "Burning Leaves Flaming Leaflet Fight",
+    ready: () =>
+      BurningLeaves.have() &&
+      BurningLeaves.numberOfLeaves() >=
+        BurningLeaves.burnFor.get($monster`flaming leaflet`)!,
+    completed: () => get("_leafMonstersFought") >= 5,
+    do: () => BurningLeaves.burnSpecialLeaves($monster`flaming leaflet`),
+    tentacle: true,
+    combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
+  },
   // li'l ninja costume
   // closed-circuit pay phone (make into it's own Quest)
 ].map(freeFightTask);
