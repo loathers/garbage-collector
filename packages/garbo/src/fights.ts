@@ -2733,9 +2733,7 @@ function bofaWishMonsterRatio(location: Location) {
     return 0;
   } else {
     return (
-      sum(monsters, (m) => {
-        return itemFact(m) === $item`pocket wish` ? 1 : 0;
-      }) / monsters.length
+     monsters.filter((m) => itemFact(m) === $item`pocket wish`).length / monsters.length
     );
   }
 }
