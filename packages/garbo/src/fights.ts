@@ -1394,18 +1394,19 @@ const freeRunFightSources = [
   // Use free runs and free kills to get our bofa wishes
   new FreeRunFight(
     () =>
-      have($skill`Just the Facts`) &&
-      get("_bookOfFactsWishes") < 3 &&
       shouldDoBofaFishing() &&
       findFreeKill() !== null &&
       getBestBofaWishLocation() !== null &&
       unlock(
         getBestBofaWishLocation(),
-        (3 - get("_bookOfFactsWishes")) * garboValue($item`pocket wish`),
+        clamp(3 - get("_bookOfFactsWishes"), 0, 3) *
+          garboValue($item`pocket wish`),
       ),
     (runSource: ActionSource) => {
       const best = getBestBofaWishLocation();
-      if (!best) throw new Error("Bofa wish location should exist, but doesn't");
+      if (!best) {
+        throw new Error("Bofa wish location should exist, but doesn't");
+      }
       const wishMonsters = getMonsters(best).filter(
         (m) => itemFact(m) === $item`pocket wish`,
       );
@@ -2732,7 +2733,8 @@ function bofaWishMonsterRatio(location: Location) {
     return 0;
   } else {
     return (
-     monsters.filter((m) => itemFact(m) === $item`pocket wish`).length / monsters.length
+      monsters.filter((m) => itemFact(m) === $item`pocket wish`).length /
+      monsters.length
     );
   }
 }
@@ -2761,7 +2763,9 @@ function shouldDoBofaFishing() {
   if (
     plentifulMonsters.some(
       (monster) => itemFact(monster) === $item`pocket wish`,
-    )
+    ) ||
+    !have($skill`Just the Facts`) ||
+    get("_bookOfFactsWishes") >= 3
   ) {
     return false;
   }
