@@ -5,7 +5,16 @@ import {
   runChoice,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, arrayEquals, get, maxBy, sum, TrainSet } from "libram";
+import {
+  $item,
+  $items,
+  arrayEquals,
+  get,
+  maxBy,
+  set,
+  sum,
+  TrainSet,
+} from "libram";
 import { globalOptions } from "../config";
 import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
