@@ -80,6 +80,23 @@ function drawBestCards(): void {
   }
 }
 
+function bestLeafBurn(): Item {
+  const ignored = $items`lit leaf lasso, day shortener`; // Ignore limited purchases
+  const leafItems = [...BurningLeaves.burnFor]
+    .filter(
+      (entry): entry is [Item, number] =>
+        entry[0] instanceof Item &&
+        entry[0].tradeable &&
+        !ignored.includes(entry[0]),
+    )
+    .map(([item]) => item);
+  const valuePerLeaf = (leafItem: Item): number => {
+    const leafCost = BurningLeaves.burnFor.get(leafItem)!;
+    return garboValue(leafItem) / leafCost;
+  };
+  return maxBy(leafItems, valuePerLeaf);
+}
+
 function bestExtrude(): Item {
   return maxBy($items`browser cookie, hacked gibson`, garboValue);
 }
@@ -427,6 +444,15 @@ const DailyItemTasks: GarboTask[] = [
         BurningLeaves.burnFor.get($item`day shortener`)!,
     completed: () => get("_leafDayShortenerCrafted"),
     do: () => BurningLeaves.burnSpecialLeaves($item`day shortener`),
+    spendsTurn: false,
+  },
+  {
+    name: "Burning Leaves Best Unlimited Tradeable Item",
+    completed: () =>
+      !BurningLeaves.have() ||
+      BurningLeaves.numberOfLeaves() <
+        500 + BurningLeaves.burnFor.get(bestLeafBurn())!, // Keep a reserve of 500 leaves for limited items and fights
+    do: () => BurningLeaves.burnSpecialLeaves(bestLeafBurn()),
     spendsTurn: false,
   },
   {
