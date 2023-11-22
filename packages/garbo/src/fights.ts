@@ -1405,7 +1405,7 @@ const freeRunFightSources = [
       ),
     (runSource: ActionSource) => {
       const best = getBestBofaWishLocation();
-      if (!best) throw `Bofa wish location should exist, but doesn't`;
+      if (!best) throw new Error("Bofa wish location should exist, but doesn't");
       const wishMonsters = getMonsters(best).filter(
         (m) => itemFact(m) === $item`pocket wish`,
       );
