@@ -35,6 +35,7 @@ import {
   GingerBread,
   have,
   questStep,
+  set,
   SourceTerminal,
   sum,
   undelay,
@@ -70,6 +71,7 @@ import { GarboTask } from "./engine";
 import { completeBarfQuest } from "../resources/realm";
 import { garboValue } from "../garboValue";
 import { bestMidnightAvailable } from "../resources";
+import { acquire } from "../acquire";
 
 const steveAdventures: Map<Location, number[]> = new Map([
   [$location`The Haunted Bedroom`, [1, 3, 1]],
@@ -326,6 +328,46 @@ const NonBarfTurnTasks: AlternateTask[] = [
     spendsTurn: true,
     sobriety: "drunk",
     turns: () => availableAmount($item`Map to Safety Shelter Grimace Prime`),
+  },
+  {
+    name: "Use Day Shorteners (drunk)",
+    ready: () =>
+      globalOptions.ascend &&
+      garboValue($item`extra time`) >
+        mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
+    completed: () => get(`_garboDayShortenersUsed`, 0) >= 3,
+    do: () => {
+      acquire(
+        1,
+        $item`day shortener`,
+        garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
+      );
+      use($item`day shortener`);
+      set(`_garboDayShortenersUsed`, get(`_garboDayShortenersUsed`, 0) + 1);
+    },
+    spendsTurn: true,
+    sobriety: "drunk",
+    turns: () => 5 * (3 - get(`_garboDayShortenersUsed`, 0)),
+  },
+  {
+    name: "Use Day Shorteners (sober)",
+    ready: () =>
+      !globalOptions.ascend &&
+      garboValue($item`extra time`) >
+        mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
+    completed: () => get(`_garboDayShortenersUsed`, 0) >= 3,
+    do: () => {
+      acquire(
+        1,
+        $item`day shortener`,
+        garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
+      );
+      use($item`day shortener`);
+      set(`_garboDayShortenersUsed`, get(`_garboDayShortenersUsed`, 0) + 1);
+    },
+    spendsTurn: true,
+    sobriety: "drunk",
+    turns: () => 5 * (3 - get(`_garboDayShortenersUsed`, 0)),
   },
 ];
 
