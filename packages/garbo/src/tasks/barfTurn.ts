@@ -337,12 +337,16 @@ const NonBarfTurnTasks: AlternateTask[] = [
         mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
     completed: () => get(`_garboDayShortenersUsed`, 0) >= 3, // Arbitrary cap at 3, since using 3 results in only 1 adventure
     do: () => {
-      acquire(
-        1,
-        $item`day shortener`,
-        garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
-      );
-      use($item`day shortener`);
+      if (
+        acquire(
+          1,
+          $item`day shortener`,
+          garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
+          false,
+        )
+      ) {
+        use($item`day shortener`);
+      }
       set(`_garboDayShortenersUsed`, get(`_garboDayShortenersUsed`, 0) + 1);
     },
     spendsTurn: true,
@@ -357,12 +361,16 @@ const NonBarfTurnTasks: AlternateTask[] = [
         mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
     completed: () => get(`_garboDayShortenersUsed`, 0) >= 3, // Arbitrary cap at 3, since using 3 results in only 1 adventure
     do: () => {
-      acquire(
-        1,
-        $item`day shortener`,
-        garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
-      );
-      use($item`day shortener`);
+      if (
+        acquire(
+          1,
+          $item`day shortener`,
+          garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
+          false,
+        )
+      ) {
+        use($item`day shortener`);
+      }
       set(`_garboDayShortenersUsed`, get(`_garboDayShortenersUsed`, 0) + 1);
     },
     spendsTurn: true,
