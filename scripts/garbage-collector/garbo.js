@@ -30285,7 +30285,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("68d16582c2bd4fc6d2ad135e075f3b437e09cdbe", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4ce673f1a6bbec87501fe299b6517bb2a3e05817", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -36604,7 +36604,11 @@ function trainNeedsRotating() {
   return true;
 }
 function rotateToOptimalCycle() {
-  return TrainSet_exports.setConfiguration(getRotatedCycle());
+  var hasRotated = TrainSet_exports.setConfiguration(getRotatedCycle());
+  if (!hasRotated && TrainSet_exports.canConfigure()) {
+    _set("lastTrainsetConfiguration", get("trainsetPosition") - 39);
+  }
+  return hasRotated;
 }
 function grabMedicine() {
   var options = (0, import_kolmafia98.visitUrl)("campground.php?action=workshed");
