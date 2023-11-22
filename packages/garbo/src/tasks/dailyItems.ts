@@ -447,7 +447,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       !BurningLeaves.have() ||
       BurningLeaves.numberOfLeaves() <
-        500 + BurningLeaves.burnFor.get(bestLeafBurn())!, // Keep a reserve of 500 leaves for limited items and fights
+        500 + (BurningLeaves.burnFor.get(bestLeafBurn()) ?? Infinity), // Keep a reserve of 500 leaves for limited items and fights
     do: () => BurningLeaves.burnSpecialLeaves(bestLeafBurn()),
     spendsTurn: false,
   },
