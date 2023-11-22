@@ -1412,7 +1412,9 @@ const freeRunFightSources = [
       );
       const freeKill = findFreeKill();
       if (!freeKill) {
-        throw `We should have a free kill for bofa wishes, but don't`;
+        throw new Error(
+          "We should have a free kill for bofa wishes, but don't",
+        );
       }
       const freeKillMacro =
         freeKill.macro instanceof Item
@@ -1420,10 +1422,7 @@ const freeRunFightSources = [
           : Macro.skill(freeKill.macro);
       garboAdventure(
         best,
-        Macro.if_(
-          wishMonsters.map((m) => `!monsterid ${m.id}`).join(" && "),
-          runSource.macro,
-        ).step(freeKillMacro),
+        Macro.if_(wishMonsters, freeKillMacro).step(runSource.macro),
       );
     },
     {
