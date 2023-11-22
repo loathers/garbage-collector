@@ -335,7 +335,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
       globalOptions.ascend &&
       garboValue($item`extra time`) >
         mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
-    completed: () => get(`_garboDayShortenersUsed`, 0) >= 3,
+    completed: () => get(`_garboDayShortenersUsed`, 0) >= 3, // Arbitrary cap at 3, since using 3 results in only 1 adventure
     do: () => {
       acquire(
         1,
@@ -355,7 +355,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
       !globalOptions.ascend &&
       garboValue($item`extra time`) >
         mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
-    completed: () => get(`_garboDayShortenersUsed`, 0) >= 3,
+    completed: () => get(`_garboDayShortenersUsed`, 0) >= 3, // Arbitrary cap at 3, since using 3 results in only 1 adventure
     do: () => {
       acquire(
         1,
