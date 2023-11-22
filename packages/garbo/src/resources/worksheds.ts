@@ -107,7 +107,15 @@ export function trainNeedsRotating(): boolean {
 }
 
 export function rotateToOptimalCycle(): boolean {
-  return TrainSet.setConfiguration(getRotatedCycle());
+  const hasRotated = TrainSet.setConfiguration(getRotatedCycle());
+
+  // If the trainset was not configured but still claims to be configurable
+  if (!hasRotated && TrainSet.canConfigure()) {
+    // Set the trainset configuration to believe it'll be configurable in one turn
+    set("lastTrainsetConfiguration", get("trainsetPosition") - 39);
+  }
+
+  return hasRotated;
 }
 
 export function grabMedicine(): void {
