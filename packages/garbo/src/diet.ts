@@ -276,6 +276,16 @@ export function nonOrganAdventures(): void {
   if (globalOptions.ascend) {
     useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 20 * MPA);
   }
+
+  while (get("_extraTimeUsed", 3) < 3) {
+    const extraTimeValue = (): number => {
+      const advs = [1, 3, 5][clamp(get("_extraTimeUsed", 3), 0, 3)];
+      return advs * MPA;
+    };
+    if (extraTimeValue() < mallPrice($item`extra time`)) break;
+    acquire(1, $item`extra time`, extraTimeValue());
+    use($item`extra time`);
+  }
 }
 
 function pillCheck(): void {
