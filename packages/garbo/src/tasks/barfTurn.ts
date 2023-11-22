@@ -366,7 +366,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
       set(`_garboDayShortenersUsed`, get(`_garboDayShortenersUsed`, 0) + 1);
     },
     spendsTurn: true,
-    sobriety: "drunk",
+    sobriety: "sober",
     turns: () => 5 * (3 - get(`_garboDayShortenersUsed`, 0)),
   },
 ];
