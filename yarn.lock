@@ -4256,7 +4256,7 @@ __metadata:
     eslint: ^8.50.0
     eslint-config-garbo: ^0.0.1
     kolmafia: ^5.27628.0
-    libram: ^0.8.16
+    libram: ^0.8.17
     lint-staged: ^14.0.1
     madge: ^6.1.0
     prettier: ^3.0.3
@@ -4925,6 +4925,17 @@ __metadata:
   peerDependencies:
     kolmafia: ^5.27668.0
   checksum: d15ca1bb66c80f42b73c8097ca383fdf6fef607127c4c7b6012b091ad6b657671b1aac7d3ec3dec4cf531d772cfc6ed76ebbf704c04cfd9ae4444b316dc17ea1
+  languageName: node
+  linkType: hard
+
+"libram@npm:^0.8.17":
+  version: 0.8.17
+  resolution: "libram@npm:0.8.17"
+  dependencies:
+    html-entities: ^2.4.0
+  peerDependencies:
+    kolmafia: ^5.27668.0
+  checksum: cb22fa1650354afa1ae81e5e0423fc89bf78ae31d90150cab3d8655e052ffa8f1026da7ee09535a49c26bd8c327c06f3738b909488b140517f527f00b067dc82
   languageName: node
   linkType: hard
 
