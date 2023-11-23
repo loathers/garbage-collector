@@ -42904,7 +42904,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia123.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("5c74427432de306e54afa0f804d6787631bc8515", ")"));
+    (0, import_kolmafia123.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("c2f2a3e3b7a757f318508ae50d13484db28aa5ab", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia123.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -59235,7 +59235,8 @@ var DailyItemTasks = [{
 }, {
   name: "Burning Leaves lit leaf lasso",
   ready: function() {
-    return BurningLeaves_exports.have() && BurningLeaves_exports.numberOfLeaves() >= BurningLeaves_exports.burnFor.get($item(_templateObject8318 || (_templateObject8318 = _taggedTemplateLiteral150(["lit leaf lasso"]))));
+    var _BurningLeaves$burnFo;
+    return BurningLeaves_exports.have() && BurningLeaves_exports.numberOfLeaves() >= ((_BurningLeaves$burnFo = BurningLeaves_exports.burnFor.get($item(_templateObject8318 || (_templateObject8318 = _taggedTemplateLiteral150(["lit leaf lasso"]))))) !== null && _BurningLeaves$burnFo !== void 0 ? _BurningLeaves$burnFo : Infinity);
   },
   completed: function() {
     return get("_leafLassosCrafted") >= 3;
@@ -59250,7 +59251,8 @@ var DailyItemTasks = [{
 }, {
   name: "Burning Leaves day shortener",
   ready: function() {
-    return BurningLeaves_exports.have() && BurningLeaves_exports.numberOfLeaves() >= BurningLeaves_exports.burnFor.get($item(_templateObject8516 || (_templateObject8516 = _taggedTemplateLiteral150(["day shortener"]))));
+    var _BurningLeaves$burnFo2;
+    return BurningLeaves_exports.have() && BurningLeaves_exports.numberOfLeaves() >= ((_BurningLeaves$burnFo2 = BurningLeaves_exports.burnFor.get($item(_templateObject8516 || (_templateObject8516 = _taggedTemplateLiteral150(["day shortener"]))))) !== null && _BurningLeaves$burnFo2 !== void 0 ? _BurningLeaves$burnFo2 : Infinity);
   },
   completed: function() {
     return get("_leafDayShortenerCrafted");
