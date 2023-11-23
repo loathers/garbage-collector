@@ -57,7 +57,7 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
-import { doCandyTrick } from "../resources";
+import { doCandyTrick, shouldAugustCast } from "../resources";
 
 type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
   combatCount: () => number;
@@ -162,6 +162,20 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       (get("_thesisDelivered") || !have($familiar`Pocket Professor`)),
     completed: () => get("_molehillMountainUsed"),
     do: () => use($item`molehill mountain`),
+    tentacle: true,
+  },
+  {
+    name: $skill`Aug. 8th: Cat Day!`.name,
+    ready: () => shouldAugustCast($skill`Aug. 8th: Cat Day!`),
+    completed: () => $skill`Aug. 8th: Cat Day!`.timescast > 0,
+    do: () => useSkill($skill`Aug. 8th: Cat Day!`),
+    tentacle: true,
+  },
+  {
+    name: $skill`Aug. 22nd: Tooth Fairy Day!`.name,
+    ready: () => shouldAugustCast($skill`Aug. 22nd: Tooth Fairy Day!`),
+    completed: () => $skill`Aug. 22nd: Tooth Fairy Day!`.timescast > 0,
+    do: () => useSkill($skill`Aug. 22nd: Tooth Fairy Day!`),
     tentacle: true,
   },
   {
