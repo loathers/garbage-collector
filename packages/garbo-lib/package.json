@@ -21,7 +21,7 @@
   },
   "peerDependencies": {
     "kolmafia": "^5.27668.0",
-    "libram": "^0.8.13"
+    "libram": "^0.8.17"
   },
   "devDependencies": {
     "eslint": "^8.50.0",

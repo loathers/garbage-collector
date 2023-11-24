@@ -280,7 +280,7 @@ export function optimizeForFishy(
             "We tried to get fishy in the Brinier Deepers, but are in a fight!",
           ),
         );
-        if (get("lastAdventure") !== "The Brinier Deepers") {
+        if (get("lastAdventure") !== $location`The Brinier Deepers`) {
           print(
             "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
             "red",
@@ -325,7 +325,7 @@ export function optimizeForFishy(
             "We tried to get fishy in the Brinier Deepers, but are in a fight!",
           ),
         );
-        if (get("lastAdventure") !== "The Brinier Deepers") {
+        if (get("lastAdventure") !== $location`The Brinier Deepers`) {
           print(
             "We failed to adventure in The Brinier Deepers, even though we thought we could. Try manually adventuring there for a lucky adventure.",
             "red",

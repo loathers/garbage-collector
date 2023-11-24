@@ -4263,7 +4263,7 @@ __metadata:
     typescript: ^5.2.2
   peerDependencies:
     kolmafia: ^5.27668.0
-    libram: ^0.8.13
+    libram: ^0.8.17
   languageName: unknown
   linkType: soft
 
@@ -4309,7 +4309,7 @@ __metadata:
     garbo-lib: ^0.0.1
     grimoire-kolmafia: ^0.3.25
     kolmafia: ^5.27668.0
-    libram: ^0.8.16
+    libram: ^0.8.17
     lint-staged: ^14.0.1
     madge: ^6.1.0
     prettier: ^3.0.3
@@ -4914,17 +4914,6 @@ __metadata:
     prelude-ls: ^1.2.1
     type-check: ~0.4.0
   checksum: 12c5021c859bd0f5248561bf139121f0358285ec545ebf48bb3d346820d5c61a4309535c7f387ed7d84361cf821e124ce346c6b7cef8ee09a67c1473b46d0fc4
-  languageName: node
-  linkType: hard
-
-"libram@npm:^0.8.16":
-  version: 0.8.16
-  resolution: "libram@npm:0.8.16"
-  dependencies:
-    html-entities: ^2.4.0
-  peerDependencies:
-    kolmafia: ^5.27668.0
-  checksum: d15ca1bb66c80f42b73c8097ca383fdf6fef607127c4c7b6012b091ad6b657671b1aac7d3ec3dec4cf531d772cfc6ed76ebbf704c04cfd9ae4444b316dc17ea1
   languageName: node
   linkType: hard
 
