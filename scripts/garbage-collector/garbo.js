@@ -42904,7 +42904,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia123.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("698efe88aef623a0bfaf329acfc4ff97e00e2056", ")"));
+    (0, import_kolmafia123.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b7ef5a309f1bdb954fcc5c6cdb70567640862f99", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia123.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
