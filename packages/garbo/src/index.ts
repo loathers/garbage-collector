@@ -101,7 +101,7 @@ function ensureBarfAccess() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27640);
+  sinceKolmafiaRevision(27668);
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
