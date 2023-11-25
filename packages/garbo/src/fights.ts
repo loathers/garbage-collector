@@ -122,10 +122,11 @@ import {
 import {
   crateStrategy,
   doingGregFight,
+  faxMonster,
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
-} from "./resources/extrovermectin";
+} from "./resources";
 import {
   bestFairy,
   freeFightFamiliar,
@@ -174,7 +175,6 @@ import { garboValue } from "./garboValue";
 import { wanderer } from "./garboWanderer";
 import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";
-import { faxMonster } from "./resources/fax";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 import { bestMidnightAvailable } from "./resources";
