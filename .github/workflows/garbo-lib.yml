@@ -1,20 +1,22 @@
 name: Publish package to NPM
 on:
   push:
-    paths:
-      - "packages/garbo-lib/package.json"
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "16.x"
+          node-version: "18.x"
           registry-url: "https://registry.npmjs.org"
+
+      - name: Install
+        run: yarn workspace garbo-lib install
 
       - name: Check publish status
         id: check
@@ -22,8 +24,6 @@ jobs:
 
       - name: Publish if necessary
         if: ${{ steps.check.outputs.exists == '0' }}
-        run: |
-          yarn
-          yarn workspace garbo-lib npm publish
+        run: yarn workspace garbo-lib npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
