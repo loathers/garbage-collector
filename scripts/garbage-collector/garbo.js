@@ -25573,7 +25573,7 @@ var require_wanderer = __commonJS({
           }],
           [(0, libram_1.$location)(_templateObject1169 || (_templateObject1169 = _taggedTemplateLiteral117(["The Haunted Library"]))), {
             163: 4,
-            888: 4,
+            888: 5,
             889: 5
           }],
           [(0, libram_1.$location)(_templateObject1260 || (_templateObject1260 = _taggedTemplateLiteral117(["The Haunted Gallery"]))), {
@@ -30308,7 +30308,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("c1064f9a5276c00ac12cea3c24deace480107082", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e80aed8d20473acb4bf5eda51f1bbe2b73ff0af7", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -43477,7 +43477,7 @@ function setupItemStealZones() {
     164: 3,
     165: 4,
     166: 1,
-    888: 4,
+    888: 5,
     889: 5
   });
 }
