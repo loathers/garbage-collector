@@ -28,7 +28,8 @@ jobs:
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
 
       - name: Publish if necessary
-        if: ${{ steps.check.outputs.exists == '404' }}
+        if: ${{ steps.check.outputs.status == '404' }}
         run: yarn workspace garbo-lib npm publish
         env:
+          STATUS: ${{ steps.check.outputs.status }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
