@@ -4249,7 +4249,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"garbo-lib@^0.0.1, garbo-lib@workspace:packages/garbo-lib":
+"garbo-lib@^0.0.2, garbo-lib@workspace:packages/garbo-lib":
   version: 0.0.0-use.local
   resolution: "garbo-lib@workspace:packages/garbo-lib"
   dependencies:
@@ -4306,7 +4306,7 @@ __metadata:
     esbuild-plugin-babel: ^0.2.3
     eslint: ^8.50.0
     eslint-config-garbo: ^0.0.1
-    garbo-lib: ^0.0.1
+    garbo-lib: ^0.0.2
     grimoire-kolmafia: ^0.3.25
     kolmafia: ^5.27668.0
     libram: ^0.8.17
