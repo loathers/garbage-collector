@@ -1,6 +1,7 @@
 import { Familiar } from "kolmafia";
 import {
   $familiar,
+  $familiars,
   findFairyMultiplier,
   findLeprechaunMultiplier,
   have,
@@ -36,12 +37,7 @@ export function setBestLeprechaunAsMeatFamiliar(): void {
 }
 
 export function meatFamiliar(): Familiar {
-  if (!fam) {
-    if (have($familiar`Robortender`)) {
-      fam = $familiar`Robortender`;
-    } else {
-      setBestLeprechaunAsMeatFamiliar();
-    }
-  }
-  return fam;
+  return (fam ??=
+    $familiars`Robortender, Jill-of-All-Trades`.find(have) ??
+    findBestLeprechaun());
 }
