@@ -17,9 +17,6 @@ jobs:
           node-version: "18.x"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Install
-        run: yarn workspace garbo-lib install
-
       - name: Check publish status
         id: check
         run: |
@@ -29,7 +26,10 @@ jobs:
 
       - name: Publish if necessary
         if: ${{ steps.check.outputs.status == '404' }}
-        run: yarn workspace garbo-lib npm publish
+        run: |
+          yarn workspace garbo-lib install
+          yarn workspace garbo-lib build
+          yarn workspace garbo-lib npm publish
         env:
           STATUS: ${{ steps.check.outputs.status }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
