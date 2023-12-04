@@ -30308,7 +30308,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8dc599a2bf7025b6e4971e75f4ef22e40a28b2bd", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9600aa30fd7a44b77f06779a85015c7fd9a268e6", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -30883,6 +30883,7 @@ var import_kolmafia100 = require("kolmafia");
 init_dist();
 
 // src/resources/scepter.ts
+var import_kolmafia95 = require("kolmafia");
 init_dist();
 
 // ../../node_modules/core-js/modules/es.object.from-entries.js
@@ -35800,7 +35801,6 @@ function variableMeatPotionsSetup(yachtzees, embezzlers) {
 }
 
 // src/resources/scepter.ts
-var import_kolmafia95 = require("kolmafia");
 var _templateObject707;
 var _templateObject2167;
 var _templateObject3149;
@@ -36067,7 +36067,7 @@ function getBestScepterSkills() {
 function shouldAugustCast(skill) {
   return AugustScepter_exports.have() && (getBestScepterSkills().some(function(s) {
     return skill === s.skill;
-  }) && skill.dailylimit && get("_augSkillsCast") < 5 || AugustScepter_exports.todaysSkill() === skill && !AugustScepter_exports.getTodayCast());
+  }) && skill.dailylimit && get("_augSkillsCast") < 5 || AugustScepter_exports.todaysSkill() === skill && !AugustScepter_exports.getTodayCast() && skill.dailylimit >= 1);
 }
 function summonTask(_ref2) {
   var skill = _ref2.skill;
