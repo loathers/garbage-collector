@@ -25,7 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "core-js": "^3.32.2",
-    "garbo-lib": "^0.0.2",
+    "garbo-lib": "*",
     "grimoire-kolmafia": "^0.3.25",
     "kolmafia": "^5.27668.0",
     "libram": "^0.8.17"
