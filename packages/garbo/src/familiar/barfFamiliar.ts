@@ -13,7 +13,6 @@ import {
 } from "kolmafia";
 import {
   $familiar,
-  $familiars,
   $item,
   $items,
   $location,
@@ -47,16 +46,12 @@ type CachedOutfit = {
   bonus: number;
 };
 
-const outfitCache = new Map<number | Familiar, CachedOutfit>();
+const outfitCache = new Map<number, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
-
-const SPECIAL_FAMILIARS = $familiars`Jill-of-All-Trades`;
 
 function getCachedOutfitValues(fam: Familiar) {
   const lepMult = findLeprechaunMultiplier(fam);
-  const currentValue = outfitCache.get(
-    SPECIAL_FAMILIARS.includes(fam) ? fam : lepMult,
-  );
+  const currentValue = outfitCache.get(lepMult);
   if (currentValue) return currentValue;
 
   const current = myFamiliar();

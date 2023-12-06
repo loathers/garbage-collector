@@ -103,11 +103,6 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
 
   outfit.familiar ??= barfFamiliar();
 
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
-    outfit.equip($item`LED candle`);
-    outfit.setModes({ jillcandle: "ultraviolet" });
-  }
-
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, outfit.familiar, sim);
 
   outfit.modifier.push(
