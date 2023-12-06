@@ -4484,7 +4484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grimoire-kolmafia@npm:^0.3.25":
+"grimoire-kolmafia@npm:latest":
   version: 0.3.26
   resolution: "grimoire-kolmafia@npm:0.3.26"
   dependencies:
