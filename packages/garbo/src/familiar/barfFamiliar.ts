@@ -2,6 +2,7 @@ import {
   cliExecute,
   equippedItem,
   Familiar,
+  familiarEquipment,
   familiarWeight,
   Item,
   myFamiliar,
@@ -104,9 +105,15 @@ function familiarModifier(
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
   const totalWeight =
     familiarWeight(familiar) + nonOutfitWeightBonus() + cachedOutfitWeight;
+  const equip = familiarEquipment(familiar);
 
-  return familiar === $familiar`Jill-of-All-Trades`
-    ? numericModifier(familiar, modifier, totalWeight - 5, $item`LED candle`)
+  return SPECIAL_FAMILIARS_FOR_CACHING.includes(familiar)
+    ? numericModifier(
+        familiar,
+        modifier,
+        totalWeight - numericModifier(equip, "Familiar Weight"),
+        equip,
+      )
     : numericModifier(familiar, modifier, totalWeight, $item.none);
 }
 
