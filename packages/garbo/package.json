@@ -26,9 +26,9 @@
   "dependencies": {
     "core-js": "^3.32.2",
     "garbo-lib": "*",
-    "grimoire-kolmafia": "^0.3.25",
+    "grimoire-kolmafia": "latest",
     "kolmafia": "^5.27668.0",
-    "libram": "^0.8.17"
+    "libram": "latest"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
