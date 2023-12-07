@@ -22,9 +22,7 @@ import { globalOptions } from "../config";
 const locationBanlist = $locations`The Daily Dungeon`; // The Daily Dungeon has no native monsters
 const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
 
-export default function bestAutumnatonLocation(
-  locations: Location[],
-): Location {
+export function bestAutumnatonLocation(locations: Location[]): Location {
   return maxBy(bestLocationsByUpgrade(locations), averageAutumnatonValue);
 }
 
