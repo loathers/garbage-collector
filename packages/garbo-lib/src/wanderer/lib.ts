@@ -309,6 +309,7 @@ export function bofaValue(
   { plentifulMonsters, itemValue, effectValue }: WandererFactoryOptions,
   monster: Monster,
 ): number {
+  if (!have($skill`Just the Facts`)) return 0;
   switch (monster.factType) {
     case "item": {
       const item = itemFact(monster);
