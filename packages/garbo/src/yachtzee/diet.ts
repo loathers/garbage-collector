@@ -38,7 +38,11 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { hasMonsterReplacers, synthesize } from "../resources";
+import {
+  hasMonsterReplacers,
+  shouldAugustCast,
+  synthesize,
+} from "../resources";
 import { Potion } from "../potions";
 import { garboValue } from "../garboValue";
 import { estimatedGarboTurns } from "../turns";
@@ -52,7 +56,6 @@ import {
   useSpikolodonSpikes,
 } from "./lib";
 import { freeRest } from "../lib";
-import { shouldAugustCast } from "../resources";
 
 class YachtzeeDietEntry<T> {
   name: string;

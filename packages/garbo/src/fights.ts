@@ -120,6 +120,7 @@ import {
   getNextEmbezzlerFight,
 } from "./embezzler";
 import {
+  bestMidnightAvailable,
   crateStrategy,
   doingGregFight,
   faxMonster,
@@ -177,7 +178,6 @@ import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
-import { bestMidnightAvailable } from "./resources";
 import { PostQuest } from "./tasks/post";
 
 const firstChainMacro = () =>
