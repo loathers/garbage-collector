@@ -47,8 +47,11 @@ import { coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
-import { augustSummonTasks, candyMapDailyTasks } from "../resources";
-import { doingGregFight } from "../resources/extrovermectin";
+import {
+  augustSummonTasks,
+  candyMapDailyTasks,
+  doingGregFight,
+} from "../resources";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;

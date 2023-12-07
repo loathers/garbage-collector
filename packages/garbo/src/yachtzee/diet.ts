@@ -38,10 +38,9 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { hasMonsterReplacers } from "../resources/extrovermectin";
+import { hasMonsterReplacers, synthesize } from "../resources";
 import { Potion } from "../potions";
 import { garboValue } from "../garboValue";
-import synthesize from "../resources/synthesis";
 import { estimatedGarboTurns } from "../turns";
 import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
