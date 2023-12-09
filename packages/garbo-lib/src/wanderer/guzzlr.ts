@@ -74,7 +74,7 @@ function guzzlrValuePerTurn(
   tier: "bronze" | "gold" | "platinum" | null,
   guzzlrBooze: Item,
 ) {
-  const turnsToCompleteQuest = 100 / (10 - get("_guzzlrDeliveries"));
+  const turnsToCompleteQuest = 100 / Math.max(3, 10 - get("_guzzlrDeliveries"));
   const boozePrice = mallPrice(guzzlrBooze);
 
   switch (tier) {
