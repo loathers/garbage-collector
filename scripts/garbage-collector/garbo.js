@@ -24964,17 +24964,18 @@ var require_guzzlr = __commonJS({
         considerAbandon(options, locationSkiplist);
       }
     }
-    function guzzlrValue(buckValue, tier) {
-      var progressPerTurn = 100 / (10 - (0, libram_1.get)("_guzzlrDeliveries"));
+    function guzzlrValuePerTurn(buckValue, tier, guzzlrBooze) {
+      var turnsToCompleteQuest = 100 / Math.max(3, 10 - (0, libram_1.get)("_guzzlrDeliveries"));
+      var boozePrice = (0, kolmafia_1.mallPrice)(guzzlrBooze);
       switch (tier) {
         case null:
           return 0;
         case "bronze":
-          return 3 * buckValue / progressPerTurn;
+          return (3 * buckValue - boozePrice) / turnsToCompleteQuest;
         case "gold":
-          return 6 * buckValue / progressPerTurn;
+          return (6 * buckValue - boozePrice) / turnsToCompleteQuest;
         case "platinum":
-          return 21.5 * buckValue / progressPerTurn;
+          return (21.5 * buckValue - boozePrice) / turnsToCompleteQuest;
       }
     }
     function guzzlrFactory(_type, locationSkiplist, options) {
@@ -24984,7 +24985,7 @@ var require_guzzlr = __commonJS({
         var location = libram_1.Guzzlr.getLocation();
         if (location !== null) {
           var guzzlrBooze = libram_1.Guzzlr.getTier() === "platinum" ? libram_1.Guzzlr.getCheapestPlatinumCocktail() : libram_1.Guzzlr.getBooze();
-          return guzzlrBooze ? [new lib_1.WandererTarget("Guzzlr", location, guzzlrValue(buckValue, libram_1.Guzzlr.getTier()) - (0, kolmafia_1.mallPrice)(guzzlrBooze), function() {
+          return guzzlrBooze ? [new lib_1.WandererTarget("Guzzlr", location, guzzlrValuePerTurn(buckValue, libram_1.Guzzlr.getTier(), guzzlrBooze), function() {
             if (!guzzlrBooze) {
               return false;
             }
@@ -24993,7 +24994,7 @@ var require_guzzlr = __commonJS({
               if (guzzlrBooze && (!fancy || fancy && (0, libram_1.freeCrafts)("booze") > 0)) {
                 (0, kolmafia_1.retrieveItem)(guzzlrBooze);
               } else if (guzzlrBooze) {
-                (0, kolmafia_1.buy)(1, guzzlrBooze, guzzlrValue(buckValue, libram_1.Guzzlr.getTier()));
+                (0, kolmafia_1.buy)(1, guzzlrBooze, buckValue * libram_1.Guzzlr.expectedReward());
               }
             }
             return (0, libram_1.have)(guzzlrBooze);
@@ -30308,7 +30309,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9600aa30fd7a44b77f06779a85015c7fd9a268e6", ")"));
+    (0, import_kolmafia78.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2b215a20bc66b10e6ab3b73203755168e113e129", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia78.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
