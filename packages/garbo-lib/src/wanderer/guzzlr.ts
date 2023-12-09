@@ -82,9 +82,9 @@ function guzzlrValuePerTurn(
     case "bronze":
       return (3 * buckValue - mallPrice(guzzlrBooze)) / turnsToCompleteQuest;
     case "gold":
-      return 6 * buckValue - mallPrice(guzzlrBooze) / turnsToCompleteQuest;
+      return (6 * buckValue - mallPrice(guzzlrBooze)) / turnsToCompleteQuest;
     case "platinum":
-      return 21.5 * buckValue - mallPrice(guzzlrBooze) / turnsToCompleteQuest;
+      return (21.5 * buckValue - mallPrice(guzzlrBooze)) / turnsToCompleteQuest;
   }
 }
 
