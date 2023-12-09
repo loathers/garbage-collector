@@ -75,16 +75,17 @@ function guzzlrValuePerTurn(
   guzzlrBooze: Item,
 ) {
   const turnsToCompleteQuest = 100 / (10 - get("_guzzlrDeliveries"));
+  const boozePrice = mallPrice(guzzlrBooze);
 
   switch (tier) {
     case null:
       return 0;
     case "bronze":
-      return (3 * buckValue - mallPrice(guzzlrBooze)) / turnsToCompleteQuest;
+      return (3 * buckValue - boozePrice) / turnsToCompleteQuest;
     case "gold":
-      return (6 * buckValue - mallPrice(guzzlrBooze)) / turnsToCompleteQuest;
+      return (6 * buckValue - boozePrice) / turnsToCompleteQuest;
     case "platinum":
-      return (21.5 * buckValue - mallPrice(guzzlrBooze)) / turnsToCompleteQuest;
+      return (21.5 * buckValue - boozePrice) / turnsToCompleteQuest;
   }
 }
 
