@@ -1,6 +1,7 @@
 import {
   buy,
   craftType,
+  Item,
   Location,
   mallPrice,
   print,
@@ -68,21 +69,22 @@ function acceptGuzzlrQuest(
   }
 }
 
-function guzzlrValue(
+function guzzlrValuePerTurn(
   buckValue: number,
   tier: "bronze" | "gold" | "platinum" | null,
+  guzzlrBooze: Item,
 ) {
-  const progressPerTurn = 100 / (10 - get("_guzzlrDeliveries"));
+  const turnsToCompleteQuest = 100 / (10 - get("_guzzlrDeliveries"));
 
   switch (tier) {
     case null:
       return 0;
     case "bronze":
-      return (3 * buckValue) / progressPerTurn;
+      return (3 * buckValue - mallPrice(guzzlrBooze)) / turnsToCompleteQuest;
     case "gold":
-      return (6 * buckValue) / progressPerTurn;
+      return 6 * buckValue - mallPrice(guzzlrBooze) / turnsToCompleteQuest;
     case "platinum":
-      return (21.5 * buckValue) / progressPerTurn;
+      return 21.5 * buckValue - mallPrice(guzzlrBooze) / turnsToCompleteQuest;
   }
 }
 
@@ -105,7 +107,7 @@ export function guzzlrFactory(
             new WandererTarget(
               "Guzzlr",
               location,
-              guzzlrValue(buckValue, Guzzlr.getTier()) - mallPrice(guzzlrBooze),
+              guzzlrValuePerTurn(buckValue, Guzzlr.getTier(), guzzlrBooze),
               () => {
                 if (!guzzlrBooze) {
                   // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze
@@ -121,11 +123,7 @@ export function guzzlrFactory(
                   ) {
                     retrieveItem(guzzlrBooze);
                   } else if (guzzlrBooze) {
-                    buy(
-                      1,
-                      guzzlrBooze,
-                      guzzlrValue(buckValue, Guzzlr.getTier()),
-                    );
+                    buy(1, guzzlrBooze, buckValue * Guzzlr.expectedReward());
                   }
                 }
                 return have(guzzlrBooze);
