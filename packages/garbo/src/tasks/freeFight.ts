@@ -59,6 +59,8 @@ import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { doCandyTrick, shouldAugustCast } from "../resources";
+import { kramcoGuaranteed } from "../lib";
+import { wanderer } from "../garboWanderer";
 
 type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
   combatCount: () => number;
@@ -440,7 +442,19 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combatCount: () => clamp(10 - get("_brickoFights"), 0, 10),
     tentacle: false,
   },
-  // First kramco (wanderer)
+  {
+    name: "Kramco",
+    ready: () => have($item`Kramco Sausage-o-Matic™`),
+    completed: () => !kramcoGuaranteed(),
+    do: () =>
+      wanderer().getTarget({ wanderer: "freefight", allowEquipment: false }),
+    outfit: () => freeFightOutfit({ offhand: $item`Kramco Sausage-o-Matic™` }),
+    choices: () =>
+      wanderer().getChoices({ wanderer: "freefight", allowEquipment: false }),
+    combat: new GarboStrategy(() => Macro.basicCombat()),
+    combatCount: () => clamp(1 - get("_sausageFights"), 0, 1),
+    tentacle: true,
+  },
   // Grimacia
   // Saber
   // Pygmys

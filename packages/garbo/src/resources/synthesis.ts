@@ -31,7 +31,7 @@ const blockList = new Set([
   $item`vitachoconutriment capsule`,
 ]);
 
-export default function synthesize(casts: number, effect: Effect): void {
+export function synthesize(casts: number, effect: Effect): void {
   const saveLimit = 1;
   const buyableCandies = $items
     .all()

@@ -68,9 +68,8 @@ import { deliverThesisIfAble } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
 
 import { GarboTask } from "./engine";
-import { completeBarfQuest } from "../resources/realm";
 import { garboValue } from "../garboValue";
-import { bestMidnightAvailable } from "../resources";
+import { bestMidnightAvailable, completeBarfQuest } from "../resources";
 import { acquire } from "../acquire";
 
 const steveAdventures: Map<Location, number[]> = new Map([

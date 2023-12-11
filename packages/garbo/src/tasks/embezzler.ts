@@ -3,7 +3,7 @@ import { $item, $items, $location, CrystalBall, get, set } from "libram";
 import { GarboTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { getChangeLastAdvLocationMethod } from "../embezzler/lib";
-import { doingGregFight } from "../resources/extrovermectin";
+import { doingGregFight } from "../resources";
 import { freeFightOutfit } from "../outfit";
 
 export const SetupEmbezzlerQuest: Quest<GarboTask> = {

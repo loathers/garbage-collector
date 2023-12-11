@@ -120,12 +120,14 @@ import {
   getNextEmbezzlerFight,
 } from "./embezzler";
 import {
+  bestMidnightAvailable,
   crateStrategy,
   doingGregFight,
+  faxMonster,
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
-} from "./resources/extrovermectin";
+} from "./resources";
 import {
   bestFairy,
   freeFightFamiliar,
@@ -174,10 +176,8 @@ import { garboValue } from "./garboValue";
 import { wanderer } from "./garboWanderer";
 import { runEmbezzlerFight } from "./embezzler/execution";
 import { EmbezzlerFightRunOptions } from "./embezzler/staging";
-import { faxMonster } from "./resources/fax";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
-import { bestMidnightAvailable } from "./resources";
 import { PostQuest } from "./tasks/post";
 
 const firstChainMacro = () =>
@@ -1033,19 +1033,6 @@ const freeFightSources = [
     },
     true,
     pygmyOptions(),
-  ),
-
-  new FreeFight(
-    () => get("_sausageFights") === 0 && have($item`Kramco Sausage-o-Matic™`),
-    () => {
-      propertyManager.setChoices(wanderer().getChoices("wanderer"));
-      adv1(wanderer().getTarget("wanderer"), -1, "");
-    },
-    true,
-    {
-      spec: { offhand: $item`Kramco Sausage-o-Matic™` },
-      wandererOptions: "wanderer",
-    },
   ),
 
   new FreeFight(
