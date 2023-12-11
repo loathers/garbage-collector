@@ -130,25 +130,6 @@ export function latteFilled(): boolean {
   );
 }
 
-// TODO: Make this not terrible, add MSG
-export function tryFillLatte(): boolean {
-  if (!latteFilled()) {
-    const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
-    const latteIngredients = goodLatteIngredients.filter((ingredient) =>
-      get("latteUnlocks").includes(ingredient),
-    );
-    if (latteIngredients.length < 3) latteIngredients.push("pumpkin");
-    if (latteIngredients.length < 3) latteIngredients.push("vanilla");
-    if (latteIngredients.length < 3) latteIngredients.push("cinnamon");
-    cliExecute(`latte refill ${latteIngredients.join(" ")}`);
-  }
-
-  return (
-    numericModifier($item`latte lovers member's mug`, "Familiar Weight") ===
-      5 && numericModifier($item`latte lovers member's mug`, "Meat Drop") === 40
-  );
-}
-
 export function toSpec(source?: ActionSource | Requirement): OutfitSpec {
   if (!source) return {};
   if (source instanceof Requirement) {

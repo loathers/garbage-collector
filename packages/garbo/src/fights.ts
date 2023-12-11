@@ -127,6 +127,7 @@ import {
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
+  tryFillLatte,
 } from "./resources";
 import {
   bestFairy,
@@ -167,7 +168,6 @@ import {
   freeFightOutfit,
   magnifyingGlass,
   toSpec,
-  tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
