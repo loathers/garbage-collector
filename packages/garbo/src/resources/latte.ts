@@ -20,13 +20,17 @@ function desirableIngredients(): Latte.Ingredient[] {
 }
 
 export function shouldUnlockIngredients(): boolean {
-  return (
+  const shouldTryToUnlockIngredients =
     desirableIngredients().filter(
       (i) =>
         Latte.ingredientsUnlocked().includes(i) ||
         canAdventure(Latte.locationOf(i) ?? $location`Noob Cave`),
-    ).length >= 3
-  );
+    ).length >= 3;
+  const doneUnlockingIngredients =
+    desirableIngredients().filter((i) =>
+      Latte.ingredientsUnlocked().includes(i),
+    ).length >= 3;
+  return shouldTryToUnlockIngredients && !doneUnlockingIngredients;
 }
 
 function ingredientsToFillWith(): Ingredients {
