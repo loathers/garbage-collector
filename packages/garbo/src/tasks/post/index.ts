@@ -44,7 +44,7 @@ import {
 } from "../../lib";
 import { teleportEffects } from "../../mood";
 import { Quest } from "grimoire-kolmafia";
-import bestAutumnatonLocation from "../../resources/autumnaton";
+import { bestAutumnatonLocation } from "../../resources";
 import { estimatedGarboTurns, remainingUserTurns } from "../../turns";
 import { acquire } from "../../acquire";
 import { garboAverageValue } from "../../garboValue";

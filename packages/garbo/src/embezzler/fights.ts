@@ -51,7 +51,6 @@ import {
   Macro,
   withMacro,
 } from "../combat";
-import { shouldAugustCast } from "../resources";
 import {
   averageEmbezzlerNet,
   embezzler,
@@ -67,7 +66,8 @@ import {
   equipOrbIfDesired,
   gregReady,
   possibleGregCrystalBall,
-} from "../resources/extrovermectin";
+  shouldAugustCast,
+} from "../resources";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 
