@@ -38,10 +38,10 @@ function ingredientsToFillWith(): Ingredients {
     ...desirableIngredients().filter((i) =>
       Latte.ingredientsUnlocked().includes(i),
     ),
-    byStat({
-      Muscle: ["vanilla", "pumpkin spice", "cinnamon"],
-      Moxie: ["cinnamon", "pumpkin spice", "vanilla"],
-      Mysticality: ["pumpkin spice", "vanilla", "cinnamon"],
+    byStat<Latte.Ingredient[]>({
+      Muscle: ["vanilla", "pumpkin", "cinnamon"],
+      Moxie: ["cinnamon", "pumpkin", "vanilla"],
+      Mysticality: ["pumpkin", "vanilla", "cinnamon"],
     }),
   ].splice(0, 3) as Ingredients;
 }

@@ -1321,7 +1321,9 @@ const priorityFreeRunFightSources = [
   ),
 ];
 
-function latteFight(ingredient: Latte.Ingredient): FreeRunFight {
+function latteFight(
+  ingredient: Exclude<Latte.Ingredient, "vanilla" | "cinnamon" | "pumpkin">,
+): FreeRunFight {
   return new FreeRunFight(
     () =>
       shouldUnlockIngredients() &&
@@ -1329,11 +1331,6 @@ function latteFight(ingredient: Latte.Ingredient): FreeRunFight {
       canAdventure(Latte.locationOf(ingredient) ?? $location.none),
     (runSource: ActionSource) => {
       const location = Latte.locationOf(ingredient);
-      if (!location) {
-        throw new Error(
-          `Couldn't identify location of latte ingredient ${ingredient}!`,
-        );
-      }
       propertyManager.setChoices(
         wanderer().unsupportedChoices.get(location) ?? {},
       );
