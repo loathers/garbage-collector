@@ -1328,7 +1328,7 @@ function latteFight(
     () =>
       shouldUnlockIngredients() &&
       !Latte.ingredientsUnlocked().includes(ingredient) &&
-      canAdventure(Latte.locationOf(ingredient) ?? $location.none),
+      canAdventure(Latte.locationOf(ingredient)),
     (runSource: ActionSource) => {
       const location = Latte.locationOf(ingredient);
       propertyManager.setChoices(
