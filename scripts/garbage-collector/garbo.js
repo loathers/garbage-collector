@@ -25244,10 +25244,10 @@ var require_freefight = __commonJS({
           return (0, lib_1.canWander)(location, "yellow ray") && (0, lib_1.canAdventureOrUnlock)(location);
         });
         var locationValues = monsterValues(type === "yellow ray", options);
-        var bestZones = /* @__PURE__ */ new Set([(0, libram_1.maxBy)(validLocations, function(l) {
+        var bestZones = new Set(validLocations.length > 0 ? [(0, libram_1.maxBy)(validLocations, function(l) {
           var _locationValues$get;
           return (_locationValues$get = locationValues.get(l)) !== null && _locationValues$get !== void 0 ? _locationValues$get : 0;
-        })]);
+        })] : []);
         var _iterator2 = _createForOfIteratorHelper40(lib_1.UnlockableZones), _step2;
         try {
           var _loop = function _loop2() {
@@ -25255,10 +25255,12 @@ var require_freefight = __commonJS({
             var extraLocations = kolmafia_1.Location.all().filter(function(l) {
               return l.zone === unlockableZone.zone && !locationSkiplist.includes(l);
             });
-            bestZones.add((0, libram_1.maxBy)(extraLocations, function(l) {
-              var _locationValues$get3;
-              return (_locationValues$get3 = locationValues.get(l)) !== null && _locationValues$get3 !== void 0 ? _locationValues$get3 : 0;
-            }));
+            if (extraLocations.length > 0) {
+              bestZones.add((0, libram_1.maxBy)(extraLocations, function(l) {
+                var _locationValues$get3;
+                return (_locationValues$get3 = locationValues.get(l)) !== null && _locationValues$get3 !== void 0 ? _locationValues$get3 : 0;
+              }));
+            }
           };
           for (_iterator2.s(); !(_step2 = _iterator2.n()).done; ) {
             _loop();
@@ -30375,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("da26d6cf50ba16f48dd3806580af3ddcb9769340", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4231f3655c1b6aad9fb5da3790401f24f008f077", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
