@@ -46,7 +46,7 @@ function ingredientsToFillWith(): Ingredients {
   ].splice(0, 3) as Ingredients;
 }
 
-function shouldFillLatte(): boolean {
+export function shouldFillLatte(): boolean {
   if (
     !have($item`latte lovers member's mug`) ||
     get("_latteRefillsUsed") >= 3
@@ -54,7 +54,7 @@ function shouldFillLatte(): boolean {
     return false;
   }
 
-  if (!get("_latteCopyUsed")) return true;
+  if (get("_latteCopyUsed")) return true;
 
   if (!arrayEquals(Latte.currentIngredients(), ingredientsToFillWith())) {
     return true;

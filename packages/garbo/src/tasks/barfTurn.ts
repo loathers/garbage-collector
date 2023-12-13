@@ -59,7 +59,6 @@ import {
   embezzlerOutfit,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
-  latteFilled,
   waterBreathingEquipment,
 } from "../outfit";
 import { digitizedMonstersRemaining } from "../turns";
@@ -71,6 +70,7 @@ import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
   completeBarfQuest,
+  shouldFillLatte,
   tryFillLatte,
 } from "../resources";
 import { acquire } from "../acquire";
@@ -384,7 +384,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
 const BarfTurnTasks: GarboTask[] = [
   {
     name: "Latte",
-    completed: () => latteFilled(),
+    completed: () => shouldFillLatte(),
     do: () => tryFillLatte(),
     spendsTurn: false,
   },
