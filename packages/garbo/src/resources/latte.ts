@@ -1,7 +1,6 @@
 import { canAdventure } from "kolmafia";
 import {
   $item,
-  $location,
   $skill,
   arrayEquals,
   byStat,
@@ -12,11 +11,11 @@ import {
 } from "libram";
 
 type Ingredients = Tuple<Latte.Ingredient, 3>;
-function desirableIngredients(): Latte.Ingredient[] {
+function desirableIngredients() {
   return have($skill`Head in the Game`) &&
     have($item`mafia pointer finger ring`)
-    ? ["msg", "cajun", "rawhide", "carrot"]
-    : ["cajun", "rawhide", "carrot"];
+    ? (["msg", "cajun", "rawhide", "carrot"] as const)
+    : (["cajun", "rawhide", "carrot"] as const);
 }
 
 export function shouldUnlockIngredients(): boolean {
@@ -24,7 +23,7 @@ export function shouldUnlockIngredients(): boolean {
     desirableIngredients().filter(
       (i) =>
         Latte.ingredientsUnlocked().includes(i) ||
-        canAdventure(Latte.locationOf(i) ?? $location`Noob Cave`),
+        canAdventure(Latte.locationOf(i)),
     ).length >= 3;
   const doneUnlockingIngredients =
     desirableIngredients().filter((i) =>
@@ -55,6 +54,7 @@ export function shouldFillLatte(): boolean {
   }
 
   if (get("_latteCopyUsed")) return true;
+  if (get("_latteBanishUsed")) return true;
 
   if (!arrayEquals(Latte.currentIngredients(), ingredientsToFillWith())) {
     return true;
