@@ -19,6 +19,7 @@ function desirableIngredients() {
 }
 
 export function shouldUnlockIngredients(): boolean {
+  if (!Latte.have()) return false;
   const shouldTryToUnlockIngredients =
     desirableIngredients().filter(
       (i) =>
