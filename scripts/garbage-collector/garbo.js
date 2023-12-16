@@ -25621,8 +25621,8 @@ var require_wanderer = __commonJS({
             886: 6
           }],
           [(0, libram_1.$location)(_templateObject1078 || (_templateObject1078 = _taggedTemplateLiteral116(["The Haunted Ballroom"]))), {
-            106: 3,
-            90: this.quartetChoice
+            90: 3,
+            106: this.quartetChoice
           }],
           [(0, libram_1.$location)(_templateObject1170 || (_templateObject1170 = _taggedTemplateLiteral116(["The Haunted Library"]))), {
             163: 4,
@@ -30377,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4231f3655c1b6aad9fb5da3790401f24f008f077", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("3808baa3696595efe64b6fa8a4ad09e6331fa1dd", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
