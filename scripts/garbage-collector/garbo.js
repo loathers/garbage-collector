@@ -30377,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9af28301ccd09b2590382f7902e9bb27e1b3f501", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("3c16bba154229bca8e56e23b827d052352d04622", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -37276,6 +37276,8 @@ function desirableIngredients() {
   return have($skill(_templateObject776 || (_templateObject776 = _taggedTemplateLiteral92(["Head in the Game"])))) && have($item(_templateObject2176 || (_templateObject2176 = _taggedTemplateLiteral92(["mafia pointer finger ring"])))) ? ["msg", "cajun", "rawhide", "carrot"] : ["cajun", "rawhide", "carrot"];
 }
 function shouldUnlockIngredients() {
+  if (!LatteLoversMembersMug_exports.have())
+    return false;
   var shouldTryToUnlockIngredients = desirableIngredients().filter(function(i) {
     return LatteLoversMembersMug_exports.ingredientsUnlocked().includes(i) || (0, import_kolmafia103.canAdventure)(LatteLoversMembersMug_exports.locationOf(i));
   }).length >= 3;
