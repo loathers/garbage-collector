@@ -59,8 +59,6 @@ import {
   embezzlerOutfit,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
-  latteFilled,
-  tryFillLatte,
   waterBreathingEquipment,
 } from "../outfit";
 import { digitizedMonstersRemaining } from "../turns";
@@ -69,7 +67,12 @@ import { computeDiet, consumeDiet } from "../diet";
 
 import { GarboTask } from "./engine";
 import { garboValue } from "../garboValue";
-import { bestMidnightAvailable, completeBarfQuest } from "../resources";
+import {
+  bestMidnightAvailable,
+  completeBarfQuest,
+  shouldFillLatte,
+  tryFillLatte,
+} from "../resources";
 import { acquire } from "../acquire";
 
 const steveAdventures: Map<Location, number[]> = new Map([
@@ -381,7 +384,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
 const BarfTurnTasks: GarboTask[] = [
   {
     name: "Latte",
-    completed: () => latteFilled(),
+    completed: () => shouldFillLatte(),
     do: () => tryFillLatte(),
     spendsTurn: false,
   },

@@ -3,8 +3,6 @@ export { embezzlerOutfit } from "./embezzler";
 export { freeFightOutfit } from "./free";
 export {
   familiarWaterBreathingEquipment,
-  latteFilled,
-  tryFillLatte,
   waterBreathingEquipment,
   useUPCs,
   toSpec,

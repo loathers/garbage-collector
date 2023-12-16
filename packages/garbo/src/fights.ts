@@ -94,6 +94,7 @@ import {
   getFoldGroup,
   GingerBread,
   have,
+  Latte,
   maxBy,
   property,
   realmAvailable,
@@ -127,6 +128,8 @@ import {
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
+  shouldUnlockIngredients,
+  tryFillLatte,
 } from "./resources";
 import {
   bestFairy,
@@ -167,7 +170,6 @@ import {
   freeFightOutfit,
   magnifyingGlass,
   toSpec,
-  tryFillLatte,
   waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
@@ -1319,57 +1321,30 @@ const priorityFreeRunFightSources = [
   ),
 ];
 
+function latteFight(
+  ingredient: Exclude<Latte.Ingredient, "vanilla" | "cinnamon" | "pumpkin">,
+): FreeRunFight {
+  return new FreeRunFight(
+    () =>
+      shouldUnlockIngredients() &&
+      !Latte.ingredientsUnlocked().includes(ingredient) &&
+      canAdventure(Latte.locationOf(ingredient)),
+    (runSource: ActionSource) => {
+      const location = Latte.locationOf(ingredient);
+      propertyManager.setChoices(
+        wanderer().unsupportedChoices.get(location) ?? {},
+      );
+      garboAdventure(location, runSource.macro);
+    },
+    {
+      spec: { equip: $items`latte lovers member's mug` },
+    },
+    freeRunConstraints(true),
+  );
+}
+
 const freeRunFightSources = [
-  // Unlock Latte ingredients
-  new FreeRunFight(
-    () =>
-      have($item`latte lovers member's mug`) &&
-      !get("latteUnlocks").includes("cajun") &&
-      questStep("questL11MacGuffin") > -1,
-    (runSource: ActionSource) => {
-      propertyManager.setChoices({
-        923: 1, // go to the blackberries in All Around the Map
-        924: 1, // fight a blackberry bush, so that we can freerun
-      });
-      garboAdventure($location`The Black Forest`, runSource.macro);
-    },
-    {
-      spec: { equip: $items`latte lovers member's mug` },
-    },
-    freeRunConstraints(true),
-  ),
-  new FreeRunFight(
-    () =>
-      have($item`latte lovers member's mug`) &&
-      get("latteUnlocks").includes("cajun") &&
-      !get("latteUnlocks").includes("rawhide") &&
-      questStep("questL02Larva") > -1,
-    (runSource: ActionSource) => {
-      propertyManager.setChoices({
-        502: 2, // go towards the stream in Arboreal Respite, so we can skip adventure
-        505: 2, // skip adventure
-      });
-      garboAdventure($location`The Spooky Forest`, runSource.macro);
-    },
-    {
-      spec: { equip: $items`latte lovers member's mug` },
-    },
-    freeRunConstraints(true),
-  ),
-  new FreeRunFight(
-    () =>
-      have($item`latte lovers member's mug`) &&
-      !get("latteUnlocks").includes("carrot") &&
-      get("latteUnlocks").includes("cajun") &&
-      get("latteUnlocks").includes("rawhide"),
-    (runSource: ActionSource) => {
-      garboAdventure($location`The Dire Warren`, runSource.macro);
-    },
-    {
-      spec: { equip: $items`latte lovers member's mug` },
-    },
-    freeRunConstraints(true),
-  ),
+  ...(["cajun", "rawhide", "carrot"] as const).map(latteFight),
   // Fire Extinguisher on best available target.
   new FreeRunFight(
     () =>
