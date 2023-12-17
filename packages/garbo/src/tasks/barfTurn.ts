@@ -384,7 +384,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
 const BarfTurnTasks: GarboTask[] = [
   {
     name: "Latte",
-    completed: () => shouldFillLatte(),
+    completed: () => !shouldFillLatte(),
     do: () => tryFillLatte(),
     spendsTurn: false,
   },
