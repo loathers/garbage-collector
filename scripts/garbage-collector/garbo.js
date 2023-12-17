@@ -30377,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("3c16bba154229bca8e56e23b827d052352d04622", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a7bf5540596776f2d4de940434f5c89059072446", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -37303,7 +37303,7 @@ function shouldFillLatte() {
     return true;
   if (get("_latteBanishUsed"))
     return true;
-  if (!arrayEquals(LatteLoversMembersMug_exports.currentIngredients(), ingredientsToFillWith())) {
+  if (!setEqual(LatteLoversMembersMug_exports.currentIngredients(), ingredientsToFillWith())) {
     return true;
   }
   return false;
@@ -44585,7 +44585,7 @@ var BarfTurnTasks = [
   {
     name: "Latte",
     completed: function() {
-      return shouldFillLatte();
+      return !shouldFillLatte();
     },
     do: function() {
       return tryFillLatte();
