@@ -30377,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a7bf5540596776f2d4de940434f5c89059072446", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ed0fcab31699b105bbb07b80530d63810d7d62dd", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -37289,11 +37289,11 @@ function shouldUnlockIngredients() {
 function ingredientsToFillWith() {
   return [].concat(_toConsumableArray41(desirableIngredients().filter(function(i) {
     return LatteLoversMembersMug_exports.ingredientsUnlocked().includes(i);
-  })), [byStat({
+  })), _toConsumableArray41(byStat({
     Muscle: ["vanilla", "pumpkin", "cinnamon"],
     Moxie: ["cinnamon", "pumpkin", "vanilla"],
     Mysticality: ["pumpkin", "vanilla", "cinnamon"]
-  })]).splice(0, 3);
+  }))).splice(0, 3);
 }
 function shouldFillLatte() {
   if (!have($item(_templateObject3155 || (_templateObject3155 = _taggedTemplateLiteral92(["latte lovers member's mug"])))) || get("_latteRefillsUsed") >= 3) {
