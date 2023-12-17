@@ -2,11 +2,11 @@ import { canAdventure } from "kolmafia";
 import {
   $item,
   $skill,
-  arrayEquals,
   byStat,
   get,
   have,
   Latte,
+  setEqual,
   Tuple,
 } from "libram";
 
@@ -57,7 +57,7 @@ export function shouldFillLatte(): boolean {
   if (get("_latteCopyUsed")) return true;
   if (get("_latteBanishUsed")) return true;
 
-  if (!arrayEquals(Latte.currentIngredients(), ingredientsToFillWith())) {
+  if (!setEqual(Latte.currentIngredients(), ingredientsToFillWith())) {
     return true;
   }
 
