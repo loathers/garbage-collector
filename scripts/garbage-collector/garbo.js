@@ -24806,7 +24806,7 @@ var require_lib2 = __commonJS({
       return location.environment === "underwater";
     }
     exports.underwater = underwater;
-    var ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm"];
+    var ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm", "A Monorail Station"];
     var ILLEGAL_ZONES = ["The Drip", "Suburbs"];
     var canAdventureOrUnlockSkipList = [].concat(_toConsumableArray56((0, libram_1.$locations)(_templateObject1170 || (_templateObject1170 = _taggedTemplateLiteral117(["The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, Madness Bakery, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, Frat House, Through the Spacegate"])))), _toConsumableArray56(kolmafia_1.Location.all().filter(function(_ref) {
       var parent = _ref.parent, zone = _ref.zone;
@@ -30377,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ed0fcab31699b105bbb07b80530d63810d7d62dd", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("33dee6c23f2e96fc988e151ffb761edac7b343ef", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
