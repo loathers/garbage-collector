@@ -30377,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("33dee6c23f2e96fc988e151ffb761edac7b343ef", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4d6736cf570188b057ec6bfc05fe89559d0de0ba", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -45606,7 +45606,7 @@ var DailyTasks = [
   {
     name: "Clan Fortune Consults",
     ready: function() {
-      return have($item(_templateObject6816 || (_templateObject6816 = _taggedTemplateLiteral109(["Clan VIP Lounge key"])))) && (0, import_kolmafia120.getClanLounge)()["Clan Carnival Game"] !== void 0 && (0, import_kolmafia120.isOnline)("CheeseFax") && Clan.getWhitelisted().find(function(c) {
+      return have($item(_templateObject6816 || (_templateObject6816 = _taggedTemplateLiteral109(["Clan VIP Lounge key"])))) && (0, import_kolmafia120.getClanLounge)()["Clan Carnival Game"] !== void 0 && (0, import_kolmafia120.isOnline)("OnlyFax") && Clan.getWhitelisted().find(function(c) {
         return c.name === "Bonus Adventures from Hell";
       }) !== void 0;
     },
@@ -45615,7 +45615,7 @@ var DailyTasks = [
     },
     do: function() {
       Clan.with("Bonus Adventures from Hell", function() {
-        return (0, import_kolmafia120.cliExecute)("fortune ".concat((0, import_kolmafia120.getPlayerId)("CheeseFax")));
+        return (0, import_kolmafia120.cliExecute)("fortune ".concat((0, import_kolmafia120.getPlayerId)("OnlyFax")));
       });
       (0, import_kolmafia120.wait)(10);
     },
