@@ -569,14 +569,14 @@ const DailyTasks: GarboTask[] = [
     ready: () =>
       have($item`Clan VIP Lounge key`) &&
       getClanLounge()["Clan Carnival Game"] !== undefined &&
-      isOnline("CheeseFax") &&
+      isOnline("OnlyFax") &&
       Clan.getWhitelisted().find(
         (c) => c.name === "Bonus Adventures from Hell",
       ) !== undefined,
     completed: () => get("_clanFortuneConsultUses") >= 3,
     do: (): void => {
       Clan.with("Bonus Adventures from Hell", () =>
-        cliExecute(`fortune ${getPlayerId("CheeseFax")}`),
+        cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
       );
       wait(10);
     },
