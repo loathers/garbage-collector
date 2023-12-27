@@ -61,6 +61,7 @@ import {
   useSkill,
   visitUrl,
   weaponHands,
+  xpath,
 } from "kolmafia";
 import {
   $effect,
@@ -972,4 +973,30 @@ export function allMallPrices() {
     mallPrices("allitems");
     sessionStorage.setItem("allpricedate", today);
   }
+}
+
+export function getCombatFlags(
+  ...flags: string[]
+): { flag: string; value: boolean }[] {
+  return flags.map((flag) => ({
+    flag,
+    value:
+      xpath(
+        visitUrl("account.php?tab=combat"),
+        `//*[@id="opt_flag_${flag}"]/label/input[@type='checkbox']@checked`,
+      )[0] === "checked",
+  }));
+}
+
+export function setCombatFlags(...flags: { flag: string; value: boolean }[]) {
+  return visitUrl(
+    `account.php?${
+      ([
+        ...flags.map(({ flag }) => `actions[]=flag_${flag}`),
+        ...flags.map(({ flag, value }) => `flag_${flag}=${Number(value)}`),
+        "action=Update",
+      ].join("&"),
+      true)
+    }`,
+  );
 }
