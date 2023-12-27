@@ -30377,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4d6736cf570188b057ec6bfc05fe89559d0de0ba", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8f381a98749750034f7dd3589882552994fb8afd", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -30701,6 +30701,29 @@ function allMallPrices() {
     (0, import_kolmafia79.mallPrices)("allitems");
     import_kolmafia79.sessionStorage.setItem("allpricedate", today);
   }
+}
+function getCombatFlags() {
+  for (var _len = arguments.length, flags = new Array(_len), _key = 0; _key < _len; _key++) {
+    flags[_key] = arguments[_key];
+  }
+  return flags.map(function(flag) {
+    return {
+      flag: flag,
+      value: (0, import_kolmafia79.xpath)((0, import_kolmafia79.visitUrl)("account.php?tab=combat"), '//*[@id="opt_flag_'.concat(flag, "\"]/label/input[@type='checkbox']@checked"))[0] === "checked"
+    };
+  });
+}
+function setCombatFlags() {
+  for (var _len2 = arguments.length, flags = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    flags[_key2] = arguments[_key2];
+  }
+  return (0, import_kolmafia79.visitUrl)("account.php?".concat(([].concat(_toConsumableArray24(flags.map(function(_ref3) {
+    var flag = _ref3.flag;
+    return "actions[]=flag_".concat(flag);
+  })), _toConsumableArray24(flags.map(function(_ref4) {
+    var flag = _ref4.flag, value = _ref4.value;
+    return "flag_".concat(flag, "=").concat(Number(value));
+  })), ["action=Update"]).join("&"), true)));
 }
 
 // src/turns.ts
@@ -47933,7 +47956,7 @@ function main() {
       (0, import_kolmafia133.visitUrl)("campground.php?action=garden&pwd");
     }
   }
-  var aaBossFlag = (0, import_kolmafia133.xpath)((0, import_kolmafia133.visitUrl)("account.php?tab=combat"), "//*[@id=\"opt_flag_aabosses\"]/label/input[@type='checkbox']@checked")[0] === "checked" ? 1 : 0;
+  var combatFlags = getCombatFlags("aabosses", "bothcombatinterf");
   try {
     (0, import_kolmafia133.print)("Collecting garbage!", HIGHLIGHT);
     if (globalOptions.stopTurncount !== null) {
@@ -47944,7 +47967,13 @@ function main() {
       (0, import_kolmafia133.use)($item(_templateObject1449 || (_templateObject1449 = _taggedTemplateLiteral116(["packet of tall grass seeds"]))));
     }
     (0, import_kolmafia133.setAutoAttack)(0);
-    (0, import_kolmafia133.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update", true);
+    setCombatFlags({
+      flag: "aaBossFlag",
+      value: true
+    }, {
+      flag: "bothcombatinterf",
+      value: false
+    });
     var maximizerCombinationLimit = isQuickGear() ? 1e5 : get("maximizerCombinationLimit");
     var bannedAutoRestorers = have($item(_templateObject1548 || (_templateObject1548 = _taggedTemplateLiteral116(["Cincho de Mayo"])))) ? ["sleep on your clan sofa", "rest in your campaway tent", "rest at the chateau", "rest at your campground", "free rest"] : [];
     var hpItems = get("hpAutoRecoveryItems").split(";").filter(function(s) {
@@ -48093,7 +48122,7 @@ function main() {
     _set("garboStashItems", stashItems.map(function(item11) {
       return (0, import_kolmafia133.toInt)(item11).toFixed(0);
     }).join(","));
-    (0, import_kolmafia133.visitUrl)("account.php?actions[]=flag_aabosses&flag_aabosses=".concat(aaBossFlag, "&action=Update"), true);
+    setCombatFlags.apply(void 0, _toConsumableArray55(combatFlags));
     if (startingGarden && have(startingGarden))
       (0, import_kolmafia133.use)(startingGarden);
     printEventLog();
