@@ -29,7 +29,6 @@ import {
   toInt,
   use,
   visitUrl,
-  xpath,
 } from "kolmafia";
 import {
   $class,
@@ -60,12 +59,14 @@ import {
   allMallPrices,
   bestJuneCleaverOption,
   checkGithubVersion,
+  getCombatFlag,
   HIGHLIGHT,
   printEventLog,
   printLog,
   propertyManager,
   questStep,
   safeRestore,
+  setCombatFlags,
   userConfirmDialog,
 } from "./lib";
 import { meatMood, useBuffExtenders } from "./mood";
@@ -317,13 +318,8 @@ export function main(argString = ""): void {
     }
   }
 
-  const aaBossFlag =
-    xpath(
-      visitUrl("account.php?tab=combat"),
-      `//*[@id="opt_flag_aabosses"]/label/input[@type='checkbox']@checked`,
-    )[0] === "checked"
-      ? 1
-      : 0;
+  const aaBossFlag = getCombatFlag("aabosses");
+  const oldCombatBarFlag = getCombatFlag("bothcombatinterf");
 
   try {
     print("Collecting garbage!", HIGHLIGHT);
@@ -344,9 +340,9 @@ export function main(argString = ""): void {
     }
 
     setAutoAttack(0);
-    visitUrl(
-      `account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`,
-      true,
+    setCombatFlags(
+      { flag: "aaBossFlag", value: true },
+      { flag: "bothcombatinterf", value: false },
     );
 
     const maximizerCombinationLimit = isQuickGear()
@@ -574,6 +570,10 @@ export function main(argString = ""): void {
     set(
       "garboStashItems",
       stashItems.map((item) => toInt(item).toFixed(0)).join(","),
+    );
+    setCombatFlags(
+      { flag: "aabosses", value: aaBossFlag },
+      { flag: "bothcombatinterf", value: oldCombatBarFlag },
     );
     visitUrl(
       `account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`,
