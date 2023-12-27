@@ -975,21 +975,28 @@ export function allMallPrices() {
   }
 }
 
-export function getCombatFlag(flag: string): boolean {
-  return (
-    xpath(
-      visitUrl("account.php?tab=combat"),
-      `//*[@id="opt_flag_${flag}"]/label/input[@type='checkbox']@checked`,
-    )[0] === "checked"
-  );
+export function getCombatFlags(
+  ...flags: string[]
+): { flag: string; value: boolean }[] {
+  return flags.map((flag) => ({
+    flag,
+    value:
+      xpath(
+        visitUrl("account.php?tab=combat"),
+        `//*[@id="opt_flag_${flag}"]/label/input[@type='checkbox']@checked`,
+      )[0] === "checked",
+  }));
 }
 
 export function setCombatFlags(...flags: { flag: string; value: boolean }[]) {
   return visitUrl(
-    `account.php?${[
-      ...flags.map(({ flag }) => `actions[]=flag_${flag}`),
-      ...flags.map(({ flag, value }) => `flag_${flag}=${Number(value)}`),
-      "action=Update",
-    ].join("&")}`,
+    `account.php?${
+      ([
+        ...flags.map(({ flag }) => `actions[]=flag_${flag}`),
+        ...flags.map(({ flag, value }) => `flag_${flag}=${Number(value)}`),
+        "action=Update",
+      ].join("&"),
+      true)
+    }`,
   );
 }

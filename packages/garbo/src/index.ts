@@ -59,7 +59,7 @@ import {
   allMallPrices,
   bestJuneCleaverOption,
   checkGithubVersion,
-  getCombatFlag,
+  getCombatFlags,
   HIGHLIGHT,
   printEventLog,
   printLog,
@@ -318,8 +318,7 @@ export function main(argString = ""): void {
     }
   }
 
-  const aaBossFlag = getCombatFlag("aabosses");
-  const oldCombatBarFlag = getCombatFlag("bothcombatinterf");
+  const combatFlags = getCombatFlags("aabosses", "bothcombatinterf");
 
   try {
     print("Collecting garbage!", HIGHLIGHT);
@@ -571,14 +570,7 @@ export function main(argString = ""): void {
       "garboStashItems",
       stashItems.map((item) => toInt(item).toFixed(0)).join(","),
     );
-    setCombatFlags(
-      { flag: "aabosses", value: aaBossFlag },
-      { flag: "bothcombatinterf", value: oldCombatBarFlag },
-    );
-    visitUrl(
-      `account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`,
-      true,
-    );
+    setCombatFlags(...combatFlags);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     printEventLog();
     endSession();
