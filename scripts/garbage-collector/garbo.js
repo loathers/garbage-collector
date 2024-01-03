@@ -30377,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e02fc9c844f3899d13ab2cfb4253f058d2508a6d", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("0f918a30ef385d61b7db67fd25c419f4d8d61723", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -31948,7 +31948,9 @@ function menu() {
     new MenuItem($item(_templateObject793 || (_templateObject793 = _taggedTemplateLiteral70(["spaghetti breakfast"]))), {
       maximum: spaghettiBreakfast
     }),
-    new MenuItem($item(_templateObject803 || (_templateObject803 = _taggedTemplateLiteral70(["extra-greasy slider"])))),
+    new MenuItem($item(_templateObject803 || (_templateObject803 = _taggedTemplateLiteral70(["extra-greasy slider"]))), {
+      maximum: 1
+    }),
     new MenuItem(mallMin(lasagnas)),
     new MenuItem(mallMin(smallEpics)),
     new MenuItem($item(_templateObject8110 || (_templateObject8110 = _taggedTemplateLiteral70(["green hamhock"]))))
@@ -31967,7 +31969,9 @@ function menu() {
     new MenuItem($item(_templateObject9210 || (_templateObject9210 = _taggedTemplateLiteral70(["splendid martini"])))),
     new MenuItem($item(_templateObject938 || (_templateObject938 = _taggedTemplateLiteral70(["low tide martini"])))),
     new MenuItem($item(_templateObject943 || (_templateObject943 = _taggedTemplateLiteral70(["Eye and a Twist"])))),
-    new MenuItem($item(_templateObject953 || (_templateObject953 = _taggedTemplateLiteral70(["jar of fermented pickle juice"])))),
+    new MenuItem($item(_templateObject953 || (_templateObject953 = _taggedTemplateLiteral70(["jar of fermented pickle juice"]))), {
+      maximum: 1
+    }),
     new MenuItem(mallMin(complexMushroomWines)),
     new MenuItem(mallMin(perfectDrinks)),
     new MenuItem($item(_templateObject963 || (_templateObject963 = _taggedTemplateLiteral70(["green eggnog"])))),
