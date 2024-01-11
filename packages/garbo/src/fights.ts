@@ -103,7 +103,6 @@ import {
   set,
   SourceTerminal,
   sum,
-  tryFindFreeRun,
   undelay,
   withChoice,
 } from "libram";
@@ -143,7 +142,6 @@ import {
   baseMeat,
   bestShadowRift,
   burnLibrams,
-  dogOrHolidayWanderer,
   ESTIMATED_OVERDRUNK_TURNS,
   eventLog,
   expectedEmbezzlerProfit,
@@ -152,6 +150,7 @@ import {
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
   kramcoGuaranteed,
+  lastAdventureWasWeird,
   logMessage,
   ltbRun,
   mapMonster,
@@ -162,6 +161,7 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  tryFindFreeRunOrBanish,
   userConfirmDialog,
 } from "./lib";
 import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
@@ -250,7 +250,7 @@ function embezzlerSetup() {
     setChoice(582, 1);
     setChoice(579, 3);
     while (get("lastTempleAdventures") < myAscensions()) {
-      const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
+      const run = tryFindFreeRunOrBanish(freeRunConstraints(false)) ?? ltbRun();
       if (!run) break;
       run.constraints.preparation?.();
       freeFightOutfit(toSpec(run)).dress();
@@ -378,7 +378,7 @@ function startWandererCounter() {
         embezzlerOutfit().dress();
       } else {
         print("You do not have gregs active, so this is a regular free run.");
-        run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
+        run = tryFindFreeRunOrBanish(freeRunConstraints(false)) ?? ltbRun();
         run.constraints.preparation?.();
         freeFightOutfit(toSpec(run)).dress();
       }
@@ -390,7 +390,7 @@ function startWandererCounter() {
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
-      dogOrHolidayWanderer(["Lights Out in the Kitchen"])
+      lastAdventureWasWeird({ extraEncounters: ["Lights Out in the Kitchen"] })
     );
   }
 }
@@ -685,7 +685,7 @@ class FreeRunFight extends FreeFight {
         noFamiliar: () => "familiar" in initialSpec,
         ...this.constraints,
       };
-      const runSource = tryFindFreeRun(constraints);
+      const runSource = tryFindFreeRunOrBanish(constraints);
       if (!runSource) break;
       runSource.constraints.preparation?.();
       const mergingOutfit = Outfit.from(
