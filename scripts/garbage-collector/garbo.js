@@ -30377,7 +30377,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d4bea054ad6c7b9b80e6c6be952d005042560048", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("01a9c681c6cd3d2adf5ed675bf93761136822406", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -41587,7 +41587,7 @@ var FreeFightTasks = [
     },
     do: function() {
       return wanderer().getTarget({
-        wanderer: "freefight",
+        wanderer: "wanderer",
         allowEquipment: false
       });
     },
@@ -41598,7 +41598,7 @@ var FreeFightTasks = [
     },
     choices: function() {
       return wanderer().getChoices({
-        wanderer: "freefight",
+        wanderer: "wanderer",
         allowEquipment: false
       });
     },
