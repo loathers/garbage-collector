@@ -241,7 +241,9 @@ export function saberCrateIfSafe(): void {
     );
   }
 
-  if (!isBanished($monster`crate`)) throw new Error("Failed to banish crate!");
+  if (isBanished($monster`crate`)) {
+    throw new Error("Accidentally banished crate! And failed to unbanish.");
+  }
 }
 
 /**
