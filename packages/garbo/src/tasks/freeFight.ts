@@ -447,10 +447,10 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     ready: () => have($item`Kramco Sausage-o-Matic™`),
     completed: () => !kramcoGuaranteed(),
     do: () =>
-      wanderer().getTarget({ wanderer: "freefight", allowEquipment: false }),
+      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false }),
     outfit: () => freeFightOutfit({ offhand: $item`Kramco Sausage-o-Matic™` }),
     choices: () =>
-      wanderer().getChoices({ wanderer: "freefight", allowEquipment: false }),
+      wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
     combat: new GarboStrategy(() => Macro.basicCombat()),
     combatCount: () => clamp(1 - get("_sausageFights"), 0, 1),
     tentacle: true,
