@@ -453,9 +453,9 @@ const DailyItemTasks: GarboTask[] = [
       runChoice(4);
       runChoice(6);
     },
-    outfit: () => ({
+    outfit: {
       weapon: $item`candy cane sword cane`,
-    }),
+    },
     limit: { skip: 1 },
     spendsTurn: false,
   },
