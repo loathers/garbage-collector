@@ -15,6 +15,7 @@ import {
   familiarEquippedEquipment,
   getAutoAttack,
   getCampground,
+  getWorkshed,
   haveEquipped,
   haveOutfit,
   inebrietyLimit,
@@ -1847,7 +1848,7 @@ const freeKillSources = [
   new FreeFight(
     () =>
       !get("_missileLauncherUsed") &&
-      getCampground()["Asdon Martin keyfob (on ring)"] !== undefined,
+      getWorkshed() === $item`Asdon Martin keyfob (on ring)`,
     () => {
       ensureBeachAccess();
       AsdonMartin.fillTo(100);
