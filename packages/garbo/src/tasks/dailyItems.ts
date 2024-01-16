@@ -2,6 +2,7 @@ import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   abort,
   buy,
+  canAdventure,
   cliExecute,
   getCampground,
   getClanLounge,
@@ -27,6 +28,7 @@ import {
   $coinmaster,
   $item,
   $items,
+  $location,
   $skill,
   $skills,
   BurningLeaves,
@@ -430,6 +432,31 @@ const DailyItemTasks: GarboTask[] = [
         (BurningLeaves.burnFor.get($item`day shortener`) ?? Infinity),
     completed: () => get("_leafDayShortenerCrafted"),
     do: () => BurningLeaves.burnSpecialLeaves($item`day shortener`),
+    spendsTurn: false,
+  },
+  {
+    name: "Wardrobe-o-Matic",
+    ready: () => have($item`wardrobe-o-matic`),
+    completed: () => have($item`futuristic shirt`),
+    do: () => use($item`wardrobe-o-matic`),
+    limit: { skip: 1 },
+    spendsTurn: false,
+  },
+  {
+    name: "Candy cane sword cane Shrine Meat",
+    ready: () =>
+      have($item`candy cane sword cane`) &&
+      canAdventure($location`An Overgrown Shrine (Northeast)`),
+    completed: () => get("_candyCaneSwordOvergrownShrine", true),
+    do: () => {
+      visitUrl("adventure.php?snarfblat=348");
+      runChoice(4);
+      runChoice(6);
+    },
+    outfit: () => ({
+      weapon: $item`candy cane sword cane`,
+    }),
+    limit: { skip: 1 },
     spendsTurn: false,
   },
   {

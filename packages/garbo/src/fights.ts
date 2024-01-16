@@ -2062,7 +2062,6 @@ function thesisReady(): boolean {
 
 export function deliverThesisIfAble(): void {
   if (!thesisReady()) return;
-  freeFightMood().execute();
   freeFightOutfit({
     modifier: ["100 Muscle"],
     familiar: $familiar`Pocket Professor`,
