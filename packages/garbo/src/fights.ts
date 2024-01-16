@@ -1847,7 +1847,7 @@ const freeKillSources = [
   new FreeFight(
     () =>
       !get("_missileLauncherUsed") &&
-      getCampground()["Asdon Martin keyfob"] !== undefined,
+      getCampground()["Asdon Martin keyfob (on ring)"] !== undefined,
     () => {
       ensureBeachAccess();
       AsdonMartin.fillTo(100);
