@@ -15,6 +15,7 @@ import {
   familiarEquippedEquipment,
   getAutoAttack,
   getCampground,
+  getWorkshed,
   haveEquipped,
   haveOutfit,
   inebrietyLimit,
@@ -1847,7 +1848,7 @@ const freeKillSources = [
   new FreeFight(
     () =>
       !get("_missileLauncherUsed") &&
-      getCampground()["Asdon Martin keyfob"] !== undefined,
+      getWorkshed() === $item`Asdon Martin keyfob (on ring)`,
     () => {
       ensureBeachAccess();
       AsdonMartin.fillTo(100);
@@ -2062,7 +2063,6 @@ function thesisReady(): boolean {
 
 export function deliverThesisIfAble(): void {
   if (!thesisReady()) return;
-  freeFightMood().execute();
   freeFightOutfit({
     modifier: ["100 Muscle"],
     familiar: $familiar`Pocket Professor`,

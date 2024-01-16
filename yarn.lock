@@ -3798,7 +3798,7 @@ __metadata:
     "@typescript-eslint/parser": ^6.7.0
     eslint: ^8.50.0
     eslint-config-prettier: ^9.0.0
-    eslint-plugin-libram: ^0.3.4
+    eslint-plugin-libram: ^0.4.1
     lint-staged: ^14.0.1
     madge: ^6.1.0
     prettier: ^3.0.3
@@ -3821,13 +3821,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.3.4":
-  version: 0.3.4
-  resolution: "eslint-plugin-libram@npm:0.3.4"
+"eslint-plugin-libram@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "eslint-plugin-libram@npm:0.4.1"
   dependencies:
     html-entities: ^2.4.0
     requireindex: ~1.2.0
-  checksum: b0c1bc61140ea42e00dddcb26deb0c8ef3d746972c8acdf04190063d45dee7335cdbbfd30ee29a17d5a411885f6806d6800ec783cb2b712f6f3ffaa34ea06084
+  checksum: 5aaff029b5cfeff4973f1b0d975df7733507304530b3233b17a4b786aeb27795584a53af485ceb190d402dfd2409822ace2c66ca9ebea6b8f982ad44a4c20630
   languageName: node
   linkType: hard
 
