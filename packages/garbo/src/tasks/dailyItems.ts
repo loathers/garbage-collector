@@ -3,15 +3,18 @@ import {
   abort,
   buy,
   canAdventure,
+  canEquip,
   cliExecute,
   getCampground,
   getClanLounge,
   getMonsters,
+  inebrietyLimit,
   Item,
   itemDropsArray,
   itemPockets,
   mallPrice,
   meatPockets,
+  myInebriety,
   pickedPockets,
   pocketItems,
   pocketMeat,
@@ -446,17 +449,24 @@ const DailyItemTasks: GarboTask[] = [
     name: "Candy cane sword cane Shrine Meat",
     ready: () =>
       have($item`candy cane sword cane`) &&
-      canAdventure($location`An Overgrown Shrine (Northeast)`),
+      canAdventure($location`An Overgrown Shrine (Northeast)`) &&
+      (!(myInebriety() > inebrietyLimit()) ||
+        (have($item`Drunkula's wineglass`) &&
+          canEquip($item`Drunkula's wineglass`))),
     completed: () => get("_candyCaneSwordOvergrownShrine", true),
     do: () => {
       visitUrl("adventure.php?snarfblat=348");
       runChoice(4);
       runChoice(6);
     },
-    outfit: {
+    outfit: () => ({
       weapon: $item`candy cane sword cane`,
-    },
-    limit: { skip: 1 },
+      offhand:
+        myInebriety() > inebrietyLimit()
+          ? $item`Drunkula's wineglass`
+          : undefined,
+    }),
+    limit: { skip: 3 },
     spendsTurn: false,
   },
   {
