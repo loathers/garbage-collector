@@ -2,6 +2,7 @@ import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   abort,
   buy,
+  canAdventure,
   cliExecute,
   getCampground,
   getClanLounge,
@@ -27,8 +28,10 @@ import {
   $coinmaster,
   $item,
   $items,
+  $location,
   $skill,
   $skills,
+  BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
   get,
@@ -46,8 +49,11 @@ import { coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
-import { augustSummonTasks } from "../resources";
-import { doingGregFight } from "../resources/extrovermectin";
+import {
+  augustSummonTasks,
+  candyMapDailyTasks,
+  doingGregFight,
+} from "../resources";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
@@ -97,7 +103,7 @@ function pickCargoPocket(): void {
     if (pocket in items) {
       value += sum(
         Object.entries(pocketItems(pocket)),
-        ([item, count]) => garboValue(toItem(item), true) * count,
+        ([item, count]) => garboValue(toItem(item)) * count,
       );
     }
     if (pocket in meats) {
@@ -398,6 +404,62 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
+    name: "Rake Leaves",
+    ready: () => BurningLeaves.have(),
+    completed: () => have($item`rake`),
+    do: () => {
+      visitUrl("campground.php?preaction=leaves");
+      visitUrl("main.php"); // Mafia not marking as can walk away
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Burning Leaves lit leaf lasso",
+    ready: () =>
+      BurningLeaves.have() &&
+      BurningLeaves.numberOfLeaves() >=
+        (BurningLeaves.burnFor.get($item`lit leaf lasso`) ?? Infinity),
+    completed: () => get("_leafLassosCrafted") >= 3,
+    do: () => BurningLeaves.burnSpecialLeaves($item`lit leaf lasso`),
+    limit: { skip: 3 },
+    spendsTurn: false,
+  },
+  {
+    name: "Burning Leaves day shortener",
+    ready: () =>
+      BurningLeaves.have() &&
+      BurningLeaves.numberOfLeaves() >=
+        (BurningLeaves.burnFor.get($item`day shortener`) ?? Infinity),
+    completed: () => get("_leafDayShortenerCrafted"),
+    do: () => BurningLeaves.burnSpecialLeaves($item`day shortener`),
+    spendsTurn: false,
+  },
+  {
+    name: "Wardrobe-o-Matic",
+    ready: () => have($item`wardrobe-o-matic`),
+    completed: () => have($item`futuristic shirt`),
+    do: () => use($item`wardrobe-o-matic`),
+    limit: { skip: 1 },
+    spendsTurn: false,
+  },
+  {
+    name: "Candy cane sword cane Shrine Meat",
+    ready: () =>
+      have($item`candy cane sword cane`) &&
+      canAdventure($location`An Overgrown Shrine (Northeast)`),
+    completed: () => get("_candyCaneSwordOvergrownShrine", true),
+    do: () => {
+      visitUrl("adventure.php?snarfblat=348");
+      runChoice(4);
+      runChoice(6);
+    },
+    outfit: {
+      weapon: $item`candy cane sword cane`,
+    },
+    limit: { skip: 1 },
+    spendsTurn: false,
+  },
+  {
     name: "Clear Existing Rufus Quest",
     completed: () =>
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
@@ -498,6 +560,7 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   ...augustSummonTasks(),
+  ...candyMapDailyTasks(),
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {

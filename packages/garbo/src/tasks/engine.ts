@@ -2,16 +2,26 @@ import {
   Engine,
   EngineOptions,
   getTasks,
+  Outfit,
   Quest,
   StrictCombatTask,
 } from "grimoire-kolmafia";
-import { eventLog, safeInterrupt, sober } from "../lib";
+import { eventLog, safeInterrupt, safeRestore, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
-import { $skill, Delayed, get, SourceTerminal, undelay } from "libram";
-import { print, totalTurnsPlayed } from "kolmafia";
-import postCombatActions from "../post";
+import {
+  $familiar,
+  $item,
+  $skill,
+  Delayed,
+  get,
+  SourceTerminal,
+  undelay,
+} from "libram";
+import { equip, itemAmount, print, totalTurnsPlayed } from "kolmafia";
 import { GarboStrategy } from "../combat";
 import { globalOptions } from "../config";
+import { sessionSinceStart } from "../session";
+import { garboValue } from "../garboValue";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
@@ -43,6 +53,18 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     return super.available(task);
   }
 
+  dress(task: GarboTask, outfit: Outfit) {
+    super.dress(task, outfit);
+    if (itemAmount($item`tiny stillsuit`) > 0) {
+      equip($familiar`Cornbeefadon`, $item`tiny stillsuit`);
+    }
+  }
+
+  prepare(task: GarboTask): void {
+    if ("combat" in task) safeRestore();
+    super.prepare(task);
+  }
+
   execute(task: GarboTask): void {
     safeInterrupt();
     const spentTurns = totalTurnsPlayed();
@@ -56,7 +78,6 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
       SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
     }
     super.execute(task);
-    postCombatActions();
     if (totalTurnsPlayed() !== spentTurns) {
       if (!undelay(task.spendsTurn)) {
         print(
@@ -68,6 +89,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
       get("lastEncounter") === globalOptions.target.name;
     if (foughtAnEmbezzler) logEmbezzler(task.name);
     wanderer().clear();
+    sessionSinceStart().value(garboValue);
     if (duplicate && SourceTerminal.have()) {
       for (const skill of before) {
         SourceTerminal.educate(skill);

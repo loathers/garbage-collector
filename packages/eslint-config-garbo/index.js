@@ -28,6 +28,7 @@ module.exports = {
     // This one needs a fix because TS's rules are different?
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-non-null-assertion": "error",
 
     // eslint-plugin-libram
     "libram/verify-constants": "error",

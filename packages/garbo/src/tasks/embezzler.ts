@@ -3,7 +3,7 @@ import { $item, $items, $location, CrystalBall, get, set } from "libram";
 import { GarboTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { getChangeLastAdvLocationMethod } from "../embezzler/lib";
-import { doingGregFight } from "../resources/extrovermectin";
+import { doingGregFight } from "../resources";
 import { freeFightOutfit } from "../outfit";
 
 export const SetupEmbezzlerQuest: Quest<GarboTask> = {
@@ -29,7 +29,7 @@ export const SetupEmbezzlerQuest: Quest<GarboTask> = {
       do: $location`The Daily Dungeon`,
       post: () => set("_lastDailyDungeonEncounter", get("lastEncounter")),
       spendsTurn: true,
-      combat: new GarboStrategy(Macro.kill()),
+      combat: new GarboStrategy(() => Macro.kill()),
     },
   ],
 };

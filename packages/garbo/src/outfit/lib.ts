@@ -24,7 +24,6 @@ import {
   $slots,
   ActionSource,
   findLeprechaunMultiplier,
-  get,
   getFoldGroup,
   have,
   Requirement,
@@ -110,44 +109,6 @@ export function useUPCsIfNeeded({ familiar }: Outfit): void {
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
-
-export function latteFilled(): boolean {
-  return !(
-    have($item`latte lovers member's mug`) &&
-    get("_latteRefillsUsed") < 3 &&
-    (get("_latteCopyUsed") ||
-      (get("latteUnlocks").includes("cajun") &&
-        get("latteUnlocks").includes("rawhide") &&
-        (numericModifier(
-          $item`latte lovers member's mug`,
-          "Familiar Weight",
-        ) !== 5 ||
-          numericModifier($item`latte lovers member's mug`, "Meat Drop") !==
-            40 ||
-          (get("latteUnlocks").includes("carrot") &&
-            numericModifier($item`latte lovers member's mug`, "Item Drop") !==
-              20))))
-  );
-}
-
-// TODO: Make this not terrible, add MSG
-export function tryFillLatte(): boolean {
-  if (!latteFilled()) {
-    const goodLatteIngredients = ["cajun", "rawhide", "carrot"];
-    const latteIngredients = goodLatteIngredients.filter((ingredient) =>
-      get("latteUnlocks").includes(ingredient),
-    );
-    if (latteIngredients.length < 3) latteIngredients.push("pumpkin");
-    if (latteIngredients.length < 3) latteIngredients.push("vanilla");
-    if (latteIngredients.length < 3) latteIngredients.push("cinnamon");
-    cliExecute(`latte refill ${latteIngredients.join(" ")}`);
-  }
-
-  return (
-    numericModifier($item`latte lovers member's mug`, "Familiar Weight") ===
-      5 && numericModifier($item`latte lovers member's mug`, "Meat Drop") === 40
-  );
-}
 
 export function toSpec(source?: ActionSource | Requirement): OutfitSpec {
   if (!source) return {};

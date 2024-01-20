@@ -22,10 +22,8 @@ import { globalOptions } from "../config";
 const locationBanlist = $locations`The Daily Dungeon`; // The Daily Dungeon has no native monsters
 const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
 
-export default function bestAutumnatonLocation(
-  locations: Location[],
-): Location {
-  return maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
+export function bestAutumnatonLocation(locations: Location[]): Location {
+  return maxBy(bestLocationsByUpgrade(locations), averageAutumnatonValue);
 }
 
 function averageAutumnatonValue(
@@ -37,9 +35,7 @@ function averageAutumnatonValue(
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
     (m) =>
-      !locationBanlist.includes(location) &&
-      !badAttributes.some((s) => m.attributes.includes(s)) &&
-      rates[m.name] > 0,
+      !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
   );
 
   if (monsters.length === 0) {
@@ -51,7 +47,7 @@ function averageAutumnatonValue(
       .map((m) => itemDropsArray(m))
       .flat()
       .map(({ rate, type, drop }) => ({
-        value: !["c", "0"].includes(type) ? garboValue(drop, true) : 0,
+        value: !["c", "0"].includes(type) ? garboValue(drop) : 0,
         preAcuityExpectation: ["c", "0", ""].includes(type)
           ? (2 * rate) / 100
           : 0,
@@ -97,7 +93,7 @@ function seasonalItemValue(
           availableAmount(autumnItem) > 0
           ? avgValueOfRandomAutumnItem
           : 0
-        : garboValue(autumnItem, true))
+        : garboValue(autumnItem))
     );
   } else {
     // If we're in a location without any uniques, we still get cowcatcher items
@@ -247,9 +243,9 @@ function makeUpgradeValuator(
   };
 }
 
-function mostValuableUpgrade(fullLocations: Location[]): Location[] {
+function bestLocationsByUpgrade(fullLocations: Location[]): Location[] {
   const validLocations = fullLocations.filter(
-    (l) => l.parent !== "Clan Basement",
+    (l) => l.parent !== "Clan Basement" && !locationBanlist.includes(l),
   );
   // This function shouldn't be getting called if we don't have an expedition left
   if (expectedRemainingExpeditions() < 1) {

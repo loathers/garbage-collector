@@ -38,10 +38,13 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { hasMonsterReplacers } from "../resources/extrovermectin";
+import {
+  hasMonsterReplacers,
+  shouldAugustCast,
+  synthesize,
+} from "../resources";
 import { Potion } from "../potions";
 import { garboValue } from "../garboValue";
-import synthesize from "../resources/synthesis";
 import { estimatedGarboTurns } from "../turns";
 import { yachtzeePotionProfits, yachtzeePotionSetup } from "./buffs";
 import { optimizeForFishy } from "./fishy";
@@ -53,7 +56,6 @@ import {
   useSpikolodonSpikes,
 } from "./lib";
 import { freeRest } from "../lib";
-import { shouldAugustCast } from "../resources";
 
 class YachtzeeDietEntry<T> {
   name: string;

@@ -37,6 +37,7 @@ import {
   $monster,
   $phyla,
   $skill,
+  BurningLeaves,
   ChateauMantegna,
   clamp,
   CombatLoversLocket,
@@ -57,6 +58,9 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
+import { doCandyTrick, shouldAugustCast } from "../resources";
+import { kramcoGuaranteed } from "../lib";
+import { wanderer } from "../garboWanderer";
 
 type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
   combatCount: () => number;
@@ -65,7 +69,7 @@ type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
 
 const DEFAULT_FREE_FIGHT_TASK = {
   // GarboTask
-  combat: new GarboStrategy(Macro.basicCombat()),
+  combat: new GarboStrategy(() => Macro.basicCombat()),
   outfit: freeFightOutfit,
   spendsTurn: false,
   // GarboFreeFightTask
@@ -90,7 +94,7 @@ function bestWitchessPiece() {
 const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 const valueDrops = (monster: Monster) =>
   sum(itemDropsArray(monster), ({ drop, rate, type }) =>
-    !["c", "0", "p"].includes(type) ? (garboValue(drop, true) * rate) / 100 : 0,
+    !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
   );
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 const locketsToSave = () =>
@@ -148,7 +152,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       get("ghostLocation") !== null,
     completed: () => get("questPAGhost") === "unstarted",
     do: () => get("ghostLocation"),
-    combat: new GarboStrategy(Macro.ghostBustin()),
+    combat: new GarboStrategy(() => Macro.ghostBustin()),
     outfit: () => freeFightOutfit({ back: $item`protonic accelerator pack` }),
     tentacle: true,
   },
@@ -159,6 +163,20 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       (get("_thesisDelivered") || !have($familiar`Pocket Professor`)),
     completed: () => get("_molehillMountainUsed"),
     do: () => use($item`molehill mountain`),
+    tentacle: true,
+  },
+  {
+    name: $skill`Aug. 8th: Cat Day!`.name,
+    ready: () => shouldAugustCast($skill`Aug. 8th: Cat Day!`),
+    completed: () => $skill`Aug. 8th: Cat Day!`.timescast > 0,
+    do: () => useSkill($skill`Aug. 8th: Cat Day!`),
+    tentacle: true,
+  },
+  {
+    name: $skill`Aug. 22nd: Tooth Fairy Day!`.name,
+    ready: () => shouldAugustCast($skill`Aug. 22nd: Tooth Fairy Day!`),
+    completed: () => $skill`Aug. 22nd: Tooth Fairy Day!`.timescast > 0,
+    do: () => useSkill($skill`Aug. 22nd: Tooth Fairy Day!`),
     tentacle: true,
   },
   {
@@ -219,7 +237,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       mallPrice($item`crappy waiter disguise`)
         ? [$effect`Crappily Disguised as a Waiter`]
         : [],
-    combat: new GarboStrategy(
+    combat: new GarboStrategy(() =>
       Macro.if_(
         $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`,
         // Using while_ here in case you run out of mp
@@ -249,7 +267,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       mallPrice($item`lynyrd snare`) <= globalOptions.prefs.valueOfFreeFight,
     completed: () => get("_lynyrdSnareUses") >= 3,
     do: () => use($item`lynyrd snare`),
-    combat: new GarboStrategy(Macro.basicCombat()),
+    combat: new GarboStrategy(() => Macro.basicCombat()),
     combatCount: () => clamp(3 - get("_lynyrdSnareUses"), 0, 3),
     tentacle: false,
   },
@@ -266,7 +284,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       visitUrl("inv_eat.php?pwd&whichitem=10207");
       runCombat();
     },
-    combat: new GarboStrategy(
+    combat: new GarboStrategy(() =>
       Macro.trySkill($skill`Curse of Marinara`)
         .trySkill($skill`Shell Up`)
         .trySkill($skill`Shadow Noodles`)
@@ -317,7 +335,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       visitUrl("inv_eat.php?pwd&whichitem=10207");
       runCombat();
     },
-    combat: new GarboStrategy(
+    combat: new GarboStrategy(() =>
       Macro.trySkill($skill`Curse of Marinara`)
         .trySkill($skill`Conspiratorial Whispers`)
         .trySkill($skill`Shadow Noodles`)
@@ -395,7 +413,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       retrieveItem(club);
       return freeFightOutfit({ weapon: club });
     },
-    combat: new GarboStrategy(
+    combat: new GarboStrategy(() =>
       Macro.startCombat()
         .trySkill($skill`Furious Wallop`)
         .while_(
@@ -418,11 +436,23 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     completed: () => get("_brickoFights") >= 10,
     do: () => use($item`BRICKO ooze`),
     outfit: () => freeFightOutfit({}, { canChooseMacro: false }),
-    combat: new GarboStrategy(Macro.basicCombat()),
+    combat: new GarboStrategy(() => Macro.basicCombat()),
     combatCount: () => clamp(10 - get("_brickoFights"), 0, 10),
     tentacle: false,
   },
-  // First kramco (wanderer)
+  {
+    name: "Kramco",
+    ready: () => have($item`Kramco Sausage-o-Matic™`),
+    completed: () => !kramcoGuaranteed(),
+    do: () =>
+      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false }),
+    outfit: () => freeFightOutfit({ offhand: $item`Kramco Sausage-o-Matic™` }),
+    choices: () =>
+      wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
+    combat: new GarboStrategy(() => Macro.basicCombat()),
+    combatCount: () => clamp(1 - get("_sausageFights"), 0, 1),
+    tentacle: true,
+  },
   // Grimacia
   // Saber
   // Pygmys
@@ -496,7 +526,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       }
     },
     choices: () => ({ 1119: 6 }), // escape DMT
-    combat: new GarboStrategy(
+    combat: new GarboStrategy(() =>
       Macro.externalIf(
         garboValue($item`abstraction: certainty`) >=
           garboValue($item`abstraction: thought`),
@@ -571,6 +601,19 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     tentacle: true,
     combatCount: () =>
       clamp(3 - CombatLoversLocket.reminiscesLeft() - locketsToSave(), 0, 3),
+  },
+  { ...doCandyTrick(), combatCount: () => 5, tentacle: true },
+  // leaf burning fights
+  {
+    name: "Burning Leaves Flaming Leaflet Fight",
+    ready: () =>
+      BurningLeaves.have() &&
+      BurningLeaves.numberOfLeaves() >=
+        (BurningLeaves.burnFor.get($monster`flaming leaflet`) ?? Infinity),
+    completed: () => get("_leafMonstersFought") >= 5,
+    do: () => BurningLeaves.burnSpecialLeaves($monster`flaming leaflet`),
+    tentacle: true,
+    combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
   },
   // li'l ninja costume
   // closed-circuit pay phone (make into it's own Quest)

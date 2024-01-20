@@ -1,34 +1,24 @@
 import {
   descToItem,
-  fileToBuffer,
   handlingChoice,
   Item,
   runChoice,
-  toItem,
   visitUrl,
 } from "kolmafia";
-import { $item, $items, gameDay, get, maxBy, set, sum, TrainSet } from "libram";
+import {
+  $item,
+  $items,
+  arrayEquals,
+  get,
+  maxBy,
+  set,
+  sum,
+  TrainSet,
+} from "libram";
 import { globalOptions } from "../config";
-import { GarboItemLists } from "../lib";
+import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
-
-function candyFactoryValue(): number {
-  const lastCalculated = new Date(get("garbo_candyFactoryValueDate", 0));
-  if (
-    !get("garbo_candyFactoryValue", 0) ||
-    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
-  ) {
-    const candyFactoryDrops = (
-      JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists
-    )["trainset"];
-    const averageDropValue =
-      sum(candyFactoryDrops, (name) => garboValue(toItem(name), true)) /
-      candyFactoryDrops.length;
-    set("garbo_candyFactoryValue", averageDropValue);
-    set("garbo_candyFactoryValueDate", gameDay().getTime());
-  }
-  return get("garbo_candyFactoryValue", 0);
-}
+import { estimatedGarboTurns } from "../turns";
 
 const GOOD_TRAIN_STATIONS = [
   { piece: TrainSet.Station.GAIN_MEAT, value: () => 900 },
@@ -109,8 +99,32 @@ function getRotatedCycle(): TrainSet.Cycle {
   return newPieces as TrainSet.Cycle;
 }
 
+export function trainNeedsRotating(): boolean {
+  if (!TrainSet.canConfigure()) return false;
+  if (!get("trainsetConfiguration")) {
+    // Visit the workshed to make sure it's actually empty, instead of us having not yet seen it this run
+    visitUrl("campground.php?action=workshed");
+    visitUrl("main.php");
+  }
+
+  if (!get("trainsetConfiguration")) return true;
+  if (arrayEquals(getRotatedCycle(), TrainSet.cycle())) return false;
+  if (globalOptions.ascend && estimatedGarboTurns() <= 40) return false;
+  const bestStations = getPrioritizedStations();
+  if (bestStations.includes(TrainSet.next())) return false;
+  return true;
+}
+
 export function rotateToOptimalCycle(): boolean {
-  return TrainSet.setConfiguration(getRotatedCycle());
+  const hasRotated = TrainSet.setConfiguration(getRotatedCycle());
+
+  // If the trainset was not configured but still claims to be configurable
+  if (!hasRotated && TrainSet.canConfigure()) {
+    // Set the trainset configuration to believe it'll be configurable in one turn
+    set("lastTrainsetConfiguration", get("trainsetPosition") - 39);
+  }
+
+  return hasRotated;
 }
 
 export function grabMedicine(): void {

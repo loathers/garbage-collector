@@ -19,6 +19,7 @@ import {
   Item,
   itemAmount,
   mallPrice,
+  myAscensions,
   myClass,
   myDaycount,
   myHash,
@@ -78,7 +79,7 @@ import {
   attemptCompletingBarfQuest,
   checkBarfQuest,
   checkVolcanoQuest,
-} from "../resources/realm";
+} from "../resources";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
@@ -348,6 +349,7 @@ const DailyTasks: GarboTask[] = [
     do: (): void => {
       visitUrl("guild.php?place=paco");
       if (handlingChoice()) runChoice(1);
+      visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
     },
     limit: { skip: 3 }, // Sometimes need to cycle through some dialogue
     spendsTurn: false,
@@ -358,6 +360,7 @@ const DailyTasks: GarboTask[] = [
     completed: floristAvailable,
     after: ["Daily/Unlock Woods"],
     do: () => {
+      visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
       visitUrl("place.php?whichplace=forestvillage&action=fv_friar");
       runChoice(4);
     },
@@ -367,13 +370,32 @@ const DailyTasks: GarboTask[] = [
     name: "Continuum Transfunctioner",
     ready: () => canAdventure($location`The Spooky Forest`),
     completed: () => have($item`continuum transfunctioner`),
+    after: ["Daily/Unlock Woods"],
     do: (): void => {
-      // taken from autoscend
-      visitUrl("place.php?whichplace=woods");
+      visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
       visitUrl("place.php?whichplace=forestvillage&action=fv_mystic");
       runChoice(1); // Sure, old man.  Tell me all about it
       runChoice(1); // Against my better judgement, yes
       runChoice(1); // Er, sure, I guess so
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Free Goofballs",
+    ready: () =>
+      canAdventure($location`The Spooky Forest`) &&
+      get("questL03Rat") !== "unstarted",
+    completed: () => get("lastGoofballBuy") === myAscensions(),
+    after: ["Daily/Unlock Woods"],
+    do: () => {
+      if (itemAmount($item`gloomy black mushroom`) > 0) {
+        putCloset(
+          itemAmount($item`gloomy black mushroom`),
+          $item`gloomy black mushroom`,
+        );
+      }
+      visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
+      visitUrl("tavern.php?action=buygoofballs");
     },
     spendsTurn: false,
   },
@@ -496,10 +518,17 @@ const DailyTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Daycare",
+    name: "Daycare Buff",
     ready: () => get("daycareOpen") || get("_daycareToday"),
     completed: () => get("_daycareSpa"),
     do: () => cliExecute("daycare mysticality"),
+    spendsTurn: false,
+  },
+  {
+    name: "Daycare Free Scavenge",
+    ready: () => get("daycareOpen") || get("_daycareToday"),
+    completed: () => get("_daycareGymScavenges") > 0,
+    do: () => cliExecute("daycare scavenge free"),
     spendsTurn: false,
   },
   {
@@ -542,14 +571,14 @@ const DailyTasks: GarboTask[] = [
     ready: () =>
       have($item`Clan VIP Lounge key`) &&
       getClanLounge()["Clan Carnival Game"] !== undefined &&
-      isOnline("CheeseFax") &&
+      isOnline("OnlyFax") &&
       Clan.getWhitelisted().find(
         (c) => c.name === "Bonus Adventures from Hell",
       ) !== undefined,
     completed: () => get("_clanFortuneConsultUses") >= 3,
     do: (): void => {
       Clan.with("Bonus Adventures from Hell", () =>
-        cliExecute(`fortune ${getPlayerId("CheeseFax")}`),
+        cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
       );
       wait(10);
     },

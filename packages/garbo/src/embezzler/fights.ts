@@ -51,7 +51,6 @@ import {
   Macro,
   withMacro,
 } from "../combat";
-import { shouldAugustCast } from "../resources";
 import {
   averageEmbezzlerNet,
   getUsingFreeBunnyBanish,
@@ -66,7 +65,8 @@ import {
   equipOrbIfDesired,
   gregReady,
   possibleGregCrystalBall,
-} from "../resources/extrovermectin";
+  shouldAugustCast,
+} from "../resources";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 
@@ -312,58 +312,42 @@ export const copySources = [
       (have($item`Rain-Doh box full of monster`) &&
         get("rainDohMonster") === globalOptions.target),
     () => {
-      const havePutty =
-        have($item`Spooky Putty sheet`) || have($item`Spooky Putty monster`);
-      const haveRainDoh =
-        have($item`Rain-Doh black box`) ||
-        have($item`Rain-Doh box full of monster`);
-      const puttyLocked =
-        have($item`Spooky Putty monster`) &&
-        get("spookyPuttyMonster") !== globalOptions.target;
-      const rainDohLocked =
-        have($item`Rain-Doh box full of monster`) &&
-        get("rainDohMonster") !== globalOptions.target;
+      const havePutty = have($item`Spooky Putty sheet`);
+      const havePuttyMonster = have($item`Spooky Putty monster`);
+      const haveRainDoh = have($item`Rain-Doh black box`);
+      const haveRainDohMonster = have($item`Rain-Doh box full of monster`);
 
-      if (havePutty && haveRainDoh) {
-        if (puttyLocked && rainDohLocked) return 0;
-        else if (puttyLocked) {
-          return (
-            5 -
-            get("_raindohCopiesMade") +
-            itemAmount($item`Rain-Doh box full of monster`)
-          );
-        } else if (rainDohLocked) {
-          return (
-            5 -
-            get("spookyPuttyCopiesMade") +
-            itemAmount($item`Spooky Putty monster`)
-          );
-        }
-        return (
-          6 -
-          get("spookyPuttyCopiesMade") -
-          get("_raindohCopiesMade") +
-          itemAmount($item`Spooky Putty monster`) +
-          itemAmount($item`Rain-Doh box full of monster`)
-        );
-      } else if (havePutty) {
-        if (puttyLocked) return 0;
-        return (
-          5 -
-          get("spookyPuttyCopiesMade") -
-          get("_raindohCopiesMade") +
-          itemAmount($item`Spooky Putty monster`)
-        );
-      } else if (haveRainDoh) {
-        if (rainDohLocked) return 0;
-        return (
-          5 -
-          get("spookyPuttyCopiesMade") -
-          get("_raindohCopiesMade") +
-          itemAmount($item`Rain-Doh box full of monster`)
-        );
+      const puttyUsed = get("spookyPuttyCopiesMade");
+      const rainDohUsed = get("_raindohCopiesMade");
+      const hardLimit = 6 - puttyUsed - rainDohUsed;
+      let monsterCount = 0;
+      let puttyLeft = 5 - puttyUsed;
+      let rainDohLeft = 5 - rainDohUsed;
+
+      if (!havePutty && !havePuttyMonster) {
+        puttyLeft = 0;
       }
-      return 0;
+      if (!haveRainDoh && !haveRainDohMonster) {
+        rainDohLeft = 0;
+      }
+
+      if (havePuttyMonster) {
+        if (get("spookyPuttyMonster") === globalOptions.target) {
+          monsterCount++;
+        } else {
+          puttyLeft = 0;
+        }
+      }
+      if (haveRainDohMonster) {
+        if (get("rainDohMonster") === globalOptions.target) {
+          monsterCount++;
+        } else {
+          rainDohLeft = 0;
+        }
+      }
+
+      const naiveLimit = Math.min(puttyLeft + rainDohLeft, hardLimit);
+      return naiveLimit + monsterCount;
     },
     (options: RunOptions) => {
       const macro = options.macro;
