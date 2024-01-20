@@ -98,9 +98,7 @@ const valueDrops = (monster: Monster) =>
   );
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 const locketsToSave = () =>
-  CombatLoversLocket.availableLocketMonsters().includes(
-    $monster`Knob Goblin Embezzler`,
-  )
+  CombatLoversLocket.availableLocketMonsters().includes(globalOptions.target)
     ? 1
     : 0;
 

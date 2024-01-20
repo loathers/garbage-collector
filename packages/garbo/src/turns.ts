@@ -10,7 +10,7 @@ import { $familiar, $item, clamp, get, have } from "libram";
 import { globalOptions } from "./config";
 // Dumb circular import stuff
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
-import { embezzlerCount } from "./embezzler";
+import { copyTargetCount } from "./embezzler";
 import {
   digitizedMonstersRemainingForTurns,
   ESTIMATED_OVERDRUNK_TURNS,
@@ -53,7 +53,7 @@ export function estimatedGarboTurns(): number {
   let turns;
   if (globalOptions.stopTurncount) {
     turns = globalOptions.stopTurncount - myTurncount();
-  } else if (globalOptions.nobarf) turns = embezzlerCount();
+  } else if (globalOptions.nobarf) turns = copyTargetCount();
   else if (globalOptions.saveTurns > 0 || !globalOptions.ascend) {
     turns =
       (myAdventures() +

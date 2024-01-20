@@ -117,9 +117,9 @@ import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 import {
-  embezzlerCount,
-  embezzlerSources,
-  getNextEmbezzlerFight,
+  copyTargetCount,
+  copyTargetSources,
+  getNextCopyTargetFight,
 } from "./embezzler";
 import {
   bestMidnightAvailable,
@@ -185,11 +185,11 @@ import { PostQuest } from "./tasks/post";
 
 const firstChainMacro = () =>
   Macro.if_(
-    $monster`Knob Goblin Embezzler`,
+    globalOptions.target,
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.externalIf(
-        SourceTerminal.getDigitizeMonster() !== $monster`Knob Goblin Embezzler`,
+        SourceTerminal.getDigitizeMonster() !== globalOptions.target,
         Macro.tryCopier($skill`Digitize`),
       )
         .tryCopier($item`Spooky Putty sheet`)
@@ -207,7 +207,7 @@ const firstChainMacro = () =>
 
 const secondChainMacro = () =>
   Macro.if_(
-    $monster`Knob Goblin Embezzler`,
+    globalOptions.target,
     Macro.if_(
       "!hasskill Lecture on Relativity",
       Macro.trySkill($skill`Meteor Shower`),
@@ -215,8 +215,7 @@ const secondChainMacro = () =>
       .if_(
         "!hasskill Lecture on Relativity",
         Macro.externalIf(
-          get("_sourceTerminalDigitizeMonster") !==
-            $monster`Knob Goblin Embezzler`,
+          get("_sourceTerminalDigitizeMonster") !== globalOptions.target,
           Macro.tryCopier($skill`Digitize`),
         )
           .tryCopier($item`Spooky Putty sheet`)
@@ -236,7 +235,7 @@ function embezzlerSetup() {
   setLocation($location`Friar Ceremony Location`);
   potionSetup(false);
   maximize("MP", false);
-  meatMood(true, 750 + baseMeat).execute(embezzlerCount());
+  meatMood(true, 750 + baseMeat).execute(copyTargetCount());
   safeRestore();
   freeFightMood().execute(50);
   useBuffExtenders();
@@ -259,7 +258,7 @@ function embezzlerSetup() {
     }
   }
 
-  bathroomFinance(embezzlerCount());
+  bathroomFinance(copyTargetCount());
 
   if (SourceTerminal.have()) {
     SourceTerminal.educate([$skill`Extract`, $skill`Digitize`]);
@@ -346,7 +345,7 @@ function embezzlerSetup() {
 }
 
 function startWandererCounter() {
-  const nextFight = getNextEmbezzlerFight();
+  const nextFight = getNextCopyTargetFight();
   if (
     !nextFight ||
     nextFight.canInitializeWandererCounters ||
@@ -385,9 +384,7 @@ function startWandererCounter() {
       }
       garboAdventure(
         $location`The Haunted Kitchen`,
-        Macro.if_($monster`Knob Goblin Embezzler`, Macro.embezzler()).step(
-          run.macro,
-        ),
+        Macro.if_(globalOptions.target, Macro.embezzler()).step(run.macro),
       );
     } while (
       get("lastCopyableMonster") === $monster`Government agent` ||
@@ -414,13 +411,13 @@ export function dailyFights(): void {
     cliExecute("fold spooky putty sheet");
   }
 
-  // Fax an embezzler before starting, to prevent an abort in case the faxbot networks are down
-  faxMonster($monster`Knob Goblin Embezzler`);
+  // Fax the copy target before starting, to prevent an abort in case the faxbot networks are down
+  faxMonster(globalOptions.target);
 
-  if (embezzlerSources.some((source) => source.potential())) {
+  if (copyTargetSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
-      // check if user wants to wish for embezzler before doing setup
-      if (!getNextEmbezzlerFight()) return;
+      // check if user wants to wish for the copy target before doing setup
+      if (!getNextCopyTargetFight()) return;
       embezzlerSetup();
 
       // PROFESSOR COPIES
@@ -444,7 +441,7 @@ export function dailyFights(): void {
 
         for (const potentialLecture of potentialPocketProfessorLectures) {
           const { property, macro, goalMaximize } = potentialLecture;
-          const fightSource = getNextEmbezzlerFight();
+          const fightSource = getNextCopyTargetFight();
           if (!fightSource) return;
           if (get(property, false)) continue;
 
@@ -484,10 +481,10 @@ export function dailyFights(): void {
               macro: macro(),
               useAuto: false,
             });
-            eventLog.initialEmbezzlersFought +=
+            eventLog.initialCopyTargetsFought +=
               1 + get("_pocketProfessorLectures") - startLectures;
-            eventLog.embezzlerSources.push(fightSource.name);
-            eventLog.embezzlerSources.push(
+            eventLog.copyTargetSources.push(fightSource.name);
+            eventLog.copyTargetSources.push(
               ...new Array<string>(
                 get("_pocketProfessorLectures") - startLectures,
               ).fill("Pocket Professor"),
@@ -495,7 +492,7 @@ export function dailyFights(): void {
           }
           set(property, true);
           postCombatActions();
-          const predictedNextFight = getNextEmbezzlerFight();
+          const predictedNextFight = getNextCopyTargetFight();
           if (!predictedNextFight?.draggable) doSausage();
           doGhost();
           startWandererCounter();
@@ -505,7 +502,7 @@ export function dailyFights(): void {
       useFamiliar(meatFamiliar());
 
       // REMAINING EMBEZZLER FIGHTS
-      let nextFight = getNextEmbezzlerFight();
+      let nextFight = getNextCopyTargetFight();
       while (nextFight !== null && myAdventures()) {
         print(`Running fight ${nextFight.name}`);
         const startTurns = totalTurnsPlayed();
@@ -557,15 +554,15 @@ export function dailyFights(): void {
         print(`Finished ${nextFight.name}`);
         if (
           totalTurnsPlayed() - startTurns === 1 &&
-          get("lastCopyableMonster") === $monster`Knob Goblin Embezzler` &&
+          get("lastCopyableMonster") === globalOptions.target &&
           (nextFight.wrongEncounterName ||
-            get("lastEncounter") === "Knob Goblin Embezzler")
+            get("lastEncounter") === globalOptions.target.name)
         ) {
-          eventLog.initialEmbezzlersFought++;
-          eventLog.embezzlerSources.push(nextFight.name);
+          eventLog.initialCopyTargetsFought++;
+          eventLog.copyTargetSources.push(nextFight.name);
         }
 
-        nextFight = getNextEmbezzlerFight();
+        nextFight = getNextCopyTargetFight();
 
         if (
           romanticMonsterImpossible() &&
