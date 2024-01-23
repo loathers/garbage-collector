@@ -13,7 +13,6 @@ import {
   outfitPieces,
   runChoice,
   totalTurnsPlayed,
-  toUrl,
   use,
   useSkill,
   visitUrl,
@@ -73,16 +72,6 @@ import {
   tryFillLatte,
 } from "../resources";
 import { acquire } from "../acquire";
-
-const steveAdventures: Map<Location, number[]> = new Map([
-  [$location`The Haunted Bedroom`, [1, 3, 1]],
-  [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
-  [$location`The Haunted Conservatory`, [1, 2, 2]],
-  [$location`The Haunted Billiards Room`, [1, 2, 2]],
-  [$location`The Haunted Wine Cellar`, [1, 2, 2, 3]],
-  [$location`The Haunted Boiler Room`, [1, 2, 2]],
-  [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
-]);
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -395,18 +384,7 @@ const BarfTurnTasks: GarboTask[] = [
       get("nextSpookyravenStephenRoom") !== get("ghostLocation") &&
       totalTurnsPlayed() % 37 === 0,
     completed: () => totalTurnsPlayed() === get("lastLightsOutTurn"),
-    do: () => {
-      const steveRoom = get("nextSpookyravenStephenRoom");
-      if (steveRoom && canAdventure(steveRoom)) {
-        const plan = steveAdventures.get(steveRoom);
-        if (plan) {
-          visitUrl(toUrl(steveRoom));
-          for (const choiceValue of plan) {
-            runChoice(choiceValue);
-          }
-        }
-      }
-    },
+    do: () => get("nextSpookyravenStephenRoom") as Location,
     outfit: () =>
       embezzlerOutfit(sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
     spendsTurn: isSteve,
