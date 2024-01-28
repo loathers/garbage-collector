@@ -881,7 +881,7 @@ export const emergencyChainStarters = [
     () => {
       const potential = Math.floor(copyTargetCount());
       if (potential < 1) return false;
-      if (globalOptions.target !== $monster`Knob Goblin Embezzler`) {
+      if (globalOptions.target === $monster`Knob Goblin Embezzler`) {
         if (!canAdventure($location`Cobb's Knob Treasury`)) {
           return false;
         }
