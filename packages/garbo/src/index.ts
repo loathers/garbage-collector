@@ -401,6 +401,7 @@ export function main(argString = ""): void {
       afterAdventureScript: "",
       betweenBattleScript: "",
       choiceAdventureScript: "",
+      recoveryScript: "",
       counterScript: "",
       familiarScript: "",
       currentMood: "apathetic",
