@@ -30380,7 +30380,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("85c23872c0766e8ae75a7eb4b2be8ba7679aff15", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b53a059e6765a90b18bf3f21984f1fa0700ba6c2", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -38175,14 +38175,14 @@ function copyTargetConfirmInvocation(msg) {
 var emergencyChainStarters = [
   // These are very deliberately the last copy target fights.
   new CopyTargetFight("11-leaf clover (untapped potential)", function() {
+    if (globalOptions.target !== $monster(_templateObject1083 || (_templateObject1083 = _taggedTemplateLiteral94(["Knob Goblin Embezzler"])))) {
+      return false;
+    }
+    if (!(0, import_kolmafia105.canAdventure)($location(_templateObject1093 || (_templateObject1093 = _taggedTemplateLiteral94(["Cobb's Knob Treasury"])))))
+      return false;
     var potential = Math.floor(copyTargetCount());
     if (potential < 1)
       return false;
-    if (globalOptions.target !== $monster(_templateObject1083 || (_templateObject1083 = _taggedTemplateLiteral94(["Knob Goblin Embezzler"])))) {
-      if (!(0, import_kolmafia105.canAdventure)($location(_templateObject1093 || (_templateObject1093 = _taggedTemplateLiteral94(["Cobb's Knob Treasury"]))))) {
-        return false;
-      }
-    }
     if (get("_genieFightsUsed") < 3 && (0, import_kolmafia105.mallPrice)($item(_templateObject1103 || (_templateObject1103 = _taggedTemplateLiteral94(["11-leaf clover"])))) >= WISH_VALUE) {
       return false;
     }
