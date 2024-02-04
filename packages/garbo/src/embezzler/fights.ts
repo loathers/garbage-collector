@@ -881,7 +881,7 @@ export const emergencyChainStarters = [
     () => {
       // We don't want to clover if we're not targetting an embezzler, so bail early
       if (globalOptions.target !== $monster`Knob Goblin Embezzler`) return false;
-      if (!canAdventure($location`Knob Goblin Treasury`)) return false;
+      if (!canAdventure($location`Cobb's Knob Treasury`)) return false;
       const potential = Math.floor(copyTargetCount());
       if (potential < 1) return false;
       // Don't use clovers if wishes are available and cheaper
