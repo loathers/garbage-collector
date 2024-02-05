@@ -289,6 +289,7 @@ export function main(argString = ""): void {
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
       shadowLabyrinthGoal: "effects",
+      lightsOutAutomation: 1,
     });
     runDiet();
     propertyManager.resetAll();
