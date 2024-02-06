@@ -1,10 +1,13 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
-import { $item, $items, get } from "libram";
+import { $item, $items, $monster, get } from "libram";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
-  { item: $item`Asdon Martin keyfob`, aliases: ["breadcar", "car", "aston"] },
+  {
+    item: $item`Asdon Martin keyfob (on ring)`,
+    aliases: ["breadcar", "car", "aston"],
+  },
   { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dnalab"] },
 ];
 const unaliasedSheds = $items`cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
@@ -114,6 +117,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: 'terminate after the specified number of turns, e.g. "garbo 200" or "garbo turns=200" will terminate after 200 turns are spent. Negative inputs will cause garbo to terminate when the specified number of turns remain.',
       default: 0,
+    }),
+    target: Args.monster({
+      setting: "",
+      help: "The monster to use all copies on",
+      default: $monster`Knob Goblin Embezzler`,
+      hidden: true,
     }),
     version: Args.flag({
       setting: "",

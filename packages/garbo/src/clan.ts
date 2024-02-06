@@ -25,7 +25,6 @@ import {
   $familiar,
   $item,
   $items,
-  $monster,
   Clan,
   get,
   getFoldGroup,
@@ -166,7 +165,7 @@ export class StashManager {
         "In fight, trying to get away to return items to stash...",
         HIGHLIGHT,
       );
-      Macro.if_($monster`Knob Goblin Embezzler`, Macro.attack().repeat())
+      Macro.if_(globalOptions.target, Macro.attack().repeat())
         .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
         .step("runaway")
         .submit();

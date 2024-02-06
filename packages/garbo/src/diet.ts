@@ -48,7 +48,6 @@ import {
   $familiar,
   $item,
   $items,
-  $monster,
   $skill,
   clamp,
   Diet,
@@ -70,7 +69,7 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { embezzlerCount } from "./embezzler";
+import { copyTargetCount } from "./embezzler";
 import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
   arrayEquals,
@@ -438,7 +437,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`frozen banquet`),
     new MenuItem($item`deviled egg`),
     new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
-    new MenuItem($item`extra-greasy slider`),
+    new MenuItem($item`extra-greasy slider`, { maximum: 1 }),
     new MenuItem(mallMin(lasagnas)),
     new MenuItem(mallMin(smallEpics)),
     new MenuItem($item`green hamhock`),
@@ -458,7 +457,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`splendid martini`),
     new MenuItem($item`low tide martini`),
     new MenuItem($item`Eye and a Twist`),
-    new MenuItem($item`jar of fermented pickle juice`),
+    new MenuItem($item`jar of fermented pickle juice`, { maximum: 1 }),
     new MenuItem(mallMin(complexMushroomWines)),
     new MenuItem(mallMin(perfectDrinks)),
     new MenuItem($item`green eggnog`),
@@ -566,7 +565,7 @@ function gregariousCount(): {
   const gregariousCharges =
     get("beGregariousCharges") +
     (get("beGregariousFightsLeft") > 0 &&
-    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+    get("beGregariousMonster") === globalOptions.target
       ? 1
       : 0);
   const gregariousFightsPerCharge = expectedGregs("extro");
@@ -609,7 +608,7 @@ function copiers(): MenuItem<Note>[] {
 
 function countCopies(diet: Diet<Note>): number {
   // this only counts the copies not yet realized
-  // any copies already realized will be properly counted by embezzlerCount
+  // any copies already realized will be properly counted by copyTargetCount
 
   // returns an array of expected counts for number of greg copies to fight per pill use
   // the last value is how much you expect to fight per pill
@@ -825,7 +824,7 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseEmbezzlers = embezzlerCount();
+  const baseEmbezzlers = copyTargetCount();
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -939,7 +938,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
     (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
   );
 
-  const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
+  const embezzlers = Math.floor(copyTargetCount() + countCopies(diet));
   const adventures = Math.floor(
     estimatedGarboTurns() + diet.expectedAdventures(),
   );

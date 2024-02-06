@@ -146,7 +146,7 @@ export class WandererManager {
       [$location`The Haunted Laboratory`, { 884: 6 }],
       [$location`The Haunted Nursery`, { 885: 6 }],
       [$location`The Haunted Storage Room`, { 886: 6 }],
-      [$location`The Haunted Ballroom`, { 106: 3, 90: this.quartetChoice }], // Skip, and Choose currently playing song, or skip
+      [$location`The Haunted Ballroom`, { 90: 3, 106: this.quartetChoice }], // Skip, and Choose currently playing song, or skip
       [$location`The Haunted Library`, { 163: 4, 888: 5, 889: 5 }],
       [$location`The Haunted Gallery`, { 89: 6, 91: 2 }],
       [$location`The Hidden Park`, { 789: 6 }],

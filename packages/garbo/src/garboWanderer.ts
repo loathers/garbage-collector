@@ -4,10 +4,10 @@ import { WandererManager } from "garbo-lib";
 import { globalOptions } from "./config";
 import { freeFightFamiliarData } from "./familiar/freeFightFamiliar";
 import { estimatedGarboTurns } from "./turns";
-import { $item, $location, $monster, $monsters, get, have } from "libram";
+import { $item, $location, $monsters, get, have } from "libram";
 import { garboValue } from "./garboValue";
 import { Potion } from "./potions";
-import { embezzlerCount } from "./embezzler/fights";
+import { copyTargetCount } from "./embezzler/fights";
 import { digitizedMonstersRemainingForTurns } from "./lib";
 
 let _wanderer: WandererManager | undefined;
@@ -18,13 +18,13 @@ export function wanderer(): WandererManager {
       estimatedTurns: estimatedGarboTurns,
       itemValue: garboValue,
       effectValue: (effect: Effect, duration: number) =>
-        new Potion($item.none, { effect, duration }).gross(embezzlerCount()),
+        new Potion($item.none, { effect, duration }).gross(copyTargetCount()),
       prioritizeCappingGuzzlr: get("garbo_prioritizeCappingGuzzlr", false),
       freeFightExtraValue: (location: Location) =>
         freeFightFamiliarData({ location }).expectedValue,
       digitzesRemaining: digitizedMonstersRemainingForTurns,
       plentifulMonsters: [
-        $monster`Knob Goblin Embezzler`,
+        globalOptions.target,
         ...(globalOptions.nobarf ? [] : getMonsters($location`Barf Mountain`)),
         ...(have($item`Kramco Sausage-o-Matic™`)
           ? $monsters`sausage goblin`

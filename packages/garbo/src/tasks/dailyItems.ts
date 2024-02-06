@@ -2,15 +2,19 @@ import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   abort,
   buy,
+  canAdventure,
+  canEquip,
   cliExecute,
   getCampground,
   getClanLounge,
   getMonsters,
+  inebrietyLimit,
   Item,
   itemDropsArray,
   itemPockets,
   mallPrice,
   meatPockets,
+  myInebriety,
   pickedPockets,
   pocketItems,
   pocketMeat,
@@ -27,6 +31,7 @@ import {
   $coinmaster,
   $item,
   $items,
+  $location,
   $skill,
   $skills,
   BurningLeaves,
@@ -42,7 +47,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { copyTargetCount } from "../embezzler";
 import { coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -433,11 +438,43 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
+    name: "Wardrobe-o-Matic",
+    ready: () => have($item`wardrobe-o-matic`),
+    completed: () => have($item`futuristic shirt`),
+    do: () => use($item`wardrobe-o-matic`),
+    limit: { skip: 1 },
+    spendsTurn: false,
+  },
+  {
+    name: "Candy cane sword cane Shrine Meat",
+    ready: () =>
+      have($item`candy cane sword cane`) &&
+      canAdventure($location`An Overgrown Shrine (Northeast)`) &&
+      (!(myInebriety() > inebrietyLimit()) ||
+        (have($item`Drunkula's wineglass`) &&
+          canEquip($item`Drunkula's wineglass`))),
+    completed: () => get("_candyCaneSwordOvergrownShrine", true),
+    do: () => {
+      visitUrl("adventure.php?snarfblat=348");
+      runChoice(4);
+      runChoice(6);
+    },
+    outfit: () => ({
+      weapon: $item`candy cane sword cane`,
+      offhand:
+        myInebriety() > inebrietyLimit()
+          ? $item`Drunkula's wineglass`
+          : undefined,
+    }),
+    limit: { skip: 3 },
+    spendsTurn: false,
+  },
+  {
     name: "Clear Existing Rufus Quest",
     completed: () =>
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
     do: (): void => {
-      const value = rufusPotion.value(embezzlerCount());
+      const value = rufusPotion.value(copyTargetCount());
       const price = rufusPotion.price(false);
       _shouldClearRufusQuest = value.some(
         (value) =>

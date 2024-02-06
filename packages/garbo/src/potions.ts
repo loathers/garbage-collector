@@ -61,7 +61,7 @@ import {
   turnsToNC,
   withLocation,
 } from "./lib";
-import { embezzlerCount } from "./embezzler";
+import { copyTargetCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
@@ -705,7 +705,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
-    const embezzlers = embezzlerCount();
+    const embezzlers = copyTargetCount();
 
     if (
       have($item`Eight Days a Week Pill Keeper`) &&
