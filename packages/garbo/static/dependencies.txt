@@ -1,7 +1,7 @@
 github Ezandora/Bastille
 github Ezandora/Briefcase
-github Ezandora/Gain
-github Ezandora/Far-Future
 github Ezandora/Detective-Solver
-github Loathing-Associates-Scripting-Society/KoL-MineVolcano
+github Ezandora/Far-Future
+github Ezandora/Gain
 github Loathing-Associates-Scripting-Society/combo release
+github Loathing-Associates-Scripting-Society/KoL-MineVolcano
