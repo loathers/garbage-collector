@@ -28,7 +28,7 @@ import { garboAdventure, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
-import { embezzlerCount } from "../embezzler";
+import { copyTargetCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
 import { baseMeat, eventLog, propertyManager, safeRestore } from "../lib";
 import { meatMood } from "../mood";
@@ -51,7 +51,7 @@ function _yachtzeeChain(): void {
   if (!realmAvailable("sleaze")) return;
 
   maximize("MP", false);
-  meatMood(false, 750 + baseMeat).execute(embezzlerCount());
+  meatMood(false, 750 + baseMeat).execute(copyTargetCount());
   potionSetup(globalOptions.nobarf); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();
@@ -133,7 +133,12 @@ function _yachtzeeChain(): void {
         useSkill($skill`The Polka of Plenty`);
       }
     }
-    garboAdventure($location`The Sunken Party Yacht`, Macro.abort());
+    garboAdventure(
+      $location`The Sunken Party Yacht`,
+      Macro.abortWithMsg(
+        "We tried to Yachtzee it up, but are in a fight instad!",
+      ),
+    );
     if (get("lastEncounter") === "Yachtzee!") eventLog.yachtzees += 1;
     if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
       fishyTurns -= 1;

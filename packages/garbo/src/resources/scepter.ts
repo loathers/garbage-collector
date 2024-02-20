@@ -1,4 +1,14 @@
 import {
+  canAdventure,
+  canEquip,
+  Item,
+  myLevel,
+  myMeat,
+  Skill,
+  toSlot,
+  useSkill,
+} from "kolmafia";
+import {
   $effect,
   $familiar,
   $item,
@@ -13,26 +23,16 @@ import {
   have,
 } from "libram";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { copyTargetCount } from "../embezzler";
+import { garboAverageValue, garboValue } from "../garboValue";
 import { EMBEZZLER_MULTIPLIER } from "../lib";
 import { Potion } from "../potions";
-import { garboAverageValue, garboValue } from "../garboValue";
-import {
-  canAdventure,
-  canEquip,
-  Item,
-  myLevel,
-  myMeat,
-  Skill,
-  toSlot,
-  useSkill,
-} from "kolmafia";
 import { GarboTask } from "../tasks/engine";
 
 type ScepterSkill = {
   skill: Skill;
   value: () => number;
-  type: "special" | "summon" | "buff";
+  type: "special" | "summon" | "buff" | "fight";
 };
 const SKILL_OPTIONS: ScepterSkill[] = [
   // August 1 deliberately omitted; does not trigger on monster replacers
@@ -69,8 +69,13 @@ const SKILL_OPTIONS: ScepterSkill[] = [
       new Potion($item`august scepter`, {
         effect: $effect`Incredibly Well Lit`,
         duration: 30,
-      }).gross(embezzlerCount()), // TODO: Yachtzee
+      }).gross(copyTargetCount()), // TODO: Yachtzee
     type: "buff",
+  },
+  {
+    skill: $skill`Aug. 8th: Cat Day!`,
+    value: () => globalOptions.prefs.valueOfFreeFight,
+    type: "fight",
   },
   {
     skill: $skill`Aug. 13th: Left/Off Hander's Day!`,
@@ -79,7 +84,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
         effect: $effect`Offhand Remarkable`,
         duration: 30,
         effectValues: { meatDrop: 80 }, // Half a purse
-      }).gross(embezzlerCount()) +
+      }).gross(copyTargetCount()) +
       (globalOptions.ascend
         ? 0
         : (5 + (have($familiar`Left-Hand Man`) ? 5 : 0)) *
@@ -100,6 +105,11 @@ const SKILL_OPTIONS: ScepterSkill[] = [
     skill: $skill`Aug. 18th: Serendipity Day!`,
     value: () => 3000, // Dummy value; we should some day calculate this based on free fight count, careful to avoid circular imports
     type: "buff",
+  },
+  {
+    skill: $skill`Aug. 22nd: Tooth Fairy Day!`,
+    value: () => globalOptions.prefs.valueOfFreeFight,
+    type: "fight",
   },
   {
     skill: $skill`Aug. 24th: Waffle Day!`,
@@ -169,7 +179,9 @@ export function shouldAugustCast(skill: Skill) {
     ((getBestScepterSkills().some((s) => skill === s.skill) &&
       skill.dailylimit &&
       get("_augSkillsCast") < 5) ||
-      (AugustScepter.todaysSkill() === skill && !AugustScepter.getTodayCast()))
+      (AugustScepter.todaysSkill() === skill &&
+        !AugustScepter.getTodayCast() &&
+        skill.dailylimit >= 1))
   );
 }
 

@@ -48,7 +48,6 @@ import {
   $familiar,
   $item,
   $items,
-  $monster,
   $skill,
   clamp,
   Diet,
@@ -70,8 +69,8 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { embezzlerCount } from "./embezzler";
-import { expectedGregs } from "./resources/extrovermectin";
+import { copyTargetCount } from "./embezzler";
+import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
   arrayEquals,
   baseMeat,
@@ -81,10 +80,8 @@ import {
 } from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
-import synthesize from "./resources/synthesis";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./garboValue";
-import { shouldAugustCast } from "./resources";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -276,6 +273,21 @@ export function nonOrganAdventures(): void {
   if (globalOptions.ascend) {
     useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 20 * MPA);
   }
+
+  if (get("_extraTimeUsed", 3) < 3) {
+    const extraTimeValue = (timesUsed: number): number => {
+      const advs = [1, 3, 5][3 - timesUsed];
+      return advs * MPA;
+    };
+    const extraTimeRemaining = 2 - get("_extraTimeUsed", 3);
+    for (let i = extraTimeRemaining; i > 0; i--) {
+      if (extraTimeValue(i) > mallPrice($item`extra time`)) {
+        if (acquire(1, $item`extra time`, extraTimeValue(i), false)) {
+          use($item`extra time`);
+        }
+      } else break;
+    }
+  }
 }
 
 function pillCheck(): void {
@@ -425,7 +437,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`frozen banquet`),
     new MenuItem($item`deviled egg`),
     new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
-    new MenuItem($item`extra-greasy slider`),
+    new MenuItem($item`extra-greasy slider`, { maximum: 1 }),
     new MenuItem(mallMin(lasagnas)),
     new MenuItem(mallMin(smallEpics)),
     new MenuItem($item`green hamhock`),
@@ -443,8 +455,9 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`Sacramento wine`),
     new MenuItem($item`iced plum wine`),
     new MenuItem($item`splendid martini`),
+    new MenuItem($item`low tide martini`),
     new MenuItem($item`Eye and a Twist`),
-    new MenuItem($item`jar of fermented pickle juice`),
+    new MenuItem($item`jar of fermented pickle juice`, { maximum: 1 }),
     new MenuItem(mallMin(complexMushroomWines)),
     new MenuItem(mallMin(perfectDrinks)),
     new MenuItem($item`green eggnog`),
@@ -468,6 +481,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(Mayo.flex),
     new MenuItem(Mayo.zapine),
     new MenuItem($item`Special Seasoning`),
+    new MenuItem($item`whet stone`),
     new MenuItem(saladFork),
     new MenuItem(frostyMug),
     new MenuItem($item`mojo filter`),
@@ -551,7 +565,7 @@ function gregariousCount(): {
   const gregariousCharges =
     get("beGregariousCharges") +
     (get("beGregariousFightsLeft") > 0 &&
-    get("beGregariousMonster") === $monster`Knob Goblin Embezzler`
+    get("beGregariousMonster") === globalOptions.target
       ? 1
       : 0);
   const gregariousFightsPerCharge = expectedGregs("extro");
@@ -594,7 +608,7 @@ function copiers(): MenuItem<Note>[] {
 
 function countCopies(diet: Diet<Note>): number {
   // this only counts the copies not yet realized
-  // any copies already realized will be properly counted by embezzlerCount
+  // any copies already realized will be properly counted by copyTargetCount
 
   // returns an array of expected counts for number of greg copies to fight per pill use
   // the last value is how much you expect to fight per pill
@@ -810,7 +824,7 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseEmbezzlers = embezzlerCount();
+  const baseEmbezzlers = copyTargetCount();
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -886,9 +900,12 @@ export function computeDiet(): {
           menu().filter(
             (menuItem) =>
               (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
-              [Mayo.flex, Mayo.zapine, $item`Special Seasoning`].includes(
-                menuItem.item,
-              ),
+              [
+                Mayo.flex,
+                Mayo.zapine,
+                $item`Special Seasoning`,
+                $item`whet stone`,
+              ].includes(menuItem.item),
           ),
           pantsgivingDietPlanner,
         ),
@@ -921,7 +938,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
     (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
   );
 
-  const embezzlers = Math.floor(embezzlerCount() + countCopies(diet));
+  const embezzlers = Math.floor(copyTargetCount() + countCopies(diet));
   const adventures = Math.floor(
     estimatedGarboTurns() + diet.expectedAdventures(),
   );

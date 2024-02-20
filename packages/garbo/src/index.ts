@@ -29,7 +29,6 @@ import {
   toInt,
   use,
   visitUrl,
-  xpath,
 } from "kolmafia";
 import {
   $class,
@@ -60,12 +59,14 @@ import {
   allMallPrices,
   bestJuneCleaverOption,
   checkGithubVersion,
+  getCombatFlags,
   HIGHLIGHT,
   printEventLog,
   printLog,
   propertyManager,
   questStep,
   safeRestore,
+  setCombatFlags,
   userConfirmDialog,
 } from "./lib";
 import { meatMood, useBuffExtenders } from "./mood";
@@ -74,7 +75,12 @@ import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
-import { BarfTurnQuest, runGarboQuests } from "./tasks";
+import {
+  BarfTurnQuests,
+  PostQuest,
+  runGarboQuests,
+  SetupEmbezzlerQuest,
+} from "./tasks";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -96,9 +102,16 @@ function ensureBarfAccess() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27640);
+  sinceKolmafiaRevision(27668);
   checkGithubVersion();
-  allMallPrices();
+
+  Args.fill(globalOptions, argString);
+  globalOptions.prefs.yachtzeechain = false;
+  if (globalOptions.version) return; // Since we always print the version, all done!
+  if (globalOptions.help) {
+    Args.showHelp(globalOptions);
+    return;
+  }
 
   // Hit up main.php to get out of easily escapable choices
   visitUrl("main.php");
@@ -113,13 +126,7 @@ export function main(argString = ""): void {
     );
   }
 
-  Args.fill(globalOptions, argString);
-  globalOptions.prefs.yachtzeechain = false;
-  if (globalOptions.version) return; // Since we always print the version, all done!
-  if (globalOptions.help) {
-    Args.showHelp(globalOptions);
-    return;
-  }
+  allMallPrices();
 
   if (globalOptions.turns) {
     if (globalOptions.turns >= 0) {
@@ -282,6 +289,7 @@ export function main(argString = ""): void {
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
       shadowLabyrinthGoal: "effects",
+      lightsOutAutomation: 1,
     });
     runDiet();
     propertyManager.resetAll();
@@ -311,13 +319,7 @@ export function main(argString = ""): void {
     }
   }
 
-  const aaBossFlag =
-    xpath(
-      visitUrl("account.php?tab=combat"),
-      `//*[@id="opt_flag_aabosses"]/label/input[@type='checkbox']@checked`,
-    )[0] === "checked"
-      ? 1
-      : 0;
+  const combatFlags = getCombatFlags("aabosses", "bothcombatinterf");
 
   try {
     print("Collecting garbage!", HIGHLIGHT);
@@ -338,9 +340,9 @@ export function main(argString = ""): void {
     }
 
     setAutoAttack(0);
-    visitUrl(
-      `account.php?actions[]=flag_aabosses&flag_aabosses=1&action=Update`,
-      true,
+    setCombatFlags(
+      { flag: "aaBossFlag", value: true },
+      { flag: "bothcombatinterf", value: false },
     );
 
     const maximizerCombinationLimit = isQuickGear()
@@ -531,6 +533,7 @@ export function main(argString = ""): void {
 
         // 2. do some embezzler stuff
         freeFights();
+        runGarboQuests([SetupEmbezzlerQuest]);
         yachtzeeChain();
         dailyFights();
 
@@ -541,7 +544,7 @@ export function main(argString = ""): void {
           meatMood().execute(estimatedGarboTurns());
           useBuffExtenders();
           try {
-            runGarboQuests([BarfTurnQuest]);
+            runGarboQuests([PostQuest(), ...BarfTurnQuests]);
 
             // buy one-day tickets with FunFunds if user desires
             if (
@@ -568,10 +571,7 @@ export function main(argString = ""): void {
       "garboStashItems",
       stashItems.map((item) => toInt(item).toFixed(0)).join(","),
     );
-    visitUrl(
-      `account.php?actions[]=flag_aabosses&flag_aabosses=${aaBossFlag}&action=Update`,
-      true,
-    );
+    setCombatFlags(...combatFlags);
     if (startingGarden && have(startingGarden)) use(startingGarden);
     printEventLog();
     endSession();

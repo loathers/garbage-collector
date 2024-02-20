@@ -10,9 +10,9 @@ import {
   myInebriety,
   myLevel,
   myTurncount,
+  outfitPieces,
   runChoice,
   totalTurnsPlayed,
-  toUrl,
   use,
   useSkill,
   visitUrl,
@@ -31,9 +31,12 @@ import {
   ensureEffect,
   get,
   getModifier,
+  GingerBread,
   have,
   questStep,
+  set,
   SourceTerminal,
+  sum,
   undelay,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
@@ -43,12 +46,10 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
-  embezzler,
   EMBEZZLER_MULTIPLIER,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
   romanticMonsterImpossible,
-  setChoice,
   sober,
 } from "../lib";
 import {
@@ -56,8 +57,6 @@ import {
   embezzlerOutfit,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
-  latteFilled,
-  tryFillLatte,
   waterBreathingEquipment,
 } from "../outfit";
 import { digitizedMonstersRemaining } from "../turns";
@@ -65,23 +64,21 @@ import { deliverThesisIfAble } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
 
 import { GarboTask } from "./engine";
-import { completeBarfQuest } from "../resources/realm";
 import { trackMarginalMpa, trackMarginalTurnExtraValue } from "../session";
-
-const steveAdventures: Map<Location, number[]> = new Map([
-  [$location`The Haunted Bedroom`, [1, 3, 1]],
-  [$location`The Haunted Nursery`, [1, 2, 2, 1, 1]],
-  [$location`The Haunted Conservatory`, [1, 2, 2]],
-  [$location`The Haunted Billiards Room`, [1, 2, 2]],
-  [$location`The Haunted Wine Cellar`, [1, 2, 2, 3]],
-  [$location`The Haunted Boiler Room`, [1, 2, 2]],
-  [$location`The Haunted Laboratory`, [1, 1, 3, 1, 1]],
-]);
+import { garboValue } from "../garboValue";
+import {
+  bestMidnightAvailable,
+  completeBarfQuest,
+  shouldFillLatte,
+  tryFillLatte,
+} from "../resources";
+import { acquire } from "../acquire";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
 const digitizedEmbezzler = () =>
-  SourceTerminal.have() && SourceTerminal.getDigitizeMonster() === embezzler;
+  SourceTerminal.have() &&
+  SourceTerminal.getDigitizeMonster() === globalOptions.target;
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
@@ -159,10 +156,225 @@ function shouldGoUnderwater(): boolean {
   return false;
 }
 
+const TurnGenTasks: GarboTask[] = [
+  {
+    name: "Sausage",
+    ready: () => myAdventures() <= 1 + globalOptions.saveTurns,
+    completed: () => howManySausagesCouldIEat() === 0,
+    prepare: () => maximize("MP", false),
+    do: () => eat(howManySausagesCouldIEat(), $item`magical sausage`),
+    spendsTurn: false,
+  },
+  {
+    name: "Sweatpants",
+    ready: () =>
+      !globalOptions.nodiet &&
+      have($item`designer sweatpants`) &&
+      myAdventures() <= 1 + globalOptions.saveTurns,
+    completed: () => get("_sweatOutSomeBoozeUsed") === 3,
+    do: () => {
+      while (
+        get("_sweatOutSomeBoozeUsed") < 3 &&
+        get("sweat") >= 25 &&
+        myInebriety() > 0
+      ) {
+        useSkill($skill`Sweat Out Some Booze`);
+      }
+      consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
+    },
+    spendsTurn: false,
+  },
+];
+
+type AlternateTask = GarboTask & { turns: Delayed<number> };
+
+function dailyDungeon(additionalReady: () => boolean) {
+  return {
+    completed: () => get("dailyDungeonDone"),
+    ready: () =>
+      additionalReady() &&
+      garboValue($item`fat loot token`) >
+        get("valueOfAdventure") *
+          clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
+    choices: () => ({ 689: 1, 690: 2, 691: 2, 692: 3, 693: 2 }),
+    acquire:
+      $items`ring of Detect Boring Doors, eleven-foot pole, Pick-O-Matic lockpicks`.map(
+        (i) => ({ item: i }),
+      ),
+    do: $location`The Daily Dungeon`,
+    combat: new GarboStrategy(() => Macro.kill()),
+    turns: () => clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
+    spendsTurn: true,
+  };
+}
+
+function vampOut(additionalReady: () => boolean) {
+  return {
+    ready: () =>
+      additionalReady() &&
+      have($item`plastic vampire fangs`) &&
+      garboValue($item`Interview With You (a Vampire)`) >
+        get("valueOfAdventure"),
+    completed: () => get("_interviewMasquerade"),
+    choices: () => ({
+      546: 12,
+    }),
+    do: () => {
+      visitUrl("place.php?whichplace=town&action=town_vampout");
+      runChoice(-1);
+    },
+    outfit: () =>
+      freeFightOutfit({
+        equip: $items`plastic vampire fangs`,
+      }),
+    spendsTurn: true,
+    turns: () => (get("_interviewMasquerade") ? 0 : 1),
+  };
+}
+
+function gingerbreadMidnight(additionalReady: () => boolean) {
+  return {
+    name: "Gingerbread Midnight",
+    ready: additionalReady,
+    completed: () => GingerBread.minutesToMidnight() !== 0,
+    do: () => bestMidnightAvailable().location,
+    choices: () => bestMidnightAvailable().choices,
+    outfit: () => ({
+      equip:
+        bestMidnightAvailable().location ===
+        $location`Gingerbread Upscale Retail District`
+          ? outfitPieces("Gingerbread Best")
+          : [],
+      offhand: sober() ? undefined : $item`Drunkula's wineglass`,
+    }),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg(
+        "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
+      ),
+    ),
+    spendsTurn: true,
+  };
+}
+
+function willDrunkAdventure() {
+  return have($item`Drunkula's wineglass`) && globalOptions.ascend;
+}
+
+const NonBarfTurnTasks: AlternateTask[] = [
+  {
+    name: "Daily Dungeon (drunk)",
+    ...dailyDungeon(() => willDrunkAdventure()),
+    outfit: () =>
+      freeFightOutfit({
+        offhand: $item`Drunkula's wineglass`,
+        equip: $items`ring of Detect Boring Doors`,
+      }),
+    sobriety: "drunk",
+  },
+  {
+    name: "Daily Dungeon (sober)",
+    ...dailyDungeon(() => !willDrunkAdventure()),
+    outfit: () =>
+      freeFightOutfit({
+        equip: $items`ring of Detect Boring Doors`,
+      }),
+    sobriety: "sober",
+  },
+  {
+    name: "Vamp Out (drunk)",
+    ...vampOut(() => willDrunkAdventure()),
+    sobriety: "drunk",
+  },
+  {
+    name: "Vamp Out (sober)",
+    ...vampOut(() => !willDrunkAdventure()),
+    sobriety: "sober",
+  },
+  {
+    ...gingerbreadMidnight(() => willDrunkAdventure()),
+    name: "Gingerbread Midnight (drunk)",
+    turns: () => (GingerBread.minutesToMidnight() === 0 ? 1 : 0),
+  },
+  {
+    ...gingerbreadMidnight(() => !willDrunkAdventure()),
+    name: "Gingerbread Midnight (sober)",
+    turns: () => (GingerBread.minutesToMidnight() === 0 ? 1 : 0),
+  },
+  {
+    name: "Map for Pills",
+    completed: () =>
+      availableAmount($item`Map to Safety Shelter Grimace Prime`) === 0,
+    choices: () => ({
+      536:
+        availableAmount($item`distention pill`) <
+        availableAmount($item`synthetic dog hair pill`) +
+          availableAmount($item`Map to Safety Shelter Grimace Prime`)
+          ? 1
+          : 2,
+    }),
+    do: () => {
+      ensureEffect($effect`Transpondent`);
+      use($item`Map to Safety Shelter Grimace Prime`);
+      return true;
+    },
+    spendsTurn: true,
+    sobriety: "drunk",
+    turns: () => availableAmount($item`Map to Safety Shelter Grimace Prime`),
+  },
+  {
+    name: "Use Day Shorteners (drunk)",
+    ready: () =>
+      globalOptions.ascend &&
+      garboValue($item`extra time`) >
+        mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
+    completed: () => get(`_garboDayShortenersUsed`, 0) >= 3, // Arbitrary cap at 3, since using 3 results in only 1 adventure
+    do: () => {
+      if (
+        acquire(
+          1,
+          $item`day shortener`,
+          garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
+          false,
+        )
+      ) {
+        use($item`day shortener`);
+      }
+      set(`_garboDayShortenersUsed`, get(`_garboDayShortenersUsed`, 0) + 1);
+    },
+    spendsTurn: true,
+    sobriety: "drunk",
+    turns: () => 5 * (3 - get(`_garboDayShortenersUsed`, 0)),
+  },
+  {
+    name: "Use Day Shorteners (sober)",
+    ready: () =>
+      !globalOptions.ascend &&
+      garboValue($item`extra time`) >
+        mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
+    completed: () => get(`_garboDayShortenersUsed`, 0) >= 3, // Arbitrary cap at 3, since using 3 results in only 1 adventure
+    do: () => {
+      if (
+        acquire(
+          1,
+          $item`day shortener`,
+          garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
+          false,
+        )
+      ) {
+        use($item`day shortener`);
+      }
+      set(`_garboDayShortenersUsed`, get(`_garboDayShortenersUsed`, 0) + 1);
+    },
+    spendsTurn: true,
+    sobriety: "sober",
+    turns: () => 5 * (3 - get(`_garboDayShortenersUsed`, 0)),
+  },
+];
+
 const BarfTurnTasks: GarboTask[] = [
   {
     name: "Latte",
-    completed: () => latteFilled(),
+    completed: () => !shouldFillLatte(),
     do: () => tryFillLatte(),
     spendsTurn: false,
   },
@@ -173,18 +385,7 @@ const BarfTurnTasks: GarboTask[] = [
       get("nextSpookyravenStephenRoom") !== get("ghostLocation") &&
       totalTurnsPlayed() % 37 === 0,
     completed: () => totalTurnsPlayed() === get("lastLightsOutTurn"),
-    do: () => {
-      const steveRoom = get("nextSpookyravenStephenRoom");
-      if (steveRoom && canAdventure(steveRoom)) {
-        const plan = steveAdventures.get(steveRoom);
-        if (plan) {
-          visitUrl(toUrl(steveRoom));
-          for (const choiceValue of plan) {
-            runChoice(choiceValue);
-          }
-        }
-      }
-    },
+    do: () => get("nextSpookyravenStephenRoom") as Location,
     outfit: () =>
       embezzlerOutfit(sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
     spendsTurn: isSteve,
@@ -233,6 +434,7 @@ const BarfTurnTasks: GarboTask[] = [
         totalTurnsPlayed() % 11 === 1 &&
         get("_voteFreeFights") < 3,
       completed: () => get("lastVoteMonsterTurn") >= totalTurnsPlayed(),
+      sobriety: () => (isGhost() ? "sober" : undefined),
     },
   ),
   {
@@ -247,39 +449,28 @@ const BarfTurnTasks: GarboTask[] = [
     spendsTurn: true,
   },
   {
-    name: "Sausage",
-    ready: () => myAdventures() <= 1 + globalOptions.saveTurns,
-    completed: () => howManySausagesCouldIEat() === 0,
-    prepare: () => maximize("MP", false),
-    do: () => eat(howManySausagesCouldIEat(), $item`magical sausage`),
-    spendsTurn: false,
-  },
-  {
-    name: "Sweatpants",
-    ready: () =>
-      !globalOptions.nodiet &&
-      have($item`designer sweatpants`) &&
-      myAdventures() <= 1 + globalOptions.saveTurns,
-    completed: () => get("_sweatOutSomeBoozeUsed") === 3,
-    do: () => {
-      while (
-        get("_sweatOutSomeBoozeUsed") < 3 &&
-        get("sweat") >= 25 &&
-        myInebriety() > 0
-      ) {
-        useSkill($skill`Sweat Out Some Booze`);
-      }
-      consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
-    },
-    spendsTurn: false,
+    name: "Digitize Wanderer (Underwater, for Green Taffy)",
+    completed: () => Counter.get("Digitize Monster") > 0,
+    ready: shouldGoUnderwater,
+    acquire: () => [{ item: $item`pulled green taffy` }],
+    do: $location`The Briny Deeps`,
+    outfit: () => embezzlerOutfit({}, $location`The Briny Deeps`),
+    combat: new GarboStrategy(
+      () => Macro.item($item`pulled green taffy`).meatKill(),
+      () =>
+        Macro.if_(
+          `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
+          Macro.item($item`pulled green taffy`).meatKill(),
+        ).abortWithMsg(
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
+        ),
+    ),
+    sobriety: "sober",
+    spendsTurn: true,
   },
   {
     name: "Digitize Wanderer",
     completed: () => Counter.get("Digitize Monster") > 0,
-    acquire: () =>
-      SourceTerminal.getDigitizeMonster() === embezzler && shouldGoUnderwater()
-        ? [{ item: $item`pulled green taffy` }]
-        : [],
     outfit: () =>
       digitizedEmbezzler()
         ? embezzlerOutfit(
@@ -291,27 +482,21 @@ const BarfTurnTasks: GarboTask[] = [
           )
         : freeFightOutfit(),
     do: () =>
-      shouldGoUnderwater()
-        ? $location`The Briny Deeps`
-        : wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false }),
-    choices: shouldGoUnderwater()
-      ? {}
-      : wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
+      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false }),
+    choices: () =>
+      wanderer().getChoices({
+        wanderer: "wanderer",
+        allowEquipment: false,
+      }),
     combat: new GarboStrategy(
+      () => Macro.meatKill(),
       () =>
-        Macro.externalIf(
-          shouldGoUnderwater(),
-          Macro.item($item`pulled green taffy`),
-        ).meatKill(),
-      Macro.if_(
-        `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
-        Macro.externalIf(
-          shouldGoUnderwater(),
-          Macro.item($item`pulled green taffy`),
-        ).meatKill(),
-      ).abortWithMsg(
-        `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
-      ),
+        Macro.if_(
+          `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
+          Macro.meatKill(),
+        ).abortWithMsg(
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
+        ),
     ),
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
@@ -342,7 +527,8 @@ const BarfTurnTasks: GarboTask[] = [
   {
     name: "Envyfish Egg",
     ready: () =>
-      have($item`envyfish egg`) && get("envyfishMonster") === embezzler,
+      have($item`envyfish egg`) &&
+      get("envyfishMonster") === globalOptions.target,
     completed: () => get("_envyfishEggUsed"),
     do: () => use($item`envyfish egg`),
     spendsTurn: true,
@@ -357,7 +543,7 @@ const BarfTurnTasks: GarboTask[] = [
       ready: () => have($skill`Fondeluge`) && romanticMonsterImpossible(),
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
-        Macro.if_(embezzler, Macro.meatKill())
+        Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
           .skill($skill`Fondeluge`),
@@ -374,7 +560,7 @@ const BarfTurnTasks: GarboTask[] = [
       ready: () => have($item`Jurassic Parka`) && romanticMonsterImpossible(),
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
-        Macro.if_(embezzler, Macro.meatKill())
+        Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
           .skill($skill`Spit jurassic acid`),
@@ -391,7 +577,7 @@ const BarfTurnTasks: GarboTask[] = [
       ready: () => have($skill`Free-For-All`) && romanticMonsterImpossible(),
       completed: () => have($effect`Everything Looks Red`),
       combat: new GarboStrategy(() =>
-        Macro.if_(embezzler, Macro.meatKill())
+        Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
           .skill($skill`Free-For-All`),
@@ -407,7 +593,7 @@ const BarfTurnTasks: GarboTask[] = [
       ready: () => romanticMonsterImpossible(),
       completed: () => get("shockingLickCharges") === 0,
       combat: new GarboStrategy(() =>
-        Macro.if_(embezzler, Macro.meatKill())
+        Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
           .skill($skill`Shocking Lick`),
@@ -417,57 +603,87 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   {
-    name: "Map for Pills",
-    ready: () =>
-      globalOptions.ascend &&
-      clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
-        availableAmount($item`Map to Safety Shelter Grimace Prime`),
-    completed: () => false,
-    do: () => {
-      const choiceToSet =
-        availableAmount($item`distention pill`) <
-        availableAmount($item`synthetic dog hair pill`) +
-          availableAmount($item`Map to Safety Shelter Grimace Prime`)
-          ? 1
-          : 2;
-      setChoice(536, choiceToSet);
-      ensureEffect($effect`Transpondent`);
-      use($item`Map to Safety Shelter Grimace Prime`);
-      return true;
-    },
+    name: "Gingerbread Noon",
+    completed: () => GingerBread.minutesToNoon() !== 0,
+    do: $location`Gingerbread Train Station`,
+    choices: { 1204: 1 },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg(
+        "We thought it was noon here in Gingerbread City, but we're in a fight!",
+      ),
+    ),
+    outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
     spendsTurn: true,
-    sobriety: "drunk",
   },
-  {
-    name: "Barf",
-    completed: () => myAdventures() === 0,
-    outfit: () => {
-      const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
+  // If extra adventures are unlocked, we want to finish midnight to re-open the zone ASAP
+  gingerbreadMidnight(() => get("gingerExtraAdventures")),
+];
+
+function nonBarfTurns(): number {
+  const sobriety = sober() ? "sober" : "drunk";
+  return sum(
+    NonBarfTurnTasks.filter(
+      (t) => (undelay(t.sobriety) ?? sobriety) === sobriety,
+    ),
+    (t) => undelay(t.turns),
+  );
+}
+
+export const TurnGenQuest: Quest<GarboTask> = {
+  name: "Turn Gen",
+  tasks: TurnGenTasks,
+};
+
+export const WandererQuest: Quest<GarboTask> = {
+  name: "Wanderers",
+  tasks: BarfTurnTasks,
+  completed: () => !canContinue(),
+};
+
+export const NonBarfTurnQuest: Quest<GarboTask> = {
+  name: "Non Barf Turn",
+  tasks: NonBarfTurnTasks,
+  ready: () =>
+    clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
+    nonBarfTurns() + globalOptions.saveTurns,
+  completed: () => !canContinue(),
+};
+
+export const BarfTurnQuest: Quest<GarboTask> = {
+  name: "Barf Turn",
+  tasks: [
+    {
+      name: "Barf",
+      completed: () => myAdventures() === 0,
+      outfit: () => {
       const { outfit, extraValue } = barfOutfit(
         lubing ? { equip: $items`lube-shoes` } : {},
       );
       trackMarginalTurnExtraValue(extraValue);
       return outfit;
-    },
-    do: () => $location`Barf Mountain`,
-    combat: new GarboStrategy(
-      () => Macro.meatKill(),
-      () =>
-        Macro.if_(
-          `(monsterid ${embezzler.id}) && !gotjump && !(pastround 2)`,
-          Macro.meatKill(),
-        ).abort(),
-    ),
+      },
+      do: $location`Barf Mountain`,
+      combat: new GarboStrategy(
+        () => Macro.meatKill(),
+        () =>
+          Macro.if_(
+            `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
+            Macro.meatKill(),
+          ).abort(),
+      ),
     post: () => {
       completeBarfQuest();
       trackMarginalMpa();
     },
-    spendsTurn: true,
-  },
-];
-
-export const BarfTurnQuest: Quest<GarboTask> = {
-  name: "Barf Turn",
-  tasks: BarfTurnTasks,
+      spendsTurn: true,
+    },
+  ],
   completed: () => !canContinue(),
 };
+
+export const BarfTurnQuests = [
+  TurnGenQuest,
+  WandererQuest,
+  NonBarfTurnQuest,
+  BarfTurnQuest,
+];

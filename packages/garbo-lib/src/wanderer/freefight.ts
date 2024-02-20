@@ -86,16 +86,20 @@ export function freefightFactory(
     );
     const locationValues = monsterValues(type === "yellow ray", options);
 
-    const bestZones = new Set<Location>([
-      maxBy(validLocations, (l: Location) => locationValues.get(l) ?? 0),
-    ]);
+    const bestZones = new Set<Location>(
+      validLocations.length > 0
+        ? [maxBy(validLocations, (l: Location) => locationValues.get(l) ?? 0)]
+        : [],
+    );
     for (const unlockableZone of UnlockableZones) {
       const extraLocations = Location.all().filter(
         (l) => l.zone === unlockableZone.zone && !locationSkiplist.includes(l),
       );
-      bestZones.add(
-        maxBy(extraLocations, (l: Location) => locationValues.get(l) ?? 0),
-      );
+      if (extraLocations.length > 0) {
+        bestZones.add(
+          maxBy(extraLocations, (l: Location) => locationValues.get(l) ?? 0),
+        );
+      }
     }
     if (bestZones.size > 0) {
       return [...bestZones].map(

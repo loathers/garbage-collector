@@ -6,14 +6,24 @@ import {
   getMonsters,
   itemDropsArray,
   Location,
+  setLocation,
 } from "kolmafia";
-import { $items, AutumnAton, get, maxBy, sum } from "libram";
+import {
+  $items,
+  $location,
+  $locations,
+  AutumnAton,
+  get,
+  maxBy,
+  sum,
+} from "libram";
 import { globalOptions } from "../config";
 
-export default function bestAutumnatonLocation(
-  locations: Location[],
-): Location {
-  return maxBy(mostValuableUpgrade(locations), averageAutumnatonValue);
+const locationBanlist = $locations`The Daily Dungeon`; // The Daily Dungeon has no native monsters
+const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
+
+export function bestAutumnatonLocation(locations: Location[]): Location {
+  return maxBy(bestLocationsByUpgrade(locations), averageAutumnatonValue);
 }
 
 function averageAutumnatonValue(
@@ -21,7 +31,7 @@ function averageAutumnatonValue(
   acuityOverride?: number,
   slotOverride?: number,
 ): number {
-  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
+  if (location === $location`Shadow Rift`) setLocation($location`Shadow Rift`); // FIXME This bypasses a mafia bug where ingress is not updated
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
     (m) =>
@@ -29,7 +39,7 @@ function averageAutumnatonValue(
   );
 
   if (monsters.length === 0) {
-    return 0;
+    return seasonalItemValue(location); // We still get seasonal items, even if there are no monsters
   } else {
     const maximumDrops = slotOverride ?? AutumnAton.zoneItems();
     const acuityCutoff = 20 - (acuityOverride ?? AutumnAton.visualAcuity()) * 5;
@@ -37,7 +47,7 @@ function averageAutumnatonValue(
       .map((m) => itemDropsArray(m))
       .flat()
       .map(({ rate, type, drop }) => ({
-        value: !["c", "0"].includes(type) ? garboValue(drop, true) : 0,
+        value: !["c", "0"].includes(type) ? garboValue(drop) : 0,
         preAcuityExpectation: ["c", "0", ""].includes(type)
           ? (2 * rate) / 100
           : 0,
@@ -83,7 +93,7 @@ function seasonalItemValue(
           availableAmount(autumnItem) > 0
           ? avgValueOfRandomAutumnItem
           : 0
-        : garboValue(autumnItem, true))
+        : garboValue(autumnItem))
     );
   } else {
     // If we're in a location without any uniques, we still get cowcatcher items
@@ -233,9 +243,9 @@ function makeUpgradeValuator(
   };
 }
 
-function mostValuableUpgrade(fullLocations: Location[]): Location[] {
+function bestLocationsByUpgrade(fullLocations: Location[]): Location[] {
   const validLocations = fullLocations.filter(
-    (l) => l.parent !== "Clan Basement",
+    (l) => l.parent !== "Clan Basement" && !locationBanlist.includes(l),
   );
   // This function shouldn't be getting called if we don't have an expedition left
   if (expectedRemainingExpeditions() < 1) {

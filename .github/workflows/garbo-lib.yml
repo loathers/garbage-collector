@@ -5,25 +5,31 @@ on:
       - "packages/garbo-lib/package.json"
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "16.x"
+          node-version: "18.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: Check publish status
         id: check
-        uses: tehpsalmist/npm-publish-status-action@v1
+        run: |
+          NEXT_VERSION=$(jq -r '.version' < packages/garbo-lib/package.json)
+          STATUS=$(curl --write-out '%{http_code}\n' --head --silent --output /dev/null https://registry.npmjs.org/garbo-lib/$NEXT_VERSION)
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
 
       - name: Publish if necessary
-        if: ${{ steps.check.outputs.exists == '0' }}
+        if: ${{ steps.check.outputs.status == '404' }}
         run: |
-          yarn
+          yarn workspace garbo-lib install
+          yarn workspace garbo-lib build
           yarn workspace garbo-lib npm publish
         env:
+          STATUS: ${{ steps.check.outputs.status }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

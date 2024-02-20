@@ -2,49 +2,40 @@ import {
   getWorkshed,
   haveEffect,
   Item,
-  print,
+  myTotalTurnsSpent,
   totalTurnsPlayed,
   use,
   visitUrl,
 } from "kolmafia";
+import { $effect, $item, $items, AsdonMartin, DNALab, get, have } from "libram";
+import { dietCompleted } from "../../diet";
+import { globalOptions } from "../../config";
+import { potionSetupCompleted } from "../../potions";
+import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../../turns";
 import {
-  $effect,
-  $item,
-  $items,
-  AsdonMartin,
-  DNALab,
-  get,
-  have,
-  TrainSet,
-} from "libram";
-import { dietCompleted } from "../diet";
-import { globalOptions } from "../config";
-import { potionSetupCompleted } from "../potions";
-import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../turns";
-import {
-  getPrioritizedStations,
   grabMedicine,
   rotateToOptimalCycle,
-} from "./workshed_utils";
-import { HIGHLIGHT } from "../lib";
+  trainNeedsRotating,
+} from "../../resources";
+import { GarboPostTask } from "./lib";
 type WorkshedOptions = {
   workshed: Item;
   done?: () => boolean;
   action?: () => void;
   minTurns?: number;
+  available?: () => boolean;
 };
 class GarboWorkshed {
-  private static _nextWorkshed: GarboWorkshed | null = null;
-  private static _currentWorkshed: GarboWorkshed | null = null;
-
   workshed: Item;
   done?: () => boolean;
   action?: () => void;
   minTurns?: number;
+  available = () => true;
   constructor(options: WorkshedOptions) {
     this.workshed = options.workshed;
     if (options.done) this.done = options.done;
     if (options.action) this.action = options.action;
+    if (options.available) this.available = options.available;
     this.minTurns = options.minTurns ?? 0;
   }
 
@@ -64,14 +55,14 @@ class GarboWorkshed {
   }
 
   static get current(): GarboWorkshed | null {
-    GarboWorkshed._currentWorkshed ??= GarboWorkshed.get(getWorkshed());
-    return GarboWorkshed._currentWorkshed;
+    return GarboWorkshed.get(getWorkshed());
   }
 
   static get next(): GarboWorkshed | null {
-    if (get("_workshedItemUsed")) return null;
-    GarboWorkshed._nextWorkshed ??= GarboWorkshed.get(globalOptions.workshed);
-    return GarboWorkshed._nextWorkshed;
+    if (get("_workshedItemUsed") || getWorkshed() === globalOptions.workshed) {
+      return null;
+    }
+    return GarboWorkshed.get(globalOptions.workshed);
   }
 
   static useNext(): GarboWorkshed | null {
@@ -79,63 +70,35 @@ class GarboWorkshed {
     const next = GarboWorkshed.next;
     if (next && have(next.workshed)) {
       use(next.workshed);
-      if (GarboWorkshed.get(getWorkshed()) === next) {
-        GarboWorkshed._nextWorkshed = null;
-        GarboWorkshed._currentWorkshed = next;
-      }
     }
-    return GarboWorkshed._currentWorkshed;
+    return GarboWorkshed.current;
   }
 }
 
 let _attemptedMakingTonics = false;
-
+let _lastCMCTurn = myTotalTurnsSpent();
 const worksheds = [
   new GarboWorkshed({
     workshed: $item`model train set`,
-    done: () => {
-      // We should always get value from the trainset, so we would never switch from it
-      return false;
-    },
-    action: () => {
-      if (!TrainSet.canConfigure()) return;
-      if (!get("trainsetConfiguration")) {
-        // Visit the workshed to make sure it's actually empty, instead of us having not yet seen it this run
-        visitUrl("campground.php?action=workshed");
-        visitUrl("main.php");
-      }
-
-      if (!get("trainsetConfiguration")) {
-        print("Reconfiguring trainset, as it is empty", HIGHLIGHT);
-        return rotateToOptimalCycle();
-      } else if (globalOptions.ascend && estimatedGarboTurns() <= 40) {
-        print(
-          "Refusing to reconfigure trainset, to save a reconfiguration for your upcoming ascension.",
-          HIGHLIGHT,
-        );
-        return;
-      } else {
-        const bestStations = getPrioritizedStations();
-        if (bestStations.includes(TrainSet.next())) return;
-        print(
-          `Reconfiguring trainset, as our next station is ${TrainSet.next()}`,
-          HIGHLIGHT,
-        );
-        return rotateToOptimalCycle();
-      }
-    },
+    // We should always get value from the trainset, so we would never switch from it
+    done: () => false,
+    available: trainNeedsRotating,
+    action: rotateToOptimalCycle,
   }),
   new GarboWorkshed({
     workshed: $item`cold medicine cabinet`,
     done: () => get("_coldMedicineConsults") >= 5,
+    available: () =>
+      get("_nextColdMedicineConsult") <= totalTurnsPlayed() &&
+      myTotalTurnsSpent() !== _lastCMCTurn, // TODO: Ensure that we have a good expected cmc result
     action: () => {
-      if (get("_nextColdMedicineConsult") > totalTurnsPlayed()) return;
       grabMedicine();
+      _lastCMCTurn = myTotalTurnsSpent();
     },
     minTurns: 80,
   }),
   new GarboWorkshed({
-    workshed: $item`Asdon Martin keyfob`,
+    workshed: $item`Asdon Martin keyfob (on ring)`,
     done: () => {
       return (
         haveEffect($effect`Driving Observantly`) >=
@@ -184,19 +147,41 @@ const worksheds = [
   ),
 ];
 
-export default function handleWorkshed(): void {
-  GarboWorkshed.current?.use();
+function workshedTask(workshed: GarboWorkshed): GarboPostTask {
+  return {
+    name: `Workshed: ${workshed.workshed}`,
+    completed: () => workshed.done?.() ?? true,
+    ready: () =>
+      getWorkshed() === workshed.workshed &&
+      workshed.available() &&
+      !!workshed.action,
+    do: () => workshed.use(),
+    available: () =>
+      [GarboWorkshed.current?.workshed, GarboWorkshed.next?.workshed].includes(
+        workshed.workshed,
+      ),
+  };
+}
 
-  const safetyTurns = 25;
-  if (
-    !get("_workshedItemUsed") &&
-    (GarboWorkshed.current?.canRemove() ?? true) &&
-    GarboWorkshed.next &&
-    have(GarboWorkshed.next.workshed) &&
-    (!GarboWorkshed.next.minTurns ||
-      GarboWorkshed.next.minTurns + safetyTurns > estimatedGarboTurns())
-  ) {
-    GarboWorkshed.useNext();
-    GarboWorkshed.current?.use();
-  }
+const SAFETY_TURNS_THRESHOLD = 25;
+export default function workshedTasks(): GarboPostTask[] {
+  return [
+    ...worksheds.map(workshedTask),
+    {
+      name: "Swap Workshed",
+      completed: () => get("_workshedItemUsed"),
+      ready: () => {
+        const canRemove = GarboWorkshed.current?.canRemove() ?? true;
+        const haveNext =
+          GarboWorkshed.next !== null && have(GarboWorkshed.next.workshed);
+        const enoughTurns =
+          !GarboWorkshed.next?.minTurns ||
+          GarboWorkshed.next.minTurns + SAFETY_TURNS_THRESHOLD >
+            estimatedGarboTurns();
+        return canRemove && haveNext && enoughTurns;
+      },
+      do: () => GarboWorkshed.useNext(),
+      available: () => !get("_workshedItemUsed") && !!GarboWorkshed.next,
+    },
+  ];
 }

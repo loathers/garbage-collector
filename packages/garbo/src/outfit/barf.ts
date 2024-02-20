@@ -29,8 +29,8 @@ import { bonusGear } from "./dropsgear";
 import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
 import { BonusEquipMode, modeValueOfItem, modeValueOfMeat } from "../lib";
 
-function chooseGun({ familiar }: Outfit) {
-  if (familiar === $familiar`Robortender` && have($item`love`)) {
+function chooseGun() {
+  if (have($item`love`)) {
     return $item`love`;
   }
   if (!have($item`ice nine`)) {
@@ -46,7 +46,7 @@ function gunSpec(outfit: Outfit) {
     return { available: false, items: [] };
   }
 
-  const gun = chooseGun(outfit);
+  const gun = chooseGun();
   if (!gun) return { available: false, items: [] };
 
   return {
@@ -106,6 +106,11 @@ export function barfOutfit(
 
   const { familiar, extraValue } = barfFamiliar();
   outfit.familiar ??= familiar;
+
+  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
+    outfit.equip($item`LED candle`);
+    outfit.setModes({ jillcandle: "ultraviolet" });
+  }
 
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, outfit.familiar, sim);
 

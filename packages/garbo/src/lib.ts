@@ -10,7 +10,6 @@ import {
   fullnessLimit,
   getLocketMonsters,
   getMonsters,
-  gitAtHead,
   gitInfo,
   handlingChoice,
   haveEquipped,
@@ -44,6 +43,7 @@ import {
   printHtml,
   restoreHp,
   restoreMp,
+  rollover,
   runChoice,
   runCombat,
   sessionStorage,
@@ -52,7 +52,6 @@ import {
   soulsauceCost,
   spleenLimit,
   todayToString,
-  toItem,
   toSlot,
   totalFreeRests,
   toUrl,
@@ -62,6 +61,7 @@ import {
   useSkill,
   visitUrl,
   weaponHands,
+  xpath,
 } from "kolmafia";
 import {
   $effect,
@@ -80,7 +80,6 @@ import {
   CombatLoversLocket,
   Counter,
   ensureFreeRun,
-  gameDay,
   get,
   getBanishedMonsters,
   getKramcoWandererChance,
@@ -100,19 +99,17 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
-import { garboValue } from "./garboValue";
-
-export const embezzler = $monster`Knob Goblin Embezzler`;
+import { garboAverageValue, garboValue } from "./garboValue";
 
 export const eventLog: {
-  initialEmbezzlersFought: number;
-  digitizedEmbezzlersFought: number;
-  embezzlerSources: Array<string>;
+  initialCopyTargetsFought: number;
+  digitizedCopyTargetsFought: number;
+  copyTargetSources: Array<string>;
   yachtzees: number;
 } = {
-  initialEmbezzlersFought: 0,
-  digitizedEmbezzlersFought: 0,
-  embezzlerSources: [],
+  initialCopyTargetsFought: 0,
+  digitizedCopyTargetsFought: 0,
+  copyTargetSources: [],
   yachtzees: 0,
 };
 
@@ -170,6 +167,16 @@ export function expectedEmbezzlerProfit(): number {
 }
 
 export function safeInterrupt(): void {
+  if (
+    globalOptions.prefs.rolloverBuffer * 60 * 1000 >
+    rollover() * 1000 - Date.now()
+  ) {
+    throw new Error(
+      `Eep! It's a mere ${Math.round(
+        rollover() - Date.now() / 1000,
+      )} seconds until rollover!`,
+    );
+  }
   if (get("garbo_interrupt", false)) {
     set("garbo_interrupt", false);
     throw new Error("User interrupt requested. Stopping Garbage Collector.");
@@ -367,11 +374,10 @@ export function pillkeeperOpportunityCost(): number {
   if (!alternateUseValue) return 0;
   if (!canTreasury) return alternateUseValue;
 
-  const embezzler = $monster`Knob Goblin Embezzler`;
   const canStartChain = [
-    CombatLoversLocket.have() && getLocketMonsters()[embezzler.name],
+    CombatLoversLocket.have() && getLocketMonsters()[globalOptions.target.name],
     ChateauMantegna.have() &&
-      ChateauMantegna.paintingMonster() === embezzler &&
+      ChateauMantegna.paintingMonster() === globalOptions.target &&
       !ChateauMantegna.paintingFought(),
     have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
   ].some((x) => x);
@@ -456,35 +462,41 @@ export function safeRestore(): void {
 export function checkGithubVersion(): void {
   if (process.env.GITHUB_REPOSITORY === "CustomBuild") {
     print("Skipping version check for custom build");
-  } else {
-    if (
-      gitAtHead("loathers-garbage-collector-release") ||
-      gitAtHead(
-        "Loathing-Associates-Scripting-Society-garbage-collector-release",
-      )
-    ) {
+  } else if (process.env.GITHUB_REPOSITORY !== undefined) {
+    const localSHA =
+      gitInfo("loathers-garbage-collector-release").commit ||
+      gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release")
+        .commit;
+
+    // Query GitHub for latest release commit
+    const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
+      visitUrl(
+        `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`,
+      ),
+    );
+    const releaseSHA = gitBranches.find(
+      (branchInfo) => branchInfo.name === "release",
+    )?.commit?.sha;
+
+    print(
+      `Local Version: ${localSHA} (built from ${process.env.GITHUB_REF_NAME}@${process.env.GITHUB_SHA})`,
+    );
+    if (releaseSHA === localSHA) {
       print("Garbo is up to date!", HIGHLIGHT);
-    } else {
-      const gitBranches: { name: string; commit: { sha: string } }[] =
-        JSON.parse(
-          visitUrl(
-            `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`,
-          ),
-        );
-      const releaseCommit = gitBranches.find(
-        (branchInfo) => branchInfo.name === "release",
-      )?.commit;
-      print("Garbo is out of date. Please run 'git update!'", "red");
+    } else if (releaseSHA === undefined) {
       print(
-        `Local Version: ${
-          gitInfo("loathers-garbage-collector-release").commit ||
-          gitInfo(
-            "Loathing-Associates-Scripting-Society-garbage-collector-release",
-          ).commit
-        }.`,
+        "Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?",
+        HIGHLIGHT,
       );
-      print(`Release Version: ${releaseCommit?.sha}.`);
+    } else {
+      print(`Release Version: ${releaseSHA}`);
+      print("Garbo is out of date. Please run 'git update'!", "red");
     }
+  } else {
+    print(
+      "Garbo was built from an unknown repository, unable to check for update.",
+      HIGHLIGHT,
+    );
   }
 }
 
@@ -770,14 +782,14 @@ export function printEventLog(): void {
   }
   const totalEmbezzlers =
     property.getNumber("garboEmbezzlerCount", 0) +
-    eventLog.initialEmbezzlersFought +
-    eventLog.digitizedEmbezzlersFought;
+    eventLog.initialCopyTargetsFought +
+    eventLog.digitizedCopyTargetsFought;
 
   const allEmbezzlerSources = property
     .getString("garboEmbezzlerSources")
     .split(",")
     .filter((source) => source);
-  allEmbezzlerSources.push(...eventLog.embezzlerSources);
+  allEmbezzlerSources.push(...eventLog.copyTargetSources);
 
   const yacthzeeCount = get("garboYachtzeeCount", 0) + eventLog.yachtzees;
 
@@ -786,7 +798,7 @@ export function printEventLog(): void {
   property.set("garboYachtzeeCount", yacthzeeCount);
 
   print(
-    `You fought ${eventLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${eventLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+    `You fought ${eventLog.initialCopyTargetsFought} ${globalOptions.target} at the beginning of the day, and an additional ${eventLog.digitizedCopyTargetsFought} digitized ${globalOptions.target} throughout the day. Good work, probably!`,
     HIGHLIGHT,
   );
   print(
@@ -934,45 +946,22 @@ export function monsterManuelAvailable(): boolean {
   return Boolean(monsterManuelCached);
 }
 
+const listItems: Partial<{ [key in keyof GarboItemLists]: Item[] }> = {};
+function getDropsList(key: keyof GarboItemLists) {
+  return (listItems[key] ??= (
+    JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists
+  )[key].map((i) => Item.get(i)));
+}
 export function felizValue(): number {
-  const lastCalculated = new Date(get("garbo_felizValueDate", 0));
-  if (
-    !get("garbo_felizValue", 0) ||
-    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
-  ) {
-    const felizDrops = (
-      JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists
-    )["Feliz Navidad"];
-    set(
-      "garbo_felizValue",
-      (
-        sum(felizDrops, (name) => garboValue(toItem(name))) / felizDrops.length
-      ).toFixed(0),
-    );
-    set("garbo_felizValueDate", gameDay().getTime());
-  }
-  return get("garbo_felizValue", 0);
+  return garboAverageValue(...getDropsList("Feliz Navidad"));
 }
 
 export function newarkValue(): number {
-  const lastCalculated = new Date(get("garbo_newarkValueDate", 0));
-  if (
-    !get("garbo_newarkValue", 0) ||
-    gameDay().getTime() - lastCalculated.getTime() > 7 * 24 * 60 * 60 * 1000
-  ) {
-    const newarkDrops = (
-      JSON.parse(fileToBuffer("garbo_item_lists.json")) as GarboItemLists
-    )["Newark"];
-    set(
-      "garbo_newarkValue",
-      (
-        sum(newarkDrops, (name) => garboValue(toItem(name))) /
-        newarkDrops.length
-      ).toFixed(0),
-    );
-    set("garbo_newarkValueDate", gameDay().getTime());
-  }
-  return get("garbo_newarkValue", 0);
+  return garboAverageValue(...getDropsList("Newark"));
+}
+
+export function candyFactoryValue(): number {
+  return garboAverageValue(...getDropsList("trainset"));
 }
 
 export function allMallPrices() {
@@ -981,4 +970,30 @@ export function allMallPrices() {
     mallPrices("allitems");
     sessionStorage.setItem("allpricedate", today);
   }
+}
+
+export function getCombatFlags(
+  ...flags: string[]
+): { flag: string; value: boolean }[] {
+  return flags.map((flag) => ({
+    flag,
+    value:
+      xpath(
+        visitUrl("account.php?tab=combat"),
+        `//*[@id="opt_flag_${flag}"]/label/input[@type='checkbox']@checked`,
+      )[0] === "checked",
+  }));
+}
+
+export function setCombatFlags(...flags: { flag: string; value: boolean }[]) {
+  return visitUrl(
+    `account.php?${
+      ([
+        ...flags.map(({ flag }) => `actions[]=flag_${flag}`),
+        ...flags.map(({ flag, value }) => `flag_${flag}=${Number(value)}`),
+        "action=Update",
+      ].join("&"),
+      true)
+    }`,
+  );
 }

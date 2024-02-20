@@ -2,6 +2,7 @@ import {
   cliExecute,
   equippedItem,
   Familiar,
+  familiarEquipment,
   familiarWeight,
   Item,
   myFamiliar,
@@ -13,6 +14,7 @@ import {
 } from "kolmafia";
 import {
   $familiar,
+  $familiars,
   $item,
   $items,
   $location,
@@ -45,12 +47,15 @@ type CachedOutfit = {
   bonus: number;
 };
 
-const outfitCache = new Map<number, CachedOutfit>();
+const outfitCache = new Map<number | Familiar, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
+const SPECIAL_FAMILIARS_FOR_CACHING = $familiars`Jill-of-All-Trades`;
+const outfitCacheKey = (f: Familiar) =>
+  SPECIAL_FAMILIARS_FOR_CACHING.includes(f) ? f : findLeprechaunMultiplier(f);
+
 function getCachedOutfitValues(fam: Familiar) {
-  const lepMult = findLeprechaunMultiplier(fam);
-  const currentValue = outfitCache.get(lepMult);
+  const currentValue = outfitCache.get(outfitCacheKey(fam));
   if (currentValue) return currentValue;
 
   const current = myFamiliar();
@@ -73,7 +78,7 @@ function getCachedOutfitValues(fam: Familiar) {
       item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
       bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
     };
-    outfitCache.set(lepMult, values);
+    outfitCache.set(outfitCacheKey(fam), values);
     return values;
   } finally {
     useFamiliar(current);
@@ -99,8 +104,16 @@ function familiarModifier(
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
   const totalWeight =
     familiarWeight(familiar) + nonOutfitWeightBonus() + cachedOutfitWeight;
+  const equip = familiarEquipment(familiar);
 
-  return numericModifier(familiar, modifier, totalWeight, $item.none);
+  return SPECIAL_FAMILIARS_FOR_CACHING.includes(familiar)
+    ? numericModifier(
+        familiar,
+        modifier,
+        totalWeight - numericModifier(equip, "Familiar Weight"),
+        equip,
+      )
+    : numericModifier(familiar, modifier, totalWeight, $item.none);
 }
 
 function familiarAbilityValue(familiar: Familiar) {

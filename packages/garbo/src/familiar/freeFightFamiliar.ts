@@ -141,13 +141,19 @@ export function freeFightFamiliarData(
   options: MenuOptions = {},
 ): GeneralFamiliar {
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
+    if (a === null) return b;
     if (a.expectedValue === b.expectedValue) {
       return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
     }
     return a.expectedValue > b.expectedValue ? a : b;
   };
 
-  return menu(options).reduce(compareFamiliars);
+  return menu(options).reduce(compareFamiliars, {
+    familiar: $familiar.none,
+    expectedValue: 0,
+    leprechaunMultiplier: 0,
+    limit: "none",
+  });
 }
 
 export function freeFightFamiliar(options: MenuOptions = {}): Familiar {

@@ -4,7 +4,6 @@ import {
   equip,
   familiarEquippedEquipment,
   hippyStoneBroken,
-  itemAmount,
   myPrimestat,
   retrieveItem,
   retrievePrice,
@@ -25,7 +24,7 @@ import {
 } from "libram";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { embezzlerCount } from "../embezzler";
+import { copyTargetCount } from "../embezzler";
 import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,
@@ -39,9 +38,10 @@ import {
 import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
+import { acquire } from "../acquire";
 
 function drivebyValue(): number {
-  const embezzlers = embezzlerCount();
+  const embezzlers = copyTargetCount();
   const tourists =
     ((estimatedGarboTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
@@ -56,7 +56,7 @@ function drivebyValue(): number {
 }
 
 function entendreValue(): number {
-  const embezzlers = embezzlerCount();
+  const embezzlers = copyTargetCount();
   const tourists =
     ((estimatedGarboTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
@@ -140,23 +140,24 @@ const DailyFamiliarTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Acquire amulet coin",
+    name: "Acquire box of Familiar Jacks",
     ready: () => have($familiar`Cornbeefadon`),
-    completed: () => have($item`amulet coin`),
-    do: () => use($item`box of Familiar Jacks`),
-    acquire: [{ item: $item`box of Familiar Jacks` }],
-    outfit: { familiar: $familiar`Cornbeefadon` },
+    completed: () =>
+      have($item`box of Familiar Jacks`) || have($item`amulet coin`),
+    do: () =>
+      // TODO: acquire max price calculation
+      acquire(1, $item`box of Familiar Jacks`, get("autoBuyPriceLimit")),
     spendsTurn: false,
   },
   {
-    // TODO: Consider other familiars?
-    name: "Equip tiny stillsuit",
+    name: "Acquire amulet coin",
     ready: () =>
-      itemAmount($item`tiny stillsuit`) > 0 && have($familiar`Cornbeefadon`),
-    completed: () =>
-      familiarEquippedEquipment($familiar`Cornbeefadon`) ===
-      $item`tiny stillsuit`,
-    do: () => equip($familiar`Cornbeefadon`, $item`tiny stillsuit`),
+      have($familiar`Cornbeefadon`) && have($item`box of Familiar Jacks`),
+    completed: () => have($item`amulet coin`),
+    do: (): void => {
+      use($item`box of Familiar Jacks`);
+    },
+    outfit: { familiar: $familiar`Cornbeefadon` },
     spendsTurn: false,
   },
   {
