@@ -25639,7 +25639,7 @@ var require_wanderer = __commonJS({
           [(0, libram_1.$location)(_templateObject1451 || (_templateObject1451 = _taggedTemplateLiteral117(["A Mob of Zeppelin Protesters"]))), {
             1432: 1,
             856: 2,
-            857: 2,
+            857: 3,
             858: 2
           }],
           [(0, libram_1.$location)(_templateObject1550 || (_templateObject1550 = _taggedTemplateLiteral117(["A-Boo Peak"]))), {
@@ -30380,7 +30380,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e01704534a9e804898a31056c6d5a79e49f94b0c", ")"));
+    (0, import_kolmafia79.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ee36dd31572e743616efcb530b725e7d0c557c80", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia79.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -40727,7 +40727,10 @@ function juneCleaver2() {
       return get("_juneCleaverFightsLeft") > 0;
     },
     do: function() {
-      return (0, import_kolmafia116.myInebriety)() > (0, import_kolmafia116.inebrietyLimit)() ? $location(_templateObject1151 || (_templateObject1151 = _taggedTemplateLiteral105(["Drunken Stupor"]))) : $location(_templateObject1248 || (_templateObject1248 = _taggedTemplateLiteral105(["Noob Cave"])));
+      var location = (0, import_kolmafia116.myInebriety)() > (0, import_kolmafia116.inebrietyLimit)() ? $location(_templateObject1151 || (_templateObject1151 = _taggedTemplateLiteral105(["Drunken Stupor"]))) : $location(_templateObject1248 || (_templateObject1248 = _taggedTemplateLiteral105(["Noob Cave"])));
+      withProperty("recoveryScript", "", function() {
+        return (0, import_kolmafia116.adv1)(location, 1);
+      });
     },
     outfit: {
       weapon: $item(_templateObject1346 || (_templateObject1346 = _taggedTemplateLiteral105(["June cleaver"])))
