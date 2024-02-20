@@ -152,7 +152,7 @@ export class WandererManager {
       [$location`The Hidden Park`, { 789: 6 }],
       [
         $location`A Mob of Zeppelin Protesters`,
-        { 1432: 1, 856: 2, 857: 2, 858: 2 },
+        { 1432: 1, 856: 2, 857: 3, 858: 2 },
       ],
       [$location`A-Boo Peak`, { 1430: 2 }],
       [$location`Sloppy Seconds Diner`, { 919: 6 }],
