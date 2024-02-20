@@ -656,11 +656,13 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       name: "Barf",
       completed: () => myAdventures() === 0,
       outfit: () => {
-      const { outfit, extraValue } = barfOutfit(
-        lubing ? { equip: $items`lube-shoes` } : {},
-      );
-      trackMarginalTurnExtraValue(extraValue);
-      return outfit;
+        const lubing =
+          get("dinseyRollercoasterNext") && have($item`lube-shoes`);
+        const { outfit, extraValue } = barfOutfit(
+          lubing ? { equip: $items`lube-shoes` } : {},
+        );
+        trackMarginalTurnExtraValue(extraValue);
+        return outfit;
       },
       do: $location`Barf Mountain`,
       combat: new GarboStrategy(
@@ -671,10 +673,10 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
-    post: () => {
-      completeBarfQuest();
-      trackMarginalMpa();
-    },
+      post: () => {
+        completeBarfQuest();
+        trackMarginalMpa();
+      },
       spendsTurn: true,
     },
   ],
