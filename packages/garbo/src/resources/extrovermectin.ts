@@ -52,7 +52,6 @@ import { garboAdventure, Macro } from "../combat";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 
-const embezzler = $monster`Knob Goblin Embezzler`;
 const crate = $monster`crate`;
 
 type GregSource = {
@@ -511,9 +510,9 @@ export function initializeExtrovermectinZones(): void {
 
 export function gregReady(): boolean {
   return (
-    (get("beGregariousMonster") === embezzler &&
+    (get("beGregariousMonster") === globalOptions.target &&
       get("beGregariousFightsLeft") > 0) ||
-    (get("_monsterHabitatsMonster") === embezzler &&
+    (get("_monsterHabitatsMonster") === globalOptions.target &&
       get("_monsterHabitatsFightsLeft") > 0)
   );
 }
@@ -532,7 +531,8 @@ export function totalGregCharges(countPartial: boolean): number {
 export function possibleGregCrystalBall(): number {
   if (have($item`miniature crystal ball`)) {
     const ponderCount =
-      CrystalBall.ponder().get($location`The Dire Warren`) === embezzler
+      CrystalBall.ponder().get($location`The Dire Warren`) ===
+      globalOptions.target
         ? 1
         : 0;
     return totalGregCharges(true) + ponderCount;

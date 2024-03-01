@@ -191,7 +191,7 @@ function canWanderTypeFreeFight(location: Location): boolean {
   );
 }
 
-const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome`;
+const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums`;
 function canWanderTypeWander(location: Location): boolean {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }

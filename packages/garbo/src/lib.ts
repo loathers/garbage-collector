@@ -104,17 +104,15 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 
-export const embezzler = $monster`Knob Goblin Embezzler`;
-
 export const eventLog: {
-  initialEmbezzlersFought: number;
-  digitizedEmbezzlersFought: number;
-  embezzlerSources: Array<string>;
+  initialCopyTargetsFought: number;
+  digitizedCopyTargetsFought: number;
+  copyTargetSources: Array<string>;
   yachtzees: number;
 } = {
-  initialEmbezzlersFought: 0,
-  digitizedEmbezzlersFought: 0,
-  embezzlerSources: [],
+  initialCopyTargetsFought: 0,
+  digitizedCopyTargetsFought: 0,
+  copyTargetSources: [],
   yachtzees: 0,
 };
 
@@ -386,11 +384,10 @@ export function pillkeeperOpportunityCost(): number {
   if (!alternateUseValue) return 0;
   if (!canTreasury) return alternateUseValue;
 
-  const embezzler = $monster`Knob Goblin Embezzler`;
   const canStartChain = [
-    CombatLoversLocket.have() && getLocketMonsters()[embezzler.name],
+    CombatLoversLocket.have() && getLocketMonsters()[globalOptions.target.name],
     ChateauMantegna.have() &&
-      ChateauMantegna.paintingMonster() === embezzler &&
+      ChateauMantegna.paintingMonster() === globalOptions.target &&
       !ChateauMantegna.paintingFought(),
     have($item`Clan VIP Lounge key`) && !get("_photocopyUsed"),
   ].some((x) => x);
@@ -835,14 +832,14 @@ export function printEventLog(): void {
   }
   const totalEmbezzlers =
     property.getNumber("garboEmbezzlerCount", 0) +
-    eventLog.initialEmbezzlersFought +
-    eventLog.digitizedEmbezzlersFought;
+    eventLog.initialCopyTargetsFought +
+    eventLog.digitizedCopyTargetsFought;
 
   const allEmbezzlerSources = property
     .getString("garboEmbezzlerSources")
     .split(",")
     .filter((source) => source);
-  allEmbezzlerSources.push(...eventLog.embezzlerSources);
+  allEmbezzlerSources.push(...eventLog.copyTargetSources);
 
   const yacthzeeCount = get("garboYachtzeeCount", 0) + eventLog.yachtzees;
 
@@ -851,7 +848,7 @@ export function printEventLog(): void {
   property.set("garboYachtzeeCount", yacthzeeCount);
 
   print(
-    `You fought ${eventLog.initialEmbezzlersFought} KGEs at the beginning of the day, and an additional ${eventLog.digitizedEmbezzlersFought} digitized KGEs throughout the day. Good work, probably!`,
+    `You fought ${eventLog.initialCopyTargetsFought} ${globalOptions.target} at the beginning of the day, and an additional ${eventLog.digitizedCopyTargetsFought} digitized ${globalOptions.target} throughout the day. Good work, probably!`,
     HIGHLIGHT,
   );
   print(
