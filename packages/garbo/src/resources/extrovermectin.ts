@@ -3,6 +3,7 @@ import {
   cliExecute,
   equip,
   haveEffect,
+  isBanished,
   Item,
   itemType,
   mallPrice,
@@ -41,8 +42,10 @@ import { freeFightFamiliar } from "../familiar";
 import {
   freeRunConstraints,
   getUsingFreeBunnyBanish,
+  lastAdventureWasWeird,
   ltbRun,
   setChoice,
+  tryFindFreeRunOrBanish,
   userConfirmDialog,
 } from "../lib";
 import { garboAdventure, Macro } from "../combat";
@@ -187,9 +190,10 @@ export function saberCrateIfSafe(): void {
     get("beGregariousFightsLeft") === 0 || get("_saberForceMonsterCount") > 0;
   if (!canSaber || !isSafeToSaber) return;
 
-  do {
-    const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
+  const possibleBanish = ltbRun();
+  const run = tryFindFreeRun(freeRunConstraints(false)) ?? possibleBanish;
 
+  do {
     useFamiliar(
       run.constraints.familiar?.() ??
         freeFightFamiliar({ canChooseMacro: false }),
@@ -211,14 +215,34 @@ export function saberCrateIfSafe(): void {
         .ifHolidayWanderer(run.macro)
         .abort(),
     );
-  } while (
-    [
-      "Puttin' it on Wax",
-      "Wooof! Wooooooof!",
-      "Playing Fetch*",
-      "Your Dog Found Something Again",
-    ].includes(get("lastEncounter"))
-  );
+  } while (lastAdventureWasWeird());
+
+  if (run === possibleBanish) {
+    useFamiliar(
+      run.constraints.familiar?.() ??
+        freeFightFamiliar({ canChooseMacro: false }),
+    );
+    run.constraints.preparation?.();
+    new Requirement([], {
+      preventEquip: $items`Kramco Sausage-o-Matic™`,
+    })
+      .merge(
+        run.constraints.equipmentRequirements?.() ?? new Requirement([], {}),
+      )
+      .maximize();
+    do {
+      garboAdventure($location`The Haunted Kitchen`, run.macro);
+    } while (
+      lastAdventureWasWeird({
+        extraEncounters: ["Lights Out in the Kitchen"],
+        includeHolidayWanderers: false,
+      })
+    );
+  }
+
+  if (isBanished($monster`crate`)) {
+    throw new Error("Accidentally banished crate! And failed to unbanish.");
+  }
 }
 
 /**
@@ -258,7 +282,7 @@ function initializeCrates(): void {
           have($skill`Gallapagosian Mating Call`)) ||
           (have($item`latte lovers member's mug`) && !get("_latteCopyUsed"))))
     ) {
-      const run = tryFindFreeRun(freeRunConstraints(true)) ?? ltbRun();
+      const run = tryFindFreeRunOrBanish(freeRunConstraints(true)) ?? ltbRun();
       setChoice(1387, 2); // use the force, in case we decide to use that
 
       // Sniff the crate in as many ways as humanly possible
