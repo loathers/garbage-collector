@@ -93,10 +93,7 @@ const POINTER_RING_SPECS: (
 const trueInebrietyLimit = () =>
   inebrietyLimit() - (myFamiliar() === $familiar`Stooper` ? 1 : 0);
 
-export function barfOutfit(
-  spec: OutfitSpec = {},
-  sim = false,
-): { outfit: Outfit; extraValue: number } {
+export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
@@ -104,8 +101,7 @@ export function barfOutfit(
     new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
   );
 
-  const { familiar, extraValue } = barfFamiliar();
-  outfit.familiar ??= familiar;
+  outfit.familiar ??= barfFamiliar();
 
   if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
     outfit.equip($item`LED candle`);
@@ -169,5 +165,5 @@ export function barfOutfit(
     parka: "kachungasaur",
   });
 
-  return { outfit, extraValue };
+  return outfit;
 }
