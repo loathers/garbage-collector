@@ -47,6 +47,7 @@ export interface RunOptions {
   macro: Macro;
   location: Location;
   useAuto: boolean;
+  action: string;
 }
 
 export function checkUnderwater(): boolean {

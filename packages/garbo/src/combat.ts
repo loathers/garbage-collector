@@ -675,7 +675,7 @@ export class Macro extends StrictMacro {
     return new Macro().ghostBustin();
   }
 
-  embezzler(): Macro {
+  embezzler(action: string): Macro {
     const doneHabitat =
       !have($skill`Just the Facts`) ||
       (get("_monsterHabitatsRecalled") === 3 &&
@@ -732,12 +732,12 @@ export class Macro extends StrictMacro {
         )
         .meatKill(),
     ).abortWithMsg(
-      `Expected ${globalOptions.target} but encountered something else.`,
+      `Macro for ${action} expected ${globalOptions.target} but encountered something else.`,
     );
   }
 
-  static embezzler(): Macro {
-    return new Macro().embezzler();
+  static embezzler(action: string): Macro {
+    return new Macro().embezzler(action);
   }
 }
 
