@@ -193,8 +193,7 @@ export function hasMonsterReplacers(): boolean {
 export function saberCrateIfSafe(): void {
   const canSaber =
     have($item`Fourth of May Cosplay Saber`) && get("_saberForceUses") < 5;
-  const isSafeToSaber =
-    get("beGregariousFightsLeft") === 0 || get("_saberForceMonsterCount") > 0;
+  const isSafeToSaber = !gregReady() || get("_saberForceMonsterCount") > 0;
   if (!canSaber || !isSafeToSaber) return;
   const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
 
