@@ -7,6 +7,7 @@ import {
   Item,
   itemType,
   mallPrice,
+  Monster,
   myFury,
   Phylum,
   retrieveItem,
@@ -32,6 +33,7 @@ import {
   get,
   getBanishedMonsters,
   have,
+  Latte,
   maxBy,
   property,
   Requirement,
@@ -45,7 +47,6 @@ import {
   lastAdventureWasWeird,
   ltbRun,
   setChoice,
-  tryFindFreeRunOrBanish,
   userConfirmDialog,
 } from "../lib";
 import { garboAdventure, Macro } from "../combat";
@@ -155,14 +156,20 @@ export function doingGregFight(): boolean {
   );
 }
 
+const isOlfacted = (monster: Monster): boolean =>
+  get("olfactedMonster") === monster && have($effect`On the Trail`);
+const isConned = (monster: Monster): boolean =>
+  get("longConMonster") === monster;
+const isTurtlesexed = (monster: Monster): boolean =>
+  get("_gallapagosMonster") === monster;
+const isLatted = (monster: Monster): boolean =>
+  Latte.sniffedMonster() === monster;
 export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
   if (!doingGregFight()) return null;
   if (
     (have($skill`Transcendent Olfaction`) &&
-      (property.getString("olfactedMonster") === "crate" ||
-        get("_olfactionsUsed") < 2)) ||
-    (have($skill`Long Con`) &&
-      (get("longConMonster") === crate || get("_longConUsed") < 4))
+      (isOlfacted(crate) || get("_olfactionsUsed") < 2)) ||
+    (have($skill`Long Con`) && (isConned(crate) || get("_longConUsed") < 4))
   ) {
     return "Sniff";
   }
@@ -189,9 +196,7 @@ export function saberCrateIfSafe(): void {
   const isSafeToSaber =
     get("beGregariousFightsLeft") === 0 || get("_saberForceMonsterCount") > 0;
   if (!canSaber || !isSafeToSaber) return;
-
-  const possibleBanish = ltbRun();
-  const run = tryFindFreeRun(freeRunConstraints(false)) ?? possibleBanish;
+  const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
 
   do {
     useFamiliar(
@@ -216,33 +221,6 @@ export function saberCrateIfSafe(): void {
         .abort(),
     );
   } while (lastAdventureWasWeird());
-
-  if (run === possibleBanish) {
-    useFamiliar(
-      run.constraints.familiar?.() ??
-        freeFightFamiliar({ canChooseMacro: false }),
-    );
-    run.constraints.preparation?.();
-    new Requirement([], {
-      preventEquip: $items`Kramco Sausage-o-Matic™`,
-    })
-      .merge(
-        run.constraints.equipmentRequirements?.() ?? new Requirement([], {}),
-      )
-      .maximize();
-    do {
-      garboAdventure($location`The Haunted Kitchen`, run.macro);
-    } while (
-      lastAdventureWasWeird({
-        extraEncounters: ["Lights Out in the Kitchen"],
-        includeHolidayWanderers: false,
-      })
-    );
-  }
-
-  if (isBanished($monster`crate`)) {
-    throw new Error("Accidentally banished crate! And failed to unbanish.");
-  }
 }
 
 /**
@@ -272,26 +250,22 @@ function initializeCrates(): void {
     }
     // if we have olfaction, that's our primary method for ensuring crates
     if (
-      (crateStrategy() === "Sniff" &&
-        (property.getString("olfactedMonster") !== "crate" ||
-          !have($effect`On the Trail`) ||
-          property.getString("longConMonster") !== "crate" ||
-          get("_longConUsed") <= 0)) ||
+      (crateStrategy() === "Sniff" && !isOlfacted(crate) && !isConned(crate)) ||
       (crateStrategy() === "Orb" &&
-        ((get("_gallapagosMonster") !== crate &&
-          have($skill`Gallapagosian Mating Call`)) ||
-          (have($item`latte lovers member's mug`) && !get("_latteCopyUsed"))))
+        ((have($skill`Gallapagosian Mating Call`) && !isTurtlesexed(crate)) ||
+          (have($item`latte lovers member's mug`) && !isLatted(crate))))
     ) {
-      const run = tryFindFreeRunOrBanish(freeRunConstraints(true)) ?? ltbRun();
+      const possibleBanish = ltbRun();
+      const run = tryFindFreeRun(freeRunConstraints(false)) ?? possibleBanish;
+
       setChoice(1387, 2); // use the force, in case we decide to use that
 
       // Sniff the crate in as many ways as humanly possible
-      const macro = Macro.trySkill($skill`Transcendent Olfaction`)
+      const sniffrun = Macro.trySkill($skill`Transcendent Olfaction`)
         .trySkill($skill`Long Con`)
         .trySkill($skill`Offer Latte to Opponent`)
         .externalIf(
-          get("_gallapagosMonster") !== crate &&
-            have($skill`Gallapagosian Mating Call`),
+          !isTurtlesexed(crate),
           Macro.trySkill($skill`Gallapagosian Mating Call`),
         )
         .trySkill($skill`Use the Force`)
@@ -317,9 +291,33 @@ function initializeCrates(): void {
         .maximize();
       garboAdventure(
         $location`Noob Cave`,
-        Macro.if_(crate, macro).ifHolidayWanderer(run.macro).abort(),
+        Macro.if_(crate, sniffrun).ifHolidayWanderer(run.macro).abort(),
       );
       visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
+
+      if (run === possibleBanish) {
+        useFamiliar(
+          run.constraints.familiar?.() ??
+            freeFightFamiliar({ canChooseMacro: false }),
+        );
+        run.constraints.preparation?.();
+        new Requirement([], {
+          preventEquip: $items`Kramco Sausage-o-Matic™`,
+        })
+          .merge(
+            run.constraints.equipmentRequirements?.() ??
+              new Requirement([], {}),
+          )
+          .maximize();
+        do {
+          garboAdventure($location`The Haunted Kitchen`, run.macro);
+        } while (
+          lastAdventureWasWeird({
+            extraEncounters: ["Lights Out in the Kitchen"],
+            includeHolidayWanderers: false,
+          })
+        );
+      }
     } else if (
       crateStrategy() === "Saber" &&
       (get("_saberForceMonster") !== crate ||
@@ -328,7 +326,14 @@ function initializeCrates(): void {
     ) {
       saberCrateIfSafe();
     } else break; // we can break the loop if there's nothing to do
-  } while (!["crate", "Using the Force"].includes(get("lastEncounter"))); // loop until we actually hit a crate
+  } while (
+    !["crate", "Using the Force"].includes(get("lastEncounter")) &&
+    !isBanished(crate)
+  ); // loop until we actually hit a crate
+
+  if (isBanished($monster`crate`)) {
+    throw new Error("Accidentally banished crate! And failed to unbanish.");
+  }
 }
 
 function getClub() {
