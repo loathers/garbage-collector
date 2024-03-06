@@ -64,7 +64,7 @@ import { deliverThesisIfAble } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
 
 import { GarboTask } from "./engine";
-import { trackMarginalMpa, trackMarginalTurnExtraValue } from "../session";
+import { trackMarginalMpa } from "../session";
 import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
@@ -658,11 +658,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       outfit: () => {
         const lubing =
           get("dinseyRollercoasterNext") && have($item`lube-shoes`);
-        const { outfit, extraValue } = barfOutfit(
-          lubing ? { equip: $items`lube-shoes` } : {},
-        );
-        trackMarginalTurnExtraValue(extraValue);
-        return outfit;
+        return barfOutfit(lubing ? { equip: $items`lube-shoes` } : {});
       },
       do: $location`Barf Mountain`,
       combat: new GarboStrategy(

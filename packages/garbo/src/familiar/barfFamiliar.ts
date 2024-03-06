@@ -28,7 +28,7 @@ import {
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
 import { baseMeat, BonusEquipMode, HIGHLIGHT } from "../lib";
-import { barfOutfit } from "../outfit/barf";
+import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
@@ -61,13 +61,13 @@ function getCachedOutfitValues(fam: Familiar) {
   const current = myFamiliar();
   cliExecute("checkpoint");
   try {
-    barfOutfit(
+    computeBarfOutfit(
       {
         familiar: fam,
         avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
       },
       true,
-    ).outfit.dress();
+    ).dress();
 
     const outfit = outfitSlots.map((slot) => equippedItem(slot));
     const bonuses = bonusGear(BonusEquipMode.EMBEZZLER, false);
