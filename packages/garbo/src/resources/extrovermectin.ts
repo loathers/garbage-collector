@@ -268,6 +268,7 @@ function initializeCrates(): void {
           Macro.trySkill($skill`Gallapagosian Mating Call`),
         )
         .trySkill($skill`Use the Force`)
+        .trySkill($skill`CLEESH`)
         .step(run.macro);
 
       // equip latte and saber for lattesniff and saberfriends, if we want to
@@ -294,7 +295,7 @@ function initializeCrates(): void {
       );
       visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
 
-      if (run === possibleBanish) {
+      if (run === possibleBanish && !have($skill`CLEESH`)) {
         useFamiliar(
           run.constraints.familiar?.() ??
             freeFightFamiliar({ canChooseMacro: false }),
