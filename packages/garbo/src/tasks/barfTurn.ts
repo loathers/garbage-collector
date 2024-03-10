@@ -533,7 +533,7 @@ const BarfTurnTasks: GarboTask[] = [
     do: () => use($item`envyfish egg`),
     spendsTurn: true,
     outfit: embezzlerOutfit,
-    combat: new GarboStrategy(() => Macro.embezzler()),
+    combat: new GarboStrategy(() => Macro.embezzler("envyfish egg")),
   },
   wanderTask(
     "yellow ray",
