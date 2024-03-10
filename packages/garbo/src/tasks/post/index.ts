@@ -294,6 +294,16 @@ function leafResin(): GarboPostTask {
   };
 }
 
+function wardrobeOMatic(): GarboPostTask {
+  return {
+    name: "Wardrobe-o-Matic",
+    available: have($item`wardrobe-o-matic`),
+    ready: () => myLevel() >= 20,
+    completed: () => have($item`futuristic shirt`),
+    do: () => use($item`wardrobe-o-matic`),
+  };
+}
+
 export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
@@ -311,6 +321,7 @@ export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
       eightBitFatLoot(),
       refillCinch(),
       leafResin(),
+      wardrobeOMatic(),
     ]
       .filter(({ available }) => undelay(available ?? true))
       .map((task) => ({ ...task, spendsTurn: false })),
