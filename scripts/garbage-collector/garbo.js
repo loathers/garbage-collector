@@ -18621,12 +18621,12 @@ var init_CommunityService = __esm({
       }, {
         key: "logTask",
         value: function logTask(name, action) {
-          var _this$taskTimers$get, _action;
+          var _this$taskTimers$get, _action2;
           var _ref2 = (_this$taskTimers$get = this.taskTimers.get(name)) !== null && _this$taskTimers$get !== void 0 ? _this$taskTimers$get : {
             time: Date.now(),
             turns: (0, import_kolmafia66.myTurncount)()
           }, time = _ref2.time, turns2 = _ref2.turns;
-          var estimatedTurns = (_action = action()) !== null && _action !== void 0 ? _action : 0;
+          var estimatedTurns = (_action2 = action()) !== null && _action2 !== void 0 ? _action2 : 0;
           CommunityService2.log[name] = {
             type: "task",
             turnCost: (0, import_kolmafia66.myTurncount)() - turns2,
@@ -27407,17 +27407,17 @@ var CombatStrategy = /* @__PURE__ */ function() {
      */
   }, {
     key: "action",
-    value: function action(_action, monsters) {
+    value: function action(_action2, monsters) {
       if (monsters === void 0) {
-        this.default_action = _action;
+        this.default_action = _action2;
       } else if (monsters instanceof import_kolmafia76.Monster) {
-        this.actions.set(monsters, _action);
+        this.actions.set(monsters, _action2);
       } else {
         var _iterator3 = _createForOfIteratorHelper19(monsters), _step3;
         try {
           for (_iterator3.s(); !(_step3 = _iterator3.n()).done; ) {
             var monster = _step3.value;
-            this.actions.set(monster, _action);
+            this.actions.set(monster, _action2);
           }
         } catch (err) {
           _iterator3.e(err);
@@ -28761,8 +28761,8 @@ var Outfit = /* @__PURE__ */ function() {
       var _iterator9 = _createForOfIteratorHelper20(this.postActions), _step9;
       try {
         for (_iterator9.s(); !(_step9 = _iterator9.n()).done; ) {
-          var _action = _step9.value;
-          _action();
+          var _action2 = _step9.value;
+          _action2();
         }
       } catch (err) {
         _iterator9.e(err);
@@ -30703,7 +30703,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia81.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e45cf39fd3bb20639bb630eec3bb0db59378ee5c", ")"));
+    (0, import_kolmafia81.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1359e614c80d46351c52bd2489cedcb81d117dd9", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia81.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -37508,7 +37508,7 @@ function banishBunny() {
   do {
     var _banish$prepare;
     (_banish$prepare = banish.prepare) === null || _banish$prepare === void 0 || _banish$prepare.call(banish);
-    garboAdventure($location(_templateObject6910 || (_templateObject6910 = _taggedTemplateLiteral91(["The Dire Warren"]))), Macro2.if_($monster(_templateObject708 || (_templateObject708 = _taggedTemplateLiteral91(["fluffy bunny"]))), banish.macro()).embezzler());
+    garboAdventure($location(_templateObject6910 || (_templateObject6910 = _taggedTemplateLiteral91(["The Dire Warren"]))), Macro2.if_($monster(_templateObject708 || (_templateObject708 = _taggedTemplateLiteral91(["fluffy bunny"]))), banish.macro()).embezzler("fluffy bunny banish"));
   } while ("fluffy bunny" !== get("lastEncounter") && !get("banishedMonsters").includes("fluffy bunny"));
 }
 function getBanishedPhyla() {
@@ -39048,9 +39048,10 @@ var wandererFailsafeMacro = function() {
 var _macro = /* @__PURE__ */ new WeakMap();
 var _location = /* @__PURE__ */ new WeakMap();
 var _useAuto = /* @__PURE__ */ new WeakMap();
+var _action = /* @__PURE__ */ new WeakMap();
 var EmbezzlerFightRunOptions = /* @__PURE__ */ function() {
   function EmbezzlerFightRunOptions2(configOptions) {
-    var _ref = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, macro = _ref.macro, location = _ref.location, useAuto = _ref.useAuto;
+    var _ref = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, macro = _ref.macro, location = _ref.location, useAuto = _ref.useAuto, action = _ref.action;
     _classCallCheck26(this, EmbezzlerFightRunOptions2);
     _defineProperty35(this, "configOptions", void 0);
     _classPrivateFieldInitSpec2(this, _macro, {
@@ -39065,7 +39066,12 @@ var EmbezzlerFightRunOptions = /* @__PURE__ */ function() {
       writable: true,
       value: void 0
     });
+    _classPrivateFieldInitSpec2(this, _action, {
+      writable: true,
+      value: void 0
+    });
     this.configOptions = configOptions;
+    _classPrivateFieldSet2(this, _action, action);
     _classPrivateFieldSet2(this, _macro, macro);
     _classPrivateFieldSet2(this, _location, location);
     _classPrivateFieldSet2(this, _useAuto, useAuto);
@@ -39090,7 +39096,7 @@ var EmbezzlerFightRunOptions = /* @__PURE__ */ function() {
     key: "macro",
     get: function get4() {
       var _classPrivateFieldGet22;
-      var baseMacro = (_classPrivateFieldGet22 = _classPrivateFieldGet2(this, _macro)) !== null && _classPrivateFieldGet22 !== void 0 ? _classPrivateFieldGet22 : Macro2.embezzler();
+      var baseMacro = (_classPrivateFieldGet22 = _classPrivateFieldGet2(this, _macro)) !== null && _classPrivateFieldGet22 !== void 0 ? _classPrivateFieldGet22 : Macro2.embezzler(this.action);
       return this.configOptions.draggable === "wanderer" ? wandererFailsafeMacro().step(baseMacro) : baseMacro;
     }
   }, {
@@ -39098,6 +39104,12 @@ var EmbezzlerFightRunOptions = /* @__PURE__ */ function() {
     get: function get4() {
       var _classPrivateFieldGet3;
       return (_classPrivateFieldGet3 = _classPrivateFieldGet2(this, _useAuto)) !== null && _classPrivateFieldGet3 !== void 0 ? _classPrivateFieldGet3 : true;
+    }
+  }, {
+    key: "action",
+    get: function get4() {
+      var _classPrivateFieldGet4;
+      return (_classPrivateFieldGet4 = _classPrivateFieldGet2(this, _action)) !== null && _classPrivateFieldGet4 !== void 0 ? _classPrivateFieldGet4 : "???";
     }
   }]);
   return EmbezzlerFightRunOptions2;
@@ -40070,9 +40082,9 @@ var Macro2 = /* @__PURE__ */ function(_StrictMacro) {
     }
   }, {
     key: "embezzler",
-    value: function embezzler() {
+    value: function embezzler(action) {
       var doneHabitat = !have($skill(_templateObject1783 || (_templateObject1783 = _taggedTemplateLiteral103(["Just the Facts"])))) || get("_monsterHabitatsRecalled") === 3 && get("_monsterHabitatsFightsLeft") <= 1;
-      return this.if_(globalOptions.target, Macro3.if_($location(_templateObject1793 || (_templateObject1793 = _taggedTemplateLiteral103(["The Briny Deeps"]))), Macro3.tryCopier($item(_templateObject1803 || (_templateObject1803 = _taggedTemplateLiteral103(["pulled green taffy"]))))).externalIf((0, import_kolmafia114.myFamiliar)() === $familiar(_templateObject18111 || (_templateObject18111 = _taggedTemplateLiteral103(["Reanimated Reanimator"]))), Macro3.trySkill($skill(_templateObject18210 || (_templateObject18210 = _taggedTemplateLiteral103(["Wink at"]))))).externalIf((0, import_kolmafia114.myFamiliar)() === $familiar(_templateObject1836 || (_templateObject1836 = _taggedTemplateLiteral103(["Obtuse Angel"]))), Macro3.trySkill($skill(_templateObject1843 || (_templateObject1843 = _taggedTemplateLiteral103(["Fire a badly romantic arrow"]))))).externalIf(doneHabitat && get("beGregariousCharges") > 0 && (get("beGregariousMonster") !== globalOptions.target || have($item(_templateObject1853 || (_templateObject1853 = _taggedTemplateLiteral103(["miniature crystal ball"])))) ? get("beGregariousFightsLeft") === 0 : get("beGregariousFightsLeft") <= 1), Macro3.trySkill($skill(_templateObject1863 || (_templateObject1863 = _taggedTemplateLiteral103(["Be Gregarious"]))))).externalIf(have($skill(_templateObject1873 || (_templateObject1873 = _taggedTemplateLiteral103(["Just the Facts"])))) && get("_monsterHabitatsRecalled") < 3 && (get("_monsterHabitatsMonster") !== globalOptions.target || have($item(_templateObject1883 || (_templateObject1883 = _taggedTemplateLiteral103(["miniature crystal ball"])))) ? get("_monsterHabitatsFightsLeft") === 0 : get("_monsterHabitatsFightsLeft") <= 1), Macro3.trySkill($skill(_templateObject1893 || (_templateObject1893 = _taggedTemplateLiteral103(["Recall Facts: Monster Habitats"]))))).externalIf(have($skill(_templateObject1903 || (_templateObject1903 = _taggedTemplateLiteral103(["Recall Facts: %phylum Circadian Rhythms"])))) && !get("_circadianRhythmsRecalled"), Macro3.trySkill($skill(_templateObject19111 || (_templateObject19111 = _taggedTemplateLiteral103(["Recall Facts: %phylum Circadian Rhythms"]))))).externalIf(SourceTerminal_exports.getDigitizeMonster() !== globalOptions.target || shouldRedigitize(), Macro3.tryCopier($skill(_templateObject19210 || (_templateObject19210 = _taggedTemplateLiteral103(["Digitize"]))))).tryCopier($item(_templateObject1935 || (_templateObject1935 = _taggedTemplateLiteral103(["Spooky Putty sheet"])))).tryCopier($item(_templateObject1943 || (_templateObject1943 = _taggedTemplateLiteral103(["Rain-Doh black box"])))).tryCopier($item(_templateObject1953 || (_templateObject1953 = _taggedTemplateLiteral103(["4-d camera"])))).tryCopier($item(_templateObject1963 || (_templateObject1963 = _taggedTemplateLiteral103(["unfinished ice sculpture"])))).externalIf(get("_enamorangs") === 0, Macro3.tryCopier($item(_templateObject1973 || (_templateObject1973 = _taggedTemplateLiteral103(["LOV Enamorang"]))))).meatKill()).abortWithMsg("Expected ".concat(globalOptions.target, " but encountered something else."));
+      return this.if_(globalOptions.target, Macro3.if_($location(_templateObject1793 || (_templateObject1793 = _taggedTemplateLiteral103(["The Briny Deeps"]))), Macro3.tryCopier($item(_templateObject1803 || (_templateObject1803 = _taggedTemplateLiteral103(["pulled green taffy"]))))).externalIf((0, import_kolmafia114.myFamiliar)() === $familiar(_templateObject18111 || (_templateObject18111 = _taggedTemplateLiteral103(["Reanimated Reanimator"]))), Macro3.trySkill($skill(_templateObject18210 || (_templateObject18210 = _taggedTemplateLiteral103(["Wink at"]))))).externalIf((0, import_kolmafia114.myFamiliar)() === $familiar(_templateObject1836 || (_templateObject1836 = _taggedTemplateLiteral103(["Obtuse Angel"]))), Macro3.trySkill($skill(_templateObject1843 || (_templateObject1843 = _taggedTemplateLiteral103(["Fire a badly romantic arrow"]))))).externalIf(doneHabitat && get("beGregariousCharges") > 0 && (get("beGregariousMonster") !== globalOptions.target || have($item(_templateObject1853 || (_templateObject1853 = _taggedTemplateLiteral103(["miniature crystal ball"])))) ? get("beGregariousFightsLeft") === 0 : get("beGregariousFightsLeft") <= 1), Macro3.trySkill($skill(_templateObject1863 || (_templateObject1863 = _taggedTemplateLiteral103(["Be Gregarious"]))))).externalIf(have($skill(_templateObject1873 || (_templateObject1873 = _taggedTemplateLiteral103(["Just the Facts"])))) && get("_monsterHabitatsRecalled") < 3 && (get("_monsterHabitatsMonster") !== globalOptions.target || have($item(_templateObject1883 || (_templateObject1883 = _taggedTemplateLiteral103(["miniature crystal ball"])))) ? get("_monsterHabitatsFightsLeft") === 0 : get("_monsterHabitatsFightsLeft") <= 1), Macro3.trySkill($skill(_templateObject1893 || (_templateObject1893 = _taggedTemplateLiteral103(["Recall Facts: Monster Habitats"]))))).externalIf(have($skill(_templateObject1903 || (_templateObject1903 = _taggedTemplateLiteral103(["Recall Facts: %phylum Circadian Rhythms"])))) && !get("_circadianRhythmsRecalled"), Macro3.trySkill($skill(_templateObject19111 || (_templateObject19111 = _taggedTemplateLiteral103(["Recall Facts: %phylum Circadian Rhythms"]))))).externalIf(SourceTerminal_exports.getDigitizeMonster() !== globalOptions.target || shouldRedigitize(), Macro3.tryCopier($skill(_templateObject19210 || (_templateObject19210 = _taggedTemplateLiteral103(["Digitize"]))))).tryCopier($item(_templateObject1935 || (_templateObject1935 = _taggedTemplateLiteral103(["Spooky Putty sheet"])))).tryCopier($item(_templateObject1943 || (_templateObject1943 = _taggedTemplateLiteral103(["Rain-Doh black box"])))).tryCopier($item(_templateObject1953 || (_templateObject1953 = _taggedTemplateLiteral103(["4-d camera"])))).tryCopier($item(_templateObject1963 || (_templateObject1963 = _taggedTemplateLiteral103(["unfinished ice sculpture"])))).externalIf(get("_enamorangs") === 0, Macro3.tryCopier($item(_templateObject1973 || (_templateObject1973 = _taggedTemplateLiteral103(["LOV Enamorang"]))))).meatKill()).abortWithMsg("Macro for ".concat(action, " expected ").concat(globalOptions.target, " but encountered something else."));
     }
   }], [{
     key: "abortWithMsg",
@@ -40136,8 +40148,8 @@ var Macro2 = /* @__PURE__ */ function(_StrictMacro) {
     }
   }, {
     key: "embezzler",
-    value: function embezzler() {
-      return new Macro3().embezzler();
+    value: function embezzler(action) {
+      return new Macro3().embezzler(action);
     }
   }]);
   return Macro3;
@@ -43040,7 +43052,7 @@ function startWandererCounter() {
         (_run$constraints$prep3 = (_run$constraints3 = run.constraints).preparation) === null || _run$constraints$prep3 === void 0 || _run$constraints$prep3.call(_run$constraints3);
         freeFightOutfit(toSpec(run)).dress();
       }
-      garboAdventure($location(_templateObject4322 || (_templateObject4322 = _taggedTemplateLiteral109(["The Haunted Kitchen"]))), Macro2.if_(globalOptions.target, Macro2.embezzler()).step(run.macro));
+      garboAdventure($location(_templateObject4322 || (_templateObject4322 = _taggedTemplateLiteral109(["The Haunted Kitchen"]))), Macro2.if_(globalOptions.target, Macro2.embezzler("wanderer")).step(run.macro));
     } while (get("lastCopyableMonster") === $monster(_templateObject4222 || (_templateObject4222 = _taggedTemplateLiteral109(["Government agent"]))) || lastAdventureWasWeird({
       extraEncounters: ["Lights Out in the Kitchen"]
     }));
@@ -43129,7 +43141,8 @@ function dailyFights() {
             var startLectures = get("_pocketProfessorLectures");
             runEmbezzlerFight(fightSource, {
               macro: macro(),
-              useAuto: false
+              useAuto: false,
+              action: "Pocket Professor"
             });
             eventLog.initialCopyTargetsFought += 1 + get("_pocketProfessorLectures") - startLectures;
             eventLog.copyTargetSources.push(fightSource.name);
@@ -43177,7 +43190,9 @@ function dailyFights() {
         }
         (0, import_kolmafia120.setLocation)(location);
         embezzlerOutfit(_objectSpread22(_objectSpread22({}, nextFight.spec), famSpec), location).dress();
-        runEmbezzlerFight(nextFight);
+        runEmbezzlerFight(nextFight, {
+          action: nextFight.name
+        });
         postCombatActions();
         (0, import_kolmafia120.print)("Finished ".concat(nextFight.name));
         if ((0, import_kolmafia120.totalTurnsPlayed)() - startTurns === 1 && get("lastCopyableMonster") === globalOptions.target && (nextFight.wrongEncounterName || get("lastEncounter") === globalOptions.target.name)) {
@@ -45253,7 +45268,7 @@ var BarfTurnTasks = [
     spendsTurn: true,
     outfit: embezzlerOutfit,
     combat: new GarboStrategy(function() {
-      return Macro2.embezzler();
+      return Macro2.embezzler("envyfish egg");
     })
   },
   wanderTask("yellow ray", {}, {
