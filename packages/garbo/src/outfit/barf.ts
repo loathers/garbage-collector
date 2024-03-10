@@ -1,6 +1,7 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
   cliExecute,
+  Familiar,
   inebrietyLimit,
   Item,
   myClass,
@@ -28,6 +29,7 @@ import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
 import { BonusEquipMode, modeValueOfItem, modeValueOfMeat } from "../lib";
+import { trackMarginalTurnExtraValue } from "../session";
 
 function chooseGun() {
   if (have($item`love`)) {
@@ -93,7 +95,10 @@ const POINTER_RING_SPECS: (
 const trueInebrietyLimit = () =>
   inebrietyLimit() - (myFamiliar() === $familiar`Stooper` ? 1 : 0);
 
-export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
+export function computeBarfOutfit(
+  spec: OutfitSpec & { familiar: Familiar },
+  sim = false,
+): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
@@ -101,14 +106,12 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
     new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
   );
 
-  outfit.familiar ??= barfFamiliar();
-
   if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
     outfit.equip($item`LED candle`);
     outfit.setModes({ jillcandle: "ultraviolet" });
   }
 
-  const bjornChoice = chooseBjorn(BonusEquipMode.BARF, outfit.familiar, sim);
+  const bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
 
   outfit.modifier.push(
     `${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`,
@@ -166,4 +169,13 @@ export function barfOutfit(spec: OutfitSpec = {}, sim = false): Outfit {
   });
 
   return outfit;
+}
+
+export function barfOutfit(spec: OutfitSpec, sim = false): Outfit {
+  const { familiar, extraValue } = barfFamiliar();
+  try {
+    return computeBarfOutfit({ familiar, ...spec }, sim);
+  } finally {
+    trackMarginalTurnExtraValue(extraValue);
+  }
 }

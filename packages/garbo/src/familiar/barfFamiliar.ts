@@ -28,14 +28,13 @@ import {
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
 import { baseMeat, BonusEquipMode, HIGHLIGHT } from "../lib";
-import { barfOutfit } from "../outfit/barf";
+import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
-import { setMarginalFamiliarsExcessValue } from "../session";
 import { garboValue } from "../garboValue";
 
 const ITEM_DROP_VALUE = 0.72;
@@ -62,7 +61,7 @@ function getCachedOutfitValues(fam: Familiar) {
   const current = myFamiliar();
   cliExecute("checkpoint");
   try {
-    barfOutfit(
+    computeBarfOutfit(
       {
         familiar: fam,
         avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
@@ -132,34 +131,35 @@ function totalFamiliarValue({
   return expectedValue + outfitValue + familiarAbilityValue(familiar);
 }
 
-function turnsNeededForFamiliar(
-  { familiar, limit, outfitValue }: MarginalFamiliar,
+function turnsNeededFromBaseline(
   baselineToCompareAgainst: MarginalFamiliar,
-): number {
-  switch (limit) {
-    case "drops":
-      return sum(
-        getAllDrops(familiar).filter(
-          ({ expectedValue }) =>
-            outfitValue + familiarAbilityValue(familiar) + expectedValue >
-            totalFamiliarValue(baselineToCompareAgainst),
-        ),
-        ({ expectedTurns }) => expectedTurns,
-      );
+): (option: MarginalFamiliar) => number {
+  return ({ familiar, limit, outfitValue }: MarginalFamiliar) => {
+    switch (limit) {
+      case "drops":
+        return sum(
+          getAllDrops(familiar).filter(
+            ({ expectedValue }) =>
+              outfitValue + familiarAbilityValue(familiar) + expectedValue >
+              totalFamiliarValue(baselineToCompareAgainst),
+          ),
+          ({ expectedTurns }) => expectedTurns,
+        );
 
-    case "experience":
-      return getExperienceFamiliarLimit(familiar);
+      case "experience":
+        return getExperienceFamiliarLimit(familiar);
 
-    case "none":
-      return 0;
+      case "none":
+        return 0;
 
-    case "special":
-      return getSpecialFamiliarLimit({
-        familiar,
-        outfitValue,
-        baselineToCompareAgainst,
-      });
-  }
+      case "special":
+        return getSpecialFamiliarLimit({
+          familiar,
+          outfitValue,
+          baselineToCompareAgainst,
+        });
+    }
+  };
 }
 
 function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
@@ -172,9 +172,33 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
 
   return { ...f, outfitValue, outfitWeight };
 }
-export function barfFamiliar(): Familiar {
-  if (timeToMeatify()) return $familiar`Grey Goose`;
-  if (get("garbo_IgnoreMarginalFamiliars", false)) return meatFamiliar();
+
+function extraValue(
+  target: MarginalFamiliar,
+  meat: MarginalFamiliar,
+  jellyfish: MarginalFamiliar | undefined,
+) {
+  const targetValue = totalFamiliarValue(target);
+  const meatFamiliarValue = totalFamiliarValue(meat);
+
+  const jellyfishValue = jellyfish
+    ? garboValue($item`stench jelly`) / 20 +
+      familiarAbilityValue(jellyfish.familiar) +
+      jellyfish.outfitValue
+    : 0;
+  return Math.max(targetValue - Math.max(meatFamiliarValue, jellyfishValue), 0);
+}
+
+export function barfFamiliar(): { familiar: Familiar; extraValue: number } {
+  if (timeToMeatify()) {
+    return { familiar: $familiar`Grey Goose`, extraValue: 0 };
+  }
+
+  if (get("garbo_IgnoreMarginalFamiliars", false)) {
+    return { familiar: meatFamiliar(), extraValue: 0 };
+  }
+
+  const meat = meatFamiliar();
 
   const fullMenu = menu({
     canChooseMacro: true,
@@ -182,9 +206,7 @@ export function barfFamiliar(): Familiar {
     includeExperienceFamiliars: false,
   }).map(calculateOutfitValue);
 
-  const meatFamiliarEntry = fullMenu.find(
-    ({ familiar }) => familiar === meatFamiliar(),
-  );
+  const meatFamiliarEntry = fullMenu.find(({ familiar }) => familiar === meat);
 
   if (!meatFamiliarEntry) {
     throw new Error("Something went wrong when initializing familiars!");
@@ -196,50 +218,38 @@ export function barfFamiliar(): Familiar {
   );
 
   if (viableMenu.every(({ limit }) => limit !== "none")) {
-    const turnsNeeded = sum(viableMenu, (option: MarginalFamiliar) =>
-      turnsNeededForFamiliar(option, meatFamiliarEntry),
+    const turnsNeeded = sum(
+      viableMenu,
+      turnsNeededFromBaseline(meatFamiliarEntry),
     );
 
     if (turnsNeeded < turnsAvailable()) {
       const shrubAvailable = viableMenu.some(
         ({ familiar }) => familiar === $familiar`Crimbo Shrub`,
       );
-      return shrubAvailable ? $familiar`Crimbo Shrub` : meatFamiliar();
+      return {
+        familiar: shrubAvailable ? $familiar`Crimbo Shrub` : meat,
+        extraValue: 0,
+      };
     }
   }
 
   if (viableMenu.length === 0) {
-    setMarginalFamiliarsExcessValue(0);
-    return meatFamiliar();
+    return { familiar: meat, extraValue: 0 };
   }
 
   const best = maxBy(viableMenu, totalFamiliarValue);
 
-  // Because we run marginal familiars at the end, our marginal MPA is inflated by best.expectedValue - meatFamiliarValue every turn
-  // Technically it's the nominalFamiliarValue, which for now is the max of meatFamiliar and jellyfish (if we have the jellyfish)
-  const jellyfish = fullMenu.find(
-    ({ familiar }) => familiar === $familiar`Space Jellyfish`,
-  );
-  const jellyfishValue = jellyfish
-    ? garboValue($item`stench jelly`) / 20 +
-      familiarAbilityValue(jellyfish.familiar) +
-      jellyfish.outfitValue
-    : 0;
-  const excessValue = Math.max(
-    best.expectedValue +
-      best.outfitValue +
-      familiarAbilityValue(best.familiar) -
-      Math.max(meatFamiliarValue, jellyfishValue),
-    0,
-  );
-  setMarginalFamiliarsExcessValue(excessValue);
-
-  const familiarPrintout = (x: MarginalFamiliar) =>
-    `(expected value of ${x.expectedValue.toFixed(
+  const familiarPrintout = ({
+    expectedValue,
+    familiar,
+    outfitValue,
+  }: MarginalFamiliar) =>
+    `(expected value of ${expectedValue.toFixed(
       1,
-    )} from familiar drops, ${familiarAbilityValue(x.familiar).toFixed(
+    )} from familiar drops, ${familiarAbilityValue(familiar).toFixed(
       1,
-    )} from familiar abilities and ${x.outfitValue.toFixed(1)} from outfit)`;
+    )} from familiar abilities and ${outfitValue.toFixed(1)} from outfit)`;
 
   print(
     `Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${
@@ -248,7 +258,14 @@ export function barfFamiliar(): Familiar {
     HIGHLIGHT,
   );
 
-  return best.familiar;
+  const jellyfish = fullMenu.find(
+    ({ familiar }) => familiar === $familiar`Space Jellyfish`,
+  );
+
+  return {
+    familiar: best.familiar,
+    extraValue: extraValue(best, meatFamiliarEntry, jellyfish),
+  };
 }
 
 function getSpecialFamiliarLimit({

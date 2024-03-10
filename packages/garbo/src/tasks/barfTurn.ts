@@ -64,6 +64,7 @@ import { deliverThesisIfAble } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
 
 import { GarboTask } from "./engine";
+import { trackMarginalMpa } from "../session";
 import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
@@ -668,7 +669,10 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
-      post: () => completeBarfQuest(),
+      post: () => {
+        completeBarfQuest();
+        trackMarginalMpa();
+      },
       spendsTurn: true,
     },
   ],
