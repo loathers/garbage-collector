@@ -6,7 +6,13 @@ import { failedWishes } from "./potions";
 import { garboValue } from "./garboValue";
 import { estimatedGarboTurns } from "./turns";
 
-type SessionKey = "full" | "barf" | "meat-start" | "meat-end" | "item";
+type SessionKey =
+  | "full"
+  | "barf"
+  | "meat-start"
+  | "meat-end"
+  | "item-start"
+  | "item-end";
 const sessions: Map<SessionKey, Session> = new Map();
 /**
  * Start a new session, deleting any old session
@@ -32,28 +38,34 @@ export function trackMarginalTurnExtraValue(additionalValue: number) {
   extraValue += additionalValue;
 }
 
-export function trackMarginalMpa() {
+export function trackMarginalMpa(remainingTurns?: number) {
   const barf = sessions.get("barf");
   const current = Session.current();
   if (!barf) {
     sessions.set("barf", Session.current());
   } else {
     const turns = barf.diff(current).totalTurns;
+    remainingTurns ??= estimatedGarboTurns();
     // track items if we have run at least 100 turns in barf mountain or we have less than 200 turns left in barf mountain
-    const item = sessions.get("item");
+    const item = sessions.get("item-start");
     if (!item && (turns > 100 || estimatedGarboTurns() <= 200)) {
-      sessions.set("item", current);
+      sessions.set("item-start", current);
     }
     // start tracking meat if there are less than 75 turns left in barf mountain
     const meatStart = sessions.get("meat-start");
-    if (!meatStart && estimatedGarboTurns() <= 75) {
+    if (!meatStart && remainingTurns <= 75) {
       sessions.set("meat-start", current);
     }
 
     // stop tracking meat if there are less than 25 turns left in barf moutain
     const meatEnd = sessions.get("meat-end");
-    if (!meatEnd && estimatedGarboTurns() <= 25) {
+    if (!meatEnd && remainingTurns <= 25) {
       sessions.set("meat-end", current);
+    }
+
+    const itemEnd = sessions.get("item-end");
+    if (!itemEnd && remainingTurns <= 0) {
+      sessions.set("item-end", current);
     }
   }
 }
@@ -64,7 +76,8 @@ function printMarginalSession() {
   const barf = sessions.get("barf");
   const meatStart = sessions.get("meat-start");
   const meatEnd = sessions.get("meat-end");
-  const item = sessions.get("item");
+  const itemStart = sessions.get("item-start");
+  const itemEnd = sessions.get("item-end");
 
   // we can only print out marginal items if we've started tracking for marginal value
   if (barf && meatStart && meatEnd) {
@@ -85,9 +98,9 @@ function printMarginalSession() {
       isOutlier,
     });
 
-    if (item) {
+    if (itemStart && itemEnd) {
       // MPA printout including maringal items
-      const itemMpa = Session.computeMPA(item, Session.current(), {
+      const itemMpa = Session.computeMPA(itemStart, itemEnd, {
         value: garboValue,
         isOutlier,
         excludeValue: { item: extraValue },
@@ -163,6 +176,8 @@ function resetGarboDaily() {
 }
 
 export function endSession(printLog = true): void {
+  // force marginal mpa to always have a 0 turns remaining calculation
+  trackMarginalMpa(0);
   resetGarboDaily();
   const message = (head: string, turns: number, meat: number, items: number) =>
     print(
