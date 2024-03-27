@@ -18,7 +18,7 @@ import {
 } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { HIGHLIGHT, logMessage } from "../lib";
+import { HIGHLIGHT } from "../lib";
 import { acquire } from "../acquire";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
@@ -73,9 +73,6 @@ export function checkVolcanoQuest() {
   );
   if (bestItem.item === $item`fused fuse`) {
     globalOptions.clarasBellClaimed = true;
-    logMessage(
-      "Grab a fused fused with your clara's bell charge while overdrunk!",
-    );
   } else if (volcanoItemValue(bestItem) < volcoinoValue) {
     withProperty("autoBuyPriceLimit", volcoinoValue, () =>
       retrieveItem(bestItem.item, bestItem.quantity),
