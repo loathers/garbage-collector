@@ -30703,7 +30703,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia81.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1359e614c80d46351c52bd2489cedcb81d117dd9", ")"));
+    (0, import_kolmafia81.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b2fe09e778a31e470e3f77c339d24014e7c3b61b", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia81.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -33427,24 +33427,30 @@ var extraValue = 0;
 function trackMarginalTurnExtraValue(additionalValue) {
   extraValue += additionalValue;
 }
-function trackMarginalMpa() {
+function trackMarginalMpa(remainingTurns) {
   var barf = sessions.get("barf");
   var current2 = Session.current();
   if (!barf) {
     sessions.set("barf", Session.current());
   } else {
+    var _remainingTurns;
     var turns2 = barf.diff(current2).totalTurns;
-    var item11 = sessions.get("item");
+    (_remainingTurns = remainingTurns) !== null && _remainingTurns !== void 0 ? _remainingTurns : remainingTurns = estimatedGarboTurns();
+    var item11 = sessions.get("item-start");
     if (!item11 && (turns2 > 100 || estimatedGarboTurns() <= 200)) {
-      sessions.set("item", current2);
+      sessions.set("item-start", current2);
     }
     var meatStart = sessions.get("meat-start");
-    if (!meatStart && estimatedGarboTurns() <= 75) {
+    if (!meatStart && remainingTurns <= 75) {
       sessions.set("meat-start", current2);
     }
     var meatEnd = sessions.get("meat-end");
-    if (!meatEnd && estimatedGarboTurns() <= 25) {
+    if (!meatEnd && remainingTurns <= 25) {
       sessions.set("meat-end", current2);
+    }
+    var itemEnd = sessions.get("item-end");
+    if (!itemEnd && remainingTurns <= 0) {
+      sessions.set("item-end", current2);
     }
   }
 }
@@ -33453,7 +33459,8 @@ function printMarginalSession() {
   var barf = sessions.get("barf");
   var meatStart = sessions.get("meat-start");
   var meatEnd = sessions.get("meat-end");
-  var item11 = sessions.get("item");
+  var itemStart = sessions.get("item-start");
+  var itemEnd = sessions.get("item-end");
   if (barf && meatStart && meatEnd) {
     var _barf$value = barf.value(garboValue), barfItemDetails = _barf$value.itemDetails;
     var isOutlier = function(detail2) {
@@ -33465,8 +33472,8 @@ function printMarginalSession() {
       value: garboValue,
       isOutlier: isOutlier
     });
-    if (item11) {
-      var itemMpa = Session.computeMPA(item11, Session.current(), {
+    if (itemStart && itemEnd) {
+      var itemMpa = Session.computeMPA(itemStart, itemEnd, {
         value: garboValue,
         isOutlier: isOutlier,
         excludeValue: {
@@ -33518,6 +33525,7 @@ function resetGarboDaily() {
 }
 function endSession() {
   var printLog2 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : true;
+  trackMarginalMpa(0);
   resetGarboDaily();
   var message = function(head2, turns3, meat2, items2) {
     return (0, import_kolmafia87.print)("".concat(head2, ", across ").concat(formatNumber(turns3), " turns you generated ").concat(formatNumber(meat2 + items2), " meat, with ").concat(formatNumber(meat2), " raw meat and ").concat(formatNumber(items2), " from items"), HIGHLIGHT);
