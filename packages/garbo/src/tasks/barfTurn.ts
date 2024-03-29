@@ -262,12 +262,13 @@ function willDrunkAdventure() {
 }
 
 function canGetFusedFuse() {
+  if (get("noncombatForcerActive")) return true;
   return (
     realmAvailable("hot") &&
     ([1, 2, 3] as const).some(
       (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id,
     ) &&
-    !globalOptions.clarasBellClaimed &&
+    !get("_claraBellUsed") &&
     have($item`Clara's bell`)
   );
 }
@@ -316,11 +317,8 @@ const NonBarfTurnTasks: AlternateTask[] = [
     name: "Fused Fuse",
     completed: () => get("_volcanoItemRedeemed"),
     ready: canGetFusedFuse,
-    do: () => {
-      use($item`Clara's bell`);
-      globalOptions.clarasBellClaimed = true;
-      return $location`LavaCo™ Lamp Factory`;
-    },
+    do: $location`LavaCo™ Lamp Factory`,
+    prepare: () => get("noncombatForcerActive") || use($item`Clara's bell`),
     post: () => {
       visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
       const option = ([1, 2, 3] as const).find(
