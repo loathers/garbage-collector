@@ -325,6 +325,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
         (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id,
       );
       if (option) runChoice(option);
+      visitUrl("main.php");
     },
     outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
     combat: new GarboStrategy(() =>
@@ -332,6 +333,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     ),
     turns: () => (canGetFusedFuse() ? 1 : 0),
     spendsTurn: true,
+    choices: { 1091: 7 },
   },
   {
     name: "Map for Pills",
