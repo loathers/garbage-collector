@@ -261,15 +261,20 @@ function willDrunkAdventure() {
   return have($item`Drunkula's wineglass`) && globalOptions.ascend;
 }
 
+function canForceNoncombat() {
+  return (
+    get("noncombatForcerActive") ||
+    (!get("_claraBellUsed") && have($item`Clara's bell`))
+  );
+}
+
 function canGetFusedFuse() {
-  if (get("noncombatForcerActive")) return true;
   return (
     realmAvailable("hot") &&
     ([1, 2, 3] as const).some(
       (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id,
     ) &&
-    !get("_claraBellUsed") &&
-    have($item`Clara's bell`)
+    canForceNoncombat()
   );
 }
 
