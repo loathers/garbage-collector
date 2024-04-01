@@ -48,7 +48,7 @@ import {
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../embezzler";
-import { coinmasterPrice } from "../lib";
+import { aprilFoolsRufus, coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
@@ -502,7 +502,10 @@ const DailyItemTasks: GarboTask[] = [
       ClosedCircuitPayphone.have() && !ClosedCircuitPayphone.rufusTarget(),
     completed: () =>
       get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`),
-    do: () => ClosedCircuitPayphone.chooseQuest(() => 3),
+    do: () => {
+      ClosedCircuitPayphone.chooseQuest(() => 3);
+      aprilFoolsRufus();
+    },
     spendsTurn: false,
   },
   {
