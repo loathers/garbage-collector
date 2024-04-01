@@ -14,6 +14,7 @@ import {
   handlingChoice,
   haveEquipped,
   haveSkill,
+  holiday,
   inebrietyLimit,
   isDarkMode,
   Item,
@@ -1046,4 +1047,10 @@ export function setCombatFlags(...flags: { flag: string; value: boolean }[]) {
       true)
     }`,
   );
+}
+
+export function aprilFoolsRufus() {
+  if (holiday().includes("April Fool's Day")) {
+    visitUrl("questlog.php?which=7");
+  }
 }

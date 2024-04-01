@@ -139,6 +139,7 @@ import {
   setBestLeprechaunAsMeatFamiliar,
 } from "./familiar";
 import {
+  aprilFoolsRufus,
   asArray,
   baseMeat,
   bestShadowRift,
@@ -1255,6 +1256,7 @@ const freeFightSources = [
         !ClosedCircuitPayphone.rufusTarget()
       ) {
         ClosedCircuitPayphone.chooseQuest(() => 2); // Choose an artifact (not supporting boss for now)
+        aprilFoolsRufus();
       }
 
       runShadowRiftTurn();
@@ -1268,6 +1270,7 @@ const freeFightSources = [
           !ClosedCircuitPayphone.rufusTarget()
         ) {
           ClosedCircuitPayphone.chooseQuest(() => 2);
+          aprilFoolsRufus();
         }
         adv1(bestShadowRift(), -1, ""); // grab the NC
       }
