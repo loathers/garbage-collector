@@ -34,6 +34,7 @@ import {
   GingerBread,
   have,
   questStep,
+  realmAvailable,
   set,
   SourceTerminal,
   sum,
@@ -260,6 +261,23 @@ function willDrunkAdventure() {
   return have($item`Drunkula's wineglass`) && globalOptions.ascend;
 }
 
+function canForceNoncombat() {
+  return (
+    get("noncombatForcerActive") ||
+    (!get("_claraBellUsed") && have($item`Clara's bell`))
+  );
+}
+
+function canGetFusedFuse() {
+  return (
+    realmAvailable("hot") &&
+    ([1, 2, 3] as const).some(
+      (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id,
+    ) &&
+    canForceNoncombat()
+  );
+}
+
 const NonBarfTurnTasks: AlternateTask[] = [
   {
     name: "Daily Dungeon (drunk)",
@@ -299,6 +317,28 @@ const NonBarfTurnTasks: AlternateTask[] = [
     ...gingerbreadMidnight(() => !willDrunkAdventure()),
     name: "Gingerbread Midnight (sober)",
     turns: () => (GingerBread.minutesToMidnight() === 0 ? 1 : 0),
+  },
+  {
+    name: "Fused Fuse",
+    completed: () => get("_volcanoItemRedeemed"),
+    ready: canGetFusedFuse,
+    do: $location`LavaCo™ Lamp Factory`,
+    prepare: () => get("noncombatForcerActive") || use($item`Clara's bell`),
+    post: () => {
+      visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
+      const option = ([1, 2, 3] as const).find(
+        (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id,
+      );
+      if (option) runChoice(option);
+      visitUrl("main.php");
+    },
+    outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Hit unexpected combat!"),
+    ),
+    turns: () => (canGetFusedFuse() ? 1 : 0),
+    spendsTurn: true,
+    choices: { 1091: 7 },
   },
   {
     name: "Map for Pills",
