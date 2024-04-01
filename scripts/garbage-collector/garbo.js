@@ -1814,9 +1814,9 @@ function findFairyMultiplier(familiar8) {
   return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
 function getTodaysHolidayWanderers() {
-  return flat((0, import_kolmafia5.holiday)().split("/").map(function(holiday5) {
+  return flat((0, import_kolmafia5.holiday)().split("/").map(function(holiday6) {
     var _holidayWanderers$get;
-    return (_holidayWanderers$get = holidayWanderers.get(holiday5)) !== null && _holidayWanderers$get !== void 0 ? _holidayWanderers$get : [];
+    return (_holidayWanderers$get = holidayWanderers.get(holiday6)) !== null && _holidayWanderers$get !== void 0 ? _holidayWanderers$get : [];
   }));
 }
 function canVisitUrl() {
@@ -30703,7 +30703,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia81.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("97bbf31416c499c79f5b6608f12a046ac7312036", ")"));
+    (0, import_kolmafia81.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d7183beecccc9fa05442b2c52b79c731350ef0d7", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia81.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -31059,6 +31059,11 @@ function setCombatFlags2() {
     var flag = _ref4.flag, value = _ref4.value;
     return "flag_".concat(flag, "=").concat(Number(value));
   })), ["action=Update"]).join("&"), true)));
+}
+function aprilFoolsRufus() {
+  if ((0, import_kolmafia81.holiday)().includes("April Fool's Day")) {
+    (0, import_kolmafia81.visitUrl)("questlog.php?which=7");
+  }
 }
 
 // src/turns.ts
@@ -35473,6 +35478,7 @@ var rufusPotion = new Potion($item(_templateObject1040 || (_templateObject1040 =
         ClosedCircuitPayphone_exports.chooseQuest(function() {
           return 3;
         });
+        aprilFoolsRufus();
         var target = ClosedCircuitPayphone_exports.rufusTarget();
         if (get("rufusQuestType") === "items") {
           if (acquire(3, target, 2 * (0, import_kolmafia96.mallPrice)(target), false, 1e5)) {
@@ -43648,6 +43654,7 @@ var freeFightSources = [
       ClosedCircuitPayphone_exports.chooseQuest(function() {
         return 2;
       });
+      aprilFoolsRufus();
     }
     runShadowRiftTurn();
     if (get("encountersUntilSRChoice") === 0 || get("noncombatForcerActive")) {
@@ -43655,6 +43662,7 @@ var freeFightSources = [
         ClosedCircuitPayphone_exports.chooseQuest(function() {
           return 2;
         });
+        aprilFoolsRufus();
       }
       (0, import_kolmafia120.adv1)(bestShadowRift(), -1, "");
     }
@@ -47603,9 +47611,10 @@ var DailyItemTasks = [{
     return get("_shadowForestLooted") || have($item(_templateObject9810 || (_templateObject9810 = _taggedTemplateLiteral113(["Rufus's shadow lodestone"]))));
   },
   do: function() {
-    return ClosedCircuitPayphone_exports.chooseQuest(function() {
+    ClosedCircuitPayphone_exports.chooseQuest(function() {
       return 3;
     });
+    aprilFoolsRufus();
   },
   spendsTurn: false
 }, {
