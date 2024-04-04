@@ -171,17 +171,7 @@ export class WandererManager {
     [$location`A-Boo Peak`, { 1430: 2 }],
     [$location`Sloppy Seconds Diner`, { 919: 6 }],
     [$location`VYKEA`, { 1115: 6 }],
-    [
-      $location`The Ice Hotel`,
-      () => {
-        const valueOfCertificates = get("_iceHotelRoomsRaided")
-          ? 0
-          : this.options.itemValue($item`Wal-Mart gift certificate`) * 3;
-        return {
-          1116: valueOfCertificates > this.options.valueOfAdventure ? 5 : 6,
-        };
-      },
-    ],
+    [$location`The Ice Hotel`, { 1116: 6 }],
     [
       $location`The Castle in the Clouds in the Sky (Basement)`,
       {
@@ -271,12 +261,34 @@ export class WandererManager {
       : $location`Drunken Stupor`;
   }
 
-  getChoices(target: WanderDetails | Location): {
+  /**
+   * Get choice map for the upcoming wander
+   * @param target Description of the wander or location in which to wander
+   * @param takeTurnForProfit Should the choices include any that would make a profit from your valueOfAdventure
+   * @returns Map of choice numbers to decisions
+   */
+  getChoices(
+    target: WanderDetails | Location,
+    takeTurnForProfit = false,
+  ): {
     [choice: number]: string | number;
   } {
     const location =
       target instanceof Location ? target : this.getTarget(target);
-    return undelay(this.unsupportedChoices.get(location) ?? {});
+    const choices = undelay(this.unsupportedChoices.get(location) ?? {});
+
+    if (takeTurnForProfit) {
+      if (location === $location`The Ice Hotel`) {
+        const valueOfCertificates = get("_iceHotelRoomsRaided")
+          ? 0
+          : this.options.itemValue($item`Wal-Mart gift certificate`) * 3;
+        if (valueOfCertificates > this.options.valueOfAdventure) {
+          return { ...choices, 1116: 5 };
+        }
+      }
+    }
+
+    return choices;
   }
 
   clear(): void {
