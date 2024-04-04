@@ -119,7 +119,7 @@ export function useSpikolodonSpikes(): void {
   }).dress();
   cliExecute("parka spikolodon");
 
-  const targetZone = canJelly
+  const targetLocation = canJelly
     ? $location`Pirates of the Garbage Barges`
     : $location`Sloppy Seconds Diner`;
   const macro = Macro.familiarActions()
@@ -127,11 +127,11 @@ export function useSpikolodonSpikes(): void {
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
 
-  const ncSkipper = wanderer().getChoices(targetZone);
+  const ncSkipper = wanderer().getChoices(targetLocation);
   if (ncSkipper) propertyManager.setChoices(ncSkipper);
 
   do {
-    garboAdventureAuto(targetZone, macro);
+    garboAdventureAuto(targetLocation, macro);
   } while (get("_spikolodonSpikeUses") === startingSpikes);
 
   postCombatActions();

@@ -64,8 +64,9 @@ export class EmbezzlerFightRunOptions implements RunOptions {
         wanderer: this.configOptions.draggable,
         allowEquipment: false,
       };
-      propertyManager.setChoices(wanderer().getChoices(wanderOptions));
-      return wanderer().getTarget(wanderOptions);
+      const targetLocation = wanderer().getTarget(wanderOptions);
+      propertyManager.setChoices(wanderer().getChoices(targetLocation));
+      return targetLocation;
     }
     return suggestion ?? $location`Noob Cave`;
   }
