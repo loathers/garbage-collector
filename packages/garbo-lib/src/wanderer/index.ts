@@ -269,7 +269,7 @@ export class WandererManager {
    */
   getChoices(
     target: WanderDetails | Location,
-    takeTurnForProfit = false,
+    takeTurnForProfit = this.options.takeTurnForProfit,
   ): {
     [choice: number]: string | number;
   } {
@@ -282,7 +282,7 @@ export class WandererManager {
         const valueOfCertificates = get("_iceHotelRoomsRaided")
           ? 0
           : this.options.itemValue($item`Wal-Mart gift certificate`) * 3;
-        if (valueOfCertificates > this.options.valueOfAdventure) {
+        if (valueOfCertificates > (this.options.valueOfAdventure || 0)) {
           return { ...choices, 1116: 5 };
         }
       }

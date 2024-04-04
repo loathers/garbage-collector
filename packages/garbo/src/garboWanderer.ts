@@ -31,6 +31,7 @@ export function wanderer(): WandererManager {
           : []),
       ],
       valueOfAdventure: get("valueOfAdventure"),
+      takeTurnForProfit: true,
     });
   }
   return _wanderer;
