@@ -144,7 +144,7 @@ const defaultWanderOptions = {
 };
 
 export class WandererManager {
-  unsupportedChoices = new Map<
+  private unsupportedChoices = new Map<
     Location,
     Delayed<{ [choice: number]: number | string }>
   >([

@@ -127,7 +127,7 @@ export function useSpikolodonSpikes(): void {
     .step(run.macro);
   const startingSpikes = get("_spikolodonSpikeUses");
 
-  const ncSkipper = wanderer().unsupportedChoices.get(targetZone);
+  const ncSkipper = wanderer().getChoices(targetZone);
   if (ncSkipper) propertyManager.setChoices(ncSkipper);
 
   do {
