@@ -1335,9 +1335,7 @@ function latteFight(
       canAdventure(Latte.locationOf(ingredient)),
     (runSource: ActionSource) => {
       const location = Latte.locationOf(ingredient);
-      propertyManager.setChoices(
-        wanderer().unsupportedChoices.get(location) ?? {},
-      );
+      propertyManager.setChoices(wanderer().getChoices(location));
       garboAdventure(location, runSource.macro);
     },
     {

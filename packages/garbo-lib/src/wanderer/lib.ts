@@ -56,6 +56,7 @@ export type WandererFactoryOptions = {
   plentifulMonsters: Monster[];
   prioritizeCappingGuzzlr: boolean;
   digitzesRemaining?: (turns: number) => number;
+  valueOfAdventure: number;
 };
 
 export type WandererFactory = (
