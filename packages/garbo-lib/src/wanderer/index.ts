@@ -16,7 +16,9 @@ import {
   $location,
   Delayed,
   get,
+  getActiveEffects,
   maxBy,
+  sum,
   undelay,
 } from "libram";
 import { guzzlrFactory } from "./guzzlr";
@@ -278,11 +280,14 @@ export class WandererManager {
     const choices = undelay(this.unsupportedChoices.get(location) ?? {});
 
     if (takeTurnForProfit) {
+      const valueOfTurn =
+        (this.options.valueOfAdventure || 0) +
+        sum(getActiveEffects(), (e) => this.options.effectValue(e, 1));
       if (location === $location`The Ice Hotel`) {
         const valueOfCertificates = get("_iceHotelRoomsRaided")
           ? 0
           : this.options.itemValue($item`Wal-Mart gift certificate`) * 3;
-        if (valueOfCertificates > (this.options.valueOfAdventure || 0)) {
+        if (valueOfCertificates > valueOfTurn) {
           return { ...choices, 1116: 5 };
         }
       }
