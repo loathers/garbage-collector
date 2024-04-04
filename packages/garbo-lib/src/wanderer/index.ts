@@ -144,7 +144,6 @@ const defaultWanderOptions = {
 };
 
 export class WandererManager {
-  quartetChoice = get("lastQuartetRequest") || 4;
   unsupportedChoices = new Map<
     Location,
     Delayed<{ [choice: number]: number | string }>
@@ -157,7 +156,11 @@ export class WandererManager {
     [$location`The Haunted Laboratory`, { 884: 6 }],
     [$location`The Haunted Nursery`, { 885: 6 }],
     [$location`The Haunted Storage Room`, { 886: 6 }],
-    [$location`The Haunted Ballroom`, { 90: 3, 106: this.quartetChoice }], // Skip, and Choose currently playing song, or skip
+    [
+      $location`The Haunted Ballroom`,
+      // Skip, and Choose currently playing song, or skip
+      () => ({ 90: 3, 106: get("lastQuartetRequest") || 4 }),
+    ],
     [$location`The Haunted Library`, { 163: 4, 888: 5, 889: 5 }],
     [$location`The Haunted Gallery`, { 89: 6, 91: 2 }],
     [$location`The Hidden Park`, { 789: 6 }],
@@ -171,7 +174,6 @@ export class WandererManager {
     [
       $location`The Ice Hotel`,
       () => {
-        // Get Wal-Mart gift certificates once per day
         const valueOfCertificates = get("_iceHotelRoomsRaided")
           ? 0
           : this.options.itemValue($item`Wal-Mart gift certificate`) * 3;
