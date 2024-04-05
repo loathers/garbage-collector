@@ -54,6 +54,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import {
+  aprilFoolsRufus,
   baseMeat,
   bestShadowRift,
   HIGHLIGHT,
@@ -572,6 +573,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
       if (!have($item`Rufus's shadow lodestone`)) {
         // If we currently have no quest, acquire one
         ClosedCircuitPayphone.chooseQuest(() => 3);
+        aprilFoolsRufus();
 
         // If we need to acquire items, do so; then complete the quest
         const target = ClosedCircuitPayphone.rufusTarget() as Item;
