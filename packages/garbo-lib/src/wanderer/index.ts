@@ -148,7 +148,10 @@ const defaultWanderOptions = {
 export class WandererManager {
   private unsupportedChoices = new Map<
     Location,
-    Delayed<{ [choice: number]: number | string }>
+    Delayed<
+      { [choice: number]: number | string },
+      [options: WandererFactoryOptions, valueOfTurn: number]
+    >
   >([
     [$location`The Spooky Forest`, { 502: 2, 505: 2 }],
     [$location`Guano Junction`, { 1427: 1 }],
@@ -173,7 +176,15 @@ export class WandererManager {
     [$location`A-Boo Peak`, { 1430: 2 }],
     [$location`Sloppy Seconds Diner`, { 919: 6 }],
     [$location`VYKEA`, { 1115: 6 }],
-    [$location`The Ice Hotel`, { 1116: 6 }],
+    [
+      $location`The Ice Hotel`,
+      (options, valueOfTurn) => {
+        const valueOfCertificates = get("_iceHotelRoomsRaided")
+          ? 0
+          : options.itemValue($item`Wal-Mart gift certificate`) * 3;
+        return { 1116: valueOfCertificates > valueOfTurn ? 5 : 6 };
+      },
+    ],
     [
       $location`The Castle in the Clouds in the Sky (Basement)`,
       {
@@ -277,23 +288,15 @@ export class WandererManager {
   } {
     const location =
       target instanceof Location ? target : this.getTarget(target);
-    const choices = undelay(this.unsupportedChoices.get(location) ?? {});
-
-    if (takeTurnForProfit) {
-      const valueOfTurn =
-        (this.options.valueOfAdventure || 0) +
-        sum(getActiveEffects(), (e) => this.options.effectValue(e, 1));
-      if (location === $location`The Ice Hotel`) {
-        const valueOfCertificates = get("_iceHotelRoomsRaided")
-          ? 0
-          : this.options.itemValue($item`Wal-Mart gift certificate`) * 3;
-        if (valueOfCertificates > valueOfTurn) {
-          return { ...choices, 1116: 5 };
-        }
-      }
-    }
-
-    return choices;
+    const valueOfTurn = takeTurnForProfit
+      ? (this.options.valueOfAdventure ?? 0) +
+        sum(getActiveEffects(), (e) => this.options.effectValue(e, 1))
+      : Infinity;
+    return undelay(
+      this.unsupportedChoices.get(location) ?? {},
+      this.options,
+      valueOfTurn,
+    );
   }
 
   clear(): void {
