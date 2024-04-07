@@ -276,7 +276,7 @@ export function nonOrganAdventures(): void {
 
   if (get("_extraTimeUsed", 3) < 3) {
     const extraTimeValue = (timesUsed: number): number => {
-      const advs = [1, 3, 5][3 - timesUsed];
+      const advs = [5, 3, 1][timesUsed];
       return advs * MPA;
     };
     const extraTimeRemaining = 2 - get("_extraTimeUsed", 3);
