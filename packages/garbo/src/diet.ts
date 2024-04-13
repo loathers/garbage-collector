@@ -279,8 +279,8 @@ export function nonOrganAdventures(): void {
       const advs = [5, 3, 1][timesUsed];
       return advs * MPA;
     };
-    const extraTimeRemaining = 2 - get("_extraTimeUsed", 3);
-    for (let i = extraTimeRemaining; i > 0; i--) {
+    const extraTimeUsed = get("_extraTimeUsed", 3);
+    for (let i = extraTimeUsed; i < 3; i++) {
       if (extraTimeValue(i) > mallPrice($item`extra time`)) {
         if (acquire(1, $item`extra time`, extraTimeValue(i), false)) {
           use($item`extra time`);
