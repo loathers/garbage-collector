@@ -439,14 +439,6 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Wardrobe-o-Matic",
-    ready: () => have($item`wardrobe-o-matic`),
-    completed: () => have($item`futuristic shirt`),
-    do: () => use($item`wardrobe-o-matic`),
-    limit: { skip: 1 },
-    spendsTurn: false,
-  },
-  {
     name: "Candy cane sword cane Shrine Meat",
     ready: () =>
       have($item`candy cane sword cane`) &&
