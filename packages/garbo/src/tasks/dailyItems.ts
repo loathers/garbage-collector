@@ -34,6 +34,7 @@ import {
   $location,
   $skill,
   $skills,
+  AprilingBandHelmet,
   BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
@@ -56,6 +57,7 @@ import {
   augustSummonTasks,
   candyMapDailyTasks,
   doingGregFight,
+  getBestAprilInstruments,
 } from "../resources";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
@@ -566,6 +568,15 @@ const DailyItemTasks: GarboTask[] = [
   },
   ...augustSummonTasks(),
   ...candyMapDailyTasks(),
+  {
+    name: "Get April Instruments",
+    completed: () => !AprilingBandHelmet.canJoinSection(),
+    do: () =>
+      getBestAprilInstruments().forEach((instrument) =>
+        AprilingBandHelmet.joinSection(instrument),
+      ),
+    spendsTurn: false,
+  },
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {
