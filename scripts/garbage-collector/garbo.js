@@ -30703,7 +30703,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia81.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("321570195cc3c707c0d96455b8673ffe49af1666", ")"));
+    (0, import_kolmafia81.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("cd674e221e8666350d6703b4a8465c022a3c668c", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia81.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -32191,11 +32191,11 @@ function nonOrganAdventures() {
   }
   if (get("_extraTimeUsed", 3) < 3) {
     var extraTimeValue = function(timesUsed) {
-      var advs = [1, 3, 5][3 - timesUsed];
+      var advs = [5, 3, 1][timesUsed];
       return advs * MPA;
     };
-    var extraTimeRemaining = 2 - get("_extraTimeUsed", 3);
-    for (var _i = extraTimeRemaining; _i > 0; _i--) {
+    var extraTimeUsed = get("_extraTimeUsed", 3);
+    for (var _i = extraTimeUsed; _i < 3; _i++) {
       if (extraTimeValue(_i) > (0, import_kolmafia84.mallPrice)($item(_templateObject4315 || (_templateObject4315 = _taggedTemplateLiteral72(["extra time"]))))) {
         if (acquire(1, $item(_templateObject4414 || (_templateObject4414 = _taggedTemplateLiteral72(["extra time"]))), extraTimeValue(_i), false)) {
           (0, import_kolmafia84.use)($item(_templateObject4514 || (_templateObject4514 = _taggedTemplateLiteral72(["extra time"]))));
