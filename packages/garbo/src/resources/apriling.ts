@@ -17,8 +17,10 @@ type AprilingItem = {
   item: Item;
   value: () => number;
   limit: () => number;
-  type: "lucky" | "sandworm" | "famXp" | "nonCombat";
 };
+
+const SBBLIMIT = 20000; // We can't get more than 20k from a SBB NC Force
+
 const INSTRUMENT_OPTIONS: AprilingItem[] = [
   {
     item: $item`Apriling band saxophone`,
@@ -27,13 +29,12 @@ const INSTRUMENT_OPTIONS: AprilingItem[] = [
         ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
         : 0,
     limit: () => clamp(3 - get("_aprilBandSaxophoneUses"), 0, 3),
-    type: "lucky",
   },
   {
     item: $item`Apriling band tuba`,
-    value: () => (!realmAvailable("sleaze") ? 0 : 0),
+    value: () =>
+      realmAvailable("sleaze") ? SBBLIMIT - get("valueOfAdventure") : 0,
     limit: () => clamp(3 - get("_aprilBandTubaUses"), 0, 3),
-    type: "nonCombat",
   },
   {
     item: $item`Apriling band piccolo`,
@@ -41,7 +42,6 @@ const INSTRUMENT_OPTIONS: AprilingItem[] = [
       // fam xp value here
       0,
     limit: () => clamp(3 - get("_aprilBandPiccoloUses"), 0, 3),
-    type: "famXp",
   },
   {
     item: $item`Apriling band quad tom`,
@@ -51,7 +51,6 @@ const INSTRUMENT_OPTIONS: AprilingItem[] = [
         ? 0.2 * mallPrice($item`spice melange`)
         : 0,
     limit: () => clamp(3 - get("_aprilBandTomUses"), 0, 3),
-    type: "sandworm",
   },
 ];
 
