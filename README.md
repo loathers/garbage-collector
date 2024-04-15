@@ -179,3 +179,7 @@ Garbo will use your consumables and potions if it is deemed profitable to do so.
 > I was trying to click around the mall/campground/inventory/etc and then Garbo crashed, and now it is behaving strangely! Is this a bug?
 
 Garbo can be very fragile during some particular segments of the run and it is strongly recommended you do not click on anything while it is performing. This isn't a bug, Garbo is just pretty complex and the last thing either of us wants is to try looking for a bug that isn't there! Go make yourself a sandwich, do some chores, or spend six hours reading random wikipedia pages.
+
+> Garbo is sending Kmails to a player named Excavator filled with secret data?
+
+Excavator helps us spade game mechanics, giving us valuable information about things like random item drops, random equipment enchantments, and so on. That data in turn is used to improve Garbo. It does not contain personal data. [You can learn more about Excavator here](https://github.com/loathers/excavator).
