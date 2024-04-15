@@ -1054,3 +1054,17 @@ export function aprilFoolsRufus() {
     visitUrl("questlog.php?which=7");
   }
 }
+
+export type LuckyAdventure = {
+  location: Location;
+  value: () => number;
+  available: () => boolean;
+};
+
+export const luckyAdventures: LuckyAdventure[] = [
+  {
+    location: $location`Cobb's Knob Treasury`,
+    value: () => EMBEZZLER_MULTIPLIER() * get("valueOfAdventure"),
+    available: () => canAdventure($location`Cobb's Knob Treasury`),
+  },
+];
