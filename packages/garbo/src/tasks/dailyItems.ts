@@ -56,6 +56,7 @@ import {
   augustSummonTasks,
   candyMapDailyTasks,
   doingGregFight,
+  getAllAprilingSummonTasks,
 } from "../resources";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
@@ -574,6 +575,7 @@ const DailyItemTasks: GarboTask[] = [
   },
   ...augustSummonTasks(),
   ...candyMapDailyTasks(),
+  ...getAllAprilingSummonTasks(),
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {

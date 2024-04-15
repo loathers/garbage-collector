@@ -8,3 +8,4 @@ export * from "./fax";
 export * from "./realm";
 export * from "./synthesis";
 export * from "./latte";
+export * from "./apriling";
