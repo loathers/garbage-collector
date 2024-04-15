@@ -47,7 +47,7 @@ const INSTRUMENT_OPTIONS: AprilingItem[] = [
     item: $item`Apriling band quad tom`,
     value: () =>
       have($effect`Steely-Eyed Squint`) ||
-      (get("_steelyEyedSquintUsed") && have($skill`Steely-Eyed Squint`))
+      (!get("_steelyEyedSquintUsed") && have($skill`Steely-Eyed Squint`))
         ? 0.2 * mallPrice($item`spice melange`)
         : 0,
     limit: () => clamp(3 - get("_aprilBandTomUses"), 0, 3),
