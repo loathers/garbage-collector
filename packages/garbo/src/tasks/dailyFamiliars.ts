@@ -16,9 +16,11 @@ import {
   $familiars,
   $item,
   $items,
+  AprilingBandHelmet,
   CrimboShrub,
   get,
   have,
+  maxBy,
   Robortender,
   withProperty,
 } from "libram";
@@ -39,6 +41,7 @@ import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
+import getExperienceFamiliars from "../familiar/experienceFamiliars";
 
 function drivebyValue(): number {
   const embezzlers = copyTargetCount();
@@ -216,6 +219,22 @@ const DailyFamiliarTasks: GarboTask[] = [
         }
       });
     },
+    spendsTurn: false,
+  },
+  {
+    name: "Play the April piccolo",
+    ready: () => have($item`Apriling band piccolo`),
+    do: () => {
+      const experienceFamiliars = getExperienceFamiliars();
+      const familiar = experienceFamiliars.length
+        ? maxBy(experienceFamiliars, "expectedValue").familiar
+        : meatFamiliar();
+      useFamiliar(familiar);
+      while ($item`Apriling band piccolo`.dailyusesleft <= 0) {
+        AprilingBandHelmet.play("Apriling band piccolo");
+      }
+    },
+    completed: () => $item`Apriling band piccolo`.dailyusesleft <= 0,
     spendsTurn: false,
   },
 ];
