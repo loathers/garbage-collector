@@ -124,6 +124,14 @@ export function prepRobortender(): void {
   }
 }
 
+const chooseAprilFamiliar = () => {
+  const experienceFamiliars = getExperienceFamiliars();
+  if (experienceFamiliars.length) {
+    return maxBy(experienceFamiliars, "expectedValue").familiar;
+  }
+  return meatFamiliar().experience < 400 ? meatFamiliar() : null;
+};
+
 const DailyFamiliarTasks: GarboTask[] = [
   {
     name: "Prepare Shorter-Order Cook",
@@ -225,16 +233,16 @@ const DailyFamiliarTasks: GarboTask[] = [
     name: "Play the April piccolo",
     ready: () => have($item`Apriling band piccolo`),
     do: () => {
-      const experienceFamiliars = getExperienceFamiliars();
-      const familiar = experienceFamiliars.length
-        ? maxBy(experienceFamiliars, "expectedValue").familiar
-        : meatFamiliar();
-      useFamiliar(familiar);
-      while ($item`Apriling band piccolo`.dailyusesleft <= 0) {
-        AprilingBandHelmet.play("Apriling band piccolo");
+      let familiar = chooseAprilFamiliar();
+      while (
+        familiar &&
+        AprilingBandHelmet.canPlay($item`Apriling band piccolo`)
+      ) {
+        AprilingBandHelmet.play($item`Apriling band piccolo`);
+        familiar = chooseAprilFamiliar();
       }
     },
-    completed: () => $item`Apriling band piccolo`.dailyusesleft <= 0,
+    completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
     spendsTurn: false,
   },
 ];
