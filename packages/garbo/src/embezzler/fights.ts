@@ -31,6 +31,7 @@ import {
   $locations,
   $monster,
   $skill,
+  AprilingBandHelmet,
   ChateauMantegna,
   CombatLoversLocket,
   Counter,
@@ -257,6 +258,30 @@ export const chainStarters = [
       cliExecute("pillkeeper semirare");
       if (!have($effect`Lucky!`)) {
         set("_freePillKeeperUsed", true);
+        return;
+      }
+      const adventureFunction = options.useAuto
+        ? garboAdventureAuto
+        : garboAdventure;
+      adventureFunction(
+        $location`Cobb's Knob Treasury`,
+        options.macro,
+        options.macro,
+      );
+    },
+  ),
+  new CopyTargetFight(
+    "Apriling Saxophone Semirare",
+    () =>
+      have($item`Apriling band tuba`) &&
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      !(get("_aprilBandTubaUses") >= 3) &&
+      !have($effect`Lucky!`),
+    () => 0,
+    (options: RunOptions) => {
+      AprilingBandHelmet.play($item`Apriling band tuba`);
+      if (!have($effect`Lucky!`)) {
+        set("_aprilBandTubaUses", 3);
         return;
       }
       const adventureFunction = options.useAuto

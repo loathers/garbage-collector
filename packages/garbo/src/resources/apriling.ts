@@ -1,5 +1,15 @@
-import { canAdventure, Item } from "kolmafia";
-import { $item, $location, AprilingBandHelmet, clamp, get } from "libram";
+import { canAdventure, Item, mallPrice } from "kolmafia";
+import {
+  $effect,
+  $item,
+  $location,
+  $skill,
+  AprilingBandHelmet,
+  clamp,
+  get,
+  have,
+  realmAvailable,
+} from "libram";
 import { EMBEZZLER_MULTIPLIER } from "../lib";
 import { GarboTask } from "../tasks/engine";
 
@@ -10,7 +20,6 @@ type AprilingItem = {
   type: "lucky" | "sandworm" | "famXp" | "nonCombat";
 };
 const INSTRUMENT_OPTIONS: AprilingItem[] = [
-  // August 1 deliberately omitted; does not trigger on monster replacers
   {
     item: $item`Apriling band saxophone`,
     value: () =>
@@ -22,10 +31,7 @@ const INSTRUMENT_OPTIONS: AprilingItem[] = [
   },
   {
     item: $item`Apriling band tuba`,
-    value: () =>
-      // Non-Combat math goes here
-      // : 0,
-      0,
+    value: () => (!realmAvailable("sleaze") ? 0 : 0),
     limit: () => clamp(3 - get("_aprilBandTubaUses"), 0, 3),
     type: "nonCombat",
   },
@@ -40,8 +46,10 @@ const INSTRUMENT_OPTIONS: AprilingItem[] = [
   {
     item: $item`Apriling band quad tom`,
     value: () =>
-      // Sandworm value here
-      0,
+      have($effect`Steely-Eyed Squint`) ||
+      (get("_steelyEyedSquintUsed") && have($skill`Steely-Eyed Squint`))
+        ? 0.2 * mallPrice($item`spice melange`)
+        : 0,
     limit: () => clamp(3 - get("_aprilBandTomUses"), 0, 3),
     type: "sandworm",
   },
