@@ -238,6 +238,7 @@ const DailyFamiliarTasks: GarboTask[] = [
         familiar &&
         AprilingBandHelmet.canPlay($item`Apriling band piccolo`)
       ) {
+        useFamiliar(familiar);
         AprilingBandHelmet.play($item`Apriling band piccolo`);
         familiar = chooseAprilFamiliar();
       }
