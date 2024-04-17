@@ -797,6 +797,7 @@ const freeFightSources = [
   new FreeFight(
     () => $item`Apriling band quad tom`.dailyusesleft,
     () => {
+      ensureBeachAccess();
       AprilingBandHelmet.play("Apriling band quad tom");
       visitUrl("main.php");
       runCombat();
