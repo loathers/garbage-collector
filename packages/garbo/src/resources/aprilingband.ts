@@ -1,9 +1,9 @@
-import { $item, $location, AprilingBandHelmet, clamp, get } from "libram";
+import { $item, $location, AprilingBandHelmet, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { EMBEZZLER_MULTIPLIER } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
-import { canAdventure } from "kolmafia";
+import { canAdventure, toItem } from "kolmafia";
 
 const instruments: {
   instrument: AprilingBandHelmet.Instrument;
@@ -39,7 +39,8 @@ const instruments: {
 export function getBestAprilInstruments(): AprilingBandHelmet.Instrument[] {
   const available = clamp(2 - get("_aprilBandInstruments"), 0, 2);
 
-  return [...instruments]
+  return instruments
+    .filter(({ instrument }) => !have(toItem(instrument)))
     .sort((a, b) => b.value() - a.value())
     .splice(0, available)
     .map(({ instrument }) => instrument);

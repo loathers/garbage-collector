@@ -16,11 +16,9 @@ import {
   $familiars,
   $item,
   $items,
-  AprilingBandHelmet,
   CrimboShrub,
   get,
   have,
-  maxBy,
   Robortender,
   withProperty,
 } from "libram";
@@ -41,7 +39,6 @@ import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
-import getExperienceFamiliars from "../familiar/experienceFamiliars";
 
 function drivebyValue(): number {
   const embezzlers = copyTargetCount();
@@ -123,14 +120,6 @@ export function prepRobortender(): void {
     if (have(drink)) Robortender.feed(drink);
   }
 }
-
-const chooseAprilFamiliar = () => {
-  const experienceFamiliars = getExperienceFamiliars();
-  if (experienceFamiliars.length) {
-    return maxBy(experienceFamiliars, "expectedValue").familiar;
-  }
-  return meatFamiliar().experience < 400 ? meatFamiliar() : null;
-};
 
 const DailyFamiliarTasks: GarboTask[] = [
   {
@@ -227,23 +216,6 @@ const DailyFamiliarTasks: GarboTask[] = [
         }
       });
     },
-    spendsTurn: false,
-  },
-  {
-    name: "Play the April piccolo",
-    ready: () => have($item`Apriling band piccolo`),
-    do: () => {
-      let familiar = chooseAprilFamiliar();
-      while (
-        familiar &&
-        AprilingBandHelmet.canPlay($item`Apriling band piccolo`)
-      ) {
-        useFamiliar(familiar);
-        AprilingBandHelmet.play($item`Apriling band piccolo`);
-        familiar = chooseAprilFamiliar();
-      }
-    },
-    completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
     spendsTurn: false,
   },
 ];
