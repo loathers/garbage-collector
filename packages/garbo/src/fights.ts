@@ -795,7 +795,10 @@ function molemanReady() {
 
 const freeFightSources = [
   new FreeFight(
-    () => $item`Apriling band quad tom`.dailyusesleft,
+    () =>
+      have($item`Apriling band quad tom`)
+        ? $item`Apriling band quad tom`.dailyusesleft
+        : 0,
     () => {
       ensureBeachAccess();
       AprilingBandHelmet.play("Apriling band quad tom");
