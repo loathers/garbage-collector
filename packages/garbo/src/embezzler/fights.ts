@@ -77,6 +77,8 @@ import {
   RunOptions,
 } from "./lib";
 
+// const shouldUseMimic = () => $familiar`Chest Mimic`.experience / get("_mimicEggsObtained") >= 11 && get("_mimicEggsObtained") < 11;
+
 export class CopyTargetFight implements CopyTargetFightConfigOptions {
   name: string;
   available: () => boolean;

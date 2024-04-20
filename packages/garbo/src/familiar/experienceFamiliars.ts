@@ -1,17 +1,11 @@
-import { Familiar } from "kolmafia";
-import {
-  $familiar,
-  findLeprechaunMultiplier,
-  get,
-  have,
-  propertyTypes,
-} from "libram";
+import { Familiar, toInt } from "kolmafia";
+import { $familiar, findLeprechaunMultiplier, get, have } from "libram";
 import { globalOptions } from "../config";
 import { GeneralFamiliar } from "./lib";
 
 type ExperienceFamiliar = {
   familiar: Familiar;
-  used: propertyTypes.BooleanProperty;
+  used: boolean;
   useValue: number;
   baseExp: number;
   xpLimit?: number;
@@ -20,15 +14,22 @@ type ExperienceFamiliar = {
 const experienceFamiliars: ExperienceFamiliar[] = [
   {
     familiar: $familiar`Pocket Professor`,
-    used: "_thesisDelivered",
+    used: get("_thesisDelivered"),
     useValue: 11 * get("valueOfAdventure"),
     baseExp: 200,
   },
   {
     familiar: $familiar`Grey Goose`,
-    used: "_meatifyMatterUsed",
+    used: get("_meatifyMatterUsed"),
     useValue: 15 ** 4,
     baseExp: 25,
+  },
+  {
+    familiar: $familiar`Chest Mimic`,
+    used: get("_mimicEggsObtained") >= 11,
+    useValue:
+      get("valueOfAdventure") * toInt(get("garbo_embezzlerMultiplier")) * 11,
+    baseExp: 50,
   },
 ];
 
@@ -53,7 +54,7 @@ export default function getExperienceFamiliars(): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(
       ({ used, familiar, xpLimit }) =>
-        have(familiar) && !get(used) && familiar.experience < (xpLimit ?? 400),
+        have(familiar) && !used && familiar.experience < (xpLimit ?? 400)
     )
     .map(valueExperienceFamiliar);
 }

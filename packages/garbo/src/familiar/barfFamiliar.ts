@@ -9,6 +9,7 @@ import {
   numericModifier,
   print,
   Slot,
+  toInt,
   useFamiliar,
   weightAdjustment,
 } from "kolmafia";
@@ -36,6 +37,7 @@ import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
+import { globalOptions } from "../config";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat / 100;
@@ -293,6 +295,17 @@ function getSpecialFamiliarLimit({
 
     case $familiar`Crimbo Shrub`:
       return Math.ceil(estimatedGarboTurns() / 100);
+
+    // If we're going to ascend, Chest Mimic can't be leveled before the next embezzler chain
+    // If we're not going to ascend, Chest Mimic shouldn't be charged beyond what it can spit out tomorrow
+    case $familiar`Chest Mimic`:
+      return globalOptions.ascend
+        ? 0
+        : $familiar`Chest Mimic`.experience < 550
+        ? ((get("valueOfAdventure") * toInt(get("garbo_embezzlerMultiplier"))) /
+            50) *
+          getModifier("Familiar Experience")
+        : 0;
 
     default:
       return 0;
