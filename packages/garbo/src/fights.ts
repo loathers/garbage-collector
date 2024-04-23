@@ -1334,11 +1334,9 @@ function latteFight(
       !Latte.ingredientsUnlocked().includes(ingredient) &&
       canAdventure(Latte.locationOf(ingredient)),
     (runSource: ActionSource) => {
-      const location = Latte.locationOf(ingredient);
-      propertyManager.setChoices(
-        wanderer().unsupportedChoices.get(location) ?? {},
-      );
-      garboAdventure(location, runSource.macro);
+      const targetLocation = Latte.locationOf(ingredient);
+      propertyManager.setChoices(wanderer().getChoices(targetLocation));
+      garboAdventure(targetLocation, runSource.macro);
     },
     {
       spec: { equip: $items`latte lovers member's mug` },
@@ -1663,8 +1661,8 @@ const freeRunFightSources = [
       get("_hipsterAdv") < 7 &&
       (have($familiar`Mini-Hipster`) || have($familiar`Artistic Goth Kid`)),
     (runSource: ActionSource) => {
-      propertyManager.setChoices(wanderer().getChoices("backup"));
       const targetLocation = wanderer().getTarget("backup");
+      propertyManager.setChoices(wanderer().getChoices(targetLocation));
       garboAdventure(
         targetLocation,
         Macro.if_(
@@ -2132,7 +2130,8 @@ export function doSausage(): void {
   freeFightOutfit({ equip: $items`Kramco Sausage-o-Matic™` }).dress();
   const currentSausages = get("_sausageFights");
   do {
-    propertyManager.setChoices(wanderer().getChoices("wanderer"));
+    const targetLocation = wanderer().getTarget("wanderer");
+    propertyManager.setChoices(wanderer().getChoices(targetLocation));
     const goblin = $monster`sausage goblin`;
     freeFightOutfit(
       {
@@ -2141,7 +2140,7 @@ export function doSausage(): void {
       { wanderOptions: "wanderer" },
     ).dress();
     garboAdventureAuto(
-      wanderer().getTarget("wanderer"),
+      targetLocation,
       Macro.if_(goblin, Macro.basicCombat())
         .ifHolidayWanderer(Macro.basicCombat())
         .abortWithMsg(`Expected ${goblin} but got something else.`),
@@ -2373,8 +2372,9 @@ function voidMonster(): void {
     },
     { wanderOptions: "wanderer" },
   ).dress();
-  propertyManager.setChoices(wanderer().getChoices("wanderer"));
-  garboAdventure(wanderer().getTarget("wanderer"), Macro.basicCombat());
+  const targetLocation = wanderer().getTarget("wanderer");
+  propertyManager.setChoices(wanderer().getChoices(targetLocation));
+  garboAdventure(targetLocation, Macro.basicCombat());
   postCombatActions();
 }
 
