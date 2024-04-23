@@ -78,6 +78,7 @@ import {
   $stat,
   $thrall,
   ActionSource,
+  AprilingBandHelmet,
   AsdonMartin,
   CinchoDeMayo,
   clamp,
@@ -793,6 +794,42 @@ function molemanReady() {
 }
 
 const freeFightSources = [
+  new FreeFight(
+    () =>
+      have($item`Apriling band quad tom`)
+        ? $item`Apriling band quad tom`.dailyusesleft
+        : 0,
+    () => {
+      ensureBeachAccess();
+      AprilingBandHelmet.play("Apriling band quad tom");
+      visitUrl("main.php");
+      runCombat();
+    },
+    true,
+    {
+      effects: () =>
+        have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed")
+          ? $effects`Steely-Eyed Squint`
+          : [],
+      spec: () => {
+        if (
+          have($item`January's Garbage Tote`) &&
+          !have($item`broken champagne bottle`) &&
+          get("garbageChampagneCharge") > 0
+        ) {
+          cliExecute("fold broken champagne bottle");
+        }
+
+        if (
+          have($item`broken champagne bottle`) &&
+          get("garbageChampagneCharge") > 0
+        ) {
+          return { weapon: $item`broken champagne bottle` };
+        }
+        return {};
+      },
+    },
+  ),
   new FreeFight(
     () => (wantPills() ? 5 - get("_saberForceUses") : 0),
     () => {

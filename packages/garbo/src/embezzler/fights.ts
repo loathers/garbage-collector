@@ -31,6 +31,7 @@ import {
   $locations,
   $monster,
   $skill,
+  AprilingBandHelmet,
   ChateauMantegna,
   CombatLoversLocket,
   Counter,
@@ -228,6 +229,25 @@ export const chainStarters = [
         set("_aug2Cast", true);
         return;
       }
+      const adventureFunction = options.useAuto
+        ? garboAdventureAuto
+        : garboAdventure;
+      adventureFunction(
+        $location`Cobb's Knob Treasury`,
+        options.macro,
+        options.macro,
+      );
+    },
+  ),
+  new CopyTargetFight(
+    "Saxophone semirare",
+    () =>
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      AprilingBandHelmet.canPlay($item`Apriling band saxophone`),
+    () => 0,
+    (options: RunOptions) => {
+      AprilingBandHelmet.play($item`Apriling band saxophone`);
+      if (!have($effect`Lucky!`)) return;
       const adventureFunction = options.useAuto
         ? garboAdventureAuto
         : garboAdventure;

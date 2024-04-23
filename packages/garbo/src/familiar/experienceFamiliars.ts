@@ -14,6 +14,7 @@ type ExperienceFamiliar = {
   used: propertyTypes.BooleanProperty;
   useValue: number;
   baseExp: number;
+  xpLimit?: number;
 };
 
 const experienceFamiliars: ExperienceFamiliar[] = [
@@ -51,8 +52,8 @@ function valueExperienceFamiliar({
 export default function getExperienceFamiliars(): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(
-      ({ used, familiar }) =>
-        have(familiar) && !get(used) && familiar.experience < 400,
+      ({ used, familiar, xpLimit }) =>
+        have(familiar) && !get(used) && familiar.experience < (xpLimit ?? 400),
     )
     .map(valueExperienceFamiliar);
 }
