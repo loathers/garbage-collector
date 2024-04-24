@@ -30968,7 +30968,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("5cdcea4d3ecba5206b215a79457ebdef334c0dc5", ")"));
+    (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("5143aef46de1db261f8cb655e39250709e1a5462", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -47547,11 +47547,14 @@ function pickCargoPocket() {
   }
 }
 var chooseAprilFamiliar = function() {
-  var experienceFamiliars2 = getExperienceFamiliars();
+  var experienceFamiliars2 = getExperienceFamiliars().filter(function(_ref5) {
+    var familiar8 = _ref5.familiar;
+    return familiar8.experience <= 360;
+  });
   if (experienceFamiliars2.length) {
     return maxBy(experienceFamiliars2, "expectedValue").familiar;
   }
-  return meatFamiliar().experience < 400 ? meatFamiliar() : null;
+  return meatFamiliar().experience <= 360 ? meatFamiliar() : null;
 };
 var SummonTasks = _toConsumableArray58(SummonTomes.map(function(skill) {
   return {
@@ -48037,8 +48040,8 @@ var DailyItemTasks = [{
       canAdventure: true,
       sortBy: function(l) {
         return sum((0, import_kolmafia126.getMonsters)(l), function(m) {
-          return sum((0, import_kolmafia126.itemDropsArray)(m), function(_ref5) {
-            var drop = _ref5.drop;
+          return sum((0, import_kolmafia126.itemDropsArray)(m), function(_ref6) {
+            var drop = _ref6.drop;
             return garboValue(drop);
           });
         });
@@ -48047,8 +48050,8 @@ var DailyItemTasks = [{
     if (!bestRift)
       (0, import_kolmafia126.abort)("Failed to choose rift for Shadow Forest");
     var value = (6 + 9) / 2 * sum((0, import_kolmafia126.getMonsters)(bestRift), function(m) {
-      return sum((0, import_kolmafia126.itemDropsArray)(m), function(_ref6) {
-        var drop = _ref6.drop;
+      return sum((0, import_kolmafia126.itemDropsArray)(m), function(_ref7) {
+        var drop = _ref7.drop;
         return garboValue(drop);
       });
     }) / 3;
@@ -48086,8 +48089,8 @@ var DailyItemTasks = [{
       canAdventure: true,
       sortBy: function(l) {
         return sum((0, import_kolmafia126.getMonsters)(l), function(m) {
-          return sum((0, import_kolmafia126.itemDropsArray)(m), function(_ref7) {
-            var drop = _ref7.drop;
+          return sum((0, import_kolmafia126.itemDropsArray)(m), function(_ref8) {
+            var drop = _ref8.drop;
             return garboValue(drop);
           });
         });
