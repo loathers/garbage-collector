@@ -80,6 +80,7 @@ import {
   ActionSource,
   AprilingBandHelmet,
   AsdonMartin,
+  ChestMimic,
   CinchoDeMayo,
   clamp,
   ClosedCircuitPayphone,
@@ -531,10 +532,16 @@ export function dailyFights(): void {
         const underwater = location.environment === "underwater";
         const shouldCopy = get("_badlyRomanticArrows") === 0 && !underwater;
 
+        const shouldMakeEgg = () =>
+          $familiar`Chest Mimic`.experience / 50 >= get("_mimicEggsObtained") &&
+          get("_mimicEggsObtained") < 11;
+
         // use obtuse angel if have + have quake of arrows, otherwise reanimator
         // quake of arrows is PvP-stealable and costs ~50k, so don't assume we have it
         let bestCopier: Familiar | undefined;
-        if (
+        if (ChestMimic.have() && shouldMakeEgg()) {
+          bestCopier = $familiar`Chest Mimic`;
+        } else if (
           have($familiar`Obtuse Angel`) &&
           (familiarEquippedEquipment($familiar`Obtuse Angel`) ===
             $item`quake of arrows` ||

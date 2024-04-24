@@ -79,8 +79,6 @@ import {
   RunOptions,
 } from "./lib";
 
-// const shouldUseMimic = () => $familiar`Chest Mimic`.experience / get("_mimicEggsObtained") >= 11 && get("_mimicEggsObtained") < 11;
-
 function canDifferentiateMonster(monster: Monster): number {
   if (!have($item`mimic egg`)) return 0;
   const regex = new RegExp(`${monster.name}\\s*(?:\\((\\d+)\\))?`, "i");

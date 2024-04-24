@@ -680,6 +680,9 @@ export class Macro extends StrictMacro {
       !have($skill`Just the Facts`) ||
       (get("_monsterHabitatsRecalled") === 3 &&
         get("_monsterHabitatsFightsLeft") <= 1);
+    const shouldMakeEgg = () =>
+      $familiar`Chest Mimic`.experience / 50 >= get("_mimicEggsObtained") &&
+      get("_mimicEggsObtained") < 11;
     return this.if_(
       globalOptions.target,
       Macro.if_(
@@ -693,6 +696,10 @@ export class Macro extends StrictMacro {
         .externalIf(
           myFamiliar() === $familiar`Obtuse Angel`,
           Macro.trySkill($skill`Fire a badly romantic arrow`),
+        )
+        .externalIf(
+          myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(),
+          Macro.trySkill($skill`%fn, lay an egg`),
         )
         .externalIf(
           doneHabitat &&
