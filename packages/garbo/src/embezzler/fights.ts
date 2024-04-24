@@ -8,6 +8,7 @@ import {
   itemAmount,
   Location,
   mallPrice,
+  Monster,
   myAdventures,
   myHash,
   print,
@@ -33,6 +34,7 @@ import {
   $skill,
   AprilingBandHelmet,
   ChateauMantegna,
+  ChestMimic,
   CombatLoversLocket,
   Counter,
   CrystalBall,
@@ -78,6 +80,19 @@ import {
 } from "./lib";
 
 // const shouldUseMimic = () => $familiar`Chest Mimic`.experience / get("_mimicEggsObtained") >= 11 && get("_mimicEggsObtained") < 11;
+
+function canDifferentiateMonster(monster: Monster): number {
+  if (!have($item`mimic egg`)) return 0;
+  const regex = new RegExp(`${monster.name}\\s*(?:\\((\\d+)\\))?`, "i");
+  const page = visitUrl(`desc_item.php?whichitem=646626465`, false, true);
+  const match = page.match(regex);
+  if (!match) {
+    visitUrl("main.php");
+    return 0;
+  }
+  visitUrl("main.php");
+  return parseInt(match[1]) || 1;
+}
 
 export class CopyTargetFight implements CopyTargetFightConfigOptions {
   name: string;
@@ -288,6 +303,18 @@ export const chainStarters = [
         $location`Cobb's Knob Treasury`,
         options.macro,
         options.macro,
+      );
+    },
+  ),
+  new CopyTargetFight(
+    "Mimic Eggs",
+    () => canDifferentiateMonster(globalOptions.target) >= 1,
+    () => canDifferentiateMonster(globalOptions.target),
+    (options: RunOptions) => {
+      withMacro(
+        options.macro,
+        () => ChestMimic.differentiate(globalOptions.target, ""),
+        options.useAuto,
       );
     },
   ),
