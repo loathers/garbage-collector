@@ -137,11 +137,13 @@ function pickCargoPocket(): void {
 }
 
 const chooseAprilFamiliar = () => {
-  const experienceFamiliars = getExperienceFamiliars();
+  const experienceFamiliars = getExperienceFamiliars().filter(
+    ({ familiar }) => familiar.experience <= 360,
+  );
   if (experienceFamiliars.length) {
     return maxBy(experienceFamiliars, "expectedValue").familiar;
   }
-  return meatFamiliar().experience < 400 ? meatFamiliar() : null;
+  return meatFamiliar().experience <= 360 ? meatFamiliar() : null;
 };
 
 const SummonTasks: GarboTask[] = [
