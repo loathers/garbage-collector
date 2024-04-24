@@ -7,11 +7,14 @@ import {
   mallPrice,
   maximize,
   myAdventures,
+  myFamiliar,
+  myHash,
   myInebriety,
   myLevel,
   myTurncount,
   outfitPieces,
   runChoice,
+  toInt,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -411,12 +414,69 @@ const NonBarfTurnTasks: AlternateTask[] = [
   },
 ];
 
+const shouldMakeEgg = () =>
+  $familiar`Chest Mimic`.experience / 50 >= get("_mimicEggsObtained") &&
+  get("_mimicEggsObtained") < 11;
+
+const eggEnabler = canAdventure($location`Cobb's Knob Treasury`)
+  ? $item`11-leaf clover`
+  : get("_genieFightsUsed") < 3
+  ? $item`pocket wish`
+  : null;
+
+const eggROI = () =>
+  eggEnabler === null
+    ? false
+    : clamp(
+        ($familiar`Chest Mimic`.experience / 50) *
+          get("valueOfAdventure") *
+          toInt(get("garbo_embezzlerMultiplier")),
+        0,
+        11 - get("_mimicEggsObtained"),
+      ) > garboValue(eggEnabler);
+
 const BarfTurnTasks: GarboTask[] = [
   {
     name: "Latte",
     completed: () => !shouldFillLatte(),
     do: () => tryFillLatte(),
     spendsTurn: false,
+  },
+  {
+    name: "Mimic Eggs",
+    ready: () =>
+      ($familiar`Chest Mimic`.experience - 50) / 50 >=
+        11 - get("_mimicEggsObtained") && eggROI(),
+    completed: () => get("_mimicEggsObtained") >= 11,
+    do: () => {
+      if (canAdventure($location`Cobb's Knob Treasury`)) {
+        acquire(1, $item`11-leaf clover`);
+        use($item`11-leaf clover`);
+        return $location`Cobb's Knob Treasury`;
+      }
+      acquire(1, $item`pocket wish`, 50000);
+      visitUrl(
+        `inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`,
+        false,
+        true,
+      );
+      visitUrl(
+        `choice.php?pwd&whichchoice=1267&option=1&wish=to fight a ${globalOptions.target} `,
+        true,
+        true,
+      );
+    },
+    combat: new GarboStrategy(() =>
+      Macro.externalIf(
+        myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(),
+        Macro.trySkill($skill`%fn, lay an egg`),
+      )
+        .if_(globalOptions.target, Macro.meatKill())
+        .familiarActions(),
+    ),
+    spendsTurn: true,
+    outfit: embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
+    sobriety: "sober",
   },
   {
     name: "Lights Out",

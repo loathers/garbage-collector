@@ -1054,3 +1054,10 @@ export function aprilFoolsRufus() {
     visitUrl("questlog.php?which=7");
   }
 }
+
+export function canIUseMimic(): boolean {
+  return (
+    ($familiar`Chest Mimic`.experience - 50) / 50 >
+      11 - get("_mimicEggsObtained") && get("_mimicEggsObtained") < 11
+  );
+}
