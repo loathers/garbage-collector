@@ -8,13 +8,11 @@ import {
   maximize,
   myAdventures,
   myFamiliar,
-  myHash,
   myInebriety,
   myLevel,
   myTurncount,
   outfitPieces,
   runChoice,
-  toInt,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -417,32 +415,9 @@ const NonBarfTurnTasks: AlternateTask[] = [
 ];
 
 const shouldMakeEgg = () =>
-  $familiar`Chest Mimic`.experience / 50 >= get("_mimicEggsObtained") &&
+  ($familiar`Chest Mimic`.experience / 50 >= 11 - get("_mimicEggsObtained") ||
+    (myAdventures() === 1 && $familiar`Chest Mimic`.experience / 100 >= 1)) &&
   get("_mimicEggsObtained") < 11;
-
-const eggEnabler = () =>
-  canDifferentiateMonster(globalOptions.target)
-    ? $item`mimic egg`
-    : ChestMimic.receive(globalOptions.target)
-    ? $item`mimic egg`
-    : canAdventure($location`Cobb's Knob Treasury`)
-    ? $item`11-leaf clover`
-    : get("_genieFightsUsed") < 3
-    ? $item`pocket wish`
-    : null;
-
-const eggROI = () =>
-  eggEnabler() === null
-    ? false
-    : eggEnabler() === $item`mimic egg`
-    ? true
-    : clamp(
-        ($familiar`Chest Mimic`.experience / 50) *
-          get("valueOfAdventure") *
-          toInt(get("garbo_embezzlerMultiplier")),
-        0,
-        11 - get("_mimicEggsObtained"),
-      ) > garboValue(eggEnabler());
 
 const BarfTurnTasks: GarboTask[] = [
   {
@@ -453,30 +428,14 @@ const BarfTurnTasks: GarboTask[] = [
   },
   {
     name: "Mimic Eggs",
-    ready: () =>
-      ($familiar`Chest Mimic`.experience - 50) / 50 >=
-        11 - get("_mimicEggsObtained") && eggROI(),
+    ready: () => shouldMakeEgg(),
     completed: () => get("_mimicEggsObtained") >= 11,
     do: () => {
-      if (eggEnabler() === $item`mimic egg`) {
+      if (canDifferentiateMonster(globalOptions.target)) {
         ChestMimic.differentiate(globalOptions.target, "");
       }
-      if (canAdventure($location`Cobb's Knob Treasury`)) {
-        acquire(1, $item`11-leaf clover`);
-        use($item`11-leaf clover`);
-        return $location`Cobb's Knob Treasury`;
-      }
-      acquire(1, $item`pocket wish`, 50000);
-      visitUrl(
-        `inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`,
-        false,
-        true,
-      );
-      visitUrl(
-        `choice.php?pwd&whichchoice=1267&option=1&wish=to fight a ${globalOptions.target} `,
-        true,
-        true,
-      );
+      ChestMimic.receive(globalOptions.target);
+      ChestMimic.differentiate(globalOptions.target, "");
     },
     combat: new GarboStrategy(() =>
       Macro.externalIf(
