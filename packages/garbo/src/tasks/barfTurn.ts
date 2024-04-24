@@ -415,7 +415,8 @@ const NonBarfTurnTasks: AlternateTask[] = [
 ];
 
 const shouldMakeEgg = () =>
-  ($familiar`Chest Mimic`.experience / 50 >= 11 - get("_mimicEggsObtained") ||
+  ((canDifferentiateMonster(globalOptions.target) &&
+    $familiar`Chest Mimic`.experience / 50 >= 11 - get("_mimicEggsObtained")) ||
     (myAdventures() === 1 && $familiar`Chest Mimic`.experience / 100 >= 1)) &&
   get("_mimicEggsObtained") < 11;
 
