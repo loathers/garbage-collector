@@ -28,6 +28,7 @@ import {
   $location,
   $monster,
   $skill,
+  ChestMimic,
   clamp,
   Counter,
   Delayed,
@@ -50,6 +51,7 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
+  canDifferentiateMonster,
   EMBEZZLER_MULTIPLIER,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
@@ -418,22 +420,29 @@ const shouldMakeEgg = () =>
   $familiar`Chest Mimic`.experience / 50 >= get("_mimicEggsObtained") &&
   get("_mimicEggsObtained") < 11;
 
-const eggEnabler = canAdventure($location`Cobb's Knob Treasury`)
-  ? $item`11-leaf clover`
-  : get("_genieFightsUsed") < 3
-  ? $item`pocket wish`
-  : null;
+const eggEnabler = () =>
+  canDifferentiateMonster(globalOptions.target)
+    ? $item`mimic egg`
+    : ChestMimic.receive(globalOptions.target)
+    ? $item`mimic egg`
+    : canAdventure($location`Cobb's Knob Treasury`)
+    ? $item`11-leaf clover`
+    : get("_genieFightsUsed") < 3
+    ? $item`pocket wish`
+    : null;
 
 const eggROI = () =>
-  eggEnabler === null
+  eggEnabler() === null
     ? false
+    : eggEnabler() === $item`mimic egg`
+    ? true
     : clamp(
         ($familiar`Chest Mimic`.experience / 50) *
           get("valueOfAdventure") *
           toInt(get("garbo_embezzlerMultiplier")),
         0,
         11 - get("_mimicEggsObtained"),
-      ) > garboValue(eggEnabler);
+      ) > garboValue(eggEnabler());
 
 const BarfTurnTasks: GarboTask[] = [
   {
@@ -449,6 +458,9 @@ const BarfTurnTasks: GarboTask[] = [
         11 - get("_mimicEggsObtained") && eggROI(),
     completed: () => get("_mimicEggsObtained") >= 11,
     do: () => {
+      if (eggEnabler() === $item`mimic egg`) {
+        ChestMimic.differentiate(globalOptions.target, "");
+      }
       if (canAdventure($location`Cobb's Knob Treasury`)) {
         acquire(1, $item`11-leaf clover`);
         use($item`11-leaf clover`);
