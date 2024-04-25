@@ -49,7 +49,6 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
-  canDifferentiateMonster,
   EMBEZZLER_MULTIPLIER,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
@@ -77,6 +76,10 @@ import {
   tryFillLatte,
 } from "../resources";
 import { acquire } from "../acquire";
+import {
+  canDifferentiateMonster,
+  shouldChargeMimic,
+} from "../resources/chestMimic";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -414,12 +417,6 @@ const NonBarfTurnTasks: AlternateTask[] = [
   },
 ];
 
-const shouldMakeEgg = () =>
-  ((canDifferentiateMonster(globalOptions.target) &&
-    $familiar`Chest Mimic`.experience / 50 >= 11 - get("_mimicEggsObtained")) ||
-    (myAdventures() === 1 && $familiar`Chest Mimic`.experience / 100 >= 1)) &&
-  get("_mimicEggsObtained") < 11;
-
 const BarfTurnTasks: GarboTask[] = [
   {
     name: "Latte",
@@ -429,7 +426,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
   {
     name: "Mimic Eggs",
-    ready: () => shouldMakeEgg(),
+    ready: () => shouldChargeMimic(),
     completed: () => get("_mimicEggsObtained") >= 11,
     do: () => {
       if (canDifferentiateMonster(globalOptions.target)) {
@@ -440,7 +437,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() =>
       Macro.externalIf(
-        myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(),
+        myFamiliar() === $familiar`Chest Mimic` && shouldChargeMimic(),
         Macro.trySkill($skill`%fn, lay an egg`),
       )
         .if_(globalOptions.target, Macro.meatKill())

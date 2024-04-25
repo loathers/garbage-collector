@@ -1,34 +1,48 @@
-import { Familiar, toInt } from "kolmafia";
-import { $familiar, findLeprechaunMultiplier, get, have } from "libram";
+import { Familiar } from "kolmafia";
+import {
+  $familiar,
+  findLeprechaunMultiplier,
+  get,
+  have,
+  propertyTypes,
+} from "libram";
 import { globalOptions } from "../config";
 import { GeneralFamiliar } from "./lib";
+import { EMBEZZLER_MULTIPLIER } from "../lib";
 
 type ExperienceFamiliar = {
   familiar: Familiar;
-  used: boolean;
+  used: propertyTypes.BooleanProperty | boolean;
   useValue: number;
   baseExp: number;
   xpLimit?: number;
 };
 
+function mimicValue(): number {
+  return get("valueOfAdventure") * EMBEZZLER_MULTIPLIER() * 11;
+}
+
+function mimicUsed(): boolean {
+  return get("_mimicEggsObtained") >= 11;
+}
+
 const experienceFamiliars: ExperienceFamiliar[] = [
   {
     familiar: $familiar`Pocket Professor`,
-    used: get("_thesisDelivered"),
+    used: "_thesisDelivered",
     useValue: 11 * get("valueOfAdventure"),
     baseExp: 200,
   },
   {
     familiar: $familiar`Grey Goose`,
-    used: get("_meatifyMatterUsed"),
+    used: "_meatifyMatterUsed",
     useValue: 15 ** 4,
     baseExp: 25,
   },
   {
     familiar: $familiar`Chest Mimic`,
-    used: get("_mimicEggsObtained") >= 11,
-    useValue:
-      get("valueOfAdventure") * toInt(get("garbo_embezzlerMultiplier")) * 11,
+    used: mimicUsed(),
+    useValue: mimicValue(),
     baseExp: 50,
   },
 ];

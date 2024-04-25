@@ -56,6 +56,7 @@ import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 import { maxPassiveDamage, monsterManuelAvailable } from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
+import { shouldMakeEgg } from "./resources/chestMimic";
 
 export function shouldRedigitize(): boolean {
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
@@ -680,9 +681,6 @@ export class Macro extends StrictMacro {
       !have($skill`Just the Facts`) ||
       (get("_monsterHabitatsRecalled") === 3 &&
         get("_monsterHabitatsFightsLeft") <= 1);
-    const shouldMakeEgg = () =>
-      $familiar`Chest Mimic`.experience / 50 >= get("_mimicEggsObtained") &&
-      get("_mimicEggsObtained") < 11;
     return this.if_(
       globalOptions.target,
       Macro.if_(
@@ -698,7 +696,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Fire a badly romantic arrow`),
         )
         .externalIf(
-          myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(),
+          myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(true),
           Macro.trySkill($skill`%fn, lay an egg`),
         )
         .externalIf(

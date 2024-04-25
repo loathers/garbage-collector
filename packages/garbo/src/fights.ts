@@ -185,6 +185,7 @@ import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
+import { shouldMakeEgg } from "./resources/chestMimic";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -531,10 +532,6 @@ export function dailyFights(): void {
         const location = new EmbezzlerFightRunOptions(nextFight).location;
         const underwater = location.environment === "underwater";
         const shouldCopy = get("_badlyRomanticArrows") === 0 && !underwater;
-
-        const shouldMakeEgg = () =>
-          $familiar`Chest Mimic`.experience / 50 >= get("_mimicEggsObtained") &&
-          get("_mimicEggsObtained") < 11;
 
         // use obtuse angel if have + have quake of arrows, otherwise reanimator
         // quake of arrows is PvP-stealable and costs ~50k, so don't assume we have it

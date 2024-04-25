@@ -55,7 +55,6 @@ import {
 } from "../combat";
 import {
   averageEmbezzlerNet,
-  canDifferentiateMonster,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
   ltbRun,
@@ -78,6 +77,7 @@ import {
   EmbezzlerFightConfigOptions as CopyTargetFightConfigOptions,
   RunOptions,
 } from "./lib";
+import { canDifferentiateMonster } from "../resources/chestMimic";
 
 export class CopyTargetFight implements CopyTargetFightConfigOptions {
   name: string;

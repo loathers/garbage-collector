@@ -9,7 +9,6 @@ import {
   numericModifier,
   print,
   Slot,
-  toInt,
   useFamiliar,
   weightAdjustment,
 } from "kolmafia";
@@ -28,7 +27,12 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
-import { baseMeat, BonusEquipMode, HIGHLIGHT } from "../lib";
+import {
+  baseMeat,
+  BonusEquipMode,
+  EMBEZZLER_MULTIPLIER,
+  HIGHLIGHT,
+} from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -302,8 +306,7 @@ function getSpecialFamiliarLimit({
       return globalOptions.ascend
         ? 0
         : $familiar`Chest Mimic`.experience < 550
-        ? ((get("valueOfAdventure") * toInt(get("garbo_embezzlerMultiplier"))) /
-            50) *
+        ? ((get("valueOfAdventure") * EMBEZZLER_MULTIPLIER()) / 50) *
           getModifier("Familiar Experience")
         : 0;
 

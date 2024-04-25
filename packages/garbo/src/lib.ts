@@ -1054,16 +1054,3 @@ export function aprilFoolsRufus() {
     visitUrl("questlog.php?which=7");
   }
 }
-
-export function canDifferentiateMonster(monster: Monster): number {
-  if (!have($item`mimic egg`)) return 0;
-  const regex = new RegExp(`${monster.name}\\s*(?:\\((\\d+)\\))?`, "i");
-  const page = visitUrl(`desc_item.php?whichitem=646626465`, false, true);
-  const match = page.match(regex);
-  if (!match) {
-    visitUrl("main.php");
-    return 0;
-  }
-  visitUrl("main.php");
-  return parseInt(match[1]) || 1;
-}
