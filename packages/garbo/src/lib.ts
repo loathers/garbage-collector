@@ -104,6 +104,7 @@ import {
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
+import { Outfit } from "grimoire-kolmafia";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -1058,6 +1059,10 @@ export function aprilFoolsRufus() {
 type LuckyAdventure = {
   location: Location;
   value: () => number;
+  outfit?: () => Outfit;
+  choices?: () => {
+    [choice: number]: string | number;
+  };
 };
 
 const luckyAdventures = [
