@@ -27,7 +27,7 @@ export function lovebugsFactory(
   _locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (get("lovebugsUnlocked")) {
+  if (get("lovebugsUnlocked") && _type !== "freerun") {
     return LovebugTargets.filter((t) => realmAvailable(t.element)).map(
       (t) =>
         new WandererTarget(

@@ -32,6 +32,7 @@ export const draggableFights = [
   "wanderer",
   "yellow ray",
   "freefight",
+  "freerun",
 ] as const;
 export type DraggableFight = (typeof draggableFights)[number];
 export function isDraggableFight<T>(
@@ -202,6 +203,7 @@ export function canWander(location: Location, type: DraggableFight): boolean {
   if (underwater(location)) return false;
   switch (type) {
     case "backup":
+    case "freerun":
       return canWanderTypeBackup(location);
     case "freefight":
     case "yellow ray":
@@ -288,6 +290,7 @@ export function wandererTurnsAvailableToday(
     wanderer: canWander(location, "wanderer"),
     "yellow ray": canWander(location, "yellow ray"),
     freefight: canWander(location, "freefight"),
+    freerun: canWander(location, "freerun"),
   };
 
   const digitize =
@@ -307,8 +310,12 @@ export function wandererTurnsAvailableToday(
       ? clamp(get(source.property), 0, source.max)
       : 0,
   );
+  // This is the ELG cooldown for spring shoes
+  const freeRun = canWanderCache["freerun"]
+    ? Math.floor(options.estimatedTurns() / 30)
+    : 0;
 
-  return digitize + pigSkinnerRay + yellowRay + wanderers;
+  return digitize + pigSkinnerRay + yellowRay + wanderers + freeRun;
 }
 
 const LIMITED_BOFA_DROPS = $items`pocket wish, tattered scrap of paper`;

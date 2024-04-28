@@ -94,7 +94,7 @@ export function guzzlrFactory(
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (Guzzlr.have()) {
+  if (Guzzlr.have() && _type !== "freerun") {
     const buckValue = options.itemValue($item`Guzzlrbuck`);
     acceptGuzzlrQuest(options, locationSkiplist);
     const location = Guzzlr.getLocation();

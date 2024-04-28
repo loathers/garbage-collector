@@ -642,6 +642,24 @@ const BarfTurnTasks: GarboTask[] = [
       sobriety: "sober",
     },
   ),
+  wanderTask(
+    "freerun",
+    {
+      equip: $items`spring shoes`,
+      bonuses: new Map([[$item`carnivorous potted plant`, 500]]),
+    },
+    {
+      name: "Spring Shoes Freerun",
+      ready: () => have($item`spring shoes`) && romanticMonsterImpossible(),
+      completed: () => have($effect`Everything Looks Green`),
+      combat: new GarboStrategy(() =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .familiarActions()
+          .skill($skill`Spring Away`),
+      ),
+      sobriety: "sober",
+    },
+  ),
   {
     name: "Gingerbread Noon",
     completed: () => GingerBread.minutesToNoon() !== 0,
