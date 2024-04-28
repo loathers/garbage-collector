@@ -1057,28 +1057,28 @@ export function aprilFoolsRufus() {
 
 type LuckyAdventure = {
   location: Location;
-  value: number;
+  value: () => number;
 };
 
 const luckyAdventures = [
   {
     location: $location`Cobb's Knob Treasury`,
-    value: canAdventure($location`Cobb's Knob Treasury`)
-      ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
-      : 0,
+    value: () =>
+      canAdventure($location`Cobb's Knob Treasury`)
+        ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
+        : 0,
   },
   {
     location: $location`The Castle in the Clouds in the Sky (Top Floor)`,
-    value: canAdventure(
-      $location`The Castle in the Clouds in the Sky (Top Floor)`,
-    )
-      ? garboValue($item`Mick's IcyVapoHotness Inhaler`)
-      : 0,
+    value: () =>
+      canAdventure($location`The Castle in the Clouds in the Sky (Top Floor)`)
+        ? garboValue($item`Mick's IcyVapoHotness Inhaler`)
+        : 0,
   },
 ] as LuckyAdventure[];
 
 function determineBestLuckyAdventure(): LuckyAdventure {
-  return maxBy(luckyAdventures, "value");
+  return maxBy(luckyAdventures, ({ value }) => value());
 }
 
 let bestLuckyAdventure: LuckyAdventure;

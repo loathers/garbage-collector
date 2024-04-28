@@ -244,7 +244,7 @@ export const chainStarters = [
     "Saxophone semirare",
     () =>
       getBestLuckyAdventure().location === $location`Cobb's Knob Treasury` &&
-      getBestLuckyAdventure().value > 0 &&
+      getBestLuckyAdventure().value() > 0 &&
       canAdventure($location`Cobb's Knob Treasury`) &&
       AprilingBandHelmet.canPlay($item`Apriling band saxophone`),
     () => 0,

@@ -17,7 +17,7 @@ const instruments: {
   },
   {
     instrument: "Apriling band saxophone",
-    value: () => getBestLuckyAdventure().value,
+    value: () => getBestLuckyAdventure().value(),
   },
   {
     instrument: "Apriling band piccolo",

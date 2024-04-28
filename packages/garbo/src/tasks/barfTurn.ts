@@ -349,7 +349,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
       have($item`Apriling band saxophone`) &&
       getBestLuckyAdventure().location ===
         $location`The Castle in the Clouds in the Sky (Top Floor)` &&
-      getBestLuckyAdventure().value > get("valueOfAdventure"),
+      getBestLuckyAdventure().value() > get("valueOfAdventure"),
     do: $location`The Castle in the Clouds in the Sky (Top Floor)`,
     prepare: () => {
       if (!have($effect`Lucky!`)) {
