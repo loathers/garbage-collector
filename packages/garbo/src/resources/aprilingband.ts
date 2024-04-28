@@ -1,9 +1,9 @@
-import { $item, $location, AprilingBandHelmet, clamp, get, have } from "libram";
+import { $item, AprilingBandHelmet, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { EMBEZZLER_MULTIPLIER } from "../lib";
+import { getBestLuckyAdventure } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
-import { canAdventure, toItem } from "kolmafia";
+import { toItem } from "kolmafia";
 
 const instruments: {
   instrument: AprilingBandHelmet.Instrument;
@@ -17,10 +17,7 @@ const instruments: {
   },
   {
     instrument: "Apriling band saxophone",
-    value: () =>
-      canAdventure($location`Cobb's Knob Treasury`)
-        ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
-        : 0,
+    value: () => getBestLuckyAdventure().value,
   },
   {
     instrument: "Apriling band piccolo",
