@@ -360,7 +360,10 @@ const NonBarfTurnTasks: AlternateTask[] = [
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg("Hit unexpected combat!"),
     ),
-    turns: () => 1,
+    turns: () =>
+      have($item`Apriling band saxophone`)
+        ? $item`Apriling band saxophone`.dailyusesleft
+        : 0,
     spendsTurn: true,
   },
   {
