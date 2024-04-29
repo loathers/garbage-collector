@@ -3,6 +3,7 @@ import {
   canAdventure,
   canEquip,
   eat,
+  getWorkshed,
   Location,
   mallPrice,
   maximize,
@@ -38,6 +39,7 @@ import {
   set,
   SourceTerminal,
   sum,
+  TrainSet,
   undelay,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
@@ -650,7 +652,11 @@ const BarfTurnTasks: GarboTask[] = [
     },
     {
       name: "Spring Shoes Freerun",
-      ready: () => have($item`spring shoes`) && romanticMonsterImpossible(),
+      ready: () =>
+        have($item`spring shoes`) &&
+        romanticMonsterImpossible() &&
+        (getWorkshed() !== $item`model train set` ||
+          TrainSet.next() !== TrainSet.Station.GAIN_MEAT),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
