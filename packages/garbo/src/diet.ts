@@ -492,7 +492,11 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`toasted brie`, { maximum: 1 }),
     new MenuItem($item`potion of the field gar`, { maximum: 1 }),
     ...[...stomachLiverCleaners.keys()].map((item) => new MenuItem<Note>(item)),
-    new MenuItem($item`sweet tooth`, { size: -1, organ: "food", maximum: 1 }),
+    new MenuItem($item`sweet tooth`, {
+      size: -1,
+      organ: "food",
+      maximum: get("_sweetToothUsed") ? 0 : 1,
+    }),
     new MenuItem($item`designer sweatpants`, {
       size: -1,
       organ: "booze",
