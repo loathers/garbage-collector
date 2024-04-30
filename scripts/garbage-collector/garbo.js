@@ -30968,7 +30968,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("5143aef46de1db261f8cb655e39250709e1a5462", ")"));
+    (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ea734ebe32778e430c4bb73f2caba2ffe3d9675b", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -32610,7 +32610,7 @@ function menu() {
   })), [new MenuItem($item(_templateObject1132 || (_templateObject1132 = _taggedTemplateLiteral73(["sweet tooth"]))), {
     size: -1,
     organ: "food",
-    maximum: 1
+    maximum: get("_sweetToothUsed") ? 0 : 1
   }), new MenuItem($item(_templateObject1142 || (_templateObject1142 = _taggedTemplateLiteral73(["designer sweatpants"]))), {
     size: -1,
     organ: "booze",
