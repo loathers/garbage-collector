@@ -343,9 +343,10 @@ const NonBarfTurnTasks: AlternateTask[] = [
     choices: { 1091: 7 },
   },
   {
-    name: "Saxophone Lucky",
+    name: "Apriling Saxophone Lucky (drunk)",
     completed: () => !AprilingBandHelmet.canPlay("Apriling band saxophone"),
     ready: () =>
+      globalOptions.ascend &&
       have($item`Apriling band saxophone`) &&
       getBestLuckyAdventure().location ===
         $location`The Castle in the Clouds in the Sky (Top Floor)` &&
@@ -364,6 +365,33 @@ const NonBarfTurnTasks: AlternateTask[] = [
       have($item`Apriling band saxophone`)
         ? $item`Apriling band saxophone`.dailyusesleft
         : 0,
+    sobriety: "drunk",
+    spendsTurn: true,
+  },
+  {
+    name: "Apriling Saxophone Lucky (sober)",
+    completed: () => !AprilingBandHelmet.canPlay("Apriling band saxophone"),
+    ready: () =>
+      !globalOptions.ascend &&
+      have($item`Apriling band saxophone`) &&
+      getBestLuckyAdventure().location ===
+        $location`The Castle in the Clouds in the Sky (Top Floor)` &&
+      getBestLuckyAdventure().value() > get("valueOfAdventure"),
+    do: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+    prepare: () => {
+      if (!have($effect`Lucky!`)) {
+        AprilingBandHelmet.play($item`Apriling band saxophone`);
+      }
+    },
+    outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Hit unexpected combat!"),
+    ),
+    turns: () =>
+      have($item`Apriling band saxophone`)
+        ? $item`Apriling band saxophone`.dailyusesleft
+        : 0,
+    sobriety: "sober",
     spendsTurn: true,
   },
   {
