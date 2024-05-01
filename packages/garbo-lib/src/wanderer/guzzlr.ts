@@ -90,11 +90,11 @@ function guzzlrValuePerTurn(
 }
 
 export function guzzlrFactory(
-  _type: DraggableFight,
+  type: DraggableFight,
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (Guzzlr.have() && _type !== "freerun") {
+  if (Guzzlr.have() && type !== "freerun") {
     const buckValue = options.itemValue($item`Guzzlrbuck`);
     acceptGuzzlrQuest(options, locationSkiplist);
     const location = Guzzlr.getLocation();

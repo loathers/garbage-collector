@@ -23,11 +23,11 @@ const LovebugTargets: LovebugTarget[] = [
 ];
 
 export function lovebugsFactory(
-  _type: DraggableFight,
+  type: DraggableFight,
   _locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (get("lovebugsUnlocked") && _type !== "freerun") {
+  if (get("lovebugsUnlocked") && type !== "freerun") {
     return LovebugTargets.filter((t) => realmAvailable(t.element)).map(
       (t) =>
         new WandererTarget(
