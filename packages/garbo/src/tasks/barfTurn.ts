@@ -348,10 +348,9 @@ const NonBarfTurnTasks: AlternateTask[] = [
     ready: () =>
       globalOptions.ascend &&
       have($item`Apriling band saxophone`) &&
-      getBestLuckyAdventure().location ===
-        $location`The Castle in the Clouds in the Sky (Top Floor)` &&
+      getBestLuckyAdventure().phase === "barf" &&
       getBestLuckyAdventure().value() > get("valueOfAdventure"),
-    do: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+    do: getBestLuckyAdventure().location,
     prepare: () => {
       if (!have($effect`Lucky!`)) {
         AprilingBandHelmet.play($item`Apriling band saxophone`);
@@ -374,10 +373,9 @@ const NonBarfTurnTasks: AlternateTask[] = [
     ready: () =>
       !globalOptions.ascend &&
       have($item`Apriling band saxophone`) &&
-      getBestLuckyAdventure().location ===
-        $location`The Castle in the Clouds in the Sky (Top Floor)` &&
+      getBestLuckyAdventure().phase === "barf" &&
       getBestLuckyAdventure().value() > get("valueOfAdventure"),
-    do: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+    do: getBestLuckyAdventure().location,
     prepare: () => {
       if (!have($effect`Lucky!`)) {
         AprilingBandHelmet.play($item`Apriling band saxophone`);
