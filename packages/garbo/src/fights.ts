@@ -1786,6 +1786,7 @@ function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   }
   if (familiar === $familiar`Jill-of-All-Trades`) {
     copy.equip?.push($item`LED candle`);
+    copy.modes = { ...copy.modes, jillcandle: "disco" };
   }
   copy.equip = [...new Set(copy.equip)]; // Prune doubled-up stuff
   return copy;
