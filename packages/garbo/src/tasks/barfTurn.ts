@@ -359,7 +359,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     },
     outfit: () => ({ offhand: $item`Drunkula's wineglass` }),
     combat: new GarboStrategy(() =>
-      Macro.abortWithMsg("Hit unexpected combat!"),
+      Macro.abortWithMsg("Unexpected combat while attempting Lucky! adventure"),
     ),
     turns: () =>
       have($item`Apriling band saxophone`)
@@ -385,7 +385,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     },
     outfit: () => ({}),
     combat: new GarboStrategy(() =>
-      Macro.abortWithMsg("Hit unexpected combat!"),
+      Macro.abortWithMsg("Unexpected combat while attempting Lucky! adventure"),
     ),
     turns: () =>
       have($item`Apriling band saxophone`)
