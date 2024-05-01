@@ -4,12 +4,11 @@ import { $item, $location, GingerBread } from "libram";
 
 export function gingerbreadFactory(
   type: DraggableFight,
-  locationSkiplist: Location[],
+  _locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
   if (
     ["freefight", "freerun"].includes(type) &&
-    !locationSkiplist.some((loc) => GingerBread.LOCATIONS.includes(loc)) &&
     GingerBread.available() &&
     GingerBread.minutesToMidnight() !== 0 &&
     GingerBread.minutesToNoon() !== 0 &&
