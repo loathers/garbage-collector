@@ -357,7 +357,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
         AprilingBandHelmet.play($item`Apriling band saxophone`);
       }
     },
-    outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+    outfit: () => ({ offhand: $item`Drunkula's wineglass` }),
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg("Hit unexpected combat!"),
     ),
@@ -383,7 +383,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
         AprilingBandHelmet.play($item`Apriling band saxophone`);
       }
     },
-    outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+    outfit: () => ({}),
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg("Hit unexpected combat!"),
     ),
