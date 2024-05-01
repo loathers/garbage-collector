@@ -645,7 +645,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
-    "freerun",
+    "Spring Away",
     {
       equip: $items`spring shoes`,
       bonuses: new Map([[$item`carnivorous potted plant`, 500]]),
