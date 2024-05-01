@@ -43,7 +43,7 @@ const experienceFamiliars: ExperienceFamiliar[] = [
     familiar: $familiar`Chest Mimic`,
     used: mimicUsed(),
     useValue: mimicValue(),
-    baseExp: 50,
+    baseExp: 0,
   },
 ];
 

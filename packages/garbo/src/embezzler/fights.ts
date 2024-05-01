@@ -77,7 +77,6 @@ import {
   EmbezzlerFightConfigOptions as CopyTargetFightConfigOptions,
   RunOptions,
 } from "./lib";
-import { canDifferentiateMonster } from "../resources/chestMimic";
 
 export class CopyTargetFight implements CopyTargetFightConfigOptions {
   name: string;
@@ -293,8 +292,8 @@ export const chainStarters = [
   ),
   new CopyTargetFight(
     "Mimic Eggs",
-    () => canDifferentiateMonster(globalOptions.target) >= 1,
-    () => canDifferentiateMonster(globalOptions.target),
+    () => ChestMimic.differentiableQuantity(globalOptions.target) >= 1,
+    () => ChestMimic.differentiableQuantity(globalOptions.target),
     (options: RunOptions) => {
       withMacro(
         options.macro,

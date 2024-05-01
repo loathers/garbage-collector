@@ -76,10 +76,7 @@ import {
   tryFillLatte,
 } from "../resources";
 import { acquire } from "../acquire";
-import {
-  canDifferentiateMonster,
-  shouldChargeMimic,
-} from "../resources/chestMimic";
+import { shouldMakeEgg } from "../resources/chestMimic";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -426,10 +423,10 @@ const BarfTurnTasks: GarboTask[] = [
   },
   {
     name: "Mimic Eggs",
-    ready: () => shouldChargeMimic(),
+    ready: () => shouldMakeEgg(),
     completed: () => get("_mimicEggsObtained") >= 11,
     do: () => {
-      if (canDifferentiateMonster(globalOptions.target)) {
+      if (ChestMimic.differentiableQuantity(globalOptions.target) >= 1) {
         ChestMimic.differentiate(globalOptions.target, "");
       }
       ChestMimic.receive(globalOptions.target);
@@ -437,7 +434,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() =>
       Macro.externalIf(
-        myFamiliar() === $familiar`Chest Mimic` && shouldChargeMimic(),
+        myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(),
         Macro.trySkill($skill`%fn, lay an egg`),
       )
         .if_(globalOptions.target, Macro.meatKill())

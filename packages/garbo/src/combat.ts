@@ -696,7 +696,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Fire a badly romantic arrow`),
         )
         .externalIf(
-          myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(true),
+          myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(),
           Macro.trySkill($skill`%fn, lay an egg`),
         )
         .externalIf(

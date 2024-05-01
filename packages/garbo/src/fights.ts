@@ -185,7 +185,6 @@ import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
-import { shouldMakeEgg } from "./resources/chestMimic";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -410,6 +409,34 @@ function pygmyOptions(equip: Item[] = []): FreeFightOptions {
   };
 }
 
+function familiarSpec(underwater: boolean): OutfitSpec {
+  if (!underwater) {
+    if (
+      ChestMimic.have() &&
+      $familiar`Chest Mimic`.experience >= 50 &&
+      get("_mimicEggsObtained") < 11
+    ) {
+      return { familiar: $familiar`Chest Mimic` };
+    }
+    if (get("_badlyRomanticArrows") === 0) {
+      if (
+        have($familiar`Obtuse Angel`) &&
+        (familiarEquippedEquipment($familiar`Obtuse Angel`) ===
+          $item`quake of arrows` ||
+          retrieveItem($item`quake of arrows`))
+      ) {
+        return {
+          familiar: $familiar`Obtuse Angel`,
+          famequip: $item`quake of arrows`,
+        };
+      }
+      if (have($familiar`Reanimated Reanimator`))
+        {return { familiar: $familiar`Reanimated Reanimator` };}
+    }
+  }
+  return { familiar: meatFamiliar() };
+}
+
 export function dailyFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
 
@@ -531,31 +558,15 @@ export function dailyFights(): void {
 
         const location = new EmbezzlerFightRunOptions(nextFight).location;
         const underwater = location.environment === "underwater";
-        const shouldCopy = get("_badlyRomanticArrows") === 0 && !underwater;
 
-        // use obtuse angel if have + have quake of arrows, otherwise reanimator
-        // quake of arrows is PvP-stealable and costs ~50k, so don't assume we have it
-        let bestCopier: Familiar | undefined;
-        if (ChestMimic.have() && shouldMakeEgg()) {
-          bestCopier = $familiar`Chest Mimic`;
-        } else if (
-          have($familiar`Obtuse Angel`) &&
-          (familiarEquippedEquipment($familiar`Obtuse Angel`) ===
-            $item`quake of arrows` ||
-            retrieveItem($item`quake of arrows`))
-        ) {
-          bestCopier = $familiar`Obtuse Angel`;
-        } else if (have($familiar`Reanimated Reanimator`)) {
-          bestCopier = $familiar`Reanimated Reanimator`;
-        }
-        const familiar = shouldCopy && bestCopier ? bestCopier : meatFamiliar();
-        const famSpec: OutfitSpec = { familiar };
-        if (familiar === $familiar`Obtuse Angel`) {
-          famSpec.famequip = $item`quake of arrows`;
+        const famSpec = () => familiarSpec(underwater);
+
+        if (famSpec() === $familiar`Obtuse Angel`) {
+          famSpec().famequip = $item`quake of arrows`;
         }
 
         setLocation(location);
-        embezzlerOutfit({ ...nextFight.spec, ...famSpec }, location).dress();
+        embezzlerOutfit({ ...nextFight.spec, ...famSpec() }, location).dress();
 
         runEmbezzlerFight(nextFight, { action: nextFight.name });
         postCombatActions();
