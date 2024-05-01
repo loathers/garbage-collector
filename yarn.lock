@@ -4918,13 +4918,13 @@ __metadata:
   linkType: hard
 
 "libram@npm:latest":
-  version: 0.8.27
-  resolution: "libram@npm:0.8.27"
+  version: 0.8.29
+  resolution: "libram@npm:0.8.29"
   dependencies:
     html-entities: ^2.4.0
   peerDependencies:
     kolmafia: ^5.27668.0
-  checksum: 2f2d3f4228a2185ac17eabe64ee3346dcc9c803618a99823352068356a8c28c9285192a45cfc68f88da0b58da27cdbae2500080e726f76a396b093b966a9659a
+  checksum: a33edd8faa50755a49775d4b56d8fc783824a59702bbbbec4dea6640756014f005bc67b23b5e921bddd66ef570c37765cf52f3059d41bf8d71f07ca61b39fdff
   languageName: node
   linkType: hard
 
