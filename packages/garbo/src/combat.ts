@@ -56,7 +56,6 @@ import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 import { maxPassiveDamage, monsterManuelAvailable } from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
-import { shouldMakeEgg } from "./resources/chestMimic";
 
 export function shouldRedigitize(): boolean {
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
@@ -695,8 +694,8 @@ export class Macro extends StrictMacro {
           myFamiliar() === $familiar`Obtuse Angel`,
           Macro.trySkill($skill`Fire a badly romantic arrow`),
         )
-        .externalIf(
-          myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(),
+        .while_(
+          `hasskill ${$skill`%fn, lay an egg`}`,
           Macro.trySkill($skill`%fn, lay an egg`),
         )
         .externalIf(
