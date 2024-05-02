@@ -11,6 +11,7 @@ import {
 import { globalOptions } from "../config";
 import { GeneralFamiliar } from "./lib";
 import { EMBEZZLER_MULTIPLIER } from "../lib";
+import { mimicExperienceNeeded, shouldChargeMimic } from "../resources";
 
 type ExperienceFamiliar = {
   familiar: Familiar;
@@ -23,16 +24,6 @@ type ExperienceFamiliar = {
 
 const isUsed = (used: propertyTypes.BooleanProperty | (() => boolean)) =>
   typeof used === "string" ? get(used) : used();
-
-function mimicValue(): number {
-  return get("valueOfAdventure") * EMBEZZLER_MULTIPLIER();
-}
-
-const mimicExperienceNeeded = () =>
-  50 * (11 - get("_mimicEggsObtained")) + (globalOptions.ascend ? 550 : 0);
-
-const mimicUsed = () =>
-  $familiar`Chest Mimic`.experience >= mimicExperienceNeeded();
 
 const experienceFamiliars: ExperienceFamiliar[] = [
   {
@@ -49,8 +40,8 @@ const experienceFamiliars: ExperienceFamiliar[] = [
   },
   {
     familiar: $familiar`Chest Mimic`,
-    used: mimicUsed,
-    useValue: mimicValue,
+    used: () => !shouldChargeMimic(),
+    useValue: () => EMBEZZLER_MULTIPLIER() * get("valueOfAdventure"),
     baseExp: 0,
     xpCost: 50,
     xpLimit: mimicExperienceNeeded,

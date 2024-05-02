@@ -76,7 +76,7 @@ import {
   tryFillLatte,
 } from "../resources";
 import { acquire } from "../acquire";
-import { shouldMakeEgg } from "../resources/chestMimic";
+import { shouldMakeEgg } from "../resources";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
