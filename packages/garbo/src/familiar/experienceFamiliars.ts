@@ -17,7 +17,8 @@ type ExperienceFamiliar = {
   used: propertyTypes.BooleanProperty | (() => boolean);
   useValue: Delayed<number>;
   baseExp: number;
-  xpLimit?: number;
+  xpCost?: number;
+  xpLimit?: () => number;
 };
 
 const isUsed = (used: propertyTypes.BooleanProperty | (() => boolean)) =>
@@ -27,12 +28,11 @@ function mimicValue(): number {
   return get("valueOfAdventure") * EMBEZZLER_MULTIPLIER();
 }
 
-function mimicUsed(): boolean {
-  return (
-    $familiar`Chest Mimic`.experience >=
-    50 * (11 - get("_mimicEggsObtained")) + (globalOptions.ascend ? 550 : 0)
-  );
-}
+const mimicExperienceNeeded = () =>
+  50 * (11 - get("_mimicEggsObtained")) + (globalOptions.ascend ? 550 : 0);
+
+const mimicUsed = () =>
+  $familiar`Chest Mimic`.experience >= mimicExperienceNeeded();
 
 const experienceFamiliars: ExperienceFamiliar[] = [
   {
@@ -52,17 +52,21 @@ const experienceFamiliars: ExperienceFamiliar[] = [
     used: mimicUsed,
     useValue: mimicValue,
     baseExp: 0,
+    xpCost: 50,
+    xpLimit: mimicExperienceNeeded,
   },
 ];
 
 function valueExperienceFamiliar({
   familiar,
   useValue,
+  xpCost,
   baseExp,
 }: ExperienceFamiliar): GeneralFamiliar {
   const currentExp =
     familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
-  const experienceNeeded = 400 - (globalOptions.ascend ? currentExp : baseExp);
+  const experienceNeeded =
+    xpCost ?? 400 - (globalOptions.ascend ? currentExp : baseExp);
   const estimatedExperience = 12;
   return {
     familiar,
@@ -78,7 +82,7 @@ export default function getExperienceFamiliars(): GeneralFamiliar[] {
       ({ used, familiar, xpLimit }) =>
         have(familiar) &&
         !isUsed(used) &&
-        familiar.experience < (xpLimit ?? 400),
+        familiar.experience < (xpLimit?.() ?? 400),
     )
     .map(valueExperienceFamiliar);
 }
@@ -87,5 +91,5 @@ export function getExperienceFamiliarLimit(fam: Familiar): number {
   const target = experienceFamiliars.find(({ familiar }) => familiar === fam);
   if (!have(fam) || !target) return 0;
 
-  return (400 - fam.experience) / 5;
+  return ((target.xpLimit?.() ?? 400) - fam.experience) / 5;
 }
