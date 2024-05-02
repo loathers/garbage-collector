@@ -1,4 +1,4 @@
-import { $item, AprilingBandHelmet, clamp, get, have } from "libram";
+import { $familiar, $item, AprilingBandHelmet, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { getBestLuckyAdventure } from "../lib";
@@ -24,9 +24,12 @@ const instruments: {
     value: () =>
       Math.max(
         0,
-        ...getExperienceFamiliars().map(({ familiar, expectedValue }) =>
-          familiar.experience < 361 ? expectedValue / 400 : 0,
-        ),
+        ...getExperienceFamiliars().map(({ familiar, expectedValue }) => {
+          const currentExp =
+            familiar.experience ||
+            (have($familiar`Shorter-Order Cook`) ? 100 : 0);
+          return currentExp < 361 ? expectedValue / 400 : 0;
+        }),
       ) * 40,
   },
 ];
