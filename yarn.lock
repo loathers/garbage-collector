@@ -3802,7 +3802,7 @@ __metadata:
     lint-staged: ^14.0.1
     madge: ^6.1.0
     prettier: ^3.0.3
-    typescript: ">=4.2.0"
+    typescript: ^5.4.5
   peerDependencies:
     eslint: ^8.50.0
     prettier: ^3.0.3
@@ -4245,7 +4245,7 @@ __metadata:
     eslint: ^8.50.0
     husky: ^8.0.3
     prettier: ^3.0.3
-    typescript: ">=4.2.0"
+    typescript: ^5.4.5
   languageName: unknown
   linkType: soft
 
@@ -4255,12 +4255,12 @@ __metadata:
   dependencies:
     eslint: ^8.50.0
     eslint-config-garbo: ^0.0.1
-    kolmafia: ^5.27668.0
-    libram: latest
+    kolmafia: ^5.27920.0
+    libram: ^0.8.30
     lint-staged: ^14.0.1
     madge: ^6.1.0
     prettier: ^3.0.3
-    typescript: ^5.2.2
+    typescript: ^5.4.5
   peerDependencies:
     kolmafia: ^5.27668.0
     libram: ^0.8.17
@@ -4284,7 +4284,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     rimraf: ^5.0.5
-    typescript: ^5.0.2
+    typescript: ^5.4.5
     vite: ^4.4.5
   languageName: unknown
   linkType: soft
@@ -4307,14 +4307,14 @@ __metadata:
     eslint: ^8.50.0
     eslint-config-garbo: ^0.0.1
     garbo-lib: "*"
-    grimoire-kolmafia: latest
-    kolmafia: ^5.27668.0
-    libram: latest
+    grimoire-kolmafia: ^0.3.26
+    kolmafia: ^5.27920.0
+    libram: ^0.8.30
     lint-staged: ^14.0.1
     madge: ^6.1.0
     prettier: ^3.0.3
     ts-node: ^10.9.1
-    typescript: ^5.2.2
+    typescript: ^5.4.5
   languageName: unknown
   linkType: soft
 
@@ -4484,7 +4484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grimoire-kolmafia@npm:latest":
+"grimoire-kolmafia@npm:^0.3.26":
   version: 0.3.26
   resolution: "grimoire-kolmafia@npm:0.3.26"
   dependencies:
@@ -4900,10 +4900,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:^5.27668.0":
-  version: 5.27696.0
-  resolution: "kolmafia@npm:5.27696.0"
-  checksum: cb6f212c69ee384a33d5a66a8dd191fa99c25bcb6d25cb2a9e52655fadb3ff4d2e05c36ac630acb2f25eb2f308e92e7c53180f6d91ada06af1eb25b990b7d786
+"kolmafia@npm:^5.27920.0":
+  version: 5.27920.0
+  resolution: "kolmafia@npm:5.27920.0"
+  checksum: d2cb41181c735f4e9442f7230e065d8ee9765e6808d96f5447079812a5e06f61bb99019c7cf6204bda647d3441f32dc367c650992864a8fbf43c524d87285e52
   languageName: node
   linkType: hard
 
@@ -4917,14 +4917,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:latest":
-  version: 0.8.29
-  resolution: "libram@npm:0.8.29"
+"libram@npm:^0.8.30":
+  version: 0.8.30
+  resolution: "libram@npm:0.8.30"
   dependencies:
     html-entities: ^2.4.0
   peerDependencies:
     kolmafia: ^5.27668.0
-  checksum: a33edd8faa50755a49775d4b56d8fc783824a59702bbbbec4dea6640756014f005bc67b23b5e921bddd66ef570c37765cf52f3059d41bf8d71f07ca61b39fdff
+  checksum: 9fe4e655a696c4456fe062664a8e3449ca95a9759daf498bb8e06b1940a3e423960cfe43fb83e152e3303f0171ed647b8f9109b1d3a92269f09065948a2ebaa8
   languageName: node
   linkType: hard
 
@@ -6617,16 +6617,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:>=4.2.0, typescript@npm:^5.0.2, typescript@npm:^5.2.2":
-  version: 5.2.2
-  resolution: "typescript@npm:5.2.2"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 7912821dac4d962d315c36800fe387cdc0a6298dba7ec171b350b4a6e988b51d7b8f051317786db1094bd7431d526b648aba7da8236607febb26cf5b871d2d3c
-  languageName: node
-  linkType: hard
-
 "typescript@npm:^3.9.10, typescript@npm:^3.9.7":
   version: 3.9.10
   resolution: "typescript@npm:3.9.10"
@@ -6647,13 +6637,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@>=4.2.0#~builtin<compat/typescript>, typescript@patch:typescript@^5.0.2#~builtin<compat/typescript>, typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
-  version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"
+"typescript@npm:^5.4.5":
+  version: 5.4.5
+  resolution: "typescript@npm:5.4.5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 0f4da2f15e6f1245e49db15801dbee52f2bbfb267e1c39225afdab5afee1a72839cd86000e65ee9d7e4dfaff12239d28beaf5ee431357fcced15fb08583d72ca
+  checksum: 53c879c6fa1e3bcb194b274d4501ba1985894b2c2692fa079db03c5a5a7140587a1e04e1ba03184605d35f439b40192d9e138eb3279ca8eee313c081c8bcd9b0
   languageName: node
   linkType: hard
 
@@ -6674,6 +6664,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 1f8f3b6aaea19f0f67cba79057674ba580438a7db55057eb89cc06950483c5d632115c14077f6663ea76fd09fce3c190e6414bb98582ec80aa5a4eaf345d5b68
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^5.4.5#~builtin<compat/typescript>":
+  version: 5.4.5
+  resolution: "typescript@patch:typescript@npm%3A5.4.5#~builtin<compat/typescript>::version=5.4.5&hash=29ae49"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 2373c693f3b328f3b2387c3efafe6d257b057a142f9a79291854b14ff4d5367d3d730810aee981726b677ae0fd8329b23309da3b6aaab8263dbdccf1da07a3ba
   languageName: node
   linkType: hard
 

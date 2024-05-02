@@ -26,9 +26,9 @@
   "dependencies": {
     "core-js": "^3.32.2",
     "garbo-lib": "*",
-    "grimoire-kolmafia": "latest",
-    "kolmafia": "^5.27668.0",
-    "libram": "latest"
+    "grimoire-kolmafia": "^0.3.26",
+    "kolmafia": "^5.27920.0",
+    "libram": "^0.8.30"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
@@ -47,7 +47,7 @@
     "madge": "^6.1.0",
     "prettier": "^3.0.3",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.5"
   },
   "eslintConfig": {
     "extends": "eslint-config-garbo"
