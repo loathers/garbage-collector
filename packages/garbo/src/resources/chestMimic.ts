@@ -2,10 +2,7 @@ import { $familiar, get } from "libram";
 
 export function shouldChargeMimic(): boolean {
   /* If we can't make any more eggs tomorrow, don't charge the mimic more */
-  if (!($familiar`Chest Mimic`.experience >= 550)) {
-    return false;
-  }
-  return true;
+  return $familiar`Chest Mimic`.experience < 550;
 }
 
 export function shouldMakeEgg(): boolean {
