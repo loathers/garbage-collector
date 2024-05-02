@@ -1,10 +1,12 @@
 import { Familiar } from "kolmafia";
 import {
   $familiar,
+  Delayed,
   findLeprechaunMultiplier,
   get,
   have,
   propertyTypes,
+  undelay,
 } from "libram";
 import { globalOptions } from "../config";
 import { GeneralFamiliar } from "./lib";
@@ -12,11 +14,14 @@ import { EMBEZZLER_MULTIPLIER } from "../lib";
 
 type ExperienceFamiliar = {
   familiar: Familiar;
-  used: () => propertyTypes.BooleanProperty | boolean;
-  useValue: number;
+  used: propertyTypes.BooleanProperty | (() => boolean);
+  useValue: Delayed<number>;
   baseExp: number;
   xpLimit?: number;
 };
+
+const isUsed = (used: propertyTypes.BooleanProperty | (() => boolean)) =>
+  typeof used === "string" ? get(used) : used();
 
 function mimicValue(): number {
   return get("valueOfAdventure") * EMBEZZLER_MULTIPLIER() * 11;
@@ -29,20 +34,20 @@ function mimicUsed(): boolean {
 const experienceFamiliars: ExperienceFamiliar[] = [
   {
     familiar: $familiar`Pocket Professor`,
-    used: () => "_thesisDelivered",
+    used: "_thesisDelivered",
     useValue: 11 * get("valueOfAdventure"),
     baseExp: 200,
   },
   {
     familiar: $familiar`Grey Goose`,
-    used: () => "_meatifyMatterUsed",
+    used: "_meatifyMatterUsed",
     useValue: 15 ** 4,
     baseExp: 25,
   },
   {
     familiar: $familiar`Chest Mimic`,
-    used: () => mimicUsed(),
-    useValue: mimicValue(),
+    used: mimicUsed,
+    useValue: mimicValue,
     baseExp: 0,
   },
 ];
@@ -58,7 +63,7 @@ function valueExperienceFamiliar({
   const estimatedExperience = 12;
   return {
     familiar,
-    expectedValue: useValue / (experienceNeeded / estimatedExperience),
+    expectedValue: undelay(useValue) / (experienceNeeded / estimatedExperience),
     leprechaunMultiplier: findLeprechaunMultiplier(familiar),
     limit: "experience",
   };
@@ -68,7 +73,9 @@ export default function getExperienceFamiliars(): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(
       ({ used, familiar, xpLimit }) =>
-        have(familiar) && !used && familiar.experience < (xpLimit ?? 400)
+        have(familiar) &&
+        !isUsed(used) &&
+        familiar.experience < (xpLimit ?? 400),
     )
     .map(valueExperienceFamiliar);
 }
