@@ -12,7 +12,7 @@ import { EMBEZZLER_MULTIPLIER } from "../lib";
 
 type ExperienceFamiliar = {
   familiar: Familiar;
-  used: propertyTypes.BooleanProperty | boolean;
+  used: () => propertyTypes.BooleanProperty | boolean;
   useValue: number;
   baseExp: number;
   xpLimit?: number;
@@ -29,19 +29,19 @@ function mimicUsed(): boolean {
 const experienceFamiliars: ExperienceFamiliar[] = [
   {
     familiar: $familiar`Pocket Professor`,
-    used: "_thesisDelivered",
+    used: () => "_thesisDelivered",
     useValue: 11 * get("valueOfAdventure"),
     baseExp: 200,
   },
   {
     familiar: $familiar`Grey Goose`,
-    used: "_meatifyMatterUsed",
+    used: () => "_meatifyMatterUsed",
     useValue: 15 ** 4,
     baseExp: 25,
   },
   {
     familiar: $familiar`Chest Mimic`,
-    used: mimicUsed(),
+    used: () => mimicUsed(),
     useValue: mimicValue(),
     baseExp: 0,
   },

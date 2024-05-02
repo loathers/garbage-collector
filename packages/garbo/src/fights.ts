@@ -430,8 +430,9 @@ function familiarSpec(underwater: boolean): OutfitSpec {
           famequip: $item`quake of arrows`,
         };
       }
-      if (have($familiar`Reanimated Reanimator`))
-        {return { familiar: $familiar`Reanimated Reanimator` };}
+      if (have($familiar`Reanimated Reanimator`)) {
+        return { familiar: $familiar`Reanimated Reanimator` };
+      }
     }
   }
   return { familiar: meatFamiliar() };
@@ -559,14 +560,10 @@ export function dailyFights(): void {
         const location = new EmbezzlerFightRunOptions(nextFight).location;
         const underwater = location.environment === "underwater";
 
-        const famSpec = () => familiarSpec(underwater);
-
-        if (famSpec() === $familiar`Obtuse Angel`) {
-          famSpec().famequip = $item`quake of arrows`;
-        }
+        const famSpec = familiarSpec(underwater);
 
         setLocation(location);
-        embezzlerOutfit({ ...nextFight.spec, ...famSpec() }, location).dress();
+        embezzlerOutfit({ ...nextFight.spec, ...famSpec }, location).dress();
 
         runEmbezzlerFight(nextFight, { action: nextFight.name });
         postCombatActions();

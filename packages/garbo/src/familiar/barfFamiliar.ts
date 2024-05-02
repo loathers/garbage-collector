@@ -304,9 +304,7 @@ function getSpecialFamiliarLimit({
     // If we're going to ascend, Chest Mimic can't be leveled before the next embezzler chain
     // If we're not going to ascend, Chest Mimic shouldn't be charged beyond what it can spit out tomorrow
     case $familiar`Chest Mimic`:
-      return globalOptions.ascend
-        ? 0
-        : !shouldChargeMimic()
+      return globalOptions.ascend || !shouldChargeMimic()
         ? 0
         : $familiar`Chest Mimic`.experience < 550
         ? ((get("valueOfAdventure") * EMBEZZLER_MULTIPLIER()) / 50) *
