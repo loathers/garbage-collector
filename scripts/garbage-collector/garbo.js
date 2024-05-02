@@ -5186,7 +5186,7 @@ function ensureFreeRun(constraints) {
   }
   return source;
 }
-var import_kolmafia14, _templateObject60, _templateObject218, _templateObject318, _templateObject416, _templateObject510, _templateObject66, _templateObject76, _templateObject86, _templateObject96, _templateObject106, _templateObject116, _templateObject126, _templateObject136, _templateObject145, _templateObject155, _templateObject165, _templateObject175, _templateObject185, _templateObject195, _templateObject205, _templateObject219, _templateObject225, _templateObject235, _templateObject245, EVERYTHING_LOOKS_GREEN, freeRunSources;
+var import_kolmafia14, _templateObject60, _templateObject218, _templateObject318, _templateObject416, _templateObject510, _templateObject66, _templateObject76, _templateObject86, _templateObject96, _templateObject106, _templateObject116, _templateObject126, _templateObject136, _templateObject145, _templateObject155, _templateObject165, _templateObject175, _templateObject185, _templateObject195, _templateObject205, _templateObject219, _templateObject225, _templateObject235, _templateObject245, everythingLooksGreen, freeRunSources;
 var init_FreeRun = __esm({
   "../../node_modules/libram/dist/actions/FreeRun.js": function() {
     import_kolmafia14 = require("kolmafia");
@@ -5198,12 +5198,12 @@ var init_FreeRun = __esm({
     init_StompingBoots();
     init_template_string();
     init_ActionSource();
-    EVERYTHING_LOOKS_GREEN = $effect(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral8(["Everything Looks Green"])));
+    everythingLooksGreen = function() {
+      return have($effect(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral8(["Everything Looks Green"])))) ? 0 : 1;
+    };
     freeRunSources = [
       // Free unlimited source
-      new ActionSource($item(_templateObject218 || (_templateObject218 = _taggedTemplateLiteral8(["spring shoes"]))), function() {
-        return have(EVERYTHING_LOOKS_GREEN) ? 1 : 0;
-      }, Macro.skill($skill(_templateObject318 || (_templateObject318 = _taggedTemplateLiteral8(["Spring Away"])))), {
+      new ActionSource($item(_templateObject218 || (_templateObject218 = _taggedTemplateLiteral8(["spring shoes"]))), everythingLooksGreen, Macro.skill($skill(_templateObject318 || (_templateObject318 = _taggedTemplateLiteral8(["Spring Away"])))), {
         equipmentRequirements: function() {
           return new Requirement([], {
             forceEquip: $items(_templateObject416 || (_templateObject416 = _taggedTemplateLiteral8(["spring shoes"])))
@@ -5265,9 +5265,7 @@ var init_FreeRun = __esm({
         // Breaks after 10 successful runaways.
       })
     ].concat(_toConsumableArray8($items(_templateObject235 || (_templateObject235 = _taggedTemplateLiteral8(["green smoke bomb, tattered scrap of paper, GOTO, T.U.R.D.S. Key"]))).map(function(item11) {
-      return new ActionSource(item11, function() {
-        return have(EVERYTHING_LOOKS_GREEN) ? 0 : 1;
-      }, Macro.item(item11), {
+      return new ActionSource(item11, everythingLooksGreen, Macro.item(item11), {
         preparation: function() {
           return (0, import_kolmafia14.retrieveItem)(item11);
         },
@@ -31172,7 +31170,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("57daec4b3b15cbb19ff30bcd4b3cfd4f847e1e6c", ")"));
+    (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("eb18ef3c1f6bf0a05bc2ea6c92f28103581f62d2", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
