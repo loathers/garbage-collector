@@ -427,10 +427,10 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => get("_mimicEggsObtained") >= 11,
     do: () => {
       if (ChestMimic.differentiableQuantity(globalOptions.target) >= 1) {
-        ChestMimic.differentiate(globalOptions.target, "");
+        ChestMimic.differentiate(globalOptions.target);
       }
       ChestMimic.receive(globalOptions.target);
-      ChestMimic.differentiate(globalOptions.target, "");
+      ChestMimic.differentiate(globalOptions.target);
     },
     combat: new GarboStrategy(() =>
       Macro.externalIf(

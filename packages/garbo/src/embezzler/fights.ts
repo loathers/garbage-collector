@@ -297,7 +297,7 @@ export const chainStarters = [
     (options: RunOptions) => {
       withMacro(
         options.macro,
-        () => ChestMimic.differentiate(globalOptions.target, ""),
+        () => ChestMimic.differentiate(globalOptions.target),
         options.useAuto,
       );
     },
