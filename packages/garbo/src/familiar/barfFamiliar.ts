@@ -27,12 +27,7 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
-import {
-  baseMeat,
-  BonusEquipMode,
-  EMBEZZLER_MULTIPLIER,
-  HIGHLIGHT,
-} from "../lib";
+import { baseMeat, BonusEquipMode, HIGHLIGHT } from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -41,8 +36,6 @@ import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
-import { globalOptions } from "../config";
-import { shouldChargeMimic } from "../resources/chestMimic";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat / 100;
@@ -300,16 +293,6 @@ function getSpecialFamiliarLimit({
 
     case $familiar`Crimbo Shrub`:
       return Math.ceil(estimatedGarboTurns() / 100);
-
-    // If we're going to ascend, Chest Mimic can't be leveled before the next embezzler chain
-    // If we're not going to ascend, Chest Mimic shouldn't be charged beyond what it can spit out tomorrow
-    case $familiar`Chest Mimic`:
-      return globalOptions.ascend || !shouldChargeMimic()
-        ? 0
-        : $familiar`Chest Mimic`.experience < 550
-        ? ((get("valueOfAdventure") * EMBEZZLER_MULTIPLIER()) / 50) *
-          getModifier("Familiar Experience")
-        : 0;
 
     default:
       return 0;

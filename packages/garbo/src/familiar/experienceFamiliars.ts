@@ -24,11 +24,14 @@ const isUsed = (used: propertyTypes.BooleanProperty | (() => boolean)) =>
   typeof used === "string" ? get(used) : used();
 
 function mimicValue(): number {
-  return get("valueOfAdventure") * EMBEZZLER_MULTIPLIER() * 11;
+  return get("valueOfAdventure") * EMBEZZLER_MULTIPLIER();
 }
 
 function mimicUsed(): boolean {
-  return get("_mimicEggsObtained") >= 11;
+  return (
+    $familiar`Chest Mimic`.experience >=
+    50 * (11 - get("_mimicEggsObtained")) + (globalOptions.ascend ? 550 : 0)
+  );
 }
 
 const experienceFamiliars: ExperienceFamiliar[] = [
