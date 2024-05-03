@@ -102,7 +102,7 @@ function ensureBarfAccess() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27668);
+  sinceKolmafiaRevision(27922); // Law of Averages tracking
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
