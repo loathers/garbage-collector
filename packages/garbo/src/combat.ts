@@ -695,7 +695,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Fire a badly romantic arrow`),
         )
         .while_(
-          `hasskill ${$skill`%fn, lay an egg`}`,
+          `hasskill ${$skill`%fn, lay an egg`.id}`,
           Macro.trySkill($skill`%fn, lay an egg`),
         )
         .externalIf(
