@@ -10,9 +10,10 @@ export function shouldChargeMimic(): boolean {
 }
 
 export function shouldMakeEgg(barf: boolean): boolean {
-  const exp = barf ? 100 : 50;
+  const experienceNeeded =
+    50 * (11 - get("_mimicEggsObtained")) + (barf ? 50 : 0);
   return (
-    $familiar`Chest Mimic`.experience / exp >= 11 - get("_mimicEggsObtained") &&
+    $familiar`Chest Mimic`.experience >= experienceNeeded &&
     get("_mimicEggsObtained") < 11
   );
 }
