@@ -441,7 +441,6 @@ const BarfTurnTasks: GarboTask[] = [
     ),
     spendsTurn: true,
     outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
-    sobriety: "sober",
   },
   {
     name: "Lights Out",
