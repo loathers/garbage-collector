@@ -433,7 +433,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() =>
       Macro.externalIf(
-        myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(true),
+        myFamiliar() === $familiar`Chest Mimic`,
         Macro.trySkill($skill`%fn, lay an egg`),
       )
         .if_(globalOptions.target, Macro.meatKill())
