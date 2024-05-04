@@ -422,14 +422,13 @@ const BarfTurnTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Mimic Eggs",
+    name: "Make Mimic Eggs",
     ready: () => shouldMakeEgg(true),
     completed: () => get("_mimicEggsObtained") >= 11,
     do: () => {
-      if (ChestMimic.differentiableQuantity(globalOptions.target) >= 1) {
-        ChestMimic.differentiate(globalOptions.target);
+      if (ChestMimic.differentiableQuantity(globalOptions.target) < 1) {
+        ChestMimic.receive(globalOptions.target);
       }
-      ChestMimic.receive(globalOptions.target);
       ChestMimic.differentiate(globalOptions.target);
     },
     combat: new GarboStrategy(() =>
@@ -441,7 +440,7 @@ const BarfTurnTasks: GarboTask[] = [
         .familiarActions(),
     ),
     spendsTurn: true,
-    outfit: embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
+    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
     sobriety: "sober",
   },
   {
