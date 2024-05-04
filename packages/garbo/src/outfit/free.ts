@@ -52,7 +52,9 @@ export function freeFightOutfit(
 
   if (outfit.familiar !== $familiar`Patriotic Eagle`) {
     outfit.modifier.push(
-      $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
+      $familiars`Pocket Professor, Grey Goose, Chest Mimic`.includes(
+        outfit.familiar,
+      )
         ? "Familiar Experience"
         : "Familiar Weight",
     );
