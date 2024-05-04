@@ -7,7 +7,6 @@ import {
   mallPrice,
   maximize,
   myAdventures,
-  myFamiliar,
   myInebriety,
   myLevel,
   myTurncount,
@@ -490,14 +489,7 @@ const BarfTurnTasks: GarboTask[] = [
       }
       ChestMimic.differentiate(globalOptions.target);
     },
-    combat: new GarboStrategy(() =>
-      Macro.externalIf(
-        myFamiliar() === $familiar`Chest Mimic`,
-        Macro.trySkill($skill`%fn, lay an egg`),
-      )
-        .if_(globalOptions.target, Macro.meatKill())
-        .familiarActions(),
-    ),
+    combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: true,
     outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
   },
