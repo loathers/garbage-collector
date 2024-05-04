@@ -423,7 +423,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
   {
     name: "Mimic Eggs",
-    ready: () => shouldMakeEgg(),
+    ready: () => shouldMakeEgg(true),
     completed: () => get("_mimicEggsObtained") >= 11,
     do: () => {
       if (ChestMimic.differentiableQuantity(globalOptions.target) >= 1) {
@@ -434,7 +434,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() =>
       Macro.externalIf(
-        myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(),
+        myFamiliar() === $familiar`Chest Mimic` && shouldMakeEgg(true),
         Macro.trySkill($skill`%fn, lay an egg`),
       )
         .if_(globalOptions.target, Macro.meatKill())
