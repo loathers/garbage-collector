@@ -422,27 +422,6 @@ const BarfTurnTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Make Mimic Eggs",
-    ready: () => shouldMakeEgg(true),
-    completed: () => get("_mimicEggsObtained") >= 11,
-    do: () => {
-      if (ChestMimic.differentiableQuantity(globalOptions.target) < 1) {
-        ChestMimic.receive(globalOptions.target);
-      }
-      ChestMimic.differentiate(globalOptions.target);
-    },
-    combat: new GarboStrategy(() =>
-      Macro.externalIf(
-        myFamiliar() === $familiar`Chest Mimic`,
-        Macro.trySkill($skill`%fn, lay an egg`),
-      )
-        .if_(globalOptions.target, Macro.meatKill())
-        .familiarActions(),
-    ),
-    spendsTurn: true,
-    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
-  },
-  {
     name: "Lights Out",
     ready: () =>
       canAdventure(get("nextSpookyravenStephenRoom") ?? $location`none`) &&
@@ -501,6 +480,27 @@ const BarfTurnTasks: GarboTask[] = [
       sobriety: () => (isGhost() ? "sober" : undefined),
     },
   ),
+  {
+    name: "Make Mimic Eggs",
+    ready: () => shouldMakeEgg(true),
+    completed: () => get("_mimicEggsObtained") >= 11,
+    do: () => {
+      if (ChestMimic.differentiableQuantity(globalOptions.target) < 1) {
+        ChestMimic.receive(globalOptions.target);
+      }
+      ChestMimic.differentiate(globalOptions.target);
+    },
+    combat: new GarboStrategy(() =>
+      Macro.externalIf(
+        myFamiliar() === $familiar`Chest Mimic`,
+        Macro.trySkill($skill`%fn, lay an egg`),
+      )
+        .if_(globalOptions.target, Macro.meatKill())
+        .familiarActions(),
+    ),
+    spendsTurn: true,
+    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
+  },
   {
     name: "Thesis",
     ready: () =>
