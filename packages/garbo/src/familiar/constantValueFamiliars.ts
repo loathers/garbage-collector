@@ -11,9 +11,15 @@ import {
   have,
   Robortender,
 } from "libram";
-import { baseMeat, felizValue, newarkValue } from "../lib";
+import {
+  baseMeat,
+  EMBEZZLER_MULTIPLIER,
+  felizValue,
+  newarkValue,
+} from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GeneralFamiliar } from "./lib";
+import { globalOptions } from "../config";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -106,6 +112,16 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: () =>
       holiday().includes("Dependence Day")
         ? 0.05 * garboValue($item`souvenir flag`)
+        : 0,
+  },
+  {
+    familiar: $familiar`Chest Mimic`,
+    value: () =>
+      globalOptions.ascend
+        ? 0
+        : $familiar`Chest Mimic`.experience < 550
+        ? ((EMBEZZLER_MULTIPLIER() * get("valueOfAdventure", 4000)) / 50) *
+          getModifier("Familiar Experience")
         : 0,
   },
 ];
