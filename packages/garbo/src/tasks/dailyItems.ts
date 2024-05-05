@@ -59,6 +59,7 @@ import {
   candyMapDailyTasks,
   doingGregFight,
   getBestAprilInstruments,
+  mayamSummonTask,
 } from "../resources";
 import { meatFamiliar } from "../familiar";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
@@ -581,6 +582,7 @@ const DailyItemTasks: GarboTask[] = [
   },
   ...augustSummonTasks(),
   ...candyMapDailyTasks(),
+  ...mayamSummonTask(),
   {
     name: "Get April Instruments",
     completed: () => !AprilingBandHelmet.canJoinSection(),
