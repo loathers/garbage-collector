@@ -24,8 +24,8 @@ const instruments: {
     value: () =>
       Math.max(
         0,
-        ...getExperienceFamiliars().map(({ familiar, expectedValue }) =>
-          familiar.experience < 281 ? expectedValue / 400 : 0,
+        ...getExperienceFamiliars().map(
+          ({ expectedValue }) => expectedValue / 12,
         ),
       ) * 40,
   },
