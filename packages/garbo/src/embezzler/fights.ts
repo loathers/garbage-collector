@@ -243,7 +243,7 @@ export const chainStarters = [
   new CopyTargetFight(
     "Saxophone semirare",
     () =>
-      getBestLuckyAdventure().location === $location`Cobb's Knob Treasury` &&
+      getBestLuckyAdventure().phase === "embezzler" &&
       getBestLuckyAdventure().value() > 0 &&
       canAdventure($location`Cobb's Knob Treasury`) &&
       AprilingBandHelmet.canPlay($item`Apriling band saxophone`),
