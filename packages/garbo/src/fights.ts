@@ -409,12 +409,14 @@ function pygmyOptions(equip: Item[] = []): FreeFightOptions {
   };
 }
 
-function familiarSpec(underwater: boolean): OutfitSpec {
+function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
   if (!underwater) {
     if (
       ChestMimic.have() &&
       $familiar`Chest Mimic`.experience >= 50 &&
-      get("_mimicEggsObtained") < 11
+      get("_mimicEggsObtained") < 11 &&
+      // Backup doesn't apply ML, meaning we die too quickly to get multiple eggs in
+      fight !== "Backup"
     ) {
       return { familiar: $familiar`Chest Mimic` };
     }
@@ -560,7 +562,7 @@ export function dailyFights(): void {
         const location = new EmbezzlerFightRunOptions(nextFight).location;
         const underwater = location.environment === "underwater";
 
-        const famSpec = familiarSpec(underwater);
+        const famSpec = familiarSpec(underwater, nextFight.name);
 
         setLocation(location);
         embezzlerOutfit({ ...nextFight.spec, ...famSpec }, location).dress();
