@@ -284,6 +284,7 @@ const WanderingSources: WanderingSource[] = [
 export function wandererTurnsAvailableToday(
   options: WandererFactoryOptions,
   location: Location,
+  requiresMonsterKill: boolean,
 ): number {
   const canWanderCache: Record<DraggableFight, boolean> = {
     backup: canWander(location, "backup"),
@@ -311,9 +312,12 @@ export function wandererTurnsAvailableToday(
       : 0,
   );
   // This is the ELG cooldown for spring shoes
-  const freeRun = canWanderCache["freerun"]
-    ? Math.floor(options.estimatedTurns() / 30)
-    : 0;
+  const freeRun =
+    !requiresMonsterKill &&
+    canWanderCache["freerun"] &&
+    have($item`spring shoes`)
+      ? Math.floor(options.estimatedTurns() / 30)
+      : 0;
 
   return digitize + pigSkinnerRay + yellowRay + wanderers + freeRun;
 }

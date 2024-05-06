@@ -36,7 +36,7 @@ function considerAbandon(
       locationSkiplist.includes(location) ||
       !canAdventureOrUnlock(location) || // or the zone is marked as "generally cannot adv"
       (options.ascend &&
-        wandererTurnsAvailableToday(options, location) < remaningTurns)) // or ascending and not enough turns to finish
+        wandererTurnsAvailableToday(options, location, true) < remaningTurns)) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
     Guzzlr.abandon();

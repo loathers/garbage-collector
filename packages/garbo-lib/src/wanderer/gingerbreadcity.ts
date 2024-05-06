@@ -1,5 +1,10 @@
 import { availableAmount, haveOutfit, Location } from "kolmafia";
-import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
+import {
+  DraggableFight,
+  WandererFactoryOptions,
+  WandererTarget,
+  wandererTurnsAvailableToday,
+} from "./lib";
 import { $item, $location, GingerBread } from "libram";
 
 export function gingerbreadFactory(
@@ -8,7 +13,7 @@ export function gingerbreadFactory(
   options: WandererFactoryOptions,
 ): WandererTarget[] {
   if (
-    ["freefight", "freerun"].includes(type) &&
+    ["freefight", "freerun", "backup", "yellow ray"].includes(type) &&
     GingerBread.available() &&
     GingerBread.minutesToMidnight() !== 0 &&
     GingerBread.minutesToNoon() !== 0 &&
@@ -17,12 +22,22 @@ export function gingerbreadFactory(
         haveOutfit("gingerbread best"))) ||
       GingerBread.minutesToNoon() > 0)
   ) {
+    const turnsUntilNextNC =
+      GingerBread.minutesToNoon() > 0
+        ? GingerBread.minutesToNoon()
+        : GingerBread.minutesToMidnight();
     return [
       new WandererTarget(
         "Gingerbread Minutes",
         $location`Gingerbread Civic Center`,
-        // Arbitrary cutoff, where it's unlikely we'll reach the next NC. 50 value is also arbitrary, just to put it above default
-        options.estimatedTurns() < 100 ? 0 : 50,
+        // 50 value is arbitrary until we have proper valuation of our options from Midnight and Noons NCs
+        wandererTurnsAvailableToday(
+          options,
+          $location`Gingerbread Civic Center`,
+          false,
+        ) > turnsUntilNextNC
+          ? 50
+          : 0,
       ),
     ];
   }
