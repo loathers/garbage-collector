@@ -185,7 +185,6 @@ import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
-import { embezzler } from "./embezzler/lib";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -241,7 +240,7 @@ function embezzlerSetup() {
   maximize("MP", false);
   meatMood(
     true,
-    globalOptions.target === embezzler
+    globalOptions.target === $monster`Knob Goblin Embezzler`
       ? 750 + baseMeat
       : (globalOptions.target.minMeat + globalOptions.target.maxMeat) / 2 +
           (SongBoom.have() &&

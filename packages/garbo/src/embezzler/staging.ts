@@ -1,9 +1,8 @@
 import { haveEquipped, Location, mallPrice, retrieveItem } from "kolmafia";
-import { $item, $location, $skill, get } from "libram";
+import { $item, $location, $monster, $skill, get } from "libram";
 import { EMBEZZLER_MULTIPLIER, propertyManager } from "../lib";
 import {
   checkUnderwater,
-  embezzler,
   EmbezzlerFightConfigOptions,
   RunOptions,
 } from "./lib";
@@ -13,7 +12,7 @@ import { globalOptions } from "../config";
 
 const taffyIsWorthIt = () =>
   mallPrice($item`pulled green taffy`) <
-    (globalOptions.target === embezzler
+    (globalOptions.target === $monster`Knob Goblin Embezzler`
       ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
       : get("valueOfAdventure")) && retrieveItem($item`pulled green taffy`);
 

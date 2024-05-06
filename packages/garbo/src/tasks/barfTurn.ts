@@ -74,7 +74,6 @@ import {
   tryFillLatte,
 } from "../resources";
 import { acquire } from "../acquire";
-import { embezzler } from "../embezzler/lib";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -145,7 +144,7 @@ function shouldGoUnderwater(): boolean {
   // TODO: if you didn't digitize an embezzler, this equation may not be right
   if (
     mallPrice($item`pulled green taffy`) >
-    (globalOptions.target === embezzler
+    (globalOptions.target === $monster`Knob Goblin Embezzler`
       ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
       : get("valueOfAdventure"))
   ) {
