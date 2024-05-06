@@ -82,6 +82,7 @@ import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./garboValue";
+import { embezzler } from "./tasks/embezzler";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -589,7 +590,8 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  const embezzlerDifferential = EMBEZZLER_MULTIPLIER() * MPA;
+  const embezzlerDifferential =
+    globalOptions.target === embezzler ? EMBEZZLER_MULTIPLIER() * MPA : 0;
   const { expectedGregariousFights, marginalGregariousFights } =
     gregariousCount();
   const extros =
@@ -828,7 +830,8 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseEmbezzlers = copyTargetCount();
+  const baseEmbezzlers =
+    globalOptions.target === embezzler ? copyTargetCount() : 0;
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -942,7 +945,10 @@ function printDiet(diet: Diet<Note>, name: DietName) {
     (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
   );
 
-  const embezzlers = Math.floor(copyTargetCount() + countCopies(diet));
+  const embezzlers = Math.floor(
+    (globalOptions.target === embezzler ? copyTargetCount() : 0) +
+      countCopies(diet),
+  );
   const adventures = Math.floor(
     estimatedGarboTurns() + diet.expectedAdventures(),
   );

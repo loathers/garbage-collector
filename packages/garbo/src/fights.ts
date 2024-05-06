@@ -103,6 +103,7 @@ import {
   Requirement,
   Robortender,
   set,
+  SongBoom,
   SourceTerminal,
   sum,
   undelay,
@@ -184,6 +185,7 @@ import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
+import { embezzler } from "./tasks/embezzler";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -237,7 +239,18 @@ function embezzlerSetup() {
   setLocation($location`Friar Ceremony Location`);
   potionSetup(false);
   maximize("MP", false);
-  meatMood(true, 750 + baseMeat).execute(copyTargetCount());
+  meatMood(
+    true,
+    globalOptions.target === embezzler
+      ? 750 + baseMeat
+      : (globalOptions.target.minMeat + globalOptions.target.maxMeat) / 2 +
+          (SongBoom.have() &&
+          (SongBoom.songChangesLeft() > 0 ||
+            (SongBoom.song() === "Total Eclipse of Your Meat" &&
+              myInebriety() <= inebrietyLimit()))
+            ? 25
+            : 0),
+  ).execute(copyTargetCount());
   safeRestore();
   freeFightMood().execute(50);
   useBuffExtenders();

@@ -9,11 +9,13 @@ import {
 import { Macro } from "../combat";
 import { wanderer } from "../garboWanderer";
 import { globalOptions } from "../config";
+import { embezzler } from "../tasks/embezzler";
 
 const taffyIsWorthIt = () =>
   mallPrice($item`pulled green taffy`) <
-    EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") &&
-  retrieveItem($item`pulled green taffy`);
+    (globalOptions.target === embezzler
+      ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
+      : get("valueOfAdventure")) && retrieveItem($item`pulled green taffy`);
 
 const wandererFailsafeMacro = () =>
   Macro.externalIf(
