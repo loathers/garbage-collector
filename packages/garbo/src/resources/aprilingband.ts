@@ -1,9 +1,9 @@
-import { $item, $location, AprilingBandHelmet, clamp, get, have } from "libram";
+import { $item, AprilingBandHelmet, clamp, get, have } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { EMBEZZLER_MULTIPLIER } from "../lib";
+import { getBestLuckyAdventure } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
-import { canAdventure, toItem } from "kolmafia";
+import { toItem } from "kolmafia";
 
 const instruments: {
   instrument: AprilingBandHelmet.Instrument;
@@ -12,27 +12,28 @@ const instruments: {
   {
     instrument: "Apriling band quad tom",
     value: () =>
-      globalOptions.prefs.valueOfFreeFight +
-      0.02 * garboValue($item`spice melange`),
+      (globalOptions.prefs.valueOfFreeFight +
+        0.02 * garboValue($item`spice melange`)) *
+      3,
   },
   {
     instrument: "Apriling band saxophone",
-    value: () =>
-      canAdventure($location`Cobb's Knob Treasury`)
-        ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
-        : 0,
+    value: () => getBestLuckyAdventure().value() * 3,
   },
   {
     instrument: "Apriling band piccolo",
     value: () =>
       Math.max(
         0,
-        ...getExperienceFamiliars().map(
-          ({ expectedValue }) => expectedValue / 12,
-        ),
-      ) *
-      20 *
-      3,
+        ...getExperienceFamiliars().map(({ familiar, expectedValue }) => {
+          const usesAllowed = clamp(
+            Math.floor((400 - familiar.experience) / 40),
+            0,
+            3,
+          );
+          return (expectedValue / 12) * 40 * usesAllowed;
+        }),
+      ),
   },
 ];
 
