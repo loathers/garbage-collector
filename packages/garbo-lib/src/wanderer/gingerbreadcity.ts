@@ -13,7 +13,7 @@ export function gingerbreadFactory(
   options: WandererFactoryOptions,
 ): WandererTarget[] {
   if (
-    ["freefight", "freerun", "backup", "yellow ray"].includes(type) &&
+    type !== "wanderer" &&
     GingerBread.available() &&
     GingerBread.minutesToMidnight() !== 0 &&
     GingerBread.minutesToNoon() !== 0 &&
