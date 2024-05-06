@@ -3,13 +3,13 @@ import { $item, $location, $skill, get } from "libram";
 import { EMBEZZLER_MULTIPLIER, propertyManager } from "../lib";
 import {
   checkUnderwater,
+  embezzler,
   EmbezzlerFightConfigOptions,
   RunOptions,
 } from "./lib";
 import { Macro } from "../combat";
 import { wanderer } from "../garboWanderer";
 import { globalOptions } from "../config";
-import { embezzler } from "../tasks/embezzler";
 
 const taffyIsWorthIt = () =>
   mallPrice($item`pulled green taffy`) <

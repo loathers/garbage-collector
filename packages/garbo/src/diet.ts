@@ -82,7 +82,7 @@ import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./garboValue";
-import { embezzler } from "./tasks/embezzler";
+import { embezzler } from "./embezzler/lib";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);

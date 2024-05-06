@@ -11,6 +11,7 @@ import {
   $familiar,
   $item,
   $location,
+  $monster,
   CrystalBall,
   get,
   have,
@@ -42,6 +43,8 @@ export interface EmbezzlerFightConfigOptions {
   gregariousReplace?: boolean;
   location?: Location;
 }
+
+export const embezzler = $monster`Knob Goblin Embezzler`;
 
 export interface RunOptions {
   macro: Macro;

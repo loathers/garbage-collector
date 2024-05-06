@@ -1,20 +1,10 @@
 import { Quest } from "grimoire-kolmafia";
-import {
-  $item,
-  $items,
-  $location,
-  $monster,
-  CrystalBall,
-  get,
-  set,
-} from "libram";
+import { $item, $items, $location, CrystalBall, get, set } from "libram";
 import { GarboTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { getChangeLastAdvLocationMethod } from "../embezzler/lib";
 import { doingGregFight } from "../resources";
 import { freeFightOutfit } from "../outfit";
-
-export const embezzler = $monster`Knob Goblin Embezzler`;
 
 export const SetupEmbezzlerQuest: Quest<GarboTask> = {
   name: "SetupEmbezzler",

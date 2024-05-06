@@ -13,8 +13,8 @@ import {
   waterBreathingEquipment,
 } from "./lib";
 import { BonusEquipMode, modeValueOfMeat } from "../lib";
-import { embezzler } from "../tasks/embezzler";
 import { globalOptions } from "../config";
+import { embezzler } from "../embezzler/lib";
 
 export function embezzlerOutfit(
   spec: OutfitSpec = {},

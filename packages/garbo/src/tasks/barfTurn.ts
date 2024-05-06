@@ -74,7 +74,7 @@ import {
   tryFillLatte,
 } from "../resources";
 import { acquire } from "../acquire";
-import { embezzler } from "./embezzler";
+import { embezzler } from "../embezzler/lib";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;

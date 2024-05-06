@@ -185,7 +185,7 @@ import { EmbezzlerFightRunOptions } from "./embezzler/staging";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
-import { embezzler } from "./tasks/embezzler";
+import { embezzler } from "./embezzler/lib";
 
 const firstChainMacro = () =>
   Macro.if_(
