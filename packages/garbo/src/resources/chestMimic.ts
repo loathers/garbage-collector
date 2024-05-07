@@ -1,4 +1,4 @@
-import { $familiar, get } from "libram";
+import { $familiar, ChestMimic, get } from "libram";
 import { globalOptions } from "../config";
 
 export const mimicExperienceNeeded = () =>
@@ -17,3 +17,6 @@ export function shouldMakeEgg(barf: boolean): boolean {
     get("_mimicEggsObtained") < 11
   );
 }
+
+export const minimumMimicExperience = () =>
+  50 + (ChestMimic.differentiableQuantity(globalOptions.target) ? 0 : 100);

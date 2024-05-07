@@ -8,7 +8,16 @@ import {
   totalTurnsPlayed,
   weightAdjustment,
 } from "kolmafia";
-import { $effect, $familiar, $item, $skill, clamp, get, have } from "libram";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $skill,
+  clamp,
+  get,
+  have,
+  sumNumbers,
+} from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
@@ -115,4 +124,23 @@ export function turnsAvailable(): number {
   const barfTurns = baseTurns - digitizes - mapTurns;
   const barfCombatRate = 1 - 1 / turnsToNC;
   return barfTurns * barfCombatRate;
+}
+
+export function estimatedBarfExperience(): number {
+  const sources = [1];
+  if (
+    [
+      $skill`Curiosity of Br'er Tarrypin`,
+      $effect`Curiosity of Br'er Tarrypin`,
+    ].some((x) => have(x))
+  ) {
+    sources.push(1);
+  }
+  if (have($skill`Testudinal Teachings`)) sources.push(1 / 6);
+  const voter = get("_voteModifier").match(
+    /Experience \(familiar\): (\d+)/,
+  )?.[1];
+  if (voter) sources.push(Number(voter));
+
+  return sumNumbers(sources);
 }
