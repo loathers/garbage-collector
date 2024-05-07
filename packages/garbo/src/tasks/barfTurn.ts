@@ -71,6 +71,7 @@ import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
   completeBarfQuest,
+  minimumMimicExperience,
   shouldFillLatte,
   tryFillLatte,
 } from "../resources";
@@ -282,6 +283,27 @@ function canGetFusedFuse() {
 
 const NonBarfTurnTasks: AlternateTask[] = [
   {
+    name: "Make Mimic Eggs (whatever we can)",
+    ready: () => have($familiar`Chest Mimic`),
+    completed: () =>
+      get("_mimicEggsObtained") >= 11 ||
+      $familiar`Chest Mimic`.experience < minimumMimicExperience(),
+    do: () => {
+      if (!ChestMimic.differentiableQuantity(globalOptions.target)) {
+        ChestMimic.receive(globalOptions.target);
+      }
+      ChestMimic.differentiate(globalOptions.target);
+    },
+    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
+    combat: new GarboStrategy(() => Macro.meatKill()),
+    turns: () =>
+      get("_mimicEggsObtained") < 11 &&
+      $familiar`Chest Mimic`.experience > minimumMimicExperience()
+        ? 1
+        : 0,
+    spendsTurn: true,
+  },
+  {
     name: "Daily Dungeon (drunk)",
     ...dailyDungeon(() => willDrunkAdventure()),
     outfit: () =>
@@ -480,20 +502,6 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   {
-    name: "Make Mimic Eggs",
-    ready: () => shouldMakeEgg(true),
-    completed: () => get("_mimicEggsObtained") >= 11,
-    do: () => {
-      if (ChestMimic.differentiableQuantity(globalOptions.target) < 1) {
-        ChestMimic.receive(globalOptions.target);
-      }
-      ChestMimic.differentiate(globalOptions.target);
-    },
-    combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: true,
-    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
-  },
-  {
     name: "Thesis",
     ready: () =>
       have($familiar`Pocket Professor`) &&
@@ -596,6 +604,20 @@ const BarfTurnTasks: GarboTask[] = [
     spendsTurn: true,
     outfit: embezzlerOutfit,
     combat: new GarboStrategy(() => Macro.embezzler("envyfish egg")),
+  },
+  {
+    name: "Make Mimic Eggs (maximum eggs)",
+    ready: () => shouldMakeEgg(true),
+    completed: () => get("_mimicEggsObtained") >= 11,
+    do: () => {
+      if (ChestMimic.differentiableQuantity(globalOptions.target) < 1) {
+        ChestMimic.receive(globalOptions.target);
+      }
+      ChestMimic.differentiate(globalOptions.target);
+    },
+    combat: new GarboStrategy(() => Macro.meatKill()),
+    spendsTurn: true,
+    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
   },
   wanderTask(
     "yellow ray",
