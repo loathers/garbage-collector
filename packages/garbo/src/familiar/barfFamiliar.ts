@@ -203,7 +203,8 @@ export function barfFamiliar(): { familiar: Familiar; extraValue: number } {
   const fullMenu = menu({
     canChooseMacro: true,
     location: $location`Barf Mountain`,
-    includeExperienceFamiliars: false,
+    includeExperienceFamiliars: true,
+    mode: "barf",
   }).map(calculateOutfitValue);
 
   const meatFamiliarEntry = fullMenu.find(({ familiar }) => familiar === meat);

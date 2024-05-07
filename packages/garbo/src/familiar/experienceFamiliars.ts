@@ -9,7 +9,7 @@ import {
   undelay,
 } from "libram";
 import { globalOptions } from "../config";
-import { GeneralFamiliar } from "./lib";
+import { estimatedBarfExperience, GeneralFamiliar } from "./lib";
 import { EMBEZZLER_MULTIPLIER } from "../lib";
 import { mimicExperienceNeeded, shouldChargeMimic } from "../resources";
 
@@ -48,17 +48,15 @@ const experienceFamiliars: ExperienceFamiliar[] = [
   },
 ];
 
-function valueExperienceFamiliar({
-  familiar,
-  useValue,
-  xpCost,
-  baseExp,
-}: ExperienceFamiliar): GeneralFamiliar {
+function valueExperienceFamiliar(
+  { familiar, useValue, xpCost, baseExp }: ExperienceFamiliar,
+  mode: "barf" | "free",
+): GeneralFamiliar {
   const currentExp =
     familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
   const experienceNeeded =
     xpCost ?? 400 - (globalOptions.ascend ? currentExp : baseExp);
-  const estimatedExperience = 12;
+  const estimatedExperience = mode === "free" ? 12 : estimatedBarfExperience();
   return {
     familiar,
     expectedValue: undelay(useValue) / (experienceNeeded / estimatedExperience),
@@ -67,7 +65,9 @@ function valueExperienceFamiliar({
   };
 }
 
-export default function getExperienceFamiliars(): GeneralFamiliar[] {
+export default function getExperienceFamiliars(
+  mode: "barf" | "free",
+): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(
       ({ used, familiar, xpLimit }) =>
@@ -75,12 +75,14 @@ export default function getExperienceFamiliars(): GeneralFamiliar[] {
         !isUsed(used) &&
         familiar.experience < (xpLimit?.() ?? 400),
     )
-    .map(valueExperienceFamiliar);
+    .map((f) => valueExperienceFamiliar(f, mode));
 }
 
 export function getExperienceFamiliarLimit(fam: Familiar): number {
   const target = experienceFamiliars.find(({ familiar }) => familiar === fam);
   if (!have(fam) || !target) return 0;
 
-  return ((target.xpLimit?.() ?? 400) - fam.experience) / 5;
+  return (
+    ((target.xpLimit?.() ?? 400) - fam.experience) / estimatedBarfExperience()
+  );
 }
