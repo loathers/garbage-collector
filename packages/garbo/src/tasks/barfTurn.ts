@@ -530,7 +530,11 @@ const BarfTurnTasks: GarboTask[] = [
     outfit: () =>
       digitizedEmbezzler()
         ? embezzlerOutfit(
-            {},
+            digitizedMonstersRemaining() === 1 &&
+              $familiar`Chest Mimic`.experience >= 50 &&
+              get("_mimicEggsObtained") < 11
+              ? { familiar: $familiar`Chest Mimic` }
+              : {},
             wanderer().getTarget({
               wanderer: "wanderer",
               allowEquipment: false,

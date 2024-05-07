@@ -227,9 +227,12 @@ export class Macro extends StrictMacro {
     )
       .trySingAlong()
       .familiarActions()
-      .while_(
-        `hasskill ${$skill`%fn, lay an egg`.id}`,
-        Macro.trySkill($skill`%fn, lay an egg`),
+      .if_(
+        globalOptions.target,
+        Macro.while_(
+          `hasskill ${$skill`%fn, lay an egg`.id}`,
+          Macro.trySkill($skill`%fn, lay an egg`),
+        ),
       )
       .externalIf(
         have($skill`Extract Oil`) && get("_oilExtracted") < 15,
