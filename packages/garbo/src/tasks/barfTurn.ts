@@ -25,6 +25,7 @@ import {
   $location,
   $monster,
   $skill,
+  AprilingBandHelmet,
   ChestMimic,
   clamp,
   Counter,
@@ -49,6 +50,7 @@ import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
   EMBEZZLER_MULTIPLIER,
+  getBestLuckyAdventure,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
   romanticMonsterImpossible,
@@ -212,6 +214,31 @@ function dailyDungeon(additionalReady: () => boolean) {
   };
 }
 
+function aprilingSaxophoneLucky(additionalReady: () => boolean) {
+  return {
+    completed: () => !AprilingBandHelmet.canPlay("Apriling band saxophone"),
+    ready: () =>
+      additionalReady() &&
+      have($item`Apriling band saxophone`) &&
+      getBestLuckyAdventure().phase === "barf" &&
+      getBestLuckyAdventure().value() > get("valueOfAdventure"),
+    do: () => getBestLuckyAdventure().location,
+    prepare: () => {
+      if (!have($effect`Lucky!`)) {
+        AprilingBandHelmet.play($item`Apriling band saxophone`);
+      }
+    },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Unexpected combat while attempting Lucky! adventure"),
+    ),
+    turns: () =>
+      have($item`Apriling band saxophone`)
+        ? $item`Apriling band saxophone`.dailyusesleft
+        : 0,
+    spendsTurn: true,
+  };
+}
+
 function vampOut(additionalReady: () => boolean) {
   return {
     ready: () =>
@@ -363,6 +390,17 @@ const NonBarfTurnTasks: AlternateTask[] = [
     turns: () => (canGetFusedFuse() ? 1 : 0),
     spendsTurn: true,
     choices: { 1091: 7 },
+  },
+  {
+    name: "Apriling Saxophone Lucky (drunk)",
+    ...aprilingSaxophoneLucky(() => willDrunkAdventure()),
+    outfit: () => ({ offhand: $item`Drunkula's wineglass` }),
+    sobriety: "drunk",
+  },
+  {
+    name: "Apriling Saxophone Lucky (sober)",
+    ...aprilingSaxophoneLucky(() => !willDrunkAdventure()),
+    sobriety: "sober",
   },
   {
     name: "Map for Pills",

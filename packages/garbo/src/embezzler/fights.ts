@@ -55,6 +55,7 @@ import {
 } from "../combat";
 import {
   averageEmbezzlerNet,
+  getBestLuckyAdventure,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
   ltbRun,
@@ -243,6 +244,8 @@ export const chainStarters = [
   new CopyTargetFight(
     "Saxophone semirare",
     () =>
+      getBestLuckyAdventure().phase === "embezzler" &&
+      getBestLuckyAdventure().value() > 0 &&
       canAdventure($location`Cobb's Knob Treasury`) &&
       AprilingBandHelmet.canPlay($item`Apriling band saxophone`),
     () => 0,
