@@ -643,20 +643,6 @@ const BarfTurnTasks: GarboTask[] = [
     outfit: embezzlerOutfit,
     combat: new GarboStrategy(() => Macro.embezzler("envyfish egg")),
   },
-  {
-    name: "Make Mimic Eggs (maximum eggs)",
-    ready: () => shouldMakeEgg(true),
-    completed: () => get("_mimicEggsObtained") >= 11,
-    do: () => {
-      if (ChestMimic.differentiableQuantity(globalOptions.target) < 1) {
-        ChestMimic.receive(globalOptions.target);
-      }
-      ChestMimic.differentiate(globalOptions.target);
-    },
-    combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: true,
-    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
-  },
   wanderTask(
     "yellow ray",
     {},
@@ -739,6 +725,30 @@ const BarfTurnTasks: GarboTask[] = [
   },
   // If extra adventures are unlocked, we want to finish midnight to re-open the zone ASAP
   gingerbreadMidnight(() => get("gingerExtraAdventures")),
+  {
+    name: "Make Mimic Eggs (maximum eggs)",
+    ready: () => shouldMakeEgg(true),
+    completed: () => get("_mimicEggsObtained") >= 11,
+    do: () => {
+      if (ChestMimic.differentiableQuantity(globalOptions.target) < 1) {
+        ChestMimic.receive(globalOptions.target);
+      }
+      ChestMimic.differentiate(globalOptions.target);
+    },
+    combat: new GarboStrategy(() => Macro.meatKill()),
+    spendsTurn: true,
+    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
+  },
+  {
+    name: "Fight Mimic Eggs",
+    ready: () => globalOptions.ascend,
+    completed: () =>
+      ChestMimic.differentiableQuantity(globalOptions.target) === 0,
+    do: () => ChestMimic.differentiate(globalOptions.target),
+    outfit: () => embezzlerOutfit(),
+    combat: new GarboStrategy(() => Macro.meatKill()),
+    spendsTurn: true,
+  },
 ];
 
 function nonBarfTurns(): number {
