@@ -187,6 +187,13 @@ const TurnGenTasks: GarboTask[] = [
     },
     spendsTurn: false,
   },
+  {
+    name: "Law of Averages",
+    ready: () => myAdventures() <= Math.min(1 + globalOptions.saveTurns, 199),
+    completed: () => $item`Law of Averages`.dailyusesleft === 0,
+    do: () => use($item`Law of Averages`),
+    spendsTurn: false,
+  },
 ];
 
 type AlternateTask = GarboTask & { turns: Delayed<number> };
