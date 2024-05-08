@@ -227,13 +227,7 @@ export class Macro extends StrictMacro {
     )
       .trySingAlong()
       .familiarActions()
-      .if_(
-        globalOptions.target,
-        Macro.while_(
-          `hasskill ${$skill`%fn, lay an egg`.id}`,
-          Macro.trySkill($skill`%fn, lay an egg`),
-        ),
-      )
+      .tryEgg()
       .externalIf(
         have($skill`Extract Oil`) && get("_oilExtracted") < 15,
         Macro.if_(
@@ -682,6 +676,24 @@ export class Macro extends StrictMacro {
     return new Macro().ghostBustin();
   }
 
+  tryEgg(): Macro {
+    return this.externalIf(
+      myFamiliar() === $familiar`Chest Mimic` &&
+        $familiar`Chest Mimic`.experience >= 50,
+      Macro.if_(
+        globalOptions.target,
+        Macro.while_(
+          `hasskill ${$skill`%fn, lay an egg`.id}`,
+          Macro.trySkill($skill`%fn, lay an egg`),
+        ),
+      ),
+    );
+  }
+
+  static tryEgg(): Macro {
+    return new Macro().tryEgg();
+  }
+
   embezzler(action: string): Macro {
     const doneHabitat =
       !have($skill`Just the Facts`) ||
@@ -701,10 +713,7 @@ export class Macro extends StrictMacro {
           myFamiliar() === $familiar`Obtuse Angel`,
           Macro.trySkill($skill`Fire a badly romantic arrow`),
         )
-        .while_(
-          `hasskill ${$skill`%fn, lay an egg`.id}`,
-          Macro.trySkill($skill`%fn, lay an egg`),
-        )
+        .tryEgg()
         .externalIf(
           doneHabitat &&
             get("beGregariousCharges") > 0 &&
