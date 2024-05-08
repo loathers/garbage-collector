@@ -36,6 +36,7 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   $slot,
   clamp,
   ClosedCircuitPayphone,
@@ -707,7 +708,10 @@ export function potionSetup(embezzlersOnly: boolean): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
-    const embezzlers = copyTargetCount();
+    const embezzlers =
+      globalOptions.target === $monster`Knob Goblin Embezzler`
+        ? copyTargetCount()
+        : 0;
 
     if (
       have($item`Eight Days a Week Pill Keeper`) &&

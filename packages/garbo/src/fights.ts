@@ -103,6 +103,7 @@ import {
   Requirement,
   Robortender,
   set,
+  SongBoom,
   SourceTerminal,
   sum,
   undelay,
@@ -237,7 +238,18 @@ function embezzlerSetup() {
   setLocation($location`Friar Ceremony Location`);
   potionSetup(false);
   maximize("MP", false);
-  meatMood(true, 750 + baseMeat).execute(copyTargetCount());
+  meatMood(
+    true,
+    globalOptions.target === $monster`Knob Goblin Embezzler`
+      ? 750 + baseMeat
+      : (globalOptions.target.minMeat + globalOptions.target.maxMeat) / 2 +
+          (SongBoom.have() &&
+          (SongBoom.songChangesLeft() > 0 ||
+            (SongBoom.song() === "Total Eclipse of Your Meat" &&
+              myInebriety() <= inebrietyLimit()))
+            ? 25
+            : 0),
+  ).execute(copyTargetCount());
   safeRestore();
   freeFightMood().execute(50);
   useBuffExtenders();

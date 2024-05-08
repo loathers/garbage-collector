@@ -145,8 +145,10 @@ function shouldGoUnderwater(): boolean {
 
   // TODO: if you didn't digitize an embezzler, this equation may not be right
   if (
-    mallPrice($item`pulled green taffy`) <
-    EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
+    mallPrice($item`pulled green taffy`) >
+    (globalOptions.target === $monster`Knob Goblin Embezzler`
+      ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
+      : get("valueOfAdventure"))
   ) {
     return false;
   }

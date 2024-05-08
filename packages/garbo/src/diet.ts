@@ -48,6 +48,7 @@ import {
   $familiar,
   $item,
   $items,
+  $monster,
   $skill,
   clamp,
   Diet,
@@ -589,7 +590,10 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  const embezzlerDifferential = EMBEZZLER_MULTIPLIER() * MPA;
+  const embezzlerDifferential =
+    globalOptions.target === $monster`Knob Goblin Embezzler`
+      ? EMBEZZLER_MULTIPLIER() * MPA
+      : 0;
   const { expectedGregariousFights, marginalGregariousFights } =
     gregariousCount();
   const extros =
@@ -828,7 +832,10 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseEmbezzlers = copyTargetCount();
+  const baseEmbezzlers =
+    globalOptions.target === $monster`Knob Goblin Embezzler`
+      ? copyTargetCount()
+      : 0;
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -942,7 +949,11 @@ function printDiet(diet: Diet<Note>, name: DietName) {
     (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
   );
 
-  const embezzlers = Math.floor(copyTargetCount() + countCopies(diet));
+  const embezzlers = Math.floor(
+    (globalOptions.target === $monster`Knob Goblin Embezzler`
+      ? copyTargetCount()
+      : 0) + countCopies(diet),
+  );
   const adventures = Math.floor(
     estimatedGarboTurns() + diet.expectedAdventures(),
   );

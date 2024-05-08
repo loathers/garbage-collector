@@ -1,7 +1,7 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { toJson } from "kolmafia";
-import { $familiar, $item, $items, $location, Guzzlr } from "libram";
-import { meatFamiliar } from "../familiar";
+import { $familiar, $item, $items, $location, $monster, Guzzlr } from "libram";
+import { freeFightFamiliar, meatFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import {
@@ -13,6 +13,7 @@ import {
   waterBreathingEquipment,
 } from "./lib";
 import { BonusEquipMode, modeValueOfMeat } from "../lib";
+import { globalOptions } from "../config";
 
 export function embezzlerOutfit(
   spec: OutfitSpec = {},
@@ -25,14 +26,26 @@ export function embezzlerOutfit(
     new Error(`Failed to construct outfit from spec ${toJson(spec)}`),
   );
 
-  outfit.modifier.push(
-    `${modeValueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`,
-    "-tie",
-  );
+  if (globalOptions.target === $monster`Knob Goblin Embezzler`) {
+    outfit.modifier.push(
+      `${modeValueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`,
+      "-tie",
+    );
+  } else if (globalOptions.target.attributes.includes("FREE")) {
+    outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.FREE)}`, "-tie");
+  }
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
-  outfit.familiar ??= meatFamiliar();
+  outfit.familiar ??=
+    globalOptions.target === $monster`Knob Goblin Embezzler`
+      ? meatFamiliar()
+      : freeFightFamiliar();
 
-  const bjornChoice = chooseBjorn(BonusEquipMode.EMBEZZLER, outfit.familiar);
+  const bjornChoice = chooseBjorn(
+    globalOptions.target === $monster`Knob Goblin Embezzler`
+      ? BonusEquipMode.EMBEZZLER
+      : BonusEquipMode.FREE,
+    outfit.familiar,
+  );
 
   const underwater = target.environment === "underwater";
   if (underwater) {
@@ -52,7 +65,11 @@ export function embezzlerOutfit(
 
   useUPCsIfNeeded(outfit);
 
-  outfit.bonuses = bonusGear(BonusEquipMode.EMBEZZLER);
+  outfit.bonuses = bonusGear(
+    globalOptions.target === $monster`Knob Goblin Embezzler`
+      ? BonusEquipMode.EMBEZZLER
+      : BonusEquipMode.FREE,
+  );
   const bjornalike = bestBjornalike(outfit);
 
   if (
