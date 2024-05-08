@@ -326,7 +326,13 @@ const NonBarfTurnTasks: AlternateTask[] = [
     turns: () =>
       get("_mimicEggsObtained") < 11 &&
       $familiar`Chest Mimic`.experience > minimumMimicExperience()
-        ? 1
+        ? globalOptions.ascend
+          ? clamp(
+              Math.floor($familiar`Chest Mimic`.experience / 50) - 1,
+              1,
+              11 - get("_mimicEggsObtained"),
+            )
+          : 0
         : 0,
     spendsTurn: true,
   },
