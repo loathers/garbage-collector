@@ -34,6 +34,7 @@ import {
   AprilingBandHelmet,
   ChateauMantegna,
   ChestMimic,
+  clamp,
   CombatLoversLocket,
   Counter,
   CrystalBall,
@@ -296,7 +297,13 @@ export const chainStarters = [
   new CopyTargetFight(
     "Mimic Eggs",
     () => ChestMimic.differentiableQuantity(globalOptions.target) >= 1,
-    () => ChestMimic.differentiableQuantity(globalOptions.target),
+    () =>
+      ChestMimic.differentiableQuantity(globalOptions.target) +
+      clamp(
+        Math.floor($familiar`Chest Mimic`.experience / 50),
+        0,
+        11 - get("_mimicEggsObtained"),
+      ),
     (options: RunOptions) => {
       withMacro(
         options.macro,
