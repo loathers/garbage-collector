@@ -1,12 +1,22 @@
-import { $familiar, ChestMimic, get } from "libram";
+import { $familiar, ChestMimic, get, SourceTerminal } from "libram";
 import { globalOptions } from "../config";
 
-export const mimicExperienceNeeded = () =>
-  50 * (11 - get("_mimicEggsObtained")) + (globalOptions.ascend ? 0 : 550);
+export const mimicExperienceNeeded = (needKickstarterEgg: boolean) =>
+  50 * (11 - get("_mimicEggsObtained")) +
+  (globalOptions.ascend
+    ? needKickstarterEgg &&
+      !SourceTerminal.have() &&
+      get("_mimicEggsObtained") < 11
+      ? 50
+      : 0
+    : 550);
 
-export function shouldChargeMimic(): boolean {
+export function shouldChargeMimic(needKickstarterEgg: boolean): boolean {
   /* If we can't make any more eggs tomorrow, don't charge the mimic more */
-  return $familiar`Chest Mimic`.experience < mimicExperienceNeeded();
+  return (
+    $familiar`Chest Mimic`.experience <
+    mimicExperienceNeeded(needKickstarterEgg)
+  );
 }
 
 export function shouldMakeEgg(barf: boolean): boolean {

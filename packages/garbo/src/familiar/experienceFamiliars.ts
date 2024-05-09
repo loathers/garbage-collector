@@ -15,15 +15,17 @@ import { mimicExperienceNeeded, shouldChargeMimic } from "../resources";
 
 type ExperienceFamiliar = {
   familiar: Familiar;
-  used: propertyTypes.BooleanProperty | (() => boolean);
+  used: propertyTypes.BooleanProperty | ((mode: "barf" | "free") => boolean);
   useValue: Delayed<number>;
   baseExp: number;
   xpCost?: number;
-  xpLimit?: () => number;
+  xpLimit?: (mode: "barf" | "free") => number;
 };
 
-const isUsed = (used: propertyTypes.BooleanProperty | (() => boolean)) =>
-  typeof used === "string" ? get(used) : used();
+const isUsed = (
+  used: propertyTypes.BooleanProperty | ((mode: "barf" | "free") => boolean),
+  mode: "barf" | "free",
+) => (typeof used === "string" ? get(used) : used(mode));
 
 const experienceFamiliars: ExperienceFamiliar[] = [
   {
@@ -40,11 +42,11 @@ const experienceFamiliars: ExperienceFamiliar[] = [
   },
   {
     familiar: $familiar`Chest Mimic`,
-    used: () => !shouldChargeMimic(),
+    used: (mode: "barf" | "free") => !shouldChargeMimic(mode === "barf"),
     useValue: () => EMBEZZLER_MULTIPLIER() * get("valueOfAdventure"),
     baseExp: 0,
     xpCost: 50,
-    xpLimit: mimicExperienceNeeded,
+    xpLimit: (mode: "barf" | "free") => mimicExperienceNeeded(mode === "barf"),
   },
 ];
 
@@ -72,8 +74,8 @@ export default function getExperienceFamiliars(
     .filter(
       ({ used, familiar, xpLimit }) =>
         have(familiar) &&
-        !isUsed(used) &&
-        familiar.experience < (xpLimit?.() ?? 400),
+        !isUsed(used, mode) &&
+        familiar.experience < (xpLimit?.(mode) ?? 400),
     )
     .map((f) => valueExperienceFamiliar(f, mode));
 }
@@ -83,6 +85,7 @@ export function getExperienceFamiliarLimit(fam: Familiar): number {
   if (!have(fam) || !target) return 0;
 
   return (
-    ((target.xpLimit?.() ?? 400) - fam.experience) / estimatedBarfExperience()
+    ((target.xpLimit?.("barf") ?? 400) - fam.experience) /
+    estimatedBarfExperience()
   );
 }
