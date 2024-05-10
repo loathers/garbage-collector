@@ -27,6 +27,7 @@ import {
   $monster,
   $skill,
   AprilingBandHelmet,
+  ChestMimic,
   clamp,
   Counter,
   Delayed,
@@ -74,10 +75,12 @@ import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
   completeBarfQuest,
+  minimumMimicExperience,
   shouldFillLatte,
   tryFillLatte,
 } from "../resources";
 import { acquire } from "../acquire";
+import { shouldMakeEgg } from "../resources";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -317,6 +320,33 @@ function canGetFusedFuse() {
 }
 
 const NonBarfTurnTasks: AlternateTask[] = [
+  {
+    name: "Make Mimic Eggs (whatever we can)",
+    ready: () => have($familiar`Chest Mimic`),
+    completed: () =>
+      get("_mimicEggsObtained") >= 11 ||
+      $familiar`Chest Mimic`.experience < minimumMimicExperience(),
+    do: () => {
+      if (!ChestMimic.differentiableQuantity(globalOptions.target)) {
+        ChestMimic.receive(globalOptions.target);
+      }
+      ChestMimic.differentiate(globalOptions.target);
+    },
+    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
+    combat: new GarboStrategy(() => Macro.meatKill()),
+    turns: () =>
+      get("_mimicEggsObtained") < 11 &&
+      $familiar`Chest Mimic`.experience > minimumMimicExperience()
+        ? globalOptions.ascend
+          ? clamp(
+              Math.floor($familiar`Chest Mimic`.experience / 50) - 1,
+              1,
+              11 - get("_mimicEggsObtained"),
+            )
+          : 0
+        : 0,
+    spendsTurn: true,
+  },
   {
     name: "Daily Dungeon (drunk)",
     ...dailyDungeon(() => willDrunkAdventure()),
@@ -563,7 +593,13 @@ const BarfTurnTasks: GarboTask[] = [
     outfit: () =>
       digitizedEmbezzler()
         ? embezzlerOutfit(
-            {},
+            get("_mimicEggsObtained") < 11 &&
+              $familiar`Chest Mimic`.experience >
+                (digitizedMonstersRemaining() === 1
+                  ? 50
+                  : (11 - get("_mimicEggsObtained")) * 50)
+              ? { familiar: $familiar`Chest Mimic` }
+              : {},
             wanderer().getTarget({
               wanderer: "wanderer",
               allowEquipment: false,
@@ -727,6 +763,30 @@ const BarfTurnTasks: GarboTask[] = [
   },
   // If extra adventures are unlocked, we want to finish midnight to re-open the zone ASAP
   gingerbreadMidnight(() => get("gingerExtraAdventures")),
+  {
+    name: "Make Mimic Eggs (maximum eggs)",
+    ready: () => shouldMakeEgg(true),
+    completed: () => get("_mimicEggsObtained") >= 11,
+    do: () => {
+      if (ChestMimic.differentiableQuantity(globalOptions.target) < 1) {
+        ChestMimic.receive(globalOptions.target);
+      }
+      ChestMimic.differentiate(globalOptions.target);
+    },
+    combat: new GarboStrategy(() => Macro.meatKill()),
+    spendsTurn: true,
+    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
+  },
+  {
+    name: "Fight Mimic Eggs",
+    ready: () => globalOptions.ascend,
+    completed: () =>
+      ChestMimic.differentiableQuantity(globalOptions.target) === 0,
+    do: () => ChestMimic.differentiate(globalOptions.target),
+    outfit: () => embezzlerOutfit(),
+    combat: new GarboStrategy(() => Macro.meatKill()),
+    spendsTurn: true,
+  },
 ];
 
 function nonBarfTurns(): number {

@@ -22,20 +22,22 @@ import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 
-type MenuOptions = {
-  canChooseMacro?: boolean;
-  location?: Location;
-  extraFamiliars?: GeneralFamiliar[];
-  includeExperienceFamiliars?: boolean;
-  allowAttackFamiliars?: boolean;
-};
+type MenuOptions = Partial<{
+  canChooseMacro: boolean;
+  location: Location;
+  extraFamiliars: GeneralFamiliar[];
+  includeExperienceFamiliars: boolean;
+  allowAttackFamiliars: boolean;
+  mode: "barf" | "free";
+}>;
 const DEFAULT_MENU_OPTIONS = {
   canChooseMacro: true,
   location: $location`none`,
   extraFamiliars: [],
   includeExperienceFamiliars: true,
   allowAttackFamiliars: true,
-};
+  mode: "free",
+} as const;
 export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
   const {
     includeExperienceFamiliars,
@@ -43,6 +45,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     location,
     extraFamiliars,
     allowAttackFamiliars,
+    mode,
   } = {
     ...DEFAULT_MENU_OPTIONS,
     ...options,
@@ -50,7 +53,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
   const familiarMenu = [
     ...getConstantValueFamiliars(),
     ...getDropFamiliars(),
-    ...(includeExperienceFamiliars ? getExperienceFamiliars() : []),
+    ...(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []),
     ...extraFamiliars,
   ];
 

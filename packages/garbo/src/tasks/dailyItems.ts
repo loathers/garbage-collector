@@ -137,7 +137,7 @@ function pickCargoPocket(): void {
 }
 
 const chooseAprilFamiliar = () => {
-  const experienceFamiliars = getExperienceFamiliars().filter(
+  const experienceFamiliars = getExperienceFamiliars("free").filter(
     ({ familiar }) => familiar.experience <= 360,
   );
   if (experienceFamiliars.length) {

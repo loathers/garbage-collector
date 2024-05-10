@@ -25,7 +25,7 @@ const instruments: {
     value: () =>
       Math.max(
         0,
-        ...getExperienceFamiliars().map(({ familiar, expectedValue }) => {
+        ...getExperienceFamiliars("free").map(({ familiar, expectedValue }) => {
           const usesAllowed = clamp(
             Math.floor((400 - familiar.experience) / 40),
             0,
