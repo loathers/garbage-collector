@@ -4533,6 +4533,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-entities@npm:^2.5.2":
+  version: 2.5.2
+  resolution: "html-entities@npm:2.5.2"
+  checksum: b23f4a07d33d49ade1994069af4e13d31650e3fb62621e92ae10ecdf01d1a98065c78fd20fdc92b4c7881612210b37c275f2c9fba9777650ab0d6f2ceb3b99b6
+  languageName: node
+  linkType: hard
+
 "http-cache-semantics@npm:^4.1.1":
   version: 4.1.1
   resolution: "http-cache-semantics@npm:4.1.1"
@@ -4918,13 +4925,13 @@ __metadata:
   linkType: hard
 
 "libram@npm:latest":
-  version: 0.8.33
-  resolution: "libram@npm:0.8.33"
+  version: 0.8.34
+  resolution: "libram@npm:0.8.34"
   dependencies:
-    html-entities: ^2.4.0
+    html-entities: ^2.5.2
   peerDependencies:
     kolmafia: ^5.27668.0
-  checksum: f99e3c8086a48937a8c1d9155b65b9c4af55953971e317209959f56ed5bdaf107bd70d545eb256a49d404797c582d47dac512dc84bdb33f193613ac156f3cfba
+  checksum: 3a1125c8854c60c6707fca2dea0fa878a7c1f3ccb409b10838911e713333accd214fbbe1083f71d07a44cbd761ac9024e9ea6f750f94768d9411e9327f7d3c2e
   languageName: node
   linkType: hard
 
