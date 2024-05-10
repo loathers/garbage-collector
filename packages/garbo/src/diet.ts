@@ -990,7 +990,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
 
 // Item priority - higher means we eat it first.
 // Anything that gives a consumption buff should go first (e.g. Refined Palate).
-function itemPriority<T>(menuItems: MenuItem<T>[]) {
+function itemPriority<T>(menuItems: MenuItem<T>[] | readonly MenuItem<T>[]) {
   // Last menu item is the food itself.
   const menuItem = menuItems[menuItems.length - 1];
   if (menuItem === undefined) {
