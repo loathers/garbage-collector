@@ -50,7 +50,7 @@ type CachedOutfit = {
 const outfitCache = new Map<number | Familiar, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
-const SPECIAL_FAMILIARS_FOR_CACHING = $familiars`Jill-of-All-Trades`;
+const SPECIAL_FAMILIARS_FOR_CACHING = $familiars`Jill-of-All-Trades, Chest Mimic`;
 const outfitCacheKey = (f: Familiar) =>
   SPECIAL_FAMILIARS_FOR_CACHING.includes(f) ? f : findLeprechaunMultiplier(f);
 
