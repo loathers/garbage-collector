@@ -116,7 +116,10 @@ export function computeBarfOutfit(
     outfit.setModes({ jillcandle: "ultraviolet" });
   }
 
-  if (outfit.familiar === $familiar`Chest Mimic`) {
+  if (
+    outfit.familiar === $familiar`Chest Mimic` &&
+    $familiar`Chest Mimic`.experience < 550
+  ) {
     const famExpValue = (EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50;
     outfit.modifier.push(`${famExpValue} Familiar Experience`);
   }
