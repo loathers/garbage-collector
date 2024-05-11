@@ -12,7 +12,7 @@ import {
 import { WanderDetails } from "garbo-lib";
 
 import { freeFightFamiliar } from "../familiar";
-import { BonusEquipMode } from "../lib";
+import { BonusEquipMode, EMBEZZLER_MULTIPLIER } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
@@ -51,10 +51,13 @@ export function freeFightOutfit(
       : BonusEquipMode.FREE;
 
   if (outfit.familiar !== $familiar`Patriotic Eagle`) {
+    const mimicFamExpValue =
+      (EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50;
+
     outfit.modifier.push(
-      $familiars`Pocket Professor, Grey Goose, Chest Mimic`.includes(
-        outfit.familiar,
-      )
+      outfit.familiar === $familiar`Chest Mimic`
+        ? `${mimicFamExpValue} Familiar Experience`
+        : $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
         ? "Familiar Experience"
         : "Familiar Weight",
     );

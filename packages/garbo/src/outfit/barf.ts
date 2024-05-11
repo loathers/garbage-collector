@@ -28,7 +28,12 @@ import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
-import { BonusEquipMode, modeValueOfItem, modeValueOfMeat } from "../lib";
+import {
+  BonusEquipMode,
+  EMBEZZLER_MULTIPLIER,
+  modeValueOfItem,
+  modeValueOfMeat,
+} from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
 
 function chooseGun() {
@@ -109,6 +114,11 @@ export function computeBarfOutfit(
   if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
     outfit.equip($item`LED candle`);
     outfit.setModes({ jillcandle: "ultraviolet" });
+  }
+
+  if (outfit.familiar === $familiar`Chest Mimic`) {
+    const famExpValue = (EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50;
+    outfit.modifier.push(`${famExpValue} Familiar Experience`);
   }
 
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
