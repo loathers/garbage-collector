@@ -533,6 +533,8 @@ export function main(argString = ""): void {
         });
 
         // 2. do some embezzler stuff
+        potionSetup(globalOptions.nobarf);
+        useBuffExtenders(); // Buff and use extenders pre free fights primarily to extend buffs like Shadow Affinity
         freeFights();
         runGarboQuests([SetupEmbezzlerQuest]);
         yachtzeeChain();
