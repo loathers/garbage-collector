@@ -1080,7 +1080,8 @@ const luckyAdventures = [
     phase: "barf",
     value: () =>
       canAdventure($location`The Castle in the Clouds in the Sky (Top Floor)`)
-        ? garboValue($item`Mick's IcyVapoHotness Inhaler`)
+        ? garboValue($item`Mick's IcyVapoHotness Inhaler`) -
+          get("valueOfAdventure")
         : 0,
   },
 ] as LuckyAdventure[];
