@@ -27,7 +27,12 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
-import { baseMeat, BonusEquipMode, HIGHLIGHT } from "../lib";
+import {
+  baseMeat,
+  BonusEquipMode,
+  EMBEZZLER_MULTIPLIER,
+  HIGHLIGHT,
+} from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -44,6 +49,7 @@ type CachedOutfit = {
   weight: number;
   meat: number;
   item: number;
+  famexp: number;
   bonus: number;
 };
 
@@ -76,6 +82,7 @@ function getCachedOutfitValues(fam: Familiar) {
       weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
       meat: sum(outfit, (eq: Item) => getModifier("Meat Drop", eq)),
       item: sum(outfit, (eq: Item) => getModifier("Item Drop", eq)),
+      famexp: sum(outfit, (eq: Item) => getModifier("Familiar Experience", eq)),
       bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
     };
     outfitCache.set(outfitCacheKey(fam), values);
@@ -163,11 +170,16 @@ function turnsNeededFromBaseline(
 }
 
 function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
+  const mimicFamExpValue =
+    (EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50;
   const outfit = getCachedOutfitValues(f.familiar);
   const outfitValue =
     outfit.bonus +
     outfit.meat * MEAT_DROP_VALUE +
-    outfit.item * ITEM_DROP_VALUE;
+    outfit.item * ITEM_DROP_VALUE +
+    (f.familiar === $familiar`Chest Mimic`
+      ? outfit.famexp * mimicFamExpValue
+      : 0);
   const outfitWeight = outfit.weight;
 
   return { ...f, outfitValue, outfitWeight };
