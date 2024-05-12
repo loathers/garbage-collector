@@ -427,8 +427,8 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
       ChestMimic.have() &&
       $familiar`Chest Mimic`.experience >= 50 &&
       get("_mimicEggsObtained") < 11 &&
-      // Backup doesn't apply ML, meaning we die too quickly to get multiple eggs in
-      fight !== "Backup"
+      // switchmonster doesn't apply ML, meaning the embezzlers die too quickly to get multiple eggs in
+      !["Macrometeorite", "Powerful Glove", "Backup"].includes(fight)
     ) {
       return { familiar: $familiar`Chest Mimic` };
     }
