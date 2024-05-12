@@ -47,6 +47,7 @@ import {
   lastAdventureWasWeird,
   ltbRun,
   setChoice,
+  tryFindFreeRunOrBanish,
   userConfirmDialog,
 } from "../lib";
 import { garboAdventure, Macro } from "../combat";
@@ -371,13 +372,44 @@ const combatItem = (item: Item, maxPrice?: number): Banish => ({
   prepare: () => acquire(1, item, maxPrice ?? MAX_BANISH_PRICE), // put a sanity ceiling of 50k on the banish
 });
 
+function springKickBanish(): Banish {
+  const run = tryFindFreeRunOrBanish(freeRunConstraints(false)) ?? ltbRun();
+  return {
+    name: "Spring Kick",
+    available: () => have($item`spring shoes`),
+    price: () => run.cost(),
+    macro: () => Macro.skill($skill`Spring Kick`).step(run.macro),
+    prepare: () => {
+      useFamiliar(
+        run.constraints.familiar?.() ??
+          freeFightFamiliar({
+            canChooseMacro: false,
+            allowAttackFamiliars: false,
+          }),
+      );
+      run.constraints.preparation?.();
+      // To prevent death of both self and monster
+      new Requirement(["100 Monster Level, 100 Muscle"], {
+        preventEquip: $items`carnivorous potted plant, Kramco Sausage-o-Matic™`,
+        forceEquip: [$item`spring shoes`],
+      })
+        .merge(
+          run.constraints.equipmentRequirements?.() ?? new Requirement([], {}),
+        )
+        .maximize();
+    },
+  };
+}
+
 const longBanishes: Banish[] = [
   combatItem($item`human musk`),
   combatItem($item`tryptophan dart`),
   combatItem($item`Daily Affirmation: Be a Mind Master`),
+  springKickBanish(),
   {
     name: "Batter Up!",
     available: () => myFury() >= 5 && have($skill`Batter Up!`),
+    price: () => get("valueOfAdventure"), // Batter up takes an adventure, cost is slightly higher than this because of effect cost
     macro: () => Macro.skill($skill`Batter Up!`),
     prepare: () => {
       const club = getClub();
