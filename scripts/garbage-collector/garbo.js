@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7f956fdbc9e106c90bbcb5c673d256726e62ba03", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2f6b1ac3b8e0011b7a28f6824ba00fa6667258a9", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -44022,8 +44022,8 @@ function pygmyOptions() {
 }
 function familiarSpec(underwater, fight) {
   if (!underwater) {
-    if (ChestMimic_exports.have() && $familiar(_templateObject4720 || (_templateObject4720 = _taggedTemplateLiteral113(["Chest Mimic"]))).experience >= 50 && get("_mimicEggsObtained") < 11 && // Backup doesn't apply ML, meaning we die too quickly to get multiple eggs in
-    fight !== "Backup") {
+    if (ChestMimic_exports.have() && $familiar(_templateObject4720 || (_templateObject4720 = _taggedTemplateLiteral113(["Chest Mimic"]))).experience >= 50 && get("_mimicEggsObtained") < 11 && // switchmonster doesn't apply ML, meaning the embezzlers die too quickly to get multiple eggs in
+    !["Macrometeorite", "Powerful Glove", "Backup"].includes(fight)) {
       return {
         familiar: $familiar(_templateObject4820 || (_templateObject4820 = _taggedTemplateLiteral113(["Chest Mimic"])))
       };
