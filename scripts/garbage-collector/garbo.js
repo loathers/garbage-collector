@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e334d2afbce24da78b6ef72a30efb0458fa6c1db", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1be7b7cdb3fe54d459bd055994f34d588aafd38f", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -34724,9 +34724,9 @@ var standardFamiliars = [{
   }
 }, {
   familiar: $familiar(_templateObject4120 || (_templateObject4120 = _taggedTemplateLiteral80(["Stocking Mimic"]))),
-  value: function() {
+  value: function(mode) {
     return garboAverageValue.apply(void 0, _toConsumableArray35($items(_templateObject5102 || (_templateObject5102 = _taggedTemplateLiteral80(["Polka Pop, BitterSweetTarts, Piddles"]))))) / 6 - // We can't equip an amulet coin if we equip the bag of many confections
-    bestAlternative * baseMeat / 100 + (1 / 3 + (have($effect(_templateObject678 || (_templateObject678 = _taggedTemplateLiteral80(["Jingle Jangle Jingle"])))) ? 0.1 : 0)) * ((0, import_kolmafia92.familiarWeight)($familiar(_templateObject759 || (_templateObject759 = _taggedTemplateLiteral80(["Stocking Mimic"])))) + (0, import_kolmafia92.weightAdjustment)());
+    (mode === "barf" ? bestAlternative * baseMeat / 100 : 0) + (1 / 3 + (have($effect(_templateObject678 || (_templateObject678 = _taggedTemplateLiteral80(["Jingle Jangle Jingle"])))) ? 0.1 : 0)) * ((0, import_kolmafia92.familiarWeight)($familiar(_templateObject759 || (_templateObject759 = _taggedTemplateLiteral80(["Stocking Mimic"])))) + (0, import_kolmafia92.weightAdjustment)());
   }
 }, {
   familiar: $familiar(_templateObject855 || (_templateObject855 = _taggedTemplateLiteral80(["Shorter-Order Cook"]))),
@@ -34736,8 +34736,8 @@ var standardFamiliars = [{
   // 9 with blue plate
 }, {
   familiar: $familiar(_templateObject1039 || (_templateObject1039 = _taggedTemplateLiteral80(["Robortender"]))),
-  value: function() {
-    return garboValue($item(_templateObject1136 || (_templateObject1136 = _taggedTemplateLiteral80(["elemental sugarcube"])))) / 5 + (Robortender_exports.currentDrinks().includes($item(_templateObject1234 || (_templateObject1234 = _taggedTemplateLiteral80(["Feliz Navidad"])))) ? felizValue() * 0.25 : 0) + (Robortender_exports.currentDrinks().includes($item(_templateObject1333 || (_templateObject1333 = _taggedTemplateLiteral80(["Newark"])))) ? newarkValue() * 0.25 : 0);
+  value: function(mode) {
+    return (mode === "barf" ? garboValue($item(_templateObject1136 || (_templateObject1136 = _taggedTemplateLiteral80(["elemental sugarcube"])))) / 5 : 0) + (Robortender_exports.currentDrinks().includes($item(_templateObject1234 || (_templateObject1234 = _taggedTemplateLiteral80(["Feliz Navidad"])))) ? felizValue() * 0.25 : 0) + (Robortender_exports.currentDrinks().includes($item(_templateObject1333 || (_templateObject1333 = _taggedTemplateLiteral80(["Newark"])))) ? newarkValue() * 0.25 : 0);
   }
 }, {
   familiar: $familiar(_templateObject1430 || (_templateObject1430 = _taggedTemplateLiteral80(["Twitching Space Critter"]))),
@@ -34755,8 +34755,8 @@ var standardFamiliars = [{
 }, {
   familiar: $familiar(_templateObject1727 || (_templateObject1727 = _taggedTemplateLiteral80(["Trick-or-Treating Tot"]))),
   // This is the value of getting a pirate costume over getting an amulet coin or whatever
-  value: function() {
-    return have($item(_templateObject1827 || (_templateObject1827 = _taggedTemplateLiteral80(["li'l pirate costume"])))) ? baseMeat * (300 - bestAlternative) / 100 : 0;
+  value: function(mode) {
+    return have($item(_templateObject1827 || (_templateObject1827 = _taggedTemplateLiteral80(["li'l pirate costume"])))) && mode === "barf" ? baseMeat * (300 - bestAlternative) / 100 : 0;
   }
 }, {
   familiar: $familiar(_templateObject1926 || (_templateObject1926 = _taggedTemplateLiteral80(["Rockin' Robin"]))),
@@ -34784,7 +34784,7 @@ var standardFamiliars = [{
     return (0, import_kolmafia92.holiday)().includes("Dependence Day") ? 0.05 * garboValue($item(_templateObject2820 || (_templateObject2820 = _taggedTemplateLiteral80(["souvenir flag"])))) : 0;
   }
 }];
-function getConstantValueFamiliars() {
+function getConstantValueFamiliars(mode) {
   return standardFamiliars.filter(function(_ref) {
     var familiar8 = _ref.familiar;
     return have(familiar8);
@@ -34792,7 +34792,7 @@ function getConstantValueFamiliars() {
     var familiar8 = _ref2.familiar, value = _ref2.value;
     return {
       familiar: familiar8,
-      expectedValue: value(),
+      expectedValue: value(mode),
       leprechaunMultiplier: findLeprechaunMultiplier(familiar8),
       limit: "none"
     };
@@ -35268,7 +35268,7 @@ var DEFAULT_MENU_OPTIONS = {
 function menu2() {
   var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
   var _DEFAULT_MENU_OPTIONS = _objectSpread16(_objectSpread16({}, DEFAULT_MENU_OPTIONS), options), includeExperienceFamiliars = _DEFAULT_MENU_OPTIONS.includeExperienceFamiliars, canChooseMacro = _DEFAULT_MENU_OPTIONS.canChooseMacro, location = _DEFAULT_MENU_OPTIONS.location, extraFamiliars = _DEFAULT_MENU_OPTIONS.extraFamiliars, allowAttackFamiliars = _DEFAULT_MENU_OPTIONS.allowAttackFamiliars, mode = _DEFAULT_MENU_OPTIONS.mode;
-  var familiarMenu = [].concat(_toConsumableArray37(getConstantValueFamiliars()), _toConsumableArray37(getDropFamiliars()), _toConsumableArray37(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray37(extraFamiliars));
+  var familiarMenu = [].concat(_toConsumableArray37(getConstantValueFamiliars(mode)), _toConsumableArray37(getDropFamiliars()), _toConsumableArray37(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray37(extraFamiliars));
   if (canChooseMacro && (0, import_kolmafia95.myInebriety)() <= (0, import_kolmafia95.inebrietyLimit)()) {
     if (timeToMeatify()) {
       familiarMenu.push({
