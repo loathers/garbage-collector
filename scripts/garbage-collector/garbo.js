@@ -5204,7 +5204,7 @@ var init_FreeRun = __esm({
         return true;
       };
       return function() {
-        return otherClause() && have($effect(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral8(["Everything Looks Green"])))) ? 0 : 1;
+        return otherClause() && !have($effect(_templateObject60 || (_templateObject60 = _taggedTemplateLiteral8(["Everything Looks Green"])))) ? 1 : 0;
       };
     };
     freeRunSources = [
@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f4b0776e4ac81ff5fc7c59c97a9940a9e7d9911d", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e334d2afbce24da78b6ef72a30efb0458fa6c1db", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
