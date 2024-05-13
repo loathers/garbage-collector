@@ -47,7 +47,6 @@ import {
   $items,
   $location,
   $monster,
-  $monsters,
   $skill,
   $slot,
   BeachComb,
@@ -55,6 +54,7 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  getTodaysHolidayWanderers,
   have,
   maxBy,
   Pantogram,
@@ -710,7 +710,11 @@ const DailyTasks: GarboTask[] = [
     spendsTurn: false,
     combat: new GarboStrategy(() =>
       Macro.if_(
-        $monsters`time-spinner prank, giant rubber spider`,
+        [
+          $monster`giant rubber spider`,
+          $monster`time-spinner prank`,
+          ...getTodaysHolidayWanderers(),
+        ],
         Macro.basicCombat(),
       ).abortWithMsg(
         "Unexpected combat encounter while attempting to get Eldritch Attunment from Generic Summer Holiday",
