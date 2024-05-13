@@ -405,7 +405,6 @@ const longBanishes: Banish[] = [
   combatItem($item`human musk`),
   combatItem($item`tryptophan dart`),
   combatItem($item`Daily Affirmation: Be a Mind Master`),
-  springKickBanish(),
   {
     name: "Batter Up!",
     available: () => myFury() >= 5 && have($skill`Batter Up!`),
@@ -480,6 +479,7 @@ function iceHouseAllowed(): boolean {
 function banishBunny(): void {
   const banishes = [
     ...longBanishes,
+    springKickBanish(),
     ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
   ].filter((b) => b.available());
 
