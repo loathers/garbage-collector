@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1be7b7cdb3fe54d459bd055994f34d588aafd38f", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("de94ee7db75c259941fe2dd151539ffe292616d5", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -46491,8 +46491,12 @@ var BarfTurnTasks = [
     duplicate: true,
     sobriety: "sober"
   }),
-  wanderTask("freerun", {
-    equip: $items(_templateObject10314 || (_templateObject10314 = _taggedTemplateLiteral114(["spring shoes, carnivorous potted plant"])))
+  wanderTask("freerun", function() {
+    return {
+      equip: $items(_templateObject10314 || (_templateObject10314 = _taggedTemplateLiteral114(["spring shoes, carnivorous potted plant"]))).filter(function(i) {
+        return have(i);
+      })
+    };
   }, {
     name: "Spring Shoes Freerun",
     ready: function() {
