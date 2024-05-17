@@ -490,20 +490,20 @@ const NonBarfTurnTasks: AlternateTask[] = [
   },
 ];
 
-function canDartsGood(ready: boolean): boolean {
-  const havePerks =
-    get("everfullDartPerks").includes("25% Better bullseye targeting") &&
-    get("everfullDartPerks").includes("25% More Accurate bullseye targeting");
-  const haveItems = havePerks
+const haveBullseyePerks = () =>
+  get("everfullDartPerks").includes("25% Better bullseye targeting") &&
+  get("everfullDartPerks").includes("25% More Accurate bullseye targeting");
+
+const haveBullseyeItems = () =>
+  haveBullseyePerks()
     ? have($item`Everfull Dart Holster`)
     : have($item`Everfull Dart Holster`) && have($item`spring shoes`);
 
-  if (ready) return haveItems;
-  return havePerks
+const shouldBullseye = () =>
+  haveBullseyePerks()
     ? have($effect`Everything Looks Red`)
     : have($effect`Everything Looks Red`) ||
-        have($effect`Everything Looks Green`);
-}
+      have($effect`Everything Looks Green`);
 
 const BarfTurnTasks: GarboTask[] = [
   {
@@ -730,8 +730,8 @@ const BarfTurnTasks: GarboTask[] = [
     { acc1: $item`Everfull Dart Holster`, acc2: $item`spring shoes` },
     {
       name: "Darts: Bullseye",
-      ready: () => canDartsGood(true),
-      completed: () => canDartsGood(false),
+      ready: () => haveBullseyeItems(),
+      completed: () => shouldBullseye(),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
