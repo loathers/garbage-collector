@@ -490,6 +490,21 @@ const NonBarfTurnTasks: AlternateTask[] = [
   },
 ];
 
+function canDartsGood(ready: boolean): boolean {
+  const havePerks =
+    get("everfullDartPerks").includes("25% Better bullseye targeting") &&
+    get("everfullDartPerks").includes("25% More Accurate bullseye targeting");
+  const haveItems = havePerks
+    ? have($item`Everfull Dart Holster`)
+    : have($item`Everfull Dart Holster`) && have($item`spring shoes`);
+
+  if (ready) return haveItems;
+  return havePerks
+    ? have($effect`Everything Looks Red`)
+    : have($effect`Everything Looks Red`) ||
+        have($effect`Everything Looks Green`);
+}
+
 const BarfTurnTasks: GarboTask[] = [
   {
     name: "Latte",
@@ -711,6 +726,23 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
+    "freefight",
+    { acc1: $item`Everfull Dart Holster`, acc2: $item`spring shoes` },
+    {
+      name: "Darts: Bullseye",
+      ready: () => canDartsGood(true),
+      completed: () => canDartsGood(false),
+      combat: new GarboStrategy(() =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .familiarActions()
+          .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
+          .skill($skill`Darts: Aim for the Bullseye`)
+          .skill($skill`Spring Away`),
+      ),
+      duplicate: true,
+    },
+  ),
+  wanderTask(
     "yellow ray",
     {},
     {
@@ -740,7 +772,9 @@ const BarfTurnTasks: GarboTask[] = [
         have($item`spring shoes`) &&
         romanticMonsterImpossible() &&
         (getWorkshed() !== $item`model train set` ||
-          TrainSet.next() !== TrainSet.Station.GAIN_MEAT),
+          TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
+        (!have($item`Everfull Dart Holster`) ||
+          have($effect`Everything Looks Red`)),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
