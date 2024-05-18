@@ -55,12 +55,10 @@ import {
   get,
   getModifier,
   have,
-  Latte,
   maxBy,
   Pantogram,
   questStep,
   realmAvailable,
-  set,
   SongBoom,
   SourceTerminal,
   uneffect,
@@ -79,6 +77,7 @@ import { GarboTask } from "./engine";
 import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   attemptCompletingBarfQuest,
+  checkAndCorrectLatteMalformation,
   checkBarfQuest,
   checkVolcanoQuest,
 } from "../resources";
@@ -317,12 +316,6 @@ export function configureSnojo(): void {
   }
 }
 
-const latteMalformed = () =>
-  (["vanilla", "pumpkin", "cinnamon"] as const).some(
-    (defaultIngredient) =>
-      !Latte.ingredientsUnlocked().includes(defaultIngredient),
-  );
-
 const DailyTasks: GarboTask[] = [
   {
     name: "Chibi Buddy",
@@ -338,14 +331,7 @@ const DailyTasks: GarboTask[] = [
     completed: () => latteRefreshed,
     do: (): void => {
       visitUrl("main.php?latte=1", false);
-
-      if (latteMalformed()) visitUrl("main.php?latte=1", false);
-      if (latteMalformed()) {
-        print("Can't access Latte Lover's Mug shop, disabling it");
-        set("_latteBanishUsed", true);
-        set("_latteCopyUsed", true);
-        set("_latteRefillsUsed", 3);
-      }
+      checkAndCorrectLatteMalformation();
       latteRefreshed = true;
     },
     spendsTurn: false,
