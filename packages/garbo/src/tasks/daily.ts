@@ -320,7 +320,7 @@ export function configureSnojo(): void {
 }
 
 const latteMalformed = () =>
-  (["carrot", "pumpkin", "cinnamon"] as const).some(
+  (["vanilla", "pumpkin", "cinnamon"] as const).some(
     (defaultIngredient) =>
       !Latte.ingredientsUnlocked().includes(defaultIngredient),
   );
