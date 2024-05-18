@@ -729,9 +729,11 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   wanderTask(
     "freerun",
-    {
-      equip: $items`spring shoes, carnivorous potted plant`,
-    },
+    () => ({
+      equip: $items`spring shoes, carnivorous potted plant`.filter((i) =>
+        have(i),
+      ),
+    }),
     {
       name: "Spring Shoes Freerun",
       ready: () =>
