@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e2a275f143e0e0fe1b018323a1e4a527b587665b", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4badee9ef471e2eb59c6c3aecbe2fba66eb1ddb6", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -46952,6 +46952,11 @@ function configureSnojo() {
     snojoConfigured = true;
   }
 }
+var latteMalformed = function() {
+  return ["carrot", "pumpkin", "cinnamon"].some(function(defaultIngredient) {
+    return !LatteLoversMembersMug_exports.ingredientsUnlocked().includes(defaultIngredient);
+  });
+};
 var DailyTasks = [
   {
     name: "Chibi Buddy",
@@ -46976,6 +46981,14 @@ var DailyTasks = [
     },
     do: function() {
       (0, import_kolmafia125.visitUrl)("main.php?latte=1", false);
+      if (latteMalformed())
+        (0, import_kolmafia125.visitUrl)("main.php?latte=1", false);
+      if (latteMalformed()) {
+        (0, import_kolmafia125.print)("Can't access Latte Lover's Mug shop, disabling it");
+        _set("_latteBanishUsed", true);
+        _set("_latteCopyUsed", true);
+        _set("_latteRefillsUsed", 3);
+      }
       latteRefreshed = true;
     },
     spendsTurn: false
