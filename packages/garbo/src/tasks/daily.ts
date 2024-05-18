@@ -56,10 +56,12 @@ import {
   getModifier,
   getTodaysHolidayWanderers,
   have,
+  Latte,
   maxBy,
   Pantogram,
   questStep,
   realmAvailable,
+  set,
   SongBoom,
   SourceTerminal,
   uneffect,
@@ -317,6 +319,12 @@ export function configureSnojo(): void {
   }
 }
 
+const latteMalformed = () =>
+  (["carrot", "pumpkin", "cinnamon"] as const).some(
+    (defaultIngredient) =>
+      !Latte.ingredientsUnlocked().includes(defaultIngredient),
+  );
+
 const DailyTasks: GarboTask[] = [
   {
     name: "Chibi Buddy",
@@ -332,6 +340,14 @@ const DailyTasks: GarboTask[] = [
     completed: () => latteRefreshed,
     do: (): void => {
       visitUrl("main.php?latte=1", false);
+
+      if (latteMalformed()) visitUrl("main.php?latte=1", false);
+      if (latteMalformed()) {
+        print("Can't access Latte Lover's Mug shop, disabling it");
+        set("_latteBanishUsed", true);
+        set("_latteCopyUsed", true);
+        set("_latteRefillsUsed", 3);
+      }
       latteRefreshed = true;
     },
     spendsTurn: false,
