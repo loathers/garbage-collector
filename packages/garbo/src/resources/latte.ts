@@ -11,6 +11,8 @@ import {
   Tuple,
 } from "libram";
 
+let latteCorrectionAttempted = false;
+
 type Ingredients = Tuple<Latte.Ingredient, 3>;
 function desirableIngredients() {
   return have($skill`Head in the Game`) &&
@@ -57,6 +59,7 @@ function latteMalformed(): boolean {
 // Returns whether the latteUnlocks preference contains the default ingredients
 export function checkAndCorrectLatteMalformation(): boolean {
   if (!latteMalformed()) return true;
+  if (latteCorrectionAttempted) return false;
 
   visitUrl("main.php?latte=1", false);
 
@@ -66,6 +69,7 @@ export function checkAndCorrectLatteMalformation(): boolean {
   set("_latteBanishUsed", true);
   set("_latteCopyUsed", true);
   set("_latteRefillsUsed", 3);
+  latteCorrectionAttempted = true;
   return false;
 }
 
