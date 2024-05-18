@@ -91,5 +91,9 @@ export function shouldFillLatte(): boolean {
 }
 
 export function tryFillLatte(): boolean {
-  return shouldFillLatte() && Latte.fill(...ingredientsToFillWith());
+  return (
+    shouldFillLatte() &&
+    Latte.fill(...ingredientsToFillWith()) &&
+    checkAndCorrectLatteMalformation()
+  );
 }
