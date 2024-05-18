@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4badee9ef471e2eb59c6c3aecbe2fba66eb1ddb6", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("78c99be6edc32ff245431e300a9341dc576fcfb8", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -46953,7 +46953,7 @@ function configureSnojo() {
   }
 }
 var latteMalformed = function() {
-  return ["carrot", "pumpkin", "cinnamon"].some(function(defaultIngredient) {
+  return ["vanilla", "pumpkin", "cinnamon"].some(function(defaultIngredient) {
     return !LatteLoversMembersMug_exports.ingredientsUnlocked().includes(defaultIngredient);
   });
 };
