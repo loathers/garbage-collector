@@ -2,6 +2,7 @@ import {
   availableAmount,
   canAdventure,
   canEquip,
+  choiceFollowsFight,
   eat,
   getWorkshed,
   Location,
@@ -107,6 +108,9 @@ function wanderTask(
       freeFightOutfit(undelay(spec), { wanderOptions: undelay(details) }),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat()),
+    post: () => {
+      if (choiceFollowsFight()) runChoice(-1);
+    },
     ...base,
   };
 }
