@@ -54,6 +54,7 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  getTodaysHolidayWanderers,
   have,
   Latte,
   maxBy,
@@ -82,6 +83,7 @@ import {
   checkBarfQuest,
   checkVolcanoQuest,
 } from "../resources";
+import { GarboStrategy, Macro } from "../combat";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
@@ -715,10 +717,25 @@ const DailyTasks: GarboTask[] = [
         ? {
             offhand: $item`Drunkula's wineglass`,
             acc1: $item`water wings`,
-            avoid: $items`June cleaver`,
+            avoid: $items`June cleaver, cursed magnifying glass, Kramco Sausage-o-Matic™`,
           }
-        : { acc1: $item`water wings`, avoid: $items`June cleaver` },
+        : {
+            acc1: $item`water wings`,
+            avoid: $items`June cleaver, cursed magnifying glass, Kramco Sausage-o-Matic™`,
+          },
     spendsTurn: false,
+    combat: new GarboStrategy(() =>
+      Macro.if_(
+        [
+          $monster`giant rubber spider`,
+          $monster`time-spinner prank`,
+          ...getTodaysHolidayWanderers(),
+        ],
+        Macro.basicCombat(),
+      ).abortWithMsg(
+        "Unexpected combat encounter while attempting to get Eldritch Attunment from Generic Summer Holiday",
+      ),
+    ),
   },
   {
     name: "Check Neverending Party Quest",

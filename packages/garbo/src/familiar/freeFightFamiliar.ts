@@ -51,7 +51,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     ...options,
   };
   const familiarMenu = [
-    ...getConstantValueFamiliars(),
+    ...getConstantValueFamiliars(mode),
     ...getDropFamiliars(),
     ...(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []),
     ...extraFamiliars,

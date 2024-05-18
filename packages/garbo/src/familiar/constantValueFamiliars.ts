@@ -17,7 +17,7 @@ import { GeneralFamiliar } from "./lib";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
-  value: () => number;
+  value: (_mode: "barf" | "free") => number;
 };
 
 const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
@@ -28,10 +28,10 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Stocking Mimic`,
-    value: () =>
+    value: (mode) =>
       garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 -
       // We can't equip an amulet coin if we equip the bag of many confections
-      (bestAlternative * baseMeat) / 100 +
+      (mode === "barf" ? (bestAlternative * baseMeat) / 100 : 0) +
       (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
         (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
   },
@@ -44,8 +44,8 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Robortender`,
-    value: () =>
-      garboValue($item`elemental sugarcube`) / 5 +
+    value: (mode) =>
+      (mode === "barf" ? garboValue($item`elemental sugarcube`) / 5 : 0) +
       (Robortender.currentDrinks().includes($item`Feliz Navidad`)
         ? felizValue() * 0.25
         : 0) +
@@ -68,8 +68,8 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Trick-or-Treating Tot`,
     // This is the value of getting a pirate costume over getting an amulet coin or whatever
-    value: () =>
-      have($item`li'l pirate costume`)
+    value: (mode) =>
+      have($item`li'l pirate costume`) && mode === "barf"
         ? (baseMeat * (300 - bestAlternative)) / 100
         : 0,
   },
@@ -110,12 +110,14 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
 ];
 
-export default function getConstantValueFamiliars(): GeneralFamiliar[] {
+export default function getConstantValueFamiliars(
+  mode: "barf" | "free",
+): GeneralFamiliar[] {
   return standardFamiliars
     .filter(({ familiar }) => have(familiar))
     .map(({ familiar, value }) => ({
       familiar,
-      expectedValue: value(),
+      expectedValue: value(mode),
       leprechaunMultiplier: findLeprechaunMultiplier(familiar),
       limit: "none",
     }));
