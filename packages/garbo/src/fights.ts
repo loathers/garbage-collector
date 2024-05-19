@@ -191,7 +191,7 @@ const firstChainMacro = () =>
   Macro.if_(
     globalOptions.target,
     Macro.if_(
-      "!hasskill Lecture on Relativity",
+      `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
       Macro.externalIf(
         SourceTerminal.getDigitizeMonster() !== globalOptions.target,
         Macro.tryCopier($skill`Digitize`),
@@ -213,11 +213,11 @@ const secondChainMacro = () =>
   Macro.if_(
     globalOptions.target,
     Macro.if_(
-      "!hasskill Lecture on Relativity",
+      `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
       Macro.trySkill($skill`Meteor Shower`),
     )
       .if_(
-        "!hasskill Lecture on Relativity",
+        `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
         Macro.externalIf(
           get("_sourceTerminalDigitizeMonster") !== globalOptions.target,
           Macro.tryCopier($skill`Digitize`),
@@ -1433,8 +1433,6 @@ const freeRunFightSources = [
       const monsters = asArray(best.monster);
       try {
         if (best.preReq) best.preReq();
-        const vortex = $skill`Fire Extinguisher: Polar Vortex`;
-        const evil = $skill`Perpetrate Mild Evil`;
         const hasXO = myFamiliar() === $familiar`XO Skeleton`;
         if (myThrall() !== $thrall.none) useSkill($skill`Dismiss Pasta Thrall`);
         Macro.if_(
@@ -1449,8 +1447,10 @@ const freeRunFightSources = [
             !best.requireMapTheMonsters && hasXO && get("_xoHugsUsed") < 10,
             Macro.step(itemStealOlfact(best)),
           )
-          .while_(`hasskill ${toInt(vortex)}`, Macro.skill(vortex))
-          .while_(`hasskill ${toInt(evil)}`, Macro.skill(evil))
+          .trySkillRepeat(
+            $skill`Fire Extinguisher: Polar Vortex`,
+            $skill`Perpetrate Mild Evil`,
+          )
           .step(runSource.macro)
           .setAutoAttack();
         if (mappingMonster) {
@@ -1506,7 +1506,9 @@ const freeRunFightSources = [
       garboAdventure(
         getStenchLocation(),
         Macro.while_(
-          "!pastround 28 && hasskill macrometeorite",
+          `!pastround 28 && ${Macro.makeBALLSPredicate(
+            $skill`Macrometeorite`,
+          )}`,
           Macro.skill($skill`Extract Jelly`).skill($skill`Macrometeorite`),
         )
           .trySkill($skill`Extract Jelly`)
@@ -1528,7 +1530,9 @@ const freeRunFightSources = [
       garboAdventure(
         getStenchLocation(),
         Macro.while_(
-          "!pastround 28 && hasskill CHEAT CODE: Replace Enemy",
+          `!pastround 28 && ${Macro.makeBALLSPredicate(
+            $skill`CHEAT CODE: Replace Enemy`,
+          )}`,
           Macro.skill($skill`Extract Jelly`).skill(
             $skill`CHEAT CODE: Replace Enemy`,
           ),
