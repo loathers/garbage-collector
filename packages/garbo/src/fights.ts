@@ -190,8 +190,8 @@ import { PostQuest } from "./tasks/post";
 const firstChainMacro = () =>
   Macro.if_(
     globalOptions.target,
-    Macro.ifNot(
-      $skill`lecture on relativity`,
+    Macro.if_(
+      `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
       Macro.externalIf(
         SourceTerminal.getDigitizeMonster() !== globalOptions.target,
         Macro.tryCopier($skill`Digitize`),
@@ -212,12 +212,12 @@ const firstChainMacro = () =>
 const secondChainMacro = () =>
   Macro.if_(
     globalOptions.target,
-    Macro.ifNot(
-      $skill`lecture on relativity`,
+    Macro.if_(
+      `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
       Macro.trySkill($skill`Meteor Shower`),
     )
-      .ifNot(
-        $skill`lecture on relativity`,
+      .if_(
+        `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
         Macro.externalIf(
           get("_sourceTerminalDigitizeMonster") !== globalOptions.target,
           Macro.tryCopier($skill`Digitize`),
@@ -1433,8 +1433,6 @@ const freeRunFightSources = [
       const monsters = asArray(best.monster);
       try {
         if (best.preReq) best.preReq();
-        const vortex = $skill`Fire Extinguisher: Polar Vortex`;
-        const evil = $skill`Perpetrate Mild Evil`;
         const hasXO = myFamiliar() === $familiar`XO Skeleton`;
         if (myThrall() !== $thrall.none) useSkill($skill`Dismiss Pasta Thrall`);
         Macro.if_(
@@ -1449,7 +1447,10 @@ const freeRunFightSources = [
             !best.requireMapTheMonsters && hasXO && get("_xoHugsUsed") < 10,
             Macro.step(itemStealOlfact(best)),
           )
-          .trySkillRepeat(vortex, evil)
+          .trySkillRepeat(
+            $skill`Fire Extinguisher: Polar Vortex`,
+            $skill`Perpetrate Mild Evil`,
+          )
           .step(runSource.macro)
           .setAutoAttack();
         if (mappingMonster) {
