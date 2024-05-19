@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("78c99be6edc32ff245431e300a9341dc576fcfb8", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d2ff7f65496ac58268c4576762976f34c48e8d63", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -38828,6 +38828,23 @@ function ingredientsToFillWith() {
     Mysticality: ["pumpkin", "vanilla", "cinnamon"]
   }))).splice(0, 3);
 }
+function latteMalformed() {
+  return ["vanilla", "pumpkin", "cinnamon"].some(function(defaultIngredient) {
+    return !LatteLoversMembersMug_exports.ingredientsUnlocked().includes(defaultIngredient);
+  });
+}
+function checkAndCorrectLatteMalformation() {
+  if (!latteMalformed())
+    return true;
+  (0, import_kolmafia108.visitUrl)("main.php?latte=1", false);
+  if (!latteMalformed())
+    return true;
+  (0, import_kolmafia108.print)("Can't access Latte Lover's Mug shop, disabling it", "red");
+  _set("_latteBanishUsed", true);
+  _set("_latteCopyUsed", true);
+  _set("_latteRefillsUsed", 3);
+  return false;
+}
 function shouldFillLatte() {
   if (!have($item(_templateObject3158 || (_templateObject3158 = _taggedTemplateLiteral97(["latte lovers member's mug"])))) || get("_latteRefillsUsed") >= 3) {
     return false;
@@ -38836,13 +38853,13 @@ function shouldFillLatte() {
     return true;
   if (get("_latteBanishUsed"))
     return true;
-  if (!setEqual(LatteLoversMembersMug_exports.currentIngredients(), ingredientsToFillWith())) {
+  if (checkAndCorrectLatteMalformation() && !setEqual(LatteLoversMembersMug_exports.currentIngredients(), ingredientsToFillWith())) {
     return true;
   }
   return false;
 }
 function tryFillLatte() {
-  return shouldFillLatte() && LatteLoversMembersMug_exports.fill.apply(LatteLoversMembersMug_exports, _toConsumableArray46(ingredientsToFillWith()));
+  return shouldFillLatte() && LatteLoversMembersMug_exports.fill.apply(LatteLoversMembersMug_exports, _toConsumableArray46(ingredientsToFillWith())) && checkAndCorrectLatteMalformation();
 }
 
 // src/resources/aprilingband.ts
@@ -46952,11 +46969,6 @@ function configureSnojo() {
     snojoConfigured = true;
   }
 }
-var latteMalformed = function() {
-  return ["vanilla", "pumpkin", "cinnamon"].some(function(defaultIngredient) {
-    return !LatteLoversMembersMug_exports.ingredientsUnlocked().includes(defaultIngredient);
-  });
-};
 var DailyTasks = [
   {
     name: "Chibi Buddy",
@@ -46981,14 +46993,7 @@ var DailyTasks = [
     },
     do: function() {
       (0, import_kolmafia125.visitUrl)("main.php?latte=1", false);
-      if (latteMalformed())
-        (0, import_kolmafia125.visitUrl)("main.php?latte=1", false);
-      if (latteMalformed()) {
-        (0, import_kolmafia125.print)("Can't access Latte Lover's Mug shop, disabling it");
-        _set("_latteBanishUsed", true);
-        _set("_latteCopyUsed", true);
-        _set("_latteRefillsUsed", 3);
-      }
+      checkAndCorrectLatteMalformation();
       latteRefreshed = true;
     },
     spendsTurn: false
