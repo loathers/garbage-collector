@@ -102,7 +102,10 @@ function wanderTask(
   },
 ): GarboTask {
   return {
-    do: () => wanderer().getTarget(undelay(details)),
+    do: () => {
+      wanderer().getTarget(undelay(details));
+      if (choiceFollowsFight()) runChoice(-1);
+    },
     choices: () => wanderer().getChoices(undelay(details)),
     outfit: () =>
       freeFightOutfit(undelay(spec), { wanderOptions: undelay(details) }),
