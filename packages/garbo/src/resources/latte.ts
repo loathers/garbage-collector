@@ -1,4 +1,4 @@
-import { canAdventure } from "kolmafia";
+import { canAdventure, print, visitUrl } from "kolmafia";
 import {
   $item,
   $skill,
@@ -6,6 +6,7 @@ import {
   get,
   have,
   Latte,
+  set,
   setEqual,
   Tuple,
 } from "libram";
@@ -46,6 +47,28 @@ function ingredientsToFillWith(): Ingredients {
   ].splice(0, 3) as Ingredients;
 }
 
+function latteMalformed(): boolean {
+  return (["vanilla", "pumpkin", "cinnamon"] as const).some(
+    (defaultIngredient) =>
+      !Latte.ingredientsUnlocked().includes(defaultIngredient),
+  );
+}
+
+// Returns whether the latteUnlocks preference contains the default ingredients
+export function checkAndCorrectLatteMalformation(): boolean {
+  if (!latteMalformed()) return true;
+
+  visitUrl("main.php?latte=1", false);
+
+  if (!latteMalformed()) return true;
+
+  print("Can't access Latte Lover's Mug shop, disabling it", "red");
+  set("_latteBanishUsed", true);
+  set("_latteCopyUsed", true);
+  set("_latteRefillsUsed", 3);
+  return false;
+}
+
 export function shouldFillLatte(): boolean {
   if (
     !have($item`latte lovers member's mug`) ||
@@ -57,7 +80,10 @@ export function shouldFillLatte(): boolean {
   if (get("_latteCopyUsed")) return true;
   if (get("_latteBanishUsed")) return true;
 
-  if (!setEqual(Latte.currentIngredients(), ingredientsToFillWith())) {
+  if (
+    checkAndCorrectLatteMalformation() &&
+    !setEqual(Latte.currentIngredients(), ingredientsToFillWith())
+  ) {
     return true;
   }
 
@@ -65,5 +91,9 @@ export function shouldFillLatte(): boolean {
 }
 
 export function tryFillLatte(): boolean {
-  return shouldFillLatte() && Latte.fill(...ingredientsToFillWith());
+  return (
+    shouldFillLatte() &&
+    Latte.fill(...ingredientsToFillWith()) &&
+    checkAndCorrectLatteMalformation()
+  );
 }
