@@ -240,21 +240,13 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combat: new GarboStrategy(() =>
       Macro.if_(
         $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`,
-        // Using while_ here in case you run out of mp
-        Macro.while_(
-          "hasskill Awesome Balls of Fire",
-          Macro.skill($skill`Awesome Balls of Fire`),
+        Macro.trySkillRepeat(
+          $skill`Awesome Balls of Fire`,
+          $skill`Eggsplosion`,
+          $skill`Saucegeyser`,
+          $skill`Weapon of the Pastalord`,
+          $skill`Lunging Thrust-Smack`,
         )
-          .while_("hasskill Eggsplosion", Macro.skill($skill`Eggsplosion`))
-          .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
-          .while_(
-            "hasskill Weapon of the Pastalord",
-            Macro.skill($skill`Weapon of the Pastalord`),
-          )
-          .while_(
-            "hasskill Lunging Thrust-Smack",
-            Macro.skill($skill`Lunging Thrust-Smack`),
-          )
           .attack()
           .repeat(),
       ).basicCombat(),
@@ -416,12 +408,11 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     combat: new GarboStrategy(() =>
       Macro.startCombat()
         .trySkill($skill`Furious Wallop`)
-        .while_(
-          "hasskill Lunging Thrust-Smack",
-          Macro.skill($skill`Lunging Thrust-Smack`),
+        .trySkillRepeat(
+          $skill`Lunging Thrust-Smack`,
+          $skill`Thrust-Smack`,
+          $skill`Lunge Smack`,
         )
-        .while_("hasskill Thrust-Smack", Macro.skill($skill`Thrust-Smack`))
-        .while_("hasskill Lunge Smack", Macro.skill($skill`Lunge Smack`))
         .attack()
         .repeat(),
     ),
