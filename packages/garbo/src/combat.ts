@@ -429,9 +429,9 @@ export class Macro extends StrictMacro {
         .externalIf(
           haveEquipped($item`Cincho de Mayo`) && canPinata,
           Macro.while_(
-            `${hpCheckCincho} && hasskill ${
-              $skill`Cincho: Projectile Piñata`.id
-            }`,
+            `${hpCheckCincho} && ${Macro.makeBALLSPredicate(
+              $skill`Cincho: Projectile Piñata`,
+            )}`,
             Macro.trySkill($skill`Cincho: Projectile Piñata`),
           ),
         )
@@ -521,51 +521,38 @@ export class Macro extends StrictMacro {
       globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted");
     const canPinata =
       haveEquipped($item`Cincho de Mayo`) && CinchoDeMayo.currentCinch() >= 5;
-    return (
-      this.externalIf(
-        myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
-        Macro.trySkill($skill`Curse of Weaksauce`),
+    return this.externalIf(
+      myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
+      Macro.trySkill($skill`Curse of Weaksauce`),
+    )
+      .externalIf(
+        !doingYachtzee && canPinata,
+        Macro.while_(
+          `${Macro.makeBALLSPredicate(
+            $skill`Cincho: Projectile Piñata`,
+          )} && !pastround 24 && !hppercentbelow 25`,
+          Macro.trySkill($skill`Cincho: Projectile Piñata`),
+        ),
       )
-        .externalIf(
-          !doingYachtzee && canPinata,
-          Macro.while_(
-            `hasskill ${
-              $skill`Cincho: Projectile Piñata`.id
-            } && !pastround 24 && !hppercentbelow 25`,
-            Macro.trySkill($skill`Cincho: Projectile Piñata`),
-          ),
-        )
-        .tryHaveSkill($skill`Become a Wolf`)
-        .externalIf(
-          !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
-          Macro.while_(
-            `!pastround 24 && !hppercentbelow 25 && !missed 1 && !snarfblat ${riftId}`,
-            Macro.attack(),
-          ),
-        )
-        // Using while_ here in case you run out of mp
-        .while_("hasskill Saucegeyser", Macro.skill($skill`Saucegeyser`))
-        .while_(
-          "hasskill Weapon of the Pastalord",
-          Macro.skill($skill`Weapon of the Pastalord`),
-        )
-        .while_(
-          "hasskill Cannelloni Cannon",
-          Macro.skill($skill`Cannelloni Cannon`),
-        )
-        .while_("hasskill Wave of Sauce", Macro.skill($skill`Wave of Sauce`))
-        .while_("hasskill Saucestorm", Macro.skill($skill`Saucestorm`))
-        .while_(
-          `hasskill Northern Explosion && snarfblat ${riftId}`,
-          Macro.skill($skill`Northern Explosion`),
-        )
-        .while_(
-          `hasskill Lunging Thrust-Smack && !snarfblat ${riftId}`,
-          Macro.skill($skill`Lunging Thrust-Smack`),
-        )
-        .attack()
-        .repeat()
-    );
+      .tryHaveSkill($skill`Become a Wolf`)
+      .externalIf(
+        !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
+        Macro.while_(
+          `!pastround 24 && !hppercentbelow 25 && !missed 1 && !snarfblat ${riftId}`,
+          Macro.attack(),
+        ),
+      )
+      .trySkillRepeat(
+        $skill`Saucegeyser`,
+        $skill`Weapon of the Pastalord`,
+        $skill`Cannelloni Cannon`,
+        $skill`Wave of Sauce`,
+        $skill`Saucestorm`,
+        $skill`Northern Explosion`,
+        $skill`Lunging Thrust-Smack`,
+      )
+      .attack()
+      .repeat();
   }
 
   static kill(): Macro {
@@ -682,10 +669,7 @@ export class Macro extends StrictMacro {
         $familiar`Chest Mimic`.experience >= 50,
       Macro.if_(
         globalOptions.target,
-        Macro.while_(
-          `hasskill ${$skill`%fn, lay an egg`.id}`,
-          Macro.trySkill($skill`%fn, lay an egg`),
-        ),
+        Macro.trySkillRepeat($skill`%fn, lay an egg`),
       ),
     );
   }

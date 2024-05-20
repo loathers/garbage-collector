@@ -78,6 +78,7 @@ import { GarboTask } from "./engine";
 import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   attemptCompletingBarfQuest,
+  checkAndCorrectLatteMalformation,
   checkBarfQuest,
   checkVolcanoQuest,
 } from "../resources";
@@ -332,6 +333,7 @@ const DailyTasks: GarboTask[] = [
     completed: () => latteRefreshed,
     do: (): void => {
       visitUrl("main.php?latte=1", false);
+      checkAndCorrectLatteMalformation();
       latteRefreshed = true;
     },
     spendsTurn: false,
