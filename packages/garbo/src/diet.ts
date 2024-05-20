@@ -457,6 +457,8 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`iced plum wine`),
     new MenuItem($item`splendid martini`),
     new MenuItem($item`low tide martini`),
+    // eslint-disable-next-line libram/verify-constants
+    new MenuItem($item`yam martini`),
     new MenuItem($item`Eye and a Twist`),
     new MenuItem($item`jar of fermented pickle juice`),
     new MenuItem(mallMin(complexMushroomWines)),
