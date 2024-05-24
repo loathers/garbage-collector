@@ -3822,12 +3822,12 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-libram@npm:latest":
-  version: 0.4.5
-  resolution: "eslint-plugin-libram@npm:0.4.5"
+  version: 0.4.7
+  resolution: "eslint-plugin-libram@npm:0.4.7"
   dependencies:
     html-entities: ^2.4.0
     requireindex: ~1.2.0
-  checksum: 1b5d30541f1a9fdcf3bf6ce40a9ae3ca939cd5a0b14654af9a82b1bdcfb850b9399619682ba16c1432a5c96d7f7eba7fbd6839662de8ed4255d370c9829e6480
+  checksum: 8991a1d35c8b8620dd81cbd7bc81bf95831a7797e0eb85f17ee8974b2bbe5e01b91d69b4efdfbe2b2f515f84f7cb01b74d2e7df97e4eb803137f949d706275dd
   languageName: node
   linkType: hard
 
