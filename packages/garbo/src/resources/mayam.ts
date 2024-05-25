@@ -72,12 +72,12 @@ const MAYAM_RING_OPTIONS: MayamRingSummon[] = [
   },
   {
     choice: "eye",
-    value: () => 5, // +30% item drop, I don't know how to value that?
+    value: () => 0, // +30% item drop, I don't know how to value that?
     ring: 1,
   },
   {
     choice: "chair",
-    value: () => 5, // +5 free rests, I don't know how to value that?
+    value: () => 0, // +5 free rests, I don't know how to value that?
     ring: 1,
   },
   {
@@ -147,72 +147,75 @@ const MAYAM_RING_OPTIONS: MayamRingSummon[] = [
   },
 ];
 
+// Check whether any individual ring is used before adding it to the list for MaxBy
 const AVAILABLE_RING_OPTIONS: MayamRingSummon[] = MAYAM_RING_OPTIONS.filter(
   (option) => {
     return !yamUses().includes(option.choice);
   },
 );
 
-function findRingValue(choice: string, ring: number): number {
-  const option = AVAILABLE_RING_OPTIONS.find(
-    (option) => option.choice === choice && option.ring === ring,
+// Check whether any component of a resonance is used before adding it to the list for MaxBy
+function isResonanceAvailable(resonance: Resonance): boolean {
+  const usedChoices = yamUses()
+    .split(",")
+    .map((choice) => choice.trim());
+  const resonanceChoices = resonance.rings.split(" ");
+  return resonanceChoices.every((choice) => !usedChoices.includes(choice));
+}
+
+// Filter resonances to only include available ones
+const AVAILABLE_RESONANCES = () => RESONANCE.filter(isResonanceAvailable);
+
+function findBestRingValue():
+  | MayamCalendar.CombinationString
+  | MayamCalendar.Combination {
+  const filteredOptions = AVAILABLE_RING_OPTIONS;
+
+  // Check for the highest value in each ring, filtering by ring
+  const ring1 = maxBy(
+    filteredOptions.filter((option) => option.ring === 1),
+    (option) => option.value(),
   );
-  return option ? option.value() : 0;
-}
+  const ring2 = maxBy(
+    filteredOptions.filter((option) => option.ring === 2),
+    (option) => option.value(),
+  );
+  const ring3 = maxBy(
+    filteredOptions.filter((option) => option.ring === 3),
+    (option) => option.value(),
+  );
+  const ring4 = maxBy(
+    filteredOptions.filter((option) => option.ring === 4),
+    (option) => option.value(),
+  );
 
-function calculateCombinationValue(combination: string[]): number {
-  const combinationString = combination.join(" ");
-  const resonance = findResonance(combinationString);
-  const baseValue = combination
-    .map((choice, index) => findRingValue(choice, index + 1))
-    .reduce((sum, value) => sum + value, 0);
-  return resonance ? baseValue + garboValue(resonance.item) : baseValue;
-}
+  // Check for the highest value resonance
+  const maxResonance = maxBy(AVAILABLE_RESONANCES(), (resonance) =>
+    findResonanceValue(resonance.rings),
+  );
 
-function generateCombinations(): string[][] {
-  const rings = MayamCalendar.RINGS;
+  // Sum the total ring value and determine the resonance value
+  const totalRingValue =
+    (ring1?.value() || 0) +
+    (ring2?.value() || 0) +
+    (ring3?.value() || 0) +
+    (ring4?.value() || 0);
+  const maxResonanceValue = maxResonance
+    ? findResonanceValue(maxResonance.rings)
+    : 0;
 
-  const combinations: string[][] = [];
-
-  for (const r1 of rings[0]) {
-    for (const r2 of rings[1]) {
-      for (const r3 of rings[2]) {
-        for (const r4 of rings[3]) {
-          combinations.push([r1, r2, r3, r4]);
-        }
-      }
-    }
+  // If the resonance is worth more than the best possible rings, return the resonance, otherwise return the four rings
+  if (maxResonance && maxResonanceValue > totalRingValue) {
+    return maxResonance.rings as MayamCalendar.CombinationString;
+  } else {
+    const combination: MayamCalendar.Combination = [
+      ring1.choice as MayamCalendar.Ring<0>,
+      ring2.choice as MayamCalendar.Ring<1>,
+      ring3.choice as MayamCalendar.Ring<2>,
+      ring4.choice as MayamCalendar.Ring<3>,
+    ];
+    return combination;
   }
-
-  return combinations;
-}
-
-export function findTopCombinations(): string[] {
-  const combinations = generateCombinations();
-  const combinationValues = combinations.map((combination) => ({
-    combination: combination.join(" "),
-    value: calculateCombinationValue(combination),
-  }));
-
-  combinationValues.sort((a, b) => b.value - a.value);
-
-  const selectedCombinations: string[] = [];
-  const usedSymbols: Set<string> = new Set();
-
-  for (const { combination } of combinationValues) {
-    const symbols = combination.split(" ");
-    if (symbols.every((symbol) => !usedSymbols.has(symbol))) {
-      selectedCombinations.push(combination);
-      symbols.forEach((symbol) => usedSymbols.add(symbol));
-      const yam4 = () => (yamUses().includes("yam4") ? 1 : 0);
-      const explosion = () => (yamUses().includes("explosion") ? 1 : 0);
-      const clock = () => (yamUses().includes("clock") ? 1 : 0);
-      const remainingUses = 3 - (yam4() + explosion() + clock());
-      if (selectedCombinations.length === remainingUses) break;
-    }
-  }
-
-  return selectedCombinations;
 }
 
 function summonTask(): GarboTask {
@@ -223,22 +226,34 @@ function summonTask(): GarboTask {
         get("_mayamSymbolsUsed").includes(sym),
       ),
     do: () => {
-      const ringOptions = findTopCombinations();
-      const includesFur = ringOptions.some((option) => option.includes("fur"));
+      while (
+        !["yam4", "explosion", "clock"].every((sym) =>
+          get("_mayamSymbolsUsed").includes(sym),
+        )
+      ) {
+        const ringOptions =
+          findBestRingValue() as MayamCalendar.CombinationString;
+        const includesFur = ringOptions
+          .split(" ")
+          .some((option) => option.includes("fur"));
 
-      if (includesFur) {
-        const bestFamiliar = maxBy(
-          getExperienceFamiliars("free"),
-          (f) => f.expectedValue,
-        );
-        useFamiliar(bestFamiliar.familiar);
+        // If we're going to use Fur, determine the best experience familiar and use it before using any rings
+        if (includesFur) {
+          const bestFamiliar = maxBy(
+            getExperienceFamiliars("free"),
+            (f) => f.expectedValue,
+          );
+          useFamiliar(bestFamiliar.familiar);
+        }
+
+        MayamCalendar.submit(ringOptions);
+
+        ringOptions.split(" ").forEach((choice, index) => {
+          const command = `mayam ${choice}`;
+          // Adjust ring index (1-based) and add delay between summons
+          setTimeout(() => cliExecute(command), index * 1000);
+        });
       }
-
-      ringOptions.forEach((choice, index) => {
-        const command = `mayam ${choice}`;
-        // Adjust ring index (1-based) and add delay between summons
-        setTimeout(() => cliExecute(command), index * 1000);
-      });
     },
     spendsTurn: false,
   };
