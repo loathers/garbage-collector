@@ -204,14 +204,16 @@ function voterSetup(): void {
 
 function pantogram(): void {
   if (!Pantogram.have() || Pantogram.havePants()) return;
-  let pantogramValue: number;
+  let pantogramValue60: number; // porquoise
+  let pantogramValue30: number; // taco shell
   if (have($item`repaid diaper`) && have($familiar`Robortender`)) {
     const expectedBarfTurns = globalOptions.nobarf
       ? 0
       : estimatedGarboTurns() -
         digitizedMonstersRemaining() -
         copyTargetCount();
-    pantogramValue = 100 * expectedBarfTurns;
+    pantogramValue60 = 100 * expectedBarfTurns;
+    pantogramValue30 = pantogramValue60;
   } else {
     const lepMult = findLeprechaunMultiplier(meatFamiliar());
     const lepBonus = 2 * lepMult + Math.sqrt(lepMult);
@@ -225,8 +227,12 @@ function pantogram(): void {
       .map((pants) => totalPantsValue(pants));
     const bestPantsValue = Math.max(0, ...alternativePants);
 
-    pantogramValue =
+    pantogramValue60 =
       (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) *
+      estimatedGarboTurns();
+
+    pantogramValue30 =
+      (100 + 0.3 * baseMeat - (bestPantsValue * baseMeat) / 100) *
       estimatedGarboTurns();
   }
   const cloverPrice = Math.min(
@@ -234,20 +240,41 @@ function pantogram(): void {
       mallPrice(item),
     ),
   );
-  if (cloverPrice + mallPrice($item`porquoise`) > pantogramValue) {
+  if (
+    cloverPrice +
+      mallPrice($item`porquoise`) +
+      mallPrice($item`bubblin' crude`) <
+      pantogramValue60 &&
+    acquire(1, $item`porquoise`, pantogramValue60 - cloverPrice, false) > 0
+  ) {
+    retrieveItem($item`ten-leaf clover`);
+    retrieveItem($item`bubblin' crude`);
+    Pantogram.makePants(
+      myPrimestat().toString(),
+      "Sleaze Resistance: 2",
+      "MP Regen Max: 15",
+      "Drops Items: true",
+      "Meat Drop: 60",
+    );
     return;
   }
-  acquire(1, $item`porquoise`, pantogramValue - cloverPrice, false);
-  if (!have($item`porquoise`)) return;
-  retrieveItem($item`ten-leaf clover`);
-  retrieveItem($item`bubblin' crude`);
-  Pantogram.makePants(
-    myPrimestat().toString(),
-    "Sleaze Resistance: 2",
-    "MP Regen Max: 15",
-    "Drops Items: true",
-    "Meat Drop: 60",
-  );
+  if (
+    cloverPrice +
+      mallPrice($item`taco shell`) +
+      mallPrice($item`bubblin' crude`) <
+    pantogramValue30
+  ) {
+    retrieveItem($item`taco shell`);
+    retrieveItem($item`ten-leaf clover`);
+    retrieveItem($item`bubblin' crude`);
+    Pantogram.makePants(
+      myPrimestat().toString(),
+      "Sleaze Resistance: 2",
+      "MP Regen Max: 15",
+      "Drops Items: true",
+      "Meat Drop: 30",
+    );
+  }
 }
 
 function nepQuest(): void {
