@@ -139,9 +139,7 @@ const MAYAM_RING_OPTIONS: MayamRingSummon[] = [
   {
     choice: "clock",
     value: () => {
-      if (globalOptions.prefs.valueOfAdventure === undefined) {
-        return 4000 * 5;
-      } else return globalOptions.prefs.valueOfAdventure * 5;
+      return (globalOptions.prefs.valueOfAdventure ?? 4000) * 5;
     },
     ring: 4,
   },
