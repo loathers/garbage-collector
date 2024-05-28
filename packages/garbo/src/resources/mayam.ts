@@ -246,10 +246,10 @@ function summonTask(): GarboTask {
 
         MayamCalendar.submit(ringOptions);
 
-        ringOptions.split(" ").forEach((choice, index) => {
+        ringOptions.split(" ").forEach((choice) => {
           const command = `mayam ${choice}`;
           // Adjust ring index (1-based) and add delay between summons
-          setTimeout(() => cliExecute(command), index * 1000);
+          cliExecute(command);
         });
       }
     },
