@@ -1,48 +1,18 @@
-/* eslint-disable libram/verify-constants */
-import { cliExecute, Item, myLevel, useFamiliar } from "kolmafia";
-import { $item, clamp, get, maxBy, MayamCalendar } from "libram";
+import { Effect, Item, myLevel, useFamiliar } from "kolmafia";
+import { $item, CinchoDeMayo, clamp, maxBy, MayamCalendar } from "libram";
 import { garboValue } from "../garboValue";
 import { GarboTask } from "../tasks/engine";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { globalOptions } from "../config";
+import { felizValue } from "../lib";
+import { Potion } from "../potions";
+import { copyTargetCount } from "../embezzler";
 
 type MayamRingSummon = {
-  choice: string;
+  choice: MayamCalendar.MayamSymbol;
   value: () => number;
   ring: number;
 };
-
-type Resonance = {
-  rings: string;
-  item: Item;
-};
-
-const RESONANCE: Resonance[] = [
-  { rings: "eye yam2 eyepatch yam4", item: $item`Mayam spinach` },
-  { rings: "vessel yam2 cheese explosion", item: $item`stuffed yam stinkbomb` },
-  { rings: "yam1 meat cheese yam4", item: $item`yam and swiss` },
-  { rings: "yam1 lightning yam3 clock", item: $item`yam battery` },
-  { rings: "yam1 yam2 yam3 explosion", item: $item`thanksgiving bomb` },
-  // {rings: "yam1 meat eyepatch yam4", item: $item`yamtility belt`}
-];
-
-const yamUses = () => get("_mayamSymbolsUsed");
-
-function findResonance(rings: string): Resonance | undefined {
-  return RESONANCE.find((resonance) => resonance.rings === rings);
-}
-
-// Function to find the resonance value
-export function findResonanceValue(input: string): number {
-  const result = findResonance(input);
-
-  // Check if the result is found
-  if (result) {
-    return garboValue(result.item);
-  }
-
-  return 0;
-}
 
 const MAYAM_RING_OPTIONS: MayamRingSummon[] = [
   {
@@ -77,7 +47,7 @@ const MAYAM_RING_OPTIONS: MayamRingSummon[] = [
   },
   {
     choice: "chair",
-    value: () => 0, // +5 free rests, I don't know how to value that?
+    value: () => (CinchoDeMayo.have() ? 3 * 5 * felizValue() : 0), // +5 free rests, I don't know how to value that?
     ring: 1,
   },
   {
@@ -145,29 +115,42 @@ const MAYAM_RING_OPTIONS: MayamRingSummon[] = [
   },
 ];
 
-// Check whether any individual ring is used before adding it to the list for MaxBy
-const AVAILABLE_RING_OPTIONS: MayamRingSummon[] = MAYAM_RING_OPTIONS.filter(
-  (option) => {
-    return !yamUses().includes(option.choice);
-  },
-);
+const availableRings = () =>
+  MAYAM_RING_OPTIONS.filter((option) => MayamCalendar.available(option.choice));
 
-// Check whether any component of a resonance is used before adding it to the list for MaxBy
-function isResonanceAvailable(resonance: Resonance): boolean {
-  const usedChoices = yamUses()
-    .split(",")
-    .map((choice) => choice.trim());
-  const resonanceChoices = resonance.rings.split(" ");
-  return resonanceChoices.every((choice) => !usedChoices.includes(choice));
+function effectValue(effect: Effect, duration: number): number {
+  return new Potion($item.none, { effect, duration }).gross(copyTargetCount());
 }
 
-// Filter resonances to only include available ones
-const AVAILABLE_RESONANCES = () => RESONANCE.filter(isResonanceAvailable);
+function getResonanceValue(
+  combination: MayamCalendar.CombinationString,
+): number {
+  const result = MayamCalendar.getResonanceResult(combination);
+  if (!result) return 0;
+  if (result instanceof Item) {
+    if (result === $item`yamtility belt`) return 0; // yamtilityValue();
+    return garboValue(result);
+  }
+  return effectValue(result, 30);
+}
+
+const availableResonances = () => {
+  return Object.entries(MayamCalendar.RESONANCES)
+    .filter(([combination]) => {
+      const symbols = combination.split(" ");
+      return MayamCalendar.available(...(symbols as MayamCalendar.Combination));
+    })
+    .map(([combination, result]) => ({
+      combination: combination,
+      result: result,
+      value: getResonanceValue(combination as MayamCalendar.CombinationString),
+    }));
+};
 
 function findBestRingValue():
-  | MayamCalendar.CombinationString
-  | MayamCalendar.Combination {
-  const filteredOptions = AVAILABLE_RING_OPTIONS;
+  | MayamCalendar.Combination
+  | MayamCalendar.CombinationString {
+  const filteredOptions = availableRings();
 
   // Check for the highest value in each ring, filtering by ring
   const ring1 = maxBy(
@@ -188,8 +171,9 @@ function findBestRingValue():
   );
 
   // Check for the highest value resonance
-  const maxResonance = maxBy(AVAILABLE_RESONANCES(), (resonance) =>
-    findResonanceValue(resonance.rings),
+  const maxResonance = maxBy(
+    availableResonances(),
+    (resonance) => resonance.value,
   );
 
   // Sum the total ring value and determine the resonance value
@@ -198,42 +182,33 @@ function findBestRingValue():
     (ring2?.value() || 0) +
     (ring3?.value() || 0) +
     (ring4?.value() || 0);
-  const maxResonanceValue = maxResonance
-    ? findResonanceValue(maxResonance.rings)
-    : 0;
+  const maxResonanceValue = maxResonance.value;
+
+  // This doesn't work and I don't know why! :D
+
+  const rings: MayamCalendar.Combination = [
+    ring1.choice as MayamCalendar.Ring<0>,
+    ring2.choice as MayamCalendar.Ring<1>,
+    ring3.choice as MayamCalendar.Ring<2>,
+    ring4.choice as MayamCalendar.Ring<3>,
+  ];
 
   // If the resonance is worth more than the best possible rings, return the resonance, otherwise return the four rings
   if (maxResonance && maxResonanceValue > totalRingValue) {
-    return maxResonance.rings as MayamCalendar.CombinationString;
+    return maxResonance.combination as MayamCalendar.CombinationString;
   } else {
-    const combination: MayamCalendar.Combination = [
-      ring1.choice as MayamCalendar.Ring<0>,
-      ring2.choice as MayamCalendar.Ring<1>,
-      ring3.choice as MayamCalendar.Ring<2>,
-      ring4.choice as MayamCalendar.Ring<3>,
-    ];
-    return combination;
+    return rings;
   }
 }
 
 function summonTask(): GarboTask {
   return {
     name: "Mayam Summons",
-    completed: () =>
-      ["yam4", "explosion", "clock"].every((sym) =>
-        get("_mayamSymbolsUsed").includes(sym),
-      ),
+    completed: () => MayamCalendar.remainingUses() === 0,
     do: () => {
-      while (
-        !["yam4", "explosion", "clock"].every((sym) =>
-          get("_mayamSymbolsUsed").includes(sym),
-        )
-      ) {
-        const ringOptions =
-          findBestRingValue() as MayamCalendar.CombinationString;
-        const includesFur = ringOptions
-          .split(" ")
-          .some((option) => option.includes("fur"));
+      while (MayamCalendar.remainingUses() > 0) {
+        const ringOptions = findBestRingValue();
+        const includesFur = ringOptions.includes("fur");
 
         // If we're going to use Fur, determine the best experience familiar and use it before using any rings
         if (includesFur) {
@@ -244,13 +219,11 @@ function summonTask(): GarboTask {
           useFamiliar(bestFamiliar.familiar);
         }
 
-        MayamCalendar.submit(ringOptions);
-
-        ringOptions.split(" ").forEach((choice) => {
-          const command = `mayam ${choice}`;
-          // Adjust ring index (1-based) and add delay between summons
-          cliExecute(command);
-        });
+        if (Array.isArray(ringOptions)) {
+          return MayamCalendar.submit(...ringOptions);
+        } else {
+          return MayamCalendar.submit(ringOptions);
+        }
       }
     },
     spendsTurn: false,
