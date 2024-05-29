@@ -206,6 +206,7 @@ function summonTask(): GarboTask {
           return MayamCalendar.submit(ringOptions);
         }
       }
+      return true;
     },
     spendsTurn: false,
   };
