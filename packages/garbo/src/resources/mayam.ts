@@ -201,9 +201,9 @@ function summonTask(): GarboTask {
         }
 
         if (Array.isArray(ringOptions)) {
-          return MayamCalendar.submit(...ringOptions);
+          MayamCalendar.submit(...ringOptions);
         } else {
-          return MayamCalendar.submit(ringOptions);
+          MayamCalendar.submit(ringOptions);
         }
       }
       return true;
