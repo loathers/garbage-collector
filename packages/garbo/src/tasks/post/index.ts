@@ -313,7 +313,13 @@ function handleDrenchedInLava(): GarboPostTask {
       $location`The Bubblin' Caldera`.turnsSpent >= 7 ||
       $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs"),
     completed: () => !have($effect`Drenched in Lava`),
-    do: () => uneffect($effect`Drenched in Lava`),
+    do: () => {
+      if (get("_hotTubSoaks") < 5) {
+        cliExecute("hottub");
+      } else {
+        uneffect($effect`Drenched in Lava`);
+      }
+    },
   };
 }
 
