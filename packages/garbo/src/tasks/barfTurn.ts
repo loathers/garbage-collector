@@ -238,7 +238,9 @@ function lavaDogs(additionalReady: () => boolean) {
       haveInCampground($item`haunted doghouse`) &&
       !get("doghouseBoarded") &&
       realmAvailable("hot") &&
-      garboValue($item`Volcoino`) > 7 * get("valueOfAdventure"),
+      garboValue($item`Volcoino`) >
+        7 * get("valueOfAdventure") +
+          mallPrice($item`soft green echo eyedrop antidote`),
     prepare: () => {
       if (
         garboValue($item`superheated metal`) > // This is actually to make superduperheated metal, but check worst option

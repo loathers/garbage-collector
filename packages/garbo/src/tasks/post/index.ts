@@ -33,6 +33,7 @@ import {
   have,
   JuneCleaver,
   undelay,
+  uneffect,
   withProperty,
 } from "libram";
 import { GarboStrategy, Macro } from "../../combat";
@@ -304,12 +305,25 @@ function wardrobeOMatic(): GarboPostTask {
   };
 }
 
+function handleDrenchedInLava(): GarboPostTask {
+  return {
+    name: "Drenched In Lava Removal",
+    available:
+      get("hallowienerVolcoino") ||
+      $location`The Bubblin' Caldera`.turnsSpent >= 7 ||
+      $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs"),
+    completed: () => !have($effect`Drenched in Lava`),
+    do: () => uneffect($effect`Drenched in Lava`),
+  };
+}
+
 export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
     completed,
     tasks: [
       ...workshedTasks(),
+      handleDrenchedInLava(),
       fallbot(),
       closetStuff(),
       floristFriars(),
