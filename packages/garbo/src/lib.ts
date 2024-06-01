@@ -673,17 +673,26 @@ const JUNE_CLEAVER_ADVENTURES = [
   "Teacher's Pet",
 ] as const;
 
+const VIOLET_FOG_ADVENTURES = [
+  "She's So Unusual",
+  "The Big Scary Place",
+  "The Prince of Wishful Thinking",
+  "Violet Fog",
+] as const;
+
 type LastAdventureOptions = {
   extraEncounters: string[];
+  includeGhostDog: boolean;
   includeHolidayWanderers: boolean;
   includeJuneCleaver: boolean;
-  includeGhostDog: boolean;
+  includeVioletFog: boolean;
 };
 const DEFAULT_LAST_ADVENTURE_OPTIONS = {
   extraEncounters: [],
   includeGhostDog: true,
   includeHolidayWanderers: true,
   includeJuneCleaver: true,
+  includeVioletFog: true,
 } as const;
 export function lastAdventureWasWeird(
   options: Partial<LastAdventureOptions> = {},
@@ -693,6 +702,7 @@ export function lastAdventureWasWeird(
     includeGhostDog,
     includeHolidayWanderers,
     includeJuneCleaver,
+    includeVioletFog,
   } = { ...DEFAULT_LAST_ADVENTURE_OPTIONS, ...options };
   return [
     ...extraEncounters,
@@ -701,6 +711,7 @@ export function lastAdventureWasWeird(
       ? getTodaysHolidayWanderers().map((monster) => monster.name)
       : []),
     ...(includeJuneCleaver ? JUNE_CLEAVER_ADVENTURES : []),
+    ...(includeVioletFog ? VIOLET_FOG_ADVENTURES : []),
   ].includes(get("lastEncounter"));
 }
 
