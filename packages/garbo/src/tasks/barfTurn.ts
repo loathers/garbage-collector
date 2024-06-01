@@ -229,6 +229,7 @@ function dailyDungeon(additionalReady: () => boolean) {
 function lavaDogs(additionalReady: () => boolean) {
   return {
     completed: () =>
+      get("hallowienerVolcoino") ||
       $location`The Bubblin' Caldera`.turnsSpent >= 7 ||
       $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs"),
     ready: () =>
