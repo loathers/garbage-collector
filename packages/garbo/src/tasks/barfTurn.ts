@@ -36,6 +36,7 @@ import {
   getModifier,
   GingerBread,
   have,
+  haveInCampground,
   questStep,
   realmAvailable,
   set,
@@ -221,6 +222,36 @@ function dailyDungeon(additionalReady: () => boolean) {
     do: $location`The Daily Dungeon`,
     combat: new GarboStrategy(() => Macro.kill()),
     turns: () => clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
+    spendsTurn: true,
+  };
+}
+
+function lavaDogs(additionalReady: () => boolean) {
+  return {
+    completed: () =>
+      $location`The Bubblin' Caldera`.turnsSpent >= 7 ||
+      $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs"),
+    ready: () =>
+      additionalReady() &&
+      haveInCampground($item`haunted doghouse`) &&
+      !get("doghouseBoarded") &&
+      realmAvailable("hot") &&
+      garboValue($item`Volcoino`) > 7 * get("valueOfAdventure"),
+    prepare: () => {
+      if (
+        garboValue($item`superheated metal`) > // This is actually to make superduperheated metal, but check worst option
+        mallPrice($item`heat-resistant sheet metal`)
+      ) {
+        acquire(
+          1,
+          $item`heat-resistant sheet metal`,
+          garboValue($item`superheated metal`),
+        );
+      }
+    },
+    do: $location`The Bubblin' Caldera`,
+    combat: new GarboStrategy(() => Macro.kill()),
+    turns: () => clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 3),
     spendsTurn: true,
   };
 }
@@ -417,6 +448,22 @@ const NonBarfTurnTasks: AlternateTask[] = [
   {
     name: "Apriling Saxophone Lucky (sober)",
     ...aprilingSaxophoneLucky(() => !willDrunkAdventure()),
+    sobriety: "sober",
+  },
+  {
+    name: "Lava Dogs (drunk)",
+    ...lavaDogs(() => willDrunkAdventure()),
+    outfit: () =>
+      freeFightOutfit({
+        modifier: "Muscle",
+        offhand: $item`Drunkula's wineglass`,
+      }),
+    sobriety: "drunk",
+  },
+  {
+    name: "Lava Dogs (sober)",
+    ...lavaDogs(() => !willDrunkAdventure()),
+    outfit: () => freeFightOutfit({ modifier: "Muscle" }),
     sobriety: "sober",
   },
   {
