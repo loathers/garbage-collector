@@ -251,7 +251,7 @@ function lavaDogs(additionalReady: () => boolean) {
     },
     do: $location`The Bubblin' Caldera`,
     combat: new GarboStrategy(() => Macro.kill()),
-    turns: () => clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 3),
+    turns: () => clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 7),
     spendsTurn: true,
   };
 }
