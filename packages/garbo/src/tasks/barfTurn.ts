@@ -243,7 +243,8 @@ function lavaDogs(additionalReady: () => boolean) {
           mallPrice($item`soft green echo eyedrop antidote`),
     prepare: () => {
       if (
-        garboValue($item`superheated metal`) > // This is actually to make superduperheated metal, but check worst option
+        garboValue($item`superheated metal`) * 0.95 +
+          garboValue($item`superduperheated metal`) * 0.05 >
         mallPrice($item`heat-resistant sheet metal`)
       ) {
         acquire(
