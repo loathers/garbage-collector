@@ -56,6 +56,7 @@ import { garboAverageValue } from "../../garboValue";
 import workshedTasks from "./worksheds";
 import { GarboPostTask } from "./lib";
 import { GarboTask } from "../engine";
+import { hotTubAvailable } from "../../resources/clanVIP";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 function closetStuff(): GarboPostTask {
@@ -320,7 +321,7 @@ function handleDrenchedInLava(): GarboPostTask {
       $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs"),
     completed: () => !have($effect`Drenched in Lava`),
     do: () => {
-      if (get("_hotTubSoaks") < 5) {
+      if (hotTubAvailable()) {
         cliExecute("hottub");
       } else {
         uneffect($effect`Drenched in Lava`);

@@ -36,7 +36,6 @@ import {
   getModifier,
   GingerBread,
   have,
-  haveInCampground,
   questStep,
   realmAvailable,
   set,
@@ -82,6 +81,7 @@ import {
 } from "../resources";
 import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
+import { shouldLavaDogs } from "../resources/doghouse";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -232,19 +232,13 @@ function lavaDogs(additionalReady: () => boolean) {
       get("hallowienerVolcoino") ||
       $location`The Bubblin' Caldera`.turnsSpent >= 7 ||
       $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs"),
-    ready: () =>
-      additionalReady() &&
-      globalOptions.ascend &&
-      haveInCampground($item`haunted doghouse`) &&
-      !get("doghouseBoarded") &&
-      realmAvailable("hot") &&
-      garboValue($item`Volcoino`) >
-        7 * get("valueOfAdventure") +
-          mallPrice($item`soft green echo eyedrop antidote`),
+    ready: () => additionalReady() && shouldLavaDogs(),
     prepare: () => {
       if (
         garboValue($item`superheated metal`) * 0.95 +
-          garboValue($item`superduperheated metal`) * 0.05 >
+          (!get("_volcanoSuperduperheatedMetal")
+            ? garboValue($item`superduperheated metal`) * 0.05
+            : garboValue($item`superheated metal`) * 0.05) >
         mallPrice($item`heat-resistant sheet metal`)
       ) {
         acquire(
@@ -257,13 +251,7 @@ function lavaDogs(additionalReady: () => boolean) {
     do: $location`The Bubblin' Caldera`,
     combat: new GarboStrategy(() => Macro.kill()),
     turns: () =>
-      !get("hallowienerVolcoino") &&
-      haveInCampground($item`haunted doghouse`) &&
-      !get("doghouseBoarded") &&
-      realmAvailable("hot") &&
-      garboValue($item`Volcoino`) >
-        7 * get("valueOfAdventure") +
-          mallPrice($item`soft green echo eyedrop antidote`)
+      !get("hallowienerVolcoino") && shouldLavaDogs()
         ? clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 7)
         : 0,
     spendsTurn: true,
