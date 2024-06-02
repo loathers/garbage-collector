@@ -81,7 +81,7 @@ import {
 } from "../resources";
 import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
-import { shouldLavaDogs } from "../resources/doghouse";
+import { lavaDogsComplete, shouldLavaDogs } from "../resources/doghouse";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -228,10 +228,7 @@ function dailyDungeon(additionalReady: () => boolean) {
 
 function lavaDogs(additionalReady: () => boolean) {
   return {
-    completed: () =>
-      get("hallowienerVolcoino") ||
-      $location`The Bubblin' Caldera`.turnsSpent >= 7 ||
-      $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs"),
+    completed: () => lavaDogsComplete(),
     ready: () => additionalReady() && shouldLavaDogs(),
     prepare: () => {
       if (
@@ -251,7 +248,7 @@ function lavaDogs(additionalReady: () => boolean) {
     do: $location`The Bubblin' Caldera`,
     combat: new GarboStrategy(() => Macro.kill()),
     turns: () =>
-      !get("hallowienerVolcoino") && shouldLavaDogs()
+      !lavaDogsComplete() && shouldLavaDogs()
         ? clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 7)
         : 0,
     spendsTurn: true,
