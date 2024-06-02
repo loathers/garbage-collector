@@ -323,7 +323,8 @@ function handleDrenchedInLava(): GarboPostTask {
     do: () => {
       if (hotTubAvailable()) {
         cliExecute("hottub");
-      } else {
+      }
+      if (have($effect`Drenched in Lava`)) {
         uneffect($effect`Drenched in Lava`);
       }
     },
