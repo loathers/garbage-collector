@@ -256,7 +256,16 @@ function lavaDogs(additionalReady: () => boolean) {
     },
     do: $location`The Bubblin' Caldera`,
     combat: new GarboStrategy(() => Macro.kill()),
-    turns: () => clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 7),
+    turns: () =>
+      !get("hallowienerVolcoino") &&
+      haveInCampground($item`haunted doghouse`) &&
+      !get("doghouseBoarded") &&
+      realmAvailable("hot") &&
+      garboValue($item`Volcoino`) >
+        7 * get("valueOfAdventure") +
+          mallPrice($item`soft green echo eyedrop antidote`)
+        ? clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 7)
+        : 0,
     spendsTurn: true,
   };
 }
