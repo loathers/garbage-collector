@@ -864,12 +864,23 @@ export const WandererQuest: Quest<GarboTask> = {
   completed: () => !canContinue(),
 };
 
+let startedNonBarf: boolean = false;
 export const NonBarfTurnQuest: Quest<GarboTask> = {
   name: "Non Barf Turn",
   tasks: NonBarfTurnTasks,
-  ready: () =>
-    clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
-    nonBarfTurns() + globalOptions.saveTurns,
+  ready: () => {
+    if (!startedNonBarf) {
+      startedNonBarf =
+        clamp(
+          myAdventures() - digitizedMonstersRemaining(),
+          1,
+          myAdventures(),
+        ) <=
+        nonBarfTurns() + globalOptions.saveTurns;
+    }
+    return startedNonBarf;
+  },
+
   completed: () => !canContinue(),
 };
 
