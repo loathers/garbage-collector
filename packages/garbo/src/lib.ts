@@ -435,7 +435,10 @@ export function safeRestoreMpTarget(): number {
 }
 
 export function safeRestore(): void {
-  if (get("_lastCombatLost")) {
+  if (
+    get("_lastCombatLost") &&
+    get("lastEncounter") !== "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl"
+  ) {
     set("_lastCombatLost", "false");
     throw new Error(
       "You lost your most recent combat! Check to make sure everything is alright before rerunning.",
