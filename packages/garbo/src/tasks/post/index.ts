@@ -31,7 +31,9 @@ import {
   get,
   getRemainingStomach,
   have,
+  haveInCampground,
   JuneCleaver,
+  realmAvailable,
   undelay,
   uneffect,
   withProperty,
@@ -308,7 +310,11 @@ function wardrobeOMatic(): GarboPostTask {
 function handleDrenchedInLava(): GarboPostTask {
   return {
     name: "Drenched In Lava Removal",
-    available:
+    available: () =>
+      haveInCampground($item`haunted doghouse`) &&
+      !get("doghouseBoarded") &&
+      realmAvailable("hot"),
+    ready: () =>
       get("hallowienerVolcoino") ||
       $location`The Bubblin' Caldera`.turnsSpent >= 7 ||
       $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs"),
