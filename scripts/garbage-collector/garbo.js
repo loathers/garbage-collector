@@ -31385,7 +31385,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8e84b9c4310baf235229d000cf0f07c4b3faf896", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9973ef5cd4066dd6255178771bbf087742039d7e", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -31467,18 +31467,20 @@ var touristFamilyRatio = touristFamilies / barfTourists;
 var turnsToNC = 27 * barfTourists / (garbageTourists + angryTourists + 3 * touristFamilies) + 1 * touristFamilyRatio + 2 * (1 - touristFamilyRatio) * touristFamilyRatio + 3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
 var GHOST_DOG_ADVENTURES = ["Puttin' it on Wax", "Wooof! Wooooooof!", "Playing Fetch*", "Your Dog Found Something Again"];
 var JUNE_CLEAVER_ADVENTURES = ["Aunts not Ants", "Bath Time", "Beware of Aligator", "Delicious Sprouts", "Hypnotic Master", "Lost and Found", "Poetic Justice", "Summer Days", "Teacher's Pet"];
+var VIOLET_FOG_ADVENTURES = ["She's So Unusual", "The Big Scary Place", "The Prince of Wishful Thinking", "Violet Fog"];
 var DEFAULT_LAST_ADVENTURE_OPTIONS = {
   extraEncounters: [],
   includeGhostDog: true,
   includeHolidayWanderers: true,
-  includeJuneCleaver: true
+  includeJuneCleaver: true,
+  includeVioletFog: true
 };
 function lastAdventureWasWeird() {
   var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  var _DEFAULT_LAST_ADVENTU = _objectSpread14(_objectSpread14({}, DEFAULT_LAST_ADVENTURE_OPTIONS), options), extraEncounters = _DEFAULT_LAST_ADVENTU.extraEncounters, includeGhostDog = _DEFAULT_LAST_ADVENTU.includeGhostDog, includeHolidayWanderers = _DEFAULT_LAST_ADVENTU.includeHolidayWanderers, includeJuneCleaver = _DEFAULT_LAST_ADVENTU.includeJuneCleaver;
+  var _DEFAULT_LAST_ADVENTU = _objectSpread14(_objectSpread14({}, DEFAULT_LAST_ADVENTURE_OPTIONS), options), extraEncounters = _DEFAULT_LAST_ADVENTU.extraEncounters, includeGhostDog = _DEFAULT_LAST_ADVENTU.includeGhostDog, includeHolidayWanderers = _DEFAULT_LAST_ADVENTU.includeHolidayWanderers, includeJuneCleaver = _DEFAULT_LAST_ADVENTU.includeJuneCleaver, includeVioletFog = _DEFAULT_LAST_ADVENTU.includeVioletFog;
   return [].concat(_toConsumableArray28(extraEncounters), _toConsumableArray28(includeGhostDog ? GHOST_DOG_ADVENTURES : []), _toConsumableArray28(includeHolidayWanderers ? getTodaysHolidayWanderers().map(function(monster) {
     return monster.name;
-  }) : []), _toConsumableArray28(includeJuneCleaver ? JUNE_CLEAVER_ADVENTURES : [])).includes(get("lastEncounter"));
+  }) : []), _toConsumableArray28(includeJuneCleaver ? JUNE_CLEAVER_ADVENTURES : []), _toConsumableArray28(includeVioletFog ? VIOLET_FOG_ADVENTURES : [])).includes(get("lastEncounter"));
 }
 var juneCleaverChoiceValues = {
   1467: {
