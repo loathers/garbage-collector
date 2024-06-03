@@ -21,7 +21,7 @@ type ConstantValueFamiliar = {
 };
 
 const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
-// / Constant Value familiars are those that drop items at a constant rate without limit, compare Rotating Value familiars
+// Constant Value familiars are those that drop items at a constant rate without limit, compare Rotating Value familiars
 const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Obtuse Angel`,
