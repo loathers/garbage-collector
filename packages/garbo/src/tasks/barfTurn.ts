@@ -231,18 +231,17 @@ function lavaDogs(additionalReady: () => boolean) {
     completed: () => lavaDogsComplete(),
     ready: () => additionalReady() && shouldLavaDogs(),
     prepare: () => {
-      if (
-        garboValue($item`superheated metal`) * 0.95 +
-          (!get("_volcanoSuperduperheatedMetal")
-            ? garboValue($item`superduperheated metal`) * 0.05
-            : garboValue($item`superheated metal`) * 0.05) >
-        mallPrice($item`heat-resistant sheet metal`)
-      ) {
-        acquire(
-          1,
-          $item`heat-resistant sheet metal`,
-          garboValue($item`superheated metal`),
-        );
+      const metalValue = get("_volcanoSuperduperheatedMetal")
+        ? garboValue($item`superheated metal`)
+        : sum(
+            [
+              [$item`superheated metal`, 0.95],
+              [$item`superduperheated metal`, 0.05],
+            ] as const,
+            ([item, rate]) => rate * garboValue(item),
+          );
+      if (metalValue > mallPrice($item`heat-resistant sheet metal`)) {
+        acquire(1, $item`heat-resistant sheet metal`, metalValue);
       }
     },
     do: $location`The Bubblin' Caldera`,
