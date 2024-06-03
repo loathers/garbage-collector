@@ -177,6 +177,11 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
     additionalValue: () =>
       (6 + 4 * familiarWeight($familiar`Jill-of-All-Trades`)) * 0.33,
   },
+  {
+    familiar: $familiar`Mini Kiwi`,
+    expected: () => 4, // faster with aviator goggles
+    drop: $item`mini kiwi`,
+  },
 ];
 
 export default function getDropFamiliars(): GeneralFamiliar[] {
