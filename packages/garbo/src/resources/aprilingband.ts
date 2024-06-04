@@ -4,6 +4,7 @@ import { garboValue } from "../garboValue";
 import { getBestLuckyAdventure } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { toItem } from "kolmafia";
+import { estimatedBarfExperience } from "../familiar";
 
 const instruments: {
   instrument: AprilingBandHelmet.Instrument;
@@ -31,7 +32,7 @@ const instruments: {
             0,
             3,
           );
-          return (expectedValue / 12) * 40 * usesAllowed;
+          return (expectedValue / estimatedBarfExperience()) * 40 * usesAllowed;
         }),
       ),
   },

@@ -1,5 +1,6 @@
 import {
   canOpenRedPresent,
+  estimatedBarfExperience,
   pocketProfessorLectures,
   timeToMeatify,
 } from "./lib";
@@ -10,6 +11,7 @@ import { bestFairy } from "./itemFamiliar";
 
 export {
   canOpenRedPresent,
+  estimatedBarfExperience,
   timeToMeatify,
   pocketProfessorLectures,
   meatFamiliar,
