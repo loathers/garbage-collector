@@ -358,6 +358,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     outfit: () =>
       freeFightOutfit({
         modifier: "Muscle",
+        avoid: $items`carnivorous potted plant`,
         offhand: $item`Drunkula's wineglass`,
       }),
     sobriety: "drunk",
@@ -365,7 +366,11 @@ const NonBarfTurnTasks: AlternateTask[] = [
   {
     name: "Lava Dogs (sober)",
     ...lavaDogs(() => !willDrunkAdventure()),
-    outfit: () => freeFightOutfit({ modifier: "Muscle" }),
+    outfit: () =>
+      freeFightOutfit({
+        modifier: "Muscle",
+        avoid: $items`carnivorous potted plant`,
+      }),
     sobriety: "sober",
   },
   {
