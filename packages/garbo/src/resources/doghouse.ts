@@ -5,10 +5,6 @@ import {
   haveInCampground,
   realmAvailable,
 } from "libram";
-import { globalOptions } from "../config";
-import { garboValue } from "../garboValue";
-import { mallPrice } from "kolmafia";
-import { hotTubAvailable } from "./clanVIP";
 
 export function lavaDogsAccessible(): boolean {
   return (
@@ -23,17 +19,5 @@ export function lavaDogsComplete(): boolean {
     get("hallowienerVolcoino") ||
     $location`The Bubblin' Caldera`.turnsSpent >= 7 ||
     $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs")
-  );
-}
-
-export function shouldLavaDogs(): boolean {
-  return (
-    globalOptions.ascend &&
-    lavaDogsAccessible() &&
-    garboValue($item`Volcoino`) >
-      7 * get("valueOfAdventure") +
-        (hotTubAvailable()
-          ? 0
-          : mallPrice($item`soft green echo eyedrop antidote`))
   );
 }
