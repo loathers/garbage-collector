@@ -31385,7 +31385,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e710337dce599311389a94b2d42e4bd2afeeecd4", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b0664d407871dbca13f31fd05ce29759ae4abdc6", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -38938,7 +38938,7 @@ var instruments = [{
     return Math.max.apply(Math, [0].concat(_toConsumableArray47(getExperienceFamiliars("free").map(function(_ref) {
       var familiar8 = _ref.familiar, expectedValue = _ref.expectedValue;
       var usesAllowed = clamp(Math.floor((400 - familiar8.experience) / 40), 0, 3);
-      return expectedValue / 12 * 40 * usesAllowed;
+      return expectedValue / estimatedBarfExperience() * 40 * usesAllowed;
     }))));
   }
 }];
