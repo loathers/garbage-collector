@@ -306,30 +306,6 @@ function vampOut(additionalReady: () => boolean) {
   };
 }
 
-function gingerbreadMidnight(additionalReady: () => boolean) {
-  return {
-    name: "Gingerbread Midnight",
-    ready: additionalReady,
-    completed: () => GingerBread.minutesToMidnight() !== 0,
-    do: () => bestMidnightAvailable().location,
-    choices: () => bestMidnightAvailable().choices,
-    outfit: () => ({
-      equip:
-        bestMidnightAvailable().location ===
-        $location`Gingerbread Upscale Retail District`
-          ? outfitPieces("Gingerbread Best")
-          : [],
-      offhand: sober() ? undefined : $item`Drunkula's wineglass`,
-    }),
-    combat: new GarboStrategy(() =>
-      Macro.abortWithMsg(
-        "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
-      ),
-    ),
-    spendsTurn: false,
-  };
-}
-
 function willDrunkAdventure() {
   return have($item`Drunkula's wineglass`) && globalOptions.ascend;
 }
@@ -505,7 +481,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
   {
     name: "Use Day Shorteners (sober)",
     ready: () =>
-      globalOptions.ascend &&
+      !globalOptions.ascend &&
       garboValue($item`extra time`) >
         mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
     completed: () => get(`_garboDayShortenersUsed`, 0) >= 3, // Arbitrary cap at 3, since using 3 results in only 1 adventure
@@ -801,7 +777,26 @@ const BarfTurnTasks: GarboTask[] = [
     outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
     spendsTurn: false,
   },
-  gingerbreadMidnight(() => true),
+  {
+    name: "Gingerbread Midnight",
+    completed: () => GingerBread.minutesToMidnight() !== 0,
+    do: () => bestMidnightAvailable().location,
+    choices: () => bestMidnightAvailable().choices,
+    outfit: () => ({
+      equip:
+        bestMidnightAvailable().location ===
+        $location`Gingerbread Upscale Retail District`
+          ? outfitPieces("Gingerbread Best")
+          : [],
+      offhand: sober() ? undefined : $item`Drunkula's wineglass`,
+    }),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg(
+        "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
+      ),
+    ),
+    spendsTurn: false,
+  },
   {
     name: "Make Mimic Eggs (maximum eggs)",
     ready: () => shouldMakeEgg(true),
