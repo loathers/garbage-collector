@@ -279,13 +279,16 @@ function aprilingSaxophoneLucky(additionalReady: () => boolean) {
   };
 }
 
+function shouldVampOut() {
+  return (
+    have($item`plastic vampire fangs`) &&
+    garboValue($item`Interview With You (a Vampire)`) > get("valueOfAdventure")
+  );
+}
+
 function vampOut(additionalReady: () => boolean) {
   return {
-    ready: () =>
-      additionalReady() &&
-      have($item`plastic vampire fangs`) &&
-      garboValue($item`Interview With You (a Vampire)`) >
-        get("valueOfAdventure"),
+    ready: () => additionalReady() && shouldVampOut(),
     completed: () => get("_interviewMasquerade"),
     choices: () => ({
       546: 12,
@@ -299,7 +302,7 @@ function vampOut(additionalReady: () => boolean) {
         equip: $items`plastic vampire fangs`,
       }),
     spendsTurn: true,
-    turns: () => (get("_interviewMasquerade") ? 0 : 1),
+    turns: () => (shouldVampOut() && !get("_interviewMasquerade") ? 1 : 0),
   };
 }
 
@@ -345,6 +348,14 @@ function canGetFusedFuse() {
       (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id,
     ) &&
     canForceNoncombat()
+  );
+}
+
+function shouldUseDayShorteners() {
+  return (
+    globalOptions.ascend &&
+    garboValue($item`extra time`) >
+      mallPrice($item`day shortener`) + 5 * get("valueOfAdventure")
   );
 }
 
@@ -487,10 +498,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
   },
   {
     name: "Use Day Shorteners (drunk)",
-    ready: () =>
-      globalOptions.ascend &&
-      garboValue($item`extra time`) >
-        mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
+    ready: () => shouldUseDayShorteners(),
     completed: () => get(`_garboDayShortenersUsed`, 0) >= 3, // Arbitrary cap at 3, since using 3 results in only 1 adventure
     do: () => {
       if (
@@ -507,14 +515,14 @@ const NonBarfTurnTasks: AlternateTask[] = [
     },
     spendsTurn: true,
     sobriety: "drunk",
-    turns: () => 5 * (3 - get(`_garboDayShortenersUsed`, 0)),
+    turns: () =>
+      shouldUseDayShorteners()
+        ? 5 * (3 - get(`_garboDayShortenersUsed`, 0))
+        : 0,
   },
   {
     name: "Use Day Shorteners (sober)",
-    ready: () =>
-      !globalOptions.ascend &&
-      garboValue($item`extra time`) >
-        mallPrice($item`day shortener`) + 5 * get("valueOfAdventure"),
+    ready: () => shouldUseDayShorteners(),
     completed: () => get(`_garboDayShortenersUsed`, 0) >= 3, // Arbitrary cap at 3, since using 3 results in only 1 adventure
     do: () => {
       if (
@@ -531,7 +539,10 @@ const NonBarfTurnTasks: AlternateTask[] = [
     },
     spendsTurn: true,
     sobriety: "sober",
-    turns: () => 5 * (3 - get(`_garboDayShortenersUsed`, 0)),
+    turns: () =>
+      shouldUseDayShorteners()
+        ? 5 * (3 - get(`_garboDayShortenersUsed`, 0))
+        : 0,
   },
 ];
 
