@@ -425,16 +425,6 @@ const NonBarfTurnTasks: AlternateTask[] = [
     sobriety: "sober",
   },
   {
-    ...gingerbreadMidnight(() => willDrunkAdventure()),
-    name: "Gingerbread Midnight (drunk)",
-    turns: 0,
-  },
-  {
-    ...gingerbreadMidnight(() => !willDrunkAdventure()),
-    name: "Gingerbread Midnight (sober)",
-    turns: 0,
-  },
-  {
     name: "Fused Fuse",
     completed: () => get("_volcanoItemRedeemed"),
     ready: canGetFusedFuse,
@@ -809,10 +799,9 @@ const BarfTurnTasks: GarboTask[] = [
       ),
     ),
     outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
-    spendsTurn: true,
+    spendsTurn: false,
   },
-  // If extra adventures are unlocked, we want to finish midnight to re-open the zone ASAP
-  gingerbreadMidnight(() => get("gingerExtraAdventures")),
+  gingerbreadMidnight(() => true),
   {
     name: "Make Mimic Eggs (maximum eggs)",
     ready: () => shouldMakeEgg(true),
