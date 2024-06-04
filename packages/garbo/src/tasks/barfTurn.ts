@@ -824,13 +824,8 @@ const BarfTurnTasks: GarboTask[] = [
 ];
 
 function nonBarfTurns(): number {
-  const sobriety = sober() ? "sober" : "drunk";
   return sum(
-    NonBarfTurnTasks.filter(
-      (t) =>
-        (undelay(t.sobriety) ?? sobriety) === sobriety &&
-        (t.ready ? t.ready() && !t.completed() : !t.completed()),
-    ),
+    NonBarfTurnTasks.filter((t) => (t.ready?.() ?? true) && !t.completed()),
     (t) => undelay(t.turns),
   );
 }
