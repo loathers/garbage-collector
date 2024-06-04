@@ -302,7 +302,7 @@ function vampOut(additionalReady: () => boolean) {
         equip: $items`plastic vampire fangs`,
       }),
     spendsTurn: true,
-    turns: () => (!get("_interviewMasquerade") ? 1 : 0),
+    turns: () => 1,
   };
 }
 
@@ -343,15 +343,12 @@ const NonBarfTurnTasks: AlternateTask[] = [
     outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
     combat: new GarboStrategy(() => Macro.meatKill()),
     turns: () =>
-      get("_mimicEggsObtained") < 11 &&
-      $familiar`Chest Mimic`.experience > minimumMimicExperience()
-        ? globalOptions.ascend
-          ? clamp(
-              Math.floor($familiar`Chest Mimic`.experience / 50) - 1,
-              1,
-              11 - get("_mimicEggsObtained"),
-            )
-          : 0
+      globalOptions.ascend
+        ? clamp(
+            Math.floor($familiar`Chest Mimic`.experience / 50) - 1,
+            1,
+            11 - get("_mimicEggsObtained"),
+          )
         : 0,
     spendsTurn: true,
   },
@@ -418,7 +415,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg("Hit unexpected combat!"),
     ),
-    turns: () => (canGetFusedFuse() ? 1 : 0),
+    turns: () => 1,
     spendsTurn: true,
     choices: { 1091: 7 },
   },
