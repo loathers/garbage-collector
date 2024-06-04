@@ -1,114 +1,115 @@
 import { Effect, Item, myLevel, useFamiliar } from "kolmafia";
-import { $item, CinchoDeMayo, clamp, maxBy, MayamCalendar } from "libram";
+import {
+  $item,
+  CinchoDeMayo,
+  clamp,
+  get,
+  maxBy,
+  MayamCalendar,
+  sum,
+} from "libram";
 import { garboValue } from "../garboValue";
 import { GarboTask } from "../tasks/engine";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
-import { globalOptions } from "../config";
 import { felizValue } from "../lib";
 import { Potion } from "../potions";
 import { copyTargetCount } from "../embezzler";
 
-type RingOption = {
-  choice: MayamCalendar.MayamSymbol;
-  value: () => number;
-};
-
-const MAYAM_RING_OPTIONS1: RingOption[] = [
-  {
-    choice: "yam1",
-    value: () => garboValue($item`yam`),
-  },
-  {
-    choice: "sword",
-    value: () => 0,
-  },
-  {
-    choice: "eye",
-    value: () => 0, // +30% item drop, I don't know how to value that?
-  },
-  {
-    choice: "chair",
-    value: () => (CinchoDeMayo.have() ? 3 * 5 * felizValue() : 0),
-  },
-  {
-    choice: "fur",
-    value: () =>
-      Math.max(
-        0,
-        ...getExperienceFamiliars("free").map(
-          ({ expectedValue }) => expectedValue / 12,
-        ),
-      ) * 100,
-  },
-  {
-    choice: "vessel",
-    value: () => 0, // How do we value MP regen?
-  },
-];
-
-const MAYAM_RING_OPTIONS2: RingOption[] = [
-  {
-    choice: "yam2",
-    value: () => garboValue($item`yam`),
-  },
-  {
-    choice: "lightning",
-    value: () => 0,
-  },
-  {
-    choice: "bottle",
-    value: () => 0, // How do we value HP regen?
-  },
-  {
-    choice: "meat",
-    value: () => clamp(myLevel() * 100, 100, 1500),
-  },
-  {
-    choice: "wood",
-    value: () => 0,
-  },
-];
-
-const MAYAM_RING_OPTIONS3: RingOption[] = [
-  {
-    choice: "wall",
-    value: () => 0,
-  },
-  {
-    choice: "cheese",
-    value: () => garboValue($item`goat cheese`),
-  },
-  {
-    choice: "eyepatch",
-    value: () => 0,
-  },
-  {
-    choice: "yam3",
-    value: () => garboValue($item`yam`),
-  },
-];
-
-const MAYAM_RING_OPTIONS4: RingOption[] = [
-  {
-    choice: "yam4",
-    value: () => garboValue($item`yam`),
-  },
-  {
-    choice: "explosion",
-    value: () => 0,
-  },
-  {
-    choice: "clock",
-    value: () => {
-      return (globalOptions.prefs.valueOfAdventure ?? 4000) * 5;
+const MAYAM_RING_OPTIONS = [
+  [
+    {
+      choice: "yam1",
+      value: () => garboValue($item`yam`),
     },
-  },
-];
+    {
+      choice: "sword",
+      value: () => 0,
+    },
+    {
+      choice: "eye",
+      value: () => 0, // +30% item drop, I don't know how to value that?
+    },
+    {
+      choice: "chair",
+      value: () => (CinchoDeMayo.have() ? 3 * 5 * felizValue() : 0),
+    },
+    {
+      choice: "fur",
+      value: () =>
+        Math.max(
+          0,
+          ...getExperienceFamiliars("free").map(
+            ({ expectedValue }) => expectedValue / 12,
+          ),
+        ) * 100,
+    },
+    {
+      choice: "vessel",
+      value: () => 0, // How do we value MP regen?
+    },
+  ],
+  [
+    {
+      choice: "yam2",
+      value: () => garboValue($item`yam`),
+    },
+    {
+      choice: "lightning",
+      value: () => 0,
+    },
+    {
+      choice: "bottle",
+      value: () => 0, // How do we value HP regen?
+    },
+    {
+      choice: "meat",
+      value: () => clamp(myLevel() * 100, 100, 1500),
+    },
+    {
+      choice: "wood",
+      value: () => 0,
+    },
+  ],
+  [
+    {
+      choice: "wall",
+      value: () => 0,
+    },
+    {
+      choice: "cheese",
+      value: () => garboValue($item`goat cheese`),
+    },
+    {
+      choice: "eyepatch",
+      value: () => 0,
+    },
+    {
+      choice: "yam3",
+      value: () => garboValue($item`yam`),
+    },
+  ],
+  [
+    {
+      choice: "yam4",
+      value: () => garboValue($item`yam`),
+    },
+    {
+      choice: "explosion",
+      value: () => 0,
+    },
+    {
+      choice: "clock",
+      value: () => get("valueOfAdventure") * 5,
+    },
+  ],
+] as const;
 
-function ringsAvailable(ringOptions: RingOption[]): RingOption[] {
-  return ringOptions.filter((choice) =>
-    MayamCalendar.available(choice.choice as MayamCalendar.MayamSymbol),
-  );
+type RingOption<R extends number> = (typeof MAYAM_RING_OPTIONS)[R][number];
+
+function symbolsAvailable<R extends number>(
+  ringOptions: readonly RingOption<R>[],
+): RingOption<R>[] {
+  return ringOptions.filter(({ choice }) => MayamCalendar.available(choice));
 }
 
 function effectValue(effect: Effect, duration: number): number {
@@ -128,7 +129,12 @@ function getResonanceValue(
 }
 
 const availableResonances = () => {
-  return Object.entries(MayamCalendar.RESONANCES)
+  return (
+    Object.entries(MayamCalendar.RESONANCES) as [
+      keyof typeof MayamCalendar.RESONANCES,
+      Item | Effect,
+    ][]
+  )
     .filter(([combination]) => {
       const symbols = combination.split(" ");
       return MayamCalendar.available(...(symbols as MayamCalendar.Combination));
@@ -143,42 +149,24 @@ const availableResonances = () => {
 function findBestRingValue():
   | MayamCalendar.Combination
   | MayamCalendar.CombinationString {
-  const filteredOptions1 = ringsAvailable(MAYAM_RING_OPTIONS1);
-  const filteredOptions2 = ringsAvailable(MAYAM_RING_OPTIONS2);
-  const filteredOptions3 = ringsAvailable(MAYAM_RING_OPTIONS3);
-  const filteredOptions4 = ringsAvailable(MAYAM_RING_OPTIONS4);
-
-  // Check for the highest value in each ring, filtering by ring
-  const ring1 = maxBy(filteredOptions1, (option) => option.value());
-  const ring2 = maxBy(filteredOptions2, (option) => option.value());
-  const ring3 = maxBy(filteredOptions3, (option) => option.value());
-  const ring4 = maxBy(filteredOptions4, (option) => option.value());
+  const bestSymbols = MAYAM_RING_OPTIONS.map(symbolsAvailable).map(
+    (filteredOptions) => maxBy(filteredOptions, (option) => option.value()),
+  ) as [RingOption<0>, RingOption<1>, RingOption<2>, RingOption<3>];
 
   // Check for the highest value resonance
   const maxResonance = maxBy(availableResonances(), "value");
 
   // Sum the total ring value and determine the resonance value
-  const totalRingValue =
-    (ring1?.value() || 0) +
-    (ring2?.value() || 0) +
-    (ring3?.value() || 0) +
-    (ring4?.value() || 0);
-  const maxResonanceValue = maxResonance.value;
-
-  // This doesn't work and I don't know why! :D
-
-  const rings: MayamCalendar.Combination = [
-    ring1.choice as MayamCalendar.Ring<0>,
-    ring2.choice as MayamCalendar.Ring<1>,
-    ring3.choice as MayamCalendar.Ring<2>,
-    ring4.choice as MayamCalendar.Ring<3>,
-  ];
+  const totalRingValue = sum(bestSymbols, (option) => option.value());
+  const ring = bestSymbols.map(
+    ({ choice }) => choice,
+  ) as MayamCalendar.Combination;
 
   // If the resonance is worth more than the best possible rings, return the resonance, otherwise return the four rings
-  if (maxResonance && maxResonanceValue > totalRingValue) {
+  if (maxResonance && maxResonance.value > totalRingValue) {
     return maxResonance.combination as MayamCalendar.CombinationString;
   } else {
-    return rings;
+    return ring;
   }
 }
 
