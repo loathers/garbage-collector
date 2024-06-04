@@ -326,7 +326,7 @@ function gingerbreadMidnight(additionalReady: () => boolean) {
         "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
       ),
     ),
-    spendsTurn: true,
+    spendsTurn: false,
   };
 }
 
@@ -435,12 +435,12 @@ const NonBarfTurnTasks: AlternateTask[] = [
   {
     ...gingerbreadMidnight(() => willDrunkAdventure()),
     name: "Gingerbread Midnight (drunk)",
-    turns: () => (GingerBread.minutesToMidnight() === 0 ? 1 : 0),
+    turns: 0,
   },
   {
     ...gingerbreadMidnight(() => !willDrunkAdventure()),
     name: "Gingerbread Midnight (sober)",
-    turns: () => (GingerBread.minutesToMidnight() === 0 ? 1 : 0),
+    turns: 0,
   },
   {
     name: "Fused Fuse",
