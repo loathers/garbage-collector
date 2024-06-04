@@ -148,7 +148,7 @@ const availableResonances = () => {
 
 function findBestRingValue():
   | MayamCalendar.Combination
-  | MayamCalendar.CombinationString {
+  | [MayamCalendar.CombinationString] {
   const bestSymbols = MAYAM_RING_OPTIONS.map(symbolsAvailable).map(
     (filteredOptions) => maxBy(filteredOptions, (option) => option.value()),
   ) as [RingOption<0>, RingOption<1>, RingOption<2>, RingOption<3>];
@@ -164,7 +164,7 @@ function findBestRingValue():
 
   // If the resonance is worth more than the best possible rings, return the resonance, otherwise return the four rings
   if (maxResonance && maxResonance.value > totalRingValue) {
-    return maxResonance.combination as MayamCalendar.CombinationString;
+    return [maxResonance.combination as MayamCalendar.CombinationString];
   } else {
     return ring;
   }
@@ -177,22 +177,18 @@ function summonTask(): GarboTask {
     do: () => {
       while (MayamCalendar.remainingUses() > 0) {
         const ringOptions = findBestRingValue();
-        const includesFur = ringOptions.includes("fur");
+        const includesFur = ringOptions.some((entry) => entry.includes("fur"));
 
         // If we're going to use Fur, determine the best experience familiar and use it before using any rings
         if (includesFur) {
           const bestFamiliar = maxBy(
             getExperienceFamiliars("free"),
-            (f) => f.expectedValue,
-          );
-          useFamiliar(bestFamiliar.familiar);
+            "expectedValue",
+          ).familiar;
+          useFamiliar(bestFamiliar);
         }
 
-        if (Array.isArray(ringOptions)) {
-          MayamCalendar.submit(...ringOptions);
-        } else {
-          MayamCalendar.submit(ringOptions);
-        }
+        MayamCalendar.submit(...ringOptions);
       }
       return true;
     },
