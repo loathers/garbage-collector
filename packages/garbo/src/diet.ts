@@ -150,7 +150,7 @@ function consumeSafe(
   const averageAdventures = getAverageAdventures(item);
   if (!skipAcquire && (averageAdventures > 0 || additionalValue)) {
     const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
-    acquire(qty, item, cap);
+    acquire(qty, item, cap, true);
   } else if (!skipAcquire) {
     acquire(qty, item);
   }
