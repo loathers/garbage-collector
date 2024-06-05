@@ -235,7 +235,7 @@ function lavaDogs(additionalReady: () => boolean) {
       globalOptions.ascend &&
       lavaDogsAccessible() &&
       garboValue($item`Volcoino`) >
-        5 * get("valueOfAdventure") +
+        6 * get("valueOfAdventure") +
           (hotTubAvailable()
             ? 0
             : mallPrice($item`soft green echo eyedrop antidote`)),
@@ -255,7 +255,7 @@ function lavaDogs(additionalReady: () => boolean) {
     },
     do: $location`The Bubblin' Caldera`,
     combat: new GarboStrategy(() => Macro.kill()),
-    turns: () => clamp(6 - $location`The Bubblin' Caldera`.turnsSpent, 0, 6),
+    turns: () => clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 7),
     spendsTurn: true,
   };
 }
