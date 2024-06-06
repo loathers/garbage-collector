@@ -109,6 +109,13 @@ function eatSafe(qty: number, item: Item) {
   if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
     eat($item`fudge spork`);
   }
+  if (
+    mallPrice($item`mini kiwi aioli`) < MPA * item.fullness ||
+    mallPrice($item`mini kiwi`) * 5 < MPA * item.fullness
+  ) {
+    acquire(1, $item`mini kiwi aioli`, MPA);
+    use($item`mini kiwi aioli`);
+  }
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
 
   if (!eat(qty, item)) throw "Failed to eat safely";
