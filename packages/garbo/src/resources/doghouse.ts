@@ -17,7 +17,7 @@ export function lavaDogsAccessible(): boolean {
 export function lavaDogsComplete(): boolean {
   return (
     get("hallowienerVolcoino") ||
-    $location`The Bubblin' Caldera`.turnsSpent > 6 ||
+    $location`The Bubblin' Caldera`.turnsSpent > 7 ||
     $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs")
   );
 }
