@@ -1175,7 +1175,12 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           },
         ],
         [$item`Special Seasoning`, "skip"],
-        [$item`mini kiwi aioli`, "skip"],
+        [
+          $item`mini kiwi aioli`,
+          (countToConsume: number, menuItem: MenuItem<Note>) => {
+            consumeSafe(countToConsume, menuItem.item);
+          },
+        ],
         [
           $item`Rethinking Candy`,
           (countToConsume: number, menuItem: MenuItem<Note>) =>
