@@ -81,6 +81,8 @@ import {
 } from "../resources";
 import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
+import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
+import { hotTubAvailable } from "../resources/clanVIP";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -225,6 +227,39 @@ function dailyDungeon(additionalReady: () => boolean) {
   };
 }
 
+function lavaDogs(additionalReady: () => boolean) {
+  return {
+    completed: () => lavaDogsComplete(),
+    ready: () =>
+      additionalReady() &&
+      globalOptions.ascend &&
+      lavaDogsAccessible() &&
+      garboValue($item`Volcoino`) >
+        6 * get("valueOfAdventure") +
+          (hotTubAvailable()
+            ? 0
+            : mallPrice($item`soft green echo eyedrop antidote`)),
+    prepare: () => {
+      const metalValue = get("_volcanoSuperduperheatedMetal")
+        ? garboValue($item`superheated metal`)
+        : sum(
+            [
+              [$item`superheated metal`, 0.95],
+              [$item`superduperheated metal`, 0.05],
+            ] as const,
+            ([item, rate]) => rate * garboValue(item),
+          );
+      if (metalValue > mallPrice($item`heat-resistant sheet metal`)) {
+        acquire(1, $item`heat-resistant sheet metal`, metalValue);
+      }
+    },
+    do: $location`The Bubblin' Caldera`,
+    combat: new GarboStrategy(() => Macro.kill()),
+    turns: () => clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 7),
+    spendsTurn: true,
+  };
+}
+
 function aprilingSaxophoneLucky(additionalReady: () => boolean) {
   return {
     completed: () => !AprilingBandHelmet.canPlay("Apriling band saxophone"),
@@ -242,10 +277,7 @@ function aprilingSaxophoneLucky(additionalReady: () => boolean) {
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg("Unexpected combat while attempting Lucky! adventure"),
     ),
-    turns: () =>
-      have($item`Apriling band saxophone`)
-        ? $item`Apriling band saxophone`.dailyusesleft
-        : 0,
+    turns: () => $item`Apriling band saxophone`.dailyusesleft,
     spendsTurn: true,
   };
 }
@@ -270,31 +302,7 @@ function vampOut(additionalReady: () => boolean) {
         equip: $items`plastic vampire fangs`,
       }),
     spendsTurn: true,
-    turns: () => (get("_interviewMasquerade") ? 0 : 1),
-  };
-}
-
-function gingerbreadMidnight(additionalReady: () => boolean) {
-  return {
-    name: "Gingerbread Midnight",
-    ready: additionalReady,
-    completed: () => GingerBread.minutesToMidnight() !== 0,
-    do: () => bestMidnightAvailable().location,
-    choices: () => bestMidnightAvailable().choices,
-    outfit: () => ({
-      equip:
-        bestMidnightAvailable().location ===
-        $location`Gingerbread Upscale Retail District`
-          ? outfitPieces("Gingerbread Best")
-          : [],
-      offhand: sober() ? undefined : $item`Drunkula's wineglass`,
-    }),
-    combat: new GarboStrategy(() =>
-      Macro.abortWithMsg(
-        "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
-      ),
-    ),
-    spendsTurn: true,
+    turns: () => 1,
   };
 }
 
@@ -335,17 +343,35 @@ const NonBarfTurnTasks: AlternateTask[] = [
     outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
     combat: new GarboStrategy(() => Macro.meatKill()),
     turns: () =>
-      get("_mimicEggsObtained") < 11 &&
-      $familiar`Chest Mimic`.experience > minimumMimicExperience()
-        ? globalOptions.ascend
-          ? clamp(
-              Math.floor($familiar`Chest Mimic`.experience / 50) - 1,
-              1,
-              11 - get("_mimicEggsObtained"),
-            )
-          : 0
+      globalOptions.ascend
+        ? clamp(
+            Math.floor($familiar`Chest Mimic`.experience / 50) - 1,
+            1,
+            11 - get("_mimicEggsObtained"),
+          )
         : 0,
     spendsTurn: true,
+  },
+  {
+    name: "Lava Dogs (drunk)",
+    ...lavaDogs(() => willDrunkAdventure()),
+    outfit: () =>
+      freeFightOutfit({
+        modifier: "Muscle",
+        avoid: $items`carnivorous potted plant`,
+        offhand: $item`Drunkula's wineglass`,
+      }),
+    sobriety: "drunk",
+  },
+  {
+    name: "Lava Dogs (sober)",
+    ...lavaDogs(() => !willDrunkAdventure()),
+    outfit: () =>
+      freeFightOutfit({
+        modifier: "Muscle",
+        avoid: $items`carnivorous potted plant`,
+      }),
+    sobriety: "sober",
   },
   {
     name: "Daily Dungeon (drunk)",
@@ -377,16 +403,6 @@ const NonBarfTurnTasks: AlternateTask[] = [
     sobriety: "sober",
   },
   {
-    ...gingerbreadMidnight(() => willDrunkAdventure()),
-    name: "Gingerbread Midnight (drunk)",
-    turns: () => (GingerBread.minutesToMidnight() === 0 ? 1 : 0),
-  },
-  {
-    ...gingerbreadMidnight(() => !willDrunkAdventure()),
-    name: "Gingerbread Midnight (sober)",
-    turns: () => (GingerBread.minutesToMidnight() === 0 ? 1 : 0),
-  },
-  {
     name: "Fused Fuse",
     completed: () => get("_volcanoItemRedeemed"),
     ready: canGetFusedFuse,
@@ -404,7 +420,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg("Hit unexpected combat!"),
     ),
-    turns: () => (canGetFusedFuse() ? 1 : 0),
+    turns: () => 1,
     spendsTurn: true,
     choices: { 1091: 7 },
   },
@@ -761,10 +777,28 @@ const BarfTurnTasks: GarboTask[] = [
       ),
     ),
     outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
-    spendsTurn: true,
+    spendsTurn: false,
   },
-  // If extra adventures are unlocked, we want to finish midnight to re-open the zone ASAP
-  gingerbreadMidnight(() => get("gingerExtraAdventures")),
+  {
+    name: "Gingerbread Midnight",
+    completed: () => GingerBread.minutesToMidnight() !== 0,
+    do: () => bestMidnightAvailable().location,
+    choices: () => bestMidnightAvailable().choices,
+    outfit: () => ({
+      equip:
+        bestMidnightAvailable().location ===
+        $location`Gingerbread Upscale Retail District`
+          ? outfitPieces("Gingerbread Best")
+          : [],
+      offhand: sober() ? undefined : $item`Drunkula's wineglass`,
+    }),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg(
+        "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
+      ),
+    ),
+    spendsTurn: false,
+  },
   {
     name: "Make Mimic Eggs (maximum eggs)",
     ready: () => shouldMakeEgg(true),
@@ -792,11 +826,8 @@ const BarfTurnTasks: GarboTask[] = [
 ];
 
 function nonBarfTurns(): number {
-  const sobriety = sober() ? "sober" : "drunk";
   return sum(
-    NonBarfTurnTasks.filter(
-      (t) => (undelay(t.sobriety) ?? sobriety) === sobriety,
-    ),
+    NonBarfTurnTasks.filter((t) => (t.ready?.() ?? true) && !t.completed()),
     (t) => undelay(t.turns),
   );
 }
@@ -812,12 +843,23 @@ export const WandererQuest: Quest<GarboTask> = {
   completed: () => !canContinue(),
 };
 
+let startedNonBarf: boolean = false;
 export const NonBarfTurnQuest: Quest<GarboTask> = {
   name: "Non Barf Turn",
   tasks: NonBarfTurnTasks,
-  ready: () =>
-    clamp(myAdventures() - digitizedMonstersRemaining(), 1, myAdventures()) <=
-    nonBarfTurns() + globalOptions.saveTurns,
+  ready: () => {
+    if (!startedNonBarf) {
+      startedNonBarf =
+        clamp(
+          myAdventures() - digitizedMonstersRemaining(),
+          1,
+          myAdventures(),
+        ) <=
+        nonBarfTurns() + globalOptions.saveTurns;
+    }
+    return startedNonBarf;
+  },
+
   completed: () => !canContinue(),
 };
 
