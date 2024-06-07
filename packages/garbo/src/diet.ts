@@ -1036,6 +1036,13 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   );
   acquire(seasoningCount, $item`Special Seasoning`, MPA);
 
+  const aioliCount = sum(diet.entries, ({ menuItems, quantity }) =>
+    menuItems.some((menuItem) => menuItem.item === $item`mini kiwi aioli`)
+      ? quantity
+      : 0,
+  );
+  acquire(aioliCount, $item`mini kiwi aioli`, MPA * 1.5); // We reallly should set the price limit based on the adventure gain of the actual food
+
   // Fill organs in rounds, making sure we're making progress in each round.
   const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
   let lastOrgans = [-1, -1, -1];
