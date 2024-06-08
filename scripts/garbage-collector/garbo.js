@@ -31389,7 +31389,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("84179a3f749485f36702bcbc3382456c7d06257b", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1421ff636e37e542f2b88853e6ae424f2c4ea71e", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -38939,7 +38939,7 @@ var instruments = [{
 }, {
   instrument: "Apriling band piccolo",
   value: function() {
-    return Math.max.apply(Math, [0].concat(_toConsumableArray47(getExperienceFamiliars("free").map(function(_ref) {
+    return Math.max.apply(Math, [0].concat(_toConsumableArray47(getExperienceFamiliars("barf").map(function(_ref) {
       var familiar8 = _ref.familiar, expectedValue = _ref.expectedValue;
       var usesAllowed = clamp(Math.floor((400 - familiar8.experience) / 40), 0, 3);
       return expectedValue / estimatedBarfExperience() * 40 * usesAllowed;
