@@ -53,7 +53,6 @@ import {
   soulsauceCost,
   spleenLimit,
   todayToString,
-  toSlot,
   totalFreeRests,
   toUrl,
   use,
@@ -61,7 +60,6 @@ import {
   userConfirm,
   useSkill,
   visitUrl,
-  weaponHands,
   xpath,
 } from "kolmafia";
 import {
@@ -71,7 +69,6 @@ import {
   $location,
   $monster,
   $skill,
-  $slot,
   $thralls,
   ActionSource,
   bestLibramToCast,
@@ -104,7 +101,7 @@ import {
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
-import { Outfit } from "grimoire-kolmafia";
+import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -618,28 +615,19 @@ const reservedBanishes = new Map<
   [$item`mafia middle finger ring`, () => true],
 ]);
 
-export function freeRunConstraints(latteActionSource: boolean): {
+export function freeRunConstraints(spec?: OutfitSpec): {
   allowedAction: (action: ActionSource) => boolean;
 } {
   return {
     allowedAction: (action: ActionSource): boolean => {
-      const disallowUsage = reservedBanishes.get(action.source);
-
-      if (!have($item`latte lovers member's mug`) || !latteActionSource) {
-        return !(disallowUsage?.() && getUsingFreeBunnyBanish());
-      }
-
-      const forceEquipsOtherThanLatte = (
-        action?.constraints?.equipmentRequirements?.().maximizeOptions
-          .forceEquip ?? []
-      ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
-      return (
-        forceEquipsOtherThanLatte.every(
-          (equipment) => toSlot(equipment) !== $slot`off-hand`,
-        ) &&
-        sum(forceEquipsOtherThanLatte, weaponHands) < 2 &&
-        !(disallowUsage?.() && getUsingFreeBunnyBanish())
+      const initialActionOutfit = Outfit.from(
+        action.constraints.equipmentRequirements?.() ?? {},
       );
+
+      if (!initialActionOutfit?.equip(spec ?? {})) return false;
+
+      const disallowUsage = reservedBanishes.get(action.source);
+      return !(disallowUsage?.() && getUsingFreeBunnyBanish());
     },
   };
 }
