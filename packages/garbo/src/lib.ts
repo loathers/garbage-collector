@@ -53,7 +53,6 @@ import {
   soulsauceCost,
   spleenLimit,
   todayToString,
-  toSlot,
   totalFreeRests,
   toUrl,
   use,
@@ -61,7 +60,6 @@ import {
   userConfirm,
   useSkill,
   visitUrl,
-  weaponHands,
   xpath,
 } from "kolmafia";
 import {
@@ -71,7 +69,6 @@ import {
   $location,
   $monster,
   $skill,
-  $slot,
   $thralls,
   ActionSource,
   bestLibramToCast,
@@ -93,7 +90,6 @@ import {
   PropertiesManager,
   property,
   realmAvailable,
-  Requirement,
   set,
   SongBoom,
   SourceTerminal,
@@ -624,56 +620,14 @@ export function freeRunConstraints(spec?: OutfitSpec): {
 } {
   return {
     allowedAction: (action: ActionSource): boolean => {
+      const initialActionOutfit = Outfit.from(
+        action.constraints.equipmentRequirements?.() ?? {},
+      );
+
+      if (!initialActionOutfit?.equip(spec ?? {})) return false;
+
       const disallowUsage = reservedBanishes.get(action.source);
-
-      if (
-        !spec ||
-        (spec instanceof Requirement && !spec.maximizeOptions.forceEquip)
-      ) {
-        return !(disallowUsage?.() && getUsingFreeBunnyBanish());
-      }
-
-      if (spec instanceof Requirement && spec.maximizeOptions.forceEquip) {
-        const actionForceEquips =
-          action?.constraints?.equipmentRequirements?.().maximizeOptions
-            .forceEquip ?? [];
-        const specForceEquips = spec.maximizeOptions.forceEquip;
-
-        return (
-          specForceEquips.every((specEquip) => {
-            const slot = toSlot(specEquip);
-
-            if (slot === $slot`off-hand`) {
-              return (
-                actionForceEquips.every(
-                  (actionEquip) => toSlot(actionEquip) !== $slot`off-hand`,
-                ) && sum(actionForceEquips, weaponHands) < 2
-              );
-            }
-            if (slot === $slot`weapon`) {
-              return (
-                sum(actionForceEquips, weaponHands) +
-                  sum(specForceEquips, weaponHands) <=
-                2
-              );
-            }
-            if (slot === $slot`accessory`) {
-              return (
-                sum(actionForceEquips, (i) =>
-                  toSlot(i) === $slot`accessory` ? 1 : 0,
-                ) +
-                  sum(specForceEquips, (i) =>
-                    toSlot(i) === $slot`accessory` ? 1 : 0,
-                  ) <
-                3
-              );
-            }
-            return !actionForceEquips.some((i) => slot === toSlot(i));
-          }) && !(disallowUsage?.() && getUsingFreeBunnyBanish())
-        );
-      } else {
-        throw new Error("Spec for freeRunConstraints was malformed");
-      }
+      return !(disallowUsage?.() && getUsingFreeBunnyBanish());
     },
   };
 }
