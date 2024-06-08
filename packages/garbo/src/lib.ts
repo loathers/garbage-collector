@@ -104,7 +104,7 @@ import {
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
-import { Outfit } from "grimoire-kolmafia";
+import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -618,27 +618,54 @@ const reservedBanishes = new Map<
   [$item`mafia middle finger ring`, () => true],
 ]);
 
-export function freeRunConstraints(latteActionSource: boolean): {
+export function freeRunConstraints(spec?: OutfitSpec): {
   allowedAction: (action: ActionSource) => boolean;
 } {
   return {
     allowedAction: (action: ActionSource): boolean => {
       const disallowUsage = reservedBanishes.get(action.source);
 
-      if (!have($item`latte lovers member's mug`) || !latteActionSource) {
+      if (!spec || !spec.equip) {
         return !(disallowUsage?.() && getUsingFreeBunnyBanish());
       }
 
-      const forceEquipsOtherThanLatte = (
+      const actionForceEquips =
         action?.constraints?.equipmentRequirements?.().maximizeOptions
-          .forceEquip ?? []
-      ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
+          .forceEquip ?? [];
+
       return (
-        forceEquipsOtherThanLatte.every(
-          (equipment) => toSlot(equipment) !== $slot`off-hand`,
-        ) &&
-        sum(forceEquipsOtherThanLatte, weaponHands) < 2 &&
-        !(disallowUsage?.() && getUsingFreeBunnyBanish())
+        spec.equip.every((specEquip) => {
+          const slot = toSlot(specEquip);
+
+          if (slot === $slot`off-hand`) {
+            return (
+              actionForceEquips.every(
+                (actionEquip) => toSlot(actionEquip) !== $slot`off-hand`,
+              ) && sum(actionForceEquips, weaponHands) < 2
+            );
+          }
+          if (slot === $slot`weapon`) {
+            return (
+              sum(actionForceEquips, weaponHands) +
+                (spec.equip ? sum(spec.equip, weaponHands) : 0) <=
+              2
+            );
+          }
+          if (slot === $slot`accessory`) {
+            return (
+              sum(actionForceEquips, (i) =>
+                toSlot(i) === $slot`accessory` ? 1 : 0,
+              ) +
+                (spec.equip
+                  ? sum(spec.equip, (i) =>
+                      toSlot(i) === $slot`accessory` ? 1 : 0,
+                    )
+                  : 0) <
+              3
+            );
+          }
+          return !actionForceEquips.some((i) => slot === toSlot(i));
+        }) && !(disallowUsage?.() && getUsingFreeBunnyBanish())
       );
     },
   };
