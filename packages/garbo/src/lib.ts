@@ -1150,8 +1150,8 @@ export function bestDartChoices(): number {
   let lowestPriority = Infinity;
   let bestChoiceIndex = -1;
 
-  Object.keys(perkOptions).forEach((key) => {
-    const option = perkOptions[key];
+  Object.keys(perkOptions).forEach((key: string) => {
+    const option = perkOptions[parseInt(key)];
     const matchingPriority = priority.find((p) => p.perk === option);
     if (matchingPriority && matchingPriority.rank < lowestPriority) {
       lowestPriority = matchingPriority.rank;
