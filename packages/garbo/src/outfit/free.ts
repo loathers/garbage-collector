@@ -1,14 +1,6 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Location, toJson } from "kolmafia";
-import {
-  $familiar,
-  $familiars,
-  $item,
-  $items,
-  get,
-  Guzzlr,
-  SourceTerminal,
-} from "libram";
+import { $familiar, $item, $items, get, Guzzlr, SourceTerminal } from "libram";
 import { WanderDetails } from "garbo-lib";
 
 import { freeFightFamiliar } from "../familiar";
@@ -51,14 +43,20 @@ export function freeFightOutfit(
       : BonusEquipMode.FREE;
 
   if (outfit.familiar !== $familiar`Patriotic Eagle`) {
-    const mimicFamExpValue =
-      (EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50;
+    const familiarExpValue = (
+      [
+        [
+          $familiar`Chest Mimic`,
+          (EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50,
+        ],
+        [$familiar`Pocket Professor`, (11 * get("valueOfAdventure")) / 200],
+        [$familiar`Grey Goose`, 15 ** 4 / 400],
+      ] as const
+    ).find(([familiar]) => outfit.familiar === familiar);
 
     outfit.modifier.push(
-      outfit.familiar === $familiar`Chest Mimic`
-        ? `${mimicFamExpValue} Familiar Experience`
-        : $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
-        ? "Familiar Experience"
+      familiarExpValue
+        ? `${familiarExpValue[1]} Familiar Experience`
         : "Familiar Weight",
     );
   }
