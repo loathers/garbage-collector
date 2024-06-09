@@ -2,7 +2,6 @@ import {
   availableAmount,
   canAdventure,
   canEquip,
-  choiceFollowsFight,
   eat,
   getWorkshed,
   Location,
@@ -52,6 +51,7 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
+  bestDartChoices,
   EMBEZZLER_MULTIPLIER,
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
@@ -97,23 +97,17 @@ const isSteve = () =>
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
-  base: Omit<GarboTask, "outfit" | "do" | "choices" | "spendsTurn"> & {
+  base: Omit<GarboTask, "outfit" | "do" | "spendsTurn"> & {
     combat?: GarboStrategy;
   },
 ): GarboTask {
   return {
-    do: () => {
-      wanderer().getTarget(undelay(details));
-      if (choiceFollowsFight()) runChoice(-1);
-    },
+    do: () => wanderer().getTarget(undelay(details)),
     choices: () => wanderer().getChoices(undelay(details)),
     outfit: () =>
       freeFightOutfit(undelay(spec), { wanderOptions: undelay(details) }),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat()),
-    post: () => {
-      if (choiceFollowsFight()) runChoice(-1);
-    },
     ...base,
   };
 }
@@ -746,6 +740,7 @@ const BarfTurnTasks: GarboTask[] = [
           .skill($skill`Darts: Aim for the Bullseye`)
           .skill($skill`Spring Away`),
       ),
+      choices: { 1525: bestDartChoices() },
       duplicate: true,
     },
   ),

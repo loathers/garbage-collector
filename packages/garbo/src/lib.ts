@@ -97,6 +97,7 @@ import {
   SongBoom,
   SourceTerminal,
   sum,
+  Switch,
   tryFindBanish,
   tryFindFreeRun,
   uneffect,
@@ -1096,4 +1097,67 @@ export function getBestLuckyAdventure(): LuckyAdventure {
     bestLuckyAdventure = determineBestLuckyAdventure();
   }
   return bestLuckyAdventure;
+}
+
+export const dartParts: Switch<string, string[]> = {
+  Meat: ["Branch", "Door", "Foot", "Psuedopod", "Thorax", "Torso"],
+  Item: ["Butt"],
+  default: [],
+};
+
+export function attemptDartThrows(part: undefined | string | string[]): Macro {
+  const result = new Macro();
+  if (part === undefined) return result;
+
+  const partList = typeof part === "string" ? [part] : part;
+  for (const p of partList) {
+    result.step(
+      `while hasskill Darts: Throw at ${p}; skill Darts: Throw at ${p}; endwhile;`,
+    );
+  }
+  return result;
+}
+
+type DartChoice = {
+  perk: string;
+  rank: number;
+};
+
+export function bestDartChoices(): number {
+  const perkOptions = availableChoiceOptions();
+  const priority: DartChoice[] = [
+    { perk: "Throw a second dart quickly", rank: 60 },
+    { perk: "Deal 25-50% more damage", rank: 800 },
+    { perk: "You are less impressed by bullseyes", rank: 10 },
+    { perk: "25% Better bullseye targeting", rank: 20 },
+    { perk: "Extra stats from stats targets", rank: 40 },
+    { perk: "Butt awareness", rank: 30 },
+    { perk: "Add Hot Damage", rank: 1000 },
+    { perk: "Add Cold Damage", rank: 1000 },
+    { perk: "Add Sleaze Damage", rank: 1000 },
+    { perk: "Add Spooky Damage", rank: 1000 },
+    { perk: "Add Stench Damage", rank: 1000 },
+    { perk: "Expand your dart capacity by 1", rank: 50 },
+    { perk: "Bullseyes do not impress you much", rank: 9 },
+    { perk: "25% More Accurate bullseye targeting", rank: 19 },
+    { perk: "Deal 25-50% extra damage", rank: 10000 },
+    { perk: "Increase Dart Deleveling from deleveling targets", rank: 100 },
+    { perk: "Deal 25-50% greater damage", rank: 10000 },
+    { perk: "Extra stats from stats targets", rank: 39 },
+    { perk: "25% better chance to hit bullseyes", rank: 18 },
+  ];
+
+  let lowestPriority = Infinity;
+  let bestChoiceIndex = -1;
+
+  Object.keys(perkOptions).forEach((key) => {
+    const option = perkOptions[key];
+    const matchingPriority = priority.find((p) => p.perk === option);
+    if (matchingPriority && matchingPriority.rank < lowestPriority) {
+      lowestPriority = matchingPriority.rank;
+      bestChoiceIndex = parseInt(key);
+    }
+  });
+
+  return bestChoiceIndex;
 }
