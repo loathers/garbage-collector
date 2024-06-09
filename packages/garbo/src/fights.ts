@@ -2035,31 +2035,6 @@ export function freeFights(): void {
     1324: 5, // Fight a random partier
   });
 
-  if (
-    canAdventure($location`The Red Zeppelin`) &&
-    !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
-  ) {
-    buy(
-      clamp(5 - get("_glarkCableUses"), 0, 5),
-      $item`glark cable`,
-      globalOptions.prefs.valueOfFreeFight,
-    );
-  }
-
-  // Free fights before free runs, so that we have free banishes available for things like Pygmies
-  // TODO: Run unconverted free fights
-  for (const freeFightSource of freeFightSources) {
-    freeFightSource.runAll();
-  }
-
-  // TODO: Run grimorized free fights until all are converted
-  // TODO: freeFightMood()
-  runGarboQuests([PostQuest(), FreeFightQuest]);
-
-  freeRunFights();
-
-  killRobortCreaturesForFree();
-
   //  Use free fights on melanges if we have Tote/Squint and prices are reasonable.
   const canSquint =
     have($effect`Steely-Eyed Squint`) ||
@@ -2084,6 +2059,31 @@ export function freeFights(): void {
       }
     }
   }
+
+  if (
+    canAdventure($location`The Red Zeppelin`) &&
+    !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
+  ) {
+    buy(
+      clamp(5 - get("_glarkCableUses"), 0, 5),
+      $item`glark cable`,
+      globalOptions.prefs.valueOfFreeFight,
+    );
+  }
+
+  // Free fights before free runs, so that we have free banishes available for things like Pygmies
+  // TODO: Run unconverted free fights
+  for (const freeFightSource of freeFightSources) {
+    freeFightSource.runAll();
+  }
+
+  // TODO: Run grimorized free fights until all are converted
+  // TODO: freeFightMood()
+  runGarboQuests([PostQuest(), FreeFightQuest]);
+
+  freeRunFights();
+
+  killRobortCreaturesForFree();
 
   tryFillLatte();
   postFreeFightDailySetup();
