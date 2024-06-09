@@ -27,6 +27,7 @@ import {
   mySpleenUse,
   npcPrice,
   print,
+  retrieveItem,
   retrievePrice,
   sellsItem,
   setProperty,
@@ -483,6 +484,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(Mayo.flex),
     new MenuItem(Mayo.zapine),
     new MenuItem($item`Special Seasoning`),
+    new MenuItem($item`mini kiwi aioli`),
     new MenuItem($item`whet stone`),
     new MenuItem(saladFork),
     new MenuItem(frostyMug),
@@ -916,6 +918,7 @@ export function computeDiet(): {
                 Mayo.flex,
                 Mayo.zapine,
                 $item`Special Seasoning`,
+                $item`mini kiwi aioli`,
                 $item`whet stone`,
               ].includes(menuItem.item),
           ),
@@ -1159,6 +1162,13 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           },
         ],
         [$item`Special Seasoning`, "skip"],
+        [
+          $item`mini kiwi aioli`,
+          (countToConsume: number, menuItem: MenuItem<Note>) => {
+            retrieveItem(menuItem.item, countToConsume);
+            use(menuItem.item);
+          },
+        ],
         [
           $item`Rethinking Candy`,
           (countToConsume: number, menuItem: MenuItem<Note>) =>
