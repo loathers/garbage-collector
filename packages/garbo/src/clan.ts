@@ -6,6 +6,7 @@ import {
   equip,
   equippedAmount,
   equippedItem,
+  familiarEquippedEquipment,
   getClanId,
   getClanName,
   handlingChoice,
@@ -19,12 +20,15 @@ import {
   stashAmount,
   takeStash,
   toItem,
+  toSlot,
   visitUrl,
 } from "kolmafia";
 import {
   $familiar,
+  $familiars,
   $item,
   $items,
+  $slot,
   Clan,
   get,
   getFoldGroup,
@@ -199,6 +203,14 @@ export class StashManager {
           if (equippedAmount(item) > 0) {
             const slots = Slot.all().filter((s) => equippedItem(s) === item);
             slots.forEach((s) => equip(s, $item.none));
+          }
+
+          if (toSlot(item) === $slot`familiar` && !have(item, count)) {
+            for (const familiar of $familiars.all().filter(have)) {
+              if (familiarEquippedEquipment(familiar) === item) {
+                equip(familiar, $item.none);
+              }
+            }
           }
 
           if (itemAmount(item) >= count && putStash(count, item)) {
