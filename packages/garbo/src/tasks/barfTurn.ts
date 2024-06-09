@@ -356,21 +356,25 @@ const NonBarfTurnTasks: AlternateTask[] = [
     name: "Lava Dogs (drunk)",
     ...lavaDogs(() => willDrunkAdventure()),
     outfit: () =>
-      freeFightOutfit({
-        modifier: "Muscle",
-        avoid: $items`carnivorous potted plant, mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
-        offhand: $item`Drunkula's wineglass`,
-      }),
+      have($effect`Drenched in Lava`)
+        ? freeFightOutfit({
+            modifier: "Muscle",
+            avoid: $items`carnivorous potted plant, mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
+            offhand: $item`Drunkula's wineglass`,
+          })
+        : freeFightOutfit({ offhand: $item`Drunkula's wineglass` }),
     sobriety: "drunk",
   },
   {
     name: "Lava Dogs (sober)",
     ...lavaDogs(() => !willDrunkAdventure()),
     outfit: () =>
-      freeFightOutfit({
-        modifier: "Muscle",
-        avoid: $items`carnivorous potted plant, mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
-      }),
+      have($effect`Drenched in Lava`)
+        ? freeFightOutfit({
+            modifier: "Muscle",
+            avoid: $items`carnivorous potted plant, mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
+          })
+        : freeFightOutfit(),
     sobriety: "sober",
   },
   {
