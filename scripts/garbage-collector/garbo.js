@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d72ac9deaa424d72416e41e312085b01531d41f3", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("dd1eb403f17824678f77059bb541384ab76e4764", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -32804,7 +32804,7 @@ function consumeSafe(qty, item11, additionalValue, skipAcquire) {
   var averageAdventures = getAverageAdventures(item11);
   if (!skipAcquire && (averageAdventures > 0 || additionalValue)) {
     var cap = Math.max(0, averageAdventures * MPA) + (additionalValue !== null && additionalValue !== void 0 ? additionalValue : 0);
-    acquire(qty, item11, cap);
+    acquire(qty, item11, cap, true);
   } else if (!skipAcquire) {
     acquire(qty, item11);
   }
