@@ -33,6 +33,7 @@ import {
   have,
   JuneCleaver,
   undelay,
+  uneffect,
   withProperty,
 } from "libram";
 import { GarboStrategy, Macro } from "../../combat";
@@ -53,6 +54,8 @@ import { garboAverageValue } from "../../garboValue";
 import workshedTasks from "./worksheds";
 import { GarboPostTask } from "./lib";
 import { GarboTask } from "../engine";
+import { hotTubAvailable } from "../../resources/clanVIP";
+import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 function closetStuff(): GarboPostTask {
@@ -304,12 +307,30 @@ function wardrobeOMatic(): GarboPostTask {
   };
 }
 
+function handleDrenchedInLava(): GarboPostTask {
+  return {
+    name: "Drenched In Lava Removal",
+    available: () => lavaDogsAccessible(),
+    ready: () => lavaDogsComplete(),
+    completed: () => !have($effect`Drenched in Lava`),
+    do: () => {
+      if (hotTubAvailable()) {
+        cliExecute("hottub");
+      }
+      if (have($effect`Drenched in Lava`)) {
+        uneffect($effect`Drenched in Lava`);
+      }
+    },
+  };
+}
+
 export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
     completed,
     tasks: [
       ...workshedTasks(),
+      handleDrenchedInLava(),
       fallbot(),
       closetStuff(),
       floristFriars(),
