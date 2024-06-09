@@ -2035,6 +2035,8 @@ export function freeFights(): void {
     1324: 5, // Fight a random partier
   });
 
+  killRobortCreaturesForFree();
+
   //  Use free fights on melanges if we have Tote/Squint and prices are reasonable.
   const canSquint =
     have($effect`Steely-Eyed Squint`) ||
@@ -2082,8 +2084,6 @@ export function freeFights(): void {
   runGarboQuests([PostQuest(), FreeFightQuest]);
 
   freeRunFights();
-
-  killRobortCreaturesForFree();
 
   tryFillLatte();
   postFreeFightDailySetup();
