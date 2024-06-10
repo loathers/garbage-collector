@@ -401,7 +401,7 @@ export function main(argString = ""): void {
       mpAutoRecoveryItems: mpItems,
       afterAdventureScript: "",
       betweenBattleScript: "",
-      choiceAdventureScript: "",
+      choiceAdventureScript: "garbo_choice.ash",
       counterScript: "",
       familiarScript: "",
       currentMood: "apathetic",

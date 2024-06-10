@@ -51,7 +51,6 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
-  bestDartChoices,
   EMBEZZLER_MULTIPLIER,
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
@@ -99,7 +98,7 @@ const isSteve = () =>
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
-  base: Omit<GarboTask, "outfit" | "do" | "spendsTurn"> & {
+  base: Omit<GarboTask, "outfit" | "do" | "spendsTurn" | "choices"> & {
     combat?: GarboStrategy;
   },
 ): GarboTask {
@@ -760,7 +759,6 @@ const BarfTurnTasks: GarboTask[] = [
           .skill($skill`Darts: Aim for the Bullseye`)
           .skill($skill`Spring Away`),
       ),
-      choices: { 1525: bestDartChoices() },
       duplicate: true,
     },
   ),
@@ -923,7 +921,6 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
-      choices: { 1525: bestDartChoices() },
       post: () => {
         completeBarfQuest();
         trackMarginalMpa();
