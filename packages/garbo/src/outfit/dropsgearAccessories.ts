@@ -10,6 +10,7 @@ import {
   getModifier,
   have,
   lgrCurrencies,
+  SongBoom,
   sumNumbers,
 } from "libram";
 import {
@@ -107,6 +108,22 @@ function cinchoDeMayo(mode: BonusEquipMode) {
 }
 
 /*
+Everfull Dart Holsters doesn't really drop anything; but because it's meat% is highly variable,
+we're doing some math to determine it's actual use value here.
+*/
+function dartHolster(mode: BonusEquipMode) {
+  if (!have($item`Everfull Dart Holster`) || mode !== BonusEquipMode.BARF) {
+    return new Map<Item, number>([]);
+  }
+
+  const numDarkPerks = get("everfullDartPerks").split(",").length;
+  const barfDrop = SongBoom.have() ? 325 : 250; // Average meat drop
+  return new Map<Item, number>([
+    [$item`Everfull Dart Holster`, numDarkPerks * 0.05 * barfDrop],
+  ]);
+}
+
+/*
 This is separate from bonusGear to prevent circular references
 bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
 If this isn't separated from bonusGear(), usingThumbRing() will call bonusGear(), creating a dangerous loop
@@ -118,6 +135,7 @@ export function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
     ...mrCheengsSpectacles(),
     ...mrScreegesSpectacles(),
     ...cinchoDeMayo(mode),
+    ...dartHolster(mode),
   ]);
 }
 

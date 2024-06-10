@@ -877,6 +877,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
+      choices: { 1525: bestDartChoices() },
       post: () => {
         completeBarfQuest();
         trackMarginalMpa();
