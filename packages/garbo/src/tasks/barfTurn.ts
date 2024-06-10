@@ -747,7 +747,11 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   wanderTask(
     "freefight",
-    { acc1: $item`Everfull Dart Holster`, acc2: $item`spring shoes` },
+    {
+      acc1: $item`Everfull Dart Holster`,
+      acc2: $item`spring shoes`,
+      modifier: "+ML",
+    },
     {
       name: "Darts: Bullseye",
       ready: () => haveBullseyeItems(),
