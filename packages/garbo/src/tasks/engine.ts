@@ -43,7 +43,7 @@ function logEmbezzler(encounterType: string) {
 export class BaseGarboEngine extends Engine<never, GarboTask> {
   static defaultSettings = {
     ...Engine.defaultSettings,
-    choiceAdventureScript: "garbo_choice.ash",
+    choiceAdventureScript: "garbo_choice.js",
   };
 
   available(task: GarboTask): boolean {
