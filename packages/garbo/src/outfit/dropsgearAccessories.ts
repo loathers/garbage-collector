@@ -6,6 +6,7 @@ import {
   $skill,
   $slot,
   CinchoDeMayo,
+  clamp,
   get,
   getModifier,
   have,
@@ -116,7 +117,7 @@ function dartHolster(mode: BonusEquipMode) {
     return new Map<Item, number>([]);
   }
 
-  const numDarkPerks = get("everfullDartPerks").split(",").length;
+  const numDarkPerks = clamp(get("everfullDartPerks").split(",").length, 1, 11);
   const barfDrop = SongBoom.have() ? 325 : 250; // Average meat drop
   return new Map<Item, number>([
     [$item`Everfull Dart Holster`, numDarkPerks * 0.05 * barfDrop],
