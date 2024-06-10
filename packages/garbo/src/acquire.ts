@@ -24,6 +24,7 @@ export const priceCaps: { [index: string]: number } = {
   "cuppa Sobrie tea": 200000,
   "potion of the field gar": 50000,
   "Special Seasoning": 20000,
+  "mini kiwi aioli": 20000,
   "whet stone": 20000,
   "spice melange": 500000,
   "mojo filter": 10000,

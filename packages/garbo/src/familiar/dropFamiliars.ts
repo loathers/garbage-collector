@@ -45,6 +45,7 @@ function valueStandardDropFamiliar({
   };
 }
 
+// Rotating Value familiars are those whose drop rate changes, compare Constant Value familiars
 const rotatingFamiliars: StandardDropFamiliar[] = [
   {
     familiar: $familiar`Fist Turkey`,
