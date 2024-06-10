@@ -763,6 +763,7 @@ const BarfTurnTasks: GarboTask[] = [
           .skill($skill`Darts: Aim for the Bullseye`)
           .skill($skill`Spring Away`),
       ),
+      sobriety: "sober",
       duplicate: true,
     },
   ),
