@@ -14,7 +14,6 @@ import {
   $skill,
   Delayed,
   get,
-  PropertiesManager,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -42,6 +41,11 @@ function logEmbezzler(encounterType: string) {
  * Runs extra logic before executing all tasks.
  */
 export class BaseGarboEngine extends Engine<never, GarboTask> {
+  static defaultSettings = {
+    ...Engine.defaultSettings,
+    choiceAdventureScript: "garbo_choice.ash",
+  };
+
   available(task: GarboTask): boolean {
     const taskSober = undelay(task.sobriety);
     if (taskSober) {
@@ -64,13 +68,6 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   prepare(task: GarboTask): void {
     if ("combat" in task) safeRestore();
     super.prepare(task);
-  }
-
-  initPropertiesManager(manager: PropertiesManager): void {
-    super.initPropertiesManager(manager);
-    manager.set({
-      choiceAdventureScript: "garbo_choice.ash",
-    });
   }
 
   execute(task: GarboTask): void {
