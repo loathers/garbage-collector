@@ -249,6 +249,7 @@ export function bonusGear(
           ...(mode === BonusEquipMode.BARF ? magnifyingGlass() : []),
           ...juneCleaver(mode),
           ...rakeLeaves(mode),
+          ...aviatorGoggles(mode),
         ])
       : []),
   ]);
@@ -346,6 +347,14 @@ function rakeLeaves(mode: BonusEquipMode): Map<Item, number> {
     [$item`rake`, rakeValue],
     [$item`tiny rake`, rakeValue],
   ]);
+}
+
+function aviatorGoggles(mode: BonusEquipMode): Map<Item, number> {
+  if (mode === BonusEquipMode.EMBEZZLER || !have($familiar`Mini Kiwi`)) {
+    return new Map();
+  }
+  const goggleValue = garboValue($item`mini kiwi`) * 0.25;
+  return new Map<Item, number>([[$item`aviator goggles`, goggleValue]]);
 }
 
 function stickers(mode: BonusEquipMode): Map<Item, number> {

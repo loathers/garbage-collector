@@ -100,7 +100,10 @@ export function yachtzeeBuffValue(obj: Item | Effect): number {
 
 export function useSpikolodonSpikes(): void {
   if (get("_spikolodonSpikeUses") >= 5) return;
-  const run = tryFindFreeRunOrBanish(freeRunConstraints(false)) ?? ltbRun();
+  const run =
+    tryFindFreeRunOrBanish(
+      freeRunConstraints({ equip: $items`Jurassic Parka` }),
+    ) ?? ltbRun();
 
   const canJelly =
     have($familiar`Space Jellyfish`) &&

@@ -196,7 +196,10 @@ export function saberCrateIfSafe(): void {
     have($item`Fourth of May Cosplay Saber`) && get("_saberForceUses") < 5;
   const isSafeToSaber = !gregReady() || get("_saberForceMonsterCount") > 0;
   if (!canSaber || !isSafeToSaber) return;
-  const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
+  const run =
+    tryFindFreeRun(
+      freeRunConstraints({ equip: $items`Fourth of May Cosplay Saber` }),
+    ) ?? ltbRun();
 
   do {
     useFamiliar(
@@ -256,7 +259,15 @@ function initializeCrates(): void {
           (have($item`latte lovers member's mug`) && !isLatted(crate))))
     ) {
       const possibleBanish = ltbRun();
-      const run = tryFindFreeRun(freeRunConstraints(false)) ?? possibleBanish;
+      const run =
+        tryFindFreeRun(
+          freeRunConstraints({
+            equip:
+              $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter(
+                (item) => have(item),
+              ),
+          }),
+        ) ?? possibleBanish;
 
       setChoice(1387, 2); // use the force, in case we decide to use that
 
@@ -373,7 +384,10 @@ const combatItem = (item: Item, maxPrice?: number): Banish => ({
 });
 
 function springKickBanish(): Banish {
-  const run = tryFindFreeRunOrBanish(freeRunConstraints(false)) ?? ltbRun();
+  const run =
+    tryFindFreeRunOrBanish(
+      freeRunConstraints({ equip: $items`spring shoes` }),
+    ) ?? ltbRun();
   return {
     name: "Spring Kick",
     available: () => have($item`spring shoes`),

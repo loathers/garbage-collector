@@ -4,6 +4,7 @@ import { garboValue } from "../garboValue";
 import { getBestLuckyAdventure } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { toItem } from "kolmafia";
+import { estimatedBarfExperience } from "../familiar";
 
 const instruments: {
   instrument: AprilingBandHelmet.Instrument;
@@ -25,13 +26,13 @@ const instruments: {
     value: () =>
       Math.max(
         0,
-        ...getExperienceFamiliars("free").map(({ familiar, expectedValue }) => {
+        ...getExperienceFamiliars("barf").map(({ familiar, expectedValue }) => {
           const usesAllowed = clamp(
             Math.floor((400 - familiar.experience) / 40),
             0,
             3,
           );
-          return (expectedValue / 12) * 40 * usesAllowed;
+          return (expectedValue / estimatedBarfExperience()) * 40 * usesAllowed;
         }),
       ),
   },

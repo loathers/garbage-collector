@@ -27,6 +27,7 @@ import {
   mySpleenUse,
   npcPrice,
   print,
+  retrieveItem,
   retrievePrice,
   sellsItem,
   setProperty,
@@ -150,7 +151,7 @@ function consumeSafe(
   const averageAdventures = getAverageAdventures(item);
   if (!skipAcquire && (averageAdventures > 0 || additionalValue)) {
     const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
-    acquire(qty, item, cap);
+    acquire(qty, item, cap, true);
   } else if (!skipAcquire) {
     acquire(qty, item);
   }
@@ -457,6 +458,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`iced plum wine`),
     new MenuItem($item`splendid martini`),
     new MenuItem($item`low tide martini`),
+    new MenuItem($item`yam martini`),
     new MenuItem($item`Eye and a Twist`),
     new MenuItem($item`jar of fermented pickle juice`),
     new MenuItem(mallMin(complexMushroomWines)),
@@ -482,6 +484,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(Mayo.flex),
     new MenuItem(Mayo.zapine),
     new MenuItem($item`Special Seasoning`),
+    new MenuItem($item`mini kiwi aioli`),
     new MenuItem($item`whet stone`),
     new MenuItem(saladFork),
     new MenuItem(frostyMug),
@@ -915,6 +918,7 @@ export function computeDiet(): {
                 Mayo.flex,
                 Mayo.zapine,
                 $item`Special Seasoning`,
+                $item`mini kiwi aioli`,
                 $item`whet stone`,
               ].includes(menuItem.item),
           ),
@@ -1158,6 +1162,13 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           },
         ],
         [$item`Special Seasoning`, "skip"],
+        [
+          $item`mini kiwi aioli`,
+          (countToConsume: number, menuItem: MenuItem<Note>) => {
+            retrieveItem(menuItem.item, countToConsume);
+            use(menuItem.item);
+          },
+        ],
         [
           $item`Rethinking Candy`,
           (countToConsume: number, menuItem: MenuItem<Note>) =>
