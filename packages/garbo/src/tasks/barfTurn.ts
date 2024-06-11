@@ -510,18 +510,18 @@ const NonBarfTurnTasks: AlternateTask[] = [
   },
 ];
 
-const haveBullseyePerks = () =>
+const guaranteedBullseye = () =>
   get("everfullDartPerks").includes("25% Better bullseye targeting") &&
   get("everfullDartPerks").includes("25% More Accurate bullseye targeting") &&
   get("everfullDartPerks").includes("25% better chance to hit bullseyes");
 
-const haveBullseyeItems = () =>
-  haveBullseyePerks()
+const safeToAttemptBullseye = () =>
+  guaranteedBullseye()
     ? have($item`Everfull Dart Holster`)
     : have($item`Everfull Dart Holster`) && have($item`spring shoes`);
 
-const shouldBullseye = () =>
-  haveBullseyePerks()
+const canBullseye = () =>
+  guaranteedBullseye()
     ? have($effect`Everything Looks Red`)
     : have($effect`Everything Looks Red`) ||
       have($effect`Everything Looks Green`);
@@ -756,14 +756,15 @@ const BarfTurnTasks: GarboTask[] = [
     "freefight",
     {
       acc1: $item`Everfull Dart Holster`,
-      acc2: !haveBullseyePerks() ? $item`spring shoes` : [],
-      modifier: !haveBullseyePerks() ? "+ML" : [],
+      acc2: !guaranteedBullseye() ? $item`spring shoes` : [],
+      modifier: !guaranteedBullseye() ? "+ML" : [],
     },
     {
       name: "Darts: Bullseye",
       ready: () =>
-        haveBullseyePerks() || (!dartLevelTooHigh() && haveBullseyeItems()),
-      completed: () => shouldBullseye(),
+        guaranteedBullseye() ||
+        (!dartLevelTooHigh() && safeToAttemptBullseye()),
+      completed: () => canBullseye(),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
@@ -808,7 +809,7 @@ const BarfTurnTasks: GarboTask[] = [
           TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
         (!have($item`Everfull Dart Holster`) ||
           (have($effect`Everything Looks Red`) && !dartLevelTooHigh()) ||
-          haveBullseyePerks()),
+          guaranteedBullseye()),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
