@@ -807,7 +807,7 @@ const BarfTurnTasks: GarboTask[] = [
         (getWorkshed() !== $item`model train set` ||
           TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
         (!have($item`Everfull Dart Holster`) ||
-          have($effect`Everything Looks Red`) ||
+          (have($effect`Everything Looks Red`) && !dartLevelTooHigh()) ||
           haveBullseyePerks()),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(() =>
