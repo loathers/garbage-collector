@@ -1,13 +1,5 @@
 import { Effect, Item, myLevel, useFamiliar } from "kolmafia";
-import {
-  $item,
-  CinchoDeMayo,
-  clamp,
-  get,
-  maxBy,
-  MayamCalendar,
-  sum,
-} from "libram";
+import { $item, CinchoDeMayo, clamp, get, maxBy, MayamCalendar } from "libram";
 import { garboValue } from "../garboValue";
 import { GarboTask } from "../tasks/engine";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
@@ -104,12 +96,105 @@ const MAYAM_RING_OPTIONS = [
   ],
 ] as const;
 
-type RingOption<R extends number> = (typeof MAYAM_RING_OPTIONS)[R][number];
+type RingOptionSet0 = (typeof MAYAM_RING_OPTIONS)[0][number];
+type RingOptionSet1 = (typeof MAYAM_RING_OPTIONS)[1][number];
+type RingOptionSet2 = (typeof MAYAM_RING_OPTIONS)[2][number];
+type RingOptionSet3 = (typeof MAYAM_RING_OPTIONS)[3][number];
 
-function symbolsAvailable<R extends number>(
-  ringOptions: readonly RingOption<R>[],
-): RingOption<R>[] {
+type RingOptionsArray = [
+  RingOptionSet0[],
+  RingOptionSet1[],
+  RingOptionSet2[],
+  RingOptionSet3[],
+];
+
+function findBestThreeValueCombinations(
+  ringOptionsArray: RingOptionsArray,
+): { combination: MayamCalendar.Combination; value: number }[] {
+  const combinations: {
+    combination: MayamCalendar.Combination;
+    value: number;
+  }[] = [];
+
+  for (const option1 of ringOptionsArray[0]) {
+    for (const option2 of ringOptionsArray[1]) {
+      for (const option3 of ringOptionsArray[2]) {
+        for (const option4 of ringOptionsArray[3]) {
+          const combination = [
+            option1.choice,
+            option2.choice,
+            option3.choice,
+            option4.choice,
+          ] as MayamCalendar.Combination;
+          const value =
+            option1.value() +
+            option2.value() +
+            option3.value() +
+            option4.value();
+
+          combinations.push({ combination, value });
+        }
+      }
+    }
+  }
+
+  // Sort combinations by value in descending order and return the top three
+  combinations.sort((a, b) => b.value - a.value);
+  return combinations.slice(0, 3);
+}
+
+function symbolsAvailable0(
+  ringOptions: readonly RingOptionSet0[],
+): RingOptionSet0[] {
   return ringOptions.filter(({ choice }) => MayamCalendar.available(choice));
+}
+
+function symbolsAvailable1(
+  ringOptions: readonly RingOptionSet1[],
+): RingOptionSet1[] {
+  return ringOptions.filter(({ choice }) => MayamCalendar.available(choice));
+}
+
+function symbolsAvailable2(
+  ringOptions: readonly RingOptionSet2[],
+): RingOptionSet2[] {
+  return ringOptions.filter(({ choice }) => MayamCalendar.available(choice));
+}
+
+function symbolsAvailable3(
+  ringOptions: readonly RingOptionSet3[],
+): RingOptionSet3[] {
+  return ringOptions.filter(({ choice }) => MayamCalendar.available(choice));
+}
+
+function getAvailableRingOptions(): RingOptionsArray {
+  return [
+    symbolsAvailable0(MAYAM_RING_OPTIONS[0]),
+    symbolsAvailable1(MAYAM_RING_OPTIONS[1]),
+    symbolsAvailable2(MAYAM_RING_OPTIONS[2]),
+    symbolsAvailable3(MAYAM_RING_OPTIONS[3]),
+  ];
+}
+
+function findBestRingValues(): (
+  | MayamCalendar.Combination
+  | [MayamCalendar.CombinationString]
+)[] {
+  const availableRingOptions = getAvailableRingOptions();
+
+  const bestCombinations = findBestThreeValueCombinations(availableRingOptions);
+
+  const maxResonance = maxBy(availableResonances(), "value");
+
+  const resultCombinations = bestCombinations.map(
+    ({ combination }) => combination,
+  );
+
+  if (maxResonance && maxResonance.value > bestCombinations[0].value) {
+    return [[maxResonance.combination as MayamCalendar.CombinationString]];
+  } else {
+    return resultCombinations;
+  }
 }
 
 function effectValue(effect: Effect, duration: number): number {
@@ -146,49 +231,23 @@ const availableResonances = () => {
     }));
 };
 
-function findBestRingValue():
-  | MayamCalendar.Combination
-  | [MayamCalendar.CombinationString] {
-  const bestSymbols = MAYAM_RING_OPTIONS.map(symbolsAvailable).map(
-    (filteredOptions) => maxBy(filteredOptions, (option) => option.value()),
-  ) as [RingOption<0>, RingOption<1>, RingOption<2>, RingOption<3>];
-
-  // Check for the highest value resonance
-  const maxResonance = maxBy(availableResonances(), "value");
-
-  // Sum the total ring value and determine the resonance value
-  const totalRingValue = sum(bestSymbols, (option) => option.value());
-  const ring = bestSymbols.map(
-    ({ choice }) => choice,
-  ) as MayamCalendar.Combination;
-
-  // If the resonance is worth more than the best possible rings, return the resonance, otherwise return the four rings
-  if (maxResonance && maxResonance.value > totalRingValue) {
-    return [maxResonance.combination as MayamCalendar.CombinationString];
-  } else {
-    return ring;
-  }
-}
-
 function summonTask(): GarboTask {
   return {
     name: "Mayam Summons",
     completed: () => MayamCalendar.remainingUses() === 0,
     do: () => {
       while (MayamCalendar.remainingUses() > 0) {
-        const ringOptions = findBestRingValue();
-        const includesFur = ringOptions.some((entry) => entry.includes("fur"));
+        const ringOptions = findBestRingValues();
 
-        // If we're going to use Fur, determine the best experience familiar and use it before using any rings
-        if (includesFur) {
-          const bestFamiliar = maxBy(
-            getExperienceFamiliars("free"),
-            "expectedValue",
-          ).familiar;
-          useFamiliar(bestFamiliar);
+        const bestFamiliar = maxBy(
+          getExperienceFamiliars("free"),
+          "expectedValue",
+        ).familiar;
+        useFamiliar(bestFamiliar);
+
+        for (const option of ringOptions) {
+          MayamCalendar.submit(...option);
         }
-
-        MayamCalendar.submit(...ringOptions);
       }
       return true;
     },
