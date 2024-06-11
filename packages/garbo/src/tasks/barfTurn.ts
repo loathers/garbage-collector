@@ -512,7 +512,8 @@ const NonBarfTurnTasks: AlternateTask[] = [
 
 const haveBullseyePerks = () =>
   get("everfullDartPerks").includes("25% Better bullseye targeting") &&
-  get("everfullDartPerks").includes("25% More Accurate bullseye targeting");
+  get("everfullDartPerks").includes("25% More Accurate bullseye targeting") &&
+  get("everfullDartPerks").includes("25% better chance to hit bullseyes");
 
 const haveBullseyeItems = () =>
   haveBullseyePerks()
@@ -749,8 +750,8 @@ const BarfTurnTasks: GarboTask[] = [
     "freefight",
     {
       acc1: $item`Everfull Dart Holster`,
-      acc2: $item`spring shoes`,
-      modifier: "+ML",
+      acc2: haveBullseyePerks() ? $item`spring shoes` : undefined,
+      modifier: haveBullseyePerks() ? "+ML" : undefined,
     },
     {
       name: "Darts: Bullseye",
