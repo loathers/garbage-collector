@@ -134,7 +134,7 @@ function doCandyTreat(): GarboTask {
         .split("")
         .entries()) {
         if (["L", "S"].includes(house)) {
-          visitHouse(index + 1);
+          visitHouse(index);
           if (house === "S") {
             runChoice(2);
             visitBlock();
@@ -178,8 +178,8 @@ export function doCandyTrick(): GarboTask {
       get("_mapToACandyRichBlockUsed") &&
       trickHats.some((hat) => have(hat)),
     do: (): void => {
-      const houseNumber = get("_trickOrTreatBlock").indexOf("D") + 1;
-      if (!houseNumber) return;
+      const houseNumber = get("_trickOrTreatBlock").indexOf("D");
+      if (houseNumber < 0) return;
       visitBlock();
       visitHouse(houseNumber);
     },
