@@ -515,6 +515,11 @@ const haveBullseyePerks = () =>
   get("everfullDartPerks").includes("25% More Accurate bullseye targeting") &&
   get("everfullDartPerks").includes("25% better chance to hit bullseyes");
 
+const haveBullseyeItems = () =>
+  haveBullseyePerks()
+    ? have($item`Everfull Dart Holster`)
+    : have($item`Everfull Dart Holster`) && have($item`spring shoes`);
+
 const shouldBullseye = () =>
   haveBullseyePerks()
     ? have($effect`Everything Looks Red`)
@@ -756,7 +761,8 @@ const BarfTurnTasks: GarboTask[] = [
     },
     {
       name: "Darts: Bullseye",
-      ready: () => haveBullseyePerks() || !dartLevelTooHigh(),
+      ready: () =>
+        haveBullseyePerks() || (!dartLevelTooHigh() && haveBullseyeItems()),
       completed: () => shouldBullseye(),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
