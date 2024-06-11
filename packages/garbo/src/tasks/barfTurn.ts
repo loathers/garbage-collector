@@ -756,8 +756,8 @@ const BarfTurnTasks: GarboTask[] = [
     "freefight",
     {
       acc1: $item`Everfull Dart Holster`,
-      acc2: haveBullseyePerks() ? $item`spring shoes` : [],
-      modifier: haveBullseyePerks() ? "+ML" : [],
+      acc2: !haveBullseyePerks() ? $item`spring shoes` : [],
+      modifier: !haveBullseyePerks() ? "+ML" : [],
     },
     {
       name: "Darts: Bullseye",
@@ -807,7 +807,8 @@ const BarfTurnTasks: GarboTask[] = [
         (getWorkshed() !== $item`model train set` ||
           TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
         (!have($item`Everfull Dart Holster`) ||
-          have($effect`Everything Looks Red`)),
+          have($effect`Everything Looks Red`) ||
+          haveBullseyePerks()),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
