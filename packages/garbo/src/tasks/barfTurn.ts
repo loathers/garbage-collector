@@ -750,8 +750,8 @@ const BarfTurnTasks: GarboTask[] = [
     "freefight",
     {
       acc1: $item`Everfull Dart Holster`,
-      acc2: haveBullseyePerks() ? $item`spring shoes` : undefined,
-      modifier: haveBullseyePerks() ? "+ML" : undefined,
+      acc2: haveBullseyePerks() ? $item`spring shoes` : [],
+      modifier: haveBullseyePerks() ? "+ML" : [],
     },
     {
       name: "Darts: Bullseye",
