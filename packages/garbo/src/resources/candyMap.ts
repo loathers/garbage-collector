@@ -130,10 +130,12 @@ function doCandyTreat(): GarboTask {
     outfit: treatOutfit,
     do: (): void => {
       visitBlock();
+
+      const houses = [...get("_trickOrTreatBlock").split("").entries()].filter(
+        ([, house]) => ["L", "S"].includes(house),
+      );
       // We do all treat houses in a row as one task for speed reasons
-      for (const [index, house] of get("_trickOrTreatBlock")
-        .split("")
-        .entries()) {
+      for (const [index, house] of houses) {
         if (["L", "S"].includes(house)) {
           visitHouse(index);
           if (house === "S") {
