@@ -94,7 +94,6 @@ import {
   SongBoom,
   SourceTerminal,
   sum,
-  Switch,
   tryFindBanish,
   tryFindFreeRun,
   uneffect,
@@ -1105,23 +1104,4 @@ export function getBestLuckyAdventure(): LuckyAdventure {
     bestLuckyAdventure = determineBestLuckyAdventure();
   }
   return bestLuckyAdventure;
-}
-
-export const dartParts: Switch<string, string[]> = {
-  Meat: ["Branch", "Door", "Foot", "Psuedopod", "Thorax", "Torso"],
-  Item: ["Butt"],
-  default: [],
-};
-
-export function attemptDartThrows(part: undefined | string | string[]): Macro {
-  const result = new Macro();
-  if (part === undefined) return result;
-
-  const partList = typeof part === "string" ? [part] : part;
-  for (const p of partList) {
-    result.step(
-      `while hasskill Darts: Throw at ${p}; skill Darts: Throw at ${p}; endwhile;`,
-    );
-  }
-  return result;
 }

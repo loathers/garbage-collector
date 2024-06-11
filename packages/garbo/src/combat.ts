@@ -54,11 +54,7 @@ import {
 import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
-import {
-  attemptDartThrows,
-  maxPassiveDamage,
-  monsterManuelAvailable,
-} from "./lib";
+import { maxPassiveDamage, monsterManuelAvailable } from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
 
 export function shouldRedigitize(): boolean {
@@ -323,10 +319,6 @@ export class Macro extends StrictMacro {
       .externalIf(
         myClass() === $class`Cheese Wizard` && myFamiliar().experience < 400,
         Macro.trySkill($skill`Stilton Splatter`),
-      )
-      .externalIf(
-        equippedAmount($item`Everfull Dart Holster`) >= 1,
-        attemptDartThrows("Meat"),
       )
       .kill();
   }
