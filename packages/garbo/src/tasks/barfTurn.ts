@@ -83,6 +83,11 @@ import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
+import {
+  canBullseye,
+  guaranteedBullseye,
+  safeToAttemptBullseye,
+} from "../resources/darts";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -98,7 +103,7 @@ const isSteve = () =>
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
-  base: Omit<GarboTask, "outfit" | "do" | "spendsTurn" | "choices"> & {
+  base: Omit<GarboTask, "outfit" | "do" | "choices" | "spendsTurn"> & {
     combat?: GarboStrategy;
   },
 ): GarboTask {
@@ -509,23 +514,6 @@ const NonBarfTurnTasks: AlternateTask[] = [
   },
 ];
 
-const haveBullseyePerks = () =>
-  get("everfullDartPerks").includes("25% Better bullseye targeting") &&
-  get("everfullDartPerks").includes("25% More Accurate bullseye targeting") &&
-  get("everfullDartPerks").includes("25% better chance to hit bullseyes");
-
-const shouldBullseye = () =>
-  haveBullseyePerks()
-    ? have($effect`Everything Looks Red`)
-    : have($effect`Everything Looks Red`) ||
-      have($effect`Everything Looks Green`);
-
-const dartLevelAtWhichThingsJustStartDying = 5;
-
-const dartLevelTooHigh = () =>
-  get("everfullDartPerks").split(",").length >=
-  dartLevelAtWhichThingsJustStartDying;
-
 const BarfTurnTasks: GarboTask[] = [
   {
     name: "Latte",
@@ -750,13 +738,13 @@ const BarfTurnTasks: GarboTask[] = [
     "freefight",
     {
       acc1: $item`Everfull Dart Holster`,
-      acc2: haveBullseyePerks() ? $item`spring shoes` : [],
-      modifier: haveBullseyePerks() ? "+ML" : [],
+      acc2: guaranteedBullseye() ? [] : $item`spring shoes`,
+      modifier: guaranteedBullseye() ? [] : "Monster Level",
     },
     {
       name: "Darts: Bullseye",
-      ready: () => haveBullseyePerks() || !dartLevelTooHigh(),
-      completed: () => shouldBullseye(),
+      ready: () => guaranteedBullseye() || safeToAttemptBullseye(),
+      completed: () => !canBullseye(),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
@@ -800,7 +788,9 @@ const BarfTurnTasks: GarboTask[] = [
         (getWorkshed() !== $item`model train set` ||
           TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
         (!have($item`Everfull Dart Holster`) ||
-          have($effect`Everything Looks Red`)),
+          have($effect`Everything Looks Red`) ||
+          guaranteedBullseye() ||
+          !safeToAttemptBullseye()),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(
         () =>
