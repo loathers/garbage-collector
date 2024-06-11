@@ -129,6 +129,7 @@ function doCandyTreat(): GarboTask {
       !holiday().includes("Halloween") && get("_mapToACandyRichBlockUsed"),
     outfit: treatOutfit,
     do: (): void => {
+      visitBlock();
       // We do all treat houses in a row as one task for speed reasons
       for (const [index, house] of get("_trickOrTreatBlock")
         .split("")
@@ -178,9 +179,9 @@ export function doCandyTrick(): GarboTask {
       get("_mapToACandyRichBlockUsed") &&
       trickHats.some((hat) => have(hat)),
     do: (): void => {
+      visitBlock();
       const houseNumber = get("_trickOrTreatBlock").indexOf("D");
       if (houseNumber < 0) return;
-      visitBlock();
       visitHouse(houseNumber);
     },
     outfit: (): Outfit => {
