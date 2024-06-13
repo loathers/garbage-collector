@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4445d895339473ff9fd560ecf16bd8f6fb30680d", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a62c72024c9c2596e665491fd6a88e130964f19f", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -50140,8 +50140,6 @@ function main() {
           preventEquip: preventEquip,
           preventSlot: $slots(_templateObject3235 || (_templateObject3235 = _taggedTemplateLiteral124(["buddy-bjorn, crown-of-thrones"])))
         });
-        potionSetup(true);
-        useBuffExtenders();
         freeFights();
         runGarboQuests([SetupEmbezzlerQuest]);
         yachtzeeChain();
