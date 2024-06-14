@@ -172,7 +172,7 @@ export function oldyachtzeeChain(): void {
     runDiet();
     prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed
   }
-  freeRunFights();
+  freeRunFights(false);
   postFreeFightDailySetup();
 }
 

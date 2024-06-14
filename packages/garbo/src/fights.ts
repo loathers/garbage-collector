@@ -1995,7 +1995,7 @@ function embezzlersInProgress(): boolean {
   );
 }
 
-export function freeRunFights(): void {
+export function freeRunFights(priorityOnly: boolean): void {
   if (myInebriety() > inebrietyLimit()) return;
   if (embezzlersInProgress()) return;
 
@@ -2003,10 +2003,6 @@ export function freeRunFights(): void {
     1387: 2, // "You will go find two friends and meet me here."
     1324: 5, // Fight a random partier
   });
-
-  const onlyPriorityRuns =
-    globalOptions.prefs.yachtzeechain &&
-    !get("_garboYachtzeeChainCompleted", false);
 
   const stashRun = stashAmount($item`navel ring of navel gazing`)
     ? $items`navel ring of navel gazing`
@@ -2019,7 +2015,7 @@ export function freeRunFights(): void {
     for (const priorityRunFight of priorityFreeRunFightSources) {
       priorityRunFight.runAll();
     }
-    if (onlyPriorityRuns) return;
+    if (priorityOnly) return;
     for (const freeRunFightSource of freeRunFightSources) {
       freeRunFightSource.runAll();
     }
@@ -2035,7 +2031,8 @@ export function freeFights(): void {
     1324: 5, // Fight a random partier
   });
 
-  freeRunFights();
+  // Run our priorty free runs first
+  freeRunFights(true);
 
   killRobortCreaturesForFree();
 
@@ -2075,6 +2072,7 @@ export function freeFights(): void {
     );
   }
 
+  // Free fights before free runs, so that we have free banishes available for things like Pygmies
   // TODO: Run unconverted free fights
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
@@ -2083,6 +2081,8 @@ export function freeFights(): void {
   // TODO: Run grimorized free fights until all are converted
   // TODO: freeFightMood()
   runGarboQuests([PostQuest(), FreeFightQuest]);
+
+  freeRunFights(false);
 
   tryFillLatte();
   postFreeFightDailySetup();
