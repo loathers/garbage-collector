@@ -1102,23 +1102,6 @@ const freeFightSources = [
     pygmyOptions(),
   ),
 
-  new FreeFight(
-    () =>
-      get("questL11Ron") === "finished"
-        ? clamp(5 - get("_glarkCableUses"), 0, itemAmount($item`glark cable`))
-        : 0,
-    () => {
-      garboAdventure(
-        $location`The Red Zeppelin`,
-        Macro.item($item`glark cable`),
-      );
-    },
-    true,
-    {
-      macroAllowsFamiliarActions: false,
-    },
-  ),
-
   // Mushroom garden
   new FreeFight(
     () =>
@@ -2062,17 +2045,6 @@ export function freeFights(): void {
         cliExecute("fold wad of used tape");
       }
     }
-  }
-
-  if (
-    canAdventure($location`The Red Zeppelin`) &&
-    !have($item`glark cable`, clamp(5 - get("_glarkCableUses"), 0, 5))
-  ) {
-    buy(
-      clamp(5 - get("_glarkCableUses"), 0, 5),
-      $item`glark cable`,
-      globalOptions.prefs.valueOfFreeFight,
-    );
   }
 
   // TODO: Run unconverted free fights
