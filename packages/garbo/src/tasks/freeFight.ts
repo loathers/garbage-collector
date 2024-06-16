@@ -464,13 +464,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         {},
         { canChooseMacro: false, allowAttackFamiliars: false },
       ),
-    prepare: () =>
-      acquire(
-        1,
-        $item`glark cable`,
-        globalOptions.prefs.valueOfFreeFight,
-        true,
-      ),
+    acquire: [{ item: $item`glark cable` }],
     combatCount: () => clamp(5 - get("_glarkCableUses"), 0, 5),
     combat: new GarboStrategy(() =>
       Macro.ifNot(
