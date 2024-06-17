@@ -62,6 +62,7 @@ import {
   realmAvailable,
   SongBoom,
   SourceTerminal,
+  sumNumbers,
   uneffect,
   Witchess,
 } from "libram";
@@ -83,6 +84,7 @@ import {
   checkVolcanoQuest,
 } from "../resources";
 import { GarboStrategy, Macro } from "../combat";
+import { luckyGoldRingDropValues } from "../outfit/lib";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
@@ -316,6 +318,16 @@ export function configureSnojo(): void {
     runChoice(option);
     snojoConfigured = true;
   }
+}
+
+function freddiesProfitable(): boolean {
+  const valuesWithoutFreddy = luckyGoldRingDropValues(false, false);
+  const valuesWithFreddy = luckyGoldRingDropValues(false, true);
+
+  return (
+    sumNumbers(valuesWithFreddy) / valuesWithFreddy.length / 10 >
+    sumNumbers(valuesWithoutFreddy) / valuesWithoutFreddy.length / 10
+  );
 }
 
 const DailyTasks: GarboTask[] = [
@@ -765,6 +777,13 @@ const DailyTasks: GarboTask[] = [
     ready: () => have($familiar`Hobo Monkey`) || have($item`hobo nickel`, 1000),
     completed: () => itemAmount($item`hobo nickel`) === 0,
     do: () => putCloset(itemAmount($item`hobo nickel`), $item`hobo nickel`),
+    spendsTurn: false,
+  },
+  {
+    name: "Closet Freddies",
+    completed: () => freddiesProfitable(),
+    do: () =>
+      putCloset(itemAmount($item`Freddy Kruegerand`), $item`Freddy Kruegerand`),
     spendsTurn: false,
   },
   {

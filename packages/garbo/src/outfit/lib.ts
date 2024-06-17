@@ -7,6 +7,7 @@ import {
   equippedItem,
   inebrietyLimit,
   Item,
+  itemAmount,
   mallPrice,
   myClass,
   myInebriety,
@@ -26,6 +27,7 @@ import {
   findLeprechaunMultiplier,
   getFoldGroup,
   have,
+  lgrCurrencies,
   Requirement,
 } from "libram";
 import { acquire } from "../acquire";
@@ -34,6 +36,7 @@ import { copyTargetCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
 import { baseMeat } from "../lib";
 import { digitizedMonstersRemaining } from "../turns";
+import { garboValue } from "../garboValue";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) =>
@@ -160,4 +163,25 @@ export function validateGarbageFoldable(spec: OutfitSpec): void {
       break;
     }
   }
+}
+
+export function luckyGoldRingDropValues(
+  includeVolcoino: boolean,
+  includeFreddy: boolean,
+): number[] {
+  // Volcoino has a low drop rate which isn't accounted for here
+  // Overestimating until it drops is probably fine, don't @ me
+  const dropValues = [
+    100, // 80 - 120 meat
+    ...[
+      itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
+      itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
+      includeFreddy ? garboValue($item`Freddy Kruegerand`) : 0,
+      ...lgrCurrencies().map((i) =>
+        i === $item`Volcoino` && !includeVolcoino ? 0 : garboValue(i),
+      ),
+    ].filter((value) => value > 0),
+  ];
+
+  return dropValues;
 }
