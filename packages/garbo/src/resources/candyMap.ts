@@ -7,7 +7,6 @@ import {
   getSaleValue,
   have,
   maxBy,
-  set,
   sum,
   withChoice,
 } from "libram";
@@ -31,15 +30,11 @@ import { GarboStrategy, Macro } from "../combat";
 import { freeFightOutfit } from "../outfit";
 import { globalOptions } from "../config";
 
-const HOUSE_NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-const checkedHousesForTricking: number[] = [];
-let blockHtml = "";
-function getBlockHtml(): string {
-  blockHtml ||= visitUrl("place.php?whichplace=town&action=town_trickortreat");
-  return blockHtml;
-}
-
 const trickHats = $items`invisible bag, witch hat, beholed bedsheet, wolfman mask, pumpkinhead mask, mummy costume`;
+const visitBlock = () =>
+  visitUrl(`place.php?whichplace=town&action=town_trickortreat`);
+const visitHouse = (house: number) =>
+  runChoice(3, `whichhouse=${house.toFixed(0)}`);
 
 function treatValue(outfit: string): number {
   return sum(
@@ -118,7 +113,6 @@ function useCandyMapTask(): GarboTask {
         )
       ) {
         withChoice(804, 2, () => use($item`map to a candy-rich block`));
-        set("_mapToACandyRichBlockUsed", "true");
       }
     },
     limit: { skip: 1 },
@@ -126,34 +120,30 @@ function useCandyMapTask(): GarboTask {
   };
 }
 
-let treated = false;
 function doCandyTreat(): GarboTask {
   return {
     name: "Treat",
-    completed: () => treated,
+    completed: () =>
+      !["L", "S"].some((house) => get("_trickOrTreatBlock").includes(house)),
     ready: () =>
       !holiday().includes("Halloween") && get("_mapToACandyRichBlockUsed"),
     outfit: treatOutfit,
     do: (): void => {
+      visitBlock();
+
+      const houses = [...get("_trickOrTreatBlock").split("").entries()].filter(
+        ([, house]) => ["L", "S"].includes(house),
+      );
       // We do all treat houses in a row as one task for speed reasons
-      for (const house of HOUSE_NUMBERS) {
-        if (getBlockHtml().match(RegExp(`whichhouse=${house}>[^>]*?house_l`))) {
-          checkedHousesForTricking.push(house);
-          visitUrl(
-            `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`,
-          );
-        } else if (
-          getBlockHtml().match(RegExp(`whichhouse=${house}>[^>]*?starhouse`))
-        ) {
-          checkedHousesForTricking.push(house);
-          visitUrl(
-            `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`,
-          );
-          runChoice(2);
-          visitUrl(`place.php?whichplace=town&action=town_trickortreat`);
+      for (const [index, house] of houses) {
+        if (["L", "S"].includes(house)) {
+          visitHouse(index);
+          if (house === "S") {
+            runChoice(2);
+            visitBlock();
+          }
         }
       }
-      treated = true;
     },
     spendsTurn: false,
     combat: new GarboStrategy(() =>
@@ -185,23 +175,16 @@ export function candyMapDailyTasks(): GarboTask[] {
 export function doCandyTrick(): GarboTask {
   return {
     name: "Trick",
-    completed: () => checkedHousesForTricking.length >= HOUSE_NUMBERS.length,
+    completed: () => !get("_trickOrTreatBlock").includes("D"),
     ready: () =>
       !holiday().includes("Halloween") &&
       get("_mapToACandyRichBlockUsed") &&
       trickHats.some((hat) => have(hat)),
     do: (): void => {
-      for (const house of HOUSE_NUMBERS) {
-        if (checkedHousesForTricking.includes(house)) continue;
-        checkedHousesForTricking.push(house);
-        if (getBlockHtml().match(RegExp(`whichhouse=${house}>[^>]*?house_d`))) {
-          visitUrl(`place.php?whichplace=town&action=town_trickortreat`);
-          visitUrl(
-            `choice.php?whichchoice=804&option=3&whichhouse=${house}&pwd`,
-          );
-          return;
-        }
-      }
+      visitBlock();
+      const houseNumber = get("_trickOrTreatBlock").indexOf("D");
+      if (houseNumber < 0) return;
+      visitHouse(houseNumber);
     },
     outfit: (): Outfit => {
       const hat = trickHats.find((hat) => have(hat));
