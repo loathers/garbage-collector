@@ -325,8 +325,8 @@ function freddiesProfitable(): boolean {
   const valuesWithFreddy = luckyGoldRingDropValues(false, true);
 
   return (
-    sumNumbers(valuesWithFreddy) / valuesWithFreddy.length / 10 >
-    sumNumbers(valuesWithoutFreddy) / valuesWithoutFreddy.length / 10
+    sumNumbers(valuesWithFreddy) / valuesWithFreddy.length >
+    sumNumbers(valuesWithoutFreddy) / valuesWithoutFreddy.length
   );
 }
 
