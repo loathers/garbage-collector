@@ -9,6 +9,7 @@ import {
   get,
   getModifier,
   have,
+  lgrCurrencies,
   sumNumbers,
 } from "libram";
 import {
@@ -20,7 +21,7 @@ import {
   monsterManuelAvailable,
 } from "../lib";
 import { globalOptions } from "../config";
-import { luckyGoldRingDropValues } from "./lib";
+import { garboValue } from "../garboValue";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -30,6 +31,27 @@ function mafiaThumbRing(mode: BonusEquipMode) {
   return new Map<Item, number>([
     [$item`mafia thumb ring`, (1 / 0.96 - 1) * get("valueOfAdventure")],
   ]);
+}
+
+export function luckyGoldRingDropValues(
+  includeVolcoino: boolean,
+  includeFreddy: boolean,
+): number[] {
+  // Volcoino has a low drop rate which isn't accounted for here
+  // Overestimating until it drops is probably fine, don't @ me
+  const dropValues = [
+    100, // 80 - 120 meat
+    ...[
+      itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
+      itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
+      includeFreddy ? garboValue($item`Freddy Kruegerand`) : 0,
+      ...lgrCurrencies().map((i) =>
+        i === $item`Volcoino` && !includeVolcoino ? 0 : garboValue(i),
+      ),
+    ].filter((value) => value > 0),
+  ];
+
+  return dropValues;
 }
 
 function luckyGoldRing(mode: BonusEquipMode) {

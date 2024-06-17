@@ -84,7 +84,7 @@ import {
   checkVolcanoQuest,
 } from "../resources";
 import { GarboStrategy, Macro } from "../combat";
-import { luckyGoldRingDropValues } from "../outfit/lib";
+import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
