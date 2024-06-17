@@ -781,7 +781,8 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Closet Freddies",
-    completed: () => freddiesProfitable(),
+    ready: () => !freddiesProfitable(),
+    completed: () => itemAmount($item`Freddy Kruegerand`) === 0,
     do: () =>
       putCloset(itemAmount($item`Freddy Kruegerand`), $item`Freddy Kruegerand`),
     spendsTurn: false,
