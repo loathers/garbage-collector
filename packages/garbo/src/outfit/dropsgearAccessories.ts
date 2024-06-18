@@ -20,8 +20,8 @@ import {
   modeIsFree,
   monsterManuelAvailable,
 } from "../lib";
-import { garboValue } from "../garboValue";
 import { globalOptions } from "../config";
+import { garboValue } from "../garboValue";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -33,12 +33,10 @@ function mafiaThumbRing(mode: BonusEquipMode) {
   ]);
 }
 
-function luckyGoldRing(mode: BonusEquipMode) {
-  // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
-  if (!have($item`lucky gold ring`) || mode === BonusEquipMode.DMT) {
-    return new Map<Item, number>([]);
-  }
-
+export function luckyGoldRingDropValues(
+  includeVolcoino: boolean,
+  includeFreddy: boolean,
+): number[] {
   // Volcoino has a low drop rate which isn't accounted for here
   // Overestimating until it drops is probably fine, don't @ me
   const dropValues = [
@@ -46,18 +44,26 @@ function luckyGoldRing(mode: BonusEquipMode) {
     ...[
       itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
       itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
-      itemAmount($item`Freddy Kruegerand`) > 0
-        ? garboValue($item`Freddy Kruegerand`)
-        : 0,
+      includeFreddy ? garboValue($item`Freddy Kruegerand`) : 0,
       ...lgrCurrencies().map((i) =>
-        i === $item`Volcoino` &&
-        mode === BonusEquipMode.EMBEZZLER &&
-        !globalOptions.nobarf // Volcoino drops once per day
-          ? 0
-          : garboValue(i),
+        i === $item`Volcoino` && !includeVolcoino ? 0 : garboValue(i),
       ),
     ].filter((value) => value > 0),
   ];
+
+  return dropValues;
+}
+
+function luckyGoldRing(mode: BonusEquipMode) {
+  // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
+  if (!have($item`lucky gold ring`) || mode === BonusEquipMode.DMT) {
+    return new Map<Item, number>([]);
+  }
+
+  const dropValues = luckyGoldRingDropValues(
+    !(mode === BonusEquipMode.EMBEZZLER && !globalOptions.nobarf), // Volcoino drops once per day, only wear during embezzlers if nobarf
+    itemAmount($item`Freddy Kruegerand`) > 0,
+  );
 
   // Items drop every ~10 turns
   return new Map<Item, number>([
