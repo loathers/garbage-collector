@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b01d3789a5a0d1d0e8339334496633e40c3bd52e", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("be4ec92c556cb5a3d46631903ef7aa8ee84990f8", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -31923,21 +31923,29 @@ function mafiaThumbRing(mode) {
   }
   return /* @__PURE__ */ new Map([[$item(_templateObject2140 || (_templateObject2140 = _taggedTemplateLiteral72(["mafia thumb ring"]))), (1 / 0.96 - 1) * get("valueOfAdventure")]]);
 }
-function luckyGoldRing(mode) {
-  if (!have($item(_templateObject3128 || (_templateObject3128 = _taggedTemplateLiteral72(["lucky gold ring"])))) || mode === BonusEquipMode.DMT) {
-    return /* @__PURE__ */ new Map([]);
-  }
+function luckyGoldRingDropValues(includeVolcoino, includeFreddy) {
   var dropValues = [100].concat(_toConsumableArray29([
-    (0, import_kolmafia84.itemAmount)($item(_templateObject4105 || (_templateObject4105 = _taggedTemplateLiteral72(["hobo nickel"])))) > 0 ? 100 : 0,
+    (0, import_kolmafia84.itemAmount)($item(_templateObject3128 || (_templateObject3128 = _taggedTemplateLiteral72(["hobo nickel"])))) > 0 ? 100 : 0,
     // This should be closeted
-    (0, import_kolmafia84.itemAmount)($item(_templateObject571 || (_templateObject571 = _taggedTemplateLiteral72(["sand dollar"])))) > 0 ? garboValue($item(_templateObject658 || (_templateObject658 = _taggedTemplateLiteral72(["sand dollar"])))) : 0,
+    (0, import_kolmafia84.itemAmount)($item(_templateObject4105 || (_templateObject4105 = _taggedTemplateLiteral72(["sand dollar"])))) > 0 ? garboValue($item(_templateObject571 || (_templateObject571 = _taggedTemplateLiteral72(["sand dollar"])))) : 0,
     // This should be closeted
-    (0, import_kolmafia84.itemAmount)($item(_templateObject749 || (_templateObject749 = _taggedTemplateLiteral72(["Freddy Kruegerand"])))) > 0 ? garboValue($item(_templateObject841 || (_templateObject841 = _taggedTemplateLiteral72(["Freddy Kruegerand"])))) : 0
+    includeFreddy ? garboValue($item(_templateObject658 || (_templateObject658 = _taggedTemplateLiteral72(["Freddy Kruegerand"])))) : 0
   ].concat(_toConsumableArray29(lgrCurrencies().map(function(i) {
-    return i === $item(_templateObject935 || (_templateObject935 = _taggedTemplateLiteral72(["Volcoino"]))) && mode === BonusEquipMode.EMBEZZLER && !globalOptions.nobarf ? 0 : garboValue(i);
+    return i === $item(_templateObject749 || (_templateObject749 = _taggedTemplateLiteral72(["Volcoino"]))) && !includeVolcoino ? 0 : garboValue(i);
   }))).filter(function(value) {
     return value > 0;
   })));
+  return dropValues;
+}
+function luckyGoldRing(mode) {
+  if (!have($item(_templateObject841 || (_templateObject841 = _taggedTemplateLiteral72(["lucky gold ring"])))) || mode === BonusEquipMode.DMT) {
+    return /* @__PURE__ */ new Map([]);
+  }
+  var dropValues = luckyGoldRingDropValues(
+    !(mode === BonusEquipMode.EMBEZZLER && !globalOptions.nobarf),
+    // Volcoino drops once per day, only wear during embezzlers if nobarf
+    (0, import_kolmafia84.itemAmount)($item(_templateObject935 || (_templateObject935 = _taggedTemplateLiteral72(["Freddy Kruegerand"])))) > 0
+  );
   return /* @__PURE__ */ new Map([[$item(_templateObject1030 || (_templateObject1030 = _taggedTemplateLiteral72(["lucky gold ring"]))), sumNumbers(dropValues) / dropValues.length / 10]]);
 }
 function mrCheengsSpectacles() {
@@ -47018,6 +47026,9 @@ var _templateObject10610;
 var _templateObject1078;
 var _templateObject1088;
 var _templateObject1098;
+var _templateObject1108;
+var _templateObject11116;
+var _templateObject11216;
 function _toConsumableArray58(arr) {
   return _arrayWithoutHoles58(arr) || _iterableToArray58(arr) || _unsupportedIterableToArray80(arr) || _nonIterableSpread58();
 }
@@ -47183,6 +47194,11 @@ function configureSnojo() {
     (0, import_kolmafia125.runChoice)(option);
     snojoConfigured = true;
   }
+}
+function freddiesProfitable() {
+  var valuesWithoutFreddy = luckyGoldRingDropValues(false, false);
+  var valuesWithFreddy = luckyGoldRingDropValues(false, true);
+  return sumNumbers(valuesWithFreddy) / valuesWithFreddy.length > sumNumbers(valuesWithoutFreddy) / valuesWithoutFreddy.length;
 }
 var DailyTasks = [
   {
@@ -47862,6 +47878,19 @@ var DailyTasks = [
     spendsTurn: false
   },
   {
+    name: "Closet Freddies",
+    ready: function() {
+      return !freddiesProfitable();
+    },
+    completed: function() {
+      return (0, import_kolmafia125.itemAmount)($item(_templateObject10610 || (_templateObject10610 = _taggedTemplateLiteral117(["Freddy Kruegerand"])))) === 0;
+    },
+    do: function() {
+      return (0, import_kolmafia125.putCloset)((0, import_kolmafia125.itemAmount)($item(_templateObject1078 || (_templateObject1078 = _taggedTemplateLiteral117(["Freddy Kruegerand"])))), $item(_templateObject1088 || (_templateObject1088 = _taggedTemplateLiteral117(["Freddy Kruegerand"]))));
+    },
+    spendsTurn: false
+  },
+  {
     name: "Retrieve Items",
     ready: function() {
       return retrieveItems.some(function(item11) {
@@ -47904,7 +47933,7 @@ var DailyTasks = [
       (0, import_kolmafia125.runChoice)(7);
     },
     acquire: function() {
-      return $items(_templateObject10610 || (_templateObject10610 = _taggedTemplateLiteral117(["smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants"]))).map(function(x) {
+      return $items(_templateObject1098 || (_templateObject1098 = _taggedTemplateLiteral117(["smooth velvet pocket square, smooth velvet socks, smooth velvet hat, smooth velvet shirt, smooth velvet hanky, smooth velvet pants"]))).map(function(x) {
         return {
           item: x
         };
@@ -47918,7 +47947,7 @@ var DailyTasks = [
   {
     name: "Free Volcano Mining",
     ready: function() {
-      return realmAvailable("hot") && have($skill(_templateObject1078 || (_templateObject1078 = _taggedTemplateLiteral117(["Unaccompanied Miner"]))));
+      return realmAvailable("hot") && have($skill(_templateObject1108 || (_templateObject1108 = _taggedTemplateLiteral117(["Unaccompanied Miner"]))));
     },
     completed: function() {
       return get("_unaccompaniedMinerUsed") >= 5;
@@ -47930,8 +47959,8 @@ var DailyTasks = [
       return (0, import_kolmafia125.restoreHp)((0, import_kolmafia125.myMaxhp)() * 0.9);
     },
     post: function() {
-      if (have($effect(_templateObject1088 || (_templateObject1088 = _taggedTemplateLiteral117(["Beaten Up"]))))) {
-        uneffect($effect(_templateObject1098 || (_templateObject1098 = _taggedTemplateLiteral117(["Beaten Up"]))));
+      if (have($effect(_templateObject11116 || (_templateObject11116 = _taggedTemplateLiteral117(["Beaten Up"]))))) {
+        uneffect($effect(_templateObject11216 || (_templateObject11216 = _taggedTemplateLiteral117(["Beaten Up"]))));
       }
       if ((0, import_kolmafia125.myHp)() < (0, import_kolmafia125.myMaxhp)() * 0.5) {
         (0, import_kolmafia125.restoreHp)((0, import_kolmafia125.myMaxhp)() * 0.9);
