@@ -467,10 +467,10 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     acquire: [{ item: $item`glark cable` }],
     combatCount: () => clamp(5 - get("_glarkCableUses"), 0, 5),
     combat: new GarboStrategy(() =>
-      Macro.ifNot(
+      Macro.if_(
         $monster`Eldritch Tentacle`,
-        Macro.item($item`glark cable`).abort(),
-      ).basicCombat(),
+        Macro.basicCombat()
+      ).item($item`glark cable`).abort(),
     ),
     tentacle: true,
   },
