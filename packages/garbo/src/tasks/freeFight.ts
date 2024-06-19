@@ -2,11 +2,13 @@ import { Quest } from "grimoire-kolmafia";
 import {
   availableAmount,
   canadiaAvailable,
+  canAdventure,
   canEquip,
   changeMcd,
   gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
+  inebrietyLimit,
   Item,
   itemAmount,
   itemDropsArray,
@@ -14,6 +16,7 @@ import {
   mallPrice,
   Monster,
   myClass,
+  myInebriety,
   myMaxhp,
   mySoulsauce,
   numericModifier,
@@ -447,7 +450,30 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // Grimacia
   // Saber
   // Pygmys
-  // glark cable
+  {
+    name: "Glark Cable",
+    ready: () =>
+      canAdventure($location`The Red Zeppelin`) &&
+      get("questL11Ron") === "finished" &&
+      myInebriety() <= inebrietyLimit() &&
+      mallPrice($item`glark cable`) <= globalOptions.prefs.valueOfFreeFight,
+    completed: () => get("_glarkCableUses") >= 5,
+    do: $location`The Red Zeppelin`,
+    outfit: () =>
+      freeFightOutfit(
+        {},
+        { canChooseMacro: false, allowAttackFamiliars: false },
+      ),
+    acquire: [{ item: $item`glark cable` }],
+    combatCount: () => clamp(5 - get("_glarkCableUses"), 0, 5),
+    combat: new GarboStrategy(() =>
+      Macro.if_(
+        $monster`Eldritch Tentacle`,
+        Macro.basicCombat()
+      ).item($item`glark cable`).abort(),
+    ),
+    tentacle: true,
+  },
   // mushroom garden
   // portscan
   {
