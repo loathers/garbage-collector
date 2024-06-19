@@ -6,6 +6,7 @@ import {
   Item,
   mallPrice,
   myFullness,
+  myFury,
   numericModifier,
   toSlot,
 } from "kolmafia";
@@ -14,6 +15,7 @@ import {
   $familiar,
   $item,
   $items,
+  $skill,
   $slot,
   $slots,
   BurningLeaves,
@@ -227,6 +229,41 @@ export function magnifyingGlass(): Map<Item, number> {
   ]);
 }
 
+function bindlestocking(mode: BonusEquipMode): Map<Item, number> {
+  // Requires a guaranteed critical hit that does not need the weapon or off-hand slots
+  // Only BARF is supported as it is difficult to always crit elsewhere
+  const canCrit =
+    (have($skill`Furious Wallop`) && myFury() > 0) ||
+    have($skill`Head in the Game`);
+  if (
+    !have($item`bindlestocking`) ||
+    mode !== BonusEquipMode.BARF ||
+    !canCrit
+  ) {
+    return new Map<Item, number>();
+  }
+
+  // TODO: Confirm drop rates with excavator https://excavator.loathers.net/projects/bindlestocking
+  // The only valuable items are fancy chocolate or jawbruiser which probably appear ~1% of the time
+  const value =
+    0.49 *
+      garboAverageValue(
+        ...$items`Angry Farmer candy, Cold Hots candy, Daffy Taffy, Mr. Mediocrebar, Senior Mints, Wint-O-Fresh mint, orange`,
+      ) +
+    0.15 * garboAverageValue(...$items`eggnog, fruitcake, yo-yo`) +
+    0.2 *
+      garboAverageValue(
+        ...$items`candy cane, ball, fancy dress ball, gingerbread bugbear, razor-tipped yo-yo`,
+      ) +
+    0.15 *
+      garboAverageValue(
+        ...$items`buckyball, gyroscope, monomolecular yo-yo, possessed top, top`,
+      ) +
+    0.01 * garboAverageValue(...$items`fancy chocolate, jawbruiser`);
+
+  return new Map<Item, number>([[$item`bindlestocking`, value]]);
+}
+
 export function bonusGear(
   mode: BonusEquipMode,
   valueCircumstantialBonus = true,
@@ -239,6 +276,7 @@ export function bonusGear(
     ...stickers(mode),
     ...powerGlove(),
     ...sneegleebs(),
+    ...bindlestocking(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...pantsgiving(mode),
