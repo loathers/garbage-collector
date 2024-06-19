@@ -214,7 +214,8 @@ export class Macro extends StrictMacro {
     const pigSkinnerSetup = have($skill`Head in the Game`);
 
     const willCrit =
-      equippedAmount($item`mafia pointer finger ring`) > 0 &&
+      (equippedAmount($item`mafia pointer finger ring`) > 0 ||
+        equippedAmount($item`bindlestocking`) > 0) &&
       (sealClubberSetup ||
         opsSetup ||
         katanaSetup ||
