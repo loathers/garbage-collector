@@ -1,5 +1,6 @@
 import {
   equippedItem,
+  familiarWeight,
   fullnessLimit,
   getWorkshed,
   haveEffect,
@@ -9,6 +10,7 @@ import {
   myFury,
   numericModifier,
   toSlot,
+  weightAdjustment,
 } from "kolmafia";
 import {
   $effect,
@@ -391,7 +393,10 @@ function aviatorGoggles(mode: BonusEquipMode): Map<Item, number> {
   if (mode === BonusEquipMode.EMBEZZLER || !have($familiar`Mini Kiwi`)) {
     return new Map();
   }
-  const goggleValue = garboValue($item`mini kiwi`) * 0.25;
+  const goggleValue =
+    garboValue($item`mini kiwi`) *
+    (familiarWeight($familiar`Mini Kiwi`) + weightAdjustment()) *
+    0.0025;
   return new Map<Item, number>([[$item`aviator goggles`, goggleValue]]);
 }
 

@@ -111,7 +111,10 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Mini Kiwi`,
-    value: () => 0.25 * garboValue($item`mini kiwi`), // faster with aviator goggles
+    value: () =>
+      (familiarWeight($familiar`Mini Kiwi`) + weightAdjustment()) *
+      0.005 *
+      garboValue($item`mini kiwi`), // faster with aviator goggles
   },
 ];
 
