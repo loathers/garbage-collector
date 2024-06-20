@@ -31381,7 +31381,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("67f32d805ad06f3ffef034286a9d781616c92f84", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4fcfae11a36a884f261371e0ecb4234733ffebf2", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -31671,6 +31671,9 @@ function maxFamiliarDamage(familiar8) {
       return Math.floor(((0, import_kolmafia83.familiarWeight)(familiar8) + 3) * 1.5);
     case $familiar(_templateObject606 || (_templateObject606 = _taggedTemplateLiteral71(["Jill-of-All-Trades"]))):
       return (0, import_kolmafia83.familiarWeight)(familiar8);
+  }
+  if (familiar8.attributes.includes("combat")) {
+    return Math.floor(((0, import_kolmafia83.familiarWeight)(familiar8) + 3) * 2);
   }
   return 0;
 }
