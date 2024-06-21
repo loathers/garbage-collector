@@ -963,7 +963,7 @@ function maxFamiliarDamage(familiar: Familiar): number {
     case $familiar`Ninja Pirate Zombie Robot`:
       return Math.floor((totalFamWeight + 3) * 1.5);
     case $familiar`Jill-of-All-Trades`:
-      return totalFamWeight;
+      return totalFamWeight + 3;
     // TODO: Unknown rate, assume 2x until properly spaded
     case $familiar`Adventurous Spelunker`:
       return Math.floor((totalFamWeight + 3) * 2);
