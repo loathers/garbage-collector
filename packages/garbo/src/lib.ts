@@ -962,11 +962,9 @@ function maxFamiliarDamage(familiar: Familiar): number {
       return Math.floor((familiarWeight(familiar) + 3) * 1.5);
     case $familiar`Jill-of-All-Trades`:
       return familiarWeight(familiar);
-  }
-
-  // Unknown damage formula, assume 2x Cocoabo to be safe
-  if (familiar.attributes.includes("combat")) {
-    return Math.floor((familiarWeight(familiar) + 3) * 2.0);
+    // TODO: Unknown rate, assume 2x until properly spaded
+    case $familiar`Adventurous Spelunker`:
+      return Math.floor((familiarWeight(familiar) + 3) * 2);
   }
   return 0;
 }
