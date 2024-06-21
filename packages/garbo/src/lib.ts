@@ -963,11 +963,6 @@ function maxFamiliarDamage(familiar: Familiar): number {
     case $familiar`Jill-of-All-Trades`:
       return familiarWeight(familiar);
   }
-
-  // Unknown damage formula, assume 2x Cocoabo to be safe
-  if (familiar.attributes.includes("combat")) {
-    return Math.floor((familiarWeight(familiar) + 3) * 2.0);
-  }
   return 0;
 }
 
