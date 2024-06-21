@@ -31382,7 +31382,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a4f302104160d59f4df615c49bc44fd87563f014", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b7a688ef85e8f4e3acc28bdd82cea69d131c8ee3", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -31663,17 +31663,18 @@ function maxCarriedFamiliarDamage(familiar8) {
   return 0;
 }
 function maxFamiliarDamage(familiar8) {
+  var totalFamWeight = (0, import_kolmafia83.familiarWeight)(familiar8) + (0, import_kolmafia83.weightAdjustment)();
   switch (familiar8) {
     case $familiar(_templateObject5610 || (_templateObject5610 = _taggedTemplateLiteral71(["Cocoabo"]))):
-      return (0, import_kolmafia83.familiarWeight)(familiar8) + 3;
+      return totalFamWeight + 3;
     case $familiar(_templateObject576 || (_templateObject576 = _taggedTemplateLiteral71(["Feather Boa Constrictor"]))):
-      return (0, import_kolmafia83.familiarWeight)(familiar8) + 3 + (0, import_kolmafia83.numericModifier)("Sleaze Damage") * ((0, import_kolmafia83.myLocation)() === $location(_templateObject586 || (_templateObject586 = _taggedTemplateLiteral71(["Barf Mountain"]))) ? 2 : 1);
+      return totalFamWeight + 3 + (0, import_kolmafia83.numericModifier)("Sleaze Damage") * ((0, import_kolmafia83.myLocation)() === $location(_templateObject586 || (_templateObject586 = _taggedTemplateLiteral71(["Barf Mountain"]))) ? 2 : 1);
     case $familiar(_templateObject596 || (_templateObject596 = _taggedTemplateLiteral71(["Ninja Pirate Zombie Robot"]))):
-      return Math.floor(((0, import_kolmafia83.familiarWeight)(familiar8) + 3) * 1.5);
+      return Math.floor((totalFamWeight + 3) * 1.5);
     case $familiar(_templateObject606 || (_templateObject606 = _taggedTemplateLiteral71(["Jill-of-All-Trades"]))):
-      return (0, import_kolmafia83.familiarWeight)(familiar8);
+      return totalFamWeight + 3;
     case $familiar(_templateObject6112 || (_templateObject6112 = _taggedTemplateLiteral71(["Adventurous Spelunker"]))):
-      return Math.floor(((0, import_kolmafia83.familiarWeight)(familiar8) + 3) * 2);
+      return Math.floor((totalFamWeight + 3) * 2);
   }
   return 0;
 }
