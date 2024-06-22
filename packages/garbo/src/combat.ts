@@ -9,6 +9,7 @@ import {
   haveEquipped,
   haveSkill,
   hippyStoneBroken,
+  inebrietyLimit,
   inMultiFight,
   Item,
   itemAmount,
@@ -19,6 +20,7 @@ import {
   myClass,
   myFamiliar,
   myFury,
+  myInebriety,
   myMp,
   mySoulsauce,
   numericModifier,
@@ -747,6 +749,11 @@ export class Macro extends StrictMacro {
 }
 
 function customizeMacro<M extends StrictMacro>(macro: M) {
+  // If overdrunk discard the macro and attack
+  if (myInebriety() > inebrietyLimit()) {
+    return Macro.attack().repeat();
+  }
+
   return Macro.if_(
     $monsters`giant rubber spider, time-spinner prank`,
     Macro.kill(),
