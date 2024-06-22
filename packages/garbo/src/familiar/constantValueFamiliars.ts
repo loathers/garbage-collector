@@ -114,9 +114,11 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: (mode) =>
       mode === "barf"
         ? 0 // Handled in outfit caching code
-        : (familiarWeight($familiar`Mini Kiwi`) + weightAdjustment()) *
-          garboValue($item`mini kiwi`) *
-          0.05, // faster with aviator goggles
+        : clamp(
+            (familiarWeight($familiar`Mini Kiwi`) + weightAdjustment()) * 0.05,
+            0,
+            1,
+          ) * garboValue($item`mini kiwi`), // faster with aviator goggles
   },
 ];
 

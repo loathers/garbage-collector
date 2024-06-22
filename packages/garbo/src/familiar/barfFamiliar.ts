@@ -17,6 +17,7 @@ import {
   $items,
   $location,
   $slots,
+  clamp,
   findLeprechaunMultiplier,
   get,
   getModifier,
@@ -69,7 +70,8 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
   [
     $familiar`Mini Kiwi`,
     {
-      extraValue: ({ weight }) => weight * 0.025 * garboValue($item`mini kiwi`),
+      extraValue: ({ weight }) =>
+        clamp(weight * 0.05, 0, 1) * garboValue($item`mini kiwi`),
     },
   ],
 ]);
