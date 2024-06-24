@@ -2,7 +2,6 @@ import {
   cliExecute,
   equippedItem,
   Familiar,
-  familiarEquipment,
   familiarWeight,
   Item,
   myFamiliar,
@@ -14,11 +13,11 @@ import {
 } from "kolmafia";
 import {
   $familiar,
-  $familiars,
   $item,
   $items,
   $location,
   $slots,
+  clamp,
   findLeprechaunMultiplier,
   get,
   getModifier,
@@ -56,9 +55,29 @@ type CachedOutfit = {
 const outfitCache = new Map<number | Familiar, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
-const SPECIAL_FAMILIARS_FOR_CACHING = $familiars`Jill-of-All-Trades, Chest Mimic`;
+const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
+  Familiar,
+  { equip?: Item; extraValue?: (outfit: CachedOutfit) => number }
+>([
+  [
+    $familiar`Chest Mimic`,
+    {
+      extraValue: ({ famexp }) =>
+        (famexp * EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50,
+    },
+  ],
+  [$familiar`Jill-of-All-Trades`, { equip: $item`LED candle` }],
+  [
+    $familiar`Mini Kiwi`,
+    {
+      extraValue: ({ weight }) =>
+        clamp(weight * 0.005, 0, 1) * garboValue($item`mini kiwi`),
+    },
+  ],
+]);
+
 const outfitCacheKey = (f: Familiar) =>
-  SPECIAL_FAMILIARS_FOR_CACHING.includes(f) ? f : findLeprechaunMultiplier(f);
+  SPECIAL_FAMILIARS_FOR_CACHING.has(f) ? f : findLeprechaunMultiplier(f);
 
 function getCachedOutfitValues(fam: Familiar) {
   const currentValue = outfitCache.get(outfitCacheKey(fam));
@@ -111,9 +130,9 @@ function familiarModifier(
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
   const totalWeight =
     familiarWeight(familiar) + nonOutfitWeightBonus() + cachedOutfitWeight;
-  const equip = familiarEquipment(familiar);
+  const { equip } = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {};
 
-  return SPECIAL_FAMILIARS_FOR_CACHING.includes(familiar)
+  return equip
     ? numericModifier(
         familiar,
         modifier,
@@ -170,16 +189,12 @@ function turnsNeededFromBaseline(
 }
 
 function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
-  const mimicFamExpValue =
-    (EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50;
   const outfit = getCachedOutfitValues(f.familiar);
   const outfitValue =
     outfit.bonus +
     outfit.meat * MEAT_DROP_VALUE +
     outfit.item * ITEM_DROP_VALUE +
-    (f.familiar === $familiar`Chest Mimic`
-      ? outfit.famexp * mimicFamExpValue
-      : 0);
+    (SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
   return { ...f, outfitValue, outfitWeight };
