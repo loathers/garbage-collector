@@ -83,6 +83,12 @@ import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
+import {
+  canBullseye,
+  dartLevelTooHigh,
+  guaranteedBullseye,
+  safeToAttemptBullseye,
+} from "../resources/darts";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -509,28 +515,6 @@ const NonBarfTurnTasks: AlternateTask[] = [
     turns: () => 5 * (3 - get(`_garboDayShortenersUsed`, 0)),
   },
 ];
-
-const guaranteedBullseye = () =>
-  get("everfullDartPerks").includes("25% Better bullseye targeting") &&
-  get("everfullDartPerks").includes("25% More Accurate bullseye targeting") &&
-  get("everfullDartPerks").includes("25% better chance to hit bullseyes");
-
-const safeToAttemptBullseye = () =>
-  guaranteedBullseye()
-    ? have($item`Everfull Dart Holster`)
-    : have($item`Everfull Dart Holster`) && have($item`spring shoes`);
-
-const canBullseye = () =>
-  guaranteedBullseye()
-    ? have($effect`Everything Looks Red`)
-    : have($effect`Everything Looks Red`) ||
-      have($effect`Everything Looks Green`);
-
-const dartLevelAtWhichThingsJustStartDying = 5;
-
-const dartLevelTooHigh = () =>
-  get("everfullDartPerks").split(",").length >=
-  dartLevelAtWhichThingsJustStartDying;
 
 const BarfTurnTasks: GarboTask[] = [
   {
