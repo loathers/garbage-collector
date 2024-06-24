@@ -762,10 +762,13 @@ const BarfTurnTasks: GarboTask[] = [
         (getWorkshed() !== $item`model train set` ||
           TrainSet.next() !== TrainSet.Station.GAIN_MEAT),
       completed: () => have($effect`Everything Looks Green`),
-      combat: new GarboStrategy(() =>
-        Macro.if_(globalOptions.target, Macro.meatKill())
-          .familiarActions()
-          .skill($skill`Spring Away`),
+      combat: new GarboStrategy(
+        () =>
+          Macro.if_(globalOptions.target, Macro.meatKill())
+            .familiarActions()
+            .skill($skill`Spring Away`),
+        undefined,
+        !have($item`carnivorous potted plant`), // Do not use autoattack with carn plant, it will cancel the swallow
       ),
       sobriety: "sober",
     },
