@@ -848,6 +848,7 @@ export class GarboStrategy extends CombatStrategy {
     if (useAutoAttack) {
       this.autoattack(macro).macro(postAuto);
     } else {
+      if (getAutoAttack() !== 0) setAutoAttack(0);
       this.macro(macro);
     }
   }
