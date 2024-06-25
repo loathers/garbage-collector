@@ -768,7 +768,7 @@ const BarfTurnTasks: GarboTask[] = [
             .familiarActions()
             .skill($skill`Spring Away`),
         undefined,
-        !have($item`carnivorous potted plant`), // Do not use autoattack with carn plant, it will cancel the swallow
+        () => !have($item`carnivorous potted plant`), // Do not use autoattack with carn plant, it will cancel the swallow
       ),
       sobriety: "sober",
     },

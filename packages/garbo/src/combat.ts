@@ -843,9 +843,13 @@ export function garboAdventureAuto<M extends StrictMacro>(
 }
 
 export class GarboStrategy extends CombatStrategy {
-  constructor(macro: () => Macro, postAuto = macro, useAutoAttack = true) {
+  constructor(
+    macro: () => Macro,
+    postAuto = macro,
+    useAutoAttack = () => true,
+  ) {
     super();
-    if (useAutoAttack) {
+    if (useAutoAttack()) {
       this.autoattack(macro).macro(postAuto);
     } else {
       this.macro(macro);
