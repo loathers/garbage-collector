@@ -259,11 +259,11 @@ function lavaDogs(additionalReady: () => boolean) {
     },
     do: $location`The Bubblin' Caldera`,
     outfit: () => {
+      const avoid = $items`carnivorous potted plant, mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`;
       const offhand =
         myInebriety() > inebrietyLimit()
           ? $item`Drunkula's wineglass`
           : undefined;
-      if (!have($effect`Drenched in Lava`) && offhand) return { offhand };
 
       const weapon = have($item`June cleaver`)
         ? $item`June cleaver`
@@ -271,7 +271,7 @@ function lavaDogs(additionalReady: () => boolean) {
       const modifier = ["Muscle"];
       if (!have($item`June cleaver`)) modifier.push(`-7 Monster Level`);
 
-      return freeFightOutfit({ modifier, offhand, weapon });
+      return freeFightOutfit({ modifier, offhand, weapon, avoid });
     },
     combat: new GarboStrategy(() => Macro.kill()),
     turns: () => clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 7),
