@@ -95,6 +95,10 @@ const POINTER_RING_SPECS: (
     available: true,
     items: $items`Operation Patriot Shield, mafia pointer finger ring`,
   },
+  {
+    available: true,
+    items: $items`left bear arm, right bear arm, mafia pointer finger ring`,
+  },
 ];
 
 const trueInebrietyLimit = () =>
