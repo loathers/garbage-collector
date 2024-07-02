@@ -31386,7 +31386,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f2956a1f6a227c3b8455b9aa25b155e6a60c3213", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("05bb6840ae41865ad76b39d4822baf91c2c7b28a", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -41318,12 +41318,19 @@ function garboAdventureAuto(loc, autoMacro) {
 var GarboStrategy = /* @__PURE__ */ function(_CombatStrategy) {
   _inherits8(GarboStrategy2, _CombatStrategy);
   var _super2 = _createSuper7(GarboStrategy2);
-  function GarboStrategy2(autoattack) {
+  function GarboStrategy2(macro) {
     var _this;
-    var postAuto = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : autoattack;
+    var postAuto = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : macro;
+    var useAutoAttack = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : function() {
+      return true;
+    };
     _classCallCheck27(this, GarboStrategy2);
     _this = _super2.call(this);
-    _this.autoattack(autoattack).macro(postAuto);
+    if (useAutoAttack()) {
+      _this.autoattack(macro).macro(postAuto);
+    } else {
+      _this.macro(macro);
+    }
     return _this;
   }
   return _createClass27(GarboStrategy2);
@@ -46014,6 +46021,7 @@ var _templateObject12412;
 var _templateObject1259;
 var _templateObject1266;
 var _templateObject1276;
+var _templateObject1286;
 function _toConsumableArray57(arr) {
   return _arrayWithoutHoles57(arr) || _iterableToArray57(arr) || _unsupportedIterableToArray79(arr) || _nonIterableSpread57();
 }
@@ -46829,6 +46837,8 @@ var BarfTurnTasks = [{
   },
   combat: new GarboStrategy(function() {
     return Macro2.if_(globalOptions.target, Macro2.meatKill()).familiarActions().skill($skill(_templateObject1197 || (_templateObject1197 = _taggedTemplateLiteral116(["Spring Away"]))));
+  }, void 0, function() {
+    return !have($item(_templateObject1207 || (_templateObject1207 = _taggedTemplateLiteral116(["carnivorous potted plant"]))));
   }),
   sobriety: "sober"
 }), {
@@ -46836,7 +46846,7 @@ var BarfTurnTasks = [{
   completed: function() {
     return GingerBread_exports.minutesToNoon() !== 0;
   },
-  do: $location(_templateObject1207 || (_templateObject1207 = _taggedTemplateLiteral116(["Gingerbread Train Station"]))),
+  do: $location(_templateObject12115 || (_templateObject12115 = _taggedTemplateLiteral116(["Gingerbread Train Station"]))),
   choices: {
     1204: 1
   },
@@ -46845,7 +46855,7 @@ var BarfTurnTasks = [{
   }),
   outfit: function() {
     return sober() ? {} : {
-      offhand: $item(_templateObject12115 || (_templateObject12115 = _taggedTemplateLiteral116(["Drunkula's wineglass"])))
+      offhand: $item(_templateObject12214 || (_templateObject12214 = _taggedTemplateLiteral116(["Drunkula's wineglass"])))
     };
   },
   spendsTurn: false
@@ -46862,8 +46872,8 @@ var BarfTurnTasks = [{
   },
   outfit: function() {
     return {
-      equip: bestMidnightAvailable().location === $location(_templateObject12214 || (_templateObject12214 = _taggedTemplateLiteral116(["Gingerbread Upscale Retail District"]))) ? (0, import_kolmafia124.outfitPieces)("Gingerbread Best") : [],
-      offhand: sober() ? void 0 : $item(_templateObject12314 || (_templateObject12314 = _taggedTemplateLiteral116(["Drunkula's wineglass"])))
+      equip: bestMidnightAvailable().location === $location(_templateObject12314 || (_templateObject12314 = _taggedTemplateLiteral116(["Gingerbread Upscale Retail District"]))) ? (0, import_kolmafia124.outfitPieces)("Gingerbread Best") : [],
+      offhand: sober() ? void 0 : $item(_templateObject12412 || (_templateObject12412 = _taggedTemplateLiteral116(["Drunkula's wineglass"])))
     };
   },
   combat: new GarboStrategy(function() {
@@ -46890,7 +46900,7 @@ var BarfTurnTasks = [{
   spendsTurn: true,
   outfit: function() {
     return embezzlerOutfit({
-      familiar: $familiar(_templateObject12412 || (_templateObject12412 = _taggedTemplateLiteral116(["Chest Mimic"])))
+      familiar: $familiar(_templateObject1259 || (_templateObject1259 = _taggedTemplateLiteral116(["Chest Mimic"])))
     });
   }
 }, {
@@ -46953,12 +46963,12 @@ var BarfTurnQuest = {
       return (0, import_kolmafia124.myAdventures)() === 0;
     },
     outfit: function() {
-      var lubing = get("dinseyRollercoasterNext") && have($item(_templateObject1259 || (_templateObject1259 = _taggedTemplateLiteral116(["lube-shoes"]))));
+      var lubing = get("dinseyRollercoasterNext") && have($item(_templateObject1266 || (_templateObject1266 = _taggedTemplateLiteral116(["lube-shoes"]))));
       return barfOutfit(lubing ? {
-        equip: $items(_templateObject1266 || (_templateObject1266 = _taggedTemplateLiteral116(["lube-shoes"])))
+        equip: $items(_templateObject1276 || (_templateObject1276 = _taggedTemplateLiteral116(["lube-shoes"])))
       } : {});
     },
-    do: $location(_templateObject1276 || (_templateObject1276 = _taggedTemplateLiteral116(["Barf Mountain"]))),
+    do: $location(_templateObject1286 || (_templateObject1286 = _taggedTemplateLiteral116(["Barf Mountain"]))),
     combat: new GarboStrategy(function() {
       return Macro2.meatKill();
     }, function() {
