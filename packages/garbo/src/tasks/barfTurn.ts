@@ -264,7 +264,7 @@ function lavaDogs(additionalReady: () => boolean) {
         myInebriety() > inebrietyLimit()
           ? $item`Drunkula's wineglass`
           : undefined;
-
+      if (have($effect`Drenched in Lava`)) return { offhand };
       const weapon = have($item`June cleaver`)
         ? $item`June cleaver`
         : undefined;
