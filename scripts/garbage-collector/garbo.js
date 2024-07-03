@@ -31388,7 +31388,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("0c85891b0329d12a76b225f25b3015681fd3feb0", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("95afafb838b20930b6aea909b780860789391c81", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -46301,7 +46301,7 @@ function dailyDungeon(additionalReady) {
     spendsTurn: true
   };
 }
-function lavaDogs(additionalReady) {
+function lavaDogs(additionalReady, baseSpec) {
   return {
     completed: function() {
       return lavaDogsComplete();
@@ -46323,27 +46323,23 @@ function lavaDogs(additionalReady) {
     do: $location(_templateObject2830 || (_templateObject2830 = _taggedTemplateLiteral116(["The Bubblin' Caldera"]))),
     outfit: function() {
       var avoid = $items(_templateObject2930 || (_templateObject2930 = _taggedTemplateLiteral116(["carnivorous potted plant, mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord"])));
-      var offhand = (0, import_kolmafia124.myInebriety)() > (0, import_kolmafia124.inebrietyLimit)() ? $item(_templateObject3030 || (_templateObject3030 = _taggedTemplateLiteral116(["Drunkula's wineglass"]))) : void 0;
-      if (!have($effect(_templateObject3181 || (_templateObject3181 = _taggedTemplateLiteral116(["Drenched in Lava"])))))
-        return {
-          offhand: offhand
-        };
-      var weapon2 = have($item(_templateObject3230 || (_templateObject3230 = _taggedTemplateLiteral116(["June cleaver"])))) ? $item(_templateObject3328 || (_templateObject3328 = _taggedTemplateLiteral116(["June cleaver"]))) : void 0;
+      if (!have($effect(_templateObject3030 || (_templateObject3030 = _taggedTemplateLiteral116(["Drenched in Lava"])))))
+        return baseSpec;
+      var weapon2 = have($item(_templateObject3181 || (_templateObject3181 = _taggedTemplateLiteral116(["June cleaver"])))) ? $item(_templateObject3230 || (_templateObject3230 = _taggedTemplateLiteral116(["June cleaver"]))) : [];
       var modifier = ["Muscle"];
-      if (!have($item(_templateObject3426 || (_templateObject3426 = _taggedTemplateLiteral116(["June cleaver"])))))
+      if (!have($item(_templateObject3328 || (_templateObject3328 = _taggedTemplateLiteral116(["June cleaver"])))))
         modifier.push("-7 Monster Level");
-      return freeFightOutfit({
+      return freeFightOutfit(_objectSpread24(_objectSpread24({}, baseSpec), {}, {
         modifier: modifier,
-        offhand: offhand,
         weapon: weapon2,
         avoid: avoid
-      });
+      }));
     },
     combat: new GarboStrategy(function() {
       return Macro2.kill();
     }),
     turns: function() {
-      return clamp(7 - $location(_templateObject3524 || (_templateObject3524 = _taggedTemplateLiteral116(["The Bubblin' Caldera"]))).turnsSpent, 0, 7);
+      return clamp(7 - $location(_templateObject3426 || (_templateObject3426 = _taggedTemplateLiteral116(["The Bubblin' Caldera"]))).turnsSpent, 0, 7);
     },
     spendsTurn: true
   };
@@ -46354,21 +46350,21 @@ function aprilingSaxophoneLucky(additionalReady) {
       return !AprilingBandHelmet_exports.canPlay("Apriling band saxophone");
     },
     ready: function() {
-      return additionalReady() && have($item(_templateObject3624 || (_templateObject3624 = _taggedTemplateLiteral116(["Apriling band saxophone"])))) && getBestLuckyAdventure().phase === "barf" && getBestLuckyAdventure().value() > get("valueOfAdventure");
+      return additionalReady() && have($item(_templateObject3524 || (_templateObject3524 = _taggedTemplateLiteral116(["Apriling band saxophone"])))) && getBestLuckyAdventure().phase === "barf" && getBestLuckyAdventure().value() > get("valueOfAdventure");
     },
     do: function() {
       return getBestLuckyAdventure().location;
     },
     prepare: function() {
-      if (!have($effect(_templateObject3723 || (_templateObject3723 = _taggedTemplateLiteral116(["Lucky!"]))))) {
-        AprilingBandHelmet_exports.play($item(_templateObject3823 || (_templateObject3823 = _taggedTemplateLiteral116(["Apriling band saxophone"]))));
+      if (!have($effect(_templateObject3624 || (_templateObject3624 = _taggedTemplateLiteral116(["Lucky!"]))))) {
+        AprilingBandHelmet_exports.play($item(_templateObject3723 || (_templateObject3723 = _taggedTemplateLiteral116(["Apriling band saxophone"]))));
       }
     },
     combat: new GarboStrategy(function() {
       return Macro2.abortWithMsg("Unexpected combat while attempting Lucky! adventure");
     }),
     turns: function() {
-      return $item(_templateObject3923 || (_templateObject3923 = _taggedTemplateLiteral116(["Apriling band saxophone"]))).dailyusesleft;
+      return $item(_templateObject3823 || (_templateObject3823 = _taggedTemplateLiteral116(["Apriling band saxophone"]))).dailyusesleft;
     },
     spendsTurn: true
   };
@@ -46376,7 +46372,7 @@ function aprilingSaxophoneLucky(additionalReady) {
 function vampOut(additionalReady) {
   return {
     ready: function() {
-      return additionalReady() && have($item(_templateObject4023 || (_templateObject4023 = _taggedTemplateLiteral116(["plastic vampire fangs"])))) && garboValue($item(_templateObject4157 || (_templateObject4157 = _taggedTemplateLiteral116(["Interview With You (a Vampire)"])))) > get("valueOfAdventure");
+      return additionalReady() && have($item(_templateObject3923 || (_templateObject3923 = _taggedTemplateLiteral116(["plastic vampire fangs"])))) && garboValue($item(_templateObject4023 || (_templateObject4023 = _taggedTemplateLiteral116(["Interview With You (a Vampire)"])))) > get("valueOfAdventure");
     },
     completed: function() {
       return get("_interviewMasquerade");
@@ -46392,7 +46388,7 @@ function vampOut(additionalReady) {
     },
     outfit: function() {
       return freeFightOutfit({
-        equip: $items(_templateObject4224 || (_templateObject4224 = _taggedTemplateLiteral116(["plastic vampire fangs"])))
+        equip: $items(_templateObject4157 || (_templateObject4157 = _taggedTemplateLiteral116(["plastic vampire fangs"])))
       });
     },
     spendsTurn: true,
@@ -46402,23 +46398,23 @@ function vampOut(additionalReady) {
   };
 }
 function willDrunkAdventure() {
-  return have($item(_templateObject4324 || (_templateObject4324 = _taggedTemplateLiteral116(["Drunkula's wineglass"])))) && globalOptions.ascend;
+  return have($item(_templateObject4224 || (_templateObject4224 = _taggedTemplateLiteral116(["Drunkula's wineglass"])))) && globalOptions.ascend;
 }
 function canForceNoncombat() {
-  return get("noncombatForcerActive") || !get("_claraBellUsed") && have($item(_templateObject4423 || (_templateObject4423 = _taggedTemplateLiteral116(["Clara's bell"]))));
+  return get("noncombatForcerActive") || !get("_claraBellUsed") && have($item(_templateObject4324 || (_templateObject4324 = _taggedTemplateLiteral116(["Clara's bell"]))));
 }
 function canGetFusedFuse() {
   return realmAvailable("hot") && [1, 2, 3].some(function(it) {
-    return get("_volcanoItem".concat(it)) === $item(_templateObject4523 || (_templateObject4523 = _taggedTemplateLiteral116(["fused fuse"]))).id;
+    return get("_volcanoItem".concat(it)) === $item(_templateObject4423 || (_templateObject4423 = _taggedTemplateLiteral116(["fused fuse"]))).id;
   }) && canForceNoncombat();
 }
 var NonBarfTurnTasks = [{
   name: "Make Mimic Eggs (whatever we can)",
   ready: function() {
-    return have($familiar(_templateObject4623 || (_templateObject4623 = _taggedTemplateLiteral116(["Chest Mimic"]))));
+    return have($familiar(_templateObject4523 || (_templateObject4523 = _taggedTemplateLiteral116(["Chest Mimic"]))));
   },
   completed: function() {
-    return get("_mimicEggsObtained") >= 11 || $familiar(_templateObject4723 || (_templateObject4723 = _taggedTemplateLiteral116(["Chest Mimic"]))).experience < minimumMimicExperience();
+    return get("_mimicEggsObtained") >= 11 || $familiar(_templateObject4623 || (_templateObject4623 = _taggedTemplateLiteral116(["Chest Mimic"]))).experience < minimumMimicExperience();
   },
   do: function() {
     if (!ChestMimic_exports.differentiableQuantity(globalOptions.target)) {
@@ -46428,27 +46424,29 @@ var NonBarfTurnTasks = [{
   },
   outfit: function() {
     return embezzlerOutfit({
-      familiar: $familiar(_templateObject4823 || (_templateObject4823 = _taggedTemplateLiteral116(["Chest Mimic"])))
+      familiar: $familiar(_templateObject4723 || (_templateObject4723 = _taggedTemplateLiteral116(["Chest Mimic"])))
     });
   },
   combat: new GarboStrategy(function() {
     return Macro2.meatKill();
   }),
   turns: function() {
-    return globalOptions.ascend ? clamp(Math.floor($familiar(_templateObject4923 || (_templateObject4923 = _taggedTemplateLiteral116(["Chest Mimic"]))).experience / 50) - 1, 1, 11 - get("_mimicEggsObtained")) : 0;
+    return globalOptions.ascend ? clamp(Math.floor($familiar(_templateObject4823 || (_templateObject4823 = _taggedTemplateLiteral116(["Chest Mimic"]))).experience / 50) - 1, 1, 11 - get("_mimicEggsObtained")) : 0;
   },
   spendsTurn: true
 }, _objectSpread24(_objectSpread24({
   name: "Lava Dogs (drunk)"
 }, lavaDogs(function() {
   return willDrunkAdventure();
+}, {
+  offhand: $item(_templateObject4923 || (_templateObject4923 = _taggedTemplateLiteral116(["Drunkula's wineglass"])))
 })), {}, {
   sobriety: "drunk"
 }), _objectSpread24(_objectSpread24({
   name: "Lava Dogs (sober)"
 }, lavaDogs(function() {
   return !willDrunkAdventure();
-})), {}, {
+}, {})), {}, {
   sobriety: "sober"
 }), _objectSpread24(_objectSpread24({
   name: "Daily Dungeon (drunk)"
