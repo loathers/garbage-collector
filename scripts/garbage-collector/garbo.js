@@ -31388,7 +31388,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("6d2ed889d80b0de602b5fe6329ce621e6035652f", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("0c85891b0329d12a76b225f25b3015681fd3feb0", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -46322,19 +46322,21 @@ function lavaDogs(additionalReady) {
     },
     do: $location(_templateObject2830 || (_templateObject2830 = _taggedTemplateLiteral116(["The Bubblin' Caldera"]))),
     outfit: function() {
-      var weapon2 = have($item(_templateObject2930 || (_templateObject2930 = _taggedTemplateLiteral116(["June cleaver"])))) ? $item(_templateObject3030 || (_templateObject3030 = _taggedTemplateLiteral116(["June cleaver"]))) : void 0;
-      var offhand = (0, import_kolmafia124.myInebriety)() > (0, import_kolmafia124.inebrietyLimit)() ? $item(_templateObject3181 || (_templateObject3181 = _taggedTemplateLiteral116(["Drunkula's wineglass"]))) : void 0;
-      var modifiers = ["Muscle"];
-      if (!have($item(_templateObject3230 || (_templateObject3230 = _taggedTemplateLiteral116(["June cleaver"])))))
-        modifiers.push("-7 Monster Level");
-      var spec = {
-        modifier: modifiers,
-        avoid: $items(_templateObject3328 || (_templateObject3328 = _taggedTemplateLiteral116(["carnivorous potted plant, mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord"]))),
+      var avoid = $items(_templateObject2930 || (_templateObject2930 = _taggedTemplateLiteral116(["carnivorous potted plant, mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord"])));
+      var offhand = (0, import_kolmafia124.myInebriety)() > (0, import_kolmafia124.inebrietyLimit)() ? $item(_templateObject3030 || (_templateObject3030 = _taggedTemplateLiteral116(["Drunkula's wineglass"]))) : void 0;
+      if (!have($effect(_templateObject3181 || (_templateObject3181 = _taggedTemplateLiteral116(["Drenched in Lava"])))))
+        return {
+          offhand: offhand
+        };
+      var weapon2 = have($item(_templateObject3230 || (_templateObject3230 = _taggedTemplateLiteral116(["June cleaver"])))) ? $item(_templateObject3328 || (_templateObject3328 = _taggedTemplateLiteral116(["June cleaver"]))) : void 0;
+      var modifier = ["Muscle"];
+      if (!have($item(_templateObject3426 || (_templateObject3426 = _taggedTemplateLiteral116(["June cleaver"])))))
+        modifier.push("-7 Monster Level");
+      return freeFightOutfit({
+        modifier: modifier,
+        offhand: offhand,
         weapon: weapon2,
-        offhand: offhand
-      };
-      return have($effect(_templateObject3426 || (_templateObject3426 = _taggedTemplateLiteral116(["Drenched in Lava"])))) ? freeFightOutfit(spec) : freeFightOutfit({
-        offhand: offhand
+        avoid: avoid
       });
     },
     combat: new GarboStrategy(function() {
