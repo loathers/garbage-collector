@@ -22,8 +22,7 @@ const DART_PERKS: string[] = [
   "Deal 25-50% greater damage",
 ];
 
-function highestPriorityOption() {
-  const options = availableChoiceOptions();
+function highestPriorityOption(options: { [key: number]: string }) {
 
   // Use maxBy to find the choice with the lowest rank (highest priority)
   const bestChoice = maxBy(
