@@ -37,6 +37,9 @@ function highestPriorityOption() {
   return choiceNum;
 }
 
-export function main() {
-  runChoice(highestPriorityOption());
+export function main(choiceNumber: number) {
+  switch (choiceNumber) {
+    case 1525:
+      return runChoice(highestPriorityOption(availableChoiceOptions()));
+  }
 }
