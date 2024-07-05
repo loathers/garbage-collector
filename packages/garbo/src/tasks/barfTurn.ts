@@ -85,7 +85,6 @@ import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
 import {
   canBullseye,
-  dartLevelTooHigh,
   guaranteedBullseye,
   safeToAttemptBullseye,
 } from "../resources/darts";
@@ -104,7 +103,7 @@ const isSteve = () =>
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
-  base: Omit<GarboTask, "outfit" | "do" | "spendsTurn" | "choices"> & {
+  base: Omit<GarboTask, "outfit" | "do" | "choices" | "spendsTurn"> & {
     combat?: GarboStrategy;
   },
 ): GarboTask {
@@ -745,9 +744,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     {
       name: "Darts: Bullseye",
-      ready: () =>
-        guaranteedBullseye() ||
-        (!dartLevelTooHigh() && safeToAttemptBullseye()),
+      ready: () => guaranteedBullseye() || safeToAttemptBullseye(),
       completed: () => !canBullseye(),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
