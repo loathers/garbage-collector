@@ -740,8 +740,8 @@ const BarfTurnTasks: GarboTask[] = [
     "freefight",
     {
       acc1: $item`Everfull Dart Holster`,
-      acc2: !guaranteedBullseye() ? $item`spring shoes` : [],
-      modifier: !guaranteedBullseye() ? "+ML" : [],
+      acc2: guaranteedBullseye() ? [] : $item`spring shoes`,
+      modifier: guaranteedBullseye() ? [] : "Monster Level",
     },
     {
       name: "Darts: Bullseye",
