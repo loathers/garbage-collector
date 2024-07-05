@@ -748,7 +748,7 @@ const BarfTurnTasks: GarboTask[] = [
       ready: () =>
         guaranteedBullseye() ||
         (!dartLevelTooHigh() && safeToAttemptBullseye()),
-      completed: () => canBullseye(),
+      completed: () => !canBullseye(),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
