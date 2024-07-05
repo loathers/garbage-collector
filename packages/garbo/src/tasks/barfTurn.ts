@@ -790,7 +790,8 @@ const BarfTurnTasks: GarboTask[] = [
           TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
         (!have($item`Everfull Dart Holster`) ||
           have($effect`Everything Looks Red`) ||
-          guaranteedBullseye()),
+          guaranteedBullseye() ||
+          !safeToAttemptBullseye()),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
