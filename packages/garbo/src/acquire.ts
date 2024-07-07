@@ -27,7 +27,7 @@ export const priceCaps: { [index: string]: number } = {
   "mini kiwi aioli": 20000,
   "whet stone": 20000,
   "spice melange": 500000,
-  "mojo filter": 10000,
+  "mojo filter": 20000,
   "Ol' Scratch's salad fork": 200000,
   "Frosty's frosty mug": 200000,
   "sweet tooth": 250000,
