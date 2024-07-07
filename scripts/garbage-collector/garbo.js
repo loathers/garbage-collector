@@ -30850,7 +30850,7 @@ var priceCaps = {
   "mini kiwi aioli": 2e4,
   "whet stone": 2e4,
   "spice melange": 5e5,
-  "mojo filter": 1e4,
+  "mojo filter": 2e4,
   "Ol' Scratch's salad fork": 2e5,
   "Frosty's frosty mug": 2e5,
   "sweet tooth": 25e4
@@ -31388,7 +31388,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("95afafb838b20930b6aea909b780860789391c81", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a47bb79340c7a156a5a6f7a919406bf286775d01", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
