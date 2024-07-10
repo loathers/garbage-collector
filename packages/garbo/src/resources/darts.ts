@@ -41,10 +41,6 @@ export const DART_PERKS: string[] = [
   "Deal 25-50% greater damage",
 ];
 
-interface ChoiceOptions {
-  [key: string]: number;
-}
-
 export function highestPriorityOption() {
   const options = availableChoiceOptions();
 
@@ -56,4 +52,7 @@ export function highestPriorityOption() {
     true,
   )[0];
 
+  const choiceNum = Number(bestChoice);
+
+  return choiceNum;
 }

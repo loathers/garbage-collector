@@ -1,5 +1,5 @@
 import { runChoice } from "kolmafia";
-import { highestPriorityOption } from "./darts";
+import { highestPriorityOption } from "./src/resources/darts";
 
 export function main(choiceNumber: number) {
   switch (choiceNumber) {
