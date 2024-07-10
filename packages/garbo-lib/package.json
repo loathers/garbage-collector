@@ -24,7 +24,7 @@
     "libram": "^0.8.17"
   },
   "devDependencies": {
-    "eslint": "^8.50.0",
+    "eslint": "^8.57.0",
     "eslint-config-garbo": "^0.0.1",
     "kolmafia": "^5.27920.0",
     "libram": "latest",
