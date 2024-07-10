@@ -1,4 +1,3 @@
-import { availableChoiceOptions } from "kolmafia";
 import { $effect, $item, get, have, maxBy } from "libram";
 
 export const guaranteedBullseye = () =>
@@ -41,18 +40,13 @@ export const DART_PERKS: string[] = [
   "Deal 25-50% greater damage",
 ];
 
-export function highestPriorityOption() {
-  const options = availableChoiceOptions();
-
-  // Convert the values of options to numbers
-  const bestChoice = maxBy(
-    Object.entries(options),
-    ([text]) =>
-      DART_PERKS.includes(text) ? DART_PERKS.indexOf(text) : Infinity,
-    true,
-  )[0];
-
-  const choiceNum = Number(bestChoice);
-
-  return choiceNum;
+export function highestPriorityOption(options: { [key: number]: string }) {
+  return Number(
+    maxBy(
+      Object.entries(options),
+      ([text]) =>
+        DART_PERKS.includes(text) ? DART_PERKS.indexOf(text) : Infinity,
+      true,
+    )[0],
+  );
 }
