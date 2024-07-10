@@ -1,6 +1,15 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { toJson } from "kolmafia";
-import { $familiar, $item, $items, $location, $monster, Guzzlr } from "libram";
+import {
+  $effect,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $monster,
+  Guzzlr,
+  have,
+} from "libram";
 import { freeFightFamiliar, meatFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
@@ -105,6 +114,10 @@ export function embezzlerOutfit(
     parka: "kachungasaur",
     edpiece: "fish",
   });
+
+  if (!have($effect`Everything Looks Purple`)) {
+    outfit.equip($item`Roman Candelabra`);
+  }
 
   return outfit;
 }

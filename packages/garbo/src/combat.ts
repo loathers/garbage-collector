@@ -740,6 +740,7 @@ export class Macro extends StrictMacro {
           get("_enamorangs") === 0,
           Macro.tryCopier($item`LOV Enamorang`),
         )
+        .tryHaveSkill($skill`Blow the Purple Candle!`)
         .meatKill(),
     ).abortWithMsg(
       `Macro for ${action} expected ${globalOptions.target} but encountered something else.`,
