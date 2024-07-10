@@ -16,6 +16,6 @@
     "target": "esnext",
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "garbo_choice.ts"],
+  "include": ["src/**/*.ts", "test/**/*.ts"],
   "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
 }
