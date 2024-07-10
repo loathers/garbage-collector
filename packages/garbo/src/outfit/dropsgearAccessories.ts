@@ -187,8 +187,7 @@ export function usingThumbRing(): boolean {
         have($item`left bear arm`))
     ) {
       accessoryValues.set($item`mafia pointer finger ring`, 500);
-    }
-    if (
+    } else if (
       have($item`mafia pointer finger ring`) &&
       (have($skill`Head in the Game`) || have($item`spring shoes`))
     ) {
