@@ -41,17 +41,26 @@ export const DART_PERKS: string[] = [
   "Deal 25-50% greater damage",
 ];
 
+interface ChoiceOptions {
+  [key: string]: number;
+}
+
 export function highestPriorityOption() {
   const options = availableChoiceOptions();
 
+  // Convert the values of options to numbers
+  const numericOptions: ChoiceOptions = Object.fromEntries(
+    Object.entries(options).map(([key, value]) => [key, Number(value)]),
+  );
+
   // Use maxBy to find the choice with the lowest rank (highest priority)
-  const bestChoice = maxBy(
-    Object.entries(options),
-    ([, text]) =>
+  const bestChoice: string = maxBy(
+    Object.entries(numericOptions),
+    ([text]) =>
       DART_PERKS.includes(text) ? DART_PERKS.indexOf(text) : Infinity,
     true,
   )[0];
-  const choiceNum = options[bestChoice];
+  const choiceNum: number = numericOptions[bestChoice];
 
   return choiceNum;
 }

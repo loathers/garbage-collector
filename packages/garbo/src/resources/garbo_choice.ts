@@ -6,4 +6,5 @@ export function main(choiceNumber: number) {
     case 1525:
       return runChoice(highestPriorityOption());
   }
+  return -1;
 }
