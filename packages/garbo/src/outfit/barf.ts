@@ -97,6 +97,10 @@ const POINTER_RING_SPECS: (
   },
   {
     available: true,
+    items: $items`spring shoes, mafia pointer finger ring`,
+  },
+  {
+    available: true,
     items: $items`left bear arm, right bear arm, mafia pointer finger ring`,
   },
 ];

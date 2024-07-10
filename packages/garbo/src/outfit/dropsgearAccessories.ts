@@ -90,6 +90,17 @@ function mrScreegesSpectacles() {
   return new Map<Item, number>([[$item`Mr. Screege's spectacles`, 180]]);
 }
 
+function springShoes() {
+  if (!have($item`spring shoes`)) {
+    return new Map<Item, number>([]);
+  }
+
+  // Items appear to be every 1/3 adventures
+  // All droppable items are mallmin
+  // Therefore, 33 meat is reasonable
+  return new Map<Item, number>([[$item`spring shoes`, 33]]);
+}
+
 function cinchoDeMayo(mode: BonusEquipMode) {
   if (
     !have($item`Cincho de Mayo`) ||
@@ -123,6 +134,7 @@ export function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
     ...luckyGoldRing(mode),
     ...mrCheengsSpectacles(),
     ...mrScreegesSpectacles(),
+    ...springShoes(),
     ...cinchoDeMayo(mode),
   ]);
 }
@@ -172,10 +184,15 @@ export function usingThumbRing(): boolean {
         have($item`haiku katana`) ||
         have($item`Operation Patriot Shield`) ||
         have($item`unwrapped knock-off retro superhero cape`) ||
-        have($item`left bear arm`) ||
-        have($skill`Head in the Game`))
+        have($item`left bear arm`))
     ) {
       accessoryValues.set($item`mafia pointer finger ring`, 500);
+    }
+    if (
+      have($item`mafia pointer finger ring`) &&
+      (have($skill`Head in the Game`) || have($item`spring shoes`))
+    ) {
+      accessoryValues.set($item`mafia pointer finger ring`, 500 * 0.65);
     }
     const bestAccessories = [...accessoryValues.entries()]
       .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
