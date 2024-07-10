@@ -3,7 +3,9 @@ import {
   $familiar,
   $item,
   $items,
+  clamp,
   findLeprechaunMultiplier,
+  get,
   have,
 } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -177,6 +179,30 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
     drop: $item`map to a candy-rich block`,
     additionalValue: () =>
       (6 + 4 * familiarWeight($familiar`Jill-of-All-Trades`)) * 0.33,
+  },
+  {
+    familiar: $familiar`Rockin' Robin`,
+    expected: (i) =>
+      i === $familiar`Rockin' Robin`.dropsToday
+        ? clamp(30 - get("rockinRobinProgress"), 1, 30)
+        : 30,
+    drop: $item`robin's egg`,
+  },
+  {
+    familiar: $familiar`Optimistic Candle`,
+    expected: (i) =>
+      i === $familiar`Optimistic Candle`.dropsToday
+        ? clamp(30 - get("optimisticCandleProgress"), 1, 30)
+        : 30,
+    drop: $item`glob of melted wax`,
+  },
+  {
+    familiar: $familiar`Garbage Fire`,
+    expected: (i) =>
+      i === $familiar`Garbage Fire`.dropsToday
+        ? clamp(30 - get("garbageFireProgress"), 1, 30)
+        : 30,
+    drop: $items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`,
   },
 ];
 
