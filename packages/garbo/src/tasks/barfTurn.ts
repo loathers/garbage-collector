@@ -744,17 +744,15 @@ const BarfTurnTasks: GarboTask[] = [
     },
     {
       name: "Darts: Bullseye",
-      ready: () => guaranteedBullseye() || safeToAttemptBullseye(),
+      ready: safeToAttemptBullseye,
       completed: () => !canBullseye(),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
-          .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
           .skill($skill`Darts: Aim for the Bullseye`)
           .skill($skill`Spring Away`),
       ),
       sobriety: "sober",
-      duplicate: true,
     },
   ),
   wanderTask(
