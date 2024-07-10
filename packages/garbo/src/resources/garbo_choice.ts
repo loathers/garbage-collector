@@ -1,5 +1,5 @@
 import { runChoice } from "kolmafia";
-import { highestPriorityOption } from "packagesgarbosrc\resourcesdarts.ts";
+import { highestPriorityOption } from "./darts";
 
 export function main(choiceNumber: number) {
   switch (choiceNumber) {
