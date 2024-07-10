@@ -11,7 +11,7 @@ export const safeToAttemptBullseye = () =>
   !dartLevelTooHigh();
 
 export const canBullseye = () =>
-  have($effect`Everything Looks Red`) &&
+  !have($effect`Everything Looks Red`) &&
   (guaranteedBullseye() || !have($effect`Everything Looks Green`));
 
 export const DARTS_KILL_BEFORE_RUN = 5;
