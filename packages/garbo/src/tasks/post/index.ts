@@ -207,6 +207,11 @@ function fallbot(): GarboPostTask {
       AutumnAton.sendTo(bestAutumnatonLocation);
     },
     available: () => AutumnAton.have(),
+    post: () => {
+      if (have($item`autumn-aton`)) {
+        cliExecute("refresh inventory");
+      }
+    },
   };
 }
 
