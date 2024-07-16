@@ -1,5 +1,6 @@
 import {
   adv1,
+  availableAmount,
   availableChoiceOptions,
   canAdventure,
   cliExecute,
@@ -207,6 +208,11 @@ function fallbot(): GarboPostTask {
       AutumnAton.sendTo(bestAutumnatonLocation);
     },
     available: () => AutumnAton.have(),
+    post: () => {
+      if (availableAmount($item`autumn-aton`) > 0) {
+        cliExecute("refresh inventory");
+      }
+    },
   };
 }
 
