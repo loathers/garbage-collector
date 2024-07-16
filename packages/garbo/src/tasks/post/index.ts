@@ -1,6 +1,5 @@
 import {
   adv1,
-  availableAmount,
   availableChoiceOptions,
   canAdventure,
   cliExecute,
@@ -209,7 +208,7 @@ function fallbot(): GarboPostTask {
     },
     available: () => AutumnAton.have(),
     post: () => {
-      if (availableAmount($item`autumn-aton`) > 0) {
+      if (have($item`autumn-aton`)) {
         cliExecute("refresh inventory");
       }
     },
