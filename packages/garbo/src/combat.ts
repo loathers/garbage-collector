@@ -230,6 +230,13 @@ export class Macro extends StrictMacro {
       shouldRedigitize(),
       Macro.if_(globalOptions.target, Macro.trySkill($skill`Digitize`)),
     )
+      .externalIf(
+        have($skill`Blow the Purple Candle!`),
+        Macro.if_(
+          globalOptions.target,
+          Macro.skill($skill`Blow the Purple Candle!`),
+        ),
+      )
       .trySingAlong()
       .familiarActions()
       .tryEgg()
