@@ -516,6 +516,7 @@ export function dailyFights(): void {
 
           const profSpec: OutfitSpec = {
             familiar: $familiar`Pocket Professor`,
+            avoid: $items`Roman Candelabra`,
           };
           if (have(chip)) {
             profSpec.famequip = chip;
