@@ -26,10 +26,6 @@ export function bestFairy(): Familiar {
     return $familiar`Trick-or-Treating Tot`;
   }
 
-  if (have($familiar`Jill-of-All-Trades`) && have($item`LED candle`)) {
-    return $familiar`Jill-of-All-Trades`;
-  }
-
   if (!bestNonCheerleaderFairy) {
     const viableFairies = Familiar.all().filter(
       (f) =>
