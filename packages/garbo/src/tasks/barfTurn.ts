@@ -786,10 +786,10 @@ const BarfTurnTasks: GarboTask[] = [
         romanticMonsterImpossible() &&
         (getWorkshed() !== $item`model train set` ||
           TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
-        (!have($item`Everfull Dart Holster`) ||
-          have($effect`Everything Looks Red`) ||
-          guaranteedBullseye() ||
-          !safeToAttemptBullseye()),
+        (guaranteedBullseye() ||
+          !safeToAttemptBullseye() ||
+          have($skill`Free-For-All`) ||
+          have($effect`Everything Looks Red`, 30)),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
