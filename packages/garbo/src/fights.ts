@@ -472,11 +472,13 @@ export function dailyFights(): void {
       if (have($familiar`Pocket Professor`)) {
         const potentialPocketProfessorLectures = [
           {
+            shouldDo: globalOptions.target === $monster`Knob Goblin Embezzler`,
             property: "_garbo_meatChain",
             macro: firstChainMacro,
             goalMaximize: (spec: OutfitSpec) => embezzlerOutfit(spec).dress(),
           },
           {
+            shouldDo: true,
             property: "_garbo_weightChain",
             macro: secondChainMacro,
             goalMaximize: (spec: OutfitSpec) =>
@@ -488,7 +490,8 @@ export function dailyFights(): void {
         ];
 
         for (const potentialLecture of potentialPocketProfessorLectures) {
-          const { property, macro, goalMaximize } = potentialLecture;
+          const { property, macro, goalMaximize, shouldDo } = potentialLecture;
+          if (!shouldDo) continue;
           const fightSource = getNextCopyTargetFight();
           if (!fightSource) return;
           if (get(property, false)) continue;

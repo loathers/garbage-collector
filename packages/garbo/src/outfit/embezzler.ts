@@ -41,7 +41,7 @@ export function embezzlerOutfit(
       "-tie",
     );
   } else if (globalOptions.target.attributes.includes("FREE")) {
-    outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.FREE)}`, "-tie");
+    outfit.modifier.push("-tie");
   }
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
   outfit.familiar ??=
