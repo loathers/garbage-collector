@@ -249,6 +249,7 @@ export function main(argString = ""): void {
     throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
   }
   if (
+    !globalOptions.nobarf &&
     globalOptions.prefs.valueOfAdventure &&
     globalOptions.prefs.valueOfAdventure >= 10000
   ) {
