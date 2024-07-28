@@ -41,12 +41,14 @@ import {
   Clan,
   examine,
   get,
+  getCombatFlags,
   getFoldGroup,
   have,
   haveInCampground,
   JuneCleaver,
   maxBy,
   set,
+  setCombatFlags,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
 } from "libram";
@@ -59,14 +61,12 @@ import {
   allMallPrices,
   bestJuneCleaverOption,
   checkGithubVersion,
-  getCombatFlags,
   HIGHLIGHT,
   printEventLog,
   printLog,
   propertyManager,
   questStep,
   safeRestore,
-  setCombatFlags,
   userConfirmDialog,
 } from "./lib";
 import { meatMood, useBuffExtenders } from "./mood";
@@ -320,7 +320,7 @@ export function main(argString = ""): void {
     }
   }
 
-  const combatFlags = getCombatFlags("aabosses", "bothcombatinterf");
+  const combatFlags = getCombatFlags(["aabosses", "bothcombatinterf"]);
 
   try {
     print("Collecting garbage!", HIGHLIGHT);
@@ -342,7 +342,7 @@ export function main(argString = ""): void {
 
     setAutoAttack(0);
     setCombatFlags(
-      { flag: "aaBossFlag", value: true },
+      { flag: "aabosses", value: true },
       { flag: "bothcombatinterf", value: false },
     );
 
