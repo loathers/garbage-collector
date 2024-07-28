@@ -22,6 +22,7 @@ import {
   isBanished,
   Item,
   itemAmount,
+  itemDropModifier,
   itemDropsArray,
   Location,
   mallPrice,
@@ -1915,6 +1916,36 @@ const freeKillSources = [
         Macro.trySingAlong()
           .tryHaveSkill($skill`Otoscope`)
           .skill($skill`Asdon Martin: Missile Launcher`),
+        () => use($item`drum machine`),
+      );
+    },
+    true,
+    {
+      spec: sandwormSpec,
+      effects: () =>
+        have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3
+          ? $effects`Feeling Lost`
+          : [],
+    },
+  ),
+
+  new FreeFight(
+    () =>
+      globalOptions.ascend &&
+      0.1 * garboValue($item`spice melange`) * itemDropModifier() >
+        garboValue($item`shadow brick`)
+        ? clamp(13 - get("_shadowBricksUsed"), 0, 13)
+        : 0,
+    () => {
+      ensureBeachAccess();
+      retrieveItem(
+        $item`shadow brick`,
+        clamp(13 - get("_shadowBricksUsed"), 0, 13),
+      );
+      withMacro(
+        Macro.trySingAlong()
+          .tryHaveSkill($skill`Otoscope`)
+          .tryItem($item`shadow brick`),
         () => use($item`drum machine`),
       );
     },
