@@ -31388,7 +31388,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1bb1c713b9a51726501a8c949f47f7b6d8bd9e6e", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("dd4233012b8033ac0786d73728a2bcb24e9a1283", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -31722,29 +31722,6 @@ function allMallPrices() {
     import_kolmafia83.sessionStorage.setItem("allpricedate", today);
   }
 }
-function getCombatFlags2() {
-  for (var _len = arguments.length, flags = new Array(_len), _key = 0; _key < _len; _key++) {
-    flags[_key] = arguments[_key];
-  }
-  return flags.map(function(flag) {
-    return {
-      flag: flag,
-      value: (0, import_kolmafia83.xpath)((0, import_kolmafia83.visitUrl)("account.php?tab=combat"), '//*[@id="opt_flag_'.concat(flag, "\"]/label/input[@type='checkbox']@checked"))[0] === "checked"
-    };
-  });
-}
-function setCombatFlags2() {
-  for (var _len2 = arguments.length, flags = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-    flags[_key2] = arguments[_key2];
-  }
-  return (0, import_kolmafia83.visitUrl)("account.php?".concat(([].concat(_toConsumableArray28(flags.map(function(_ref3) {
-    var flag = _ref3.flag;
-    return "actions[]=flag_".concat(flag);
-  })), _toConsumableArray28(flags.map(function(_ref4) {
-    var flag = _ref4.flag, value = _ref4.value;
-    return "flag_".concat(flag, "=").concat(Number(value));
-  })), ["action=Update"]).join("&"), true)));
-}
 function aprilFoolsRufus() {
   if ((0, import_kolmafia83.holiday)().includes("April Fool's Day")) {
     (0, import_kolmafia83.visitUrl)("questlog.php?which=7");
@@ -31764,8 +31741,8 @@ var luckyAdventures = [{
   }
 }];
 function determineBestLuckyAdventure() {
-  return maxBy(luckyAdventures, function(_ref5) {
-    var value = _ref5.value;
+  return maxBy(luckyAdventures, function(_ref3) {
+    var value = _ref3.value;
     return value();
   });
 }
@@ -50134,7 +50111,7 @@ function main() {
       (0, import_kolmafia138.visitUrl)("campground.php?action=garden&pwd");
     }
   }
-  var combatFlags = getCombatFlags2("aabosses", "bothcombatinterf");
+  var combatFlags = getCombatFlags(["aabosses", "bothcombatinterf"]);
   try {
     (0, import_kolmafia138.print)("Collecting garbage!", HIGHLIGHT);
     if (globalOptions.stopTurncount !== null) {
@@ -50145,8 +50122,8 @@ function main() {
       (0, import_kolmafia138.use)($item(_templateObject1457 || (_templateObject1457 = _taggedTemplateLiteral124(["packet of tall grass seeds"]))));
     }
     (0, import_kolmafia138.setAutoAttack)(0);
-    setCombatFlags2({
-      flag: "aaBossFlag",
+    setCombatFlags({
+      flag: "aabosses",
       value: true
     }, {
       flag: "bothcombatinterf",
@@ -50302,7 +50279,7 @@ function main() {
     _set("garboStashItems", stashItems.map(function(item11) {
       return (0, import_kolmafia138.toInt)(item11).toFixed(0);
     }).join(","));
-    setCombatFlags2.apply(void 0, _toConsumableArray61(combatFlags));
+    setCombatFlags.apply(void 0, _toConsumableArray61(combatFlags));
     if (startingGarden && have(startingGarden))
       (0, import_kolmafia138.use)(startingGarden);
     printEventLog();
