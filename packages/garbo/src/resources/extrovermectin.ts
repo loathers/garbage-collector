@@ -220,7 +220,7 @@ export function saberCrateIfSafe(): void {
       $location`Noob Cave`,
       Macro.if_(crate, Macro.skill($skill`Use the Force`))
         .if_($monster`sausage goblin`, Macro.kill())
-        .ifHolidayWanderer(run.macro)
+        .ifKnownWanderer(Macro.step(run.macro))
         .abort(),
     );
   } while (lastAdventureWasWeird());
@@ -303,7 +303,9 @@ function initializeCrates(): void {
         .maximize();
       garboAdventure(
         $location`Noob Cave`,
-        Macro.if_(crate, sniffrun).ifHolidayWanderer(run.macro).abort(),
+        Macro.if_(crate, sniffrun)
+          .ifKnownWanderer(Macro.step(run.macro))
+          .abort(),
       );
       visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
 

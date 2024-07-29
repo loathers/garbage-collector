@@ -20,6 +20,7 @@ import {
   myFamiliar,
   myFury,
   myMp,
+  myPath,
   mySoulsauce,
   numericModifier,
   retrieveItem,
@@ -47,6 +48,7 @@ import {
   Counter,
   get,
   have,
+  HeavyRains,
   SongBoom,
   SourceTerminal,
   StrictMacro,
@@ -106,6 +108,25 @@ export class Macro extends StrictMacro {
 
   static trySingAlong(): Macro {
     return new Macro().trySingAlong();
+  }
+
+  ifHeavyRainsWanderer(macro: Macro): Macro {
+    return this.externalIf(
+      myPath() === HeavyRains.path,
+      Macro.if_([...HeavyRains.wanderers], macro),
+    );
+  }
+
+  static ifHeavyRainsWanderer(macro: Macro): Macro {
+    return new Macro().ifHeavyRainsWanderer(macro);
+  }
+
+  ifKnownWanderer(macro: Macro): Macro {
+    return this.ifHolidayWanderer(macro).ifHeavyRainsWanderer(macro);
+  }
+
+  static ifKnownWanderer(macro: Macro): Macro {
+    return new Macro().ifKnownWanderer(macro);
   }
 
   familiarActions(): Macro {
@@ -767,7 +788,7 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
       have($effect`Eldritch Attunement`),
       Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat()),
     )
-    .ifHolidayWanderer(
+    .ifKnownWanderer(
       Macro.externalIf(
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
