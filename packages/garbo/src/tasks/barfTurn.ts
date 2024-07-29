@@ -832,7 +832,7 @@ const BarfTurnTasks: GarboTask[] = [
       HeavyRains.rainMan(globalOptions.target);
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: true,
+    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
     outfit: () => embezzlerOutfit(),
   },
   {
@@ -846,7 +846,7 @@ const BarfTurnTasks: GarboTask[] = [
       ChestMimic.differentiate(globalOptions.target);
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: true,
+    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
     outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
   },
   {
@@ -857,7 +857,7 @@ const BarfTurnTasks: GarboTask[] = [
     do: () => ChestMimic.differentiate(globalOptions.target),
     outfit: () => embezzlerOutfit(),
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: true,
+    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
   },
 ];
 
