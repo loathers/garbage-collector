@@ -1931,7 +1931,9 @@ const freeKillSources = [
   new FreeFight(
     () =>
       globalOptions.ascend &&
-      0.1 * garboValue($item`spice melange`) * numericModifier("Item Drop %") >
+      0.1 *
+        garboValue($item`spice melange`) *
+        (numericModifier("Item Drop") / 100) >
         mallPrice($item`shadow brick`)
         ? clamp(13 - get("_shadowBricksUsed"), 0, 13)
         : 0,
