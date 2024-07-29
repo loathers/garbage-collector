@@ -121,12 +121,12 @@ export class Macro extends StrictMacro {
     return new Macro().ifHeavyRainsWanderer(macro);
   }
 
-  ifKnownWanderer(macro: Macro): Macro {
+  ifWanderer(macro: Macro): Macro {
     return this.ifHolidayWanderer(macro).ifHeavyRainsWanderer(macro);
   }
 
-  static ifKnownWanderer(macro: Macro): Macro {
-    return new Macro().ifKnownWanderer(macro);
+  static ifWanderer(macro: Macro): Macro {
+    return new Macro().ifWanderer(macro);
   }
 
   familiarActions(): Macro {
@@ -788,7 +788,7 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
       have($effect`Eldritch Attunement`),
       Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat()),
     )
-    .ifKnownWanderer(
+    .ifWanderer(
       Macro.externalIf(
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
