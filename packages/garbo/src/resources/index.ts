@@ -10,3 +10,4 @@ export * from "./synthesis";
 export * from "./latte";
 export * from "./aprilingband";
 export * from "./chestMimic";
+export * from "./darts";

@@ -83,6 +83,11 @@ import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
+import {
+  canBullseye,
+  guaranteedBullseye,
+  safeToAttemptBullseye,
+} from "../resources/darts";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -730,6 +735,26 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
+    "freefight",
+    {
+      acc1: $item`Everfull Dart Holster`,
+      acc2: guaranteedBullseye() ? [] : $item`spring shoes`,
+      modifier: guaranteedBullseye() ? [] : "Monster Level",
+    },
+    {
+      name: "Darts: Bullseye",
+      ready: safeToAttemptBullseye,
+      completed: () => !canBullseye(),
+      combat: new GarboStrategy(() =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .familiarActions()
+          .skill($skill`Darts: Aim for the Bullseye`)
+          .skill($skill`Spring Away`),
+      ),
+      sobriety: "sober",
+    },
+  ),
+  wanderTask(
     "yellow ray",
     {},
     {
@@ -759,7 +784,11 @@ const BarfTurnTasks: GarboTask[] = [
         have($item`spring shoes`) &&
         romanticMonsterImpossible() &&
         (getWorkshed() !== $item`model train set` ||
-          TrainSet.next() !== TrainSet.Station.GAIN_MEAT),
+          TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
+        (guaranteedBullseye() ||
+          !safeToAttemptBullseye() ||
+          have($skill`Free-For-All`) ||
+          have($effect`Everything Looks Red`, 30)),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(
         () =>
