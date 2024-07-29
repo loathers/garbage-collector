@@ -10,6 +10,7 @@ import {
   mallPrice,
   myAdventures,
   myHash,
+  myRain,
   print,
   retrieveItem,
   runChoice,
@@ -41,6 +42,7 @@ import {
   get,
   getBanishedMonsters,
   have,
+  HeavyRains,
   property,
   set,
   SourceTerminal,
@@ -308,6 +310,18 @@ export const chainStarters = [
       withMacro(
         options.macro,
         () => ChestMimic.differentiate(globalOptions.target),
+        options.useAuto,
+      );
+    },
+  ),
+  new CopyTargetFight(
+    "Rain Main",
+    () => have($skill`Rain Man`) && myRain() >= 50,
+    () => Math.floor(myRain() / 50),
+    (options: RunOptions) => {
+      withMacro(
+        options.macro,
+        () => HeavyRains.rainMan(globalOptions.target),
         options.useAuto,
       );
     },
