@@ -22,7 +22,6 @@ import {
   isBanished,
   Item,
   itemAmount,
-  itemDropModifier,
   itemDropsArray,
   Location,
   mallPrice,
@@ -1932,8 +1931,8 @@ const freeKillSources = [
   new FreeFight(
     () =>
       globalOptions.ascend &&
-      0.1 * garboValue($item`spice melange`) * itemDropModifier() >
-        garboValue($item`shadow brick`)
+      0.1 * garboValue($item`spice melange`) * numericModifier("Item Drop %") >
+        mallPrice($item`shadow brick`)
         ? clamp(13 - get("_shadowBricksUsed"), 0, 13)
         : 0,
     () => {
