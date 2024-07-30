@@ -47,6 +47,7 @@ import {
   CinchoDeMayo,
   Counter,
   get,
+  getTodaysHolidayWanderers,
   have,
   HeavyRains,
   SongBoom,
@@ -110,20 +111,15 @@ export class Macro extends StrictMacro {
     return new Macro().trySingAlong();
   }
 
-  ifHeavyRainsWanderer(macro: Macro): Macro {
-    return this.externalIf(
-      myPath() === HeavyRains.path,
-      Macro.if_([...HeavyRains.wanderers], macro),
-    );
-  }
-
-  static ifHeavyRainsWanderer(macro: Macro): Macro {
-    return new Macro().ifHeavyRainsWanderer(macro);
-  }
-
   ifInnateWanderer(macro: Macro): Macro {
     // if this monster appears without action on the part of the script
-    return this.ifHolidayWanderer(macro).ifHeavyRainsWanderer(macro);
+
+    const monsters = [
+      ...(myPath() === HeavyRains.path ? [...HeavyRains.wanderers] : []),
+      ...getTodaysHolidayWanderers(),
+    ];
+
+    return this.externalIf(monsters.length > 0, Macro.if_(monsters, macro));
   }
 
   static ifInnateWanderer(macro: Macro): Macro {
