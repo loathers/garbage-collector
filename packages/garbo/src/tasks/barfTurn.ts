@@ -10,6 +10,8 @@ import {
   myAdventures,
   myInebriety,
   myLevel,
+  myLightning,
+  myRain,
   myTurncount,
   outfitPieces,
   runChoice,
@@ -36,6 +38,7 @@ import {
   getModifier,
   GingerBread,
   have,
+  HeavyRains,
   questStep,
   realmAvailable,
   set,
@@ -730,6 +733,22 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
+    "freefight",
+    {},
+    {
+      name: "Heavy Rains Lightning Strike",
+      ready: () => have($skill`Lightning Strike`) && myLightning() >= 20,
+      completed: () => myLightning() < 20,
+      combat: new GarboStrategy(() =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .familiarActions()
+          .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
+          .skill($skill`Lightning Strike`),
+      ),
+      duplicate: true,
+    },
+  ),
+  wanderTask(
     "yellow ray",
     {},
     {
@@ -806,6 +825,17 @@ const BarfTurnTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
+    name: "Rain Man",
+    ready: () => myRain() >= 50 && have($skill`Rain Man`),
+    completed: () => myRain() < 50,
+    do: () => {
+      HeavyRains.rainMan(globalOptions.target);
+    },
+    combat: new GarboStrategy(() => Macro.meatKill()),
+    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    outfit: () => embezzlerOutfit(),
+  },
+  {
     name: "Make Mimic Eggs (maximum eggs)",
     ready: () => shouldMakeEgg(true),
     completed: () => get("_mimicEggsObtained") >= 11,
@@ -816,7 +846,7 @@ const BarfTurnTasks: GarboTask[] = [
       ChestMimic.differentiate(globalOptions.target);
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: true,
+    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
     outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
   },
   {
@@ -827,7 +857,7 @@ const BarfTurnTasks: GarboTask[] = [
     do: () => ChestMimic.differentiate(globalOptions.target),
     outfit: () => embezzlerOutfit(),
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: true,
+    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
   },
 ];
 
