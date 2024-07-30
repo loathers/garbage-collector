@@ -225,7 +225,8 @@ export const chainStarters = [
     "Scepter Semirare",
     () =>
       canAdventure($location`Cobb's Knob Treasury`) &&
-      shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
+      shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`) &&
+      globalOptions.target === $monster`Knob Goblin Embezzler`,
     () => 0, // prevent circular reference
     (options: RunOptions) => {
       retrieveItem($item`august scepter`);
@@ -250,7 +251,8 @@ export const chainStarters = [
       getBestLuckyAdventure().phase === "embezzler" &&
       getBestLuckyAdventure().value() > 0 &&
       canAdventure($location`Cobb's Knob Treasury`) &&
-      AprilingBandHelmet.canPlay($item`Apriling band saxophone`),
+      AprilingBandHelmet.canPlay($item`Apriling band saxophone`) &&
+      globalOptions.target === $monster`Knob Goblin Embezzler`,
     () => 0,
     (options: RunOptions) => {
       AprilingBandHelmet.play($item`Apriling band saxophone`);
@@ -271,12 +273,14 @@ export const chainStarters = [
       have($item`Eight Days a Week Pill Keeper`) &&
       canAdventure($location`Cobb's Knob Treasury`) &&
       !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`),
+      !have($effect`Lucky!`) &&
+      globalOptions.target === $monster`Knob Goblin Embezzler`,
     () =>
       have($item`Eight Days a Week Pill Keeper`) &&
       canAdventure($location`Cobb's Knob Treasury`) &&
       !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`)
+      !have($effect`Lucky!`) &&
+      globalOptions.target === $monster`Knob Goblin Embezzler`
         ? 1
         : 0,
     (options: RunOptions) => {
@@ -515,9 +519,13 @@ export const wanderSources = [
   new CopyTargetFight(
     "Lucky!",
     () =>
-      canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`),
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      have($effect`Lucky!`) &&
+      globalOptions.target === $monster`Knob Goblin Embezzler`,
     () =>
-      canAdventure($location`Cobb's Knob Treasury`) && have($effect`Lucky!`)
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      have($effect`Lucky!`) &&
+      globalOptions.target === $monster`Knob Goblin Embezzler`
         ? 1
         : 0,
     undefined,
