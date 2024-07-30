@@ -1054,12 +1054,13 @@ type LuckyAdventure = {
   };
 };
 
-const luckyAdventures = [
+const luckyAdventures: LuckyAdventure[] = [
   {
     location: $location`Cobb's Knob Treasury`,
     phase: "embezzler",
     value: () =>
-      canAdventure($location`Cobb's Knob Treasury`)
+      canAdventure($location`Cobb's Knob Treasury`) &&
+      globalOptions.target === $monster`Knob Goblin Embezzler`
         ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
         : 0,
   },
@@ -1072,7 +1073,7 @@ const luckyAdventures = [
           get("valueOfAdventure")
         : 0,
   },
-] as LuckyAdventure[];
+];
 
 function determineBestLuckyAdventure(): LuckyAdventure {
   return maxBy(luckyAdventures, ({ value }) => value());
@@ -1080,8 +1081,5 @@ function determineBestLuckyAdventure(): LuckyAdventure {
 
 let bestLuckyAdventure: LuckyAdventure;
 export function getBestLuckyAdventure(): LuckyAdventure {
-  if (bestLuckyAdventure === undefined) {
-    bestLuckyAdventure = determineBestLuckyAdventure();
-  }
-  return bestLuckyAdventure;
+  return (bestLuckyAdventure ??= determineBestLuckyAdventure());
 }
