@@ -790,7 +790,7 @@ const pygmyMacro = Macro.step(
   ),
 )
   .if_($monster`drunk pygmy`, Macro.trySkill($skill`Extract`).trySingAlong())
-  .ifWanderer(Macro.basicCombat())
+  .ifInnateWanderer(Macro.basicCombat())
   .abort();
 
 function getStenchLocation() {
@@ -2189,7 +2189,7 @@ export function doSausage(): void {
     garboAdventureAuto(
       targetLocation,
       Macro.if_(goblin, Macro.basicCombat())
-        .ifWanderer(Macro.basicCombat())
+        .ifInnateWanderer(Macro.basicCombat())
         .abortWithMsg(`Expected ${goblin} but got something else.`),
     );
   } while (get("_sausageFights") === currentSausages); // Try again if we hit an NC that didn't take a turn

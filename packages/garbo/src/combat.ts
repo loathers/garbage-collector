@@ -121,12 +121,14 @@ export class Macro extends StrictMacro {
     return new Macro().ifHeavyRainsWanderer(macro);
   }
 
-  ifWanderer(macro: Macro): Macro {
+  ifInnateWanderer(macro: Macro): Macro {
+    // if this monster appears without action on the part of the script
     return this.ifHolidayWanderer(macro).ifHeavyRainsWanderer(macro);
   }
 
-  static ifWanderer(macro: Macro): Macro {
-    return new Macro().ifWanderer(macro);
+  static ifInnateWanderer(macro: Macro): Macro {
+    // if this monster appears without action on the part of the script
+    return new Macro().ifInnateWanderer(macro);
   }
 
   familiarActions(): Macro {
@@ -788,7 +790,7 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
       have($effect`Eldritch Attunement`),
       Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat()),
     )
-    .ifWanderer(
+    .ifInnateWanderer(
       Macro.externalIf(
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
