@@ -1,4 +1,4 @@
-import { Item, myLevel } from "kolmafia";
+import { Item, myFamiliar, myLevel, useFamiliar } from "kolmafia";
 import {
   $effect,
   $item,
@@ -17,6 +17,7 @@ import { copyTargetCount } from "../embezzler";
 import { Potion } from "../potions";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { felizValue } from "../lib";
+import { GarboTask } from "../tasks/engine";
 // Stats assigned a value of 1, to discern from the Truly Useless
 // MP restore assigned a value of 2, because it's better than stats!
 const MAYAM_RING_VALUES = {
@@ -140,6 +141,27 @@ function findBestMayamCombinations(): MayamCalendar.Combination[] {
 }
 
 let mayamChoice: MayamCalendar.Combination[];
-export function getBestMayamCombinations(): MayamCalendar.Combination[] {
+function getBestMayamCombinations(): MayamCalendar.Combination[] {
   return (mayamChoice ??= findBestMayamCombinations());
 }
+
+export const mayamCalendarSummon: GarboTask = {
+  name: "Mayam Summons",
+  completed: () => MayamCalendar.remainingUses() === 0,
+  ready: () => MayamCalendar.have(),
+  do: () => {
+    const startingFamiliar = myFamiliar();
+    for (const combination of getBestMayamCombinations()) {
+      if (combination.includes("fur")) {
+        const bestFamiliar = maxBy(
+          getExperienceFamiliars("free"),
+          "expectedValue",
+        ).familiar;
+        useFamiliar(bestFamiliar);
+      }
+      MayamCalendar.submit(...combination);
+    }
+    useFamiliar(startingFamiliar);
+  },
+  spendsTurn: false,
+};
