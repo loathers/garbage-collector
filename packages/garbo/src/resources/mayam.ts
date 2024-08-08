@@ -123,7 +123,7 @@ function expandCombinationGroup<N extends number>(
   ];
 }
 
-function findBestMayamCombinations(): MayamCalendar.Combination[] {
+function getBestMayamCombinations(): MayamCalendar.Combination[] {
   const combinationGroups =
     // `reduce` misbehaves a lot when `any` shows its face
     (new Array(MayamCalendar.remainingUses()).fill(null) as null[]).reduce(
@@ -138,11 +138,6 @@ function findBestMayamCombinations(): MayamCalendar.Combination[] {
     );
 
   return maxBy(combinationGroups, (group) => sum(group, valueCombination));
-}
-
-let mayamChoice: MayamCalendar.Combination[];
-function getBestMayamCombinations(): MayamCalendar.Combination[] {
-  return (mayamChoice ??= findBestMayamCombinations());
 }
 
 export const mayamCalendarSummon: GarboTask = {
