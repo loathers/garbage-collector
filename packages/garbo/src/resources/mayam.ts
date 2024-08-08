@@ -48,7 +48,7 @@ const MAYAM_RING_VALUES = {
   yam4: () => garboValue($item`yam`),
   explosion: () => 0,
   clock: () => 5 * get("valueOfAdventure"),
-} as const;
+};
 
 function valueSymbol(symbol: MayamCalendar.MayamSymbol): number {
   return MAYAM_RING_VALUES[symbol]();
@@ -134,9 +134,8 @@ function getBestMayamCombinations(): MayamCalendar.Combination[] {
         }
         return result;
       },
-      [] as MayamCalendar.Combination[][],
+      [[]] as MayamCalendar.Combination[][],
     );
-
   return maxBy(combinationGroups, (group) => sum(group, valueCombination));
 }
 
