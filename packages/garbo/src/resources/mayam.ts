@@ -73,14 +73,11 @@ function valueCombination(combination: MayamCalendar.Combination): number {
 function getAvailableResonances(
   forbiddenSymbols: MayamCalendar.MayamSymbol[],
 ): MayamCalendar.Combination[] {
-  return (
-    Object.keys(MayamCalendar.RESONANCES) as MayamCalendar.CombinationString[]
-  )
-    .map((combination) => MayamCalendar.toCombination([combination]))
-    .filter(
-      (combination) =>
-        !combination.some((sym) => forbiddenSymbols.includes(sym)),
-    );
+  return MayamCalendar.RESONANCE_KEYS.map((combination) =>
+    MayamCalendar.toCombination([combination]),
+  ).filter(
+    (combination) => !combination.some((sym) => forbiddenSymbols.includes(sym)),
+  );
 }
 
 function getBestAvailableSymbolFromRing<R extends Range<0, 4>>(
@@ -107,10 +104,7 @@ function getBestGreedyCombination(
 function expandCombinationGroup<N extends number>(
   group: Tuple<MayamCalendar.Combination, N>,
 ): [...Tuple<MayamCalendar.Combination, N>, MayamCalendar.Combination][] {
-  const usedSymbols = get("_mayamSymbolsUsed").split(
-    ",",
-  ) as MayamCalendar.MayamSymbol[];
-  const forbiddenSymbols = [...flat(group), ...usedSymbols];
+  const forbiddenSymbols = [...flat(group), ...MayamCalendar.symbolsUsed()];
   return [
     ...getAvailableResonances(forbiddenSymbols).map(
       (resonance) =>
