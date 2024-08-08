@@ -1,6 +1,9 @@
-import { Item } from "kolmafia";
+import { Item, myLevel } from "kolmafia";
 import {
+  $effect,
   $item,
+  CinchoDeMayo,
+  clamp,
   flat,
   get,
   maxBy,
@@ -12,10 +15,42 @@ import {
 import { garboValue } from "../garboValue";
 import { copyTargetCount } from "../embezzler";
 import { Potion } from "../potions";
+import getExperienceFamiliars from "../familiar/experienceFamiliars";
+import { felizValue } from "../lib";
+// Stats assigned a value of 1, to discern from the Truly Useless
+// MP restore assigned a value of 2, because it's better than stats!
+const MAYAM_RING_VALUES = {
+  yam1: () => garboValue($item`yam`),
+  sword: () => 1,
+  vessel: () => 2,
+  eye: () =>
+    new Potion($item.none, { effect: $effect`Big Eyes`, duration: 100 }).gross(
+      copyTargetCount(),
+    ),
+  fur: () =>
+    Math.max(
+      0,
+      ...getExperienceFamiliars("free").map(
+        ({ expectedValue }) => expectedValue / 12,
+      ),
+    ) * 100,
+  chair: () => (CinchoDeMayo.have() ? 3 * 5 * felizValue() : 0),
+  yam2: () => garboValue($item`yam`),
+  lightning: () => 1,
+  bottle: () => 0,
+  wood: () => 0,
+  wall: () => 0,
+  cheese: () => garboValue($item`goat cheese`),
+  eyepatch: () => 1,
+  meat: () => clamp(myLevel() * 100, 100, 1500),
+  yam3: () => garboValue($item`yam`),
+  yam4: () => garboValue($item`yam`),
+  explosion: () => 0,
+  clock: () => 5 * get("valueOfAdventure"),
+} as const;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function valueSymbol(symbol: MayamCalendar.MayamSymbol): number {
-  return 0;
+  return MAYAM_RING_VALUES[symbol]();
 }
 
 function valueResonance(combination: MayamCalendar.Combination): number {
@@ -88,8 +123,6 @@ function expandCombinationGroup<N extends number>(
 }
 
 export function getBestMayamCombinations(): MayamCalendar.Combination[] {
-  const needed = MayamCalendar.remainingUses();
-  if (!needed) return [];
   const combinationGroups =
     // `reduce` misbehaves a lot when `any` shows its face
     (new Array(MayamCalendar.remainingUses()).fill(null) as null[]).reduce(
