@@ -59,6 +59,7 @@ import {
   candyMapDailyTasks,
   doingGregFight,
   getBestAprilInstruments,
+  mayamCalendarSummon,
 } from "../resources";
 import { meatFamiliar } from "../familiar";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
@@ -607,6 +608,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
     spendsTurn: false,
   },
+  mayamCalendarSummon,
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {
