@@ -7,6 +7,7 @@ import {
   $items,
   $location,
   $monster,
+  Environment,
   Guzzlr,
   have,
 } from "libram";
@@ -115,7 +116,10 @@ export function embezzlerOutfit(
     edpiece: "fish",
   });
 
-  if (!have($effect`Everything Looks Purple`)) {
+  if (
+    !have($effect`Everything Looks Purple`) &&
+    target.environment !== Environment.Underwater
+  ) {
     outfit.equip($item`Roman Candelabra`);
   }
 
