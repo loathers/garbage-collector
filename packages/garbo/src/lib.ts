@@ -1071,15 +1071,6 @@ type LuckyAdventure = {
 
 const luckyAdventures: LuckyAdventure[] = [
   {
-    location: $location`Cobb's Knob Treasury`,
-    phase: "embezzler",
-    value: () =>
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`
-        ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
-        : 0,
-  },
-  {
     location: $location`The Castle in the Clouds in the Sky (Top Floor)`,
     phase: "barf",
     value: () =>

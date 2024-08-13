@@ -51,7 +51,7 @@ import { OutfitSpec, Quest } from "grimoire-kolmafia";
 import { WanderDetails } from "garbo-lib";
 
 import { GarboStrategy, Macro } from "../combat";
-import { globalOptions } from "../config";
+import { defaultTarget, globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
   EMBEZZLER_MULTIPLIER,
@@ -156,7 +156,7 @@ function shouldGoUnderwater(): boolean {
   // TODO: if you didn't digitize an embezzler, this equation may not be right
   if (
     mallPrice($item`pulled green taffy`) >
-    (globalOptions.target === $monster`Knob Goblin Embezzler`
+    (globalOptions.target === defaultTarget
       ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
       : get("valueOfAdventure"))
   ) {

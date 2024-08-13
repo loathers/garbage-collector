@@ -6,7 +6,6 @@ import {
   $item,
   $items,
   $location,
-  $monster,
   Environment,
   Guzzlr,
   have,
@@ -23,7 +22,7 @@ import {
   waterBreathingEquipment,
 } from "./lib";
 import { BonusEquipMode, modeValueOfMeat } from "../lib";
-import { globalOptions } from "../config";
+import { defaultTarget, globalOptions } from "../config";
 
 export function embezzlerOutfit(
   spec: OutfitSpec = {},
@@ -36,7 +35,7 @@ export function embezzlerOutfit(
     new Error(`Failed to construct outfit from spec ${toJson(spec)}`),
   );
 
-  if (globalOptions.target === $monster`Knob Goblin Embezzler`) {
+  if (globalOptions.target === defaultTarget) {
     outfit.modifier.push(
       `${modeValueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`,
       "-tie",
@@ -46,12 +45,12 @@ export function embezzlerOutfit(
   }
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
   outfit.familiar ??=
-    globalOptions.target === $monster`Knob Goblin Embezzler`
+    globalOptions.target === defaultTarget
       ? meatFamiliar()
       : freeFightFamiliar();
 
   const bjornChoice = chooseBjorn(
-    globalOptions.target === $monster`Knob Goblin Embezzler`
+    globalOptions.target === defaultTarget
       ? BonusEquipMode.EMBEZZLER
       : BonusEquipMode.FREE,
     outfit.familiar,
@@ -76,7 +75,7 @@ export function embezzlerOutfit(
   useUPCsIfNeeded(outfit);
 
   outfit.bonuses = bonusGear(
-    globalOptions.target === $monster`Knob Goblin Embezzler`
+    globalOptions.target === defaultTarget
       ? BonusEquipMode.EMBEZZLER
       : BonusEquipMode.FREE,
   );

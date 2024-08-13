@@ -36,7 +36,6 @@ import {
   $item,
   $items,
   $location,
-  $monster,
   $slot,
   clamp,
   ClosedCircuitPayphone,
@@ -68,7 +67,7 @@ import {
 import { copyTargetCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
-import { globalOptions } from "./config";
+import { defaultTarget, globalOptions } from "./config";
 import { castAugustScepterBuffs } from "./resources";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
@@ -714,9 +713,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
     const embezzlers =
-      globalOptions.target === $monster`Knob Goblin Embezzler`
-        ? copyTargetCount()
-        : 0;
+      globalOptions.target === defaultTarget ? copyTargetCount() : 0;
 
     if (
       have($item`Eight Days a Week Pill Keeper`) &&
