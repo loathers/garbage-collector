@@ -152,7 +152,7 @@ export function usingThumbRing(): boolean {
       )
       .map(
         (item) =>
-          [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [
+          [item, (getModifier("Meat Drop", item) * baseMeat()) / 100] as [
             Item,
             number,
           ],

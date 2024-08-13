@@ -134,7 +134,9 @@ export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
 export function modeValueOfMeat(mode: BonusEquipMode): number {
   return modeIsFree(mode)
     ? 0
-    : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
+    : (baseMeat() +
+        (mode === BonusEquipMode.EMBEZZLER ? targetMeatDifferential() : 0)) /
+        100;
 }
 
 export function modeValueOfItem(mode: BonusEquipMode): number {
@@ -149,24 +151,37 @@ export const EMBEZZLER_MULTIPLIER = (): number =>
 
 export const propertyManager = new PropertiesManager();
 
-export const baseMeat =
+const songboomMeat = () =>
   SongBoom.have() &&
   (SongBoom.songChangesLeft() > 0 ||
     (SongBoom.song() === "Total Eclipse of Your Meat" &&
       myInebriety() <= inebrietyLimit()))
-    ? 275
-    : 250;
+    ? 25
+    : 0;
 
-export function averageEmbezzlerNet(): number {
-  return ((baseMeat + 750) * meatDropModifier()) / 100;
+// all tourists have a basemeat of 250
+export const baseMeat = () => 250 + songboomMeat();
+export const targetMeat = () =>
+  (globalOptions.target.minMeat + globalOptions.target.maxMeat) / 2 +
+  songboomMeat();
+
+export const targetMeatDifferential = () => {
+  const baseMeatVal = baseMeat();
+  const targetMeatVal = targetMeat();
+
+  return clamp(targetMeatVal - baseMeatVal, 0, targetMeatVal);
+};
+
+export function averageTargetNet(): number {
+  return (targetMeat() * meatDropModifier()) / 100;
 }
 
 export function averageTouristNet(): number {
-  return (baseMeat * meatDropModifier()) / 100;
+  return (baseMeat() * meatDropModifier()) / 100;
 }
 
-export function expectedEmbezzlerProfit(): number {
-  return averageEmbezzlerNet() - averageTouristNet();
+export function expectedTargetProfit(): number {
+  return averageTargetNet() - averageTouristNet();
 }
 
 export function safeInterrupt(): void {
@@ -1055,15 +1070,6 @@ type LuckyAdventure = {
 };
 
 const luckyAdventures: LuckyAdventure[] = [
-  {
-    location: $location`Cobb's Knob Treasury`,
-    phase: "embezzler",
-    value: () =>
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`
-        ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
-        : 0,
-  },
   {
     location: $location`The Castle in the Clouds in the Sky (Top Floor)`,
     phase: "barf",

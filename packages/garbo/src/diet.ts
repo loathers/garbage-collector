@@ -49,7 +49,6 @@ import {
   $familiar,
   $item,
   $items,
-  $monster,
   $skill,
   clamp,
   Diet,
@@ -70,14 +69,14 @@ import {
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
-import { globalOptions } from "./config";
+import { globalOptions, targettingMeat } from "./config";
 import { copyTargetCount } from "./embezzler";
 import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
   arrayEquals,
-  baseMeat,
   EMBEZZLER_MULTIPLIER,
   HIGHLIGHT,
+  targetMeat,
   userConfirmDialog,
 } from "./lib";
 import { shrugBadEffects } from "./mood";
@@ -553,8 +552,7 @@ export function bestConsumable(
     const meatDrop = getModifier("Meat Drop", buff);
     const famWeight = getModifier("Familiar Weight", buff);
     const buffValue =
-      ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * (baseMeat + 750)) /
-      100;
+      ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * targetMeat()) / 100;
     const advValue = getAverageAdventures(edible) * get("valueOfAdventure");
     const organSpace = consumable.size;
     return {
@@ -593,10 +591,9 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  const embezzlerDifferential =
-    globalOptions.target === $monster`Knob Goblin Embezzler`
-      ? EMBEZZLER_MULTIPLIER() * MPA
-      : 0;
+  const embezzlerDifferential = targettingMeat()
+    ? EMBEZZLER_MULTIPLIER() * MPA
+    : 0;
   const { expectedGregariousFights, marginalGregariousFights } =
     gregariousCount();
   const extros =
@@ -835,10 +832,7 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseEmbezzlers =
-    globalOptions.target === $monster`Knob Goblin Embezzler`
-      ? copyTargetCount()
-      : 0;
+  const baseEmbezzlers = targettingMeat() ? copyTargetCount() : 0;
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -954,9 +948,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   );
 
   const embezzlers = Math.floor(
-    (globalOptions.target === $monster`Knob Goblin Embezzler`
-      ? copyTargetCount()
-      : 0) + countCopies(diet),
+    (targettingMeat() ? copyTargetCount() : 0) + countCopies(diet),
   );
   const adventures = Math.floor(
     estimatedGarboTurns() + diet.expectedAdventures(),

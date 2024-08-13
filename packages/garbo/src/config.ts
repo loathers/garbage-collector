@@ -1,6 +1,14 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
-import { $item, $items, $monster, get } from "libram";
+import {
+  $item,
+  $items,
+  $monster,
+  $monsters,
+  ChestMimic,
+  CombatLoversLocket,
+  get,
+} from "libram";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -63,6 +71,18 @@ function stringToWorkshedItem(s: string): Item | null {
   return validWorksheds[0].item;
 }
 
+const defaultTarget =
+  ChestMimic.have() ||
+  (CombatLoversLocket.have() &&
+    CombatLoversLocket.unlockedLocketMonsters().includes(
+      $monster`cheerless mime executive`,
+    ))
+    ? $monster`cheerless mime executive`
+    : $monster`cockroach`;
+
+export const targettingMeat = () =>
+  $monsters`cheerless mime executive, cockroach`.includes(globalOptions.target);
+
 export const globalOptions = Args.create(
   "garbo",
   'This script is an automated turn-burning script for the Kingdom of Loathing that spends a day\'s resources and adventures on farming\n\
@@ -121,7 +141,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     target: Args.monster({
       setting: "",
       help: "The monster to use all copies on",
-      default: $monster`Knob Goblin Embezzler`,
+      default: defaultTarget,
       hidden: true,
     }),
     version: Args.flag({
@@ -175,8 +195,8 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
         }),
         embezzlerMultiplier: Args.number({
           setting: "garbo_embezzlerMultiplier",
-          help: "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit. (Default 2.5)",
-          default: 2.5,
+          help: "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit. (Default 1.5)",
+          default: 1.5,
         }),
         stashClan: Args.string({
           setting: "garbo_stashClan",

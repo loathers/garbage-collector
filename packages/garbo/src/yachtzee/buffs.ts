@@ -27,7 +27,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
-import { baseMeat, burnLibrams, turnsToNC } from "../lib";
+import { baseMeat, burnLibrams, targetMeat, turnsToNC } from "../lib";
 import {
   failedWishes,
   farmingPotions,
@@ -74,7 +74,7 @@ export function yachtzeePotionProfits(
       2000 *
       (potion.meatDrop() + 2.5 * potion.familiarWeight())) /
     100; // Every 1lbs of lep ~ 2.5% meat drop
-  const barfValue = (barfTurns * baseMeat * turnsToNC) / (turnsToNC + 1);
+  const barfValue = (barfTurns * baseMeat() * turnsToNC) / (turnsToNC + 1);
 
   return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
 }
@@ -275,8 +275,8 @@ export function yachtzeePotionSetup(
       (Math.min(100, expectedEmbezzlers + yachtzeeTurns) + 1);
     const greenspanValue =
       (2000 * yachtzeeFactor +
-        (baseMeat + 750) * (embezzlerFactor - yachtzeeFactor) +
-        baseMeat * (10100 - embezzlerFactor)) /
+        targetMeat() * (embezzlerFactor - yachtzeeFactor) +
+        baseMeat() * (10100 - embezzlerFactor)) /
       100;
     const price = garboValue($item`Uncle Greenspan's Bathroom Finance Guide`);
     const profit = greenspanValue - price;

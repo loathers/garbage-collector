@@ -31,7 +31,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: (mode) =>
       garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 -
       // We can't equip an amulet coin if we equip the bag of many confections
-      (mode === "barf" ? (bestAlternative * baseMeat) / 100 : 0) +
+      (mode === "barf" ? (bestAlternative * baseMeat()) / 100 : 0) +
       (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
         (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
   },
@@ -70,7 +70,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     // This is the value of getting a pirate costume over getting an amulet coin or whatever
     value: (mode) =>
       have($item`li'l pirate costume`) && mode === "barf"
-        ? (baseMeat * (300 - bestAlternative)) / 100
+        ? (baseMeat() * (300 - bestAlternative)) / 100
         : 0,
   },
   {

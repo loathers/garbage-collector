@@ -104,7 +104,6 @@ import {
   Requirement,
   Robortender,
   set,
-  SongBoom,
   SourceTerminal,
   sum,
   undelay,
@@ -116,7 +115,7 @@ import { WanderDetails } from "garbo-lib";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
-import { globalOptions } from "./config";
+import { globalOptions, targettingMeat } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 import {
   copyTargetCount,
@@ -144,12 +143,11 @@ import {
 import {
   aprilFoolsRufus,
   asArray,
-  baseMeat,
   bestShadowRift,
   burnLibrams,
   ESTIMATED_OVERDRUNK_TURNS,
   eventLog,
-  expectedEmbezzlerProfit,
+  expectedTargetProfit,
   freeRest,
   freeRunConstraints,
   getUsingFreeBunnyBanish,
@@ -166,6 +164,7 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  targetMeat,
   tryFindFreeRunOrBanish,
   userConfirmDialog,
 } from "./lib";
@@ -239,18 +238,7 @@ function embezzlerSetup() {
   setLocation($location`Friar Ceremony Location`);
   potionSetup(false);
   maximize("MP", false);
-  meatMood(
-    true,
-    globalOptions.target === $monster`Knob Goblin Embezzler`
-      ? 750 + baseMeat
-      : (globalOptions.target.minMeat + globalOptions.target.maxMeat) / 2 +
-          (SongBoom.have() &&
-          (SongBoom.songChangesLeft() > 0 ||
-            (SongBoom.song() === "Total Eclipse of Your Meat" &&
-              myInebriety() <= inebrietyLimit()))
-            ? 25
-            : 0),
-  ).execute(copyTargetCount());
+  meatMood(true, targetMeat()).execute(copyTargetCount());
   safeRestore();
   freeFightMood().execute(50);
   useBuffExtenders();
@@ -281,7 +269,7 @@ function embezzlerSetup() {
   if (
     !get("_cameraUsed") &&
     !have($item`shaking 4-d camera`) &&
-    expectedEmbezzlerProfit() > mallPrice($item`4-d camera`)
+    expectedTargetProfit() > mallPrice($item`4-d camera`)
   ) {
     property.withProperty("autoSatisfyWithCloset", true, () =>
       retrieveItem($item`4-d camera`),
@@ -291,7 +279,7 @@ function embezzlerSetup() {
   if (
     !get("_iceSculptureUsed") &&
     !have($item`ice sculpture`) &&
-    expectedEmbezzlerProfit() >
+    expectedTargetProfit() >
       (mallPrice($item`snow berries`) + mallPrice($item`ice harvest`)) * 3
   ) {
     property.withProperty("autoSatisfyWithCloset", true, () => {
@@ -303,7 +291,7 @@ function embezzlerSetup() {
   if (
     !get("_enamorangs") &&
     !itemAmount($item`LOV Enamorang`) &&
-    expectedEmbezzlerProfit() > 20000
+    expectedTargetProfit() > 20000
   ) {
     retrieveItem($item`LOV Enamorang`);
   }
@@ -472,7 +460,7 @@ export function dailyFights(): void {
       if (have($familiar`Pocket Professor`)) {
         const potentialPocketProfessorLectures = [
           {
-            shouldDo: globalOptions.target === $monster`Knob Goblin Embezzler`,
+            shouldDo: targettingMeat(),
             property: "_garbo_meatChain",
             macro: firstChainMacro,
             goalMaximize: (spec: OutfitSpec) => embezzlerOutfit(spec).dress(),
