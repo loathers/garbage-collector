@@ -31403,7 +31403,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("bbde2ce542bc4ad1706d519dc73600247a661f05", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9c3c056f4ae67d56ff7663eec1cc6271df3d3497", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -49065,7 +49065,7 @@ var chooseAprilFamiliar = function() {
 };
 var SummonTasks = _toConsumableArray62(SummonTomes.map(function(skill) {
   return {
-    name: "{skill}",
+    name: "".concat(skill),
     ready: function() {
       return have(skill);
     },
