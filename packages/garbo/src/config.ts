@@ -195,7 +195,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
         }),
         embezzlerMultiplier: Args.number({
           setting: "garbo_embezzlerMultiplier",
-          help: "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit. (Default 2.5)",
+          help: "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit. (Default 1.5)",
           default: 1.5,
         }),
         stashClan: Args.string({
