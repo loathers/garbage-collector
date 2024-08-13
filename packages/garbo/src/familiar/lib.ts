@@ -56,7 +56,7 @@ export function timeToMeatify(): boolean {
     have($item`cursed magnifying glass`) &&
     get("_voidFreeFights") < 5 &&
     globalOptions.prefs.valueOfFreeFight / 13 >
-      baseMeat * (usingLatte ? 0.75 : 0.6)
+      baseMeat() * (usingLatte ? 0.75 : 0.6)
       ? -get("cursedMagnifyingGlassCount") % 13
       : Infinity;
 

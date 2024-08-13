@@ -73,7 +73,7 @@ function pantsgiving(mode: BonusEquipMode) {
         expectedSinusTurns,
       )
     : expectedSinusTurns;
-  const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
+  const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat();
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
@@ -315,7 +315,7 @@ function shavingBonus(): Map<Item, number> {
     return new Map();
   }
 
-  const bonusValue = (baseMeat * 100 + 72 * 50) / 100;
+  const bonusValue = (baseMeat() * 100 + 72 * 50) / 100;
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
 
