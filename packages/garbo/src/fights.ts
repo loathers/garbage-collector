@@ -115,7 +115,7 @@ import { WanderDetails } from "garbo-lib";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
-import { defaultTarget, globalOptions } from "./config";
+import { globalOptions, targettingMeat } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 import {
   copyTargetCount,
@@ -460,7 +460,7 @@ export function dailyFights(): void {
       if (have($familiar`Pocket Professor`)) {
         const potentialPocketProfessorLectures = [
           {
-            shouldDo: globalOptions.target === defaultTarget,
+            shouldDo: targettingMeat(),
             property: "_garbo_meatChain",
             macro: firstChainMacro,
             goalMaximize: (spec: OutfitSpec) => embezzlerOutfit(spec).dress(),

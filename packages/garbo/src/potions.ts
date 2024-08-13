@@ -67,7 +67,7 @@ import {
 import { copyTargetCount } from "./embezzler";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
-import { defaultTarget, globalOptions } from "./config";
+import { globalOptions, targettingMeat } from "./config";
 import { castAugustScepterBuffs } from "./resources";
 
 export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
@@ -712,8 +712,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
-    const embezzlers =
-      globalOptions.target === defaultTarget ? copyTargetCount() : 0;
+    const embezzlers = targettingMeat() ? copyTargetCount() : 0;
 
     if (
       have($item`Eight Days a Week Pill Keeper`) &&

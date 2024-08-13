@@ -69,7 +69,7 @@ import {
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
-import { defaultTarget, globalOptions } from "./config";
+import { globalOptions, targettingMeat } from "./config";
 import { copyTargetCount } from "./embezzler";
 import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
@@ -591,8 +591,9 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  const embezzlerDifferential =
-    globalOptions.target === defaultTarget ? EMBEZZLER_MULTIPLIER() * MPA : 0;
+  const embezzlerDifferential = targettingMeat()
+    ? EMBEZZLER_MULTIPLIER() * MPA
+    : 0;
   const { expectedGregariousFights, marginalGregariousFights } =
     gregariousCount();
   const extros =
@@ -831,8 +832,7 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseEmbezzlers =
-    globalOptions.target === defaultTarget ? copyTargetCount() : 0;
+  const baseEmbezzlers = targettingMeat() ? copyTargetCount() : 0;
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -948,8 +948,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   );
 
   const embezzlers = Math.floor(
-    (globalOptions.target === defaultTarget ? copyTargetCount() : 0) +
-      countCopies(diet),
+    (targettingMeat() ? copyTargetCount() : 0) + countCopies(diet),
   );
   const adventures = Math.floor(
     estimatedGarboTurns() + diet.expectedAdventures(),

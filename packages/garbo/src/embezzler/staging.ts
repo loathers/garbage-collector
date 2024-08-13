@@ -8,11 +8,11 @@ import {
 } from "./lib";
 import { Macro } from "../combat";
 import { wanderer } from "../garboWanderer";
-import { defaultTarget, globalOptions } from "../config";
+import { globalOptions, targettingMeat } from "../config";
 
 const taffyIsWorthIt = () =>
   mallPrice($item`pulled green taffy`) <
-    (globalOptions.target === defaultTarget
+    (targettingMeat()
       ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
       : get("valueOfAdventure")) && retrieveItem($item`pulled green taffy`);
 

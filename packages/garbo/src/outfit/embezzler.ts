@@ -22,7 +22,7 @@ import {
   waterBreathingEquipment,
 } from "./lib";
 import { BonusEquipMode, modeValueOfMeat } from "../lib";
-import { defaultTarget, globalOptions } from "../config";
+import { globalOptions, targettingMeat } from "../config";
 
 export function embezzlerOutfit(
   spec: OutfitSpec = {},
@@ -35,7 +35,7 @@ export function embezzlerOutfit(
     new Error(`Failed to construct outfit from spec ${toJson(spec)}`),
   );
 
-  if (globalOptions.target === defaultTarget) {
+  if (targettingMeat()) {
     outfit.modifier.push(
       `${modeValueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`,
       "-tie",
@@ -44,15 +44,10 @@ export function embezzlerOutfit(
     outfit.modifier.push("-tie");
   }
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
-  outfit.familiar ??=
-    globalOptions.target === defaultTarget
-      ? meatFamiliar()
-      : freeFightFamiliar();
+  outfit.familiar ??= targettingMeat() ? meatFamiliar() : freeFightFamiliar();
 
   const bjornChoice = chooseBjorn(
-    globalOptions.target === defaultTarget
-      ? BonusEquipMode.EMBEZZLER
-      : BonusEquipMode.FREE,
+    targettingMeat() ? BonusEquipMode.EMBEZZLER : BonusEquipMode.FREE,
     outfit.familiar,
   );
 
@@ -75,9 +70,7 @@ export function embezzlerOutfit(
   useUPCsIfNeeded(outfit);
 
   outfit.bonuses = bonusGear(
-    globalOptions.target === defaultTarget
-      ? BonusEquipMode.EMBEZZLER
-      : BonusEquipMode.FREE,
+    targettingMeat() ? BonusEquipMode.EMBEZZLER : BonusEquipMode.FREE,
   );
   const bjornalike = bestBjornalike(outfit);
 

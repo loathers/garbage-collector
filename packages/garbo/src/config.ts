@@ -4,6 +4,7 @@ import {
   $item,
   $items,
   $monster,
+  $monsters,
   ChestMimic,
   CombatLoversLocket,
   get,
@@ -70,7 +71,7 @@ function stringToWorkshedItem(s: string): Item | null {
   return validWorksheds[0].item;
 }
 
-export const defaultTarget =
+const defaultTarget =
   ChestMimic.have() ||
   (CombatLoversLocket.have() &&
     CombatLoversLocket.unlockedLocketMonsters().includes(
@@ -78,6 +79,9 @@ export const defaultTarget =
     ))
     ? $monster`cheerless mime executive`
     : $monster`cockroach`;
+
+export const targettingMeat = () =>
+  $monsters`cheerless mime executive, cockroach`.includes(globalOptions.target);
 
 export const globalOptions = Args.create(
   "garbo",
