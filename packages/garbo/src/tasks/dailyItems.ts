@@ -150,7 +150,7 @@ const SummonTasks: GarboTask[] = [
   ...SummonTomes.map(
     (skill) =>
       <GarboTask>{
-        name: `{skill}`,
+        name: `${skill}`,
         ready: () => have(skill),
         completed: () => skill.dailylimit === 0,
         do: () => useSkill(skill, skill.dailylimit),
