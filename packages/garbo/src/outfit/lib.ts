@@ -32,7 +32,7 @@ import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
-import { baseMeat } from "../lib";
+import { targetMeat } from "../lib";
 import { digitizedMonstersRemaining } from "../turns";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
@@ -97,7 +97,7 @@ export function useUPCsIfNeeded({ familiar }: Outfit): void {
     : 20;
 
   const addedValueOfFullSword =
-    (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
+    (embezzlers * ((75 - currentWeapon) * targetMeat())) / 100;
   if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
     const needed =
       3 -

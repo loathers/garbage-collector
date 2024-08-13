@@ -121,7 +121,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     target: Args.monster({
       setting: "",
       help: "The monster to use all copies on",
-      default: $monster`Knob Goblin Embezzler`,
+      default: $monster`cheerless mime executive`,
       hidden: true,
     }),
     version: Args.flag({

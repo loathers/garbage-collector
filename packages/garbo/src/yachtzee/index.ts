@@ -30,7 +30,7 @@ import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
 import { copyTargetCount } from "../embezzler";
 import { doSausage, freeRunFights } from "../fights";
-import { baseMeat, eventLog, propertyManager, safeRestore } from "../lib";
+import { eventLog, propertyManager, safeRestore, targetMeat } from "../lib";
 import { meatMood } from "../mood";
 import postCombatActions from "../post";
 import { potionSetup } from "../potions";
@@ -51,7 +51,7 @@ function _yachtzeeChain(): void {
   if (!realmAvailable("sleaze")) return;
 
   maximize("MP", false);
-  meatMood(false, 750 + baseMeat).execute(copyTargetCount());
+  meatMood(false, targetMeat()).execute(copyTargetCount());
   potionSetup(globalOptions.nobarf); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();

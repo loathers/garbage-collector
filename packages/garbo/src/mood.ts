@@ -24,7 +24,12 @@ import {
   Mood,
   uneffect,
 } from "libram";
-import { baseMeat, burnLibrams, safeRestoreMpTarget, setChoice } from "./lib";
+import {
+  baseMeat as baseMeatFunc,
+  burnLibrams,
+  safeRestoreMpTarget,
+  setChoice,
+} from "./lib";
 import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
@@ -38,7 +43,12 @@ Mood.setDefaultOptions({
   useNativeRestores: true,
 });
 
-export function meatMood(urKels = false, meat = baseMeat): Mood {
+export function meatMood(
+  urKels = false,
+  meat: undefined | number = undefined,
+): Mood {
+  const baseMeat = baseMeatFunc();
+  meat ||= baseMeat;
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 

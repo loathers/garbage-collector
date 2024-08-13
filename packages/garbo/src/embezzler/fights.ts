@@ -57,7 +57,7 @@ import {
   withMacro,
 } from "../combat";
 import {
-  averageEmbezzlerNet,
+  averageTargetNet,
   getBestLuckyAdventure,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
@@ -960,8 +960,7 @@ export const emergencyChainStarters = [
       }
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
       const profit =
-        (potential + 1) * averageEmbezzlerNet() -
-        mallPrice($item`11-leaf clover`);
+        (potential + 1) * averageTargetNet() - mallPrice($item`11-leaf clover`);
       if (profit < 0) return false;
       print(
         `You have the following copy target sources untapped right now:`,
@@ -975,7 +974,7 @@ export const emergencyChainStarters = [
       globalOptions.wishAnswer = copyTargetConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy ${
           globalOptions.target
-        }, but no way to start a fight with one. Current net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for ${
+        }, but no way to start a fight with one. Current net (before potions) is ${averageTargetNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for ${
           globalOptions.target
         }?`,
       );
@@ -1004,11 +1003,12 @@ export const emergencyChainStarters = [
   new CopyTargetFight(
     "Pocket Wish (untapped potential)",
     () => {
+      if (!globalOptions.target.wishable) return false;
       const potential = Math.floor(copyTargetCount());
       if (potential < 1) return false;
       if (get("_genieFightsUsed") >= 3) return false;
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
-      const profit = (potential + 1) * averageEmbezzlerNet() - WISH_VALUE;
+      const profit = (potential + 1) * averageTargetNet() - WISH_VALUE;
       if (profit < 0) return false;
       print(
         `You have the following copy target sources untapped right now:`,
@@ -1024,7 +1024,7 @@ export const emergencyChainStarters = [
           globalOptions.target
         }, but no way to start a fight with one. Current ${
           globalOptions.target
-        } net (before potions) is ${averageEmbezzlerNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${
+        } net (before potions) is ${averageTargetNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${
           globalOptions.target
         }?`,
       );

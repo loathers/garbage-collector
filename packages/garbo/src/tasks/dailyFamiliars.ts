@@ -31,6 +31,7 @@ import {
   felizValue,
   garbageTouristRatio,
   newarkValue,
+  targetMeat,
   tryFeast,
   turnsToNC,
   userConfirmDialog,
@@ -51,7 +52,7 @@ function drivebyValue(): number {
     2 * marginalRoboWeight;
   return (
     (meatPercentDelta / 100) *
-    ((750 + baseMeat) * embezzlers + baseMeat * tourists)
+    (targetMeat() * embezzlers + baseMeat() * tourists)
   );
 }
 
@@ -85,7 +86,7 @@ export function prepRobortender(): void {
     },
     "Bloody Nora": {
       priceCap: get("_envyfishEggUsed")
-        ? (750 + baseMeat) * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
+        ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
         : 0,
       mandatory: false,
     },

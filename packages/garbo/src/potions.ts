@@ -60,6 +60,8 @@ import {
   bestShadowRift,
   HIGHLIGHT,
   pillkeeperOpportunityCost,
+  targetMeat,
+  targetMeatDifferential,
   turnsToNC,
   withLocation,
 } from "./lib";
@@ -291,7 +293,10 @@ export class Potion {
       0,
     );
 
-    return (bonusMeat / 100) * (baseMeat * duration + 750 * embezzlersApplied);
+    return (
+      (bonusMeat / 100) *
+      (baseMeat() * duration + targetMeatDifferential() * embezzlersApplied)
+    );
   }
 
   static gross(item: Item, embezzlers: number): number {
@@ -808,13 +813,13 @@ export function bathroomFinance(embezzlers: number): void {
   if (have($effect`Buy!  Sell!  Buy!  Sell!`)) return;
 
   // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
-  const averageEmbezzlerGross =
-    ((baseMeat + 750) * 2 * (embezzlers + 1)) / 2 / 100;
+  const averageEmbezzlerGross = (targetMeat() * 2 * (embezzlers + 1)) / 2 / 100;
   const embezzlerGross = averageEmbezzlerGross * embezzlers;
   const tourists = 100 - embezzlers;
 
   // Average meat % for tourists is sum of arithmetic series, 2 * sum(embezzlers + 1 -> 100)
-  const averageTouristGross = (baseMeat * 2 * (100 + embezzlers + 1)) / 2 / 100;
+  const averageTouristGross =
+    (baseMeat() * 2 * (100 + embezzlers + 1)) / 2 / 100;
   const touristGross = averageTouristGross * tourists;
 
   const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
@@ -934,8 +939,8 @@ class VariableMeatPotion {
     barfTurns: number,
   ): number {
     const yachtzeeValue = 2000;
-    const embezzlerValue = baseMeat + 750;
-    const barfValue = (baseMeat * turnsToNC) / 30;
+    const embezzlerValue = targetMeat();
+    const barfValue = (baseMeat() * turnsToNC) / 30;
 
     const totalCosts = retrievePrice(this.potion, n);
     const totalDuration = n * this.duration;

@@ -26,7 +26,7 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { meatFamiliar } from "../familiar";
-import { baseMeat } from "../lib";
+import { targetMeat } from "../lib";
 import {
   familiarWaterBreathingEquipment,
   useUPCs,
@@ -103,7 +103,7 @@ export function stickerSetup(expectedYachts: number): void {
     ((75 - yachtOpportunityCost) * expectedYachts * 2000) / 100 +
     ((75 - embezzlerOpportunityCost) *
       Math.min(20, expectedEmbezzlers) *
-      (750 + baseMeat)) /
+      targetMeat()) /
       100;
   if (mallPrice(UPC) < addedValueOfFullSword / 3) {
     const needed =

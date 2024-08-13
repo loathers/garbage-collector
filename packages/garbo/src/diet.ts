@@ -75,9 +75,9 @@ import { copyTargetCount } from "./embezzler";
 import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
   arrayEquals,
-  baseMeat,
   EMBEZZLER_MULTIPLIER,
   HIGHLIGHT,
+  targetMeat,
   userConfirmDialog,
 } from "./lib";
 import { shrugBadEffects } from "./mood";
@@ -553,8 +553,7 @@ export function bestConsumable(
     const meatDrop = getModifier("Meat Drop", buff);
     const famWeight = getModifier("Familiar Weight", buff);
     const buffValue =
-      ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * (baseMeat + 750)) /
-      100;
+      ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * targetMeat()) / 100;
     const advValue = getAverageAdventures(edible) * get("valueOfAdventure");
     const organSpace = consumable.size;
     return {
