@@ -331,6 +331,7 @@ function handleDrenchedInLava(): GarboPostTask {
   };
 }
 
+const MEAT_CLIP_VALUE = 520;
 function songBoom(): GarboPostTask[] {
   const willDrunkAdventure =
     globalOptions.ascend &&
@@ -352,7 +353,7 @@ function songBoom(): GarboPostTask[] {
       available: () =>
         SongBoom.have() &&
         myInebriety() < inebrietyLimit() &&
-        garboValue($item`Special Seasoning`) > 520,
+        garboValue($item`Special Seasoning`) > MEAT_CLIP_VALUE,
       completed: () => SongBoom.song() === "Food Vibrations",
       ready: () =>
         SongBoom.dropProgress() === 11 &&
