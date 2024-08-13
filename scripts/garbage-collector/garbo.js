@@ -31403,7 +31403,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a4511c7c818fa7ba9edcf543463aa1787c85dd28", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("bbde2ce542bc4ad1706d519dc73600247a661f05", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
@@ -34678,7 +34678,7 @@ function embezzlerOutfit() {
     parka: "kachungasaur",
     edpiece: "fish"
   });
-  if (!have($effect(_templateObject1234 || (_templateObject1234 = _taggedTemplateLiteral79(["Everything Looks Purple"]))))) {
+  if (!have($effect(_templateObject1234 || (_templateObject1234 = _taggedTemplateLiteral79(["Everything Looks Purple"])))) && target.environment !== Environment.Underwater) {
     outfit3.equip($item(_templateObject1333 || (_templateObject1333 = _taggedTemplateLiteral79(["Roman Candelabra"]))));
   }
   return outfit3;
