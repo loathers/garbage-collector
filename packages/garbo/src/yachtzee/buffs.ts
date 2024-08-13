@@ -74,7 +74,7 @@ export function yachtzeePotionProfits(
       2000 *
       (potion.meatDrop() + 2.5 * potion.familiarWeight())) /
     100; // Every 1lbs of lep ~ 2.5% meat drop
-  const barfValue = (barfTurns * baseMeat * turnsToNC) / (turnsToNC + 1);
+  const barfValue = (barfTurns * baseMeat() * turnsToNC) / (turnsToNC + 1);
 
   return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
 }

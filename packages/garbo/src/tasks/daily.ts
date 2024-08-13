@@ -228,7 +228,7 @@ function pantogram(): void {
     const bestPantsValue = Math.max(0, ...alternativePants);
 
     pantogramValue =
-      (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) *
+      (100 + 0.6 * baseMeat() - (bestPantsValue * baseMeat()) / 100) *
       estimatedGarboTurns();
   }
   const cloverPrice = Math.min(
