@@ -22,7 +22,7 @@ import {
   waterBreathingEquipment,
 } from "./lib";
 import { BonusEquipMode, modeValueOfMeat } from "../lib";
-import { globalOptions, targettingMeat } from "../config";
+import { globalOptions, targettingItems, targettingMeat } from "../config";
 
 export function embezzlerOutfit(
   spec: OutfitSpec = {},
@@ -44,7 +44,11 @@ export function embezzlerOutfit(
     outfit.modifier.push("-tie");
   }
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
-  outfit.familiar ??= targettingMeat() ? meatFamiliar() : freeFightFamiliar();
+  outfit.familiar ??= targettingMeat()
+    ? meatFamiliar()
+    : targettingItems()
+    ? $familiar`Grey Goose`
+    : freeFightFamiliar();
 
   const bjornChoice = chooseBjorn(
     targettingMeat() ? BonusEquipMode.EMBEZZLER : BonusEquipMode.FREE,

@@ -260,6 +260,14 @@ export class Macro extends StrictMacro {
       .familiarActions()
       .tryEgg()
       .externalIf(
+        myFamiliar() === $familiar`Grey Goose` &&
+          $familiar`Grey Goose`.experience >= 36,
+        Macro.if_(
+          globalOptions.target,
+          Macro.trySkill($skill`Emit Matter Duplicating Drones`),
+        ),
+      )
+      .externalIf(
         have($skill`Extract Oil`) && get("_oilExtracted") < 15,
         Macro.if_(
           $monster`garbage tourist`,

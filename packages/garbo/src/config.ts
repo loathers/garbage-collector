@@ -1,6 +1,7 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
 import {
+  $familiar,
   $item,
   $items,
   $monster,
@@ -8,6 +9,7 @@ import {
   ChestMimic,
   CombatLoversLocket,
   get,
+  have,
 } from "libram";
 
 const workshedAliases = [
@@ -82,6 +84,10 @@ const defaultTarget =
 
 export const targettingMeat = () =>
   $monsters`cheerless mime executive, cockroach`.includes(globalOptions.target);
+
+export const targettingItems = () =>
+  have($familiar`Grey Goose`) &&
+  $monster`Witchess Knight` === globalOptions.target;
 
 export const globalOptions = Args.create(
   "garbo",
