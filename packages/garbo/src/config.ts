@@ -8,7 +8,9 @@ import {
   ChestMimic,
   CombatLoversLocket,
   get,
+  maxBy,
 } from "libram";
+import { isFree, valueDrops } from "./lib";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -78,10 +80,11 @@ const defaultTarget =
       $monster`cheerless mime executive`,
     ))
     ? $monster`cheerless mime executive`
-    : $monster`cockroach`;
+    : maxBy($monsters.all().filter(isFree), valueDrops) ||
+      $monster`Witchess Knight`;
 
 export const targettingMeat = () =>
-  $monsters`cheerless mime executive, cockroach`.includes(globalOptions.target);
+  $monsters`cheerless mime executive`.includes(globalOptions.target);
 
 export const globalOptions = Args.create(
   "garbo",

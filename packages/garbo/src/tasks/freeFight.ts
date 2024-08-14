@@ -14,7 +14,6 @@ import {
   itemDropsArray,
   itemType,
   mallPrice,
-  Monster,
   myClass,
   myInebriety,
   myMaxhp,
@@ -62,7 +61,7 @@ import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { doCandyTrick, shouldAugustCast } from "../resources";
-import { kramcoGuaranteed } from "../lib";
+import { isFree, kramcoGuaranteed, valueDrops } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
@@ -94,11 +93,6 @@ function bestWitchessPiece() {
   );
 }
 
-const isFree = (monster: Monster) => monster.attributes.includes("FREE");
-const valueDrops = (monster: Monster) =>
-  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
-    !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
-  );
 const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
 const locketsToSave = () =>
   CombatLoversLocket.availableLocketMonsters().includes(globalOptions.target)
