@@ -8,12 +8,14 @@ import {
   ChestMimic,
   CombatLoversLocket,
   get,
+  have,
   maxBy,
   sum,
 } from "libram";
 import { garboValue } from "./garboValue";
 
-export const isFree = (monster: Monster) => monster.attributes.includes("FREE");
+export const isFree = (monster: Monster) =>
+  monster.wishable && monster.copyable && monster.attributes.includes("FREE");
 export const valueDrops = (monster: Monster) =>
   sum(itemDropsArray(monster), ({ drop, rate, type }) =>
     !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
@@ -82,6 +84,7 @@ function stringToWorkshedItem(s: string): Item | null {
 
 const defaultTarget =
   ChestMimic.have() ||
+  have($item`Clan VIP Lounge key`) ||
   (CombatLoversLocket.have() &&
     CombatLoversLocket.unlockedLocketMonsters().includes(
       $monster`cheerless mime executive`,
