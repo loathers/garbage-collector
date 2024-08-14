@@ -56,12 +56,12 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { GarboStrategy, Macro } from "../combat";
-import { globalOptions } from "../config";
+import { globalOptions, isFree, valueDrops } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { doCandyTrick, shouldAugustCast } from "../resources";
-import { isFree, kramcoGuaranteed, valueDrops } from "../lib";
+import { kramcoGuaranteed } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {

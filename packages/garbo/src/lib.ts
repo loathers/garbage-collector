@@ -1089,9 +1089,3 @@ let bestLuckyAdventure: LuckyAdventure;
 export function getBestLuckyAdventure(): LuckyAdventure {
   return (bestLuckyAdventure ??= determineBestLuckyAdventure());
 }
-
-export const isFree = (monster: Monster) => monster.attributes.includes("FREE");
-export const valueDrops = (monster: Monster) =>
-  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
-    !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
-  );
