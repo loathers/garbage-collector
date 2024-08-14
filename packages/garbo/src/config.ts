@@ -14,8 +14,8 @@ import {
 } from "libram";
 import { garboValue } from "./garboValue";
 
-export const isFree = (monster: Monster) =>
-  monster.wishable && monster.copyable && monster.attributes.includes("FREE");
+export const isFreeAndCopyable = (monster: Monster) =>
+  monster.copyable && monster.attributes.includes("FREE");
 export const valueDrops = (monster: Monster) =>
   sum(itemDropsArray(monster), ({ drop, rate, type }) =>
     !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
@@ -90,8 +90,10 @@ const defaultTarget =
       $monster`cheerless mime executive`,
     ))
     ? $monster`cheerless mime executive`
-    : maxBy($monsters.all().filter(isFree), valueDrops) ||
-      $monster`Witchess Knight`;
+    : maxBy(
+        $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
+        valueDrops,
+      ) || $monster`Witchess Knight`;
 
 export const targettingMeat = () =>
   $monsters`cheerless mime executive`.includes(globalOptions.target);
