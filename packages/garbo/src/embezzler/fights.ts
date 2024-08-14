@@ -10,8 +10,11 @@ import {
   mallPrice,
   myAdventures,
   myHash,
+  myHp,
+  myMaxhp,
   myRain,
   print,
+  restoreHp,
   retrieveItem,
   runChoice,
   runCombat,
@@ -152,6 +155,9 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
     print(
       `Now running ${globalOptions.target} fight: ${this.name}. Stay tuned for details.`,
     );
+    if (myHp() < myMaxhp() * 0.5 || myHp() > 3000) {
+      restoreHp(clamp(myHp() / 2, 300, 3000));
+    }
     this.execute(options);
   }
 }
