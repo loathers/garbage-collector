@@ -250,6 +250,22 @@ export class Macro extends StrictMacro {
       Macro.if_(globalOptions.target, Macro.trySkill($skill`Digitize`)),
     )
       .externalIf(
+        globalOptions.target === $monster`cheerless mime executive`,
+        Macro.if_(
+          $monster`cheerless mime executive`,
+          Macro.tryHaveSkill($skill`Curse of Weaksauce`)
+            .externalIf(
+              have($skill`Meteor Lore`),
+              Macro.trySkill($skill`Micrometeorite`),
+            )
+            .tryHaveSkill($skill`Pocket Crumbs`)
+            .tryHaveItem($item`train whistle`)
+            .tryHaveSkill($skill`Entangling Noodles`)
+            .tryHaveItem($item`Rain-Doh indigo cup`)
+            .tryHaveItem($item`Rain-Doh blue balls`),
+        ),
+      )
+      .externalIf(
         have($skill`Blow the Purple Candle!`),
         Macro.if_(
           globalOptions.target,
