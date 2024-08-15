@@ -5,6 +5,7 @@ import {
   $items,
   $monster,
   $monsters,
+  $skills,
   ChestMimic,
   CombatLoversLocket,
   get,
@@ -82,18 +83,28 @@ function stringToWorkshedItem(s: string): Item | null {
   return validWorksheds[0].item;
 }
 
-const defaultTarget =
-  ChestMimic.have() ||
-  have($item`Clan VIP Lounge key`) ||
-  (CombatLoversLocket.have() &&
-    CombatLoversLocket.unlockedLocketMonsters().includes(
-      $monster`cheerless mime executive`,
-    ))
-    ? $monster`cheerless mime executive`
-    : maxBy(
-        $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
-        valueDrops,
-      ) || $monster`Witchess Knight`;
+function defaultTarget() {
+  if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
+    if (
+      ChestMimic.have() ||
+      have($item`Clan VIP Lounge key`) ||
+      (CombatLoversLocket.have() &&
+        CombatLoversLocket.unlockedLocketMonsters().includes(
+          $monster`cheerless mime executive`,
+        ))
+    ) {
+      return $monster`cheerless mime executive`;
+    } else {
+      return (
+        maxBy(
+          $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
+          valueDrops,
+        ) || $monster`Witchess Knight`
+      );
+    }
+  }
+  return $monster`Knob Goblin Elite Guard Captain`;
+}
 
 export const targettingMeat = () =>
   $monsters`cheerless mime executive`.includes(globalOptions.target);
@@ -156,7 +167,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     target: Args.monster({
       setting: "",
       help: "The monster to use all copies on",
-      default: defaultTarget,
+      default: defaultTarget(),
       hidden: true,
     }),
     version: Args.flag({
