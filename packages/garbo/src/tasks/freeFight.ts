@@ -14,7 +14,6 @@ import {
   itemDropsArray,
   itemType,
   mallPrice,
-  Monster,
   myClass,
   myInebriety,
   myMaxhp,
@@ -57,7 +56,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { GarboStrategy, Macro } from "../combat";
-import { globalOptions } from "../config";
+import { globalOptions, isFreeAndCopyable, valueDrops } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
@@ -94,12 +93,8 @@ function bestWitchessPiece() {
   );
 }
 
-const isFree = (monster: Monster) => monster.attributes.includes("FREE");
-const valueDrops = (monster: Monster) =>
-  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
-    !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
-  );
-const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
+const locketMonster = () =>
+  CombatLoversLocket.findMonster(isFreeAndCopyable, valueDrops);
 const locketsToSave = () =>
   CombatLoversLocket.availableLocketMonsters().includes(globalOptions.target)
     ? 1

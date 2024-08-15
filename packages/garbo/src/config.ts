@@ -1,5 +1,5 @@
 import { Args } from "grimoire-kolmafia";
-import { Item, print } from "kolmafia";
+import { Item, itemDropsArray, Monster, print } from "kolmafia";
 import {
   $item,
   $items,
@@ -8,7 +8,18 @@ import {
   ChestMimic,
   CombatLoversLocket,
   get,
+  have,
+  maxBy,
+  sum,
 } from "libram";
+import { garboValue } from "./garboValue";
+
+export const isFreeAndCopyable = (monster: Monster) =>
+  monster.copyable && monster.attributes.includes("FREE");
+export const valueDrops = (monster: Monster) =>
+  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
+    !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
+  );
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -73,15 +84,19 @@ function stringToWorkshedItem(s: string): Item | null {
 
 const defaultTarget =
   ChestMimic.have() ||
+  have($item`Clan VIP Lounge key`) ||
   (CombatLoversLocket.have() &&
     CombatLoversLocket.unlockedLocketMonsters().includes(
       $monster`cheerless mime executive`,
     ))
     ? $monster`cheerless mime executive`
-    : $monster`cockroach`;
+    : maxBy(
+        $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
+        valueDrops,
+      ) || $monster`Witchess Knight`;
 
 export const targettingMeat = () =>
-  $monsters`cheerless mime executive, cockroach`.includes(globalOptions.target);
+  $monsters`cheerless mime executive`.includes(globalOptions.target);
 
 export const globalOptions = Args.create(
   "garbo",
