@@ -198,6 +198,13 @@ export function makeValue(
       ),
     ],
     [$item`inflammable leaf`, inflammableLeafCurrency()],
+    [
+      $item`crystalline cheer`,
+      currency(
+        ...$items`stale cheer wine, stale Cheer-E-Os, Cheer-Up soda, cheer-o-gram, cheerful antler hat, cheerful Crimbo sweater, cheerful pajama pants`,
+        // ignore the science volumes because some accounts can't acquire them
+      ),
+    ],
     ...inputValues,
   ]);
 
