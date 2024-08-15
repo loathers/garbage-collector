@@ -25241,6 +25241,8 @@ var require_value = __commonJS({
     var _templateObject6521;
     var _templateObject6619;
     var _templateObject6719;
+    var _templateObject6818;
+    var _templateObject6918;
     function _createForOfIteratorHelper40(o, allowArrayLike) {
       var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
       if (!it) {
@@ -25413,10 +25415,10 @@ var require_value = __commonJS({
         return value((0, libram_1.$item)(_templateObject5819 || (_templateObject5819 = _taggedTemplateLiteral126(["Jarlsberg's key lime"])))) - value((0, libram_1.$item)(_templateObject5919 || (_templateObject5919 = _taggedTemplateLiteral126(["lime"]))));
       }], [(0, libram_1.$item)(_templateObject6019 || (_templateObject6019 = _taggedTemplateLiteral126(["Sneaky Pete's key"]))), function() {
         return value((0, libram_1.$item)(_templateObject6144 || (_templateObject6144 = _taggedTemplateLiteral126(["Sneaky Pete's key lime"])))) - value((0, libram_1.$item)(_templateObject6223 || (_templateObject6223 = _taggedTemplateLiteral126(["lime"]))));
-      }], [(0, libram_1.$item)(_templateObject6323 || (_templateObject6323 = _taggedTemplateLiteral126(["fat loot token"]))), currency.apply(void 0, _toConsumableArray64((0, libram_1.$items)(_templateObject6422 || (_templateObject6422 = _taggedTemplateLiteral126(["Boris's key, Jarlsberg's key, Sneaky Pete's key, Boris's ring, Jarlsberg's earring, Sneaky Pete's breath spray, potato sprout, sewing kit, Spellbook: Singer's Faithful Ocelot, Spellbook: Drescher's Annoying Noise, Spellbook: Walberg's Dim Bulb, dried gelatinous cube"])))))], [(0, libram_1.$item)(_templateObject6521 || (_templateObject6521 = _taggedTemplateLiteral126(["inflammable leaf"]))), inflammableLeafCurrency()]], _toConsumableArray64(inputValues)));
+      }], [(0, libram_1.$item)(_templateObject6323 || (_templateObject6323 = _taggedTemplateLiteral126(["fat loot token"]))), currency.apply(void 0, _toConsumableArray64((0, libram_1.$items)(_templateObject6422 || (_templateObject6422 = _taggedTemplateLiteral126(["Boris's key, Jarlsberg's key, Sneaky Pete's key, Boris's ring, Jarlsberg's earring, Sneaky Pete's breath spray, potato sprout, sewing kit, Spellbook: Singer's Faithful Ocelot, Spellbook: Drescher's Annoying Noise, Spellbook: Walberg's Dim Bulb, dried gelatinous cube"])))))], [(0, libram_1.$item)(_templateObject6521 || (_templateObject6521 = _taggedTemplateLiteral126(["inflammable leaf"]))), inflammableLeafCurrency()], [(0, libram_1.$item)(_templateObject6619 || (_templateObject6619 = _taggedTemplateLiteral126(["crystalline cheer"]))), currency.apply(void 0, _toConsumableArray64((0, libram_1.$items)(_templateObject6719 || (_templateObject6719 = _taggedTemplateLiteral126(["stale cheer wine, stale Cheer-E-Os, Cheer-Up soda, cheer-o-gram, cheerful antler hat, cheerful Crimbo sweater, cheerful pajama pants"])))))]], _toConsumableArray64(inputValues)));
       var exclusions = /* @__PURE__ */ new Set([
         // For tradeable items which can be "consumed" infinitely
-        (0, libram_1.$item)(_templateObject6619 || (_templateObject6619 = _taggedTemplateLiteral126(["ChibiBuddy\u2122 (off)"])))
+        (0, libram_1.$item)(_templateObject6818 || (_templateObject6818 = _taggedTemplateLiteral126(["ChibiBuddy\u2122 (off)"])))
       ]);
       function saleValue(item11, useHistorical) {
         if (useHistorical) {
@@ -25453,7 +25455,7 @@ var require_value = __commonJS({
           return function() {
             return 0;
           };
-        var ignored = (0, libram_1.$items)(_templateObject6719 || (_templateObject6719 = _taggedTemplateLiteral126(["lit leaf lasso, day shortener"])));
+        var ignored = (0, libram_1.$items)(_templateObject6918 || (_templateObject6918 = _taggedTemplateLiteral126(["lit leaf lasso, day shortener"])));
         var unitCost = _toConsumableArray64(libram_1.BurningLeaves.burnFor).filter(function(entry) {
           return entry[0] instanceof kolmafia_1.Item && entry[0].tradeable && !ignored.includes(entry[0]);
         });
@@ -31432,7 +31434,7 @@ function checkGithubVersion() {
     var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
       return branchInfo.name === "release";
     })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f4ba9369bea9cb1f5dad4c9d15735c2173cae614", ")"));
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2ab3294327dc98132d4a30e3db433cfa086b9e81", ")"));
     if (releaseSHA === localSHA) {
       (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
     } else if (releaseSHA === void 0) {
