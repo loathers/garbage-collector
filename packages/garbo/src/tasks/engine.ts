@@ -29,7 +29,7 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   duplicate?: Delayed<boolean>;
 };
 
-function logEmbezzler(encounterType: string) {
+function logTargetFight(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
   if (isDigitize) {
     eventLog.digitizedCopyTargetsFought++;
@@ -87,9 +87,8 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
         );
       }
     }
-    const foughtAnEmbezzler =
-      get("lastEncounter") === globalOptions.target.name;
-    if (foughtAnEmbezzler) logEmbezzler(task.name);
+    const foughtATarget = get("lastEncounter") === globalOptions.target.name;
+    if (foughtATarget) logTargetFight(task.name);
     wanderer().clear();
     sessionSinceStart().value(garboValue);
     if (duplicate && SourceTerminal.have()) {

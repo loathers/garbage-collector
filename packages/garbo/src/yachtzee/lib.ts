@@ -19,7 +19,7 @@ import {
 import { withStash } from "../clan";
 import { garboAdventureAuto, Macro } from "../combat";
 import { globalOptions } from "../config";
-import { copyTargetSources } from "../embezzler";
+import { copyTargetSources } from "../target";
 import { freeFightFamiliar } from "../familiar";
 import {
   freeRunConstraints,
@@ -37,7 +37,7 @@ const ignoredSources = [
   "Lucky!",
   "11-leaf clover (untapped potential)",
 ];
-export const expectedEmbezzlers = sum(
+export const expectedTargets = sum(
   copyTargetSources.filter((source) => !ignoredSources.includes(source.name)),
   (source) => source.potential(),
 );

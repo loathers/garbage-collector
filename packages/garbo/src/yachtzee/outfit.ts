@@ -33,7 +33,7 @@ import {
   waterBreathingEquipment,
 } from "../outfit";
 import { bestYachtzeeFamiliar } from "./familiar";
-import { expectedEmbezzlers, yachtzeeBuffValue } from "./lib";
+import { expectedTargets, yachtzeeBuffValue } from "./lib";
 
 export const maximizeMeat = (): boolean =>
   new Requirement(
@@ -97,12 +97,11 @@ export function stickerSetup(expectedYachts: number): void {
   if (currentStickers.every((sticker) => sticker === UPC)) return;
   const yachtOpportunityCost =
     25 * findLeprechaunMultiplier(bestYachtzeeFamiliar());
-  const embezzlerOpportunityCost =
-    25 * findLeprechaunMultiplier(meatFamiliar());
+  const targetOpportunityCost = 25 * findLeprechaunMultiplier(meatFamiliar());
   const addedValueOfFullSword =
     ((75 - yachtOpportunityCost) * expectedYachts * 2000) / 100 +
-    ((75 - embezzlerOpportunityCost) *
-      Math.min(20, expectedEmbezzlers) *
+    ((75 - targetOpportunityCost) *
+      Math.min(20, expectedTargets) *
       targetMeat()) /
       100;
   if (mallPrice(UPC) < addedValueOfFullSword / 3) {

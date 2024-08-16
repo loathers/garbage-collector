@@ -28,7 +28,7 @@ import { garboAdventure, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
-import { copyTargetCount } from "../embezzler";
+import { copyTargetCount } from "../target";
 import { doSausage, freeRunFights } from "../fights";
 import { eventLog, propertyManager, safeRestore, targetMeat } from "../lib";
 import { meatMood } from "../mood";
@@ -52,7 +52,7 @@ function _yachtzeeChain(): void {
 
   maximize("MP", false);
   meatMood(false, targetMeat()).execute(copyTargetCount());
-  potionSetup(globalOptions.nobarf); // This is the default set up for embezzlers (which helps us estimate if chaining is better than extros)
+  potionSetup(globalOptions.nobarf); // This is the default set up for targets (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();
 
