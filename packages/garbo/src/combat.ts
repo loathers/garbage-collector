@@ -16,6 +16,7 @@ import {
   Location,
   mpCost,
   myAdventures,
+  myBuffedstat,
   myClass,
   myFamiliar,
   myFury,
@@ -44,6 +45,7 @@ import {
   $monsters,
   $skill,
   $slot,
+  $stat,
   CinchoDeMayo,
   Counter,
   get,
@@ -590,14 +592,26 @@ export class Macro extends StrictMacro {
           Macro.attack(),
         ),
       )
-      .trySkillRepeat(
-        $skill`Saucegeyser`,
-        $skill`Weapon of the Pastalord`,
-        $skill`Cannelloni Cannon`,
-        $skill`Wave of Sauce`,
-        $skill`Saucestorm`,
-        $skill`Northern Explosion`,
-        $skill`Lunging Thrust-Smack`,
+      .externalIf(
+        myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`),
+        Macro.trySkillRepeat(
+          $skill`Northern Explosion`,
+          $skill`Lunging Thrust-Smack`,
+          $skill`Saucegeyser`,
+          $skill`Weapon of the Pastalord`,
+          $skill`Cannelloni Cannon`,
+          $skill`Wave of Sauce`,
+          $skill`Saucestorm`,
+        ),
+        Macro.trySkillRepeat(
+          $skill`Saucegeyser`,
+          $skill`Weapon of the Pastalord`,
+          $skill`Cannelloni Cannon`,
+          $skill`Wave of Sauce`,
+          $skill`Saucestorm`,
+          $skill`Northern Explosion`,
+          $skill`Lunging Thrust-Smack`,
+        ),
       )
       .attack()
       .repeat();
