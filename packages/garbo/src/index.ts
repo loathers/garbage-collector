@@ -79,7 +79,7 @@ import {
   BarfTurnQuests,
   PostQuest,
   runGarboQuests,
-  SetupEmbezzlerQuest,
+  SetupTargetCopyQuest,
 } from "./tasks";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -377,9 +377,9 @@ export function main(argString = ""): void {
           "libram_savedMacro",
           "maximizerMRUList",
           "testudinalTeachings",
-          "garboEmbezzlerDate",
-          "garboEmbezzlerCount",
-          "garboEmbezzlerSources",
+          "garboTargetDate",
+          "garboTargetCount",
+          "garboTargetSources",
           "spadingData",
         ]),
       ]
@@ -533,9 +533,9 @@ export function main(argString = ""): void {
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
-        // 2. do some embezzler stuff
+        // 2. do some target copy stuff
         freeFights();
-        runGarboQuests([SetupEmbezzlerQuest]);
+        runGarboQuests([SetupTargetCopyQuest]);
         yachtzeeChain();
         dailyFights();
 

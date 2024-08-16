@@ -513,7 +513,7 @@ function banishBunny(): void {
     banish.prepare?.();
     garboAdventure(
       $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, banish.macro()).embezzler(
+      Macro.if_($monster`fluffy bunny`, banish.macro()).target(
         "fluffy bunny banish",
       ),
     );

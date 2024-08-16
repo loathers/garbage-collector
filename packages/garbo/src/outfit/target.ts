@@ -24,7 +24,7 @@ import {
 import { BonusEquipMode, modeValueOfMeat } from "../lib";
 import { globalOptions, targettingMeat } from "../config";
 
-export function embezzlerOutfit(
+export function meatTargetOutfit(
   spec: OutfitSpec = {},
   target = $location.none,
 ): Outfit {
@@ -37,7 +37,7 @@ export function embezzlerOutfit(
 
   if (targettingMeat()) {
     outfit.modifier.push(
-      `${modeValueOfMeat(BonusEquipMode.EMBEZZLER)} Meat Drop`,
+      `${modeValueOfMeat(BonusEquipMode.MEAT_TARGET)} Meat Drop`,
       "-tie",
     );
   } else if (globalOptions.target.attributes.includes("FREE")) {
@@ -47,7 +47,7 @@ export function embezzlerOutfit(
   outfit.familiar ??= targettingMeat() ? meatFamiliar() : freeFightFamiliar();
 
   const bjornChoice = chooseBjorn(
-    targettingMeat() ? BonusEquipMode.EMBEZZLER : BonusEquipMode.FREE,
+    targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
     outfit.familiar,
   );
 
@@ -70,7 +70,7 @@ export function embezzlerOutfit(
   useUPCsIfNeeded(outfit);
 
   outfit.bonuses = bonusGear(
-    targettingMeat() ? BonusEquipMode.EMBEZZLER : BonusEquipMode.FREE,
+    targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
   );
   const bjornalike = bestBjornalike(outfit);
 

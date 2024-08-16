@@ -37,7 +37,7 @@ import {
 } from "../potions";
 import { garboValue } from "../garboValue";
 import { executeNextDietStep } from "./diet";
-import { expectedEmbezzlers, pyecAvailable, shrugIrrelevantSongs } from "./lib";
+import { expectedTargets, pyecAvailable, shrugIrrelevantSongs } from "./lib";
 
 export function yachtzeePotionProfits(
   potion: Potion,
@@ -57,18 +57,18 @@ export function yachtzeePotionProfits(
     ),
     0,
   );
-  const embezzlerTurns = Math.min(
-    expectedEmbezzlers,
+  const targetTurns = Math.min(
+    expectedTargets,
     Math.max(potion.effectDuration() + extraOffset - effectiveYachtzeeTurns, 0),
   );
   const barfTurns = Math.max(
     potion.effectDuration() +
       extraOffset -
       effectiveYachtzeeTurns -
-      embezzlerTurns,
+      targetTurns,
     0,
   );
-  const embezzlerValue = embezzlerTurns > 0 ? potion.gross(embezzlerTurns) : 0;
+  const targetValue = targetTurns > 0 ? potion.gross(targetTurns) : 0;
   const yachtzeeValue =
     (effectiveYachtzeeTurns *
       2000 *
@@ -76,7 +76,7 @@ export function yachtzeePotionProfits(
     100; // Every 1lbs of lep ~ 2.5% meat drop
   const barfValue = (barfTurns * baseMeat() * turnsToNC) / (turnsToNC + 1);
 
-  return yachtzeeValue + embezzlerValue + barfValue - potion.price(true);
+  return yachtzeeValue + targetValue + barfValue - potion.price(true);
 }
 
 const doublingValue = (potion: Potion, yachtzeeTurns: number) =>
@@ -237,7 +237,7 @@ export function yachtzeePotionSetup(
   }
 
   if (!simOnly) {
-    variableMeatPotionsSetup(yachtzeeTurns, expectedEmbezzlers);
+    variableMeatPotionsSetup(yachtzeeTurns, expectedTargets);
     executeNextDietStep(true);
     if (pyecAvailable()) {
       maximize("MP", false);
@@ -270,13 +270,13 @@ export function yachtzeePotionSetup(
   // Uncle Greenspan's may be cost effective
   if (!simOnly && !have($effect`Buy!  Sell!  Buy!  Sell!`)) {
     const yachtzeeFactor = yachtzeeTurns * (yachtzeeTurns + 1);
-    const embezzlerFactor =
-      Math.min(100, expectedEmbezzlers + yachtzeeTurns) *
-      (Math.min(100, expectedEmbezzlers + yachtzeeTurns) + 1);
+    const targetFactor =
+      Math.min(100, expectedTargets + yachtzeeTurns) *
+      (Math.min(100, expectedTargets + yachtzeeTurns) + 1);
     const greenspanValue =
       (2000 * yachtzeeFactor +
-        targetMeat() * (embezzlerFactor - yachtzeeFactor) +
-        baseMeat() * (10100 - embezzlerFactor)) /
+        targetMeat() * (targetFactor - yachtzeeFactor) +
+        baseMeat() * (10100 - targetFactor)) /
       100;
     const price = garboValue($item`Uncle Greenspan's Bathroom Finance Guide`);
     const profit = greenspanValue - price;

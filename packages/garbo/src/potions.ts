@@ -64,13 +64,13 @@ import {
   turnsToNC,
   withLocation,
 } from "./lib";
-import { copyTargetCount } from "./embezzler";
+import { copyTargetCount } from "./target";
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions, targettingMeat } from "./config";
 import { castAugustScepterBuffs } from "./resources";
 
-export type PotionTier = "embezzler" | "overlap" | "barf" | "ascending";
+export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
 export const failedWishes: Effect[] = [];
 
@@ -283,23 +283,23 @@ export class Potion {
     return new Potion(item).bonusMeat();
   }
 
-  gross(embezzlers: number, maxTurns?: number): number {
+  gross(targets: number, maxTurns?: number): number {
     const bonusMeat = this.bonusMeat();
     const duration = Math.max(this.effectDuration(), maxTurns ?? 0);
-    // Number of embezzlers this will actually be in effect for.
-    const embezzlersApplied = Math.max(
-      Math.min(duration, embezzlers - haveEffect(this.effect())),
+    // Number of meat targets this will actually be in effect for.
+    const targetsApplied = Math.max(
+      Math.min(duration, targets - haveEffect(this.effect())),
       0,
     );
 
     return (
       (bonusMeat / 100) *
-      (baseMeat() * duration + targetMeatDifferential() * embezzlersApplied)
+      (baseMeat() * duration + targetMeatDifferential() * targetsApplied)
     );
   }
 
-  static gross(item: Item, embezzlers: number): number {
-    return new Potion(item).gross(embezzlers);
+  static gross(item: Item, targets: number): number {
+    return new Potion(item).gross(targets);
   }
 
   price(historical: boolean): number {
@@ -313,28 +313,28 @@ export class Potion {
       : retrieveUntradeablePrice(this.potion);
   }
 
-  net(embezzlers: number, historical = false): number {
-    return this.gross(embezzlers) - this.price(historical);
+  net(targets: number, historical = false): number {
+    return this.gross(targets) - this.price(historical);
   }
 
-  static net(item: Item, embezzlers: number, historical = false): number {
-    return new Potion(item).net(embezzlers, historical);
+  static net(item: Item, targets: number, historical = false): number {
+    return new Potion(item).net(targets, historical);
   }
 
-  doublingValue(embezzlers: number, historical = false): number {
+  doublingValue(targets: number, historical = false): number {
     return Math.min(
-      Math.max(this.doubleDuration().net(embezzlers, historical), 0) -
-        Math.max(this.net(embezzlers, historical), 0),
+      Math.max(this.doubleDuration().net(targets, historical), 0) -
+        Math.max(this.net(targets, historical), 0),
       this.price(true),
     );
   }
 
   static doublingValue(
     item: Item,
-    embezzlers: number,
+    targets: number,
     historical = false,
   ): number {
-    return new Potion(item).doublingValue(embezzlers, historical);
+    return new Potion(item).doublingValue(targets, historical);
   }
 
   /**
@@ -370,16 +370,16 @@ export class Potion {
   }
 
   /**
-   * Compute up to 4 possible value thresholds for this potion based on the number of embezzlers to fight at the start of the day
-   * - using it to only cover embezzlers
-   * - using it to cover both barf and embezzlers (this is max 1 use)
+   * Compute up to 4 possible value thresholds for this potion based on the number of meat targets to fight at the start of the day
+   * - using it to only cover meat targets
+   * - using it to cover both barf and meat targets (this is max 1 use)
    * - using it to only cover barf
    * - using it to cover turns in barf and those that would be lost at the end of the day
-   * @param embezzlers The number of embezzlers expected to be fought in a block at the start of the day
+   * @param targets The number of meat targets expected to be fought in a block at the start of the day
    * @returns
    */
   value(
-    embezzlers: number,
+    targets: number,
     turns?: number,
     limit?: number,
   ): { name: PotionTier; quantity: number; value: number }[] {
@@ -396,41 +396,40 @@ export class Potion {
           clamp(limit - sum(values, ({ quantity }) => quantity), 0, quantity)
       : (quantity: number) => quantity;
 
-    // compute the value of covering embezzlers
-    const embezzlerTurns = Math.max(0, embezzlers - startingTurns);
-    const embezzlerQuantity = this.usesToCover(embezzlerTurns, false);
-    const embezzlerValue = embezzlerQuantity ? this.gross(embezzlers) : 0;
+    // compute the value of covering meat targets
+    const targetTurns = Math.max(0, targets - startingTurns);
+    const targetQuantity = this.usesToCover(targetTurns, false);
+    const targetValue = targetQuantity ? this.gross(targets) : 0;
 
     values.push({
-      name: "embezzler",
-      quantity: limitFunction(embezzlerQuantity),
-      value: embezzlerValue,
+      name: "target",
+      quantity: limitFunction(targetQuantity),
+      value: targetValue,
     });
 
-    // compute the number of embezzlers missed before, and their value (along with barf unless nobarf)
-    const overlapEmbezzlers = -this.overage(embezzlerTurns, embezzlerQuantity);
+    // compute the number of meat targets missed before, and their value (along with barf unless nobarf)
+    const overlapTargets = -this.overage(targetTurns, targetQuantity);
 
-    if (overlapEmbezzlers > 0) {
+    if (overlapTargets > 0) {
       values.push({
         name: "overlap",
         quantity: limitFunction(1),
         value: this.gross(
-          overlapEmbezzlers,
-          globalOptions.nobarf ? overlapEmbezzlers : undefined,
+          overlapTargets,
+          globalOptions.nobarf ? overlapTargets : undefined,
         ),
       });
     }
 
-    const embezzlerCoverage =
-      embezzlerQuantity +
-      (overlapEmbezzlers > 0 ? 1 : 0) * this.effectDuration();
+    const targetCoverage =
+      targetQuantity + (overlapTargets > 0 ? 1 : 0) * this.effectDuration();
 
     if (!globalOptions.nobarf) {
       // unless nobarf, compute the value of barf turns
       // if ascending, break those turns that are not fully covered by a potion into their own value
       const remainingTurns = Math.max(
         0,
-        totalTurns - embezzlerCoverage - startingTurns,
+        totalTurns - targetCoverage - startingTurns,
       );
 
       const barfQuantity = this.usesToCover(remainingTurns, !ascending);
@@ -483,13 +482,13 @@ export class Potion {
 
 function useAsValuable(
   potion: Potion,
-  embezzlers: number,
-  embezzlersOnly: boolean,
+  targets: number,
+  targetsOnly: boolean,
 ): number {
-  const value = potion.value(embezzlers);
+  const value = potion.value(targets);
   const price = potion.price(false);
   const amountsAcquired = value.map((value) =>
-    (!embezzlersOnly || value.name === "embezzler") && value.value - price > 0
+    (!targetsOnly || value.name === "target") && value.value - price > 0
       ? potion.acquire(
           value.quantity,
           potion.potion,
@@ -674,14 +673,14 @@ export const farmingPotions = [
   ...(have($item`closed-circuit pay phone`) ? [rufusPotion] : []),
 ];
 
-export function doublingPotions(embezzlers: number): Potion[] {
+export function doublingPotions(targets: number): Potion[] {
   return farmingPotions
     .filter(
       (potion) =>
-        potion.doubleDuration().gross(embezzlers) / potion.price(true) > 0.5,
+        potion.doubleDuration().gross(targets) / potion.price(true) > 0.5,
     )
     .map((potion) => {
-      return { potion: potion, value: potion.doublingValue(embezzlers) };
+      return { potion: potion, value: potion.doublingValue(targets) };
     })
     .sort((a, b) => b.value - a.value)
     .map((pair) => pair.potion);
@@ -704,29 +703,28 @@ export function potionSetupCompleted(): boolean {
   return completedPotionSetup;
 }
 /**
- * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer embezzlers. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
- * @param embezzlersOnly Are we valuing the potions only for embezzlers (noBarf)?
+ * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer targets. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
+ * @param targetsOnly Are we valuing the potions only for meat targets (noBarf)?
  */
-export function potionSetup(embezzlersOnly: boolean): void {
+export function potionSetup(targetsOnly: boolean): void {
   castAugustScepterBuffs();
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
-    const embezzlers = targettingMeat() ? copyTargetCount() : 0;
+    const targets = targettingMeat() ? copyTargetCount() : 0;
 
     if (
       have($item`Eight Days a Week Pill Keeper`) &&
       !get("_freePillKeeperUsed")
     ) {
-      const possibleDoublingPotions = doublingPotions(embezzlers);
+      const possibleDoublingPotions = doublingPotions(targets);
       const bestPotion =
         possibleDoublingPotions.length > 0
           ? possibleDoublingPotions[0]
           : undefined;
       if (
         bestPotion &&
-        bestPotion.doubleDuration().net(embezzlers) >
-          pillkeeperOpportunityCost()
+        bestPotion.doubleDuration().net(targets) > pillkeeperOpportunityCost()
       ) {
         print(
           `Determined that ${bestPotion.potion} was the best potion to double`,
@@ -736,7 +734,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
         bestPotion.acquire(
           1,
           bestPotion.potion,
-          bestPotion.doubleDuration().gross(embezzlers),
+          bestPotion.doubleDuration().gross(targets),
         );
         bestPotion.use(1);
       }
@@ -744,12 +742,12 @@ export function potionSetup(embezzlersOnly: boolean): void {
 
     // Only test potions which are reasonably close to being profitable using historical price.
     const testPotions = farmingPotions.filter(
-      (potion) => potion.gross(embezzlers) / potion.price(true) > 0.5,
+      (potion) => potion.gross(targets) / potion.price(true) > 0.5,
     );
     const nonWishTestPotions = testPotions.filter(
       (potion) => potion.potion !== $item`pocket wish`,
     );
-    nonWishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+    nonWishTestPotions.sort((a, b) => b.net(targets) - a.net(targets));
 
     const excludedEffects = new Set<Effect>();
     for (const effect of getActiveEffects()) {
@@ -762,7 +760,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
       const effect = potion.effect();
       if (
         !excludedEffects.has(effect) &&
-        useAsValuable(potion, embezzlers, embezzlersOnly) > 0
+        useAsValuable(potion, targets, targetsOnly) > 0
       ) {
         for (const excluded of mutuallyExclusive.get(effect) ?? []) {
           excludedEffects.add(excluded);
@@ -771,7 +769,7 @@ export function potionSetup(embezzlersOnly: boolean): void {
     }
 
     usePawWishes((potion) => {
-      const value = potion.value(embezzlers);
+      const value = potion.value(targets);
       return value.length > 0
         ? maxBy(value, ({ quantity, value }) => (quantity > 0 ? value : 0))
             .value
@@ -781,14 +779,14 @@ export function potionSetup(embezzlersOnly: boolean): void {
     const wishTestPotions = testPotions.filter(
       (potion) => potion.potion === $item`pocket wish`,
     );
-    wishTestPotions.sort((a, b) => b.net(embezzlers) - a.net(embezzlers));
+    wishTestPotions.sort((a, b) => b.net(targets) - a.net(targets));
 
     for (const potion of wishTestPotions) {
       const effect = potion.effect();
       if (
         !excludedEffects.has(effect) &&
         !failedWishes.includes(effect) &&
-        useAsValuable(potion, embezzlers, embezzlersOnly) > 0
+        useAsValuable(potion, targets, targetsOnly) > 0
       ) {
         for (const excluded of mutuallyExclusive.get(effect) ?? []) {
           excludedEffects.add(excluded);
@@ -796,31 +794,30 @@ export function potionSetup(embezzlersOnly: boolean): void {
       }
     }
 
-    variableMeatPotionsSetup(0, embezzlers);
+    variableMeatPotionsSetup(0, targets);
     completedPotionSetup = true;
   });
 }
 
 /**
  * Uses a Greenspan iff profitable; does not account for PYEC/LTC, or running out of adventures with the ascend flag.
- * @param embezzlers Do we want to account for embezzlers when calculating the value of bathroom finance?
+ * @param targets Do we want to account for targets when calculating the value of bathroom finance?
  */
-export function bathroomFinance(embezzlers: number): void {
+export function bathroomFinance(targets: number): void {
   if (have($effect`Buy!  Sell!  Buy!  Sell!`)) return;
 
-  // Average meat % for embezzlers is sum of arithmetic series, 2 * sum(1 -> embezzlers)
-  const averageEmbezzlerGross = (targetMeat() * 2 * (embezzlers + 1)) / 2 / 100;
-  const embezzlerGross = averageEmbezzlerGross * embezzlers;
-  const tourists = 100 - embezzlers;
+  // Average meat % for targets is sum of arithmetic series, 2 * sum(1 -> targets)
+  const averageTargetGross = (targetMeat() * 2 * (targets + 1)) / 2 / 100;
+  const targetGross = averageTargetGross * targets;
+  const tourists = 100 - targets;
 
-  // Average meat % for tourists is sum of arithmetic series, 2 * sum(embezzlers + 1 -> 100)
-  const averageTouristGross =
-    (baseMeat() * 2 * (100 + embezzlers + 1)) / 2 / 100;
+  // Average meat % for tourists is sum of arithmetic series, 2 * sum(targets + 1 -> 100)
+  const averageTouristGross = (baseMeat() * 2 * (100 + targets + 1)) / 2 / 100;
   const touristGross = averageTouristGross * tourists;
 
   const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
-  if (touristGross + embezzlerGross > mallPrice(greenspan)) {
-    acquire(1, greenspan, touristGross + embezzlerGross, false);
+  if (touristGross + targetGross > mallPrice(greenspan)) {
+    acquire(1, greenspan, touristGross + targetGross, false);
     if (itemAmount(greenspan) > 0) {
       print(`Using ${greenspan}!`, HIGHLIGHT);
       use(greenspan);
@@ -877,20 +874,17 @@ class VariableMeatPotion {
       : retrieveUntradeablePrice(this.potion);
   }
 
-  getOptimalNumberToUse(yachtzees: number, embezzlers: number): number {
-    const barfTurns = Math.max(
-      0,
-      estimatedGarboTurns() - yachtzees - embezzlers,
-    );
+  getOptimalNumberToUse(yachtzees: number, targets: number): number {
+    const barfTurns = Math.max(0, estimatedGarboTurns() - yachtzees - targets);
 
     const potionAmountsToConsider: number[] = [];
     const considerSoftcap = [0, this.softcap];
-    const considerEmbezzlers = embezzlers > 0 ? [0, embezzlers] : [0];
+    const considerTargets = targets > 0 ? [0, targets] : [0];
     for (const fn of [Math.floor, Math.ceil]) {
       for (const sc of considerSoftcap) {
-        for (const em of considerEmbezzlers) {
+        for (const em of considerTargets) {
           const considerBarfTurns =
-            em === embezzlers && barfTurns > 0 ? [0, barfTurns] : [0];
+            em === targets && barfTurns > 0 ? [0, barfTurns] : [0];
           for (const bt of considerBarfTurns) {
             const potionAmount = fn((yachtzees + em + bt + sc) / this.duration);
             if (!potionAmountsToConsider.includes(potionAmount)) {
@@ -903,7 +897,7 @@ class VariableMeatPotion {
 
     const profitsFromPotions = potionAmountsToConsider.map((quantity) => ({
       quantity,
-      value: this.valueNPotions(quantity, yachtzees, embezzlers, barfTurns),
+      value: this.valueNPotions(quantity, yachtzees, targets, barfTurns),
     }));
     const bestOption = maxBy(profitsFromPotions, "value");
 
@@ -931,11 +925,11 @@ class VariableMeatPotion {
   valueNPotions(
     n: number,
     yachtzees: number,
-    embezzlers: number,
+    targets: number,
     barfTurns: number,
   ): number {
     const yachtzeeValue = 2000;
-    const embezzlerValue = targetMeat();
+    const targetValue = targetMeat();
     const barfValue = (baseMeat() * turnsToNC) / 30;
 
     const totalCosts = retrievePrice(this.potion, n);
@@ -945,7 +939,7 @@ class VariableMeatPotion {
     let totalValue = 0;
     const turnTypes = [
       [yachtzees, yachtzeeValue],
-      [embezzlers, embezzlerValue],
+      [targets, targetValue],
       [barfTurns, barfValue],
     ];
 
@@ -969,7 +963,7 @@ class VariableMeatPotion {
 
 export function variableMeatPotionsSetup(
   yachtzees: number,
-  embezzlers: number,
+  targets: number,
 ): void {
   const potions = [
     new VariableMeatPotion($item`love song of sugary cuteness`, 20, 2),
@@ -990,7 +984,7 @@ export function variableMeatPotionsSetup(
     const effect = effectModifier(potion.potion, "Effect");
     const n = excludedEffects.has(effect)
       ? 0
-      : potion.getOptimalNumberToUse(yachtzees, embezzlers);
+      : potion.getOptimalNumberToUse(yachtzees, targets);
     if (n > 0) {
       potion.use(n);
       for (const excluded of mutuallyExclusive.get(effect) ?? []) {

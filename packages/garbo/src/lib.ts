@@ -118,7 +118,7 @@ export const eventLog: {
 
 export enum BonusEquipMode {
   FREE,
-  EMBEZZLER,
+  MEAT_TARGET,
   DMT,
   BARF,
 }
@@ -135,7 +135,7 @@ export function modeValueOfMeat(mode: BonusEquipMode): number {
   return modeIsFree(mode)
     ? 0
     : (baseMeat() +
-        (mode === BonusEquipMode.EMBEZZLER ? targetMeatDifferential() : 0)) /
+        (mode === BonusEquipMode.MEAT_TARGET ? targetMeatDifferential() : 0)) /
         100;
 }
 
@@ -146,8 +146,7 @@ export function modeValueOfItem(mode: BonusEquipMode): number {
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 export const ESTIMATED_OVERDRUNK_TURNS = 60;
-export const EMBEZZLER_MULTIPLIER = (): number =>
-  globalOptions.prefs.embezzlerMultiplier;
+export const TARGET_MULTIPLIER = (): number => targetMeat() / baseMeat() - 1;
 
 export const propertyManager = new PropertiesManager();
 
@@ -383,7 +382,7 @@ export function pillkeeperOpportunityCost(): number {
   const alternateUses = [
     {
       can: canTreasury,
-      value: EMBEZZLER_MULTIPLIER() * get("valueOfAdventure"),
+      value: TARGET_MULTIPLIER() * get("valueOfAdventure"),
     },
     {
       can: realmAvailable("sleaze"),
@@ -852,26 +851,26 @@ export function freeRest(): boolean {
 }
 
 export function printEventLog(): void {
-  if (resetDailyPreference("garboEmbezzlerDate")) {
-    property.set("garboEmbezzlerCount", 0);
-    property.set("garboEmbezzlerSources", "");
+  if (resetDailyPreference("garboTargetDate")) {
+    property.set("garboTargetCount", 0);
+    property.set("garboTargetSources", "");
     property.set("garboYachtzeeCount", 0);
   }
-  const totalEmbezzlers =
-    property.getNumber("garboEmbezzlerCount", 0) +
+  const totalTargetCopies =
+    property.getNumber("garboTargetCount", 0) +
     eventLog.initialCopyTargetsFought +
     eventLog.digitizedCopyTargetsFought;
 
-  const allEmbezzlerSources = property
-    .getString("garboEmbezzlerSources")
+  const allTargetSources = property
+    .getString("garboTargetSources")
     .split(",")
     .filter((source) => source);
-  allEmbezzlerSources.push(...eventLog.copyTargetSources);
+  allTargetSources.push(...eventLog.copyTargetSources);
 
   const yacthzeeCount = get("garboYachtzeeCount", 0) + eventLog.yachtzees;
 
-  property.set("garboEmbezzlerCount", totalEmbezzlers);
-  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
+  property.set("garboTargetCount", totalTargetCopies);
+  property.set("garboTargetSources", allTargetSources.join(","));
   property.set("garboYachtzeeCount", yacthzeeCount);
 
   print(
@@ -879,7 +878,7 @@ export function printEventLog(): void {
     HIGHLIGHT,
   );
   print(
-    `Including this, you have fought ${totalEmbezzlers} across all ascensions today`,
+    `Including this, you have fought ${totalTargetCopies} across all ascensions today`,
     HIGHLIGHT,
   );
   if (yacthzeeCount > 0) {
@@ -1061,7 +1060,7 @@ export function aprilFoolsRufus() {
 
 type LuckyAdventure = {
   location: Location;
-  phase: "embezzler" | "yachtzee" | "barf";
+  phase: "target" | "yachtzee" | "barf";
   value: () => number;
   outfit?: () => Outfit;
   choices?: () => {

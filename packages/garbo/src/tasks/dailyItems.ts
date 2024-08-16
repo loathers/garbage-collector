@@ -49,7 +49,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
+import { copyTargetCount } from "../target";
 import { aprilFoolsRufus, coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -486,7 +486,7 @@ const DailyItemTasks: GarboTask[] = [
       const price = rufusPotion.price(false);
       _shouldClearRufusQuest = value.some(
         (value) =>
-          (!globalOptions.nobarf || value.name === "embezzler") &&
+          (!globalOptions.nobarf || value.name === "target") &&
           value.value - price > 0,
       );
       if (_shouldClearRufusQuest) {

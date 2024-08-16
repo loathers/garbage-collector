@@ -30,9 +30,9 @@ import { bonusGear } from "./dropsgear";
 import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
 import {
   BonusEquipMode,
-  EMBEZZLER_MULTIPLIER,
   modeValueOfItem,
   modeValueOfMeat,
+  TARGET_MULTIPLIER,
 } from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
 
@@ -124,7 +124,7 @@ export function computeBarfOutfit(
     outfit.familiar === $familiar`Chest Mimic` &&
     $familiar`Chest Mimic`.experience < 550
   ) {
-    const famExpValue = (EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50;
+    const famExpValue = (TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50;
     outfit.modifier.push(`${famExpValue} Familiar Experience`);
   }
 
