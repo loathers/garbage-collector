@@ -75,7 +75,7 @@ import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
   arrayEquals,
   HIGHLIGHT,
-  TARGET_MULTIPLIER,
+  MEAT_TARGET_MULTIPLIER,
   targetMeat,
   userConfirmDialog,
 } from "./lib";
@@ -591,7 +591,9 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  const targetDifferential = targettingMeat() ? TARGET_MULTIPLIER() * MPA : 0;
+  const targetDifferential = targettingMeat()
+    ? MEAT_TARGET_MULTIPLIER() * MPA
+    : 0;
   const { expectedGregariousFights, marginalGregariousFights } =
     gregariousCount();
   const extros =
