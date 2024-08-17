@@ -26,7 +26,12 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
-import { baseMeat, BonusEquipMode, HIGHLIGHT, TARGET_MULTIPLIER } from "../lib";
+import {
+  baseMeat,
+  BonusEquipMode,
+  HIGHLIGHT,
+  MEAT_TARGET_MULTIPLIER,
+} from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -58,7 +63,7 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
     $familiar`Chest Mimic`,
     {
       extraValue: ({ famexp }) =>
-        (famexp * TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
+        (famexp * MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
     },
   ],
   [$familiar`Jill-of-All-Trades`, { equip: $item`LED candle` }],

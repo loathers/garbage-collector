@@ -57,9 +57,9 @@ import {
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
+  MEAT_TARGET_MULTIPLIER,
   romanticMonsterImpossible,
   sober,
-  TARGET_MULTIPLIER,
 } from "../lib";
 import {
   barfOutfit,
@@ -157,7 +157,7 @@ function shouldGoUnderwater(): boolean {
   if (
     mallPrice($item`pulled green taffy`) >
     (targettingMeat()
-      ? TARGET_MULTIPLIER() * get("valueOfAdventure")
+      ? MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")
       : get("valueOfAdventure"))
   ) {
     return false;

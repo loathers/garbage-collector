@@ -10,7 +10,7 @@ import {
 } from "libram";
 import { globalOptions } from "../config";
 import { estimatedBarfExperience, GeneralFamiliar } from "./lib";
-import { TARGET_MULTIPLIER } from "../lib";
+import { MEAT_TARGET_MULTIPLIER } from "../lib";
 import { mimicExperienceNeeded, shouldChargeMimic } from "../resources";
 
 type ExperienceFamiliar = {
@@ -43,7 +43,7 @@ const experienceFamiliars: ExperienceFamiliar[] = [
   {
     familiar: $familiar`Chest Mimic`,
     used: (mode: "barf" | "free") => !shouldChargeMimic(mode === "barf"),
-    useValue: () => TARGET_MULTIPLIER() * get("valueOfAdventure"),
+    useValue: () => MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure"),
     baseExp: 0,
     xpCost: 50,
     xpLimit: (mode: "barf" | "free") => mimicExperienceNeeded(mode === "barf"),
