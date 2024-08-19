@@ -147,7 +147,7 @@ export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 export const ESTIMATED_OVERDRUNK_TURNS = 60;
 export const MEAT_TARGET_MULTIPLIER = (): number =>
-  globalOptions.meatTargetMultiplier;
+  globalOptions.prefs.meatTargetMultiplier;
 
 export const propertyManager = new PropertiesManager();
 
