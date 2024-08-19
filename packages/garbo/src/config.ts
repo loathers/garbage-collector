@@ -219,6 +219,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           default: false,
           hidden: true,
         }),
+        meatTargetMultiplier: Args.number({
+          setting: "garbo_meatTargetMultiplier",
+          help: "The amount we multiply our valueOfAdventure by when estimating marginal meat target profit. (Default 1.5)",
+          default: 1.5,
+        }),
         stashClan: Args.string({
           setting: "garbo_stashClan",
           help: "If set, garbo will attempt to switch to this clan to take and return useful clan stash item, i.e. a Haiku Katana or Repaid Diaper. Leave blank to disable.",
