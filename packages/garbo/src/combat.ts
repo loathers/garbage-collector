@@ -2,6 +2,7 @@ import "core-js/features/array/flat";
 import {
   adv1,
   choiceFollowsFight,
+  currentHitStat,
   equippedAmount,
   equippedItem,
   getAutoAttack,
@@ -593,7 +594,9 @@ export class Macro extends StrictMacro {
         ),
       )
       .externalIf(
-        myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`),
+        myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`) &&
+          (currentHitStat() === $stat`Muscle` ||
+            itemType(equippedItem($slot`weapon`)) === "knife"),
         Macro.trySkillRepeat(
           $skill`Northern Explosion`,
           $skill`Lunging Thrust-Smack`,
