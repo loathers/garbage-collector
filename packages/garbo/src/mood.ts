@@ -63,6 +63,9 @@ export function meatMood(
   mood.skill($skill`Leash of Linguini`);
   mood.skill($skill`Empathy of the Newt`);
 
+  mood.skill($skill`Astral Shell`);
+  mood.skill($skill`Ghostly Shell`);
+
   mood.skill($skill`The Polka of Plenty`);
   mood.skill($skill`Disco Leer`);
   mood.skill(
