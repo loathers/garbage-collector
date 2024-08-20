@@ -1191,8 +1191,8 @@ const freeFightSources = [
           get("_questPartyFairQuest") === "trash"
             ? ["100 Item Drop"]
             : get("_questPartyFairQuest") === "dj"
-            ? ["100 Meat Drop"]
-            : [],
+              ? ["100 Meat Drop"]
+              : [],
         equip: have($item`January's Garbage Tote`)
           ? $items`makeshift garbage shirt`
           : [],
@@ -1986,8 +1986,8 @@ export function freeRunFights(): void {
   const stashRun = stashAmount($item`navel ring of navel gazing`)
     ? $items`navel ring of navel gazing`
     : stashAmount($item`Greatest American Pants`)
-    ? $items`Greatest American Pants`
-    : [];
+      ? $items`Greatest American Pants`
+      : [];
   refreshStash();
 
   withStash(stashRun, () => {
@@ -2510,8 +2510,8 @@ function killRobortCreaturesForFree() {
       isFree(roboTarget)
         ? Macro.basicCombat()
         : freeKill.macro instanceof Item
-        ? Macro.item(freeKill.macro)
-        : Macro.skill(freeKill.macro),
+          ? Macro.item(freeKill.macro)
+          : Macro.skill(freeKill.macro),
       () => CombatLoversLocket.reminisce(roboTarget),
       true,
     );

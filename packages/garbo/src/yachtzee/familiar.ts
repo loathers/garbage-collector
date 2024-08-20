@@ -26,8 +26,8 @@ function bestFamUnderwaterGear(fam: Familiar): Item {
       ? $item`amulet coin`
       : $item`filthy child leash`
     : have($item`das boot`)
-    ? $item`das boot`
-    : $item`little bitty bathysphere`;
+      ? $item`das boot`
+      : $item`little bitty bathysphere`;
 }
 
 function getBuffedFamiliarWeight(fam: Familiar): number {
