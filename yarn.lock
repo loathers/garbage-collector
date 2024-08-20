@@ -2272,7 +2272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-x64-gnu@npm:4.21.0":
+"@rollup/rollup-linux-x64-gnu@npm:4.21.0, @rollup/rollup-linux-x64-gnu@npm:^4.21.0":
   version: 4.21.0
   resolution: "@rollup/rollup-linux-x64-gnu@npm:4.21.0"
   conditions: os=linux & cpu=x64 & libc=glibc
@@ -4357,6 +4357,7 @@ __metadata:
   resolution: "garbo-relay@workspace:packages/garbo-relay"
   dependencies:
     "@eslint/js": 9.9.0
+    "@rollup/rollup-linux-x64-gnu": ^4.21.0
     "@types/react": ^18.3.3
     "@types/react-dom": ^18.3.0
     "@typescript-eslint/eslint-plugin": ^8.2.0
@@ -4373,6 +4374,9 @@ __metadata:
     rimraf: ^6.0.1
     typescript: ^5.5.4
     vite: ^5.4.2
+  dependenciesMeta:
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
   languageName: unknown
   linkType: soft
 
