@@ -11,14 +11,14 @@
     "lint": " yarn workspaces foreach -pv run lint",
     "pre-commit": "yarn workspaces foreach -v run pre-commit",
     "madge": "yarn workspaces foreach -v run madge",
-    "postinstall": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
     "eslint": "^8.57.0",
-    "husky": "^8.0.3",
-    "prettier": "^3.0.3",
-    "typescript": "^5.4.5"
+    "husky": "^9.1.5",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
   },
   "packageManager": "yarn@3.6.4"
 }
