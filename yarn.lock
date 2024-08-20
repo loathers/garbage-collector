@@ -2275,6 +2275,7 @@ __metadata:
 "@rollup/rollup-linux-x64-gnu@npm:4.21.0, @rollup/rollup-linux-x64-gnu@npm:^4.21.0":
   version: 4.21.0
   resolution: "@rollup/rollup-linux-x64-gnu@npm:4.21.0"
+  checksum: 14e79e4ab0c0683670c7a6c37dee50548188aa07e6821a3b401904da5dcd2700c5c7f50d1164d90ca310a2bc18fe4940c8b1650cfefcdeb737e7046e10f02acf
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
@@ -4374,9 +4375,6 @@ __metadata:
     rimraf: ^6.0.1
     typescript: ^5.5.4
     vite: ^5.4.2
-  dependenciesMeta:
-    "@rollup/rollup-linux-x64-gnu":
-      optional: true
   languageName: unknown
   linkType: soft
 
