@@ -17,7 +17,9 @@
   },
   "lint-staged": {
     "*": [
-      "prettier --write --ignore-unknown",
+      "prettier --write --ignore-unknown"
+    ],
+    "src/*": [
       "eslint --quiet --fix"
     ]
   },
@@ -41,15 +43,12 @@
     "copyfiles": "^2.4.1",
     "esbuild": "^0.23.1",
     "esbuild-plugin-babel": "^0.2.3",
-    "eslint": "^8.57.0",
+    "eslint": "^9.9.0",
     "eslint-config-garbo": "^0.0.1",
     "lint-staged": "^15.2.9",
     "madge": "^8.0.0",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
-  },
-  "eslintConfig": {
-    "extends": "eslint-config-garbo"
   }
 }
