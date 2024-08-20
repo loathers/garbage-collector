@@ -1003,7 +1003,9 @@ export const emergencyChainStarters = [
   new CopyTargetFight(
     "Pocket Wish (untapped potential)",
     () => {
-      if (!globalOptions.target.wishable) return false;
+      if (globalOptions.target === $monster`cheerless mime executive`) {
+        globalOptions.target = $monster`Knob Goblin Elite Guard Captain`;
+      } else if (!globalOptions.target.wishable) return false;
       const potential = Math.floor(copyTargetCount());
       if (potential < 1) return false;
       if (get("_genieFightsUsed") >= 3) return false;
