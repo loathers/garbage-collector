@@ -507,8 +507,8 @@ function banishBunny(): void {
   const banish = usingIceHouseBanish
     ? iceHouseBanish
     : getUsingFreeBunnyBanish()
-    ? freeBunnyBanish
-    : maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
+      ? freeBunnyBanish
+      : maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
   do {
     banish.prepare?.();
     garboAdventure(

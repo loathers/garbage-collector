@@ -477,7 +477,7 @@ export const copySources = [
         ? 1
         : 0,
     (options: RunOptions) => {
-      withMacro(options.macro, () => use($item`envyfish egg`)), options.useAuto;
+      withMacro(options.macro, () => use($item`envyfish egg`), options.useAuto);
     },
   ),
   new CopyTargetFight(

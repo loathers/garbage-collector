@@ -266,8 +266,8 @@ export class Potion {
     const familiarMultiplier = have($familiar`Robortender`)
       ? 2
       : have($familiar`Hobo Monkey`)
-      ? 1.25
-      : 1;
+        ? 1.25
+        : 1;
 
     // Assume base weight of 100 pounds. This is off but close enough.
     const assumedBaseWeight = 100;

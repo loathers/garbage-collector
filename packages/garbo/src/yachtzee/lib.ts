@@ -49,10 +49,10 @@ export function pyecAvailable(): boolean {
       get("expressCardUsed")
         ? false
         : have($item`Platinum Yendorian Express Card`)
-        ? true
-        : withStash($items`Platinum Yendorian Express Card`, () => {
-            return have($item`Platinum Yendorian Express Card`);
-          }),
+          ? true
+          : withStash($items`Platinum Yendorian Express Card`, () => {
+              return have($item`Platinum Yendorian Express Card`);
+            }),
     );
   }
   return get("_PYECAvailable", false);
