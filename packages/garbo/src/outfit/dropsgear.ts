@@ -266,7 +266,6 @@ function bindlestocking(mode: BonusEquipMode): Map<Item, number> {
 }
 
 function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
-  const value = targetPointerRingMeat();
   const canCrit =
     (have($skill`Furious Wallop`) && myFury() > 0) ||
     have($skill`Head in the Game`);
@@ -274,12 +273,13 @@ function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
     !have($item`mafia pointer finger ring`) ||
     mode !== BonusEquipMode.EMBEZZLER ||
     !canCrit ||
-    value === 0
+    globalOptions.target.attributes.includes("FREE")
   ) {
     return new Map<Item, number>();
   }
-
-  return new Map<Item, number>([[$item`mafia pointer finger ring`, value]]);
+  return new Map<Item, number>([
+    [$item`mafia pointer finger ring`, targetPointerRingMeat()],
+  ]);
 }
 
 export function bonusGear(
