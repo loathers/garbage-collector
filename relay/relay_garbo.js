@@ -106,79 +106,52 @@ function _objectSpread(e) {
   }
   return e;
 }
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
+function _classCallCheck(a, n) {
+  if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
+}
+function _defineProperties(e, r) {
+  for (var t = 0; t < r.length; t++) {
+    var o = r[t];
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey(o.key), o);
   }
 }
-function _defineProperties(target, props) {
-  for (var i = 0; i < props.length; i++) {
-    var descriptor = props[i];
-    descriptor.enumerable = descriptor.enumerable || false;
-    descriptor.configurable = true;
-    if ("value" in descriptor)
-      descriptor.writable = true;
-    Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
-  }
+function _createClass(e, r, t) {
+  return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _createClass(Constructor, protoProps, staticProps) {
-  if (protoProps)
-    _defineProperties(Constructor.prototype, protoProps);
-  if (staticProps)
-    _defineProperties(Constructor, staticProps);
-  Object.defineProperty(Constructor, "prototype", { writable: false });
-  return Constructor;
+function _defineProperty(e, r, t) {
+  return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _defineProperty(obj, key, value) {
-  key = _toPropertyKey(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
+function _toPropertyKey(t) {
+  var i = _toPrimitive(t, "string");
+  return "symbol" == typeof i ? i : i + "";
 }
-function _toPropertyKey(arg) {
-  var key = _toPrimitive(arg, "string");
-  return typeof key === "symbol" ? key : String(key);
-}
-function _toPrimitive(input, hint) {
-  if (typeof input !== "object" || input === null)
-    return input;
-  var prim = input[Symbol.toPrimitive];
-  if (prim !== void 0) {
-    var res = prim.call(input, hint || "default");
-    if (typeof res !== "object")
-      return res;
+function _toPrimitive(t, r) {
+  if ("object" != typeof t || !t) return t;
+  var e = t[Symbol.toPrimitive];
+  if (void 0 !== e) {
+    var i = e.call(t, r || "default");
+    if ("object" != typeof i) return i;
     throw new TypeError("@@toPrimitive must return a primitive value.");
   }
-  return (hint === "string" ? String : Number)(input);
+  return ("string" === r ? String : Number)(t);
 }
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+function _slicedToArray(r, e) {
+  return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest();
 }
 function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o)
-    return;
-  if (typeof o === "string")
-    return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor)
-    n = o.constructor.name;
-  if (n === "Map" || n === "Set")
-    return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
-    return _arrayLikeToArray(o, minLen);
+function _unsupportedIterableToArray(r, a) {
+  if (r) {
+    if ("string" == typeof r) return _arrayLikeToArray(r, a);
+    var t = {}.toString.call(r).slice(8, -1);
+    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0;
+  }
 }
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length)
-    len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++)
-    arr2[i] = arr[i];
-  return arr2;
+function _arrayLikeToArray(r, a) {
+  (null == a || a > r.length) && (a = r.length);
+  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+  return n;
 }
 function _iterableToArrayLimit(r, l) {
   var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
@@ -186,29 +159,23 @@ function _iterableToArrayLimit(r, l) {
     var e, n, i, u, a = [], f = true, o = false;
     try {
       if (i = (t = t.call(r)).next, 0 === l) {
-        if (Object(t) !== t)
-          return;
+        if (Object(t) !== t) return;
         f = false;
-      } else
-        for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = true)
-          ;
+      } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = true) ;
     } catch (r2) {
       o = true, n = r2;
     } finally {
       try {
-        if (!f && null != t.return && (u = t.return(), Object(u) !== u))
-          return;
+        if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return;
       } finally {
-        if (o)
-          throw n;
+        if (o) throw n;
       }
     }
     return a;
   }
 }
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr))
-    return arr;
+function _arrayWithHoles(r) {
+  if (Array.isArray(r)) return r;
 }
 var createPropertyGetter = function(transform) {
   return function(property, default_) {
@@ -221,8 +188,7 @@ var createPropertyGetter = function(transform) {
 };
 var createMafiaClassPropertyGetter = function(Type, toType) {
   return createPropertyGetter(function(value) {
-    if (value === "")
-      return null;
+    if (value === "") return null;
     var v = toType(value);
     return v === Type.none ? null : v;
   });
@@ -313,7 +279,7 @@ var PropertiesManager = /* @__PURE__ */ function() {
     _classCallCheck(this, PropertiesManager2);
     _defineProperty(this, "properties", {});
   }
-  _createClass(PropertiesManager2, [{
+  return _createClass(PropertiesManager2, [{
     key: "storedValues",
     get: function get2() {
       return this.properties;
@@ -371,8 +337,7 @@ var PropertiesManager = /* @__PURE__ */ function() {
       }
       for (var _i3 = 0, _properties = properties; _i3 < _properties.length; _i3++) {
         var property = _properties[_i3];
-        if (!(property in this.properties))
-          continue;
+        if (!(property in this.properties)) continue;
         var value = this.properties[property];
         if (value === PropertiesManager2.EMPTY_PREFERENCE) {
           (0, import_kolmafia.removeProperty)(property);
@@ -472,8 +437,7 @@ var PropertiesManager = /* @__PURE__ */ function() {
   }, {
     key: "clamp",
     value: function clamp(property, min, max) {
-      if (max < min)
-        return false;
+      if (max < min) return false;
       var start = get(property);
       this.setMinimumValue(property, min);
       this.setMaximumValue(property, max);
@@ -490,12 +454,10 @@ var PropertiesManager = /* @__PURE__ */ function() {
     value: function equals(other) {
       var thisProps = Object.entries(this.storedValues);
       var otherProps = new Map(Object.entries(other.storedValues));
-      if (thisProps.length !== otherProps.size)
-        return false;
+      if (thisProps.length !== otherProps.size) return false;
       for (var _i5 = 0, _thisProps = thisProps; _i5 < _thisProps.length; _i5++) {
         var _thisProps$_i = _slicedToArray(_thisProps[_i5], 2), propertyName = _thisProps$_i[0], propertyValue = _thisProps$_i[1];
-        if (otherProps.get(propertyName) === propertyValue)
-          return false;
+        if (otherProps.get(propertyName) === propertyValue) return false;
       }
       return true;
     }
@@ -524,76 +486,58 @@ var PropertiesManager = /* @__PURE__ */ function() {
       for (var _len3 = arguments.length, mergees = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
         mergees[_key3] = arguments[_key3];
       }
-      if (mergees.length === 0)
-        return new PropertiesManager2();
+      if (mergees.length === 0) return new PropertiesManager2();
       return mergees.reduce(function(a, b) {
         return a.merge(b);
       });
     }
   }]);
-  return PropertiesManager2;
 }();
 _defineProperty(PropertiesManager, "EMPTY_PREFERENCE", Symbol("empty preference"));
 
 // src/relay_garbo.ts
-function _createForOfIteratorHelper(o, allowArrayLike) {
-  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-  if (!it) {
-    if (Array.isArray(o) || (it = _unsupportedIterableToArray2(o)) || allowArrayLike && o && typeof o.length === "number") {
-      if (it)
-        o = it;
-      var i = 0;
-      var F = function F2() {
+function _createForOfIteratorHelper(r, e) {
+  var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+  if (!t) {
+    if (Array.isArray(r) || (t = _unsupportedIterableToArray2(r)) || e && r && "number" == typeof r.length) {
+      t && (r = t);
+      var _n = 0, F = function F2() {
       };
       return { s: F, n: function n() {
-        if (i >= o.length)
-          return { done: true };
-        return { done: false, value: o[i++] };
-      }, e: function e(_e) {
-        throw _e;
+        return _n >= r.length ? { done: true } : { done: false, value: r[_n++] };
+      }, e: function e2(r2) {
+        throw r2;
       }, f: F };
     }
     throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
-  var normalCompletion = true, didErr = false, err;
+  var o, a = true, u = false;
   return { s: function s() {
-    it = it.call(o);
+    t = t.call(r);
   }, n: function n() {
-    var step = it.next();
-    normalCompletion = step.done;
-    return step;
-  }, e: function e(_e2) {
-    didErr = true;
-    err = _e2;
+    var r2 = t.next();
+    return a = r2.done, r2;
+  }, e: function e2(r2) {
+    u = true, o = r2;
   }, f: function f() {
     try {
-      if (!normalCompletion && it.return != null)
-        it.return();
+      a || null == t.return || t.return();
     } finally {
-      if (didErr)
-        throw err;
+      if (u) throw o;
     }
   } };
 }
-function _unsupportedIterableToArray2(o, minLen) {
-  if (!o)
-    return;
-  if (typeof o === "string")
-    return _arrayLikeToArray2(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor)
-    n = o.constructor.name;
-  if (n === "Map" || n === "Set")
-    return Array.from(o);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
-    return _arrayLikeToArray2(o, minLen);
+function _unsupportedIterableToArray2(r, a) {
+  if (r) {
+    if ("string" == typeof r) return _arrayLikeToArray2(r, a);
+    var t = {}.toString.call(r).slice(8, -1);
+    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray2(r, a) : void 0;
+  }
 }
-function _arrayLikeToArray2(arr, len) {
-  if (len == null || len > arr.length)
-    len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++)
-    arr2[i] = arr[i];
-  return arr2;
+function _arrayLikeToArray2(r, a) {
+  (null == a || a > r.length) && (a = r.length);
+  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+  return n;
 }
 var charMap = /* @__PURE__ */ new Map([["<", "\\u003C"], [">", "\\u003E"], ["/", "\\u002F"], ["\\", "\\\\"], ["\b", "\\b"], ["\f", "\\f"], ["\n", "\\n"], ["\r", "\\r"], ["	", "\\t"], ["\0", "\\0"], ["\u2028", "\\u2028"], ["\u2029", "\\u2029"]]);
 function escapeUnsafeChars(str) {
@@ -606,13 +550,10 @@ function main() {
   var updatedSettings = [];
   var fields = (0, import_kolmafia2.formFields)();
   Object.keys(fields).forEach(function(field) {
-    if (field.includes("_didchange"))
-      return;
-    if (field === "relay")
-      return;
+    if (field.includes("_didchange")) return;
+    if (field === "relay") return;
     var oldSetting = (0, import_kolmafia2.formField)("".concat(field, "_didchange"));
-    if (oldSetting === fields[field] && get(field) !== fields[field])
-      return;
+    if (oldSetting === fields[field] && get(field) !== fields[field]) return;
     if (get(field).toString() !== fields[field]) {
       updatedSettings.push({
         name: field,
