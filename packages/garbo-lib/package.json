@@ -9,7 +9,6 @@
     "build": "tsc",
     "format": "eslint src --fix && prettier --write .",
     "lint": "eslint src && prettier --check .",
-    "madge": "madge --circular . ./src/index.ts",
     "pre-commit": "lint-staged",
     "prepublishOnly": "yarn run build"
   },
@@ -31,7 +30,6 @@
     "kolmafia": "^5.28021.0",
     "libram": "^0.9.4",
     "lint-staged": "^15.2.9",
-    "madge": "^8.0.0",
     "prettier": "^3.3.3",
     "typescript": "^5.5.4"
   }

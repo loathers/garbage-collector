@@ -10,7 +10,6 @@
     "format": "yarn run prettier --write .github && yarn workspaces foreach -pv run format",
     "lint": " yarn workspaces foreach -pv run lint",
     "pre-commit": "yarn workspaces foreach -v run pre-commit",
-    "madge": "yarn workspaces foreach -v run madge",
     "prepare": "husky"
   },
   "devDependencies": {

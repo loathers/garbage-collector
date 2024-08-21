@@ -8,7 +8,6 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "prettier --check .",
-    "madge": "madge --circular . ./index.js",
     "build": "echo \"Nothing to do\"",
     "pre-commit": "lint-staged"
   },
@@ -32,7 +31,6 @@
     "@types/eslint__js": "^8.42.3",
     "eslint": "^9.9.0",
     "lint-staged": "^15.2.9",
-    "madge": "^8.0.0",
     "prettier": "^3.3.3",
     "typescript": "^5.5.4"
   }
