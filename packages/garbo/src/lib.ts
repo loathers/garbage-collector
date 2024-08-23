@@ -164,6 +164,19 @@ export const baseMeat = () => 250 + songboomMeat();
 export const targetMeat = () =>
   (globalOptions.target.minMeat + globalOptions.target.maxMeat) / 2 +
   songboomMeat();
+export const basePointerRingMeat = () => 500;
+export const targetPointerRingMeat = () => {
+  if (globalOptions.target.attributes.includes("FREE")) return 0;
+  const meat = targetMeat();
+  if (meat >= 500) {
+    return 700;
+  } else if (meat >= 100) {
+    return 500;
+  } else if (meat >= 1) {
+    return 300;
+  }
+  return 50;
+};
 
 export const targetMeatDifferential = () => {
   const baseMeatVal = baseMeat();

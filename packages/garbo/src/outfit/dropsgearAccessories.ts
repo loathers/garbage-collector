@@ -14,6 +14,7 @@ import {
 } from "libram";
 import {
   baseMeat,
+  basePointerRingMeat,
   BonusEquipMode,
   felizValue,
   maxPassiveDamage,
@@ -175,7 +176,10 @@ export function usingThumbRing(): boolean {
         have($item`left bear arm`) ||
         have($skill`Head in the Game`))
     ) {
-      accessoryValues.set($item`mafia pointer finger ring`, 500);
+      accessoryValues.set(
+        $item`mafia pointer finger ring`,
+        basePointerRingMeat(),
+      );
     }
     const bestAccessories = [...accessoryValues.entries()]
       .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)

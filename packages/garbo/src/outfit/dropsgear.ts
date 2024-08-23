@@ -38,6 +38,7 @@ import {
   juneCleaverChoiceValues,
   modeUseLimitedDrops,
   modeValueOfMeat,
+  targetPointerRingMeat,
   valueJuneCleaverOption,
 } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -264,6 +265,23 @@ function bindlestocking(mode: BonusEquipMode): Map<Item, number> {
   return new Map<Item, number>([[$item`bindlestocking`, value]]);
 }
 
+function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
+  const canCrit =
+    (have($skill`Furious Wallop`) && myFury() > 0) ||
+    have($skill`Head in the Game`);
+  if (
+    !have($item`mafia pointer finger ring`) ||
+    mode !== BonusEquipMode.EMBEZZLER ||
+    !canCrit ||
+    globalOptions.target.attributes.includes("FREE")
+  ) {
+    return new Map<Item, number>();
+  }
+  return new Map<Item, number>([
+    [$item`mafia pointer finger ring`, targetPointerRingMeat()],
+  ]);
+}
+
 export function bonusGear(
   mode: BonusEquipMode,
   valueCircumstantialBonus = true,
@@ -277,6 +295,7 @@ export function bonusGear(
     ...powerGlove(),
     ...sneegleebs(),
     ...bindlestocking(mode),
+    ...simpleTargetCrits(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...pantsgiving(mode),
