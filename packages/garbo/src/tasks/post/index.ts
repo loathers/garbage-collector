@@ -58,11 +58,21 @@ import { hotTubAvailable } from "../../resources/clanVIP";
 import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
+const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
+
 function closetStuff(): GarboPostTask {
   return {
     name: "Closet Stuff",
     completed: () => STUFF_TO_CLOSET.every((i) => itemAmount(i) === 0),
     do: () => STUFF_TO_CLOSET.forEach((i) => putCloset(itemAmount(i), i)),
+  };
+}
+
+function useStuff(): GarboPostTask {
+  return {
+    name: "Use Stuff",
+    completed: () => STUFF_TO_USE.every((i) => itemAmount(i) === 0),
+    do: () => STUFF_TO_USE.forEach((i) => use(itemAmount(i), i)),
   };
 }
 
@@ -338,6 +348,7 @@ export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
       handleDrenchedInLava(),
       fallbot(),
       closetStuff(),
+      useStuff(),
       floristFriars(),
       numberology(),
       juneCleaver(),
