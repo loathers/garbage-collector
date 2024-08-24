@@ -27261,7 +27261,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("da8d0f8b7a23e569672c932c3577168aaff40ad8", ")"));
+      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("75c6f3798ff57187d5dcb5f50854d7b6e834b779", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -34487,7 +34487,7 @@ function valueSymbol(symbol) {
   return MAYAM_RING_VALUES[symbol]();
 }
 function valueResonance(combination) {
-  var result = MayamCalendar_exports.getResonanceResult.apply(MayamCalendar_exports, _toConsumableArray49(combination));
+  var result = MayamCalendar_exports.getResonanceResult(combination);
   if (!result) return 0;
   if (result instanceof import_kolmafia110.Item) {
     if (result === $item(_templateObject796 || (_templateObject796 = _taggedTemplateLiteral100(["yamtility belt"])))) return 0;
@@ -34499,13 +34499,11 @@ function valueResonance(combination) {
   }).gross(copyTargetCount());
 }
 function valueCombination(combination) {
-  return sum(combination, valueSymbol) + valueResonance(combination);
+  return sum(MayamCalendar_exports.toCombination([combination]), valueSymbol) + valueResonance(combination);
 }
 function getAvailableResonances(forbiddenSymbols) {
-  return MayamCalendar_exports.RESONANCE_KEYS.map(function(combination) {
-    return MayamCalendar_exports.toCombination([combination]);
-  }).filter(function(combination) {
-    return !combination.some(function(sym) {
+  return MayamCalendar_exports.RESONANCE_KEYS.filter(function(combination) {
+    return !MayamCalendar_exports.toCombination([combination]).some(function(sym) {
       return forbiddenSymbols.includes(sym);
     });
   });
@@ -34516,11 +34514,19 @@ function getBestAvailableSymbolFromRing(ring, forbiddenSymbols) {
   }), valueSymbol);
 }
 function getBestGreedyCombination(forbiddenSymbols) {
-  return [getBestAvailableSymbolFromRing(0, forbiddenSymbols), getBestAvailableSymbolFromRing(1, forbiddenSymbols), getBestAvailableSymbolFromRing(2, forbiddenSymbols), getBestAvailableSymbolFromRing(3, forbiddenSymbols)];
+  return MayamCalendar_exports.toCombinationString([getBestAvailableSymbolFromRing(0, forbiddenSymbols), getBestAvailableSymbolFromRing(1, forbiddenSymbols), getBestAvailableSymbolFromRing(2, forbiddenSymbols), getBestAvailableSymbolFromRing(3, forbiddenSymbols)]);
 }
 function expandCombinationGroup(group) {
-  var forbiddenSymbols = [].concat(_toConsumableArray49(flat(group)), _toConsumableArray49(MayamCalendar_exports.symbolsUsed()));
-  return [].concat(_toConsumableArray49(getAvailableResonances(forbiddenSymbols).map(function(resonance) {
+  var forbiddenSymbols = [].concat(_toConsumableArray49(flat(group.map(function(combinationString) {
+    return MayamCalendar_exports.toCombination([combinationString]);
+  }))), _toConsumableArray49(MayamCalendar_exports.symbolsUsed()));
+  return [].concat(_toConsumableArray49(getAvailableResonances(forbiddenSymbols).filter(function(resonance) {
+    var RESONANCE_KEYS_ANONYMIZED = MayamCalendar_exports.RESONANCE_KEYS;
+    var rightmostIndex = Math.max.apply(Math, _toConsumableArray49(group.map(function(combination) {
+      return RESONANCE_KEYS_ANONYMIZED.indexOf(combination);
+    })));
+    return RESONANCE_KEYS_ANONYMIZED.indexOf(resonance) > rightmostIndex;
+  }).map(function(resonance) {
     return [].concat(_toConsumableArray49(group), [resonance]);
   })), [[].concat(_toConsumableArray49(group), [getBestGreedyCombination(forbiddenSymbols)])]);
 }
@@ -34565,7 +34571,7 @@ var mayamCalendarSummon = {
           var bestFamiliar = maxBy(getExperienceFamiliars("free"), "expectedValue").familiar;
           (0, import_kolmafia110.useFamiliar)(bestFamiliar);
         }
-        MayamCalendar_exports.submit.apply(MayamCalendar_exports, _toConsumableArray49(combination));
+        MayamCalendar_exports.submit(combination);
       }
     } catch (err) {
       _iterator2.e(err);
