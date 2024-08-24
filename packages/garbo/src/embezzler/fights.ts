@@ -939,7 +939,29 @@ function copyTargetConfirmInvocation(msg: string): boolean {
   return true;
 }
 
+let monsterInEggnet: boolean;
+const mosterIsInEggnet = () =>
+  (monsterInEggnet ??= ChestMimic.getReceivableMonsters().includes(
+    globalOptions.target,
+  ));
 export const emergencyChainStarters = [
+  new CopyTargetFight(
+    "Mimic Egg (from clinic)",
+    () =>
+      monsterInEggnet &&
+      ChestMimic.have() &&
+      mosterIsInEggnet() &&
+      get("_mimicEggsObtained") < 11,
+    () => 0,
+    (options: RunOptions) => {
+      ChestMimic.receive(globalOptions.target);
+      withMacro(
+        options.macro,
+        () => ChestMimic.differentiate(globalOptions.target),
+        options.useAuto,
+      );
+    },
+  ),
   // These are very deliberately the last copy target fights.
   new CopyTargetFight(
     "11-leaf clover (untapped potential)",
