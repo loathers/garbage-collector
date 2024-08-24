@@ -30,7 +30,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
+import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
 import { targetMeat } from "../lib";
 import { digitizedMonstersRemaining } from "../turns";
@@ -92,12 +92,12 @@ const UPC = $item`scratch 'n' sniff UPC sticker`;
 export function useUPCsIfNeeded({ familiar }: Outfit): void {
   const currentWeapon =
     25 * (familiar ? findLeprechaunMultiplier(familiar) : 0);
-  const embezzlers = globalOptions.ascend
+  const targets = globalOptions.ascend
     ? Math.min(20, copyTargetCount() || digitizedMonstersRemaining())
     : 20;
 
   const addedValueOfFullSword =
-    (embezzlers * ((75 - currentWeapon) * targetMeat())) / 100;
+    (targets * ((75 - currentWeapon) * targetMeat())) / 100;
   if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
     const needed =
       3 -

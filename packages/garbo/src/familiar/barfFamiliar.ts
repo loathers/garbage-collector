@@ -29,8 +29,8 @@ import { bonusGear } from "../outfit";
 import {
   baseMeat,
   BonusEquipMode,
-  EMBEZZLER_MULTIPLIER,
   HIGHLIGHT,
+  MEAT_TARGET_MULTIPLIER,
 } from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
@@ -63,7 +63,7 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
     $familiar`Chest Mimic`,
     {
       extraValue: ({ famexp }) =>
-        (famexp * EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50,
+        (famexp * MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
     },
   ],
   [$familiar`Jill-of-All-Trades`, { equip: $item`LED candle` }],
@@ -95,7 +95,7 @@ function getCachedOutfitValues(fam: Familiar) {
     ).dress();
 
     const outfit = outfitSlots.map((slot) => equippedItem(slot));
-    const bonuses = bonusGear(BonusEquipMode.EMBEZZLER, false);
+    const bonuses = bonusGear(BonusEquipMode.MEAT_TARGET, false);
 
     const values = {
       weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),

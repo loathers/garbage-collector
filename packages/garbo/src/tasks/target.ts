@@ -2,12 +2,12 @@ import { Quest } from "grimoire-kolmafia";
 import { $item, $items, $location, CrystalBall, get, set } from "libram";
 import { GarboTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
-import { getChangeLastAdvLocationMethod } from "../embezzler/lib";
+import { getChangeLastAdvLocationMethod } from "../target/lib";
 import { doingGregFight } from "../resources";
 import { freeFightOutfit } from "../outfit";
 
-export const SetupEmbezzlerQuest: Quest<GarboTask> = {
-  name: "SetupEmbezzler",
+export const SetupTargetCopyQuest: Quest<GarboTask> = {
+  name: "SetupTargetCopy",
   tasks: [
     {
       // Need the daily dungeon to either be totally finished or to be on a NC we can walk away from

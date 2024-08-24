@@ -3,4 +3,4 @@ export {
   copyTargetCount,
   copyTargetSources,
 } from "./fights";
-export { EmbezzlerFightRunOptions } from "./staging";
+export { TargetFightRunOptions } from "./staging";

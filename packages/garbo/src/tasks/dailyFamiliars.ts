@@ -24,7 +24,7 @@ import {
 } from "libram";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
+import { copyTargetCount } from "../target";
 import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,
@@ -42,24 +42,23 @@ import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
 
 function drivebyValue(): number {
-  const embezzlers = copyTargetCount();
+  const targets = copyTargetCount();
   const tourists =
-    ((estimatedGarboTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
   const meatPercentDelta =
     Math.sqrt(220 * 2 * marginalRoboWeight) -
     Math.sqrt(220 * 2 * marginalRoboWeight) +
     2 * marginalRoboWeight;
   return (
-    (meatPercentDelta / 100) *
-    (targetMeat() * embezzlers + baseMeat() * tourists)
+    (meatPercentDelta / 100) * (targetMeat() * targets + baseMeat() * tourists)
   );
 }
 
 function entendreValue(): number {
-  const embezzlers = copyTargetCount();
+  const targets = copyTargetCount();
   const tourists =
-    ((estimatedGarboTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
   const itemPercent =
     Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;
@@ -67,7 +66,7 @@ function entendreValue(): number {
   const meatStackDropRate = 0.3 * 4; // 4 stacks each with a 30% drop chance
   return (
     (itemPercent / 100) *
-    (meatStackDropRate * embezzlers +
+    (meatStackDropRate * targets +
       garbageBagsDropRate * tourists * garbageTouristRatio)
   );
 }

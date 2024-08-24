@@ -13,7 +13,7 @@ import {
   Tuple,
 } from "libram";
 import { garboValue } from "../garboValue";
-import { copyTargetCount } from "../embezzler";
+import { copyTargetCount } from "../target";
 import { Potion } from "../potions";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { felizValue } from "../lib";

@@ -126,7 +126,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     }),
     nobarf: Args.flag({
       setting: "",
-      help: "do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
+      help: "do beginning of the day setup, copy target monster, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
       default: false,
     }),
     nodiet: Args.flag({
@@ -219,9 +219,9 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           default: false,
           hidden: true,
         }),
-        embezzlerMultiplier: Args.number({
-          setting: "garbo_embezzlerMultiplier",
-          help: "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit. (Default 1.5)",
+        meatTargetMultiplier: Args.number({
+          setting: "garbo_meatTargetMultiplier",
+          help: "The amount we multiply our valueOfAdventure by when estimating marginal meat target profit. (Default 1.5)",
           default: 1.5,
         }),
         stashClan: Args.string({
@@ -250,9 +250,9 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_autoUserConfirm",
           help: "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive.",
         }),
-        autoUserConfirm_embezzlerInvocationsThreshold: Args.number({
-          setting: "garbo_autoUserConfirm_embezzlerInvocationsThreshold",
-          help: "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source an embezzler for chaining before requesting user interference.",
+        autoUserConfirm_targetInvocationsThreshold: Args.number({
+          setting: "garbo_autoUserConfirm_targetInvocationsThreshold",
+          help: "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source a target monster for chaining before requesting user interference.",
           default: 1,
         }),
         restoreHpTarget: Args.number({

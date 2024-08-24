@@ -21,7 +21,7 @@ import {
   have,
 } from "libram";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
+import { copyTargetCount } from "../target";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { getBestLuckyAdventure } from "../lib";
 import { Potion } from "../potions";

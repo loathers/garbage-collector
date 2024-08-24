@@ -78,7 +78,7 @@ import { globalOptions } from "../config";
 
 import {
   changeLastAdvLocationTask,
-  EmbezzlerFightConfigOptions as CopyTargetFightConfigOptions,
+  TargetFightConfigOptions as CopyTargetFightConfigOptions,
   RunOptions,
 } from "./lib";
 
@@ -99,11 +99,11 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
    * @classdesc Copy Target Fight enc
    * @prop {string} name The name of the source of this fight, primarily used to identify special cases.
    * @prop {() => boolean} available Returns whether or not we can do this fight right now (this may change later in the day).
-   * @prop {() => number} potential Returns the number of embezzlers we expect to be able to fight from this source given the current state of hte character
+   * @prop {() => number} potential Returns the number of targets we expect to be able to fight from this source given the current state of hte character
    *  This is used when computing turns for buffs, so it should be as accurate as possible to the number of KGE we will fight
    * @prop {(options: RunOptions) => void} execute This runs the combat, optionally using the provided location and macro. Location is used only by draggable fights.
    *  This is the meat of each fight. How do you initialize the fight? Are there any special considerations?
-   * @prop {EmbezzlerFightConfigOptions} options configuration options for this fight. see EmbezzlerFightConfigOptions for full details of all available options
+   * @prop {TargetFightConfigOptions} options configuration options for this fight. see TargetFightConfigOptions for full details of all available options
    * @example
    * // suppose that we wanted to add a fight that will use print screens repeatedly, as long as we have them in our inventory
    * new CopyTargetFight(
@@ -248,7 +248,7 @@ export const chainStarters = [
   new CopyTargetFight(
     "Saxophone semirare",
     () =>
-      getBestLuckyAdventure().phase === "embezzler" &&
+      getBestLuckyAdventure().phase === "target" &&
       getBestLuckyAdventure().value() > 0 &&
       canAdventure($location`Cobb's Knob Treasury`) &&
       AprilingBandHelmet.canPlay($item`Apriling band saxophone`) &&
@@ -692,7 +692,7 @@ export const gregLikeFights = [
 ];
 
 /**
- * Determines whether we want to do this particular Embezzler fight; if we aren't using orb, should always return true. If we're using orb and it's a crate, we'll have to see!
+ * Determines whether we want to do this particular Target fight; if we aren't using orb, should always return true. If we're using orb and it's a crate, we'll have to see!
  * @returns
  */
 function proceedWithOrb(): boolean {
@@ -923,19 +923,16 @@ function copyTargetConfirmInvocation(msg: string): boolean {
     return userConfirm(msg);
   }
 
-  const invocatedCount = get(
-    "_garbo_autoUserConfirm_embezzlerInvocatedCount",
-    0,
-  );
+  const invocatedCount = get("_garbo_autoUserConfirm_targetInvocatedCount", 0);
 
   if (
     invocatedCount >=
-    globalOptions.prefs.autoUserConfirm_embezzlerInvocationsThreshold
+    globalOptions.prefs.autoUserConfirm_targetInvocationsThreshold
   ) {
     return false;
   }
 
-  set("_garbo_autoUserConfirm_embezzlerInvocatedCount", invocatedCount + 1);
+  set("_garbo_autoUserConfirm_targetInvocatedCount", invocatedCount + 1);
   return true;
 }
 

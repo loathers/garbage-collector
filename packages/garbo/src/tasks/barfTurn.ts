@@ -54,18 +54,18 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions, targettingMeat } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
-  EMBEZZLER_MULTIPLIER,
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
+  MEAT_TARGET_MULTIPLIER,
   romanticMonsterImpossible,
   sober,
 } from "../lib";
 import {
   barfOutfit,
-  embezzlerOutfit,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
+  meatTargetOutfit,
   waterBreathingEquipment,
 } from "../outfit";
 import { digitizedMonstersRemaining } from "../turns";
@@ -89,7 +89,7 @@ import { hotTubAvailable } from "../resources/clanVIP";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
-const digitizedEmbezzler = () =>
+const digitizedTarget = () =>
   SourceTerminal.have() &&
   SourceTerminal.getDigitizeMonster() === globalOptions.target;
 
@@ -153,11 +153,11 @@ function shouldGoUnderwater(): boolean {
   }
   if (!canAdventure($location`The Briny Deeps`)) return false;
 
-  // TODO: if you didn't digitize an embezzler, this equation may not be right
+  // TODO: if you didn't digitize a target, this equation may not be right
   if (
     mallPrice($item`pulled green taffy`) >
     (targettingMeat()
-      ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
+      ? MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")
       : get("valueOfAdventure"))
   ) {
     return false;
@@ -355,7 +355,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
       }
       ChestMimic.differentiate(globalOptions.target);
     },
-    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
+    outfit: () => meatTargetOutfit({ familiar: $familiar`Chest Mimic` }),
     combat: new GarboStrategy(() => Macro.meatKill()),
     turns: () =>
       globalOptions.ascend
@@ -528,7 +528,7 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => totalTurnsPlayed() === get("lastLightsOutTurn"),
     do: () => get("nextSpookyravenStephenRoom") as Location,
     outfit: () =>
-      embezzlerOutfit(sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+      meatTargetOutfit(sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
     spendsTurn: isSteve,
     combat: new GarboStrategy(() =>
       Macro.if_(
@@ -595,7 +595,7 @@ const BarfTurnTasks: GarboTask[] = [
     ready: shouldGoUnderwater,
     acquire: () => [{ item: $item`pulled green taffy` }],
     do: $location`The Briny Deeps`,
-    outfit: () => embezzlerOutfit({}, $location`The Briny Deeps`),
+    outfit: () => meatTargetOutfit({}, $location`The Briny Deeps`),
     combat: new GarboStrategy(
       () => Macro.item($item`pulled green taffy`).meatKill(),
       () =>
@@ -613,8 +613,8 @@ const BarfTurnTasks: GarboTask[] = [
     name: "Digitize Wanderer",
     completed: () => Counter.get("Digitize Monster") > 0,
     outfit: () =>
-      digitizedEmbezzler()
-        ? embezzlerOutfit(
+      digitizedTarget()
+        ? meatTargetOutfit(
             get("_mimicEggsObtained") < 11 &&
               $familiar`Chest Mimic`.experience >
                 (digitizedMonstersRemaining() === 1
@@ -679,8 +679,8 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => get("_envyfishEggUsed"),
     do: () => use($item`envyfish egg`),
     spendsTurn: true,
-    outfit: embezzlerOutfit,
-    combat: new GarboStrategy(() => Macro.embezzler("envyfish egg")),
+    outfit: meatTargetOutfit,
+    combat: new GarboStrategy(() => Macro.target("envyfish egg")),
   },
   wanderTask(
     "yellow ray",
@@ -833,7 +833,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
-    outfit: () => embezzlerOutfit(),
+    outfit: () => meatTargetOutfit(),
   },
   {
     name: "Make Mimic Eggs (maximum eggs)",
@@ -847,7 +847,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
-    outfit: () => embezzlerOutfit({ familiar: $familiar`Chest Mimic` }),
+    outfit: () => meatTargetOutfit({ familiar: $familiar`Chest Mimic` }),
   },
   {
     name: "Fight Mimic Eggs",
@@ -855,7 +855,7 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () =>
       ChestMimic.differentiableQuantity(globalOptions.target) === 0,
     do: () => ChestMimic.differentiate(globalOptions.target),
-    outfit: () => embezzlerOutfit(),
+    outfit: () => meatTargetOutfit(),
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
   },

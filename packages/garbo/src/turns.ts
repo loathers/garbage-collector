@@ -10,7 +10,7 @@ import { $familiar, $item, clamp, get, have } from "libram";
 import { globalOptions } from "./config";
 // Dumb circular import stuff
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
-import { copyTargetCount } from "./embezzler";
+import { copyTargetCount } from "./target";
 import {
   digitizedMonstersRemainingForTurns,
   ESTIMATED_OVERDRUNK_TURNS,

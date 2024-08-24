@@ -1,11 +1,11 @@
 import { CopyTargetFight } from "./fights";
 import { RunOptions } from "./lib";
-import { EmbezzlerFightRunOptions } from "./staging";
+import { TargetFightRunOptions } from "./staging";
 
-export function runEmbezzlerFight(
+export function runTargetFight(
   fight: CopyTargetFight,
   options: Partial<RunOptions> = {},
 ): void {
-  const fullOptions = new EmbezzlerFightRunOptions(fight, options);
+  const fullOptions = new TargetFightRunOptions(fight, options);
   fight.run(fullOptions);
 }

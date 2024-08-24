@@ -1,11 +1,7 @@
 import { haveEquipped, Location, mallPrice, retrieveItem } from "kolmafia";
 import { $item, $location, $skill, get } from "libram";
-import { EMBEZZLER_MULTIPLIER, propertyManager } from "../lib";
-import {
-  checkUnderwater,
-  EmbezzlerFightConfigOptions,
-  RunOptions,
-} from "./lib";
+import { MEAT_TARGET_MULTIPLIER, propertyManager } from "../lib";
+import { checkUnderwater, RunOptions, TargetFightConfigOptions } from "./lib";
 import { Macro } from "../combat";
 import { wanderer } from "../garboWanderer";
 import { globalOptions, targettingMeat } from "../config";
@@ -13,7 +9,7 @@ import { globalOptions, targettingMeat } from "../config";
 const taffyIsWorthIt = () =>
   mallPrice($item`pulled green taffy`) <
     (targettingMeat()
-      ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
+      ? MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")
       : get("valueOfAdventure")) && retrieveItem($item`pulled green taffy`);
 
 const wandererFailsafeMacro = () =>
@@ -27,14 +23,14 @@ const wandererFailsafeMacro = () =>
     ),
   );
 
-export class EmbezzlerFightRunOptions implements RunOptions {
-  configOptions: EmbezzlerFightConfigOptions;
+export class TargetFightRunOptions implements RunOptions {
+  configOptions: TargetFightConfigOptions;
   #macro?: Macro;
   #location?: Location;
   #useAuto?: boolean;
   #action?: string;
   constructor(
-    configOptions: EmbezzlerFightConfigOptions,
+    configOptions: TargetFightConfigOptions,
     { macro, location, useAuto, action }: Partial<RunOptions> = {},
   ) {
     this.configOptions = configOptions;
@@ -73,7 +69,7 @@ export class EmbezzlerFightRunOptions implements RunOptions {
   }
 
   get macro(): Macro {
-    const baseMacro = this.#macro ?? Macro.embezzler(this.action);
+    const baseMacro = this.#macro ?? Macro.target(this.action);
     return this.configOptions.draggable === "wanderer"
       ? wandererFailsafeMacro().step(baseMacro)
       : baseMacro;

@@ -62,7 +62,7 @@ function luckyGoldRing(mode: BonusEquipMode) {
   }
 
   const dropValues = luckyGoldRingDropValues(
-    !(mode === BonusEquipMode.EMBEZZLER && !globalOptions.nobarf), // Volcoino drops once per day, only wear during embezzlers if nobarf
+    !(mode === BonusEquipMode.MEAT_TARGET && !globalOptions.nobarf), // Volcoino drops once per day, only wear during meat targets if nobarf
     itemAmount($item`Freddy Kruegerand`) > 0,
   );
 
@@ -97,7 +97,7 @@ function cinchoDeMayo(mode: BonusEquipMode) {
     CinchoDeMayo.currentCinch() === 0 ||
     // Ignore for DMT? Requires specific combat stuff, so probably weird there
     mode === BonusEquipMode.DMT ||
-    mode === BonusEquipMode.EMBEZZLER ||
+    mode === BonusEquipMode.MEAT_TARGET ||
     // Require manuel to make sure we don't kill during stasis
     !monsterManuelAvailable() ||
     // Don't use Cincho if we're planning on doing yachtzees, and haven't completed them yet

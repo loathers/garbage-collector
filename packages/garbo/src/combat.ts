@@ -751,7 +751,7 @@ export class Macro extends StrictMacro {
     return new Macro().tryEgg();
   }
 
-  embezzler(action: string): Macro {
+  target(action: string): Macro {
     const doneHabitat =
       !have($skill`Just the Facts`) ||
       (get("_monsterHabitatsRecalled") === 3 &&
@@ -814,8 +814,8 @@ export class Macro extends StrictMacro {
     );
   }
 
-  static embezzler(action: string): Macro {
-    return new Macro().embezzler(action);
+  static target(action: string): Macro {
+    return new Macro().target(action);
   }
 }
 
