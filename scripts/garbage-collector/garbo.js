@@ -29054,24 +29054,20 @@ function checkGithubVersion() {
   if (false) {
     (0, import_kolmafia83.print)("Skipping version check for custom build");
   } else if (true) {
+    var _gitBranches$find;
     var localSHA = (0, import_kolmafia83.gitInfo)("loathers-garbage-collector-release").commit || (0, import_kolmafia83.gitInfo)("Loathing-Associates-Scripting-Society-garbage-collector-release").commit;
-    var gitData = (0, import_kolmafia83.visitUrl)("https://api.github.com/repos/".concat("loathers/garbage-collector", "/branches"));
-    if (!gitData) (0, import_kolmafia83.print)("Failed to reach github!");
-    else {
-      var _gitBranches$find;
-      var gitBranches = JSON.parse(gitData);
-      var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
-        return branchInfo.name === "release";
-      })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("035e584a8bb057fd2509c55961ef18c15585f83b", ")"));
-      if (releaseSHA === localSHA) {
-        (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
-      } else if (releaseSHA === void 0) {
-        (0, import_kolmafia83.print)("Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?", HIGHLIGHT);
-      } else {
-        (0, import_kolmafia83.print)("Release Version: ".concat(releaseSHA));
-        (0, import_kolmafia83.print)("Garbo is out of date. Please run 'git update'!", "red");
-      }
+    var gitBranches = JSON.parse((0, import_kolmafia83.visitUrl)("https://api.github.com/repos/".concat("loathers/garbage-collector", "/branches")));
+    var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
+      return branchInfo.name === "release";
+    })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
+    (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("75bd5fa7a36432d55e49269883833b0edb818972", ")"));
+    if (releaseSHA === localSHA) {
+      (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
+    } else if (releaseSHA === void 0) {
+      (0, import_kolmafia83.print)("Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?", HIGHLIGHT);
+    } else {
+      (0, import_kolmafia83.print)("Release Version: ".concat(releaseSHA));
+      (0, import_kolmafia83.print)("Garbo is out of date. Please run 'git update'!", "red");
     }
   } else {
     (0, import_kolmafia83.print)("Garbo was built from an unknown repository, unable to check for update.", HIGHLIGHT);
