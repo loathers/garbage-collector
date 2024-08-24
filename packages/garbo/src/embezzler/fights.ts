@@ -131,7 +131,7 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
         : garboAdventure;
       adventureFunction(options.location, options.macro, options.macro);
     },
-    options: CopyTargetFightConfigOptions = {},
+    options: CopyTargetFightConfigOptions = {}
   ) {
     this.name = name;
     this.available = available;
@@ -150,7 +150,7 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
   run(options: RunOptions): void {
     if (!this.available() || !myAdventures()) return;
     print(
-      `Now running ${globalOptions.target} fight: ${this.name}. Stay tuned for details.`,
+      `Now running ${globalOptions.target} fight: ${this.name}. Stay tuned for details.`
     );
     this.execute(options);
   }
@@ -173,19 +173,19 @@ export const chainStarters = [
       withMacro(
         options.macro,
         () => ChateauMantegna.fightPainting(),
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Combat Lover's Locket",
     () =>
       CombatLoversLocket.availableLocketMonsters().includes(
-        globalOptions.target,
+        globalOptions.target
       ),
     () =>
       CombatLoversLocket.availableLocketMonsters().includes(
-        globalOptions.target,
+        globalOptions.target
       )
         ? 1
         : 0,
@@ -193,9 +193,9 @@ export const chainStarters = [
       withMacro(
         options.macro,
         () => CombatLoversLocket.reminisce(globalOptions.target),
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Fax",
@@ -217,9 +217,9 @@ export const chainStarters = [
       withMacro(
         options.macro,
         () => use($item`photocopied monster`),
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Scepter Semirare",
@@ -241,9 +241,9 @@ export const chainStarters = [
       adventureFunction(
         $location`Cobb's Knob Treasury`,
         options.macro,
-        options.macro,
+        options.macro
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Saxophone semirare",
@@ -263,9 +263,9 @@ export const chainStarters = [
       adventureFunction(
         $location`Cobb's Knob Treasury`,
         options.macro,
-        options.macro,
+        options.macro
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Pillkeeper Semirare",
@@ -296,9 +296,9 @@ export const chainStarters = [
       adventureFunction(
         $location`Cobb's Knob Treasury`,
         options.macro,
-        options.macro,
+        options.macro
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Mimic Eggs",
@@ -308,15 +308,15 @@ export const chainStarters = [
       clamp(
         Math.floor($familiar`Chest Mimic`.experience / 50),
         0,
-        11 - get("_mimicEggsObtained"),
+        11 - get("_mimicEggsObtained")
       ),
     (options: RunOptions) => {
       withMacro(
         options.macro,
         () => ChestMimic.differentiate(globalOptions.target),
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Rain Main",
@@ -326,9 +326,9 @@ export const chainStarters = [
       withMacro(
         options.macro,
         () => HeavyRains.rainMan(globalOptions.target),
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
 ];
 
@@ -338,7 +338,7 @@ export const copySources = [
     () =>
       have($item`Time-Spinner`) &&
       $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) => location.combatQueue.includes(globalOptions.target.name),
+        (location) => location.combatQueue.includes(globalOptions.target.name)
       ) &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
@@ -346,7 +346,7 @@ export const copySources = [
       $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
         (location) =>
           location.combatQueue.includes(globalOptions.target.name) ||
-          get("beGregariousCharges") > 0,
+          get("beGregariousCharges") > 0
       )
         ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
@@ -357,13 +357,13 @@ export const copySources = [
           visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
           runChoice(1);
           visitUrl(
-            `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
+            `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`
           );
           runCombat();
         },
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Spooky Putty & Rain-Doh",
@@ -420,9 +420,9 @@ export const copySources = [
           }
           return use($item`Rain-Doh box full of monster`);
         },
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "4-d Camera",
@@ -440,9 +440,9 @@ export const copySources = [
       withMacro(
         options.macro,
         () => use($item`shaking 4-d camera`),
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Ice Sculpture",
@@ -460,9 +460,9 @@ export const copySources = [
       withMacro(
         options.macro,
         () => use($item`ice sculpture`),
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Green Taffy",
@@ -478,7 +478,7 @@ export const copySources = [
         : 0,
     (options: RunOptions) => {
       withMacro(options.macro, () => use($item`envyfish egg`), options.useAuto);
-    },
+    }
   ),
   new CopyTargetFight(
     "Screencapped Monster",
@@ -493,9 +493,9 @@ export const copySources = [
       withMacro(
         options.macro,
         () => use($item`screencapped monster`),
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   new CopyTargetFight(
     "Sticky Clay Homunculus",
@@ -510,8 +510,8 @@ export const copySources = [
       withMacro(
         options.macro,
         () => use($item`sticky clay homunculus`),
-        options.useAuto,
-      ),
+        options.useAuto
+      )
   ),
 ];
 
@@ -531,7 +531,7 @@ export const wanderSources = [
     undefined,
     {
       location: $location`Cobb's Knob Treasury`,
-    },
+    }
   ),
   new CopyTargetFight(
     "Digitize",
@@ -543,7 +543,7 @@ export const wanderSources = [
     undefined,
     {
       draggable: "wanderer",
-    },
+    }
   ),
   new CopyTargetFight(
     "Guaranteed Romantic Monster",
@@ -555,7 +555,7 @@ export const wanderSources = [
     undefined,
     {
       draggable: "wanderer",
-    },
+    }
   ),
   new CopyTargetFight(
     "Enamorang",
@@ -571,7 +571,7 @@ export const wanderSources = [
     undefined,
     {
       draggable: "wanderer",
-    },
+    }
   ),
 ];
 
@@ -588,7 +588,7 @@ const gregFights = (
   haveCheck: () => boolean,
   monsterProp: MonsterProperty,
   fightsProp: NumericProperty,
-  totalCharges: () => number,
+  totalCharges: () => number
 ) => {
   function runGregFight(options: RunOptions) {
     const run = ltbRun();
@@ -603,7 +603,7 @@ const gregFights = (
     adventureFunction(
       $location`The Dire Warren`,
       Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
-      Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
+      Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro)
     );
 
     if (
@@ -611,10 +611,10 @@ const gregFights = (
       bunnyIsBanished
     ) {
       const bunnyBanish = [...getBanishedMonsters().entries()].find(
-        ([, monster]) => monster === $monster`fluffy bunny`,
+        ([, monster]) => monster === $monster`fluffy bunny`
       )?.[0];
       abort(
-        `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${monsterProp} preference is nonzero and should probably be zero.`,
+        `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${monsterProp} preference is nonzero and should probably be zero.`
       );
     }
   }
@@ -636,7 +636,7 @@ const gregFights = (
         // reset the crystal ball prediction by staring longingly at toast
         if (get(fightsProp) === 1 && have($item`miniature crystal ball`)) {
           const warrenPrediction = CrystalBall.ponder().get(
-            $location`The Dire Warren`,
+            $location`The Dire Warren`
           );
           if (warrenPrediction !== globalOptions.target) {
             changeLastAdvLocation();
@@ -645,7 +645,7 @@ const gregFights = (
       },
       {
         canInitializeWandererCounters: true,
-      },
+      }
     ),
     new CopyTargetFight(
       `${name} (Set Up Crystal Ball)`,
@@ -665,7 +665,7 @@ const gregFights = (
           equip: $items`miniature crystal ball`.filter((item) => have(item)),
         },
         canInitializeWandererCounters: true,
-      },
+      }
     ),
   ];
 };
@@ -676,7 +676,7 @@ export const gregLikeFights = [
     () => true, // we can always use extrovermectin
     "beGregariousMonster",
     "beGregariousFightsLeft",
-    () => get("beGregariousCharges") * 3 + get("beGregariousFightsLeft"),
+    () => get("beGregariousCharges") * 3 + get("beGregariousFightsLeft")
   ),
   ...gregFights(
     "Habitats Monster",
@@ -687,7 +687,7 @@ export const gregLikeFights = [
       have($skill`Just the Facts`)
         ? (3 - get("_monsterHabitatsRecalled")) * 5 +
           get("_monsterHabitatsFightsLeft")
-        : 0,
+        : 0
   ),
 ];
 
@@ -712,7 +712,7 @@ function proceedWithOrb(): boolean {
     CrystalBall.ponder().get($location`Noob Cave`) === globalOptions.target &&
     copyTargetSources
       .filter(
-        (source) => !gregFightNames.some((name) => source.name.includes(name)),
+        (source) => !gregFightNames.some((name) => source.name.includes(name))
       )
       .find((source) => source.available())
   ) {
@@ -745,7 +745,7 @@ export const conditionalSources = [
       adventureFunction(
         $location`The Dire Warren`,
         options.macro,
-        options.macro,
+        options.macro
       );
       changeLastAdvLocation();
       if (!doingGregFight()) set("_garbo_doneGregging", true);
@@ -753,7 +753,7 @@ export const conditionalSources = [
     {
       spec: { equip: $items`miniature crystal ball` },
       canInitializeWandererCounters: true,
-    },
+    }
   ),
   new CopyTargetFight(
     "Macrometeorite",
@@ -780,15 +780,15 @@ export const conditionalSources = [
           crateStrategy() !== "Saber" &&
             !have($effect`On the Trail`) &&
             get("_olfactionsUsed") < 2,
-          Macro.tryHaveSkill($skill`Transcendent Olfaction`),
+          Macro.tryHaveSkill($skill`Transcendent Olfaction`)
         )
           .externalIf(
             haveEquipped($item`Fourth of May Cosplay Saber`) &&
               weWantToSaberCrates &&
               get("_saberForceUses") < 5,
-            Macro.trySkill($skill`Use the Force`),
+            Macro.trySkill($skill`Use the Force`)
           )
-          .skill($skill`Macrometeorite`),
+          .skill($skill`Macrometeorite`)
       ).step(options.macro);
       const adventureFunction = options.useAuto
         ? garboAdventureAuto
@@ -802,7 +802,7 @@ export const conditionalSources = [
     },
     {
       gregariousReplace: true,
-    },
+    }
   ),
   new CopyTargetFight(
     "Powerful Glove",
@@ -829,15 +829,15 @@ export const conditionalSources = [
           crateStrategy() !== "Saber" &&
             !have($effect`On the Trail`) &&
             get("_olfactionsUsed") < 2,
-          Macro.tryHaveSkill($skill`Transcendent Olfaction`),
+          Macro.tryHaveSkill($skill`Transcendent Olfaction`)
         )
           .externalIf(
             haveEquipped($item`Fourth of May Cosplay Saber`) &&
               weWantToSaberCrates &&
               get("_saberForceUses") < 5,
-            Macro.trySkill($skill`Use the Force`),
+            Macro.trySkill($skill`Use the Force`)
           )
-          .skill($skill`CHEAT CODE: Replace Enemy`),
+          .skill($skill`CHEAT CODE: Replace Enemy`)
       ).step(options.macro);
       const adventureFunction = options.useAuto
         ? garboAdventureAuto
@@ -852,7 +852,7 @@ export const conditionalSources = [
     {
       spec: { equip: $items`Powerful Glove` },
       gregariousReplace: true,
-    },
+    }
   ),
   ...gregLikeFights,
   new CopyTargetFight(
@@ -870,12 +870,12 @@ export const conditionalSources = [
         options.location,
         Macro.if_(
           `!monsterid ${globalOptions.target.id}`,
-          Macro.skill($skill`Back-Up to your Last Enemy`),
+          Macro.skill($skill`Back-Up to your Last Enemy`)
         ).step(options.macro),
         Macro.if_(
           `!monsterid ${globalOptions.target.id}`,
-          Macro.skill($skill`Back-Up to your Last Enemy`),
-        ).step(options.macro),
+          Macro.skill($skill`Back-Up to your Last Enemy`)
+        ).step(options.macro)
       );
     },
     {
@@ -883,7 +883,7 @@ export const conditionalSources = [
       draggable: "backup",
       wrongEncounterName: true,
       canInitializeWandererCounters: true,
-    },
+    }
   ),
 ];
 
@@ -897,7 +897,7 @@ export const fakeSources = [
         : 0,
     () => {
       return;
-    },
+    }
   ),
   new CopyTargetFight(
     "Professor WeightChain",
@@ -908,7 +908,7 @@ export const fakeSources = [
         : 0,
     () => {
       return;
-    },
+    }
   ),
 ];
 
@@ -925,7 +925,7 @@ function copyTargetConfirmInvocation(msg: string): boolean {
 
   const invocatedCount = get(
     "_garbo_autoUserConfirm_embezzlerInvocatedCount",
-    0,
+    0
   );
 
   if (
@@ -942,7 +942,7 @@ function copyTargetConfirmInvocation(msg: string): boolean {
 let monsterInEggnet: boolean;
 const mosterIsInEggnet = () =>
   (monsterInEggnet ??= ChestMimic.getReceivableMonsters().includes(
-    globalOptions.target,
+    globalOptions.target
   ));
 export const emergencyChainStarters = [
   new CopyTargetFight(
@@ -950,6 +950,7 @@ export const emergencyChainStarters = [
     () =>
       monsterInEggnet &&
       ChestMimic.have() &&
+      $familiar`Chest Mimic`.experience >= 100 &&
       mosterIsInEggnet() &&
       get("_mimicEggsObtained") < 11,
     () => 0,
@@ -958,9 +959,9 @@ export const emergencyChainStarters = [
       withMacro(
         options.macro,
         () => ChestMimic.differentiate(globalOptions.target),
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
   // These are very deliberately the last copy target fights.
   new CopyTargetFight(
@@ -986,7 +987,7 @@ export const emergencyChainStarters = [
       if (profit < 0) return false;
       print(
         `You have the following copy target sources untapped right now:`,
-        HIGHLIGHT,
+        HIGHLIGHT
       );
       copyTargetSources
         .filter((source) => source.potential() > 0)
@@ -998,7 +999,7 @@ export const emergencyChainStarters = [
           globalOptions.target
         }, but no way to start a fight with one. Current net (before potions) is ${averageTargetNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for ${
           globalOptions.target
-        }?`,
+        }?`
       );
       return globalOptions.wishAnswer;
     },
@@ -1006,7 +1007,7 @@ export const emergencyChainStarters = [
     (options: RunOptions) => {
       globalOptions.askedAboutWish = false;
       property.withProperty("autoSatisfyWithCloset", true, () =>
-        retrieveItem($item`11-leaf clover`),
+        retrieveItem($item`11-leaf clover`)
       );
       use($item`11-leaf clover`);
       if (have($effect`Lucky!`)) {
@@ -1016,11 +1017,11 @@ export const emergencyChainStarters = [
         adventureFunction(
           $location`Cobb's Knob Treasury`,
           options.macro,
-          options.macro,
+          options.macro
         );
       }
       globalOptions.askedAboutWish = false;
-    },
+    }
   ),
   new CopyTargetFight(
     "Pocket Wish (untapped potential)",
@@ -1034,7 +1035,7 @@ export const emergencyChainStarters = [
       if (profit < 0) return false;
       print(
         `You have the following copy target sources untapped right now:`,
-        HIGHLIGHT,
+        HIGHLIGHT
       );
       copyTargetSources
         .filter((source) => source.potential() > 0)
@@ -1048,7 +1049,7 @@ export const emergencyChainStarters = [
           globalOptions.target
         } net (before potions) is ${averageTargetNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${
           globalOptions.target
-        }?`,
+        }?`
       );
       return globalOptions.wishAnswer;
     },
@@ -1062,20 +1063,20 @@ export const emergencyChainStarters = [
           visitUrl(
             `inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`,
             false,
-            true,
+            true
           );
           visitUrl(
             `choice.php?pwd&whichchoice=1267&option=1&wish=to fight a ${globalOptions.target} `,
             true,
-            true,
+            true
           );
           visitUrl("main.php", false);
           runCombat();
           globalOptions.askedAboutWish = false;
         },
-        options.useAuto,
+        options.useAuto
       );
-    },
+    }
   ),
 ];
 
@@ -1090,7 +1091,7 @@ export const copyTargetSources = [
 
 export function copyTargetCount(): number {
   return sum(copyTargetSources, (source: CopyTargetFight) =>
-    source.potential(),
+    source.potential()
   );
 }
 
