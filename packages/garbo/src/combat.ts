@@ -60,7 +60,11 @@ import {
 import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
-import { maxPassiveDamage, monsterManuelAvailable } from "./lib";
+import {
+  isStrongScaler,
+  maxPassiveDamage,
+  monsterManuelAvailable,
+} from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
 
 export function shouldRedigitize(): boolean {
@@ -224,7 +228,24 @@ export class Macro extends StrictMacro {
     return new Macro().tryCopier(itemOrSkill);
   }
 
-  meatKill(): Macro {
+  delevel(): Macro {
+    return this.tryHaveSkill($skill`Curse of Weaksauce`)
+      .externalIf(
+        have($skill`Meteor Lore`),
+        Macro.trySkill($skill`Micrometeorite`),
+      )
+      .tryHaveSkill($skill`Pocket Crumbs`)
+      .tryHaveItem($item`train whistle`)
+      .tryHaveSkill($skill`Entangling Noodles`)
+      .tryHaveItem($item`Rain-Doh indigo cup`)
+      .tryHaveItem($item`Rain-Doh blue balls`);
+  }
+
+  static delevel(): Macro {
+    return new Macro().delevel();
+  }
+
+  meatKill(delevel = isStrongScaler(globalOptions.target)): Macro {
     const sealClubberSetup =
       myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`);
     const opsSetup = equippedAmount($item`Operation Patriot Shield`) > 0;
@@ -253,20 +274,8 @@ export class Macro extends StrictMacro {
       Macro.if_(globalOptions.target, Macro.trySkill($skill`Digitize`)),
     )
       .externalIf(
-        globalOptions.target === $monster`cheerless mime executive`,
-        Macro.if_(
-          $monster`cheerless mime executive`,
-          Macro.tryHaveSkill($skill`Curse of Weaksauce`)
-            .externalIf(
-              have($skill`Meteor Lore`),
-              Macro.trySkill($skill`Micrometeorite`),
-            )
-            .tryHaveSkill($skill`Pocket Crumbs`)
-            .tryHaveItem($item`train whistle`)
-            .tryHaveSkill($skill`Entangling Noodles`)
-            .tryHaveItem($item`Rain-Doh indigo cup`)
-            .tryHaveItem($item`Rain-Doh blue balls`),
-        ),
+        delevel,
+        Macro.if_($monster`cheerless mime executive`, Macro.delevel()),
       )
       .externalIf(
         have($skill`Blow the Purple Candle!`),

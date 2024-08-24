@@ -1102,3 +1102,26 @@ let bestLuckyAdventure: LuckyAdventure;
 export function getBestLuckyAdventure(): LuckyAdventure {
   return (bestLuckyAdventure ??= determineBestLuckyAdventure());
 }
+
+const SCALE_PATTERN = /Scale: /;
+const CAP_PATTERN = /Cap: (\d*)/;
+function calculateScalerCap({ attributes }: Monster): number {
+  const scaleMatch = SCALE_PATTERN.test(attributes);
+  if (!scaleMatch) return 0;
+  const capMatch = CAP_PATTERN.exec(attributes);
+  if (!capMatch?.[1]) return Infinity;
+  return Number(capMatch[1]);
+}
+
+const MONSTER_SCALER_CAPS = new Map<Monster, number>();
+export function scalerCap(monster: Monster): number {
+  const cached = MONSTER_SCALER_CAPS.get(monster);
+  if (cached) return cached;
+  const cap = calculateScalerCap(monster);
+  MONSTER_SCALER_CAPS.set(monster, cap);
+  return cap;
+}
+
+const STRONG_SCALER_THRESHOLD = 1_000;
+export const isStrongScaler = (m: Monster) =>
+  scalerCap(m) > STRONG_SCALER_THRESHOLD;

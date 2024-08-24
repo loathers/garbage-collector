@@ -152,6 +152,7 @@ import {
   freeRunConstraints,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
+  isStrongScaler,
   kramcoGuaranteed,
   lastAdventureWasWeird,
   logMessage,
@@ -189,32 +190,34 @@ import { PostQuest } from "./tasks/post";
 const firstChainMacro = () =>
   Macro.if_(
     globalOptions.target,
-    Macro.if_(
-      `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
-      Macro.externalIf(
-        SourceTerminal.getDigitizeMonster() !== globalOptions.target,
-        Macro.tryCopier($skill`Digitize`),
+    Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel())
+      .if_(
+        `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
+        Macro.externalIf(
+          SourceTerminal.getDigitizeMonster() !== globalOptions.target,
+          Macro.tryCopier($skill`Digitize`),
+        )
+          .tryCopier($item`Spooky Putty sheet`)
+          .tryCopier($item`Rain-Doh black box`)
+          .tryCopier($item`4-d camera`)
+          .tryCopier($item`unfinished ice sculpture`)
+          .externalIf(
+            get("_enamorangs") === 0,
+            Macro.tryCopier($item`LOV Enamorang`),
+          ),
       )
-        .tryCopier($item`Spooky Putty sheet`)
-        .tryCopier($item`Rain-Doh black box`)
-        .tryCopier($item`4-d camera`)
-        .tryCopier($item`unfinished ice sculpture`)
-        .externalIf(
-          get("_enamorangs") === 0,
-          Macro.tryCopier($item`LOV Enamorang`),
-        ),
-    )
       .trySkill($skill`lecture on relativity`)
-      .meatKill(),
+      .meatKill(false),
   ).abort();
 
 const secondChainMacro = () =>
   Macro.if_(
     globalOptions.target,
-    Macro.if_(
-      `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
-      Macro.trySkill($skill`Meteor Shower`),
-    )
+    Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel())
+      .if_(
+        `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
+        Macro.trySkill($skill`Meteor Shower`),
+      )
       .if_(
         `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
         Macro.externalIf(
@@ -231,7 +234,7 @@ const secondChainMacro = () =>
           ),
       )
       .trySkill($skill`lecture on relativity`)
-      .meatKill(),
+      .meatKill(false),
   ).abort();
 
 function embezzlerSetup() {
@@ -1085,9 +1088,7 @@ const freeFightSources = [
       visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
       runChoice(1);
       visitUrl(
-        `choice.php?whichchoice=1196&monid=${
-          $monster`drunk pygmy`.id
-        }&option=1`,
+        `choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`,
       );
     },
     true,
