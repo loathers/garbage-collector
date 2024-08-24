@@ -1,4 +1,3 @@
-import "core-js/modules/es.object.from-entries";
 import {
   adv1,
   autosellPrice,

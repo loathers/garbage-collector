@@ -1,4 +1,3 @@
-import "core-js/features/array/flat";
 import {
   adv1,
   choiceFollowsFight,
