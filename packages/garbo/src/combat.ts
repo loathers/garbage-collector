@@ -759,10 +759,11 @@ export class Macro extends StrictMacro {
         get("_monsterHabitatsFightsLeft") <= 1);
     return this.if_(
       globalOptions.target,
-      Macro.if_(
-        $location`The Briny Deeps`,
-        Macro.tryCopier($item`pulled green taffy`),
-      )
+      Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel())
+        .if_(
+          $location`The Briny Deeps`,
+          Macro.tryCopier($item`pulled green taffy`),
+        )
         .externalIf(
           myFamiliar() === $familiar`Reanimated Reanimator`,
           Macro.trySkill($skill`Wink at`),
@@ -808,7 +809,7 @@ export class Macro extends StrictMacro {
           get("_enamorangs") === 0,
           Macro.tryCopier($item`LOV Enamorang`),
         )
-        .meatKill(),
+        .meatKill(false),
     ).abortWithMsg(
       `Macro for ${action} expected ${globalOptions.target} but encountered something else.`,
     );
