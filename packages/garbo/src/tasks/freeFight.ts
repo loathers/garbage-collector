@@ -14,6 +14,7 @@ import {
   itemDropsArray,
   itemType,
   mallPrice,
+  Monster,
   myClass,
   myInebriety,
   myMaxhp,
@@ -48,6 +49,7 @@ import {
   get,
   have,
   maxBy,
+  set,
   sum,
   TunnelOfLove,
   undelay,
@@ -109,6 +111,27 @@ function sealsAvailable(): number {
     ? Infinity
     : Math.floor(availableAmount($item`seal-blubber candle`) / 3);
   return Math.min(max, available);
+}
+
+function litLeafMacro(monster: Monster): Macro {
+  const tiedUpItem = new Map<Monster, Item>([
+    [$monster`flaming leaflet`, $item`tied-up flaming leaflet`],
+    [$monster`flaming monstera`, $item`tied-up flaming monstera`],
+    [$monster`leaviathan`, $item`tied-up leaviathan`],
+  ]).get(monster);
+
+  // Only convert lassos if we can funksling as the combat counts as a free loss
+  return Macro.externalIf(
+    tiedUpItem !== undefined &&
+      itemAmount($item`lit leaf lasso`) >= 2 &&
+      have($skill`Ambidextrous Funkslinging`) &&
+      (garboValue(tiedUpItem) - mallPrice($item`lit leaf lasso`)) * 2 >=
+        globalOptions.prefs.valueOfFreeFight,
+    Macro.if_(
+      monster,
+      Macro.tryItem([$item`lit leaf lasso`, $item`lit leaf lasso`]),
+    ),
+  ).basicCombat();
 }
 
 const stunDurations = new Map<Skill | Item, Delayed<number>>([
@@ -622,10 +645,57 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       BurningLeaves.numberOfLeaves() >=
         (BurningLeaves.burnFor.get($monster`flaming leaflet`) ?? Infinity),
     completed: () => get("_leafMonstersFought") >= 5,
-    do: () => BurningLeaves.burnSpecialLeaves($monster`flaming leaflet`),
+    do: () => {
+      const lassoCount = itemAmount($item`lit leaf lasso`);
+      const result = BurningLeaves.burnSpecialLeaves($monster`flaming leaflet`);
+      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
+        set("_lastCombatLost", "false");
+      }
+      return result;
+    },
     tentacle: true,
     combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
+    combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   },
+  {
+    name: $item`tied-up flaming leaflet`.name,
+    ready: () =>
+      mallPrice($item`tied-up flaming leaflet`) <=
+      globalOptions.prefs.valueOfFreeFight,
+    completed: () => get("_tiedUpFlamingLeafletFought"),
+    acquire: () => [{ item: $item`tied-up flaming leaflet` }],
+    do: () => {
+      const lassoCount = itemAmount($item`lit leaf lasso`);
+      const result = use($item`tied-up flaming leaflet`);
+      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
+        set("_lastCombatLost", "false");
+      }
+      return result;
+    },
+    tentacle: true,
+    combatCount: () => (get("_tiedUpFlamingLeafletFought") ? 0 : 1),
+    combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
+  },
+  {
+    name: $item`tied-up flaming monstera`.name,
+    ready: () =>
+      mallPrice($item`tied-up flaming monstera`) <=
+      globalOptions.prefs.valueOfFreeFight,
+    completed: () => get("_tiedUpFlamingMonsteraFought"),
+    acquire: () => [{ item: $item`tied-up flaming monstera` }],
+    do: () => {
+      const lassoCount = itemAmount($item`lit leaf lasso`);
+      const result = use($item`tied-up flaming monstera`);
+      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
+        set("_lastCombatLost", "false");
+      }
+      return result;
+    },
+    tentacle: true,
+    combatCount: () => (get("_tiedUpFlamingMonsteraFought") ? 0 : 1),
+    combat: new GarboStrategy(() => litLeafMacro($monster`flaming monstera`)),
+  },
+  // tied-up leaviathan (scaling, has 100 damage source cap and 2500 hp)
   // li'l ninja costume
   // closed-circuit pay phone (make into it's own Quest)
 ].map(freeFightTask);
