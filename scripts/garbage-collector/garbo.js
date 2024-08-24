@@ -27261,7 +27261,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("75c6f3798ff57187d5dcb5f50854d7b6e834b779", ")"));
+      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2ffc113364fa3d1ca375faa961cff422f33a0fdf", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -28697,6 +28697,7 @@ var frostyMug = $item(_templateObject4914 || (_templateObject4914 = _taggedTempl
 var spleenCleaners = /* @__PURE__ */ new Map([[$item(_templateObject5012 || (_templateObject5012 = _taggedTemplateLiteral74(["extra-greasy slider"]))), 5], [$item(_templateObject5115 || (_templateObject5115 = _taggedTemplateLiteral74(["jar of fermented pickle juice"]))), 5], [$item(_templateObject5214 || (_templateObject5214 = _taggedTemplateLiteral74(["mojo filter"]))), 1]]);
 var stomachLiverCleaners = /* @__PURE__ */ new Map([[$item(_templateObject5314 || (_templateObject5314 = _taggedTemplateLiteral74(["spice melange"]))), [-3, -3]], [$item(_templateObject5414 || (_templateObject5414 = _taggedTemplateLiteral74(["synthetic dog hair pill"]))), [0, -1]], [$item(_templateObject5513 || (_templateObject5513 = _taggedTemplateLiteral74(["cuppa Sobrie tea"]))), [0, -1]], [$item(_templateObject5612 || (_templateObject5612 = _taggedTemplateLiteral74(["designer sweatpants"]))), [0, -1]], [$item(_templateObject5710 || (_templateObject5710 = _taggedTemplateLiteral74(["august scepter"]))), [-1, 0]]]);
 function legendaryPizzaToMenu(pizzas, maker) {
+  if (!globalOptions.ascend) return [];
   var canCookLegendaryPizza = function(pizza) {
     var recipes = [pizza].concat(_toConsumableArray32($items(_templateObject588 || (_templateObject588 = _taggedTemplateLiteral74(["roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread"]))))).map(function(i) {
       return (0, import_kolmafia86.toInt)(i);
