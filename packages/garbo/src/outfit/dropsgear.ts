@@ -274,7 +274,7 @@ function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
     have($skill`Head in the Game`);
   if (
     !have($item`mafia pointer finger ring`) ||
-    mode !== BonusEquipMode.EMBEZZLER ||
+    mode !== BonusEquipMode.MEAT_TARGET ||
     !canCrit ||
     globalOptions.target.attributes.includes("FREE")
   ) {
