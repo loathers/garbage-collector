@@ -1448,7 +1448,7 @@ function getKramcoWandererChance() {
     return lastFight === totalTurns && (0, import_kolmafia5.myTurncount)() < 1 ? 0.5 : 1;
   }
   var turnsSinceLastFight = totalTurns - lastFight;
-  return Math.min(1, (turnsSinceLastFight + 1) / (5 + fights * 3 + Math.pow(Math.max(0, fights - 5), 3)));
+  return Math.min(1, (turnsSinceLastFight + 1) / (5 + fights * 3 + Math.max(0, fights - 5) ** 3));
 }
 function getFamiliarWandererChance() {
   var totalFights = get("_hipsterAdv");
@@ -1480,8 +1480,8 @@ function getWandererChance(wanderer2) {
   var re = new RegExp("(\\d+):" + end);
   var matches = counters.match(re);
   if (matches && matches.length === 2) {
-    var window2 = Number.parseInt(matches[1]) - (0, import_kolmafia5.myTurncount)();
-    return 1 / window2;
+    var window = Number.parseInt(matches[1]) - (0, import_kolmafia5.myTurncount)();
+    return 1 / window;
   }
   return 0;
 }
@@ -11497,7 +11497,7 @@ function have51() {
 }
 function expected2() {
   var rareSummons = get("_favorRareSummons");
-  var totalRareChance = 1 / Math.pow(2, rareSummons + 1);
+  var totalRareChance = 1 / 2 ** (rareSummons + 1);
   var commonChance2 = (1 - totalRareChance) / 3;
   var rareChance2 = totalRareChance / 3;
   return /* @__PURE__ */ new Map([[$item(_templateObject2118 || (_templateObject2118 = _taggedTemplateLiteral52(["divine blowout"]))), commonChance2], [$item(_templateObject3102 || (_templateObject3102 = _taggedTemplateLiteral52(["divine can of silly string"]))), commonChance2], [$item(_templateObject470 || (_templateObject470 = _taggedTemplateLiteral52(["divine noisemaker"]))), commonChance2], [$item(_templateObject545 || (_templateObject545 = _taggedTemplateLiteral52(["divine champagne flute"]))), rareChance2], [$item(_templateObject637 || (_templateObject637 = _taggedTemplateLiteral52(["divine champagne popper"]))), rareChance2], [$item(_templateObject731 || (_templateObject731 = _taggedTemplateLiteral52(["divine cracker"]))), rareChance2]]);
@@ -11609,7 +11609,7 @@ function expected7() {
   var rareSummons = get("_taffyRareSummons");
   var yellowSummons = get("_taffyYellowSummons");
   var onlyYellow = yellowSummons === 0 && rareSummons === 3;
-  var totalRareChance = rareSummons < 4 ? 1 / Math.pow(2, rareSummons + 1) : 0;
+  var totalRareChance = rareSummons < 4 ? 1 / 2 ** (rareSummons + 1) : 0;
   var commonChance2 = (1 - totalRareChance) / 4;
   var rareChance2 = onlyYellow ? 0 : totalRareChance / (3 - get("_taffyYellowSummons"));
   var yellowChance = yellowSummons === 1 ? 0 : onlyYellow ? totalRareChance : rareChance2;
@@ -12901,18 +12901,18 @@ var require_named_references = __commonJS({
           "&Acirc": "\xC2",
           "&Acirc;": "\xC2",
           "&Acy;": "\u0410",
-          "&Afr;": "\uD835\uDD04",
+          "&Afr;": "\u{1D504}",
           "&Agrave": "\xC0",
           "&Agrave;": "\xC0",
           "&Alpha;": "\u0391",
           "&Amacr;": "\u0100",
           "&And;": "\u2A53",
           "&Aogon;": "\u0104",
-          "&Aopf;": "\uD835\uDD38",
+          "&Aopf;": "\u{1D538}",
           "&ApplyFunction;": "\u2061",
           "&Aring": "\xC5",
           "&Aring;": "\xC5",
-          "&Ascr;": "\uD835\uDC9C",
+          "&Ascr;": "\u{1D49C}",
           "&Assign;": "\u2254",
           "&Atilde": "\xC3",
           "&Atilde;": "\xC3",
@@ -12925,8 +12925,8 @@ var require_named_references = __commonJS({
           "&Because;": "\u2235",
           "&Bernoullis;": "\u212C",
           "&Beta;": "\u0392",
-          "&Bfr;": "\uD835\uDD05",
-          "&Bopf;": "\uD835\uDD39",
+          "&Bfr;": "\u{1D505}",
+          "&Bopf;": "\u{1D539}",
           "&Breve;": "\u02D8",
           "&Bscr;": "\u212C",
           "&Bumpeq;": "\u224E",
@@ -12963,7 +12963,7 @@ var require_named_references = __commonJS({
           "&Coproduct;": "\u2210",
           "&CounterClockwiseContourIntegral;": "\u2233",
           "&Cross;": "\u2A2F",
-          "&Cscr;": "\uD835\uDC9E",
+          "&Cscr;": "\u{1D49E}",
           "&Cup;": "\u22D3",
           "&CupCap;": "\u224D",
           "&DD;": "\u2145",
@@ -12978,7 +12978,7 @@ var require_named_references = __commonJS({
           "&Dcy;": "\u0414",
           "&Del;": "\u2207",
           "&Delta;": "\u0394",
-          "&Dfr;": "\uD835\uDD07",
+          "&Dfr;": "\u{1D507}",
           "&DiacriticalAcute;": "\xB4",
           "&DiacriticalDot;": "\u02D9",
           "&DiacriticalDoubleAcute;": "\u02DD",
@@ -12986,7 +12986,7 @@ var require_named_references = __commonJS({
           "&DiacriticalTilde;": "\u02DC",
           "&Diamond;": "\u22C4",
           "&DifferentialD;": "\u2146",
-          "&Dopf;": "\uD835\uDD3B",
+          "&Dopf;": "\u{1D53B}",
           "&Dot;": "\xA8",
           "&DotDot;": "\u20DC",
           "&DotEqual;": "\u2250",
@@ -13018,7 +13018,7 @@ var require_named_references = __commonJS({
           "&DownTee;": "\u22A4",
           "&DownTeeArrow;": "\u21A7",
           "&Downarrow;": "\u21D3",
-          "&Dscr;": "\uD835\uDC9F",
+          "&Dscr;": "\u{1D49F}",
           "&Dstrok;": "\u0110",
           "&ENG;": "\u014A",
           "&ETH": "\xD0",
@@ -13030,7 +13030,7 @@ var require_named_references = __commonJS({
           "&Ecirc;": "\xCA",
           "&Ecy;": "\u042D",
           "&Edot;": "\u0116",
-          "&Efr;": "\uD835\uDD08",
+          "&Efr;": "\u{1D508}",
           "&Egrave": "\xC8",
           "&Egrave;": "\xC8",
           "&Element;": "\u2208",
@@ -13038,7 +13038,7 @@ var require_named_references = __commonJS({
           "&EmptySmallSquare;": "\u25FB",
           "&EmptyVerySmallSquare;": "\u25AB",
           "&Eogon;": "\u0118",
-          "&Eopf;": "\uD835\uDD3C",
+          "&Eopf;": "\u{1D53C}",
           "&Epsilon;": "\u0395",
           "&Equal;": "\u2A75",
           "&EqualTilde;": "\u2242",
@@ -13051,10 +13051,10 @@ var require_named_references = __commonJS({
           "&Exists;": "\u2203",
           "&ExponentialE;": "\u2147",
           "&Fcy;": "\u0424",
-          "&Ffr;": "\uD835\uDD09",
+          "&Ffr;": "\u{1D509}",
           "&FilledSmallSquare;": "\u25FC",
           "&FilledVerySmallSquare;": "\u25AA",
-          "&Fopf;": "\uD835\uDD3D",
+          "&Fopf;": "\u{1D53D}",
           "&ForAll;": "\u2200",
           "&Fouriertrf;": "\u2131",
           "&Fscr;": "\u2131",
@@ -13068,9 +13068,9 @@ var require_named_references = __commonJS({
           "&Gcirc;": "\u011C",
           "&Gcy;": "\u0413",
           "&Gdot;": "\u0120",
-          "&Gfr;": "\uD835\uDD0A",
+          "&Gfr;": "\u{1D50A}",
           "&Gg;": "\u22D9",
-          "&Gopf;": "\uD835\uDD3E",
+          "&Gopf;": "\u{1D53E}",
           "&GreaterEqual;": "\u2265",
           "&GreaterEqualLess;": "\u22DB",
           "&GreaterFullEqual;": "\u2267",
@@ -13078,7 +13078,7 @@ var require_named_references = __commonJS({
           "&GreaterLess;": "\u2277",
           "&GreaterSlantEqual;": "\u2A7E",
           "&GreaterTilde;": "\u2273",
-          "&Gscr;": "\uD835\uDCA2",
+          "&Gscr;": "\u{1D4A2}",
           "&Gt;": "\u226B",
           "&HARDcy;": "\u042A",
           "&Hacek;": "\u02C7",
@@ -13114,7 +13114,7 @@ var require_named_references = __commonJS({
           "&InvisibleComma;": "\u2063",
           "&InvisibleTimes;": "\u2062",
           "&Iogon;": "\u012E",
-          "&Iopf;": "\uD835\uDD40",
+          "&Iopf;": "\u{1D540}",
           "&Iota;": "\u0399",
           "&Iscr;": "\u2110",
           "&Itilde;": "\u0128",
@@ -13123,9 +13123,9 @@ var require_named_references = __commonJS({
           "&Iuml;": "\xCF",
           "&Jcirc;": "\u0134",
           "&Jcy;": "\u0419",
-          "&Jfr;": "\uD835\uDD0D",
-          "&Jopf;": "\uD835\uDD41",
-          "&Jscr;": "\uD835\uDCA5",
+          "&Jfr;": "\u{1D50D}",
+          "&Jopf;": "\u{1D541}",
+          "&Jscr;": "\u{1D4A5}",
           "&Jsercy;": "\u0408",
           "&Jukcy;": "\u0404",
           "&KHcy;": "\u0425",
@@ -13133,9 +13133,9 @@ var require_named_references = __commonJS({
           "&Kappa;": "\u039A",
           "&Kcedil;": "\u0136",
           "&Kcy;": "\u041A",
-          "&Kfr;": "\uD835\uDD0E",
-          "&Kopf;": "\uD835\uDD42",
-          "&Kscr;": "\uD835\uDCA6",
+          "&Kfr;": "\u{1D50E}",
+          "&Kopf;": "\u{1D542}",
+          "&Kscr;": "\u{1D4A6}",
           "&LJcy;": "\u0409",
           "&LT": "<",
           "&LT;": "<",
@@ -13179,7 +13179,7 @@ var require_named_references = __commonJS({
           "&LessLess;": "\u2AA1",
           "&LessSlantEqual;": "\u2A7D",
           "&LessTilde;": "\u2272",
-          "&Lfr;": "\uD835\uDD0F",
+          "&Lfr;": "\u{1D50F}",
           "&Ll;": "\u22D8",
           "&Lleftarrow;": "\u21DA",
           "&Lmidot;": "\u013F",
@@ -13189,7 +13189,7 @@ var require_named_references = __commonJS({
           "&Longleftarrow;": "\u27F8",
           "&Longleftrightarrow;": "\u27FA",
           "&Longrightarrow;": "\u27F9",
-          "&Lopf;": "\uD835\uDD43",
+          "&Lopf;": "\u{1D543}",
           "&LowerLeftArrow;": "\u2199",
           "&LowerRightArrow;": "\u2198",
           "&Lscr;": "\u2112",
@@ -13200,9 +13200,9 @@ var require_named_references = __commonJS({
           "&Mcy;": "\u041C",
           "&MediumSpace;": "\u205F",
           "&Mellintrf;": "\u2133",
-          "&Mfr;": "\uD835\uDD10",
+          "&Mfr;": "\u{1D510}",
           "&MinusPlus;": "\u2213",
-          "&Mopf;": "\uD835\uDD44",
+          "&Mopf;": "\u{1D544}",
           "&Mscr;": "\u2133",
           "&Mu;": "\u039C",
           "&NJcy;": "\u040A",
@@ -13217,7 +13217,7 @@ var require_named_references = __commonJS({
           "&NestedGreaterGreater;": "\u226B",
           "&NestedLessLess;": "\u226A",
           "&NewLine;": "\n",
-          "&Nfr;": "\uD835\uDD11",
+          "&Nfr;": "\u{1D511}",
           "&NoBreak;": "\u2060",
           "&NonBreakingSpace;": "\xA0",
           "&Nopf;": "\u2115",
@@ -13273,7 +13273,7 @@ var require_named_references = __commonJS({
           "&NotTildeFullEqual;": "\u2247",
           "&NotTildeTilde;": "\u2249",
           "&NotVerticalBar;": "\u2224",
-          "&Nscr;": "\uD835\uDCA9",
+          "&Nscr;": "\u{1D4A9}",
           "&Ntilde": "\xD1",
           "&Ntilde;": "\xD1",
           "&Nu;": "\u039D",
@@ -13284,17 +13284,17 @@ var require_named_references = __commonJS({
           "&Ocirc;": "\xD4",
           "&Ocy;": "\u041E",
           "&Odblac;": "\u0150",
-          "&Ofr;": "\uD835\uDD12",
+          "&Ofr;": "\u{1D512}",
           "&Ograve": "\xD2",
           "&Ograve;": "\xD2",
           "&Omacr;": "\u014C",
           "&Omega;": "\u03A9",
           "&Omicron;": "\u039F",
-          "&Oopf;": "\uD835\uDD46",
+          "&Oopf;": "\u{1D546}",
           "&OpenCurlyDoubleQuote;": "\u201C",
           "&OpenCurlyQuote;": "\u2018",
           "&Or;": "\u2A54",
-          "&Oscr;": "\uD835\uDCAA",
+          "&Oscr;": "\u{1D4AA}",
           "&Oslash": "\xD8",
           "&Oslash;": "\xD8",
           "&Otilde": "\xD5",
@@ -13308,7 +13308,7 @@ var require_named_references = __commonJS({
           "&OverParenthesis;": "\u23DC",
           "&PartialD;": "\u2202",
           "&Pcy;": "\u041F",
-          "&Pfr;": "\uD835\uDD13",
+          "&Pfr;": "\u{1D513}",
           "&Phi;": "\u03A6",
           "&Pi;": "\u03A0",
           "&PlusMinus;": "\xB1",
@@ -13323,13 +13323,13 @@ var require_named_references = __commonJS({
           "&Product;": "\u220F",
           "&Proportion;": "\u2237",
           "&Proportional;": "\u221D",
-          "&Pscr;": "\uD835\uDCAB",
+          "&Pscr;": "\u{1D4AB}",
           "&Psi;": "\u03A8",
           "&QUOT": '"',
           "&QUOT;": '"',
-          "&Qfr;": "\uD835\uDD14",
+          "&Qfr;": "\u{1D514}",
           "&Qopf;": "\u211A",
-          "&Qscr;": "\uD835\uDCAC",
+          "&Qscr;": "\u{1D4AC}",
           "&RBarr;": "\u2910",
           "&REG": "\xAE",
           "&REG;": "\xAE",
@@ -13384,14 +13384,14 @@ var require_named_references = __commonJS({
           "&Scedil;": "\u015E",
           "&Scirc;": "\u015C",
           "&Scy;": "\u0421",
-          "&Sfr;": "\uD835\uDD16",
+          "&Sfr;": "\u{1D516}",
           "&ShortDownArrow;": "\u2193",
           "&ShortLeftArrow;": "\u2190",
           "&ShortRightArrow;": "\u2192",
           "&ShortUpArrow;": "\u2191",
           "&Sigma;": "\u03A3",
           "&SmallCircle;": "\u2218",
-          "&Sopf;": "\uD835\uDD4A",
+          "&Sopf;": "\u{1D54A}",
           "&Sqrt;": "\u221A",
           "&Square;": "\u25A1",
           "&SquareIntersection;": "\u2293",
@@ -13400,7 +13400,7 @@ var require_named_references = __commonJS({
           "&SquareSuperset;": "\u2290",
           "&SquareSupersetEqual;": "\u2292",
           "&SquareUnion;": "\u2294",
-          "&Sscr;": "\uD835\uDCAE",
+          "&Sscr;": "\u{1D4AE}",
           "&Star;": "\u22C6",
           "&Sub;": "\u22D0",
           "&Subset;": "\u22D0",
@@ -13425,7 +13425,7 @@ var require_named_references = __commonJS({
           "&Tcaron;": "\u0164",
           "&Tcedil;": "\u0162",
           "&Tcy;": "\u0422",
-          "&Tfr;": "\uD835\uDD17",
+          "&Tfr;": "\u{1D517}",
           "&Therefore;": "\u2234",
           "&Theta;": "\u0398",
           "&ThickSpace;": "\u205F\u200A",
@@ -13434,9 +13434,9 @@ var require_named_references = __commonJS({
           "&TildeEqual;": "\u2243",
           "&TildeFullEqual;": "\u2245",
           "&TildeTilde;": "\u2248",
-          "&Topf;": "\uD835\uDD4B",
+          "&Topf;": "\u{1D54B}",
           "&TripleDot;": "\u20DB",
-          "&Tscr;": "\uD835\uDCAF",
+          "&Tscr;": "\u{1D4AF}",
           "&Tstrok;": "\u0166",
           "&Uacute": "\xDA",
           "&Uacute;": "\xDA",
@@ -13448,7 +13448,7 @@ var require_named_references = __commonJS({
           "&Ucirc;": "\xDB",
           "&Ucy;": "\u0423",
           "&Udblac;": "\u0170",
-          "&Ufr;": "\uD835\uDD18",
+          "&Ufr;": "\u{1D518}",
           "&Ugrave": "\xD9",
           "&Ugrave;": "\xD9",
           "&Umacr;": "\u016A",
@@ -13459,7 +13459,7 @@ var require_named_references = __commonJS({
           "&Union;": "\u22C3",
           "&UnionPlus;": "\u228E",
           "&Uogon;": "\u0172",
-          "&Uopf;": "\uD835\uDD4C",
+          "&Uopf;": "\u{1D54C}",
           "&UpArrow;": "\u2191",
           "&UpArrowBar;": "\u2912",
           "&UpArrowDownArrow;": "\u21C5",
@@ -13474,7 +13474,7 @@ var require_named_references = __commonJS({
           "&Upsi;": "\u03D2",
           "&Upsilon;": "\u03A5",
           "&Uring;": "\u016E",
-          "&Uscr;": "\uD835\uDCB0",
+          "&Uscr;": "\u{1D4B0}",
           "&Utilde;": "\u0168",
           "&Uuml": "\xDC",
           "&Uuml;": "\xDC",
@@ -13491,19 +13491,19 @@ var require_named_references = __commonJS({
           "&VerticalSeparator;": "\u2758",
           "&VerticalTilde;": "\u2240",
           "&VeryThinSpace;": "\u200A",
-          "&Vfr;": "\uD835\uDD19",
-          "&Vopf;": "\uD835\uDD4D",
-          "&Vscr;": "\uD835\uDCB1",
+          "&Vfr;": "\u{1D519}",
+          "&Vopf;": "\u{1D54D}",
+          "&Vscr;": "\u{1D4B1}",
           "&Vvdash;": "\u22AA",
           "&Wcirc;": "\u0174",
           "&Wedge;": "\u22C0",
-          "&Wfr;": "\uD835\uDD1A",
-          "&Wopf;": "\uD835\uDD4E",
-          "&Wscr;": "\uD835\uDCB2",
-          "&Xfr;": "\uD835\uDD1B",
+          "&Wfr;": "\u{1D51A}",
+          "&Wopf;": "\u{1D54E}",
+          "&Wscr;": "\u{1D4B2}",
+          "&Xfr;": "\u{1D51B}",
           "&Xi;": "\u039E",
-          "&Xopf;": "\uD835\uDD4F",
-          "&Xscr;": "\uD835\uDCB3",
+          "&Xopf;": "\u{1D54F}",
+          "&Xscr;": "\u{1D4B3}",
           "&YAcy;": "\u042F",
           "&YIcy;": "\u0407",
           "&YUcy;": "\u042E",
@@ -13511,9 +13511,9 @@ var require_named_references = __commonJS({
           "&Yacute;": "\xDD",
           "&Ycirc;": "\u0176",
           "&Ycy;": "\u042B",
-          "&Yfr;": "\uD835\uDD1C",
-          "&Yopf;": "\uD835\uDD50",
-          "&Yscr;": "\uD835\uDCB4",
+          "&Yfr;": "\u{1D51C}",
+          "&Yopf;": "\u{1D550}",
+          "&Yscr;": "\u{1D4B4}",
           "&Yuml;": "\u0178",
           "&ZHcy;": "\u0416",
           "&Zacute;": "\u0179",
@@ -13524,7 +13524,7 @@ var require_named_references = __commonJS({
           "&Zeta;": "\u0396",
           "&Zfr;": "\u2128",
           "&Zopf;": "\u2124",
-          "&Zscr;": "\uD835\uDCB5",
+          "&Zscr;": "\u{1D4B5}",
           "&aacute": "\xE1",
           "&aacute;": "\xE1",
           "&abreve;": "\u0103",
@@ -13539,7 +13539,7 @@ var require_named_references = __commonJS({
           "&aelig": "\xE6",
           "&aelig;": "\xE6",
           "&af;": "\u2061",
-          "&afr;": "\uD835\uDD1E",
+          "&afr;": "\u{1D51E}",
           "&agrave": "\xE0",
           "&agrave;": "\xE0",
           "&alefsym;": "\u2135",
@@ -13573,7 +13573,7 @@ var require_named_references = __commonJS({
           "&angst;": "\xC5",
           "&angzarr;": "\u237C",
           "&aogon;": "\u0105",
-          "&aopf;": "\uD835\uDD52",
+          "&aopf;": "\u{1D552}",
           "&ap;": "\u2248",
           "&apE;": "\u2A70",
           "&apacir;": "\u2A6F",
@@ -13584,7 +13584,7 @@ var require_named_references = __commonJS({
           "&approxeq;": "\u224A",
           "&aring": "\xE5",
           "&aring;": "\xE5",
-          "&ascr;": "\uD835\uDCB6",
+          "&ascr;": "\u{1D4B6}",
           "&ast;": "*",
           "&asymp;": "\u2248",
           "&asympeq;": "\u224D",
@@ -13616,7 +13616,7 @@ var require_named_references = __commonJS({
           "&beta;": "\u03B2",
           "&beth;": "\u2136",
           "&between;": "\u226C",
-          "&bfr;": "\uD835\uDD1F",
+          "&bfr;": "\u{1D51F}",
           "&bigcap;": "\u22C2",
           "&bigcirc;": "\u25EF",
           "&bigcup;": "\u22C3",
@@ -13645,7 +13645,7 @@ var require_named_references = __commonJS({
           "&bne;": "=\u20E5",
           "&bnequiv;": "\u2261\u20E5",
           "&bnot;": "\u2310",
-          "&bopf;": "\uD835\uDD53",
+          "&bopf;": "\u{1D553}",
           "&bot;": "\u22A5",
           "&bottom;": "\u22A5",
           "&bowtie;": "\u22C8",
@@ -13697,7 +13697,7 @@ var require_named_references = __commonJS({
           "&breve;": "\u02D8",
           "&brvbar": "\xA6",
           "&brvbar;": "\xA6",
-          "&bscr;": "\uD835\uDCB7",
+          "&bscr;": "\u{1D4B7}",
           "&bsemi;": "\u204F",
           "&bsim;": "\u223D",
           "&bsime;": "\u22CD",
@@ -13734,7 +13734,7 @@ var require_named_references = __commonJS({
           "&cent": "\xA2",
           "&cent;": "\xA2",
           "&centerdot;": "\xB7",
-          "&cfr;": "\uD835\uDD20",
+          "&cfr;": "\u{1D520}",
           "&chcy;": "\u0447",
           "&check;": "\u2713",
           "&checkmark;": "\u2713",
@@ -13768,14 +13768,14 @@ var require_named_references = __commonJS({
           "&cong;": "\u2245",
           "&congdot;": "\u2A6D",
           "&conint;": "\u222E",
-          "&copf;": "\uD835\uDD54",
+          "&copf;": "\u{1D554}",
           "&coprod;": "\u2210",
           "&copy": "\xA9",
           "&copy;": "\xA9",
           "&copysr;": "\u2117",
           "&crarr;": "\u21B5",
           "&cross;": "\u2717",
-          "&cscr;": "\uD835\uDCB8",
+          "&cscr;": "\u{1D4B8}",
           "&csub;": "\u2ACF",
           "&csube;": "\u2AD1",
           "&csup;": "\u2AD0",
@@ -13829,7 +13829,7 @@ var require_named_references = __commonJS({
           "&delta;": "\u03B4",
           "&demptyv;": "\u29B1",
           "&dfisht;": "\u297F",
-          "&dfr;": "\uD835\uDD21",
+          "&dfr;": "\u{1D521}",
           "&dharl;": "\u21C3",
           "&dharr;": "\u21C2",
           "&diam;": "\u22C4",
@@ -13848,7 +13848,7 @@ var require_named_references = __commonJS({
           "&dlcorn;": "\u231E",
           "&dlcrop;": "\u230D",
           "&dollar;": "$",
-          "&dopf;": "\uD835\uDD55",
+          "&dopf;": "\u{1D555}",
           "&dot;": "\u02D9",
           "&doteq;": "\u2250",
           "&doteqdot;": "\u2251",
@@ -13863,7 +13863,7 @@ var require_named_references = __commonJS({
           "&drbkarow;": "\u2910",
           "&drcorn;": "\u231F",
           "&drcrop;": "\u230C",
-          "&dscr;": "\uD835\uDCB9",
+          "&dscr;": "\u{1D4B9}",
           "&dscy;": "\u0455",
           "&dsol;": "\u29F6",
           "&dstrok;": "\u0111",
@@ -13889,7 +13889,7 @@ var require_named_references = __commonJS({
           "&edot;": "\u0117",
           "&ee;": "\u2147",
           "&efDot;": "\u2252",
-          "&efr;": "\uD835\uDD22",
+          "&efr;": "\u{1D522}",
           "&eg;": "\u2A9A",
           "&egrave": "\xE8",
           "&egrave;": "\xE8",
@@ -13910,7 +13910,7 @@ var require_named_references = __commonJS({
           "&eng;": "\u014B",
           "&ensp;": "\u2002",
           "&eogon;": "\u0119",
-          "&eopf;": "\uD835\uDD56",
+          "&eopf;": "\u{1D556}",
           "&epar;": "\u22D5",
           "&eparsl;": "\u29E3",
           "&eplus;": "\u2A71",
@@ -13948,14 +13948,14 @@ var require_named_references = __commonJS({
           "&ffilig;": "\uFB03",
           "&fflig;": "\uFB00",
           "&ffllig;": "\uFB04",
-          "&ffr;": "\uD835\uDD23",
+          "&ffr;": "\u{1D523}",
           "&filig;": "\uFB01",
           "&fjlig;": "fj",
           "&flat;": "\u266D",
           "&fllig;": "\uFB02",
           "&fltns;": "\u25B1",
           "&fnof;": "\u0192",
-          "&fopf;": "\uD835\uDD57",
+          "&fopf;": "\u{1D557}",
           "&forall;": "\u2200",
           "&fork;": "\u22D4",
           "&forkv;": "\u2AD9",
@@ -13980,7 +13980,7 @@ var require_named_references = __commonJS({
           "&frac78;": "\u215E",
           "&frasl;": "\u2044",
           "&frown;": "\u2322",
-          "&fscr;": "\uD835\uDCBB",
+          "&fscr;": "\u{1D4BB}",
           "&gE;": "\u2267",
           "&gEl;": "\u2A8C",
           "&gacute;": "\u01F5",
@@ -14003,7 +14003,7 @@ var require_named_references = __commonJS({
           "&gesdotol;": "\u2A84",
           "&gesl;": "\u22DB\uFE00",
           "&gesles;": "\u2A94",
-          "&gfr;": "\uD835\uDD24",
+          "&gfr;": "\u{1D524}",
           "&gg;": "\u226B",
           "&ggg;": "\u22D9",
           "&gimel;": "\u2137",
@@ -14019,7 +14019,7 @@ var require_named_references = __commonJS({
           "&gneq;": "\u2A88",
           "&gneqq;": "\u2269",
           "&gnsim;": "\u22E7",
-          "&gopf;": "\uD835\uDD58",
+          "&gopf;": "\u{1D558}",
           "&grave;": "`",
           "&gscr;": "\u210A",
           "&gsim;": "\u2273",
@@ -14055,16 +14055,16 @@ var require_named_references = __commonJS({
           "&heartsuit;": "\u2665",
           "&hellip;": "\u2026",
           "&hercon;": "\u22B9",
-          "&hfr;": "\uD835\uDD25",
+          "&hfr;": "\u{1D525}",
           "&hksearow;": "\u2925",
           "&hkswarow;": "\u2926",
           "&hoarr;": "\u21FF",
           "&homtht;": "\u223B",
           "&hookleftarrow;": "\u21A9",
           "&hookrightarrow;": "\u21AA",
-          "&hopf;": "\uD835\uDD59",
+          "&hopf;": "\u{1D559}",
           "&horbar;": "\u2015",
-          "&hscr;": "\uD835\uDCBD",
+          "&hscr;": "\u{1D4BD}",
           "&hslash;": "\u210F",
           "&hstrok;": "\u0127",
           "&hybull;": "\u2043",
@@ -14079,7 +14079,7 @@ var require_named_references = __commonJS({
           "&iexcl": "\xA1",
           "&iexcl;": "\xA1",
           "&iff;": "\u21D4",
-          "&ifr;": "\uD835\uDD26",
+          "&ifr;": "\u{1D526}",
           "&igrave": "\xEC",
           "&igrave;": "\xEC",
           "&ii;": "\u2148",
@@ -14108,12 +14108,12 @@ var require_named_references = __commonJS({
           "&intprod;": "\u2A3C",
           "&iocy;": "\u0451",
           "&iogon;": "\u012F",
-          "&iopf;": "\uD835\uDD5A",
+          "&iopf;": "\u{1D55A}",
           "&iota;": "\u03B9",
           "&iprod;": "\u2A3C",
           "&iquest": "\xBF",
           "&iquest;": "\xBF",
-          "&iscr;": "\uD835\uDCBE",
+          "&iscr;": "\u{1D4BE}",
           "&isin;": "\u2208",
           "&isinE;": "\u22F9",
           "&isindot;": "\u22F5",
@@ -14127,22 +14127,22 @@ var require_named_references = __commonJS({
           "&iuml;": "\xEF",
           "&jcirc;": "\u0135",
           "&jcy;": "\u0439",
-          "&jfr;": "\uD835\uDD27",
+          "&jfr;": "\u{1D527}",
           "&jmath;": "\u0237",
-          "&jopf;": "\uD835\uDD5B",
-          "&jscr;": "\uD835\uDCBF",
+          "&jopf;": "\u{1D55B}",
+          "&jscr;": "\u{1D4BF}",
           "&jsercy;": "\u0458",
           "&jukcy;": "\u0454",
           "&kappa;": "\u03BA",
           "&kappav;": "\u03F0",
           "&kcedil;": "\u0137",
           "&kcy;": "\u043A",
-          "&kfr;": "\uD835\uDD28",
+          "&kfr;": "\u{1D528}",
           "&kgreen;": "\u0138",
           "&khcy;": "\u0445",
           "&kjcy;": "\u045C",
-          "&kopf;": "\uD835\uDD5C",
-          "&kscr;": "\uD835\uDCC0",
+          "&kopf;": "\u{1D55C}",
+          "&kscr;": "\u{1D4C0}",
           "&lAarr;": "\u21DA",
           "&lArr;": "\u21D0",
           "&lAtail;": "\u291B",
@@ -14221,7 +14221,7 @@ var require_named_references = __commonJS({
           "&lesssim;": "\u2272",
           "&lfisht;": "\u297C",
           "&lfloor;": "\u230A",
-          "&lfr;": "\uD835\uDD29",
+          "&lfr;": "\u{1D529}",
           "&lg;": "\u2276",
           "&lgE;": "\u2A91",
           "&lhard;": "\u21BD",
@@ -14254,7 +14254,7 @@ var require_named_references = __commonJS({
           "&looparrowleft;": "\u21AB",
           "&looparrowright;": "\u21AC",
           "&lopar;": "\u2985",
-          "&lopf;": "\uD835\uDD5D",
+          "&lopf;": "\u{1D55D}",
           "&loplus;": "\u2A2D",
           "&lotimes;": "\u2A34",
           "&lowast;": "\u2217",
@@ -14271,7 +14271,7 @@ var require_named_references = __commonJS({
           "&lrm;": "\u200E",
           "&lrtri;": "\u22BF",
           "&lsaquo;": "\u2039",
-          "&lscr;": "\uD835\uDCC1",
+          "&lscr;": "\u{1D4C1}",
           "&lsh;": "\u21B0",
           "&lsim;": "\u2272",
           "&lsime;": "\u2A8D",
@@ -14313,7 +14313,7 @@ var require_named_references = __commonJS({
           "&mcy;": "\u043C",
           "&mdash;": "\u2014",
           "&measuredangle;": "\u2221",
-          "&mfr;": "\uD835\uDD2A",
+          "&mfr;": "\u{1D52A}",
           "&mho;": "\u2127",
           "&micro": "\xB5",
           "&micro;": "\xB5",
@@ -14330,9 +14330,9 @@ var require_named_references = __commonJS({
           "&mldr;": "\u2026",
           "&mnplus;": "\u2213",
           "&models;": "\u22A7",
-          "&mopf;": "\uD835\uDD5E",
+          "&mopf;": "\u{1D55E}",
           "&mp;": "\u2213",
-          "&mscr;": "\uD835\uDCC2",
+          "&mscr;": "\u{1D4C2}",
           "&mstpos;": "\u223E",
           "&mu;": "\u03BC",
           "&multimap;": "\u22B8",
@@ -14382,7 +14382,7 @@ var require_named_references = __commonJS({
           "&nesim;": "\u2242\u0338",
           "&nexist;": "\u2204",
           "&nexists;": "\u2204",
-          "&nfr;": "\uD835\uDD2B",
+          "&nfr;": "\u{1D52B}",
           "&ngE;": "\u2267\u0338",
           "&nge;": "\u2271",
           "&ngeq;": "\u2271",
@@ -14417,7 +14417,7 @@ var require_named_references = __commonJS({
           "&nltri;": "\u22EA",
           "&nltrie;": "\u22EC",
           "&nmid;": "\u2224",
-          "&nopf;": "\uD835\uDD5F",
+          "&nopf;": "\u{1D55F}",
           "&not": "\xAC",
           "&not;": "\xAC",
           "&notin;": "\u2209",
@@ -14450,7 +14450,7 @@ var require_named_references = __commonJS({
           "&nsc;": "\u2281",
           "&nsccue;": "\u22E1",
           "&nsce;": "\u2AB0\u0338",
-          "&nscr;": "\uD835\uDCC3",
+          "&nscr;": "\u{1D4C3}",
           "&nshortmid;": "\u2224",
           "&nshortparallel;": "\u2226",
           "&nsim;": "\u2241",
@@ -14520,7 +14520,7 @@ var require_named_references = __commonJS({
           "&odsold;": "\u29BC",
           "&oelig;": "\u0153",
           "&ofcir;": "\u29BF",
-          "&ofr;": "\uD835\uDD2C",
+          "&ofr;": "\u{1D52C}",
           "&ogon;": "\u02DB",
           "&ograve": "\xF2",
           "&ograve;": "\xF2",
@@ -14538,7 +14538,7 @@ var require_named_references = __commonJS({
           "&omicron;": "\u03BF",
           "&omid;": "\u29B6",
           "&ominus;": "\u2296",
-          "&oopf;": "\uD835\uDD60",
+          "&oopf;": "\u{1D560}",
           "&opar;": "\u29B7",
           "&operp;": "\u29B9",
           "&oplus;": "\u2295",
@@ -14579,7 +14579,7 @@ var require_named_references = __commonJS({
           "&permil;": "\u2030",
           "&perp;": "\u22A5",
           "&pertenk;": "\u2031",
-          "&pfr;": "\uD835\uDD2D",
+          "&pfr;": "\u{1D52D}",
           "&phi;": "\u03C6",
           "&phiv;": "\u03D5",
           "&phmmat;": "\u2133",
@@ -14603,7 +14603,7 @@ var require_named_references = __commonJS({
           "&plustwo;": "\u2A27",
           "&pm;": "\xB1",
           "&pointint;": "\u2A15",
-          "&popf;": "\uD835\uDD61",
+          "&popf;": "\u{1D561}",
           "&pound": "\xA3",
           "&pound;": "\xA3",
           "&pr;": "\u227A",
@@ -14632,14 +14632,14 @@ var require_named_references = __commonJS({
           "&propto;": "\u221D",
           "&prsim;": "\u227E",
           "&prurel;": "\u22B0",
-          "&pscr;": "\uD835\uDCC5",
+          "&pscr;": "\u{1D4C5}",
           "&psi;": "\u03C8",
           "&puncsp;": "\u2008",
-          "&qfr;": "\uD835\uDD2E",
+          "&qfr;": "\u{1D52E}",
           "&qint;": "\u2A0C",
-          "&qopf;": "\uD835\uDD62",
+          "&qopf;": "\u{1D562}",
           "&qprime;": "\u2057",
-          "&qscr;": "\uD835\uDCC6",
+          "&qscr;": "\u{1D4C6}",
           "&quaternions;": "\u210D",
           "&quatint;": "\u2A16",
           "&quest;": "?",
@@ -14702,7 +14702,7 @@ var require_named_references = __commonJS({
           "&reg;": "\xAE",
           "&rfisht;": "\u297D",
           "&rfloor;": "\u230B",
-          "&rfr;": "\uD835\uDD2F",
+          "&rfr;": "\u{1D52F}",
           "&rhard;": "\u21C1",
           "&rharu;": "\u21C0",
           "&rharul;": "\u296C",
@@ -14729,7 +14729,7 @@ var require_named_references = __commonJS({
           "&roarr;": "\u21FE",
           "&robrk;": "\u27E7",
           "&ropar;": "\u2986",
-          "&ropf;": "\uD835\uDD63",
+          "&ropf;": "\u{1D563}",
           "&roplus;": "\u2A2E",
           "&rotimes;": "\u2A35",
           "&rpar;": ")",
@@ -14737,7 +14737,7 @@ var require_named_references = __commonJS({
           "&rppolint;": "\u2A12",
           "&rrarr;": "\u21C9",
           "&rsaquo;": "\u203A",
-          "&rscr;": "\uD835\uDCC7",
+          "&rscr;": "\u{1D4C7}",
           "&rsh;": "\u21B1",
           "&rsqb;": "]",
           "&rsquo;": "\u2019",
@@ -14780,7 +14780,7 @@ var require_named_references = __commonJS({
           "&setminus;": "\u2216",
           "&setmn;": "\u2216",
           "&sext;": "\u2736",
-          "&sfr;": "\uD835\uDD30",
+          "&sfr;": "\u{1D530}",
           "&sfrown;": "\u2322",
           "&sharp;": "\u266F",
           "&shchcy;": "\u0449",
@@ -14816,7 +14816,7 @@ var require_named_references = __commonJS({
           "&sol;": "/",
           "&solb;": "\u29C4",
           "&solbar;": "\u233F",
-          "&sopf;": "\uD835\uDD64",
+          "&sopf;": "\u{1D564}",
           "&spades;": "\u2660",
           "&spadesuit;": "\u2660",
           "&spar;": "\u2225",
@@ -14837,7 +14837,7 @@ var require_named_references = __commonJS({
           "&squarf;": "\u25AA",
           "&squf;": "\u25AA",
           "&srarr;": "\u2192",
-          "&sscr;": "\uD835\uDCC8",
+          "&sscr;": "\u{1D4C8}",
           "&ssetmn;": "\u2216",
           "&ssmile;": "\u2323",
           "&sstarf;": "\u22C6",
@@ -14916,7 +14916,7 @@ var require_named_references = __commonJS({
           "&tcy;": "\u0442",
           "&tdot;": "\u20DB",
           "&telrec;": "\u2315",
-          "&tfr;": "\uD835\uDD31",
+          "&tfr;": "\u{1D531}",
           "&there4;": "\u2234",
           "&therefore;": "\u2234",
           "&theta;": "\u03B8",
@@ -14940,7 +14940,7 @@ var require_named_references = __commonJS({
           "&top;": "\u22A4",
           "&topbot;": "\u2336",
           "&topcir;": "\u2AF1",
-          "&topf;": "\uD835\uDD65",
+          "&topf;": "\u{1D565}",
           "&topfork;": "\u2ADA",
           "&tosa;": "\u2929",
           "&tprime;": "\u2034",
@@ -14959,7 +14959,7 @@ var require_named_references = __commonJS({
           "&trisb;": "\u29CD",
           "&tritime;": "\u2A3B",
           "&trpezium;": "\u23E2",
-          "&tscr;": "\uD835\uDCC9",
+          "&tscr;": "\u{1D4C9}",
           "&tscy;": "\u0446",
           "&tshcy;": "\u045B",
           "&tstrok;": "\u0167",
@@ -14980,7 +14980,7 @@ var require_named_references = __commonJS({
           "&udblac;": "\u0171",
           "&udhar;": "\u296E",
           "&ufisht;": "\u297E",
-          "&ufr;": "\uD835\uDD32",
+          "&ufr;": "\u{1D532}",
           "&ugrave": "\xF9",
           "&ugrave;": "\xF9",
           "&uharl;": "\u21BF",
@@ -14994,7 +14994,7 @@ var require_named_references = __commonJS({
           "&uml": "\xA8",
           "&uml;": "\xA8",
           "&uogon;": "\u0173",
-          "&uopf;": "\uD835\uDD66",
+          "&uopf;": "\u{1D566}",
           "&uparrow;": "\u2191",
           "&updownarrow;": "\u2195",
           "&upharpoonleft;": "\u21BF",
@@ -15009,7 +15009,7 @@ var require_named_references = __commonJS({
           "&urcrop;": "\u230E",
           "&uring;": "\u016F",
           "&urtri;": "\u25F9",
-          "&uscr;": "\uD835\uDCCA",
+          "&uscr;": "\u{1D4CA}",
           "&utdot;": "\u22F0",
           "&utilde;": "\u0169",
           "&utri;": "\u25B5",
@@ -15047,14 +15047,14 @@ var require_named_references = __commonJS({
           "&vellip;": "\u22EE",
           "&verbar;": "|",
           "&vert;": "|",
-          "&vfr;": "\uD835\uDD33",
+          "&vfr;": "\u{1D533}",
           "&vltri;": "\u22B2",
           "&vnsub;": "\u2282\u20D2",
           "&vnsup;": "\u2283\u20D2",
-          "&vopf;": "\uD835\uDD67",
+          "&vopf;": "\u{1D567}",
           "&vprop;": "\u221D",
           "&vrtri;": "\u22B3",
-          "&vscr;": "\uD835\uDCCB",
+          "&vscr;": "\u{1D4CB}",
           "&vsubnE;": "\u2ACB\uFE00",
           "&vsubne;": "\u228A\uFE00",
           "&vsupnE;": "\u2ACC\uFE00",
@@ -15065,17 +15065,17 @@ var require_named_references = __commonJS({
           "&wedge;": "\u2227",
           "&wedgeq;": "\u2259",
           "&weierp;": "\u2118",
-          "&wfr;": "\uD835\uDD34",
-          "&wopf;": "\uD835\uDD68",
+          "&wfr;": "\u{1D534}",
+          "&wopf;": "\u{1D568}",
           "&wp;": "\u2118",
           "&wr;": "\u2240",
           "&wreath;": "\u2240",
-          "&wscr;": "\uD835\uDCCC",
+          "&wscr;": "\u{1D4CC}",
           "&xcap;": "\u22C2",
           "&xcirc;": "\u25EF",
           "&xcup;": "\u22C3",
           "&xdtri;": "\u25BD",
-          "&xfr;": "\uD835\uDD35",
+          "&xfr;": "\u{1D535}",
           "&xhArr;": "\u27FA",
           "&xharr;": "\u27F7",
           "&xi;": "\u03BE",
@@ -15084,12 +15084,12 @@ var require_named_references = __commonJS({
           "&xmap;": "\u27FC",
           "&xnis;": "\u22FB",
           "&xodot;": "\u2A00",
-          "&xopf;": "\uD835\uDD69",
+          "&xopf;": "\u{1D569}",
           "&xoplus;": "\u2A01",
           "&xotime;": "\u2A02",
           "&xrArr;": "\u27F9",
           "&xrarr;": "\u27F6",
-          "&xscr;": "\uD835\uDCCD",
+          "&xscr;": "\u{1D4CD}",
           "&xsqcup;": "\u2A06",
           "&xuplus;": "\u2A04",
           "&xutri;": "\u25B3",
@@ -15102,10 +15102,10 @@ var require_named_references = __commonJS({
           "&ycy;": "\u044B",
           "&yen": "\xA5",
           "&yen;": "\xA5",
-          "&yfr;": "\uD835\uDD36",
+          "&yfr;": "\u{1D536}",
           "&yicy;": "\u0457",
-          "&yopf;": "\uD835\uDD6A",
-          "&yscr;": "\uD835\uDCCE",
+          "&yopf;": "\u{1D56A}",
+          "&yscr;": "\u{1D4CE}",
           "&yucy;": "\u044E",
           "&yuml": "\xFF",
           "&yuml;": "\xFF",
@@ -15115,11 +15115,11 @@ var require_named_references = __commonJS({
           "&zdot;": "\u017C",
           "&zeetrf;": "\u2128",
           "&zeta;": "\u03B6",
-          "&zfr;": "\uD835\uDD37",
+          "&zfr;": "\u{1D537}",
           "&zhcy;": "\u0436",
           "&zigrarr;": "\u21DD",
-          "&zopf;": "\uD835\uDD6B",
-          "&zscr;": "\uD835\uDCCF",
+          "&zopf;": "\u{1D56B}",
+          "&zscr;": "\u{1D4CF}",
           "&zwj;": "\u200D",
           "&zwnj;": "\u200C"
         },
@@ -15130,16 +15130,16 @@ var require_named_references = __commonJS({
           "\u0102": "&Abreve;",
           "\xC2": "&Acirc;",
           "\u0410": "&Acy;",
-          "\uD835\uDD04": "&Afr;",
+          "\u{1D504}": "&Afr;",
           "\xC0": "&Agrave;",
           "\u0391": "&Alpha;",
           "\u0100": "&Amacr;",
           "\u2A53": "&And;",
           "\u0104": "&Aogon;",
-          "\uD835\uDD38": "&Aopf;",
+          "\u{1D538}": "&Aopf;",
           "\u2061": "&af;",
           "\xC5": "&angst;",
-          "\uD835\uDC9C": "&Ascr;",
+          "\u{1D49C}": "&Ascr;",
           "\u2254": "&coloneq;",
           "\xC3": "&Atilde;",
           "\xC4": "&Auml;",
@@ -15150,8 +15150,8 @@ var require_named_references = __commonJS({
           "\u2235": "&because;",
           "\u212C": "&bernou;",
           "\u0392": "&Beta;",
-          "\uD835\uDD05": "&Bfr;",
-          "\uD835\uDD39": "&Bopf;",
+          "\u{1D505}": "&Bfr;",
+          "\u{1D539}": "&Bopf;",
           "\u02D8": "&breve;",
           "\u224E": "&bump;",
           "\u0427": "&CHcy;",
@@ -15184,7 +15184,7 @@ var require_named_references = __commonJS({
           "\u2210": "&coprod;",
           "\u2233": "&awconint;",
           "\u2A2F": "&Cross;",
-          "\uD835\uDC9E": "&Cscr;",
+          "\u{1D49E}": "&Cscr;",
           "\u22D3": "&Cup;",
           "\u224D": "&asympeq;",
           "\u2911": "&DDotrahd;",
@@ -15198,7 +15198,7 @@ var require_named_references = __commonJS({
           "\u0414": "&Dcy;",
           "\u2207": "&nabla;",
           "\u0394": "&Delta;",
-          "\uD835\uDD07": "&Dfr;",
+          "\u{1D507}": "&Dfr;",
           "\xB4": "&acute;",
           "\u02D9": "&dot;",
           "\u02DD": "&dblac;",
@@ -15206,7 +15206,7 @@ var require_named_references = __commonJS({
           "\u02DC": "&tilde;",
           "\u22C4": "&diamond;",
           "\u2146": "&dd;",
-          "\uD835\uDD3B": "&Dopf;",
+          "\u{1D53B}": "&Dopf;",
           "\xA8": "&uml;",
           "\u20DC": "&DotDot;",
           "\u2250": "&esdot;",
@@ -15234,7 +15234,7 @@ var require_named_references = __commonJS({
           "\u2957": "&DownRightVectorBar;",
           "\u22A4": "&top;",
           "\u21A7": "&mapstodown;",
-          "\uD835\uDC9F": "&Dscr;",
+          "\u{1D49F}": "&Dscr;",
           "\u0110": "&Dstrok;",
           "\u014A": "&ENG;",
           "\xD0": "&ETH;",
@@ -15243,14 +15243,14 @@ var require_named_references = __commonJS({
           "\xCA": "&Ecirc;",
           "\u042D": "&Ecy;",
           "\u0116": "&Edot;",
-          "\uD835\uDD08": "&Efr;",
+          "\u{1D508}": "&Efr;",
           "\xC8": "&Egrave;",
           "\u2208": "&isinv;",
           "\u0112": "&Emacr;",
           "\u25FB": "&EmptySmallSquare;",
           "\u25AB": "&EmptyVerySmallSquare;",
           "\u0118": "&Eogon;",
-          "\uD835\uDD3C": "&Eopf;",
+          "\u{1D53C}": "&Eopf;",
           "\u0395": "&Epsilon;",
           "\u2A75": "&Equal;",
           "\u2242": "&esim;",
@@ -15262,10 +15262,10 @@ var require_named_references = __commonJS({
           "\u2203": "&exist;",
           "\u2147": "&exponentiale;",
           "\u0424": "&Fcy;",
-          "\uD835\uDD09": "&Ffr;",
+          "\u{1D509}": "&Ffr;",
           "\u25FC": "&FilledSmallSquare;",
           "\u25AA": "&squf;",
-          "\uD835\uDD3D": "&Fopf;",
+          "\u{1D53D}": "&Fopf;",
           "\u2200": "&forall;",
           "\u2131": "&Fscr;",
           "\u0403": "&GJcy;",
@@ -15277,9 +15277,9 @@ var require_named_references = __commonJS({
           "\u011C": "&Gcirc;",
           "\u0413": "&Gcy;",
           "\u0120": "&Gdot;",
-          "\uD835\uDD0A": "&Gfr;",
+          "\u{1D50A}": "&Gfr;",
           "\u22D9": "&ggg;",
-          "\uD835\uDD3E": "&Gopf;",
+          "\u{1D53E}": "&Gopf;",
           "\u2265": "&geq;",
           "\u22DB": "&gtreqless;",
           "\u2267": "&geqq;",
@@ -15287,7 +15287,7 @@ var require_named_references = __commonJS({
           "\u2277": "&gtrless;",
           "\u2A7E": "&ges;",
           "\u2273": "&gtrsim;",
-          "\uD835\uDCA2": "&Gscr;",
+          "\u{1D4A2}": "&Gscr;",
           "\u226B": "&gg;",
           "\u042A": "&HARDcy;",
           "\u02C7": "&caron;",
@@ -15316,7 +15316,7 @@ var require_named_references = __commonJS({
           "\u2063": "&ic;",
           "\u2062": "&it;",
           "\u012E": "&Iogon;",
-          "\uD835\uDD40": "&Iopf;",
+          "\u{1D540}": "&Iopf;",
           "\u0399": "&Iota;",
           "\u2110": "&imagline;",
           "\u0128": "&Itilde;",
@@ -15324,9 +15324,9 @@ var require_named_references = __commonJS({
           "\xCF": "&Iuml;",
           "\u0134": "&Jcirc;",
           "\u0419": "&Jcy;",
-          "\uD835\uDD0D": "&Jfr;",
-          "\uD835\uDD41": "&Jopf;",
-          "\uD835\uDCA5": "&Jscr;",
+          "\u{1D50D}": "&Jfr;",
+          "\u{1D541}": "&Jopf;",
+          "\u{1D4A5}": "&Jscr;",
           "\u0408": "&Jsercy;",
           "\u0404": "&Jukcy;",
           "\u0425": "&KHcy;",
@@ -15334,9 +15334,9 @@ var require_named_references = __commonJS({
           "\u039A": "&Kappa;",
           "\u0136": "&Kcedil;",
           "\u041A": "&Kcy;",
-          "\uD835\uDD0E": "&Kfr;",
-          "\uD835\uDD42": "&Kopf;",
-          "\uD835\uDCA6": "&Kscr;",
+          "\u{1D50E}": "&Kfr;",
+          "\u{1D542}": "&Kopf;",
+          "\u{1D4A6}": "&Kscr;",
           "\u0409": "&LJcy;",
           "<": "&lt;",
           "\u0139": "&Lacute;",
@@ -15377,14 +15377,14 @@ var require_named_references = __commonJS({
           "\u2AA1": "&LessLess;",
           "\u2A7D": "&les;",
           "\u2272": "&lsim;",
-          "\uD835\uDD0F": "&Lfr;",
+          "\u{1D50F}": "&Lfr;",
           "\u22D8": "&Ll;",
           "\u21DA": "&lAarr;",
           "\u013F": "&Lmidot;",
           "\u27F5": "&xlarr;",
           "\u27F7": "&xharr;",
           "\u27F6": "&xrarr;",
-          "\uD835\uDD43": "&Lopf;",
+          "\u{1D543}": "&Lopf;",
           "\u2199": "&swarrow;",
           "\u2198": "&searrow;",
           "\u21B0": "&lsh;",
@@ -15394,9 +15394,9 @@ var require_named_references = __commonJS({
           "\u041C": "&Mcy;",
           "\u205F": "&MediumSpace;",
           "\u2133": "&phmmat;",
-          "\uD835\uDD10": "&Mfr;",
+          "\u{1D510}": "&Mfr;",
           "\u2213": "&mp;",
-          "\uD835\uDD44": "&Mopf;",
+          "\u{1D544}": "&Mopf;",
           "\u039C": "&Mu;",
           "\u040A": "&NJcy;",
           "\u0143": "&Nacute;",
@@ -15405,7 +15405,7 @@ var require_named_references = __commonJS({
           "\u041D": "&Ncy;",
           "\u200B": "&ZeroWidthSpace;",
           "\n": "&NewLine;",
-          "\uD835\uDD11": "&Nfr;",
+          "\u{1D511}": "&Nfr;",
           "\u2060": "&NoBreak;",
           "\xA0": "&nbsp;",
           "\u2115": "&naturals;",
@@ -15461,7 +15461,7 @@ var require_named_references = __commonJS({
           "\u2247": "&ncong;",
           "\u2249": "&napprox;",
           "\u2224": "&nsmid;",
-          "\uD835\uDCA9": "&Nscr;",
+          "\u{1D4A9}": "&Nscr;",
           "\xD1": "&Ntilde;",
           "\u039D": "&Nu;",
           "\u0152": "&OElig;",
@@ -15469,16 +15469,16 @@ var require_named_references = __commonJS({
           "\xD4": "&Ocirc;",
           "\u041E": "&Ocy;",
           "\u0150": "&Odblac;",
-          "\uD835\uDD12": "&Ofr;",
+          "\u{1D512}": "&Ofr;",
           "\xD2": "&Ograve;",
           "\u014C": "&Omacr;",
           "\u03A9": "&ohm;",
           "\u039F": "&Omicron;",
-          "\uD835\uDD46": "&Oopf;",
+          "\u{1D546}": "&Oopf;",
           "\u201C": "&ldquo;",
           "\u2018": "&lsquo;",
           "\u2A54": "&Or;",
-          "\uD835\uDCAA": "&Oscr;",
+          "\u{1D4AA}": "&Oscr;",
           "\xD8": "&Oslash;",
           "\xD5": "&Otilde;",
           "\u2A37": "&Otimes;",
@@ -15489,7 +15489,7 @@ var require_named_references = __commonJS({
           "\u23DC": "&OverParenthesis;",
           "\u2202": "&part;",
           "\u041F": "&Pcy;",
-          "\uD835\uDD13": "&Pfr;",
+          "\u{1D513}": "&Pfr;",
           "\u03A6": "&Phi;",
           "\u03A0": "&Pi;",
           "\xB1": "&pm;",
@@ -15502,12 +15502,12 @@ var require_named_references = __commonJS({
           "\u2033": "&Prime;",
           "\u220F": "&prod;",
           "\u221D": "&vprop;",
-          "\uD835\uDCAB": "&Pscr;",
+          "\u{1D4AB}": "&Pscr;",
           "\u03A8": "&Psi;",
           '"': "&quot;",
-          "\uD835\uDD14": "&Qfr;",
+          "\u{1D514}": "&Qfr;",
           "\u211A": "&rationals;",
-          "\uD835\uDCAC": "&Qscr;",
+          "\u{1D4AC}": "&Qscr;",
           "\u2910": "&drbkarow;",
           "\xAE": "&reg;",
           "\u0154": "&Racute;",
@@ -15559,11 +15559,11 @@ var require_named_references = __commonJS({
           "\u015E": "&Scedil;",
           "\u015C": "&Scirc;",
           "\u0421": "&Scy;",
-          "\uD835\uDD16": "&Sfr;",
+          "\u{1D516}": "&Sfr;",
           "\u2191": "&uparrow;",
           "\u03A3": "&Sigma;",
           "\u2218": "&compfn;",
-          "\uD835\uDD4A": "&Sopf;",
+          "\u{1D54A}": "&Sopf;",
           "\u221A": "&radic;",
           "\u25A1": "&square;",
           "\u2293": "&sqcap;",
@@ -15572,7 +15572,7 @@ var require_named_references = __commonJS({
           "\u2290": "&sqsupset;",
           "\u2292": "&sqsupseteq;",
           "\u2294": "&sqcup;",
-          "\uD835\uDCAE": "&Sscr;",
+          "\u{1D4AE}": "&Sscr;",
           "\u22C6": "&sstarf;",
           "\u22D0": "&Subset;",
           "\u2286": "&subseteq;",
@@ -15593,7 +15593,7 @@ var require_named_references = __commonJS({
           "\u0164": "&Tcaron;",
           "\u0162": "&Tcedil;",
           "\u0422": "&Tcy;",
-          "\uD835\uDD17": "&Tfr;",
+          "\u{1D517}": "&Tfr;",
           "\u2234": "&therefore;",
           "\u0398": "&Theta;",
           "\u205F\u200A": "&ThickSpace;",
@@ -15602,9 +15602,9 @@ var require_named_references = __commonJS({
           "\u2243": "&simeq;",
           "\u2245": "&cong;",
           "\u2248": "&thkap;",
-          "\uD835\uDD4B": "&Topf;",
+          "\u{1D54B}": "&Topf;",
           "\u20DB": "&tdot;",
-          "\uD835\uDCAF": "&Tscr;",
+          "\u{1D4AF}": "&Tscr;",
           "\u0166": "&Tstrok;",
           "\xDA": "&Uacute;",
           "\u219F": "&Uarr;",
@@ -15614,7 +15614,7 @@ var require_named_references = __commonJS({
           "\xDB": "&Ucirc;",
           "\u0423": "&Ucy;",
           "\u0170": "&Udblac;",
-          "\uD835\uDD18": "&Ufr;",
+          "\u{1D518}": "&Ufr;",
           "\xD9": "&Ugrave;",
           "\u016A": "&Umacr;",
           _: "&lowbar;",
@@ -15624,7 +15624,7 @@ var require_named_references = __commonJS({
           "\u22C3": "&xcup;",
           "\u228E": "&uplus;",
           "\u0172": "&Uogon;",
-          "\uD835\uDD4C": "&Uopf;",
+          "\u{1D54C}": "&Uopf;",
           "\u2912": "&UpArrowBar;",
           "\u21C5": "&udarr;",
           "\u2195": "&varr;",
@@ -15636,7 +15636,7 @@ var require_named_references = __commonJS({
           "\u03D2": "&upsih;",
           "\u03A5": "&Upsilon;",
           "\u016E": "&Uring;",
-          "\uD835\uDCB0": "&Uscr;",
+          "\u{1D4B0}": "&Uscr;",
           "\u0168": "&Utilde;",
           "\xDC": "&Uuml;",
           "\u22AB": "&VDash;",
@@ -15651,28 +15651,28 @@ var require_named_references = __commonJS({
           "\u2758": "&VerticalSeparator;",
           "\u2240": "&wreath;",
           "\u200A": "&hairsp;",
-          "\uD835\uDD19": "&Vfr;",
-          "\uD835\uDD4D": "&Vopf;",
-          "\uD835\uDCB1": "&Vscr;",
+          "\u{1D519}": "&Vfr;",
+          "\u{1D54D}": "&Vopf;",
+          "\u{1D4B1}": "&Vscr;",
           "\u22AA": "&Vvdash;",
           "\u0174": "&Wcirc;",
           "\u22C0": "&xwedge;",
-          "\uD835\uDD1A": "&Wfr;",
-          "\uD835\uDD4E": "&Wopf;",
-          "\uD835\uDCB2": "&Wscr;",
-          "\uD835\uDD1B": "&Xfr;",
+          "\u{1D51A}": "&Wfr;",
+          "\u{1D54E}": "&Wopf;",
+          "\u{1D4B2}": "&Wscr;",
+          "\u{1D51B}": "&Xfr;",
           "\u039E": "&Xi;",
-          "\uD835\uDD4F": "&Xopf;",
-          "\uD835\uDCB3": "&Xscr;",
+          "\u{1D54F}": "&Xopf;",
+          "\u{1D4B3}": "&Xscr;",
           "\u042F": "&YAcy;",
           "\u0407": "&YIcy;",
           "\u042E": "&YUcy;",
           "\xDD": "&Yacute;",
           "\u0176": "&Ycirc;",
           "\u042B": "&Ycy;",
-          "\uD835\uDD1C": "&Yfr;",
-          "\uD835\uDD50": "&Yopf;",
-          "\uD835\uDCB4": "&Yscr;",
+          "\u{1D51C}": "&Yfr;",
+          "\u{1D550}": "&Yopf;",
+          "\u{1D4B4}": "&Yscr;",
           "\u0178": "&Yuml;",
           "\u0416": "&ZHcy;",
           "\u0179": "&Zacute;",
@@ -15682,7 +15682,7 @@ var require_named_references = __commonJS({
           "\u0396": "&Zeta;",
           "\u2128": "&zeetrf;",
           "\u2124": "&integers;",
-          "\uD835\uDCB5": "&Zscr;",
+          "\u{1D4B5}": "&Zscr;",
           "\xE1": "&aacute;",
           "\u0103": "&abreve;",
           "\u223E": "&mstpos;",
@@ -15691,7 +15691,7 @@ var require_named_references = __commonJS({
           "\xE2": "&acirc;",
           "\u0430": "&acy;",
           "\xE6": "&aelig;",
-          "\uD835\uDD1E": "&afr;",
+          "\u{1D51E}": "&afr;",
           "\xE0": "&agrave;",
           "\u2135": "&aleph;",
           "\u03B1": "&alpha;",
@@ -15719,14 +15719,14 @@ var require_named_references = __commonJS({
           "\u2222": "&angsph;",
           "\u237C": "&angzarr;",
           "\u0105": "&aogon;",
-          "\uD835\uDD52": "&aopf;",
+          "\u{1D552}": "&aopf;",
           "\u2A70": "&apE;",
           "\u2A6F": "&apacir;",
           "\u224A": "&approxeq;",
           "\u224B": "&apid;",
           "'": "&apos;",
           "\xE5": "&aring;",
-          "\uD835\uDCB6": "&ascr;",
+          "\u{1D4B6}": "&ascr;",
           "*": "&midast;",
           "\xE3": "&atilde;",
           "\xE4": "&auml;",
@@ -15746,7 +15746,7 @@ var require_named_references = __commonJS({
           "\u03B2": "&beta;",
           "\u2136": "&beth;",
           "\u226C": "&twixt;",
-          "\uD835\uDD1F": "&bfr;",
+          "\u{1D51F}": "&bfr;",
           "\u25EF": "&xcirc;",
           "\u2A00": "&xodot;",
           "\u2A01": "&xoplus;",
@@ -15770,7 +15770,7 @@ var require_named_references = __commonJS({
           "=\u20E5": "&bne;",
           "\u2261\u20E5": "&bnequiv;",
           "\u2310": "&bnot;",
-          "\uD835\uDD53": "&bopf;",
+          "\u{1D553}": "&bopf;",
           "\u22C8": "&bowtie;",
           "\u2557": "&boxDL;",
           "\u2554": "&boxDR;",
@@ -15816,7 +15816,7 @@ var require_named_references = __commonJS({
           "\u2524": "&boxvl;",
           "\u251C": "&boxvr;",
           "\xA6": "&brvbar;",
-          "\uD835\uDCB7": "&bscr;",
+          "\u{1D4B7}": "&bscr;",
           "\u204F": "&bsemi;",
           "\\": "&bsol;",
           "\u29C5": "&bsolb;",
@@ -15841,7 +15841,7 @@ var require_named_references = __commonJS({
           "\u010B": "&cdot;",
           "\u29B2": "&cemptyv;",
           "\xA2": "&cent;",
-          "\uD835\uDD20": "&cfr;",
+          "\u{1D520}": "&cfr;",
           "\u0447": "&chcy;",
           "\u2713": "&checkmark;",
           "\u03C7": "&chi;",
@@ -15864,11 +15864,11 @@ var require_named_references = __commonJS({
           "@": "&commat;",
           "\u2201": "&complement;",
           "\u2A6D": "&congdot;",
-          "\uD835\uDD54": "&copf;",
+          "\u{1D554}": "&copf;",
           "\u2117": "&copysr;",
           "\u21B5": "&crarr;",
           "\u2717": "&cross;",
-          "\uD835\uDCB8": "&cscr;",
+          "\u{1D4B8}": "&cscr;",
           "\u2ACF": "&csub;",
           "\u2AD1": "&csube;",
           "\u2AD0": "&csup;",
@@ -15907,7 +15907,7 @@ var require_named_references = __commonJS({
           "\u03B4": "&delta;",
           "\u29B1": "&demptyv;",
           "\u297F": "&dfisht;",
-          "\uD835\uDD21": "&dfr;",
+          "\u{1D521}": "&dfr;",
           "\u2666": "&diams;",
           "\u03DD": "&gammad;",
           "\u22F2": "&disin;",
@@ -15917,14 +15917,14 @@ var require_named_references = __commonJS({
           "\u231E": "&llcorner;",
           "\u230D": "&dlcrop;",
           $: "&dollar;",
-          "\uD835\uDD55": "&dopf;",
+          "\u{1D555}": "&dopf;",
           "\u2251": "&eDot;",
           "\u2238": "&minusd;",
           "\u2214": "&plusdo;",
           "\u22A1": "&sdotb;",
           "\u231F": "&lrcorner;",
           "\u230C": "&drcrop;",
-          "\uD835\uDCB9": "&dscr;",
+          "\u{1D4B9}": "&dscr;",
           "\u0455": "&dscy;",
           "\u29F6": "&dsol;",
           "\u0111": "&dstrok;",
@@ -15942,7 +15942,7 @@ var require_named_references = __commonJS({
           "\u044D": "&ecy;",
           "\u0117": "&edot;",
           "\u2252": "&fallingdotseq;",
-          "\uD835\uDD22": "&efr;",
+          "\u{1D522}": "&efr;",
           "\u2A9A": "&eg;",
           "\xE8": "&egrave;",
           "\u2A96": "&eqslantgtr;",
@@ -15960,7 +15960,7 @@ var require_named_references = __commonJS({
           "\u014B": "&eng;",
           "\u2002": "&ensp;",
           "\u0119": "&eogon;",
-          "\uD835\uDD56": "&eopf;",
+          "\u{1D556}": "&eopf;",
           "\u22D5": "&epar;",
           "\u29E3": "&eparsl;",
           "\u2A71": "&eplus;",
@@ -15983,14 +15983,14 @@ var require_named_references = __commonJS({
           "\uFB03": "&ffilig;",
           "\uFB00": "&fflig;",
           "\uFB04": "&ffllig;",
-          "\uD835\uDD23": "&ffr;",
+          "\u{1D523}": "&ffr;",
           "\uFB01": "&filig;",
           fj: "&fjlig;",
           "\u266D": "&flat;",
           "\uFB02": "&fllig;",
           "\u25B1": "&fltns;",
           "\u0192": "&fnof;",
-          "\uD835\uDD57": "&fopf;",
+          "\u{1D557}": "&fopf;",
           "\u22D4": "&pitchfork;",
           "\u2AD9": "&forkv;",
           "\u2A0D": "&fpartint;",
@@ -16011,7 +16011,7 @@ var require_named_references = __commonJS({
           "\u215E": "&frac78;",
           "\u2044": "&frasl;",
           "\u2322": "&sfrown;",
-          "\uD835\uDCBB": "&fscr;",
+          "\u{1D4BB}": "&fscr;",
           "\u2A8C": "&gtreqqless;",
           "\u01F5": "&gacute;",
           "\u03B3": "&gamma;",
@@ -16026,7 +16026,7 @@ var require_named_references = __commonJS({
           "\u2A84": "&gesdotol;",
           "\u22DB\uFE00": "&gesl;",
           "\u2A94": "&gesles;",
-          "\uD835\uDD24": "&gfr;",
+          "\u{1D524}": "&gfr;",
           "\u2137": "&gimel;",
           "\u0453": "&gjcy;",
           "\u2A92": "&glE;",
@@ -16036,7 +16036,7 @@ var require_named_references = __commonJS({
           "\u2A8A": "&gnapprox;",
           "\u2A88": "&gneq;",
           "\u22E7": "&gnsim;",
-          "\uD835\uDD58": "&gopf;",
+          "\u{1D558}": "&gopf;",
           "\u210A": "&gscr;",
           "\u2A8E": "&gsime;",
           "\u2A90": "&gsiml;",
@@ -16055,16 +16055,16 @@ var require_named_references = __commonJS({
           "\u2665": "&heartsuit;",
           "\u2026": "&mldr;",
           "\u22B9": "&hercon;",
-          "\uD835\uDD25": "&hfr;",
+          "\u{1D525}": "&hfr;",
           "\u2925": "&searhk;",
           "\u2926": "&swarhk;",
           "\u21FF": "&hoarr;",
           "\u223B": "&homtht;",
           "\u21A9": "&larrhk;",
           "\u21AA": "&rarrhk;",
-          "\uD835\uDD59": "&hopf;",
+          "\u{1D559}": "&hopf;",
           "\u2015": "&horbar;",
-          "\uD835\uDCBD": "&hscr;",
+          "\u{1D4BD}": "&hscr;",
           "\u0127": "&hstrok;",
           "\u2043": "&hybull;",
           "\xED": "&iacute;",
@@ -16072,7 +16072,7 @@ var require_named_references = __commonJS({
           "\u0438": "&icy;",
           "\u0435": "&iecy;",
           "\xA1": "&iexcl;",
-          "\uD835\uDD26": "&ifr;",
+          "\u{1D526}": "&ifr;",
           "\xEC": "&igrave;",
           "\u2A0C": "&qint;",
           "\u222D": "&tint;",
@@ -16091,10 +16091,10 @@ var require_named_references = __commonJS({
           "\u2A3C": "&iprod;",
           "\u0451": "&iocy;",
           "\u012F": "&iogon;",
-          "\uD835\uDD5A": "&iopf;",
+          "\u{1D55A}": "&iopf;",
           "\u03B9": "&iota;",
           "\xBF": "&iquest;",
-          "\uD835\uDCBE": "&iscr;",
+          "\u{1D4BE}": "&iscr;",
           "\u22F9": "&isinE;",
           "\u22F5": "&isindot;",
           "\u22F4": "&isins;",
@@ -16104,22 +16104,22 @@ var require_named_references = __commonJS({
           "\xEF": "&iuml;",
           "\u0135": "&jcirc;",
           "\u0439": "&jcy;",
-          "\uD835\uDD27": "&jfr;",
+          "\u{1D527}": "&jfr;",
           "\u0237": "&jmath;",
-          "\uD835\uDD5B": "&jopf;",
-          "\uD835\uDCBF": "&jscr;",
+          "\u{1D55B}": "&jopf;",
+          "\u{1D4BF}": "&jscr;",
           "\u0458": "&jsercy;",
           "\u0454": "&jukcy;",
           "\u03BA": "&kappa;",
           "\u03F0": "&varkappa;",
           "\u0137": "&kcedil;",
           "\u043A": "&kcy;",
-          "\uD835\uDD28": "&kfr;",
+          "\u{1D528}": "&kfr;",
           "\u0138": "&kgreen;",
           "\u0445": "&khcy;",
           "\u045C": "&kjcy;",
-          "\uD835\uDD5C": "&kopf;",
-          "\uD835\uDCC0": "&kscr;",
+          "\u{1D55C}": "&kopf;",
+          "\u{1D4C0}": "&kscr;",
           "\u291B": "&lAtail;",
           "\u290E": "&lBarr;",
           "\u2A8B": "&lesseqqgtr;",
@@ -16165,7 +16165,7 @@ var require_named_references = __commonJS({
           "\u2A93": "&lesges;",
           "\u22D6": "&ltdot;",
           "\u297C": "&lfisht;",
-          "\uD835\uDD29": "&lfr;",
+          "\u{1D529}": "&lfr;",
           "\u2A91": "&lgE;",
           "\u296A": "&lharul;",
           "\u2584": "&lhblk;",
@@ -16183,7 +16183,7 @@ var require_named_references = __commonJS({
           "\u27FC": "&xmap;",
           "\u21AC": "&rarrlp;",
           "\u2985": "&lopar;",
-          "\uD835\uDD5D": "&lopf;",
+          "\u{1D55D}": "&lopf;",
           "\u2A2D": "&loplus;",
           "\u2A34": "&lotimes;",
           "\u2217": "&lowast;",
@@ -16194,7 +16194,7 @@ var require_named_references = __commonJS({
           "\u200E": "&lrm;",
           "\u22BF": "&lrtri;",
           "\u2039": "&lsaquo;",
-          "\uD835\uDCC1": "&lscr;",
+          "\u{1D4C1}": "&lscr;",
           "\u2A8D": "&lsime;",
           "\u2A8F": "&lsimg;",
           "\u201A": "&sbquo;",
@@ -16217,7 +16217,7 @@ var require_named_references = __commonJS({
           "\u2A29": "&mcomma;",
           "\u043C": "&mcy;",
           "\u2014": "&mdash;",
-          "\uD835\uDD2A": "&mfr;",
+          "\u{1D52A}": "&mfr;",
           "\u2127": "&mho;",
           "\xB5": "&micro;",
           "\u2AF0": "&midcir;",
@@ -16225,8 +16225,8 @@ var require_named_references = __commonJS({
           "\u2A2A": "&minusdu;",
           "\u2ADB": "&mlcp;",
           "\u22A7": "&models;",
-          "\uD835\uDD5E": "&mopf;",
-          "\uD835\uDCC2": "&mscr;",
+          "\u{1D55E}": "&mopf;",
+          "\u{1D4C2}": "&mscr;",
           "\u03BC": "&mu;",
           "\u22B8": "&mumap;",
           "\u22D9\u0338": "&nGg;",
@@ -16255,7 +16255,7 @@ var require_named_references = __commonJS({
           "\u2924": "&nearhk;",
           "\u2250\u0338": "&nedot;",
           "\u2928": "&toea;",
-          "\uD835\uDD2B": "&nfr;",
+          "\u{1D52B}": "&nfr;",
           "\u21AE": "&nleftrightarrow;",
           "\u2AF2": "&nhpar;",
           "\u22FC": "&nis;",
@@ -16264,7 +16264,7 @@ var require_named_references = __commonJS({
           "\u2266\u0338": "&nleqq;",
           "\u219A": "&nleftarrow;",
           "\u2025": "&nldr;",
-          "\uD835\uDD5F": "&nopf;",
+          "\u{1D55F}": "&nopf;",
           "\xAC": "&not;",
           "\u22F9\u0338": "&notinE;",
           "\u22F5\u0338": "&notindot;",
@@ -16278,7 +16278,7 @@ var require_named_references = __commonJS({
           "\u219B": "&nrightarrow;",
           "\u2933\u0338": "&nrarrc;",
           "\u219D\u0338": "&nrarrw;",
-          "\uD835\uDCC3": "&nscr;",
+          "\u{1D4C3}": "&nscr;",
           "\u2284": "&nsub;",
           "\u2AC5\u0338": "&nsubseteqq;",
           "\u2285": "&nsup;",
@@ -16313,7 +16313,7 @@ var require_named_references = __commonJS({
           "\u29BC": "&odsold;",
           "\u0153": "&oelig;",
           "\u29BF": "&ofcir;",
-          "\uD835\uDD2C": "&ofr;",
+          "\u{1D52C}": "&ofr;",
           "\u02DB": "&ogon;",
           "\xF2": "&ograve;",
           "\u29C1": "&ogt;",
@@ -16325,7 +16325,7 @@ var require_named_references = __commonJS({
           "\u03C9": "&omega;",
           "\u03BF": "&omicron;",
           "\u29B6": "&omid;",
-          "\uD835\uDD60": "&oopf;",
+          "\u{1D560}": "&oopf;",
           "\u29B7": "&opar;",
           "\u29B9": "&operp;",
           "\u2228": "&vee;",
@@ -16351,7 +16351,7 @@ var require_named_references = __commonJS({
           ".": "&period;",
           "\u2030": "&permil;",
           "\u2031": "&pertenk;",
-          "\uD835\uDD2D": "&pfr;",
+          "\u{1D52D}": "&pfr;",
           "\u03C6": "&phi;",
           "\u03D5": "&varphi;",
           "\u260E": "&phone;",
@@ -16366,7 +16366,7 @@ var require_named_references = __commonJS({
           "\u2A26": "&plussim;",
           "\u2A27": "&plustwo;",
           "\u2A15": "&pointint;",
-          "\uD835\uDD61": "&popf;",
+          "\u{1D561}": "&popf;",
           "\xA3": "&pound;",
           "\u2AB3": "&prE;",
           "\u2AB7": "&precapprox;",
@@ -16378,13 +16378,13 @@ var require_named_references = __commonJS({
           "\u2312": "&profline;",
           "\u2313": "&profsurf;",
           "\u22B0": "&prurel;",
-          "\uD835\uDCC5": "&pscr;",
+          "\u{1D4C5}": "&pscr;",
           "\u03C8": "&psi;",
           "\u2008": "&puncsp;",
-          "\uD835\uDD2E": "&qfr;",
-          "\uD835\uDD62": "&qopf;",
+          "\u{1D52E}": "&qfr;",
+          "\u{1D562}": "&qopf;",
           "\u2057": "&qprime;",
-          "\uD835\uDCC6": "&qscr;",
+          "\u{1D4C6}": "&qscr;",
           "\u2A16": "&quatint;",
           "?": "&quest;",
           "\u291C": "&rAtail;",
@@ -16419,7 +16419,7 @@ var require_named_references = __commonJS({
           "\u21B3": "&rdsh;",
           "\u25AD": "&rect;",
           "\u297D": "&rfisht;",
-          "\uD835\uDD2F": "&rfr;",
+          "\u{1D52F}": "&rfr;",
           "\u296C": "&rharul;",
           "\u03C1": "&rho;",
           "\u03F1": "&varrho;",
@@ -16432,14 +16432,14 @@ var require_named_references = __commonJS({
           "\u27ED": "&roang;",
           "\u21FE": "&roarr;",
           "\u2986": "&ropar;",
-          "\uD835\uDD63": "&ropf;",
+          "\u{1D563}": "&ropf;",
           "\u2A2E": "&roplus;",
           "\u2A35": "&rotimes;",
           ")": "&rpar;",
           "\u2994": "&rpargt;",
           "\u2A12": "&rppolint;",
           "\u203A": "&rsaquo;",
-          "\uD835\uDCC7": "&rscr;",
+          "\u{1D4C7}": "&rscr;",
           "\u22CA": "&rtimes;",
           "\u25B9": "&triangleright;",
           "\u29CE": "&rtriltri;",
@@ -16463,7 +16463,7 @@ var require_named_references = __commonJS({
           ";": "&semi;",
           "\u2929": "&tosa;",
           "\u2736": "&sext;",
-          "\uD835\uDD30": "&sfr;",
+          "\u{1D530}": "&sfr;",
           "\u266F": "&sharp;",
           "\u0449": "&shchcy;",
           "\u0448": "&shcy;",
@@ -16488,11 +16488,11 @@ var require_named_references = __commonJS({
           "/": "&sol;",
           "\u29C4": "&solb;",
           "\u233F": "&solbar;",
-          "\uD835\uDD64": "&sopf;",
+          "\u{1D564}": "&sopf;",
           "\u2660": "&spadesuit;",
           "\u2293\uFE00": "&sqcaps;",
           "\u2294\uFE00": "&sqcups;",
-          "\uD835\uDCC8": "&sscr;",
+          "\u{1D4C8}": "&sscr;",
           "\u2606": "&star;",
           "\u2282": "&subset;",
           "\u2AC5": "&subseteqq;",
@@ -16533,7 +16533,7 @@ var require_named_references = __commonJS({
           "\u0163": "&tcedil;",
           "\u0442": "&tcy;",
           "\u2315": "&telrec;",
-          "\uD835\uDD31": "&tfr;",
+          "\u{1D531}": "&tfr;",
           "\u03B8": "&theta;",
           "\u03D1": "&vartheta;",
           "\xFE": "&thorn;",
@@ -16542,7 +16542,7 @@ var require_named_references = __commonJS({
           "\u2A30": "&timesd;",
           "\u2336": "&topbot;",
           "\u2AF1": "&topcir;",
-          "\uD835\uDD65": "&topf;",
+          "\u{1D565}": "&topf;",
           "\u2ADA": "&topfork;",
           "\u2034": "&tprime;",
           "\u25B5": "&utri;",
@@ -16553,7 +16553,7 @@ var require_named_references = __commonJS({
           "\u29CD": "&trisb;",
           "\u2A3B": "&tritime;",
           "\u23E2": "&trpezium;",
-          "\uD835\uDCC9": "&tscr;",
+          "\u{1D4C9}": "&tscr;",
           "\u0446": "&tscy;",
           "\u045B": "&tshcy;",
           "\u0167": "&tstrok;",
@@ -16565,7 +16565,7 @@ var require_named_references = __commonJS({
           "\u0443": "&ucy;",
           "\u0171": "&udblac;",
           "\u297E": "&ufisht;",
-          "\uD835\uDD32": "&ufr;",
+          "\u{1D532}": "&ufr;",
           "\xF9": "&ugrave;",
           "\u2580": "&uhblk;",
           "\u231C": "&ulcorner;",
@@ -16573,14 +16573,14 @@ var require_named_references = __commonJS({
           "\u25F8": "&ultri;",
           "\u016B": "&umacr;",
           "\u0173": "&uogon;",
-          "\uD835\uDD66": "&uopf;",
+          "\u{1D566}": "&uopf;",
           "\u03C5": "&upsilon;",
           "\u21C8": "&uuarr;",
           "\u231D": "&urcorner;",
           "\u230E": "&urcrop;",
           "\u016F": "&uring;",
           "\u25F9": "&urtri;",
-          "\uD835\uDCCA": "&uscr;",
+          "\u{1D4CA}": "&uscr;",
           "\u22F0": "&utdot;",
           "\u0169": "&utilde;",
           "\xFC": "&uuml;",
@@ -16596,31 +16596,31 @@ var require_named_references = __commonJS({
           "\u22BB": "&veebar;",
           "\u225A": "&veeeq;",
           "\u22EE": "&vellip;",
-          "\uD835\uDD33": "&vfr;",
-          "\uD835\uDD67": "&vopf;",
-          "\uD835\uDCCB": "&vscr;",
+          "\u{1D533}": "&vfr;",
+          "\u{1D567}": "&vopf;",
+          "\u{1D4CB}": "&vscr;",
           "\u299A": "&vzigzag;",
           "\u0175": "&wcirc;",
           "\u2A5F": "&wedbar;",
           "\u2259": "&wedgeq;",
           "\u2118": "&wp;",
-          "\uD835\uDD34": "&wfr;",
-          "\uD835\uDD68": "&wopf;",
-          "\uD835\uDCCC": "&wscr;",
-          "\uD835\uDD35": "&xfr;",
+          "\u{1D534}": "&wfr;",
+          "\u{1D568}": "&wopf;",
+          "\u{1D4CC}": "&wscr;",
+          "\u{1D535}": "&xfr;",
           "\u03BE": "&xi;",
           "\u22FB": "&xnis;",
-          "\uD835\uDD69": "&xopf;",
-          "\uD835\uDCCD": "&xscr;",
+          "\u{1D569}": "&xopf;",
+          "\u{1D4CD}": "&xscr;",
           "\xFD": "&yacute;",
           "\u044F": "&yacy;",
           "\u0177": "&ycirc;",
           "\u044B": "&ycy;",
           "\xA5": "&yen;",
-          "\uD835\uDD36": "&yfr;",
+          "\u{1D536}": "&yfr;",
           "\u0457": "&yicy;",
-          "\uD835\uDD6A": "&yopf;",
-          "\uD835\uDCCE": "&yscr;",
+          "\u{1D56A}": "&yopf;",
+          "\u{1D4CE}": "&yscr;",
           "\u044E": "&yucy;",
           "\xFF": "&yuml;",
           "\u017A": "&zacute;",
@@ -16628,11 +16628,11 @@ var require_named_references = __commonJS({
           "\u0437": "&zcy;",
           "\u017C": "&zdot;",
           "\u03B6": "&zeta;",
-          "\uD835\uDD37": "&zfr;",
+          "\u{1D537}": "&zfr;",
           "\u0436": "&zhcy;",
           "\u21DD": "&zigrarr;",
-          "\uD835\uDD6B": "&zopf;",
-          "\uD835\uDCCF": "&zscr;",
+          "\u{1D56B}": "&zopf;",
+          "\u{1D4CF}": "&zscr;",
           "\u200D": "&zwj;",
           "\u200C": "&zwnj;"
         }
@@ -21745,1617 +21745,6 @@ var init_dist = __esm({
   }
 });
 
-// ../../node_modules/core-js/internals/global-this.js
-var require_global_this = __commonJS({
-  "../../node_modules/core-js/internals/global-this.js": function(exports2, module2) {
-    "use strict";
-    var check = function check2(it) {
-      return it && it.Math === Math && it;
-    };
-    module2.exports = // eslint-disable-next-line es/no-global-this -- safe
-    check(typeof globalThis == "object" && globalThis) || check(typeof window == "object" && window) || // eslint-disable-next-line no-restricted-globals -- safe
-    check(typeof self == "object" && self) || check(typeof global == "object" && global) || check(typeof exports2 == "object" && exports2) || // eslint-disable-next-line no-new-func -- fallback
-    /* @__PURE__ */ function() {
-      return this;
-    }() || Function("return this")();
-  }
-});
-
-// ../../node_modules/core-js/internals/fails.js
-var require_fails = __commonJS({
-  "../../node_modules/core-js/internals/fails.js": function(exports2, module2) {
-    "use strict";
-    module2.exports = function(exec) {
-      try {
-        return !!exec();
-      } catch (error2) {
-        return true;
-      }
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/descriptors.js
-var require_descriptors = __commonJS({
-  "../../node_modules/core-js/internals/descriptors.js": function(exports2, module2) {
-    "use strict";
-    var fails = require_fails();
-    module2.exports = !fails(function() {
-      return Object.defineProperty({}, 1, {
-        get: function get4() {
-          return 7;
-        }
-      })[1] !== 7;
-    });
-  }
-});
-
-// ../../node_modules/core-js/internals/function-bind-native.js
-var require_function_bind_native = __commonJS({
-  "../../node_modules/core-js/internals/function-bind-native.js": function(exports2, module2) {
-    "use strict";
-    var fails = require_fails();
-    module2.exports = !fails(function() {
-      var test = function() {
-      }.bind();
-      return typeof test != "function" || test.hasOwnProperty("prototype");
-    });
-  }
-});
-
-// ../../node_modules/core-js/internals/function-call.js
-var require_function_call = __commonJS({
-  "../../node_modules/core-js/internals/function-call.js": function(exports2, module2) {
-    "use strict";
-    var NATIVE_BIND = require_function_bind_native();
-    var call = Function.prototype.call;
-    module2.exports = NATIVE_BIND ? call.bind(call) : function() {
-      return call.apply(call, arguments);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/object-property-is-enumerable.js
-var require_object_property_is_enumerable = __commonJS({
-  "../../node_modules/core-js/internals/object-property-is-enumerable.js": function(exports2) {
-    "use strict";
-    var $propertyIsEnumerable = {}.propertyIsEnumerable;
-    var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-    var NASHORN_BUG = getOwnPropertyDescriptor && !$propertyIsEnumerable.call({
-      1: 2
-    }, 1);
-    exports2.f = NASHORN_BUG ? function propertyIsEnumerable(V) {
-      var descriptor = getOwnPropertyDescriptor(this, V);
-      return !!descriptor && descriptor.enumerable;
-    } : $propertyIsEnumerable;
-  }
-});
-
-// ../../node_modules/core-js/internals/create-property-descriptor.js
-var require_create_property_descriptor = __commonJS({
-  "../../node_modules/core-js/internals/create-property-descriptor.js": function(exports2, module2) {
-    "use strict";
-    module2.exports = function(bitmap, value) {
-      return {
-        enumerable: !(bitmap & 1),
-        configurable: !(bitmap & 2),
-        writable: !(bitmap & 4),
-        value: value
-      };
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/function-uncurry-this.js
-var require_function_uncurry_this = __commonJS({
-  "../../node_modules/core-js/internals/function-uncurry-this.js": function(exports2, module2) {
-    "use strict";
-    var NATIVE_BIND = require_function_bind_native();
-    var FunctionPrototype = Function.prototype;
-    var call = FunctionPrototype.call;
-    var uncurryThisWithBind = NATIVE_BIND && FunctionPrototype.bind.bind(call, call);
-    module2.exports = NATIVE_BIND ? uncurryThisWithBind : function(fn) {
-      return function() {
-        return call.apply(fn, arguments);
-      };
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/classof-raw.js
-var require_classof_raw = __commonJS({
-  "../../node_modules/core-js/internals/classof-raw.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this();
-    var toString = uncurryThis({}.toString);
-    var stringSlice = uncurryThis("".slice);
-    module2.exports = function(it) {
-      return stringSlice(toString(it), 8, -1);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/indexed-object.js
-var require_indexed_object = __commonJS({
-  "../../node_modules/core-js/internals/indexed-object.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this();
-    var fails = require_fails();
-    var classof = require_classof_raw();
-    var $Object = Object;
-    var split = uncurryThis("".split);
-    module2.exports = fails(function() {
-      return !$Object("z").propertyIsEnumerable(0);
-    }) ? function(it) {
-      return classof(it) === "String" ? split(it, "") : $Object(it);
-    } : $Object;
-  }
-});
-
-// ../../node_modules/core-js/internals/is-null-or-undefined.js
-var require_is_null_or_undefined = __commonJS({
-  "../../node_modules/core-js/internals/is-null-or-undefined.js": function(exports2, module2) {
-    "use strict";
-    module2.exports = function(it) {
-      return it === null || it === void 0;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/require-object-coercible.js
-var require_require_object_coercible = __commonJS({
-  "../../node_modules/core-js/internals/require-object-coercible.js": function(exports2, module2) {
-    "use strict";
-    var isNullOrUndefined = require_is_null_or_undefined();
-    var $TypeError = TypeError;
-    module2.exports = function(it) {
-      if (isNullOrUndefined(it)) throw new $TypeError("Can't call method on " + it);
-      return it;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/to-indexed-object.js
-var require_to_indexed_object = __commonJS({
-  "../../node_modules/core-js/internals/to-indexed-object.js": function(exports2, module2) {
-    "use strict";
-    var IndexedObject = require_indexed_object();
-    var requireObjectCoercible = require_require_object_coercible();
-    module2.exports = function(it) {
-      return IndexedObject(requireObjectCoercible(it));
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/is-callable.js
-var require_is_callable = __commonJS({
-  "../../node_modules/core-js/internals/is-callable.js": function(exports2, module2) {
-    "use strict";
-    var documentAll = typeof document == "object" && document.all;
-    module2.exports = typeof documentAll == "undefined" && documentAll !== void 0 ? function(argument) {
-      return typeof argument == "function" || argument === documentAll;
-    } : function(argument) {
-      return typeof argument == "function";
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/is-object.js
-var require_is_object = __commonJS({
-  "../../node_modules/core-js/internals/is-object.js": function(exports2, module2) {
-    "use strict";
-    var isCallable = require_is_callable();
-    module2.exports = function(it) {
-      return typeof it == "object" ? it !== null : isCallable(it);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/get-built-in.js
-var require_get_built_in = __commonJS({
-  "../../node_modules/core-js/internals/get-built-in.js": function(exports2, module2) {
-    "use strict";
-    var globalThis2 = require_global_this();
-    var isCallable = require_is_callable();
-    var aFunction = function aFunction2(argument) {
-      return isCallable(argument) ? argument : void 0;
-    };
-    module2.exports = function(namespace, method) {
-      return arguments.length < 2 ? aFunction(globalThis2[namespace]) : globalThis2[namespace] && globalThis2[namespace][method];
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/object-is-prototype-of.js
-var require_object_is_prototype_of = __commonJS({
-  "../../node_modules/core-js/internals/object-is-prototype-of.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this();
-    module2.exports = uncurryThis({}.isPrototypeOf);
-  }
-});
-
-// ../../node_modules/core-js/internals/environment-user-agent.js
-var require_environment_user_agent = __commonJS({
-  "../../node_modules/core-js/internals/environment-user-agent.js": function(exports2, module2) {
-    "use strict";
-    var globalThis2 = require_global_this();
-    var navigator = globalThis2.navigator;
-    var userAgent = navigator && navigator.userAgent;
-    module2.exports = userAgent ? String(userAgent) : "";
-  }
-});
-
-// ../../node_modules/core-js/internals/environment-v8-version.js
-var require_environment_v8_version = __commonJS({
-  "../../node_modules/core-js/internals/environment-v8-version.js": function(exports2, module2) {
-    "use strict";
-    var globalThis2 = require_global_this();
-    var userAgent = require_environment_user_agent();
-    var process2 = globalThis2.process;
-    var Deno = globalThis2.Deno;
-    var versions = process2 && process2.versions || Deno && Deno.version;
-    var v8 = versions && versions.v8;
-    var match;
-    var version;
-    if (v8) {
-      match = v8.split(".");
-      version = match[0] > 0 && match[0] < 4 ? 1 : +(match[0] + match[1]);
-    }
-    if (!version && userAgent) {
-      match = userAgent.match(/Edge\/(\d+)/);
-      if (!match || match[1] >= 74) {
-        match = userAgent.match(/Chrome\/(\d+)/);
-        if (match) version = +match[1];
-      }
-    }
-    module2.exports = version;
-  }
-});
-
-// ../../node_modules/core-js/internals/symbol-constructor-detection.js
-var require_symbol_constructor_detection = __commonJS({
-  "../../node_modules/core-js/internals/symbol-constructor-detection.js": function(exports2, module2) {
-    "use strict";
-    var V8_VERSION = require_environment_v8_version();
-    var fails = require_fails();
-    var globalThis2 = require_global_this();
-    var $String = globalThis2.String;
-    module2.exports = !!Object.getOwnPropertySymbols && !fails(function() {
-      var symbol = Symbol("symbol detection");
-      return !$String(symbol) || !(Object(symbol) instanceof Symbol) || // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
-      !Symbol.sham && V8_VERSION && V8_VERSION < 41;
-    });
-  }
-});
-
-// ../../node_modules/core-js/internals/use-symbol-as-uid.js
-var require_use_symbol_as_uid = __commonJS({
-  "../../node_modules/core-js/internals/use-symbol-as-uid.js": function(exports2, module2) {
-    "use strict";
-    var NATIVE_SYMBOL = require_symbol_constructor_detection();
-    module2.exports = NATIVE_SYMBOL && !Symbol.sham && typeof Symbol.iterator == "symbol";
-  }
-});
-
-// ../../node_modules/core-js/internals/is-symbol.js
-var require_is_symbol = __commonJS({
-  "../../node_modules/core-js/internals/is-symbol.js": function(exports2, module2) {
-    "use strict";
-    var getBuiltIn = require_get_built_in();
-    var isCallable = require_is_callable();
-    var isPrototypeOf = require_object_is_prototype_of();
-    var USE_SYMBOL_AS_UID = require_use_symbol_as_uid();
-    var $Object = Object;
-    module2.exports = USE_SYMBOL_AS_UID ? function(it) {
-      return typeof it == "symbol";
-    } : function(it) {
-      var $Symbol = getBuiltIn("Symbol");
-      return isCallable($Symbol) && isPrototypeOf($Symbol.prototype, $Object(it));
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/try-to-string.js
-var require_try_to_string = __commonJS({
-  "../../node_modules/core-js/internals/try-to-string.js": function(exports2, module2) {
-    "use strict";
-    var $String = String;
-    module2.exports = function(argument) {
-      try {
-        return $String(argument);
-      } catch (error2) {
-        return "Object";
-      }
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/a-callable.js
-var require_a_callable = __commonJS({
-  "../../node_modules/core-js/internals/a-callable.js": function(exports2, module2) {
-    "use strict";
-    var isCallable = require_is_callable();
-    var tryToString = require_try_to_string();
-    var $TypeError = TypeError;
-    module2.exports = function(argument) {
-      if (isCallable(argument)) return argument;
-      throw new $TypeError(tryToString(argument) + " is not a function");
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/get-method.js
-var require_get_method = __commonJS({
-  "../../node_modules/core-js/internals/get-method.js": function(exports2, module2) {
-    "use strict";
-    var aCallable = require_a_callable();
-    var isNullOrUndefined = require_is_null_or_undefined();
-    module2.exports = function(V, P) {
-      var func = V[P];
-      return isNullOrUndefined(func) ? void 0 : aCallable(func);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/ordinary-to-primitive.js
-var require_ordinary_to_primitive = __commonJS({
-  "../../node_modules/core-js/internals/ordinary-to-primitive.js": function(exports2, module2) {
-    "use strict";
-    var call = require_function_call();
-    var isCallable = require_is_callable();
-    var isObject = require_is_object();
-    var $TypeError = TypeError;
-    module2.exports = function(input, pref) {
-      var fn, val;
-      if (pref === "string" && isCallable(fn = input.toString) && !isObject(val = call(fn, input))) return val;
-      if (isCallable(fn = input.valueOf) && !isObject(val = call(fn, input))) return val;
-      if (pref !== "string" && isCallable(fn = input.toString) && !isObject(val = call(fn, input))) return val;
-      throw new $TypeError("Can't convert object to primitive value");
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/is-pure.js
-var require_is_pure = __commonJS({
-  "../../node_modules/core-js/internals/is-pure.js": function(exports2, module2) {
-    "use strict";
-    module2.exports = false;
-  }
-});
-
-// ../../node_modules/core-js/internals/define-global-property.js
-var require_define_global_property = __commonJS({
-  "../../node_modules/core-js/internals/define-global-property.js": function(exports2, module2) {
-    "use strict";
-    var globalThis2 = require_global_this();
-    var defineProperty = Object.defineProperty;
-    module2.exports = function(key, value) {
-      try {
-        defineProperty(globalThis2, key, {
-          value: value,
-          configurable: true,
-          writable: true
-        });
-      } catch (error2) {
-        globalThis2[key] = value;
-      }
-      return value;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/shared-store.js
-var require_shared_store = __commonJS({
-  "../../node_modules/core-js/internals/shared-store.js": function(exports2, module2) {
-    "use strict";
-    var IS_PURE = require_is_pure();
-    var globalThis2 = require_global_this();
-    var defineGlobalProperty = require_define_global_property();
-    var SHARED = "__core-js_shared__";
-    var store = module2.exports = globalThis2[SHARED] || defineGlobalProperty(SHARED, {});
-    (store.versions || (store.versions = [])).push({
-      version: "3.38.1",
-      mode: IS_PURE ? "pure" : "global",
-      copyright: "\xA9 2014-2024 Denis Pushkarev (zloirock.ru)",
-      license: "https://github.com/zloirock/core-js/blob/v3.38.1/LICENSE",
-      source: "https://github.com/zloirock/core-js"
-    });
-  }
-});
-
-// ../../node_modules/core-js/internals/shared.js
-var require_shared = __commonJS({
-  "../../node_modules/core-js/internals/shared.js": function(exports2, module2) {
-    "use strict";
-    var store = require_shared_store();
-    module2.exports = function(key, value) {
-      return store[key] || (store[key] = value || {});
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/to-object.js
-var require_to_object = __commonJS({
-  "../../node_modules/core-js/internals/to-object.js": function(exports2, module2) {
-    "use strict";
-    var requireObjectCoercible = require_require_object_coercible();
-    var $Object = Object;
-    module2.exports = function(argument) {
-      return $Object(requireObjectCoercible(argument));
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/has-own-property.js
-var require_has_own_property = __commonJS({
-  "../../node_modules/core-js/internals/has-own-property.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this();
-    var toObject = require_to_object();
-    var hasOwnProperty = uncurryThis({}.hasOwnProperty);
-    module2.exports = Object.hasOwn || function hasOwn(it, key) {
-      return hasOwnProperty(toObject(it), key);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/uid.js
-var require_uid = __commonJS({
-  "../../node_modules/core-js/internals/uid.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this();
-    var id = 0;
-    var postfix = Math.random();
-    var toString = uncurryThis(1 .toString);
-    module2.exports = function(key) {
-      return "Symbol(" + (key === void 0 ? "" : key) + ")_" + toString(++id + postfix, 36);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/well-known-symbol.js
-var require_well_known_symbol = __commonJS({
-  "../../node_modules/core-js/internals/well-known-symbol.js": function(exports2, module2) {
-    "use strict";
-    var globalThis2 = require_global_this();
-    var shared = require_shared();
-    var hasOwn = require_has_own_property();
-    var uid = require_uid();
-    var NATIVE_SYMBOL = require_symbol_constructor_detection();
-    var USE_SYMBOL_AS_UID = require_use_symbol_as_uid();
-    var Symbol2 = globalThis2.Symbol;
-    var WellKnownSymbolsStore = shared("wks");
-    var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol2["for"] || Symbol2 : Symbol2 && Symbol2.withoutSetter || uid;
-    module2.exports = function(name) {
-      if (!hasOwn(WellKnownSymbolsStore, name)) {
-        WellKnownSymbolsStore[name] = NATIVE_SYMBOL && hasOwn(Symbol2, name) ? Symbol2[name] : createWellKnownSymbol("Symbol." + name);
-      }
-      return WellKnownSymbolsStore[name];
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/to-primitive.js
-var require_to_primitive = __commonJS({
-  "../../node_modules/core-js/internals/to-primitive.js": function(exports2, module2) {
-    "use strict";
-    var call = require_function_call();
-    var isObject = require_is_object();
-    var isSymbol = require_is_symbol();
-    var getMethod = require_get_method();
-    var ordinaryToPrimitive = require_ordinary_to_primitive();
-    var wellKnownSymbol = require_well_known_symbol();
-    var $TypeError = TypeError;
-    var TO_PRIMITIVE = wellKnownSymbol("toPrimitive");
-    module2.exports = function(input, pref) {
-      if (!isObject(input) || isSymbol(input)) return input;
-      var exoticToPrim = getMethod(input, TO_PRIMITIVE);
-      var result;
-      if (exoticToPrim) {
-        if (pref === void 0) pref = "default";
-        result = call(exoticToPrim, input, pref);
-        if (!isObject(result) || isSymbol(result)) return result;
-        throw new $TypeError("Can't convert object to primitive value");
-      }
-      if (pref === void 0) pref = "number";
-      return ordinaryToPrimitive(input, pref);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/to-property-key.js
-var require_to_property_key = __commonJS({
-  "../../node_modules/core-js/internals/to-property-key.js": function(exports2, module2) {
-    "use strict";
-    var toPrimitive = require_to_primitive();
-    var isSymbol = require_is_symbol();
-    module2.exports = function(argument) {
-      var key = toPrimitive(argument, "string");
-      return isSymbol(key) ? key : key + "";
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/document-create-element.js
-var require_document_create_element = __commonJS({
-  "../../node_modules/core-js/internals/document-create-element.js": function(exports2, module2) {
-    "use strict";
-    var globalThis2 = require_global_this();
-    var isObject = require_is_object();
-    var document2 = globalThis2.document;
-    var EXISTS = isObject(document2) && isObject(document2.createElement);
-    module2.exports = function(it) {
-      return EXISTS ? document2.createElement(it) : {};
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/ie8-dom-define.js
-var require_ie8_dom_define = __commonJS({
-  "../../node_modules/core-js/internals/ie8-dom-define.js": function(exports2, module2) {
-    "use strict";
-    var DESCRIPTORS = require_descriptors();
-    var fails = require_fails();
-    var createElement = require_document_create_element();
-    module2.exports = !DESCRIPTORS && !fails(function() {
-      return Object.defineProperty(createElement("div"), "a", {
-        get: function get4() {
-          return 7;
-        }
-      }).a !== 7;
-    });
-  }
-});
-
-// ../../node_modules/core-js/internals/object-get-own-property-descriptor.js
-var require_object_get_own_property_descriptor = __commonJS({
-  "../../node_modules/core-js/internals/object-get-own-property-descriptor.js": function(exports2) {
-    "use strict";
-    var DESCRIPTORS = require_descriptors();
-    var call = require_function_call();
-    var propertyIsEnumerableModule = require_object_property_is_enumerable();
-    var createPropertyDescriptor = require_create_property_descriptor();
-    var toIndexedObject = require_to_indexed_object();
-    var toPropertyKey = require_to_property_key();
-    var hasOwn = require_has_own_property();
-    var IE8_DOM_DEFINE = require_ie8_dom_define();
-    var $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-    exports2.f = DESCRIPTORS ? $getOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
-      O = toIndexedObject(O);
-      P = toPropertyKey(P);
-      if (IE8_DOM_DEFINE) try {
-        return $getOwnPropertyDescriptor(O, P);
-      } catch (error2) {
-      }
-      if (hasOwn(O, P)) return createPropertyDescriptor(!call(propertyIsEnumerableModule.f, O, P), O[P]);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/v8-prototype-define-bug.js
-var require_v8_prototype_define_bug = __commonJS({
-  "../../node_modules/core-js/internals/v8-prototype-define-bug.js": function(exports2, module2) {
-    "use strict";
-    var DESCRIPTORS = require_descriptors();
-    var fails = require_fails();
-    module2.exports = DESCRIPTORS && fails(function() {
-      return Object.defineProperty(function() {
-      }, "prototype", {
-        value: 42,
-        writable: false
-      }).prototype !== 42;
-    });
-  }
-});
-
-// ../../node_modules/core-js/internals/an-object.js
-var require_an_object = __commonJS({
-  "../../node_modules/core-js/internals/an-object.js": function(exports2, module2) {
-    "use strict";
-    var isObject = require_is_object();
-    var $String = String;
-    var $TypeError = TypeError;
-    module2.exports = function(argument) {
-      if (isObject(argument)) return argument;
-      throw new $TypeError($String(argument) + " is not an object");
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/object-define-property.js
-var require_object_define_property = __commonJS({
-  "../../node_modules/core-js/internals/object-define-property.js": function(exports2) {
-    "use strict";
-    var DESCRIPTORS = require_descriptors();
-    var IE8_DOM_DEFINE = require_ie8_dom_define();
-    var V8_PROTOTYPE_DEFINE_BUG = require_v8_prototype_define_bug();
-    var anObject = require_an_object();
-    var toPropertyKey = require_to_property_key();
-    var $TypeError = TypeError;
-    var $defineProperty = Object.defineProperty;
-    var $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-    var ENUMERABLE = "enumerable";
-    var CONFIGURABLE = "configurable";
-    var WRITABLE = "writable";
-    exports2.f = DESCRIPTORS ? V8_PROTOTYPE_DEFINE_BUG ? function defineProperty(O, P, Attributes) {
-      anObject(O);
-      P = toPropertyKey(P);
-      anObject(Attributes);
-      if (typeof O === "function" && P === "prototype" && "value" in Attributes && WRITABLE in Attributes && !Attributes[WRITABLE]) {
-        var current2 = $getOwnPropertyDescriptor(O, P);
-        if (current2 && current2[WRITABLE]) {
-          O[P] = Attributes.value;
-          Attributes = {
-            configurable: CONFIGURABLE in Attributes ? Attributes[CONFIGURABLE] : current2[CONFIGURABLE],
-            enumerable: ENUMERABLE in Attributes ? Attributes[ENUMERABLE] : current2[ENUMERABLE],
-            writable: false
-          };
-        }
-      }
-      return $defineProperty(O, P, Attributes);
-    } : $defineProperty : function defineProperty(O, P, Attributes) {
-      anObject(O);
-      P = toPropertyKey(P);
-      anObject(Attributes);
-      if (IE8_DOM_DEFINE) try {
-        return $defineProperty(O, P, Attributes);
-      } catch (error2) {
-      }
-      if ("get" in Attributes || "set" in Attributes) throw new $TypeError("Accessors not supported");
-      if ("value" in Attributes) O[P] = Attributes.value;
-      return O;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/create-non-enumerable-property.js
-var require_create_non_enumerable_property = __commonJS({
-  "../../node_modules/core-js/internals/create-non-enumerable-property.js": function(exports2, module2) {
-    "use strict";
-    var DESCRIPTORS = require_descriptors();
-    var definePropertyModule = require_object_define_property();
-    var createPropertyDescriptor = require_create_property_descriptor();
-    module2.exports = DESCRIPTORS ? function(object, key, value) {
-      return definePropertyModule.f(object, key, createPropertyDescriptor(1, value));
-    } : function(object, key, value) {
-      object[key] = value;
-      return object;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/function-name.js
-var require_function_name = __commonJS({
-  "../../node_modules/core-js/internals/function-name.js": function(exports2, module2) {
-    "use strict";
-    var DESCRIPTORS = require_descriptors();
-    var hasOwn = require_has_own_property();
-    var FunctionPrototype = Function.prototype;
-    var getDescriptor = DESCRIPTORS && Object.getOwnPropertyDescriptor;
-    var EXISTS = hasOwn(FunctionPrototype, "name");
-    var PROPER = EXISTS && function something() {
-    }.name === "something";
-    var CONFIGURABLE = EXISTS && (!DESCRIPTORS || DESCRIPTORS && getDescriptor(FunctionPrototype, "name").configurable);
-    module2.exports = {
-      EXISTS: EXISTS,
-      PROPER: PROPER,
-      CONFIGURABLE: CONFIGURABLE
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/inspect-source.js
-var require_inspect_source = __commonJS({
-  "../../node_modules/core-js/internals/inspect-source.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this();
-    var isCallable = require_is_callable();
-    var store = require_shared_store();
-    var functionToString = uncurryThis(Function.toString);
-    if (!isCallable(store.inspectSource)) {
-      store.inspectSource = function(it) {
-        return functionToString(it);
-      };
-    }
-    module2.exports = store.inspectSource;
-  }
-});
-
-// ../../node_modules/core-js/internals/weak-map-basic-detection.js
-var require_weak_map_basic_detection = __commonJS({
-  "../../node_modules/core-js/internals/weak-map-basic-detection.js": function(exports2, module2) {
-    "use strict";
-    var globalThis2 = require_global_this();
-    var isCallable = require_is_callable();
-    var WeakMap2 = globalThis2.WeakMap;
-    module2.exports = isCallable(WeakMap2) && /native code/.test(String(WeakMap2));
-  }
-});
-
-// ../../node_modules/core-js/internals/shared-key.js
-var require_shared_key = __commonJS({
-  "../../node_modules/core-js/internals/shared-key.js": function(exports2, module2) {
-    "use strict";
-    var shared = require_shared();
-    var uid = require_uid();
-    var keys = shared("keys");
-    module2.exports = function(key) {
-      return keys[key] || (keys[key] = uid(key));
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/hidden-keys.js
-var require_hidden_keys = __commonJS({
-  "../../node_modules/core-js/internals/hidden-keys.js": function(exports2, module2) {
-    "use strict";
-    module2.exports = {};
-  }
-});
-
-// ../../node_modules/core-js/internals/internal-state.js
-var require_internal_state = __commonJS({
-  "../../node_modules/core-js/internals/internal-state.js": function(exports2, module2) {
-    "use strict";
-    var NATIVE_WEAK_MAP = require_weak_map_basic_detection();
-    var globalThis2 = require_global_this();
-    var isObject = require_is_object();
-    var createNonEnumerableProperty = require_create_non_enumerable_property();
-    var hasOwn = require_has_own_property();
-    var shared = require_shared_store();
-    var sharedKey = require_shared_key();
-    var hiddenKeys = require_hidden_keys();
-    var OBJECT_ALREADY_INITIALIZED = "Object already initialized";
-    var TypeError2 = globalThis2.TypeError;
-    var WeakMap2 = globalThis2.WeakMap;
-    var set3;
-    var get4;
-    var has;
-    var enforce = function enforce2(it) {
-      return has(it) ? get4(it) : set3(it, {});
-    };
-    var getterFor = function getterFor2(TYPE) {
-      return function(it) {
-        var state;
-        if (!isObject(it) || (state = get4(it)).type !== TYPE) {
-          throw new TypeError2("Incompatible receiver, " + TYPE + " required");
-        }
-        return state;
-      };
-    };
-    if (NATIVE_WEAK_MAP || shared.state) {
-      store = shared.state || (shared.state = new WeakMap2());
-      store.get = store.get;
-      store.has = store.has;
-      store.set = store.set;
-      set3 = function set4(it, metadata) {
-        if (store.has(it)) throw new TypeError2(OBJECT_ALREADY_INITIALIZED);
-        metadata.facade = it;
-        store.set(it, metadata);
-        return metadata;
-      };
-      get4 = function get5(it) {
-        return store.get(it) || {};
-      };
-      has = function has2(it) {
-        return store.has(it);
-      };
-    } else {
-      STATE = sharedKey("state");
-      hiddenKeys[STATE] = true;
-      set3 = function set4(it, metadata) {
-        if (hasOwn(it, STATE)) throw new TypeError2(OBJECT_ALREADY_INITIALIZED);
-        metadata.facade = it;
-        createNonEnumerableProperty(it, STATE, metadata);
-        return metadata;
-      };
-      get4 = function get5(it) {
-        return hasOwn(it, STATE) ? it[STATE] : {};
-      };
-      has = function has2(it) {
-        return hasOwn(it, STATE);
-      };
-    }
-    var store;
-    var STATE;
-    module2.exports = {
-      set: set3,
-      get: get4,
-      has: has,
-      enforce: enforce,
-      getterFor: getterFor
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/make-built-in.js
-var require_make_built_in = __commonJS({
-  "../../node_modules/core-js/internals/make-built-in.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this();
-    var fails = require_fails();
-    var isCallable = require_is_callable();
-    var hasOwn = require_has_own_property();
-    var DESCRIPTORS = require_descriptors();
-    var CONFIGURABLE_FUNCTION_NAME = require_function_name().CONFIGURABLE;
-    var inspectSource = require_inspect_source();
-    var InternalStateModule = require_internal_state();
-    var enforceInternalState = InternalStateModule.enforce;
-    var getInternalState = InternalStateModule.get;
-    var $String = String;
-    var defineProperty = Object.defineProperty;
-    var stringSlice = uncurryThis("".slice);
-    var replace = uncurryThis("".replace);
-    var join = uncurryThis([].join);
-    var CONFIGURABLE_LENGTH = DESCRIPTORS && !fails(function() {
-      return defineProperty(function() {
-      }, "length", {
-        value: 8
-      }).length !== 8;
-    });
-    var TEMPLATE = String(String).split("String");
-    var makeBuiltIn = module2.exports = function(value, name, options) {
-      if (stringSlice($String(name), 0, 7) === "Symbol(") {
-        name = "[" + replace($String(name), /^Symbol\(([^)]*)\).*$/, "$1") + "]";
-      }
-      if (options && options.getter) name = "get " + name;
-      if (options && options.setter) name = "set " + name;
-      if (!hasOwn(value, "name") || CONFIGURABLE_FUNCTION_NAME && value.name !== name) {
-        if (DESCRIPTORS) defineProperty(value, "name", {
-          value: name,
-          configurable: true
-        });
-        else value.name = name;
-      }
-      if (CONFIGURABLE_LENGTH && options && hasOwn(options, "arity") && value.length !== options.arity) {
-        defineProperty(value, "length", {
-          value: options.arity
-        });
-      }
-      try {
-        if (options && hasOwn(options, "constructor") && options.constructor) {
-          if (DESCRIPTORS) defineProperty(value, "prototype", {
-            writable: false
-          });
-        } else if (value.prototype) value.prototype = void 0;
-      } catch (error2) {
-      }
-      var state = enforceInternalState(value);
-      if (!hasOwn(state, "source")) {
-        state.source = join(TEMPLATE, typeof name == "string" ? name : "");
-      }
-      return value;
-    };
-    Function.prototype.toString = makeBuiltIn(function toString() {
-      return isCallable(this) && getInternalState(this).source || inspectSource(this);
-    }, "toString");
-  }
-});
-
-// ../../node_modules/core-js/internals/define-built-in.js
-var require_define_built_in = __commonJS({
-  "../../node_modules/core-js/internals/define-built-in.js": function(exports2, module2) {
-    "use strict";
-    var isCallable = require_is_callable();
-    var definePropertyModule = require_object_define_property();
-    var makeBuiltIn = require_make_built_in();
-    var defineGlobalProperty = require_define_global_property();
-    module2.exports = function(O, key, value, options) {
-      if (!options) options = {};
-      var simple = options.enumerable;
-      var name = options.name !== void 0 ? options.name : key;
-      if (isCallable(value)) makeBuiltIn(value, name, options);
-      if (options.global) {
-        if (simple) O[key] = value;
-        else defineGlobalProperty(key, value);
-      } else {
-        try {
-          if (!options.unsafe) delete O[key];
-          else if (O[key]) simple = true;
-        } catch (error2) {
-        }
-        if (simple) O[key] = value;
-        else definePropertyModule.f(O, key, {
-          value: value,
-          enumerable: false,
-          configurable: !options.nonConfigurable,
-          writable: !options.nonWritable
-        });
-      }
-      return O;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/math-trunc.js
-var require_math_trunc = __commonJS({
-  "../../node_modules/core-js/internals/math-trunc.js": function(exports2, module2) {
-    "use strict";
-    var ceil = Math.ceil;
-    var floor = Math.floor;
-    module2.exports = Math.trunc || function trunc(x) {
-      var n = +x;
-      return (n > 0 ? floor : ceil)(n);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/to-integer-or-infinity.js
-var require_to_integer_or_infinity = __commonJS({
-  "../../node_modules/core-js/internals/to-integer-or-infinity.js": function(exports2, module2) {
-    "use strict";
-    var trunc = require_math_trunc();
-    module2.exports = function(argument) {
-      var number = +argument;
-      return number !== number || number === 0 ? 0 : trunc(number);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/to-absolute-index.js
-var require_to_absolute_index = __commonJS({
-  "../../node_modules/core-js/internals/to-absolute-index.js": function(exports2, module2) {
-    "use strict";
-    var toIntegerOrInfinity = require_to_integer_or_infinity();
-    var max = Math.max;
-    var min = Math.min;
-    module2.exports = function(index, length) {
-      var integer = toIntegerOrInfinity(index);
-      return integer < 0 ? max(integer + length, 0) : min(integer, length);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/to-length.js
-var require_to_length = __commonJS({
-  "../../node_modules/core-js/internals/to-length.js": function(exports2, module2) {
-    "use strict";
-    var toIntegerOrInfinity = require_to_integer_or_infinity();
-    var min = Math.min;
-    module2.exports = function(argument) {
-      var len = toIntegerOrInfinity(argument);
-      return len > 0 ? min(len, 9007199254740991) : 0;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/length-of-array-like.js
-var require_length_of_array_like = __commonJS({
-  "../../node_modules/core-js/internals/length-of-array-like.js": function(exports2, module2) {
-    "use strict";
-    var toLength = require_to_length();
-    module2.exports = function(obj) {
-      return toLength(obj.length);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/array-includes.js
-var require_array_includes = __commonJS({
-  "../../node_modules/core-js/internals/array-includes.js": function(exports2, module2) {
-    "use strict";
-    var toIndexedObject = require_to_indexed_object();
-    var toAbsoluteIndex = require_to_absolute_index();
-    var lengthOfArrayLike = require_length_of_array_like();
-    var createMethod = function createMethod2(IS_INCLUDES) {
-      return function($this, el, fromIndex) {
-        var O = toIndexedObject($this);
-        var length = lengthOfArrayLike(O);
-        if (length === 0) return !IS_INCLUDES && -1;
-        var index = toAbsoluteIndex(fromIndex, length);
-        var value;
-        if (IS_INCLUDES && el !== el) while (length > index) {
-          value = O[index++];
-          if (value !== value) return true;
-        }
-        else for (; length > index; index++) {
-          if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
-        }
-        return !IS_INCLUDES && -1;
-      };
-    };
-    module2.exports = {
-      // `Array.prototype.includes` method
-      // https://tc39.es/ecma262/#sec-array.prototype.includes
-      includes: createMethod(true),
-      // `Array.prototype.indexOf` method
-      // https://tc39.es/ecma262/#sec-array.prototype.indexof
-      indexOf: createMethod(false)
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/object-keys-internal.js
-var require_object_keys_internal = __commonJS({
-  "../../node_modules/core-js/internals/object-keys-internal.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this();
-    var hasOwn = require_has_own_property();
-    var toIndexedObject = require_to_indexed_object();
-    var indexOf2 = require_array_includes().indexOf;
-    var hiddenKeys = require_hidden_keys();
-    var push = uncurryThis([].push);
-    module2.exports = function(object, names) {
-      var O = toIndexedObject(object);
-      var i = 0;
-      var result = [];
-      var key;
-      for (key in O) !hasOwn(hiddenKeys, key) && hasOwn(O, key) && push(result, key);
-      while (names.length > i) if (hasOwn(O, key = names[i++])) {
-        ~indexOf2(result, key) || push(result, key);
-      }
-      return result;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/enum-bug-keys.js
-var require_enum_bug_keys = __commonJS({
-  "../../node_modules/core-js/internals/enum-bug-keys.js": function(exports2, module2) {
-    "use strict";
-    module2.exports = ["constructor", "hasOwnProperty", "isPrototypeOf", "propertyIsEnumerable", "toLocaleString", "toString", "valueOf"];
-  }
-});
-
-// ../../node_modules/core-js/internals/object-get-own-property-names.js
-var require_object_get_own_property_names = __commonJS({
-  "../../node_modules/core-js/internals/object-get-own-property-names.js": function(exports2) {
-    "use strict";
-    var internalObjectKeys = require_object_keys_internal();
-    var enumBugKeys = require_enum_bug_keys();
-    var hiddenKeys = enumBugKeys.concat("length", "prototype");
-    exports2.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
-      return internalObjectKeys(O, hiddenKeys);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/object-get-own-property-symbols.js
-var require_object_get_own_property_symbols = __commonJS({
-  "../../node_modules/core-js/internals/object-get-own-property-symbols.js": function(exports2) {
-    "use strict";
-    exports2.f = Object.getOwnPropertySymbols;
-  }
-});
-
-// ../../node_modules/core-js/internals/own-keys.js
-var require_own_keys = __commonJS({
-  "../../node_modules/core-js/internals/own-keys.js": function(exports2, module2) {
-    "use strict";
-    var getBuiltIn = require_get_built_in();
-    var uncurryThis = require_function_uncurry_this();
-    var getOwnPropertyNamesModule = require_object_get_own_property_names();
-    var getOwnPropertySymbolsModule = require_object_get_own_property_symbols();
-    var anObject = require_an_object();
-    var concat = uncurryThis([].concat);
-    module2.exports = getBuiltIn("Reflect", "ownKeys") || function ownKeys25(it) {
-      var keys = getOwnPropertyNamesModule.f(anObject(it));
-      var getOwnPropertySymbols = getOwnPropertySymbolsModule.f;
-      return getOwnPropertySymbols ? concat(keys, getOwnPropertySymbols(it)) : keys;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/copy-constructor-properties.js
-var require_copy_constructor_properties = __commonJS({
-  "../../node_modules/core-js/internals/copy-constructor-properties.js": function(exports2, module2) {
-    "use strict";
-    var hasOwn = require_has_own_property();
-    var ownKeys25 = require_own_keys();
-    var getOwnPropertyDescriptorModule = require_object_get_own_property_descriptor();
-    var definePropertyModule = require_object_define_property();
-    module2.exports = function(target, source, exceptions) {
-      var keys = ownKeys25(source);
-      var defineProperty = definePropertyModule.f;
-      var getOwnPropertyDescriptor = getOwnPropertyDescriptorModule.f;
-      for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        if (!hasOwn(target, key) && !(exceptions && hasOwn(exceptions, key))) {
-          defineProperty(target, key, getOwnPropertyDescriptor(source, key));
-        }
-      }
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/is-forced.js
-var require_is_forced = __commonJS({
-  "../../node_modules/core-js/internals/is-forced.js": function(exports2, module2) {
-    "use strict";
-    var fails = require_fails();
-    var isCallable = require_is_callable();
-    var replacement = /#|\.prototype\./;
-    var isForced = function isForced2(feature, detection) {
-      var value = data[normalize(feature)];
-      return value === POLYFILL ? true : value === NATIVE ? false : isCallable(detection) ? fails(detection) : !!detection;
-    };
-    var normalize = isForced.normalize = function(string) {
-      return String(string).replace(replacement, ".").toLowerCase();
-    };
-    var data = isForced.data = {};
-    var NATIVE = isForced.NATIVE = "N";
-    var POLYFILL = isForced.POLYFILL = "P";
-    module2.exports = isForced;
-  }
-});
-
-// ../../node_modules/core-js/internals/export.js
-var require_export = __commonJS({
-  "../../node_modules/core-js/internals/export.js": function(exports2, module2) {
-    "use strict";
-    var globalThis2 = require_global_this();
-    var getOwnPropertyDescriptor = require_object_get_own_property_descriptor().f;
-    var createNonEnumerableProperty = require_create_non_enumerable_property();
-    var defineBuiltIn = require_define_built_in();
-    var defineGlobalProperty = require_define_global_property();
-    var copyConstructorProperties = require_copy_constructor_properties();
-    var isForced = require_is_forced();
-    module2.exports = function(options, source) {
-      var TARGET = options.target;
-      var GLOBAL = options.global;
-      var STATIC = options.stat;
-      var FORCED, target, key, targetProperty, sourceProperty, descriptor;
-      if (GLOBAL) {
-        target = globalThis2;
-      } else if (STATIC) {
-        target = globalThis2[TARGET] || defineGlobalProperty(TARGET, {});
-      } else {
-        target = globalThis2[TARGET] && globalThis2[TARGET].prototype;
-      }
-      if (target) for (key in source) {
-        sourceProperty = source[key];
-        if (options.dontCallGetSet) {
-          descriptor = getOwnPropertyDescriptor(target, key);
-          targetProperty = descriptor && descriptor.value;
-        } else targetProperty = target[key];
-        FORCED = isForced(GLOBAL ? key : TARGET + (STATIC ? "." : "#") + key, options.forced);
-        if (!FORCED && targetProperty !== void 0) {
-          if (typeof sourceProperty == typeof targetProperty) continue;
-          copyConstructorProperties(sourceProperty, targetProperty);
-        }
-        if (options.sham || targetProperty && targetProperty.sham) {
-          createNonEnumerableProperty(sourceProperty, "sham", true);
-        }
-        defineBuiltIn(target, key, sourceProperty, options);
-      }
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/is-array.js
-var require_is_array = __commonJS({
-  "../../node_modules/core-js/internals/is-array.js": function(exports2, module2) {
-    "use strict";
-    var classof = require_classof_raw();
-    module2.exports = Array.isArray || function isArray(argument) {
-      return classof(argument) === "Array";
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/does-not-exceed-safe-integer.js
-var require_does_not_exceed_safe_integer = __commonJS({
-  "../../node_modules/core-js/internals/does-not-exceed-safe-integer.js": function(exports2, module2) {
-    "use strict";
-    var $TypeError = TypeError;
-    var MAX_SAFE_INTEGER = 9007199254740991;
-    module2.exports = function(it) {
-      if (it > MAX_SAFE_INTEGER) throw $TypeError("Maximum allowed index exceeded");
-      return it;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/function-uncurry-this-clause.js
-var require_function_uncurry_this_clause = __commonJS({
-  "../../node_modules/core-js/internals/function-uncurry-this-clause.js": function(exports2, module2) {
-    "use strict";
-    var classofRaw = require_classof_raw();
-    var uncurryThis = require_function_uncurry_this();
-    module2.exports = function(fn) {
-      if (classofRaw(fn) === "Function") return uncurryThis(fn);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/function-bind-context.js
-var require_function_bind_context = __commonJS({
-  "../../node_modules/core-js/internals/function-bind-context.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this_clause();
-    var aCallable = require_a_callable();
-    var NATIVE_BIND = require_function_bind_native();
-    var bind = uncurryThis(uncurryThis.bind);
-    module2.exports = function(fn, that) {
-      aCallable(fn);
-      return that === void 0 ? fn : NATIVE_BIND ? bind(fn, that) : function() {
-        return fn.apply(that, arguments);
-      };
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/flatten-into-array.js
-var require_flatten_into_array = __commonJS({
-  "../../node_modules/core-js/internals/flatten-into-array.js": function(exports2, module2) {
-    "use strict";
-    var isArray = require_is_array();
-    var lengthOfArrayLike = require_length_of_array_like();
-    var doesNotExceedSafeInteger = require_does_not_exceed_safe_integer();
-    var bind = require_function_bind_context();
-    var _flattenIntoArray = function flattenIntoArray(target, original, source, sourceLen, start, depth, mapper, thisArg) {
-      var targetIndex = start;
-      var sourceIndex = 0;
-      var mapFn = mapper ? bind(mapper, thisArg) : false;
-      var element, elementLen;
-      while (sourceIndex < sourceLen) {
-        if (sourceIndex in source) {
-          element = mapFn ? mapFn(source[sourceIndex], sourceIndex, original) : source[sourceIndex];
-          if (depth > 0 && isArray(element)) {
-            elementLen = lengthOfArrayLike(element);
-            targetIndex = _flattenIntoArray(target, original, element, elementLen, targetIndex, depth - 1) - 1;
-          } else {
-            doesNotExceedSafeInteger(targetIndex + 1);
-            target[targetIndex] = element;
-          }
-          targetIndex++;
-        }
-        sourceIndex++;
-      }
-      return targetIndex;
-    };
-    module2.exports = _flattenIntoArray;
-  }
-});
-
-// ../../node_modules/core-js/internals/to-string-tag-support.js
-var require_to_string_tag_support = __commonJS({
-  "../../node_modules/core-js/internals/to-string-tag-support.js": function(exports2, module2) {
-    "use strict";
-    var wellKnownSymbol = require_well_known_symbol();
-    var TO_STRING_TAG = wellKnownSymbol("toStringTag");
-    var test = {};
-    test[TO_STRING_TAG] = "z";
-    module2.exports = String(test) === "[object z]";
-  }
-});
-
-// ../../node_modules/core-js/internals/classof.js
-var require_classof = __commonJS({
-  "../../node_modules/core-js/internals/classof.js": function(exports2, module2) {
-    "use strict";
-    var TO_STRING_TAG_SUPPORT = require_to_string_tag_support();
-    var isCallable = require_is_callable();
-    var classofRaw = require_classof_raw();
-    var wellKnownSymbol = require_well_known_symbol();
-    var TO_STRING_TAG = wellKnownSymbol("toStringTag");
-    var $Object = Object;
-    var CORRECT_ARGUMENTS = classofRaw(/* @__PURE__ */ function() {
-      return arguments;
-    }()) === "Arguments";
-    var tryGet = function tryGet2(it, key) {
-      try {
-        return it[key];
-      } catch (error2) {
-      }
-    };
-    module2.exports = TO_STRING_TAG_SUPPORT ? classofRaw : function(it) {
-      var O, tag, result;
-      return it === void 0 ? "Undefined" : it === null ? "Null" : typeof (tag = tryGet(O = $Object(it), TO_STRING_TAG)) == "string" ? tag : CORRECT_ARGUMENTS ? classofRaw(O) : (result = classofRaw(O)) === "Object" && isCallable(O.callee) ? "Arguments" : result;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/is-constructor.js
-var require_is_constructor = __commonJS({
-  "../../node_modules/core-js/internals/is-constructor.js": function(exports2, module2) {
-    "use strict";
-    var uncurryThis = require_function_uncurry_this();
-    var fails = require_fails();
-    var isCallable = require_is_callable();
-    var classof = require_classof();
-    var getBuiltIn = require_get_built_in();
-    var inspectSource = require_inspect_source();
-    var noop = function noop2() {
-    };
-    var construct = getBuiltIn("Reflect", "construct");
-    var constructorRegExp = /^\s*(?:class|function)\b/;
-    var exec = uncurryThis(constructorRegExp.exec);
-    var INCORRECT_TO_STRING = !constructorRegExp.test(noop);
-    var isConstructorModern = function isConstructor(argument) {
-      if (!isCallable(argument)) return false;
-      try {
-        construct(noop, [], argument);
-        return true;
-      } catch (error2) {
-        return false;
-      }
-    };
-    var isConstructorLegacy = function isConstructor(argument) {
-      if (!isCallable(argument)) return false;
-      switch (classof(argument)) {
-        case "AsyncFunction":
-        case "GeneratorFunction":
-        case "AsyncGeneratorFunction":
-          return false;
-      }
-      try {
-        return INCORRECT_TO_STRING || !!exec(constructorRegExp, inspectSource(argument));
-      } catch (error2) {
-        return true;
-      }
-    };
-    isConstructorLegacy.sham = true;
-    module2.exports = !construct || fails(function() {
-      var called;
-      return isConstructorModern(isConstructorModern.call) || !isConstructorModern(Object) || !isConstructorModern(function() {
-        called = true;
-      }) || called;
-    }) ? isConstructorLegacy : isConstructorModern;
-  }
-});
-
-// ../../node_modules/core-js/internals/array-species-constructor.js
-var require_array_species_constructor = __commonJS({
-  "../../node_modules/core-js/internals/array-species-constructor.js": function(exports2, module2) {
-    "use strict";
-    var isArray = require_is_array();
-    var isConstructor = require_is_constructor();
-    var isObject = require_is_object();
-    var wellKnownSymbol = require_well_known_symbol();
-    var SPECIES = wellKnownSymbol("species");
-    var $Array = Array;
-    module2.exports = function(originalArray) {
-      var C;
-      if (isArray(originalArray)) {
-        C = originalArray.constructor;
-        if (isConstructor(C) && (C === $Array || isArray(C.prototype))) C = void 0;
-        else if (isObject(C)) {
-          C = C[SPECIES];
-          if (C === null) C = void 0;
-        }
-      }
-      return C === void 0 ? $Array : C;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/array-species-create.js
-var require_array_species_create = __commonJS({
-  "../../node_modules/core-js/internals/array-species-create.js": function(exports2, module2) {
-    "use strict";
-    var arraySpeciesConstructor = require_array_species_constructor();
-    module2.exports = function(originalArray, length) {
-      return new (arraySpeciesConstructor(originalArray))(length === 0 ? 0 : length);
-    };
-  }
-});
-
-// ../../node_modules/core-js/modules/es.array.flat.js
-var require_es_array_flat = __commonJS({
-  "../../node_modules/core-js/modules/es.array.flat.js": function() {
-    "use strict";
-    var $ = require_export();
-    var flattenIntoArray = require_flatten_into_array();
-    var toObject = require_to_object();
-    var lengthOfArrayLike = require_length_of_array_like();
-    var toIntegerOrInfinity = require_to_integer_or_infinity();
-    var arraySpeciesCreate = require_array_species_create();
-    $({
-      target: "Array",
-      proto: true
-    }, {
-      flat: function flat2() {
-        var depthArg = arguments.length ? arguments[0] : void 0;
-        var O = toObject(this);
-        var sourceLen = lengthOfArrayLike(O);
-        var A = arraySpeciesCreate(O, 0);
-        A.length = flattenIntoArray(A, O, O, sourceLen, 0, depthArg === void 0 ? 1 : toIntegerOrInfinity(depthArg));
-        return A;
-      }
-    });
-  }
-});
-
-// ../../node_modules/core-js/internals/object-keys.js
-var require_object_keys = __commonJS({
-  "../../node_modules/core-js/internals/object-keys.js": function(exports2, module2) {
-    "use strict";
-    var internalObjectKeys = require_object_keys_internal();
-    var enumBugKeys = require_enum_bug_keys();
-    module2.exports = Object.keys || function keys(O) {
-      return internalObjectKeys(O, enumBugKeys);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/object-define-properties.js
-var require_object_define_properties = __commonJS({
-  "../../node_modules/core-js/internals/object-define-properties.js": function(exports2) {
-    "use strict";
-    var DESCRIPTORS = require_descriptors();
-    var V8_PROTOTYPE_DEFINE_BUG = require_v8_prototype_define_bug();
-    var definePropertyModule = require_object_define_property();
-    var anObject = require_an_object();
-    var toIndexedObject = require_to_indexed_object();
-    var objectKeys = require_object_keys();
-    exports2.f = DESCRIPTORS && !V8_PROTOTYPE_DEFINE_BUG ? Object.defineProperties : function defineProperties(O, Properties) {
-      anObject(O);
-      var props = toIndexedObject(Properties);
-      var keys = objectKeys(Properties);
-      var length = keys.length;
-      var index = 0;
-      var key;
-      while (length > index) definePropertyModule.f(O, key = keys[index++], props[key]);
-      return O;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/html.js
-var require_html = __commonJS({
-  "../../node_modules/core-js/internals/html.js": function(exports2, module2) {
-    "use strict";
-    var getBuiltIn = require_get_built_in();
-    module2.exports = getBuiltIn("document", "documentElement");
-  }
-});
-
-// ../../node_modules/core-js/internals/object-create.js
-var require_object_create = __commonJS({
-  "../../node_modules/core-js/internals/object-create.js": function(exports2, module2) {
-    "use strict";
-    var anObject = require_an_object();
-    var definePropertiesModule = require_object_define_properties();
-    var enumBugKeys = require_enum_bug_keys();
-    var hiddenKeys = require_hidden_keys();
-    var html = require_html();
-    var documentCreateElement = require_document_create_element();
-    var sharedKey = require_shared_key();
-    var GT = ">";
-    var LT = "<";
-    var PROTOTYPE = "prototype";
-    var SCRIPT = "script";
-    var IE_PROTO = sharedKey("IE_PROTO");
-    var EmptyConstructor = function EmptyConstructor2() {
-    };
-    var scriptTag = function scriptTag2(content) {
-      return LT + SCRIPT + GT + content + LT + "/" + SCRIPT + GT;
-    };
-    var NullProtoObjectViaActiveX = function NullProtoObjectViaActiveX2(activeXDocument2) {
-      activeXDocument2.write(scriptTag(""));
-      activeXDocument2.close();
-      var temp = activeXDocument2.parentWindow.Object;
-      activeXDocument2 = null;
-      return temp;
-    };
-    var NullProtoObjectViaIFrame = function NullProtoObjectViaIFrame2() {
-      var iframe = documentCreateElement("iframe");
-      var JS = "java" + SCRIPT + ":";
-      var iframeDocument;
-      iframe.style.display = "none";
-      html.appendChild(iframe);
-      iframe.src = String(JS);
-      iframeDocument = iframe.contentWindow.document;
-      iframeDocument.open();
-      iframeDocument.write(scriptTag("document.F=Object"));
-      iframeDocument.close();
-      return iframeDocument.F;
-    };
-    var activeXDocument;
-    var _NullProtoObject = function NullProtoObject() {
-      try {
-        activeXDocument = new ActiveXObject("htmlfile");
-      } catch (error2) {
-      }
-      _NullProtoObject = typeof document != "undefined" ? document.domain && activeXDocument ? NullProtoObjectViaActiveX(activeXDocument) : NullProtoObjectViaIFrame() : NullProtoObjectViaActiveX(activeXDocument);
-      var length = enumBugKeys.length;
-      while (length--) delete _NullProtoObject[PROTOTYPE][enumBugKeys[length]];
-      return _NullProtoObject();
-    };
-    hiddenKeys[IE_PROTO] = true;
-    module2.exports = Object.create || function create3(O, Properties) {
-      var result;
-      if (O !== null) {
-        EmptyConstructor[PROTOTYPE] = anObject(O);
-        result = new EmptyConstructor();
-        EmptyConstructor[PROTOTYPE] = null;
-        result[IE_PROTO] = O;
-      } else result = _NullProtoObject();
-      return Properties === void 0 ? result : definePropertiesModule.f(result, Properties);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/add-to-unscopables.js
-var require_add_to_unscopables = __commonJS({
-  "../../node_modules/core-js/internals/add-to-unscopables.js": function(exports2, module2) {
-    "use strict";
-    var wellKnownSymbol = require_well_known_symbol();
-    var create3 = require_object_create();
-    var defineProperty = require_object_define_property().f;
-    var UNSCOPABLES = wellKnownSymbol("unscopables");
-    var ArrayPrototype = Array.prototype;
-    if (ArrayPrototype[UNSCOPABLES] === void 0) {
-      defineProperty(ArrayPrototype, UNSCOPABLES, {
-        configurable: true,
-        value: create3(null)
-      });
-    }
-    module2.exports = function(key) {
-      ArrayPrototype[UNSCOPABLES][key] = true;
-    };
-  }
-});
-
-// ../../node_modules/core-js/modules/es.array.unscopables.flat.js
-var require_es_array_unscopables_flat = __commonJS({
-  "../../node_modules/core-js/modules/es.array.unscopables.flat.js": function() {
-    "use strict";
-    var addToUnscopables = require_add_to_unscopables();
-    addToUnscopables("flat");
-  }
-});
-
-// ../../node_modules/core-js/internals/entry-unbind.js
-var require_entry_unbind = __commonJS({
-  "../../node_modules/core-js/internals/entry-unbind.js": function(exports2, module2) {
-    "use strict";
-    var globalThis2 = require_global_this();
-    var uncurryThis = require_function_uncurry_this();
-    module2.exports = function(CONSTRUCTOR, METHOD) {
-      return uncurryThis(globalThis2[CONSTRUCTOR].prototype[METHOD]);
-    };
-  }
-});
-
-// ../../node_modules/core-js/es/array/flat.js
-var require_flat = __commonJS({
-  "../../node_modules/core-js/es/array/flat.js": function(exports2, module2) {
-    "use strict";
-    require_es_array_flat();
-    require_es_array_unscopables_flat();
-    var entryUnbind = require_entry_unbind();
-    module2.exports = entryUnbind("Array", "flat");
-  }
-});
-
-// ../../node_modules/core-js/stable/array/flat.js
-var require_flat2 = __commonJS({
-  "../../node_modules/core-js/stable/array/flat.js": function(exports2, module2) {
-    "use strict";
-    var parent = require_flat();
-    module2.exports = parent;
-  }
-});
-
-// ../../node_modules/core-js/actual/array/flat.js
-var require_flat3 = __commonJS({
-  "../../node_modules/core-js/actual/array/flat.js": function(exports2, module2) {
-    "use strict";
-    var parent = require_flat2();
-    module2.exports = parent;
-  }
-});
-
-// ../../node_modules/core-js/full/array/flat.js
-var require_flat4 = __commonJS({
-  "../../node_modules/core-js/full/array/flat.js": function(exports2, module2) {
-    "use strict";
-    var parent = require_flat3();
-    module2.exports = parent;
-  }
-});
-
-// ../../node_modules/core-js/features/array/flat.js
-var require_flat5 = __commonJS({
-  "../../node_modules/core-js/features/array/flat.js": function(exports2, module2) {
-    "use strict";
-    module2.exports = require_flat4();
-  }
-});
-
 // ../garbo-lib/dist/value.js
 var require_value = __commonJS({
   "../garbo-lib/dist/value.js": function(exports2) {
@@ -24809,198 +23198,6 @@ var require_dist = __commonJS({
       enumerable: true,
       get: function get4() {
         return wanderer_1.WandererManager;
-      }
-    });
-  }
-});
-
-// ../../node_modules/core-js/internals/iterators.js
-var require_iterators = __commonJS({
-  "../../node_modules/core-js/internals/iterators.js": function(exports2, module2) {
-    "use strict";
-    module2.exports = {};
-  }
-});
-
-// ../../node_modules/core-js/internals/is-array-iterator-method.js
-var require_is_array_iterator_method = __commonJS({
-  "../../node_modules/core-js/internals/is-array-iterator-method.js": function(exports2, module2) {
-    "use strict";
-    var wellKnownSymbol = require_well_known_symbol();
-    var Iterators = require_iterators();
-    var ITERATOR = wellKnownSymbol("iterator");
-    var ArrayPrototype = Array.prototype;
-    module2.exports = function(it) {
-      return it !== void 0 && (Iterators.Array === it || ArrayPrototype[ITERATOR] === it);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/get-iterator-method.js
-var require_get_iterator_method = __commonJS({
-  "../../node_modules/core-js/internals/get-iterator-method.js": function(exports2, module2) {
-    "use strict";
-    var classof = require_classof();
-    var getMethod = require_get_method();
-    var isNullOrUndefined = require_is_null_or_undefined();
-    var Iterators = require_iterators();
-    var wellKnownSymbol = require_well_known_symbol();
-    var ITERATOR = wellKnownSymbol("iterator");
-    module2.exports = function(it) {
-      if (!isNullOrUndefined(it)) return getMethod(it, ITERATOR) || getMethod(it, "@@iterator") || Iterators[classof(it)];
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/get-iterator.js
-var require_get_iterator = __commonJS({
-  "../../node_modules/core-js/internals/get-iterator.js": function(exports2, module2) {
-    "use strict";
-    var call = require_function_call();
-    var aCallable = require_a_callable();
-    var anObject = require_an_object();
-    var tryToString = require_try_to_string();
-    var getIteratorMethod = require_get_iterator_method();
-    var $TypeError = TypeError;
-    module2.exports = function(argument, usingIterator) {
-      var iteratorMethod = arguments.length < 2 ? getIteratorMethod(argument) : usingIterator;
-      if (aCallable(iteratorMethod)) return anObject(call(iteratorMethod, argument));
-      throw new $TypeError(tryToString(argument) + " is not iterable");
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/iterator-close.js
-var require_iterator_close = __commonJS({
-  "../../node_modules/core-js/internals/iterator-close.js": function(exports2, module2) {
-    "use strict";
-    var call = require_function_call();
-    var anObject = require_an_object();
-    var getMethod = require_get_method();
-    module2.exports = function(iterator, kind, value) {
-      var innerResult, innerError;
-      anObject(iterator);
-      try {
-        innerResult = getMethod(iterator, "return");
-        if (!innerResult) {
-          if (kind === "throw") throw value;
-          return value;
-        }
-        innerResult = call(innerResult, iterator);
-      } catch (error2) {
-        innerError = true;
-        innerResult = error2;
-      }
-      if (kind === "throw") throw value;
-      if (innerError) throw innerResult;
-      anObject(innerResult);
-      return value;
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/iterate.js
-var require_iterate = __commonJS({
-  "../../node_modules/core-js/internals/iterate.js": function(exports2, module2) {
-    "use strict";
-    var bind = require_function_bind_context();
-    var call = require_function_call();
-    var anObject = require_an_object();
-    var tryToString = require_try_to_string();
-    var isArrayIteratorMethod = require_is_array_iterator_method();
-    var lengthOfArrayLike = require_length_of_array_like();
-    var isPrototypeOf = require_object_is_prototype_of();
-    var getIterator = require_get_iterator();
-    var getIteratorMethod = require_get_iterator_method();
-    var iteratorClose = require_iterator_close();
-    var $TypeError = TypeError;
-    var Result = function Result2(stopped, result) {
-      this.stopped = stopped;
-      this.result = result;
-    };
-    var ResultPrototype = Result.prototype;
-    module2.exports = function(iterable, unboundFunction, options) {
-      var that = options && options.that;
-      var AS_ENTRIES = !!(options && options.AS_ENTRIES);
-      var IS_RECORD = !!(options && options.IS_RECORD);
-      var IS_ITERATOR = !!(options && options.IS_ITERATOR);
-      var INTERRUPTED = !!(options && options.INTERRUPTED);
-      var fn = bind(unboundFunction, that);
-      var iterator, iterFn, index, length, result, next2, step;
-      var stop = function stop2(condition) {
-        if (iterator) iteratorClose(iterator, "normal", condition);
-        return new Result(true, condition);
-      };
-      var callFn = function callFn2(value) {
-        if (AS_ENTRIES) {
-          anObject(value);
-          return INTERRUPTED ? fn(value[0], value[1], stop) : fn(value[0], value[1]);
-        }
-        return INTERRUPTED ? fn(value, stop) : fn(value);
-      };
-      if (IS_RECORD) {
-        iterator = iterable.iterator;
-      } else if (IS_ITERATOR) {
-        iterator = iterable;
-      } else {
-        iterFn = getIteratorMethod(iterable);
-        if (!iterFn) throw new $TypeError(tryToString(iterable) + " is not iterable");
-        if (isArrayIteratorMethod(iterFn)) {
-          for (index = 0, length = lengthOfArrayLike(iterable); length > index; index++) {
-            result = callFn(iterable[index]);
-            if (result && isPrototypeOf(ResultPrototype, result)) return result;
-          }
-          return new Result(false);
-        }
-        iterator = getIterator(iterable, iterFn);
-      }
-      next2 = IS_RECORD ? iterable.next : iterator.next;
-      while (!(step = call(next2, iterator)).done) {
-        try {
-          result = callFn(step.value);
-        } catch (error2) {
-          iteratorClose(iterator, "throw", error2);
-        }
-        if (typeof result == "object" && result && isPrototypeOf(ResultPrototype, result)) return result;
-      }
-      return new Result(false);
-    };
-  }
-});
-
-// ../../node_modules/core-js/internals/create-property.js
-var require_create_property = __commonJS({
-  "../../node_modules/core-js/internals/create-property.js": function(exports2, module2) {
-    "use strict";
-    var DESCRIPTORS = require_descriptors();
-    var definePropertyModule = require_object_define_property();
-    var createPropertyDescriptor = require_create_property_descriptor();
-    module2.exports = function(object, key, value) {
-      if (DESCRIPTORS) definePropertyModule.f(object, key, createPropertyDescriptor(0, value));
-      else object[key] = value;
-    };
-  }
-});
-
-// ../../node_modules/core-js/modules/es.object.from-entries.js
-var require_es_object_from_entries = __commonJS({
-  "../../node_modules/core-js/modules/es.object.from-entries.js": function() {
-    "use strict";
-    var $ = require_export();
-    var iterate = require_iterate();
-    var createProperty = require_create_property();
-    $({
-      target: "Object",
-      stat: true
-    }, {
-      fromEntries: function fromEntries(iterable) {
-        var obj = {};
-        iterate(iterable, function(k, v) {
-          createProperty(obj, k, v);
-        }, {
-          AS_ENTRIES: true
-        });
-        return obj;
       }
     });
   }
@@ -28188,7 +26385,6 @@ var import_kolmafia119 = require("kolmafia");
 init_dist();
 
 // src/combat.ts
-var import_flat = __toESM(require_flat5());
 var import_kolmafia118 = require("kolmafia");
 init_dist();
 
@@ -29065,7 +27261,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("360e90430554e5e1a3b492b6b8ec767a063734cb", ")"));
+      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("015b730cc4c5424ee199a455ea665214065af838", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -29679,7 +27875,6 @@ var import_kolmafia99 = require("kolmafia");
 init_dist();
 
 // src/potions.ts
-var import_es_object = __toESM(require_es_object_from_entries());
 var import_kolmafia98 = require("kolmafia");
 init_dist();
 
@@ -32570,7 +30765,7 @@ var experienceFamiliars = [{
 }, {
   familiar: $familiar(_templateObject2160 || (_templateObject2160 = _taggedTemplateLiteral82(["Grey Goose"]))),
   used: "_meatifyMatterUsed",
-  useValue: Math.pow(15, 4),
+  useValue: 15 ** 4,
   baseExp: 25
 }, {
   familiar: $familiar(_templateObject3141 || (_templateObject3141 = _taggedTemplateLiteral82(["Chest Mimic"]))),
@@ -32742,7 +30937,7 @@ function menu2() {
     if (timeToMeatify()) {
       familiarMenu.push({
         familiar: $familiar(_templateObject2163 || (_templateObject2163 = _taggedTemplateLiteral84(["Grey Goose"]))),
-        expectedValue: Math.pow((Math.max((0, import_kolmafia95.familiarWeight)($familiar(_templateObject3142 || (_templateObject3142 = _taggedTemplateLiteral84(["Grey Goose"])))) - 5), 0), 4),
+        expectedValue: (Math.max((0, import_kolmafia95.familiarWeight)($familiar(_templateObject3142 || (_templateObject3142 = _taggedTemplateLiteral84(["Grey Goose"])))) - 5), 0) ** 4,
         leprechaunMultiplier: 0,
         limit: "experience"
       });
@@ -33003,7 +31198,7 @@ function freeFightOutfit() {
   }));
   var mode = outfit3.familiar === $familiar(_templateObject701 || (_templateObject701 = _taggedTemplateLiteral86(["Machine Elf"]))) ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   if (outfit3.familiar !== $familiar(_templateObject2165 || (_templateObject2165 = _taggedTemplateLiteral86(["Patriotic Eagle"])))) {
-    var familiarExpValue = [[$familiar(_templateObject3144 || (_templateObject3144 = _taggedTemplateLiteral86(["Chest Mimic"]))), EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") / 50], [$familiar(_templateObject4125 || (_templateObject4125 = _taggedTemplateLiteral86(["Pocket Professor"]))), 11 * get("valueOfAdventure") / 200], [$familiar(_templateObject5106 || (_templateObject5106 = _taggedTemplateLiteral86(["Grey Goose"]))), Math.pow(15, 4) / 400]].find(function(_ref) {
+    var familiarExpValue = [[$familiar(_templateObject3144 || (_templateObject3144 = _taggedTemplateLiteral86(["Chest Mimic"]))), EMBEZZLER_MULTIPLIER() * get("valueOfAdventure") / 50], [$familiar(_templateObject4125 || (_templateObject4125 = _taggedTemplateLiteral86(["Pocket Professor"]))), 11 * get("valueOfAdventure") / 200], [$familiar(_templateObject5106 || (_templateObject5106 = _taggedTemplateLiteral86(["Grey Goose"]))), 15 ** 4 / 400]].find(function(_ref) {
       var _ref2 = _slicedToArray31(_ref, 1), familiar8 = _ref2[0];
       return outfit3.familiar === familiar8;
     });
@@ -33697,7 +31892,7 @@ var pawPotions = Array.from(validPawWishes.keys()).filter(function(effect2) {
     effect: effect2,
     canDouble: false,
     price: function() {
-      return !CursedMonkeyPaw_exports.have() || CursedMonkeyPaw_exports.wishes() === 0 || failedWishes.includes(effect2) ? Math.pow(2, 100) : 0;
+      return !CursedMonkeyPaw_exports.have() || CursedMonkeyPaw_exports.wishes() === 0 || failedWishes.includes(effect2) ? 2 ** 100 : 0;
     },
     duration: 30,
     acquire: function() {
@@ -35016,7 +33211,7 @@ function expectedRemainingExpeditions() {
   var availableAutumnatonTurns = estimatedGarboTurns() - AutumnAton_exports.turnsLeft() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow);
   var quests2 = get("_autumnatonQuests");
   var legOffsetFactor = 11 * Math.max(quests2 - legs2 - 1, 0);
-  return Math.floor(Math.sqrt(Math.pow(quests2, 2) + 2 * (availableAutumnatonTurns - legOffsetFactor) / 11));
+  return Math.floor(Math.sqrt(quests2 ** 2 + 2 * (availableAutumnatonTurns - legOffsetFactor) / 11));
 }
 var profitRelevantUpgrades = ["leftarm1", "leftleg1", "rightarm1", "rightleg1", "cowcatcher", "periscope", "radardish"];
 function profitFromExtraAcuity(bestLocationContainingUpgrade, bestLocationWithInstalledUpgrade) {
