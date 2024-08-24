@@ -516,29 +516,32 @@ export function checkGithubVersion(): void {
       gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release")
         .commit;
 
-    // Query GitHub for latest release commit
-    const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
-      visitUrl(
-        `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`,
-      ),
+    const gitData = visitUrl(
+      `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`,
     );
-    const releaseSHA = gitBranches.find(
-      (branchInfo) => branchInfo.name === "release",
-    )?.commit?.sha;
+    if (!gitData) print("Failed to reach github!");
+    else {
+      // Query GitHub for latest release commit
+      const gitBranches: { name: string; commit: { sha: string } }[] =
+        JSON.parse(gitData);
+      const releaseSHA = gitBranches.find(
+        (branchInfo) => branchInfo.name === "release",
+      )?.commit?.sha;
 
-    print(
-      `Local Version: ${localSHA} (built from ${process.env.GITHUB_REF_NAME}@${process.env.GITHUB_SHA})`,
-    );
-    if (releaseSHA === localSHA) {
-      print("Garbo is up to date!", HIGHLIGHT);
-    } else if (releaseSHA === undefined) {
       print(
-        "Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?",
-        HIGHLIGHT,
+        `Local Version: ${localSHA} (built from ${process.env.GITHUB_REF_NAME}@${process.env.GITHUB_SHA})`,
       );
-    } else {
-      print(`Release Version: ${releaseSHA}`);
-      print("Garbo is out of date. Please run 'git update'!", "red");
+      if (releaseSHA === localSHA) {
+        print("Garbo is up to date!", HIGHLIGHT);
+      } else if (releaseSHA === undefined) {
+        print(
+          "Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?",
+          HIGHLIGHT,
+        );
+      } else {
+        print(`Release Version: ${releaseSHA}`);
+        print("Garbo is out of date. Please run 'git update'!", "red");
+      }
     }
   } else {
     print(
