@@ -347,6 +347,7 @@ function legendaryPizzaToMenu(
     price: number;
   }) => MenuItem<Note> | MenuItem<Note>[],
 ) {
+  if (!globalOptions.ascend) return [];
   const canCookLegendaryPizza = (pizza: Item): boolean => {
     const recipes = [
       pizza,
