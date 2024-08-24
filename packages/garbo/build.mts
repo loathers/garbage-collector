@@ -7,7 +7,7 @@ const watch = process.argv.some((arg) => ["--watch", "-w"].includes(arg));
 const context = await esbuild.context({
   bundle: true,
   platform: "node",
-  target: "rhino1.7.14",
+  target: "rhino1.7.15",
   external: ["kolmafia"],
   define: {
     "process.env.GITHUB_SHA": `"${
