@@ -4,6 +4,7 @@ import {
   $item,
   CinchoDeMayo,
   clamp,
+  flat,
   get,
   maxBy,
   MayamCalendar,
@@ -103,7 +104,7 @@ function getBestGreedyCombination(
 function expandCombinationGroup<N extends number>(
   group: Tuple<MayamCalendar.Combination, N>,
 ): [...Tuple<MayamCalendar.Combination, N>, MayamCalendar.Combination][] {
-  const forbiddenSymbols = [...group.flat(), ...MayamCalendar.symbolsUsed()];
+  const forbiddenSymbols = [...flat(group), ...MayamCalendar.symbolsUsed()];
   return [
     ...getAvailableResonances(forbiddenSymbols).map(
       (resonance) =>
