@@ -52,9 +52,9 @@
     "description": "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive."
   },
   {
-    "name": "garbo_autoUserConfirm_embezzlerInvocationsThreshold",
+    "name": "garbo_autoUserConfirm_targetInvocationsThreshold",
     "defaultValue": 1,
-    "description": "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source an embezzler for chaining before requesting user interference."
+    "description": "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source a target monster for chaining before requesting user interference."
   },
   {
     "name": "garbo_IgnoreMarginalFamiliars",
@@ -65,10 +65,5 @@
     "name": "garbo_restoreHpTarget",
     "defaultValue": 2000,
     "description": "If you're a very high level, what HP threshold should garbo aim to maintain?"
-  },
-  {
-    "name": "garbo_embezzlerMultiplier",
-    "defaultValue": 2.5,
-    "description": "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit"
   }
 ]
