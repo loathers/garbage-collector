@@ -58,6 +58,7 @@ export function makeValue(
       $item`Wal-Mart gift certificate`,
       currency($item`one-day ticket to The Glaciest`),
     ],
+    [$item`cop dollar`, currency($item`shoe gum`)],
     [$item`Rubee™`, currency($item`FantasyRealm guest pass`)],
     [$item`Guzzlrbuck`, currency($item`Never Don't Stop Not Striving`)],
     ...complexCandy(),
