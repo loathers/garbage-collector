@@ -609,7 +609,7 @@ export class Macro extends StrictMacro {
         Macro.trySkillRepeat($skill`Northern Explosion`)
           .ifNot(
             $monster`cheerless mime executive`,
-            Macro.trySkillRepeat($skill`Lunging Thrust-Smack`)
+            Macro.trySkillRepeat($skill`Lunging Thrust-Smack`),
           )
           .trySkillRepeat(
             $skill`Saucegeyser`,
