@@ -606,20 +606,18 @@ export class Macro extends StrictMacro {
         myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`) &&
           (currentHitStat() === $stat`Muscle` ||
             itemType(equippedItem($slot`weapon`)) === "knife"),
-        Macro.trySkillRepeat(
-          $skill`Northern Explosion`,
-        )
-        .ifNot(
-          $monster`cheerless mime executive`,
-          Macro.trySkillRepeat($skill`Lunging Thrust-Smack`)
-        )
-        .trySkillRepeat(
-          $skill`Saucegeyser`,
-          $skill`Weapon of the Pastalord`,
-          $skill`Cannelloni Cannon`,
-          $skill`Wave of Sauce`,
-          $skill`Saucestorm`,
-        ),
+        Macro.trySkillRepeat($skill`Northern Explosion`)
+          .ifNot(
+            $monster`cheerless mime executive`,
+            Macro.trySkillRepeat($skill`Lunging Thrust-Smack`)
+          )
+          .trySkillRepeat(
+            $skill`Saucegeyser`,
+            $skill`Weapon of the Pastalord`,
+            $skill`Cannelloni Cannon`,
+            $skill`Wave of Sauce`,
+            $skill`Saucestorm`,
+          ),
         Macro.trySkillRepeat(
           $skill`Saucegeyser`,
           $skill`Weapon of the Pastalord`,
