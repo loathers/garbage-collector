@@ -83,12 +83,16 @@ function stringToWorkshedItem(s: string): Item | null {
   return validWorksheds[0].item;
 }
 
+// We want this to be a const because we don't want to determine we can no longer target Cheerless Mime Executive simply because we used all reminisces to start a chain
+const locketAvailable = CombatLoversLocket.reminiscesLeft() > 0;
+
 function defaultTarget() {
   if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
     if (
       ChestMimic.have() ||
-      have($item`Clan VIP Lounge key`) ||
+      (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed")) ||
       (CombatLoversLocket.have() &&
+        locketAvailable &&
         CombatLoversLocket.unlockedLocketMonsters().includes(
           $monster`cheerless mime executive`,
         ))
