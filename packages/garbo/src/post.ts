@@ -1,8 +1,8 @@
 import { safeRestore } from "./lib";
-import { runGarboQuests } from "./tasks";
+import { runSafeGarboQuests } from "./tasks";
 import { PostQuest } from "./tasks/post";
 
 export default function postCombatActions() {
-  runGarboQuests([PostQuest()]);
+  runSafeGarboQuests([PostQuest()]);
   safeRestore();
 }
