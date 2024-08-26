@@ -21,6 +21,7 @@ import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
+import { copyTargetCount } from "../target";
 
 type MenuOptions = Partial<{
   canChooseMacro: boolean;
@@ -66,6 +67,17 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         leprechaunMultiplier: 0,
         limit: "experience",
       });
+    }
+
+    if (canChooseMacro && myInebriety() <= inebrietyLimit()) {
+      if (get("gooseDronesRemaining") < copyTargetCount()) {
+        familiarMenu.push({
+          familiar: $familiar`Grey Goose`,
+          expectedValue: garboValue($item`jumping horseradish`),
+          leprechaunMultiplier: 0,
+          limit: "experience",
+        });
+      }
     }
 
     if (canOpenRedPresent()) {

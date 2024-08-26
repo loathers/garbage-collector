@@ -364,6 +364,10 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Feel Superior`),
         ),
       )
+      .externalIf(
+        $monsters`Witchess Knight`.includes(globalOptions.target),
+        Macro.trySkill($skill`Emit Matter Duplicating Drones`),
+      )
       .externalIf(sealClubberSetup, Macro.trySkill($skill`Furious Wallop`))
       .externalIf(opsSetup, Macro.attack())
       .externalIf(katanaSetup, Macro.trySkill($skill`Summer Siesta`))

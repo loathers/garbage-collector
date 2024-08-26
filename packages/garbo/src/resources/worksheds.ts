@@ -8,6 +8,7 @@ import {
 import {
   $item,
   $items,
+  $monsters,
   arrayEquals,
   get,
   maxBy,
@@ -19,6 +20,7 @@ import { globalOptions } from "../config";
 import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns } from "../turns";
+import { copyTargetCount } from "../target";
 
 const GOOD_TRAIN_STATIONS = [
   { piece: TrainSet.Station.GAIN_MEAT, value: () => 900 },
@@ -26,9 +28,12 @@ const GOOD_TRAIN_STATIONS = [
     // Some day this'll be better
     piece: TrainSet.Station.TRACKSIDE_DINER,
     value: () =>
-      garboAverageValue(
-        ...$items`bowl of cottage cheese, hot buttered roll, toast`,
-      ),
+      $monsters`Witchess Knight`.includes(globalOptions.target) &&
+      copyTargetCount() > 0
+        ? garboValue($item`jumping horseradish`)
+        : garboAverageValue(
+            ...$items`bowl of cottage cheese, hot buttered roll, toast`,
+          ),
   },
   { piece: TrainSet.Station.CANDY_FACTORY, value: candyFactoryValue },
   {

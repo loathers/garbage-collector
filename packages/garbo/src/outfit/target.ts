@@ -6,7 +6,9 @@ import {
   $item,
   $items,
   $location,
+  $monsters,
   Environment,
+  get,
   Guzzlr,
   have,
 } from "libram";
@@ -23,6 +25,7 @@ import {
 } from "./lib";
 import { BonusEquipMode, modeValueOfMeat } from "../lib";
 import { globalOptions, targettingMeat } from "../config";
+import { copyTargetCount } from "../target";
 
 export function meatTargetOutfit(
   spec: OutfitSpec = {},
@@ -44,7 +47,13 @@ export function meatTargetOutfit(
     outfit.modifier.push("-tie");
   }
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
-  outfit.familiar ??= targettingMeat() ? meatFamiliar() : freeFightFamiliar();
+  outfit.familiar ??= $monsters`Witchess Knight`.includes(globalOptions.target)
+    ? get("gooseDronesRemaining") < copyTargetCount()
+      ? $familiar`Grey Goose`
+      : freeFightFamiliar()
+    : targettingMeat()
+      ? meatFamiliar()
+      : freeFightFamiliar();
 
   const bjornChoice = chooseBjorn(
     targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
