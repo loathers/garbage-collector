@@ -438,6 +438,20 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
       if (have($familiar`Reanimated Reanimator`)) {
         return { familiar: $familiar`Reanimated Reanimator` };
       }
+      if (
+        $monsters`Witchess Knight, Witchess Bishop`.includes(
+          globalOptions.target,
+        )
+      ) {
+        if (
+          get("gooseDronesRemaining") < copyTargetCount() &&
+          have($familiar`Grey Goose`)
+        ) {
+          return { familiar: $familiar`Grey Goose` };
+        } else {
+          return { familiar: freeFightFamiliar() };
+        }
+      }
     }
   }
   return { familiar: meatFamiliar() };

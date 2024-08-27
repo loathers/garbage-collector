@@ -1087,9 +1087,10 @@ export const copyTargetSources = [
 ];
 
 export function copyTargetCount(): number {
-  return sum(copyTargetSources, (source: CopyTargetFight) =>
+  const fights = sum(copyTargetSources, (source: CopyTargetFight) =>
     source.potential(),
   );
+  return fights;
 }
 
 /**

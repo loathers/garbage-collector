@@ -364,10 +364,6 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Feel Superior`),
         ),
       )
-      .externalIf(
-        $monsters`Witchess Knight`.includes(globalOptions.target),
-        Macro.trySkill($skill`Emit Matter Duplicating Drones`),
-      )
       .externalIf(sealClubberSetup, Macro.trySkill($skill`Furious Wallop`))
       .externalIf(opsSetup, Macro.attack())
       .externalIf(katanaSetup, Macro.trySkill($skill`Summer Siesta`))
@@ -807,6 +803,12 @@ export class Macro extends StrictMacro {
           SourceTerminal.getDigitizeMonster() !== globalOptions.target ||
             shouldRedigitize(),
           Macro.tryCopier($skill`Digitize`),
+        )
+        .externalIf(
+          $monsters`Witchess Knight, Witchess Bishop`.includes(
+            globalOptions.target,
+          ),
+          Macro.trySkill($skill`Emit Matter Duplicating Drones`),
         )
         .tryCopier($item`Spooky Putty sheet`)
         .tryCopier($item`Rain-Doh black box`)

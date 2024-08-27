@@ -5,22 +5,13 @@ import {
   Location,
   myInebriety,
 } from "kolmafia";
-import {
-  $familiar,
-  $item,
-  $location,
-  clamp,
-  findLeprechaunMultiplier,
-  get,
-  have,
-} from "libram";
+import { $familiar, $item, $location, clamp, get, have } from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
-import { meatFamiliar } from "./meatFamiliar";
 
 type MenuOptions = Partial<{
   canChooseMacro: boolean;
@@ -92,17 +83,6 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         limit: "special",
       });
     }
-  }
-
-  const meatFam = meatFamiliar();
-
-  if (!familiarMenu.some(({ familiar }) => familiar === meatFam)) {
-    familiarMenu.push({
-      familiar: meatFam,
-      expectedValue: 0,
-      leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
-      limit: "none",
-    });
   }
 
   if (!allowAttackFamiliars) {
