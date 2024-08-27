@@ -412,6 +412,12 @@ function pygmyOptions(equip: Item[] = []): FreeFightOptions {
   };
 }
 
+function goosoCheck(): boolean {
+  return $monsters`Witchess Knight, Witchess Bishop`.includes(
+    globalOptions.target,
+  );
+}
+
 function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
   if (!underwater) {
     if (
@@ -438,11 +444,7 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
       if (have($familiar`Reanimated Reanimator`)) {
         return { familiar: $familiar`Reanimated Reanimator` };
       }
-      if (
-        $monsters`Witchess Knight, Witchess Bishop`.includes(
-          globalOptions.target,
-        )
-      ) {
+      if (goosoCheck()) {
         if (
           get("gooseDronesRemaining") < copyTargetCount() &&
           have($familiar`Grey Goose`)
