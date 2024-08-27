@@ -1007,6 +1007,12 @@ function maxBy(array, optimizer) {
     });
   }
 }
+function tuple() {
+  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+    args[_key] = arguments[_key];
+  }
+  return args;
+}
 function arrayEquals(left, right) {
   if (left.length !== right.length) return false;
   return left.every(function(element, index) {
@@ -1014,8 +1020,8 @@ function arrayEquals(left, right) {
   });
 }
 function undelay(delayedObject) {
-  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
   }
   return typeof delayedObject === "function" ? delayedObject.apply(void 0, args) : delayedObject;
 }
@@ -1671,10 +1677,10 @@ function findFairyMultiplier(familiar8) {
   return Math.pow(Math.sqrt(itemBonus + 55 / 4 + 3) - Math.sqrt(55) / 2, 2);
 }
 function getTodaysHolidayWanderers() {
-  return flat((0, import_kolmafia5.holiday)().split("/").map(function(holiday6) {
+  return (0, import_kolmafia5.holiday)().split("/").flatMap(function(holiday6) {
     var _holidayWanderers$get;
     return (_holidayWanderers$get = holidayWanderers.get(holiday6)) !== null && _holidayWanderers$get !== void 0 ? _holidayWanderers$get : [];
-  }));
+  });
 }
 function canVisitUrl() {
   if ((0, import_kolmafia5.currentRound)()) {
@@ -1790,10 +1796,10 @@ function setCombatFlags() {
   for (var _len2 = arguments.length, flags = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
     flags[_key2] = arguments[_key2];
   }
-  return (0, import_kolmafia5.visitUrl)("account.php?".concat(([].concat(_toConsumableArray2(flat(flags.map(function(_ref11) {
+  return (0, import_kolmafia5.visitUrl)("account.php?".concat(([].concat(_toConsumableArray2(flags.flatMap(function(_ref11) {
     var flag = _ref11.flag, value = _ref11.value;
     return ["actions[]=flag_".concat(flag), "flag_".concat(flag, "=").concat(Number(value))];
-  }))), ["action=Update", "am=1", "ajax=1"]).join("&"), true)));
+  })), ["action=Update", "am=1", "ajax=1"]).join("&"), true)));
 }
 function withCombatFlags(action) {
   for (var _len3 = arguments.length, flags = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
@@ -1818,7 +1824,17 @@ function extractItems(text) {
     return [import_kolmafia5.Item.get(itemName), quantity];
   }));
 }
-var import_kolmafia5, _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, Wanderer, deterministicWanderers, EnsureError, valueMap, MALL_VALUE_MODIFIER, Environment, holidayWanderers, telescopeStats, telescopeElements, hedgeTrap1, hedgeTrap2, hedgeTrap3, byStat, byClass, realmTypes, ACCOUNT_COMBAT_FLAGS;
+function makeScalerCalcFunction(cache, pattern) {
+  return function(monster) {
+    var _pattern$exec$, _pattern$exec;
+    var current2 = cache.get(monster);
+    if (current2 !== void 0) return (0, import_kolmafia5.monsterEval)(current2);
+    var result = (_pattern$exec$ = (_pattern$exec = pattern.exec(monster.attributes)) === null || _pattern$exec === void 0 ? void 0 : _pattern$exec[1]) !== null && _pattern$exec$ !== void 0 ? _pattern$exec$ : "0";
+    cache.set(monster, result);
+    return (0, import_kolmafia5.monsterEval)(result);
+  };
+}
+var import_kolmafia5, _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject7, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36, _templateObject37, _templateObject38, _templateObject39, _templateObject40, _templateObject41, _templateObject42, _templateObject43, _templateObject44, _templateObject45, Wanderer, deterministicWanderers, EnsureError, valueMap, MALL_VALUE_MODIFIER, Environment, holidayWanderers, telescopeStats, telescopeElements, hedgeTrap1, hedgeTrap2, hedgeTrap3, byStat, byClass, realmTypes, ACCOUNT_COMBAT_FLAGS, scalerRates, scalerCaps, SCALE_RATE_PATTERN, SCALE_CAP_PATTERN, getScalingRate, getScalingCap;
 var init_lib = __esm({
   "../../node_modules/libram/dist/lib.js": function() {
     import_kolmafia5 = require("kolmafia");
@@ -1871,6 +1887,12 @@ var init_lib = __esm({
     });
     realmTypes = ["spooky", "stench", "hot", "cold", "sleaze", "fantasy", "pirate"];
     ACCOUNT_COMBAT_FLAGS = ["aabosses", "wowbar", "bothcombatinterf", "compactmanuel", "eternalmrj", "disablelovebugs", "boringdarts"];
+    scalerRates = /* @__PURE__ */ new Map();
+    scalerCaps = /* @__PURE__ */ new Map();
+    SCALE_RATE_PATTERN = /Scale: (?:\[([^\]]*)\]|(\d*))/;
+    SCALE_CAP_PATTERN = /Cap: (?:\[([^\]]*)\]|(\d*))/;
+    getScalingRate = makeScalerCalcFunction(scalerRates, SCALE_RATE_PATTERN);
+    getScalingCap = makeScalerCalcFunction(scalerCaps, SCALE_CAP_PATTERN);
   }
 });
 
@@ -2348,7 +2370,7 @@ var init_combat = __esm({
            * @returns {Macro} This object itself.
            */
           function ifNot(condition, ifTrue) {
-            return this.step("if !(".concat(Macro3.makeBALLSPredicate(condition), ")")).step(ifTrue).step("endif");
+            return this.if_("!".concat(Macro3.makeBALLSPredicate(condition)), ifTrue);
           }
         )
         /**
@@ -3818,9 +3840,9 @@ var init_ActionSource = __esm({
           if (constraints === null) {
             return null;
           }
-          return new ActionSource2(_toConsumableArray5(flat(actions.map(function(action) {
+          return new ActionSource2(actions.flatMap(function(action) {
             return action.source;
-          }))), function() {
+          }), function() {
             return sum(actions, function(action) {
               return action.potential();
             });
@@ -9827,8 +9849,8 @@ var init_CrystalBall = __esm({
     parsedProp = function() {
       return get("crystalBallPredictions").split("|").filter(Boolean).map(function(element) {
         return element.split(":");
-      }).filter(function(tuple) {
-        return tuple.length === 3;
+      }).filter(function(tuple2) {
+        return tuple2.length === 3;
       }).map(function(_ref) {
         var _ref2 = _slicedToArray12(_ref, 3), location = _ref2[1], monster = _ref2[2];
         return [(0, import_kolmafia50.toLocation)(location), (0, import_kolmafia50.toMonster)(monster)];
@@ -10862,14 +10884,14 @@ function wishes() {
 }
 function wishableItems() {
   var filters = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  return new Set(flat(import_kolmafia61.Location.all().filter(function(l) {
+  return new Set(import_kolmafia61.Location.all().filter(function(l) {
     var _filters$location, _filters$location2;
     return (0, import_kolmafia61.canAdventure)(l) && ((_filters$location = (_filters$location2 = filters.location) === null || _filters$location2 === void 0 ? void 0 : _filters$location2.call(filters, l)) !== null && _filters$location !== void 0 ? _filters$location : true);
-  }).map(function(l) {
+  }).flatMap(function(l) {
     return (0, import_kolmafia61.getMonsters)(l).filter(function(m) {
       var _filters$monster, _filters$monster2;
       return m.copyable && ((_filters$monster = (_filters$monster2 = filters.monster) === null || _filters$monster2 === void 0 ? void 0 : _filters$monster2.call(filters, m)) !== null && _filters$monster !== void 0 ? _filters$monster : true);
-    }).map(function(m) {
+    }).flatMap(function(m) {
       return (0, import_kolmafia61.itemDropsArray)(m).filter(function(_ref) {
         var _filters$drop, _filters$drop2;
         var type = _ref.type, rate = _ref.rate, drop = _ref.drop;
@@ -10884,7 +10906,7 @@ function wishableItems() {
         return drop;
       });
     });
-  })));
+  }));
 }
 function unwishableEffects() {
   var names = import_kolmafia61.Effect.all().filter(function(e) {
@@ -21485,6 +21507,12 @@ __export(dist_exports, {
   getSaleValue: function() {
     return getSaleValue;
   },
+  getScalingCap: function() {
+    return getScalingCap;
+  },
+  getScalingRate: function() {
+    return getScalingRate;
+  },
   getSongCount: function() {
     return getSongCount;
   },
@@ -21688,6 +21716,9 @@ __export(dist_exports, {
   },
   tryFindFreeRun: function() {
     return tryFindFreeRun;
+  },
+  tuple: function() {
+    return tuple;
   },
   undelay: function() {
     return undelay;
@@ -27261,7 +27292,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("41d2e468c29e21619ac97f256d98657737b2fabc", ")"));
+      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4706442de930c48dbe48ad732a4526272869bac0", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
