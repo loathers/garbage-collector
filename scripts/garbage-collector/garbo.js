@@ -26525,7 +26525,7 @@ function defaultTarget() {
   if ($skills(_templateObject567 || (_templateObject567 = _taggedTemplateLiteral70(["Curse of Weaksauce, Saucegeyser"]))).every(function(s) {
     return have(s);
   })) {
-    if (ChestMimic_exports.have() || have($item(_templateObject656 || (_templateObject656 = _taggedTemplateLiteral70(["Clan VIP Lounge key"])))) || CombatLoversLocket_exports.have() && CombatLoversLocket_exports.unlockedLocketMonsters().includes($monster(_templateObject748 || (_templateObject748 = _taggedTemplateLiteral70(["cheerless mime executive"]))))) {
+    if (ChestMimic_exports.have() || have($item(_templateObject656 || (_templateObject656 = _taggedTemplateLiteral70(["Clan VIP Lounge key"])))) && !get("_photocopyUsed") || CombatLoversLocket_exports.availableLocketMonsters().includes($monster(_templateObject748 || (_templateObject748 = _taggedTemplateLiteral70(["cheerless mime executive"]))))) {
       return $monster(_templateObject840 || (_templateObject840 = _taggedTemplateLiteral70(["cheerless mime executive"])));
     } else {
       return maxBy($monsters.all().filter(function(m) {
@@ -27261,7 +27261,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9197d7fb2aa5dc5ad0e01b47d4d1e49a5f2edb85", ")"));
+      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("41d2e468c29e21619ac97f256d98657737b2fabc", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
