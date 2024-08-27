@@ -27261,7 +27261,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7d6ca9ee60c607fb1e55ac8329f527f7d1837f6a", ")"));
+      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9197d7fb2aa5dc5ad0e01b47d4d1e49a5f2edb85", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -44774,6 +44774,7 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
   return _createClass31(BaseGarboEngine2, [{
     key: "available",
     value: function available6(task) {
+      safeInterrupt();
       var taskSober = undelay(task.sobriety);
       if (taskSober) {
         return (taskSober === "drunk" && !sober() || taskSober === "sober" && sober()) && _superPropGet2(BaseGarboEngine2, "available", this, 3)([task]);
@@ -44797,7 +44798,6 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
   }, {
     key: "execute",
     value: function execute(task) {
-      safeInterrupt();
       var spentTurns = (0, import_kolmafia131.totalTurnsPlayed)();
       var duplicate = undelay(task.duplicate);
       var before = SourceTerminal_exports.getSkills();
