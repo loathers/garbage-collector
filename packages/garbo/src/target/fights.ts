@@ -222,6 +222,61 @@ export const chainStarters = [
     },
   ),
   new CopyTargetFight(
+    "Pocket Wish",
+    () => {
+      if (!globalOptions.target.wishable) return false;
+      const potential = Math.floor(copyTargetCount());
+      if (potential < 1) return false;
+      if (get("_genieFightsUsed") >= 3) return false;
+      if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
+      const profit = (potential + 1) * averageTargetNet() - WISH_VALUE;
+      if (profit < 0) return false;
+      print(
+        `You have the following copy target sources untapped right now:`,
+        HIGHLIGHT,
+      );
+      copyTargetSources
+        .filter((source) => source.potential() > 0)
+        .map((source) => `${source.potential()} from ${source.name}`)
+        .forEach((text) => print(text, HIGHLIGHT));
+      globalOptions.askedAboutWish = true;
+      globalOptions.wishAnswer = copyTargetConfirmInvocation(
+        `Garbo has detected you have ${potential} potential ways to copy a ${
+          globalOptions.target
+        }, but no way to start a fight with one. Current ${
+          globalOptions.target
+        } net (before potions) is ${averageTargetNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${
+          globalOptions.target
+        }?`,
+      );
+      return globalOptions.wishAnswer;
+    },
+    () => 0,
+    (options: RunOptions) => {
+      globalOptions.askedAboutWish = false;
+      withMacro(
+        options.macro,
+        () => {
+          acquire(1, $item`pocket wish`, WISH_VALUE);
+          visitUrl(
+            `inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`,
+            false,
+            true,
+          );
+          visitUrl(
+            `choice.php?pwd&whichchoice=1267&option=1&wish=to fight a ${globalOptions.target} `,
+            true,
+            true,
+          );
+          visitUrl("main.php", false);
+          runCombat();
+          globalOptions.askedAboutWish = false;
+        },
+        options.useAuto,
+      );
+    },
+  ),
+  new CopyTargetFight(
     "Scepter Semirare",
     () =>
       canAdventure($location`Cobb's Knob Treasury`) &&
