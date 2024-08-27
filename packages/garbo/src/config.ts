@@ -87,11 +87,10 @@ function defaultTarget() {
   if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
     if (
       ChestMimic.have() ||
-      have($item`Clan VIP Lounge key`) ||
-      (CombatLoversLocket.have() &&
-        CombatLoversLocket.unlockedLocketMonsters().includes(
-          $monster`cheerless mime executive`,
-        ))
+      (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed")) ||
+      CombatLoversLocket.availableLocketMonsters().includes(
+        $monster`cheerless mime executive`,
+      )
     ) {
       return $monster`cheerless mime executive`;
     } else {
