@@ -88,7 +88,9 @@ function defaultTarget() {
     if (
       ChestMimic.have() ||
       (have($item`Clan VIP Lounge key`) && !get("_photocopyUsed")) ||
-      CombatLoversLocket.availableLocketMonsters().includes($monster`cheerless mime executive`) 
+      CombatLoversLocket.availableLocketMonsters().includes(
+        $monster`cheerless mime executive`,
+      )
     ) {
       return $monster`cheerless mime executive`;
     } else {
