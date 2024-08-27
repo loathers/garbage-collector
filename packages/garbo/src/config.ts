@@ -84,7 +84,11 @@ function stringToWorkshedItem(s: string): Item | null {
 }
 
 // We want this to be a const because we don't want to determine we can no longer target Cheerless Mime Executive simply because we used all reminisces to start a chain
-const locketAvailable = CombatLoversLocket.reminiscesLeft() > 0;
+const locketAvailable =
+  CombatLoversLocket.reminiscesLeft() > 0 &&
+  !CombatLoversLocket.monstersReminisced().includes(
+    $monster`cheerless mime executive`,
+  );
 
 function defaultTarget() {
   if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
