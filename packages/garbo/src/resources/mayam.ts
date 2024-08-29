@@ -4,7 +4,6 @@ import {
   $item,
   CinchoDeMayo,
   clamp,
-  flat,
   get,
   maxBy,
   MayamCalendar,
@@ -114,10 +113,8 @@ function expandCombinationGroup<N extends number>(
   MayamCalendar.CombinationString,
 ][] {
   const forbiddenSymbols = [
-    ...flat(
-      group.map((combinationString) =>
-        MayamCalendar.toCombination([combinationString]),
-      ),
+    ...group.flatMap((combinationString) =>
+      MayamCalendar.toCombination([combinationString]),
     ),
     ...MayamCalendar.symbolsUsed(),
   ];
