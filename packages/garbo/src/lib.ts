@@ -69,7 +69,6 @@ import {
   $item,
   $location,
   $monster,
-  $monsters,
   $skill,
   $thralls,
   ActionSource,
@@ -101,7 +100,7 @@ import {
   uneffect,
 } from "libram";
 import { acquire } from "./acquire";
-import { globalOptions } from "./config";
+import { globalOptions, targettingMeat } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 
@@ -187,14 +186,17 @@ export const targetMeatDifferential = () => {
 };
 
 export function averageTargetNet(): number {
-  const gooso = have($familiar`Grey Goose`) ? 2 : 1;
-  const targetDrop = $monsters`Witchess Knight`.includes(globalOptions.target)
-    ? $item`jumping horseradish`
-    : $item`Sacramento wine`;
-  return $monsters`Witchess Knight, Witchess Bishop`.includes(
-    globalOptions.target,
-  )
-    ? garboValue(targetDrop) * gooso
+  const gooso =
+    have($familiar`Grey Goose`) &&
+    itemDropsArray(globalOptions.target).length === 1
+      ? 2
+      : 1;
+
+  return !targettingMeat()
+    ? itemDropsArray(globalOptions.target).reduce(
+        (total, it) => total + garboValue(it.drop),
+        0,
+      ) * gooso
     : (targetMeat() * meatDropModifier()) / 100;
 }
 
@@ -203,7 +205,9 @@ export function averageTouristNet(): number {
 }
 
 export function expectedTargetProfit(): number {
-  return averageTargetNet() - averageTouristNet();
+  return globalOptions.target.attributes.includes("FREE")
+    ? averageTargetNet()
+    : averageTargetNet() - averageTouristNet();
 }
 
 export function safeInterrupt(): void {
