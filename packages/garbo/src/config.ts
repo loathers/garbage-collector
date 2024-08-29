@@ -94,11 +94,9 @@ function defaultTarget() {
     ) {
       return $monster`cheerless mime executive`;
     } else {
-      return (
-        maxBy(
-          $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
-          valueDrops,
-        ) || $monster`Witchess Knight`
+      return maxBy(
+        $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
+        valueDrops,
       );
     }
   }
