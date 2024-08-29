@@ -1128,3 +1128,11 @@ export function scalerCap(monster: Monster): number {
 const STRONG_SCALER_THRESHOLD = 1_000;
 export const isStrongScaler = (m: Monster) =>
   scalerCap(m) > STRONG_SCALER_THRESHOLD;
+
+export const isFreeAndCopyable = (monster: Monster) =>
+  monster.copyable && monster.attributes.includes("FREE");
+export const valueDrops = (monster: Monster) =>
+  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
+    !["c", "0", "p", "a"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
+  );
+export const isFree = (monster: Monster) => monster.attributes.includes("FREE");

@@ -46,7 +46,7 @@ function averageAutumnatonValue(
     const validDrops = monsters
       .flatMap((m) => itemDropsArray(m))
       .map(({ rate, type, drop }) => ({
-        value: !["c", "0"].includes(type) ? garboValue(drop) : 0,
+        value: !["c", "0", "a"].includes(type) ? garboValue(drop) : 0,
         preAcuityExpectation: ["c", "0", ""].includes(type)
           ? (2 * rate) / 100
           : 0,
