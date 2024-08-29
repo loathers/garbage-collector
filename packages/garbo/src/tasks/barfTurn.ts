@@ -422,7 +422,10 @@ const NonBarfTurnTasks: AlternateTask[] = [
       if (option) runChoice(option);
       visitUrl("main.php");
     },
-    outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+    outfit: () =>
+      sober()
+        ? { avoid: $items`Kramco Sausage-o-Matic™` }
+        : { offhand: $item`Drunkula's wineglass` },
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg("Hit unexpected combat!"),
     ),
