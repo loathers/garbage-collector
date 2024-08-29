@@ -69,6 +69,7 @@ import {
   $item,
   $location,
   $monster,
+  $monsters,
   $skill,
   $thralls,
   ActionSource,
@@ -186,7 +187,15 @@ export const targetMeatDifferential = () => {
 };
 
 export function averageTargetNet(): number {
-  return (targetMeat() * meatDropModifier()) / 100;
+  const gooso = have($familiar`Grey Goose`) ? 2 : 1;
+  const targetDrop = $monsters`Witchess Knight`.includes(globalOptions.target)
+    ? $item`jumping horseradish`
+    : $item`Sacramento wine`;
+  return $monsters`Witchess Knight, Witchess Bishop`.includes(
+    globalOptions.target,
+  )
+    ? garboValue(targetDrop) * gooso
+    : (targetMeat() * meatDropModifier()) / 100;
 }
 
 export function averageTouristNet(): number {

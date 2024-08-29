@@ -229,7 +229,8 @@ export const chainStarters = [
       if (potential < 1) return false;
       if (get("_genieFightsUsed") >= 3) return false;
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
-      const profit = (potential + 1) * averageTargetNet() - WISH_VALUE;
+      const profit = (potential + 1) * averageTargetNet() - WISH_VALUE; // here
+      boop;
       if (profit < 0) return false;
       print(
         `You have the following copy target sources untapped right now:`,
