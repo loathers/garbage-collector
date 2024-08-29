@@ -27292,7 +27292,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4706442de930c48dbe48ad732a4526272869bac0", ")"));
+      (0, import_kolmafia83.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("708092a4fa4e308077c2919fd4849e840400213c", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia83.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -31515,16 +31515,16 @@ var invalidWishStrings = wishableEffectData.filter(function(_ref) {
 });
 var availableItems = _toConsumableArray40(new Set(import_kolmafia98.Location.all().filter(function(l) {
   return (0, import_kolmafia98.canAdventure)(l);
-}).map(function(l) {
+}).flatMap(function(l) {
   return (0, import_kolmafia98.getMonsters)(l).filter(function(m) {
     return m.copyable;
-  }).map(function(m) {
+  }).flatMap(function(m) {
     return (0, import_kolmafia98.itemDropsArray)(m).filter(function(_ref4) {
       var rate = _ref4.rate;
       return rate > 1;
     });
-  }).flat();
-}).flat().map(function(_ref5) {
+  });
+}).map(function(_ref5) {
   var drop = _ref5.drop;
   return drop;
 }))).map(function(i) {
@@ -33200,9 +33200,9 @@ function averageAutumnatonValue(location, acuityOverride, slotOverride) {
   } else {
     var maximumDrops = slotOverride !== null && slotOverride !== void 0 ? slotOverride : AutumnAton_exports.zoneItems();
     var acuityCutoff = 20 - (acuityOverride !== null && acuityOverride !== void 0 ? acuityOverride : AutumnAton_exports.visualAcuity()) * 5;
-    var validDrops = monsters.map(function(m) {
+    var validDrops = monsters.flatMap(function(m) {
       return (0, import_kolmafia103.itemDropsArray)(m);
-    }).flat().map(function(_ref) {
+    }).map(function(_ref) {
       var rate = _ref.rate, type = _ref.type, drop = _ref.drop;
       return {
         value: !["c", "0"].includes(type) ? garboValue(drop) : 0,
@@ -34549,9 +34549,9 @@ function getBestGreedyCombination(forbiddenSymbols) {
   return MayamCalendar_exports.toCombinationString([getBestAvailableSymbolFromRing(0, forbiddenSymbols), getBestAvailableSymbolFromRing(1, forbiddenSymbols), getBestAvailableSymbolFromRing(2, forbiddenSymbols), getBestAvailableSymbolFromRing(3, forbiddenSymbols)]);
 }
 function expandCombinationGroup(group) {
-  var forbiddenSymbols = [].concat(_toConsumableArray49(flat(group.map(function(combinationString) {
+  var forbiddenSymbols = [].concat(_toConsumableArray49(group.flatMap(function(combinationString) {
     return MayamCalendar_exports.toCombination([combinationString]);
-  }))), _toConsumableArray49(MayamCalendar_exports.symbolsUsed()));
+  })), _toConsumableArray49(MayamCalendar_exports.symbolsUsed()));
   return [].concat(_toConsumableArray49(getAvailableResonances(forbiddenSymbols).filter(function(resonance) {
     var RESONANCE_KEYS_ANONYMIZED = MayamCalendar_exports.RESONANCE_KEYS;
     var rightmostIndex = Math.max.apply(Math, _toConsumableArray49(group.map(function(combination) {
@@ -36453,9 +36453,9 @@ var Macro2 = /* @__PURE__ */ function(_StrictMacro) {
   }, {
     key: "familiarActions",
     value: function familiarActions() {
-      return this.externalIf((0, import_kolmafia118.myFamiliar)() === $familiar(_templateObject2193 || (_templateObject2193 = _taggedTemplateLiteral108(["Grey Goose"]))) && timeToMeatify(), Macro3.trySkill($skill(_templateObject3168 || (_templateObject3168 = _taggedTemplateLiteral108(["Meatify Matter"]))))).externalIf(canOpenRedPresent() && (0, import_kolmafia118.myFamiliar)() === $familiar(_templateObject4146 || (_templateObject4146 = _taggedTemplateLiteral108(["Crimbo Shrub"]))), Macro3.trySkill($skill(_templateObject5133 || (_templateObject5133 = _taggedTemplateLiteral108(["Open a Big Red Present"]))))).externalIf((0, import_kolmafia118.myFamiliar)() === $familiar(_templateObject6126 || (_templateObject6126 = _taggedTemplateLiteral108(["Space Jellyfish"]))), Macro3.externalIf(get("_spaceJellyfishDrops") < 5, Macro3.if_($locations(_templateObject7105 || (_templateObject7105 = _taggedTemplateLiteral108(["Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Toxic Teacups"]))).map(function(l) {
+      return this.externalIf((0, import_kolmafia118.myFamiliar)() === $familiar(_templateObject2193 || (_templateObject2193 = _taggedTemplateLiteral108(["Grey Goose"]))) && timeToMeatify(), Macro3.trySkill($skill(_templateObject3168 || (_templateObject3168 = _taggedTemplateLiteral108(["Meatify Matter"]))))).externalIf(canOpenRedPresent() && (0, import_kolmafia118.myFamiliar)() === $familiar(_templateObject4146 || (_templateObject4146 = _taggedTemplateLiteral108(["Crimbo Shrub"]))), Macro3.trySkill($skill(_templateObject5133 || (_templateObject5133 = _taggedTemplateLiteral108(["Open a Big Red Present"]))))).externalIf((0, import_kolmafia118.myFamiliar)() === $familiar(_templateObject6126 || (_templateObject6126 = _taggedTemplateLiteral108(["Space Jellyfish"]))), Macro3.externalIf(get("_spaceJellyfishDrops") < 5, Macro3.if_($locations(_templateObject7105 || (_templateObject7105 = _taggedTemplateLiteral108(["Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Toxic Teacups"]))).flatMap(function(l) {
         return (0, import_kolmafia118.getMonsters)(l);
-      }).flat(), Macro3.trySkill($skill(_templateObject876 || (_templateObject876 = _taggedTemplateLiteral108(["Extract Jelly"]))))), Macro3.trySkill($skill(_templateObject967 || (_templateObject967 = _taggedTemplateLiteral108(["Extract Jelly"]))))));
+      }), Macro3.trySkill($skill(_templateObject876 || (_templateObject876 = _taggedTemplateLiteral108(["Extract Jelly"]))))), Macro3.trySkill($skill(_templateObject967 || (_templateObject967 = _taggedTemplateLiteral108(["Extract Jelly"]))))));
     }
   }, {
     key: "tryCopier",
