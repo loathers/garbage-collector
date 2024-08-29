@@ -115,13 +115,11 @@ const availableItems = [
   ...new Set(
     Location.all()
       .filter((l) => canAdventure(l))
-      .map((l) =>
+      .flatMap((l) =>
         getMonsters(l)
           .filter((m) => m.copyable)
-          .map((m) => itemDropsArray(m).filter(({ rate }) => rate > 1))
-          .flat(),
+          .flatMap((m) => itemDropsArray(m).filter(({ rate }) => rate > 1)),
       )
-      .flat()
       .map(({ drop }) => drop),
   ),
 ].map((i) => i.name);

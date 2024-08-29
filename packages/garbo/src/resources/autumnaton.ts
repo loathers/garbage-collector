@@ -44,8 +44,7 @@ function averageAutumnatonValue(
     const maximumDrops = slotOverride ?? AutumnAton.zoneItems();
     const acuityCutoff = 20 - (acuityOverride ?? AutumnAton.visualAcuity()) * 5;
     const validDrops = monsters
-      .map((m) => itemDropsArray(m))
-      .flat()
+      .flatMap((m) => itemDropsArray(m))
       .map(({ rate, type, drop }) => ({
         value: !["c", "0"].includes(type) ? garboValue(drop) : 0,
         preAcuityExpectation: ["c", "0", ""].includes(type)
