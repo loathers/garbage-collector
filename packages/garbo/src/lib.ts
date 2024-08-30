@@ -100,7 +100,13 @@ import {
   uneffect,
 } from "libram";
 import { acquire } from "./acquire";
-import { globalOptions, goosoEligible, targettingItems } from "./config";
+import {
+  globalOptions,
+  goosoEligible,
+  isFreeAndCopyable,
+  targettingItems,
+  valueDrops,
+} from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 
@@ -189,10 +195,7 @@ export function averageTargetNet(): number {
   const gooso = goosoEligible() ? 2 : 1;
 
   return targettingItems()
-    ? itemDropsArray(globalOptions.target).reduce(
-        (total, it) => total + garboValue(it.drop),
-        0,
-      ) * gooso
+    ? valueDrops(globalOptions.target) * gooso
     : (targetMeat() * meatDropModifier()) / 100;
 }
 
@@ -201,7 +204,7 @@ export function averageTouristNet(): number {
 }
 
 export function expectedTargetProfit(): number {
-  return globalOptions.target.attributes.includes("FREE")
+  return isFreeAndCopyable(globalOptions.target)
     ? averageTargetNet()
     : averageTargetNet() - averageTouristNet();
 }

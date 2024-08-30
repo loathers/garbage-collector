@@ -110,10 +110,7 @@ export const targettingMeat = () =>
   $monsters`cheerless mime executive`.includes(globalOptions.target);
 
 export const targettingItems = () =>
-  itemDropsArray(globalOptions.target).reduce(
-    (total, it) => total + garboValue(it.drop),
-    0,
-  ) > globalOptions.target.maxMeat;
+  valueDrops(globalOptions.target) > globalOptions.target.maxMeat;
 
 export const goosoEligible = () =>
   targettingItems() &&
