@@ -56,7 +56,12 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
-import { globalOptions, isQuickCombat } from "./config";
+import {
+  globalOptions,
+  goosoEligible,
+  isQuickCombat,
+  targettingItems,
+} from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 import {
@@ -806,9 +811,9 @@ export class Macro extends StrictMacro {
           Macro.tryCopier($skill`Digitize`),
         )
         .externalIf(
-          $monsters`Witchess Knight, Witchess Bishop`.includes(
-            globalOptions.target,
-          ) && get("gooseDronesRemaining") < copyTargetCount(),
+          targettingItems() &&
+            goosoEligible() &&
+            get("gooseDronesRemaining") < copyTargetCount(),
           Macro.trySkill($skill`Emit Matter Duplicating Drones`),
         )
         .tryCopier($item`Spooky Putty sheet`)

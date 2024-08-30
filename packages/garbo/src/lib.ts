@@ -100,7 +100,7 @@ import {
   uneffect,
 } from "libram";
 import { acquire } from "./acquire";
-import { globalOptions, targettingMeat } from "./config";
+import { globalOptions, goosoEligible, targettingItems } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 
@@ -186,13 +186,9 @@ export const targetMeatDifferential = () => {
 };
 
 export function averageTargetNet(): number {
-  const gooso =
-    have($familiar`Grey Goose`) &&
-    itemDropsArray(globalOptions.target).length === 1
-      ? 2
-      : 1;
+  const gooso = goosoEligible() ? 2 : 1;
 
-  return !targettingMeat()
+  return targettingItems()
     ? itemDropsArray(globalOptions.target).reduce(
         (total, it) => total + garboValue(it.drop),
         0,

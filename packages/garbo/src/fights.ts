@@ -115,7 +115,7 @@ import { WanderDetails } from "garbo-lib";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
-import { globalOptions, targettingMeat } from "./config";
+import { globalOptions, goosoEligible, targettingMeat } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 import {
   copyTargetCount,
@@ -412,12 +412,6 @@ function pygmyOptions(equip: Item[] = []): FreeFightOptions {
   };
 }
 
-function goosoCheck(): boolean {
-  return $monsters`Witchess Knight, Witchess Bishop`.includes(
-    globalOptions.target,
-  );
-}
-
 function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
   if (!underwater) {
     if (
@@ -444,11 +438,8 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
       if (have($familiar`Reanimated Reanimator`)) {
         return { familiar: $familiar`Reanimated Reanimator` };
       }
-      if (goosoCheck()) {
-        if (
-          get("gooseDronesRemaining") < copyTargetCount() &&
-          have($familiar`Grey Goose`)
-        ) {
+      if (goosoEligible()) {
+        if (get("gooseDronesRemaining") < copyTargetCount()) {
           return { familiar: $familiar`Grey Goose` };
         } else {
           return { familiar: freeFightFamiliar() };
