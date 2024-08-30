@@ -1,11 +1,5 @@
 import { Args } from "grimoire-kolmafia";
-import {
-  Item,
-  itemDropsArray,
-  meatDropModifier,
-  Monster,
-  print,
-} from "kolmafia";
+import { Item, itemDropsArray, meatDropModifier, print } from "kolmafia";
 import {
   $familiar,
   $item,
@@ -18,17 +12,8 @@ import {
   get,
   have,
   maxBy,
-  sum,
 } from "libram";
-import { garboValue } from "./garboValue";
-import { targetMeat } from "./lib";
-
-export const isFreeAndCopyable = (monster: Monster) =>
-  monster.copyable && monster.attributes.includes("FREE");
-export const valueDrops = (monster: Monster) =>
-  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
-    !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
-  );
+import { isFreeAndCopyable, targetMeat, valueDrops } from "./lib";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
