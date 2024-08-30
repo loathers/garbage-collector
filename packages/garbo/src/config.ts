@@ -1,5 +1,11 @@
 import { Args } from "grimoire-kolmafia";
-import { Item, itemDropsArray, Monster, print } from "kolmafia";
+import {
+  Item,
+  itemDropsArray,
+  meatDropModifier,
+  Monster,
+  print,
+} from "kolmafia";
 import {
   $familiar,
   $item,
@@ -15,6 +21,7 @@ import {
   sum,
 } from "libram";
 import { garboValue } from "./garboValue";
+import { targetMeat } from "./lib";
 
 export const isFreeAndCopyable = (monster: Monster) =>
   monster.copyable && monster.attributes.includes("FREE");
@@ -110,7 +117,7 @@ export const targettingMeat = () =>
   $monsters`cheerless mime executive`.includes(globalOptions.target);
 
 export const targettingItems = () =>
-  valueDrops(globalOptions.target) > globalOptions.target.maxMeat;
+  valueDrops(globalOptions.target) > targetMeat() * meatDropModifier();
 
 export const goosoEligible = () =>
   targettingItems() &&
