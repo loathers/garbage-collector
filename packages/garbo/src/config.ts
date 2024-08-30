@@ -119,7 +119,7 @@ export const targettingMeat = () =>
 export const targettingItems = () =>
   valueDrops(globalOptions.target) > targetMeat() * meatDropModifier();
 
-export const goosoEligible = () =>
+export const goosoDroneEligible = () =>
   targettingItems() &&
   itemDropsArray(globalOptions.target).length === 1 &&
   have($familiar`Grey Goose`);

@@ -58,7 +58,7 @@ import {
 } from "libram";
 import {
   globalOptions,
-  goosoEligible,
+  goosoDroneEligible,
   isQuickCombat,
   targettingItems,
 } from "./config";
@@ -812,7 +812,7 @@ export class Macro extends StrictMacro {
         )
         .externalIf(
           targettingItems() &&
-            goosoEligible() &&
+            goosoDroneEligible() &&
             get("gooseDronesRemaining") < copyTargetCount(),
           Macro.trySkill($skill`Emit Matter Duplicating Drones`),
         )

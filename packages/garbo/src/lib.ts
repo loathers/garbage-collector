@@ -102,7 +102,7 @@ import {
 import { acquire } from "./acquire";
 import {
   globalOptions,
-  goosoEligible,
+  goosoDroneEligible,
   isFreeAndCopyable,
   targettingItems,
   valueDrops,
@@ -192,7 +192,7 @@ export const targetMeatDifferential = () => {
 };
 
 export function averageTargetNet(): number {
-  const gooso = goosoEligible() ? 2 : 1;
+  const gooso = goosoDroneEligible() ? 2 : 1;
 
   return targettingItems()
     ? valueDrops(globalOptions.target) * gooso
