@@ -338,6 +338,8 @@ const stomachLiverCleaners = new Map([
   [$item`cuppa Sobrie tea`, [0, -1]],
   [$item`designer sweatpants`, [0, -1]],
   [$item`august scepter`, [-1, 0]],
+  [$item`Mr. Burnsger`, [4, -1]],
+  [$item`Doc Clock's thyme cocktail`, [-1, 4]],
 ]);
 
 function legendaryPizzaToMenu(
@@ -440,6 +442,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`deviled egg`),
     new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
     new MenuItem($item`extra-greasy slider`),
+    new MenuItem($item`Mr. Burnsger`),
     new MenuItem(mallMin(lasagnas)),
     new MenuItem(mallMin(smallEpics)),
     new MenuItem($item`green hamhock`),
@@ -461,6 +464,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`yam martini`),
     new MenuItem($item`Eye and a Twist`),
     new MenuItem($item`jar of fermented pickle juice`),
+    new MenuItem($item`Doc Clock's thyme cocktail`),
     new MenuItem(mallMin(complexMushroomWines)),
     new MenuItem(mallMin(perfectDrinks)),
     new MenuItem($item`green eggnog`),
