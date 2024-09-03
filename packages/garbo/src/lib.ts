@@ -1139,6 +1139,8 @@ export const isFreeAndCopyable = (monster: Monster) =>
   monster.copyable && monster.attributes.includes("FREE");
 export const valueDrops = (monster: Monster) =>
   sum(itemDropsArray(monster), ({ drop, rate, type }) =>
-    !["c", "0", "p", "a"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
+    !["c", "0", "p", "a", "n"].includes(type)
+      ? (garboValue(drop) * rate) / 100
+      : 0,
   );
 export const isFree = (monster: Monster) => monster.attributes.includes("FREE");

@@ -69,7 +69,7 @@ import {
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
-import { globalOptions, targettingMeat } from "./config";
+import { globalOptions, targettingItems, targettingMeat } from "./config";
 import { copyTargetCount } from "./target";
 import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
@@ -833,7 +833,8 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseTargets = targettingMeat() ? copyTargetCount() : 0;
+  const baseTargets =
+    targettingMeat() || targettingItems() ? copyTargetCount() : 0;
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
