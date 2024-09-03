@@ -56,15 +56,17 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
-import { globalOptions, isQuickCombat } from "./config";
+import { globalOptions, goosoDroneEligible, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 import {
   isStrongScaler,
   maxPassiveDamage,
   monsterManuelAvailable,
+  targetMeat,
 } from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
+import { copyTargetCount } from "./target";
 
 export function shouldRedigitize(): boolean {
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
@@ -273,6 +275,12 @@ export class Macro extends StrictMacro {
       shouldRedigitize(),
       Macro.if_(globalOptions.target, Macro.trySkill($skill`Digitize`)),
     )
+      .externalIf(
+        !targetMeat() &&
+          goosoDroneEligible() &&
+          get("gooseDronesRemaining") < copyTargetCount(),
+        Macro.trySkill($skill`Emit Matter Duplicating Drones`),
+      )
       .externalIf(
         delevel,
         Macro.if_($monster`cheerless mime executive`, Macro.delevel()),

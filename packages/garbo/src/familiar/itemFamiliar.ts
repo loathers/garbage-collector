@@ -10,11 +10,14 @@ import {
   $item,
   findFairyMultiplier,
   get,
+  getModifier,
   have,
   maxBy,
   set,
 } from "libram";
 import { menu } from "./freeFightFamiliar";
+import { shouldChargeMimic } from "../resources";
+import { MEAT_TARGET_MULTIPLIER } from "../lib";
 
 let bestNonCheerleaderFairy: Familiar;
 
@@ -65,6 +68,36 @@ export function bestFairy(): Familiar {
       {
         familiar: $familiar`Reagnimated Gnome`,
         expectedValue: (get("valueOfAdventure") * 70) / 1000,
+        leprechaunMultiplier: 0,
+        limit: "none",
+      },
+      {
+        familiar: $familiar`Chest Mimic`,
+        expectedValue: shouldChargeMimic(true)
+          ? ((MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 400) *
+            getModifier("Familiar Experience")
+          : 0,
+        leprechaunMultiplier: 1,
+        limit: "none",
+      },
+      {
+        familiar: $familiar`Pocket Professor`,
+        expectedValue:
+          !get("_thesisDelivered") &&
+          $familiar`Pocket Professor`.experience < 400
+            ? ((11 * get("valueOfAdventure")) / 400) *
+              getModifier("Familiar Experience")
+            : 0,
+        leprechaunMultiplier: 1,
+        limit: "none",
+      },
+      {
+        familiar: $familiar`Grey Goose`,
+        expectedValue:
+          !get("_meatifyMatterUsed") &&
+          $familiar`Pocket Professor`.experience < 400
+            ? getModifier("Familiar Experience") * (15 ** 4 / 400)
+            : 0, // Meatify Matter is worth 15 ** 4, each xp is worth 1/400th of that
         leprechaunMultiplier: 0,
         limit: "none",
       },
