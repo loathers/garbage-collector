@@ -153,9 +153,9 @@ export class Macro extends StrictMacro {
         Macro.externalIf(
           get("_spaceJellyfishDrops") < 5,
           Macro.if_(
-            $locations`Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Toxic Teacups`
-              .map((l) => getMonsters(l))
-              .flat(),
+            $locations`Barf Mountain, Pirates of the Garbage Barges, Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Toxic Teacups`.flatMap(
+              (l) => getMonsters(l),
+            ),
             Macro.trySkill($skill`Extract Jelly`),
           ),
           Macro.trySkill($skill`Extract Jelly`),
@@ -294,6 +294,12 @@ export class Macro extends StrictMacro {
       .familiarActions()
       .tryEgg()
       .externalIf(
+        targettingItems() &&
+          goosoDroneEligible() &&
+          get("gooseDronesRemaining") < copyTargetCount(),
+        Macro.trySkill($skill`Emit Matter Duplicating Drones`),
+      )
+      .externalIf(
         have($skill`Extract Oil`) && get("_oilExtracted") < 15,
         Macro.if_(
           $monster`garbage tourist`,
@@ -376,7 +382,6 @@ export class Macro extends StrictMacro {
       .externalIf(capeSetup, Macro.trySkill($skill`Precision Shot`))
       .externalIf(bearArmsSetup, Macro.trySkill($skill`Kodiak Moment`))
       .externalIf(pigSkinnerSetup, Macro.attack())
-      .externalIf(timeToMeatify(), Macro.trySkill($skill`Meatify Matter`))
       .externalIf(
         myClass() === $class`Disco Bandit`,
         Macro.trySkill($skill`Disco Dance of Doom`)
@@ -588,58 +593,55 @@ export class Macro extends StrictMacro {
       globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted");
     const canPinata =
       haveEquipped($item`Cincho de Mayo`) && CinchoDeMayo.currentCinch() >= 5;
-    return (
-      this.externalIf(
-        myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
-        Macro.trySkill($skill`Curse of Weaksauce`),
+    return this.externalIf(
+      myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`),
+      Macro.trySkill($skill`Curse of Weaksauce`),
+    )
+      .externalIf(
+        !doingYachtzee && canPinata,
+        Macro.while_(
+          `${Macro.makeBALLSPredicate(
+            $skill`Cincho: Projectile Piñata`,
+          )} && !pastround 24 && !hppercentbelow 25`,
+          Macro.trySkill($skill`Cincho: Projectile Piñata`),
+        ),
       )
-        .externalIf(
-          !doingYachtzee && canPinata,
-          Macro.while_(
-            `${Macro.makeBALLSPredicate(
-              $skill`Cincho: Projectile Piñata`,
-            )} && !pastround 24 && !hppercentbelow 25`,
-            Macro.trySkill($skill`Cincho: Projectile Piñata`),
+      .tryHaveSkill($skill`Become a Wolf`)
+      .externalIf(
+        !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
+        Macro.while_(
+          `!pastround 24 && !hppercentbelow 25 && !missed 1 && !snarfblat ${riftId}`,
+          Macro.attack(),
+        ),
+      )
+      .externalIf(
+        myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`) &&
+          (currentHitStat() === $stat`Muscle` ||
+            itemType(equippedItem($slot`weapon`)) === "knife"),
+        Macro.trySkillRepeat($skill`Northern Explosion`)
+          .ifNot(
+            $monster`cheerless mime executive`,
+            Macro.trySkillRepeat($skill`Lunging Thrust-Smack`),
+          )
+          .trySkillRepeat(
+            $skill`Saucegeyser`,
+            $skill`Weapon of the Pastalord`,
+            $skill`Cannelloni Cannon`,
+            $skill`Wave of Sauce`,
+            $skill`Saucestorm`,
           ),
-        )
-        .tryHaveSkill($skill`Become a Wolf`)
-        .externalIf(
-          !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
-          Macro.while_(
-            `!pastround 24 && !hppercentbelow 25 && !missed 1 && !snarfblat ${riftId}`,
-            Macro.attack(),
-          ),
-        )
-        .externalIf(
-          globalOptions.target === $monster`cheerless mime executive` &&
-            myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`) &&
-            (currentHitStat() === $stat`Muscle` ||
-              itemType(equippedItem($slot`weapon`)) === "knife"),
-          Macro.trySkillRepeat($skill`Northern Explosion`),
-        )
-        .externalIf(
-          globalOptions.target !== $monster`cheerless mime executive`,
-          Macro.trySkillRepeat($skill`Lunging Thrust-Smack`),
-        )
-        .trySkillRepeat(
+        Macro.trySkillRepeat(
           $skill`Saucegeyser`,
           $skill`Weapon of the Pastalord`,
           $skill`Cannelloni Cannon`,
           $skill`Wave of Sauce`,
           $skill`Saucestorm`,
+          $skill`Northern Explosion`,
+          $skill`Lunging Thrust-Smack`,
         ),
-      Macro.trySkillRepeat(
-        $skill`Saucegeyser`,
-        $skill`Weapon of the Pastalord`,
-        $skill`Cannelloni Cannon`,
-        $skill`Wave of Sauce`,
-        $skill`Saucestorm`,
-        $skill`Northern Explosion`,
-        $skill`Lunging Thrust-Smack`,
       )
-        .attack()
-        .repeat()
-    );
+      .attack()
+      .repeat();
   }
 
   static kill(): Macro {
@@ -813,12 +815,6 @@ export class Macro extends StrictMacro {
           SourceTerminal.getDigitizeMonster() !== globalOptions.target ||
             shouldRedigitize(),
           Macro.tryCopier($skill`Digitize`),
-        )
-        .externalIf(
-          targettingItems() &&
-            goosoDroneEligible() &&
-            get("gooseDronesRemaining") < copyTargetCount(),
-          Macro.trySkill($skill`Emit Matter Duplicating Drones`),
         )
         .tryCopier($item`Spooky Putty sheet`)
         .tryCopier($item`Rain-Doh black box`)
