@@ -74,7 +74,8 @@ export function bestFairy(): Familiar {
       {
         familiar: $familiar`Chest Mimic`,
         expectedValue: shouldChargeMimic(true)
-          ? MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")
+          ? ((MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 400) *
+            getModifier("Familiar Experience")
           : 0,
         leprechaunMultiplier: 1,
         limit: "none",
@@ -84,7 +85,8 @@ export function bestFairy(): Familiar {
         expectedValue:
           !get("_thesisDelivered") &&
           $familiar`Pocket Professor`.experience < 400
-            ? 11 * get("valueOfAdventure")
+            ? ((11 * get("valueOfAdventure")) / 400) *
+              getModifier("Familiar Experience")
             : 0,
         leprechaunMultiplier: 1,
         limit: "none",
