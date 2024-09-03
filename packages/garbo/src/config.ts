@@ -1,5 +1,5 @@
 import { Args } from "grimoire-kolmafia";
-import { Item, itemDropsArray, meatDropModifier, print } from "kolmafia";
+import { Item, itemDropsArray, print } from "kolmafia";
 import {
   $familiar,
   $item,
@@ -13,7 +13,7 @@ import {
   have,
   maxBy,
 } from "libram";
-import { isFreeAndCopyable, targetMeat, valueDrops } from "./lib";
+import { isFreeAndCopyable, valueDrops } from "./lib";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -102,7 +102,7 @@ export const targettingMeat = () =>
   $monsters`cheerless mime executive`.includes(globalOptions.target);
 
 export const targettingItems = () =>
-  valueDrops(globalOptions.target) > targetMeat() * meatDropModifier();
+  valueDrops(globalOptions.target) > get("valueOfAdventure");
 
 export const goosoDroneEligible = () =>
   targettingItems() &&
