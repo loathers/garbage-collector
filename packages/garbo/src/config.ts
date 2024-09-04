@@ -1,5 +1,5 @@
 import { Args } from "grimoire-kolmafia";
-import { Item, itemDropsArray, print } from "kolmafia";
+import { Item, itemDropsArray, meatDrop, print } from "kolmafia";
 import {
   $familiar,
   $item,
@@ -100,7 +100,7 @@ export const targettingMeat = () =>
   $monsters`cheerless mime executive`.includes(globalOptions.target);
 
 export const targettingItems = () =>
-  valueDrops(globalOptions.target) > get("valueOfAdventure");
+  valueDrops(globalOptions.target) > meatDrop(globalOptions.target);
 
 export const goosoDroneEligible = () =>
   targettingItems() &&

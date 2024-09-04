@@ -63,10 +63,8 @@ import {
   isStrongScaler,
   maxPassiveDamage,
   monsterManuelAvailable,
-  targetMeat,
 } from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
-import { copyTargetCount } from "./target";
 
 export function shouldRedigitize(): boolean {
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
@@ -276,12 +274,6 @@ export class Macro extends StrictMacro {
       Macro.if_(globalOptions.target, Macro.trySkill($skill`Digitize`)),
     )
       .externalIf(
-        !targetMeat() &&
-          goosoDroneEligible() &&
-          get("gooseDronesRemaining") < copyTargetCount(),
-        Macro.trySkill($skill`Emit Matter Duplicating Drones`),
-      )
-      .externalIf(
         delevel,
         Macro.if_($monster`cheerless mime executive`, Macro.delevel()),
       )
@@ -295,6 +287,7 @@ export class Macro extends StrictMacro {
       .trySingAlong()
       .familiarActions()
       .tryEgg()
+      .tryDrone()
       .externalIf(
         have($skill`Extract Oil`) && get("_oilExtracted") < 15,
         Macro.if_(
@@ -748,6 +741,20 @@ export class Macro extends StrictMacro {
     return new Macro().ghostBustin();
   }
 
+  tryDrone(): Macro {
+    return this.externalIf(
+      goosoDroneEligible(),
+      Macro.if_(
+        globalOptions.target,
+        Macro.trySkill($skill`Emit Matter Duplicating Drones`),
+      ),
+    );
+  }
+
+  static tryDrone(): Macro {
+    return new Macro().tryDrone();
+  }
+
   tryEgg(): Macro {
     return this.externalIf(
       myFamiliar() === $familiar`Chest Mimic` &&
@@ -784,6 +791,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Fire a badly romantic arrow`),
         )
         .tryEgg()
+        .tryDrone()
         .externalIf(
           doneHabitat &&
             get("beGregariousCharges") > 0 &&
