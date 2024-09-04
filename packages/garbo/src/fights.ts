@@ -7,7 +7,6 @@ import {
   canEquip,
   cliExecute,
   closetAmount,
-  count,
   create,
   Effect,
   equip,
@@ -32,10 +31,8 @@ import {
   myBuffedstat,
   myClass,
   myFamiliar,
-  myHp,
   myInebriety,
   myLevel,
-  myMaxhp,
   myPath,
   myThrall,
   myTurncount,
@@ -193,7 +190,6 @@ import { TargetFightRunOptions } from "./target/staging";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
-import { fakeSources } from "./target/fights";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -207,11 +203,6 @@ const firstChainMacro = () =>
           Macro.tryCopier($skill`Digitize`),
         )
           .tryCopier($item`Spooky Putty sheet`)
-          .externalIf(
-            myHp() <
-              Math.min(myMaxhp() * 0.3, get("garbo_restoreHpTarget", 2000)),
-            Macro.tryHaveItem($item`New Age healing crystal`),
-          )
           .tryCopier($item`Rain-Doh black box`)
           .tryCopier($item`4-d camera`)
           .tryCopier($item`unfinished ice sculpture`)
@@ -240,11 +231,6 @@ const secondChainMacro = () =>
           Macro.tryCopier($skill`Digitize`),
         )
           .tryCopier($item`Spooky Putty sheet`)
-          .externalIf(
-            myHp() <
-              Math.min(myMaxhp() * 0.3, get("garbo_restoreHpTarget", 2000)),
-            Macro.tryHaveItem($item`New Age healing crystal`),
-          )
           .tryCopier($item`Rain-Doh black box`)
           .tryCopier($item`4-d camera`)
           .tryCopier($item`unfinished ice sculpture`)
@@ -541,7 +527,8 @@ export function dailyFights(): void {
             mallPrice($item`New Age healing crystal`) < expectedTargetProfit()
           ) {
             // Better to live and continue the chain than lose and not pprof fight at all
-            retrieveItem($item`New Age healing crystal`, count(fakeSources));
+            // Let's just have 20 of these.
+            retrieveItem($item`New Age healing crystal`, 20);
           }
 
           const profSpec: OutfitSpec = {
