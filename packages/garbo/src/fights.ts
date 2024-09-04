@@ -194,7 +194,7 @@ const firstChainMacro = () =>
   Macro.if_(
     globalOptions.target,
     Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel())
-      .if_("hppercentbelow 30", Macro.item($item`New Age healing crystal`))
+      .if_("hppercentbelow 30", Macro.tryItem($item`New Age healing crystal`))
       .if_(
         `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
         Macro.externalIf(
@@ -218,7 +218,7 @@ const secondChainMacro = () =>
   Macro.if_(
     globalOptions.target,
     Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel())
-      .if_("hppercentbelow 30", Macro.item($item`New Age healing crystal`))
+      .if_("hppercentbelow 30", Macro.tryItem($item`New Age healing crystal`))
       .if_(
         `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
         Macro.trySkill($skill`Meteor Shower`),
