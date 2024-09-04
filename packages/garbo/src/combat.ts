@@ -230,15 +230,15 @@ export class Macro extends StrictMacro {
     return new Macro().tryCopier(itemOrSkill);
   }
 
-  profChainHeal(): Macro {
+  tryNewAgeHeal(): Macro {
     return this.externalIf(
       myHp() < Math.min(myMaxhp() * 0.3, get("garbo_restoreHpTarget", 2000)),
       Macro.tryHaveItem($item`New Age healing crystal`),
     );
   }
 
-  static profChainHeal(): Macro {
-    return new Macro().profChainHeal();
+  static tryNewAgeHeal(): Macro {
+    return new Macro().tryNewAgeHeal();
   }
 
   delevel(): Macro {
@@ -302,7 +302,6 @@ export class Macro extends StrictMacro {
       .familiarActions()
       .tryEgg()
       .tryDrone()
-      .profChainHeal()
       .externalIf(
         have($skill`Extract Oil`) && get("_oilExtracted") < 15,
         Macro.if_(
@@ -807,7 +806,6 @@ export class Macro extends StrictMacro {
         )
         .tryEgg()
         .tryDrone()
-        .profChainHeal()
         .externalIf(
           doneHabitat &&
             get("beGregariousCharges") > 0 &&

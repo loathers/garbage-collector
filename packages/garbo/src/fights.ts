@@ -198,7 +198,10 @@ import { fakeSources } from "./target/fights";
 const firstChainMacro = () =>
   Macro.if_(
     globalOptions.target,
-    Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel())
+    Macro.externalIf(
+      isStrongScaler(globalOptions.target),
+      Macro.delevel().tryNewAgeHeal(),
+    )
       .if_(
         `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
         Macro.externalIf(
@@ -226,7 +229,10 @@ const firstChainMacro = () =>
 const secondChainMacro = () =>
   Macro.if_(
     globalOptions.target,
-    Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel())
+    Macro.externalIf(
+      isStrongScaler(globalOptions.target),
+      Macro.delevel().tryNewAgeHeal(),
+    )
       .if_(
         `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
         Macro.trySkill($skill`Meteor Shower`),
