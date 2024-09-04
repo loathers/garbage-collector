@@ -7,7 +7,6 @@ import {
   canEquip,
   cliExecute,
   closetAmount,
-  count,
   create,
   Effect,
   equip,
@@ -188,7 +187,6 @@ import { TargetFightRunOptions } from "./target/staging";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
 import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
-import { fakeSources } from "./target/fights";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -517,7 +515,8 @@ export function dailyFights(): void {
             mallPrice($item`New Age healing crystal`) < expectedTargetProfit()
           ) {
             // Better to live and continue the chain than lose and not pprof fight at all
-            retrieveItem($item`New Age healing crystal`, count(fakeSources));
+            // Just buy 20 crystals
+            retrieveItem($item`New Age healing crystal`, 20);
           }
 
           const profSpec: OutfitSpec = {
