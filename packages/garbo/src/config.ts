@@ -1,7 +1,6 @@
 import { Args } from "grimoire-kolmafia";
-import { Item, itemDropsArray, meatDrop, print } from "kolmafia";
+import { Item, print } from "kolmafia";
 import {
-  $familiar,
   $item,
   $items,
   $monster,
@@ -95,17 +94,6 @@ function defaultTarget() {
   }
   return $monster`Knob Goblin Elite Guard Captain`;
 }
-
-export const targettingMeat = () =>
-  $monsters`cheerless mime executive`.includes(globalOptions.target);
-
-export const targettingItems = () =>
-  valueDrops(globalOptions.target) > meatDrop(globalOptions.target);
-
-export const goosoDroneEligible = () =>
-  targettingItems() &&
-  itemDropsArray(globalOptions.target).length === 1 &&
-  have($familiar`Grey Goose`);
 
 export const globalOptions = Args.create(
   "garbo",

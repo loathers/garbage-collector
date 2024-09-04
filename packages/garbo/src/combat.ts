@@ -58,10 +58,11 @@ import {
   SourceTerminal,
   StrictMacro,
 } from "libram";
-import { globalOptions, goosoDroneEligible, isQuickCombat } from "./config";
+import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 import {
+  gooseDroneEligible,
   isStrongScaler,
   maxPassiveDamage,
   monsterManuelAvailable,
@@ -757,7 +758,7 @@ export class Macro extends StrictMacro {
 
   tryDrone(): Macro {
     return this.externalIf(
-      goosoDroneEligible(),
+      gooseDroneEligible(),
       Macro.if_(
         globalOptions.target,
         Macro.trySkill($skill`Emit Matter Duplicating Drones`),

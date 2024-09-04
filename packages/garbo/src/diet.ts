@@ -69,7 +69,7 @@ import {
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
-import { globalOptions, targettingMeat } from "./config";
+import { globalOptions } from "./config";
 import { copyTargetCount } from "./target";
 import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
@@ -77,6 +77,7 @@ import {
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
   targetMeat,
+  targettingMeat,
   userConfirmDialog,
 } from "./lib";
 import { shrugBadEffects } from "./mood";

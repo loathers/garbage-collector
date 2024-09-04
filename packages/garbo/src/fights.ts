@@ -117,7 +117,7 @@ import { WanderDetails } from "garbo-lib";
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
-import { globalOptions, goosoDroneEligible, targettingMeat } from "./config";
+import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 import {
   copyTargetCount,
@@ -153,8 +153,10 @@ import {
   freeRest,
   freeRunConstraints,
   getUsingFreeBunnyBanish,
+  gooseDroneEligible,
   HIGHLIGHT,
   isFree,
+  isFreeAndCopyable,
   isStrongScaler,
   kramcoGuaranteed,
   lastAdventureWasWeird,
@@ -169,6 +171,7 @@ import {
   safeRestore,
   setChoice,
   targetMeat,
+  targettingMeat,
   tryFindFreeRunOrBanish,
   userConfirmDialog,
   valueDrops,
@@ -453,12 +456,14 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
       if (have($familiar`Reanimated Reanimator`)) {
         return { familiar: $familiar`Reanimated Reanimator` };
       }
-      if (goosoDroneEligible()) {
-        if (get("gooseDronesRemaining") < copyTargetCount()) {
-          return { familiar: $familiar`Grey Goose` };
-        } else {
-          return { familiar: freeFightFamiliar() };
-        }
+      if (
+        gooseDroneEligible() &&
+        get("gooseDronesRemaining") < copyTargetCount()
+      ) {
+        return { familiar: $familiar`Grey Goose` };
+      }
+      if (isFreeAndCopyable(globalOptions.target)) {
+        return { familiar: freeFightFamiliar() };
       }
     }
   }

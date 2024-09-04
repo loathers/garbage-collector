@@ -23,6 +23,7 @@ import {
   lastMonster,
   Location,
   mallPrices,
+  meatDrop,
   meatDropModifier,
   Monster,
   mpCost,
@@ -69,6 +70,7 @@ import {
   $item,
   $location,
   $monster,
+  $monsters,
   $skill,
   $thralls,
   ActionSource,
@@ -100,7 +102,7 @@ import {
   uneffect,
 } from "libram";
 import { acquire } from "./acquire";
-import { globalOptions, goosoDroneEligible, targettingItems } from "./config";
+import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 
@@ -185,8 +187,19 @@ export const targetMeatDifferential = () => {
   return clamp(targetMeatVal - baseMeatVal, 0, targetMeatVal);
 };
 
+export const targettingMeat = () =>
+  $monsters`cheerless mime executive`.includes(globalOptions.target);
+
+export const targettingItems = () =>
+  valueDrops(globalOptions.target) > meatDrop(globalOptions.target);
+
+export const gooseDroneEligible = () =>
+  targettingItems() &&
+  itemDropsArray(globalOptions.target).length === 1 &&
+  have($familiar`Grey Goose`);
+
 export function averageTargetNet(): number {
-  const gooso = goosoDroneEligible() ? 2 : 1;
+  const gooso = gooseDroneEligible() ? 2 : 1;
 
   return targettingItems()
     ? valueDrops(globalOptions.target) * gooso
