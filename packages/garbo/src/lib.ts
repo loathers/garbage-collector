@@ -195,7 +195,9 @@ export const targettingItems = () =>
 
 export const gooseDroneEligible = () =>
   targettingItems() &&
-  itemDropsArray(globalOptions.target).length === 1 &&
+  itemDropsArray(globalOptions.target).filter(
+    (item) => !["c", "0", "p", "a"].includes(item.type),
+  ).length === 1 &&
   have($familiar`Grey Goose`);
 
 export function averageTargetNet(): number {
