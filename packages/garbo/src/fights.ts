@@ -32,10 +32,8 @@ import {
   myBuffedstat,
   myClass,
   myFamiliar,
-  myHp,
   myInebriety,
   myLevel,
-  myMaxhp,
   myPath,
   myThrall,
   myTurncount,
@@ -195,7 +193,10 @@ import { fakeSources } from "./target/fights";
 const firstChainMacro = () =>
   Macro.if_(
     globalOptions.target,
-    Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel())
+    Macro.externalIf(
+      isStrongScaler(globalOptions.target),
+      Macro.delevel().tryNewAgeHeal(),
+    )
       .if_(
         `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
         Macro.externalIf(
@@ -203,11 +204,6 @@ const firstChainMacro = () =>
           Macro.tryCopier($skill`Digitize`),
         )
           .tryCopier($item`Spooky Putty sheet`)
-          .externalIf(
-            myHp() <
-              Math.min(myMaxhp() * 0.3, get("garbo_restoreHpTarget", 2000)),
-            Macro.tryHaveItem($item`New Age healing crystal`),
-          )
           .tryCopier($item`Rain-Doh black box`)
           .tryCopier($item`4-d camera`)
           .tryCopier($item`unfinished ice sculpture`)
@@ -223,7 +219,10 @@ const firstChainMacro = () =>
 const secondChainMacro = () =>
   Macro.if_(
     globalOptions.target,
-    Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel())
+    Macro.externalIf(
+      isStrongScaler(globalOptions.target),
+      Macro.delevel().tryNewAgeHeal(),
+    )
       .if_(
         `!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`,
         Macro.trySkill($skill`Meteor Shower`),
@@ -235,11 +234,6 @@ const secondChainMacro = () =>
           Macro.tryCopier($skill`Digitize`),
         )
           .tryCopier($item`Spooky Putty sheet`)
-          .externalIf(
-            myHp() <
-              Math.min(myMaxhp() * 0.3, get("garbo_restoreHpTarget", 2000)),
-            Macro.tryHaveItem($item`New Age healing crystal`),
-          )
           .tryCopier($item`Rain-Doh black box`)
           .tryCopier($item`4-d camera`)
           .tryCopier($item`unfinished ice sculpture`)
