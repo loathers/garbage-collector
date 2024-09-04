@@ -26980,7 +26980,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ba42cd9875eb5dfd6fddaf6dead60d102b64878f", ")"));
+      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("89bbafd28d4820ff21affad5d0746e35a86ee915", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -36068,9 +36068,7 @@ function bestFairy() {
     if (have($item(_templateObject875 || (_templateObject875 = _taggedTemplateLiteral107(["gnomish housemaid's kgnee"])))) && highestFairyMult === 1) {
       goodFairies.push($familiar(_templateObject966 || (_templateObject966 = _taggedTemplateLiteral107(["Reagnimated Gnome"]))));
     }
-    var bonuses = [].concat(_toConsumableArray51(menu2({
-      includeExperienceFamiliars: false
-    })), [{
+    var bonuses = [].concat(_toConsumableArray51(menu2()), [{
       familiar: $familiar(_templateObject1055 || (_templateObject1055 = _taggedTemplateLiteral107(["Reagnimated Gnome"]))),
       expectedValue: get("valueOfAdventure") * 70 / 1e3,
       leprechaunMultiplier: 0,
