@@ -201,10 +201,10 @@ export const gooseDroneEligible = () =>
   have($familiar`Grey Goose`);
 
 export function averageTargetNet(): number {
-  const gooso = gooseDroneEligible() ? 2 : 1;
+  const goose = gooseDroneEligible() ? 2 : 1;
 
   return targettingItems()
-    ? valueDrops(globalOptions.target) * gooso
+    ? valueDrops(globalOptions.target) * goose
     : (targetMeat() * meatDropModifier()) / 100;
 }
 
