@@ -953,9 +953,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
     (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
   );
 
-  const targets = Math.floor(
-    (targettingMeat() ? copyTargetCount() : 0) + countCopies(diet),
-  );
+  const targets = Math.floor(copyTargetCount() + countCopies(diet));
   const adventures = Math.floor(
     estimatedGarboTurns() + diet.expectedAdventures(),
   );
