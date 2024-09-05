@@ -139,6 +139,8 @@ export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {
     cachedUsingPurse =
       myInebriety() <= inebrietyLimit() &&
+      !have($item`KoL Con 13 snowglobe`) &&
+      !have($item`can of mixed everything`) &&
       (!have($item`latte lovers member's mug`) ||
         (!have($familiar`Robortender`) && !have($familiar`Hobo Monkey`)) ||
         !canAdventure($location`The Black Forest`));

@@ -188,7 +188,7 @@ export const targetMeatDifferential = () => {
 };
 
 export const targettingMeat = () =>
-  $monsters`cheerless mime executive`.includes(globalOptions.target);
+  $monsters`Knob Goblin Elite Guard Captain`.includes(globalOptions.target);
 
 export const targettingItems = () =>
   valueDrops(globalOptions.target) > meatDrop(globalOptions.target);
