@@ -51,7 +51,7 @@ import { OutfitSpec, Quest } from "grimoire-kolmafia";
 import { WanderDetails } from "garbo-lib";
 
 import { GarboStrategy, Macro } from "../combat";
-import { globalOptions, targettingMeat } from "../config";
+import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
   getBestLuckyAdventure,
@@ -60,6 +60,7 @@ import {
   MEAT_TARGET_MULTIPLIER,
   romanticMonsterImpossible,
   sober,
+  targettingMeat,
 } from "../lib";
 import {
   barfOutfit,

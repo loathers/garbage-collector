@@ -20,6 +20,8 @@ import {
   myClass,
   myFamiliar,
   myFury,
+  myHp,
+  myMaxhp,
   myMp,
   myPath,
   mySoulsauce,
@@ -60,6 +62,7 @@ import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { digitizedMonstersRemaining } from "./turns";
 import {
+  gooseDroneEligible,
   isStrongScaler,
   maxPassiveDamage,
   monsterManuelAvailable,
@@ -227,6 +230,17 @@ export class Macro extends StrictMacro {
     return new Macro().tryCopier(itemOrSkill);
   }
 
+  tryNewAgeHeal(): Macro {
+    return this.externalIf(
+      myHp() < Math.min(myMaxhp() * 0.3, get("garbo_restoreHpTarget", 2000)),
+      Macro.tryHaveItem($item`New Age healing crystal`),
+    );
+  }
+
+  static tryNewAgeHeal(): Macro {
+    return new Macro().tryNewAgeHeal();
+  }
+
   delevel(): Macro {
     return this.tryHaveSkill($skill`Curse of Weaksauce`)
       .externalIf(
@@ -287,6 +301,7 @@ export class Macro extends StrictMacro {
       .trySingAlong()
       .familiarActions()
       .tryEgg()
+      .tryDrone()
       .externalIf(
         have($skill`Extract Oil`) && get("_oilExtracted") < 15,
         Macro.if_(
@@ -740,6 +755,20 @@ export class Macro extends StrictMacro {
     return new Macro().ghostBustin();
   }
 
+  tryDrone(): Macro {
+    return this.externalIf(
+      gooseDroneEligible(),
+      Macro.if_(
+        globalOptions.target,
+        Macro.trySkill($skill`Emit Matter Duplicating Drones`),
+      ),
+    );
+  }
+
+  static tryDrone(): Macro {
+    return new Macro().tryDrone();
+  }
+
   tryEgg(): Macro {
     return this.externalIf(
       myFamiliar() === $familiar`Chest Mimic` &&
@@ -776,6 +805,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Fire a badly romantic arrow`),
         )
         .tryEgg()
+        .tryDrone()
         .externalIf(
           doneHabitat &&
             get("beGregariousCharges") > 0 &&

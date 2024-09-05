@@ -1,10 +1,14 @@
 import { haveEquipped, Location, mallPrice, retrieveItem } from "kolmafia";
 import { $item, $location, $skill, get } from "libram";
-import { MEAT_TARGET_MULTIPLIER, propertyManager } from "../lib";
+import {
+  MEAT_TARGET_MULTIPLIER,
+  propertyManager,
+  targettingMeat,
+} from "../lib";
 import { checkUnderwater, RunOptions, TargetFightConfigOptions } from "./lib";
 import { Macro } from "../combat";
 import { wanderer } from "../garboWanderer";
-import { globalOptions, targettingMeat } from "../config";
+import { globalOptions } from "../config";
 
 const taffyIsWorthIt = () =>
   mallPrice($item`pulled green taffy`) <

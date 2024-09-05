@@ -23,6 +23,7 @@ import {
   lastMonster,
   Location,
   mallPrices,
+  meatDrop,
   meatDropModifier,
   Monster,
   mpCost,
@@ -69,6 +70,7 @@ import {
   $item,
   $location,
   $monster,
+  $monsters,
   $skill,
   $thralls,
   ActionSource,
@@ -185,8 +187,25 @@ export const targetMeatDifferential = () => {
   return clamp(targetMeatVal - baseMeatVal, 0, targetMeatVal);
 };
 
+export const targettingMeat = () =>
+  $monsters`cheerless mime executive`.includes(globalOptions.target);
+
+export const targettingItems = () =>
+  valueDrops(globalOptions.target) > meatDrop(globalOptions.target);
+
+export const gooseDroneEligible = () =>
+  targettingItems() &&
+  itemDropsArray(globalOptions.target).filter(
+    (item) => !["c", "0", "p", "a"].includes(item.type),
+  ).length === 1 &&
+  have($familiar`Grey Goose`);
+
 export function averageTargetNet(): number {
-  return (targetMeat() * meatDropModifier()) / 100;
+  const goose = gooseDroneEligible() ? 2 : 1;
+
+  return targettingItems()
+    ? valueDrops(globalOptions.target) * goose
+    : (targetMeat() * meatDropModifier()) / 100;
 }
 
 export function averageTouristNet(): number {
@@ -194,7 +213,9 @@ export function averageTouristNet(): number {
 }
 
 export function expectedTargetProfit(): number {
-  return averageTargetNet() - averageTouristNet();
+  return isFreeAndCopyable(globalOptions.target)
+    ? averageTargetNet()
+    : averageTargetNet() - averageTouristNet();
 }
 
 export function safeInterrupt(): void {

@@ -95,9 +95,6 @@ function defaultTarget() {
   return $monster`Knob Goblin Elite Guard Captain`;
 }
 
-export const targettingMeat = () =>
-  $monsters`cheerless mime executive`.includes(globalOptions.target);
-
 export const globalOptions = Args.create(
   "garbo",
   'This script is an automated turn-burning script for the Kingdom of Loathing that spends a day\'s resources and adventures on farming\n\
