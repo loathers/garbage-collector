@@ -5,6 +5,7 @@ import {
   buy,
   canAdventure,
   canEquip,
+  ceil,
   cliExecute,
   closetAmount,
   create,
@@ -13,6 +14,7 @@ import {
   equippedItem,
   Familiar,
   familiarEquippedEquipment,
+  familiarWeight,
   getAutoAttack,
   getCampground,
   getWorkshed,
@@ -48,6 +50,7 @@ import {
   setAutoAttack,
   setLocation,
   Skill,
+  squareRoot,
   stashAmount,
   takeCloset,
   toInt,
@@ -58,6 +61,7 @@ import {
   useFamiliar,
   useSkill,
   visitUrl,
+  weightAdjustment,
 } from "kolmafia";
 import {
   $class,
@@ -515,8 +519,21 @@ export function dailyFights(): void {
             mallPrice($item`New Age healing crystal`) < expectedTargetProfit()
           ) {
             // Better to live and continue the chain than lose and not pprof fight at all
-            // Just buy 20 crystals
-            retrieveItem($item`New Age healing crystal`, 20);
+            // You don't need more than 50 crystals, what are you a hippie?
+            retrieveItem(
+              $item`New Age healing crystal`,
+              clamp(
+                ceil(
+                  squareRoot(
+                    familiarWeight(myFamiliar()) +
+                      weightAdjustment() +
+                      myFamiliar().soupWeight,
+                  ) + 2,
+                ),
+                0,
+                50,
+              ),
+            );
           }
 
           const profSpec: OutfitSpec = {
