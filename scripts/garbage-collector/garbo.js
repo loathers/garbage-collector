@@ -26993,7 +26993,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2028d46cb0237b8fdb656d50f3e6917e91d43f31", ")"));
+      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7eb7ba51b97dc074bbc4ef1073f3c3956760c468", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -36618,7 +36618,7 @@ var Macro2 = /* @__PURE__ */ function(_StrictMacro) {
   }, {
     key: "tryDrone",
     value: function tryDrone() {
-      return this.externalIf(gooseDroneEligible(), Macro3.if_(globalOptions.target, Macro3.trySkill($skill(_templateObject2053 || (_templateObject2053 = _taggedTemplateLiteral108(["Emit Matter Duplicating Drones"]))))));
+      return this.externalIf(gooseDroneEligible() && get("gooseDronesRemaining") < copyTargetCount(), Macro3.if_(globalOptions.target, Macro3.trySkill($skill(_templateObject2053 || (_templateObject2053 = _taggedTemplateLiteral108(["Emit Matter Duplicating Drones"]))))));
     }
   }, {
     key: "tryEgg",
