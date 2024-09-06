@@ -26994,7 +26994,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("596faeb726601de41e6cdd4d372619d2b9fd511e", ")"));
+      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a4ddd6a63e9ca503c5c47948b285a7856a8d520f", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -29096,7 +29096,7 @@ function printDiet(diet, name) {
   diet.entries.sort(function(a, b) {
     return itemPriority(b.menuItems) - itemPriority(a.menuItems);
   });
-  var targets = Math.floor((targettingMeat() ? copyTargetCount() : 0) + countCopies(diet));
+  var targets = Math.floor(copyTargetCount() + countCopies(diet));
   var adventures = Math.floor(estimatedGarboTurns() + diet.expectedAdventures());
   (0, import_kolmafia86.print)("Planning to fight ".concat(targets, " ").concat(globalOptions.target, " and run ").concat(adventures, " adventures"));
   var _iterator = _createForOfIteratorHelper25(diet.entries), _step;
