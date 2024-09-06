@@ -287,10 +287,7 @@ export class Macro extends StrictMacro {
       shouldRedigitize(),
       Macro.if_(globalOptions.target, Macro.trySkill($skill`Digitize`)),
     )
-      .externalIf(
-        delevel,
-        Macro.if_($monster`cheerless mime executive`, Macro.delevel()),
-      )
+      .externalIf(delevel, Macro.if_(globalOptions.target, Macro.delevel()))
       .externalIf(
         have($skill`Blow the Purple Candle!`),
         Macro.if_(
@@ -621,18 +618,16 @@ export class Macro extends StrictMacro {
         myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`) &&
           (currentHitStat() === $stat`Muscle` ||
             itemType(equippedItem($slot`weapon`)) === "knife"),
-        Macro.trySkillRepeat($skill`Northern Explosion`)
-          .ifNot(
-            $monster`cheerless mime executive`,
-            Macro.trySkillRepeat($skill`Lunging Thrust-Smack`),
-          )
-          .trySkillRepeat(
-            $skill`Saucegeyser`,
-            $skill`Weapon of the Pastalord`,
-            $skill`Cannelloni Cannon`,
-            $skill`Wave of Sauce`,
-            $skill`Saucestorm`,
-          ),
+
+        Macro.trySkillRepeat(
+          $skill`Northern Explosion`,
+          $skill`Lunging Thrust-Smack`,
+          $skill`Saucegeyser`,
+          $skill`Weapon of the Pastalord`,
+          $skill`Cannelloni Cannon`,
+          $skill`Wave of Sauce`,
+          $skill`Saucestorm`,
+        ),
         Macro.trySkillRepeat(
           $skill`Saucegeyser`,
           $skill`Weapon of the Pastalord`,
