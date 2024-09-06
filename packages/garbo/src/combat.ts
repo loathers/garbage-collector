@@ -20,8 +20,6 @@ import {
   myClass,
   myFamiliar,
   myFury,
-  myHp,
-  myMaxhp,
   myMp,
   myPath,
   mySoulsauce,
@@ -229,17 +227,6 @@ export class Macro extends StrictMacro {
 
   static tryCopier(itemOrSkill: Item | Skill): Macro {
     return new Macro().tryCopier(itemOrSkill);
-  }
-
-  tryNewAgeHeal(): Macro {
-    return this.externalIf(
-      myHp() < Math.min(myMaxhp() * 0.3, get("garbo_restoreHpTarget", 2000)),
-      Macro.tryHaveItem($item`New Age healing crystal`),
-    );
-  }
-
-  static tryNewAgeHeal(): Macro {
-    return new Macro().tryNewAgeHeal();
   }
 
   delevel(): Macro {
