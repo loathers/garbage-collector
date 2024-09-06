@@ -924,7 +924,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
           ).abort(),
       ),
       prepare: () =>
-        !get("dinseyRollercoasterNext") &&
+        get("dinseyRollercoasterNext") ||
         meatMood().execute(estimatedGarboTurns()),
       post: () => {
         completeBarfQuest();
