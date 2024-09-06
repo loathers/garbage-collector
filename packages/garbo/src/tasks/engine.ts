@@ -111,8 +111,11 @@ export class SafeGarboEngine extends BaseGarboEngine {
   }
 }
 
-export function runSafeGarboTasks(tasks: GarboTask[]): void {
-  const engine = new SafeGarboEngine(tasks);
+function runQuests<T extends typeof BaseGarboEngine>(
+  quests: Quest<GarboTask>[],
+  garboEngine: T,
+) {
+  const engine = new garboEngine(getTasks(quests));
 
   try {
     engine.run();
@@ -122,19 +125,9 @@ export function runSafeGarboTasks(tasks: GarboTask[]): void {
 }
 
 export function runSafeGarboQuests(quests: Quest<GarboTask>[]): void {
-  runSafeGarboTasks(getTasks(quests));
-}
-
-export function runGarboTasks(tasks: GarboTask[]): void {
-  const engine = new BaseGarboEngine(tasks);
-
-  try {
-    engine.run();
-  } finally {
-    engine.destruct();
-  }
+  runQuests(quests, SafeGarboEngine);
 }
 
 export function runGarboQuests(quests: Quest<GarboTask>[]): void {
-  runGarboTasks(getTasks(quests));
+  runQuests(quests, BaseGarboEngine);
 }
