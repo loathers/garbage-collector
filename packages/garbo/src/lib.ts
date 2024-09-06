@@ -23,7 +23,6 @@ import {
   lastMonster,
   Location,
   mallPrices,
-  meatDrop,
   meatDropModifier,
   Monster,
   mpCost,
@@ -70,7 +69,6 @@ import {
   $item,
   $location,
   $monster,
-  $monsters,
   $skill,
   $thralls,
   ActionSource,
@@ -188,10 +186,9 @@ export const targetMeatDifferential = () => {
 };
 
 export const targettingMeat = () =>
-  $monsters`Knob Goblin Elite Guard Captain`.includes(globalOptions.target);
+  !isFree(globalOptions.target) && targetMeat() > baseMeat();
 
-export const targettingItems = () =>
-  valueDrops(globalOptions.target) > meatDrop(globalOptions.target);
+export const targettingItems = () => !targettingMeat();
 
 export const gooseDroneEligible = () =>
   targettingItems() &&
