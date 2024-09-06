@@ -419,42 +419,42 @@ function pygmyOptions(equip: Item[] = []): FreeFightOptions {
 }
 
 function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
-  if (!underwater) {
+  if (
+    ChestMimic.have() &&
+    $familiar`Chest Mimic`.experience >= 50 &&
+    get("_mimicEggsObtained") < 11 &&
+    // switchmonster doesn't apply ML, meaning the target monsters die too quickly to get multiple eggs in
+    !["Macrometeorite", "Powerful Glove", "Backup"].includes(fight)
+  ) {
+    return { familiar: $familiar`Chest Mimic` };
+  }
+
+  if (get("_badlyRomanticArrows") === 0) {
     if (
-      ChestMimic.have() &&
-      $familiar`Chest Mimic`.experience >= 50 &&
-      get("_mimicEggsObtained") < 11 &&
-      // switchmonster doesn't apply ML, meaning the target monsters die too quickly to get multiple eggs in
-      !["Macrometeorite", "Powerful Glove", "Backup"].includes(fight)
+      !underwater &&
+      have($familiar`Obtuse Angel`) &&
+      (familiarEquippedEquipment($familiar`Obtuse Angel`) ===
+        $item`quake of arrows` ||
+        retrieveItem($item`quake of arrows`))
     ) {
-      return { familiar: $familiar`Chest Mimic` };
+      return {
+        familiar: $familiar`Obtuse Angel`,
+        famequip: $item`quake of arrows`,
+      };
     }
-    if (get("_badlyRomanticArrows") === 0) {
-      if (
-        have($familiar`Obtuse Angel`) &&
-        (familiarEquippedEquipment($familiar`Obtuse Angel`) ===
-          $item`quake of arrows` ||
-          retrieveItem($item`quake of arrows`))
-      ) {
-        return {
-          familiar: $familiar`Obtuse Angel`,
-          famequip: $item`quake of arrows`,
-        };
-      }
-      if (have($familiar`Reanimated Reanimator`)) {
-        return { familiar: $familiar`Reanimated Reanimator` };
-      }
-      if (
-        gooseDroneEligible() &&
-        get("gooseDronesRemaining") < copyTargetCount()
-      ) {
-        return { familiar: $familiar`Grey Goose` };
-      }
-      if (isFreeAndCopyable(globalOptions.target)) {
-        return { familiar: freeFightFamiliar() };
-      }
+    if (have($familiar`Reanimated Reanimator`)) {
+      return { familiar: $familiar`Reanimated Reanimator` };
     }
   }
+
+  if (gooseDroneEligible() && get("gooseDronesRemaining") < copyTargetCount()) {
+    return { familiar: $familiar`Grey Goose` };
+  }
+
+  if (isFreeAndCopyable(globalOptions.target)) {
+    return { familiar: freeFightFamiliar() };
+  }
+
   return { familiar: meatFamiliar() };
 }
 
