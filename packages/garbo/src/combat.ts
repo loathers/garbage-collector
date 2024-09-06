@@ -68,6 +68,7 @@ import {
   monsterManuelAvailable,
 } from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
+import { copyTargetCount } from "./target";
 
 export function shouldRedigitize(): boolean {
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
@@ -752,7 +753,7 @@ export class Macro extends StrictMacro {
 
   tryDrone(): Macro {
     return this.externalIf(
-      gooseDroneEligible(),
+      gooseDroneEligible() && get("gooseDronesRemaining") < copyTargetCount(),
       Macro.if_(
         globalOptions.target,
         Macro.trySkill($skill`Emit Matter Duplicating Drones`),
