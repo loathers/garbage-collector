@@ -28,7 +28,6 @@ import {
   Monster,
   mpCost,
   myBjornedFamiliar,
-  myBuffedstat,
   myEnthronedFamiliar,
   myFamiliar,
   myFullness,
@@ -38,7 +37,6 @@ import {
   myMaxhp,
   myMaxmp,
   myMp,
-  myPrimestat,
   mySoulsauce,
   mySpleenUse,
   myThrall,
@@ -1148,8 +1146,7 @@ export function scalerCap(monster: Monster): number {
   return cap;
 }
 
-// What constitutes a strong scaler depends on our ability to take hits. Let's compare mainstat with 50 removed for safety.
-const STRONG_SCALER_THRESHOLD = myBuffedstat(myPrimestat()) - 50;
+const STRONG_SCALER_THRESHOLD = 1_000;
 export const isStrongScaler = (m: Monster) =>
   scalerCap(m) > STRONG_SCALER_THRESHOLD;
 
