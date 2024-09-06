@@ -106,6 +106,9 @@ function getBestGreedyCombination(
   ]);
 }
 
+const resonanceIndex = (resonance: string) =>
+  (MayamCalendar.RESONANCE_KEYS as string[]).indexOf(resonance);
+
 function expandCombinationGroup<N extends number>(
   group: Tuple<MayamCalendar.CombinationString, N>,
 ): [
@@ -121,14 +124,8 @@ function expandCombinationGroup<N extends number>(
   return [
     ...getAvailableResonances(forbiddenSymbols)
       .filter((resonance) => {
-        const RESONANCE_KEYS_ANONYMIZED =
-          MayamCalendar.RESONANCE_KEYS as string[];
-        const rightmostIndex = Math.max(
-          ...group.map((combination) =>
-            RESONANCE_KEYS_ANONYMIZED.indexOf(combination),
-          ),
-        );
-        return RESONANCE_KEYS_ANONYMIZED.indexOf(resonance) > rightmostIndex;
+        const rightmostIndex = Math.max(...group.map(resonanceIndex));
+        return resonanceIndex(resonance) > rightmostIndex;
       })
       .map(
         (resonance) =>
