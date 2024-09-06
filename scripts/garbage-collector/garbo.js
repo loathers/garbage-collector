@@ -26993,7 +26993,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1c357ed6709b2eb9bd46bc1021719967fea79465", ")"));
+      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("afdb1863c0485533ff0b049260424a294c527552", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -34562,16 +34562,16 @@ function getBestAvailableSymbolFromRing(ring, forbiddenSymbols) {
 function getBestGreedyCombination(forbiddenSymbols) {
   return MayamCalendar_exports.toCombinationString([getBestAvailableSymbolFromRing(0, forbiddenSymbols), getBestAvailableSymbolFromRing(1, forbiddenSymbols), getBestAvailableSymbolFromRing(2, forbiddenSymbols), getBestAvailableSymbolFromRing(3, forbiddenSymbols)]);
 }
+var resonanceIndex = function(resonance) {
+  return MayamCalendar_exports.RESONANCE_KEYS.indexOf(resonance);
+};
 function expandCombinationGroup(group) {
   var forbiddenSymbols = [].concat(_toConsumableArray49(group.flatMap(function(combinationString) {
     return MayamCalendar_exports.toCombination([combinationString]);
   })), _toConsumableArray49(MayamCalendar_exports.symbolsUsed()));
   return [].concat(_toConsumableArray49(getAvailableResonances(forbiddenSymbols).filter(function(resonance) {
-    var RESONANCE_KEYS_ANONYMIZED = MayamCalendar_exports.RESONANCE_KEYS;
-    var rightmostIndex = Math.max.apply(Math, _toConsumableArray49(group.map(function(combination) {
-      return RESONANCE_KEYS_ANONYMIZED.indexOf(combination);
-    })));
-    return RESONANCE_KEYS_ANONYMIZED.indexOf(resonance) > rightmostIndex;
+    var rightmostIndex = Math.max.apply(Math, _toConsumableArray49(group.map(resonanceIndex)));
+    return resonanceIndex(resonance) > rightmostIndex;
   }).map(function(resonance) {
     return [].concat(_toConsumableArray49(group), [resonance]);
   })), [[].concat(_toConsumableArray49(group), [getBestGreedyCombination(forbiddenSymbols)])]);
@@ -34580,19 +34580,9 @@ function getBestMayamCombinations() {
   var combinationGroups = (
     // `reduce` misbehaves a lot when `any` shows its face
     new Array(MayamCalendar_exports.remainingUses()).fill(null).reduce(function(acc) {
-      var result = [];
-      var _iterator = _createForOfIteratorHelper34(acc), _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done; ) {
-          var combinationGroup = _step.value;
-          result.push.apply(result, _toConsumableArray49(expandCombinationGroup(combinationGroup)));
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-      return result;
+      return acc.flatMap(function(combinationGroup) {
+        return expandCombinationGroup(combinationGroup);
+      });
     }, [[]])
   );
   return maxBy(combinationGroups, function(group) {
@@ -34609,10 +34599,10 @@ var mayamCalendarSummon = {
   },
   do: function() {
     var startingFamiliar = (0, import_kolmafia110.myFamiliar)();
-    var _iterator2 = _createForOfIteratorHelper34(getBestMayamCombinations()), _step2;
+    var _iterator = _createForOfIteratorHelper34(getBestMayamCombinations()), _step;
     try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done; ) {
-        var combination = _step2.value;
+      for (_iterator.s(); !(_step = _iterator.n()).done; ) {
+        var combination = _step.value;
         if (combination.includes("fur")) {
           var bestFamiliar = maxBy(getExperienceFamiliars("free"), "expectedValue").familiar;
           (0, import_kolmafia110.useFamiliar)(bestFamiliar);
@@ -34620,9 +34610,9 @@ var mayamCalendarSummon = {
         MayamCalendar_exports.submit(combination);
       }
     } catch (err) {
-      _iterator2.e(err);
+      _iterator.e(err);
     } finally {
-      _iterator2.f();
+      _iterator.f();
     }
     (0, import_kolmafia110.useFamiliar)(startingFamiliar);
   },
@@ -42256,6 +42246,9 @@ var BarfTurnQuest = {
     }, function() {
       return Macro2.if_("(monsterid ".concat(globalOptions.target.id, ") && !gotjump && !(pastround 2)"), Macro2.meatKill()).abort();
     }),
+    prepare: function() {
+      return get("dinseyRollercoasterNext") || meatMood().execute(estimatedGarboTurns());
+    },
     post: function() {
       completeBarfQuest();
       trackMarginalMpa();
@@ -44903,8 +44896,8 @@ var SafeGarboEngine = /* @__PURE__ */ function(_BaseGarboEngine) {
   _inherits10(SafeGarboEngine2, _BaseGarboEngine);
   return _createClass31(SafeGarboEngine2);
 }(BaseGarboEngine);
-function runSafeGarboTasks(tasks) {
-  var engine = new SafeGarboEngine(tasks);
+function runQuests(quests2, garboEngine) {
+  var engine = new garboEngine(getTasks(quests2));
   try {
     engine.run();
   } finally {
@@ -44912,18 +44905,10 @@ function runSafeGarboTasks(tasks) {
   }
 }
 function runSafeGarboQuests(quests2) {
-  runSafeGarboTasks(getTasks(quests2));
-}
-function runGarboTasks(tasks) {
-  var engine = new BaseGarboEngine(tasks);
-  try {
-    engine.run();
-  } finally {
-    engine.destruct();
-  }
+  runQuests(quests2, SafeGarboEngine);
 }
 function runGarboQuests(quests2) {
-  runGarboTasks(getTasks(quests2));
+  runQuests(quests2, BaseGarboEngine);
 }
 
 // src/dailies.ts
