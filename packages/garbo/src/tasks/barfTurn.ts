@@ -68,7 +68,7 @@ import {
   meatTargetOutfit,
   waterBreathingEquipment,
 } from "../outfit";
-import { digitizedMonstersRemaining } from "../turns";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { deliverThesisIfAble } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
 
@@ -86,6 +86,7 @@ import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
+import { meatMood } from "../mood";
 
 const canDuplicate = () =>
   SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
@@ -922,6 +923,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
+      prepare: () => meatMood().execute(estimatedGarboTurns()),
       post: () => {
         completeBarfQuest();
         trackMarginalMpa();

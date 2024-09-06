@@ -78,7 +78,6 @@ import { garboAverageValue } from "./garboValue";
 import {
   BarfTurnQuests,
   PostQuest,
-  runBarfQuests,
   runGarboQuests,
   SetupTargetCopyQuest,
 } from "./tasks";
@@ -547,7 +546,7 @@ export function main(argString = ""): void {
           meatMood().execute(estimatedGarboTurns());
           useBuffExtenders();
           try {
-            runBarfQuests([PostQuest(), ...BarfTurnQuests]);
+            runGarboQuests([PostQuest(), ...BarfTurnQuests]);
 
             // buy one-day tickets with FunFunds if user desires
             if (

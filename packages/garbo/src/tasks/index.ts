@@ -8,4 +8,4 @@ export { PostFreeFightQuest } from "./postFreeFight";
 export { SetupTargetCopyQuest } from "./target";
 export { DailySeaQuest } from "./dailySea";
 export { PostQuest } from "./post";
-export { runBarfQuests, runGarboQuests, runSafeGarboQuests } from "./engine";
+export { runGarboQuests, runSafeGarboQuests } from "./engine";

@@ -22,8 +22,6 @@ import { GarboStrategy } from "../combat";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
-import { meatMood } from "../mood";
-import { estimatedGarboTurns } from "../turns";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
@@ -101,13 +99,6 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   }
 }
 
-export class BarfEngine extends BaseGarboEngine {
-  execute(task: GarboTask): void {
-    meatMood().execute(estimatedGarboTurns());
-    return super.execute(task);
-  }
-}
-
 /**
  * A safe engine for Garbo!
  * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
@@ -139,8 +130,4 @@ export function runSafeGarboQuests(quests: Quest<GarboTask>[]): void {
 
 export function runGarboQuests(quests: Quest<GarboTask>[]): void {
   runQuests(quests, BaseGarboEngine);
-}
-
-export function runBarfQuests(quests: Quest<GarboTask>[]): void {
-  runQuests(quests, BarfEngine);
 }
