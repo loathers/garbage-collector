@@ -47,6 +47,7 @@ import {
   set,
   SourceTerminal,
   sum,
+  Witchess,
 } from "libram";
 import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
 
@@ -333,6 +334,18 @@ export const chainStarters = [
 ];
 
 export const copySources = [
+  new CopyTargetFight(
+    "Witchess",
+    () => Witchess.have() && Witchess.pieces.includes(globalOptions.target),
+    () => 5 - Witchess.fightsDone(),
+    (options: RunOptions) => {
+      withMacro(
+        options.macro,
+        () => Witchess.fightPiece(globalOptions.target),
+        options.useAuto,
+      );
+    },
+  ),
   new CopyTargetFight(
     "Time-Spinner",
     () =>
