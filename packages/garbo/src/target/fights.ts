@@ -337,7 +337,7 @@ export const copySources = [
   new CopyTargetFight(
     "Witchess",
     () => Witchess.have() && Witchess.pieces.includes(globalOptions.target),
-    () => 5 - Witchess.fightsDone(),
+    () => Math.max(5 - Witchess.fightsDone(), 0),
     (options: RunOptions) => {
       withMacro(
         options.macro,
