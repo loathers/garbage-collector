@@ -159,6 +159,18 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
 
 export const chainStarters = [
   new CopyTargetFight(
+    "Witchess",
+    () => Witchess.have() && Witchess.pieces.includes(globalOptions.target),
+    () => Math.max(5 - Witchess.fightsDone(), 0),
+    (options: RunOptions) => {
+      withMacro(
+        options.macro,
+        () => Witchess.fightPiece(globalOptions.target),
+        options.useAuto,
+      );
+    },
+  ),
+  new CopyTargetFight(
     "Chateau Painting",
     () =>
       ChateauMantegna.have() &&
@@ -334,18 +346,6 @@ export const chainStarters = [
 ];
 
 export const copySources = [
-  new CopyTargetFight(
-    "Witchess",
-    () => Witchess.have() && Witchess.pieces.includes(globalOptions.target),
-    () => Math.max(5 - Witchess.fightsDone(), 0),
-    (options: RunOptions) => {
-      withMacro(
-        options.macro,
-        () => Witchess.fightPiece(globalOptions.target),
-        options.useAuto,
-      );
-    },
-  ),
   new CopyTargetFight(
     "Time-Spinner",
     () =>
