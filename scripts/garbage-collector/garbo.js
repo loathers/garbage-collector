@@ -26993,7 +26993,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("afdb1863c0485533ff0b049260424a294c527552", ")"));
+      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a6cbe2977e24274fa6e47e719b7e7e9fc65b1b10", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -39625,36 +39625,34 @@ function pygmyOptions() {
   };
 }
 function familiarSpec(underwater, fight) {
-  if (!underwater) {
-    if (ChestMimic_exports.have() && $familiar(_templateObject5143 || (_templateObject5143 = _taggedTemplateLiteral116(["Chest Mimic"]))).experience >= 50 && get("_mimicEggsObtained") < 11 && // switchmonster doesn't apply ML, meaning the target monsters die too quickly to get multiple eggs in
-    !["Macrometeorite", "Powerful Glove", "Backup"].includes(fight)) {
+  if (ChestMimic_exports.have() && $familiar(_templateObject5143 || (_templateObject5143 = _taggedTemplateLiteral116(["Chest Mimic"]))).experience >= 50 && get("_mimicEggsObtained") < 11 && // switchmonster doesn't apply ML, meaning the target monsters die too quickly to get multiple eggs in
+  !["Macrometeorite", "Powerful Glove", "Backup"].includes(fight)) {
+    return {
+      familiar: $familiar(_templateObject5221 || (_templateObject5221 = _taggedTemplateLiteral116(["Chest Mimic"])))
+    };
+  }
+  if (get("_badlyRomanticArrows") === 0) {
+    if (!underwater && have($familiar(_templateObject5321 || (_templateObject5321 = _taggedTemplateLiteral116(["Obtuse Angel"])))) && ((0, import_kolmafia124.familiarEquippedEquipment)($familiar(_templateObject5421 || (_templateObject5421 = _taggedTemplateLiteral116(["Obtuse Angel"])))) === $item(_templateObject5520 || (_templateObject5520 = _taggedTemplateLiteral116(["quake of arrows"]))) || (0, import_kolmafia124.retrieveItem)($item(_templateObject5618 || (_templateObject5618 = _taggedTemplateLiteral116(["quake of arrows"])))))) {
       return {
-        familiar: $familiar(_templateObject5221 || (_templateObject5221 = _taggedTemplateLiteral116(["Chest Mimic"])))
+        familiar: $familiar(_templateObject5718 || (_templateObject5718 = _taggedTemplateLiteral116(["Obtuse Angel"]))),
+        famequip: $item(_templateObject5816 || (_templateObject5816 = _taggedTemplateLiteral116(["quake of arrows"])))
       };
     }
-    if (get("_badlyRomanticArrows") === 0) {
-      if (have($familiar(_templateObject5321 || (_templateObject5321 = _taggedTemplateLiteral116(["Obtuse Angel"])))) && ((0, import_kolmafia124.familiarEquippedEquipment)($familiar(_templateObject5421 || (_templateObject5421 = _taggedTemplateLiteral116(["Obtuse Angel"])))) === $item(_templateObject5520 || (_templateObject5520 = _taggedTemplateLiteral116(["quake of arrows"]))) || (0, import_kolmafia124.retrieveItem)($item(_templateObject5618 || (_templateObject5618 = _taggedTemplateLiteral116(["quake of arrows"])))))) {
-        return {
-          familiar: $familiar(_templateObject5718 || (_templateObject5718 = _taggedTemplateLiteral116(["Obtuse Angel"]))),
-          famequip: $item(_templateObject5816 || (_templateObject5816 = _taggedTemplateLiteral116(["quake of arrows"])))
-        };
-      }
-      if (have($familiar(_templateObject5915 || (_templateObject5915 = _taggedTemplateLiteral116(["Reanimated Reanimator"]))))) {
-        return {
-          familiar: $familiar(_templateObject6015 || (_templateObject6015 = _taggedTemplateLiteral116(["Reanimated Reanimator"])))
-        };
-      }
-      if (gooseDroneEligible() && get("gooseDronesRemaining") < copyTargetCount()) {
-        return {
-          familiar: $familiar(_templateObject6136 || (_templateObject6136 = _taggedTemplateLiteral116(["Grey Goose"])))
-        };
-      }
-      if (isFreeAndCopyable(globalOptions.target)) {
-        return {
-          familiar: freeFightFamiliar()
-        };
-      }
+    if (have($familiar(_templateObject5915 || (_templateObject5915 = _taggedTemplateLiteral116(["Reanimated Reanimator"]))))) {
+      return {
+        familiar: $familiar(_templateObject6015 || (_templateObject6015 = _taggedTemplateLiteral116(["Reanimated Reanimator"])))
+      };
     }
+  }
+  if (gooseDroneEligible() && get("gooseDronesRemaining") < copyTargetCount()) {
+    return {
+      familiar: $familiar(_templateObject6136 || (_templateObject6136 = _taggedTemplateLiteral116(["Grey Goose"])))
+    };
+  }
+  if (isFreeAndCopyable(globalOptions.target)) {
+    return {
+      familiar: freeFightFamiliar()
+    };
   }
   return {
     familiar: meatFamiliar()
