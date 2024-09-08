@@ -93,7 +93,6 @@ import {
   FloristFriar,
   gameDay,
   get,
-  getFoldGroup,
   GingerBread,
   have,
   Latte,
@@ -125,7 +124,6 @@ import {
   bestMidnightAvailable,
   crateStrategy,
   doingGregFight,
-  faxMonster,
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
@@ -305,52 +303,6 @@ function meatTargetSetup() {
     retrieveItem($item`LOV Enamorang`);
   }
 
-  // Fix invalid copiers (caused by ascending or combat text-effects)
-  if (have($item`Spooky Putty monster`) && !get("spookyPuttyMonster")) {
-    // Visit the description to update the monster as it may be valid but not tracked correctly
-    visitUrl(
-      `desc_item.php?whichitem=${$item`Spooky Putty monster`.descid}`,
-      false,
-      false,
-    );
-    if (!get("spookyPuttyMonster")) {
-      // Still invalid, use it to turn back into the spooky putty sheet
-      use($item`Spooky Putty monster`);
-    }
-  }
-
-  if (have($item`Rain-Doh box full of monster`) && !get("rainDohMonster")) {
-    visitUrl(
-      `desc_item.php?whichitem=${$item`Rain-Doh box full of monster`.descid}`,
-      false,
-      false,
-    );
-  }
-
-  if (have($item`shaking 4-d camera`) && !get("cameraMonster")) {
-    visitUrl(
-      `desc_item.php?whichitem=${$item`shaking 4-d camera`.descid}`,
-      false,
-      false,
-    );
-  }
-
-  if (have($item`envyfish egg`) && !get("envyfishMonster")) {
-    visitUrl(
-      `desc_item.php?whichitem=${$item`envyfish egg`.descid}`,
-      false,
-      false,
-    );
-  }
-
-  if (have($item`ice sculpture`) && !get("iceSculptureMonster")) {
-    visitUrl(
-      `desc_item.php?whichitem=${$item`ice sculpture`.descid}`,
-      false,
-      false,
-    );
-  }
-
   if (doingGregFight()) {
     initializeExtrovermectinZones();
   }
@@ -460,13 +412,6 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
 
 export function dailyFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
-
-  if (getFoldGroup($item`Spooky Putty sheet`).some((item) => have(item))) {
-    cliExecute("fold spooky putty sheet");
-  }
-
-  // Fax the copy target before starting, to prevent an abort in case the faxbot networks are down
-  faxMonster(globalOptions.target);
 
   if (copyTargetSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
