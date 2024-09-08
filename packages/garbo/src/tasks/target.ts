@@ -4,6 +4,7 @@ import {
   $items,
   $location,
   CrystalBall,
+  examine,
   get,
   getFoldGroup,
   have,
@@ -22,7 +23,6 @@ import {
   inebrietyLimit,
   myInebriety,
   use,
-  visitUrl,
   wait,
 } from "kolmafia";
 import { globalOptions } from "../config";
@@ -69,11 +69,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       completed: () =>
         !!get("spookyPuttyMonster") || !have($item`Spooky Putty monster`),
       do: () => {
-        visitUrl(
-          `desc_item.php?whichitem=${$item`Spooky Putty monster`.descid}`,
-          false,
-          false,
-        );
+        examine($item`Spooky Putty monster`);
         if (!get("spookyPuttyMonster")) {
           // Still invalid, use it to turn back into the spooky putty sheet
           use($item`Spooky Putty monster`);
@@ -86,12 +82,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       name: "Fix Rain-Doh box full of monster",
       ready: () => have($item`Rain-Doh box full of monster`),
       completed: () => !!get("rainDohMonster"),
-      do: () =>
-        visitUrl(
-          `desc_item.php?whichitem=${$item`Rain-Doh box full of monster`.descid}`,
-          false,
-          false,
-        ),
+      do: () => examine($item`Rain-Doh box full of monster`),
       spendsTurn: false,
       limit: { skip: 1 },
     },
@@ -99,12 +90,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       name: "Fix shaking 4-d camera",
       ready: () => have($item`shaking 4-d camera`),
       completed: () => !!get("cameraMonster"),
-      do: () =>
-        visitUrl(
-          `desc_item.php?whichitem=${$item`shaking 4-d camera`.descid}`,
-          false,
-          false,
-        ),
+      do: () => examine($item`shaking 4-d camera`),
       spendsTurn: false,
       limit: { skip: 1 },
     },
@@ -112,12 +98,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       name: "Fix envyfish egg",
       ready: () => have($item`envyfish egg`),
       completed: () => !!get("envyfishMonster"),
-      do: () =>
-        visitUrl(
-          `desc_item.php?whichitem=${$item`envyfish egg`.descid}`,
-          false,
-          false,
-        ),
+      do: () => examine($item`envyfish egg`),
       spendsTurn: false,
       limit: { skip: 1 },
     },
@@ -125,12 +106,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       name: "Fix ice sculpture",
       ready: () => have($item`ice sculpture`),
       completed: () => !!get("iceSculptureMonster"),
-      do: () =>
-        visitUrl(
-          `desc_item.php?whichitem=${$item`ice sculpture`.descid}`,
-          false,
-          false,
-        ),
+      do: () => examine($item`ice sculpture`),
       spendsTurn: false,
       limit: { skip: 1 },
     },
@@ -138,12 +114,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       name: "Fix photocopied monster",
       ready: () => have($item`photocopied monster`),
       completed: () => !!get("photocopyMonster"),
-      do: () =>
-        visitUrl(
-          `desc_item.php?whichitem=${$item`photocopied monster`.descid}`,
-          false,
-          false,
-        ),
+      do: () => examine($item`photocopied monster`),
       spendsTurn: false,
       limit: { skip: 1 },
     },
