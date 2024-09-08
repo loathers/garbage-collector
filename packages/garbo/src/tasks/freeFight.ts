@@ -594,7 +594,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   {
     name: "Witchess",
     ready: () => Witchess.have(),
-    completed: () => Witchess.fightsDone() >= 5,
+    completed: () =>
+      Witchess.fightsDone() >= 5 ||
+      Witchess.pieces.includes(globalOptions.target),
     do: () => Witchess.fightPiece(bestWitchessPiece()),
     tentacle: true,
     combatCount: () => clamp(5 - Witchess.fightsDone(), 0, 5),
