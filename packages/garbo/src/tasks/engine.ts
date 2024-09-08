@@ -22,11 +22,25 @@ import { GarboStrategy } from "../combat";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
+import { DraggableFight } from "garbo-lib";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
   spendsTurn: Delayed<boolean>;
   duplicate?: Delayed<boolean>;
+};
+
+export type CopyTargetTask = GarboTask & {
+  fightType?:
+    | "regular"
+    | "conditional"
+    | "chainstarter"
+    | "gregarious"
+    | "emergencychainstarter"
+    | "fake";
+  draggable?: DraggableFight;
+  canInitializeWandererCounters: boolean;
+  wrongEncounterName?: boolean;
 };
 
 function logTargetFight(encounterType: string) {
@@ -96,6 +110,16 @@ export class BaseGarboEngine<T extends GarboTask> extends Engine<never, T> {
         SourceTerminal.educate(skill);
       }
     }
+  }
+}
+
+export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
+  getNextTask(): CopyTargetTask | undefined {
+    // TO DO: copy logic from `getNextCopyTargetFight`
+    // But also handle things like "initialize digitize if our next fight isn't a digitize"
+    // and "don't kramco if we're backing up"
+    // and so on and so forth
+    return super.getNextTask();
   }
 }
 
