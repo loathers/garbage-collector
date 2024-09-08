@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && rimraf --glob \"dist/**/index.html\"",
+    "check": "tsc",
     "lint": "eslint && prettier --check .",
     "format": "prettier --write .",
     "preview": "vite preview",
