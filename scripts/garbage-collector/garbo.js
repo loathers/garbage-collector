@@ -26993,7 +26993,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("3c210b8b14e9e3894256be0edf6268bf5d167983", ")"));
+      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a30c054bcee28841ae9dd6bc4306f7bd740ddfd5", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -34952,7 +34952,7 @@ var CopyTargetFight = /* @__PURE__ */ function() {
   }]);
 }();
 var chainStarters = [new CopyTargetFight("Witchess", function() {
-  return Witchess_exports.have() && Witchess_exports.pieces.includes(globalOptions.target);
+  return Witchess_exports.have() && Witchess_exports.pieces.includes(globalOptions.target) && Witchess_exports.fightsDone() < 5;
 }, function() {
   return Math.max(5 - Witchess_exports.fightsDone(), 0);
 }, function(options) {
