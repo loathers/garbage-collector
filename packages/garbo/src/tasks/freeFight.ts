@@ -542,6 +542,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         .basicCombat(),
     ),
     combatCount: () => clamp(1 - get("_mushroomGardenFights"), 0, 1),
+    tentacle: true,
   },
   {
     name: "Portscan + Macrometeorite + Mushroom garden",
@@ -595,6 +596,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         .basicCombat(),
     ),
     combatCount: () => clamp(10 - get("_macrometeoriteUses"), 0, 10),
+    tentacle: true,
   },
   {
     name: "God Lobster",
