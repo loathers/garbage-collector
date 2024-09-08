@@ -834,6 +834,20 @@ export class Macro extends StrictMacro {
   static target(action: string): Macro {
     return new Macro().target(action);
   }
+
+  duplicate(): Macro {
+    return this.externalIf(
+      haveEquipped($item`pro skateboard`) && !get("_epicMcTwistUsed"),
+      Macro.trySkill($skill`Do an epic McTwist!`),
+    ).externalIf(
+      SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0,
+      Macro.trySkill($skill`Duplicate`),
+    );
+  }
+
+  static duplicate(): Macro {
+    return new Macro().duplicate();
+  }
 }
 
 function customizeMacro<M extends StrictMacro>(macro: M) {
