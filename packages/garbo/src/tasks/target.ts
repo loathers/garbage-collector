@@ -67,8 +67,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       name: "Fix Spooky Putty monster",
       ready: () => have($item`Spooky Putty monster`),
       completed: () =>
-        get("spookyPuttyMonster") !== null ||
-        !have($item`Spooky Putty monster`),
+        !!get("spookyPuttyMonster") || !have($item`Spooky Putty monster`),
       do: () => {
         visitUrl(
           `desc_item.php?whichitem=${$item`Spooky Putty monster`.descid}`,
@@ -86,7 +85,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
     {
       name: "Fix Rain-Doh box full of monster",
       ready: () => have($item`Rain-Doh box full of monster`),
-      completed: () => get("rainDohMonster") !== null,
+      completed: () => !!get("rainDohMonster"),
       do: () =>
         visitUrl(
           `desc_item.php?whichitem=${$item`Rain-Doh box full of monster`.descid}`,
@@ -99,7 +98,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
     {
       name: "Fix shaking 4-d camera",
       ready: () => have($item`shaking 4-d camera`),
-      completed: () => get("cameraMonster") !== null,
+      completed: () => !!get("cameraMonster"),
       do: () =>
         visitUrl(
           `desc_item.php?whichitem=${$item`shaking 4-d camera`.descid}`,
@@ -112,7 +111,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
     {
       name: "Fix envyfish egg",
       ready: () => have($item`envyfish egg`),
-      completed: () => get("envyfishMonster") !== null,
+      completed: () => !!get("envyfishMonster"),
       do: () =>
         visitUrl(
           `desc_item.php?whichitem=${$item`envyfish egg`.descid}`,
@@ -125,7 +124,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
     {
       name: "Fix ice sculpture",
       ready: () => have($item`ice sculpture`),
-      completed: () => get("iceSculptureMonster") !== null,
+      completed: () => !!get("iceSculptureMonster"),
       do: () =>
         visitUrl(
           `desc_item.php?whichitem=${$item`ice sculpture`.descid}`,
@@ -138,7 +137,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
     {
       name: "Fix photocopied monster",
       ready: () => have($item`photocopied monster`),
-      completed: () => get("photocopyMonster") !== null,
+      completed: () => !!get("photocopyMonster"),
       do: () =>
         visitUrl(
           `desc_item.php?whichitem=${$item`photocopied monster`.descid}`,
