@@ -55,6 +55,7 @@ import {
   set,
   SourceTerminal,
   sum,
+  TearawayPants,
   TunnelOfLove,
   undelay,
   uneffect,
@@ -524,7 +525,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           bonuses: new Map<Item, number>([
             [
               $item`tearaway pants`,
-              get("valueOfAdventure") * (1 / (2 + get("_tearawayPantsAdvs"))),
+              get("valueOfAdventure") * TearawayPants.plantsAdventureChance(),
             ],
           ]),
         },
@@ -577,7 +578,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           bonuses: new Map<Item, number>([
             [
               $item`tearaway pants`,
-              get("valueOfAdventure") * (1 / (2 + get("_tearawayPantsAdvs"))),
+              get("valueOfAdventure") * TearawayPants.plantsAdventureChance(),
             ],
           ]),
         },
