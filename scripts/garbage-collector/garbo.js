@@ -26993,7 +26993,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a6cbe2977e24274fa6e47e719b7e7e9fc65b1b10", ")"));
+      (0, import_kolmafia82.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("92a2df6884e5c91f549bc6fc5a45f506be24a0bd", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia82.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -34984,7 +34984,15 @@ var CopyTargetFight = /* @__PURE__ */ function() {
     }
   }]);
 }();
-var chainStarters = [new CopyTargetFight("Chateau Painting", function() {
+var chainStarters = [new CopyTargetFight("Witchess", function() {
+  return Witchess_exports.have() && Witchess_exports.pieces.includes(globalOptions.target);
+}, function() {
+  return Math.max(5 - Witchess_exports.fightsDone(), 0);
+}, function(options) {
+  withMacro(options.macro, function() {
+    return Witchess_exports.fightPiece(globalOptions.target);
+  }, options.useAuto);
+}), new CopyTargetFight("Chateau Painting", function() {
   return ChateauMantegna_exports.have() && !ChateauMantegna_exports.paintingFought() && ChateauMantegna_exports.paintingMonster() === globalOptions.target;
 }, function() {
   return ChateauMantegna_exports.have() && !ChateauMantegna_exports.paintingFought() && ChateauMantegna_exports.paintingMonster() === globalOptions.target ? 1 : 0;
@@ -38696,7 +38704,7 @@ var FreeFightTasks = [
       return Witchess_exports.have();
     },
     completed: function() {
-      return Witchess_exports.fightsDone() >= 5;
+      return Witchess_exports.fightsDone() >= 5 || Witchess_exports.pieces.includes(globalOptions.target);
     },
     do: function() {
       return Witchess_exports.fightPiece(bestWitchessPiece());
