@@ -32,7 +32,7 @@ function averageYrValue(
     SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
   const canMctwist = have($item`pro skateboard`) && !get("_epicMcTwistUsed");
   const possibleDuplicateFactor =
-    2 ** [canDuplicate, canMctwist].filter(Boolean).length
+    2 ** [canDuplicate, canMctwist].filter(Boolean).length;
   if (monsters.length === 0) {
     return 0;
   } else {
