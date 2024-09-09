@@ -160,7 +160,10 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
 export const chainStarters = [
   new CopyTargetFight(
     "Witchess",
-    () => Witchess.have() && Witchess.pieces.includes(globalOptions.target),
+    () =>
+      Witchess.have() &&
+      Witchess.pieces.includes(globalOptions.target) &&
+      Witchess.fightsDone() < 5,
     () => Math.max(5 - Witchess.fightsDone(), 0),
     (options: RunOptions) => {
       withMacro(
