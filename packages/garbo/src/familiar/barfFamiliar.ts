@@ -2,7 +2,6 @@ import {
   cliExecute,
   equippedItem,
   Familiar,
-  familiarWeight,
   Item,
   myFamiliar,
   numericModifier,
@@ -23,6 +22,7 @@ import {
   getModifier,
   maxBy,
   sum,
+  totalFamiliarWeight,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
@@ -129,7 +129,9 @@ function familiarModifier(
 ): number {
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
   const totalWeight =
-    familiarWeight(familiar) + nonOutfitWeightBonus() + cachedOutfitWeight;
+    totalFamiliarWeight(familiar, false) +
+    nonOutfitWeightBonus() +
+    cachedOutfitWeight;
   const { equip } = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {};
 
   return equip

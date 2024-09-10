@@ -1,12 +1,10 @@
 import {
   availableAmount,
   Familiar,
-  familiarWeight,
   inebrietyLimit,
   myAdventures,
   myInebriety,
   totalTurnsPlayed,
-  weightAdjustment,
 } from "kolmafia";
 import {
   $effect,
@@ -83,17 +81,6 @@ export function timeToMeatify(): boolean {
   else if (freeFightNow || $familiar`Grey Goose`.experience >= 121) return true;
 
   return false;
-}
-
-export function pocketProfessorLectures(): number {
-  return (
-    2 +
-    Math.ceil(
-      Math.sqrt(
-        familiarWeight($familiar`Pocket Professor`) + weightAdjustment(),
-      ),
-    )
-  );
 }
 
 export function canOpenRedPresent(): boolean {
