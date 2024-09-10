@@ -14,7 +14,6 @@ import {
   Familiar,
   familiarEquippedEquipment,
   getAutoAttack,
-  getCampground,
   getWorkshed,
   haveEquipped,
   haveOutfit,
@@ -1053,75 +1052,6 @@ const freeFightSources = [
     },
     true,
     pygmyOptions(),
-  ),
-
-  // Mushroom garden
-  new FreeFight(
-    () =>
-      (have($item`packet of mushroom spores`) ||
-        getCampground()["packet of mushroom spores"] !== undefined) &&
-      get("_mushroomGardenFights") === 0,
-    () => {
-      if (have($item`packet of mushroom spores`)) {
-        use($item`packet of mushroom spores`);
-      }
-      if (SourceTerminal.have()) {
-        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
-      }
-      garboAdventure(
-        $location`Your Mushroom Garden`,
-        Macro.externalIf(
-          !doingGregFight(),
-          Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
-        ).basicCombat(),
-      );
-      if (have($item`packet of tall grass seeds`)) {
-        use($item`packet of tall grass seeds`);
-      }
-    },
-    true,
-    {
-      spec: () =>
-        have($familiar`Robortender`)
-          ? { familiar: $familiar`Robortender` }
-          : {},
-    },
-  ),
-
-  // Portscan and mushroom garden
-  new FreeFight(
-    () =>
-      !doingGregFight() &&
-      (have($item`packet of mushroom spores`) ||
-        getCampground()["packet of mushroom spores"] !== undefined) &&
-      Counter.get("portscan.edu") === 0 &&
-      have($skill`Macrometeorite`) &&
-      get("_macrometeoriteUses") < 10,
-    () => {
-      if (have($item`packet of mushroom spores`)) {
-        use($item`packet of mushroom spores`);
-      }
-      if (SourceTerminal.have()) {
-        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
-      }
-      garboAdventure(
-        $location`Your Mushroom Garden`,
-        Macro.if_(
-          $monster`Government agent`,
-          Macro.skill($skill`Macrometeorite`),
-        ).if_(
-          $monster`piranha plant`,
-          Macro.if_(
-            $skill`Macrometeorite`,
-            Macro.trySkill($skill`Portscan`),
-          ).basicCombat(),
-        ),
-      );
-      if (have($item`packet of tall grass seeds`)) {
-        use($item`packet of tall grass seeds`);
-      }
-    },
-    true,
   ),
   new FreeFight(
     () =>
