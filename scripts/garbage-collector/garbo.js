@@ -27424,7 +27424,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4df1b4a2569588a830845883cd32ebd82fde9e05", ")"));
+      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("5ecaed68721485b0e4f6817f061d49fb9f892912", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia85.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -42673,7 +42673,7 @@ var BarfTurnQuest = {
       return Macro2.if_("(monsterid ".concat(globalOptions.target.id, ") && !gotjump && !(pastround 2)"), Macro2.meatKill()).abort();
     }),
     prepare: function() {
-      return get("dinseyRollercoasterNext") || meatMood().execute(estimatedGarboTurns());
+      return !get("dinseyRollercoasterNext") && !((0, import_kolmafia127.totalTurnsPlayed)() % 11) && meatMood().execute(estimatedGarboTurns());
     },
     post: function() {
       completeBarfQuest();
