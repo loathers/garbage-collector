@@ -96,6 +96,7 @@ import {
   have,
   Latte,
   maxBy,
+  PocketProfessor,
   property,
   realmAvailable,
   Requirement,
@@ -133,7 +134,6 @@ import {
   bestFairy,
   freeFightFamiliar,
   meatFamiliar,
-  pocketProfessorLectures,
   setBestLeprechaunAsMeatFamiliar,
 } from "./familiar";
 import {
@@ -477,7 +477,10 @@ export function dailyFights(): void {
 
           goalMaximize({ ...profSpec, ...fightSource.spec });
 
-          if (get("_pocketProfessorLectures") < pocketProfessorLectures()) {
+          if (
+            get("_pocketProfessorLectures") <
+            PocketProfessor.totalAvailableLectures()
+          ) {
             const startLectures = get("_pocketProfessorLectures");
             runTargetFight(fightSource, {
               macro: macro(),
