@@ -201,14 +201,20 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Sept-Ember",
-    ready: () => have($item`Sept-Ember Censer`) && globalOptions.ascend,
-    completed: () =>
-      get("availableSeptEmbers", 0) === 0 && get("_septEmbersCollected", true),
+    name: "Check Sept-Ember",
+    ready: () => have($item`Sept-Ember Censer`),
+    completed: () => get("_septEmbersCollected", true),
     do: (): void => {
       visitUrl("shop.php?whichshop=september");
       set("_septEmbersCollected", true);
-
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Spend Sept-Ember Embers",
+    ready: () => have($item`Sept-Ember Censer`) && globalOptions.ascend,
+    completed: () => get("availableSeptEmbers", 0) === 0,
+    do: (): void => {
       let itemsWithCosts = Item.all()
         .filter((i) => sellsItem($coinmaster`Sept-Ember Censer`, i))
         .map((item) => ({
