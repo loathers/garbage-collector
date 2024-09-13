@@ -14,6 +14,7 @@ import {
   $skill,
   Delayed,
   get,
+  set,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -23,7 +24,11 @@ import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
 import { DraggableFight } from "garbo-lib";
-import { crateStrategy, hasMonsterReplacers } from "../resources";
+import {
+  crateStrategy,
+  hasMonsterReplacers,
+  totalGregCharges,
+} from "../resources";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
@@ -43,7 +48,6 @@ export type CopyTargetTask = GarboTask & {
   draggable?: DraggableFight;
   canInitializeWandererCounters: boolean;
   wrongEncounterName?: boolean;
-  isGregarious?: boolean;
 };
 
 function logTargetFight(encounterType: string) {
@@ -117,15 +121,28 @@ export class BaseGarboEngine<T extends GarboTask> extends Engine<never, T> {
 }
 
 export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
+  private lastFight: CopyTargetTask | null = null;
+
+  // TODO: `proceedWithOrb` logic
+  // Reconsider the way it works for free fights?
+  // Reconsider
   findNextFight(type: CopyTargetTask["fightType"]) {
     return this.tasks.find(
       (task) => task.fightType === type && this.available(task),
     );
   }
 
+  post(task: CopyTargetTask): void {
+    this.lastFight = task;
+    if (task.fightType === "gregarious" && totalGregCharges(true) === 0) {
+      set("_garbo_doneGregging", true);
+    }
+    super.post(task);
+  }
+
   getNextTask(): CopyTargetTask | undefined {
     // TO DO: allow for interpolating non-embezzler tasks into this
-    // E.g., kramco, digitize initialization, and proton ghosts
+    // E.g., kramco, digitize initialization, crate-sabers, and proton ghosts
     // Actually I think those are it? I don't think there's a third
 
     // We do a wanderer if it's available, because they're basically involuntary
@@ -139,7 +156,9 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
       const hasReplacers = hasMonsterReplacers();
 
       const skipConditionals =
-        conditional.isGregarious && crateStrategy() === "Orb" && hasReplacers;
+        conditional.fightType === "gregarious" &&
+        crateStrategy() === "Orb" &&
+        hasReplacers;
 
       if (!skipConditionals) return conditional;
     }

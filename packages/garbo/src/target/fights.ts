@@ -61,6 +61,7 @@ import {
   getBestLuckyAdventure,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
+  isFreeAndCopyable,
   ltbRun,
   setChoice,
   WISH_VALUE,
@@ -748,7 +749,6 @@ export const conditionalSources = [
         options.macro,
       );
       changeLastAdvLocation();
-      if (!doingGregFight()) set("_garbo_doneGregging", true);
     },
     {
       spec: { equip: $items`miniature crystal ball` },
