@@ -23,6 +23,7 @@ import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
 import { DraggableFight } from "garbo-lib";
+import { crateStrategy, hasMonsterReplacers } from "../resources";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
@@ -32,6 +33,7 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
 
 export type CopyTargetTask = GarboTask & {
   fightType?:
+    | "wanderer"
     | "regular"
     | "conditional"
     | "chainstarter"
@@ -41,6 +43,7 @@ export type CopyTargetTask = GarboTask & {
   draggable?: DraggableFight;
   canInitializeWandererCounters: boolean;
   wrongEncounterName?: boolean;
+  isGregarious?: boolean;
 };
 
 function logTargetFight(encounterType: string) {
@@ -114,12 +117,39 @@ export class BaseGarboEngine<T extends GarboTask> extends Engine<never, T> {
 }
 
 export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
+  findNextFight(type: CopyTargetTask["fightType"]) {
+    return this.tasks.find(
+      (task) => task.fightType === type && this.available(task),
+    );
+  }
+
   getNextTask(): CopyTargetTask | undefined {
-    // TO DO: copy logic from `getNextCopyTargetFight`
-    // But also handle things like "initialize digitize if our next fight isn't a digitize"
-    // and "don't kramco if we're backing up"
-    // and so on and so forth
-    return super.getNextTask();
+    // TO DO: allow for interpolating non-embezzler tasks into this
+    // E.g., kramco, digitize initialization, and proton ghosts
+    // Actually I think those are it? I don't think there's a third
+
+    // We do a wanderer if it's available, because they're basically involuntary
+    const wanderer = this.findNextFight("wanderer");
+    if (wanderer) return wanderer;
+
+    // Conditional fights we want to do when we can
+    // But we don't want to reset our orb with a gregarious fight; that defeats the purpose
+    const conditional = this.findNextFight("conditional");
+    if (conditional) {
+      const hasReplacers = hasMonsterReplacers();
+
+      const skipConditionals =
+        conditional.isGregarious && crateStrategy() === "Orb" && hasReplacers;
+
+      if (!skipConditionals) return conditional;
+    }
+
+    const regularCopy =
+      this.findNextFight("regular") ?? this.findNextFight("chainstarter");
+    if (regularCopy) return regularCopy;
+    return (
+      conditional ?? this.findNextFight("emergencychainstarter") ?? undefined
+    );
   }
 }
 
