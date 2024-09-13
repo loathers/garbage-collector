@@ -44,6 +44,7 @@ import { freeFightFamiliar } from "../familiar";
 import {
   freeRunConstraints,
   getUsingFreeBunnyBanish,
+  isFree,
   lastAdventureWasWeird,
   ltbRun,
   setChoice,
@@ -173,7 +174,9 @@ export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
   ) {
     return "Sniff";
   }
-  if (have($item`miniature crystal ball`)) return "Orb";
+  if (have($item`miniature crystal ball`) && !isFree(globalOptions.target)) {
+    return "Orb";
+  }
   if (have($item`Fourth of May Cosplay Saber`) && get("_saberForceUses") < 5) {
     return "Saber";
   }
