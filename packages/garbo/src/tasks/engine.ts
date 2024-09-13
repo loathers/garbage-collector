@@ -123,6 +123,9 @@ export class BaseGarboEngine<T extends GarboTask> extends Engine<never, T> {
 export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
   private lastFight: CopyTargetTask | null = null;
 
+  // TODO: `proceedWithOrb` logic
+  // Reconsider the way it works for free fights?
+  // Reconsider
   findNextFight(type: CopyTargetTask["fightType"]) {
     return this.tasks.find(
       (task) => task.fightType === type && this.available(task),

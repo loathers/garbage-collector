@@ -49,7 +49,7 @@ const mosterIsInEggnet = () =>
     globalOptions.target,
   ));
 
-// TO DO: all outfits, all most combat strategies
+// TO DO: non-trivial combat strategies, choosing outfit function based on copy target
 // Outfit needs to support prof, angel, and underwater
 // Combat can passively support prof probably
 // Might be a weird edge case where we're copying a free fight and want to charge our professor
@@ -291,8 +291,7 @@ export const CopyTargetFights: CopyTargetTask[] = [
     ready: () =>
       gregReady() &&
       have($skill`Meteor Lore`) &&
-      get("_macrometeoriteUses") < 10 &&
-      proceedWithOrb(),
+      get("_macrometeoriteUses") < 10,
     completed: () => get("_macrometeoriteUses") >= 10,
     do: $location`noob cave`,
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
@@ -304,8 +303,7 @@ export const CopyTargetFights: CopyTargetTask[] = [
     ready: () =>
       gregReady() &&
       have($item`Powerful Glove`) &&
-      get("_powerfulGloveBatteryPowerUsed") <= 90 &&
-      proceedWithOrb(),
+      get("_powerfulGloveBatteryPowerUsed") <= 90,
     completed: () => get("_powerfulGloveBatteryPowerUsed") >= 95,
     do: $location`The Dire Warren`,
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
