@@ -14,8 +14,8 @@ import {
   $skill,
   Delayed,
   get,
-  set,
   have,
+  set,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -131,7 +131,7 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
   // TODO: `proceedWithOrb` logic
   // Reconsider the way it works for free fights?
   // Reconsider
-  findNextFight(type: CopyTargetTask["fightType"]) {
+  findAvailableFight(type: CopyTargetTask["fightType"]) {
     return this.tasks.find(
       (task) => task.fightType === type && this.available(task),
     );
@@ -151,12 +151,12 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
     // Actually I think those are it? I don't think there's a third
 
     // We do a wanderer if it's available, because they're basically involuntary
-    const wanderer = this.findNextFight("wanderer");
+    const wanderer = this.findAvailableFight("wanderer");
     if (wanderer) return wanderer;
 
     // Conditional fights we want to do when we can
     // But we don't want to reset our orb with a gregarious fight; that defeats the purpose
-    const conditional = this.findNextFight("conditional");
+    const conditional = this.findAvailableFight("conditional");
     if (conditional) {
       const hasReplacers = hasMonsterReplacers();
 
@@ -169,10 +169,13 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
     }
 
     const regularCopy =
-      this.findNextFight("regular") ?? this.findNextFight("chainstarter");
+      this.findAvailableFight("regular") ??
+      this.findAvailableFight("chainstarter");
     if (regularCopy) return regularCopy;
     return (
-      conditional ?? this.findNextFight("emergencychainstarter") ?? undefined
+      conditional ??
+      this.findAvailableFight("emergencychainstarter") ??
+      undefined
     );
   }
 }
