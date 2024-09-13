@@ -43,6 +43,7 @@ import {
   have,
   maxBy,
   questStep,
+  set,
   SourceTerminal,
   sum,
   withChoice,
@@ -194,6 +195,37 @@ const DailyItemTasks: GarboTask[] = [
       buy(
         $coinmaster`Mr. Store 2002`,
         get("availableMrStore2002Credits", 0),
+        bestItem,
+      );
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Sept-Ember",
+    // eslint-disable-next-line libram/verify-constants
+    ready: () => have($item`Sept-Ember Censer`) && globalOptions.ascend,
+    completed: () =>
+      get("availableSeptEmbers", 0) === 0 && get("_septEmbersCollected", true),
+    do: (): void => {
+      visitUrl("shop.php?whichshop=september");
+      set("_septEmbersCollected", true);
+
+      const itemsWithCosts = Item.all()
+        .filter((i) => sellsItem($coinmaster`Sept-Ember Censer`, i))
+        .map((item) => ({
+          item,
+          cost: coinmasterPrice(item),
+          value: garboValue(item),
+        }));
+
+      const bestItem = maxBy(
+        itemsWithCosts,
+        ({ value, cost }) => value / cost,
+      )?.item;
+
+      buy(
+        $coinmaster`Sept-Ember Censer`,
+        get("availableSeptEmbers", 0),
         bestItem,
       );
     },
