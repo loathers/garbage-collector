@@ -203,20 +203,14 @@ const DailyItemTasks: GarboTask[] = [
   {
     name: "Sept-Ember",
     // eslint-disable-next-line libram/verify-constants
-    ready: () => have($item`Sept-Ember Censer`),
+    ready: () => have($item`Sept-Ember Censer`) && globalOptions.ascend,
     completed: () =>
       get("availableSeptEmbers", 0) === 0 && get("_septEmbersCollected", true),
     do: (): void => {
       visitUrl("shop.php?whichshop=september");
       set("_septEmbersCollected", true);
 
-      // If we're not about to ascend, we don't want to spend all our embers; in a world where Hulk is best and we generate 7 a day
-      // saving 5 gets us three hulks the next day (5 + 7 = 12)
-      // There's a limit on how many embers one can have or we'd just wait until ascend
-      const spendEmbers =
-        get("availableSeptEmbers", 0) - (globalOptions.ascend ? 0 : 5);
-
-      const itemsWithCosts = Item.all()
+      let itemsWithCosts = Item.all()
         .filter((i) => sellsItem($coinmaster`Sept-Ember Censer`, i))
         .map((item) => ({
           item,
@@ -224,13 +218,21 @@ const DailyItemTasks: GarboTask[] = [
           value: garboValue(item),
         }));
 
-      const bestItem = maxBy(itemsWithCosts, ({ value, cost }) => value / cost);
+      while (get("availableSeptEmbers", 0) > 0) {
+        itemsWithCosts = itemsWithCosts.filter(
+          ({ cost }) => cost <= get("availableSeptEmbers", 0),
+        );
+        const bestItem = maxBy(
+          itemsWithCosts,
+          ({ value, cost }) => value / cost,
+        );
 
-      buy(
-        $coinmaster`Sept-Ember Censer`,
-        Math.round(spendEmbers / bestItem.cost),
-        bestItem.item,
-      );
+        buy(
+          $coinmaster`Sept-Ember Censer`,
+          Math.round(get("availableSeptEmbers", 0) / bestItem.cost),
+          bestItem.item,
+        );
+      }
     },
     spendsTurn: false,
   },
