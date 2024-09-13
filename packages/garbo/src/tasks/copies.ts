@@ -41,6 +41,7 @@ import { puttyLeft } from "../target/lib";
 import { CopyTargetTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { wanderer } from "../garboWanderer";
+import { meatTargetOutfit } from "../outfit";
 
 let monsterInEggnet: boolean;
 const mosterIsInEggnet = () =>
@@ -65,7 +66,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {
       ChateauMantegna.fightPainting();
     },
-    combat: new GarboStrategy(() => Macro.target("chateau painting")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "chainstarter",
@@ -83,7 +83,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {
       CombatLoversLocket.reminisce(globalOptions.target);
     },
-    combat: new GarboStrategy(() => Macro.target("combat lover's locket")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "chainstarter",
@@ -100,7 +99,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {
       use($item`photocopied monster`);
     },
-    combat: new GarboStrategy(() => Macro.target("photocopied monster")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "chainstarter",
@@ -113,8 +111,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {
       ChestMimic.differentiate(globalOptions.target);
     },
-    combat: new GarboStrategy(() => Macro.target("mimic egg")),
-    spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "chainstarter",
   },
@@ -125,7 +121,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {
       HeavyRains.rainMan(globalOptions.target);
     },
-    combat: new GarboStrategy(() => Macro.target("rain man")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "chainstarter",
@@ -146,7 +141,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
         `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
       );
     },
-    combat: new GarboStrategy(() => Macro.target("time-spinner")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "regular",
@@ -166,7 +160,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
         `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
       );
     },
-    combat: new GarboStrategy(() => Macro.target("spooky putty & rain-doh")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "regular",
@@ -181,7 +174,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {
       use($item`shaking 4-d camera`);
     },
-    combat: new GarboStrategy(() => Macro.target("4-d camera")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "regular",
@@ -196,7 +188,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {
       use($item`ice sculpture`);
     },
-    combat: new GarboStrategy(() => Macro.target("ice sculpture")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "regular",
@@ -211,7 +202,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {
       use($item`envyfish egg`);
     },
-    combat: new GarboStrategy(() => Macro.target("envyfish egg")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "regular",
@@ -227,7 +217,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {
       use($item`screencapped monster`);
     },
-    combat: new GarboStrategy(() => Macro.target("screencapped monster")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: false,
     fightType: "regular",
@@ -292,9 +281,8 @@ export const CopyTargetFights: CopyTargetTask[] = [
         globalOptions.target,
     completed: () => !possibleGregCrystalBall(),
     do: $location`The Dire Warren`,
-    combat: new GarboStrategy(() => Macro.target("Fight an orb prediction")),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
-    outfit: { equip: $items`miniature crystal ball` },
+    outfit: () => meatTargetOutfit({ equip: $items`miniature crystal ball` }),
     canInitializeWandererCounters: true,
     fightType: "conditional",
   },
@@ -352,7 +340,11 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: () => wanderer().getTarget("backup"),
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: true,
-    outfit: { equip: $items`backup camera`, modes: { backupcamera: "meat" } },
+    outfit: () =>
+      meatTargetOutfit({
+        equip: $items`backup camera`,
+        modes: { backupcamera: "meat" },
+      }),
     fightType: "conditional",
   },
   {
@@ -363,7 +355,6 @@ export const CopyTargetFights: CopyTargetTask[] = [
     do: (): void => {},
     spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
     canInitializeWandererCounters: true,
-    outfit: { familiar: $familiar`Pocket Professor` },
     fightType: "fake",
   },
   {
@@ -434,4 +425,9 @@ export const CopyTargetFights: CopyTargetTask[] = [
     canInitializeWandererCounters: true,
     fightType: "emergencychainstarter",
   },
-];
+].map((partialTask) => ({
+  combat: new GarboStrategy(() => Macro.target(partialTask.name)),
+  outfit: () => meatTargetOutfit(),
+  spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
+  ...partialTask,
+}));
