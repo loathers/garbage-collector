@@ -47,6 +47,7 @@ import {
   set,
   SourceTerminal,
   sum,
+  Witchess,
 } from "libram";
 import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
 
@@ -158,6 +159,21 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
 }
 
 export const chainStarters = [
+  new CopyTargetFight(
+    "Witchess",
+    () =>
+      Witchess.have() &&
+      Witchess.pieces.includes(globalOptions.target) &&
+      Witchess.fightsDone() < 5,
+    () => Math.max(5 - Witchess.fightsDone(), 0),
+    (options: RunOptions) => {
+      withMacro(
+        options.macro,
+        () => Witchess.fightPiece(globalOptions.target),
+        options.useAuto,
+      );
+    },
+  ),
   new CopyTargetFight(
     "Chateau Painting",
     () =>

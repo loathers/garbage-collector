@@ -15,6 +15,7 @@ import {
   Delayed,
   get,
   set,
+  have,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -78,6 +79,10 @@ export class BaseGarboEngine<T extends GarboTask> extends Engine<never, T> {
   }
 
   dress(task: T, outfit: Outfit) {
+    const duplicate = undelay(task.duplicate);
+    if (duplicate && have($item`pro skateboard`) && !get("_epicMcTwistUsed")) {
+      outfit.equip($item`pro skateboard`);
+    }
     super.dress(task, outfit);
     if (itemAmount($item`tiny stillsuit`) > 0) {
       equip($familiar`Cornbeefadon`, $item`tiny stillsuit`);

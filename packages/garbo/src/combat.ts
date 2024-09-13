@@ -740,7 +740,9 @@ export class Macro extends StrictMacro {
 
   tryDrone(): Macro {
     return this.externalIf(
-      gooseDroneEligible() && get("gooseDronesRemaining") < copyTargetCount(),
+      myFamiliar() === $familiar`Grey Goose` &&
+        gooseDroneEligible() &&
+        get("gooseDronesRemaining") < copyTargetCount(),
       Macro.if_(
         globalOptions.target,
         Macro.trySkill($skill`Emit Matter Duplicating Drones`),
@@ -833,6 +835,20 @@ export class Macro extends StrictMacro {
 
   static target(action: string): Macro {
     return new Macro().target(action);
+  }
+
+  duplicate(): Macro {
+    return this.externalIf(
+      haveEquipped($item`pro skateboard`) && !get("_epicMcTwistUsed"),
+      Macro.trySkill($skill`Do an epic McTwist!`),
+    ).externalIf(
+      SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0,
+      Macro.trySkill($skill`Duplicate`),
+    );
+  }
+
+  static duplicate(): Macro {
+    return new Macro().duplicate();
   }
 }
 

@@ -1,4 +1,4 @@
-import { Familiar, familiarWeight, Item } from "kolmafia";
+import { Familiar, Item } from "kolmafia";
 import {
   $familiar,
   $item,
@@ -7,6 +7,7 @@ import {
   findLeprechaunMultiplier,
   get,
   have,
+  totalFamiliarWeight,
 } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GeneralFamiliar } from "./lib";
@@ -178,7 +179,7 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
     expected: (i) => 3 * Math.pow(20, i),
     drop: $item`map to a candy-rich block`,
     additionalValue: () =>
-      (6 + 4 * familiarWeight($familiar`Jill-of-All-Trades`)) * 0.33,
+      (6 + 4 * totalFamiliarWeight($familiar`Jill-of-All-Trades`)) * 0.33,
   },
   {
     familiar: $familiar`Rockin' Robin`,

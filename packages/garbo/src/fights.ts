@@ -14,7 +14,6 @@ import {
   Familiar,
   familiarEquippedEquipment,
   getAutoAttack,
-  getCampground,
   getWorkshed,
   haveEquipped,
   haveOutfit,
@@ -93,11 +92,11 @@ import {
   FloristFriar,
   gameDay,
   get,
-  getFoldGroup,
   GingerBread,
   have,
   Latte,
   maxBy,
+  PocketProfessor,
   property,
   realmAvailable,
   Requirement,
@@ -125,7 +124,6 @@ import {
   bestMidnightAvailable,
   crateStrategy,
   doingGregFight,
-  faxMonster,
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
@@ -136,7 +134,6 @@ import {
   bestFairy,
   freeFightFamiliar,
   meatFamiliar,
-  pocketProfessorLectures,
   setBestLeprechaunAsMeatFamiliar,
 } from "./familiar";
 import {
@@ -305,52 +302,6 @@ function meatTargetSetup() {
     retrieveItem($item`LOV Enamorang`);
   }
 
-  // Fix invalid copiers (caused by ascending or combat text-effects)
-  if (have($item`Spooky Putty monster`) && !get("spookyPuttyMonster")) {
-    // Visit the description to update the monster as it may be valid but not tracked correctly
-    visitUrl(
-      `desc_item.php?whichitem=${$item`Spooky Putty monster`.descid}`,
-      false,
-      false,
-    );
-    if (!get("spookyPuttyMonster")) {
-      // Still invalid, use it to turn back into the spooky putty sheet
-      use($item`Spooky Putty monster`);
-    }
-  }
-
-  if (have($item`Rain-Doh box full of monster`) && !get("rainDohMonster")) {
-    visitUrl(
-      `desc_item.php?whichitem=${$item`Rain-Doh box full of monster`.descid}`,
-      false,
-      false,
-    );
-  }
-
-  if (have($item`shaking 4-d camera`) && !get("cameraMonster")) {
-    visitUrl(
-      `desc_item.php?whichitem=${$item`shaking 4-d camera`.descid}`,
-      false,
-      false,
-    );
-  }
-
-  if (have($item`envyfish egg`) && !get("envyfishMonster")) {
-    visitUrl(
-      `desc_item.php?whichitem=${$item`envyfish egg`.descid}`,
-      false,
-      false,
-    );
-  }
-
-  if (have($item`ice sculpture`) && !get("iceSculptureMonster")) {
-    visitUrl(
-      `desc_item.php?whichitem=${$item`ice sculpture`.descid}`,
-      false,
-      false,
-    );
-  }
-
   if (doingGregFight()) {
     initializeExtrovermectinZones();
   }
@@ -461,13 +412,6 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
 export function dailyFights(): void {
   if (myInebriety() > inebrietyLimit()) return;
 
-  if (getFoldGroup($item`Spooky Putty sheet`).some((item) => have(item))) {
-    cliExecute("fold spooky putty sheet");
-  }
-
-  // Fax the copy target before starting, to prevent an abort in case the faxbot networks are down
-  faxMonster(globalOptions.target);
-
   if (copyTargetSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
       // check if user wants to wish for the copy target before doing setup
@@ -533,7 +477,10 @@ export function dailyFights(): void {
 
           goalMaximize({ ...profSpec, ...fightSource.spec });
 
-          if (get("_pocketProfessorLectures") < pocketProfessorLectures()) {
+          if (
+            get("_pocketProfessorLectures") <
+            PocketProfessor.totalAvailableLectures()
+          ) {
             const startLectures = get("_pocketProfessorLectures");
             runTargetFight(fightSource, {
               macro: macro(),
@@ -1108,75 +1055,6 @@ const freeFightSources = [
     },
     true,
     pygmyOptions(),
-  ),
-
-  // Mushroom garden
-  new FreeFight(
-    () =>
-      (have($item`packet of mushroom spores`) ||
-        getCampground()["packet of mushroom spores"] !== undefined) &&
-      get("_mushroomGardenFights") === 0,
-    () => {
-      if (have($item`packet of mushroom spores`)) {
-        use($item`packet of mushroom spores`);
-      }
-      if (SourceTerminal.have()) {
-        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
-      }
-      garboAdventure(
-        $location`Your Mushroom Garden`,
-        Macro.externalIf(
-          !doingGregFight(),
-          Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
-        ).basicCombat(),
-      );
-      if (have($item`packet of tall grass seeds`)) {
-        use($item`packet of tall grass seeds`);
-      }
-    },
-    true,
-    {
-      spec: () =>
-        have($familiar`Robortender`)
-          ? { familiar: $familiar`Robortender` }
-          : {},
-    },
-  ),
-
-  // Portscan and mushroom garden
-  new FreeFight(
-    () =>
-      !doingGregFight() &&
-      (have($item`packet of mushroom spores`) ||
-        getCampground()["packet of mushroom spores"] !== undefined) &&
-      Counter.get("portscan.edu") === 0 &&
-      have($skill`Macrometeorite`) &&
-      get("_macrometeoriteUses") < 10,
-    () => {
-      if (have($item`packet of mushroom spores`)) {
-        use($item`packet of mushroom spores`);
-      }
-      if (SourceTerminal.have()) {
-        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
-      }
-      garboAdventure(
-        $location`Your Mushroom Garden`,
-        Macro.if_(
-          $monster`Government agent`,
-          Macro.skill($skill`Macrometeorite`),
-        ).if_(
-          $monster`piranha plant`,
-          Macro.if_(
-            $skill`Macrometeorite`,
-            Macro.trySkill($skill`Portscan`),
-          ).basicCombat(),
-        ),
-      );
-      if (have($item`packet of tall grass seeds`)) {
-        use($item`packet of tall grass seeds`);
-      }
-    },
-    true,
   ),
   new FreeFight(
     () =>
