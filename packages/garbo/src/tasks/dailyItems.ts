@@ -202,7 +202,6 @@ const DailyItemTasks: GarboTask[] = [
   },
   {
     name: "Sept-Ember",
-    // eslint-disable-next-line libram/verify-constants
     ready: () => have($item`Sept-Ember Censer`) && globalOptions.ascend,
     completed: () =>
       get("availableSeptEmbers", 0) === 0 && get("_septEmbersCollected", true),
