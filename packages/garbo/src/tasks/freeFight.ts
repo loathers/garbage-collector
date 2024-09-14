@@ -134,7 +134,10 @@ function litLeafMacro(monster: Monster): Macro {
         globalOptions.prefs.valueOfFreeFight,
     Macro.if_(
       monster,
-      Macro.tryItem([$item`lit leaf lasso`, $item`lit leaf lasso`]),
+      Macro.externalIf(
+        equippedAmount($item`tearaway pants`) > 0,
+        Macro.trySkill($skill`Tear Away your Pants!`),
+      ).tryItem([$item`lit leaf lasso`, $item`lit leaf lasso`]),
     ),
   ).basicCombat();
 }
@@ -757,6 +760,17 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     tentacle: true,
     combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
+    outfit: freeFightOutfit(
+      {
+        bonuses: new Map<Item, number>([
+          [
+            $item`tearaway pants`,
+            get("valueOfAdventure") * TearawayPants.plantsAdventureChance(),
+          ],
+        ]),
+      },
+      { canChooseMacro: false, allowAttackFamiliars: false },
+    ),
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   },
   {
@@ -776,6 +790,17 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     tentacle: true,
     combatCount: () => (get("_tiedUpFlamingLeafletFought") ? 0 : 1),
+    outfit: freeFightOutfit(
+      {
+        bonuses: new Map<Item, number>([
+          [
+            $item`tearaway pants`,
+            get("valueOfAdventure") * TearawayPants.plantsAdventureChance(),
+          ],
+        ]),
+      },
+      { canChooseMacro: false, allowAttackFamiliars: false },
+    ),
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   },
   {
@@ -795,6 +820,17 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     tentacle: true,
     combatCount: () => (get("_tiedUpFlamingMonsteraFought") ? 0 : 1),
+    outfit: freeFightOutfit(
+      {
+        bonuses: new Map<Item, number>([
+          [
+            $item`tearaway pants`,
+            get("valueOfAdventure") * TearawayPants.plantsAdventureChance(),
+          ],
+        ]),
+      },
+      { canChooseMacro: false, allowAttackFamiliars: false },
+    ),
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming monstera`)),
   },
   // tied-up leaviathan (scaling, has 100 damage source cap and 2500 hp)
