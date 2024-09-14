@@ -203,7 +203,7 @@ const DailyItemTasks: GarboTask[] = [
   {
     name: "Check Sept-Ember",
     ready: () => have($item`Sept-Ember Censer`),
-    completed: () => get("_septEmbersCollected", true),
+    completed: () => get("_septEmbersCollected", false),
     do: (): void => {
       visitUrl("shop.php?whichshop=september");
       set("_septEmbersCollected", true);
