@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "format": "eslint src --fix && prettier --write .",
+    "check": "tsc",
     "lint": "eslint src && prettier --check .",
     "madge": "madge --circular . ./src/index.ts",
     "pre-commit": "lint-staged",
