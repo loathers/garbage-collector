@@ -25,6 +25,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: yarn
       - run: yarn install --immutable --immutable-cache
+      - run: yarn workspace garbo-lib build
       - run: yarn check
       #- run: yarn run test TODO: Readd once we have tests
 
