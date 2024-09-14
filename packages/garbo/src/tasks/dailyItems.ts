@@ -220,23 +220,16 @@ const DailyItemTasks: GarboTask[] = [
         .map((item) => ({
           item,
           cost: coinmasterPrice(item),
-          value: garboValue(item),
+          value: garboValue(item) / coinmasterPrice(item),
         }));
 
       while (get("availableSeptEmbers", 0) > 0) {
         itemsWithCosts = itemsWithCosts.filter(
           ({ cost }) => cost <= get("availableSeptEmbers", 0),
         );
-        const bestItem = maxBy(
-          itemsWithCosts,
-          ({ value, cost }) => value / cost,
-        );
+        const bestItem = () => maxBy(itemsWithCosts, "value");
 
-        buy(
-          $coinmaster`Sept-Ember Censer`,
-          Math.round(get("availableSeptEmbers", 0) / bestItem.cost),
-          bestItem.item,
-        );
+        buy($coinmaster`Sept-Ember Censer`, 1, bestItem().item);
       }
     },
     spendsTurn: false,
