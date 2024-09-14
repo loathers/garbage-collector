@@ -257,8 +257,8 @@ export function optimizeForFishy(
         ? (have($effect`Lucky!`)
             ? 0
             : shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
-            ? 0
-            : Infinity) +
+              ? 0
+              : Infinity) +
           get("valueOfAdventure") +
           bestWaterBreathingEquipment.cost +
           fishyCloverAdventureOpportunityCost(haveFishyPipe)

@@ -5,9 +5,11 @@ import {
   canAdventure,
   canEquip,
   changeMcd,
+  getCampground,
   gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
+  haveEquipped,
   inebrietyLimit,
   Item,
   itemAmount,
@@ -44,12 +46,16 @@ import {
   ChateauMantegna,
   clamp,
   CombatLoversLocket,
+  Counter,
   Delayed,
   ensureEffect,
   get,
   have,
   maxBy,
+  set,
+  SourceTerminal,
   sum,
+  TearawayPants,
   TunnelOfLove,
   undelay,
   uneffect,
@@ -61,8 +67,8 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
-import { doCandyTrick, shouldAugustCast } from "../resources";
-import { kramcoGuaranteed } from "../lib";
+import { doCandyTrick, doingGregFight, shouldAugustCast } from "../resources";
+import { isFreeAndCopyable, kramcoGuaranteed, valueDrops } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
@@ -94,12 +100,8 @@ function bestWitchessPiece() {
   );
 }
 
-const isFree = (monster: Monster) => monster.attributes.includes("FREE");
-const valueDrops = (monster: Monster) =>
-  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
-    !["c", "0", "p"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
-  );
-const locketMonster = () => CombatLoversLocket.findMonster(isFree, valueDrops);
+const locketMonster = () =>
+  CombatLoversLocket.findMonster(isFreeAndCopyable, valueDrops);
 const locketsToSave = () =>
   CombatLoversLocket.availableLocketMonsters().includes(globalOptions.target)
     ? 1
@@ -114,6 +116,45 @@ function sealsAvailable(): number {
     ? Infinity
     : Math.floor(availableAmount($item`seal-blubber candle`) / 3);
   return Math.min(max, available);
+}
+
+const tearawayPantsFreeFightOutfit = () =>
+  freeFightOutfit(
+    {
+      bonuses: new Map<Item, number>([
+        [
+          $item`tearaway pants`,
+          get("valueOfAdventure") * TearawayPants.plantsAdventureChance(),
+        ],
+      ]),
+    },
+    { canChooseMacro: false, allowAttackFamiliars: false },
+  );
+
+function litLeafMacro(monster: Monster): Macro {
+  const tiedUpItem = new Map<Monster, Item>([
+    [$monster`flaming leaflet`, $item`tied-up flaming leaflet`],
+    [$monster`flaming monstera`, $item`tied-up flaming monstera`],
+    [$monster`leaviathan`, $item`tied-up leaviathan`],
+  ]).get(monster);
+
+  // Only convert lassos if we can funksling as the combat counts as a free loss
+  return Macro.externalIf(
+    haveEquipped($item`tearaway pants`),
+    Macro.if_(monster, Macro.trySkill($skill`Tear Away your Pants!`)),
+  )
+    .externalIf(
+      tiedUpItem !== undefined &&
+        itemAmount($item`lit leaf lasso`) >= 2 &&
+        have($skill`Ambidextrous Funkslinging`) &&
+        (garboValue(tiedUpItem) - mallPrice($item`lit leaf lasso`)) * 2 >=
+          globalOptions.prefs.valueOfFreeFight,
+      Macro.if_(
+        monster,
+        Macro.tryItem([$item`lit leaf lasso`, $item`lit leaf lasso`]),
+      ),
+    )
+    .basicCombat();
 }
 
 const stunDurations = new Map<Skill | Item, Delayed<number>>([
@@ -473,8 +514,81 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     ),
     tentacle: true,
   },
-  // mushroom garden
-  // portscan
+  {
+    name: "Mushroom garden",
+    ready: () =>
+      have($item`packet of mushroom spores`) ||
+      getCampground()["packet of mushroom spores"] !== undefined,
+    completed: () => get("_mushroomGardenFights") > 0,
+    prepare: () => {
+      if (have($item`packet of mushroom spores`)) {
+        use($item`packet of mushroom spores`);
+      }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: () => $location`Your Mushroom Garden`,
+    post: () => {
+      if (have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
+      }
+    },
+    outfit: tearawayPantsFreeFightOutfit,
+    combat: new GarboStrategy(() =>
+      Macro.externalIf(
+        !doingGregFight(),
+        Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
+      )
+        .externalIf(
+          haveEquipped($item`tearaway pants`),
+          Macro.trySkill($skill`Tear Away your Pants!`),
+        )
+        .basicCombat(),
+    ),
+    combatCount: () => clamp(1 - get("_mushroomGardenFights"), 0, 1),
+    tentacle: true,
+  },
+  {
+    name: "Portscan + Macrometeorite + Mushroom garden",
+    ready: () =>
+      (have($item`packet of mushroom spores`) ||
+        getCampground()["packet of mushroom spores"] !== undefined) &&
+      !doingGregFight() &&
+      Counter.get("portscan.edu") === 0 &&
+      have($skill`Macrometeorite`) &&
+      get("_macrometeoriteUses") < 10,
+    completed: () => get("_mushroomGardenFights") > 0,
+    prepare: () => {
+      if (have($item`packet of mushroom spores`)) {
+        use($item`packet of mushroom spores`);
+      }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: () => $location`Your Mushroom Garden`,
+    post: () => {
+      if (have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
+      }
+    },
+    outfit: tearawayPantsFreeFightOutfit,
+    combat: new GarboStrategy(() =>
+      Macro.if_($monster`Government agent`, Macro.skill($skill`Macrometeorite`))
+        .if_(
+          $monster`piranha plant`,
+          Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
+        )
+        .externalIf(
+          haveEquipped($item`tearaway pants`),
+          Macro.trySkill($skill`Tear Away your Pants!`),
+        )
+        .basicCombat(),
+    ),
+    combatCount: () => clamp(10 - get("_macrometeoriteUses"), 0, 10),
+    tentacle: true,
+  },
   {
     name: "God Lobster",
     ready: () => have($familiar`God Lobster`),
@@ -576,7 +690,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   {
     name: "Witchess",
     ready: () => Witchess.have(),
-    completed: () => Witchess.fightsDone() >= 5,
+    completed: () =>
+      Witchess.fightsDone() >= 5 ||
+      Witchess.pieces.includes(globalOptions.target),
     do: () => Witchess.fightPiece(bestWitchessPiece()),
     tentacle: true,
     combatCount: () => clamp(5 - Witchess.fightsDone(), 0, 5),
@@ -627,10 +743,60 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       BurningLeaves.numberOfLeaves() >=
         (BurningLeaves.burnFor.get($monster`flaming leaflet`) ?? Infinity),
     completed: () => get("_leafMonstersFought") >= 5,
-    do: () => BurningLeaves.burnSpecialLeaves($monster`flaming leaflet`),
+    do: () => {
+      const lassoCount = itemAmount($item`lit leaf lasso`);
+      const result = BurningLeaves.burnSpecialLeaves($monster`flaming leaflet`);
+      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
+        set("_lastCombatLost", "false");
+      }
+      return result;
+    },
     tentacle: true,
     combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
+    outfit: tearawayPantsFreeFightOutfit,
+    combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   },
+  {
+    name: $item`tied-up flaming leaflet`.name,
+    ready: () =>
+      mallPrice($item`tied-up flaming leaflet`) <=
+      globalOptions.prefs.valueOfFreeFight,
+    completed: () => get("_tiedUpFlamingLeafletFought"),
+    acquire: () => [{ item: $item`tied-up flaming leaflet` }],
+    do: () => {
+      const lassoCount = itemAmount($item`lit leaf lasso`);
+      const result = use($item`tied-up flaming leaflet`);
+      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
+        set("_lastCombatLost", "false");
+      }
+      return result;
+    },
+    tentacle: true,
+    combatCount: () => (get("_tiedUpFlamingLeafletFought") ? 0 : 1),
+    outfit: tearawayPantsFreeFightOutfit,
+    combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
+  },
+  {
+    name: $item`tied-up flaming monstera`.name,
+    ready: () =>
+      mallPrice($item`tied-up flaming monstera`) <=
+      globalOptions.prefs.valueOfFreeFight,
+    completed: () => get("_tiedUpFlamingMonsteraFought"),
+    acquire: () => [{ item: $item`tied-up flaming monstera` }],
+    do: () => {
+      const lassoCount = itemAmount($item`lit leaf lasso`);
+      const result = use($item`tied-up flaming monstera`);
+      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
+        set("_lastCombatLost", "false");
+      }
+      return result;
+    },
+    tentacle: true,
+    combatCount: () => (get("_tiedUpFlamingMonsteraFought") ? 0 : 1),
+    outfit: tearawayPantsFreeFightOutfit,
+    combat: new GarboStrategy(() => litLeafMacro($monster`flaming monstera`)),
+  },
+  // tied-up leaviathan (scaling, has 100 damage source cap and 2500 hp)
   // li'l ninja costume
   // closed-circuit pay phone (make into it's own Quest)
 ].map(freeFightTask);

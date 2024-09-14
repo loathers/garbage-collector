@@ -2,7 +2,6 @@ import {
   cliExecute,
   equippedItem,
   Familiar,
-  familiarWeight,
   Item,
   myFamiliar,
   numericModifier,
@@ -23,14 +22,15 @@ import {
   getModifier,
   maxBy,
   sum,
+  totalFamiliarWeight,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
 import {
   baseMeat,
   BonusEquipMode,
-  EMBEZZLER_MULTIPLIER,
   HIGHLIGHT,
+  MEAT_TARGET_MULTIPLIER,
 } from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
@@ -42,7 +42,7 @@ import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
 
 const ITEM_DROP_VALUE = 0.72;
-const MEAT_DROP_VALUE = baseMeat / 100;
+const MEAT_DROP_VALUE = baseMeat() / 100;
 
 type CachedOutfit = {
   weight: number;
@@ -63,7 +63,7 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
     $familiar`Chest Mimic`,
     {
       extraValue: ({ famexp }) =>
-        (famexp * EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")) / 50,
+        (famexp * MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
     },
   ],
   [$familiar`Jill-of-All-Trades`, { equip: $item`LED candle` }],
@@ -71,7 +71,11 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
     $familiar`Mini Kiwi`,
     {
       extraValue: ({ weight }) =>
-        clamp(weight * 0.005, 0, 1) * garboValue($item`mini kiwi`),
+        clamp(
+          (weight + totalFamiliarWeight($familiar`Mini Kiwi`, false)) * 0.005,
+          0,
+          1,
+        ) * garboValue($item`mini kiwi`),
     },
   ],
 ]);
@@ -95,7 +99,7 @@ function getCachedOutfitValues(fam: Familiar) {
     ).dress();
 
     const outfit = outfitSlots.map((slot) => equippedItem(slot));
-    const bonuses = bonusGear(BonusEquipMode.EMBEZZLER, false);
+    const bonuses = bonusGear(BonusEquipMode.MEAT_TARGET, false);
 
     const values = {
       weight: sum(outfit, (eq: Item) => getModifier("Familiar Weight", eq)),
@@ -129,7 +133,9 @@ function familiarModifier(
 ): number {
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
   const totalWeight =
-    familiarWeight(familiar) + nonOutfitWeightBonus() + cachedOutfitWeight;
+    totalFamiliarWeight(familiar, false) +
+    nonOutfitWeightBonus() +
+    cachedOutfitWeight;
   const { equip } = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {};
 
   return equip

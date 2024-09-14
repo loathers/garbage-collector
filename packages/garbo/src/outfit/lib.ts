@@ -30,9 +30,9 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
+import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
-import { baseMeat } from "../lib";
+import { targetMeat } from "../lib";
 import { digitizedMonstersRemaining } from "../turns";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
@@ -92,12 +92,12 @@ const UPC = $item`scratch 'n' sniff UPC sticker`;
 export function useUPCsIfNeeded({ familiar }: Outfit): void {
   const currentWeapon =
     25 * (familiar ? findLeprechaunMultiplier(familiar) : 0);
-  const embezzlers = globalOptions.ascend
+  const targets = globalOptions.ascend
     ? Math.min(20, copyTargetCount() || digitizedMonstersRemaining())
     : 20;
 
   const addedValueOfFullSword =
-    (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
+    (targets * ((75 - currentWeapon) * targetMeat())) / 100;
   if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
     const needed =
       3 -
@@ -139,6 +139,8 @@ export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {
     cachedUsingPurse =
       myInebriety() <= inebrietyLimit() &&
+      !have($item`KoL Con 13 snowglobe`) &&
+      !have($item`can of mixed everything`) &&
       (!have($item`latte lovers member's mug`) ||
         (!have($familiar`Robortender`) && !have($familiar`Hobo Monkey`)) ||
         !canAdventure($location`The Black Forest`));

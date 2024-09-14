@@ -7,7 +7,7 @@ import { estimatedGarboTurns } from "./turns";
 import { $item, $location, $monsters, get, have } from "libram";
 import { garboValue } from "./garboValue";
 import { Potion } from "./potions";
-import { copyTargetCount } from "./embezzler/fights";
+import { copyTargetCount } from "./target/fights";
 import { digitizedMonstersRemainingForTurns } from "./lib";
 
 let _wanderer: WandererManager | undefined;

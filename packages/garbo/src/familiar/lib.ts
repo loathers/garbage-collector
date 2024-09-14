@@ -1,12 +1,10 @@
 import {
   availableAmount,
   Familiar,
-  familiarWeight,
   inebrietyLimit,
   myAdventures,
   myInebriety,
   totalTurnsPlayed,
-  weightAdjustment,
 } from "kolmafia";
 import {
   $effect,
@@ -56,7 +54,7 @@ export function timeToMeatify(): boolean {
     have($item`cursed magnifying glass`) &&
     get("_voidFreeFights") < 5 &&
     globalOptions.prefs.valueOfFreeFight / 13 >
-      baseMeat * (usingLatte ? 0.75 : 0.6)
+      baseMeat() * (usingLatte ? 0.75 : 0.6)
       ? -get("cursedMagnifyingGlassCount") % 13
       : Infinity;
 
@@ -83,17 +81,6 @@ export function timeToMeatify(): boolean {
   else if (freeFightNow || $familiar`Grey Goose`.experience >= 121) return true;
 
   return false;
-}
-
-export function pocketProfessorLectures(): number {
-  return (
-    2 +
-    Math.ceil(
-      Math.sqrt(
-        familiarWeight($familiar`Pocket Professor`) + weightAdjustment(),
-      ),
-    )
-  );
 }
 
 export function canOpenRedPresent(): boolean {

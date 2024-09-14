@@ -857,7 +857,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     (borisBreads > 0 ? yachtzeeTurns * 1000 : 0) +
     (greedyDogs > 0 ? yachtzeeTurns * 2000 : 0);
 
-  // We assume that the embezzlers after yachtzee chaining would still benefit from our start-of-day buffs
+  // We assume that the targets after yachtzee chaining would still benefit from our start-of-day buffs
   // so the assumption is that all the gregged embezzlies can be approximated as marginal KGEs with profits of 3 * VOA
   const extroValuePerSpleen = 6 * VOA - extroPrice / 2;
   const jellyValuePerSpleen =

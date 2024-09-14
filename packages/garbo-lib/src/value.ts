@@ -58,6 +58,7 @@ export function makeValue(
       $item`Wal-Mart gift certificate`,
       currency($item`one-day ticket to The Glaciest`),
     ],
+    [$item`cop dollar`, currency($item`shoe gum`)],
     [$item`Rubee™`, currency($item`FantasyRealm guest pass`)],
     [$item`Guzzlrbuck`, currency($item`Never Don't Stop Not Striving`)],
     ...complexCandy(),
@@ -198,6 +199,13 @@ export function makeValue(
       ),
     ],
     [$item`inflammable leaf`, inflammableLeafCurrency()],
+    [
+      $item`crystalline cheer`,
+      currency(
+        ...$items`stale cheer wine, stale Cheer-E-Os, Cheer-Up soda, cheer-o-gram, cheerful antler hat, cheerful Crimbo sweater, cheerful pajama pants`,
+        // ignore the science volumes because some accounts can't acquire them
+      ),
+    ],
     ...inputValues,
   ]);
 

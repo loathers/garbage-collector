@@ -43,13 +43,14 @@ import {
   have,
   maxBy,
   questStep,
+  set,
   SourceTerminal,
   sum,
   withChoice,
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
+import { copyTargetCount } from "../target";
 import { aprilFoolsRufus, coinmasterPrice } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -59,6 +60,7 @@ import {
   candyMapDailyTasks,
   doingGregFight,
   getBestAprilInstruments,
+  mayamCalendarSummon,
 } from "../resources";
 import { meatFamiliar } from "../familiar";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
@@ -150,7 +152,7 @@ const SummonTasks: GarboTask[] = [
   ...SummonTomes.map(
     (skill) =>
       <GarboTask>{
-        name: `{skill}`,
+        name: `${skill}`,
         ready: () => have(skill),
         completed: () => skill.dailylimit === 0,
         do: () => useSkill(skill, skill.dailylimit),
@@ -195,6 +197,40 @@ const DailyItemTasks: GarboTask[] = [
         get("availableMrStore2002Credits", 0),
         bestItem,
       );
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Check Sept-Ember",
+    ready: () => have($item`Sept-Ember Censer`),
+    completed: () => get("_septEmbersCollected", false),
+    do: (): void => {
+      visitUrl("shop.php?whichshop=september");
+      set("_septEmbersCollected", true);
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Spend Sept-Ember Embers",
+    ready: () => have($item`Sept-Ember Censer`) && globalOptions.ascend,
+    completed: () => get("availableSeptEmbers", 0) === 0,
+    do: (): void => {
+      let itemsWithCosts = Item.all()
+        .filter((i) => sellsItem($coinmaster`Sept-Ember Censer`, i))
+        .map((item) => ({
+          item,
+          cost: coinmasterPrice(item),
+          value: garboValue(item) / coinmasterPrice(item),
+        }));
+
+      while (get("availableSeptEmbers", 0) > 0) {
+        itemsWithCosts = itemsWithCosts.filter(
+          ({ cost }) => cost <= get("availableSeptEmbers", 0),
+        );
+        const bestItem = () => maxBy(itemsWithCosts, "value");
+
+        buy($coinmaster`Sept-Ember Censer`, 1, bestItem().item);
+      }
     },
     spendsTurn: false,
   },
@@ -485,7 +521,7 @@ const DailyItemTasks: GarboTask[] = [
       const price = rufusPotion.price(false);
       _shouldClearRufusQuest = value.some(
         (value) =>
-          (!globalOptions.nobarf || value.name === "embezzler") &&
+          (!globalOptions.nobarf || value.name === "target") &&
           value.value - price > 0,
       );
       if (_shouldClearRufusQuest) {
@@ -607,6 +643,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
     spendsTurn: false,
   },
+  mayamCalendarSummon,
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {

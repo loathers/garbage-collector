@@ -1,6 +1,16 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
-import { $item, $items, $monster, get } from "libram";
+import {
+  $item,
+  $items,
+  $monster,
+  $monsters,
+  $skills,
+  get,
+  have,
+  maxBy,
+} from "libram";
+import { isFreeAndCopyable, valueDrops } from "./lib";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -63,6 +73,16 @@ function stringToWorkshedItem(s: string): Item | null {
   return validWorksheds[0].item;
 }
 
+function defaultTarget() {
+  if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
+    return maxBy(
+      $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
+      valueDrops,
+    );
+  }
+  return $monster`Knob Goblin Elite Guard Captain`;
+}
+
 export const globalOptions = Args.create(
   "garbo",
   'This script is an automated turn-burning script for the Kingdom of Loathing that spends a day\'s resources and adventures on farming\n\
@@ -80,7 +100,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     }),
     nobarf: Args.flag({
       setting: "",
-      help: "do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
+      help: "do beginning of the day setup, copy target monster, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
       default: false,
     }),
     nodiet: Args.flag({
@@ -121,7 +141,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     target: Args.monster({
       setting: "",
       help: "The monster to use all copies on",
-      default: $monster`Knob Goblin Embezzler`,
+      default: defaultTarget(),
       hidden: true,
     }),
     version: Args.flag({
@@ -173,10 +193,10 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           default: false,
           hidden: true,
         }),
-        embezzlerMultiplier: Args.number({
-          setting: "garbo_embezzlerMultiplier",
-          help: "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit. (Default 2.5)",
-          default: 2.5,
+        meatTargetMultiplier: Args.number({
+          setting: "garbo_meatTargetMultiplier",
+          help: "The amount we multiply our valueOfAdventure by when estimating marginal meat target profit. (Default 1.5)",
+          default: 1.5,
         }),
         stashClan: Args.string({
           setting: "garbo_stashClan",
@@ -204,9 +224,9 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_autoUserConfirm",
           help: "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive.",
         }),
-        autoUserConfirm_embezzlerInvocationsThreshold: Args.number({
-          setting: "garbo_autoUserConfirm_embezzlerInvocationsThreshold",
-          help: "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source an embezzler for chaining before requesting user interference.",
+        autoUserConfirm_targetInvocationsThreshold: Args.number({
+          setting: "garbo_autoUserConfirm_targetInvocationsThreshold",
+          help: "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source a target monster for chaining before requesting user interference.",
           default: 1,
         }),
         restoreHpTarget: Args.number({

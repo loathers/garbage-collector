@@ -220,7 +220,7 @@ export function saberCrateIfSafe(): void {
       $location`Noob Cave`,
       Macro.if_(crate, Macro.skill($skill`Use the Force`))
         .if_($monster`sausage goblin`, Macro.kill())
-        .ifHolidayWanderer(run.macro)
+        .ifInnateWanderer(Macro.step(run.macro))
         .abort(),
     );
   } while (lastAdventureWasWeird());
@@ -303,7 +303,9 @@ function initializeCrates(): void {
         .maximize();
       garboAdventure(
         $location`Noob Cave`,
-        Macro.if_(crate, sniffrun).ifHolidayWanderer(run.macro).abort(),
+        Macro.if_(crate, sniffrun)
+          .ifInnateWanderer(Macro.step(run.macro))
+          .abort(),
       );
       visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
 
@@ -505,13 +507,13 @@ function banishBunny(): void {
   const banish = usingIceHouseBanish
     ? iceHouseBanish
     : getUsingFreeBunnyBanish()
-    ? freeBunnyBanish
-    : maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
+      ? freeBunnyBanish
+      : maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
   do {
     banish.prepare?.();
     garboAdventure(
       $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, banish.macro()).embezzler(
+      Macro.if_($monster`fluffy bunny`, banish.macro()).target(
         "fluffy bunny banish",
       ),
     );

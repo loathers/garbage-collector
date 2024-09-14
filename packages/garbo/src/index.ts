@@ -41,12 +41,14 @@ import {
   Clan,
   examine,
   get,
+  getCombatFlags,
   getFoldGroup,
   have,
   haveInCampground,
   JuneCleaver,
   maxBy,
   set,
+  setCombatFlags,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
 } from "libram";
@@ -59,14 +61,12 @@ import {
   allMallPrices,
   bestJuneCleaverOption,
   checkGithubVersion,
-  getCombatFlags,
   HIGHLIGHT,
   printEventLog,
   printLog,
   propertyManager,
   questStep,
   safeRestore,
-  setCombatFlags,
   userConfirmDialog,
 } from "./lib";
 import { meatMood, useBuffExtenders } from "./mood";
@@ -79,7 +79,7 @@ import {
   BarfTurnQuests,
   PostQuest,
   runGarboQuests,
-  SetupEmbezzlerQuest,
+  SetupTargetCopyQuest,
 } from "./tasks";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -249,6 +249,7 @@ export function main(argString = ""): void {
     throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
   }
   if (
+    !globalOptions.nobarf &&
     globalOptions.prefs.valueOfAdventure &&
     globalOptions.prefs.valueOfAdventure >= 10000
   ) {
@@ -319,7 +320,7 @@ export function main(argString = ""): void {
     }
   }
 
-  const combatFlags = getCombatFlags("aabosses", "bothcombatinterf");
+  const combatFlags = getCombatFlags(["aabosses", "bothcombatinterf"]);
 
   try {
     print("Collecting garbage!", HIGHLIGHT);
@@ -341,7 +342,7 @@ export function main(argString = ""): void {
 
     setAutoAttack(0);
     setCombatFlags(
-      { flag: "aaBossFlag", value: true },
+      { flag: "aabosses", value: true },
       { flag: "bothcombatinterf", value: false },
     );
 
@@ -376,9 +377,9 @@ export function main(argString = ""): void {
           "libram_savedMacro",
           "maximizerMRUList",
           "testudinalTeachings",
-          "garboEmbezzlerDate",
-          "garboEmbezzlerCount",
-          "garboEmbezzlerSources",
+          "garboTargetDate",
+          "garboTargetCount",
+          "garboTargetSources",
           "spadingData",
         ]),
       ]
@@ -532,9 +533,9 @@ export function main(argString = ""): void {
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
-        // 2. do some embezzler stuff
+        // 2. do some target copy stuff
         freeFights();
-        runGarboQuests([SetupEmbezzlerQuest]);
+        runGarboQuests([SetupTargetCopyQuest]);
         yachtzeeChain();
         dailyFights();
 

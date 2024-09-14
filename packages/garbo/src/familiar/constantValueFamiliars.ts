@@ -1,4 +1,4 @@
-import { Familiar, familiarWeight, holiday, weightAdjustment } from "kolmafia";
+import { Familiar, holiday } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -9,6 +9,7 @@ import {
   getModifier,
   have,
   Robortender,
+  totalFamiliarWeight,
 } from "libram";
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -31,9 +32,9 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: (mode) =>
       garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6 -
       // We can't equip an amulet coin if we equip the bag of many confections
-      (mode === "barf" ? (bestAlternative * baseMeat) / 100 : 0) +
+      (mode === "barf" ? (bestAlternative * baseMeat()) / 100 : 0) +
       (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
-        (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
+        totalFamiliarWeight($familiar`Stocking Mimic`),
   },
   {
     familiar: $familiar`Shorter-Order Cook`,
@@ -70,7 +71,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     // This is the value of getting a pirate costume over getting an amulet coin or whatever
     value: (mode) =>
       have($item`li'l pirate costume`) && mode === "barf"
-        ? (baseMeat * (300 - bestAlternative)) / 100
+        ? (baseMeat() * (300 - bestAlternative)) / 100
         : 0,
   },
   {
@@ -94,11 +95,8 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: (mode) =>
       mode === "barf"
         ? 0 // Handled in outfit caching code
-        : clamp(
-            (familiarWeight($familiar`Mini Kiwi`) + weightAdjustment()) * 0.005,
-            0,
-            1,
-          ) * garboValue($item`mini kiwi`), // faster with aviator goggles
+        : clamp(totalFamiliarWeight($familiar`Mini Kiwi`) * 0.005, 0, 1) *
+          garboValue($item`mini kiwi`), // faster with aviator goggles
   },
 ];
 
