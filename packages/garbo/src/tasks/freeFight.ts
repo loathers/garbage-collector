@@ -5,11 +5,11 @@ import {
   canAdventure,
   canEquip,
   changeMcd,
-  equippedAmount,
   getCampground,
   gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
+  haveEquipped,
   inebrietyLimit,
   Item,
   itemAmount,
@@ -140,7 +140,7 @@ function litLeafMacro(monster: Monster): Macro {
 
   // Only convert lassos if we can funksling as the combat counts as a free loss
   return Macro.externalIf(
-    equippedAmount($item`tearaway pants`) > 0,
+    haveEquipped($item`tearaway pants`),
     Macro.if_(monster, Macro.trySkill($skill`Tear Away your Pants!`)),
   )
     .externalIf(
@@ -541,7 +541,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
       )
         .externalIf(
-          equippedAmount($item`tearaway pants`) > 0,
+          haveEquipped($item`tearaway pants`),
           Macro.trySkill($skill`Tear Away your Pants!`),
         )
         .basicCombat(),
@@ -581,7 +581,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
         )
         .externalIf(
-          equippedAmount($item`tearaway pants`) > 0,
+          haveEquipped($item`tearaway pants`),
           Macro.trySkill($skill`Tear Away your Pants!`),
         )
         .basicCombat(),
