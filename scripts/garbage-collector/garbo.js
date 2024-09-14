@@ -27424,7 +27424,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7b9a0619097074571f0c8b6197e46395a741660b", ")"));
+      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("fba8f3501b52bf32c41a10cbe615362fb67b7015", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia85.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -44382,7 +44382,7 @@ var DailyItemTasks = [{
     return get("_septEmbersCollected", false);
   },
   do: function() {
-    (0, import_kolmafia130.visitUrl)("shop.php?whichshop=september");
+    (0, import_kolmafia130.visitUrl)("shop.php?whichshop=september", false);
     _set("_septEmbersCollected", true);
   },
   spendsTurn: false
@@ -44397,22 +44397,20 @@ var DailyItemTasks = [{
   do: function() {
     var itemsWithCosts = import_kolmafia130.Item.all().filter(function(i) {
       return (0, import_kolmafia130.sellsItem)($coinmaster(_templateObject2438 || (_templateObject2438 = _taggedTemplateLiteral122(["Sept-Ember Censer"]))), i);
-    }).map(function(item12) {
+    }).map(function(item13) {
       return {
-        item: item12,
-        cost: coinmasterPrice(item12),
-        value: garboValue(item12) / coinmasterPrice(item12)
+        item: item13,
+        cost: coinmasterPrice(item13),
+        value: garboValue(item13) / coinmasterPrice(item13)
       };
     });
     while (get("availableSeptEmbers", 0) > 0) {
-      itemsWithCosts = itemsWithCosts.filter(function(_ref6) {
-        var cost = _ref6.cost;
-        return cost <= get("availableSeptEmbers", 0);
-      });
-      var bestItem = function() {
-        return maxBy(itemsWithCosts, "value");
-      };
-      (0, import_kolmafia130.buy)($coinmaster(_templateObject2537 || (_templateObject2537 = _taggedTemplateLiteral122(["Sept-Ember Censer"]))), 1, bestItem().item);
+      var _maxBy = maxBy(itemsWithCosts.filter(function(_ref6) {
+        var cost2 = _ref6.cost;
+        return cost2 <= get("availableSeptEmbers", 0);
+      }), "value"), item12 = _maxBy.item, cost = _maxBy.cost;
+      var toBuy = Math.floor(get("availableSeptEmbers", 0) / cost);
+      (0, import_kolmafia130.buy)($coinmaster(_templateObject2537 || (_templateObject2537 = _taggedTemplateLiteral122(["Sept-Ember Censer"]))), toBuy, item12);
     }
   },
   spendsTurn: false
