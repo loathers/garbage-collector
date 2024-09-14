@@ -140,19 +140,21 @@ function litLeafMacro(monster: Monster): Macro {
 
   // Only convert lassos if we can funksling as the combat counts as a free loss
   return Macro.externalIf(
-    tiedUpItem !== undefined &&
-      itemAmount($item`lit leaf lasso`) >= 2 &&
-      have($skill`Ambidextrous Funkslinging`) &&
-      (garboValue(tiedUpItem) - mallPrice($item`lit leaf lasso`)) * 2 >=
-        globalOptions.prefs.valueOfFreeFight,
-    Macro.if_(
-      monster,
-      Macro.externalIf(
-        equippedAmount($item`tearaway pants`) > 0,
-        Macro.trySkill($skill`Tear Away your Pants!`),
-      ).tryItem([$item`lit leaf lasso`, $item`lit leaf lasso`]),
-    ),
-  ).basicCombat();
+    equippedAmount($item`tearaway pants`) > 0,
+    Macro.if_(monster, Macro.trySkill($skill`Tear Away your Pants!`)),
+  )
+    .externalIf(
+      tiedUpItem !== undefined &&
+        itemAmount($item`lit leaf lasso`) >= 2 &&
+        have($skill`Ambidextrous Funkslinging`) &&
+        (garboValue(tiedUpItem) - mallPrice($item`lit leaf lasso`)) * 2 >=
+          globalOptions.prefs.valueOfFreeFight,
+      Macro.if_(
+        monster,
+        Macro.tryItem([$item`lit leaf lasso`, $item`lit leaf lasso`]),
+      ),
+    )
+    .basicCombat();
 }
 
 const stunDurations = new Map<Skill | Item, Delayed<number>>([
