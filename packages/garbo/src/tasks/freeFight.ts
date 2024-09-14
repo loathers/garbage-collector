@@ -532,7 +532,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         use($item`packet of tall grass seeds`);
       }
     },
-    outfit: () => tearawayPantsFreeFightOutfit(),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() =>
       Macro.externalIf(
         !doingGregFight(),
@@ -571,7 +571,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         use($item`packet of tall grass seeds`);
       }
     },
-    outfit: () => tearawayPantsFreeFightOutfit(),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() =>
       Macro.if_($monster`Government agent`, Macro.skill($skill`Macrometeorite`))
         .if_(
@@ -751,7 +751,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     tentacle: true,
     combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
-    outfit: () => tearawayPantsFreeFightOutfit(),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   },
   {
@@ -771,7 +771,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     tentacle: true,
     combatCount: () => (get("_tiedUpFlamingLeafletFought") ? 0 : 1),
-    outfit: () => tearawayPantsFreeFightOutfit(),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   },
   {
@@ -791,7 +791,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     tentacle: true,
     combatCount: () => (get("_tiedUpFlamingMonsteraFought") ? 0 : 1),
-    outfit: () => tearawayPantsFreeFightOutfit(),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming monstera`)),
   },
   // tied-up leaviathan (scaling, has 100 damage source cap and 2500 hp)
