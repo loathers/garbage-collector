@@ -11,3 +11,5 @@ export * from "./aprilingband";
 export * from "./chestMimic";
 export * from "./darts";
 export * from "./mayam";
+export * from "./clanVIP";
+export * from "./doghouse";

@@ -78,17 +78,17 @@ import { trackMarginalMpa } from "../session";
 import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
-  completeBarfQuest,
-  minimumMimicExperience,
-  shouldFillLatte,
-  tryFillLatte,
   canBullseye,
+  completeBarfQuest,
   guaranteedBullseye,
-  safeToAttemptBullseye,
   hotTubAvailable,
   lavaDogsAccessible,
   lavaDogsComplete,
+  minimumMimicExperience,
+  safeToAttemptBullseye,
+  shouldFillLatte,
   shouldMakeEgg,
+  tryFillLatte,
 } from "../resources";
 import { acquire } from "../acquire";
 import { meatMood } from "../mood";
@@ -758,9 +758,10 @@ const BarfTurnTasks: GarboTask[] = [
       ),
       sobriety: "sober",
       duplicate: true,
-         },
-  ), 
+    },
+  ),
   wanderTask(
+    "freefight",
     {},
     {
       name: "Heavy Rains Lightning Strike",
