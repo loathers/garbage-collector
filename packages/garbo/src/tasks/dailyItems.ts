@@ -205,7 +205,7 @@ const DailyItemTasks: GarboTask[] = [
     ready: () => have($item`Sept-Ember Censer`),
     completed: () => get("_septEmbersCollected", false),
     do: (): void => {
-      visitUrl("shop.php?whichshop=september");
+      visitUrl("shop.php?whichshop=september", false);
       set("_septEmbersCollected", true);
     },
     spendsTurn: false,
@@ -215,7 +215,7 @@ const DailyItemTasks: GarboTask[] = [
     ready: () => have($item`Sept-Ember Censer`) && globalOptions.ascend,
     completed: () => get("availableSeptEmbers", 0) === 0,
     do: (): void => {
-      let itemsWithCosts = Item.all()
+      const itemsWithCosts = Item.all()
         .filter((i) => sellsItem($coinmaster`Sept-Ember Censer`, i))
         .map((item) => ({
           item,
@@ -224,12 +224,14 @@ const DailyItemTasks: GarboTask[] = [
         }));
 
       while (get("availableSeptEmbers", 0) > 0) {
-        itemsWithCosts = itemsWithCosts.filter(
-          ({ cost }) => cost <= get("availableSeptEmbers", 0),
+        const { item, cost } = maxBy(
+          itemsWithCosts.filter(
+            ({ cost }) => cost <= get("availableSeptEmbers", 0),
+          ),
+          "value",
         );
-        const bestItem = () => maxBy(itemsWithCosts, "value");
-
-        buy($coinmaster`Sept-Ember Censer`, 1, bestItem().item);
+        const toBuy = Math.floor(get("availableSeptEmbers", 0) / cost);
+        buy($coinmaster`Sept-Ember Censer`, toBuy, item);
       }
     },
     spendsTurn: false,
