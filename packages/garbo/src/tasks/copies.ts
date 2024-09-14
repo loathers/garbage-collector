@@ -41,6 +41,7 @@ import { CopyTargetTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { wanderer } from "../garboWanderer";
 import { meatTargetOutfit } from "../outfit";
+import { copyTargetConfirmInvocation } from "../target/fights";
 
 let monsterInEggnet: boolean;
 const mosterIsInEggnet = () =>
