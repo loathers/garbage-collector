@@ -119,14 +119,17 @@ function sealsAvailable(): number {
 }
 
 const tearawayPantsFreeFightOutfit = () =>
-  freeFightOutfit({
-    bonuses: new Map<Item, number>([
-      [
-        $item`tearaway pants`,
-        get("valueOfAdventure") * TearawayPants.plantsAdventureChance(),
-      ],
-    ]),
-  });
+  freeFightOutfit(
+    {
+      bonuses: new Map<Item, number>([
+        [
+          $item`tearaway pants`,
+          get("valueOfAdventure") * TearawayPants.plantsAdventureChance(),
+        ],
+      ]),
+    },
+    { canChooseMacro: false, allowAttackFamiliars: false },
+  );
 
 function litLeafMacro(monster: Monster): Macro {
   const tiedUpItem = new Map<Monster, Item>([
