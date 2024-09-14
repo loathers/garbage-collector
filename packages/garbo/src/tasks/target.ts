@@ -54,10 +54,11 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       combat: new GarboStrategy(() => Macro.kill()),
     },
     {
-      name: "Fold Spooky Putty monster",
+      name: "Fold Spooky Putty sheet",
       ready: () =>
+        !have($item`Spooky Putty monster`) &&
         getFoldGroup($item`Spooky Putty sheet`).some((item) => have(item)),
-      completed: () => have($item`Spooky Putty monster`),
+      completed: () => have($item`Spooky Putty sheet`),
       do: () => cliExecute("fold spooky putty sheet"),
       spendsTurn: false,
       limit: { skip: 1 },
