@@ -62,7 +62,6 @@ import {
   getBestLuckyAdventure,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
-  isFreeAndCopyable,
   ltbRun,
   setChoice,
   WISH_VALUE,

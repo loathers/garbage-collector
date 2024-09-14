@@ -1,41 +1,40 @@
 import {
   getClanLounge,
-  use,
-  myRain,
-  visitUrl,
-  toInt,
-  runChoice,
-  print,
   myHash,
+  myRain,
+  print,
+  runChoice,
   runCombat,
+  toInt,
+  use,
+  visitUrl,
 } from "kolmafia";
 import {
-  ChateauMantegna,
-  CombatLoversLocket,
-  have,
+  $familiar,
   $item,
-  property,
-  ChestMimic,
-  $skill,
-  get,
-  HeavyRains,
+  $items,
+  $location,
   $locations,
+  $skill,
+  ChateauMantegna,
+  ChestMimic,
+  CombatLoversLocket,
   Counter,
   CrystalBall,
-  $location,
-  set,
-  $items,
-  $familiar,
+  get,
+  have,
+  HeavyRains,
+  property,
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import {
-  isFreeAndCopyable,
   averageTargetNet,
-  WISH_VALUE,
   HIGHLIGHT,
+  isFreeAndCopyable,
+  WISH_VALUE,
 } from "../lib";
-import { possibleGregCrystalBall, gregReady } from "../resources";
+import { gregReady, possibleGregCrystalBall } from "../resources";
 import { copyTargetCount, copyTargetSources } from "../target";
 import { puttyLeft } from "../target/lib";
 import { CopyTargetTask } from "./engine";
@@ -295,7 +294,7 @@ export const CopyTargetFights: CopyTargetTask[] = (
         have($skill`Meteor Lore`) &&
         get("_macrometeoriteUses") < 10,
       completed: () => get("_macrometeoriteUses") >= 10,
-      do: $location`noob cave`,
+      do: $location`Noob Cave`,
       spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: true,
       fightType: "gregarious",
