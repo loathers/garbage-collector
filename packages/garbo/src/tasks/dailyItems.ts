@@ -21,6 +21,7 @@ import {
   print,
   runChoice,
   scrapPockets,
+  sellPrice,
   sellsItem,
   toItem,
   use,
@@ -51,7 +52,7 @@ import {
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
-import { aprilFoolsRufus, coinmasterPrice } from "../lib";
+import { aprilFoolsRufus } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
@@ -219,8 +220,9 @@ const DailyItemTasks: GarboTask[] = [
         .filter((i) => sellsItem($coinmaster`Sept-Ember Censer`, i))
         .map((item) => ({
           item,
-          cost: coinmasterPrice(item),
-          value: garboValue(item) / coinmasterPrice(item),
+          cost: sellPrice($coinmaster`Sept-Ember Censer`, item),
+          value:
+            garboValue(item) / sellPrice($coinmaster`Sept-Ember Censer`, item),
         }));
 
       while (get("availableSeptEmbers", 0) > 0) {
@@ -293,9 +295,15 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_internetViralVideoBought") ||
       garboValue($item`viral video`) <
-        garboValue($item`BACON`) * coinmasterPrice($item`viral video`),
+        garboValue($item`BACON`) *
+          sellPrice($coinmaster`Internet Meme Shop`, $item`viral video`),
     do: () => buy($coinmaster`Internet Meme Shop`, 1, $item`viral video`),
-    acquire: [{ item: $item`BACON`, num: coinmasterPrice($item`viral video`) }],
+    acquire: [
+      {
+        item: $item`BACON`,
+        num: sellPrice($coinmaster`Internet Meme Shop`, $item`viral video`),
+      },
+    ],
     spendsTurn: false,
   },
   {
@@ -303,9 +311,15 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_internetPlusOneBought") ||
       garboValue($item`plus one`) <
-        garboValue($item`BACON`) * coinmasterPrice($item`plus one`),
+        garboValue($item`BACON`) *
+          sellPrice($coinmaster`Internet Meme Shop`, $item`plus one`),
     do: () => buy($coinmaster`Internet Meme Shop`, 1, $item`plus one`),
-    acquire: [{ item: $item`BACON`, num: coinmasterPrice($item`plus one`) }],
+    acquire: [
+      {
+        item: $item`BACON`,
+        num: sellPrice($coinmaster`Internet Meme Shop`, $item`plus one`),
+      },
+    ],
     spendsTurn: false,
   },
   {
@@ -313,10 +327,14 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_internetGallonOfMilkBought") ||
       garboValue($item`gallon of milk`) <
-        garboValue($item`BACON`) * coinmasterPrice($item`gallon of milk`),
+        garboValue($item`BACON`) *
+          sellPrice($coinmaster`Internet Meme Shop`, $item`gallon of milk`),
     do: () => buy($coinmaster`Internet Meme Shop`, 1, $item`gallon of milk`),
     acquire: [
-      { item: $item`BACON`, num: coinmasterPrice($item`gallon of milk`) },
+      {
+        item: $item`BACON`,
+        num: sellPrice($coinmaster`Internet Meme Shop`, $item`gallon of milk`),
+      },
     ],
     spendsTurn: false,
   },
@@ -325,11 +343,21 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_internetPrintScreenButtonBought") ||
       garboValue($item`print screen button`) <
-        garboValue($item`BACON`) * coinmasterPrice($item`print screen button`),
+        garboValue($item`BACON`) *
+          sellPrice(
+            $coinmaster`Internet Meme Shop`,
+            $item`print screen button`,
+          ),
     do: () =>
       buy($coinmaster`Internet Meme Shop`, 1, $item`print screen button`),
     acquire: [
-      { item: $item`BACON`, num: coinmasterPrice($item`print screen button`) },
+      {
+        item: $item`BACON`,
+        num: sellPrice(
+          $coinmaster`Internet Meme Shop`,
+          $item`print screen button`,
+        ),
+      },
     ],
     spendsTurn: false,
   },
@@ -339,13 +367,19 @@ const DailyItemTasks: GarboTask[] = [
       get("_internetDailyDungeonMalwareBought") ||
       garboValue($item`daily dungeon malware`) <
         garboValue($item`BACON`) *
-          coinmasterPrice($item`daily dungeon malware`),
+          sellPrice(
+            $coinmaster`Internet Meme Shop`,
+            $item`daily dungeon malware`,
+          ),
     do: () =>
       buy($coinmaster`Internet Meme Shop`, 1, $item`daily dungeon malware`),
     acquire: [
       {
         item: $item`BACON`,
-        num: coinmasterPrice($item`daily dungeon malware`),
+        num: sellPrice(
+          $coinmaster`Internet Meme Shop`,
+          $item`daily dungeon malware`,
+        ),
       },
     ],
     spendsTurn: false,
