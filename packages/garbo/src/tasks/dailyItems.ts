@@ -21,6 +21,7 @@ import {
   print,
   runChoice,
   scrapPockets,
+  sellPrice,
   sellsItem,
   toItem,
   use,
@@ -220,7 +221,8 @@ const DailyItemTasks: GarboTask[] = [
         .map((item) => ({
           item,
           cost: coinmasterPrice(item),
-          value: garboValue(item) / coinmasterPrice(item),
+          value:
+            garboValue(item) / sellPrice($coinmaster`Sept-Ember Censer`, item),
         }));
 
       while (get("availableSeptEmbers", 0) > 0) {
