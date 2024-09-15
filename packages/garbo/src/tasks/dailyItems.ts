@@ -220,7 +220,7 @@ const DailyItemTasks: GarboTask[] = [
         .filter((i) => sellsItem($coinmaster`Sept-Ember Censer`, i))
         .map((item) => ({
           item,
-          cost: coinmasterPrice(item),
+          cost: sellPrice($coinmaster`Sept-Ember Censer`, item),
           value:
             garboValue(item) / sellPrice($coinmaster`Sept-Ember Censer`, item),
         }));
