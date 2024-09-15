@@ -27404,7 +27404,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8ca04eae49f932a4ad657ec35d07b0033954e3df", ")"));
+      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("72f5035003076172b34872ad5eb437f8c4bba394", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia85.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -35768,7 +35768,7 @@ var mosterIsInEggnet = function() {
 };
 var emergencyChainStarters = [
   new CopyTargetFight("Mimic Egg (from clinic)", function() {
-    return monsterInEggnet && ChestMimic_exports.have() && $familiar(_templateObject12111 || (_templateObject12111 = _taggedTemplateLiteral104(["Chest Mimic"]))).experience >= 100 && mosterIsInEggnet() && get("_mimicEggsObtained") < 11;
+    return ChestMimic_exports.have() && $familiar(_templateObject12111 || (_templateObject12111 = _taggedTemplateLiteral104(["Chest Mimic"]))).experience >= 100 && mosterIsInEggnet() && get("_mimicEggsObtained") < 11;
   }, function() {
     return 0;
   }, function(options) {
