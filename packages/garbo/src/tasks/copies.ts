@@ -40,7 +40,6 @@ import { puttyLeft } from "../target/lib";
 import { CopyTargetTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { wanderer } from "../garboWanderer";
-import { meatTargetOutfit } from "../outfit";
 import { copyTargetConfirmInvocation } from "../target/fights";
 
 let monsterInEggnet: boolean;
@@ -284,7 +283,7 @@ export const CopyTargetFights: CopyTargetTask[] = (
       completed: () => !possibleGregCrystalBall(),
       do: $location`The Dire Warren`,
       spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
-      outfit: () => meatTargetOutfit({ equip: $items`miniature crystal ball` }),
+      outfit: { equip: $items`miniature crystal ball` },
       canInitializeWandererCounters: true,
       fightType: "conditional",
     },
@@ -340,11 +339,10 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: () => wanderer().getTarget("backup"),
       spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: true,
-      outfit: () =>
-        meatTargetOutfit({
-          equip: $items`backup camera`,
-          modes: { backupcamera: "meat" },
-        }),
+      outfit: {
+        equip: $items`backup camera`,
+        modes: { backupcamera: "meat" },
+      },
       fightType: "conditional",
     },
     {
@@ -428,7 +426,7 @@ export const CopyTargetFights: CopyTargetTask[] = (
   ] as Omit<CopyTargetTask, "outfit" | "combat" | "spendsTurn">[]
 ).map((partialTask) => ({
   combat: new GarboStrategy(() => Macro.target(partialTask.name)),
-  outfit: () => meatTargetOutfit(),
+  outfit: {},
   spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
   ...partialTask,
 }));
