@@ -6,7 +6,7 @@ import {
   Quest,
   StrictCombatTask,
 } from "grimoire-kolmafia";
-import { eventLog, safeInterrupt, safeRestore, sober } from "../lib";
+import { eventLog, isFree, safeInterrupt, safeRestore, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
 import {
   $familiar,
@@ -19,7 +19,7 @@ import {
   SourceTerminal,
   undelay,
 } from "libram";
-import { equip, itemAmount, print, totalTurnsPlayed } from "kolmafia";
+import { equip, itemAmount, Location, print, totalTurnsPlayed } from "kolmafia";
 import { GarboStrategy } from "../combat";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
@@ -30,6 +30,7 @@ import {
   hasMonsterReplacers,
   totalGregCharges,
 } from "../resources";
+import { freeFightOutfit, meatTargetOutfit } from "../outfit";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
@@ -128,6 +129,23 @@ export class BaseGarboEngine<T extends GarboTask> extends Engine<never, T> {
 export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
   private lastFight: CopyTargetTask | null = null;
 
+  createOutfit(task: CopyTargetTask): Outfit {
+    if (task.fightType) {
+      const baseOutfit = undelay(task.outfit);
+      const spec = baseOutfit
+        ? baseOutfit instanceof Outfit
+          ? baseOutfit.spec()
+          : baseOutfit
+        : {};
+      if (isFree(globalOptions.target)) {
+        return freeFightOutfit(spec);
+      } else if (task.do instanceof Location) {
+        return meatTargetOutfit(spec, task.do);
+      } else return meatTargetOutfit(spec);
+    }
+
+    return super.createOutfit(task);
+  }
   // TODO: `proceedWithOrb` logic
   // Reconsider the way it works for free fights?
   // Reconsider
