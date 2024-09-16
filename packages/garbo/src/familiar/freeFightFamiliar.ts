@@ -12,6 +12,7 @@ import {
   clamp,
   findLeprechaunMultiplier,
   get,
+  getModifier,
   have,
 } from "libram";
 import { canOpenRedPresent } from ".";
@@ -21,6 +22,9 @@ import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import { GeneralFamiliar, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
+import { gooseDroneEligible, valueDrops } from "../lib";
+import { globalOptions } from "../config";
+import { copyTargetCount } from "../target";
 
 type MenuOptions = Partial<{
   canChooseMacro: boolean;
@@ -63,6 +67,25 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         familiar: $familiar`Grey Goose`,
         expectedValue:
           (Math.max(familiarWeight($familiar`Grey Goose`) - 5), 0) ** 4,
+        leprechaunMultiplier: 0,
+        limit: "experience",
+      });
+    }
+
+    if (
+      gooseDroneEligible() &&
+      get("gooseDronesRemaining") < copyTargetCount()
+    ) {
+      familiarMenu.push({
+        familiar: $familiar`Grey Goose`,
+        expectedValue:
+          // It takes 9 experience to go from level 5 to 6 and emit a drone
+          clamp(
+            getModifier("Familiar Experience") / 9,
+            0,
+            // The limit to how valuable any emission can be is how many drones are actually gonna hit the copyTarget
+            copyTargetCount() - get("gooseDronesRemaining"),
+          ) * valueDrops(globalOptions.target),
         leprechaunMultiplier: 0,
         limit: "experience",
       });

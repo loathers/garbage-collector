@@ -147,7 +147,6 @@ import {
   freeRest,
   freeRunConstraints,
   getUsingFreeBunnyBanish,
-  gooseDroneEligible,
   HIGHLIGHT,
   isFree,
   isFreeAndCopyable,
@@ -396,10 +395,6 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
     if (have($familiar`Reanimated Reanimator`)) {
       return { familiar: $familiar`Reanimated Reanimator` };
     }
-  }
-
-  if (gooseDroneEligible() && get("gooseDronesRemaining") < copyTargetCount()) {
-    return { familiar: $familiar`Grey Goose` };
   }
 
   if (isFreeAndCopyable(globalOptions.target)) {
