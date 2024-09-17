@@ -149,7 +149,6 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
   private lastFight: CopyTargetTask | null = null;
   private profChain: string | null = null;
 
-  // TODO: account for this in copy target outfit
   underwater(task: CopyTargetTask): boolean {
     // Only run for copy target fights
     if (!task.fightType) return false;
@@ -220,7 +219,10 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
       }
 
       if (isFree(globalOptions.target)) {
-        return freeFightOutfit(spec);
+        const options = this.underwater(task)
+          ? { location: $location`The Briny Deeps` }
+          : {};
+        return freeFightOutfit(spec, options);
       } else {
         if (task.do instanceof Location) return meatTargetOutfit(spec, task.do);
         if (this.underwater(task)) {
