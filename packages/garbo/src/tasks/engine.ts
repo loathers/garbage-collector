@@ -18,7 +18,6 @@ import {
 import { wanderer } from "../garboWanderer";
 import {
   $familiar,
-  $familiars,
   $item,
   $location,
   $skill,
@@ -206,9 +205,17 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
         !get("_badlyRomanticArrows") &&
         !this.underwater(task)
       ) {
-        const familiar = $familiars`Reagnimated Gnome, Obtuse Angel`.find(have);
+        const { familiar, famequip } =
+          [
+            { familiar: $familiar`Reanimated Reanimator` },
+            {
+              familiar: $familiar`Obtuse Angel`,
+              famequip: $item`quake of arrows`,
+            },
+          ].find(({ familiar }) => have(familiar)) ?? {};
         if (familiar) {
           spec.familiar = familiar;
+          if (famequip) spec.famequip ??= famequip;
         }
       }
 
@@ -229,6 +236,10 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
   do(task: CopyTargetTask) {
     if (this.profChain && PocketProfessor.currentlyAvailableLectures() <= 0) {
       return;
+    }
+
+    if (task.fightType && task.draggable && this.underwater(task)) {
+      return $location`The Briny Deeps`;
     }
     return super.do(task);
   }
