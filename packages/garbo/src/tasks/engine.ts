@@ -175,12 +175,6 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
   customize(task: CopyTargetTask) {
     const profChain = this.profChain;
     if (profChain) {
-      task.post = () => {
-        task.post?.();
-        set(profChain, true);
-        this.profChain = null;
-      };
-
       const currentDo = task.do;
 
       task.do = () => {
@@ -203,6 +197,11 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
     this.lastFight = task;
     if (task.fightType === "gregarious" && totalGregCharges(true) === 0) {
       set("_garbo_doneGregging", true);
+    }
+
+    if (this.profChain) {
+      set(this.profChain, true);
+      this.profChain = null;
     }
     super.post(task);
   }
