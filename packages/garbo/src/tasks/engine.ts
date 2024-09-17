@@ -172,16 +172,11 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
     return super.createOutfit(task);
   }
 
-  customize(task: CopyTargetTask) {
-    const profChain = this.profChain;
-    if (profChain) {
-      const currentDo = task.do;
-
-      task.do = () => {
-        if (PocketProfessor.currentlyAvailableLectures() <= 0) return;
-        return currentDo instanceof Location ? currentDo : currentDo();
-      };
+  do(task: CopyTargetTask) {
+    if (this.profChain && PocketProfessor.currentlyAvailableLectures() <= 0) {
+      return;
     }
+    return super.do(task);
   }
 
   // TODO: `proceedWithOrb` logic
