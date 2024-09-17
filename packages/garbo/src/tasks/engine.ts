@@ -142,22 +142,21 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
 
       // Prof chains
       if (have($familiar`Pocket Professor`) && !spec.familiar) {
-        if (!get("_garbo_meatChain", false)) {
-          this.profChain = "_garbo_meatChain";
+        const chain = ["_garbo_meatChain", "_garbo_weightChain"].find(
+          (pref) => !get(pref, false),
+        );
+        if (chain) {
+          this.profChain = chain;
           spec.familiar = $familiar`Pocket Professor`;
           spec.famequip ??= $item`Pocket Professor memory chip`;
           spec.avoid ??= [];
           spec.avoid.push($item`Roman Candelabra`);
-        } else if (!get("_garbo_weightChain", false)) {
-          this.profChain = "_garbo_weightChain";
-          spec.familiar = $familiar`Pocket Professor`;
-          spec.famequip ??= $item`Pocket Professor memory chip`;
-          spec.avoid ??= [];
-          spec.avoid.push($item`Roman Candelabra`);
-          return Outfit.from(
-            { ...spec, modifier: ["Familiar Weight"] },
-            new Error("Unable to build outfit for weight chain!"),
-          );
+          if (chain === "_garbo_weightchain") {
+            return Outfit.from(
+              { ...spec, modifier: ["Familiar Weight"] },
+              new Error("Unable to build outfit for weight chain!"),
+            );
+          }
         }
       }
 
