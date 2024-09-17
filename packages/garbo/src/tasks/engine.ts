@@ -71,6 +71,7 @@ export type CopyTargetTask = GarboTask & {
           | "emergencychainstarter"
           | "fake";
         wrongEncounterName?: boolean;
+        amount: () => number;
       }
     | { fightType?: undefined }
   );
