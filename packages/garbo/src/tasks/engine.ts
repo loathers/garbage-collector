@@ -58,18 +58,22 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
 };
 
 export type CopyTargetTask = GarboTask & {
-  fightType?:
-    | "wanderer"
-    | "regular"
-    | "conditional"
-    | "chainstarter"
-    | "gregarious"
-    | "emergencychainstarter"
-    | "fake";
-  draggable?: DraggableFight;
   canInitializeWandererCounters: boolean;
-  wrongEncounterName?: boolean;
-};
+} & (
+    | {
+        fightType:
+          | "wanderer"
+          | "backup"
+          | "regular"
+          | "conditional"
+          | "chainstarter"
+          | "gregarious"
+          | "emergencychainstarter"
+          | "fake";
+        wrongEncounterName?: boolean;
+      }
+    | { fightType?: undefined }
+  );
 
 function logTargetFight(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
@@ -149,11 +153,19 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
   private lastFight: CopyTargetTask | null = null;
   private profChain: string | null = null;
 
+  draggable(task: CopyTargetTask): DraggableFight | null {
+    return (
+      (["wanderer", "backup"] as const).find(
+        (fightType) => fightType === task.fightType,
+      ) ?? null
+    );
+  }
+
   underwater(task: CopyTargetTask): boolean {
     // Only run for copy target fights
     if (!task.fightType) return false;
     // Only run for _draggable_ copy target fights
-    if (!task.draggable) return false;
+    if (!this.draggable(task)) return false;
     // Only run if we can actually go underwater
     if (!checkUnderwater()) return false;
     // Only run if taffy is worth it
@@ -240,7 +252,7 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
       return;
     }
 
-    if (task.fightType && task.draggable && this.underwater(task)) {
+    if (this.underwater(task)) {
       return $location`The Briny Deeps`;
     }
     return super.do(task);
@@ -292,6 +304,7 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
     }
 
     const regularCopy =
+      this.findAvailableFight("backup") ??
       this.findAvailableFight("regular") ??
       this.findAvailableFight("chainstarter");
     if (regularCopy) return regularCopy;

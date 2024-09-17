@@ -20,7 +20,6 @@ import {
   ChestMimic,
   CombatLoversLocket,
   Counter,
-  CrystalBall,
   get,
   have,
   HeavyRains,
@@ -34,7 +33,7 @@ import {
   isFreeAndCopyable,
   WISH_VALUE,
 } from "../lib";
-import { gregReady, possibleGregCrystalBall } from "../resources";
+import { gregReady } from "../resources";
 import { copyTargetCount, copyTargetSources } from "../target";
 import { puttyLeft } from "../target/lib";
 import { CopyTargetTask } from "./engine";
@@ -234,7 +233,7 @@ export const CopyTargetFights: CopyTargetTask[] = (
       completed: () =>
         Counter.get("Digitize Monster") > 0 ||
         !(get("_sourceTerminalDigitizeMonster") === globalOptions.target),
-      do: (): void => {},
+      do: () => wanderer().getTarget("wanderer"),
       canInitializeWandererCounters: false,
       fightType: "wanderer",
     },
@@ -245,7 +244,7 @@ export const CopyTargetFights: CopyTargetTask[] = (
         Counter.get("Romantic Monster window begin") <= 0 &&
         Counter.get("Romantic Monster window end") <= 0,
       completed: () => get("_romanticFightsLeft") <= 0,
-      do: (): void => {},
+      do: () => wanderer().getTarget("wanderer"),
       canInitializeWandererCounters: false,
       fightType: "wanderer",
     },
@@ -255,22 +254,9 @@ export const CopyTargetFights: CopyTargetTask[] = (
         Counter.get("Enamorang") <= 0 &&
         get("enamorangMonster") === globalOptions.target,
       completed: () => Counter.get("Enamorang") <= 0,
-      do: (): void => {},
+      do: () => wanderer().getTarget("wanderer"),
       canInitializeWandererCounters: false,
       fightType: "wanderer",
-    },
-    {
-      name: "Orb Prediction",
-      ready: () =>
-        have($item`miniature crystal ball`) &&
-        !get("_garbo_doneGregging", false) &&
-        CrystalBall.ponder().get($location`The Dire Warren`) ===
-          globalOptions.target,
-      completed: () => !possibleGregCrystalBall(),
-      do: $location`The Dire Warren`,
-      outfit: { equip: $items`miniature crystal ball` },
-      canInitializeWandererCounters: true,
-      fightType: "conditional",
     },
     {
       name: "Macrometeorite",
@@ -290,22 +276,7 @@ export const CopyTargetFights: CopyTargetTask[] = (
         have($item`Powerful Glove`) &&
         get("_powerfulGloveBatteryPowerUsed") <= 90,
       completed: () => get("_powerfulGloveBatteryPowerUsed") >= 95,
-      do: $location`The Dire Warren`,
-      canInitializeWandererCounters: true,
-      fightType: "gregarious",
-    },
-    {
-      name: "Be Gregarious",
-      ready: () => get("beGregariousFightsLeft") >= 0,
-      completed: () => get("beGregariousFightsLeft") <= 0,
-      do: $location`The Dire Warren`,
-      canInitializeWandererCounters: true,
-      fightType: "gregarious",
-    },
-    {
-      name: "Habitats Monster",
-      ready: () => get("_monsterHabitatsFightsLeft") >= 0,
-      completed: () => get("_monsterHabitatsFightsLeft") <= 0,
+      outfit: { acc1: $item`powerful glove ` },
       do: $location`The Dire Warren`,
       canInitializeWandererCounters: true,
       fightType: "gregarious",
@@ -318,21 +289,19 @@ export const CopyTargetFights: CopyTargetTask[] = (
         get("_backUpUses") < 11,
       completed: () => get("_backUpUses") >= 11,
       do: () => wanderer().getTarget("backup"),
-
       canInitializeWandererCounters: true,
       outfit: {
         equip: $items`backup camera`,
         modes: { backupcamera: "meat" },
       },
-      fightType: "conditional",
+      fightType: "backup",
     },
     {
-      name: "Professor CopyChain",
+      name: "Professor MeatChain",
       ready: () =>
         have($familiar`Pocket Professor`) && !get("_garbo_meatChain", false),
       completed: () => get("_garbo_meatChain", false),
       do: (): void => {},
-
       canInitializeWandererCounters: true,
       fightType: "fake",
     },
