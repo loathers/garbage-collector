@@ -178,6 +178,7 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
       task.post = () => {
         task.post?.();
         set(profChain, true);
+        this.profChain = null;
       };
 
       const currentDo = task.do;
