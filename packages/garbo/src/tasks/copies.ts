@@ -66,7 +66,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         ChateauMantegna.fightPainting();
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "chainstarter",
     },
@@ -83,7 +82,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         CombatLoversLocket.reminisce(globalOptions.target);
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "chainstarter",
     },
@@ -99,7 +97,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`photocopied monster`);
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "chainstarter",
     },
@@ -121,7 +118,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         HeavyRains.rainMan(globalOptions.target);
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "chainstarter",
     },
@@ -142,7 +138,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
           `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
         );
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "regular",
     },
@@ -161,7 +156,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
           `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
         );
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "regular",
     },
@@ -175,7 +169,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`shaking 4-d camera`);
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "regular",
     },
@@ -189,7 +182,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`ice sculpture`);
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "regular",
     },
@@ -203,7 +195,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`envyfish egg`);
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "regular",
     },
@@ -218,7 +209,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`screencapped monster`);
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "regular",
     },
@@ -233,7 +223,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`sticky clay homunculus`);
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "regular",
     },
@@ -246,7 +235,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
         Counter.get("Digitize Monster") > 0 ||
         !(get("_sourceTerminalDigitizeMonster") === globalOptions.target),
       do: (): void => {},
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "wanderer",
     },
@@ -258,7 +246,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
         Counter.get("Romantic Monster window end") <= 0,
       completed: () => get("_romanticFightsLeft") <= 0,
       do: (): void => {},
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "wanderer",
     },
@@ -269,7 +256,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
         get("enamorangMonster") === globalOptions.target,
       completed: () => Counter.get("Enamorang") <= 0,
       do: (): void => {},
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: false,
       fightType: "wanderer",
     },
@@ -282,7 +268,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
           globalOptions.target,
       completed: () => !possibleGregCrystalBall(),
       do: $location`The Dire Warren`,
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       outfit: { equip: $items`miniature crystal ball` },
       canInitializeWandererCounters: true,
       fightType: "conditional",
@@ -295,7 +280,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
         get("_macrometeoriteUses") < 10,
       completed: () => get("_macrometeoriteUses") >= 10,
       do: $location`Noob Cave`,
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: true,
       fightType: "gregarious",
     },
@@ -307,7 +291,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
         get("_powerfulGloveBatteryPowerUsed") <= 90,
       completed: () => get("_powerfulGloveBatteryPowerUsed") >= 95,
       do: $location`The Dire Warren`,
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: true,
       fightType: "gregarious",
     },
@@ -316,7 +299,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       ready: () => get("beGregariousFightsLeft") >= 0,
       completed: () => get("beGregariousFightsLeft") <= 0,
       do: $location`The Dire Warren`,
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: true,
       fightType: "gregarious",
     },
@@ -325,7 +307,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       ready: () => get("_monsterHabitatsFightsLeft") >= 0,
       completed: () => get("_monsterHabitatsFightsLeft") <= 0,
       do: $location`The Dire Warren`,
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: true,
       fightType: "gregarious",
     },
@@ -337,7 +318,7 @@ export const CopyTargetFights: CopyTargetTask[] = (
         get("_backUpUses") < 11,
       completed: () => get("_backUpUses") >= 11,
       do: () => wanderer().getTarget("backup"),
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
+
       canInitializeWandererCounters: true,
       outfit: {
         equip: $items`backup camera`,
@@ -351,7 +332,7 @@ export const CopyTargetFights: CopyTargetTask[] = (
         have($familiar`Pocket Professor`) && !get("_garbo_meatChain", false),
       completed: () => get("_garbo_meatChain", false),
       do: (): void => {},
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
+
       canInitializeWandererCounters: true,
       fightType: "fake",
     },
@@ -366,7 +347,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
         ChestMimic.receive(globalOptions.target);
         ChestMimic.differentiate(globalOptions.target);
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: true,
       fightType: "emergencychainstarter",
     },
@@ -419,7 +399,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
         runCombat();
         globalOptions.askedAboutWish = false;
       },
-      spendsTurn: () => !isFreeAndCopyable(globalOptions.target),
       canInitializeWandererCounters: true,
       fightType: "emergencychainstarter",
     },
