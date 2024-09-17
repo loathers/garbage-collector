@@ -79,13 +79,15 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
       familiarMenu.push({
         familiar: $familiar`Grey Goose`,
         expectedValue:
-          // It takes 9 experience to go from level 5 to 6 and emit a drone
-          clamp(
-            getModifier("Familiar Experience") / 9,
-            0,
-            // The limit to how valuable any emission can be is how many drones are actually gonna hit the copyTarget
-            copyTargetCount() - get("gooseDronesRemaining"),
-          ) * valueDrops(globalOptions.target),
+          mode === "free"
+            ? // It takes 9 experience to go from level 5 to 6 and emit a drone
+              clamp(
+                getModifier("Familiar Experience") / 9,
+                0,
+                // The limit to how valuable any emission can be is how many drones are actually gonna hit the copyTarget
+                copyTargetCount() - get("gooseDronesRemaining"),
+              ) * valueDrops(globalOptions.target)
+            : 0,
         leprechaunMultiplier: 0,
         limit: "experience",
       });
