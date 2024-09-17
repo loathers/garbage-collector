@@ -15,6 +15,7 @@ import {
   Delayed,
   get,
   have,
+  PocketProfessor,
   set,
   SourceTerminal,
   undelay,
@@ -128,6 +129,7 @@ export class BaseGarboEngine<T extends GarboTask> extends Engine<never, T> {
 
 export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
   private lastFight: CopyTargetTask | null = null;
+  private profChain: string | null = null;
 
   createOutfit(task: CopyTargetTask): Outfit {
     if (task.fightType) {
@@ -137,15 +139,57 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
           ? baseOutfit.spec()
           : baseOutfit
         : {};
+
+      // Prof chains
+      if (have($familiar`Pocket Professor`) && !spec.familiar) {
+        if (!get("_garbo_meatChain", false)) {
+          this.profChain = "_garbo_meatChain";
+          spec.familiar = $familiar`Pocket Professor`;
+          spec.famequip ??= $item`Pocket Professor memory chip`;
+          spec.avoid ??= [];
+          spec.avoid.push($item`Roman Candelabra`);
+        } else if (!get("_garbo_weightChain", false)) {
+          this.profChain = "_garbo_weightChain";
+          spec.familiar = $familiar`Pocket Professor`;
+          spec.famequip ??= $item`Pocket Professor memory chip`;
+          spec.avoid ??= [];
+          spec.avoid.push($item`Roman Candelabra`);
+          return Outfit.from(
+            { ...spec, modifier: ["Familiar Weight"] },
+            new Error("Unable to build outfit for weight chain!"),
+          );
+        }
+      }
+
       if (isFree(globalOptions.target)) {
         return freeFightOutfit(spec);
-      } else if (task.do instanceof Location) {
-        return meatTargetOutfit(spec, task.do);
-      } else return meatTargetOutfit(spec);
+      } else {
+        return task.do instanceof Location
+          ? meatTargetOutfit(spec, task.do)
+          : meatTargetOutfit(spec);
+      }
     }
 
     return super.createOutfit(task);
   }
+
+  customize(task: CopyTargetTask) {
+    const profChain = this.profChain;
+    if (profChain) {
+      task.post = () => {
+        task.post?.();
+        set(profChain, true);
+      };
+
+      const currentDo = task.do;
+
+      task.do = () => {
+        if (PocketProfessor.currentlyAvailableLectures() <= 0) return;
+        return currentDo instanceof Location ? currentDo : currentDo();
+      };
+    }
+  }
+
   // TODO: `proceedWithOrb` logic
   // Reconsider the way it works for free fights?
   // Reconsider
