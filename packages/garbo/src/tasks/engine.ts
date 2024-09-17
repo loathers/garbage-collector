@@ -6,11 +6,21 @@ import {
   Quest,
   StrictCombatTask,
 } from "grimoire-kolmafia";
-import { eventLog, isFree, safeInterrupt, safeRestore, sober } from "../lib";
+import {
+  eventLog,
+  isFree,
+  MEAT_TARGET_MULTIPLIER,
+  safeInterrupt,
+  safeRestore,
+  sober,
+  targettingMeat,
+} from "../lib";
 import { wanderer } from "../garboWanderer";
 import {
   $familiar,
+  $familiars,
   $item,
+  $location,
   $skill,
   Delayed,
   get,
@@ -20,7 +30,15 @@ import {
   SourceTerminal,
   undelay,
 } from "libram";
-import { equip, itemAmount, Location, print, totalTurnsPlayed } from "kolmafia";
+import {
+  equip,
+  itemAmount,
+  Location,
+  mallPrice,
+  print,
+  retrieveItem,
+  totalTurnsPlayed,
+} from "kolmafia";
 import { GarboStrategy } from "../combat";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
@@ -32,6 +50,7 @@ import {
   totalGregCharges,
 } from "../resources";
 import { freeFightOutfit, meatTargetOutfit } from "../outfit";
+import { checkUnderwater } from "../target/lib";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
@@ -131,6 +150,28 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
   private lastFight: CopyTargetTask | null = null;
   private profChain: string | null = null;
 
+  // TODO: account for this in copy target outfit
+  underwater(task: CopyTargetTask): boolean {
+    // Only run for copy target fights
+    if (!task.fightType) return false;
+    // Only run for _draggable_ copy target fights
+    if (!task.draggable) return false;
+    // Only run if we can actually go underwater
+    if (!checkUnderwater()) return false;
+    // Only run if taffy is worth it
+    if (
+      mallPrice($item`pulled green taffy`) >
+        (targettingMeat()
+          ? MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")
+          : get("valueOfAdventure")) &&
+      retrieveItem($item`pulled green taffy`)
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
   createOutfit(task: CopyTargetTask): Outfit {
     if (task.fightType) {
       const baseOutfit = undelay(task.outfit);
@@ -160,12 +201,25 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
         }
       }
 
+      if (
+        !spec.familiar &&
+        !get("_badlyRomanticArrows") &&
+        !this.underwater(task)
+      ) {
+        const familiar = $familiars`Reagnimated Gnome, Obtuse Angel`.find(have);
+        if (familiar) {
+          spec.familiar = familiar;
+        }
+      }
+
       if (isFree(globalOptions.target)) {
         return freeFightOutfit(spec);
       } else {
-        return task.do instanceof Location
-          ? meatTargetOutfit(spec, task.do)
-          : meatTargetOutfit(spec);
+        if (task.do instanceof Location) return meatTargetOutfit(spec, task.do);
+        if (this.underwater(task)) {
+          return meatTargetOutfit(spec, $location`The Briny Deeps`);
+        }
+        return meatTargetOutfit(spec);
       }
     }
 
