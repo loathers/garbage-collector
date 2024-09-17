@@ -14,6 +14,7 @@ import {
   Item,
   logprint,
   maximize,
+  Monster,
   myBasestat,
   myClass,
   myGardenType,
@@ -36,7 +37,10 @@ import {
   $coinmaster,
   $item,
   $items,
+  $monster,
+  $monsters,
   $skill,
+  $skills,
   $slots,
   Clan,
   examine,
@@ -62,12 +66,14 @@ import {
   bestJuneCleaverOption,
   checkGithubVersion,
   HIGHLIGHT,
+  isFreeAndCopyable,
   printEventLog,
   printLog,
   propertyManager,
   questStep,
   safeRestore,
   userConfirmDialog,
+  valueDrops,
 } from "./lib";
 import { meatMood, useBuffExtenders } from "./mood";
 import { potionSetup } from "./potions";
@@ -101,17 +107,19 @@ function ensureBarfAccess() {
   }
 }
 
+function defaultTarget() {
+  if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
+    return maxBy(
+      $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
+      valueDrops,
+    );
+  }
+  return $monster`Knob Goblin Elite Guard Captain`;
+}
+
 export function main(argString = ""): void {
   sinceKolmafiaRevision(27974); // Hallowe'en tracking
   checkGithubVersion();
-
-  Args.fill(globalOptions, argString);
-  globalOptions.prefs.yachtzeechain = false;
-  if (globalOptions.version) return; // Since we always print the version, all done!
-  if (globalOptions.help) {
-    Args.showHelp(globalOptions);
-    return;
-  }
 
   // Hit up main.php to get out of easily escapable choices
   visitUrl("main.php");
@@ -127,6 +135,18 @@ export function main(argString = ""): void {
   }
 
   allMallPrices();
+
+  Args.fill(globalOptions, argString);
+  if (!(globalOptions.target instanceof Monster)) {
+    globalOptions.target = defaultTarget();
+  }
+
+  globalOptions.prefs.yachtzeechain = false;
+  if (globalOptions.version) return; // Since we always print the version, all done!
+  if (globalOptions.help) {
+    Args.showHelp(globalOptions);
+    return;
+  }
 
   if (globalOptions.turns) {
     if (globalOptions.turns >= 0) {
