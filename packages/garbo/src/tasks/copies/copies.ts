@@ -28,21 +28,21 @@ import {
   property,
   SourceTerminal,
 } from "libram";
-import { acquire } from "../acquire";
-import { globalOptions } from "../config";
+import { acquire } from "../../acquire";
+import { globalOptions } from "../../config";
 import {
   averageTargetNet,
   HIGHLIGHT,
   isFreeAndCopyable,
   WISH_VALUE,
-} from "../lib";
-import { doingGregFight, gregReady } from "../resources";
-import { copyTargetCount, copyTargetSources } from "../target";
-import { puttyLeft } from "../target/lib";
-import { CopyTargetTask } from "./engine";
-import { GarboStrategy, Macro } from "../combat";
-import { wanderer } from "../garboWanderer";
-import { copyTargetConfirmInvocation } from "../target/fights";
+} from "../../lib";
+import { doingGregFight, gregReady } from "../../resources";
+import { copyTargetCount, copyTargetSources } from "../../target";
+import { puttyLeft } from "../../target/lib";
+import { CopyTargetTask } from "../engine";
+import { GarboStrategy, Macro } from "../../combat";
+import { wanderer } from "../../garboWanderer";
+import { copyTargetConfirmInvocation } from "../../target/fights";
 
 let monsterInEggnet: boolean;
 const mosterIsInEggnet = () =>
