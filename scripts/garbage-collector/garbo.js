@@ -11619,7 +11619,7 @@ function differentiate(monster) {
   return true;
 }
 function eggMonsters() {
-  return new Map(get("mimicEggMonsters").split(",").map(function(pair) {
+  return new Map(get("mimicEggMonsters").split(",").filter(Boolean).map(function(pair) {
     return pair.split(":").map(Number);
   }).map(function(_ref) {
     var _ref2 = _slicedToArray15(_ref, 2), id = _ref2[0], quantity = _ref2[1];
@@ -27485,7 +27485,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("77b5f216e771b4f4a9199d63c790d12c4c7cb83d", ")"));
+      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9a7f846718d44884cdf0ef4639e57020525a3f81", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia85.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
