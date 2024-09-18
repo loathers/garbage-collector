@@ -73,26 +73,24 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     }
 
     if (
+      mode === "free" &&
       gooseDroneEligible() &&
       get("gooseDronesRemaining") < copyTargetCount()
     ) {
       familiarMenu.push({
         familiar: $familiar`Grey Goose`,
         expectedValue:
-          mode === "free"
-            ? // It takes 9 experience to go from level 5 to 6 and emit a drone
-              clamp(
-                getModifier("Familiar Experience") / 9,
-                0,
-                // The limit to how valuable any emission can be is how many drones are actually gonna hit the copyTarget
-                copyTargetCount() - get("gooseDronesRemaining"),
-              ) * valueDrops(globalOptions.target)
-            : 0,
+            // It takes 9 experience to go from level 5 to 6 and emit a drone
+            clamp(
+              getModifier("Familiar Experience") / 9,
+              0,
+              // The limit to how valuable any emission can be is how many drones are actually gonna hit the copyTarget
+              copyTargetCount() - get("gooseDronesRemaining"),
+            ) * valueDrops(globalOptions.target),
         leprechaunMultiplier: 0,
         limit: "experience",
       });
     }
-
     if (canOpenRedPresent()) {
       familiarMenu.push({
         familiar: $familiar`Crimbo Shrub`,
