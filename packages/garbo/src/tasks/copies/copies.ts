@@ -122,11 +122,17 @@ export const CopyTargetFights: CopyTargetTask[] = (
           get("rainDohMonster") === globalOptions.target),
       completed: () => puttyLeft() < 1,
       do: (): void => {
-        visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
-        runChoice(1);
-        visitUrl(
-          `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
-        );
+        if (
+          have($item`Spooky Putty monster`) &&
+          get("spookyPuttyMonster") === globalOptions.target
+        ) {
+          use($item`Spooky Putty monster`);
+        } else if (
+          have($item`Rain-Doh box full of monster`) &&
+          get("rainDohMonster") === globalOptions.target
+        ) {
+          use($item`Rain-Doh box full of monster`);
+        }
       },
       fightType: "regular",
       amount: puttyLeft,
