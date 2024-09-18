@@ -102,7 +102,7 @@ function ensureBarfAccess() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27974); // Hallowe'en tracking
+  sinceKolmafiaRevision(28054); // Mimic egg tracking
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
