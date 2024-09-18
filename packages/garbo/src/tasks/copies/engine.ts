@@ -1,37 +1,37 @@
 import { DraggableFight } from "garbo-lib";
 import { Outfit } from "grimoire-kolmafia";
-import { mallPrice, retrieveItem, Location } from "kolmafia";
+import { Location, mallPrice, retrieveItem } from "kolmafia";
 import {
-  have,
-  $item,
-  $monster,
-  $location,
-  tryFindFreeRun,
-  $items,
-  Requirement,
-  $skill,
-  undelay,
   $familiar,
-  PocketProfessor,
-  set,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $skill,
   get,
+  have,
+  PocketProfessor,
+  Requirement,
+  set,
+  tryFindFreeRun,
+  undelay,
 } from "libram";
 import { GarboStrategy, Macro } from "../../combat";
 import { globalOptions } from "../../config";
 import { freeFightFamiliar } from "../../familiar";
 import {
   freeRunConstraints,
-  ltbRun,
-  targettingMeat,
-  MEAT_TARGET_MULTIPLIER,
   isFree,
+  ltbRun,
+  MEAT_TARGET_MULTIPLIER,
+  targettingMeat,
 } from "../../lib";
-import { toSpec, freeFightOutfit, meatTargetOutfit } from "../../outfit";
+import { freeFightOutfit, meatTargetOutfit, toSpec } from "../../outfit";
 import {
-  doingGregFight,
-  totalGregCharges,
-  hasMonsterReplacers,
   crateStrategy,
+  doingGregFight,
+  hasMonsterReplacers,
+  totalGregCharges,
 } from "../../resources";
 import { checkUnderwater } from "../../target/lib";
 import { BaseGarboEngine, CopyTargetTask } from "../engine";
@@ -48,7 +48,7 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
           get("_saberForceUses") < 5 &&
           get("_saberForceMonsterCount") < 2) ||
         get("_saberForceMonster") !== $monster`crate`,
-      do: $location`noob cave`,
+      do: $location`Noob Cave`,
       outfit: () => {
         const run =
           tryFindFreeRun(
@@ -228,8 +228,9 @@ export class CopyTargetEngine extends BaseGarboEngine<CopyTargetTask> {
     // But we don't want to reset our orb with a gregarious fight; that defeats the purpose
     const conditional = this.findAvailableFight("conditional");
     if (conditional?.fightType === "gregarious") {
-      if (this.available(this.SPECIAL_TASKS.saberCrate))
+      if (this.available(this.SPECIAL_TASKS.saberCrate)) {
         return this.SPECIAL_TASKS.saberCrate;
+      }
       const hasReplacers = hasMonsterReplacers();
 
       const skipConditionals = crateStrategy() === "Orb" && hasReplacers;

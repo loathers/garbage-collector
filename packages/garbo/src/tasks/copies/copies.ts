@@ -215,7 +215,7 @@ export const CopyTargetFights: CopyTargetTask[] = (
         have($item`Powerful Glove`) &&
         get("_powerfulGloveBatteryPowerUsed") <= 90,
       completed: () => get("_powerfulGloveBatteryPowerUsed") >= 95,
-      outfit: { acc1: $item`powerful glove ` },
+      outfit: { acc1: $item`Powerful Glove` },
       do: $location`The Dire Warren`,
       canInitializeWandererCounters: true,
       fightType: "gregarious",
