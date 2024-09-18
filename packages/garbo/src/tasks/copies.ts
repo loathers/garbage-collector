@@ -7,9 +7,11 @@ import {
   runCombat,
   toInt,
   use,
+  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
@@ -57,61 +59,36 @@ const mosterIsInEggnet = () =>
 export const CopyTargetFights: CopyTargetTask[] = (
   [
     {
-      name: "Chateau Painting",
+      name: "Digitize",
       ready: () =>
-        ChateauMantegna.have() &&
-        !ChateauMantegna.paintingFought() &&
-        ChateauMantegna.paintingMonster() === globalOptions.target,
-      completed: () => ChateauMantegna.paintingFought(),
-      do: (): void => {
-        ChateauMantegna.fightPainting();
-      },
-      fightType: "chainstarter",
-    },
-    {
-      name: "Combat Lover's Locket",
+        get("_sourceTerminalDigitizeMonster") === globalOptions.target &&
+        Counter.get("Digitize Monster") <= 0,
       completed: () =>
-        !CombatLoversLocket.availableLocketMonsters().includes(
-          globalOptions.target,
-        ),
-      do: (): void => {
-        CombatLoversLocket.reminisce(globalOptions.target);
-      },
-      fightType: "chainstarter",
+        Counter.get("Digitize Monster") > 0 ||
+        !(get("_sourceTerminalDigitizeMonster") === globalOptions.target),
+      do: () => wanderer().getTarget("wanderer"),
+      fightType: "wanderer",
+      amount: () =>
+        SourceTerminal.have() && SourceTerminal.getDigitizeUses() === 0 ? 1 : 0,
     },
     {
-      name: "Fax",
+      name: "Guaranteed Romantic Monster",
       ready: () =>
-        have($item`Clan VIP Lounge key`) &&
-        !get("_photocopyUsed") &&
-        have($item`photocopied monster`) &&
-        property.get("photocopyMonster") === globalOptions.target &&
-        getClanLounge()["deluxe fax machine"] !== undefined,
-      completed: () => get("_photocopyUsed"),
-      do: (): void => {
-        use($item`photocopied monster`);
-      },
-      fightType: "chainstarter",
+        get("_romanticFightsLeft") > 0 &&
+        Counter.get("Romantic Monster window begin") <= 0 &&
+        Counter.get("Romantic Monster window end") <= 0,
+      completed: () => get("_romanticFightsLeft") <= 0,
+      do: () => wanderer().getTarget("wanderer"),
+      fightType: "wanderer",
     },
     {
-      name: "Mimic Egg",
-      completed: () =>
-        ChestMimic.differentiableQuantity(globalOptions.target) < 1,
-      do: (): void => {
-        ChestMimic.differentiate(globalOptions.target);
-      },
-      fightType: "chainstarter",
-      amount: () => ChestMimic.differentiableQuantity(globalOptions.target),
-    },
-    {
-      name: "Rain Man",
-      ready: () => have($skill`Rain Man`) && myRain() >= 50,
-      completed: () => myRain() < 50,
-      do: (): void => {
-        HeavyRains.rainMan(globalOptions.target);
-      },
-      fightType: "chainstarter",
-      amount: () => Math.floor(myRain() / 50),
+      name: "Enamorang",
+      ready: () =>
+        Counter.get("Enamorang") <= 0 &&
+        get("enamorangMonster") === globalOptions.target,
+      completed: () => Counter.get("Enamorang") <= 0,
+      do: () => wanderer().getTarget("wanderer"),
+      fightType: "wanderer",
     },
     {
       name: "Time-Spinner",
@@ -217,38 +194,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       fightType: "regular",
     },
     {
-      name: "Digitize",
-      ready: () =>
-        get("_sourceTerminalDigitizeMonster") === globalOptions.target &&
-        Counter.get("Digitize Monster") <= 0,
-      completed: () =>
-        Counter.get("Digitize Monster") > 0 ||
-        !(get("_sourceTerminalDigitizeMonster") === globalOptions.target),
-      do: () => wanderer().getTarget("wanderer"),
-      fightType: "wanderer",
-      amount: () =>
-        SourceTerminal.have() && SourceTerminal.getDigitizeUses() === 0 ? 1 : 0,
-    },
-    {
-      name: "Guaranteed Romantic Monster",
-      ready: () =>
-        get("_romanticFightsLeft") > 0 &&
-        Counter.get("Romantic Monster window begin") <= 0 &&
-        Counter.get("Romantic Monster window end") <= 0,
-      completed: () => get("_romanticFightsLeft") <= 0,
-      do: () => wanderer().getTarget("wanderer"),
-      fightType: "wanderer",
-    },
-    {
-      name: "Enamorang",
-      ready: () =>
-        Counter.get("Enamorang") <= 0 &&
-        get("enamorangMonster") === globalOptions.target,
-      completed: () => Counter.get("Enamorang") <= 0,
-      do: () => wanderer().getTarget("wanderer"),
-      fightType: "wanderer",
-    },
-    {
       name: "Macrometeorite",
       ready: () =>
         gregReady() &&
@@ -292,8 +237,73 @@ export const CopyTargetFights: CopyTargetTask[] = (
         equip: $items`backup camera`,
         modes: { backupcamera: "meat" },
       },
+      pre: () => {
+        if (
+          have($skill`Musk of the Moose`) &&
+          !have($effect`Musk of the Moose`)
+        ) {
+          useSkill($skill`Musk of the Moose`);
+        }
+      },
       fightType: "backup",
       amount: () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
+    },
+    {
+      name: "Chateau Painting",
+      ready: () =>
+        ChateauMantegna.have() &&
+        !ChateauMantegna.paintingFought() &&
+        ChateauMantegna.paintingMonster() === globalOptions.target,
+      completed: () => ChateauMantegna.paintingFought(),
+      do: (): void => {
+        ChateauMantegna.fightPainting();
+      },
+      fightType: "chainstarter",
+    },
+    {
+      name: "Combat Lover's Locket",
+      completed: () =>
+        !CombatLoversLocket.availableLocketMonsters().includes(
+          globalOptions.target,
+        ),
+      do: (): void => {
+        CombatLoversLocket.reminisce(globalOptions.target);
+      },
+      fightType: "chainstarter",
+    },
+    {
+      name: "Fax",
+      ready: () =>
+        have($item`Clan VIP Lounge key`) &&
+        !get("_photocopyUsed") &&
+        have($item`photocopied monster`) &&
+        property.get("photocopyMonster") === globalOptions.target &&
+        getClanLounge()["deluxe fax machine"] !== undefined,
+      completed: () => get("_photocopyUsed"),
+      do: (): void => {
+        use($item`photocopied monster`);
+      },
+      fightType: "chainstarter",
+    },
+    {
+      name: "Mimic Egg",
+      completed: () =>
+        ChestMimic.differentiableQuantity(globalOptions.target) < 1,
+      do: (): void => {
+        ChestMimic.differentiate(globalOptions.target);
+      },
+      fightType: "chainstarter",
+      amount: () => ChestMimic.differentiableQuantity(globalOptions.target),
+    },
+    {
+      name: "Rain Man",
+      ready: () => have($skill`Rain Man`) && myRain() >= 50,
+      completed: () => myRain() < 50,
+      do: (): void => {
+        HeavyRains.rainMan(globalOptions.target);
+      },
+      fightType: "chainstarter",
+      amount: () => Math.floor(myRain() / 50),
     },
     {
       name: "Professor MeatChain",
