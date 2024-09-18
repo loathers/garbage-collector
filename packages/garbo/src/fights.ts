@@ -398,7 +398,7 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
   }
 
   if (isFreeAndCopyable(globalOptions.target)) {
-    return { familiar: freeFightFamiliar() };
+    return { familiar: freeFightFamiliar({ mode: "target" }) };
   }
 
   return { familiar: meatFamiliar() };
