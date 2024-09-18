@@ -57,9 +57,10 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   duplicate?: Delayed<boolean>;
 };
 
-export type CopyTargetTask = GarboTask & {
-  canInitializeWandererCounters: boolean;
-} & (
+export type CopyTargetTask = (GarboTask & {
+  canInitializeWandererCounters?: boolean;
+}) &
+  (
     | {
         fightType:
           | "wanderer"
@@ -71,7 +72,7 @@ export type CopyTargetTask = GarboTask & {
           | "emergencychainstarter"
           | "fake";
         wrongEncounterName?: boolean;
-        amount: () => number;
+        amount?: () => number;
       }
     | { fightType?: undefined }
   );

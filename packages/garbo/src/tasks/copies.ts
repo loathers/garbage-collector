@@ -24,6 +24,7 @@ import {
   have,
   HeavyRains,
   property,
+  SourceTerminal,
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
@@ -33,7 +34,7 @@ import {
   isFreeAndCopyable,
   WISH_VALUE,
 } from "../lib";
-import { gregReady } from "../resources";
+import { doingGregFight, gregReady } from "../resources";
 import { copyTargetCount, copyTargetSources } from "../target";
 import { puttyLeft } from "../target/lib";
 import { CopyTargetTask } from "./engine";
@@ -65,15 +66,10 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         ChateauMantegna.fightPainting();
       },
-      canInitializeWandererCounters: false,
       fightType: "chainstarter",
     },
     {
       name: "Combat Lover's Locket",
-      ready: () =>
-        CombatLoversLocket.availableLocketMonsters().includes(
-          globalOptions.target,
-        ),
       completed: () =>
         !CombatLoversLocket.availableLocketMonsters().includes(
           globalOptions.target,
@@ -81,7 +77,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         CombatLoversLocket.reminisce(globalOptions.target);
       },
-      canInitializeWandererCounters: false,
       fightType: "chainstarter",
     },
     {
@@ -96,19 +91,17 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`photocopied monster`);
       },
-      canInitializeWandererCounters: false,
       fightType: "chainstarter",
     },
     {
       name: "Mimic Egg",
-      ready: () => ChestMimic.differentiableQuantity(globalOptions.target) >= 1,
       completed: () =>
         ChestMimic.differentiableQuantity(globalOptions.target) < 1,
       do: (): void => {
         ChestMimic.differentiate(globalOptions.target);
       },
-      canInitializeWandererCounters: false,
       fightType: "chainstarter",
+      amount: () => ChestMimic.differentiableQuantity(globalOptions.target),
     },
     {
       name: "Rain Man",
@@ -117,8 +110,8 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         HeavyRains.rainMan(globalOptions.target);
       },
-      canInitializeWandererCounters: false,
       fightType: "chainstarter",
+      amount: () => Math.floor(myRain() / 50),
     },
     {
       name: "Time-Spinner",
@@ -137,8 +130,11 @@ export const CopyTargetFights: CopyTargetTask[] = (
           `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
         );
       },
-      canInitializeWandererCounters: false,
       fightType: "regular",
+      amount: () =>
+        have($item`Time-Spinner`)
+          ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
+          : 0,
     },
     {
       name: "Spooky Putty & Rain-Doh",
@@ -155,8 +151,8 @@ export const CopyTargetFights: CopyTargetTask[] = (
           `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
         );
       },
-      canInitializeWandererCounters: false,
       fightType: "regular",
+      amount: puttyLeft,
     },
     {
       name: "4-d Camera",
@@ -168,7 +164,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`shaking 4-d camera`);
       },
-      canInitializeWandererCounters: false,
       fightType: "regular",
     },
     {
@@ -181,7 +176,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`ice sculpture`);
       },
-      canInitializeWandererCounters: false,
       fightType: "regular",
     },
     {
@@ -194,7 +188,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`envyfish egg`);
       },
-      canInitializeWandererCounters: false,
       fightType: "regular",
     },
     {
@@ -208,7 +201,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`screencapped monster`);
       },
-      canInitializeWandererCounters: false,
       fightType: "regular",
     },
     {
@@ -222,7 +214,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: (): void => {
         use($item`sticky clay homunculus`);
       },
-      canInitializeWandererCounters: false,
       fightType: "regular",
     },
     {
@@ -234,8 +225,9 @@ export const CopyTargetFights: CopyTargetTask[] = (
         Counter.get("Digitize Monster") > 0 ||
         !(get("_sourceTerminalDigitizeMonster") === globalOptions.target),
       do: () => wanderer().getTarget("wanderer"),
-      canInitializeWandererCounters: false,
       fightType: "wanderer",
+      amount: () =>
+        SourceTerminal.have() && SourceTerminal.getDigitizeUses() === 0 ? 1 : 0,
     },
     {
       name: "Guaranteed Romantic Monster",
@@ -245,7 +237,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
         Counter.get("Romantic Monster window end") <= 0,
       completed: () => get("_romanticFightsLeft") <= 0,
       do: () => wanderer().getTarget("wanderer"),
-      canInitializeWandererCounters: false,
       fightType: "wanderer",
     },
     {
@@ -255,7 +246,6 @@ export const CopyTargetFights: CopyTargetTask[] = (
         get("enamorangMonster") === globalOptions.target,
       completed: () => Counter.get("Enamorang") <= 0,
       do: () => wanderer().getTarget("wanderer"),
-      canInitializeWandererCounters: false,
       fightType: "wanderer",
     },
     {
@@ -268,6 +258,10 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: $location`Noob Cave`,
       canInitializeWandererCounters: true,
       fightType: "gregarious",
+      amount: () =>
+        doingGregFight() && have($skill`Meteor Lore`)
+          ? 10 - get("_macrometeoriteUses")
+          : 0,
     },
     {
       name: "Powerful Glove",
@@ -280,6 +274,10 @@ export const CopyTargetFights: CopyTargetTask[] = (
       do: $location`The Dire Warren`,
       canInitializeWandererCounters: true,
       fightType: "gregarious",
+      amount: () =>
+        doingGregFight() && have($item`Powerful Glove`)
+          ? Math.min((100 - get("_powerfulGloveBatteryPowerUsed")) / 10)
+          : 0,
     },
     {
       name: "Backup",
@@ -295,15 +293,27 @@ export const CopyTargetFights: CopyTargetTask[] = (
         modes: { backupcamera: "meat" },
       },
       fightType: "backup",
+      amount: () => (have($item`backup camera`) ? 11 - get("_backUpUses") : 0),
     },
     {
       name: "Professor MeatChain",
-      ready: () =>
-        have($familiar`Pocket Professor`) && !get("_garbo_meatChain", false),
-      completed: () => get("_garbo_meatChain", false),
+      completed: () => true,
       do: (): void => {},
-      canInitializeWandererCounters: true,
       fightType: "fake",
+      amount: () =>
+        have($familiar`Pocket Professor`) && !get("_garbo_meatChain", false)
+          ? Math.max(10 - get("_pocketProfessorLectures"), 0)
+          : 0,
+    },
+    {
+      name: "Professor WeightChain",
+      completed: () => true,
+      do: (): void => {},
+      fightType: "fake",
+      amount: () =>
+        have($familiar`Pocket Professor`) && !get("_garbo_weightChain", false)
+          ? Math.min(15 - get("_pocketProfessorLectures"), 5)
+          : 0,
     },
     {
       name: "Mimic Egg (from clinic)",
@@ -316,8 +326,9 @@ export const CopyTargetFights: CopyTargetTask[] = (
         ChestMimic.receive(globalOptions.target);
         ChestMimic.differentiate(globalOptions.target);
       },
-      canInitializeWandererCounters: true,
+      canInitializeWandererCounters: false,
       fightType: "emergencychainstarter",
+      amount: () => 0,
     },
     {
       name: "Pocket Wish",
@@ -370,8 +381,9 @@ export const CopyTargetFights: CopyTargetTask[] = (
       },
       canInitializeWandererCounters: true,
       fightType: "emergencychainstarter",
+      amount: () => 0,
     },
-  ] as Omit<CopyTargetTask, "outfit" | "combat" | "spendsTurn">[]
+  ] as const
 ).map((partialTask) => ({
   combat: new GarboStrategy(() => Macro.target(partialTask.name)),
   outfit: {},
