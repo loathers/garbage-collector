@@ -14,7 +14,6 @@ import {
   Item,
   logprint,
   maximize,
-  Monster,
   myBasestat,
   myClass,
   myGardenType,
@@ -137,7 +136,7 @@ export function main(argString = ""): void {
   allMallPrices();
 
   Args.fill(globalOptions, argString);
-  if (!(globalOptions.target instanceof Monster)) {
+  if (globalOptions.target === $monster.none) {
     globalOptions.target = defaultTarget();
   }
 

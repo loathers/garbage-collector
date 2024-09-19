@@ -1,6 +1,6 @@
 import { Args } from "grimoire-kolmafia";
-import { Item, Monster, print } from "kolmafia";
-import { $item, $items, get } from "libram";
+import { Item, print } from "kolmafia";
+import { $item, $items, $monster, get } from "libram";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -121,7 +121,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     target: Args.monster({
       setting: "",
       help: "The monster to use all copies on",
-      default: { name: "" } as unknown as Monster,
+      default: $monster.none,
       hidden: true,
     }),
     version: Args.flag({
