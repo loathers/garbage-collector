@@ -732,6 +732,7 @@ const BarfTurnTasks: GarboTask[] = [
           .duplicate()
           .skill($skill`Free-For-All`),
       ),
+      sobriety: "sober",
       duplicate: true,
     },
   ),
