@@ -277,14 +277,12 @@ export function possibleFreeGiantSandwormQuestTentacleFights(): number {
   );
 }
 
-//  Use free fights on melanges if we have Tote/Squint and prices are reasonable.
+//  Use free fights on melanges if prices are reasonable
 export const FreeGiantSandwormQuest: Quest<GarboTask> = {
   name: "Free Giant Sandworm",
   tasks: SandwormTasks,
   ready: () =>
     sober() &&
-    mallPrice($item`drum machine`) < 0.02 * mallPrice($item`spice melange`) &&
-    (have($effect`Steely-Eyed Squint`) ||
-      (have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed"))) &&
-    have($item`January's Garbage Tote`),
+    expectedFreeGiantSandwormQuestFights() > 0 &&
+    mallPrice($item`drum machine`) < 0.01 * mallPrice($item`spice melange`),
 };
