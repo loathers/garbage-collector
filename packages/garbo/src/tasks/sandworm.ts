@@ -47,7 +47,7 @@ function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   ) {
     copy.equip?.push($item`broken champagne bottle`);
   }
-  if (have($item`Lil' Doctor™ bag`) && get("_otoscopeUsed")) {
+  if (have($item`Lil' Doctor™ bag`) && get("_otoscopeUsed") < 3) {
     copy.equip?.push($item`Lil' Doctor™ bag`);
   }
   const familiar = bestFairy();
