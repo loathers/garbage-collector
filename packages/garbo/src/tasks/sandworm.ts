@@ -130,7 +130,6 @@ const SandwormTasks: GarboFreeFightTask[] = [
         get("garbageChampagneCharge") > 0,
       completed: () => have($item`broken champagne bottle`),
       do: () => cliExecute("fold broken champagne bottle"),
-      spendsTurn: false,
     },
   ].map(nonSandwormTask),
   ...[
@@ -249,7 +248,6 @@ const SandwormTasks: GarboFreeFightTask[] = [
       ready: () => have($item`January's Garbage Tote`),
       completed: () => have($item`wad of used tape`),
       do: () => cliExecute("fold wad of used tape"),
-      spendsTurn: false,
     },
   ],
 ].map(nonSandwormTask);
