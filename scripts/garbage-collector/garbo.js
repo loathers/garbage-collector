@@ -27485,7 +27485,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9a7f846718d44884cdf0ef4639e57020525a3f81", ")"));
+      (0, import_kolmafia85.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9cf184021b2002e57388b06a636e0027f8d2e9ca", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia85.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -42521,6 +42521,7 @@ var BarfTurnTasks = [{
   combat: new GarboStrategy(function() {
     return Macro2.if_(globalOptions.target, Macro2.meatKill()).familiarActions().duplicate().skill($skill(_templateObject1097 || (_templateObject1097 = _taggedTemplateLiteral119(["Free-For-All"]))));
   }),
+  sobriety: "sober",
   duplicate: true
 }), wanderTask("freefight", {}, {
   name: "Heavy Rains Lightning Strike",
