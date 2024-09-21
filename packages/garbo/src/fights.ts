@@ -178,9 +178,16 @@ import { wanderer } from "./garboWanderer";
 import { runTargetFight } from "./target/execution";
 import { TargetFightRunOptions } from "./target/staging";
 import { FreeFightQuest, runGarboQuests } from "./tasks";
-import { expectedFreeFights, possibleTentacleFights } from "./tasks/freeFight";
+import {
+  expectedFreeFightQuestFights,
+  possibleFreeFightQuestTentacleFights,
+} from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
-import { SandwormQuest } from "./tasks/sandworm";
+import {
+  expectedSandwormQuestFights,
+  possibleSandwormQuestTentacleFights,
+  SandwormQuest,
+} from "./tasks/sandworm";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -2155,21 +2162,27 @@ function killRobortCreaturesForFree() {
   }
 }
 
+// Expected free fights, not including tentacles
 export function estimatedFreeFights(): number {
   return (
     sum(freeFightSources, (source: FreeFight) => {
       const avail = source.available();
       return typeof avail === "number" ? avail : toInt(avail);
-    }) + expectedFreeFights()
+    }) +
+    expectedFreeFightQuestFights() +
+    expectedSandwormQuestFights()
   );
 }
 
+// Possible additional free fights from tentacles
 export function estimatedTentacles(): number {
   return (
     sum(freeFightSources, (source: FreeFight) => {
       const avail = source.tentacle ? source.available() : 0;
       return typeof avail === "number" ? avail : toInt(avail);
-    }) + possibleTentacleFights()
+    }) +
+    possibleFreeFightQuestTentacleFights() +
+    possibleSandwormQuestTentacleFights()
   );
 }
 

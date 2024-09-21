@@ -255,7 +255,8 @@ const SandwormTasks: GarboFreeFightTask[] = [
   ],
 ].map(nonSandwormTask);
 
-export function expectedSandworms(): number {
+// Expected free sandworm fights, not including tentacles
+export function expectedSandwormQuestFights(): number {
   const availableFights = SandwormTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
@@ -265,7 +266,8 @@ export function expectedSandworms(): number {
   );
 }
 
-export function possibleSandwormTentacleFights(): number {
+// Possible additional free fights from tentacles
+export function possibleSandwormQuestTentacleFights(): number {
   const availableFights = SandwormTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
@@ -277,7 +279,7 @@ export function possibleSandwormTentacleFights(): number {
 
 //  Use free fights on melanges if we have Tote/Squint and prices are reasonable.
 export const SandwormQuest: Quest<GarboTask> = {
-  name: "Sandworm",
+  name: "Free Giant Sandworms",
   tasks: SandwormTasks,
   ready: () =>
     sober() &&

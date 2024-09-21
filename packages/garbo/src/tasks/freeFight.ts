@@ -804,17 +804,16 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // closed-circuit pay phone (make into it's own Quest)
 ].map(freeFightTask);
 
-export function expectedFreeFights(): number {
+// Expected free fights, not including tentacles
+export function expectedFreeFightQuestFights(): number {
   const availableFights = FreeFightTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
-  return sum(
-    availableFights,
-    ({ combatCount, tentacle }) => combatCount() * (tentacle ? 2 : 1),
-  );
+  return sum(availableFights, ({ combatCount }) => combatCount());
 }
 
-export function possibleTentacleFights(): number {
+// Possible additional free fights from tentacles
+export function possibleFreeFightQuestTentacleFights(): number {
   const availableFights = FreeFightTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
