@@ -31,8 +31,8 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
-import { GarboTask } from "./engine";
-import { GarboFreeFightTask } from "./freeFight";
+import { GarboTask } from "../tasks/engine";
+import { GarboFreeFightTask } from "../tasks/freeFight";
 import { bestFairy } from "../familiar";
 import { sober } from "../lib";
 
@@ -256,7 +256,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
 ].map(nonSandwormTask);
 
 // Expected free sandworm fights, not including tentacles
-export function expectedSandwormQuestFights(): number {
+export function expectedFreeGiantSandwormQuestFights(): number {
   const availableFights = SandwormTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
@@ -267,7 +267,7 @@ export function expectedSandwormQuestFights(): number {
 }
 
 // Possible additional free fights from tentacles
-export function possibleSandwormQuestTentacleFights(): number {
+export function possibleFreeGiantSandwormQuestTentacleFights(): number {
   const availableFights = SandwormTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
@@ -278,8 +278,8 @@ export function possibleSandwormQuestTentacleFights(): number {
 }
 
 //  Use free fights on melanges if we have Tote/Squint and prices are reasonable.
-export const SandwormQuest: Quest<GarboTask> = {
-  name: "Free Giant Sandworms",
+export const FreeGiantSandwormQuest: Quest<GarboTask> = {
+  name: "Free Giant Sandworm",
   tasks: SandwormTasks,
   ready: () =>
     sober() &&

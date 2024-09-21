@@ -184,10 +184,10 @@ import {
 } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
 import {
-  expectedSandwormQuestFights,
-  possibleSandwormQuestTentacleFights,
-  SandwormQuest,
-} from "./tasks/sandworm";
+  expectedFreeGiantSandwormQuestFights,
+  FreeGiantSandwormQuest,
+  possibleFreeGiantSandwormQuestTentacleFights,
+} from "./quests/freeGiantSandworm";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1685,7 +1685,7 @@ export function freeFights(): void {
 
   // TODO: Run grimorized free fights until all are converted
   // TODO: freeFightMood()
-  runGarboQuests([PostQuest(), FreeFightQuest, SandwormQuest]);
+  runGarboQuests([PostQuest(), FreeFightQuest, FreeGiantSandwormQuest]);
 
   tryFillLatte();
   postFreeFightDailySetup();
@@ -2170,7 +2170,7 @@ export function estimatedFreeFights(): number {
       return typeof avail === "number" ? avail : toInt(avail);
     }) +
     expectedFreeFightQuestFights() +
-    expectedSandwormQuestFights()
+    expectedFreeGiantSandwormQuestFights()
   );
 }
 
@@ -2182,7 +2182,7 @@ export function estimatedTentacles(): number {
       return typeof avail === "number" ? avail : toInt(avail);
     }) +
     possibleFreeFightQuestTentacleFights() +
-    possibleSandwormQuestTentacleFights()
+    possibleFreeGiantSandwormQuestTentacleFights()
   );
 }
 
