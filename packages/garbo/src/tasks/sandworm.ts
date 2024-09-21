@@ -34,6 +34,7 @@ import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { GarboFreeFightTask } from "./freeFight";
 import { bestFairy } from "../familiar";
+import { sober } from "../lib";
 
 function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   const copy = { ...spec, equip: [...(spec.equip ?? [])] };
@@ -70,8 +71,6 @@ function sandwormOutfit(spec: OutfitSpec = {}): Outfit {
 const DEFAULT_SANDWORM_TASK = {
   // GarboTask
   combat: new GarboStrategy(() => Macro.abort()),
-  do: () => use($item`drum machine`),
-  outfit: sandwormOutfit,
   effects: () => [
     ...(have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3
       ? $effects`Feeling Lost`
@@ -80,6 +79,8 @@ const DEFAULT_SANDWORM_TASK = {
       ? $effects`Steely-Eyed Squint`
       : []),
   ],
+  do: () => use($item`drum machine`),
+  outfit: sandwormOutfit,
   spendsTurn: false,
   // GarboFreeFightTask
   tentacle: true,
@@ -94,10 +95,12 @@ function sandwormTask(
 }
 
 const NON_SANDWORM_TASK = {
+  // GarboTask
   combat: new GarboStrategy(() => Macro.abort()),
   outfit: () => new Outfit(),
-  combatCount: () => 0,
   spendsTurn: false,
+  // GarboFreeFightTask
+  combatCount: () => 0,
   tentacle: false,
 };
 
@@ -277,6 +280,7 @@ export const SandwormQuest: Quest<GarboTask> = {
   name: "Sandworm",
   tasks: SandwormTasks,
   ready: () =>
+    sober() &&
     mallPrice($item`drum machine`) < 0.02 * mallPrice($item`spice melange`) &&
     (have($effect`Steely-Eyed Squint`) ||
       (have($skill`Steely-Eyed Squint`) && !get("_steelyEyedSquintUsed"))) &&
