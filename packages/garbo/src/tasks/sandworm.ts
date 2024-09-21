@@ -85,158 +85,174 @@ const DEFAULT_SANDWORM_TASK = {
   tentacle: true,
 };
 
-const NON_SANDWORM_TASK = {
-  effects: () => [],
-  outfit: () => new Outfit(),
-  combatCount: () => 0,
-  tentacle: false,
-};
-
 function sandwormTask(
   fragment: Omit<GarboFreeFightTask, keyof typeof DEFAULT_SANDWORM_TASK> &
     Partial<Pick<GarboFreeFightTask, keyof typeof DEFAULT_SANDWORM_TASK>>,
 ) {
   const fullTask = { ...DEFAULT_SANDWORM_TASK, ...fragment };
-
   return { ...fullTask, limit: { skip: 5 + fullTask.combatCount() } };
+}
+
+const NON_SANDWORM_TASK = {
+  combat: new GarboStrategy(() => Macro.abort()),
+  outfit: () => new Outfit(),
+  combatCount: () => 0,
+  spendsTurn: false,
+  tentacle: false,
+};
+
+function nonSandwormTask(
+  fragment: Omit<GarboFreeFightTask, keyof typeof NON_SANDWORM_TASK> &
+    Partial<Pick<GarboFreeFightTask, keyof typeof NON_SANDWORM_TASK>>,
+) {
+  const fullTask = { ...NON_SANDWORM_TASK, ...fragment };
+  return { ...fullTask, limit: { skip: 5 } };
 }
 
 const sandwormMacro = () => Macro.trySingAlong().tryHaveSkill($skill`Otoscope`);
 
 const SandwormTasks: GarboFreeFightTask[] = [
-  {
-    name: "Ensure Beach Access",
-    ready: () => get("lastDesertUnlock") !== myAscensions(),
-    completed: () =>
-      have($item`bitchin' meatcar`) ||
-      have($item`Desert Bus pass`) ||
-      myPath() === $path`Actually Ed the Undying`,
-    do: () => create($item`bitchin' meatcar`),
-    ...NON_SANDWORM_TASK,
-  },
-  {
-    name: "Fold broken champagne bottle",
-    ready: () =>
-      have($item`January's Garbage Tote`) &&
-      !have($item`broken champagne bottle`) &&
-      get("garbageChampagneCharge") > 0,
-    completed: () => have($item`broken champagne bottle`),
-    do: () => cliExecute("fold broken champagne bottle"),
-    ...NON_SANDWORM_TASK,
-  },
-  {
-    name: $skill`Chest X-Ray`.name,
-    ready: () => have($item`Lil' Doctor™ bag`),
-    completed: () => get("_chestXRayUsed") >= 3,
-    combat: new GarboStrategy(() =>
-      sandwormMacro().trySkill($skill`Chest X-Ray`),
-    ),
-    outfit: () => sandwormOutfit({ equip: $items`Lil' Doctor™ bag` }),
-    combatCount: () => clamp(3 - get("_chestXRayUsed"), 0, 3),
-  },
-  {
-    name: $item`Apriling band quad tom`.name,
-    ready: () => have($item`Apriling band quad tom`),
-    completed: () => $item`Apriling band quad tom`.dailyusesleft === 0,
-    do: () => {
-      AprilingBandHelmet.play("Apriling band quad tom");
-      visitUrl("main.php");
-      return runCombat();
+  ...[
+    {
+      name: "Ensure Beach Access",
+      ready: () => get("lastDesertUnlock") !== myAscensions(),
+      completed: () =>
+        have($item`bitchin' meatcar`) ||
+        have($item`Desert Bus pass`) ||
+        myPath() === $path`Actually Ed the Undying`,
+      do: () => create($item`bitchin' meatcar`),
     },
-    combat: new GarboStrategy(() => sandwormMacro().basicCombat()),
-    combatCount: () => $item`Apriling band quad tom`.dailyusesleft,
-  },
-  {
-    name: $skill`Asdon Martin: Missile Launcher`.name,
-    ready: () => getWorkshed() === $item`Asdon Martin keyfob (on ring)`,
-    completed: () => get("_missileLauncherUsed"),
-    prepare: () => AsdonMartin.fillTo(100),
-    combat: new GarboStrategy(() =>
-      sandwormMacro().trySkill($skill`Asdon Martin: Missile Launcher`),
-    ),
-    combatCount: () => (!get("_missileLauncherUsed") ? 1 : 0),
-  },
-  {
-    name: $skill`Gingerbread Mob Hit`.name,
-    ready: () => have($skill`Gingerbread Mob Hit`),
-    completed: () => get("_gingerbreadMobHitUsed"),
-    combat: new GarboStrategy(() =>
-      sandwormMacro().trySkill($skill`Gingerbread Mob Hit`),
-    ),
-    combatCount: () => (!get("_gingerbreadMobHitUsed") ? 1 : 0),
-  },
-  {
-    name: $skill`Shattering Punch`.name,
-    ready: () => have($skill`Shattering Punch`),
-    completed: () => get("_shatteringPunchUsed") >= 3,
-    combat: new GarboStrategy(() =>
-      sandwormMacro().trySkill($skill`Shattering Punch`),
-    ),
-    combatCount: () => clamp(3 - get("_shatteringPunchUsed"), 0, 3),
-  },
-  {
-    name: $item`replica bat-oomerang`.name,
-    ready: () => have($item`replica bat-oomerang`),
-    completed: () => get("_usedReplicaBatoomerang") >= 3,
-    combat: new GarboStrategy(() =>
-      sandwormMacro().tryItem($item`replica bat-oomerang`),
-    ),
-    combatCount: () => clamp(3 - get("_usedReplicaBatoomerang"), 0, 3),
-  },
-  {
-    name: $skill`Shocking Lick`.name,
-    ready: () => globalOptions.ascend && get("shockingLickCharges") > 0,
-    completed: () => get("shockingLickCharges") === 0,
-    combat: new GarboStrategy(() =>
-      sandwormMacro().trySkill($skill`Shocking Lick`),
-    ),
-    combatCount: () => get("shockingLickCharges"),
-  },
-  {
-    name: $skill`Lightning Strike`.name,
-    ready: () => have($skill`Lightning Strike`) && myLightning() >= 20,
-    completed: () => myLightning() < 20,
-    combat: new GarboStrategy(() =>
-      sandwormMacro().trySkill($skill`Lightning Strike`),
-    ),
-    combatCount: () => floor(myLightning() / 20),
-  },
-  {
-    name: $skill`Free-For-All`.name,
-    ready: () => have($skill`Free-For-All`),
-    completed: () => have($effect`Everything Looks Red`),
-    combat: new GarboStrategy(() =>
-      sandwormMacro().trySkill($skill`Free-For-All`),
-    ),
-    combatCount: () => (!have($effect`Everything Looks Red`) ? 1 : 0),
-  },
-  {
-    name: "Yellow Ray",
-    ready: () => have($skill`Fondeluge`) || have($item`Jurassic Parka`),
-    completed: () => have($effect`Everything Looks Yellow`),
-    combat: new GarboStrategy(() =>
-      sandwormMacro()
-        .tryHaveSkill($skill`Fondeluge`)
-        .trySkill($skill`Spit jurassic acid`),
-    ),
-    outfit: () =>
-      sandwormOutfit(
-        have($skill`Fondeluge`)
-          ? {}
-          : have($item`Jurassic Parka`)
-            ? { shirt: $items`Jurassic Parka`, modes: { parka: "dilophosaur" } }
-            : {},
+    {
+      name: "Fold broken champagne bottle",
+      ready: () =>
+        have($item`January's Garbage Tote`) &&
+        !have($item`broken champagne bottle`) &&
+        get("garbageChampagneCharge") > 0,
+      completed: () => have($item`broken champagne bottle`),
+      do: () => cliExecute("fold broken champagne bottle"),
+      spendsTurn: false,
+    },
+  ].map(nonSandwormTask),
+  ...[
+    {
+      name: $skill`Chest X-Ray`.name,
+      ready: () => have($item`Lil' Doctor™ bag`),
+      completed: () => get("_chestXRayUsed") >= 3,
+      combat: new GarboStrategy(() =>
+        sandwormMacro().trySkill($skill`Chest X-Ray`),
       ),
-    combatCount: () => (!have($effect`Everything Looks Yellow`) ? 1 : 0),
-  },
-  {
-    name: "Fold wad of used tape",
-    ready: () => have($item`January's Garbage Tote`),
-    completed: () => have($item`wad of used tape`),
-    do: () => cliExecute("fold wad of used tape"),
-    ...NON_SANDWORM_TASK,
-  },
-].map(sandwormTask);
+      outfit: () => sandwormOutfit({ equip: $items`Lil' Doctor™ bag` }),
+      combatCount: () => clamp(3 - get("_chestXRayUsed"), 0, 3),
+    },
+    {
+      name: $item`Apriling band quad tom`.name,
+      ready: () => have($item`Apriling band quad tom`),
+      completed: () => $item`Apriling band quad tom`.dailyusesleft === 0,
+      do: () => {
+        AprilingBandHelmet.play("Apriling band quad tom");
+        visitUrl("main.php");
+        return runCombat();
+      },
+      combat: new GarboStrategy(() => sandwormMacro().basicCombat()),
+      combatCount: () => $item`Apriling band quad tom`.dailyusesleft,
+    },
+    {
+      name: $skill`Asdon Martin: Missile Launcher`.name,
+      ready: () => getWorkshed() === $item`Asdon Martin keyfob (on ring)`,
+      completed: () => get("_missileLauncherUsed"),
+      prepare: () => AsdonMartin.fillTo(100),
+      combat: new GarboStrategy(() =>
+        sandwormMacro().trySkill($skill`Asdon Martin: Missile Launcher`),
+      ),
+      combatCount: () => (!get("_missileLauncherUsed") ? 1 : 0),
+    },
+    {
+      name: $skill`Gingerbread Mob Hit`.name,
+      ready: () => have($skill`Gingerbread Mob Hit`),
+      completed: () => get("_gingerbreadMobHitUsed"),
+      combat: new GarboStrategy(() =>
+        sandwormMacro().trySkill($skill`Gingerbread Mob Hit`),
+      ),
+      combatCount: () => (!get("_gingerbreadMobHitUsed") ? 1 : 0),
+    },
+    {
+      name: $skill`Shattering Punch`.name,
+      ready: () => have($skill`Shattering Punch`),
+      completed: () => get("_shatteringPunchUsed") >= 3,
+      combat: new GarboStrategy(() =>
+        sandwormMacro().trySkill($skill`Shattering Punch`),
+      ),
+      combatCount: () => clamp(3 - get("_shatteringPunchUsed"), 0, 3),
+    },
+    {
+      name: $item`replica bat-oomerang`.name,
+      ready: () => have($item`replica bat-oomerang`),
+      completed: () => get("_usedReplicaBatoomerang") >= 3,
+      combat: new GarboStrategy(() =>
+        sandwormMacro().tryItem($item`replica bat-oomerang`),
+      ),
+      combatCount: () => clamp(3 - get("_usedReplicaBatoomerang"), 0, 3),
+    },
+    {
+      name: $skill`Shocking Lick`.name,
+      ready: () => globalOptions.ascend && get("shockingLickCharges") > 0,
+      completed: () => get("shockingLickCharges") === 0,
+      combat: new GarboStrategy(() =>
+        sandwormMacro().trySkill($skill`Shocking Lick`),
+      ),
+      combatCount: () => get("shockingLickCharges"),
+    },
+    {
+      name: $skill`Lightning Strike`.name,
+      ready: () => have($skill`Lightning Strike`) && myLightning() >= 20,
+      completed: () => myLightning() < 20,
+      combat: new GarboStrategy(() =>
+        sandwormMacro().trySkill($skill`Lightning Strike`),
+      ),
+      combatCount: () => floor(myLightning() / 20),
+    },
+    {
+      name: $skill`Free-For-All`.name,
+      ready: () => have($skill`Free-For-All`),
+      completed: () => have($effect`Everything Looks Red`),
+      combat: new GarboStrategy(() =>
+        sandwormMacro().trySkill($skill`Free-For-All`),
+      ),
+      combatCount: () => (!have($effect`Everything Looks Red`) ? 1 : 0),
+    },
+    {
+      name: "Yellow Ray",
+      ready: () => have($skill`Fondeluge`) || have($item`Jurassic Parka`),
+      completed: () => have($effect`Everything Looks Yellow`),
+      combat: new GarboStrategy(() =>
+        sandwormMacro()
+          .tryHaveSkill($skill`Fondeluge`)
+          .trySkill($skill`Spit jurassic acid`),
+      ),
+      outfit: () =>
+        sandwormOutfit(
+          have($skill`Fondeluge`)
+            ? {}
+            : have($item`Jurassic Parka`)
+              ? {
+                  shirt: $items`Jurassic Parka`,
+                  modes: { parka: "dilophosaur" },
+                }
+              : {},
+        ),
+      combatCount: () => (!have($effect`Everything Looks Yellow`) ? 1 : 0),
+    },
+  ].map(sandwormTask),
+  ...[
+    {
+      name: "Fold wad of used tape",
+      ready: () => have($item`January's Garbage Tote`),
+      completed: () => have($item`wad of used tape`),
+      do: () => cliExecute("fold wad of used tape"),
+      spendsTurn: false,
+    },
+  ],
+].map(nonSandwormTask);
 
 export function expectedSandworms(): number {
   const availableFights = SandwormTasks.filter(
