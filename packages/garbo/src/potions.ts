@@ -60,6 +60,7 @@ import {
   pillkeeperOpportunityCost,
   targetMeat,
   targetMeatDifferential,
+  targettingItems,
   targettingMeat,
   turnsToNC,
   withLocation,
@@ -631,6 +632,7 @@ export const pawPotions = Array.from(validPawWishes.keys())
         effect,
         canDouble: false,
         price: () =>
+          targettingItems() ||
           !CursedMonkeyPaw.have() ||
           CursedMonkeyPaw.wishes() === 0 ||
           failedWishes.includes(effect)
@@ -640,6 +642,7 @@ export const pawPotions = Array.from(validPawWishes.keys())
         acquire: () => (CursedMonkeyPaw.wishes() ? 1 : 0),
         use: () => {
           if (
+            targettingItems() ||
             !CursedMonkeyPaw.have() ||
             CursedMonkeyPaw.wishes() === 0 ||
             failedWishes.includes(effect)
