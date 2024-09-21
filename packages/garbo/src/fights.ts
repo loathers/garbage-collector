@@ -147,7 +147,6 @@ import {
   freeRest,
   freeRunConstraints,
   getUsingFreeBunnyBanish,
-  gooseDroneEligible,
   HIGHLIGHT,
   isFree,
   isFreeAndCopyable,
@@ -398,12 +397,8 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
     }
   }
 
-  if (gooseDroneEligible() && get("gooseDronesRemaining") < copyTargetCount()) {
-    return { familiar: $familiar`Grey Goose` };
-  }
-
   if (isFreeAndCopyable(globalOptions.target)) {
-    return { familiar: freeFightFamiliar() };
+    return { familiar: freeFightFamiliar({ mode: "target" }) };
   }
 
   return { familiar: meatFamiliar() };
