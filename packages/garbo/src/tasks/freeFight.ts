@@ -71,7 +71,10 @@ import { doCandyTrick, doingGregFight, shouldAugustCast } from "../resources";
 import { isFreeAndCopyable, kramcoGuaranteed, valueDrops } from "../lib";
 import { wanderer } from "../garboWanderer";
 
-type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
+export type GarboFreeFightTask = Extract<
+  GarboTask,
+  { combat: GarboStrategy }
+> & {
   combatCount: () => number;
   tentacle: boolean; // if a tentacle fight can follow
 };
