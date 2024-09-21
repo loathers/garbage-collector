@@ -68,7 +68,7 @@ import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { doCandyTrick, doingGregFight, shouldAugustCast } from "../resources";
-import { isFreeAndCopyable, kramcoGuaranteed, valueDrops } from "../lib";
+import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 export type GarboFreeFightTask = Extract<
@@ -827,4 +827,5 @@ export function possibleTentacleFights(): number {
 export const FreeFightQuest: Quest<GarboTask> = {
   name: "Free Fight",
   tasks: FreeFightTasks,
+  ready: () => sober(),
 };
