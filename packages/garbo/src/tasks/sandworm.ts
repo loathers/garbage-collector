@@ -117,8 +117,9 @@ const SandwormTasks: GarboFreeFightTask[] = [
   {
     name: "Fold broken champagne bottle",
     ready: () =>
-      have($item`January's Garbage Tote`) && !have($item`broken champagne bottle`) &&
-    get("garbageChampagneCharge") > 0,
+      have($item`January's Garbage Tote`) &&
+      !have($item`broken champagne bottle`) &&
+      get("garbageChampagneCharge") > 0,
     completed: () => have($item`broken champagne bottle`),
     do: () => cliExecute("fold broken champagne bottle"),
     ...NON_SANDWORM_TASK,
