@@ -1,6 +1,6 @@
 import { eightBitPoints, Location } from "kolmafia";
 import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
-import { $item, $location, get, have } from "libram";
+import { $item, $location, $slot, get, have } from "libram";
 
 export const bonusColor = ["black", "blue", "green", "red"] as const;
 export type BonusColor = (typeof bonusColor)[number];
@@ -22,7 +22,8 @@ function value(color: BonusColor, options: WandererFactoryOptions) {
   return (
     (options.itemValue($item`fat loot token`) *
       eightBitPoints(locationColor[color])) /
-    denominator
+      denominator -
+    options.slotCost($slot`off-hand`)
   );
 }
 

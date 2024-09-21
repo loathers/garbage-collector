@@ -1,6 +1,6 @@
 import { canAdventure, Location } from "kolmafia";
 import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
-import { $locations, get, TearawayPants } from "libram";
+import { $locations, $slot, get, TearawayPants } from "libram";
 
 const VALID_DRAGGABLE_TYPES: DraggableFight[] = [
   "backup",
@@ -24,7 +24,8 @@ export function tearawayPantsFactory(
           `Tearaway Pants ${l}`,
           l,
           TearawayPants.plantsAdventureChance() *
-            (options.valueOfAdventure ?? get("valueOfAdventure")),
+            (options.valueOfAdventure ?? get("valueOfAdventure")) -
+            options.slotCost($slot`pants`),
         ),
     );
 }
