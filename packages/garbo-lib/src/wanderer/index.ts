@@ -8,6 +8,7 @@ import {
   myInebriety,
   myTotalTurnsSpent,
   print,
+  Slot,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -272,6 +273,7 @@ export class WandererManager<T extends string = never> {
       itemValue: (item: Item) => this.options.itemValue(mode, item),
       effectValue: (effect: Effect, duration: number) =>
         this.options.effectValue(mode, effect, duration),
+      slotCost: (slot: Slot) => this.options.slotCost(mode, slot),
     };
   }
 

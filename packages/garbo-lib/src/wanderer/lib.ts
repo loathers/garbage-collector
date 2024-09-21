@@ -8,6 +8,7 @@ import {
   Location,
   Monster,
   numericFact,
+  Slot,
   toItem,
   use,
 } from "kolmafia";
@@ -59,6 +60,7 @@ export type WandererFactoryOptions = {
   digitzesRemaining?: (turns: number) => number;
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
+  slotCost: (slot: Slot) => number;
 };
 
 export type WandererFactory = (
