@@ -262,7 +262,7 @@ export function expectedFreeGiantSandwormQuestFights(): number {
   );
   return sum(
     availableFights,
-    ({ combatCount, tentacle }) => combatCount() * (tentacle ? 2 : 1),
+    ({ combatCount }) => combatCount(),
   );
 }
 
