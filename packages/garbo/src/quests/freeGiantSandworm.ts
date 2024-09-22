@@ -260,10 +260,7 @@ export function expectedFreeGiantSandwormQuestFights(): number {
   const availableFights = SandwormTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
-  return sum(
-    availableFights,
-    ({ combatCount }) => combatCount(),
-  );
+  return sum(availableFights, ({ combatCount }) => combatCount());
 }
 
 // Possible additional free fights from tentacles
