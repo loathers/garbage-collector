@@ -420,9 +420,14 @@ function menu(): MenuItem<Note>[] {
   const boxingDayCareItems =
     $items`glass of raw eggs, punch-drunk punch`.filter((item) => have(item));
   const pilsners = $items`astral pilsner`.filter((item) => have(item));
-  const limitedItems = [...boxingDayCareItems, ...pilsners].map(
-    (item) => new MenuItem<Note>(item, { maximum: availableAmount(item) }),
-  );
+  const instantKarma = globalOptions.usekarma
+    ? $items`Instant Karma`.filter((item) => have(item))
+    : [];
+  const limitedItems = [
+    ...boxingDayCareItems,
+    ...pilsners,
+    ...instantKarma,
+  ].map((item) => new MenuItem<Note>(item, { maximum: availableAmount(item) }));
 
   const legendaryPizzas = legendaryPizzaToMenu(
     [

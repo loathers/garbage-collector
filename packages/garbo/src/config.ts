@@ -230,6 +230,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       "",
     ),
     saveTurns: Args.custom<number>({ hidden: true, default: 0 }, () => 0, ""),
+    usekarma: Args.custom<boolean>(
+      { hidden: true, default: false },
+      () => false,
+      "",
+    ),
     askedAboutWish: Args.custom<boolean>(
       { hidden: true, default: false },
       () => false,
