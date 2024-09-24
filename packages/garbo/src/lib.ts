@@ -198,10 +198,8 @@ export const gooseDroneEligible = () =>
   have($familiar`Grey Goose`);
 
 export function averageTargetNet(): number {
-  const goose = gooseDroneEligible() ? 2 : 1;
-
   return targettingItems()
-    ? valueDrops(globalOptions.target) * goose
+    ? valueDrops(globalOptions.target)
     : (targetMeat() * meatDropModifier()) / 100;
 }
 
@@ -345,24 +343,6 @@ const ltbRestraints: FindActionSourceConstraints = {
 };
 export function ltbRun(): ActionSource {
   return tryFindFreeRunOrBanish(ltbRestraints) ?? ensureFreeRun(ltbRestraints);
-}
-
-export function coinmasterPrice(item: Item): number {
-  // TODO: Get this from coinmasters.txt if more are needed
-  switch (item) {
-    case $item`viral video`:
-      return 20;
-    case $item`plus one`:
-      return 74;
-    case $item`gallon of milk`:
-      return 100;
-    case $item`print screen button`:
-      return 111;
-    case $item`daily dungeon malware`:
-      return 150;
-  }
-
-  return 0;
 }
 
 export function kramcoGuaranteed(): boolean {

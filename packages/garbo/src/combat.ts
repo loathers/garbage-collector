@@ -458,7 +458,11 @@ export class Macro extends StrictMacro {
     // Ignore unexpected monsters, holiday scaling monsters seem to abort with monsterhpabove
     // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
-      `monstername angry tourist || monstername garbage tourist || monstername horrible tourist family || monstername ${globalOptions.target} || monstername sausage goblin`,
+      [
+        ...getMonsters($location`Barf Mountain`),
+        globalOptions.target,
+        $monster`sausage goblin`,
+      ],
       Macro.externalIf(
         have($item`Time-Spinner`),
         Macro.if_(
@@ -607,8 +611,10 @@ export class Macro extends StrictMacro {
           (currentHitStat() === $stat`Muscle` ||
             itemType(equippedItem($slot`weapon`)) === "knife"),
 
-        Macro.trySkillRepeat(
-          $skill`Northern Explosion`,
+        Macro.ifNot(
+          $monster`X-32-F Combat Training Snowman`,
+          Macro.trySkillRepeat($skill`Northern Explosion`),
+        ).trySkillRepeat(
           $skill`Lunging Thrust-Smack`,
           $skill`Saucegeyser`,
           $skill`Weapon of the Pastalord`,
@@ -622,9 +628,12 @@ export class Macro extends StrictMacro {
           $skill`Cannelloni Cannon`,
           $skill`Wave of Sauce`,
           $skill`Saucestorm`,
-          $skill`Northern Explosion`,
-          $skill`Lunging Thrust-Smack`,
-        ),
+        )
+          .ifNot(
+            $monster`X-32-F Combat Training Snowman`,
+            Macro.trySkillRepeat($skill`Northern Explosion`),
+          )
+          .trySkillRepeat($skill`Lunging Thrust-Smack`),
       )
       .attack()
       .repeat();

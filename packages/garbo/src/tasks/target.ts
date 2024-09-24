@@ -134,7 +134,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
     },
     // Fax the copy target before starting, to prevent an abort in case the faxbot networks are down
     {
-      name: `Faxbot ${globalOptions.target}`,
+      name: `Faxbot copytarget`,
       ready: () =>
         !get("_photocopyUsed") &&
         have($item`Clan VIP Lounge key`) &&
