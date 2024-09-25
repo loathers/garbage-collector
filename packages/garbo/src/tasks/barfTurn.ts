@@ -2,12 +2,16 @@ import {
   availableAmount,
   canAdventure,
   canEquip,
+  closetAmount,
   eat,
   getWorkshed,
+  Item,
+  itemAmount,
   Location,
   mallPrice,
   maximize,
   myAdventures,
+  myAscensions,
   myInebriety,
   myLevel,
   myLightning,
@@ -15,6 +19,7 @@ import {
   myTurncount,
   outfitPieces,
   runChoice,
+  takeCloset,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -39,6 +44,7 @@ import {
   GingerBread,
   have,
   HeavyRains,
+  maxBy,
   questStep,
   realmAvailable,
   set,
@@ -321,6 +327,54 @@ function vampOut(additionalReady: () => boolean) {
   };
 }
 
+let bestDupeItem: Item | null = null;
+function getBestDupeItem(): Item {
+  if (bestDupeItem === null) {
+    // Machine elf can dupe PVPable food, booze, spleen item or potion
+    const validItems = Item.all().filter(
+      (i) =>
+        i.tradeable &&
+        i.discardable &&
+        (i.inebriety || i.fullness || i.potion || i.spleen) &&
+        have(i),
+    );
+    bestDupeItem = maxBy(validItems, garboValue);
+  }
+  return bestDupeItem;
+}
+
+function machineElfDupe(additionalReady: () => boolean) {
+  return {
+    ready: () => additionalReady() && get("_machineTunnelsAdv") === 5,
+    completed: () => get("lastDMTDuplication") === myAscensions(),
+    do: $location`The Deep Machine Tunnels`,
+    prepare: () => {
+      if (
+        itemAmount(getBestDupeItem()) < 1 &&
+        closetAmount(getBestDupeItem()) > 0
+      ) {
+        takeCloset(getBestDupeItem());
+      }
+    },
+    outfit: () =>
+      sober()
+        ? {
+            avoid: $items`Kramco Sausage-o-Matic™`,
+            familiar: $familiar`Machine Elf`,
+          }
+        : {
+            offhand: $item`Drunkula's wineglass`,
+            familiar: $familiar`Machine Elf`,
+          },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Hit unexpected combat!"),
+    ),
+    turns: () => 1,
+    spendsTurn: true,
+    choices: () => ({ 1119: 4, 1125: `1&iid=${getBestDupeItem().id}` }),
+  };
+}
+
 function willDrunkAdventure() {
   return have($item`Drunkula's wineglass`) && globalOptions.ascend;
 }
@@ -366,6 +420,16 @@ const NonBarfTurnTasks: AlternateTask[] = [
           )
         : 0,
     spendsTurn: true,
+  },
+  {
+    name: "Machine Elf Dupe (drunk)",
+    ...machineElfDupe(() => willDrunkAdventure()),
+    sobriety: "drunk",
+  },
+  {
+    name: "Machine Elf Dupe (sober)",
+    ...machineElfDupe(() => !willDrunkAdventure()),
+    sobriety: "sober",
   },
   {
     name: "Lava Dogs (drunk)",
