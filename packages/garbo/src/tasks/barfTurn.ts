@@ -345,7 +345,11 @@ function getBestDupeItem(): Item {
 
 function machineElfDupe(additionalReady: () => boolean) {
   return {
-    ready: () => additionalReady() && get("_machineTunnelsAdv") === 5,
+    ready: () =>
+      additionalReady() &&
+      get("_machineTunnelsAdv") === 5 &&
+      globalOptions.ascend &&
+      garboValue(getBestDupeItem()) > get("valueOfAdventure"),
     completed: () => get("lastDMTDuplication") === myAscensions(),
     do: $location`The Deep Machine Tunnels`,
     prepare: () => {
