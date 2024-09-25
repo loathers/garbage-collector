@@ -124,6 +124,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       default: $monster.none,
       hidden: true,
     }),
+    usekarma: Args.flag({
+      setting: "",
+      help: "Use instant karma as part of diet",
+      default: false,
+    }),
     version: Args.flag({
       setting: "",
       help: "Print the current version and exit.",
@@ -230,11 +235,6 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       "",
     ),
     saveTurns: Args.custom<number>({ hidden: true, default: 0 }, () => 0, ""),
-    usekarma: Args.custom<boolean>(
-      { hidden: true, default: false },
-      () => false,
-      "",
-    ),
     askedAboutWish: Args.custom<boolean>(
       { hidden: true, default: false },
       () => false,
