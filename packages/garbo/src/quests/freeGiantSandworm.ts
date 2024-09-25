@@ -252,8 +252,8 @@ const SandwormTasks: GarboFreeFightTask[] = [
       completed: () => have($item`wad of used tape`),
       do: () => cliExecute("fold wad of used tape"),
     },
-  ],
-].map(nonSandwormTask);
+  ].map(nonSandwormTask),
+];
 
 // Expected free sandworm fights, not including tentacles
 export function expectedFreeGiantSandwormQuestFights(): number {
