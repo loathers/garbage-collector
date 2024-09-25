@@ -329,7 +329,7 @@ function vampOut(additionalReady: () => boolean) {
 
 let bestDupeItem: Item | null = null;
 function getBestDupeItem(): Item {
-  if (bestDupeItem === null) {
+  if (bestDupeItem === null || !have(bestDupeItem)) {
     // Machine elf can dupe PVPable food, booze, spleen item or potion
     const validItems = Item.all().filter(
       (i) =>
