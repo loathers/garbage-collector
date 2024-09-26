@@ -33,8 +33,8 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
-import { GarboTask } from "../tasks/engine";
-import { GarboFreeFightTask } from "../tasks/freeFight";
+import { GarboTask } from "./engine";
+import { GarboFreeFightTask } from "./freeFight";
 import { bestFairy } from "../familiar";
 import { sober } from "../lib";
 

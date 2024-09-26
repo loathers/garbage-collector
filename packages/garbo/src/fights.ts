@@ -187,7 +187,7 @@ import {
   expectedFreeGiantSandwormQuestFights,
   FreeGiantSandwormQuest,
   possibleFreeGiantSandwormQuestTentacleFights,
-} from "./quests/freeGiantSandworm";
+} from "./tasks/freeGiantSandworm";
 
 const firstChainMacro = () =>
   Macro.if_(
