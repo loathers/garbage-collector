@@ -68,10 +68,13 @@ import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { doCandyTrick, doingGregFight, shouldAugustCast } from "../resources";
-import { isFreeAndCopyable, kramcoGuaranteed, valueDrops } from "../lib";
+import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
 import { wanderer } from "../garboWanderer";
 
-type GarboFreeFightTask = Extract<GarboTask, { combat: GarboStrategy }> & {
+export type GarboFreeFightTask = Extract<
+  GarboTask,
+  { combat: GarboStrategy }
+> & {
   combatCount: () => number;
   tentacle: boolean; // if a tentacle fight can follow
 };
@@ -801,17 +804,16 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // closed-circuit pay phone (make into it's own Quest)
 ].map(freeFightTask);
 
-export function expectedFreeFights(): number {
+// Expected free fights, not including tentacles
+export function expectedFreeFightQuestFights(): number {
   const availableFights = FreeFightTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
-  return sum(
-    availableFights,
-    ({ combatCount, tentacle }) => combatCount() * (tentacle ? 2 : 1),
-  );
+  return sum(availableFights, ({ combatCount }) => combatCount());
 }
 
-export function possibleTentacleFights(): number {
+// Possible additional free fights from tentacles
+export function possibleFreeFightQuestTentacleFights(): number {
   const availableFights = FreeFightTasks.filter(
     (task) => (task.ready?.() ?? true) && !task.completed(),
   );
@@ -824,4 +826,5 @@ export function possibleTentacleFights(): number {
 export const FreeFightQuest: Quest<GarboTask> = {
   name: "Free Fight",
   tasks: FreeFightTasks,
+  ready: () => sober(),
 };
