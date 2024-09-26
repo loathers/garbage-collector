@@ -27,6 +27,7 @@ import {
   have,
   set,
   sum,
+  uneffect,
 } from "libram";
 import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
@@ -258,6 +259,12 @@ const SandwormTasks: GarboFreeFightTask[] = [
         set("_garbageItemChanged", true);
         return cliExecute("fold wad of used tape");
       },
+    },
+    {
+      name: "Uneffect Feeling Lost",
+      ready: () => have($effect`Feeling Lost`),
+      completed: () => !have($effect`Feeling Lost`),
+      do: () => uneffect($effect`Feeling Lost`),
     },
   ].map(nonSandwormTask),
 ];
