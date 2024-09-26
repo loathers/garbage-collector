@@ -2,7 +2,6 @@ import {
   availableAmount,
   canAdventure,
   canEquip,
-  closetAmount,
   eat,
   getWorkshed,
   Item,
@@ -18,8 +17,8 @@ import {
   myRain,
   myTurncount,
   outfitPieces,
+  retrieveItem,
   runChoice,
-  takeCloset,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -52,6 +51,7 @@ import {
   sum,
   TrainSet,
   undelay,
+  withProperty,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
 import { WanderDetails } from "garbo-lib";
@@ -400,11 +400,10 @@ const NonBarfTurnTasks: AlternateTask[] = [
     completed: () => get("lastDMTDuplication") === myAscensions(),
     do: $location`The Deep Machine Tunnels`,
     prepare: () => {
-      if (
-        itemAmount(getBestDupeItem()) < 1 &&
-        closetAmount(getBestDupeItem()) > 0
-      ) {
-        takeCloset(getBestDupeItem());
+      if (itemAmount(getBestDupeItem()) === 0) {
+        withProperty("autoSatisfyWithMall", false, () =>
+          retrieveItem(getBestDupeItem()),
+        );
       }
     },
     outfit: () =>
