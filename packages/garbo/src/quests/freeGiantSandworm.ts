@@ -25,6 +25,7 @@ import {
   clamp,
   get,
   have,
+  set,
   sum,
 } from "libram";
 import { GarboStrategy, Macro } from "../combat";
@@ -132,7 +133,10 @@ const SandwormTasks: GarboFreeFightTask[] = [
         !have($item`broken champagne bottle`) &&
         get("garbageChampagneCharge") > 0,
       completed: () => have($item`broken champagne bottle`),
-      do: () => cliExecute("fold broken champagne bottle"),
+      do: () => {
+        set("_garbageItemChanged", true);
+        return cliExecute("fold broken champagne bottle");
+      },
     },
   ].map(nonSandwormTask),
   ...[
@@ -250,7 +254,10 @@ const SandwormTasks: GarboFreeFightTask[] = [
       name: "Fold wad of used tape",
       ready: () => have($item`January's Garbage Tote`),
       completed: () => have($item`wad of used tape`),
-      do: () => cliExecute("fold wad of used tape"),
+      do: () => {
+        set("_garbageItemChanged", true);
+        return cliExecute("fold wad of used tape");
+      },
     },
   ].map(nonSandwormTask),
 ];
