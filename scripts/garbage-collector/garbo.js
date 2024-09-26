@@ -27768,7 +27768,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8caffedcd0fed993cc495dce44faa53c814899e6", ")"));
+      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ab569a0b327b57c7cda162a8bbb73dd8b079f62c", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia86.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -39921,11 +39921,16 @@ function possibleFreeGiantSandwormQuestTentacleFights() {
     return combatCount() * (tentacle ? 1 : 0);
   });
 }
+var _hasWorms;
+function hasWorms() {
+  var _hasWorms2;
+  return (_hasWorms2 = _hasWorms) !== null && _hasWorms2 !== void 0 ? _hasWorms2 : _hasWorms = expectedFreeGiantSandwormQuestFights() > 0;
+}
 var FreeGiantSandwormQuest = {
   name: "Free Giant Sandworm",
   tasks: SandwormTasks,
   ready: function() {
-    return sober() && expectedFreeGiantSandwormQuestFights() > 0 && (0, import_kolmafia126.mallPrice)($item(_templateObject6814 || (_templateObject6814 = _taggedTemplateLiteral118(["drum machine"])))) < 0.01 * (0, import_kolmafia126.mallPrice)($item(_templateObject6914 || (_templateObject6914 = _taggedTemplateLiteral118(["spice melange"]))));
+    return sober() && hasWorms() && (0, import_kolmafia126.mallPrice)($item(_templateObject6814 || (_templateObject6814 = _taggedTemplateLiteral118(["drum machine"])))) < 0.01 * (0, import_kolmafia126.mallPrice)($item(_templateObject6914 || (_templateObject6914 = _taggedTemplateLiteral118(["spice melange"]))));
   }
 };
 
