@@ -14,6 +14,7 @@ import {
   get,
   getModifier,
   have,
+  Snapper,
 } from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../garboValue";
@@ -91,6 +92,26 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         limit: "experience",
       });
     }
+
+    if (mode === "target") {
+      const item = Snapper.phylumItem.get(globalOptions.target.phylum);
+
+      familiarMenu.push({
+        familiar: $familiar`Red-Nosed Snapper`,
+        expectedValue:
+          item &&
+          copyTargetCount() >
+            11 -
+              (Snapper.getTrackedPhylum() === globalOptions.target.phylum
+                ? Snapper.getProgress()
+                : 0)
+            ? garboValue(item) / 11
+            : 0,
+        leprechaunMultiplier: 0,
+        limit: "special",
+      });
+    }
+
     if (canOpenRedPresent()) {
       familiarMenu.push({
         familiar: $familiar`Crimbo Shrub`,

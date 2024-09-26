@@ -102,6 +102,7 @@ import {
   Requirement,
   Robortender,
   set,
+  Snapper,
   SourceTerminal,
   sum,
   undelay,
@@ -527,6 +528,13 @@ export function dailyFights(): void {
         const underwater = location.environment === "underwater";
 
         const famSpec = familiarSpec(underwater, nextFight.name);
+
+        if (
+          famSpec === $familiar`Red-Nosed Snapper` &&
+          Snapper.getTrackedPhylum() !== globalOptions.target.phylum
+        ) {
+          Snapper.trackPhylum(globalOptions.target.phylum);
+        }
 
         setLocation(location);
         meatTargetOutfit({ ...nextFight.spec, ...famSpec }, location).dress();
