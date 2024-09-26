@@ -288,12 +288,17 @@ export function possibleFreeGiantSandwormQuestTentacleFights(): number {
   );
 }
 
+let _hasWorms: boolean;
+function hasWorms(): boolean {
+  return (_hasWorms ??= expectedFreeGiantSandwormQuestFights() > 0);
+}
+
 //  Use free fights on melanges if prices are reasonable
 export const FreeGiantSandwormQuest: Quest<GarboTask> = {
   name: "Free Giant Sandworm",
   tasks: SandwormTasks,
   ready: () =>
     sober() &&
-    expectedFreeGiantSandwormQuestFights() > 0 &&
+    hasWorms() &&
     mallPrice($item`drum machine`) < 0.01 * mallPrice($item`spice melange`),
 };
