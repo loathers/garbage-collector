@@ -124,6 +124,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       default: $monster.none,
       hidden: true,
     }),
+    usekarma: Args.flag({
+      setting: "",
+      help: "Use instant karma as part of diet",
+      default: false,
+    }),
     version: Args.flag({
       setting: "",
       help: "Print the current version and exit.",
