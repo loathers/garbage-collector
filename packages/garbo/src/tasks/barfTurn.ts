@@ -393,6 +393,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     name: "Machine Elf Dupe",
     ready: () =>
       have($familiar`Machine Elf`) &&
+      // Dupe at end of day even if not ascending, encountersUntilDMTChoice does not reset on rollover
       willDrunkAdventure() === !sober() &&
       get("encountersUntilDMTChoice") === 0 &&
       garboValue(getBestDupeItem()) > get("valueOfAdventure"),
