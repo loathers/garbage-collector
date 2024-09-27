@@ -21,6 +21,7 @@ import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { garboValue } from "../garboValue";
+import { copyTargetCount } from "../target";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
@@ -138,8 +139,16 @@ const ESTIMATED_ENVELOPE_VALUE = 50_000;
 
 export function snapperValue(): number {
   const item = Snapper.phylumItem.get(globalOptions.target.phylum);
+  const denominator =
+    11 -
+    (Snapper.getTrackedPhylum() === globalOptions.target.phylum
+      ? Snapper.getProgress()
+      : 0);
+  if (denominator > copyTargetCount()) return 0;
+
   if (!item) return 0;
 
-  if (item === $item`envelope full of Meat`) return ESTIMATED_ENVELOPE_VALUE;
-  return garboValue(item);
+  if (item === $item`envelope full of Meat`)
+    return ESTIMATED_ENVELOPE_VALUE / denominator;
+  return garboValue(item) / denominator;
 }
