@@ -33,7 +33,7 @@ type MenuOptions = Partial<{
   extraFamiliars: GeneralFamiliar[];
   includeExperienceFamiliars: boolean;
   allowAttackFamiliars: boolean;
-  mode: "barf" | "free" | "target" | "target replacer";
+  mode: "barf" | "free" | "target";
 }>;
 const DEFAULT_MENU_OPTIONS = {
   canChooseMacro: true,
@@ -43,7 +43,10 @@ const DEFAULT_MENU_OPTIONS = {
   allowAttackFamiliars: true,
   mode: "free",
 } as const;
-export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
+export function menu(
+  options: MenuOptions = {},
+  fight?: string,
+): GeneralFamiliar[] {
   const {
     includeExperienceFamiliars,
     canChooseMacro,
@@ -93,7 +96,11 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
       });
     }
 
-    if (mode.includes("target") && !mode.includes("replacer")) {
+    if (
+      mode === "target" && fight
+        ? !["Macrometeorite", "Powerful Glove"].includes(fight)
+        : true
+    ) {
       const item = Snapper.phylumItem.get(globalOptions.target.phylum);
 
       familiarMenu.push({
@@ -186,6 +193,7 @@ export function getAllJellyfishDrops(): {
 
 export function freeFightFamiliarData(
   options: MenuOptions = {},
+  fight?: string,
 ): GeneralFamiliar {
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
     if (a === null) return b;
@@ -195,7 +203,7 @@ export function freeFightFamiliarData(
     return a.expectedValue > b.expectedValue ? a : b;
   };
 
-  return menu(options).reduce(compareFamiliars, {
+  return menu(options, fight).reduce(compareFamiliars, {
     familiar: $familiar.none,
     expectedValue: 0,
     leprechaunMultiplier: 0,
@@ -203,6 +211,9 @@ export function freeFightFamiliarData(
   });
 }
 
-export function freeFightFamiliar(options: MenuOptions = {}): Familiar {
-  return freeFightFamiliarData(options).familiar;
+export function freeFightFamiliar(
+  options: MenuOptions = {},
+  fight?: string,
+): Familiar {
+  return freeFightFamiliarData(options, fight).familiar;
 }
