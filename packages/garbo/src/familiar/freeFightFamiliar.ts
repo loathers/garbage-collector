@@ -33,7 +33,7 @@ type MenuOptions = Partial<{
   extraFamiliars: GeneralFamiliar[];
   includeExperienceFamiliars: boolean;
   allowAttackFamiliars: boolean;
-  mode: "barf" | "free" | "target";
+  mode: "barf" | "free" | "target" | "target replacer";
 }>;
 const DEFAULT_MENU_OPTIONS = {
   canChooseMacro: true,
@@ -74,7 +74,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     }
 
     if (
-      mode === "target" &&
+      mode.includes("target") &&
       gooseDroneEligible() &&
       get("gooseDronesRemaining") < copyTargetCount()
     ) {
@@ -93,7 +93,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
       });
     }
 
-    if (mode === "target") {
+    if (mode.includes("target") && !mode.includes("replacer")) {
       const item = Snapper.phylumItem.get(globalOptions.target.phylum);
 
       familiarMenu.push({

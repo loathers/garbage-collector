@@ -17,7 +17,7 @@ import { GeneralFamiliar } from "./lib";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
-  value: (_mode: "barf" | "free" | "target") => number;
+  value: (_mode: "barf" | "free" | "target" | "target replacer") => number;
 };
 
 const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
@@ -101,7 +101,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
 ];
 
 export default function getConstantValueFamiliars(
-  mode: "barf" | "free" | "target",
+  mode: "barf" | "free" | "target" | "target replacer",
 ): GeneralFamiliar[] {
   return standardFamiliars
     .filter(({ familiar }) => have(familiar))

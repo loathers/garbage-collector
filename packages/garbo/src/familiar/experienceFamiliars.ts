@@ -17,18 +17,18 @@ type ExperienceFamiliar = {
   familiar: Familiar;
   used:
     | propertyTypes.BooleanProperty
-    | ((mode: "barf" | "free" | "target") => boolean);
+    | ((mode: "barf" | "free" | "target" | "target replacer") => boolean);
   useValue: Delayed<number>;
   baseExp: number;
   xpCost?: number;
-  xpLimit?: (mode: "barf" | "free" | "target") => number;
+  xpLimit?: (mode: "barf" | "free" | "target" | "target replacer") => number;
 };
 
 const isUsed = (
   used:
     | propertyTypes.BooleanProperty
-    | ((mode: "barf" | "free" | "target") => boolean),
-  mode: "barf" | "free" | "target",
+    | ((mode: "barf" | "free" | "target" | "target replacer") => boolean),
+  mode: "barf" | "free" | "target" | "target replacer",
 ) => (typeof used === "string" ? get(used) : used(mode));
 
 const experienceFamiliars: ExperienceFamiliar[] = [
@@ -46,19 +46,19 @@ const experienceFamiliars: ExperienceFamiliar[] = [
   },
   {
     familiar: $familiar`Chest Mimic`,
-    used: (mode: "barf" | "free" | "target") =>
+    used: (mode: "barf" | "free" | "target" | "target replacer") =>
       !shouldChargeMimic(mode === "barf"),
     useValue: () => MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure"),
     baseExp: 0,
     xpCost: 50,
-    xpLimit: (mode: "barf" | "free" | "target") =>
+    xpLimit: (mode: "barf" | "free" | "target" | "target replacer") =>
       mimicExperienceNeeded(mode === "barf"),
   },
 ];
 
 function valueExperienceFamiliar(
   { familiar, useValue, xpCost, baseExp }: ExperienceFamiliar,
-  mode: "barf" | "free" | "target",
+  mode: "barf" | "free" | "target" | "target replacer",
 ): GeneralFamiliar {
   const currentExp =
     familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
@@ -74,7 +74,7 @@ function valueExperienceFamiliar(
 }
 
 export default function getExperienceFamiliars(
-  mode: "barf" | "free" | "target",
+  mode: "barf" | "free" | "target" | "target replacer",
 ): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(
