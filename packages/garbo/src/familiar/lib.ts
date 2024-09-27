@@ -148,7 +148,8 @@ export function snapperValue(): number {
 
   if (!item) return 0;
 
-  if (item === $item`envelope full of Meat`)
+  if (item === $item`envelope full of Meat`) {
     return ESTIMATED_ENVELOPE_VALUE / denominator;
+  }
   return garboValue(item) / denominator;
 }
