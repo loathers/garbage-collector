@@ -399,7 +399,15 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
   }
 
   if (isFreeAndCopyable(globalOptions.target)) {
-    return { familiar: freeFightFamiliar({ mode: "target" }, fight) };
+    if (["Macrometeorite", "Powerful Glove"].includes(fight)) {
+      return {
+        familiar: freeFightFamiliar({
+          mode: "target",
+          excludeFamiliar: [$familiar`Red-Nosed Snapper`],
+        }),
+      };
+    }
+    return { familiar: freeFightFamiliar({ mode: "target" }) };
   }
 
   return { familiar: meatFamiliar() };

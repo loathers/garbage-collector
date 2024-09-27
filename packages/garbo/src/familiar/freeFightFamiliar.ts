@@ -33,6 +33,7 @@ type MenuOptions = Partial<{
   includeExperienceFamiliars: boolean;
   allowAttackFamiliars: boolean;
   mode: "barf" | "free" | "target";
+  excludeFamiliar: Familiar[];
 }>;
 const DEFAULT_MENU_OPTIONS = {
   canChooseMacro: true,
@@ -42,10 +43,7 @@ const DEFAULT_MENU_OPTIONS = {
   allowAttackFamiliars: true,
   mode: "free",
 } as const;
-export function menu(
-  options: MenuOptions = {},
-  fight?: string,
-): GeneralFamiliar[] {
+export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
   const {
     includeExperienceFamiliars,
     canChooseMacro,
@@ -53,6 +51,7 @@ export function menu(
     extraFamiliars,
     allowAttackFamiliars,
     mode,
+    excludeFamiliar,
   } = {
     ...DEFAULT_MENU_OPTIONS,
     ...options,
@@ -95,13 +94,10 @@ export function menu(
       });
     }
 
-    if (
-      mode === "target" &&
-      (fight ? !["Macrometeorite", "Powerful Glove"].includes(fight) : true)
-    ) {
+    if (mode === "target") {
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: mode === "target" ? snapperValue() : 0,
+        expectedValue: snapperValue(),
         leprechaunMultiplier: 0,
         limit: "special",
       });
@@ -150,6 +146,15 @@ export function menu(
     );
   }
 
+  if (excludeFamiliar) {
+    return familiarMenu.filter(
+      (generalFamiliar) =>
+        !excludeFamiliar.some(
+          (excludedFamiliar) => excludedFamiliar === generalFamiliar.familiar,
+        ),
+    );
+  }
+
   return familiarMenu;
 }
 
@@ -181,7 +186,6 @@ export function getAllJellyfishDrops(): {
 
 export function freeFightFamiliarData(
   options: MenuOptions = {},
-  fight?: string,
 ): GeneralFamiliar {
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
     if (a === null) return b;
@@ -191,7 +195,7 @@ export function freeFightFamiliarData(
     return a.expectedValue > b.expectedValue ? a : b;
   };
 
-  return menu(options, fight).reduce(compareFamiliars, {
+  return menu(options).reduce(compareFamiliars, {
     familiar: $familiar.none,
     expectedValue: 0,
     leprechaunMultiplier: 0,
@@ -199,9 +203,6 @@ export function freeFightFamiliarData(
   });
 }
 
-export function freeFightFamiliar(
-  options: MenuOptions = {},
-  fight?: string,
-): Familiar {
-  return freeFightFamiliarData(options, fight).familiar;
+export function freeFightFamiliar(options: MenuOptions = {}): Familiar {
+  return freeFightFamiliarData(options).familiar;
 }
