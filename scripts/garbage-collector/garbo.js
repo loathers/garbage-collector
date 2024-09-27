@@ -27768,7 +27768,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ab569a0b327b57c7cda162a8bbb73dd8b079f62c", ")"));
+      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f22fa29b29e2f2897906e2e2392cb9a84811c14d", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia86.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -39930,7 +39930,7 @@ var FreeGiantSandwormQuest = {
   name: "Free Giant Sandworm",
   tasks: SandwormTasks,
   ready: function() {
-    return sober() && hasWorms() && (0, import_kolmafia126.mallPrice)($item(_templateObject6814 || (_templateObject6814 = _taggedTemplateLiteral118(["drum machine"])))) < 0.01 * (0, import_kolmafia126.mallPrice)($item(_templateObject6914 || (_templateObject6914 = _taggedTemplateLiteral118(["spice melange"]))));
+    return sober() && hasWorms() && garboValue($item(_templateObject6814 || (_templateObject6814 = _taggedTemplateLiteral118(["drum machine"])))) < 0.01 * garboValue($item(_templateObject6914 || (_templateObject6914 = _taggedTemplateLiteral118(["spice melange"]))));
   }
 };
 
