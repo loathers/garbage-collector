@@ -4,7 +4,6 @@ import {
   create,
   floor,
   getWorkshed,
-  mallPrice,
   myAscensions,
   myLightning,
   myPath,
@@ -300,5 +299,5 @@ export const FreeGiantSandwormQuest: Quest<GarboTask> = {
   ready: () =>
     sober() &&
     hasWorms() &&
-    mallPrice($item`drum machine`) < 0.01 * mallPrice($item`spice melange`),
+    garboValue($item`drum machine`) < 0.01 * garboValue($item`spice melange`),
 };
