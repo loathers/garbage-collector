@@ -30,15 +30,16 @@ type MenuOptions = Partial<{
   canChooseMacro: boolean;
   location: Location;
   extraFamiliars: GeneralFamiliar[];
+  excludeFamiliar: Familiar[];
   includeExperienceFamiliars: boolean;
   allowAttackFamiliars: boolean;
   mode: "barf" | "free" | "target";
-  excludeFamiliar: Familiar[];
 }>;
 const DEFAULT_MENU_OPTIONS = {
   canChooseMacro: true,
   location: $location`none`,
   extraFamiliars: [],
+  excludeFamiliar: [],
   includeExperienceFamiliars: true,
   allowAttackFamiliars: true,
   mode: "free",
@@ -49,9 +50,9 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     canChooseMacro,
     location,
     extraFamiliars,
+    excludeFamiliar,
     allowAttackFamiliars,
     mode,
-    excludeFamiliar,
   } = {
     ...DEFAULT_MENU_OPTIONS,
     ...options,
@@ -140,22 +141,14 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     });
   }
 
-  if (!allowAttackFamiliars) {
-    return familiarMenu.filter(
-      (fam) => !(fam.familiar.physicalDamage || fam.familiar.elementalDamage),
-    );
-  }
-
-  if (excludeFamiliar) {
-    return familiarMenu.filter(
-      (generalFamiliar) =>
-        !excludeFamiliar.some(
-          (excludedFamiliar) => excludedFamiliar === generalFamiliar.familiar,
-        ),
-    );
-  }
-
-  return familiarMenu;
+  return familiarMenu.filter(
+    ({ familiar }) =>
+      (allowAttackFamiliars ||
+        !(familiar.physicalDamage || familiar.elementalDamage)) &&
+      !excludeFamiliar.some(
+        (excludedFamiliar) => excludedFamiliar === familiar,
+      ),
+  );
 }
 
 export function getAllJellyfishDrops(): {
