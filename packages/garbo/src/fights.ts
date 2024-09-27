@@ -530,7 +530,7 @@ export function dailyFights(): void {
         const famSpec = familiarSpec(underwater, nextFight.name);
 
         if (
-          famSpec === $familiar`Red-Nosed Snapper` &&
+          famSpec.familiar === $familiar`Red-Nosed Snapper` &&
           Snapper.getTrackedPhylum() !== globalOptions.target.phylum
         ) {
           Snapper.trackPhylum(globalOptions.target.phylum);
