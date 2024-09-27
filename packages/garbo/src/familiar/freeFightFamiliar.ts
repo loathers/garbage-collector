@@ -96,13 +96,12 @@ export function menu(
     }
 
     if (
-      mode === "target" && fight
-        ? !["Macrometeorite", "Powerful Glove"].includes(fight)
-        : true
+      mode === "target" &&
+      (fight ? !["Macrometeorite", "Powerful Glove"].includes(fight) : true)
     ) {
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: snapperValue(),
+        expectedValue: mode === "target" ? snapperValue() : 0,
         leprechaunMultiplier: 0,
         limit: "special",
       });

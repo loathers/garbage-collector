@@ -134,7 +134,7 @@ export function estimatedBarfExperience(): number {
   return sumNumbers(sources);
 }
 
-const ESTIMATED_ENVELOPE_VALUE = 25_000;
+const ESTIMATED_ENVELOPE_VALUE = 50_000;
 
 export function snapperValue(): number {
   const item = Snapper.phylumItem.get(globalOptions.target.phylum);
