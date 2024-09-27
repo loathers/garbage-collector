@@ -14,11 +14,13 @@ import {
   clamp,
   get,
   have,
+  Snapper,
   sumNumbers,
 } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import { garboValue } from "../garboValue";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
@@ -130,4 +132,14 @@ export function estimatedBarfExperience(): number {
   if (voter) sources.push(Number(voter));
 
   return sumNumbers(sources);
+}
+
+const ESTIMATED_ENVELOPE_VALUE = 25_000;
+
+export function snapperValue(): number {
+  const item = Snapper.phylumItem.get(globalOptions.target.phylum);
+  if (!item) return 0;
+
+  if (item === $item`envelope full of Meat`) return ESTIMATED_ENVELOPE_VALUE;
+  return garboValue(item);
 }

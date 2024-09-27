@@ -9,20 +9,18 @@ import {
   $familiar,
   $item,
   $location,
-  $phylum,
   clamp,
   findLeprechaunMultiplier,
   get,
   getModifier,
   have,
-  Snapper,
 } from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
-import { GeneralFamiliar, timeToMeatify } from "./lib";
+import { GeneralFamiliar, snapperValue, timeToMeatify } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
@@ -102,25 +100,9 @@ export function menu(
         ? !["Macrometeorite", "Powerful Glove"].includes(fight)
         : true
     ) {
-      const item = Snapper.phylumItem.get(globalOptions.target.phylum);
-      // Special handling for penguin envelopes
-      const itemValue =
-        globalOptions.target.phylum === $phylum`Penguin`
-          ? 25_000
-          : item
-            ? garboValue(item)
-            : 0;
-
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue:
-          copyTargetCount() >
-          11 -
-            (Snapper.getTrackedPhylum() === globalOptions.target.phylum
-              ? Snapper.getProgress()
-              : 0)
-            ? itemValue
-            : 0,
+        expectedValue: snapperValue(),
         leprechaunMultiplier: 0,
         limit: "special",
       });
