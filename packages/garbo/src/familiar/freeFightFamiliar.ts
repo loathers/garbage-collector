@@ -9,6 +9,7 @@ import {
   $familiar,
   $item,
   $location,
+  $phylum,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -102,17 +103,23 @@ export function menu(
         : true
     ) {
       const item = Snapper.phylumItem.get(globalOptions.target.phylum);
+      // Special handling for penguin envelopes
+      const itemValue =
+        globalOptions.target.phylum === $phylum`Penguin`
+          ? 25_000
+          : item
+            ? garboValue(item)
+            : 0;
 
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
         expectedValue:
-          item &&
           copyTargetCount() >
-            11 -
-              (Snapper.getTrackedPhylum() === globalOptions.target.phylum
-                ? Snapper.getProgress()
-                : 0)
-            ? garboValue(item) / 11
+          11 -
+            (Snapper.getTrackedPhylum() === globalOptions.target.phylum
+              ? Snapper.getProgress()
+              : 0)
+            ? itemValue
             : 0,
         leprechaunMultiplier: 0,
         limit: "special",
