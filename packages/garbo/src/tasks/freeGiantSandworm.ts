@@ -24,6 +24,7 @@ import {
   AsdonMartin,
   clamp,
   get,
+  getModifier,
   have,
   set,
   sum,
@@ -293,6 +294,21 @@ function hasWorms(): boolean {
   return (_hasWorms ??= expectedFreeGiantSandwormQuestFights() > 0);
 }
 
+const REJECTION = 1 / 10;
+const BASE_RATE = 1 / 100;
+let _sandwormRate: number;
+function sandwormRate(): number {
+  if (!_sandwormRate) {
+    Outfit.from(
+      sandwormSpec(),
+      new Error("Failed to generate Sandworm outfit"),
+    ).dress();
+    _sandwormRate =
+      REJECTION * BASE_RATE * (1 + getModifier("Item Drop") / 100);
+  }
+  return _sandwormRate;
+}
+
 //  Use free fights on melanges if prices are reasonable
 export const FreeGiantSandwormQuest: Quest<GarboTask> = {
   name: "Free Giant Sandworm",
@@ -300,5 +316,6 @@ export const FreeGiantSandwormQuest: Quest<GarboTask> = {
   ready: () =>
     sober() &&
     hasWorms() &&
-    mallPrice($item`drum machine`) < 0.01 * garboValue($item`spice melange`),
+    mallPrice($item`drum machine`) <
+      sandwormRate() * garboValue($item`spice melange`),
 };
