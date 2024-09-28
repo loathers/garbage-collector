@@ -4334,14 +4334,14 @@ __metadata:
   dependencies:
     eslint: ^9.9.0
     eslint-config-garbo: ^0.0.1
-    kolmafia: ^5.28064.0
+    kolmafia: ^5.28065.0
     libram: ^0.9.10
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
     typescript: ^5.5.4
   peerDependencies:
-    kolmafia: ^5.28064.0
+    kolmafia: ^5.28065.0
     libram: ^0.9.10
   languageName: unknown
   linkType: soft
@@ -4389,7 +4389,7 @@ __metadata:
     eslint-config-garbo: ^0.0.1
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.26
-    kolmafia: ^5.28064.0
+    kolmafia: ^5.28065.0
     libram: ^0.9.10
     lint-staged: ^15.2.9
     madge: ^8.0.0
@@ -5037,10 +5037,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:^5.28064.0":
-  version: 5.28064.0
-  resolution: "kolmafia@npm:5.28064.0"
-  checksum: 619b5b862c93307b7238ecff6352a3391d67972ef138ebe343faa7419d63a2d649cdf931bbab92a320bbf4f6aa647ef38a0f8a2b1201f647907d2eef63cec098
+"kolmafia@npm:^5.28065.0":
+  version: 5.28065.0
+  resolution: "kolmafia@npm:5.28065.0"
+  checksum: a4c0d908637e23b7eb3685d83b736005b8bc6d08a3bdd6b4aeea8c74c886397a8da0d05256d03d36451e5df3da95340578065859c33e642c62ab722cbc917703
   languageName: node
   linkType: hard
 
