@@ -1,4 +1,5 @@
 import {
+  booleanModifier,
   cliExecute,
   Effect,
   getWorkshed,
@@ -227,20 +228,28 @@ export function useBuffExtenders(): void {
   }
 }
 
-const stings = [
-  ...$effects`Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jabañero Saucesphere, Jalapeño Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous`,
-  $effect`Burning, Man`,
-  $effect`Yes, Can Haz`,
-];
-const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
-export const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
-const otherwiseBadEffects = $effects`Temporary Blindness`;
+const damageEffects = Effect.all().filter(
+  (x) =>
+    numericModifier(x, "Thorns") ||
+    numericModifier(x, "Sporadic Thorns") ||
+    numericModifier(x, "Damage Aura") ||
+    numericModifier(x, "Sporadic Damage Aura"),
+);
+const textAlteringEffects = Effect.all().filter((x) =>
+  booleanModifier(x, "Alters Page Text"),
+);
+export const teleportEffects = Effect.all().filter((x) =>
+  booleanModifier(x, "Adventure Randomly"),
+);
+const blindnessEffects = Effect.all().filter((x) =>
+  booleanModifier(x, "Blind"),
+);
 export function shrugBadEffects(...exclude: Effect[]): void {
   [
-    ...stings,
+    ...damageEffects,
     ...textAlteringEffects,
     ...teleportEffects,
-    ...otherwiseBadEffects,
+    ...blindnessEffects,
   ].forEach((effect) => {
     if (have(effect) && !exclude.includes(effect)) {
       uneffect(effect);
