@@ -14,6 +14,7 @@ import {
   get,
   getModifier,
   have,
+  Snapper,
 } from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../garboValue";
@@ -95,7 +96,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
       });
     }
 
-    if (mode === "target") {
+    if (mode === "target" && Snapper.have()) {
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
         expectedValue: snapperValue(),
@@ -147,8 +148,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         !(familiar.physicalDamage || familiar.elementalDamage)) &&
       !excludeFamiliar.some(
         (excludedFamiliar) => excludedFamiliar === familiar,
-      ) &&
-      have(familiar),
+      ),
   );
 }
 
