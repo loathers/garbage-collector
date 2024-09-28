@@ -981,11 +981,12 @@ export class GarboStrategy extends CombatStrategy {
     macro: () => Macro,
     postAuto = macro,
     useAutoAttack = () => true,
+    options: Partial<CustomizeMacroOptions> = {},
   ) {
     super();
-    const macroCustom = () => customizeMacro(macro());
+    const macroCustom = () => customizeMacro(macro(), options);
     if (useAutoAttack()) {
-      const postAutoCustom = () => customizeMacro(postAuto());
+      const postAutoCustom = () => customizeMacro(postAuto(), options);
       this.autoattack(macroCustom).macro(postAutoCustom);
     } else {
       this.macro(macroCustom);
