@@ -6,16 +6,7 @@ import {
   runChoice,
   visitUrl,
 } from "kolmafia";
-import {
-  $item,
-  get,
-  have,
-  maxBy,
-  property,
-  realmAvailable,
-  set,
-  withProperty,
-} from "libram";
+import { $item, get, have, maxBy, property, set, withProperty } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { HIGHLIGHT } from "../lib";
@@ -29,17 +20,7 @@ function volcanoItemValue({ quantity, item }: VolcanoItem): number {
     if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) {
       return Infinity;
     }
-    // Check if we can use Clara's bell for Yachtzee
-    // If so, we call the opportunity cost of this about 40k
-    if (
-      realmAvailable("sleaze") &&
-      have($item`fishy pipe`) &&
-      !get("_fishyPipeUsed")
-    ) {
-      return quantity * 40000;
-    } else {
-      return quantity * get("valueOfAdventure");
-    }
+    return quantity * get("valueOfAdventure");
   }
 
   if (!item.tradeable) return Infinity;

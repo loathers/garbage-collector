@@ -4,16 +4,20 @@ import {
   canEquip,
   eat,
   getWorkshed,
+  Item,
+  itemAmount,
   Location,
   mallPrice,
   maximize,
   myAdventures,
+  myAscensions,
   myInebriety,
   myLevel,
   myLightning,
   myRain,
   myTurncount,
   outfitPieces,
+  retrieveItem,
   runChoice,
   totalTurnsPlayed,
   use,
@@ -39,6 +43,7 @@ import {
   GingerBread,
   have,
   HeavyRains,
+  maxBy,
   questStep,
   realmAvailable,
   set,
@@ -46,6 +51,7 @@ import {
   sum,
   TrainSet,
   undelay,
+  withProperty,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
 import { WanderDetails } from "garbo-lib";
@@ -321,6 +327,22 @@ function vampOut(additionalReady: () => boolean) {
   };
 }
 
+let bestDupeItem: Item | null = null;
+function getBestDupeItem(): Item {
+  if (bestDupeItem === null || !have(bestDupeItem)) {
+    // Machine elf can dupe PVPable food, booze, spleen item or potion
+    const validItems = Item.all().filter(
+      (i) =>
+        i.tradeable &&
+        i.discardable &&
+        (i.inebriety || i.fullness || i.potion || i.spleen) &&
+        have(i),
+    );
+    bestDupeItem = maxBy(validItems, garboValue);
+  }
+  return bestDupeItem;
+}
+
 function willDrunkAdventure() {
   return have($item`Drunkula's wineglass`) && globalOptions.ascend;
 }
@@ -366,6 +388,40 @@ const NonBarfTurnTasks: AlternateTask[] = [
           )
         : 0,
     spendsTurn: true,
+  },
+  {
+    name: "Machine Elf Dupe",
+    ready: () =>
+      have($familiar`Machine Elf`) &&
+      // Dupe at end of day even if not ascending, encountersUntilDMTChoice does not reset on rollover
+      willDrunkAdventure() === !sober() &&
+      get("encountersUntilDMTChoice") === 0 &&
+      garboValue(getBestDupeItem()) > get("valueOfAdventure"),
+    completed: () => get("lastDMTDuplication") === myAscensions(),
+    do: $location`The Deep Machine Tunnels`,
+    prepare: () => {
+      if (itemAmount(getBestDupeItem()) === 0) {
+        withProperty("autoSatisfyWithMall", false, () =>
+          retrieveItem(getBestDupeItem()),
+        );
+      }
+    },
+    outfit: () =>
+      sober()
+        ? {
+            avoid: $items`Kramco Sausage-o-Matic™`,
+            familiar: $familiar`Machine Elf`,
+          }
+        : {
+            offhand: $item`Drunkula's wineglass`,
+            familiar: $familiar`Machine Elf`,
+          },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Hit unexpected combat!"),
+    ),
+    turns: () => 1,
+    spendsTurn: true,
+    choices: () => ({ 1119: 4, 1125: `1&iid=${getBestDupeItem().id}` }),
   },
   {
     name: "Lava Dogs (drunk)",
