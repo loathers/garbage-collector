@@ -135,12 +135,10 @@ export function estimatedBarfExperience(): number {
   return sumNumbers(sources);
 }
 
-const ESTIMATED_ENVELOPE_VALUE = 50_000;
-
 export function snapperValue(): number {
   const item = Snapper.phylumItem.get(globalOptions.target.phylum);
   if (!item) return 0;
-  
+
   const denominator =
     11 -
     (Snapper.getTrackedPhylum() === globalOptions.target.phylum
@@ -148,8 +146,5 @@ export function snapperValue(): number {
       : 0);
   if (denominator > copyTargetCount()) return 0;
 
-  if (item === $item`envelope full of Meat`) {
-    return ESTIMATED_ENVELOPE_VALUE / denominator;
-  }
   return garboValue(item) / denominator;
 }

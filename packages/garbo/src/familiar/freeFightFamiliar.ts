@@ -147,7 +147,8 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         !(familiar.physicalDamage || familiar.elementalDamage)) &&
       !excludeFamiliar.some(
         (excludedFamiliar) => excludedFamiliar === familiar,
-      ),
+      ) &&
+      have(familiar),
   );
 }
 
