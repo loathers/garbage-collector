@@ -76,7 +76,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     }
 
     if (
-      mode.includes("target") &&
+      mode === "target" &&
       gooseDroneEligible() &&
       get("gooseDronesRemaining") < copyTargetCount()
     ) {
