@@ -869,7 +869,7 @@ type CustomizeMacroOptions = {
   innateWanderer: (macro: StrictMacro) => Macro;
 };
 const DEFAULT_MACRO_OPTIONS = {
-  freeWanderer: () => Macro.kill(),
+  freeWanderer: () => Macro.basicCombat(),
   tentacle: () => Macro.basicCombat(),
   innateWanderer: (macro: StrictMacro) =>
     Macro.externalIf(
