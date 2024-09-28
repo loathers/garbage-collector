@@ -95,7 +95,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
       });
     }
 
-    if (mode.includes("target")) {
+    if (mode === "target") {
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
         expectedValue: snapperValue(),
