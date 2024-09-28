@@ -23,14 +23,14 @@
     ]
   },
   "peerDependencies": {
-    "kolmafia": "^5.27668.0",
-    "libram": "^0.8.17"
+    "kolmafia": "^5.28064.0",
+    "libram": "^0.9.10"
   },
   "devDependencies": {
     "eslint": "^9.9.0",
     "eslint-config-garbo": "^0.0.1",
-    "kolmafia": "^5.28021.0",
-    "libram": "^0.9.9",
+    "kolmafia": "^5.28064.0",
+    "libram": "^0.9.10",
     "lint-staged": "^15.2.9",
     "madge": "^8.0.0",
     "prettier": "^3.3.3",

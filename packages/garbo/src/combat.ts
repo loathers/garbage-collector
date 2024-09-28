@@ -36,6 +36,7 @@ import {
 import {
   $class,
   $effect,
+  $element,
   $familiar,
   $item,
   $items,
@@ -612,7 +613,7 @@ export class Macro extends StrictMacro {
             itemType(equippedItem($slot`weapon`)) === "knife"),
 
         Macro.ifNot(
-          $monster`X-32-F Combat Training Snowman`,
+          $element`Cold`,
           Macro.trySkillRepeat($skill`Northern Explosion`),
         ).trySkillRepeat(
           $skill`Lunging Thrust-Smack`,
@@ -630,7 +631,7 @@ export class Macro extends StrictMacro {
           $skill`Saucestorm`,
         )
           .ifNot(
-            $monster`X-32-F Combat Training Snowman`,
+            $element`Cold`,
             Macro.trySkillRepeat($skill`Northern Explosion`),
           )
           .trySkillRepeat($skill`Lunging Thrust-Smack`),
