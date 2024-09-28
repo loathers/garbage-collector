@@ -22663,7 +22663,7 @@ var require_lib2 = __commonJS({
     function _classCallCheck33(a, n) {
       if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
     }
-    function _defineProperty45(e, r, t) {
+    function _defineProperty46(e, r, t) {
       return (r = _toPropertyKey50(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
     }
     function _toPropertyKey50(t) {
@@ -22848,10 +22848,10 @@ var require_lib2 = __commonJS({
           return true;
         };
         _classCallCheck33(this, WandererTarget2);
-        _defineProperty45(this, "name", void 0);
-        _defineProperty45(this, "value", void 0);
-        _defineProperty45(this, "location", void 0);
-        _defineProperty45(this, "prepareTurn", void 0);
+        _defineProperty46(this, "name", void 0);
+        _defineProperty46(this, "value", void 0);
+        _defineProperty46(this, "location", void 0);
+        _defineProperty46(this, "prepareTurn", void 0);
         this.name = name;
         this.value = value;
         this.location = location;
@@ -23342,7 +23342,7 @@ var require_wanderer = __commonJS({
     var _templateObject3236;
     var _templateObject3335;
     var _templateObject3430;
-    function ownKeys26(e, r) {
+    function ownKeys27(e, r) {
       var t = Object.keys(e);
       if (Object.getOwnPropertySymbols) {
         var o = Object.getOwnPropertySymbols(e);
@@ -23352,12 +23352,12 @@ var require_wanderer = __commonJS({
       }
       return t;
     }
-    function _objectSpread26(e) {
+    function _objectSpread27(e) {
       for (var r = 1; r < arguments.length; r++) {
         var t = null != arguments[r] ? arguments[r] : {};
-        r % 2 ? ownKeys26(Object(t), true).forEach(function(r2) {
-          _defineProperty45(e, r2, t[r2]);
-        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys26(Object(t)).forEach(function(r2) {
+        r % 2 ? ownKeys27(Object(t), true).forEach(function(r2) {
+          _defineProperty46(e, r2, t[r2]);
+        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys27(Object(t)).forEach(function(r2) {
           Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
         });
       }
@@ -23375,7 +23375,7 @@ var require_wanderer = __commonJS({
     function _createClass33(e, r, t) {
       return r && _defineProperties33(e.prototype, r), t && _defineProperties33(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
     }
-    function _defineProperty45(e, r, t) {
+    function _defineProperty46(e, r, t) {
       return (r = _toPropertyKey50(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
     }
     function _toPropertyKey50(t) {
@@ -23526,7 +23526,7 @@ var require_wanderer = __commonJS({
     var WandererManager2 = /* @__PURE__ */ function() {
       function WandererManager3(_options) {
         _classCallCheck33(this, WandererManager3);
-        _defineProperty45(this, "unsupportedChoices", /* @__PURE__ */ new Map([
+        _defineProperty46(this, "unsupportedChoices", /* @__PURE__ */ new Map([
           [(0, libram_1.$location)(_templateObject2261 || (_templateObject2261 = _taggedTemplateLiteral129(["The Spooky Forest"]))), {
             502: 2,
             505: 2
@@ -23663,14 +23663,14 @@ var require_wanderer = __commonJS({
           }]
           // fight eXtreme Sports Orcs
         ]));
-        _defineProperty45(this, "equipment", new Map([].concat(_toConsumableArray65(kolmafia_1.Location.all().filter(function(l) {
+        _defineProperty46(this, "equipment", new Map([].concat(_toConsumableArray65(kolmafia_1.Location.all().filter(function(l) {
           return l.zone === "The 8-Bit Realm";
         }).map(function(l) {
           return [l, (0, libram_1.$items)(_templateObject31100 || (_templateObject31100 = _taggedTemplateLiteral129(["continuum transfunctioner"])))];
         })), [[(0, libram_1.$location)(_templateObject3236 || (_templateObject3236 = _taggedTemplateLiteral129(["Shadow Rift (The 8-Bit Realm)"]))), (0, libram_1.$items)(_templateObject3335 || (_templateObject3335 = _taggedTemplateLiteral129(["continuum transfunctioner"])))]])));
-        _defineProperty45(this, "cacheKey", "");
-        _defineProperty45(this, "targets", {});
-        _defineProperty45(this, "options", void 0);
+        _defineProperty46(this, "cacheKey", "");
+        _defineProperty46(this, "targets", {});
+        _defineProperty46(this, "options", void 0);
         this.options = _options;
       }
       return _createClass33(WandererManager3, [{
@@ -23684,7 +23684,7 @@ var require_wanderer = __commonJS({
             draggableFight: wanderer2.wanderer,
             options: wanderer2
           }, draggableFight = _ref.draggableFight, options = _ref.options;
-          var _defaultWanderOptions = _objectSpread26(_objectSpread26({}, defaultWanderOptions), options), drunkSafe = _defaultWanderOptions.drunkSafe, allowEquipment = _defaultWanderOptions.allowEquipment;
+          var _defaultWanderOptions = _objectSpread27(_objectSpread27({}, defaultWanderOptions), options), drunkSafe = _defaultWanderOptions.drunkSafe, allowEquipment = _defaultWanderOptions.allowEquipment;
           var newKey = "".concat((0, kolmafia_1.myTotalTurnsSpent)(), ";").concat((0, kolmafia_1.totalTurnsPlayed)(), ";").concat((0, libram_1.get)("familiarSweat"));
           if (this.cacheKey !== newKey) this.clear();
           this.cacheKey = newKey;
@@ -27773,7 +27773,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("0d87f209cbc614f465d5904bd3f6b3aefec03b82", ")"));
+      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1fc80ed80cf9da39c05c8a73053d171f2aead6a4", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia86.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -36802,6 +36802,30 @@ var _templateObject2372;
 var _templateObject2382;
 var _templateObject2392;
 var _templateObject2402;
+function ownKeys21(e, r) {
+  var t = Object.keys(e);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e);
+    r && (o = o.filter(function(r2) {
+      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
+    })), t.push.apply(t, o);
+  }
+  return t;
+}
+function _objectSpread21(e) {
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {};
+    r % 2 ? ownKeys21(Object(t), true).forEach(function(r2) {
+      _defineProperty38(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys21(Object(t)).forEach(function(r2) {
+      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
+    });
+  }
+  return e;
+}
+function _defineProperty38(e, r, t) {
+  return (r = _toPropertyKey41(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+}
 function _toConsumableArray52(r) {
   return _arrayWithoutHoles52(r) || _iterableToArray52(r) || _unsupportedIterableToArray75(r) || _nonIterableSpread52();
 }
@@ -37195,8 +37219,21 @@ var Macro2 = /* @__PURE__ */ function(_StrictMacro) {
     }
   }]);
 }(StrictMacro);
+var DEFAULT_MACRO_OPTIONS = {
+  freeWanderer: function() {
+    return Macro2.basicCombat();
+  },
+  tentacle: function() {
+    return Macro2.basicCombat();
+  },
+  innateWanderer: function(macro) {
+    return Macro2.externalIf((0, import_kolmafia120.haveEquipped)($item(_templateObject2362 || (_templateObject2362 = _taggedTemplateLiteral110(["backup camera"])))) && get("_backUpUses") < 11 && get("lastCopyableMonster") === globalOptions.target && (!targettingMeat() || (0, import_kolmafia120.myFamiliar)() === meatFamiliar()), Macro2.skill($skill(_templateObject2372 || (_templateObject2372 = _taggedTemplateLiteral110(["Back-Up to your Last Enemy"])))).step(macro), Macro2.basicCombat());
+  }
+};
 function customizeMacro(macro) {
-  return Macro2.if_($monsters(_templateObject2362 || (_templateObject2362 = _taggedTemplateLiteral110(["giant rubber spider, time-spinner prank"]))), Macro2.kill()).externalIf(have($effect(_templateObject2372 || (_templateObject2372 = _taggedTemplateLiteral110(["Eldritch Attunement"])))), Macro2.if_($monster(_templateObject2382 || (_templateObject2382 = _taggedTemplateLiteral110(["Eldritch Tentacle"]))), Macro2.basicCombat())).ifInnateWanderer(Macro2.externalIf((0, import_kolmafia120.haveEquipped)($item(_templateObject2392 || (_templateObject2392 = _taggedTemplateLiteral110(["backup camera"])))) && get("_backUpUses") < 11 && get("lastCopyableMonster") === globalOptions.target && (!targettingMeat() || (0, import_kolmafia120.myFamiliar)() === meatFamiliar()), Macro2.skill($skill(_templateObject2402 || (_templateObject2402 = _taggedTemplateLiteral110(["Back-Up to your Last Enemy"])))).step(macro), Macro2.basicCombat())).step(macro);
+  var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+  var _DEFAULT_MACRO_OPTION = _objectSpread21(_objectSpread21({}, DEFAULT_MACRO_OPTIONS), options), freeWanderer = _DEFAULT_MACRO_OPTION.freeWanderer, tentacle = _DEFAULT_MACRO_OPTION.tentacle, innateWanderer = _DEFAULT_MACRO_OPTION.innateWanderer;
+  return Macro2.if_($monsters(_templateObject2382 || (_templateObject2382 = _taggedTemplateLiteral110(["giant rubber spider, time-spinner prank"]))), freeWanderer(macro)).externalIf(have($effect(_templateObject2392 || (_templateObject2392 = _taggedTemplateLiteral110(["Eldritch Attunement"])))), Macro2.if_($monster(_templateObject2402 || (_templateObject2402 = _taggedTemplateLiteral110(["Eldritch Tentacle"]))), tentacle(macro))).ifInnateWanderer(innateWanderer(macro)).step(macro);
 }
 function makeCcs(macro) {
   (0, import_kolmafia120.writeCcs)('[default]\n"'.concat(customizeMacro(macro).toString(), '"'), "garbo");
@@ -37245,14 +37282,15 @@ var GarboStrategy = /* @__PURE__ */ function(_CombatStrategy) {
     var useAutoAttack = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : function() {
       return true;
     };
+    var options = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
     _classCallCheck28(this, GarboStrategy2);
     _this = _callSuper7(this, GarboStrategy2);
     var macroCustom = function() {
-      return customizeMacro(macro());
+      return customizeMacro(macro(), options);
     };
     if (useAutoAttack()) {
       var postAutoCustom = function() {
-        return customizeMacro(postAuto());
+        return customizeMacro(postAuto(), options);
       };
       _this.autoattack(macroCustom).macro(postAutoCustom);
     } else {
@@ -37315,7 +37353,7 @@ function _defineProperties29(e, r) {
 function _createClass29(e, r, t) {
   return r && _defineProperties29(e.prototype, r), t && _defineProperties29(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _defineProperty38(e, r, t) {
+function _defineProperty39(e, r, t) {
   return (r = _toPropertyKey42(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
 function _toPropertyKey42(t) {
@@ -37398,9 +37436,9 @@ var StashManager = /* @__PURE__ */ function() {
   function StashManager2() {
     var _this = this;
     _classCallCheck29(this, StashManager2);
-    _defineProperty38(this, "clanIdOrName", void 0);
-    _defineProperty38(this, "enabled", void 0);
-    _defineProperty38(this, "taken", /* @__PURE__ */ new Map());
+    _defineProperty39(this, "clanIdOrName", void 0);
+    _defineProperty39(this, "enabled", void 0);
+    _defineProperty39(this, "taken", /* @__PURE__ */ new Map());
     var clanIdOrName = globalOptions.prefs.stashClan;
     this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
     this.enabled = ![0, "", "none"].some(function(id) {
@@ -37730,7 +37768,7 @@ function _defineProperties30(e, r) {
 function _createClass30(e, r, t) {
   return r && _defineProperties30(e.prototype, r), t && _defineProperties30(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _defineProperty39(e, r, t) {
+function _defineProperty40(e, r, t) {
   return (r = _toPropertyKey43(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
 function _toPropertyKey43(t) {
@@ -37751,11 +37789,11 @@ var GarboWorkshed = /* @__PURE__ */ function() {
   function GarboWorkshed2(options) {
     var _options$minTurns;
     _classCallCheck30(this, GarboWorkshed2);
-    _defineProperty39(this, "workshed", void 0);
-    _defineProperty39(this, "done", void 0);
-    _defineProperty39(this, "action", void 0);
-    _defineProperty39(this, "minTurns", void 0);
-    _defineProperty39(this, "available", function() {
+    _defineProperty40(this, "workshed", void 0);
+    _defineProperty40(this, "done", void 0);
+    _defineProperty40(this, "action", void 0);
+    _defineProperty40(this, "minTurns", void 0);
+    _defineProperty40(this, "available", function() {
       return true;
     });
     this.workshed = options.workshed;
@@ -37975,7 +38013,7 @@ var _templateObject3025;
 var _templateObject3176;
 var _templateObject3226;
 var _templateObject3325;
-function ownKeys21(e, r) {
+function ownKeys22(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -37985,18 +38023,18 @@ function ownKeys21(e, r) {
   }
   return t;
 }
-function _objectSpread21(e) {
+function _objectSpread22(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys21(Object(t), true).forEach(function(r2) {
-      _defineProperty40(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys21(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys22(Object(t), true).forEach(function(r2) {
+      _defineProperty41(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys22(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty40(e, r, t) {
+function _defineProperty41(e, r, t) {
   return (r = _toPropertyKey44(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
 function _toPropertyKey44(t) {
@@ -38353,7 +38391,7 @@ function PostQuest(completed) {
       var available6 = _ref.available;
       return undelay(available6 !== null && available6 !== void 0 ? available6 : true);
     }).map(function(task) {
-      return _objectSpread21(_objectSpread21({}, task), {}, {
+      return _objectSpread22(_objectSpread22({}, task), {}, {
         spendsTurn: false
       });
     })
@@ -38685,7 +38723,7 @@ function _arrayLikeToArray80(r, a) {
 function _taggedTemplateLiteral117(e, t) {
   return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
 }
-function ownKeys22(e, r) {
+function ownKeys23(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -38695,18 +38733,18 @@ function ownKeys22(e, r) {
   }
   return t;
 }
-function _objectSpread22(e) {
+function _objectSpread23(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys22(Object(t), true).forEach(function(r2) {
-      _defineProperty41(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys22(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys23(Object(t), true).forEach(function(r2) {
+      _defineProperty42(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys23(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty41(e, r, t) {
+function _defineProperty42(e, r, t) {
   return (r = _toPropertyKey45(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
 function _toPropertyKey45(t) {
@@ -38736,8 +38774,8 @@ var DEFAULT_FREE_FIGHT_TASK = {
   }
 };
 function freeFightTask(fragment) {
-  var fullTask = _objectSpread22(_objectSpread22({}, DEFAULT_FREE_FIGHT_TASK), fragment);
-  return _objectSpread22(_objectSpread22({}, fullTask), {}, {
+  var fullTask = _objectSpread23(_objectSpread23({}, DEFAULT_FREE_FIGHT_TASK), fragment);
+  return _objectSpread23(_objectSpread23({}, fullTask), {}, {
     limit: {
       skip: 5 + fullTask.combatCount()
     }
@@ -39361,7 +39399,7 @@ var FreeFightTasks = [
       return clamp(3 - CombatLoversLocket_exports.reminiscesLeft() - locketsToSave(), 0, 3);
     }
   },
-  _objectSpread22(_objectSpread22({}, doCandyTrick()), {}, {
+  _objectSpread23(_objectSpread23({}, doCandyTrick()), {}, {
     combatCount: function() {
       return 5;
     },
@@ -39575,7 +39613,7 @@ function _arrayLikeToArray81(r, a) {
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
   return n;
 }
-function ownKeys23(e, r) {
+function ownKeys24(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -39585,18 +39623,18 @@ function ownKeys23(e, r) {
   }
   return t;
 }
-function _objectSpread23(e) {
+function _objectSpread24(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys23(Object(t), true).forEach(function(r2) {
-      _defineProperty42(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys23(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys24(Object(t), true).forEach(function(r2) {
+      _defineProperty43(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys24(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty42(e, r, t) {
+function _defineProperty43(e, r, t) {
   return (r = _toPropertyKey46(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
 function _toPropertyKey46(t) {
@@ -39616,7 +39654,7 @@ function _toPrimitive46(t, r) {
 function sandwormSpec() {
   var _spec$equip;
   var spec = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  var copy = _objectSpread23(_objectSpread23({}, spec), {}, {
+  var copy = _objectSpread24(_objectSpread24({}, spec), {}, {
     equip: _toConsumableArray58((_spec$equip = spec.equip) !== null && _spec$equip !== void 0 ? _spec$equip : [])
   });
   var itemDropBonus = 0.1 / 1e4 * garboValue($item(_templateObject896 || (_templateObject896 = _taggedTemplateLiteral118(["spice melange"]))));
@@ -39638,7 +39676,7 @@ function sandwormSpec() {
   if (familiar9 === $familiar(_templateObject978 || (_templateObject978 = _taggedTemplateLiteral118(["Jill-of-All-Trades"])))) {
     var _copy$equip4;
     (_copy$equip4 = copy.equip) === null || _copy$equip4 === void 0 || _copy$equip4.push($item(_templateObject1066 || (_templateObject1066 = _taggedTemplateLiteral118(["LED candle"]))));
-    copy.modes = _objectSpread23(_objectSpread23({}, copy.modes), {}, {
+    copy.modes = _objectSpread24(_objectSpread24({}, copy.modes), {}, {
       jillcandle: "disco"
     });
   }
@@ -39666,8 +39704,8 @@ var DEFAULT_SANDWORM_TASK = {
   tentacle: true
 };
 function sandwormTask(fragment) {
-  var fullTask = _objectSpread23(_objectSpread23({}, DEFAULT_SANDWORM_TASK), fragment);
-  return _objectSpread23(_objectSpread23({}, fullTask), {}, {
+  var fullTask = _objectSpread24(_objectSpread24({}, DEFAULT_SANDWORM_TASK), fragment);
+  return _objectSpread24(_objectSpread24({}, fullTask), {}, {
     limit: {
       skip: 5 + fullTask.combatCount()
     }
@@ -39689,8 +39727,8 @@ var NON_SANDWORM_TASK = {
   tentacle: false
 };
 function nonSandwormTask(fragment) {
-  var fullTask = _objectSpread23(_objectSpread23({}, NON_SANDWORM_TASK), fragment);
-  return _objectSpread23(_objectSpread23({}, fullTask), {}, {
+  var fullTask = _objectSpread24(_objectSpread24({}, NON_SANDWORM_TASK), fragment);
+  return _objectSpread24(_objectSpread24({}, fullTask), {}, {
     limit: {
       skip: 1
     }
@@ -40406,7 +40444,7 @@ function _defineProperties31(e, r) {
 function _createClass31(e, r, t) {
   return r && _defineProperties31(e.prototype, r), t && _defineProperties31(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function ownKeys24(e, r) {
+function ownKeys25(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -40416,18 +40454,18 @@ function ownKeys24(e, r) {
   }
   return t;
 }
-function _objectSpread24(e) {
+function _objectSpread25(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys24(Object(t), true).forEach(function(r2) {
-      _defineProperty43(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys24(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys25(Object(t), true).forEach(function(r2) {
+      _defineProperty44(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys25(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty43(e, r, t) {
+function _defineProperty44(e, r, t) {
   return (r = _toPropertyKey47(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
 function _toPropertyKey47(t) {
@@ -40621,7 +40659,7 @@ function dailyFights() {
           property: "_garbo_weightChain",
           macro: secondChainMacro,
           goalMaximize: function(spec) {
-            return Outfit.from(_objectSpread24(_objectSpread24({}, spec), {}, {
+            return Outfit.from(_objectSpread25(_objectSpread25({}, spec), {}, {
               modifier: ["Familiar Weight"]
             }), new Error("Unable to build outfit for weight chain!")).dress();
           }
@@ -40657,7 +40695,7 @@ function dailyFights() {
           if (have(chip)) {
             profSpec.famequip = chip;
           }
-          goalMaximize(_objectSpread24(_objectSpread24({}, profSpec), fightSource.spec));
+          goalMaximize(_objectSpread25(_objectSpread25({}, profSpec), fightSource.spec));
           if (get("_pocketProfessorLectures") < PocketProfessor_exports.totalAvailableLectures()) {
             var _eventLog$copyTargetS;
             var startLectures = get("_pocketProfessorLectures");
@@ -40696,7 +40734,7 @@ function dailyFights() {
         var underwater = location.environment === "underwater";
         var famSpec = familiarSpec(underwater, nextFight.name);
         (0, import_kolmafia127.setLocation)(location);
-        meatTargetOutfit(_objectSpread24(_objectSpread24({}, nextFight.spec), famSpec), location).dress();
+        meatTargetOutfit(_objectSpread25(_objectSpread25({}, nextFight.spec), famSpec), location).dress();
         runTargetFight(nextFight, {
           action: nextFight.name
         });
@@ -40722,10 +40760,10 @@ var FreeFight = /* @__PURE__ */ function() {
   function FreeFight2(available6, run, tentacle) {
     var options = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
     _classCallCheck31(this, FreeFight2);
-    _defineProperty43(this, "available", void 0);
-    _defineProperty43(this, "run", void 0);
-    _defineProperty43(this, "tentacle", void 0);
-    _defineProperty43(this, "options", void 0);
+    _defineProperty44(this, "available", void 0);
+    _defineProperty44(this, "run", void 0);
+    _defineProperty44(this, "tentacle", void 0);
+    _defineProperty44(this, "options", void 0);
     this.available = available6;
     this.run = run;
     this.tentacle = tentacle;
@@ -40786,11 +40824,11 @@ var FreeRunFight = /* @__PURE__ */ function(_FreeFight2) {
     _classCallCheck31(this, FreeRunFight2);
     _this = _callSuper8(this, FreeRunFight2, [available6, function() {
       return null;
-    }, false, _objectSpread24(_objectSpread24({}, options), {}, {
+    }, false, _objectSpread25(_objectSpread25({}, options), {}, {
       macroAllowsFamiliarActions: false
     })]);
-    _defineProperty43(_this, "freeRun", void 0);
-    _defineProperty43(_this, "constraints", void 0);
+    _defineProperty44(_this, "freeRun", void 0);
+    _defineProperty44(_this, "constraints", void 0);
     _this.freeRun = run;
     _this.constraints = freeRunPicker;
     return _this;
@@ -40807,7 +40845,7 @@ var FreeRunFight = /* @__PURE__ */ function(_FreeFight2) {
       var _loop = function _loop2() {
         var _this2$options$spec, _runSource$constraint, _runSource$constraint2, _this2$options$effect, _this2$options$effect2, _this2$options;
         var initialSpec = undelay((_this2$options$spec = _this2.options.spec) !== null && _this2$options$spec !== void 0 ? _this2$options$spec : {});
-        var constraints = _objectSpread24(_objectSpread24({}, freeRunConstraints(initialSpec)), {}, {
+        var constraints = _objectSpread25(_objectSpread25({}, freeRunConstraints(initialSpec)), {}, {
           noFamiliar: function() {
             return "familiar" in initialSpec;
           }
@@ -41740,7 +41778,7 @@ function killRobortCreaturesForFree() {
       setChoice(855, 4);
       garboAdventure($location(_templateObject3572 || (_templateObject3572 = _taggedTemplateLiteral119(["The Copperhead Club"]))), Macro2.abort());
     }
-    freeFightOutfit(_objectSpread24(_objectSpread24({}, freeKill.spec), {}, {
+    freeFightOutfit(_objectSpread25(_objectSpread25({}, freeKill.spec), {}, {
       familiar: $familiar(_templateObject3582 || (_templateObject3582 = _taggedTemplateLiteral119(["Robortender"])))
     })).dress();
     withMacro(freeKill.macro instanceof import_kolmafia127.Item ? Macro2.item(freeKill.macro) : Macro2.skill(freeKill.macro), function() {
@@ -41764,7 +41802,7 @@ function killRobortCreaturesForFree() {
     }) : $familiar(_templateObject3662 || (_templateObject3662 = _taggedTemplateLiteral119(["Robortender"])));
     freeFightOutfit(roboTarget.attributes.includes("FREE") ? {
       familiar: familiar9
-    } : _objectSpread24(_objectSpread24({}, freeKill.spec), {}, {
+    } : _objectSpread25(_objectSpread25({}, freeKill.spec), {}, {
       familiar: familiar9
     })).dress();
     withMacro(isFree(roboTarget) ? Macro2.basicCombat() : freeKill.macro instanceof import_kolmafia127.Item ? Macro2.item(freeKill.macro) : Macro2.skill(freeKill.macro), function() {
@@ -42056,7 +42094,7 @@ function _iterableToArrayLimit39(r, l) {
 function _arrayWithHoles39(r) {
   if (Array.isArray(r)) return r;
 }
-function ownKeys25(e, r) {
+function ownKeys26(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -42066,18 +42104,18 @@ function ownKeys25(e, r) {
   }
   return t;
 }
-function _objectSpread25(e) {
+function _objectSpread26(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys25(Object(t), true).forEach(function(r2) {
-      _defineProperty44(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys25(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys26(Object(t), true).forEach(function(r2) {
+      _defineProperty45(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys26(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty44(e, r, t) {
+function _defineProperty45(e, r, t) {
   return (r = _toPropertyKey48(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
 function _toPropertyKey48(t) {
@@ -42110,7 +42148,7 @@ var isSteve = function() {
   return get("nextSpookyravenStephenRoom") === $location(_templateObject3184 || (_templateObject3184 = _taggedTemplateLiteral120(["The Haunted Laboratory"])));
 };
 function wanderTask(details, spec, base) {
-  return _objectSpread25({
+  return _objectSpread26({
     do: function() {
       return wanderer().getTarget(undelay(details));
     },
@@ -42262,7 +42300,7 @@ function lavaDogs(additionalReady, baseSpec) {
       var weapon2 = have($item(_templateObject3030 || (_templateObject3030 = _taggedTemplateLiteral120(["June cleaver"])))) ? $item(_templateObject3185 || (_templateObject3185 = _taggedTemplateLiteral120(["June cleaver"]))) : [];
       var modifier = ["Muscle"];
       if (!have($item(_templateObject3230 || (_templateObject3230 = _taggedTemplateLiteral120(["June cleaver"]))))) modifier.push("-7 Monster Level");
-      return freeFightOutfit(_objectSpread25(_objectSpread25({}, baseSpec), {}, {
+      return freeFightOutfit(_objectSpread26(_objectSpread26({}, baseSpec), {}, {
         modifier: modifier,
         weapon: weapon2,
         avoid: avoid
@@ -42416,7 +42454,7 @@ var NonBarfTurnTasks = [{
       1125: "1&iid=".concat(getBestDupeItem().id)
     };
   }
-}, _objectSpread25(_objectSpread25({
+}, _objectSpread26(_objectSpread26({
   name: "Lava Dogs (drunk)"
 }, lavaDogs(function() {
   return willDrunkAdventure();
@@ -42424,13 +42462,13 @@ var NonBarfTurnTasks = [{
   offhand: $item(_templateObject5423 || (_templateObject5423 = _taggedTemplateLiteral120(["Drunkula's wineglass"])))
 })), {}, {
   sobriety: "drunk"
-}), _objectSpread25(_objectSpread25({
+}), _objectSpread26(_objectSpread26({
   name: "Lava Dogs (sober)"
 }, lavaDogs(function() {
   return !willDrunkAdventure();
 }, {})), {}, {
   sobriety: "sober"
-}), _objectSpread25(_objectSpread25({
+}), _objectSpread26(_objectSpread26({
   name: "Daily Dungeon (drunk)"
 }, dailyDungeon(function() {
   return willDrunkAdventure();
@@ -42442,7 +42480,7 @@ var NonBarfTurnTasks = [{
     });
   },
   sobriety: "drunk"
-}), _objectSpread25(_objectSpread25({
+}), _objectSpread26(_objectSpread26({
   name: "Daily Dungeon (sober)"
 }, dailyDungeon(function() {
   return !willDrunkAdventure();
@@ -42453,13 +42491,13 @@ var NonBarfTurnTasks = [{
     });
   },
   sobriety: "sober"
-}), _objectSpread25(_objectSpread25({
+}), _objectSpread26(_objectSpread26({
   name: "Vamp Out (drunk)"
 }, vampOut(function() {
   return willDrunkAdventure();
 })), {}, {
   sobriety: "drunk"
-}), _objectSpread25(_objectSpread25({
+}), _objectSpread26(_objectSpread26({
   name: "Vamp Out (sober)"
 }, vampOut(function() {
   return !willDrunkAdventure();
@@ -42500,7 +42538,7 @@ var NonBarfTurnTasks = [{
   choices: {
     1091: 7
   }
-}, _objectSpread25(_objectSpread25({
+}, _objectSpread26(_objectSpread26({
   name: "Apriling Saxophone Lucky (drunk)"
 }, aprilingSaxophoneLucky(function() {
   return willDrunkAdventure();
@@ -42511,7 +42549,7 @@ var NonBarfTurnTasks = [{
     };
   },
   sobriety: "drunk"
-}), _objectSpread25(_objectSpread25({
+}), _objectSpread26(_objectSpread26({
   name: "Apriling Saxophone Lucky (sober)"
 }, aprilingSaxophoneLucky(function() {
   return !willDrunkAdventure();
