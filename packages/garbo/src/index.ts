@@ -117,7 +117,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28054); // Mimic egg tracking
+  sinceKolmafiaRevision(28063); // Update for new BALLS predicates
   checkGithubVersion();
 
   // Hit up main.php to get out of easily escapable choices

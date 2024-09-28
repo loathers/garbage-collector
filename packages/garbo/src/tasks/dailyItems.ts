@@ -478,14 +478,6 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Update Garbage Tote",
-    ready: () =>
-      have($item`January's Garbage Tote`) && !get("_garbageItemChanged"),
-    completed: () => get("_garbageItemChanged"),
-    do: () => cliExecute("fold broken champagne bottle"),
-    spendsTurn: false,
-  },
-  {
     name: "Learn About Bugs",
     ready: () => have($item`S.I.T. Course Completion Certificate`),
     completed: () => get("_sitCourseCompleted") || have($skill`Insectologist`),

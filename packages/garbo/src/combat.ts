@@ -36,6 +36,7 @@ import {
 import {
   $class,
   $effect,
+  $element,
   $familiar,
   $item,
   $items,
@@ -64,6 +65,7 @@ import {
   isStrongScaler,
   maxPassiveDamage,
   monsterManuelAvailable,
+  targettingMeat,
 } from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
 import { copyTargetCount } from "./target";
@@ -612,7 +614,7 @@ export class Macro extends StrictMacro {
             itemType(equippedItem($slot`weapon`)) === "knife"),
 
         Macro.ifNot(
-          $monster`X-32-F Combat Training Snowman`,
+          $element`Cold`,
           Macro.trySkillRepeat($skill`Northern Explosion`),
         ).trySkillRepeat(
           $skill`Lunging Thrust-Smack`,
@@ -630,7 +632,7 @@ export class Macro extends StrictMacro {
           $skill`Saucestorm`,
         )
           .ifNot(
-            $monster`X-32-F Combat Training Snowman`,
+            $element`Cold`,
             Macro.trySkillRepeat($skill`Northern Explosion`),
           )
           .trySkillRepeat($skill`Lunging Thrust-Smack`),
@@ -875,7 +877,7 @@ function customizeMacro<M extends StrictMacro>(macro: M) {
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
           get("lastCopyableMonster") === globalOptions.target &&
-          myFamiliar() === meatFamiliar(),
+          (!targettingMeat() || myFamiliar() === meatFamiliar()),
         Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
         Macro.basicCombat(),
       ),
@@ -964,10 +966,12 @@ export class GarboStrategy extends CombatStrategy {
     useAutoAttack = () => true,
   ) {
     super();
+    const macroCustom = () => customizeMacro(macro());
     if (useAutoAttack()) {
-      this.autoattack(macro).macro(postAuto);
+      const postAutoCustom = () => customizeMacro(postAuto());
+      this.autoattack(macroCustom).macro(postAutoCustom);
     } else {
-      this.macro(macro);
+      this.macro(macroCustom);
     }
   }
 }
