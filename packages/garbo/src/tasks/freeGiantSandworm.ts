@@ -303,8 +303,12 @@ function sandwormRate(): number {
       sandwormSpec(),
       new Error("Failed to generate Sandworm outfit"),
     ).dress();
+    const squint =
+      have($skill`Steely-Eyed Squint`) && !have($effect`Steely-Eyed Squint`)
+        ? 2
+        : 1;
     _sandwormRate =
-      REJECTION * BASE_RATE * (1 + getModifier("Item Drop") / 100);
+      REJECTION * BASE_RATE * (1 + (getModifier("Item Drop") * squint) / 100);
   }
   return _sandwormRate;
 }
