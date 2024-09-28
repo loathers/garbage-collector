@@ -399,7 +399,7 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
   }
 
   if (isFreeAndCopyable(globalOptions.target)) {
-    if (["Macrometeorite", "Powerful Glove"].includes(fight)) {
+    if (fight.gregariousReplace) {
       return {
         familiar: freeFightFamiliar({
           mode: "target",
