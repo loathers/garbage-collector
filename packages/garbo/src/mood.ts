@@ -241,18 +241,16 @@ const textAlteringEffects = Effect.all().filter((x) =>
 export const teleportEffects = Effect.all().filter((x) =>
   booleanModifier(x, "Adventure Randomly"),
 );
-const blindnessEffects = Effect.all().filter((x) =>
-  booleanModifier(x, "Blind"),
+const otherBadEffects = Effect.all().filter(
+  (x) => booleanModifier(x, "Blind") || booleanModifier(x, "Always Fumble"),
 );
 export function shrugBadEffects(...exclude: Effect[]): void {
   [
     ...damageEffects,
     ...textAlteringEffects,
     ...teleportEffects,
-    ...blindnessEffects,
-  ].forEach((effect) => {
-    if (have(effect) && !exclude.includes(effect)) {
-      uneffect(effect);
-    }
-  });
+    ...otherBadEffects,
+  ]
+    .filter((effect) => have(effect) && !exclude.includes(effect))
+    .forEach((effect) => uneffect(effect));
 }
