@@ -287,6 +287,7 @@ function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
 
 export function bonusGear(
   mode: BonusEquipMode,
+  plantRate: number,
   valueCircumstantialBonus = true,
 ): Map<Item, number> {
   return new Map<Item, number>([

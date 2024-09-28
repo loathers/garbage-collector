@@ -1,6 +1,16 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Location, toJson } from "kolmafia";
-import { $familiar, $item, $items, get, Guzzlr, SourceTerminal } from "libram";
+import { appearanceRates, Location, toJson } from "kolmafia";
+import {
+  $familiar,
+  $item,
+  $items,
+  $monster,
+  $phylum,
+  get,
+  Guzzlr,
+  SourceTerminal,
+  sum,
+} from "libram";
 import { WanderDetails } from "garbo-lib";
 
 import { freeFightFamiliar } from "../familiar";
@@ -9,7 +19,11 @@ import { wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
-import { cleaverCheck, validateGarbageFoldable } from "./lib";
+import {
+  cleaverCheck,
+  extractDraggableType,
+  validateGarbageFoldable,
+} from "./lib";
 
 type MenuOptions = {
   canChooseMacro?: boolean;
@@ -66,7 +80,28 @@ export function freeFightOutfit(
   if (get("_vampyreCloakeFormUses") < 10) {
     outfit.setBonus($item`vampyric cloake`, 500);
   }
-  bonusGear(mode).forEach((value, item) => outfit.addBonus(item, value));
+
+  const dragType = options.wanderOptions
+    ? extractDraggableType(options.wanderOptions)
+    : null;
+
+  const location =
+    (options.location ?? options.wanderOptions)
+      ? wanderer().getTarget(options.wanderOptions)
+      : null;
+  const plantRate =
+    location && [null, "backup", "wanderer"].includes(dragType)
+      ? 0
+      : sum(Object.entries(appearanceRates(location)), ([monster, rate]) =>
+          $monster.get(monster)?.phylum === $phylum`plant` ? rate : 0,
+        ) /
+        sum(Object.entries(appearanceRates(location)), ([monster, rate]) =>
+          $monster.get(monster) ? rate : 0,
+        );
+
+  bonusGear(mode, plantRate).forEach((value, item) =>
+    outfit.addBonus(item, value),
+  );
 
   if (outfit.familiar !== $familiar`Grey Goose`) {
     outfit.setBonus($item`tiny stillsuit`, 500);

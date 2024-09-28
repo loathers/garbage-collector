@@ -34,6 +34,7 @@ import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
 import { targetMeat } from "../lib";
 import { digitizedMonstersRemaining } from "../turns";
+import { DraggableFight, WanderDetails } from "garbo-lib";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) =>
@@ -162,4 +163,9 @@ export function validateGarbageFoldable(spec: OutfitSpec): void {
       break;
     }
   }
+}
+
+export function extractDraggableType(details: WanderDetails): DraggableFight {
+  if (typeof details === "string") return details;
+  return details.wanderer;
 }
