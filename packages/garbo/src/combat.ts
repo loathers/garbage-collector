@@ -863,25 +863,42 @@ export class Macro extends StrictMacro {
   }
 }
 
-function customizeMacro<M extends StrictMacro>(macro: M) {
+type CustomizeMacroOptions = {
+  freeWanderer: (macro: StrictMacro) => Macro;
+  tentacle: (macro: StrictMacro) => Macro;
+  innateWanderer: (macro: StrictMacro) => Macro;
+};
+const DEFAULT_MACRO_OPTIONS = {
+  freeWanderer: () => Macro.basicCombat(),
+  tentacle: () => Macro.basicCombat(),
+  innateWanderer: (macro: StrictMacro) =>
+    Macro.externalIf(
+      haveEquipped($item`backup camera`) &&
+        get("_backUpUses") < 11 &&
+        get("lastCopyableMonster") === globalOptions.target &&
+        (!targettingMeat() || myFamiliar() === meatFamiliar()),
+      Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
+      Macro.basicCombat(),
+    ),
+} as const satisfies CustomizeMacroOptions;
+
+function customizeMacro<M extends StrictMacro>(
+  macro: M,
+  options: Partial<CustomizeMacroOptions> = {},
+) {
+  const { freeWanderer, tentacle, innateWanderer } = {
+    ...DEFAULT_MACRO_OPTIONS,
+    ...options,
+  };
   return Macro.if_(
     $monsters`giant rubber spider, time-spinner prank`,
-    Macro.kill(),
+    freeWanderer(macro),
   )
     .externalIf(
       have($effect`Eldritch Attunement`),
-      Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat()),
+      Macro.if_($monster`Eldritch Tentacle`, tentacle(macro)),
     )
-    .ifInnateWanderer(
-      Macro.externalIf(
-        haveEquipped($item`backup camera`) &&
-          get("_backUpUses") < 11 &&
-          get("lastCopyableMonster") === globalOptions.target &&
-          (!targettingMeat() || myFamiliar() === meatFamiliar()),
-        Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
-        Macro.basicCombat(),
-      ),
-    )
+    .ifInnateWanderer(innateWanderer(macro))
     .step(macro);
 }
 
@@ -964,11 +981,12 @@ export class GarboStrategy extends CombatStrategy {
     macro: () => Macro,
     postAuto = macro,
     useAutoAttack = () => true,
+    options: Partial<CustomizeMacroOptions> = {},
   ) {
     super();
-    const macroCustom = () => customizeMacro(macro());
+    const macroCustom = () => customizeMacro(macro(), options);
     if (useAutoAttack()) {
-      const postAutoCustom = () => customizeMacro(postAuto());
+      const postAutoCustom = () => customizeMacro(postAuto(), options);
       this.autoattack(macroCustom).macro(postAutoCustom);
     } else {
       this.macro(macroCustom);
