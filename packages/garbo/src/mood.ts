@@ -229,12 +229,7 @@ export function useBuffExtenders(): void {
 }
 
 const damageEffects = Effect.all().filter(
-  (x) =>
-    numericModifier(x, "Thorns") ||
-    numericModifier(x, "Sporadic Thorns") ||
-    numericModifier(x, "Damage Aura") ||
-    numericModifier(x, "Sporadic Damage Aura"),
-);
+  (x) =>["Thorns", "Sporadic Thorns", "Damage Aura", "Sporadic Damage Aura"].some((modifier) => numericModifier(x, modifier) > 0));
 const textAlteringEffects = Effect.all().filter((x) =>
   booleanModifier(x, "Alters Page Text"),
 );
