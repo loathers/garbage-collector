@@ -27773,7 +27773,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4b7f135d8f5d638754e1b49356fcb9010763b3b7", ")"));
+      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f206fbfa695514ca03b80c69d48c46893c45acf1", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia86.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -37201,7 +37201,7 @@ var Macro2 = /* @__PURE__ */ function(_StrictMacro) {
   }]);
 }(StrictMacro);
 function customizeMacro(macro) {
-  return Macro2.if_($monsters(_templateObject2362 || (_templateObject2362 = _taggedTemplateLiteral110(["giant rubber spider, time-spinner prank"]))), Macro2.kill()).externalIf(have($effect(_templateObject2372 || (_templateObject2372 = _taggedTemplateLiteral110(["Eldritch Attunement"])))), Macro2.if_($monster(_templateObject2382 || (_templateObject2382 = _taggedTemplateLiteral110(["Eldritch Tentacle"]))), Macro2.basicCombat())).ifInnateWanderer(Macro2.externalIf((0, import_kolmafia120.haveEquipped)($item(_templateObject2392 || (_templateObject2392 = _taggedTemplateLiteral110(["backup camera"])))) && get("_backUpUses") < 11 && get("lastCopyableMonster") === globalOptions.target && (!targettingMeat() || (0, import_kolmafia120.myFamiliar)() === meatFamiliar()), Macro2.skill($skill(_templateObject2402 || (_templateObject2402 = _taggedTemplateLiteral110(["Back-Up to your Last Enemy"])))).step(macro), Macro2.basicCombat())).step(macro);
+  return Macro2.if_($monsters(_templateObject2362 || (_templateObject2362 = _taggedTemplateLiteral110(["giant rubber spider, time-spinner prank"]))), Macro2.kill()).externalIf(have($effect(_templateObject2372 || (_templateObject2372 = _taggedTemplateLiteral110(["Eldritch Attunement"])))), Macro2.if_($monster(_templateObject2382 || (_templateObject2382 = _taggedTemplateLiteral110(["Eldritch Tentacle"]))), Macro2.basicCombat())).ifInnateWanderer(Macro2.externalIf((0, import_kolmafia120.haveEquipped)($item(_templateObject2392 || (_templateObject2392 = _taggedTemplateLiteral110(["backup camera"])))) && get("_backUpUses") < 11 && get("lastCopyableMonster") === globalOptions.target && (0, import_kolmafia120.myFamiliar)() === meatFamiliar(), Macro2.skill($skill(_templateObject2402 || (_templateObject2402 = _taggedTemplateLiteral110(["Back-Up to your Last Enemy"])))).step(macro), Macro2.basicCombat())).step(macro);
 }
 function makeCcs(macro) {
   (0, import_kolmafia120.writeCcs)('[default]\n"'.concat(customizeMacro(macro).toString(), '"'), "garbo");
@@ -37252,16 +37252,10 @@ var GarboStrategy = /* @__PURE__ */ function(_CombatStrategy) {
     };
     _classCallCheck28(this, GarboStrategy2);
     _this = _callSuper7(this, GarboStrategy2);
-    var macroCustom = function() {
-      return customizeMacro(macro());
-    };
     if (useAutoAttack()) {
-      var postAutoCustom = function() {
-        return customizeMacro(postAuto());
-      };
-      _this.autoattack(macroCustom).macro(postAutoCustom);
+      _this.autoattack(macro).macro(postAuto);
     } else {
-      _this.macro(macroCustom);
+      _this.macro(macro);
     }
     return _this;
   }
