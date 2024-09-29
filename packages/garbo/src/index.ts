@@ -117,7 +117,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28065); // Add boolean modifiers for Adventure Randomly, Alters Page Text, and Blind
+  sinceKolmafiaRevision(28067); // yes, can haz is like o hai
   checkGithubVersion();
 
   // Hit up main.php to get out of easily escapable choices
