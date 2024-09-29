@@ -144,7 +144,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
   ...[
     {
       name: $skill`Chest X-Ray`.name,
-      ready: () => have($item`Lil' Doctor™ bag`),
+      ready: () => drumMachineWorthIt() && have($item`Lil' Doctor™ bag`),
       completed: () => get("_chestXRayUsed") >= 3,
       combat: new GarboStrategy(() =>
         sandwormMacro().trySkill($skill`Chest X-Ray`),
@@ -166,7 +166,9 @@ const SandwormTasks: GarboFreeFightTask[] = [
     },
     {
       name: $skill`Asdon Martin: Missile Launcher`.name,
-      ready: () => getWorkshed() === $item`Asdon Martin keyfob (on ring)`,
+      ready: () =>
+        drumMachineWorthIt() &&
+        getWorkshed() === $item`Asdon Martin keyfob (on ring)`,
       completed: () => get("_missileLauncherUsed"),
       prepare: () => AsdonMartin.fillTo(100),
       combat: new GarboStrategy(() =>
@@ -176,7 +178,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
     },
     {
       name: $skill`Gingerbread Mob Hit`.name,
-      ready: () => have($skill`Gingerbread Mob Hit`),
+      ready: () => drumMachineWorthIt() && have($skill`Gingerbread Mob Hit`),
       completed: () => get("_gingerbreadMobHitUsed"),
       combat: new GarboStrategy(() =>
         sandwormMacro().trySkill($skill`Gingerbread Mob Hit`),
@@ -185,7 +187,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
     },
     {
       name: $skill`Shattering Punch`.name,
-      ready: () => have($skill`Shattering Punch`),
+      ready: () => drumMachineWorthIt() && have($skill`Shattering Punch`),
       completed: () => get("_shatteringPunchUsed") >= 3,
       combat: new GarboStrategy(() =>
         sandwormMacro().trySkill($skill`Shattering Punch`),
@@ -194,7 +196,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
     },
     {
       name: $item`replica bat-oomerang`.name,
-      ready: () => have($item`replica bat-oomerang`),
+      ready: () => drumMachineWorthIt() && have($item`replica bat-oomerang`),
       completed: () => get("_usedReplicaBatoomerang") >= 3,
       combat: new GarboStrategy(() =>
         sandwormMacro().tryItem($item`replica bat-oomerang`),
@@ -203,7 +205,10 @@ const SandwormTasks: GarboFreeFightTask[] = [
     },
     {
       name: $skill`Shocking Lick`.name,
-      ready: () => globalOptions.ascend && get("shockingLickCharges") > 0,
+      ready: () =>
+        drumMachineWorthIt() &&
+        globalOptions.ascend &&
+        get("shockingLickCharges") > 0,
       completed: () => get("shockingLickCharges") === 0,
       combat: new GarboStrategy(() =>
         sandwormMacro().trySkill($skill`Shocking Lick`),
@@ -212,7 +217,10 @@ const SandwormTasks: GarboFreeFightTask[] = [
     },
     {
       name: $skill`Lightning Strike`.name,
-      ready: () => have($skill`Lightning Strike`) && myLightning() >= 20,
+      ready: () =>
+        drumMachineWorthIt() &&
+        have($skill`Lightning Strike`) &&
+        myLightning() >= 20,
       completed: () => myLightning() < 20,
       combat: new GarboStrategy(() =>
         sandwormMacro().trySkill($skill`Lightning Strike`),
@@ -221,7 +229,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
     },
     {
       name: $skill`Free-For-All`.name,
-      ready: () => have($skill`Free-For-All`),
+      ready: () => drumMachineWorthIt() && have($skill`Free-For-All`),
       completed: () => have($effect`Everything Looks Red`),
       combat: new GarboStrategy(() =>
         sandwormMacro().trySkill($skill`Free-For-All`),
@@ -230,7 +238,9 @@ const SandwormTasks: GarboFreeFightTask[] = [
     },
     {
       name: "Yellow Ray",
-      ready: () => have($skill`Fondeluge`) || have($item`Jurassic Parka`),
+      ready: () =>
+        (drumMachineWorthIt() && have($skill`Fondeluge`)) ||
+        have($item`Jurassic Parka`),
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
         sandwormMacro()
@@ -296,9 +306,9 @@ function hasWorms(): boolean {
 
 const REJECTION = 1 / 10;
 const BASE_RATE = 1 / 100;
-let _sandwormRate: number;
-function sandwormRate(): number {
-  if (!_sandwormRate) {
+let _drumMachineWorthIt: boolean;
+function drumMachineWorthIt(): boolean {
+  if (_drumMachineWorthIt === undefined) {
     Outfit.from(
       sandwormSpec(),
       new Error("Failed to generate Sandworm outfit"),
@@ -307,20 +317,18 @@ function sandwormRate(): number {
       have($skill`Steely-Eyed Squint`) && !have($effect`Steely-Eyed Squint`)
         ? 2
         : 1;
-    _sandwormRate =
+    const rate =
       REJECTION *
       clamp(BASE_RATE * (1 + (getModifier("Item Drop") * squint) / 100), 0, 1);
+    _drumMachineWorthIt =
+      mallPrice($item`drum machine`) < rate * garboValue($item`spice melange`);
   }
-  return _sandwormRate;
+  return _drumMachineWorthIt;
 }
 
 //  Use free fights on melanges if prices are reasonable
 export const FreeGiantSandwormQuest: Quest<GarboTask> = {
   name: "Free Giant Sandworm",
   tasks: SandwormTasks,
-  ready: () =>
-    sober() &&
-    hasWorms() &&
-    mallPrice($item`drum machine`) <
-      sandwormRate() * garboValue($item`spice melange`),
+  ready: () => sober() && hasWorms(),
 };
