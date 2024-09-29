@@ -308,7 +308,8 @@ function sandwormRate(): number {
         ? 2
         : 1;
     _sandwormRate =
-      REJECTION * BASE_RATE * (1 + (getModifier("Item Drop") * squint) / 100);
+      REJECTION *
+      clamp(BASE_RATE * (1 + (getModifier("Item Drop") * squint) / 100), 0, 1);
   }
   return _sandwormRate;
 }
