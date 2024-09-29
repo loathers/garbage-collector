@@ -239,8 +239,8 @@ const SandwormTasks: GarboFreeFightTask[] = [
     {
       name: "Yellow Ray",
       ready: () =>
-        (drumMachineWorthIt() && have($skill`Fondeluge`)) ||
-        have($item`Jurassic Parka`),
+        drumMachineWorthIt() &&
+        (have($skill`Fondeluge`) || have($item`Jurassic Parka`)),
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
         sandwormMacro()
