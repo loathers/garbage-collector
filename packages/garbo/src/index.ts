@@ -117,7 +117,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28063); // Update for new BALLS predicates
+  sinceKolmafiaRevision(28067); // yes, can haz is like o hai
   checkGithubVersion();
 
   // Hit up main.php to get out of easily escapable choices
