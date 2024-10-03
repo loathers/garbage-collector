@@ -1246,6 +1246,8 @@ const freeRunFightSources = [
       ((have($item`industrial fire extinguisher`) &&
         get("_fireExtinguisherCharge") >= 10) ||
         (have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11) ||
+        // eslint-disable-next-line libram/verify-constants
+        (have($item`bat wings`) && get("_stealSkillPref", 0) < 11) ||
         (have($skill`Perpetrate Mild Evil`) &&
           get("_mildEvilPerpetrated") < 3)) &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
@@ -1280,6 +1282,8 @@ const freeRunFightSources = [
           .trySkillRepeat(
             $skill`Fire Extinguisher: Polar Vortex`,
             $skill`Perpetrate Mild Evil`,
+            // eslint-disable-next-line libram/verify-constants
+            $skill`Swoop like a Bat`,
           )
           .step(runSource.macro)
           .setAutoAttack();
