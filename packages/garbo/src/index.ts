@@ -117,7 +117,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28067); // yes, can haz is like o hai
+  sinceKolmafiaRevision(28077); // various iotm improvements
   checkGithubVersion();
 
   // Hit up main.php to get out of easily escapable choices
