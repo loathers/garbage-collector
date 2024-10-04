@@ -291,9 +291,10 @@ function batWings(mode: BonusEquipMode): Map<Item, number> {
   if (
     !have(batWings) ||
     mode !== BonusEquipMode.BARF ||
-    get("_batWingsPref", 0) >= 5
-  )
+    get("_batWingsFreeFights", 0) >= 5
+  ) {
     return new Map<Item, number>();
+  }
   const batWingsRate = 0.25;
   const value = batWingsRate * get("valueOfAdventure");
   return new Map<Item, number>([[batWings, value]]);
