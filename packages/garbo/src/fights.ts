@@ -97,6 +97,7 @@ import {
   Requirement,
   Robortender,
   set,
+  Snapper,
   SourceTerminal,
   sum,
   undelay,
@@ -188,6 +189,7 @@ import {
   FreeGiantSandwormQuest,
   possibleFreeGiantSandwormQuestTentacleFights,
 } from "./tasks/freeGiantSandworm";
+import { CopyTargetFight } from "./target/fights";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -370,13 +372,13 @@ function pygmyOptions(equip: Item[] = []): FreeFightOptions {
   };
 }
 
-function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
+function familiarSpec(underwater: boolean, fight: CopyTargetFight): OutfitSpec {
   if (
     ChestMimic.have() &&
     $familiar`Chest Mimic`.experience >= 50 &&
     get("_mimicEggsObtained") < 11 &&
     // switchmonster doesn't apply ML, meaning the target monsters die too quickly to get multiple eggs in
-    !["Macrometeorite", "Powerful Glove", "Backup"].includes(fight)
+    !["Macrometeorite", "Powerful Glove", "Backup"].includes(fight.name)
   ) {
     return { familiar: $familiar`Chest Mimic` };
   }
@@ -400,6 +402,14 @@ function familiarSpec(underwater: boolean, fight: string): OutfitSpec {
   }
 
   if (isFreeAndCopyable(globalOptions.target)) {
+    if (fight.gregariousReplace) {
+      return {
+        familiar: freeFightFamiliar({
+          mode: "target",
+          excludeFamiliar: [$familiar`Red-Nosed Snapper`],
+        }),
+      };
+    }
     return { familiar: freeFightFamiliar({ mode: "target" }) };
   }
 
@@ -528,7 +538,14 @@ export function dailyFights(): void {
         const location = new TargetFightRunOptions(nextFight).location;
         const underwater = location.environment === "underwater";
 
-        const famSpec = familiarSpec(underwater, nextFight.name);
+        const famSpec = familiarSpec(underwater, nextFight);
+
+        if (
+          famSpec.familiar === $familiar`Red-Nosed Snapper` &&
+          Snapper.getTrackedPhylum() !== globalOptions.target.phylum
+        ) {
+          Snapper.trackPhylum(globalOptions.target.phylum);
+        }
 
         setLocation(location);
         meatTargetOutfit({ ...nextFight.spec, ...famSpec }, location).dress();
