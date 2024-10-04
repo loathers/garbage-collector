@@ -14,11 +14,14 @@ import {
   clamp,
   get,
   have,
+  Snapper,
   sumNumbers,
 } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import { garboValue } from "../garboValue";
+import { copyTargetCount } from "../target";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
@@ -130,4 +133,18 @@ export function estimatedBarfExperience(): number {
   if (voter) sources.push(Number(voter));
 
   return sumNumbers(sources);
+}
+
+export function snapperValue(): number {
+  const item = Snapper.phylumItem.get(globalOptions.target.phylum);
+  if (!item) return 0;
+
+  const denominator =
+    11 -
+    (Snapper.getTrackedPhylum() === globalOptions.target.phylum
+      ? Snapper.getProgress()
+      : 0);
+  if (denominator > copyTargetCount()) return 0;
+
+  return garboValue(item) / denominator;
 }
