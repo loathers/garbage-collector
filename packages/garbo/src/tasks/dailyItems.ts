@@ -44,7 +44,6 @@ import {
   have,
   maxBy,
   questStep,
-  set,
   SourceTerminal,
   sum,
   withChoice,
@@ -186,8 +185,8 @@ const DailyItemTasks: GarboTask[] = [
     name: "2002 Mr. Store",
     ready: () => have($item`2002 Mr. Store Catalog`),
     completed: () =>
-      get("availableMrStore2002Credits", 0) === 0 &&
-      get("_2002MrStoreCreditsCollected", true),
+      get("availableMrStore2002Credits") === 0 &&
+      get("_2002MrStoreCreditsCollected"),
     do: (): void => {
       const bestItem = maxBy(
         Item.all().filter((i) => sellsItem($coinmaster`Mr. Store 2002`, i)),
@@ -195,26 +194,16 @@ const DailyItemTasks: GarboTask[] = [
       );
       buy(
         $coinmaster`Mr. Store 2002`,
-        get("availableMrStore2002Credits", 0),
+        get("availableMrStore2002Credits"),
         bestItem,
       );
     },
     spendsTurn: false,
   },
   {
-    name: "Check Sept-Ember",
-    ready: () => have($item`Sept-Ember Censer`),
-    completed: () => get("_septEmbersCollected", false),
-    do: (): void => {
-      visitUrl("shop.php?whichshop=september", false);
-      set("_septEmbersCollected", true);
-    },
-    spendsTurn: false,
-  },
-  {
     name: "Spend Sept-Ember Embers",
     ready: () => have($item`Sept-Ember Censer`) && globalOptions.ascend,
-    completed: () => get("availableSeptEmbers", 0) === 0,
+    completed: () => get("availableSeptEmbers") === 0,
     do: (): void => {
       const itemsWithCosts = Item.all()
         .filter((i) => sellsItem($coinmaster`Sept-Ember Censer`, i))
@@ -225,14 +214,14 @@ const DailyItemTasks: GarboTask[] = [
             garboValue(item) / sellPrice($coinmaster`Sept-Ember Censer`, item),
         }));
 
-      while (get("availableSeptEmbers", 0) > 0) {
+      while (get("availableSeptEmbers") > 0) {
         const { item, cost } = maxBy(
           itemsWithCosts.filter(
-            ({ cost }) => cost <= get("availableSeptEmbers", 0),
+            ({ cost }) => cost <= get("availableSeptEmbers"),
           ),
           "value",
         );
-        const toBuy = Math.floor(get("availableSeptEmbers", 0) / cost);
+        const toBuy = Math.floor(get("availableSeptEmbers") / cost);
         buy($coinmaster`Sept-Ember Censer`, toBuy, item);
       }
     },
@@ -524,7 +513,7 @@ const DailyItemTasks: GarboTask[] = [
       (!(myInebriety() > inebrietyLimit()) ||
         (have($item`Drunkula's wineglass`) &&
           canEquip($item`Drunkula's wineglass`))),
-    completed: () => get("_candyCaneSwordOvergrownShrine", true),
+    completed: () => get("_candyCaneSwordOvergrownShrine"),
     do: () => {
       visitUrl("adventure.php?snarfblat=348");
       runChoice(4);

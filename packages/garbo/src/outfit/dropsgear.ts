@@ -291,7 +291,7 @@ function batWings(mode: BonusEquipMode): Map<Item, number> {
   if (
     !have(batWings) ||
     mode !== BonusEquipMode.BARF ||
-    get("_batWingsFreeFights", 0) >= 5
+    get("_batWingsFreeFights") >= 5
   ) {
     return new Map<Item, number>();
   }

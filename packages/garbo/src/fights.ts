@@ -1264,7 +1264,7 @@ const freeRunFightSources = [
         get("_fireExtinguisherCharge") >= 10) ||
         (have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11) ||
         // eslint-disable-next-line libram/verify-constants
-        (have($item`bat wings`) && get("_stealSkillPref", 0) < 11) ||
+        (have($item`bat wings`) && get("_batWingsSwoopUsed") < 11) ||
         (have($skill`Perpetrate Mild Evil`) &&
           get("_mildEvilPerpetrated") < 3)) &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture

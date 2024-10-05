@@ -184,7 +184,7 @@ function canWanderTypeBackup(location: Location): boolean {
 function canWanderTypeFreeFight(location: Location): boolean {
   if (
     location === $location`The Fun-Guy Mansion` &&
-    get("funGuyMansionKills", 0) >= 100
+    get("funGuyMansionKills") >= 100
   ) {
     return false;
   }
