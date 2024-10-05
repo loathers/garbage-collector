@@ -1978,12 +1978,7 @@ function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
     (zone) =>
       zone.isOpen() &&
       (mappingMonster || !zone.requireMapTheMonsters) &&
-      asArray(zone.monster).some(
-        (m) =>
-          !isBanished(m) ||
-          get("olfactedMonster") === m ||
-          get("_gallapagosMonster") === m,
-      ),
+      asArray(zone.monster).some((m) => !isBanished(m)),
   );
   const vorticesAvail = have($item`industrial fire extinguisher`)
     ? Math.floor(get("_fireExtinguisherCharge") / 10)
