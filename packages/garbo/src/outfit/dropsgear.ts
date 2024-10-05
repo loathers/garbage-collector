@@ -286,7 +286,6 @@ function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
 }
 
 function batWings(mode: BonusEquipMode): Map<Item, number> {
-  // eslint-disable-next-line libram/verify-constants
   const batWings = $item`bat wings`;
   if (
     !have(batWings) ||
