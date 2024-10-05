@@ -4,6 +4,7 @@ import {
   canEquip,
   eat,
   getWorkshed,
+  haveEquipped,
   Item,
   itemAmount,
   Location,
@@ -17,6 +18,7 @@ import {
   myRain,
   myTurncount,
   outfitPieces,
+  print,
   retrieveItem,
   runChoice,
   totalTurnsPlayed,
@@ -94,6 +96,9 @@ import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
 import { meatMood } from "../mood";
+
+let batWingsTurns = 0;
+let batWingTriggers = 0;
 
 const digitizedTarget = () =>
   SourceTerminal.have() &&
@@ -982,6 +987,17 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         !(totalTurnsPlayed() % 11) &&
         meatMood().execute(estimatedGarboTurns()),
       post: () => {
+        // eslint-disable-next-line libram/verify-constants
+        if (haveEquipped($item`bat wings`)) {
+          if (batWingTriggers === get("_batWingsFreeFights", 0)) {
+            batWingsTurns++;
+            print(`${batWingsTurns} since last bat wing trigger`);
+          } else {
+            print(`Bat Wing Free Fight Trigger after ${batWingsTurns} turns`);
+            batWingTriggers = get("_batWingsFreeFights", 0);
+            batWingsTurns = 0;
+          }
+        }
         completeBarfQuest();
         trackMarginalMpa();
       },
