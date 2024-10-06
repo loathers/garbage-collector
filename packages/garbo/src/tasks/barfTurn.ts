@@ -17,7 +17,6 @@ import {
   myRain,
   myTurncount,
   outfitPieces,
-  print,
   retrieveItem,
   runChoice,
   totalTurnsPlayed,
