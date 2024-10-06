@@ -42,6 +42,8 @@ export function bestBjornalike(outfit: Outfit): Item | null {
   if (bjornalikes.length === 0) return null;
   if (bjornalikes.length === 1) return bjornalikes[0];
 
+  if (outfit.bonuses.has($item`bat wings`)) return $item`Crown of Thrones`;
+
   const hasStrongLep = findLeprechaunMultiplier(meatFamiliar()) >= 2;
   const goodRobortHats = $items`crumpled felt fedora`;
   if (myClass() === $class`Turtle Tamer`) {

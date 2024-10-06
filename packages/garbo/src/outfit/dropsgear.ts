@@ -285,6 +285,20 @@ function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
   ]);
 }
 
+function batWings(mode: BonusEquipMode): Map<Item, number> {
+  const batWings = $item`bat wings`;
+  if (
+    !have(batWings) ||
+    mode !== BonusEquipMode.BARF ||
+    get("_batWingsFreeFights") >= 5
+  ) {
+    return new Map<Item, number>();
+  }
+  const batWingsRate = 0.25;
+  const value = batWingsRate * get("valueOfAdventure");
+  return new Map<Item, number>([[batWings, value]]);
+}
+
 export function bonusGear(
   mode: BonusEquipMode,
   valueCircumstantialBonus = true,
@@ -299,6 +313,7 @@ export function bonusGear(
     ...sneegleebs(),
     ...bindlestocking(mode),
     ...simpleTargetCrits(mode),
+    ...batWings(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...pantsgiving(mode),

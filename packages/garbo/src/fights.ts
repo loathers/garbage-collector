@@ -1263,6 +1263,7 @@ const freeRunFightSources = [
       ((have($item`industrial fire extinguisher`) &&
         get("_fireExtinguisherCharge") >= 10) ||
         (have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11) ||
+        (have($item`bat wings`) && get("_batWingsSwoopUsed") < 11) ||
         (have($skill`Perpetrate Mild Evil`) &&
           get("_mildEvilPerpetrated") < 3)) &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
@@ -1297,6 +1298,7 @@ const freeRunFightSources = [
           .trySkillRepeat(
             $skill`Fire Extinguisher: Polar Vortex`,
             $skill`Perpetrate Mild Evil`,
+            $skill`Swoop like a Bat`,
           )
           .step(runSource.macro)
           .setAutoAttack();
@@ -1314,13 +1316,16 @@ const freeRunFightSources = [
         const zone = getBestItemStealZone();
         const spec: OutfitSpec =
           have($familiar`XO Skeleton`) && get("_xoHugsUsed") < 11
-            ? { familiar: $familiar`XO Skeleton` }
-            : {};
+            ? { familiar: $familiar`XO Skeleton`, equip: [] }
+            : { equip: [] };
         if (
           have($item`industrial fire extinguisher`) &&
           get("_fireExtinguisherCharge") >= 10
         ) {
-          spec.equip = $items`industrial fire extinguisher`;
+          spec.equip?.push($item`industrial fire extinguisher`);
+        }
+        if (have($item`bat wings`) && get("_batWingsSwoopUsed") < 11) {
+          spec.equip?.push($item`bat wings`);
         }
         spec.modifier = zone?.maximize ?? [];
         return spec;
@@ -1973,12 +1978,7 @@ function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
     (zone) =>
       zone.isOpen() &&
       (mappingMonster || !zone.requireMapTheMonsters) &&
-      asArray(zone.monster).some(
-        (m) =>
-          !isBanished(m) ||
-          get("olfactedMonster") === m ||
-          get("_gallapagosMonster") === m,
-      ),
+      asArray(zone.monster).some((m) => !isBanished(m)),
   );
   const vorticesAvail = have($item`industrial fire extinguisher`)
     ? Math.floor(get("_fireExtinguisherCharge") / 10)
