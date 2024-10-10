@@ -162,7 +162,7 @@ export function computeBarfOutfit(
     outfit.equip($item`Kramco Sausage-o-Matic™`);
   }
 
-  outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
+  outfit.bonuses = bonusGear(BonusEquipMode.BARF, 0, !sim);
   const bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
     outfit.setBonus(bjornalike, bjornChoice.value);

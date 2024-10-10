@@ -6,6 +6,7 @@ import {
   $item,
   $items,
   $location,
+  $phylum,
   Environment,
   Guzzlr,
   have,
@@ -71,6 +72,7 @@ export function meatTargetOutfit(
 
   outfit.bonuses = bonusGear(
     targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
+    globalOptions.target.phylum === $phylum`plant` ? 1 : 0,
   );
   const bjornalike = bestBjornalike(outfit);
 
