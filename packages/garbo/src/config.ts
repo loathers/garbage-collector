@@ -178,6 +178,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           default: false,
           hidden: true,
         }),
+        dmtDupeItem: Args.item({
+          setting: "garbo_dmtDupeItem",
+          help: "Item to duplicate in the deep machine tunnel instead of calculating by value. Will be ignored if the item is not in inventory or not able to be duped.",
+          hidden: true,
+        }),
         meatTargetMultiplier: Args.number({
           setting: "garbo_meatTargetMultiplier",
           help: "The amount we multiply our valueOfAdventure by when estimating marginal meat target profit. (Default 1.5)",
