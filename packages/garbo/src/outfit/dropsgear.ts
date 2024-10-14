@@ -18,6 +18,7 @@ import {
   $skill,
   $slot,
   $slots,
+  BatWings,
   BurningLeaves,
   clamp,
   DaylightShavings,
@@ -294,8 +295,7 @@ function batWings(mode: BonusEquipMode): Map<Item, number> {
   ) {
     return new Map<Item, number>();
   }
-  const batWingsRate = 0.25;
-  const value = batWingsRate * get("valueOfAdventure");
+  const value = BatWings.flapChance() * get("valueOfAdventure");
   return new Map<Item, number>([[batWings, value]]);
 }
 
