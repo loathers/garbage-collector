@@ -18,6 +18,7 @@ import {
   $skill,
   $slot,
   $slots,
+  BatWings,
   BurningLeaves,
   clamp,
   DaylightShavings,
@@ -288,14 +289,13 @@ function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
 function batWings(mode: BonusEquipMode): Map<Item, number> {
   const batWings = $item`bat wings`;
   if (
-    !have(batWings) ||
+    !BatWings.have() ||
     mode !== BonusEquipMode.BARF ||
-    get("_batWingsFreeFights") >= 5
+    BatWings.flapChance() === 0
   ) {
     return new Map<Item, number>();
   }
-  const batWingsRate = 0.25;
-  const value = batWingsRate * get("valueOfAdventure");
+  const value = BatWings.flapChance() * get("valueOfAdventure");
   return new Map<Item, number>([[batWings, value]]);
 }
 

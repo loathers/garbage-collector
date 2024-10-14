@@ -73,6 +73,8 @@ import {
   $stat,
   $thrall,
   ActionSource,
+  BatWings,
+  Cartography,
   ChestMimic,
   CinchoDeMayo,
   clamp,
@@ -1101,8 +1103,7 @@ const freeFightSources = [
       !get("_firedJokestersGun") &&
       have($item`The Jokester's gun`) &&
       canEquip($item`The Jokester's gun`) &&
-      have($skill`Comprehensive Cartography`) &&
-      get("_monstersMapped") < 3,
+      Cartography.availableMaps() > 0,
     () => {
       try {
         Macro.skill($skill`Fire the Jokester's Gun`)
@@ -1267,17 +1268,13 @@ const freeRunFightSources = [
         (have($skill`Perpetrate Mild Evil`) &&
           get("_mildEvilPerpetrated") < 3)) &&
       get("_VYKEACompanionLevel") === 0 && // don't attempt this in case you re-run garbo after making a vykea furniture
-      getBestItemStealZone(true) !== null,
+      getBestItemStealZone() !== null,
     (runSource: ActionSource) => {
       setupItemStealZones();
-      const best = getBestItemStealZone(true);
+      const best = getBestItemStealZone();
       if (!best) throw `Unable to find fire extinguisher zone?`;
       const mappingMonster =
-        have($skill`Comprehensive Cartography`) &&
-        get("_monstersMapped") < 3 &&
-        best.location.wanderers &&
-        have($skill`Comprehensive Cartography`) &&
-        get("_monstersMapped") < 3;
+        Cartography.availableMaps() > 0 && best.location.wanderers;
       const monsters = asArray(best.monster);
       try {
         if (best.preReq) best.preReq();
@@ -1324,7 +1321,7 @@ const freeRunFightSources = [
         ) {
           spec.equip?.push($item`industrial fire extinguisher`);
         }
-        if (have($item`bat wings`) && get("_batWingsSwoopUsed") < 11) {
+        if (BatWings.swoopsRemaining() > 0) {
           spec.equip?.push($item`bat wings`);
         }
         spec.modifier = zone?.maximize ?? [];
@@ -1973,12 +1970,16 @@ const itemStealZones = [
   ),
 ] as ItemStealZone[];
 
-function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
+function getBestItemStealZone(
+  canMapMonster = Cartography.availableMaps() > 0 ||
+    Cartography.currentlyMapping(),
+): ItemStealZone | null {
   const targets = itemStealZones.filter(
     (zone) =>
       zone.isOpen() &&
-      (mappingMonster || !zone.requireMapTheMonsters) &&
-      asArray(zone.monster).some((m) => !isBanished(m)),
+      (canMapMonster ||
+        (!zone.requireMapTheMonsters &&
+          asArray(zone.monster).some((m) => !isBanished(m)))),
   );
   const vorticesAvail = have($item`industrial fire extinguisher`)
     ? Math.floor(get("_fireExtinguisherCharge") / 10)
@@ -1986,10 +1987,13 @@ function getBestItemStealZone(mappingMonster = false): ItemStealZone | null {
   const hugsAvail = have($familiar`XO Skeleton`)
     ? clamp(11 - get("_xoHugsUsed"), 0, 11)
     : 0;
+  const swoopsAvail = BatWings.swoopsRemaining();
   const value = (zone: ItemStealZone): number => {
     // We have to divide hugs by 2 - will likely use a banish as a free run so we will be alternating zones.
     return (
-      zone.dropRate * garboValue(zone.item) * (vorticesAvail + hugsAvail / 2) -
+      zone.dropRate *
+        garboValue(zone.item) *
+        (vorticesAvail + swoopsAvail + hugsAvail / 2) -
       zone.openCost()
     );
   };
@@ -2100,8 +2104,7 @@ function killRobortCreaturesForFree() {
   while (
     freeKill &&
     canAdventure($location`The Copperhead Club`) &&
-    have($skill`Comprehensive Cartography`) &&
-    get("_monstersMapped") < 3
+    Cartography.availableMaps() > 0
   ) {
     if (have($effect`Crappily Disguised as a Waiter`)) {
       setChoice(855, 4);
