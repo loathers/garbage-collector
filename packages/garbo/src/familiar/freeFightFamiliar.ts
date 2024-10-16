@@ -3,6 +3,7 @@ import {
   familiarWeight,
   inebrietyLimit,
   Location,
+  myAdventures,
   myInebriety,
 } from "kolmafia";
 import {
@@ -110,16 +111,17 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
     if (have($familiar`Unspeakachu`)) {
       familiarMenu.push({
         familiar: $familiar`Unspeakachu`,
-        expectedValue: !globalOptions.ascend
-          ? getActiveEffects()
-              .map((ef) =>
-                new Potion($item.none, { effect: ef, duration: 5 }).gross(1),
-              )
-              .reduce((sum, currentValue) => sum + currentValue, 0) *
-            // Unspeakachu has a 5% activation rate with a 50% effect for any given buff, we're operating on an average here
-            0.5 *
-            0.05
-          : 0,
+        expectedValue:
+          getActiveEffects()
+            .map((ef) =>
+              new Potion($item.none, { effect: ef, duration: 5 }).gross(
+                clamp(5, 0, globalOptions.ascend ? myAdventures() : 5),
+              ),
+            )
+            .reduce((sum, currentValue) => sum + currentValue, 0) *
+          // Unspeakachu has a 5% activation rate with a 50% effect for any given buff, we're operating on an average here
+          0.5 *
+          0.05,
         leprechaunMultiplier: 0,
         limit: "none",
       });
