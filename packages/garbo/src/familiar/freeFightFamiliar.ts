@@ -3,6 +3,7 @@ import {
   familiarWeight,
   inebrietyLimit,
   Location,
+  myAdventures,
   myInebriety,
 } from "kolmafia";
 import {
@@ -12,6 +13,7 @@ import {
   clamp,
   findLeprechaunMultiplier,
   get,
+  getActiveEffects,
   getModifier,
   have,
   Snapper,
@@ -26,6 +28,7 @@ import { meatFamiliar } from "./meatFamiliar";
 import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
+import { Potion } from "../potions";
 
 type MenuOptions = Partial<{
   canChooseMacro: boolean;
@@ -102,6 +105,25 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         expectedValue: snapperValue(),
         leprechaunMultiplier: 0,
         limit: "special",
+      });
+    }
+
+    if (have($familiar`Unspeakachu`)) {
+      familiarMenu.push({
+        familiar: $familiar`Unspeakachu`,
+        expectedValue:
+          getActiveEffects()
+            .map((ef) =>
+              new Potion($item.none, { effect: ef, duration: 5 }).gross(
+                clamp(5, 0, globalOptions.ascend ? myAdventures() : 5),
+              ),
+            )
+            .reduce((sum, currentValue) => sum + currentValue, 0) *
+          // Unspeakachu has a 5% activation rate with a 50% effect for any given buff, we're operating on an average here
+          0.5 *
+          0.05,
+        leprechaunMultiplier: 0,
+        limit: "none",
       });
     }
 
