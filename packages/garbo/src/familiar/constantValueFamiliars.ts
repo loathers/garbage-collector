@@ -89,16 +89,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Unspeakachu`,
-    value: () => {
-      const effects = getActiveEffects().map((ef) => ({
-        grossValue: new Potion($item.none, { effect: ef, duration: 5 }).gross(
-          clamp(5, 0, globalOptions.ascend ? myAdventures() : 5),
-        ),
-      }));
-      // Unspeakachu has a 5% activation rate with a 50% effect for any given buff, we're operating on an average here
-      return sum(effects, "grossValue") * 0.5 * 0.05;
-    },
-  },
+    value: () => sum(getActiveEffects(), (effect) => new Potion($item.none, { effect, duration: 5 }).gross(clamp(5, 0, globalOptions.ascend ? myAdventures() : 5))) * 0.5 * 0.05,
   {
     familiar: $familiar`Patriotic Eagle`,
     value: () =>
