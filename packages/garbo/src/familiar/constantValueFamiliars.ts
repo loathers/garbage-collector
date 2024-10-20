@@ -89,7 +89,15 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Unspeakachu`,
-    value: () => sum(getActiveEffects(), (effect) => new Potion($item.none, { effect, duration: 5 }).gross(clamp(5, 0, globalOptions.ascend ? myAdventures() : 5))) * 0.5 * 0.05,
+    value: () =>
+      sum(getActiveEffects(), (effect) =>
+        new Potion($item.none, { effect, duration: 5 }).gross(
+          clamp(5, 0, globalOptions.ascend ? myAdventures() : 5),
+        ),
+      ) *
+      0.5 *
+      0.05,
+  },
   {
     familiar: $familiar`Patriotic Eagle`,
     value: () =>
