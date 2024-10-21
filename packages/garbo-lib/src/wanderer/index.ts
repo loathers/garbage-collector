@@ -1,4 +1,5 @@
 import {
+  Effect,
   inebrietyLimit,
   isDarkMode,
   Item,
@@ -7,6 +8,7 @@ import {
   myInebriety,
   myTotalTurnsSpent,
   print,
+  Slot,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -37,6 +39,7 @@ import { lovebugsFactory } from "./lovebugs";
 import { freefightFactory } from "./freefight";
 import { eightbitFactory } from "./eightbit";
 import { gingerbreadFactory } from "./gingerbreadcity";
+import { tearawayPantsFactory } from "./tearawaypants";
 
 export type { DraggableFight };
 
@@ -54,6 +57,7 @@ const wanderFactories: WandererFactory[] = [
   guzzlrFactory,
   eightbitFactory,
   gingerbreadFactory,
+  tearawayPantsFactory,
 ];
 
 function bestWander(
@@ -134,20 +138,31 @@ function wanderWhere(
     return candidate.location;
   }
 }
-export type WanderOptions = {
+export type WanderOptions<T extends string> = {
   wanderer: DraggableFight;
   drunkSafe?: boolean;
   allowEquipment?: boolean;
+  mode?: T;
 };
 
-export type WanderDetails = DraggableFight | WanderOptions;
+export type WanderDetails<T extends string> = DraggableFight | WanderOptions<T>;
 
 const defaultWanderOptions = {
   drunkSafe: true,
   allowEquipment: true,
 };
 
-export class WandererManager {
+export type WandererManagerOptions<T extends string> = {
+  [k in keyof WandererFactoryOptions]: k extends
+    | "digitizesRemaining"
+    | "estimatedTurns"
+    ? WandererFactoryOptions[k]
+    : WandererFactoryOptions[k] extends (...args: infer A) => infer R
+      ? (mode: T | null, ...args: A) => R
+      : WandererFactoryOptions[k];
+};
+
+export class WandererManager<T extends string = never> {
   private unsupportedChoices = new Map<
     Location,
     Delayed<
@@ -244,13 +259,25 @@ export class WandererManager {
 
   cacheKey = "";
   targets: Partial<{ [x in `${DraggableFight}:${boolean}`]: Location }> = {};
-  options: WandererFactoryOptions;
+  options: WandererManagerOptions<T>;
 
-  constructor(options: WandererFactoryOptions) {
+  constructor(options: WandererManagerOptions<T>) {
     this.options = options;
   }
 
-  getTarget(wanderer: WanderDetails): Location {
+  getOptions(mode: T | null = null): WandererFactoryOptions {
+    return {
+      ...this.options,
+      freeFightExtraValue: (loc: Location) =>
+        this.options.freeFightExtraValue(mode, loc),
+      itemValue: (item: Item) => this.options.itemValue(mode, item),
+      effectValue: (effect: Effect, duration: number) =>
+        this.options.effectValue(mode, effect, duration),
+      slotCost: (slot: Slot) => this.options.slotCost(mode, slot),
+    };
+  }
+
+  getTarget(wanderer: WanderDetails<T>): Location {
     const { draggableFight, options } = isDraggableFight(wanderer)
       ? { draggableFight: wanderer, options: {} }
       : { draggableFight: wanderer.wanderer, options: wanderer };
@@ -268,7 +295,7 @@ export class WandererManager {
 
     return sober() || !drunkSafe
       ? (this.targets[`${draggableFight}:${allowEquipment}`] ??= wanderWhere(
-          this.options,
+          this.getOptions(options.mode),
           draggableFight,
           [],
           locationSkipList,
@@ -283,20 +310,25 @@ export class WandererManager {
    * @returns Map of choice numbers to decisions
    */
   getChoices(
-    target: WanderDetails | Location,
+    target: WanderDetails<T> | Location,
     takeTurnForProfit = this.options.takeTurnForProfit,
   ): {
     [choice: number]: string | number;
   } {
     const location =
       target instanceof Location ? target : this.getTarget(target);
+    const mode =
+      target instanceof Location || isDraggableFight(target)
+        ? null
+        : target.mode;
+    const options = this.getOptions(mode);
     const valueOfTurn = takeTurnForProfit
       ? (this.options.valueOfAdventure ?? 0) +
-        sum(getActiveEffects(), (e) => this.options.effectValue(e, 1))
+        sum(getActiveEffects(), (e) => options.effectValue(e, 1))
       : Infinity;
     return undelay(
       this.unsupportedChoices.get(location) ?? {},
-      this.options,
+      options,
       valueOfTurn,
     );
   }
@@ -305,7 +337,7 @@ export class WandererManager {
     this.targets = {};
   }
 
-  getEquipment(wanderer: WanderDetails): Item[] {
+  getEquipment(wanderer: WanderDetails<T>): Item[] {
     return this.equipment.get(this.getTarget(wanderer)) ?? [];
   }
 }
