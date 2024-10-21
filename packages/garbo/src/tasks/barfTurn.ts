@@ -338,7 +338,14 @@ function getBestDupeItem(): Item {
         (i.inebriety || i.fullness || i.potion || i.spleen) &&
         have(i),
     );
-    bestDupeItem = maxBy(validItems, garboValue);
+    if (
+      globalOptions.prefs.dmtDupeItem &&
+      validItems.includes(globalOptions.prefs.dmtDupeItem)
+    ) {
+      bestDupeItem = globalOptions.prefs.dmtDupeItem;
+    } else {
+      bestDupeItem = maxBy(validItems, garboValue);
+    }
   }
   return bestDupeItem;
 }
