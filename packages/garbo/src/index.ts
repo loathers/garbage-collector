@@ -86,6 +86,7 @@ import {
   runGarboQuests,
   SetupTargetCopyQuest,
 } from "./tasks";
+import { prFinishTasks } from "./resources";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -556,6 +557,7 @@ export function main(argString = ""): void {
         freeFights();
         runGarboQuests([SetupTargetCopyQuest]);
         yachtzeeChain();
+        prFinishTasks();
         dailyFights();
 
         if (!globalOptions.nobarf) {

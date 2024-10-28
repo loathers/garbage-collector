@@ -15,9 +15,11 @@ export function prSetupTasks(): GarboTask[] {
     chooseCrew(),
     sailToCrabIsland(),
     runToGiantGiantCrab(),
-    runGiantGiantCrab(),
-    selectTrashIsland(),
   ];
+}
+
+export function prFinishTasks(): GarboTask[] {
+  return [runGiantGiantCrab(), selectTrashIsland()];
 }
 
 export function getEyepatch(): GarboTask {
@@ -40,13 +42,8 @@ export function getEyepatch(): GarboTask {
 export function chooseCrew(): GarboTask {
   return {
     name: "Choose Crew",
-    completed: () => get("_pirateRealmShip").length > 0,
-    ready: () =>
-      get("prAlways") ||
-      (get("_prToday") &&
-        globalOptions.target === $monster`cockroach` &&
-        have(eyepatch) &&
-        get("pirateRealmUnlockedAnemometer")),
+    completed: () => step("_questPirateRealm") >= 1,
+    ready: () => have(eyepatch),
     do: (): void => {
       visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
       runChoice(1); // Head to Groggy's
@@ -70,13 +67,8 @@ export function chooseCrew(): GarboTask {
 export function sailToCrabIsland(): GarboTask {
   return {
     name: "Sail to Crab Island",
-    completed: () => get("_pirateRealmShip").length > 0,
-    ready: () =>
-      (get("_questPirateRealm") && get("prAlways")) ||
-      (get("_prToday") &&
-        globalOptions.target === $monster`cockroach` &&
-        have(eyepatch) &&
-        get("pirateRealmUnlockedAnemometer")),
+    completed: () => step("_questPirateRealm") >= 4,
+    ready: () => step("_questPirateRealm") >= 1,
     do: $location`Sailing the PirateRealm Seas`,
     choices: {
       1365: 1,
