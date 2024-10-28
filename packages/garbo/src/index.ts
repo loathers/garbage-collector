@@ -108,6 +108,15 @@ function ensureBarfAccess() {
 }
 
 function defaultTarget() {
+  // Can we account for re-entry if we only have certain amounts of copiers left in each of these?
+  if (
+    have($skill`Just the Facts`) &&
+    have($skill`Meteor Lore`) &&
+    have($item`Powerful Glove`) &&
+    (get("_prToday") || get("prAlways"))
+  ) {
+    return $monster`cockroach`;
+  }
   if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
     return maxBy(
       $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
