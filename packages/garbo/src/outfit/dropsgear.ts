@@ -18,6 +18,7 @@ import {
   $skill,
   $slot,
   $slots,
+  BatWings,
   BurningLeaves,
   clamp,
   DaylightShavings,
@@ -285,6 +286,19 @@ function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
   ]);
 }
 
+function batWings(mode: BonusEquipMode): Map<Item, number> {
+  const batWings = $item`bat wings`;
+  if (
+    !BatWings.have() ||
+    mode !== BonusEquipMode.BARF ||
+    BatWings.flapChance() === 0
+  ) {
+    return new Map<Item, number>();
+  }
+  const value = BatWings.flapChance() * get("valueOfAdventure");
+  return new Map<Item, number>([[batWings, value]]);
+}
+
 export function bonusGear(
   mode: BonusEquipMode,
   valueCircumstantialBonus = true,
@@ -299,6 +313,7 @@ export function bonusGear(
     ...sneegleebs(),
     ...bindlestocking(mode),
     ...simpleTargetCrits(mode),
+    ...batWings(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...pantsgiving(mode),

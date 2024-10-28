@@ -28,8 +28,8 @@
   "dependencies": {
     "garbo-lib": "*",
     "grimoire-kolmafia": "^0.3.26",
-    "kolmafia": "^5.28021.0",
-    "libram": "^0.9.5"
+    "kolmafia": "^5.28067.0",
+    "libram": "^0.9.12"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.8",

@@ -4,7 +4,7 @@ import {
   itemDropsArray,
   Location,
 } from "kolmafia";
-import { clamp, maxBy, SourceTerminal, sum } from "libram";
+import { $item, clamp, get, have, maxBy, SourceTerminal, sum } from "libram";
 import {
   bofaValue,
   canAdventureOrUnlock,
@@ -30,6 +30,9 @@ function averageYrValue(
 
   const canDuplicate =
     SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
+  const canMctwist = have($item`pro skateboard`) && !get("_epicMcTwistUsed");
+  const possibleDuplicateFactor =
+    2 ** [canDuplicate, canMctwist].filter(Boolean).length;
   if (monsters.length === 0) {
     return 0;
   } else {
@@ -38,8 +41,9 @@ function averageYrValue(
         const items = itemDropsArray(m).filter((drop) =>
           ["", "n"].includes(drop.type),
         );
-        const duplicateFactor =
-          canDuplicate && !m.attributes.includes("NOCOPY") ? 2 : 1;
+        const duplicateFactor = !m.attributes.includes("NOCOPY")
+          ? possibleDuplicateFactor
+          : 1;
 
         // TODO: this should consider unbuffed meat drop and unbuffed item drop, probably
         const meatDrop = clamp((m.minMeat + m.maxMeat) / 2, 0, 1000);

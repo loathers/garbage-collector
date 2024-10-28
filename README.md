@@ -98,7 +98,7 @@ To invoke Garbage Collector, type `garbo` in the Mafia GCLI. In addition, you ca
 
 ### `nobarf` flag
 
-Running Garbo in `nobarf` mode will not target spending the bulk of your turns at Barf Mountain. Instead, it will just do your daily flag turns, as well as attempt to fight as many target monsters (usually Cheerless Mime Executive or Knob Goblin Elite Captain) as possible.
+Running Garbo in `nobarf` mode will not target spending the bulk of your turns at Barf Mountain. Instead, it will just do your daily flag turns, as well as attempt to fight as many copied target monsters as possible.
 
 ### `ascend` flag
 

@@ -1,4 +1,4 @@
-import { Familiar, familiarWeight, holiday, weightAdjustment } from "kolmafia";
+import { Familiar, holiday, myAdventures } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -6,17 +6,22 @@ import {
   $items,
   clamp,
   findLeprechaunMultiplier,
+  getActiveEffects,
   getModifier,
   have,
   Robortender,
+  sum,
+  totalFamiliarWeight,
 } from "libram";
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GeneralFamiliar } from "./lib";
+import { Potion } from "../potions";
+import { globalOptions } from "../config";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
-  value: (_mode: "barf" | "free") => number;
+  value: (_mode: "barf" | "free" | "target") => number;
 };
 
 const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
@@ -33,7 +38,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       // We can't equip an amulet coin if we equip the bag of many confections
       (mode === "barf" ? (bestAlternative * baseMeat()) / 100 : 0) +
       (1 / 3 + (have($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) *
-        (familiarWeight($familiar`Stocking Mimic`) + weightAdjustment()),
+        totalFamiliarWeight($familiar`Stocking Mimic`),
   },
   {
     familiar: $familiar`Shorter-Order Cook`,
@@ -83,6 +88,17 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       11,
   },
   {
+    familiar: $familiar`Unspeakachu`,
+    value: () =>
+      sum(getActiveEffects(), (effect) =>
+        new Potion($item.none, { effect, duration: 5 }).gross(
+          clamp(5, 0, globalOptions.ascend ? myAdventures() : 5),
+        ),
+      ) *
+      0.5 *
+      0.05,
+  },
+  {
     familiar: $familiar`Patriotic Eagle`,
     value: () =>
       holiday().includes("Dependence Day")
@@ -94,16 +110,13 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: (mode) =>
       mode === "barf"
         ? 0 // Handled in outfit caching code
-        : clamp(
-            (familiarWeight($familiar`Mini Kiwi`) + weightAdjustment()) * 0.005,
-            0,
-            1,
-          ) * garboValue($item`mini kiwi`), // faster with aviator goggles
+        : clamp(totalFamiliarWeight($familiar`Mini Kiwi`) * 0.005, 0, 1) *
+          garboValue($item`mini kiwi`), // faster with aviator goggles
   },
 ];
 
 export default function getConstantValueFamiliars(
-  mode: "barf" | "free",
+  mode: "barf" | "free" | "target",
 ): GeneralFamiliar[] {
   return standardFamiliars
     .filter(({ familiar }) => have(familiar))

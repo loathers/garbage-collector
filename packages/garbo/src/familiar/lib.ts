@@ -1,12 +1,10 @@
 import {
   availableAmount,
   Familiar,
-  familiarWeight,
   inebrietyLimit,
   myAdventures,
   myInebriety,
   totalTurnsPlayed,
-  weightAdjustment,
 } from "kolmafia";
 import {
   $effect,
@@ -16,11 +14,14 @@ import {
   clamp,
   get,
   have,
+  Snapper,
   sumNumbers,
 } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import { garboValue } from "../garboValue";
+import { copyTargetCount } from "../target";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
@@ -85,17 +86,6 @@ export function timeToMeatify(): boolean {
   return false;
 }
 
-export function pocketProfessorLectures(): number {
-  return (
-    2 +
-    Math.ceil(
-      Math.sqrt(
-        familiarWeight($familiar`Pocket Professor`) + weightAdjustment(),
-      ),
-    )
-  );
-}
-
 export function canOpenRedPresent(): boolean {
   return (
     have($familiar`Crimbo Shrub`) &&
@@ -143,4 +133,18 @@ export function estimatedBarfExperience(): number {
   if (voter) sources.push(Number(voter));
 
   return sumNumbers(sources);
+}
+
+export function snapperValue(): number {
+  const item = Snapper.phylumItem.get(globalOptions.target.phylum);
+  if (!item) return 0;
+
+  const denominator =
+    11 -
+    (Snapper.getTrackedPhylum() === globalOptions.target.phylum
+      ? Snapper.getProgress()
+      : 0);
+  if (denominator > copyTargetCount()) return 0;
+
+  return garboValue(item) / denominator;
 }

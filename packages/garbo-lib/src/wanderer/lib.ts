@@ -184,7 +184,7 @@ function canWanderTypeBackup(location: Location): boolean {
 function canWanderTypeFreeFight(location: Location): boolean {
   if (
     location === $location`The Fun-Guy Mansion` &&
-    get("funGuyMansionKills", 0) >= 100
+    get("funGuyMansionKills") >= 100
   ) {
     return false;
   }
@@ -194,7 +194,7 @@ function canWanderTypeFreeFight(location: Location): boolean {
   );
 }
 
-const wandererSkiplist = $locations`The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums`;
+const wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums`;
 function canWanderTypeWander(location: Location): boolean {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }

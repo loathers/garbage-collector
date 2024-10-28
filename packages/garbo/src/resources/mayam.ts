@@ -106,6 +106,9 @@ function getBestGreedyCombination(
   ]);
 }
 
+const resonanceIndex = (resonance: string) =>
+  (MayamCalendar.RESONANCE_KEYS as string[]).indexOf(resonance);
+
 function expandCombinationGroup<N extends number>(
   group: Tuple<MayamCalendar.CombinationString, N>,
 ): [
@@ -121,14 +124,8 @@ function expandCombinationGroup<N extends number>(
   return [
     ...getAvailableResonances(forbiddenSymbols)
       .filter((resonance) => {
-        const RESONANCE_KEYS_ANONYMIZED =
-          MayamCalendar.RESONANCE_KEYS as string[];
-        const rightmostIndex = Math.max(
-          ...group.map((combination) =>
-            RESONANCE_KEYS_ANONYMIZED.indexOf(combination),
-          ),
-        );
-        return RESONANCE_KEYS_ANONYMIZED.indexOf(resonance) > rightmostIndex;
+        const rightmostIndex = Math.max(...group.map(resonanceIndex));
+        return resonanceIndex(resonance) > rightmostIndex;
       })
       .map(
         (resonance) =>
@@ -145,13 +142,10 @@ function getBestMayamCombinations(): MayamCalendar.CombinationString[] {
   const combinationGroups =
     // `reduce` misbehaves a lot when `any` shows its face
     (new Array(MayamCalendar.remainingUses()).fill(null) as null[]).reduce(
-      (acc) => {
-        const result = [] as MayamCalendar.CombinationString[][];
-        for (const combinationGroup of acc) {
-          result.push(...expandCombinationGroup(combinationGroup));
-        }
-        return result;
-      },
+      (acc) =>
+        acc.flatMap((combinationGroup) =>
+          expandCombinationGroup(combinationGroup),
+        ),
       [[]] as MayamCalendar.CombinationString[][],
     );
   return maxBy(combinationGroups, (group) => sum(group, valueCombination));

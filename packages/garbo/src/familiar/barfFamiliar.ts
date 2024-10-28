@@ -2,7 +2,6 @@ import {
   cliExecute,
   equippedItem,
   Familiar,
-  familiarWeight,
   Item,
   myFamiliar,
   numericModifier,
@@ -23,6 +22,7 @@ import {
   getModifier,
   maxBy,
   sum,
+  totalFamiliarWeight,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
@@ -71,7 +71,11 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
     $familiar`Mini Kiwi`,
     {
       extraValue: ({ weight }) =>
-        clamp(weight * 0.005, 0, 1) * garboValue($item`mini kiwi`),
+        clamp(
+          (weight + totalFamiliarWeight($familiar`Mini Kiwi`, false)) * 0.005,
+          0,
+          1,
+        ) * garboValue($item`mini kiwi`),
     },
   ],
 ]);
@@ -89,7 +93,7 @@ function getCachedOutfitValues(fam: Familiar) {
     computeBarfOutfit(
       {
         familiar: fam,
-        avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections`,
+        avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections, bat wings`,
       },
       true,
     ).dress();
@@ -129,7 +133,9 @@ function familiarModifier(
 ): number {
   const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
   const totalWeight =
-    familiarWeight(familiar) + nonOutfitWeightBonus() + cachedOutfitWeight;
+    totalFamiliarWeight(familiar, false) +
+    nonOutfitWeightBonus() +
+    cachedOutfitWeight;
   const { equip } = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {};
 
   return equip

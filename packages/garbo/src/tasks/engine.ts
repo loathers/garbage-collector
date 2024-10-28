@@ -14,6 +14,7 @@ import {
   $skill,
   Delayed,
   get,
+  have,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -57,6 +58,10 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   }
 
   dress(task: GarboTask, outfit: Outfit) {
+    const duplicate = undelay(task.duplicate);
+    if (duplicate && have($item`pro skateboard`) && !get("_epicMcTwistUsed")) {
+      outfit.equip($item`pro skateboard`);
+    }
     super.dress(task, outfit);
     if (itemAmount($item`tiny stillsuit`) > 0) {
       equip($familiar`Cornbeefadon`, $item`tiny stillsuit`);
@@ -111,8 +116,11 @@ export class SafeGarboEngine extends BaseGarboEngine {
   }
 }
 
-export function runSafeGarboTasks(tasks: GarboTask[]): void {
-  const engine = new SafeGarboEngine(tasks);
+function runQuests<T extends typeof BaseGarboEngine>(
+  quests: Quest<GarboTask>[],
+  garboEngine: T,
+) {
+  const engine = new garboEngine(getTasks(quests));
 
   try {
     engine.run();
@@ -122,19 +130,9 @@ export function runSafeGarboTasks(tasks: GarboTask[]): void {
 }
 
 export function runSafeGarboQuests(quests: Quest<GarboTask>[]): void {
-  runSafeGarboTasks(getTasks(quests));
-}
-
-export function runGarboTasks(tasks: GarboTask[]): void {
-  const engine = new BaseGarboEngine(tasks);
-
-  try {
-    engine.run();
-  } finally {
-    engine.destruct();
-  }
+  runQuests(quests, SafeGarboEngine);
 }
 
 export function runGarboQuests(quests: Quest<GarboTask>[]): void {
-  runGarboTasks(getTasks(quests));
+  runQuests(quests, BaseGarboEngine);
 }

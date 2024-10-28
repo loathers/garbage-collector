@@ -4,16 +4,20 @@ import {
   canEquip,
   eat,
   getWorkshed,
+  Item,
+  itemAmount,
   Location,
   mallPrice,
   maximize,
   myAdventures,
+  myAscensions,
   myInebriety,
   myLevel,
   myLightning,
   myRain,
   myTurncount,
   outfitPieces,
+  retrieveItem,
   runChoice,
   totalTurnsPlayed,
   use,
@@ -39,6 +43,7 @@ import {
   GingerBread,
   have,
   HeavyRains,
+  maxBy,
   questStep,
   realmAvailable,
   set,
@@ -46,6 +51,7 @@ import {
   sum,
   TrainSet,
   undelay,
+  withProperty,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
 import { WanderDetails } from "garbo-lib";
@@ -69,7 +75,7 @@ import {
   meatTargetOutfit,
   waterBreathingEquipment,
 } from "../outfit";
-import { digitizedMonstersRemaining } from "../turns";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { deliverThesisIfAble } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
 
@@ -87,9 +93,8 @@ import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
+import { meatMood } from "../mood";
 
-const canDuplicate = () =>
-  SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
 const digitizedTarget = () =>
   SourceTerminal.have() &&
   SourceTerminal.getDigitizeMonster() === globalOptions.target;
@@ -322,6 +327,29 @@ function vampOut(additionalReady: () => boolean) {
   };
 }
 
+let bestDupeItem: Item | null = null;
+function getBestDupeItem(): Item {
+  if (bestDupeItem === null || !have(bestDupeItem)) {
+    // Machine elf can dupe PVPable food, booze, spleen item or potion
+    const validItems = Item.all().filter(
+      (i) =>
+        i.tradeable &&
+        i.discardable &&
+        (i.inebriety || i.fullness || i.potion || i.spleen) &&
+        have(i),
+    );
+    if (
+      globalOptions.prefs.dmtDupeItem &&
+      validItems.includes(globalOptions.prefs.dmtDupeItem)
+    ) {
+      bestDupeItem = globalOptions.prefs.dmtDupeItem;
+    } else {
+      bestDupeItem = maxBy(validItems, garboValue);
+    }
+  }
+  return bestDupeItem;
+}
+
 function willDrunkAdventure() {
   return have($item`Drunkula's wineglass`) && globalOptions.ascend;
 }
@@ -367,6 +395,40 @@ const NonBarfTurnTasks: AlternateTask[] = [
           )
         : 0,
     spendsTurn: true,
+  },
+  {
+    name: "Machine Elf Dupe",
+    ready: () =>
+      have($familiar`Machine Elf`) &&
+      // Dupe at end of day even if not ascending, encountersUntilDMTChoice does not reset on rollover
+      willDrunkAdventure() === !sober() &&
+      get("encountersUntilDMTChoice") === 0 &&
+      garboValue(getBestDupeItem()) > get("valueOfAdventure"),
+    completed: () => get("lastDMTDuplication") === myAscensions(),
+    do: $location`The Deep Machine Tunnels`,
+    prepare: () => {
+      if (itemAmount(getBestDupeItem()) === 0) {
+        withProperty("autoSatisfyWithMall", false, () =>
+          retrieveItem(getBestDupeItem()),
+        );
+      }
+    },
+    outfit: () =>
+      sober()
+        ? {
+            avoid: $items`Kramco Sausage-o-Matic™`,
+            familiar: $familiar`Machine Elf`,
+          }
+        : {
+            offhand: $item`Drunkula's wineglass`,
+            familiar: $familiar`Machine Elf`,
+          },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Hit unexpected combat!"),
+    ),
+    turns: () => 1,
+    spendsTurn: true,
+    choices: () => ({ 1119: 4, 1125: `1&iid=${getBestDupeItem().id}` }),
   },
   {
     name: "Lava Dogs (drunk)",
@@ -696,7 +758,7 @@ const BarfTurnTasks: GarboTask[] = [
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
-          .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
+          .duplicate()
           .skill($skill`Fondeluge`),
       ),
       duplicate: true,
@@ -713,7 +775,7 @@ const BarfTurnTasks: GarboTask[] = [
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
-          .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
+          .duplicate()
           .skill($skill`Spit jurassic acid`),
       ),
       sobriety: "sober",
@@ -730,9 +792,9 @@ const BarfTurnTasks: GarboTask[] = [
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
-          .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
           .skill($skill`Free-For-All`),
       ),
+      sobriety: "sober",
       duplicate: true,
     },
   ),
@@ -746,7 +808,6 @@ const BarfTurnTasks: GarboTask[] = [
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
-          .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
           .skill($skill`Lightning Strike`),
       ),
       duplicate: true,
@@ -762,7 +823,7 @@ const BarfTurnTasks: GarboTask[] = [
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
-          .externalIf(canDuplicate(), Macro.trySkill($skill`Duplicate`))
+          .duplicate()
           .skill($skill`Shocking Lick`),
       ),
       duplicate: true,
@@ -923,6 +984,10 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
+      prepare: () =>
+        !get("dinseyRollercoasterNext") &&
+        !(totalTurnsPlayed() % 11) &&
+        meatMood().execute(estimatedGarboTurns()),
       post: () => {
         completeBarfQuest();
         trackMarginalMpa();

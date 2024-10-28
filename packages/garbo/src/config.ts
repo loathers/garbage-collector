@@ -1,17 +1,6 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
-import {
-  $item,
-  $items,
-  $monster,
-  $monsters,
-  $skill,
-  $skills,
-  get,
-  have,
-  maxBy,
-} from "libram";
-import { isFreeAndCopyable, valueDrops } from "./lib";
+import { $item, $items, $monster, get } from "libram";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -74,25 +63,6 @@ function stringToWorkshedItem(s: string): Item | null {
   return validWorksheds[0].item;
 }
 
-function defaultTarget() {
-  // Can we account for re-entry if we only have certain amounts of copiers left in each of these?
-  if (
-    have($skill`Just the Facts`) &&
-    have($skill`Meteor Lore`) &&
-    have($item`Powerful Glove`) &&
-    (get("_prToday") || get("prAlways"))
-  ) {
-    return $monster`cockroach`;
-  }
-  if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
-    return maxBy(
-      $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
-      valueDrops,
-    );
-  }
-  return $monster`Knob Goblin Elite Guard Captain`;
-}
-
 export const globalOptions = Args.create(
   "garbo",
   'This script is an automated turn-burning script for the Kingdom of Loathing that spends a day\'s resources and adventures on farming\n\
@@ -151,8 +121,13 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     target: Args.monster({
       setting: "",
       help: "The monster to use all copies on",
-      default: defaultTarget(),
+      default: $monster.none,
       hidden: true,
+    }),
+    usekarma: Args.flag({
+      setting: "",
+      help: "Use instant karma as part of diet",
+      default: false,
     }),
     version: Args.flag({
       setting: "",
@@ -201,6 +176,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_candydish",
           help: "*DANGEROUS* garbo will consider using porcelain candy dishes. This could result in potentially destructive behavior in the instance that the user does not have sufficient meat (1-2 million) to purchase as many dishes as garbo desires or there is a price cliff.",
           default: false,
+          hidden: true,
+        }),
+        dmtDupeItem: Args.item({
+          setting: "garbo_dmtDupeItem",
+          help: "Item to duplicate in the deep machine tunnel instead of calculating by value. Will be ignored if the item is not in inventory or not able to be duped.",
           hidden: true,
         }),
         meatTargetMultiplier: Args.number({
