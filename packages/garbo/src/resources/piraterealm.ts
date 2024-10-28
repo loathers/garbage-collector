@@ -1,6 +1,14 @@
 import { Outfit, step } from "grimoire-kolmafia";
-import { $item, $location, $monster, get, have } from "libram";
-import { runChoice, visitUrl } from "kolmafia";
+import { $item, $location, $monster, $stat, get, have, uneffect } from "libram";
+import {
+  Effect,
+  myBuffedstat,
+  myEffects,
+  numericModifier,
+  runChoice,
+  toEffect,
+  visitUrl,
+} from "kolmafia";
 import { GarboTask } from "../tasks/engine";
 
 import { GarboStrategy, Macro } from "../combat";
@@ -8,6 +16,28 @@ import { freeFightOutfit, meatTargetOutfit } from "../outfit";
 import { globalOptions } from "../config";
 
 const eyepatch = $item`PirateRealm eyepatch`;
+
+function keepStatsLow(): void {
+  const stats = [$stat`Muscle`, $stat`Moxie`, $stat`Mysticality`];
+  const effects: Effect[] = Object.keys(myEffects()).map((effectName) =>
+    toEffect(effectName),
+  );
+
+  stats.forEach((stat) => {
+    if (myBuffedstat(stat) > 100) {
+      // Get effect names from myEffects and convert them to Effect instances
+      effects.forEach((ef) => {
+        // Check if the effect modifier includes the stat and not "meat"
+        if (
+          numericModifier(ef, "muscle") &&
+          !(numericModifier(ef, "meat drop") > 0)
+        ) {
+          uneffect(ef); // Remove the effect
+        }
+      });
+    }
+  });
+}
 
 export function prSetupTasks(): GarboTask[] {
   return [
@@ -42,6 +72,7 @@ export function getEyepatch(): GarboTask {
 export function chooseCrew(): GarboTask {
   return {
     name: "Choose Crew",
+    prepare: () => keepStatsLow(),
     completed: () => step("_questPirateRealm") >= 1,
     ready: () => have(eyepatch),
     do: (): void => {
@@ -67,6 +98,7 @@ export function chooseCrew(): GarboTask {
 export function sailToCrabIsland(): GarboTask {
   return {
     name: "Sail to Crab Island",
+    prepare: () => keepStatsLow(),
     completed: () => step("_questPirateRealm") >= 4,
     ready: () => step("_questPirateRealm") >= 1,
     do: $location`Sailing the PirateRealm Seas`,
@@ -97,6 +129,7 @@ export function sailToCrabIsland(): GarboTask {
 export function runToGiantGiantCrab(): GarboTask {
   return {
     name: "Pre-Giant Giant Crab",
+    prepare: () => keepStatsLow(),
     completed: () => get("_pirateRealmIslandMonstersDefeated") >= 4,
     ready: () => step("_questPirateRealm") === 4,
     do: $location`PirateRealm Island`,
@@ -112,6 +145,7 @@ export function runToGiantGiantCrab(): GarboTask {
 export function runGiantGiantCrab(): GarboTask {
   return {
     name: "Giant Giant Crab",
+    prepare: () => keepStatsLow(),
     completed: () => step("_questPirateRealm") === 6,
     ready: () => get("_pirateRealmIslandMonstersDefeated") >= 4,
     do: $location`PirateRealm Island`,
@@ -126,6 +160,7 @@ export function runGiantGiantCrab(): GarboTask {
 export function selectTrashIsland(): GarboTask {
   return {
     name: "Select Trash Island",
+    prepare: () => keepStatsLow(),
     completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
     ready: () => step("_questPirateRealm") === 6,
     do: $location`Sailing the PirateRealm Seas`,
