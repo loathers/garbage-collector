@@ -13,7 +13,7 @@ import {
 import { GarboTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { getChangeLastAdvLocationMethod } from "../target/lib";
-import { doingGregFight } from "../resources";
+import { doingGregFight, prSetupTasks } from "../resources";
 import { freeFightOutfit } from "../outfit";
 import {
   canFaxbot,
@@ -53,6 +53,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       spendsTurn: true,
       combat: new GarboStrategy(() => Macro.kill()),
     },
+    ...prSetupTasks(),
     {
       name: "Fold Spooky Putty sheet",
       ready: () =>
