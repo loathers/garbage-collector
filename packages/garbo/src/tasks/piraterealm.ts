@@ -22,7 +22,7 @@ import {
   use,
   visitUrl,
 } from "kolmafia";
-import { GarboTask } from "../tasks/engine";
+import { GarboTask } from "./engine";
 
 import { GarboStrategy, Macro } from "../combat";
 import { freeFightOutfit, meatTargetOutfit } from "../outfit";
@@ -45,6 +45,32 @@ function keepStatsLow(): void {
         retrieveItem($item`Fun-Guy spore`);
         use($item`Fun-Guy spore`);
       }
+      if (stat === $stat`muscle`) {
+        if (
+          !have($item`decorative fountain`) &&
+          mallPrice($item`decorative fountain`) < 2_000
+        ) {
+          retrieveItem($item`decorative fountain`);
+        }
+        use($item`decorative fountain`);
+      }
+
+      if (stat === $stat`moxie`) {
+        if (
+          !have($item`patchouli incense stick`) &&
+          mallPrice($item`patchouli incense stick`) < 2_000
+        ) {
+          retrieveItem($item`patchouli incense stick`);
+        }
+        use($item`patchouli incense stick`);
+      }
+
+      if (mallPrice($item`Mr. Mediocrebar`) < 2_000) {
+        retrieveItem($item`Mr. Mediocrebar`);
+        use($item`Mr. Mediocrebar`);
+      }
+
+      if (have($effect`Feeling Excited`)) uneffect($effect`Feeling Excited`);
       // Get effect names from myEffects and convert them to Effect instances
       effects.forEach((ef) => {
         // Check if the effect modifier includes the stat and not "meat"
@@ -146,7 +172,7 @@ export function sailToCrabIsland(): GarboTask {
     },
     combat: new GarboStrategy(() => Macro.basicCombat()),
     spendsTurn: true,
-    limit: { tries: get("_pirateRealmShipSpeed") + 2 },
+    limit: { tries: 8 },
   };
 }
 
@@ -154,7 +180,7 @@ export function runToGiantGiantCrab(): GarboTask {
   return {
     name: "Pre-Giant Giant Crab",
     prepare: () => keepStatsLow(),
-    completed: () => get("_pirateRealmIslandMonstersDefeated") >= 4,
+    completed: () => get("_pirateRealmIslandMonstersDefeated") >= 5,
     ready: () => step("_questPirateRealm") === 4,
     do: $location`PirateRealm Island`,
     outfit: (): Outfit => {
@@ -162,7 +188,7 @@ export function runToGiantGiantCrab(): GarboTask {
     },
     combat: new GarboStrategy(() => Macro.basicCombat()),
     spendsTurn: true,
-    limit: { turns: get("_pirateRealmShipSpeed") + 2 },
+    limit: { tries: 4 },
   };
 }
 

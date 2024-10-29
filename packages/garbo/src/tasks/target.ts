@@ -13,7 +13,7 @@ import {
 import { GarboTask } from "./engine";
 import { GarboStrategy, Macro } from "../combat";
 import { getChangeLastAdvLocationMethod } from "../target/lib";
-import { doingGregFight, prSetupTasks } from "../resources";
+import { doingGregFight } from "../resources";
 import { freeFightOutfit } from "../outfit";
 import {
   canFaxbot,
@@ -26,6 +26,7 @@ import {
   wait,
 } from "kolmafia";
 import { globalOptions } from "../config";
+import { prSetupTasks } from "./piraterealm";
 
 export const SetupTargetCopyQuest: Quest<GarboTask> = {
   name: "SetupTargetCopy",

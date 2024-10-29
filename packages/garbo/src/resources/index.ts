@@ -10,4 +10,3 @@ export * from "./latte";
 export * from "./aprilingband";
 export * from "./chestMimic";
 export * from "./mayam";
-export * from "./piraterealm";
