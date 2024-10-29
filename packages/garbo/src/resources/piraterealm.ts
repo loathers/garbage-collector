@@ -1,12 +1,25 @@
 import { Outfit, step } from "grimoire-kolmafia";
-import { $item, $location, $monster, $stat, get, have, uneffect } from "libram";
+import {
+  $effect,
+  $item,
+  $location,
+  $monster,
+  $stat,
+  get,
+  have,
+  realmAvailable,
+  uneffect,
+} from "libram";
 import {
   Effect,
+  mallPrice,
   myBuffedstat,
   myEffects,
   numericModifier,
+  retrieveItem,
   runChoice,
   toEffect,
+  use,
   visitUrl,
 } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
@@ -24,13 +37,25 @@ function keepStatsLow(): void {
   );
 
   stats.forEach((stat) => {
-    if (myBuffedstat(stat) > 100) {
+    while (myBuffedstat(stat) > 100) {
+      if (
+        !have($effect`Mush-Mouth`) &&
+        mallPrice($item`Fun-Guy spore`) < 5_000
+      ) {
+        retrieveItem($item`Fun-Guy spore`);
+        use($item`Fun-Guy spore`);
+      }
       // Get effect names from myEffects and convert them to Effect instances
       effects.forEach((ef) => {
         // Check if the effect modifier includes the stat and not "meat"
         if (
-          numericModifier(ef, "muscle") &&
-          !(numericModifier(ef, "meat drop") > 0)
+          numericModifier(ef, `${stat.toString}`) &&
+          !(
+            numericModifier(ef, "meat drop") > 0 ||
+            numericModifier(ef, "familiar weight") ||
+            numericModifier(ef, "smithsness") ||
+            numericModifier(ef, "item drop")
+          )
         ) {
           uneffect(ef); // Remove the effect
         }
@@ -57,10 +82,9 @@ export function getEyepatch(): GarboTask {
     name: "Start Pirate Realm",
     completed: () => have(eyepatch),
     ready: () =>
-      get("prAlways") ||
-      (get("_prToday") &&
-        globalOptions.target === $monster`cockroach` &&
-        get("pirateRealmUnlockedAnemometer")),
+      realmAvailable("pirate") &&
+      globalOptions.target === $monster`cockroach` &&
+      get("pirateRealmUnlockedAnemometer"),
     do: (): void => {
       visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
     },
@@ -122,7 +146,7 @@ export function sailToCrabIsland(): GarboTask {
     },
     combat: new GarboStrategy(() => Macro.basicCombat()),
     spendsTurn: true,
-    limit: { turns: get("_pirateRealmShipSpeed") + 2 },
+    limit: { tries: get("_pirateRealmShipSpeed") + 2 },
   };
 }
 
@@ -147,7 +171,7 @@ export function runGiantGiantCrab(): GarboTask {
     name: "Giant Giant Crab",
     prepare: () => keepStatsLow(),
     completed: () => step("_questPirateRealm") === 6,
-    ready: () => get("_pirateRealmIslandMonstersDefeated") >= 4,
+    ready: () => get("_pirateRealmIslandMonstersDefeated") === 5,
     do: $location`PirateRealm Island`,
     outfit: (): Outfit => {
       return meatTargetOutfit({ acc3: eyepatch });
