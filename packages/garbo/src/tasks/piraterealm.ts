@@ -186,9 +186,16 @@ export function runToGiantGiantCrab(): GarboTask {
     outfit: (): Outfit => {
       return freeFightOutfit({ acc3: eyepatch });
     },
-    combat: new GarboStrategy(() => Macro.basicCombat()),
+    combat: new GarboStrategy(() =>
+      Macro.externalIf(
+        mallPrice($item`windicle`) < 3 * get("valueOfAdventure") &&
+          !get("_pirateRealmWindicleUsed") &&
+          get("_pirateRealmIslandMonstersDefeated") <= 1,
+        Macro.item($item`windicle`),
+      ).basicCombat(),
+    ),
     spendsTurn: true,
-    limit: { tries: 4 },
+    limit: { tries: 5 },
   };
 }
 
