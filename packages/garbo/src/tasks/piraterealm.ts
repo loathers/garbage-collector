@@ -180,7 +180,7 @@ export function runToGiantGiantCrab(): GarboTask {
   return {
     name: "Pre-Giant Giant Crab",
     prepare: () => keepStatsLow(),
-    completed: () => get("_pirateRealmIslandMonstersDefeated") >= 5,
+    completed: () => step("_questPirateRealm") >= 5,
     ready: () => step("_questPirateRealm") === 4,
     do: $location`PirateRealm Island`,
     outfit: (): Outfit => {
@@ -203,8 +203,8 @@ export function runGiantGiantCrab(): GarboTask {
   return {
     name: "Giant Giant Crab",
     prepare: () => keepStatsLow(),
-    completed: () => step("_questPirateRealm") === 6,
-    ready: () => get("_pirateRealmIslandMonstersDefeated") === 5,
+    completed: () => step("_questPirateRealm") >= 6,
+    ready: () => step("_questPirateRealm") === 5,
     do: $location`PirateRealm Island`,
     outfit: (): Outfit => {
       return meatTargetOutfit({ acc3: eyepatch });
@@ -218,7 +218,9 @@ export function selectTrashIsland(): GarboTask {
   return {
     name: "Select Trash Island",
     prepare: () => keepStatsLow(),
-    completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+    completed: () =>
+      get("_lastPirateRealmIsland") === $location`Trash Island` ||
+      step("_questPirateRealm") > 6,
     ready: () => step("_questPirateRealm") === 6,
     do: $location`Sailing the PirateRealm Seas`,
     choices: { 1353: 5 }, // Select Trash Island
