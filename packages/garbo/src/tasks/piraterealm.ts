@@ -96,6 +96,7 @@ export function prSetupTasks(): GarboTask[] {
     chooseCrew(),
     sailToCrabIsland(),
     runToGiantGiantCrab(),
+    ...prFinishTasks(), // We can remove this once Embezzlers are en-grimoired
   ];
 }
 
@@ -179,7 +180,11 @@ export function sailToCrabIsland(): GarboTask {
 export function runToGiantGiantCrab(): GarboTask {
   return {
     name: "Pre-Giant Giant Crab",
-    prepare: () => keepStatsLow(),
+    prepare: (): void => {
+      keepStatsLow();
+      if (mallPrice($item`windicle`) < 3 * get("valueOfAdventure"))
+        retrieveItem($item`windicle`);
+    },
     completed: () => step("_questPirateRealm") >= 5,
     ready: () => step("_questPirateRealm") === 4,
     do: $location`PirateRealm Island`,
@@ -191,7 +196,7 @@ export function runToGiantGiantCrab(): GarboTask {
         mallPrice($item`windicle`) < 3 * get("valueOfAdventure") &&
           !get("_pirateRealmWindicleUsed") &&
           get("_pirateRealmIslandMonstersDefeated") <= 1,
-        Macro.item($item`windicle`),
+        Macro.tryItem($item`windicle`),
       ).basicCombat(),
     ),
     spendsTurn: true,
