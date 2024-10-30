@@ -206,10 +206,11 @@ export function runGiantGiantCrab(): GarboTask {
     completed: () => step("_questPirateRealm") >= 6,
     ready: () => step("_questPirateRealm") === 5,
     do: $location`PirateRealm Island`,
+    choices: { 1385: 1, 1368: 1 },
     outfit: (): Outfit => {
       return meatTargetOutfit({ acc3: eyepatch });
     },
-    combat: new GarboStrategy(() => Macro.basicCombat()),
+    combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: true,
   };
 }
