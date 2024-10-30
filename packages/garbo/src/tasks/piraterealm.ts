@@ -182,8 +182,9 @@ export function runToGiantGiantCrab(): GarboTask {
     name: "Pre-Giant Giant Crab",
     prepare: (): void => {
       keepStatsLow();
-      if (mallPrice($item`windicle`) < 3 * get("valueOfAdventure"))
+      if (mallPrice($item`windicle`) < 3 * get("valueOfAdventure")) {
         retrieveItem($item`windicle`);
+      }
     },
     completed: () => step("_questPirateRealm") >= 5,
     ready: () => step("_questPirateRealm") === 4,
