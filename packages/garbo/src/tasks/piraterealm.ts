@@ -48,24 +48,32 @@ function keepStatsLow(): void {
       if (stat === $stat`muscle`) {
         if (
           !have($item`decorative fountain`) &&
+          !have($effect`Sleepy`) &&
           mallPrice($item`decorative fountain`) < 2_000
         ) {
           retrieveItem($item`decorative fountain`);
         }
-        use($item`decorative fountain`);
+        if (!have($effect`Sleepy`)) {
+          use($item`decorative fountain`);
+        }
       }
 
       if (stat === $stat`moxie`) {
         if (
           !have($item`patchouli incense stick`) &&
+          !have($effect`Far Out`) &&
           mallPrice($item`patchouli incense stick`) < 2_000
         ) {
           retrieveItem($item`patchouli incense stick`);
         }
         use($item`patchouli incense stick`);
+
+        if (have($effect`Endless Drool`) && stat === $stat`Moxie`) {
+          uneffect($effect`Endless Drool`);
+        }
       }
 
-      if (mallPrice($item`Mr. Mediocrebar`) < 2_000) {
+      if (mallPrice($item`Mr. Mediocrebar`) < 2_000 && !have($effect`Apathy`)) {
         retrieveItem($item`Mr. Mediocrebar`);
         use($item`Mr. Mediocrebar`);
       }
