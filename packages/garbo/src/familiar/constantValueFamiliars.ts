@@ -113,6 +113,10 @@ const standardFamiliars: ConstantValueFamiliar[] = [
         : clamp(totalFamiliarWeight($familiar`Mini Kiwi`) * 0.005, 0, 1) *
           garboValue($item`mini kiwi`), // faster with aviator goggles
   },
+  {
+    familiar: $familiar`quantized familiar`,
+    value: () => garboValue($item`quantized familiar experience`) / 11,
+  },
 ];
 
 export default function getConstantValueFamiliars(

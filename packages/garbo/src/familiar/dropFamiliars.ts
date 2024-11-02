@@ -205,13 +205,6 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
         : 30,
     drop: $items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`,
   },
-  {
-    // eslint-disable-next-line libram/verify-constants
-    familiar: $familiar`quantized familiar`,
-    expected: [11.0],
-    // eslint-disable-next-line libram/verify-constants
-    drop: $item`quantized familiar experience`,
-  },
 ];
 
 export default function getDropFamiliars(): GeneralFamiliar[] {
