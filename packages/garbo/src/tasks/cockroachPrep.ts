@@ -1,8 +1,7 @@
-import { OutfitSpec, Quest } from "grimoire-kolmafia";
+import { Outfit, Quest } from "grimoire-kolmafia";
 import { GarboTask } from "./engine";
 import {
   $effect,
-  $familiar,
   $item,
   $items,
   $location,
@@ -16,35 +15,91 @@ import {
 import {
   abort,
   adv1,
+  Effect,
   mallPrice,
   myBuffedstat,
+  myEffects,
+  numericModifier,
+  retrieveItem,
   runChoice,
+  toEffect,
+  use,
   visitUrl,
 } from "kolmafia";
 import { garboValue } from "../garboValue";
 import { freeFightFamiliar } from "../familiar";
-import { freeFightOutfit } from "../outfit";
+import { freeFightOutfit, meatTargetOutfit } from "../outfit";
 import { GarboStrategy, Macro } from "../combat";
 import { acquire } from "../acquire";
 
 // Just checking for the gummi effects for now, maybe can check other stuff later?
 function checkAndFixOvercapStats(): void {
-  if (myBuffedstat($stat`Muscle`) >= 100) {
-    if (have($effect`Gummiheart`)) uneffect($effect`Gummiheart`);
-  }
-  if (myBuffedstat($stat`Mysticality`) >= 100) {
-    if (have($effect`Gummibrain`)) uneffect($effect`Gummibrain`);
-  }
-  if (myBuffedstat($stat`Moxie`) >= 100) {
-    if (have($effect`Gummiskin`)) uneffect($effect`Gummiskin`);
-  }
-  if (
-    myBuffedstat($stat`Moxie`) >= 100 ||
-    myBuffedstat($stat`Mysticality`) >= 100 ||
-    myBuffedstat($stat`Muscle`) >= 100
-  ) {
-    uneffect($effect`Having a Ball!`);
-  }
+  const stats = [$stat`Muscle`, $stat`Moxie`, $stat`Mysticality`];
+  const effects: Effect[] = Object.keys(myEffects()).map((effectName) =>
+    toEffect(effectName),
+  );
+
+  stats.forEach((stat) => {
+    while (myBuffedstat(stat) > 100) {
+      if (
+        !have($effect`Mush-Mouth`) &&
+        mallPrice($item`Fun-Guy spore`) < 5_000
+      ) {
+        retrieveItem($item`Fun-Guy spore`);
+        use($item`Fun-Guy spore`);
+      }
+      if (stat === $stat`muscle`) {
+        if (
+          !have($item`decorative fountain`) &&
+          !have($effect`Sleepy`) &&
+          mallPrice($item`decorative fountain`) < 2_000
+        ) {
+          retrieveItem($item`decorative fountain`);
+        }
+        if (!have($effect`Sleepy`)) {
+          use($item`decorative fountain`);
+        }
+      }
+
+      if (stat === $stat`moxie`) {
+        if (
+          !have($item`patchouli incense stick`) &&
+          !have($effect`Far Out`) &&
+          mallPrice($item`patchouli incense stick`) < 2_000
+        ) {
+          retrieveItem($item`patchouli incense stick`);
+        }
+        use($item`patchouli incense stick`);
+
+        if (have($effect`Endless Drool`) && stat === $stat`Moxie`) {
+          uneffect($effect`Endless Drool`);
+        }
+      }
+
+      if (mallPrice($item`Mr. Mediocrebar`) < 2_000 && !have($effect`Apathy`)) {
+        retrieveItem($item`Mr. Mediocrebar`);
+        use($item`Mr. Mediocrebar`);
+      }
+
+      if (have($effect`Feeling Excited`)) uneffect($effect`Feeling Excited`);
+      // Get effect names from myEffects and convert them to Effect instances
+      effects.forEach((ef) => {
+        // Check if the effect modifier includes the stat and not "meat"
+        if (
+          numericModifier(ef, `${stat.toString}`) &&
+          !(
+            numericModifier(ef, "meat drop") > 0 ||
+            numericModifier(ef, "familiar weight") ||
+            numericModifier(ef, "smithsness") ||
+            numericModifier(ef, "item drop")
+          )
+        ) {
+          uneffect(ef); // Remove the effect
+        }
+      });
+    }
+  });
+
   if (
     myBuffedstat($stat`Moxie`) >= 100 ||
     myBuffedstat($stat`Mysticality`) >= 100 ||
@@ -99,7 +154,9 @@ function chooseCrew(): void {
 
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
-  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+  completed: () =>
+    get("_lastPirateRealmIsland") === $location`Trash Island` ||
+    !get("pirateRealmUnlockedAnemometer"),
   tasks: [
     // Tasks to progress pirate realm up to selecting Trash Island go here
     // We'll have to be careful about things like max stats becoming too high (bofa is annoying for this!)
@@ -122,7 +179,11 @@ export const CockroachSetup: Quest<GarboTask> = {
         runChoice(1); // Head to Groggy's
         chooseCrew(); // Choose our crew
         runChoice(4); // Choose anemometer for trash island
-        runChoice(4); // Choose swift clipper, fastest ship
+        if (get("pirateRealmStormsEscaped") >= 10) {
+          runChoice(4); // Swift Clipper, if it's unlocked
+        } else {
+          runChoice(3); // Otherwise, Speedy Caravel
+        }
         runChoice(1); // Head for the sea
       },
       outfit: { equip: $items`PirateRealm eyepatch` },
@@ -135,7 +196,9 @@ export const CockroachSetup: Quest<GarboTask> = {
       completed: () => questStep("_questPirateRealm") > 1,
       prepare: () => checkAndFixOvercapStats(),
       do: () => adv1($location`Sailing the PirateRealm Seas`),
-      outfit: { equip: $items`PirateRealm eyepatch` },
+      outfit: (): Outfit => {
+        return freeFightOutfit({ acc3: $items`PirateRealm eyepatch` });
+      },
       choices: () => ({
         1352:
           dessertIslandWorthIt() &&
@@ -209,7 +272,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       do: () => adv1(get("_lastPirateRealmIsland", $location`none`)),
       outfit: () =>
         freeFightOutfit({
-          equip: $items`PirateRealm eyepatch, PirateRealm party hat, carnivorous potted plant, Red Roger's red left foot, Space Trip safety headphones`,
+          equip: $items`PirateRealm eyepatch`,
           familiar: freeFightFamiliar({
             canChooseMacro: false,
             location: get("_lastPirateRealmIsland", $location`none`),
@@ -253,12 +316,10 @@ export const CockroachSetup: Quest<GarboTask> = {
       },
       outfit: () => {
         if (get("_lastPirateRealmIsland") === $location`Crab Island`) {
-          const spec: OutfitSpec = {
+          const spec = meatTargetOutfit({
             modifier: ["meat"],
             equip: $items`PirateRealm eyepatch`,
-            avoid: $items`cursed pirate cutlass`, // Gives +25 muscle which often overcaps
-            familiar: $familiar`Hobo Monkey`, // We haven't done familiar prep yet so robort isn't fed yet, something to fix later
-          };
+          });
           return spec;
         }
         return { equip: $items`PirateRealm eyepatch` };
