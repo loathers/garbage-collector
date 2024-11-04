@@ -114,7 +114,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
           garboValue($item`mini kiwi`), // faster with aviator goggles
   },
   {
-    familiar: $familiar`quantized familiar`,
+    familiar: $familiar`quantum entangler`,
     value: () => garboValue($item`quantized familiar experience`) / 11,
   },
 ];
