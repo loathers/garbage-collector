@@ -17,6 +17,7 @@ import {
   abort,
   adv1,
   Effect,
+  isShruggable,
   Item,
   mallPrice,
   myBuffedstat,
@@ -47,6 +48,25 @@ function checkAndFixOvercapStats(): void {
     const statName = stat.toString();
 
     while (myBuffedstat(stat) > 100) {
+      for (const isShruggablePass of [true, false]) {
+        for (let j = 0; j < effects.length; j++) {
+          const ef = effects[j];
+          if (
+            isShruggable(ef) === isShruggablePass && // Process shruggable effects in first pass, non-shruggable in second
+            (getModifier(statName, ef) ||
+              getModifier(`${statName} Percent`, ef)) &&
+            !(
+              getModifier("Meat Drop", ef) > 0 ||
+              getModifier("Familiar Weight", ef) > 0 ||
+              getModifier("Smithsness", ef) > 0 ||
+              getModifier("Item Drop", ef) > 0
+            )
+          ) {
+            uneffect(ef); // Remove the effect
+          }
+        }
+      }
+
       if (
         !have($effect`Mush-Mouth`) &&
         mallPrice($item`Fun-Guy spore`) < 5_000
@@ -76,33 +96,11 @@ function checkAndFixOvercapStats(): void {
           retrieveItem($item`patchouli incense stick`);
         }
         use($item`patchouli incense stick`);
-
-        if (have($effect`Endless Drool`) && stat === $stat`Moxie`) {
-          uneffect($effect`Endless Drool`);
-        }
       }
 
       if (mallPrice($item`Mr. Mediocrebar`) < 2_000 && !have($effect`Apathy`)) {
         retrieveItem($item`Mr. Mediocrebar`);
         use($item`Mr. Mediocrebar`);
-      }
-
-      if (have($effect`Feeling Excited`)) uneffect($effect`Feeling Excited`);
-
-      for (let j = 0; j < effects.length; j++) {
-        const ef = effects[j];
-
-        if (
-          getModifier(statName, ef) &&
-          !(
-            getModifier("Meat Drop", ef) > 0 ||
-            getModifier("Familiar Weight", ef) > 0 ||
-            getModifier("Smithsness", ef) > 0 ||
-            getModifier("Item Drop", ef) > 0
-          )
-        ) {
-          uneffect(ef); // Remove the effect
-        }
       }
     }
   }
