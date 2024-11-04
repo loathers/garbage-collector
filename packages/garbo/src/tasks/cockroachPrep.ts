@@ -81,8 +81,12 @@ function checkAndFixOvercapStats(): void {
           ) {
             uneffect(ef); // Remove the effect
           }
+          if (myBuffedstat(stat) <= 100) break;
         }
+        if (myBuffedstat(stat) <= 100) break;
       }
+      if (myBuffedstat(stat) <= 100) break;
+
       const debuffItem = () => pickBestDebuff(stat);
       retrieveItem(debuffItem());
       use(debuffItem());
