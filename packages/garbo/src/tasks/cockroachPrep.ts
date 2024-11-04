@@ -17,6 +17,7 @@ import {
   abort,
   adv1,
   Effect,
+  Item,
   mallPrice,
   myBuffedstat,
   myEffects,
@@ -158,6 +159,15 @@ function chooseCrew(): void {
   runChoice(bestChoice);
 }
 
+const funPointValue = garboValue($item`PirateRealm guest pass`) / 600;
+const carnPlantValue =
+  get("valueOfAdventure") / (20 + get("_carnivorousPottedPlantWins"));
+const funPointBonuses = new Map<Item, number>([
+  [$item`Red Roger's red left foot`, funPointValue],
+  [$item`PirateRealm party hat`, funPointValue],
+  [$item`carnivorous potted plant`, carnPlantValue],
+]);
+
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
   ready: () => get("pirateRealmUnlockedAnemometer"),
@@ -276,6 +286,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       outfit: () =>
         freeFightOutfit({
           equip: $items`PirateRealm eyepatch`,
+          bonuses: funPointBonuses,
           familiar: freeFightFamiliar({
             canChooseMacro: false,
             location: get("_lastPirateRealmIsland", $location`none`),
