@@ -1,6 +1,7 @@
 import { Quest } from "grimoire-kolmafia";
 import { GarboTask } from "./engine";
 import {
+  $effect,
   $item,
   $items,
   $location,
@@ -35,33 +36,31 @@ import { freeFightOutfit, meatTargetOutfit } from "../outfit";
 import { GarboStrategy, Macro } from "../combat";
 import { acquire } from "../acquire";
 
-function pickBestDebuff(stat: Stat): Item {
-  const statName = stat.toString();
+function getBestDebuffItem(stat: Stat): Item {
+  const debuffs = Item.all()
+    .map((item) => ({ item, effect: effectModifier(item, "Effect") }))
+    .filter(
+      ({ effect }) =>
+        effect !== $effect.none &&
+        !have(effect) &&
+        getModifier(stat.toString(), effect) < 0,
+    );
 
-  const debuffMenu = Item.all()
-    .filter((it) => {
-      const effect = effectModifier(it, "Effect").toString();
-      return effect && !(effect in myEffects());
-    })
-    .filter((it) => getModifier(statName, it) < 0)
-    .map(
-      (it) => [it, mallPrice(it) / getModifier(statName, it)] as [Item, number],
-    ); // getModifier should return a negative value, flipping these negative
-
-  // ...so that when we maxBy we pick the smallest negative value, spending the least meat
-  return maxBy(debuffMenu, ([, value]) => value)[0];
+  return maxBy(
+    debuffs,
+    ({ item, effect }) =>
+      mallPrice(item) / getModifier(stat.toString(), effect),
+  ).item;
 }
 
 // Just checking for the gummi effects for now, maybe can check other stuff later?
 function checkAndFixOvercapStats(): void {
-  const stats = Stat.all();
   const effects: Effect[] = Object.keys(myEffects()).map((effectName) =>
     toEffect(effectName),
   );
 
   // Use a traditional for loop for stats
-  for (let i = 0; i < stats.length; i++) {
-    const stat = stats[i];
+  for (const stat of Stat.all()) {
     const statName = stat.toString();
 
     while (myBuffedstat(stat) > 100) {
@@ -87,7 +86,7 @@ function checkAndFixOvercapStats(): void {
       }
       if (myBuffedstat(stat) <= 100) break;
 
-      const debuffItem = () => pickBestDebuff(stat);
+      const debuffItem = () => getBestDebuffItem(stat);
       retrieveItem(debuffItem());
       use(debuffItem());
     }
@@ -145,14 +144,17 @@ function chooseCrew(): void {
   runChoice(bestChoice);
 }
 
-const funPointValue = garboValue($item`PirateRealm guest pass`) / 600;
-const carnPlantValue =
-  get("valueOfAdventure") / (20 + get("_carnivorousPottedPlantWins"));
-const funPointBonuses = new Map<Item, number>([
-  [$item`Red Roger's red left foot`, funPointValue],
-  [$item`PirateRealm party hat`, funPointValue],
-  [$item`carnivorous potted plant`, carnPlantValue],
-]);
+function outfitBonuses() {
+  const funPointValue = garboValue($item`PirateRealm guest pass`) / 600;
+  return new Map([
+    [
+      $item`carnivorous potted plant`,
+      get("valueOfAdventure") / (20 + get("_carnivorousPottedPlantWins")),
+    ],
+    [$item`Red Roger's red left foot`, funPointValue],
+    [$item`PirateRealm party hat`, funPointValue],
+  ]);
+}
 
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
@@ -272,7 +274,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       outfit: () =>
         freeFightOutfit({
           equip: $items`PirateRealm eyepatch`,
-          bonuses: funPointBonuses,
+          bonuses: outfitBonuses(),
           familiar: freeFightFamiliar({
             canChooseMacro: false,
             location: get("_lastPirateRealmIsland", $location`none`),
