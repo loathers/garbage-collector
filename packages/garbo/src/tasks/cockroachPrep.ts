@@ -1,4 +1,4 @@
-import { Outfit, Quest } from "grimoire-kolmafia";
+import { Quest } from "grimoire-kolmafia";
 import { GarboTask } from "./engine";
 import {
   $effect,
@@ -7,6 +7,7 @@ import {
   $location,
   $stat,
   get,
+  getModifier,
   have,
   maxBy,
   questStep,
@@ -19,9 +20,9 @@ import {
   mallPrice,
   myBuffedstat,
   myEffects,
-  numericModifier,
   retrieveItem,
   runChoice,
+  Stat,
   toEffect,
   use,
   visitUrl,
@@ -34,12 +35,16 @@ import { acquire } from "../acquire";
 
 // Just checking for the gummi effects for now, maybe can check other stuff later?
 function checkAndFixOvercapStats(): void {
-  const stats = [$stat`Muscle`, $stat`Moxie`, $stat`Mysticality`];
+  const stats = Stat.all();
   const effects: Effect[] = Object.keys(myEffects()).map((effectName) =>
     toEffect(effectName),
   );
 
-  stats.forEach((stat) => {
+  // Use a traditional for loop for stats
+  for (let i = 0; i < stats.length; i++) {
+    const stat = stats[i];
+    const statName = stat.toString();
+
     while (myBuffedstat(stat) > 100) {
       if (
         !have($effect`Mush-Mouth`) &&
@@ -82,23 +87,24 @@ function checkAndFixOvercapStats(): void {
       }
 
       if (have($effect`Feeling Excited`)) uneffect($effect`Feeling Excited`);
-      // Get effect names from myEffects and convert them to Effect instances
-      effects.forEach((ef) => {
-        // Check if the effect modifier includes the stat and not "meat"
+
+      for (let j = 0; j < effects.length; j++) {
+        const ef = effects[j];
+
         if (
-          numericModifier(ef, `${stat.toString}`) &&
+          getModifier(statName, ef) &&
           !(
-            numericModifier(ef, "meat drop") > 0 ||
-            numericModifier(ef, "familiar weight") ||
-            numericModifier(ef, "smithsness") ||
-            numericModifier(ef, "item drop")
+            getModifier("Meat Drop", ef) > 0 ||
+            getModifier("Familiar Weight", ef) > 0 ||
+            getModifier("Smithsness", ef) > 0 ||
+            getModifier("Item Drop", ef) > 0
           )
         ) {
           uneffect(ef); // Remove the effect
         }
-      });
+      }
     }
-  });
+  }
 
   if (
     myBuffedstat($stat`Moxie`) >= 100 ||
@@ -154,9 +160,8 @@ function chooseCrew(): void {
 
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
-  completed: () =>
-    get("_lastPirateRealmIsland") === $location`Trash Island` ||
-    !get("pirateRealmUnlockedAnemometer"),
+  ready: () => get("pirateRealmUnlockedAnemometer"),
+  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
   tasks: [
     // Tasks to progress pirate realm up to selecting Trash Island go here
     // We'll have to be careful about things like max stats becoming too high (bofa is annoying for this!)
