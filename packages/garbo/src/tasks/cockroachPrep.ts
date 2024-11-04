@@ -196,9 +196,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       completed: () => questStep("_questPirateRealm") > 1,
       prepare: () => checkAndFixOvercapStats(),
       do: () => adv1($location`Sailing the PirateRealm Seas`),
-      outfit: (): Outfit => {
-        return freeFightOutfit({ acc3: $items`PirateRealm eyepatch` });
-      },
+      outfit: () => freeFightOutfit({ acc3: $items`PirateRealm eyepatch` }),
       choices: () => ({
         1352:
           dessertIslandWorthIt() &&
