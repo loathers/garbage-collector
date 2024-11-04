@@ -1,7 +1,6 @@
 import { Quest } from "grimoire-kolmafia";
 import { GarboTask } from "./engine";
 import {
-  $effect,
   $item,
   $items,
   $location,
@@ -17,6 +16,7 @@ import {
   abort,
   adv1,
   Effect,
+  effectModifier,
   isShruggable,
   Item,
   mallPrice,
@@ -34,6 +34,23 @@ import { freeFightFamiliar } from "../familiar";
 import { freeFightOutfit, meatTargetOutfit } from "../outfit";
 import { GarboStrategy, Macro } from "../combat";
 import { acquire } from "../acquire";
+
+function pickBestDebuff(stat: Stat): Item {
+  const statName = stat.toString();
+
+  const debuffMenu = Item.all()
+    .filter((it) => {
+      const effect = effectModifier(it, "Effect").toString();
+      return effect && !(effect in myEffects());
+    })
+    .filter((it) => getModifier(statName, it) < 0)
+    .map(
+      (it) => [it, mallPrice(it) / getModifier(statName, it)] as [Item, number],
+    ); // getModifier should return a negative value, flipping these negative
+
+  // ...so that when we maxBy we pick the smallest negative value, spending the least meat
+  return maxBy(debuffMenu, ([, value]) => value)[0];
+}
 
 // Just checking for the gummi effects for now, maybe can check other stuff later?
 function checkAndFixOvercapStats(): void {
@@ -66,42 +83,9 @@ function checkAndFixOvercapStats(): void {
           }
         }
       }
-
-      if (
-        !have($effect`Mush-Mouth`) &&
-        mallPrice($item`Fun-Guy spore`) < 5_000
-      ) {
-        retrieveItem($item`Fun-Guy spore`);
-        use($item`Fun-Guy spore`);
-      }
-      if (stat === $stat`muscle`) {
-        if (
-          !have($item`decorative fountain`) &&
-          !have($effect`Sleepy`) &&
-          mallPrice($item`decorative fountain`) < 2_000
-        ) {
-          retrieveItem($item`decorative fountain`);
-        }
-        if (!have($effect`Sleepy`)) {
-          use($item`decorative fountain`);
-        }
-      }
-
-      if (stat === $stat`moxie`) {
-        if (
-          !have($item`patchouli incense stick`) &&
-          !have($effect`Far Out`) &&
-          mallPrice($item`patchouli incense stick`) < 2_000
-        ) {
-          retrieveItem($item`patchouli incense stick`);
-        }
-        use($item`patchouli incense stick`);
-      }
-
-      if (mallPrice($item`Mr. Mediocrebar`) < 2_000 && !have($effect`Apathy`)) {
-        retrieveItem($item`Mr. Mediocrebar`);
-        use($item`Mr. Mediocrebar`);
-      }
+      const debuffItem = () => pickBestDebuff(stat);
+      retrieveItem(debuffItem());
+      use(debuffItem());
     }
   }
 
