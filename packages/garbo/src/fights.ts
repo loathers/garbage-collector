@@ -49,7 +49,6 @@ import {
   takeCloset,
   toInt,
   toItem,
-  toJson,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -692,7 +691,7 @@ class FreeRunFight extends FreeFight {
       runSource.constraints.preparation?.();
       const mergingOutfit = Outfit.from(
         initialSpec,
-        new Error(`Failed to build outfit from ${toJson(initialSpec)}`),
+        new Error(`Failed to build outfit from ${JSON.stringify(initialSpec)}`),
       );
       mergingOutfit.equip(toSpec(runSource));
       freeFightOutfit(mergingOutfit.spec()).dress();

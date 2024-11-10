@@ -1,5 +1,5 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Location, toJson } from "kolmafia";
+import { Location } from "kolmafia";
 import { $familiar, $item, $items, get, Guzzlr, SourceTerminal } from "libram";
 import { WanderDetails } from "garbo-lib";
 
@@ -30,7 +30,7 @@ export function freeFightOutfit(
   validateGarbageFoldable(computedSpec);
   const outfit = Outfit.from(
     computedSpec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
+    new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
   outfit.familiar ??= freeFightFamiliar({
