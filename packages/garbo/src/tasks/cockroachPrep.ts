@@ -182,7 +182,7 @@ export const CockroachSetup: Quest<GarboTask> = {
         runChoice(1); // Head to Groggy's
         chooseCrew(); // Choose our crew
         runChoice(4); // Choose anemometer for trash island
-        if (get("pirateRealmStormsEscaped") >= 10) {
+        if (get("pirateRealmUnlockedClipper")) {
           runChoice(4); // Swift Clipper, if it's unlocked
         } else {
           runChoice(3); // Otherwise, Speedy Caravel
