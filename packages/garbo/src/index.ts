@@ -86,7 +86,7 @@ import {
   runGarboQuests,
   SetupTargetCopyQuest,
 } from "./tasks";
-import { CockroachSetup } from "./tasks/cockroachPrep";
+import { CockroachFinish, CockroachSetup } from "./tasks/cockroachPrep";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -569,6 +569,7 @@ export function main(argString = ""): void {
 
         // 2. do some target copy stuff
         freeFights();
+        runGarboQuests([CockroachFinish]);
         runGarboQuests([SetupTargetCopyQuest]);
         yachtzeeChain();
         dailyFights();

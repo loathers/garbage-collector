@@ -21,6 +21,7 @@ import {
   isShruggable,
   Item,
   mallPrice,
+  myAdventures,
   myBuffedstat,
   myEffects,
   retrieveItem,
@@ -176,7 +177,12 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Start PirateRealm Journey",
       ready: () => have($item`PirateRealm eyepatch`),
       completed: () => questStep("_questPirateRealm") > 0,
-      prepare: () => checkAndFixOvercapStats(),
+      prepare: (): void => {
+        checkAndFixOvercapStats();
+        if (myAdventures() < 40) {
+          // do something?
+        }
+      },
       do: () => {
         visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
         runChoice(1); // Head to Groggy's
@@ -293,6 +299,14 @@ export const CockroachSetup: Quest<GarboTask> = {
       limit: { tries: 8 },
       spendsTurn: true,
     },
+  ],
+};
+
+export const CockroachFinish: Quest<GarboTask> = {
+  name: "Setup Cockroach Target",
+  ready: () => get("pirateRealmUnlockedAnemometer"),
+  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+  tasks: [
     {
       name: "Final Island Encounter (Island 1)", // Ideally we delay this to do it before our copy target fights for meat but here for now
       ready: () => questStep("_questPirateRealm") === 5,
