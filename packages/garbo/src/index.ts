@@ -569,8 +569,7 @@ export function main(argString = ""): void {
 
         // 2. do some target copy stuff
         freeFights();
-        runGarboQuests([CockroachFinish]);
-        runGarboQuests([SetupTargetCopyQuest]);
+        runGarboQuests([CockroachFinish, SetupTargetCopyQuest]);
         yachtzeeChain();
         dailyFights();
 
