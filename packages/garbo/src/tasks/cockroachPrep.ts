@@ -39,6 +39,7 @@ import { acquire } from "../acquire";
 
 function getBestDebuffItem(stat: Stat): Item {
   const debuffs = Item.all()
+    .filter((i) => i.potion)
     .map((item) => ({ item, effect: effectModifier(item, "Effect") }))
     .filter(
       ({ effect }) =>
