@@ -36,10 +36,14 @@ import { freeFightFamiliar } from "../familiar";
 import { freeFightOutfit, meatTargetOutfit } from "../outfit";
 import { GarboStrategy, Macro } from "../combat";
 import { acquire } from "../acquire";
+import { meatMood } from "../mood";
+import { targetMeat } from "../lib";
+import { copyTargetCount } from "../target";
+import { potionSetup } from "../potions";
 
 function getBestDebuffItem(stat: Stat): Item {
   const debuffs = Item.all()
-    .filter((i) => i.potion)
+    .filter((i) => i.potion && (i.tradeable || have(i)))
     .map((item) => ({ item, effect: effectModifier(item, "Effect") }))
     .filter(
       ({ effect }) =>
@@ -161,7 +165,10 @@ function outfitBonuses() {
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
   ready: () => get("pirateRealmUnlockedAnemometer"),
-  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+  completed: () =>
+    get("_lastPirateRealmIsland") === $location`Trash Island` ||
+    (questStep("_questPirateRealm") === 5 &&
+      get("_lastPirateRealmIsland") === $location`Crab Island`),
   tasks: [
     // Tasks to progress pirate realm up to selecting Trash Island go here
     // We'll have to be careful about things like max stats becoming too high (bofa is annoying for this!)
@@ -300,6 +307,45 @@ export const CockroachSetup: Quest<GarboTask> = {
       limit: { tries: 8 },
       spendsTurn: true,
     },
+    {
+      name: "Final Island Encounter (Island 1 (Dessert))",
+      ready: () =>
+        questStep("_questPirateRealm") === 5 &&
+        get("_lastPirateRealmIsland") === $location`Dessert Island`,
+      completed: () => questStep("_questPirateRealm") > 5,
+      prepare: () => {
+        checkAndFixOvercapStats();
+      },
+      do: () => {
+        if (
+          visitUrl("adventure.php?snarfblat=531").includes(
+            "Chocolate Fountain of Youth",
+          )
+        ) {
+          runChoice(1);
+        } else {
+          abort("Expected cocoa of youth but got something else!");
+        }
+      },
+      outfit: () => {
+        return { equip: $items`PirateRealm eyepatch` };
+      },
+      choices: { 1385: 1, 1368: 1 }, // Take cocoa of youth, fight crab
+      combat: new GarboStrategy(() => Macro.delevel().meatKill()),
+      limit: { tries: 1 },
+      spendsTurn: true,
+    },
+    {
+      name: "Choose Trash Island",
+      ready: () => questStep("_questPirateRealm") === 6,
+      completed: () => questStep("_questPirateRealm") > 6,
+      prepare: () => checkAndFixOvercapStats(),
+      do: () => adv1($location`Sailing the PirateRealm Seas`),
+      outfit: { equip: $items`PirateRealm eyepatch` },
+      choices: { 1353: 5 }, // Trash Island
+      limit: { tries: 1 },
+      spendsTurn: false,
+    },
   ],
 };
 
@@ -309,37 +355,23 @@ export const CockroachFinish: Quest<GarboTask> = {
   completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
   tasks: [
     {
-      name: "Final Island Encounter (Island 1)", // Ideally we delay this to do it before our copy target fights for meat but here for now
-      ready: () => questStep("_questPirateRealm") === 5,
+      name: "Final Island Encounter (Island 1 (Giant Giant Crab))",
+      ready: () =>
+        questStep("_questPirateRealm") === 5 &&
+        get("_lastPirateRealmIsland") === $location`Crab Island`,
       completed: () => questStep("_questPirateRealm") > 5,
       prepare: () => {
+        meatMood(true, targetMeat()).execute(copyTargetCount());
+        potionSetup(false);
         checkAndFixOvercapStats();
       },
-      do: () => {
-        if (get("_lastPirateRealmIsland") === $location`Dessert Island`) {
-          // Should give us cocoa of youth
-          if (
-            visitUrl("adventure.php?snarfblat=531").includes(
-              "Chocolate Fountain of Youth",
-            )
-          ) {
-            runChoice(1);
-          } else {
-            abort("Expected cocoa of youth but got something else!");
-          }
-        } else {
-          adv1($location`Crab Island`);
-        }
-      },
+      do: () => $location`Crab Island`,
       outfit: () => {
-        if (get("_lastPirateRealmIsland") === $location`Crab Island`) {
-          const spec = meatTargetOutfit({
-            modifier: ["meat"],
-            equip: $items`PirateRealm eyepatch`,
-          });
-          return spec;
-        }
-        return { equip: $items`PirateRealm eyepatch` };
+        const spec = meatTargetOutfit({
+          modifier: ["meat"],
+          equip: $items`PirateRealm eyepatch`,
+        });
+        return spec;
       },
       choices: { 1385: 1, 1368: 1 }, // Take cocoa of youth, fight crab
       combat: new GarboStrategy(() => Macro.delevel().meatKill()),
