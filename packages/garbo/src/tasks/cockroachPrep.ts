@@ -41,9 +41,20 @@ import { targetMeat } from "../lib";
 import { copyTargetCount } from "../target";
 import { potionSetup } from "../potions";
 
+function avoidDebuffItem(item: Item): boolean {
+  return Stat.all().some((stat) => getModifier(stat.toString(), item) > 0);
+}
+
 function getBestDebuffItem(stat: Stat): Item {
+  const itemBanList = $items`pill cup`;
   const debuffs = Item.all()
-    .filter((i) => i.potion && (i.tradeable || have(i)))
+    .filter(
+      (i) =>
+        i.potion &&
+        (i.tradeable || have(i)) &&
+        !itemBanList.includes(i) &&
+        !avoidDebuffItem(i),
+    )
     .map((item) => ({ item, effect: effectModifier(item, "Effect") }))
     .filter(
       ({ effect }) =>
