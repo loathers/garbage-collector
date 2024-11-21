@@ -42,7 +42,9 @@ import { copyTargetCount } from "../target";
 import { potionSetup } from "../potions";
 
 function avoidDebuffItem(item: Item): boolean {
-  return Stat.all().some((stat) => getModifier(stat.toString(), item) > 0);
+  return Stat.all().some(
+    (stat) => getModifier(stat.toString(), effectModifier(item, "Effect")) > 0,
+  );
 }
 
 function getBestDebuffItem(stat: Stat): Item {
@@ -306,6 +308,7 @@ export const CockroachSetup: Quest<GarboTask> = {
             allowAttackFamiliars: true,
             mode: "free",
           }),
+          avoid: $items`Roman Candelabra`,
         }),
       combat: new GarboStrategy(() =>
         Macro.externalIf(
@@ -339,7 +342,10 @@ export const CockroachSetup: Quest<GarboTask> = {
         }
       },
       outfit: () => {
-        return { equip: $items`PirateRealm eyepatch` };
+        return {
+          equip: $items`PirateRealm eyepatch`,
+          avoid: $items`Roman Candelabra`,
+        };
       },
       choices: { 1385: 1, 1368: 1 }, // Take cocoa of youth, fight crab
       combat: new GarboStrategy(() => Macro.delevel().meatKill()),
@@ -381,6 +387,7 @@ export const CockroachFinish: Quest<GarboTask> = {
         const spec = meatTargetOutfit({
           modifier: ["meat"],
           equip: $items`PirateRealm eyepatch`,
+          avoid: $items`Roman Candelabra`,
         });
         return spec;
       },
@@ -395,7 +402,10 @@ export const CockroachFinish: Quest<GarboTask> = {
       completed: () => questStep("_questPirateRealm") > 6,
       prepare: () => checkAndFixOvercapStats(),
       do: () => adv1($location`Sailing the PirateRealm Seas`),
-      outfit: { equip: $items`PirateRealm eyepatch` },
+      outfit: {
+        equip: $items`PirateRealm eyepatch`,
+        avoid: $items`Roman Candelabra`,
+      },
       choices: { 1353: 5 }, // Trash Island
       limit: { tries: 1 },
       spendsTurn: false,
