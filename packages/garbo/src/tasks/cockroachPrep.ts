@@ -5,8 +5,8 @@ import {
   $item,
   $items,
   $location,
-  $stat,
   get,
+  getActiveEffects,
   getModifier,
   have,
   maxBy,
@@ -23,11 +23,9 @@ import {
   mallPrice,
   myAdventures,
   myBuffedstat,
-  myEffects,
   retrieveItem,
   runChoice,
   Stat,
-  toEffect,
   use,
   visitUrl,
 } from "kolmafia";
@@ -39,13 +37,35 @@ import { acquire } from "../acquire";
 import { meatMood } from "../mood";
 import { targetMeat } from "../lib";
 import { copyTargetCount } from "../target";
-import { potionSetup } from "../potions";
+import { potionSetup, VALUABLE_MODIFIERS } from "../potions";
 
-function avoidDebuffItem(item: Item): boolean {
-  return Stat.all().some(
-    (stat) => getModifier(stat.toString(), effectModifier(item, "Effect")) > 0,
+function asEffect(thing: Item | Effect): Effect {
+  return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
+}
+
+function improvesStat(thing: Item | Effect, stat: Stat): boolean {
+  const effect = asEffect(thing);
+  return ([stat.toString(), `${stat.toString()} Percent`] as const).some(
+    (modifier) => getModifier(modifier, effect) > 0,
   );
 }
+
+function improvedStats(thing: Item | Effect): Stat[] {
+  return Stat.all().filter((stat) => improvesStat(thing, stat));
+}
+function improvesAStat(thing: Item | Effect): boolean {
+  return improvedStats(thing).length > 0;
+}
+
+function isValuable(thing: Item | Effect): boolean {
+  const effect = asEffect(thing);
+  return VALUABLE_MODIFIERS.some(
+    (modifier) => getModifier(modifier, effect) > 0,
+  );
+}
+
+const debuffedEnough = () =>
+  Stat.all().every((stat) => myBuffedstat(stat) <= 100);
 
 function getBestDebuffItem(stat: Stat): Item {
   const itemBanList = $items`pill cup`;
@@ -55,9 +75,9 @@ function getBestDebuffItem(stat: Stat): Item {
         i.potion &&
         (i.tradeable || have(i)) &&
         !itemBanList.includes(i) &&
-        !avoidDebuffItem(i),
+        !improvesAStat(i),
     )
-    .map((item) => ({ item, effect: effectModifier(item, "Effect") }))
+    .map((item) => ({ item, effect: asEffect(item) }))
     .filter(
       ({ effect }) =>
         effect !== $effect.none &&
@@ -74,48 +94,40 @@ function getBestDebuffItem(stat: Stat): Item {
 
 // Just checking for the gummi effects for now, maybe can check other stuff later?
 function checkAndFixOvercapStats(): void {
-  const effects: Effect[] = Object.keys(myEffects()).map((effectName) =>
-    toEffect(effectName),
-  );
+  if (debuffedEnough()) return;
 
-  // Use a traditional for loop for stats
-  for (const stat of Stat.all()) {
-    const statName = stat.toString();
+  for (const isShruggablePass of [true, false]) {
+    for (const ef of getActiveEffects()) {
+      // First check all shruggable buffs, then all unshruggable
+      if (isShruggable(ef) !== isShruggablePass) continue;
+      // Only shrug effects that buff at least one stat that's too high
+      if (!improvedStats(ef).some((stat) => myBuffedstat(stat) > 100)) continue;
+      // Don't shrug effects that give meat or other stuff
+      if (isValuable(ef)) continue;
 
-    while (myBuffedstat(stat) > 100) {
-      for (const isShruggablePass of [true, false]) {
-        for (let j = 0; j < effects.length; j++) {
-          const ef = effects[j];
-          if (
-            isShruggable(ef) === isShruggablePass && // Process shruggable effects in first pass, non-shruggable in second
-            (getModifier(statName, ef) ||
-              getModifier(`${statName} Percent`, ef)) &&
-            !(
-              getModifier("Meat Drop", ef) > 0 ||
-              getModifier("Familiar Weight", ef) > 0 ||
-              getModifier("Smithsness", ef) > 0 ||
-              getModifier("Item Drop", ef) > 0
-            )
-          ) {
-            uneffect(ef); // Remove the effect
-          }
-          if (myBuffedstat(stat) <= 100) break;
-        }
-        if (myBuffedstat(stat) <= 100) break;
-      }
-      if (myBuffedstat(stat) <= 100) break;
+      uneffect(ef);
 
-      const debuffItem = () => getBestDebuffItem(stat);
-      retrieveItem(debuffItem());
-      use(debuffItem());
+      if (debuffedEnough()) return;
     }
   }
 
-  if (
-    myBuffedstat($stat`Moxie`) > 100 ||
-    myBuffedstat($stat`Mysticality`) > 100 ||
-    myBuffedstat($stat`Muscle`) > 100
-  ) {
+  let debuffItemLoops = 0;
+  while (!debuffedEnough()) {
+    if (debuffItemLoops > 11) {
+      abort("Spent too long trying to debuff for PirateRealm!");
+    }
+
+    debuffItemLoops++;
+    for (const stat of Stat.all()) {
+      if (myBuffedstat(stat) > 100) {
+        const debuffPotion = getBestDebuffItem(stat);
+        retrieveItem(debuffPotion);
+        use(debuffPotion);
+      }
+    }
+  }
+
+  if (!debuffedEnough()) {
     abort(
       "Buffed stats are too high for PirateRealm! Check for equipment or buffs that we can add to prevent in the script",
     );
