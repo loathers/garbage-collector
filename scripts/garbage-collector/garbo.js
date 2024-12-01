@@ -27862,7 +27862,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("51d63671f550cf83c42bdd453f87b5194b51194c", ")"));
+      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("48823a190416c9c6fd6bea67b6dde3a1411f6720", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia86.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -39366,10 +39366,10 @@ var FreeFightTasks = [
   {
     name: "Portscan + Macrometeorite + Mushroom garden",
     ready: function() {
-      return (have($item(_templateObject1474 || (_templateObject1474 = _taggedTemplateLiteral118(["packet of mushroom spores"])))) || (0, import_kolmafia123.getCampground)()["packet of mushroom spores"] !== void 0) && !doingGregFight() && counter_exports.get("portscan.edu") === 0 && have($skill(_templateObject1484 || (_templateObject1484 = _taggedTemplateLiteral118(["Macrometeorite"])))) && get("_macrometeoriteUses") < 10;
+      return (have($item(_templateObject1474 || (_templateObject1474 = _taggedTemplateLiteral118(["packet of mushroom spores"])))) || (0, import_kolmafia123.getCampground)()["packet of mushroom spores"] !== void 0) && !doingGregFight() && have($skill(_templateObject1484 || (_templateObject1484 = _taggedTemplateLiteral118(["Macrometeorite"])))) && get("_macrometeoriteUses") < 10;
     },
     completed: function() {
-      return get("_mushroomGardenFights") > 0;
+      return counter_exports.exists("portscan.edu");
     },
     prepare: function() {
       if (have($item(_templateObject1494 || (_templateObject1494 = _taggedTemplateLiteral118(["packet of mushroom spores"]))))) {
