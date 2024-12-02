@@ -1,13 +1,13 @@
-import { OutfitSpec, Quest } from "grimoire-kolmafia";
+import { Quest } from "grimoire-kolmafia";
 import { GarboTask } from "./engine";
 import {
   $effect,
-  $familiar,
   $item,
   $items,
   $location,
-  $stat,
   get,
+  getActiveEffects,
+  getModifier,
   have,
   maxBy,
   questStep,
@@ -16,40 +16,118 @@ import {
 import {
   abort,
   adv1,
+  Effect,
+  effectModifier,
+  isShruggable,
+  Item,
   mallPrice,
+  myAdventures,
   myBuffedstat,
+  retrieveItem,
   runChoice,
+  Stat,
+  use,
   visitUrl,
 } from "kolmafia";
 import { garboValue } from "../garboValue";
 import { freeFightFamiliar } from "../familiar";
-import { freeFightOutfit } from "../outfit";
+import { freeFightOutfit, meatTargetOutfit } from "../outfit";
 import { GarboStrategy, Macro } from "../combat";
 import { acquire } from "../acquire";
+import { meatMood } from "../mood";
+import { targetMeat } from "../lib";
+import { copyTargetCount } from "../target";
+import { potionSetup, VALUABLE_MODIFIERS } from "../potions";
+
+function asEffect(thing: Item | Effect): Effect {
+  return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
+}
+
+function improvesStat(thing: Item | Effect, stat: Stat): boolean {
+  const effect = asEffect(thing);
+  return ([stat.toString(), `${stat.toString()} Percent`] as const).some(
+    (modifier) => getModifier(modifier, effect) > 0,
+  );
+}
+
+function improvedStats(thing: Item | Effect): Stat[] {
+  return Stat.all().filter((stat) => improvesStat(thing, stat));
+}
+function improvesAStat(thing: Item | Effect): boolean {
+  return improvedStats(thing).length > 0;
+}
+
+function isValuable(thing: Item | Effect): boolean {
+  const effect = asEffect(thing);
+  return VALUABLE_MODIFIERS.some(
+    (modifier) => getModifier(modifier, effect) > 0,
+  );
+}
+
+const debuffedEnough = () =>
+  Stat.all().every((stat) => myBuffedstat(stat) <= 100);
+
+function getBestDebuffItem(stat: Stat): Item {
+  const itemBanList = $items`pill cup`;
+  const debuffs = Item.all()
+    .filter(
+      (i) =>
+        i.potion &&
+        (i.tradeable || have(i)) &&
+        !itemBanList.includes(i) &&
+        !improvesAStat(i),
+    )
+    .map((item) => ({ item, effect: asEffect(item) }))
+    .filter(
+      ({ effect }) =>
+        effect !== $effect.none &&
+        !have(effect) &&
+        getModifier(stat.toString(), effect) < 0,
+    );
+
+  return maxBy(
+    debuffs,
+    ({ item, effect }) =>
+      mallPrice(item) / getModifier(stat.toString(), effect),
+  ).item;
+}
 
 // Just checking for the gummi effects for now, maybe can check other stuff later?
 function checkAndFixOvercapStats(): void {
-  if (myBuffedstat($stat`Muscle`) >= 100) {
-    if (have($effect`Gummiheart`)) uneffect($effect`Gummiheart`);
+  if (debuffedEnough()) return;
+
+  for (const isShruggablePass of [true, false]) {
+    for (const ef of getActiveEffects()) {
+      // First check all shruggable buffs, then all unshruggable
+      if (isShruggable(ef) !== isShruggablePass) continue;
+      // Only shrug effects that buff at least one stat that's too high
+      if (!improvedStats(ef).some((stat) => myBuffedstat(stat) > 100)) continue;
+      // Don't shrug effects that give meat or other stuff
+      if (isValuable(ef)) continue;
+
+      uneffect(ef);
+
+      if (debuffedEnough()) return;
+    }
   }
-  if (myBuffedstat($stat`Mysticality`) >= 100) {
-    if (have($effect`Gummibrain`)) uneffect($effect`Gummibrain`);
+
+  let debuffItemLoops = 0;
+  while (!debuffedEnough()) {
+    if (debuffItemLoops > 11) {
+      abort("Spent too long trying to debuff for PirateRealm!");
+    }
+
+    debuffItemLoops++;
+    for (const stat of Stat.all()) {
+      if (myBuffedstat(stat) > 100) {
+        const debuffPotion = getBestDebuffItem(stat);
+        retrieveItem(debuffPotion);
+        use(debuffPotion);
+      }
+    }
   }
-  if (myBuffedstat($stat`Moxie`) >= 100) {
-    if (have($effect`Gummiskin`)) uneffect($effect`Gummiskin`);
-  }
-  if (
-    myBuffedstat($stat`Moxie`) >= 100 ||
-    myBuffedstat($stat`Mysticality`) >= 100 ||
-    myBuffedstat($stat`Muscle`) >= 100
-  ) {
-    uneffect($effect`Having a Ball!`);
-  }
-  if (
-    myBuffedstat($stat`Moxie`) >= 100 ||
-    myBuffedstat($stat`Mysticality`) >= 100 ||
-    myBuffedstat($stat`Muscle`) >= 100
-  ) {
+
+  if (!debuffedEnough()) {
     abort(
       "Buffed stats are too high for PirateRealm! Check for equipment or buffs that we can add to prevent in the script",
     );
@@ -97,9 +175,25 @@ function chooseCrew(): void {
   runChoice(bestChoice);
 }
 
+function outfitBonuses() {
+  const funPointValue = garboValue($item`PirateRealm guest pass`) / 600;
+  return new Map([
+    [
+      $item`carnivorous potted plant`,
+      get("valueOfAdventure") / (20 + get("_carnivorousPottedPlantWins")),
+    ],
+    [$item`Red Roger's red left foot`, funPointValue],
+    [$item`PirateRealm party hat`, funPointValue],
+  ]);
+}
+
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
-  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+  ready: () => get("pirateRealmUnlockedAnemometer"),
+  completed: () =>
+    get("_lastPirateRealmIsland") === $location`Trash Island` ||
+    (questStep("_questPirateRealm") === 5 &&
+      get("_lastPirateRealmIsland") === $location`Crab Island`),
   tasks: [
     // Tasks to progress pirate realm up to selecting Trash Island go here
     // We'll have to be careful about things like max stats becoming too high (bofa is annoying for this!)
@@ -116,13 +210,22 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Start PirateRealm Journey",
       ready: () => have($item`PirateRealm eyepatch`),
       completed: () => questStep("_questPirateRealm") > 0,
-      prepare: () => checkAndFixOvercapStats(),
+      prepare: (): void => {
+        checkAndFixOvercapStats();
+        if (myAdventures() < 40) {
+          // do something?
+        }
+      },
       do: () => {
         visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
         runChoice(1); // Head to Groggy's
         chooseCrew(); // Choose our crew
         runChoice(4); // Choose anemometer for trash island
-        runChoice(4); // Choose swift clipper, fastest ship
+        if (get("pirateRealmUnlockedClipper")) {
+          runChoice(4); // Swift Clipper, if it's unlocked
+        } else {
+          runChoice(3); // Otherwise, Speedy Caravel
+        }
         runChoice(1); // Head for the sea
       },
       outfit: { equip: $items`PirateRealm eyepatch` },
@@ -135,7 +238,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       completed: () => questStep("_questPirateRealm") > 1,
       prepare: () => checkAndFixOvercapStats(),
       do: () => adv1($location`Sailing the PirateRealm Seas`),
-      outfit: { equip: $items`PirateRealm eyepatch` },
+      outfit: () => freeFightOutfit({ acc3: $items`PirateRealm eyepatch` }),
       choices: () => ({
         1352:
           dessertIslandWorthIt() &&
@@ -209,13 +312,15 @@ export const CockroachSetup: Quest<GarboTask> = {
       do: () => adv1(get("_lastPirateRealmIsland", $location`none`)),
       outfit: () =>
         freeFightOutfit({
-          equip: $items`PirateRealm eyepatch, PirateRealm party hat, carnivorous potted plant, Red Roger's red left foot, Space Trip safety headphones`,
+          equip: $items`PirateRealm eyepatch`,
+          bonuses: outfitBonuses(),
           familiar: freeFightFamiliar({
             canChooseMacro: false,
             location: get("_lastPirateRealmIsland", $location`none`),
             allowAttackFamiliars: true,
             mode: "free",
           }),
+          avoid: $items`Roman Candelabra`,
         }),
       combat: new GarboStrategy(() =>
         Macro.externalIf(
@@ -229,39 +334,30 @@ export const CockroachSetup: Quest<GarboTask> = {
       spendsTurn: true,
     },
     {
-      name: "Final Island Encounter (Island 1)", // Ideally we delay this to do it before our copy target fights for meat but here for now
-      ready: () => questStep("_questPirateRealm") === 5,
+      name: "Final Island Encounter (Island 1 (Dessert))",
+      ready: () =>
+        questStep("_questPirateRealm") === 5 &&
+        get("_lastPirateRealmIsland") === $location`Dessert Island`,
       completed: () => questStep("_questPirateRealm") > 5,
       prepare: () => {
         checkAndFixOvercapStats();
       },
       do: () => {
-        if (get("_lastPirateRealmIsland") === $location`Dessert Island`) {
-          // Should give us cocoa of youth
-          if (
-            visitUrl("adventure.php?snarfblat=531").includes(
-              "Chocolate Fountain of Youth",
-            )
-          ) {
-            runChoice(1);
-          } else {
-            abort("Expected cocoa of youth but got something else!");
-          }
+        if (
+          visitUrl("adventure.php?snarfblat=531").includes(
+            "Chocolate Fountain of Youth",
+          )
+        ) {
+          runChoice(1);
         } else {
-          adv1($location`Crab Island`);
+          abort("Expected cocoa of youth but got something else!");
         }
       },
       outfit: () => {
-        if (get("_lastPirateRealmIsland") === $location`Crab Island`) {
-          const spec: OutfitSpec = {
-            modifier: ["meat"],
-            equip: $items`PirateRealm eyepatch`,
-            avoid: $items`cursed pirate cutlass`, // Gives +25 muscle which often overcaps
-            familiar: $familiar`Hobo Monkey`, // We haven't done familiar prep yet so robort isn't fed yet, something to fix later
-          };
-          return spec;
-        }
-        return { equip: $items`PirateRealm eyepatch` };
+        return {
+          equip: $items`PirateRealm eyepatch`,
+          avoid: $items`Roman Candelabra`,
+        };
       },
       choices: { 1385: 1, 1368: 1 }, // Take cocoa of youth, fight crab
       combat: new GarboStrategy(() => Macro.delevel().meatKill()),
@@ -275,6 +371,53 @@ export const CockroachSetup: Quest<GarboTask> = {
       prepare: () => checkAndFixOvercapStats(),
       do: () => adv1($location`Sailing the PirateRealm Seas`),
       outfit: { equip: $items`PirateRealm eyepatch` },
+      choices: { 1353: 5 }, // Trash Island
+      limit: { tries: 1 },
+      spendsTurn: false,
+    },
+  ],
+};
+
+export const CockroachFinish: Quest<GarboTask> = {
+  name: "Setup Cockroach Target",
+  ready: () => get("pirateRealmUnlockedAnemometer"),
+  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+  tasks: [
+    {
+      name: "Final Island Encounter (Island 1 (Giant Giant Crab))",
+      ready: () =>
+        questStep("_questPirateRealm") === 5 &&
+        get("_lastPirateRealmIsland") === $location`Crab Island`,
+      completed: () => questStep("_questPirateRealm") > 5,
+      prepare: () => {
+        meatMood(true, targetMeat()).execute(copyTargetCount());
+        potionSetup(false);
+        checkAndFixOvercapStats();
+      },
+      do: () => $location`Crab Island`,
+      outfit: () => {
+        const spec = meatTargetOutfit({
+          modifier: ["meat"],
+          equip: $items`PirateRealm eyepatch`,
+          avoid: $items`Roman Candelabra`,
+        });
+        return spec;
+      },
+      choices: { 1385: 1, 1368: 1 }, // Take cocoa of youth, fight crab
+      combat: new GarboStrategy(() => Macro.delevel().meatKill()),
+      limit: { tries: 1 },
+      spendsTurn: true,
+    },
+    {
+      name: "Choose Trash Island",
+      ready: () => questStep("_questPirateRealm") === 6,
+      completed: () => questStep("_questPirateRealm") > 6,
+      prepare: () => checkAndFixOvercapStats(),
+      do: () => adv1($location`Sailing the PirateRealm Seas`),
+      outfit: {
+        equip: $items`PirateRealm eyepatch`,
+        avoid: $items`Roman Candelabra`,
+      },
       choices: { 1353: 5 }, // Trash Island
       limit: { tries: 1 },
       spendsTurn: false,
