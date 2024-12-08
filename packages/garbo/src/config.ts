@@ -10,7 +10,8 @@ const workshedAliases = [
   },
   { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dnalab"] },
 ];
-const unaliasedSheds = $items`cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
+// eslint-disable-next-line libram/verify-constants
+const unaliasedSheds = $items`TakerSpace letter of Marque, cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
 const allWorkshedAliases = [
   ...workshedAliases.map(({ item, aliases }) => {
     return { item: item, aliases: [...aliases, item.name.toLowerCase()] };

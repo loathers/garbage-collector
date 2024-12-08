@@ -117,7 +117,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28078); // track remaining bat wing skills
+  sinceKolmafiaRevision(28151); // detect TakerSpace + basic related functionality
   checkGithubVersion();
 
   // Hit up main.php to get out of easily escapable choices
