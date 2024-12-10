@@ -1,4 +1,6 @@
 import {
+  autosell,
+  autosellPrice,
   availableAmount,
   canAdventure,
   canEquip,
@@ -371,6 +373,16 @@ function canGetFusedFuse() {
   );
 }
 
+function getAutosellableMeltingJunk(): Item[] {
+  return Item.all().filter(
+    (i) =>
+      have(i) &&
+      autosellPrice(i) > 0 &&
+      !getModifier("Adventures") &&
+      !getModifier("PvP Fights"),
+  );
+}
+
 const NonBarfTurnTasks: AlternateTask[] = [
   {
     name: "Make Mimic Eggs (whatever we can)",
@@ -527,6 +539,16 @@ const NonBarfTurnTasks: AlternateTask[] = [
     spendsTurn: true,
     sobriety: "drunk",
     turns: () => availableAmount($item`Map to Safety Shelter Grimace Prime`),
+  },
+  {
+    name: "Autosell Melting Junk",
+    completed: () => getAutosellableMeltingJunk().length === 0,
+    spendsTurn: false,
+    turns: 0,
+    do: () =>
+      getAutosellableMeltingJunk().forEach((i) =>
+        autosell(i, availableAmount(i)),
+      ),
   },
   {
     name: "Use Day Shorteners (drunk)",
