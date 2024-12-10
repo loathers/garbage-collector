@@ -381,7 +381,9 @@ function getAutosellableMeltingJunk(): Item[] {
       have(i) &&
       autosellPrice(i) > 0 &&
       (globalOptions.ascend ||
-        (!getModifier("Adventures") && !getModifier("PvP Fights"))),
+        !(
+          ["Adventures", "PvP Fights", "Rollover Effect Duration"] as const
+        ).some((mod) => getModifier(mod))),
   );
 }
 
