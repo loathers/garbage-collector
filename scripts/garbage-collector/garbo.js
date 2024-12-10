@@ -27064,7 +27064,7 @@ var workshedAliases = [{
   item: $item(_templateObject3129 || (_templateObject3129 = _taggedTemplateLiteral73(["Little Geneticist DNA-Splicing Lab"]))),
   aliases: ["dnalab"]
 }];
-var unaliasedSheds = $items(_templateObject4107 || (_templateObject4107 = _taggedTemplateLiteral73(["cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner"])));
+var unaliasedSheds = $items(_templateObject4107 || (_templateObject4107 = _taggedTemplateLiteral73(["TakerSpace letter of Marque, cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner"])));
 var allWorkshedAliases = [].concat(_toConsumableArray27(workshedAliases.map(function(_ref) {
   var item12 = _ref.item, aliases = _ref.aliases;
   return {
@@ -27862,7 +27862,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9d9329aa9a0c4f97f7f1066def03d7129e0793c0", ")"));
+      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("3e3a50920f9ca926963f7ffa23e8109a40cc01c8", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia86.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -38045,7 +38045,7 @@ var worksheds = [new GarboWorkshed({
     workshed: item12,
     done: potionSetupCompleted
   });
-})), _toConsumableArray55($items(_templateObject1059 || (_templateObject1059 = _taggedTemplateLiteral114(["snow machine, warbear jackhammer drill press, warbear auto-anvil"]))).map(function(item12) {
+})), _toConsumableArray55($items(_templateObject1059 || (_templateObject1059 = _taggedTemplateLiteral114(["TakerSpace letter of Marque, snow machine, warbear jackhammer drill press, warbear auto-anvil"]))).map(function(item12) {
   return new GarboWorkshed({
     workshed: item12
   });
@@ -46290,7 +46290,7 @@ function defaultTarget() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "";
-  sinceKolmafiaRevision(28078);
+  sinceKolmafiaRevision(28151);
   checkGithubVersion();
   (0, import_kolmafia141.visitUrl)("main.php");
   if ((0, import_kolmafia141.currentRound)() > 0) {
