@@ -376,6 +376,8 @@ function canGetFusedFuse() {
 function getAutosellableMeltingJunk(): Item[] {
   return Item.all().filter(
     (i) =>
+      (getModifier("Lasts Until Rollover", i) ||
+        (globalOptions.ascend && i.quest)) &&
       have(i) &&
       autosellPrice(i) > 0 &&
       !getModifier("Adventures") &&
