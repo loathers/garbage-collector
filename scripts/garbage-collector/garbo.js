@@ -27862,7 +27862,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("48823a190416c9c6fd6bea67b6dde3a1411f6720", ")"));
+      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9d9329aa9a0c4f97f7f1066def03d7129e0793c0", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia86.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -42566,6 +42566,13 @@ function canGetFusedFuse() {
     return get("_volcanoItem".concat(it)) === $item(_templateObject4324 || (_templateObject4324 = _taggedTemplateLiteral121(["fused fuse"]))).id;
   }) && canForceNoncombat();
 }
+function getAutosellableMeltingJunk() {
+  return import_kolmafia126.Item.all().filter(function(i) {
+    return (get2("Lasts Until Rollover", i) || globalOptions.ascend && i.quest) && have(i) && (0, import_kolmafia126.autosellPrice)(i) > 0 && (globalOptions.ascend || !["Adventures", "PvP Fights", "Rollover Effect Duration"].some(function(mod) {
+      return get2(mod);
+    }));
+  });
+}
 var NonBarfTurnTasks = [{
   name: "Make Mimic Eggs (whatever we can)",
   ready: function() {
@@ -42751,6 +42758,18 @@ var NonBarfTurnTasks = [{
   sobriety: "drunk",
   turns: function() {
     return (0, import_kolmafia126.availableAmount)($item(_templateObject7015 || (_templateObject7015 = _taggedTemplateLiteral121(["Map to Safety Shelter Grimace Prime"]))));
+  }
+}, {
+  name: "Autosell Melting Junk",
+  completed: function() {
+    return getAutosellableMeltingJunk().length === 0;
+  },
+  spendsTurn: false,
+  turns: 0,
+  do: function() {
+    return getAutosellableMeltingJunk().forEach(function(i) {
+      return (0, import_kolmafia126.autosell)(i, (0, import_kolmafia126.availableAmount)(i));
+    });
   }
 }, {
   name: "Use Day Shorteners (drunk)",
