@@ -380,8 +380,8 @@ function getAutosellableMeltingJunk(): Item[] {
         (globalOptions.ascend && i.quest)) &&
       have(i) &&
       autosellPrice(i) > 0 &&
-      !getModifier("Adventures") &&
-      !getModifier("PvP Fights"),
+      (globalOptions.ascend ||
+        (!getModifier("Adventures") && !getModifier("PvP Fights"))),
   );
 }
 
