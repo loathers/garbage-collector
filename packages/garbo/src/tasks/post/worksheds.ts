@@ -142,7 +142,8 @@ const worksheds = [
   ...$items`warbear chemistry lab, warbear LP-ROM burner`.map(
     (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted }),
   ),
-  ...$items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
+  // eslint-disable-next-line libram/verify-constants
+  ...$items`TakerSpace letter of Marque, snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
     (item) => new GarboWorkshed({ workshed: item }),
   ),
 ];
