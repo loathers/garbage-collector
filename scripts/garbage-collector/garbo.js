@@ -27862,7 +27862,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("3e3a50920f9ca926963f7ffa23e8109a40cc01c8", ")"));
+      (0, import_kolmafia86.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f204c3c46466e6900b0f72942beb3f77e20a1582", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia86.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -42568,7 +42568,7 @@ function canGetFusedFuse() {
 }
 function getAutosellableMeltingJunk() {
   return import_kolmafia126.Item.all().filter(function(i) {
-    return (get2("Lasts Until Rollover", i) || globalOptions.ascend && i.quest) && have(i) && (0, import_kolmafia126.autosellPrice)(i) > 0 && (globalOptions.ascend || !["Adventures", "PvP Fights", "Rollover Effect Duration"].some(function(mod) {
+    return (get2("Lasts Until Rollover", i) || globalOptions.ascend && i.quest) && (0, import_kolmafia126.itemAmount)(i) && (0, import_kolmafia126.autosellPrice)(i) > 0 && (globalOptions.ascend || !["Adventures", "PvP Fights", "Rollover Effect Duration"].some(function(mod) {
       return get2(mod);
     }));
   });
@@ -42768,7 +42768,7 @@ var NonBarfTurnTasks = [{
   turns: 0,
   do: function() {
     return getAutosellableMeltingJunk().forEach(function(i) {
-      return (0, import_kolmafia126.autosell)(i, (0, import_kolmafia126.availableAmount)(i));
+      return (0, import_kolmafia126.autosell)(i, (0, import_kolmafia126.itemAmount)(i));
     });
   }
 }, {
