@@ -4,6 +4,7 @@ import {
   holiday,
   myAdventures,
   squareRoot,
+  toInt,
 } from "kolmafia";
 import {
   $effect,
@@ -133,7 +134,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
           3: $item`whirled peas`,
           4: $item`piece of cake`,
           6: $item`peace shooter`,
-        }[get("peaceTurkeyIndex")] ?? $item.none,
+        }[toInt(get("peaceTurkeyIndex"))] ?? $item.none,
       ) * peaceTurkeyDropChance(),
   },
 ];
