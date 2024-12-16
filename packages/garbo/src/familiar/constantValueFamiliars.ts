@@ -127,13 +127,14 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Peace Turkey`,
     value: () =>
-      get("peaceTurkeyIndex") === 0 || get("peaceTurkeyIndex") === 3
-        ? garboValue($item`whirled peas`) * peaceTurkeyDropChance()
-        : get("peaceTurkeyIndex") === 4
-          ? garboValue($item`piece of cake`) * peaceTurkeyDropChance()
-          : get("peaceTurkeyIndex") === 6
-            ? garboValue($item`peace shooter`) * peaceTurkeyDropChance()
-            : 0,
+      garboValue(
+        {
+          0: $item`whirled peas`,
+          3: $item`whirled peas`,
+          4: $item`piece of cake`,
+          6: $item`peace shooter`,
+        }[get("peaceTurkeyIndex")] ?? $item.none,
+      ) * peaceTurkeyDropChance(),
   },
 ];
 
