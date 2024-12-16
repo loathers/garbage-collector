@@ -1,4 +1,11 @@
-import { Familiar, holiday, myAdventures } from "kolmafia";
+import {
+  Familiar,
+  familiarWeight,
+  holiday,
+  myAdventures,
+  squareRoot,
+  toInt,
+} from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -6,6 +13,7 @@ import {
   $items,
   clamp,
   findLeprechaunMultiplier,
+  get,
   getActiveEffects,
   getModifier,
   have,
@@ -117,7 +125,23 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     familiar: $familiar`quantum entangler`,
     value: () => garboValue($item`quantized familiar experience`) / 11,
   },
+  {
+    familiar: $familiar`Peace Turkey`,
+    value: () =>
+      garboValue(
+        {
+          0: $item`whirled peas`,
+          3: $item`whirled peas`,
+          4: $item`piece of cake`,
+          6: $item`peace shooter`,
+        }[toInt(get("peaceTurkeyIndex"))] ?? $item.none,
+      ) * peaceTurkeyDropChance(),
+  },
 ];
+
+function peaceTurkeyDropChance(): number {
+  return 0.24 + squareRoot(familiarWeight($familiar`Peace Turkey`));
+}
 
 export default function getConstantValueFamiliars(
   mode: "barf" | "free" | "target",
