@@ -49,7 +49,7 @@ const MAYAM_RING_VALUES = {
   clock: () => 5 * get("valueOfAdventure"),
 };
 
-function valueSymbol(symbol: MayamCalendar.MayamSymbol): number {
+function valueSymbol(symbol: MayamCalendar.Glyph): number {
   return MAYAM_RING_VALUES[symbol]();
 }
 
@@ -75,7 +75,7 @@ function valueCombination(
 }
 
 function getAvailableResonances(
-  forbiddenSymbols: MayamCalendar.MayamSymbol[],
+  forbiddenSymbols: MayamCalendar.Glyph[],
 ): MayamCalendar.CombinationString[] {
   return MayamCalendar.RESONANCE_KEYS.filter(
     (combination) =>
@@ -87,7 +87,7 @@ function getAvailableResonances(
 
 function getBestAvailableSymbolFromRing<R extends Range<0, 4>>(
   ring: R,
-  forbiddenSymbols: MayamCalendar.MayamSymbol[],
+  forbiddenSymbols: MayamCalendar.Glyph[],
 ): (typeof MayamCalendar.RINGS)[R][number] {
   return maxBy(
     MayamCalendar.RINGS[ring].filter((sym) => !forbiddenSymbols.includes(sym)),
@@ -96,7 +96,7 @@ function getBestAvailableSymbolFromRing<R extends Range<0, 4>>(
 }
 
 function getBestGreedyCombination(
-  forbiddenSymbols: MayamCalendar.MayamSymbol[],
+  forbiddenSymbols: MayamCalendar.Glyph[],
 ): MayamCalendar.CombinationString {
   return MayamCalendar.toCombinationString([
     getBestAvailableSymbolFromRing(0, forbiddenSymbols),
