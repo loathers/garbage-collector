@@ -51,8 +51,9 @@ export class AutumnAtonManager {
   }: Partial<AutumnAtonOptions>) {
     if (averageItemValue) this.averageItemValue = averageItemValue;
     if (estimatedTurns) this.estimatedTurns = estimatedTurns;
-    if (estimatedTurnsTomorrow)
+    if (estimatedTurnsTomorrow) {
       this.estimatedTurnsTomorrow = estimatedTurnsTomorrow;
+    }
   }
 
   bestLocation(locations: Location[]): Location {
@@ -87,8 +88,9 @@ export class AutumnAtonManager {
     acuityOverride?: number,
     slotOverride?: number,
   ): number {
-    if (location === $location`Shadow Rift`)
-      setLocation($location`Shadow Rift`); // FIXME This bypasses a mafia bug where ingress is not updated
+    if (location === $location`Shadow Rift`) {
+      setLocation($location`Shadow Rift`);
+    } // FIXME This bypasses a mafia bug where ingress is not updated
     const rates = appearanceRates(location);
     const monsters = getMonsters(location).filter(
       (m) =>
