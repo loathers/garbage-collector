@@ -5,3 +5,4 @@ import type { DraggableFight, WanderDetails, WanderOptions } from "./wanderer";
 
 export { makeValue, WandererManager };
 export type { ValueFunctions, WanderOptions, DraggableFight, WanderDetails };
+export * from "./resources";
