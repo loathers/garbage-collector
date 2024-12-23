@@ -56,9 +56,10 @@ export class AutumnAtonManager {
     }
   }
 
-  bestLocation(locations: Location[]): Location {
-    return maxBy(this.bestLocationsByUpgrade(locations), this.averageValue);
-  }
+  bestLocation = (locations: Location[]): Location =>
+    maxBy(this.bestLocationsByUpgrade(locations), (it) =>
+      this.averageValue(it),
+    );
 
   seasonalItemValue(location: Location, seasonalOverride?: number): number {
     // Find the value of the drops based on zone difficulty/type
