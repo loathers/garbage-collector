@@ -16,6 +16,7 @@
     - [`workshed` arg](#workshed-arg)
     - [`quick` flag](#quick-flag)
     - [Turncount](#turncount)
+    - ['target' flag](#target-flag)
     - [`help` flag](#help-flag)
   - [Frequent Questions](#frequent-questions)
 
@@ -133,6 +134,10 @@ Use `quickgear` to only speed up the maximizer, and `quickcombat` to only speed 
 ### Turncount
 
 Garbo can run for a specified number of turns, or run until you have a specified number of turns remaining. To run for `N` turns, run `garbo N`. To run until `M` turns are remaining, run `garbo -M`.
+
+### 'target' flag
+
+You can tell Garbo to target a specific monster for copying instead of its default. This argument is used in the following manner: e.g. 'garbo target="pygmy bowler"'.
 
 ### `help` flag
 
