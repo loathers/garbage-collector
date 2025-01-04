@@ -141,6 +141,8 @@ For example, you may wish to target:
 * a monster which isn't the Knob Goblin Elite Guard Captain if you don't have Curse of Weaksauce and Saucegeyser but think garbo will be able to kill it anyway
 
 Note that Garbo will break if you set the target to a monster which is conditional in its zone (and you don't meet the condition), such as "cockroach" or "Green Ops Soldier".
+- cockroach requires the Trash Island to be unlocked and not completed.
+- Green Ops Soldier requires the Frat / Hippy War to be active, and for you to have defeated at least 400 hippies.
 
 ### Turncount
 
