@@ -123,7 +123,6 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "The monster to use all copies on",
       default: $monster.none,
-      hidden: true,
     }),
     usekarma: Args.flag({
       setting: "",

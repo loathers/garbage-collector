@@ -15,6 +15,7 @@
     - [`simdiet` flag](#simdiet-flag)
     - [`workshed` arg](#workshed-arg)
     - [`quick` flag](#quick-flag)
+    - [`target` flag](#target-flag)
     - [Turncount](#turncount)
     - [`help` flag](#help-flag)
   - [Frequent Questions](#frequent-questions)
@@ -129,6 +130,15 @@ Garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual
 - Stasis at max 5 rounds, instead of up to 20.
 
 Use `quickgear` to only speed up the maximizer, and `quickcombat` to only speed up combat.
+
+### `target` flag
+
+Garbo will use all copies on the provided monster instead of trying to calculate the free, wishable monster with the best item drops.
+
+For example, you may wish to target:
+* sausage goblin, which is free and has meat drops, if you can max out the meat drops
+* an event monster with rare drops, if you're trying to maximize the number you encounter (e.g. Section 11)
+* a monster which isn't the Knob Goblin Elite Guard Captain if you don't have Curse of Weaksauce and Saucegeyser but think garbo will be able to kill it anyway
 
 ### Turncount
 
