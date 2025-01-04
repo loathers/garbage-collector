@@ -27691,8 +27691,7 @@ var globalOptions = Args.create("garbo", 'This script is an automated turn-burni
   target: Args.monster({
     setting: "",
     help: "The monster to use all copies on",
-    default: $monster.none,
-    hidden: true
+    default: $monster.none
   }),
   usekarma: Args.flag({
     setting: "",
@@ -28388,7 +28387,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia90.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("86373ba96e06bbcd3e75bf71e50587aae58f26d7", ")"));
+      (0, import_kolmafia90.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1f0de5937e579e22012b8f87b595feaafdad40eb", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia90.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
