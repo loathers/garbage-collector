@@ -140,6 +140,8 @@ For example, you may wish to target:
 * an event monster with rare drops, if you're trying to maximize the number you encounter (e.g. Section 11)
 * a monster which isn't the Knob Goblin Elite Guard Captain if you don't have Curse of Weaksauce and Saucegeyser but think garbo will be able to kill it anyway
 
+Note that Garbo will break if you set the target to a monster which is conditional in its zone (and you don't meet the condition), such as "cockroach" or "Green Ops Soldier".
+
 ### Turncount
 
 Garbo can run for a specified number of turns, or run until you have a specified number of turns remaining. To run for `N` turns, run `garbo N`. To run until `M` turns are remaining, run `garbo -M`.
