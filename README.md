@@ -133,16 +133,14 @@ Use `quickgear` to only speed up the maximizer, and `quickcombat` to only speed 
 
 ### `target` flag
 
-Garbo will use all copies on the provided monster instead of trying to calculate the free, wishable monster with the best item drops.
+_EXPERIMENTAL_ Garbo will use all of a user's copies on the provided monster instead of trying to calculate the free, wishable monster with the best item drops.
 
 For example, you may wish to target:
-* sausage goblin, which is free and has meat drops, if you can max out the meat drops
-* an event monster with rare drops, if you're trying to maximize the number you encounter (e.g. Section 11)
-* a monster which isn't the Knob Goblin Elite Guard Captain if you don't have Curse of Weaksauce and Saucegeyser but think garbo will be able to kill it anyway
+- a free fight like a sausage goblin, to stock up on extra sausage casings with a bit of meat
+- a turn-taking event monster with rare drops, if you're trying to maximize the number you encounter (e.g. Section 11 from 2024's Crimbo Islands)
+- a monster which isn't the Knob Goblin Elite Guard Captain if you don't have Curse of Weaksauce and Saucegeyser but think garbo will be able to kill it anyway
 
-Note that Garbo will break if you set the target to a monster which is conditional in its zone (and you don't meet the condition), such as "cockroach" or "Green Ops Soldier".
-- cockroach requires the Trash Island to be unlocked and not completed.
-- Green Ops Soldier requires the Frat / Hippy War to be active, and for you to have defeated at least 400 hippies.
+Please note that this feature **will not work** for all users with monsters like the Cockroach (a conditional monster requiring PirateRealm tricks to encounter as a wanderer), the Witchess Queen (an impossibly hard fight that Garbo is not equipped to kill), or various other difficult monsters throughout the game. Use this feature at your own risk. If you put yourself into a bizarre account state because you copied a monster you had no real reason to copy that has strange conditions and you managed to break your account state for a day, it is unlikely that a bug report (or advice in ASS) will be addressed.
 
 ### Turncount
 
