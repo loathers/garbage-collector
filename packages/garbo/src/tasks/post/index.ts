@@ -47,11 +47,7 @@ import {
 } from "../../lib";
 import { teleportEffects } from "../../mood";
 import { Quest } from "grimoire-kolmafia";
-import {
-  estimatedGarboTurns,
-  estimatedTurnsTomorrow,
-  remainingUserTurns,
-} from "../../turns";
+import { estimatedGarboTurns, remainingUserTurns } from "../../turns";
 import { acquire } from "../../acquire";
 import { garboAverageValue } from "../../garboValue";
 import workshedTasks from "./worksheds";
@@ -59,19 +55,10 @@ import { GarboPostTask } from "./lib";
 import { GarboTask } from "../engine";
 import { hotTubAvailable } from "../../resources/clanVIP";
 import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
-import { AutumnAtonManager } from "garbo-lib";
+import { autumnAtonManager } from "../../resources";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
-
-let _autumnAtonManager: AutumnAtonManager;
-const autumnAtonManager = () =>
-  (_autumnAtonManager ??= new AutumnAtonManager({
-    averageItemValue: garboAverageValue,
-    estimatedTurns: estimatedGarboTurns,
-    estimatedTurnsTomorrow: () =>
-      globalOptions.ascend ? 0 : estimatedTurnsTomorrow,
-  }));
 
 function closetStuff(): GarboPostTask {
   return {
