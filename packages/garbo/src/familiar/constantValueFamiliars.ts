@@ -1,4 +1,10 @@
-import { Familiar, holiday, myAdventures } from "kolmafia";
+import {
+  Familiar,
+  familiarWeight,
+  holiday,
+  myAdventures,
+  squareRoot,
+} from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -117,7 +123,21 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     familiar: $familiar`quantum entangler`,
     value: () => garboValue($item`quantized familiar experience`) / 11,
   },
+  {
+    familiar: $familiar`Peace Turkey`,
+    value: () =>
+      // drops are ~1/2 of the activations, whirled peas are twice as likely to drop
+      (garboAverageValue(
+        ...$items`whirled peas, piece of cake, peace shooter, whirled peas`,
+      ) *
+        peaceTurkeyDropChance()) /
+      2,
+  },
 ];
+
+function peaceTurkeyDropChance(): number {
+  return 0.24 + squareRoot(familiarWeight($familiar`Peace Turkey`));
+}
 
 export default function getConstantValueFamiliars(
   mode: "barf" | "free" | "target",
