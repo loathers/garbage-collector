@@ -16,6 +16,7 @@ import {
   myInebriety,
   myLevel,
   myLightning,
+  myLocation,
   myRain,
   myTurncount,
   outfitPieces,
@@ -38,6 +39,7 @@ import {
   ChestMimic,
   clamp,
   Counter,
+  CrepeParachute,
   Delayed,
   ensureEffect,
   get,
@@ -991,6 +993,30 @@ export const NonBarfTurnQuest: Quest<GarboTask> = {
 export const BarfTurnQuest: Quest<GarboTask> = {
   name: "Barf Turn",
   tasks: [
+    {
+      name: "Barf Parachute",
+      ready: () => CrepeParachute.have() && !have($effect`Everything looks Beige`) && myLocation() === $location`Barf Mountain`,
+      completed: () => have($effect`Everything looks Beige`),
+      outfit: () =>  barfOutfit({}),
+      do: () => CrepeParachute.fight($monster`garbage tourist`),
+      combat: new GarboStrategy(
+        () => Macro.meatKill(),
+        () =>
+          Macro.if_(
+            `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
+            Macro.meatKill(),
+          ).abort(),
+      ),
+      prepare: () =>
+        !get("dinseyRollercoasterNext") &&
+        !(totalTurnsPlayed() % 11) &&
+        meatMood().execute(estimatedGarboTurns()),
+      post: () => {
+        completeBarfQuest();
+        trackMarginalMpa();
+      },
+      spendsTurn: true,
+    },
     {
       name: "Barf",
       completed: () => myAdventures() === 0,
