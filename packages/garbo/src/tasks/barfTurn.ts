@@ -1004,11 +1004,6 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       do: () => CrepeParachute.fight($monster`garbage tourist`),
       combat: new GarboStrategy(
         () => Macro.meatKill(),
-        () =>
-          Macro.if_(
-            `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-            Macro.meatKill(),
-          ).abort(),
       ),
       prepare: () => !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
       post: () => {
