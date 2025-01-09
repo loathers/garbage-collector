@@ -995,7 +995,6 @@ export const BarfTurnQuest: Quest<GarboTask> = {
   tasks: [
     {
       name: "Barf Parachute",
-      // this is a comment
       ready: () => CrepeParachute.have() &&
         !have($effect`Everything looks Beige`) &&
         myLocation() === $location`Barf Mountain`,
