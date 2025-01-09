@@ -28778,7 +28778,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("0c27c1877cd7d23d3181caae88766041eca9312e", ")"));
+      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("81a1f468b8ab228f916ca112b778d7a7e51f5a8c", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia91.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -36322,7 +36322,7 @@ var CopyTargetFight = /* @__PURE__ */ function() {
 var chainStarters = [new CopyTargetFight("Witchess", function() {
   return Witchess_exports.have() && Witchess_exports.pieces.includes(globalOptions.target) && Witchess_exports.fightsDone() < 5;
 }, function() {
-  return Math.max(5 - Witchess_exports.fightsDone(), 0);
+  return Witchess_exports.have() && Witchess_exports.pieces.includes(globalOptions.target) ? Math.max(5 - Witchess_exports.fightsDone(), 0) : 0;
 }, function(options) {
   withMacro(options.macro, function() {
     return Witchess_exports.fightPiece(globalOptions.target);
