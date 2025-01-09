@@ -1009,9 +1009,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
-      prepare: () =>
-        !(totalTurnsPlayed() % 11) &&
-        meatMood().execute(estimatedGarboTurns()),
+      prepare: () => !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
       post: () => {
         completeBarfQuest();
         trackMarginalMpa();
