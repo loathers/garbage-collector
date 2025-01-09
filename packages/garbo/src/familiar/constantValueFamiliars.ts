@@ -4,7 +4,6 @@ import {
   holiday,
   myAdventures,
   squareRoot,
-  toInt,
 } from "kolmafia";
 import {
   $effect,
@@ -13,7 +12,6 @@ import {
   $items,
   clamp,
   findLeprechaunMultiplier,
-  get,
   getActiveEffects,
   getModifier,
   have,
@@ -128,14 +126,8 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Peace Turkey`,
     value: () =>
-      garboValue(
-        {
-          0: $item`whirled peas`,
-          3: $item`whirled peas`,
-          4: $item`piece of cake`,
-          6: $item`peace shooter`,
-        }[toInt(get("peaceTurkeyIndex"))] ?? $item.none,
-      ) * peaceTurkeyDropChance(),
+      // drops are ~1/2 of the activations, whirled peas are twice as likely to drop
+      garboAverageValue(...$items`whirled peas, piece of cake, peace shooter, whirled peas`) * peaceTurkeyDropChance() / 2,
   },
 ];
 
