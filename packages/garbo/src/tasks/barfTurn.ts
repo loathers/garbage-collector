@@ -1000,12 +1000,11 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         !have($effect`Everything looks Beige`) &&
         myLocation() === $location`Barf Mountain`,
       completed: () => have($effect`Everything looks Beige`),
-      outfit: () =>  barfOutfit({}),
+      outfit: () => barfOutfit({}),
       do: () => CrepeParachute.fight($monster`garbage tourist`),
-      combat: new GarboStrategy(
-        () => Macro.meatKill(),
-      ),
-      prepare: () => !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
+      combat: new GarboStrategy(() => Macro.meatKill()),
+      prepare: () =>
+        !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
       post: () => {
         completeBarfQuest();
         trackMarginalMpa();
