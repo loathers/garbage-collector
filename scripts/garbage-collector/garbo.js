@@ -28778,7 +28778,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("676ba6f0b8acf83283658205a8ddf41a58e837ea", ")"));
+      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("0c27c1877cd7d23d3181caae88766041eca9312e", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia91.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -34555,8 +34555,8 @@ var DEFAULT_MIDNIGHT = {
 };
 function bestMidnightAvailable() {
   var availableMidnights = [].concat(_toConsumableArray45(MIDNIGHTS2.filter(function(_ref) {
-    var available6 = _ref.available;
-    return available6();
+    var location = _ref.location, available6 = _ref.available;
+    return (0, import_kolmafia107.canAdventure)(location) && available6();
   })), [DEFAULT_MIDNIGHT]);
   return maxBy(availableMidnights, function(_ref2) {
     var value = _ref2.value;
