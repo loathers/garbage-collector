@@ -164,7 +164,10 @@ export const chainStarters = [
       Witchess.have() &&
       Witchess.pieces.includes(globalOptions.target) &&
       Witchess.fightsDone() < 5,
-    () => Math.max(5 - Witchess.fightsDone(), 0),
+    () =>
+      Witchess.have() && Witchess.pieces.includes(globalOptions.target)
+        ? Math.max(5 - Witchess.fightsDone(), 0)
+        : 0,
     (options: RunOptions) => {
       withMacro(
         options.macro,
