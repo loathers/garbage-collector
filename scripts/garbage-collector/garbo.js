@@ -28778,7 +28778,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("76a6bcc9d76ea72271b95282258e16a532571be7", ")"));
+      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8dacfb64f575e558ee4a66303b8559f1956af58e", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia91.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -32043,12 +32043,12 @@ var standardFamiliars = [{
   value: function() {
     return (
       // drops are ~1/2 of the activations, whirled peas are twice as likely to drop
-      garboAverageValue.apply(void 0, _toConsumableArray37($items(_templateObject3019 || (_templateObject3019 = _taggedTemplateLiteral89(["whirled peas, piece of cake, peace shooter, whirled peas"]))))) * peaceTurkeyDropChance() / 2
+      garboAverageValue.apply(void 0, _toConsumableArray37($items(_templateObject3019 || (_templateObject3019 = _taggedTemplateLiteral89(["whirled peas, whirled peas, piece of cake, peace shooter"]))))) * peaceTurkeyDropChance() / 2
     );
   }
 }];
 function peaceTurkeyDropChance() {
-  return 0.24 + (0, import_kolmafia99.squareRoot)((0, import_kolmafia99.familiarWeight)($familiar(_templateObject3144 || (_templateObject3144 = _taggedTemplateLiteral89(["Peace Turkey"])))));
+  return 0.24 + (0, import_kolmafia99.squareRoot)((0, import_kolmafia99.familiarWeight)($familiar(_templateObject3144 || (_templateObject3144 = _taggedTemplateLiteral89(["Peace Turkey"]))))) / 100;
 }
 function getConstantValueFamiliars(mode) {
   return standardFamiliars.filter(function(_ref) {
