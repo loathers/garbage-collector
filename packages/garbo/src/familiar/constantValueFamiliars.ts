@@ -128,7 +128,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: () =>
       // drops are ~1/2 of the activations, whirled peas are twice as likely to drop
       (garboAverageValue(
-        ...$items`whirled peas, piece of cake, peace shooter, whirled peas`,
+        ...$items`whirled peas, whirled peas, piece of cake, peace shooter`,
       ) *
         peaceTurkeyDropChance()) /
       2,
@@ -136,7 +136,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
 ];
 
 function peaceTurkeyDropChance(): number {
-  return 0.24 + squareRoot(familiarWeight($familiar`Peace Turkey`));
+  return 0.24 + squareRoot(familiarWeight($familiar`Peace Turkey`)) / 100;
 }
 
 export default function getConstantValueFamiliars(
