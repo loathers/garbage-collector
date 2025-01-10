@@ -108,6 +108,11 @@ const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
 const isSteve = () =>
   get("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`;
 
+let lastParachuteFailure = 0;
+const shouldCheckParachute = () => totalTurnsPlayed() !== lastParachuteFailure;
+const updateParachuteFailure = () =>
+  (lastParachuteFailure = totalTurnsPlayed());
+
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
@@ -997,7 +1002,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       name: "Barf Parachute",
       ready: () =>
         CrepeParachute.have() &&
-        !have($effect`Everything looks Beige`) &&
+        shouldCheckParachute() &&
         myLocation() === $location`Barf Mountain`,
       completed: () => have($effect`Everything looks Beige`),
       outfit: () => barfOutfit({}),
@@ -1006,6 +1011,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       prepare: () =>
         !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
       post: () => {
+        if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
         completeBarfQuest();
         trackMarginalMpa();
       },
