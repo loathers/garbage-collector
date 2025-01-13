@@ -14,7 +14,6 @@ import {
 import {
   $effect,
   $item,
-  $items,
   $location,
   $locations,
   $skill,
@@ -322,7 +321,11 @@ export function wandererTurnsAvailableToday(
   return digitize + pigSkinnerRay + yellowRay + wanderers + freeRun;
 }
 
-const LIMITED_BOFA_DROPS = $items`pocket wish, tattered scrap of paper`;
+const LIMITED_BOFA_DROPS = new Map<Item, { limit: number; current: () => number }>([
+  [$item`pocket wish`, { limit: 3, current: () => get("_bookOfFactsWishes") }],
+  [$item`tattered scrap of paper`, { limit: 11, current: () => get("_bookOfFactsTatters", 0) }],
+]);
+
 export function bofaValue(
   { plentifulMonsters, itemValue, effectValue }: WandererFactoryOptions,
   monster: Monster,
@@ -331,9 +334,12 @@ export function bofaValue(
     case "item": {
       const item = itemFact(monster);
       const quantity = numericFact(monster);
+
+      const limitedDrop = LIMITED_BOFA_DROPS.get(item);
       if (
-        LIMITED_BOFA_DROPS.includes(item) &&
-        plentifulMonsters.some((monster) => toItem(monster.fact) === item)
+        limitedDrop &&
+        (limitedDrop.current() >= limitedDrop.limit ||
+        plentifulMonsters.some((monster) => toItem(monster.fact) === item))
       ) {
         return 0;
       }
