@@ -321,9 +321,15 @@ export function wandererTurnsAvailableToday(
   return digitize + pigSkinnerRay + yellowRay + wanderers + freeRun;
 }
 
-const LIMITED_BOFA_DROPS = new Map<Item, { limit: number; current: () => number }>([
+const LIMITED_BOFA_DROPS = new Map<
+  Item,
+  { limit: number; current: () => number }
+>([
   [$item`pocket wish`, { limit: 3, current: () => get("_bookOfFactsWishes") }],
-  [$item`tattered scrap of paper`, { limit: 11, current: () => get("_bookOfFactsTatters", 0) }],
+  [
+    $item`tattered scrap of paper`,
+    { limit: 11, current: () => get("_bookOfFactsTatters", 0) },
+  ],
 ]);
 
 export function bofaValue(
@@ -339,7 +345,7 @@ export function bofaValue(
       if (
         limitedDrop &&
         (limitedDrop.current() >= limitedDrop.limit ||
-        plentifulMonsters.some((monster) => toItem(monster.fact) === item))
+          plentifulMonsters.some((monster) => toItem(monster.fact) === item))
       ) {
         return 0;
       }
