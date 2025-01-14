@@ -40,6 +40,7 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
   $phyla,
   $skill,
   BurningLeaves,
@@ -801,6 +802,34 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // tied-up leaviathan (scaling, has 100 damage source cap and 2500 hp)
   // li'l ninja costume
   // closed-circuit pay phone (make into it's own Quest)
+  {
+    name: "CyberRealm Overclock Fights",
+    ready: () =>
+      have($item`server room key`) && // TODO support day pass? Not require tanktop
+      have($item`zero-trust tanktop`) &&
+      have($skill`Torso Awareness`) &&
+      have($skill`OVERCLOCK(10)`),
+    completed: () => get("_cyberFreeFights") >= 10,
+    do: $location`Cyberzone 1`, // TODO Support other zones with better equipment and valuing hacker drops
+    tentacle: false,
+    choices: () => ({ 1545: 1 }), // Take damage, get 0's
+    outfit: () =>
+      freeFightOutfit({
+        bonuses: new Map<Item, number>([
+          [$item`familiar-in-the-middle wrapper`, garboValue($item`1`)],
+          [$item`retro floppy disk`, garboValue($item`1`)],
+          [$item`visual packet sniffer`, garboValue($item`1`) / 4], // unspaded droprate
+        ]),
+        shirt: $item`zero-trust tanktop`,
+      }),
+    combat: new GarboStrategy(() =>
+      Macro.if_(
+        $monsters`firewall, ICE barrier, corruption quarantine, parental controls, null container, zombie process, botfly, network worm, ICE man, rat (remote access trojan)`,
+        Macro.trySkillRepeat($skill`Throw Cyber Rock`),
+      ).basicCombat(),
+    ),
+    combatCount: () => clamp(10 - get("_cyberFreeFights"), 0, 10),
+  },
 ].map(freeFightTask);
 
 // Expected free fights, not including tentacles

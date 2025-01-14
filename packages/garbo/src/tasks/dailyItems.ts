@@ -661,6 +661,22 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   mayamCalendarSummon,
+  {
+    name: "Collect CyberRealm Datastick",
+    ready: () => have($item`server room key`),
+    completed: () => get("cyberDatastickCollected"),
+    do: () =>
+      visitUrl("place.php?whichplace=serverroom&action=serverroom_chipdrawer"),
+    spendsTurn: false,
+  },
+  {
+    name: "Check CyberRealm Trash",
+    ready: () => have($item`server room key`),
+    completed: () => get("_cyberTrashCollected"),
+    do: () =>
+      visitUrl("place.php?whichplace=serverroom&action=serverroom_trash1"),
+    spendsTurn: false,
+  },
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {
