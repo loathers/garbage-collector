@@ -1,13 +1,16 @@
 import {
+  appearanceRates,
   autosell,
   autosellPrice,
   availableAmount,
   canAdventure,
   canEquip,
   eat,
+  getMonsters,
   getWorkshed,
   Item,
   itemAmount,
+  itemFact,
   Location,
   mallPrice,
   maximize,
@@ -955,7 +958,52 @@ const BarfTurnTasks: GarboTask[] = [
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
   },
+    {
+    name: "Find Pocket Wishes",
+    ready: () => have($skill`Just the Facts`) && haveNoYellowRays(),
+    completed: () =>
+      get("_bookOfFactsWishes") >= 3,
+    do: () => bestPocketWishTarget(),
+    outfit: () => meatTargetOutfit(),
+    combat: new GarboStrategy(() => Macro.meatKill()),
+    spendsTurn: () => true,
+  },
 ];
+
+function haveNoYellowRays(): boolean {
+  return !have($item`Jurassic Parka`) && get("shockingLickCharges") === 0 && !have($skill`Fondeluge`)
+}
+
+function bestPocketWishTarget(): Location {
+  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
+  const pocketWishValue = 49000;
+
+  const bestLocation = Location.all()
+    .filter((location) => canAdventure(location))
+    .filter((location) => {
+      const monsters = getMonsters(location);
+      return monsters.some((monster) => {
+        const rates = appearanceRates(location);
+        return (
+          !badAttributes.some((attr) => monster.attributes.includes(attr)) &&
+          rates[monster.name] > 0 &&
+          itemFact(monster) === $item`pocket wish`
+        );
+      });
+    })
+    .map((location) => {
+      const monsters = getMonsters(location);
+      const totalValue = monsters.reduce((sum, monster) => {
+        const meatDrop = clamp((monster.minMeat + monster.maxMeat) / 2, 0, 1000);
+        const wishValue = itemFact(monster) === $item`pocket wish` ? pocketWishValue : 0;
+        return sum + meatDrop + wishValue;
+      }, 0);
+      return { location, value: totalValue / monsters.length };
+    });
+
+  return maxBy(bestLocation, "value")?.location;
+}
+
 
 function nonBarfTurns(): number {
   return sum(
