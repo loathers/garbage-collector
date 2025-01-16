@@ -958,11 +958,10 @@ const BarfTurnTasks: GarboTask[] = [
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
   },
-    {
+  {
     name: "Find Pocket Wishes",
     ready: () => have($skill`Just the Facts`) && haveNoYellowRays(),
-    completed: () =>
-      get("_bookOfFactsWishes") >= 3,
+    completed: () => get("_bookOfFactsWishes") >= 3,
     do: () => bestPocketWishTarget(),
     outfit: () => meatTargetOutfit(),
     combat: new GarboStrategy(() => Macro.meatKill()),
@@ -971,7 +970,11 @@ const BarfTurnTasks: GarboTask[] = [
 ];
 
 function haveNoYellowRays(): boolean {
-  return !have($item`Jurassic Parka`) && get("shockingLickCharges") === 0 && !have($skill`Fondeluge`)
+  return (
+    !have($item`Jurassic Parka`) &&
+    get("shockingLickCharges") === 0 &&
+    !have($skill`Fondeluge`)
+  );
 }
 
 function bestPocketWishTarget(): Location {
@@ -994,8 +997,13 @@ function bestPocketWishTarget(): Location {
     .map((location) => {
       const monsters = getMonsters(location);
       const totalValue = monsters.reduce((sum, monster) => {
-        const meatDrop = clamp((monster.minMeat + monster.maxMeat) / 2, 0, 1000);
-        const wishValue = itemFact(monster) === $item`pocket wish` ? pocketWishValue : 0;
+        const meatDrop = clamp(
+          (monster.minMeat + monster.maxMeat) / 2,
+          0,
+          1000,
+        );
+        const wishValue =
+          itemFact(monster) === $item`pocket wish` ? pocketWishValue : 0;
         return sum + meatDrop + wishValue;
       }, 0);
       return { location, value: totalValue / monsters.length };
@@ -1003,7 +1011,6 @@ function bestPocketWishTarget(): Location {
 
   return maxBy(bestLocation, "value")?.location;
 }
-
 
 function nonBarfTurns(): number {
   return sum(
