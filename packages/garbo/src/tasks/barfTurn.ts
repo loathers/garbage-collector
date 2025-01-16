@@ -1,16 +1,14 @@
 import {
-  appearanceRates,
   autosell,
   autosellPrice,
   availableAmount,
   canAdventure,
   canEquip,
   eat,
-  getMonsters,
+  getClanLounge,
   getWorkshed,
   Item,
   itemAmount,
-  itemFact,
   Location,
   mallPrice,
   maximize,
@@ -25,6 +23,7 @@ import {
   outfitPieces,
   retrieveItem,
   runChoice,
+  Skill,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -53,6 +52,7 @@ import {
   maxBy,
   questStep,
   realmAvailable,
+  RetroCape,
   set,
   SourceTerminal,
   sum,
@@ -959,57 +959,52 @@ const BarfTurnTasks: GarboTask[] = [
     spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
   },
   {
-    name: "Find Pocket Wishes",
-    ready: () => have($skill`Just the Facts`) && haveNoYellowRays(),
-    completed: () => get("_bookOfFactsWishes") >= 3,
-    do: () => bestPocketWishTarget(),
+    name: "Other Yellow Rays",
+    ready: () => have($skill`Just the Facts`) && get("_bookOfFactsWishes") < 3, // the only way we can guarantee this is profitable
+    completed: () => have($effect`Everything Looks Yellow`),
+    prepare: () => {
+      const yellowRay = bestYellowRay();
+      if (yellowRay instanceof Item) {
+        retrieveItem(yellowRay);
+      }
+    },
+    do: () => wanderer().getTarget(undelay("yellow ray")),
     outfit: () => meatTargetOutfit(),
-    combat: new GarboStrategy(() => Macro.meatKill()),
+    combat: new GarboStrategy(() =>
+      Macro.if_(globalOptions.target, Macro.meatKill())
+        .familiarActions()
+        .duplicate()
+        .externalIf(
+          bestYellowRay() instanceof Skill,
+          Macro.trySkill(bestYellowRay() as Skill),
+          Macro.tryItem(bestYellowRay() as Item),
+        ),
+    ),
     spendsTurn: () => true,
   },
 ];
 
-function haveNoYellowRays(): boolean {
-  return (
-    !have($item`Jurassic Parka`) &&
-    get("shockingLickCharges") === 0 &&
-    !have($skill`Fondeluge`)
-  );
-}
+function bestYellowRay(): Skill | Item {
+  if (have($item`Roman Candelabra`)) {
+    return $skill`Blow the Yellow Candle!`;
+  }
 
-function bestPocketWishTarget(): Location {
-  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
-  const pocketWishValue = 49000;
+  if (
+    have($item`Clan VIP Lounge key`) &&
+    getClanLounge()["clan underground fireworks shop"] !== undefined
+  ) {
+    return $item`yellow rocket`;
+  }
 
-  const bestLocation = Location.all()
-    .filter((location) => canAdventure(location))
-    .filter((location) => {
-      const monsters = getMonsters(location);
-      return monsters.some((monster) => {
-        const rates = appearanceRates(location);
-        return (
-          !badAttributes.some((attr) => monster.attributes.includes(attr)) &&
-          rates[monster.name] > 0 &&
-          itemFact(monster) === $item`pocket wish`
-        );
-      });
-    })
-    .map((location) => {
-      const monsters = getMonsters(location);
-      const totalValue = monsters.reduce((sum, monster) => {
-        const meatDrop = clamp(
-          (monster.minMeat + monster.maxMeat) / 2,
-          0,
-          1000,
-        );
-        const wishValue =
-          itemFact(monster) === $item`pocket wish` ? pocketWishValue : 0;
-        return sum + meatDrop + wishValue;
-      }, 0);
-      return { location, value: totalValue / monsters.length };
-    });
+  if (RetroCape.have()) {
+    return $skill`Unleash the Devil's Kiss`;
+  }
 
-  return maxBy(bestLocation, "value")?.location;
+  if (have($skill`Disintegrate`)) {
+    return $skill`Disintegrate`;
+  }
+
+  return $item`viral video`;
 }
 
 function nonBarfTurns(): number {
