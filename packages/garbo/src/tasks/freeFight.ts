@@ -805,14 +805,14 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   {
     name: "CyberRealm Overclock Fights",
     ready: () =>
-      have($item`server room key`) && // TODO support day pass? Not require tanktop
+      canAdventure($location`Cyberzone 1`) &&
       have($item`zero-trust tanktop`) &&
       have($skill`Torso Awareness`) &&
       have($skill`OVERCLOCK(10)`),
     completed: () => get("_cyberFreeFights") >= 10,
     do: $location`Cyberzone 1`, // TODO Support other zones with better equipment and valuing hacker drops
     tentacle: false,
-    choices: () => ({ 1545: 1 }), // Take damage, get 0's
+    choices: { 1545: 1 }, // Take damage, get 0's
     outfit: () =>
       freeFightOutfit({
         bonuses: new Map<Item, number>([
