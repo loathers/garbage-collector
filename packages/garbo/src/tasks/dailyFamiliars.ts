@@ -75,7 +75,9 @@ function entendreValue(): number {
 function worthFeedingRobortender(): boolean {
   if (!globalOptions.nobarf) return true;
   if (isFree(globalOptions.target)) return false;
-  return globalOptions.target.maxMeat + globalOptions.target.minMeat >= 300;
+  return (
+    (globalOptions.target.maxMeat + globalOptions.target.minMeat) / 2 >= 300
+  );
 }
 
 export function prepRobortender(): void {
