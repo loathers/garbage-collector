@@ -10,6 +10,7 @@ import {
   getClanName,
   guildStoreAvailable,
   handlingChoice,
+  haveEquipped,
   inebrietyLimit,
   Item,
   logprint,
@@ -54,6 +55,7 @@ import {
   setCombatFlags,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
+  unequip,
 } from "libram";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { globalOptions, isQuickGear } from "./config";
@@ -185,10 +187,17 @@ export function main(argString = ""): void {
         if (parsedClanIdOrName) {
           Clan.with(parsedClanIdOrName, () => {
             for (const item of [...stashItems]) {
-              if (getFoldGroup(item).some((item) => have(item))) {
+              const equipped = [item, ...getFoldGroup(item)].find((i) =>
+                haveEquipped(i),
+              );
+              if (equipped) unequip(equipped);
+
+              if (getFoldGroup(item).some((i) => have(i))) {
                 cliExecute(`fold ${item}`);
               }
+
               const retrieved = retrieveItem(item);
+
               if (
                 item === $item`Spooky Putty sheet` &&
                 !retrieved &&
@@ -196,6 +205,7 @@ export function main(argString = ""): void {
               ) {
                 continue;
               }
+
               print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
               if (putStash(item, 1)) {
                 stashItems.splice(stashItems.indexOf(item), 1);
@@ -210,13 +220,14 @@ export function main(argString = ""): void {
       if (
         userConfirmDialog(
           "Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?",
-          true,
+          false,
         )
       ) {
         stashItems.splice(0);
       }
     }
   }
+
   if (globalOptions.returnstash) {
     set(
       "garboStashItems",
