@@ -26344,7 +26344,7 @@ var Outfit = /* @__PURE__ */ function() {
       /**
        * Check how many of an item is equipped on the outfit.
        */
-      function equippedAmount5(item14) {
+      function equippedAmount4(item14) {
         return _toConsumableArray27(this.equips.values()).filter(function(i) {
           return i === item14;
         }).length;
@@ -26364,7 +26364,7 @@ var Outfit = /* @__PURE__ */ function() {
      */
   }, {
     key: "haveEquipped",
-    value: function haveEquipped14(item14, slot) {
+    value: function haveEquipped15(item14, slot) {
       if (slot === void 0) return this.equippedAmount(item14) > 0;
       return this.equips.get(slot) === item14;
     }
@@ -28791,7 +28791,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a8979c7bb4e333695a4dc940a9a4296cee2cec19", ")"));
+      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8af69cb842c4c98187bc9dfa850e6ec7b3d6a05e", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia91.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -38438,7 +38438,7 @@ var StashManager = /* @__PURE__ */ function() {
         }
       }
       withClan(this.clanIdOrName, function() {
-        var _loop = function _loop2() {
+        for (var _i2 = 0, _items2 = items; _i2 < _items2.length; _i2++) {
           var _this$taken$get2;
           var item14 = _items2[_i2];
           var count = (_this$taken$get2 = _this.taken.get(item14)) !== null && _this$taken$get2 !== void 0 ? _this$taken$get2 : 0;
@@ -38452,27 +38452,31 @@ var StashManager = /* @__PURE__ */ function() {
               (0, import_kolmafia123.visitUrl)("desc_item.php?whichitem=".concat($item(_templateObject6126 || (_templateObject6126 = _taggedTemplateLiteral116(["Crown of Thrones"]))).descid));
               (0, import_kolmafia123.enthroneFamiliar)($familiar.none);
             }
-            if ((0, import_kolmafia123.equippedAmount)(item14) > 0) {
-              var slots = import_kolmafia123.Slot.all().filter(function(s) {
-                return (0, import_kolmafia123.equippedItem)(s) === item14;
-              });
-              slots.forEach(function(s) {
-                return (0, import_kolmafia123.equip)(s, $item.none);
-              });
+            var foldedForms = [item14].concat(_toConsumableArray54(getFoldGroup(item14)));
+            var _iterator2 = _createForOfIteratorHelper34(foldedForms), _step2;
+            try {
+              for (_iterator2.s(); !(_step2 = _iterator2.n()).done; ) {
+                var fold = _step2.value;
+                unequip(fold);
+              }
+            } catch (err) {
+              _iterator2.e(err);
+            } finally {
+              _iterator2.f();
             }
             if ((0, import_kolmafia123.toSlot)(item14) === $slot(_templateObject7105 || (_templateObject7105 = _taggedTemplateLiteral116(["familiar"]))) && !have(item14, count)) {
-              var _iterator2 = _createForOfIteratorHelper34($familiars.all().filter(have)), _step2;
+              var _iterator3 = _createForOfIteratorHelper34($familiars.all().filter(have)), _step3;
               try {
-                for (_iterator2.s(); !(_step2 = _iterator2.n()).done; ) {
-                  var familiar10 = _step2.value;
+                for (_iterator3.s(); !(_step3 = _iterator3.n()).done; ) {
+                  var familiar10 = _step3.value;
                   if ((0, import_kolmafia123.familiarEquippedEquipment)(familiar10) === item14) {
                     (0, import_kolmafia123.equip)(familiar10, $item.none);
                   }
                 }
               } catch (err) {
-                _iterator2.e(err);
+                _iterator3.e(err);
               } finally {
-                _iterator2.f();
+                _iterator3.f();
               }
             }
             if ((0, import_kolmafia123.itemAmount)(item14) >= count && (0, import_kolmafia123.putStash)(count, item14)) {
@@ -38484,9 +38488,6 @@ var StashManager = /* @__PURE__ */ function() {
               throw "Failed to return ".concat(item14.name, " to stash.");
             }
           }
-        };
-        for (var _i2 = 0, _items2 = items; _i2 < _items2.length; _i2++) {
-          _loop();
         }
       });
     }
@@ -47142,8 +47143,12 @@ function main() {
           Clan.with(parsedClanIdOrName, function() {
             for (var _i = 0, _arr = _toConsumableArray65(stashItems); _i < _arr.length; _i++) {
               var item14 = _arr[_i];
-              if (getFoldGroup(item14).some(function(item15) {
-                return have(item15);
+              var equipped = [item14].concat(_toConsumableArray65(getFoldGroup(item14))).find(function(i) {
+                return (0, import_kolmafia145.haveEquipped)(i);
+              });
+              if (equipped) unequip(equipped);
+              if (getFoldGroup(item14).some(function(i) {
+                return have(i);
               })) {
                 (0, import_kolmafia145.cliExecute)("fold ".concat(item14));
               }
@@ -47162,7 +47167,7 @@ function main() {
         endSession(false);
       }
     } else {
-      if (userConfirmDialog("Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?", true)) {
+      if (userConfirmDialog("Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?", false)) {
         stashItems.splice(0);
       }
     }
