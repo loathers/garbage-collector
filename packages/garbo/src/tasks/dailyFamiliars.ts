@@ -30,6 +30,7 @@ import {
   baseMeat,
   felizValue,
   garbageTouristRatio,
+  isFree,
   newarkValue,
   targetMeat,
   tryFeast,
@@ -69,6 +70,12 @@ function entendreValue(): number {
     (meatStackDropRate * targets +
       garbageBagsDropRate * tourists * garbageTouristRatio)
   );
+}
+
+function worthFeedingRobortender(): boolean {
+  if (!globalOptions.nobarf) return true;
+  if (isFree(globalOptions.target)) return false;
+  return globalOptions.target.maxMeat + globalOptions.target.minMeat >= 300;
 }
 
 export function prepRobortender(): void {
@@ -133,7 +140,7 @@ const DailyFamiliarTasks: GarboTask[] = [
   },
   {
     name: "Prepare Robortender",
-    ready: () => have($familiar`Robortender`),
+    ready: () => have($familiar`Robortender`) && worthFeedingRobortender(),
     completed: () =>
       get("_roboDrinks").toLowerCase().includes("drive-by shooting"),
     do: prepRobortender,
