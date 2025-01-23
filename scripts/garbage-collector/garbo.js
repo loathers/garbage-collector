@@ -28791,7 +28791,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("718044e60c340e3f7d553c93f6efd77dd22f01a1", ")"));
+      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("08009f3041fc152849673f7680d26b35223139d2", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia91.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -45269,11 +45269,6 @@ function entendreValue() {
   var meatStackDropRate = 0.3 * 4;
   return itemPercent / 100 * (meatStackDropRate * targets + garbageBagsDropRate * tourists * garbageTouristRatio);
 }
-function worthFeedingRobortender() {
-  if (!globalOptions.nobarf) return true;
-  if (isFree(globalOptions.target)) return false;
-  return (globalOptions.target.maxMeat + globalOptions.target.minMeat) / 2 >= 300;
-}
 function prepRobortender() {
   if (!have($familiar(_templateObject909 || (_templateObject909 = _taggedTemplateLiteral127(["Robortender"]))))) return;
   var roboDrinks = {
@@ -45341,7 +45336,7 @@ var DailyFamiliarTasks = [{
 }, {
   name: "Prepare Robortender",
   ready: function() {
-    return have($familiar(_templateObject990 || (_templateObject990 = _taggedTemplateLiteral127(["Robortender"])))) && worthFeedingRobortender();
+    return have($familiar(_templateObject990 || (_templateObject990 = _taggedTemplateLiteral127(["Robortender"]))));
   },
   completed: function() {
     return get("_roboDrinks").toLowerCase().includes("drive-by shooting");
