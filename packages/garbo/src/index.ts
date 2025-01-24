@@ -120,6 +120,7 @@ export function main(argString = ""): void {
   sinceKolmafiaRevision(28151); // detect TakerSpace + basic related functionality
   checkGithubVersion();
 
+  Args.fill(globalOptions, argString);
   // Instant returns placed before visiting anything.
   if (globalOptions.version) return; // Since we always print the version, all done!
   if (globalOptions.help) {
@@ -142,7 +143,6 @@ export function main(argString = ""): void {
 
   allMallPrices();
 
-  Args.fill(globalOptions, argString);
   if (globalOptions.target === $monster.none) {
     globalOptions.target = defaultTarget();
   }
