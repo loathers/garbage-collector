@@ -115,6 +115,14 @@ export function main(argString = ""): void {
   sinceKolmafiaRevision(28151); // detect TakerSpace + basic related functionality
   checkGithubVersion();
 
+  Args.fill(globalOptions, argString);
+  // Instant returns placed before visiting anything.
+  if (globalOptions.version) return; // Since we always print the version, all done!
+  if (globalOptions.help) {
+    Args.showHelp(globalOptions);
+    return;
+  }
+
   // Hit up main.php to get out of easily escapable choices
   visitUrl("main.php");
   if (currentRound() > 0) {
@@ -130,17 +138,11 @@ export function main(argString = ""): void {
 
   allMallPrices();
 
-  Args.fill(globalOptions, argString);
   if (globalOptions.target === $monster.none) {
     globalOptions.target = defaultTarget();
   }
 
   globalOptions.prefs.yachtzeechain = false;
-  if (globalOptions.version) return; // Since we always print the version, all done!
-  if (globalOptions.help) {
-    Args.showHelp(globalOptions);
-    return;
-  }
 
   if (globalOptions.turns) {
     if (globalOptions.turns >= 0) {
