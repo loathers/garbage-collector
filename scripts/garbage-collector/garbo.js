@@ -28791,7 +28791,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("08009f3041fc152849673f7680d26b35223139d2", ")"));
+      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a32d043d79f7950993bce32ad6ee4d097fd98f0a", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia91.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -45269,6 +45269,11 @@ function entendreValue() {
   var meatStackDropRate = 0.3 * 4;
   return itemPercent / 100 * (meatStackDropRate * targets + garbageBagsDropRate * tourists * garbageTouristRatio);
 }
+function worthFeedingRobortender() {
+  if (!globalOptions.nobarf) return true;
+  if (isFree(globalOptions.target)) return false;
+  return (globalOptions.target.maxMeat + globalOptions.target.minMeat) / 2 >= 300;
+}
 function prepRobortender() {
   if (!have($familiar(_templateObject909 || (_templateObject909 = _taggedTemplateLiteral127(["Robortender"]))))) return;
   var roboDrinks = {
@@ -45336,7 +45341,7 @@ var DailyFamiliarTasks = [{
 }, {
   name: "Prepare Robortender",
   ready: function() {
-    return have($familiar(_templateObject990 || (_templateObject990 = _taggedTemplateLiteral127(["Robortender"]))));
+    return have($familiar(_templateObject990 || (_templateObject990 = _taggedTemplateLiteral127(["Robortender"])))) && worthFeedingRobortender();
   },
   completed: function() {
     return get("_roboDrinks").toLowerCase().includes("drive-by shooting");
@@ -47150,6 +47155,12 @@ function main() {
   var argString = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "";
   sinceKolmafiaRevision(28151);
   checkGithubVersion();
+  Args.fill(globalOptions, argString);
+  if (globalOptions.version) return;
+  if (globalOptions.help) {
+    Args.showHelp(globalOptions);
+    return;
+  }
   (0, import_kolmafia145.visitUrl)("main.php");
   if ((0, import_kolmafia145.currentRound)() > 0) {
     (0, import_kolmafia145.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
@@ -47158,16 +47169,10 @@ function main() {
     (0, import_kolmafia145.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.");
   }
   allMallPrices();
-  Args.fill(globalOptions, argString);
   if (globalOptions.target === $monster.none) {
     globalOptions.target = defaultTarget();
   }
   globalOptions.prefs.yachtzeechain = false;
-  if (globalOptions.version) return;
-  if (globalOptions.help) {
-    Args.showHelp(globalOptions);
-    return;
-  }
   if (globalOptions.turns) {
     if (globalOptions.turns >= 0) {
       globalOptions.stopTurncount = (0, import_kolmafia145.myTurncount)() + globalOptions.turns;
