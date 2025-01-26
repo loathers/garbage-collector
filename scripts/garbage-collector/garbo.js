@@ -28791,7 +28791,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a32d043d79f7950993bce32ad6ee4d097fd98f0a", ")"));
+      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("bbef0306297227c09a0a6ac0ba26f65a522c376c", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia91.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -29116,13 +29116,6 @@ function newarkValue() {
 }
 function candyFactoryValue() {
   return garboAverageValue.apply(void 0, _toConsumableArray30(getDropsList("trainset")));
-}
-function allMallPrices() {
-  var today = (0, import_kolmafia91.todayToString)();
-  if (import_kolmafia91.sessionStorage.getItem("allpricedate") !== today) {
-    (0, import_kolmafia91.mallPrices)("allitems");
-    import_kolmafia91.sessionStorage.setItem("allpricedate", today);
-  }
 }
 function aprilFoolsRufus() {
   if ((0, import_kolmafia91.holiday)().includes("April Fool's Day")) {
@@ -47168,7 +47161,7 @@ function main() {
   if ((0, import_kolmafia145.handlingChoice)()) {
     (0, import_kolmafia145.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.");
   }
-  allMallPrices();
+  (0, import_kolmafia145.cliExecute)("mallcheck.js");
   if (globalOptions.target === $monster.none) {
     globalOptions.target = defaultTarget();
   }
