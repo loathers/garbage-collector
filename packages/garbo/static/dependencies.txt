@@ -6,3 +6,4 @@ github Ezandora/Gain
 github Loathing-Associates-Scripting-Society/KoL-MineVolcano
 github loathers/combo release
 github loathers/excavator release
+github loathers/mall-check

@@ -22,7 +22,6 @@ import {
   itemDropsArray,
   lastMonster,
   Location,
-  mallPrices,
   meatDropModifier,
   Monster,
   mpCost,
@@ -48,7 +47,6 @@ import {
   rollover,
   runChoice,
   runCombat,
-  sessionStorage,
   setLocation,
   Skill,
   soulsauceCost,
@@ -1057,14 +1055,6 @@ export function newarkValue(): number {
 
 export function candyFactoryValue(): number {
   return garboAverageValue(...getDropsList("trainset"));
-}
-
-export function allMallPrices() {
-  const today = todayToString();
-  if (sessionStorage.getItem("allpricedate") !== today) {
-    mallPrices("allitems");
-    sessionStorage.setItem("allpricedate", today);
-  }
 }
 
 export function aprilFoolsRufus() {
