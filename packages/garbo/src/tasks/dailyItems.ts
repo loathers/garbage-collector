@@ -24,6 +24,7 @@ import {
   scrapPockets,
   sellPrice,
   sellsItem,
+  toInt,
   toItem,
   use,
   useFamiliar,
@@ -188,7 +189,7 @@ function bestDevilerCandy(): Item {
 }
 
 let cachedbestDevilerCandy: Item | null = null;
-function getCachedDevilerCandy(): Item {
+function getBestDevilerCandy(): Item {
   if (cachedbestDevilerCandy === null) {
     cachedbestDevilerCandy = bestDevilerCandy();
   }
@@ -723,19 +724,19 @@ const DailyItemTasks: GarboTask[] = [
     ready: () => have($item`candy egg deviler`), // TODO: Support guild stash
     completed: () =>
       get("_candyEggsDeviled") >= 3 ||
-      garboValue($item`deviled candy egg`) <
-        garboValue(getCachedDevilerCandy()),
+      garboValue($item`deviled candy egg`) < garboValue(getBestDevilerCandy()),
     do: () => {
       acquire(
         1,
-        bestDevilerCandy(),
+        getBestDevilerCandy(),
         garboValue($item`deviled candy egg`),
         true,
       );
       visitUrl(`inventory.php?action=eggdevil&pwd`);
       visitUrl(
-        `choice.php?a=${bestDevilerCandy()}&whichchoice=1544&option=1&pwd`,
+        `choice.php?a=${toInt(getBestDevilerCandy())}&whichchoice=1544&option=1&pwd`,
       );
+      cachedbestDevilerCandy = null;
     },
     spendsTurn: false,
   },
