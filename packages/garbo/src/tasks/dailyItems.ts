@@ -165,13 +165,18 @@ function bestDevilerCandy(): Item {
   const sortedInventoryCandies = inventoryCandies
     .sort((a, b) => garboValue(a) - garboValue(b))
     .slice(0, 50);
+  // remove any candies that cost more than the lowest priced one in the list
   const prunedInventoryCandies = sortedInventoryCandies.filter(
     (i) => garboValue(i) === garboValue(sortedInventoryCandies[0]),
   );
   // Lowest garbovalue candy that we have the largest amount of
   const bestInventoryCandy = maxBy(prunedInventoryCandies, itemAmount);
 
-  return maxBy([bestInventoryCandy, bestCandyFromMall], garboValue, true);
+  return maxBy(
+    [bestInventoryCandy, bestCandyFromMall],
+    (i) => (i === bestInventoryCandy ? garboValue(i) : mallPrice(i)),
+    true,
+  );
 }
 
 let cachedbestDevilerCandy: Item | null = null;
