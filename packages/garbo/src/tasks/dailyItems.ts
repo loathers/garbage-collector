@@ -141,11 +141,14 @@ function pickCargoPocket(): void {
 
 function bestDevilerCandy(): Item {
   // These are replenishable notrade nodiscard items that we would prefer to use
-  const priorityUntradeableNoDiscardList = $items`sugar shotgun, sugar shillelagh, sugar shank, sugar chapeau, sugar shorts, sugar shield, sugar shirt`;
-  const bestPriorityCandy = maxBy(
-    priorityUntradeableNoDiscardList.filter((i) => itemAmount(i) > 1),
-    (i) => itemAmount(i),
-  );
+  const priorityUntradeableNoDiscardList =
+    $items`sugar shotgun, sugar shillelagh, sugar shank, sugar chapeau, sugar shorts, sugar shield, sugar shirt`.filter(
+      (i) => itemAmount(i) > 1,
+    );
+  const bestPriorityCandy =
+    priorityUntradeableNoDiscardList.length > 0
+      ? maxBy(priorityUntradeableNoDiscardList, (i) => itemAmount(i))
+      : null;
 
   if (bestPriorityCandy) return bestPriorityCandy;
 
@@ -155,28 +158,33 @@ function bestDevilerCandy(): Item {
     true,
   );
   // These are notrade items that have an autosell value that we don't mind using if they are the cheapest
-  const possibleUntradeableCandies = $items`Comet Pop, black candy heart, peanut brittle shield`;
+  const safeUntradeableCandies = $items`Comet Pop, black candy heart, peanut brittle shield`;
   // Find the best candy from inventory, accounting for value of autosell when mall min
   const inventoryCandies = Item.all().filter((i) =>
     i.candy && have(i) && !i.tradeable
-      ? possibleUntradeableCandies.includes(i)
+      ? safeUntradeableCandies.includes(i)
       : true,
   );
   const sortedInventoryCandies = inventoryCandies
     .sort((a, b) => garboValue(a) - garboValue(b))
     .slice(0, 50);
-  // remove any candies that cost more than the lowest priced one in the list
+  // remove any candies that cost more than the lowest
   const prunedInventoryCandies = sortedInventoryCandies.filter(
     (i) => garboValue(i) === garboValue(sortedInventoryCandies[0]),
   );
   // Lowest garbovalue candy that we have the largest amount of
-  const bestInventoryCandy = maxBy(prunedInventoryCandies, itemAmount);
+  const bestInventoryCandy =
+    prunedInventoryCandies.length > 0
+      ? maxBy(prunedInventoryCandies, itemAmount)
+      : null;
 
-  return maxBy(
-    [bestInventoryCandy, bestCandyFromMall],
-    (i) => (i === bestInventoryCandy ? garboValue(i) : mallPrice(i)),
-    true,
-  );
+  return bestInventoryCandy
+    ? maxBy(
+        [bestInventoryCandy, bestCandyFromMall],
+        (i) => (i === bestInventoryCandy ? garboValue(i) : mallPrice(i)),
+        true,
+      )
+    : bestCandyFromMall;
 }
 
 let cachedbestDevilerCandy: Item | null = null;
