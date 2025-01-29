@@ -10,6 +10,7 @@ import {
   getMonsters,
   inebrietyLimit,
   Item,
+  itemAmount,
   itemDropsArray,
   itemPockets,
   mallPrice,
@@ -136,6 +137,49 @@ function pickCargoPocket(): void {
   if (pockets.length > 0) {
     cliExecute(`cargo ${Math.trunc(maxBy(pockets, 1)[0])}`);
   }
+}
+
+function bestDevilerCandy(): Item {
+  // These are replenishable notrade nodiscard items that we would prefer to use
+  const priorityUntradeableNoDiscardList = $items`sugar shotgun, sugar shillelagh, sugar shank, sugar chapeau, sugar shorts, sugar shield, sugar shirt`;
+  const bestPriorityCandy = maxBy(
+    priorityUntradeableNoDiscardList.filter((i) => itemAmount(i) > 1),
+    (i) => itemAmount(i),
+  );
+
+  if (bestPriorityCandy) return bestPriorityCandy;
+
+  const bestCandyFromMall = maxBy(
+    Item.all().filter((i) => i.candy && i.tradeable),
+    mallPrice,
+    true,
+  );
+  // These are notrade items that have an autosell value that we don't mind using if they are the cheapest
+  const possibleUntradeableCandies = $items`Comet Pop, black candy heart, peanut brittle shield`;
+  // Find the best candy from inventory, accounting for value of autosell when mall min
+  const inventoryCandies = Item.all().filter((i) =>
+    i.candy && have(i) && !i.tradeable
+      ? possibleUntradeableCandies.includes(i)
+      : true,
+  );
+  const sortedInventoryCandies = inventoryCandies
+    .sort((a, b) => garboValue(a) - garboValue(b))
+    .slice(0, 50);
+  const prunedInventoryCandies = sortedInventoryCandies.filter(
+    (i) => garboValue(i) === garboValue(sortedInventoryCandies[0]),
+  );
+  // Lowest garbovalue candy that we have the largest amount of
+  const bestInventoryCandy = maxBy(prunedInventoryCandies, itemAmount);
+
+  return maxBy([bestInventoryCandy, bestCandyFromMall], garboValue, true);
+}
+
+let cachedbestDevilerCandy: Item | null = null;
+function getCachedDevilerCandy(): Item {
+  if (cachedbestDevilerCandy === null) {
+    cachedbestDevilerCandy = bestDevilerCandy();
+  }
+  return cachedbestDevilerCandy;
 }
 
 const chooseAprilFamiliar = () => {
@@ -661,6 +705,27 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   mayamCalendarSummon,
+  {
+    name: "Devil Cheapest Candy",
+    ready: () => have($item`candy egg deviler`), // TODO: Support guild stash
+    completed: () =>
+      get("_candyEggsDeviled") >= 3 ||
+      garboValue($item`deviled candy egg`) <
+        garboValue(getCachedDevilerCandy()),
+    do: () => {
+      acquire(
+        1,
+        bestDevilerCandy(),
+        garboValue($item`deviled candy egg`),
+        true,
+      );
+      visitUrl(`inventory.php?action=eggdevil&pwd`);
+      visitUrl(
+        `choice.php?a=${bestDevilerCandy()}&whichchoice=1544&option=1&pwd`,
+      );
+    },
+    spendsTurn: false,
+  },
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {
