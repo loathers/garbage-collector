@@ -1,4 +1,5 @@
 import {
+  adv1,
   autosell,
   autosellPrice,
   availableAmount,
@@ -55,6 +56,7 @@ import {
   sum,
   TrainSet,
   undelay,
+  withChoice,
   withProperty,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
@@ -954,6 +956,30 @@ const BarfTurnTasks: GarboTask[] = [
     outfit: () => meatTargetOutfit(),
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+  },
+  {
+    name: "Liana Parachute",
+    ready: () =>
+      CrepeParachute.have() &&
+      shouldCheckParachute() &&
+      questStep("questL11Worship") > 3 &&
+      have($item`antique machete`), // TODO Support other machete's
+    completed: () => have($effect`Everything looks Beige`),
+    outfit: () => freeFightOutfit({ weapon: $item`antique machete` }),
+    do: () => CrepeParachute.fight($monster`dense liana`),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg(
+        "Did not instantly kill the Liana, check what went wrong",
+      ),
+    ),
+    prepare: () =>
+      withChoice(785, 6, () =>
+        adv1($location`An Overgrown Shrine (Northeast)`, -1, ""),
+      ),
+    post: () => {
+      if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
+    },
+    spendsTurn: false,
   },
 ];
 
