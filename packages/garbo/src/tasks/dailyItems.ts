@@ -732,12 +732,16 @@ const DailyItemTasks: GarboTask[] = [
         garboValue($item`deviled candy egg`),
         true,
       );
+      print(
+        `${getBestDevilerCandy()} will be deviled for expected profit of ${garboValue($item`deviled candy egg`) - garboValue(getBestDevilerCandy())}`,
+      );
       visitUrl(`inventory.php?action=eggdevil&pwd`);
       visitUrl(
         `choice.php?a=${toInt(getBestDevilerCandy())}&whichchoice=1544&option=1&pwd`,
       );
       cachedbestDevilerCandy = null;
     },
+    limit: { skip: 3 },
     spendsTurn: false,
   },
 ];
