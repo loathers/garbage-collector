@@ -960,6 +960,9 @@ const BarfTurnTasks: GarboTask[] = [
   {
     name: "Liana Parachute",
     ready: () =>
+      (sober() ||
+        (have($item`Drunkula's wineglass`) &&
+          canEquip($item`Drunkula's wineglass`))) &&
       CrepeParachute.have() &&
       shouldCheckParachute() &&
       questStep("questL11Worship") > 3 &&
@@ -972,10 +975,15 @@ const BarfTurnTasks: GarboTask[] = [
         "Did not instantly kill the Liana, check what went wrong",
       ),
     ),
-    prepare: () =>
+    prepare: () => {
+      if (!sober()) {
+        freeFightOutfit({ offhand: $item`Drunkula's wineglass` }).dress();
+      }
       withChoice(785, 6, () =>
         adv1($location`An Overgrown Shrine (Northeast)`, -1, ""),
-      ),
+      );
+      if (!sober()) freeFightOutfit({ weapon: $item`antique machete` }).dress();
+    },
     post: () => {
       if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
     },
