@@ -14,6 +14,7 @@ import {
   putStash,
   refreshStash,
   retrieveItem,
+  retrievePrice,
   stashAmount,
   takeStash,
   toItem,
@@ -168,7 +169,11 @@ export class StashManager {
         HIGHLIGHT,
       );
       Macro.if_(globalOptions.target, Macro.attack().repeat())
-        .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
+        .tryItem(
+          ...$items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`
+            .filter((i) => retrievePrice(i) < get("valueOfAdventure"))
+            .sort((a, b) => retrievePrice(a) - retrievePrice(b)),
+        )
         .step("runaway")
         .submit();
     } else {
