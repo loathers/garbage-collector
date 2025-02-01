@@ -146,12 +146,9 @@ function bestDevilerCandy(): Item {
     $items`sugar shotgun, sugar shillelagh, sugar shank, sugar chapeau, sugar shorts, sugar shield, sugar shirt`.filter(
       (i) => itemAmount(i) > 1,
     );
-  const bestPriorityCandy =
-    priorityUntradeableNoDiscardList.length > 0
-      ? maxBy(priorityUntradeableNoDiscardList, (i) => itemAmount(i))
-      : null;
-
-  if (bestPriorityCandy) return bestPriorityCandy;
+  if (priorityUntradeableNoDiscardList.length > 0) {
+    return maxBy(priorityUntradeableNoDiscardList, itemAmount);
+  }
 
   const bestCandyFromMall = maxBy(
     Item.all().filter((i) => i.candy && i.tradeable),
@@ -166,25 +163,18 @@ function bestDevilerCandy(): Item {
       ? safeUntradeableCandies.includes(i)
       : true,
   );
-  const sortedInventoryCandies = inventoryCandies
-    .sort((a, b) => garboValue(a) - garboValue(b))
-    .slice(0, 50);
-  // remove any candies that cost more than the lowest
-  const prunedInventoryCandies = sortedInventoryCandies.filter(
-    (i) => garboValue(i) === garboValue(sortedInventoryCandies[0]),
-  );
-  // Lowest garbovalue candy that we have the largest amount of
-  const bestInventoryCandy =
-    prunedInventoryCandies.length > 0
-      ? maxBy(prunedInventoryCandies, itemAmount)
-      : null;
+  const bestInventoryCandy = (() => {
+    if (inventoryCandies.length === 0) return null;
+    const naiveBest = maxBy(inventoryCandies, garboValue, true);
+    return maxBy(
+      inventoryCandies.filter((c) => garboValue(c) === garboValue(naiveBest)),
+      itemAmount,
+    );
+  })();
 
-  return bestInventoryCandy
-    ? maxBy(
-        [bestInventoryCandy, bestCandyFromMall],
-        (i) => (i === bestInventoryCandy ? garboValue(i) : mallPrice(i)),
-        true,
-      )
+  return !!bestInventoryCandy &&
+    garboValue(bestInventoryCandy) < mallPrice(bestCandyFromMall)
+    ? bestInventoryCandy
     : bestCandyFromMall;
 }
 
@@ -736,9 +726,7 @@ const DailyItemTasks: GarboTask[] = [
         `${getBestDevilerCandy()} will be deviled for expected profit of ${garboValue($item`deviled candy egg`) - garboValue(getBestDevilerCandy())}`,
       );
       visitUrl(`inventory.php?action=eggdevil&pwd`);
-      visitUrl(
-        `choice.php?a=${toInt(getBestDevilerCandy())}&whichchoice=1544&option=1&pwd`,
-      );
+      runChoice(1, `a=${toInt(getBestDevilerCandy())}`);
       cachedbestDevilerCandy = null;
     },
     limit: { skip: 3 },
