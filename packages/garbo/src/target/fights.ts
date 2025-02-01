@@ -633,7 +633,7 @@ const gregFights = (
         ([, monster]) => monster === $monster`fluffy bunny`,
       )?.[0];
       abort(
-        `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${monsterProp} preference is nonzero and should probably be zero.`,
+        `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${fightsProp} preference is nonzero and should probably be zero.`,
       );
     }
   }
