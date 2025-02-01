@@ -7,12 +7,22 @@ import {
   use,
   visitUrl,
 } from "kolmafia";
-import { $effect, $item, $items, AsdonMartin, DNALab, get, have } from "libram";
+import {
+  $effect,
+  $item,
+  $items,
+  AsdonMartin,
+  DNALab,
+  get,
+  have,
+  TakerSpace,
+} from "libram";
 import { dietCompleted } from "../../diet";
 import { globalOptions } from "../../config";
 import { potionSetupCompleted } from "../../potions";
 import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../../turns";
 import {
+  bestTakerspaceItem,
   grabMedicine,
   rotateToOptimalCycle,
   trainNeedsRotating,
@@ -134,6 +144,20 @@ const worksheds = [
       // We simply assume you will not gain a level while garboing, since we do not do powerlevellings
       // So we will just use the spinning wheel immediately
       visitUrl("campground.php?action=spinningwheel");
+    },
+  }),
+  new GarboWorkshed({
+    workshed: $item`TakerSpace letter of Marque`,
+    done: () =>
+      [...TakerSpace.allRecipes().keys()].every(
+        (item) => !TakerSpace.canMake(item),
+      ),
+    action: () => {
+      let best: Item | null = bestTakerspaceItem();
+      while (best) {
+        TakerSpace.make(best);
+        best = bestTakerspaceItem();
+      }
     },
   }),
   ...$items`diabolic pizza cube, portable Mayo Clinic, warbear high-efficiency still, warbear induction oven`.map(

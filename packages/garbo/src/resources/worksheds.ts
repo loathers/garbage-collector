@@ -14,6 +14,7 @@ import {
   maxBy,
   set,
   sum,
+  TakerSpace,
   TrainSet,
 } from "libram";
 import { globalOptions } from "../config";
@@ -156,4 +157,25 @@ export function grabMedicine(): void {
     runChoice(bestChoice);
   }
   if (handlingChoice()) visitUrl("main.php");
+}
+
+// Silk and Gold are thrice as rare as other ingredients, so we value them thrice as much
+// Yes, it's pretty dumb
+function naiveTakerspaceCost(recipe: TakerSpace.Recipe): number {
+  return sum(
+    [...recipe.entries()],
+    ([amount, index]) => amount * ([4, 5].includes(index) ? 3 : 1),
+  );
+}
+
+export function bestTakerspaceItem(): Item | null {
+  const makeables = [...TakerSpace.allRecipes().entries()].filter(([i]) =>
+    TakerSpace.canMake(i),
+  );
+  return makeables.length
+    ? maxBy(
+        makeables,
+        ([item, recipe]) => garboValue(item) / naiveTakerspaceCost(recipe),
+      )[0]
+    : null;
 }
