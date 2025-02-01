@@ -159,7 +159,8 @@ const worksheds = [
         best = bestTakerspaceItem();
       }
     },
-    available: () => globalOptions.ascend || !!GarboWorkshed.next,
+    available: () =>
+      (GarboWorkshed.next && !get("_workshedItemUsed")) || globalOptions.ascend,
   }),
   ...$items`diabolic pizza cube, portable Mayo Clinic, warbear high-efficiency still, warbear induction oven`.map(
     (item) => new GarboWorkshed({ workshed: item, done: dietCompleted }),
