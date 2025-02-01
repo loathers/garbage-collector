@@ -28791,7 +28791,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("5f27c93b2490fd5ecf7692392d3e26124fd4beec", ")"));
+      (0, import_kolmafia91.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("05b6e4e10ac6ef005698323362a5b1f44259c059", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia91.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -36576,7 +36576,7 @@ var gregFights = function(name, haveCheck, monsterProp, fightsProp, totalCharges
         var _ref2 = _slicedToArray39(_ref, 2), monster = _ref2[1];
         return monster === $monster(_templateObject7511 || (_templateObject7511 = _taggedTemplateLiteral109(["fluffy bunny"])));
       })) === null || _find === void 0 ? void 0 : _find[0];
-      (0, import_kolmafia116.abort)("Fluffy bunny is supposedly banished by ".concat(bunnyBanish, ", but this appears not to be the case; the most likely issue is that your ").concat(monsterProp, " preference is nonzero and should probably be zero."));
+      (0, import_kolmafia116.abort)("Fluffy bunny is supposedly banished by ".concat(bunnyBanish, ", but this appears not to be the case; the most likely issue is that your ").concat(fightsProp, " preference is nonzero and should probably be zero."));
     }
   }
   var resourceIsOccupied = function() {
