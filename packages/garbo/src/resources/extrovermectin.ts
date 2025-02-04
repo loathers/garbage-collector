@@ -6,6 +6,7 @@ import {
   isBanished,
   Item,
   itemType,
+  lastMonster,
   mallPrice,
   Monster,
   myFury,
@@ -340,10 +341,7 @@ function initializeCrates(): void {
     ) {
       saberCrateIfSafe();
     } else break; // we can break the loop if there's nothing to do
-  } while (
-    !["crate", "Using the Force"].includes(get("lastEncounter")) &&
-    !isBanished(crate)
-  ); // loop until we actually hit a crate
+  } while (lastMonster() !== $monster`crate` && !isBanished(crate)); // loop until we actually hit a crate
 
   if (isBanished($monster`crate`)) {
     throw new Error("Accidentally banished crate! And failed to unbanish.");
@@ -519,8 +517,8 @@ function banishBunny(): void {
       ),
     );
   } while (
-    "fluffy bunny" !== get("lastEncounter") &&
-    !get("banishedMonsters").includes("fluffy bunny")
+    lastMonster() !== $monster`fluffy bunny` &&
+    !isBanished($monster`fluffy bunny`)
   );
 }
 

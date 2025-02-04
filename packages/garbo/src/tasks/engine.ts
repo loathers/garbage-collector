@@ -18,7 +18,13 @@ import {
   SourceTerminal,
   undelay,
 } from "libram";
-import { equip, itemAmount, print, totalTurnsPlayed } from "kolmafia";
+import {
+  equip,
+  itemAmount,
+  lastMonster,
+  print,
+  totalTurnsPlayed,
+} from "kolmafia";
 import { GarboStrategy } from "../combat";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
@@ -92,7 +98,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
         );
       }
     }
-    const foughtATarget = get("lastEncounter") === globalOptions.target.name;
+    const foughtATarget = lastMonster() === globalOptions.target;
     if (foughtATarget) logTargetFight(task.name);
     wanderer().clear();
     sessionSinceStart().value(garboValue);

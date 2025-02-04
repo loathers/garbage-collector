@@ -20,6 +20,7 @@ import {
   isBanished,
   Item,
   itemAmount,
+  lastMonster,
   Location,
   mallPrice,
   maximize,
@@ -559,7 +560,7 @@ export function dailyFights(): void {
           totalTurnsPlayed() - startTurns === 1 &&
           get("lastCopyableMonster") === globalOptions.target &&
           (nextFight.wrongEncounterName ||
-            get("lastEncounter") === globalOptions.target.name)
+            lastMonster() === globalOptions.target)
         ) {
           eventLog.initialCopyTargetsFought++;
           eventLog.copyTargetSources.push(nextFight.name);

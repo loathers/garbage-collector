@@ -6,6 +6,7 @@ import {
   haveEquipped,
   isBanished,
   itemAmount,
+  lastMonster,
   Location,
   mallPrice,
   myAdventures,
@@ -625,10 +626,7 @@ const gregFights = (
       Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
     );
 
-    if (
-      get("lastEncounter") === $monster`fluffy bunny`.name &&
-      bunnyIsBanished
-    ) {
+    if (lastMonster() === $monster`fluffy bunny` && bunnyIsBanished) {
       const bunnyBanish = [...getBanishedMonsters().entries()].find(
         ([, monster]) => monster === $monster`fluffy bunny`,
       )?.[0];
