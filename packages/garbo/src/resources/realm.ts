@@ -1,12 +1,14 @@
+import { Item, print, retrieveItem, runChoice, visitUrl } from "kolmafia";
 import {
-  Item,
-  print,
-  retrieveItem,
-  retrievePrice,
-  runChoice,
-  visitUrl,
-} from "kolmafia";
-import { $item, get, have, maxBy, property, set, withProperty } from "libram";
+  $item,
+  get,
+  getAcquirePrice,
+  have,
+  maxBy,
+  property,
+  set,
+  withProperty,
+} from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { HIGHLIGHT } from "../lib";
@@ -24,7 +26,7 @@ function volcanoItemValue({ quantity, item }: VolcanoItem): number {
   }
 
   if (!item.tradeable) return Infinity;
-  return quantity * retrievePrice(item);
+  return quantity * getAcquirePrice(item);
 }
 
 export function checkVolcanoQuest() {
@@ -72,7 +74,7 @@ export function completeBarfQuest(): void {
   if (!_attemptCompletingBarfQuest) return;
 
   if (get("questEStGiveMeFuel") === "started") {
-    const globuleCosts = retrievePrice($item`toxic globule`, 20);
+    const globuleCosts = getAcquirePrice($item`toxic globule`, 20);
     if (globuleCosts < 3 * garboValue($item`FunFunds™`)) {
       print(
         `The cost of 20 toxic globules (${globuleCosts}) is less than the profits expected from 3 FunFunds™ (${

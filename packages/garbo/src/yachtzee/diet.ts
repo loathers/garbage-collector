@@ -30,6 +30,7 @@ import {
   CinchoDeMayo,
   clamp,
   get,
+  getAcquirePrice,
   getAverageAdventures,
   getSongCount,
   getSongLimit,
@@ -763,7 +764,7 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
     }
   }
 
-  const jelliesBulkPrice = retrievePrice($item`stench jelly`, jelliesToChew);
+  const jelliesBulkPrice = getAcquirePrice($item`stench jelly`, jelliesToChew);
 
   // TODO: This is outdated in the era of dynamic chains - if prices are too expensive, choose a more profitable chain length!
   // If we need spleen cleansers but their prices are unreasonable, just return

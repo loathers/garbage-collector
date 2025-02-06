@@ -39,7 +39,6 @@ import {
   putCloset,
   refreshStash,
   retrieveItem,
-  retrievePrice,
   runChoice,
   runCombat,
   setAutoAttack,
@@ -88,6 +87,7 @@ import {
   FloristFriar,
   gameDay,
   get,
+  getAcquirePrice,
   GingerBread,
   have,
   Latte,
@@ -903,7 +903,7 @@ const freeFightSources = [
           )
           .map(({ item }) => item);
         return (
-          retrievePrice($item`Bowl of Scorpions`) +
+          getAcquirePrice($item`Bowl of Scorpions`) +
           sum(banishers, mallPrice) / 11
         );
       },

@@ -11,7 +11,6 @@ import {
   myFury,
   Phylum,
   retrieveItem,
-  retrievePrice,
   Skill,
   toPhylum,
   toSkill,
@@ -31,6 +30,7 @@ import {
   clamp,
   CrystalBall,
   get,
+  getAcquirePrice,
   getBanishedMonsters,
   have,
   Latte,
@@ -379,9 +379,9 @@ type Banish = {
 
 const combatItem = (item: Item, maxPrice?: number): Banish => ({
   name: `${item}`,
-  available: () => retrievePrice(item) < (maxPrice ?? MAX_BANISH_PRICE),
+  available: () => getAcquirePrice(item) < (maxPrice ?? MAX_BANISH_PRICE),
   macro: () => Macro.item(item),
-  price: () => retrievePrice(item),
+  price: () => getAcquirePrice(item),
   prepare: () => acquire(1, item, maxPrice ?? MAX_BANISH_PRICE), // put a sanity ceiling of 50k on the banish
 });
 
@@ -502,7 +502,7 @@ function banishBunny(): void {
 
   const usingIceHouseBanish =
     getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
-    retrievePrice($item`ice house`) < 1000000 &&
+    getAcquirePrice($item`ice house`) < 1000000 &&
     iceHouseAllowed();
 
   const banish = usingIceHouseBanish
