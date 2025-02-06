@@ -82,7 +82,7 @@ export type GarboFreeFightTask = Extract<
 
 function cupidBonus() {
   const toyCupidValue = garboValue($item`self-dribbling basketball`) / 5
-  return new Map([[$item`toy cupid bow`, toyCupidValue]])
+  return new Map([[$item`toy Cupid bow`, toyCupidValue]])
 }
 
 const DEFAULT_FREE_FIGHT_TASK = {
