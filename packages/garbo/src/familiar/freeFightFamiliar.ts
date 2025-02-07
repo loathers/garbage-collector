@@ -139,12 +139,14 @@ export function menu(
       expectedValue: 0,
       leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
       limit: "none",
-      worksOnFreeRun: false,
+      // Because strictly speaking this is better than using no familiar at all
+      worksOnFreeRun: true,
     });
   }
 
   return familiarMenu.filter(
-    ({ familiar }) =>
+    ({ familiar, worksOnFreeRun }) =>
+      (mode !== "run" || worksOnFreeRun) &&
       (allowAttackFamiliars ||
         !(familiar.physicalDamage || familiar.elementalDamage)) &&
       !excludeFamiliar.some(
