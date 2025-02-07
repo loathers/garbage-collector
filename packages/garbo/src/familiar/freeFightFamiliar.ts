@@ -21,7 +21,12 @@ import { garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
-import { GeneralFamiliar, snapperValue, timeToMeatify } from "./lib";
+import {
+  FamiliarMode,
+  GeneralFamiliar,
+  snapperValue,
+  timeToMeatify,
+} from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
@@ -34,7 +39,7 @@ type MenuOptions = Partial<{
   excludeFamiliar: Familiar[];
   includeExperienceFamiliars: boolean;
   allowAttackFamiliars: boolean;
-  mode: "barf" | "free" | "target";
+  mode: FamiliarMode;
 }>;
 
 export function menu(
@@ -63,6 +68,7 @@ export function menu(
           (Math.max(familiarWeight($familiar`Grey Goose`) - 5), 0) ** 4,
         leprechaunMultiplier: 0,
         limit: "experience",
+        worksOnFreeRun: true,
       });
     }
 
@@ -83,6 +89,7 @@ export function menu(
           ) * valueDrops(globalOptions.target),
         leprechaunMultiplier: 0,
         limit: "experience",
+        worksOnFreeRun: false,
       });
     }
 
@@ -92,6 +99,7 @@ export function menu(
         expectedValue: snapperValue(),
         leprechaunMultiplier: 0,
         limit: "special",
+        worksOnFreeRun: false,
       });
     }
 
@@ -101,6 +109,7 @@ export function menu(
         expectedValue: 2500,
         leprechaunMultiplier: 0,
         limit: "special",
+        worksOnFreeRun: true,
       });
     }
 
@@ -117,6 +126,7 @@ export function menu(
             : 20),
         leprechaunMultiplier: 0,
         limit: "special",
+        worksOnFreeRun: true,
       });
     }
   }
@@ -129,6 +139,7 @@ export function menu(
       expectedValue: 0,
       leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
       limit: "none",
+      worksOnFreeRun: false,
     });
   }
 
@@ -184,6 +195,7 @@ export function freeFightFamiliarData(
     expectedValue: 0,
     leprechaunMultiplier: 0,
     limit: "none",
+    worksOnFreeRun: true,
   });
 }
 

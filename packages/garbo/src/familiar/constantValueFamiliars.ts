@@ -21,13 +21,13 @@ import {
 } from "libram";
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
-import { GeneralFamiliar } from "./lib";
+import { FamiliarMode, GeneralFamiliar } from "./lib";
 import { Potion } from "../potions";
 import { globalOptions } from "../config";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
-  value: (_mode: "barf" | "free" | "target") => number;
+  value: (_mode: FamiliarMode) => number;
   worksOnFreeRun?: boolean;
 };
 
@@ -142,7 +142,7 @@ function peaceTurkeyDropChance(): number {
 }
 
 export default function getConstantValueFamiliars(
-  mode: "barf" | "free" | "target",
+  mode: FamiliarMode,
 ): GeneralFamiliar[] {
   return standardFamiliars
     .filter(({ familiar }) => have(familiar))

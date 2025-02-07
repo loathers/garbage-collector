@@ -23,6 +23,8 @@ import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
 
+export type FamiliarMode = "barf" | "free" | "target" | "run";
+
 export type GeneralFamiliar = {
   familiar: Familiar;
   expectedValue: number;
