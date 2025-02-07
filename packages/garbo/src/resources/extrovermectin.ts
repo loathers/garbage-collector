@@ -150,11 +150,7 @@ export function doingGregFight(): boolean {
     (get("_monsterHabitatsRecalled") < 3 ||
       get("_monsterHabitatsFightsLeft") > 0);
 
-  return (
-    extrovermectin ||
-    habitat ||
-    (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted"))
-  );
+  return extrovermectin || habitat;
 }
 
 const isOlfacted = (monster: Monster): boolean =>

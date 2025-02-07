@@ -50,6 +50,7 @@ import {
   haveInCampground,
   JuneCleaver,
   maxBy,
+  realmAvailable,
   set,
   setCombatFlags,
   setDefaultMaximizeOptions,
@@ -87,6 +88,7 @@ import {
   SetupTargetCopyQuest,
 } from "./tasks";
 import { CockroachFinish, CockroachSetup } from "./tasks/cockroachPrep";
+import { doingGregFight, hasMonsterReplacers } from "./resources";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -109,12 +111,7 @@ function ensureBarfAccess() {
 
 function defaultTarget() {
   // Can we account for re-entry if we only have certain amounts of copiers left in each of these?
-  if (
-    have($skill`Just the Facts`) &&
-    have($skill`Meteor Lore`) &&
-    have($item`Powerful Glove`) &&
-    (get("_prToday") || get("prAlways"))
-  ) {
+  if (doingGregFight() && hasMonsterReplacers() && realmAvailable("pirate")) {
     return $monster`cockroach`;
   }
   if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {

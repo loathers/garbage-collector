@@ -15,13 +15,11 @@ import {
 } from "libram";
 import {
   abort,
-  adv1,
   Effect,
   effectModifier,
   isShruggable,
   Item,
   mallPrice,
-  myAdventures,
   myBuffedstat,
   retrieveItem,
   runChoice,
@@ -135,11 +133,8 @@ function checkAndFixOvercapStats(): void {
 }
 
 function dessertIslandWorthIt(): boolean {
-  // guesstimating value of giant crab at 3*VOA
-  if (garboValue($item`cocoa of youth`) > 3 * get("valueOfAdventure")) {
-    return true;
-  }
-  return false;
+  // estimating value of giant crab at 3*VOA
+  return garboValue($item`cocoa of youth`) > 3 * get("valueOfAdventure");
 }
 
 function crewRoleValue(crewmate: string): number {
@@ -210,25 +205,20 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Start PirateRealm Journey",
       ready: () => have($item`PirateRealm eyepatch`),
       completed: () => questStep("_questPirateRealm") > 0,
-      prepare: (): void => {
-        checkAndFixOvercapStats();
-        if (myAdventures() < 40) {
-          // do something?
-        }
-      },
+      prepare: checkAndFixOvercapStats,
       do: () => {
         visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
         runChoice(1); // Head to Groggy's
         chooseCrew(); // Choose our crew
         runChoice(4); // Choose anemometer for trash island
-        if (get("pirateRealmUnlockedClipper")) {
-          runChoice(4); // Swift Clipper, if it's unlocked
-        } else {
-          runChoice(3); // Otherwise, Speedy Caravel
-        }
+        const bestBoat = get("pirateRealmUnlockedClipper") ? 4 : 3; // Swift Clipper or Speedy Caravel
+        runChoice(bestBoat);
         runChoice(1); // Head for the sea
       },
-      outfit: { equip: $items`PirateRealm eyepatch` },
+      outfit: {
+        equip: $items`PirateRealm eyepatch`,
+        modifier: Stat.all().map((stat) => `-${stat}`),
+      },
       limit: { tries: 1 },
       spendsTurn: false,
     },
@@ -236,8 +226,8 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Choose First Island",
       ready: () => questStep("_questPirateRealm") === 1,
       completed: () => questStep("_questPirateRealm") > 1,
-      prepare: () => checkAndFixOvercapStats(),
-      do: () => adv1($location`Sailing the PirateRealm Seas`),
+      prepare: checkAndFixOvercapStats,
+      do: $location`Sailing the PirateRealm Seas`,
       outfit: () => freeFightOutfit({ acc3: $items`PirateRealm eyepatch` }),
       choices: () => ({
         1352:
@@ -248,15 +238,19 @@ export const CockroachSetup: Quest<GarboTask> = {
       }),
       limit: { tries: 1 },
       spendsTurn: false,
+      combat: new GarboStrategy(() =>
+        Macro.abortWithMsg("Hit a combat while sailing the high seas!"),
+      ),
     },
     {
       name: "Sail to first Island",
       ready: () => questStep("_questPirateRealm") === 2,
       completed: () => questStep("_questPirateRealm") > 2,
-      prepare: () => checkAndFixOvercapStats(),
-      do: () => adv1($location`Sailing the PirateRealm Seas`),
+      prepare: checkAndFixOvercapStats,
+      do: $location`Sailing the PirateRealm Seas`,
       outfit: {
         equip: $items`PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot`,
+        modifier: Stat.all().map((stat) => `-${stat}`),
       },
       choices: () => ({
         1365: 1,
@@ -276,22 +270,23 @@ export const CockroachSetup: Quest<GarboTask> = {
       }),
       limit: { tries: 8 },
       spendsTurn: true,
+      combat: new GarboStrategy(() =>
+        Macro.abortWithMsg("Hit a combat while sailing the high seas!"),
+      ),
     },
     {
       name: "Land Ho (First Island)",
       ready: () => questStep("_questPirateRealm") === 3,
       completed: () => questStep("_questPirateRealm") > 3,
-      prepare: () => checkAndFixOvercapStats(),
-      do: () => {
-        // Should give us the Land-Ho adventure
-        if (visitUrl("adventure.php?snarfblat=530").includes("Land Ho!")) {
-          runChoice(1);
-        } else {
-          abort("Expected Land Ho! but didn't get it!");
-        }
-      },
+      prepare: checkAndFixOvercapStats,
+      do: $location`Sailing the PirateRealm Seas`,
+      combat: new GarboStrategy(() =>
+        Macro.abortWithMsg("Expected Land Ho! but hit a combat"),
+      ),
+      choices: { 1355: 1 }, // Land ho!
       outfit: {
         equip: $items`PirateRealm eyepatch`,
+        modifier: Stat.all().map((stat) => `-${stat}`),
       },
       limit: { tries: 1 },
       spendsTurn: false,
@@ -309,7 +304,7 @@ export const CockroachSetup: Quest<GarboTask> = {
           acquire(1, $item`windicle`, 3 * get("valueOfAdventure"), true);
         }
       },
-      do: () => adv1(get("_lastPirateRealmIsland", $location`none`)),
+      do: () => get("_lastPirateRealmIsland", $location`none`),
       outfit: () =>
         freeFightOutfit({
           equip: $items`PirateRealm eyepatch`,
@@ -339,20 +334,8 @@ export const CockroachSetup: Quest<GarboTask> = {
         questStep("_questPirateRealm") === 5 &&
         get("_lastPirateRealmIsland") === $location`Dessert Island`,
       completed: () => questStep("_questPirateRealm") > 5,
-      prepare: () => {
-        checkAndFixOvercapStats();
-      },
-      do: () => {
-        if (
-          visitUrl("adventure.php?snarfblat=531").includes(
-            "Chocolate Fountain of Youth",
-          )
-        ) {
-          runChoice(1);
-        } else {
-          abort("Expected cocoa of youth but got something else!");
-        }
-      },
+      prepare: checkAndFixOvercapStats,
+      do: () => $location`PirateRealm Island`,
       outfit: () => {
         return {
           equip: $items`PirateRealm eyepatch`,
@@ -368,12 +351,15 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Choose Trash Island",
       ready: () => questStep("_questPirateRealm") === 6,
       completed: () => questStep("_questPirateRealm") > 6,
-      prepare: () => checkAndFixOvercapStats(),
-      do: () => adv1($location`Sailing the PirateRealm Seas`),
+      prepare: checkAndFixOvercapStats,
+      do: $location`Sailing the PirateRealm Seas`,
       outfit: { equip: $items`PirateRealm eyepatch` },
       choices: { 1353: 5 }, // Trash Island
       limit: { tries: 1 },
       spendsTurn: false,
+      combat: new GarboStrategy(() =>
+        Macro.abortWithMsg("Hit a combat while sailing the high seas!"),
+      ),
     },
   ],
 };
@@ -394,7 +380,7 @@ export const CockroachFinish: Quest<GarboTask> = {
         potionSetup(false);
         checkAndFixOvercapStats();
       },
-      do: () => $location`Crab Island`,
+      do: $location`Crab Island`,
       outfit: () => {
         const spec = meatTargetOutfit({
           modifier: ["meat"],
@@ -413,7 +399,7 @@ export const CockroachFinish: Quest<GarboTask> = {
       ready: () => questStep("_questPirateRealm") === 6,
       completed: () => questStep("_questPirateRealm") > 6,
       prepare: () => checkAndFixOvercapStats(),
-      do: () => adv1($location`Sailing the PirateRealm Seas`),
+      do: $location`Sailing the PirateRealm Seas`,
       outfit: {
         equip: $items`PirateRealm eyepatch`,
         avoid: $items`Roman Candelabra`,
@@ -421,6 +407,9 @@ export const CockroachFinish: Quest<GarboTask> = {
       choices: { 1353: 5 }, // Trash Island
       limit: { tries: 1 },
       spendsTurn: false,
+      combat: new GarboStrategy(() =>
+        Macro.abortWithMsg("Hit a combat while sailing the high seas!"),
+      ),
     },
   ],
 };
