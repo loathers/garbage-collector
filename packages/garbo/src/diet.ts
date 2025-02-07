@@ -28,6 +28,7 @@ import {
   npcPrice,
   print,
   retrieveItem,
+  retrievePrice,
   sellsItem,
   setProperty,
   spleenLimit,
@@ -52,7 +53,6 @@ import {
   clamp,
   Diet,
   get,
-  getAcquirePrice,
   getAverageAdventures,
   getModifier,
   getRemainingLiver,
@@ -1260,7 +1260,7 @@ export function runDiet(): void {
 
     MenuItem.defaultPriceFunction = (item: Item) => {
       const prices = [
-        getAcquirePrice(item),
+        retrievePrice(item),
         mallPrice(item),
         npcPrice(item),
       ].filter((p) => p > 0 && p < Number.MAX_SAFE_INTEGER);

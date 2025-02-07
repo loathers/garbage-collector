@@ -11,6 +11,7 @@ import {
   myFury,
   Phylum,
   retrieveItem,
+  retrievePrice,
   Skill,
   toPhylum,
   toSkill,
@@ -502,7 +503,7 @@ function banishBunny(): void {
 
   const usingIceHouseBanish =
     getBanishedMonsters().get($item`ice house`) !== $monster`fluffy bunny` &&
-    getAcquirePrice($item`ice house`) < 1000000 &&
+    retrievePrice($item`ice house`) < 1000000 &&
     iceHouseAllowed();
 
   const banish = usingIceHouseBanish

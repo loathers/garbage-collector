@@ -1,5 +1,6 @@
 import {
   adv1,
+  autosellPrice,
   availableAmount,
   canAdventure,
   canEquip,
@@ -39,7 +40,6 @@ import {
   ClosedCircuitPayphone,
   CursedMonkeyPaw,
   get,
-  getAcquirePrice,
   getActiveEffects,
   getActiveSongs,
   getModifier,
@@ -149,6 +149,13 @@ const validPawWishes: Map<Effect, string> = new Map(
       ];
     }),
 );
+
+function retrieveUntradeablePrice(it: Item) {
+  return (
+    retrievePrice(it, availableAmount(it) + 1) -
+    autosellPrice(it) * availableAmount(it)
+  );
+}
 
 export interface PotionOptions {
   providesDoubleDuration?: boolean;
@@ -296,12 +303,12 @@ export class Potion {
   price(historical: boolean): number {
     if (this.priceOverride) return this.priceOverride(historical);
     // If asked for historical, and age < 14 days, use historical.
-    // If potion is not tradeable, use getAcquirePrice from libram instead
+    // If potion is not tradeable, use retrievePrice instead
     return this.potion.tradeable
       ? historical && historicalAge(this.potion) < 14
         ? historicalPrice(this.potion)
         : mallPrice(this.potion)
-      : getAcquirePrice(this.potion);
+      : retrieveUntradeablePrice(this.potion);
   }
 
   net(targets: number, historical = false): number {
@@ -857,12 +864,12 @@ class VariableMeatPotion {
 
   price(historical: boolean): number {
     // If asked for historical, and age < 14 days, use historical.
-    // If potion is not tradeable, use getAcquirePrice from libram instead
+    // If potion is not tradeable, use retrievePrice instead
     return this.potion.tradeable
       ? historical && historicalAge(this.potion) < 14
         ? historicalPrice(this.potion)
         : mallPrice(this.potion)
-      : getAcquirePrice(this.potion);
+      : retrieveUntradeablePrice(this.potion);
   }
 
   getOptimalNumberToUse(yachtzees: number, targets: number): number {
@@ -923,7 +930,7 @@ class VariableMeatPotion {
     const targetValue = targetMeat();
     const barfValue = (baseMeat() * turnsToNC) / 30;
 
-    const totalCosts = getAcquirePrice(this.potion, n);
+    const totalCosts = retrievePrice(this.potion, n);
     const totalDuration = n * this.duration;
     let cappedDuration = Math.max(0, totalDuration - this.softcap + 1);
     let decayDuration = Math.min(totalDuration, this.softcap - 1);
