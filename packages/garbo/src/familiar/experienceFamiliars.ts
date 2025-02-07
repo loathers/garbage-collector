@@ -69,7 +69,7 @@ function valueExperienceFamiliar(
 }
 
 export default function getExperienceFamiliars(
-  mode: FamiliarMode | "run",
+  mode: FamiliarMode,
 ): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(
