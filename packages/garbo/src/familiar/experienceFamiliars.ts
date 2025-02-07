@@ -70,6 +70,7 @@ function valueExperienceFamiliar(
     expectedValue: undelay(useValue) / (experienceNeeded / estimatedExperience),
     leprechaunMultiplier: findLeprechaunMultiplier(familiar),
     limit: "experience",
+    worksOnFreeRun: false,
   };
 }
 

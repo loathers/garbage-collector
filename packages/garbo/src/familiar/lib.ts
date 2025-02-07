@@ -28,6 +28,7 @@ export type GeneralFamiliar = {
   expectedValue: number;
   leprechaunMultiplier: number;
   limit: "drops" | "experience" | "none" | "special";
+  worksOnFreeRun: boolean;
 };
 
 export function timeToMeatify(): boolean {

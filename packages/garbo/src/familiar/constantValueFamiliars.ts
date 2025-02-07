@@ -28,6 +28,7 @@ import { globalOptions } from "../config";
 type ConstantValueFamiliar = {
   familiar: Familiar;
   value: (_mode: "barf" | "free" | "target") => number;
+  worksOnFreeRun?: boolean;
 };
 
 const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
@@ -132,6 +133,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       ) *
         peaceTurkeyDropChance()) /
       2,
+    worksOnFreeRun: true,
   },
 ];
 
@@ -144,8 +146,9 @@ export default function getConstantValueFamiliars(
 ): GeneralFamiliar[] {
   return standardFamiliars
     .filter(({ familiar }) => have(familiar))
-    .map(({ familiar, value }) => ({
+    .map(({ familiar, value, worksOnFreeRun = false }) => ({
       familiar,
+      worksOnFreeRun,
       expectedValue: value(mode),
       leprechaunMultiplier: findLeprechaunMultiplier(familiar),
       limit: "none",
