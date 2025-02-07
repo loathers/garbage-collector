@@ -28836,7 +28836,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b6c375c97b23d1afcfc764edda9b37e6765a5d75", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("248567d77b585eee88337755118d1d096cac5ab7", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -37820,10 +37820,12 @@ function _setPrototypeOf8(t, e) {
   }, _setPrototypeOf8(t, e);
 }
 function shouldRedigitize() {
-  var digitizesLeft = SourceTerminal_exports.getDigitizeUsesRemaining();
+  if (!SourceTerminal_exports.have() || !SourceTerminal_exports.canDigitize()) return false;
+  var digitizesRemaining = SourceTerminal_exports.getDigitizeUsesRemaining();
+  var digitizeChunks = 1 + digitizesRemaining;
   var monsterCount = SourceTerminal_exports.getDigitizeMonsterCount() + 1;
   var digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
-  return SourceTerminal_exports.have() && SourceTerminal_exports.canDigitize() && (0, import_kolmafia123.myAdventures)() * 1.04 < digitizesLeft * digitizeAdventuresUsed;
+  return estimatedGarboTurns() / digitizeChunks < digitizeAdventuresUsed;
 }
 var Macro2 = /* @__PURE__ */ function(_StrictMacro) {
   function Macro3() {
