@@ -80,6 +80,11 @@ export type GarboFreeFightTask = Extract<
   tentacle: boolean; // if a tentacle fight can follow
 };
 
+function cupidBonus() {
+  const toyCupidValue = garboValue($item`self-dribbling basketball`) / 5;
+  return new Map([[$item`toy Cupid bow`, toyCupidValue]]);
+}
+
 const DEFAULT_FREE_FIGHT_TASK = {
   // GarboTask
   combat: new GarboStrategy(() => Macro.basicCombat()),
@@ -686,7 +691,11 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         )
         .basicCombat(),
     ),
-    outfit: () => freeFightOutfit({ familiar: $familiar`Machine Elf` }),
+    outfit: () =>
+      freeFightOutfit({
+        familiar: $familiar`Machine Elf`,
+        bonuses: cupidBonus(),
+      }),
     tentacle: false, // Marked like this as 2 DMT fights get overriden by tentacles (could add +1 combat)
     combatCount: () => clamp(5 - get("_machineTunnelsAdv"), 0, 5),
   },
