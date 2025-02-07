@@ -23427,7 +23427,7 @@ var require_lib2 = __commonJS({
     function _defineProperties33(e, r) {
       for (var t = 0; t < r.length; t++) {
         var o = r[t];
-        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey51(o.key), o);
+        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey50(o.key), o);
       }
     }
     function _createClass33(e, r, t) {
@@ -23436,14 +23436,14 @@ var require_lib2 = __commonJS({
     function _classCallCheck33(a, n) {
       if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
     }
-    function _defineProperty47(e, r, t) {
-      return (r = _toPropertyKey51(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+    function _defineProperty45(e, r, t) {
+      return (r = _toPropertyKey50(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
     }
-    function _toPropertyKey51(t) {
-      var i = _toPrimitive51(t, "string");
+    function _toPropertyKey50(t) {
+      var i = _toPrimitive50(t, "string");
       return "symbol" == typeof i ? i : i + "";
     }
-    function _toPrimitive51(t, r) {
+    function _toPrimitive50(t, r) {
       if ("object" != typeof t || !t) return t;
       var e = t[Symbol.toPrimitive];
       if (void 0 !== e) {
@@ -23621,10 +23621,10 @@ var require_lib2 = __commonJS({
           return true;
         };
         _classCallCheck33(this, WandererTarget2);
-        _defineProperty47(this, "name", void 0);
-        _defineProperty47(this, "value", void 0);
-        _defineProperty47(this, "location", void 0);
-        _defineProperty47(this, "prepareTurn", void 0);
+        _defineProperty45(this, "name", void 0);
+        _defineProperty45(this, "value", void 0);
+        _defineProperty45(this, "location", void 0);
+        _defineProperty45(this, "prepareTurn", void 0);
         this.name = name;
         this.value = value;
         this.location = location;
@@ -24115,47 +24115,26 @@ var require_wanderer = __commonJS({
     var _templateObject3236;
     var _templateObject3335;
     var _templateObject3430;
-    function ownKeys28(e, r) {
-      var t = Object.keys(e);
-      if (Object.getOwnPropertySymbols) {
-        var o = Object.getOwnPropertySymbols(e);
-        r && (o = o.filter(function(r2) {
-          return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-        })), t.push.apply(t, o);
-      }
-      return t;
-    }
-    function _objectSpread28(e) {
-      for (var r = 1; r < arguments.length; r++) {
-        var t = null != arguments[r] ? arguments[r] : {};
-        r % 2 ? ownKeys28(Object(t), true).forEach(function(r2) {
-          _defineProperty47(e, r2, t[r2]);
-        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys28(Object(t)).forEach(function(r2) {
-          Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-        });
-      }
-      return e;
-    }
     function _classCallCheck33(a, n) {
       if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
     }
     function _defineProperties33(e, r) {
       for (var t = 0; t < r.length; t++) {
         var o = r[t];
-        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey51(o.key), o);
+        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey50(o.key), o);
       }
     }
     function _createClass33(e, r, t) {
       return r && _defineProperties33(e.prototype, r), t && _defineProperties33(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
     }
-    function _defineProperty47(e, r, t) {
-      return (r = _toPropertyKey51(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+    function _defineProperty45(e, r, t) {
+      return (r = _toPropertyKey50(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
     }
-    function _toPropertyKey51(t) {
-      var i = _toPrimitive51(t, "string");
+    function _toPropertyKey50(t) {
+      var i = _toPrimitive50(t, "string");
       return "symbol" == typeof i ? i : i + "";
     }
-    function _toPrimitive51(t, r) {
+    function _toPrimitive50(t, r) {
       if ("object" != typeof t || !t) return t;
       var e = t[Symbol.toPrimitive];
       if (void 0 !== e) {
@@ -24292,14 +24271,10 @@ var require_wanderer = __commonJS({
         return candidate.location;
       }
     }
-    var defaultWanderOptions = {
-      drunkSafe: true,
-      allowEquipment: true
-    };
     var WandererManager2 = /* @__PURE__ */ function() {
       function WandererManager3(_options) {
         _classCallCheck33(this, WandererManager3);
-        _defineProperty47(this, "unsupportedChoices", /* @__PURE__ */ new Map([
+        _defineProperty45(this, "unsupportedChoices", /* @__PURE__ */ new Map([
           [(0, libram_1.$location)(_templateObject2269 || (_templateObject2269 = _taggedTemplateLiteral135(["The Spooky Forest"]))), {
             502: 2,
             505: 2
@@ -24436,14 +24411,14 @@ var require_wanderer = __commonJS({
           }]
           // fight eXtreme Sports Orcs
         ]));
-        _defineProperty47(this, "equipment", new Map([].concat(_toConsumableArray66(kolmafia_1.Location.all().filter(function(l) {
+        _defineProperty45(this, "equipment", new Map([].concat(_toConsumableArray66(kolmafia_1.Location.all().filter(function(l) {
           return l.zone === "The 8-Bit Realm";
         }).map(function(l) {
           return [l, (0, libram_1.$items)(_templateObject31101 || (_templateObject31101 = _taggedTemplateLiteral135(["continuum transfunctioner"])))];
         })), [[(0, libram_1.$location)(_templateObject3236 || (_templateObject3236 = _taggedTemplateLiteral135(["Shadow Rift (The 8-Bit Realm)"]))), (0, libram_1.$items)(_templateObject3335 || (_templateObject3335 = _taggedTemplateLiteral135(["continuum transfunctioner"])))]])));
-        _defineProperty47(this, "cacheKey", "");
-        _defineProperty47(this, "targets", {});
-        _defineProperty47(this, "options", void 0);
+        _defineProperty45(this, "cacheKey", "");
+        _defineProperty45(this, "targets", {});
+        _defineProperty45(this, "options", void 0);
         this.options = _options;
       }
       return _createClass33(WandererManager3, [{
@@ -24457,7 +24432,7 @@ var require_wanderer = __commonJS({
             draggableFight: wanderer2.wanderer,
             options: wanderer2
           }, draggableFight = _ref.draggableFight, options = _ref.options;
-          var _defaultWanderOptions = _objectSpread28(_objectSpread28({}, defaultWanderOptions), options), drunkSafe = _defaultWanderOptions.drunkSafe, allowEquipment = _defaultWanderOptions.allowEquipment;
+          var _options$drunkSafe = options.drunkSafe, drunkSafe = _options$drunkSafe === void 0 ? true : _options$drunkSafe, _options$allowEquipme = options.allowEquipment, allowEquipment = _options$allowEquipme === void 0 ? false : _options$allowEquipme;
           var newKey = "".concat((0, kolmafia_1.myTotalTurnsSpent)(), ";").concat((0, kolmafia_1.totalTurnsPlayed)(), ";").concat((0, libram_1.get)("familiarSweat"));
           if (this.cacheKey !== newKey) this.clear();
           this.cacheKey = newKey;
@@ -24554,20 +24529,20 @@ var require_autumnaton = __commonJS({
     function _defineProperties33(e, r) {
       for (var t = 0; t < r.length; t++) {
         var o = r[t];
-        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey51(o.key), o);
+        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey50(o.key), o);
       }
     }
     function _createClass33(e, r, t) {
       return r && _defineProperties33(e.prototype, r), t && _defineProperties33(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
     }
-    function _defineProperty47(e, r, t) {
-      return (r = _toPropertyKey51(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+    function _defineProperty45(e, r, t) {
+      return (r = _toPropertyKey50(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
     }
-    function _toPropertyKey51(t) {
-      var i = _toPrimitive51(t, "string");
+    function _toPropertyKey50(t) {
+      var i = _toPrimitive50(t, "string");
       return "symbol" == typeof i ? i : i + "";
     }
-    function _toPrimitive51(t, r) {
+    function _toPrimitive50(t, r) {
       if ("object" != typeof t || !t) return t;
       var e = t[Symbol.toPrimitive];
       if (void 0 !== e) {
@@ -24589,12 +24564,12 @@ var require_autumnaton = __commonJS({
         var _this = this;
         var averageItemValue = _ref.averageItemValue, estimatedTurns = _ref.estimatedTurns, estimatedTurnsTomorrow2 = _ref.estimatedTurnsTomorrow;
         _classCallCheck33(this, AutumnAtonManager3);
-        _defineProperty47(this, "averageItemValue", lib_1.DEFAULT_VALUE_FUNCTIONS.averageValue);
-        _defineProperty47(this, "estimatedTurns", kolmafia_1.myAdventures);
-        _defineProperty47(this, "estimatedTurnsTomorrow", function() {
+        _defineProperty45(this, "averageItemValue", lib_1.DEFAULT_VALUE_FUNCTIONS.averageValue);
+        _defineProperty45(this, "estimatedTurns", kolmafia_1.myAdventures);
+        _defineProperty45(this, "estimatedTurnsTomorrow", function() {
           return 0;
         });
-        _defineProperty47(this, "bestLocation", function(locations) {
+        _defineProperty45(this, "bestLocation", function(locations) {
           return (0, libram_1.maxBy)(_this.bestLocationsByUpgrade(locations), function(it) {
             return _this.averageValue(it);
           });
@@ -24788,9 +24763,9 @@ var require_autumnaton = __commonJS({
         }
       }]);
     }();
-    _defineProperty47(AutumnAtonManager2, "locationBanlist", (0, libram_1.$locations)(_templateObject5158 || (_templateObject5158 = _taggedTemplateLiteral135(["The Daily Dungeon"]))));
-    _defineProperty47(AutumnAtonManager2, "badAttributes", ["LUCKY", "ULTRARARE", "BOSS"]);
-    _defineProperty47(AutumnAtonManager2, "profitRelevantUpgrades", ["leftarm1", "leftleg1", "rightarm1", "rightleg1", "cowcatcher", "periscope", "radardish"]);
+    _defineProperty45(AutumnAtonManager2, "locationBanlist", (0, libram_1.$locations)(_templateObject5158 || (_templateObject5158 = _taggedTemplateLiteral135(["The Daily Dungeon"]))));
+    _defineProperty45(AutumnAtonManager2, "badAttributes", ["LUCKY", "ULTRARARE", "BOSS"]);
+    _defineProperty45(AutumnAtonManager2, "profitRelevantUpgrades", ["leftarm1", "leftleg1", "rightarm1", "rightleg1", "cowcatcher", "periscope", "radardish"]);
     exports2.AutumnAtonManager = AutumnAtonManager2;
   }
 });
@@ -28500,27 +28475,6 @@ var _templateObject6211;
 var _templateObject6311;
 var _templateObject6411;
 var _templateObject658;
-function ownKeys15(e, r) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r && (o = o.filter(function(r2) {
-      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread15(e) {
-  for (var r = 1; r < arguments.length; r++) {
-    var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys15(Object(t), true).forEach(function(r2) {
-      _defineProperty29(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys15(Object(t)).forEach(function(r2) {
-      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-    });
-  }
-  return e;
-}
 function _createForOfIteratorHelper22(r, e) {
   var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
   if (!t) {
@@ -28882,7 +28836,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("5a42edff09e8121d70e80e3d84c724bb74cb2d8f", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b6c375c97b23d1afcfc764edda9b37e6765a5d75", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -28959,16 +28913,8 @@ var turnsToNC = 27 * barfTourists / (garbageTourists + angryTourists + 3 * touri
 var GHOST_DOG_ADVENTURES = ["Puttin' it on Wax", "Wooof! Wooooooof!", "Playing Fetch*", "Your Dog Found Something Again"];
 var JUNE_CLEAVER_ADVENTURES = ["Aunts not Ants", "Bath Time", "Beware of Aligator", "Delicious Sprouts", "Hypnotic Master", "Lost and Found", "Poetic Justice", "Summer Days", "Teacher's Pet"];
 var VIOLET_FOG_ADVENTURES = ["She's So Unusual", "The Big Scary Place", "The Prince of Wishful Thinking", "Violet Fog"];
-var DEFAULT_LAST_ADVENTURE_OPTIONS = {
-  extraEncounters: [],
-  includeGhostDog: true,
-  includeHolidayWanderers: true,
-  includeJuneCleaver: true,
-  includeVioletFog: true
-};
 function lastAdventureWasWeird() {
-  var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  var _DEFAULT_LAST_ADVENTU = _objectSpread15(_objectSpread15({}, DEFAULT_LAST_ADVENTURE_OPTIONS), options), extraEncounters = _DEFAULT_LAST_ADVENTU.extraEncounters, includeGhostDog = _DEFAULT_LAST_ADVENTU.includeGhostDog, includeHolidayWanderers = _DEFAULT_LAST_ADVENTU.includeHolidayWanderers, includeJuneCleaver = _DEFAULT_LAST_ADVENTU.includeJuneCleaver, includeVioletFog = _DEFAULT_LAST_ADVENTU.includeVioletFog;
+  var _ref2 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {}, _ref2$extraEncounters = _ref2.extraEncounters, extraEncounters = _ref2$extraEncounters === void 0 ? [] : _ref2$extraEncounters, _ref2$includeGhostDog = _ref2.includeGhostDog, includeGhostDog = _ref2$includeGhostDog === void 0 ? true : _ref2$includeGhostDog, _ref2$includeHolidayW = _ref2.includeHolidayWanderers, includeHolidayWanderers = _ref2$includeHolidayW === void 0 ? true : _ref2$includeHolidayW, _ref2$includeJuneClea = _ref2.includeJuneCleaver, includeJuneCleaver = _ref2$includeJuneClea === void 0 ? true : _ref2$includeJuneClea, _ref2$includeVioletFo = _ref2.includeVioletFog, includeVioletFog = _ref2$includeVioletFo === void 0 ? true : _ref2$includeVioletFo;
   return [].concat(_toConsumableArray30(extraEncounters), _toConsumableArray30(includeGhostDog ? GHOST_DOG_ADVENTURES : []), _toConsumableArray30(includeHolidayWanderers ? getTodaysHolidayWanderers().map(function(monster) {
     return monster.name;
   }) : []), _toConsumableArray30(includeJuneCleaver ? JUNE_CLEAVER_ADVENTURES : []), _toConsumableArray30(includeVioletFog ? VIOLET_FOG_ADVENTURES : [])).includes(get("lastEncounter"));
@@ -29050,8 +28996,8 @@ function bestShadowRift() {
         sortBy: function(l) {
           var dropModifier = 1 + (0, import_kolmafia92.numericModifier)("Item Drop") / 100;
           return sum((0, import_kolmafia92.getMonsters)(l), function(m) {
-            return sum((0, import_kolmafia92.itemDropsArray)(m), function(_ref2) {
-              var drop = _ref2.drop, rate = _ref2.rate;
+            return sum((0, import_kolmafia92.itemDropsArray)(m), function(_ref3) {
+              var drop = _ref3.drop, rate = _ref3.rate;
               return garboValue(drop) * clamp(rate * dropModifier / 100, 0, 1);
             });
           });
@@ -29221,8 +29167,8 @@ var luckyAdventures = [{
   }
 }];
 function determineBestLuckyAdventure() {
-  return maxBy(luckyAdventures, function(_ref3) {
-    var value = _ref3.value;
+  return maxBy(luckyAdventures, function(_ref4) {
+    var value = _ref4.value;
     return value();
   });
 }
@@ -29233,8 +29179,8 @@ function getBestLuckyAdventure() {
 }
 var SCALE_PATTERN = /Scale: /;
 var CAP_PATTERN = /Cap: (\d*)/;
-function calculateScalerCap(_ref4) {
-  var attributes = _ref4.attributes;
+function calculateScalerCap(_ref5) {
+  var attributes = _ref5.attributes;
   var scaleMatch = SCALE_PATTERN.test(attributes);
   if (!scaleMatch) return 0;
   var capMatch = CAP_PATTERN.exec(attributes);
@@ -29257,8 +29203,8 @@ var isFreeAndCopyable = function(monster) {
   return monster.copyable && monster.attributes.includes("FREE");
 };
 var valueDrops = function(monster) {
-  return sum((0, import_kolmafia92.itemDropsArray)(monster), function(_ref5) {
-    var drop = _ref5.drop, rate = _ref5.rate, type = _ref5.type;
+  return sum((0, import_kolmafia92.itemDropsArray)(monster), function(_ref6) {
+    var drop = _ref6.drop, rate = _ref6.rate, type = _ref6.type;
     return !["c", "0", "p", "a"].includes(type) ? garboValue(drop) * rate / 100 : 0;
   });
 };
@@ -31693,7 +31639,7 @@ var _templateObject2721;
 var _templateObject2819;
 var _templateObject2919;
 var _templateObject3018;
-function ownKeys16(e, r) {
+function ownKeys15(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -31703,12 +31649,12 @@ function ownKeys16(e, r) {
   }
   return t;
 }
-function _objectSpread16(e) {
+function _objectSpread15(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys16(Object(t), true).forEach(function(r2) {
+    r % 2 ? ownKeys15(Object(t), true).forEach(function(r2) {
       _defineProperty30(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys16(Object(t)).forEach(function(r2) {
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys15(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
@@ -31905,7 +31851,7 @@ function barfOutfit(spec) {
   var sim = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
   var _barfFamiliar = barfFamiliar(), familiar10 = _barfFamiliar.familiar, extraValue3 = _barfFamiliar.extraValue;
   try {
-    return computeBarfOutfit(_objectSpread16({
+    return computeBarfOutfit(_objectSpread15({
       familiar: familiar10
     }, spec), sim);
   } finally {
@@ -32565,59 +32511,11 @@ function _arrayLikeToArray59(r, a) {
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
   return n;
 }
-function ownKeys17(e, r) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r && (o = o.filter(function(r2) {
-      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread17(e) {
-  for (var r = 1; r < arguments.length; r++) {
-    var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys17(Object(t), true).forEach(function(r2) {
-      _defineProperty31(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys17(Object(t)).forEach(function(r2) {
-      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-    });
-  }
-  return e;
-}
-function _defineProperty31(e, r, t) {
-  return (r = _toPropertyKey34(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
-}
-function _toPropertyKey34(t) {
-  var i = _toPrimitive34(t, "string");
-  return "symbol" == typeof i ? i : i + "";
-}
-function _toPrimitive34(t, r) {
-  if ("object" != typeof t || !t) return t;
-  var e = t[Symbol.toPrimitive];
-  if (void 0 !== e) {
-    var i = e.call(t, r || "default");
-    if ("object" != typeof i) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r ? String : Number)(t);
-}
 function _taggedTemplateLiteral94(e, t) {
   return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
 }
-var DEFAULT_MENU_OPTIONS = {
-  canChooseMacro: true,
-  location: $location(_templateObject687 || (_templateObject687 = _taggedTemplateLiteral94(["none"]))),
-  extraFamiliars: [],
-  excludeFamiliar: [],
-  includeExperienceFamiliars: true,
-  allowAttackFamiliars: true,
-  mode: "free"
-};
 function menu2() {
-  var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  var _DEFAULT_MENU_OPTIONS = _objectSpread17(_objectSpread17({}, DEFAULT_MENU_OPTIONS), options), includeExperienceFamiliars = _DEFAULT_MENU_OPTIONS.includeExperienceFamiliars, canChooseMacro = _DEFAULT_MENU_OPTIONS.canChooseMacro, location = _DEFAULT_MENU_OPTIONS.location, extraFamiliars = _DEFAULT_MENU_OPTIONS.extraFamiliars, excludeFamiliar = _DEFAULT_MENU_OPTIONS.excludeFamiliar, allowAttackFamiliars = _DEFAULT_MENU_OPTIONS.allowAttackFamiliars, mode = _DEFAULT_MENU_OPTIONS.mode;
+  var _ref = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {}, _ref$canChooseMacro = _ref.canChooseMacro, canChooseMacro = _ref$canChooseMacro === void 0 ? true : _ref$canChooseMacro, _ref$location = _ref.location, location = _ref$location === void 0 ? $location(_templateObject687 || (_templateObject687 = _taggedTemplateLiteral94(["none"]))) : _ref$location, _ref$extraFamiliars = _ref.extraFamiliars, extraFamiliars = _ref$extraFamiliars === void 0 ? [] : _ref$extraFamiliars, _ref$excludeFamiliar = _ref.excludeFamiliar, excludeFamiliar = _ref$excludeFamiliar === void 0 ? [] : _ref$excludeFamiliar, _ref$includeExperienc = _ref.includeExperienceFamiliars, includeExperienceFamiliars = _ref$includeExperienc === void 0 ? true : _ref$includeExperienc, _ref$allowAttackFamil = _ref.allowAttackFamiliars, allowAttackFamiliars = _ref$allowAttackFamil === void 0 ? true : _ref$allowAttackFamil, _ref$mode = _ref.mode, mode = _ref$mode === void 0 ? "free" : _ref$mode;
   var familiarMenu = [].concat(_toConsumableArray39(getConstantValueFamiliars(mode)), _toConsumableArray39(getDropFamiliars()), _toConsumableArray39(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray39(extraFamiliars));
   if (canChooseMacro && (0, import_kolmafia103.myInebriety)() <= (0, import_kolmafia103.inebrietyLimit)()) {
     if (timeToMeatify()) {
@@ -32670,8 +32568,8 @@ function menu2() {
     }
   }
   var meatFam = meatFamiliar();
-  if (!familiarMenu.some(function(_ref) {
-    var familiar10 = _ref.familiar;
+  if (!familiarMenu.some(function(_ref2) {
+    var familiar10 = _ref2.familiar;
     return familiar10 === meatFam;
   })) {
     familiarMenu.push({
@@ -32681,8 +32579,8 @@ function menu2() {
       limit: "none"
     });
   }
-  return familiarMenu.filter(function(_ref2) {
-    var familiar10 = _ref2.familiar;
+  return familiarMenu.filter(function(_ref3) {
+    var familiar10 = _ref3.familiar;
     return (allowAttackFamiliars || !(familiar10.physicalDamage || familiar10.elementalDamage)) && !excludeFamiliar.some(function(excludedFamiliar) {
       return excludedFamiliar === familiar10;
     });
@@ -32857,7 +32755,7 @@ function _arrayWithHoles34(r) {
 function _taggedTemplateLiteral96(e, t) {
   return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
 }
-function ownKeys18(e, r) {
+function ownKeys16(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -32867,25 +32765,25 @@ function ownKeys18(e, r) {
   }
   return t;
 }
-function _objectSpread18(e) {
+function _objectSpread16(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys18(Object(t), true).forEach(function(r2) {
-      _defineProperty32(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys18(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys16(Object(t), true).forEach(function(r2) {
+      _defineProperty31(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys16(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty32(e, r, t) {
-  return (r = _toPropertyKey35(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty31(e, r, t) {
+  return (r = _toPropertyKey34(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey35(t) {
-  var i = _toPrimitive35(t, "string");
+function _toPropertyKey34(t) {
+  var i = _toPrimitive34(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive35(t, r) {
+function _toPrimitive34(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -32903,7 +32801,7 @@ function freeFightOutfit() {
   var computedSpec = computeOutfitSpec(spec, options);
   validateGarbageFoldable(computedSpec);
   var outfit3 = Outfit.from(computedSpec, new Error("Failed to construct outfit from spec ".concat(JSON.stringify(spec), "!")));
-  (_outfit$familiar = outfit3.familiar) !== null && _outfit$familiar !== void 0 ? _outfit$familiar : outfit3.familiar = freeFightFamiliar(_objectSpread18(_objectSpread18({}, options), {}, {
+  (_outfit$familiar = outfit3.familiar) !== null && _outfit$familiar !== void 0 ? _outfit$familiar : outfit3.familiar = freeFightFamiliar(_objectSpread16(_objectSpread16({}, options), {}, {
     allowAttackFamiliars: computeAllowAttackFamiliars(options)
   }));
   var mode = outfit3.familiar === $familiar(_templateObject690 || (_templateObject690 = _taggedTemplateLiteral96(["Machine Elf"]))) ? BonusEquipMode.DMT : BonusEquipMode.FREE;
@@ -32954,7 +32852,7 @@ function freeFightOutfit() {
 function computeOutfitSpec(spec, options) {
   if (options.wanderOptions) {
     var _spec$equip;
-    return _objectSpread18(_objectSpread18({}, spec), {}, {
+    return _objectSpread16(_objectSpread16({}, spec), {}, {
       equip: [].concat(_toConsumableArray41((_spec$equip = spec.equip) !== null && _spec$equip !== void 0 ? _spec$equip : []), _toConsumableArray41(wanderer().getEquipment(options.wanderOptions)))
     });
   }
@@ -33051,20 +32949,20 @@ function _classCallCheck25(a, n) {
 function _defineProperties25(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey36(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey35(o.key), o);
   }
 }
 function _createClass25(e, r, t) {
   return r && _defineProperties25(e.prototype, r), t && _defineProperties25(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _defineProperty33(e, r, t) {
-  return (r = _toPropertyKey36(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty32(e, r, t) {
+  return (r = _toPropertyKey35(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey36(t) {
-  var i = _toPrimitive36(t, "string");
+function _toPropertyKey35(t) {
+  var i = _toPrimitive35(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive36(t, r) {
+function _toPrimitive35(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -33233,15 +33131,15 @@ var Potion = /* @__PURE__ */ function() {
     var _options$canDouble, _options$acquire;
     var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
     _classCallCheck25(this, Potion2);
-    _defineProperty33(this, "potion", void 0);
-    _defineProperty33(this, "providesDoubleDuration", void 0);
-    _defineProperty33(this, "canDouble", void 0);
-    _defineProperty33(this, "overrideEffect", void 0);
-    _defineProperty33(this, "overrideDuration", void 0);
-    _defineProperty33(this, "priceOverride", void 0);
-    _defineProperty33(this, "useOverride", void 0);
-    _defineProperty33(this, "acquire", void 0);
-    _defineProperty33(this, "effectValues", void 0);
+    _defineProperty32(this, "potion", void 0);
+    _defineProperty32(this, "providesDoubleDuration", void 0);
+    _defineProperty32(this, "canDouble", void 0);
+    _defineProperty32(this, "overrideEffect", void 0);
+    _defineProperty32(this, "overrideDuration", void 0);
+    _defineProperty32(this, "priceOverride", void 0);
+    _defineProperty32(this, "useOverride", void 0);
+    _defineProperty32(this, "acquire", void 0);
+    _defineProperty32(this, "effectValues", void 0);
     this.potion = potion;
     this.providesDoubleDuration = options.providesDoubleDuration;
     this.canDouble = (_options$canDouble = options.canDouble) !== null && _options$canDouble !== void 0 ? _options$canDouble : true;
@@ -33792,12 +33690,12 @@ function triangleNumber(b) {
 var VariableMeatPotion = /* @__PURE__ */ function() {
   function VariableMeatPotion2(potion, softcap, meatBonusPerTurn, duration, effect2) {
     _classCallCheck25(this, VariableMeatPotion2);
-    _defineProperty33(this, "potion", void 0);
-    _defineProperty33(this, "effect", void 0);
-    _defineProperty33(this, "duration", void 0);
-    _defineProperty33(this, "softcap", void 0);
-    _defineProperty33(this, "meatBonusPerTurn", void 0);
-    _defineProperty33(this, "cappedMeatBonus", void 0);
+    _defineProperty32(this, "potion", void 0);
+    _defineProperty32(this, "effect", void 0);
+    _defineProperty32(this, "duration", void 0);
+    _defineProperty32(this, "softcap", void 0);
+    _defineProperty32(this, "meatBonusPerTurn", void 0);
+    _defineProperty32(this, "cappedMeatBonus", void 0);
     this.potion = potion;
     this.effect = effect2 !== null && effect2 !== void 0 ? effect2 : (0, import_kolmafia105.effectModifier)(potion, "Effect");
     this.duration = duration !== null && duration !== void 0 ? duration : (0, import_kolmafia105.numericModifier)(potion, "Effect Duration");
@@ -34989,7 +34887,7 @@ function _iterableToArrayLimit38(r, l) {
 function _arrayWithHoles38(r) {
   if (Array.isArray(r)) return r;
 }
-function ownKeys19(e, r) {
+function ownKeys17(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -34999,25 +34897,25 @@ function ownKeys19(e, r) {
   }
   return t;
 }
-function _objectSpread19(e) {
+function _objectSpread17(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys19(Object(t), true).forEach(function(r2) {
-      _defineProperty34(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys19(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys17(Object(t), true).forEach(function(r2) {
+      _defineProperty33(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys17(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty34(e, r, t) {
-  return (r = _toPropertyKey37(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty33(e, r, t) {
+  return (r = _toPropertyKey36(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey37(t) {
-  var i = _toPrimitive37(t, "string");
+function _toPropertyKey36(t) {
+  var i = _toPrimitive36(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive37(t, r) {
+function _toPrimitive36(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -35080,7 +34978,7 @@ function expectedGregs(skillSource) {
   var firstReplaces = clamp(replacementsPerGreg(baseGregs[0]), 0, macrometeors + replaceEnemies);
   var initialCast = {
     replacesLeft: macrometeors + replaceEnemies - firstReplaces,
-    sources: [_objectSpread19(_objectSpread19({}, baseGregs[0]), {}, {
+    sources: [_objectSpread17(_objectSpread17({}, baseGregs[0]), {}, {
       replaces: firstReplaces,
       extra: timeSpunGregs + orbGregs
     })]
@@ -35089,7 +34987,7 @@ function expectedGregs(skillSource) {
     var currentReplaces = clamp(replacementsPerGreg(curr), 0, acc.replacesLeft);
     return {
       replacesLeft: acc.replacesLeft - currentReplaces,
-      sources: [].concat(_toConsumableArray47(acc.sources), [_objectSpread19(_objectSpread19({}, curr), {}, {
+      sources: [].concat(_toConsumableArray47(acc.sources), [_objectSpread17(_objectSpread17({}, curr), {}, {
         replaces: currentReplaces,
         extra: orbGregs
       })])
@@ -36126,7 +36024,7 @@ var _templateObject869;
 var _templateObject959;
 var _templateObject1050;
 var _templateObject1146;
-function ownKeys20(e, r) {
+function ownKeys18(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -36136,25 +36034,25 @@ function ownKeys20(e, r) {
   }
   return t;
 }
-function _objectSpread20(e) {
+function _objectSpread18(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys20(Object(t), true).forEach(function(r2) {
-      _defineProperty35(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys20(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys18(Object(t), true).forEach(function(r2) {
+      _defineProperty34(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys18(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty35(e, r, t) {
-  return (r = _toPropertyKey38(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty34(e, r, t) {
+  return (r = _toPropertyKey37(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey38(t) {
-  var i = _toPrimitive38(t, "string");
+function _toPropertyKey37(t) {
+  var i = _toPrimitive37(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive38(t, r) {
+function _toPrimitive37(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -36194,7 +36092,7 @@ function changeLastAdvLocationTask() {
   };
   switch (getChangeLastAdvLocationMethod()) {
     case "hiddencity":
-      return _objectSpread20(_objectSpread20({}, base), {}, {
+      return _objectSpread18(_objectSpread18({}, base), {}, {
         do: function() {
           return withChoice(785, 6, function() {
             return (0, import_kolmafia116.adv1)($location(_templateObject1050 || (_templateObject1050 = _taggedTemplateLiteral109(["An Overgrown Shrine (Northeast)"]))), -1, "");
@@ -36202,7 +36100,7 @@ function changeLastAdvLocationTask() {
         }
       });
     case "dailydungeon":
-      return _objectSpread20(_objectSpread20({}, base), {}, {
+      return _objectSpread18(_objectSpread18({}, base), {}, {
         do: function() {
           return (
             // at this point, we're either at an NC we can walk away from or the whole DD is done
@@ -36415,20 +36313,20 @@ function _classCallCheck26(a, n) {
 function _defineProperties26(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey39(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey38(o.key), o);
   }
 }
 function _createClass26(e, r, t) {
   return r && _defineProperties26(e.prototype, r), t && _defineProperties26(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _defineProperty36(e, r, t) {
-  return (r = _toPropertyKey39(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty35(e, r, t) {
+  return (r = _toPropertyKey38(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey39(t) {
-  var i = _toPrimitive39(t, "string");
+function _toPropertyKey38(t) {
+  var i = _toPrimitive38(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive39(t, r) {
+function _toPrimitive38(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -36447,16 +36345,16 @@ var CopyTargetFight = /* @__PURE__ */ function() {
     };
     var options = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {};
     _classCallCheck26(this, CopyTargetFight2);
-    _defineProperty36(this, "name", void 0);
-    _defineProperty36(this, "available", void 0);
-    _defineProperty36(this, "potential", void 0);
-    _defineProperty36(this, "execute", void 0);
-    _defineProperty36(this, "spec", void 0);
-    _defineProperty36(this, "draggable", void 0);
-    _defineProperty36(this, "canInitializeWandererCounters", void 0);
-    _defineProperty36(this, "wrongEncounterName", void 0);
-    _defineProperty36(this, "gregariousReplace", void 0);
-    _defineProperty36(this, "location", void 0);
+    _defineProperty35(this, "name", void 0);
+    _defineProperty35(this, "available", void 0);
+    _defineProperty35(this, "potential", void 0);
+    _defineProperty35(this, "execute", void 0);
+    _defineProperty35(this, "spec", void 0);
+    _defineProperty35(this, "draggable", void 0);
+    _defineProperty35(this, "canInitializeWandererCounters", void 0);
+    _defineProperty35(this, "wrongEncounterName", void 0);
+    _defineProperty35(this, "gregariousReplace", void 0);
+    _defineProperty35(this, "location", void 0);
     this.name = name;
     this.available = available6;
     this.potential = potential;
@@ -37012,7 +36910,7 @@ function _classCallCheck27(a, n) {
 function _defineProperties27(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey40(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey39(o.key), o);
   }
 }
 function _createClass27(e, r, t) {
@@ -37024,14 +36922,14 @@ function _classPrivateFieldInitSpec2(e, t, a) {
 function _checkPrivateRedeclaration2(e, t) {
   if (t.has(e)) throw new TypeError("Cannot initialize the same private elements twice on an object");
 }
-function _defineProperty37(e, r, t) {
-  return (r = _toPropertyKey40(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty36(e, r, t) {
+  return (r = _toPropertyKey39(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey40(t) {
-  var i = _toPrimitive40(t, "string");
+function _toPropertyKey39(t) {
+  var i = _toPrimitive39(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive40(t, r) {
+function _toPrimitive39(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -37068,7 +36966,7 @@ var TargetFightRunOptions = /* @__PURE__ */ function() {
   function TargetFightRunOptions2(configOptions) {
     var _ref = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, macro = _ref.macro, location = _ref.location, useAuto = _ref.useAuto, action = _ref.action;
     _classCallCheck27(this, TargetFightRunOptions2);
-    _defineProperty37(this, "configOptions", void 0);
+    _defineProperty36(this, "configOptions", void 0);
     _classPrivateFieldInitSpec2(this, _macro, void 0);
     _classPrivateFieldInitSpec2(this, _location, void 0);
     _classPrivateFieldInitSpec2(this, _useAuto, void 0);
@@ -37258,7 +37156,7 @@ var _templateObject1345;
 var _templateObject1441;
 var _templateObject1537;
 var _templateObject1636;
-function ownKeys21(e, r) {
+function ownKeys19(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -37268,25 +37166,25 @@ function ownKeys21(e, r) {
   }
   return t;
 }
-function _objectSpread21(e) {
+function _objectSpread19(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys21(Object(t), true).forEach(function(r2) {
-      _defineProperty38(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys21(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys19(Object(t), true).forEach(function(r2) {
+      _defineProperty37(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys19(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty38(e, r, t) {
-  return (r = _toPropertyKey41(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty37(e, r, t) {
+  return (r = _toPropertyKey40(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey41(t) {
-  var i = _toPrimitive41(t, "string");
+function _toPropertyKey40(t) {
+  var i = _toPrimitive40(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive41(t, r) {
+function _toPrimitive40(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -37407,7 +37305,7 @@ function calculateOutfitValue(f) {
   var outfit3 = getCachedOutfitValues(f.familiar);
   var outfitValue = outfit3.bonus + outfit3.meat * MEAT_DROP_VALUE + outfit3.item * ITEM_DROP_VALUE + ((_SPECIAL_FAMILIARS_FO2 = (_SPECIAL_FAMILIARS_FO3 = SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)) === null || _SPECIAL_FAMILIARS_FO3 === void 0 || (_SPECIAL_FAMILIARS_FO4 = _SPECIAL_FAMILIARS_FO3.extraValue) === null || _SPECIAL_FAMILIARS_FO4 === void 0 ? void 0 : _SPECIAL_FAMILIARS_FO4.call(_SPECIAL_FAMILIARS_FO3, outfit3)) !== null && _SPECIAL_FAMILIARS_FO2 !== void 0 ? _SPECIAL_FAMILIARS_FO2 : 0);
   var outfitWeight = outfit3.weight;
-  return _objectSpread21(_objectSpread21({}, f), {}, {
+  return _objectSpread19(_objectSpread19({}, f), {}, {
     outfitValue: outfitValue,
     outfitWeight: outfitWeight
   });
@@ -37832,30 +37730,6 @@ var _templateObject2372;
 var _templateObject2382;
 var _templateObject2392;
 var _templateObject2402;
-function ownKeys22(e, r) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r && (o = o.filter(function(r2) {
-      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread22(e) {
-  for (var r = 1; r < arguments.length; r++) {
-    var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys22(Object(t), true).forEach(function(r2) {
-      _defineProperty39(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys22(Object(t)).forEach(function(r2) {
-      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-    });
-  }
-  return e;
-}
-function _defineProperty39(e, r, t) {
-  return (r = _toPropertyKey42(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
-}
 function _toConsumableArray53(r) {
   return _arrayWithoutHoles53(r) || _iterableToArray53(r) || _unsupportedIterableToArray75(r) || _nonIterableSpread53();
 }
@@ -37889,17 +37763,17 @@ function _classCallCheck28(a, n) {
 function _defineProperties28(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey42(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey41(o.key), o);
   }
 }
 function _createClass28(e, r, t) {
   return r && _defineProperties28(e.prototype, r), t && _defineProperties28(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _toPropertyKey42(t) {
-  var i = _toPrimitive42(t, "string");
+function _toPropertyKey41(t) {
+  var i = _toPrimitive41(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive42(t, r) {
+function _toPrimitive41(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -38249,20 +38123,14 @@ var Macro2 = /* @__PURE__ */ function(_StrictMacro) {
     }
   }]);
 }(StrictMacro);
-var DEFAULT_MACRO_OPTIONS = {
-  freeWanderer: function() {
-    return Macro2.basicCombat();
-  },
-  tentacle: function() {
-    return Macro2.basicCombat();
-  },
-  innateWanderer: function(macro) {
-    return Macro2.externalIf((0, import_kolmafia123.haveEquipped)($item(_templateObject2362 || (_templateObject2362 = _taggedTemplateLiteral116(["backup camera"])))) && get("_backUpUses") < 11 && get("lastCopyableMonster") === globalOptions.target && (!targettingMeat() || (0, import_kolmafia123.myFamiliar)() === meatFamiliar()), Macro2.skill($skill(_templateObject2372 || (_templateObject2372 = _taggedTemplateLiteral116(["Back-Up to your Last Enemy"])))).step(macro), Macro2.basicCombat());
-  }
-};
 function customizeMacro(macro) {
-  var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-  var _DEFAULT_MACRO_OPTION = _objectSpread22(_objectSpread22({}, DEFAULT_MACRO_OPTIONS), options), freeWanderer = _DEFAULT_MACRO_OPTION.freeWanderer, tentacle = _DEFAULT_MACRO_OPTION.tentacle, innateWanderer = _DEFAULT_MACRO_OPTION.innateWanderer;
+  var _ref = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {}, _ref$freeWanderer = _ref.freeWanderer, freeWanderer = _ref$freeWanderer === void 0 ? function() {
+    return Macro2.basicCombat();
+  } : _ref$freeWanderer, _ref$tentacle = _ref.tentacle, tentacle = _ref$tentacle === void 0 ? function() {
+    return Macro2.basicCombat();
+  } : _ref$tentacle, _ref$innateWanderer = _ref.innateWanderer, innateWanderer = _ref$innateWanderer === void 0 ? function(macro2) {
+    return Macro2.externalIf((0, import_kolmafia123.haveEquipped)($item(_templateObject2362 || (_templateObject2362 = _taggedTemplateLiteral116(["backup camera"])))) && get("_backUpUses") < 11 && get("lastCopyableMonster") === globalOptions.target && (!targettingMeat() || (0, import_kolmafia123.myFamiliar)() === meatFamiliar()), Macro2.skill($skill(_templateObject2372 || (_templateObject2372 = _taggedTemplateLiteral116(["Back-Up to your Last Enemy"])))).step(macro2), Macro2.basicCombat());
+  } : _ref$innateWanderer;
   return Macro2.if_($monsters(_templateObject2382 || (_templateObject2382 = _taggedTemplateLiteral116(["giant rubber spider, time-spinner prank"]))), freeWanderer(macro)).externalIf(have($effect(_templateObject2392 || (_templateObject2392 = _taggedTemplateLiteral116(["Eldritch Attunement"])))), Macro2.if_($monster(_templateObject2402 || (_templateObject2402 = _taggedTemplateLiteral116(["Eldritch Tentacle"]))), tentacle(macro))).ifInnateWanderer(innateWanderer(macro)).step(macro);
 }
 function makeCcs(macro) {
@@ -38377,20 +38245,20 @@ function _classCallCheck29(a, n) {
 function _defineProperties29(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey43(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey42(o.key), o);
   }
 }
 function _createClass29(e, r, t) {
   return r && _defineProperties29(e.prototype, r), t && _defineProperties29(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _defineProperty40(e, r, t) {
-  return (r = _toPropertyKey43(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty38(e, r, t) {
+  return (r = _toPropertyKey42(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey43(t) {
-  var i = _toPrimitive43(t, "string");
+function _toPropertyKey42(t) {
+  var i = _toPrimitive42(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive43(t, r) {
+function _toPrimitive42(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -38466,9 +38334,9 @@ var StashManager = /* @__PURE__ */ function() {
   function StashManager2() {
     var _this = this;
     _classCallCheck29(this, StashManager2);
-    _defineProperty40(this, "clanIdOrName", void 0);
-    _defineProperty40(this, "enabled", void 0);
-    _defineProperty40(this, "taken", /* @__PURE__ */ new Map());
+    _defineProperty38(this, "clanIdOrName", void 0);
+    _defineProperty38(this, "enabled", void 0);
+    _defineProperty38(this, "taken", /* @__PURE__ */ new Map());
     var clanIdOrName = globalOptions.prefs.stashClan;
     this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
     this.enabled = ![0, "", "none"].some(function(id) {
@@ -38798,20 +38666,20 @@ function _classCallCheck30(a, n) {
 function _defineProperties30(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey44(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey43(o.key), o);
   }
 }
 function _createClass30(e, r, t) {
   return r && _defineProperties30(e.prototype, r), t && _defineProperties30(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _defineProperty41(e, r, t) {
-  return (r = _toPropertyKey44(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty39(e, r, t) {
+  return (r = _toPropertyKey43(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey44(t) {
-  var i = _toPrimitive44(t, "string");
+function _toPropertyKey43(t) {
+  var i = _toPrimitive43(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive44(t, r) {
+function _toPrimitive43(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -38825,11 +38693,11 @@ var GarboWorkshed = /* @__PURE__ */ function() {
   function GarboWorkshed2(options) {
     var _options$minTurns;
     _classCallCheck30(this, GarboWorkshed2);
-    _defineProperty41(this, "workshed", void 0);
-    _defineProperty41(this, "done", void 0);
-    _defineProperty41(this, "action", void 0);
-    _defineProperty41(this, "minTurns", void 0);
-    _defineProperty41(this, "available", function() {
+    _defineProperty39(this, "workshed", void 0);
+    _defineProperty39(this, "done", void 0);
+    _defineProperty39(this, "action", void 0);
+    _defineProperty39(this, "minTurns", void 0);
+    _defineProperty39(this, "available", function() {
       return true;
     });
     this.workshed = options.workshed;
@@ -39066,7 +38934,7 @@ var _templateObject3026;
 var _templateObject3180;
 var _templateObject3226;
 var _templateObject3325;
-function ownKeys23(e, r) {
+function ownKeys20(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -39076,25 +38944,25 @@ function ownKeys23(e, r) {
   }
   return t;
 }
-function _objectSpread23(e) {
+function _objectSpread20(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys23(Object(t), true).forEach(function(r2) {
-      _defineProperty42(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys23(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys20(Object(t), true).forEach(function(r2) {
+      _defineProperty40(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys20(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty42(e, r, t) {
-  return (r = _toPropertyKey45(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty40(e, r, t) {
+  return (r = _toPropertyKey44(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey45(t) {
-  var i = _toPrimitive45(t, "string");
+function _toPropertyKey44(t) {
+  var i = _toPrimitive44(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive45(t, r) {
+function _toPrimitive44(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -39444,7 +39312,7 @@ function PostQuest(completed) {
       var available6 = _ref.available;
       return undelay(available6 !== null && available6 !== void 0 ? available6 : true);
     }).map(function(task) {
-      return _objectSpread23(_objectSpread23({}, task), {}, {
+      return _objectSpread20(_objectSpread20({}, task), {}, {
         spendsTurn: false
       });
     })
@@ -39789,7 +39657,7 @@ function _arrayLikeToArray80(r, a) {
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
   return n;
 }
-function ownKeys24(e, r) {
+function ownKeys21(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -39799,25 +39667,25 @@ function ownKeys24(e, r) {
   }
   return t;
 }
-function _objectSpread24(e) {
+function _objectSpread21(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys24(Object(t), true).forEach(function(r2) {
-      _defineProperty43(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys24(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys21(Object(t), true).forEach(function(r2) {
+      _defineProperty41(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys21(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty43(e, r, t) {
-  return (r = _toPropertyKey46(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty41(e, r, t) {
+  return (r = _toPropertyKey45(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey46(t) {
-  var i = _toPrimitive46(t, "string");
+function _toPropertyKey45(t) {
+  var i = _toPrimitive45(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive46(t, r) {
+function _toPrimitive45(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -39847,8 +39715,8 @@ var DEFAULT_FREE_FIGHT_TASK = {
   }
 };
 function freeFightTask(fragment) {
-  var fullTask = _objectSpread24(_objectSpread24({}, DEFAULT_FREE_FIGHT_TASK), fragment);
-  return _objectSpread24(_objectSpread24({}, fullTask), {}, {
+  var fullTask = _objectSpread21(_objectSpread21({}, DEFAULT_FREE_FIGHT_TASK), fragment);
+  return _objectSpread21(_objectSpread21({}, fullTask), {}, {
     limit: {
       skip: 5 + fullTask.combatCount()
     }
@@ -40473,7 +40341,7 @@ var FreeFightTasks = [
       return clamp(3 - CombatLoversLocket_exports.reminiscesLeft() - locketsToSave(), 0, 3);
     }
   },
-  _objectSpread24(_objectSpread24({}, doCandyTrick()), {}, {
+  _objectSpread21(_objectSpread21({}, doCandyTrick()), {}, {
     combatCount: function() {
       return 5;
     },
@@ -40722,7 +40590,7 @@ function _arrayLikeToArray81(r, a) {
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
   return n;
 }
-function ownKeys25(e, r) {
+function ownKeys22(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -40732,25 +40600,25 @@ function ownKeys25(e, r) {
   }
   return t;
 }
-function _objectSpread25(e) {
+function _objectSpread22(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys25(Object(t), true).forEach(function(r2) {
-      _defineProperty44(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys25(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys22(Object(t), true).forEach(function(r2) {
+      _defineProperty42(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys22(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty44(e, r, t) {
-  return (r = _toPropertyKey47(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty42(e, r, t) {
+  return (r = _toPropertyKey46(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey47(t) {
-  var i = _toPrimitive47(t, "string");
+function _toPropertyKey46(t) {
+  var i = _toPrimitive46(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive47(t, r) {
+function _toPrimitive46(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -40763,7 +40631,7 @@ function _toPrimitive47(t, r) {
 function sandwormSpec() {
   var _spec$equip;
   var spec = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  var copy = _objectSpread25(_objectSpread25({}, spec), {}, {
+  var copy = _objectSpread22(_objectSpread22({}, spec), {}, {
     equip: _toConsumableArray59((_spec$equip = spec.equip) !== null && _spec$equip !== void 0 ? _spec$equip : [])
   });
   var itemDropBonus = 0.1 / 1e4 * garboValue($item(_templateObject897 || (_templateObject897 = _taggedTemplateLiteral124(["spice melange"]))));
@@ -40785,7 +40653,7 @@ function sandwormSpec() {
   if (familiar10 === $familiar(_templateObject978 || (_templateObject978 = _taggedTemplateLiteral124(["Jill-of-All-Trades"])))) {
     var _copy$equip4;
     (_copy$equip4 = copy.equip) === null || _copy$equip4 === void 0 || _copy$equip4.push($item(_templateObject1067 || (_templateObject1067 = _taggedTemplateLiteral124(["LED candle"]))));
-    copy.modes = _objectSpread25(_objectSpread25({}, copy.modes), {}, {
+    copy.modes = _objectSpread22(_objectSpread22({}, copy.modes), {}, {
       jillcandle: "disco"
     });
   }
@@ -40813,8 +40681,8 @@ var DEFAULT_SANDWORM_TASK = {
   tentacle: true
 };
 function sandwormTask(fragment) {
-  var fullTask = _objectSpread25(_objectSpread25({}, DEFAULT_SANDWORM_TASK), fragment);
-  return _objectSpread25(_objectSpread25({}, fullTask), {}, {
+  var fullTask = _objectSpread22(_objectSpread22({}, DEFAULT_SANDWORM_TASK), fragment);
+  return _objectSpread22(_objectSpread22({}, fullTask), {}, {
     limit: {
       skip: 5 + fullTask.combatCount()
     }
@@ -40836,8 +40704,8 @@ var NON_SANDWORM_TASK = {
   tentacle: false
 };
 function nonSandwormTask(fragment) {
-  var fullTask = _objectSpread25(_objectSpread25({}, NON_SANDWORM_TASK), fragment);
-  return _objectSpread25(_objectSpread25({}, fullTask), {}, {
+  var fullTask = _objectSpread22(_objectSpread22({}, NON_SANDWORM_TASK), fragment);
+  return _objectSpread22(_objectSpread22({}, fullTask), {}, {
     limit: {
       skip: 1
     }
@@ -41560,13 +41428,13 @@ function _classCallCheck31(a, n) {
 function _defineProperties31(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey48(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey47(o.key), o);
   }
 }
 function _createClass31(e, r, t) {
   return r && _defineProperties31(e.prototype, r), t && _defineProperties31(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function ownKeys26(e, r) {
+function ownKeys23(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -41576,25 +41444,25 @@ function ownKeys26(e, r) {
   }
   return t;
 }
-function _objectSpread26(e) {
+function _objectSpread23(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys26(Object(t), true).forEach(function(r2) {
-      _defineProperty45(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys26(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys23(Object(t), true).forEach(function(r2) {
+      _defineProperty43(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys23(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty45(e, r, t) {
-  return (r = _toPropertyKey48(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty43(e, r, t) {
+  return (r = _toPropertyKey47(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey48(t) {
-  var i = _toPrimitive48(t, "string");
+function _toPropertyKey47(t) {
+  var i = _toPrimitive47(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive48(t, r) {
+function _toPrimitive47(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -41789,7 +41657,7 @@ function dailyFights() {
           property: "_garbo_weightChain",
           macro: secondChainMacro,
           goalMaximize: function(spec) {
-            return Outfit.from(_objectSpread26(_objectSpread26({}, spec), {}, {
+            return Outfit.from(_objectSpread23(_objectSpread23({}, spec), {}, {
               modifier: ["Familiar Weight"]
             }), new Error("Unable to build outfit for weight chain!")).dress();
           }
@@ -41825,7 +41693,7 @@ function dailyFights() {
           if (have(chip)) {
             profSpec.famequip = chip;
           }
-          goalMaximize(_objectSpread26(_objectSpread26({}, profSpec), fightSource.spec));
+          goalMaximize(_objectSpread23(_objectSpread23({}, profSpec), fightSource.spec));
           if (get("_pocketProfessorLectures") < PocketProfessor_exports.totalAvailableLectures()) {
             var _eventLog$copyTargetS;
             var startLectures = get("_pocketProfessorLectures");
@@ -41867,7 +41735,7 @@ function dailyFights() {
           Snapper_exports.trackPhylum(globalOptions.target.phylum);
         }
         (0, import_kolmafia130.setLocation)(location);
-        meatTargetOutfit(_objectSpread26(_objectSpread26({}, nextFight.spec), famSpec), location).dress();
+        meatTargetOutfit(_objectSpread23(_objectSpread23({}, nextFight.spec), famSpec), location).dress();
         runTargetFight(nextFight, {
           action: nextFight.name
         });
@@ -41893,10 +41761,10 @@ var FreeFight = /* @__PURE__ */ function() {
   function FreeFight2(available6, run, tentacle) {
     var options = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
     _classCallCheck31(this, FreeFight2);
-    _defineProperty45(this, "available", void 0);
-    _defineProperty45(this, "run", void 0);
-    _defineProperty45(this, "tentacle", void 0);
-    _defineProperty45(this, "options", void 0);
+    _defineProperty43(this, "available", void 0);
+    _defineProperty43(this, "run", void 0);
+    _defineProperty43(this, "tentacle", void 0);
+    _defineProperty43(this, "options", void 0);
     this.available = available6;
     this.run = run;
     this.tentacle = tentacle;
@@ -41957,11 +41825,11 @@ var FreeRunFight = /* @__PURE__ */ function(_FreeFight2) {
     _classCallCheck31(this, FreeRunFight2);
     _this = _callSuper8(this, FreeRunFight2, [available6, function() {
       return null;
-    }, false, _objectSpread26(_objectSpread26({}, options), {}, {
+    }, false, _objectSpread23(_objectSpread23({}, options), {}, {
       macroAllowsFamiliarActions: false
     })]);
-    _defineProperty45(_this, "freeRun", void 0);
-    _defineProperty45(_this, "constraints", void 0);
+    _defineProperty43(_this, "freeRun", void 0);
+    _defineProperty43(_this, "constraints", void 0);
     _this.freeRun = run;
     _this.constraints = freeRunPicker;
     return _this;
@@ -41978,7 +41846,7 @@ var FreeRunFight = /* @__PURE__ */ function(_FreeFight2) {
       var _loop = function _loop2() {
         var _this2$options$spec, _runSource$constraint, _runSource$constraint2, _this2$options$effect, _this2$options$effect2, _this2$options;
         var initialSpec = undelay((_this2$options$spec = _this2.options.spec) !== null && _this2$options$spec !== void 0 ? _this2$options$spec : {});
-        var constraints = _objectSpread26(_objectSpread26({}, freeRunConstraints(initialSpec)), {}, {
+        var constraints = _objectSpread23(_objectSpread23({}, freeRunConstraints(initialSpec)), {}, {
           noFamiliar: function() {
             return "familiar" in initialSpec;
           }
@@ -42920,7 +42788,7 @@ function killRobortCreaturesForFree() {
       setChoice(855, 4);
       garboAdventure($location(_templateObject3582 || (_templateObject3582 = _taggedTemplateLiteral125(["The Copperhead Club"]))), Macro2.abort());
     }
-    freeFightOutfit(_objectSpread26(_objectSpread26({}, freeKill.spec), {}, {
+    freeFightOutfit(_objectSpread23(_objectSpread23({}, freeKill.spec), {}, {
       familiar: $familiar(_templateObject3592 || (_templateObject3592 = _taggedTemplateLiteral125(["Robortender"])))
     })).dress();
     withMacro(freeKill.macro instanceof import_kolmafia130.Item ? Macro2.item(freeKill.macro) : Macro2.skill(freeKill.macro), function() {
@@ -42944,7 +42812,7 @@ function killRobortCreaturesForFree() {
     }) : $familiar(_templateObject3672 || (_templateObject3672 = _taggedTemplateLiteral125(["Robortender"])));
     freeFightOutfit(roboTarget.attributes.includes("FREE") ? {
       familiar: familiar10
-    } : _objectSpread26(_objectSpread26({}, freeKill.spec), {}, {
+    } : _objectSpread23(_objectSpread23({}, freeKill.spec), {}, {
       familiar: familiar10
     })).dress();
     withMacro(isFree(roboTarget) ? Macro2.basicCombat() : freeKill.macro instanceof import_kolmafia130.Item ? Macro2.item(freeKill.macro) : Macro2.skill(freeKill.macro), function() {
@@ -43250,7 +43118,7 @@ function _iterableToArrayLimit42(r, l) {
 function _arrayWithHoles42(r) {
   if (Array.isArray(r)) return r;
 }
-function ownKeys27(e, r) {
+function ownKeys24(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -43260,25 +43128,25 @@ function ownKeys27(e, r) {
   }
   return t;
 }
-function _objectSpread27(e) {
+function _objectSpread24(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys27(Object(t), true).forEach(function(r2) {
-      _defineProperty46(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys27(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys24(Object(t), true).forEach(function(r2) {
+      _defineProperty44(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys24(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty46(e, r, t) {
-  return (r = _toPropertyKey49(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty44(e, r, t) {
+  return (r = _toPropertyKey48(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey49(t) {
-  var i = _toPrimitive49(t, "string");
+function _toPropertyKey48(t) {
+  var i = _toPrimitive48(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive49(t, r) {
+function _toPrimitive48(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -43311,7 +43179,7 @@ var updateParachuteFailure = function() {
   return lastParachuteFailure = (0, import_kolmafia131.totalTurnsPlayed)();
 };
 function wanderTask(details, spec, base) {
-  return _objectSpread27({
+  return _objectSpread24({
     do: function() {
       return wanderer().getTarget(undelay(details));
     },
@@ -43463,7 +43331,7 @@ function lavaDogs(additionalReady, baseSpec) {
       var weapon2 = have($item(_templateObject3030 || (_templateObject3030 = _taggedTemplateLiteral126(["June cleaver"])))) ? $item(_templateObject3189 || (_templateObject3189 = _taggedTemplateLiteral126(["June cleaver"]))) : [];
       var modifier = ["Muscle"];
       if (!have($item(_templateObject3230 || (_templateObject3230 = _taggedTemplateLiteral126(["June cleaver"]))))) modifier.push("-7 Monster Level");
-      return freeFightOutfit(_objectSpread27(_objectSpread27({}, baseSpec), {}, {
+      return freeFightOutfit(_objectSpread24(_objectSpread24({}, baseSpec), {}, {
         modifier: modifier,
         weapon: weapon2,
         avoid: avoid
@@ -43628,7 +43496,7 @@ var NonBarfTurnTasks = [{
       1125: "1&iid=".concat(getBestDupeItem().id)
     };
   }
-}, _objectSpread27(_objectSpread27({
+}, _objectSpread24(_objectSpread24({
   name: "Lava Dogs (drunk)"
 }, lavaDogs(function() {
   return willDrunkAdventure();
@@ -43636,13 +43504,13 @@ var NonBarfTurnTasks = [{
   offhand: $item(_templateObject5423 || (_templateObject5423 = _taggedTemplateLiteral126(["Drunkula's wineglass"])))
 })), {}, {
   sobriety: "drunk"
-}), _objectSpread27(_objectSpread27({
+}), _objectSpread24(_objectSpread24({
   name: "Lava Dogs (sober)"
 }, lavaDogs(function() {
   return !willDrunkAdventure();
 }, {})), {}, {
   sobriety: "sober"
-}), _objectSpread27(_objectSpread27({
+}), _objectSpread24(_objectSpread24({
   name: "Daily Dungeon (drunk)"
 }, dailyDungeon(function() {
   return willDrunkAdventure();
@@ -43654,7 +43522,7 @@ var NonBarfTurnTasks = [{
     });
   },
   sobriety: "drunk"
-}), _objectSpread27(_objectSpread27({
+}), _objectSpread24(_objectSpread24({
   name: "Daily Dungeon (sober)"
 }, dailyDungeon(function() {
   return !willDrunkAdventure();
@@ -43665,13 +43533,13 @@ var NonBarfTurnTasks = [{
     });
   },
   sobriety: "sober"
-}), _objectSpread27(_objectSpread27({
+}), _objectSpread24(_objectSpread24({
   name: "Vamp Out (drunk)"
 }, vampOut(function() {
   return willDrunkAdventure();
 })), {}, {
   sobriety: "drunk"
-}), _objectSpread27(_objectSpread27({
+}), _objectSpread24(_objectSpread24({
   name: "Vamp Out (sober)"
 }, vampOut(function() {
   return !willDrunkAdventure();
@@ -43712,7 +43580,7 @@ var NonBarfTurnTasks = [{
   choices: {
     1091: 7
   }
-}, _objectSpread27(_objectSpread27({
+}, _objectSpread24(_objectSpread24({
   name: "Apriling Saxophone Lucky (drunk)"
 }, aprilingSaxophoneLucky(function() {
   return willDrunkAdventure();
@@ -43723,7 +43591,7 @@ var NonBarfTurnTasks = [{
     };
   },
   sobriety: "drunk"
-}), _objectSpread27(_objectSpread27({
+}), _objectSpread24(_objectSpread24({
   name: "Apriling Saxophone Lucky (sober)"
 }, aprilingSaxophoneLucky(function() {
   return !willDrunkAdventure();
@@ -47080,17 +46948,17 @@ function _classCallCheck32(a, n) {
 function _defineProperties32(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey50(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey49(o.key), o);
   }
 }
 function _createClass32(e, r, t) {
   return r && _defineProperties32(e.prototype, r), t && _defineProperties32(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _toPropertyKey50(t) {
-  var i = _toPrimitive50(t, "string");
+function _toPropertyKey49(t) {
+  var i = _toPrimitive49(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive50(t, r) {
+function _toPrimitive49(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
