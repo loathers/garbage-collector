@@ -15,7 +15,6 @@ import {
   itemType,
   Location,
   mpCost,
-  myAdventures,
   myBuffedstat,
   myClass,
   myFamiliar,
@@ -59,7 +58,7 @@ import {
 } from "libram";
 import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
-import { digitizedMonstersRemaining } from "./turns";
+import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
 import {
   gooseDroneEligible,
   isStrongScaler,
@@ -71,16 +70,14 @@ import { CombatStrategy } from "grimoire-kolmafia";
 import { copyTargetCount } from "./target";
 
 export function shouldRedigitize(): boolean {
-  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
+  if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
+  const digitizesRemaining = SourceTerminal.getDigitizeUsesRemaining();
+  const digitizeChunks = 1 + digitizesRemaining;
   const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
   // triangular number * 10 - 3
   const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
-  // Redigitize if fewer adventures than this digitize usage.
-  return (
-    SourceTerminal.have() &&
-    SourceTerminal.canDigitize() &&
-    myAdventures() * 1.04 < digitizesLeft * digitizeAdventuresUsed
-  );
+  // Redigitize if we've spent too many turns in this "chunk" of our digitize day
+  return estimatedGarboTurns() / digitizeChunks < digitizeAdventuresUsed;
 }
 
 export class Macro extends StrictMacro {
