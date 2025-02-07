@@ -14,7 +14,6 @@ import {
   putStash,
   refreshStash,
   retrieveItem,
-  retrievePrice,
   stashAmount,
   takeStash,
   toItem,
@@ -29,6 +28,7 @@ import {
   $slot,
   Clan,
   get,
+  getAcquirePrice,
   getFoldGroup,
   have,
   set,
@@ -171,8 +171,8 @@ export class StashManager {
       Macro.if_(globalOptions.target, Macro.attack().repeat())
         .tryItem(
           ...$items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`
-            .filter((i) => retrievePrice(i) < get("valueOfAdventure"))
-            .sort((a, b) => retrievePrice(a) - retrievePrice(b)),
+            .filter((i) => getAcquirePrice(i) < get("valueOfAdventure"))
+            .sort((a, b) => getAcquirePrice(a) - getAcquirePrice(b)),
         )
         .step("runaway")
         .submit();
