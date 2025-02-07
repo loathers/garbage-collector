@@ -133,16 +133,14 @@ export function menu(
 
   const meatFam = meatFamiliar();
 
-  if (!familiarMenu.some(({ familiar }) => familiar === meatFam)) {
-    familiarMenu.push({
-      familiar: meatFam,
-      expectedValue: 0,
-      leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
-      limit: "none",
-      // Because strictly speaking this is better than using no familiar at all
-      worksOnFreeRun: true,
-    });
-  }
+  familiarMenu.push({
+    familiar: meatFam,
+    expectedValue: 0,
+    leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
+    limit: "none",
+    // Because strictly speaking this is better than using no familiar at all
+    worksOnFreeRun: true,
+  });
 
   return familiarMenu.filter(
     ({ familiar, worksOnFreeRun }) =>
