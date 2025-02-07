@@ -111,6 +111,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       holiday().includes("Dependence Day")
         ? 0.05 * garboValue($item`souvenir flag`)
         : 0,
+    worksOnFreeRun: true,
   },
   {
     familiar: $familiar`Mini Kiwi`,

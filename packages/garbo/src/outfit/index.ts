@@ -1,6 +1,6 @@
 export { barfOutfit } from "./barf";
 export { meatTargetOutfit } from "./target";
-export { freeFightOutfit } from "./free";
+export { freeFightOutfit, FreeFightOutfitMenuOptions } from "./free";
 export {
   familiarWaterBreathingEquipment,
   waterBreathingEquipment,

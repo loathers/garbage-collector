@@ -32,7 +32,7 @@ import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
 
-type MenuOptions = Partial<{
+export type FamiliarMenuOptions = Partial<{
   canChooseMacro: boolean;
   location: Location;
   extraFamiliars: GeneralFamiliar[];
@@ -51,7 +51,7 @@ export function menu(
     includeExperienceFamiliars = true,
     allowAttackFamiliars = true,
     mode = "free",
-  } = {} as MenuOptions,
+  } = {} as FamiliarMenuOptions,
 ): GeneralFamiliar[] {
   const familiarMenu = [
     ...getConstantValueFamiliars(mode),
@@ -180,7 +180,7 @@ export function getAllJellyfishDrops(): {
 }
 
 export function freeFightFamiliarData(
-  options: Partial<MenuOptions> = {},
+  options: Partial<FamiliarMenuOptions> = {},
 ): GeneralFamiliar {
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
     if (a === null) return b;
@@ -199,6 +199,6 @@ export function freeFightFamiliarData(
   });
 }
 
-export function freeFightFamiliar(options: MenuOptions = {}): Familiar {
+export function freeFightFamiliar(options: FamiliarMenuOptions = {}): Familiar {
   return freeFightFamiliarData(options).familiar;
 }
