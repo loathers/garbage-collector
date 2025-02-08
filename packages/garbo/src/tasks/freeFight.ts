@@ -295,6 +295,20 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       mallPrice($item`crappy waiter disguise`)
         ? [$effect`Crappily Disguised as a Waiter`]
         : [],
+    outfit: () =>
+      freeFightOutfit(
+        {
+          bonuses: new Map<Item, number>(
+            $items`eldritch hat, eldritch pants, eldritch hammer`.map(
+              (item) => [
+                item,
+                (11 / 200) * garboValue($item`eldritch effluvium`),
+              ],
+            ),
+          ),
+        },
+        { canChooseMacro: false },
+      ),
     combat: new GarboStrategy(() =>
       Macro.if_(
         $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`,
