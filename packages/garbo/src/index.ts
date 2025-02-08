@@ -84,11 +84,12 @@ import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
 import {
   BarfTurnQuests,
+  CockroachFinish,
+  CockroachSetup,
   PostQuest,
   runGarboQuests,
   SetupTargetCopyQuest,
 } from "./tasks";
-import { CockroachFinish, CockroachSetup } from "./tasks/cockroachPrep";
 import { doingGregFight, hasMonsterReplacers } from "./resources";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
