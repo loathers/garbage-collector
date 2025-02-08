@@ -54,17 +54,29 @@ function isValuable(thing: Item | Effect): boolean {
 const debuffedEnough = () =>
   Stat.all().every((stat) => myBuffedstat(stat) <= 100);
 
-const effectiveDebuffQuantity = (effect: Effect, stat: Stat) =>
+const effectiveDebuffQuantity = (
+  effect: Effect,
+  stat: Stat,
+  shrugging: boolean,
+) =>
   clamp(
-    getModifier(stat.toString(), effect) +
-      // Eyepatch caps you at 30
-      (30 / 100) * getModifier(`${stat.toString()} Percent`, effect),
+    (shrugging ? -1 : 1) *
+      (getModifier(stat.toString(), effect) +
+        // Eyepatch caps you at 30
+        (30 / 100) * getModifier(`${stat.toString()} Percent`, effect)),
     100 - myBuffedstat(stat),
     0,
   );
 
-function debuffEfficacy(item: Item, effect: Effect, stat: Stat) {
-  return (-1 * effectiveDebuffQuantity(effect, stat)) / mallPrice(item);
+function debuffEfficacy(
+  item: Item,
+  effect: Effect,
+  stat: Stat,
+  shrugging: boolean,
+) {
+  return (
+    (-1 * effectiveDebuffQuantity(effect, stat, shrugging)) / mallPrice(item)
+  );
 }
 
 const itemBanList = $items`pill cup`;
@@ -93,7 +105,7 @@ const getDebuffItems = (stat: Stat) =>
 
 function getBestDebuffItem(stat: Stat): Item | Effect {
   const bestPotion = maxBy(getDebuffItems(stat), ({ item, effect }) =>
-    debuffEfficacy(item, effect, stat),
+    debuffEfficacy(item, effect, stat, false),
   );
 
   const effectsToShrug = getActiveEffects().filter(
@@ -104,15 +116,15 @@ function getBestDebuffItem(stat: Stat): Item | Effect {
 
   const bestEffectToShrug = maxBy(
     effectsToShrug,
-    (ef) => effectiveDebuffQuantity(ef, stat),
+    (ef) => effectiveDebuffQuantity(ef, stat, true),
     true,
   );
-  return (-1 * effectiveDebuffQuantity(bestEffectToShrug, stat)) /
+  return effectiveDebuffQuantity(bestEffectToShrug, stat, true) /
     mallPrice($item`soft green echo eyedrop antidote`) >
-    effectiveDebuffQuantity(bestPotion.effect, stat) /
+    effectiveDebuffQuantity(bestPotion.effect, stat, false) /
       mallPrice(bestPotion.item)
-    ? bestPotion.item
-    : bestEffectToShrug;
+    ? bestEffectToShrug
+    : bestPotion.item;
 }
 
 function shouldRemove(effect: Effect) {
