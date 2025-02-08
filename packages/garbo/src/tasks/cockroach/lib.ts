@@ -62,6 +62,11 @@ const effectiveDebuffQuantity = (effect: Effect, stat: Stat) =>
     100 - myBuffedstat(stat),
     0,
   );
+
+function debuffEfficacy(item: Item, effect: Effect, stat: Stat) {
+  return (-1 * effectiveDebuffQuantity(effect, stat)) / mallPrice(item);
+}
+
 const itemBanList = $items`pill cup`;
 
 const possibleDebuffItems: Partial<
@@ -87,11 +92,8 @@ const getDebuffItems = (stat: Stat) =>
     ));
 
 function getBestDebuffItem(stat: Stat): Item | Effect {
-  const bestPotion = maxBy(
-    getDebuffItems(stat),
-    ({ item, effect }) =>
-      effectiveDebuffQuantity(effect, stat) / mallPrice(item),
-    true,
+  const bestPotion = maxBy(getDebuffItems(stat), ({ item, effect }) =>
+    debuffEfficacy(item, effect, stat),
   );
 
   const effectsToShrug = getActiveEffects().filter(
@@ -105,12 +107,12 @@ function getBestDebuffItem(stat: Stat): Item | Effect {
     (ef) => effectiveDebuffQuantity(ef, stat),
     true,
   );
-  return effectiveDebuffQuantity(bestEffectToShrug, stat) /
+  return (-1 * effectiveDebuffQuantity(bestEffectToShrug, stat)) /
     mallPrice($item`soft green echo eyedrop antidote`) >
     effectiveDebuffQuantity(bestPotion.effect, stat) /
       mallPrice(bestPotion.item)
-    ? bestEffectToShrug
-    : bestPotion.effect;
+    ? bestPotion.item
+    : bestEffectToShrug;
 }
 
 function shouldRemove(effect: Effect) {
