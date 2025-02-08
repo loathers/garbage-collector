@@ -5,6 +5,7 @@ import {
   $item,
   $items,
   $location,
+  clamp,
   get,
   getActiveEffects,
   getModifier,
@@ -65,7 +66,15 @@ function isValuable(thing: Item | Effect): boolean {
 const debuffedEnough = () =>
   Stat.all().every((stat) => myBuffedstat(stat) <= 100);
 
-function getBestDebuffItem(stat: Stat): Item {
+const effectiveDebuffQuantity = (effect: Effect, stat: Stat) =>
+  clamp(
+    getModifier(stat.toString(), effect) +
+      (30 / 100) * getModifier(`${stat.toString()} Percent`, effect),
+    100 - myBuffedstat(stat),
+    0,
+  );
+
+function getBestDebuffItem(stat: Stat): Item | Effect {
   const itemBanList = $items`pill cup`;
   const debuffs = Item.all()
     .filter(
@@ -80,47 +89,74 @@ function getBestDebuffItem(stat: Stat): Item {
       ({ effect }) =>
         effect !== $effect.none &&
         !have(effect) &&
-        getModifier(stat.toString(), effect) < 0,
+        ([stat.toString(), `${stat.toString()} Percent`] as const).some(
+          (mod) => getModifier(mod, effect) < 0,
+        ),
     );
 
-  return maxBy(
+  const bestPotion = maxBy(
     debuffs,
     ({ item, effect }) =>
-      mallPrice(item) / getModifier(stat.toString(), effect),
-  ).item;
+      mallPrice(item) / effectiveDebuffQuantity(effect, stat),
+  );
+
+  const effectsToShrug = getActiveEffects().filter(
+    (ef) => !isShruggable(ef) && shouldRemove(ef),
+  );
+
+  if (!effectsToShrug.length) return bestPotion.item;
+
+  const bestEffectToShrug = maxBy(
+    effectsToShrug,
+    (ef) => effectiveDebuffQuantity(ef, stat),
+    true,
+  );
+  return effectiveDebuffQuantity(bestEffectToShrug, stat) /
+    mallPrice($item`soft green echo eyedrop antidote`) >
+    effectiveDebuffQuantity(bestPotion.effect, stat) /
+      mallPrice(bestPotion.item)
+    ? bestEffectToShrug
+    : bestPotion.effect;
+}
+
+function shouldRemove(effect: Effect) {
+  // Only shrug effects that buff at least one stat that's too high
+  if (!improvedStats(effect).some((stat) => myBuffedstat(stat) >= 100))
+    return false;
+  // Never shrug effects that give meat or whatever
+  if (isValuable(effect)) return false;
+  return true;
 }
 
 // Just checking for the gummi effects for now, maybe can check other stuff later?
 function checkAndFixOvercapStats(): void {
   if (debuffedEnough()) return;
 
-  for (const isShruggablePass of [true, false]) {
-    for (const ef of getActiveEffects()) {
-      // First check all shruggable buffs, then all unshruggable
-      if (isShruggable(ef) !== isShruggablePass) continue;
-      // Only shrug effects that buff at least one stat that's too high
-      if (!improvedStats(ef).some((stat) => myBuffedstat(stat) > 100)) continue;
-      // Don't shrug effects that give meat or other stuff
-      if (isValuable(ef)) continue;
+  for (const effect of getActiveEffects()) {
+    if (!isShruggable(effect)) continue;
+    if (!shouldRemove(effect)) continue;
 
-      uneffect(ef);
+    uneffect(effect);
 
-      if (debuffedEnough()) return;
-    }
+    if (debuffedEnough()) return;
   }
 
   let debuffItemLoops = 0;
   while (!debuffedEnough()) {
-    if (debuffItemLoops > 11) {
+    if (debuffItemLoops > 27) {
       abort("Spent too long trying to debuff for PirateRealm!");
     }
 
     debuffItemLoops++;
     for (const stat of Stat.all()) {
       if (myBuffedstat(stat) > 100) {
-        const debuffPotion = getBestDebuffItem(stat);
-        retrieveItem(debuffPotion);
-        use(debuffPotion);
+        const debuff = getBestDebuffItem(stat);
+        if (debuff instanceof Item) {
+          retrieveItem(debuff);
+          use(debuff);
+        } else {
+          uneffect(debuff);
+        }
       }
     }
   }
