@@ -5,6 +5,8 @@ import {
   canAdventure,
   canEquip,
   changeMcd,
+  currentHitStat,
+  equippedItem,
   getCampground,
   gnomadsAvailable,
   guildStoreAvailable,
@@ -17,6 +19,7 @@ import {
   itemType,
   mallPrice,
   Monster,
+  myBuffedstat,
   myClass,
   myInebriety,
   myMaxhp,
@@ -43,6 +46,8 @@ import {
   $monsters,
   $phyla,
   $skill,
+  $slot,
+  $stat,
   BurningLeaves,
   ChateauMantegna,
   clamp,
@@ -290,15 +295,32 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       mallPrice($item`crappy waiter disguise`)
         ? [$effect`Crappily Disguised as a Waiter`]
         : [],
+    outfit: () =>
+      freeFightOutfit(
+        {
+          bonuses: new Map<Item, number>(
+            $items`eldritch hat, eldritch pants, eldritch hammer`.map(
+              (item) => [
+                item,
+                (11 / 200) * garboValue($item`eldritch effluvium`),
+              ],
+            ),
+          ),
+        },
+        { canChooseMacro: false },
+      ),
     combat: new GarboStrategy(() =>
       Macro.if_(
         $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`,
-        Macro.trySkillRepeat(
-          $skill`Awesome Balls of Fire`,
-          $skill`Eggsplosion`,
-          $skill`Saucegeyser`,
-          $skill`Weapon of the Pastalord`,
-          $skill`Lunging Thrust-Smack`,
+        Macro.externalIf(
+          have($effect`Crappily Disguised as a Waiter`),
+          Macro.externalIf(
+            myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`) &&
+              (currentHitStat() === $stat`Muscle` ||
+                itemType(equippedItem($slot`weapon`)) === "knife"),
+            Macro.trySkillRepeat($skill`Lunging Thrust-Smack`),
+            Macro.trySkillRepeat($skill`Saucegeyser`),
+          ),
         )
           .attack()
           .repeat(),
