@@ -5,6 +5,8 @@ import {
   canAdventure,
   canEquip,
   changeMcd,
+  currentHitStat,
+  equippedItem,
   getCampground,
   gnomadsAvailable,
   guildStoreAvailable,
@@ -18,6 +20,7 @@ import {
   Location,
   mallPrice,
   Monster,
+  myBuffedstat,
   myClass,
   myInebriety,
   myMaxhp,
@@ -41,8 +44,11 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
   $phyla,
   $skill,
+  $slot,
+  $stat,
   BurningLeaves,
   ChateauMantegna,
   clamp,
@@ -79,6 +85,11 @@ export type GarboFreeFightTask = Extract<
   combatCount: () => number;
   tentacle: boolean; // if a tentacle fight can follow
 };
+
+function cupidBonus() {
+  const toyCupidValue = garboValue($item`self-dribbling basketball`) / 5;
+  return new Map([[$item`toy Cupid bow`, toyCupidValue]]);
+}
 
 const DEFAULT_FREE_FIGHT_TASK = {
   // GarboTask
@@ -132,7 +143,7 @@ const tearawayPantsFreeFightOutfit = () =>
         ],
       ]),
     },
-    { canChooseMacro: false, allowAttackFamiliars: false },
+    { familiarOptions: { canChooseMacro: false, allowAttackFamiliars: false } },
   );
 
 function litLeafMacro(monster: Monster): Macro {
@@ -285,15 +296,32 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       mallPrice($item`crappy waiter disguise`)
         ? [$effect`Crappily Disguised as a Waiter`]
         : [],
+    outfit: () =>
+      freeFightOutfit(
+        {
+          bonuses: new Map<Item, number>(
+            $items`eldritch hat, eldritch pants, eldritch hammer`.map(
+              (item) => [
+                item,
+                (11 / 200) * garboValue($item`eldritch effluvium`),
+              ],
+            ),
+          ),
+        },
+        { familiarOptions: { canChooseMacro: false } },
+      ),
     combat: new GarboStrategy(() =>
       Macro.if_(
         $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`,
-        Macro.trySkillRepeat(
-          $skill`Awesome Balls of Fire`,
-          $skill`Eggsplosion`,
-          $skill`Saucegeyser`,
-          $skill`Weapon of the Pastalord`,
-          $skill`Lunging Thrust-Smack`,
+        Macro.externalIf(
+          have($effect`Crappily Disguised as a Waiter`),
+          Macro.externalIf(
+            myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`) &&
+              (currentHitStat() === $stat`Muscle` ||
+                itemType(equippedItem($slot`weapon`)) === "knife"),
+            Macro.trySkillRepeat($skill`Lunging Thrust-Smack`),
+            Macro.trySkillRepeat($skill`Saucegeyser`),
+          ),
         )
           .attack()
           .repeat(),
@@ -343,7 +371,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           modes: { retrocape: ["robot", "kiss"] },
           avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
         },
-        { canChooseMacro: false },
+        { familiarOptions: { canChooseMacro: false } },
       ),
     prepare: () => {
       restoreHp(myMaxhp());
@@ -407,7 +435,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           modifier: ["1000 mainstat"],
           avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
         },
-        { canChooseMacro: false },
+        { familiarOptions: { canChooseMacro: false } },
       ),
     prepare: () => {
       restoreHp(myMaxhp());
@@ -474,7 +502,8 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       globalOptions.prefs.valueOfFreeFight,
     completed: () => get("_brickoFights") >= 10,
     do: () => use($item`BRICKO ooze`),
-    outfit: () => freeFightOutfit({}, { canChooseMacro: false }),
+    outfit: () =>
+      freeFightOutfit({}, { familiarOptions: { canChooseMacro: false } }),
     combat: new GarboStrategy(() => Macro.basicCombat()),
     combatCount: () => clamp(10 - get("_brickoFights"), 0, 10),
     tentacle: false,
@@ -507,7 +536,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     outfit: () =>
       freeFightOutfit(
         {},
-        { canChooseMacro: false, allowAttackFamiliars: false },
+        {
+          familiarOptions: {
+            canChooseMacro: false,
+            allowAttackFamiliars: false,
+          },
+        },
       ),
     acquire: [{ item: $item`glark cable` }],
     combatCount: () => clamp(5 - get("_glarkCableUses"), 0, 5),
@@ -559,10 +593,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       (have($item`packet of mushroom spores`) ||
         getCampground()["packet of mushroom spores"] !== undefined) &&
       !doingGregFight() &&
-      Counter.get("portscan.edu") === 0 &&
       have($skill`Macrometeorite`) &&
       get("_macrometeoriteUses") < 10,
-    completed: () => get("_mushroomGardenFights") > 0,
+    completed: () => Counter.exists("portscan.edu"),
     prepare: () => {
       if (have($item`packet of mushroom spores`)) {
         use($item`packet of mushroom spores`);
@@ -687,7 +720,11 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         )
         .basicCombat(),
     ),
-    outfit: () => freeFightOutfit({ familiar: $familiar`Machine Elf` }),
+    outfit: () =>
+      freeFightOutfit({
+        familiar: $familiar`Machine Elf`,
+        bonuses: cupidBonus(),
+      }),
     tentacle: false, // Marked like this as 2 DMT fights get overriden by tentacles (could add +1 combat)
     combatCount: () => clamp(5 - get("_machineTunnelsAdv"), 0, 5),
   },
@@ -803,6 +840,34 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // tied-up leaviathan (scaling, has 100 damage source cap and 2500 hp)
   // li'l ninja costume
   // closed-circuit pay phone (make into it's own Quest)
+  {
+    name: "CyberRealm Overclock Fights",
+    ready: () =>
+      canAdventure($location`Cyberzone 1`) &&
+      have($item`zero-trust tanktop`) &&
+      have($skill`Torso Awareness`) &&
+      have($skill`OVERCLOCK(10)`),
+    completed: () => get("_cyberFreeFights") >= 10,
+    do: $location`Cyberzone 1`, // TODO Support other zones with better equipment and valuing hacker drops
+    tentacle: false,
+    choices: { 1545: 1 }, // Take damage, get 0's
+    outfit: () =>
+      freeFightOutfit({
+        bonuses: new Map<Item, number>([
+          [$item`familiar-in-the-middle wrapper`, garboValue($item`1`)],
+          [$item`retro floppy disk`, garboValue($item`1`)],
+          [$item`visual packet sniffer`, garboValue($item`1`) / 4], // unspaded droprate
+        ]),
+        shirt: $item`zero-trust tanktop`,
+      }),
+    combat: new GarboStrategy(() =>
+      Macro.if_(
+        $monsters`firewall, ICE barrier, corruption quarantine, parental controls, null container, zombie process, botfly, network worm, ICE man, rat (remote access trojan)`,
+        Macro.trySkillRepeat($skill`Throw Cyber Rock`),
+      ).basicCombat(),
+    ),
+    combatCount: () => clamp(10 - get("_cyberFreeFights"), 0, 10),
+  },
 ].map(freeFightTask);
 
 // Expected free fights, not including tentacles

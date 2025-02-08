@@ -21,43 +21,38 @@ import { garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
-import { GeneralFamiliar, snapperValue, timeToMeatify } from "./lib";
+import {
+  FamiliarMode,
+  GeneralFamiliar,
+  snapperValue,
+  timeToMeatify,
+} from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
 
-type MenuOptions = Partial<{
+export type FamiliarMenuOptions = Partial<{
   canChooseMacro: boolean;
   location: Location;
   extraFamiliars: GeneralFamiliar[];
   excludeFamiliar: Familiar[];
   includeExperienceFamiliars: boolean;
   allowAttackFamiliars: boolean;
-  mode: "barf" | "free" | "target";
+  mode: FamiliarMode;
 }>;
-const DEFAULT_MENU_OPTIONS = {
-  canChooseMacro: true,
-  location: $location`none`,
-  extraFamiliars: [],
-  excludeFamiliar: [],
-  includeExperienceFamiliars: true,
-  allowAttackFamiliars: true,
-  mode: "free",
-} as const;
-export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
-  const {
-    includeExperienceFamiliars,
-    canChooseMacro,
-    location,
-    extraFamiliars,
-    excludeFamiliar,
-    allowAttackFamiliars,
-    mode,
-  } = {
-    ...DEFAULT_MENU_OPTIONS,
-    ...options,
-  };
+
+export function menu(
+  {
+    canChooseMacro = true,
+    location = $location`none`,
+    extraFamiliars = [],
+    excludeFamiliar = [],
+    includeExperienceFamiliars = true,
+    allowAttackFamiliars = true,
+    mode = "free",
+  } = {} as FamiliarMenuOptions,
+): GeneralFamiliar[] {
   const familiarMenu = [
     ...getConstantValueFamiliars(mode),
     ...getDropFamiliars(),
@@ -73,6 +68,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
           (Math.max(familiarWeight($familiar`Grey Goose`) - 5), 0) ** 4,
         leprechaunMultiplier: 0,
         limit: "experience",
+        worksOnFreeRun: false,
       });
     }
 
@@ -93,6 +89,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
           ) * valueDrops(globalOptions.target),
         leprechaunMultiplier: 0,
         limit: "experience",
+        worksOnFreeRun: false,
       });
     }
 
@@ -102,6 +99,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         expectedValue: snapperValue(),
         leprechaunMultiplier: 0,
         limit: "special",
+        worksOnFreeRun: false,
       });
     }
 
@@ -111,6 +109,7 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
         expectedValue: 2500,
         leprechaunMultiplier: 0,
         limit: "special",
+        worksOnFreeRun: true,
       });
     }
 
@@ -127,23 +126,25 @@ export function menu(options: MenuOptions = {}): GeneralFamiliar[] {
             : 20),
         leprechaunMultiplier: 0,
         limit: "special",
+        worksOnFreeRun: true,
       });
     }
   }
 
   const meatFam = meatFamiliar();
 
-  if (!familiarMenu.some(({ familiar }) => familiar === meatFam)) {
-    familiarMenu.push({
-      familiar: meatFam,
-      expectedValue: 0,
-      leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
-      limit: "none",
-    });
-  }
+  familiarMenu.push({
+    familiar: meatFam,
+    expectedValue: 0,
+    leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
+    limit: "none",
+    // Because strictly speaking this is better than using no familiar at all
+    worksOnFreeRun: true,
+  });
 
   return familiarMenu.filter(
-    ({ familiar }) =>
+    ({ familiar, worksOnFreeRun }) =>
+      (mode !== "run" || worksOnFreeRun) &&
       (allowAttackFamiliars ||
         !(familiar.physicalDamage || familiar.elementalDamage)) &&
       !excludeFamiliar.some(
@@ -179,7 +180,7 @@ export function getAllJellyfishDrops(): {
 }
 
 export function freeFightFamiliarData(
-  options: MenuOptions = {},
+  options: Partial<FamiliarMenuOptions> = {},
 ): GeneralFamiliar {
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
     if (a === null) return b;
@@ -194,9 +195,10 @@ export function freeFightFamiliarData(
     expectedValue: 0,
     leprechaunMultiplier: 0,
     limit: "none",
+    worksOnFreeRun: true,
   });
 }
 
-export function freeFightFamiliar(options: MenuOptions = {}): Familiar {
+export function freeFightFamiliar(options: FamiliarMenuOptions = {}): Familiar {
   return freeFightFamiliarData(options).familiar;
 }

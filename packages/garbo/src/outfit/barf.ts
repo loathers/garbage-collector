@@ -9,7 +9,6 @@ import {
   myFury,
   myInebriety,
   retrieveItem,
-  toJson,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -112,7 +111,7 @@ export function computeBarfOutfit(
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
+    new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
   if (outfit.familiar === $familiar`Jill-of-All-Trades`) {

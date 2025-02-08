@@ -3888,7 +3888,7 @@ __metadata:
     "@types/eslint__js": ^8.42.3
     eslint: ^9.9.0
     eslint-config-prettier: ^9.1.0
-    eslint-plugin-libram: ^0.4.14
+    eslint-plugin-libram: ^0.4.22
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -3912,13 +3912,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.4.14":
-  version: 0.4.14
-  resolution: "eslint-plugin-libram@npm:0.4.14"
+"eslint-plugin-libram@npm:^0.4.22":
+  version: 0.4.22
+  resolution: "eslint-plugin-libram@npm:0.4.22"
   dependencies:
     html-entities: ^2.5.2
     requireindex: ~1.2.0
-  checksum: 5395edbb43cc849010365bfacc0090e9a5111040abbfb934b965112021ac61449e25f6002ee4093f0cfd3ade4b3bf612aa7a804ec37b339f347a161d2aa287c1
+  checksum: 9ea246bb793a9391c7d8b92cb20f7630177e4951b95db7597e4ced0e5e4ec86af15d1e12c40820d533a78114b9e1938a4a7ae7d56a9425efb0ea3ec6581901fd
   languageName: node
   linkType: hard
 
@@ -4335,7 +4335,7 @@ __metadata:
     eslint: ^9.9.0
     eslint-config-garbo: ^0.0.1
     kolmafia: ^5.28067.0
-    libram: ^0.9.12
+    libram: ^0.9.33
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4390,7 +4390,7 @@ __metadata:
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.26
     kolmafia: ^5.28067.0
-    libram: ^0.9.12
+    libram: ^0.9.33
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -5054,14 +5054,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:^0.9.12":
-  version: 0.9.12
-  resolution: "libram@npm:0.9.12"
+"libram@npm:^0.9.33":
+  version: 0.9.33
+  resolution: "libram@npm:0.9.33"
   dependencies:
     html-entities: ^2.5.2
   peerDependencies:
-    kolmafia: ^5.27668.0
-  checksum: 0d023ac40dccf9f23c080d1a83a0e1513fb17710ab89460bdb944d40b46b2bea7530386dbc0164cf2d4c4a1e23a48a740a2ed0426c21ab503746380d31297d1a
+    kolmafia: ^5.28100.0
+  checksum: 03ef26cbed18326675446193792ceea6f5205d6e25b0fca7a7337d97908eefcb2a7ff1bd1fe0d85f3acd87ba310850fbcaca4aa7e40e898188faaa422274db4f
   languageName: node
   linkType: hard
 

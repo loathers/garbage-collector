@@ -1,9 +1,9 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Location, toJson } from "kolmafia";
+import { Location } from "kolmafia";
 import { $familiar, $item, $items, get, Guzzlr, SourceTerminal } from "libram";
 import { WanderDetails } from "garbo-lib";
 
-import { freeFightFamiliar } from "../familiar";
+import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
 import { BonusEquipMode, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { wanderer } from "../garboWanderer";
 
@@ -11,17 +11,15 @@ import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
 
-type MenuOptions = {
-  canChooseMacro?: boolean;
+export type FreeFightOutfitMenuOptions = {
   location?: Location;
-  includeExperienceFamiliars?: boolean;
-  allowAttackFamiliars?: boolean;
   duplicate?: boolean;
   wanderOptions?: WanderDetails;
+  familiarOptions?: FamiliarMenuOptions;
 };
 export function freeFightOutfit(
   spec: OutfitSpec = {},
-  options: MenuOptions = {},
+  options: FreeFightOutfitMenuOptions = {},
 ): Outfit {
   cleaverCheck();
 
@@ -30,13 +28,15 @@ export function freeFightOutfit(
   validateGarbageFoldable(computedSpec);
   const outfit = Outfit.from(
     computedSpec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
+    new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
-  outfit.familiar ??= freeFightFamiliar({
-    ...options,
-    allowAttackFamiliars: computeAllowAttackFamiliars(options),
-  });
+  outfit.familiar ??= freeFightFamiliar(
+    computeFamiliarMenuOptions(
+      options.familiarOptions,
+      options.duplicate ?? false,
+    ),
+  );
   const mode =
     outfit.familiar === $familiar`Machine Elf`
       ? BonusEquipMode.DMT
@@ -110,7 +110,10 @@ export function freeFightOutfit(
   return outfit;
 }
 
-function computeOutfitSpec(spec: OutfitSpec, options: MenuOptions): OutfitSpec {
+function computeOutfitSpec(
+  spec: OutfitSpec,
+  options: FreeFightOutfitMenuOptions,
+): OutfitSpec {
   if (options.wanderOptions) {
     return {
       ...spec,
@@ -123,7 +126,9 @@ function computeOutfitSpec(spec: OutfitSpec, options: MenuOptions): OutfitSpec {
   return spec;
 }
 
-function computeLocation(options: MenuOptions): Location | undefined {
+function computeLocation(
+  options: FreeFightOutfitMenuOptions,
+): Location | undefined {
   if (options.location) {
     return options.location;
   }
@@ -133,16 +138,18 @@ function computeLocation(options: MenuOptions): Location | undefined {
   return undefined;
 }
 
-function computeAllowAttackFamiliars(
-  options: MenuOptions,
-): boolean | undefined {
-  if (options.allowAttackFamiliars !== undefined) {
-    return options.allowAttackFamiliars;
-  }
-  if (options.duplicate) {
-    return (
-      !SourceTerminal.have() || SourceTerminal.duplicateUsesRemaining() === 0
-    );
-  }
-  return undefined;
+function computeFamiliarMenuOptions(
+  options: FamiliarMenuOptions = {},
+  duplicate: boolean,
+): FamiliarMenuOptions {
+  return {
+    ...options,
+    allowAttackFamiliars:
+      options.allowAttackFamiliars ??
+      !(
+        duplicate &&
+        SourceTerminal.have() &&
+        SourceTerminal.duplicateUsesRemaining() > 0
+      ),
+  };
 }

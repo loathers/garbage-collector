@@ -795,6 +795,21 @@ const DailyTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
+    name: "Dispose of Park Garbage",
+    ready: () =>
+      realmAvailable("stench") &&
+      3 * garboValue($item`FunFunds™`) > mallPrice($item`bag of park garbage`),
+    completed: () => get("_dinseyGarbageDisposed"),
+    do: () => {
+      print("Disposing of garbage.", HIGHLIGHT);
+      retrieveItem($item`bag of park garbage`);
+      visitUrl("place.php?whichplace=airport_stench&action=airport3_tunnels");
+      runChoice(6);
+      cliExecute("refresh inv");
+    },
+    spendsTurn: false,
+  },
+  {
     name: "Volcano Quest",
     ready: () => realmAvailable("hot"),
     completed: () => get("_volcanoItemRedeemed"),
