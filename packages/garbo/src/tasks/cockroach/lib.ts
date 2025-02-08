@@ -101,7 +101,7 @@ const getDebuffItems = (stat: Stat) =>
         ([stat.toString(), `${stat.toString()} Percent`] as const).some(
           (mod) => getModifier(mod, effect) < 0,
         ),
-    ));
+    )).filter(({ effect }) => !have(effect));
 
 function getBestDebuffItem(stat: Stat): Item | Effect {
   const bestPotion = maxBy(getDebuffItems(stat), ({ item, effect }) =>
