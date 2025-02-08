@@ -90,7 +90,8 @@ function getBestDebuffItem(stat: Stat): Item | Effect {
   const bestPotion = maxBy(
     getDebuffItems(stat),
     ({ item, effect }) =>
-      mallPrice(item) / effectiveDebuffQuantity(effect, stat),
+      effectiveDebuffQuantity(effect, stat) / mallPrice(item),
+    true,
   );
 
   const effectsToShrug = getActiveEffects().filter(
