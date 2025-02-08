@@ -694,7 +694,9 @@ class FreeRunFight extends FreeFight {
         new Error(`Failed to build outfit from ${JSON.stringify(initialSpec)}`),
       );
       mergingOutfit.equip(toSpec(runSource));
-      freeFightOutfit(mergingOutfit.spec()).dress();
+      freeFightOutfit(mergingOutfit.spec(), {
+        familiarOptions: { mode: "run" },
+      }).dress();
       freeFightMood(...(this.options.effects?.() ?? []));
       safeRestore();
       const curTurncount = myTurncount();

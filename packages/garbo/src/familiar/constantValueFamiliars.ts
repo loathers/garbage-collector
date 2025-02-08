@@ -21,13 +21,14 @@ import {
 } from "libram";
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
-import { GeneralFamiliar } from "./lib";
+import { FamiliarMode, GeneralFamiliar } from "./lib";
 import { Potion } from "../potions";
 import { globalOptions } from "../config";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
-  value: (_mode: "barf" | "free" | "target") => number;
+  value: (_mode: FamiliarMode) => number;
+  worksOnFreeRun?: boolean;
 };
 
 const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
@@ -110,6 +111,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       holiday().includes("Dependence Day")
         ? 0.05 * garboValue($item`souvenir flag`)
         : 0,
+    worksOnFreeRun: true,
   },
   {
     familiar: $familiar`Mini Kiwi`,
@@ -132,6 +134,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       ) *
         peaceTurkeyDropChance()) /
       2,
+    worksOnFreeRun: true,
   },
 ];
 
@@ -140,12 +143,13 @@ function peaceTurkeyDropChance(): number {
 }
 
 export default function getConstantValueFamiliars(
-  mode: "barf" | "free" | "target",
+  mode: FamiliarMode,
 ): GeneralFamiliar[] {
   return standardFamiliars
     .filter(({ familiar }) => have(familiar))
-    .map(({ familiar, value }) => ({
+    .map(({ familiar, value, worksOnFreeRun = false }) => ({
       familiar,
+      worksOnFreeRun,
       expectedValue: value(mode),
       leprechaunMultiplier: findLeprechaunMultiplier(familiar),
       limit: "none",

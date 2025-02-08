@@ -142,7 +142,7 @@ const tearawayPantsFreeFightOutfit = () =>
         ],
       ]),
     },
-    { canChooseMacro: false, allowAttackFamiliars: false },
+    { familiarOptions: { canChooseMacro: false, allowAttackFamiliars: false } },
   );
 
 function litLeafMacro(monster: Monster): Macro {
@@ -370,7 +370,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           modes: { retrocape: ["robot", "kiss"] },
           avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
         },
-        { canChooseMacro: false },
+        { familiarOptions: { canChooseMacro: false } },
       ),
     prepare: () => {
       restoreHp(myMaxhp());
@@ -434,7 +434,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           modifier: ["1000 mainstat"],
           avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
         },
-        { canChooseMacro: false },
+        { familiarOptions: { canChooseMacro: false } },
       ),
     prepare: () => {
       restoreHp(myMaxhp());
@@ -501,7 +501,8 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       globalOptions.prefs.valueOfFreeFight,
     completed: () => get("_brickoFights") >= 10,
     do: () => use($item`BRICKO ooze`),
-    outfit: () => freeFightOutfit({}, { canChooseMacro: false }),
+    outfit: () =>
+      freeFightOutfit({}, { familiarOptions: { canChooseMacro: false } }),
     combat: new GarboStrategy(() => Macro.basicCombat()),
     combatCount: () => clamp(10 - get("_brickoFights"), 0, 10),
     tentacle: false,
@@ -534,7 +535,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     outfit: () =>
       freeFightOutfit(
         {},
-        { canChooseMacro: false, allowAttackFamiliars: false },
+        {
+          familiarOptions: {
+            canChooseMacro: false,
+            allowAttackFamiliars: false,
+          },
+        },
       ),
     acquire: [{ item: $item`glark cable` }],
     combatCount: () => clamp(5 - get("_glarkCableUses"), 0, 5),
