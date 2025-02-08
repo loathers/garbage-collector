@@ -68,7 +68,7 @@ export function menu(
           (Math.max(familiarWeight($familiar`Grey Goose`) - 5), 0) ** 4,
         leprechaunMultiplier: 0,
         limit: "experience",
-        worksOnFreeRun: true,
+        worksOnFreeRun: false,
       });
     }
 
