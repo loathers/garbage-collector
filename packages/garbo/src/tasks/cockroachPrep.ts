@@ -121,8 +121,9 @@ function getBestDebuffItem(stat: Stat): Item | Effect {
 
 function shouldRemove(effect: Effect) {
   // Only shrug effects that buff at least one stat that's too high
-  if (!improvedStats(effect).some((stat) => myBuffedstat(stat) >= 100))
+  if (!improvedStats(effect).some((stat) => myBuffedstat(stat) >= 100)) {
     return false;
+  }
   // Never shrug effects that give meat or whatever
   if (isValuable(effect)) return false;
   return true;
