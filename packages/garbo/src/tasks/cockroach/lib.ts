@@ -8,6 +8,7 @@ import {
   myBuffedstat,
   retrieveItem,
   Stat,
+  StatType,
   use,
 } from "kolmafia";
 import {
@@ -61,10 +62,13 @@ const effectiveDebuffQuantity = (effect: Effect, stat: Stat) =>
     100 - myBuffedstat(stat),
     0,
   );
+const itemBanList = $items`pill cup`;
 
-function getBestDebuffItem(stat: Stat): Item | Effect {
-  const itemBanList = $items`pill cup`;
-  const debuffs = Item.all()
+const possibleDebuffItems: Partial<
+  Record<StatType, { item: Item; effect: Effect }[]>
+> = {};
+const getDebuffItems = (stat: Stat) =>
+  (possibleDebuffItems[stat.toString()] ??= Item.all()
     .filter(
       (i) =>
         i.potion &&
@@ -80,10 +84,11 @@ function getBestDebuffItem(stat: Stat): Item | Effect {
         ([stat.toString(), `${stat.toString()} Percent`] as const).some(
           (mod) => getModifier(mod, effect) < 0,
         ),
-    );
+    ));
 
+function getBestDebuffItem(stat: Stat): Item | Effect {
   const bestPotion = maxBy(
-    debuffs,
+    getDebuffItems(stat),
     ({ item, effect }) =>
       mallPrice(item) / effectiveDebuffQuantity(effect, stat),
   );
