@@ -28836,7 +28836,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("5997a8c1e8f8390f9d67cafa26467f6be121d0ac", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4bd702a87a37e625281ff7fcc4bb5abc9e4e41e6", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -32069,7 +32069,8 @@ var standardFamiliars = [{
   familiar: $familiar(_templateObject2228 || (_templateObject2228 = _taggedTemplateLiteral90(["Patriotic Eagle"]))),
   value: function() {
     return (0, import_kolmafia100.holiday)().includes("Dependence Day") ? 0.05 * garboValue($item(_templateObject2326 || (_templateObject2326 = _taggedTemplateLiteral90(["souvenir flag"])))) : 0;
-  }
+  },
+  worksOnFreeRun: true
 }, {
   familiar: $familiar(_templateObject2425 || (_templateObject2425 = _taggedTemplateLiteral90(["Mini Kiwi"]))),
   value: function(mode) {
@@ -32088,7 +32089,8 @@ var standardFamiliars = [{
       // drops are ~1/2 of the activations, whirled peas are twice as likely to drop
       garboAverageValue.apply(void 0, _toConsumableArray37($items(_templateObject3019 || (_templateObject3019 = _taggedTemplateLiteral90(["whirled peas, whirled peas, piece of cake, peace shooter"]))))) * peaceTurkeyDropChance() / 2
     );
-  }
+  },
+  worksOnFreeRun: true
 }];
 function peaceTurkeyDropChance() {
   return 0.24 + (0, import_kolmafia100.squareRoot)((0, import_kolmafia100.familiarWeight)($familiar(_templateObject3145 || (_templateObject3145 = _taggedTemplateLiteral90(["Peace Turkey"]))))) / 100;
@@ -32098,9 +32100,10 @@ function getConstantValueFamiliars(mode) {
     var familiar10 = _ref.familiar;
     return have(familiar10);
   }).map(function(_ref2) {
-    var familiar10 = _ref2.familiar, value = _ref2.value;
+    var familiar10 = _ref2.familiar, value = _ref2.value, _ref2$worksOnFreeRun = _ref2.worksOnFreeRun, worksOnFreeRun = _ref2$worksOnFreeRun === void 0 ? false : _ref2$worksOnFreeRun;
     return {
       familiar: familiar10,
+      worksOnFreeRun: worksOnFreeRun,
       expectedValue: value(mode),
       leprechaunMultiplier: findLeprechaunMultiplier(familiar10),
       limit: "none"
@@ -32217,14 +32220,15 @@ function dropValue(drop) {
 }
 function valueStandardDropFamiliar(_ref) {
   var _additionalValue;
-  var familiar10 = _ref.familiar, expected8 = _ref.expected, drop = _ref.drop, additionalValue = _ref.additionalValue;
+  var familiar10 = _ref.familiar, expected8 = _ref.expected, drop = _ref.drop, additionalValue = _ref.additionalValue, _ref$worksOnFreeRun = _ref.worksOnFreeRun, worksOnFreeRun = _ref$worksOnFreeRun === void 0 ? false : _ref$worksOnFreeRun;
   var expectedTurns = expectedTurnsValue(expected8, familiar10.dropsToday) || Infinity;
   var expectedValue = dropValue(drop) / expectedTurns + ((_additionalValue = additionalValue === null || additionalValue === void 0 ? void 0 : additionalValue()) !== null && _additionalValue !== void 0 ? _additionalValue : 0);
   return {
     familiar: familiar10,
     expectedValue: expectedValue,
     leprechaunMultiplier: findLeprechaunMultiplier(familiar10),
-    limit: "drops"
+    limit: "drops",
+    worksOnFreeRun: worksOnFreeRun
   };
 }
 var rotatingFamiliars = [{
@@ -32419,7 +32423,8 @@ function valueExperienceFamiliar(_ref, mode) {
     familiar: familiar10,
     expectedValue: undelay(useValue) / (experienceNeeded / estimatedExperience),
     leprechaunMultiplier: findLeprechaunMultiplier(familiar10),
-    limit: "experience"
+    limit: "experience",
+    worksOnFreeRun: false
   };
 }
 function getExperienceFamiliars(mode) {
@@ -32523,7 +32528,8 @@ function menu2() {
         familiar: $familiar(_templateObject2167 || (_templateObject2167 = _taggedTemplateLiteral94(["Grey Goose"]))),
         expectedValue: (Math.max((0, import_kolmafia103.familiarWeight)($familiar(_templateObject3149 || (_templateObject3149 = _taggedTemplateLiteral94(["Grey Goose"])))) - 5), 0) ** 4,
         leprechaunMultiplier: 0,
-        limit: "experience"
+        limit: "experience",
+        worksOnFreeRun: false
       });
     }
     if (mode === "target" && gooseDroneEligible() && get("gooseDronesRemaining") < copyTargetCount()) {
@@ -32539,7 +32545,8 @@ function menu2() {
           ) * valueDrops(globalOptions.target)
         ),
         leprechaunMultiplier: 0,
-        limit: "experience"
+        limit: "experience",
+        worksOnFreeRun: false
       });
     }
     if (mode === "target" && Snapper_exports.have()) {
@@ -32547,7 +32554,8 @@ function menu2() {
         familiar: $familiar(_templateObject5106 || (_templateObject5106 = _taggedTemplateLiteral94(["Red-Nosed Snapper"]))),
         expectedValue: snapperValue(),
         leprechaunMultiplier: 0,
-        limit: "special"
+        limit: "special",
+        worksOnFreeRun: false
       });
     }
     if (canOpenRedPresent()) {
@@ -32555,7 +32563,8 @@ function menu2() {
         familiar: $familiar(_templateObject688 || (_templateObject688 = _taggedTemplateLiteral94(["Crimbo Shrub"]))),
         expectedValue: 2500,
         leprechaunMultiplier: 0,
-        limit: "special"
+        limit: "special",
+        worksOnFreeRun: true
       });
     }
     if (location.zone === "Dinseylandfill" && have($familiar(_templateObject766 || (_templateObject766 = _taggedTemplateLiteral94(["Space Jellyfish"]))))) {
@@ -32563,25 +32572,23 @@ function menu2() {
         familiar: $familiar(_templateObject858 || (_templateObject858 = _taggedTemplateLiteral94(["Space Jellyfish"]))),
         expectedValue: garboValue($item(_templateObject948 || (_templateObject948 = _taggedTemplateLiteral94(["stench jelly"])))) / (get("_spaceJellyfishDrops") < 5 ? get("_spaceJellyfishDrops") + 1 : 20),
         leprechaunMultiplier: 0,
-        limit: "special"
+        limit: "special",
+        worksOnFreeRun: true
       });
     }
   }
   var meatFam = meatFamiliar();
-  if (!familiarMenu.some(function(_ref2) {
-    var familiar10 = _ref2.familiar;
-    return familiar10 === meatFam;
-  })) {
-    familiarMenu.push({
-      familiar: meatFam,
-      expectedValue: 0,
-      leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
-      limit: "none"
-    });
-  }
-  return familiarMenu.filter(function(_ref3) {
-    var familiar10 = _ref3.familiar;
-    return (allowAttackFamiliars || !(familiar10.physicalDamage || familiar10.elementalDamage)) && !excludeFamiliar.some(function(excludedFamiliar) {
+  familiarMenu.push({
+    familiar: meatFam,
+    expectedValue: 0,
+    leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
+    limit: "none",
+    // Because strictly speaking this is better than using no familiar at all
+    worksOnFreeRun: true
+  });
+  return familiarMenu.filter(function(_ref2) {
+    var familiar10 = _ref2.familiar, worksOnFreeRun = _ref2.worksOnFreeRun;
+    return (mode !== "run" || worksOnFreeRun) && (allowAttackFamiliars || !(familiar10.physicalDamage || familiar10.elementalDamage)) && !excludeFamiliar.some(function(excludedFamiliar) {
       return excludedFamiliar === familiar10;
     });
   });
@@ -32616,7 +32623,8 @@ function freeFightFamiliarData() {
     familiar: $familiar.none,
     expectedValue: 0,
     leprechaunMultiplier: 0,
-    limit: "none"
+    limit: "none",
+    worksOnFreeRun: true
   });
 }
 function freeFightFamiliar() {
@@ -32710,6 +32718,44 @@ function _iterableToArray41(r) {
 function _arrayWithoutHoles41(r) {
   if (Array.isArray(r)) return _arrayLikeToArray61(r);
 }
+function ownKeys16(e, r) {
+  var t = Object.keys(e);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e);
+    r && (o = o.filter(function(r2) {
+      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
+    })), t.push.apply(t, o);
+  }
+  return t;
+}
+function _objectSpread16(e) {
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {};
+    r % 2 ? ownKeys16(Object(t), true).forEach(function(r2) {
+      _defineProperty31(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys16(Object(t)).forEach(function(r2) {
+      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
+    });
+  }
+  return e;
+}
+function _defineProperty31(e, r, t) {
+  return (r = _toPropertyKey34(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+}
+function _toPropertyKey34(t) {
+  var i = _toPrimitive34(t, "string");
+  return "symbol" == typeof i ? i : i + "";
+}
+function _toPrimitive34(t, r) {
+  if ("object" != typeof t || !t) return t;
+  var e = t[Symbol.toPrimitive];
+  if (void 0 !== e) {
+    var i = e.call(t, r || "default");
+    if ("object" != typeof i) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r ? String : Number)(t);
+}
 function _slicedToArray34(r, e) {
   return _arrayWithHoles34(r) || _iterableToArrayLimit34(r, e) || _unsupportedIterableToArray61(r, e) || _nonIterableRest34();
 }
@@ -32755,55 +32801,15 @@ function _arrayWithHoles34(r) {
 function _taggedTemplateLiteral96(e, t) {
   return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
 }
-function ownKeys16(e, r) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r && (o = o.filter(function(r2) {
-      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread16(e) {
-  for (var r = 1; r < arguments.length; r++) {
-    var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys16(Object(t), true).forEach(function(r2) {
-      _defineProperty31(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys16(Object(t)).forEach(function(r2) {
-      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-    });
-  }
-  return e;
-}
-function _defineProperty31(e, r, t) {
-  return (r = _toPropertyKey34(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
-}
-function _toPropertyKey34(t) {
-  var i = _toPrimitive34(t, "string");
-  return "symbol" == typeof i ? i : i + "";
-}
-function _toPrimitive34(t, r) {
-  if ("object" != typeof t || !t) return t;
-  var e = t[Symbol.toPrimitive];
-  if (void 0 !== e) {
-    var i = e.call(t, r || "default");
-    if ("object" != typeof i) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r ? String : Number)(t);
-}
 function freeFightOutfit() {
-  var _outfit$familiar;
+  var _outfit$familiar, _options$duplicate;
   var spec = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
   var options = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
   cleaverCheck();
   var computedSpec = computeOutfitSpec(spec, options);
   validateGarbageFoldable(computedSpec);
   var outfit3 = Outfit.from(computedSpec, new Error("Failed to construct outfit from spec ".concat(JSON.stringify(spec), "!")));
-  (_outfit$familiar = outfit3.familiar) !== null && _outfit$familiar !== void 0 ? _outfit$familiar : outfit3.familiar = freeFightFamiliar(_objectSpread16(_objectSpread16({}, options), {}, {
-    allowAttackFamiliars: computeAllowAttackFamiliars(options)
-  }));
+  (_outfit$familiar = outfit3.familiar) !== null && _outfit$familiar !== void 0 ? _outfit$familiar : outfit3.familiar = freeFightFamiliar(computeFamiliarMenuOptions(options.familiarOptions, (_options$duplicate = options.duplicate) !== null && _options$duplicate !== void 0 ? _options$duplicate : false));
   var mode = outfit3.familiar === $familiar(_templateObject690 || (_templateObject690 = _taggedTemplateLiteral96(["Machine Elf"]))) ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   if (outfit3.familiar !== $familiar(_templateObject2169 || (_templateObject2169 = _taggedTemplateLiteral96(["Patriotic Eagle"])))) {
     var familiarExpValue = [[$familiar(_templateObject3151 || (_templateObject3151 = _taggedTemplateLiteral96(["Chest Mimic"]))), MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure") / 50], [$familiar(_templateObject4133 || (_templateObject4133 = _taggedTemplateLiteral96(["Pocket Professor"]))), 11 * get("valueOfAdventure") / 200], [$familiar(_templateObject5107 || (_templateObject5107 = _taggedTemplateLiteral96(["Grey Goose"]))), 15 ** 4 / 400]].find(function(_ref) {
@@ -32867,14 +32873,13 @@ function computeLocation(options) {
   }
   return void 0;
 }
-function computeAllowAttackFamiliars(options) {
-  if (options.allowAttackFamiliars !== void 0) {
-    return options.allowAttackFamiliars;
-  }
-  if (options.duplicate) {
-    return !SourceTerminal_exports.have() || SourceTerminal_exports.duplicateUsesRemaining() === 0;
-  }
-  return void 0;
+function computeFamiliarMenuOptions() {
+  var _options$allowAttackF;
+  var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+  var duplicate = arguments.length > 1 ? arguments[1] : void 0;
+  return _objectSpread16(_objectSpread16({}, options), {}, {
+    allowAttackFamiliars: (_options$allowAttackF = options.allowAttackFamiliars) !== null && _options$allowAttackF !== void 0 ? _options$allowAttackF : !(duplicate && SourceTerminal_exports.have() && SourceTerminal_exports.duplicateUsesRemaining() > 0)
+  });
 }
 
 // src/potions.ts
@@ -39754,8 +39759,10 @@ var tearawayPantsFreeFightOutfit = function() {
   return freeFightOutfit({
     bonuses: /* @__PURE__ */ new Map([[$item(_templateObject5140 || (_templateObject5140 = _taggedTemplateLiteral123(["tearaway pants"]))), get("valueOfAdventure") * TearawayPants_exports.plantsAdventureChance()]])
   }, {
-    canChooseMacro: false,
-    allowAttackFamiliars: false
+    familiarOptions: {
+      canChooseMacro: false,
+      allowAttackFamiliars: false
+    }
   });
 };
 function litLeafMacro(monster) {
@@ -39910,7 +39917,9 @@ var FreeFightTasks = [
           return [item14, 11 / 200 * garboValue($item(_templateObject6131 || (_templateObject6131 = _taggedTemplateLiteral123(["eldritch effluvium"]))))];
         }))
       }, {
-        canChooseMacro: false
+        familiarOptions: {
+          canChooseMacro: false
+        }
       });
     },
     combat: new GarboStrategy(function() {
@@ -39964,7 +39973,9 @@ var FreeFightTasks = [
         },
         avoid: $items(_templateObject8412 || (_templateObject8412 = _taggedTemplateLiteral123(["mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord"])))
       }, {
-        canChooseMacro: false
+        familiarOptions: {
+          canChooseMacro: false
+        }
       });
     },
     prepare: function() {
@@ -40008,7 +40019,9 @@ var FreeFightTasks = [
         modifier: ["1000 mainstat"],
         avoid: $items(_templateObject11113 || (_templateObject11113 = _taggedTemplateLiteral123(["mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord"])))
       }, {
-        canChooseMacro: false
+        familiarOptions: {
+          canChooseMacro: false
+        }
       });
     },
     prepare: function() {
@@ -40075,7 +40088,9 @@ var FreeFightTasks = [
     },
     outfit: function() {
       return freeFightOutfit({}, {
-        canChooseMacro: false
+        familiarOptions: {
+          canChooseMacro: false
+        }
       });
     },
     combat: new GarboStrategy(function() {
@@ -40133,8 +40148,10 @@ var FreeFightTasks = [
     do: $location(_templateObject1374 || (_templateObject1374 = _taggedTemplateLiteral123(["The Red Zeppelin"]))),
     outfit: function() {
       return freeFightOutfit({}, {
-        canChooseMacro: false,
-        allowAttackFamiliars: false
+        familiarOptions: {
+          canChooseMacro: false,
+          allowAttackFamiliars: false
+        }
       });
     },
     acquire: [{
@@ -41871,7 +41888,11 @@ var FreeRunFight = /* @__PURE__ */ function(_FreeFight2) {
         (_runSource$constraint = (_runSource$constraint2 = runSource.constraints).preparation) === null || _runSource$constraint === void 0 || _runSource$constraint.call(_runSource$constraint2);
         var mergingOutfit = Outfit.from(initialSpec, new Error("Failed to build outfit from ".concat(JSON.stringify(initialSpec))));
         mergingOutfit.equip(toSpec(runSource));
-        freeFightOutfit(mergingOutfit.spec()).dress();
+        freeFightOutfit(mergingOutfit.spec(), {
+          familiarOptions: {
+            mode: "run"
+          }
+        }).dress();
         freeFightMood.apply(void 0, _toConsumableArray60((_this2$options$effect = (_this2$options$effect2 = (_this2$options = _this2.options).effects) === null || _this2$options$effect2 === void 0 ? void 0 : _this2$options$effect2.call(_this2$options)) !== null && _this2$options$effect !== void 0 ? _this2$options$effect : []));
         safeRestore();
         var curTurncount = (0, import_kolmafia130.myTurncount)();
@@ -43194,6 +43215,7 @@ var updateParachuteFailure = function() {
   return lastParachuteFailure = (0, import_kolmafia131.totalTurnsPlayed)();
 };
 function wanderTask(details, spec, base) {
+  var additionalOutfitOptions = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
   return _objectSpread24({
     do: function() {
       return wanderer().getTarget(undelay(details));
@@ -43202,9 +43224,9 @@ function wanderTask(details, spec, base) {
       return wanderer().getChoices(undelay(details));
     },
     outfit: function() {
-      return freeFightOutfit(undelay(spec), {
+      return freeFightOutfit(undelay(spec), _objectSpread24({
         wanderOptions: undelay(details)
-      });
+      }, additionalOutfitOptions));
     },
     spendsTurn: false,
     combat: new GarboStrategy(function() {
@@ -43955,6 +43977,10 @@ var BarfTurnTasks = [{
     return !have($item(_templateObject12413 || (_templateObject12413 = _taggedTemplateLiteral126(["carnivorous potted plant"]))));
   }),
   sobriety: "sober"
+}, {
+  familiarOptions: {
+    mode: "run"
+  }
 }), {
   name: "Gingerbread Noon",
   completed: function() {
