@@ -1,4 +1,4 @@
-import { $item, have, $effect, $skill, get } from "libram";
+import { $effect, $item, $skill, get, have } from "libram";
 import { Macro } from "../../combat";
 import { FreeRunSource } from "./lib";
 import { globalOptions } from "../../config";
@@ -6,21 +6,21 @@ import { globalOptions } from "../../config";
 export const RunSources: FreeRunSource[] = [
   {
     name: "Spring Runaway",
-    spec: { acc1: $item`Spring Shoes` },
+    spec: { acc1: $item`spring shoes` },
     macro: Macro.skill($skill`Spring Away`),
     available: () => !have($effect`Everything Looks Green`),
-    have: () => have($item`Spring Shoes`),
+    have: () => have($item`spring shoes`),
   },
   {
     name: "GAP Runaway",
     spec: { pants: $item`Greatest American Pants` },
     macro: Macro.runaway(),
     available: () => get("_navelRunaways") < 3,
-    have: () => have($item`greatest american pants`),
+    have: () => have($item`Greatest American Pants`),
   },
   {
     name: "Navel Ring Runaway",
-    spec: { acc1: $item`Navel Ring of Navel Gazing` },
+    spec: { acc1: $item`navel ring of navel gazing` },
     macro: Macro.runaway(),
     available: () => get("_navelRunaways") < 3,
     have: () => have($item`navel ring of navel gazing`),
