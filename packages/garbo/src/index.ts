@@ -105,7 +105,11 @@ function ensureBarfAccess() {
 
 function defaultTarget() {
   // Can we account for re-entry if we only have certain amounts of copiers left in each of these?
-  if (doingGregFight() && hasMonsterReplacers() && realmAvailable("pirate")) {
+  // We need piraterealm if we're doing gregs of any sort; hasMonsterReplacers tells us if we're chewing extro
+  if (
+    !(doingGregFight() || hasMonsterReplacers()) ||
+    realmAvailable("pirate")
+  ) {
     return $monster`cockroach`;
   }
   if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
