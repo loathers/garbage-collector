@@ -37,6 +37,7 @@ import {
   $coinmaster,
   $item,
   $items,
+  $location,
   $monster,
   $monsters,
   $skill,
