@@ -109,7 +109,10 @@ function defaultTarget() {
   // We need piraterealm if we're doing gregs of any sort; hasMonsterReplacers tells us if we're chewing extro
   if (
     !(doingGregFight() || hasMonsterReplacers()) ||
-    realmAvailable("pirate")
+    (realmAvailable("pirate") &&
+      (questStep("_questPirateRealm") <= 6 ||
+        (questStep("_questPirateRealm") === 7 &&
+          get("_lastPirateRealmIsland") === $location`Trash Island`)))
   ) {
     return $monster`cockroach`;
   }
