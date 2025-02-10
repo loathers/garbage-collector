@@ -29,9 +29,11 @@ import {
   clamp,
   FloristFriar,
   get,
+  getAcquirePrice,
   getRemainingStomach,
   have,
   JuneCleaver,
+  maxBy,
   undelay,
   uneffect,
   withProperty,
@@ -339,11 +341,28 @@ function handleDrenchedInLava(): GarboPostTask {
   };
 }
 
+function acquireAbortFreeRun(): GarboPostTask {
+  const possibleFreeRuns =
+    $items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`.filter(
+      (i) => getAcquirePrice(i) < get("valueOfAdventure"),
+    );
+  const bestFreeRun =
+    possibleFreeRuns.length > 0
+      ? maxBy(possibleFreeRuns, getAcquirePrice, true)
+      : $item`none`;
+  return {
+    name: "Acquire Best Free Run in Case of Abort",
+    completed: () => bestFreeRun === $item`none` || have(bestFreeRun),
+    do: () => acquire(1, bestFreeRun, getAcquirePrice(bestFreeRun)),
+  };
+}
+
 export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
     completed,
     tasks: [
+      acquireAbortFreeRun(),
       ...workshedTasks(),
       handleDrenchedInLava(),
       fallbot(),
