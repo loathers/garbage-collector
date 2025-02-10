@@ -43,6 +43,8 @@ export const stashItems = get("garboStashItems", "")
   .filter((x) => x.trim().length > 0)
   .map((id) => toItem(id));
 
+export const unlimitedFreeRunList = $items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`;
+
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
   const manager = new StashManager();
   try {
@@ -170,7 +172,7 @@ export class StashManager {
       );
       Macro.if_(globalOptions.target, Macro.attack().repeat())
         .tryItem(
-          ...$items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`
+          ...unlimitedFreeRunList
             .filter((i) => getAcquirePrice(i) < get("valueOfAdventure"))
             .sort((a, b) => getAcquirePrice(a) - getAcquirePrice(b)),
         )

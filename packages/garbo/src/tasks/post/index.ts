@@ -58,6 +58,7 @@ import { GarboTask } from "../engine";
 import { hotTubAvailable } from "../../resources/clanVIP";
 import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
 import { autumnAtonManager } from "../../resources";
+import { unlimitedFreeRunList } from "../../clan";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
@@ -342,10 +343,9 @@ function handleDrenchedInLava(): GarboPostTask {
 }
 
 function acquireAbortFreeRun(): GarboPostTask {
-  const possibleFreeRuns =
-    $items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`.filter(
-      (i) => getAcquirePrice(i) < get("valueOfAdventure"),
-    );
+  const possibleFreeRuns = unlimitedFreeRunList.filter(
+    (i) => getAcquirePrice(i) < get("valueOfAdventure"),
+  );
   const bestFreeRun =
     possibleFreeRuns.length > 0
       ? maxBy(possibleFreeRuns, getAcquirePrice, true)
