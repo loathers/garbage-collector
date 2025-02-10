@@ -4,6 +4,7 @@ import {
   canAdventure,
   cliExecute,
   inebrietyLimit,
+  Item,
   itemAmount,
   mallPrice,
   myAdventures,
@@ -342,18 +343,25 @@ function handleDrenchedInLava(): GarboPostTask {
   };
 }
 
+let bestAbortFreeRun: Item | null = null;
+function getBestAbortFreeRun(): Item {
+  if (bestAbortFreeRun === null) {
+    const bestFreeRun = maxBy(unlimitedFreeRunList, getAcquirePrice, true);
+    bestAbortFreeRun =
+      getAcquirePrice(bestFreeRun) < get("valueOfAdventure")
+        ? bestFreeRun
+        : $item.none;
+  }
+  return bestAbortFreeRun;
+}
+
 function acquireAbortFreeRun(): GarboPostTask {
-  const possibleFreeRuns = unlimitedFreeRunList.filter(
-    (i) => getAcquirePrice(i) < get("valueOfAdventure"),
-  );
-  const bestFreeRun =
-    possibleFreeRuns.length > 0
-      ? maxBy(possibleFreeRuns, getAcquirePrice, true)
-      : $item`none`;
   return {
     name: "Acquire Best Free Run in Case of Abort",
-    completed: () => bestFreeRun === $item`none` || have(bestFreeRun),
-    do: () => acquire(1, bestFreeRun, getAcquirePrice(bestFreeRun)),
+    completed: () =>
+      getBestAbortFreeRun() === $item`none` || have(getBestAbortFreeRun()),
+    do: () =>
+      acquire(1, getBestAbortFreeRun(), getAcquirePrice(getBestAbortFreeRun())),
   };
 }
 
