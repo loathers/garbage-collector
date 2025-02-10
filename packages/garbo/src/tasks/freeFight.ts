@@ -17,6 +17,7 @@ import {
   itemAmount,
   itemDropsArray,
   itemType,
+  Location,
   mallPrice,
   Monster,
   myBuffedstat,
@@ -209,7 +210,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       get("questPAGhost") !== "unstarted" &&
       get("ghostLocation") !== null,
     completed: () => get("questPAGhost") === "unstarted",
-    do: () => get("ghostLocation"),
+    do: () => get("ghostLocation") as Location,
     combat: new GarboStrategy(() => Macro.ghostBustin()),
     outfit: () => freeFightOutfit({ back: $item`protonic accelerator pack` }),
     tentacle: true,

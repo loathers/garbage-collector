@@ -37,6 +37,7 @@ import {
   $coinmaster,
   $item,
   $items,
+  $location,
   $monster,
   $monsters,
   $skill,
@@ -51,6 +52,7 @@ import {
   haveInCampground,
   JuneCleaver,
   maxBy,
+  realmAvailable,
   set,
   setCombatFlags,
   setDefaultMaximizeOptions,
@@ -83,10 +85,13 @@ import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
 import {
   BarfTurnQuests,
+  CockroachFinish,
+  CockroachSetup,
   PostQuest,
   runGarboQuests,
   SetupTargetCopyQuest,
 } from "./tasks";
+import { doingGregFight, hasMonsterReplacers } from "./resources";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -101,6 +106,17 @@ function ensureBarfAccess() {
 }
 
 function defaultTarget() {
+  // Can we account for re-entry if we only have certain amounts of copiers left in each of these?
+  // We need piraterealm if we're doing gregs of any sort; hasMonsterReplacers tells us if we're chewing extro
+  if (
+    !(doingGregFight() || hasMonsterReplacers()) ||
+    (realmAvailable("pirate") &&
+      (questStep("_questPirateRealm") <= 6 ||
+        (questStep("_questPirateRealm") === 7 &&
+          get("_lastPirateRealmIsland") === $location`Trash Island`)))
+  ) {
+    return $monster`cockroach`;
+  }
   if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
     return maxBy(
       $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
@@ -523,6 +539,11 @@ export function main(argString = ""): void {
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {
+        // Prepare pirate realm if our copy target is cockroach
+        // How do we handle if garbo was started without enough turns left without dieting to prep?
+        if (globalOptions.target === $monster`cockroach`) {
+          runGarboQuests([CockroachSetup]);
+        }
         // 0. diet stuff.
         if (
           globalOptions.nodiet ||
@@ -560,7 +581,7 @@ export function main(argString = ""): void {
 
         // 2. do some target copy stuff
         freeFights();
-        runGarboQuests([SetupTargetCopyQuest]);
+        runGarboQuests([CockroachFinish, SetupTargetCopyQuest]);
         yachtzeeChain();
         dailyFights();
 
