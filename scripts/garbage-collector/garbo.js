@@ -28841,7 +28841,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b7ff507bf5576c8e6d3d97a6fabfb58f1a14051a", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f6c9b4c2678fc4a05bbfdc8ff8ee8a3f5224704d", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -42388,7 +42388,8 @@ var freeRunFightSources = [].concat(_toConsumableArray60(["cajun", "rawhide", "c
         equip: $items(_templateObject2542 || (_templateObject2542 = _taggedTemplateLiteral125(["mayfly bait necklace"]))),
         bonuses: /* @__PURE__ */ new Map([[$item(_templateObject2552 || (_templateObject2552 = _taggedTemplateLiteral125(["carnivorous potted plant"]))), 100]]),
         familiar: freeFightFamiliar({
-          allowAttackFamiliars: false
+          allowAttackFamiliars: false,
+          mode: "run"
         })
       };
       if (!canPickPocket && bestPickpocketItem) {
