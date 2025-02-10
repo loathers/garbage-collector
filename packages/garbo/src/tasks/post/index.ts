@@ -45,6 +45,7 @@ import {
   bestJuneCleaverOption,
   freeRest,
   juneCleaverChoiceValues,
+  unlimitedFreeRunList,
   valueJuneCleaverOption,
 } from "../../lib";
 import { teleportEffects } from "../../mood";
@@ -58,7 +59,6 @@ import { GarboTask } from "../engine";
 import { hotTubAvailable } from "../../resources/clanVIP";
 import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
 import { autumnAtonManager } from "../../resources";
-import { unlimitedFreeRunList } from "../../clan";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;

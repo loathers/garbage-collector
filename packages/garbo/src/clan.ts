@@ -24,7 +24,6 @@ import {
   $familiar,
   $familiars,
   $item,
-  $items,
   $slot,
   Clan,
   get,
@@ -36,14 +35,12 @@ import {
 } from "libram";
 import { Macro } from "./combat";
 import { globalOptions } from "./config";
-import { HIGHLIGHT, userConfirmDialog } from "./lib";
+import { HIGHLIGHT, unlimitedFreeRunList, userConfirmDialog } from "./lib";
 
 export const stashItems = get("garboStashItems", "")
   .split(",")
   .filter((x) => x.trim().length > 0)
   .map((id) => toItem(id));
-
-export const unlimitedFreeRunList = $items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`;
 
 export function withStash<T>(itemsToTake: Item[], action: () => T): T {
   const manager = new StashManager();
