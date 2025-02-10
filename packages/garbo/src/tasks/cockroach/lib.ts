@@ -15,6 +15,7 @@ import {
   $effect,
   $item,
   $items,
+  $stat,
   clamp,
   get,
   getActiveEffects,
@@ -25,6 +26,7 @@ import {
 } from "libram";
 import { VALUABLE_MODIFIERS } from "../../potions";
 import { garboValue } from "../../garboValue";
+import { acquire } from "../../acquire";
 
 function asEffect(thing: Item | Effect): Effect {
   return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
@@ -140,6 +142,17 @@ function shouldRemove(effect: Effect) {
 // Just checking for the gummi effects for now, maybe can check other stuff later?
 export function checkAndFixOvercapStats(): void {
   if (debuffedEnough()) return;
+
+  // Decorative fountain is both cheap and reusable for -30% muscle, but is not a potion
+  if (
+    myBuffedstat($stat`Muscle`) > 100 &&
+    !have($effect`Sleepy`) &&
+    (have($item`decorative fountain`) ||
+      mallPrice($item`decorative fountain`) < 500)
+  ) {
+    acquire(1, $item`decorative fountain`, 500);
+    use($item`decorative fountain`);
+  }
 
   for (const effect of getActiveEffects()) {
     if (!isShruggable(effect)) continue;
