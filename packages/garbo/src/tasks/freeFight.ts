@@ -307,7 +307,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
             ),
           ),
         },
-        { canChooseMacro: false },
+        { familiarOptions: { canChooseMacro: false } },
       ),
     combat: new GarboStrategy(() =>
       Macro.if_(
