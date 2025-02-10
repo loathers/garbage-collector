@@ -28,7 +28,7 @@ export const CockroachFinish: Quest<GarboTask> = {
       do: $location`Crab Island`,
       outfit: () => {
         const spec = meatTargetOutfit({
-          modifier: ["meat"],
+          modifier: ["20 Meat Drop"],
           equip: $items`PirateRealm eyepatch`,
           avoid: $items`Roman Candelabra`,
         });
