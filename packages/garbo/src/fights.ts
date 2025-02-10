@@ -49,7 +49,6 @@ import {
   takeCloset,
   toInt,
   toItem,
-  toJson,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -692,10 +691,12 @@ class FreeRunFight extends FreeFight {
       runSource.constraints.preparation?.();
       const mergingOutfit = Outfit.from(
         initialSpec,
-        new Error(`Failed to build outfit from ${toJson(initialSpec)}`),
+        new Error(`Failed to build outfit from ${JSON.stringify(initialSpec)}`),
       );
       mergingOutfit.equip(toSpec(runSource));
-      freeFightOutfit(mergingOutfit.spec()).dress();
+      freeFightOutfit(mergingOutfit.spec(), {
+        familiarOptions: { mode: "run" },
+      }).dress();
       freeFightMood(...(this.options.effects?.() ?? []));
       safeRestore();
       const curTurncount = myTurncount();
@@ -818,7 +819,7 @@ const freeFightSources = [
       } else {
         if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
           retrieveItem(1, $item`tennis ball`);
-          retrieveItem(1, $item`Louder Than Bomb`);
+          retrieveItem(1, $item`handful of split pea soup`);
           retrieveItem(1, $item`divine champagne popper`);
         }
         const snokeLimit = getUsingFreeBunnyBanish() ? 1 : 3;
@@ -828,7 +829,7 @@ const freeFightSources = [
             $monster`alielf`,
             Macro.trySkill(
               $skill`Asdon Martin: Spring-Loaded Front Bumper`,
-            ).tryItem($item`Louder Than Bomb`),
+            ).tryItem($item`handful of split pea soup`),
           )
             .if_(
               $monster`cat-alien`,

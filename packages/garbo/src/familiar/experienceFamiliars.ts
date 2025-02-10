@@ -9,26 +9,22 @@ import {
   undelay,
 } from "libram";
 import { globalOptions } from "../config";
-import { estimatedBarfExperience, GeneralFamiliar } from "./lib";
+import { estimatedBarfExperience, FamiliarMode, GeneralFamiliar } from "./lib";
 import { MEAT_TARGET_MULTIPLIER } from "../lib";
 import { mimicExperienceNeeded, shouldChargeMimic } from "../resources";
 
 type ExperienceFamiliar = {
   familiar: Familiar;
-  used:
-    | propertyTypes.BooleanProperty
-    | ((mode: "barf" | "free" | "target") => boolean);
+  used: propertyTypes.BooleanProperty | ((mode: FamiliarMode) => boolean);
   useValue: Delayed<number>;
   baseExp: number;
   xpCost?: number;
-  xpLimit?: (mode: "barf" | "free" | "target") => number;
+  xpLimit?: (mode: FamiliarMode) => number;
 };
 
 const isUsed = (
-  used:
-    | propertyTypes.BooleanProperty
-    | ((mode: "barf" | "free" | "target") => boolean),
-  mode: "barf" | "free" | "target",
+  used: propertyTypes.BooleanProperty | ((mode: FamiliarMode) => boolean),
+  mode: FamiliarMode,
 ) => (typeof used === "string" ? get(used) : used(mode));
 
 const experienceFamiliars: ExperienceFamiliar[] = [
@@ -46,19 +42,17 @@ const experienceFamiliars: ExperienceFamiliar[] = [
   },
   {
     familiar: $familiar`Chest Mimic`,
-    used: (mode: "barf" | "free" | "target") =>
-      !shouldChargeMimic(mode === "barf"),
+    used: (mode: FamiliarMode) => !shouldChargeMimic(mode === "barf"),
     useValue: () => MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure"),
     baseExp: 0,
     xpCost: 50,
-    xpLimit: (mode: "barf" | "free" | "target") =>
-      mimicExperienceNeeded(mode === "barf"),
+    xpLimit: (mode: FamiliarMode) => mimicExperienceNeeded(mode === "barf"),
   },
 ];
 
 function valueExperienceFamiliar(
   { familiar, useValue, xpCost, baseExp }: ExperienceFamiliar,
-  mode: "barf" | "free" | "target",
+  mode: FamiliarMode,
 ): GeneralFamiliar {
   const currentExp =
     familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
@@ -70,11 +64,12 @@ function valueExperienceFamiliar(
     expectedValue: undelay(useValue) / (experienceNeeded / estimatedExperience),
     leprechaunMultiplier: findLeprechaunMultiplier(familiar),
     limit: "experience",
+    worksOnFreeRun: false,
   };
 }
 
 export default function getExperienceFamiliars(
-  mode: "barf" | "free" | "target",
+  mode: FamiliarMode,
 ): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(

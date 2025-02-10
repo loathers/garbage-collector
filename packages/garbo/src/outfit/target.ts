@@ -1,5 +1,4 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { toJson } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -32,7 +31,7 @@ export function meatTargetOutfit(
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}`),
+    new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
   if (targettingMeat()) {

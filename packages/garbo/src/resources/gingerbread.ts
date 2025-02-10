@@ -1,4 +1,5 @@
 import {
+  canAdventure,
   canEquip,
   haveOutfit,
   itemAmount,
@@ -95,7 +96,9 @@ export function bestMidnightAvailable(): {
   choices: { [x in number]: number };
 } {
   const availableMidnights = [
-    ...MIDNIGHTS.filter(({ available }) => available()),
+    ...MIDNIGHTS.filter(
+      ({ location, available }) => canAdventure(location) && available(),
+    ),
     DEFAULT_MIDNIGHT,
   ];
   return maxBy(availableMidnights, ({ value }) => value());

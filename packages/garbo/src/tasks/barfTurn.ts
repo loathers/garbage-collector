@@ -1,4 +1,7 @@
 import {
+  adv1,
+  autosell,
+  autosellPrice,
   availableAmount,
   canAdventure,
   canEquip,
@@ -14,6 +17,7 @@ import {
   myInebriety,
   myLevel,
   myLightning,
+  myLocation,
   myRain,
   myTurncount,
   outfitPieces,
@@ -36,6 +40,7 @@ import {
   ChestMimic,
   clamp,
   Counter,
+  CrepeParachute,
   Delayed,
   ensureEffect,
   get,
@@ -51,6 +56,7 @@ import {
   sum,
   TrainSet,
   undelay,
+  withChoice,
   withProperty,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
@@ -72,6 +78,7 @@ import {
   barfOutfit,
   familiarWaterBreathingEquipment,
   freeFightOutfit,
+  FreeFightOutfitMenuOptions,
   meatTargetOutfit,
   waterBreathingEquipment,
 } from "../outfit";
@@ -104,18 +111,30 @@ const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
 const isSteve = () =>
   get("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`;
 
+let lastParachuteFailure = 0;
+const shouldCheckParachute = () => totalTurnsPlayed() !== lastParachuteFailure;
+const updateParachuteFailure = () =>
+  (lastParachuteFailure = totalTurnsPlayed());
+
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
   base: Omit<GarboTask, "outfit" | "do" | "choices" | "spendsTurn"> & {
     combat?: GarboStrategy;
   },
+  additionalOutfitOptions: Omit<
+    FreeFightOutfitMenuOptions,
+    "wanderOptions"
+  > = {},
 ): GarboTask {
   return {
     do: () => wanderer().getTarget(undelay(details)),
     choices: () => wanderer().getChoices(undelay(details)),
     outfit: () =>
-      freeFightOutfit(undelay(spec), { wanderOptions: undelay(details) }),
+      freeFightOutfit(undelay(spec), {
+        wanderOptions: undelay(details),
+        ...additionalOutfitOptions,
+      }),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat()),
     ...base,
@@ -371,6 +390,20 @@ function canGetFusedFuse() {
   );
 }
 
+function getAutosellableMeltingJunk(): Item[] {
+  return Item.all().filter(
+    (i) =>
+      (getModifier("Lasts Until Rollover", i) ||
+        (globalOptions.ascend && i.quest)) &&
+      itemAmount(i) &&
+      autosellPrice(i) > 0 &&
+      (globalOptions.ascend ||
+        !(
+          ["Adventures", "PvP Fights", "Rollover Effect Duration"] as const
+        ).some((mod) => getModifier(mod))),
+  );
+}
+
 const NonBarfTurnTasks: AlternateTask[] = [
   {
     name: "Make Mimic Eggs (whatever we can)",
@@ -527,6 +560,14 @@ const NonBarfTurnTasks: AlternateTask[] = [
     spendsTurn: true,
     sobriety: "drunk",
     turns: () => availableAmount($item`Map to Safety Shelter Grimace Prime`),
+  },
+  {
+    name: "Autosell Melting Junk",
+    completed: () => getAutosellableMeltingJunk().length === 0,
+    spendsTurn: false,
+    turns: 0,
+    do: () =>
+      getAutosellableMeltingJunk().forEach((i) => autosell(i, itemAmount(i))),
   },
   {
     name: "Use Day Shorteners (drunk)",
@@ -855,6 +896,11 @@ const BarfTurnTasks: GarboTask[] = [
       ),
       sobriety: "sober",
     },
+    {
+      familiarOptions: {
+        mode: "run",
+      },
+    },
   ),
   {
     name: "Gingerbread Noon",
@@ -924,6 +970,38 @@ const BarfTurnTasks: GarboTask[] = [
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
   },
+  {
+    name: "Liana Parachute",
+    ready: () =>
+      (sober() ||
+        (have($item`Drunkula's wineglass`) &&
+          canEquip($item`Drunkula's wineglass`))) &&
+      CrepeParachute.have() &&
+      shouldCheckParachute() &&
+      questStep("questL11Worship") > 3 &&
+      have($item`antique machete`), // TODO Support other machete's
+    completed: () => have($effect`Everything looks Beige`),
+    outfit: () => freeFightOutfit({ weapon: $item`antique machete` }),
+    do: () => CrepeParachute.fight($monster`dense liana`),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg(
+        "Did not instantly kill the Liana, check what went wrong",
+      ),
+    ),
+    prepare: () => {
+      if (!sober()) {
+        freeFightOutfit({ offhand: $item`Drunkula's wineglass` }).dress();
+      }
+      withChoice(785, 6, () =>
+        adv1($location`An Overgrown Shrine (Northeast)`, -1, ""),
+      );
+      if (!sober()) freeFightOutfit({ weapon: $item`antique machete` }).dress();
+    },
+    post: () => {
+      if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
+    },
+    spendsTurn: false,
+  },
 ];
 
 function nonBarfTurns(): number {
@@ -967,6 +1045,25 @@ export const NonBarfTurnQuest: Quest<GarboTask> = {
 export const BarfTurnQuest: Quest<GarboTask> = {
   name: "Barf Turn",
   tasks: [
+    {
+      name: "Barf Parachute",
+      ready: () =>
+        CrepeParachute.have() &&
+        shouldCheckParachute() &&
+        myLocation() === $location`Barf Mountain`,
+      completed: () => have($effect`Everything looks Beige`),
+      outfit: () => barfOutfit({}),
+      do: () => CrepeParachute.fight($monster`garbage tourist`),
+      combat: new GarboStrategy(() => Macro.meatKill()),
+      prepare: () =>
+        !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
+      post: () => {
+        if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
+        completeBarfQuest();
+        trackMarginalMpa();
+      },
+      spendsTurn: true,
+    },
     {
       name: "Barf",
       completed: () => myAdventures() === 0,

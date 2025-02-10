@@ -164,7 +164,10 @@ export const chainStarters = [
       Witchess.have() &&
       Witchess.pieces.includes(globalOptions.target) &&
       Witchess.fightsDone() < 5,
-    () => Math.max(5 - Witchess.fightsDone(), 0),
+    () =>
+      Witchess.have() && Witchess.pieces.includes(globalOptions.target)
+        ? Math.max(5 - Witchess.fightsDone(), 0)
+        : 0,
     (options: RunOptions) => {
       withMacro(
         options.macro,
@@ -630,7 +633,7 @@ const gregFights = (
         ([, monster]) => monster === $monster`fluffy bunny`,
       )?.[0];
       abort(
-        `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${monsterProp} preference is nonzero and should probably be zero.`,
+        `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${fightsProp} preference is nonzero and should probably be zero.`,
       );
     }
   }

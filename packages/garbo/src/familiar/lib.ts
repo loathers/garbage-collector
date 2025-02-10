@@ -23,11 +23,14 @@ import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
 
+export type FamiliarMode = "barf" | "free" | "target" | "run";
+
 export type GeneralFamiliar = {
   familiar: Familiar;
   expectedValue: number;
   leprechaunMultiplier: number;
   limit: "drops" | "experience" | "none" | "special";
+  worksOnFreeRun: boolean;
 };
 
 export function timeToMeatify(): boolean {

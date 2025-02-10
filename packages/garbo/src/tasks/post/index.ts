@@ -47,7 +47,6 @@ import {
 } from "../../lib";
 import { teleportEffects } from "../../mood";
 import { Quest } from "grimoire-kolmafia";
-import { bestAutumnatonLocation } from "../../resources";
 import { estimatedGarboTurns, remainingUserTurns } from "../../turns";
 import { acquire } from "../../acquire";
 import { garboAverageValue } from "../../garboValue";
@@ -56,6 +55,7 @@ import { GarboPostTask } from "./lib";
 import { GarboTask } from "../engine";
 import { hotTubAvailable } from "../../resources/clanVIP";
 import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
+import { autumnAtonManager } from "../../resources";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
@@ -214,7 +214,7 @@ function fallbot(): GarboPostTask {
       globalOptions.ascend ||
       AutumnAton.turnsForQuest() < estimatedGarboTurns() + remainingUserTurns(),
     do: () => {
-      AutumnAton.sendTo(bestAutumnatonLocation);
+      AutumnAton.sendTo(autumnAtonManager().bestLocation);
     },
     available: () => AutumnAton.have(),
     post: () => {

@@ -1,4 +1,10 @@
-import { Familiar, holiday, myAdventures } from "kolmafia";
+import {
+  Familiar,
+  familiarWeight,
+  holiday,
+  myAdventures,
+  squareRoot,
+} from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -15,13 +21,14 @@ import {
 } from "libram";
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
-import { GeneralFamiliar } from "./lib";
+import { FamiliarMode, GeneralFamiliar } from "./lib";
 import { Potion } from "../potions";
 import { globalOptions } from "../config";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
-  value: (_mode: "barf" | "free" | "target") => number;
+  value: (_mode: FamiliarMode) => number;
+  worksOnFreeRun?: boolean;
 };
 
 const bestAlternative = getModifier("Meat Drop", $item`amulet coin`);
@@ -104,6 +111,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       holiday().includes("Dependence Day")
         ? 0.05 * garboValue($item`souvenir flag`)
         : 0,
+    worksOnFreeRun: true,
   },
   {
     familiar: $familiar`Mini Kiwi`,
@@ -113,15 +121,35 @@ const standardFamiliars: ConstantValueFamiliar[] = [
         : clamp(totalFamiliarWeight($familiar`Mini Kiwi`) * 0.005, 0, 1) *
           garboValue($item`mini kiwi`), // faster with aviator goggles
   },
+  {
+    familiar: $familiar`quantum entangler`,
+    value: () => garboValue($item`quantized familiar experience`) / 11,
+  },
+  {
+    familiar: $familiar`Peace Turkey`,
+    value: () =>
+      // drops are ~1/2 of the activations, whirled peas are twice as likely to drop
+      (garboAverageValue(
+        ...$items`whirled peas, whirled peas, piece of cake, peace shooter`,
+      ) *
+        peaceTurkeyDropChance()) /
+      2,
+    worksOnFreeRun: true,
+  },
 ];
 
+function peaceTurkeyDropChance(): number {
+  return 0.24 + squareRoot(familiarWeight($familiar`Peace Turkey`)) / 100;
+}
+
 export default function getConstantValueFamiliars(
-  mode: "barf" | "free" | "target",
+  mode: FamiliarMode,
 ): GeneralFamiliar[] {
   return standardFamiliars
     .filter(({ familiar }) => have(familiar))
-    .map(({ familiar, value }) => ({
+    .map(({ familiar, value, worksOnFreeRun = false }) => ({
       familiar,
+      worksOnFreeRun,
       expectedValue: value(mode),
       leprechaunMultiplier: findLeprechaunMultiplier(familiar),
       limit: "none",

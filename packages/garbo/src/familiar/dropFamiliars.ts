@@ -17,6 +17,7 @@ type StandardDropFamiliar = {
   expected: number[] | ((index: number) => number);
   drop: Item | Item[];
   additionalValue?: () => number;
+  worksOnFreeRun?: boolean;
 };
 
 function expectedTurnsValue(
@@ -35,6 +36,7 @@ function valueStandardDropFamiliar({
   expected,
   drop,
   additionalValue,
+  worksOnFreeRun = false,
 }: StandardDropFamiliar): GeneralFamiliar {
   const expectedTurns =
     expectedTurnsValue(expected, familiar.dropsToday) || Infinity;
@@ -45,6 +47,7 @@ function valueStandardDropFamiliar({
     expectedValue,
     leprechaunMultiplier: findLeprechaunMultiplier(familiar),
     limit: "drops",
+    worksOnFreeRun,
   };
 }
 
