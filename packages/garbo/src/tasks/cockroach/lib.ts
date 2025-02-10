@@ -191,8 +191,8 @@ export function checkAndFixOvercapStats(): void {
 }
 
 export function dessertIslandWorthIt(): boolean {
-  // estimating value of giant crab at 3*VOA
-  return garboValue($item`cocoa of youth`) > 3 * get("valueOfAdventure");
+  // estimating value of giant giant crab at 5*VOA, it has 2000 base meat
+  return garboValue($item`cocoa of youth`) > 5 * get("valueOfAdventure");
 }
 
 function crewRoleValue(crewmate: string): number {
