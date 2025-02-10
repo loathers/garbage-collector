@@ -5,6 +5,7 @@ import {
   $item,
   $items,
   $location,
+  $stat,
   get,
   getActiveEffects,
   getModifier,
@@ -93,6 +94,17 @@ function getBestDebuffItem(stat: Stat): Item {
 // Just checking for the gummi effects for now, maybe can check other stuff later?
 function checkAndFixOvercapStats(): void {
   if (debuffedEnough()) return;
+
+  // Decorative fountain is both cheap and reusable for -30% muscle, but is not a potion
+  if (
+    myBuffedstat($stat`Muscle`) > 100 &&
+    !have($effect`Sleepy`) &&
+    (have($item`decorative fountain`) ||
+      mallPrice($item`decorative fountain`) < 500)
+  ) {
+    acquire(1, $item`decorative fountain`, 500);
+    use($item`decorative fountain`);
+  }
 
   for (const isShruggablePass of [true, false]) {
     for (const ef of getActiveEffects()) {
