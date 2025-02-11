@@ -64,8 +64,8 @@ const effectiveDebuffQuantity = (
   clamp(
     (shrugging ? -1 : 1) *
       (getModifier(stat.toString(), effect) +
-        // Eyepatch caps you at 30
-        (30 / 100) * getModifier(`${stat.toString()} Percent`, effect)),
+        // Eyepatch caps you at 20
+        (20 / 100) * getModifier(`${stat.toString()} Percent`, effect)),
     100 - myBuffedstat(stat),
     0,
   );
