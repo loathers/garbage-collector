@@ -360,8 +360,7 @@ function acquireAbortFreeRun(): GarboPostTask {
     name: "Acquire Best Free Run in Case of Abort",
     completed: () =>
       getBestAbortFreeRun() === $item`none` || have(getBestAbortFreeRun()),
-    do: () =>
-      acquire(1, getBestAbortFreeRun(), getAcquirePrice(getBestAbortFreeRun())),
+    do: () => acquire(1, getBestAbortFreeRun(), get("valueOfAdventure"), false),
   };
 }
 
