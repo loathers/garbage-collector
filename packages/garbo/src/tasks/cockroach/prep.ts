@@ -59,7 +59,10 @@ export const CockroachSetup: Quest<GarboTask> = {
       completed: () => questStep("_questPirateRealm") > 1,
       prepare: checkAndFixOvercapStats,
       do: $location`Sailing the PirateRealm Seas`,
-      outfit: () => freeFightOutfit({ acc3: $items`PirateRealm eyepatch` }),
+      outfit: {
+        equip: $items`PirateRealm eyepatch`,
+        modifier: Stat.all().map((stat) => `-${stat}`),
+      },
       choices: () => ({
         1352:
           dessertIslandWorthIt() &&
@@ -167,14 +170,14 @@ export const CockroachSetup: Quest<GarboTask> = {
       completed: () => questStep("_questPirateRealm") > 5,
       prepare: checkAndFixOvercapStats,
       do: () => $location`PirateRealm Island`,
-      outfit: () => {
-        return {
-          equip: $items`PirateRealm eyepatch`,
-          avoid: $items`Roman Candelabra`,
-        };
-      },
-      choices: { 1385: 1, 1368: 1 }, // Take cocoa of youth, fight crab
-      combat: new GarboStrategy(() => Macro.delevel().meatKill()),
+      outfit: () => ({
+        equip: $items`PirateRealm eyepatch`,
+        modifier: Stat.all().map((stat) => `-${stat}`),
+      }),
+      choices: { 1385: 1 }, // Take cocoa of youth
+      combat: new GarboStrategy(() =>
+        Macro.abortWithMsg("Hit a combat when we expected cocoa of youth!"),
+      ),
       limit: { tries: 1 },
       spendsTurn: true,
     },
