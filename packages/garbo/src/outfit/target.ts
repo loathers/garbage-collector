@@ -20,7 +20,7 @@ import {
   validateGarbageFoldable,
   waterBreathingEquipment,
 } from "./lib";
-import { BonusEquipMode, modeValueOfMeat, targettingMeat } from "../lib";
+import { BonusEquipMode, modeValueOfMeat, targetingMeat } from "../lib";
 import { globalOptions } from "../config";
 
 export function meatTargetOutfit(
@@ -34,7 +34,7 @@ export function meatTargetOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
-  if (targettingMeat()) {
+  if (targetingMeat()) {
     outfit.modifier.push(
       `${modeValueOfMeat(BonusEquipMode.MEAT_TARGET)} Meat Drop`,
       "-tie",
@@ -43,10 +43,10 @@ export function meatTargetOutfit(
     outfit.modifier.push("-tie");
   }
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
-  outfit.familiar ??= targettingMeat() ? meatFamiliar() : freeFightFamiliar();
+  outfit.familiar ??= targetingMeat() ? meatFamiliar() : freeFightFamiliar();
 
   const bjornChoice = chooseBjorn(
-    targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
+    targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
     outfit.familiar,
   );
 
@@ -69,7 +69,7 @@ export function meatTargetOutfit(
   useUPCsIfNeeded(outfit);
 
   outfit.bonuses = bonusGear(
-    targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
+    targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
   );
   const bjornalike = bestBjornalike(outfit);
 

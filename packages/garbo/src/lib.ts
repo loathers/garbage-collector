@@ -184,20 +184,20 @@ export const targetMeatDifferential = () => {
   return clamp(targetMeatVal - baseMeatVal, 0, targetMeatVal);
 };
 
-export const targettingMeat = () =>
+export const targetingMeat = () =>
   !isFree(globalOptions.target) && targetMeat() > baseMeat();
 
-export const targettingItems = () => !targettingMeat();
+export const targetingItems = () => !targetingMeat();
 
 export const gooseDroneEligible = () =>
-  targettingItems() &&
+  targetingItems() &&
   itemDropsArray(globalOptions.target).filter(
     (item) => !["c", "0", "p", "a"].includes(item.type),
   ).length === 1 &&
   have($familiar`Grey Goose`);
 
 export function averageTargetNet(): number {
-  return targettingItems()
+  return targetingItems()
     ? valueDrops(globalOptions.target)
     : (targetMeat() * meatDropModifier()) / 100;
 }
