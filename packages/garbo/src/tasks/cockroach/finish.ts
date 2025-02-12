@@ -8,10 +8,11 @@ import { potionSetup } from "../../potions";
 import { copyTargetCount } from "../../target";
 import { GarboTask } from "../engine";
 import { checkAndFixOvercapStats } from "./lib";
+import { doingGregFight } from "../../resources";
 
 export const CockroachFinish: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
-  ready: () => get("pirateRealmUnlockedAnemometer"),
+  ready: () => get("pirateRealmUnlockedAnemometer") && doingGregFight(),
   completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
   tasks: [
     {
