@@ -12,7 +12,9 @@ import { doingGregFight } from "../../resources";
 
 export const CockroachFinish: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
-  ready: () => get("pirateRealmUnlockedAnemometer") && doingGregFight(),
+  ready: () => get("pirateRealmUnlockedAnemometer") &&
+    doingGregFight() &&
+    questStep("_questPirateRealm") >= 5,
   completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
   tasks: [
     {
