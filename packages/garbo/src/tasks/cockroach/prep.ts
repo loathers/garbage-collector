@@ -1,8 +1,10 @@
 import { Quest } from "grimoire-kolmafia";
 import {
   abort,
+  inebrietyLimit,
   mallPrice,
   myAdventures,
+  myInebriety,
   runChoice,
   Stat,
   visitUrl,
@@ -36,7 +38,8 @@ export const CockroachSetup: Quest<GarboTask> = {
   ready: () =>
     get("pirateRealmUnlockedAnemometer") &&
     doingGregFight() &&
-    globalOptions.target === $monster`cockroach`,
+    globalOptions.target === $monster`cockroach` &&
+    myInebriety() <= inebrietyLimit(),
   completed: () =>
     get("_lastPirateRealmIsland") === $location`Trash Island` ||
     (questStep("_questPirateRealm") === 5 &&
