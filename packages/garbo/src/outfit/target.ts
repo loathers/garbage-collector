@@ -26,6 +26,7 @@ import { globalOptions } from "../config";
 export function meatTargetOutfit(
   spec: OutfitSpec = {},
   target = $location.none,
+  baseMeat?: number,
 ): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);
@@ -34,11 +35,11 @@ export function meatTargetOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
-  if (targetingMeat()) {
-    outfit.modifier.push(
-      `${modeValueOfMeat(BonusEquipMode.MEAT_TARGET)} Meat Drop`,
-      "-tie",
-    );
+  if (targetingMeat() || baseMeat) {
+    const meatDropModifier = baseMeat
+      ? baseMeat / 100
+      : modeValueOfMeat(BonusEquipMode.MEAT_TARGET);
+    outfit.modifier.push(`${meatDropModifier} Meat Drop`, "-tie");
   } else if (globalOptions.target.attributes.includes("FREE")) {
     outfit.modifier.push("-tie");
   }

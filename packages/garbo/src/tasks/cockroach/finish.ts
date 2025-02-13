@@ -31,11 +31,15 @@ export const CockroachFinish: Quest<GarboTask> = {
       },
       do: $location`Crab Island`,
       outfit: () => {
-        const spec = meatTargetOutfit({
-          modifier: ["20 Meat Drop"],
-          equip: $items`PirateRealm eyepatch`,
-          avoid: $items`Roman Candelabra`,
-        });
+        const spec = meatTargetOutfit(
+          {
+            modifier: ["-Muscle", "-Mysticality", "-Moxie"],
+            equip: $items`PirateRealm eyepatch`,
+            avoid: $items`Roman Candelabra`,
+          },
+          undefined,
+          2000,
+        );
         return spec;
       },
       choices: { 1385: 1, 1368: 1 }, // Take cocoa of youth, fight crab
