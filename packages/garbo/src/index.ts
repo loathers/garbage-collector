@@ -112,7 +112,8 @@ function defaultTarget() {
   if (
     !(doingGregFight() || hasMonsterReplacers()) ||
     (realmAvailable("pirate") &&
-      (questStep("_questPirateRealm") <= 6 ||
+      ((questStep("_questPirateRealm") <= 6 &&
+        get("pirateRealmUnlockedAnemometer")) ||
         (questStep("_questPirateRealm") === 7 &&
           get("_lastPirateRealmIsland") === $location`Trash Island`)))
   ) {
