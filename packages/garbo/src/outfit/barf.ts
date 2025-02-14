@@ -171,8 +171,13 @@ export function computeBarfOutfit(
     outfit.equip($item`toy Cupid bow`);
   }
 
-  if(!ToyCupidBow.familiarsToday().includes(spec.familiar)) {
-    outfit.setBonus($item`toy Cupid bow`, estimatedGarboTurns() >= 5 ? garboValue(familiarEquipment(spec.familiar)) / 5 : 0)
+  if (!ToyCupidBow.familiarsToday().includes(spec.familiar)) {
+    outfit.setBonus(
+      $item`toy Cupid bow`,
+      estimatedGarboTurns() >= 5
+        ? garboValue(familiarEquipment(spec.familiar)) / 5
+        : 0,
+    );
   }
 
   outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
