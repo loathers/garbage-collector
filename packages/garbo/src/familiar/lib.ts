@@ -29,7 +29,7 @@ export type GeneralFamiliar = {
   familiar: Familiar;
   expectedValue: number;
   leprechaunMultiplier: number;
-  limit: "drops" | "experience" | "none" | "special";
+  limit: "drops" | "experience" | "none" | "special" | "cupid";
   worksOnFreeRun: boolean;
 };
 

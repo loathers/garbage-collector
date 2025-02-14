@@ -25,7 +25,7 @@ import {
   ToyCupidBow,
   undelay,
 } from "libram";
-import { barfFamiliar, getToyCupidBowFamiliars } from "../familiar";
+import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
@@ -165,13 +165,12 @@ export function computeBarfOutfit(
     outfit.equip($item`Kramco Sausage-o-Matic™`);
   }
 
-  const toyBowFam = getToyCupidBowFamiliars()[0];
-
-  if (spec.familiar === toyBowFam?.familiar) {
-    outfit.equip($item`toy Cupid bow`);
-  }
-
-  if (!ToyCupidBow.familiarsToday().includes(spec.familiar)) {
+  if (
+    !sim &&
+    !(ToyCupidBow.familiarsToday() as (Familiar | undefined)[]).includes(
+      outfit.familiar,
+    )
+  ) {
     outfit.setBonus(
       $item`toy Cupid bow`,
       estimatedGarboTurns() >= 5

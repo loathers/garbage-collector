@@ -11,11 +11,7 @@ import {
 } from "libram";
 import { WanderDetails } from "garbo-lib";
 
-import {
-  FamiliarMenuOptions,
-  freeFightFamiliar,
-  getToyCupidBowFamiliars,
-} from "../familiar";
+import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
 import { BonusEquipMode, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { wanderer } from "../garboWanderer";
 
@@ -87,12 +83,6 @@ export function freeFightOutfit(
       $item`tiny stillsuit`,
       (get("valueOfAdventure") * 3) ** 0.4,
     );
-  }
-
-  const toyBowFam = getToyCupidBowFamiliars()[0];
-
-  if (spec.familiar === toyBowFam?.familiar) {
-    outfit.equip($item`toy Cupid bow`);
   }
 
   if (!ToyCupidBow.familiarsToday().includes(outfit.familiar)) {

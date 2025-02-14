@@ -23,6 +23,7 @@ import {
   maxBy,
   sum,
   totalFamiliarWeight,
+  ToyCupidBow,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit";
@@ -183,6 +184,9 @@ function turnsNeededFromBaseline(
 
       case "none":
         return 0;
+
+      case "cupid":
+        return ToyCupidBow.turnsLeft(familiar);
 
       case "special":
         return getSpecialFamiliarLimit({
