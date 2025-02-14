@@ -150,7 +150,7 @@ export const MEAT_TARGET_MULTIPLIER = (): number =>
 
 export const propertyManager = new PropertiesManager();
 
-const songboomMeat = () =>
+export const songboomMeat = () =>
   SongBoom.have() &&
   (SongBoom.songChangesLeft() > 0 ||
     (SongBoom.song() === "Total Eclipse of Your Meat" &&

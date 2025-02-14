@@ -5,6 +5,7 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   Environment,
   Guzzlr,
   have,
@@ -20,13 +21,18 @@ import {
   validateGarbageFoldable,
   waterBreathingEquipment,
 } from "./lib";
-import { BonusEquipMode, modeValueOfMeat, targetingMeat } from "../lib";
+import {
+  BonusEquipMode,
+  modeValueOfMeat,
+  songboomMeat,
+  targetingMeat,
+} from "../lib";
 import { globalOptions } from "../config";
+import { meatDrop } from "kolmafia";
 
 export function meatTargetOutfit(
   spec: OutfitSpec = {},
   target = $location.none,
-  baseMeat?: number,
 ): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);
@@ -35,11 +41,15 @@ export function meatTargetOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
-  if (targetingMeat() || baseMeat) {
-    const meatDropModifier = baseMeat
-      ? baseMeat / 100
-      : modeValueOfMeat(BonusEquipMode.MEAT_TARGET);
-    outfit.modifier.push(`${meatDropModifier} Meat Drop`, "-tie");
+  if (target === $location`Crab Island`) {
+    const meat = meatDrop($monster`giant crab`) + songboomMeat();
+    outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
+  }
+  if (targetingMeat()) {
+    outfit.modifier.push(
+      `${modeValueOfMeat(BonusEquipMode.MEAT_TARGET)} Meat Drop`,
+      "-tie",
+    );
   } else if (globalOptions.target.attributes.includes("FREE")) {
     outfit.modifier.push("-tie");
   }

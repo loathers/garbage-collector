@@ -37,8 +37,7 @@ export const CockroachFinish: Quest<GarboTask> = {
             equip: $items`PirateRealm eyepatch`,
             avoid: $items`Roman Candelabra`,
           },
-          undefined,
-          2000,
+          $location`Crab Island`,
         );
         return spec;
       },
