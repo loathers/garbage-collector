@@ -31,6 +31,7 @@ import { meatFamiliar } from "./meatFamiliar";
 import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
+import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
 
 export type FamiliarMenuOptions = Partial<{
   canChooseMacro: boolean;
@@ -56,6 +57,7 @@ export function menu(
   const familiarMenu = [
     ...getConstantValueFamiliars(mode),
     ...getDropFamiliars(),
+    ...getToyCupidBowFamiliars(),
     ...(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []),
     ...extraFamiliars,
   ];

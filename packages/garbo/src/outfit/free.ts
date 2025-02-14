@@ -1,15 +1,17 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Location } from "kolmafia";
-import { $familiar, $item, $items, get, Guzzlr, SourceTerminal } from "libram";
+import { familiarEquipment, Location } from "kolmafia";
+import { $familiar, $item, $items, get, Guzzlr, SourceTerminal, ToyCupidBow } from "libram";
 import { WanderDetails } from "garbo-lib";
 
-import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
+import { FamiliarMenuOptions, freeFightFamiliar, getToyCupidBowFamiliars } from "../familiar";
 import { BonusEquipMode, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
 import { bonusGear } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
+import { estimatedGarboTurns } from "../turns";
+import { garboValue } from "../garboValue";
 
 export type FreeFightOutfitMenuOptions = {
   location?: Location;
@@ -69,7 +71,17 @@ export function freeFightOutfit(
   bonusGear(mode).forEach((value, item) => outfit.addBonus(item, value));
 
   if (outfit.familiar !== $familiar`Grey Goose`) {
-    outfit.setBonus($item`tiny stillsuit`, 500);
+    outfit.setBonus($item`tiny stillsuit`, (get("valueOfAdventure") * 3) ** 0.4);
+  }
+
+  const toyBowFam = getToyCupidBowFamiliars()[0];
+
+  if (spec.familiar === toyBowFam?.familiar) {
+    outfit.equip($item`toy Cupid bow`);
+  }
+
+  if(!ToyCupidBow.familiarsToday().includes(outfit.familiar)) {
+    outfit.setBonus($item`toy Cupid bow`, estimatedGarboTurns() >= 5 ? garboValue(familiarEquipment(outfit.familiar)) / 5 : 0)
   }
 
   if (
