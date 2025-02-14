@@ -42,7 +42,7 @@ export function meatTargetOutfit(
   );
 
   if (target === $location`Crab Island`) {
-    const meat = meatDrop($monster`giant crab`) + songboomMeat();
+    const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
   } else if (targetingMeat()) {
     outfit.modifier.push(
