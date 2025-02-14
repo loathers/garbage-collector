@@ -1,5 +1,13 @@
 import { Quest } from "grimoire-kolmafia";
-import { $items, $location, get, questStep } from "libram";
+import {
+  $effect,
+  $items,
+  $location,
+  $skill,
+  get,
+  have,
+  questStep,
+} from "libram";
 import { GarboStrategy, Macro } from "../../combat";
 import { targetMeat } from "../../lib";
 import { meatMood } from "../../mood";
@@ -9,6 +17,7 @@ import { copyTargetCount } from "../../target";
 import { GarboTask } from "../engine";
 import { checkAndFixOvercapStats } from "./lib";
 import { doingGregFight } from "../../resources";
+import { useSkill } from "kolmafia";
 
 export const CockroachFinish: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
@@ -62,6 +71,12 @@ export const CockroachFinish: Quest<GarboTask> = {
       combat: new GarboStrategy(() =>
         Macro.abortWithMsg("Hit a combat while sailing the high seas!"),
       ),
+    },
+    {
+      name: "Stop Being Beaten Up",
+      completed: () => !have($effect`Beaten Up`),
+      do: () => useSkill($skill`Tongue of the Walrus`),
+      spendsTurn: false,
     },
   ],
 };

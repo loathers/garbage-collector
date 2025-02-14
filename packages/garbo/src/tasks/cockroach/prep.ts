@@ -7,13 +7,16 @@ import {
   myInebriety,
   runChoice,
   Stat,
+  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
+  $effect,
   $item,
   $items,
   $location,
   $monster,
+  $skill,
   get,
   have,
   questStep,
@@ -238,6 +241,12 @@ export const CockroachSetup: Quest<GarboTask> = {
       combat: new GarboStrategy(() =>
         Macro.abortWithMsg("Hit a combat while sailing the high seas!"),
       ),
+    },
+    {
+      name: "Stop Being Beaten Up",
+      completed: () => !have($effect`Beaten Up`),
+      do: () => useSkill($skill`Tongue of the Walrus`),
+      spendsTurn: false,
     },
   ],
 };
