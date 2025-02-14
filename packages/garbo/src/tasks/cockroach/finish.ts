@@ -9,7 +9,7 @@ import {
   questStep,
 } from "libram";
 import { GarboStrategy, Macro } from "../../combat";
-import { targetMeat } from "../../lib";
+import { targetMeat, unignoreBeatenUp } from "../../lib";
 import { meatMood } from "../../mood";
 import { meatTargetOutfit } from "../../outfit";
 import { potionSetup } from "../../potions";
@@ -77,6 +77,7 @@ export const CockroachFinish: Quest<GarboTask> = {
       completed: () => !have($effect`Beaten Up`),
       do: () => useSkill($skill`Tongue of the Walrus`),
       spendsTurn: false,
+      post: unignoreBeatenUp,
     },
   ],
 };

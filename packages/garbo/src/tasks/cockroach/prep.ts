@@ -33,7 +33,7 @@ import {
   outfitBonuses,
 } from "./lib";
 import { doingGregFight } from "../../resources";
-import { userConfirmDialog } from "../../lib";
+import { unignoreBeatenUp, userConfirmDialog } from "../../lib";
 import { globalOptions } from "../../config";
 
 export const CockroachSetup: Quest<GarboTask> = {
@@ -247,6 +247,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       completed: () => !have($effect`Beaten Up`),
       do: () => useSkill($skill`Tongue of the Walrus`),
       spendsTurn: false,
+      post: unignoreBeatenUp,
     },
   ],
 };
