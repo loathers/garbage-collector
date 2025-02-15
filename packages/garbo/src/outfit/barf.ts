@@ -165,6 +165,8 @@ export function computeBarfOutfit(
     outfit.equip($item`Kramco Sausage-o-Matic™`);
   }
 
+  outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
+
   if (
     !sim &&
     !(ToyCupidBow.familiarsToday() as (Familiar | undefined)[]).includes(
@@ -179,7 +181,6 @@ export function computeBarfOutfit(
     );
   }
 
-  outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
   const bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
     outfit.setBonus(bjornalike, bjornChoice.value);
