@@ -118,6 +118,8 @@ export function computeBarfOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
+  outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
+
   if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
     outfit.equip($item`LED candle`);
     outfit.setModes({ jillcandle: "ultraviolet" });
@@ -164,8 +166,6 @@ export function computeBarfOutfit(
   if (getKramcoWandererChance() > 0.05) {
     outfit.equip($item`Kramco Sausage-o-Matic™`);
   }
-
-  outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
 
   if (
     !sim &&
