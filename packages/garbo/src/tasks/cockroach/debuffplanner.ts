@@ -6,6 +6,7 @@ import {
   Item,
   mallPrice,
   myBuffedstat,
+  print,
   retrieveItem,
   Stat,
   StatType,
@@ -68,7 +69,12 @@ export class DebuffPlanner {
   private buffedStat(stat: Stat): number {
     return (
       myBuffedstat(stat) +
-      sum(this.plan, (element) => totalModifier(asEffect(element.target), stat))
+      sum(
+        this.plan,
+        ({ target, type }) =>
+          (["uneffect", "shrug"].includes(type) ? -1 : 1) *
+          totalModifier(asEffect(target), stat),
+      )
     );
   }
 
@@ -110,6 +116,18 @@ export class DebuffPlanner {
     );
   }
 
+  private have(effect: Effect): boolean {
+    return have(effect)
+      ? !this.plan.some(
+          ({ type, target }) =>
+            ["shrug", "uneffect"].includes(type) && target === effect,
+        )
+      : this.plan.some(
+          ({ type, target }) =>
+            type === "potion" && asEffect(target) === effect,
+        );
+  }
+
   private getDebuffItems(stat: Stat) {
     return (this.possibleDebuffItems[stat.toString()] ??= Item.all()
       .map((item) => ({ item, effect: asEffect(item) }))
@@ -124,7 +142,7 @@ export class DebuffPlanner {
           ([stat.toString(), `${stat.toString()} Percent`] as const).some(
             (mod) => getModifier(mod, effect) < 0,
           ),
-      )).filter(({ effect }) => !have(effect));
+      )).filter(({ effect }) => !this.have(effect));
   }
   private getBestDebuffItem(stat: Stat): Item | Effect {
     const bestPotion = maxBy(this.getDebuffItems(stat), ({ item, effect }) =>
@@ -151,6 +169,7 @@ export class DebuffPlanner {
   }
 
   private shouldRemove(effect: Effect) {
+    if (!this.have(effect)) return false;
     // Only shrug effects that buff at least one stat that's too high
     if (!improvedStats(effect).some((stat) => this.buffedStat(stat) >= 100)) {
       return false;
@@ -191,6 +210,8 @@ export class DebuffPlanner {
     let debuffItemLoops = 0;
     while (!this.debuffedEnough()) {
       if (debuffItemLoops > 27) {
+        print("Debuff plan:");
+        for (const { type, target } of this.plan) print(`${type}: ${target}`);
         abort("Spent too long trying to debuff for PirateRealm!");
       }
 
@@ -235,8 +256,9 @@ export class DebuffPlanner {
 
   checkAndFixOvercapStats() {
     for (const debuff of this.plan) this.executeDebuff(debuff);
-    if (Stat.all().some((stat) => myBuffedstat(stat) > 100))
+    if (Stat.all().some((stat) => myBuffedstat(stat) > 100)) {
       abort("Failed to debuff sufficiently for piraterealm!");
+    }
   }
 
   price(): number {
