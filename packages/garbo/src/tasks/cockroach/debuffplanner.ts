@@ -17,6 +17,7 @@ import {
   $items,
   $stat,
   clamp,
+  getAcquirePrice,
   getActiveEffects,
   getModifier,
   have,
@@ -228,9 +229,25 @@ export class DebuffPlanner {
     }
   }
 
-  private checkAndFixOvercapStats() {
+  private constructor() {
     this.generateDebuffList();
+  }
+
+  checkAndFixOvercapStats() {
     for (const debuff of this.plan) this.executeDebuff(debuff);
+  }
+
+  price(): number {
+    return sum(this.plan, ({ type, target }) => {
+      switch (type) {
+        case "potion":
+          return getAcquirePrice(target);
+        case "shrug":
+          return 0;
+        case "uneffect":
+          return getAcquirePrice($item`soft green echo eyedrop antidote`);
+      }
+    });
   }
 
   static checkAndFixOvercapStats(): void {
