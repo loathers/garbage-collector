@@ -235,6 +235,8 @@ export class DebuffPlanner {
 
   checkAndFixOvercapStats() {
     for (const debuff of this.plan) this.executeDebuff(debuff);
+    if (Stat.all().some((stat) => myBuffedstat(stat) > 100))
+      abort("Failed to debuff sufficiently for piraterealm!");
   }
 
   price(): number {
