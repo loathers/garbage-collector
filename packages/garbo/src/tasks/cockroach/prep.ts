@@ -79,7 +79,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Start PirateRealm Journey",
       ready: () => have($item`PirateRealm eyepatch`),
       completed: () => questStep("_questPirateRealm") > 0,
-      prepare: () => checkAndFixOvercapStats(),
+      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: () => {
         visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
         runChoice(1); // Head to Groggy's
@@ -247,6 +247,3 @@ export const CockroachSetup: Quest<GarboTask> = {
     },
   ],
 };
-function checkAndFixOvercapStats(): void {
-  throw new Error("Function not implemented.");
-}
