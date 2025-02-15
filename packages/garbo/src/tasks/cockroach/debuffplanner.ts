@@ -139,9 +139,7 @@ export class DebuffPlanner {
           !improvesAStat(item) &&
           effect !== $effect.none &&
           !have(effect) &&
-          ([stat.toString(), `${stat.toString()} Percent`] as const).some(
-            (mod) => getModifier(mod, effect) < 0,
-          ),
+          totalModifier(effect, stat) < 0,
       )).filter(({ effect }) => !this.have(effect));
   }
   private getBestDebuffItem(stat: Stat): Item | Effect {
