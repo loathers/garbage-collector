@@ -23305,7 +23305,7 @@ var require_value = __commonJS({
         }
         var unitCost = items.map(function(i) {
           var coinmaster = kolmafia_1.Coinmaster.all().find(function(c) {
-            return (0, kolmafia_1.sellPrice)(c, i) > 0;
+            return (0, kolmafia_1.sellsItem)(c, i);
           });
           if (!coinmaster) {
             throw "Invalid coinmaster item ".concat(i);
@@ -28842,7 +28842,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("17671f99b1dcc8896f55ef2d65e0ff1a7ff9a0db", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("063b2a020fe0a2096d69d2bb4cdde9404eadf78a", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
