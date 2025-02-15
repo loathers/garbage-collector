@@ -28,6 +28,29 @@ import { acquire } from "../../acquire";
 import { ignoreBeatenUp } from "../../lib";
 import { VALUABLE_MODIFIERS } from "../../potions";
 
+function totalModifier(effect: Effect, stat: Stat): number {
+  return (
+    getModifier(stat.toString(), effect) +
+    0.2 * getModifier(`${stat.toString()} Percent`, effect)
+  );
+}
+
+function asEffect(thing: Item | Effect): Effect {
+  return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
+}
+
+function improvesStat(thing: Item | Effect, stat: Stat): boolean {
+  return totalModifier(asEffect(thing), stat) > 0;
+}
+
+function improvedStats(thing: Item | Effect): Stat[] {
+  return Stat.all().filter((stat) => improvesStat(thing, stat));
+}
+
+function improvesAStat(thing: Item | Effect): boolean {
+  return improvedStats(thing).length > 0;
+}
+
 type DebuffPlanElement =
   | { type: "potion"; target: Item }
   | { type: "shrug"; target: Effect }
@@ -41,42 +64,15 @@ export class DebuffPlanner {
     Record<StatType, { item: Item; effect: Effect }[]>
   > = {};
 
-  private totalModifier(effect: Effect, stat: Stat): number {
-    return (
-      getModifier(stat.toString(), effect) +
-      0.2 * getModifier(`${stat.toString()} Percent`, effect)
-    );
-  }
-
   private buffedStat(stat: Stat): number {
     return (
       myBuffedstat(stat) +
-      sum(this.plan, (element) =>
-        this.totalModifier(this.asEffect(element.target), stat),
-      )
+      sum(this.plan, (element) => totalModifier(asEffect(element.target), stat))
     );
-  }
-
-  private asEffect(thing: Item | Effect): Effect {
-    return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
-  }
-
-  private improvesStat(thing: Item | Effect, stat: Stat): boolean {
-    const effect = this.asEffect(thing);
-    return ([stat.toString(), `${stat.toString()} Percent`] as const).some(
-      (modifier) => getModifier(modifier, effect) > 0,
-    );
-  }
-
-  private improvedStats(thing: Item | Effect): Stat[] {
-    return Stat.all().filter((stat) => this.improvesStat(thing, stat));
-  }
-  private improvesAStat(thing: Item | Effect): boolean {
-    return this.improvedStats(thing).length > 0;
   }
 
   private isValuable(thing: Item | Effect): boolean {
-    const effect = this.asEffect(thing);
+    const effect = asEffect(thing);
     return VALUABLE_MODIFIERS.some(
       (modifier) => getModifier(modifier, effect) > 0,
     );
@@ -115,16 +111,13 @@ export class DebuffPlanner {
 
   private getDebuffItems(stat: Stat) {
     return (this.possibleDebuffItems[stat.toString()] ??= Item.all()
+      .map((item) => ({ item, effect: asEffect(item) }))
       .filter(
-        (i) =>
-          i.potion &&
-          (i.tradeable || have(i)) &&
-          !this.itemBanList.includes(i) &&
-          !this.improvesAStat(i),
-      )
-      .map((item) => ({ item, effect: this.asEffect(item) }))
-      .filter(
-        ({ effect }) =>
+        ({ item, effect }) =>
+          item.potion &&
+          (item.tradeable || have(item)) &&
+          !this.itemBanList.includes(item) &&
+          !improvesAStat(item) &&
           effect !== $effect.none &&
           !have(effect) &&
           ([stat.toString(), `${stat.toString()} Percent`] as const).some(
@@ -158,9 +151,7 @@ export class DebuffPlanner {
 
   private shouldRemove(effect: Effect) {
     // Only shrug effects that buff at least one stat that's too high
-    if (
-      !this.improvedStats(effect).some((stat) => this.buffedStat(stat) >= 100)
-    ) {
+    if (!improvedStats(effect).some((stat) => this.buffedStat(stat) >= 100)) {
       return false;
     }
     // Never shrug effects that give meat or whatever
