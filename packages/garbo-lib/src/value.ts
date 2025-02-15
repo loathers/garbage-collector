@@ -196,7 +196,7 @@ export function makeValue(
     [
       $item`fat loot token`,
       currency(
-        ...$items`Boris's key, Jarlsberg's key, Sneaky Pete's key, Boris's ring, Jarlsberg's earring, Sneaky Pete's breath spray, potato sprout, Spellbook: Singer's Faithful Ocelot, Spellbook: Drescher's Annoying Noise, Spellbook: Walberg's Dim Bulb, dried gelatinous cube`,
+        ...$items`Boris's key, Jarlsberg's key, Sneaky Pete's key, Boris's ring, Jarlsberg's earring, Sneaky Pete's breath spray, potato sprout, sewing kit, Spellbook: Singer's Faithful Ocelot, Spellbook: Drescher's Annoying Noise, Spellbook: Walberg's Dim Bulb, dried gelatinous cube`,
       ),
     ],
     [$item`inflammable leaf`, inflammableLeafCurrency()],
@@ -231,7 +231,7 @@ export function makeValue(
     const unitCost: [Item, number][] = items.map((i) => {
       const coinmaster = Coinmaster.all().find((c) => sellsItem(c, i));
       if (!coinmaster) {
-        throw `Invalid coinmaster item ${i}`;
+        return [i, Infinity];
       } else {
         return [i, sellPrice(coinmaster, i)];
       }
