@@ -6,6 +6,7 @@ import {
   Item,
   myClass,
   sellPrice,
+  sellsItem,
   toInt,
 } from "kolmafia";
 import {
@@ -228,9 +229,9 @@ export function makeValue(
 
   function currency(...items: Item[]): () => number {
     const unitCost: [Item, number][] = items.map((i) => {
-      const coinmaster = Coinmaster.all().find((c) => sellPrice(c, i) > 0);
+      const coinmaster = Coinmaster.all().find((c) => sellsItem(c, i));
       if (!coinmaster) {
-        throw `Invalid coinmaster item ${i}`;
+        return [i, Infinity];
       } else {
         return [i, sellPrice(coinmaster, i)];
       }
