@@ -145,11 +145,17 @@ export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
 
 export function doingGregFight(): boolean {
   const extrovermectin =
-    get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
+    get("beGregariousCharges") > 0 ||
+    (get("beGregariousFightsLeft") > 0 &&
+      get("beGregariousMonster") === globalOptions.target) ||
+    (!globalOptions.dietCompleted &&
+      !globalOptions.nodiet &&
+      hasMonsterReplacers());
   const habitat =
     have($skill`Just the Facts`) &&
     (get("_monsterHabitatsRecalled") < 3 ||
-      get("_monsterHabitatsFightsLeft") > 0);
+      (get("_monsterHabitatsFightsLeft") > 0 &&
+        get("beGregariousMonster") === globalOptions.target));
 
   return extrovermectin || habitat;
 }

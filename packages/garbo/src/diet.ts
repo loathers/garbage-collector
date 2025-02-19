@@ -1248,10 +1248,6 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   }
 }
 
-let completedDiet = globalOptions.nodiet;
-export function dietCompleted(): boolean {
-  return completedDiet;
-}
 export function runDiet(): void {
   withVIPClan(() => {
     if (myFamiliar() === $familiar`Stooper`) {
@@ -1303,5 +1299,5 @@ export function runDiet(): void {
       shrugBadEffects();
     }
   });
-  completedDiet = true;
+  globalOptions.dietCompleted = true;
 }
