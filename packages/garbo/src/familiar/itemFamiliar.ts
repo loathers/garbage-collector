@@ -37,7 +37,11 @@ export function bestFairy(): Familiar {
     );
 
     const highestFairyMult = findFairyMultiplier(
-      maxBy(viableFairies, findFairyMultiplier),
+      maxBy(viableFairies, (f) =>
+        f === $familiar`Jill-of-All-Trades` && have($item`toy Cupid bow`)
+          ? findFairyMultiplier(f) / 1.5
+          : findFairyMultiplier(f),
+      ),
     );
     const goodFairies = viableFairies.filter(
       (f) => findFairyMultiplier(f) === highestFairyMult,
