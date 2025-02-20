@@ -2,9 +2,12 @@ import { Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
   cliExecute,
   create,
+  familiarWeight,
   floor,
   getWorkshed,
+  Item,
   mallPrice,
+  maximize,
   myAscensions,
   myLightning,
   myPath,
@@ -18,11 +21,13 @@ import {
   $familiar,
   $item,
   $items,
+  $modifier,
   $path,
   $skill,
   AprilingBandHelmet,
   AsdonMartin,
   clamp,
+  findFairyMultiplier,
   get,
   getModifier,
   have,
@@ -55,14 +60,31 @@ function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
     copy.equip?.push($item`Lil' Doctor™ bag`);
   }
   const familiar = bestFairy();
+  copy.bonuses ??= new Map();
   copy.familiar = familiar;
   if (familiar === $familiar`Reagnimated Gnome`) {
-    copy.equip?.push($item`gnomish housemaid's kgnee`);
+    copy.bonuses.set(
+      $item`gnomish housemaid's kgnee`,
+      (familiarWeight($familiar`Reagnimated Gnome`) * get("valueOfAdventure")) /
+        1000,
+    );
   }
+
   if (familiar === $familiar`Jill-of-All-Trades`) {
-    copy.equip?.push($item`LED candle`);
+    copy.bonuses.set(
+      $item`LED candle`,
+      garboValue($item`spice melange`) *
+        (findFairyMultiplier($familiar`Jill-of-All-Trades`) -
+          findFairyMultiplier($familiar`Baby Gravy Fairy`)),
+    );
     copy.modes = { ...copy.modes, jillcandle: "disco" };
   }
+
+  copy.bonuses.set(
+    $item`toy Cupid bow`,
+    garboValue($item`spice melange`) * getModifier("Item Drop"),
+  );
+
   copy.equip = [...new Set(copy.equip)]; // Prune doubled-up stuff
   return copy;
 }
