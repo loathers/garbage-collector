@@ -13,6 +13,7 @@ import {
   $item,
   $skill,
   clamp,
+  findLeprechaunMultiplier,
   get,
   have,
   Snapper,
@@ -157,11 +158,23 @@ export function snapperValue(): number {
 export function tcbValue(
   familiar: Familiar,
   equipmentForced?: boolean,
+  includeAmuletCoinOpportunityCost?: boolean,
 ): number {
   if (equipmentForced) return 0;
   if (!ToyCupidBow.have()) return 0;
   if (ToyCupidBow.familiarsToday().includes(familiar)) return 0;
+  const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
+  // This is only used during barf so we can just use basemeat
+  // Includes a lazy linearization of the value of its leprechaun-pounds
+  const amuletCoin =
+    includeAmuletCoinOpportunityCost && have($item`amulet coin`)
+      ? ((50 +
+          10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) *
+          baseMeat()) /
+        100
+      : 0;
   return (
-    garboValue(familiarEquipment(familiar)) / ToyCupidBow.turnsLeft(familiar)
+    garboValue(familiarEquipment(familiar)) / ToyCupidBow.turnsLeft(familiar) -
+    amuletCoin
   );
 }

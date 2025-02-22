@@ -260,7 +260,7 @@ export function barfFamiliar(equipmentForced: boolean): {
             ...generalFamiliar,
             expectedValue:
               generalFamiliar.expectedValue +
-              tcbValue(generalFamiliar.familiar),
+              tcbValue(generalFamiliar.familiar, false, true),
             limit: "cupid",
           }),
         ]
