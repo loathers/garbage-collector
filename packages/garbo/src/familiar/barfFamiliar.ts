@@ -256,8 +256,9 @@ export function barfFamiliar(equipmentForced: boolean): {
       equipmentForced ||
       !ToyCupidBow.have() ||
       ToyCupidBow.familiarsToday().includes(generalFamiliar.familiar)
-    )
+    ) {
       return normal;
+    }
     const tcb = calculateOutfitValue({
       ...generalFamiliar,
       expectedValue:
