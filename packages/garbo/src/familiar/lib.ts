@@ -1,6 +1,7 @@
 import {
   availableAmount,
   Familiar,
+  familiarEquipment,
   inebrietyLimit,
   myAdventures,
   myInebriety,
@@ -16,6 +17,7 @@ import {
   have,
   Snapper,
   sumNumbers,
+  ToyCupidBow,
 } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
@@ -150,4 +152,16 @@ export function snapperValue(): number {
   if (denominator > copyTargetCount()) return 0;
 
   return garboValue(item) / denominator;
+}
+
+export function tcbValue(
+  familiar: Familiar,
+  equipmentForced?: boolean,
+): number {
+  if (equipmentForced) return 0;
+  if (!ToyCupidBow.have()) return 0;
+  if (ToyCupidBow.familiarsToday().includes(familiar)) return 0;
+  return (
+    garboValue(familiarEquipment(familiar)) / ToyCupidBow.turnsLeft(familiar)
+  );
 }

@@ -6,7 +6,7 @@ import { estimatedGarboTurns } from "../turns";
 
 export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
   // If there aren't enough turns to run someone to completion, only check for the current cupid familiar
-  if (estimatedGarboTurns() < 5) {
+  if (estimatedGarboTurns() < ToyCupidBow.turnsLeft()) {
     const current = ToyCupidBow.currentFamiliar();
     if (!current) return [];
     if (ToyCupidBow.familiarsToday().includes(current)) return [];

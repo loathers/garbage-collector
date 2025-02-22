@@ -25,6 +25,7 @@ import {
   FamiliarMode,
   GeneralFamiliar,
   snapperValue,
+  tcbValue,
   timeToMeatify,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
@@ -41,6 +42,7 @@ export type FamiliarMenuOptions = Partial<{
   includeExperienceFamiliars: boolean;
   allowAttackFamiliars: boolean;
   mode: FamiliarMode;
+  equipmentForced: boolean;
 }>;
 
 export function menu(
@@ -186,10 +188,14 @@ export function freeFightFamiliarData(
 ): GeneralFamiliar {
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
     if (a === null) return b;
-    if (a.expectedValue === b.expectedValue) {
+    const aValue =
+      a.expectedValue + tcbValue(a.familiar, options.equipmentForced);
+    const bValue =
+      b.expectedValue + tcbValue(b.familiar, options.equipmentForced);
+    if (aValue === bValue) {
       return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
     }
-    return a.expectedValue > b.expectedValue ? a : b;
+    return aValue > bValue ? a : b;
   };
 
   return menu(options).reduce(compareFamiliars, {

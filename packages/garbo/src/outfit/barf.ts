@@ -10,6 +10,7 @@ import {
   myFury,
   myInebriety,
   retrieveItem,
+  toSlot,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -18,6 +19,7 @@ import {
   $item,
   $items,
   $skill,
+  $slot,
   Delayed,
   get,
   getKramcoWandererChance,
@@ -208,7 +210,12 @@ export function computeBarfOutfit(
 }
 
 export function barfOutfit(spec: OutfitSpec, sim = false): Outfit {
-  const { familiar, extraValue } = barfFamiliar();
+  const { familiar, extraValue } = barfFamiliar(
+    Boolean(
+      spec.famequip ||
+        spec.equip?.some((equipment) => toSlot(equipment) === $slot`familiar`),
+    ),
+  );
   try {
     return computeBarfOutfit({ familiar, ...spec }, sim);
   } finally {

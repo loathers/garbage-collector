@@ -38,7 +38,12 @@ import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
-import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
+import {
+  GeneralFamiliar,
+  tcbValue,
+  timeToMeatify,
+  turnsAvailable,
+} from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
 
@@ -94,7 +99,7 @@ function getCachedOutfitValues(fam: Familiar) {
     computeBarfOutfit(
       {
         familiar: fam,
-        avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections, bat wings`,
+        avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections, bat wings, toy Cupid bow`,
       },
       true,
     ).dress();
@@ -226,7 +231,10 @@ function extraValue(
   return Math.max(targetValue - Math.max(meatFamiliarValue, jellyfishValue), 0);
 }
 
-export function barfFamiliar(): { familiar: Familiar; extraValue: number } {
+export function barfFamiliar(equipmentForced: boolean): {
+  familiar: Familiar;
+  extraValue: number;
+} {
   if (timeToMeatify()) {
     return { familiar: $familiar`Grey Goose`, extraValue: 0 };
   }
@@ -242,7 +250,22 @@ export function barfFamiliar(): { familiar: Familiar; extraValue: number } {
     location: $location`Barf Mountain`,
     includeExperienceFamiliars: true,
     mode: "barf",
-  }).map(calculateOutfitValue);
+  }).flatMap((generalFamiliar) => [
+    calculateOutfitValue(generalFamiliar),
+    ...(!equipmentForced &&
+    ToyCupidBow.have() &&
+    !ToyCupidBow.familiarsToday().includes(generalFamiliar.familiar)
+      ? [
+          calculateOutfitValue({
+            ...generalFamiliar,
+            expectedValue:
+              generalFamiliar.expectedValue +
+              tcbValue(generalFamiliar.familiar),
+            limit: "cupid",
+          }),
+        ]
+      : []),
+  ]);
 
   const meatFamiliarEntry = fullMenu.find(({ familiar }) => familiar === meat);
 
