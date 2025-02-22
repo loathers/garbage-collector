@@ -4334,8 +4334,8 @@ __metadata:
   dependencies:
     eslint: ^9.9.0
     eslint-config-garbo: ^0.0.1
-    kolmafia: ^5.28067.0
-    libram: ^0.9.34
+    kolmafia: ^5.28383.0
+    libram: ^0.10.0
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4388,9 +4388,9 @@ __metadata:
     eslint: ^9.9.0
     eslint-config-garbo: ^0.0.1
     garbo-lib: "*"
-    grimoire-kolmafia: ^0.3.26
-    kolmafia: ^5.28067.0
-    libram: ^0.9.34
+    grimoire-kolmafia: ^0.3.28
+    kolmafia: ^5.28383.0
+    libram: ^0.10.0
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4583,15 +4583,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grimoire-kolmafia@npm:^0.3.26":
-  version: 0.3.26
-  resolution: "grimoire-kolmafia@npm:0.3.26"
+"grimoire-kolmafia@npm:^0.3.28":
+  version: 0.3.28
+  resolution: "grimoire-kolmafia@npm:0.3.28"
   dependencies:
     core-js: ^3.16.4
   peerDependencies:
-    kolmafia: ^5.27339.0
-    libram: ^0.8.4
-  checksum: 2cf49469e215dcbdb68d94d3f1823de81a247c3b594d499577a6f8f907b528c652647e8ee0f8c5386622617a3fed96f0afaa2e4aadc95562ee7f349c74813e8e
+    kolmafia: ^5.28100.0
+    libram: ^0.10.0
+  checksum: c55c1626c7b672a89b621a0171c6f1703c9bd208b44e696ec94622c9ffa5fc09ae0e0f6710956291cb2b657fa2a21dc84c337e22d823316d116047629a50883b
   languageName: node
   linkType: hard
 
@@ -5037,10 +5037,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:^5.28067.0":
-  version: 5.28069.0
-  resolution: "kolmafia@npm:5.28069.0"
-  checksum: 67c53aae0b5e4b7986ece0ec90567bf2a2182d7096792f0058aa5a788c0c3f14a78327b20509f8a63e466d9bf6685a26dcb738e75621f3886333c4bfb0f356a1
+"kolmafia@npm:^5.28383.0":
+  version: 5.28383.0
+  resolution: "kolmafia@npm:5.28383.0"
+  checksum: 5dc57504a4a776d96058af3212d4e6253b6ae016b56f6e23ae8e109655822edd57dbc8edd233f01b59c9575da90937e0cdf28dd7f70b120a252348d78dc54495
   languageName: node
   linkType: hard
 
@@ -5054,14 +5054,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:^0.9.34":
-  version: 0.9.34
-  resolution: "libram@npm:0.9.34"
+"libram@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "libram@npm:0.10.0"
   dependencies:
     html-entities: ^2.5.2
   peerDependencies:
     kolmafia: ^5.28100.0
-  checksum: c48bf5001b0f5fc94526917eae77817164a2631f22c3cb8b945cd7876513d6631ed65f6eea28f340687daeff11c10c00f9d14277d1ac3790873882d774759012
+  checksum: ee7d2c2e60b6a4ee194e9c23c61ef5295bb4409e92a2d1f0466dc9d94fdd72f8ee7fb53ec19ebde619cd5a95b6b46e45ff6a607bbac6c5ebd3e0f3dd47545215
   languageName: node
   linkType: hard
 
