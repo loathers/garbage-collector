@@ -271,8 +271,15 @@ export function barfFamiliar(equipmentForced: boolean): {
         tcbValue(generalFamiliar.familiar, false, true),
       limit: "cupid",
     });
-    if (tcb.expectedValue >= normal.expectedValue)
-      return [tcb, { ...normal, bonusTurns: 5 }];
+    if (tcb.expectedValue >= normal.expectedValue) {
+      return [
+        tcb,
+        {
+          ...normal,
+          bonusTurns: ToyCupidBow.turnsLeft(generalFamiliar.familiar),
+        },
+      ];
+    }
     return normal;
   });
 
