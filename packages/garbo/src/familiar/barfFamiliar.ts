@@ -66,13 +66,16 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
   { equip?: Item; extraValue?: (outfit: CachedOutfit) => number }
 >([
   [
+    // Derives its value from famexp and requires _much_ more famexp than other exp familiars
     $familiar`Chest Mimic`,
     {
       extraValue: ({ famexp }) =>
         (famexp * MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
     },
   ],
+  // Uniquely required to equip its fam equip to meaningfully have value
   [$familiar`Jill-of-All-Trades`, { equip: $item`LED candle` }],
+  // Derives its value irregularly from +famweight
   [
     $familiar`Mini Kiwi`,
     {
@@ -90,7 +93,8 @@ const outfitCacheKey = (f: Familiar) =>
   SPECIAL_FAMILIARS_FOR_CACHING.has(f) ? f : findLeprechaunMultiplier(f);
 
 function getCachedOutfitValues(fam: Familiar) {
-  const currentValue = outfitCache.get(outfitCacheKey(fam));
+  const cacheKey = outfitCacheKey(fam);
+  const currentValue = outfitCache.get(cacheKey);
   if (currentValue) return currentValue;
 
   const current = myFamiliar();
@@ -114,7 +118,7 @@ function getCachedOutfitValues(fam: Familiar) {
       famexp: sum(outfit, (eq: Item) => getModifier("Familiar Experience", eq)),
       bonus: sum(outfit, (eq: Item) => bonuses.get(eq) ?? 0),
     };
-    outfitCache.set(outfitCacheKey(fam), values);
+    outfitCache.set(cacheKey, values);
     return values;
   } finally {
     useFamiliar(current);
@@ -123,8 +127,11 @@ function getCachedOutfitValues(fam: Familiar) {
 }
 
 type MarginalFamiliar = GeneralFamiliar & {
+  // How much weight do we get on our outfit when we run this familiar?
   outfitWeight: number;
+  // What's the total non-familiar value of this outfit?
   outfitValue: number;
+  // How many extra turns do we expect to have racked up on this familiar by the time we run it?
   bonusTurns?: number;
 };
 
@@ -240,10 +247,12 @@ export function barfFamiliar(equipmentForced: boolean): {
   familiar: Familiar;
   extraValue: number;
 } {
+  // Meatify is basically always the most valuable thing we can do, to the point of not even counting as a marginal familiar
   if (timeToMeatify()) {
     return { familiar: $familiar`Grey Goose`, extraValue: 0 };
   }
 
+  // Luddite mode users get off here
   if (get("garbo_IgnoreMarginalFamiliars", false)) {
     return { familiar: meatFamiliar(), extraValue: 0 };
   }
@@ -256,11 +265,15 @@ export function barfFamiliar(equipmentForced: boolean): {
     includeExperienceFamiliars: true,
     mode: "barf",
   }).flatMap((generalFamiliar) => {
+    // Here we do two things:
+    // * transform `GeneralFamiliar`s into `MarginalFamiliar`s, which carry with them the total value of the outfit you'd wear
+    // * "double up" on familiars for which the toy Cupid bow is available
     const normal = calculateOutfitValue(generalFamiliar);
     if (
-      equipmentForced ||
-      !ToyCupidBow.have() ||
-      ToyCupidBow.familiarsToday().includes(generalFamiliar.familiar)
+      normal.limit === "cupid" || // If we're already dealing with one of our generated toy cupid bow picks
+      equipmentForced || // If we're unable to equip the toy cupid bow
+      !ToyCupidBow.have() || // If we don't have the toy cupid bow
+      ToyCupidBow.familiarsToday().includes(generalFamiliar.familiar) // If we've already gotten the thing
     ) {
       return normal;
     }
@@ -276,6 +289,7 @@ export function barfFamiliar(equipmentForced: boolean): {
         tcb,
         {
           ...normal,
+          // Account for the already-burned TCB turns when calculating the limit for the "normal" entry for the familiar
           bonusTurns: ToyCupidBow.turnsLeft(generalFamiliar.familiar),
         },
       ];
@@ -290,29 +304,39 @@ export function barfFamiliar(equipmentForced: boolean): {
   }
 
   const meatFamiliarValue = totalFamiliarValue(meatFamiliarEntry);
+  // Ultimately, using our meat familiar all day is the default behavior
+  // so any familiar worse than that isn't worth spending any time thinking about
   const viableMenu = fullMenu.filter(
     (f) => totalFamiliarValue(f) > meatFamiliarValue,
   );
 
-  if (viableMenu.every(({ limit }) => limit !== "none")) {
-    const turnsNeeded = sum(
-      viableMenu,
-      turnsNeededFromBaseline(meatFamiliarEntry),
-    );
-
-    if (turnsNeeded < turnsAvailable()) {
-      const shrubAvailable = viableMenu.some(
-        ({ familiar }) => familiar === $familiar`Crimbo Shrub`,
-      );
-      return {
-        familiar: shrubAvailable ? $familiar`Crimbo Shrub` : meat,
-        extraValue: 0,
-      };
-    }
-  }
-
   if (viableMenu.length === 0) {
     return { familiar: meat, extraValue: 0 };
+  }
+
+  // Determine the baseline for how good a familiar needs to be to be run--either an unlimited familiar, or our meat familiar
+  const unlimitedCruisingFamiliars = viableMenu.filter(
+    ({ limit }) => limit === "none",
+  );
+  const cruisingFamiliar = unlimitedCruisingFamiliars.length
+    ? maxBy(unlimitedCruisingFamiliars, totalFamiliarValue)
+    : meatFamiliarEntry;
+
+  const turnsNeeded = sum(
+    viableMenu,
+    turnsNeededFromBaseline(cruisingFamiliar),
+  );
+
+  // If there aren't enough turns left in the day to get value out of fams that aren't our "cruising" familiar, just return that
+  // With a special exception for crimbo shrub
+  if (turnsNeeded < turnsAvailable()) {
+    const shrubAvailable = viableMenu.some(
+      ({ familiar }) => familiar === $familiar`Crimbo Shrub`,
+    );
+    return {
+      familiar: shrubAvailable ? $familiar`Crimbo Shrub` : meat,
+      extraValue: 0,
+    };
   }
 
   const best = maxBy(viableMenu, totalFamiliarValue);
