@@ -125,6 +125,7 @@ function getCachedOutfitValues(fam: Familiar) {
 type MarginalFamiliar = GeneralFamiliar & {
   outfitWeight: number;
   outfitValue: number;
+  bonusTurns?: number;
 };
 
 const nonOutfitWeightBonus = () =>
@@ -172,33 +173,37 @@ function totalFamiliarValue({
 function turnsNeededFromBaseline(
   baselineToCompareAgainst: MarginalFamiliar,
 ): (option: MarginalFamiliar) => number {
-  return ({ familiar, limit, outfitValue }: MarginalFamiliar) => {
+  return ({ familiar, limit, outfitValue, bonusTurns }: MarginalFamiliar) => {
     switch (limit) {
       case "drops":
-        return sum(
-          getAllDrops(familiar).filter(
-            ({ expectedValue }) =>
-              outfitValue + familiarAbilityValue(familiar) + expectedValue >
-              totalFamiliarValue(baselineToCompareAgainst),
-          ),
-          ({ expectedTurns }) => expectedTurns,
+        return (
+          sum(
+            getAllDrops(familiar).filter(
+              ({ expectedValue }) =>
+                outfitValue + familiarAbilityValue(familiar) + expectedValue >
+                totalFamiliarValue(baselineToCompareAgainst),
+            ),
+            ({ expectedTurns }) => expectedTurns,
+          ) - (bonusTurns ?? 0)
         );
 
       case "experience":
-        return getExperienceFamiliarLimit(familiar);
+        return getExperienceFamiliarLimit(familiar) - (bonusTurns ?? 0);
 
       case "none":
         return 0;
 
       case "cupid":
-        return ToyCupidBow.turnsLeft(familiar);
+        return ToyCupidBow.turnsLeft(familiar) - (bonusTurns ?? 0);
 
       case "special":
-        return getSpecialFamiliarLimit({
-          familiar,
-          outfitValue,
-          baselineToCompareAgainst,
-        });
+        return (
+          getSpecialFamiliarLimit({
+            familiar,
+            outfitValue,
+            baselineToCompareAgainst,
+          }) - (bonusTurns ?? 0)
+        );
     }
   };
 }
@@ -266,7 +271,8 @@ export function barfFamiliar(equipmentForced: boolean): {
         tcbValue(generalFamiliar.familiar, false, true),
       limit: "cupid",
     });
-    if (tcb.expectedValue >= normal.expectedValue) return [tcb, normal];
+    if (tcb.expectedValue >= normal.expectedValue)
+      return [tcb, { ...normal, bonusTurns: 5 }];
     return normal;
   });
 
