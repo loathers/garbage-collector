@@ -250,22 +250,24 @@ export function barfFamiliar(equipmentForced: boolean): {
     location: $location`Barf Mountain`,
     includeExperienceFamiliars: true,
     mode: "barf",
-  }).flatMap((generalFamiliar) => [
-    calculateOutfitValue(generalFamiliar),
-    ...(!equipmentForced &&
-    ToyCupidBow.have() &&
-    !ToyCupidBow.familiarsToday().includes(generalFamiliar.familiar)
-      ? [
-          calculateOutfitValue({
-            ...generalFamiliar,
-            expectedValue:
-              generalFamiliar.expectedValue +
-              tcbValue(generalFamiliar.familiar, false, true),
-            limit: "cupid",
-          }),
-        ]
-      : []),
-  ]);
+  }).flatMap((generalFamiliar) => {
+    const normal = calculateOutfitValue(generalFamiliar);
+    if (
+      equipmentForced ||
+      !ToyCupidBow.have() ||
+      ToyCupidBow.familiarsToday().includes(generalFamiliar.familiar)
+    )
+      return normal;
+    const tcb = calculateOutfitValue({
+      ...generalFamiliar,
+      expectedValue:
+        generalFamiliar.expectedValue +
+        tcbValue(generalFamiliar.familiar, false, true),
+      limit: "cupid",
+    });
+    if (tcb.expectedValue >= normal.expectedValue) return [tcb, normal];
+    return normal;
+  });
 
   const meatFamiliarEntry = fullMenu.find(({ familiar }) => familiar === meat);
 
