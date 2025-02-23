@@ -543,7 +543,11 @@ export function main(argString = ""): void {
       withVIPClan(() => {
         // Prepare pirate realm if our copy target is cockroach
         // How do we handle if garbo was started without enough turns left without dieting to prep?
-        if (globalOptions.target === $monster`cockroach`) {
+        if (
+          globalOptions.target === $monster`cockroach` &&
+          !globalOptions.simdiet
+        ) {
+          if (!globalOptions.nodiet) nonOrganAdventures();
           withProperty("removeMalignantEffects", false, () =>
             runGarboQuests([CockroachSetup]),
           );
