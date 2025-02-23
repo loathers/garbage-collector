@@ -5,11 +5,13 @@ import { GeneralFamiliar, getUsedTcbFamiliars } from "./lib";
 import { estimatedGarboTurns } from "../turns";
 
 export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
+  const usedTcbFamiliars = getUsedTcbFamiliars();
+
   // If there aren't enough turns to run someone to completion, only check for the current cupid familiar
   if (estimatedGarboTurns() < ToyCupidBow.turnsLeft()) {
     const current = ToyCupidBow.currentFamiliar();
     if (!current) return [];
-    if (ToyCupidBow.familiarsToday().includes(current)) return [];
+    if (usedTcbFamiliars.has(current)) return [];
     return [
       {
         familiar: current,
@@ -27,10 +29,9 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
     number,
     GeneralFamiliar
   >();
-  const tcbFamiliars = getUsedTcbFamiliars();
   for (const familiar of Familiar.all()) {
     if (!have(familiar)) continue;
-    if (tcbFamiliars.has(familiar)) continue;
+    if (usedTcbFamiliars.has(familiar)) continue;
     const equipment = familiarEquipment(familiar);
     if (!equipment.tradeable) continue;
 

@@ -260,7 +260,7 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const meat = meatFamiliar();
 
-  const tcbFamiliars = getUsedTcbFamiliars();
+  const usedTcbFamiliars = getUsedTcbFamiliars();
 
   const fullMenu = menu({
     canChooseMacro: true,
@@ -276,7 +276,7 @@ export function barfFamiliar(equipmentForced: boolean): {
       normal.limit === "cupid" || // If we're already dealing with one of our generated toy cupid bow picks
       equipmentForced || // If we're unable to equip the toy cupid bow
       !ToyCupidBow.have() || // If we don't have the toy cupid bow
-      tcbFamiliars.has(generalFamiliar.familiar) // If we've already gotten the thing
+      usedTcbFamiliars.has(generalFamiliar.familiar) // If we've already gotten the thing
     ) {
       return normal;
     }
@@ -284,7 +284,7 @@ export function barfFamiliar(equipmentForced: boolean): {
       ...generalFamiliar,
       expectedValue:
         generalFamiliar.expectedValue +
-        tcbValue(generalFamiliar.familiar, tcbFamiliars, false, true),
+        tcbValue(generalFamiliar.familiar, usedTcbFamiliars, false, true),
       limit: "cupid",
     });
     if (tcb.expectedValue >= normal.expectedValue) {
