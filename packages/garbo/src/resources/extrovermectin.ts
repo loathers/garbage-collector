@@ -155,7 +155,7 @@ export function doingGregFight(): boolean {
     have($skill`Just the Facts`) &&
     (get("_monsterHabitatsRecalled") < 3 ||
       (get("_monsterHabitatsFightsLeft") > 0 &&
-        get("beGregariousMonster") === globalOptions.target));
+        get("_monsterHabitatsMonster") === globalOptions.target));
 
   return extrovermectin || habitat;
 }
