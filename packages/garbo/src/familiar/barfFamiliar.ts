@@ -40,6 +40,7 @@ import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import {
   GeneralFamiliar,
+  getUsedTcbFamiliars,
   tcbValue,
   timeToMeatify,
   turnsAvailable,
@@ -259,6 +260,8 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const meat = meatFamiliar();
 
+  const tcbFamiliars = getUsedTcbFamiliars();
+
   const fullMenu = menu({
     canChooseMacro: true,
     location: $location`Barf Mountain`,
@@ -273,7 +276,7 @@ export function barfFamiliar(equipmentForced: boolean): {
       normal.limit === "cupid" || // If we're already dealing with one of our generated toy cupid bow picks
       equipmentForced || // If we're unable to equip the toy cupid bow
       !ToyCupidBow.have() || // If we don't have the toy cupid bow
-      ToyCupidBow.familiarsToday().includes(generalFamiliar.familiar) // If we've already gotten the thing
+      tcbFamiliars.has(generalFamiliar.familiar) // If we've already gotten the thing
     ) {
       return normal;
     }
@@ -281,7 +284,7 @@ export function barfFamiliar(equipmentForced: boolean): {
       ...generalFamiliar,
       expectedValue:
         generalFamiliar.expectedValue +
-        tcbValue(generalFamiliar.familiar, false, true),
+        tcbValue(generalFamiliar.familiar, tcbFamiliars, false, true),
       limit: "cupid",
     });
     if (tcb.expectedValue >= normal.expectedValue) {

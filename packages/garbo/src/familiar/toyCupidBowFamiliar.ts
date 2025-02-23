@@ -1,7 +1,7 @@
 import { Familiar, familiarEquipment } from "kolmafia";
 import { findLeprechaunMultiplier, have, ToyCupidBow } from "libram";
 import { garboValue } from "../garboValue";
-import { GeneralFamiliar } from "./lib";
+import { GeneralFamiliar, getUsedTcbFamiliars } from "./lib";
 import { estimatedGarboTurns } from "../turns";
 
 export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
@@ -27,9 +27,10 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
     number,
     GeneralFamiliar
   >();
+  const tcbFamiliars = getUsedTcbFamiliars();
   for (const familiar of Familiar.all()) {
     if (!have(familiar)) continue;
-    if (ToyCupidBow.familiarsToday().includes(familiar)) continue;
+    if (tcbFamiliars.has(familiar)) continue;
     const equipment = familiarEquipment(familiar);
     if (!equipment.tradeable) continue;
 

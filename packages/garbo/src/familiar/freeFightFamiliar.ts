@@ -24,6 +24,7 @@ import getExperienceFamiliars from "./experienceFamiliars";
 import {
   FamiliarMode,
   GeneralFamiliar,
+  getUsedTcbFamiliars,
   snapperValue,
   tcbValue,
   timeToMeatify,
@@ -186,12 +187,15 @@ export function getAllJellyfishDrops(): {
 export function freeFightFamiliarData(
   options: Partial<FamiliarMenuOptions> = {},
 ): GeneralFamiliar {
+  const tcbFamiliars = getUsedTcbFamiliars();
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
     if (a === null) return b;
     const aValue =
-      a.expectedValue + tcbValue(a.familiar, options.equipmentForced);
+      a.expectedValue +
+      tcbValue(a.familiar, tcbFamiliars, options.equipmentForced);
     const bValue =
-      b.expectedValue + tcbValue(b.familiar, options.equipmentForced);
+      b.expectedValue +
+      tcbValue(b.familiar, tcbFamiliars, options.equipmentForced);
     if (aValue === bValue) {
       return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
     }

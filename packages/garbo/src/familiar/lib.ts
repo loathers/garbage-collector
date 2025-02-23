@@ -155,14 +155,17 @@ export function snapperValue(): number {
   return garboValue(item) / denominator;
 }
 
+export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
+
 export function tcbValue(
   familiar: Familiar,
+  tcbFamiliars: Set<Familiar>,
   equipmentForced?: boolean,
   includeAmuletCoinOpportunityCost?: boolean,
 ): number {
   if (equipmentForced) return 0;
   if (!ToyCupidBow.have()) return 0;
-  if (ToyCupidBow.familiarsToday().includes(familiar)) return 0;
+  if (tcbFamiliars.has(familiar)) return 0;
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   // This is only used during barf so we can just use basemeat
   // Includes a lazy linearization of the value of its leprechaun-pounds
