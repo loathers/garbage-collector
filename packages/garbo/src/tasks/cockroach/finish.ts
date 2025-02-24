@@ -15,9 +15,9 @@ import { meatTargetOutfit } from "../../outfit";
 import { potionSetup } from "../../potions";
 import { copyTargetCount } from "../../target";
 import { GarboTask } from "../engine";
-import { checkAndFixOvercapStats } from "./lib";
 import { doingGregFight } from "../../resources";
 import { useSkill } from "kolmafia";
+import { DebuffPlanner } from "./debuffplanner";
 
 export const CockroachFinish: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
@@ -36,7 +36,7 @@ export const CockroachFinish: Quest<GarboTask> = {
       prepare: () => {
         meatMood(true, targetMeat()).execute(copyTargetCount());
         potionSetup(false);
-        checkAndFixOvercapStats();
+        DebuffPlanner.checkAndFixOvercapStats();
       },
       do: $location`Crab Island`,
       outfit: () => {
@@ -59,7 +59,7 @@ export const CockroachFinish: Quest<GarboTask> = {
       name: "Choose Trash Island",
       ready: () => questStep("_questPirateRealm") === 6,
       completed: () => questStep("_questPirateRealm") > 6,
-      prepare: () => checkAndFixOvercapStats(),
+      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
       outfit: {
         equip: $items`PirateRealm eyepatch`,
