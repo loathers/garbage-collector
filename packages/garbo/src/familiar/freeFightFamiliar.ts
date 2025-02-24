@@ -24,7 +24,9 @@ import getExperienceFamiliars from "./experienceFamiliars";
 import {
   FamiliarMode,
   GeneralFamiliar,
+  getUsedTcbFamiliars,
   snapperValue,
+  tcbValue,
   timeToMeatify,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
@@ -41,6 +43,7 @@ export type FamiliarMenuOptions = Partial<{
   includeExperienceFamiliars: boolean;
   allowAttackFamiliars: boolean;
   mode: FamiliarMode;
+  equipmentForced: boolean;
 }>;
 
 export function menu(
@@ -184,12 +187,19 @@ export function getAllJellyfishDrops(): {
 export function freeFightFamiliarData(
   options: Partial<FamiliarMenuOptions> = {},
 ): GeneralFamiliar {
+  const usedTcbFamiliars = getUsedTcbFamiliars();
   const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
     if (a === null) return b;
-    if (a.expectedValue === b.expectedValue) {
+    const aValue =
+      a.expectedValue +
+      tcbValue(a.familiar, usedTcbFamiliars, options.equipmentForced);
+    const bValue =
+      b.expectedValue +
+      tcbValue(b.familiar, usedTcbFamiliars, options.equipmentForced);
+    if (aValue === bValue) {
       return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
     }
-    return a.expectedValue > b.expectedValue ? a : b;
+    return aValue > bValue ? a : b;
   };
 
   return menu(options).reduce(compareFamiliars, {

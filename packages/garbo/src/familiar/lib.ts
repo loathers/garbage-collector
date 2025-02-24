@@ -1,6 +1,7 @@
 import {
   availableAmount,
   Familiar,
+  familiarEquipment,
   inebrietyLimit,
   myAdventures,
   myInebriety,
@@ -12,10 +13,12 @@ import {
   $item,
   $skill,
   clamp,
+  findLeprechaunMultiplier,
   get,
   have,
   Snapper,
   sumNumbers,
+  ToyCupidBow,
 } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
@@ -150,4 +153,31 @@ export function snapperValue(): number {
   if (denominator > copyTargetCount()) return 0;
 
   return garboValue(item) / denominator;
+}
+
+export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
+
+export function tcbValue(
+  familiar: Familiar,
+  tcbFamiliars: Set<Familiar>,
+  equipmentForced?: boolean,
+  includeAmuletCoinOpportunityCost?: boolean,
+): number {
+  if (equipmentForced) return 0;
+  if (!ToyCupidBow.have()) return 0;
+  if (tcbFamiliars.has(familiar)) return 0;
+  const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
+  // This is only used during barf so we can just use basemeat
+  // Includes a lazy linearization of the value of its leprechaun-pounds
+  const amuletCoin =
+    includeAmuletCoinOpportunityCost && have($item`amulet coin`)
+      ? ((50 +
+          10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) *
+          baseMeat()) /
+        100
+      : 0;
+  return (
+    garboValue(familiarEquipment(familiar)) / ToyCupidBow.turnsLeft(familiar) -
+    amuletCoin
+  );
 }
