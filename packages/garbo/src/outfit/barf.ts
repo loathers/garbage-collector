@@ -2,7 +2,6 @@ import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
   cliExecute,
   Familiar,
-  familiarEquipment,
   inebrietyLimit,
   Item,
   myClass,
@@ -24,12 +23,11 @@ import {
   get,
   getKramcoWandererChance,
   have,
-  ToyCupidBow,
   undelay,
 } from "libram";
 import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
-import { bonusGear } from "./dropsgear";
+import { bonusGear, toyCupidBow } from "./dropsgear";
 import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
 import {
   BonusEquipMode,
@@ -38,8 +36,6 @@ import {
   modeValueOfMeat,
 } from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
-import { estimatedGarboTurns } from "../turns";
-import { garboValue } from "../garboValue";
 
 function chooseGun() {
   if (have($item`love`)) {
@@ -169,16 +165,8 @@ export function computeBarfOutfit(
     outfit.equip($item`Kramco Sausage-o-Matic™`);
   }
 
-  if (
-    !sim &&
-    !ToyCupidBow.familiarsToday().includes(spec.familiar) &&
-    estimatedGarboTurns() >= 5
-  ) {
-    outfit.setBonus(
-      $item`toy Cupid bow`,
-      garboValue(familiarEquipment(spec.familiar)) /
-        ToyCupidBow.turnsLeft(spec.familiar),
-    );
+  if (!sim) {
+    outfit.addBonuses(toyCupidBow(spec.familiar));
   }
 
   const bjornalike = bestBjornalike(outfit);

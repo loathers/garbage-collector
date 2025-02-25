@@ -11,7 +11,7 @@ import {
 } from "libram";
 import { freeFightFamiliar, meatFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
-import { bonusGear } from "./dropsgear";
+import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   bestBjornalike,
   cleaverCheck,
@@ -71,6 +71,9 @@ export function meatTargetOutfit(
   outfit.bonuses = bonusGear(
     targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
   );
+
+  outfit.addBonuses(toyCupidBow(outfit.familiar));
+
   const bjornalike = bestBjornalike(outfit);
 
   if (

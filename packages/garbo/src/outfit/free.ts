@@ -1,14 +1,6 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { familiarEquipment, Location } from "kolmafia";
-import {
-  $familiar,
-  $item,
-  $items,
-  get,
-  Guzzlr,
-  SourceTerminal,
-  ToyCupidBow,
-} from "libram";
+import { Location } from "kolmafia";
+import { $familiar, $item, $items, get, Guzzlr, SourceTerminal } from "libram";
 import { WanderDetails } from "garbo-lib";
 
 import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
@@ -16,10 +8,8 @@ import { BonusEquipMode, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
-import { bonusGear } from "./dropsgear";
+import { bonusGear, toyCupidBow } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
-import { estimatedGarboTurns } from "../turns";
-import { garboValue } from "../garboValue";
 import { adventuresPerSweat } from "../resources";
 
 export type FreeFightOutfitMenuOptions = {
@@ -86,14 +76,7 @@ export function freeFightOutfit(
     );
   }
 
-  if (!ToyCupidBow.familiarsToday().includes(outfit.familiar)) {
-    outfit.setBonus(
-      $item`toy Cupid bow`,
-      estimatedGarboTurns() >= 5
-        ? garboValue(familiarEquipment(outfit.familiar)) / 5
-        : 0,
-    );
-  }
+  outfit.addBonuses(toyCupidBow(outfit.familiar));
 
   if (
     computeLocation(options) === Guzzlr.getLocation() &&
