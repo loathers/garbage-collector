@@ -43,7 +43,11 @@ export function meatTargetOutfit(
     outfit.modifier.push("-tie");
   }
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
-  outfit.familiar ??= targettingMeat() ? meatFamiliar() : freeFightFamiliar();
+  outfit.familiar ??= targettingMeat()
+    ? meatFamiliar()
+    : freeFightFamiliar({
+        equipmentForced: outfit.canEquip($item`toy Cupid bow`),
+      });
 
   const bjornChoice = chooseBjorn(
     targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
