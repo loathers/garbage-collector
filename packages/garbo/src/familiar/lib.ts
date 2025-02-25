@@ -157,6 +157,13 @@ export function snapperValue(): number {
 
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
 
+export const familiarEquipmentValue = (f: Familiar) =>
+  clamp(
+    garboValue(familiarEquipment(f)),
+    0,
+    garboValue($item`box of Familiar Jacks`),
+  );
+
 export function tcbValue(
   familiar: Familiar,
   tcbFamiliars: Set<Familiar>,
@@ -177,7 +184,7 @@ export function tcbValue(
         100
       : 0;
   return (
-    garboValue(familiarEquipment(familiar)) / ToyCupidBow.turnsLeft(familiar) -
+    familiarEquipmentValue(familiar) / ToyCupidBow.turnsLeft(familiar) -
     amuletCoin
   );
 }

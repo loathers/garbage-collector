@@ -1,7 +1,11 @@
 import { Familiar, familiarEquipment } from "kolmafia";
 import { findLeprechaunMultiplier, have, ToyCupidBow } from "libram";
 import { garboValue } from "../garboValue";
-import { GeneralFamiliar, getUsedTcbFamiliars } from "./lib";
+import {
+  familiarEquipmentValue,
+  GeneralFamiliar,
+  getUsedTcbFamiliars,
+} from "./lib";
 import { estimatedGarboTurns } from "../turns";
 
 export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
@@ -32,12 +36,11 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
   for (const familiar of Familiar.all()) {
     if (!have(familiar)) continue;
     if (usedTcbFamiliars.has(familiar)) continue;
-    const equipment = familiarEquipment(familiar);
-    if (!equipment.tradeable) continue;
+    if (!familiarEquipment(familiar).tradeable) continue;
 
     const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
     const expectedValue =
-      garboValue(equipment) / ToyCupidBow.turnsLeft(familiar);
+      familiarEquipmentValue(familiar) / ToyCupidBow.turnsLeft(familiar);
 
     const currentBestValue =
       bestFamiliarsByLeprechaunMultiplier.get(leprechaunMultiplier)

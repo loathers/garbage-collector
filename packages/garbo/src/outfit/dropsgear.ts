@@ -1,7 +1,6 @@
 import {
   equippedItem,
   Familiar,
-  familiarEquipment,
   fullnessLimit,
   getWorkshed,
   haveEffect,
@@ -48,6 +47,7 @@ import {
 import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { bonusAccessories } from "./dropsgearAccessories";
+import { familiarEquipmentValue } from "../familiar/lib";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -499,7 +499,7 @@ export function toyCupidBow(familiar: Familiar): Map<Item, number> {
   return new Map([
     [
       $item`toy Cupid bow`,
-      garboValue(familiarEquipment(familiar)) / ToyCupidBow.turnsLeft(familiar),
+      familiarEquipmentValue(familiar) / ToyCupidBow.turnsLeft(familiar),
     ],
   ]);
 }
