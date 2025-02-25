@@ -493,8 +493,9 @@ function sneegleebs(): Map<Item, number> {
 export function toyCupidBow(familiar: Familiar): Map<Item, number> {
   if (!ToyCupidBow.have()) return new Map();
   if (ToyCupidBow.familiarsToday().includes(familiar)) return new Map();
-  if (estimatedGarboTurns() <= ToyCupidBow.turnsLeft(familiar))
+  if (estimatedGarboTurns() <= ToyCupidBow.turnsLeft(familiar)) {
     return new Map();
+  }
   return new Map([
     [
       $item`toy Cupid bow`,
