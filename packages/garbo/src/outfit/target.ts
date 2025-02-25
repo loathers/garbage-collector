@@ -72,7 +72,7 @@ export function meatTargetOutfit(
     targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
   );
 
-  outfit.addBonuses(toyCupidBow(outfit.familiar));
+  if (!targettingMeat()) outfit.addBonuses(toyCupidBow(outfit.familiar));
 
   const bjornalike = bestBjornalike(outfit);
 
