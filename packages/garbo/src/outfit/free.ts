@@ -36,6 +36,7 @@ export function freeFightOutfit(
     computeFamiliarMenuOptions(
       options.familiarOptions,
       options.duplicate ?? false,
+      outfit,
     ),
   );
   const mode =
@@ -147,6 +148,7 @@ function computeLocation(
 function computeFamiliarMenuOptions(
   options: FamiliarMenuOptions = {},
   duplicate: boolean,
+  outfit: Outfit,
 ): FamiliarMenuOptions {
   return {
     ...options,
@@ -157,5 +159,7 @@ function computeFamiliarMenuOptions(
         SourceTerminal.have() &&
         SourceTerminal.duplicateUsesRemaining() > 0
       ),
+    equipmentForced:
+      options.equipmentForced || Boolean(outfit.canEquip($item`toy Cupid bow`)),
   };
 }
