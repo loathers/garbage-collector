@@ -594,7 +594,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       !doingGregFight() &&
       have($skill`Macrometeorite`) &&
       get("_macrometeoriteUses") < 10,
-    completed: () => Counter.exists("portscan.edu"),
+    completed: () => !Counter.exists("portscan.edu"),
     prepare: () => {
       if (have($item`packet of mushroom spores`)) {
         use($item`packet of mushroom spores`);
