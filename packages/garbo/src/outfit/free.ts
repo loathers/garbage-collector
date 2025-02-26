@@ -86,8 +86,9 @@ export function freeFightOutfit(
     );
   }
 
-  if (mode !== BonusEquipMode.DMT)
+  if (mode !== BonusEquipMode.DMT) {
     outfit.addBonuses(toyCupidBow(outfit.familiar));
+  }
 
   if (
     computeLocation(options) === Guzzlr.getLocation() &&
