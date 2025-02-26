@@ -1,5 +1,5 @@
 import { Familiar, familiarEquipment } from "kolmafia";
-import { findLeprechaunMultiplier, have, ToyCupidBow } from "libram";
+import { $familiar, findLeprechaunMultiplier, have, ToyCupidBow } from "libram";
 import { garboValue } from "../garboValue";
 import {
   familiarEquipmentValue,
@@ -7,6 +7,8 @@ import {
   getUsedTcbFamiliars,
 } from "./lib";
 import { estimatedGarboTurns } from "../turns";
+import { globalOptions } from "../config";
+import { propertyManager } from "../lib";
 
 export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
   const usedTcbFamiliars = getUsedTcbFamiliars();
@@ -37,6 +39,11 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
     if (!have(familiar)) continue;
     if (usedTcbFamiliars.has(familiar)) continue;
     if (!familiarEquipment(familiar).tradeable) continue;
+    if (familiar === $familiar`Mini-Adventurer`) {
+      if (globalOptions.ascend)
+        propertyManager.setChoice(768, 4); // Littlest identity crisis, sauceror
+      else continue;
+    }
 
     const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
     const expectedValue =
