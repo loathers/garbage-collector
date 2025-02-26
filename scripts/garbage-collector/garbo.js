@@ -28842,7 +28842,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("c1da9400fff9a3bb879213f14a83b00cf40a0d51", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("c70df1d4efa51b23c707354f5fabca6fe7f782c5", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -40230,7 +40230,7 @@ var FreeFightTasks = [
       return (have($item(_templateObject15310 || (_templateObject15310 = _taggedTemplateLiteral123(["packet of mushroom spores"])))) || (0, import_kolmafia128.getCampground)()["packet of mushroom spores"] !== void 0) && !doingGregFight() && have($skill(_templateObject1544 || (_templateObject1544 = _taggedTemplateLiteral123(["Macrometeorite"])))) && get("_macrometeoriteUses") < 10;
     },
     completed: function() {
-      return counter_exports.exists("portscan.edu");
+      return !counter_exports.exists("portscan.edu");
     },
     prepare: function() {
       if (have($item(_templateObject1554 || (_templateObject1554 = _taggedTemplateLiteral123(["packet of mushroom spores"]))))) {
