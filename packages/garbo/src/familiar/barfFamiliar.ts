@@ -191,7 +191,7 @@ function turnsNeededFromBaseline(
                 outfitValue + familiarAbilityValue(familiar) + expectedValue >
                 totalFamiliarValue(baselineToCompareAgainst),
             ),
-            ({ expectedTurns }) => expectedTurns,
+            "expectedTurns",
           ) - (bonusTurns ?? 0)
         );
 
@@ -392,7 +392,7 @@ function getSpecialFamiliarLimit({
             outfitValue + familiarAbilityValue(familiar) + expectedValue >
             totalFamiliarValue(baselineToCompareAgainst),
         ),
-        ({ turnsAtValue }) => turnsAtValue,
+        "turnsAtValue",
       );
 
     case $familiar`Crimbo Shrub`:
