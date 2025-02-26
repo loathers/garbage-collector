@@ -72,8 +72,10 @@ export function meatTargetOutfit(
 
   useUPCsIfNeeded(outfit);
 
-  outfit.bonuses = bonusGear(
-    targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
+  outfit.addBonuses(
+    bonusGear(
+      targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
+    ),
   );
 
   if (!targettingMeat()) outfit.addBonuses(toyCupidBow(outfit.familiar));

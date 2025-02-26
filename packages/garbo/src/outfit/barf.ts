@@ -116,7 +116,7 @@ export function computeBarfOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
-  outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
+  outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
 
   if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
     outfit.equip($item`LED candle`);

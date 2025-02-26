@@ -1,6 +1,14 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Location } from "kolmafia";
-import { $familiar, $item, $items, get, Guzzlr, SourceTerminal } from "libram";
+import {
+  $familiar,
+  $item,
+  $items,
+  $location,
+  get,
+  Guzzlr,
+  SourceTerminal,
+} from "libram";
 import { WanderDetails } from "garbo-lib";
 
 import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
@@ -40,7 +48,7 @@ export function freeFightOutfit(
     ),
   );
   const mode =
-    outfit.familiar === $familiar`Machine Elf`
+    options.location === $location`The Deep Machine Tunnels`
       ? BonusEquipMode.DMT
       : BonusEquipMode.FREE;
 
@@ -68,7 +76,8 @@ export function freeFightOutfit(
   if (get("_vampyreCloakeFormUses") < 10) {
     outfit.setBonus($item`vampyric cloake`, 500);
   }
-  bonusGear(mode).forEach((value, item) => outfit.addBonus(item, value));
+
+  outfit.addBonuses(bonusGear(mode));
 
   if (outfit.familiar !== $familiar`Grey Goose`) {
     outfit.setBonus(
@@ -77,7 +86,8 @@ export function freeFightOutfit(
     );
   }
 
-  outfit.addBonuses(toyCupidBow(outfit.familiar));
+  if (mode !== BonusEquipMode.DMT)
+    outfit.addBonuses(toyCupidBow(outfit.familiar));
 
   if (
     computeLocation(options) === Guzzlr.getLocation() &&
