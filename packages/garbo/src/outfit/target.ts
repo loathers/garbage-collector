@@ -46,7 +46,7 @@ export function meatTargetOutfit(
   outfit.familiar ??= targettingMeat()
     ? meatFamiliar()
     : freeFightFamiliar({
-        equipmentForced: outfit.canEquip($item`toy Cupid bow`),
+        equipmentForced: !outfit.canEquip($item`toy Cupid bow`),
       });
 
   const bjornChoice = chooseBjorn(

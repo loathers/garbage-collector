@@ -17,6 +17,8 @@ import { globalOptions } from "../config";
 import { propertyManager } from "../lib";
 
 export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
+  if (ToyCupidBow.have()) return [];
+
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
   // If there aren't enough turns to run someone to completion, only check for the current cupid familiar
