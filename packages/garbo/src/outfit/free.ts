@@ -171,6 +171,6 @@ function computeFamiliarMenuOptions(
         SourceTerminal.duplicateUsesRemaining() > 0
       ),
     equipmentForced:
-      options.equipmentForced || Boolean(outfit.canEquip($item`toy Cupid bow`)),
+      options.equipmentForced || !outfit.canEquip($item`toy Cupid bow`),
   };
 }
