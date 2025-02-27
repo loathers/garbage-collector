@@ -28842,7 +28842,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d16d54dd8d59526abf4636498614ff39bf89eb0d", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("c057ead73578bc2e9cb65ecf023de0628d9e9c2e", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -31905,7 +31905,7 @@ function meatTargetOutfit() {
   }
   outfit3.avoid.push($item(_templateObject671 || (_templateObject671 = _taggedTemplateLiteral89(["cheap sunglasses"]))));
   (_outfit$familiar = outfit3.familiar) !== null && _outfit$familiar !== void 0 ? _outfit$familiar : outfit3.familiar = targettingMeat() ? meatFamiliar() : freeFightFamiliar({
-    equipmentForced: outfit3.canEquip($item(_templateObject2159 || (_templateObject2159 = _taggedTemplateLiteral89(["toy Cupid bow"]))))
+    equipmentForced: !outfit3.canEquip($item(_templateObject2159 || (_templateObject2159 = _taggedTemplateLiteral89(["toy Cupid bow"]))))
   });
   var bjornChoice = chooseBjorn(targettingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE, outfit3.familiar);
   var underwater = target.environment === "underwater";
@@ -32564,6 +32564,7 @@ function _arrayLikeToArray59(r, a) {
   return n;
 }
 function getToyCupidBowFamiliars() {
+  if (ToyCupidBow_exports.have()) return [];
   var usedTcbFamiliars = getUsedTcbFamiliars();
   if (estimatedGarboTurns() < ToyCupidBow_exports.turnsLeft()) {
     var current2 = ToyCupidBow_exports.currentFamiliar();
@@ -33017,7 +33018,7 @@ function computeFamiliarMenuOptions() {
   var outfit3 = arguments.length > 2 ? arguments[2] : void 0;
   return _objectSpread16(_objectSpread16({}, options), {}, {
     allowAttackFamiliars: (_options$allowAttackF = options.allowAttackFamiliars) !== null && _options$allowAttackF !== void 0 ? _options$allowAttackF : !(duplicate && SourceTerminal_exports.have() && SourceTerminal_exports.duplicateUsesRemaining() > 0),
-    equipmentForced: options.equipmentForced || Boolean(outfit3.canEquip($item(_templateObject1434 || (_templateObject1434 = _taggedTemplateLiteral97(["toy Cupid bow"])))))
+    equipmentForced: options.equipmentForced || !outfit3.canEquip($item(_templateObject1434 || (_templateObject1434 = _taggedTemplateLiteral97(["toy Cupid bow"]))))
   });
 }
 
