@@ -398,7 +398,7 @@ export class Potion {
     }[] = [];
     const limitFunction = limit
       ? (quantity: number) =>
-          clamp(limit - sum(values, ({ quantity }) => quantity), 0, quantity)
+          clamp(limit - sum(values, "quantity"), 0, quantity)
       : (quantity: number) => quantity;
 
     // compute the value of covering meat targets

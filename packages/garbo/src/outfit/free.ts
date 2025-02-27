@@ -1,6 +1,14 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Location } from "kolmafia";
-import { $familiar, $item, $items, get, Guzzlr, SourceTerminal } from "libram";
+import {
+  $familiar,
+  $item,
+  $items,
+  $location,
+  get,
+  Guzzlr,
+  SourceTerminal,
+} from "libram";
 import { WanderDetails } from "garbo-lib";
 
 import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
@@ -8,8 +16,9 @@ import { BonusEquipMode, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
-import { bonusGear } from "./dropsgear";
+import { bonusGear, toyCupidBow } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
+import { adventuresPerSweat } from "../resources";
 
 export type FreeFightOutfitMenuOptions = {
   location?: Location;
@@ -35,10 +44,11 @@ export function freeFightOutfit(
     computeFamiliarMenuOptions(
       options.familiarOptions,
       options.duplicate ?? false,
+      outfit,
     ),
   );
   const mode =
-    outfit.familiar === $familiar`Machine Elf`
+    options.location === $location`The Deep Machine Tunnels`
       ? BonusEquipMode.DMT
       : BonusEquipMode.FREE;
 
@@ -66,10 +76,18 @@ export function freeFightOutfit(
   if (get("_vampyreCloakeFormUses") < 10) {
     outfit.setBonus($item`vampyric cloake`, 500);
   }
-  bonusGear(mode).forEach((value, item) => outfit.addBonus(item, value));
+
+  outfit.addBonuses(bonusGear(mode));
 
   if (outfit.familiar !== $familiar`Grey Goose`) {
-    outfit.setBonus($item`tiny stillsuit`, 500);
+    outfit.setBonus(
+      $item`tiny stillsuit`,
+      get("valueOfAdventure") * 2 * adventuresPerSweat(),
+    );
+  }
+
+  if (mode !== BonusEquipMode.DMT) {
+    outfit.addBonuses(toyCupidBow(outfit.familiar));
   }
 
   if (
@@ -141,6 +159,7 @@ function computeLocation(
 function computeFamiliarMenuOptions(
   options: FamiliarMenuOptions = {},
   duplicate: boolean,
+  outfit: Outfit,
 ): FamiliarMenuOptions {
   return {
     ...options,
@@ -151,5 +170,7 @@ function computeFamiliarMenuOptions(
         SourceTerminal.have() &&
         SourceTerminal.duplicateUsesRemaining() > 0
       ),
+    equipmentForced:
+      options.equipmentForced || Boolean(outfit.canEquip($item`toy Cupid bow`)),
   };
 }

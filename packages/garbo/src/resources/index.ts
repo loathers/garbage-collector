@@ -10,3 +10,4 @@ export * from "./aprilingband";
 export * from "./chestMimic";
 export * from "./mayam";
 export * from "./autumnaton";
+export * from "./stillsuit";

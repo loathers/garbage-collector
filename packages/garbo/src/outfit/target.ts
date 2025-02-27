@@ -12,7 +12,7 @@ import {
 } from "libram";
 import { freeFightFamiliar, meatFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
-import { bonusGear } from "./dropsgear";
+import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   bestBjornalike,
   cleaverCheck,
@@ -53,7 +53,11 @@ export function meatTargetOutfit(
     outfit.modifier.push("-tie");
   }
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
-  outfit.familiar ??= targetingMeat() ? meatFamiliar() : freeFightFamiliar();
+  outfit.familiar ??= targetingMeat()
+    ? meatFamiliar()
+    : freeFightFamiliar({
+        equipmentForced: outfit.canEquip($item`toy Cupid bow`),
+      });
 
   const bjornChoice = chooseBjorn(
     targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
@@ -78,9 +82,14 @@ export function meatTargetOutfit(
 
   useUPCsIfNeeded(outfit);
 
-  outfit.bonuses = bonusGear(
-    targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
+  outfit.addBonuses(
+    bonusGear(
+      targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
+    ),
   );
+
+  if (!targettingMeat()) outfit.addBonuses(toyCupidBow(outfit.familiar));
+
   const bjornalike = bestBjornalike(outfit);
 
   if (

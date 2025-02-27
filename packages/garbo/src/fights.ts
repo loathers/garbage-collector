@@ -1068,9 +1068,13 @@ const freeFightSources = [
             : get("_questPartyFairQuest") === "dj"
               ? ["100 Meat Drop"]
               : [],
-        equip: have($item`January's Garbage Tote`)
-          ? $items`makeshift garbage shirt`
-          : [],
+        equip:
+          have($item`January's Garbage Tote`) &&
+          (!have($item`broken champagne bottle`) ||
+            get("garbageChampagneCharge") === 0) &&
+          (!have($item`deceased crimbo tree`) || get("garbageTreeCharge") === 0)
+            ? $items`makeshift garbage shirt`
+            : [],
       }),
     },
   ),

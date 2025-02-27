@@ -86,11 +86,6 @@ export type GarboFreeFightTask = Extract<
   tentacle: boolean; // if a tentacle fight can follow
 };
 
-function cupidBonus() {
-  const toyCupidValue = garboValue($item`self-dribbling basketball`) / 5;
-  return new Map([[$item`toy Cupid bow`, toyCupidValue]]);
-}
-
 const DEFAULT_FREE_FIGHT_TASK = {
   // GarboTask
   combat: new GarboStrategy(() => Macro.basicCombat()),
@@ -595,7 +590,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       !doingGregFight() &&
       have($skill`Macrometeorite`) &&
       get("_macrometeoriteUses") < 10,
-    completed: () => Counter.exists("portscan.edu"),
+    completed: () => !Counter.exists("portscan.edu"),
     prepare: () => {
       if (have($item`packet of mushroom spores`)) {
         use($item`packet of mushroom spores`);
@@ -721,10 +716,14 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         .basicCombat(),
     ),
     outfit: () =>
-      freeFightOutfit({
-        familiar: $familiar`Machine Elf`,
-        bonuses: cupidBonus(),
-      }),
+      freeFightOutfit(
+        {
+          familiar: $familiar`Machine Elf`,
+        },
+        {
+          location: $location`The Deep Machine Tunnels`,
+        },
+      ),
     tentacle: false, // Marked like this as 2 DMT fights get overriden by tentacles (could add +1 combat)
     combatCount: () => clamp(5 - get("_machineTunnelsAdv"), 0, 5),
   },
