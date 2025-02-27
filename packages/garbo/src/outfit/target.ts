@@ -88,7 +88,7 @@ export function meatTargetOutfit(
     ),
   );
 
-  if (!targettingMeat()) outfit.addBonuses(toyCupidBow(outfit.familiar));
+  if (!targetingMeat()) outfit.addBonuses(toyCupidBow(outfit.familiar));
 
   const bjornalike = bestBjornalike(outfit);
 
