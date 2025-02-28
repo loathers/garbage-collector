@@ -137,7 +137,10 @@ const DailyFamiliarTasks: GarboTask[] = [
     completed: () =>
       familiarEquippedEquipment($familiar`Shorter-Order Cook`) ===
       $item`blue plate`,
-    do: () => equip($familiar`Shorter-Order Cook`, $item`blue plate`),
+    do: () => {
+      retrieveItem($item`blue plate`);
+      equip($familiar`Shorter-Order Cook`, $item`blue plate`);
+    },
     spendsTurn: false,
   },
   {

@@ -233,7 +233,7 @@ export function makeValue(
       if (!coinmaster) {
         return [i, Infinity];
       } else {
-        return [i, sellPrice(coinmaster, i)];
+        return [i, sellPrice(coinmaster, i) || Infinity];
       }
     });
     return () =>
