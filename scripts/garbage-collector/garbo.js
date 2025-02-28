@@ -28842,7 +28842,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("c057ead73578bc2e9cb65ecf023de0628d9e9c2e", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("341602b0e28df00e744cec644370dfbaf438a351", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -32564,7 +32564,7 @@ function _arrayLikeToArray59(r, a) {
   return n;
 }
 function getToyCupidBowFamiliars() {
-  if (ToyCupidBow_exports.have()) return [];
+  if (!ToyCupidBow_exports.have()) return [];
   var usedTcbFamiliars = getUsedTcbFamiliars();
   if (estimatedGarboTurns() < ToyCupidBow_exports.turnsLeft()) {
     var current2 = ToyCupidBow_exports.currentFamiliar();
