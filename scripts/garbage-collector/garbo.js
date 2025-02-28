@@ -28842,7 +28842,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("341602b0e28df00e744cec644370dfbaf438a351", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("72f939c78ee761f66474b34bbd1d4d4f81fe76f2", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -36096,15 +36096,11 @@ function expandCombinationGroup(group) {
   })), [[].concat(_toConsumableArray51(group), [getBestGreedyCombination(forbiddenSymbols)])]);
 }
 function getBestMayamCombinations() {
-  var combinationGroups = (
-    // `reduce` misbehaves a lot when `any` shows its face
-    new Array(MayamCalendar_exports.remainingUses()).fill(null).reduce(function(acc) {
-      return acc.flatMap(function(combinationGroup) {
-        return expandCombinationGroup(combinationGroup);
-      });
-    }, [[]])
-  );
-  return maxBy(combinationGroups, function(group) {
+  return maxBy(new Array(MayamCalendar_exports.remainingUses()).fill(null).reduce(function(acc) {
+    return acc.flatMap(function(combinationGroup) {
+      return expandCombinationGroup(combinationGroup);
+    });
+  }, [[]]), function(group) {
     return sum(group, valueCombination);
   });
 }
