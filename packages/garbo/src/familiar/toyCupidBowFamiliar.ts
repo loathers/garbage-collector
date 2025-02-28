@@ -17,7 +17,7 @@ import { globalOptions } from "../config";
 import { propertyManager } from "../lib";
 
 export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
-  if (ToyCupidBow.have()) return [];
+  if (!ToyCupidBow.have()) return [];
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
