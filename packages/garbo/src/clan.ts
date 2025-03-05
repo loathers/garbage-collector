@@ -24,7 +24,6 @@ import {
   $familiar,
   $familiars,
   $item,
-  $items,
   $slot,
   Clan,
   get,
@@ -36,7 +35,7 @@ import {
 } from "libram";
 import { Macro } from "./combat";
 import { globalOptions } from "./config";
-import { HIGHLIGHT, userConfirmDialog } from "./lib";
+import { HIGHLIGHT, unlimitedFreeRunList, userConfirmDialog } from "./lib";
 
 export const stashItems = get("garboStashItems", "")
   .split(",")
@@ -170,7 +169,7 @@ export class StashManager {
       );
       Macro.if_(globalOptions.target, Macro.attack().repeat())
         .tryItem(
-          ...$items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`
+          ...unlimitedFreeRunList
             .filter((i) => getAcquirePrice(i) < get("valueOfAdventure"))
             .sort((a, b) => getAcquirePrice(a) - getAcquirePrice(b)),
         )
