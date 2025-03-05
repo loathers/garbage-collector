@@ -1,11 +1,14 @@
 import {
   autosellPrice,
   Coinmaster,
+  Familiar,
+  familiarEquipment,
   historicalAge,
   historicalPrice,
   Item,
   myClass,
   sellPrice,
+  sellsItem,
   toInt,
 } from "kolmafia";
 import {
@@ -207,6 +210,20 @@ export function makeValue(
         // ignore the science volumes because some accounts can't acquire them
       ),
     ],
+    ...Familiar.all()
+      .map((f) => familiarEquipment(f))
+      .filter((i) => i !== $item.none && i.tradeable && i.discardable)
+      .map(
+        (i) =>
+          [
+            i,
+            () =>
+              Math.min(
+                saleValue(i, false),
+                value($item`box of Familiar Jacks`),
+              ),
+          ] as const,
+      ),
     ...inputValues,
   ]);
 
@@ -228,11 +245,11 @@ export function makeValue(
 
   function currency(...items: Item[]): () => number {
     const unitCost: [Item, number][] = items.map((i) => {
-      const coinmaster = Coinmaster.all().find((c) => sellPrice(c, i) > 0);
+      const coinmaster = Coinmaster.all().find((c) => sellsItem(c, i));
       if (!coinmaster) {
-        throw `Invalid coinmaster item ${i}`;
+        return [i, Infinity];
       } else {
-        return [i, sellPrice(coinmaster, i)];
+        return [i, sellPrice(coinmaster, i) || Infinity];
       }
     });
     return () =>

@@ -4,6 +4,7 @@ import {
   canAdventure,
   cliExecute,
   inebrietyLimit,
+  Item,
   itemAmount,
   mallPrice,
   myAdventures,
@@ -29,9 +30,11 @@ import {
   clamp,
   FloristFriar,
   get,
+  getAcquirePrice,
   getRemainingStomach,
   have,
   JuneCleaver,
+  maxBy,
   undelay,
   uneffect,
   withProperty,
@@ -43,6 +46,7 @@ import {
   bestJuneCleaverOption,
   freeRest,
   juneCleaverChoiceValues,
+  unlimitedFreeRunList,
   valueJuneCleaverOption,
 } from "../../lib";
 import { teleportEffects } from "../../mood";
@@ -339,11 +343,33 @@ function handleDrenchedInLava(): GarboPostTask {
   };
 }
 
+let bestAbortFreeRun: Item | null = null;
+function getBestAbortFreeRun(): Item {
+  if (bestAbortFreeRun === null) {
+    const bestFreeRun = maxBy(unlimitedFreeRunList, getAcquirePrice, true);
+    bestAbortFreeRun =
+      getAcquirePrice(bestFreeRun) < get("valueOfAdventure")
+        ? bestFreeRun
+        : $item.none;
+  }
+  return bestAbortFreeRun;
+}
+
+function acquireAbortFreeRun(): GarboPostTask {
+  return {
+    name: "Acquire Best Free Run in Case of Abort",
+    completed: () =>
+      getBestAbortFreeRun() === $item`none` || have(getBestAbortFreeRun()),
+    do: () => acquire(1, getBestAbortFreeRun(), get("valueOfAdventure"), false),
+  };
+}
+
 export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
     completed,
     tasks: [
+      acquireAbortFreeRun(),
       ...workshedTasks(),
       handleDrenchedInLava(),
       fallbot(),
