@@ -226,6 +226,7 @@ export class WandererManager {
     [$location`The Penultimate Fantasy Airship`, { 178: 2, 182: 1 }], // Skip, and Fight random enemy
     [$location`The Haiku Dungeon`, { 297: 3 }], // skip
     [$location`Frat House`, { 1425: 4 }], // fight eXtreme Sports Orcs
+    [$location`Madness Bakery`, { 1061: 6 }],
   ]);
   equipment = new Map<Location, Item[]>([
     ...Location.all()
