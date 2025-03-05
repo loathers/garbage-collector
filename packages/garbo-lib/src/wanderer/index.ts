@@ -227,6 +227,8 @@ export class WandererManager {
     [$location`The Haiku Dungeon`, { 297: 3 }], // skip
     [$location`Frat House`, { 1425: 4 }], // fight eXtreme Sports Orcs
     [$location`Madness Bakery`, { 1061: 6 }],
+    [$location`The Skeleton Store`, { 1060: 6 }],
+    [$location`The Overgrown Lot`, { 1062: 6 }],
   ]);
   equipment = new Map<Location, Item[]>([
     ...Location.all()
