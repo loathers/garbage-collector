@@ -21,7 +21,6 @@ import {
   Monster,
   myBuffedstat,
   myClass,
-  myFamiliar,
   myInebriety,
   myMaxhp,
   mySoulsauce,
