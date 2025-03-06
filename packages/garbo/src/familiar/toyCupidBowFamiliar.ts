@@ -17,7 +17,7 @@ import { globalOptions } from "../config";
 import { propertyManager } from "../lib";
 
 export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
-  if (ToyCupidBow.have()) return [];
+  if (!ToyCupidBow.have()) return [];
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
@@ -53,6 +53,7 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
       } // Littlest identity crisis, sauceror
       else continue;
     }
+    if (familiar === $familiar`Doppelshifter`) continue;
 
     const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
     const expectedValue =

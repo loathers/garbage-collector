@@ -139,16 +139,14 @@ function expandCombinationGroup<N extends number>(
 }
 
 function getBestMayamCombinations(): MayamCalendar.CombinationString[] {
-  const combinationGroups =
-    // `reduce` misbehaves a lot when `any` shows its face
-    (new Array(MayamCalendar.remainingUses()).fill(null) as null[]).reduce(
-      (acc) =>
-        acc.flatMap((combinationGroup) =>
-          expandCombinationGroup(combinationGroup),
-        ),
-      [[]] as MayamCalendar.CombinationString[][],
-    );
-  return maxBy(combinationGroups, (group) => sum(group, valueCombination));
+  return maxBy(
+    new Array(MayamCalendar.remainingUses())
+      .fill(null)
+      .reduce<
+        MayamCalendar.CombinationString[][]
+      >((acc) => acc.flatMap((combinationGroup) => expandCombinationGroup(combinationGroup)), [[]]),
+    (group) => sum(group, valueCombination),
+  );
 }
 
 export const mayamCalendarSummon: GarboTask = {
