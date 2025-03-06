@@ -674,49 +674,47 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           acquire(1, $item`Deep Machine Tunnels snowglobe`);
           use($item`Deep Machine Tunnels snowglobe`);
         }
-      } else {
-        // We need an else here because if we're using Comma we don't get to convert items.
-        if (
-          garboValue($item`abstraction: certainty`) >=
-          garboValue($item`abstraction: thought`)
-        ) {
-          acquire(
-            1,
-            $item`abstraction: thought`,
-            garboValue($item`abstraction: certainty`),
-            false,
-          );
-        }
-        if (
-          garboValue($item`abstraction: joy`) >=
-          garboValue($item`abstraction: action`)
-        ) {
-          acquire(
-            1,
-            $item`abstraction: action`,
-            garboValue($item`abstraction: joy`),
-            false,
-          );
-        }
-        if (
-          garboValue($item`abstraction: motion`) >=
-          garboValue($item`abstraction: sensation`)
-        ) {
-          acquire(
-            1,
-            $item`abstraction: sensation`,
-            garboValue($item`abstraction: motion`),
-            false,
-          );
-        }
+      }
+      // We need an else here because if we're using Comma we don't get to convert items.
+      if (
+        garboValue($item`abstraction: certainty`) >=
+        garboValue($item`abstraction: thought`)
+      ) {
+        acquire(
+          1,
+          $item`abstraction: thought`,
+          garboValue($item`abstraction: certainty`),
+          false,
+        );
+      }
+      if (
+        garboValue($item`abstraction: joy`) >=
+        garboValue($item`abstraction: action`)
+      ) {
+        acquire(
+          1,
+          $item`abstraction: action`,
+          garboValue($item`abstraction: joy`),
+          false,
+        );
+      }
+      if (
+        garboValue($item`abstraction: motion`) >=
+        garboValue($item`abstraction: sensation`)
+      ) {
+        acquire(
+          1,
+          $item`abstraction: sensation`,
+          garboValue($item`abstraction: motion`),
+          false,
+        );
       }
     },
     choices: () => ({ 1119: 6 }), // escape DMT
     combat: new GarboStrategy(() =>
       Macro.externalIf(
         garboValue($item`abstraction: certainty`) >=
-          garboValue($item`abstraction: thought`) &&
-          myFamiliar() !== $familiar`Comma Chameleon`,
+          garboValue($item`abstraction: thought`),
         Macro.if_(
           $monster`Perceiver of Sensations`,
           Macro.tryItem($item`abstraction: thought`),
@@ -724,8 +722,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       )
         .externalIf(
           garboValue($item`abstraction: joy`) >=
-            garboValue($item`abstraction: action`) &&
-            myFamiliar() !== $familiar`Comma Chameleon`,
+            garboValue($item`abstraction: action`),
           Macro.if_(
             $monster`Thinker of Thoughts`,
             Macro.tryItem($item`abstraction: action`),
@@ -733,8 +730,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         )
         .externalIf(
           garboValue($item`abstraction: motion`) >=
-            garboValue($item`abstraction: sensation`) &&
-            myFamiliar() !== $familiar`Comma Chameleon`,
+            garboValue($item`abstraction: sensation`),
           Macro.if_(
             $monster`Performer of Actions`,
             Macro.tryItem($item`abstraction: sensation`),
