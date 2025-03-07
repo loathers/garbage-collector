@@ -27,9 +27,9 @@
   "license": "MIT",
   "dependencies": {
     "garbo-lib": "*",
-    "grimoire-kolmafia": "^0.3.26",
+    "grimoire-kolmafia": "^0.3.29",
     "kolmafia": "^5.28067.0",
-    "libram": "^0.9.34"
+    "libram": "^0.10.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.8",
