@@ -150,7 +150,7 @@ export const MEAT_TARGET_MULTIPLIER = (): number =>
 
 export const propertyManager = new PropertiesManager();
 
-const songboomMeat = () =>
+export const songboomMeat = () =>
   SongBoom.have() &&
   (SongBoom.songChangesLeft() > 0 ||
     (SongBoom.song() === "Total Eclipse of Your Meat" &&
@@ -184,20 +184,20 @@ export const targetMeatDifferential = () => {
   return clamp(targetMeatVal - baseMeatVal, 0, targetMeatVal);
 };
 
-export const targettingMeat = () =>
+export const targetingMeat = () =>
   !isFree(globalOptions.target) && targetMeat() > baseMeat();
 
-export const targettingItems = () => !targettingMeat();
+export const targetingItems = () => !targetingMeat();
 
 export const gooseDroneEligible = () =>
-  targettingItems() &&
+  targetingItems() &&
   itemDropsArray(globalOptions.target).filter(
     (item) => !["c", "0", "p", "a"].includes(item.type),
   ).length === 1 &&
   have($familiar`Grey Goose`);
 
 export function averageTargetNet(): number {
-  return targettingItems()
+  return targetingItems()
     ? valueDrops(globalOptions.target)
     : (targetMeat() * meatDropModifier()) / 100;
 }
@@ -457,6 +457,10 @@ export function safeRestoreMpTarget(): number {
   return Math.min(myMaxmp(), 200);
 }
 
+let _ignoreBeatenUp = false;
+export const ignoreBeatenUp = () => (_ignoreBeatenUp = true);
+export const unignoreBeatenUp = () => (_ignoreBeatenUp = false);
+
 export function safeRestore(): void {
   if (
     get("_lastCombatLost") &&
@@ -467,7 +471,7 @@ export function safeRestore(): void {
       "You lost your most recent combat! Check to make sure everything is alright before rerunning.",
     );
   }
-  if (have($effect`Beaten Up`)) {
+  if (have($effect`Beaten Up`) && !_ignoreBeatenUp) {
     if (
       lastMonster() ===
       $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
