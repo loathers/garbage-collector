@@ -1,6 +1,8 @@
 import {
   autosellPrice,
   Coinmaster,
+  Familiar,
+  familiarEquipment,
   historicalAge,
   historicalPrice,
   Item,
@@ -208,6 +210,20 @@ export function makeValue(
         // ignore the science volumes because some accounts can't acquire them
       ),
     ],
+    ...Familiar.all()
+      .map((f) => familiarEquipment(f))
+      .filter((i) => i !== $item.none && i.tradeable && i.discardable)
+      .map(
+        (i) =>
+          [
+            i,
+            () =>
+              Math.min(
+                saleValue(i, false),
+                value($item`box of Familiar Jacks`),
+              ),
+          ] as const,
+      ),
     ...inputValues,
   ]);
 
