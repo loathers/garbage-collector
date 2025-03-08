@@ -4342,7 +4342,7 @@ __metadata:
     typescript: ^5.5.4
   peerDependencies:
     kolmafia: ^5.28067.0
-    libram: ^0.10.5
+    libram: ^0.10.6
   languageName: unknown
   linkType: soft
 
