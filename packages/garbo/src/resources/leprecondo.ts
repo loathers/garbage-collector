@@ -63,7 +63,7 @@ function valueCombination(combo: Combination): number {
   );
 }
 
-function buildCombination<L extends 0 | 1 | 2 | 3>(
+function buildCombination<L extends number>(
   combinations: Tuple<Leprecondo.FurniturePiece, L>[],
   furniture: Leprecondo.FurniturePiece[],
 ): [...Tuple<Leprecondo.FurniturePiece, L>, Leprecondo.FurniturePiece][] {
@@ -87,10 +87,12 @@ function buildCombination<L extends 0 | 1 | 2 | 3>(
 
 function getViableCombinations(): Combination[] {
   const furniture = viableFurniture();
-  const firstRooms = buildCombination<0>([[]], furniture);
-  const secondRooms = buildCombination<1>(firstRooms, furniture);
-  const thirdRooms = buildCombination<2>(secondRooms, furniture);
-  return buildCombination<3>(thirdRooms, furniture);
+  return Array(4)
+    .fill(null)
+    .reduce<Leprecondo.FurniturePiece[][]>(
+      (acc) => buildCombination(acc, furniture),
+      [[]],
+    ) as Combination[];
 }
 
 function findBestCombination(): Combination {
