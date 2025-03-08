@@ -62,6 +62,7 @@ import {
   candyMapDailyTasks,
   doingGregFight,
   getBestAprilInstruments,
+  leprecondoTask,
   mayamCalendarSummon,
 } from "../resources";
 import { meatFamiliar } from "../familiar";
@@ -732,6 +733,7 @@ const DailyItemTasks: GarboTask[] = [
     limit: { skip: 3 },
     spendsTurn: false,
   },
+  leprecondoTask(),
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {
