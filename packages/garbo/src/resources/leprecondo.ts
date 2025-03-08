@@ -1,8 +1,17 @@
 import { Item } from "kolmafia";
-import { $item, Leprecondo, maxBy, setEqual, sum, Tuple } from "libram";
+import {
+  $item,
+  arrayEquals,
+  Leprecondo,
+  maxBy,
+  setEqual,
+  sum,
+  Tuple,
+} from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
 import { Potion } from "../potions";
+import { GarboTask } from "../tasks/engine";
 
 function resultValue(result: Leprecondo.Result): number {
   if (result instanceof Item) return garboValue(result);
@@ -101,10 +110,24 @@ function findBestCombination(): Combination {
 
 let bestCombination: Combination;
 let unlocked: Leprecondo.FurniturePiece[];
-export function getBestLeprecondoCombination(): Combination {
+function getBestLeprecondoCombination(): Combination {
   if (!unlocked || !setEqual(unlocked, Leprecondo.discoveredFurniture())) {
     unlocked = Leprecondo.discoveredFurniture();
     bestCombination = findBestCombination();
   }
   return bestCombination;
+}
+
+export function leprecondoTask(): GarboTask {
+  return {
+    name: "Configure Leprecondo",
+    ready: () => Leprecondo.have() && Leprecondo.rearrangesRemaining() > 0,
+    completed: () =>
+      arrayEquals(
+        Leprecondo.installedFurniture(),
+        getBestLeprecondoCombination(),
+      ),
+    do: () => Leprecondo.setFurniture(...getBestLeprecondoCombination()),
+    spendsTurn: false,
+  };
 }
