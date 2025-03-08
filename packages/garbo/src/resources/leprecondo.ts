@@ -26,14 +26,14 @@ function strictlyBetterThan(
   a: Leprecondo.FurnitureStat,
   b: Leprecondo.FurnitureStat,
 ): boolean {
-  return (Object.entries(b) as [Leprecondo.Need, Leprecondo.Result][]).every(
-    ([need, result]) => {
-      const other = a[need];
-      if (!other) return false;
-      if (resultValue(other) <= resultValue(result)) return false;
-      return true;
-    },
-  );
+  return Leprecondo.NEEDS.every((need) => {
+    const result = b[need];
+    if (!result) return true;
+    const other = a[need];
+    if (!other) return false;
+    if (resultValue(other) <= resultValue(result)) return false;
+    return true;
+  });
 }
 
 function getStat(
