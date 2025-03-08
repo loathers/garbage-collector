@@ -1,13 +1,5 @@
 import { Item } from "kolmafia";
-import {
-  $item,
-  arrayEquals,
-  Leprecondo,
-  maxBy,
-  setEqual,
-  sum,
-  Tuple,
-} from "libram";
+import { $item, arrayEquals, get, Leprecondo, maxBy, sum, Tuple } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
 import { Potion } from "../potions";
@@ -109,10 +101,10 @@ function findBestCombination(): Combination {
 }
 
 let bestCombination: Combination;
-let unlocked: Leprecondo.FurniturePiece[];
+let unlocked: string;
 function getBestLeprecondoCombination(): Combination {
-  if (!unlocked || !setEqual(unlocked, Leprecondo.discoveredFurniture())) {
-    unlocked = Leprecondo.discoveredFurniture();
+  if (unlocked !== get("leprecondoDiscovered")) {
+    unlocked = get("leprecondoDiscovered");
     bestCombination = findBestCombination();
   }
   return bestCombination;
