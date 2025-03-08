@@ -1,5 +1,5 @@
 import { Item } from "kolmafia";
-import { $item, Leprecondo, maxBy, sum, Tuple } from "libram";
+import { $item, Leprecondo, maxBy, setEqual, sum, Tuple } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
 import { Potion } from "../potions";
@@ -63,10 +63,10 @@ function valueCombination(combo: Combination): number {
   );
 }
 
-function buildCombination(
-  combinations: Leprecondo.FurniturePiece[][],
+function buildCombination<L extends 0 | 1 | 2 | 3>(
+  combinations: Tuple<Leprecondo.FurniturePiece, L>[],
   furniture: Leprecondo.FurniturePiece[],
-): Leprecondo.FurniturePiece[][] {
+): [...Tuple<Leprecondo.FurniturePiece, L>, Leprecondo.FurniturePiece][] {
   return combinations.flatMap((combination) => {
     const coveredNeeds = new Set(combination.flatMap(getCoveredNeeds));
     const plausibleFurniture = furniture.filter((f) =>
@@ -74,20 +74,35 @@ function buildCombination(
     ); // Only furniture that cover at least one presently-uncovered need need apply
     return (
       plausibleFurniture.length ? plausibleFurniture : (["empty"] as const)
-    ).map((furniture) => [...combination, furniture]);
+    ).map(
+      (
+        furniture,
+      ): [
+        ...Tuple<Leprecondo.FurniturePiece, L>,
+        Leprecondo.FurniturePiece,
+      ] => [...combination, furniture],
+    );
   });
 }
 
 function getViableCombinations(): Combination[] {
   const furniture = viableFurniture();
-  return Array(4)
-    .fill(null)
-    .reduce<Leprecondo.FurniturePiece[][]>(
-      (acc) => buildCombination(acc, furniture),
-      [],
-    ) as Combination[];
+  const firstRooms = buildCombination<0>([[]], furniture);
+  const secondRooms = buildCombination<1>(firstRooms, furniture);
+  const thirdRooms = buildCombination<2>(secondRooms, furniture);
+  return buildCombination<3>(thirdRooms, furniture);
 }
 
-function getBestCombination(): Combination {
+function findBestCombination(): Combination {
   return maxBy(getViableCombinations(), valueCombination);
+}
+
+let bestCombination: Combination;
+let unlocked: Leprecondo.FurniturePiece[];
+export function getBestLeprecondoCombination(): Combination {
+  if (!unlocked || !setEqual(unlocked, Leprecondo.discoveredFurniture())) {
+    unlocked = Leprecondo.discoveredFurniture();
+    bestCombination = findBestCombination();
+  }
+  return bestCombination;
 }
