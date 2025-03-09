@@ -39,6 +39,7 @@ import {
   $class,
   $effect,
   $familiar,
+  $familiars,
   $item,
   $items,
   $location,
