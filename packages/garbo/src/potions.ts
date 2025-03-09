@@ -991,3 +991,14 @@ export function variableMeatPotionsSetup(
     }
   }
 }
+
+export function effectValue(
+  effect: Effect,
+  duration: number,
+  maxTurns?: number,
+): number {
+  return new Potion($item.none, { duration, effect }).gross(
+    copyTargetCount(),
+    maxTurns,
+  );
+}

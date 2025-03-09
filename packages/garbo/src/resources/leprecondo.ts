@@ -1,14 +1,13 @@
 import { Item } from "kolmafia";
 import { $item, arrayEquals, get, Leprecondo, maxBy, sum, Tuple } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
-import { copyTargetCount } from "../target";
-import { Potion } from "../potions";
+import { effectValue } from "../potions";
 import { GarboTask } from "../tasks/engine";
 
 function resultValue(result: Leprecondo.Result): number {
   if (result instanceof Item) return garboValue(result);
   if (Array.isArray(result)) return garboAverageValue(...result);
-  return new Potion($item.none, result).gross(copyTargetCount());
+  return effectValue(result.effect, result.duration);
 }
 
 /*
