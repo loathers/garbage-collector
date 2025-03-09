@@ -259,6 +259,10 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       () => get("_claraBellUsed"),
       "",
     ),
+    dietCompleted: Args.flag({
+      hidden: true,
+      default: false,
+    }),
   },
   { positionalArgs: ["turns"] },
 );

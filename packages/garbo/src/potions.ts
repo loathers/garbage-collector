@@ -58,9 +58,9 @@ import {
   bestShadowRift,
   HIGHLIGHT,
   pillkeeperOpportunityCost,
+  targetingMeat,
   targetMeat,
   targetMeatDifferential,
-  targettingMeat,
   turnsToNC,
   withLocation,
 } from "./lib";
@@ -178,6 +178,13 @@ export interface PotionOptions {
     famWeight: number;
   }>;
 }
+
+export const VALUABLE_MODIFIERS = [
+  "Meat Drop",
+  "Familiar Weight",
+  "Smithsness",
+  "Item Drop",
+] as const;
 
 export class Potion {
   potion: Item;
@@ -709,7 +716,7 @@ export function potionSetup(targetsOnly: boolean): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
-    const targets = targettingMeat() ? copyTargetCount() : 0;
+    const targets = targetingMeat() ? copyTargetCount() : 0;
 
     if (
       have($item`Eight Days a Week Pill Keeper`) &&
