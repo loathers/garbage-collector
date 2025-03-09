@@ -21,6 +21,7 @@ import {
   Monster,
   myBuffedstat,
   myClass,
+  myFamiliar,
   myInebriety,
   myMaxhp,
   mySoulsauce,
@@ -52,6 +53,7 @@ import {
   ChateauMantegna,
   clamp,
   CombatLoversLocket,
+  CommaChameleon,
   Counter,
   Delayed,
   ensureEffect,
@@ -164,6 +166,16 @@ function litLeafMacro(monster: Monster): Macro {
       ),
     )
     .basicCombat();
+}
+
+function dmtCommaValuable(): boolean {
+  if (!CommaChameleon.have()) return false;
+  const cost =
+    mallPrice($item`Deep Machine Tunnels snowglobe`) +
+    (CommaChameleon.currentFamiliar() === $familiar`Machine Elf`
+      ? 0
+      : mallPrice($item`self-dribbling basketball`));
+  return globalOptions.prefs.valueOfFreeFight * 5 > cost;
 }
 
 const stunDurations = new Map<Skill | Item, Delayed<number>>([
@@ -648,10 +660,22 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "Machine Elf",
-    ready: () => have($familiar`Machine Elf`),
+    ready: () => have($familiar`Machine Elf`) || dmtCommaValuable(),
     completed: () => get("_machineTunnelsAdv") >= 5,
     do: $location`The Deep Machine Tunnels`,
     prepare: () => {
+      if (myFamiliar() === $familiar`Comma Chameleon`) {
+        if (CommaChameleon.currentFamiliar() !== $familiar`Machine Elf`) {
+          acquire(1, $item`self-dribbling basketball`);
+          CommaChameleon.transform($familiar`Machine Elf`);
+        }
+
+        if (!canAdventure($location`The Deep Machine Tunnels`)) {
+          acquire(1, $item`Deep Machine Tunnels snowglobe`);
+          use($item`Deep Machine Tunnels snowglobe`);
+        }
+      }
+      // We need an else here because if we're using Comma we don't get to convert items.
       if (
         garboValue($item`abstraction: certainty`) >=
         garboValue($item`abstraction: thought`)
@@ -717,7 +741,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     outfit: () =>
       freeFightOutfit(
         {
-          familiar: $familiar`Machine Elf`,
+          familiar: have($familiar`Machine Elf`)
+            ? $familiar`Machine Elf`
+            : $familiar`Comma Chameleon`,
         },
         {
           location: $location`The Deep Machine Tunnels`,
