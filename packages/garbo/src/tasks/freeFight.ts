@@ -167,8 +167,8 @@ function litLeafMacro(monster: Monster): Macro {
     .basicCombat();
 }
 
-function machineElfCommaGood(): boolean {
-  if (!CommaChameleon.have() || have($familiar`Machine Elf`)) return false;
+function dmtCommaValuable(): boolean {
+  if (!CommaChameleon.have()) return false;
   const cost =
     mallPrice($item`Deep Machine Tunnels snowglobe`) +
     (CommaChameleon.currentFamiliar() === $familiar`Machine Elf`
@@ -659,7 +659,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "Machine Elf",
-    ready: () => have($familiar`Machine Elf`) || machineElfCommaGood(),
+    ready: () => have($familiar`Machine Elf`) || dmtCommaValuable(),
     completed: () => get("_machineTunnelsAdv") >= 5,
     do: $location`The Deep Machine Tunnels`,
     prepare: () => {
@@ -740,7 +740,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     outfit: () =>
       freeFightOutfit(
         {
-          familiar: machineElfCommaGood()
+          familiar: $familiars`Machine Elf, Comma Chameleon`
             ? $familiar`Comma Chameleon`
             : $familiar`Machine Elf`,
         },
