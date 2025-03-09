@@ -664,7 +664,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     completed: () => get("_machineTunnelsAdv") >= 5,
     do: $location`The Deep Machine Tunnels`,
     prepare: () => {
-      if (machineElfCommaGood()) {
+      if (myFamiliar() === $familiar`Comma Chameleon`) {
         if (CommaChameleon.currentFamiliar() !== $familiar`Machine Elf`) {
           acquire(1, $item`self-dribbling basketball`);
           CommaChameleon.transform($familiar`Machine Elf`);
