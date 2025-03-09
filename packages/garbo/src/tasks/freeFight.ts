@@ -741,9 +741,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     outfit: () =>
       freeFightOutfit(
         {
-          familiar: $familiars`Machine Elf, Comma Chameleon`
-            ? $familiar`Comma Chameleon`
-            : $familiar`Machine Elf`,
+          familiar: $familiars`Machine Elf, Comma Chameleon`,
         },
         {
           location: $location`The Deep Machine Tunnels`,
