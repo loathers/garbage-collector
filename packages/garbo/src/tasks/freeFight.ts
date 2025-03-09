@@ -21,6 +21,7 @@ import {
   Monster,
   myBuffedstat,
   myClass,
+  myFamiliar,
   myInebriety,
   myMaxhp,
   mySoulsauce,
@@ -39,7 +40,6 @@ import {
   $class,
   $effect,
   $familiar,
-  $familiars,
   $item,
   $items,
   $location,
@@ -741,7 +741,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     outfit: () =>
       freeFightOutfit(
         {
-          familiar: $familiars`Machine Elf, Comma Chameleon`,
+          familiar: have($familiar`Machine Elf`)
+            ? $familiar`Machine Elf`
+            : $familiar`Comma Chameleon`,
         },
         {
           location: $location`The Deep Machine Tunnels`,
