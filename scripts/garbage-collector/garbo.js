@@ -24434,7 +24434,7 @@ var require_wanderer = __commonJS({
             1060: 6
           }],
           [(0, libram_1.$location)(_templateObject3336 || (_templateObject3336 = _taggedTemplateLiteral136(["The Overgrown Lot"]))), {
-            1062: 6
+            1062: 7
           }]
         ]));
         _defineProperty45(this, "equipment", new Map([].concat(_toConsumableArray67(kolmafia_1.Location.all().filter(function(l) {
@@ -28863,7 +28863,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b1d451b126cae30c1d230bb46bf693447421e460", ")"));
+      (0, import_kolmafia92.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("521f670fc7d5f060ef0bdd2bde6c495c315528f3", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia92.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -40041,6 +40041,10 @@ var FreeFightTasks = [
     completed: function() {
       return get("questPAGhost") === "unstarted";
     },
+    choices: function() {
+      var _get3;
+      return wanderer().getChoices((_get3 = get("ghostLocation")) !== null && _get3 !== void 0 ? _get3 : $location.none);
+    },
     do: function() {
       return get("ghostLocation");
     },
@@ -42860,6 +42864,7 @@ function doGhost() {
   }
   var ghostLocation = get("ghostLocation");
   if (!ghostLocation) return;
+  propertyManager.setChoices(wanderer().getChoices(ghostLocation));
   freeFightOutfit({
     equip: $items(_templateObject3062 || (_templateObject3062 = _taggedTemplateLiteral126(["protonic accelerator pack"])))
   }).dress();
@@ -44011,6 +44016,10 @@ var BarfTurnTasks = [{
       modifier: get("ghostLocation") === $location(_templateObject8514 || (_templateObject8514 = _taggedTemplateLiteral127(["The Icy Peak"]))) ? ["Cold Resistance 5 min"] : [],
       back: $item(_templateObject8614 || (_templateObject8614 = _taggedTemplateLiteral127(["protonic accelerator pack"])))
     });
+  },
+  choices: function() {
+    var _get22;
+    return wanderer().getChoices((_get22 = get("ghostLocation")) !== null && _get22 !== void 0 ? _get22 : $location.none);
   },
   combat: new GarboStrategy(function() {
     return Macro2.ghostBustin();
