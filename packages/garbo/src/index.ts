@@ -111,7 +111,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28151); // detect TakerSpace + basic related functionality
+  sinceKolmafiaRevision(28425); // leprechaun's condo is escapable
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
