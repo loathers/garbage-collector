@@ -216,6 +216,8 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       get("questPAGhost") !== "unstarted" &&
       get("ghostLocation") !== null,
     completed: () => get("questPAGhost") === "unstarted",
+    choices: () =>
+      wanderer().getChoices(get("ghostLocation") ?? $location.none),
     do: () => get("ghostLocation"),
     combat: new GarboStrategy(() => Macro.ghostBustin()),
     outfit: () => freeFightOutfit({ back: $item`protonic accelerator pack` }),
