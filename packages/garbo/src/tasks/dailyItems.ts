@@ -158,10 +158,10 @@ function bestDevilerCandy(): Item {
   // These are notrade items that have an autosell value that we don't mind using if they are the cheapest
   const safeUntradeableCandies = $items`Comet Pop, black candy heart, peanut brittle shield`;
   // Find the best candy from inventory, accounting for value of autosell when mall min
-  const inventoryCandies = Item.all().filter((i) =>
-    i.candy && have(i) && !i.tradeable
-      ? safeUntradeableCandies.includes(i)
-      : true,
+  const inventoryCandies = Item.all().filter(
+    (i) =>
+      i.candy &&
+      (have(i) && !i.tradeable ? safeUntradeableCandies.includes(i) : true),
   );
   const bestInventoryCandy = (() => {
     if (inventoryCandies.length === 0) return null;
