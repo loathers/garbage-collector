@@ -29432,7 +29432,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia95.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("bd18ecd6435abf161cdef17ae859733c3e89a752", ")"));
+      (0, import_kolmafia95.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("12136b7840ff717b511b6946763f008271f11a9e", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia95.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -41196,11 +41196,11 @@ var FreeFightTasks = [
     prepare: function() {
       if ((0, import_kolmafia133.myFamiliar)() === $familiar(_templateObject1804 || (_templateObject1804 = _taggedTemplateLiteral125(["Comma Chameleon"])))) {
         if (CommaChameleon_exports.currentFamiliar() !== $familiar(_templateObject18112 || (_templateObject18112 = _taggedTemplateLiteral125(["Machine Elf"])))) {
-          acquire(1, $item(_templateObject18211 || (_templateObject18211 = _taggedTemplateLiteral125(["self-dribbling basketball"]))));
+          acquire(1, $item(_templateObject18211 || (_templateObject18211 = _taggedTemplateLiteral125(["self-dribbling basketball"]))), 1e4);
           CommaChameleon_exports.transform($familiar(_templateObject18310 || (_templateObject18310 = _taggedTemplateLiteral125(["Machine Elf"]))));
         }
         if (!(0, import_kolmafia133.canAdventure)($location(_templateObject1844 || (_templateObject1844 = _taggedTemplateLiteral125(["The Deep Machine Tunnels"]))))) {
-          acquire(1, $item(_templateObject1854 || (_templateObject1854 = _taggedTemplateLiteral125(["Deep Machine Tunnels snowglobe"]))));
+          acquire(1, $item(_templateObject1854 || (_templateObject1854 = _taggedTemplateLiteral125(["Deep Machine Tunnels snowglobe"]))), 2e3);
           (0, import_kolmafia133.use)($item(_templateObject1864 || (_templateObject1864 = _taggedTemplateLiteral125(["Deep Machine Tunnels snowglobe"]))));
         }
       }
