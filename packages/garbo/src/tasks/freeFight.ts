@@ -668,12 +668,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     prepare: () => {
       if (myFamiliar() === $familiar`Comma Chameleon`) {
         if (CommaChameleon.currentFamiliar() !== $familiar`Machine Elf`) {
-          acquire(1, $item`self-dribbling basketball`);
+          acquire(1, $item`self-dribbling basketball`, 10000);
           CommaChameleon.transform($familiar`Machine Elf`);
         }
 
         if (!canAdventure($location`The Deep Machine Tunnels`)) {
-          acquire(1, $item`Deep Machine Tunnels snowglobe`);
+          acquire(1, $item`Deep Machine Tunnels snowglobe`, 2000);
           use($item`Deep Machine Tunnels snowglobe`);
         }
       }

@@ -31,8 +31,6 @@ export const priceCaps: { [index: string]: number } = {
   "Ol' Scratch's salad fork": 200000,
   "Frosty's frosty mug": 200000,
   "sweet tooth": 250000,
-  "self-dribbling basketball": 10000,
-  "Deep Machine Tunnels snowglobe": 2000,
 };
 
 export function acquire(
