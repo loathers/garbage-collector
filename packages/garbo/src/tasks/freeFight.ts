@@ -17,7 +17,6 @@ import {
   itemAmount,
   itemDropsArray,
   itemType,
-  Location,
   mallPrice,
   Monster,
   myBuffedstat,
