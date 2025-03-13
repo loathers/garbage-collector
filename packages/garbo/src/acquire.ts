@@ -32,7 +32,7 @@ export const priceCaps: { [index: string]: number } = {
   "Frosty's frosty mug": 200000,
   "sweet tooth": 250000,
   "self-dribbling basketball": 10000,
-  "Deep Machine Tunnels snowglobe": 2000
+  "Deep Machine Tunnels snowglobe": 2000,
 };
 
 export function acquire(
