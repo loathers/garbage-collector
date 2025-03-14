@@ -1,6 +1,7 @@
 import { Quest } from "grimoire-kolmafia";
 import {
   abort,
+  availableChoiceOptions,
   inebrietyLimit,
   mallPrice,
   myAdventures,
@@ -35,7 +36,6 @@ import { DebuffPlanner } from "./debuffplanner";
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
   ready: () =>
-    get("pirateRealmUnlockedAnemometer") &&
     doingGregFight() &&
     globalOptions.target === $monster`cockroach` &&
     myInebriety() <= inebrietyLimit(),
@@ -84,6 +84,11 @@ export const CockroachSetup: Quest<GarboTask> = {
         visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
         runChoice(1); // Head to Groggy's
         runChoice(bestCrewmate()); // Choose our crew
+        if (!(4 in availableChoiceOptions())) {
+          abort(
+            "You need the anemometer unlocked to fight cockroaches in garbo!",
+          );
+        }
         runChoice(4); // Choose anemometer for trash island
         const bestBoat = get("pirateRealmUnlockedClipper") ? 4 : 3; // Swift Clipper or Speedy Caravel
         runChoice(bestBoat);
