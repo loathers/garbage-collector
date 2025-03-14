@@ -144,6 +144,11 @@ export class DebuffPlanner {
       )).filter(({ effect }) => !this.have(effect));
   }
   private getBestDebuffItem(stat: Stat): Item | Effect {
+    const debuffItems = this.getDebuffItems(stat);
+    if (!debuffItems.length) {
+      this.printPlan();
+      abort(`Failed to find a debuff item for ${stat}!`);
+    }
     const bestPotion = maxBy(this.getDebuffItems(stat), ({ item, effect }) =>
       this.debuffEfficacy(item, effect, stat, false),
     );
@@ -209,8 +214,7 @@ export class DebuffPlanner {
     let debuffItemLoops = 0;
     while (!this.debuffedEnough()) {
       if (debuffItemLoops > 27) {
-        print("Debuff plan:");
-        for (const { type, target } of this.plan) print(`${type}: ${target}`);
+        this.printPlan();
         abort("Spent too long trying to debuff for PirateRealm!");
       }
 
@@ -234,6 +238,7 @@ export class DebuffPlanner {
     }
 
     if (!this.debuffedEnough()) {
+      this.printPlan();
       abort("Failed to generate debuff list!");
     }
   }
@@ -253,26 +258,30 @@ export class DebuffPlanner {
     this.generateDebuffList();
   }
 
+  printPlan(colour = "green") {
+    print("Debuff plan:", colour);
+    for (const { target, type } of this.plan) {
+      switch (type) {
+        case "uneffect":
+          print(
+            ` - Remove ${target} with a soft green echo eyedrop antidote`,
+            colour,
+          );
+          continue;
+        case "potion":
+          print(` - Use a ${target} to get ${asEffect(target)}`, colour);
+          continue;
+        case "shrug":
+          print(` - Shrug ${target}`, colour);
+          continue;
+      }
+    }
+  }
+
   checkAndFixOvercapStats() {
     if (this.price() >= this.priceCap) {
       print("Failed to debuff enough to use piraterealm!", "red");
-      print("Debuff plan:", "green");
-      for (const { target, type } of this.plan) {
-        switch (type) {
-          case "uneffect":
-            print(
-              ` - Remove ${target} with a soft green echo eyedrop antidote`,
-              "green",
-            );
-            continue;
-          case "potion":
-            print(` - Use a ${target} to get ${asEffect(target)}`, "green");
-            continue;
-          case "shrug":
-            print(` - Shrug ${target}`, "green");
-            continue;
-        }
-      }
+      this.printPlan();
       abort(
         "Total price of this debuff plan too great! Consider targeting something other than cockroaches next time.",
       );
