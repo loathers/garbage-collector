@@ -61,6 +61,7 @@ type DebuffPlanElement =
 export class DebuffPlanner {
   plan: DebuffPlanElement[] = [];
   itemBanList = $items`pill cup`;
+  priceCap = 150_000; // Chosen at random by Shiverwarp
 
   possibleDebuffItems: Partial<
     Record<StatType, { item: Item; effect: Effect }[]>
@@ -253,6 +254,29 @@ export class DebuffPlanner {
   }
 
   checkAndFixOvercapStats() {
+    if (this.price() >= this.priceCap) {
+      print("Failed to debuff enough to use piraterealm!", "red");
+      print("Debuff plan:", "green");
+      for (const { target, type } of this.plan) {
+        switch (type) {
+          case "uneffect":
+            print(
+              ` - Remove ${target} with a soft green echo eyedrop antidote`,
+              "green",
+            );
+            continue;
+          case "potion":
+            print(` - Use a ${target} to get ${asEffect(target)}`, "green");
+            continue;
+          case "shrug":
+            print(` - Shrug ${target}`, "green");
+            continue;
+        }
+      }
+      abort(
+        "Total price of this debuff plan too great! Consider targeting something other than cockroaches next time.",
+      );
+    }
     for (const debuff of this.plan) this.executeDebuff(debuff);
     if (Stat.all().some((stat) => myBuffedstat(stat) > 100)) {
       abort("Failed to debuff sufficiently for piraterealm!");
