@@ -45,7 +45,7 @@ export const CockroachFinish: Quest<GarboTask> = {
           $location`Crab Island`,
         );
         outfit.beforeDress(
-          () => meatMood(true, targetMeat()).execute(copyTargetCount()),
+          () => meatMood(false, targetMeat()).execute(copyTargetCount()),
           () => potionSetup(false),
         );
         return outfit;
