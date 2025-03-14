@@ -198,16 +198,8 @@ export const chainStarters = [
   ),
   new CopyTargetFight(
     "Combat Lover's Locket",
-    () =>
-      CombatLoversLocket.availableLocketMonsters().includes(
-        globalOptions.target,
-      ),
-    () =>
-      CombatLoversLocket.availableLocketMonsters().includes(
-        globalOptions.target,
-      )
-        ? 1
-        : 0,
+    () => CombatLoversLocket.canReminisce(globalOptions.target),
+    () => (CombatLoversLocket.canReminisce(globalOptions.target) ? 1 : 0),
     (options: RunOptions) => {
       withMacro(
         options.macro,

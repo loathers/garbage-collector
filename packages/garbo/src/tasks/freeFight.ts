@@ -114,9 +114,7 @@ function bestWitchessPiece() {
 const locketMonster = () =>
   CombatLoversLocket.findMonster(isFreeAndCopyable, valueDrops);
 const locketsToSave = () =>
-  CombatLoversLocket.availableLocketMonsters().includes(globalOptions.target)
-    ? 1
-    : 0;
+  CombatLoversLocket.canReminisce(globalOptions.target) ? 1 : 0;
 
 const maxSealsAvailable = () =>
   retrieveItem(1, $item`Claw of the Infernal Seal`) ? 10 : 5;
