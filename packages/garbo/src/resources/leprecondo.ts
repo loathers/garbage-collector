@@ -1,5 +1,5 @@
 import { Item } from "kolmafia";
-import { $item, arrayEquals, get, Leprecondo, maxBy, sum, Tuple } from "libram";
+import { arrayEquals, get, Leprecondo, maxBy, sum, Tuple } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { effectValue } from "../potions";
 import { GarboTask } from "../tasks/engine";
@@ -10,98 +10,107 @@ function resultValue(result: Leprecondo.Result): number {
   return effectValue(result.effect, result.duration);
 }
 
+type ValuedFurniture = {
+  furniture: Leprecondo.FurniturePiece;
+  values: Partial<Record<Leprecondo.Need, number>>;
+};
+
 /*
  * @returns Whether `a` is strictly better than `b`
  */
-function strictlyBetterThan(
-  a: Leprecondo.FurnitureStat,
-  b: Leprecondo.FurnitureStat,
-): boolean {
+function strictlyBetterThan(a: ValuedFurniture, b: ValuedFurniture): boolean {
   return Leprecondo.NEEDS.every((need) => {
-    const result = b[need];
-    if (!result) return true;
-    const other = a[need];
-    if (!other) return false;
-    if (resultValue(other) <= resultValue(result)) return false;
+    const result = b.values[need];
+    if (result === undefined) return true;
+    const other = a.values[need];
+    if (other === undefined) return false;
+    if (other <= result) return false;
     return true;
   });
 }
 
-function getStat(
-  furniture: Leprecondo.FurniturePiece,
-): Leprecondo.FurnitureStat {
-  return Leprecondo.Furniture[furniture];
+function getCoveredNeeds({ furniture }: ValuedFurniture): Leprecondo.Need[] {
+  return Object.keys(Leprecondo.getStats(furniture)) as Leprecondo.Need[];
 }
 
-function getCoveredNeeds(
-  furniture: Leprecondo.FurniturePiece,
-): Leprecondo.Need[] {
-  return Object.keys(getStat(furniture)) as Leprecondo.Need[];
-}
-
-function viableFurniture(): Leprecondo.FurniturePiece[] {
+function viableFurniture(): {
+  furniture: Leprecondo.FurniturePiece;
+  values: Partial<Record<Leprecondo.Need, number>>;
+}[] {
   const discovered = Leprecondo.discoveredFurniture();
   return [
-    "empty",
-    ...discovered.filter(
-      (f, index) =>
-        !discovered
-          .slice(index)
-          .some((futureFurniture) =>
-            strictlyBetterThan(getStat(futureFurniture), getStat(f)),
+    { furniture: "empty", values: {} },
+    ...discovered
+      .map((furniture) => ({
+        furniture,
+        values: Object.fromEntries(
+          Object.entries(Leprecondo.getStats(furniture)).map(
+            ([need, result]): [Leprecondo.Need, number] => [
+              need as Leprecondo.Need,
+              resultValue(result),
+            ],
           ),
-    ),
+        ),
+      }))
+      .filter(
+        (f, index, valuedDiscoveries) =>
+          !valuedDiscoveries
+            .slice(index)
+            .some((futureFurniture) => strictlyBetterThan(futureFurniture, f)),
+      ),
   ];
 }
 
-type Combination = Tuple<Leprecondo.FurniturePiece, 4>;
+type Combination = Tuple<ValuedFurniture, 4>;
 
 function valueCombination(combo: Combination): number {
-  const total = Leprecondo.furnitureBonuses(combo);
-  return sum(Leprecondo.NEEDS, (need) =>
-    resultValue(total[need] ?? $item.none),
+  const total = combo.reduce<ValuedFurniture["values"]>(
+    (acc, { values }) => ({ ...values, ...acc }),
+    {},
   );
+  return sum(Leprecondo.NEEDS, (need) => total[need] ?? 0);
 }
 
 function buildCombination<L extends number>(
-  combinations: Tuple<Leprecondo.FurniturePiece, L>[],
-  furniture: Leprecondo.FurniturePiece[],
-): [...Tuple<Leprecondo.FurniturePiece, L>, Leprecondo.FurniturePiece][] {
+  combinations: Tuple<ValuedFurniture, L>[],
+  furniture: ValuedFurniture[],
+): [...Tuple<ValuedFurniture, L>, ValuedFurniture][] {
   return combinations.flatMap((combination) => {
     const coveredNeeds = new Set(combination.flatMap(getCoveredNeeds));
     const plausibleFurniture = furniture.filter((f) =>
       getCoveredNeeds(f).some((need) => !coveredNeeds.has(need)),
     ); // Only furniture that cover at least one presently-uncovered need need apply
     return (
-      plausibleFurniture.length ? plausibleFurniture : (["empty"] as const)
-    ).map(
-      (
-        furniture,
-      ): [
-        ...Tuple<Leprecondo.FurniturePiece, L>,
-        Leprecondo.FurniturePiece,
-      ] => [...combination, furniture],
-    );
+      plausibleFurniture.length
+        ? plausibleFurniture
+        : ([{ furniture: "empty", values: {} }] as const)
+    ).map((furniture): [...Tuple<ValuedFurniture, L>, ValuedFurniture] => [
+      ...combination,
+      furniture,
+    ]);
   });
 }
 
-function getViableCombinations(): Combination[] {
+function getViableCombinations(): Tuple<ValuedFurniture, 4>[] {
   const furniture = viableFurniture();
   return Array(4)
     .fill(null)
-    .reduce<Leprecondo.FurniturePiece[][]>(
+    .reduce<ValuedFurniture[][]>(
       (acc) => buildCombination(acc, furniture),
       [[]],
     ) as Combination[];
 }
 
-function findBestCombination(): Combination {
-  return maxBy(getViableCombinations(), valueCombination);
+type FurnitureCombination = Tuple<Leprecondo.FurniturePiece, 4>;
+function findBestCombination(): FurnitureCombination {
+  return maxBy(getViableCombinations(), valueCombination).map(
+    ({ furniture }) => furniture,
+  ) as FurnitureCombination;
 }
 
-let bestCombination: Combination;
+let bestCombination: FurnitureCombination;
 let unlocked: string;
-function getBestLeprecondoCombination(): Combination {
+function getBestLeprecondoCombination(): FurnitureCombination {
   if (unlocked !== get("leprecondoDiscovered")) {
     unlocked = get("leprecondoDiscovered");
     bestCombination = findBestCombination();
