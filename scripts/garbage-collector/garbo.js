@@ -29647,7 +29647,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("6e3c735c9e50639e9db1971043085e9e4076dcec", ")"));
+      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("12352d87c7b112d9f5f7cec57b398a8855190d2c", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia96.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -37540,9 +37540,9 @@ var chainStarters = [new CopyTargetFight("Witchess", function() {
     return ChateauMantegna_exports.fightPainting();
   }, options.useAuto);
 }), new CopyTargetFight("Combat Lover's Locket", function() {
-  return CombatLoversLocket_exports.availableLocketMonsters().includes(globalOptions.target);
+  return CombatLoversLocket_exports.canReminisce(globalOptions.target);
 }, function() {
-  return CombatLoversLocket_exports.availableLocketMonsters().includes(globalOptions.target) ? 1 : 0;
+  return CombatLoversLocket_exports.canReminisce(globalOptions.target) ? 1 : 0;
 }, function(options) {
   withMacro(options.macro, function() {
     return CombatLoversLocket_exports.reminisce(globalOptions.target);
@@ -40958,7 +40958,7 @@ var locketMonster = function() {
   return CombatLoversLocket_exports.findMonster(isFreeAndCopyable, valueDrops);
 };
 var locketsToSave = function() {
-  return CombatLoversLocket_exports.availableLocketMonsters().includes(globalOptions.target) ? 1 : 0;
+  return CombatLoversLocket_exports.canReminisce(globalOptions.target) ? 1 : 0;
 };
 var maxSealsAvailable = function() {
   return (0, import_kolmafia134.retrieveItem)(1, $item(_templateObject896 || (_templateObject896 = _taggedTemplateLiteral126(["Claw of the Infernal Seal"])))) ? 10 : 5;
