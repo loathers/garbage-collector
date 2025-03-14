@@ -119,7 +119,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       default: 0,
     }),
     target: Args.monster({
-      setting: "",
+      setting: "garbo_copyTarget",
       help: "The monster to use all copies on",
       default: $monster.none,
     }),

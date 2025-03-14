@@ -37,7 +37,6 @@ import {
   $coinmaster,
   $item,
   $items,
-  $location,
   $monster,
   $monsters,
   $skill,
@@ -52,7 +51,6 @@ import {
   haveInCampground,
   JuneCleaver,
   maxBy,
-  realmAvailable,
   set,
   setCombatFlags,
   setDefaultMaximizeOptions,
@@ -92,7 +90,6 @@ import {
   runGarboQuests,
   SetupTargetCopyQuest,
 } from "./tasks";
-import { doingGregFight, hasMonsterReplacers } from "./resources";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -107,18 +104,6 @@ function ensureBarfAccess() {
 }
 
 function defaultTarget() {
-  // Can we account for re-entry if we only have certain amounts of copiers left in each of these?
-  // We need piraterealm if we're doing gregs of any sort; hasMonsterReplacers tells us if we're chewing extro
-  if (
-    !(doingGregFight() || hasMonsterReplacers()) ||
-    (realmAvailable("pirate") &&
-      ((questStep("_questPirateRealm") <= 6 &&
-        get("pirateRealmUnlockedAnemometer")) ||
-        (questStep("_questPirateRealm") === 7 &&
-          get("_lastPirateRealmIsland") === $location`Trash Island`)))
-  ) {
-    return $monster`cockroach`;
-  }
   if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
     return maxBy(
       $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
