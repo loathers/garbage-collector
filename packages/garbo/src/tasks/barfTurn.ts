@@ -92,6 +92,7 @@ import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
   completeBarfQuest,
+  mayamCalendarSummon,
   minimumMimicExperience,
   shouldFillLatte,
   tryFillLatte,
@@ -1097,8 +1098,14 @@ export const BarfTurnQuest: Quest<GarboTask> = {
   completed: () => !canContinue(),
 };
 
+export const DailyExtrasQuest: Quest<GarboTask> = {
+  name: "Daily Extras",
+  tasks: [mayamCalendarSummon],
+};
+
 export const BarfTurnQuests = [
   TurnGenQuest,
+  DailyExtrasQuest,
   WandererQuest,
   NonBarfTurnQuest,
   BarfTurnQuest,
