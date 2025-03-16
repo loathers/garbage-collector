@@ -29647,7 +29647,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("12352d87c7b112d9f5f7cec57b398a8855190d2c", ")"));
+      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f69d49758995a75dca734b14011254c964383aaa", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia96.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -31399,6 +31399,7 @@ function balanceMenu(baseMenu, dietPlanner) {
   return rebalance(baseMenu, 5, 0, baseDiet.expectedAdventures());
 }
 function computeDiet() {
+  (0, import_kolmafia99.print)("Calculating diet, please wait...", HIGHLIGHT);
   var orEmpty = function(diet) {
     return diet.expectedValue(MPA, "net") < 0 ? new Diet() : diet;
   };
