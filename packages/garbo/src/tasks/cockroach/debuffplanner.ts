@@ -62,6 +62,7 @@ export class DebuffPlanner {
   plan: DebuffPlanElement[] = [];
   itemBanList = $items`pill cup`;
   priceCap = 150_000; // Chosen at random by Shiverwarp
+  sizeCap = 69; // Chosen at random by sweaty bill
 
   possibleDebuffItems: Partial<
     Record<StatType, { item: Item; effect: Effect }[]>
@@ -213,7 +214,7 @@ export class DebuffPlanner {
 
     let debuffItemLoops = 0;
     while (!this.debuffedEnough()) {
-      if (debuffItemLoops > 27) {
+      if (debuffItemLoops > this.sizeCap) {
         this.printPlan();
         abort("Spent too long trying to debuff for PirateRealm!");
       }
