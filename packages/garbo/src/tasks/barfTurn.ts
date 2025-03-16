@@ -1100,7 +1100,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
 
 export const DailyExtrasQuest: Quest<GarboTask> = {
   name: "Daily Extras",
-  tasks: [mayamCalendarSummon],
+  tasks: [mayamCalendarSummon()],
 };
 
 export const BarfTurnQuests = [
