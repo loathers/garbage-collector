@@ -29647,7 +29647,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f69d49758995a75dca734b14011254c964383aaa", ")"));
+      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4c2e9e0f1accbf9409299e97c2fdf194f21bfd8a", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia96.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -33391,7 +33391,7 @@ function getToyCupidBowFamiliars() {
       if (!have(familiar10)) continue;
       if (usedTcbFamiliars.has(familiar10)) continue;
       if (!(0, import_kolmafia107.familiarEquipment)(familiar10).tradeable) continue;
-      if (familiar10 === $familiar(_templateObject691 || (_templateObject691 = _taggedTemplateLiteral96(["Mini-Adventurer"]))) && !get("miniAdvClass")) {
+      if (familiar10 === $familiar(_templateObject691 || (_templateObject691 = _taggedTemplateLiteral96(["Mini-Adventurer"]))) && !get("miniAdvClass") && !get("choiceAdventure768")) {
         if (globalOptions.ascend) {
           propertyManager.setChoice(768, 4);
         } else continue;
