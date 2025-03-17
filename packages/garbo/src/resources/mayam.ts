@@ -143,23 +143,25 @@ function getBestMayamCombinations(): MayamCalendar.CombinationString[] {
   );
 }
 
-export const mayamCalendarSummon: GarboTask = {
-  name: "Mayam Summons",
-  completed: () => MayamCalendar.remainingUses() === 0,
-  ready: () => MayamCalendar.have(),
-  do: () => {
-    const startingFamiliar = myFamiliar();
-    for (const combination of getBestMayamCombinations()) {
-      if (combination.includes("fur")) {
-        const bestFamiliar = maxBy(
-          getExperienceFamiliars("free"),
-          "expectedValue",
-        ).familiar;
-        useFamiliar(bestFamiliar);
+export function mayamCalendarSummon(): GarboTask {
+  return {
+    name: "Mayam Summons",
+    completed: () => MayamCalendar.remainingUses() === 0,
+    ready: () => MayamCalendar.have(),
+    do: () => {
+      const startingFamiliar = myFamiliar();
+      for (const combination of getBestMayamCombinations()) {
+        if (combination.includes("fur")) {
+          const bestFamiliar = maxBy(
+            getExperienceFamiliars("free"),
+            "expectedValue",
+          ).familiar;
+          useFamiliar(bestFamiliar);
+        }
+        MayamCalendar.submit(combination);
       }
-      MayamCalendar.submit(combination);
-    }
-    useFamiliar(startingFamiliar);
-  },
-  spendsTurn: false,
-};
+      useFamiliar(startingFamiliar);
+    },
+    spendsTurn: false,
+  };
+}
