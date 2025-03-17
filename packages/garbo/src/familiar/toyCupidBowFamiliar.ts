@@ -47,7 +47,11 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
     if (!have(familiar)) continue;
     if (usedTcbFamiliars.has(familiar)) continue;
     if (!familiarEquipment(familiar).tradeable) continue;
-    if (familiar === $familiar`Mini-Adventurer` && !get("miniAdvClass")) {
+    if (
+      familiar === $familiar`Mini-Adventurer` &&
+      !get("miniAdvClass") &&
+      !get("choiceAdventure768")
+    ) {
       if (globalOptions.ascend) {
         propertyManager.setChoice(768, 4);
       } // Littlest identity crisis, sauceror
