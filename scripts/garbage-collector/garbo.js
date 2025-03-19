@@ -29647,7 +29647,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1372092ab130bd6d0a140b94e6e9b84b39f2a6d6", ")"));
+      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("bc94aafa7e196ff80130768cd577c74be73c2172", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia96.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -48782,7 +48782,8 @@ function main() {
       suppressMallPriceCacheMessages: true,
       maximizerCombinationLimit: maximizerCombinationLimit,
       allowNegativeTally: true,
-      spadingScript: "excavator.js"
+      spadingScript: "excavator.js",
+      lastChanceBurn: ""
     });
     var bestHalloweiner = 0;
     if (haveInCampground($item(_templateObject1756 || (_templateObject1756 = _taggedTemplateLiteral137(["haunted doghouse"]))))) {
