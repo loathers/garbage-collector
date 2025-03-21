@@ -217,7 +217,7 @@ export const CockroachSetup: Quest<GarboTask> = {
         get("_lastPirateRealmIsland") === $location`Dessert Island`,
       completed: () => questStep("_questPirateRealm") > 5,
       prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
-      do: () => $location`PirateRealm Island`,
+      do: $location`PirateRealm Island`,
       outfit: () => ({
         equip: $items`PirateRealm eyepatch`,
         modifier: Stat.all().map((stat) => `-${stat}`),
@@ -255,7 +255,7 @@ export const CockroachSetup: Quest<GarboTask> = {
         );
         return outfit;
       },
-      choices: { 1385: 1, 1368: 1 }, // Take cocoa of youth, fight crab
+      choices: { 1368: 1 }, // fight crab
       combat: new GarboStrategy(() => Macro.delevel().meatKill()),
       limit: { tries: 1 },
       spendsTurn: true,
