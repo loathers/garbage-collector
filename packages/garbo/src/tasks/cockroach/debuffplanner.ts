@@ -4,7 +4,6 @@ import {
   effectModifier,
   isShruggable,
   Item,
-  mallPrice,
   myBuffedstat,
   print,
   retrieveItem,
@@ -114,7 +113,7 @@ export class DebuffPlanner {
   ) {
     return (
       (-1 * this.effectiveDebuffQuantity(effect, stat, shrugging)) /
-      mallPrice(item)
+      getAcquirePrice(item)
     );
   }
 
@@ -166,9 +165,9 @@ export class DebuffPlanner {
       true,
     );
     return this.effectiveDebuffQuantity(bestEffectToShrug, stat, true) /
-      mallPrice($item`soft green echo eyedrop antidote`) >
+      getAcquirePrice($item`soft green echo eyedrop antidote`) >
       this.effectiveDebuffQuantity(bestPotion.effect, stat, false) /
-        mallPrice(bestPotion.item)
+        getAcquirePrice(bestPotion.item)
       ? bestEffectToShrug
       : bestPotion.item;
   }
@@ -194,7 +193,7 @@ export class DebuffPlanner {
       this.buffedStat($stat`Muscle`) > 100 &&
       !have($effect`Sleepy`) &&
       (have($item`decorative fountain`) ||
-        mallPrice($item`decorative fountain`) < 500)
+        getAcquirePrice($item`decorative fountain`) < 500)
     ) {
       acquire(1, $item`decorative fountain`, 500);
       use($item`decorative fountain`);
