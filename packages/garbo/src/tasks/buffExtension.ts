@@ -74,6 +74,7 @@ const BuffExtensionTasks: GarboTask[] = [
     ready: () =>
       globalOptions.ascend &&
       sober() &&
+      !have($effect`Lucky!`) &&
       questStep("questM16Temple") > 0 &&
       mallPrice($item`stone wool`) < 3 * get("valueOfAdventure") + 100 && // TODO: Add actual valuation for gaining effects
       !!getRun(),
@@ -91,7 +92,7 @@ const BuffExtensionTasks: GarboTask[] = [
     outfit: () => freeFightOutfit(toSpec(getRun())),
     choices: { 582: 1, 579: 3 },
     spendsTurn: false,
-    limit: { tries: 10 },
+    limit: { tries: 5 }, // Stone-faced should immediately get us the Fitting In adventure. If we try this many times, something has gone wrong
   },
 ];
 
