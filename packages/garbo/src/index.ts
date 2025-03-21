@@ -87,6 +87,7 @@ import {
   runGarboQuests,
   SetupTargetCopyQuest,
 } from "./tasks";
+import { PostBuffExtensionQuest } from "./tasks/postBuffExtension";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -570,6 +571,7 @@ export function main(argString = ""): void {
           maximize("MP", false);
           meatMood().execute(estimatedGarboTurns());
           useBuffExtenders();
+          runGarboQuests([PostBuffExtensionQuest]);
           try {
             runGarboQuests([PostQuest(), ...BarfTurnQuests]);
 

@@ -23,7 +23,6 @@ import {
   get,
   have,
   Mood,
-  realmAvailable,
   uneffect,
 } from "libram";
 import {
@@ -226,15 +225,6 @@ export function useBuffExtenders(): void {
   if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
     burnLibrams();
     use($item`License to Chill`);
-  }
-  // This is the best spot to run free mines after extending Loded buff
-  if (
-    realmAvailable("hot") &&
-    ((have($skill`Unaccompanied Miner`) &&
-      get("_unaccompaniedMinerUsed") < 5) ||
-      haveEffect($effect`Loded`))
-  ) {
-    cliExecute("oreo 0");
   }
 }
 
