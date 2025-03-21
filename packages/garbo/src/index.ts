@@ -84,7 +84,6 @@ import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
 import {
   BarfTurnQuests,
-  CockroachFinish,
   CockroachSetup,
   PostQuest,
   runGarboQuests,
@@ -576,9 +575,6 @@ export function main(argString = ""): void {
 
         // 2. do some target copy stuff
         freeFights();
-        withProperty("removeMalignantEffects", false, () =>
-          runGarboQuests([CockroachFinish]),
-        );
         runGarboQuests([SetupTargetCopyQuest]);
         yachtzeeChain();
         dailyFights();

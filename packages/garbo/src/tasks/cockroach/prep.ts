@@ -25,13 +25,17 @@ import {
 import { acquire } from "../../acquire";
 import { GarboStrategy, Macro } from "../../combat";
 import { freeFightFamiliar } from "../../familiar";
-import { freeFightOutfit } from "../../outfit";
-import { GarboTask } from "../engine";
+import { freeFightOutfit, meatTargetOutfit } from "../../outfit";
+import { GarboTask, runSafeGarboQuests } from "../engine";
 import { bestCrewmate, dessertIslandWorthIt, outfitBonuses } from "./lib";
 import { doingGregFight } from "../../resources";
-import { unignoreBeatenUp, userConfirmDialog } from "../../lib";
+import { targetMeat, unignoreBeatenUp, userConfirmDialog } from "../../lib";
 import { globalOptions } from "../../config";
 import { DebuffPlanner } from "./debuffplanner";
+import { meatMood } from "../../mood";
+import { copyTargetCount } from "../../target";
+import { potionSetup } from "../../potions";
+import { DailyFamiliarsQuest } from "../dailyFamiliars";
 
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
@@ -222,6 +226,37 @@ export const CockroachSetup: Quest<GarboTask> = {
       combat: new GarboStrategy(() =>
         Macro.abortWithMsg("Hit a combat when we expected cocoa of youth!"),
       ),
+      limit: { tries: 1 },
+      spendsTurn: true,
+    },
+    {
+      name: "Final Island Encounter (Island 1 (Giant Giant Crab))",
+      ready: () =>
+        questStep("_questPirateRealm") === 5 &&
+        get("_lastPirateRealmIsland") === $location`Crab Island`,
+      completed: () => questStep("_questPirateRealm") > 5,
+      prepare: () => {
+        DebuffPlanner.checkAndFixOvercapStats();
+        runSafeGarboQuests([DailyFamiliarsQuest]); // Feed robort, get amulet coin
+      },
+      do: $location`Crab Island`,
+      outfit: () => {
+        const outfit = meatTargetOutfit(
+          {
+            modifier: ["-Muscle", "-Mysticality", "-Moxie"],
+            equip: $items`PirateRealm eyepatch`,
+            avoid: $items`Roman Candelabra`,
+          },
+          $location`Crab Island`,
+        );
+        outfit.beforeDress(
+          () => meatMood(false, targetMeat()).execute(copyTargetCount()), // meatMood is currently difficult to sort for things that give +stats
+          () => potionSetup(false, true), // run potionSetup while avoiding stats. We do not avoid limited use buffs that may still increase stats like paw wishes or pill keeper.
+        );
+        return outfit;
+      },
+      choices: { 1385: 1, 1368: 1 }, // Take cocoa of youth, fight crab
+      combat: new GarboStrategy(() => Macro.delevel().meatKill()),
       limit: { tries: 1 },
       spendsTurn: true,
     },

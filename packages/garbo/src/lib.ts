@@ -4,6 +4,8 @@ import {
   choiceFollowsFight,
   cliExecute,
   eat,
+  Effect,
+  effectModifier,
   Familiar,
   familiarWeight,
   fileToBuffer,
@@ -51,6 +53,7 @@ import {
   Skill,
   soulsauceCost,
   spleenLimit,
+  Stat,
   todayToString,
   totalFreeRests,
   toUrl,
@@ -82,6 +85,7 @@ import {
   get,
   getBanishedMonsters,
   getKramcoWandererChance,
+  getModifier,
   getTodaysHolidayWanderers,
   have,
   JuneCleaver,
@@ -1124,3 +1128,26 @@ export const valueDrops = (monster: Monster) =>
 export const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 
 export const unlimitedFreeRunList = $items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`;
+
+export function totalModifier(effect: Effect, stat: Stat): number {
+  return (
+    getModifier(stat.toString(), effect) +
+    0.2 * getModifier(`${stat.toString()} Percent`, effect)
+  );
+}
+
+export function asEffect(thing: Item | Effect): Effect {
+  return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
+}
+
+function improvesStat(thing: Item | Effect, stat: Stat): boolean {
+  return totalModifier(asEffect(thing), stat) > 0;
+}
+
+export function improvedStats(thing: Item | Effect): Stat[] {
+  return Stat.all().filter((stat) => improvesStat(thing, stat));
+}
+
+export function improvesAStat(thing: Item | Effect): boolean {
+  return improvedStats(thing).length > 0;
+}

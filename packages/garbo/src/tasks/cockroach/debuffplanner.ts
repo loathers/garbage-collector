@@ -1,7 +1,6 @@
 import {
   abort,
   Effect,
-  effectModifier,
   isShruggable,
   Item,
   myBuffedstat,
@@ -26,31 +25,14 @@ import {
   uneffect,
 } from "libram";
 import { acquire } from "../../acquire";
-import { ignoreBeatenUp } from "../../lib";
+import {
+  asEffect,
+  ignoreBeatenUp,
+  improvedStats,
+  improvesAStat,
+  totalModifier,
+} from "../../lib";
 import { VALUABLE_MODIFIERS } from "../../potions";
-
-function totalModifier(effect: Effect, stat: Stat): number {
-  return (
-    getModifier(stat.toString(), effect) +
-    0.2 * getModifier(`${stat.toString()} Percent`, effect)
-  );
-}
-
-function asEffect(thing: Item | Effect): Effect {
-  return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
-}
-
-function improvesStat(thing: Item | Effect, stat: Stat): boolean {
-  return totalModifier(asEffect(thing), stat) > 0;
-}
-
-function improvedStats(thing: Item | Effect): Stat[] {
-  return Stat.all().filter((stat) => improvesStat(thing, stat));
-}
-
-function improvesAStat(thing: Item | Effect): boolean {
-  return improvedStats(thing).length > 0;
-}
 
 type DebuffPlanElement =
   | { type: "potion"; target: Item }
