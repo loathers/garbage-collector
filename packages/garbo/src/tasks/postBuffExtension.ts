@@ -1,16 +1,13 @@
 import { Quest } from "grimoire-kolmafia";
-import { cliExecute, haveEffect } from "kolmafia";
-import { $effect, $skill, get, have, realmAvailable } from "libram";
+import { cliExecute } from "kolmafia";
+import { Mining, realmAvailable } from "libram";
 import { GarboTask } from "./engine";
 
 const PostBuffExtensionTasks: GarboTask[] = [
   {
     name: "Free 70s Mining",
-    ready: () =>
-      realmAvailable("hot") &&
-      (haveEffect($effect`Loded`) > 0 || have($skill`Unaccompanied Miner`)),
-    completed: () =>
-      get("_unaccompaniedMinerUsed") >= 5 && !haveEffect($effect`Loded`),
+    ready: () => realmAvailable("hot"),
+    completed: () => Mining.countFreeMines() <= 0,
     do: () => cliExecute("oreo 0"),
     spendsTurn: false,
   },
