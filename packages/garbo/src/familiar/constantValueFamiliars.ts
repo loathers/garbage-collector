@@ -1,10 +1,4 @@
-import {
-  Familiar,
-  familiarWeight,
-  holiday,
-  myAdventures,
-  squareRoot,
-} from "kolmafia";
+import { Familiar, familiarWeight, holiday, squareRoot } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -22,8 +16,8 @@ import {
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { FamiliarMode, GeneralFamiliar } from "./lib";
-import { effectValue } from "../potions";
-import { globalOptions } from "../config";
+import { Potion } from "../potions";
+import { copyTargetCount } from "../target";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -96,16 +90,19 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Unspeakachu`,
-    value: () =>
-      sum(getActiveEffects(), (effect) =>
-        effectValue(
-          effect,
-          5,
-          clamp(5, 0, globalOptions.ascend ? myAdventures() : 5),
-        ),
-      ) *
-      0.5 *
-      0.05,
+    value: () => {
+      const targets = copyTargetCount();
+      return (
+        sum(getActiveEffects(), (effect) =>
+          new Potion($item.none, {
+            effect,
+            duration: 5,
+          }).gross(targets),
+        ) *
+        0.5 *
+        0.05
+      );
+    },
   },
   {
     familiar: $familiar`Patriotic Eagle`,
