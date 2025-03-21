@@ -276,7 +276,8 @@ export function main(argString = ""): void {
   if (
     !globalOptions.nobarf &&
     globalOptions.prefs.valueOfAdventure &&
-    globalOptions.prefs.valueOfAdventure >= 10000
+    globalOptions.prefs.valueOfAdventure >=
+      (globalOptions.nobarf ? 20_000 : 10_000)
   ) {
     throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is definitely incorrect. Please set it to your reliable marginal turn value.`;
   }
@@ -443,6 +444,7 @@ export function main(argString = ""): void {
       maximizerCombinationLimit: maximizerCombinationLimit,
       allowNegativeTally: true,
       spadingScript: "excavator.js",
+      lastChanceBurn: "",
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {

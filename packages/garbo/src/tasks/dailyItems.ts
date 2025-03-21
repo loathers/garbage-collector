@@ -709,7 +709,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
     spendsTurn: false,
   },
-  mayamCalendarSummon,
+  mayamCalendarSummon(),
   {
     name: "Devil Cheapest Candy",
     ready: () => have($item`candy egg deviler`), // TODO: Support guild stash
