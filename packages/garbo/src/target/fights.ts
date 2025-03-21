@@ -759,7 +759,6 @@ export const conditionalSources = [
         options.macro,
       );
       changeLastAdvLocation();
-      if (!doingGregFight()) set("_garbo_doneGregging", true);
     },
     {
       spec: { equip: $items`miniature crystal ball` },
@@ -923,7 +922,7 @@ export const fakeSources = [
   ),
 ];
 
-function copyTargetConfirmInvocation(msg: string): boolean {
+export function copyTargetConfirmInvocation(msg: string): boolean {
   // If user does not have autoUserConfirm set to true
   // If the incocatedCount has already reached or exceeded the default limit
   if (!globalOptions.prefs.autoUserConfirm) {
