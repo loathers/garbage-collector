@@ -29657,7 +29657,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d22067384cecceb591eaf23affb4d14c4a939344", ")"));
+      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e769224898533826b42b8798d8430782a1ece84e", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia96.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -32895,12 +32895,8 @@ var standardFamiliars = [{
 }, {
   familiar: $familiar(_templateObject2165 || (_templateObject2165 = _taggedTemplateLiteral92(["Unspeakachu"]))),
   value: function() {
-    var targets = copyTargetCount();
     return sum(getActiveEffects(), function(effect2) {
-      return new Potion($item.none, {
-        effect: effect2,
-        duration: 5
-      }).gross(targets);
+      return effectValue(effect2, 5, clamp(5, 0, globalOptions.ascend ? (0, import_kolmafia104.myAdventures)() : 5));
     }) * 0.5 * 0.05;
   }
 }, {
