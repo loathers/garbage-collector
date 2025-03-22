@@ -4,6 +4,8 @@ import {
   choiceFollowsFight,
   cliExecute,
   eat,
+  Effect,
+  effectModifier,
   Familiar,
   familiarWeight,
   fileToBuffer,
@@ -51,6 +53,7 @@ import {
   Skill,
   soulsauceCost,
   spleenLimit,
+  Stat,
   todayToString,
   totalFreeRests,
   toUrl,
@@ -82,6 +85,7 @@ import {
   get,
   getBanishedMonsters,
   getKramcoWandererChance,
+  getModifier,
   getTodaysHolidayWanderers,
   have,
   JuneCleaver,
@@ -150,7 +154,7 @@ export const MEAT_TARGET_MULTIPLIER = (): number =>
 
 export const propertyManager = new PropertiesManager();
 
-const songboomMeat = () =>
+export const songboomMeat = () =>
   SongBoom.have() &&
   (SongBoom.songChangesLeft() > 0 ||
     (SongBoom.song() === "Total Eclipse of Your Meat" &&
@@ -184,20 +188,20 @@ export const targetMeatDifferential = () => {
   return clamp(targetMeatVal - baseMeatVal, 0, targetMeatVal);
 };
 
-export const targettingMeat = () =>
+export const targetingMeat = () =>
   !isFree(globalOptions.target) && targetMeat() > baseMeat();
 
-export const targettingItems = () => !targettingMeat();
+export const targetingItems = () => !targetingMeat();
 
 export const gooseDroneEligible = () =>
-  targettingItems() &&
+  targetingItems() &&
   itemDropsArray(globalOptions.target).filter(
     (item) => !["c", "0", "p", "a"].includes(item.type),
   ).length === 1 &&
   have($familiar`Grey Goose`);
 
 export function averageTargetNet(): number {
-  return targettingItems()
+  return targetingItems()
     ? valueDrops(globalOptions.target)
     : (targetMeat() * meatDropModifier()) / 100;
 }
@@ -457,6 +461,10 @@ export function safeRestoreMpTarget(): number {
   return Math.min(myMaxmp(), 200);
 }
 
+let _ignoreBeatenUp = false;
+export const ignoreBeatenUp = () => (_ignoreBeatenUp = true);
+export const unignoreBeatenUp = () => (_ignoreBeatenUp = false);
+
 export function safeRestore(): void {
   if (
     get("_lastCombatLost") &&
@@ -467,7 +475,7 @@ export function safeRestore(): void {
       "You lost your most recent combat! Check to make sure everything is alright before rerunning.",
     );
   }
-  if (have($effect`Beaten Up`)) {
+  if (have($effect`Beaten Up`) && !_ignoreBeatenUp) {
     if (
       lastMonster() ===
       $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
@@ -1120,3 +1128,26 @@ export const valueDrops = (monster: Monster) =>
 export const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 
 export const unlimitedFreeRunList = $items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`;
+
+export function totalModifier(effect: Effect, stat: Stat): number {
+  return (
+    getModifier(stat.toString(), effect) +
+    0.2 * getModifier(`${stat.toString()} Percent`, effect)
+  );
+}
+
+export function asEffect(thing: Item | Effect): Effect {
+  return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
+}
+
+function improvesStat(thing: Item | Effect, stat: Stat): boolean {
+  return totalModifier(asEffect(thing), stat) > 0;
+}
+
+export function improvedStats(thing: Item | Effect): Stat[] {
+  return Stat.all().filter((stat) => improvesStat(thing, stat));
+}
+
+export function improvesAStat(thing: Item | Effect): boolean {
+  return improvedStats(thing).length > 0;
+}

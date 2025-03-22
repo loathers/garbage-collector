@@ -17,7 +17,6 @@ import {
   have,
   TakerSpace,
 } from "libram";
-import { dietCompleted } from "../../diet";
 import { globalOptions } from "../../config";
 import { potionSetupCompleted } from "../../potions";
 import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../../turns";
@@ -163,7 +162,11 @@ const worksheds = [
       (GarboWorkshed.next && !get("_workshedItemUsed")) || globalOptions.ascend,
   }),
   ...$items`diabolic pizza cube, portable Mayo Clinic, warbear high-efficiency still, warbear induction oven`.map(
-    (item) => new GarboWorkshed({ workshed: item, done: dietCompleted }),
+    (item) =>
+      new GarboWorkshed({
+        workshed: item,
+        done: () => globalOptions.dietCompleted,
+      }),
   ),
   ...$items`warbear chemistry lab, warbear LP-ROM burner`.map(
     (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted }),
