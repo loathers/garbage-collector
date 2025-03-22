@@ -49,8 +49,8 @@ const BuffExtensionTasks: GarboTask[] = [
     name: "Bag o' Tricks",
     completed: () => get("_bagOTricksUsed"),
     do: () => {
-      withStash($items`Platinum Yendorian Express Card`, () => {
-        if (have($item`Platinum Yendorian Express Card`)) {
+      withStash($items`Bag o' Tricks`, () => {
+        if (have($item`Bag o' Tricks`)) {
           use($item`Bag o' Tricks`);
         }
       });
