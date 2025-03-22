@@ -806,7 +806,7 @@ export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
       }
     }
 
-    variableMeatPotionsSetup(0, targets);
+    variableMeatPotionsSetup(0, targets, avoidStats);
     completedPotionSetup = true;
   });
 }
@@ -976,9 +976,12 @@ class VariableMeatPotion {
 export function variableMeatPotionsSetup(
   yachtzees: number,
   targets: number,
+  avoidStats = false,
 ): void {
   const potions = [
-    new VariableMeatPotion($item`love song of sugary cuteness`, 20, 2),
+    ...(avoidStats
+      ? []
+      : [new VariableMeatPotion($item`love song of sugary cuteness`, 20, 2)]),
     new VariableMeatPotion($item`pulled yellow taffy`, 50, 2),
     ...(globalOptions.prefs.candydish
       ? [new VariableMeatPotion($item`porcelain candy dish`, 500, 1)]
