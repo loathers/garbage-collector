@@ -44,10 +44,7 @@ export const CockroachSetup: Quest<GarboTask> = {
     doingGregFight() &&
     globalOptions.target === $monster`cockroach` &&
     myInebriety() <= inebrietyLimit(),
-  completed: () =>
-    get("_lastPirateRealmIsland") === $location`Trash Island` ||
-    (questStep("_questPirateRealm") === 5 &&
-      get("_lastPirateRealmIsland") === $location`Crab Island`),
+  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
   tasks: [
     {
       name: "40 Adventure Failsafe",
