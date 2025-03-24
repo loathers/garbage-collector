@@ -49,6 +49,10 @@ export class DebuffPlanner {
     Record<StatType, { item: Item; effect: Effect }[]>
   > = {};
 
+  private constructor() {
+    this.generateDebuffList();
+  }
+
   private buffedStat(stat: Stat): number {
     return (
       myBuffedstat(stat) +
@@ -131,7 +135,7 @@ export class DebuffPlanner {
       this.printPlan();
       abort(`Failed to find a debuff item for ${stat}!`);
     }
-    const bestPotion = maxBy(this.getDebuffItems(stat), ({ item, effect }) =>
+    const bestPotion = maxBy(debuffItems, ({ item, effect }) =>
       this.debuffEfficacy(item, effect, stat, false),
     );
 
@@ -234,10 +238,6 @@ export class DebuffPlanner {
       case "uneffect":
         return uneffect(target);
     }
-  }
-
-  private constructor() {
-    this.generateDebuffList();
   }
 
   printPlan(colour = "green") {
