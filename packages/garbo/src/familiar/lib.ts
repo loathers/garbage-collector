@@ -3,6 +3,7 @@ import {
   Familiar,
   familiarEquipment,
   inebrietyLimit,
+  mallPrice,
   myAdventures,
   myInebriety,
   totalTurnsPlayed,
@@ -157,8 +158,13 @@ export function snapperValue(): number {
 
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
 
-export const familiarEquipmentValue = (f: Familiar) =>
-  garboValue(familiarEquipment(f));
+export const familiarEquipmentValue = (f: Familiar) => {
+  if (f === $familiar`Cornbeefadon` && !have($item`amulet coin`)) {
+    return mallPrice($item`box of Familiar Jacks`);
+  }
+
+  return garboValue(familiarEquipment(f));
+};
 
 export function tcbValue(
   familiar: Familiar,

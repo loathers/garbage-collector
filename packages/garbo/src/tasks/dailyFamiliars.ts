@@ -20,6 +20,7 @@ import {
   get,
   have,
   Robortender,
+  ToyCupidBow,
   withProperty,
 } from "libram";
 import { withStash } from "../clan";
@@ -164,7 +165,9 @@ const DailyFamiliarTasks: GarboTask[] = [
   {
     name: "Acquire amulet coin",
     ready: () =>
-      have($familiar`Cornbeefadon`) && have($item`box of Familiar Jacks`),
+      !ToyCupidBow.have() &&
+      have($familiar`Cornbeefadon`) &&
+      have($item`box of Familiar Jacks`),
     completed: () => have($item`amulet coin`),
     do: (): void => {
       use($item`box of Familiar Jacks`);

@@ -1,5 +1,6 @@
 import { Quest } from "grimoire-kolmafia";
 import {
+  $familiar,
   $item,
   $items,
   $location,
@@ -155,6 +156,18 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
           }
         }
       },
+      spendsTurn: false,
+      limit: { skip: 1 },
+    },
+    {
+      name: "Acquire amulet coin",
+      ready: () =>
+        have($familiar`Cornbeefadon`) && have($item`box of Familiar Jacks`),
+      completed: () => have($item`amulet coin`),
+      do: (): void => {
+        use($item`box of Familiar Jacks`);
+      },
+      outfit: { familiar: $familiar`Cornbeefadon` },
       spendsTurn: false,
       limit: { skip: 1 },
     },
