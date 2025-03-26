@@ -4,6 +4,7 @@ import {
   familiarEquipment,
   inebrietyLimit,
   mallPrice,
+  meatDrop,
   myAdventures,
   myInebriety,
   totalTurnsPlayed,
@@ -22,7 +23,12 @@ import {
   ToyCupidBow,
 } from "libram";
 import { globalOptions } from "../config";
-import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
+import {
+  baseMeat,
+  ESTIMATED_OVERDRUNK_TURNS,
+  targettingMeat,
+  turnsToNC,
+} from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
@@ -160,7 +166,11 @@ export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
 
 export const familiarEquipmentValue = (f: Familiar) => {
   if (f === $familiar`Cornbeefadon` && !have($item`amulet coin`)) {
-    return mallPrice($item`box of Familiar Jacks`);
+    return Math.min(
+      mallPrice($item`box of Familiar Jacks`),
+      baseMeat() * 0.5 * estimatedGarboTurns() +
+        (targettingMeat() ? meatDrop(globalOptions.target) : 0),
+    );
   }
 
   return garboValue(familiarEquipment(f));
