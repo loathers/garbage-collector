@@ -60,13 +60,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
   },
   {
     skill: $skill`Aug. 7th: Lighthouse Day!`,
-    value: () =>
-      effectValue(
-        $effect`Incredibly Well Lit`,
-        30,
-        undefined,
-        copyTargetCount(),
-      ),
+    value: () => effectValue($effect`Incredibly Well Lit`, 30),
     type: "buff",
   },
   {
