@@ -24,6 +24,7 @@ import {
   $familiar,
   $familiars,
   $item,
+  $monster,
   $slot,
   Clan,
   get,
@@ -167,7 +168,10 @@ export class StashManager {
         "In fight, trying to get away to return items to stash...",
         HIGHLIGHT,
       );
-      Macro.if_(globalOptions.target, Macro.attack().repeat())
+      Macro.if_(
+        [globalOptions.target, $monster`giant giant crab`],
+        Macro.attack().repeat(),
+      )
         .tryItem(
           ...unlimitedFreeRunList
             .filter((i) => getAcquirePrice(i) < get("valueOfAdventure"))
