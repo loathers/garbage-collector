@@ -169,7 +169,9 @@ export const familiarEquipmentValue = (f: Familiar) => {
     return Math.min(
       mallPrice($item`box of Familiar Jacks`),
       baseMeat() * 0.5 * estimatedGarboTurns() +
-        (targettingMeat() ? meatDrop(globalOptions.target) : 0),
+        (targettingMeat()
+          ? meatDrop(globalOptions.target) * 0.5 * copyTargetCount()
+          : 0),
     );
   }
 
