@@ -29657,7 +29657,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f094aa05935de0b08b961cec69b6331788cad624", ")"));
+      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4f3dfafc8817237d9b59eeecaea589ca0ef74652", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia96.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -37649,11 +37649,11 @@ var copySources = [new CopyTargetFight("Time-Spinner", function() {
   }) && get("_timeSpinnerMinutesUsed") <= 7;
 }, function() {
   return have($item(_templateObject3421 || (_templateObject3421 = _taggedTemplateLiteral113(["Time-Spinner"])))) && $locations(_templateObject3520 || (_templateObject3520 = _taggedTemplateLiteral113(["Noob Cave, The Dire Warren, The Haunted Kitchen"]))).some(function(location) {
-    return location.combatQueue.includes(globalOptions.target.name) || get("beGregariousCharges") > 0;
+    return location.combatQueue.includes(globalOptions.target.name) || totalGregCharges(true);
   }) ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3) : 0;
 }, function(options) {
   withMacro(options.macro, function() {
-    (0, import_kolmafia123.visitUrl)("inv_use.php?whichitem=".concat((0, import_kolmafia123.toInt)($item(_templateObject3619 || (_templateObject3619 = _taggedTemplateLiteral113(["Time-Spinner"]))))));
+    directlyUse($item(_templateObject3619 || (_templateObject3619 = _taggedTemplateLiteral113(["Time-Spinner"]))));
     (0, import_kolmafia123.runChoice)(1);
     (0, import_kolmafia123.visitUrl)("choice.php?whichchoice=1196&monid=".concat(globalOptions.target.id, "&option=1"));
     (0, import_kolmafia123.runCombat)();
