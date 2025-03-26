@@ -1000,7 +1000,7 @@ export function effectValue(
   effect: Effect,
   duration: number,
   maxTurns?: number,
-  targets = 0,
+  targets = copyTargetCount(),
 ): number {
   if (effect === $effect`Shadow Affinity`) {
     return globalOptions.prefs.valueOfFreeFight * duration; // Each turn of Shadow Affinity gives us one free fight
