@@ -24,7 +24,7 @@ import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { getBestLuckyAdventure } from "../lib";
-import { Potion } from "../potions";
+import { effectValue, Potion } from "../potions";
 import { GarboTask } from "../tasks/engine";
 
 type ScepterSkill = {
@@ -61,10 +61,12 @@ const SKILL_OPTIONS: ScepterSkill[] = [
   {
     skill: $skill`Aug. 7th: Lighthouse Day!`,
     value: () =>
-      new Potion($item`august scepter`, {
-        effect: $effect`Incredibly Well Lit`,
-        duration: 30,
-      }).gross(copyTargetCount()), // TODO: Yachtzee
+      effectValue(
+        $effect`Incredibly Well Lit`,
+        30,
+        undefined,
+        copyTargetCount(),
+      ),
     type: "buff",
   },
   {

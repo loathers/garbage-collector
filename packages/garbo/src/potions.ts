@@ -290,14 +290,6 @@ export class Potion {
       0,
     );
 
-    if (this.effect() === $effect`Shadow Affinity`) {
-      return globalOptions.prefs.valueOfFreeFight * duration; // Each turn of Shadow Affinity gives us one free fight
-    }
-
-    if (this.effect() === $effect`Loded`) {
-      return 3400 * duration; // 70s Mining is 3400 VoA
-    }
-
     return (
       (bonusMeat / 100) *
       (baseMeat() * duration + targetMeatDifferential() * targetsApplied)
@@ -1007,9 +999,15 @@ export function effectValue(
   effect: Effect,
   duration: number,
   maxTurns?: number,
+  targets = 0,
 ): number {
-  return new Potion($item.none, { duration, effect }).gross(
-    copyTargetCount(),
-    maxTurns,
-  );
+  if (effect === $effect`Shadow Affinity`) {
+    return globalOptions.prefs.valueOfFreeFight * duration; // Each turn of Shadow Affinity gives us one free fight
+  }
+
+  if (effect === $effect`Loded`) {
+    return 3400 * duration; // 70s Mining is 3400 VoA
+  }
+
+  return new Potion($item.none, { duration, effect }).gross(targets, maxTurns);
 }

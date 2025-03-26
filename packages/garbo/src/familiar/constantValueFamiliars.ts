@@ -16,7 +16,7 @@ import {
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { FamiliarMode, GeneralFamiliar } from "./lib";
-import { Potion } from "../potions";
+import { effectValue } from "../potions";
 import { copyTargetCount } from "../target";
 
 type ConstantValueFamiliar = {
@@ -94,10 +94,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       const targets = copyTargetCount();
       return (
         sum(getActiveEffects(), (effect) =>
-          new Potion($item.none, {
-            effect,
-            duration: 5,
-          }).gross(targets),
+          effectValue(effect, 5, undefined, targets),
         ) *
         0.5 *
         0.05
