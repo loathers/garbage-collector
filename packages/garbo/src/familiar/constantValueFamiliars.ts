@@ -18,6 +18,7 @@ import { garboAverageValue, garboValue } from "../garboValue";
 import { FamiliarMode, GeneralFamiliar } from "./lib";
 import { effectValue } from "../potions";
 import { copyTargetCount } from "../target";
+import { estimatedGarboTurns } from "../turns";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -92,9 +93,10 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     familiar: $familiar`Unspeakachu`,
     value: () => {
       const targets = copyTargetCount();
+      const garboTurns = estimatedGarboTurns();
       return (
         sum(getActiveEffects(), (effect) =>
-          effectValue(effect, 5, undefined, targets),
+          effectValue(effect, 5, garboTurns, targets),
         ) *
         0.5 *
         0.05
