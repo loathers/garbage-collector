@@ -282,9 +282,9 @@ export class Potion {
     return new Potion(item).bonusMeat();
   }
 
-  gross(targets: number, maxTurns?: number): number {
+  gross(targets: number, durationOverride?: number): number {
     const bonusMeat = this.bonusMeat();
-    const duration = Math.max(this.effectDuration(), maxTurns ?? 0);
+    const duration = Math.max(this.effectDuration(), durationOverride ?? 0);
     // Number of meat targets this will actually be in effect for.
     const targetsApplied = Math.max(
       Math.min(duration, targets - haveEffect(this.effect())),
@@ -999,7 +999,7 @@ export function variableMeatPotionsSetup(
 export function effectValue(
   effect: Effect,
   duration: number,
-  maxTurns?: number,
+  maxTurnsWanted?: number,
   targets = copyTargetCount(),
 ): number {
   if (effect === $effect`Shadow Affinity`) {
@@ -1010,7 +1010,14 @@ export function effectValue(
     return 3400 * duration; // 70s Mining is 3400 VoA, which will always be higher than the meat% in current climate
   }
 
-  return new Potion($item.none, { duration, effect }).gross(targets, maxTurns);
+  const durationOverride = maxTurnsWanted
+    ? clamp(maxTurnsWanted - haveEffect(effect), 0, duration)
+    : undefined;
+
+  return new Potion($item.none, { duration, effect }).gross(
+    targets,
+    durationOverride,
+  );
 }
 
 export function effectExtenderValue(
