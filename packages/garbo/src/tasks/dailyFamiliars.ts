@@ -4,6 +4,7 @@ import {
   equip,
   familiarEquippedEquipment,
   hippyStoneBroken,
+  mallPrice,
   myPrimestat,
   retrieveItem,
   retrievePrice,
@@ -20,7 +21,6 @@ import {
   get,
   have,
   Robortender,
-  ToyCupidBow,
   withProperty,
 } from "libram";
 import { withStash } from "../clan";
@@ -42,6 +42,7 @@ import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
+import { amuletCoinValue } from "../familiar/lib";
 
 function drivebyValue(): number {
   const targets = copyTargetCount();
@@ -165,9 +166,9 @@ const DailyFamiliarTasks: GarboTask[] = [
   {
     name: "Acquire amulet coin",
     ready: () =>
-      !ToyCupidBow.have() &&
       have($familiar`Cornbeefadon`) &&
-      have($item`box of Familiar Jacks`),
+      have($item`box of Familiar Jacks`) &&
+      amuletCoinValue() >= mallPrice($item`box of Familiar Jacks`),
     completed: () => have($item`amulet coin`),
     do: (): void => {
       use($item`box of Familiar Jacks`);

@@ -164,15 +164,15 @@ export function snapperValue(): number {
 
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
 
+export const amuletCoinValue = () =>
+  baseMeat() * 0.5 * estimatedGarboTurns() +
+  (targettingMeat()
+    ? meatDrop(globalOptions.target) * 0.5 * copyTargetCount()
+    : 0);
+
 export const familiarEquipmentValue = (f: Familiar) => {
   if (f === $familiar`Cornbeefadon` && !have($item`amulet coin`)) {
-    return Math.min(
-      mallPrice($item`box of Familiar Jacks`),
-      baseMeat() * 0.5 * estimatedGarboTurns() +
-        (targettingMeat()
-          ? meatDrop(globalOptions.target) * 0.5 * copyTargetCount()
-          : 0),
-    );
+    return Math.min(mallPrice($item`box of Familiar Jacks`), amuletCoinValue());
   }
 
   return garboValue(familiarEquipment(f));
