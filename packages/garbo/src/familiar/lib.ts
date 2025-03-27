@@ -3,7 +3,6 @@ import {
   Familiar,
   familiarEquipment,
   inebrietyLimit,
-  mallPrice,
   myAdventures,
   myInebriety,
   totalTurnsPlayed,
@@ -164,13 +163,19 @@ export function snapperValue(): number {
 
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
 
-export const amuletCoinValue = () =>
-  baseMeat() * 0.5 * estimatedGarboTurns() +
-  (targettingMeat() ? targetMeat() * 0.5 * copyTargetCount() : 0);
+export const amuletCoinValue = () => {
+  const garboTurns = estimatedGarboTurns();
+  return (
+    baseMeat() * 0.5 * garboTurns +
+    (targettingMeat()
+      ? targetMeat() * 0.5 * (copyTargetCount() - garboTurns)
+      : 0)
+  );
+};
 
 export const familiarEquipmentValue = (f: Familiar) => {
   if (f === $familiar`Cornbeefadon` && !have($item`amulet coin`)) {
-    return Math.min(mallPrice($item`box of Familiar Jacks`), amuletCoinValue());
+    return amuletCoinValue();
   }
 
   return garboValue(familiarEquipment(f));
