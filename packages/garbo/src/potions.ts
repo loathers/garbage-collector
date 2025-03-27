@@ -26,6 +26,7 @@ import {
   print,
   retrievePrice,
   setLocation,
+  toSkill,
   use,
 } from "kolmafia";
 import {
@@ -35,6 +36,7 @@ import {
   $item,
   $items,
   $location,
+  $skill,
   $slot,
   clamp,
   ClosedCircuitPayphone,
@@ -1027,9 +1029,13 @@ export function effectExtenderValue(
   const targets = copyTargetCount();
   const turns = estimatedGarboTurns();
   return (
-    sum(getActiveEffects(), (effect) =>
-      effectValue(effect, duration, turns, targets),
-    ) *
+    sum(getActiveEffects(), (effect) => {
+      const skill = toSkill(effect);
+      if (skill !== $skill`none` && have(skill) && skill.dailylimit === -1) {
+        return 0; // If we have an unlimited skill to cast it, there's no value in extending
+      }
+      return effectValue(effect, duration, turns, targets);
+    }) *
     (maximumNumberOfEffects
       ? Math.min(1, maximumNumberOfEffects / getActiveEffects().length)
       : 1)
