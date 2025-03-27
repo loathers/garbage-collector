@@ -25,6 +25,7 @@ import {
 import { globalOptions } from "../config";
 import { freeFightOutfit, toSpec } from "../outfit";
 import { GarboStrategy, Macro } from "../combat";
+import { effectExtenderValue } from "../potions";
 
 function getRun(): ActionSource {
   return tryFindFreeRunOrBanish(freeRunConstraints()) ?? ltbRun();
@@ -76,7 +77,8 @@ const BuffExtensionTasks: GarboTask[] = [
       sober() &&
       !have($effect`Lucky!`) &&
       questStep("questM16Temple") > 0 &&
-      mallPrice($item`stone wool`) < 3 * get("valueOfAdventure") + 100 && // TODO: Add actual valuation for gaining effects
+      mallPrice($item`stone wool`) <
+        3 * get("valueOfAdventure") + effectExtenderValue(3, 10) && // TODO: Add actual valuation for gaining effects
       !!getRun(),
     completed: () => get("lastTempleAdventures") >= myAscensions(),
     prepare: () => {

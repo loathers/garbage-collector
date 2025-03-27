@@ -1012,3 +1012,19 @@ export function effectValue(
 
   return new Potion($item.none, { duration, effect }).gross(targets, maxTurns);
 }
+
+export function effectExtenderValue(
+  duration: number,
+  maximumNumberOfEffects?: number,
+): number {
+  const targets = copyTargetCount();
+  const turns = estimatedGarboTurns();
+  return (
+    sum(getActiveEffects(), (effect) =>
+      effectValue(effect, duration, turns, targets),
+    ) *
+    (maximumNumberOfEffects
+      ? Math.min(1, maximumNumberOfEffects / getActiveEffects().length)
+      : 1)
+  );
+}
