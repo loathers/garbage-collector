@@ -174,8 +174,8 @@ export const amuletCoinValue = () => {
 };
 
 export const familiarEquipmentValue = (f: Familiar) => {
-  if (f === $familiar`Cornbeefadon` && !have($item`amulet coin`)) {
-    return amuletCoinValue();
+  if (f === $familiar`Cornbeefadon`) {
+    return have($item`amulet coin`) ? 0 : amuletCoinValue();
   }
 
   return garboValue(familiarEquipment(f));
