@@ -1,4 +1,4 @@
-import { Familiar, familiarWeight, holiday, squareRoot } from "kolmafia";
+import { Familiar, holiday, squareRoot } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -138,7 +138,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
 ];
 
 function peaceTurkeyDropChance(): number {
-  return 0.24 + squareRoot(familiarWeight($familiar`Peace Turkey`)) / 100;
+  return 0.24 + squareRoot(totalFamiliarWeight($familiar`Peace Turkey`)) / 100;
 }
 
 export default function getConstantValueFamiliars(
