@@ -29657,7 +29657,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4f3dfafc8817237d9b59eeecaea589ca0ef74652", ")"));
+      (0, import_kolmafia96.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("73e8b1decd871c427cf5a30adb0b1156b7593c48", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia96.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -32931,7 +32931,7 @@ var standardFamiliars = [{
   worksOnFreeRun: true
 }];
 function peaceTurkeyDropChance() {
-  return 0.24 + (0, import_kolmafia104.squareRoot)((0, import_kolmafia104.familiarWeight)($familiar(_templateObject3149 || (_templateObject3149 = _taggedTemplateLiteral92(["Peace Turkey"]))))) / 100;
+  return 0.24 + (0, import_kolmafia104.squareRoot)(totalFamiliarWeight($familiar(_templateObject3149 || (_templateObject3149 = _taggedTemplateLiteral92(["Peace Turkey"]))))) / 100;
 }
 function getConstantValueFamiliars(mode) {
   return standardFamiliars.filter(function(_ref) {
@@ -34164,7 +34164,7 @@ var Potion = /* @__PURE__ */ function() {
     }
   }, {
     key: "familiarWeight",
-    value: function familiarWeight7() {
+    value: function familiarWeight6() {
       var _this$effectValues$fa, _this$effectValues3;
       return (_this$effectValues$fa = (_this$effectValues3 = this.effectValues) === null || _this$effectValues3 === void 0 ? void 0 : _this$effectValues3.famWeight) !== null && _this$effectValues$fa !== void 0 ? _this$effectValues$fa : get2("Familiar Weight", this.effect());
     }
