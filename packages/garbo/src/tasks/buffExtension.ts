@@ -78,7 +78,7 @@ const BuffExtensionTasks: GarboTask[] = [
       !have($effect`Lucky!`) &&
       questStep("questM16Temple") > 0 &&
       mallPrice($item`stone wool`) <
-        3 * get("valueOfAdventure") + effectExtenderValue(3, 10) && // TODO: Add actual valuation for gaining effects
+        3 * get("valueOfAdventure") + effectExtenderValue(3, 10) &&
       !!getRun(),
     completed: () => get("lastTempleAdventures") >= myAscensions(),
     prepare: () => {
