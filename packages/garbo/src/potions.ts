@@ -284,7 +284,7 @@ export class Potion {
 
   gross(targets: number, maxTurns?: number): number {
     const bonusMeat = this.bonusMeat();
-    const duration = Math.min(this.effectDuration(), maxTurns ?? Infinity);
+    const duration = Math.max(this.effectDuration(), maxTurns ?? 0);
     // Number of meat targets this will actually be in effect for.
     const targetsApplied = Math.max(
       Math.min(duration, targets - haveEffect(this.effect())),
