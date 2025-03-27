@@ -284,9 +284,18 @@ export class Potion {
     return new Potion(item).bonusMeat();
   }
 
+  /**
+   * @param targets The total number of meat targets we will be encountering
+   * @param durationOverride A number lower than the normal duration of the potion to override the potion duration
+   * @returns The amount of meat we expect to gain from having the effect a potion grants
+   */
   gross(targets: number, durationOverride?: number): number {
     const bonusMeat = this.bonusMeat();
-    const duration = Math.max(this.effectDuration(), durationOverride ?? 0);
+    const duration = clamp(
+      durationOverride ?? Infinity,
+      this.effectDuration(),
+      0,
+    );
     // Number of meat targets this will actually be in effect for.
     const targetsApplied = Math.max(
       Math.min(duration, targets - haveEffect(this.effect())),
