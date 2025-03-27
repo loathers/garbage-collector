@@ -4,7 +4,6 @@ import {
   familiarEquipment,
   inebrietyLimit,
   mallPrice,
-  meatDrop,
   myAdventures,
   myInebriety,
   totalTurnsPlayed,
@@ -26,6 +25,7 @@ import { globalOptions } from "../config";
 import {
   baseMeat,
   ESTIMATED_OVERDRUNK_TURNS,
+  targetMeat,
   targettingMeat,
   turnsToNC,
 } from "../lib";
@@ -166,9 +166,7 @@ export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
 
 export const amuletCoinValue = () =>
   baseMeat() * 0.5 * estimatedGarboTurns() +
-  (targettingMeat()
-    ? meatDrop(globalOptions.target) * 0.5 * copyTargetCount()
-    : 0);
+  (targettingMeat() ? targetMeat() * 0.5 * copyTargetCount() : 0);
 
 export const familiarEquipmentValue = (f: Familiar) => {
   if (f === $familiar`Cornbeefadon` && !have($item`amulet coin`)) {
