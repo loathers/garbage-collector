@@ -39,7 +39,7 @@ export function sandwormFamiliar(): Familiar {
     const highestFairyMult = findFairyMultiplier(
       maxBy(viableFairies, (f) =>
         f === $familiar`Jill-of-All-Trades` && have($item`toy Cupid bow`)
-          ? findFairyMultiplier(f) / 1.5
+          ? 1 // Ignore LED candle if we have TCB
           : findFairyMultiplier(f),
       ),
     );
