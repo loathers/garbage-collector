@@ -17,7 +17,6 @@ import {
   $effect,
   $effects,
   $item,
-  $items,
   $skill,
   AsdonMartin,
   get,
@@ -27,11 +26,9 @@ import {
 } from "libram";
 import {
   baseMeat as baseMeatFunc,
-  burnLibrams,
   safeRestoreMpTarget,
   setChoice,
 } from "./lib";
-import { withStash } from "./clan";
 import { usingPurse } from "./outfit";
 
 Mood.setDefaultOptions({
@@ -204,28 +201,6 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   }
 
   return mood;
-}
-
-/**
- * Use buff extenders like PYEC and Bag o Tricks
- */
-export function useBuffExtenders(): void {
-  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
-    if (
-      have($item`Platinum Yendorian Express Card`) &&
-      !get("expressCardUsed")
-    ) {
-      burnLibrams();
-      use($item`Platinum Yendorian Express Card`);
-    }
-    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
-      use($item`Bag o' Tricks`);
-    }
-  });
-  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
-    burnLibrams();
-    use($item`License to Chill`);
-  }
 }
 
 const damageEffects = Effect.all().filter((x) =>

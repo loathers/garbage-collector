@@ -1,4 +1,4 @@
-import { Familiar, familiarWeight, holiday, squareRoot } from "kolmafia";
+import { Familiar, holiday, squareRoot } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -6,18 +6,15 @@ import {
   $items,
   clamp,
   findLeprechaunMultiplier,
-  getActiveEffects,
   getModifier,
   have,
   Robortender,
-  sum,
   totalFamiliarWeight,
 } from "libram";
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { FamiliarMode, GeneralFamiliar } from "./lib";
-import { Potion } from "../potions";
-import { copyTargetCount } from "../target";
+import { effectExtenderValue } from "../potions";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -91,17 +88,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Unspeakachu`,
     value: () => {
-      const targets = copyTargetCount();
-      return (
-        sum(getActiveEffects(), (effect) =>
-          new Potion($item.none, {
-            effect,
-            duration: 5,
-          }).gross(targets),
-        ) *
-        0.5 *
-        0.05
-      );
+      return effectExtenderValue(5) * 0.5 * 0.05;
     },
   },
   {
@@ -138,7 +125,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
 ];
 
 function peaceTurkeyDropChance(): number {
-  return 0.24 + squareRoot(familiarWeight($familiar`Peace Turkey`)) / 100;
+  return 0.24 + squareRoot(totalFamiliarWeight($familiar`Peace Turkey`)) / 100;
 }
 
 export default function getConstantValueFamiliars(

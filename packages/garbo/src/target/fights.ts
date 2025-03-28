@@ -15,7 +15,6 @@ import {
   retrieveItem,
   runChoice,
   runCombat,
-  toInt,
   use,
   userConfirm,
   useSkill,
@@ -39,6 +38,7 @@ import {
   CombatLoversLocket,
   Counter,
   CrystalBall,
+  directlyUse,
   get,
   getBanishedMonsters,
   have,
@@ -73,6 +73,7 @@ import {
   gregReady,
   possibleGregCrystalBall,
   shouldAugustCast,
+  totalGregCharges,
 } from "../resources";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
@@ -357,7 +358,7 @@ export const copySources = [
       $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
         (location) =>
           location.combatQueue.includes(globalOptions.target.name) ||
-          get("beGregariousCharges") > 0,
+          totalGregCharges(true),
       )
         ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
@@ -365,7 +366,7 @@ export const copySources = [
       withMacro(
         options.macro,
         () => {
-          visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
+          directlyUse($item`Time-Spinner`);
           runChoice(1);
           visitUrl(
             `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
