@@ -18,7 +18,7 @@ import { menu } from "./freeFightFamiliar";
 
 let bestNonCheerleaderFairy: Familiar;
 
-export function bestFairy(): Familiar {
+export function sandwormFamiliar(): Familiar {
   if (
     have($familiar`Trick-or-Treating Tot`) &&
     have($item`li'l ninja costume`)

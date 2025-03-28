@@ -6,6 +6,6 @@ export {
 export { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "./meatFamiliar";
 export { barfFamiliar } from "./barfFamiliar";
 export { freeFightFamiliar } from "./freeFightFamiliar";
-export { bestFairy } from "./itemFamiliar";
+export { sandwormFamiliar } from "./sandwormFamiliar";
 export type { FamiliarMenuOptions } from "./freeFightFamiliar";
 export { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";

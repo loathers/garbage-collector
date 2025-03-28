@@ -38,7 +38,7 @@ import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { GarboFreeFightTask } from "./freeFight";
-import { bestFairy } from "../familiar";
+import { sandwormFamiliar } from "../familiar";
 import { sober } from "../lib";
 
 function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
@@ -56,7 +56,7 @@ function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   if (have($item`Lil' Doctor™ bag`) && get("_otoscopeUsed") < 3) {
     copy.equip?.push($item`Lil' Doctor™ bag`);
   }
-  const familiar = bestFairy();
+  const familiar = sandwormFamiliar();
   copy.bonuses ??= new Map();
   copy.familiar = familiar;
   if (familiar === $familiar`Reagnimated Gnome`) {
