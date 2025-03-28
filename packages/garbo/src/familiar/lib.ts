@@ -24,8 +24,8 @@ import { globalOptions } from "../config";
 import {
   baseMeat,
   ESTIMATED_OVERDRUNK_TURNS,
-  targetMeat,
   targetingMeat,
+  targetMeat,
   turnsToNC,
 } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
