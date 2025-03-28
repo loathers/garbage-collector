@@ -23,14 +23,11 @@ import {
   myClass,
   myDaycount,
   myHash,
-  myHp,
   myInebriety,
-  myMaxhp,
   myPath,
   myPrimestat,
   print,
   putCloset,
-  restoreHp,
   retrieveItem,
   runChoice,
   toSlot,
@@ -47,7 +44,6 @@ import {
   $items,
   $location,
   $monster,
-  $skill,
   $slot,
   BeachComb,
   Clan,
@@ -63,7 +59,6 @@ import {
   SongBoom,
   SourceTerminal,
   sumNumbers,
-  uneffect,
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
@@ -829,23 +824,6 @@ const DailyTasks: GarboTask[] = [
         (x) => <AcquireItem>{ item: x },
       ),
     outfit: { modifier: "disco style" },
-    spendsTurn: false,
-  },
-  {
-    name: "Free Volcano Mining",
-    ready: () => realmAvailable("hot") && have($skill`Unaccompanied Miner`),
-    completed: () => get("_unaccompaniedMinerUsed") >= 5,
-    do: () =>
-      cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`),
-    prepare: () => restoreHp(myMaxhp() * 0.9),
-    post: (): void => {
-      if (have($effect`Beaten Up`)) {
-        uneffect($effect`Beaten Up`);
-      }
-      if (myHp() < myMaxhp() * 0.5) {
-        restoreHp(myMaxhp() * 0.9);
-      }
-    },
     spendsTurn: false,
   },
 ];

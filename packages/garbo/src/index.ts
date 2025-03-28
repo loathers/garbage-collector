@@ -76,7 +76,7 @@ import {
   userConfirmDialog,
   valueDrops,
 } from "./lib";
-import { meatMood, useBuffExtenders } from "./mood";
+import { meatMood } from "./mood";
 import { potionSetup } from "./potions";
 import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
@@ -91,6 +91,10 @@ import {
   runSafeGarboQuests,
   SetupTargetCopyQuest,
 } from "./tasks";
+import {
+  BuffExtensionQuest,
+  PostBuffExtensionQuest,
+} from "./tasks/buffExtension";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -587,7 +591,7 @@ export function main(argString = ""): void {
           potionSetup(false);
           maximize("MP", false);
           meatMood().execute(estimatedGarboTurns());
-          useBuffExtenders();
+          runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
           try {
             runGarboQuests([PostQuest(), ...BarfTurnQuests]);
 
