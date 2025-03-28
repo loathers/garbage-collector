@@ -21,7 +21,13 @@ import {
   ToyCupidBow,
 } from "libram";
 import { globalOptions } from "../config";
-import { baseMeat, ESTIMATED_OVERDRUNK_TURNS, turnsToNC } from "../lib";
+import {
+  baseMeat,
+  ESTIMATED_OVERDRUNK_TURNS,
+  targetMeat,
+  targettingMeat,
+  turnsToNC,
+} from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
@@ -157,8 +163,23 @@ export function snapperValue(): number {
 
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
 
-export const familiarEquipmentValue = (f: Familiar) =>
-  garboValue(familiarEquipment(f));
+export const amuletCoinValue = () => {
+  const garboTurns = estimatedGarboTurns();
+  return (
+    baseMeat() * 0.5 * garboTurns +
+    (targettingMeat()
+      ? targetMeat() * 0.5 * (copyTargetCount() - garboTurns)
+      : 0)
+  );
+};
+
+export const familiarEquipmentValue = (f: Familiar) => {
+  if (f === $familiar`Cornbeefadon`) {
+    return have($item`amulet coin`) ? 0 : amuletCoinValue();
+  }
+
+  return garboValue(familiarEquipment(f));
+};
 
 export function tcbValue(
   familiar: Familiar,

@@ -24,6 +24,7 @@ import {
   itemDropsArray,
   lastMonster,
   Location,
+  meatDrop,
   meatDropModifier,
   Monster,
   mpCost,
@@ -164,9 +165,7 @@ export const songboomMeat = () =>
 
 // all tourists have a basemeat of 250
 export const baseMeat = () => 250 + songboomMeat();
-export const targetMeat = () =>
-  (globalOptions.target.minMeat + globalOptions.target.maxMeat) / 2 +
-  songboomMeat();
+export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {
   if (globalOptions.target.attributes.includes("FREE")) return 0;

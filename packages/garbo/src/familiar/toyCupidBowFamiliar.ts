@@ -7,7 +7,6 @@ import {
   have,
   ToyCupidBow,
 } from "libram";
-import { garboValue } from "../garboValue";
 import {
   familiarEquipmentValue,
   GeneralFamiliar,
@@ -34,7 +33,7 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
       {
         familiar: current,
         expectedValue:
-          garboValue(familiarEquipment(current)) / ToyCupidBow.turnsLeft(),
+          familiarEquipmentValue(current) / ToyCupidBow.turnsLeft(),
         worksOnFreeRun: true,
         limit: "cupid",
         leprechaunMultiplier: findLeprechaunMultiplier(current),
