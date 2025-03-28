@@ -12,8 +12,7 @@ import {
   Tuple,
 } from "libram";
 import { garboValue } from "../garboValue";
-import { copyTargetCount } from "../target";
-import { Potion } from "../potions";
+import { effectValue } from "../potions";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { felizValue } from "../lib";
 import { GarboTask } from "../tasks/engine";
@@ -23,10 +22,7 @@ const MAYAM_RING_VALUES = {
   yam1: () => garboValue($item`yam`),
   sword: () => 1,
   vessel: () => 2,
-  eye: () =>
-    new Potion($item.none, { effect: $effect`Big Eyes`, duration: 100 }).gross(
-      copyTargetCount(),
-    ),
+  eye: () => effectValue($effect`Big Eyes`, 100),
   fur: () =>
     Math.max(
       0,
@@ -60,9 +56,7 @@ function valueResonance(combination: MayamCalendar.CombinationString): number {
     if (result === $item`yamtility belt`) return 0; // yamtilityValue();
     return garboValue(result);
   }
-  return new Potion($item.none, { effect: result, duration: 30 }).gross(
-    copyTargetCount(),
-  );
+  return effectValue(result, 30);
 }
 
 function valueCombination(
@@ -149,23 +143,25 @@ function getBestMayamCombinations(): MayamCalendar.CombinationString[] {
   );
 }
 
-export const mayamCalendarSummon: GarboTask = {
-  name: "Mayam Summons",
-  completed: () => MayamCalendar.remainingUses() === 0,
-  ready: () => MayamCalendar.have(),
-  do: () => {
-    const startingFamiliar = myFamiliar();
-    for (const combination of getBestMayamCombinations()) {
-      if (combination.includes("fur")) {
-        const bestFamiliar = maxBy(
-          getExperienceFamiliars("free"),
-          "expectedValue",
-        ).familiar;
-        useFamiliar(bestFamiliar);
+export function mayamCalendarSummon(): GarboTask {
+  return {
+    name: "Mayam Summons",
+    completed: () => MayamCalendar.remainingUses() === 0,
+    ready: () => MayamCalendar.have(),
+    do: () => {
+      const startingFamiliar = myFamiliar();
+      for (const combination of getBestMayamCombinations()) {
+        if (combination.includes("fur")) {
+          const bestFamiliar = maxBy(
+            getExperienceFamiliars("free"),
+            "expectedValue",
+          ).familiar;
+          useFamiliar(bestFamiliar);
+        }
+        MayamCalendar.submit(combination);
       }
-      MayamCalendar.submit(combination);
-    }
-    useFamiliar(startingFamiliar);
-  },
-  spendsTurn: false,
-};
+      useFamiliar(startingFamiliar);
+    },
+    spendsTurn: false,
+  };
+}

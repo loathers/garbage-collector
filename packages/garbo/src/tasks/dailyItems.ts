@@ -62,6 +62,7 @@ import {
   candyMapDailyTasks,
   doingGregFight,
   getBestAprilInstruments,
+  leprecondoTask,
   mayamCalendarSummon,
 } from "../resources";
 import { meatFamiliar } from "../familiar";
@@ -158,10 +159,10 @@ function bestDevilerCandy(): Item {
   // These are notrade items that have an autosell value that we don't mind using if they are the cheapest
   const safeUntradeableCandies = $items`Comet Pop, black candy heart, peanut brittle shield`;
   // Find the best candy from inventory, accounting for value of autosell when mall min
-  const inventoryCandies = Item.all().filter((i) =>
-    i.candy && have(i) && !i.tradeable
-      ? safeUntradeableCandies.includes(i)
-      : true,
+  const inventoryCandies = Item.all().filter(
+    (i) =>
+      i.candy &&
+      (have(i) && !i.tradeable ? safeUntradeableCandies.includes(i) : true),
   );
   const bestInventoryCandy = (() => {
     if (inventoryCandies.length === 0) return null;
@@ -708,7 +709,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
     spendsTurn: false,
   },
-  mayamCalendarSummon,
+  mayamCalendarSummon(),
   {
     name: "Devil Cheapest Candy",
     ready: () => have($item`candy egg deviler`), // TODO: Support guild stash
@@ -732,6 +733,7 @@ const DailyItemTasks: GarboTask[] = [
     limit: { skip: 3 },
     spendsTurn: false,
   },
+  leprecondoTask(),
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {

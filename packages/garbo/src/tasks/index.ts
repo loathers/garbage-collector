@@ -1,5 +1,6 @@
 export { AscendingQuest } from "./ascending";
 export { BarfTurnQuests } from "./barfTurn";
+export { CockroachSetup } from "./cockroach";
 export { DailyQuest } from "./daily";
 export { DailyFamiliarsQuest } from "./dailyFamiliars";
 export { DailyItemsQuest } from "./dailyItems";

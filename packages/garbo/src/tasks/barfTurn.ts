@@ -72,7 +72,7 @@ import {
   MEAT_TARGET_MULTIPLIER,
   romanticMonsterImpossible,
   sober,
-  targettingMeat,
+  targetingMeat,
 } from "../lib";
 import {
   barfOutfit,
@@ -92,6 +92,7 @@ import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
   completeBarfQuest,
+  mayamCalendarSummon,
   minimumMimicExperience,
   shouldFillLatte,
   tryFillLatte,
@@ -181,7 +182,7 @@ function shouldGoUnderwater(): boolean {
   // TODO: if you didn't digitize a target, this equation may not be right
   if (
     mallPrice($item`pulled green taffy`) >
-    (targettingMeat()
+    (targetingMeat()
       ? MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")
       : get("valueOfAdventure"))
   ) {
@@ -658,6 +659,8 @@ const BarfTurnTasks: GarboTask[] = [
             : [],
         back: $item`protonic accelerator pack`,
       }),
+    choices: () =>
+      wanderer().getChoices(get("ghostLocation") ?? $location.none),
     combat: new GarboStrategy(() => Macro.ghostBustin()),
     spendsTurn: false,
     // Ghost fights are currently hard
@@ -1095,8 +1098,14 @@ export const BarfTurnQuest: Quest<GarboTask> = {
   completed: () => !canContinue(),
 };
 
+export const DailyExtrasQuest: Quest<GarboTask> = {
+  name: "Daily Extras",
+  tasks: [mayamCalendarSummon()],
+};
+
 export const BarfTurnQuests = [
   TurnGenQuest,
+  DailyExtrasQuest,
   WandererQuest,
   NonBarfTurnQuest,
   BarfTurnQuest,

@@ -26,6 +26,7 @@ import {
   print,
   retrievePrice,
   setLocation,
+  toSkill,
   use,
 } from "kolmafia";
 import {
@@ -35,6 +36,7 @@ import {
   $item,
   $items,
   $location,
+  $skill,
   $slot,
   clamp,
   ClosedCircuitPayphone,
@@ -47,6 +49,7 @@ import {
   isSong,
   maxBy,
   Mood,
+  realmAvailable,
   sum,
   sumNumbers,
   withChoice,
@@ -57,10 +60,11 @@ import {
   baseMeat,
   bestShadowRift,
   HIGHLIGHT,
+  improvesAStat,
   pillkeeperOpportunityCost,
+  targetingMeat,
   targetMeat,
   targetMeatDifferential,
-  targettingMeat,
   turnsToNC,
   withLocation,
 } from "./lib";
@@ -179,6 +183,13 @@ export interface PotionOptions {
   }>;
 }
 
+export const VALUABLE_MODIFIERS = [
+  "Meat Drop",
+  "Familiar Weight",
+  "Smithsness",
+  "Item Drop",
+] as const;
+
 export class Potion {
   potion: Item;
   providesDoubleDuration?: boolean;
@@ -281,9 +292,18 @@ export class Potion {
     return new Potion(item).bonusMeat();
   }
 
-  gross(targets: number, maxTurns?: number): number {
+  /**
+   * @param targets The total number of meat targets we will be encountering
+   * @param durationOverride A number lower than the normal duration of the potion to override the potion duration
+   * @returns The amount of meat we expect to gain from having the effect a potion grants
+   */
+  gross(targets: number, durationOverride?: number): number {
     const bonusMeat = this.bonusMeat();
-    const duration = Math.max(this.effectDuration(), maxTurns ?? 0);
+    const duration = clamp(
+      durationOverride ?? Infinity,
+      this.effectDuration(),
+      0,
+    );
     // Number of meat targets this will actually be in effect for.
     const targetsApplied = Math.max(
       Math.min(duration, targets - haveEffect(this.effect())),
@@ -671,6 +691,12 @@ export const farmingPotions = [
   ...(have($item`closed-circuit pay phone`) ? [rufusPotion] : []),
 ];
 
+export function getFarmingPotions(avoidStats = false): Potion[] {
+  return avoidStats
+    ? farmingPotions.filter((potion) => !improvesAStat(potion.effect()))
+    : farmingPotions;
+}
+
 export function doublingPotions(targets: number): Potion[] {
   return farmingPotions
     .filter(
@@ -704,12 +730,12 @@ export function potionSetupCompleted(): boolean {
  * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer targets. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
  * @param targetsOnly Are we valuing the potions only for meat targets (noBarf)?
  */
-export function potionSetup(targetsOnly: boolean): void {
+export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
   castAugustScepterBuffs();
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
-    const targets = targettingMeat() ? copyTargetCount() : 0;
+    const targets = targetingMeat() ? copyTargetCount() : 0;
 
     if (
       have($item`Eight Days a Week Pill Keeper`) &&
@@ -739,7 +765,7 @@ export function potionSetup(targetsOnly: boolean): void {
     }
 
     // Only test potions which are reasonably close to being profitable using historical price.
-    const testPotions = farmingPotions.filter(
+    const testPotions = getFarmingPotions(avoidStats).filter(
       (potion) => potion.gross(targets) / potion.price(true) > 0.5,
     );
     const nonWishTestPotions = testPotions.filter(
@@ -792,7 +818,7 @@ export function potionSetup(targetsOnly: boolean): void {
       }
     }
 
-    variableMeatPotionsSetup(0, targets);
+    variableMeatPotionsSetup(0, targets, avoidStats);
     completedPotionSetup = true;
   });
 }
@@ -962,9 +988,12 @@ class VariableMeatPotion {
 export function variableMeatPotionsSetup(
   yachtzees: number,
   targets: number,
+  avoidStats = false,
 ): void {
   const potions = [
-    new VariableMeatPotion($item`love song of sugary cuteness`, 20, 2),
+    ...(avoidStats
+      ? []
+      : [new VariableMeatPotion($item`love song of sugary cuteness`, 20, 2)]),
     new VariableMeatPotion($item`pulled yellow taffy`, 50, 2),
     ...(globalOptions.prefs.candydish
       ? [new VariableMeatPotion($item`porcelain candy dish`, 500, 1)]
@@ -990,4 +1019,51 @@ export function variableMeatPotionsSetup(
       }
     }
   }
+}
+
+/**
+ * WARNING: Expensive
+ */
+export function effectValue(
+  effect: Effect,
+  duration: number,
+  maxTurnsWanted?: number,
+  targets = copyTargetCount(),
+): number {
+  if (effect === $effect`Shadow Affinity`) {
+    return globalOptions.prefs.valueOfFreeFight * duration; // Each turn of Shadow Affinity gives us one free fight
+  }
+
+  if (effect === $effect`Loded` && realmAvailable("hot")) {
+    return 3400 * duration; // 70s Mining is 3400 VoA, which will always be higher than the meat% in current climate
+  }
+
+  const durationOverride = maxTurnsWanted
+    ? clamp(maxTurnsWanted - haveEffect(effect), 0, duration)
+    : undefined;
+
+  return new Potion($item.none, { duration, effect }).gross(
+    targets,
+    durationOverride,
+  );
+}
+
+export function effectExtenderValue(
+  duration: number,
+  maximumNumberOfEffects?: number,
+): number {
+  const targets = copyTargetCount();
+  const turns = estimatedGarboTurns();
+  return (
+    sum(getActiveEffects(), (effect) => {
+      const skill = toSkill(effect);
+      if (skill !== $skill`none` && have(skill) && skill.dailylimit === -1) {
+        return 0; // If we have an unlimited skill to cast it, there's no value in extending
+      }
+      return effectValue(effect, duration, turns, targets);
+    }) *
+    (maximumNumberOfEffects
+      ? Math.min(1, maximumNumberOfEffects / getActiveEffects().length)
+      : 1)
+  );
 }

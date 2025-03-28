@@ -1,6 +1,7 @@
 import { Familiar, familiarEquipment } from "kolmafia";
 import {
   $familiar,
+  $familiars,
   findLeprechaunMultiplier,
   get,
   have,
@@ -16,16 +17,19 @@ import { estimatedGarboTurns } from "../turns";
 import { globalOptions } from "../config";
 import { propertyManager } from "../lib";
 
+// Familiars that should never be introduced as a surprise
+const NO_TCB_FAMILIARS = $familiars`Mini-Hipster, Artistic Goth Kid`;
 export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
   if (!ToyCupidBow.have()) return [];
 
-  const usedTcbFamiliars = getUsedTcbFamiliars();
+  const skipFamiliars = getUsedTcbFamiliars();
+  for (const familiar of NO_TCB_FAMILIARS) skipFamiliars.add(familiar);
 
   // If there aren't enough turns to run someone to completion, only check for the current cupid familiar
   if (estimatedGarboTurns() < ToyCupidBow.turnsLeft()) {
     const current = ToyCupidBow.currentFamiliar();
     if (!current) return [];
-    if (usedTcbFamiliars.has(current)) return [];
+    if (skipFamiliars.has(current)) return [];
     return [
       {
         familiar: current,
@@ -45,9 +49,13 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
   >();
   for (const familiar of Familiar.all()) {
     if (!have(familiar)) continue;
-    if (usedTcbFamiliars.has(familiar)) continue;
+    if (skipFamiliars.has(familiar)) continue;
     if (!familiarEquipment(familiar).tradeable) continue;
-    if (familiar === $familiar`Mini-Adventurer` && !get("miniAdvClass")) {
+    if (
+      familiar === $familiar`Mini-Adventurer` &&
+      !get("miniAdvClass") &&
+      !get("choiceAdventure768")
+    ) {
       if (globalOptions.ascend) {
         propertyManager.setChoice(768, 4);
       } // Littlest identity crisis, sauceror

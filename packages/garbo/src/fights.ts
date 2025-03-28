@@ -159,13 +159,13 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  targetingMeat,
   targetMeat,
-  targettingMeat,
   tryFindFreeRunOrBanish,
   userConfirmDialog,
   valueDrops,
 } from "./lib";
-import { freeFightMood, meatMood, useBuffExtenders } from "./mood";
+import { freeFightMood, meatMood } from "./mood";
 import {
   freeFightOutfit,
   magnifyingGlass,
@@ -191,6 +191,10 @@ import {
   possibleFreeGiantSandwormQuestTentacleFights,
 } from "./tasks/freeGiantSandworm";
 import { CopyTargetFight } from "./target/fights";
+import {
+  BuffExtensionQuest,
+  PostBuffExtensionQuest,
+} from "./tasks/buffExtension";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -251,25 +255,8 @@ function meatTargetSetup() {
   meatMood(true, targetMeat()).execute(copyTargetCount());
   safeRestore();
   freeFightMood().execute(50);
-  useBuffExtenders();
+  runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
   burnLibrams(400);
-  if (
-    globalOptions.ascend &&
-    questStep("questM16Temple") > 0 &&
-    get("lastTempleAdventures") < myAscensions() &&
-    acquire(1, $item`stone wool`, 3 * get("valueOfAdventure") + 100, false) > 0
-  ) {
-    ensureEffect($effect`Stone-Faced`);
-    setChoice(582, 1);
-    setChoice(579, 3);
-    while (get("lastTempleAdventures") < myAscensions()) {
-      const run = tryFindFreeRunOrBanish(freeRunConstraints()) ?? ltbRun();
-      if (!run) break;
-      run.constraints.preparation?.();
-      freeFightOutfit(toSpec(run)).dress();
-      garboAdventure($location`The Hidden Temple`, run.macro);
-    }
-  }
 
   bathroomFinance(copyTargetCount());
 
@@ -430,7 +417,7 @@ export function dailyFights(): void {
       if (have($familiar`Pocket Professor`)) {
         const potentialPocketProfessorLectures = [
           {
-            shouldDo: targettingMeat(),
+            shouldDo: targetingMeat(),
             property: "_garbo_meatChain",
             macro: firstChainMacro,
             goalMaximize: (spec: OutfitSpec) => meatTargetOutfit(spec).dress(),
@@ -1860,6 +1847,7 @@ function doGhost() {
   }
   const ghostLocation = get("ghostLocation");
   if (!ghostLocation) return;
+  propertyManager.setChoices(wanderer().getChoices(ghostLocation));
   freeFightOutfit({ equip: $items`protonic accelerator pack` }).dress();
   let currentTurncount;
   do {

@@ -76,8 +76,8 @@ import {
   arrayEquals,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
+  targetingMeat,
   targetMeat,
-  targettingMeat,
   userConfirmDialog,
 } from "./lib";
 import { shrugBadEffects } from "./mood";
@@ -602,7 +602,7 @@ function gregariousCount(): {
 }
 
 function copiers(): MenuItem<Note>[] {
-  const targetDifferential = targettingMeat()
+  const targetDifferential = targetingMeat()
     ? MEAT_TARGET_MULTIPLIER() * MPA
     : 0;
   const { expectedGregariousFights, marginalGregariousFights } =
@@ -843,7 +843,7 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseTargets = targettingMeat() ? copyTargetCount() : 0;
+  const baseTargets = targetingMeat() ? copyTargetCount() : 0;
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -877,6 +877,7 @@ export function computeDiet(): {
   pantsgiving: () => Diet<Note>;
   sweatpants: () => Diet<Note>;
 } {
+  print("Calculating diet, please wait...", HIGHLIGHT);
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
   const orEmpty = (diet: Diet<Note>) =>
@@ -1248,10 +1249,6 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   }
 }
 
-let completedDiet = globalOptions.nodiet;
-export function dietCompleted(): boolean {
-  return completedDiet;
-}
 export function runDiet(): void {
   withVIPClan(() => {
     if (myFamiliar() === $familiar`Stooper`) {
@@ -1303,5 +1300,5 @@ export function runDiet(): void {
       shrugBadEffects();
     }
   });
-  completedDiet = true;
+  globalOptions.dietCompleted = true;
 }
