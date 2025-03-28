@@ -72,7 +72,7 @@ import {
   MEAT_TARGET_MULTIPLIER,
   romanticMonsterImpossible,
   sober,
-  targettingMeat,
+  targetingMeat,
 } from "../lib";
 import {
   barfOutfit,
@@ -182,7 +182,7 @@ function shouldGoUnderwater(): boolean {
   // TODO: if you didn't digitize a target, this equation may not be right
   if (
     mallPrice($item`pulled green taffy`) >
-    (targettingMeat()
+    (targetingMeat()
       ? MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")
       : get("valueOfAdventure"))
   ) {

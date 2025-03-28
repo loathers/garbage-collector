@@ -975,7 +975,7 @@ export const emergencyChainStarters = [
   new CopyTargetFight(
     "11-leaf clover (untapped potential)",
     () => {
-      // We don't want to clover if we're not targetting an embezzler, so bail early
+      // We don't want to clover if we're not targeting an embezzler, so bail early
       if (globalOptions.target !== $monster`Knob Goblin Embezzler`) {
         return false;
       }

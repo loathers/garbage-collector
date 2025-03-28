@@ -56,6 +56,7 @@ import {
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
   unequip,
+  withProperty,
 } from "libram";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { globalOptions, isQuickGear } from "./config";
@@ -83,8 +84,11 @@ import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
 import {
   BarfTurnQuests,
+  CockroachSetup,
+  DailyFamiliarsQuest,
   PostQuest,
   runGarboQuests,
+  runSafeGarboQuests,
   SetupTargetCopyQuest,
 } from "./tasks";
 import {
@@ -529,6 +533,18 @@ export function main(argString = ""): void {
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {
+        // Prepare pirate realm if our copy target is cockroach
+        // How do we handle if garbo was started without enough turns left without dieting to prep?
+        if (
+          globalOptions.target === $monster`cockroach` &&
+          !globalOptions.simdiet
+        ) {
+          if (!globalOptions.nodiet) nonOrganAdventures();
+          runSafeGarboQuests([DailyFamiliarsQuest]); // Prep robortender ahead of time in case it's a giant crab
+          withProperty("removeMalignantEffects", false, () =>
+            runGarboQuests([CockroachSetup]),
+          );
+        }
         // 0. diet stuff.
         if (
           globalOptions.nodiet ||

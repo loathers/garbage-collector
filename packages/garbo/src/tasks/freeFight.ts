@@ -216,7 +216,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     completed: () => get("questPAGhost") === "unstarted",
     choices: () =>
       wanderer().getChoices(get("ghostLocation") ?? $location.none),
-    do: () => get("ghostLocation"),
+    do: () => get("ghostLocation") ?? $location.none,
     combat: new GarboStrategy(() => Macro.ghostBustin()),
     outfit: () => freeFightOutfit({ back: $item`protonic accelerator pack` }),
     tentacle: true,
@@ -376,6 +376,8 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           back: $items`unwrapped knock-off retro superhero cape`,
           modes: { retrocape: ["robot", "kiss"] },
           avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
+          modifier:
+            numericModifier("Monster Level") >= 50 ? "-Monster Level" : [], // Above 50 ML, monsters resist stuns.
         },
         { familiarOptions: { canChooseMacro: false } },
       ),

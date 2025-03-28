@@ -64,7 +64,7 @@ import {
   isStrongScaler,
   maxPassiveDamage,
   monsterManuelAvailable,
-  targettingMeat,
+  targetingMeat,
 } from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
 import { copyTargetCount } from "./target";
@@ -876,7 +876,7 @@ function customizeMacro<M extends StrictMacro>(
         haveEquipped($item`backup camera`) &&
           get("_backUpUses") < 11 &&
           get("lastCopyableMonster") === globalOptions.target &&
-          (!targettingMeat() || myFamiliar() === meatFamiliar()),
+          (!targetingMeat() || myFamiliar() === meatFamiliar()),
         Macro.skill($skill`Back-Up to your Last Enemy`).step(macro),
         Macro.basicCombat(),
       ),
