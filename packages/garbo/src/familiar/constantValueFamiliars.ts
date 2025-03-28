@@ -6,18 +6,15 @@ import {
   $items,
   clamp,
   findLeprechaunMultiplier,
-  getActiveEffects,
   getModifier,
   have,
   Robortender,
-  sum,
   totalFamiliarWeight,
 } from "libram";
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { FamiliarMode, GeneralFamiliar } from "./lib";
-import { Potion } from "../potions";
-import { copyTargetCount } from "../target";
+import { effectExtenderValue } from "../potions";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -91,17 +88,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Unspeakachu`,
     value: () => {
-      const targets = copyTargetCount();
-      return (
-        sum(getActiveEffects(), (effect) =>
-          new Potion($item.none, {
-            effect,
-            duration: 5,
-          }).gross(targets),
-        ) *
-        0.5 *
-        0.05
-      );
+      return effectExtenderValue(5) * 0.5 * 0.05;
     },
   },
   {

@@ -26,6 +26,7 @@ import {
   print,
   retrievePrice,
   setLocation,
+  toSkill,
   use,
 } from "kolmafia";
 import {
@@ -35,6 +36,7 @@ import {
   $item,
   $items,
   $location,
+  $skill,
   $slot,
   clamp,
   ClosedCircuitPayphone,
@@ -47,6 +49,7 @@ import {
   isSong,
   maxBy,
   Mood,
+  realmAvailable,
   sum,
   sumNumbers,
   withChoice,
@@ -281,9 +284,18 @@ export class Potion {
     return new Potion(item).bonusMeat();
   }
 
-  gross(targets: number, maxTurns?: number): number {
+  /**
+   * @param targets The total number of meat targets we will be encountering
+   * @param durationOverride A number lower than the normal duration of the potion to override the potion duration
+   * @returns The amount of meat we expect to gain from having the effect a potion grants
+   */
+  gross(targets: number, durationOverride?: number): number {
     const bonusMeat = this.bonusMeat();
-    const duration = Math.max(this.effectDuration(), maxTurns ?? 0);
+    const duration = clamp(
+      durationOverride ?? Infinity,
+      this.effectDuration(),
+      0,
+    );
     // Number of meat targets this will actually be in effect for.
     const targetsApplied = Math.max(
       Math.min(duration, targets - haveEffect(this.effect())),
@@ -998,10 +1010,43 @@ export function variableMeatPotionsSetup(
 export function effectValue(
   effect: Effect,
   duration: number,
-  maxTurns?: number,
+  maxTurnsWanted?: number,
+  targets = copyTargetCount(),
 ): number {
+  if (effect === $effect`Shadow Affinity`) {
+    return globalOptions.prefs.valueOfFreeFight * duration; // Each turn of Shadow Affinity gives us one free fight
+  }
+
+  if (effect === $effect`Loded` && realmAvailable("hot")) {
+    return 3400 * duration; // 70s Mining is 3400 VoA, which will always be higher than the meat% in current climate
+  }
+
+  const durationOverride = maxTurnsWanted
+    ? clamp(maxTurnsWanted - haveEffect(effect), 0, duration)
+    : undefined;
+
   return new Potion($item.none, { duration, effect }).gross(
-    copyTargetCount(),
-    maxTurns,
+    targets,
+    durationOverride,
+  );
+}
+
+export function effectExtenderValue(
+  duration: number,
+  maximumNumberOfEffects?: number,
+): number {
+  const targets = copyTargetCount();
+  const turns = estimatedGarboTurns();
+  return (
+    sum(getActiveEffects(), (effect) => {
+      const skill = toSkill(effect);
+      if (skill !== $skill`none` && have(skill) && skill.dailylimit === -1) {
+        return 0; // If we have an unlimited skill to cast it, there's no value in extending
+      }
+      return effectValue(effect, duration, turns, targets);
+    }) *
+    (maximumNumberOfEffects
+      ? Math.min(1, maximumNumberOfEffects / getActiveEffects().length)
+      : 1)
   );
 }
