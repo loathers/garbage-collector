@@ -25,7 +25,7 @@ import {
   baseMeat,
   ESTIMATED_OVERDRUNK_TURNS,
   targetMeat,
-  targettingMeat,
+  targetingMeat,
   turnsToNC,
 } from "../lib";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
@@ -167,7 +167,7 @@ export const amuletCoinValue = () => {
   const garboTurns = estimatedGarboTurns();
   return (
     baseMeat() * 0.5 * garboTurns +
-    (targettingMeat()
+    (targetingMeat()
       ? targetMeat() * 0.5 * (copyTargetCount() - garboTurns)
       : 0)
   );
