@@ -2,6 +2,7 @@ import { Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
   cliExecute,
   create,
+  familiarWeight,
   floor,
   getWorkshed,
   mallPrice,
@@ -36,35 +37,45 @@ import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { GarboFreeFightTask } from "./freeFight";
-import { bestFairy } from "../familiar";
+import { sandwormFamiliar } from "../familiar";
 import { sober } from "../lib";
 
 function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
-  const copy = { ...spec, equip: [...(spec.equip ?? [])] };
-  // Effective drop rate of spice melange is 0.1, each 1% item drop increases the chance by 0.1/10000
+  const outfit = Outfit.from(
+    spec,
+    new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
+  );
+
   const itemDropBonus = (0.1 / 10000) * garboValue($item`spice melange`);
-  copy.modifier = [`${itemDropBonus.toFixed(2)} Item Drop 10000 max`];
+  outfit.modifier.push(`${itemDropBonus.toFixed(2)} Item Drop 10000 max`);
+
   if (
     have($item`January's Garbage Tote`) &&
     have($item`broken champagne bottle`) &&
     get("garbageChampagneCharge") > 0
   ) {
-    copy.equip?.push($item`broken champagne bottle`);
+    outfit.equip($item`broken champagne bottle`);
   }
   if (have($item`Lil' Doctor™ bag`) && get("_otoscopeUsed") < 3) {
-    copy.equip?.push($item`Lil' Doctor™ bag`);
+    outfit.equip($item`Lil' Doctor™ bag`);
   }
-  const familiar = bestFairy();
-  copy.familiar = familiar;
-  if (familiar === $familiar`Reagnimated Gnome`) {
-    copy.equip?.push($item`gnomish housemaid's kgnee`);
+
+  outfit.equip(sandwormFamiliar());
+  if (outfit.familiar === $familiar`Reagnimated Gnome`) {
+    outfit.addBonus(
+      $item`gnomish housemaid's kgnee`,
+      (familiarWeight($familiar`Reagnimated Gnome`) * get("valueOfAdventure")) /
+        1000,
+    );
   }
-  if (familiar === $familiar`Jill-of-All-Trades`) {
-    copy.equip?.push($item`LED candle`);
-    copy.modes = { ...copy.modes, jillcandle: "disco" };
+
+  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
+    outfit.setModes({ jillcandle: "disco" });
   }
-  copy.equip = [...new Set(copy.equip)]; // Prune doubled-up stuff
-  return copy;
+
+  outfit.equip($item`toy Cupid bow`);
+
+  return outfit.spec();
 }
 
 function sandwormOutfit(spec: OutfitSpec = {}): Outfit {

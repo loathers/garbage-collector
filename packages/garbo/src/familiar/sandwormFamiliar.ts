@@ -18,7 +18,7 @@ import { menu } from "./freeFightFamiliar";
 
 let bestNonCheerleaderFairy: Familiar;
 
-export function bestFairy(): Familiar {
+export function sandwormFamiliar(): Familiar {
   if (
     have($familiar`Trick-or-Treating Tot`) &&
     have($item`li'l ninja costume`)
@@ -37,7 +37,11 @@ export function bestFairy(): Familiar {
     );
 
     const highestFairyMult = findFairyMultiplier(
-      maxBy(viableFairies, findFairyMultiplier),
+      maxBy(viableFairies, (f) =>
+        f === $familiar`Jill-of-All-Trades` && have($item`toy Cupid bow`)
+          ? 1 // Ignore LED candle if we have TCB
+          : findFairyMultiplier(f),
+      ),
     );
     const goodFairies = viableFairies.filter(
       (f) => findFairyMultiplier(f) === highestFairyMult,
