@@ -1,4 +1,4 @@
-import { StillSuit } from "libram";
+import { get, StillSuit } from "libram";
 
 const currentAdventures = () => StillSuit.distillateAdventures();
 const nextDistillateSweat = () =>
@@ -8,3 +8,8 @@ const previousDistillateSweat = () =>
 
 export const adventuresPerSweat = () =>
   1 / (nextDistillateSweat() - previousDistillateSweat());
+
+export const turnsNeededForNextAdventure = (equipped = true) =>
+  Math.ceil(
+    (nextDistillateSweat() - get("familiarSweat")) / (equipped ? 3 : 1),
+  );

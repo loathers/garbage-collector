@@ -18,8 +18,9 @@ import { wanderer } from "../garboWanderer";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
-import { adventuresPerSweat } from "../resources";
+import { adventuresPerSweat, turnsNeededForNextAdventure } from "../resources";
 import { globalOptions } from "../config";
+import { estimatedGarboTurns } from "../turns";
 
 export type FreeFightOutfitMenuOptions = {
   location?: Location;
@@ -82,7 +83,8 @@ export function freeFightOutfit(
 
   if (
     outfit.familiar !== $familiar`Grey Goose` &&
-    !(globalOptions.ascend && !sober())
+    !(globalOptions.ascend && !sober()) &&
+    turnsNeededForNextAdventure() <= estimatedGarboTurns()
   ) {
     outfit.setBonus(
       $item`tiny stillsuit`,
