@@ -29717,7 +29717,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia97.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("edd047fa189e22c39b4007970d0c056b11cc0409", ")"));
+      (0, import_kolmafia97.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("0f9fc5bf2d2b089dd998782a077d2aa80842a4dd", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia97.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -33841,7 +33841,7 @@ function freeFightOutfit() {
     outfit3.setBonus($item(_templateObject6100 || (_templateObject6100 = _taggedTemplateLiteral100(["vampyric cloake"]))), 500);
   }
   outfit3.addBonuses(bonusGear(mode));
-  if (outfit3.familiar !== $familiar(_templateObject770 || (_templateObject770 = _taggedTemplateLiteral100(["Grey Goose"])))) {
+  if (outfit3.familiar !== $familiar(_templateObject770 || (_templateObject770 = _taggedTemplateLiteral100(["Grey Goose"]))) && !(globalOptions.ascend && !sober()) && turnsNeededForNextAdventure() <= estimatedGarboTurns()) {
     outfit3.setBonus($item(_templateObject861 || (_templateObject861 = _taggedTemplateLiteral100(["tiny stillsuit"]))), get("valueOfAdventure") * 2 * adventuresPerSweat());
   }
   if (mode !== BonusEquipMode.DMT) {
@@ -37077,6 +37077,10 @@ var previousDistillateSweat = function() {
 };
 var adventuresPerSweat = function() {
   return 1 / (nextDistillateSweat() - previousDistillateSweat());
+};
+var turnsNeededForNextAdventure = function turnsNeededForNextAdventure2() {
+  var equipped = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : true;
+  return Math.ceil((nextDistillateSweat() - get("familiarSweat")) / (equipped ? 3 : 1));
 };
 
 // src/resources/leprecondo.ts
