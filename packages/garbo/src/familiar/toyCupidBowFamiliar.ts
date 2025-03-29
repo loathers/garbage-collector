@@ -53,8 +53,9 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
     if (
       !familiarEquipment(familiar).tradeable &&
       familiarEquipment(familiar) !== $item`amulet coin`
-    )
+    ) {
       continue;
+    }
     if (
       familiar === $familiar`Mini-Adventurer` &&
       !get("miniAdvClass") &&
