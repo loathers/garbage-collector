@@ -29717,7 +29717,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia97.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("0f9fc5bf2d2b089dd998782a077d2aa80842a4dd", ")"));
+      (0, import_kolmafia97.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("dd6a96a1d0f697d7a206644c7d79ab09353374b4", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia97.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -33469,7 +33469,7 @@ function getToyCupidBowFamiliars() {
       var _familiar = _step2.value;
       if (!have(_familiar)) continue;
       if (skipFamiliars.has(_familiar)) continue;
-      if (!(0, import_kolmafia109.familiarEquipment)(_familiar).tradeable && (0, import_kolmafia109.familiarEquipment)(_familiar) !== $item(_templateObject2171 || (_templateObject2171 = _taggedTemplateLiteral97(["amulet coin"])))) {
+      if (!(0, import_kolmafia109.familiarEquipment)(_familiar).tradeable && _familiar !== $familiar(_templateObject2171 || (_templateObject2171 = _taggedTemplateLiteral97(["Cornbeefadon"])))) {
         continue;
       }
       if (_familiar === $familiar(_templateObject3154 || (_templateObject3154 = _taggedTemplateLiteral97(["Mini-Adventurer"]))) && !get("miniAdvClass") && !get("choiceAdventure768")) {
