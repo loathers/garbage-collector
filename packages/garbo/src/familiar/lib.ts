@@ -24,7 +24,7 @@ import { globalOptions } from "../config";
 import {
   baseMeat,
   ESTIMATED_OVERDRUNK_TURNS,
-  targetingMeat,
+  isFree,
   targetMeat,
   turnsToNC,
 } from "../lib";
@@ -164,13 +164,13 @@ export function snapperValue(): number {
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
 
 export const amuletCoinValue = () => {
-  const garboTurns = estimatedGarboTurns();
-  return (
-    baseMeat() * 0.5 * garboTurns +
-    (targetingMeat()
-      ? targetMeat() * 0.5 * (copyTargetCount() - garboTurns)
-      : 0)
-  );
+  const [copies, barf] = isFree(globalOptions.target)
+    ? [0, estimatedGarboTurns()]
+    : (() => {
+        const copies = copyTargetCount();
+        return [copies, estimatedGarboTurns() - copies];
+      })();
+  return 0.5 * (barf * baseMeat() + copies * targetMeat());
 };
 
 export const familiarEquipmentValue = (f: Familiar) => {
