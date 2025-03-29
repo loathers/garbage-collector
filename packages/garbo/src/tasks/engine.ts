@@ -18,7 +18,13 @@ import {
   SourceTerminal,
   undelay,
 } from "libram";
-import { equip, itemAmount, print, totalTurnsPlayed } from "kolmafia";
+import {
+  equip,
+  itemAmount,
+  myFamiliar,
+  print,
+  totalTurnsPlayed,
+} from "kolmafia";
 import { GarboStrategy } from "../combat";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
@@ -64,7 +70,12 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     }
     super.dress(task, outfit);
     if (itemAmount($item`tiny stillsuit`) > 0) {
-      equip($familiar`Cornbeefadon`, $item`tiny stillsuit`);
+      equip(
+        myFamiliar() === $familiar`Cornbeefadon`
+          ? $familiar`Mosquito`
+          : $familiar`Cornbeefadon`,
+        $item`tiny stillsuit`,
+      );
     }
   }
 
