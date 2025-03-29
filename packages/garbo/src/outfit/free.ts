@@ -12,13 +12,14 @@ import {
 import { WanderDetails } from "garbo-lib";
 
 import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
-import { BonusEquipMode, MEAT_TARGET_MULTIPLIER } from "../lib";
+import { BonusEquipMode, MEAT_TARGET_MULTIPLIER, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
 import { adventuresPerSweat } from "../resources";
+import { globalOptions } from "../config";
 
 export type FreeFightOutfitMenuOptions = {
   location?: Location;
@@ -79,7 +80,10 @@ export function freeFightOutfit(
 
   outfit.addBonuses(bonusGear(mode));
 
-  if (outfit.familiar !== $familiar`Grey Goose`) {
+  if (
+    outfit.familiar !== $familiar`Grey Goose` &&
+    !(globalOptions.ascend && !sober())
+  ) {
     outfit.setBonus(
       $item`tiny stillsuit`,
       get("valueOfAdventure") * 2 * adventuresPerSweat(),
