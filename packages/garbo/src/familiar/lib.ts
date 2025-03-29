@@ -164,12 +164,10 @@ export function snapperValue(): number {
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
 
 export const amuletCoinValue = () => {
-  const garboTurns = estimatedGarboTurns();
+  const copies = copyTargetCount();
   return (
-    baseMeat() * 0.5 * garboTurns +
-    (targetingMeat()
-      ? targetMeat() * 0.5 * (copyTargetCount() - garboTurns)
-      : 0)
+    baseMeat() * 0.5 * (estimatedGarboTurns() - copies) +
+    (targetingMeat() ? targetMeat() * 0.5 * copies : 0)
   );
 };
 
