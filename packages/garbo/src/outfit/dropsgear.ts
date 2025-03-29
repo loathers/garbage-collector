@@ -23,6 +23,7 @@ import {
   BurningLeaves,
   clamp,
   DaylightShavings,
+  DesignerSweatpants,
   get,
   getAverageAdventures,
   getFoldGroup,
@@ -98,8 +99,11 @@ function sweatpants(mode: BonusEquipMode) {
   }
 
   const needSweat =
-    (!globalOptions.ascend && get("sweat") < 75) ||
-    get("sweat") < 25 * (3 - get("_sweatOutSomeBoozeUsed"));
+    (!globalOptions.ascend &&
+      DesignerSweatpants.sweat() <
+        DesignerSweatpants.sweatCost($skill`Sweat Out Some Booze`) * 3) ||
+    DesignerSweatpants.sweat() <
+      DesignerSweatpants.potentialCasts($skill`Sweat Out Some Booze`);
 
   if (!needSweat) return new Map();
 
