@@ -26,11 +26,13 @@ import {
   myMaxhp,
   mySoulsauce,
   numericModifier,
+  refreshStatus,
   restoreHp,
   retrieveItem,
   runChoice,
   runCombat,
   Skill,
+  toInt,
   use,
   useSkill,
   visitUrl,
@@ -669,7 +671,10 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       if (myFamiliar() === $familiar`Comma Chameleon`) {
         if (CommaChameleon.currentFamiliar() !== $familiar`Machine Elf`) {
           acquire(1, $item`self-dribbling basketball`, 10000);
-          CommaChameleon.transform($familiar`Machine Elf`);
+          visitUrl(
+            `inv_equip.php?which=2&action=equip&whichitem=${toInt($item`self-dribbling basketball`)}&pwd`,
+          );
+          refreshStatus(); // Extra precaution, works without this
         }
 
         if (!canAdventure($location`The Deep Machine Tunnels`)) {
