@@ -2,7 +2,6 @@ import { Familiar, familiarEquipment } from "kolmafia";
 import {
   $familiar,
   $familiars,
-  $item,
   findLeprechaunMultiplier,
   get,
   have,
@@ -52,7 +51,7 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
     if (skipFamiliars.has(familiar)) continue;
     if (
       !familiarEquipment(familiar).tradeable &&
-      familiarEquipment(familiar) !== $item`amulet coin`
+      familiar !== $familiar`Cornbeefadon`
     ) {
       continue;
     }
