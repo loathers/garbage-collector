@@ -103,7 +103,8 @@ function sweatpants(mode: BonusEquipMode) {
       DesignerSweatpants.sweat() <
         DesignerSweatpants.sweatCost($skill`Sweat Out Some Booze`) * 3) ||
     DesignerSweatpants.sweat() <
-      DesignerSweatpants.potentialCasts($skill`Sweat Out Some Booze`);
+      DesignerSweatpants.sweatCost($skill`Sweat Out Some Booze`) *
+        DesignerSweatpants.potentialCasts($skill`Sweat Out Some Booze`);
 
   if (!needSweat) return new Map();
 
