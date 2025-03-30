@@ -29,6 +29,7 @@ import {
   $slot,
   CinchoDeMayo,
   clamp,
+  DesignerSweatpants,
   get,
   getAverageAdventures,
   getSongCount,
@@ -323,11 +324,10 @@ export function executeNextDietStep(stopBeforeJellies?: boolean): void {
         if (entry.name === name) {
           if (entry.drunkenness > 0) {
             while (
-              get("sweat") >= 25 &&
-              get("_sweatOutSomeBoozeUsed") < 3 &&
+              DesignerSweatpants.canUseSkill($skill`Sweat Out Some Booze`) &&
               myInebriety() > 0
             ) {
-              useSkill($skill`Sweat Out Some Booze`);
+              DesignerSweatpants.useSkill($skill`Sweat Out Some Booze`);
             }
             if (
               !get("_syntheticDogHairPillUsed") &&
@@ -492,10 +492,8 @@ function yachtzeeDietScheduler(
   let fullness = myFullness();
   let drunkenness = myInebriety();
   let spleenUse = mySpleenUse();
-  let sweatOutsAvailable = clamp(
-    Math.floor(get("sweat") / 25),
-    0,
-    3 - get("_sweatOutSomeBoozeUsed"),
+  let sweatOutsAvailable = DesignerSweatpants.availableCasts(
+    $skill`Sweat Out Some Booze`,
   );
   let syntheticPillsAvailable =
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`)
@@ -566,10 +564,8 @@ export function yachtzeeChainDiet(simOnly?: boolean): boolean {
   const haveDistentionPill =
     !get("_distentionPillUsed") && have($item`distention pill`);
   visitUrl(`desc_item.php?whichitem=${$item`designer sweatpants`.descid}`); // Ensure that our sweat tracker is updated
-  const sweatOutsAvailable = clamp(
-    Math.floor(get("sweat") / 25),
-    0,
-    3 - get("_sweatOutSomeBoozeUsed"),
+  const sweatOutsAvailable = DesignerSweatpants.availableCasts(
+    $skill`Sweat Out Some Booze`,
   );
   const syntheticPillsAvailable =
     !get("_syntheticDogHairPillUsed") && have($item`synthetic dog hair pill`)
