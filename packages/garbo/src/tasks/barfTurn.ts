@@ -7,6 +7,7 @@ import {
   canEquip,
   eat,
   getWorkshed,
+  inebrietyLimit,
   Item,
   itemAmount,
   Location,
@@ -210,10 +211,14 @@ const TurnGenTasks: GarboTask[] = [
     name: "Sweatpants",
     ready: () =>
       !globalOptions.nodiet &&
-      myInebriety() > 0 &&
       DesignerSweatpants.canUseSkill($skill`Sweat Out Some Booze`) &&
+      myInebriety() > 0 &&
       myAdventures() <= 1 + globalOptions.saveTurns,
-    completed: () => $skill`Sweat Out Some Booze`.dailylimit === 0,
+    completed: () =>
+      $skill`Sweat Out Some Booze`.dailylimit === 0 ||
+      myInebriety() -
+        DesignerSweatpants.potentialCasts($skill`Sweat Out Some Booze`) >
+        inebrietyLimit(),
     do: () => {
       while (
         DesignerSweatpants.canUseSkill($skill`Sweat Out Some Booze`) &&
