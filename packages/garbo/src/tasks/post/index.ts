@@ -119,12 +119,16 @@ function fillSweatyLiver(): GarboPostTask {
     name: "Fill Sweaty Liver",
     ready: () =>
       !globalOptions.nodiet &&
+      myInebriety() > 0 &&
       DesignerSweatpants.canUseSkill($skill`Sweat Out Some Booze`) &&
       DesignerSweatpants.availableCasts($skill`Sweat Out Some Booze`) ===
         DesignerSweatpants.potentialCasts($skill`Sweat Out Some Booze`),
     completed: () => $skill`Sweat Out Some Booze`.dailylimit === 0,
     do: () => {
-      while (DesignerSweatpants.canUseSkill($skill`Sweat Out Some Booze`)) {
+      while (
+        DesignerSweatpants.canUseSkill($skill`Sweat Out Some Booze`) &&
+        myInebriety() > 0
+      ) {
         DesignerSweatpants.useSkill($skill`Sweat Out Some Booze`);
       }
       consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");

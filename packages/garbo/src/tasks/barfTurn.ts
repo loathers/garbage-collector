@@ -210,6 +210,7 @@ const TurnGenTasks: GarboTask[] = [
     name: "Sweatpants",
     ready: () =>
       !globalOptions.nodiet &&
+      myInebriety() > 0 &&
       DesignerSweatpants.canUseSkill($skill`Sweat Out Some Booze`) &&
       myAdventures() <= 1 + globalOptions.saveTurns,
     completed: () => $skill`Sweat Out Some Booze`.dailylimit === 0,
