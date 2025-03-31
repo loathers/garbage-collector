@@ -1,13 +1,15 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Location } from "kolmafia";
+import { Familiar, Location } from "kolmafia";
 import {
   $familiar,
   $item,
   $items,
   $location,
+  Delayed,
   get,
   Guzzlr,
   SourceTerminal,
+  undelay,
 } from "libram";
 import { WanderDetails } from "garbo-lib";
 
@@ -21,6 +23,15 @@ import { cleaverCheck, validateGarbageFoldable } from "./lib";
 import { adventuresPerSweat, turnsNeededForNextAdventure } from "../resources";
 import { globalOptions } from "../config";
 import { estimatedGarboTurns } from "../turns";
+
+const famExpValue = new Map<Familiar, Delayed<number>>([
+  [
+    $familiar`Chest Mimic`,
+    () => (MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
+  ],
+  [$familiar`Pocket Professor`, (11 * get("valueOfAdventure")) / 200],
+  [$familiar`Grey Goose`, 15 ** 4 / 400],
+]);
 
 export type FreeFightOutfitMenuOptions = {
   location?: Location;
@@ -55,20 +66,11 @@ export function freeFightOutfit(
       : BonusEquipMode.FREE;
 
   if (outfit.familiar !== $familiar`Patriotic Eagle`) {
-    const familiarExpValue = (
-      [
-        [
-          $familiar`Chest Mimic`,
-          (MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
-        ],
-        [$familiar`Pocket Professor`, (11 * get("valueOfAdventure")) / 200],
-        [$familiar`Grey Goose`, 15 ** 4 / 400],
-      ] as const
-    ).find(([familiar]) => outfit.familiar === familiar);
+    const familiarExpValue = undelay(famExpValue.get(outfit.familiar));
 
     outfit.modifier.push(
       familiarExpValue
-        ? `${familiarExpValue[1]} Familiar Experience`
+        ? `${famExpValue} Familiar Experience`
         : "Familiar Weight",
     );
   }
@@ -82,7 +84,6 @@ export function freeFightOutfit(
   outfit.addBonuses(bonusGear(mode));
 
   if (
-    outfit.familiar !== $familiar`Grey Goose` &&
     !(globalOptions.ascend && !sober()) &&
     turnsNeededForNextAdventure() <= estimatedGarboTurns()
   ) {
