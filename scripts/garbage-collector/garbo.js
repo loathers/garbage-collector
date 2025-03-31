@@ -29811,7 +29811,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d9fbc9945d72a35585eac2ecae361d0457985c2f", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("639e65841f974a9f2bd998b92c677ed221d45459", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -33901,7 +33901,7 @@ function freeFightOutfit() {
   var mode = options.location === $location(_templateObject4138 || (_templateObject4138 = _taggedTemplateLiteral101(["The Deep Machine Tunnels"]))) ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   if (outfit3.familiar !== $familiar(_templateObject5108 || (_templateObject5108 = _taggedTemplateLiteral101(["Patriotic Eagle"])))) {
     var familiarExpValue = undelay(famExpValue.get(outfit3.familiar));
-    outfit3.modifier.push(familiarExpValue ? "".concat(famExpValue, " Familiar Experience") : "Familiar Weight");
+    outfit3.modifier.push(familiarExpValue ? "".concat(familiarExpValue, " Familiar Experience") : "Familiar Weight");
   }
   var bjornChoice = chooseBjorn(mode, outfit3.familiar);
   if (get("_vampyreCloakeFormUses") < 10) {
