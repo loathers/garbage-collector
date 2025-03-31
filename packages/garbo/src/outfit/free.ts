@@ -70,7 +70,7 @@ export function freeFightOutfit(
 
     outfit.modifier.push(
       familiarExpValue
-        ? `${famExpValue} Familiar Experience`
+        ? `${familiarExpValue} Familiar Experience`
         : "Familiar Weight",
     );
   }
