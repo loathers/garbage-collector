@@ -329,7 +329,7 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const turnsNeeded = sum(
     viableMenu,
-    turnsNeededFromBaseline(cruisingFamiliar),
+    turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars),
   );
 
   // If there aren't enough turns left in the day to get value out of fams that aren't our "cruising" familiar, just return that
