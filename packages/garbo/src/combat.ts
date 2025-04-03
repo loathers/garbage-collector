@@ -374,6 +374,12 @@ export class Macro extends StrictMacro {
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
       .meatStasis(willCrit)
       .externalIf(
+        shouldAffirmationHate(),
+        Macro.tryHaveItem(
+          $item`Daily Affirmation: Keep Free Hate in your Heart`,
+        ),
+      )
+      .externalIf(
         hippyStoneBroken() && monsterManuelAvailable(),
         Macro.if_(
           `(monsterid 1758 || monsterid 1759 || monsterid 1760) && monsterhpbelow ${Math.floor(

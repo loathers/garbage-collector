@@ -96,6 +96,7 @@ import {
   PostBuffExtensionQuest,
 } from "./tasks/buffExtension";
 import { shouldAffirmationHate } from "./combat";
+import { acquire } from "./acquire";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -533,7 +534,7 @@ export function main(argString = ""): void {
 
     // Prepare Daily Affirmation for PvP fights if desired
     if (shouldAffirmationHate()) {
-      retrieveItem($item`Daily Affirmation: Keep Free Hate in your Heart`);
+      acquire(1, $item`Daily Affirmation: Keep Free Hate in your Heart`, globalOptions.prefs.valueOfPvPFight * 3 * 1.1);
     }
 
     // FIXME: Dynamically figure out pointer ring approach.
