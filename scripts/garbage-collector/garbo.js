@@ -29811,7 +29811,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("639e65841f974a9f2bd998b92c677ed221d45459", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8a1bcd1402ededa54614624ded0a50edda7aefb0", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -32173,11 +32173,11 @@ function sneegleebs() {
 }
 function toyCupidBow(familiar10) {
   if (!ToyCupidBow_exports.have()) return /* @__PURE__ */ new Map();
-  if (ToyCupidBow_exports.familiarsToday().includes(familiar10)) return /* @__PURE__ */ new Map();
-  if (estimatedGarboTurns() <= ToyCupidBow_exports.turnsLeft(familiar10)) {
+  var turns2 = tcbTurnsLeft(familiar10, getUsedTcbFamiliars());
+  if (estimatedGarboTurns() <= turns2) {
     return /* @__PURE__ */ new Map();
   }
-  return /* @__PURE__ */ new Map([[$item(_templateObject6611 || (_templateObject6611 = _taggedTemplateLiteral89(["toy Cupid bow"]))), familiarEquipmentValue(familiar10) / ToyCupidBow_exports.turnsLeft(familiar10)]]);
+  return /* @__PURE__ */ new Map([[$item(_templateObject6611 || (_templateObject6611 = _taggedTemplateLiteral89(["toy Cupid bow"]))), familiarEquipmentValue(familiar10) / turns2]]);
 }
 
 // src/outfit/lib.ts
@@ -33547,16 +33547,17 @@ function getToyCupidBowFamiliars() {
   } finally {
     _iterator.f();
   }
-  if (estimatedGarboTurns() < ToyCupidBow_exports.turnsLeft()) {
-    var current2 = ToyCupidBow_exports.currentFamiliar();
-    if (!current2) return [];
-    if (skipFamiliars.has(current2)) return [];
+  var current2 = ToyCupidBow_exports.currentFamiliar();
+  if (current2 && estimatedGarboTurns() < tcbTurnsLeft(current2, skipFamiliars)) {
+    var _current = ToyCupidBow_exports.currentFamiliar();
+    if (!_current) return [];
+    if (skipFamiliars.has(_current)) return [];
     return [{
-      familiar: current2,
-      expectedValue: familiarEquipmentValue(current2) / ToyCupidBow_exports.turnsLeft(),
+      familiar: _current,
+      expectedValue: familiarEquipmentValue(_current) / tcbTurnsLeft(_current, skipFamiliars),
       worksOnFreeRun: true,
       limit: "cupid",
-      leprechaunMultiplier: findLeprechaunMultiplier(current2)
+      leprechaunMultiplier: findLeprechaunMultiplier(_current)
     }];
   }
   var bestFamiliarsByLeprechaunMultiplier = /* @__PURE__ */ new Map();
@@ -33577,7 +33578,7 @@ function getToyCupidBowFamiliars() {
       }
       if (_familiar === $familiar(_templateObject4136 || (_templateObject4136 = _taggedTemplateLiteral98(["Doppelshifter"])))) continue;
       var leprechaunMultiplier = findLeprechaunMultiplier(_familiar);
-      var expectedValue = familiarEquipmentValue(_familiar) / ToyCupidBow_exports.turnsLeft(_familiar);
+      var expectedValue = familiarEquipmentValue(_familiar) / tcbTurnsLeft(_familiar, skipFamiliars);
       var currentBestValue = (_bestFamiliarsByLepre = (_bestFamiliarsByLepre2 = bestFamiliarsByLeprechaunMultiplier.get(leprechaunMultiplier)) === null || _bestFamiliarsByLepre2 === void 0 ? void 0 : _bestFamiliarsByLepre2.expectedValue) !== null && _bestFamiliarsByLepre !== void 0 ? _bestFamiliarsByLepre : 0;
       if (expectedValue > currentBestValue) {
         bestFamiliarsByLeprechaunMultiplier.set(leprechaunMultiplier, {
@@ -38519,6 +38520,9 @@ function snapperValue() {
 var getUsedTcbFamiliars = function() {
   return new Set(ToyCupidBow_exports.familiarsToday());
 };
+var tcbTurnsLeft = function(f, used) {
+  return used.has(f) ? Infinity : ToyCupidBow_exports.currentFamiliar() === f ? clamp(5 - get("cupidBowFights"), 0, 5) : 5;
+};
 var amuletCoinValue = function() {
   var _ref = isFree(globalOptions.target) ? [0, estimatedGarboTurns()] : function() {
     var copies2 = copyTargetCount();
@@ -38538,7 +38542,7 @@ function tcbValue(familiar10, tcbFamiliars, equipmentForced, includeAmuletCoinOp
   if (tcbFamiliars.has(familiar10)) return 0;
   var leprechaunMultiplier = findLeprechaunMultiplier(familiar10);
   var amuletCoin = includeAmuletCoinOpportunityCost && have($item(_templateObject1738 || (_templateObject1738 = _taggedTemplateLiteral118(["amulet coin"])))) ? (50 + 10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) * baseMeat() / 100 : 0;
-  return familiarEquipmentValue(familiar10) / ToyCupidBow_exports.turnsLeft(familiar10) - amuletCoin;
+  return familiarEquipmentValue(familiar10) / tcbTurnsLeft(familiar10, tcbFamiliars) - amuletCoin;
 }
 
 // src/familiar/barfFamiliar.ts
@@ -38690,7 +38694,7 @@ function totalFamiliarValue(_ref4) {
   var expectedValue = _ref4.expectedValue, outfitValue = _ref4.outfitValue, familiar10 = _ref4.familiar;
   return expectedValue + outfitValue + familiarAbilityValue(familiar10);
 }
-function turnsNeededFromBaseline(baselineToCompareAgainst) {
+function turnsNeededFromBaseline(baselineToCompareAgainst, tcbFamiliars) {
   return function(_ref5) {
     var familiar10 = _ref5.familiar, limit = _ref5.limit, outfitValue = _ref5.outfitValue, bonusTurns = _ref5.bonusTurns;
     switch (limit) {
@@ -38704,7 +38708,7 @@ function turnsNeededFromBaseline(baselineToCompareAgainst) {
       case "none":
         return 0;
       case "cupid":
-        return ToyCupidBow_exports.turnsLeft(familiar10) - (bonusTurns !== null && bonusTurns !== void 0 ? bonusTurns : 0);
+        return tcbTurnsLeft(familiar10, tcbFamiliars) - (bonusTurns !== null && bonusTurns !== void 0 ? bonusTurns : 0);
       case "special":
         return getSpecialFamiliarLimit({
           familiar: familiar10,
@@ -38765,7 +38769,7 @@ function barfFamiliar(equipmentForced) {
     if (tcb.expectedValue >= normal.expectedValue) {
       return [tcb, _objectSpread21(_objectSpread21({}, normal), {}, {
         // Account for the already-burned TCB turns when calculating the limit for the "normal" entry for the familiar
-        bonusTurns: ToyCupidBow_exports.turnsLeft(generalFamiliar.familiar)
+        bonusTurns: tcbTurnsLeft(generalFamiliar.familiar, usedTcbFamiliars)
       })];
     }
     return normal;
@@ -38792,7 +38796,7 @@ function barfFamiliar(equipmentForced) {
     return limit === "none";
   });
   var cruisingFamiliar = unlimitedCruisingFamiliars.length ? maxBy(unlimitedCruisingFamiliars, totalFamiliarValue) : meatFamiliarEntry;
-  var turnsNeeded = sum(viableMenu, turnsNeededFromBaseline(cruisingFamiliar));
+  var turnsNeeded = sum(viableMenu, turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars));
   if (turnsNeeded < turnsAvailable()) {
     var shrubAvailable = viableMenu.some(function(_ref9) {
       var familiar10 = _ref9.familiar;
