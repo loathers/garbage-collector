@@ -41,6 +41,7 @@ import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
 import {
   GeneralFamiliar,
   getUsedTcbFamiliars,
+  tcbTurnsLeft,
   tcbValue,
   timeToMeatify,
   turnsAvailable,
@@ -180,6 +181,7 @@ function totalFamiliarValue({
 
 function turnsNeededFromBaseline(
   baselineToCompareAgainst: MarginalFamiliar,
+  tcbFamiliars: Set<Familiar>,
 ): (option: MarginalFamiliar) => number {
   return ({ familiar, limit, outfitValue, bonusTurns }: MarginalFamiliar) => {
     switch (limit) {
@@ -202,7 +204,7 @@ function turnsNeededFromBaseline(
         return 0;
 
       case "cupid":
-        return ToyCupidBow.turnsLeft(familiar) - (bonusTurns ?? 0);
+        return tcbTurnsLeft(familiar, tcbFamiliars) - (bonusTurns ?? 0);
 
       case "special":
         return (
@@ -293,7 +295,7 @@ export function barfFamiliar(equipmentForced: boolean): {
         {
           ...normal,
           // Account for the already-burned TCB turns when calculating the limit for the "normal" entry for the familiar
-          bonusTurns: ToyCupidBow.turnsLeft(generalFamiliar.familiar),
+          bonusTurns: tcbTurnsLeft(generalFamiliar.familiar, usedTcbFamiliars),
         },
       ];
     }
@@ -327,7 +329,7 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const turnsNeeded = sum(
     viableMenu,
-    turnsNeededFromBaseline(cruisingFamiliar),
+    turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars),
   );
 
   // If there aren't enough turns left in the day to get value out of fams that aren't our "cruising" familiar, just return that
