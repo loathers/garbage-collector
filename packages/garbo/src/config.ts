@@ -164,6 +164,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "Set to whatever you estimate the value of a free fight/run to be for you. (Default 2000)",
           default: 2000,
         }),
+        valueOfPvPFight: Args.number({
+          setting: "garbo_valueOfPvPFight",
+          help: "Set to whatever you estimate the value of a PvP fight to be for you. (Default 0)",
+          default: 0,
+        }),
         yachtzeechain: Args.flag({
           setting: "garbo_yachtzeechain",
           help: "only diets after free fights, and attempts to estimate if Yachtzee! chaining is profitable for you - if so, it consumes a specific diet which uses ~0-36 spleen;\
