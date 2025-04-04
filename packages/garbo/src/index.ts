@@ -534,7 +534,11 @@ export function main(argString = ""): void {
 
     // Prepare Daily Affirmation for PvP fights if desired
     if (shouldAffirmationHate()) {
-      acquire(1, $item`Daily Affirmation: Keep Free Hate in your Heart`, globalOptions.prefs.valueOfPvPFight * 3 * 1.1);
+      acquire(
+        1,
+        $item`Daily Affirmation: Keep Free Hate in your Heart`,
+        globalOptions.prefs.valueOfPvPFight * 3 * 1.1,
+      );
     }
 
     // FIXME: Dynamically figure out pointer ring approach.
