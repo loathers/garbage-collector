@@ -68,6 +68,7 @@ import {
 } from "./lib";
 import { CombatStrategy } from "grimoire-kolmafia";
 import { copyTargetCount } from "./target";
+import { garboValue } from "./garboValue";
 
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
@@ -78,6 +79,18 @@ export function shouldRedigitize(): boolean {
   const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
   // Redigitize if we've spent too many turns in this "chunk" of our digitize day
   return estimatedGarboTurns() / digitizeChunks < digitizeAdventuresUsed;
+}
+
+export function shouldAffirmationHate(): boolean {
+  if (!hippyStoneBroken()) return false;
+  if (get("_affirmationHateUsed")) return false;
+  if (
+    garboValue($item`Daily Affirmation: Keep Free Hate in your Heart`) >=
+    globalOptions.prefs.valueOfPvPFight * 3
+  ) {
+    return false;
+  }
+  return true;
 }
 
 export class Macro extends StrictMacro {
@@ -231,6 +244,12 @@ export class Macro extends StrictMacro {
   delevel(): Macro {
     return this.tryHaveSkill($skill`Curse of Weaksauce`)
       .externalIf(
+        shouldAffirmationHate(),
+        Macro.tryHaveItem(
+          $item`Daily Affirmation: Keep Free Hate in your Heart`,
+        ),
+      )
+      .externalIf(
         have($skill`Meteor Lore`),
         Macro.trySkill($skill`Micrometeorite`),
       )
@@ -354,6 +373,12 @@ export class Macro extends StrictMacro {
       )
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
       .meatStasis(willCrit)
+      .externalIf(
+        shouldAffirmationHate(),
+        Macro.tryHaveItem(
+          $item`Daily Affirmation: Keep Free Hate in your Heart`,
+        ),
+      )
       .externalIf(
         hippyStoneBroken() && monsterManuelAvailable(),
         Macro.if_(
