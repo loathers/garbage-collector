@@ -167,7 +167,7 @@ export const tcbTurnsLeft = (f: Familiar, used: Set<Familiar>) =>
   used.has(f)
     ? Infinity
     : ToyCupidBow.currentFamiliar() === f
-      ? clamp(5 - get("cupidBowFights"), 0, 5)
+      ? clamp(5 - get("cupidBowFights"), 1, 5)
       : 5;
 
 export const amuletCoinValue = () => {
