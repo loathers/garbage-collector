@@ -29811,7 +29811,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8a1bcd1402ededa54614624ded0a50edda7aefb0", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f32c947d8cd709c04c97e3f886061ebdfc7d378d", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -38521,7 +38521,7 @@ var getUsedTcbFamiliars = function() {
   return new Set(ToyCupidBow_exports.familiarsToday());
 };
 var tcbTurnsLeft = function(f, used) {
-  return used.has(f) ? Infinity : ToyCupidBow_exports.currentFamiliar() === f ? clamp(5 - get("cupidBowFights"), 0, 5) : 5;
+  return used.has(f) ? Infinity : ToyCupidBow_exports.currentFamiliar() === f ? clamp(5 - get("cupidBowFights"), 1, 5) : 5;
 };
 var amuletCoinValue = function() {
   var _ref = isFree(globalOptions.target) ? [0, estimatedGarboTurns()] : function() {
