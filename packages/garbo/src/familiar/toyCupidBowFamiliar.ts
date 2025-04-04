@@ -11,6 +11,7 @@ import {
   familiarEquipmentValue,
   GeneralFamiliar,
   getUsedTcbFamiliars,
+  tcbTurnsLeft,
 } from "./lib";
 import { estimatedGarboTurns } from "../turns";
 import { globalOptions } from "../config";
@@ -25,7 +26,8 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
   for (const familiar of NO_TCB_FAMILIARS) skipFamiliars.add(familiar);
 
   // If there aren't enough turns to run someone to completion, only check for the current cupid familiar
-  if (estimatedGarboTurns() < ToyCupidBow.turnsLeft()) {
+  const current = ToyCupidBow.currentFamiliar();
+  if (current && estimatedGarboTurns() < tcbTurnsLeft(current, skipFamiliars)) {
     const current = ToyCupidBow.currentFamiliar();
     if (!current) return [];
     if (skipFamiliars.has(current)) return [];
@@ -33,7 +35,8 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
       {
         familiar: current,
         expectedValue:
-          familiarEquipmentValue(current) / ToyCupidBow.turnsLeft(),
+          familiarEquipmentValue(current) /
+          tcbTurnsLeft(current, skipFamiliars),
         worksOnFreeRun: true,
         limit: "cupid",
         leprechaunMultiplier: findLeprechaunMultiplier(current),
@@ -69,7 +72,7 @@ export function getToyCupidBowFamiliars(): GeneralFamiliar[] {
 
     const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
     const expectedValue =
-      familiarEquipmentValue(familiar) / ToyCupidBow.turnsLeft(familiar);
+      familiarEquipmentValue(familiar) / tcbTurnsLeft(familiar, skipFamiliars);
 
     const currentBestValue =
       bestFamiliarsByLeprechaunMultiplier.get(leprechaunMultiplier)

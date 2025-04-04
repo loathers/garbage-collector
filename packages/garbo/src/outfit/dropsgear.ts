@@ -48,7 +48,11 @@ import {
 import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { bonusAccessories } from "./dropsgearAccessories";
-import { familiarEquipmentValue } from "../familiar/lib";
+import {
+  familiarEquipmentValue,
+  getUsedTcbFamiliars,
+  tcbTurnsLeft,
+} from "../familiar/lib";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -497,14 +501,11 @@ function sneegleebs(): Map<Item, number> {
 
 export function toyCupidBow(familiar: Familiar): Map<Item, number> {
   if (!ToyCupidBow.have()) return new Map();
-  if (ToyCupidBow.familiarsToday().includes(familiar)) return new Map();
-  if (estimatedGarboTurns() <= ToyCupidBow.turnsLeft(familiar)) {
+  const turns = tcbTurnsLeft(familiar, getUsedTcbFamiliars());
+  if (estimatedGarboTurns() <= turns) {
     return new Map();
   }
   return new Map([
-    [
-      $item`toy Cupid bow`,
-      familiarEquipmentValue(familiar) / ToyCupidBow.turnsLeft(familiar),
-    ],
+    [$item`toy Cupid bow`, familiarEquipmentValue(familiar) / turns],
   ]);
 }
