@@ -29816,7 +29816,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d4b9b93c82b214d573046ba8931f5dd1425154c5", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("35449ac68e7b792c0c92f91751abcd0610ee0056", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -46407,6 +46407,11 @@ var CockroachSetup = {
         1367: 1
         // Wrecked ship, this uses glue, need a pref for glue to make this not break if we don't have glue
       };
+    },
+    post: function() {
+      if ((0, import_kolmafia143.handlingChoice)() && (0, import_kolmafia143.lastChoice)() === 1367) {
+        (0, import_kolmafia143.runChoice)(2);
+      }
     },
     limit: {
       tries: 8
