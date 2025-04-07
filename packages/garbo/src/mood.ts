@@ -65,6 +65,7 @@ export function meatMood(
     mood.effect($effect`Thoughtful Empathy`);
     mood.effect($effect`Lubricating Sauce`);
     mood.effect($effect`Tubes of Universal Meat`);
+    mood.effect($effect`Strength of the Tortoise`);
   }
 
   mood.skill($skill`The Polka of Plenty`);
