@@ -76,7 +76,13 @@ import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { doCandyTrick, doingGregFight, shouldAugustCast } from "../resources";
-import { doCyberRealmZone3, isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
+import {
+  doCyberRealmZone3,
+  isFreeAndCopyable,
+  kramcoGuaranteed,
+  sober,
+  valueDrops,
+} from "../lib";
 import { wanderer } from "../garboWanderer";
 
 export type GarboFreeFightTask = Extract<
