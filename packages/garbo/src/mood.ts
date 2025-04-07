@@ -2,7 +2,6 @@ import {
   booleanModifier,
   cliExecute,
   Effect,
-  equip,
   getWorkshed,
   haveEffect,
   itemAmount,
@@ -24,7 +23,6 @@ import {
   have,
   Mood,
   uneffect,
-  unequip,
 } from "libram";
 import {
   baseMeat as baseMeatFunc,
