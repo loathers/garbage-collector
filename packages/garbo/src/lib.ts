@@ -81,6 +81,7 @@ import {
   ClosedCircuitPayphone,
   CombatLoversLocket,
   Counter,
+  CyberRealm,
   ensureFreeRun,
   FindActionSourceConstraints,
   get,
@@ -1150,3 +1151,5 @@ export function improvedStats(thing: Item | Effect): Stat[] {
 export function improvesAStat(thing: Item | Effect): boolean {
   return improvedStats(thing).length > 0;
 }
+
+export const doCyberRealmZone3 = get("_cyberFreeFights") === 0 && have($item`zero-trust tanktop`) && garboValue(CyberRealm.zone3Rewards()) > get("valueOfAdventure") * 9;
