@@ -64,21 +64,9 @@ export function meatMood(
   mood.skill($skill`Empathy of the Newt`);
 
   if (have($item`April Shower Thoughts shield`)) {
-    mood.effect($effect`Thoughtful Empathy`, () => {
-      equip($item`April Shower Thoughts shield`);
-      useSkill($skill`Empathy of the Newt`);
-      unequip($item`April Shower Thoughts shield`);
-    });
-    mood.effect($effect`Lubricating Sauce`, () => {
-      equip($item`April Shower Thoughts shield`);
-      useSkill($skill`Sauce Contemplation`);
-      unequip($item`April Shower Thoughts shield`);
-    });
-    mood.effect($effect`Tubes of Universal Meat`, () => {
-      equip($item`April Shower Thoughts shield`);
-      useSkill($skill`Manicotti Meditation`);
-      unequip($item`April Shower Thoughts shield`);
-    });
+    mood.effect($effect`Thoughtful Empathy`);
+    mood.effect($effect`Lubricating Sauce`);
+    mood.effect($effect`Tubes of Universal Meat`);
   }
 
   mood.skill($skill`The Polka of Plenty`);
