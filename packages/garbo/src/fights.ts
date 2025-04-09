@@ -2192,14 +2192,14 @@ export function estimatedFreeFights(): number {
 
 // Possible additional free fights from tentacles
 export function estimatedTentacles(): number {
-  return (
+  const totalFreeFights =
     sum(freeFightSources, (source: FreeFight) => {
       const avail = source.tentacle ? source.available() : 0;
       return typeof avail === "number" ? avail : toInt(avail);
     }) +
     possibleFreeFightQuestTentacleFights() +
-    possibleFreeGiantSandwormQuestTentacleFights()
-  );
+    possibleFreeGiantSandwormQuestTentacleFights();
+  return clamp(totalFreeFights, 0, 11); // Capped at 11 per day
 }
 
 function yachtzee(): void {
