@@ -145,15 +145,20 @@ function consumeSafe(
   additionalValue?: number,
   skipAcquire?: boolean,
 ) {
+  const itemInSnootee = item === get("_dailySpecial");
   const spleenCleaned = spleenCleaners.get(item);
   if (spleenCleaned && mySpleenUse() < spleenCleaned) {
     throw "No spleen to clear with this.";
   }
   const averageAdventures = getAverageAdventures(item);
-  if (!skipAcquire && (averageAdventures > 0 || additionalValue)) {
+  if (
+    !skipAcquire &&
+    !itemInSnootee &&
+    (averageAdventures > 0 || additionalValue)
+  ) {
     const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
     acquire(qty, item, cap, true);
-  } else if (!skipAcquire) {
+  } else if (!skipAcquire && !itemInSnootee) {
     acquire(qty, item);
   }
   if (itemType(item) === "food" || item === saladFork) eatSafe(qty, item);
