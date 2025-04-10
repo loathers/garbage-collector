@@ -493,7 +493,13 @@ function menu(): MenuItem<Note>[] {
 
     // MISC
     ...limitedItems,
-    ...(crimboKeyValue >= 50_000 ? [new MenuItem(mallMin(crimboKeyItems), { additionalValue: crimboKeyValue })] : []),
+    ...(crimboKeyValue >= 50_000
+      ? [
+          new MenuItem(mallMin(crimboKeyItems), {
+            additionalValue: crimboKeyValue,
+          }),
+        ]
+      : []),
 
     // HELPERS
     new MenuItem($item`distention pill`),
