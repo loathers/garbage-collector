@@ -572,9 +572,7 @@ export function bestConsumable(
     const organSpace = consumable.size;
     return {
       edible: edible,
-      value:
-        (buffValue + advValue + crimboKeyValue - mallPrice(edible)) /
-        organSpace,
+      value: (buffValue + advValue - mallPrice(edible)) / organSpace,
     };
   });
   const best = maxBy(organList, "value");
