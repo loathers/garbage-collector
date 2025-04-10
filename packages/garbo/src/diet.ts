@@ -1290,6 +1290,11 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   }
 }
 
+function snootyPrice(item: Item) {
+  if (!inCanadiaSign || item !== get("_dailySpecial")) return 0;
+  return get("_dailySpecialPrice");
+}
+
 export function runDiet(): void {
   withVIPClan(() => {
     if (myFamiliar() === $familiar`Stooper`) {
@@ -1301,6 +1306,7 @@ export function runDiet(): void {
         retrievePrice(item),
         mallPrice(item),
         npcPrice(item),
+        snootyPrice(item),
       ].filter((p) => p > 0 && p < Number.MAX_SAFE_INTEGER);
       if (prices.length > 0) {
         return Math.min(...prices);
