@@ -428,10 +428,7 @@ function menu(): MenuItem<Note>[] {
   const instantKarma = globalOptions.usekarma
     ? $items`Instant Karma`.filter((item) => have(item))
     : [];
-  const crimboKeyItems =
-    crimboKeyValue > 50_000
-      ? $items`corned beet, pickled bread, salted mutton`
-      : [];
+  const crimboKeyItems = $items`corned beet, pickled bread, salted mutton`;
   const limitedItems = [
     ...boxingDayCareItems,
     ...pilsners,
