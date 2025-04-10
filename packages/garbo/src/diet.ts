@@ -24,6 +24,7 @@ import {
   myInebriety,
   myLevel,
   myMaxhp,
+  mySign,
   mySpleenUse,
   npcPrice,
   print,
@@ -95,6 +96,8 @@ print(`Using adventure value ${MPA}.`, HIGHLIGHT);
 const Mayo = MayoClinic.Mayo;
 type Note = PotionTier | null;
 
+const inCanadiaSign = ["Platypus", "Opossum", "Marmot"].includes(mySign());
+
 function eatSafe(qty: number, item: Item) {
   if (
     have($item`Universal Seasoning`) &&
@@ -154,6 +157,7 @@ function consumeSafe(
   }
   const averageAdventures = getAverageAdventures(item);
   const snooteeWorthIt =
+    inCanadiaSign &&
     item === get("_dailySpecial") &&
     get("_dailySpecialPrice") < mallPrice(item);
   if (
@@ -466,7 +470,7 @@ function menu(): MenuItem<Note>[] {
 
   const snooteeDailySpecial = (() => {
     const dailySpecial = get("_dailySpecial");
-    if (dailySpecial) {
+    if (dailySpecial && inCanadiaSign) {
       return [
         new MenuItem(dailySpecial, {
           priceOverride: get("_dailySpecialPrice"),
