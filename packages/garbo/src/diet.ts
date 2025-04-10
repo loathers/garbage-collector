@@ -377,10 +377,6 @@ function legendaryPizzaToMenu(
     );
 }
 
-const crimboKeyValue = garboValue(
-  toItem((toInt(myId()) % 4) + $item`pirate encryption key alpha`.id),
-);
-
 export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
   maxBy(items, mallPrice, true);
 
@@ -423,6 +419,9 @@ function menu(): MenuItem<Note>[] {
     $item`Tea, Earl Grey, Hot`,
   ];
 
+  const crimboKeyValue = garboValue(
+    toItem((toInt(myId()) % 4) + $item`pirate encryption key alpha`.id),
+  );
   const boxingDayCareItems =
     $items`glass of raw eggs, punch-drunk punch`.filter((item) => have(item));
   const pilsners = $items`astral pilsner`.filter((item) => have(item));
@@ -431,9 +430,7 @@ function menu(): MenuItem<Note>[] {
     : [];
   const crimboKeyItems =
     crimboKeyValue > 50_000
-      ? $items`corned beet, pickled bread, salted mutton`.map(
-          (item) => new MenuItem<Note>(item),
-        )
+      ? $items`corned beet, pickled bread, salted mutton`
       : [];
   const limitedItems = [
     ...boxingDayCareItems,
@@ -499,7 +496,7 @@ function menu(): MenuItem<Note>[] {
 
     // MISC
     ...limitedItems,
-    ...crimboKeyItems,
+    new MenuItem(mallMin(crimboKeyItems)),
 
     // HELPERS
     new MenuItem($item`distention pill`),
@@ -544,6 +541,9 @@ export function bestConsumable(
   maxSize?: number,
 ): { edible: Item; value: number } {
   const fullMenu = potionMenu(menu(), 0, 0);
+  const crimboKeyValue = garboValue(
+    toItem((toInt(myId()) % 4) + $item`pirate encryption key alpha`.id),
+  );
   let organMenu = fullMenu.filter(
     (menuItem) => itemType(menuItem.item) === organType,
   );
