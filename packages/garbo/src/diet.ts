@@ -428,7 +428,7 @@ function menu(): MenuItem<Note>[] {
   const instantKarma = globalOptions.usekarma
     ? $items`Instant Karma`.filter((item) => have(item))
     : [];
-  const crimboKeyItems = mallMin(
+  const crimboKeyItem = mallMin(
     $items`corned beet, pickled bread, salted mutton`,
   );
   const limitedItems = [
@@ -495,9 +495,10 @@ function menu(): MenuItem<Note>[] {
 
     // MISC
     ...limitedItems,
-    ...(crimboKeyValue >= 1.15 * mallPrice(crimboKeyItems) // 1.15 is made up
+    ...(crimboKeyValue >=
+    Math.max(mallPrice(crimboKeyItem) + 50_000, get("valueOfAdventure") * 10) // 1.15 is made up
       ? [
-          new MenuItem(crimboKeyItems, {
+          new MenuItem(crimboKeyItem, {
             additionalValue: crimboKeyValue,
             maximum: 5, // 5 is made up
           }),
