@@ -21,6 +21,7 @@ import {
   myClass,
   myFamiliar,
   myFullness,
+  myId,
   myInebriety,
   myLevel,
   myMaxhp,
@@ -376,6 +377,10 @@ function legendaryPizzaToMenu(
     );
 }
 
+const crimboKeyValue = garboValue(
+  toItem((toInt(myId()) % 4) + $item`pirate encryption key alpha`.id),
+);
+
 export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
   maxBy(items, mallPrice, true);
 
@@ -424,6 +429,12 @@ function menu(): MenuItem<Note>[] {
   const instantKarma = globalOptions.usekarma
     ? $items`Instant Karma`.filter((item) => have(item))
     : [];
+  const crimboKeyItems =
+    crimboKeyValue > 50_000
+      ? $items`corned beet, pickled bread, salted mutton`.map(
+          (item) => new MenuItem<Note>(item),
+        )
+      : [];
   const limitedItems = [
     ...boxingDayCareItems,
     ...pilsners,
@@ -488,6 +499,7 @@ function menu(): MenuItem<Note>[] {
 
     // MISC
     ...limitedItems,
+    ...crimboKeyItems,
 
     // HELPERS
     new MenuItem($item`distention pill`),
@@ -566,7 +578,9 @@ export function bestConsumable(
     const organSpace = consumable.size;
     return {
       edible: edible,
-      value: (buffValue + advValue - mallPrice(edible)) / organSpace,
+      value:
+        (buffValue + advValue + crimboKeyValue - mallPrice(edible)) /
+        organSpace,
     };
   });
   const best = maxBy(organList, "value");
