@@ -541,9 +541,6 @@ export function bestConsumable(
   maxSize?: number,
 ): { edible: Item; value: number } {
   const fullMenu = potionMenu(menu(), 0, 0);
-  const crimboKeyValue = garboValue(
-    toItem((toInt(myId()) % 4) + $item`pirate encryption key alpha`.id),
-  );
   let organMenu = fullMenu.filter(
     (menuItem) => itemType(menuItem.item) === organType,
   );
