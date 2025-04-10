@@ -27,11 +27,13 @@ import {
   mySpleenUse,
   npcPrice,
   print,
+  putCloset,
   retrieveItem,
   retrievePrice,
   sellsItem,
   setProperty,
   spleenLimit,
+  takeCloset,
   toInt,
   toItem,
   turnsPerCast,
@@ -67,6 +69,7 @@ import {
   set,
   sum,
   sumNumbers,
+  withProperties,
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
@@ -145,24 +148,41 @@ function consumeSafe(
   additionalValue?: number,
   skipAcquire?: boolean,
 ) {
-  const itemInSnootee = item === get("_dailySpecial");
   const spleenCleaned = spleenCleaners.get(item);
   if (spleenCleaned && mySpleenUse() < spleenCleaned) {
     throw "No spleen to clear with this.";
   }
   const averageAdventures = getAverageAdventures(item);
+  const snooteeWorthIt =
+    item === get("_dailySpecial") &&
+    get("_dailySpecialPrice") < mallPrice(item);
   if (
     !skipAcquire &&
-    !itemInSnootee &&
+    !snooteeWorthIt &&
     (averageAdventures > 0 || additionalValue)
   ) {
     const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
     acquire(qty, item, cap, true);
-  } else if (!skipAcquire && !itemInSnootee) {
+  } else if (!skipAcquire && !snooteeWorthIt) {
     acquire(qty, item);
   }
-  if (itemType(item) === "food" || item === saladFork) eatSafe(qty, item);
-  else if (itemType(item) === "booze" || item === frostyMug) {
+  if (itemType(item) === "food" || item === saladFork) {
+    if (snooteeWorthIt && itemAmount(item) > 0) {
+      // Better to eat from snootees than our inventory in this case
+      // Closet items to not eat them and instead buy from snootees
+      const excessAmount = itemAmount(item);
+      if (excessAmount > 0) putCloset(item, excessAmount);
+      withProperties(
+        { autoSatisfyWithCloset: false, autoSatisfyWithMall: false },
+        () => {
+          eatSafe(qty, item);
+        },
+      );
+      if (excessAmount > 0) takeCloset(item, excessAmount);
+    } else {
+      eatSafe(qty, item);
+    }
+  } else if (itemType(item) === "booze" || item === frostyMug) {
     drinkSafe(qty, item);
   } else if (itemType(item) === "spleen item") chewSafe(qty, item);
   else use(qty, item);
@@ -444,6 +464,19 @@ function menu(): MenuItem<Note>[] {
       new MenuItem<Note>(out.item, { maximum: 1, priceOverride: out.price }),
   );
 
+  const snooteeDailySpecial = (() => {
+    const dailySpecial = get("_dailySpecial");
+    if (dailySpecial) {
+      return [
+        new MenuItem(dailySpecial, {
+          priceOverride: get("_dailySpecialPrice"),
+        }),
+      ];
+    } else {
+      return [];
+    }
+  })();
+
   return [
     // FOOD
     new MenuItem($item`Dreadsylvanian cold pocket`),
@@ -460,6 +493,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(mallMin(smallEpics)),
     new MenuItem($item`green hamhock`),
     ...legendaryPizzas.flat(),
+    ...snooteeDailySpecial.flat(),
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
