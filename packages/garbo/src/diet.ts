@@ -918,7 +918,7 @@ function balanceMenu(
     const fullMenu = potionMenu(
       menu,
       baseTargets + targets,
-      estimatedGarboTurns() + adventures,
+      estimatedGarboTurns(false) + adventures,
     );
     if (iterations <= 0) {
       return fullMenu;
@@ -1026,7 +1026,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
 
   const targets = Math.floor(copyTargetCount() + countCopies(diet));
   const adventures = Math.floor(
-    estimatedGarboTurns() + diet.expectedAdventures(),
+    estimatedGarboTurns(false) + diet.expectedAdventures(),
   );
   print(
     `Planning to fight ${targets} ${globalOptions.target} and run ${adventures} adventures`,
