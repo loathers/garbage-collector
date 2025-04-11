@@ -3,6 +3,7 @@ import {
   availableChoiceOptions,
   canAdventure,
   cliExecute,
+  haveEffect,
   inebrietyLimit,
   Item,
   itemAmount,
@@ -373,11 +374,29 @@ function acquireAbortFreeRun(): GarboPostTask {
   };
 }
 
+function uneffectAttunement(): GarboPostTask {
+  return {
+    name: "Uneffect Eldritch Attunement After 11 Tentacles",
+    ready: () => get("_eldritchTentaclesFoughtToday") >= 11,
+    prepare: () =>
+      acquire(
+        1,
+        $item`soft green echo eyedrop antidote`,
+        haveEffect($effect`Eldritch Attunement`) * get("valueOfAdventure") +
+          20000, // We lose some extra value if a turn taking fight hits during free fights. Higher bound taken. This is an extremely high SGEEA price
+        true,
+      ),
+    completed: () => !have($effect`Eldritch Attunement`),
+    do: () => uneffect($effect`Eldritch Attunement`),
+  };
+}
+
 export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
     completed,
     tasks: [
+      uneffectAttunement(),
       acquireAbortFreeRun(),
       ...workshedTasks(),
       handleDrenchedInLava(),
