@@ -495,12 +495,12 @@ function menu(): MenuItem<Note>[] {
 
     // MISC
     ...limitedItems,
-    ...(crimboKeyValue >=
-    Math.max(mallPrice(crimboKeyItem) + 50_000, get("valueOfAdventure") * 10) // 1.15 is made up
+    ...(crimboKeyValue >= mallPrice(crimboKeyItem)
       ? [
           new MenuItem(crimboKeyItem, {
             additionalValue: crimboKeyValue,
-            maximum: clamp( // Restrict to a 3rd of our open stomach, capped at 5 to avoid using stomach cleansers
+            maximum: clamp(
+              // Restrict to a 3rd of our open stomach, capped at 5 to avoid using stomach cleansers
               Math.floor((fullnessLimit() - myFullness()) / 3),
               0,
               5,
