@@ -495,13 +495,15 @@ function menu(): MenuItem<Note>[] {
       new MenuItem<Note>(out.item, { maximum: 1, priceOverride: out.price }),
   );
 
-  const dailySpecialItem = hasMoonZoneRestaurant()
-    ? [
-        new MenuItem(dailySpecial(), {
-          priceOverride: get("_dailySpecialPrice"),
-        }),
-      ]
-    : [];
+  const dailySpecialItem =
+    hasMoonZoneRestaurant() &&
+    get("_dailySpecialPrice") < mallPrice(dailySpecial())
+      ? [
+          new MenuItem(dailySpecial(), {
+            priceOverride: get("_dailySpecialPrice"),
+          }),
+        ]
+      : [];
 
   return [
     // FOOD
@@ -519,7 +521,6 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(mallMin(smallEpics)),
     new MenuItem($item`green hamhock`),
     ...legendaryPizzas.flat(),
-    ...dailySpecialItem,
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -553,6 +554,7 @@ function menu(): MenuItem<Note>[] {
 
     // MISC
     ...limitedItems,
+    ...dailySpecialItem,
 
     // HELPERS
     new MenuItem($item`distention pill`),
