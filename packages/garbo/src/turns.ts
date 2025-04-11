@@ -21,7 +21,7 @@ import {
  * Computes the estimated number of turns during which garbo will run
  * @returns A guess of how many runs garbo will run in total
  */
-export function estimatedGarboTurns(): number {
+export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
   const pantsgivingAdventures = have($item`Pantsgiving`)
     ? Math.max(0, 2 - get("_pantsgivingFullness")) * 8
@@ -38,12 +38,14 @@ export function estimatedGarboTurns(): number {
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
   // Estimate potential adventures from empty organs
-  const unrealizedOrganAdventures = Math.max(
-    potentialFullnessAdventures() +
-      potentialInebrietyAdventures() +
-      potentialNonOrganAdventures(),
-    0,
-  );
+  const unrealizedOrganAdventures = estimateEmptyOrgans
+    ? Math.max(
+        potentialFullnessAdventures() +
+          potentialInebrietyAdventures() +
+          potentialNonOrganAdventures(),
+        0,
+      )
+    : 0;
 
   let turns;
   if (globalOptions.stopTurncount) {
