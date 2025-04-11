@@ -109,6 +109,7 @@ function availableFromMoonZoneRestaurant(item: Item) {
 }
 
 function eatSafe(qty: number, item: Item) {
+  const usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
   if (
     have($item`Universal Seasoning`) &&
     $item`Universal Seasoning`.dailyusesleft > 0 &&
@@ -128,12 +129,22 @@ function eatSafe(qty: number, item: Item) {
     eat($item`fudge spork`);
   }
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
-
-  if (!eat(qty, item)) throw "Failed to eat safely";
+  withProperties(
+    {
+      autoSatisfyWithCloset: usingMoonZoneRestaurant
+        ? false
+        : get("autoSatisfyWithCloset"),
+      autoSatisfyWithMall: !usingMoonZoneRestaurant,
+    },
+    () => {
+      if (!eat(qty, item)) throw "Failed to eat safely";
+    },
+  );
 }
 
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
+  const usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
   if (have($skill`The Ode to Booze`)) {
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
@@ -144,7 +155,17 @@ function drinkSafe(qty: number, item: Item) {
       );
     }
   }
-  if (!drink(qty, item)) throw "Failed to drink safely";
+  withProperties(
+    {
+      autoSatisfyWithCloset: usingMoonZoneRestaurant
+        ? false
+        : get("autoSatisfyWithCloset"),
+      autoSatisfyWithMall: !usingMoonZoneRestaurant,
+    },
+    () => {
+      if (!drink(qty, item)) throw "Failed to drink safely";
+    },
+  );
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
     // sometimes mafia does not track the mime army shotglass property
     setProperty("_mimeArmyShotglassUsed", "true");
@@ -177,26 +198,25 @@ function consumeSafe(
   } else if (!skipAcquire && !usingMoonZoneRestaurant) {
     acquire(qty, item);
   }
+  // When eating the daily special, we need to closet any excess food, since it's much cheaper to eat the special
+  const excessAmount = usingMoonZoneRestaurant ? itemAmount(item) : 0;
+  if (usingMoonZoneRestaurant && itemAmount(item) > 0) {
+    putCloset(item, excessAmount);
+  }
   if (itemType(item) === "food" || item === saladFork) {
-    if (usingMoonZoneRestaurant && itemAmount(item) > 0) {
-      // Better to eat from snootees than our inventory in this case
-      // Closet items to not eat them and instead buy from snootees
-      const excessAmount = itemAmount(item);
-      if (excessAmount > 0) putCloset(item, excessAmount);
-      withProperties(
-        { autoSatisfyWithCloset: false, autoSatisfyWithMall: false },
-        () => {
-          eatSafe(qty, item);
-        },
-      );
-      if (excessAmount > 0) takeCloset(item, excessAmount);
-    } else {
-      eatSafe(qty, item);
-    }
-  } else if (itemType(item) === "booze" || item === frostyMug) {
+    eatSafe(qty, item);
+    return;
+  }
+  if (itemType(item) === "booze" || item === frostyMug) {
     drinkSafe(qty, item);
-  } else if (itemType(item) === "spleen item") chewSafe(qty, item);
-  else use(qty, item);
+    return;
+  }
+  if (excessAmount > 0) takeCloset(item, excessAmount);
+  if (itemType(item) === "spleen item") {
+    chewSafe(qty, item);
+    return;
+  }
+  use(qty, item);
 }
 
 function propTrue(prop: string | boolean) {
