@@ -35,6 +35,7 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
   $skill,
   AprilingBandHelmet,
   ChestMimic,
@@ -67,6 +68,7 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
+  doCyberRealmZone3,
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
@@ -257,6 +259,39 @@ function dailyDungeon(additionalReady: () => boolean) {
     do: $location`The Daily Dungeon`,
     combat: new GarboStrategy(() => Macro.kill()),
     turns: () => clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
+    spendsTurn: true,
+  };
+}
+
+function cyberRealm3(additionalReady: () => boolean) {
+  return {
+    ready: () =>
+      canAdventure($location`Cyberzone 1`) &&
+      have($item`zero-trust tanktop`) &&
+      have($skill`Torso Awareness`) &&
+      have($skill`OVERCLOCK(10)`) &&
+      doCyberRealmZone3 &&
+      additionalReady(),
+    completed: () => !canAdventure($location`Cyberzone 3`),
+    do: $location`Cyberzone 3`, // TODO Support other zones with better equipment and valuing hacker drops
+    tentacle: false,
+    choices: { 1545: 1 }, // Take damage, get 0's
+    outfit: () =>
+      freeFightOutfit({
+        bonuses: new Map<Item, number>([
+          [$item`familiar-in-the-middle wrapper`, garboValue($item`1`)],
+          [$item`retro floppy disk`, garboValue($item`1`)],
+          [$item`visual packet sniffer`, garboValue($item`1`) / 4], // unspaded droprate
+        ]),
+        shirt: $item`zero-trust tanktop`,
+      }),
+    combat: new GarboStrategy(() =>
+      Macro.if_(
+        $monsters`firewall, ICE barrier, corruption quarantine, parental controls, null container, zombie process, botfly, network worm, ICE man, rat (remote access trojan)`,
+        Macro.trySkillRepeat($skill`Throw Cyber Rock`),
+      ).basicCombat(),
+    ),
+    turns: () => 20 - $location`Cyberzone 3`.turnsSpent,
     spendsTurn: true,
   };
 }
@@ -498,6 +533,11 @@ const NonBarfTurnTasks: AlternateTask[] = [
       freeFightOutfit({
         equip: $items`ring of Detect Boring Doors`,
       }),
+    sobriety: "sober",
+  },
+  {
+    name: "CyberRealm 3",
+    ...cyberRealm3(() => !willDrunkAdventure()),
     sobriety: "sober",
   },
   {
