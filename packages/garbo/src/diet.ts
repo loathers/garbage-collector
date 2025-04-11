@@ -2,8 +2,10 @@ import {
   autosellPrice,
   availableAmount,
   buy,
+  canAdventure,
   chew,
   cliExecute,
+  dailySpecial,
   drink,
   eat,
   Element,
@@ -24,7 +26,6 @@ import {
   myInebriety,
   myLevel,
   myMaxhp,
-  mySign,
   mySpleenUse,
   npcPrice,
   print,
@@ -52,6 +53,7 @@ import {
   $familiar,
   $item,
   $items,
+  $locations,
   $skill,
   clamp,
   DesignerSweatpants,
@@ -96,7 +98,15 @@ print(`Using adventure value ${MPA}.`, HIGHLIGHT);
 const Mayo = MayoClinic.Mayo;
 type Note = PotionTier | null;
 
-const inCanadiaSign = ["Platypus", "Opossum", "Marmot"].includes(mySign());
+function hasMoonZoneRestaurant(): boolean {
+  return $locations`Camp Logging Camp, Thugnderdome`.some((loc) =>
+    canAdventure(loc),
+  );
+}
+
+function availableFromMoonZoneRestaurant(item: Item) {
+  return hasMoonZoneRestaurant() && dailySpecial() === item;
+}
 
 function eatSafe(qty: number, item: Item) {
   if (
@@ -156,22 +166,19 @@ function consumeSafe(
     throw "No spleen to clear with this.";
   }
   const averageAdventures = getAverageAdventures(item);
-  const snooteeWorthIt =
-    inCanadiaSign &&
-    item === get("_dailySpecial") &&
-    get("_dailySpecialPrice") < mallPrice(item);
+  const usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
   if (
     !skipAcquire &&
-    !snooteeWorthIt &&
+    !usingMoonZoneRestaurant &&
     (averageAdventures > 0 || additionalValue)
   ) {
     const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
     acquire(qty, item, cap, true);
-  } else if (!skipAcquire && !snooteeWorthIt) {
+  } else if (!skipAcquire && !usingMoonZoneRestaurant) {
     acquire(qty, item);
   }
   if (itemType(item) === "food" || item === saladFork) {
-    if (snooteeWorthIt && itemAmount(item) > 0) {
+    if (usingMoonZoneRestaurant && itemAmount(item) > 0) {
       // Better to eat from snootees than our inventory in this case
       // Closet items to not eat them and instead buy from snootees
       const excessAmount = itemAmount(item);
@@ -468,18 +475,13 @@ function menu(): MenuItem<Note>[] {
       new MenuItem<Note>(out.item, { maximum: 1, priceOverride: out.price }),
   );
 
-  const snooteeDailySpecial = (() => {
-    const dailySpecial = get("_dailySpecial");
-    if (dailySpecial && inCanadiaSign) {
-      return [
-        new MenuItem(dailySpecial, {
+  const dailySpecialItem = hasMoonZoneRestaurant()
+    ? [
+        new MenuItem(dailySpecial(), {
           priceOverride: get("_dailySpecialPrice"),
         }),
-      ];
-    } else {
-      return [];
-    }
-  })();
+      ]
+    : [];
 
   return [
     // FOOD
@@ -497,7 +499,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(mallMin(smallEpics)),
     new MenuItem($item`green hamhock`),
     ...legendaryPizzas.flat(),
-    ...snooteeDailySpecial.flat(),
+    ...dailySpecialItem,
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -1290,8 +1292,8 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   }
 }
 
-function snootyPrice(item: Item) {
-  if (!inCanadiaSign || item !== get("_dailySpecial")) return 0;
+function dailySpecialPrice(item: Item) {
+  if (!hasMoonZoneRestaurant() || item !== get("_dailySpecial")) return 0;
   return get("_dailySpecialPrice");
 }
 
@@ -1306,7 +1308,7 @@ export function runDiet(): void {
         retrievePrice(item),
         mallPrice(item),
         npcPrice(item),
-        snootyPrice(item),
+        dailySpecialPrice(item),
       ].filter((p) => p > 0 && p < Number.MAX_SAFE_INTEGER);
       if (prices.length > 0) {
         return Math.min(...prices);
