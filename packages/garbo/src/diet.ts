@@ -500,7 +500,11 @@ function menu(): MenuItem<Note>[] {
       ? [
           new MenuItem(crimboKeyItem, {
             additionalValue: crimboKeyValue,
-            maximum: 5, // 5 is made up
+            maximum: clamp( // Restrict to a 3rd of our open stomach, capped at 5 to avoid using stomach cleansers
+              Math.floor((fullnessLimit() - myFullness()) / 3),
+              0,
+              5,
+            ),
           }),
         ]
       : []),
