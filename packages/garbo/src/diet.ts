@@ -108,8 +108,19 @@ function availableFromMoonZoneRestaurant(item: Item) {
   return hasMoonZoneRestaurant() && dailySpecial() === item;
 }
 
-function eatSafe(qty: number, item: Item) {
+function consumeWhileRespectingMoonRestaurant(command: () => void, item: Item) {
   const usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
+  withProperties(
+    {
+      autoSatisfyWithCloset:
+        !usingMoonZoneRestaurant && get("autoSatisfyWithCloset"),
+      autoSatisfyWithMall: !usingMoonZoneRestaurant,
+    },
+    command,
+  );
+}
+
+function eatSafe(qty: number, item: Item) {
   if (
     have($item`Universal Seasoning`) &&
     $item`Universal Seasoning`.dailyusesleft > 0 &&
@@ -129,22 +140,13 @@ function eatSafe(qty: number, item: Item) {
     eat($item`fudge spork`);
   }
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
-  withProperties(
-    {
-      autoSatisfyWithCloset: usingMoonZoneRestaurant
-        ? false
-        : get("autoSatisfyWithCloset"),
-      autoSatisfyWithMall: !usingMoonZoneRestaurant,
-    },
-    () => {
-      if (!eat(qty, item)) throw "Failed to eat safely";
-    },
-  );
+  consumeWhileRespectingMoonRestaurant(() => {
+    if (!eat(qty, item)) throw "Failed to eat safely";
+  }, item);
 }
 
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
-  const usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
   if (have($skill`The Ode to Booze`)) {
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
@@ -155,17 +157,10 @@ function drinkSafe(qty: number, item: Item) {
       );
     }
   }
-  withProperties(
-    {
-      autoSatisfyWithCloset: usingMoonZoneRestaurant
-        ? false
-        : get("autoSatisfyWithCloset"),
-      autoSatisfyWithMall: !usingMoonZoneRestaurant,
-    },
-    () => {
-      if (!drink(qty, item)) throw "Failed to drink safely";
-    },
-  );
+  consumeWhileRespectingMoonRestaurant(() => {
+    if (!drink(qty, item)) throw "Failed to drink safely";
+  }, item);
+
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
     // sometimes mafia does not track the mime army shotglass property
     setProperty("_mimeArmyShotglassUsed", "true");
@@ -188,15 +183,13 @@ function consumeSafe(
   }
   const averageAdventures = getAverageAdventures(item);
   const usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
-  if (
-    !skipAcquire &&
-    !usingMoonZoneRestaurant &&
-    (averageAdventures > 0 || additionalValue)
-  ) {
-    const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
-    acquire(qty, item, cap, true);
-  } else if (!skipAcquire && !usingMoonZoneRestaurant) {
-    acquire(qty, item);
+  if (!skipAcquire && !usingMoonZoneRestaurant) {
+    if (averageAdventures > 0 || additionalValue) {
+      const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
+      acquire(qty, item, cap, true);
+    } else {
+      acquire(qty, item);
+    }
   }
   // When eating the daily special, we need to closet any excess food, since it's much cheaper to eat the special
   const excessAmount = usingMoonZoneRestaurant ? itemAmount(item) : 0;
