@@ -2190,8 +2190,8 @@ export function estimatedFreeFights(): number {
   );
 }
 
-// Possible additional free fights from tentacles
-export function estimatedTentacles(): number {
+// Possible additional free fights from Eldritch Attunement
+export function estimatedAttunementTentacles(): number {
   const totalFreeFights =
     sum(freeFightSources, (source: FreeFight) => {
       const avail = source.tentacle ? source.available() : 0;
@@ -2199,7 +2199,11 @@ export function estimatedTentacles(): number {
     }) +
     possibleFreeFightQuestTentacleFights() +
     possibleFreeGiantSandwormQuestTentacleFights();
-  return clamp(totalFreeFights, 0, 11); // Capped at 11 per day
+  return clamp(
+    totalFreeFights,
+    0,
+    11 - (get("questL02Larva") !== "unstarted" ? 1 : 0), // Capped at 11, minus one if we have access to Science Tent
+  );
 }
 
 function yachtzee(): void {

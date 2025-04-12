@@ -66,7 +66,7 @@ import { withStash } from "../clan";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
-import { estimatedTentacles } from "../fights";
+import { estimatedAttunementTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
@@ -698,7 +698,7 @@ const DailyTasks: GarboTask[] = [
     ready: () =>
       holiday().includes("Generic Summer Holiday") &&
       !have($effect`Eldritch Attunement`) &&
-      estimatedTentacles() * globalOptions.prefs.valueOfFreeFight >
+      estimatedAttunementTentacles() * globalOptions.prefs.valueOfFreeFight >
         get("valueOfAdventure") +
           mallPrice($item`soft green echo eyedrop antidote`), // We have to uneffect once we've capped tentacles
     completed: () => have($effect`Eldritch Attunement`),
