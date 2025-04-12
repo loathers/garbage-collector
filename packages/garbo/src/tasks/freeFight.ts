@@ -280,7 +280,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   {
     name: "Eldritch Tentacle",
     ready: () => get("questL02Larva") !== "unstarted",
-    completed: () => get("_eldritchTentacleFought"),
+    completed: () =>
+      get("_eldritchTentacleFought") ||
+      get("_eldritchTentaclesFoughtToday") >= 11,
     do: () => {
       const haveEldritchEssence = itemAmount($item`eldritch essence`) !== 0;
       visitUrl("place.php?whichplace=forestvillage&action=fv_scientist", false);
