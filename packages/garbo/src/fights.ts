@@ -2202,7 +2202,12 @@ export function estimatedAttunementTentacles(): number {
   return clamp(
     totalFreeFights,
     0,
-    11 - (get("questL02Larva") !== "unstarted" ? 1 : 0), // Capped at 11, minus one if we have access to Science Tent
+    Math.max(
+      0,
+      11 - // Capped at 11,
+        get("_eldritchTentaclesFoughtToday") - // minus what we've already fought,
+        (get("questL02Larva") !== "unstarted" ? 1 : 0), // and minus one if we have access to Science Tent
+    ),
   );
 }
 
