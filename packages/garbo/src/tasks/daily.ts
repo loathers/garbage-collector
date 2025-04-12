@@ -699,8 +699,7 @@ const DailyTasks: GarboTask[] = [
       holiday().includes("Generic Summer Holiday") &&
       !have($effect`Eldritch Attunement`) &&
       estimatedAttunementTentacles() * globalOptions.prefs.valueOfFreeFight >
-        get("valueOfAdventure") +
-          mallPrice($item`soft green echo eyedrop antidote`), // We have to uneffect once we've capped tentacles
+        get("valueOfAdventure"),
     completed: () => have($effect`Eldritch Attunement`),
     do: () => adv1($location`Generic Summer Holiday Swimming!`),
     acquire: [{ item: $item`water wings` }],
