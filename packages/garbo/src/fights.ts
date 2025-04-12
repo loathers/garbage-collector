@@ -1693,6 +1693,7 @@ export function freeFights(): void {
   killRobortCreaturesForFree();
 
   // TODO: Run unconverted free fights
+  // TODO: Once all is grimoirized, move Eldritch Horror free fight to the start and update the uneffect task, so that we can optimize Generic Summer Holiday tentacles.
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
   }
