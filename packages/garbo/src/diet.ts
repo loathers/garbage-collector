@@ -637,10 +637,12 @@ export function bestConsumable(
   }
   const organList = organMenu.map((consumable) => {
     const edible = consumable.item;
-    const buff = getModifier("Effect", edible);
+    const buffs = getModifier("Effect", edible);
     const turnsPerUse = getModifier("Effect Duration", edible);
-    const meatDrop = getModifier("Meat Drop", buff);
-    const famWeight = getModifier("Familiar Weight", buff);
+    const meatDrop = sum(buffs, (buff) => getModifier("Meat Drop", buff));
+    const famWeight = sum(buffs, (buff) =>
+      getModifier("Familiar Weight", buff),
+    );
     const buffValue =
       ((meatDrop + (famWeight * 25) / 10) * turnsPerUse * targetMeat()) / 100;
     const advValue = getAverageAdventures(edible) * get("valueOfAdventure");
