@@ -199,13 +199,14 @@ function consumeSafe(
   }
   if (itemType(item) === "food" || item === saladFork) {
     eatSafe(qty, item);
+    if (excessAmount > 0) takeCloset(item, excessAmount);
     return;
   }
   if (itemType(item) === "booze" || item === frostyMug) {
     drinkSafe(qty, item);
+    if (excessAmount > 0) takeCloset(item, excessAmount);
     return;
   }
-  if (excessAmount > 0) takeCloset(item, excessAmount);
   if (itemType(item) === "spleen item") {
     chewSafe(qty, item);
     return;

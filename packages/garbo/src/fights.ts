@@ -1693,6 +1693,7 @@ export function freeFights(): void {
   killRobortCreaturesForFree();
 
   // TODO: Run unconverted free fights
+  // TODO: Once all is grimoirized, move Eldritch Horror free fight to the start and update the uneffect task, so that we can optimize Generic Summer Holiday tentacles.
   for (const freeFightSource of freeFightSources) {
     freeFightSource.runAll();
   }
@@ -2190,8 +2191,8 @@ export function estimatedFreeFights(): number {
   );
 }
 
-// Possible additional free fights from tentacles
-export function estimatedTentacles(): number {
+// Possible additional free fights from Eldritch Attunement
+export function estimatedAttunementTentacles(): number {
   const totalFreeFights =
     sum(freeFightSources, (source: FreeFight) => {
       const avail = source.tentacle ? source.available() : 0;
@@ -2199,7 +2200,19 @@ export function estimatedTentacles(): number {
     }) +
     possibleFreeFightQuestTentacleFights() +
     possibleFreeGiantSandwormQuestTentacleFights();
-  return clamp(totalFreeFights, 0, 11); // Capped at 11 per day
+  return clamp(
+    totalFreeFights,
+    0,
+    Math.max(
+      0,
+      11 - // Capped at 11,
+        get("_eldritchTentaclesFoughtToday") - // minus what we've already fought,
+        (get("questL02Larva") !== "unstarted" ? 1 : 0) - // minus one if we have access to Science Tent
+        (have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked") // minus one if we have Evoke Eldritch Horror
+          ? 1
+          : 0),
+    ),
+  );
 }
 
 function yachtzee(): void {

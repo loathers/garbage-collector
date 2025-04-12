@@ -3,7 +3,6 @@ import {
   availableChoiceOptions,
   canAdventure,
   cliExecute,
-  haveEffect,
   inebrietyLimit,
   Item,
   itemAmount,
@@ -377,17 +376,13 @@ function acquireAbortFreeRun(): GarboPostTask {
 function uneffectAttunement(): GarboPostTask {
   return {
     name: "Uneffect Eldritch Attunement After 11 Tentacles",
-    ready: () => get("_eldritchTentaclesFoughtToday") >= 11,
-    prepare: () =>
-      acquire(
-        1,
-        $item`soft green echo eyedrop antidote`,
-        haveEffect($effect`Eldritch Attunement`) * get("valueOfAdventure") +
-          20000, // We lose some extra value if a turn taking fight hits during free fights. Higher bound taken. This is an extremely high SGEEA price
-        true,
-      ),
+    ready: () =>
+      get("_eldritchTentaclesFoughtToday") >=
+      (have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked") // Shrug at 10 if we plan to fight Eldritch Horror TODO: Remove this once we grimoirize everything and can re-order and do Eldritch Horror first
+        ? 10
+        : 11),
     completed: () => !have($effect`Eldritch Attunement`),
-    do: () => uneffect($effect`Eldritch Attunement`),
+    do: () => uneffect($effect`Eldritch Attunement`), // Shruggable
   };
 }
 
