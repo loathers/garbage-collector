@@ -294,7 +294,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   {
     name: $skill`Evoke Eldritch Horror`.name,
     ready: () => have($skill`Evoke Eldritch Horror`),
-    completed: () => get("_eldritchHorrorEvoked"),
+    completed: () =>
+      get("_eldritchHorrorEvoked") ||
+      get("_eldritchTentaclesFoughtToday") >= 11,
     do: () => {
       useSkill($skill`Evoke Eldritch Horror`);
       if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);

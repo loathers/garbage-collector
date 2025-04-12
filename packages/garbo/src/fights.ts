@@ -2206,7 +2206,10 @@ export function estimatedAttunementTentacles(): number {
       0,
       11 - // Capped at 11,
         get("_eldritchTentaclesFoughtToday") - // minus what we've already fought,
-        (get("questL02Larva") !== "unstarted" ? 1 : 0), // and minus one if we have access to Science Tent
+        (get("questL02Larva") !== "unstarted" ? 1 : 0) - // minus one if we have access to Science Tent
+        (have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked") // minus one if we have Evoke Eldritch Horror
+          ? 1
+          : 0),
     ),
   );
 }

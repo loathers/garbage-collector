@@ -376,7 +376,11 @@ function acquireAbortFreeRun(): GarboPostTask {
 function uneffectAttunement(): GarboPostTask {
   return {
     name: "Uneffect Eldritch Attunement After 11 Tentacles",
-    ready: () => get("_eldritchTentaclesFoughtToday") >= 11,
+    ready: () =>
+      get("_eldritchTentaclesFoughtToday") >=
+      (have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked") // Shrug at 10 if we plan to fight Eldritch Horror
+        ? 10
+        : 11),
     completed: () => !have($effect`Eldritch Attunement`),
     do: () => uneffect($effect`Eldritch Attunement`), // Shruggable
   };
