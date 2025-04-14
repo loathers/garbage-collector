@@ -10,11 +10,13 @@ import {
   $item,
   findFairyMultiplier,
   get,
+  getModifier,
   have,
   maxBy,
   set,
 } from "libram";
 import { menu } from "./freeFightFamiliar";
+import { MEAT_TARGET_MULTIPLIER } from "../lib";
 
 let bestNonCheerleaderFairy: Familiar;
 
@@ -70,6 +72,18 @@ export function sandwormFamiliar(): Familiar {
         familiar: $familiar`Reagnimated Gnome`,
         expectedValue: (get("valueOfAdventure") * 70) / 1000,
         leprechaunMultiplier: 0,
+        limit: "none",
+      },
+      {
+        familiar: $familiar`Grey Goose`,
+        expectedValue: !(get("_meatifyMatterUsed")) ? (15 ** 4) / 400 * getModifier("Familiar Experience") : 0,
+        leprechaunMultiplier: 0,
+        limit: "none",
+      },
+      {
+        familiar: $familiar`Chest Mimic`,
+        expectedValue: getModifier("Familiar Experience") * MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure") / 50,
+        leprechaunMultiplier: 1,
         limit: "none",
       },
     ];
