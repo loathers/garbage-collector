@@ -29909,7 +29909,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("bb095809ff38d3da30f299331a5b1f33acd13de9", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2fa13841d13603456e3093710bfdf4bb9fe90a73", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -37271,7 +37271,8 @@ function mayamCalendarSummon() {
         for (_iterator.s(); !(_step = _iterator.n()).done; ) {
           var combination = _step.value;
           if (combination.includes("fur")) {
-            var bestFamiliar2 = maxBy(getExperienceFamiliars("free"), "expectedValue").familiar;
+            var famList = getExperienceFamiliars("free");
+            var bestFamiliar2 = famList.length > 0 ? maxBy(famList, "expectedValue").familiar : meatFamiliar();
             (0, import_kolmafia123.useFamiliar)(bestFamiliar2);
           }
           MayamCalendar_exports.submit(combination);
