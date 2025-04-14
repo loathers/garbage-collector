@@ -16,6 +16,7 @@ import { effectValue } from "../potions";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { felizValue } from "../lib";
 import { GarboTask } from "../tasks/engine";
+import { meatFamiliar } from "../familiar";
 // Stats assigned a value of 1, to discern from the Truly Useless
 // MP restore assigned a value of 2, because it's better than stats!
 const MAYAM_RING_VALUES = {
@@ -152,10 +153,11 @@ export function mayamCalendarSummon(): GarboTask {
       const startingFamiliar = myFamiliar();
       for (const combination of getBestMayamCombinations()) {
         if (combination.includes("fur")) {
-          const bestFamiliar = maxBy(
-            getExperienceFamiliars("free"),
-            "expectedValue",
-          ).familiar;
+          const famList = getExperienceFamiliars("free");
+          const bestFamiliar =
+            famList.length > 0
+              ? maxBy(famList, "expectedValue").familiar
+              : meatFamiliar();
           useFamiliar(bestFamiliar);
         }
         MayamCalendar.submit(combination);
