@@ -76,13 +76,19 @@ export function sandwormFamiliar(): Familiar {
       },
       {
         familiar: $familiar`Grey Goose`,
-        expectedValue: !(get("_meatifyMatterUsed")) ? (15 ** 4) / 400 * getModifier("Familiar Experience") : 0,
+        expectedValue: !get("_meatifyMatterUsed")
+          ? (15 ** 4 / 400) * getModifier("Familiar Experience")
+          : 0,
         leprechaunMultiplier: 0,
         limit: "none",
       },
       {
         familiar: $familiar`Chest Mimic`,
-        expectedValue: getModifier("Familiar Experience") * MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure") / 50,
+        expectedValue:
+          (getModifier("Familiar Experience") *
+            MEAT_TARGET_MULTIPLIER() *
+            get("valueOfAdventure")) /
+          50,
         leprechaunMultiplier: 1,
         limit: "none",
       },
