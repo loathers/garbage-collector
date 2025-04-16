@@ -1152,7 +1152,16 @@ export function improvesAStat(thing: Item | Effect): boolean {
   return improvedStats(thing).length > 0;
 }
 
-export const doCyberRealmZone3 =
-  get("_cyberFreeFights") === 0 &&
-  have($item`zero-trust tanktop`) &&
-  garboValue(CyberRealm.zone3Rewards()) > get("valueOfAdventure") * 9;
+export function doCyberRealmZone3(): boolean {
+  const turnCost =
+    20 - get("_cyberZone3Turns") - Math.max(10 - get("_cyberFreeFights"), 0);
+  return (
+    get("_cyberFreeFights") === 0 &&
+    have($item`zero-trust tanktop`) &&
+    garboValue(CyberRealm.zone3Rewards()) > get("valueOfAdventure") * turnCost
+  );
+}
+
+export function cyberRealmZone(): Location {
+  return doCyberRealmZone3() ? $location`Cyberzone 3` : $location`Cyberzone 1`;
+}

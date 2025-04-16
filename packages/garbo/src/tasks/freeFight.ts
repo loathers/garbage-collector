@@ -77,7 +77,7 @@ import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { doCandyTrick, doingGregFight, shouldAugustCast } from "../resources";
 import {
-  doCyberRealmZone3,
+  cyberRealmZone,
   isFreeAndCopyable,
   kramcoGuaranteed,
   sober,
@@ -880,7 +880,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       have($skill`Torso Awareness`) &&
       have($skill`OVERCLOCK(10)`),
     completed: () => get("_cyberFreeFights") >= 10,
-    do: doCyberRealmZone3 ? $location`Cyberzone 3` : $location`Cyberzone 1`, // TODO Support other zones with better equipment and valuing hacker drops
+    do: cyberRealmZone(), // TODO Support other zones with better equipment and valuing hacker drops
     tentacle: false,
     choices: { 1545: 1 }, // Take damage, get 0's
     outfit: () =>
