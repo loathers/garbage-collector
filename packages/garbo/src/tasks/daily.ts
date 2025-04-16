@@ -833,7 +833,9 @@ const DailyTasks: GarboTask[] = [
       mallPrice($item`almost-dead walkie-talkie`) <
         globalOptions.prefs.valueOfFreeFight &&
       get("nextParanormalActivity") <= totalTurnsPlayed(),
-    completed: () => get("questPAGhost") === "started",
+    completed: () =>
+      have($item`protonic accelerator pack`) ||
+      get("questPAGhost") === "started",
     do: () => {
       if (
         acquire(
