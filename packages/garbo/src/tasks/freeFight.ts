@@ -209,16 +209,22 @@ const stunDurations = new Map<Skill | Item, Delayed<number>>([
 const FreeFightTasks: GarboFreeFightTask[] = [
   {
     name: $item`protonic accelerator pack`.name,
-    ready: () =>
-      have($item`protonic accelerator pack`) &&
-      get("questPAGhost") !== "unstarted" &&
-      get("ghostLocation") !== null,
+    ready: () => get("ghostLocation") !== null,
     completed: () => get("questPAGhost") === "unstarted",
     choices: () =>
       wanderer().getChoices(get("ghostLocation") ?? $location.none),
     do: () => get("ghostLocation") ?? $location.none,
-    combat: new GarboStrategy(() => Macro.ghostBustin()),
-    outfit: () => freeFightOutfit({ back: $item`protonic accelerator pack` }),
+    combat: new GarboStrategy(() =>
+      have($item`protonic accelerator pack`)
+        ? Macro.ghostBustin()
+        : Macro.basicCombat(),
+    ),
+    outfit: () =>
+      freeFightOutfit({
+        back: have($item`protonic accelerator pack`)
+          ? $item`protonic accelerator pack`
+          : [],
+      }),
     tentacle: true,
   },
   {
