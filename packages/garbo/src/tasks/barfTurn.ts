@@ -672,6 +672,7 @@ const BarfTurnTasks: GarboTask[] = [
       }
     },
     spendsTurn: false,
+    limit: { skip: 40 }, // Safeguard to avoid infinite loops if mallPrice can bug
   },
   {
     name: "Proton Ghost",
