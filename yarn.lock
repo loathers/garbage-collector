@@ -3888,7 +3888,7 @@ __metadata:
     "@types/eslint__js": ^8.42.3
     eslint: ^9.9.0
     eslint-config-prettier: ^9.1.0
-    eslint-plugin-libram: ^0.4.24
+    eslint-plugin-libram: ^0.4.26
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -3912,13 +3912,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.4.24":
-  version: 0.4.24
-  resolution: "eslint-plugin-libram@npm:0.4.24"
+"eslint-plugin-libram@npm:^0.4.26":
+  version: 0.4.26
+  resolution: "eslint-plugin-libram@npm:0.4.26"
   dependencies:
     html-entities: ^2.5.2
     requireindex: ~1.2.0
-  checksum: f11e3cbf4760679da27f83c0e66669048d6e8bf6677e1be7e02386327d40da5a7cd077eebe61eb59a2efe5069e39a40fd5167912c081b06bc133ccdda4eca466
+  checksum: bd22faf4c74250df0e9790a40aa5f7fc90dc53259ee1ca0066e407ab96cfbc49e3fb2f2b49a4b716b067798f367afcd2a4bf1a4caa31892dccdbd61ea3fdc4c9
   languageName: node
   linkType: hard
 
@@ -4335,14 +4335,14 @@ __metadata:
     eslint: ^9.9.0
     eslint-config-garbo: ^0.0.1
     kolmafia: ^5.28389.0
-    libram: ^0.10.13
+    libram: ^0.11.1
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
     typescript: ^5.5.4
   peerDependencies:
     kolmafia: ^5.28389.0
-    libram: ^0.10.7
+    libram: ^0.11.0
   languageName: unknown
   linkType: soft
 
@@ -4390,7 +4390,7 @@ __metadata:
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.29
     kolmafia: ^5.28389.0
-    libram: ^0.10.13
+    libram: ^0.11.1
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -5054,14 +5054,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:^0.10.13":
-  version: 0.10.13
-  resolution: "libram@npm:0.10.13"
+"libram@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "libram@npm:0.11.1"
   dependencies:
     html-entities: ^2.5.2
   peerDependencies:
     kolmafia: ^5.28100.0
-  checksum: 3dd747f389bccfe902c5b0de292f920fa7969e0bea862c0b33e9083ae71682a85182ecc0ae062e2ecfd0ecde02f3fcfd0b948bf5ef1617fbe29ecdb886d82dd3
+  checksum: 16dc77b1560cb0f772f9f222303e2899e689617f896c503c39fe504ded9f3d59a701b96fafa1c56da6e1666806aed4b1825405d4502ecdbb998a77d04848bec7
   languageName: node
   linkType: hard
 

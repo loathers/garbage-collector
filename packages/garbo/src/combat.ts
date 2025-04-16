@@ -843,8 +843,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Recall Facts: Monster Habitats`),
         )
         .externalIf(
-          have($skill`Recall Facts: %phylum Circadian Rhythms`) &&
-            !get("_circadianRhythmsRecalled"),
+          have($skill`Just the Facts`) && !get("_circadianRhythmsRecalled"),
           Macro.trySkill($skill`Recall Facts: %phylum Circadian Rhythms`),
         )
         .externalIf(

@@ -152,6 +152,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
           wait(10 + i * 2);
           if (!have($item`photocopied monster`)) {
             cliExecute("fax receive");
+            examine($item`photocopied monster`);
             if (get("photocopyMonster") === globalOptions.target) {
               break;
             }

@@ -6,6 +6,7 @@ import {
   canEquip,
   cliExecute,
   currentRound,
+  equip,
   getCampground,
   getClanName,
   guildStoreAvailable,
@@ -35,6 +36,7 @@ import {
   $class,
   $classes,
   $coinmaster,
+  $familiars,
   $item,
   $items,
   $monster,
@@ -493,6 +495,11 @@ export function main(argString = ""): void {
       );
     }
     propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
+
+    const equipmentFamiliars = $familiars`Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow`;
+    for (const familiar of equipmentFamiliars.filter(have)) {
+      equip(familiar, $item.none);
+    }
 
     safeRestore();
 
