@@ -3,6 +3,7 @@ import {
   Familiar,
   familiarEquipment,
   inebrietyLimit,
+  mallPrice,
   myAdventures,
   myInebriety,
   totalTurnsPlayed,
@@ -58,9 +59,12 @@ export function timeToMeatify(): boolean {
     have($item`latte lovers member's mug`) &&
     get("latteModifier").split(",").includes("Meat Drop: 40");
 
-  const nextProtonicGhost = have($item`protonic accelerator pack`)
-    ? Math.max(1, get("nextParanormalActivity") - totalTurns)
-    : Infinity;
+  const nextProtonicGhost =
+    have($item`protonic accelerator pack`) ||
+    mallPrice($item`almost-dead walkie-talkie`) <
+      globalOptions.prefs.valueOfFreeFight
+      ? Math.max(1, get("nextParanormalActivity") - totalTurns)
+      : Infinity;
   const nextVoteMonster =
     have($item`"I Voted!" sticker`) && get("_voteFreeFights") < 3
       ? Math.max(0, ((totalTurns % 11) - 1) % 11)

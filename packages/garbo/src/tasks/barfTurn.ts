@@ -651,9 +651,32 @@ const BarfTurnTasks: GarboTask[] = [
     ),
   },
   {
-    name: "Proton Ghost",
+    name: "Use Walkie Talkie for Ghost",
     ready: () =>
-      have($item`protonic accelerator pack`) && !!get("ghostLocation"),
+      mallPrice($item`almost-dead walkie-talkie`) <
+        globalOptions.prefs.valueOfFreeFight &&
+      get("nextParanormalActivity") <= totalTurnsPlayed(),
+    completed: () =>
+      have($item`protonic accelerator pack`) ||
+      get("questPAGhost") === "started",
+    do: () => {
+      if (
+        acquire(
+          1,
+          $item`almost-dead walkie-talkie`,
+          globalOptions.prefs.valueOfFreeFight,
+          false,
+        )
+      ) {
+        use($item`almost-dead walkie-talkie`);
+      }
+    },
+    spendsTurn: false,
+    limit: { skip: 40 }, // Safeguard to avoid infinite loops if mallPrice can bug
+  },
+  {
+    name: "Proton Ghost",
+    ready: () => !!get("ghostLocation"),
     completed: () => get("questPAGhost") === "unstarted",
     do: () => get("ghostLocation") as Location,
     outfit: () =>
@@ -662,11 +685,17 @@ const BarfTurnTasks: GarboTask[] = [
           get("ghostLocation") === $location`The Icy Peak`
             ? ["Cold Resistance 5 min"]
             : [],
-        back: $item`protonic accelerator pack`,
+        back: have($item`protonic accelerator pack`)
+          ? $item`protonic accelerator pack`
+          : [],
       }),
     choices: () =>
       wanderer().getChoices(get("ghostLocation") ?? $location.none),
-    combat: new GarboStrategy(() => Macro.ghostBustin()),
+    combat: new GarboStrategy(() =>
+      have($item`protonic accelerator pack`)
+        ? Macro.ghostBustin()
+        : Macro.basicCombat(),
+    ),
     spendsTurn: false,
     // Ghost fights are currently hard
     // and they resist physical attacks!
