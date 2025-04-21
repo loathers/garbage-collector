@@ -25180,6 +25180,7 @@ var require_wanderer = __commonJS({
     var _templateObject3531;
     var _templateObject3631;
     var _templateObject3731;
+    var _templateObject3831;
     function _classCallCheck34(a, n) {
       if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
     }
@@ -25458,38 +25459,42 @@ var require_wanderer = __commonJS({
           [(0, libram_1.$location)(_templateObject2644 || (_templateObject2644 = _taggedTemplateLiteral144(["The Hidden Office Building"]))), {
             786: 6
           }],
-          [(0, libram_1.$location)(_templateObject2744 || (_templateObject2744 = _taggedTemplateLiteral144(["Cobb's Knob Barracks"]))), {
+          [(0, libram_1.$location)(_templateObject2744 || (_templateObject2744 = _taggedTemplateLiteral144(["The Hidden Temple"]))), {
+            581: 3
+          }],
+          // Fight clan of cave bars
+          [(0, libram_1.$location)(_templateObject2841 || (_templateObject2841 = _taggedTemplateLiteral144(["Cobb's Knob Barracks"]))), {
             522: 2
           }],
           // skip
-          [(0, libram_1.$location)(_templateObject2841 || (_templateObject2841 = _taggedTemplateLiteral144(["The Penultimate Fantasy Airship"]))), {
+          [(0, libram_1.$location)(_templateObject2941 || (_templateObject2941 = _taggedTemplateLiteral144(["The Penultimate Fantasy Airship"]))), {
             178: 2,
             182: 1
           }],
           // Skip, and Fight random enemy
-          [(0, libram_1.$location)(_templateObject2941 || (_templateObject2941 = _taggedTemplateLiteral144(["The Haiku Dungeon"]))), {
+          [(0, libram_1.$location)(_templateObject3040 || (_templateObject3040 = _taggedTemplateLiteral144(["The Haiku Dungeon"]))), {
             297: 3
           }],
           // skip
-          [(0, libram_1.$location)(_templateObject3040 || (_templateObject3040 = _taggedTemplateLiteral144(["Frat House"]))), {
+          [(0, libram_1.$location)(_templateObject31106 || (_templateObject31106 = _taggedTemplateLiteral144(["Frat House"]))), {
             1425: 4
           }],
           // fight eXtreme Sports Orcs
-          [(0, libram_1.$location)(_templateObject31106 || (_templateObject31106 = _taggedTemplateLiteral144(["Madness Bakery"]))), {
+          [(0, libram_1.$location)(_templateObject3243 || (_templateObject3243 = _taggedTemplateLiteral144(["Madness Bakery"]))), {
             1061: 6
           }],
-          [(0, libram_1.$location)(_templateObject3243 || (_templateObject3243 = _taggedTemplateLiteral144(["The Skeleton Store"]))), {
+          [(0, libram_1.$location)(_templateObject3337 || (_templateObject3337 = _taggedTemplateLiteral144(["The Skeleton Store"]))), {
             1060: 5
           }],
-          [(0, libram_1.$location)(_templateObject3337 || (_templateObject3337 = _taggedTemplateLiteral144(["The Overgrown Lot"]))), {
+          [(0, libram_1.$location)(_templateObject3435 || (_templateObject3435 = _taggedTemplateLiteral144(["The Overgrown Lot"]))), {
             1062: 7
           }]
         ]));
         _defineProperty48(this, "equipment", new Map([].concat(_toConsumableArray71(kolmafia_1.Location.all().filter(function(l) {
           return l.zone === "The 8-Bit Realm";
         }).map(function(l) {
-          return [l, (0, libram_1.$items)(_templateObject3435 || (_templateObject3435 = _taggedTemplateLiteral144(["continuum transfunctioner"])))];
-        })), [[(0, libram_1.$location)(_templateObject3531 || (_templateObject3531 = _taggedTemplateLiteral144(["Shadow Rift (The 8-Bit Realm)"]))), (0, libram_1.$items)(_templateObject3631 || (_templateObject3631 = _taggedTemplateLiteral144(["continuum transfunctioner"])))]])));
+          return [l, (0, libram_1.$items)(_templateObject3531 || (_templateObject3531 = _taggedTemplateLiteral144(["continuum transfunctioner"])))];
+        })), [[(0, libram_1.$location)(_templateObject3631 || (_templateObject3631 = _taggedTemplateLiteral144(["Shadow Rift (The 8-Bit Realm)"]))), (0, libram_1.$items)(_templateObject3731 || (_templateObject3731 = _taggedTemplateLiteral144(["continuum transfunctioner"])))]])));
         _defineProperty48(this, "cacheKey", "");
         _defineProperty48(this, "targets", {});
         _defineProperty48(this, "options", void 0);
@@ -25511,7 +25516,7 @@ var require_wanderer = __commonJS({
           if (this.cacheKey !== newKey) this.clear();
           this.cacheKey = newKey;
           var locationSkipList = allowEquipment ? [] : _toConsumableArray71(this.equipment.keys());
-          return sober2() || !drunkSafe ? (_this$targets$_ref = (_this$targets = this.targets)[_ref2 = "".concat(draggableFight, ":").concat(allowEquipment)]) !== null && _this$targets$_ref !== void 0 ? _this$targets$_ref : _this$targets[_ref2] = wanderWhere(this.options, draggableFight, [], locationSkipList) : (0, libram_1.$location)(_templateObject3731 || (_templateObject3731 = _taggedTemplateLiteral144(["Drunken Stupor"])));
+          return sober2() || !drunkSafe ? (_this$targets$_ref = (_this$targets = this.targets)[_ref2 = "".concat(draggableFight, ":").concat(allowEquipment)]) !== null && _this$targets$_ref !== void 0 ? _this$targets$_ref : _this$targets[_ref2] = wanderWhere(this.options, draggableFight, [], locationSkipList) : (0, libram_1.$location)(_templateObject3831 || (_templateObject3831 = _taggedTemplateLiteral144(["Drunken Stupor"])));
         }
         /**
          * Get choice map for the upcoming wander
@@ -29921,7 +29926,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("fa0d288fc043dec461586799ea5bba107c3ac447", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("884a759f37d1c7f385afcd5dbde9a0bf583f4696", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
