@@ -29926,7 +29926,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("884a759f37d1c7f385afcd5dbde9a0bf583f4696", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("384b4a46d2ff226bc9af417dc4f48c8d2fb6bab6", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -41671,7 +41671,7 @@ var FreeFightTasks = [
           retrocape: ["robot", "kiss"]
         },
         avoid: $items(_templateObject8612 || (_templateObject8612 = _taggedTemplateLiteral128(["mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord"]))),
-        modifier: (0, import_kolmafia137.numericModifier)("Monster Level") >= 50 ? "-Monster Level" : []
+        modifier: (0, import_kolmafia137.numericModifier)("Monster Level") >= 50 ? "-7 Monster Level" : "-Monster Level"
         // Above 50 ML, monsters resist stuns.
       }, {
         familiarOptions: {
