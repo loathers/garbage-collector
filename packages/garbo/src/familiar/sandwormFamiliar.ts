@@ -66,7 +66,9 @@ export function sandwormFamiliar(): Familiar {
   }
 
   const bonuses = [
-    ...menu(),
+    ...menu({
+      canChooseMacro: false,
+    }),
     {
       familiar: $familiar`Reagnimated Gnome`,
       expectedValue: (get("valueOfAdventure") * 70) / 1000,
