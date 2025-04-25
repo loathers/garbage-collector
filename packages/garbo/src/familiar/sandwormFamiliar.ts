@@ -15,6 +15,7 @@ import {
   set,
 } from "libram";
 import { menu } from "./freeFightFamiliar";
+import { getUsedTcbFamiliars, tcbValue } from "./lib";
 
 export function sandwormFamiliar(): Familiar {
   if (
@@ -77,9 +78,13 @@ export function sandwormFamiliar(): Familiar {
     },
   ];
 
+  const tcbFamiliars = getUsedTcbFamiliars();
+
   const bestNonCheerleaderFairy = maxBy(
     goodFairies,
-    (f) => bonuses.find(({ familiar }) => familiar === f)?.expectedValue ?? 0,
+    (f) =>
+      bonuses.find(({ familiar }) => familiar === f)?.expectedValue ??
+      tcbValue(f, tcbFamiliars),
   );
 
   if (
