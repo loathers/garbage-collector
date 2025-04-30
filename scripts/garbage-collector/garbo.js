@@ -29926,7 +29926,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("384b4a46d2ff226bc9af417dc4f48c8d2fb6bab6", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("10d32c8bf7f912272557f2f981a731a765f20067", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -44046,21 +44046,18 @@ var freeRunFightSources = [].concat(_toConsumableArray65(["cajun", "rawhide", "c
     if (!best) throw "Unable to find fire extinguisher zone?";
     var mappingMonster = Cartography_exports.availableMaps() > 0 && best.location.wanderers;
     var monsters = asArray(best.monster);
-    try {
-      if (best.preReq) best.preReq();
-      var hasXO = (0, import_kolmafia140.myFamiliar)() === $familiar(_templateObject2005 || (_templateObject2005 = _taggedTemplateLiteral131(["XO Skeleton"])));
-      if ((0, import_kolmafia140.myThrall)() !== $thrall.none) (0, import_kolmafia140.useSkill)($skill(_templateObject20113 || (_templateObject20113 = _taggedTemplateLiteral131(["Dismiss Pasta Thrall"]))));
-      Macro2.if_(monsters.map(function(m) {
-        return "!monsterid ".concat(m.id);
-      }).join(" && "), runSource.macro).externalIf(hasXO && get("_xoHugsUsed") < 11, Macro2.skill($skill(_templateObject20212 || (_templateObject20212 = _taggedTemplateLiteral131(["Hugs and Kisses!"]))))).externalIf(!best.requireMapTheMonsters && hasXO && get("_xoHugsUsed") < 10, Macro2.step(itemStealOlfact(best))).trySkillRepeat($skill(_templateObject20311 || (_templateObject20311 = _taggedTemplateLiteral131(["Fire Extinguisher: Polar Vortex"]))), $skill(_templateObject2045 || (_templateObject2045 = _taggedTemplateLiteral131(["Perpetrate Mild Evil"]))), $skill(_templateObject2055 || (_templateObject2055 = _taggedTemplateLiteral131(["Swoop like a Bat"])))).step(runSource.macro).setAutoAttack();
+    if (best.preReq) best.preReq();
+    var hasXO = (0, import_kolmafia140.myFamiliar)() === $familiar(_templateObject2005 || (_templateObject2005 = _taggedTemplateLiteral131(["XO Skeleton"])));
+    if ((0, import_kolmafia140.myThrall)() !== $thrall.none) (0, import_kolmafia140.useSkill)($skill(_templateObject20113 || (_templateObject20113 = _taggedTemplateLiteral131(["Dismiss Pasta Thrall"]))));
+    withMacro(Macro2.if_(monsters.map(function(m) {
+      return "!monsterid ".concat(m.id);
+    }).join(" && "), runSource.macro).externalIf(hasXO && get("_xoHugsUsed") < 11, Macro2.skill($skill(_templateObject20212 || (_templateObject20212 = _taggedTemplateLiteral131(["Hugs and Kisses!"]))))).externalIf(!best.requireMapTheMonsters && hasXO && get("_xoHugsUsed") < 10, Macro2.step(itemStealOlfact(best))).trySkillRepeat($skill(_templateObject20311 || (_templateObject20311 = _taggedTemplateLiteral131(["Fire Extinguisher: Polar Vortex"]))), $skill(_templateObject2045 || (_templateObject2045 = _taggedTemplateLiteral131(["Perpetrate Mild Evil"]))), $skill(_templateObject2055 || (_templateObject2055 = _taggedTemplateLiteral131(["Swoop like a Bat"])))).step(runSource.macro), function() {
       if (mappingMonster) {
         mapMonster2(best.location, monsters[0]);
       } else {
         (0, import_kolmafia140.adv1)(best.location, -1, "");
       }
-    } finally {
-      (0, import_kolmafia140.setAutoAttack)(0);
-    }
+    }, true);
   }, {
     spec: function() {
       var _zone$maximize;
@@ -44568,7 +44565,7 @@ function setupItemStealZones() {
   });
 }
 function itemStealOlfact(best) {
-  return Macro2.externalIf(have($skill(_templateObject3342 || (_templateObject3342 = _taggedTemplateLiteral131(["Transcendent Olfaction"])))) && get("_olfactionsUsed") < 1 && itemStealZones.every(function(zone) {
+  return best.location.zone === "Shadow Rift" ? new Macro2() : Macro2.externalIf(have($skill(_templateObject3342 || (_templateObject3342 = _taggedTemplateLiteral131(["Transcendent Olfaction"])))) && get("_olfactionsUsed") < 1 && itemStealZones.every(function(zone) {
     return !asArray(zone.monster).includes(get("olfactedMonster"));
   }), Macro2.skill($skill(_templateObject3352 || (_templateObject3352 = _taggedTemplateLiteral131(["Transcendent Olfaction"]))))).externalIf(have($skill(_templateObject3362 || (_templateObject3362 = _taggedTemplateLiteral131(["Gallapagosian Mating Call"])))) && get("_gallapagosMonster") !== best.monster, Macro2.skill($skill(_templateObject3372 || (_templateObject3372 = _taggedTemplateLiteral131(["Gallapagosian Mating Call"])))));
 }
