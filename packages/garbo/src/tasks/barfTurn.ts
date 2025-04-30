@@ -7,6 +7,7 @@ import {
   canEquip,
   eat,
   getWorkshed,
+  haveEquipped,
   inebrietyLimit,
   Item,
   itemAmount,
@@ -249,7 +250,17 @@ function dailyDungeon(additionalReady: () => boolean) {
       garboValue($item`fat loot token`) >
         get("valueOfAdventure") *
           clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
-    choices: () => ({ 689: 1, 690: 2, 691: 2, 692: 3, 693: 2 }),
+    choices: () => ({
+      689: 1,
+      690: 2,
+      691:
+        haveEquipped($item`candy cane sword cane`) &&
+        !get("candyCaneSwordDailyDungeon")
+          ? 4
+          : 2,
+      692: 3,
+      693: 2,
+    }),
     acquire:
       $items`ring of Detect Boring Doors, eleven-foot pole, Pick-O-Matic lockpicks`.map(
         (i) => ({ item: i }),
@@ -257,6 +268,7 @@ function dailyDungeon(additionalReady: () => boolean) {
     do: $location`The Daily Dungeon`,
     combat: new GarboStrategy(() => Macro.kill()),
     turns: () => clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
+    outfit: { equip: $items`candy cane sword cane` },
     spendsTurn: true,
   };
 }
