@@ -21,7 +21,6 @@ import {
   cliExecute,
   faxbot,
   getClanLounge,
-  haveEquipped,
   inebrietyLimit,
   mallPrice,
   myInebriety,
@@ -40,17 +39,13 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       name: "Setup Daily Dungeon",
       outfit: () =>
         freeFightOutfit({
-          equip: $items`ring of Detect Boring Doors, candy cane sword cane`,
+          equip: $items`ring of Detect Boring Doors`,
         }),
       // walk away from any nc we can walk away from, skip boring doors, open the final chest
       choices: () => ({
         689: 1,
         690: 2,
-        691:
-          haveEquipped($item`candy cane sword cane`) &&
-          !get("candyCaneSwordDailyDungeon")
-            ? 4
-            : 2,
+        691: 2,
         692: 8,
         693: 3,
       }),
