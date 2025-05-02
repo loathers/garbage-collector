@@ -5,6 +5,7 @@ import {
   availableAmount,
   canAdventure,
   canEquip,
+  cliExecute,
   eat,
   getWorkshed,
   haveEquipped,
@@ -27,6 +28,7 @@ import {
   runChoice,
   totalTurnsPlayed,
   use,
+  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
@@ -96,6 +98,7 @@ import {
   completeBarfQuest,
   mayamCalendarSummon,
   minimumMimicExperience,
+  shouldAugustCast,
   shouldFillLatte,
   tryFillLatte,
 } from "../resources";
@@ -340,6 +343,61 @@ function aprilingSaxophoneLucky(additionalReady: () => boolean) {
   };
 }
 
+function augustScepterLucky(additionalReady: () => boolean) {
+  return {
+    completed: () =>
+      !shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
+    ready: () =>
+      additionalReady() &&
+      getBestLuckyAdventure().phase === "barf" &&
+      getBestLuckyAdventure().value() > get("valueOfAdventure"),
+    do: () => getBestLuckyAdventure().location,
+    prepare: () => {
+      if (!have($effect`Lucky!`)) {
+        useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
+        if (!have($effect`Lucky!`)) {
+          set("_aug2Cast", true);
+        }
+      }
+    },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Unexpected combat while attempting Lucky! adventure"),
+    ),
+    turns: () =>
+      shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
+        ? 1
+        : 0,
+    spendsTurn: true,
+  };
+}
+
+function pillKeeperLucky(additionalReady: () => boolean) {
+  return {
+    completed: () => get("_freePillKeeperUsed"),
+    ready: () =>
+      additionalReady() &&
+      getBestLuckyAdventure().phase === "barf" &&
+      getBestLuckyAdventure().value() > get("valueOfAdventure") &&
+      have($item`Eight Days a Week Pill Keeper`),
+    do: () => getBestLuckyAdventure().location,
+    prepare: () => {
+      if (!have($effect`Lucky!`)) {
+        retrieveItem($item`Eight Days a Week Pill Keeper`);
+        cliExecute("pillkeeper semirare");
+        if (!have($effect`Lucky!`)) {
+          set("_freePillKeeperUsed", true);
+          return;
+        }
+      }
+    },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Unexpected combat while attempting Lucky! adventure"),
+    ),
+    turns: () => (!get("_freePillKeeperUsed") ? 1 : 0),
+    spendsTurn: true,
+  };
+}
+
 function vampOut(additionalReady: () => boolean) {
   return {
     ready: () =>
@@ -556,6 +614,28 @@ const NonBarfTurnTasks: AlternateTask[] = [
   {
     name: "Apriling Saxophone Lucky (sober)",
     ...aprilingSaxophoneLucky(() => !willDrunkAdventure()),
+    sobriety: "sober",
+  },
+  {
+    name: "August Scepter Lucky (drunk)",
+    ...augustScepterLucky(() => willDrunkAdventure()),
+    outfit: () => ({ offhand: $item`Drunkula's wineglass` }),
+    sobriety: "drunk",
+  },
+  {
+    name: "August Scepter Lucky (sober)",
+    ...augustScepterLucky(() => !willDrunkAdventure()),
+    sobriety: "sober",
+  },
+  {
+    name: "Pillkeeper Lucky (drunk)",
+    ...pillKeeperLucky(() => willDrunkAdventure()),
+    outfit: () => ({ offhand: $item`Drunkula's wineglass` }),
+    sobriety: "drunk",
+  },
+  {
+    name: "Pillkeeper Lucky (sober)",
+    ...pillKeeperLucky(() => !willDrunkAdventure()),
     sobriety: "sober",
   },
   {

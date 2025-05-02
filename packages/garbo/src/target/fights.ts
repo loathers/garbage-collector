@@ -1,7 +1,6 @@
 import {
   abort,
   canAdventure,
-  cliExecute,
   getClanLounge,
   haveEquipped,
   isBanished,
@@ -17,7 +16,6 @@ import {
   runCombat,
   use,
   userConfirm,
-  useSkill,
   visitUrl,
 } from "kolmafia";
 import { DraggableFight } from "garbo-lib";
@@ -31,7 +29,6 @@ import {
   $locations,
   $monster,
   $skill,
-  AprilingBandHelmet,
   ChateauMantegna,
   ChestMimic,
   clamp,
@@ -59,7 +56,6 @@ import {
 } from "../combat";
 import {
   averageTargetNet,
-  getBestLuckyAdventure,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
   ltbRun,
@@ -72,7 +68,6 @@ import {
   equipOrbIfDesired,
   gregReady,
   possibleGregCrystalBall,
-  shouldAugustCast,
   totalGregCharges,
 } from "../resources";
 import { acquire } from "../acquire";
@@ -230,85 +225,6 @@ export const chainStarters = [
         options.macro,
         () => use($item`photocopied monster`),
         options.useAuto,
-      );
-    },
-  ),
-  new CopyTargetFight(
-    "Scepter Semirare",
-    () =>
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`,
-    () => 0, // prevent circular reference
-    (options: RunOptions) => {
-      retrieveItem($item`august scepter`);
-      useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
-      if (!have($effect`Lucky!`)) {
-        set("_aug2Cast", true);
-        return;
-      }
-      const adventureFunction = options.useAuto
-        ? garboAdventureAuto
-        : garboAdventure;
-      adventureFunction(
-        $location`Cobb's Knob Treasury`,
-        options.macro,
-        options.macro,
-      );
-    },
-  ),
-  new CopyTargetFight(
-    "Saxophone semirare",
-    () =>
-      getBestLuckyAdventure().phase === "target" &&
-      getBestLuckyAdventure().value() > 0 &&
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      AprilingBandHelmet.canPlay($item`Apriling band saxophone`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`,
-    () => 0,
-    (options: RunOptions) => {
-      AprilingBandHelmet.play($item`Apriling band saxophone`);
-      if (!have($effect`Lucky!`)) return;
-      const adventureFunction = options.useAuto
-        ? garboAdventureAuto
-        : garboAdventure;
-      adventureFunction(
-        $location`Cobb's Knob Treasury`,
-        options.macro,
-        options.macro,
-      );
-    },
-  ),
-  new CopyTargetFight(
-    "Pillkeeper Semirare",
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`,
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`
-        ? 1
-        : 0,
-    (options: RunOptions) => {
-      retrieveItem($item`Eight Days a Week Pill Keeper`);
-      cliExecute("pillkeeper semirare");
-      if (!have($effect`Lucky!`)) {
-        set("_freePillKeeperUsed", true);
-        return;
-      }
-      const adventureFunction = options.useAuto
-        ? garboAdventureAuto
-        : garboAdventure;
-      adventureFunction(
-        $location`Cobb's Knob Treasury`,
-        options.macro,
-        options.macro,
       );
     },
   ),
