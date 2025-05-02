@@ -88,6 +88,7 @@ import {
   BarfTurnQuests,
   CockroachSetup,
   DailyFamiliarsQuest,
+  EmbezzlerFightsQuest,
   PostQuest,
   runGarboQuests,
   runSafeGarboQuests,
@@ -602,6 +603,7 @@ export function main(argString = ""): void {
         freeFights();
         runGarboQuests([SetupTargetCopyQuest]);
         yachtzeeChain();
+        runGarboQuests([EmbezzlerFightsQuest]);
         dailyFights();
 
         if (!globalOptions.nobarf) {
