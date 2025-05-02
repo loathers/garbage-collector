@@ -179,7 +179,7 @@ import { garboValue } from "./garboValue";
 import { wanderer } from "./garboWanderer";
 import { runTargetFight } from "./target/execution";
 import { TargetFightRunOptions } from "./target/staging";
-import { FreeFightQuest, runGarboQuests } from "./tasks";
+import { EmbezzlerFightsQuest, FreeFightQuest, runGarboQuests } from "./tasks";
 import {
   expectedFreeFightQuestFights,
   possibleFreeFightQuestTentacleFights,
@@ -412,6 +412,7 @@ export function dailyFights(): void {
       // check if user wants to wish for the copy target before doing setup
       if (!getNextCopyTargetFight()) return;
       meatTargetSetup();
+      if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
 
       // PROFESSOR COPIES
       if (have($familiar`Pocket Professor`)) {

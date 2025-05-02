@@ -604,7 +604,6 @@ export function main(argString = ""): void {
         freeFights();
         runGarboQuests([SetupTargetCopyQuest]);
         yachtzeeChain();
-        if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
         dailyFights();
 
         if (!globalOptions.nobarf) {
