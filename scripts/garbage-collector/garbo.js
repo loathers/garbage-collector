@@ -29926,7 +29926,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b3ae1903b6b0bdced94805146db1c3d29189c785", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ec270d700a9248eebc1f80ce2d80c3154889b3f6", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -46617,13 +46617,15 @@ var CockroachSetup = {
       return DebuffPlanner.checkAndFixOvercapStats();
     },
     do: $location(_templateObject1078 || (_templateObject1078 = _taggedTemplateLiteral135(["Sailing the PirateRealm Seas"]))),
-    outfit: {
-      equip: $items(_templateObject1171 || (_templateObject1171 = _taggedTemplateLiteral135(["PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot"]))).filter(function(i) {
-        return have(i);
-      }),
-      modifier: import_kolmafia143.Stat.all().map(function(stat) {
-        return "-".concat(stat);
-      })
+    outfit: function() {
+      return {
+        equip: $items(_templateObject1171 || (_templateObject1171 = _taggedTemplateLiteral135(["PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot"]))).filter(function(i) {
+          return have(i);
+        }),
+        modifier: import_kolmafia143.Stat.all().map(function(stat) {
+          return "-".concat(stat);
+        })
+      };
     },
     choices: function() {
       return {
