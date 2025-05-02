@@ -11,6 +11,7 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { HIGHLIGHT } from "../lib";
 import { acquire } from "../acquire";
+import { shouldYachtzee } from "../yachtzee/lib";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
@@ -52,7 +53,10 @@ export function checkVolcanoQuest() {
     volcanoItemValue,
     true,
   );
-  if (bestItem.item === $item`fused fuse`) {
+  if (
+    bestItem.item === $item`fused fuse` &&
+    (!shouldYachtzee() || volcoinoValue > 2000 - get("valueOfAdventure"))
+  ) {
     globalOptions.clarasBellClaimed = true;
   } else if (volcanoItemValue(bestItem) < volcoinoValue) {
     withProperty("autoBuyPriceLimit", volcoinoValue, () =>

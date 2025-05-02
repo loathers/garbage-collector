@@ -4,7 +4,6 @@ import {
   equippedItem,
   haveEquipped,
   Item,
-  mallPrice,
   myFamiliar,
   toSlot,
   use,
@@ -15,25 +14,19 @@ import {
   $item,
   $items,
   $slot,
-  $slots,
-  findLeprechaunMultiplier,
   get,
   getModifier,
   have,
   maxBy,
   Requirement,
 } from "libram";
-import { acquire } from "../acquire";
 import { withStash } from "../clan";
-import { meatFamiliar } from "../familiar";
-import { targetMeat } from "../lib";
 import {
   familiarWaterBreathingEquipment,
-  useUPCs,
   waterBreathingEquipment,
 } from "../outfit";
 import { bestYachtzeeFamiliar } from "./familiar";
-import { expectedTargets, yachtzeeBuffValue } from "./lib";
+import { yachtzeeBuffValue } from "./lib";
 
 export const maximizeMeat = (): boolean =>
   new Requirement(
@@ -86,28 +79,5 @@ export function prepareOutfitAndFamiliar(): void {
         (eq) => getModifier("Familiar Weight", eq),
       ),
     );
-  }
-}
-
-export function stickerSetup(expectedYachts: number): void {
-  const currentStickers = $slots`sticker1, sticker2, sticker3`.map((s) =>
-    equippedItem(s),
-  );
-  const UPC = $item`scratch 'n' sniff UPC sticker`;
-  if (currentStickers.every((sticker) => sticker === UPC)) return;
-  const yachtOpportunityCost =
-    25 * findLeprechaunMultiplier(bestYachtzeeFamiliar());
-  const targetOpportunityCost = 25 * findLeprechaunMultiplier(meatFamiliar());
-  const addedValueOfFullSword =
-    ((75 - yachtOpportunityCost) * expectedYachts * 2000) / 100 +
-    ((75 - targetOpportunityCost) *
-      Math.min(20, expectedTargets) *
-      targetMeat()) /
-      100;
-  if (mallPrice(UPC) < addedValueOfFullSword / 3) {
-    const needed =
-      3 - currentStickers.filter((sticker) => sticker === UPC).length;
-    if (needed) acquire(needed, UPC, addedValueOfFullSword / 3, false);
-    useUPCs();
   }
 }

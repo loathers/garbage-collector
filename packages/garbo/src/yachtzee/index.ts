@@ -1,182 +1,151 @@
 import {
-  booleanModifier,
-  canInteract,
-  cliExecute,
-  equip,
-  haveEffect,
-  haveEquipped,
-  maximize,
-  myMeat,
-  myTurncount,
-  print,
-  useSkill,
-} from "kolmafia";
-import {
   $effect,
   $item,
+  $items,
   $location,
   $skill,
-  FloristFriar,
+  AprilingBandHelmet,
+  CinchoDeMayo,
+  Delayed,
   get,
-  getActiveSongs,
   have,
-  realmAvailable,
-  set,
-  uneffect,
 } from "libram";
-import { garboAdventure, Macro } from "../combat";
-import { globalOptions } from "../config";
-import { postFreeFightDailySetup } from "../dailiespost";
-import { runDiet } from "../diet";
-import { copyTargetCount } from "../target";
-import { doSausage, freeRunFights } from "../fights";
-import { eventLog, propertyManager, safeRestore, targetMeat } from "../lib";
-import { meatMood } from "../mood";
-import postCombatActions from "../post";
-import { potionSetup } from "../potions";
-import { prepRobortender } from "../tasks/dailyFamiliars";
-import { yachtzeePotionSetup } from "./buffs";
-import { executeNextDietStep, yachtzeeChainDiet } from "./diet";
-import { pyecAvailable, shrugIrrelevantSongs } from "./lib";
+import { GarboStrategy, Macro } from "../combat";
 import {
-  getBestWaterBreathingEquipment,
-  maximizeMeat,
-  prepareOutfitAndFamiliar,
-  stickerSetup,
-} from "./outfit";
+  freeFishyAvailable,
+  freeNCs,
+  maximumYachtzees,
+  shouldYachtzee,
+} from "./lib";
+import {
+  inebrietyLimit,
+  myInebriety,
+  totalFreeRests,
+  use,
+  useSkill,
+} from "kolmafia";
+import { getBestWaterBreathingEquipment } from "./outfit";
+import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
+import { freeRest, willDrunkAdventure } from "../lib";
+import { globalOptions } from "../config";
+import { GarboTask } from "../tasks/engine";
 
-function _yachtzeeChain(): void {
-  if (!canInteract()) return;
-  // We definitely need to be able to eat sliders and drink pickle juice
-  if (!realmAvailable("sleaze")) return;
-
-  maximize("MP", false);
-  meatMood(false, targetMeat()).execute(copyTargetCount());
-  potionSetup(globalOptions.nobarf); // This is the default set up for targets (which helps us estimate if chaining is better than extros)
-  maximizeMeat();
-  prepareOutfitAndFamiliar();
-
-  const meatLimit = 5000000;
-  if (myMeat() > meatLimit) {
-    const meatToCloset = myMeat() - meatLimit;
-    print("");
-    print("");
-    print(
-      `We are going to closet all-but-5million meat for your safety!`,
-      "blue",
-    );
-    print("");
-    print("");
-    if (!get("_yachtzeeChainClosetedMeat")) {
-      set("_yachtzeeChainClosetedMeat", meatToCloset);
-    } else {
-      set(
-        "_yachtzeeChainClosetedMeat",
-        meatToCloset + get("_yachtzeeChainClosetedMeat"),
-      );
-    }
-    cliExecute(`closet put ${meatToCloset} meat`);
-  }
-  if (!yachtzeeChainDiet()) {
-    if (get("_yachtzeeChainClosetedMeat", 0)) {
-      cliExecute(`closet take ${get("_yachtzeeChainClosetedMeat")} meat`);
-    }
-    set("_yachtzeeChainClosetedMeat", 0);
-    return;
-  }
-  let jellyTurns = get("_stenchJellyChargeTarget", 0);
-  let fishyTurns = haveEffect($effect`Fishy`) + (pyecAvailable() ? 5 : 0);
-  let turncount = myTurncount();
-  yachtzeePotionSetup(Math.min(jellyTurns, fishyTurns));
-  stickerSetup(Math.min(jellyTurns, fishyTurns));
-  if (get("_yachtzeeChainClosetedMeat", 0)) {
-    cliExecute(`closet take ${get("_yachtzeeChainClosetedMeat")} meat`);
-  }
-  set("_yachtzeeChainClosetedMeat", 0);
-  if (haveEffect($effect`Beaten Up`)) {
-    uneffect($effect`Beaten Up`);
-  }
-  meatMood(false, 2000).execute(Math.min(jellyTurns, fishyTurns));
-  safeRestore();
-
-  propertyManager.setChoice(918, 2);
-  let plantCrookweed = true;
-  while (Math.min(jellyTurns, fishyTurns) > 0) {
-    executeNextDietStep();
-    if (!get("noncombatForcerActive")) {
-      throw new Error("We did not use stench jellies");
-    }
-    // Switch familiars in case changes in fam weight from buffs means our current familiar is no longer optimal
-    prepareOutfitAndFamiliar();
-    if (!have($effect`Really Deep Breath`)) {
-      const bestWaterBreathingEquipment = getBestWaterBreathingEquipment(
-        Math.min(jellyTurns, fishyTurns),
-      );
-      if (bestWaterBreathingEquipment.item !== $item.none) {
-        equip(bestWaterBreathingEquipment.item);
-      }
+function doYachtzeeTask(additionalReady: () => boolean) {
+  return {
+    completed: () => !get("noncombatForcerActive"),
+    ready: () => additionalReady() && have($effect`Fishy`),
+    do: $location`The Sunken Party Yacht`,
+    outfit: () => {
+      const overdrunk = myInebriety() > inebrietyLimit();
+      const yachtzeeFamiliar = bestYachtzeeFamiliar();
+      const modifiers = ["20 Meat"];
       if (
-        haveEquipped($item`The Crown of Ed the Undying`) &&
-        !booleanModifier("Adventure Underwater")
+        !(
+          yachtzeeFamiliar.underwater ||
+          have($effect`Driving Waterproofly`) ||
+          have($effect`Wet Willied`)
+        )
       ) {
-        cliExecute("edpiece fish");
+        modifiers.push("underwater familiar");
       }
-    }
-    if (!have($effect`Polka of Plenty`)) {
-      if (have($effect`Ode to Booze`)) {
-        cliExecute(`shrug ${$effect`Ode to Booze`}`);
-      }
-      if (
-        getActiveSongs().length < (have($skill`Mariachi Memory`) ? 4 : 3) &&
-        have($skill`The Polka of Plenty`)
-      ) {
-        useSkill($skill`The Polka of Plenty`);
-      }
-    }
-    garboAdventure(
-      $location`The Sunken Party Yacht`,
+      const equips = [
+        getBestWaterBreathingEquipment(freeNCs()).item,
+        bestFamUnderwaterGear(yachtzeeFamiliar),
+      ];
+      if (overdrunk) equips.push($item`Drunkula's wineglass`);
+      return {
+        equip: equips,
+        modifier: modifiers,
+        avoid: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
+        familiar: yachtzeeFamiliar,
+      };
+    },
+    combat: new GarboStrategy(() =>
       Macro.abortWithMsg(
-        "We tried to Yachtzee it up, but are in a fight instad!",
+        "Unexpected combat while attempting yachtzee adventure",
       ),
-    );
-    if (get("lastEncounter") === "Yachtzee!") eventLog.yachtzees += 1;
-    if (myTurncount() > turncount || haveEffect($effect`Fishy`) < fishyTurns) {
-      fishyTurns -= 1;
-      jellyTurns -= 1;
-      turncount = myTurncount();
-      set("_stenchJellyChargeTarget", get("_stenchJellyChargeTarget", 0) - 1);
-    }
-    if (
-      plantCrookweed &&
-      FloristFriar.have() &&
-      FloristFriar.Crookweed.available()
-    ) {
-      FloristFriar.Crookweed.plant();
-    }
-    plantCrookweed = false;
-    postCombatActions();
-
-    doSausage();
-  }
+    ),
+    turns: () => maximumYachtzees(),
+    spendsTurn: true,
+  };
 }
 
-export function oldyachtzeeChain(): void {
-  if (!globalOptions.prefs.yachtzeechain) return;
-  if (get("_garboYachtzeeChainCompleted", false)) return;
-  print("Running Yachtzee Chain", "purple");
-  _yachtzeeChain();
-  set("_garboYachtzeeChainCompleted", true);
-  globalOptions.prefs.yachtzeechain = false;
-  if (!globalOptions.nodiet) {
-    shrugIrrelevantSongs();
-    runDiet();
-    prepRobortender(); // Recompute robo drinks' worth after diet is finally consumed
-  }
-  freeRunFights();
-  postFreeFightDailySetup();
-}
+type AlternateTask = GarboTask & { turns: Delayed<number> };
 
-export function yachtzeeChain(): void {
-  if (!globalOptions.prefs.yachtzeechain) return;
-  print("As of 2023-10-03, Yachtzee has been nerfed.", "red");
+export function yachtzeeTasks(): AlternateTask[] {
+  if (!shouldYachtzee() || !freeFishyAvailable()) return [];
+  return [
+    {
+      name: "Yachtzee (sober)",
+      ...doYachtzeeTask(() => !willDrunkAdventure()),
+      sobriety: "sober",
+    },
+    {
+      name: "Yachtzee (drunk)",
+      ...doYachtzeeTask(() => willDrunkAdventure()),
+      sobriety: "drunk",
+    },
+    {
+      name: "Refill Cinch", // Our current cinch refill only happens post combat I believe, we also can't directly import because it's a postTask type
+      ready: () => CinchoDeMayo.have() && totalFreeRests() > get("timesRested"),
+      completed: () => get("_cinchUsed") < CinchoDeMayo.cinchRestoredBy(),
+      do: () => {
+        const missingCinch = () => {
+          return 100 - CinchoDeMayo.currentCinch();
+        };
+        // Only rest if we'll get full value out of the cinch
+        // If our current cinch is less than the total available, it means we have free rests left.
+        while (
+          missingCinch() >= CinchoDeMayo.cinchRestoredBy() &&
+          CinchoDeMayo.currentCinch() < CinchoDeMayo.totalAvailableCinch()
+        ) {
+          if (!freeRest()) break;
+        }
+      },
+      spendsTurn: false,
+      turns: 0,
+    },
+    {
+      name: "Use Fishy Pipe for Yachtzee",
+      completed: () => have($effect`Fishy`),
+      ready: () => have($item`fishy pipe`) && !get("_fishyPipeUsed"),
+      do: () => use($item`fishy pipe`),
+      turns: 0,
+      sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
+      spendsTurn: false,
+    },
+    {
+      name: "Apriling Band Tuba Yachtzee NC Force",
+      completed: () => get("noncombatForcerActive"),
+      ready: () =>
+        have($item`Apriling band tuba`) &&
+        $item`Apriling band tuba`.dailyusesleft > 0 &&
+        have($effect`Fishy`),
+      do: () => AprilingBandHelmet.play($item`Apriling band tuba`),
+      turns: 0,
+      sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
+      spendsTurn: false,
+    },
+    {
+      name: "Clara Yachtzee NC Force",
+      completed: () => get("noncombatForcerActive"),
+      ready: () =>
+        have($item`Clara's bell`) &&
+        !globalOptions.clarasBellClaimed &&
+        have($effect`Fishy`),
+      do: () => use($item`Clara's bell`),
+      turns: 0,
+      sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
+      spendsTurn: false,
+    },
+    {
+      name: "Cincho Yachtzee NC Force",
+      completed: () => get("noncombatForcerActive"),
+      ready: () => CinchoDeMayo.currentCinch() >= 60 && have($effect`Fishy`),
+      do: () => useSkill($skill`Cincho: Fiesta Exit`),
+      turns: 0,
+      sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
+      spendsTurn: false,
+    },
+  ];
 }

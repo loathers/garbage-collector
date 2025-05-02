@@ -17,6 +17,7 @@ import {
   basePointerRingMeat,
   BonusEquipMode,
   felizValue,
+  maximumPinataCasts,
   maxPassiveDamage,
   modeIsFree,
   monsterManuelAvailable,
@@ -100,9 +101,8 @@ function cinchoDeMayo(mode: BonusEquipMode) {
     mode === BonusEquipMode.MEAT_TARGET ||
     // Require manuel to make sure we don't kill during stasis
     !monsterManuelAvailable() ||
-    // Don't use Cincho if we're planning on doing yachtzees, and haven't completed them yet
-    (!get("_garboYachtzeeChainCompleted") &&
-      globalOptions.prefs.yachtzeechain) ||
+    // If we're doing Yachtzees, only use up excess cincho.
+    maximumPinataCasts() <= 0 ||
     // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
     maxPassiveDamage() >= 50
   ) {

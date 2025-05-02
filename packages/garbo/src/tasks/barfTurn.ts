@@ -75,6 +75,7 @@ import {
   romanticMonsterImpossible,
   sober,
   targetingMeat,
+  willDrunkAdventure,
 } from "../lib";
 import {
   barfOutfit,
@@ -104,6 +105,8 @@ import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
 import { meatMood } from "../mood";
+import { freeFishyAvailable, shouldYachtzee } from "../yachtzee/lib";
+import { yachtzeeTasks } from "../yachtzee";
 
 const digitizedTarget = () =>
   SourceTerminal.have() &&
@@ -192,7 +195,7 @@ function shouldGoUnderwater(): boolean {
   }
 
   if (have($effect`Fishy`)) return true;
-  if (have($item`fishy pipe`) && !get("_fishyPipeUsed")) {
+  if (freeFishyAvailable() && !shouldYachtzee()) {
     use($item`fishy pipe`);
     return have($effect`Fishy`);
   }
@@ -387,10 +390,6 @@ function getBestDupeItem(): Item {
   return bestDupeItem;
 }
 
-function willDrunkAdventure() {
-  return have($item`Drunkula's wineglass`) && globalOptions.ascend;
-}
-
 function canForceNoncombat() {
   return (
     get("noncombatForcerActive") ||
@@ -493,6 +492,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     ...lavaDogs(() => !willDrunkAdventure(), {}),
     sobriety: "sober",
   },
+  ...yachtzeeTasks(), // Use NC forces and adventure to get the Yachtzee NC
   {
     name: "Daily Dungeon (drunk)",
     ...dailyDungeon(() => willDrunkAdventure()),

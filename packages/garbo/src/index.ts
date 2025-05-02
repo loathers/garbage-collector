@@ -82,7 +82,6 @@ import { meatMood } from "./mood";
 import { potionSetup } from "./potions";
 import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
-import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
 import {
   BarfTurnQuests,
@@ -601,7 +600,6 @@ export function main(argString = ""): void {
         // 2. do some target copy stuff
         freeFights();
         runGarboQuests([SetupTargetCopyQuest]);
-        yachtzeeChain();
         dailyFights();
 
         if (!globalOptions.nobarf) {

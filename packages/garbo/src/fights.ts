@@ -195,6 +195,7 @@ import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
 } from "./tasks/buffExtension";
+import { shouldYachtzee } from "./yachtzee/lib";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1137,7 +1138,7 @@ const freeFightSources = [
       }
 
       // Consider forcing noncombats below:
-      if (globalOptions.prefs.yachtzeechain) return false; // NCs are better when yachtzeeing, probably
+      if (shouldYachtzee()) return false; // NCs are better when yachtzeeing, probably
       // TODO: With the KoL update, is there a function for checking if an NC is already forced?
       if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
         return true;
@@ -2298,7 +2299,7 @@ function runShadowRiftTurn(): void {
   // we can probably have a better name
   if (get("encountersUntilSRChoice") === 0) return;
   if (
-    globalOptions.prefs.yachtzeechain ||
+    shouldYachtzee() ||
     get("rufusQuestType") === "items" ||
     get("rufusQuestType") === "entity" // We can't handle bosses... yet
   ) {
