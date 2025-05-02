@@ -75,6 +75,7 @@ import {
   propertyManager,
   questStep,
   safeRestore,
+  targetingMeat,
   userConfirmDialog,
   valueDrops,
 } from "./lib";
@@ -603,7 +604,7 @@ export function main(argString = ""): void {
         freeFights();
         runGarboQuests([SetupTargetCopyQuest]);
         yachtzeeChain();
-        runGarboQuests([EmbezzlerFightsQuest]);
+        if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
         dailyFights();
 
         if (!globalOptions.nobarf) {
@@ -612,6 +613,7 @@ export function main(argString = ""): void {
           maximize("MP", false);
           meatMood().execute(estimatedGarboTurns());
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
+          if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
             runGarboQuests([PostQuest(), ...BarfTurnQuests]);
 
