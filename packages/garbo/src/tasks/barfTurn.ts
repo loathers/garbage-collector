@@ -376,9 +376,9 @@ function pillKeeperLucky(additionalReady: () => boolean) {
     completed: () => get("_freePillKeeperUsed"),
     ready: () =>
       additionalReady() &&
+      have($item`Eight Days a Week Pill Keeper`) &&
       getBestLuckyAdventure().phase === "barf" &&
-      getBestLuckyAdventure().value() > get("valueOfAdventure") &&
-      have($item`Eight Days a Week Pill Keeper`),
+      getBestLuckyAdventure().value() > get("valueOfAdventure"),
     do: () => getBestLuckyAdventure().location,
     prepare: () => {
       if (!have($effect`Lucky!`)) {
