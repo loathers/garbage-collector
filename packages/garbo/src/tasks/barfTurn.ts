@@ -105,8 +105,8 @@ import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
 import { meatMood } from "../mood";
-import { freeFishyAvailable, shouldYachtzee } from "../yachtzee/lib";
-import { yachtzeeTasks } from "../yachtzee";
+import { freeFishyAvailable, shouldYachtzee } from "./yachtzee/lib";
+import { yachtzeeTasks } from "./yachtzee";
 
 const digitizedTarget = () =>
   SourceTerminal.have() &&

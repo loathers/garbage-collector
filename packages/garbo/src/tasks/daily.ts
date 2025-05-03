@@ -81,7 +81,7 @@ import {
 } from "../resources";
 import { GarboStrategy, Macro } from "../combat";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
-import { shouldYachtzee } from "../yachtzee/lib";
+import { shouldYachtzee } from "./yachtzee/lib";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;

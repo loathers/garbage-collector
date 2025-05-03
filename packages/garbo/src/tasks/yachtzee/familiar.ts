@@ -15,7 +15,7 @@ import {
   findLeprechaunMultiplier,
   have,
 } from "libram";
-import { familiarWaterBreathingEquipment } from "../outfit";
+import { familiarWaterBreathingEquipment } from "../../outfit";
 
 export function bestFamUnderwaterGear(fam: Familiar): Item {
   // Returns best familiar gear for yachtzee chaining

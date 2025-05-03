@@ -195,7 +195,7 @@ import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
 } from "./tasks/buffExtension";
-import { shouldYachtzee } from "./yachtzee/lib";
+import { shouldYachtzee } from "./tasks/yachtzee/lib";
 
 const firstChainMacro = () =>
   Macro.if_(

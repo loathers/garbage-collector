@@ -1,4 +1,3 @@
-import { Effect, haveEffect, Item } from "kolmafia";
 import {
   $effect,
   $item,
@@ -9,7 +8,8 @@ import {
   have,
   realmAvailable,
 } from "libram";
-import { globalOptions } from "../config";
+import { globalOptions } from "../../config";
+import { Effect, haveEffect, Item } from "kolmafia";
 
 export function freeFishyAvailable(): boolean {
   return (

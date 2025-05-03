@@ -1,3 +1,4 @@
+import { inebrietyLimit, myInebriety, use, useSkill } from "kolmafia";
 import {
   $effect,
   $item,
@@ -10,19 +11,18 @@ import {
   get,
   have,
 } from "libram";
-import { GarboStrategy, Macro } from "../combat";
+import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
+import { getBestWaterBreathingEquipment } from "./outfit";
 import {
   freeFishyAvailable,
   freeNCs,
   maximumYachtzees,
   shouldYachtzee,
 } from "./lib";
-import { inebrietyLimit, myInebriety, use, useSkill } from "kolmafia";
-import { getBestWaterBreathingEquipment } from "./outfit";
-import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
-import { willDrunkAdventure } from "../lib";
-import { globalOptions } from "../config";
-import { GarboTask } from "../tasks/engine";
+import { GarboStrategy, Macro } from "../../combat";
+import { GarboTask } from "../engine";
+import { willDrunkAdventure } from "../../lib";
+import { globalOptions } from "../../config";
 
 function doYachtzeeTask(additionalReady: () => boolean) {
   return {

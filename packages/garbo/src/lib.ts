@@ -108,7 +108,7 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { cinchNCs, shouldYachtzee } from "./yachtzee/lib";
+import { cinchNCs, shouldYachtzee } from "./tasks/yachtzee/lib";
 
 export const eventLog: {
   initialCopyTargetsFought: number;

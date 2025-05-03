@@ -20,13 +20,13 @@ import {
   maxBy,
   Requirement,
 } from "libram";
-import { withStash } from "../clan";
 import {
   familiarWaterBreathingEquipment,
   waterBreathingEquipment,
-} from "../outfit";
-import { bestYachtzeeFamiliar } from "./familiar";
+} from "../../outfit";
 import { yachtzeeBuffValue } from "./lib";
+import { bestYachtzeeFamiliar } from "./familiar";
+import { withStash } from "../../clan";
 
 export const maximizeMeat = (): boolean =>
   new Requirement(
