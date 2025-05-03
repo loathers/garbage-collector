@@ -64,8 +64,7 @@ export const EmbezzlerFightsQuest: Quest<GarboTask> = {
     },
     {
       name: "Fight Lucky Embezzler",
-      outfit: () =>
-        meatTargetOutfit(undefined, $location`Cobb's Knob Treasury`),
+      outfit: () => meatTargetOutfit({}, $location`Cobb's Knob Treasury`),
       ready: () => canAdventure($location`Cobb's Knob Treasury`),
       completed: () => !have($effect`Lucky!`),
       do: $location`Cobb's Knob Treasury`,
