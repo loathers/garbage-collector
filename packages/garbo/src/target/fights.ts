@@ -78,6 +78,7 @@ import {
   TargetFightConfigOptions as CopyTargetFightConfigOptions,
   RunOptions,
 } from "./lib";
+import { embezzlerFights } from "../tasks/embezzler";
 
 export class CopyTargetFight implements CopyTargetFightConfigOptions {
   name: string;
@@ -1014,8 +1015,9 @@ export const copyTargetSources = [
 ];
 
 export function copyTargetCount(): number {
-  return sum(copyTargetSources, (source: CopyTargetFight) =>
-    source.potential(),
+  return (
+    sum(copyTargetSources, (source: CopyTargetFight) => source.potential()) +
+    embezzlerFights()
   );
 }
 

@@ -81,6 +81,7 @@ import {
   ClosedCircuitPayphone,
   CombatLoversLocket,
   Counter,
+  Delayed,
   ensureFreeRun,
   FindActionSourceConstraints,
   get,
@@ -107,6 +108,9 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
+import { GarboTask } from "./tasks/engine";
+
+export type AlternateTask = GarboTask & { turns: Delayed<number> };
 
 export const eventLog: {
   initialCopyTargetsFought: number;

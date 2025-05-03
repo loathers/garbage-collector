@@ -8,15 +8,25 @@ import {
   get,
   have,
   set,
+  sum,
+  undelay,
 } from "libram";
-import { GarboTask } from "./engine";
 import { shouldAugustCast } from "../resources";
 import { canAdventure, cliExecute, useSkill } from "kolmafia";
 import { meatTargetOutfit } from "../outfit";
 import { GarboStrategy, Macro } from "../combat";
-import { getBestLuckyAdventure } from "../lib";
+import { AlternateTask, getBestLuckyAdventure } from "../lib";
 
-export const EmbezzlerFightsQuest: Quest<GarboTask> = {
+export function embezzlerFights(): number {
+  return sum(
+    EmbezzlerFightsQuest.tasks.filter(
+      (t) => (t.ready?.() ?? true) && !t.completed(),
+    ),
+    (t) => undelay(t.turns),
+  );
+}
+
+export const EmbezzlerFightsQuest: Quest<AlternateTask> = {
   name: "Lucky Embezzlers",
   ready: () =>
     getBestLuckyAdventure().phase === "target" &&
@@ -35,6 +45,9 @@ export const EmbezzlerFightsQuest: Quest<GarboTask> = {
         }
       },
       spendsTurn: false,
+      turns: shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
+        ? 1
+        : 0,
     },
     {
       name: "Saxophone Lucky",
@@ -46,6 +59,7 @@ export const EmbezzlerFightsQuest: Quest<GarboTask> = {
         if (!have($effect`Lucky!`)) return;
       },
       spendsTurn: false,
+      turns: $item`Apriling band saxophone`.dailyusesleft,
     },
     {
       name: "Pillkeeper Lucky",
@@ -61,6 +75,11 @@ export const EmbezzlerFightsQuest: Quest<GarboTask> = {
         }
       },
       spendsTurn: false,
+      turns:
+        have($item`Eight Days a Week Pill Keeper`) &&
+        !get("_freePillKeeperUsed")
+          ? 1
+          : 0,
     },
     {
       name: "Fight Lucky Embezzler",
@@ -70,6 +89,7 @@ export const EmbezzlerFightsQuest: Quest<GarboTask> = {
       do: $location`Cobb's Knob Treasury`,
       spendsTurn: true,
       combat: new GarboStrategy(() => Macro.meatKill()),
+      turns: 0, // Turns spent are tracked by the lucky sources
     },
   ],
 };
