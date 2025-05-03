@@ -238,7 +238,7 @@ function fallbot(): GarboPostTask {
   };
 }
 
-export function refillCinch(): GarboPostTask {
+function refillCinch(): GarboPostTask {
   return {
     name: "Refill Cinch",
     ready: () => CinchoDeMayo.have() && totalFreeRests() > get("timesRested"),

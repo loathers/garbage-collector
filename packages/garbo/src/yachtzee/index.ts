@@ -17,16 +17,10 @@ import {
   maximumYachtzees,
   shouldYachtzee,
 } from "./lib";
-import {
-  inebrietyLimit,
-  myInebriety,
-  totalFreeRests,
-  use,
-  useSkill,
-} from "kolmafia";
+import { inebrietyLimit, myInebriety, use, useSkill } from "kolmafia";
 import { getBestWaterBreathingEquipment } from "./outfit";
 import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
-import { freeRest, willDrunkAdventure } from "../lib";
+import { willDrunkAdventure } from "../lib";
 import { globalOptions } from "../config";
 import { GarboTask } from "../tasks/engine";
 
@@ -84,26 +78,6 @@ export function yachtzeeTasks(): AlternateTask[] {
       name: "Yachtzee (drunk)",
       ...doYachtzeeTask(() => willDrunkAdventure()),
       sobriety: "drunk",
-    },
-    {
-      name: "Refill Cinch", // Our current cinch refill only happens post combat I believe, we also can't directly import because it's a postTask type
-      ready: () => CinchoDeMayo.have() && totalFreeRests() > get("timesRested"),
-      completed: () => get("_cinchUsed") < CinchoDeMayo.cinchRestoredBy(),
-      do: () => {
-        const missingCinch = () => {
-          return 100 - CinchoDeMayo.currentCinch();
-        };
-        // Only rest if we'll get full value out of the cinch
-        // If our current cinch is less than the total available, it means we have free rests left.
-        while (
-          missingCinch() >= CinchoDeMayo.cinchRestoredBy() &&
-          CinchoDeMayo.currentCinch() < CinchoDeMayo.totalAvailableCinch()
-        ) {
-          if (!freeRest()) break;
-        }
-      },
-      spendsTurn: false,
-      turns: 0,
     },
     {
       name: "Use Fishy Pipe for Yachtzee",
