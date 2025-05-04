@@ -45,9 +45,10 @@ export const EmbezzlerFightsQuest: Quest<AlternateTask> = {
         }
       },
       spendsTurn: false,
-      turns: shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
-        ? 1
-        : 0,
+      turns: () =>
+        shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
+          ? 1
+          : 0,
     },
     {
       name: "Saxophone Lucky",
@@ -59,7 +60,7 @@ export const EmbezzlerFightsQuest: Quest<AlternateTask> = {
         if (!have($effect`Lucky!`)) return;
       },
       spendsTurn: false,
-      turns: $item`Apriling band saxophone`.dailyusesleft,
+      turns: () => $item`Apriling band saxophone`.dailyusesleft,
     },
     {
       name: "Pillkeeper Lucky",
@@ -75,7 +76,7 @@ export const EmbezzlerFightsQuest: Quest<AlternateTask> = {
         }
       },
       spendsTurn: false,
-      turns:
+      turns: () =>
         have($item`Eight Days a Week Pill Keeper`) &&
         !get("_freePillKeeperUsed")
           ? 1
