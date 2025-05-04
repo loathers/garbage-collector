@@ -412,7 +412,7 @@ export function dailyFights(): void {
       // check if user wants to wish for the copy target before doing setup
       if (!getNextCopyTargetFight()) return;
       meatTargetSetup();
-      if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
+      if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest()]);
 
       // PROFESSOR COPIES
       if (have($familiar`Pocket Professor`)) {

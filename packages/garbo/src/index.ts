@@ -612,7 +612,7 @@ export function main(argString = ""): void {
           maximize("MP", false);
           meatMood().execute(estimatedGarboTurns());
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
-          if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
+          if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest()]);
           try {
             runGarboQuests([PostQuest(), ...BarfTurnQuests]);
 
