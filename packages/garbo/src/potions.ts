@@ -73,6 +73,7 @@ import { usingPurse } from "./outfit";
 import { estimatedGarboTurns } from "./turns";
 import { globalOptions } from "./config";
 import { castAugustScepterBuffs } from "./resources";
+import { embezzlerFights } from "./tasks/embezzler";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -735,7 +736,7 @@ export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
-    const targets = targetingMeat() ? copyTargetCount() : 0;
+    const targets = targetingMeat() ? copyTargetCount() : embezzlerFights();
 
     if (
       have($item`Eight Days a Week Pill Keeper`) &&

@@ -6,12 +6,10 @@ import {
   isBanished,
   itemAmount,
   Location,
-  mallPrice,
   myAdventures,
   myHash,
   myRain,
   print,
-  retrieveItem,
   runChoice,
   runCombat,
   use,
@@ -888,71 +886,11 @@ export const emergencyChainStarters = [
       );
     },
   ),
-  // These are very deliberately the last copy target fights.
-  new CopyTargetFight(
-    "11-leaf clover (untapped potential)",
-    () => {
-      // We don't want to clover if we're not targeting an embezzler, so bail early
-      if (globalOptions.target !== $monster`Knob Goblin Embezzler`) {
-        return false;
-      }
-      if (!canAdventure($location`Cobb's Knob Treasury`)) return false;
-      const potential = Math.floor(copyTargetCount());
-      if (potential < 1) return false;
-      // Don't use clovers if wishes are available and cheaper
-      if (
-        get("_genieFightsUsed") < 3 &&
-        mallPrice($item`11-leaf clover`) >= WISH_VALUE
-      ) {
-        return false;
-      }
-      if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
-      const profit =
-        (potential + 1) * averageTargetNet() - mallPrice($item`11-leaf clover`);
-      if (profit < 0) return false;
-      print(
-        `You have the following copy target sources untapped right now:`,
-        HIGHLIGHT,
-      );
-      copyTargetSources
-        .filter((source) => source.potential() > 0)
-        .map((source) => `${source.potential()} from ${source.name}`)
-        .forEach((text) => print(text, HIGHLIGHT));
-      globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = copyTargetConfirmInvocation(
-        `Garbo has detected you have ${potential} potential ways to copy ${
-          globalOptions.target
-        }, but no way to start a fight with one. Current net (before potions) is ${averageTargetNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for ${
-          globalOptions.target
-        }?`,
-      );
-      return globalOptions.wishAnswer;
-    },
-    () => 0,
-    (options: RunOptions) => {
-      globalOptions.askedAboutWish = false;
-      property.withProperty("autoSatisfyWithCloset", true, () =>
-        retrieveItem($item`11-leaf clover`),
-      );
-      use($item`11-leaf clover`);
-      if (have($effect`Lucky!`)) {
-        const adventureFunction = options.useAuto
-          ? garboAdventureAuto
-          : garboAdventure;
-        adventureFunction(
-          $location`Cobb's Knob Treasury`,
-          options.macro,
-          options.macro,
-        );
-      }
-      globalOptions.askedAboutWish = false;
-    },
-  ),
   new CopyTargetFight(
     "Pocket Wish (untapped potential)",
     () => {
       if (!globalOptions.target.wishable) return false;
-      const potential = Math.floor(copyTargetCount());
+      const potential = Math.floor(copyTargetCount(false));
       if (potential < 1) return false;
       if (get("_genieFightsUsed") >= 3) return false;
       if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
@@ -1014,10 +952,10 @@ export const copyTargetSources = [
   ...fakeSources,
 ];
 
-export function copyTargetCount(): number {
+export function copyTargetCount(countEmbezzlers = true): number {
   return (
     sum(copyTargetSources, (source: CopyTargetFight) => source.potential()) +
-    embezzlerFights()
+    (countEmbezzlers ? embezzlerFights() : 0)
   );
 }
 

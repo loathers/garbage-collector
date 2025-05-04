@@ -93,6 +93,7 @@ import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { estimatedGarboTurns } from "./turns";
 import { garboValue } from "./garboValue";
+import { embezzlerFights } from "./tasks/embezzler";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -927,7 +928,7 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseTargets = targetingMeat() ? copyTargetCount() : 0;
+  const baseTargets = targetingMeat() ? copyTargetCount() : embezzlerFights();
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -1043,7 +1044,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
     (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
   );
 
-  const targets = Math.floor(copyTargetCount() + countCopies(diet));
+  const targets = Math.floor(copyTargetCount(false) + countCopies(diet));
   const adventures = Math.floor(
     estimatedGarboTurns(false) + diet.expectedAdventures(),
   );

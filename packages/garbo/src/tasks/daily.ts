@@ -113,9 +113,7 @@ function voterSetup(): void {
     ],
     [
       "Item Drop: +15",
-      0.15 *
-        (4 * 100 * 0.3 * copyTargetCount() +
-          3 * 200 * 0.15 * (estimatedGarboTurns() - copyTargetCount())),
+      0.15 * (3 * 200 * 0.15 * (estimatedGarboTurns() - copyTargetCount())),
     ],
     ["Adventures: +1", globalOptions.ascend ? 0 : get("valueOfAdventure")],
     ["Familiar Experience: +2", 8],

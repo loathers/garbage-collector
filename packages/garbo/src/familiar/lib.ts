@@ -160,7 +160,7 @@ export function snapperValue(): number {
     (Snapper.getTrackedPhylum() === globalOptions.target.phylum
       ? Snapper.getProgress()
       : 0);
-  if (denominator > copyTargetCount()) return 0;
+  if (denominator > copyTargetCount(false)) return 0;
 
   return garboValue(item) / denominator;
 }

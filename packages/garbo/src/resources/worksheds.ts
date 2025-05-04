@@ -30,7 +30,7 @@ const GOOD_TRAIN_STATIONS = [
     piece: TrainSet.Station.TRACKSIDE_DINER,
     value: () =>
       $monsters`Witchess Knight`.includes(globalOptions.target) &&
-      copyTargetCount() > 0
+      copyTargetCount(false) > 0
         ? garboValue($item`jumping horseradish`)
         : garboAverageValue(
             ...$items`bowl of cottage cheese, hot buttered roll, toast`,
