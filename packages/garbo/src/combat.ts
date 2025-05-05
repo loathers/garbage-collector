@@ -775,7 +775,7 @@ export class Macro extends StrictMacro {
     return this.externalIf(
       myFamiliar() === $familiar`Grey Goose` &&
         gooseDroneEligible() &&
-        get("gooseDronesRemaining") < copyTargetCount(false),
+        get("gooseDronesRemaining") < copyTargetCount(),
       Macro.if_(
         globalOptions.target,
         Macro.trySkill($skill`Emit Matter Duplicating Drones`),

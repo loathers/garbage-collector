@@ -80,7 +80,7 @@ export function menu(
     if (
       mode === "target" &&
       gooseDroneEligible() &&
-      get("gooseDronesRemaining") < copyTargetCount(false)
+      get("gooseDronesRemaining") < copyTargetCount()
     ) {
       familiarMenu.push({
         familiar: $familiar`Grey Goose`,
@@ -90,7 +90,7 @@ export function menu(
             getModifier("Familiar Experience") / 9,
             0,
             // The limit to how valuable any emission can be is how many drones are actually gonna hit the copyTarget
-            copyTargetCount(false) - get("gooseDronesRemaining"),
+            copyTargetCount() - get("gooseDronesRemaining"),
           ) * valueDrops(globalOptions.target),
         leprechaunMultiplier: 0,
         limit: "experience",

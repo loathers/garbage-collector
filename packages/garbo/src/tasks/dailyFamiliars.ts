@@ -26,7 +26,6 @@ import {
 } from "libram";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../target";
 import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,
@@ -39,14 +38,14 @@ import {
   turnsToNC,
   userConfirmDialog,
 } from "../lib";
-import { estimatedGarboTurns } from "../turns";
+import { estimatedGarboTurns, highMeatMonsterCount } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
 import { amuletCoinValue } from "../familiar/lib";
 
 function drivebyValue(): number {
-  const targets = copyTargetCount();
+  const targets = highMeatMonsterCount();
   const tourists =
     ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
@@ -60,18 +59,15 @@ function drivebyValue(): number {
 }
 
 function entendreValue(): number {
-  const targets = copyTargetCount();
+  const targets = highMeatMonsterCount();
   const tourists =
     ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
   const itemPercent =
     Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;
   const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance
-  const meatStackDropRate = 0.3 * 4; // 4 stacks each with a 30% drop chance
   return (
-    (itemPercent / 100) *
-    (meatStackDropRate * targets +
-      garbageBagsDropRate * tourists * garbageTouristRatio)
+    (itemPercent / 100) * (garbageBagsDropRate * tourists * garbageTouristRatio)
   );
 }
 

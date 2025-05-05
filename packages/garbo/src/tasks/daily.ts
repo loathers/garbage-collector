@@ -68,9 +68,13 @@ import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
 import { estimatedAttunementTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT, targetMeat } from "../lib";
+import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import {
+  digitizedMonstersRemaining,
+  estimatedGarboTurns,
+  highMeatMonsterCount,
+} from "../turns";
 import { GarboTask } from "./engine";
 import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
@@ -81,6 +85,7 @@ import {
 } from "../resources";
 import { GarboStrategy, Macro } from "../combat";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
+import { embezzlerFights } from "./embezzler";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
@@ -108,8 +113,10 @@ function voterSetup(): void {
     [
       "Meat Drop: +30",
       0.3 *
-        (targetMeat() * copyTargetCount() +
-          baseMeat() * (estimatedGarboTurns() - copyTargetCount())),
+        ((1000 + songboomMeat()) * embezzlerFights() +
+          targetMeat() * copyTargetCount() +
+          baseMeat() *
+            (estimatedGarboTurns() - copyTargetCount() - embezzlerFights())),
     ],
     [
       "Item Drop: +15",
@@ -206,7 +213,7 @@ function pantogram(): void {
       ? 0
       : estimatedGarboTurns() -
         digitizedMonstersRemaining() -
-        copyTargetCount();
+        highMeatMonsterCount();
     pantogramValue = 100 * expectedBarfTurns;
   } else {
     const lepMult = findLeprechaunMultiplier(meatFamiliar());

@@ -62,18 +62,15 @@ import {
   HIGHLIGHT,
   improvesAStat,
   pillkeeperOpportunityCost,
-  targetingMeat,
   targetMeat,
   targetMeatDifferential,
   turnsToNC,
   withLocation,
 } from "./lib";
-import { copyTargetCount } from "./target";
 import { usingPurse } from "./outfit";
-import { estimatedGarboTurns } from "./turns";
+import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { globalOptions } from "./config";
 import { castAugustScepterBuffs } from "./resources";
-import { embezzlerFights } from "./tasks/embezzler";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -736,7 +733,7 @@ export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
-    const targets = targetingMeat() ? copyTargetCount() : embezzlerFights();
+    const targets = highMeatMonsterCount();
 
     if (
       have($item`Eight Days a Week Pill Keeper`) &&
@@ -1029,7 +1026,7 @@ export function effectValue(
   effect: Effect,
   duration: number,
   maxTurnsWanted?: number,
-  targets = copyTargetCount(),
+  targets = highMeatMonsterCount(),
 ): number {
   if (effect === $effect`Shadow Affinity`) {
     return globalOptions.prefs.valueOfFreeFight * duration; // Each turn of Shadow Affinity gives us one free fight
@@ -1053,7 +1050,7 @@ export function effectExtenderValue(
   duration: number,
   maximumNumberOfEffects?: number,
 ): number {
-  const targets = copyTargetCount();
+  const targets = highMeatMonsterCount();
   const turns = estimatedGarboTurns();
   return (
     sum(getActiveEffects(), (effect) => {

@@ -28,7 +28,6 @@ import { garboAdventure, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { postFreeFightDailySetup } from "../dailiespost";
 import { runDiet } from "../diet";
-import { copyTargetCount } from "../target";
 import { doSausage, freeRunFights } from "../fights";
 import { eventLog, propertyManager, safeRestore, targetMeat } from "../lib";
 import { meatMood } from "../mood";
@@ -44,6 +43,7 @@ import {
   prepareOutfitAndFamiliar,
   stickerSetup,
 } from "./outfit";
+import { highMeatMonsterCount } from "../turns";
 
 function _yachtzeeChain(): void {
   if (!canInteract()) return;
@@ -51,7 +51,7 @@ function _yachtzeeChain(): void {
   if (!realmAvailable("sleaze")) return;
 
   maximize("MP", false);
-  meatMood(false, targetMeat()).execute(copyTargetCount());
+  meatMood(false, targetMeat()).execute(highMeatMonsterCount());
   potionSetup(globalOptions.nobarf); // This is the default set up for targets (which helps us estimate if chaining is better than extros)
   maximizeMeat();
   prepareOutfitAndFamiliar();
