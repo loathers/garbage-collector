@@ -18,11 +18,9 @@ import { GarboStrategy, Macro } from "../combat";
 import { getBestLuckyAdventure } from "../lib";
 import { AlternateTask } from "./engine";
 
-export function embezzlerFights(
-  ...exludedLuckySources: embezzlerLuckySource[]
-): number {
+export function embezzlerFights(...exludedLuckySources: LuckySource[]): number {
   return sum(
-    EmbezzlerFightsQuest.tasks.filter(
+    luckySourceTasks.filter(
       (t) =>
         (t.ready?.() ?? true) &&
         !t.completed() &&
@@ -32,9 +30,9 @@ export function embezzlerFights(
   );
 }
 
-export type embezzlerLuckySource = (typeof luckySourceTasks)[number]["name"];
+export type LuckySource = (typeof luckySourceTasks)[number]["name"];
 
-const luckySourceTasks: AlternateTask[] = [
+const luckySourceTasks = [
   {
     name: "Scepter",
     acquire: [{ item: $item`august scepter` }],
@@ -84,7 +82,7 @@ const luckySourceTasks: AlternateTask[] = [
         ? 1
         : 0,
   },
-] as const;
+] as const satisfies AlternateTask[];
 
 export const EmbezzlerFightsQuest: Quest<AlternateTask> = {
   name: "Lucky Embezzlers",
