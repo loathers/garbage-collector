@@ -15,7 +15,8 @@ import { shouldAugustCast } from "../resources";
 import { canAdventure, cliExecute, useSkill } from "kolmafia";
 import { meatTargetOutfit } from "../outfit";
 import { GarboStrategy, Macro } from "../combat";
-import { AlternateTask, getBestLuckyAdventure } from "../lib";
+import { getBestLuckyAdventure } from "../lib";
+import { AlternateTask } from "./engine";
 
 export function embezzlerFights(
   ...exludedLuckySources: embezzlerLuckySource[]

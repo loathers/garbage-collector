@@ -36,6 +36,8 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   duplicate?: Delayed<boolean>;
 };
 
+export type AlternateTask = GarboTask & { turns: Delayed<number> };
+
 function logTargetFight(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
   if (isDigitize) {
