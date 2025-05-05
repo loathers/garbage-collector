@@ -83,7 +83,8 @@ import {
   checkBarfQuest,
   checkVolcanoQuest,
 } from "../resources";
-import { GarboStrategy, Macro } from "../combat";
+import { Macro } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
 import { embezzlerFights } from "./embezzler";
 

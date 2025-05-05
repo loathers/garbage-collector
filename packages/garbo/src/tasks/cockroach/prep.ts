@@ -26,7 +26,8 @@ import {
   unequip,
 } from "libram";
 import { acquire } from "../../acquire";
-import { GarboStrategy, Macro } from "../../combat";
+import { Macro } from "../../combat";
+import { GarboStrategy } from "../../combatStrategy";
 import { freeFightFamiliar } from "../../familiar";
 import { freeFightOutfit, meatTargetOutfit } from "../../outfit";
 import { GarboTask } from "../engine";

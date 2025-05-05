@@ -25,7 +25,7 @@ import {
   print,
   totalTurnsPlayed,
 } from "kolmafia";
-import { GarboStrategy } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";

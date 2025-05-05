@@ -14,9 +14,10 @@ import {
 import { shouldAugustCast } from "../resources";
 import { canAdventure, cliExecute, useSkill } from "kolmafia";
 import { meatTargetOutfit } from "../outfit";
-import { GarboStrategy, Macro } from "../combat";
 import { getBestLuckyAdventure } from "../lib";
 import { AlternateTask } from "./engine";
+import { Macro } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 
 export function embezzlerFights(...exludedLuckySources: LuckySource[]): number {
   return sum(
