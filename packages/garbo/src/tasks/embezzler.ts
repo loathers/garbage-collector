@@ -23,9 +23,9 @@ export function embezzlerFights(...exludedLuckySources: LuckySource[]): number {
   return sum(
     luckySourceTasks.filter(
       (t) =>
+        !exludedLuckySources.includes(t.name) &&
         (t.ready?.() ?? true) &&
-        !t.completed() &&
-        !exludedLuckySources.includes(t.name),
+        !t.completed(),
     ),
     (t) => undelay(t.turns),
   );
