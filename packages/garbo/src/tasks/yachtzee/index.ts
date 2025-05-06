@@ -13,15 +13,14 @@ import {
 } from "libram";
 import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
 import { getBestWaterBreathingEquipment } from "./outfit";
-import {
-  freeFishyAvailable,
-  freeNCs,
-  maximumYachtzees,
-  shouldYachtzee,
-} from "./lib";
+import { freeNCs, maximumYachtzees } from "./lib";
 import { GarboStrategy, Macro } from "../../combat";
 import { GarboTask } from "../engine";
-import { willDrunkAdventure } from "../../lib";
+import {
+  freeFishyAvailable,
+  shouldYachtzee,
+  willDrunkAdventure,
+} from "../../lib";
 import { globalOptions } from "../../config";
 
 function doYachtzeeTask(additionalReady: () => boolean) {

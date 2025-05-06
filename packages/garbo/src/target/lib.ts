@@ -24,7 +24,7 @@ import { OutfitSpec } from "grimoire-kolmafia";
 import { waterBreathingEquipment } from "../outfit";
 import { Macro } from "../combat";
 import { globalOptions } from "../config";
-import { freeFishyAvailable, shouldYachtzee } from "../tasks/yachtzee/lib";
+import { freeFishyAvailable, shouldYachtzee } from "../lib";
 
 /**
  * Configure the behavior of the fights in use in different parts of the fight engine

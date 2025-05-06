@@ -159,6 +159,7 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  shouldYachtzee,
   targetingMeat,
   targetMeat,
   tryFindFreeRunOrBanish,
@@ -195,7 +196,6 @@ import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
 } from "./tasks/buffExtension";
-import { shouldYachtzee } from "./tasks/yachtzee/lib";
 
 const firstChainMacro = () =>
   Macro.if_(

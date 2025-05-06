@@ -108,7 +108,7 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { cinchNCs, shouldYachtzee } from "./tasks/yachtzee/lib";
+import { cinchNCs, freeNCs } from "./tasks/yachtzee/lib";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -1164,4 +1164,19 @@ export function maximumPinataCasts() {
         Math.floor((CinchoDeMayo.totalAvailableCinch() - cinchNCs() * 60) / 5),
       )
     : 30;
+}
+
+export function freeFishyAvailable(): boolean {
+  return (
+    have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))
+  );
+}
+
+export function shouldYachtzee(): boolean {
+  const nonCombats = freeNCs();
+  return (
+    realmAvailable("sleaze") &&
+    nonCombats > 0 &&
+    get("valueOfAdventure") * nonCombats < 20000 * nonCombats
+  ); // Can we check for "value of doing the taffy copier"?
 }

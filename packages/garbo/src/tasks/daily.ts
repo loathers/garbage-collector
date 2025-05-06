@@ -68,7 +68,7 @@ import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
 import { estimatedAttunementTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT, targetMeat } from "../lib";
+import { baseMeat, HIGHLIGHT, shouldYachtzee, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
@@ -81,7 +81,6 @@ import {
 } from "../resources";
 import { GarboStrategy, Macro } from "../combat";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
-import { shouldYachtzee } from "./yachtzee/lib";
 
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;

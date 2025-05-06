@@ -9,9 +9,8 @@ import {
 import { $item, get, have, maxBy, property, set, withProperty } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { HIGHLIGHT } from "../lib";
+import { HIGHLIGHT, shouldYachtzee } from "../lib";
 import { acquire } from "../acquire";
-import { shouldYachtzee } from "../tasks/yachtzee/lib";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 

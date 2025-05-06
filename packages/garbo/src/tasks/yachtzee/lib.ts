@@ -6,25 +6,9 @@ import {
   get,
   getModifier,
   have,
-  realmAvailable,
 } from "libram";
 import { globalOptions } from "../../config";
 import { Effect, haveEffect, Item } from "kolmafia";
-
-export function freeFishyAvailable(): boolean {
-  return (
-    have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))
-  );
-}
-
-export function shouldYachtzee(): boolean {
-  const nonCombats = freeNCs();
-  return (
-    realmAvailable("sleaze") &&
-    nonCombats > 0 &&
-    get("valueOfAdventure") * nonCombats < 20000 * nonCombats
-  ); // Can we check for "value of doing the taffy copier"?
-}
 
 export function cinchNCs(): number {
   return CinchoDeMayo.have()
