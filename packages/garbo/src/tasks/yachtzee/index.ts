@@ -22,6 +22,7 @@ import {
   willDrunkAdventure,
 } from "../../lib";
 import { globalOptions } from "../../config";
+import { Outfit } from "grimoire-kolmafia";
 
 function doYachtzeeTask(additionalReady: () => boolean) {
   return {
@@ -29,9 +30,10 @@ function doYachtzeeTask(additionalReady: () => boolean) {
     ready: () => additionalReady() && have($effect`Fishy`),
     do: $location`The Sunken Party Yacht`,
     outfit: () => {
+      const outfit = new Outfit();
       const overdrunk = myInebriety() > inebrietyLimit();
       const yachtzeeFamiliar = bestYachtzeeFamiliar();
-      const modifiers = ["20 Meat"];
+      outfit.modifier.push("20 Meat Drop", "-tie");
       if (
         !(
           yachtzeeFamiliar.underwater ||
@@ -39,19 +41,16 @@ function doYachtzeeTask(additionalReady: () => boolean) {
           have($effect`Wet Willied`)
         )
       ) {
-        modifiers.push("underwater familiar");
+        outfit.modifier.push("underwater familiar");
       }
-      const equips = [
-        getBestWaterBreathingEquipment(freeNCs()).item,
-        bestFamUnderwaterGear(yachtzeeFamiliar),
-      ];
-      if (overdrunk) equips.push($item`Drunkula's wineglass`);
-      return {
-        equip: equips,
-        modifier: modifiers,
-        avoid: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
-        familiar: yachtzeeFamiliar,
-      };
+      outfit.equip(getBestWaterBreathingEquipment(freeNCs()).item);
+      outfit.equip(bestFamUnderwaterGear(yachtzeeFamiliar));
+      if (overdrunk) outfit.equip($item`Drunkula's wineglass`);
+      outfit.avoid.push(
+        ...$items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
+      );
+      outfit.familiar = yachtzeeFamiliar;
+      return outfit;
     },
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg(
