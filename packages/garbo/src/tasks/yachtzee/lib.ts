@@ -28,9 +28,8 @@ export function maximumYachtzees(): number {
   return clamp(
     freeNCs(),
     0,
-    have($item`fishy pipe`) && !get("_fishyPipeUsed")
-      ? 10
-      : haveEffect($effect`Fishy`),
+    haveEffect($effect`Fishy`) +
+      (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0),
   );
 }
 
