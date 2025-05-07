@@ -1,4 +1,10 @@
-import { inebrietyLimit, myInebriety, use, useSkill } from "kolmafia";
+import {
+  cliExecute,
+  inebrietyLimit,
+  myInebriety,
+  use,
+  useSkill,
+} from "kolmafia";
 import {
   $effect,
   $item,
@@ -82,6 +88,15 @@ export function yachtzeeTasks(): AlternateTask[] {
       completed: () => have($effect`Fishy`),
       ready: () => have($item`fishy pipe`) && !get("_fishyPipeUsed"),
       do: () => use($item`fishy pipe`),
+      turns: 0,
+      sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
+      spendsTurn: false,
+    },
+    {
+      name: "Use Skatepark for Yachtzee",
+      completed: () => have($effect`Fishy`),
+      ready: () => get("skateParkStatus") === "ice" && !get("_skateBuff1"),
+      do: () => cliExecute("skate lutz"),
       turns: 0,
       sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
       spendsTurn: false,

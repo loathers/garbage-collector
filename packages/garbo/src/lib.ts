@@ -1168,7 +1168,9 @@ export function maximumPinataCasts() {
 
 export function freeFishyAvailable(): boolean {
   return (
-    have($effect`Fishy`) || (have($item`fishy pipe`) && !get("_fishyPipeUsed"))
+    have($effect`Fishy`) ||
+    (have($item`fishy pipe`) && !get("_fishyPipeUsed")) ||
+    (get("skateParkStatus") === "ice" && !get("_skateBuff1"))
   );
 }
 

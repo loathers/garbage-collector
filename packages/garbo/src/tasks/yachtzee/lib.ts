@@ -29,7 +29,8 @@ export function maximumYachtzees(): number {
     freeNCs(),
     0,
     haveEffect($effect`Fishy`) +
-      (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0),
+      (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0) +
+      (get("skateParkStatus") === "ice" && !get("_skateBuff1") ? 30 : 0),
   );
 }
 
