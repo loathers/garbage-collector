@@ -79,7 +79,6 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { copyTargetCount } from "./target";
 import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
   arrayEquals,
@@ -91,7 +90,7 @@ import {
 } from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
-import { estimatedGarboTurns } from "./turns";
+import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { garboValue } from "./garboValue";
 
 const MPA = get("valueOfAdventure");
@@ -927,7 +926,7 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseTargets = targetingMeat() ? copyTargetCount() : 0;
+  const baseTargets = highMeatMonsterCount();
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -1043,7 +1042,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
     (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
   );
 
-  const targets = Math.floor(copyTargetCount() + countCopies(diet));
+  const targets = Math.floor(highMeatMonsterCount() + countCopies(diet));
   const adventures = Math.floor(
     estimatedGarboTurns(false) + diet.expectedAdventures(),
   );

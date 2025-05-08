@@ -24,7 +24,8 @@ import {
 } from "../lib";
 import { globalOptions } from "../config";
 import { freeFightOutfit, toSpec } from "../outfit";
-import { GarboStrategy, Macro } from "../combat";
+import { Macro } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 import { effectExtenderValue } from "../potions";
 
 function getRun(): ActionSource {

@@ -10,3 +10,4 @@ export { SetupTargetCopyQuest } from "./target";
 export { DailySeaQuest } from "./dailySea";
 export { PostQuest } from "./post";
 export { runGarboQuests, runSafeGarboQuests } from "./engine";
+export { EmbezzlerFightsQuest } from "./embezzler";

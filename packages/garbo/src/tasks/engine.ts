@@ -25,7 +25,7 @@ import {
   print,
   totalTurnsPlayed,
 } from "kolmafia";
-import { GarboStrategy } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
@@ -35,6 +35,8 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   spendsTurn: Delayed<boolean>;
   duplicate?: Delayed<boolean>;
 };
+
+export type AlternateTask = GarboTask & { turns: Delayed<number> };
 
 function logTargetFight(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
