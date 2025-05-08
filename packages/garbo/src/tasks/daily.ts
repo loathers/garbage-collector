@@ -31,6 +31,7 @@ import {
   retrieveItem,
   runChoice,
   toSlot,
+  totalTurnsPlayed,
   toUrl,
   use,
   visitUrl,
@@ -824,6 +825,29 @@ const DailyTasks: GarboTask[] = [
         (x) => <AcquireItem>{ item: x },
       ),
     outfit: { modifier: "disco style" },
+    spendsTurn: false,
+  },
+  {
+    name: "Use Walkie Talkie for Ghost",
+    ready: () =>
+      mallPrice($item`almost-dead walkie-talkie`) <
+        globalOptions.prefs.valueOfFreeFight &&
+      get("nextParanormalActivity") <= totalTurnsPlayed(),
+    completed: () =>
+      have($item`protonic accelerator pack`) ||
+      get("questPAGhost") === "started",
+    do: () => {
+      if (
+        acquire(
+          1,
+          $item`almost-dead walkie-talkie`,
+          globalOptions.prefs.valueOfFreeFight,
+          false,
+        )
+      ) {
+        use($item`almost-dead walkie-talkie`);
+      }
+    },
     spendsTurn: false,
   },
 ];

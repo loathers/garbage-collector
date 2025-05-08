@@ -129,10 +129,13 @@ export const CockroachSetup: Quest<GarboTask> = {
       completed: () => questStep("_questPirateRealm") > 2,
       prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
-      outfit: {
-        equip: $items`PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot`,
+      outfit: () => ({
+        equip:
+          $items`PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot`.filter(
+            (i) => have(i),
+          ),
         modifier: Stat.all().map((stat) => `-${stat}`),
-      },
+      }),
       choices: () => ({
         1365: 1,
         1364: 2,

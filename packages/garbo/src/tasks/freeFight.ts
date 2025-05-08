@@ -215,16 +215,22 @@ const stunDurations = new Map<Skill | Item, Delayed<number>>([
 const FreeFightTasks: GarboFreeFightTask[] = [
   {
     name: $item`protonic accelerator pack`.name,
-    ready: () =>
-      have($item`protonic accelerator pack`) &&
-      get("questPAGhost") !== "unstarted" &&
-      get("ghostLocation") !== null,
+    ready: () => get("ghostLocation") !== null,
     completed: () => get("questPAGhost") === "unstarted",
     choices: () =>
       wanderer().getChoices(get("ghostLocation") ?? $location.none),
     do: () => get("ghostLocation") ?? $location.none,
-    combat: new GarboStrategy(() => Macro.ghostBustin()),
-    outfit: () => freeFightOutfit({ back: $item`protonic accelerator pack` }),
+    combat: new GarboStrategy(() =>
+      have($item`protonic accelerator pack`)
+        ? Macro.ghostBustin()
+        : Macro.basicCombat(),
+    ),
+    outfit: () =>
+      freeFightOutfit({
+        back: have($item`protonic accelerator pack`)
+          ? $item`protonic accelerator pack`
+          : [],
+      }),
     tentacle: true,
   },
   {
@@ -387,7 +393,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           modes: { retrocape: ["robot", "kiss"] },
           avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
           modifier:
-            numericModifier("Monster Level") >= 50 ? "-Monster Level" : [], // Above 50 ML, monsters resist stuns.
+            numericModifier("Monster Level") >= 50
+              ? "-7 Monster Level"
+              : "-Monster Level", // Above 50 ML, monsters resist stuns.
         },
         { familiarOptions: { canChooseMacro: false } },
       ),
