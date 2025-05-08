@@ -1026,7 +1026,7 @@ export function effectValue(
   effect: Effect,
   duration: number,
   maxTurnsWanted?: number,
-  targets = highMeatMonsterCount(),
+  targets = highMeatMonsterCount("Scepter"), // Scepter has circular logic issues
 ): number {
   if (effect === $effect`Shadow Affinity`) {
     return globalOptions.prefs.valueOfFreeFight * duration; // Each turn of Shadow Affinity gives us one free fight

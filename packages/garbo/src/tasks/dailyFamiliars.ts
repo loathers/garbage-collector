@@ -45,7 +45,7 @@ import { acquire } from "../acquire";
 import { amuletCoinValue } from "../familiar/lib";
 
 function drivebyValue(): number {
-  const targets = highMeatMonsterCount();
+  const targets = highMeatMonsterCount("Scepter"); // Scepter can cause circular logic
   const tourists =
     ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
@@ -59,7 +59,7 @@ function drivebyValue(): number {
 }
 
 function entendreValue(): number {
-  const targets = highMeatMonsterCount();
+  const targets = highMeatMonsterCount("Scepter"); // Scepter can cause circular logic
   const tourists =
     ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
