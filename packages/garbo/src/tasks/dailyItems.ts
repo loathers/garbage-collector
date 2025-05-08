@@ -74,9 +74,16 @@ const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Shee
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
 let _shouldClearRufusQuest: boolean | null = null;
 
-const ULTRA_RARE_ZONES = $locations`Cobb's Knob Menagerie\, Level 1, The Haunted Billiards Room, The Sleazy Back Alley, The Icy Peak, Camp Logging Camp, Pandamonium Slums, Cobb's Knob Treasury, The Dungeons of Doom, Inside the Palindome, The Spooky Forest, The VERY Unquiet Garves, A Mob of Zeppelin Protesters`;
-const UNSAFE_ULTRA_RARE_ZONES = $locations`Pandamonium Slums, The Spooky Forest, The VERY Unquiet Garves, A Mob of Zeppelin Protesters`;
-const URZonesToCheck = () => ULTRA_RARE_ZONES.filter((l) => !(get("_perilLocations").includes(l.id) || UNSAFE_ULTRA_RARE_ZONES.includes(l)))[0];
+const ULTRA_RARE_ZONES = $locations`The Unquiet Garves, Cobb's Knob Menagerie\, Level 1, The Haunted Billiards Room, The Sleazy Back Alley, The Icy Peak, Camp Logging Camp, Pandamonium Slums, Cobb's Knob Treasury, The Dungeons of Doom, Inside the Palindome, The Spooky Forest, The VERY Unquiet Garves, A Mob of Zeppelin Protesters`;
+const UNSAFE_ULTRA_RARE_ZONES = $locations`Pandamonium Slums, The Spooky Forest, The VERY Unquiet Garves, Inside the Palindome, A Mob of Zeppelin Protesters`;
+const URZonesToCheck = () =>
+  ULTRA_RARE_ZONES.filter(
+    (l) =>
+      !(
+        get("_perilLocations").includes(l.id) ||
+        UNSAFE_ULTRA_RARE_ZONES.includes(l)
+      ),
+  )[0];
 
 function drawBestCards(): void {
   const cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
@@ -717,10 +724,13 @@ const DailyItemTasks: GarboTask[] = [
   },
   {
     name: "Peridot Hunt for Ultra Rares",
-    ready: () => !globalOptions.nobarf && myAdventures() < 10 && have($item`Peridot of Peril`),
+    ready: () =>
+      !globalOptions.nobarf &&
+      myAdventures() < 10 &&
+      have($item`Peridot of Peril`),
     do: () => URZonesToCheck(),
     completed: () => URZonesToCheck() === null,
-    choices: {1557: 2},
+    choices: { 1557: 2 },
     spendsTurn: true, // We only spend turns if we actually hit an UR
   },
   mayamCalendarSummon(),
