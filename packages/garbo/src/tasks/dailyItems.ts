@@ -80,7 +80,7 @@ const URZonesToCheck = () =>
   ULTRA_RARE_ZONES.filter(
     (l) =>
       !(
-        get("_perilLocations").includes(l.id) ||
+        get("_perilLocations").split(",").map(Number).includes(l.id) ||
         UNSAFE_ULTRA_RARE_ZONES.includes(l)
       ),
   )[0];
