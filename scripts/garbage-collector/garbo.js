@@ -29926,7 +29926,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ec270d700a9248eebc1f80ce2d80c3154889b3f6", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("fceb38321cc4d30cdc6d07c3e03101f9009a7da0", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -33207,7 +33207,7 @@ var standardFamiliars = [{
 }, {
   familiar: $familiar(_templateObject1041 || (_templateObject1041 = _taggedTemplateLiteral94(["Robortender"]))),
   value: function(mode) {
-    return (mode === "barf" ? garboValue($item(_templateObject1139 || (_templateObject1139 = _taggedTemplateLiteral94(["elemental sugarcube"])))) / 5 : 0) + (Robortender_exports.currentDrinks().includes($item(_templateObject1238 || (_templateObject1238 = _taggedTemplateLiteral94(["Feliz Navidad"])))) ? felizValue() * 0.25 : 0) + (Robortender_exports.currentDrinks().includes($item(_templateObject1335 || (_templateObject1335 = _taggedTemplateLiteral94(["Newark"])))) ? newarkValue() * 0.25 : 0);
+    return Robortender_exports.dropChance() * garboValue(Robortender_exports.dropFrom(mode === "barf" ? $monster(_templateObject1139 || (_templateObject1139 = _taggedTemplateLiteral94(["garbage tourist"]))) : mode === "target" ? globalOptions.target : $monster.none)) + (Robortender_exports.currentDrinks().includes($item(_templateObject1238 || (_templateObject1238 = _taggedTemplateLiteral94(["Feliz Navidad"])))) ? felizValue() * 0.25 : 0) + (Robortender_exports.currentDrinks().includes($item(_templateObject1335 || (_templateObject1335 = _taggedTemplateLiteral94(["Newark"])))) ? newarkValue() * 0.25 : 0);
   }
 }, {
   familiar: $familiar(_templateObject1434 || (_templateObject1434 = _taggedTemplateLiteral94(["Twitching Space Critter"]))),
