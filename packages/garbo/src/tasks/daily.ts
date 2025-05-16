@@ -68,7 +68,7 @@ import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
 import { estimatedAttunementTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT, targetMeat } from "../lib";
+import { baseMeat, HIGHLIGHT, shouldYachtzee, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
@@ -264,7 +264,7 @@ function nepQuest(): void {
 
   if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
     print("Gerald/ine quest!", HIGHLIGHT);
-    globalOptions.clarasBellClaimed = true;
+    if (!shouldYachtzee()) globalOptions.clarasBellClaimed = true;
   }
 }
 
