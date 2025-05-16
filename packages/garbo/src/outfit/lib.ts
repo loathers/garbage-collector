@@ -30,10 +30,9 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
 import { targetMeat } from "../lib";
-import { digitizedMonstersRemaining } from "../turns";
+import { digitizedMonstersRemaining, highMeatMonsterCount } from "../turns";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) =>
@@ -95,7 +94,7 @@ export function useUPCsIfNeeded({ familiar }: Outfit): void {
   const currentWeapon =
     25 * (familiar ? findLeprechaunMultiplier(familiar) : 0);
   const targets = globalOptions.ascend
-    ? Math.min(20, copyTargetCount() || digitizedMonstersRemaining())
+    ? Math.min(20, highMeatMonsterCount() || digitizedMonstersRemaining())
     : 20;
 
   const addedValueOfFullSword =

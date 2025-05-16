@@ -15,7 +15,9 @@ import {
   digitizedMonstersRemainingForTurns,
   ESTIMATED_OVERDRUNK_TURNS,
   howManySausagesCouldIEat,
+  targetingMeat,
 } from "./lib";
+import { embezzlerFights, LuckySource } from "./tasks/embezzler";
 
 /**
  * Computes the estimated number of turns during which garbo will run
@@ -50,8 +52,9 @@ export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
   let turns;
   if (globalOptions.stopTurncount) {
     turns = globalOptions.stopTurncount - myTurncount();
-  } else if (globalOptions.nobarf) turns = copyTargetCount();
-  else if (globalOptions.saveTurns > 0 || !globalOptions.ascend) {
+  } else if (globalOptions.nobarf) {
+    turns = targetingMeat() ? highMeatMonsterCount() : 0;
+  } else if (globalOptions.saveTurns > 0 || !globalOptions.ascend) {
     turns =
       (myAdventures() +
         sausageAdventures +
@@ -136,4 +139,10 @@ function potentialNonOrganAdventures(): number {
 
 export function digitizedMonstersRemaining() {
   return digitizedMonstersRemainingForTurns(estimatedGarboTurns());
+}
+
+export function highMeatMonsterCount(...excludedEmbezzlers: LuckySource[]) {
+  const meatTargets = targetingMeat() ? copyTargetCount() : 0;
+  const embezzlers = embezzlerFights(...excludedEmbezzlers);
+  return meatTargets + embezzlers;
 }

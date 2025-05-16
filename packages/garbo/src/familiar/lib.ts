@@ -29,7 +29,11 @@ import {
   targetMeat,
   turnsToNC,
 } from "../lib";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import {
+  digitizedMonstersRemaining,
+  estimatedGarboTurns,
+  highMeatMonsterCount,
+} from "../turns";
 import { garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
 
@@ -178,7 +182,7 @@ export const amuletCoinValue = () => {
   const [copies, barf] = isFree(globalOptions.target)
     ? [0, estimatedGarboTurns()]
     : (() => {
-        const copies = copyTargetCount();
+        const copies = highMeatMonsterCount();
         return [copies, estimatedGarboTurns() - copies];
       })();
   return 0.5 * (barf * baseMeat() + copies * targetMeat());
