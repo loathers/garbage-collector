@@ -4,6 +4,7 @@ import {
   $familiar,
   $item,
   $items,
+  $monster,
   clamp,
   findLeprechaunMultiplier,
   getModifier,
@@ -15,6 +16,7 @@ import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { FamiliarMode, GeneralFamiliar } from "./lib";
 import { effectExtenderValue } from "../potions";
+import { globalOptions } from "../config";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -48,7 +50,16 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   {
     familiar: $familiar`Robortender`,
     value: (mode) =>
-      (mode === "barf" ? garboValue($item`elemental sugarcube`) / 5 : 0) +
+      Robortender.dropChance() *
+        garboValue(
+          Robortender.dropFrom(
+            mode === "barf"
+              ? $monster`garbage tourist`
+              : mode === "target"
+                ? globalOptions.target
+                : $monster.none,
+          ),
+        ) +
       (Robortender.currentDrinks().includes($item`Feliz Navidad`)
         ? felizValue() * 0.25
         : 0) +
