@@ -1169,7 +1169,7 @@ const alwaysSafeUltraRares = $locations`Battlefield (No Uniform), The Icy Peak, 
 export function getAvailableUltraRareZones(): Location[] {
   const zones = [...alwaysSafeUltraRares];
 
-  const goingPostalSafe = !questBetween("questM11Postal", 0, 998);
+  const goingPostalSafe = !questBetween("questM11Postal", 0, 998); // Going Postal tracking is not especially granular
 
   if ($location`The Haunted Billiards Room`.turnsSpent > 0) {
     zones.push($location`The Haunted Billiards Room`); // no better check for pool cue adventure
@@ -1197,6 +1197,7 @@ export function getAvailableUltraRareZones(): Location[] {
     zones.push($location`Pandamonium Slums`);
   }
   if (questBetween("questL11Palindome", 1, 5)) {
+    // Step 1 is having rearranged the photos, which means you got all the superlikelies already
     zones.push($location`Inside the Palindome`);
   }
   // if (goingPostalSafe && something with get("lastNoncombat15")?) zones.push($location`Spooky Forest`);
