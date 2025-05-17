@@ -71,6 +71,7 @@ import {
   $item,
   $items,
   $location,
+  $locations,
   $monster,
   $skill,
   $thralls,
@@ -89,6 +90,7 @@ import {
   getModifier,
   getTodaysHolidayWanderers,
   have,
+  haveInCampground,
   JuneCleaver,
   Macro,
   maxBy,
@@ -1149,4 +1151,56 @@ export function improvedStats(thing: Item | Effect): Stat[] {
 
 export function improvesAStat(thing: Item | Effect): boolean {
   return improvedStats(thing).length > 0;
+}
+
+function questBetween(
+  quest: string,
+  lower: number,
+  upper: number,
+  inclusive = true,
+): boolean {
+  const step = questStep(quest);
+  return inclusive
+    ? step >= lower && step <= upper
+    : step > lower && step < upper;
+}
+
+const alwaysSafeUltraRares = $locations`Battlefield (No Uniform), The Icy Peak, Cobb's Knob Treasury, Cobb's Knob Menagerie\, Level 1, The Dungeons of Doom, A Mob of Zeppelin Protesters, Camp Logging Camp`;
+export function getAvailableUltraRareZones(): Location[] {
+  const zones = [...alwaysSafeUltraRares];
+
+  const goingPostalSafe = !questBetween("questM11Postal", 0, 998); // Going Postal tracking is not especially granular
+
+  if ($location`The Haunted Billiards Room`.turnsSpent > 0) {
+    zones.push($location`The Haunted Billiards Room`); // no better check for pool cue adventure
+  }
+  if (questStep("questG03Ego") !== 0) {
+    if (!questBetween("questG04Nemesis", 0, 2)) {
+      zones.push($location`The Unquiet Garves`);
+    }
+    if (goingPostalSafe) zones.push($location`The VERY Unquiet Garves`);
+  }
+  if (
+    have($item`the Slug Lord's map`) && // this doesn't work :c
+    goingPostalSafe &&
+    questStep("questG08Moxie") !== 0 &&
+    questStep("questM02Artist") !== 0
+  ) {
+    zones.push($location`The Sleazy Back Alley`);
+  }
+  if (
+    goingPostalSafe &&
+    (have($item`Hey Deze map`) ||
+      have($item`Hey Deze nuts`) ||
+      haveInCampground($item`pagoda plans`))
+  ) {
+    zones.push($location`Pandamonium Slums`);
+  }
+  if (questBetween("questL11Palindome", 1, 5)) {
+    // Step 1 is having rearranged the photos, which means you got all the superlikelies already
+    zones.push($location`Inside the Palindome`);
+  }
+  // if (goingPostalSafe && something with get("lastNoncombat15")?) zones.push($location`Spooky Forest`);
+
+  return zones.filter((l) => canAdventure(l));
 }
