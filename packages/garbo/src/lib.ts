@@ -90,6 +90,7 @@ import {
   getModifier,
   getTodaysHolidayWanderers,
   have,
+  haveInCampground,
   JuneCleaver,
   Macro,
   maxBy,
@@ -1180,7 +1181,7 @@ export function getAvailableUltraRareZones(): Location[] {
     if (goingPostalSafe) zones.push($location`The VERY Unquiet Garves`);
   }
   if (
-    have($item`the Slug Lord's map`) &&
+    have($item`the Slug Lord's map`) && // this doesn't work :c
     goingPostalSafe &&
     questStep("questG08Moxie") !== 0 &&
     questStep("questM02Artist") !== 0
@@ -1190,7 +1191,12 @@ export function getAvailableUltraRareZones(): Location[] {
   if ($location`Camp Logging Camp`.turnsSpent > 0) {
     zones.push($location`Camp Logging Camp`); // axe adventure
   }
-  if (goingPostalSafe && have($item`Hey Deze map`)) {
+  if (
+    goingPostalSafe &&
+    (have($item`Hey Deze map`) ||
+      have($item`Hey Deze nuts`) ||
+      haveInCampground($item`pagoda plans`))
+  ) {
     zones.push($location`Pandamonium Slums`);
   }
   if (questBetween("questL11Palindome", 1, 5)) {
