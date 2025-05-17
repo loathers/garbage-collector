@@ -173,8 +173,9 @@ function shrugForOde() {
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
   if (have($skill`The Ode to Booze`)) {
-    if (!have($effect`Ode to Booze`) && getSongCount() >= getSongLimit())
-      {shrugForOde();}
+    if (!have($effect`Ode to Booze`) && getSongCount() >= getSongLimit()) {
+      shrugForOde();
+    }
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
