@@ -1174,8 +1174,9 @@ export function getAvailableUltraRareZones(): Location[] {
     zones.push($location`The Haunted Billiards Room`); // no better check for pool cue adventure
   }
   if (questStep("questG03Ego") !== 0) {
-    if (!questBetween("questG04Nemesis", 0, 2))
-      {zones.push($location`The Unquiet Garves`);}
+    if (!questBetween("questG04Nemesis", 0, 2)) {
+      zones.push($location`The Unquiet Garves`);
+    }
     if (goingPostalSafe) zones.push($location`The VERY Unquiet Garves`);
   }
   if (
@@ -1183,15 +1184,18 @@ export function getAvailableUltraRareZones(): Location[] {
     goingPostalSafe &&
     questStep("questG08Moxie") !== 0 &&
     questStep("questM02Artist") !== 0
-  )
-    {zones.push($location`The Sleazy Back Alley`);}
+  ) {
+    zones.push($location`The Sleazy Back Alley`);
+  }
   if ($location`Camp Logging Camp`.turnsSpent > 0) {
     zones.push($location`Camp Logging Camp`); // axe adventure
   }
-  if (goingPostalSafe && have($item`Hey Deze map`))
-    {zones.push($location`Pandamonium Slums`);}
-  if (questBetween("questL11Palindome", 1, 5))
-    {zones.push($location`Inside the Palindome`);}
+  if (goingPostalSafe && have($item`Hey Deze map`)) {
+    zones.push($location`Pandamonium Slums`);
+  }
+  if (questBetween("questL11Palindome", 1, 5)) {
+    zones.push($location`Inside the Palindome`);
+  }
   // if (goingPostalSafe && something with get("lastNoncombat15")?) zones.push($location`Spooky Forest`);
 
   return zones.filter((l) => canAdventure(l));
