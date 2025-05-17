@@ -1165,7 +1165,7 @@ function questBetween(
     : step > lower && step < upper;
 }
 
-const alwaysSafeUltraRares = $locations`Battlefield (No Uniform), The Icy Peak, Cobb's Knob Treasury, Cobb's Knob Menagerie\, Level 1, The Dungeons of Doom, A Mob of Zeppelin Protesters`;
+const alwaysSafeUltraRares = $locations`Battlefield (No Uniform), The Icy Peak, Cobb's Knob Treasury, Cobb's Knob Menagerie\, Level 1, The Dungeons of Doom, A Mob of Zeppelin Protesters, Camp Logging Camp`;
 export function getAvailableUltraRareZones(): Location[] {
   const zones = [...alwaysSafeUltraRares];
 
@@ -1187,9 +1187,6 @@ export function getAvailableUltraRareZones(): Location[] {
     questStep("questM02Artist") !== 0
   ) {
     zones.push($location`The Sleazy Back Alley`);
-  }
-  if ($location`Camp Logging Camp`.turnsSpent > 0) {
-    zones.push($location`Camp Logging Camp`); // axe adventure
   }
   if (
     goingPostalSafe &&
