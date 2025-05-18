@@ -600,7 +600,14 @@ const NonBarfTurnTasks: AlternateTask[] = [
     completed: () => !peridotZone(),
     do: peridotZone,
     outfit: () =>
-      freeFightOutfit(sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+      freeFightOutfit(
+        sober()
+          ? { acc1: $item`Peridot of Peril` }
+          : {
+              acc1: $item`Peridot of Peril`,
+              offhand: $item`Drunkula's wineglass`,
+            },
+      ),
     turns: () => (peridotZone() ? 1 : 0),
     spendsTurn: false,
     combat: new GarboStrategy(() =>
