@@ -1210,3 +1210,7 @@ export function getAvailableUltraRareZones(): Location[] {
 
   return zones.filter((l) => canAdventure(l));
 }
+
+export const ULTRA_RARE_MONSTERS = Monster.all().filter((m) =>
+  m.attributes.includes("ULTRARARE"),
+);

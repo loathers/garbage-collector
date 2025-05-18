@@ -610,11 +610,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
       ),
     turns: () => (peridotZone() ? 1 : 0),
     spendsTurn: false,
-    combat: new GarboStrategy(() =>
-      Macro.abortWithMsg(
-        "Either we just got an Ultra Rare, or something bad just happened!",
-      ),
-    ),
+    combat: new GarboStrategy(() => Macro.kill()),
     choices: () => wanderer().getChoices(peridotZone() ?? $location.none),
   },
   {
