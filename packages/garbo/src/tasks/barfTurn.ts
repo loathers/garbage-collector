@@ -608,6 +608,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
         "Either we just got an Ultra Rare, or something bad just happened!",
       ),
     ),
+    choices: () => wanderer().getChoices(peridotZone() ?? $location.none),
   },
   {
     name: "Use Day Shorteners (drunk)",
