@@ -1169,7 +1169,7 @@ const alwaysSafeUltraRares = $locations`Battlefield (No Uniform), The Icy Peak, 
 export function getAvailableUltraRareZones(): Location[] {
   const zones = [...alwaysSafeUltraRares];
 
-  const goingPostalSafe = !questBetween("questM11Postal", 0, 998); // Going Postal tracking is not especially granular
+  const goingPostalSafe = !questBetween("questM11Postal", -1, 999, false); // Going Postal tracking is not especially granular
 
   if ($location`The Haunted Billiards Room`.turnsSpent > 0) {
     zones.push($location`The Haunted Billiards Room`); // no better check for pool cue adventure
@@ -1181,7 +1181,7 @@ export function getAvailableUltraRareZones(): Location[] {
     if (goingPostalSafe) zones.push($location`The VERY Unquiet Garves`);
   }
   if (
-    have($item`the Slug Lord's map`) && // this doesn't work :c
+    have($item`the Slug Lord's map`) && // Quest not tracked, but certainly if you currently own the map you aren't going to get it again
     goingPostalSafe &&
     questStep("questG08Moxie") !== 0 &&
     questStep("questM02Artist") !== 0
@@ -1192,15 +1192,21 @@ export function getAvailableUltraRareZones(): Location[] {
     goingPostalSafe &&
     (have($item`Hey Deze map`) ||
       have($item`Hey Deze nuts`) ||
-      haveInCampground($item`pagoda plans`))
+      haveInCampground($item`pagoda plans`)) // Quest not tracked, but these three checks work
   ) {
     zones.push($location`Pandamonium Slums`);
   }
   if (questBetween("questL11Palindome", 1, 5)) {
-    // Step 1 is having rearranged the photos, which means you got all the superlikelies already
-    zones.push($location`Inside the Palindome`);
+    zones.push($location`Inside the Palindome`); // Step 1 is having rearranged the photos, which means you got all the superlikelies already
   }
-  // if (goingPostalSafe && something with get("lastNoncombat15")?) zones.push($location`Spooky Forest`);
+  if (
+    goingPostalSafe &&
+    $location`The Spooky Forest`.turnsSpent -
+      $location`The Spooky Forest`.lastNoncombatTurnsSpent >=
+      7
+  ) {
+    zones.push($location`The Spooky Forest`);
+  }
 
   return zones.filter((l) => canAdventure(l));
 }
