@@ -36,7 +36,12 @@ import {
 } from "libram";
 import { Macro } from "./combat";
 import { globalOptions } from "./config";
-import { HIGHLIGHT, unlimitedFreeRunList, userConfirmDialog } from "./lib";
+import {
+  HIGHLIGHT,
+  ULTRA_RARE_MONSTERS,
+  unlimitedFreeRunList,
+  userConfirmDialog,
+} from "./lib";
 
 export const stashItems = get("garboStashItems", "")
   .split(",")
@@ -172,6 +177,7 @@ export class StashManager {
         [globalOptions.target, $monster`giant giant crab`],
         Macro.attack().repeat(),
       )
+        .if_(ULTRA_RARE_MONSTERS, Macro.abort())
         .tryItem(
           ...unlimitedFreeRunList
             .filter((i) => getAcquirePrice(i) < get("valueOfAdventure"))
