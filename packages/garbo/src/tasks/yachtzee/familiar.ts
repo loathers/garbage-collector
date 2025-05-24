@@ -15,9 +15,9 @@ import {
   findLeprechaunMultiplier,
   have,
 } from "libram";
-import { familiarWaterBreathingEquipment } from "../outfit";
+import { familiarWaterBreathingEquipment } from "../../outfit";
 
-function bestFamUnderwaterGear(fam: Familiar): Item {
+export function bestFamUnderwaterGear(fam: Familiar): Item {
   // Returns best familiar gear for yachtzee chaining
   return fam.underwater ||
     have($effect`Driving Waterproofly`) ||
