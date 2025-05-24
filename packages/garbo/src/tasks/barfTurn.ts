@@ -425,7 +425,7 @@ function getAutosellableMeltingJunk(): Item[] {
 
 const peridotZone = () =>
   getAvailableUltraRareZones().find(
-    (l) => !RegExp(`^|,${l.id}$|,`).test(get("_perilLocations")),
+    (l) => !RegExp(`(?:^|,)${l.id}(?:$|,)`).test(get("_perilLocations")),
   );
 
 const NonBarfTurnTasks: AlternateTask[] = [
