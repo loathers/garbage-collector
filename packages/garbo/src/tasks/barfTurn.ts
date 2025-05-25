@@ -611,7 +611,10 @@ const NonBarfTurnTasks: AlternateTask[] = [
     turns: () => (peridotZone() ? 1 : 0),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.kill()),
-    choices: () => wanderer().getChoices(peridotZone() ?? $location.none),
+    choices: () => ({
+      ...wanderer().getChoices(peridotZone() ?? $location.none),
+      1557: 2,
+    }),
   },
   {
     name: "Use Day Shorteners (drunk)",
