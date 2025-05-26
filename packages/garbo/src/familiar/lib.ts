@@ -11,6 +11,7 @@ import {
 import {
   $effect,
   $familiar,
+  $familiars,
   $item,
   $skill,
   clamp,
@@ -187,6 +188,14 @@ export const amuletCoinValue = () => {
 export const familiarEquipmentValue = (f: Familiar) => {
   if (f === $familiar`Cornbeefadon`) {
     return have($item`amulet coin`) ? 0 : amuletCoinValue();
+  }
+
+  if (
+    $familiars`Frozen Gravy Fairy, Flaming Gravy Fairy, Sleazy Gravy Fairy, Spooky Gravy Fairy, Stinky Gravy Fairy`.includes(
+      f,
+    )
+  ) {
+    return garboValue($item`lead necklace`);
   }
 
   return garboValue(familiarEquipment(f));
