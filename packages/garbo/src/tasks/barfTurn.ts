@@ -68,7 +68,6 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
-  getAvailableUltraRareZones,
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
@@ -105,6 +104,7 @@ import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
 import { meatMood } from "../mood";
+import { getAvailableUltraRareZones } from "garbo-lib/dist/wanderer/lib";
 
 const digitizedTarget = () =>
   SourceTerminal.have() &&
