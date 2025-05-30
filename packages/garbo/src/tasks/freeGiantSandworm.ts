@@ -248,6 +248,15 @@ const SandwormTasks: GarboFreeFightTask[] = [
       combatCount: () => (!have($effect`Everything Looks Red`) ? 1 : 0),
     },
     {
+      name: $item`shadow brick`.name,
+      ready: () => drumMachineWorthIt() && mallPrice($item`shadow brick`) < get("garbo_valueOfFreeFight",2000),
+      completed: () => get("_shadowBricksUsed") >= 13,
+      combat: new GarboStrategy(() =>
+        sandwormMacro().tryItem($item`shadow brick`),
+      ),
+      combatCount: () => (clamp(13 - get("_shadowBricksUsed"),0,13)),
+    },
+    {
       name: "Yellow Ray",
       ready: () =>
         drumMachineWorthIt() &&
