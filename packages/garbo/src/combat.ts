@@ -65,6 +65,7 @@ import {
   maxPassiveDamage,
   monsterManuelAvailable,
   targetingMeat,
+  ULTRA_RARE_MONSTERS,
 } from "./lib";
 import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
@@ -909,6 +910,10 @@ export function customizeMacro<M extends StrictMacro>(
     $monsters`giant rubber spider, time-spinner prank`,
     freeWanderer(macro),
   )
+    .externalIf(
+      get("stopForUltraRare"),
+      Macro.if_(ULTRA_RARE_MONSTERS, Macro.abort()),
+    )
     .externalIf(
       have($effect`Eldritch Attunement`),
       Macro.if_($monster`Eldritch Tentacle`, tentacle(macro)),
