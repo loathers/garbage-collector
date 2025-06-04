@@ -62,7 +62,7 @@ import {
   withProperty,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
-import { WanderDetails } from "garbo-lib";
+import { getAvailableUltraRareZones, WanderDetails } from "garbo-lib";
 
 import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
@@ -104,7 +104,6 @@ import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
 import { meatMood } from "../mood";
-import { getAvailableUltraRareZones } from "garbo-lib/dist/wanderer/lib";
 
 const digitizedTarget = () =>
   SourceTerminal.have() &&
