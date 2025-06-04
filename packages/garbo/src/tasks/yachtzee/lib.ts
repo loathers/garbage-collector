@@ -6,9 +6,19 @@ import {
   get,
   getModifier,
   have,
+  maxBy,
 } from "libram";
 import { globalOptions } from "../../config";
-import { Effect, haveEffect, Item } from "kolmafia";
+import {
+  canEquip,
+  Effect,
+  equippedItem,
+  haveEffect,
+  haveEquipped,
+  Item,
+  toSlot,
+} from "kolmafia";
+import { waterBreathingEquipment } from "../../outfit";
 
 export function cinchNCs(): number {
   return CinchoDeMayo.have()
@@ -43,4 +53,23 @@ export function yachtzeeBuffValue(obj: Item | Effect): number {
     0,
     20000,
   );
+}
+
+export function getBestWaterBreathingEquipment(yachtzeeTurns: number): {
+  item: Item;
+  cost: number;
+} {
+  const waterBreathingEquipmentCosts = waterBreathingEquipment.map((it) => ({
+    item: it,
+    cost:
+      have(it) && canEquip(it)
+        ? yachtzeeTurns * yachtzeeBuffValue(equippedItem(toSlot(it)))
+        : Infinity,
+  }));
+  const bestWaterBreathingEquipment = waterBreathingEquipment.some((item) =>
+    haveEquipped(item),
+  )
+    ? { item: $item.none, cost: 0 }
+    : maxBy(waterBreathingEquipmentCosts, "cost", true);
+  return bestWaterBreathingEquipment;
 }

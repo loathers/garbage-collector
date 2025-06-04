@@ -18,8 +18,11 @@ import {
   have,
 } from "libram";
 import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
-import { getBestWaterBreathingEquipment } from "./outfit";
-import { freeNCs, maximumYachtzees } from "./lib";
+import {
+  freeNCs,
+  getBestWaterBreathingEquipment,
+  maximumYachtzees,
+} from "./lib";
 import { GarboStrategy, Macro } from "../../combat";
 import { GarboTask } from "../engine";
 import {
