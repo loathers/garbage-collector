@@ -44,8 +44,8 @@ import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
 import { amuletCoinValue } from "../familiar/lib";
 
-function drivebyValue(): number {
-  const targets = highMeatMonsterCount("Scepter"); // Scepter can cause circular logic
+function drivebyValue(targetCount = 0): number {
+  const targets = targetCount;
   const tourists =
     ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
@@ -58,8 +58,8 @@ function drivebyValue(): number {
   );
 }
 
-function entendreValue(): number {
-  const targets = highMeatMonsterCount("Scepter"); // Scepter can cause circular logic
+function entendreValue(targetCount = 0): number {
+  const targets = targetCount;
   const tourists =
     ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
@@ -81,8 +81,12 @@ function worthFeedingRobortender(): boolean {
 
 export function prepRobortender(): void {
   if (!have($familiar`Robortender`)) return;
+  const targetCount = highMeatMonsterCount("Scepter"); // Scepter can cause circular logic
   const roboDrinks = {
-    "Drive-by shooting": { priceCap: drivebyValue(), mandatory: true },
+    "Drive-by shooting": {
+      priceCap: drivebyValue(targetCount),
+      mandatory: true,
+    },
     Newark: {
       priceCap: newarkValue() * 0.25 * estimatedGarboTurns(),
       mandatory: false,
@@ -97,7 +101,10 @@ export function prepRobortender(): void {
         : 0,
       mandatory: false,
     },
-    "Single entendre": { priceCap: entendreValue(), mandatory: false },
+    "Single entendre": {
+      priceCap: entendreValue(targetCount),
+      mandatory: false,
+    },
   };
   for (const [drinkName, { priceCap, mandatory }] of Object.entries(
     roboDrinks,
