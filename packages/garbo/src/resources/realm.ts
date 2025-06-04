@@ -17,7 +17,12 @@ type VolcanoItem = { quantity: number; item: Item; choice: number };
 function volcanoItemValue({ quantity, item }: VolcanoItem): number {
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
-    if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) {
+    if (
+      !have($item`Clara's bell`) ||
+      globalOptions.clarasBellClaimed ||
+      (shouldYachtzee() &&
+        garboValue($item`Volcoino`) < 20000 - get("valueOfAdventure"))
+    ) {
       return Infinity;
     }
     return quantity * get("valueOfAdventure");
@@ -52,10 +57,7 @@ export function checkVolcanoQuest() {
     volcanoItemValue,
     true,
   );
-  if (
-    bestItem.item === $item`fused fuse` &&
-    (!shouldYachtzee() || volcoinoValue > 2000 - get("valueOfAdventure"))
-  ) {
+  if (bestItem.item === $item`fused fuse`) {
     globalOptions.clarasBellClaimed = true;
   } else if (volcanoItemValue(bestItem) < volcoinoValue) {
     withProperty("autoBuyPriceLimit", volcoinoValue, () =>
