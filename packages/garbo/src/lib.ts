@@ -110,7 +110,11 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { cinchNCs, freeNCs } from "./tasks/yachtzee/lib";
+import {
+  cinchNCs,
+  cinchYachtzeeProfitable,
+  freeNCs,
+} from "./tasks/yachtzee/lib";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -1160,7 +1164,7 @@ export function willDrunkAdventure() {
 }
 
 export function maximumPinataCasts() {
-  return shouldYachtzee() // If we're doing Yachtzee at end of day, only use up our excess Cincho on candy
+  return shouldYachtzee() && cinchYachtzeeProfitable() // If we're doing Yachtzee at end of day, only use up our excess Cincho on candy
     ? Math.max(
         0,
         Math.floor((CinchoDeMayo.totalAvailableCinch() - cinchNCs() * 60) / 5),

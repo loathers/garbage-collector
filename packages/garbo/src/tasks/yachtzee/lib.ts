@@ -19,6 +19,7 @@ import {
   toSlot,
 } from "kolmafia";
 import { waterBreathingEquipment } from "../../outfit";
+import { felizValue } from "../../lib";
 
 export function cinchNCs(): number {
   return CinchoDeMayo.have()
@@ -26,10 +27,15 @@ export function cinchNCs(): number {
     : 0;
 }
 
+export function cinchYachtzeeProfitable(): boolean {
+  // A yachtzee costs a turn and gives us 20k meat for 60 cinch, projectile pinata costs 5 cinch and gets us 3 feliz candies
+  return 20000 - get("valueOfAdventure") > 12 * 3 * felizValue();
+}
+
 // These NCs do not require us to enter combat to activate them
 export const freeNCs = (): number =>
   (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed ? 1 : 0) +
-  cinchNCs() +
+  (cinchYachtzeeProfitable() ? cinchNCs() : 0) +
   (have($item`Apriling band tuba`)
     ? $item`Apriling band tuba`.dailyusesleft
     : 0);
