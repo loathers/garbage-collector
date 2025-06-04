@@ -125,7 +125,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28425); // leprechaun's condo is escapable
+  sinceKolmafiaRevision(28520); // feat: update `cast` for replacing / additional buff effects
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
