@@ -62,13 +62,12 @@ import {
   withProperty,
 } from "libram";
 import { OutfitSpec, Quest } from "grimoire-kolmafia";
-import { WanderDetails } from "garbo-lib";
+import { getAvailableUltraRareZones, WanderDetails } from "garbo-lib";
 
 import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
-  getAvailableUltraRareZones,
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
