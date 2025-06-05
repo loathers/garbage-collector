@@ -328,7 +328,6 @@ function hasWorms(): boolean {
 
 const REJECTION = 1 / 10;
 const BASE_RATE = 1 / 100;
-let _drumMachineWorthIt: boolean;
 let _drumMachineROI: number;
 function drumMachineROI(): number {
   if (_drumMachineROI === undefined) {
