@@ -153,11 +153,11 @@ export function canAdventureOrUnlock(
     skiplist.push(...GingerBread.LOCATIONS);
   }
 
-  const canUnlock = includeUnlockable
-    ? UnlockableZones.some(
-        (z) => loc.zone === z.zone && (z.available() || !z.noInv),
-      )
-    : false;
+  const canUnlock =
+    includeUnlockable &&
+    UnlockableZones.some(
+      (z) => loc.zone === z.zone && (z.available() || !z.noInv),
+    );
   return (
     !underwater(loc) &&
     !skiplist.includes(loc) &&
