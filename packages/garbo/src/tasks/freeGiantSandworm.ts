@@ -250,7 +250,8 @@ const SandwormTasks: GarboFreeFightTask[] = [
     {
       name: $item`shadow brick`.name,
       ready: () =>
-        drumMachineROI() + globalOptions.prefs.valueOfFreeFight > mallPrice($item`shadow brick`),
+        drumMachineROI() + globalOptions.prefs.valueOfFreeFight >
+        mallPrice($item`shadow brick`),
       completed: () => get("_shadowBricksUsed") >= 13,
       combat: new GarboStrategy(() =>
         sandwormMacro().tryItem($item`shadow brick`),
