@@ -349,10 +349,7 @@ function drumMachineROI(): number {
 }
 
 function drumMachineWorthIt(): boolean {
-  if (_drumMachineWorthIt === undefined) {
-    _drumMachineWorthIt = drumMachineROI() > 0;
-    return _drumMachineWorthIt;
-  } else return _drumMachineWorthIt;
+  return drumMachineROI() > 0;
 }
 
 //  Use free fights on melanges if prices are reasonable
