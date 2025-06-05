@@ -134,7 +134,10 @@ const canAdventureOrUnlockSkipList = [
       ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone),
   ),
 ];
-export function canAdventureOrUnlock(loc: Location): boolean {
+export function canAdventureOrUnlock(
+  loc: Location,
+  includeUnlockable = true,
+): boolean {
   const skiplist = [...canAdventureOrUnlockSkipList];
   if (
     !have($item`repaid diaper`) &&
@@ -150,9 +153,11 @@ export function canAdventureOrUnlock(loc: Location): boolean {
     skiplist.push(...GingerBread.LOCATIONS);
   }
 
-  const canUnlock = UnlockableZones.some(
-    (z) => loc.zone === z.zone && (z.available() || !z.noInv),
-  );
+  const canUnlock = includeUnlockable
+    ? UnlockableZones.some(
+        (z) => loc.zone === z.zone && (z.available() || !z.noInv),
+      )
+    : false;
   return (
     !underwater(loc) &&
     !skiplist.includes(loc) &&
