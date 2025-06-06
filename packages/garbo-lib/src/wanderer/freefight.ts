@@ -9,6 +9,7 @@ import {
   bofaValue,
   canAdventureOrUnlock,
   canWander,
+  cookbookbatQuestValue,
   DraggableFight,
   underwater,
   UnlockableZones,
@@ -54,7 +55,12 @@ function averageYrValue(
               (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
             return yrRate * options.itemValue(drop.drop);
           });
-        return itemDrop + meatDrop + bofaValue(options, m);
+        return (
+          itemDrop +
+          meatDrop +
+          bofaValue(options, m) +
+          cookbookbatQuestValue(options, location, m) // Is this too complicated to account for here? Need to consider the cost of not using normal free fight familiar somehow
+        );
       }) / monsters.length
     );
   }

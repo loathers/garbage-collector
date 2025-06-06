@@ -356,3 +356,18 @@ export function bofaValue(
       return 0;
   }
 }
+
+export function cookbookbatQuestValue(
+  { itemValue }: WandererFactoryOptions,
+  location: Location,
+  monster: Monster,
+): number {
+  if (
+    location === get("_cookbookbatQuestLastLocation") &&
+    monster === get("_cookbookbatQuestMonster")
+  ) {
+    const questIngredient = get("_cookbookbatQuestIngredient");
+    return questIngredient ? 3 * itemValue(questIngredient) : 0;
+  }
+  return 0;
+}
