@@ -5054,14 +5054,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:^0.11.4":
-  version: 0.11.4
-  resolution: "libram@npm:0.11.4"
+"libram@npm:^0.11.5":
+  version: 0.11.5
+  resolution: "libram@npm:0.11.5"
   dependencies:
     html-entities: ^2.5.2
   peerDependencies:
     kolmafia: ^5.28100.0
-  checksum: cadc8851208c81a3be058fa67d09b70127429c79e106ae71245bb3224c77741efb2a32a1286cbf4dd54fdc9ea8bbbb74dc59c816ca06b548078aaba29bfd6ab7
+  checksum: 321b4a61935adb4ee97950e8f61abe3d106649374d228fc6107e6f703c0dfe60719a28bdd63206ea402627d46dc93f758903df31e70c18ccafb780c2fe597fc6
   languageName: node
   linkType: hard
 
