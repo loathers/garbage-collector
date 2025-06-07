@@ -2,6 +2,7 @@ import {
   adv1,
   booleanModifier,
   canEquip,
+  cliExecute,
   Location,
   myLocation,
   use,
@@ -62,7 +63,20 @@ export function checkUnderwater(): boolean {
     freeFishyAvailable() &&
     !shouldYachtzee()
   ) {
-    if (freeFishyAvailable() && !shouldYachtzee()) use($item`fishy pipe`);
+    if (
+      !have($effect`Fishy`) &&
+      have($item`fishy pipe`) &&
+      !get("_fishyPipeUsed")
+    ) {
+      use($item`fishy pipe`);
+    }
+    if (
+      !have($effect`Fishy`) &&
+      get("skateParkStatus") === "ice" &&
+      !get("_skateBuff1")
+    ) {
+      cliExecute("skate lutz");
+    }
 
     return have($effect`Fishy`);
   }

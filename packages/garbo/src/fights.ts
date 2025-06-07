@@ -11,10 +11,8 @@ import {
   Effect,
   equip,
   equippedItem,
-  Familiar,
   familiarEquippedEquipment,
   getAutoAttack,
-  haveEquipped,
   haveOutfit,
   inebrietyLimit,
   isBanished,
@@ -84,9 +82,6 @@ import {
   Delayed,
   ensureEffect,
   FindActionSourceConstraints,
-  findLeprechaunMultiplier,
-  FloristFriar,
-  gameDay,
   get,
   GingerBread,
   have,
@@ -94,8 +89,6 @@ import {
   maxBy,
   PocketProfessor,
   property,
-  realmAvailable,
-  Requirement,
   Robortender,
   set,
   Snapper,
@@ -173,7 +166,6 @@ import {
   magnifyingGlass,
   meatTargetOutfit,
   toSpec,
-  waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
@@ -561,7 +553,6 @@ export function dailyFights(): void {
           (!nextFight || !nextFight.draggable)
         ) {
           doSausage();
-          yachtzee();
         }
         doGhost();
         startWandererCounter();
@@ -2221,75 +2212,6 @@ export function estimatedAttunementTentacles(): number {
           : 0),
     ),
   );
-}
-
-function yachtzee(): void {
-  if (!realmAvailable("sleaze") || !have($effect`Fishy`)) return;
-
-  for (const { available, action } of [
-    {
-      available: shouldClara("yachtzee"),
-      action: () => use($item`Clara's bell`),
-    },
-    {
-      available:
-        have($item`Eight Days a Week Pill Keeper`) &&
-        !get("_freePillKeeperUsed"),
-      action: () => {
-        cliExecute("pillkeeper noncombat");
-        // Defense against mis-set counters
-        set("_freePillKeeperUsed", true);
-      },
-    },
-  ]) {
-    if (available) {
-      const familiarOptions = Familiar.all().filter(
-        (familiar) =>
-          have(familiar) &&
-          familiar.underwater &&
-          familiar !== $familiar`Robortender`,
-      );
-      const familiarChoice = familiarOptions.length
-        ? maxBy(familiarOptions, findLeprechaunMultiplier)
-        : $familiar.none;
-      useFamiliar(familiarChoice);
-
-      const underwaterBreathingGear = waterBreathingEquipment.find(
-        (item) => have(item) && canEquip(item),
-      );
-      if (!underwaterBreathingGear) return;
-      const equippedOutfit = new Requirement(["meat", "-tie"], {
-        forceEquip: [underwaterBreathingGear],
-      }).maximize();
-      if (haveEquipped($item`The Crown of Ed the Undying`)) {
-        cliExecute("edpiece fish");
-      }
-
-      if (!equippedOutfit) return;
-      action();
-      if (!get("noncombatForcerActive")) return;
-
-      const lastUMDDate = property.getString("umdLastObtained");
-      const getUMD =
-        !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
-        garboValue($item`Ultimate Mind Destroyer`) >=
-          Math.min(20000, 2000 * (1 + numericModifier("meat drop") / 100)) &&
-        (!lastUMDDate ||
-          gameDay().getTime() - Date.parse(lastUMDDate) >=
-            1000 * 60 * 60 * 24 * 7);
-
-      setChoice(918, getUMD ? 1 : 2);
-
-      garboAdventureAuto($location`The Sunken Party Yacht`, Macro.abort());
-      if (FloristFriar.have() && FloristFriar.Crookweed.available()) {
-        FloristFriar.Crookweed.plant();
-      }
-      if (get("lastEncounter") === "Yacht, See?") {
-        garboAdventureAuto($location`The Sunken Party Yacht`, Macro.abort());
-      }
-      return;
-    }
-  }
 }
 
 function runShadowRiftTurn(): void {
