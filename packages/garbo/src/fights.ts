@@ -117,6 +117,7 @@ import {
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
+  shouldClara,
   shouldUnlockIngredients,
   tryFillLatte,
 } from "./resources";
@@ -1129,9 +1130,10 @@ const freeFightSources = [
       }
 
       // Consider forcing noncombats below:
+      if (get("noncombatForcerActive")) return true; // If it's already forced, no problem
       if (shouldYachtzee()) return false; // NCs are better when yachtzeeing, probably
       // TODO: With the KoL update, is there a function for checking if an NC is already forced?
-      if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+      if (shouldClara("shadow waters")) {
         return true;
       }
 
@@ -2224,8 +2226,7 @@ function runShadowRiftTurn(): void {
     return;
   }
 
-  if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
-    globalOptions.clarasBellClaimed = true;
+  if (shouldClara("shadow waters")) {
     use($item`Clara's bell`);
   } else if (CinchoDeMayo.have() && CinchoDeMayo.totalAvailableCinch() >= 60) {
     const lastAcc = equippedItem($slot`acc3`);
