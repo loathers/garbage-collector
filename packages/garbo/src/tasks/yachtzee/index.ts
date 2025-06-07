@@ -21,13 +21,9 @@ import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
 import { getBestWaterBreathingEquipment } from "./lib";
 import { GarboStrategy, Macro } from "../../combat";
 import { GarboTask } from "../engine";
-import {
-  freeFishyAvailable,
-  shouldYachtzee,
-  willDrunkAdventure,
-} from "../../lib";
+import { willDrunkAdventure } from "../../lib";
 import { Outfit } from "grimoire-kolmafia";
-import { maximumYachtzees, shouldClara } from "../../resources";
+import { maximumYachtzees, shouldClara, willYachtzee } from "../../resources";
 
 function doYachtzeeTask(additionalReady: () => boolean) {
   return {
@@ -70,7 +66,7 @@ function doYachtzeeTask(additionalReady: () => boolean) {
 type AlternateTask = GarboTask & { turns: Delayed<number> };
 
 export function yachtzeeTasks(): AlternateTask[] {
-  if (!shouldYachtzee() || !freeFishyAvailable()) return [];
+  if (!willYachtzee()) return [];
   return [
     {
       name: "Yachtzee (sober)",

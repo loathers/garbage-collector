@@ -1165,9 +1165,6 @@ export function freeFishyAvailable(): boolean {
   );
 }
 
-export function shouldYachtzee(): boolean {
-  return realmAvailable("sleaze") && get("valueOfAdventure") < 20_000; // Can we check for "value of doing the taffy copier"?
-}
 function questBetween(
   quest: string,
   lower: number,
