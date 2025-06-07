@@ -62,7 +62,6 @@ import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
 import {
   gooseDroneEligible,
   isStrongScaler,
-  maximumPinataCasts,
   maxPassiveDamage,
   monsterManuelAvailable,
   targetingMeat,
@@ -71,6 +70,7 @@ import {
 import { CombatStrategy } from "grimoire-kolmafia";
 import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
+import { maximumPinataCasts } from "./resources";
 
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;

@@ -18,11 +18,7 @@ import {
   have,
 } from "libram";
 import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
-import {
-  freeNCs,
-  getBestWaterBreathingEquipment,
-  maximumYachtzees,
-} from "./lib";
+import { getBestWaterBreathingEquipment } from "./lib";
 import { GarboStrategy, Macro } from "../../combat";
 import { GarboTask } from "../engine";
 import {
@@ -31,7 +27,7 @@ import {
   willDrunkAdventure,
 } from "../../lib";
 import { Outfit } from "grimoire-kolmafia";
-import { shouldClara } from "../../resources";
+import { maximumYachtzees, shouldClara } from "../../resources";
 
 function doYachtzeeTask(additionalReady: () => boolean) {
   return {
@@ -52,7 +48,7 @@ function doYachtzeeTask(additionalReady: () => boolean) {
       ) {
         outfit.modifier.push("underwater familiar");
       }
-      outfit.equip(getBestWaterBreathingEquipment(freeNCs()).item);
+      outfit.equip(getBestWaterBreathingEquipment(maximumYachtzees()).item);
       outfit.equip(bestFamUnderwaterGear(yachtzeeFamiliar));
       if (overdrunk) outfit.equip($item`Drunkula's wineglass`);
       outfit.avoid.push(
@@ -66,7 +62,7 @@ function doYachtzeeTask(additionalReady: () => boolean) {
         "Unexpected combat while attempting yachtzee adventure",
       ),
     ),
-    turns: () => maximumYachtzees(),
+    turns: maximumYachtzees,
     spendsTurn: true,
   };
 }

@@ -11,7 +11,7 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { HIGHLIGHT, shouldYachtzee } from "../lib";
 import { acquire } from "../acquire";
-import { claimClaraVolcoino } from "./clarasbell";
+import { claimClaraVolcoino } from "./yachtzee";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
