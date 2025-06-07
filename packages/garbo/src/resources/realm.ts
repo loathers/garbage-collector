@@ -18,11 +18,8 @@ type VolcanoItem = { quantity: number; item: Item; choice: number };
 function volcanoItemValue({ quantity, item }: VolcanoItem): number {
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
-    if (
-      !have($item`Clara's bell`) ||
-      get("_claraBellUsed") ||
-      shouldYachtzee()
-    ) {
+    if (!have($item`Clara's bell`) || get("_claraBellUsed")) return Infinity;
+    if (shouldYachtzee()) {
       return garboValue($item`Volcoino`) - (20000 - get("valueOfAdventure"));
     }
     return quantity * get("valueOfAdventure");
