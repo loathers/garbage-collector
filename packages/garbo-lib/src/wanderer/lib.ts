@@ -240,7 +240,7 @@ export class WandererTarget {
     location: Location,
     value: number,
     prepareTurn: () => boolean = () => true,
-    peridotMonster: Monster,
+    peridotMonster: Monster = $monster`none`,
   ) {
     this.name = name;
     this.value = value;
