@@ -17,6 +17,7 @@ import {
   $items,
   $location,
   $locations,
+  $monster,
   $skill,
   clamp,
   get,
@@ -70,6 +71,7 @@ export type WandererLocation = {
   location: Location;
   targets: WandererTarget[];
   value: number;
+  peridotMonster: Monster;
 };
 
 export const UnlockableZones: UnlockableZone[] = [
@@ -134,7 +136,10 @@ const canAdventureOrUnlockSkipList = [
       ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone),
   ),
 ];
-export function canAdventureOrUnlock(loc: Location): boolean {
+export function canAdventureOrUnlock(
+  loc: Location,
+  includeUnlockable = true,
+): boolean {
   const skiplist = [...canAdventureOrUnlockSkipList];
   if (
     !have($item`repaid diaper`) &&
@@ -150,9 +155,11 @@ export function canAdventureOrUnlock(loc: Location): boolean {
     skiplist.push(...GingerBread.LOCATIONS);
   }
 
-  const canUnlock = UnlockableZones.some(
-    (z) => loc.zone === z.zone && (z.available() || !z.noInv),
-  );
+  const canUnlock =
+    includeUnlockable &&
+    UnlockableZones.some(
+      (z) => loc.zone === z.zone && (z.available() || !z.noInv),
+    );
   return (
     !underwater(loc) &&
     !skiplist.includes(loc) &&
@@ -218,6 +225,7 @@ export class WandererTarget {
   value: number;
   location: Location;
   prepareTurn: () => boolean;
+  peridotMonster: Monster;
 
   /**
    * Process for determining where to put a wanderer to extract additional value from it
@@ -225,22 +233,33 @@ export class WandererTarget {
    * @param location returns the location to adventure to target this; null only if something goes wrong
    * @param value the expected additional value of putting a single wanderer-fight into the zone for this
    * @param prepareTurn attempt to set up, spending meat and or items as necessary
+   * @param peridotMonster The specific monster we will target using the Peridot of Peril
    */
   constructor(
     name: string,
     location: Location,
     value: number,
     prepareTurn: () => boolean = () => true,
+    peridotMonster: Monster = $monster`none`,
   ) {
     this.name = name;
     this.value = value;
     this.location = location;
     this.prepareTurn = prepareTurn;
+    this.peridotMonster = peridotMonster;
   }
 }
 
 export function defaultFactory(): WandererTarget[] {
-  return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
+  return [
+    new WandererTarget(
+      "Default",
+      $location`The Haunted Kitchen`,
+      0,
+      undefined,
+      $monster`none`,
+    ),
+  ];
 }
 
 type WanderingSource = {
@@ -350,4 +369,19 @@ export function bofaValue(
     default:
       return 0;
   }
+}
+
+export function cookbookbatQuestValue(
+  { itemValue }: WandererFactoryOptions,
+  location: Location,
+  monster: Monster,
+): number {
+  if (
+    location === get("_cookbookbatQuestLastLocation") &&
+    monster === get("_cookbookbatQuestMonster")
+  ) {
+    const questIngredient = get("_cookbookbatQuestIngredient");
+    return questIngredient ? 3 * itemValue(questIngredient) : 0;
+  }
+  return 0;
 }

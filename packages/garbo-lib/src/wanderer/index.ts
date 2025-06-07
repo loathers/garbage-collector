@@ -3,6 +3,7 @@ import {
   isDarkMode,
   Item,
   Location,
+  Monster,
   myFamiliar,
   myInebriety,
   myTotalTurnsSpent,
@@ -14,6 +15,7 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   Delayed,
   get,
   getActiveEffects,
@@ -78,6 +80,7 @@ function bestWander(
           location: wanderTarget.location,
           targets: [],
           value: 0,
+          peridotMonster: $monster`none`,
         };
         wandererLocation.targets = [...wandererLocation.targets, wanderTarget];
         wandererLocation.value += wanderTarget.value;
@@ -105,7 +108,7 @@ function wanderWhere(
   type: DraggableFight,
   nameSkiplist: string[] = [],
   locationSkiplist: Location[] = [],
-): Location {
+): WanderResult {
   const candidate = bestWander(type, locationSkiplist, nameSkiplist, options);
   const failed = candidate.targets.filter((target) => !target.prepareTurn());
 
@@ -131,7 +134,10 @@ function wanderWhere(
       isDarkMode() ? "yellow" : "blue",
     );
 
-    return candidate.location;
+    return {
+      location: candidate.location,
+      peridotMonster: candidate.peridotMonster,
+    };
   }
 }
 export type WanderOptions = {
@@ -141,6 +147,11 @@ export type WanderOptions = {
 };
 
 export type WanderDetails = DraggableFight | WanderOptions;
+
+export type WanderResult = {
+  location: Location;
+  peridotMonster: Monster;
+};
 
 export class WandererManager {
   private unsupportedChoices = new Map<
@@ -243,14 +254,15 @@ export class WandererManager {
   ]);
 
   cacheKey = "";
-  targets: Partial<{ [x in `${DraggableFight}:${boolean}`]: Location }> = {};
+  targets: Partial<{ [x in `${DraggableFight}:${boolean}`]: WanderResult }> =
+    {};
   options: WandererFactoryOptions;
 
   constructor(options: WandererFactoryOptions) {
     this.options = options;
   }
 
-  getTarget(wanderer: WanderDetails): Location {
+  getTarget(wanderer: WanderDetails): WanderResult {
     const { draggableFight, options } = isDraggableFight(wanderer)
       ? { draggableFight: wanderer, options: {} }
       : { draggableFight: wanderer.wanderer, options: wanderer };
@@ -270,7 +282,7 @@ export class WandererManager {
           [],
           locationSkipList,
         ))
-      : $location`Drunken Stupor`;
+      : { location: $location`Drunken Stupor`, peridotMonster: $monster`none` };
   }
 
   /**
@@ -286,7 +298,7 @@ export class WandererManager {
     [choice: number]: string | number;
   } {
     const location =
-      target instanceof Location ? target : this.getTarget(target);
+      target instanceof Location ? target : this.getTarget(target).location;
     const valueOfTurn = takeTurnForProfit
       ? (this.options.valueOfAdventure ?? 0) +
         sum(getActiveEffects(), (e) => this.options.effectValue(e, 1))
@@ -303,6 +315,10 @@ export class WandererManager {
   }
 
   getEquipment(wanderer: WanderDetails): Item[] {
-    return this.equipment.get(this.getTarget(wanderer)) ?? [];
+    return this.equipment.get(this.getTarget(wanderer).location) ?? [];
+  }
+
+  peridotMonster(wanderer: WanderDetails): Monster {
+    return this.getTarget(wanderer).peridotMonster;
   }
 }
