@@ -12,3 +12,4 @@ export * from "./mayam";
 export * from "./autumnaton";
 export * from "./stillsuit";
 export * from "./leprecondo";
+export * from "./clarasbell";

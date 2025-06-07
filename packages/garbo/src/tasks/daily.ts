@@ -264,7 +264,6 @@ function nepQuest(): void {
 
   if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
     print("Gerald/ine quest!", HIGHLIGHT);
-    globalOptions.clarasBellClaimed = true;
   }
 }
 
