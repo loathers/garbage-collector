@@ -121,9 +121,12 @@ export function yachtzeeTasks(): AlternateTask[] {
       completed: () => get("noncombatForcerActive"),
       ready: () =>
         have($item`Clara's bell`) &&
-        !globalOptions.clarasBellClaimed &&
+        get("_claraBellUsed") &&
         have($effect`Fishy`),
-      do: () => use($item`Clara's bell`),
+      do: () => {
+        use($item`Clara's bell`);
+        globalOptions.clarasBellClaimed = true;
+      },
       turns: 0,
       sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
       spendsTurn: false,
