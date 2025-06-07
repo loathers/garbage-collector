@@ -70,6 +70,7 @@ export type WandererLocation = {
   location: Location;
   targets: WandererTarget[];
   value: number;
+  peridotMonster: Monster;
 };
 
 export const UnlockableZones: UnlockableZone[] = [

@@ -61,7 +61,7 @@ import {
   withChoice,
   withProperty,
 } from "libram";
-import { OutfitSpec, Quest } from "grimoire-kolmafia";
+import { Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
 import { WanderDetails } from "garbo-lib";
 
 import { GarboStrategy, Macro } from "../combat";
@@ -120,6 +120,35 @@ const shouldCheckParachute = () => totalTurnsPlayed() !== lastParachuteFailure;
 const updateParachuteFailure = () =>
   (lastParachuteFailure = totalTurnsPlayed());
 
+function createWandererOutfit(
+  details: Delayed<WanderDetails>,
+  spec: Delayed<OutfitSpec>,
+  additionalOutfitOptions: Omit<FreeFightOutfitMenuOptions, "wanderOptions">,
+): Outfit {
+  const wanderManager = wanderer();
+  const wandererFamiliar =
+    wanderer().getTarget(undelay(details)).location ===
+    get("_cookbookbatQuestLastLocation")
+      ? $familiar`Cookbookbat`
+      : undefined;
+  const peridotEquip =
+    wanderManager.getTarget(undelay(details)).peridotMonster !== $monster`none`;
+  const undelayedSpec = undelay(spec);
+  const wandererSpec: OutfitSpec = {
+    ...undelayedSpec,
+    equip: [
+      ...(undelayedSpec.equip ?? []),
+      ...(peridotEquip ? [$item`Peridot of Peril`] : []),
+    ],
+    familiar: wandererFamiliar,
+  };
+
+  return freeFightOutfit(wandererSpec, {
+    wanderOptions: undelay(details),
+    ...additionalOutfitOptions,
+  });
+}
+
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
@@ -132,13 +161,9 @@ function wanderTask(
   > = {},
 ): GarboTask {
   return {
-    do: () => wanderer().getTarget(undelay(details)),
+    do: () => wanderer().getTarget(undelay(details)).location,
     choices: () => wanderer().getChoices(undelay(details)),
-    outfit: () =>
-      freeFightOutfit(undelay(spec), {
-        wanderOptions: undelay(details),
-        ...additionalOutfitOptions,
-      }),
+    outfit: () => createWandererOutfit(details, spec, additionalOutfitOptions),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat()),
     ...base,
@@ -810,11 +835,12 @@ const BarfTurnTasks: GarboTask[] = [
             wanderer().getTarget({
               wanderer: "wanderer",
               allowEquipment: false,
-            }),
+            }).location,
           )
         : freeFightOutfit(),
     do: () =>
-      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false }),
+      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
+        .location,
     choices: () =>
       wanderer().getChoices({
         wanderer: "wanderer",
@@ -869,12 +895,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
   wanderTask(
     "yellow ray",
-    (): OutfitSpec => {
-      return wanderer().getTarget("yellow ray") ===
-        get("_cookbookbatQuestLastLocation")
-        ? { familiar: $familiar`Cookbookbat` }
-        : {};
-    },
+    {},
     {
       name: "Cheese Wizard Fondeluge",
       ready: () => have($skill`Fondeluge`) && romanticMonsterImpossible(),
@@ -891,16 +912,7 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   wanderTask(
     "yellow ray",
-    (): OutfitSpec => {
-      return wanderer().getTarget("yellow ray") ===
-        get("_cookbookbatQuestLastLocation")
-        ? {
-            familiar: $familiar`Cookbookbat`,
-            shirt: $items`Jurassic Parka`,
-            modes: { parka: "dilophosaur" },
-          }
-        : { shirt: $items`Jurassic Parka`, modes: { parka: "dilophosaur" } };
-    },
+    { shirt: $items`Jurassic Parka`, modes: { parka: "dilophosaur" } },
     {
       name: "Spit Acid",
       ready: () => have($item`Jurassic Parka`) && romanticMonsterImpossible(),
@@ -917,12 +929,7 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   wanderTask(
     "freefight",
-    (): OutfitSpec => {
-      return wanderer().getTarget("freefight") ===
-        get("_cookbookbatQuestLastLocation")
-        ? { familiar: $familiar`Cookbookbat` }
-        : {};
-    },
+    {},
     {
       name: "Pig Skinner Free-For-All",
       ready: () => have($skill`Free-For-All`) && romanticMonsterImpossible(),
@@ -938,12 +945,7 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   wanderTask(
     "freefight",
-    (): OutfitSpec => {
-      return wanderer().getTarget("freefight") ===
-        get("_cookbookbatQuestLastLocation")
-        ? { familiar: $familiar`Cookbookbat` }
-        : {};
-    },
+    {},
     {
       name: "Heavy Rains Lightning Strike",
       ready: () => have($skill`Lightning Strike`) && myLightning() >= 20,
@@ -958,12 +960,7 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   wanderTask(
     "yellow ray",
-    (): OutfitSpec => {
-      return wanderer().getTarget("yellow ray") ===
-        get("_cookbookbatQuestLastLocation")
-        ? { familiar: $familiar`Cookbookbat` }
-        : {};
-    },
+    {},
     {
       name: "Shocking Lick",
       ready: () => romanticMonsterImpossible(),
@@ -984,10 +981,6 @@ const BarfTurnTasks: GarboTask[] = [
       equip: $items`spring shoes, carnivorous potted plant`.filter((i) =>
         have(i),
       ),
-      familiar:
-        wanderer().getTarget("freerun") === get("_cookbookbatQuestLastLocation")
-          ? $familiar`Cookbookbat`
-          : undefined,
     }),
     {
       name: "Spring Shoes Freerun",
