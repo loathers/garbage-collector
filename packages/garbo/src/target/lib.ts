@@ -25,7 +25,8 @@ import { OutfitSpec } from "grimoire-kolmafia";
 import { waterBreathingEquipment } from "../outfit";
 import { Macro } from "../combat";
 import { globalOptions } from "../config";
-import { freeFishyAvailable, shouldYachtzee } from "../lib";
+import { freeFishyAvailable } from "../lib";
+import { willYachtzee } from "../resources";
 
 /**
  * Configure the behavior of the fights in use in different parts of the fight engine
@@ -61,7 +62,7 @@ export function checkUnderwater(): boolean {
     (booleanModifier("Adventure Underwater") ||
       waterBreathingEquipment.some((item) => have(item) && canEquip(item))) &&
     freeFishyAvailable() &&
-    !shouldYachtzee()
+    !willYachtzee()
   ) {
     if (
       !have($effect`Fishy`) &&

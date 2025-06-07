@@ -9,9 +9,9 @@ import {
 import { $item, get, have, maxBy, property, set, withProperty } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { HIGHLIGHT, shouldYachtzee } from "../lib";
+import { HIGHLIGHT } from "../lib";
 import { acquire } from "../acquire";
-import { claimClaraVolcoino } from "./clarasbell";
+import { claimClaraVolcoino, willYachtzee } from "./yachtzee";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
@@ -19,7 +19,7 @@ function volcanoQuestItemCost({ quantity, item }: VolcanoItem): number {
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
     if (!have($item`Clara's bell`) || get("_claraBellUsed")) return Infinity;
-    if (shouldYachtzee()) {
+    if (willYachtzee()) {
       return garboValue($item`Volcoino`) - (20000 - get("valueOfAdventure"));
     }
     return quantity * get("valueOfAdventure");
