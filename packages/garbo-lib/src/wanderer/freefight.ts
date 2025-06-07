@@ -3,8 +3,19 @@ import {
   getMonsters,
   itemDropsArray,
   Location,
+  Monster,
 } from "kolmafia";
-import { $item, clamp, get, have, maxBy, SourceTerminal, sum } from "libram";
+import {
+  $item,
+  $monster,
+  clamp,
+  get,
+  have,
+  maxBy,
+  PeridotOfPeril,
+  SourceTerminal,
+  sum,
+} from "libram";
 import {
   bofaValue,
   canAdventureOrUnlock,
@@ -17,11 +28,52 @@ import {
   WandererTarget,
 } from "./lib";
 
-function averageYrValue(
+type FreeKillValue = {
+  value: number;
+  forcedMonster: Monster;
+};
+
+function valueMonster(
+  location: Location,
+  m: Monster,
+  forceItemDrops: boolean,
+  options: WandererFactoryOptions,
+): number {
+  const canDuplicate =
+    SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
+  const canMctwist = have($item`pro skateboard`) && !get("_epicMcTwistUsed");
+  const possibleDuplicateFactor =
+    2 ** [canDuplicate, canMctwist].filter(Boolean).length;
+  const items = itemDropsArray(m).filter((drop) =>
+    ["", "n"].includes(drop.type),
+  );
+  const duplicateFactor = !m.attributes.includes("NOCOPY")
+    ? possibleDuplicateFactor
+    : 1;
+
+  // TODO: this should consider unbuffed meat drop and unbuffed item drop, probably
+  const meatDrop = clamp((m.minMeat + m.maxMeat) / 2, 0, 1000);
+  const itemDrop =
+    duplicateFactor *
+    sum(items, (drop) => {
+      const yrRate =
+        (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
+      return yrRate * options.itemValue(drop.drop);
+    });
+  return (
+    itemDrop +
+    meatDrop +
+    bofaValue(options, m) +
+    cookbookbatQuestValue(options, location, m)
+  );
+}
+
+function freeKillValue(
   location: Location,
   forceItemDrops: boolean,
   options: WandererFactoryOptions,
-) {
+  canForceMonster: boolean,
+): FreeKillValue {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
@@ -29,56 +81,46 @@ function averageYrValue(
       !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
   );
 
-  const canDuplicate =
-    SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
-  const canMctwist = have($item`pro skateboard`) && !get("_epicMcTwistUsed");
-  const possibleDuplicateFactor =
-    2 ** [canDuplicate, canMctwist].filter(Boolean).length;
   if (monsters.length === 0) {
-    return 0;
+    return { value: 0, forcedMonster: $monster`none` };
   } else {
-    return (
-      sum(monsters, (m) => {
-        const items = itemDropsArray(m).filter((drop) =>
-          ["", "n"].includes(drop.type),
-        );
-        const duplicateFactor = !m.attributes.includes("NOCOPY")
-          ? possibleDuplicateFactor
-          : 1;
-
-        // TODO: this should consider unbuffed meat drop and unbuffed item drop, probably
-        const meatDrop = clamp((m.minMeat + m.maxMeat) / 2, 0, 1000);
-        const itemDrop =
-          duplicateFactor *
-          sum(items, (drop) => {
-            const yrRate =
-              (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
-            return yrRate * options.itemValue(drop.drop);
-          });
-        return (
-          itemDrop +
-          meatDrop +
-          bofaValue(options, m) +
-          cookbookbatQuestValue(options, location, m) // Is this too complicated to account for here? Need to consider the cost of not using normal free fight familiar somehow
-        );
-      }) / monsters.length
-    );
+    if (canForceMonster) {
+      const forcedMonster = maxBy(monsters, (m) =>
+        valueMonster(location, m, forceItemDrops, options),
+      );
+      const value = valueMonster(
+        location,
+        forcedMonster,
+        forceItemDrops,
+        options,
+      );
+      return { value, forcedMonster };
+    } else {
+      const averageValue =
+        sum(monsters, (m) =>
+          valueMonster(location, m, forceItemDrops, options),
+        ) / monsters.length;
+      return { value: averageValue, forcedMonster: $monster`none` };
+    }
   }
 }
 
 function monsterValues(
   forceItemDrops: boolean,
   options: WandererFactoryOptions,
-): Map<Location, number> {
-  const values = new Map<Location, number>();
+  canForceMonster: boolean,
+): Map<Location, FreeKillValue> {
+  const values = new Map<Location, FreeKillValue>();
   for (const location of Location.all().filter(
     (l) => canAdventureOrUnlock(l) && !underwater(l),
   )) {
-    values.set(
+    const freeKillValuation = freeKillValue(
       location,
-      averageYrValue(location, forceItemDrops, options) +
-        options.freeFightExtraValue(location),
+      forceItemDrops,
+      options,
+      canForceMonster && PeridotOfPeril.canImperil(location),
     );
+    values.set(location, freeKillValuation);
   }
   return values;
 }
@@ -94,11 +136,20 @@ export function freefightFactory(
       (location) =>
         canWander(location, "yellow ray") && canAdventureOrUnlock(location),
     );
-    const locationValues = monsterValues(type === "yellow ray", options);
+    const locationValues = monsterValues(
+      type === "yellow ray",
+      options,
+      PeridotOfPeril.have(),
+    );
 
     const bestZones = new Set<Location>(
       validLocations.length > 0
-        ? [maxBy(validLocations, (l: Location) => locationValues.get(l) ?? 0)]
+        ? [
+            maxBy(
+              validLocations,
+              (l: Location) => locationValues.get(l)?.value ?? 0,
+            ),
+          ]
         : [],
     );
     for (const unlockableZone of UnlockableZones) {
@@ -107,15 +158,24 @@ export function freefightFactory(
       );
       if (extraLocations.length > 0) {
         bestZones.add(
-          maxBy(extraLocations, (l: Location) => locationValues.get(l) ?? 0),
+          maxBy(extraLocations, (l: Location) => {
+            const locationValue = locationValues.get(l);
+            return locationValue ? locationValue.value : 0;
+          }),
         );
       }
     }
     if (bestZones.size > 0) {
-      return [...bestZones].map(
-        (l: Location) =>
-          new WandererTarget(`Yellow Ray ${l}`, l, locationValues.get(l) ?? 0),
-      );
+      return [...bestZones].map((l: Location) => {
+        const locationValue = locationValues.get(l);
+        return new WandererTarget(
+          `Yellow Ray ${l}`,
+          l,
+          locationValue ? locationValue.value : 0,
+          undefined,
+          locationValue ? locationValue.forcedMonster : $monster`none`,
+        );
+      });
     }
   }
   return [];

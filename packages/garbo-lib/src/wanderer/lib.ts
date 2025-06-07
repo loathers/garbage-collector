@@ -17,6 +17,7 @@ import {
   $items,
   $location,
   $locations,
+  $monster,
   $skill,
   clamp,
   get,
@@ -224,6 +225,7 @@ export class WandererTarget {
   value: number;
   location: Location;
   prepareTurn: () => boolean;
+  peridotMonster: Monster;
 
   /**
    * Process for determining where to put a wanderer to extract additional value from it
@@ -231,22 +233,33 @@ export class WandererTarget {
    * @param location returns the location to adventure to target this; null only if something goes wrong
    * @param value the expected additional value of putting a single wanderer-fight into the zone for this
    * @param prepareTurn attempt to set up, spending meat and or items as necessary
+   * @param peridotMonster The specific monster we will target using the Peridot of Peril
    */
   constructor(
     name: string,
     location: Location,
     value: number,
     prepareTurn: () => boolean = () => true,
+    peridotMonster: Monster,
   ) {
     this.name = name;
     this.value = value;
     this.location = location;
     this.prepareTurn = prepareTurn;
+    this.peridotMonster = peridotMonster;
   }
 }
 
 export function defaultFactory(): WandererTarget[] {
-  return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
+  return [
+    new WandererTarget(
+      "Default",
+      $location`The Haunted Kitchen`,
+      0,
+      undefined,
+      $monster`none`,
+    ),
+  ];
 }
 
 type WanderingSource = {
