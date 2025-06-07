@@ -15,7 +15,7 @@ import { claimClaraVolcoino } from "./clarasbell";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
-function volcanoItemValue({ quantity, item }: VolcanoItem): number {
+function volcanoQuestItemCost({ quantity, item }: VolcanoItem): number {
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
     if (!have($item`Clara's bell`) || get("_claraBellUsed")) return Infinity;
@@ -51,12 +51,12 @@ export function checkVolcanoQuest() {
         choice: 3,
       },
     ],
-    volcanoItemValue,
+    volcanoQuestItemCost,
     true,
   );
   if (bestItem.item === $item`fused fuse`) {
     claimClaraVolcoino();
-  } else if (volcanoItemValue(bestItem) < volcoinoValue) {
+  } else if (volcanoQuestItemCost(bestItem) < volcoinoValue) {
     withProperty("autoBuyPriceLimit", volcoinoValue, () =>
       retrieveItem(bestItem.item, bestItem.quantity),
     );
