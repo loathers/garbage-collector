@@ -8,7 +8,6 @@ import {
   have,
   maxBy,
 } from "libram";
-import { globalOptions } from "../../config";
 import {
   canEquip,
   Effect,
@@ -20,6 +19,7 @@ import {
 } from "kolmafia";
 import { waterBreathingEquipment } from "../../outfit";
 import { felizValue } from "../../lib";
+import { shouldClara } from "../../resources";
 
 export function cinchNCs(): number {
   return CinchoDeMayo.have()
@@ -34,7 +34,7 @@ export function cinchYachtzeeProfitable(): boolean {
 
 // These NCs do not require us to enter combat to activate them
 export const freeNCs = (): number =>
-  (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed ? 1 : 0) +
+  (shouldClara("yachtzee") ? 1 : 0) +
   (cinchYachtzeeProfitable() ? cinchNCs() : 0) +
   (have($item`Apriling band tuba`)
     ? $item`Apriling band tuba`.dailyusesleft

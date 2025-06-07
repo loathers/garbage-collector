@@ -124,6 +124,7 @@ import {
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
+  shouldClara,
   shouldUnlockIngredients,
   tryFillLatte,
 } from "./resources";
@@ -1138,9 +1139,10 @@ const freeFightSources = [
       }
 
       // Consider forcing noncombats below:
+      if (get("noncombatForcerActive")) return true; // If it's already forced, no problem
       if (shouldYachtzee()) return false; // NCs are better when yachtzeeing, probably
       // TODO: With the KoL update, is there a function for checking if an NC is already forced?
-      if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+      if (shouldClara("shadow waters")) {
         return true;
       }
 
@@ -2224,26 +2226,19 @@ export function estimatedAttunementTentacles(): number {
 function yachtzee(): void {
   if (!realmAvailable("sleaze") || !have($effect`Fishy`)) return;
 
-  for (const { available, success } of [
+  for (const { available, action } of [
     {
-      available: have($item`Clara's bell`) && !globalOptions.clarasBellClaimed,
-      success: () => {
-        globalOptions.clarasBellClaimed = true;
-        if (use($item`Clara's bell`)) return true;
-        return false;
-      },
+      available: shouldClara("yachtzee"),
+      action: () => use($item`Clara's bell`),
     },
     {
       available:
         have($item`Eight Days a Week Pill Keeper`) &&
         !get("_freePillKeeperUsed"),
-      success: () => {
-        if (cliExecute("pillkeeper noncombat") && get("_freePillKeeperUsed")) {
-          // Defense against mis-set counters
-          set("_freePillKeeperUsed", true);
-          return true;
-        }
-        return false;
+      action: () => {
+        cliExecute("pillkeeper noncombat");
+        // Defense against mis-set counters
+        set("_freePillKeeperUsed", true);
       },
     },
   ]) {
@@ -2270,7 +2265,9 @@ function yachtzee(): void {
         cliExecute("edpiece fish");
       }
 
-      if (!equippedOutfit || !success()) return;
+      if (!equippedOutfit) return;
+      action();
+      if (!get("noncombatForcerActive")) return;
 
       const lastUMDDate = property.getString("umdLastObtained");
       const getUMD =
@@ -2307,8 +2304,7 @@ function runShadowRiftTurn(): void {
     return;
   }
 
-  if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
-    globalOptions.clarasBellClaimed = true;
+  if (shouldClara("shadow waters")) {
     use($item`Clara's bell`);
   } else if (CinchoDeMayo.have() && CinchoDeMayo.totalAvailableCinch() >= 60) {
     const lastAcc = equippedItem($slot`acc3`);

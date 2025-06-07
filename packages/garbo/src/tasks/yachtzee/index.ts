@@ -30,8 +30,8 @@ import {
   shouldYachtzee,
   willDrunkAdventure,
 } from "../../lib";
-import { globalOptions } from "../../config";
 import { Outfit } from "grimoire-kolmafia";
+import { shouldClara } from "../../resources";
 
 function doYachtzeeTask(additionalReady: () => boolean) {
   return {
@@ -119,13 +119,9 @@ export function yachtzeeTasks(): AlternateTask[] {
     {
       name: "Clara Yachtzee NC Force",
       completed: () => get("noncombatForcerActive"),
-      ready: () =>
-        have($item`Clara's bell`) &&
-        get("_claraBellUsed") &&
-        have($effect`Fishy`),
+      ready: () => shouldClara("yachtzee") && have($effect`Fishy`),
       do: () => {
         use($item`Clara's bell`);
-        globalOptions.clarasBellClaimed = true;
       },
       turns: 0,
       sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
