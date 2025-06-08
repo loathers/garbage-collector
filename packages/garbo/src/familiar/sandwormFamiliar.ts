@@ -21,7 +21,7 @@ export function sandwormFamiliar(): Familiar {
   if (
     have($familiar`Trick-or-Treating Tot`) &&
     have($item`li'l ninja costume`) &&
-    have($item`toy Cupid bow`)
+    !have($item`toy Cupid bow`)
   ) {
     return $familiar`Trick-or-Treating Tot`;
   }
