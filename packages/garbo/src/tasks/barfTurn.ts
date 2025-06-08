@@ -1124,8 +1124,8 @@ const BarfTurnTasks: GarboTask[] = [
     choices: () => {
       const questMonster = get("_cookbookbatQuestMonster");
       return questMonster
-        ? PeridotOfPeril.getChoiceProperty(questMonster)
-        : undefined;
+        ? { 1557: `1&bandersnatch=${questMonster.id}` }
+        : { 1557: `1&bandersnatch=${0}` };
     },
     outfit: () => {
       return sober()
