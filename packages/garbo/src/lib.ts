@@ -1153,6 +1153,18 @@ export function improvesAStat(thing: Item | Effect): boolean {
   return improvedStats(thing).length > 0;
 }
 
+export function willDrunkAdventure() {
+  return have($item`Drunkula's wineglass`) && globalOptions.ascend;
+}
+
+export function freeFishyAvailable(): boolean {
+  return (
+    have($effect`Fishy`) ||
+    (have($item`fishy pipe`) && !get("_fishyPipeUsed")) ||
+    (get("skateParkStatus") === "ice" && !get("_skateBuff1"))
+  );
+}
+
 function questBetween(
   quest: string,
   lower: number,
