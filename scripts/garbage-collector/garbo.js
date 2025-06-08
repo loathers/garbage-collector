@@ -29911,7 +29911,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("683182e2c81550d4deb9aee513cf5baf1cd4b655", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("c22203d0bc42215e01b4d94c280f60a82cdfa6f2", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -45012,6 +45012,9 @@ function doYachtzeeTask(additionalReady) {
     },
     ready: function() {
       return additionalReady() && have($effect(_templateObject997 || (_templateObject997 = _taggedTemplateLiteral134(["Fishy"]))));
+    },
+    choices: {
+      918: 2
     },
     do: $location(_templateObject2256 || (_templateObject2256 = _taggedTemplateLiteral134(["The Sunken Party Yacht"]))),
     outfit: function() {
