@@ -29,6 +29,7 @@ function doYachtzeeTask(additionalReady: () => boolean) {
   return {
     completed: () => !get("noncombatForcerActive"),
     ready: () => additionalReady() && have($effect`Fishy`),
+    choices: { 918: 2 },
     do: $location`The Sunken Party Yacht`,
     outfit: () => {
       const outfit = new Outfit();
