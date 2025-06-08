@@ -50,6 +50,9 @@ function doYachtzeeTask(additionalReady: () => boolean) {
       outfit.avoid.push(
         ...$items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
       );
+      if (outfit.haveEquipped($item`The Crown of Ed the Undying`)) {
+        outfit.setModes({ edpiece: "fish" });
+      }
       outfit.familiar = yachtzeeFamiliar;
       return outfit;
     },
