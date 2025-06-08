@@ -5,6 +5,7 @@ import {
   familiarWeight,
   floor,
   getWorkshed,
+  haveEquipped,
   mallPrice,
   myAscensions,
   myLightning,
@@ -343,9 +344,16 @@ function drumMachineROI(): number {
       have($skill`Steely-Eyed Squint`) && !have($effect`Steely-Eyed Squint`)
         ? 2
         : 1;
+    const dropRate = clamp(
+      BASE_RATE * (1 + (getModifier("Item Drop") * squint) / 100),
+      0,
+      1,
+    );
+
     const rate =
       REJECTION *
-      clamp(BASE_RATE * (1 + (getModifier("Item Drop") * squint) / 100), 0, 1);
+      (1 - (1 - dropRate) ** (haveEquipped($item`toy Cupid bow`) ? 2 : 1));
+
     _drumMachineROI =
       rate * garboValue($item`spice melange`) - mallPrice($item`drum machine`);
   }
