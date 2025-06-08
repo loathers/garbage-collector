@@ -1,11 +1,4 @@
-import {
-  Familiar,
-  getMonsters,
-  holiday,
-  Location,
-  squareRoot,
-  toInt,
-} from "kolmafia";
+import { Familiar, getMonsters, holiday, Location, squareRoot } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -18,6 +11,7 @@ import {
   get,
   getModifier,
   have,
+  PeridotOfPeril,
   Robortender,
   totalFamiliarWeight,
 } from "libram";
@@ -175,11 +169,8 @@ function cookbookbatPerilBonus(): number {
   const cookbookbatQuestLocations = locationsWithMonsters.filter(
     (l) => canAdventureOrUnlock(l, false) && !canAdvExclusions.includes(l),
   );
-  const usedPeridotLocationIDs = get("_perilLocations")
-    .split(",")
-    .map((stringID) => toInt(stringID));
   const availablePeridotCookbookbatLocations = cookbookbatQuestLocations.filter(
-    (l) => !usedPeridotLocationIDs.includes(l.id),
+    (l) => PeridotOfPeril.canImperil(l),
   );
   const doableQuestChance =
     availablePeridotCookbookbatLocations.length /
