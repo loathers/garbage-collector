@@ -5,6 +5,7 @@ import {
   familiarWeight,
   floor,
   getWorkshed,
+  haveEquipped,
   mallPrice,
   myAscensions,
   myLightning,
@@ -249,16 +250,13 @@ const SandwormTasks: GarboFreeFightTask[] = [
     },
     {
       name: $item`shadow brick`.name,
-      ready: () =>
-        drumMachineROI() + globalOptions.prefs.valueOfFreeFight >
-        mallPrice($item`shadow brick`),
+      ready: () => drumMachineROI() > mallPrice($item`shadow brick`),
       completed: () => get("_shadowBricksUsed") >= 13,
       combat: new GarboStrategy(() =>
         sandwormMacro().tryItem($item`shadow brick`),
       ),
       combatCount: () =>
-        drumMachineROI() + globalOptions.prefs.valueOfFreeFight >
-        mallPrice($item`shadow brick`)
+        drumMachineROI() > mallPrice($item`shadow brick`)
           ? clamp(13 - get("_shadowBricksUsed"), 0, 13)
           : 0,
     },
@@ -335,19 +333,25 @@ const BASE_RATE = 1 / 100;
 let _drumMachineROI: number;
 function drumMachineROI(): number {
   if (_drumMachineROI === undefined) {
-    Outfit.from(
-      sandwormSpec(),
-      new Error("Failed to generate Sandworm outfit"),
-    ).dress();
+    sandwormOutfit().dress();
     const squint =
       have($skill`Steely-Eyed Squint`) && !have($effect`Steely-Eyed Squint`)
         ? 2
         : 1;
+    const dropRate = clamp(
+      BASE_RATE * (1 + (getModifier("Item Drop") * squint) / 100),
+      0,
+      1,
+    );
+
     const rate =
       REJECTION *
-      clamp(BASE_RATE * (1 + (getModifier("Item Drop") * squint) / 100), 0, 1);
+      (1 - (1 - dropRate) ** (haveEquipped($item`toy Cupid bow`) ? 2 : 1));
+
     _drumMachineROI =
-      rate * garboValue($item`spice melange`) - mallPrice($item`drum machine`);
+      rate * garboValue($item`spice melange`) +
+      globalOptions.prefs.valueOfFreeFight -
+      mallPrice($item`drum machine`);
   }
   return _drumMachineROI;
 }
