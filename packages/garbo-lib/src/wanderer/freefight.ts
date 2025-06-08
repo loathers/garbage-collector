@@ -83,26 +83,27 @@ function freeKillValue(
 
   if (monsters.length === 0) {
     return { value: 0, forcedMonster: $monster`none` };
-  } else {
-    if (canForceMonster) {
-      const forcedMonster = maxBy(monsters, (m) =>
-        valueMonster(location, m, forceItemDrops, options),
-      );
-      const value = valueMonster(
-        location,
-        forcedMonster,
-        forceItemDrops,
-        options,
-      );
-      return { value, forcedMonster };
-    } else {
-      const averageValue =
-        sum(monsters, (m) =>
-          valueMonster(location, m, forceItemDrops, options),
-        ) / monsters.length;
-      return { value: averageValue, forcedMonster: $monster`none` };
-    }
   }
+
+  const monsterValues = monsters.map((m) => {
+    return {
+      value: valueMonster(location, m, forceItemDrops, options),
+      forcedMonster: m,
+    };
+  });
+
+  const targetList = [
+    {
+      value: sum(monsterValues, (v) => v.value) / monsters.length,
+      forcedMonster: $monster`none`,
+    },
+  ];
+
+  if (canForceMonster) {
+    targetList.push(maxBy(monsterValues, (v) => v.value));
+  }
+
+  return maxBy(targetList, (l) => l.value);
 }
 
 function monsterValues(
