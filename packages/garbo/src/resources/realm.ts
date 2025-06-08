@@ -11,14 +11,16 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { HIGHLIGHT } from "../lib";
 import { acquire } from "../acquire";
+import { claimClaraVolcoino, willYachtzee } from "./yachtzee";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };
 
-function volcanoItemValue({ quantity, item }: VolcanoItem): number {
+function volcanoQuestItemCost({ quantity, item }: VolcanoItem): number {
   if (item === $item`fused fuse`) {
     // Check if clara's bell is available and unused
-    if (!have($item`Clara's bell`) || globalOptions.clarasBellClaimed) {
-      return Infinity;
+    if (!have($item`Clara's bell`) || get("_claraBellUsed")) return Infinity;
+    if (willYachtzee()) {
+      return garboValue($item`Volcoino`) - (20000 - get("valueOfAdventure"));
     }
     return quantity * get("valueOfAdventure");
   }
@@ -49,12 +51,12 @@ export function checkVolcanoQuest() {
         choice: 3,
       },
     ],
-    volcanoItemValue,
+    volcanoQuestItemCost,
     true,
   );
   if (bestItem.item === $item`fused fuse`) {
-    globalOptions.clarasBellClaimed = true;
-  } else if (volcanoItemValue(bestItem) < volcoinoValue) {
+    claimClaraVolcoino();
+  } else if (volcanoQuestItemCost(bestItem) < volcoinoValue) {
     withProperty("autoBuyPriceLimit", volcoinoValue, () =>
       retrieveItem(bestItem.item, bestItem.quantity),
     );
