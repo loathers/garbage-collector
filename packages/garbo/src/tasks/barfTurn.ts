@@ -5,6 +5,7 @@ import {
   availableAmount,
   canAdventure,
   canEquip,
+  cliExecute,
   eat,
   getWorkshed,
   haveEquipped,
@@ -68,14 +69,12 @@ import { GarboStrategy, Macro } from "../combat";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
-  freeFishyAvailable,
   getAvailableUltraRareZones,
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
   MEAT_TARGET_MULTIPLIER,
   romanticMonsterImpossible,
-  shouldYachtzee,
   sober,
   targetingMeat,
   willDrunkAdventure,
@@ -102,6 +101,7 @@ import {
   minimumMimicExperience,
   shouldFillLatte,
   tryFillLatte,
+  willYachtzee,
 } from "../resources";
 import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
@@ -197,10 +197,17 @@ function shouldGoUnderwater(): boolean {
   }
 
   if (have($effect`Fishy`)) return true;
-  if (freeFishyAvailable() && !shouldYachtzee()) {
+  if (willYachtzee()) return false;
+  if (have($item`fishy pipe`) && !get("_fishyPipeUsed")) {
     use($item`fishy pipe`);
-    return have($effect`Fishy`);
+    if (have($effect`Fishy`)) return true;
   }
+
+  if (get("skateParkStatus") === "ice" && !get("_skateBuff1")) {
+    cliExecute("skate lutz");
+    if (have($effect`Fishy`)) return true;
+  }
+
   return false;
 }
 

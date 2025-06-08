@@ -17,11 +17,11 @@ import {
   basePointerRingMeat,
   BonusEquipMode,
   felizValue,
-  maximumPinataCasts,
   maxPassiveDamage,
   modeIsFree,
   monsterManuelAvailable,
 } from "../lib";
+import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 

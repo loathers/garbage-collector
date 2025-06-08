@@ -120,6 +120,7 @@ import {
   shouldClara,
   shouldUnlockIngredients,
   tryFillLatte,
+  willYachtzee,
 } from "./resources";
 import {
   freeFightFamiliar,
@@ -153,7 +154,6 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
-  shouldYachtzee,
   targetingMeat,
   targetMeat,
   tryFindFreeRunOrBanish,
@@ -1131,7 +1131,7 @@ const freeFightSources = [
 
       // Consider forcing noncombats below:
       if (get("noncombatForcerActive")) return true; // If it's already forced, no problem
-      if (shouldYachtzee()) return false; // NCs are better when yachtzeeing, probably
+      if (willYachtzee()) return false; // NCs are better when yachtzeeing, probably
       // TODO: With the KoL update, is there a function for checking if an NC is already forced?
       if (shouldClara("shadow waters")) {
         return true;
@@ -2218,7 +2218,7 @@ function runShadowRiftTurn(): void {
   // we can probably have a better name
   if (get("encountersUntilSRChoice") === 0) return;
   if (
-    shouldYachtzee() ||
+    willYachtzee() ||
     get("rufusQuestType") === "items" ||
     get("rufusQuestType") === "entity" // We can't handle bosses... yet
   ) {
