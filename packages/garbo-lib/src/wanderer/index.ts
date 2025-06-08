@@ -20,6 +20,7 @@ import {
   get,
   getActiveEffects,
   maxBy,
+  PeridotOfPeril,
   sum,
   undelay,
 } from "libram";
@@ -305,11 +306,18 @@ export class WandererManager {
       ? (this.options.valueOfAdventure ?? 0) +
         sum(getActiveEffects(), (e) => this.options.effectValue(e, 1))
       : Infinity;
-    return undelay(
-      this.unsupportedChoices.get(location) ?? {},
-      this.options,
-      valueOfTurn,
-    );
+    const baseChoices = this.unsupportedChoices.get(location) ?? {};
+    if (
+      !(target instanceof Location) &&
+      this.getTarget(target).peridotMonster !== $monster`none`
+    ) {
+      const peridotChoice = PeridotOfPeril.getChoiceProperty(
+        this.getTarget(target).peridotMonster,
+      );
+      const newChoices = Object.assign(peridotChoice, baseChoices);
+      return undelay(newChoices, this.options, valueOfTurn);
+    }
+    return undelay(baseChoices, this.options, valueOfTurn);
   }
 
   clear(): void {
