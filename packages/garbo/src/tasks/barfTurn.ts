@@ -51,6 +51,7 @@ import {
   have,
   HeavyRains,
   maxBy,
+  PeridotOfPeril,
   questStep,
   realmAvailable,
   set,
@@ -1105,6 +1106,41 @@ const BarfTurnTasks: GarboTask[] = [
       if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
     },
     spendsTurn: false,
+  },
+  {
+    name: "Fight Cookbookbat Quest Target",
+    ready: () => {
+      const questReward = get("_cookbookbatQuestIngredient");
+      return (
+        PeridotOfPeril.have() &&
+        !!questReward &&
+        3 * garboValue(questReward) > get("valueOfAdventure")
+      );
+    },
+    completed: () => {
+      const questLocation = get("_cookbookbatQuestLastLocation");
+      return !questLocation || !PeridotOfPeril.canImperil(questLocation);
+    },
+    choices: () => {
+      const questMonster = get("_cookbookbatQuestMonster");
+      return questMonster
+        ? PeridotOfPeril.getChoiceProperty(questMonster)
+        : undefined;
+    },
+    outfit: () => {
+      return sober()
+        ? freeFightOutfit({
+            equip: $items`Peridot of Peril`,
+            familiar: $familiar`Cookbookbat`,
+          })
+        : freeFightOutfit({
+            equip: $items`Peridot of Peril, Drunkula's wineglass`,
+            familiar: $familiar`Cookbookbat`,
+          });
+    },
+    do: () => get("_cookbookbatQuestLastLocation"),
+    combat: new GarboStrategy(() => Macro.basicCombat()),
+    spendsTurn: true,
   },
 ];
 
