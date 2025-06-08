@@ -506,7 +506,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     ...lavaDogs(() => !willDrunkAdventure(), {}),
     sobriety: "sober",
   },
-  ...(getTasks(yachtzeeQuest) as AlternateTask[]), // Use NC forces and adventure to get the Yachtzee NC
+  ...getTasks(yachtzeeQuest), // Use NC forces and adventure to get the Yachtzee NC
   {
     name: "Daily Dungeon (drunk)",
     ...dailyDungeon(() => willDrunkAdventure()),
