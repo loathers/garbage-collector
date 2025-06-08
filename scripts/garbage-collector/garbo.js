@@ -24456,7 +24456,7 @@ var require_lib2 = __commonJS({
     function _defineProperties34(e, r) {
       for (var t = 0; t < r.length; t++) {
         var o = r[t];
-        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey54(o.key), o);
+        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey53(o.key), o);
       }
     }
     function _createClass34(e, r, t) {
@@ -24465,14 +24465,14 @@ var require_lib2 = __commonJS({
     function _classCallCheck34(a, n) {
       if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
     }
-    function _defineProperty49(e, r, t) {
-      return (r = _toPropertyKey54(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+    function _defineProperty48(e, r, t) {
+      return (r = _toPropertyKey53(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
     }
-    function _toPropertyKey54(t) {
-      var i = _toPrimitive54(t, "string");
+    function _toPropertyKey53(t) {
+      var i = _toPrimitive53(t, "string");
       return "symbol" == typeof i ? i : i + "";
     }
-    function _toPrimitive54(t, r) {
+    function _toPrimitive53(t, r) {
       if ("object" != typeof t || !t) return t;
       var e = t[Symbol.toPrimitive];
       if (void 0 !== e) {
@@ -24650,10 +24650,10 @@ var require_lib2 = __commonJS({
           return true;
         };
         _classCallCheck34(this, WandererTarget2);
-        _defineProperty49(this, "name", void 0);
-        _defineProperty49(this, "value", void 0);
-        _defineProperty49(this, "location", void 0);
-        _defineProperty49(this, "prepareTurn", void 0);
+        _defineProperty48(this, "name", void 0);
+        _defineProperty48(this, "value", void 0);
+        _defineProperty48(this, "location", void 0);
+        _defineProperty48(this, "prepareTurn", void 0);
         this.name = name;
         this.value = value;
         this.location = location;
@@ -25155,20 +25155,20 @@ var require_wanderer = __commonJS({
     function _defineProperties34(e, r) {
       for (var t = 0; t < r.length; t++) {
         var o = r[t];
-        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey54(o.key), o);
+        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey53(o.key), o);
       }
     }
     function _createClass34(e, r, t) {
       return r && _defineProperties34(e.prototype, r), t && _defineProperties34(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
     }
-    function _defineProperty49(e, r, t) {
-      return (r = _toPropertyKey54(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+    function _defineProperty48(e, r, t) {
+      return (r = _toPropertyKey53(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
     }
-    function _toPropertyKey54(t) {
-      var i = _toPrimitive54(t, "string");
+    function _toPropertyKey53(t) {
+      var i = _toPrimitive53(t, "string");
       return "symbol" == typeof i ? i : i + "";
     }
-    function _toPrimitive54(t, r) {
+    function _toPrimitive53(t, r) {
       if ("object" != typeof t || !t) return t;
       var e = t[Symbol.toPrimitive];
       if (void 0 !== e) {
@@ -25308,7 +25308,7 @@ var require_wanderer = __commonJS({
     var WandererManager2 = /* @__PURE__ */ function() {
       function WandererManager3(_options) {
         _classCallCheck34(this, WandererManager3);
-        _defineProperty49(this, "unsupportedChoices", /* @__PURE__ */ new Map([
+        _defineProperty48(this, "unsupportedChoices", /* @__PURE__ */ new Map([
           [(0, libram_1.$location)(_templateObject2288 || (_templateObject2288 = _taggedTemplateLiteral147(["The Spooky Forest"]))), {
             502: 2,
             505: 2
@@ -25463,14 +25463,14 @@ var require_wanderer = __commonJS({
           }]
           // Hustle away from the ghost
         ]));
-        _defineProperty49(this, "equipment", new Map([].concat(_toConsumableArray72(kolmafia_1.Location.all().filter(function(l) {
+        _defineProperty48(this, "equipment", new Map([].concat(_toConsumableArray72(kolmafia_1.Location.all().filter(function(l) {
           return l.zone === "The 8-Bit Realm";
         }).map(function(l) {
           return [l, (0, libram_1.$items)(_templateObject3631 || (_templateObject3631 = _taggedTemplateLiteral147(["continuum transfunctioner"])))];
         })), [[(0, libram_1.$location)(_templateObject3731 || (_templateObject3731 = _taggedTemplateLiteral147(["Shadow Rift (The 8-Bit Realm)"]))), (0, libram_1.$items)(_templateObject3830 || (_templateObject3830 = _taggedTemplateLiteral147(["continuum transfunctioner"])))]])));
-        _defineProperty49(this, "cacheKey", "");
-        _defineProperty49(this, "targets", {});
-        _defineProperty49(this, "options", void 0);
+        _defineProperty48(this, "cacheKey", "");
+        _defineProperty48(this, "targets", {});
+        _defineProperty48(this, "options", void 0);
         this.options = _options;
       }
       return _createClass34(WandererManager3, [{
@@ -25581,20 +25581,20 @@ var require_autumnaton = __commonJS({
     function _defineProperties34(e, r) {
       for (var t = 0; t < r.length; t++) {
         var o = r[t];
-        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey54(o.key), o);
+        o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey53(o.key), o);
       }
     }
     function _createClass34(e, r, t) {
       return r && _defineProperties34(e.prototype, r), t && _defineProperties34(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
     }
-    function _defineProperty49(e, r, t) {
-      return (r = _toPropertyKey54(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+    function _defineProperty48(e, r, t) {
+      return (r = _toPropertyKey53(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
     }
-    function _toPropertyKey54(t) {
-      var i = _toPrimitive54(t, "string");
+    function _toPropertyKey53(t) {
+      var i = _toPrimitive53(t, "string");
       return "symbol" == typeof i ? i : i + "";
     }
-    function _toPrimitive54(t, r) {
+    function _toPrimitive53(t, r) {
       if ("object" != typeof t || !t) return t;
       var e = t[Symbol.toPrimitive];
       if (void 0 !== e) {
@@ -25616,12 +25616,12 @@ var require_autumnaton = __commonJS({
         var _this = this;
         var averageItemValue = _ref.averageItemValue, estimatedTurns = _ref.estimatedTurns, estimatedTurnsTomorrow2 = _ref.estimatedTurnsTomorrow;
         _classCallCheck34(this, AutumnAtonManager3);
-        _defineProperty49(this, "averageItemValue", lib_1.DEFAULT_VALUE_FUNCTIONS.averageValue);
-        _defineProperty49(this, "estimatedTurns", kolmafia_1.myAdventures);
-        _defineProperty49(this, "estimatedTurnsTomorrow", function() {
+        _defineProperty48(this, "averageItemValue", lib_1.DEFAULT_VALUE_FUNCTIONS.averageValue);
+        _defineProperty48(this, "estimatedTurns", kolmafia_1.myAdventures);
+        _defineProperty48(this, "estimatedTurnsTomorrow", function() {
           return 0;
         });
-        _defineProperty49(this, "bestLocation", function(locations) {
+        _defineProperty48(this, "bestLocation", function(locations) {
           return (0, libram_1.maxBy)(_this.bestLocationsByUpgrade(locations), function(it) {
             return _this.averageValue(it);
           });
@@ -25815,9 +25815,9 @@ var require_autumnaton = __commonJS({
         }
       }]);
     }();
-    _defineProperty49(AutumnAtonManager2, "locationBanlist", (0, libram_1.$locations)(_templateObject5168 || (_templateObject5168 = _taggedTemplateLiteral147(["The Daily Dungeon"]))));
-    _defineProperty49(AutumnAtonManager2, "badAttributes", ["LUCKY", "ULTRARARE", "BOSS"]);
-    _defineProperty49(AutumnAtonManager2, "profitRelevantUpgrades", ["leftarm1", "leftleg1", "rightarm1", "rightleg1", "cowcatcher", "periscope", "radardish"]);
+    _defineProperty48(AutumnAtonManager2, "locationBanlist", (0, libram_1.$locations)(_templateObject5168 || (_templateObject5168 = _taggedTemplateLiteral147(["The Daily Dungeon"]))));
+    _defineProperty48(AutumnAtonManager2, "badAttributes", ["LUCKY", "ULTRARARE", "BOSS"]);
+    _defineProperty48(AutumnAtonManager2, "profitRelevantUpgrades", ["leftarm1", "leftleg1", "rightarm1", "rightleg1", "cowcatcher", "periscope", "radardish"]);
     exports2.AutumnAtonManager = AutumnAtonManager2;
   }
 });
@@ -29911,7 +29911,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a226ec52bdaa4ff63d7b2d5b5511f6b29773ee61", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("89f0abba7f74a7f5bffb7b2666f6c25da93268e7", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -44942,44 +44942,6 @@ var _templateObject1650;
 var _templateObject1749;
 var _templateObject1849;
 var _templateObject1947;
-function ownKeys26(e, r) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r && (o = o.filter(function(r2) {
-      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread26(e) {
-  for (var r = 1; r < arguments.length; r++) {
-    var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys26(Object(t), true).forEach(function(r2) {
-      _defineProperty46(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys26(Object(t)).forEach(function(r2) {
-      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-    });
-  }
-  return e;
-}
-function _defineProperty46(e, r, t) {
-  return (r = _toPropertyKey50(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
-}
-function _toPropertyKey50(t) {
-  var i = _toPrimitive50(t, "string");
-  return "symbol" == typeof i ? i : i + "";
-}
-function _toPrimitive50(t, r) {
-  if ("object" != typeof t || !t) return t;
-  var e = t[Symbol.toPrimitive];
-  if (void 0 !== e) {
-    var i = e.call(t, r || "default");
-    if ("object" != typeof i) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r ? String : Number)(t);
-}
 function _toConsumableArray66(r) {
   return _arrayWithoutHoles66(r) || _iterableToArray66(r) || _unsupportedIterableToArray87(r) || _nonIterableSpread66();
 }
@@ -45007,13 +44969,18 @@ function _arrayLikeToArray87(r, a) {
 function _taggedTemplateLiteral134(e, t) {
   return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
 }
-function doYachtzeeTask(additionalReady) {
-  return {
+var yachtzeeQuest = [{
+  name: "Yachtzee",
+  completed: function() {
+    return !willYachtzee() && !get("noncombatForcerActive");
+  },
+  tasks: [{
+    name: "Yachtzee",
     completed: function() {
       return !get("noncombatForcerActive");
     },
     ready: function() {
-      return additionalReady() && have($effect(_templateObject997 || (_templateObject997 = _taggedTemplateLiteral134(["Fishy"]))));
+      return have($effect(_templateObject997 || (_templateObject997 = _taggedTemplateLiteral134(["Fishy"]))));
     },
     choices: {
       918: 2
@@ -45045,23 +45012,7 @@ function doYachtzeeTask(additionalReady) {
     }),
     turns: maximumYachtzees,
     spendsTurn: true
-  };
-}
-function yachtzeeTasks() {
-  if (!willYachtzee()) return [];
-  return [_objectSpread26(_objectSpread26({
-    name: "Yachtzee (sober)"
-  }, doYachtzeeTask(function() {
-    return !willDrunkAdventure();
-  })), {}, {
-    sobriety: "sober"
-  }), _objectSpread26(_objectSpread26({
-    name: "Yachtzee (drunk)"
-  }, doYachtzeeTask(function() {
-    return willDrunkAdventure();
-  })), {}, {
-    sobriety: "drunk"
-  }), {
+  }, {
     name: "Use Fishy Pipe for Yachtzee",
     completed: function() {
       return have($effect(_templateObject8108 || (_templateObject8108 = _taggedTemplateLiteral134(["Fishy"]))));
@@ -45141,8 +45092,8 @@ function yachtzeeTasks() {
       return willDrunkAdventure() ? "drunk" : "sober";
     },
     spendsTurn: false
-  }];
-}
+  }]
+}];
 
 // src/tasks/barfTurn.ts
 var _templateObject999;
@@ -45360,7 +45311,7 @@ function _iterableToArrayLimit44(r, l) {
 function _arrayWithHoles44(r) {
   if (Array.isArray(r)) return r;
 }
-function ownKeys27(e, r) {
+function ownKeys26(e, r) {
   var t = Object.keys(e);
   if (Object.getOwnPropertySymbols) {
     var o = Object.getOwnPropertySymbols(e);
@@ -45370,25 +45321,25 @@ function ownKeys27(e, r) {
   }
   return t;
 }
-function _objectSpread27(e) {
+function _objectSpread26(e) {
   for (var r = 1; r < arguments.length; r++) {
     var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys27(Object(t), true).forEach(function(r2) {
-      _defineProperty47(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys27(Object(t)).forEach(function(r2) {
+    r % 2 ? ownKeys26(Object(t), true).forEach(function(r2) {
+      _defineProperty46(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys26(Object(t)).forEach(function(r2) {
       Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
     });
   }
   return e;
 }
-function _defineProperty47(e, r, t) {
-  return (r = _toPropertyKey51(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty46(e, r, t) {
+  return (r = _toPropertyKey50(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey51(t) {
-  var i = _toPrimitive51(t, "string");
+function _toPropertyKey50(t) {
+  var i = _toPrimitive50(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive51(t, r) {
+function _toPrimitive50(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -45422,7 +45373,7 @@ var updateParachuteFailure = function() {
 };
 function wanderTask(details, spec, base) {
   var additionalOutfitOptions = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
-  return _objectSpread27({
+  return _objectSpread26({
     do: function() {
       return wanderer().getTarget(undelay(details));
     },
@@ -45430,7 +45381,7 @@ function wanderTask(details, spec, base) {
       return wanderer().getChoices(undelay(details));
     },
     outfit: function() {
-      return freeFightOutfit(undelay(spec), _objectSpread27({
+      return freeFightOutfit(undelay(spec), _objectSpread26({
         wanderOptions: undelay(details)
       }, additionalOutfitOptions));
     },
@@ -45582,7 +45533,7 @@ function lavaDogs(additionalReady, baseSpec) {
       var weapon2 = have($item(_templateObject3627 || (_templateObject3627 = _taggedTemplateLiteral135(["June cleaver"])))) ? $item(_templateObject3727 || (_templateObject3727 = _taggedTemplateLiteral135(["June cleaver"]))) : [];
       var modifier = ["Muscle"];
       if (!have($item(_templateObject3826 || (_templateObject3826 = _taggedTemplateLiteral135(["June cleaver"]))))) modifier.push("-7 Monster Level");
-      return freeFightOutfit(_objectSpread27(_objectSpread27({}, baseSpec), {}, {
+      return freeFightOutfit(_objectSpread26(_objectSpread26({}, baseSpec), {}, {
         modifier: modifier,
         weapon: weapon2,
         avoid: avoid
@@ -45749,7 +45700,7 @@ var NonBarfTurnTasks = [{
       1125: "1&iid=".concat(getBestDupeItem().id)
     };
   }
-}, _objectSpread27(_objectSpread27({
+}, _objectSpread26(_objectSpread26({
   name: "Lava Dogs (drunk)"
 }, lavaDogs(function() {
   return willDrunkAdventure();
@@ -45757,15 +45708,15 @@ var NonBarfTurnTasks = [{
   offhand: $item(_templateObject5919 || (_templateObject5919 = _taggedTemplateLiteral135(["Drunkula's wineglass"])))
 })), {}, {
   sobriety: "drunk"
-}), _objectSpread27(_objectSpread27({
+}), _objectSpread26(_objectSpread26({
   name: "Lava Dogs (sober)"
 }, lavaDogs(function() {
   return !willDrunkAdventure();
 }, {})), {}, {
   sobriety: "sober"
-})].concat(_toConsumableArray67(yachtzeeTasks()), [
+})].concat(_toConsumableArray67(getTasks(yachtzeeQuest)), [
   // Use NC forces and adventure to get the Yachtzee NC
-  _objectSpread27(_objectSpread27({
+  _objectSpread26(_objectSpread26({
     name: "Daily Dungeon (drunk)"
   }, dailyDungeon(function() {
     return willDrunkAdventure();
@@ -45778,7 +45729,7 @@ var NonBarfTurnTasks = [{
     },
     sobriety: "drunk"
   }),
-  _objectSpread27(_objectSpread27({
+  _objectSpread26(_objectSpread26({
     name: "Daily Dungeon (sober)"
   }, dailyDungeon(function() {
     return !willDrunkAdventure();
@@ -45790,14 +45741,14 @@ var NonBarfTurnTasks = [{
     },
     sobriety: "sober"
   }),
-  _objectSpread27(_objectSpread27({
+  _objectSpread26(_objectSpread26({
     name: "Vamp Out (drunk)"
   }, vampOut(function() {
     return willDrunkAdventure();
   })), {}, {
     sobriety: "drunk"
   }),
-  _objectSpread27(_objectSpread27({
+  _objectSpread26(_objectSpread26({
     name: "Vamp Out (sober)"
   }, vampOut(function() {
     return !willDrunkAdventure();
@@ -45840,7 +45791,7 @@ var NonBarfTurnTasks = [{
       1091: 7
     }
   },
-  _objectSpread27(_objectSpread27({
+  _objectSpread26(_objectSpread26({
     name: "Apriling Saxophone Lucky (drunk)"
   }, aprilingSaxophoneLucky(function() {
     return willDrunkAdventure();
@@ -45852,7 +45803,7 @@ var NonBarfTurnTasks = [{
     },
     sobriety: "drunk"
   }),
-  _objectSpread27(_objectSpread27({
+  _objectSpread26(_objectSpread26({
     name: "Apriling Saxophone Lucky (sober)"
   }, aprilingSaxophoneLucky(function() {
     return !willDrunkAdventure();
@@ -45919,7 +45870,7 @@ var NonBarfTurnTasks = [{
     }),
     choices: function() {
       var _peridotZone;
-      return _objectSpread27(_objectSpread27({}, wanderer().getChoices((_peridotZone = peridotZone()) !== null && _peridotZone !== void 0 ? _peridotZone : $location.none)), {}, {
+      return _objectSpread26(_objectSpread26({}, wanderer().getChoices((_peridotZone = peridotZone()) !== null && _peridotZone !== void 0 ? _peridotZone : $location.none)), {}, {
         1557: 2
       });
     }
@@ -46610,20 +46561,20 @@ function _classCallCheck32(a, n) {
 function _defineProperties32(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey52(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey51(o.key), o);
   }
 }
 function _createClass32(e, r, t) {
   return r && _defineProperties32(e.prototype, r), t && _defineProperties32(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _defineProperty48(e, r, t) {
-  return (r = _toPropertyKey52(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+function _defineProperty47(e, r, t) {
+  return (r = _toPropertyKey51(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
 }
-function _toPropertyKey52(t) {
-  var i = _toPrimitive52(t, "string");
+function _toPropertyKey51(t) {
+  var i = _toPrimitive51(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive52(t, r) {
+function _toPrimitive51(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
@@ -46636,11 +46587,11 @@ function _toPrimitive52(t, r) {
 var DebuffPlanner = /* @__PURE__ */ function() {
   function DebuffPlanner2() {
     _classCallCheck32(this, DebuffPlanner2);
-    _defineProperty48(this, "plan", []);
-    _defineProperty48(this, "itemBanList", $items(_templateObject1001 || (_templateObject1001 = _taggedTemplateLiteral137(["pill cup"]))));
-    _defineProperty48(this, "priceCap", 15e4);
-    _defineProperty48(this, "sizeCap", 69);
-    _defineProperty48(this, "possibleDebuffItems", {});
+    _defineProperty47(this, "plan", []);
+    _defineProperty47(this, "itemBanList", $items(_templateObject1001 || (_templateObject1001 = _taggedTemplateLiteral137(["pill cup"]))));
+    _defineProperty47(this, "priceCap", 15e4);
+    _defineProperty47(this, "sizeCap", 69);
+    _defineProperty47(this, "possibleDebuffItems", {});
     this.generateDebuffList();
   }
   return _createClass32(DebuffPlanner2, [{
@@ -50057,17 +50008,17 @@ function _classCallCheck33(a, n) {
 function _defineProperties33(e, r) {
   for (var t = 0; t < r.length; t++) {
     var o = r[t];
-    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey53(o.key), o);
+    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey52(o.key), o);
   }
 }
 function _createClass33(e, r, t) {
   return r && _defineProperties33(e.prototype, r), t && _defineProperties33(e, t), Object.defineProperty(e, "prototype", { writable: false }), e;
 }
-function _toPropertyKey53(t) {
-  var i = _toPrimitive53(t, "string");
+function _toPropertyKey52(t) {
+  var i = _toPrimitive52(t, "string");
   return "symbol" == typeof i ? i : i + "";
 }
-function _toPrimitive53(t, r) {
+function _toPrimitive52(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
   if (void 0 !== e) {
