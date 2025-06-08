@@ -93,13 +93,13 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Cookbookbat`,
-    value: () =>
+    value: (mode) =>
       (3 *
         garboAverageValue(
           ...$items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`,
         )) /
         11 +
-      cookbookbatPerilBonus(),
+      (mode === "barf" ? cookbookbatPerilBonus() : 0), // We cannot run the turn spending task during our start of day freefights, so cannot guarantee this value
   },
   {
     familiar: $familiar`Unspeakachu`,
