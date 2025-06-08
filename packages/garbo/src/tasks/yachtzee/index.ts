@@ -25,62 +25,50 @@ import { willDrunkAdventure } from "../../lib";
 import { Outfit } from "grimoire-kolmafia";
 import { maximumYachtzees, shouldClara, willYachtzee } from "../../resources";
 
-function doYachtzeeTask(additionalReady: () => boolean) {
-  return {
-    completed: () => !get("noncombatForcerActive"),
-    ready: () => additionalReady() && have($effect`Fishy`),
-    choices: { 918: 2 },
-    do: $location`The Sunken Party Yacht`,
-    outfit: () => {
-      const outfit = new Outfit();
-      const overdrunk = myInebriety() > inebrietyLimit();
-      const yachtzeeFamiliar = bestYachtzeeFamiliar();
-      outfit.modifier.push("20 Meat Drop", "-tie");
-      if (
-        !(
-          yachtzeeFamiliar.underwater ||
-          have($effect`Driving Waterproofly`) ||
-          have($effect`Wet Willied`)
-        )
-      ) {
-        outfit.modifier.push("underwater familiar");
-      }
-      outfit.equip(getBestWaterBreathingEquipment(maximumYachtzees()).item);
-      outfit.equip(bestFamUnderwaterGear(yachtzeeFamiliar));
-      if (overdrunk) outfit.equip($item`Drunkula's wineglass`);
-      outfit.avoid.push(
-        ...$items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
-      );
-      if (outfit.haveEquipped($item`The Crown of Ed the Undying`)) {
-        outfit.setModes({ edpiece: "fish" });
-      }
-      outfit.familiar = yachtzeeFamiliar;
-      return outfit;
-    },
-    combat: new GarboStrategy(() =>
-      Macro.abortWithMsg(
-        "Unexpected combat while attempting yachtzee adventure",
-      ),
-    ),
-    turns: maximumYachtzees,
-    spendsTurn: true,
-  };
-}
-
 type AlternateTask = GarboTask & { turns: Delayed<number> };
 
 export function yachtzeeTasks(): AlternateTask[] {
-  if (!willYachtzee()) return [];
+  if (!willYachtzee() && !get("noncombatForcerActive")) return [];
   return [
     {
-      name: "Yachtzee (sober)",
-      ...doYachtzeeTask(() => !willDrunkAdventure()),
-      sobriety: "sober",
-    },
-    {
-      name: "Yachtzee (drunk)",
-      ...doYachtzeeTask(() => willDrunkAdventure()),
-      sobriety: "drunk",
+      name: "Yachtzee",
+      completed: () => !get("noncombatForcerActive"),
+      ready: () => have($effect`Fishy`),
+      choices: { 918: 2 },
+      do: $location`The Sunken Party Yacht`,
+      outfit: () => {
+        const outfit = new Outfit();
+        const overdrunk = myInebriety() > inebrietyLimit();
+        const yachtzeeFamiliar = bestYachtzeeFamiliar();
+        outfit.modifier.push("20 Meat Drop", "-tie");
+        if (
+          !(
+            yachtzeeFamiliar.underwater ||
+            have($effect`Driving Waterproofly`) ||
+            have($effect`Wet Willied`)
+          )
+        ) {
+          outfit.modifier.push("underwater familiar");
+        }
+        outfit.equip(getBestWaterBreathingEquipment(maximumYachtzees()).item);
+        outfit.equip(bestFamUnderwaterGear(yachtzeeFamiliar));
+        if (overdrunk) outfit.equip($item`Drunkula's wineglass`);
+        outfit.avoid.push(
+          ...$items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
+        );
+        if (outfit.haveEquipped($item`The Crown of Ed the Undying`)) {
+          outfit.setModes({ edpiece: "fish" });
+        }
+        outfit.familiar = yachtzeeFamiliar;
+        return outfit;
+      },
+      combat: new GarboStrategy(() =>
+        Macro.abortWithMsg(
+          "Unexpected combat while attempting yachtzee adventure",
+        ),
+      ),
+      turns: maximumYachtzees,
+      spendsTurn: true,
     },
     {
       name: "Use Fishy Pipe for Yachtzee",
