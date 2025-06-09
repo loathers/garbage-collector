@@ -41,6 +41,7 @@ import { freefightFactory } from "./freefight";
 import { eightbitFactory } from "./eightbit";
 import { gingerbreadFactory } from "./gingerbreadcity";
 import { cookbookbatQuestFactory } from "./freerunquestcompletion";
+import { ultraRareFactory } from "./ultrarare";
 
 export type { DraggableFight };
 
@@ -58,6 +59,7 @@ const wanderFactories: WandererFactory[] = [
   guzzlrFactory,
   eightbitFactory,
   gingerbreadFactory,
+  ultraRareFactory,
   cookbookbatQuestFactory,
 ];
 
