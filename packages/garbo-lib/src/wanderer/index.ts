@@ -40,7 +40,7 @@ import { lovebugsFactory } from "./lovebugs";
 import { freefightFactory } from "./freefight";
 import { eightbitFactory } from "./eightbit";
 import { gingerbreadFactory } from "./gingerbreadcity";
-import { freeRunQuestCompletionFactory } from "./freerunquestcompletion";
+import { cookbookbatQuestFactory } from "./freerunquestcompletion";
 
 export type { DraggableFight };
 
@@ -58,7 +58,7 @@ const wanderFactories: WandererFactory[] = [
   guzzlrFactory,
   eightbitFactory,
   gingerbreadFactory,
-  freeRunQuestCompletionFactory,
+  cookbookbatQuestFactory,
 ];
 
 function bestWander(
