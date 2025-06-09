@@ -69,7 +69,10 @@ function bestWander(
   nameSkiplist: string[],
   options: WandererFactoryOptions,
 ): WandererLocation {
-  const possibleLocations = new Map<Location, WandererLocation>();
+  const possibleLocations = new Map<
+    { location: Location; peridotTarget: Monster },
+    WandererLocation
+  >();
 
   for (const wanderFactory of wanderFactories) {
     const wanderTargets = wanderFactory(type, locationSkiplist, options);
@@ -79,17 +82,27 @@ function bestWander(
         !locationSkiplist.includes(wanderTarget.location) &&
         canWander(wanderTarget.location, type)
       ) {
+        const identifierKey = {
+          location: wanderTarget.location,
+          peridotTarget: wanderTarget.peridotMonster,
+        };
         const wandererLocation: WandererLocation = possibleLocations.get(
-          wanderTarget.location,
+          identifierKey,
         ) ?? {
           location: wanderTarget.location,
           targets: [],
-          value: 0,
+          zoneValue: 0,
+          monsterDropValue: 0,
           peridotMonster: $monster`none`,
+          targetedMonsterDropType: "none",
         };
         wandererLocation.targets = [...wandererLocation.targets, wanderTarget];
-        wandererLocation.value += wanderTarget.value;
-        possibleLocations.set(wandererLocation.location, wandererLocation);
+        wandererLocation.zoneValue += wanderTarget.zoneValue;
+        wandererLocation.monsterDropValue += wanderTarget.monsterDropValue;
+        wandererLocation.peridotMonster = wanderTarget.peridotMonster;
+        wandererLocation.targetedMonsterDropType =
+          wanderTarget.targetedMonsterDropType;
+        possibleLocations.set(identifierKey, wandererLocation);
       }
     }
   }

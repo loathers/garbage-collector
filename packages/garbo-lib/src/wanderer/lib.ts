@@ -72,8 +72,10 @@ export type WandererFactory = (
 export type WandererLocation = {
   location: Location;
   targets: WandererTarget[];
-  value: number;
+  zoneValue: number;
+  monsterDropValue: number;
   peridotMonster: Monster;
+  targetedMonsterDropType: "normal" | "forced" | "none";
 };
 
 export const UnlockableZones: UnlockableZone[] = [
