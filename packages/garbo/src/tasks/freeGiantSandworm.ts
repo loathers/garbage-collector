@@ -106,7 +106,7 @@ function sandwormTask(
     Partial<Pick<GarboFreeFightTask, keyof typeof DEFAULT_SANDWORM_TASK>>,
 ) {
   const fullTask = { ...DEFAULT_SANDWORM_TASK, ...fragment };
-  return { ...fullTask, limit: { skip: 5 + fullTask.combatCount() } };
+  return { ...fullTask, limit: { skip: 20 } };
 }
 
 const NON_SANDWORM_TASK = {
