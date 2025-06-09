@@ -259,6 +259,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
         drumMachineROI() > mallPrice($item`shadow brick`)
           ? clamp(13 - get("_shadowBricksUsed"), 0, 13)
           : 0,
+      acquire: () => [{ item: $item`shadow brick`, price: drumMachineROI() }],
     },
     {
       name: "Yellow Ray",
