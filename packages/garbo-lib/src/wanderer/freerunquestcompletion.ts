@@ -2,7 +2,7 @@ import { appearanceRates, getMonsters, Location } from "kolmafia";
 import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
 import { get, PeridotOfPeril } from "libram";
 
-export function freeRunQuestCompletionFactory(
+export function cookbookbatQuestFactory(
   type: DraggableFight,
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
