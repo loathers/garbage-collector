@@ -23,7 +23,7 @@ export function cookbookbatQuestFactory(
     ) {
       return [
         new WandererTarget(
-          `Cookbookbat Freerun Quest (Peridot)`,
+          `Cookbookbat Quest (Peridot)`,
           questLocation,
           3 * options.itemValue(questReward),
           undefined,
@@ -40,7 +40,7 @@ export function cookbookbatQuestFactory(
       );
       return [
         new WandererTarget(
-          `Cookbookbat Freerun Quest`,
+          `Cookbookbat Quest`,
           questLocation,
           (3 * options.itemValue(questReward)) / monsters.length,
         ),
