@@ -28,7 +28,8 @@ export function ultraRareFactory(
               ).map((a) => a.drop),
               options.itemValue,
             ),
-          ) / 500000000, // Ultra rares are rare, let's say 1 in 500 million to be conservative
+          ) / 500000000, // Ultra rares are rare, let's say 1 in 500 million to be conservative,
+          0,
         ),
     );
 }

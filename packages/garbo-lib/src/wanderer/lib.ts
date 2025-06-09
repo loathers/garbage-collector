@@ -224,7 +224,8 @@ export function canWander(location: Location, type: DraggableFight): boolean {
 
 export class WandererTarget {
   name: string;
-  value: number;
+  zoneValue: number;
+  monsterDropValue: number;
   location: Location;
   prepareTurn: () => boolean;
   peridotMonster: Monster;
@@ -233,19 +234,22 @@ export class WandererTarget {
    * Process for determining where to put a wanderer to extract additional value from it
    * @param name name of this wanderer - for documentation/logging purposes
    * @param location returns the location to adventure to target this; null only if something goes wrong
-   * @param value the expected additional value of putting a single wanderer-fight into the zone for this
+   * @param zoneValue the expected additional value from zone bonuses for putting a single wanderer-fight into the location for this
+   * @param monsterDropValue the expected additional value from monster drops for putting a single wanderer-fight into the location for this
    * @param prepareTurn attempt to set up, spending meat and or items as necessary
-   * @param peridotMonster The specific monster we will target using the Peridot of Peril
+   * @param peridotMonster The specific monster we will target using the Peridot of Peril, if needed
    */
   constructor(
     name: string,
     location: Location,
-    value: number,
+    zoneValue: number,
+    monsterDropValue: number,
     prepareTurn: () => boolean = () => true,
     peridotMonster: Monster = $monster`none`,
   ) {
     this.name = name;
-    this.value = value;
+    this.zoneValue = zoneValue;
+    this.monsterDropValue = monsterDropValue;
     this.location = location;
     this.prepareTurn = prepareTurn;
     this.peridotMonster = peridotMonster;
@@ -257,6 +261,7 @@ export function defaultFactory(): WandererTarget[] {
     new WandererTarget(
       "Default",
       $location`The Haunted Kitchen`,
+      0,
       0,
       undefined,
       $monster`none`,

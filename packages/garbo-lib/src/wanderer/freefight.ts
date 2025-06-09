@@ -172,6 +172,7 @@ export function freefightFactory(
         return new WandererTarget(
           `Yellow Ray ${l}`,
           l,
+          0,
           locationValue ? locationValue.value : 0,
           undefined,
           locationValue ? locationValue.forcedMonster : $monster`none`,

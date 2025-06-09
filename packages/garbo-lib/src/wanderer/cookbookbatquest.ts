@@ -26,6 +26,7 @@ export function cookbookbatQuestFactory(
           `Cookbookbat Quest (Peridot)`,
           questLocation,
           3 * options.itemValue(questReward),
+          0,
           undefined,
           questMonster,
         ),
@@ -43,6 +44,7 @@ export function cookbookbatQuestFactory(
           `Cookbookbat Quest`,
           questLocation,
           (3 * options.itemValue(questReward)) / monsters.length,
+          0,
         ),
       ];
     }

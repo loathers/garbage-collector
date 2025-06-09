@@ -34,6 +34,7 @@ export function lovebugsFactory(
           `Lovebugs ${t.location}`,
           t.location,
           options.itemValue(t.currency) * 0.05,
+          0,
         ),
     );
   }
