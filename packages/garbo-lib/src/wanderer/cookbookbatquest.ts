@@ -23,7 +23,7 @@ export function cookbookbatQuestFactory(
     ) {
       return [
         new WandererTarget(
-          `Cookbookbat Quest (Peridot)`,
+          `Cookbookbat Quest (Peridot: ${questMonster.name})`,
           questLocation,
           3 * options.itemValue(questReward),
           0,

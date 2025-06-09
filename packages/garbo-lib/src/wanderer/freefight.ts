@@ -163,8 +163,15 @@ export function freefightFactory(
     if (bestZones.size > 0) {
       return [...bestZones].map((l: Location) => {
         const locationValue = locationValues.get(l);
+        const forcedMonster = locationValue
+          ? locationValue.forcedMonster
+          : $monster`none`;
         return new WandererTarget(
-          `Yellow Ray ${l}`,
+          `Yellow Ray ${l}`.concat(
+            forcedMonster !== $monster`none`
+              ? ` (Peridot: ${forcedMonster.name}`
+              : "",
+          ),
           l,
           0,
           locationValue ? locationValue.value : 0,
