@@ -20,7 +20,6 @@ import {
   bofaValue,
   canAdventureOrUnlock,
   canWander,
-  cookbookbatQuestValue,
   DraggableFight,
   underwater,
   UnlockableZones,
@@ -60,12 +59,7 @@ function valueMonster(
         (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
       return yrRate * options.itemValue(drop.drop);
     });
-  return (
-    itemDrop +
-    meatDrop +
-    bofaValue(options, m) +
-    cookbookbatQuestValue(options, location, m)
-  );
+  return itemDrop + meatDrop + bofaValue(options, m);
 }
 
 function freeKillValue(
@@ -94,7 +88,7 @@ function freeKillValue(
 
   const targetList = [
     {
-      value: sum(monsterValues, "value") / monsterValues.length,
+      value: sum(monsterValues, "value") / monsterValues.length, // FIXME account for actual monster apperanceRates
       forcedMonster: $monster`none`,
     },
   ];

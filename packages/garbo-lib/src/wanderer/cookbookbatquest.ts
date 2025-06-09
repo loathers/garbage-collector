@@ -11,7 +11,7 @@ export function cookbookbatQuestFactory(
   const questReward = get("_cookbookbatQuestIngredient");
   const questMonster = get("_cookbookbatQuestMonster");
   if (
-    type === "freerun" &&
+    ["yellow ray", "freefight", "freerun"].includes(type) &&
     questLocation &&
     !locationSkiplist.includes(questLocation) &&
     questReward
@@ -43,7 +43,7 @@ export function cookbookbatQuestFactory(
         new WandererTarget(
           `Cookbookbat Quest`,
           questLocation,
-          (3 * options.itemValue(questReward)) / monsters.length,
+          (3 * options.itemValue(questReward)) / monsters.length, // FIXME account for actual monster apperanceRates
           0,
         ),
       ];
