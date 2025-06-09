@@ -40,8 +40,8 @@ import { lovebugsFactory } from "./lovebugs";
 import { freefightFactory } from "./freefight";
 import { eightbitFactory } from "./eightbit";
 import { gingerbreadFactory } from "./gingerbreadcity";
-import { cookbookbatQuestFactory } from "./freerunquestcompletion";
 import { ultraRareFactory } from "./ultrarare";
+import { cookbookbatQuestFactory } from "./cookbookbatquest";
 
 export type { DraggableFight };
 
