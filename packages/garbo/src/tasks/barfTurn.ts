@@ -1127,17 +1127,13 @@ const BarfTurnTasks: GarboTask[] = [
         ? { 1557: `1&bandersnatch=${questMonster.id}` }
         : { 1557: `1&bandersnatch=${0}` };
     },
-    outfit: () => {
-      return sober()
-        ? freeFightOutfit({
-            equip: $items`Peridot of Peril`,
-            familiar: $familiar`Cookbookbat`,
-          })
-        : freeFightOutfit({
-            equip: $items`Peridot of Peril, Drunkula's wineglass`,
-            familiar: $familiar`Cookbookbat`,
-          });
-    },
+    outfit: () =>
+      freeFightOutfit({
+        equip: sober()
+          ? $items`Peridot of Peril`
+          : $items`Peridot of Peril, Drunkula's wineglass`,
+        familiar: $familiar`Cookbookbat`,
+      }),
     do: () => get("_cookbookbatQuestLastLocation"),
     combat: new GarboStrategy(() => Macro.basicCombat()),
     spendsTurn: true,
