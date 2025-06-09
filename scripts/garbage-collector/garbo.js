@@ -25172,11 +25172,10 @@ var require_ultrarare = __commonJS({
       return (0, lib_1.getAvailableUltraRareZones)().filter(function(l) {
         return (0, kolmafia_1.canAdventure)(l);
       }).map(function(z) {
-        return new lib_1.WandererTarget("UltraRare ".concat(z), z, options.itemValue((0, libram_1.maxBy)((0, kolmafia_1.itemDropsArray)((0, kolmafia_1.getMonsters)(z).filter(function(m) {
+        var _$drop, _find;
+        return new lib_1.WandererTarget("UltraRare ".concat(z), z, options.itemValue((_$drop = (0, kolmafia_1.itemDropsArray)((_find = (0, kolmafia_1.getMonsters)(z).find(function(m) {
           return m.attributes.includes("ULTRARARE");
-        })[0]).map(function(a) {
-          return a.drop;
-        }), options.itemValue)) / 5e8);
+        })) !== null && _find !== void 0 ? _find : libram_1.$monster.none)[0].drop) !== null && _$drop !== void 0 ? _$drop : libram_1.$item.none) / 5e8);
       });
     }
   }
@@ -29980,7 +29979,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("eebc34eb1df6be84f65460f2443a97b748a5e2ef", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("299d3fbb8f098adc2580ea8217c30119b28a2e5a", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
