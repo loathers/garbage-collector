@@ -229,6 +229,7 @@ export class WandererTarget {
   location: Location;
   prepareTurn: () => boolean;
   peridotMonster: Monster;
+  targetedMonsterDropType: "normal" | "forced" | "none";
 
   /**
    * Process for determining where to put a wanderer to extract additional value from it
@@ -238,6 +239,7 @@ export class WandererTarget {
    * @param monsterDropValue the expected additional value from monster drops for putting a single wanderer-fight into the location for this
    * @param prepareTurn attempt to set up, spending meat and or items as necessary
    * @param peridotMonster The specific monster we will target using the Peridot of Peril, if needed
+   * @param targetedMonsterDropType If we're targeting via peridot, what drop type this WanderTarget should include. "normal" for a regular fight, "forced" for guaranteed item drops
    */
   constructor(
     name: string,
@@ -246,6 +248,7 @@ export class WandererTarget {
     monsterDropValue: number,
     prepareTurn: () => boolean = () => true,
     peridotMonster: Monster = $monster`none`,
+    targetedMonsterDropType: "normal" | "forced" | "none" = "none",
   ) {
     this.name = name;
     this.zoneValue = zoneValue;
@@ -253,6 +256,7 @@ export class WandererTarget {
     this.location = location;
     this.prepareTurn = prepareTurn;
     this.peridotMonster = peridotMonster;
+    this.targetedMonsterDropType = targetedMonsterDropType;
   }
 }
 
@@ -434,19 +438,4 @@ export function getAvailableUltraRareZones(): Location[] {
   }
 
   return zones.filter((l) => canAdventure(l));
-}
-
-export function cookbookbatQuestValue(
-  { itemValue }: WandererFactoryOptions,
-  location: Location,
-  monster: Monster,
-): number {
-  if (
-    location === get("_cookbookbatQuestLastLocation") &&
-    monster === get("_cookbookbatQuestMonster")
-  ) {
-    const questIngredient = get("_cookbookbatQuestIngredient");
-    return questIngredient ? 3 * itemValue(questIngredient) : 0;
-  }
-  return 0;
 }

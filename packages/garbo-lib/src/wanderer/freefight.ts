@@ -170,6 +170,7 @@ export function freefightFactory(
           locationValue ? locationValue.value : 0,
           undefined,
           locationValue ? locationValue.forcedMonster : $monster`none`,
+          type === "freefight" ? "normal" : "forced",
         );
       });
     }

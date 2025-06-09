@@ -29,6 +29,11 @@ export function cookbookbatQuestFactory(
           0,
           undefined,
           questMonster,
+          type === "freefight"
+            ? "normal"
+            : type === "yellow ray"
+              ? "forced"
+              : "none",
         ),
       ];
     } else {
