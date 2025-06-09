@@ -62,7 +62,7 @@ import {
   withChoice,
   withProperty,
 } from "libram";
-import { OutfitSpec, Quest } from "grimoire-kolmafia";
+import { getTasks, OutfitSpec, Quest } from "grimoire-kolmafia";
 import { getAvailableUltraRareZones, WanderDetails } from "garbo-lib";
 
 import { GarboStrategy, Macro } from "../combat";
@@ -107,7 +107,7 @@ import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
 import { meatMood } from "../mood";
-import { yachtzeeTasks } from "./yachtzee";
+import { yachtzeeQuest } from "./yachtzee";
 
 const digitizedTarget = () =>
   SourceTerminal.have() &&
@@ -505,7 +505,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     ...lavaDogs(() => !willDrunkAdventure(), {}),
     sobriety: "sober",
   },
-  ...yachtzeeTasks(), // Use NC forces and adventure to get the Yachtzee NC
+  ...getTasks(yachtzeeQuest), // Use NC forces and adventure to get the Yachtzee NC
   {
     name: "Daily Dungeon (drunk)",
     ...dailyDungeon(() => willDrunkAdventure()),
