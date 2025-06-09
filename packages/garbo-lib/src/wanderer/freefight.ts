@@ -94,16 +94,16 @@ function freeKillValue(
 
   const targetList = [
     {
-      value: sum(monsterValues, (v) => v.value) / monsters.length,
+      value: sum(monsterValues, "value") / monsterValues.length,
       forcedMonster: $monster`none`,
     },
   ];
 
   if (canForceMonster) {
-    targetList.push(maxBy(monsterValues, (v) => v.value));
+    targetList.push(maxBy(monsterValues, "value"));
   }
 
-  return maxBy(targetList, (l) => l.value);
+  return maxBy(targetList, "value");
 }
 
 function monsterValues(
