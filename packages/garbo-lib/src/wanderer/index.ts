@@ -108,12 +108,12 @@ function bestWander(
           monsterValues: new Map<Monster, number>(),
         };
         const newMonsterValues = wanderTarget.monsterValues;
-        for (const newMonsterData of newMonsterValues) {
+        for (const [newMonster, newMonsterValue] of newMonsterValues) {
           const oldMonsterValue =
-            monsterData.monsterValues.get(newMonsterData[0]) ?? 0;
+            monsterData.monsterValues.get(newMonster) ?? 0;
           monsterData.monsterValues.set(
-            newMonsterData[0],
-            oldMonsterValue + newMonsterData[1],
+            newMonster,
+            oldMonsterValue + newMonsterValue,
           );
         }
         locationMonsterValues.set(location, monsterData);
