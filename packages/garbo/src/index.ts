@@ -122,7 +122,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28520); // feat: update `cast` for replacing / additional buff effects
+  sinceKolmafiaRevision(28554); // feat: Count Bakula also appears in The Unquiet Garves
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
