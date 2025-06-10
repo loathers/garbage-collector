@@ -1,4 +1,5 @@
 import {
+  appearanceRates,
   inebrietyLimit,
   isDarkMode,
   Item,
@@ -64,6 +65,52 @@ const wanderFactories: WandererFactory[] = [
   cookbookbatQuestFactory,
 ];
 
+function zoneAverageMonsterValue(
+  location: Location,
+  monsterValues: Map<Monster, number>,
+): number {
+  const rates = appearanceRates(location);
+  return sum([...monsterValues.keys()], (m) => {
+    const monsterValue = monsterValues.get(m) ?? 0;
+    const rate = rates[m.name] / 100;
+    return monsterValue * rate;
+  });
+}
+
+function targetedMonsterValue(
+  monsterValues: Map<Monster, number>,
+): [Monster, number] {
+  const bestMonster = maxBy(
+    [...monsterValues.keys()],
+    (m) => monsterValues.get(m) ?? 0,
+  );
+  return [bestMonster, monsterValues.get(bestMonster) ?? 0];
+}
+
+function initializeWandererLocationMap(
+  zoneValues: Map<
+    Location,
+    {
+      location: Location;
+      targets: WandererTarget[];
+      value: number;
+    }
+  >,
+): Map<Location, WandererLocation> {
+  // Build initial zones
+  const wandererLocationMap = new Map<Location, WandererLocation>();
+  for (const [locationKey, { location, targets, value }] of zoneValues) {
+    const wandererLocation: WandererLocation = {
+      location,
+      targets,
+      value,
+      peridotMonster: $monster`none`,
+    };
+    wandererLocationMap.set(locationKey, wandererLocation);
+  }
+  return wandererLocationMap;
+}
+
 function bestWander(
   type: DraggableFight,
   locationSkiplist: Location[],
@@ -72,13 +119,16 @@ function bestWander(
 ): WandererLocation {
   const locationZoneValues = new Map<
     Location,
-    { targets: WandererTarget[]; value: number }
+    { location: Location; targets: WandererTarget[]; value: number }
   >();
   const locationMonsterValues = new Map<
     Location,
-    { targets: WandererTarget[]; monsterValues: Map<Monster, number> }
+    {
+      location: Location;
+      targets: WandererTarget[];
+      monsterValues: Map<Monster, number>;
+    }
   >();
-  const constructedLocations = new Map<Location, WandererLocation>();
 
   // Create data for zone/monster values from all factories
   for (const wanderFactory of wanderFactories) {
@@ -93,27 +143,30 @@ function bestWander(
 
         // Zone specific bonuses
         const zoneData = locationZoneValues.get(location) ?? {
+          location,
           targets: [],
           value: 0,
         };
         const zoneTargets = [...zoneData.targets, wanderTarget];
         locationZoneValues.set(location, {
-          value: zoneData.value + wanderTarget.zoneValue,
+          location: location,
           targets: zoneTargets,
+          value: zoneData.value + wanderTarget.zoneValue,
         });
 
         // Monster specific bonuses
         const monsterData = locationMonsterValues.get(location) ?? {
+          location,
           targets: [],
           monsterValues: new Map<Monster, number>(),
         };
         const newMonsterValues = wanderTarget.monsterValues;
-        for (const newMonsterData of newMonsterValues) {
+        for (const [newMonster, newMonsterValue] of newMonsterValues) {
           const oldMonsterValue =
-            monsterData.monsterValues.get(newMonsterData[0]) ?? 0;
+            monsterData.monsterValues.get(newMonster) ?? 0;
           monsterData.monsterValues.set(
-            newMonsterData[0],
-            oldMonsterValue + newMonsterData[1],
+            newMonster,
+            oldMonsterValue + newMonsterValue,
           );
         }
         locationMonsterValues.set(location, monsterData);
@@ -122,12 +175,82 @@ function bestWander(
   }
 
   // Determine combined values, and whether best forced target is better than the best average location drops
+  // Build initial maps with zone values
+  const initialZoneValues = initializeWandererLocationMap(locationZoneValues);
+  const mergedAverageZoneDropWandererLocations = initialZoneValues;
+  const mergedTargetedDropLocations = initialZoneValues;
 
-  if (possibleLocations.size === 0) {
+  // Merge in average zone monster drops
+  for (const [
+    locationKey,
+    { location, targets, monsterValues },
+  ] of locationMonsterValues) {
+    const wandererLocation: WandererLocation =
+      mergedAverageZoneDropWandererLocations.get(locationKey) ?? {
+        location,
+        targets,
+        value: zoneAverageMonsterValue(location, monsterValues),
+        peridotMonster: $monster`none`,
+      };
+    if (mergedAverageZoneDropWandererLocations.get(locationKey)) {
+      wandererLocation.value += zoneAverageMonsterValue(
+        location,
+        monsterValues,
+      );
+    }
+    mergedAverageZoneDropWandererLocations.set(locationKey, wandererLocation);
+  }
+
+  // Targeted monsters if we have peridot
+  if (PeridotOfPeril.have()) {
+    // Merge in targeted monster drops
+    for (const [
+      locationKey,
+      { location, targets, monsterValues },
+    ] of locationMonsterValues) {
+      const [bestMonster, value] = targetedMonsterValue(monsterValues);
+      const wandererLocation: WandererLocation =
+        mergedTargetedDropLocations.get(locationKey) ?? {
+          location,
+          targets,
+          value,
+          peridotMonster: bestMonster,
+        };
+      if (mergedTargetedDropLocations.get(locationKey)) {
+        wandererLocation.value += value;
+      }
+      mergedTargetedDropLocations.set(locationKey, wandererLocation);
+    }
+  }
+
+  // Construct our map of locations, replacing any average zone drop WandererLocations with their targeted version, if they are better
+  const constructedLocations = mergedAverageZoneDropWandererLocations;
+  if (PeridotOfPeril.have()) {
+    for (const [
+      locationKeyFromAverage,
+      wandererLocationFromAverage,
+    ] of constructedLocations) {
+      for (const [
+        locationKeyFromTargeted,
+        wandererLocationFromTargeted,
+      ] of mergedTargetedDropLocations) {
+        if (
+          wandererLocationFromTargeted.value > wandererLocationFromAverage.value
+        ) {
+          constructedLocations.set(
+            locationKeyFromTargeted,
+            wandererLocationFromTargeted,
+          );
+        }
+      }
+    }
+  }
+
+  if (constructedLocations.size === 0) {
     throw "Could not determine a wander target!";
   }
 
-  return maxBy([...possibleLocations.values()], "value");
+  return maxBy([...constructedLocations.values()], "value");
 }
 
 /**
