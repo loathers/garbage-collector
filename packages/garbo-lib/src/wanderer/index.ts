@@ -123,11 +123,11 @@ function bestWander(
 
   // Determine combined values, and whether best forced target is better than the best average location drops
 
-  if (possibleLocations.size === 0) {
+  if (constructedLocations.size === 0) {
     throw "Could not determine a wander target!";
   }
 
-  return maxBy([...possibleLocations.values()], "value");
+  return maxBy([...constructedLocations.values()], "value");
 }
 
 /**
