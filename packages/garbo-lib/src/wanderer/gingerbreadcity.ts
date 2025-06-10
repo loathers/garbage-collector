@@ -38,7 +38,6 @@ export function gingerbreadFactory(
         ) > turnsUntilNextNC
           ? 50
           : 0,
-        0,
       ),
     ];
   }

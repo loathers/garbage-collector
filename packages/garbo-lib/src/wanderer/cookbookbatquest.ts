@@ -1,4 +1,4 @@
-import { appearanceRates, getMonsters, Location } from "kolmafia";
+import { Location, Monster } from "kolmafia";
 import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
 import { get, PeridotOfPeril } from "libram";
 
@@ -25,8 +25,10 @@ export function cookbookbatQuestFactory(
         new WandererTarget(
           `Cookbookbat Quest (Peridot: ${questMonster.name})`,
           questLocation,
-          3 * options.itemValue(questReward),
           0,
+          new Map<Monster, number>([
+            [questMonster, 3 * options.itemValue(questReward)],
+          ]),
           undefined,
           questMonster,
           type === "freefight"
@@ -34,22 +36,6 @@ export function cookbookbatQuestFactory(
             : type === "yellow ray"
               ? "forced"
               : "none",
-        ),
-      ];
-    } else {
-      const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
-      const rates = appearanceRates(questLocation);
-      const monsters = getMonsters(questLocation).filter(
-        (m) =>
-          !badAttributes.some((s) => m.attributes.includes(s)) &&
-          rates[m.name] > 0,
-      );
-      return [
-        new WandererTarget(
-          `Cookbookbat Quest`,
-          questLocation,
-          (3 * options.itemValue(questReward)) / monsters.length, // FIXME account for actual monster apperanceRates
-          0,
         ),
       ];
     }

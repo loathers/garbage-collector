@@ -5,32 +5,15 @@ import {
   Location,
   Monster,
 } from "kolmafia";
-import {
-  $item,
-  $monster,
-  clamp,
-  get,
-  have,
-  maxBy,
-  PeridotOfPeril,
-  SourceTerminal,
-  sum,
-} from "libram";
+import { $item, clamp, get, have, SourceTerminal, sum } from "libram";
 import {
   bofaValue,
   canAdventureOrUnlock,
   canWander,
   DraggableFight,
-  underwater,
-  UnlockableZones,
   WandererFactoryOptions,
   WandererTarget,
 } from "./lib";
-
-type FreeKillValue = {
-  value: number;
-  forcedMonster: Monster;
-};
 
 function valueMonster(
   location: Location,
@@ -62,12 +45,11 @@ function valueMonster(
   return itemDrop + meatDrop + bofaValue(options, m);
 }
 
-function freeKillValue(
+function monsterValues(
   location: Location,
   forceItemDrops: boolean,
   options: WandererFactoryOptions,
-  canForceMonster: boolean,
-): FreeKillValue {
+): Map<Monster, number> {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
@@ -76,48 +58,16 @@ function freeKillValue(
   );
 
   if (monsters.length === 0) {
-    return { value: 0, forcedMonster: $monster`none` };
+    return new Map<Monster, number>();
   }
 
-  const monsterValues = monsters.map((m) => {
-    return {
-      value: valueMonster(location, m, forceItemDrops, options),
-      forcedMonster: m,
-    };
-  });
+  const monsterValues = new Map<Monster, number>(
+    monsters.map((m) => {
+      return [m, valueMonster(location, m, forceItemDrops, options)];
+    }),
+  );
 
-  const targetList = [
-    {
-      value: sum(monsterValues, "value") / monsterValues.length, // FIXME account for actual monster apperanceRates
-      forcedMonster: $monster`none`,
-    },
-  ];
-
-  if (canForceMonster) {
-    targetList.push(maxBy(monsterValues, "value"));
-  }
-
-  return maxBy(targetList, "value");
-}
-
-function monsterValues(
-  forceItemDrops: boolean,
-  options: WandererFactoryOptions,
-  canForceMonster: boolean,
-): Map<Location, FreeKillValue> {
-  const values = new Map<Location, FreeKillValue>();
-  for (const location of Location.all().filter(
-    (l) => canAdventureOrUnlock(l) && !underwater(l),
-  )) {
-    const freeKillValuation = freeKillValue(
-      location,
-      forceItemDrops,
-      options,
-      canForceMonster && PeridotOfPeril.canImperil(location),
-    );
-    values.set(location, freeKillValuation);
-  }
-  return values;
+  return monsterValues;
 }
 
 // Doing a free fight + yellow ray combination against a random enemy
@@ -129,58 +79,23 @@ export function freefightFactory(
   if (type === "yellow ray" || type === "freefight") {
     const validLocations = Location.all().filter(
       (location) =>
-        canWander(location, "yellow ray") && canAdventureOrUnlock(location),
+        canWander(location, "yellow ray") &&
+        canAdventureOrUnlock(location) &&
+        !locationSkiplist.includes(location),
     );
-    const locationValues = monsterValues(
-      type === "yellow ray",
-      options,
-      PeridotOfPeril.have(),
-    );
-
-    const bestZones = new Set<Location>(
-      validLocations.length > 0
-        ? [
-            maxBy(
-              validLocations,
-              (l: Location) => locationValues.get(l)?.value ?? 0,
-            ),
-          ]
-        : [],
-    );
-    for (const unlockableZone of UnlockableZones) {
-      const extraLocations = Location.all().filter(
-        (l) => l.zone === unlockableZone.zone && !locationSkiplist.includes(l),
+    return [...validLocations].map((l: Location) => {
+      return new WandererTarget(
+        `Item Drop Values ${l}`.concat(
+          type === "yellow ray" ? ` (Guaranteed Drops)` : "",
+        ),
+        l,
+        0,
+        monsterValues(l, type === "yellow ray", options),
+        undefined,
+        undefined,
+        type === "freefight" ? "normal" : "forced",
       );
-      if (extraLocations.length > 0) {
-        bestZones.add(
-          maxBy(extraLocations, (l: Location) => {
-            const locationValue = locationValues.get(l);
-            return locationValue ? locationValue.value : 0;
-          }),
-        );
-      }
-    }
-    if (bestZones.size > 0) {
-      return [...bestZones].map((l: Location) => {
-        const locationValue = locationValues.get(l);
-        const forcedMonster = locationValue
-          ? locationValue.forcedMonster
-          : $monster`none`;
-        return new WandererTarget(
-          `Yellow Ray ${l}`.concat(
-            forcedMonster !== $monster`none`
-              ? ` (Peridot: ${forcedMonster.name}`
-              : "",
-          ),
-          l,
-          0,
-          locationValue ? locationValue.value : 0,
-          undefined,
-          locationValue ? locationValue.forcedMonster : $monster`none`,
-          type === "freefight" ? "normal" : "forced",
-        );
-      });
-    }
+    });
   }
   return [];
 }

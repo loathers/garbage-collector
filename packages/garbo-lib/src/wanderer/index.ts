@@ -69,10 +69,9 @@ function bestWander(
   nameSkiplist: string[],
   options: WandererFactoryOptions,
 ): WandererLocation {
-  const possibleLocations = new Map<
-    { location: Location; peridotTarget: Monster },
-    WandererLocation
-  >();
+  const locationZoneValues = new Map<Location, number>();
+  const locationMonsterValues = new Map<Location, Map<Monster, number>>();
+  const constructedLocations = new Map<Location, WandererLocation>();
 
   for (const wanderFactory of wanderFactories) {
     const wanderTargets = wanderFactory(type, locationSkiplist, options);

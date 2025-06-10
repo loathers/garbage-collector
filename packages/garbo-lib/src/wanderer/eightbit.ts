@@ -43,7 +43,6 @@ export function eightbitFactory(
             `8-bit (${color})`,
             locationColor[color],
             value(color, options),
-            0,
           ),
       )
       .filter((t) => !locationSkiplist.includes(t.location));

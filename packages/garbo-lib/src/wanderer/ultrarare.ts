@@ -29,7 +29,6 @@ export function ultraRareFactory(
               options.itemValue,
             ),
           ) / 500000000, // Ultra rares are rare, let's say 1 in 500 million to be conservative,
-          0,
         ),
     );
 }
