@@ -130,11 +130,7 @@ function createWandererOutfit(
   additionalOutfitOptions: Omit<FreeFightOutfitMenuOptions, "wanderOptions">,
 ): Outfit {
   const wanderManager = wanderer();
-  const wandererFamiliar =
-    wanderer().getTarget(undelay(details)).location ===
-    get("_cookbookbatQuestLastLocation")
-      ? { familiar: $familiar`Cookbookbat` }
-      : {};
+  const wandererFamiliar = wanderManager.getFamiliar(undelay(details));
   const peridotEquip =
     wanderManager.getTarget(undelay(details)).peridotMonster !== $monster`none`;
   const undelayedSpec = undelay(spec);

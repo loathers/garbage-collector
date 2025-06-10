@@ -1,5 +1,6 @@
 import {
   appearanceRates,
+  Familiar,
   inebrietyLimit,
   isDarkMode,
   Item,
@@ -288,6 +289,9 @@ function wanderWhere(
     return {
       location: candidate.location,
       peridotMonster: candidate.peridotMonster,
+      familiar: candidate.targets.find((t) => t.name.includes(`Cookbookbat`))
+        ? $familiar`Cookbookbat`
+        : $familiar`none`,
     };
   }
 }
@@ -302,6 +306,7 @@ export type WanderDetails = DraggableFight | WanderOptions;
 export type WanderResult = {
   location: Location;
   peridotMonster: Monster;
+  familiar: Familiar;
 };
 
 export class WandererManager {
@@ -433,7 +438,11 @@ export class WandererManager {
           [],
           locationSkipList,
         ))
-      : { location: $location`Drunken Stupor`, peridotMonster: $monster`none` };
+      : {
+          location: $location`Drunken Stupor`,
+          peridotMonster: $monster`none`,
+          familiar: $familiar`none`,
+        };
   }
 
   /**
@@ -478,5 +487,9 @@ export class WandererManager {
 
   peridotMonster(wanderer: WanderDetails): Monster {
     return this.getTarget(wanderer).peridotMonster;
+  }
+
+  getFamiliar(wanderer: WanderDetails): Familiar {
+    return this.getTarget(wanderer).familiar;
   }
 }
