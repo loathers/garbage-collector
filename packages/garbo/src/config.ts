@@ -1,6 +1,6 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
-import { $item, $items, $monster, get } from "libram";
+import { $item, $items, $monster } from "libram";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -257,11 +257,6 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     wishAnswer: Args.custom<boolean>(
       { hidden: true, default: false },
       () => false,
-      "",
-    ),
-    clarasBellClaimed: Args.custom<boolean>(
-      { hidden: true, setting: "_claraBellUsed" },
-      () => get("_claraBellUsed"),
       "",
     ),
     dietCompleted: Args.flag({

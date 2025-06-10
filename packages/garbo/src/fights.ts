@@ -11,10 +11,8 @@ import {
   Effect,
   equip,
   equippedItem,
-  Familiar,
   familiarEquippedEquipment,
   getAutoAttack,
-  haveEquipped,
   haveOutfit,
   inebrietyLimit,
   isBanished,
@@ -84,9 +82,6 @@ import {
   Delayed,
   ensureEffect,
   FindActionSourceConstraints,
-  findLeprechaunMultiplier,
-  FloristFriar,
-  gameDay,
   get,
   GingerBread,
   have,
@@ -94,8 +89,6 @@ import {
   maxBy,
   PocketProfessor,
   property,
-  realmAvailable,
-  Requirement,
   Robortender,
   set,
   Snapper,
@@ -120,8 +113,10 @@ import {
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
+  shouldClara,
   shouldUnlockIngredients,
   tryFillLatte,
+  willYachtzee,
 } from "./resources";
 import {
   freeFightFamiliar,
@@ -167,7 +162,6 @@ import {
   magnifyingGlass,
   meatTargetOutfit,
   toSpec,
-  waterBreathingEquipment,
 } from "./outfit";
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
@@ -557,7 +551,6 @@ export function dailyFights(): void {
           (!nextFight || !nextFight.draggable)
         ) {
           doSausage();
-          yachtzee();
         }
         doGhost();
         startWandererCounter();
@@ -1135,9 +1128,10 @@ const freeFightSources = [
       }
 
       // Consider forcing noncombats below:
-      if (globalOptions.prefs.yachtzeechain) return false; // NCs are better when yachtzeeing, probably
+      if (get("noncombatForcerActive")) return true; // If it's already forced, no problem
+      if (willYachtzee()) return false; // NCs are better when yachtzeeing, probably
       // TODO: With the KoL update, is there a function for checking if an NC is already forced?
-      if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
+      if (shouldClara("shadow waters")) {
         return true;
       }
 
@@ -2218,85 +2212,11 @@ export function estimatedAttunementTentacles(): number {
   );
 }
 
-function yachtzee(): void {
-  if (!realmAvailable("sleaze") || !have($effect`Fishy`)) return;
-
-  for (const { available, success } of [
-    {
-      available: have($item`Clara's bell`) && !globalOptions.clarasBellClaimed,
-      success: () => {
-        globalOptions.clarasBellClaimed = true;
-        if (use($item`Clara's bell`)) return true;
-        return false;
-      },
-    },
-    {
-      available:
-        have($item`Eight Days a Week Pill Keeper`) &&
-        !get("_freePillKeeperUsed"),
-      success: () => {
-        if (cliExecute("pillkeeper noncombat") && get("_freePillKeeperUsed")) {
-          // Defense against mis-set counters
-          set("_freePillKeeperUsed", true);
-          return true;
-        }
-        return false;
-      },
-    },
-  ]) {
-    if (available) {
-      const familiarOptions = Familiar.all().filter(
-        (familiar) =>
-          have(familiar) &&
-          familiar.underwater &&
-          familiar !== $familiar`Robortender`,
-      );
-      const familiarChoice = familiarOptions.length
-        ? maxBy(familiarOptions, findLeprechaunMultiplier)
-        : $familiar.none;
-      useFamiliar(familiarChoice);
-
-      const underwaterBreathingGear = waterBreathingEquipment.find(
-        (item) => have(item) && canEquip(item),
-      );
-      if (!underwaterBreathingGear) return;
-      const equippedOutfit = new Requirement(["meat", "-tie"], {
-        forceEquip: [underwaterBreathingGear],
-      }).maximize();
-      if (haveEquipped($item`The Crown of Ed the Undying`)) {
-        cliExecute("edpiece fish");
-      }
-
-      if (!equippedOutfit || !success()) return;
-
-      const lastUMDDate = property.getString("umdLastObtained");
-      const getUMD =
-        !get("_sleazeAirportToday") && // We cannot get the UMD with a one-day pass
-        garboValue($item`Ultimate Mind Destroyer`) >=
-          Math.min(20000, 2000 * (1 + numericModifier("meat drop") / 100)) &&
-        (!lastUMDDate ||
-          gameDay().getTime() - Date.parse(lastUMDDate) >=
-            1000 * 60 * 60 * 24 * 7);
-
-      setChoice(918, getUMD ? 1 : 2);
-
-      garboAdventureAuto($location`The Sunken Party Yacht`, Macro.abort());
-      if (FloristFriar.have() && FloristFriar.Crookweed.available()) {
-        FloristFriar.Crookweed.plant();
-      }
-      if (get("lastEncounter") === "Yacht, See?") {
-        garboAdventureAuto($location`The Sunken Party Yacht`, Macro.abort());
-      }
-      return;
-    }
-  }
-}
-
 function runShadowRiftTurn(): void {
   // we can probably have a better name
   if (get("encountersUntilSRChoice") === 0) return;
   if (
-    globalOptions.prefs.yachtzeechain ||
+    willYachtzee() ||
     get("rufusQuestType") === "items" ||
     get("rufusQuestType") === "entity" // We can't handle bosses... yet
   ) {
@@ -2304,8 +2224,7 @@ function runShadowRiftTurn(): void {
     return;
   }
 
-  if (have($item`Clara's bell`) && !globalOptions.clarasBellClaimed) {
-    globalOptions.clarasBellClaimed = true;
+  if (shouldClara("shadow waters")) {
     use($item`Clara's bell`);
   } else if (CinchoDeMayo.have() && CinchoDeMayo.totalAvailableCinch() >= 60) {
     const lastAcc = equippedItem($slot`acc3`);

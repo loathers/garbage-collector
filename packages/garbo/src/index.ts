@@ -83,7 +83,6 @@ import { meatMood } from "./mood";
 import { potionSetup } from "./potions";
 import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
-import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
 import {
   BarfTurnQuests,
@@ -125,7 +124,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28520); // feat: update `cast` for replacing / additional buff effects
+  sinceKolmafiaRevision(28554); // feat: Count Bakula also appears in The Unquiet Garves
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
@@ -603,7 +602,6 @@ export function main(argString = ""): void {
         // 2. do some target copy stuff
         freeFights();
         runGarboQuests([SetupTargetCopyQuest]);
-        yachtzeeChain();
         dailyFights();
 
         if (!globalOptions.nobarf) {
