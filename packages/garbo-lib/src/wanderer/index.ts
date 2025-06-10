@@ -45,6 +45,7 @@ import { eightbitFactory } from "./eightbit";
 import { gingerbreadFactory } from "./gingerbreadcity";
 import { ultraRareFactory } from "./ultrarare";
 import { cookbookbatQuestFactory } from "./cookbookbatquest";
+import { bofaFactory } from "./bofa";
 
 export type { DraggableFight };
 
@@ -64,6 +65,7 @@ const wanderFactories: WandererFactory[] = [
   gingerbreadFactory,
   ultraRareFactory,
   cookbookbatQuestFactory,
+  bofaFactory,
 ];
 
 function zoneAverageMonsterValue(
