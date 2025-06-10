@@ -40,7 +40,7 @@ import {
   WandererTarget,
 } from "./lib";
 import { lovebugsFactory } from "./lovebugs";
-import { freefightFactory } from "./freefight";
+import { itemDropFactory } from "./itemdrop";
 import { eightbitFactory } from "./eightbit";
 import { gingerbreadFactory } from "./gingerbreadcity";
 import { ultraRareFactory } from "./ultrarare";
@@ -57,7 +57,7 @@ function sober(): boolean {
 
 const wanderFactories: WandererFactory[] = [
   defaultFactory,
-  freefightFactory,
+  itemDropFactory,
   lovebugsFactory,
   guzzlrFactory,
   eightbitFactory,

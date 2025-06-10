@@ -71,7 +71,7 @@ function monsterValues(
 }
 
 // Doing a free fight + yellow ray combination against a random enemy
-export function freefightFactory(
+export function itemDropFactory(
   type: DraggableFight,
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
