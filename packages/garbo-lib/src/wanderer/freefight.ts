@@ -91,9 +91,6 @@ export function freefightFactory(
         l,
         0,
         monsterValues(l, type === "yellow ray", options),
-        undefined,
-        undefined,
-        type === "freefight" ? "normal" : "forced",
       );
     });
   }

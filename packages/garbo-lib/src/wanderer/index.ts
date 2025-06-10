@@ -35,6 +35,7 @@ import {
   WandererFactory,
   WandererFactoryOptions,
   WandererLocation,
+  WandererTarget,
 } from "./lib";
 import { lovebugsFactory } from "./lovebugs";
 import { freefightFactory } from "./freefight";
@@ -69,10 +70,17 @@ function bestWander(
   nameSkiplist: string[],
   options: WandererFactoryOptions,
 ): WandererLocation {
-  const locationZoneValues = new Map<Location, number>();
-  const locationMonsterValues = new Map<Location, Map<Monster, number>>();
+  const locationZoneValues = new Map<
+    Location,
+    { targets: WandererTarget[]; value: number }
+  >();
+  const locationMonsterValues = new Map<
+    Location,
+    { targets: WandererTarget[]; monsterValues: Map<Monster, number> }
+  >();
   const constructedLocations = new Map<Location, WandererLocation>();
 
+  // Create data for zone/monster values from all factories
   for (const wanderFactory of wanderFactories) {
     const wanderTargets = wanderFactory(type, locationSkiplist, options);
     for (const wanderTarget of wanderTargets) {
@@ -81,30 +89,39 @@ function bestWander(
         !locationSkiplist.includes(wanderTarget.location) &&
         canWander(wanderTarget.location, type)
       ) {
-        const identifierKey = {
-          location: wanderTarget.location,
-          peridotTarget: wanderTarget.peridotMonster,
-        };
-        const wandererLocation: WandererLocation = possibleLocations.get(
-          identifierKey,
-        ) ?? {
-          location: wanderTarget.location,
+        const location = wanderTarget.location;
+
+        // Zone specific bonuses
+        const zoneData = locationZoneValues.get(location) ?? {
           targets: [],
-          zoneValue: 0,
-          monsterDropValue: 0,
-          peridotMonster: $monster`none`,
-          targetedMonsterDropType: "none",
+          value: 0,
         };
-        wandererLocation.targets = [...wandererLocation.targets, wanderTarget];
-        wandererLocation.zoneValue += wanderTarget.zoneValue;
-        wandererLocation.monsterDropValue += wanderTarget.monsterDropValue;
-        wandererLocation.peridotMonster = wanderTarget.peridotMonster;
-        wandererLocation.targetedMonsterDropType =
-          wanderTarget.targetedMonsterDropType;
-        possibleLocations.set(identifierKey, wandererLocation);
+        const zoneTargets = [...zoneData.targets, wanderTarget];
+        locationZoneValues.set(location, {
+          value: zoneData.value + wanderTarget.zoneValue,
+          targets: zoneTargets,
+        });
+
+        // Monster specific bonuses
+        const monsterData = locationMonsterValues.get(location) ?? {
+          targets: [],
+          monsterValues: new Map<Monster, number>(),
+        };
+        const newMonsterValues = wanderTarget.monsterValues;
+        for (const newMonsterData of newMonsterValues) {
+          const oldMonsterValue =
+            monsterData.monsterValues.get(newMonsterData[0]) ?? 0;
+          monsterData.monsterValues.set(
+            newMonsterData[0],
+            oldMonsterValue + newMonsterData[1],
+          );
+        }
+        locationMonsterValues.set(location, monsterData);
       }
     }
   }
+
+  // Determine combined values, and whether best forced target is better than the best average location drops
 
   if (possibleLocations.size === 0) {
     throw "Could not determine a wander target!";

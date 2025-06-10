@@ -29,13 +29,6 @@ export function cookbookbatQuestFactory(
           new Map<Monster, number>([
             [questMonster, 3 * options.itemValue(questReward)],
           ]),
-          undefined,
-          questMonster,
-          type === "freefight"
-            ? "normal"
-            : type === "yellow ray"
-              ? "forced"
-              : "none",
         ),
       ];
     }

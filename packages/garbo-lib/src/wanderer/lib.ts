@@ -17,7 +17,6 @@ import {
   $items,
   $location,
   $locations,
-  $monster,
   $skill,
   clamp,
   get,
@@ -72,10 +71,8 @@ export type WandererFactory = (
 export type WandererLocation = {
   location: Location;
   targets: WandererTarget[];
-  zoneValue: number;
-  monsterDropValue: number;
+  value: number;
   peridotMonster: Monster;
-  targetedMonsterDropType: "normal" | "forced" | "none";
 };
 
 export const UnlockableZones: UnlockableZone[] = [
@@ -230,8 +227,6 @@ export class WandererTarget {
   monsterValues: Map<Monster, number>;
   location: Location;
   prepareTurn: () => boolean;
-  peridotMonster: Monster;
-  targetedMonsterDropType: "normal" | "forced" | "none";
 
   /**
    * Process for determining where to put a wanderer to extract additional value from it
@@ -240,8 +235,6 @@ export class WandererTarget {
    * @param zoneValue value of an encounter existing within a zone, regardless of which monster you fight
    * @param monsterValues A map of monsters and their expected value from this wanderer for encountering it
    * @param prepareTurn attempt to set up, spending meat and or items as necessary
-   * @param peridotMonster The specific monster we will target using the Peridot of Peril, if needed
-   * @param targetedMonsterDropType If we're targeting via peridot, what drop type this WanderTarget should include. "normal" for a regular fight, "forced" for guaranteed item drops
    */
   constructor(
     name: string,
@@ -249,16 +242,12 @@ export class WandererTarget {
     zoneValue: number,
     monsterValues: Map<Monster, number> = new Map<Monster, number>(),
     prepareTurn: () => boolean = () => true,
-    peridotMonster: Monster = $monster`none`,
-    targetedMonsterDropType: "normal" | "forced" | "none" = "none",
   ) {
     this.name = name;
     this.zoneValue = zoneValue;
     this.monsterValues = monsterValues;
     this.location = location;
     this.prepareTurn = prepareTurn;
-    this.peridotMonster = peridotMonster;
-    this.targetedMonsterDropType = targetedMonsterDropType;
   }
 }
 
