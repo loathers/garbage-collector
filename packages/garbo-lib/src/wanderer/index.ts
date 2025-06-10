@@ -226,21 +226,15 @@ function bestWander(
   // Construct our map of locations, replacing any average zone drop WandererLocations with their targeted version, if they are better
   const constructedLocations = mergedAverageZoneDropWandererLocations;
   if (PeridotOfPeril.have()) {
-    for (const [
-      locationKeyFromAverage,
-      wandererLocationFromAverage,
-    ] of constructedLocations) {
+    for (const [, wandererLocationFromAverage] of constructedLocations) {
       for (const [
-        locationKeyFromTargeted,
+        location,
         wandererLocationFromTargeted,
       ] of mergedTargetedDropLocations) {
         if (
           wandererLocationFromTargeted.value > wandererLocationFromAverage.value
         ) {
-          constructedLocations.set(
-            locationKeyFromTargeted,
-            wandererLocationFromTargeted,
-          );
+          constructedLocations.set(location, wandererLocationFromTargeted);
         }
       }
     }
