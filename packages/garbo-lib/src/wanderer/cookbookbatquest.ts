@@ -1,6 +1,6 @@
 import { Location, Monster } from "kolmafia";
 import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
-import { get, PeridotOfPeril } from "libram";
+import { get } from "libram";
 
 export function cookbookbatQuestFactory(
   type: DraggableFight,
@@ -13,25 +13,20 @@ export function cookbookbatQuestFactory(
   if (
     ["yellow ray", "freefight", "freerun"].includes(type) &&
     questLocation &&
-    !locationSkiplist.includes(questLocation) &&
-    questReward
+    questReward &&
+    questMonster &&
+    !locationSkiplist.includes(questLocation)
   ) {
-    if (
-      PeridotOfPeril.have() &&
-      PeridotOfPeril.canImperil(questLocation) &&
-      questMonster
-    ) {
-      return [
-        new WandererTarget(
-          `Cookbookbat Quest (Peridot: ${questMonster.name})`,
-          questLocation,
-          0,
-          new Map<Monster, number>([
-            [questMonster, 3 * options.itemValue(questReward)],
-          ]),
-        ),
-      ];
-    }
+    return [
+      new WandererTarget(
+        `Cookbookbat Quest`,
+        questLocation,
+        0,
+        new Map<Monster, number>([
+          [questMonster, 3 * options.itemValue(questReward)],
+        ]),
+      ),
+    ];
   }
   return [];
 }
