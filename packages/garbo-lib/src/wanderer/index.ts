@@ -219,8 +219,12 @@ function bestWander(
           value,
           peridotMonster: bestMonster,
         };
-      if (mergedTargetedDropLocations.get(locationKey)) {
+      if (
+        PeridotOfPeril.canImperil(locationKey) &&
+        mergedTargetedDropLocations.get(locationKey)
+      ) {
         wandererLocation.value += value;
+        wandererLocation.peridotMonster = bestMonster;
       }
       mergedTargetedDropLocations.set(locationKey, wandererLocation);
     }
