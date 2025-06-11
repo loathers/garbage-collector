@@ -70,7 +70,7 @@ function monsterValues(
   return monsterValues;
 }
 
-// Doing a free fight + yellow ray combination against a random enemy
+// Monster item drop values
 export function itemDropFactory(
   type: DraggableFight,
   locationSkiplist: Location[],

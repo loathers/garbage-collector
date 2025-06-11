@@ -1,12 +1,9 @@
 import {
-  appearanceRates,
   buy,
   canAdventure,
   Effect,
   effectFact,
-  getMonsters,
   Item,
-  itemDropsArray,
   itemFact,
   Location,
   Monster,
@@ -28,7 +25,6 @@ import {
   haveInCampground,
   questStep,
   realmAvailable,
-  SourceTerminal,
   sum,
 } from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
@@ -424,48 +420,4 @@ export function getAvailableUltraRareZones(): Location[] {
   }
 
   return zones.filter((l) => canAdventure(l));
-}
-
-export function zoneAverageItemValue(
-  location: Location,
-  forceItemDrops: boolean,
-  options: WandererFactoryOptions,
-) {
-  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
-  const rates = appearanceRates(location);
-  const monsters = getMonsters(location).filter(
-    (m) =>
-      !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
-  );
-
-  const canDuplicate =
-    SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
-  const canMctwist = have($item`pro skateboard`) && !get("_epicMcTwistUsed");
-  const possibleDuplicateFactor =
-    2 ** [canDuplicate, canMctwist].filter(Boolean).length;
-  if (monsters.length === 0) {
-    return 0;
-  } else {
-    return sum(monsters, (m) => {
-      const items = itemDropsArray(m).filter((drop) =>
-        ["", "n"].includes(drop.type),
-      );
-      const duplicateFactor = !m.attributes.includes("NOCOPY")
-        ? possibleDuplicateFactor
-        : 1;
-
-      // TODO: this should consider unbuffed meat drop and unbuffed item drop, probably
-      const meatDrop = clamp((m.minMeat + m.maxMeat) / 2, 0, 1000);
-      const itemDrop =
-        duplicateFactor *
-        sum(items, (drop) => {
-          const yrRate =
-            (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
-          return yrRate * options.itemValue(drop.drop);
-        });
-      return (
-        (itemDrop * rates[m.name]) / 100 + meatDrop + bofaValue(options, m)
-      );
-    });
-  }
 }

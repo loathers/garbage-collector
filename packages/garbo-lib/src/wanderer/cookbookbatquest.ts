@@ -11,7 +11,7 @@ export function cookbookbatQuestFactory(
   const questReward = get("_cookbookbatQuestIngredient");
   const questMonster = get("_cookbookbatQuestMonster");
   if (
-    ["yellow ray", "freefight", "freerun"].includes(type) &&
+    ["yellow ray", "freefight", "freerun"].includes(type) && // Runs still get you the quest reward
     questLocation &&
     questReward &&
     questMonster &&

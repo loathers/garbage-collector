@@ -33,7 +33,6 @@ function monsterValues(
   return monsterValues;
 }
 
-// Doing a free fight + yellow ray combination against a random enemy
 export function bofaFactory(
   type: DraggableFight,
   locationSkiplist: Location[],
