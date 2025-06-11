@@ -188,14 +188,16 @@ function bestWander(
     locationKey,
     { location, targets, monsterValues },
   ] of locationMonsterValues) {
-    const wandererLocation: WandererLocation =
-      mergedAverageZoneDropWandererLocations.get(locationKey) ?? {
-        location,
-        targets,
-        value: zoneAverageMonsterValue(location, monsterValues),
-        peridotMonster: $monster`none`,
-      };
-    if (mergedAverageZoneDropWandererLocations.get(locationKey)) {
+    const locationFromMergedMap =
+      mergedAverageZoneDropWandererLocations.get(locationKey);
+    const wandererLocation: WandererLocation = locationFromMergedMap ?? {
+      location,
+      targets,
+      value: zoneAverageMonsterValue(location, monsterValues),
+      peridotMonster: $monster`none`,
+    };
+    // If the location was already in the list, then we add the value to it
+    if (locationFromMergedMap) {
       wandererLocation.value += zoneAverageMonsterValue(
         location,
         monsterValues,
@@ -211,18 +213,17 @@ function bestWander(
       locationKey,
       { location, targets, monsterValues },
     ] of locationMonsterValues) {
+      const locationFromMergedMap =
+        mergedTargetedDropLocations.get(locationKey);
       const [bestMonster, value] = targetedMonsterValue(monsterValues);
-      const wandererLocation: WandererLocation =
-        mergedTargetedDropLocations.get(locationKey) ?? {
-          location,
-          targets,
-          value,
-          peridotMonster: bestMonster,
-        };
-      if (
-        PeridotOfPeril.canImperil(locationKey) &&
-        mergedTargetedDropLocations.get(locationKey)
-      ) {
+      const wandererLocation: WandererLocation = locationFromMergedMap ?? {
+        location,
+        targets,
+        value,
+        peridotMonster: bestMonster,
+      };
+      // If the location already existed in the list, and we can imperil there, add the value
+      if (PeridotOfPeril.canImperil(locationKey) && locationFromMergedMap) {
         wandererLocation.value += value;
         wandererLocation.peridotMonster = bestMonster;
       }
