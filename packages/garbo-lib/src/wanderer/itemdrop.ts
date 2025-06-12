@@ -7,7 +7,6 @@ import {
 } from "kolmafia";
 import { $item, clamp, get, have, SourceTerminal, sum } from "libram";
 import {
-  bofaValue,
   canAdventureOrUnlock,
   canWander,
   DraggableFight,
@@ -42,7 +41,7 @@ function valueMonster(
         (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
       return yrRate * options.itemValue(drop.drop);
     });
-  return itemDrop + meatDrop + bofaValue(options, m);
+  return itemDrop + meatDrop;
 }
 
 function monsterValues(
