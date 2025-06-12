@@ -41,7 +41,7 @@ export function bofaFactory(
     );
     return [...validLocations].map((l: Location) => {
       return new WandererTarget(
-        `Book of Facts ${l}`,
+        `Book of Facts`,
         l,
         0,
         monsterValues(l, type === "yellow ray", options),

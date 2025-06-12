@@ -245,8 +245,12 @@ function wanderWhere(
   } else {
     const targets = candidate.targets.map((t) => t.name).join("; ");
     const value = candidate.value.toFixed(2);
+    const peridotPrintText =
+      candidate.peridotMonster !== $monster`none`
+        ? `, forcing ${candidate.peridotMonster.name},`
+        : "";
     print(
-      `Wandering at ${candidate.location} for expected value ${value} (${targets})`,
+      `Wandering at ${candidate.location}${peridotPrintText} for expected value ${value} (${targets})`,
       isDarkMode() ? "yellow" : "blue",
     );
 

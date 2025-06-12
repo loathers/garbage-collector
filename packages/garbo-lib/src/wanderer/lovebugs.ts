@@ -31,7 +31,7 @@ export function lovebugsFactory(
     return LovebugTargets.filter((t) => realmAvailable(t.element)).map(
       (t) =>
         new WandererTarget(
-          `Lovebugs ${t.location}`,
+          `Lovebugs`,
           t.location,
           options.itemValue(t.currency) * 0.05,
         ),

@@ -85,7 +85,7 @@ export function itemDropFactory(
     );
     return [...validLocations].map((l: Location) => {
       return new WandererTarget(
-        `Item Drop Values ${l}`.concat(
+        `Item Drop Values`.concat(
           type === "yellow ray" ? ` (Guaranteed Drops)` : "",
         ),
         l,
