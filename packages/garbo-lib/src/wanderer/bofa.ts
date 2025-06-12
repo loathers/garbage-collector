@@ -20,17 +20,11 @@ function monsterValues(
       !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
   );
 
-  if (monsters.length === 0) {
-    return new Map<Monster, number>();
-  }
-
-  const monsterValues = new Map<Monster, number>(
+  return new Map<Monster, number>(
     monsters.map((m) => {
       return [m, bofaValue(options, m)];
     }),
   );
-
-  return monsterValues;
 }
 
 export function bofaFactory(

@@ -73,21 +73,16 @@ function zoneAverageMonsterValue(
   monsterValues: Map<Monster, number>,
 ): number {
   const rates = appearanceRates(location);
-  return sum([...monsterValues.keys()], (m) => {
-    const monsterValue = monsterValues.get(m) ?? 0;
-    const rate = rates[m.name] / 100;
-    return monsterValue * rate;
+  return sum([...monsterValues.entries()], ([monster, value]) => {
+    const rate = rates[monster.name] / 100;
+    return value * rate;
   });
 }
 
 function targetedMonsterValue(
   monsterValues: Map<Monster, number>,
 ): [Monster, number] {
-  const bestMonster = maxBy(
-    [...monsterValues.keys()],
-    (m) => monsterValues.get(m) ?? 0,
-  );
-  return [bestMonster, monsterValues.get(bestMonster) ?? 0];
+  return maxBy([...monsterValues.entries()], 1);
 }
 
 function initializeWandererLocationMap(
@@ -101,17 +96,12 @@ function initializeWandererLocationMap(
   >,
 ): Map<Location, WandererLocation> {
   // Build initial zones
-  const wandererLocationMap = new Map<Location, WandererLocation>();
-  for (const [locationKey, { location, targets, value }] of zoneValues) {
-    const wandererLocation: WandererLocation = {
+  return new Map(
+    [...zoneValues.entries()].map(([location, details]) => [
       location,
-      targets,
-      value,
-      peridotMonster: $monster`none`,
-    };
-    wandererLocationMap.set(locationKey, wandererLocation);
-  }
-  return wandererLocationMap;
+      { ...details, peridotMonster: $monster.none },
+    ]),
+  );
 }
 
 function bestWander(
