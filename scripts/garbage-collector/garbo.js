@@ -29979,7 +29979,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("672a26c9eaf04cf1cae396785128e47272ebcd09", ")"));
+      (0, import_kolmafia98.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8dcca6629f4d0da557e31705a0beb0dbb8a3ed18", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia98.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -43929,10 +43929,12 @@ var pygmySniffed = function() {
     });
   });
 };
-var pygmyMacro = Macro2.step.apply(Macro2, _toConsumableArray65(pygmyBanishHandlers.map(function(_ref2) {
-  var pygmy = _ref2.pygmy, skill = _ref2.skill, item15 = _ref2.item, check = _ref2.check, limit = _ref2.limit;
-  return Macro2.externalIf((check ? get(check) : Infinity) < limit, Macro2.if_(pygmy, skill ? Macro2.trySkill(skill).item(item15) : Macro2.item(item15)), Macro2.if_(pygmy, Macro2.item(item15)));
-}))).if_($monster(_templateObject7015 || (_templateObject7015 = _taggedTemplateLiteral132(["drunk pygmy"]))), Macro2.trySkill($skill(_templateObject7125 || (_templateObject7125 = _taggedTemplateLiteral132(["Extract"])))).trySingAlong()).ifInnateWanderer(Macro2.basicCombat()).abort();
+var pygmyMacro = function() {
+  return Macro2.step.apply(Macro2, _toConsumableArray65(pygmyBanishHandlers.map(function(_ref2) {
+    var pygmy = _ref2.pygmy, skill = _ref2.skill, item15 = _ref2.item, check = _ref2.check, limit = _ref2.limit;
+    return Macro2.externalIf((check ? get(check) : Infinity) < limit, Macro2.if_(pygmy, skill ? Macro2.trySkill(skill).item(item15) : Macro2.item(item15)), Macro2.if_(pygmy, Macro2.item(item15)));
+  }))).if_($monster(_templateObject7015 || (_templateObject7015 = _taggedTemplateLiteral132(["drunk pygmy"]))), Macro2.trySkill($skill(_templateObject7125 || (_templateObject7125 = _taggedTemplateLiteral132(["Extract"])))).trySingAlong()).ifInnateWanderer(Macro2.basicCombat()).abort();
+};
 function getStenchLocation() {
   var _find;
   return (_find = $locations(_templateObject7217 || (_templateObject7217 = _taggedTemplateLiteral132(["Uncle Gator's Country Fun-Time Liquid Waste Sluice, The Hippy Camp (Bombed Back to the Stone Age), The Dark and Spooky Swamp"]))).find(function(l) {
@@ -44012,7 +44014,7 @@ var freeFightSources = [
     (0, import_kolmafia141.retrieveItem)($item(_templateObject1106 || (_templateObject1106 = _taggedTemplateLiteral132(["Louder Than Bomb"]))));
     (0, import_kolmafia141.retrieveItem)($item(_templateObject11114 || (_templateObject11114 = _taggedTemplateLiteral132(["tennis ball"]))));
     (0, import_kolmafia141.retrieveItem)($item(_templateObject11214 || (_templateObject11214 = _taggedTemplateLiteral132(["divine champagne popper"]))));
-    garboAdventure($location(_templateObject11313 || (_templateObject11313 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), pygmyMacro);
+    garboAdventure($location(_templateObject11313 || (_templateObject11313 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), pygmyMacro());
   }, true, {
     cost: function() {
       var banishers = pygmyBanishHandlers.filter(function(_ref3) {
@@ -44031,7 +44033,7 @@ var freeFightSources = [
   }, function() {
     (0, import_kolmafia141.putCloset)((0, import_kolmafia141.itemAmount)($item(_templateObject11511 || (_templateObject11511 = _taggedTemplateLiteral132(["bowling ball"])))), $item(_templateObject11610 || (_templateObject11610 = _taggedTemplateLiteral132(["bowling ball"]))));
     (0, import_kolmafia141.retrieveItem)($item(_templateObject1176 || (_templateObject1176 = _taggedTemplateLiteral132(["Bowl of Scorpions"]))));
-    garboAdventure($location(_templateObject1186 || (_templateObject1186 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), pygmyMacro);
+    garboAdventure($location(_templateObject1186 || (_templateObject1186 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), pygmyMacro());
   }, true, pygmyOptions($items(_templateObject1196 || (_templateObject1196 = _taggedTemplateLiteral132(["miniature crystal ball"]))).filter(function(item15) {
     return have(item15);
   }))),
@@ -44041,7 +44043,7 @@ var freeFightSources = [
   }, function() {
     (0, import_kolmafia141.putCloset)((0, import_kolmafia141.itemAmount)($item(_templateObject12114 || (_templateObject12114 = _taggedTemplateLiteral132(["bowling ball"])))), $item(_templateObject12214 || (_templateObject12214 = _taggedTemplateLiteral132(["bowling ball"]))));
     (0, import_kolmafia141.retrieveItem)($item(_templateObject12313 || (_templateObject12313 = _taggedTemplateLiteral132(["Bowl of Scorpions"]))));
-    garboAdventureAuto($location(_templateObject12412 || (_templateObject12412 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), pygmyMacro);
+    garboAdventureAuto($location(_templateObject12412 || (_templateObject12412 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), pygmyMacro());
   }, true, pygmyOptions()),
   // 11th+ pygmy fight if we have a saber- saber friends
   new FreeFight(function() {
@@ -44059,7 +44061,7 @@ var freeFightSources = [
       if ((0, import_kolmafia141.closetAmount)($item(_templateObject1358 || (_templateObject1358 = _taggedTemplateLiteral132(["Bowl of Scorpions"])))) > 0) {
         (0, import_kolmafia141.takeCloset)((0, import_kolmafia141.closetAmount)($item(_templateObject1365 || (_templateObject1365 = _taggedTemplateLiteral132(["Bowl of Scorpions"])))), $item(_templateObject1375 || (_templateObject1375 = _taggedTemplateLiteral132(["Bowl of Scorpions"]))));
       } else (0, import_kolmafia141.retrieveItem)($item(_templateObject1385 || (_templateObject1385 = _taggedTemplateLiteral132(["Bowl of Scorpions"]))));
-      garboAdventure($location(_templateObject1395 || (_templateObject1395 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), pygmyMacro);
+      garboAdventure($location(_templateObject1395 || (_templateObject1395 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), pygmyMacro());
     }
   }, false, pygmyOptions($items(_templateObject1405 || (_templateObject1405 = _taggedTemplateLiteral132(["Fourth of May Cosplay Saber"]))))),
   // Finally, saber or not, if we have a drunk pygmy in our crystal ball, let it out.
@@ -44068,7 +44070,7 @@ var freeFightSources = [
   }, function() {
     (0, import_kolmafia141.putCloset)((0, import_kolmafia141.itemAmount)($item(_templateObject14312 || (_templateObject14312 = _taggedTemplateLiteral132(["bowling ball"])))), $item(_templateObject14411 || (_templateObject14411 = _taggedTemplateLiteral132(["bowling ball"]))));
     (0, import_kolmafia141.retrieveItem)(1, $item(_templateObject1455 || (_templateObject1455 = _taggedTemplateLiteral132(["Bowl of Scorpions"]))));
-    garboAdventure($location(_templateObject1465 || (_templateObject1465 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), Macro2.if_($monster(_templateObject1475 || (_templateObject1475 = _taggedTemplateLiteral132(["drunk pygmy"]))), pygmyMacro).abort());
+    garboAdventure($location(_templateObject1465 || (_templateObject1465 = _taggedTemplateLiteral132(["The Hidden Bowling Alley"]))), Macro2.if_($monster(_templateObject1475 || (_templateObject1475 = _taggedTemplateLiteral132(["drunk pygmy"]))), pygmyMacro()).abort());
   }, true, pygmyOptions($items(_templateObject1485 || (_templateObject1485 = _taggedTemplateLiteral132(["miniature crystal ball"]))).filter(function(item15) {
     return have(item15);
   }))),
