@@ -28,6 +28,7 @@ import {
 } from "libram";
 import { guzzlrFactory } from "./guzzlr";
 import {
+  blacklistedPeridotZones,
   canAdventureOrUnlock,
   canWander,
   defaultFactory,
@@ -196,6 +197,7 @@ function bestWander(
       targetedMonsterValue(monsterValues);
     if (
       PeridotOfPeril.canImperil(location) &&
+      !blacklistedPeridotZones.includes(location) &&
       monsterTargetedValue > monsterAverageValue
     ) {
       wandererLocation.value += monsterTargetedValue;
