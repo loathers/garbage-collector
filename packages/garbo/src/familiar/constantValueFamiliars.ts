@@ -21,6 +21,7 @@ import { FamiliarMode, GeneralFamiliar } from "./lib";
 import { effectExtenderValue } from "../potions";
 import { globalOptions } from "../config";
 import { canAdventureOrUnlock } from "garbo-lib";
+import { estimatedGarboTurns } from "../turns";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -163,7 +164,12 @@ const locationsWithMonsters = Location.all().filter(
 );
 
 function cookbookbatPerilBonus(): number {
-  if (!have($item`Peridot of Peril`)) return 0;
+  if (
+    !have($item`Peridot of Peril`) ||
+    get("_cookbookbatCombatsUntilNewQuest") + 1 > estimatedGarboTurns()
+  ) {
+    return 0;
+  }
   // canAdventure includes some zones we need to exclude
   const canAdvExclusions = $locations`Fastest Adventurer Contest, Strongest Adventurer Contest, Smartest Adventurer Contest, Smoothest Adventurer Contest, Hottest Adventurer Contest, Coldest Adventurer Contest, Spookiest Adventurer Contest, Stinkiest Adventurer Contest, Sleaziest Adventurer Contest, The Hedge Maze, Tower Level 1, Tower Level 2, Tower Level 3, Tower Level 5, The Naughty Sorceress' Chamber, The Daily Dungeon, An Overgrown Shrine (Northwest), An Overgrown Shrine (Southwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southeast), A Crater Full of Space Beasts, Mt. Molehill, The Red Queen's Garden, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), The Primordial Soup, The Jungles of Ancient Loathing, Seaside Megalopolis, Domed City of Ronaldus, Domed City of Grimacia, Hamburglaris Shield Generator, The X-32-F Combat Training Snowman, The Haiku Dungeon, The Deep Machine Tunnels, The Oasis, Shadow Rift, `;
   const cookbookbatQuestLocations = locationsWithMonsters.filter(
