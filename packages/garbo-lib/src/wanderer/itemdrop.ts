@@ -5,7 +5,15 @@ import {
   Location,
   Monster,
 } from "kolmafia";
-import { $item, clamp, get, have, SourceTerminal, sum } from "libram";
+import {
+  $item,
+  $monsters,
+  clamp,
+  get,
+  have,
+  SourceTerminal,
+  sum,
+} from "libram";
 import {
   bofaValue,
   canAdventureOrUnlock,
@@ -51,10 +59,13 @@ function monsterValues(
   options: WandererFactoryOptions,
 ): Map<Monster, number> {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
+  const blacklistedMonsters = $monsters`SMOOCH sergeant, SMOOCH general`; // Monsters that are currently improperly tracked by mafia
   const rates = appearanceRates(location);
   const monsters = getMonsters(location).filter(
     (m) =>
-      !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
+      !badAttributes.some((s) => m.attributes.includes(s)) &&
+      !blacklistedMonsters.includes(m) &&
+      rates[m.name] > 0,
   );
 
   if (monsters.length === 0) {
