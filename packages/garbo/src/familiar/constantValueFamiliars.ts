@@ -184,7 +184,8 @@ function cookbookbatPerilBonus(): number {
   // It takes 5 turns to get a quest, times the chance we hit a zone we can do with peridot. Assume worst case of spending a turn to complete the quest
   return Math.max(
     0,
-    (averageCookbookbatRewardValue / 5) * doableQuestChance -
-      get("valueOfAdventure"),
+    (averageCookbookbatRewardValue * doableQuestChance -
+      get("valueOfAdventure")) /
+      5,
   );
 }
