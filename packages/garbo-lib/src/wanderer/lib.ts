@@ -202,7 +202,7 @@ function canWanderTypeFreeFight(location: Location): boolean {
   );
 }
 
-const wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums`;
+const wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums, Lair of the Ninja Snowmen`;
 function canWanderTypeWander(location: Location): boolean {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
