@@ -422,4 +422,5 @@ export function getAvailableUltraRareZones(): Location[] {
   return zones.filter((l) => canAdventure(l));
 }
 
-export const blacklistedPeridotZones = $locations`Lair of the Ninja Snowmen, A Mob of Zeppelin Protesters`; // Mob of zeppelin Protesters seems to not proc the NC, maybe related to map the monsters
+// Mob of zeppelin Protesters and Upper Chamber seem to not have peridot NC's. Lair of Ninja Snowman resulted in targeting an incorrect monster that leads to map the monsters turn costing NC
+export const blacklistedPeridotZones = $locations`Lair of the Ninja Snowmen, A Mob of Zeppelin Protesters, The Upper Chamber`;
