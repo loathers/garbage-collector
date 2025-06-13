@@ -129,24 +129,20 @@ function createWandererOutfit(
   spec: Delayed<OutfitSpec>,
   additionalOutfitOptions: Omit<FreeFightOutfitMenuOptions, "wanderOptions">,
 ): Outfit {
-  const wanderManager = wanderer();
-  const wandererFamiliar =
-    wanderManager.getFamiliar(undelay(details)) !== $familiar`none`
-      ? { familiar: $familiar`Cookbookbat` }
-      : {};
-  const peridotEquip =
-    wanderManager.getTarget(undelay(details)).peridotMonster !== $monster`none`;
-  const undelayedSpec = undelay(spec);
-  const wandererSpec: OutfitSpec = {
-    ...undelayedSpec,
-    equip: [
-      ...(undelayedSpec.equip ?? []),
-      ...(peridotEquip ? [$item`Peridot of Peril`] : []),
-    ],
-    ...wandererFamiliar,
-  };
+  const wanderTarget = wanderer().getTarget(undelay(details));
+  const needPeridot = wanderTarget.peridotMonster !== $monster`none`;
+  const sourceOutfit = Outfit.from(
+    undelay(spec),
+    new Error(
+      `Failed to build outfit for Wanderer from ${JSON.stringify(undelay(spec))}`,
+    ),
+  );
+  if (wanderTarget.familiar !== $familiar`none`) {
+    sourceOutfit.familiar = wanderTarget.familiar;
+  }
+  if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
 
-  return freeFightOutfit(wandererSpec, {
+  return freeFightOutfit(sourceOutfit.spec(), {
     wanderOptions: undelay(details),
     ...additionalOutfitOptions,
   });
