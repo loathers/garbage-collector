@@ -10,7 +10,8 @@ export function cookbookbatQuestFactory(
   const questLocation = get("_cookbookbatQuestLastLocation");
   const questReward = get("_cookbookbatQuestIngredient");
   const questMonster = get("_cookbookbatQuestMonster");
-  const blackListedLocations = $locations`Frat House, The Orcish Frat House (Bombed Back to the Stone Age)`; // Seem to be unable to distinguish between them
+  // TODO: These are fixed in mafia (we get the correct location), however we cannot use peridot to target them for cookbookbat specifically, because we cannot know which monster cookbookbat wants because of duplicate names
+  const blackListedLocations = $locations`Frat House, The Orcish Frat House (Bombed Back to the Stone Age)`;
   if (
     ["yellow ray", "freefight", "freerun"].includes(type) && // Runs still get you the quest reward
     questLocation &&
