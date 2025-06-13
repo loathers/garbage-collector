@@ -422,4 +422,4 @@ export function getAvailableUltraRareZones(): Location[] {
   return zones.filter((l) => canAdventure(l));
 }
 
-export const blacklistedPeridotZones = $locations`Lair of the Ninja Snowmen`;
+export const blacklistedPeridotZones = $locations`Lair of the Ninja Snowmen, A Mob of Zeppelin Protesters`; // Mob of zeppelin Protesters seems to not proc the NC, maybe related to map the monsters
