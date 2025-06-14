@@ -158,7 +158,7 @@ function computeLocation(
     return options.location;
   }
   if (options.wanderOptions) {
-    return wanderer().getTarget(options.wanderOptions);
+    return wanderer().getTarget(options.wanderOptions).location;
   }
   return undefined;
 }

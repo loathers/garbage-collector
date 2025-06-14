@@ -72,6 +72,7 @@ export type WandererLocation = {
   location: Location;
   targets: WandererTarget[];
   value: number;
+  peridotMonster: Monster;
 };
 
 export const UnlockableZones: UnlockableZone[] = [
@@ -136,7 +137,10 @@ const canAdventureOrUnlockSkipList = [
       ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone),
   ),
 ];
-export function canAdventureOrUnlock(loc: Location): boolean {
+export function canAdventureOrUnlock(
+  loc: Location,
+  includeUnlockable = true,
+): boolean {
   const skiplist = [...canAdventureOrUnlockSkipList];
   if (
     !have($item`repaid diaper`) &&
@@ -152,9 +156,11 @@ export function canAdventureOrUnlock(loc: Location): boolean {
     skiplist.push(...GingerBread.LOCATIONS);
   }
 
-  const canUnlock = UnlockableZones.some(
-    (z) => loc.zone === z.zone && (z.available() || !z.noInv),
-  );
+  const canUnlock =
+    includeUnlockable &&
+    UnlockableZones.some(
+      (z) => loc.zone === z.zone && (z.available() || !z.noInv),
+    );
   return (
     !underwater(loc) &&
     !skiplist.includes(loc) &&
@@ -196,7 +202,7 @@ function canWanderTypeFreeFight(location: Location): boolean {
   );
 }
 
-const wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums`;
+const wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums, Lair of the Ninja Snowmen`;
 function canWanderTypeWander(location: Location): boolean {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
@@ -217,7 +223,8 @@ export function canWander(location: Location, type: DraggableFight): boolean {
 
 export class WandererTarget {
   name: string;
-  value: number;
+  zoneValue: number;
+  monsterValues: Map<Monster, number>;
   location: Location;
   prepareTurn: () => boolean;
 
@@ -225,17 +232,20 @@ export class WandererTarget {
    * Process for determining where to put a wanderer to extract additional value from it
    * @param name name of this wanderer - for documentation/logging purposes
    * @param location returns the location to adventure to target this; null only if something goes wrong
-   * @param value the expected additional value of putting a single wanderer-fight into the zone for this
+   * @param zoneValue value of an encounter existing within a zone, regardless of which monster you fight
+   * @param monsterValues A map of monsters and their expected value from this wanderer for encountering it
    * @param prepareTurn attempt to set up, spending meat and or items as necessary
    */
   constructor(
     name: string,
     location: Location,
-    value: number,
+    zoneValue: number,
+    monsterValues: Map<Monster, number> = new Map<Monster, number>(),
     prepareTurn: () => boolean = () => true,
   ) {
     this.name = name;
-    this.value = value;
+    this.zoneValue = zoneValue;
+    this.monsterValues = monsterValues;
     this.location = location;
     this.prepareTurn = prepareTurn;
   }
@@ -411,3 +421,6 @@ export function getAvailableUltraRareZones(): Location[] {
 
   return zones.filter((l) => canAdventure(l));
 }
+
+// Mob of zeppelin Protesters and Upper Chamber seem to not have peridot NC's. Lair of Ninja Snowman resulted in targeting an incorrect monster that leads to map the monsters turn costing NC
+export const blacklistedPeridotZones = $locations`Lair of the Ninja Snowmen, A Mob of Zeppelin Protesters, The Upper Chamber`;
