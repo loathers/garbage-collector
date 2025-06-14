@@ -75,6 +75,7 @@ import {
   propertyManager,
   questStep,
   safeRestore,
+  targetingMeat,
   userConfirmDialog,
   valueDrops,
 } from "./lib";
@@ -87,6 +88,7 @@ import {
   BarfTurnQuests,
   CockroachSetup,
   DailyFamiliarsQuest,
+  EmbezzlerFightsQuest,
   PostQuest,
   runGarboQuests,
   runSafeGarboQuests,
@@ -608,6 +610,7 @@ export function main(argString = ""): void {
           maximize("MP", false);
           meatMood().execute(estimatedGarboTurns());
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
+          if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
             runGarboQuests([PostQuest(), ...BarfTurnQuests]);
 

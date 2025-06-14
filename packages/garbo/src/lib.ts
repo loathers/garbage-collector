@@ -1084,6 +1084,14 @@ const luckyAdventures: LuckyAdventure[] = [
           get("valueOfAdventure")
         : 0,
   },
+  {
+    location: $location`Cobb's Knob Treasury`,
+    phase: "target",
+    value: () =>
+      canAdventure($location`Cobb's Knob Treasury`)
+        ? 3 * get("valueOfAdventure") // Rough estimation, they have 4x the basemeat of barf
+        : 0,
+  },
 ];
 
 function determineBestLuckyAdventure(): LuckyAdventure {

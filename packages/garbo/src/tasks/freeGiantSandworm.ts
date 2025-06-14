@@ -32,7 +32,8 @@ import {
   sum,
   uneffect,
 } from "libram";
-import { GarboStrategy, Macro } from "../combat";
+import { Macro } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";

@@ -19,11 +19,12 @@ import {
 } from "libram";
 import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
 import { getBestWaterBreathingEquipment } from "./lib";
-import { GarboStrategy, Macro } from "../../combat";
+import { Macro } from "../../combat";
 import { GarboTask } from "../engine";
 import { willDrunkAdventure } from "../../lib";
 import { Outfit, Quest } from "grimoire-kolmafia";
 import { maximumYachtzees, shouldClara, willYachtzee } from "../../resources";
+import { GarboStrategy } from "../../combatStrategy";
 
 type AlternateTask = GarboTask & { turns: Delayed<number> };
 
