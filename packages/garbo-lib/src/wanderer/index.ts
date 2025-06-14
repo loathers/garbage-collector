@@ -205,6 +205,7 @@ function bestWander(
     } else {
       wandererLocation.value += monsterAverageValue;
     }
+    constructedLocations.set(location, wandererLocation);
   }
 
   if (constructedLocations.size === 0) {
