@@ -24664,7 +24664,7 @@ var require_lib2 = __commonJS({
     exports2.wandererTurnsAvailableToday = wandererTurnsAvailableToday;
     exports2.bofaValue = bofaValue;
     exports2.getAvailableUltraRareZones = getAvailableUltraRareZones2;
-    exports2.hasNameCollision = hasNameCollision;
+    exports2.hasNameCollision = hasNameCollision2;
     exports2.ensureMapElement = ensureMapElement;
     exports2.addMaps = addMaps;
     var kolmafia_1 = require("kolmafia");
@@ -24920,7 +24920,7 @@ var require_lib2 = __commonJS({
       });
     }
     var nameCollisionCache = /* @__PURE__ */ new Map();
-    function hasNameCollision(monster) {
+    function hasNameCollision2(monster) {
       var cached = nameCollisionCache.get(monster);
       if (cached !== void 0) return cached;
       var _iterator = _createForOfIteratorHelper42(kolmafia_1.Monster.all()), _step;
@@ -26235,7 +26235,7 @@ var require_dist = __commonJS({
     Object.defineProperty(exports2, "__esModule", {
       value: true
     });
-    exports2.getAvailableUltraRareZones = exports2.canAdventureOrUnlock = exports2.WandererManager = exports2.makeValue = void 0;
+    exports2.hasNameCollision = exports2.getAvailableUltraRareZones = exports2.canAdventureOrUnlock = exports2.WandererManager = exports2.makeValue = void 0;
     var value_1 = require_value();
     Object.defineProperty(exports2, "makeValue", {
       enumerable: true,
@@ -26261,6 +26261,12 @@ var require_dist = __commonJS({
       enumerable: true,
       get: function get4() {
         return lib_1.getAvailableUltraRareZones;
+      }
+    });
+    Object.defineProperty(exports2, "hasNameCollision", {
+      enumerable: true,
+      get: function get4() {
+        return lib_1.hasNameCollision;
       }
     });
     __exportStar(require_resources(), exports2);
@@ -30280,7 +30286,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("87df02a095a6929ed31204d502c01b578f8848b3", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f114d876f4934193dbcc050edeec069df4e1984e", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -46179,9 +46185,7 @@ function getAutosellableMeltingJunk() {
   });
 }
 var peridotZone = function() {
-  return (0, import_garbo_lib5.getAvailableUltraRareZones)().find(function(l) {
-    return !RegExp("(?:^|,)".concat(l.id, "(?:$|,)")).test(get("_perilLocations"));
-  });
+  return (0, import_garbo_lib5.getAvailableUltraRareZones)().find(PeridotOfPeril_exports.canImperil);
 };
 var NonBarfTurnTasks = [{
   name: "Make Mimic Eggs (whatever we can)",
@@ -46886,6 +46890,8 @@ var BarfTurnTasks = [{
 }, {
   name: "Fight Cookbookbat Quest Target",
   ready: function() {
+    var questMonster = get("_cookbookbatQuestMonster");
+    if (!questMonster || (0, import_garbo_lib5.hasNameCollision)(questMonster)) return false;
     var questReward = get("_cookbookbatQuestIngredient");
     return PeridotOfPeril_exports.have() && !!questReward && 3 * garboValue(questReward) > get("valueOfAdventure");
   },
