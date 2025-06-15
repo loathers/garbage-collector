@@ -15,7 +15,6 @@ import {
 } from "./lib";
 
 function valueMonster(
-  location: Location,
   m: Monster,
   forceItemDrops: boolean,
   options: WandererFactoryOptions,
@@ -62,7 +61,7 @@ function monsterValues(
 
   const monsterValues = new Map<Monster, number>(
     monsters.map((m) => {
-      return [m, valueMonster(location, m, forceItemDrops, options)];
+      return [m, valueMonster(m, forceItemDrops, options)];
     }),
   );
 

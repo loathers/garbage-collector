@@ -422,5 +422,39 @@ export function getAvailableUltraRareZones(): Location[] {
   return zones.filter((l) => canAdventure(l));
 }
 
-// Mob of zeppelin Protesters and Upper Chamber seem to not have peridot NC's. Lair of Ninja Snowman resulted in targeting an incorrect monster that leads to map the monsters turn costing NC
-export const blacklistedPeridotZones = $locations`Lair of the Ninja Snowmen, A Mob of Zeppelin Protesters, The Upper Chamber`;
+const decidedMonsters = new Map<Monster, boolean>();
+export function hasNameCollision(monster: Monster): boolean {
+  const cached = decidedMonsters.get(monster);
+  if (cached !== undefined) return cached;
+  for (const other of Monster.all()) {
+    if (other === monster) continue;
+    if (other.manuelName === monster.manuelName) {
+      decidedMonsters.set(other, true);
+      decidedMonsters.set(monster, true);
+      return true;
+    }
+  }
+  decidedMonsters.set(monster, false);
+  return false;
+}
+
+// Mob of zeppelin Protesters and Upper Chamber seem to not have peridot NC's.
+export const unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber`;
+
+export function ensureMapElement<K, V>(
+  map: Map<K, V>,
+  key: K,
+  defaultValue: V,
+) {
+  const current = map.get(key);
+  if (current) return current;
+  map.set(key, defaultValue);
+  return defaultValue;
+}
+
+export function addMaps<K>(left: Map<K, number>, right: Map<K, number>): void {
+  for (const [key, value] of right) {
+    const current = left.get(key) ?? 0;
+    left.set(key, current + value);
+  }
+}

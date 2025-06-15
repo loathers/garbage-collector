@@ -10,7 +10,6 @@ import {
 
 function monsterValues(
   location: Location,
-  forceItemDrops: boolean,
   options: WandererFactoryOptions,
 ): Map<Monster, number> {
   const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
@@ -44,7 +43,7 @@ export function bofaFactory(
         `Book of Facts`,
         l,
         0,
-        monsterValues(l, type === "yellow ray", options),
+        monsterValues(l, options),
       );
     });
   }
