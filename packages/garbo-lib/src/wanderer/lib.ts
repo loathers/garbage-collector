@@ -19,6 +19,7 @@ import {
   $locations,
   $skill,
   clamp,
+  Delayed,
   get,
   GingerBread,
   have,
@@ -26,6 +27,7 @@ import {
   questStep,
   realmAvailable,
   sum,
+  undelay,
 } from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
 
@@ -422,36 +424,49 @@ export function getAvailableUltraRareZones(): Location[] {
   return zones.filter((l) => canAdventure(l));
 }
 
-const decidedMonsters = new Map<Monster, boolean>();
+const nameCollisionCache = new Map<Monster, boolean>();
 export function hasNameCollision(monster: Monster): boolean {
-  const cached = decidedMonsters.get(monster);
+  const cached = nameCollisionCache.get(monster);
   if (cached !== undefined) return cached;
   for (const other of Monster.all()) {
     if (other === monster) continue;
     if (other.manuelName === monster.manuelName) {
-      decidedMonsters.set(other, true);
-      decidedMonsters.set(monster, true);
+      nameCollisionCache.set(other, true);
+      nameCollisionCache.set(monster, true);
       return true;
     }
   }
-  decidedMonsters.set(monster, false);
+  nameCollisionCache.set(monster, false);
   return false;
 }
 
 // Mob of zeppelin Protesters and Upper Chamber seem to not have peridot NC's.
 export const unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber`;
 
+/**
+ * Retrieve an element from a map if it exists; setting a value for the given key if it doesn't.
+ * @param map The map in question.
+ * @param key The key to try to retrieve from the map.
+ * @param defaultValue A delayed value to assign to the key in the map if there isn't already an existing object.
+ * @returns The retrieved value, which, by the end of this function, will exist in the map.
+ */
 export function ensureMapElement<K, V>(
   map: Map<K, V>,
   key: K,
-  defaultValue: V,
+  defaultValue: Delayed<V>,
 ) {
   const current = map.get(key);
   if (current) return current;
-  map.set(key, defaultValue);
-  return defaultValue;
+  const value = undelay(defaultValue);
+  map.set(key, value);
+  return value;
 }
 
+/**
+ * Add the values of a numeric-valued map to another with the same key type, mutating the first map.
+ * @param left The "left" addend map. This map will be mutated by this function.
+ * @param right The "right" addend map, to be added to the left.
+ */
 export function addMaps<K>(left: Map<K, number>, right: Map<K, number>): void {
   for (const [key, value] of right) {
     const current = left.get(key) ?? 0;
