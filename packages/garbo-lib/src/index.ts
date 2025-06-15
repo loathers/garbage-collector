@@ -5,6 +5,7 @@ import type { DraggableFight, WanderDetails, WanderOptions } from "./wanderer";
 import {
   canAdventureOrUnlock,
   getAvailableUltraRareZones,
+  hasNameCollision,
 } from "./wanderer/lib";
 
 export {
@@ -12,6 +13,7 @@ export {
   WandererManager,
   canAdventureOrUnlock,
   getAvailableUltraRareZones,
+  hasNameCollision,
 };
 export type { ValueFunctions, WanderOptions, DraggableFight, WanderDetails };
 export * from "./resources";
