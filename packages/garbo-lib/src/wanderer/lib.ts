@@ -19,6 +19,7 @@ import {
   $locations,
   $skill,
   clamp,
+  Delayed,
   get,
   GingerBread,
   have,
@@ -26,6 +27,7 @@ import {
   questStep,
   realmAvailable,
   sum,
+  undelay,
 } from "libram";
 import { NumericProperty } from "libram/dist/propertyTypes";
 
@@ -72,6 +74,7 @@ export type WandererLocation = {
   location: Location;
   targets: WandererTarget[];
   value: number;
+  peridotMonster: Monster;
 };
 
 export const UnlockableZones: UnlockableZone[] = [
@@ -136,7 +139,10 @@ const canAdventureOrUnlockSkipList = [
       ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone),
   ),
 ];
-export function canAdventureOrUnlock(loc: Location): boolean {
+export function canAdventureOrUnlock(
+  loc: Location,
+  includeUnlockable = true,
+): boolean {
   const skiplist = [...canAdventureOrUnlockSkipList];
   if (
     !have($item`repaid diaper`) &&
@@ -152,9 +158,11 @@ export function canAdventureOrUnlock(loc: Location): boolean {
     skiplist.push(...GingerBread.LOCATIONS);
   }
 
-  const canUnlock = UnlockableZones.some(
-    (z) => loc.zone === z.zone && (z.available() || !z.noInv),
-  );
+  const canUnlock =
+    includeUnlockable &&
+    UnlockableZones.some(
+      (z) => loc.zone === z.zone && (z.available() || !z.noInv),
+    );
   return (
     !underwater(loc) &&
     !skiplist.includes(loc) &&
@@ -196,7 +204,7 @@ function canWanderTypeFreeFight(location: Location): boolean {
   );
 }
 
-const wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums`;
+const wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums, Lair of the Ninja Snowmen`;
 function canWanderTypeWander(location: Location): boolean {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
@@ -217,7 +225,8 @@ export function canWander(location: Location, type: DraggableFight): boolean {
 
 export class WandererTarget {
   name: string;
-  value: number;
+  zoneValue: number;
+  monsterValues: Map<Monster, number>;
   location: Location;
   prepareTurn: () => boolean;
 
@@ -225,17 +234,20 @@ export class WandererTarget {
    * Process for determining where to put a wanderer to extract additional value from it
    * @param name name of this wanderer - for documentation/logging purposes
    * @param location returns the location to adventure to target this; null only if something goes wrong
-   * @param value the expected additional value of putting a single wanderer-fight into the zone for this
+   * @param zoneValue value of an encounter existing within a zone, regardless of which monster you fight
+   * @param monsterValues A map of monsters and their expected value from this wanderer for encountering it
    * @param prepareTurn attempt to set up, spending meat and or items as necessary
    */
   constructor(
     name: string,
     location: Location,
-    value: number,
+    zoneValue: number,
+    monsterValues: Map<Monster, number> = new Map<Monster, number>(),
     prepareTurn: () => boolean = () => true,
   ) {
     this.name = name;
-    this.value = value;
+    this.zoneValue = zoneValue;
+    this.monsterValues = monsterValues;
     this.location = location;
     this.prepareTurn = prepareTurn;
   }
@@ -410,4 +422,54 @@ export function getAvailableUltraRareZones(): Location[] {
   }
 
   return zones.filter((l) => canAdventure(l));
+}
+
+const nameCollisionCache = new Map<Monster, boolean>();
+export function hasNameCollision(monster: Monster): boolean {
+  const cached = nameCollisionCache.get(monster);
+  if (cached !== undefined) return cached;
+  for (const other of Monster.all()) {
+    if (other === monster) continue;
+    if (other.manuelName === monster.manuelName) {
+      nameCollisionCache.set(other, true);
+      nameCollisionCache.set(monster, true);
+      return true;
+    }
+  }
+  nameCollisionCache.set(monster, false);
+  return false;
+}
+
+// Mob of zeppelin Protesters and Upper Chamber seem to not have peridot NC's.
+export const unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber`;
+
+/**
+ * Retrieve an element from a map if it exists; setting a value for the given key if it doesn't.
+ * @param map The map in question.
+ * @param key The key to try to retrieve from the map.
+ * @param defaultValue A delayed value to assign to the key in the map if there isn't already an existing object.
+ * @returns The retrieved value, which, by the end of this function, will exist in the map.
+ */
+export function ensureMapElement<K, V>(
+  map: Map<K, V>,
+  key: K,
+  defaultValue: Delayed<V>,
+): V {
+  const current = map.get(key);
+  if (map.has(key)) return current as V;
+  const value = undelay(defaultValue);
+  map.set(key, value);
+  return value;
+}
+
+/**
+ * Add the values of a numeric-valued map to another with the same key type, mutating the first map.
+ * @param left The "left" addend map. This map will be mutated by this function.
+ * @param right The "right" addend map, to be added to the left.
+ */
+export function addMaps<K>(left: Map<K, number>, right: Map<K, number>): void {
+  for (const [key, value] of right) {
+    const current = left.get(key) ?? 0;
+    left.set(key, current + value);
+  }
 }

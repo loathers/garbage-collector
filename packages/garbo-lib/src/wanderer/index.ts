@@ -1,8 +1,11 @@
 import {
+  appearanceRates,
+  Familiar,
   inebrietyLimit,
   isDarkMode,
   Item,
   Location,
+  Monster,
   myFamiliar,
   myInebriety,
   myTotalTurnsSpent,
@@ -14,30 +17,38 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   Delayed,
   get,
   getActiveEffects,
   maxBy,
+  PeridotOfPeril,
   sum,
   undelay,
 } from "libram";
 import { guzzlrFactory } from "./guzzlr";
 import {
+  addMaps,
   canAdventureOrUnlock,
   canWander,
   defaultFactory,
   DraggableFight,
+  ensureMapElement,
   isDraggableFight,
   unlock,
+  unperidotableZones,
   WandererFactory,
   WandererFactoryOptions,
   WandererLocation,
+  WandererTarget,
 } from "./lib";
 import { lovebugsFactory } from "./lovebugs";
-import { freefightFactory } from "./freefight";
+import { itemDropFactory } from "./itemdrop";
 import { eightbitFactory } from "./eightbit";
 import { gingerbreadFactory } from "./gingerbreadcity";
 import { ultraRareFactory } from "./ultrarare";
+import { cookbookbatQuestFactory } from "./cookbookbatquest";
+import { bofaFactory } from "./bofa";
 
 export type { DraggableFight };
 
@@ -50,13 +61,45 @@ function sober(): boolean {
 
 const wanderFactories: WandererFactory[] = [
   defaultFactory,
-  freefightFactory,
+  itemDropFactory,
   lovebugsFactory,
   guzzlrFactory,
   eightbitFactory,
   gingerbreadFactory,
   ultraRareFactory,
+  cookbookbatQuestFactory,
+  bofaFactory,
 ];
+
+function zoneAverageMonsterValue(
+  location: Location,
+  monsterValues: Map<Monster, number>,
+): number {
+  const rates = appearanceRates(location);
+  return sum([...monsterValues.entries()], ([monster, value]) => {
+    const rate = rates[monster.name] / 100;
+    return value * rate;
+  });
+}
+
+function targetedMonsterValue(
+  monsterValues: Map<Monster, number>,
+): [Monster, number] {
+  if (monsterValues.size === 0) return [$monster.none, 0];
+  return maxBy([...monsterValues.entries()], 1);
+}
+
+type ZoneData = {
+  location: Location;
+  targets: WandererTarget[];
+  zoneValue: number;
+  monsterValues: Map<Monster, number>;
+};
+
+function updateZoneData(zoneData: ZoneData, wanderer: WandererTarget) {
+  zoneData.targets.push(wanderer);
+  addMaps(zoneData.monsterValues, wanderer.monsterValues);
+}
 
 function bestWander(
   type: DraggableFight,
@@ -64,8 +107,9 @@ function bestWander(
   nameSkiplist: string[],
   options: WandererFactoryOptions,
 ): WandererLocation {
-  const possibleLocations = new Map<Location, WandererLocation>();
+  const locationValues = new Map<Location, ZoneData>();
 
+  // Create data for zone/monster values from all factories
   for (const wanderFactory of wanderFactories) {
     const wanderTargets = wanderFactory(type, locationSkiplist, options);
     for (const wanderTarget of wanderTargets) {
@@ -74,25 +118,54 @@ function bestWander(
         !locationSkiplist.includes(wanderTarget.location) &&
         canWander(wanderTarget.location, type)
       ) {
-        const wandererLocation: WandererLocation = possibleLocations.get(
-          wanderTarget.location,
-        ) ?? {
-          location: wanderTarget.location,
+        const { location } = wanderTarget;
+
+        // Retrieve existing data for location if extant
+        const zoneData = ensureMapElement(locationValues, location, {
+          location,
           targets: [],
-          value: 0,
-        };
-        wandererLocation.targets = [...wandererLocation.targets, wanderTarget];
-        wandererLocation.value += wanderTarget.value;
-        possibleLocations.set(wandererLocation.location, wandererLocation);
+          zoneValue: 0,
+          monsterValues: new Map<Monster, number>(),
+        });
+        updateZoneData(zoneData, wanderTarget);
       }
     }
   }
 
-  if (possibleLocations.size === 0) {
+  // Determine combined values, and whether best forced target is better than the best average location drops
+  const locationMonsterValues = new Map<Location, WandererLocation>();
+  for (const [
+    location,
+    { targets, zoneValue, monsterValues },
+  ] of locationValues) {
+    const monsterAverageValue = zoneAverageMonsterValue(
+      location,
+      monsterValues,
+    );
+    const [bestMonster, monsterTargetedValue] =
+      targetedMonsterValue(monsterValues);
+
+    const shouldPeridot =
+      PeridotOfPeril.canImperil(location) &&
+      !unperidotableZones.includes(location) &&
+      monsterTargetedValue > monsterAverageValue;
+    const [monster, monsterValue] = shouldPeridot
+      ? [bestMonster, monsterTargetedValue]
+      : [$monster.none, monsterAverageValue];
+
+    locationMonsterValues.set(location, {
+      location,
+      targets,
+      peridotMonster: monster,
+      value: zoneValue + monsterValue,
+    });
+  }
+
+  if (locationMonsterValues.size === 0) {
     throw "Could not determine a wander target!";
   }
 
-  return maxBy([...possibleLocations.values()], "value");
+  return maxBy([...locationMonsterValues.values()], "value");
 }
 
 /**
@@ -107,7 +180,7 @@ function wanderWhere(
   type: DraggableFight,
   nameSkiplist: string[] = [],
   locationSkiplist: Location[] = [],
-): Location {
+): WanderResult {
   const candidate = bestWander(type, locationSkiplist, nameSkiplist, options);
   const failed = candidate.targets.filter((target) => !target.prepareTurn());
 
@@ -128,12 +201,22 @@ function wanderWhere(
   } else {
     const targets = candidate.targets.map((t) => t.name).join("; ");
     const value = candidate.value.toFixed(2);
+    const peridotPrintText =
+      candidate.peridotMonster !== $monster.none
+        ? `, forcing ${candidate.peridotMonster.name},`
+        : "";
     print(
-      `Wandering at ${candidate.location} for expected value ${value} (${targets})`,
+      `Wandering at ${candidate.location}${peridotPrintText} for expected value ${value} (${targets})`,
       isDarkMode() ? "yellow" : "blue",
     );
 
-    return candidate.location;
+    return {
+      location: candidate.location,
+      peridotMonster: candidate.peridotMonster,
+      familiar: candidate.targets.find((t) => t.name.includes(`Cookbookbat`))
+        ? $familiar`Cookbookbat`
+        : $familiar`none`,
+    };
   }
 }
 export type WanderOptions = {
@@ -143,6 +226,12 @@ export type WanderOptions = {
 };
 
 export type WanderDetails = DraggableFight | WanderOptions;
+
+export type WanderResult = {
+  location: Location;
+  peridotMonster: Monster;
+  familiar: Familiar;
+};
 
 export class WandererManager {
   private unsupportedChoices = new Map<
@@ -245,14 +334,15 @@ export class WandererManager {
   ]);
 
   cacheKey = "";
-  targets: Partial<{ [x in `${DraggableFight}:${boolean}`]: Location }> = {};
+  targets: Partial<{ [x in `${DraggableFight}:${boolean}`]: WanderResult }> =
+    {};
   options: WandererFactoryOptions;
 
   constructor(options: WandererFactoryOptions) {
     this.options = options;
   }
 
-  getTarget(wanderer: WanderDetails): Location {
+  getTarget(wanderer: WanderDetails): WanderResult {
     const { draggableFight, options } = isDraggableFight(wanderer)
       ? { draggableFight: wanderer, options: {} }
       : { draggableFight: wanderer.wanderer, options: wanderer };
@@ -272,7 +362,11 @@ export class WandererManager {
           [],
           locationSkipList,
         ))
-      : $location`Drunken Stupor`;
+      : {
+          location: $location`Drunken Stupor`,
+          peridotMonster: $monster.none,
+          familiar: $familiar`none`,
+        };
   }
 
   /**
@@ -288,16 +382,23 @@ export class WandererManager {
     [choice: number]: string | number;
   } {
     const location =
-      target instanceof Location ? target : this.getTarget(target);
+      target instanceof Location ? target : this.getTarget(target).location;
     const valueOfTurn = takeTurnForProfit
       ? (this.options.valueOfAdventure ?? 0) +
         sum(getActiveEffects(), (e) => this.options.effectValue(e, 1))
       : Infinity;
-    return undelay(
-      this.unsupportedChoices.get(location) ?? {},
-      this.options,
-      valueOfTurn,
-    );
+    const baseChoices = this.unsupportedChoices.get(location) ?? {};
+    if (
+      !(target instanceof Location) &&
+      this.getTarget(target).peridotMonster !== $monster.none
+    ) {
+      const peridotChoice = PeridotOfPeril.getChoiceProperty(
+        this.getTarget(target).peridotMonster,
+      );
+      const newChoices = Object.assign(peridotChoice, baseChoices);
+      return undelay(newChoices, this.options, valueOfTurn);
+    }
+    return undelay(baseChoices, this.options, valueOfTurn);
   }
 
   clear(): void {
@@ -305,6 +406,14 @@ export class WandererManager {
   }
 
   getEquipment(wanderer: WanderDetails): Item[] {
-    return this.equipment.get(this.getTarget(wanderer)) ?? [];
+    return this.equipment.get(this.getTarget(wanderer).location) ?? [];
+  }
+
+  peridotMonster(wanderer: WanderDetails): Monster {
+    return this.getTarget(wanderer).peridotMonster;
+  }
+
+  getFamiliar(wanderer: WanderDetails): Familiar {
+    return this.getTarget(wanderer).familiar;
   }
 }
