@@ -454,9 +454,9 @@ export function ensureMapElement<K, V>(
   map: Map<K, V>,
   key: K,
   defaultValue: Delayed<V>,
-) {
+): V {
   const current = map.get(key);
-  if (current) return current;
+  if (map.has(key)) return current as V;
   const value = undelay(defaultValue);
   map.set(key, value);
   return value;
