@@ -130,7 +130,7 @@ function createWandererOutfit(
   additionalOutfitOptions: Omit<FreeFightOutfitMenuOptions, "wanderOptions">,
 ): Outfit {
   const wanderTarget = wanderer().getTarget(undelay(details));
-  const needPeridot = wanderTarget.peridotMonster !== $monster`none`;
+  const needPeridot = wanderTarget.peridotMonster !== $monster.none;
   const sourceOutfit = Outfit.from(
     undelay(spec),
     new Error(

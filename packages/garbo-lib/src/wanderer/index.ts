@@ -28,13 +28,15 @@ import {
 } from "libram";
 import { guzzlrFactory } from "./guzzlr";
 import {
-  blacklistedPeridotZones,
+  addMaps,
   canAdventureOrUnlock,
   canWander,
   defaultFactory,
   DraggableFight,
+  ensureMapElement,
   isDraggableFight,
   unlock,
+  unperidotableZones,
   WandererFactory,
   WandererFactoryOptions,
   WandererLocation,
@@ -83,29 +85,20 @@ function zoneAverageMonsterValue(
 function targetedMonsterValue(
   monsterValues: Map<Monster, number>,
 ): [Monster, number] {
-  if (monsterValues.size === 0) return [$monster`none`, 0];
+  if (monsterValues.size === 0) return [$monster.none, 0];
   return maxBy([...monsterValues.entries()], 1);
 }
 
-// Initializes with only zone value
-function initializeWandererLocationMap(
-  zoneValues: Map<
-    Location,
-    {
-      location: Location;
-      targets: WandererTarget[];
-      zoneValue: number;
-      monsterValues: Map<Monster, number>;
-    }
-  >,
-): Map<Location, WandererLocation> {
-  // Build initial zones
-  return new Map(
-    [...zoneValues.entries()].map(([, { location, targets, zoneValue }]) => [
-      location,
-      { location, targets, value: zoneValue, peridotMonster: $monster.none },
-    ]),
-  );
+type ZoneData = {
+  location: Location;
+  targets: WandererTarget[];
+  zoneValue: number;
+  monsterValues: Map<Monster, number>;
+};
+
+function updateZoneData(zoneData: ZoneData, wanderer: WandererTarget) {
+  zoneData.targets.push(wanderer);
+  addMaps(zoneData.monsterValues, wanderer.monsterValues);
 }
 
 function bestWander(
@@ -114,15 +107,7 @@ function bestWander(
   nameSkiplist: string[],
   options: WandererFactoryOptions,
 ): WandererLocation {
-  const locationValues = new Map<
-    Location,
-    {
-      location: Location;
-      targets: WandererTarget[];
-      zoneValue: number;
-      monsterValues: Map<Monster, number>;
-    }
-  >();
+  const locationValues = new Map<Location, ZoneData>();
 
   // Create data for zone/monster values from all factories
   for (const wanderFactory of wanderFactories) {
@@ -133,86 +118,54 @@ function bestWander(
         !locationSkiplist.includes(wanderTarget.location) &&
         canWander(wanderTarget.location, type)
       ) {
-        const location = wanderTarget.location;
+        const { location } = wanderTarget;
 
-        // Zone specific bonuses
-        const zoneData = locationValues.get(location) ?? {
+        // Retrieve existing data for location if extant
+        const zoneData = ensureMapElement(locationValues, location, {
           location,
           targets: [],
           zoneValue: 0,
           monsterValues: new Map<Monster, number>(),
-        };
-        const zoneTargets = [...zoneData.targets, wanderTarget];
-        locationValues.set(location, {
-          location: location,
-          targets: zoneTargets,
-          zoneValue: zoneData.zoneValue + wanderTarget.zoneValue,
-          monsterValues: zoneData.monsterValues,
         });
-
-        // Monster specific bonuses
-        const monsterData = locationValues.get(location) ?? {
-          location,
-          targets: [],
-          zoneValue: 0,
-          monsterValues: new Map<Monster, number>(),
-        };
-        const newMonsterValues = wanderTarget.monsterValues;
-        for (const [newMonster, newMonsterValue] of newMonsterValues) {
-          const oldMonsterValue =
-            monsterData.monsterValues.get(newMonster) ?? 0;
-          monsterData.monsterValues.set(
-            newMonster,
-            oldMonsterValue + newMonsterValue,
-          );
-        }
-        locationValues.set(location, monsterData);
+        updateZoneData(zoneData, wanderTarget);
       }
     }
   }
 
   // Determine combined values, and whether best forced target is better than the best average location drops
-
-  // Create starting map with zone value only, because it's always active
-  const constructedLocations = initializeWandererLocationMap(locationValues);
-
-  // Determine whether targeted or average is better, and then add that amount to the value of the zone
+  const locationMonsterValues = new Map<Location, WandererLocation>();
   for (const [
-    ,
-    { location, targets, zoneValue, monsterValues },
+    location,
+    { targets, zoneValue, monsterValues },
   ] of locationValues) {
-    const wandererLocation: WandererLocation = constructedLocations.get(
-      location,
-    ) ?? {
-      location,
-      targets,
-      value: zoneValue,
-      peridotMonster: $monster`none`,
-    };
     const monsterAverageValue = zoneAverageMonsterValue(
       location,
       monsterValues,
     );
     const [bestMonster, monsterTargetedValue] =
       targetedMonsterValue(monsterValues);
-    if (
+
+    const shouldPeridot =
       PeridotOfPeril.canImperil(location) &&
-      !blacklistedPeridotZones.includes(location) &&
-      monsterTargetedValue > monsterAverageValue
-    ) {
-      wandererLocation.value += monsterTargetedValue;
-      wandererLocation.peridotMonster = bestMonster;
-    } else {
-      wandererLocation.value += monsterAverageValue;
-    }
-    constructedLocations.set(location, wandererLocation);
+      !unperidotableZones.includes(location) &&
+      monsterTargetedValue > monsterAverageValue;
+    const [monster, monsterValue] = shouldPeridot
+      ? [bestMonster, monsterTargetedValue]
+      : [$monster.none, monsterAverageValue];
+
+    locationMonsterValues.set(location, {
+      location,
+      targets,
+      peridotMonster: monster,
+      value: zoneValue + monsterValue,
+    });
   }
 
-  if (constructedLocations.size === 0) {
+  if (locationMonsterValues.size === 0) {
     throw "Could not determine a wander target!";
   }
 
-  return maxBy([...constructedLocations.values()], "value");
+  return maxBy([...locationMonsterValues.values()], "value");
 }
 
 /**
@@ -249,7 +202,7 @@ function wanderWhere(
     const targets = candidate.targets.map((t) => t.name).join("; ");
     const value = candidate.value.toFixed(2);
     const peridotPrintText =
-      candidate.peridotMonster !== $monster`none`
+      candidate.peridotMonster !== $monster.none
         ? `, forcing ${candidate.peridotMonster.name},`
         : "";
     print(
@@ -411,7 +364,7 @@ export class WandererManager {
         ))
       : {
           location: $location`Drunken Stupor`,
-          peridotMonster: $monster`none`,
+          peridotMonster: $monster.none,
           familiar: $familiar`none`,
         };
   }
@@ -437,7 +390,7 @@ export class WandererManager {
     const baseChoices = this.unsupportedChoices.get(location) ?? {};
     if (
       !(target instanceof Location) &&
-      this.getTarget(target).peridotMonster !== $monster`none`
+      this.getTarget(target).peridotMonster !== $monster.none
     ) {
       const peridotChoice = PeridotOfPeril.getChoiceProperty(
         this.getTarget(target).peridotMonster,
