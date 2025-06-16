@@ -20,6 +20,7 @@ import {
 } from "libram";
 import {
   equip,
+  isDarkMode,
   itemAmount,
   myFamiliar,
   print,
@@ -52,6 +53,11 @@ function logTargetFight(encounterType: string) {
  * Runs extra logic before executing all tasks.
  */
 export class BaseGarboEngine extends Engine<never, GarboTask> {
+  printExecutingMessage(task: GarboTask) {
+    print(``);
+    print(`Executing ${task.name}`, isDarkMode() ? "aqua" : "blue");
+  }
+
   available(task: GarboTask): boolean {
     safeInterrupt();
     const taskSober = undelay(task.sobriety);
