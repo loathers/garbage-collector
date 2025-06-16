@@ -25573,6 +25573,7 @@ var require_wanderer = __commonJS({
     function updateZoneData(zoneData, wanderer2) {
       zoneData.targets.push(wanderer2);
       (0, lib_1.addMaps)(zoneData.monsterValues, wanderer2.monsterValues);
+      zoneData.zoneValue += wanderer2.zoneValue;
     }
     function bestWander(type, locationSkiplist, nameSkiplist, options) {
       var locationValues = /* @__PURE__ */ new Map();
@@ -30286,7 +30287,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f114d876f4934193dbcc050edeec069df4e1984e", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7a3a17bface23a1b1334a1206455a818803f21a3", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
