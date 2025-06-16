@@ -30287,7 +30287,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7a3a17bface23a1b1334a1206455a818803f21a3", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2ff569e71209b4ee5ccf81b2ee2fbbebff81c6f5", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -50667,6 +50667,12 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
   }
   _inherits11(BaseGarboEngine2, _Engine);
   return _createClass34(BaseGarboEngine2, [{
+    key: "printExecutingMessage",
+    value: function printExecutingMessage(task) {
+      (0, import_kolmafia156.print)("");
+      (0, import_kolmafia156.print)("Executing ".concat(task.name), HIGHLIGHT);
+    }
+  }, {
     key: "available",
     value: function available7(task) {
       safeInterrupt();
