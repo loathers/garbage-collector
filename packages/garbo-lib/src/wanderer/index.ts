@@ -99,6 +99,7 @@ type ZoneData = {
 function updateZoneData(zoneData: ZoneData, wanderer: WandererTarget) {
   zoneData.targets.push(wanderer);
   addMaps(zoneData.monsterValues, wanderer.monsterValues);
+  zoneData.zoneValue += wanderer.zoneValue;
 }
 
 function bestWander(
