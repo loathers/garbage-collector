@@ -6,7 +6,7 @@ import {
   Quest,
   StrictCombatTask,
 } from "grimoire-kolmafia";
-import { eventLog, safeInterrupt, safeRestore, sober } from "../lib";
+import { eventLog, HIGHLIGHT, safeInterrupt, safeRestore, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
 import {
   $familiar,
@@ -20,7 +20,6 @@ import {
 } from "libram";
 import {
   equip,
-  isDarkMode,
   itemAmount,
   myFamiliar,
   print,
@@ -55,7 +54,7 @@ function logTargetFight(encounterType: string) {
 export class BaseGarboEngine extends Engine<never, GarboTask> {
   printExecutingMessage(task: GarboTask) {
     print(``);
-    print(`Executing ${task.name}`, isDarkMode() ? "aqua" : "blue");
+    print(`Executing ${task.name}`, HIGHLIGHT);
   }
 
   available(task: GarboTask): boolean {
