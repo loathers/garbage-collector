@@ -440,8 +440,8 @@ export function hasNameCollision(monster: Monster): boolean {
   return false;
 }
 
-// Mob of zeppelin Protesters and Upper Chamber seem to not have peridot NC's.
-export const unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber`;
+// TODO These seem to be bugged peridot zones. Can remove if they get fixed.
+export const unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber, The Haunted Billiards Room`;
 
 /**
  * Retrieve an element from a map if it exists; setting a value for the given key if it doesn't.
