@@ -24942,7 +24942,7 @@ var require_lib2 = __commonJS({
       nameCollisionCache.set(monster, false);
       return false;
     }
-    exports2.unperidotableZones = (0, libram_1.$locations)(_templateObject4427 || (_templateObject4427 = _taggedTemplateLiteral149(["A Mob of Zeppelin Protesters, The Upper Chamber"])));
+    exports2.unperidotableZones = (0, libram_1.$locations)(_templateObject4427 || (_templateObject4427 = _taggedTemplateLiteral149(["A Mob of Zeppelin Protesters, The Upper Chamber, The Haunted Billiards Room"])));
     function ensureMapElement(map, key, defaultValue) {
       var current2 = map.get(key);
       if (map.has(key)) return current2;
@@ -26236,7 +26236,7 @@ var require_dist = __commonJS({
     Object.defineProperty(exports2, "__esModule", {
       value: true
     });
-    exports2.hasNameCollision = exports2.getAvailableUltraRareZones = exports2.canAdventureOrUnlock = exports2.WandererManager = exports2.makeValue = void 0;
+    exports2.unperidotableZones = exports2.hasNameCollision = exports2.getAvailableUltraRareZones = exports2.canAdventureOrUnlock = exports2.WandererManager = exports2.makeValue = void 0;
     var value_1 = require_value();
     Object.defineProperty(exports2, "makeValue", {
       enumerable: true,
@@ -26268,6 +26268,12 @@ var require_dist = __commonJS({
       enumerable: true,
       get: function get4() {
         return lib_1.hasNameCollision;
+      }
+    });
+    Object.defineProperty(exports2, "unperidotableZones", {
+      enumerable: true,
+      get: function get4() {
+        return lib_1.unperidotableZones;
       }
     });
     __exportStar(require_resources(), exports2);
@@ -30287,7 +30293,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("2ff569e71209b4ee5ccf81b2ee2fbbebff81c6f5", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("87dca41fa9787cf275fa69701a30d0bbc85409f6", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -33481,7 +33487,7 @@ function cookbookbatPerilBonus() {
     return (0, import_garbo_lib2.canAdventureOrUnlock)(l, false) && !canAdvExclusions.includes(l);
   });
   var availablePeridotCookbookbatLocations = cookbookbatQuestLocations.filter(function(l) {
-    return PeridotOfPeril_exports.canImperil(l);
+    return PeridotOfPeril_exports.canImperil(l) && !import_garbo_lib2.unperidotableZones.includes(l);
   });
   var doableQuestChance = availablePeridotCookbookbatLocations.length / cookbookbatQuestLocations.length;
   var averageCookbookbatRewardValue = 3 * garboAverageValue.apply(void 0, _toConsumableArray39($items(_templateObject3419 || (_templateObject3419 = _taggedTemplateLiteral94(["Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey"])))));
@@ -46186,7 +46192,9 @@ function getAutosellableMeltingJunk() {
   });
 }
 var peridotZone = function() {
-  return (0, import_garbo_lib5.getAvailableUltraRareZones)().find(PeridotOfPeril_exports.canImperil);
+  return (0, import_garbo_lib5.getAvailableUltraRareZones)().find(function(l) {
+    return PeridotOfPeril_exports.canImperil(l) && !import_garbo_lib5.unperidotableZones.includes(l);
+  });
 };
 var NonBarfTurnTasks = [{
   name: "Make Mimic Eggs (whatever we can)",
@@ -46898,7 +46906,7 @@ var BarfTurnTasks = [{
   },
   completed: function() {
     var questLocation = get("_cookbookbatQuestLastLocation");
-    return !questLocation || !PeridotOfPeril_exports.canImperil(questLocation);
+    return !questLocation || !PeridotOfPeril_exports.canImperil(questLocation) || import_garbo_lib5.unperidotableZones.includes(questLocation);
   },
   choices: function() {
     var questMonster = get("_cookbookbatQuestMonster");
