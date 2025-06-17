@@ -39,7 +39,7 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
   [
     $familiar`Pocket Professor`,
     () =>
-      $familiar`Pocket Professor`.experience < 200 &&
+      $familiar`Pocket Professor`.experience < 400 &&
       (!get("_thesisDelivered") || !globalOptions.ascend)
         ? (11 * get("valueOfAdventure")) / 200
         : 0,
@@ -47,7 +47,7 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
   [
     $familiar`Grey Goose`,
     () =>
-      $familiar`Grey Goose`.experience < 200 &&
+      $familiar`Grey Goose`.experience < 400 &&
       (!get("_meatifyMatterUsed") || !globalOptions.ascend)
         ? 15 ** 4 / 400
         : 0,
