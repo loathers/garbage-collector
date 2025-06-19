@@ -124,7 +124,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28554); // feat: Count Bakula also appears in The Unquiet Garves
+  sinceKolmafiaRevision(28562); // fix: names for base hippy camp, frat house, video game dungeons
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
