@@ -24657,7 +24657,7 @@ var require_lib2 = __commonJS({
     exports2.unperidotableZones = exports2.WandererTarget = exports2.UnlockableZones = exports2.draggableFights = void 0;
     exports2.isDraggableFight = isDraggableFight;
     exports2.underwater = underwater;
-    exports2.canAdventureOrUnlock = canAdventureOrUnlock2;
+    exports2.canAdventureOrUnlock = canAdventureOrUnlock3;
     exports2.unlock = unlock;
     exports2.canWander = canWander;
     exports2.defaultFactory = defaultFactory;
@@ -24732,7 +24732,7 @@ var require_lib2 = __commonJS({
       var parent = _ref.parent, zone = _ref.zone;
       return ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone);
     })));
-    function canAdventureOrUnlock2(loc) {
+    function canAdventureOrUnlock3(loc) {
       var includeUnlockable = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : true;
       var skiplist = _toConsumableArray72(canAdventureOrUnlockSkipList);
       if (!(0, libram_1.have)((0, libram_1.$item)(_templateObject1281 || (_templateObject1281 = _taggedTemplateLiteral149(["repaid diaper"])))) && (0, libram_1.have)((0, libram_1.$item)(_templateObject1378 || (_templateObject1378 = _taggedTemplateLiteral149(["Great Wolf's beastly trousers"]))))) {
@@ -30293,7 +30293,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ad7a568971e154519a20cf942a3780b69edc6ad8", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("467191521dfc12d335bc9101259b2e7d878a4b5f", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -46901,6 +46901,10 @@ var BarfTurnTasks = [{
   ready: function() {
     var questMonster = get("_cookbookbatQuestMonster");
     if (!questMonster || (0, import_garbo_lib5.hasNameCollision)(questMonster)) return false;
+    var questLocation = get("_cookbookbatQuestLastLocation");
+    if (!questLocation || !(0, import_garbo_lib5.canAdventureOrUnlock)(questLocation, false)) {
+      return false;
+    }
     var questReward = get("_cookbookbatQuestIngredient");
     return PeridotOfPeril_exports.have() && !!questReward && 3 * garboValue(questReward) > get("valueOfAdventure");
   },
@@ -50926,7 +50930,7 @@ function defaultTarget() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "";
-  sinceKolmafiaRevision(28554);
+  sinceKolmafiaRevision(28562);
   checkGithubVersion();
   Args.fill(globalOptions, argString);
   if (globalOptions.version) return;
