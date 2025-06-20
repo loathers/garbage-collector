@@ -20,17 +20,38 @@ import { wanderer } from "../garboWanderer";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import { cleaverCheck, validateGarbageFoldable } from "./lib";
-import { adventuresPerSweat, turnsNeededForNextAdventure } from "../resources";
+import {
+  adventuresPerSweat,
+  mimicExperienceNeeded,
+  turnsNeededForNextAdventure,
+} from "../resources";
 import { globalOptions } from "../config";
 import { estimatedGarboTurns } from "../turns";
 
 const famExpValue = new Map<Familiar, Delayed<number>>([
   [
     $familiar`Chest Mimic`,
-    () => (MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
+    () =>
+      $familiar`Chest Mimic`.experience < mimicExperienceNeeded(true)
+        ? (MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50
+        : 0,
   ],
-  [$familiar`Pocket Professor`, (11 * get("valueOfAdventure")) / 200],
-  [$familiar`Grey Goose`, 15 ** 4 / 400],
+  [
+    $familiar`Pocket Professor`,
+    () =>
+      $familiar`Pocket Professor`.experience < 400 &&
+      (!get("_thesisDelivered") || !globalOptions.ascend)
+        ? (11 * get("valueOfAdventure")) / 200
+        : 0,
+  ],
+  [
+    $familiar`Grey Goose`,
+    () =>
+      $familiar`Grey Goose`.experience < 400 &&
+      (!get("_meatifyMatterUsed") || !globalOptions.ascend)
+        ? 15 ** 4 / 400
+        : 0,
+  ],
 ]);
 
 export type FreeFightOutfitMenuOptions = {
