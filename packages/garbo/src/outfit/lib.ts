@@ -189,8 +189,9 @@ function cheeseBonus(mode: BonusEquipMode) {
   if (globalOptions.ascend) return 0;
   if (mode === BonusEquipMode.MEAT_TARGET) return 0;
   if (get("_stinkyCheeseCount") >= 100) return 0;
-  if (!getFoldGroup($item`stinky cheese diaper`).some((item) => have(item)))
+  if (!getFoldGroup($item`stinky cheese diaper`).some((item) => have(item))) {
     return 0;
+  }
   if (estimatedGarboTurns() < 100 - get("_stinkyCheeseCount")) return 0;
   return get("valueOfAdventure") * (10 - getBestPantsAdventures()) * (1 / 100);
 }
