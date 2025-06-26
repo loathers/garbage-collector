@@ -1,8 +1,10 @@
 import {
+  appearanceRates,
   buy,
   canAdventure,
   Effect,
   effectFact,
+  getMonsters,
   Item,
   itemFact,
   Location,
@@ -472,4 +474,15 @@ export function addMaps<K>(left: Map<K, number>, right: Map<K, number>): void {
     const current = left.get(key) ?? 0;
     left.set(key, current + value);
   }
+}
+
+const BAD_ATTRIBUTES = ["LUCKY", "ULTRARARE", "BOSS"];
+export function availableMonsters(location: Location): Monster[] {
+  appearanceRates(location, true); // Force a recalculation
+  const rates = appearanceRates(location);
+  return getMonsters(location).filter(
+    (m) =>
+      !BAD_ATTRIBUTES.some((attribute) => m.attributes.includes(attribute)) &&
+      rates[m.name] > 0,
+  );
 }
