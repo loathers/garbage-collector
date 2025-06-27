@@ -24667,6 +24667,7 @@ var require_lib2 = __commonJS({
     exports2.hasNameCollision = hasNameCollision2;
     exports2.ensureMapElement = ensureMapElement;
     exports2.addMaps = addMaps;
+    exports2.availableMonsters = availableMonsters2;
     var kolmafia_1 = require("kolmafia");
     var libram_1 = (init_dist(), __toCommonJS(dist_exports));
     exports2.draggableFights = ["backup", "wanderer", "yellow ray", "freefight", "freerun"];
@@ -24965,6 +24966,16 @@ var require_lib2 = __commonJS({
         _iterator2.f();
       }
     }
+    var BAD_ATTRIBUTES = ["LUCKY", "ULTRARARE", "BOSS"];
+    function availableMonsters2(location) {
+      (0, kolmafia_1.appearanceRates)(location, true);
+      var rates = (0, kolmafia_1.appearanceRates)(location);
+      return (0, kolmafia_1.getMonsters)(location).filter(function(m) {
+        return !BAD_ATTRIBUTES.some(function(attribute) {
+          return m.attributes.includes(attribute);
+        }) && rates[m.name] > 0;
+      });
+    }
   }
 });
 
@@ -25156,13 +25167,7 @@ var require_itemdrop = __commonJS({
       return itemDrop + meatDrop3;
     }
     function monsterValues(location, forceItemDrops, options) {
-      var badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
-      var rates = (0, kolmafia_1.appearanceRates)(location);
-      var monsters = (0, kolmafia_1.getMonsters)(location).filter(function(m) {
-        return !badAttributes.some(function(s) {
-          return m.attributes.includes(s);
-        }) && rates[m.name] > 0;
-      });
+      var monsters = (0, lib_1.availableMonsters)(location);
       if (monsters.length === 0) {
         return /* @__PURE__ */ new Map();
       }
@@ -25351,13 +25356,7 @@ var require_bofa = __commonJS({
     var kolmafia_1 = require("kolmafia");
     var lib_1 = require_lib2();
     function monsterValues(location, options) {
-      var badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
-      var rates = (0, kolmafia_1.appearanceRates)(location);
-      var monsters = (0, kolmafia_1.getMonsters)(location).filter(function(m) {
-        return !badAttributes.some(function(s) {
-          return m.attributes.includes(s);
-        }) && rates[m.name] > 0;
-      });
+      var monsters = (0, lib_1.availableMonsters)(location);
       return new Map(monsters.map(function(m) {
         return [m, (0, lib_1.bofaValue)(options, m)];
       }));
@@ -25559,7 +25558,7 @@ var require_wanderer = __commonJS({
     }
     var wanderFactories = [lib_1.defaultFactory, itemdrop_1.itemDropFactory, lovebugs_1.lovebugsFactory, guzzlr_1.guzzlrFactory, eightbit_1.eightbitFactory, gingerbreadcity_1.gingerbreadFactory, ultrarare_1.ultraRareFactory, cookbookbatquest_1.cookbookbatQuestFactory, bofa_1.bofaFactory];
     function zoneAverageMonsterValue(location, monsterValues) {
-      var rates = (0, kolmafia_1.appearanceRates)(location);
+      var rates = (0, kolmafia_1.appearanceRates)(location, true);
       return (0, libram_1.sum)(_toConsumableArray72(monsterValues.entries()), function(_ref) {
         var _ref2 = _slicedToArray48(_ref, 2), monster = _ref2[0], value = _ref2[1];
         var rate = rates[monster.name] / 100;
@@ -25981,6 +25980,7 @@ var require_autumnaton = __commonJS({
     var kolmafia_1 = require("kolmafia");
     var lib_1 = require_lib3();
     var libram_1 = (init_dist(), __toCommonJS(dist_exports));
+    var lib_2 = require_lib2();
     var AutumnAtonManager2 = /* @__PURE__ */ function() {
       function AutumnAtonManager3(_ref) {
         var _this = this;
@@ -26027,12 +26027,7 @@ var require_autumnaton = __commonJS({
           if (location === (0, libram_1.$location)(_templateObject3246 || (_templateObject3246 = _taggedTemplateLiteral149(["Shadow Rift"])))) {
             (0, kolmafia_1.setLocation)((0, libram_1.$location)(_templateObject4191 || (_templateObject4191 = _taggedTemplateLiteral149(["Shadow Rift"]))));
           }
-          var rates = (0, kolmafia_1.appearanceRates)(location);
-          var monsters = (0, kolmafia_1.getMonsters)(location).filter(function(m) {
-            return !AutumnAtonManager3.badAttributes.some(function(s) {
-              return m.attributes.includes(s);
-            }) && rates[m.name] > 0;
-          });
+          var monsters = (0, lib_2.availableMonsters)(location);
           if (monsters.length === 0) {
             return this.seasonalItemValue(location);
           } else {
@@ -26186,7 +26181,6 @@ var require_autumnaton = __commonJS({
       }]);
     }();
     _defineProperty48(AutumnAtonManager2, "locationBanlist", (0, libram_1.$locations)(_templateObject5169 || (_templateObject5169 = _taggedTemplateLiteral149(["The Daily Dungeon"]))));
-    _defineProperty48(AutumnAtonManager2, "badAttributes", ["LUCKY", "ULTRARARE", "BOSS"]);
     _defineProperty48(AutumnAtonManager2, "profitRelevantUpgrades", ["leftarm1", "leftleg1", "rightarm1", "rightleg1", "cowcatcher", "periscope", "radardish"]);
     exports2.AutumnAtonManager = AutumnAtonManager2;
   }
@@ -30293,7 +30287,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("dbd5f9dc72d08b7cb5a701aa39cf71b1b15c72f3", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("f54223b77be3cb9ecc22fa484ae80ec66e9a8288", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
