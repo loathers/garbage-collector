@@ -30287,7 +30287,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9c1fc4fc42faed30b7ee5582ea57f2eb52f4e7e6", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a48d4e2106f248b6350e36c5a2ac37b4f325fd2d", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -32172,20 +32172,20 @@ function dailySpecialPrice(item15) {
   if (!hasMoonZoneRestaurant() || item15 !== get("_dailySpecial")) return 0;
   return get("_dailySpecialPrice");
 }
+MenuItem.defaultPriceFunction = function(item15) {
+  var prices = [(0, import_kolmafia101.retrievePrice)(item15), (0, import_kolmafia101.mallPrice)(item15), (0, import_kolmafia101.npcPrice)(item15), dailySpecialPrice(item15)].filter(function(p) {
+    return p > 0 && p < Number.MAX_SAFE_INTEGER;
+  });
+  if (prices.length > 0) {
+    return Math.min.apply(Math, _toConsumableArray36(prices));
+  }
+  return !item15.tradeable && have(item15) ? 0 : Infinity;
+};
 function runDiet() {
   withVIPClan(function() {
     if ((0, import_kolmafia101.myFamiliar)() === $familiar(_templateObject2324 || (_templateObject2324 = _taggedTemplateLiteral88(["Stooper"])))) {
       (0, import_kolmafia101.useFamiliar)($familiar.none);
     }
-    MenuItem.defaultPriceFunction = function(item15) {
-      var prices = [(0, import_kolmafia101.retrievePrice)(item15), (0, import_kolmafia101.mallPrice)(item15), (0, import_kolmafia101.npcPrice)(item15), dailySpecialPrice(item15)].filter(function(p) {
-        return p > 0 && p < Number.MAX_SAFE_INTEGER;
-      });
-      if (prices.length > 0) {
-        return Math.min.apply(Math, _toConsumableArray36(prices));
-      }
-      return !item15.tradeable && have(item15) ? 0 : Infinity;
-    };
     var dietBuilder = computeDiet();
     if (globalOptions.simdiet) {
       (0, import_kolmafia101.print)("===== SIMULATED DIET =====");
