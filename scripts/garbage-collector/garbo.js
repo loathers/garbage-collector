@@ -30287,7 +30287,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("46988b4be43e5aaaa256a8f760a32d87ec3fe298", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9c1fc4fc42faed30b7ee5582ea57f2eb52f4e7e6", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -31610,8 +31610,8 @@ function legendaryPizzaToMenu(pizzas, maker) {
     });
   });
 }
-var mallMin = function(items) {
-  return maxBy(items, import_kolmafia101.mallPrice, true);
+var cheapestItem = function(items) {
+  return maxBy(items, MenuItem.defaultPriceFunction, true);
 };
 function menu() {
   var spaghettiBreakfast = have($item(_templateObject686 || (_templateObject686 = _taggedTemplateLiteral88(["spaghetti breakfast"])))) && (0, import_kolmafia101.myFullness)() === 0 && get("_timeSpinnerFoodAvailable") === "" && !get("_spaghettiBreakfastEaten") ? 1 : 0;
@@ -31630,7 +31630,7 @@ function menu() {
   var instantKarma = globalOptions.usekarma ? $items(_templateObject784 || (_templateObject784 = _taggedTemplateLiteral88(["Instant Karma"]))).filter(function(item15) {
     return have(item15);
   }) : [];
-  var crimboKeyItem = mallMin($items(_templateObject794 || (_templateObject794 = _taggedTemplateLiteral88(["corned beet, pickled bread, salted mutton"]))));
+  var crimboKeyItem = cheapestItem($items(_templateObject794 || (_templateObject794 = _taggedTemplateLiteral88(["corned beet, pickled bread, salted mutton"]))));
   var limitedItems = [].concat(_toConsumableArray36(boxingDayCareItems), _toConsumableArray36(pilsners), _toConsumableArray36(instantKarma)).map(function(item15) {
     return new MenuItem(item15, {
       maximum: (0, import_kolmafia101.availableAmount)(item15)
@@ -31665,8 +31665,8 @@ function menu() {
       maximum: spaghettiBreakfast
     }),
     new MenuItem($item(_templateObject9110 || (_templateObject9110 = _taggedTemplateLiteral88(["extra-greasy slider"])))),
-    new MenuItem(mallMin(lasagnas)),
-    new MenuItem(mallMin(smallEpics)),
+    new MenuItem(cheapestItem(lasagnas)),
+    new MenuItem(cheapestItem(smallEpics)),
     new MenuItem($item(_templateObject9210 || (_templateObject9210 = _taggedTemplateLiteral88(["green hamhock"]))))
   ].concat(_toConsumableArray36(legendaryPizzas.flat()), [
     // BOOZE
@@ -31685,8 +31685,8 @@ function menu() {
     new MenuItem($item(_templateObject1052 || (_templateObject1052 = _taggedTemplateLiteral88(["yam martini"])))),
     new MenuItem($item(_templateObject1062 || (_templateObject1062 = _taggedTemplateLiteral88(["Eye and a Twist"])))),
     new MenuItem($item(_templateObject1072 || (_templateObject1072 = _taggedTemplateLiteral88(["jar of fermented pickle juice"])))),
-    new MenuItem(mallMin(complexMushroomWines)),
-    new MenuItem(mallMin(perfectDrinks)),
+    new MenuItem(cheapestItem(complexMushroomWines)),
+    new MenuItem(cheapestItem(perfectDrinks)),
     new MenuItem($item(_templateObject1082 || (_templateObject1082 = _taggedTemplateLiteral88(["green eggnog"])))),
     // SPLEEN
     new MenuItem($item(_templateObject1092 || (_templateObject1092 = _taggedTemplateLiteral88(["octolus oculus"])))),
@@ -31695,8 +31695,8 @@ function menu() {
     new MenuItem($item(_templateObject11210 || (_templateObject11210 = _taggedTemplateLiteral88(["antimatter wad"])))),
     new MenuItem($item(_templateObject1133 || (_templateObject1133 = _taggedTemplateLiteral88(["voodoo snuff"])))),
     new MenuItem($item(_templateObject1142 || (_templateObject1142 = _taggedTemplateLiteral88(["blood-drive sticker"])))),
-    new MenuItem(mallMin(standardSpleenItems)),
-    new MenuItem(mallMin($items(_templateObject1152 || (_templateObject1152 = _taggedTemplateLiteral88(["not-a-pipe, glimmering roc feather"])))))
+    new MenuItem(cheapestItem(standardSpleenItems)),
+    new MenuItem(cheapestItem($items(_templateObject1152 || (_templateObject1152 = _taggedTemplateLiteral88(["not-a-pipe, glimmering roc feather"])))))
   ], _toConsumableArray36(limitedItems), _toConsumableArray36(crimboKeyValue >= (0, import_kolmafia101.mallPrice)(crimboKeyItem) ? [new MenuItem(crimboKeyItem, {
     additionalValue: crimboKeyValue,
     maximum: clamp(
@@ -32361,7 +32361,7 @@ function sweatpants(mode) {
   var needSweat = !globalOptions.ascend && DesignerSweatpants_exports.sweat() < DesignerSweatpants_exports.sweatCost($skill(_templateObject941 || (_templateObject941 = _taggedTemplateLiteral89(["Sweat Out Some Booze"])))) * 3 || DesignerSweatpants_exports.sweat() < DesignerSweatpants_exports.sweatCost($skill(_templateObject1036 || (_templateObject1036 = _taggedTemplateLiteral89(["Sweat Out Some Booze"])))) * DesignerSweatpants_exports.potentialCasts($skill(_templateObject1134 || (_templateObject1134 = _taggedTemplateLiteral89(["Sweat Out Some Booze"]))));
   if (!needSweat) return /* @__PURE__ */ new Map();
   var VOA = get("valueOfAdventure");
-  var bestPerfectDrink = mallMin($items(_templateObject1233 || (_templateObject1233 = _taggedTemplateLiteral89(["perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma"]))));
+  var bestPerfectDrink = cheapestItem($items(_templateObject1233 || (_templateObject1233 = _taggedTemplateLiteral89(["perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma"]))));
   var perfectDrinkValuePerDrunk = ((getAverageAdventures(bestPerfectDrink) + 3) * VOA - (0, import_kolmafia102.mallPrice)(bestPerfectDrink)) / 3;
   var splendidMartiniValuePerDrunk = (getAverageAdventures($item(_templateObject1330 || (_templateObject1330 = _taggedTemplateLiteral89(["splendid martini"])))) + 2) * VOA;
   var bonus = Math.max(perfectDrinkValuePerDrunk, splendidMartiniValuePerDrunk) * 2 / 25;
