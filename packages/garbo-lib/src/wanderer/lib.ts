@@ -130,6 +130,7 @@ const ILLEGAL_PARENTS = [
   "Psychoses",
   "PirateRealm",
   "A Monorail Station",
+  "Memories",
 ];
 const ILLEGAL_ZONES = ["The Drip", "Suburbs"];
 const canAdventureOrUnlockSkipList = [
