@@ -453,8 +453,8 @@ function legendaryPizzaToMenu(
     );
 }
 
-export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
-  maxBy(items, mallPrice, true);
+export const cheapestItem: (items: Item[]) => Item = (items: Item[]) =>
+  maxBy(items, MenuItem.defaultPriceFunction, true);
 
 /**
  * Generate a basic menu of high-yield items to consider
@@ -504,7 +504,7 @@ function menu(): MenuItem<Note>[] {
   const instantKarma = globalOptions.usekarma
     ? $items`Instant Karma`.filter((item) => have(item))
     : [];
-  const crimboKeyItem = mallMin(
+  const crimboKeyItem = cheapestItem(
     $items`corned beet, pickled bread, salted mutton`,
   );
   const limitedItems = [
@@ -544,8 +544,8 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`deviled egg`),
     new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
     new MenuItem($item`extra-greasy slider`),
-    new MenuItem(mallMin(lasagnas)),
-    new MenuItem(mallMin(smallEpics)),
+    new MenuItem(cheapestItem(lasagnas)),
+    new MenuItem(cheapestItem(smallEpics)),
     new MenuItem($item`green hamhock`),
     ...legendaryPizzas.flat(),
 
@@ -565,8 +565,8 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`yam martini`),
     new MenuItem($item`Eye and a Twist`),
     new MenuItem($item`jar of fermented pickle juice`),
-    new MenuItem(mallMin(complexMushroomWines)),
-    new MenuItem(mallMin(perfectDrinks)),
+    new MenuItem(cheapestItem(complexMushroomWines)),
+    new MenuItem(cheapestItem(perfectDrinks)),
     new MenuItem($item`green eggnog`),
 
     // SPLEEN
@@ -576,8 +576,8 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`antimatter wad`),
     new MenuItem($item`voodoo snuff`),
     new MenuItem($item`blood-drive sticker`),
-    new MenuItem(mallMin(standardSpleenItems)),
-    new MenuItem(mallMin($items`not-a-pipe, glimmering roc feather`)),
+    new MenuItem(cheapestItem(standardSpleenItems)),
+    new MenuItem(cheapestItem($items`not-a-pipe, glimmering roc feather`)),
 
     // MISC
     ...limitedItems,

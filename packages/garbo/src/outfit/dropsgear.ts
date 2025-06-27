@@ -30,7 +30,7 @@ import {
   ToyCupidBow,
 } from "libram";
 import { globalOptions } from "../config";
-import { mallMin } from "../diet";
+import { cheapestItem } from "../diet";
 import {
   baseMeat,
   bestJuneCleaverOption,
@@ -110,7 +110,7 @@ function sweatpants(mode: BonusEquipMode) {
 
   const VOA = get("valueOfAdventure");
 
-  const bestPerfectDrink = mallMin(
+  const bestPerfectDrink = cheapestItem(
     $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`,
   );
   const perfectDrinkValuePerDrunk =
