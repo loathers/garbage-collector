@@ -66,8 +66,10 @@ import {
 } from "libram";
 import { getTasks, Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
+  canAdventureOrUnlock,
   getAvailableUltraRareZones,
   hasNameCollision,
+  unperidotableZones,
   WanderDetails,
 } from "garbo-lib";
 
@@ -522,7 +524,9 @@ function getAutosellableMeltingJunk(): Item[] {
 }
 
 const peridotZone = () =>
-  getAvailableUltraRareZones().find(PeridotOfPeril.canImperil);
+  getAvailableUltraRareZones().find(
+    (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l),
+  );
 
 const NonBarfTurnTasks: AlternateTask[] = [
   {
@@ -1174,6 +1178,10 @@ const BarfTurnTasks: GarboTask[] = [
     ready: () => {
       const questMonster = get("_cookbookbatQuestMonster");
       if (!questMonster || hasNameCollision(questMonster)) return false;
+      const questLocation = get("_cookbookbatQuestLastLocation");
+      if (!questLocation || !canAdventureOrUnlock(questLocation, false)) {
+        return false;
+      }
       const questReward = get("_cookbookbatQuestIngredient");
       return (
         PeridotOfPeril.have() &&
@@ -1183,7 +1191,11 @@ const BarfTurnTasks: GarboTask[] = [
     },
     completed: () => {
       const questLocation = get("_cookbookbatQuestLastLocation");
-      return !questLocation || !PeridotOfPeril.canImperil(questLocation);
+      return (
+        !questLocation ||
+        !PeridotOfPeril.canImperil(questLocation) ||
+        unperidotableZones.includes(questLocation)
+      );
     },
     choices: () => {
       const questMonster = get("_cookbookbatQuestMonster");

@@ -1,8 +1,10 @@
 import {
+  appearanceRates,
   buy,
   canAdventure,
   Effect,
   effectFact,
+  getMonsters,
   Item,
   itemFact,
   Location,
@@ -130,10 +132,11 @@ const ILLEGAL_PARENTS = [
   "Psychoses",
   "PirateRealm",
   "A Monorail Station",
+  "Memories",
 ];
 const ILLEGAL_ZONES = ["The Drip", "Suburbs"];
 const canAdventureOrUnlockSkipList = [
-  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, Frat House, Through the Spacegate`,
+  ...$locations`The Oasis, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, Frat House, Through the Spacegate, Mt. Molehill`,
   ...Location.all().filter(
     ({ parent, zone }) =>
       ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone),
@@ -440,8 +443,8 @@ export function hasNameCollision(monster: Monster): boolean {
   return false;
 }
 
-// Mob of zeppelin Protesters and Upper Chamber seem to not have peridot NC's.
-export const unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber`;
+// TODO These seem to be bugged peridot zones. Can remove if they get fixed.
+export const unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber, The Haunted Billiards Room`;
 
 /**
  * Retrieve an element from a map if it exists; setting a value for the given key if it doesn't.
@@ -472,4 +475,15 @@ export function addMaps<K>(left: Map<K, number>, right: Map<K, number>): void {
     const current = left.get(key) ?? 0;
     left.set(key, current + value);
   }
+}
+
+const BAD_ATTRIBUTES = ["LUCKY", "ULTRARARE", "BOSS"];
+export function availableMonsters(location: Location): Monster[] {
+  appearanceRates(location, true); // Force a recalculation
+  const rates = appearanceRates(location);
+  return getMonsters(location).filter(
+    (m) =>
+      !BAD_ATTRIBUTES.some((attribute) => m.attributes.includes(attribute)) &&
+      rates[m.name] > 0,
+  );
 }

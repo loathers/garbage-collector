@@ -8,8 +8,6 @@ import {
   mallPrice,
   myFullness,
   myFury,
-  numericModifier,
-  toSlot,
 } from "kolmafia";
 import {
   $effect,
@@ -17,7 +15,6 @@ import {
   $item,
   $items,
   $skill,
-  $slot,
   $slots,
   BatWings,
   BurningLeaves,
@@ -26,7 +23,6 @@ import {
   DesignerSweatpants,
   get,
   getAverageAdventures,
-  getFoldGroup,
   have,
   JuneCleaver,
   sum,
@@ -128,37 +124,6 @@ function sweatpants(mode: BonusEquipMode) {
     (Math.max(perfectDrinkValuePerDrunk, splendidMartiniValuePerDrunk) * 2) /
     25;
   return new Map([[$item`designer sweatpants`, bonus]]);
-}
-
-const alternativePants = Item.all()
-  .filter(
-    (item) =>
-      toSlot(item) === $slot`pants` &&
-      have(item) &&
-      numericModifier(item, "Adventures") > 0,
-  )
-  .map((pants) => numericModifier(pants, "Adventures"));
-const bestAdventuresFromPants = Math.max(0, ...alternativePants);
-const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) =>
-  have(item),
-);
-function cheeses(mode: BonusEquipMode) {
-  return haveSomeCheese &&
-    !globalOptions.ascend &&
-    get("_stinkyCheeseCount") < 100 &&
-    estimatedGarboTurns() >= 100 - get("_stinkyCheeseCount") &&
-    mode !== BonusEquipMode.MEAT_TARGET
-    ? new Map<Item, number>(
-        getFoldGroup($item`stinky cheese diaper`)
-          .filter((item) => toSlot(item) !== $slot`weapon`)
-          .map((item) => [
-            item,
-            get("valueOfAdventure") *
-              (10 - bestAdventuresFromPants) *
-              (1 / 100),
-          ]),
-      )
-    : [];
 }
 
 function pantogramPants() {
@@ -316,7 +281,6 @@ export function bonusGear(
   valueCircumstantialBonus = true,
 ): Map<Item, number> {
   return new Map<Item, number>([
-    ...cheeses(mode),
     ...bonusAccessories(mode),
     ...pantogramPants(),
     ...bagOfManyConfections(),

@@ -6,7 +6,7 @@ import {
   Quest,
   StrictCombatTask,
 } from "grimoire-kolmafia";
-import { eventLog, safeInterrupt, safeRestore, sober } from "../lib";
+import { eventLog, HIGHLIGHT, safeInterrupt, safeRestore, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
 import {
   $familiar,
@@ -52,6 +52,11 @@ function logTargetFight(encounterType: string) {
  * Runs extra logic before executing all tasks.
  */
 export class BaseGarboEngine extends Engine<never, GarboTask> {
+  printExecutingMessage(task: GarboTask) {
+    print(``);
+    print(`Executing ${task.name}`, HIGHLIGHT);
+  }
+
   available(task: GarboTask): boolean {
     safeInterrupt();
     const taskSober = undelay(task.sobriety);

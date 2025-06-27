@@ -75,7 +75,7 @@ function zoneAverageMonsterValue(
   location: Location,
   monsterValues: Map<Monster, number>,
 ): number {
-  const rates = appearanceRates(location);
+  const rates = appearanceRates(location, true);
   return sum([...monsterValues.entries()], ([monster, value]) => {
     const rate = rates[monster.name] / 100;
     return value * rate;
@@ -99,6 +99,7 @@ type ZoneData = {
 function updateZoneData(zoneData: ZoneData, wanderer: WandererTarget) {
   zoneData.targets.push(wanderer);
   addMaps(zoneData.monsterValues, wanderer.monsterValues);
+  zoneData.zoneValue += wanderer.zoneValue;
 }
 
 function bestWander(

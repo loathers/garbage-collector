@@ -28,7 +28,12 @@ import {
 import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
-import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
+import {
+  applyCheeseBonus,
+  bestBjornalike,
+  cleaverCheck,
+  validateGarbageFoldable,
+} from "./lib";
 import {
   BonusEquipMode,
   MEAT_TARGET_MULTIPLIER,
@@ -117,6 +122,7 @@ export function computeBarfOutfit(
   );
 
   outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
+  applyCheeseBonus(outfit, BonusEquipMode.BARF);
 
   if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
     outfit.equip($item`LED candle`);
