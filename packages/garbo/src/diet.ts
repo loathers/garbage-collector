@@ -1363,24 +1363,24 @@ function dailySpecialPrice(item: Item) {
   return get("_dailySpecialPrice");
 }
 
+MenuItem.defaultPriceFunction = (item: Item) => {
+  const prices = [
+    retrievePrice(item),
+    mallPrice(item),
+    npcPrice(item),
+    dailySpecialPrice(item),
+  ].filter((p) => p > 0 && p < Number.MAX_SAFE_INTEGER);
+  if (prices.length > 0) {
+    return Math.min(...prices);
+  }
+  return !item.tradeable && have(item) ? 0 : Infinity;
+};
+
 export function runDiet(): void {
   withVIPClan(() => {
     if (myFamiliar() === $familiar`Stooper`) {
       useFamiliar($familiar.none);
     }
-
-    MenuItem.defaultPriceFunction = (item: Item) => {
-      const prices = [
-        retrievePrice(item),
-        mallPrice(item),
-        npcPrice(item),
-        dailySpecialPrice(item),
-      ].filter((p) => p > 0 && p < Number.MAX_SAFE_INTEGER);
-      if (prices.length > 0) {
-        return Math.min(...prices);
-      }
-      return !item.tradeable && have(item) ? 0 : Infinity;
-    };
 
     const dietBuilder = computeDiet();
 
