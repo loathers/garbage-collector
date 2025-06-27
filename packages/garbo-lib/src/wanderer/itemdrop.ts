@@ -1,12 +1,7 @@
-import {
-  appearanceRates,
-  getMonsters,
-  itemDropsArray,
-  Location,
-  Monster,
-} from "kolmafia";
+import { itemDropsArray, Location, Monster } from "kolmafia";
 import { $item, clamp, get, have, SourceTerminal, sum } from "libram";
 import {
+  availableMonsters,
   canAdventureOrUnlock,
   canWander,
   DraggableFight,
@@ -48,12 +43,7 @@ function monsterValues(
   forceItemDrops: boolean,
   options: WandererFactoryOptions,
 ): Map<Monster, number> {
-  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
-  const rates = appearanceRates(location);
-  const monsters = getMonsters(location).filter(
-    (m) =>
-      !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
-  );
+  const monsters = availableMonsters(location);
 
   if (monsters.length === 0) {
     return new Map<Monster, number>();
