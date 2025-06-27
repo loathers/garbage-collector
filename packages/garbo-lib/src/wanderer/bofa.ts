@@ -1,5 +1,6 @@
-import { appearanceRates, getMonsters, Location, Monster } from "kolmafia";
+import { Location, Monster } from "kolmafia";
 import {
+  availableMonsters,
   bofaValue,
   canAdventureOrUnlock,
   canWander,
@@ -12,12 +13,7 @@ function monsterValues(
   location: Location,
   options: WandererFactoryOptions,
 ): Map<Monster, number> {
-  const badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
-  const rates = appearanceRates(location);
-  const monsters = getMonsters(location).filter(
-    (m) =>
-      !badAttributes.some((s) => m.attributes.includes(s)) && rates[m.name] > 0,
-  );
+  const monsters = availableMonsters(location);
 
   return new Map<Monster, number>(
     monsters.map((m) => {

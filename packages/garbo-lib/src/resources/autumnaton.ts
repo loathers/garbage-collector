@@ -1,7 +1,5 @@
 import {
-  appearanceRates,
   availableAmount,
-  getMonsters,
   Item,
   itemDropsArray,
   Location,
@@ -18,6 +16,7 @@ import {
   maxBy,
   sum,
 } from "libram";
+import { availableMonsters } from "../wanderer/lib";
 
 export type AutumnAtonOptions = {
   averageItemValue: (...items: Item[]) => number;
@@ -32,7 +31,6 @@ export class AutumnAtonManager {
   estimatedTurnsTomorrow: () => number = () => 0;
 
   static locationBanlist = $locations`The Daily Dungeon`; // The Daily Dungeon has no native monsters
-  static badAttributes = ["LUCKY", "ULTRARARE", "BOSS"];
 
   static profitRelevantUpgrades = [
     "leftarm1",
@@ -92,13 +90,7 @@ export class AutumnAtonManager {
     if (location === $location`Shadow Rift`) {
       setLocation($location`Shadow Rift`);
     } // FIXME This bypasses a mafia bug where ingress is not updated
-    const rates = appearanceRates(location);
-    const monsters = getMonsters(location).filter(
-      (m) =>
-        !AutumnAtonManager.badAttributes.some((s) =>
-          m.attributes.includes(s),
-        ) && rates[m.name] > 0,
-    );
+    const monsters = availableMonsters(location);
 
     if (monsters.length === 0) {
       return this.seasonalItemValue(location); // We still get seasonal items, even if there are no monsters

@@ -75,7 +75,7 @@ function zoneAverageMonsterValue(
   location: Location,
   monsterValues: Map<Monster, number>,
 ): number {
-  const rates = appearanceRates(location);
+  const rates = appearanceRates(location, true);
   return sum([...monsterValues.entries()], ([monster, value]) => {
     const rate = rates[monster.name] / 100;
     return value * rate;
