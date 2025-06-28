@@ -25798,8 +25798,7 @@ var require_wanderer = __commonJS({
           }],
           // fight eXtreme Sports Orcs
           [(0, libram_1.$location)(_templateObject3437 || (_templateObject3437 = _taggedTemplateLiteral149(["Madness Bakery"]))), {
-            1061: 6,
-            440: 6
+            1061: 6
           }],
           [(0, libram_1.$location)(_templateObject3533 || (_templateObject3533 = _taggedTemplateLiteral149(["The Skeleton Store"]))), {
             1060: 5
@@ -30288,7 +30287,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("58ea4af4136bd6e0f66c63e6ce2cd8cd08a5d7b4", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("348e7ea7d13d92bff3b87d46f414439cdd8e6c3f", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -46937,12 +46936,10 @@ var BarfTurnTasks = [{
     return !questLocation || !PeridotOfPeril_exports.canImperil(questLocation) || import_garbo_lib5.unperidotableZones.includes(questLocation);
   },
   choices: function() {
-    var questMonster = get("_cookbookbatQuestMonster");
-    return questMonster ? {
-      1557: "1&bandersnatch=".concat(questMonster.id)
-    } : {
-      1557: "1&bandersnatch=".concat(0)
-    };
+    var _get$id, _get3, _get4;
+    return _objectSpread26({
+      1557: "1&bandersnatch=".concat((_get$id = (_get3 = get("_cookbookbatQuestMonster")) === null || _get3 === void 0 ? void 0 : _get3.id) !== null && _get$id !== void 0 ? _get$id : 0)
+    }, wanderer().getChoices((_get4 = get("_cookbookbatQuestLastLocation")) !== null && _get4 !== void 0 ? _get4 : $location.none));
   },
   outfit: function() {
     return freeFightOutfit({
