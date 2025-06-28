@@ -1197,12 +1197,12 @@ const BarfTurnTasks: GarboTask[] = [
         unperidotableZones.includes(questLocation)
       );
     },
-    choices: () => {
-      const questMonster = get("_cookbookbatQuestMonster");
-      return questMonster
-        ? { 1557: `1&bandersnatch=${questMonster.id}` }
-        : { 1557: `1&bandersnatch=${0}` };
-    },
+    choices: () => ({
+      1557: `1&bandersnatch=${get("_cookbookbatQuestMonster")?.id ?? 0}`,
+      ...wanderer().getChoices(
+        get("_cookbookbatQuestLastLocation") ?? $location.none,
+      ),
+    }),
     outfit: () =>
       freeFightOutfit({
         equip: sober()
