@@ -25798,7 +25798,8 @@ var require_wanderer = __commonJS({
           }],
           // fight eXtreme Sports Orcs
           [(0, libram_1.$location)(_templateObject3437 || (_templateObject3437 = _taggedTemplateLiteral149(["Madness Bakery"]))), {
-            1061: 6
+            1061: 6,
+            440: 6
           }],
           [(0, libram_1.$location)(_templateObject3533 || (_templateObject3533 = _taggedTemplateLiteral149(["The Skeleton Store"]))), {
             1060: 5
@@ -30287,7 +30288,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("a48d4e2106f248b6350e36c5a2ac37b4f325fd2d", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("58ea4af4136bd6e0f66c63e6ce2cd8cd08a5d7b4", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
