@@ -319,7 +319,7 @@ export class WandererManager {
     [$location`The Penultimate Fantasy Airship`, { 178: 2, 182: 1 }], // Skip, and Fight random enemy
     [$location`The Haiku Dungeon`, { 297: 3 }], // skip
     [$location`Frat House`, { 1425: 4 }], // fight eXtreme Sports Orcs
-    [$location`Madness Bakery`, { 1061: 6 }],
+    [$location`Madness Bakery`, { 1061: 6, 440: 6 }],
     [$location`The Skeleton Store`, { 1060: 5 }],
     [$location`The Overgrown Lot`, { 1062: 7 }],
     [$location`The Haunted Billiards Room`, { 1436: 2, 875: 3 }], // Hustle away from the ghost
