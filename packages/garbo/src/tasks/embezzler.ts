@@ -2,6 +2,7 @@ import { Quest } from "grimoire-kolmafia";
 import {
   $effect,
   $item,
+  $items,
   $location,
   $skill,
   AprilingBandHelmet,
@@ -12,9 +13,9 @@ import {
   undelay,
 } from "libram";
 import { shouldAugustCast } from "../resources";
-import { canAdventure, cliExecute, useSkill } from "kolmafia";
+import { canAdventure, canEquip, cliExecute, useSkill } from "kolmafia";
 import { meatTargetOutfit } from "../outfit";
-import { getBestLuckyAdventure } from "../lib";
+import { getBestLuckyAdventure, sober } from "../lib";
 import { AlternateTask } from "./engine";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
@@ -89,12 +90,19 @@ export const EmbezzlerFightsQuest: Quest<AlternateTask> = {
   name: "Lucky Embezzlers",
   ready: () =>
     getBestLuckyAdventure().phase === "target" &&
-    getBestLuckyAdventure().value() > 0,
+    getBestLuckyAdventure().value() > 0 &&
+    (sober() ||
+      (have($item`Drunkula's wineglass`) &&
+        canEquip($item`Drunkula's wineglass`))),
   tasks: [
     ...luckySourceTasks,
     {
       name: "Fight Lucky Embezzler",
-      outfit: () => meatTargetOutfit({}, $location`Cobb's Knob Treasury`),
+      outfit: () =>
+        meatTargetOutfit(
+          sober() ? {} : { equip: $items`Drunkula's wineglass` },
+          $location`Cobb's Knob Treasury`,
+        ),
       ready: () => canAdventure($location`Cobb's Knob Treasury`),
       completed: () => !have($effect`Lucky!`),
       do: $location`Cobb's Knob Treasury`,
