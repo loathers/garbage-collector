@@ -30287,7 +30287,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("348e7ea7d13d92bff3b87d46f414439cdd8e6c3f", ")"));
+      (0, import_kolmafia99.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ce534e49031dd64d8d20ab3051c7b6e706c49b20", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia99.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -34578,13 +34578,8 @@ function copyTargetConfirmInvocation(msg) {
   _set("_garbo_autoUserConfirm_targetInvocatedCount", invocatedCount + 1);
   return true;
 }
-var monsterInEggnet;
-var mosterIsInEggnet = function() {
-  var _monsterInEggnet;
-  return (_monsterInEggnet = monsterInEggnet) !== null && _monsterInEggnet !== void 0 ? _monsterInEggnet : monsterInEggnet = ChestMimic_exports.getReceivableMonsters().includes(globalOptions.target);
-};
 var emergencyChainStarters = [new CopyTargetFight("Mimic Egg (from clinic)", function() {
-  return ChestMimic_exports.have() && $familiar(_templateObject974 || (_templateObject974 = _taggedTemplateLiteral99(["Chest Mimic"]))).experience >= 100 && mosterIsInEggnet() && get("_mimicEggsObtained") < 11;
+  return ChestMimic_exports.have() && $familiar(_templateObject974 || (_templateObject974 = _taggedTemplateLiteral99(["Chest Mimic"]))).experience >= 100 && monsterIsInEggnet() && get("_mimicEggsObtained") < 11;
 }, function() {
   return 0;
 }, function(options) {
@@ -38364,8 +38359,15 @@ var mimicExperienceNeeded = function(needKickstarterEgg) {
 function shouldChargeMimic(needKickstarterEgg) {
   return $familiar(_templateObject809 || (_templateObject809 = _taggedTemplateLiteral116(["Chest Mimic"]))).experience < mimicExperienceNeeded(needKickstarterEgg);
 }
+var monsterInEggnet;
+var monsterIsInEggnet = function() {
+  var _monsterInEggnet;
+  return (_monsterInEggnet = monsterInEggnet) !== null && _monsterInEggnet !== void 0 ? _monsterInEggnet : monsterInEggnet = ChestMimic_exports.getReceivableMonsters().includes(globalOptions.target);
+};
 function shouldMakeEgg(barf) {
-  var experienceNeeded = 50 * (11 - get("_mimicEggsObtained")) + (barf ? 50 : 0);
+  var needKickstarterEgg = barf && ChestMimic_exports.differentiableQuantity(globalOptions.target);
+  if (needKickstarterEgg && !monsterIsInEggnet()) return false;
+  var experienceNeeded = 50 * (11 - get("_mimicEggsObtained")) + (needKickstarterEgg ? 50 : 0);
   return $familiar(_templateObject2195 || (_templateObject2195 = _taggedTemplateLiteral116(["Chest Mimic"]))).experience >= experienceNeeded && get("_mimicEggsObtained") < 11;
 }
 var minimumMimicExperience = function() {
