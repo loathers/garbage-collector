@@ -65,6 +65,7 @@ import {
   doingGregFight,
   equipOrbIfDesired,
   gregReady,
+  monsterIsInEggnet,
   possibleGregCrystalBall,
   totalGregCharges,
 } from "../resources";
@@ -862,18 +863,13 @@ function copyTargetConfirmInvocation(msg: string): boolean {
   return true;
 }
 
-let monsterInEggnet: boolean;
-const mosterIsInEggnet = () =>
-  (monsterInEggnet ??= ChestMimic.getReceivableMonsters().includes(
-    globalOptions.target,
-  ));
 export const emergencyChainStarters = [
   new CopyTargetFight(
     "Mimic Egg (from clinic)",
     () =>
       ChestMimic.have() &&
       $familiar`Chest Mimic`.experience >= 100 &&
-      mosterIsInEggnet() &&
+      monsterIsInEggnet() &&
       get("_mimicEggsObtained") < 11,
     () => 0,
     (options: RunOptions) => {
