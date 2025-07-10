@@ -159,11 +159,11 @@ function shrugForOde() {
   const inexpensiveSongs = getActiveSongs().filter(
     (e) => !EXPENSIVE_SONGS.includes(e),
   );
-  if (inexpensiveSongs.length === 1) return uneffect(inexpensiveSongs[1]);
   const uselessSongs = inexpensiveSongs.filter(
     (e) => !USEFUL_SONGS.includes(e),
   );
   if (uselessSongs.length >= 1) return uneffect(uselessSongs[0]);
+  if (inexpensiveSongs.length === 1) return uneffect(inexpensiveSongs[0]);
   return uneffect(
     maxBy(inexpensiveSongs, (e) => haveEffect(e) * mpCost(toSkill(e)), true),
   );
