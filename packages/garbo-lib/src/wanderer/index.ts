@@ -393,7 +393,7 @@ export class WandererManager {
       !(target instanceof Location) &&
       this.getTarget(target).peridotMonster !== $monster.none
     ) {
-      const peridotChoice = PeridotOfPeril.getChoiceProperty(
+      const peridotChoice = PeridotOfPeril.getChoiceObject(
         this.getTarget(target).peridotMonster,
       );
       const newChoices = Object.assign(peridotChoice, baseChoices);
