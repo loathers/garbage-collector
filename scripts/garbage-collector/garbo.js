@@ -26189,7 +26189,7 @@ var require_wanderer = __commonJS({
           }) : Infinity;
           var baseChoices = (_this$unsupportedChoi = this.unsupportedChoices.get(location)) !== null && _this$unsupportedChoi !== void 0 ? _this$unsupportedChoi : {};
           if (!(target instanceof kolmafia_1.Location) && this.getTarget(target).peridotMonster !== libram_1.$monster.none) {
-            var peridotChoice = libram_1.PeridotOfPeril.getChoiceProperty(this.getTarget(target).peridotMonster);
+            var peridotChoice = libram_1.PeridotOfPeril.getChoiceObject(this.getTarget(target).peridotMonster);
             var newChoices = Object.assign(peridotChoice, baseChoices);
             return (0, libram_1.undelay)(newChoices, this.options, valueOfTurn);
           }
@@ -30614,7 +30614,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("436acf8b505eedc138074a645263017a426b450f", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("97f145710551dd2cd0185c673fc738d0634eddc1", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
