@@ -8,6 +8,7 @@ import {
   dailySpecial,
   drink,
   eat,
+  Effect,
   Element,
   elementalResistance,
   fullnessLimit,
@@ -76,6 +77,7 @@ import {
   maximizeCached,
   MayoClinic,
   MenuItem,
+  PrismaticBeret,
   realmAvailable,
   set,
   sum,
@@ -128,6 +130,29 @@ function consumeWhileRespectingMoonRestaurant(command: () => void, item: Item) {
   );
 }
 
+function beretForSaltyMouthArray(): [number, number][] {
+  const busksAvailable = clamp(5 - get("_beretBuskingUses"), 0, 5);
+  const results: [number, number][] = [];
+
+  for (let i = 5 - busksAvailable; i < 5; i++) {
+    const optimalPower = PrismaticBeret.findOptimalOutfitPower(
+      $effects`Salty Mouth`,
+      {
+        uselessEffects: [],
+        buyItems: true,
+      },
+      i
+    );
+
+    // Beret in Libram returns 110 when a suitable effect can't be found
+    if (optimalPower > 110) {
+      results.push([i, optimalPower]);
+    }
+  }
+
+  return results;
+}
+
 function eatSafe(qty: number, item: Item) {
   if (
     have($item`Universal Seasoning`) &&
@@ -171,6 +196,53 @@ function shrugForOde() {
 
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
+  const isBeer = item.notes?.includes("BEER") ?? false;
+  const saltyMouthBusks = beretForSaltyMouthArray();
+
+  // Loop while a Salty Mouth busk is scheduled, but we're not at it yet
+  while (
+    isBeer &&
+    saltyMouthBusks.length > 0 &&
+    saltyMouthBusks[0][0] > (5 - get("_beretBuskingUses"))
+  ) {
+    const currentBuskIndex = 5 - get("_beretBuskingUses");
+    const fallbackPower = PrismaticBeret.findOptimalOutfitPower(
+      {
+        "Familiar Weight": 10,
+        "Meat Drop": 1,
+      },
+      {
+        uselessEffects: Effect.all().filter((e) => have(e)),
+        buyItems: true,
+      },
+      currentBuskIndex
+    );
+
+    PrismaticBeret.buskAt(fallbackPower);
+  }
+
+  // Now either we're at the Salty Mouth slot, or it's not scheduled at all
+  const buskIndex = 5 - get("_beretBuskingUses");
+  const nextIsSalty =
+    isBeer && saltyMouthBusks.length > 0 && saltyMouthBusks[0][0] === buskIndex;
+
+    const effectOrModifiers = nextIsSalty
+    ? $effects`Salty Mouth`
+    : {
+        "Familiar Weight": 10,
+        "Meat Drop": 1,
+      };
+
+  const uselessEffects = Effect.all().filter((e) => have(e));
+
+  const finalBuskPower = PrismaticBeret.findOptimalOutfitPower(
+    effectOrModifiers,
+    { uselessEffects, buyItems: true },
+    buskIndex
+  );
+
+  PrismaticBeret.buskAt(finalBuskPower);
+
   if (have($skill`The Ode to Booze`)) {
     if (!have($effect`Ode to Booze`) && getSongCount() >= getSongLimit()) {
       shrugForOde();
