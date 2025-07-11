@@ -30614,7 +30614,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("97f145710551dd2cd0185c673fc738d0634eddc1", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("346dd414115d89bf672a33c7c4abc308daf1d883", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -31743,11 +31743,11 @@ function shrugForOde() {
   var inexpensiveSongs = getActiveSongs().filter(function(e) {
     return !EXPENSIVE_SONGS.includes(e);
   });
-  if (inexpensiveSongs.length === 1) return uneffect(inexpensiveSongs[1]);
   var uselessSongs = inexpensiveSongs.filter(function(e) {
     return !USEFUL_SONGS.includes(e);
   });
   if (uselessSongs.length >= 1) return uneffect(uselessSongs[0]);
+  if (inexpensiveSongs.length === 1) return uneffect(inexpensiveSongs[0]);
   return uneffect(maxBy(inexpensiveSongs, function(e) {
     return (0, import_kolmafia102.haveEffect)(e) * (0, import_kolmafia102.mpCost)((0, import_kolmafia102.toSkill)(e));
   }, true));
