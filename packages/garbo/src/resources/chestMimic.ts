@@ -27,7 +27,7 @@ export const monsterIsInEggnet = () =>
 
 export function shouldMakeEgg(barf: boolean): boolean {
   const needKickstarterEgg =
-    barf && ChestMimic.differentiableQuantity(globalOptions.target);
+    barf && ChestMimic.differentiableQuantity(globalOptions.target) <= 0;
   if (needKickstarterEgg && !monsterIsInEggnet()) return false;
   const experienceNeeded =
     50 * (11 - get("_mimicEggsObtained")) + (needKickstarterEgg ? 50 : 0);
