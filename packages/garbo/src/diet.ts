@@ -1,6 +1,7 @@
 import {
   autosellPrice,
   availableAmount,
+  beretBuskingEffects,
   buy,
   canAdventure,
   chew,
@@ -141,11 +142,14 @@ function beretForSaltyMouthArray(): [number, number][] {
         uselessEffects: [],
         buyItems: true,
       },
-      i
+      i,
     );
 
-    // Beret in Libram returns 110 when a suitable effect can't be found
-    if (optimalPower > 110) {
+    const buskEffects = Object.keys(
+      beretBuskingEffects(optimalPower, get("_beretBuskingUses")),
+    ).map(toEffect);
+
+    if (!buskEffects.includes($effect`Salty Mouth`)) {
       results.push([i, optimalPower]);
     }
   }
@@ -203,7 +207,7 @@ function drinkSafe(qty: number, item: Item) {
   while (
     isBeer &&
     saltyMouthBusks.length > 0 &&
-    saltyMouthBusks[0][0] > (5 - get("_beretBuskingUses"))
+    saltyMouthBusks[0][0] > 5 - get("_beretBuskingUses")
   ) {
     const currentBuskIndex = 5 - get("_beretBuskingUses");
     const fallbackPower = PrismaticBeret.findOptimalOutfitPower(
@@ -215,7 +219,7 @@ function drinkSafe(qty: number, item: Item) {
         uselessEffects: Effect.all().filter((e) => have(e)),
         buyItems: true,
       },
-      currentBuskIndex
+      currentBuskIndex,
     );
 
     PrismaticBeret.buskAt(fallbackPower);
@@ -226,7 +230,7 @@ function drinkSafe(qty: number, item: Item) {
   const nextIsSalty =
     isBeer && saltyMouthBusks.length > 0 && saltyMouthBusks[0][0] === buskIndex;
 
-    const effectOrModifiers = nextIsSalty
+  const effectOrModifiers = nextIsSalty
     ? $effects`Salty Mouth`
     : {
         "Familiar Weight": 10,
@@ -238,7 +242,7 @@ function drinkSafe(qty: number, item: Item) {
   const finalBuskPower = PrismaticBeret.findOptimalOutfitPower(
     effectOrModifiers,
     { uselessEffects, buyItems: true },
-    buskIndex
+    buskIndex,
   );
 
   PrismaticBeret.buskAt(finalBuskPower);
