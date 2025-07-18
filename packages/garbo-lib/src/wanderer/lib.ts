@@ -8,6 +8,7 @@ import {
   Item,
   itemFact,
   Location,
+  modifierEval,
   Monster,
   numericFact,
   toItem,
@@ -489,6 +490,6 @@ export function availableMonsters(location: Location): Monster[] {
   );
 }
 
-export const UNPERIDOTABLE_MONSTERS = new Set(
-  $monsters`alielf, cat-alien, dog-alien`,
-);
+export const UNPERIDOTABLE_MONSTERS = new Set([
+  ...(modifierEval("G") < 4 ? $monsters`alielf, cat-alien, dog-alien` : []),
+]);
