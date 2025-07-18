@@ -24865,6 +24865,7 @@ var require_lib2 = __commonJS({
     var _templateObject4626;
     var _templateObject4726;
     var _templateObject4826;
+    var _templateObject4926;
     function _slicedToArray49(r, e) {
       return _arrayWithHoles49(r) || _iterableToArrayLimit49(r, e) || _unsupportedIterableToArray96(r, e) || _nonIterableRest49();
     }
@@ -24985,7 +24986,7 @@ var require_lib2 = __commonJS({
     Object.defineProperty(exports2, "__esModule", {
       value: true
     });
-    exports2.unperidotableZones = exports2.WandererTarget = exports2.UnlockableZones = exports2.draggableFights = void 0;
+    exports2.UNPERIDOTABLE_MONSTERS = exports2.unperidotableZones = exports2.WandererTarget = exports2.UnlockableZones = exports2.draggableFights = void 0;
     exports2.isDraggableFight = isDraggableFight;
     exports2.underwater = underwater;
     exports2.canAdventureOrUnlock = canAdventureOrUnlock3;
@@ -25312,6 +25313,7 @@ var require_lib2 = __commonJS({
         }) && rates[m.name] > 0;
       });
     }
+    exports2.UNPERIDOTABLE_MONSTERS = new Set(_toConsumableArray74((0, kolmafia_1.modifierEval)("G") < 4 ? (0, libram_1.$monsters)(_templateObject4926 || (_templateObject4926 = _taggedTemplateLiteral150(["alielf, cat-alien, dog-alien"]))) : []));
   }
 });
 
@@ -25902,8 +25904,12 @@ var require_wanderer = __commonJS({
       });
     }
     function targetedMonsterValue(monsterValues) {
-      if (monsterValues.size === 0) return [libram_1.$monster.none, 0];
-      return (0, libram_1.maxBy)(_toConsumableArray74(monsterValues.entries()), 1);
+      var availableMonsters2 = _toConsumableArray74(monsterValues.entries()).filter(function(_ref3) {
+        var _ref4 = _slicedToArray49(_ref3, 1), m = _ref4[0];
+        return !lib_1.UNPERIDOTABLE_MONSTERS.has(m);
+      });
+      if (availableMonsters2.length === 0) return [libram_1.$monster.none, 0];
+      return (0, libram_1.maxBy)(availableMonsters2, 1);
     }
     function updateZoneData(zoneData, wanderer2) {
       zoneData.targets.push(wanderer2);
@@ -25944,7 +25950,7 @@ var require_wanderer = __commonJS({
           var monsterAverageValue = zoneAverageMonsterValue(_location2, monsterValues);
           var _targetedMonsterValue = targetedMonsterValue(monsterValues), _targetedMonsterValue2 = _slicedToArray49(_targetedMonsterValue, 2), bestMonster = _targetedMonsterValue2[0], monsterTargetedValue = _targetedMonsterValue2[1];
           var shouldPeridot = libram_1.PeridotOfPeril.canImperil(_location2) && !lib_1.unperidotableZones.includes(_location2) && monsterTargetedValue > monsterAverageValue;
-          var _ref3 = shouldPeridot ? [bestMonster, monsterTargetedValue] : [libram_1.$monster.none, monsterAverageValue], _ref4 = _slicedToArray49(_ref3, 2), monster = _ref4[0], monsterValue = _ref4[1];
+          var _ref5 = shouldPeridot ? [bestMonster, monsterTargetedValue] : [libram_1.$monster.none, monsterAverageValue], _ref6 = _slicedToArray49(_ref5, 2), monster = _ref6[0], monsterValue = _ref6[1];
           locationMonsterValues.set(_location2, {
             location: _location2,
             targets: targets,
@@ -26161,20 +26167,20 @@ var require_wanderer = __commonJS({
       return _createClass35(WandererManager3, [{
         key: "getTarget",
         value: function getTarget(wanderer2) {
-          var _this$targets, _ref6, _this$targets$_ref;
-          var _ref5 = (0, lib_1.isDraggableFight)(wanderer2) ? {
+          var _this$targets, _ref8, _this$targets$_ref;
+          var _ref7 = (0, lib_1.isDraggableFight)(wanderer2) ? {
             draggableFight: wanderer2,
             options: {}
           } : {
             draggableFight: wanderer2.wanderer,
             options: wanderer2
-          }, draggableFight = _ref5.draggableFight, options = _ref5.options;
+          }, draggableFight = _ref7.draggableFight, options = _ref7.options;
           var _options$drunkSafe = options.drunkSafe, drunkSafe = _options$drunkSafe === void 0 ? true : _options$drunkSafe, _options$allowEquipme = options.allowEquipment, allowEquipment = _options$allowEquipme === void 0 ? false : _options$allowEquipme;
           var newKey = "".concat((0, kolmafia_1.myTotalTurnsSpent)(), ";").concat((0, kolmafia_1.totalTurnsPlayed)(), ";").concat((0, libram_1.get)("familiarSweat"));
           if (this.cacheKey !== newKey) this.clear();
           this.cacheKey = newKey;
           var locationSkipList = allowEquipment ? [] : _toConsumableArray74(this.equipment.keys());
-          return sober2() || !drunkSafe ? (_this$targets$_ref = (_this$targets = this.targets)[_ref6 = "".concat(draggableFight, ":").concat(allowEquipment)]) !== null && _this$targets$_ref !== void 0 ? _this$targets$_ref : _this$targets[_ref6] = wanderWhere(this.options, draggableFight, [], locationSkipList) : {
+          return sober2() || !drunkSafe ? (_this$targets$_ref = (_this$targets = this.targets)[_ref8 = "".concat(draggableFight, ":").concat(allowEquipment)]) !== null && _this$targets$_ref !== void 0 ? _this$targets$_ref : _this$targets[_ref8] = wanderWhere(this.options, draggableFight, [], locationSkipList) : {
             location: (0, libram_1.$location)(_templateObject4193 || (_templateObject4193 = _taggedTemplateLiteral150(["Drunken Stupor"]))),
             peridotMonster: libram_1.$monster.none,
             familiar: (0, libram_1.$familiar)(_templateObject4230 || (_templateObject4230 = _taggedTemplateLiteral150(["none"])))
@@ -30623,7 +30629,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4ac553b2b77a8786ddd2328e6010d2b73372b9f1", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d833bfd36be1f2045f05fd48025a73cc66fde1f1", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
