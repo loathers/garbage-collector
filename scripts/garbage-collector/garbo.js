@@ -30629,7 +30629,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("bc810c479e5452d4c01c955820b5392fc42692e4", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("74c76ddf7dedb8eb641448c15bf42eb26ef50917", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -35969,7 +35969,7 @@ var Potion = /* @__PURE__ */ function() {
         var bonusMeat = this.bonusMeat();
         var duration = clamp(durationOverride !== null && durationOverride !== void 0 ? durationOverride : Infinity, this.effectDuration(), 0);
         var targetsApplied = Math.max(Math.min(duration, targets - (0, import_kolmafia117.haveEffect)(this.effect())), 0);
-        return bonusMeat / 100 * (baseMeat() * duration + targetMeatDifferential() * targetsApplied);
+        return bonusMeat / 100 * (baseMeat() * (duration - targetsApplied) * (turnsToNC / (turnsToNC + 1)) + (baseMeat() + targetMeatDifferential()) * targetsApplied);
       }
     )
   }, {
