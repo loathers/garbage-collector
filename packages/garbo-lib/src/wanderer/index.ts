@@ -36,6 +36,7 @@ import {
   ensureMapElement,
   isDraggableFight,
   unlock,
+  UNPERIDOTABLE_MONSTERS,
   unperidotableZones,
   WandererFactory,
   WandererFactoryOptions,
@@ -85,8 +86,11 @@ function zoneAverageMonsterValue(
 function targetedMonsterValue(
   monsterValues: Map<Monster, number>,
 ): [Monster, number] {
-  if (monsterValues.size === 0) return [$monster.none, 0];
-  return maxBy([...monsterValues.entries()], 1);
+  const availableMonsters = [...monsterValues.entries()].filter(
+    ([m]) => !UNPERIDOTABLE_MONSTERS.has(m),
+  );
+  if (availableMonsters.length === 0) return [$monster.none, 0];
+  return maxBy(availableMonsters, 1);
 }
 
 type ZoneData = {

@@ -8,6 +8,7 @@ import {
   Item,
   itemFact,
   Location,
+  modifierEval,
   Monster,
   numericFact,
   toItem,
@@ -19,6 +20,7 @@ import {
   $items,
   $location,
   $locations,
+  $monsters,
   $skill,
   clamp,
   Delayed,
@@ -159,6 +161,15 @@ export function canAdventureOrUnlock(
     GingerBread.minutesToMidnight() === 0
   ) {
     skiplist.push(...GingerBread.LOCATIONS);
+  }
+
+  if (
+    !goingPostalSafe() ||
+    (!have($item`Hey Deze map`) &&
+      !have($item`Hey Deze nuts`) &&
+      !haveInCampground($item`pagoda plans`)) // Quest not tracked, but these three checks work
+  ) {
+    skiplist.push($location`Pandamonium Slums`);
   }
 
   const canUnlock =
@@ -381,11 +392,13 @@ function questBetween(
     : step > lower && step < upper;
 }
 
-const alwaysSafeUltraRares = $locations`The Cola Wars Battlefield, The Icy Peak, Cobb's Knob Treasury, Cobb's Knob Menagerie\, Level 1, The Dungeons of Doom, A Mob of Zeppelin Protesters, Camp Logging Camp`;
+
+const goingPostalSafe = () => !questBetween("questM11Postal", -1, 999, false); // Going Postal tracking is not especially granular
+
+const alwaysSafeUltraRares = $locations`Battlefield (No Uniform), The Icy Peak, Cobb's Knob Treasury, Cobb's Knob Menagerie\, Level 1, The Dungeons of Doom, A Mob of Zeppelin Protesters, Camp Logging Camp`;
+
 export function getAvailableUltraRareZones(): Location[] {
   const zones = [...alwaysSafeUltraRares];
-
-  const goingPostalSafe = !questBetween("questM11Postal", -1, 999, false); // Going Postal tracking is not especially granular
 
   if ($location`The Haunted Billiards Room`.turnsSpent > 0) {
     zones.push($location`The Haunted Billiards Room`); // no better check for pool cue adventure
@@ -394,18 +407,18 @@ export function getAvailableUltraRareZones(): Location[] {
     if (!questBetween("questG04Nemesis", 0, 2)) {
       zones.push($location`The Unquiet Garves`);
     }
-    if (goingPostalSafe) zones.push($location`The VERY Unquiet Garves`);
+    if (goingPostalSafe()) zones.push($location`The VERY Unquiet Garves`);
   }
   if (
     have($item`the Slug Lord's map`) && // Quest not tracked, but certainly if you currently own the map you aren't going to get it again
-    goingPostalSafe &&
+    goingPostalSafe() &&
     questStep("questG08Moxie") !== 0 &&
     questStep("questM02Artist") !== 0
   ) {
     zones.push($location`The Sleazy Back Alley`);
   }
   if (
-    goingPostalSafe &&
+    goingPostalSafe() &&
     (have($item`Hey Deze map`) ||
       have($item`Hey Deze nuts`) ||
       haveInCampground($item`pagoda plans`)) // Quest not tracked, but these three checks work
@@ -416,7 +429,7 @@ export function getAvailableUltraRareZones(): Location[] {
     zones.push($location`Inside the Palindome`); // Step 1 is having rearranged the photos, which means you got all the superlikelies already
   }
   if (
-    goingPostalSafe &&
+    goingPostalSafe() &&
     $location`The Spooky Forest`.turnsSpent -
       $location`The Spooky Forest`.lastNoncombatTurnsSpent >=
       7
@@ -487,3 +500,8 @@ export function availableMonsters(location: Location): Monster[] {
       rates[m.name] > 0,
   );
 }
+
+export const UNPERIDOTABLE_MONSTERS = new Set([
+  ...(modifierEval("G") < 4 ? $monsters`alielf, cat-alien, dog-alien` : []),
+  ...$monsters`Arizona bark scorpion, swimming pool monster`,
+]);
