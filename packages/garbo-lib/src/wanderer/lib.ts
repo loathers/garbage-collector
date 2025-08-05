@@ -395,7 +395,7 @@ function questBetween(
 
 const goingPostalSafe = () => !questBetween("questM11Postal", -1, 999, false); // Going Postal tracking is not especially granular
 
-const alwaysSafeUltraRares = $locations`Battlefield (No Uniform), The Icy Peak, Cobb's Knob Treasury, Cobb's Knob Menagerie\, Level 1, The Dungeons of Doom, A Mob of Zeppelin Protesters, Camp Logging Camp`;
+const alwaysSafeUltraRares = $locations`The Cola Wars Battlefield, The Icy Peak, Cobb's Knob Treasury, Cobb's Knob Menagerie\, Level 1, The Dungeons of Doom, A Mob of Zeppelin Protesters, Camp Logging Camp`;
 
 export function getAvailableUltraRareZones(): Location[] {
   const zones = [...alwaysSafeUltraRares];
