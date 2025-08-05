@@ -8,6 +8,7 @@ import {
   mallPrice,
   myFullness,
   myFury,
+  totalTurnsPlayed,
 } from "kolmafia";
 import {
   $effect,
@@ -290,6 +291,7 @@ export function bonusGear(
     ...bindlestocking(mode),
     ...simpleTargetCrits(mode),
     ...batWings(mode),
+    ...mobius(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...pantsgiving(mode),
@@ -304,6 +306,15 @@ export function bonusGear(
         ])
       : []),
   ]);
+}
+
+function mobius(mode: BonusEquipMode): Map<Item, number> {
+  if (mode === BonusEquipMode.BARF) {
+    const value = totalTurnsPlayed() - get("_lastMobiusStripTurn",0) > 7 + 7 * get("_mobiusStripEncounters",0) ? 5000 : 0;
+    // eslint-disable-next-line libram/verify-constants
+    return new Map<Item, number>([[$item`Möbius ring`,value]]);
+  }
+  return new Map();
 }
 
 function shavingBonus(): Map<Item, number> {
