@@ -1,4 +1,4 @@
-import { availableChoiceOptions,  print, runChoice } from "kolmafia";
+import { availableChoiceOptions, print, runChoice } from "kolmafia";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function main(choice: number, page: string) {

@@ -310,9 +310,13 @@ export function bonusGear(
 
 function mobius(mode: BonusEquipMode): Map<Item, number> {
   if (mode === BonusEquipMode.BARF) {
-    const value = totalTurnsPlayed() - get("_lastMobiusStripTurn",0) > 7 + 7 * get("_mobiusStripEncounters",0) ? 5000 : 0;
+    const value =
+      totalTurnsPlayed() - get("_lastMobiusStripTurn", 0) >
+      7 + 7 * get("_mobiusStripEncounters", 0)
+        ? 5000
+        : 0;
     // eslint-disable-next-line libram/verify-constants
-    return new Map<Item, number>([[$item`Möbius ring`,value]]);
+    return new Map<Item, number>([[$item`Möbius ring`, value]]);
   }
   return new Map();
 }
