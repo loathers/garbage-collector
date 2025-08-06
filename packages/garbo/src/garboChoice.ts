@@ -1,4 +1,8 @@
-import { availableChoiceOptions, ChoiceAdventureScript, runChoice } from "kolmafia";
+import {
+  availableChoiceOptions,
+  ChoiceAdventureScript,
+  runChoice,
+} from "kolmafia";
 import { mobiusChoice } from "./resources/mobiusRing";
 
 export const main: ChoiceAdventureScript = (choiceNumber: number) => {
