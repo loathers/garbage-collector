@@ -395,7 +395,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         {
           familiarOptions: {
             canChooseMacro: false,
-            includeExperienceFamiliars: false, // Experience familiars have an extremely modifier value for fam exp, causing us to not wear -ML
+            includeExperienceFamiliars: false, // Experience familiars have a high modifier value for fam exp, causing us to not wear -ML
           },
         },
       ),
