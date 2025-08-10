@@ -333,7 +333,7 @@ function mobius(mode: BonusEquipMode): Map<Item, number> {
       51   // 18
     ];
     const delta = totalTurnsPlayed() - get("_lastMobiusStripTurn", 0);
-    const expected = encounterMap[get("_mobiusStripEncounters", 0)] - 3;
+    const expected = encounterMap[get("_mobiusStripEncounters", 0)];
     if (delta > expected) {
       print(`Using Mobius Ring bcause ${delta} is greater than ${expected}`);
     }
