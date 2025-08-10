@@ -29,9 +29,11 @@ import {
   Monster,
   mpCost,
   myBjornedFamiliar,
+  myClass,
   myEnthronedFamiliar,
   myFamiliar,
   myFullness,
+  myFury,
   myHp,
   myInebriety,
   myLocation,
@@ -66,12 +68,14 @@ import {
   weightAdjustment,
 } from "kolmafia";
 import {
+  $class,
   $effect,
   $familiar,
   $item,
   $items,
   $location,
   $monster,
+  $monsters,
   $skill,
   $thralls,
   ActionSource,
@@ -164,7 +168,8 @@ export const songboomMeat = () =>
     : 0;
 
 // all tourists have a basemeat of 250
-export const baseMeat = () => 250 + songboomMeat();
+const pinguMeat = globalOptions.penguin ? 200 : 250;
+export const baseMeat = () => pinguMeat + songboomMeat();
 export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {
@@ -1174,3 +1179,71 @@ export function freeFishyAvailable(): boolean {
 export const ULTRA_RARE_MONSTERS = Monster.all().filter((m) =>
   m.attributes.includes("ULTRARARE"),
 );
+
+const monsters = $monsters`Copperhead Club bartender, fan dancer, ninja dressed as a waiter, waiter dressed as a ninja`;
+
+export function getMonstersToBanish(): Monster[] {
+  const banishedMonsters = getBanishedMonsters();
+  const alreadyBanished = Array.from(banishedMonsters.values());
+  return monsters.filter((monster) => !alreadyBanished.includes(monster));
+}
+
+interface BanishMethod {
+  available: () => boolean;
+  macro: () => Macro;
+  name: string; // optional, for debugging
+}
+
+const banishMethods: BanishMethod[] = [
+  {
+    name: "Monkey Slap",
+    available: () => get("_monkeyPawWishesUsed") === 0 && have($item`cursed monkey's paw`),
+    macro: () => Macro.trySkill($skill`Monkey Slap`),
+  },
+  {
+    name: "Spring Kick",
+    available: () => have($item`spring shoes`),
+    macro: () => Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`).runaway(),
+  },
+  {
+    name: "Batter Up!",
+    available: () => myClass() === $class`Seal Clubber` && have($skill`Batter Up!`) && myFury() >= 5,
+    macro: () => Macro.trySkill($skill`Batter Up!`),
+  },
+  {
+    name: "human musk",
+    available: () => true,
+    macro: () => Macro.tryItem($item`human musk`),
+  },
+  {
+    name: "Unleash Nanites",
+    available: () => have($effect`Nanobrawny`),
+    macro: () => Macro.trySkill($skill`Unleash Nanites`),
+  },
+]
+
+function banishMethodInUse(method: BanishMethod): boolean {
+  const banished = getBanishedMonsters();
+
+  for (const [sourceItemOrSkill, banishedMonster] of banished.entries()) {
+    if (
+      monsters.includes(banishedMonster) && // our critical list
+      (
+        (method.name === sourceItemOrSkill.name) || // Match by name (item or skill)
+        false // you can extend this if necessary
+      )
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function penguinChooseBanish(): Macro | null {
+  for (const method of banishMethods) {
+    if (method.available() && !banishMethodInUse(method)) {
+      return method.macro();
+    }
+  }
+  return null;
+}

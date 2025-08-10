@@ -57,6 +57,11 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     print(`Executing ${task.name}`, HIGHLIGHT);
   }
 
+  static defaultSettings = {
+    ...Engine.defaultSettings,
+    choiceAdventureScript: "garbo_choice.js",
+  };
+
   available(task: GarboTask): boolean {
     safeInterrupt();
     const taskSober = undelay(task.sobriety);

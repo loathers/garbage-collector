@@ -3,6 +3,7 @@ import {
   abort,
   availableAmount,
   buy,
+  canAdventure,
   canEquip,
   cliExecute,
   currentRound,
@@ -36,9 +37,11 @@ import {
   $class,
   $classes,
   $coinmaster,
+  $familiar,
   $familiars,
   $item,
   $items,
+  $location,
   $monster,
   $monsters,
   $skill,
@@ -68,6 +71,7 @@ import { dailyFights, freeFights } from "./fights";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
+  getMonstersToBanish,
   HIGHLIGHT,
   isFreeAndCopyable,
   printEventLog,
@@ -105,11 +109,13 @@ import { acquire } from "./acquire";
 const TICKET_MAX_PRICE = 500000;
 
 function ensureBarfAccess() {
-  if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
-    const ticket = $item`one-day ticket to Dinseylandfill`;
-    // TODO: Get better item acquisition logic that e.g. checks own mall store.
-    if (!have(ticket)) buy(1, ticket, TICKET_MAX_PRICE);
-    use(ticket);
+  if (!globalOptions.penguin) {
+    if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
+      const ticket = $item`one-day ticket to Dinseylandfill`;
+      // TODO: Get better item acquisition logic that e.g. checks own mall store.
+      if (!have(ticket)) buy(1, ticket, TICKET_MAX_PRICE);
+      use(ticket);
+    }
   }
 }
 
@@ -133,6 +139,18 @@ export function main(argString = ""): void {
   if (globalOptions.help) {
     Args.showHelp(globalOptions);
     return;
+  }
+
+  if (
+    globalOptions.penguin &&
+    (!have($familiar`Red-Nosed Snapper`) ||
+      ((!have($item`spring shoes`) ||
+        !have($skill`Batter Up!`) ||
+        myClass() !== $class`Seal Clubber`) &&
+        getMonstersToBanish.length > 0) ||
+      !canAdventure($location`The Copperhead Club`))
+  ) {
+    globalOptions.penguin = false;
   }
 
   // Hit up main.php to get out of easily escapable choices
@@ -441,7 +459,7 @@ export function main(argString = ""): void {
       mpAutoRecoveryItems: mpItems,
       afterAdventureScript: "",
       betweenBattleScript: "",
-      choiceAdventureScript: "",
+      choiceAdventureScript: "garbo_choice.js",
       counterScript: "",
       familiarScript: "",
       currentMood: "apathetic",

@@ -128,6 +128,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "Use instant karma as part of diet",
       default: false,
     }),
+    penguin: Args.flag({
+        setting: "",
+        help: "Avoid barf mountain, farm penguins",
+        default: false,
+      }),
     version: Args.flag({
       setting: "",
       help: "Print the current version and exit.",
