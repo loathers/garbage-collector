@@ -314,8 +314,8 @@ function mobius(mode: BonusEquipMode): Map<Item, number> {
     const value =
       totalTurnsPlayed() - get("_lastMobiusStripTurn", 0) >
       encounterMap[get("_mobiusStripEncounters", 0)] - 3
-        // eslint-disable-next-line libram/verify-constants
-        ? Math.max(mallPrice($item`clock`), get("valueOfAdventure") * 3 ) / 2
+        ? // eslint-disable-next-line libram/verify-constants
+          Math.max(mallPrice($item`clock`), get("valueOfAdventure") * 3) / 2
         : 0;
     // eslint-disable-next-line libram/verify-constants
     return new Map<Item, number>([[$item`Möbius ring`, value]]);
