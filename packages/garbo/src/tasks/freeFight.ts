@@ -392,7 +392,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
               ? "-7 Monster Level"
               : "-Monster Level", // Above 50 ML, monsters resist stuns.
         },
-        { familiarOptions: { canChooseMacro: false } },
+        {
+          familiarOptions: {
+            canChooseMacro: false,
+            includeExperienceFamiliars: false, // Experience familiars have a high modifier value for fam exp, causing us to not wear -ML
+          },
+        },
       ),
     prepare: () => {
       restoreHp(myMaxhp());
