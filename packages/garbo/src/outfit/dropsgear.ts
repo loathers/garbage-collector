@@ -8,7 +8,6 @@ import {
   mallPrice,
   myFullness,
   myFury,
-  print,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -51,6 +50,7 @@ import {
   getUsedTcbFamiliars,
   tcbTurnsLeft,
 } from "../familiar/lib";
+import { encounterMap } from "../resources/mobiusRing";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -311,32 +311,6 @@ export function bonusGear(
 
 function mobius(mode: BonusEquipMode): Map<Item, number> {
   if (mode === BonusEquipMode.BARF) {
-    const encounterMap = [
-      4,   // 0
-      7,   // 1
-      14,  // 2
-      14,  // 3
-      25,  // 4
-      25,  // 5
-      41,  // 6
-      41,  // 7
-      41,  // 8
-      41,  // 9
-      41,  // 10
-      51,  // 11
-      51,  // 12
-      51,  // 13
-      51,  // 14
-      51,  // 15
-      51,  // 16
-      51,  // 17
-      51   // 18
-    ];
-    const delta = totalTurnsPlayed() - get("_lastMobiusStripTurn", 0);
-    const expected = encounterMap[get("_mobiusStripEncounters", 0)];
-    if (delta > expected) {
-      print(`Using Mobius Ring bcause ${delta} is greater than ${expected}`);
-    }
     const value =
       totalTurnsPlayed() - get("_lastMobiusStripTurn", 0) >
       encounterMap[get("_mobiusStripEncounters", 0)] - 3

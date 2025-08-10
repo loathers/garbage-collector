@@ -12,12 +12,12 @@ export const main: ChoiceAdventureScript = (choiceNumber: number) => {
       return void runChoice(mobiusChoice(options));
   }
   if (choiceNumber === 1224) {
-    runChoice(3);
+    runChoice(3); // "LOV Epaulettes",
   }
   if (choiceNumber === 1226) {
-    runChoice(2);
+    runChoice(2); // "Open Heart Surgery",
   }
   if (choiceNumber === 1228) {
-    runChoice(3);
+    runChoice(3); // "LOV Extraterrestrial Chocolate",
   }
 };
