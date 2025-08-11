@@ -1231,7 +1231,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
   {
     name: "Darts: Bullseye",
-    ready: safeToAttemptBullseye,
+    ready: () => safeToAttemptBullseye() && myInebriety() < inebrietyLimit(),
     completed: () => !canBullseye(),
     do: globalOptions.penguin ? $location`The Copperhead Club` : $location`Barf Mountain`,
     outfit: () =>
@@ -1347,7 +1347,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
           Snapper.trackPhylum($phylum`Penguin`);
         }
         if (
-          getMonstersToBanish().includes($monster`waiter dressed as a ninja`)
+          getMonstersToBanish().length > 0
         ) {
           retrieveItem($item`human musk`);
         }
@@ -1365,7 +1365,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
           outfits.equip($item`Everfull Dart Holster`);
         }
         if (
-          getMonstersToBanish().includes($monster`ninja dressed as a waiter`)
+          getMonstersToBanish().length > 0
         ) {
           outfits.equip($item`spring shoes`);
         }
