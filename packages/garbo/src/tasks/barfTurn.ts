@@ -26,6 +26,7 @@ import {
   outfitPieces,
   retrieveItem,
   runChoice,
+  toMonster,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -1356,24 +1357,16 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       outfit: () => {
         const outfits = barfOutfit({
           familiar: $familiar`Red-Nosed Snapper`,
-          equip: [],
         });
-        if (
-          have($item`Everfull Dart Holster`) &&
-          !have($effect`Everything Looks Red`)
-        ) {
-          outfits.equip($item`Everfull Dart Holster`);
-        }
-        if (
-          getMonstersToBanish().length > 0
-        ) {
-          outfits.equip($item`spring shoes`);
+          const banishMethod = penguinChooseBanish();
+        if (banishMethod?.equip) {
+          outfits.equip(banishMethod.equip);
         }
         return outfits;
       },
       do: $location`The Copperhead Club`,
       combat: new GarboStrategy(() => {
-        const banish = penguinChooseBanish();
+        const banish = penguinChooseBanish()?.macro();
         if (banish === null && getMonstersToBanish().length > 0) {
           throw "I have monsters to banish for pingu, but no banishes available!";
         }
@@ -1384,6 +1377,9 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       }),
       post: () => {
         trackMarginalMpa();
+        if(getMonstersToBanish().includes(toMonster(get("lastEncounter")))) {
+          throw "You encountered a banishable monster and didn't banish it, sort your life out!"
+        }
       },
       spendsTurn: true,
     },

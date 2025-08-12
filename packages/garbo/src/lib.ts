@@ -1191,7 +1191,8 @@ export function getMonstersToBanish(): Monster[] {
 interface BanishMethod {
   available: () => boolean;
   macro: () => Macro;
-  name: string; // optional, for debugging
+  name: string;
+  equip?: Item | Familiar;
 }
 
 const banishMethods: BanishMethod[] = [
@@ -1199,16 +1200,19 @@ const banishMethods: BanishMethod[] = [
     name: "Monkey Slap",
     available: () => get("_monkeyPawWishesUsed") === 0 && have($item`cursed monkey's paw`),
     macro: () => Macro.trySkill($skill`Monkey Slap`),
+    equip: $item`cursed monkey's paw`,
   },
   {
     name: "Spring Kick",
     available: () => have($item`spring shoes`),
     macro: () => Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`).runaway(),
+    equip: $item`spring shoes`
   },
   {
     name: "Batter Up!",
     available: () => myClass() === $class`Seal Clubber` && have($skill`Batter Up!`) && myFury() >= 5,
     macro: () => Macro.trySkill($skill`Batter Up!`),
+    equip: $item`seal-clubbing club`
   },
   {
     name: "human musk",
@@ -1219,6 +1223,7 @@ const banishMethods: BanishMethod[] = [
     name: "Unleash Nanites",
     available: () => have($effect`Nanobrawny`),
     macro: () => Macro.trySkill($skill`Unleash Nanites`),
+    equip: have($familiar`Nanorhino`) ? $familiar`Nanorhino` : $familiar`Comma Chameleon`
   },
 ]
 
@@ -1239,10 +1244,10 @@ function banishMethodInUse(method: BanishMethod): boolean {
   return false;
 }
 
-export function penguinChooseBanish(): Macro | null {
+export function penguinChooseBanish(): BanishMethod | null {
   for (const method of banishMethods) {
     if (method.available() && !banishMethodInUse(method)) {
-      return method.macro();
+      return method;
     }
   }
   return null;
