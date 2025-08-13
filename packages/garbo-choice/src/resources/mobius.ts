@@ -1,4 +1,3 @@
-/* eslint-disable libram/verify-constants */
 import { availableChoiceOptions, Effect, Item } from "kolmafia";
 import { $effect, $item, getSaleValue, maxBy, ValueOf } from "libram";
 
