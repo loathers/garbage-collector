@@ -1,9 +1,9 @@
 {
-  "name": "garbo",
+  "name": "garbo-choice",
   "version": "1.0.0",
   "description": "Script for farming meat (and garbage) in 2004 web RPG Kingdom of Loathing.",
   "repository": "https://github.com/loathers/garbage-collector.git",
-  "main": "dist/scripts/garbage-collector/garbo.js",
+  "main": "dist/scripts/garbage-collector/garbo_choice.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node --no-warnings --loader ts-node/esm/transpile-only ./build.mjs && yarn run copyStatic",
