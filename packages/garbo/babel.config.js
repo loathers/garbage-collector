@@ -10,7 +10,7 @@ module.exports = function (api) {
       [
         "@babel/preset-env",
         {
-          targets: { rhino: "1.7.15" },
+          targets: { rhino: "1.8.0" },
         },
       ],
     ],
