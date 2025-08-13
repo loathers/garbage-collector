@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "noEmit": true /* Do not emit outputs. */,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "declaration": false,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ES2019"],
+    "module": "commonjs",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "pretty": true,
+    "strict": true,
+    "target": "esnext",
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts", "../standalone/**/*.ts"],
+  "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
+}

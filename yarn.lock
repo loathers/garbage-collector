@@ -3888,7 +3888,7 @@ __metadata:
     "@types/eslint__js": ^8.42.3
     eslint: ^9.9.0
     eslint-config-prettier: ^9.1.0
-    eslint-plugin-libram: ^0.4.30
+    eslint-plugin-libram: ^0.4.31
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -3912,13 +3912,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.4.30":
-  version: 0.4.30
-  resolution: "eslint-plugin-libram@npm:0.4.30"
+"eslint-plugin-libram@npm:^0.4.31":
+  version: 0.4.31
+  resolution: "eslint-plugin-libram@npm:0.4.31"
   dependencies:
     html-entities: ^2.5.2
     requireindex: ~1.2.0
-  checksum: 6d85383eb72f10f3976776fb73f5de9d7b656d37a6f119ce223699e68d0a7cf818a5a55fccbef767337ed0e0f9b84244455843a25ad5104001ad442aa197100e
+  checksum: 3d5b63883899bbcd46e7d0414ee1d98d4a394b215bc1e55a29705005bcd5e66b550c07bfd8ac0409d39a2f9d694bfdeed9bd1f8ca1e00db413cbf7d10c74d26b
   languageName: node
   linkType: hard
 
@@ -4324,6 +4324,34 @@ __metadata:
     eslint: ^9.9.0
     husky: ^9.1.5
     prettier: ^3.3.3
+    typescript: ^5.5.4
+  languageName: unknown
+  linkType: soft
+
+"garbo-choice@workspace:packages/garbo-choice":
+  version: 0.0.0-use.local
+  resolution: "garbo-choice@workspace:packages/garbo-choice"
+  dependencies:
+    "@babel/cli": ^7.24.8
+    "@babel/compat-data": ^7.25.2
+    "@babel/core": ^7.25.2
+    "@babel/preset-env": ^7.25.3
+    "@babel/preset-react": ^7.24.7
+    "@babel/preset-typescript": ^7.24.7
+    "@types/node": ^22.4.1
+    copyfiles: ^2.4.1
+    esbuild: ^0.23.1
+    esbuild-plugin-babel: ^0.2.3
+    eslint: ^9.9.0
+    eslint-config-garbo: ^0.0.1
+    garbo-lib: "*"
+    grimoire-kolmafia: ^0.3.29
+    kolmafia: ^5.28620.0
+    libram: ^0.11.6
+    lint-staged: ^15.2.9
+    madge: ^8.0.0
+    prettier: ^3.3.3
+    ts-node: ^10.9.2
     typescript: ^5.5.4
   languageName: unknown
   linkType: soft
