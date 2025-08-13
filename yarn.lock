@@ -3888,7 +3888,7 @@ __metadata:
     "@types/eslint__js": ^8.42.3
     eslint: ^9.9.0
     eslint-config-prettier: ^9.1.0
-    eslint-plugin-libram: ^0.4.27
+    eslint-plugin-libram: ^0.4.28
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -3912,13 +3912,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.4.27":
-  version: 0.4.27
-  resolution: "eslint-plugin-libram@npm:0.4.27"
+"eslint-plugin-libram@npm:^0.4.28":
+  version: 0.4.28
+  resolution: "eslint-plugin-libram@npm:0.4.28"
   dependencies:
     html-entities: ^2.5.2
     requireindex: ~1.2.0
-  checksum: 46014cf8d8a75cd051133340b3928b9d6169429bbf2202f772230dfd337451425b8a9c5732dca30143398ddb1f3515cab6cedf8c2029851621be95b223b0640d
+  checksum: f73a90d60058f6e9e5cacb2d0f3555d5a79017aa0926b1e2773d45129b520481f4448a74c33ccafdeee17bce7a4c8bbd844f6ca6e365558ace40279a71d47e78
   languageName: node
   linkType: hard
 
@@ -4334,8 +4334,8 @@ __metadata:
   dependencies:
     eslint: ^9.9.0
     eslint-config-garbo: ^0.0.1
-    kolmafia: ^5.28389.0
-    libram: latest
+    kolmafia: ^5.28573.0
+    libram: ^0.11.6
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4389,8 +4389,8 @@ __metadata:
     eslint-config-garbo: ^0.0.1
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.29
-    kolmafia: ^5.28389.0
-    libram: latest
+    kolmafia: ^5.28573.0
+    libram: ^0.11.6
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -5037,10 +5037,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:^5.28389.0":
-  version: 5.28389.0
-  resolution: "kolmafia@npm:5.28389.0"
-  checksum: db57093fbad1f0983fde4a2ace86278b70b261a57a43dcc402dfd5808cfe43ff5f8aec22c01c2832e070441564e0c1de107776edcb44f760678abd48b06d1ebf
+"kolmafia@npm:^5.28573.0":
+  version: 5.28573.0
+  resolution: "kolmafia@npm:5.28573.0"
+  checksum: 8b9a8c9b5d19a4580e234beea94c8354b4b367b3d5d60196df7759a576d6f50a5fa9727a12a8abf064391c36d90bb903e06b59890623257940a528d431821138
   languageName: node
   linkType: hard
 
@@ -5054,7 +5054,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:latest":
+"libram@npm:^0.11.6":
   version: 0.11.6
   resolution: "libram@npm:0.11.6"
   dependencies:
