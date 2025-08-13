@@ -1,10 +1,6 @@
+/* eslint-disable libram/verify-constants */
 import { availableChoiceOptions, Effect, Item } from "kolmafia";
 import { $effect, $item, getSaleValue, maxBy, ValueOf } from "libram";
-
-type MobiusPair = {
-  cause: string; // Cause a paradox
-  resolve: string; // Resolve a paradox
-};
 
 const MOBIUS_PAIRS = {
   "Borrow a cup of sugar from yourself": "Return the sugar you borrowed",
