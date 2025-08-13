@@ -51,7 +51,6 @@ import {
   tcbTurnsLeft,
 } from "../familiar/lib";
 
-
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
   if (!have($item`Pantsgiving`) || !modeUseLimitedDrops(mode)) {
@@ -310,25 +309,25 @@ export function bonusGear(
 }
 
 const encounterMap = [
-  4,   // 0
-  7,   // 1
-  14,  // 2
-  14,  // 3
-  25,  // 4
-  25,  // 5
-  41,  // 6
-  41,  // 7
-  41,  // 8
-  41,  // 9
-  41,  // 10
-  51,  // 11
-  51,  // 12
-  51,  // 13
-  51,  // 14
-  51,  // 15
-  51,  // 16
-  51,  // 17
-  51   // 18
+  4, // 0
+  7, // 1
+  14, // 2
+  14, // 3
+  25, // 4
+  25, // 5
+  41, // 6
+  41, // 7
+  41, // 8
+  41, // 9
+  41, // 10
+  51, // 11
+  51, // 12
+  51, // 13
+  51, // 14
+  51, // 15
+  51, // 16
+  51, // 17
+  51, // 18
 ];
 
 function mobius(mode: BonusEquipMode): Map<Item, number> {
@@ -336,8 +335,7 @@ function mobius(mode: BonusEquipMode): Map<Item, number> {
     const value =
       totalTurnsPlayed() - get("_lastMobiusStripTurn", 0) >
       encounterMap[get("_mobiusStripEncounters", 0)] - 3
-        ?
-          Math.max(mallPrice($item`clock`), get("valueOfAdventure") * 3) / 2
+        ? Math.max(mallPrice($item`clock`), get("valueOfAdventure") * 3) / 2
         : 0;
     return new Map<Item, number>([[$item`Möbius ring`, value]]);
   }
