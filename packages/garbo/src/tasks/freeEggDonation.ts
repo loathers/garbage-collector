@@ -33,7 +33,7 @@ import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { getUsingFreeBunnyBanish, sober, tryFindFreeRunOrBanish } from "../lib";
+import { getUsingFreeBunnyBanish, tryFindFreeRunOrBanish } from "../lib";
 import { GarboTask } from "./engine";
 
 function queryEggNetIncomplete(): Map<Monster, number> {
@@ -66,6 +66,13 @@ function donateMonsterValue(m: Monster): number {
 function findDonateMonster(): { monster: Monster; count: number } | undefined {
   const incomplete = queryEggNetIncomplete();
   if (incomplete.size === 0) return undefined;
+
+  const alreadyHave = [...ChestMimic.eggMonsters().keys()].find(incomplete.has);
+  if (alreadyHave) {
+    const count = incomplete.get(alreadyHave ?? Monster.none) ?? 0;
+    return { monster: alreadyHave, count };
+  }
+
   const maxMonsterId = 2497; // Last Update Aug 2025
   const banned = new Set<Monster>([
     ...Location.all()
@@ -97,44 +104,26 @@ function mimicEscape(): ActionSource | null {
 }
 
 function mimicEggDonation(): GarboTask[] {
-  if (
-    !ChestMimic.have() ||
-    !CombatLoversLocket.have() ||
-    $familiar`Chest Mimic`.experience < 50 ||
-    get("_mimicEggsDonated") >= 3
-  ) {
-    return [];
-  }
-
-  const escape = mimicEscape();
-  if (!escape) {
-    return [];
-  }
-
   const donation = findDonateMonster();
   if (!donation) {
     return [];
   }
 
+  const escape = mimicEscape();
+
   return [
-    {
-      name: `Donate ${donation.monster} mimic egg`,
-      ready: () => ChestMimic.eggMonsters().has(donation.monster),
-      completed: () => get("_mimicEggsDonated") >= 3,
-      outfit: { familiar: $familiar`Chest Mimic` },
-      do: () => ChestMimic.donate(donation.monster),
-      limit: { skip: 3 },
-      spendsTurn: false,
-    },
     {
       name: `Harvest ${donation.monster} mimic egg(s)`,
       ready: () =>
+        !!escape &&
         donation.count > 0 &&
         $familiar`Chest Mimic`.experience > 50 &&
         get("_mimicEggsObtained") < 11 &&
         get("_mimicEggsDonated") < 3,
-      completed: () => ChestMimic.eggMonsters().has(donation.monster),
-      do: () => CombatLoversLocket.reminisce(donation?.monster ?? Monster.none),
+      completed: () =>
+        ChestMimic.eggMonsters().has(donation.monster) ||
+        !CombatLoversLocket.canReminisce(donation.monster),
+      do: () => CombatLoversLocket.reminisce(donation.monster),
       combat: new GarboStrategy(
         () =>
           Macro.externalIf(
@@ -151,14 +140,14 @@ function mimicEggDonation(): GarboTask[] {
             )
             .externalIf(
               !donation?.monster.attributes.includes("FREE"),
-              Macro.step(escape.macro),
+              Macro.step(escape?.macro ?? ""),
             )
             .kill(),
         () => Macro.kill(),
       ),
       prepare: () => {
         useFamiliar($familiar`Chest Mimic`);
-        escape.prepare(
+        escape?.prepare(
           new Requirement(
             [
               "100 Avoid Attack",
@@ -189,6 +178,16 @@ function mimicEggDonation(): GarboTask[] {
       },
       limit: { skip: 1 },
       spendsTurn: false,
+      sobriety: "sober",
+    },
+    {
+      name: `Donate ${donation.monster} mimic egg`,
+      ready: () => ChestMimic.eggMonsters().has(donation.monster),
+      completed: () => get("_mimicEggsDonated") >= 3,
+      outfit: { familiar: $familiar`Chest Mimic` },
+      do: () => ChestMimic.donate(donation.monster),
+      limit: { skip: 3 },
+      spendsTurn: false,
     },
   ];
 }
@@ -196,5 +195,9 @@ function mimicEggDonation(): GarboTask[] {
 export const FreeMimicEggDonationQuest: Delayed<Quest<GarboTask>> = () => ({
   name: "Free Mimic Egg Donation",
   tasks: [...mimicEggDonation()],
-  ready: () => globalOptions.prefs.beSelfish !== true && sober(),
+  ready: () =>
+    globalOptions.prefs.beSelfish !== true &&
+    ChestMimic.have() &&
+    CombatLoversLocket.have(),
+  completed: () => get("_mimicEggsDonated") >= 3,
 });
