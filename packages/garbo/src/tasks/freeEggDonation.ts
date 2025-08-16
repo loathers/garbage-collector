@@ -63,7 +63,9 @@ function donateMonsterValue(m: Monster): number {
   );
 }
 
-function findDonateMonster(): { monster: Monster; count: number } | undefined {
+function findDonateMonster(
+  onlyFree: boolean,
+): { monster: Monster; count: number } | undefined {
   const incomplete = queryEggNetIncomplete();
   if (incomplete.size === 0) return undefined;
 
@@ -81,7 +83,10 @@ function findDonateMonster(): { monster: Monster; count: number } | undefined {
     ...$monsters
       .all()
       .filter(
-        (x) => x.attributes.includes("BOSS") || x.attributes.includes("NOCOPY"),
+        (x) =>
+          x.attributes.includes("BOSS") ||
+          x.attributes.includes("NOCOPY") ||
+          (onlyFree && !x.attributes.includes("FREE")),
       ),
     ...$monsters`Source Agent`,
   ]);
@@ -93,49 +98,55 @@ function findDonateMonster(): { monster: Monster; count: number } | undefined {
   return monster ? { monster, count } : undefined;
 }
 
-function mimicEscape(): ActionSource | null {
-  return tryFindFreeRunOrBanish({
-    noFamiliar: () => true,
-    allowedAction: (action) =>
-      action.source === $skill`Snokebomb` && getUsingFreeBunnyBanish()
-        ? $skill`Snokebomb`.timescast < 2
-        : true,
-  });
+function mimicEscape(): ActionSource | undefined {
+  return (
+    tryFindFreeRunOrBanish({
+      noFamiliar: () => true,
+      allowedAction: (action) =>
+        action.source === $skill`Snokebomb` && getUsingFreeBunnyBanish()
+          ? $skill`Snokebomb`.timescast < 2
+          : true,
+    }) ?? undefined
+  );
 }
 
 function mimicEggDonation(): GarboTask[] {
-  const donation = findDonateMonster();
-  if (!donation) {
-    return [];
-  }
-
   const escape = mimicEscape();
+  const donation = findDonateMonster(escape === undefined);
 
   return [
     {
-      name: `Harvest ${donation.monster} mimic egg(s)`,
+      name: `Donate mimic egg`,
+      ready: () => ChestMimic.getDonableMonsters().length > 0,
+      completed: () => get("_mimicEggsDonated") >= 3,
+      outfit: { familiar: $familiar`Chest Mimic` },
+      do: () => ChestMimic.donate(ChestMimic.getDonableMonsters()[0]),
+      limit: { skip: 3 },
+      spendsTurn: false,
+    },
+    {
+      name: `Harvest mimic eggs`,
       ready: () =>
-        !!escape &&
-        donation.count > 0 &&
-        $familiar`Chest Mimic`.experience > 50 &&
-        get("_mimicEggsObtained") < 11 &&
-        get("_mimicEggsDonated") < 3,
+        !!donation &&
+        donation?.count > 0 &&
+        CombatLoversLocket.canReminisce(donation.monster) &&
+        (!!escape || donation.monster.attributes.includes("FREE")) &&
+        $familiar`Chest Mimic`.experience > 50,
       completed: () =>
-        ChestMimic.eggMonsters().has(donation.monster) ||
-        !CombatLoversLocket.canReminisce(donation.monster),
-      do: () => CombatLoversLocket.reminisce(donation.monster),
+        get("_mimicEggsObtained") >= 11 || get("_mimicEggsDonated") >= 3 || ChestMimic.eggMonsters().has(donation?.monster ?? Monster.none),
+      do: () => CombatLoversLocket.reminisce(donation?.monster ?? Monster.none),
       combat: new GarboStrategy(
         () =>
           Macro.externalIf(
-            Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 0,
+            Math.min(donation?.count ?? 0, 3 - get("_mimicEggsDonated")) > 0,
             Macro.trySkill($skill`%fn, lay an egg`),
           )
             .externalIf(
-              Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 1,
+              Math.min(donation?.count ?? 0, 3 - get("_mimicEggsDonated")) > 1,
               Macro.trySkill($skill`%fn, lay an egg`),
             )
             .externalIf(
-              Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 2,
+              Math.min(donation?.count ?? 0, 3 - get("_mimicEggsDonated")) > 2,
               Macro.trySkill($skill`%fn, lay an egg`),
             )
             .externalIf(
@@ -179,15 +190,6 @@ function mimicEggDonation(): GarboTask[] {
       limit: { skip: 1 },
       spendsTurn: false,
       sobriety: "sober",
-    },
-    {
-      name: `Donate ${donation.monster} mimic egg`,
-      ready: () => ChestMimic.eggMonsters().has(donation.monster),
-      completed: () => get("_mimicEggsDonated") >= 3,
-      outfit: { familiar: $familiar`Chest Mimic` },
-      do: () => ChestMimic.donate(donation.monster),
-      limit: { skip: 3 },
-      spendsTurn: false,
     },
   ];
 }
