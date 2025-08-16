@@ -124,7 +124,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28562); // fix: names for base hippy camp, frat house, video game dungeons
+  sinceKolmafiaRevision(28603); // time cop
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);

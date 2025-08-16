@@ -214,6 +214,10 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_buyPass",
           help: "Set to true to buy a Dinsey day pass with FunFunds at the end of the day, if possible.",
         }),
+        beSelfish: Args.boolean({
+          setting: "_garbo_beSelfish",
+          help: "Set to true to not spend a small amount of daily resources on community endeavors.",
+        }),
         autoUserConfirm: Args.boolean({
           setting: "garbo_autoUserConfirm",
           help: "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive.",

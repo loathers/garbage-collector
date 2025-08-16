@@ -5,6 +5,7 @@ export { DailyQuest } from "./daily";
 export { DailyFamiliarsQuest } from "./dailyFamiliars";
 export { DailyItemsQuest } from "./dailyItems";
 export { FreeFightQuest } from "./freeFight";
+export { FreeMimicEggDonationQuest } from "./freeEggDonation";
 export { PostFreeFightQuest } from "./postFreeFight";
 export { SetupTargetCopyQuest } from "./target";
 export { DailySeaQuest } from "./dailySea";
