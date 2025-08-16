@@ -133,7 +133,9 @@ function mimicEggDonation(): GarboTask[] {
         (!!escape || donation.monster.attributes.includes("FREE")) &&
         $familiar`Chest Mimic`.experience > 50,
       completed: () =>
-        get("_mimicEggsObtained") >= 11 || get("_mimicEggsDonated") >= 3 || ChestMimic.eggMonsters().has(donation?.monster ?? Monster.none),
+        get("_mimicEggsObtained") >= 11 ||
+        get("_mimicEggsDonated") >= 3 ||
+        ChestMimic.eggMonsters().has(donation?.monster ?? Monster.none),
       do: () => CombatLoversLocket.reminisce(donation?.monster ?? Monster.none),
       combat: new GarboStrategy(
         () =>
