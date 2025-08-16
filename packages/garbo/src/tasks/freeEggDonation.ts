@@ -16,6 +16,7 @@ import {
   $familiar,
   $item,
   $items,
+  $monster,
   $monsters,
   $skill,
   ActionSource,
@@ -75,7 +76,7 @@ function findDonateMonster(
     return { monster: alreadyHave, count };
   }
 
-  const maxMonsterId = 2497; // Last Update Aug 2025
+  const maxMonsterId = $monster`time cop`.id; // Last Update Aug 2025
   const banned = new Set<Monster>([
     ...Location.all()
       .filter((x) => x.zone === "FantasyRealm")
