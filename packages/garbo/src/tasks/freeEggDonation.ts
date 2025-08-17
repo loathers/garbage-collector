@@ -120,7 +120,7 @@ function mimicEggDonation(): GarboTask[] {
   return [
     {
       name: `Donate mimic egg`,
-      ready: () => ChestMimic.getDonableMonsters().includes(donation.monster),
+      ready: () => ChestMimic.eggMonsters().has(donation.monster),
       completed: () => get("_mimicEggsDonated") >= 3,
       outfit: { familiar: $familiar`Chest Mimic` },
       do: () => ChestMimic.donate(donation.monster),
