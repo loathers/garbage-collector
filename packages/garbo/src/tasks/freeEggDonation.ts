@@ -202,5 +202,6 @@ export const FreeMimicEggDonationQuest: Delayed<Quest<GarboTask>> = () => ({
     globalOptions.prefs.beSelfish !== true &&
     ChestMimic.have() &&
     CombatLoversLocket.have(),
-  completed: () => get("_mimicEggsDonated") >= 3,
+  completed: () =>
+    get("_mimicEggsDonated") >= 3 || get("_mimicEggsObtained") >= 11,
 });
