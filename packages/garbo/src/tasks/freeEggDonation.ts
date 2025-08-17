@@ -89,7 +89,9 @@ function findDonateMonster(
     (m) => donateMonsterValue(m),
   );
   const count = incomplete.get(monster ?? Monster.none) ?? 0;
-  return monster ? { monster, count } : undefined;
+  return !!monster && monster !== Monster.none && count > 0
+    ? { monster, count }
+    : undefined;
 }
 
 function mimicEscape(): ActionSource | undefined {
@@ -108,12 +110,7 @@ function mimicEggDonation(): GarboTask[] {
   const escape = mimicEscape();
   const donation = findDonateMonster(!escape);
 
-  if (
-    !donation ||
-    donation.monster === Monster.none ||
-    donation.count === 0 ||
-    donation.count === 100
-  ) {
+  if (!donation) {
     return [];
   }
 
@@ -204,6 +201,5 @@ export const FreeMimicEggDonationQuest: Delayed<Quest<GarboTask>> = () => ({
     globalOptions.prefs.beSelfish !== true &&
     ChestMimic.have() &&
     CombatLoversLocket.have(),
-  completed: () =>
-    get("_mimicEggsDonated") >= 3 || get("_mimicEggsObtained") >= 11,
+  completed: () => get("_mimicEggsDonated") >= 3,
 });
