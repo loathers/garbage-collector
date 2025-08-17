@@ -86,7 +86,7 @@ function findDonateMonster(
   ]);
   const monster = CombatLoversLocket.findMonster(
     (m) => m.id <= maxMonsterId && incomplete.has(m) && !banned.has(m),
-    donateMonsterValue,
+    (m) => donateMonsterValue(m),
   );
   const count = incomplete.get(monster ?? Monster.none) ?? 0;
   return monster ? { monster, count } : undefined;
