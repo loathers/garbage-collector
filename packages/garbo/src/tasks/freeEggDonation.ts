@@ -74,7 +74,7 @@ function findDonateMonster(
     (x) => (!onlyFree || x.attributes.includes("FREE")) && incomplete.has(x),
   );
   if (alreadyHave) {
-    const count = incomplete.get(alreadyHave ?? Monster.none) ?? 0;
+    const count = incomplete.get(alreadyHave) ?? 0;
     return { monster: alreadyHave, count };
   }
 
@@ -120,10 +120,13 @@ function mimicEggDonation(): GarboTask[] {
   return [
     {
       name: `Donate mimic egg`,
-      ready: () => ChestMimic.getDonableMonsters().length > 0,
+      ready: () =>
+        !!donation &&
+        donation?.count > 0 &&
+        ChestMimic.eggMonsters().has(donation?.monster ?? Monster.none),
       completed: () => get("_mimicEggsDonated") >= 3,
       outfit: { familiar: $familiar`Chest Mimic` },
-      do: () => ChestMimic.donate(ChestMimic.getDonableMonsters()[0]),
+      do: () => ChestMimic.donate(donation?.monster ?? Monster.none),
       limit: { skip: 3 },
       spendsTurn: false,
     },
