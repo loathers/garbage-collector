@@ -30634,7 +30634,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("748c471c19ab9bafc837d50ce57755d657bef5b8", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9820aaa6d9c279c34602c5e47dc77e679cb7496f", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -50538,9 +50538,6 @@ var _templateObject1860;
 var _templateObject1958;
 var _templateObject2057;
 var _templateObject21116;
-function _taggedTemplateLiteral145(e, t) {
-  return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
-}
 function _toConsumableArray73(r) {
   return _arrayWithoutHoles73(r) || _iterableToArray73(r) || _unsupportedIterableToArray94(r) || _nonIterableSpread73();
 }
@@ -50552,6 +50549,9 @@ function _iterableToArray73(r) {
 }
 function _arrayWithoutHoles73(r) {
   if (Array.isArray(r)) return _arrayLikeToArray94(r);
+}
+function _taggedTemplateLiteral145(e, t) {
+  return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
 }
 function _slicedToArray48(r, e) {
   return _arrayWithHoles48(r) || _iterableToArrayLimit48(r, e) || _unsupportedIterableToArray94(r, e) || _nonIterableRest48();
@@ -50599,7 +50599,7 @@ function queryEggNetIncomplete() {
   try {
     var status = JSON.parse((0, import_kolmafia154.visitUrl)("https://eggnet.loathers.net/status"));
     return new Map(Object.entries(status.eggs).filter(function(entry) {
-      return entry[1] < 100;
+      return entry[1] > 0 && entry[1] < 100;
     }).map(function(_ref) {
       var _ref2 = _slicedToArray48(_ref, 2), id = _ref2[0], count = _ref2[1];
       return [import_kolmafia154.Monster.get(id), count];
@@ -50617,20 +50617,9 @@ function donateMonsterValue(m) {
   });
 }
 function findDonateMonster(onlyFree) {
-  var _incomplete$get2;
+  var _incomplete$get;
   var incomplete = queryEggNetIncomplete();
   if (incomplete.size === 0) return void 0;
-  var alreadyHave = _toConsumableArray73(ChestMimic_exports.eggMonsters().keys()).find(function(x) {
-    return (!onlyFree || x.attributes.includes("FREE")) && incomplete.has(x);
-  });
-  if (alreadyHave) {
-    var _incomplete$get;
-    var _count = (_incomplete$get = incomplete.get(alreadyHave)) !== null && _incomplete$get !== void 0 ? _incomplete$get : 0;
-    return {
-      monster: alreadyHave,
-      count: _count
-    };
-  }
   var maxMonsterId = $monster(_templateObject1100 || (_templateObject1100 = _taggedTemplateLiteral145(["time cop"]))).id;
   var banned2 = new Set([].concat(_toConsumableArray73(import_kolmafia154.Location.all().filter(function(x) {
     return x.zone === "FantasyRealm";
@@ -50641,9 +50630,11 @@ function findDonateMonster(onlyFree) {
   })), _toConsumableArray73($monsters(_templateObject2280 || (_templateObject2280 = _taggedTemplateLiteral145(["Source Agent"]))))));
   var monster = CombatLoversLocket_exports.findMonster(function(m) {
     return m.id <= maxMonsterId && incomplete.has(m) && !banned2.has(m);
-  }, donateMonsterValue);
-  var count = (_incomplete$get2 = incomplete.get(monster !== null && monster !== void 0 ? monster : import_kolmafia154.Monster.none)) !== null && _incomplete$get2 !== void 0 ? _incomplete$get2 : 0;
-  return monster ? {
+  }, function(m) {
+    return donateMonsterValue(m);
+  });
+  var count = (_incomplete$get = incomplete.get(monster !== null && monster !== void 0 ? monster : import_kolmafia154.Monster.none)) !== null && _incomplete$get !== void 0 ? _incomplete$get : 0;
+  return !!monster && monster !== import_kolmafia154.Monster.none && count > 0 ? {
     monster: monster,
     count: count
   } : void 0;
@@ -50661,12 +50652,14 @@ function mimicEscape() {
 }
 function mimicEggDonation() {
   var escape = mimicEscape();
-  var donation = findDonateMonster(escape === void 0);
+  var donation = findDonateMonster(!escape);
+  if (!donation) {
+    return [];
+  }
   return [{
     name: "Donate mimic egg",
     ready: function() {
-      var _donation$monster;
-      return !!donation && (donation === null || donation === void 0 ? void 0 : donation.count) > 0 && ChestMimic_exports.eggMonsters().has((_donation$monster = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster !== void 0 ? _donation$monster : import_kolmafia154.Monster.none);
+      return ChestMimic_exports.eggMonsters().has(donation.monster);
     },
     completed: function() {
       return get("_mimicEggsDonated") >= 3;
@@ -50675,8 +50668,7 @@ function mimicEggDonation() {
       familiar: $familiar(_templateObject5164 || (_templateObject5164 = _taggedTemplateLiteral145(["Chest Mimic"])))
     },
     do: function() {
-      var _donation$monster2;
-      return ChestMimic_exports.donate((_donation$monster2 = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster2 !== void 0 ? _donation$monster2 : import_kolmafia154.Monster.none);
+      return ChestMimic_exports.donate(donation.monster);
     },
     limit: {
       skip: 3
@@ -50685,19 +50677,17 @@ function mimicEggDonation() {
   }, {
     name: "Harvest mimic eggs",
     ready: function() {
-      return !!donation && (donation === null || donation === void 0 ? void 0 : donation.count) > 0 && CombatLoversLocket_exports.canReminisce(donation.monster) && (!!escape || donation.monster.attributes.includes("FREE")) && $familiar(_templateObject6153 || (_templateObject6153 = _taggedTemplateLiteral145(["Chest Mimic"]))).experience > 50;
+      return CombatLoversLocket_exports.canReminisce(donation.monster) && (!!escape || donation.monster.attributes.includes("FREE")) && $familiar(_templateObject6153 || (_templateObject6153 = _taggedTemplateLiteral145(["Chest Mimic"]))).experience > 50;
     },
     completed: function() {
-      var _donation$monster3;
-      return get("_mimicEggsObtained") >= 11 || get("_mimicEggsDonated") >= 3 || ChestMimic_exports.eggMonsters().has((_donation$monster3 = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster3 !== void 0 ? _donation$monster3 : import_kolmafia154.Monster.none);
+      return get("_mimicEggsObtained") >= 11 || get("_mimicEggsDonated") >= 3 || ChestMimic_exports.eggMonsters().has(donation.monster);
     },
     do: function() {
-      var _donation$monster4;
-      return CombatLoversLocket_exports.reminisce((_donation$monster4 = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster4 !== void 0 ? _donation$monster4 : import_kolmafia154.Monster.none);
+      return CombatLoversLocket_exports.reminisce(donation.monster);
     },
     combat: new GarboStrategy(function() {
-      var _donation$count, _donation$count2, _donation$count3, _escape$macro;
-      return Macro2.externalIf(Math.min((_donation$count = donation === null || donation === void 0 ? void 0 : donation.count) !== null && _donation$count !== void 0 ? _donation$count : 0, 3 - get("_mimicEggsDonated")) > 0, Macro2.trySkill($skill(_templateObject7140 || (_templateObject7140 = _taggedTemplateLiteral145(["%fn, lay an egg"]))))).externalIf(Math.min((_donation$count2 = donation === null || donation === void 0 ? void 0 : donation.count) !== null && _donation$count2 !== void 0 ? _donation$count2 : 0, 3 - get("_mimicEggsDonated")) > 1, Macro2.trySkill($skill(_templateObject8124 || (_templateObject8124 = _taggedTemplateLiteral145(["%fn, lay an egg"]))))).externalIf(Math.min((_donation$count3 = donation === null || donation === void 0 ? void 0 : donation.count) !== null && _donation$count3 !== void 0 ? _donation$count3 : 0, 3 - get("_mimicEggsDonated")) > 2, Macro2.trySkill($skill(_templateObject9106 || (_templateObject9106 = _taggedTemplateLiteral145(["%fn, lay an egg"]))))).externalIf(!(donation !== null && donation !== void 0 && donation.monster.attributes.includes("FREE")), Macro2.step((_escape$macro = escape === null || escape === void 0 ? void 0 : escape.macro) !== null && _escape$macro !== void 0 ? _escape$macro : "")).kill();
+      var _escape$macro;
+      return Macro2.externalIf(Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 0, Macro2.trySkill($skill(_templateObject7140 || (_templateObject7140 = _taggedTemplateLiteral145(["%fn, lay an egg"]))))).externalIf(Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 1, Macro2.trySkill($skill(_templateObject8124 || (_templateObject8124 = _taggedTemplateLiteral145(["%fn, lay an egg"]))))).externalIf(Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 2, Macro2.trySkill($skill(_templateObject9106 || (_templateObject9106 = _taggedTemplateLiteral145(["%fn, lay an egg"]))))).externalIf(!!escape && !donation.monster.attributes.includes("FREE"), Macro2.step((_escape$macro = escape === null || escape === void 0 ? void 0 : escape.macro) !== null && _escape$macro !== void 0 ? _escape$macro : "")).kill();
     }, function() {
       return Macro2.kill();
     }),
