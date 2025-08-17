@@ -30634,7 +30634,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("bfddf3b63cb91655aedc5ba7d8b3b3ceac540adb", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1e5dd2ac45fdd873bd4a7f72a8b34934ab570e81", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -50621,7 +50621,7 @@ function findDonateMonster(onlyFree) {
   var incomplete = queryEggNetIncomplete();
   if (incomplete.size === 0) return void 0;
   var alreadyHave = _toConsumableArray73(ChestMimic_exports.eggMonsters().keys()).find(function(x) {
-    return incomplete.has(x);
+    return (!onlyFree || x.attributes.includes("FREE")) && incomplete.has(x);
   });
   if (alreadyHave) {
     var _incomplete$get;
