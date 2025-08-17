@@ -46,7 +46,7 @@ function queryEggNetIncomplete(): Map<Monster, number> {
 
     return new Map<Monster, number>(
       Object.entries(status.eggs)
-        .filter((entry) => entry[1] < 100)
+        .filter((entry) => entry[1] > 0 && entry[1] < 100)
         .map(([id, count]) => [Monster.get(id), count]),
     );
   } catch {
@@ -108,16 +108,19 @@ function mimicEggDonation(): GarboTask[] {
   const escape = mimicEscape();
   const donation = findDonateMonster(!escape);
 
-  if (!donation) {
+  if (
+    !donation ||
+    donation.monster === Monster.none ||
+    donation.count === 0 ||
+    donation.count === 100
+  ) {
     return [];
   }
 
   return [
     {
       name: `Donate mimic egg`,
-      ready: () =>
-        donation.count > 0 &&
-        ChestMimic.getDonableMonsters().includes(donation.monster),
+      ready: () => ChestMimic.getDonableMonsters().includes(donation.monster),
       completed: () => get("_mimicEggsDonated") >= 3,
       outfit: { familiar: $familiar`Chest Mimic` },
       do: () => ChestMimic.donate(donation.monster),
@@ -127,7 +130,6 @@ function mimicEggDonation(): GarboTask[] {
     {
       name: `Harvest mimic eggs`,
       ready: () =>
-        donation.count > 0 &&
         CombatLoversLocket.canReminisce(donation.monster) &&
         (!!escape || donation.monster.attributes.includes("FREE")) &&
         $familiar`Chest Mimic`.experience > 50,
