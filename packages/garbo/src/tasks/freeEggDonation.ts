@@ -69,15 +69,6 @@ function findDonateMonster(
 ): { monster: Monster; count: number } | undefined {
   const incomplete = queryEggNetIncomplete();
   if (incomplete.size === 0) return undefined;
-
-  const alreadyHave = [...ChestMimic.eggMonsters().keys()].find(
-    (x) => (!onlyFree || x.attributes.includes("FREE")) && incomplete.has(x),
-  );
-  if (alreadyHave) {
-    const count = incomplete.get(alreadyHave) ?? 0;
-    return { monster: alreadyHave, count };
-  }
-
   const maxMonsterId = $monster`time cop`.id; // Last Update Aug 2025
   const banned = new Set<Monster>([
     ...Location.all()
@@ -115,50 +106,52 @@ function mimicEscape(): ActionSource | undefined {
 
 function mimicEggDonation(): GarboTask[] {
   const escape = mimicEscape();
-  const donation = findDonateMonster(escape === undefined);
+  const donation = findDonateMonster(!escape);
+
+  if (!donation) {
+    return [];
+  }
 
   return [
     {
       name: `Donate mimic egg`,
       ready: () =>
-        !!donation &&
-        donation?.count > 0 &&
-        ChestMimic.eggMonsters().has(donation?.monster ?? Monster.none),
+        donation.count > 0 &&
+        ChestMimic.getDonableMonsters().includes(donation.monster),
       completed: () => get("_mimicEggsDonated") >= 3,
       outfit: { familiar: $familiar`Chest Mimic` },
-      do: () => ChestMimic.donate(donation?.monster ?? Monster.none),
+      do: () => ChestMimic.donate(donation.monster),
       limit: { skip: 3 },
       spendsTurn: false,
     },
     {
       name: `Harvest mimic eggs`,
       ready: () =>
-        !!donation &&
-        donation?.count > 0 &&
+        donation.count > 0 &&
         CombatLoversLocket.canReminisce(donation.monster) &&
         (!!escape || donation.monster.attributes.includes("FREE")) &&
         $familiar`Chest Mimic`.experience > 50,
       completed: () =>
         get("_mimicEggsObtained") >= 11 ||
         get("_mimicEggsDonated") >= 3 ||
-        ChestMimic.eggMonsters().has(donation?.monster ?? Monster.none),
-      do: () => CombatLoversLocket.reminisce(donation?.monster ?? Monster.none),
+        ChestMimic.eggMonsters().has(donation.monster),
+      do: () => CombatLoversLocket.reminisce(donation.monster),
       combat: new GarboStrategy(
         () =>
           Macro.externalIf(
-            Math.min(donation?.count ?? 0, 3 - get("_mimicEggsDonated")) > 0,
+            Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 0,
             Macro.trySkill($skill`%fn, lay an egg`),
           )
             .externalIf(
-              Math.min(donation?.count ?? 0, 3 - get("_mimicEggsDonated")) > 1,
+              Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 1,
               Macro.trySkill($skill`%fn, lay an egg`),
             )
             .externalIf(
-              Math.min(donation?.count ?? 0, 3 - get("_mimicEggsDonated")) > 2,
+              Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 2,
               Macro.trySkill($skill`%fn, lay an egg`),
             )
             .externalIf(
-              !donation?.monster.attributes.includes("FREE"),
+              !!escape && !donation.monster.attributes.includes("FREE"),
               Macro.step(escape?.macro ?? ""),
             )
             .kill(),
