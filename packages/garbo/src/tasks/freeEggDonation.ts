@@ -70,8 +70,8 @@ function findDonateMonster(
   const incomplete = queryEggNetIncomplete();
   if (incomplete.size === 0) return undefined;
 
-  const alreadyHave = [...ChestMimic.eggMonsters().keys()].find((x) =>
-    incomplete.has(x),
+  const alreadyHave = [...ChestMimic.eggMonsters().keys()].find(
+    (x) => (!onlyFree || x.attributes.includes("FREE")) && incomplete.has(x),
   );
   if (alreadyHave) {
     const count = incomplete.get(alreadyHave ?? Monster.none) ?? 0;
