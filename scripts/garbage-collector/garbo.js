@@ -30634,7 +30634,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1e5dd2ac45fdd873bd4a7f72a8b34934ab570e81", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("748c471c19ab9bafc837d50ce57755d657bef5b8", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -50625,7 +50625,7 @@ function findDonateMonster(onlyFree) {
   });
   if (alreadyHave) {
     var _incomplete$get;
-    var _count = (_incomplete$get = incomplete.get(alreadyHave !== null && alreadyHave !== void 0 ? alreadyHave : import_kolmafia154.Monster.none)) !== null && _incomplete$get !== void 0 ? _incomplete$get : 0;
+    var _count = (_incomplete$get = incomplete.get(alreadyHave)) !== null && _incomplete$get !== void 0 ? _incomplete$get : 0;
     return {
       monster: alreadyHave,
       count: _count
@@ -50665,7 +50665,8 @@ function mimicEggDonation() {
   return [{
     name: "Donate mimic egg",
     ready: function() {
-      return ChestMimic_exports.getDonableMonsters().length > 0;
+      var _donation$monster;
+      return !!donation && (donation === null || donation === void 0 ? void 0 : donation.count) > 0 && ChestMimic_exports.eggMonsters().has((_donation$monster = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster !== void 0 ? _donation$monster : import_kolmafia154.Monster.none);
     },
     completed: function() {
       return get("_mimicEggsDonated") >= 3;
@@ -50674,7 +50675,8 @@ function mimicEggDonation() {
       familiar: $familiar(_templateObject5164 || (_templateObject5164 = _taggedTemplateLiteral145(["Chest Mimic"])))
     },
     do: function() {
-      return ChestMimic_exports.donate(ChestMimic_exports.getDonableMonsters()[0]);
+      var _donation$monster2;
+      return ChestMimic_exports.donate((_donation$monster2 = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster2 !== void 0 ? _donation$monster2 : import_kolmafia154.Monster.none);
     },
     limit: {
       skip: 3
@@ -50686,12 +50688,12 @@ function mimicEggDonation() {
       return !!donation && (donation === null || donation === void 0 ? void 0 : donation.count) > 0 && CombatLoversLocket_exports.canReminisce(donation.monster) && (!!escape || donation.monster.attributes.includes("FREE")) && $familiar(_templateObject6153 || (_templateObject6153 = _taggedTemplateLiteral145(["Chest Mimic"]))).experience > 50;
     },
     completed: function() {
-      var _donation$monster;
-      return get("_mimicEggsObtained") >= 11 || get("_mimicEggsDonated") >= 3 || ChestMimic_exports.eggMonsters().has((_donation$monster = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster !== void 0 ? _donation$monster : import_kolmafia154.Monster.none);
+      var _donation$monster3;
+      return get("_mimicEggsObtained") >= 11 || get("_mimicEggsDonated") >= 3 || ChestMimic_exports.eggMonsters().has((_donation$monster3 = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster3 !== void 0 ? _donation$monster3 : import_kolmafia154.Monster.none);
     },
     do: function() {
-      var _donation$monster2;
-      return CombatLoversLocket_exports.reminisce((_donation$monster2 = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster2 !== void 0 ? _donation$monster2 : import_kolmafia154.Monster.none);
+      var _donation$monster4;
+      return CombatLoversLocket_exports.reminisce((_donation$monster4 = donation === null || donation === void 0 ? void 0 : donation.monster) !== null && _donation$monster4 !== void 0 ? _donation$monster4 : import_kolmafia154.Monster.none);
     },
     combat: new GarboStrategy(function() {
       var _donation$count, _donation$count2, _donation$count3, _escape$macro;
