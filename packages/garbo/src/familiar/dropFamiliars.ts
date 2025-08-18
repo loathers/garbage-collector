@@ -1,5 +1,6 @@
 import { Familiar, Item } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
@@ -92,6 +93,11 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
     familiar: $familiar`Green Pixie`,
     expected: [3.03, 3.42, 3.91, 4.52, 5.29],
     drop: $item`tiny bottle of absinthe`,
+    // no drops can occur when Absinthe-Minded is active
+    additionalValue: () =>
+      have($effect`Absinthe-Minded`)
+        ? -garboValue($item`tiny bottle of absinthe`)
+        : 0,
   },
   {
     familiar: $familiar`Blavious Kloop`,
