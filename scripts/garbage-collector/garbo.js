@@ -30634,7 +30634,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1d3d7d744178e4cd9c7d62bf13c3c9a4c241a1f6", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("219062324d5226e3f9298a69f0eb119ae54ce834", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -50728,7 +50728,7 @@ function mimicEggDonation() {
     },
     combat: new GarboStrategy(function() {
       var _escape$macro;
-      return Macro2.externalIf(Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 0, Macro2.trySkill($skill(_templateObject7141 || (_templateObject7141 = _taggedTemplateLiteral146(["%fn, lay an egg"]))))).externalIf(Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 1, Macro2.trySkill($skill(_templateObject8124 || (_templateObject8124 = _taggedTemplateLiteral146(["%fn, lay an egg"]))))).externalIf(Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 2, Macro2.trySkill($skill(_templateObject9106 || (_templateObject9106 = _taggedTemplateLiteral146(["%fn, lay an egg"]))))).externalIf(!!escape && !donation.monster.attributes.includes("FREE"), Macro2.step((_escape$macro = escape === null || escape === void 0 ? void 0 : escape.macro) !== null && _escape$macro !== void 0 ? _escape$macro : "")).kill();
+      return Macro2.externalIf(Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 0, Macro2.trySkill($skill(_templateObject7141 || (_templateObject7141 = _taggedTemplateLiteral146(["%fn, lay an egg"]))))).externalIf(Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 1, Macro2.trySkill($skill(_templateObject8124 || (_templateObject8124 = _taggedTemplateLiteral146(["%fn, lay an egg"]))))).externalIf(Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 2, Macro2.trySkill($skill(_templateObject9106 || (_templateObject9106 = _taggedTemplateLiteral146(["%fn, lay an egg"]))))).externalIf(!!escape && !donation.monster.attributes.includes("FREE"), Macro2.step((_escape$macro = escape === null || escape === void 0 ? void 0 : escape.macro) !== null && _escape$macro !== void 0 ? _escape$macro : "")).kill();
     }, function() {
       return Macro2.kill();
     }),
