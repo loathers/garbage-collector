@@ -1,7 +1,5 @@
 import {
   adv1,
-  autosell,
-  autosellPrice,
   availableAmount,
   canAdventure,
   canEquip,
@@ -512,20 +510,6 @@ function canGetFusedFuse() {
   );
 }
 
-function getAutosellableMeltingJunk(): Item[] {
-  return Item.all().filter(
-    (i) =>
-      (getModifier("Lasts Until Rollover", i) ||
-        (globalOptions.ascend && i.quest)) &&
-      itemAmount(i) &&
-      autosellPrice(i) > 0 &&
-      (globalOptions.ascend ||
-        !(
-          ["Adventures", "PvP Fights", "Rollover Effect Duration"] as const
-        ).some((mod) => getModifier(mod))),
-  );
-}
-
 const peridotZone = () =>
   getAvailableUltraRareZones().find(
     (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l),
@@ -679,14 +663,6 @@ const NonBarfTurnTasks: AlternateTask[] = [
     spendsTurn: true,
     sobriety: "drunk",
     turns: () => availableAmount($item`Map to Safety Shelter Grimace Prime`),
-  },
-  {
-    name: "Autosell Melting Junk",
-    completed: () => getAutosellableMeltingJunk().length === 0,
-    spendsTurn: false,
-    turns: 0,
-    do: () =>
-      getAutosellableMeltingJunk().forEach((i) => autosell(i, itemAmount(i))),
   },
   {
     name: "Peridot Fish for UR",
