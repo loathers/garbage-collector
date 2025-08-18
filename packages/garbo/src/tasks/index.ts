@@ -4,6 +4,7 @@ export { CockroachSetup } from "./cockroach";
 export { DailyQuest } from "./daily";
 export { DailyFamiliarsQuest } from "./dailyFamiliars";
 export { DailyItemsQuest } from "./dailyItems";
+export { FinishUpQuest } from "./finishUp";
 export { FreeFightQuest } from "./freeFight";
 export { FreeMimicEggDonationQuest } from "./freeEggDonation";
 export { PostFreeFightQuest } from "./postFreeFight";
