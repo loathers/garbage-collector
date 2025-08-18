@@ -138,15 +138,15 @@ function mimicEggDonation(): GarboTask[] {
       combat: new GarboStrategy(
         () =>
           Macro.externalIf(
-            Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 0,
+            Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 0,
             Macro.trySkill($skill`%fn, lay an egg`),
           )
             .externalIf(
-              Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 1,
+              Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 1,
               Macro.trySkill($skill`%fn, lay an egg`),
             )
             .externalIf(
-              Math.min(donation.count, 3 - get("_mimicEggsDonated")) > 2,
+              Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 2,
               Macro.trySkill($skill`%fn, lay an egg`),
             )
             .externalIf(
