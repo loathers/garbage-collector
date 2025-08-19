@@ -169,7 +169,12 @@ import { garboValue } from "./garboValue";
 import { wanderer } from "./garboWanderer";
 import { runTargetFight } from "./target/execution";
 import { TargetFightRunOptions } from "./target/staging";
-import { EmbezzlerFightsQuest, FreeFightQuest, runGarboQuests } from "./tasks";
+import {
+  EmbezzlerFightsQuest,
+  FreeFightQuest,
+  FreeMimicEggDonationQuest,
+  runGarboQuests,
+} from "./tasks";
 import {
   expectedFreeFightQuestFights,
   possibleFreeFightQuestTentacleFights,
@@ -1694,6 +1699,9 @@ export function freeFights(): void {
   // TODO: Run grimorized free fights until all are converted
   // TODO: freeFightMood()
   runGarboQuests([PostQuest(), FreeFightQuest, FreeGiantSandwormQuest]);
+
+  // Run any community endeavors
+  runGarboQuests([PostQuest(), undelay(FreeMimicEggDonationQuest)]);
 
   tryFillLatte();
   postFreeFightDailySetup();
