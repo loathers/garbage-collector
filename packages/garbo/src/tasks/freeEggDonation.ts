@@ -40,13 +40,18 @@ import { GarboTask } from "./engine";
 function queryEggNetIncomplete(): Map<Monster, number> {
   try {
     const status: {
-      lastUpdate: number;
+      lastUpdate: string;
       eggs: { [id: string]: number };
     } = JSON.parse(visitUrl("https://eggnet.loathers.net/status"));
 
+    const lastUpdate = new Date(status.lastUpdate);
+    const daysSince =
+      (Date.now() - lastUpdate.getTime()) / (24 * 60 * 60 * 1000);
+    const max = daysSince < 0.5 ? 100 : 100 - 10 * daysSince;
+
     return new Map<Monster, number>(
       Object.entries(status.eggs)
-        .filter((entry) => entry[1] > 0 && entry[1] < 100)
+        .filter((entry) => entry[1] > 0 && entry[1] < max)
         .map(([id, count]) => [Monster.get(id), count]),
     );
   } catch {
