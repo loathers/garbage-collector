@@ -30634,7 +30634,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("219062324d5226e3f9298a69f0eb119ae54ce834", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("3212d8efb9ad2dc10ee17af11a60857208c98f4f", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -50639,8 +50639,11 @@ function _arrayWithHoles48(r) {
 function queryEggNetIncomplete() {
   try {
     var status = JSON.parse((0, import_kolmafia155.visitUrl)("https://eggnet.loathers.net/status"));
+    var lastUpdate = new Date(status.lastUpdate);
+    var daysSince = (Date.now() - lastUpdate.getTime()) / (24 * 60 * 60 * 1e3);
+    var max = daysSince < 0.5 ? 100 : 100 - 10 * daysSince;
     return new Map(Object.entries(status.eggs).filter(function(entry) {
-      return entry[1] > 0 && entry[1] < 100;
+      return entry[1] > 0 && entry[1] < max;
     }).map(function(_ref) {
       var _ref2 = _slicedToArray48(_ref, 2), id = _ref2[0], count = _ref2[1];
       return [import_kolmafia155.Monster.get(id), count];
