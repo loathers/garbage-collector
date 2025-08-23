@@ -5,6 +5,8 @@ import { get, NumericOrStringProperty } from "libram";
 export const main: ChoiceAdventureScript = (choiceNumber, pageText) => {
   switch (choiceNumber) {
     case 536: // Map for pills
+    case 914: // Louvre it or Leave it
+    case 1499: // Labyrinth of shadows
       return; // Doesn't follow traditional choice adventure structure
     case 1557: {
       const option = get("choiceAdventure1557" as NumericOrStringProperty);
