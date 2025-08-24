@@ -322,6 +322,7 @@ function leafResin(): GarboPostTask {
     completed: () => have($effect`Resined`),
     acquire: [{ item: $item`distilled resin` }],
     do: () => use($item`distilled resin`),
+    limit: { skip: estimatedGarboTurns() / 100 + 1 },
   };
 }
 
