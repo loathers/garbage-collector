@@ -4346,7 +4346,7 @@ __metadata:
     eslint-config-garbo: ^0.0.1
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.29
-    kolmafia: ^5.28651.0
+    kolmafia: ^5.28673.0
     libram: ^0.11.7
     lint-staged: ^15.2.9
     madge: ^8.0.0
@@ -5066,9 +5066,9 @@ __metadata:
   linkType: hard
 
 "kolmafia@npm:^5.28673.0":
-  version: 5.28673.0
-  resolution: "kolmafia@npm:5.28673.0"
-  checksum: 639ff5e5cb3d7937f2cc185c351c137fae23156f28f300a4664a4c04f6971739bf8aa9bc7a55c93e8035fe81cbb148dc3c293fe53e7698788f337958a23b2c17
+  version: 5.28677.0
+  resolution: "kolmafia@npm:5.28677.0"
+  checksum: 22fb5889ccadd50b26334d2c7a21307b0c827239939c3c6b2154252db5d6d224a6b3f719513c69eb91f54391426769b871d0dae2e46ac527aeed1b435160c89d
   languageName: node
   linkType: hard
 
