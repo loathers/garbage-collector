@@ -1,5 +1,9 @@
-import { ChoiceAdventureScript, runChoice, xpath } from "kolmafia";
-import { getBestDartsOption, getBestMobiusOption } from "./resources";
+import { ChoiceAdventureScript, runChoice } from "kolmafia";
+import {
+  getBestDartsOption,
+  getBestMobiusOption,
+  runPeridotChoice,
+} from "./resources";
 import { get, NumericOrStringProperty } from "libram";
 
 export const main: ChoiceAdventureScript = (choiceNumber, pageText) => {
@@ -10,21 +14,8 @@ export const main: ChoiceAdventureScript = (choiceNumber, pageText) => {
       return; // Doesn't follow traditional choice adventure structure
     case 1525:
       return void runChoice(getBestDartsOption());
-    case 1557: {
-      const option = get("choiceAdventure1557" as NumericOrStringProperty);
-      if (typeof option === "string") {
-        const monsterId = option.slice("1&bandersnatch=".length);
-        if (
-          !xpath(
-            pageText,
-            `//form//input[@name='bandersnatch'][value='${monsterId}']`,
-          ).length
-        ) {
-          return void runChoice(2);
-        }
-      }
-      return;
-    }
+    case 1557:
+      return void runPeridotChoice(pageText);
     case 1562:
       return void runChoice(getBestMobiusOption());
     default: {
