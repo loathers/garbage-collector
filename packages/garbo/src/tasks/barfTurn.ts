@@ -658,11 +658,12 @@ const NonBarfTurnTasks: AlternateTask[] = [
           ? 1
           : 2,
     }),
-    do: () => {
-      ensureEffect($effect`Transpondent`);
-      use($item`Map to Safety Shelter Grimace Prime`);
-      return true;
-    },
+    do: () =>
+      withProperty("choiceAdventureScript", "", () => {
+        ensureEffect($effect`Transpondent`);
+        use($item`Map to Safety Shelter Grimace Prime`);
+        return true;
+      }),
     spendsTurn: true,
     sobriety: "drunk",
     turns: () => availableAmount($item`Map to Safety Shelter Grimace Prime`),
