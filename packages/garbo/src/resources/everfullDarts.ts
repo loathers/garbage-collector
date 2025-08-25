@@ -1,14 +1,11 @@
-import { $effect, $item, get, have } from "libram";
+import { $effect, $item, EverfullDarts, have } from "libram";
 
-export const guaranteedBullseye = () =>
-  get("everfullDartPerks").includes("25% Better bullseye targeting") &&
-  get("everfullDartPerks").includes("25% More Accurate bullseye targeting") &&
-  get("everfullDartPerks").includes("25% better chance to hit bullseyes");
+export const guaranteedBullseye = () => EverfullDarts.bullseyeChance() >= 1;
 
 export const DARTS_KILL_BEFORE_RUN = 5;
 
 const dartLevelTooHigh = () =>
-  get("everfullDartPerks").split(",").length >= DARTS_KILL_BEFORE_RUN;
+  EverfullDarts.currentPerks().length >= DARTS_KILL_BEFORE_RUN;
 
 export const safeToAttemptBullseye = () =>
   have($item`Everfull Dart Holster`) &&

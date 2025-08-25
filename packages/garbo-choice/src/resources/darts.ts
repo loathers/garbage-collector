@@ -1,7 +1,7 @@
 import { availableChoiceOptions } from "kolmafia";
 import { maxBy } from "libram";
 
-export const DART_PERKS: string[] = [
+const DART_PERKS: string[] = [
   "Bullseyes do not impress you much",
   "You are less impressed by bullseyes",
   "25% better chance to hit bullseyes",
