@@ -30634,7 +30634,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("cde6de04900d6f6d60855347774781ef82ce9010", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("fc9ce03b4e2d560e622fa903994424c10fd7563c", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -46840,9 +46840,11 @@ var NonBarfTurnTasks = [{
     };
   },
   do: function() {
-    ensureEffect($effect(_templateObject8813 || (_templateObject8813 = _taggedTemplateLiteral139(["Transpondent"]))));
-    (0, import_kolmafia148.use)($item(_templateObject8912 || (_templateObject8912 = _taggedTemplateLiteral139(["Map to Safety Shelter Grimace Prime"]))));
-    return true;
+    return withProperty("choiceAdventureScript", "", function() {
+      ensureEffect($effect(_templateObject8813 || (_templateObject8813 = _taggedTemplateLiteral139(["Transpondent"]))));
+      (0, import_kolmafia148.use)($item(_templateObject8912 || (_templateObject8912 = _taggedTemplateLiteral139(["Map to Safety Shelter Grimace Prime"]))));
+      return true;
+    });
   },
   spendsTurn: true,
   sobriety: "drunk",
