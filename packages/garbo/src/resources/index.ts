@@ -13,3 +13,4 @@ export * from "./autumnaton";
 export * from "./stillsuit";
 export * from "./leprecondo";
 export * from "./yachtzee";
+export * from "./everfullDarts";
