@@ -15,7 +15,10 @@ export const main: ChoiceAdventureScript = (choiceNumber, pageText) => {
       if (typeof option === "string") {
         const monsterId = option.slice("1&bandersnatch=".length);
         if (
-          !xpath(pageText, `//form//input[@bandersnatch='${monsterId}']`).length
+          !xpath(
+            pageText,
+            `//form//input[@name='bandersnatch'][value='${monsterId}']`,
+          ).length
         ) {
           return void runChoice(2);
         }
