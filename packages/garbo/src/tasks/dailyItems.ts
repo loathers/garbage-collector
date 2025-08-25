@@ -1,7 +1,6 @@
 import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   abort,
-  alliedRadio,
   buy,
   canAdventure,
   canEquip,
@@ -735,14 +734,6 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   leprecondoTask(),
-  {
-    name: "Allied Radio Backpack",
-    ready: () => have($item`Allied Radio Backpack`),
-    completed: () => get("_alliedRadioDropsUsed") >= 3,
-    do: () => alliedRadio("radio"),
-    limit: { skip: 3 },
-    spendsTurn: false,
-  },
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {
