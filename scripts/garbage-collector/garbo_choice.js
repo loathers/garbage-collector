@@ -30,7 +30,7 @@ __export(src_exports, {
   }
 });
 module.exports = __toCommonJS(src_exports);
-var import_kolmafia5 = require("kolmafia");
+var import_kolmafia6 = require("kolmafia");
 
 // src/resources/mobius.ts
 var import_kolmafia4 = require("kolmafia");
@@ -1117,7 +1117,8 @@ function getBestMobiusOption() {
   })[0]);
 }
 
-// src/index.ts
+// src/resources/darts.ts
+var import_kolmafia5 = require("kolmafia");
 function _slicedToArray4(r, e) {
   return _arrayWithHoles4(r) || _iterableToArrayLimit4(r, e) || _unsupportedIterableToArray5(r, e) || _nonIterableRest4();
 }
@@ -1160,6 +1161,57 @@ function _iterableToArrayLimit4(r, l) {
 function _arrayWithHoles4(r) {
   if (Array.isArray(r)) return r;
 }
+var DART_PERKS = ["Bullseyes do not impress you much", "You are less impressed by bullseyes", "25% better chance to hit bullseyes", "25% More Accurate bullseye targeting", "25% Better bullseye targeting", "Extra stats from stats targets", "Expand your dart capacity by 1", "Throw a second dart quickly", "Butt awareness", "Increase Dart Deleveling from deleveling targets", "Add Hot Damage", "Add Cold Damage", "Add Sleaze Damage", "Add Spooky Damage", "Add Stench Damage", "Deal 25-50% more damage", "Deal 25-50% extra damage", "Deal 25-50% greater damage"];
+function getBestDartsOption() {
+  return Number(maxBy(Object.entries((0, import_kolmafia5.availableChoiceOptions)()), function(_ref) {
+    var _ref2 = _slicedToArray4(_ref, 1), text = _ref2[0];
+    return DART_PERKS.includes(text) ? DART_PERKS.indexOf(text) : Infinity;
+  }, true)[0]);
+}
+
+// src/index.ts
+function _slicedToArray5(r, e) {
+  return _arrayWithHoles5(r) || _iterableToArrayLimit5(r, e) || _unsupportedIterableToArray6(r, e) || _nonIterableRest5();
+}
+function _nonIterableRest5() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _unsupportedIterableToArray6(r, a) {
+  if (r) {
+    if ("string" == typeof r) return _arrayLikeToArray6(r, a);
+    var t = {}.toString.call(r).slice(8, -1);
+    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray6(r, a) : void 0;
+  }
+}
+function _arrayLikeToArray6(r, a) {
+  (null == a || a > r.length) && (a = r.length);
+  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+  return n;
+}
+function _iterableToArrayLimit5(r, l) {
+  var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+  if (null != t) {
+    var e, n, i, u, a = [], f = true, o = false;
+    try {
+      if (i = (t = t.call(r)).next, 0 === l) {
+        if (Object(t) !== t) return;
+        f = false;
+      } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = true) ;
+    } catch (r2) {
+      o = true, n = r2;
+    } finally {
+      try {
+        if (!f && null != t.return && (u = t.return(), Object(u) !== u)) return;
+      } finally {
+        if (o) throw n;
+      }
+    }
+    return a;
+  }
+}
+function _arrayWithHoles5(r) {
+  if (Array.isArray(r)) return r;
+}
 var main = function(choiceNumber, pageText) {
   switch (choiceNumber) {
     case 536:
@@ -1169,24 +1221,26 @@ var main = function(choiceNumber, pageText) {
     case 1499:
       return;
     // Doesn't follow traditional choice adventure structure
+    case 1525:
+      return void (0, import_kolmafia6.runChoice)(getBestDartsOption());
     case 1557: {
       var option = get("choiceAdventure1557");
       if (typeof option === "string") {
         var monsterId = option.slice("1&bandersnatch=".length);
-        if (!(0, import_kolmafia5.xpath)(pageText, "//form//input[@bandersnatch='".concat(monsterId, "']")).length) {
-          return void (0, import_kolmafia5.runChoice)(2);
+        if (!(0, import_kolmafia6.xpath)(pageText, "//form//input[@bandersnatch='".concat(monsterId, "']")).length) {
+          return void (0, import_kolmafia6.runChoice)(2);
         }
       }
       return;
     }
     case 1562:
-      return void (0, import_kolmafia5.runChoice)(getBestMobiusOption());
+      return void (0, import_kolmafia6.runChoice)(getBestMobiusOption());
     default: {
       var _option = get("choiceAdventure".concat(choiceNumber));
       if (_option) {
-        if (typeof _option === "number") return void (0, import_kolmafia5.runChoice)(_option);
-        var _option$split = _option.split("&", 2), _option$split2 = _slicedToArray4(_option$split, 2), numeric = _option$split2[0], params = _option$split2[1];
-        return void (0, import_kolmafia5.runChoice)(Number(numeric), params);
+        if (typeof _option === "number") return void (0, import_kolmafia6.runChoice)(_option);
+        var _option$split = _option.split("&", 2), _option$split2 = _slicedToArray5(_option$split, 2), numeric = _option$split2[0], params = _option$split2[1];
+        return void (0, import_kolmafia6.runChoice)(Number(numeric), params);
       }
     }
   }
