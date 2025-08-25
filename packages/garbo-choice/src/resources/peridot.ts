@@ -11,8 +11,9 @@ function getChoiceOption(): [number, string | null] {
 export function runPeridotChoice(pageText: string) {
   const [option, addendums] = getChoiceOption();
   if (!addendums) return void runChoice(option);
-  if (!addendums.startsWith("bandersnatch="))
+  if (!addendums.startsWith("bandersnatch=")) {
     abort(`Invalid peridot args: ${addendums}`);
+  }
   const monsterId = addendums.slice("bandersnatch=".length);
 
   if (
