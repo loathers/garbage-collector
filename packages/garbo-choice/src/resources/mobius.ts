@@ -1,7 +1,7 @@
 import { availableChoiceOptions, Effect, Item } from "kolmafia";
 import { $effect, $item, getSaleValue, maxBy, ValueOf } from "libram";
 
-const MOBIUS_PAIRS = {
+const MOBIUS_BASE_TO_RES = {
   "Borrow a cup of sugar from yourself": "Return the sugar you borrowed",
   "Draw a goatee on yourself": "Succumb to evil",
   "Stop your Arch-Nemesis as a baby":
@@ -31,7 +31,16 @@ const MOBIUS_PAIRS = {
   "I'm not messing with the timeline!": "I'm not messing with the timeline!",
 } as const;
 
-type MobiusOption = keyof typeof MOBIUS_PAIRS | ValueOf<typeof MOBIUS_PAIRS>;
+const MOBIUS_PAIRS = {
+  ...MOBIUS_BASE_TO_RES,
+  ...Object.fromEntries(
+    Object.entries(MOBIUS_BASE_TO_RES).map(([k, v]) => [v, k]),
+  ),
+};
+
+type MobiusOption =
+  | keyof typeof MOBIUS_BASE_TO_RES
+  | ValueOf<typeof MOBIUS_BASE_TO_RES>;
 type MobiusResult = Item | Effect | number | null;
 function valueMobiusResult(result: MobiusResult): number {
   if (result === null) return 0;
