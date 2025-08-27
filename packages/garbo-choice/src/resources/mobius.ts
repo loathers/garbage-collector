@@ -102,7 +102,7 @@ function valueMobiusChoice(choice: MobiusOption): number {
   const baseValue = valueMobiusResult(MOBIUS_VALUES[choice]);
   const resolution = MOBIUS_PAIRS[choice as keyof typeof MOBIUS_PAIRS];
   const resolutionValue = resolution
-    ? valueMobiusResult(MOBIUS_VALUES[choice]) / 2
+    ? valueMobiusResult(MOBIUS_VALUES[resolution]) / 2
     : 0;
   return baseValue + resolutionValue;
 }
