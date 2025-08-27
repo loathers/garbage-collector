@@ -978,6 +978,9 @@ var _templateObject332;
 var _templateObject342;
 var _templateObject352;
 var _templateObject362;
+function _taggedTemplateLiteral2(e, t) {
+  return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
+}
 function _slicedToArray3(r, e) {
   return _arrayWithHoles3(r) || _iterableToArrayLimit3(r, e) || _unsupportedIterableToArray4(r, e) || _nonIterableRest3();
 }
@@ -1020,17 +1023,52 @@ function _iterableToArrayLimit3(r, l) {
 function _arrayWithHoles3(r) {
   if (Array.isArray(r)) return r;
 }
-function _taggedTemplateLiteral2(e, t) {
-  return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
+function ownKeys2(e, r) {
+  var t = Object.keys(e);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e);
+    r && (o = o.filter(function(r2) {
+      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
+    })), t.push.apply(t, o);
+  }
+  return t;
 }
-var MOBIUS_PAIRS = {
+function _objectSpread2(e) {
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {};
+    r % 2 ? ownKeys2(Object(t), true).forEach(function(r2) {
+      _defineProperty2(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys2(Object(t)).forEach(function(r2) {
+      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
+    });
+  }
+  return e;
+}
+function _defineProperty2(e, r, t) {
+  return (r = _toPropertyKey2(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: true, configurable: true, writable: true }) : e[r] = t, e;
+}
+function _toPropertyKey2(t) {
+  var i = _toPrimitive2(t, "string");
+  return "symbol" == typeof i ? i : i + "";
+}
+function _toPrimitive2(t, r) {
+  if ("object" != typeof t || !t) return t;
+  var e = t[Symbol.toPrimitive];
+  if (void 0 !== e) {
+    var i = e.call(t, r || "default");
+    if ("object" != typeof i) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r ? String : Number)(t);
+}
+var MOBIUS_BASE_TO_RES = {
   "Borrow a cup of sugar from yourself": "Return the sugar you borrowed",
   "Draw a goatee on yourself": "Succumb to evil",
-  "Stop your Arch-Nemesis as a baby": "Go back and make the Naughty Sorceress naughty again",
-  "Defend Yourself": "Assassinate Yourself",
+  "Stop your arch-nemesis as a baby": "Go back and make the Naughty Sorceress naughty again",
+  "Defend yourself": "Assassinate yourself",
   "Take the long odds on the trifecta": "Fix the race and also fix the race.",
   "Plant some seeds in the distant past": "Chop down some trees",
-  "Give your past self some investment tips": "Steal from your future self",
+  "Give your past self investment tips": "Steal from your future self",
   "Steal a cupcake from young Susie": "Bake Susie a cupcake",
   "Play Schroedinger's Prank on yourself": "Check your pocket",
   "Shoot yourself in the foot": "Get shot in the foot",
@@ -1038,17 +1076,21 @@ var MOBIUS_PAIRS = {
   "Go back and take a 20-year-long nap": "Go back and set an alarm",
   "Lift yourself up by your bootstraps": "Let yourself get lifted up by your bootstraps",
   "Go back and write a best-seller.": "Replace your novel with AI drivel",
-  "Peek in on your future.": "Make yourself forget",
-  "Steal a club from the past.": "Prevent the deadly seal invasion",
+  "Peek in on your future": "Make yourself forget",
+  "Steal a club from the past": "Prevent the deadly seal invasion",
   "Mind your own business": "Sit and write in your journal",
   "Plant some trees and harvest them in the future": "Teach hippies to make jams and jellies",
   "Go for a nature walk": "Go back in time and kill a butterfly",
   "Hey, free gun!": "Sell the gun",
-  "Make friends with a famous poet.": "Make enemies with a famous poet.",
+  "Make friends with a famous poet": "Make enemies with a famous poet",
   "Cheeze it, it's the pigs!": "Aiding and abetterment",
-  "Borrow meat from your future.": "Repay yourself in the past",
+  "Borrow meat from your future": "Repay yourself in the past",
   "I'm not messing with the timeline!": "I'm not messing with the timeline!"
 };
+var MOBIUS_PAIRS = _objectSpread2(_objectSpread2({}, MOBIUS_BASE_TO_RES), Object.fromEntries(Object.entries(MOBIUS_BASE_TO_RES).map(function(_ref) {
+  var _ref2 = _slicedToArray3(_ref, 2), k = _ref2[0], v = _ref2[1];
+  return [v, k];
+})));
 function valueMobiusResult(result) {
   if (result === null) return 0;
   if (typeof result === "number") return result;
@@ -1061,8 +1103,8 @@ var MOBIUS_VALUES = {
   "Return the sugar you borrowed": $effect(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral2(["Sugar Debt"]))),
   "Draw a goatee on yourself": $effect(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral2(["Merry Prankster"]))),
   "Succumb to evil": $effect(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral2(["Evil"]))),
-  "Make friends with a famous poet.": $effect(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral2(["Just the Best Anapests"]))),
-  "Make enemies with a famous poet.": $item(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral2(["fancy old wine"]))),
+  "Make friends with a famous poet": $effect(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral2(["Just the Best Anapests"]))),
+  "Make enemies with a famous poet": $item(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral2(["fancy old wine"]))),
   "Go back and take a 20-year-long nap": $effect(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral2(["Older than You Look"]))),
   "Go back and set an alarm": $item(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral2(["clock"]))),
   "Go for a nature walk": $effect(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral2(["Stricken by Lightning"]))),
@@ -1075,9 +1117,9 @@ var MOBIUS_VALUES = {
   "Chop down some trees": $item(_templateObject152 || (_templateObject152 = _taggedTemplateLiteral2(["morningwood plank"]))),
   "Play Schroedinger's Prank on yourself": $effect(_templateObject162 || (_templateObject162 = _taggedTemplateLiteral2(["Schroedinger's Anticipation"]))),
   "Check your pocket": $effect(_templateObject172 || (_templateObject172 = _taggedTemplateLiteral2(["Neither Alive nor Dead"]))),
-  "Steal a club from the past.": null,
+  "Steal a club from the past": null,
   "Prevent the deadly seal invasion": 500,
-  "Borrow meat from your future.": 1e3,
+  "Borrow meat from your future": 1e3,
   "Repay yourself in the past": $effect(_templateObject182 || (_templateObject182 = _taggedTemplateLiteral2(["Gaining Interest"]))),
   "Mind your own business": null,
   "Sit and write in your journal": $effect(_templateObject192 || (_templateObject192 = _taggedTemplateLiteral2(["Paranoia"]))),
@@ -1089,13 +1131,13 @@ var MOBIUS_VALUES = {
   "Let yourself get lifted up by your bootstraps": $effect(_templateObject242 || (_templateObject242 = _taggedTemplateLiteral2(["Lifted by your Bootstraps"]))),
   "Shoot yourself in the foot": null,
   "Get shot in the foot": $effect(_templateObject252 || (_templateObject252 = _taggedTemplateLiteral2(["Trailing Blood"]))),
-  "Give your past self some investment tips": $item(_templateObject262 || (_templateObject262 = _taggedTemplateLiteral2(["Stock Certificate"]))),
+  "Give your past self investment tips": $item(_templateObject262 || (_templateObject262 = _taggedTemplateLiteral2(["Stock Certificate"]))),
   "Steal from your future self": null,
-  "Peek in on your future.": $effect(_templateObject272 || (_templateObject272 = _taggedTemplateLiteral2(["Forearmed"]))),
+  "Peek in on your future": $effect(_templateObject272 || (_templateObject272 = _taggedTemplateLiteral2(["Forearmed"]))),
   "Make yourself forget": $effect(_templateObject282 || (_templateObject282 = _taggedTemplateLiteral2(["Beaten Up"]))),
-  "Defend Yourself": $effect(_templateObject292 || (_templateObject292 = _taggedTemplateLiteral2(["Paranoia"]))),
-  "Assassinate Yourself": null,
-  "Stop your Arch-Nemesis as a baby": $item(_templateObject302 || (_templateObject302 = _taggedTemplateLiteral2(["Life Goals Pamphlet"]))),
+  "Defend yourself": $effect(_templateObject292 || (_templateObject292 = _taggedTemplateLiteral2(["Paranoia"]))),
+  "Assassinate yourself": null,
+  "Stop your arch-nemesis as a baby": $item(_templateObject302 || (_templateObject302 = _taggedTemplateLiteral2(["Life Goals Pamphlet"]))),
   "Go back and make the Naughty Sorceress naughty again": $item(_templateObject312 || (_templateObject312 = _taggedTemplateLiteral2(["bully badge"]))),
   "Steal a cupcake from young Susie": $item(_templateObject322 || (_templateObject322 = _taggedTemplateLiteral2(["Susie's cupcake"]))),
   "Bake Susie a cupcake": $effect(_templateObject332 || (_templateObject332 = _taggedTemplateLiteral2(["Good Feelings"]))),
@@ -1107,12 +1149,12 @@ var MOBIUS_VALUES = {
 function valueMobiusChoice(choice) {
   var baseValue = valueMobiusResult(MOBIUS_VALUES[choice]);
   var resolution = MOBIUS_PAIRS[choice];
-  var resolutionValue = resolution ? valueMobiusResult(MOBIUS_VALUES[choice]) / 2 : 0;
+  var resolutionValue = resolution ? valueMobiusResult(MOBIUS_VALUES[resolution]) / 2 : 0;
   return baseValue + resolutionValue;
 }
 function getBestMobiusOption() {
-  return Number(maxBy(Object.entries((0, import_kolmafia4.availableChoiceOptions)()), function(_ref) {
-    var _ref2 = _slicedToArray3(_ref, 2), name = _ref2[1];
+  return Number(maxBy(Object.entries((0, import_kolmafia4.availableChoiceOptions)()), function(_ref3) {
+    var _ref4 = _slicedToArray3(_ref3, 2), name = _ref4[1];
     return valueMobiusChoice(name);
   })[0]);
 }
