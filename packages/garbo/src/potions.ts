@@ -32,7 +32,6 @@ import {
 import {
   $effect,
   $effects,
-  $familiar,
   $item,
   $items,
   $location,
@@ -61,6 +60,7 @@ import {
   bestShadowRift,
   HIGHLIGHT,
   improvesAStat,
+  marginalFamWeightValue,
   pillkeeperOpportunityCost,
   targetMeat,
   targetMeatDifferential,
@@ -270,20 +270,7 @@ export class Potion {
   }
 
   bonusMeat(): number {
-    const familiarMultiplier = have($familiar`Robortender`)
-      ? 2
-      : have($familiar`Hobo Monkey`)
-        ? 1.25
-        : 1;
-
-    // Assume base weight of 100 pounds. This is off but close enough.
-    const assumedBaseWeight = 100;
-    // Marginal value of familiar weight in % meat drop.
-    const marginalValue =
-      2 * familiarMultiplier +
-      Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight));
-
-    return this.familiarWeight() * marginalValue + this.meatDrop();
+    return this.familiarWeight() * marginalFamWeightValue() + this.meatDrop();
   }
 
   static bonusMeat(item: Item): number {
