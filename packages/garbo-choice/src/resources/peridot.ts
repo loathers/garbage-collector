@@ -19,7 +19,7 @@ export function runPeridotChoice(pageText: string) {
   if (
     !xpath(
       pageText,
-      `//form//input[@name='bandersnatch'][value='${monsterId}']`,
+      `//form//input[@name='bandersnatch'][@value='${monsterId}']`,
     ).length
   ) {
     return void runChoice(2); // Monster not available
