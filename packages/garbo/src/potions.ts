@@ -712,7 +712,13 @@ export function usePawWishes(
 }
 
 function useBusks() {
-  if (!PrismaticBeret.have() || get("_beretBuskingUses") >= 5) return;
+  if (
+    !PrismaticBeret.have() ||
+    get("_beretBuskingUses") >= 5 ||
+    myInebriety() < inebrietyLimit() // Do not use busks until after dieting, prioritize Salty Mouth
+  ) {
+    return;
+  }
   for (let i = get("_beretBuskingUses"); i < 5; i++) {
     PrismaticBeret.buskFor(
       {
