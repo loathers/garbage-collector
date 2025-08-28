@@ -48,6 +48,7 @@ import {
   isSong,
   maxBy,
   Mood,
+  PrismaticBeret,
   realmAvailable,
   sum,
   sumNumbers,
@@ -710,6 +711,19 @@ export function usePawWishes(
   }
 }
 
+function useBusks() {
+  if (!PrismaticBeret.have() || get("_beretBuskingUses") >= 5) return;
+  for (let i = get("_beretBuskingUses"); i < 5; i++) {
+    PrismaticBeret.buskFor(
+      {
+        "Familiar Weight": (marginalFamWeightValue() / 100) * baseMeat(),
+        "Meat Drop": baseMeat() / 100,
+      },
+      {},
+    );
+  }
+}
+
 let completedPotionSetup = false;
 export function potionSetupCompleted(): boolean {
   return completedPotionSetup;
@@ -720,6 +734,7 @@ export function potionSetupCompleted(): boolean {
  */
 export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
   castAugustScepterBuffs();
+  useBusks();
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
