@@ -1268,7 +1268,7 @@ function runPeridotChoice(pageText) {
     (0, import_kolmafia6.abort)("Invalid peridot args: ".concat(addendums));
   }
   var monsterId = addendums.slice("bandersnatch=".length);
-  if (!(0, import_kolmafia6.xpath)(pageText, "//form//input[@name='bandersnatch'][value='".concat(monsterId, "']")).length) {
+  if (!(0, import_kolmafia6.xpath)(pageText, "//form//input[@name='bandersnatch'][@value='".concat(monsterId, "']")).length) {
     return void (0, import_kolmafia6.runChoice)(2);
   }
   return void (0, import_kolmafia6.runChoice)(option, addendums);
