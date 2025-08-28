@@ -179,8 +179,9 @@ function buskEffectValuer(effect: Effect, duration: number): number {
       ? 5 * get("valueOfAdventure")
       : 0;
   const famWeightValue =
-    getModifier("Familiar Weight", effect) *
-    marginalFamWeightValue() *
+    ((getModifier("Familiar Weight", effect) * marginalFamWeightValue()) /
+      100) *
+    baseMeat() *
     duration;
   const meatValue =
     (getModifier("Meat Drop", effect) / 100) * baseMeat() * duration; // Just value barf
