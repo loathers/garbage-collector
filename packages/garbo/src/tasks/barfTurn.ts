@@ -897,7 +897,10 @@ const BarfTurnTasks: GarboTask[] = [
         allowEquipment: false,
       }),
     combat: new GarboStrategy(
-      () => Macro.meatKill(),
+      () =>
+        Macro.if_(globalOptions.target, Macro.meatKill()).abortWithMsg(
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
+        ),
       () =>
         Macro.if_(
           `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
