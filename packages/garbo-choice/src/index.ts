@@ -9,8 +9,6 @@ import { get, NumericOrStringProperty } from "libram";
 export const main: ChoiceAdventureScript = (choiceNumber, pageText) => {
   switch (choiceNumber) {
     case 536: // Map for pills
-    case 914: // Louvre it or Leave it
-    case 1499: // Labyrinth of shadows
     case 890: // Lights Out
     case 891: //
     case 892: //
@@ -25,6 +23,8 @@ export const main: ChoiceAdventureScript = (choiceNumber, pageText) => {
     case 901: //
     case 902: //
     case 903: // Lights Out
+    case 914: // Louvre it or Leave it
+    case 1499: // Labyrinth of shadows
       return; // Doesn't follow traditional choice adventure structure
     case 1525:
       return void runChoice(getBestDartsOption());
