@@ -978,6 +978,8 @@ var _templateObject332;
 var _templateObject342;
 var _templateObject352;
 var _templateObject362;
+var _templateObject37;
+var _templateObject38;
 function _taggedTemplateLiteral2(e, t) {
   return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
 }
@@ -1093,58 +1095,61 @@ var MOBIUS_PAIRS = _objectSpread2(_objectSpread2({}, MOBIUS_BASE_TO_RES), Object
 })));
 function valueMobiusResult(result) {
   if (result === null) return 0;
+  if (result === $effect(_templateObject || (_templateObject = _taggedTemplateLiteral2(["Just the Best Anapests"])))) {
+    return -1 * (0, import_kolmafia4.mallPrice)($item(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral2(["soft green echo eyedrop antidote"]))));
+  }
   if (typeof result === "number") return result;
   if (result instanceof import_kolmafia4.Item) return getSaleValue(result);
   return 0;
 }
 var MOBIUS_VALUES = {
   "I'm not messing with the timeline!": null,
-  "Borrow a cup of sugar from yourself": $item(_templateObject || (_templateObject = _taggedTemplateLiteral2(["cup of sugar"]))),
-  "Return the sugar you borrowed": $effect(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral2(["Sugar Debt"]))),
-  "Draw a goatee on yourself": $effect(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral2(["Merry Prankster"]))),
-  "Succumb to evil": $effect(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral2(["Evil"]))),
-  "Make friends with a famous poet": $effect(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral2(["Just the Best Anapests"]))),
-  "Make enemies with a famous poet": $item(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral2(["fancy old wine"]))),
-  "Go back and take a 20-year-long nap": $effect(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral2(["Older than You Look"]))),
-  "Go back and set an alarm": $item(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral2(["clock"]))),
-  "Go for a nature walk": $effect(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral2(["Stricken by Lightning"]))),
-  "Go back in time and kill a butterfly": $effect(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral2(["Hint of Bacon"]))),
-  "Cheeze it, it's the pigs!": $effect(_templateObject112 || (_templateObject112 = _taggedTemplateLiteral2(["Very Old"]))),
-  "Aiding and abetterment": $effect(_templateObject122 || (_templateObject122 = _taggedTemplateLiteral2(["Scot Free"]))),
+  "Borrow a cup of sugar from yourself": $item(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral2(["cup of sugar"]))),
+  "Return the sugar you borrowed": $effect(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral2(["Sugar Debt"]))),
+  "Draw a goatee on yourself": $effect(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral2(["Merry Prankster"]))),
+  "Succumb to evil": $effect(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral2(["Evil"]))),
+  "Make friends with a famous poet": $effect(_templateObject7 || (_templateObject7 = _taggedTemplateLiteral2(["Just the Best Anapests"]))),
+  "Make enemies with a famous poet": $item(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral2(["fancy old wine"]))),
+  "Go back and take a 20-year-long nap": $effect(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral2(["Older than You Look"]))),
+  "Go back and set an alarm": $item(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral2(["clock"]))),
+  "Go for a nature walk": $effect(_templateObject112 || (_templateObject112 = _taggedTemplateLiteral2(["Stricken by Lightning"]))),
+  "Go back in time and kill a butterfly": $effect(_templateObject122 || (_templateObject122 = _taggedTemplateLiteral2(["Hint of Bacon"]))),
+  "Cheeze it, it's the pigs!": $effect(_templateObject132 || (_templateObject132 = _taggedTemplateLiteral2(["Very Old"]))),
+  "Aiding and abetterment": $effect(_templateObject142 || (_templateObject142 = _taggedTemplateLiteral2(["Scot Free"]))),
   "Plant some trees and harvest them in the future": null,
-  "Teach hippies to make jams and jellies": $item(_templateObject132 || (_templateObject132 = _taggedTemplateLiteral2(["mixed berry jelly"]))),
-  "Plant some seeds in the distant past": $effect(_templateObject142 || (_templateObject142 = _taggedTemplateLiteral2(["Raised on Fresh Air"]))),
-  "Chop down some trees": $item(_templateObject152 || (_templateObject152 = _taggedTemplateLiteral2(["morningwood plank"]))),
-  "Play Schroedinger's Prank on yourself": $effect(_templateObject162 || (_templateObject162 = _taggedTemplateLiteral2(["Schroedinger's Anticipation"]))),
-  "Check your pocket": $effect(_templateObject172 || (_templateObject172 = _taggedTemplateLiteral2(["Neither Alive nor Dead"]))),
+  "Teach hippies to make jams and jellies": $item(_templateObject152 || (_templateObject152 = _taggedTemplateLiteral2(["mixed berry jelly"]))),
+  "Plant some seeds in the distant past": $effect(_templateObject162 || (_templateObject162 = _taggedTemplateLiteral2(["Raised on Fresh Air"]))),
+  "Chop down some trees": $item(_templateObject172 || (_templateObject172 = _taggedTemplateLiteral2(["morningwood plank"]))),
+  "Play Schroedinger's Prank on yourself": $effect(_templateObject182 || (_templateObject182 = _taggedTemplateLiteral2(["Schroedinger's Anticipation"]))),
+  "Check your pocket": $effect(_templateObject192 || (_templateObject192 = _taggedTemplateLiteral2(["Neither Alive nor Dead"]))),
   "Steal a club from the past": null,
   "Prevent the deadly seal invasion": 500,
   "Borrow meat from your future": 1e3,
-  "Repay yourself in the past": $effect(_templateObject182 || (_templateObject182 = _taggedTemplateLiteral2(["Gaining Interest"]))),
+  "Repay yourself in the past": $effect(_templateObject202 || (_templateObject202 = _taggedTemplateLiteral2(["Gaining Interest"]))),
   "Mind your own business": null,
-  "Sit and write in your journal": $effect(_templateObject192 || (_templateObject192 = _taggedTemplateLiteral2(["Paranoia"]))),
-  "Take the long odds on the trifecta": $effect(_templateObject202 || (_templateObject202 = _taggedTemplateLiteral2(["Marked by the Don"]))),
-  "Fix the race and also fix the race.": $effect(_templateObject212 || (_templateObject212 = _taggedTemplateLiteral2(["Favored by the Don"]))),
-  "Go back and write a best-seller.": $effect(_templateObject222 || (_templateObject222 = _taggedTemplateLiteral2(["Famous"]))),
-  "Replace your novel with AI drivel": $effect(_templateObject232 || (_templateObject232 = _taggedTemplateLiteral2(["Care Free"]))),
+  "Sit and write in your journal": $effect(_templateObject212 || (_templateObject212 = _taggedTemplateLiteral2(["Paranoia"]))),
+  "Take the long odds on the trifecta": $effect(_templateObject222 || (_templateObject222 = _taggedTemplateLiteral2(["Marked by the Don"]))),
+  "Fix the race and also fix the race.": $effect(_templateObject232 || (_templateObject232 = _taggedTemplateLiteral2(["Favored by the Don"]))),
+  "Go back and write a best-seller.": $effect(_templateObject242 || (_templateObject242 = _taggedTemplateLiteral2(["Famous"]))),
+  "Replace your novel with AI drivel": $effect(_templateObject252 || (_templateObject252 = _taggedTemplateLiteral2(["Care Free"]))),
   "Lift yourself up by your bootstraps": null,
-  "Let yourself get lifted up by your bootstraps": $effect(_templateObject242 || (_templateObject242 = _taggedTemplateLiteral2(["Lifted by your Bootstraps"]))),
+  "Let yourself get lifted up by your bootstraps": $effect(_templateObject262 || (_templateObject262 = _taggedTemplateLiteral2(["Lifted by your Bootstraps"]))),
   "Shoot yourself in the foot": null,
-  "Get shot in the foot": $effect(_templateObject252 || (_templateObject252 = _taggedTemplateLiteral2(["Trailing Blood"]))),
-  "Give your past self investment tips": $item(_templateObject262 || (_templateObject262 = _taggedTemplateLiteral2(["Stock Certificate"]))),
+  "Get shot in the foot": $effect(_templateObject272 || (_templateObject272 = _taggedTemplateLiteral2(["Trailing Blood"]))),
+  "Give your past self investment tips": $item(_templateObject282 || (_templateObject282 = _taggedTemplateLiteral2(["Stock Certificate"]))),
   "Steal from your future self": null,
-  "Peek in on your future": $effect(_templateObject272 || (_templateObject272 = _taggedTemplateLiteral2(["Forearmed"]))),
-  "Make yourself forget": $effect(_templateObject282 || (_templateObject282 = _taggedTemplateLiteral2(["Beaten Up"]))),
-  "Defend yourself": $effect(_templateObject292 || (_templateObject292 = _taggedTemplateLiteral2(["Paranoia"]))),
+  "Peek in on your future": $effect(_templateObject292 || (_templateObject292 = _taggedTemplateLiteral2(["Forearmed"]))),
+  "Make yourself forget": $effect(_templateObject302 || (_templateObject302 = _taggedTemplateLiteral2(["Beaten Up"]))),
+  "Defend yourself": $effect(_templateObject312 || (_templateObject312 = _taggedTemplateLiteral2(["Paranoia"]))),
   "Assassinate yourself": null,
-  "Stop your arch-nemesis as a baby": $item(_templateObject302 || (_templateObject302 = _taggedTemplateLiteral2(["Life Goals Pamphlet"]))),
-  "Go back and make the Naughty Sorceress naughty again": $item(_templateObject312 || (_templateObject312 = _taggedTemplateLiteral2(["bully badge"]))),
-  "Steal a cupcake from young Susie": $item(_templateObject322 || (_templateObject322 = _taggedTemplateLiteral2(["Susie's cupcake"]))),
-  "Bake Susie a cupcake": $effect(_templateObject332 || (_templateObject332 = _taggedTemplateLiteral2(["Good Feelings"]))),
-  "Hey, free gun!": $item(_templateObject342 || (_templateObject342 = _taggedTemplateLiteral2(["the gun"]))),
+  "Stop your arch-nemesis as a baby": $item(_templateObject322 || (_templateObject322 = _taggedTemplateLiteral2(["Life Goals Pamphlet"]))),
+  "Go back and make the Naughty Sorceress naughty again": $item(_templateObject332 || (_templateObject332 = _taggedTemplateLiteral2(["bully badge"]))),
+  "Steal a cupcake from young Susie": $item(_templateObject342 || (_templateObject342 = _taggedTemplateLiteral2(["Susie's cupcake"]))),
+  "Bake Susie a cupcake": $effect(_templateObject352 || (_templateObject352 = _taggedTemplateLiteral2(["Good Feelings"]))),
+  "Hey, free gun!": $item(_templateObject362 || (_templateObject362 = _taggedTemplateLiteral2(["the gun"]))),
   "Sell the gun": 2546,
-  "Meet your parents when they were young": $effect(_templateObject352 || (_templateObject352 = _taggedTemplateLiteral2(["Your Own Parents"]))),
-  "Fix your parents' relationship": $effect(_templateObject362 || (_templateObject362 = _taggedTemplateLiteral2(["Met Cute"])))
+  "Meet your parents when they were young": $effect(_templateObject37 || (_templateObject37 = _taggedTemplateLiteral2(["Your Own Parents"]))),
+  "Fix your parents' relationship": $effect(_templateObject38 || (_templateObject38 = _taggedTemplateLiteral2(["Met Cute"])))
 };
 function valueMobiusChoice(choice) {
   var baseValue = valueMobiusResult(MOBIUS_VALUES[choice]);
