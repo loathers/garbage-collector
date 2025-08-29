@@ -193,8 +193,11 @@ function buskEffectValuer(effect: Effect, duration: number): number {
       : 0;
   return saltyMouthValue + famWeightValue + meatValue + hammerTimeValue;
 }
+function canBusk() {
+  return PrismaticBeret.have() && get("_beretBuskingUses") < 5;
+}
 function buskForSaltyMouth() {
-  if (!PrismaticBeret.have() || get("_beretBuskingUses") >= 5) return;
+  if (!canBusk()) return;
   for (let i = get("_beretBuskingUses"); i < 5; i++) {
     PrismaticBeret.buskFor(buskEffectValuer, {});
     if (have($effect`Salty Mouth`)) break;
@@ -216,13 +219,22 @@ function drinkSafe(qty: number, item: Item) {
       );
     }
   }
-  if (item.notes?.includes("BEER") && !have($effect`Salty Mouth`)) {
-    buskForSaltyMouth();
+  if (
+    item.notes?.includes("BEER") &&
+    !have($effect`Salty Mouth`) &&
+    canBusk()
+  ) {
+    for (let i = 0; i < qty; i++) {
+      buskForSaltyMouth();
+      consumeWhileRespectingMoonRestaurant(() => {
+        if (!drink(1, item)) throw "Failed to drink safely";
+      }, item);
+    }
+  } else {
+    consumeWhileRespectingMoonRestaurant(() => {
+      if (!drink(qty, item)) throw "Failed to drink safely";
+    }, item);
   }
-
-  consumeWhileRespectingMoonRestaurant(() => {
-    if (!drink(qty, item)) throw "Failed to drink safely";
-  }, item);
 
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
     // sometimes mafia does not track the mime army shotglass property
