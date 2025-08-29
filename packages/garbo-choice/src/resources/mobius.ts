@@ -44,8 +44,9 @@ type MobiusOption =
 type MobiusResult = Item | Effect | number | null;
 function valueMobiusResult(result: MobiusResult): number {
   if (result === null) return 0;
-  if (result === $effect`Just the Best Anapests`)
+  if (result === $effect`Just the Best Anapests`) {
     return -1 * mallPrice($item`soft green echo eyedrop antidote`);
+  }
   if (typeof result === "number") return result;
   if (result instanceof Item) return getSaleValue(result);
   return 0; // Effects currently unvalued
