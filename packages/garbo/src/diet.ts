@@ -219,18 +219,14 @@ function drinkSafe(qty: number, item: Item) {
       );
     }
   }
-  if (item.notes?.includes("BEER") && canBusk()) {
-    for (let i = 0; i < qty; i++) {
-      buskForSaltyMouth();
-      consumeWhileRespectingMoonRestaurant(() => {
+  consumeWhileRespectingMoonRestaurant(() => {
+    if (item.notes?.includes("BEER") && canBusk()) {
+      for (let i = 0; i < qty; i++) {
+        buskForSaltyMouth();
         if (!drink(1, item)) throw "Failed to drink safely";
-      }, item);
-    }
-  } else {
-    consumeWhileRespectingMoonRestaurant(() => {
-      if (!drink(qty, item)) throw "Failed to drink safely";
-    }, item);
-  }
+      }
+    } else if (!drink(qty, item)) throw "Failed to drink safely";
+  }, item);
 
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
     // sometimes mafia does not track the mime army shotglass property
