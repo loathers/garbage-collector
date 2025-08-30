@@ -137,15 +137,15 @@ const updateParachuteFailure = () =>
 function createWandererOutfit(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
-  additionalOutfitOptions: Omit<FreeFightOutfitMenuOptions, "wanderOptions">,
+  additionalOutfitOptions: Omit<FreeFightOutfitMenuOptions, "wanderOptions">
 ): Outfit {
   const wanderTarget = wanderer().getTarget(undelay(details));
   const needPeridot = wanderTarget.peridotMonster !== $monster.none;
   const sourceOutfit = Outfit.from(
     undelay(spec),
     new Error(
-      `Failed to build outfit for Wanderer from ${JSON.stringify(undelay(spec))}`,
-    ),
+      `Failed to build outfit for Wanderer from ${JSON.stringify(undelay(spec))}`
+    )
   );
   if (wanderTarget.familiar !== $familiar`none`) {
     sourceOutfit.familiar = wanderTarget.familiar;
@@ -167,7 +167,7 @@ function wanderTask(
   additionalOutfitOptions: Omit<
     FreeFightOutfitMenuOptions,
     "wanderOptions"
-  > = {},
+  > = {}
 ): GarboTask {
   return {
     do: () => wanderer().getTarget(undelay(details)).location,
@@ -303,7 +303,7 @@ function dailyDungeon(additionalReady: () => boolean) {
     }),
     acquire:
       $items`ring of Detect Boring Doors, eleven-foot pole, Pick-O-Matic lockpicks`.map(
-        (i) => ({ item: i }),
+        (i) => ({ item: i })
       ),
     do: $location`The Daily Dungeon`,
     combat: new GarboStrategy(() => Macro.kill()),
@@ -326,7 +326,7 @@ function lavaDogs(additionalReady: () => boolean, baseSpec: OutfitSpec) {
             ? 0
             : mallPrice($item`soft green echo eyedrop antidote`)) &&
       $items`June cleaver, Space Trip safety headphones`.some(
-        (i) => have(i) && canEquip(i),
+        (i) => have(i) && canEquip(i)
       ),
     prepare: () => {
       const metalValue = get("_volcanoSuperduperheatedMetal")
@@ -336,7 +336,7 @@ function lavaDogs(additionalReady: () => boolean, baseSpec: OutfitSpec) {
               [$item`superheated metal`, 0.95],
               [$item`superduperheated metal`, 0.05],
             ] as const,
-            ([item, rate]) => rate * garboValue(item),
+            ([item, rate]) => rate * garboValue(item)
           );
       if (metalValue > mallPrice($item`heat-resistant sheet metal`)) {
         acquire(1, $item`heat-resistant sheet metal`, metalValue);
@@ -360,7 +360,7 @@ function lavaDogs(additionalReady: () => boolean, baseSpec: OutfitSpec) {
 
 function luckyTasks(
   sobriety: "sober" | "drunk",
-  additionalReady: () => boolean,
+  additionalReady: () => boolean
 ): AlternateTask[] {
   return [
     {
@@ -375,8 +375,8 @@ function luckyTasks(
         sobriety === "drunk" ? { offhand: $item`Drunkula's wineglass` } : {},
       combat: new GarboStrategy(() =>
         Macro.abortWithMsg(
-          "Unexpected combat while attempting Lucky! adventure",
-        ),
+          "Unexpected combat while attempting Lucky! adventure"
+        )
       ),
       sobriety,
       spendsTurn: true,
@@ -482,7 +482,7 @@ function getBestDupeItem(): Item {
         i.tradeable &&
         i.discardable &&
         (i.inebriety || i.fullness || i.potion || i.spleen) &&
-        have(i),
+        have(i)
     );
     if (
       globalOptions.prefs.dmtDupeItem &&
@@ -507,7 +507,7 @@ function canGetFusedFuse() {
   return (
     realmAvailable("hot") &&
     ([1, 2, 3] as const).some(
-      (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id,
+      (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id
     ) &&
     canForceNoncombat()
   );
@@ -515,7 +515,7 @@ function canGetFusedFuse() {
 
 const peridotZone = () =>
   getAvailableUltraRareZones().find(
-    (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l),
+    (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l)
   );
 
 const NonBarfTurnTasks: AlternateTask[] = [
@@ -538,7 +538,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
         ? clamp(
             Math.floor($familiar`Chest Mimic`.experience / 50) - 1,
             1,
-            11 - get("_mimicEggsObtained"),
+            11 - get("_mimicEggsObtained")
           )
         : 0,
     spendsTurn: true,
@@ -556,7 +556,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     prepare: () => {
       if (itemAmount(getBestDupeItem()) === 0) {
         withProperty("autoSatisfyWithMall", false, () =>
-          retrieveItem(getBestDupeItem()),
+          retrieveItem(getBestDupeItem())
         );
       }
     },
@@ -571,7 +571,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
             familiar: $familiar`Machine Elf`,
           },
     combat: new GarboStrategy(() =>
-      Macro.abortWithMsg("Hit unexpected combat!"),
+      Macro.abortWithMsg("Hit unexpected combat!")
     ),
     turns: () => 1,
     spendsTurn: true,
@@ -628,7 +628,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     post: () => {
       visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");
       const option = ([1, 2, 3] as const).find(
-        (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id,
+        (it) => get(`_volcanoItem${it}`) === $item`fused fuse`.id
       );
       if (option) runChoice(option);
       visitUrl("main.php");
@@ -638,7 +638,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
         ? { avoid: $items`Kramco Sausage-o-Matic™` }
         : { offhand: $item`Drunkula's wineglass` },
     combat: new GarboStrategy(() =>
-      Macro.abortWithMsg("Hit unexpected combat!"),
+      Macro.abortWithMsg("Hit unexpected combat!")
     ),
     turns: () => 1,
     spendsTurn: true,
@@ -681,7 +681,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
           : {
               acc1: $item`Peridot of Peril`,
               offhand: $item`Drunkula's wineglass`,
-            },
+            }
       ),
     turns: () => (peridotZone() ? 1 : 0),
     spendsTurn: false,
@@ -704,7 +704,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
           1,
           $item`day shortener`,
           garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
-          false,
+          false
         )
       ) {
         use($item`day shortener`);
@@ -728,7 +728,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
           1,
           $item`day shortener`,
           garboValue($item`extra time`) - 5 * get("valueOfAdventure"),
-          false,
+          false
         )
       ) {
         use($item`day shortener`);
@@ -762,8 +762,8 @@ const BarfTurnTasks: GarboTask[] = [
     combat: new GarboStrategy(() =>
       Macro.if_(
         $monster`Stephen Spookyraven`,
-        Macro.basicCombat(),
-      ).abortWithMsg("Expected to fight Stephen Spookyraven, but didn't!"),
+        Macro.basicCombat()
+      ).abortWithMsg("Expected to fight Stephen Spookyraven, but didn't!")
     ),
   },
   {
@@ -781,7 +781,7 @@ const BarfTurnTasks: GarboTask[] = [
           1,
           $item`almost-dead walkie-talkie`,
           globalOptions.prefs.valueOfFreeFight,
-          false,
+          false
         )
       ) {
         use($item`almost-dead walkie-talkie`);
@@ -810,7 +810,7 @@ const BarfTurnTasks: GarboTask[] = [
     combat: new GarboStrategy(() =>
       have($item`protonic accelerator pack`)
         ? Macro.ghostBustin()
-        : Macro.basicCombat(),
+        : Macro.basicCombat()
     ),
     spendsTurn: false,
     // Ghost fights are currently hard
@@ -836,7 +836,7 @@ const BarfTurnTasks: GarboTask[] = [
         get("_voteFreeFights") < 3,
       completed: () => get("lastVoteMonsterTurn") >= totalTurnsPlayed(),
       sobriety: () => (isGhost() ? "sober" : undefined),
-    },
+    }
   ),
   {
     name: "Thesis",
@@ -861,10 +861,10 @@ const BarfTurnTasks: GarboTask[] = [
       () =>
         Macro.if_(
           `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-          Macro.item($item`pulled green taffy`).meatKill(),
+          Macro.item($item`pulled green taffy`).meatKill()
         ).abortWithMsg(
-          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
-        ),
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`
+        )
     ),
     sobriety: "sober",
     spendsTurn: true,
@@ -885,7 +885,7 @@ const BarfTurnTasks: GarboTask[] = [
             wanderer().getTarget({
               wanderer: "wanderer",
               allowEquipment: false,
-            }).location,
+            }).location
           )
         : freeFightOutfit(),
     do: () =>
@@ -899,15 +899,15 @@ const BarfTurnTasks: GarboTask[] = [
     combat: new GarboStrategy(
       () =>
         Macro.if_(globalOptions.target, Macro.meatKill()).abortWithMsg(
-          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`
         ),
       () =>
         Macro.if_(
           `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-          Macro.meatKill(),
+          Macro.meatKill()
         ).abortWithMsg(
-          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
-        ),
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`
+        )
     ),
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
@@ -921,7 +921,7 @@ const BarfTurnTasks: GarboTask[] = [
       name: "Guaranteed Kramco",
       ready: () => romanticMonsterImpossible(),
       completed: () => !kramcoGuaranteed(),
-    },
+    }
   ),
   wanderTask(
     "wanderer",
@@ -933,7 +933,7 @@ const BarfTurnTasks: GarboTask[] = [
       ready: () =>
         have($item`cursed magnifying glass`) && get("_voidFreeFights") < 5,
       completed: () => get("cursedMagnifyingGlassCount") !== 13,
-    },
+    }
   ),
   {
     name: "Envyfish Egg",
@@ -957,11 +957,11 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .duplicate()
-          .skill($skill`Fondeluge`),
+          .skill($skill`Fondeluge`)
       ),
       duplicate: true,
       sobriety: "sober",
-    },
+    }
   ),
   wanderTask(
     "yellow ray",
@@ -974,11 +974,11 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .duplicate()
-          .skill($skill`Spit jurassic acid`),
+          .skill($skill`Spit jurassic acid`)
       ),
       sobriety: "sober",
       duplicate: true,
-    },
+    }
   ),
   wanderTask(
     "freefight",
@@ -990,15 +990,19 @@ const BarfTurnTasks: GarboTask[] = [
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
-          .skill($skill`Free-For-All`),
+          .skill($skill`Free-For-All`)
       ),
       sobriety: "sober",
       duplicate: true,
-    },
+    }
   ),
   wanderTask(
     "freefight",
     {
+      offhand:
+        guaranteedBullseye() || have($item`spring shoes`)
+          ? []
+          : $item`Roman Candelabra`,
       acc1: $item`Everfull Dart Holster`,
       acc2: guaranteedBullseye() ? [] : $item`spring shoes`,
       modifier: guaranteedBullseye() ? [] : "Monster Level",
@@ -1011,11 +1015,12 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .skill($skill`Darts: Aim for the Bullseye`)
-          .skill($skill`Spring Away`),
+          .skill($skill`Spring Away`)
+          .skill($skill`Blow the Green Candle!`)
       ),
       sobriety: "sober",
       duplicate: true,
-    },
+    }
   ),
   wanderTask(
     "freefight",
@@ -1027,10 +1032,10 @@ const BarfTurnTasks: GarboTask[] = [
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
-          .skill($skill`Lightning Strike`),
+          .skill($skill`Lightning Strike`)
       ),
       duplicate: true,
-    },
+    }
   ),
   wanderTask(
     "yellow ray",
@@ -1043,17 +1048,17 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .duplicate()
-          .skill($skill`Shocking Lick`),
+          .skill($skill`Shocking Lick`)
       ),
       duplicate: true,
       sobriety: "sober",
-    },
+    }
   ),
   wanderTask(
     "freerun",
     () => ({
       equip: $items`spring shoes, carnivorous potted plant`.filter((i) =>
-        have(i),
+        have(i)
       ),
     }),
     {
@@ -1074,7 +1079,7 @@ const BarfTurnTasks: GarboTask[] = [
             .familiarActions()
             .skill($skill`Spring Away`),
         undefined,
-        () => !have($item`carnivorous potted plant`), // Do not use autoattack with carn plant, it will cancel the swallow
+        () => !have($item`carnivorous potted plant`) // Do not use autoattack with carn plant, it will cancel the swallow
       ),
       sobriety: "sober",
     },
@@ -1082,7 +1087,7 @@ const BarfTurnTasks: GarboTask[] = [
       familiarOptions: {
         mode: "run",
       },
-    },
+    }
   ),
   {
     name: "Gingerbread Noon",
@@ -1091,8 +1096,8 @@ const BarfTurnTasks: GarboTask[] = [
     choices: { 1204: 1 },
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg(
-        "We thought it was noon here in Gingerbread City, but we're in a fight!",
-      ),
+        "We thought it was noon here in Gingerbread City, but we're in a fight!"
+      )
     ),
     outfit: () => (sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
     spendsTurn: false,
@@ -1112,8 +1117,8 @@ const BarfTurnTasks: GarboTask[] = [
     }),
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg(
-        "We thought it was Midnight here in Gingerbread City, but we're in a fight!",
-      ),
+        "We thought it was Midnight here in Gingerbread City, but we're in a fight!"
+      )
     ),
     spendsTurn: false,
   },
@@ -1167,15 +1172,15 @@ const BarfTurnTasks: GarboTask[] = [
     do: () => CrepeParachute.fight($monster`dense liana`),
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg(
-        "Did not instantly kill the Liana, check what went wrong",
-      ),
+        "Did not instantly kill the Liana, check what went wrong"
+      )
     ),
     prepare: () => {
       if (!sober()) {
         freeFightOutfit({ offhand: $item`Drunkula's wineglass` }).dress();
       }
       withChoice(785, 6, () =>
-        adv1($location`An Overgrown Shrine (Northeast)`, -1, ""),
+        adv1($location`An Overgrown Shrine (Northeast)`, -1, "")
       );
       if (!sober()) freeFightOutfit({ weapon: $item`antique machete` }).dress();
     },
@@ -1211,7 +1216,7 @@ const BarfTurnTasks: GarboTask[] = [
     choices: () => ({
       1557: `1&bandersnatch=${get("_cookbookbatQuestMonster")?.id ?? 0}`,
       ...wanderer().getChoices(
-        get("_cookbookbatQuestLastLocation") ?? $location.none,
+        get("_cookbookbatQuestLastLocation") ?? $location.none
       ),
     }),
     outfit: () =>
@@ -1230,7 +1235,7 @@ const BarfTurnTasks: GarboTask[] = [
 function nonBarfTurns(): number {
   return sum(
     NonBarfTurnTasks.filter((t) => (t.ready?.() ?? true) && !t.completed()),
-    (t) => undelay(t.turns),
+    (t) => undelay(t.turns)
   );
 }
 
@@ -1255,7 +1260,7 @@ export const NonBarfTurnQuest: Quest<GarboTask> = {
         clamp(
           myAdventures() - digitizedMonstersRemaining(),
           1,
-          myAdventures(),
+          myAdventures()
         ) <=
         nonBarfTurns() + globalOptions.saveTurns;
     }
@@ -1301,8 +1306,8 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         () =>
           Macro.if_(
             `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-            Macro.meatKill(),
-          ).abort(),
+            Macro.meatKill()
+          ).abort()
       ),
       prepare: () =>
         !get("dinseyRollercoasterNext") &&
