@@ -102,9 +102,12 @@ import { trackMarginalMpa } from "../session";
 import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
+  canBullseye,
   completeBarfQuest,
+  guaranteedBullseye,
   mayamCalendarSummon,
   minimumMimicExperience,
+  safeToAttemptBullseye,
   shouldAugustCast,
   shouldFillLatte,
   tryFillLatte,
@@ -655,11 +658,12 @@ const NonBarfTurnTasks: AlternateTask[] = [
           ? 1
           : 2,
     }),
-    do: () => {
-      ensureEffect($effect`Transpondent`);
-      use($item`Map to Safety Shelter Grimace Prime`);
-      return true;
-    },
+    do: () =>
+      withProperty("choiceAdventureScript", "", () => {
+        ensureEffect($effect`Transpondent`);
+        use($item`Map to Safety Shelter Grimace Prime`);
+        return true;
+      }),
     spendsTurn: true,
     sobriety: "drunk",
     turns: () => availableAmount($item`Map to Safety Shelter Grimace Prime`),
@@ -893,7 +897,10 @@ const BarfTurnTasks: GarboTask[] = [
         allowEquipment: false,
       }),
     combat: new GarboStrategy(
-      () => Macro.meatKill(),
+      () =>
+        Macro.if_(globalOptions.target, Macro.meatKill()).abortWithMsg(
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
+        ),
       () =>
         Macro.if_(
           `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
@@ -991,6 +998,27 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   wanderTask(
     "freefight",
+    {
+      acc1: $item`Everfull Dart Holster`,
+      acc2: guaranteedBullseye() ? [] : $item`spring shoes`,
+      modifier: guaranteedBullseye() ? [] : "Monster Level",
+    },
+    {
+      name: "Darts: Bullseye",
+      ready: safeToAttemptBullseye,
+      completed: () => !canBullseye(),
+      combat: new GarboStrategy(() =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .familiarActions()
+          .skill($skill`Darts: Aim for the Bullseye`)
+          .skill($skill`Spring Away`),
+      ),
+      sobriety: "sober",
+      duplicate: true,
+    },
+  ),
+  wanderTask(
+    "freefight",
     {},
     {
       name: "Heavy Rains Lightning Strike",
@@ -1034,7 +1062,11 @@ const BarfTurnTasks: GarboTask[] = [
         have($item`spring shoes`) &&
         romanticMonsterImpossible() &&
         (getWorkshed() !== $item`model train set` ||
-          TrainSet.next() !== TrainSet.Station.GAIN_MEAT),
+          TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
+        (guaranteedBullseye() ||
+          !safeToAttemptBullseye() ||
+          have($skill`Free-For-All`) ||
+          have($effect`Everything Looks Red`, 30)),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(
         () =>

@@ -1,5 +1,6 @@
 import { Familiar, Item } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
@@ -90,7 +91,10 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
   },
   {
     familiar: $familiar`Green Pixie`,
-    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    expected: (id) =>
+      have($effect`Absinthe-Minded`)
+        ? Infinity
+        : ([3.03, 3.42, 3.91, 4.52, 5.29][id] ?? Infinity),
     drop: $item`tiny bottle of absinthe`,
   },
   {
