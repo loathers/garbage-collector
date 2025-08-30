@@ -1321,6 +1321,34 @@ var main = function(choiceNumber, pageText) {
   switch (choiceNumber) {
     case 536:
     // Map for pills
+    case 890:
+    // Lights Out
+    case 891:
+    //
+    case 892:
+    //
+    case 893:
+    //
+    case 894:
+    //
+    case 895:
+    //
+    case 896:
+    //
+    case 897:
+    //
+    case 898:
+    //
+    case 899:
+    //
+    case 900:
+    //
+    case 901:
+    //
+    case 902:
+    //
+    case 903:
+    // Lights Out
     case 914:
     // Louvre it or Leave it
     case 1499:
