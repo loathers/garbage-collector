@@ -8,6 +8,7 @@ import {
   dailySpecial,
   drink,
   eat,
+  Effect,
   Element,
   elementalResistance,
   fullnessLimit,
@@ -76,6 +77,7 @@ import {
   maximizeCached,
   MayoClinic,
   MenuItem,
+  PrismaticBeret,
   realmAvailable,
   set,
   sum,
@@ -89,7 +91,9 @@ import { globalOptions } from "./config";
 import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
 import {
   arrayEquals,
+  baseMeat,
   HIGHLIGHT,
+  marginalFamWeightValue,
   MEAT_TARGET_MULTIPLIER,
   targetingMeat,
   targetMeat,
@@ -169,6 +173,37 @@ function shrugForOde() {
   );
 }
 
+function buskEffectValuer(effect: Effect, duration: number): number {
+  const saltyMouthValue =
+    effect === $effect`Salty Mouth` && !have($effect`Salty Mouth`)
+      ? 5 * get("valueOfAdventure")
+      : 0;
+  const famWeightValue =
+    ((getModifier("Familiar Weight", effect) * marginalFamWeightValue()) /
+      100) *
+    baseMeat() *
+    duration;
+  const meatValue =
+    (getModifier("Meat Drop", effect) / 100) * baseMeat() * duration; // Just value barf
+  const hammerTimeValue =
+    effect === $effect`Hammertime` &&
+    !have($effect`Hammertime`) &&
+    get("_beretBuskingUses") === 0
+      ? 1000 // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
+      : 0;
+  return saltyMouthValue + famWeightValue + meatValue + hammerTimeValue;
+}
+function canBusk() {
+  return PrismaticBeret.have() && get("_beretBuskingUses") < 5;
+}
+function buskForSaltyMouth() {
+  if (!canBusk()) return;
+  for (let i = get("_beretBuskingUses"); i < 5; i++) {
+    if (have($effect`Salty Mouth`)) break;
+    PrismaticBeret.buskFor(buskEffectValuer, {});
+  }
+}
+
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
   if (have($skill`The Ode to Booze`)) {
@@ -185,7 +220,12 @@ function drinkSafe(qty: number, item: Item) {
     }
   }
   consumeWhileRespectingMoonRestaurant(() => {
-    if (!drink(qty, item)) throw "Failed to drink safely";
+    if (item.notes?.includes("BEER") && canBusk()) {
+      for (let i = 0; i < qty; i++) {
+        buskForSaltyMouth();
+        if (!drink(1, item)) throw "Failed to drink safely";
+      }
+    } else if (!drink(qty, item)) throw "Failed to drink safely";
   }, item);
 
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
