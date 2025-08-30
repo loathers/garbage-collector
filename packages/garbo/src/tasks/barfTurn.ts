@@ -1004,7 +1004,10 @@ const BarfTurnTasks: GarboTask[] = [
           ? []
           : $item`Roman Candelabra`,
       acc1: $item`Everfull Dart Holster`,
-      acc2: guaranteedBullseye() ? [] : $item`spring shoes`,
+      acc2:
+        guaranteedBullseye() || !have($item`spring shoes`)
+          ? []
+          : $item`spring shoes`,
       modifier: guaranteedBullseye() ? [] : "Monster Level",
     },
     {
