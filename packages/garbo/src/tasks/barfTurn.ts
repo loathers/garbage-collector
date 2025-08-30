@@ -1018,8 +1018,8 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .skill($skill`Darts: Aim for the Bullseye`)
-          .skill($skill`Spring Away`)
-          .skill($skill`Blow the Green Candle!`),
+          .trySkill($skill`Spring Away`)
+          .trySkill($skill`Blow the Green Candle!`),
       ),
       sobriety: "sober",
       duplicate: true,
