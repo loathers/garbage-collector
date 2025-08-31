@@ -30168,7 +30168,7 @@ function acquire(qty, item15, maxPrice) {
   }
   if (maxPrice === void 0) throw new Error("No price cap for ".concat(item15.name, "."));
   (0, import_kolmafia99.print)("Trying to acquire ".concat(qty, " ").concat(item15.plural, "; max price ").concat(maxPrice.toFixed(0), "."), "green");
-  if (qty * (0, import_kolmafia99.mallPrice)(item15) > (maxAggregateCost !== null && maxAggregateCost !== void 0 ? maxAggregateCost : 1e6)) {
+  if (qty * (0, import_kolmafia99.mallPrice)(item15) > (maxAggregateCost !== null && maxAggregateCost !== void 0 ? maxAggregateCost : 3e6)) {
     throw new Error("Aggregate cost too high! Probably a bug.");
   }
   var startAmount = (0, import_kolmafia99.itemAmount)(item15);
@@ -30655,7 +30655,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ba1bf0de177732a80f2a6af1f9598c3db035109b", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("057960627b2231db17aa8c1cb9b604d35558b359", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
