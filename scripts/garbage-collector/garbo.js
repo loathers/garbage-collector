@@ -30655,7 +30655,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ef90a172f0dd61324f5dfbb2a7b4bb4ba814689a", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ba1bf0de177732a80f2a6af1f9598c3db035109b", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -51902,7 +51902,8 @@ function main() {
       valueOfInventory: 2,
       suppressMallPriceCacheMessages: true,
       shadowLabyrinthGoal: "effects",
-      lightsOutAutomation: 1
+      lightsOutAutomation: 1,
+      errorOnAmbiguousFold: false
     });
     runDiet();
     propertyManager.resetAll();
