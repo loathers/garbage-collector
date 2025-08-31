@@ -999,8 +999,15 @@ const BarfTurnTasks: GarboTask[] = [
   wanderTask(
     "freefight",
     {
+      offhand:
+        guaranteedBullseye() || have($item`spring shoes`)
+          ? []
+          : $item`Roman Candelabra`,
       acc1: $item`Everfull Dart Holster`,
-      acc2: guaranteedBullseye() ? [] : $item`spring shoes`,
+      acc2:
+        guaranteedBullseye() || !have($item`spring shoes`)
+          ? []
+          : $item`spring shoes`,
       modifier: guaranteedBullseye() ? [] : "Monster Level",
     },
     {
@@ -1011,7 +1018,8 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .skill($skill`Darts: Aim for the Bullseye`)
-          .skill($skill`Spring Away`),
+          .trySkill($skill`Spring Away`)
+          .trySkill($skill`Blow the Green Candle!`),
       ),
       sobriety: "sober",
       duplicate: true,

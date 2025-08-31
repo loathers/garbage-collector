@@ -12,8 +12,9 @@ const dartLevelTooHigh = () =>
 
 export const safeToAttemptBullseye = () =>
   have($item`Everfull Dart Holster`) &&
-  (guaranteedBullseye() || have($item`spring shoes`)) &&
-  !dartLevelTooHigh();
+  (guaranteedBullseye() ||
+    ((have($item`spring shoes`) || have($item`Roman Candelabra`)) &&
+      !dartLevelTooHigh()));
 
 export const canBullseye = () =>
   !have($effect`Everything Looks Red`) &&
