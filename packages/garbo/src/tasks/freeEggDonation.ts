@@ -1,10 +1,13 @@
 import {
+  equippedItem,
   getMonsters,
   haveEquipped,
   Item,
   itemDropsArray,
+  itemType,
   Location,
   Monster,
+  myBuffedstat,
   myMaxhp,
   restoreHp,
   useFamiliar,
@@ -19,6 +22,8 @@ import {
   $monster,
   $monsters,
   $skill,
+  $slot,
+  $stat,
   ActionSource,
   ChestMimic,
   CombatLoversLocket,
@@ -111,6 +116,16 @@ function mimicEscape(): ActionSource | undefined {
   );
 }
 
+function shouldDelevel(monster: Monster): boolean {
+  return (
+    monster.attributes.includes("Scale:") ||
+    myBuffedstat($stat`Moxie`) < monster.baseAttack + 10 ||
+    (have($skill`Hero of the Half-Shell`) &&
+      itemType(equippedItem($slot`offhand`)) === "shield" &&
+      myBuffedstat($stat`Muscle`) < monster.baseAttack + 10)
+  );
+}
+
 function mimicEggDonation(): GarboTask[] {
   const escape = mimicEscape();
   const donation = findDonateMonster(!escape);
@@ -142,10 +157,11 @@ function mimicEggDonation(): GarboTask[] {
       do: () => CombatLoversLocket.reminisce(donation.monster),
       combat: new GarboStrategy(
         () =>
-          Macro.externalIf(
-            Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 0,
-            Macro.trySkill($skill`%fn, lay an egg`),
-          )
+          Macro.externalIf(shouldDelevel(donation.monster), Macro.delevel())
+            .externalIf(
+              Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 0,
+              Macro.trySkill($skill`%fn, lay an egg`),
+            )
             .externalIf(
               Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 1,
               Macro.trySkill($skill`%fn, lay an egg`),
