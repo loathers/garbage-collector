@@ -408,6 +408,21 @@ export function nonOrganAdventures(): void {
       } else break;
     }
   }
+
+  if (get("_clocksUsed", 2) < 2) {
+    const clockValue = (timesUsed: number): number => {
+      const advs = [3, 2][timesUsed];
+      return advs * MPA;
+    };
+    const clocksUsed = get("_clocksUsed", 2);
+    for (let i = clocksUsed; i < 2; i++) {
+      if (clockValue(i) > mallPrice($item`clock`)) {
+        if (acquire(1, $item`clock`, clockValue(i), false)) {
+          use($item`clock`);
+        }
+      } else break;
+    }
+  }
 }
 
 function pillCheck(): void {
