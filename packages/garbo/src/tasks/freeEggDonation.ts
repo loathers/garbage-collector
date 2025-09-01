@@ -64,6 +64,24 @@ function queryEggNetIncomplete(): Map<Monster, number> {
   }
 }
 
+function queryEggNetPriority(): Map<Monster, number> {
+  try {
+    const monsters: {
+      id: number;
+      eggs: number;
+      priority: number;
+    }[] = JSON.parse(visitUrl("https://eggnet.loathers.net/monsters"));
+
+    return new Map<Monster, number>(
+      monsters
+        .filter((entry) => entry.eggs < 100 && entry.priority > 0)
+        .map((entry) => [Monster.get(entry.id), entry.priority]),
+    );
+  } catch {
+    return new Map<Monster, number>();
+  }
+}
+
 function donateMonsterValue(m: Monster): number {
   const items = itemDropsArray(m).filter((drop) =>
     ["", "n"].includes(drop.type),
@@ -78,6 +96,7 @@ function findDonateMonster(
   onlyFree: boolean,
 ): { monster: Monster; count: number } | undefined {
   const incomplete = queryEggNetIncomplete();
+  const priority = queryEggNetPriority();
   if (incomplete.size === 0) return undefined;
   const maxMonsterId = $monster`time cop`.id; // Last Update Aug 2025
   const banned = new Set<Monster>([
@@ -96,7 +115,7 @@ function findDonateMonster(
   ]);
   const monster = CombatLoversLocket.findMonster(
     (m) => m.id <= maxMonsterId && incomplete.has(m) && !banned.has(m),
-    (m) => donateMonsterValue(m),
+    (m) => donateMonsterValue(m) + (priority.get(m) ?? 0) * 10000,
   );
   const count = incomplete.get(monster ?? Monster.none) ?? 0;
   return !!monster && monster !== Monster.none && count > 0
