@@ -112,6 +112,9 @@ function mimicEscape(): ActionSource | undefined {
         action.source === $skill`Snokebomb` && getUsingFreeBunnyBanish()
           ? $skill`Snokebomb`.timescast < 2
           : true,
+      maximumCost: () =>
+        globalOptions.prefs.valueOfAdventure ??
+        globalOptions.prefs.valueOfFreeFight,
     }) ?? undefined
   );
 }
