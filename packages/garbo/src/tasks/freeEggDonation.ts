@@ -1,10 +1,13 @@
 import {
+  equippedItem,
   getMonsters,
   haveEquipped,
   Item,
   itemDropsArray,
+  itemType,
   Location,
   Monster,
+  myBuffedstat,
   myMaxhp,
   restoreHp,
   useFamiliar,
@@ -19,6 +22,8 @@ import {
   $monster,
   $monsters,
   $skill,
+  $slot,
+  $stat,
   ActionSource,
   ChestMimic,
   CombatLoversLocket,
@@ -59,6 +64,24 @@ function queryEggNetIncomplete(): Map<Monster, number> {
   }
 }
 
+function queryEggNetPriority(): Map<Monster, number> {
+  try {
+    const monsters: {
+      id: number;
+      eggs: number;
+      priority: number;
+    }[] = JSON.parse(visitUrl("https://eggnet.loathers.net/monsters"));
+
+    return new Map<Monster, number>(
+      monsters
+        .filter((entry) => entry.eggs < 100 && entry.priority > 0)
+        .map((entry) => [Monster.get(entry.id), entry.priority]),
+    );
+  } catch {
+    return new Map<Monster, number>();
+  }
+}
+
 function donateMonsterValue(m: Monster): number {
   const items = itemDropsArray(m).filter((drop) =>
     ["", "n"].includes(drop.type),
@@ -73,6 +96,7 @@ function findDonateMonster(
   onlyFree: boolean,
 ): { monster: Monster; count: number } | undefined {
   const incomplete = queryEggNetIncomplete();
+  const priority = queryEggNetPriority();
   if (incomplete.size === 0) return undefined;
   const maxMonsterId = $monster`time cop`.id; // Last Update Aug 2025
   const banned = new Set<Monster>([
@@ -91,7 +115,7 @@ function findDonateMonster(
   ]);
   const monster = CombatLoversLocket.findMonster(
     (m) => m.id <= maxMonsterId && incomplete.has(m) && !banned.has(m),
-    (m) => donateMonsterValue(m),
+    (m) => donateMonsterValue(m) + (priority.get(m) ?? 0) * 10000,
   );
   const count = incomplete.get(monster ?? Monster.none) ?? 0;
   return !!monster && monster !== Monster.none && count > 0
@@ -107,7 +131,20 @@ function mimicEscape(): ActionSource | undefined {
         action.source === $skill`Snokebomb` && getUsingFreeBunnyBanish()
           ? $skill`Snokebomb`.timescast < 2
           : true,
+      maximumCost: () =>
+        globalOptions.prefs.valueOfAdventure ??
+        globalOptions.prefs.valueOfFreeFight,
     }) ?? undefined
+  );
+}
+
+function shouldDelevel(monster: Monster): boolean {
+  return (
+    monster.attributes.includes("Scale:") ||
+    myBuffedstat($stat`Moxie`) < monster.baseAttack + 10 ||
+    (have($skill`Hero of the Half-Shell`) &&
+      itemType(equippedItem($slot`offhand`)) === "shield" &&
+      myBuffedstat($stat`Muscle`) < monster.baseAttack + 10)
   );
 }
 
@@ -142,10 +179,11 @@ function mimicEggDonation(): GarboTask[] {
       do: () => CombatLoversLocket.reminisce(donation.monster),
       combat: new GarboStrategy(
         () =>
-          Macro.externalIf(
-            Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 0,
-            Macro.trySkill($skill`%fn, lay an egg`),
-          )
+          Macro.externalIf(shouldDelevel(donation.monster), Macro.delevel())
+            .externalIf(
+              Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 0,
+              Macro.trySkill($skill`%fn, lay an egg`),
+            )
             .externalIf(
               Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 1,
               Macro.trySkill($skill`%fn, lay an egg`),
@@ -205,6 +243,7 @@ export const FreeMimicEggDonationQuest: Delayed<Quest<GarboTask>> = () => ({
   ready: () =>
     globalOptions.prefs.beSelfish !== true &&
     ChestMimic.have() &&
-    CombatLoversLocket.have(),
+    CombatLoversLocket.have() &&
+    CombatLoversLocket.reminiscesLeft() > 0,
   completed: () => get("_mimicEggsDonated") >= 3,
 });
