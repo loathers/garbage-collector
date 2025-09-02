@@ -30655,7 +30655,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d2a69222ad62ede42c63d4f9da26d88b69e5ca88", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e041b195c6dd2ceaed4ab7dded6606875721d50a", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -50981,7 +50981,7 @@ var FreeMimicEggDonationQuest = function() {
     name: "Free Mimic Egg Donation",
     tasks: _toConsumableArray73(mimicEggDonation()),
     ready: function() {
-      return globalOptions.prefs.beSelfish !== true && ChestMimic_exports.have() && CombatLoversLocket_exports.have() && CombatLoversLocket_exports.reminiscesLeft() > 0;
+      return globalOptions.prefs.beSelfish !== true && ChestMimic_exports.have() && CombatLoversLocket_exports.have();
     },
     completed: function() {
       return get("_mimicEggsDonated") >= 3;
