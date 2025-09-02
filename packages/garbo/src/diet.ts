@@ -183,8 +183,8 @@ function buskEffectValuer(effect: Effect, duration: number): number {
     !have($effect`Hammertime`) &&
     get("_beretBuskingUses") === 0
   ) {
-    return 1_000;
-  } // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
+    return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
+  }
   return beretEffectValue(effect, duration);
 }
 function canBusk() {
