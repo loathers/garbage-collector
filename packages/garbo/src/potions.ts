@@ -71,7 +71,7 @@ import {
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { globalOptions } from "./config";
-import { castAugustScepterBuffs } from "./resources";
+import { beretEffectValue, castAugustScepterBuffs } from "./resources";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -720,13 +720,7 @@ function useBusks() {
     return;
   }
   for (let i = get("_beretBuskingUses"); i < 5; i++) {
-    PrismaticBeret.buskFor(
-      {
-        "Familiar Weight": (marginalFamWeightValue() / 100) * baseMeat(),
-        "Meat Drop": baseMeat() / 100,
-      },
-      {},
-    );
+    PrismaticBeret.buskFor(beretEffectValue, {});
   }
 }
 
