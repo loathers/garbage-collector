@@ -1190,3 +1190,5 @@ export function marginalFamWeightValue(): number {
     Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight))
   );
 }
+
+export const seadentZone = $location`Barf Mountain`

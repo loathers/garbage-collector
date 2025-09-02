@@ -24,6 +24,7 @@ import {
   outfitPieces,
   retrieveItem,
   runChoice,
+  toItem,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -81,6 +82,7 @@ import {
   kramcoGuaranteed,
   MEAT_TARGET_MULTIPLIER,
   romanticMonsterImpossible,
+  seadentZone,
   sober,
   targetingMeat,
   willDrunkAdventure,
@@ -1317,6 +1319,11 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         !(totalTurnsPlayed() % 11) &&
         meatMood().execute(estimatedGarboTurns()),
       post: () => {
+        if(!get("_seadentWaveUsed") && have(toItem(11975)) && seadentZone === $location`Barf Mountain`) {
+          // eslint-disable-next-line libram/verify-constants
+          useSkill($skill`Sea *dent: Summon a Wave`);
+          runChoice(1);
+        }
         completeBarfQuest();
         trackMarginalMpa();
       },
