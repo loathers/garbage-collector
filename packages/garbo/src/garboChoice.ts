@@ -2,9 +2,11 @@ import {
   availableChoiceOptions,
   ChoiceAdventureScript,
   runChoice,
+  toInt,
 } from "kolmafia";
 import { highestPriorityOption } from "./resources/darts";
 import { mobiusChoice } from "./resources";
+import { get } from "libram";
 
 export const main: ChoiceAdventureScript = (choiceNumber: number) => {
   const options = availableChoiceOptions();
@@ -13,11 +15,10 @@ export const main: ChoiceAdventureScript = (choiceNumber: number) => {
       return void runChoice(mobiusChoice(options));
     case 1525:
       return void runChoice(highestPriorityOption(options));
-    case 1224:
-      return runChoice(3); // "LOV Epaulettes",
-    case 1226:
-      return runChoice(2); // "Open Heart Surgery",
-    case 1228:
-      return runChoice(3); // "LOV Extraterrestrial Chocolate",
+    default: {
+      const option = toInt(get(`choiceAdventure${choiceNumber}`));
+      if (option) return void runChoice(option);
+    }
   }
+
 };
