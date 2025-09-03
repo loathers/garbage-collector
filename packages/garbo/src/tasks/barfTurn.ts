@@ -24,7 +24,6 @@ import {
   outfitPieces,
   retrieveItem,
   runChoice,
-  toItem,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -1322,7 +1321,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         if (
           !get("_seadentWaveUsed") &&
           // Seadent can change names, so we use the item ID to avoid mafia errors
-          have(toItem(11975)) &&
+          have($item`Monodent of the Sea`) &&
           seadentZone === $location`Barf Mountain`
         ) {
           useSkill($skill`Sea *dent: Summon a Wave`);
