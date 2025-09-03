@@ -88,12 +88,15 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
+import {
+  beretEffectValue,
+  expectedGregs,
+  shouldAugustCast,
+  synthesize,
+} from "./resources";
 import {
   arrayEquals,
-  baseMeat,
   HIGHLIGHT,
-  marginalFamWeightValue,
   MEAT_TARGET_MULTIPLIER,
   targetingMeat,
   targetMeat,
@@ -174,24 +177,15 @@ function shrugForOde() {
 }
 
 function buskEffectValuer(effect: Effect, duration: number): number {
-  const saltyMouthValue =
-    effect === $effect`Salty Mouth` && !have($effect`Salty Mouth`)
-      ? 5 * get("valueOfAdventure")
-      : 0;
-  const famWeightValue =
-    ((getModifier("Familiar Weight", effect) * marginalFamWeightValue()) /
-      100) *
-    baseMeat() *
-    duration;
-  const meatValue =
-    (getModifier("Meat Drop", effect) / 100) * baseMeat() * duration; // Just value barf
-  const hammerTimeValue =
+  if (effect === $effect`Salty Mouth`) return 5 * get("valueOfAdventure");
+  if (
     effect === $effect`Hammertime` &&
     !have($effect`Hammertime`) &&
     get("_beretBuskingUses") === 0
-      ? 1000 // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
-      : 0;
-  return saltyMouthValue + famWeightValue + meatValue + hammerTimeValue;
+  ) {
+    return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
+  }
+  return beretEffectValue(effect, duration);
 }
 function canBusk() {
   return PrismaticBeret.have() && get("_beretBuskingUses") < 5;
