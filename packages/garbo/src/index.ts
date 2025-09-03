@@ -123,7 +123,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28701); // summon a wave
+  sinceKolmafiaRevision(28703); // summon a wave
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);

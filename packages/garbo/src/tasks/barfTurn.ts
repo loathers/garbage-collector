@@ -80,6 +80,7 @@ import {
   howManySausagesCouldIEat,
   kramcoGuaranteed,
   MEAT_TARGET_MULTIPLIER,
+  redTaffyWorth,
   romanticMonsterImpossible,
   seadentZone,
   sober,
@@ -1313,14 +1314,22 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
-      prepare: () =>
-        !get("dinseyRollercoasterNext") &&
-        !(totalTurnsPlayed() % 11) &&
-        meatMood().execute(estimatedGarboTurns()),
+      prepare: () => {
+        if (
+          redTaffyWorth &&
+          toLocation(get("_seadentWaveZone")) === $location`Barf Mountain`
+        ) {
+          retrieveItem($item`pulled red taffy`, 10_000);
+        }
+        return (
+          !get("dinseyRollercoasterNext") &&
+          !(totalTurnsPlayed() % 11) &&
+          meatMood().execute(estimatedGarboTurns())
+        );
+      },
       post: () => {
         if (
           !get("_seadentWaveUsed") &&
-          // Seadent can change names, so we use the item ID to avoid mafia errors
           have($item`Monodent of the Sea`) &&
           seadentZone === $location`Barf Mountain`
         ) {

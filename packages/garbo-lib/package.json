@@ -29,7 +29,7 @@
   "devDependencies": {
     "eslint": "^9.9.0",
     "eslint-config-garbo": "^0.0.1",
-    "kolmafia": "^5.28701.0",
+    "kolmafia": "^5.28703.0",
     "libram": "^0.11.9",
     "lint-staged": "^15.2.9",
     "madge": "^8.0.0",

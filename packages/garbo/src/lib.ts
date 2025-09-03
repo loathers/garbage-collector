@@ -24,6 +24,7 @@ import {
   itemDropsArray,
   lastMonster,
   Location,
+  mallPrice,
   meatDrop,
   meatDropModifier,
   Monster,
@@ -1192,3 +1193,34 @@ export function marginalFamWeightValue(): number {
 }
 
 export const seadentZone = $location`Barf Mountain`;
+
+export const redTaffyWorth =
+  mallPrice($item`pulled red taffy`) <
+  garboAverageValue(
+    $item`Alewife™ Ale`,
+    $item`bazookafish bubble gum`,
+    $item`beefy fish meat`,
+    $item`dull fish scale`,
+    $item`eel battery`,
+    $item`eel sauce`,
+    $item`glistening fish meat`,
+    $item`high-pressure seltzer bottle`,
+    $item`imitation crab crate`,
+    $item`ink bladder`,
+    $item`live nautical mine`,
+    $item`Mer-kin healscroll`,
+    $item`Mer-kin lunchbox`,
+    $item`Mer-kin thingpouch`,
+    $item`pufferfish spine`,
+    $item`rough fish scale`,
+    $item`salinated mint julep`,
+    $item`sand dollar`,
+    $item`sea lace`,
+    $item`seaweed`,
+    $item`shark cartilage`,
+    $item`slick fish meat`,
+    $item`slug of rum`,
+    $item`slug of shochu`,
+    $item`slug of vodka`,
+    $item`soggy seed packet`,
+  );
