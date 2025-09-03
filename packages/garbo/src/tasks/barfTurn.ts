@@ -24,6 +24,7 @@ import {
   outfitPieces,
   retrieveItem,
   runChoice,
+  toLocation,
   totalTurnsPlayed,
   use,
   useSkill,
