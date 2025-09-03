@@ -1319,8 +1319,12 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         !(totalTurnsPlayed() % 11) &&
         meatMood().execute(estimatedGarboTurns()),
       post: () => {
-        if(!get("_seadentWaveUsed") && have(toItem(11975)) && seadentZone === $location`Barf Mountain`) {
-          // eslint-disable-next-line libram/verify-constants
+        if (
+          !get("_seadentWaveUsed") &&
+          // Seadent can change names, so we use the item ID to avoid mafia errors
+          have(toItem(11975)) &&
+          seadentZone === $location`Barf Mountain`
+        ) {
           useSkill($skill`Sea *dent: Summon a Wave`);
           runChoice(1);
         }

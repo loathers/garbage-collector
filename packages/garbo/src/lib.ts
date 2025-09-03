@@ -1191,4 +1191,4 @@ export function marginalFamWeightValue(): number {
   );
 }
 
-export const seadentZone = $location`Barf Mountain`
+export const seadentZone = $location`Barf Mountain`;
