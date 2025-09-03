@@ -1,4 +1,11 @@
-import { $item, AprilingBandHelmet, clamp, get, have } from "libram";
+import {
+  $item,
+  AprilingBandHelmet,
+  clamp,
+  get,
+  have,
+  realmAvailable,
+} from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { getBestLuckyAdventure } from "../lib";
@@ -10,6 +17,11 @@ const instruments: {
   instrument: AprilingBandHelmet.Instrument;
   value: () => number;
 }[] = [
+  {
+    instrument: "Apriling band tuba",
+    value: () =>
+      realmAvailable("sleaze") ? (20000 - get("valueOfAdventure")) * 3 : 0,
+  },
   {
     instrument: "Apriling band quad tom",
     value: () =>

@@ -65,10 +65,11 @@ import {
   maxPassiveDamage,
   monsterManuelAvailable,
   targetingMeat,
+  ULTRA_RARE_MONSTERS,
 } from "./lib";
-import { CombatStrategy } from "grimoire-kolmafia";
 import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
+import { maximumPinataCasts } from "./resources";
 
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
@@ -517,7 +518,7 @@ export class Macro extends StrictMacro {
         .externalIf(
           haveEquipped($item`Cincho de Mayo`) && canPinata,
           Macro.while_(
-            `${hpCheckCincho} && ${Macro.makeBALLSPredicate(
+            `!times ${maximumPinataCasts()} && ${hpCheckCincho} && ${Macro.makeBALLSPredicate(
               $skill`Cincho: Projectile Piñata`,
             )}`,
             Macro.trySkill($skill`Cincho: Projectile Piñata`),
@@ -605,8 +606,6 @@ export class Macro extends StrictMacro {
 
   kill(): Macro {
     const riftId = toInt($location`Shadow Rift`);
-    const doingYachtzee =
-      globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted");
     const canPinata =
       haveEquipped($item`Cincho de Mayo`) && CinchoDeMayo.currentCinch() >= 5;
     return this.externalIf(
@@ -614,9 +613,9 @@ export class Macro extends StrictMacro {
       Macro.trySkill($skill`Curse of Weaksauce`),
     )
       .externalIf(
-        !doingYachtzee && canPinata,
+        canPinata,
         Macro.while_(
-          `${Macro.makeBALLSPredicate(
+          `!times ${maximumPinataCasts()} && ${Macro.makeBALLSPredicate(
             $skill`Cincho: Projectile Piñata`,
           )} && !pastround 24 && !hppercentbelow 25`,
           Macro.trySkill($skill`Cincho: Projectile Piñata`),
@@ -884,13 +883,13 @@ export class Macro extends StrictMacro {
   }
 }
 
-type CustomizeMacroOptions = {
+export type CustomizeMacroOptions = {
   freeWanderer: (macro: StrictMacro) => Macro;
   tentacle: (macro: StrictMacro) => Macro;
   innateWanderer: (macro: StrictMacro) => Macro;
 };
 
-function customizeMacro<M extends StrictMacro>(
+export function customizeMacro<M extends StrictMacro>(
   macro: M,
   {
     freeWanderer = () => Macro.basicCombat(),
@@ -910,6 +909,10 @@ function customizeMacro<M extends StrictMacro>(
     $monsters`giant rubber spider, time-spinner prank`,
     freeWanderer(macro),
   )
+    .externalIf(
+      get("stopForUltraRare"),
+      Macro.if_(ULTRA_RARE_MONSTERS, Macro.abort()),
+    )
     .externalIf(
       have($effect`Eldritch Attunement`),
       Macro.if_($monster`Eldritch Tentacle`, tentacle(macro)),
@@ -990,22 +993,4 @@ export function garboAdventureAuto<M extends StrictMacro>(
   autoMacro.setAutoAttack();
   makeCcs(nextMacro);
   runCombatBy(() => adv1(loc, -1, ""));
-}
-
-export class GarboStrategy extends CombatStrategy {
-  constructor(
-    macro: () => Macro,
-    postAuto = macro,
-    useAutoAttack = () => true,
-    options: Partial<CustomizeMacroOptions> = {},
-  ) {
-    super();
-    const macroCustom = () => customizeMacro(macro(), options);
-    if (useAutoAttack()) {
-      const postAutoCustom = () => customizeMacro(postAuto(), options);
-      this.autoattack(macroCustom).macro(postAutoCustom);
-    } else {
-      this.macro(macroCustom);
-    }
-  }
 }

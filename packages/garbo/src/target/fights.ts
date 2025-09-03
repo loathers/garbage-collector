@@ -1,23 +1,19 @@
 import {
   abort,
   canAdventure,
-  cliExecute,
   getClanLounge,
   haveEquipped,
   isBanished,
   itemAmount,
   Location,
-  mallPrice,
   myAdventures,
   myHash,
   myRain,
   print,
-  retrieveItem,
   runChoice,
   runCombat,
   use,
   userConfirm,
-  useSkill,
   visitUrl,
 } from "kolmafia";
 import { DraggableFight } from "garbo-lib";
@@ -31,7 +27,6 @@ import {
   $locations,
   $monster,
   $skill,
-  AprilingBandHelmet,
   ChateauMantegna,
   ChestMimic,
   clamp,
@@ -59,7 +54,6 @@ import {
 } from "../combat";
 import {
   averageTargetNet,
-  getBestLuckyAdventure,
   getUsingFreeBunnyBanish,
   HIGHLIGHT,
   ltbRun,
@@ -71,8 +65,8 @@ import {
   doingGregFight,
   equipOrbIfDesired,
   gregReady,
+  monsterIsInEggnet,
   possibleGregCrystalBall,
-  shouldAugustCast,
   totalGregCharges,
 } from "../resources";
 import { acquire } from "../acquire";
@@ -230,85 +224,6 @@ export const chainStarters = [
         options.macro,
         () => use($item`photocopied monster`),
         options.useAuto,
-      );
-    },
-  ),
-  new CopyTargetFight(
-    "Scepter Semirare",
-    () =>
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`,
-    () => 0, // prevent circular reference
-    (options: RunOptions) => {
-      retrieveItem($item`august scepter`);
-      useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
-      if (!have($effect`Lucky!`)) {
-        set("_aug2Cast", true);
-        return;
-      }
-      const adventureFunction = options.useAuto
-        ? garboAdventureAuto
-        : garboAdventure;
-      adventureFunction(
-        $location`Cobb's Knob Treasury`,
-        options.macro,
-        options.macro,
-      );
-    },
-  ),
-  new CopyTargetFight(
-    "Saxophone semirare",
-    () =>
-      getBestLuckyAdventure().phase === "target" &&
-      getBestLuckyAdventure().value() > 0 &&
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      AprilingBandHelmet.canPlay($item`Apriling band saxophone`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`,
-    () => 0,
-    (options: RunOptions) => {
-      AprilingBandHelmet.play($item`Apriling band saxophone`);
-      if (!have($effect`Lucky!`)) return;
-      const adventureFunction = options.useAuto
-        ? garboAdventureAuto
-        : garboAdventure;
-      adventureFunction(
-        $location`Cobb's Knob Treasury`,
-        options.macro,
-        options.macro,
-      );
-    },
-  ),
-  new CopyTargetFight(
-    "Pillkeeper Semirare",
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`,
-    () =>
-      have($item`Eight Days a Week Pill Keeper`) &&
-      canAdventure($location`Cobb's Knob Treasury`) &&
-      !get("_freePillKeeperUsed") &&
-      !have($effect`Lucky!`) &&
-      globalOptions.target === $monster`Knob Goblin Embezzler`
-        ? 1
-        : 0,
-    (options: RunOptions) => {
-      retrieveItem($item`Eight Days a Week Pill Keeper`);
-      cliExecute("pillkeeper semirare");
-      if (!have($effect`Lucky!`)) {
-        set("_freePillKeeperUsed", true);
-        return;
-      }
-      const adventureFunction = options.useAuto
-        ? garboAdventureAuto
-        : garboAdventure;
-      adventureFunction(
-        $location`Cobb's Knob Treasury`,
-        options.macro,
-        options.macro,
       );
     },
   ),
@@ -948,18 +863,13 @@ function copyTargetConfirmInvocation(msg: string): boolean {
   return true;
 }
 
-let monsterInEggnet: boolean;
-const mosterIsInEggnet = () =>
-  (monsterInEggnet ??= ChestMimic.getReceivableMonsters().includes(
-    globalOptions.target,
-  ));
 export const emergencyChainStarters = [
   new CopyTargetFight(
     "Mimic Egg (from clinic)",
     () =>
       ChestMimic.have() &&
       $familiar`Chest Mimic`.experience >= 100 &&
-      mosterIsInEggnet() &&
+      monsterIsInEggnet() &&
       get("_mimicEggsObtained") < 11,
     () => 0,
     (options: RunOptions) => {
@@ -969,66 +879,6 @@ export const emergencyChainStarters = [
         () => ChestMimic.differentiate(globalOptions.target),
         options.useAuto,
       );
-    },
-  ),
-  // These are very deliberately the last copy target fights.
-  new CopyTargetFight(
-    "11-leaf clover (untapped potential)",
-    () => {
-      // We don't want to clover if we're not targeting an embezzler, so bail early
-      if (globalOptions.target !== $monster`Knob Goblin Embezzler`) {
-        return false;
-      }
-      if (!canAdventure($location`Cobb's Knob Treasury`)) return false;
-      const potential = Math.floor(copyTargetCount());
-      if (potential < 1) return false;
-      // Don't use clovers if wishes are available and cheaper
-      if (
-        get("_genieFightsUsed") < 3 &&
-        mallPrice($item`11-leaf clover`) >= WISH_VALUE
-      ) {
-        return false;
-      }
-      if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
-      const profit =
-        (potential + 1) * averageTargetNet() - mallPrice($item`11-leaf clover`);
-      if (profit < 0) return false;
-      print(
-        `You have the following copy target sources untapped right now:`,
-        HIGHLIGHT,
-      );
-      copyTargetSources
-        .filter((source) => source.potential() > 0)
-        .map((source) => `${source.potential()} from ${source.name}`)
-        .forEach((text) => print(text, HIGHLIGHT));
-      globalOptions.askedAboutWish = true;
-      globalOptions.wishAnswer = copyTargetConfirmInvocation(
-        `Garbo has detected you have ${potential} potential ways to copy ${
-          globalOptions.target
-        }, but no way to start a fight with one. Current net (before potions) is ${averageTargetNet()}, so we expect to earn ${profit} meat, after the cost of a 11-leaf clover. Should we get Lucky! for ${
-          globalOptions.target
-        }?`,
-      );
-      return globalOptions.wishAnswer;
-    },
-    () => 0,
-    (options: RunOptions) => {
-      globalOptions.askedAboutWish = false;
-      property.withProperty("autoSatisfyWithCloset", true, () =>
-        retrieveItem($item`11-leaf clover`),
-      );
-      use($item`11-leaf clover`);
-      if (have($effect`Lucky!`)) {
-        const adventureFunction = options.useAuto
-          ? garboAdventureAuto
-          : garboAdventure;
-        adventureFunction(
-          $location`Cobb's Knob Treasury`,
-          options.macro,
-          options.macro,
-        );
-      }
-      globalOptions.askedAboutWish = false;
     },
   ),
   new CopyTargetFight(

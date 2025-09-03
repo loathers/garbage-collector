@@ -1,6 +1,6 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
-import { $item, $items, $monster, get } from "libram";
+import { $item, $items, $monster } from "libram";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -214,6 +214,10 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_buyPass",
           help: "Set to true to buy a Dinsey day pass with FunFunds at the end of the day, if possible.",
         }),
+        beSelfish: Args.boolean({
+          setting: "_garbo_beSelfish",
+          help: "Set to true to not spend a small amount of daily resources on community endeavors.",
+        }),
         autoUserConfirm: Args.boolean({
           setting: "garbo_autoUserConfirm",
           help: "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive.",
@@ -257,11 +261,6 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     wishAnswer: Args.custom<boolean>(
       { hidden: true, default: false },
       () => false,
-      "",
-    ),
-    clarasBellClaimed: Args.custom<boolean>(
-      { hidden: true, setting: "_claraBellUsed" },
-      () => get("_claraBellUsed"),
       "",
     ),
     dietCompleted: Args.flag({

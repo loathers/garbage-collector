@@ -6,9 +6,10 @@ import {
   Quest,
   StrictCombatTask,
 } from "grimoire-kolmafia";
-import { eventLog, safeInterrupt, safeRestore, sober } from "../lib";
+import { eventLog, HIGHLIGHT, safeInterrupt, safeRestore, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
 import {
+  $effect,
   $familiar,
   $item,
   $skill,
@@ -25,16 +26,19 @@ import {
   print,
   totalTurnsPlayed,
 } from "kolmafia";
-import { GarboStrategy } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
+import { shrugBadEffects } from "../mood";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
   spendsTurn: Delayed<boolean>;
   duplicate?: Delayed<boolean>;
 };
+
+export type AlternateTask = GarboTask & { turns: Delayed<number> };
 
 function logTargetFight(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
@@ -50,6 +54,16 @@ function logTargetFight(encounterType: string) {
  * Runs extra logic before executing all tasks.
  */
 export class BaseGarboEngine extends Engine<never, GarboTask> {
+  static defaultSettings = {
+    ...Engine.defaultSettings,
+    choiceAdventureScript: "garbo_choice.js",
+  };
+
+  printExecutingMessage(task: GarboTask) {
+    print(``);
+    print(`Executing ${task.name}`, HIGHLIGHT);
+  }
+
   available(task: GarboTask): boolean {
     safeInterrupt();
     const taskSober = undelay(task.sobriety);
@@ -105,6 +119,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     }
     const foughtATarget = get("lastEncounter") === globalOptions.target.name;
     if (foughtATarget) logTargetFight(task.name);
+    shrugBadEffects($effect`Feeling Lost`); // We deliberately use Feeling Lost sometimes
     wanderer().clear();
     sessionSinceStart().value(garboValue);
     if (duplicate && SourceTerminal.have()) {

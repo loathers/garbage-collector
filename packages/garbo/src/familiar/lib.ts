@@ -11,6 +11,7 @@ import {
 import {
   $effect,
   $familiar,
+  $familiars,
   $item,
   $skill,
   clamp,
@@ -29,9 +30,14 @@ import {
   targetMeat,
   turnsToNC,
 } from "../lib";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import {
+  digitizedMonstersRemaining,
+  estimatedGarboTurns,
+  highMeatMonsterCount,
+} from "../turns";
 import { garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
+import { canBullseye, safeToAttemptBullseye } from "../resources";
 
 export type FamiliarMode = "barf" | "free" | "target" | "run";
 
@@ -107,6 +113,7 @@ export function canOpenRedPresent(): boolean {
     have($familiar`Crimbo Shrub`) &&
     !have($effect`Everything Looks Red`) &&
     !have($skill`Free-For-All`) &&
+    !(safeToAttemptBullseye() && canBullseye()) &&
     get("shrubGifts") === "meat" &&
     myInebriety() <= inebrietyLimit()
   );
@@ -178,7 +185,7 @@ export const amuletCoinValue = () => {
   const [copies, barf] = isFree(globalOptions.target)
     ? [0, estimatedGarboTurns()]
     : (() => {
-        const copies = copyTargetCount();
+        const copies = highMeatMonsterCount();
         return [copies, estimatedGarboTurns() - copies];
       })();
   return 0.5 * (barf * baseMeat() + copies * targetMeat());
@@ -187,6 +194,14 @@ export const amuletCoinValue = () => {
 export const familiarEquipmentValue = (f: Familiar) => {
   if (f === $familiar`Cornbeefadon`) {
     return have($item`amulet coin`) ? 0 : amuletCoinValue();
+  }
+
+  if (
+    $familiars`Frozen Gravy Fairy, Flaming Gravy Fairy, Sleazy Gravy Fairy, Spooky Gravy Fairy, Stinky Gravy Fairy`.includes(
+      f,
+    )
+  ) {
+    return garboValue($item`lead necklace`);
   }
 
   return garboValue(familiarEquipment(f));

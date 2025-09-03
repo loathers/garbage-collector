@@ -57,7 +57,7 @@ export function acquire(
     "green",
   );
 
-  if (qty * mallPrice(item) > (maxAggregateCost ?? 1000000)) {
+  if (qty * mallPrice(item) > (maxAggregateCost ?? 3000000)) {
     throw new Error("Aggregate cost too high! Probably a bug.");
   }
 

@@ -12,7 +12,8 @@ import {
   set,
 } from "libram";
 import { GarboTask } from "./engine";
-import { GarboStrategy, Macro } from "../combat";
+import { Macro } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 import { getChangeLastAdvLocationMethod } from "../target/lib";
 import { doingGregFight } from "../resources";
 import { freeFightOutfit } from "../outfit";

@@ -1,4 +1,12 @@
-import { Item, itemAmount, myClass, setLocation, toSlot } from "kolmafia";
+import {
+  Item,
+  itemAmount,
+  Modifier,
+  myClass,
+  setLocation,
+  stringModifier,
+  toSlot,
+} from "kolmafia";
 import {
   $class,
   $item,
@@ -10,6 +18,7 @@ import {
   getModifier,
   have,
   lgrCurrencies,
+  sum,
   sumNumbers,
 } from "libram";
 import {
@@ -21,6 +30,7 @@ import {
   modeIsFree,
   monsterManuelAvailable,
 } from "../lib";
+import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 
@@ -72,14 +82,38 @@ function luckyGoldRing(mode: BonusEquipMode) {
   ]);
 }
 
+// Possible drops are any pvpable potion that are not marked as banned by standard in the future,
+// which can be checked with the "Last Available" modifier being unset.
+// Resulting value from this function should be cached to prevent reprocessing
+function calculateMrCheengsSpectaclesBonus() {
+  const lastAvailableModifier = Modifier.get("Last Available");
+  const possibleDrops = Item.all().filter(
+    (i) =>
+      i.tradeable &&
+      i.discardable &&
+      i.potion &&
+      stringModifier(i, lastAvailableModifier) === "",
+  );
+  const dropRate = 0.25; // Items drop every 4 turns
+  const maxPrice = 100_000; // arbitrary, to help avoid outliers
+  return (
+    (sum(possibleDrops, (item) => Math.min(garboValue(item), maxPrice)) /
+      possibleDrops.length) *
+    dropRate
+  );
+}
+
+let mrCheengsBonus: number;
 function mrCheengsSpectacles() {
   if (!have($item`Mr. Cheeng's spectacles`)) {
     return new Map<Item, number>([]);
   }
 
-  // Items drop every 4 turns
-  // TODO: Possible drops are speculated to be any pvpable potion that will never be banned by standard
-  return new Map<Item, number>([[$item`Mr. Cheeng's spectacles`, 220]]);
+  mrCheengsBonus ??= calculateMrCheengsSpectaclesBonus();
+
+  return new Map<Item, number>([
+    [$item`Mr. Cheeng's spectacles`, mrCheengsBonus],
+  ]);
 }
 
 function mrScreegesSpectacles() {
@@ -100,9 +134,8 @@ function cinchoDeMayo(mode: BonusEquipMode) {
     mode === BonusEquipMode.MEAT_TARGET ||
     // Require manuel to make sure we don't kill during stasis
     !monsterManuelAvailable() ||
-    // Don't use Cincho if we're planning on doing yachtzees, and haven't completed them yet
-    (!get("_garboYachtzeeChainCompleted") &&
-      globalOptions.prefs.yachtzeechain) ||
+    // If we're doing Yachtzees, only use up excess cincho.
+    maximumPinataCasts() <= 0 ||
     // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
     maxPassiveDamage() >= 50
   ) {

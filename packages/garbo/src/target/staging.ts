@@ -61,7 +61,7 @@ export class TargetFightRunOptions implements RunOptions {
         wanderer: this.configOptions.draggable,
         allowEquipment: false,
       };
-      const targetLocation = wanderer().getTarget(wanderOptions);
+      const targetLocation = wanderer().getTarget(wanderOptions).location;
       propertyManager.setChoices(wanderer().getChoices(targetLocation));
       return targetLocation;
     }

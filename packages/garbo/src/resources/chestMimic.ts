@@ -19,9 +19,18 @@ export function shouldChargeMimic(needKickstarterEgg: boolean): boolean {
   );
 }
 
+let monsterInEggnet: boolean;
+export const monsterIsInEggnet = () =>
+  (monsterInEggnet ??= ChestMimic.getReceivableMonsters().includes(
+    globalOptions.target,
+  ));
+
 export function shouldMakeEgg(barf: boolean): boolean {
+  const needKickstarterEgg =
+    barf && ChestMimic.differentiableQuantity(globalOptions.target) <= 0;
+  if (needKickstarterEgg && !monsterIsInEggnet()) return false;
   const experienceNeeded =
-    50 * (11 - get("_mimicEggsObtained")) + (barf ? 50 : 0);
+    50 * (11 - get("_mimicEggsObtained")) + (needKickstarterEgg ? 50 : 0);
   return (
     $familiar`Chest Mimic`.experience >= experienceNeeded &&
     get("_mimicEggsObtained") < 11

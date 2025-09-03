@@ -26,9 +26,10 @@ import {
 import { GarboTask } from "../tasks/engine";
 import { garboValue } from "../garboValue";
 import { acquire } from "../acquire";
-import { GarboStrategy, Macro } from "../combat";
+import { Macro } from "../combat";
 import { freeFightOutfit } from "../outfit";
 import { globalOptions } from "../config";
+import { GarboStrategy } from "../combatStrategy";
 
 const trickHats = $items`invisible bag, witch hat, beholed bedsheet, wolfman mask, pumpkinhead mask, mummy costume`;
 const visitBlock = () =>

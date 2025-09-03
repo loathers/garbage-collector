@@ -52,7 +52,6 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../target";
 import { aprilFoolsRufus } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -67,6 +66,7 @@ import {
 } from "../resources";
 import { meatFamiliar } from "../familiar";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
+import { highMeatMonsterCount } from "../turns";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
@@ -583,7 +583,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
     do: (): void => {
-      const value = rufusPotion.value(copyTargetCount());
+      const value = rufusPotion.value(highMeatMonsterCount());
       const price = rufusPotion.price(false);
       _shouldClearRufusQuest = value.some(
         (value) =>

@@ -1,10 +1,9 @@
 import {
   adv1,
-  autosell,
-  autosellPrice,
   availableAmount,
   canAdventure,
   canEquip,
+  cliExecute,
   eat,
   getWorkshed,
   haveEquipped,
@@ -27,6 +26,7 @@ import {
   runChoice,
   totalTurnsPlayed,
   use,
+  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
@@ -52,6 +52,7 @@ import {
   have,
   HeavyRains,
   maxBy,
+  PeridotOfPeril,
   questStep,
   realmAvailable,
   set,
@@ -62,10 +63,17 @@ import {
   withChoice,
   withProperty,
 } from "libram";
-import { OutfitSpec, Quest } from "grimoire-kolmafia";
-import { WanderDetails } from "garbo-lib";
+import { getTasks, Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
+import {
+  canAdventureOrUnlock,
+  getAvailableUltraRareZones,
+  hasNameCollision,
+  unperidotableZones,
+  WanderDetails,
+} from "garbo-lib";
 
-import { GarboStrategy, Macro } from "../combat";
+import { Macro } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
@@ -77,6 +85,7 @@ import {
   romanticMonsterImpossible,
   sober,
   targetingMeat,
+  willDrunkAdventure,
 } from "../lib";
 import {
   barfOutfit,
@@ -90,22 +99,28 @@ import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
 import { deliverThesisIfAble } from "../fights";
 import { computeDiet, consumeDiet } from "../diet";
 
-import { GarboTask } from "./engine";
+import { AlternateTask, GarboTask } from "./engine";
 import { trackMarginalMpa } from "../session";
 import { garboValue } from "../garboValue";
 import {
   bestMidnightAvailable,
+  canBullseye,
   completeBarfQuest,
+  guaranteedBullseye,
   mayamCalendarSummon,
   minimumMimicExperience,
+  safeToAttemptBullseye,
+  shouldAugustCast,
   shouldFillLatte,
   tryFillLatte,
+  willYachtzee,
 } from "../resources";
 import { acquire } from "../acquire";
 import { shouldMakeEgg } from "../resources";
 import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
 import { hotTubAvailable } from "../resources/clanVIP";
 import { meatMood } from "../mood";
+import { yachtzeeQuest } from "./yachtzee";
 
 const digitizedTarget = () =>
   SourceTerminal.have() &&
@@ -121,6 +136,30 @@ const shouldCheckParachute = () => totalTurnsPlayed() !== lastParachuteFailure;
 const updateParachuteFailure = () =>
   (lastParachuteFailure = totalTurnsPlayed());
 
+function createWandererOutfit(
+  details: Delayed<WanderDetails>,
+  spec: Delayed<OutfitSpec>,
+  additionalOutfitOptions: Omit<FreeFightOutfitMenuOptions, "wanderOptions">,
+): Outfit {
+  const wanderTarget = wanderer().getTarget(undelay(details));
+  const needPeridot = wanderTarget.peridotMonster !== $monster.none;
+  const sourceOutfit = Outfit.from(
+    undelay(spec),
+    new Error(
+      `Failed to build outfit for Wanderer from ${JSON.stringify(undelay(spec))}`,
+    ),
+  );
+  if (wanderTarget.familiar !== $familiar`none`) {
+    sourceOutfit.familiar = wanderTarget.familiar;
+  }
+  if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
+
+  return freeFightOutfit(sourceOutfit.spec(), {
+    wanderOptions: undelay(details),
+    ...additionalOutfitOptions,
+  });
+}
+
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
@@ -133,13 +172,9 @@ function wanderTask(
   > = {},
 ): GarboTask {
   return {
-    do: () => wanderer().getTarget(undelay(details)),
+    do: () => wanderer().getTarget(undelay(details)).location,
     choices: () => wanderer().getChoices(undelay(details)),
-    outfit: () =>
-      freeFightOutfit(undelay(spec), {
-        wanderOptions: undelay(details),
-        ...additionalOutfitOptions,
-      }),
+    outfit: () => createWandererOutfit(details, spec, additionalOutfitOptions),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat()),
     ...base,
@@ -194,10 +229,17 @@ function shouldGoUnderwater(): boolean {
   }
 
   if (have($effect`Fishy`)) return true;
+  if (willYachtzee()) return false;
   if (have($item`fishy pipe`) && !get("_fishyPipeUsed")) {
     use($item`fishy pipe`);
-    return have($effect`Fishy`);
+    if (have($effect`Fishy`)) return true;
   }
+
+  if (get("skateParkStatus") === "ice" && !get("_skateBuff1")) {
+    cliExecute("skate lutz");
+    if (have($effect`Fishy`)) return true;
+  }
+
   return false;
 }
 
@@ -241,8 +283,6 @@ const TurnGenTasks: GarboTask[] = [
     spendsTurn: false,
   },
 ];
-
-type AlternateTask = GarboTask & { turns: Delayed<number> };
 
 function dailyDungeon(additionalReady: () => boolean) {
   return {
@@ -320,26 +360,95 @@ function lavaDogs(additionalReady: () => boolean, baseSpec: OutfitSpec) {
   };
 }
 
-function aprilingSaxophoneLucky(additionalReady: () => boolean) {
-  return {
-    completed: () => !AprilingBandHelmet.canPlay("Apriling band saxophone"),
-    ready: () =>
-      additionalReady() &&
-      have($item`Apriling band saxophone`) &&
-      getBestLuckyAdventure().phase === "barf" &&
-      getBestLuckyAdventure().value() > get("valueOfAdventure"),
-    do: () => getBestLuckyAdventure().location,
-    prepare: () => {
-      if (!have($effect`Lucky!`)) {
-        AprilingBandHelmet.play($item`Apriling band saxophone`);
-      }
+function luckyTasks(
+  sobriety: "sober" | "drunk",
+  additionalReady: () => boolean,
+): AlternateTask[] {
+  return [
+    {
+      name: `Lucky Adventure (${sobriety})`,
+      completed: () => !have($effect`Lucky!`),
+      ready: () =>
+        additionalReady() &&
+        getBestLuckyAdventure().phase === "barf" &&
+        getBestLuckyAdventure().value() > get("valueOfAdventure"),
+      do: () => getBestLuckyAdventure().location,
+      outfit: () =>
+        sobriety === "drunk" ? { offhand: $item`Drunkula's wineglass` } : {},
+      combat: new GarboStrategy(() =>
+        Macro.abortWithMsg(
+          "Unexpected combat while attempting Lucky! adventure",
+        ),
+      ),
+      sobriety,
+      spendsTurn: true,
+      turns: 0, // Turns spent is handled by Lucky Sources
     },
-    combat: new GarboStrategy(() =>
-      Macro.abortWithMsg("Unexpected combat while attempting Lucky! adventure"),
-    ),
-    turns: () => $item`Apriling band saxophone`.dailyusesleft,
-    spendsTurn: true,
-  };
+    {
+      name: `Apriling Band Lucky (${sobriety})`,
+      completed: () =>
+        have($effect`Lucky!`) ||
+        !AprilingBandHelmet.canPlay("Apriling band saxophone"),
+      ready: () =>
+        additionalReady() &&
+        have($item`Apriling band saxophone`) &&
+        getBestLuckyAdventure().phase === "barf" &&
+        getBestLuckyAdventure().value() > get("valueOfAdventure"),
+      do: () => {
+        if (!have($effect`Lucky!`)) {
+          AprilingBandHelmet.play($item`Apriling band saxophone`);
+        }
+      },
+      sobriety,
+      spendsTurn: false,
+      turns: () => $item`Apriling band saxophone`.dailyusesleft,
+    },
+    {
+      name: `August Scepter Lucky (${sobriety})`,
+      completed: () =>
+        have($effect`Lucky!`) ||
+        !shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
+      ready: () =>
+        additionalReady() &&
+        getBestLuckyAdventure().phase === "barf" &&
+        getBestLuckyAdventure().value() > get("valueOfAdventure"),
+      do: () => {
+        if (!have($effect`Lucky!`)) {
+          useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
+          if (!have($effect`Lucky!`)) {
+            set("_aug2Cast", true);
+          }
+        }
+      },
+      sobriety,
+      spendsTurn: false,
+      turns: () =>
+        shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
+          ? 1
+          : 0,
+    },
+    {
+      name: `Pillkeeper Lucky (${sobriety})`,
+      completed: () => have($effect`Lucky!`) || get("_freePillKeeperUsed"),
+      ready: () =>
+        additionalReady() &&
+        have($item`Eight Days a Week Pill Keeper`) &&
+        getBestLuckyAdventure().phase === "barf" &&
+        getBestLuckyAdventure().value() > get("valueOfAdventure"),
+      do: () => {
+        if (!have($effect`Lucky!`)) {
+          retrieveItem($item`Eight Days a Week Pill Keeper`);
+          cliExecute("pillkeeper semirare");
+          if (!have($effect`Lucky!`)) {
+            set("_freePillKeeperUsed", true);
+          }
+        }
+      },
+      sobriety,
+      spendsTurn: false,
+      turns: () => (!get("_freePillKeeperUsed") ? 1 : 0),
+    },
+  ];
 }
 
 function vampOut(additionalReady: () => boolean) {
@@ -389,10 +498,6 @@ function getBestDupeItem(): Item {
   return bestDupeItem;
 }
 
-function willDrunkAdventure() {
-  return have($item`Drunkula's wineglass`) && globalOptions.ascend;
-}
-
 function canForceNoncombat() {
   return (
     get("noncombatForcerActive") ||
@@ -410,19 +515,10 @@ function canGetFusedFuse() {
   );
 }
 
-function getAutosellableMeltingJunk(): Item[] {
-  return Item.all().filter(
-    (i) =>
-      (getModifier("Lasts Until Rollover", i) ||
-        (globalOptions.ascend && i.quest)) &&
-      itemAmount(i) &&
-      autosellPrice(i) > 0 &&
-      (globalOptions.ascend ||
-        !(
-          ["Adventures", "PvP Fights", "Rollover Effect Duration"] as const
-        ).some((mod) => getModifier(mod))),
+const peridotZone = () =>
+  getAvailableUltraRareZones().find(
+    (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l),
   );
-}
 
 const NonBarfTurnTasks: AlternateTask[] = [
   {
@@ -525,6 +621,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
     ...lavaDogs(() => !willDrunkAdventure(), {}),
     sobriety: "sober",
   },
+  ...getTasks(yachtzeeQuest), // Use NC forces and adventure to get the Yachtzee NC
   {
     name: "Daily Dungeon (drunk)",
     ...dailyDungeon(() => willDrunkAdventure()),
@@ -579,17 +676,8 @@ const NonBarfTurnTasks: AlternateTask[] = [
     spendsTurn: true,
     choices: { 1091: 7 },
   },
-  {
-    name: "Apriling Saxophone Lucky (drunk)",
-    ...aprilingSaxophoneLucky(() => willDrunkAdventure()),
-    outfit: () => ({ offhand: $item`Drunkula's wineglass` }),
-    sobriety: "drunk",
-  },
-  {
-    name: "Apriling Saxophone Lucky (sober)",
-    ...aprilingSaxophoneLucky(() => !willDrunkAdventure()),
-    sobriety: "sober",
-  },
+  ...luckyTasks("sober", () => !willDrunkAdventure()),
+  ...luckyTasks("drunk", () => willDrunkAdventure()),
   {
     name: "Map for Pills",
     completed: () =>
@@ -602,22 +690,38 @@ const NonBarfTurnTasks: AlternateTask[] = [
           ? 1
           : 2,
     }),
-    do: () => {
-      ensureEffect($effect`Transpondent`);
-      use($item`Map to Safety Shelter Grimace Prime`);
-      return true;
-    },
+    do: () =>
+      withProperty("choiceAdventureScript", "", () => {
+        ensureEffect($effect`Transpondent`);
+        use($item`Map to Safety Shelter Grimace Prime`);
+        return true;
+      }),
     spendsTurn: true,
     sobriety: "drunk",
     turns: () => availableAmount($item`Map to Safety Shelter Grimace Prime`),
   },
   {
-    name: "Autosell Melting Junk",
-    completed: () => getAutosellableMeltingJunk().length === 0,
+    name: "Peridot Fish for UR",
+    ready: () =>
+      have($item`Peridot of Peril`) && !(willDrunkAdventure() && sober()),
+    completed: () => !peridotZone(),
+    do: peridotZone,
+    outfit: () =>
+      freeFightOutfit(
+        sober()
+          ? { acc1: $item`Peridot of Peril` }
+          : {
+              acc1: $item`Peridot of Peril`,
+              offhand: $item`Drunkula's wineglass`,
+            },
+      ),
+    turns: () => (peridotZone() ? 1 : 0),
     spendsTurn: false,
-    turns: 0,
-    do: () =>
-      getAutosellableMeltingJunk().forEach((i) => autosell(i, itemAmount(i))),
+    combat: new GarboStrategy(() => Macro.kill()),
+    choices: () => ({
+      ...wanderer().getChoices(peridotZone() ?? $location.none),
+      1557: 2,
+    }),
   },
   {
     name: "Use Day Shorteners (drunk)",
@@ -813,18 +917,22 @@ const BarfTurnTasks: GarboTask[] = [
             wanderer().getTarget({
               wanderer: "wanderer",
               allowEquipment: false,
-            }),
+            }).location,
           )
         : freeFightOutfit(),
     do: () =>
-      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false }),
+      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
+        .location,
     choices: () =>
       wanderer().getChoices({
         wanderer: "wanderer",
         allowEquipment: false,
       }),
     combat: new GarboStrategy(
-      () => Macro.meatKill(),
+      () =>
+        Macro.if_(globalOptions.target, Macro.meatKill()).abortWithMsg(
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
+        ),
       () =>
         Macro.if_(
           `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
@@ -922,6 +1030,35 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   wanderTask(
     "freefight",
+    {
+      offhand:
+        guaranteedBullseye() || have($item`spring shoes`)
+          ? []
+          : $item`Roman Candelabra`,
+      acc1: $item`Everfull Dart Holster`,
+      acc2:
+        guaranteedBullseye() || !have($item`spring shoes`)
+          ? []
+          : $item`spring shoes`,
+      modifier: guaranteedBullseye() ? [] : "Monster Level",
+    },
+    {
+      name: "Darts: Bullseye",
+      ready: safeToAttemptBullseye,
+      completed: () => !canBullseye(),
+      combat: new GarboStrategy(() =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .familiarActions()
+          .skill($skill`Darts: Aim for the Bullseye`)
+          .trySkill($skill`Spring Away`)
+          .trySkill($skill`Blow the Green Candle!`),
+      ),
+      sobriety: "sober",
+      duplicate: true,
+    },
+  ),
+  wanderTask(
+    "freefight",
     {},
     {
       name: "Heavy Rains Lightning Strike",
@@ -965,7 +1102,11 @@ const BarfTurnTasks: GarboTask[] = [
         have($item`spring shoes`) &&
         romanticMonsterImpossible() &&
         (getWorkshed() !== $item`model train set` ||
-          TrainSet.next() !== TrainSet.Station.GAIN_MEAT),
+          TrainSet.next() !== TrainSet.Station.GAIN_MEAT) &&
+        (guaranteedBullseye() ||
+          !safeToAttemptBullseye() ||
+          have($skill`Free-For-All`) ||
+          have($effect`Everything Looks Red`, 30)),
       completed: () => have($effect`Everything Looks Green`),
       combat: new GarboStrategy(
         () =>
@@ -1082,6 +1223,47 @@ const BarfTurnTasks: GarboTask[] = [
       if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
     },
     spendsTurn: false,
+  },
+  {
+    name: "Fight Cookbookbat Quest Target",
+    ready: () => {
+      const questMonster = get("_cookbookbatQuestMonster");
+      if (!questMonster || hasNameCollision(questMonster)) return false;
+      const questLocation = get("_cookbookbatQuestLastLocation");
+      if (!questLocation || !canAdventureOrUnlock(questLocation, false)) {
+        return false;
+      }
+      const questReward = get("_cookbookbatQuestIngredient");
+      return (
+        PeridotOfPeril.have() &&
+        !!questReward &&
+        3 * garboValue(questReward) > get("valueOfAdventure")
+      );
+    },
+    completed: () => {
+      const questLocation = get("_cookbookbatQuestLastLocation");
+      return (
+        !questLocation ||
+        !PeridotOfPeril.canImperil(questLocation) ||
+        unperidotableZones.includes(questLocation)
+      );
+    },
+    choices: () => ({
+      1557: `1&bandersnatch=${get("_cookbookbatQuestMonster")?.id ?? 0}`,
+      ...wanderer().getChoices(
+        get("_cookbookbatQuestLastLocation") ?? $location.none,
+      ),
+    }),
+    outfit: () =>
+      freeFightOutfit({
+        equip: sober()
+          ? $items`Peridot of Peril`
+          : $items`Peridot of Peril, Drunkula's wineglass`,
+        familiar: $familiar`Cookbookbat`,
+      }),
+    do: () => get("_cookbookbatQuestLastLocation"),
+    combat: new GarboStrategy(() => Macro.basicCombat()),
+    spendsTurn: true,
   },
 ];
 

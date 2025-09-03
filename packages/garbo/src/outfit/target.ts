@@ -14,6 +14,7 @@ import { freeFightFamiliar, meatFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
+  applyCheeseBonus,
   bestBjornalike,
   cleaverCheck,
   familiarWaterBreathingEquipment,
@@ -29,6 +30,7 @@ import {
 } from "../lib";
 import { globalOptions } from "../config";
 import { meatDrop } from "kolmafia";
+import { shouldRedigitize } from "../combat";
 
 export function meatTargetOutfit(
   spec: OutfitSpec = {},
@@ -44,6 +46,12 @@ export function meatTargetOutfit(
   if (target === $location`Crab Island`) {
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
+  } else if (
+    target === $location`Cobb's Knob Treasury` &&
+    have($effect`Lucky!`)
+  ) {
+    const meat = meatDrop($monster`Knob Goblin Embezzler`) + songboomMeat();
+    outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
   } else if (targetingMeat()) {
     outfit.modifier.push(
       `${modeValueOfMeat(BonusEquipMode.MEAT_TARGET)} Meat Drop`,
@@ -52,6 +60,10 @@ export function meatTargetOutfit(
   } else if (globalOptions.target.attributes.includes("FREE")) {
     outfit.modifier.push("-tie");
   }
+  applyCheeseBonus(
+    outfit,
+    targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
+  );
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
   outfit.familiar ??= targetingMeat()
     ? meatFamiliar()
@@ -128,7 +140,8 @@ export function meatTargetOutfit(
 
   if (
     !have($effect`Everything Looks Purple`) &&
-    target.environment !== Environment.Underwater
+    target.environment !== Environment.Underwater &&
+    !shouldRedigitize()
   ) {
     outfit.equip($item`Roman Candelabra`);
   }

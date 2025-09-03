@@ -40,7 +40,8 @@ import {
   uneffect,
   withProperty,
 } from "libram";
-import { GarboStrategy, Macro } from "../../combat";
+import { Macro } from "../../combat";
+import { GarboStrategy } from "../../combatStrategy";
 import { globalOptions } from "../../config";
 import { computeDiet, consumeDiet } from "../../diet";
 import {
@@ -256,8 +257,7 @@ function refillCinch(): GarboPostTask {
         if (!freeRest()) break;
       }
     },
-    available: () =>
-      CinchoDeMayo.have() && totalFreeRests() > get("timesRested"),
+    available: () => CinchoDeMayo.have(),
   };
 }
 

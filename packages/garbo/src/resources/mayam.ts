@@ -31,7 +31,7 @@ const MAYAM_RING_VALUES = {
         ({ expectedValue }) => expectedValue / 12,
       ),
     ) * 100,
-  chair: () => (CinchoDeMayo.have() ? 3 * 5 * felizValue() : 0),
+  chair: () => (CinchoDeMayo.have() ? 3 * 5 * felizValue() : 0), // TODO Account for reaching a Yachtzee NC breakpoint
   yam2: () => garboValue($item`yam`),
   lightning: () => 1,
   bottle: () => 0,

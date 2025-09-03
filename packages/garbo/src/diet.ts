@@ -8,6 +8,7 @@ import {
   dailySpecial,
   drink,
   eat,
+  Effect,
   Element,
   elementalResistance,
   fullnessLimit,
@@ -20,6 +21,7 @@ import {
   itemType,
   logprint,
   mallPrice,
+  mpCost,
   myClass,
   myFamiliar,
   myFullness,
@@ -40,6 +42,7 @@ import {
   toEffect,
   toInt,
   toItem,
+  toSkill,
   turnsPerCast,
   use,
   useFamiliar,
@@ -51,6 +54,7 @@ import {
   $classes,
   $coinmaster,
   $effect,
+  $effects,
   $element,
   $familiar,
   $item,
@@ -61,26 +65,35 @@ import {
   DesignerSweatpants,
   Diet,
   get,
+  getActiveSongs,
   getAverageAdventures,
   getModifier,
   getRemainingLiver,
+  getSongCount,
+  getSongLimit,
   have,
   Kmail,
   maxBy,
   maximizeCached,
   MayoClinic,
   MenuItem,
+  PrismaticBeret,
   realmAvailable,
   set,
   sum,
   sumNumbers,
+  uneffect,
   withProperties,
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { copyTargetCount } from "./target";
-import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
+import {
+  beretEffectValue,
+  expectedGregs,
+  shouldAugustCast,
+  synthesize,
+} from "./resources";
 import {
   arrayEquals,
   HIGHLIGHT,
@@ -91,7 +104,7 @@ import {
 } from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
-import { estimatedGarboTurns } from "./turns";
+import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { garboValue } from "./garboValue";
 
 const MPA = get("valueOfAdventure");
@@ -147,9 +160,50 @@ function eatSafe(qty: number, item: Item) {
   }, item);
 }
 
+const EXPENSIVE_SONGS = $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
+const USEFUL_SONGS = $effects`Polka of Plenty, Ur-Kel's Aria of Annoyance, Fat Leon's Phat Loot Lyric`;
+function shrugForOde() {
+  const inexpensiveSongs = getActiveSongs().filter(
+    (e) => !EXPENSIVE_SONGS.includes(e),
+  );
+  const uselessSongs = inexpensiveSongs.filter(
+    (e) => !USEFUL_SONGS.includes(e),
+  );
+  if (uselessSongs.length >= 1) return uneffect(uselessSongs[0]);
+  if (inexpensiveSongs.length === 1) return uneffect(inexpensiveSongs[0]);
+  return uneffect(
+    maxBy(inexpensiveSongs, (e) => haveEffect(e) * mpCost(toSkill(e)), true),
+  );
+}
+
+function buskEffectValuer(effect: Effect, duration: number): number {
+  if (effect === $effect`Salty Mouth`) return 5 * get("valueOfAdventure");
+  if (
+    effect === $effect`Hammertime` &&
+    !have($effect`Hammertime`) &&
+    get("_beretBuskingUses") === 0
+  ) {
+    return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
+  }
+  return beretEffectValue(effect, duration);
+}
+function canBusk() {
+  return PrismaticBeret.have() && get("_beretBuskingUses") < 5;
+}
+function buskForSaltyMouth() {
+  if (!canBusk()) return;
+  for (let i = get("_beretBuskingUses"); i < 5; i++) {
+    if (have($effect`Salty Mouth`)) break;
+    PrismaticBeret.buskFor(buskEffectValuer, {});
+  }
+}
+
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
   if (have($skill`The Ode to Booze`)) {
+    if (!have($effect`Ode to Booze`) && getSongCount() >= getSongLimit()) {
+      shrugForOde();
+    }
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
@@ -160,7 +214,12 @@ function drinkSafe(qty: number, item: Item) {
     }
   }
   consumeWhileRespectingMoonRestaurant(() => {
-    if (!drink(qty, item)) throw "Failed to drink safely";
+    if (item.notes?.includes("BEER") && canBusk()) {
+      for (let i = 0; i < qty; i++) {
+        buskForSaltyMouth();
+        if (!drink(1, item)) throw "Failed to drink safely";
+      }
+    } else if (!drink(qty, item)) throw "Failed to drink safely";
   }, item);
 
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
@@ -343,6 +402,21 @@ export function nonOrganAdventures(): void {
       } else break;
     }
   }
+
+  if (get("_clocksUsed", 2) < 2) {
+    const clockValue = (timesUsed: number): number => {
+      const advs = [3, 2][timesUsed];
+      return advs * MPA;
+    };
+    const clocksUsed = get("_clocksUsed", 2);
+    for (let i = clocksUsed; i < 2; i++) {
+      if (clockValue(i) > mallPrice($item`clock`)) {
+        if (acquire(1, $item`clock`, clockValue(i), false)) {
+          use($item`clock`);
+        }
+      } else break;
+    }
+  }
 }
 
 function pillCheck(): void {
@@ -428,8 +502,8 @@ function legendaryPizzaToMenu(
     );
 }
 
-export const mallMin: (items: Item[]) => Item = (items: Item[]) =>
-  maxBy(items, mallPrice, true);
+export const cheapestItem: (items: Item[]) => Item = (items: Item[]) =>
+  maxBy(items, MenuItem.defaultPriceFunction, true);
 
 /**
  * Generate a basic menu of high-yield items to consider
@@ -479,7 +553,7 @@ function menu(): MenuItem<Note>[] {
   const instantKarma = globalOptions.usekarma
     ? $items`Instant Karma`.filter((item) => have(item))
     : [];
-  const crimboKeyItem = mallMin(
+  const crimboKeyItem = cheapestItem(
     $items`corned beet, pickled bread, salted mutton`,
   );
   const limitedItems = [
@@ -519,8 +593,8 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`deviled egg`),
     new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
     new MenuItem($item`extra-greasy slider`),
-    new MenuItem(mallMin(lasagnas)),
-    new MenuItem(mallMin(smallEpics)),
+    new MenuItem(cheapestItem(lasagnas)),
+    new MenuItem(cheapestItem(smallEpics)),
     new MenuItem($item`green hamhock`),
     ...legendaryPizzas.flat(),
 
@@ -540,8 +614,8 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`yam martini`),
     new MenuItem($item`Eye and a Twist`),
     new MenuItem($item`jar of fermented pickle juice`),
-    new MenuItem(mallMin(complexMushroomWines)),
-    new MenuItem(mallMin(perfectDrinks)),
+    new MenuItem(cheapestItem(complexMushroomWines)),
+    new MenuItem(cheapestItem(perfectDrinks)),
     new MenuItem($item`green eggnog`),
 
     // SPLEEN
@@ -551,8 +625,8 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`antimatter wad`),
     new MenuItem($item`voodoo snuff`),
     new MenuItem($item`blood-drive sticker`),
-    new MenuItem(mallMin(standardSpleenItems)),
-    new MenuItem(mallMin($items`not-a-pipe, glimmering roc feather`)),
+    new MenuItem(cheapestItem(standardSpleenItems)),
+    new MenuItem(cheapestItem($items`not-a-pipe, glimmering roc feather`)),
 
     // MISC
     ...limitedItems,
@@ -927,7 +1001,7 @@ function balanceMenu(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): MenuItem<Note>[] {
-  const baseTargets = targetingMeat() ? copyTargetCount() : 0;
+  const baseTargets = highMeatMonsterCount();
   function rebalance(
     menu: MenuItem<Note>[],
     iterations: number,
@@ -1043,7 +1117,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
     (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
   );
 
-  const targets = Math.floor(copyTargetCount() + countCopies(diet));
+  const targets = Math.floor(highMeatMonsterCount() + countCopies(diet));
   const adventures = Math.floor(
     estimatedGarboTurns(false) + diet.expectedAdventures(),
   );
@@ -1338,24 +1412,24 @@ function dailySpecialPrice(item: Item) {
   return get("_dailySpecialPrice");
 }
 
+MenuItem.defaultPriceFunction = (item: Item) => {
+  const prices = [
+    retrievePrice(item),
+    mallPrice(item),
+    npcPrice(item),
+    dailySpecialPrice(item),
+  ].filter((p) => p > 0 && p < Number.MAX_SAFE_INTEGER);
+  if (prices.length > 0) {
+    return Math.min(...prices);
+  }
+  return !item.tradeable && have(item) ? 0 : Infinity;
+};
+
 export function runDiet(): void {
   withVIPClan(() => {
     if (myFamiliar() === $familiar`Stooper`) {
       useFamiliar($familiar.none);
     }
-
-    MenuItem.defaultPriceFunction = (item: Item) => {
-      const prices = [
-        retrievePrice(item),
-        mallPrice(item),
-        npcPrice(item),
-        dailySpecialPrice(item),
-      ].filter((p) => p > 0 && p < Number.MAX_SAFE_INTEGER);
-      if (prices.length > 0) {
-        return Math.min(...prices);
-      }
-      return !item.tradeable && have(item) ? 0 : Infinity;
-    };
 
     const dietBuilder = computeDiet();
 

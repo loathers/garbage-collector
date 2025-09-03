@@ -1085,6 +1085,14 @@ const luckyAdventures: LuckyAdventure[] = [
           get("valueOfAdventure")
         : 0,
   },
+  {
+    location: $location`Cobb's Knob Treasury`,
+    phase: "target",
+    value: () =>
+      canAdventure($location`Cobb's Knob Treasury`)
+        ? 3 * get("valueOfAdventure") // Rough estimation, they have 4x the basemeat of barf
+        : 0,
+  },
 ];
 
 function determineBestLuckyAdventure(): LuckyAdventure {
@@ -1152,6 +1160,7 @@ export function improvesAStat(thing: Item | Effect): boolean {
   return improvedStats(thing).length > 0;
 }
 
+
 export function doCyberRealmZone3(): boolean {
   const turnCost =
     20 - get("_cyberZone3Turns") - Math.max(10 - get("_cyberFreeFights"), 0);
@@ -1164,4 +1173,35 @@ export function doCyberRealmZone3(): boolean {
 
 export function cyberRealmZone(): Location {
   return doCyberRealmZone3() ? $location`Cyberzone 3` : $location`Cyberzone 1`;
+
+export function willDrunkAdventure() {
+  return have($item`Drunkula's wineglass`) && globalOptions.ascend;
+}
+
+export function freeFishyAvailable(): boolean {
+  return (
+    have($effect`Fishy`) ||
+    (have($item`fishy pipe`) && !get("_fishyPipeUsed")) ||
+    (get("skateParkStatus") === "ice" && !get("_skateBuff1"))
+  );
+}
+
+export const ULTRA_RARE_MONSTERS = Monster.all().filter((m) =>
+  m.attributes.includes("ULTRARARE"),
+);
+
+// Marginal value of familiar weight in % meat drop.
+export function marginalFamWeightValue(): number {
+  const familiarMultiplier = have($familiar`Robortender`)
+    ? 2
+    : have($familiar`Hobo Monkey`)
+      ? 1.25
+      : 1;
+
+  // Assume base weight of 100 pounds. This is off but close enough.
+  const assumedBaseWeight = 100;
+  return (
+    2 * familiarMultiplier +
+    Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight))
+  );
 }

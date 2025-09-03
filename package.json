@@ -7,7 +7,7 @@
   "scripts": {
     "build": "yarn workspaces foreach -ptv run build && yarn run combineFiles",
     "check": " yarn workspaces foreach -pv run check",
-    "combineFiles": "copyfiles --up 2 \"packages/garbo/dist/**\" .; copyfiles --up 2 \"packages/garbo-relay/dist/**\" .",
+    "combineFiles": "copyfiles --up 2 \"packages/garbo/dist/**\" .; copyfiles --up 2 \"packages/garbo-relay/dist/**\" .; copyfiles --up 2 \"packages/garbo-choice/dist/**\" .",
     "format": "yarn run prettier --write .github && yarn workspaces foreach -pv run format",
     "lint": " yarn workspaces foreach -pv run lint",
     "pre-commit": "yarn workspaces foreach -v run pre-commit",
