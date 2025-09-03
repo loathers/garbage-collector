@@ -605,6 +605,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
           [$item`visual packet sniffer`, garboValue($item`1`) / 4], // unspaded droprate
         ]),
         shirt: $item`zero-trust tanktop`,
+        modifier: "-mys, -mox, -mus, -ml"
       }),
     combat: new GarboStrategy(() =>
       Macro.if_(
