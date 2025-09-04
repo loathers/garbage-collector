@@ -27,6 +27,7 @@ export function beretEffectValue(effect: Effect, duration: number) {
       ({ modifier, value }: { modifier: NumericModifier; value: number }) =>
         value * getModifier(modifier, effect),
     );
+  if (meatValue <= 0) return meatValue;
   const potionPrices = Item.all()
     .filter((i) => i.tradeable && effectsModifier(i, "Effect").includes(effect))
     .map(
