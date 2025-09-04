@@ -29,7 +29,12 @@ export function beretEffectValue(effect: Effect, duration: number) {
     );
   if (meatValue <= 0) return meatValue;
   const potionPrices = Item.all()
-    .filter((i) => i.tradeable && effectsModifier(i, "Effect").includes(effect))
+    .filter(
+      (i) =>
+        i.potion &&
+        i.tradeable &&
+        effectsModifier(i, "Effect").includes(effect),
+    )
     .map(
       (i) =>
         (getAcquirePrice(i) * duration) / getModifier("Effect Duration", i),
