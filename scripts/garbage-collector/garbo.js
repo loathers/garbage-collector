@@ -30655,7 +30655,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("506f5c29c0d5d6c9cc3aeeefcfff2800652f440e", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("29129a5fcb997102ac3e159e47ce4eba5aef808d", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -39369,8 +39369,9 @@ function beretEffectValue(effect2, duration) {
     var modifier = _ref.modifier, value = _ref.value;
     return value * get2(modifier, effect2);
   });
+  if (meatValue <= 0) return meatValue;
   var potionPrices = import_kolmafia130.Item.all().filter(function(i) {
-    return i.tradeable && (0, import_kolmafia130.effectsModifier)(i, "Effect").includes(effect2);
+    return i.potion && i.tradeable && (0, import_kolmafia130.effectsModifier)(i, "Effect").includes(effect2);
   }).map(function(i) {
     return getAcquirePrice(i) * duration / get2("Effect Duration", i);
   });
