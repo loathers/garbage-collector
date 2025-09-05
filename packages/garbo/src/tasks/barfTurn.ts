@@ -24,6 +24,7 @@ import {
   outfitPieces,
   retrieveItem,
   runChoice,
+  toLocation,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -80,7 +81,9 @@ import {
   howManySausagesCouldIEat,
   kramcoGuaranteed,
   MEAT_TARGET_MULTIPLIER,
+  redTaffyWorth,
   romanticMonsterImpossible,
+  seadentZone,
   sober,
   targetingMeat,
   willDrunkAdventure,
@@ -1312,11 +1315,28 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
-      prepare: () =>
-        !get("dinseyRollercoasterNext") &&
-        !(totalTurnsPlayed() % 11) &&
-        meatMood().execute(estimatedGarboTurns()),
+      prepare: () => {
+        if (
+          redTaffyWorth &&
+          toLocation(get("_seadentWaveZone")) === $location`Barf Mountain`
+        ) {
+          retrieveItem($item`pulled red taffy`, 10_000);
+        }
+        return (
+          !get("dinseyRollercoasterNext") &&
+          !(totalTurnsPlayed() % 11) &&
+          meatMood().execute(estimatedGarboTurns())
+        );
+      },
       post: () => {
+        if (
+          !get("_seadentWaveUsed") &&
+          have($item`Monodent of the Sea`) &&
+          seadentZone === $location`Barf Mountain`
+        ) {
+          useSkill($skill`Sea *dent: Summon a Wave`);
+          runChoice(1);
+        }
         completeBarfQuest();
         trackMarginalMpa();
       },

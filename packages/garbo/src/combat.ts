@@ -29,6 +29,7 @@ import {
   setCcs,
   Skill,
   toInt,
+  toLocation,
   visitUrl,
   writeCcs,
 } from "kolmafia";
@@ -64,6 +65,7 @@ import {
   isStrongScaler,
   maxPassiveDamage,
   monsterManuelAvailable,
+  redTaffyWorth,
   targetingMeat,
   ULTRA_RARE_MONSTERS,
 } from "./lib";
@@ -373,6 +375,11 @@ export class Macro extends StrictMacro {
         ),
       )
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
+      .externalIf(
+        toLocation(get("_seadentWaveZone")) === $location`Barf Mountain` &&
+          redTaffyWorth,
+        Macro.tryItem($item`pulled red taffy`),
+      )
       .meatStasis(willCrit)
       .externalIf(
         shouldAffirmationHate(),
