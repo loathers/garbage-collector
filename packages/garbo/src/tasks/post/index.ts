@@ -322,6 +322,13 @@ function leafResin(): GarboPostTask {
     completed: () => have($effect`Resined`),
     acquire: [{ item: $item`distilled resin` }],
     do: () => use($item`distilled resin`),
+    post: () => {
+      if (!have($effect`Resined`)) {
+        throw new Error(
+          "Did not gain resined after using distilled resin. Mafia bug?",
+        );
+      }
+    },
   };
 }
 
