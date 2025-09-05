@@ -77,7 +77,13 @@ import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { doCandyTrick, doingGregFight, shouldAugustCast } from "../resources";
-import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
+import {
+  cyberRealmZone,
+  isFreeAndCopyable,
+  kramcoGuaranteed,
+  sober,
+  valueDrops,
+} from "../lib";
 import { wanderer } from "../garboWanderer";
 
 export type GarboFreeFightTask = Extract<
@@ -893,7 +899,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
       have($skill`Torso Awareness`) &&
       have($skill`OVERCLOCK(10)`),
     completed: () => get("_cyberFreeFights") >= 10,
-    do: $location`Cyberzone 1`, // TODO Support other zones with better equipment and valuing hacker drops
+    do: cyberRealmZone(), // TODO Support other zones with better equipment and valuing hacker drops
     tentacle: false,
     choices: { 1545: 1 }, // Take damage, get 0's
     outfit: () =>

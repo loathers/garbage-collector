@@ -36,6 +36,7 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
   $skill,
   AprilingBandHelmet,
   ChestMimic,
@@ -76,6 +77,7 @@ import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
+  doCyberRealmZone3,
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
@@ -583,6 +585,37 @@ const NonBarfTurnTasks: AlternateTask[] = [
       offhand: $item`Drunkula's wineglass`,
     }),
     sobriety: "drunk",
+  },
+  {
+    name: "CyberRealm Zone 3 (best rewards)",
+    ready: () =>
+      canAdventure($location`Cyberzone 1`) &&
+      have($item`zero-trust tanktop`) &&
+      have($skill`Torso Awareness`) &&
+      have($skill`OVERCLOCK(10)`) &&
+      doCyberRealmZone3(),
+    completed: () => !canAdventure($location`Cyberzone 3`),
+    do: $location`Cyberzone 3`, // TODO Support other zones with better equipment and valuing hacker drops
+    choices: { 1549: 1 }, // Take damage, get 0's
+    outfit: () =>
+      freeFightOutfit({
+        bonuses: new Map<Item, number>([
+          [$item`familiar-in-the-middle wrapper`, garboValue($item`1`)],
+          [$item`retro floppy disk`, garboValue($item`1`)],
+          [$item`visual packet sniffer`, garboValue($item`1`) / 4], // unspaded droprate
+        ]),
+        shirt: $item`zero-trust tanktop`,
+        modifier: "-mys, -mox, -mus, -ml"
+      }),
+    combat: new GarboStrategy(() =>
+      Macro.if_(
+        $monsters`firewall, ICE barrier, corruption quarantine, parental controls, null container, zombie process, botfly, network worm, ICE man, rat (remote access trojan)`,
+        Macro.trySkillRepeat($skill`Throw Cyber Rock`),
+      ).basicCombat(),
+    ),
+    turns: () => 20 - $location`Cyberzone 3`.turnsSpent,
+    spendsTurn: true,
+    sobriety: "sober",
   },
   {
     name: "Lava Dogs (sober)",
