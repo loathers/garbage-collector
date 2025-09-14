@@ -20,10 +20,13 @@ import {
   undelay,
 } from "libram";
 import {
+  bufferToFile,
   equip,
+  fileToBuffer,
   itemAmount,
   myFamiliar,
   print,
+  todayToString,
   totalTurnsPlayed,
 } from "kolmafia";
 import { GarboStrategy } from "../combatStrategy";
@@ -59,9 +62,47 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     choiceAdventureScript: "garbo_choice.js",
   };
 
+  history: Array<{ name: string; startTime: number; durationMs: number }> = [];
+
+  constructor(tasks: GarboTask[], options?: EngineOptions | undefined) {
+    const startTime = Date.now();
+    super(tasks, options);
+
+    if (globalOptions.history) {
+      this.history.push({
+        name: "Engine/Construct",
+        startTime,
+        durationMs: Date.now() - startTime,
+      });
+    }
+  }
+
   printExecutingMessage(task: GarboTask) {
     print(``);
     print(`Executing ${task.name}`, HIGHLIGHT);
+  }
+
+  destruct(): void {
+    const startTime = Date.now();
+    super.destruct();
+
+    if (globalOptions.history) {
+      this.history.push({
+        name: "Engine/Destruct",
+        startTime,
+        durationMs: Date.now() - startTime,
+      });
+      const filename = `garbo_history_${todayToString()}.csv`;
+      const buffer = fileToBuffer(filename).trim();
+      const taskArray = [
+        ...buffer.split("\n"),
+        ...this.history.map(
+          (item) =>
+            `${item.startTime},${item.name.replace(",", "")},${item.durationMs}`,
+        ),
+      ];
+      bufferToFile(taskArray.join("\n"), filename);
+    }
   }
 
   available(task: GarboTask): boolean {
@@ -99,6 +140,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   }
 
   execute(task: GarboTask): void {
+    const startTime = Date.now();
     const spentTurns = totalTurnsPlayed();
     const duplicate = undelay(task.duplicate);
     const before = SourceTerminal.getSkills();
@@ -126,6 +168,28 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
       for (const skill of before) {
         SourceTerminal.educate(skill);
       }
+    }
+
+    if (globalOptions.history) {
+      this.history.push({
+        name: task.name,
+        startTime,
+        durationMs: Date.now() - startTime,
+      });
+    }
+  }
+
+  markAttempt(task: GarboTask): void {
+    super.markAttempt(task);
+    if (
+      !!globalOptions.halt &&
+      task.name.localeCompare(globalOptions.halt, undefined, {
+        sensitivity: "base",
+      })
+    ) {
+      throw new Error(
+        `Task halt requested for "${task.name}". Stopping Garbage Collector.`,
+      );
     }
   }
 }

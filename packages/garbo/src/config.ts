@@ -128,6 +128,15 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "Use instant karma as part of diet",
       default: false,
     }),
+    halt: Args.string({
+      setting: "",
+      help: "Halt after a grimoire task is run that contains this sub-string. If a task is skipped this will not trigger.",
+    }),
+    history: Args.flag({
+      setting: "",
+      help: "Write grimoire task history to garbo_history_<date>.csv",
+      default: false,
+    }),
     version: Args.flag({
       setting: "",
       help: "Print the current version and exit.",
