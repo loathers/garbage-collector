@@ -133,7 +133,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "Halt after a grimoire task is run that contains this sub-string. If a task is skipped this will not trigger.",
     }),
     history: Args.flag({
-      setting: "",
+      setting: "garbo_history",
       help: "Write grimoire task history to garbo_history_<date>.csv",
       default: false,
     }),
