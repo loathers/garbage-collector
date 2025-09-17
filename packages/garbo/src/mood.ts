@@ -18,6 +18,7 @@ import {
   $effect,
   $effects,
   $item,
+  $location,
   $skill,
   AsdonMartin,
   get,
@@ -28,6 +29,7 @@ import {
 import {
   baseMeat as baseMeatFunc,
   safeRestoreMpTarget,
+  seadentZone,
   setChoice,
 } from "./lib";
 import { usingPurse } from "./outfit";
@@ -52,6 +54,11 @@ export function meatMood(
   meat ||= baseMeat;
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
+
+  if (seadentZone === $location`Barf Mountain`) {
+    mood.potion($item`temporary teardrop tattoo`, 0.4 * baseMeat);
+    mood.potion($item`sea grease`, 0.2 * baseMeat);
+  }
 
   mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);

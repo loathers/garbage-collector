@@ -5,6 +5,8 @@ import {
   canEquip,
   cliExecute,
   eat,
+  equip,
+  equippedItem,
   getWorkshed,
   haveEquipped,
   inebrietyLimit,
@@ -38,6 +40,7 @@ import {
   $location,
   $monster,
   $skill,
+  $slot,
   AprilingBandHelmet,
   ChestMimic,
   clamp,
@@ -1304,7 +1307,16 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       outfit: () => {
         const lubing =
           get("dinseyRollercoasterNext") && have($item`lube-shoes`);
-        return barfOutfit(lubing ? { equip: $items`lube-shoes` } : {});
+        const wave =
+          toLocation(get("_seadentWaveZone")) === $location`Barf Mountain`;
+        const equips = $items``;
+        if (lubing) {
+          equips.push($item`lube-shoes`);
+        }
+        if (wave) {
+          equips.push($item`Monodent of the Sea`);
+        }
+        return barfOutfit({ equip: equips });
       },
       do: $location`Barf Mountain`,
       combat: new GarboStrategy(
@@ -1334,8 +1346,11 @@ export const BarfTurnQuest: Quest<GarboTask> = {
           have($item`Monodent of the Sea`) &&
           seadentZone === $location`Barf Mountain`
         ) {
+          const mainhand = equippedItem($slot`weapon`);
+          equip($item`Monodent of the Sea`);
           useSkill($skill`Sea *dent: Summon a Wave`);
           runChoice(1);
+          equip(mainhand);
         }
         completeBarfQuest();
         trackMarginalMpa();

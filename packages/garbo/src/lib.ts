@@ -1192,7 +1192,23 @@ export function marginalFamWeightValue(): number {
   );
 }
 
-export const seadentZone = $location`Barf Mountain`;
+const seadentMeatBonus = 0.3; // Negative Pressure Bonus
+export function seaBuffROI(): number {
+  const greaseBonus =
+    mallPrice($item`sea grease`) < 0.2 * baseMeat() * 40
+      ? 0.2 * baseMeat() * 40 - mallPrice($item`sea grease`)
+      : 0;
+  const crocBonus =
+    mallPrice($item`temporary teardrop tattoo`) < 0.4 * baseMeat() * 15
+      ? 0.4 * baseMeat() * 15 - mallPrice($item`temporary teardrop tattoo`)
+      : 0;
+  return greaseBonus + crocBonus;
+}
+
+export const seadentZone =
+  baseMeat() * seadentMeatBonus + seaBuffROI() > 150
+    ? $location`Barf Mountain`
+    : Location.none;
 
 export const redTaffyWorth =
   mallPrice($item`pulled red taffy`) <
