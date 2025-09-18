@@ -1332,7 +1332,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
           redTaffyWorth &&
           toLocation(get("_seadentWaveZone")) === $location`Barf Mountain`
         ) {
-          retrieveItem($item`pulled red taffy`, 10_000);
+          acquire(5, $item`pulled red taffy`, 10_000);
         }
         return (
           !get("dinseyRollercoasterNext") &&
