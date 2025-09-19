@@ -65,7 +65,7 @@ import {
   isStrongScaler,
   maxPassiveDamage,
   monsterManuelAvailable,
-  redTaffyWorth,
+  redTaffyDelta,
   targetingMeat,
   ULTRA_RARE_MONSTERS,
 } from "./lib";
@@ -377,7 +377,7 @@ export class Macro extends StrictMacro {
       .externalIf(opsSetup, Macro.trySkill($skill`Throw Shield`))
       .externalIf(
         toLocation(get("_seadentWaveZone")) === $location`Barf Mountain` &&
-          redTaffyWorth,
+          redTaffyDelta > 0,
         Macro.tryItem($item`pulled red taffy`),
       )
       .meatStasis(willCrit)

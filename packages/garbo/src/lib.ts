@@ -1192,28 +1192,7 @@ export function marginalFamWeightValue(): number {
   );
 }
 
-const seadentMeatBonus = 0.3; // Negative Pressure Bonus
-export function seaBuffROI(): number {
-  const greaseBonus =
-    mallPrice($item`sea grease`) < 0.2 * baseMeat() * 40
-      ? 0.2 * baseMeat() * 40 - mallPrice($item`sea grease`)
-      : 0;
-  const crocBonus =
-    mallPrice($item`temporary teardrop tattoo`) < 0.4 * baseMeat() * 15
-      ? 0.4 * baseMeat() * 15 - mallPrice($item`temporary teardrop tattoo`)
-      : 0;
-  return greaseBonus + crocBonus;
-}
-
-export const seadentZone =
-  baseMeat() * seadentMeatBonus + seaBuffROI() > 150
-    ? $location`Barf Mountain`
-    : Location.none;
-
-export const redTaffyWorth =
-  mallPrice($item`pulled red taffy`) <
-  garboAverageValue(
-    $item`Alewife™ Ale`,
+const redTaffyItems = [$item`Alewife™ Ale`,
     $item`bazookafish bubble gum`,
     $item`beefy fish meat`,
     $item`dull fish scale`,
@@ -1238,5 +1217,34 @@ export const redTaffyWorth =
     $item`slug of rum`,
     $item`slug of shochu`,
     $item`slug of vodka`,
-    $item`soggy seed packet`,
+    $item`soggy seed packet`];
+
+const redTaffyAvg = garboAverageValue(...redTaffyItems);
+const redTaffyPrice = mallPrice($item`pulled red taffy`);
+export const redTaffyDelta = redTaffyPrice - redTaffyAvg;
+
+export function seadentZone(weaponROI = 150): Location {
+
+function roiIfCheaper(item: Item, value: number): number {
+  const price = mallPrice(item);
+  return price < value ? value - price : 0;
+}
+
+const seadentMeatBonus = 0.3; // Negative Pressure Bonus
+
+function seaBuffROI(): number {
+  const famValue = marginalFamWeightValue() * baseMeat();
+  return (
+    roiIfCheaper($item`sea grease`, famValue * 5) + // 5 familiar weight
+    roiIfCheaper($item`temporary teardrop tattoo`, famValue * 10) // 10 familiar weight
   );
+}
+
+const totalWaveBonus = (baseMeat() * seadentMeatBonus) + seaBuffROI() + (redTaffyDelta > 0 ? redTaffyDelta : 0);
+
+const seadentZone =
+  totalWaveBonus > weaponROI // weapon opportunity cost goes here
+    ? $location`Barf Mountain`
+    : Location.none;
+    return seadentZone
+}

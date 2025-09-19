@@ -84,7 +84,7 @@ import {
   howManySausagesCouldIEat,
   kramcoGuaranteed,
   MEAT_TARGET_MULTIPLIER,
-  redTaffyWorth,
+  redTaffyDelta,
   romanticMonsterImpossible,
   seadentZone,
   sober,
@@ -1309,16 +1309,14 @@ export const BarfTurnQuest: Quest<GarboTask> = {
           get("dinseyRollercoasterNext") && have($item`lube-shoes`);
         const wave =
           toLocation(get("_seadentWaveZone")) === $location`Barf Mountain`;
-        const equips = $items``;
-        if (lubing) {
-          equips.push($item`lube-shoes`);
-        }
-        if (wave) {
-          equips.push($item`Monodent of the Sea`);
-        }
+        const equips: Item[] = [];
+        if (lubing) equips.push($item`lube-shoes`);
+        if (wave) equips.push($item`Monodent of the Sea`);
+
         return barfOutfit({ equip: equips });
       },
       do: $location`Barf Mountain`,
+      choices: { 1566: 1 },
       combat: new GarboStrategy(
         () => Macro.meatKill(),
         () =>
@@ -1329,7 +1327,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       ),
       prepare: () => {
         if (
-          redTaffyWorth &&
+          redTaffyDelta &&
           toLocation(get("_seadentWaveZone")) === $location`Barf Mountain`
         ) {
           acquire(5, $item`pulled red taffy`, 10_000);
@@ -1344,7 +1342,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         if (
           !get("_seadentWaveUsed") &&
           have($item`Monodent of the Sea`) &&
-          seadentZone === $location`Barf Mountain`
+          seadentZone() === $location`Barf Mountain`
         ) {
           const mainhand = equippedItem($slot`weapon`);
           equip($item`Monodent of the Sea`);

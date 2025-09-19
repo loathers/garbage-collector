@@ -55,7 +55,7 @@ export function meatMood(
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
-  if (seadentZone === $location`Barf Mountain`) {
+  if (seadentZone() === $location`Barf Mountain`) {
     mood.potion($item`temporary teardrop tattoo`, 0.4 * baseMeat);
     mood.potion($item`sea grease`, 0.2 * baseMeat);
   }
