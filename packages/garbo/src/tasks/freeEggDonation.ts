@@ -39,7 +39,7 @@ import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { getUsingFreeBunnyBanish, tryFindFreeRunOrBanish } from "../lib";
+import { freeRunConstraints, tryFindFreeRunOrBanish } from "../lib";
 import { GarboTask } from "./engine";
 
 function queryEggNetIncomplete(): Map<Monster, number> {
@@ -124,18 +124,14 @@ function findDonateMonster(
 }
 
 function mimicEscape(): ActionSource | undefined {
-  return (
-    tryFindFreeRunOrBanish({
-      noFamiliar: () => true,
-      allowedAction: (action) =>
-        action.source === $skill`Snokebomb` && getUsingFreeBunnyBanish()
-          ? $skill`Snokebomb`.timescast < 2
-          : true,
-      maximumCost: () =>
-        globalOptions.prefs.valueOfAdventure ??
-        globalOptions.prefs.valueOfFreeFight,
-    }) ?? undefined
-  );
+  const constraints = {
+    ...freeRunConstraints(),
+    noFamiliar: () => true,
+    maximumCost: () =>
+      globalOptions.prefs.valueOfAdventure ??
+      globalOptions.prefs.valueOfFreeFight,
+  };
+  return tryFindFreeRunOrBanish(constraints) ?? undefined;
 }
 
 function shouldDelevel(monster: Monster): boolean {
