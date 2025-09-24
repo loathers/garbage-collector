@@ -5,6 +5,8 @@ import {
   canEquip,
   cliExecute,
   eat,
+  equip,
+  equippedItem,
   getWorkshed,
   haveEquipped,
   inebrietyLimit,
@@ -24,6 +26,7 @@ import {
   outfitPieces,
   retrieveItem,
   runChoice,
+  toLocation,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -37,6 +40,7 @@ import {
   $location,
   $monster,
   $skill,
+  $slot,
   AprilingBandHelmet,
   ChestMimic,
   clamp,
@@ -80,7 +84,9 @@ import {
   howManySausagesCouldIEat,
   kramcoGuaranteed,
   MEAT_TARGET_MULTIPLIER,
+  redTaffyDelta,
   romanticMonsterImpossible,
+  seadentZone,
   sober,
   targetingMeat,
   willDrunkAdventure,
@@ -1301,9 +1307,16 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       outfit: () => {
         const lubing =
           get("dinseyRollercoasterNext") && have($item`lube-shoes`);
-        return barfOutfit(lubing ? { equip: $items`lube-shoes` } : {});
+        const wave =
+          toLocation(get("_seadentWaveZone")) === $location`Barf Mountain`;
+        const equips: Item[] = [];
+        if (lubing) equips.push($item`lube-shoes`);
+        if (wave) equips.push($item`Monodent of the Sea`);
+
+        return barfOutfit({ equip: equips });
       },
       do: $location`Barf Mountain`,
+      choices: { 1566: 1 },
       combat: new GarboStrategy(
         () => Macro.meatKill(),
         () =>
@@ -1312,11 +1325,31 @@ export const BarfTurnQuest: Quest<GarboTask> = {
             Macro.meatKill(),
           ).abort(),
       ),
-      prepare: () =>
-        !get("dinseyRollercoasterNext") &&
-        !(totalTurnsPlayed() % 11) &&
-        meatMood().execute(estimatedGarboTurns()),
+      prepare: () => {
+        if (
+          redTaffyDelta &&
+          toLocation(get("_seadentWaveZone")) === $location`Barf Mountain`
+        ) {
+          acquire(5, $item`pulled red taffy`, 10_000);
+        }
+        return (
+          !get("dinseyRollercoasterNext") &&
+          !(totalTurnsPlayed() % 11) &&
+          meatMood().execute(estimatedGarboTurns())
+        );
+      },
       post: () => {
+        if (
+          !get("_seadentWaveUsed") &&
+          have($item`Monodent of the Sea`) &&
+          seadentZone() === $location`Barf Mountain`
+        ) {
+          const mainhand = equippedItem($slot`weapon`);
+          equip($item`Monodent of the Sea`);
+          useSkill($skill`Sea *dent: Summon a Wave`);
+          runChoice(1);
+          equip(mainhand);
+        }
         completeBarfQuest();
         trackMarginalMpa();
       },

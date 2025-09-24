@@ -24,6 +24,7 @@ import {
   itemDropsArray,
   lastMonster,
   Location,
+  mallPrice,
   meatDrop,
   meatDropModifier,
   Monster,
@@ -1189,4 +1190,61 @@ export function marginalFamWeightValue(): number {
     2 * familiarMultiplier +
     Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight))
   );
+}
+
+const redTaffyItems = [$item`Alewife™ Ale`,
+    $item`bazookafish bubble gum`,
+    $item`beefy fish meat`,
+    $item`dull fish scale`,
+    $item`eel battery`,
+    $item`eel sauce`,
+    $item`glistening fish meat`,
+    $item`high-pressure seltzer bottle`,
+    $item`imitation crab crate`,
+    $item`ink bladder`,
+    $item`live nautical mine`,
+    $item`Mer-kin healscroll`,
+    $item`Mer-kin lunchbox`,
+    $item`Mer-kin thingpouch`,
+    $item`pufferfish spine`,
+    $item`rough fish scale`,
+    $item`salinated mint julep`,
+    $item`sand dollar`,
+    $item`sea lace`,
+    $item`seaweed`,
+    $item`shark cartilage`,
+    $item`slick fish meat`,
+    $item`slug of rum`,
+    $item`slug of shochu`,
+    $item`slug of vodka`,
+    $item`soggy seed packet`];
+
+const redTaffyAvg = garboAverageValue(...redTaffyItems);
+const redTaffyPrice = mallPrice($item`pulled red taffy`);
+export const redTaffyDelta = redTaffyPrice - redTaffyAvg;
+
+export function seadentZone(weaponROI = 150): Location {
+
+function roiIfCheaper(item: Item, value: number): number {
+  const price = mallPrice(item);
+  return price < value ? value - price : 0;
+}
+
+const seadentMeatBonus = 0.3; // Negative Pressure Bonus
+
+function seaBuffROI(): number {
+  const famValue = marginalFamWeightValue() * baseMeat();
+  return (
+    roiIfCheaper($item`sea grease`, famValue * 5) + // 5 familiar weight
+    roiIfCheaper($item`temporary teardrop tattoo`, famValue * 10) // 10 familiar weight
+  );
+}
+
+const totalWaveBonus = (baseMeat() * seadentMeatBonus) + seaBuffROI() + (redTaffyDelta > 0 ? redTaffyDelta : 0);
+
+const seadentZone =
+  totalWaveBonus > weaponROI // weapon opportunity cost goes here
+    ? $location`Barf Mountain`
+    : Location.none;
+    return seadentZone
 }

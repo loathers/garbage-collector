@@ -3888,7 +3888,7 @@ __metadata:
     "@types/eslint__js": ^8.42.3
     eslint: ^9.9.0
     eslint-config-prettier: ^9.1.0
-    eslint-plugin-libram: ^0.4.31
+    eslint-plugin-libram: ^0.4.32
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -3912,13 +3912,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.4.31":
-  version: 0.4.31
-  resolution: "eslint-plugin-libram@npm:0.4.31"
+"eslint-plugin-libram@npm:^0.4.32":
+  version: 0.4.32
+  resolution: "eslint-plugin-libram@npm:0.4.32"
   dependencies:
     html-entities: ^2.5.2
     requireindex: ~1.2.0
-  checksum: 3d5b63883899bbcd46e7d0414ee1d98d4a394b215bc1e55a29705005bcd5e66b550c07bfd8ac0409d39a2f9d694bfdeed9bd1f8ca1e00db413cbf7d10c74d26b
+  checksum: 0e56f095231c9ccdd232e961e02296c8fdc404222b74ae973a148ffb2a90c9c0af9c285592710f1ac9a415791aa92af90e80b78a3e97051cda2fe646aee1b07d
   languageName: node
   linkType: hard
 
@@ -4346,7 +4346,7 @@ __metadata:
     eslint-config-garbo: ^0.0.1
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.29
-    kolmafia: ^5.28673.0
+    kolmafia: ^5.28703.0
     libram: ^0.11.9
     lint-staged: ^15.2.9
     madge: ^8.0.0
@@ -4362,7 +4362,7 @@ __metadata:
   dependencies:
     eslint: ^9.9.0
     eslint-config-garbo: ^0.0.1
-    kolmafia: ^5.28673.0
+    kolmafia: ^5.28703.0
     libram: ^0.11.9
     lint-staged: ^15.2.9
     madge: ^8.0.0
@@ -4417,7 +4417,7 @@ __metadata:
     eslint-config-garbo: ^0.0.1
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.29
-    kolmafia: ^5.28673.0
+    kolmafia: ^5.28703.0
     libram: ^0.11.9
     lint-staged: ^15.2.9
     madge: ^8.0.0
@@ -5065,10 +5065,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:^5.28673.0":
-  version: 5.28677.0
-  resolution: "kolmafia@npm:5.28677.0"
-  checksum: 22fb5889ccadd50b26334d2c7a21307b0c827239939c3c6b2154252db5d6d224a6b3f719513c69eb91f54391426769b871d0dae2e46ac527aeed1b435160c89d
+"kolmafia@npm:^5.28703.0":
+  version: 5.28703.0
+  resolution: "kolmafia@npm:5.28703.0"
+  checksum: 142424d27bed97d037e5c4fb2bac85eb95f69a675fd43880af8435137075795330a539724dfca29da6e6d83a5468f786600e6eaae81bdfb6629b56d18c143714
   languageName: node
   linkType: hard
 
