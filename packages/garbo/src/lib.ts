@@ -1226,7 +1226,7 @@ const COUNCIL_QUESTS = [
 export function isFunctionallyInRun(): boolean {
   if (!get("kingLiberated")) return true;
   if (myLevel() < 13) return true;
-  if (Stat.all().some((s) => myBasestat(s) < 17)) return true;
+  if (Stat.all().some((s) => myBasestat(s) < 75)) return true;
   if (
     COUNCIL_QUESTS.some(
       (quest) => questStep(quest) > -1 && questStep(quest) < 999,
