@@ -1231,7 +1231,8 @@ export function isFunctionallyInRun(): boolean {
     COUNCIL_QUESTS.some(
       (quest) => questStep(quest) > -1 && questStep(quest) < 999,
     )
-  )
-    {return true;}
+  ) {
+    return true;
+  }
   return false;
 }
