@@ -28,12 +28,14 @@ import {
   meatDropModifier,
   Monster,
   mpCost,
+  myBasestat,
   myBjornedFamiliar,
   myEnthronedFamiliar,
   myFamiliar,
   myFullness,
   myHp,
   myInebriety,
+  myLevel,
   myLocation,
   myMaxhp,
   myMaxmp,
@@ -1189,4 +1191,47 @@ export function marginalFamWeightValue(): number {
     2 * familiarMultiplier +
     Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight))
   );
+}
+
+const COUNCIL_QUESTS = [
+  "questL02Larva",
+  "questL03Rat",
+  "questL04Bat",
+  "questL05Goblin",
+  "questL06Friar",
+  "questL07Cyrptic",
+  "questL08Trapper",
+  "questL09Topping",
+  "questL10Garbage",
+  "questL11Black",
+  "questL11Business",
+  "questL11Curses",
+  "questL11Desert",
+  "questL11Doctor",
+  "questL11MacGuffin",
+  "questL11Manor",
+  "questL11Palindome",
+  "questL11Pyramid",
+  "questL11Ron",
+  "questL11Shen",
+  "questL11Spare",
+  "questL11Worship",
+  "questL12HippyFrat",
+  "questL12War",
+  "questL13Final",
+  "questL13Warehouse",
+] as const;
+// Use cases we don't specifically intend to support
+// triggers the "silly goose" warning
+export function isFunctionallyInRun(): boolean {
+  if (!get("kingLiberated")) return true;
+  if (myLevel() < 13) return true;
+  if (Stat.all().some((s) => myBasestat(s) < 17)) return true;
+  if (
+    COUNCIL_QUESTS.some(
+      (quest) => questStep(quest) > -1 && questStep(quest) < 999,
+    )
+  )
+    {return true;}
+  return false;
 }
