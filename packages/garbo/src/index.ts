@@ -15,7 +15,6 @@ import {
   Item,
   logprint,
   maximize,
-  myBasestat,
   myClass,
   myGardenType,
   myInebriety,
@@ -26,7 +25,6 @@ import {
   retrieveItem,
   runChoice,
   setAutoAttack,
-  Stat,
   toInt,
   use,
   visitUrl,
@@ -68,6 +66,7 @@ import {
   checkGithubVersion,
   HIGHLIGHT,
   isFreeAndCopyable,
+  isFunctionallyInRun,
   printEventLog,
   printLog,
   propertyManager,
@@ -252,11 +251,7 @@ export function main(argString = ""): void {
     );
   }
 
-  if (
-    !get("kingLiberated") ||
-    myLevel() < 13 ||
-    Stat.all().some((s) => myBasestat(s) < 75)
-  ) {
+  if (isFunctionallyInRun()) {
     if (globalOptions.prefs.skipAscensionCheck) {
       logprint(
         "This player is a silly goose, who ignored our warnings about being underleveled.",
