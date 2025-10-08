@@ -35,6 +35,7 @@ import {
   putCloset,
   retrieveItem,
   retrievePrice,
+  runChoice,
   sellsItem,
   setProperty,
   spleenLimit,
@@ -47,6 +48,7 @@ import {
   use,
   useFamiliar,
   useSkill,
+  visitUrl,
   wait,
 } from "kolmafia";
 import {
@@ -1190,13 +1192,37 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   );
   acquire(seasoningCount, $item`Special Seasoning`, MPA);
 
-  // Fill organs in rounds, making sure we're making progress in each round.
+  const shouldUseCoolerYeti =
+    globalOptions.ascend &&
+    have($familiar`Cooler Yeti`) &&
+    get("_mimeArmyShotglassUsed") &&
+    $familiar`Cooler Yeti`.experience > 400;
+
+  const getBestBooze = (diet: Diet<Note>): Item | null => {
+    const boozeEntries = diet.entries.filter((e) =>
+      e.menuItems.some((m) => m.organ === "booze"),
+    );
+    if (boozeEntries.length === 0) return null;
+
+    // Provide explicit initial value
+    const bestEntry = boozeEntries.reduce((best, current) => {
+      const bestVal = best.expectedAdventures(diet) / best.quantity;
+      const curVal = current.expectedAdventures(diet) / current.quantity;
+      return curVal > bestVal ? current : best;
+    }, boozeEntries[0]);
+
+    return bestEntry.menuItems[bestEntry.menuItems.length - 1].item;
+  };
+
+  const bestBooze = shouldUseCoolerYeti ? getBestBooze(diet) : null;
+
   const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
   let lastOrgans = [-1, -1, -1];
   const capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
   let lastCapacities = [-1, -1, -1];
   let currentQuantity = sum(diet.entries, "quantity");
   let lastQuantity = -1;
+
   while (currentQuantity > 0) {
     if (
       arrayEquals(lastOrgans, organs()) &&
@@ -1310,7 +1336,6 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         [
           $item`campfire hot dog`,
           (countToConsume: number, menuItem: MenuItem<Note>) => {
-            // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
             if (!have($item`stick of firewood`)) {
               buy(
                 1,
@@ -1393,11 +1418,38 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
 
       for (const menuItem of menuItems) {
         const itemAction = itemActions.get(menuItem.item);
-        if (itemAction === "skip") {
+        const isBooze = menuItem.organ === "booze";
+
+        // If it's worth doing, use Cooler Yeti
+        if (isBooze && bestBooze && menuItem.item === bestBooze) {
+          const prevFamiliar = myFamiliar();
+          print(
+            `Switching to Cooler Yeti to chill ${menuItem.item}...`,
+            HIGHLIGHT,
+          );
+          useFamiliar($familiar`Cooler Yeti`);
+          visitUrl("main.php?talktoyeti=1", false);
+          runChoice(2);
+
+          if (itemAction === "skip") continue;
+          else if (itemAction) itemAction(countToConsume, menuItem);
+          else {
+            consumeSafe(
+              countToConsume,
+              menuItem.item,
+              menuItem.additionalValue,
+            );
+          }
+
+          print(`Switching back to ${prevFamiliar}.`, "blue");
+          useFamiliar(prevFamiliar);
           continue;
-        } else if (itemAction) {
-          itemAction(countToConsume, menuItem);
-        } else {
+        }
+
+        // Normal behavior
+        if (itemAction === "skip") continue;
+        else if (itemAction) itemAction(countToConsume, menuItem);
+        else {
           consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
         }
       }
