@@ -137,7 +137,7 @@ const sandwormMacro = () => Macro.trySingAlong().tryHaveSkill($skill`Otoscope`);
 function safeSweatBulletCasts(): number {
   const mainstat = myPrimestat();
   return mainstat === $stat`Moxie` && myLevel() >= 23
-    ? BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 488) // If we're level 23, we don't want to go under that
+    ? BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 629) // If we're level 26, we don't want to go under that
     : mainstat === $stat`Moxie` && myLevel() >= 20
       ? BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 365) // If we're level 20, we don't want to go under that
       : mainstat === $stat`Moxie`
