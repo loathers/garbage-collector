@@ -8,8 +8,10 @@ import {
   haveEquipped,
   mallPrice,
   myAscensions,
+  myLevel,
   myLightning,
   myPath,
+  myPrimestat,
   runCombat,
   use,
   visitUrl,
@@ -22,8 +24,10 @@ import {
   $items,
   $path,
   $skill,
+  $stat,
   AprilingBandHelmet,
   AsdonMartin,
+  BloodCubicZirconia,
   clamp,
   get,
   getModifier,
@@ -129,6 +133,17 @@ function nonSandwormTask(
 }
 
 const sandwormMacro = () => Macro.trySingAlong().tryHaveSkill($skill`Otoscope`);
+
+function safeSweatBulletCasts(): number {
+  const mainstat = myPrimestat();
+  return mainstat === $stat`Moxie` && myLevel() >= 23
+    ? BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 488) // If we're level 23, we don't want to go under that
+    : mainstat === $stat`Moxie` && myLevel() >= 20
+      ? BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 365) // If we're level 20, we don't want to go under that
+      : mainstat === $stat`Moxie`
+        ? BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 148) // If we're a moxie class, we don't want to go under level 13
+        : BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 100);
+}
 
 const SandwormTasks: GarboFreeFightTask[] = [
   ...[
@@ -261,6 +276,16 @@ const SandwormTasks: GarboFreeFightTask[] = [
           ? clamp(13 - get("_shadowBricksUsed"), 0, 13)
           : 0,
       acquire: () => [{ item: $item`shadow brick`, price: drumMachineROI() }],
+    },
+    {
+      name: $skill`BCZ: Sweat Bullets`.name,
+      ready: () =>
+        have($item`blood cubic zirconia`) && safeSweatBulletCasts() >= 0,
+      completed: () => safeSweatBulletCasts() <= 0,
+      combat: new GarboStrategy(() =>
+        sandwormMacro().trySkill($skill`BCZ: Sweat Bullets`),
+      ),
+      combatCount: () => safeSweatBulletCasts(),
     },
     {
       name: "Yellow Ray",

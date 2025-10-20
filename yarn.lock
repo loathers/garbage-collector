@@ -3888,7 +3888,7 @@ __metadata:
     "@types/eslint__js": ^8.42.3
     eslint: ^9.9.0
     eslint-config-prettier: ^9.1.0
-    eslint-plugin-libram: ^0.4.31
+    eslint-plugin-libram: ^0.4.33
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -3912,13 +3912,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.4.31":
-  version: 0.4.31
-  resolution: "eslint-plugin-libram@npm:0.4.31"
+"eslint-plugin-libram@npm:^0.4.33":
+  version: 0.4.33
+  resolution: "eslint-plugin-libram@npm:0.4.33"
   dependencies:
     html-entities: ^2.5.2
     requireindex: ~1.2.0
-  checksum: 3d5b63883899bbcd46e7d0414ee1d98d4a394b215bc1e55a29705005bcd5e66b550c07bfd8ac0409d39a2f9d694bfdeed9bd1f8ca1e00db413cbf7d10c74d26b
+  checksum: 3124fc7d9f9ce2d8aa675ad3b143a9807adba5a39ef317e8c5b659d759da4419cd4802a143865914160e4cb3c2faab9fd390bdace90c657db2c12ba4581bd039
   languageName: node
   linkType: hard
 
@@ -4347,7 +4347,7 @@ __metadata:
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.29
     kolmafia: ^5.28673.0
-    libram: ^0.11.9
+    libram: ^0.11.10
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4363,7 +4363,7 @@ __metadata:
     eslint: ^9.9.0
     eslint-config-garbo: ^0.0.1
     kolmafia: ^5.28673.0
-    libram: ^0.11.9
+    libram: ^0.11.10
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4418,7 +4418,7 @@ __metadata:
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.29
     kolmafia: ^5.28673.0
-    libram: ^0.11.9
+    libram: ^0.11.10
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -5082,14 +5082,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:^0.11.9":
-  version: 0.11.9
-  resolution: "libram@npm:0.11.9"
+"libram@npm:^0.11.10":
+  version: 0.11.10
+  resolution: "libram@npm:0.11.10"
   dependencies:
     html-entities: ^2.5.2
   peerDependencies:
     kolmafia: ^5.28100.0
-  checksum: c172e1dc6adb2037965f77ac57ed7103ecc78bc45c26f9fa60b1ddd89c8cbd1498030b910a1216c98de21b61858e486b80948ea64470f2023a8066f3ffb82ec4
+  checksum: 23c827ba4a42f7419c147382876fb644c5e88032ec66f3e43e123828e76b7330b841a20dec184816c989c44345d14bd420c5a04bb866a8c89d63630ccee66b3a
   languageName: node
   linkType: hard
 
