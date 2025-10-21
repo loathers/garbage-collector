@@ -285,6 +285,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
       combat: new GarboStrategy(() =>
         sandwormMacro().trySkill($skill`BCZ: Sweat Bullets`),
       ),
+      outfit: () => sandwormOutfit({ equip: $items`blood cubic zirconia` }),
       combatCount: () => safeSweatBulletCasts(),
     },
     {
