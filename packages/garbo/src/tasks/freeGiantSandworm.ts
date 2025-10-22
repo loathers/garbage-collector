@@ -8,10 +8,8 @@ import {
   haveEquipped,
   mallPrice,
   myAscensions,
-  myLevel,
   myLightning,
   myPath,
-  myPrimestat,
   runCombat,
   use,
   visitUrl,
@@ -24,10 +22,8 @@ import {
   $items,
   $path,
   $skill,
-  $stat,
   AprilingBandHelmet,
   AsdonMartin,
-  BloodCubicZirconia,
   clamp,
   get,
   getModifier,
@@ -44,7 +40,7 @@ import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import { GarboFreeFightTask } from "./freeFight";
 import { sandwormFamiliar } from "../familiar";
-import { sober } from "../lib";
+import { safeSweatBulletCasts, sober } from "../lib";
 
 function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   const outfit = Outfit.from(
@@ -133,34 +129,6 @@ function nonSandwormTask(
 }
 
 const sandwormMacro = () => Macro.trySingAlong().tryHaveSkill($skill`Otoscope`);
-
-function mainStatLevel(level: number): number {
-  return (level - 1) ** 2 + 4;
-}
-
-function safeSweatBulletCasts(): number {
-  const mainstat = myPrimestat();
-  if (mainstat === $stat`Moxie`) {
-    if (myLevel() >= 26) {
-      return BloodCubicZirconia.availableCasts(
-        $skill`BCZ: Sweat Bullets`,
-        mainStatLevel(26),
-      );
-    }
-    if (myLevel() >= 20) {
-      return BloodCubicZirconia.availableCasts(
-        $skill`BCZ: Sweat Bullets`,
-        mainStatLevel(20),
-      );
-    }
-  }
-
-  if (have($item`crumpled felt fedora`)) {
-    return BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 200);
-  }
-
-  return BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 100);
-}
 
 const SandwormTasks: GarboFreeFightTask[] = [
   ...[
@@ -297,13 +265,14 @@ const SandwormTasks: GarboFreeFightTask[] = [
     {
       name: $skill`BCZ: Sweat Bullets`.name,
       ready: () =>
-        have($item`blood cubic zirconia`) && safeSweatBulletCasts() >= 0,
-      completed: () => safeSweatBulletCasts() <= 0,
+        have($item`blood cubic zirconia`) &&
+        safeSweatBulletCasts(drumMachineROI()) >= 0,
+      completed: () => safeSweatBulletCasts(drumMachineROI()) <= 0,
       combat: new GarboStrategy(() =>
         sandwormMacro().trySkill($skill`BCZ: Sweat Bullets`),
       ),
       outfit: () => sandwormOutfit({ equip: $items`blood cubic zirconia` }),
-      combatCount: () => safeSweatBulletCasts(),
+      combatCount: () => safeSweatBulletCasts(drumMachineROI()),
     },
     {
       name: "Yellow Ray",

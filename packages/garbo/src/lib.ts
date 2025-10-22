@@ -34,10 +34,12 @@ import {
   myFullness,
   myHp,
   myInebriety,
+  myLevel,
   myLocation,
   myMaxhp,
   myMaxmp,
   myMp,
+  myPrimestat,
   mySoulsauce,
   mySpleenUse,
   myThrall,
@@ -73,9 +75,11 @@ import {
   $location,
   $monster,
   $skill,
+  $stat,
   $thralls,
   ActionSource,
   bestLibramToCast,
+  BloodCubicZirconia,
   ChateauMantegna,
   clamp,
   ClosedCircuitPayphone,
@@ -1189,4 +1193,44 @@ export function marginalFamWeightValue(): number {
     2 * familiarMultiplier +
     Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight))
   );
+}
+
+export function mainStatLevel(level: number): number {
+  return (level - 1) ** 2 + 4;
+}
+
+function sweatEquityROI(): number {
+  return baseMeat() * 0.4 * 30;
+}
+
+function safeBCZCasts(skill: Skill): number {
+  const stat = BloodCubicZirconia.substatUsed(skill);
+  const mainstat = myPrimestat();
+
+  if (stat === mainstat) {
+    if (myLevel() >= 26) {
+      return BloodCubicZirconia.availableCasts(skill, mainStatLevel(26));
+    }
+
+    if (myLevel() >= 20) {
+      return BloodCubicZirconia.availableCasts(skill, mainStatLevel(20));
+    }
+  }
+
+  if (stat === $stat`Moxie`) {
+    if (have($item`crumpled felt fedora`)) {
+      return BloodCubicZirconia.availableCasts(skill, 200);
+    }
+  }
+
+  return BloodCubicZirconia.availableCasts(skill, 100);
+}
+
+export function safeSweatEquityCasts(): number {
+  return safeBCZCasts($skill`BCZ: Sweat Equity`);
+}
+
+export function safeSweatBulletCasts(drumMachineROI: number): number {
+  if (sweatEquityROI() > drumMachineROI) return 0;
+  return safeBCZCasts($skill`BCZ: Sweat Bullets`);
 }

@@ -8,8 +8,10 @@ import {
   Effect,
   effectModifier,
   equip,
+  equippedItem,
   getMonsters,
   haveEffect,
+  haveEquipped,
   historicalAge,
   historicalPrice,
   inebrietyLimit,
@@ -28,6 +30,7 @@ import {
   setLocation,
   toSkill,
   use,
+  useSkill,
 } from "kolmafia";
 import {
   $effect,
@@ -37,6 +40,7 @@ import {
   $location,
   $skill,
   $slot,
+  BloodCubicZirconia,
   clamp,
   ClosedCircuitPayphone,
   CursedMonkeyPaw,
@@ -63,6 +67,7 @@ import {
   improvesAStat,
   marginalFamWeightValue,
   pillkeeperOpportunityCost,
+  safeSweatEquityCasts,
   targetMeat,
   targetMeatDifferential,
   turnsToNC,
@@ -724,6 +729,24 @@ function useBusks() {
   }
 }
 
+function sweatEquity() {
+  if (!BloodCubicZirconia.have() || safeSweatEquityCasts() === 0) {
+    return;
+  }
+
+  let acc3 = Item.none;
+  if (!haveEquipped($item`blood cubic zirconia`)) {
+    acc3 = equippedItem($slot`acc3`);
+    equip($item`blood cubic zirconia`, $slot`acc3`);
+  }
+  while (safeSweatEquityCasts() > 0) {
+    useSkill($skill`BCZ: Sweat Equity`);
+  }
+  if (acc3 !== Item.none) {
+    equip(acc3, $slot`acc3`);
+  }
+}
+
 let completedPotionSetup = false;
 export function potionSetupCompleted(): boolean {
   return completedPotionSetup;
@@ -735,6 +758,7 @@ export function potionSetupCompleted(): boolean {
 export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
   castAugustScepterBuffs();
   useBusks();
+  sweatEquity();
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
