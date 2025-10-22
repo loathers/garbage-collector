@@ -134,15 +134,32 @@ function nonSandwormTask(
 
 const sandwormMacro = () => Macro.trySingAlong().tryHaveSkill($skill`Otoscope`);
 
+function mainStatLevel(level: number): number {
+  return (level - 1) ** 2 + 4;
+}
+
 function safeSweatBulletCasts(): number {
   const mainstat = myPrimestat();
-  return mainstat === $stat`Moxie` && myLevel() >= 23
-    ? BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 629) // If we're level 26, we don't want to go under that
-    : mainstat === $stat`Moxie` && myLevel() >= 20
-      ? BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 365) // If we're level 20, we don't want to go under that
-      : mainstat === $stat`Moxie`
-        ? BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 148) // If we're a moxie class, we don't want to go under level 13
-        : BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 100);
+  if (mainstat === $stat`Moxie`) {
+    if (myLevel() >= 26) {
+      return BloodCubicZirconia.availableCasts(
+        $skill`BCZ: Sweat Bullets`,
+        mainStatLevel(26),
+      );
+    }
+    if (myLevel() >= 20) {
+      return BloodCubicZirconia.availableCasts(
+        $skill`BCZ: Sweat Bullets`,
+        mainStatLevel(20),
+      );
+    }
+  }
+
+  if (have($item`crumpled felt fedora`)) {
+    return BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 200);
+  }
+
+  return BloodCubicZirconia.availableCasts($skill`BCZ: Sweat Bullets`, 100);
 }
 
 const SandwormTasks: GarboFreeFightTask[] = [
