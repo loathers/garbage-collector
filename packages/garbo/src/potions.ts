@@ -8,10 +8,8 @@ import {
   Effect,
   effectModifier,
   equip,
-  equippedItem,
   getMonsters,
   haveEffect,
-  haveEquipped,
   historicalAge,
   historicalPrice,
   inebrietyLimit,
@@ -30,7 +28,6 @@ import {
   setLocation,
   toSkill,
   use,
-  useSkill,
 } from "kolmafia";
 import {
   $effect,
@@ -63,6 +60,7 @@ import {
   aprilFoolsRufus,
   baseMeat,
   bestShadowRift,
+  getBCZStatFloor,
   HIGHLIGHT,
   improvesAStat,
   marginalFamWeightValue,
@@ -734,17 +732,10 @@ function sweatEquity() {
     return;
   }
 
-  let acc3 = Item.none;
-  if (!haveEquipped($item`blood cubic zirconia`)) {
-    acc3 = equippedItem($slot`acc3`);
-    equip($item`blood cubic zirconia`, $slot`acc3`);
-  }
-  while (safeSweatEquityCasts() > 0) {
-    useSkill($skill`BCZ: Sweat Equity`);
-  }
-  if (acc3 !== Item.none) {
-    equip(acc3, $slot`acc3`);
-  }
+  BloodCubicZirconia.castDownTo(
+    $skill`BCZ: Sweat Equity`,
+    getBCZStatFloor($skill`BCZ: Sweat Equity`),
+  );
 }
 
 let completedPotionSetup = false;

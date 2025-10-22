@@ -1203,27 +1203,33 @@ function sweatEquityROI(): number {
   return baseMeat() * 0.4 * 30;
 }
 
-function safeBCZCasts(skill: Skill): number {
+export function getBCZStatFloor(skill: Skill): number {
   const stat = BloodCubicZirconia.substatUsed(skill);
   const mainstat = myPrimestat();
+  const level = myLevel();
+
+  let floor = 100; // Default baseline
 
   if (stat === mainstat) {
-    if (myLevel() >= 26) {
-      return BloodCubicZirconia.availableCasts(skill, mainStatLevel(26));
-    }
-
-    if (myLevel() >= 20) {
-      return BloodCubicZirconia.availableCasts(skill, mainStatLevel(20));
-    }
-  }
-
-  if (stat === $stat`Moxie`) {
-    if (have($item`crumpled felt fedora`)) {
-      return BloodCubicZirconia.availableCasts(skill, 200);
+    if (level >= 26) {
+      floor = mainStatLevel(26);
+    } else if (level >= 20) {
+      floor = mainStatLevel(20);
+    } else {
+      floor = mainStatLevel(13);
     }
   }
 
-  return BloodCubicZirconia.availableCasts(skill, 100);
+  // Equipment-based floors (specific overrides)
+  if (stat === $stat`Moxie` && have($item`crumpled felt fedora`)) {
+    floor = Math.max(floor, 200);
+  }
+
+  return floor;
+}
+
+function safeBCZCasts(skill: Skill): number {
+  return BloodCubicZirconia.availableCasts(skill, getBCZStatFloor(skill));
 }
 
 export function safeSweatEquityCasts(): number {
