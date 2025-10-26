@@ -1203,29 +1203,21 @@ function sweatEquityROI(): number {
   return baseMeat() * 0.4 * 30;
 }
 
+const BCT_LEVEL_THRESHOLDS = [26, 20, 13];
 export function getBCZStatFloor(skill: Skill): number {
   const stat = BloodCubicZirconia.substatUsed(skill);
-  const mainstat = myPrimestat();
-  const level = myLevel();
-
-  let floor = 100; // Default baseline
-
-  if (stat === mainstat) {
-    if (level >= 26) {
-      floor = mainStatLevel(26);
-    } else if (level >= 20) {
-      floor = mainStatLevel(20);
-    } else {
-      floor = mainStatLevel(13);
+  if (stat !== myPrimestat()) {
+    if (stat == $stat`Moxie` && have($item`crupled felt fedora`) {
+      return 200
     }
+    return 100; // ? is this good?
   }
-
-  // Equipment-based floors (specific overrides)
-  if (stat === $stat`Moxie` && have($item`crumpled felt fedora`)) {
-    floor = Math.max(floor, 200);
+  const minimumLevel = BCT_LEVEL_THRESHOLDS.find((threshold) => myLevel() > threshold);
+  if (!minimumLevel) {
+    return myBaseStat(stat); // So low level we can't afford to lose exp at all
   }
-
-  return floor;
+  
+  return mainStatLevel(minimumLevel);
 }
 
 function safeBCZCasts(skill: Skill): number {
