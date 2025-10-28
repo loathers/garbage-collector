@@ -28,6 +28,7 @@ import {
   meatDropModifier,
   Monster,
   mpCost,
+  myBasestat,
   myBjornedFamiliar,
   myEnthronedFamiliar,
   myFamiliar,
@@ -1207,16 +1208,18 @@ const BCT_LEVEL_THRESHOLDS = [26, 20, 13];
 export function getBCZStatFloor(skill: Skill): number {
   const stat = BloodCubicZirconia.substatUsed(skill);
   if (stat !== myPrimestat()) {
-    if (stat == $stat`Moxie` && have($item`crupled felt fedora`) {
-      return 200
+    if (stat === $stat`Moxie` && have($item`crumpled felt fedora`)) {
+      return 200;
     }
     return 100; // ? is this good?
   }
-  const minimumLevel = BCT_LEVEL_THRESHOLDS.find((threshold) => myLevel() > threshold);
+  const minimumLevel = BCT_LEVEL_THRESHOLDS.find(
+    (threshold) => myLevel() > threshold,
+  );
   if (!minimumLevel) {
-    return myBaseStat(stat); // So low level we can't afford to lose exp at all
+    return myBasestat(stat); // So low level we can't afford to lose exp at all
   }
-  
+
   return mainStatLevel(minimumLevel);
 }
 
