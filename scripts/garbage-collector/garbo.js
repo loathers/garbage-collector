@@ -30664,7 +30664,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ba9a55ea286f118491f14a76b8e5eb6a8fc69e35", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("17ab85ee404c999541fdd15015b7acf50c23e0c6", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -49123,7 +49123,7 @@ var DailyTasks = [
       Clan.with("Bonus Adventures from Hell", function() {
         return (0, import_kolmafia152.cliExecute)("fortune ".concat((0, import_kolmafia152.getPlayerId)("OnlyFax")));
       });
-      (0, import_kolmafia152.wait)(10);
+      if (get("_clanFortuneConsultUses") < 3) (0, import_kolmafia152.wait)(10);
     },
     limit: {
       skip: 3
