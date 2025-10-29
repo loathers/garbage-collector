@@ -3,7 +3,6 @@ import { $item, $skill, $stat, BloodCubicZirconia, have } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, mainStatLevel } from "../lib";
 
-
 function sweatEquityROI(): number {
   return baseMeat() * 0.4 * 30;
 }
