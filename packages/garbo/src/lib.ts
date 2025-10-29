@@ -30,6 +30,7 @@ import {
   mpCost,
   myBasestat,
   myBjornedFamiliar,
+  myDaycount,
   myEnthronedFamiliar,
   myFamiliar,
   myFullness,
@@ -1213,9 +1214,10 @@ export function getBCZStatFloor(skill: Skill): number {
     }
     return 100; // ? is this good?
   }
-  const minimumLevel = globalOptions.ascend
-    ? BCT_LEVEL_THRESHOLDS.find((threshold) => myLevel() > threshold)
-    : 26;
+  const minimumLevel =
+    globalOptions.ascend && myDaycount() >= 2
+      ? BCT_LEVEL_THRESHOLDS.find((threshold) => myLevel() > threshold)
+      : 26;
   if (!minimumLevel) {
     return myBasestat(stat); // So low level we can't afford to lose exp at all
   }
