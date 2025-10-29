@@ -60,12 +60,10 @@ import {
   aprilFoolsRufus,
   baseMeat,
   bestShadowRift,
-  getBCZStatFloor,
   HIGHLIGHT,
   improvesAStat,
   marginalFamWeightValue,
   pillkeeperOpportunityCost,
-  safeSweatEquityCasts,
   targetMeat,
   targetMeatDifferential,
   turnsToNC,
@@ -74,7 +72,7 @@ import {
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { globalOptions } from "./config";
-import { beretEffectValue, castAugustScepterBuffs } from "./resources";
+import { beretEffectValue, castAugustScepterBuffs, getBCZStatFloor, safeSweatEquityCasts } from "./resources";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
