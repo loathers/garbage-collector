@@ -607,7 +607,7 @@ const DailyTasks: GarboTask[] = [
       Clan.with("Bonus Adventures from Hell", () =>
         cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
       );
-      wait(10);
+      if (get("_clanFortuneConsultUses") < 3) wait(10);
     },
     limit: { skip: 3 },
     spendsTurn: false,
