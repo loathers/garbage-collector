@@ -1213,9 +1213,9 @@ export function getBCZStatFloor(skill: Skill): number {
     }
     return 100; // ? is this good?
   }
-  const minimumLevel = BCT_LEVEL_THRESHOLDS.find(
-    (threshold) => myLevel() > threshold,
-  );
+  const minimumLevel = globalOptions.ascend
+    ? BCT_LEVEL_THRESHOLDS.find((threshold) => myLevel() > threshold)
+    : 26;
   if (!minimumLevel) {
     return myBasestat(stat); // So low level we can't afford to lose exp at all
   }
