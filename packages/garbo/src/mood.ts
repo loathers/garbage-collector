@@ -176,7 +176,7 @@ export function meatMood(
 
   const canRecord =
     getWorkshed() === $item`warbear LP-ROM burner` ||
-    (have($item`warbear LP-ROM burner`) && !get("_workshedItemUsed")) || 
+    (have($item`warbear LP-ROM burner`) && !get("_workshedItemUsed")) ||
     get("questG04Nemesis") === "finished";
 
   if (myClass() === $class`Accordion Thief` && myLevel() >= 15 && !canRecord) {
