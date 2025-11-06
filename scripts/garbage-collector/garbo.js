@@ -30664,7 +30664,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("17ab85ee404c999541fdd15015b7acf50c23e0c6", ")"));
+      (0, import_kolmafia100.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("1964284e6331ef363c1cc873c00fad0970f86110", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia100.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -31384,7 +31384,7 @@ function meatMood() {
     if (!acquired) _wildsunBoonWorthIt = false;
     (0, import_kolmafia101.alliedRadio)("wildsun boon");
   }
-  var canRecord = (0, import_kolmafia101.getWorkshed)() === $item(_templateObject5214 || (_templateObject5214 = _taggedTemplateLiteral88(["warbear LP-ROM burner"]))) || have($item(_templateObject5313 || (_templateObject5313 = _taggedTemplateLiteral88(["warbear LP-ROM burner"]))) || get("questG04Nemesis") === "finished");
+  var canRecord = (0, import_kolmafia101.getWorkshed)() === $item(_templateObject5214 || (_templateObject5214 = _taggedTemplateLiteral88(["warbear LP-ROM burner"]))) || have($item(_templateObject5313 || (_templateObject5313 = _taggedTemplateLiteral88(["warbear LP-ROM burner"])))) && !get("_workshedItemUsed") || get("questG04Nemesis") === "finished";
   if ((0, import_kolmafia101.myClass)() === $class(_templateObject5413 || (_templateObject5413 = _taggedTemplateLiteral88(["Accordion Thief"]))) && (0, import_kolmafia101.myLevel)() >= 15 && !canRecord) {
     if (have($skill(_templateObject5513 || (_templateObject5513 = _taggedTemplateLiteral88(["The Ballad of Richie Thingfinder"]))))) {
       (0, import_kolmafia101.useSkill)($skill(_templateObject5613 || (_templateObject5613 = _taggedTemplateLiteral88(["The Ballad of Richie Thingfinder"]))), 10 - get("_thingfinderCasts"));
