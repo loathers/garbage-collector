@@ -457,6 +457,7 @@ export function main(argString = ""): void {
       allowNegativeTally: true,
       spadingScript: "excavator.js",
       lastChanceBurn: "",
+      errorOnAmbiguousFold: false,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
