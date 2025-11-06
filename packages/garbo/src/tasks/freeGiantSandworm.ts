@@ -41,6 +41,7 @@ import { GarboTask } from "./engine";
 import { GarboFreeFightTask } from "./freeFight";
 import { sandwormFamiliar } from "../familiar";
 import { sober } from "../lib";
+import { safeSweatBulletCasts } from "../resources";
 
 function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   const outfit = Outfit.from(
@@ -261,6 +262,18 @@ const SandwormTasks: GarboFreeFightTask[] = [
           ? clamp(13 - get("_shadowBricksUsed"), 0, 13)
           : 0,
       acquire: () => [{ item: $item`shadow brick`, price: drumMachineROI() }],
+    },
+    {
+      name: $skill`BCZ: Sweat Bullets`.name,
+      ready: () =>
+        have($item`blood cubic zirconia`) &&
+        safeSweatBulletCasts(drumMachineROI()) >= 0,
+      completed: () => safeSweatBulletCasts(drumMachineROI()) <= 0,
+      combat: new GarboStrategy(() =>
+        sandwormMacro().trySkill($skill`BCZ: Sweat Bullets`),
+      ),
+      outfit: () => sandwormOutfit({ equip: $items`blood cubic zirconia` }),
+      combatCount: () => safeSweatBulletCasts(drumMachineROI()),
     },
     {
       name: "Yellow Ray",

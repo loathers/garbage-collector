@@ -1190,3 +1190,7 @@ export function marginalFamWeightValue(): number {
     Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight))
   );
 }
+
+export function mainStatLevel(level: number): number {
+  return (level - 1) ** 2 + 4;
+}

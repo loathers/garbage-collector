@@ -37,6 +37,7 @@ import {
   $location,
   $skill,
   $slot,
+  BloodCubicZirconia,
   clamp,
   ClosedCircuitPayphone,
   CursedMonkeyPaw,
@@ -71,7 +72,12 @@ import {
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { globalOptions } from "./config";
-import { beretEffectValue, castAugustScepterBuffs } from "./resources";
+import {
+  beretEffectValue,
+  castAugustScepterBuffs,
+  getBCZStatFloor,
+  safeSweatEquityCasts,
+} from "./resources";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -724,6 +730,17 @@ function useBusks() {
   }
 }
 
+function sweatEquity() {
+  if (!BloodCubicZirconia.have() || safeSweatEquityCasts() === 0) {
+    return;
+  }
+
+  BloodCubicZirconia.castDownTo(
+    $skill`BCZ: Sweat Equity`,
+    getBCZStatFloor($skill`BCZ: Sweat Equity`),
+  );
+}
+
 let completedPotionSetup = false;
 export function potionSetupCompleted(): boolean {
   return completedPotionSetup;
@@ -735,6 +752,7 @@ export function potionSetupCompleted(): boolean {
 export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
   castAugustScepterBuffs();
   useBusks();
+  sweatEquity();
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
