@@ -4,6 +4,7 @@ import {
   $item,
   $items,
   $location,
+  Clan,
   CrystalBall,
   examine,
   get,
@@ -15,7 +16,11 @@ import { GarboTask } from "./engine";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { getChangeLastAdvLocationMethod } from "../target/lib";
-import { doingGregFight } from "../resources";
+import {
+  doingGregFight,
+  shrunkenHeadLocation,
+  shrunkenHeadMonster,
+} from "../resources";
 import { freeFightOutfit } from "../outfit";
 import {
   canFaxbot,
@@ -23,6 +28,7 @@ import {
   faxbot,
   getClanLounge,
   inebrietyLimit,
+  Location,
   mallPrice,
   myInebriety,
   use,
@@ -30,6 +36,7 @@ import {
 } from "kolmafia";
 import { globalOptions } from "../config";
 import { amuletCoinValue } from "../familiar/lib";
+import { propertyManager } from "../lib";
 
 export const SetupTargetCopyQuest: Quest<GarboTask> = {
   name: "SetupTargetCopy",
@@ -62,6 +69,27 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
         ),
       do: $location`The Daily Dungeon`,
       post: () => set("_lastDailyDungeonEncounter", get("lastEncounter")),
+      spendsTurn: true,
+      combat: new GarboStrategy(() => Macro.kill()),
+    },
+    {
+      name: "Setup Shrunken Head",
+      ready: () => shrunkenHeadLocation() !== Location.none,
+      outfit: () =>
+        freeFightOutfit({
+          equip: $items`Sheriff moustache, Sheriff badge, Sheriff pistol`,
+        }),
+      prepare: () => {
+        const monster = shrunkenHeadMonster();
+        propertyManager.setChoice(1557, `1&bandersnatch=${monster.id}`);
+        Clan.with("Bonus Adventures from Hell", () => {
+          cliExecute("photobooth item moustache");
+          cliExecute("photobooth item badge");
+          cliExecute("photobooth item pistol");
+        });
+      },
+      completed: () => get("shrunkenHeadZombieAbilities").includes("meat"),
+      do: shrunkenHeadLocation(),
       spendsTurn: true,
       combat: new GarboStrategy(() => Macro.kill()),
     },
