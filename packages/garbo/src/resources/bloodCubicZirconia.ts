@@ -1,4 +1,4 @@
-import { myBasestat, myDaycount, myLevel, myPrimestat, Skill } from "kolmafia";
+import { myBasestat, myDaycount, myLevel, myPrimestat, Skill, Stat } from "kolmafia";
 import { $item, $skill, $stat, BloodCubicZirconia, have } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, mainStatLevel } from "../lib";
@@ -7,9 +7,18 @@ function sweatEquityROI(): number {
   return baseMeat() * 0.4 * 30;
 }
 
+function parentStat(sub: Stat | null): Stat {
+  switch (sub) {
+    case $stat`subMuscle`: return $stat`Muscle`;
+    case $stat`subMysticality`: return $stat`Mysticality`;
+    case $stat`subMoxie`: return $stat`Moxie`;
+  }
+  return $stat`Muscle`;
+}
+
 const BCT_LEVEL_THRESHOLDS = [26, 20, 13];
 export function getBCZStatFloor(skill: Skill): number {
-  const stat = BloodCubicZirconia.substatUsed(skill);
+  const stat = parentStat(BloodCubicZirconia.substatUsed(skill));
   if (stat !== myPrimestat()) {
     if (stat === $stat`Moxie` && have($item`crumpled felt fedora`)) {
       return 200;
