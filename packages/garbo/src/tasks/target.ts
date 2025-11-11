@@ -4,7 +4,7 @@ import {
   $item,
   $items,
   $location,
-  Clan,
+  $skill,
   CrystalBall,
   examine,
   get,
@@ -77,21 +77,18 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
       ready: () => shrunkenHeadLocation() !== Location.none,
       outfit: () =>
         freeFightOutfit({
-          equip: $items`Sheriff moustache, Sheriff badge, Sheriff pistol`,
+          // eslint-disable-next-line libram/verify-constants
+          equip: $items`shrunken head, Peridot of Peril`
         }),
       prepare: () => {
         const monster = shrunkenHeadMonster();
         propertyManager.setChoice(1557, `1&bandersnatch=${monster.id}`);
-        Clan.with("Bonus Adventures from Hell", () => {
-          cliExecute("photobooth item moustache");
-          cliExecute("photobooth item badge");
-          cliExecute("photobooth item pistol");
-        });
       },
-      completed: () => get("shrunkenHeadZombieAbilities").includes("meat"),
+      completed: () => get("shrunkenHeadZombieAbilities").includes("Meat"),
       do: shrunkenHeadLocation(),
       spendsTurn: true,
-      combat: new GarboStrategy(() => Macro.kill()),
+      // eslint-disable-next-line libram/verify-constants
+      combat: new GarboStrategy(() => Macro.trySkill($skill`Prepare to reanimate your foe`).kill()),
     },
     {
       name: "Fold Spooky Putty sheet",
