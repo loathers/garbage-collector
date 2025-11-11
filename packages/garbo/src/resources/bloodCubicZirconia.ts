@@ -1,4 +1,11 @@
-import { myBasestat, myDaycount, myLevel, myPrimestat, Skill, Stat } from "kolmafia";
+import {
+  myBasestat,
+  myDaycount,
+  myLevel,
+  myPrimestat,
+  Skill,
+  Stat,
+} from "kolmafia";
 import { $item, $skill, $stat, BloodCubicZirconia, have } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, mainStatLevel } from "../lib";
@@ -9,9 +16,12 @@ function sweatEquityROI(): number {
 
 function parentStat(sub: Stat | null): Stat {
   switch (sub) {
-    case $stat`subMuscle`: return $stat`Muscle`;
-    case $stat`subMysticality`: return $stat`Mysticality`;
-    case $stat`subMoxie`: return $stat`Moxie`;
+    case $stat`subMuscle`:
+      return $stat`Muscle`;
+    case $stat`subMysticality`:
+      return $stat`Mysticality`;
+    case $stat`subMoxie`:
+      return $stat`Moxie`;
   }
   return $stat`Muscle`;
 }
