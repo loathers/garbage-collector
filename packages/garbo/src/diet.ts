@@ -8,6 +8,7 @@ import {
   dailySpecial,
   drink,
   eat,
+  Effect,
   Element,
   elementalResistance,
   fullnessLimit,
@@ -76,6 +77,7 @@ import {
   maximizeCached,
   MayoClinic,
   MenuItem,
+  PrismaticBeret,
   realmAvailable,
   set,
   sum,
@@ -86,7 +88,12 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { expectedGregs, shouldAugustCast, synthesize } from "./resources";
+import {
+  beretEffectValue,
+  expectedGregs,
+  shouldAugustCast,
+  synthesize,
+} from "./resources";
 import {
   arrayEquals,
   HIGHLIGHT,
@@ -169,6 +176,28 @@ function shrugForOde() {
   );
 }
 
+function buskEffectValuer(effect: Effect, duration: number): number {
+  if (effect === $effect`Salty Mouth`) return 5 * get("valueOfAdventure");
+  if (
+    effect === $effect`Hammertime` &&
+    !have($effect`Hammertime`) &&
+    get("_beretBuskingUses") === 0
+  ) {
+    return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
+  }
+  return beretEffectValue(effect, duration);
+}
+function canBusk() {
+  return PrismaticBeret.have() && get("_beretBuskingUses") < 5;
+}
+function buskForSaltyMouth() {
+  if (!canBusk()) return;
+  for (let i = get("_beretBuskingUses"); i < 5; i++) {
+    if (have($effect`Salty Mouth`)) break;
+    PrismaticBeret.buskFor(buskEffectValuer, {});
+  }
+}
+
 function drinkSafe(qty: number, item: Item) {
   const prevDrunk = myInebriety();
   if (have($skill`The Ode to Booze`)) {
@@ -185,7 +214,12 @@ function drinkSafe(qty: number, item: Item) {
     }
   }
   consumeWhileRespectingMoonRestaurant(() => {
-    if (!drink(qty, item)) throw "Failed to drink safely";
+    if (item.notes?.includes("BEER") && canBusk()) {
+      for (let i = 0; i < qty; i++) {
+        buskForSaltyMouth();
+        if (!drink(1, item)) throw "Failed to drink safely";
+      }
+    } else if (!drink(qty, item)) throw "Failed to drink safely";
   }, item);
 
   if (item.inebriety === 1 && prevDrunk === qty + myInebriety() - 1) {
@@ -364,6 +398,21 @@ export function nonOrganAdventures(): void {
       if (extraTimeValue(i) > mallPrice($item`extra time`)) {
         if (acquire(1, $item`extra time`, extraTimeValue(i), false)) {
           use($item`extra time`);
+        }
+      } else break;
+    }
+  }
+
+  if (get("_clocksUsed", 2) < 2) {
+    const clockValue = (timesUsed: number): number => {
+      const advs = [3, 2][timesUsed];
+      return advs * MPA;
+    };
+    const clocksUsed = get("_clocksUsed", 2);
+    for (let i = clocksUsed; i < 2; i++) {
+      if (clockValue(i) > mallPrice($item`clock`)) {
+        if (acquire(1, $item`clock`, clockValue(i), false)) {
+          use($item`clock`);
         }
       } else break;
     }

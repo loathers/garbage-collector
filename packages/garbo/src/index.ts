@@ -1,7 +1,6 @@
 import { Args } from "grimoire-kolmafia";
 import {
   abort,
-  availableAmount,
   buy,
   canAdventure,
   canEquip,
@@ -93,6 +92,7 @@ import {
   CockroachSetup,
   DailyFamiliarsQuest,
   EmbezzlerFightsQuest,
+  FinishUpQuest,
   PostQuest,
   runGarboQuests,
   runSafeGarboQuests,
@@ -130,7 +130,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28562); // fix: names for base hippy camp, frat house, video game dungeons
+  sinceKolmafiaRevision(28603); // time cop
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
@@ -348,6 +348,7 @@ export function main(argString = ""): void {
       suppressMallPriceCacheMessages: true,
       shadowLabyrinthGoal: "effects",
       lightsOutAutomation: 1,
+      errorOnAmbiguousFold: false,
     });
     runDiet();
     propertyManager.resetAll();
@@ -475,6 +476,7 @@ export function main(argString = ""): void {
       allowNegativeTally: true,
       spadingScript: "excavator.js",
       lastChanceBurn: "",
+      errorOnAmbiguousFold: false,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
@@ -631,20 +633,7 @@ export function main(argString = ""): void {
           if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
             runGarboQuests([PostQuest(), ...BarfTurnQuests]);
-
-            // buy one-day tickets with FunFunds if user desires
-            if (
-              globalOptions.prefs.buyPass &&
-              availableAmount($item`FunFunds™`) >= 20 &&
-              !have($item`one-day ticket to Dinseylandfill`)
-            ) {
-              print("Buying a one-day ticket", HIGHLIGHT);
-              buy(
-                $coinmaster`The Dinsey Company Store`,
-                1,
-                $item`one-day ticket to Dinseylandfill`,
-              );
-            }
+            runGarboQuests([FinishUpQuest]);
           } finally {
             setAutoAttack(0);
           }

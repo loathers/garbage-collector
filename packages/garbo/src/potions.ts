@@ -32,12 +32,12 @@ import {
 import {
   $effect,
   $effects,
-  $familiar,
   $item,
   $items,
   $location,
   $skill,
   $slot,
+  BloodCubicZirconia,
   clamp,
   ClosedCircuitPayphone,
   CursedMonkeyPaw,
@@ -49,6 +49,7 @@ import {
   isSong,
   maxBy,
   Mood,
+  PrismaticBeret,
   realmAvailable,
   sum,
   sumNumbers,
@@ -61,6 +62,7 @@ import {
   bestShadowRift,
   HIGHLIGHT,
   improvesAStat,
+  marginalFamWeightValue,
   pillkeeperOpportunityCost,
   targetMeat,
   targetMeatDifferential,
@@ -70,7 +72,12 @@ import {
 import { usingPurse } from "./outfit";
 import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { globalOptions } from "./config";
-import { castAugustScepterBuffs } from "./resources";
+import {
+  beretEffectValue,
+  castAugustScepterBuffs,
+  getBCZStatFloor,
+  safeSweatEquityCasts,
+} from "./resources";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -270,20 +277,7 @@ export class Potion {
   }
 
   bonusMeat(): number {
-    const familiarMultiplier = have($familiar`Robortender`)
-      ? 2
-      : have($familiar`Hobo Monkey`)
-        ? 1.25
-        : 1;
-
-    // Assume base weight of 100 pounds. This is off but close enough.
-    const assumedBaseWeight = 100;
-    // Marginal value of familiar weight in % meat drop.
-    const marginalValue =
-      2 * familiarMultiplier +
-      Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight));
-
-    return this.familiarWeight() * marginalValue + this.meatDrop();
+    return this.familiarWeight() * marginalFamWeightValue() + this.meatDrop();
   }
 
   static bonusMeat(item: Item): number {
@@ -723,6 +717,30 @@ export function usePawWishes(
   }
 }
 
+function useBusks() {
+  if (
+    !PrismaticBeret.have() ||
+    get("_beretBuskingUses") >= 5 ||
+    myInebriety() < inebrietyLimit() // Do not use busks until after dieting, prioritize Salty Mouth
+  ) {
+    return;
+  }
+  for (let i = get("_beretBuskingUses"); i < 5; i++) {
+    PrismaticBeret.buskFor(beretEffectValue, {});
+  }
+}
+
+function sweatEquity() {
+  if (!BloodCubicZirconia.have() || safeSweatEquityCasts() === 0) {
+    return;
+  }
+
+  BloodCubicZirconia.castDownTo(
+    $skill`BCZ: Sweat Equity`,
+    getBCZStatFloor($skill`BCZ: Sweat Equity`),
+  );
+}
+
 let completedPotionSetup = false;
 export function potionSetupCompleted(): boolean {
   return completedPotionSetup;
@@ -733,6 +751,8 @@ export function potionSetupCompleted(): boolean {
  */
 export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
   castAugustScepterBuffs();
+  useBusks();
+  sweatEquity();
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {

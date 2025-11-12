@@ -3888,7 +3888,7 @@ __metadata:
     "@types/eslint__js": ^8.42.3
     eslint: ^9.9.0
     eslint-config-prettier: ^9.1.0
-    eslint-plugin-libram: ^0.4.27
+    eslint-plugin-libram: ^0.4.33
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -3912,13 +3912,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.4.27":
-  version: 0.4.27
-  resolution: "eslint-plugin-libram@npm:0.4.27"
+"eslint-plugin-libram@npm:^0.4.33":
+  version: 0.4.33
+  resolution: "eslint-plugin-libram@npm:0.4.33"
   dependencies:
     html-entities: ^2.5.2
     requireindex: ~1.2.0
-  checksum: 46014cf8d8a75cd051133340b3928b9d6169429bbf2202f772230dfd337451425b8a9c5732dca30143398ddb1f3515cab6cedf8c2029851621be95b223b0640d
+  checksum: 3124fc7d9f9ce2d8aa675ad3b143a9807adba5a39ef317e8c5b659d759da4419cd4802a143865914160e4cb3c2faab9fd390bdace90c657db2c12ba4581bd039
   languageName: node
   linkType: hard
 
@@ -4328,21 +4328,49 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"garbo-choice@workspace:packages/garbo-choice":
+  version: 0.0.0-use.local
+  resolution: "garbo-choice@workspace:packages/garbo-choice"
+  dependencies:
+    "@babel/cli": ^7.24.8
+    "@babel/compat-data": ^7.25.2
+    "@babel/core": ^7.25.2
+    "@babel/preset-env": ^7.25.3
+    "@babel/preset-react": ^7.24.7
+    "@babel/preset-typescript": ^7.24.7
+    "@types/node": ^22.4.1
+    copyfiles: ^2.4.1
+    esbuild: ^0.23.1
+    esbuild-plugin-babel: ^0.2.3
+    eslint: ^9.9.0
+    eslint-config-garbo: ^0.0.1
+    garbo-lib: "*"
+    grimoire-kolmafia: ^0.3.29
+    kolmafia: ^5.28673.0
+    libram: ^0.11.11
+    lint-staged: ^15.2.9
+    madge: ^8.0.0
+    prettier: ^3.3.3
+    ts-node: ^10.9.2
+    typescript: ^5.5.4
+  languageName: unknown
+  linkType: soft
+
 "garbo-lib@*, garbo-lib@workspace:packages/garbo-lib":
   version: 0.0.0-use.local
   resolution: "garbo-lib@workspace:packages/garbo-lib"
   dependencies:
     eslint: ^9.9.0
     eslint-config-garbo: ^0.0.1
-    kolmafia: ^5.28389.0
-    libram: latest
+    kolmafia: ^5.28673.0
+    libram: ^0.11.11
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
     typescript: ^5.5.4
   peerDependencies:
     kolmafia: ^5.28389.0
-    libram: ^0.11.5
+    libram: ^0.11.9
   languageName: unknown
   linkType: soft
 
@@ -4389,8 +4417,8 @@ __metadata:
     eslint-config-garbo: ^0.0.1
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.29
-    kolmafia: ^5.28389.0
-    libram: latest
+    kolmafia: ^5.28673.0
+    libram: ^0.11.11
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -5037,10 +5065,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:^5.28389.0":
-  version: 5.28389.0
-  resolution: "kolmafia@npm:5.28389.0"
-  checksum: db57093fbad1f0983fde4a2ace86278b70b261a57a43dcc402dfd5808cfe43ff5f8aec22c01c2832e070441564e0c1de107776edcb44f760678abd48b06d1ebf
+"kolmafia@npm:^5.28673.0":
+  version: 5.28677.0
+  resolution: "kolmafia@npm:5.28677.0"
+  checksum: 22fb5889ccadd50b26334d2c7a21307b0c827239939c3c6b2154252db5d6d224a6b3f719513c69eb91f54391426769b871d0dae2e46ac527aeed1b435160c89d
   languageName: node
   linkType: hard
 
@@ -5054,14 +5082,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:latest":
-  version: 0.11.6
-  resolution: "libram@npm:0.11.6"
+"libram@npm:^0.11.11":
+  version: 0.11.11
+  resolution: "libram@npm:0.11.11"
   dependencies:
     html-entities: ^2.5.2
   peerDependencies:
     kolmafia: ^5.28100.0
-  checksum: 15fe2948937e71e396d54650712bfc0e2ce07e88fe0b3acb2a6a1e728e2f427e364804e7141d3f53c753fcc8044d4945895722d25d0d1f7e9a5ec98207c306e8
+  checksum: ff24947c78feab68004dcebe732aea17820ac81402e95abcf7addf94ac6393b707c660390583c3179da6b0c3e15f5ee6fcdb2c25aac1d97adbbe9990ea7bf073
   languageName: node
   linkType: hard
 

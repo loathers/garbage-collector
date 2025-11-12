@@ -1,7 +1,5 @@
 import {
   adv1,
-  autosell,
-  autosellPrice,
   availableAmount,
   canAdventure,
   canEquip,
@@ -521,20 +519,6 @@ function canGetFusedFuse() {
   );
 }
 
-function getAutosellableMeltingJunk(): Item[] {
-  return Item.all().filter(
-    (i) =>
-      (getModifier("Lasts Until Rollover", i) ||
-        (globalOptions.ascend && i.quest)) &&
-      itemAmount(i) &&
-      autosellPrice(i) > 0 &&
-      (globalOptions.ascend ||
-        !(
-          ["Adventures", "PvP Fights", "Rollover Effect Duration"] as const
-        ).some((mod) => getModifier(mod))),
-  );
-}
-
 const peridotZone = () =>
   getAvailableUltraRareZones().find(
     (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l),
@@ -680,22 +664,15 @@ const NonBarfTurnTasks: AlternateTask[] = [
           ? 1
           : 2,
     }),
-    do: () => {
-      ensureEffect($effect`Transpondent`);
-      use($item`Map to Safety Shelter Grimace Prime`);
-      return true;
-    },
+    do: () =>
+      withProperty("choiceAdventureScript", "", () => {
+        ensureEffect($effect`Transpondent`);
+        use($item`Map to Safety Shelter Grimace Prime`);
+        return true;
+      }),
     spendsTurn: true,
     sobriety: "drunk",
     turns: () => availableAmount($item`Map to Safety Shelter Grimace Prime`),
-  },
-  {
-    name: "Autosell Melting Junk",
-    completed: () => getAutosellableMeltingJunk().length === 0,
-    spendsTurn: false,
-    turns: 0,
-    do: () =>
-      getAutosellableMeltingJunk().forEach((i) => autosell(i, itemAmount(i))),
   },
   {
     name: "Peridot Fish for UR",
@@ -926,7 +903,10 @@ const BarfTurnTasks: GarboTask[] = [
         allowEquipment: false,
       }),
     combat: new GarboStrategy(
-      () => Macro.meatKill(),
+      () =>
+        Macro.if_(globalOptions.target, Macro.meatKill()).abortWithMsg(
+          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
+        ),
       () =>
         Macro.if_(
           `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
@@ -1017,6 +997,35 @@ const BarfTurnTasks: GarboTask[] = [
         Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
           .skill($skill`Free-For-All`),
+      ),
+      sobriety: "sober",
+      duplicate: true,
+    },
+  ),
+  wanderTask(
+    "freefight",
+    {
+      offhand:
+        guaranteedBullseye() || have($item`spring shoes`)
+          ? []
+          : $item`Roman Candelabra`,
+      acc1: $item`Everfull Dart Holster`,
+      acc2:
+        guaranteedBullseye() || !have($item`spring shoes`)
+          ? []
+          : $item`spring shoes`,
+      modifier: guaranteedBullseye() ? [] : "Monster Level",
+    },
+    {
+      name: "Darts: Bullseye",
+      ready: safeToAttemptBullseye,
+      completed: () => !canBullseye(),
+      combat: new GarboStrategy(() =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .familiarActions()
+          .skill($skill`Darts: Aim for the Bullseye`)
+          .trySkill($skill`Spring Away`)
+          .trySkill($skill`Blow the Green Candle!`),
       ),
       sobriety: "sober",
       duplicate: true,

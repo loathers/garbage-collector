@@ -1,4 +1,5 @@
 import {
+  alliedRadio,
   booleanModifier,
   cliExecute,
   Effect,
@@ -30,6 +31,8 @@ import {
   setChoice,
 } from "./lib";
 import { usingPurse } from "./outfit";
+import { effectValue } from "./potions";
+import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 
 Mood.setDefaultOptions({
@@ -163,9 +166,21 @@ export function meatMood(
     useSkill($skill`Incredible Self-Esteem`);
   }
 
+  if (!get("_alliedRadioWildsunBoon") && wildsunBoonWorthIt()) {
+    const acquired = acquire(
+      1,
+      $item`handheld Allied radio`,
+      effectValue($effect`Wildsun Boon`, 100),
+      false,
+    );
+    if (!acquired) _wildsunBoonWorthIt = false;
+    alliedRadio("wildsun boon");
+  }
+
   const canRecord =
     getWorkshed() === $item`warbear LP-ROM burner` ||
-    have($item`warbear LP-ROM burner` || get("questG04Nemesis") === "finished");
+    (have($item`warbear LP-ROM burner`) && !get("_workshedItemUsed")) ||
+    get("questG04Nemesis") === "finished";
 
   if (myClass() === $class`Accordion Thief` && myLevel() >= 15 && !canRecord) {
     if (have($skill`The Ballad of Richie Thingfinder`)) {
@@ -236,4 +251,11 @@ export function shrugBadEffects(...exclude: Effect[]): void {
   ]
     .filter((effect) => have(effect) && !exclude.includes(effect))
     .forEach((effect) => uneffect(effect));
+}
+
+let _wildsunBoonWorthIt: boolean;
+function wildsunBoonWorthIt(): boolean {
+  return (_wildsunBoonWorthIt ??=
+    effectValue($effect`Wildsun Boon`, 100) >
+    mallPrice($item`handheld Allied radio`));
 }

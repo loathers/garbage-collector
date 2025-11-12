@@ -7,7 +7,7 @@ const watch = process.argv.some((arg) => ["--watch", "-w"].includes(arg));
 const context = await esbuild.context({
   bundle: true,
   platform: "node",
-  target: "rhino1.8.0",
+  target: "rhino1.7.15",
   external: ["kolmafia"],
   define: {
     "process.env.GITHUB_SHA": `"${
@@ -21,9 +21,7 @@ const context = await esbuild.context({
     }"`,
   },
   entryPoints: {
-    "scripts/garbage-collector/garbo": "src/index.ts",
-    "scripts/garbage-collector/garbo_choice": "src/garboChoice.ts",
-    "relay/relay_garbo": "src/relay_garbo.ts",
+    "scripts/garbage-collector/garbo_choice": "src/index.ts",
   },
   entryNames: "[dir]/[name]",
   outdir: "dist",
