@@ -33,7 +33,6 @@ import {
 import { usingPurse } from "./outfit";
 import { effectValue } from "./potions";
 import { acquire } from "./acquire";
-import { globalOptions } from "./config";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -54,9 +53,7 @@ export function meatMood(
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
-  if(!globalOptions.penguin) {
-    mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
-  }
+  mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
 
