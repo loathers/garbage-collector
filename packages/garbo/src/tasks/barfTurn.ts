@@ -24,6 +24,7 @@ import {
   outfitPieces,
   retrieveItem,
   runChoice,
+  toMonster,
   totalTurnsPlayed,
   use,
   useSkill,
@@ -36,6 +37,8 @@ import {
   $items,
   $location,
   $monster,
+  $monsters,
+  $phylum,
   $skill,
   AprilingBandHelmet,
   ChestMimic,
@@ -55,6 +58,7 @@ import {
   questStep,
   realmAvailable,
   set,
+  Snapper,
   SourceTerminal,
   sum,
   TrainSet,
@@ -77,9 +81,11 @@ import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
   getBestLuckyAdventure,
+  getMonstersToBanish,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
   MEAT_TARGET_MULTIPLIER,
+  penguinChooseBanish,
   romanticMonsterImpossible,
   sober,
   targetingMeat,
@@ -1233,6 +1239,25 @@ const BarfTurnTasks: GarboTask[] = [
     combat: new GarboStrategy(() => Macro.basicCombat()),
     spendsTurn: true,
   },
+  {
+    name: "Darts: Bullseye",
+    ready: () => safeToAttemptBullseye() && myInebriety() < inebrietyLimit(),
+    completed: () => !canBullseye(),
+    do: globalOptions.penguin ? $location`The Copperhead Club` : $location`Barf Mountain`,
+    outfit: () =>
+      freeFightOutfit(
+        {acc1: $item`Everfull Dart Holster`,
+        acc2: guaranteedBullseye() ? [] : $item`spring shoes`,
+        modifier: guaranteedBullseye() ? [] : "Monster Level",}
+      ),
+    spendsTurn: false,
+    combat: new GarboStrategy(() =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .familiarActions()
+          .skill($skill`Darts: Aim for the Bullseye`)
+          .skill($skill`Spring Away`),
+      ),
+  },
 ];
 
 function nonBarfTurns(): number {
@@ -1297,6 +1322,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
     },
     {
       name: "Barf",
+      ready: () => !(globalOptions.penguin),
       completed: () => myAdventures() === 0,
       outfit: () => {
         const lubing =
@@ -1319,6 +1345,50 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       post: () => {
         completeBarfQuest();
         trackMarginalMpa();
+      },
+      spendsTurn: true,
+    },
+    {
+      name: "Penguin",
+      ready: () => globalOptions.penguin,
+      prepare: () => {
+        meatMood().execute(estimatedGarboTurns());
+        if (Snapper.getTrackedPhylum() !== $phylum`Penguin`) {
+          Snapper.trackPhylum($phylum`Penguin`);
+        }
+        if (
+          getMonstersToBanish().length > 0
+        ) {
+          retrieveItem($item`human musk`);
+        }
+      },
+      completed: () => myAdventures() === 0,
+      outfit: () => {
+        const outfits = barfOutfit({
+          familiar: $familiar`Red-Nosed Snapper`,
+        });
+          const banishMethod = penguinChooseBanish();
+        if (banishMethod?.equip) {
+          outfits.equip(banishMethod.equip);
+        }
+        return outfits;
+      },
+      do: $location`The Copperhead Club`,
+      combat: new GarboStrategy(() => {
+        const banish = penguinChooseBanish()?.macro();
+        if (banish === null && getMonstersToBanish().length > 0) {
+          throw "I have monsters to banish for pingu, but no banishes available!";
+        }
+        return Macro.if_(
+          $monsters`fan dancer, Copperhead Club bartender, ninja dressed as a waiter, waiter dressed as a ninja`,
+          banish ? banish : Macro.tryItem($item`human musk`),
+        ).meatKill();
+      }),
+      post: () => {
+        trackMarginalMpa();
+        if(getMonstersToBanish().includes(toMonster(get("lastEncounter")))) {
+          throw "You encountered a banishable monster and didn't banish it, sort your life out!"
+        }
       },
       spendsTurn: true,
     },

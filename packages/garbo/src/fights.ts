@@ -781,7 +781,7 @@ const freeFightSources = [
   new FreeFight(
     () => (wantPills() ? 5 - get("_saberForceUses") : 0),
     () => {
-      if (have($familiar`Red-Nosed Snapper`)) {
+      if (have($familiar`Red-Nosed Snapper`) && !globalOptions.penguin) {
         cliExecute(`snapper ${$phylum`dude`}`);
       }
       setChoice(1387, 3);
@@ -846,7 +846,7 @@ const freeFightSources = [
           modifier: ["1000 Pickpocket Chance"],
           equip: $items`Fourth of May Cosplay Saber`,
         };
-        if (have($familiar`Red-Nosed Snapper`)) {
+        if (have($familiar`Red-Nosed Snapper`) && !globalOptions.penguin) {
           spec.familiar = $familiar`Red-Nosed Snapper`;
         }
         if (!canPickPocket && bestPickpocketItem) {

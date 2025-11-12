@@ -25,7 +25,7 @@ import {
   myClass,
   myFamiliar,
   myFullness,
-  myId,
+  // myId,
   myInebriety,
   myLevel,
   myMaxhp,
@@ -510,52 +510,52 @@ export const cheapestItem: (items: Item[]) => Item = (items: Item[]) =>
  * @returns basic menu
  */
 function menu(): MenuItem<Note>[] {
-  const spaghettiBreakfast =
+  /* const spaghettiBreakfast =
     have($item`spaghetti breakfast`) &&
     myFullness() === 0 &&
     get("_timeSpinnerFoodAvailable") === "" &&
     !get("_spaghettiBreakfastEaten")
       ? 1
-      : 0;
+      : 0; */
 
   /*
    * generated in mafia with an account that has super human cocktail crafting
    *  > js Item.all().filter((item) => item.inebriety > 0 && item.quality === "EPIC" && getIngredients(item)["mushroom fermenting powder]).join(", ")
    */
-  const complexMushroomWines = $items`overpowering mushroom wine, complex mushroom wine, smooth mushroom wine, blood-red mushroom wine, buzzing mushroom wine, swirling mushroom wine`;
+  // const complexMushroomWines = $items`overpowering mushroom wine, complex mushroom wine, smooth mushroom wine, blood-red mushroom wine, buzzing mushroom wine, swirling mushroom wine`;
   /*
    * generated in mafia with:
    *  > js Item.all().filter((item) => item.inebriety > 0 && getIngredients(item)["perfect ice cube"]).join(", ")
    */
-  const perfectDrinks = $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`;
+  // const perfectDrinks = $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`;
   /*
    * generated in mafia with an account that has Transcendental Noodlecraft
    *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
    */
-  const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
+  // const lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
 
   /*
    * standardSpleenItem indicates a spleen item of size 4 with an adventure yield of 5-10. Taken from the wiki. They are all functionally equivalent.
    */
   const standardSpleenItems = $items`agua de vida, gooey paste, oily paste, ectoplasmic paste, greasy paste, bug paste, hippy paste, orc paste, demonic paste, indescribably horrible paste, fishy paste, goblin paste, pirate paste, chlorophyll paste, strange paste, Mer-kin paste, slimy paste, penguin paste, elemental paste, cosmic paste, hobo paste, Crimbo paste, groose grease, Unconscious Collective Dream Jar, grim fairy tale, powdered gold`;
 
-  const smallEpics = [
+  /* const smallEpics = [
     ...$items`meteoreo, ice rice`,
     $item`Tea, Earl Grey, Hot`,
-  ];
+  ]; */
 
-  const crimboKeyValue = garboValue(
+  /* const crimboKeyValue = garboValue(
     toItem((toInt(myId()) % 4) + $item`pirate encryption key alpha`.id),
-  );
+  ); */
   const boxingDayCareItems =
     $items`glass of raw eggs, punch-drunk punch`.filter((item) => have(item));
   const pilsners = $items`astral pilsner`.filter((item) => have(item));
   const instantKarma = globalOptions.usekarma
     ? $items`Instant Karma`.filter((item) => have(item))
     : [];
-  const crimboKeyItem = cheapestItem(
+  /* const crimboKeyItem = cheapestItem(
     $items`corned beet, pickled bread, salted mutton`,
-  );
+  ); */
   const limitedItems = [
     ...boxingDayCareItems,
     ...pilsners,
@@ -583,7 +583,7 @@ function menu(): MenuItem<Note>[] {
 
   return [
     // FOOD
-    new MenuItem($item`Dreadsylvanian cold pocket`),
+    /* new MenuItem($item`Dreadsylvanian cold pocket`),
     new MenuItem($item`Dreadsylvanian hot pocket`),
     new MenuItem($item`Dreadsylvanian sleaze pocket`),
     new MenuItem($item`Dreadsylvanian stink pocket`),
@@ -591,46 +591,46 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`tin cup of mulligan stew`),
     new MenuItem($item`frozen banquet`),
     new MenuItem($item`deviled egg`),
-    new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }),
+    new MenuItem($item`spaghetti breakfast`, { maximum: spaghettiBreakfast }), */
     new MenuItem($item`extra-greasy slider`),
-    new MenuItem(cheapestItem(lasagnas)),
+    /* new MenuItem(cheapestItem(lasagnas)),
     new MenuItem(cheapestItem(smallEpics)),
-    new MenuItem($item`green hamhock`),
+    new MenuItem($item`green hamhock`), */
     ...legendaryPizzas.flat(),
 
     // BOOZE
-    new MenuItem($item`elemental caipiroska`),
+    /* new MenuItem($item`elemental caipiroska`),
     new MenuItem($item`moreltini`),
     new MenuItem($item`Dreadsylvanian cold-fashioned`),
     new MenuItem($item`Dreadsylvanian dank and stormy`),
     new MenuItem($item`Dreadsylvanian grimlet`),
     new MenuItem($item`Dreadsylvanian hot toddy`),
     new MenuItem($item`Dreadsylvanian slithery nipple`),
-    new MenuItem($item`Hodgman's blanket`),
+    new MenuItem($item`Hodgman's blanket`), */
     new MenuItem($item`Sacramento wine`),
-    new MenuItem($item`iced plum wine`),
+    // new MenuItem($item`iced plum wine`),
     new MenuItem($item`splendid martini`),
     new MenuItem($item`low tide martini`),
     new MenuItem($item`yam martini`),
     new MenuItem($item`Eye and a Twist`),
     new MenuItem($item`jar of fermented pickle juice`),
-    new MenuItem(cheapestItem(complexMushroomWines)),
-    new MenuItem(cheapestItem(perfectDrinks)),
-    new MenuItem($item`green eggnog`),
+    // new MenuItem(cheapestItem(complexMushroomWines)),
+    // new MenuItem(cheapestItem(perfectDrinks)),
+    // new MenuItem($item`green eggnog`),
 
     // SPLEEN
-    new MenuItem($item`octolus oculus`),
-    new MenuItem($item`prismatic wad`),
-    new MenuItem($item`transdermal smoke patch`),
-    new MenuItem($item`antimatter wad`),
-    new MenuItem($item`voodoo snuff`),
+    // new MenuItem($item`octolus oculus`),
+    // new MenuItem($item`prismatic wad`),
+    // new MenuItem($item`transdermal smoke patch`),
+    // new MenuItem($item`antimatter wad`),
+    // new MenuItem($item`voodoo snuff`),
     new MenuItem($item`blood-drive sticker`),
     new MenuItem(cheapestItem(standardSpleenItems)),
-    new MenuItem(cheapestItem($items`not-a-pipe, glimmering roc feather`)),
+    // new MenuItem(cheapestItem($items`not-a-pipe, glimmering roc feather`)),
 
     // MISC
     ...limitedItems,
-    ...(crimboKeyValue >= mallPrice(crimboKeyItem)
+    /* ...(crimboKeyValue >= mallPrice(crimboKeyItem)
       ? [
           new MenuItem(crimboKeyItem, {
             additionalValue: crimboKeyValue,
@@ -642,19 +642,19 @@ function menu(): MenuItem<Note>[] {
             ),
           }),
         ]
-      : []),
+      : []), */
     ...dailySpecialItem,
 
     // HELPERS
     new MenuItem($item`distention pill`),
     new MenuItem($item`cuppa Voraci tea`),
-    new MenuItem(Mayo.flex),
-    new MenuItem(Mayo.zapine),
+    /* new MenuItem(Mayo.flex),
+    new MenuItem(Mayo.zapine),*/
     new MenuItem($item`Special Seasoning`),
     new MenuItem($item`mini kiwi aioli`),
     new MenuItem($item`whet stone`),
-    new MenuItem(saladFork),
-    new MenuItem(frostyMug),
+    /* new MenuItem(saladFork),
+    new MenuItem(frostyMug), */
     new MenuItem($item`mojo filter`),
     new MenuItem($item`pocket wish`, {
       maximum: 1,
@@ -866,7 +866,7 @@ export function potionMenu(
     return limitedPotion(potion, undefined, options);
   }
 
-  const speakeasy = $item`Clan speakeasy`;
+  /* const speakeasy = $item`Clan speakeasy`;
   const hasSpeakeasy = getClanLounge()[`${speakeasy}`];
 
   const twiceHauntedPrice =
@@ -895,7 +895,7 @@ export function potionMenu(
             price: 2 * garboValue($item`FunFunds™`),
           },
         )
-      : [];
+      : []; */
 
   const borisBread = !get("unknownRecipe10978") // this property is true if you don't know the recipe, false if you do
     ? potion($item`Boris's bread`, {
@@ -915,7 +915,7 @@ export function potionMenu(
 
     // FOOD POTIONS
     ...potion($item`jumping horseradish`),
-    ...potion($item`tempura cauliflower`),
+    /* ...potion($item`tempura cauliflower`),
     ...potion($item`sea truffle`),
     ...potion($item`tempura broccoli`),
     ...potion($item`Miserable Pie`),
@@ -923,12 +923,12 @@ export function potionMenu(
     ...potion($item`bowl of mummy guts`),
     ...potion($item`haunted Hell ramen`),
     ...campfireHotdog,
-    ...foodCone,
+    ...foodCone, */
     ...borisBread,
     ...deepDish.flat(),
 
     // BOOZE POTIONS
-    ...potion($item`dirt julep`),
+    /* ...potion($item`dirt julep`),
     ...potion($item`Ambitious Turkey`),
     ...potion($item`Friendly Turkey`),
     ...potion($item`vintage smart drink`),
@@ -959,9 +959,9 @@ export function potionMenu(
       : []),
 
     // SPLEEN POTIONS
-    ...potion($item`cute mushroom`),
+    ...potion($item`cute mushroom`), */
     ...potion($item`beggin' cologne`),
-    ...potion($item`Knob Goblin nasal spray`),
+    /* ...potion($item`Knob Goblin nasal spray`),
     ...potion($item`handful of Smithereens`),
     ...potion($item`black striped oyster egg`),
     ...potion($item`black paisley oyster egg`),
@@ -972,7 +972,7 @@ export function potionMenu(
     ...potion($item`abstraction: joy`),
     ...potion($item`beastly paste`),
     ...potion($item`gleaming oyster egg`),
-    ...potion($item`Party-in-a-Can™`),
+    ...potion($item`Party-in-a-Can™`), */
     ...limitedPotion(
       $item`body spradium`,
       clamp(availableAmount($item`body spradium`), 0, 1),

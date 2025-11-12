@@ -50,6 +50,7 @@ import {
   getUsedTcbFamiliars,
   tcbTurnsLeft,
 } from "../familiar/lib";
+import { encounterMap } from "../resources/mobiusRing";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -337,6 +338,10 @@ function mobius(mode: BonusEquipMode): Map<Item, number> {
       encounterMap[get("_mobiusStripEncounters", 0)] - 3
         ? Math.max(mallPrice($item`clock`), get("valueOfAdventure") * 3) / 2
         : 0;
+        ? // eslint-disable-next-line libram/verify-constants
+          Math.max(mallPrice($item`clock`), get("valueOfAdventure") * 3) / 2
+        : 0;
+    // eslint-disable-next-line libram/verify-constants
     return new Map<Item, number>([[$item`Möbius ring`, value]]);
   }
   return new Map();

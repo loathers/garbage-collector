@@ -104,6 +104,10 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
       bufferToFile(taskArray.join("\n"), filename);
     }
   }
+  static defaultSettings = {
+    ...Engine.defaultSettings,
+    choiceAdventureScript: "garbo_choice.js",
+  };
 
   available(task: GarboTask): boolean {
     safeInterrupt();
