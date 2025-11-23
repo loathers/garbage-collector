@@ -30884,7 +30884,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia101.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("106a69fc97533a3a590b5f0808564c6e0476a2ac", ")"));
+      (0, import_kolmafia101.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b522426f6430f6dd768140aacb9a6d0d2501461b", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia101.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -51275,16 +51275,8 @@ function queryEggNetPriority() {
     return /* @__PURE__ */ new Map();
   }
 }
-function donateMonsterValue(m) {
-  var items = (0, import_kolmafia158.itemDropsArray)(m).filter(function(drop) {
-    return ["", "n"].includes(drop.type);
-  });
-  return (m.minMeat + m.maxMeat) / 2 + sum(items, function(drop) {
-    return drop.rate / 100 * garboValue(drop.drop);
-  });
-}
 function findDonateMonster(onlyFree) {
-  var _incomplete$get;
+  var _incomplete$get2;
   var incomplete = queryEggNetIncomplete();
   var priority = queryEggNetPriority();
   if (incomplete.size === 0) return void 0;
@@ -51299,10 +51291,10 @@ function findDonateMonster(onlyFree) {
   var monster = CombatLoversLocket_exports.findMonster(function(m) {
     return m.id <= maxMonsterId && incomplete.has(m) && !banned2.has(m);
   }, function(m) {
-    var _priority$get;
-    return donateMonsterValue(m) + ((_priority$get = priority.get(m)) !== null && _priority$get !== void 0 ? _priority$get : 0) * 1e4;
+    var _incomplete$get, _priority$get;
+    return 100 - ((_incomplete$get = incomplete.get(monster !== null && monster !== void 0 ? monster : import_kolmafia158.Monster.none)) !== null && _incomplete$get !== void 0 ? _incomplete$get : 0) + ((_priority$get = priority.get(m)) !== null && _priority$get !== void 0 ? _priority$get : 0) * 1e3 + Math.sin(((0, import_kolmafia158.toInt)((0, import_kolmafia158.myId)()) << 5) + (0, import_kolmafia158.myDaycount)() + m.id);
   });
-  var count = (_incomplete$get = incomplete.get(monster !== null && monster !== void 0 ? monster : import_kolmafia158.Monster.none)) !== null && _incomplete$get !== void 0 ? _incomplete$get : 0;
+  var count = (_incomplete$get2 = incomplete.get(monster !== null && monster !== void 0 ? monster : import_kolmafia158.Monster.none)) !== null && _incomplete$get2 !== void 0 ? _incomplete$get2 : 0;
   return !!monster && monster !== import_kolmafia158.Monster.none && count > 0 ? {
     monster: monster,
     count: count
