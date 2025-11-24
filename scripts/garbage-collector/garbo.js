@@ -30884,7 +30884,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia101.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b522426f6430f6dd768140aacb9a6d0d2501461b", ")"));
+      (0, import_kolmafia101.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("76d5bad940702458c8598db6553e4f055e2f3f79", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia101.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -51292,7 +51292,7 @@ function findDonateMonster(onlyFree) {
     return m.id <= maxMonsterId && incomplete.has(m) && !banned2.has(m);
   }, function(m) {
     var _incomplete$get, _priority$get;
-    return 100 - ((_incomplete$get = incomplete.get(monster !== null && monster !== void 0 ? monster : import_kolmafia158.Monster.none)) !== null && _incomplete$get !== void 0 ? _incomplete$get : 0) + ((_priority$get = priority.get(m)) !== null && _priority$get !== void 0 ? _priority$get : 0) * 1e3 + Math.sin(((0, import_kolmafia158.toInt)((0, import_kolmafia158.myId)()) << 5) + (0, import_kolmafia158.myDaycount)() + m.id);
+    return 100 - ((_incomplete$get = incomplete.get(m !== null && m !== void 0 ? m : import_kolmafia158.Monster.none)) !== null && _incomplete$get !== void 0 ? _incomplete$get : 0) + ((_priority$get = priority.get(m)) !== null && _priority$get !== void 0 ? _priority$get : 0) * 1e3 + Math.sin(((0, import_kolmafia158.toInt)((0, import_kolmafia158.myId)()) << 5) + (0, import_kolmafia158.myDaycount)() + m.id);
   });
   var count = (_incomplete$get2 = incomplete.get(monster !== null && monster !== void 0 ? monster : import_kolmafia158.Monster.none)) !== null && _incomplete$get2 !== void 0 ? _incomplete$get2 : 0;
   return !!monster && monster !== import_kolmafia158.Monster.none && count > 0 ? {
