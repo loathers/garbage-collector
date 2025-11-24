@@ -108,7 +108,7 @@ function findDonateMonster(
     (m) => m.id <= maxMonsterId && incomplete.has(m) && !banned.has(m),
     (m) =>
       100 -
-      (incomplete.get(monster ?? Monster.none) ?? 0) +
+      (incomplete.get(m ?? Monster.none) ?? 0) +
       (priority.get(m) ?? 0) * 1000 +
       Math.sin((toInt(myId()) << 5) + myDaycount() + m.id),
   );
