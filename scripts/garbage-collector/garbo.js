@@ -30884,7 +30884,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia101.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("76d5bad940702458c8598db6553e4f055e2f3f79", ")"));
+      (0, import_kolmafia101.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b2bc1dea6a56f731447d8feb43d771840669604d", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia101.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -51287,7 +51287,7 @@ function findDonateMonster(onlyFree) {
     return (0, import_kolmafia158.getMonsters)(x);
   })), _toConsumableArray74($monsters.all().filter(function(x) {
     return x.attributes.includes("BOSS") || x.attributes.includes("NOCOPY") || onlyFree && !x.attributes.includes("FREE");
-  })), _toConsumableArray74($monsters(_templateObject2287 || (_templateObject2287 = _taggedTemplateLiteral149(["Source Agent"]))))));
+  })), _toConsumableArray74($monsters(_templateObject2287 || (_templateObject2287 = _taggedTemplateLiteral149(["Source Agent, invader bullet"]))))));
   var monster = CombatLoversLocket_exports.findMonster(function(m) {
     return m.id <= maxMonsterId && incomplete.has(m) && !banned2.has(m);
   }, function(m) {
