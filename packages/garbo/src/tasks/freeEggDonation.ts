@@ -101,7 +101,7 @@ function findDonateMonster(
           x.attributes.includes("NOCOPY") ||
           (onlyFree && !x.attributes.includes("FREE")),
       ),
-    ...$monsters`Source Agent`,
+    ...$monsters`Source Agent, invader bullet`,
   ]);
   // Find the monster that needs the most eggs, adding in a small amount of variance as a tiebreaker
   const monster = CombatLoversLocket.findMonster(
