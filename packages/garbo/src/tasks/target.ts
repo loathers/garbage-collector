@@ -76,7 +76,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
     },
     {
       name: "Setup Shrunken Head",
-      ready: () => shrunkenHeadLocation() !== Location.none,
+      ready: () => CombatLoversLocket.canReminisce($monster`Witchess Rook`),
       outfit: () =>
         freeFightOutfit({
           // eslint-disable-next-line libram/verify-constants
