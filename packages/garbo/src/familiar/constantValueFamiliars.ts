@@ -139,6 +139,10 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       2,
     worksOnFreeRun: true,
   },
+  {
+    familiar: $familiar`Skeleton of Crimbo Past`,
+    value: () => 50_000,
+  },
 ];
 
 function peaceTurkeyDropChance(): number {
