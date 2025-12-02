@@ -123,7 +123,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28603); // time cop
+  sinceKolmafiaRevision(28771); // time cop
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
