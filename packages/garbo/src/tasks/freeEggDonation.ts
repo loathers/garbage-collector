@@ -3,13 +3,15 @@ import {
   getMonsters,
   haveEquipped,
   Item,
-  itemDropsArray,
   itemType,
   Location,
   Monster,
   myBuffedstat,
+  myDaycount,
+  myId,
   myMaxhp,
   restoreHp,
+  toInt,
   useFamiliar,
   visitUrl,
 } from "kolmafia";
@@ -33,12 +35,10 @@ import {
   have,
   Requirement,
   RetroCape,
-  sum,
 } from "libram";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
-import { garboValue } from "../garboValue";
 import { freeRunConstraints, tryFindFreeRunOrBanish } from "../lib";
 import { GarboTask } from "./engine";
 
@@ -82,16 +82,6 @@ function queryEggNetPriority(): Map<Monster, number> {
   }
 }
 
-function donateMonsterValue(m: Monster): number {
-  const items = itemDropsArray(m).filter((drop) =>
-    ["", "n"].includes(drop.type),
-  );
-  return (
-    (m.minMeat + m.maxMeat) / 2 +
-    sum(items, (drop) => (drop.rate / 100) * garboValue(drop.drop))
-  );
-}
-
 function findDonateMonster(
   onlyFree: boolean,
 ): { monster: Monster; count: number } | undefined {
@@ -111,11 +101,16 @@ function findDonateMonster(
           x.attributes.includes("NOCOPY") ||
           (onlyFree && !x.attributes.includes("FREE")),
       ),
-    ...$monsters`Source Agent`,
+    ...$monsters`Source Agent, invader bullet`,
   ]);
+  // Find the monster that needs the most eggs, adding in a small amount of variance as a tiebreaker
   const monster = CombatLoversLocket.findMonster(
     (m) => m.id <= maxMonsterId && incomplete.has(m) && !banned.has(m),
-    (m) => donateMonsterValue(m) + (priority.get(m) ?? 0) * 10000,
+    (m) =>
+      100 -
+      (incomplete.get(m ?? Monster.none) ?? 0) +
+      (priority.get(m) ?? 0) * 1000 +
+      Math.sin((toInt(myId()) << 5) + myDaycount() + m.id),
   );
   const count = incomplete.get(monster ?? Monster.none) ?? 0;
   return !!monster && monster !== Monster.none && count > 0
