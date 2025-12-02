@@ -3888,7 +3888,7 @@ __metadata:
     "@types/eslint__js": ^8.42.3
     eslint: ^9.9.0
     eslint-config-prettier: ^9.1.0
-    eslint-plugin-libram: ^0.4.33
+    eslint-plugin-libram: ^0.4.34
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -3912,13 +3912,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.4.33":
-  version: 0.4.33
-  resolution: "eslint-plugin-libram@npm:0.4.33"
+"eslint-plugin-libram@npm:^0.4.34":
+  version: 0.4.34
+  resolution: "eslint-plugin-libram@npm:0.4.34"
   dependencies:
     html-entities: ^2.5.2
     requireindex: ~1.2.0
-  checksum: 3124fc7d9f9ce2d8aa675ad3b143a9807adba5a39ef317e8c5b659d759da4419cd4802a143865914160e4cb3c2faab9fd390bdace90c657db2c12ba4581bd039
+  checksum: 617a1d7016b0fe45d4bcabbc378d6453118519efa4ac97ca9fb3029f88c91a1491e0872aad0a75d0442dbcdddfa8093c742619e21bb5cbfd911c2b970be22e79
   languageName: node
   linkType: hard
 
