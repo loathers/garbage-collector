@@ -20,6 +20,7 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  have,
   maxBy,
   sum,
   totalFamiliarWeight,
@@ -320,21 +321,21 @@ export function barfFamiliar(equipmentForced: boolean): {
   }
 
   // Determine the baseline for how good a familiar needs to be to be run--either an unlimited familiar, or our meat familiar
-  const unlimitedCruisingFamiliars = viableMenu.filter(
+  /* const unlimitedCruisingFamiliars = viableMenu.filter(
     ({ limit }) => limit === "none",
   );
-  const cruisingFamiliar = unlimitedCruisingFamiliars.length
+  /* const cruisingFamiliar = unlimitedCruisingFamiliars.length
     ? maxBy(unlimitedCruisingFamiliars, totalFamiliarValue)
     : meatFamiliarEntry;
 
-  const turnsNeeded = sum(
+  /* const turnsNeeded = sum(
     viableMenu,
     turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars),
   );
 
   // If there aren't enough turns left in the day to get value out of fams that aren't our "cruising" familiar, just return that
   // With a special exception for crimbo shrub
-  if (turnsNeeded < turnsAvailable()) {
+  /* if (turnsNeeded < turnsAvailable()) {
     const shrubAvailable = viableMenu.some(
       ({ familiar }) => familiar === $familiar`Crimbo Shrub`,
     );
@@ -342,7 +343,7 @@ export function barfFamiliar(equipmentForced: boolean): {
       familiar: shrubAvailable ? $familiar`Crimbo Shrub` : meat,
       extraValue: 0,
     };
-  }
+  } */
 
   const best = maxBy(viableMenu, totalFamiliarValue);
 

@@ -82,6 +82,9 @@ export function shouldRedigitize(): boolean {
   return estimatedGarboTurns() / digitizeChunks < digitizeAdventuresUsed;
 }
 
+// eslint-disable-next-line libram/verify-constants
+  const goodSniff = () => have($familiar`Skeleton of Crimbo Past`) && get("_knuckleboneDrops",0) < 100  ? $monster`angry tourist` : $monster`garbage tourist`;
+
 export function shouldAffirmationHate(): boolean {
   if (!hippyStoneBroken()) return false;
   if (get("_affirmationHateUsed")) return false;
@@ -325,41 +328,41 @@ export class Macro extends StrictMacro {
       )
       .externalIf(
         have($skill`Transcendent Olfaction`) &&
-          (get("olfactedMonster") !== $monster`garbage tourist` ||
+          (get("olfactedMonster") !== goodSniff() ||
             !have($effect`On the Trail`)) &&
           get("_olfactionsUsed") < 3,
         Macro.if_(
-          $monster`garbage tourist`,
+          goodSniff(),
           Macro.trySkill($skill`Transcendent Olfaction`),
         ),
       )
       .externalIf(
-        get("_gallapagosMonster") !== $monster`garbage tourist` &&
+        get("_gallapagosMonster") !== goodSniff() &&
           have($skill`Gallapagosian Mating Call`),
         Macro.if_(
-          $monster`garbage tourist`,
+          goodSniff(),
           Macro.trySkill($skill`Gallapagosian Mating Call`),
         ),
       )
       .externalIf(
-        get("longConMonster") !== $monster`garbage tourist` &&
+        get("longConMonster") !== goodSniff() &&
           get("_longConUsed") < 5 &&
           have($skill`Long Con`),
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Long Con`)),
+        Macro.if_(goodSniff(), Macro.trySkill($skill`Long Con`)),
       )
       .externalIf(
-        get("motifMonster") !== $monster`garbage tourist` &&
+        get("motifMonster") !== goodSniff() &&
           have($skill`Motif`) &&
           !have($effect`Everything Looks Blue`),
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Motif`)),
+        Macro.if_(goodSniff(), Macro.trySkill($skill`Motif`)),
       )
       .externalIf(
         !get("_latteCopyUsed") &&
-          (get("_latteMonster") !== $monster`garbage tourist` ||
+          (get("_latteMonster") !== goodSniff() ||
             Counter.get("Latte Monster") > 30) &&
           have($item`latte lovers member's mug`),
         Macro.if_(
-          $monster`garbage tourist`,
+          goodSniff(),
           Macro.trySkill($skill`Offer Latte to Opponent`),
         ),
       )

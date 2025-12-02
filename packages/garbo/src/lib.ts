@@ -852,7 +852,9 @@ export function freeRest(): boolean {
       useSkill(bestSkill);
     }
   }
-
+  const fam = myFamiliar();
+  // eslint-disable-next-line libram/verify-constants
+  useFamiliar($familiar`Skeleton of Crimbo Past`);
   if (get("chateauAvailable")) {
     visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
   } else if (get("getawayCampsiteUnlocked")) {
@@ -860,6 +862,7 @@ export function freeRest(): boolean {
   } else {
     visitUrl("campground.php?action=rest");
   }
+  useFamiliar(fam);
 
   return true;
 }

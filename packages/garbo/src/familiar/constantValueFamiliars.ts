@@ -139,6 +139,11 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       2,
     worksOnFreeRun: true,
   },
+  {
+    // eslint-disable-next-line libram/verify-constants
+    familiar: $familiar`Skeleton of Crimbo Past`,
+    value: (mode) => mode === "barf" ? (get("_knuckleboneDrops",0) < 100 ? 5_000 : 0) : 0,
+  }
 ];
 
 function peaceTurkeyDropChance(): number {
