@@ -30884,7 +30884,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia101.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b2bc1dea6a56f731447d8feb43d771840669604d", ")"));
+      (0, import_kolmafia101.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("aaccf0ea6e40c7e9fa54671154547e01f826c725", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia101.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -40504,7 +40504,7 @@ function barfFamiliar(equipmentForced) {
       return familiar10 === $familiar(_templateObject1253 || (_templateObject1253 = _taggedTemplateLiteral126(["Crimbo Shrub"])));
     });
     return {
-      familiar: shrubAvailable ? $familiar(_templateObject1350 || (_templateObject1350 = _taggedTemplateLiteral126(["Crimbo Shrub"]))) : meat,
+      familiar: shrubAvailable ? $familiar(_templateObject1350 || (_templateObject1350 = _taggedTemplateLiteral126(["Crimbo Shrub"]))) : cruisingFamiliar.familiar,
       extraValue: 0
     };
   }
