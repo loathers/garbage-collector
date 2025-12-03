@@ -870,7 +870,6 @@ export function freeRest(): boolean {
       visitUrl("campground.php?action=rest");
     }
   }
-  useFamiliar(fam);
 
   return true;
 }
