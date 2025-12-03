@@ -853,12 +853,22 @@ export function freeRest(): boolean {
     }
   }
 
-  if (get("chateauAvailable")) {
-    visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
-  } else if (get("getawayCampsiteUnlocked")) {
-    visitUrl("place.php?whichplace=campaway&action=campaway_tentclick");
-  } else {
+  if (
+    have($familiar`Skeleton of Crimbo Past`) &&
+    get("_knuckleboneRests", 0) < 5
+  ) {
+    const start = myFamiliar();
+    useFamiliar($familiar`Skeleton of Crimbo Past`);
     visitUrl("campground.php?action=rest");
+    useFamiliar(start);
+  } else {
+    if (get("chateauAvailable")) {
+      visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
+    } else if (get("getawayCampsiteUnlocked")) {
+      visitUrl("place.php?whichplace=campaway&action=campaway_tentclick");
+    } else {
+      visitUrl("campground.php?action=rest");
+    }
   }
 
   return true;
