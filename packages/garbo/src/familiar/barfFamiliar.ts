@@ -77,8 +77,10 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
   ],
   // Uniquely required to equip its fam equip to meaningfully have value
   [$familiar`Jill-of-All-Trades`, { equip: $item`LED candle` }],
-  /* eslint-disable-next-line libram/verify-constants */
-  [$familiar`Skeleton of Crimbo Past`, { equip: $item`small peppermint-flavored sugar walking crook` }],
+  [
+    $familiar`Skeleton of Crimbo Past`,
+    { equip: $item`small peppermint-flavored sugar walking crook` },
+  ],
   // Derives its value irregularly from +famweight
   [
     $familiar`Mini Kiwi`,

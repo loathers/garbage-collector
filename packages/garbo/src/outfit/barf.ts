@@ -138,9 +138,7 @@ export function computeBarfOutfit(
     outfit.modifier.push(`${famExpValue} Familiar Experience`);
   }
 
-  /* eslint-disable-next-line libram/verify-constants */
   if (outfit.familiar === $familiar`Skeleton of Crimbo Past`) {
-    /* eslint-disable-next-line libram/verify-constants */
     outfit.equip($item`small peppermint-flavored sugar walking crook`);
   }
 

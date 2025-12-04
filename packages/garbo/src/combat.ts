@@ -71,8 +71,10 @@ import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
 import { maximumPinataCasts } from "./resources";
 
-/* eslint-disable-next-line libram/verify-constants */
-export const getPreferredBarfMonster = () => (have($familiar`Skeleton of Crimbo Past`) && get("_knuckleboneDrops",0) < 100)  ? $monster`angry tourist` : $monster`garbage tourist`;
+export const getPreferredBarfMonster = () =>
+  have($familiar`Skeleton of Crimbo Past`) && get("_knuckleboneDrops", 0) < 100
+    ? $monster`angry tourist`
+    : $monster`garbage tourist`;
 
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;

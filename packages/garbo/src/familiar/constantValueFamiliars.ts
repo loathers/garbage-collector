@@ -57,24 +57,28 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     familiar: $familiar`Robortender`,
     value: (mode) => {
       const olfactedMonster = get("olfactedMonster");
-      const olfactedIsFromBarf = olfactedMonster && getMonsters($location`Barf Mountain`).includes(olfactedMonster);
-      return Robortender.dropChance() *
-        garboValue(
-          Robortender.dropFrom(
-            (mode === "barf" && olfactedIsFromBarf)
-              ? olfactedMonster
-              : mode === "target"
-                ? globalOptions.target
-                : $monster.none,
-          ),
-        ) +
-      (Robortender.currentDrinks().includes($item`Feliz Navidad`)
-        ? felizValue() * 0.25
-        : 0) +
-      (Robortender.currentDrinks().includes($item`Newark`)
-        ? newarkValue() * 0.25
-        : 0)
-      },
+      const olfactedIsFromBarf =
+        olfactedMonster &&
+        getMonsters($location`Barf Mountain`).includes(olfactedMonster);
+      return (
+        Robortender.dropChance() *
+          garboValue(
+            Robortender.dropFrom(
+              mode === "barf" && olfactedIsFromBarf
+                ? olfactedMonster
+                : mode === "target"
+                  ? globalOptions.target
+                  : $monster.none,
+            ),
+          ) +
+        (Robortender.currentDrinks().includes($item`Feliz Navidad`)
+          ? felizValue() * 0.25
+          : 0) +
+        (Robortender.currentDrinks().includes($item`Newark`)
+          ? newarkValue() * 0.25
+          : 0)
+      );
+    },
   },
   {
     familiar: $familiar`Twitching Space Critter`,
@@ -144,9 +148,8 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     worksOnFreeRun: true,
   },
   {
-    /* eslint-disable-next-line libram/verify-constants */
     familiar: $familiar`Skeleton of Crimbo Past`,
-    value: () => get("_knuckleboneDrops", 0) < 100 ? 50_000 : 0,
+    value: () => (get("_knuckleboneDrops", 0) < 100 ? 50_000 : 0),
   },
 ];
 
