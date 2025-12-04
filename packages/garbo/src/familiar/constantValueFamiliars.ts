@@ -140,8 +140,9 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     worksOnFreeRun: true,
   },
   {
+    /* eslint-disable-next-line libram/verify-constants */
     familiar: $familiar`Skeleton of Crimbo Past`,
-    value: () => 50_000,
+    value: () => get("_knuckleboneDrops", 0) < 100 ? 50_000 : 0,
   },
 ];
 
