@@ -48,6 +48,7 @@ import { bonusAccessories } from "./dropsgearAccessories";
 import {
   familiarEquipmentValue,
   getUsedTcbFamiliars,
+  knuckleboneValue,
   tcbTurnsLeft,
 } from "../familiar/lib";
 
@@ -303,6 +304,7 @@ export function bonusGear(
           ...juneCleaver(mode),
           ...rakeLeaves(mode),
           ...aviatorGoggles(mode),
+          ...skeletonCane(mode),
         ])
       : []),
   ]);
@@ -442,6 +444,20 @@ function aviatorGoggles(mode: BonusEquipMode): Map<Item, number> {
   }
   const goggleValue = garboValue($item`mini kiwi`) * 0.25;
   return new Map<Item, number>([[$item`aviator goggles`, goggleValue]]);
+}
+
+function skeletonCane(mode: BonusEquipMode): Map<Item, number> {
+  if (
+    mode === BonusEquipMode.MEAT_TARGET ||
+    !have($familiar`Skeleton of Crimbo Past`)
+  ) {
+    return new Map();
+  }
+  // Cane improves drop rate by ~9.5%
+  const caneValue = knuckleboneValue() * 0.095;
+  return new Map<Item, number>([
+    [$item`small peppermint-flavored sugar walking crook`, caneValue],
+  ]);
 }
 
 function stickers(mode: BonusEquipMode): Map<Item, number> {

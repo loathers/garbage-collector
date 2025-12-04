@@ -231,3 +231,9 @@ export function tcbValue(
     amuletCoin
   );
 }
+
+// 2927 knucklebones required for a TPS
+export const knuckleboneValue = () =>
+  get("_knuckleboneDrops", 0) < 100
+    ? garboValue($item`tiny plastic sword`) / 2927
+    : 0;
