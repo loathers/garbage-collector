@@ -7,7 +7,6 @@ import {
   $location,
   $locations,
   $monster,
-  $phylum,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -154,7 +153,8 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     value: (mode) =>
       mode === "barf"
         ? knuckleboneValue() * 0.49
-        : mode === "target" && globalOptions.target.phylum === $phylum`Undead`
+        : mode === "target" &&
+            globalOptions.target.attributes.includes("Skeleton")
           ? knuckleboneValue() * 0.9
           : 0,
   },
