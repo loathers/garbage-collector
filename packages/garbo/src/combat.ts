@@ -71,6 +71,9 @@ import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
 import { maximumPinataCasts } from "./resources";
 
+/* eslint-disable-next-line libram/verify-constants */
+export const getPreferredBarfMonster = () => (have($familiar`Skeleton of Crimbo Past`) && get("_knuckleboneDrops",0) < 100)  ? $monster`angry tourist` : $monster`garbage tourist`;
+
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
   const digitizesRemaining = SourceTerminal.getDigitizeUsesRemaining();
@@ -290,6 +293,8 @@ export class Macro extends StrictMacro {
         pigSkinnerSetup ||
         bearArmsSetup);
 
+    const preferredBarfMonster = getPreferredBarfMonster();
+
     return this.externalIf(
       shouldRedigitize(),
       Macro.if_(globalOptions.target, Macro.trySkill($skill`Digitize`)),
@@ -325,41 +330,41 @@ export class Macro extends StrictMacro {
       )
       .externalIf(
         have($skill`Transcendent Olfaction`) &&
-          (get("olfactedMonster") !== $monster`garbage tourist` ||
+          (get("olfactedMonster") !== preferredBarfMonster ||
             !have($effect`On the Trail`)) &&
           get("_olfactionsUsed") < 3,
         Macro.if_(
-          $monster`garbage tourist`,
+          preferredBarfMonster,
           Macro.trySkill($skill`Transcendent Olfaction`),
         ),
       )
       .externalIf(
-        get("_gallapagosMonster") !== $monster`garbage tourist` &&
+        get("_gallapagosMonster") !== preferredBarfMonster &&
           have($skill`Gallapagosian Mating Call`),
         Macro.if_(
-          $monster`garbage tourist`,
+          preferredBarfMonster,
           Macro.trySkill($skill`Gallapagosian Mating Call`),
         ),
       )
       .externalIf(
-        get("longConMonster") !== $monster`garbage tourist` &&
+        get("longConMonster") !== preferredBarfMonster &&
           get("_longConUsed") < 5 &&
           have($skill`Long Con`),
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Long Con`)),
+        Macro.if_(preferredBarfMonster, Macro.trySkill($skill`Long Con`)),
       )
       .externalIf(
-        get("motifMonster") !== $monster`garbage tourist` &&
+        get("motifMonster") !== preferredBarfMonster &&
           have($skill`Motif`) &&
           !have($effect`Everything Looks Blue`),
-        Macro.if_($monster`garbage tourist`, Macro.trySkill($skill`Motif`)),
+        Macro.if_(preferredBarfMonster, Macro.trySkill($skill`Motif`)),
       )
       .externalIf(
         !get("_latteCopyUsed") &&
-          (get("_latteMonster") !== $monster`garbage tourist` ||
+          (get("_latteMonster") !== preferredBarfMonster ||
             Counter.get("Latte Monster") > 30) &&
           have($item`latte lovers member's mug`),
         Macro.if_(
-          $monster`garbage tourist`,
+          preferredBarfMonster,
           Macro.trySkill($skill`Offer Latte to Opponent`),
         ),
       )
