@@ -152,7 +152,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
     // Rate of drop for dudes appears to be ~49% without cane
     value: (mode) =>
       mode === "barf"
-        ? knuckleboneValue() * 0.49
+        ? knuckleboneValue() * 0.5
         : mode === "target" &&
             globalOptions.target.attributes.includes("Skeleton")
           ? knuckleboneValue() * 0.9

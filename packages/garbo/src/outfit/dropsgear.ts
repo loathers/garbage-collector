@@ -454,7 +454,7 @@ function skeletonCane(mode: BonusEquipMode): Map<Item, number> {
     return new Map();
   }
   // Cane improves drop rate by ~9.5%
-  const caneValue = knuckleboneValue() * 0.095;
+  const caneValue = knuckleboneValue() * 0.1;
   return new Map<Item, number>([
     [$item`small peppermint-flavored sugar walking crook`, caneValue],
   ]);
