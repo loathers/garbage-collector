@@ -85,21 +85,21 @@ function getPhylumMultiplier(monster: Monster): number {
     case $phylum`fish`:
       return 0.2;
     case $phylum`goblin`:
-      return 0.5;
-    case $phylum`hobo`:
       return 0.4;
+    case $phylum`hobo`:
+      return 0.5;
     case $phylum`horror`:
       return 0.0;
     case $phylum`humanoid`:
-      return 0.5;
+      return 0.4;
     case $phylum`mer-kin`:
       return 0.0;
     case $phylum`orc`:
-      return 0.1;
+      return 0.8;
     case $phylum`penguin`:
-      return 0.1;
+      return 0.2;
     case $phylum`pirate`:
-      return 0.5;
+      return 0.65;
     case $phylum`plant`:
       return 0.0;
     case $phylum`slime`:
