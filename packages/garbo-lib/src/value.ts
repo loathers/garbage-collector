@@ -210,12 +210,7 @@ export function makeValue(
         // ignore the science volumes because some accounts can't acquire them
       ),
     ],
-    [
-      $item`knucklebone`,
-      currency(
-        ...$items`tiny plastic sword`
-      )
-    ],
+    [$item`knucklebone`, () => value($item`tiny plastic sword`) / 2927],
     ...Familiar.all()
       .map((f) => familiarEquipment(f))
       .filter((i) => i !== $item.none && i.tradeable && i.discardable)
