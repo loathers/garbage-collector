@@ -50,7 +50,6 @@ import {
   getUsedTcbFamiliars,
   tcbTurnsLeft,
 } from "../familiar/lib";
-import { knuckleboneValue } from "../resources";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -454,7 +453,7 @@ function skeletonCane(mode: BonusEquipMode): Map<Item, number> {
     return new Map();
   }
   // Cane improves drop rate by 10%
-  const caneValue = knuckleboneValue(mode) * 0.1;
+  const caneValue = garboValue($item`knucklebone`) * 0.1;
   return new Map<Item, number>([
     [$item`small peppermint-flavored sugar walking crook`, caneValue],
   ]);
