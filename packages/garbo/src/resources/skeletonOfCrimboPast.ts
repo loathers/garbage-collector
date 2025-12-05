@@ -1,9 +1,18 @@
-import { $familiar, $item, $location, $phylum, get, have } from "libram";
+import {
+  $familiar,
+  $item,
+  $location,
+  $phylum,
+  get,
+  have,
+  sum,
+  tuple,
+} from "libram";
 import { garboValue } from "../garboValue";
 import { globalOptions } from "../config";
 import { FamiliarMode } from "../familiar/lib";
 import { BonusEquipMode } from "../lib";
-import { Location, Monster } from "kolmafia";
+import { appearanceRates, Location, Monster } from "kolmafia";
 
 export function knuckleboneValue(
   mode: FamiliarMode | BonusEquipMode | Monster | Location,
@@ -15,51 +24,36 @@ export function knuckleboneValue(
     return 0;
   }
   const boneTradeValue = garboValue($item`knucklebone`);
-  return knuckboneMultiplier(mode) * boneTradeValue;
+  return boneTradeValue * knuckleboneMultiplier(mode);
 }
 
-function knuckboneMultiplier(
+function knuckleboneMultiplier(
   mode: FamiliarMode | BonusEquipMode | Monster | Location,
 ): number {
   if (mode === "barf") {
-    return getLocationPhylumMultiplier($location`Barf Mountain`);
+    return valueLocation($location`Barf Mountain`);
   }
 
   if (mode === "target") {
     return getPhylumMultiplier(globalOptions.target);
   }
 
-  if (mode instanceof Location) {
-    return getLocationPhylumMultiplier(mode);
-  }
-
-  if (mode instanceof Monster) {
-    return getPhylumMultiplier(mode);
-  }
+  if (mode instanceof Location) return valueLocation(mode);
+  if (mode instanceof Monster) return getPhylumMultiplier(mode);
 
   return 0;
 }
 
-function getLocationPhylumMultiplier(loc: Location): number {
-  const queueString = loc.combatQueue;
-  if (!queueString) return 0;
+function valueLocation(loc: Location): number {
+  const rates = appearanceRates(loc); // { monsterName: % }
 
-  const names = queueString
-    .split(";")
-    .map((s) => s.trim())
-    .filter((s) => s.length > 0);
+  const entries = Object.entries(rates).map(([name, rate]) =>
+    tuple(Monster.get(name), rate),
+  );
 
-  if (names.length === 0) return 0;
-
-  const multipliers = names
-    .map((name) => Monster.get(name))
-    .filter((mon) => mon !== Monster.none)
-    .map((mon) => getPhylumMultiplier(mon));
-
-  if (multipliers.length === 0) return 0;
-
-  const sum = multipliers.reduce((a, b) => a + b, 0);
-  return sum / multipliers.length;
+  return sum(entries, ([mon, rate]) =>
+    mon !== Monster.none ? (rate / 100) * getPhylumMultiplier(mon) : 0,
+  );
 }
 
 function getPhylumMultiplier(monster: Monster): number {
