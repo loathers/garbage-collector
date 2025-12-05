@@ -26,9 +26,7 @@ function knuckboneMultiplier(
   }
 
   if (mode === "target") {
-    return globalOptions.target.attributes.includes("SKELETON")
-      ? 0.9
-      : getPhylumMultiplier(globalOptions.target);
+    return getPhylumMultiplier(globalOptions.target);
   }
 
   if (mode instanceof Location) {
@@ -65,6 +63,10 @@ function getLocationPhylumMultiplier(loc: Location): number {
 }
 
 function getPhylumMultiplier(monster: Monster): number {
+  if (monster.attributes.includes("SKELETON")) {
+    return 0.9;
+  }
+
   switch (monster.phylum) {
     case $phylum`beast`:
       return 0.3;
