@@ -264,9 +264,8 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
-  const fullMenu = menu({
+  const fullMenu = menu($location`Barf Mountain`, {
     canChooseMacro: true,
-    location: $location`Barf Mountain`,
     includeExperienceFamiliars: true,
     mode: "barf",
   }).flatMap((generalFamiliar) => {
