@@ -29,12 +29,12 @@ import {
   targetingMeat,
 } from "../lib";
 import { globalOptions } from "../config";
-import { meatDrop } from "kolmafia";
+import { Location, meatDrop } from "kolmafia";
 import { shouldRedigitize } from "../combat";
 
 export function meatTargetOutfit(
   spec: OutfitSpec = {},
-  target = $location.none,
+  location?: Location,
 ): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);
@@ -43,11 +43,11 @@ export function meatTargetOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
-  if (target === $location`Crab Island`) {
+  if (location === $location`Crab Island`) {
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
   } else if (
-    target === $location`Cobb's Knob Treasury` &&
+    location === $location`Cobb's Knob Treasury` &&
     have($effect`Lucky!`)
   ) {
     const meat = meatDrop($monster`Knob Goblin Embezzler`) + songboomMeat();
@@ -67,7 +67,7 @@ export function meatTargetOutfit(
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
   outfit.familiar ??= targetingMeat()
     ? meatFamiliar()
-    : freeFightFamiliar({
+    : freeFightFamiliar(location ?? globalOptions.target, {
         equipmentForced: !outfit.canEquip($item`toy Cupid bow`),
       });
 
@@ -76,7 +76,7 @@ export function meatTargetOutfit(
     outfit.familiar,
   );
 
-  const underwater = target.environment === "underwater";
+  const underwater = location?.environment === "underwater";
   if (underwater) {
     if (!outfit.familiar.underwater) {
       outfit.equipFirst(familiarWaterBreathingEquipment);
@@ -109,7 +109,7 @@ export function meatTargetOutfit(
   const bjornalike = bestBjornalike(outfit);
 
   if (
-    target === Guzzlr.getLocation() &&
+    location === Guzzlr.getLocation() &&
     Guzzlr.turnsLeftOnQuest(false) === 1 &&
     Guzzlr.haveBooze()
   ) {
@@ -144,7 +144,7 @@ export function meatTargetOutfit(
 
   if (
     !have($effect`Everything Looks Purple`) &&
-    target.environment !== Environment.Underwater &&
+    location?.environment !== Environment.Underwater &&
     !shouldRedigitize()
   ) {
     outfit.equip($item`Roman Candelabra`);

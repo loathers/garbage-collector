@@ -1,5 +1,5 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Familiar, Location } from "kolmafia";
+import { Familiar, Location, Monster } from "kolmafia";
 import {
   $familiar,
   $item,
@@ -14,7 +14,12 @@ import {
 import { WanderDetails } from "garbo-lib";
 
 import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
-import { BonusEquipMode, MEAT_TARGET_MULTIPLIER, sober } from "../lib";
+import {
+  adventureTargetToWeightedMap,
+  BonusEquipMode,
+  MEAT_TARGET_MULTIPLIER,
+  sober,
+} from "../lib";
 import { wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
@@ -55,18 +60,23 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
 ]);
 
 export type FreeFightOutfitMenuOptions = {
-  location?: Location;
   duplicate?: boolean;
-  wanderOptions?: WanderDetails;
+  monsterTarget?: Monster;
   familiarOptions?: FamiliarMenuOptions;
 };
 export function freeFightOutfit(
   spec: OutfitSpec = {},
+  destination: Location | WanderDetails,
   options: FreeFightOutfitMenuOptions = {},
 ): Outfit {
   cleaverCheck();
 
-  const computedSpec = computeOutfitSpec(spec, options);
+  const location =
+    destination instanceof Location
+      ? destination
+      : wanderer().getTarget(destination).location;
+
+  const computedSpec = computeOutfitSpec(spec, location);
 
   validateGarbageFoldable(computedSpec);
   const outfit = Outfit.from(
@@ -74,7 +84,12 @@ export function freeFightOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
+  const adventureTarget = adventureTargetToWeightedMap(
+    options.monsterTarget ?? location,
+  );
+
   outfit.familiar ??= freeFightFamiliar(
+    adventureTarget,
     computeFamiliarMenuOptions(
       options.familiarOptions,
       options.duplicate ?? false,
@@ -82,7 +97,7 @@ export function freeFightOutfit(
     ),
   );
   const mode =
-    options.location === $location`The Deep Machine Tunnels`
+    location === $location`The Deep Machine Tunnels`
       ? BonusEquipMode.DMT
       : BonusEquipMode.FREE;
 
@@ -120,7 +135,7 @@ export function freeFightOutfit(
   }
 
   if (
-    computeLocation(options) === Guzzlr.getLocation() &&
+    location === Guzzlr.getLocation() &&
     Guzzlr.turnsLeftOnQuest(false) === 1 &&
     Guzzlr.haveBooze()
   ) {
@@ -157,32 +172,11 @@ export function freeFightOutfit(
   return outfit;
 }
 
-function computeOutfitSpec(
-  spec: OutfitSpec,
-  options: FreeFightOutfitMenuOptions,
-): OutfitSpec {
-  if (options.wanderOptions) {
-    return {
-      ...spec,
-      equip: [
-        ...(spec.equip ?? []),
-        ...wanderer().getEquipment(options.wanderOptions),
-      ],
-    };
-  }
-  return spec;
-}
-
-function computeLocation(
-  options: FreeFightOutfitMenuOptions,
-): Location | undefined {
-  if (options.location) {
-    return options.location;
-  }
-  if (options.wanderOptions) {
-    return wanderer().getTarget(options.wanderOptions).location;
-  }
-  return undefined;
+function computeOutfitSpec(spec: OutfitSpec, location: Location): OutfitSpec {
+  return {
+    ...spec,
+    equip: [...(spec.equip ?? []), ...wanderer().getEquipment(location)],
+  };
 }
 
 function computeFamiliarMenuOptions(

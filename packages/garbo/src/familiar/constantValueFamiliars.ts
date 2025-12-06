@@ -23,7 +23,6 @@ import { effectExtenderValue } from "../potions";
 import { globalOptions } from "../config";
 import { canAdventureOrUnlock, unperidotableZones } from "garbo-lib";
 import { estimatedGarboTurns } from "../turns";
-import { knuckleboneValue } from "../resources";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -147,11 +146,6 @@ const standardFamiliars: ConstantValueFamiliar[] = [
         peaceTurkeyDropChance()) /
       2,
     worksOnFreeRun: true,
-  },
-  {
-    familiar: $familiar`Skeleton of Crimbo Past`,
-    // Rate of drop for dudes appears to be ~49% without cane
-    value: (mode) => knuckleboneValue(mode),
   },
 ];
 

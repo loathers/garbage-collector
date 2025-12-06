@@ -410,8 +410,14 @@ export class WandererManager {
     this.targets = {};
   }
 
-  getEquipment(wanderer: WanderDetails): Item[] {
-    return this.equipment.get(this.getTarget(wanderer).location) ?? [];
+  getEquipment(wanderer: Location | WanderDetails): Item[] {
+    return (
+      this.equipment.get(
+        wanderer instanceof Location
+          ? wanderer
+          : this.getTarget(wanderer).location,
+      ) ?? []
+    );
   }
 
   peridotMonster(wanderer: WanderDetails): Monster {

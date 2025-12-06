@@ -1,108 +1,35 @@
-import {
-  $familiar,
-  $item,
-  $location,
-  $phylum,
-  get,
-  have,
-  sum,
-  tuple,
-} from "libram";
-import { garboValue } from "../garboValue";
-import { globalOptions } from "../config";
-import { FamiliarMode } from "../familiar/lib";
-import { BonusEquipMode } from "../lib";
-import { appearanceRates, Location, Monster } from "kolmafia";
+import { $phylum, get, sum } from "libram";
+import { Location } from "kolmafia";
+import { AdventureTarget, adventureTargetToWeightedMap } from "../lib";
 
-export function knuckleboneValue(
-  mode: FamiliarMode | BonusEquipMode | Monster | Location,
-): number {
-  if (
-    get("_knuckleboneDrops", 0) >= 100 ||
-    !have($familiar`Skeleton of Crimbo Past`)
-  ) {
-    return 0;
+const BONE_PHYLA = new Map([
+  [$phylum`beast`, 0.3],
+  [$phylum`bug`, 0.1],
+  [$phylum`construct`, 0.1],
+  [$phylum`demon`, 0.4],
+  [$phylum`elf`, 0.5],
+  [$phylum`fish`, 0.2],
+  [$phylum`goblin`, 0.4],
+  [$phylum`hobo`, 0.5],
+  [$phylum`humanoid`, 0.4],
+  [$phylum`orc`, 0.8],
+  [$phylum`penguin`, 0.2],
+  [$phylum`pirate`, 0.65],
+]);
+
+export function expectedBones(target: AdventureTarget): number {
+  if (get("_knuckleboneDrops", 0) >= 100) return 0;
+  if (target instanceof Location) {
+    return expectedBones(adventureTargetToWeightedMap(target));
   }
-  const boneTradeValue = garboValue($item`knucklebone`);
-  return boneTradeValue * knuckleboneMultiplier(mode);
-}
-
-function knuckleboneMultiplier(
-  mode: FamiliarMode | BonusEquipMode | Monster | Location,
-): number {
-  if (mode === "barf") {
-    return valueLocation($location`Barf Mountain`);
+  if (target instanceof Map) {
+    return sum(
+      [...target.entries()],
+      ([monster, rate]) => rate * expectedBones(monster),
+    );
   }
 
-  if (mode === "target") {
-    return getPhylumMultiplier(globalOptions.target);
-  }
+  if (target.attributes.includes("SKELETON")) return 0.9;
 
-  if (mode instanceof Location) return valueLocation(mode);
-  if (mode instanceof Monster) return getPhylumMultiplier(mode);
-
-  return 0;
-}
-
-function valueLocation(loc: Location): number {
-  const rates = appearanceRates(loc); // { monsterName: % }
-
-  const entries = Object.entries(rates).map(([name, rate]) =>
-    tuple(Monster.get(name), rate),
-  );
-
-  return sum(entries, ([mon, rate]) =>
-    mon !== Monster.none ? (rate / 100) * getPhylumMultiplier(mon) : 0,
-  );
-}
-
-function getPhylumMultiplier(monster: Monster): number {
-  if (monster.attributes.includes("SKELETON")) {
-    return 0.9;
-  }
-
-  switch (monster.phylum) {
-    case $phylum`beast`:
-      return 0.3;
-    case $phylum`bug`:
-      return 0.1;
-    case $phylum`construct`:
-      return 0.1;
-    case $phylum`demon`:
-      return 0.4;
-    case $phylum`dude`:
-      return 0.5;
-    case $phylum`elemental`:
-      return 0.0;
-    case $phylum`elf`:
-      return 0.5;
-    case $phylum`fish`:
-      return 0.2;
-    case $phylum`goblin`:
-      return 0.4;
-    case $phylum`hobo`:
-      return 0.5;
-    case $phylum`horror`:
-      return 0.0;
-    case $phylum`humanoid`:
-      return 0.4;
-    case $phylum`mer-kin`:
-      return 0.0;
-    case $phylum`orc`:
-      return 0.8;
-    case $phylum`penguin`:
-      return 0.2;
-    case $phylum`pirate`:
-      return 0.65;
-    case $phylum`plant`:
-      return 0.0;
-    case $phylum`slime`:
-      return 0.0;
-    case $phylum`undead`:
-      return 0.4;
-    case $phylum`weird`:
-      return 0.2;
-    default:
-      return 0;
-  }
+  return BONE_PHYLA.get(target.phylum) ?? 0;
 }
