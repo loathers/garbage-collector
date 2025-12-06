@@ -23,6 +23,7 @@ import { effectExtenderValue } from "../potions";
 import { globalOptions } from "../config";
 import { canAdventureOrUnlock, unperidotableZones } from "garbo-lib";
 import { estimatedGarboTurns } from "../turns";
+import { knuckleboneValue } from "../resources";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -149,7 +150,8 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Skeleton of Crimbo Past`,
-    value: () => (get("_knuckleboneDrops", 0) < 100 ? 50_000 : 0),
+    // Rate of drop for dudes appears to be ~49% without cane
+    value: (mode) => knuckleboneValue(mode),
   },
 ];
 
