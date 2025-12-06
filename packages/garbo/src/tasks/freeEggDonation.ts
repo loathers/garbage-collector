@@ -1,10 +1,8 @@
 import {
   equippedItem,
-  getMonsters,
   haveEquipped,
   Item,
   itemType,
-  Location,
   Monster,
   myBuffedstat,
   myDaycount,
@@ -90,9 +88,6 @@ function findDonateMonster(
   if (incomplete.size === 0) return undefined;
   const maxMonsterId = $monster`time cop`.id; // Last Update Aug 2025
   const banned = new Set<Monster>([
-    ...Location.all()
-      .filter((x) => x.zone === "FantasyRealm")
-      .flatMap((x) => getMonsters(x)),
     ...$monsters
       .all()
       .filter(
@@ -101,7 +96,15 @@ function findDonateMonster(
           x.attributes.includes("NOCOPY") ||
           (onlyFree && !x.attributes.includes("FREE")),
       ),
-    ...$monsters`Source Agent, invader bullet`,
+    // Could have special handling
+    $monster`invader bullet`, // Instantly lose on third combat round
+    $monster`mining grobold`, // 90% hp physical damage on first and every 2 rounds
+    $monster`swamp monster`, // 100% hp stench damage every round
+    $monster`regular thief`, // Lose 100 turns of an effect every round unless stunned
+    $monster`spooky ghost`, // 100% hp spooky damage every round
+    $monster`crypt creeper`, // 40-60% hp damage per round, cannot be reduced
+    // Impossible, cannot use items or skills
+    ...$monsters`quadfaerie, cursed villager, plywood cultists, barrow wraith?, Source Agent`,
   ]);
   // Find the monster that needs the most eggs, adding in a small amount of variance as a tiebreaker
   const monster = CombatLoversLocket.findMonster(
