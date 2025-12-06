@@ -71,7 +71,7 @@ import {
   WanderDetails,
 } from "garbo-lib";
 
-import { Macro } from "../combat";
+import { getPreferredBarfMonster, Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
@@ -1284,7 +1284,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         myLocation() === $location`Barf Mountain`,
       completed: () => have($effect`Everything looks Beige`),
       outfit: () => barfOutfit({}),
-      do: () => CrepeParachute.fight($monster`garbage tourist`),
+      do: () => CrepeParachute.fight(getPreferredBarfMonster()),
       combat: new GarboStrategy(() => Macro.meatKill()),
       prepare: () =>
         !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),

@@ -4,6 +4,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $locations,
   $monster,
   clamp,
@@ -22,6 +23,7 @@ import { effectExtenderValue } from "../potions";
 import { globalOptions } from "../config";
 import { canAdventureOrUnlock, unperidotableZones } from "garbo-lib";
 import { estimatedGarboTurns } from "../turns";
+import { knuckleboneValue } from "../resources";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -54,23 +56,30 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Robortender`,
-    value: (mode) =>
-      Robortender.dropChance() *
-        garboValue(
-          Robortender.dropFrom(
-            mode === "barf"
-              ? $monster`garbage tourist`
-              : mode === "target"
-                ? globalOptions.target
-                : $monster.none,
-          ),
-        ) +
-      (Robortender.currentDrinks().includes($item`Feliz Navidad`)
-        ? felizValue() * 0.25
-        : 0) +
-      (Robortender.currentDrinks().includes($item`Newark`)
-        ? newarkValue() * 0.25
-        : 0),
+    value: (mode) => {
+      const olfactedMonster = get("olfactedMonster");
+      const olfactedIsFromBarf =
+        olfactedMonster &&
+        getMonsters($location`Barf Mountain`).includes(olfactedMonster);
+      return (
+        Robortender.dropChance() *
+          garboValue(
+            Robortender.dropFrom(
+              mode === "barf" && olfactedIsFromBarf
+                ? olfactedMonster
+                : mode === "target"
+                  ? globalOptions.target
+                  : $monster.none,
+            ),
+          ) +
+        (Robortender.currentDrinks().includes($item`Feliz Navidad`)
+          ? felizValue() * 0.25
+          : 0) +
+        (Robortender.currentDrinks().includes($item`Newark`)
+          ? newarkValue() * 0.25
+          : 0)
+      );
+    },
   },
   {
     familiar: $familiar`Twitching Space Critter`,
@@ -138,6 +147,11 @@ const standardFamiliars: ConstantValueFamiliar[] = [
         peaceTurkeyDropChance()) /
       2,
     worksOnFreeRun: true,
+  },
+  {
+    familiar: $familiar`Skeleton of Crimbo Past`,
+    // Rate of drop for dudes appears to be ~49% without cane
+    value: (mode) => knuckleboneValue(mode),
   },
 ];
 
