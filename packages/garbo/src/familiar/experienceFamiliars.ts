@@ -48,6 +48,19 @@ const experienceFamiliars: ExperienceFamiliar[] = [
     xpCost: 50,
     xpLimit: (mode: FamiliarMode) => mimicExperienceNeeded(mode === "barf"),
   },
+  {
+    familiar: $familiar`Cooler Yeti`,
+    used: () => {
+      return (
+        $familiar`Cooler Yeti`.experience >= 400 ||
+        globalOptions.ascend ||
+        !globalOptions.prefs.chargeYeti
+      );
+    },
+    // Vintage Smart Drink is 40 adventures
+    useValue: 40 * get("valueOfAdventure"),
+    baseExp: 0,
+  },
 ];
 
 function valueExperienceFamiliar(

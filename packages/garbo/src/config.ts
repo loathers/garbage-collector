@@ -219,6 +219,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_fightGlitch",
           help: "Set to true to fight the glitch season reward. You need certain skills, see relay for info.",
         }),
+        chargeYeti: Args.boolean({
+          setting: "garbo_chargeYeti",
+          help: "If set,, garbo will value Cooler Yeti familiar experience to help you nightcap more effectively",
+          default: false,
+        }),
         buyPass: Args.boolean({
           setting: "garbo_buyPass",
           help: "Set to true to buy a Dinsey day pass with FunFunds at the end of the day, if possible.",
