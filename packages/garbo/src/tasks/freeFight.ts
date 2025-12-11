@@ -17,6 +17,7 @@ import {
   itemAmount,
   itemDropsArray,
   itemType,
+  Location,
   mallPrice,
   Monster,
   myBuffedstat,
@@ -221,11 +222,14 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         : Macro.basicCombat(),
     ),
     outfit: () =>
-      freeFightOutfit({
-        back: have($item`protonic accelerator pack`)
-          ? $item`protonic accelerator pack`
-          : [],
-      }),
+      freeFightOutfit(
+        {
+          back: have($item`protonic accelerator pack`)
+            ? $item`protonic accelerator pack`
+            : [],
+        },
+        get("ghostLocation") ?? $location.none,
+      ),
     tentacle: true,
   },
   {
@@ -281,6 +285,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           )
           ? { familiar: $familiar`Robortender` }
           : {},
+        Location.none,
       ),
     tentacle: true,
   },
@@ -505,7 +510,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         clubs.find((i) => weaponHands(i) === 2) ??
         $item`seal-clubbing club`;
       retrieveItem(club);
-      return freeFightOutfit({ weapon: club });
+      return freeFightOutfit({ weapon: club }, Location.none);
     },
     combat: new GarboStrategy(() =>
       Macro.startCombat()
@@ -529,7 +534,11 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     completed: () => get("_brickoFights") >= 10,
     do: () => use($item`BRICKO ooze`),
     outfit: () =>
-      freeFightOutfit({}, { familiarOptions: { canChooseMacro: false } }),
+      freeFightOutfit(
+        {},
+        { familiarOptions: { canChooseMacro: false } },
+        Location.none,
+      ),
     combat: new GarboStrategy(() => Macro.basicCombat()),
     combatCount: () => clamp(10 - get("_brickoFights"), 0, 10),
     tentacle: false,
@@ -541,7 +550,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     do: () =>
       wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
         .location,
-    outfit: () => freeFightOutfit({ offhand: $item`Kramco Sausage-o-Matic™` }),
+    outfit: () =>
+      freeFightOutfit(
+        { offhand: $item`Kramco Sausage-o-Matic™` },
+        wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
+          .location,
+      ),
     choices: () =>
       wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
     combat: new GarboStrategy(() => Macro.basicCombat()),
@@ -569,6 +583,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
             allowAttackFamiliars: false,
           },
         },
+        $location`The Red Zeppelin`,
       ),
     acquire: [{ item: $item`glark cable` }],
     combatCount: () => clamp(5 - get("_glarkCableUses"), 0, 5),
@@ -666,16 +681,19 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     choices: () => ({ 1310: !have($item`God Lobster's Crown`) ? 1 : 2 }), // god lob equipment, then stats
     outfit: () =>
-      freeFightOutfit({
-        familiar: $familiar`God Lobster`,
-        bonuses: new Map<Item, number>([
-          [$item`God Lobster's Scepter`, 1000],
-          [$item`God Lobster's Ring`, 2000],
-          [$item`God Lobster's Rod`, 3000],
-          [$item`God Lobster's Robe`, 4000],
-          [$item`God Lobster's Crown`, 5000],
-        ]),
-      }),
+      freeFightOutfit(
+        {
+          familiar: $familiar`God Lobster`,
+          bonuses: new Map<Item, number>([
+            [$item`God Lobster's Scepter`, 1000],
+            [$item`God Lobster's Ring`, 2000],
+            [$item`God Lobster's Rod`, 3000],
+            [$item`God Lobster's Robe`, 4000],
+            [$item`God Lobster's Crown`, 5000],
+          ]),
+        },
+        Location.none,
+      ),
     combatCount: () => clamp(3 - get("_godLobsterFights"), 0, 3),
     tentacle: false,
   },
@@ -815,6 +833,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         have($familiar`Robortender`)
           ? { familiar: $familiar`Robortender` }
           : {},
+        Location.none,
       ),
     tentacle: true,
     combatCount: () =>
@@ -897,14 +916,17 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     tentacle: false,
     choices: { 1545: 1 }, // Take damage, get 0's
     outfit: () =>
-      freeFightOutfit({
-        bonuses: new Map<Item, number>([
-          [$item`familiar-in-the-middle wrapper`, garboValue($item`1`)],
-          [$item`retro floppy disk`, garboValue($item`1`)],
-          [$item`visual packet sniffer`, garboValue($item`1`) / 4], // unspaded droprate
-        ]),
-        shirt: $item`zero-trust tanktop`,
-      }),
+      freeFightOutfit(
+        {
+          bonuses: new Map<Item, number>([
+            [$item`familiar-in-the-middle wrapper`, garboValue($item`1`)],
+            [$item`retro floppy disk`, garboValue($item`1`)],
+            [$item`visual packet sniffer`, garboValue($item`1`) / 4], // unspaded droprate
+          ]),
+          shirt: $item`zero-trust tanktop`,
+        },
+        $location`Cyberzone 1`,
+      ),
     combat: new GarboStrategy(() =>
       Macro.if_(
         $monsters`firewall, ICE barrier, corruption quarantine, parental controls, null container, zombie process, botfly, network worm, ICE man, rat (remote access trojan)`,
