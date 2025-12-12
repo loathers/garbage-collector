@@ -221,7 +221,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
         }),
         chargeYeti: Args.boolean({
           setting: "garbo_chargeYeti",
-          help: "If set,, garbo will value Cooler Yeti familiar experience to help you nightcap more effectively",
+          help: "If set, garbo will value Cooler Yeti familiar experience to help you nightcap more effectively",
           default: false,
         }),
         buyPass: Args.boolean({
