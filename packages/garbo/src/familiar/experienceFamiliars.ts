@@ -60,7 +60,9 @@ const experienceFamiliars: ExperienceFamiliar[] = [
       );
     },
     // Vintage Smart Drink is 40 adventures
-    useValue: getAverageAdventures($item`vintage smart drink`) * get("valueOfAdventure"),
+    useValue:
+      getAverageAdventures($item`vintage smart drink`) *
+      get("valueOfAdventure"),
     baseExp: 0,
   },
 ];
