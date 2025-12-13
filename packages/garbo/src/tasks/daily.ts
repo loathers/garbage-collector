@@ -13,6 +13,7 @@ import {
   gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
+  haveEquipped,
   holiday,
   inebrietyLimit,
   isOnline,
@@ -60,6 +61,7 @@ import {
   SongBoom,
   SourceTerminal,
   sumNumbers,
+  unequip,
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
@@ -256,6 +258,11 @@ function pantogram(): void {
 
 function nepQuest(): void {
   if (!(get("neverendingPartyAlways") || get("_neverendingPartyToday"))) return;
+
+  // Do not enable hard mode
+  if (haveEquipped($item`PARTY HARD T-shirt`)) {
+    unequip($item`PARTY HARD T-shirt`);
+  }
 
   if (get("_questPartyFair") === "unstarted") {
     visitUrl(toUrl($location`The Neverending Party`));
@@ -747,8 +754,11 @@ const DailyTasks: GarboTask[] = [
       myInebriety() > inebrietyLimit() &&
       have($item`Drunkula's wineglass`) &&
       canEquip($item`Drunkula's wineglass`)
-        ? { offhand: $item`Drunkula's wineglass`, avoid: $items`June cleaver` }
-        : { avoid: $items`June cleaver` },
+        ? {
+            offhand: $item`Drunkula's wineglass`,
+            avoid: $items`June cleaver, PARTY HARD T-shirt`,
+          }
+        : { avoid: $items`June cleaver, PARTY HARD T-shirt` },
     spendsTurn: false,
   },
   {
