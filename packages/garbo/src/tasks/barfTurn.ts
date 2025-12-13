@@ -152,10 +152,11 @@ function createWandererOutfit(
   }
   if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
 
-  return freeFightOutfit(sourceOutfit.spec(), {
-    wanderOptions: undelay(details),
-    ...additionalOutfitOptions,
-  });
+  return freeFightOutfit(
+    sourceOutfit.spec(),
+    undelay(details),
+    additionalOutfitOptions,
+  );
 }
 
 function wanderTask(
