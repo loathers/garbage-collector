@@ -69,7 +69,7 @@ export function sandwormFamiliar(): Familiar {
   }
 
   const bonuses = [
-    ...menu($monster`Giant Sandworm`, {
+    ...menu($monster`giant sandworm`, {
       canChooseMacro: false,
     }),
     {

@@ -21,6 +21,7 @@ import {
   get,
   getModifier,
   maxBy,
+  SkeletonOfCrimboPast,
   sum,
   totalFamiliarWeight,
   ToyCupidBow,
@@ -400,6 +401,12 @@ function getSpecialFamiliarLimit({
 
     case $familiar`Crimbo Shrub`:
       return Math.ceil(estimatedGarboTurns() / 100);
+
+    case $familiar`Skeleton of Crimbo Past`:
+      return (
+        clamp(100 - get("_knuckleboneDrops"), 0, 100) /
+        SkeletonOfCrimboPast.expectedBones($location`Barf Mountain`)
+      );
 
     default:
       return 0;

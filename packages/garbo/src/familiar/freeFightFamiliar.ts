@@ -8,11 +8,14 @@ import {
   $element,
   $familiar,
   $item,
+  AdventureTarget,
+  adventureTargetToWeightedMap,
   clamp,
   findLeprechaunMultiplier,
   get,
   getModifier,
   have,
+  SkeletonOfCrimboPast,
   Snapper,
   sum,
 } from "libram";
@@ -30,12 +33,7 @@ import {
   timeToMeatify,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
-import {
-  AdventureTarget,
-  adventureTargetToWeightedMap,
-  gooseDroneEligible,
-  valueDrops,
-} from "../lib";
+import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
 import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
@@ -140,6 +138,16 @@ export function menu(
         worksOnFreeRun: true,
       });
     }
+  }
+
+  if (SkeletonOfCrimboPast.have()) {
+    familiarMenu.push({
+      familiar: $familiar`Skeleton of Crimbo Past`,
+      expectedValue: SkeletonOfCrimboPast.expectedBones(target),
+      leprechaunMultiplier: 0,
+      limit: "special",
+      worksOnFreeRun: false,
+    });
   }
 
   const meatFam = meatFamiliar();

@@ -56,7 +56,6 @@ import {
   spleenLimit,
   Stat,
   todayToString,
-  toMonster,
   totalFreeRests,
   toUrl,
   use,
@@ -102,7 +101,6 @@ import {
   sum,
   tryFindBanish,
   tryFindFreeRun,
-  tuple,
   uneffect,
 } from "libram";
 import { acquire } from "./acquire";
@@ -1205,20 +1203,6 @@ export function marginalFamWeightValue(): number {
 
 export function mainStatLevel(level: number): number {
   return (level - 1) ** 2 + 4;
-}
-
-export type AdventureTarget = Monster | Location | Map<Monster, number>;
-export function adventureTargetToWeightedMap(
-  target: AdventureTarget,
-): Map<Monster, number> {
-  if (target instanceof Monster) return new Map([[target, 1]]);
-  if (target instanceof Location)
-    {return new Map(
-      Object.entries(target).map(([monster, rate]) =>
-        tuple(toMonster(monster), rate),
-      ),
-    );}
-  return target;
 }
 
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T

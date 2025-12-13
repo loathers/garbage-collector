@@ -5,6 +5,7 @@ import {
   $item,
   $items,
   $location,
+  adventureTargetToWeightedMap,
   Delayed,
   get,
   Guzzlr,
@@ -14,17 +15,17 @@ import {
 import { WanderDetails } from "garbo-lib";
 
 import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
-import {
-  adventureTargetToWeightedMap,
-  BonusEquipMode,
-  MEAT_TARGET_MULTIPLIER,
-  sober,
-} from "../lib";
+import { BonusEquipMode, MEAT_TARGET_MULTIPLIER, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
-import { applyCheeseBonus, cleaverCheck, validateGarbageFoldable } from "./lib";
+import {
+  applyCheeseBonus,
+  cleaverCheck,
+  destinationToLocation,
+  validateGarbageFoldable,
+} from "./lib";
 import {
   adventuresPerSweat,
   mimicExperienceNeeded,
@@ -71,10 +72,7 @@ export function freeFightOutfit(
 ): Outfit {
   cleaverCheck();
 
-  const location =
-    destination instanceof Location
-      ? destination
-      : wanderer().getTarget(destination).location;
+  const location = destinationToLocation(destination);
 
   const computedSpec = computeOutfitSpec(spec, location);
 

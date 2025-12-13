@@ -28,6 +28,7 @@ import {
   $monster,
   $skill,
   $slot,
+  AdventureTarget,
   clamp,
   CrystalBall,
   get,
@@ -43,7 +44,6 @@ import {
 } from "libram";
 import { freeFightFamiliar } from "../familiar";
 import {
-  AdventureTarget,
   freeRunConstraints,
   getUsingFreeBunnyBanish,
   lastAdventureWasWeird,
