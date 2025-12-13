@@ -92,17 +92,26 @@ export type GarboFreeFightTask = Extract<
 const DEFAULT_FREE_FIGHT_TASK = {
   // GarboTask
   combat: new GarboStrategy(() => Macro.basicCombat()),
-  outfit: freeFightOutfit,
   spendsTurn: false,
   // GarboFreeFightTask
   combatCount: () => 1,
 };
 
 function freeFightTask(
-  fragment: Omit<GarboFreeFightTask, keyof typeof DEFAULT_FREE_FIGHT_TASK> &
-    Partial<Pick<GarboFreeFightTask, keyof typeof DEFAULT_FREE_FIGHT_TASK>>,
+  fragment: Omit<
+    GarboFreeFightTask,
+    keyof typeof DEFAULT_FREE_FIGHT_TASK | "outfit"
+  > &
+    Partial<
+      Pick<GarboFreeFightTask, keyof typeof DEFAULT_FREE_FIGHT_TASK | "outfit">
+    >,
 ) {
-  const fullTask = { ...DEFAULT_FREE_FIGHT_TASK, ...fragment };
+  const outfit = () =>
+    freeFightOutfit(
+      {},
+      fragment.do instanceof Location ? fragment.do : $location.none,
+    ); // Todo: account for wanderers
+  const fullTask = { outfit, ...DEFAULT_FREE_FIGHT_TASK, ...fragment };
   // Give us some padding
   return { ...fullTask, limit: { skip: 5 + fullTask.combatCount() } };
 }
