@@ -185,7 +185,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
       !!globalOptions.halt &&
       task.name.localeCompare(globalOptions.halt, undefined, {
         sensitivity: "base",
-      })
+      }) === 0
     ) {
       throw new Error(
         `Task halt requested for "${task.name}". Stopping Garbage Collector.`,
