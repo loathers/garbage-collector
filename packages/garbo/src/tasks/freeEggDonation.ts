@@ -4,7 +4,6 @@ import {
   haveEquipped,
   Item,
   itemType,
-  jumpChance,
   Monster,
   myBuffedstat,
   myDaycount,
@@ -106,12 +105,6 @@ function findDonateMonster(
       ),
     // Could have special handling
     $monster`mining grobold`, // 90% hp physical damage on first and every 2 rounds
-    // Lose 100 turns of an effect every round unless stunned, avoid without Shadow Noodles and 100% jump chance
-    ...$monsters`regular thief`.filter(
-      () =>
-        have($skill`Shadow Noodles`) &&
-        jumpChance($monster`regular thief`) >= 100,
-    ),
     // Impossible, cannot use items or skills
     ...$monsters`quadfaerie, cursed villager, plywood cultists, barrow wraith?, Source Agent`,
   ]);
@@ -143,9 +136,7 @@ function mimicEscape(): ActionSource | undefined {
 
 function shouldDelevel(monster: Monster): boolean {
   return (
-    !$monsters`invader bullet, swamp monster, regular thief, spooky ghost`.includes(
-      monster,
-    ) &&
+    !$monsters`invader bullet, swamp monster, spooky ghost`.includes(monster) &&
     (monster.attributes.includes("Scale:") ||
       myBuffedstat($stat`Moxie`) < monster.baseAttack + 10 ||
       (have($skill`Hero of the Half-Shell`) &&
@@ -196,13 +187,6 @@ function monsterEffects(monster: Monster): Effect[] {
     if (have($skill`Astral Shell`)) {
       effects.push($effect`Astral Shell`);
     }
-  } else if (monster === $monster`regular thief`) {
-    if (have($skill`Springy Fusilli`)) {
-      effects.push($effect`Springy Fusilli`);
-    }
-    if (have($skill`Walberg's Dim Bulb`)) {
-      effects.push($effect`Walberg's Dim Bulb`);
-    }
   }
   return effects;
 }
@@ -239,10 +223,6 @@ function mimicEggDonation(): GarboTask[] {
       combat: new GarboStrategy(
         () =>
           Macro.externalIf(shouldDelevel(donation.monster), Macro.delevel())
-            .externalIf(
-              donation.monster === $monster`regular thief`,
-              Macro.trySkill($skill`Shadow Noodles`),
-            )
             .externalIf(
               Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 0,
               Macro.trySkill($skill`%fn, lay an egg`),
