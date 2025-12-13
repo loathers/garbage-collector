@@ -143,7 +143,9 @@ export function menu(
   if (SkeletonOfCrimboPast.have()) {
     familiarMenu.push({
       familiar: $familiar`Skeleton of Crimbo Past`,
-      expectedValue: SkeletonOfCrimboPast.expectedBones(target),
+      expectedValue:
+        SkeletonOfCrimboPast.expectedBones(target) *
+        garboValue($item`knucklebone`),
       leprechaunMultiplier: 0,
       limit: "special",
       worksOnFreeRun: false,
