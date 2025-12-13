@@ -982,6 +982,29 @@ const BarfTurnTasks: GarboTask[] = [
   ),
   wanderTask(
     "freefight",
+    () => ({
+      weapon: $item`Sheriff pistol`,
+      acc1: $item`Sheriff badge`,
+      acc2: $item`Sheriff moustache`,
+    }),
+    {
+      name: "Assert your Authority",
+      ready: () =>
+        have($item`Sheriff pistol`) &&
+        have($item`Sheriff badge`) &&
+        have($item`Sheriff moustache`) &&
+        romanticMonsterImpossible(),
+      completed: () => get("_assertYourAuthorityCast") >= 3,
+      combat: new GarboStrategy(() =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .familiarActions()
+          .skill($skill`Assert your Authority`),
+      ),
+      sobriety: "sober",
+    },
+  ),
+  wanderTask(
+    "freefight",
     {},
     {
       name: "Pig Skinner Free-For-All",
