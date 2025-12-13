@@ -1079,11 +1079,13 @@ const freeFightSources = [
             : get("_questPartyFairQuest") === "dj"
               ? ["100 Meat Drop"]
               : [],
-        equip:
-          have($item`January's Garbage Tote`) &&
-          (!have($item`broken champagne bottle`) ||
-            get("garbageChampagneCharge") === 0) &&
-          (!have($item`deceased crimbo tree`) || get("garbageTreeCharge") === 0)
+        equip: get("_partyHard")
+          ? $items`PARTY HARD T-shirt`
+          : have($item`January's Garbage Tote`) &&
+              (!have($item`broken champagne bottle`) ||
+                get("garbageChampagneCharge") === 0) &&
+              (!have($item`deceased crimbo tree`) ||
+                get("garbageTreeCharge") === 0)
             ? $items`makeshift garbage shirt`
             : [],
       }),
@@ -1823,7 +1825,8 @@ export function deliverThesisIfAble(): void {
     thesisLocation = $location`Noob Cave`; // We can trivially always adventure here
   } else if (
     (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
-    questStep("_questPartyFair") < 999
+    questStep("_questPartyFair") < 999 &&
+    !get("_partyHard")
   ) {
     // Set up NEP if we haven't yet
     setNepQuestChoicesAndPrepItems();

@@ -1,9 +1,11 @@
 import { Familiar } from "kolmafia";
 import {
   $familiar,
+  $item,
   Delayed,
   findLeprechaunMultiplier,
   get,
+  getAverageAdventures,
   have,
   propertyTypes,
   undelay,
@@ -47,6 +49,21 @@ const experienceFamiliars: ExperienceFamiliar[] = [
     baseExp: 0,
     xpCost: 50,
     xpLimit: (mode: FamiliarMode) => mimicExperienceNeeded(mode === "barf"),
+  },
+  {
+    familiar: $familiar`Cooler Yeti`,
+    used: () => {
+      return (
+        $familiar`Cooler Yeti`.experience >= 400 ||
+        globalOptions.ascend ||
+        !globalOptions.prefs.chargeYeti
+      );
+    },
+    // Vintage Smart Drink is 40 adventures
+    useValue:
+      getAverageAdventures($item`vintage smart drink`) *
+      get("valueOfAdventure"),
+    baseExp: 0,
   },
 ];
 
