@@ -7,6 +7,7 @@ import {
   equippedItem,
   inebrietyLimit,
   Item,
+  Location,
   mallPrice,
   myClass,
   myInebriety,
@@ -39,6 +40,8 @@ import {
   estimatedGarboTurns,
   highMeatMonsterCount,
 } from "../turns";
+import { WanderDetails } from "garbo-lib";
+import { wanderer } from "../garboWanderer";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) =>
@@ -200,3 +203,10 @@ export function applyCheeseBonus(outfit: Outfit, mode: BonusEquipMode) {
   const bonus = cheeseBonus(mode);
   if (bonus > 0) outfit.modifier.push(`${bonus.toFixed(2)} stinky cheese`);
 }
+
+export const destinationToLocation = (
+  destination: Location | WanderDetails,
+): Location =>
+  destination instanceof Location
+    ? destination
+    : wanderer().getTarget(destination).location;

@@ -21,6 +21,7 @@ import {
   get,
   getModifier,
   maxBy,
+  SkeletonOfCrimboPast,
   sum,
   totalFamiliarWeight,
   ToyCupidBow,
@@ -264,9 +265,8 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
-  const fullMenu = menu({
+  const fullMenu = menu($location`Barf Mountain`, {
     canChooseMacro: true,
-    location: $location`Barf Mountain`,
     includeExperienceFamiliars: true,
     mode: "barf",
   }).flatMap((generalFamiliar) => {
@@ -401,6 +401,12 @@ function getSpecialFamiliarLimit({
 
     case $familiar`Crimbo Shrub`:
       return Math.ceil(estimatedGarboTurns() / 100);
+
+    case $familiar`Skeleton of Crimbo Past`:
+      return (
+        clamp(100 - get("_knuckleboneDrops"), 0, 100) /
+        SkeletonOfCrimboPast.expectedBones($location`Barf Mountain`)
+      );
 
     default:
       return 0;

@@ -2,19 +2,22 @@ import {
   Familiar,
   familiarWeight,
   inebrietyLimit,
-  Location,
   myInebriety,
 } from "kolmafia";
 import {
+  $element,
   $familiar,
   $item,
-  $location,
+  AdventureTarget,
+  adventureTargetToWeightedMap,
   clamp,
   findLeprechaunMultiplier,
   get,
   getModifier,
   have,
+  SkeletonOfCrimboPast,
   Snapper,
+  sum,
 } from "libram";
 import { canOpenRedPresent } from ".";
 import { garboValue } from "../garboValue";
@@ -37,7 +40,6 @@ import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
 
 export type FamiliarMenuOptions = Partial<{
   canChooseMacro: boolean;
-  location: Location;
   extraFamiliars: GeneralFamiliar[];
   excludeFamiliar: Familiar[];
   includeExperienceFamiliars: boolean;
@@ -47,9 +49,9 @@ export type FamiliarMenuOptions = Partial<{
 }>;
 
 export function menu(
+  target: AdventureTarget,
   {
     canChooseMacro = true,
-    location = $location`none`,
     extraFamiliars = [],
     excludeFamiliar = [],
     includeExperienceFamiliars = true,
@@ -64,6 +66,8 @@ export function menu(
     ...(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []),
     ...extraFamiliars,
   ];
+
+  const monsterRates = adventureTargetToWeightedMap(target);
 
   if (canChooseMacro && myInebriety() <= inebrietyLimit()) {
     if (timeToMeatify()) {
@@ -118,22 +122,32 @@ export function menu(
       });
     }
 
-    if (
-      location.zone === "Dinseylandfill" &&
-      have($familiar`Space Jellyfish`)
-    ) {
+    if (have($familiar`Space Jellyfish`)) {
       familiarMenu.push({
         familiar: $familiar`Space Jellyfish`,
-        expectedValue:
-          garboValue($item`stench jelly`) /
-          (get("_spaceJellyfishDrops") < 5
-            ? get("_spaceJellyfishDrops") + 1
-            : 20),
+        expectedValue: sum([...monsterRates.entries()], ([monster, rate]) =>
+          monster.defenseElement === $element`Stench`
+            ? (rate * garboValue($item`stench jelly`)) /
+              (get("_spaceJellyfishDrops") < 5
+                ? get("_spaceJellyfishDrops") + 1
+                : 20)
+            : 0,
+        ),
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: true,
       });
     }
+  }
+
+  if (SkeletonOfCrimboPast.have()) {
+    familiarMenu.push({
+      familiar: $familiar`Skeleton of Crimbo Past`,
+      expectedValue: SkeletonOfCrimboPast.expectedBones(target),
+      leprechaunMultiplier: 0,
+      limit: "special",
+      worksOnFreeRun: false,
+    });
   }
 
   const meatFam = meatFamiliar();
@@ -185,6 +199,7 @@ export function getAllJellyfishDrops(): {
 }
 
 export function freeFightFamiliarData(
+  target: AdventureTarget,
   options: Partial<FamiliarMenuOptions> = {},
 ): GeneralFamiliar {
   const usedTcbFamiliars = getUsedTcbFamiliars();
@@ -202,7 +217,7 @@ export function freeFightFamiliarData(
     return aValue > bValue ? a : b;
   };
 
-  return menu(options).reduce(compareFamiliars, {
+  return menu(target, options).reduce(compareFamiliars, {
     familiar: $familiar.none,
     expectedValue: 0,
     leprechaunMultiplier: 0,
@@ -211,6 +226,9 @@ export function freeFightFamiliarData(
   });
 }
 
-export function freeFightFamiliar(options: FamiliarMenuOptions = {}): Familiar {
-  return freeFightFamiliarData(options).familiar;
+export function freeFightFamiliar(
+  target: AdventureTarget,
+  options: FamiliarMenuOptions = {},
+): Familiar {
+  return freeFightFamiliarData(target, options).familiar;
 }

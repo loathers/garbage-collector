@@ -6,6 +6,7 @@ import {
   floor,
   getWorkshed,
   haveEquipped,
+  Location,
   mallPrice,
   myAscensions,
   myLightning,
@@ -86,7 +87,7 @@ function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
 }
 
 function sandwormOutfit(spec: OutfitSpec = {}): Outfit {
-  return freeFightOutfit(sandwormSpec(spec));
+  return freeFightOutfit(sandwormSpec(spec), Location.none);
 }
 
 const DEFAULT_SANDWORM_TASK = {

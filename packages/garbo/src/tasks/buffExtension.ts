@@ -92,7 +92,8 @@ const BuffExtensionTasks: GarboTask[] = [
         "Failed to freerun while attempting to reach Such Great Heights for buff extension",
       ),
     ),
-    outfit: () => freeFightOutfit(toSpec(getRun())),
+    outfit: () =>
+      freeFightOutfit(toSpec(getRun()), $location`The Hidden Temple`),
     choices: { 582: 1, 579: 3 },
     spendsTurn: false,
     limit: { tries: 5 }, // Stone-faced should immediately get us the Fitting In adventure. If we try this many times, something has gone wrong

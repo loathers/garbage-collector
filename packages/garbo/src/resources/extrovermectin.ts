@@ -28,6 +28,7 @@ import {
   $monster,
   $skill,
   $slot,
+  AdventureTarget,
   clamp,
   CrystalBall,
   get,
@@ -207,7 +208,7 @@ export function saberCrateIfSafe(): void {
   do {
     useFamiliar(
       run.constraints.familiar?.() ??
-        freeFightFamiliar({ canChooseMacro: false }),
+        freeFightFamiliar($location`Noob Cave`, { canChooseMacro: false }),
     );
     run.constraints.preparation?.();
     new Requirement([], {
@@ -290,7 +291,7 @@ function initializeCrates(): void {
       // Crank up ML to make sure the crate survives several rounds; we may have some passive damage
       useFamiliar(
         run.constraints.familiar?.() ??
-          freeFightFamiliar({ canChooseMacro: false }),
+          freeFightFamiliar($location`Noob Cave`, { canChooseMacro: false }),
       );
       run.constraints.preparation?.();
       new Requirement(["100 Monster Level"], {
@@ -315,7 +316,9 @@ function initializeCrates(): void {
       if (run === possibleBanish && !have($skill`CLEESH`)) {
         useFamiliar(
           run.constraints.familiar?.() ??
-            freeFightFamiliar({ canChooseMacro: false }),
+            freeFightFamiliar($location`The Haunted Kitchen`, {
+              canChooseMacro: false,
+            }),
         );
         run.constraints.preparation?.();
         new Requirement([], {
@@ -388,7 +391,7 @@ const combatItem = (item: Item, maxPrice?: number): Banish => ({
   prepare: () => acquire(1, item, maxPrice ?? MAX_BANISH_PRICE), // put a sanity ceiling of 50k on the banish
 });
 
-function springKickBanish(): Banish {
+function springKickBanish(target: AdventureTarget): Banish {
   const run =
     tryFindFreeRunOrBanish(
       freeRunConstraints({ equip: $items`spring shoes` }),
@@ -401,7 +404,7 @@ function springKickBanish(): Banish {
     prepare: () => {
       useFamiliar(
         run.constraints.familiar?.() ??
-          freeFightFamiliar({
+          freeFightFamiliar(target, {
             canChooseMacro: false,
             allowAttackFamiliars: false,
           }),
@@ -499,7 +502,7 @@ function iceHouseAllowed(): boolean {
 function banishBunny(): void {
   const banishes = [
     ...longBanishes,
-    springKickBanish(),
+    springKickBanish($location`The Dire Warren`),
     ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
   ].filter((b) => b.available());
 

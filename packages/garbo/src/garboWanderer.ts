@@ -19,7 +19,7 @@ export function wanderer(): WandererManager {
       effectValue,
       prioritizeCappingGuzzlr: get("garbo_prioritizeCappingGuzzlr", false),
       freeFightExtraValue: (location: Location) =>
-        freeFightFamiliarData({ location }).expectedValue,
+        freeFightFamiliarData(location).expectedValue,
       digitzesRemaining: digitizedMonstersRemainingForTurns,
       plentifulMonsters: [
         globalOptions.target,

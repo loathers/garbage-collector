@@ -147,6 +147,7 @@ import {
   monsterManuelAvailable,
   propertyManager,
   questStep,
+  RequireAtLeastOne,
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
@@ -159,6 +160,7 @@ import {
 import { freeFightMood, meatMood } from "./mood";
 import {
   freeFightOutfit,
+  FreeFightOutfitMenuOptions,
   magnifyingGlass,
   meatTargetOutfit,
   toSpec,
@@ -330,7 +332,7 @@ function startWandererCounter() {
         print("You do not have gregs active, so this is a regular free run.");
         run = tryFindFreeRunOrBanish(freeRunConstraints()) ?? ltbRun();
         run.constraints.preparation?.();
-        freeFightOutfit(toSpec(run)).dress();
+        freeFightOutfit(toSpec(run), $location`The Haunted Kitchen`).dress();
       }
       garboAdventure(
         $location`The Haunted Kitchen`,
@@ -353,6 +355,8 @@ function pygmyOptions(equip: Item[] = []): FreeFightOptions {
       bonuses: new Map([[$item`garbage sticker`, 100], ...magnifyingGlass()]),
     }),
     macroAllowsFamiliarActions: false,
+    location: $location`The Hidden Bowling Alley`,
+    monster: $monster`drunk pygmy`,
   };
 }
 
@@ -388,13 +392,17 @@ function familiarSpec(underwater: boolean, fight: CopyTargetFight): OutfitSpec {
   if (isFreeAndCopyable(globalOptions.target)) {
     if (fight.gregariousReplace) {
       return {
-        familiar: freeFightFamiliar({
+        familiar: freeFightFamiliar(fight.location ?? globalOptions.target, {
           mode: "target",
           excludeFamiliar: [$familiar`Red-Nosed Snapper`],
         }),
       };
     }
-    return { familiar: freeFightFamiliar({ mode: "target" }) };
+    return {
+      familiar: freeFightFamiliar(fight.location ?? globalOptions.target, {
+        mode: "target",
+      }),
+    };
   }
 
   return { familiar: meatFamiliar() };
@@ -574,8 +582,11 @@ type FreeFightOptions = {
   // actions like meatifying matter, or crimbo shrub red raying.
   // Defaults to true.
   macroAllowsFamiliarActions?: boolean;
-  wandererOptions?: WanderDetails;
-};
+} & RequireAtLeastOne<{
+  location: Delayed<Location>;
+  monster: Delayed<Monster>;
+  wandererDetails: WanderDetails;
+}>;
 
 let consecutiveNonFreeFights = 0;
 class FreeFight {
@@ -588,12 +599,27 @@ class FreeFight {
     available: () => number | boolean,
     run: () => void,
     tentacle: boolean,
-    options: FreeFightOptions = {},
+    options: FreeFightOptions,
   ) {
     this.available = available;
     this.run = run;
     this.tentacle = tentacle;
     this.options = options;
+  }
+
+  destination(): Location | WanderDetails {
+    return (
+      this.options.wandererDetails ??
+      undelay(this.options.location) ??
+      $location.none
+    );
+  }
+
+  outfit(spec: OutfitSpec, additonalOptions: FreeFightOutfitMenuOptions = {}) {
+    return freeFightOutfit(spec, this.destination(), {
+      ...additonalOptions,
+      monsterTarget: undelay(this.options.monster),
+    });
   }
 
   isAvailable(): boolean {
@@ -618,9 +644,7 @@ class FreeFight {
       const noncombat = !!this.options?.noncombat?.();
       const effects = this.options.effects?.() ?? [];
       freeFightMood(...effects).execute();
-      freeFightOutfit(this.getSpec(noncombat), {
-        wanderOptions: this.options.wandererOptions,
-      }).dress();
+      this.outfit(this.getSpec(noncombat)).dress();
       safeRestore();
       const curTurncount = myTurncount();
       withMacro(Macro.basicCombat(), this.run);
@@ -643,7 +667,7 @@ class FreeRunFight extends FreeFight {
   constructor(
     available: () => number | boolean,
     run: (runSource: ActionSource) => void,
-    options: FreeFightOptions = {},
+    options: FreeFightOptions,
     freeRunPicker: FindActionSourceConstraints = {},
   ) {
     super(available, () => null, false, {
@@ -677,7 +701,7 @@ class FreeRunFight extends FreeFight {
         new Error(`Failed to build outfit from ${JSON.stringify(initialSpec)}`),
       );
       mergingOutfit.equip(toSpec(runSource));
-      freeFightOutfit(mergingOutfit.spec(), {
+      this.outfit(mergingOutfit.spec(), {
         familiarOptions: { mode: "run" },
       }).dress();
       freeFightMood(...(this.options.effects?.() ?? []));
@@ -857,6 +881,7 @@ const freeFightSources = [
       },
       effects: () => $effects`Transpondent`,
       macroAllowsFamiliarActions: false,
+      location: $location`Domed City of Grimacia`,
     },
   ),
 
@@ -893,6 +918,8 @@ const freeFightSources = [
           sum(banishers, mallPrice) / 11
         );
       },
+      location: $location`The Hidden Bowling Alley`,
+      monster: $monster`drunk pygmy`,
     },
   ),
 
@@ -1060,6 +1087,7 @@ const freeFightSources = [
             ? $items`makeshift garbage shirt`
             : [],
       }),
+      location: $location`The Neverending Party`,
     },
   ),
 
@@ -1081,6 +1109,7 @@ const freeFightSources = [
     {
       spec: { equip: $items`The Jokester's gun` },
       macroAllowsFamiliarActions: false,
+      location: $location`Lair of the Ninja Snowmen`,
     },
   ),
 
@@ -1107,6 +1136,8 @@ const freeFightSources = [
     {
       spec: { equip: $items`The Jokester's gun` },
       macroAllowsFamiliarActions: false,
+      location: $location`The Haiku Dungeon`,
+      monster: $monster`amateur ninja`,
     },
   ),
   new FreeFight(
@@ -1193,6 +1224,9 @@ const freeFightSources = [
       }
     },
     true,
+    {
+      location: $location`Shadow Rift`,
+    },
   ),
 ];
 
@@ -1222,6 +1256,9 @@ const priorityFreeRunFightSources = [
         modifier: ["ML 100 Max", "-Familiar Weight"],
         avoid: $items`Drunkula's wineglass`,
       },
+      location: canAdventure($location`Barf Mountain`)
+        ? $location`Barf Mountain`
+        : $location`The Fun-Guy Mansion`,
     },
   ),
 ];
@@ -1241,6 +1278,7 @@ function latteFight(
     },
     {
       spec: { equip: $items`latte lovers member's mug` },
+      location: Latte.locationOf(ingredient),
     },
     freeRunConstraints({ equip: $items`latte lovers member's mug` }),
   );
@@ -1317,6 +1355,12 @@ const freeRunFightSources = [
         spec.modifier = zone?.maximize ?? [];
         return spec;
       },
+      location: () => getBestItemStealZone()?.location ?? $location.none,
+      monster: () => {
+        const monsterTarget = getBestItemStealZone()?.monster;
+        if (!monsterTarget) return $monster.none;
+        return Array.isArray(monsterTarget) ? monsterTarget[0] : monsterTarget;
+      },
     },
   ),
   new FreeRunFight(
@@ -1332,6 +1376,7 @@ const freeRunFightSources = [
     },
     {
       spec: { familiar: $familiar`Space Jellyfish` },
+      location: getStenchLocation,
     },
   ),
   new FreeRunFight(
@@ -1356,6 +1401,7 @@ const freeRunFightSources = [
     },
     {
       spec: { familiar: $familiar`Space Jellyfish` },
+      location: getStenchLocation,
     },
   ),
   new FreeRunFight(
@@ -1385,6 +1431,7 @@ const freeRunFightSources = [
         familiar: $familiar`Space Jellyfish`,
         equip: $items`Powerful Glove`,
       },
+      location: getStenchLocation,
     },
   ),
   new FreeFight(
@@ -1407,6 +1454,7 @@ const freeRunFightSources = [
     false,
     {
       noncombat: () => true,
+      location: $location`Gingerbread Civic Center`,
     },
   ),
   new FreeRunFight(
@@ -1429,6 +1477,7 @@ const freeRunFightSources = [
     },
     {
       spec: { bonuses: new Map([[$item`carnivorous potted plant`, 100]]) },
+      location: $location`Gingerbread Civic Center`,
     },
   ),
   new FreeFight(
@@ -1447,6 +1496,7 @@ const freeRunFightSources = [
     false,
     {
       noncombat: () => true,
+      location: $location`Gingerbread Train Station`,
     },
   ),
   new FreeRunFight(
@@ -1473,6 +1523,7 @@ const freeRunFightSources = [
     },
     {
       spec: { bonuses: new Map([[$item`carnivorous potted plant`, 100]]) },
+      location: $location`Gingerbread Civic Center`,
     },
   ),
   new FreeFight(
@@ -1496,6 +1547,7 @@ const freeRunFightSources = [
     false,
     {
       noncombat: () => true,
+      location: () => bestMidnightAvailable().location,
     },
   ),
   // Try for an ultra-rare with mayfly runs and pickpocket if we have a manuel to detect monster hp ;)
@@ -1548,10 +1600,13 @@ const freeRunFightSources = [
         const spec: OutfitSpec = {
           equip: $items`mayfly bait necklace`,
           bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
-          familiar: freeFightFamiliar({
-            allowAttackFamiliars: false,
-            mode: "run",
-          }),
+          familiar: freeFightFamiliar(
+            $location`Cobb's Knob Menagerie, Level 1`,
+            {
+              allowAttackFamiliars: false,
+              mode: "run",
+            },
+          ),
         };
         if (!canPickPocket && bestPickpocketItem) {
           spec.equip?.push(bestPickpocketItem);
@@ -1562,6 +1617,7 @@ const freeRunFightSources = [
 
         return spec;
       },
+      location: $location`Cobb's Knob Menagerie, Level 1`,
     },
   ),
   // Try for mini-hipster\goth kid free fights with any remaining non-familiar free runs
@@ -1598,7 +1654,7 @@ const freeRunFightSources = [
           return { familiar: $familiar`Artistic Goth Kid` };
         }
       },
-      wandererOptions: "backup",
+      wandererDetails: "backup",
     },
   ),
   // Try to accelerate the shadow nc, if you're able to do a quest
@@ -1610,6 +1666,9 @@ const freeRunFightSources = [
       get("encountersUntilSRChoice") > 0,
     (runSource: ActionSource) =>
       garboAdventure(bestShadowRift(), runSource.macro),
+    {
+      location: bestShadowRift,
+    },
   ),
   // Try for an ultra-rare with mayfly runs if we didn't have a manuel ;)
   new FreeRunFight(
@@ -1633,6 +1692,7 @@ const freeRunFightSources = [
         equip: $items`mayfly bait necklace`,
         bonuses: new Map([[$item`carnivorous potted plant`, 100]]),
       },
+      location: $location`Cobb's Knob Menagerie, Level 1`,
     },
   ),
 ];
@@ -1754,12 +1814,6 @@ function thesisReady(): boolean {
 
 export function deliverThesisIfAble(): void {
   if (!thesisReady()) return;
-  freeFightOutfit({
-    modifier: ["100 Muscle"],
-    familiar: $familiar`Pocket Professor`,
-  }).dress();
-  safeRestore();
-
   const requiredThesisHP = 1296;
 
   let thesisLocation = $location`Uncle Gator's Country Fun-Time Liquid Waste Sluice`;
@@ -1785,6 +1839,16 @@ export function deliverThesisIfAble(): void {
     thesisLocation = $location`Hamburglaris Shield Generator`;
     requiredMuscle = requiredThesisHP / 0.75 - 1;
   }
+
+  freeFightOutfit(
+    {
+      modifier: ["100 Muscle"],
+      familiar: $familiar`Pocket Professor`,
+    },
+    thesisLocation,
+    { monsterTarget: molemanReady() ? $monster`Moleman` : undefined },
+  ).dress();
+  safeRestore();
 
   if (
     myBuffedstat($stat`Muscle`) < requiredMuscle &&
@@ -1817,7 +1881,9 @@ export function doSausage(): void {
   if (!kramcoGuaranteed()) {
     return;
   }
-  freeFightOutfit({ equip: $items`Kramco Sausage-o-Matic™` }).dress();
+  freeFightOutfit({ equip: $items`Kramco Sausage-o-Matic™` }, "wanderer", {
+    monsterTarget: $monster`sausage goblin`,
+  }).dress();
   const currentSausages = get("_sausageFights");
   do {
     const targetLocation = wanderer().getTarget("wanderer").location;
@@ -1827,7 +1893,8 @@ export function doSausage(): void {
       {
         equip: $items`Kramco Sausage-o-Matic™`,
       },
-      { wanderOptions: "wanderer" },
+      "wanderer",
+      { monsterTarget: $monster`sausage goblin` },
     ).dress();
     garboAdventureAuto(
       targetLocation,
@@ -1850,7 +1917,10 @@ function doGhost() {
   const ghostLocation = get("ghostLocation");
   if (!ghostLocation) return;
   propertyManager.setChoices(wanderer().getChoices(ghostLocation));
-  freeFightOutfit({ equip: $items`protonic accelerator pack` }).dress();
+  freeFightOutfit(
+    { equip: $items`protonic accelerator pack` },
+    ghostLocation,
+  ).dress();
   let currentTurncount;
   do {
     currentTurncount = myTurncount();
@@ -2059,7 +2129,7 @@ function voidMonster(): void {
     {
       equip: $items`cursed magnifying glass`,
     },
-    { wanderOptions: "wanderer" },
+    "wanderer",
   ).dress();
   const targetLocation = wanderer().getTarget("wanderer").location;
   propertyManager.setChoices(wanderer().getChoices(targetLocation));
@@ -2113,10 +2183,14 @@ function killRobortCreaturesForFree() {
       setChoice(855, 4);
       garboAdventure($location`The Copperhead Club`, Macro.abort());
     }
-    freeFightOutfit({
-      ...freeKill.spec,
-      familiar: $familiar`Robortender`,
-    }).dress();
+    freeFightOutfit(
+      {
+        ...freeKill.spec,
+        familiar: $familiar`Robortender`,
+      },
+      $location`The Copperhead Club`,
+      { monsterTarget: $monster`Mob Penguin Capo` },
+    ).dress();
     withMacro(
       freeKill.macro instanceof Item
         ? Macro.item(freeKill.macro)
@@ -2149,7 +2223,7 @@ function killRobortCreaturesForFree() {
     );
     const familiar =
       regularTarget === roboTarget
-        ? freeFightFamiliar({
+        ? freeFightFamiliar(regularTarget, {
             canChooseMacro: roboTarget.attributes.includes("FREE"),
           })
         : $familiar`Robortender`;
@@ -2158,6 +2232,8 @@ function killRobortCreaturesForFree() {
       roboTarget.attributes.includes("FREE")
         ? { familiar }
         : { ...freeKill.spec, familiar },
+      $location.none,
+      { monsterTarget: roboTarget },
     ).dress();
     withMacro(
       isFree(roboTarget)
@@ -2249,7 +2325,7 @@ function runShadowRiftTurn(): void {
     have($effect`Shadow Affinity`) &&
     get("encountersUntilSRChoice") >= 2
   ) {
-    freeFightOutfit({ shirt: $item`Jurassic Parka` }).dress();
+    freeFightOutfit({ shirt: $item`Jurassic Parka` }, bestShadowRift()).dress();
     cliExecute("parka spikolodon");
     const macro = Macro.skill($skill`Launch spikolodon spikes`).basicCombat();
     garboAdventureAuto(bestShadowRift(), macro);
