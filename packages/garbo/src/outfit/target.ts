@@ -92,10 +92,6 @@ export function meatTargetOutfit(
     outfit.setModes({ jillcandle: "ultraviolet" });
   }
 
-  if (outfit.familiar === $familiar`Skeleton of Crimbo Past`) {
-    outfit.equip($item`small peppermint-flavored sugar walking crook`);
-  }
-
   useUPCsIfNeeded(outfit);
 
   outfit.addBonuses(

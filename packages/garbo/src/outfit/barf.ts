@@ -138,10 +138,6 @@ export function computeBarfOutfit(
     outfit.modifier.push(`${famExpValue} Familiar Experience`);
   }
 
-  if (outfit.familiar === $familiar`Skeleton of Crimbo Past`) {
-    outfit.equip($item`small peppermint-flavored sugar walking crook`);
-  }
-
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
 
   outfit.modifier.push(

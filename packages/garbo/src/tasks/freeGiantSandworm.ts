@@ -77,10 +77,6 @@ function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
     outfit.setModes({ jillcandle: "disco" });
   }
 
-  if (outfit.familiar === $familiar`Skeleton of Crimbo Past`) {
-    outfit.equip($item`small peppermint-flavored sugar walking crook`);
-  }
-
   outfit.equip($item`toy Cupid bow`);
 
   return outfit.spec();
