@@ -28,7 +28,6 @@ import {
   $monster,
   $skill,
   $slot,
-  AdventureTarget,
   clamp,
   CrystalBall,
   get,
@@ -55,6 +54,7 @@ import {
 import { garboAdventure, Macro } from "../combat";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
+import { AdventureArgument } from "../garboWanderer";
 
 const crate = $monster`crate`;
 
@@ -391,7 +391,7 @@ const combatItem = (item: Item, maxPrice?: number): Banish => ({
   prepare: () => acquire(1, item, maxPrice ?? MAX_BANISH_PRICE), // put a sanity ceiling of 50k on the banish
 });
 
-function springKickBanish(target: AdventureTarget): Banish {
+function springKickBanish(adventure: AdventureArgument): Banish {
   const run =
     tryFindFreeRunOrBanish(
       freeRunConstraints({ equip: $items`spring shoes` }),
@@ -404,7 +404,7 @@ function springKickBanish(target: AdventureTarget): Banish {
     prepare: () => {
       useFamiliar(
         run.constraints.familiar?.() ??
-          freeFightFamiliar(target, {
+          freeFightFamiliar(adventure, {
             canChooseMacro: false,
             allowAttackFamiliars: false,
           }),

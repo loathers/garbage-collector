@@ -1,10 +1,17 @@
-import { getMonsters, Location } from "kolmafia";
-import { WandererManager } from "garbo-lib";
+import { getMonsters, Location, Monster } from "kolmafia";
+import { WanderDetails, WandererManager } from "garbo-lib";
 
 import { globalOptions } from "./config";
 import { freeFightFamiliarData } from "./familiar/freeFightFamiliar";
 import { estimatedGarboTurns } from "./turns";
-import { $item, $location, $monsters, get, have } from "libram";
+import {
+  $item,
+  $location,
+  $monsters,
+  AdventureTarget,
+  get,
+  have,
+} from "libram";
 import { garboValue } from "./garboValue";
 import { effectValue } from "./potions";
 import { digitizedMonstersRemainingForTurns } from "./lib";
@@ -33,4 +40,24 @@ export function wanderer(): WandererManager {
     });
   }
   return _wanderer;
+}
+
+export type Destination = Location | WanderDetails;
+export const destinationToLocation = (destination: Destination): Location =>
+  destination instanceof Location
+    ? destination
+    : wanderer().getTarget(destination).location;
+export type Adventure = { target: AdventureTarget; location: Location };
+export type AdventureArgument =
+  | Monster
+  | Destination
+  | { target: Monster; location: Destination };
+export function toAdventure(arg: AdventureArgument): Adventure {
+  if (arg instanceof Monster) return { target: arg, location: $location.none };
+  if (arg instanceof Location) return { target: arg, location: arg };
+  if (typeof arg === "string" || !("target" in arg)) {
+    const location = wanderer().getTarget(arg).location;
+    return { target: location, location };
+  }
+  return { target: arg.target, location: destinationToLocation(arg.location) };
 }

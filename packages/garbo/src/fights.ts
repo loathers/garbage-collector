@@ -616,10 +616,16 @@ class FreeFight {
   }
 
   outfit(spec: OutfitSpec, additonalOptions: FreeFightOutfitMenuOptions = {}) {
-    return freeFightOutfit(spec, this.destination(), {
-      ...additonalOptions,
-      monsterTarget: undelay(this.options.monster),
-    });
+    return freeFightOutfit(
+      spec,
+      this.options.monster
+        ? {
+            location: this.destination(),
+            target: undelay(this.options.monster),
+          }
+        : this.destination(),
+      additonalOptions,
+    );
   }
 
   isAvailable(): boolean {
@@ -1848,8 +1854,7 @@ export function deliverThesisIfAble(): void {
       modifier: ["100 Muscle"],
       familiar: $familiar`Pocket Professor`,
     },
-    thesisLocation,
-    { monsterTarget: molemanReady() ? $monster`Moleman` : undefined },
+    molemanReady() ? $monster`Moleman` : thesisLocation,
   ).dress();
   safeRestore();
 
@@ -1884,9 +1889,10 @@ export function doSausage(): void {
   if (!kramcoGuaranteed()) {
     return;
   }
-  freeFightOutfit({ equip: $items`Kramco Sausage-o-Matic™` }, "wanderer", {
-    monsterTarget: $monster`sausage goblin`,
-  }).dress();
+  freeFightOutfit(
+    { equip: $items`Kramco Sausage-o-Matic™` },
+    { location: "wanderer", target: $monster`sausage goblin` },
+  ).dress();
   const currentSausages = get("_sausageFights");
   do {
     const targetLocation = wanderer().getTarget("wanderer").location;
@@ -1896,8 +1902,7 @@ export function doSausage(): void {
       {
         equip: $items`Kramco Sausage-o-Matic™`,
       },
-      "wanderer",
-      { monsterTarget: $monster`sausage goblin` },
+      { location: "wanderer", target: $monster`sausage goblin` },
     ).dress();
     garboAdventureAuto(
       targetLocation,
@@ -2191,8 +2196,10 @@ function killRobortCreaturesForFree() {
         ...freeKill.spec,
         familiar: $familiar`Robortender`,
       },
-      $location`The Copperhead Club`,
-      { monsterTarget: $monster`Mob Penguin Capo` },
+      {
+        location: $location`The Copperhead Club`,
+        target: $monster`Mob Penguin Capo`,
+      },
     ).dress();
     withMacro(
       freeKill.macro instanceof Item
@@ -2235,8 +2242,7 @@ function killRobortCreaturesForFree() {
       roboTarget.attributes.includes("FREE")
         ? { familiar }
         : { ...freeKill.spec, familiar },
-      $location.none,
-      { monsterTarget: roboTarget },
+      roboTarget,
     ).dress();
     withMacro(
       isFree(roboTarget)

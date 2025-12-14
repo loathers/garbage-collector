@@ -17,7 +17,6 @@ import {
   itemAmount,
   itemDropsArray,
   itemType,
-  Location,
   mallPrice,
   Monster,
   myBuffedstat,
@@ -77,9 +76,14 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
-import { doCandyTrick, doingGregFight, shouldAugustCast } from "../resources";
+import {
+  doCandyTrick,
+  doingGregFight,
+  ghostAdventure,
+  shouldAugustCast,
+} from "../resources";
 import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
-import { wanderer } from "../garboWanderer";
+import { AdventureArgument, wanderer } from "../garboWanderer";
 
 export type GarboFreeFightTask = Extract<
   GarboTask,
@@ -104,13 +108,11 @@ function freeFightTask(
   > &
     Partial<
       Pick<GarboFreeFightTask, keyof typeof DEFAULT_FREE_FIGHT_TASK | "outfit">
-    >,
+    > & {
+      adventure: Delayed<AdventureArgument>;
+    },
 ) {
-  const outfit = () =>
-    freeFightOutfit(
-      {},
-      fragment.do instanceof Location ? fragment.do : $location.none,
-    ); // Todo: account for wanderers
+  const outfit = () => freeFightOutfit({}, undelay(fragment.adventure)); // Todo: account for wanderers
   const fullTask = { outfit, ...DEFAULT_FREE_FIGHT_TASK, ...fragment };
   // Give us some padding
   return { ...fullTask, limit: { skip: 5 + fullTask.combatCount() } };
@@ -138,7 +140,7 @@ function sealsAvailable(): number {
   return Math.min(max, available);
 }
 
-const tearawayPantsFreeFightOutfit = (location: Location) => () =>
+const tearawayPantsFreeFightOutfit = (adventure: AdventureArgument) => () =>
   freeFightOutfit(
     {
       bonuses: new Map<Item, number>([
@@ -148,7 +150,7 @@ const tearawayPantsFreeFightOutfit = (location: Location) => () =>
         ],
       ]),
     },
-    location,
+    adventure,
     { familiarOptions: { canChooseMacro: false, allowAttackFamiliars: false } },
   );
 
@@ -218,9 +220,10 @@ const stunDurations = new Map<Skill | Item, Delayed<number>>([
   [$item`Rain-Doh blue balls`, 1],
 ]);
 
-const FreeFightTasks: GarboFreeFightTask[] = [
+const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
   {
     name: $item`protonic accelerator pack`.name,
+    adventure: ghostAdventure,
     ready: () => get("ghostLocation") !== null,
     completed: () => get("questPAGhost") === "unstarted",
     choices: () =>
@@ -244,6 +247,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: $item`molehill mountain`.name,
+    adventure: $monster`Moleman`,
     ready: () =>
       have($item`molehill mountain`) &&
       (get("_thesisDelivered") || !have($familiar`Pocket Professor`)),
@@ -253,6 +257,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: $skill`Aug. 8th: Cat Day!`.name,
+    adventure: $monster.none, // TODO
     ready: () => shouldAugustCast($skill`Aug. 8th: Cat Day!`),
     completed: () => $skill`Aug. 8th: Cat Day!`.timescast > 0,
     do: () => useSkill($skill`Aug. 8th: Cat Day!`),
@@ -260,6 +265,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: $skill`Aug. 22nd: Tooth Fairy Day!`.name,
+    adventure: $monster`Tooth Golem`,
     ready: () => shouldAugustCast($skill`Aug. 22nd: Tooth Fairy Day!`),
     completed: () => $skill`Aug. 22nd: Tooth Fairy Day!`.timescast > 0,
     do: () => useSkill($skill`Aug. 22nd: Tooth Fairy Day!`),
@@ -267,6 +273,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "Tunnel of Love",
+    adventure: $location`The Tunnel of L.O.V.E.`,
     ready: TunnelOfLove.have,
     completed: TunnelOfLove.isUsed,
     do: () =>
@@ -281,6 +288,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "Chateau Mantegna",
+    adventure: () => ChateauMantegna.paintingMonster() ?? $monster.none,
     ready: () =>
       ChateauMantegna.have() &&
       (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ??
@@ -295,12 +303,13 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           )
           ? { familiar: $familiar`Robortender` }
           : {},
-        $location.none,
+        ChateauMantegna.paintingMonster() ?? $monster.none,
       ),
     tentacle: true,
   },
   {
     name: "Eldritch Tentacle",
+    adventure: $monster`Eldritch Tentacle`,
     ready: () => get("questL02Larva") !== "unstarted",
     completed: () =>
       get("_eldritchTentacleFought") ||
@@ -315,6 +324,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: $skill`Evoke Eldritch Horror`.name,
+    adventure: $monster`Eldritch Tentacle`,
     ready: () => have($skill`Evoke Eldritch Horror`),
     completed: () =>
       get("_eldritchHorrorEvoked") ||
@@ -340,7 +350,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
             ),
           ),
         },
-        $location.none,
+        $monster`Eldritch Tentacle`,
         { familiarOptions: { canChooseMacro: false } },
       ),
     combat: new GarboStrategy(() =>
@@ -364,6 +374,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: $item`lynyrd snare`.name,
+    adventure: $monster`lynyrd`,
     ready: () =>
       mallPrice($item`lynyrd snare`) <= globalOptions.prefs.valueOfFreeFight,
     completed: () => get("_lynyrdSnareUses") >= 3,
@@ -374,6 +385,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "[glitch season reward name]: retrocape edition",
+    adventure: $monster`%monster%`,
     ready: () =>
       (globalOptions.prefs.fightGlitch ?? false) &&
       have($item`unwrapped knock-off retro superhero cape`) &&
@@ -408,7 +420,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
               ? "-7 Monster Level"
               : "-Monster Level", // Above 50 ML, monsters resist stuns.
         },
-        $location.none,
+        $monster`%monster%`,
         {
           familiarOptions: {
             canChooseMacro: false,
@@ -441,6 +453,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   {
     name: "[glitch season reward name]",
     ready: () => globalOptions.prefs.fightGlitch ?? false,
+    adventure: $monster`%monster%`,
     completed: () => !!get("_glitchMonsterFights"),
     do: () => {
       visitUrl("inv_eat.php?pwd&whichitem=10207");
@@ -478,7 +491,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
           modifier: ["1000 mainstat"],
           avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
         },
-        $location.none,
+        $monster`%monster%`,
         { familiarOptions: { canChooseMacro: false } },
       ),
     prepare: () => {
@@ -506,6 +519,10 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     ready: () => myClass() === $class`Seal Clubber`,
     completed: () =>
       sealsAvailable() <= 0 || get("_sealsSummoned") >= maxSealsAvailable(),
+    adventure: () =>
+      guildStoreAvailable()
+        ? $monster`Spawn of Wally`
+        : $monster`hermetic seal`,
     do: () => {
       const [figurine, candlesNeeded] = guildStoreAvailable()
         ? [$item`figurine of a wretched-looking seal`, 1]
@@ -523,7 +540,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         clubs.find((i) => weaponHands(i) === 2) ??
         $item`seal-clubbing club`;
       retrieveItem(club);
-      return freeFightOutfit({ weapon: club }, $location.none);
+      return freeFightOutfit(
+        { weapon: club },
+        guildStoreAvailable()
+          ? $monster`Spawn of Wally`
+          : $monster`hermetic seal`,
+      );
     },
     combat: new GarboStrategy(() =>
       Macro.startCombat()
@@ -541,13 +563,14 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "BRICKO",
+    adventure: $monster`BRICKO ooze`,
     ready: () =>
       mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`) <=
       globalOptions.prefs.valueOfFreeFight,
     completed: () => get("_brickoFights") >= 10,
     do: () => use($item`BRICKO ooze`),
     outfit: () =>
-      freeFightOutfit({}, $location.none, {
+      freeFightOutfit({}, $monster`BRICKO ooze`, {
         familiarOptions: { canChooseMacro: false },
       }),
     combat: new GarboStrategy(() => Macro.basicCombat()),
@@ -556,6 +579,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "Kramco",
+    adventure: { target: $monster`sausage goblin`, location: "wanderer" },
     ready: () => have($item`Kramco Sausage-o-Matic™`),
     completed: () => !kramcoGuaranteed(),
     do: () =>
@@ -564,8 +588,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     outfit: () =>
       freeFightOutfit(
         { offhand: $item`Kramco Sausage-o-Matic™` },
-        wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
-          .location,
+        { target: $monster`sausage goblin`, location: "wanderer" },
       ),
     choices: () =>
       wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
@@ -578,6 +601,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // Pygmys
   {
     name: "Glark Cable",
+    adventure: $location`The Red Zeppelin`,
     ready: () =>
       canAdventure($location`The Red Zeppelin`) &&
       get("questL11Ron") === "finished" &&
@@ -603,6 +627,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "Mushroom garden",
+    adventure: $location`Your Mushroom Garden`,
     ready: () =>
       have($item`packet of mushroom spores`) ||
       getCampground()["packet of mushroom spores"] !== undefined,
@@ -638,6 +663,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "Portscan + Macrometeorite + Mushroom garden",
+    adventure: $location`Your Mushroom Garden`,
     ready: () =>
       (have($item`packet of mushroom spores`) ||
         getCampground()["packet of mushroom spores"] !== undefined) &&
@@ -653,7 +679,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
     },
-    do: () => $location`Your Mushroom Garden`,
+    do: $location`Your Mushroom Garden`,
     post: () => {
       if (have($item`packet of tall grass seeds`)) {
         use($item`packet of tall grass seeds`);
@@ -677,6 +703,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "God Lobster",
+    adventure: $monster`God Lobster`,
     ready: () => have($familiar`God Lobster`),
     completed: () => get("_godLobsterFights") >= 3,
     do: () => {
@@ -699,13 +726,14 @@ const FreeFightTasks: GarboFreeFightTask[] = [
             [$item`God Lobster's Crown`, 5000],
           ]),
         },
-        $location.none,
+        $monster`God Lobster`,
       ),
     combatCount: () => clamp(3 - get("_godLobsterFights"), 0, 3),
     tentacle: false,
   },
   {
     name: "Machine Elf",
+    adventure: $location`The Deep Machine Tunnels`,
     ready: () => have($familiar`Machine Elf`) || dmtCommaValuable(),
     completed: () => get("_machineTunnelsAdv") >= 5,
     do: $location`The Deep Machine Tunnels`,
@@ -798,6 +826,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "Witchess",
+    adventure: bestWitchessPiece,
     ready: () => Witchess.have(),
     completed: () =>
       Witchess.fightsDone() >= 5 ||
@@ -808,6 +837,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   },
   {
     name: "The X-32-F Combat Training Snowman",
+    adventure: $location`The X-32-F Combat Training Snowman`,
     ready: () => get("snojoAvailable"),
     completed: () => get("_snojoFreeFights") >= 10,
     do: $location`The X-32-F Combat Training Snowman`,
@@ -817,6 +847,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // Neverending party
   {
     name: "An Unusually Quiet Barroom Brawl",
+    adventure: $location`An Unusually Quiet Barroom Brawl`,
     ready: () => get("ownsSpeakeasy"),
     completed: () => get("_speakeasyFreeFights") >= 3,
     do: $location`An Unusually Quiet Barroom Brawl`,
@@ -826,6 +857,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // killRobortCreaturesForFree
   {
     name: $item`combat lover's locket`.name,
+    adventure: () => locketMonster() ?? $monster.none,
     ready: () => CombatLoversLocket.have() && locketMonster() !== null,
     completed: () => CombatLoversLocket.reminiscesLeft() <= locketsToSave(),
     do: () => {
@@ -838,16 +870,22 @@ const FreeFightTasks: GarboFreeFightTask[] = [
         have($familiar`Robortender`)
           ? { familiar: $familiar`Robortender` }
           : {},
-        $location.none,
+        locketMonster() ?? $monster.none,
       ),
     tentacle: true,
     combatCount: () =>
       clamp(3 - CombatLoversLocket.reminiscesLeft() - locketsToSave(), 0, 3),
   },
-  { ...doCandyTrick(), combatCount: () => 5, tentacle: true },
+  {
+    ...doCandyTrick(),
+    adventure: $location`Trick-or-Treating`,
+    combatCount: () => 5,
+    tentacle: true,
+  },
   // leaf burning fights
   {
     name: "Burning Leaves Flaming Leaflet Fight",
+    adventure: $monster`flaming leaflet`,
     ready: () =>
       BurningLeaves.have() &&
       BurningLeaves.numberOfLeaves() >=
@@ -863,11 +901,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     tentacle: true,
     combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
-    outfit: tearawayPantsFreeFightOutfit($location.none),
+    outfit: tearawayPantsFreeFightOutfit($monster`flaming leaflet`),
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   },
   {
     name: $item`tied-up flaming leaflet`.name,
+    adventure: $monster`flaming leaflet`,
     ready: () =>
       mallPrice($item`tied-up flaming leaflet`) <=
       globalOptions.prefs.valueOfFreeFight,
@@ -883,11 +922,12 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     tentacle: true,
     combatCount: () => (get("_tiedUpFlamingLeafletFought") ? 0 : 1),
-    outfit: tearawayPantsFreeFightOutfit($location.none),
+    outfit: tearawayPantsFreeFightOutfit($monster`flaming leaflet`),
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   },
   {
     name: $item`tied-up flaming monstera`.name,
+    adventure: $monster`flaming monstera`,
     ready: () =>
       mallPrice($item`tied-up flaming monstera`) <=
       globalOptions.prefs.valueOfFreeFight,
@@ -903,7 +943,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     },
     tentacle: true,
     combatCount: () => (get("_tiedUpFlamingMonsteraFought") ? 0 : 1),
-    outfit: tearawayPantsFreeFightOutfit($location.none),
+    outfit: tearawayPantsFreeFightOutfit($monster`flaming monstera`),
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming monstera`)),
   },
   // tied-up leaviathan (scaling, has 100 damage source cap and 2500 hp)
@@ -911,6 +951,7 @@ const FreeFightTasks: GarboFreeFightTask[] = [
   // closed-circuit pay phone (make into it's own Quest)
   {
     name: "CyberRealm Overclock Fights",
+    adventure: $location`Cyberzone 1`,
     ready: () =>
       canAdventure($location`Cyberzone 1`) &&
       have($item`zero-trust tanktop`) &&
@@ -940,7 +981,9 @@ const FreeFightTasks: GarboFreeFightTask[] = [
     ),
     combatCount: () => clamp(10 - get("_cyberFreeFights"), 0, 10),
   },
-].map(freeFightTask);
+];
+
+const FreeFightTasks = RAW_FIGHTS.map(freeFightTask);
 
 // Expected free fights, not including tentacles
 export function expectedFreeFightQuestFights(): number {

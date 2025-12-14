@@ -8,7 +8,6 @@ import {
   $element,
   $familiar,
   $item,
-  AdventureTarget,
   adventureTargetToWeightedMap,
   clamp,
   findLeprechaunMultiplier,
@@ -37,6 +36,7 @@ import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";
 import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
+import { AdventureArgument, toAdventure } from "../garboWanderer";
 
 export type FamiliarMenuOptions = Partial<{
   canChooseMacro: boolean;
@@ -49,7 +49,7 @@ export type FamiliarMenuOptions = Partial<{
 }>;
 
 export function menu(
-  target: AdventureTarget,
+  adventure: AdventureArgument,
   {
     canChooseMacro = true,
     extraFamiliars = [],
@@ -67,6 +67,7 @@ export function menu(
     ...extraFamiliars,
   ];
 
+  const { target } = toAdventure(adventure);
   const monsterRates = adventureTargetToWeightedMap(target);
 
   if (canChooseMacro && myInebriety() <= inebrietyLimit()) {
@@ -201,7 +202,7 @@ export function getAllJellyfishDrops(): {
 }
 
 export function freeFightFamiliarData(
-  target: AdventureTarget,
+  adventure: AdventureArgument,
   options: Partial<FamiliarMenuOptions> = {},
 ): GeneralFamiliar {
   const usedTcbFamiliars = getUsedTcbFamiliars();
@@ -219,7 +220,7 @@ export function freeFightFamiliarData(
     return aValue > bValue ? a : b;
   };
 
-  return menu(target, options).reduce(compareFamiliars, {
+  return menu(adventure, options).reduce(compareFamiliars, {
     familiar: $familiar.none,
     expectedValue: 0,
     leprechaunMultiplier: 0,
@@ -229,7 +230,7 @@ export function freeFightFamiliarData(
 }
 
 export function freeFightFamiliar(
-  target: AdventureTarget,
+  target: AdventureArgument,
   options: FamiliarMenuOptions = {},
 ): Familiar {
   return freeFightFamiliarData(target, options).familiar;

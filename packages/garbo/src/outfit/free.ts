@@ -1,31 +1,24 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Familiar, Location, Monster } from "kolmafia";
+import { Familiar, Location } from "kolmafia";
 import {
   $familiar,
   $item,
   $items,
   $location,
-  adventureTargetToWeightedMap,
   Delayed,
   get,
   Guzzlr,
   SourceTerminal,
   undelay,
 } from "libram";
-import { WanderDetails } from "garbo-lib";
 
 import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
 import { BonusEquipMode, MEAT_TARGET_MULTIPLIER, sober } from "../lib";
-import { wanderer } from "../garboWanderer";
+import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
-import {
-  applyCheeseBonus,
-  cleaverCheck,
-  destinationToLocation,
-  validateGarbageFoldable,
-} from "./lib";
+import { applyCheeseBonus, cleaverCheck, validateGarbageFoldable } from "./lib";
 import {
   adventuresPerSweat,
   mimicExperienceNeeded,
@@ -62,17 +55,16 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
 
 export type FreeFightOutfitMenuOptions = {
   duplicate?: boolean;
-  monsterTarget?: Monster;
   familiarOptions?: FamiliarMenuOptions;
 };
 export function freeFightOutfit(
   spec: OutfitSpec = {},
-  destination: Location | WanderDetails,
+  adventure: AdventureArgument,
   options: FreeFightOutfitMenuOptions = {},
 ): Outfit {
   cleaverCheck();
 
-  const location = destinationToLocation(destination);
+  const { location } = toAdventure(adventure);
 
   const computedSpec = computeOutfitSpec(spec, location);
 
@@ -82,12 +74,8 @@ export function freeFightOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
-  const adventureTarget = adventureTargetToWeightedMap(
-    options.monsterTarget ?? location,
-  );
-
   outfit.familiar ??= freeFightFamiliar(
-    adventureTarget,
+    adventure,
     computeFamiliarMenuOptions(
       options.familiarOptions,
       options.duplicate ?? false,
