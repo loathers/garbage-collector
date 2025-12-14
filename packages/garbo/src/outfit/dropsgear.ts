@@ -448,13 +448,13 @@ function aviatorGoggles(mode: BonusEquipMode): Map<Item, number> {
 function skeletonCane(mode: BonusEquipMode): Map<Item, number> {
   if (
     mode === BonusEquipMode.MEAT_TARGET ||
-    !have($familiar`Skeleton of Crimbo Past`)
+    !have($familiar`Skeleton of Crimbo Past`) ||
+    get("_knuckleboneDrops") >= 100
   ) {
     return new Map();
   }
   // Cane improves drop rate by 10%
-  const caneValue =
-    get("_knuckleboneDrops") < 100 ? garboValue($item`knucklebone`) * 0.1 : 0;
+  const caneValue = garboValue($item`knucklebone`) * 0.1;
   return new Map<Item, number>([
     [$item`small peppermint-flavored sugar walking crook`, caneValue],
   ]);
