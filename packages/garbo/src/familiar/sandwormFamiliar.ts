@@ -8,6 +8,7 @@ import {
 import {
   $familiar,
   $item,
+  $monster,
   findFairyMultiplier,
   get,
   have,
@@ -68,7 +69,7 @@ export function sandwormFamiliar(): Familiar {
   }
 
   const bonuses = [
-    ...menu({
+    ...menu($monster`giant sandworm`, {
       canChooseMacro: false,
     }),
     {

@@ -303,6 +303,7 @@ export function bonusGear(
           ...juneCleaver(mode),
           ...rakeLeaves(mode),
           ...aviatorGoggles(mode),
+          ...skeletonCane(mode),
         ])
       : []),
   ]);
@@ -442,6 +443,21 @@ function aviatorGoggles(mode: BonusEquipMode): Map<Item, number> {
   }
   const goggleValue = garboValue($item`mini kiwi`) * 0.25;
   return new Map<Item, number>([[$item`aviator goggles`, goggleValue]]);
+}
+
+function skeletonCane(mode: BonusEquipMode): Map<Item, number> {
+  if (
+    mode === BonusEquipMode.MEAT_TARGET ||
+    !have($familiar`Skeleton of Crimbo Past`) ||
+    get("_knuckleboneDrops") >= 100
+  ) {
+    return new Map();
+  }
+  // Cane improves drop rate by 10%
+  const caneValue = garboValue($item`knucklebone`) * 0.1;
+  return new Map<Item, number>([
+    [$item`small peppermint-flavored sugar walking crook`, caneValue],
+  ]);
 }
 
 function stickers(mode: BonusEquipMode): Map<Item, number> {

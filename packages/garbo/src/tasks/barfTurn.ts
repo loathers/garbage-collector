@@ -71,7 +71,7 @@ import {
   WanderDetails,
 } from "garbo-lib";
 
-import { Macro } from "../combat";
+import { getPreferredBarfMonster, Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
@@ -152,10 +152,11 @@ function createWandererOutfit(
   }
   if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
 
-  return freeFightOutfit(sourceOutfit.spec(), {
-    wanderOptions: undelay(details),
-    ...additionalOutfitOptions,
-  });
+  return freeFightOutfit(
+    sourceOutfit.spec(),
+    undelay(details),
+    additionalOutfitOptions,
+  );
 }
 
 function wanderTask(
@@ -350,7 +351,10 @@ function lavaDogs(additionalReady: () => boolean, baseSpec: OutfitSpec) {
       const modifier = ["Muscle"];
       if (!have($item`June cleaver`)) modifier.push(`-7 Monster Level`);
 
-      return freeFightOutfit({ ...baseSpec, modifier, weapon, avoid });
+      return freeFightOutfit(
+        { ...baseSpec, modifier, weapon, avoid },
+        $location`The Bubblin' Caldera`,
+      );
     },
     combat: new GarboStrategy(() => Macro.kill()),
     turns: () => clamp(7 - $location`The Bubblin' Caldera`.turnsSpent, 0, 7),
@@ -465,9 +469,12 @@ function vampOut(additionalReady: () => boolean) {
       runChoice(-1);
     },
     outfit: () =>
-      freeFightOutfit({
-        equip: $items`plastic vampire fangs`,
-      }),
+      freeFightOutfit(
+        {
+          equip: $items`plastic vampire fangs`,
+        },
+        Location.none,
+      ),
     spendsTurn: true,
     turns: () => 1,
   };
@@ -594,19 +601,25 @@ const NonBarfTurnTasks: AlternateTask[] = [
     name: "Daily Dungeon (drunk)",
     ...dailyDungeon(() => willDrunkAdventure()),
     outfit: () =>
-      freeFightOutfit({
-        offhand: $item`Drunkula's wineglass`,
-        equip: $items`ring of Detect Boring Doors`,
-      }),
+      freeFightOutfit(
+        {
+          offhand: $item`Drunkula's wineglass`,
+          equip: $items`ring of Detect Boring Doors`,
+        },
+        $location`The Daily Dungeon`,
+      ),
     sobriety: "drunk",
   },
   {
     name: "Daily Dungeon (sober)",
     ...dailyDungeon(() => !willDrunkAdventure()),
     outfit: () =>
-      freeFightOutfit({
-        equip: $items`ring of Detect Boring Doors`,
-      }),
+      freeFightOutfit(
+        {
+          equip: $items`ring of Detect Boring Doors`,
+        },
+        $location`The Daily Dungeon`,
+      ),
     sobriety: "sober",
   },
   {
@@ -682,6 +695,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
               acc1: $item`Peridot of Peril`,
               offhand: $item`Drunkula's wineglass`,
             },
+        peridotZone() ?? Location.none,
       ),
     turns: () => (peridotZone() ? 1 : 0),
     spendsTurn: false,
@@ -796,15 +810,18 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => get("questPAGhost") === "unstarted",
     do: () => get("ghostLocation") as Location,
     outfit: () =>
-      freeFightOutfit({
-        modifier:
-          get("ghostLocation") === $location`The Icy Peak`
-            ? ["Cold Resistance 5 min"]
+      freeFightOutfit(
+        {
+          modifier:
+            get("ghostLocation") === $location`The Icy Peak`
+              ? ["Cold Resistance 5 min"]
+              : [],
+          back: have($item`protonic accelerator pack`)
+            ? $item`protonic accelerator pack`
             : [],
-        back: have($item`protonic accelerator pack`)
-          ? $item`protonic accelerator pack`
-          : [],
-      }),
+        },
+        get("ghostLocation") as Location,
+      ),
     choices: () =>
       wanderer().getChoices(get("ghostLocation") ?? $location.none),
     combat: new GarboStrategy(() =>
@@ -887,7 +904,13 @@ const BarfTurnTasks: GarboTask[] = [
               allowEquipment: false,
             }).location,
           )
-        : freeFightOutfit(),
+        : freeFightOutfit(
+            undefined,
+            wanderer().getTarget({
+              wanderer: "wanderer",
+              allowEquipment: false,
+            }).location,
+          ),
     do: () =>
       wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
         .location,
@@ -1194,7 +1217,8 @@ const BarfTurnTasks: GarboTask[] = [
       questStep("questL11Worship") > 3 &&
       have($item`antique machete`), // TODO Support other machete's
     completed: () => have($effect`Everything looks Beige`),
-    outfit: () => freeFightOutfit({ weapon: $item`antique machete` }),
+    outfit: () =>
+      freeFightOutfit({ weapon: $item`antique machete` }, Location.none),
     do: () => CrepeParachute.fight($monster`dense liana`),
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg(
@@ -1203,12 +1227,20 @@ const BarfTurnTasks: GarboTask[] = [
     ),
     prepare: () => {
       if (!sober()) {
-        freeFightOutfit({ offhand: $item`Drunkula's wineglass` }).dress();
+        freeFightOutfit(
+          { offhand: $item`Drunkula's wineglass` },
+          Location.none,
+        ).dress();
       }
       withChoice(785, 6, () =>
         adv1($location`An Overgrown Shrine (Northeast)`, -1, ""),
       );
-      if (!sober()) freeFightOutfit({ weapon: $item`antique machete` }).dress();
+      if (!sober()) {
+        freeFightOutfit(
+          { weapon: $item`antique machete` },
+          Location.none,
+        ).dress();
+      }
     },
     post: () => {
       if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
@@ -1246,12 +1278,15 @@ const BarfTurnTasks: GarboTask[] = [
       ),
     }),
     outfit: () =>
-      freeFightOutfit({
-        equip: sober()
-          ? $items`Peridot of Peril`
-          : $items`Peridot of Peril, Drunkula's wineglass`,
-        familiar: $familiar`Cookbookbat`,
-      }),
+      freeFightOutfit(
+        {
+          equip: sober()
+            ? $items`Peridot of Peril`
+            : $items`Peridot of Peril, Drunkula's wineglass`,
+          familiar: $familiar`Cookbookbat`,
+        },
+        get("_cookbookbatQuestLastLocation") ?? Location.none,
+      ),
     do: () => get("_cookbookbatQuestLastLocation"),
     combat: new GarboStrategy(() => Macro.basicCombat()),
     spendsTurn: true,
@@ -1307,7 +1342,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         myLocation() === $location`Barf Mountain`,
       completed: () => have($effect`Everything looks Beige`),
       outfit: () => barfOutfit({}),
-      do: () => CrepeParachute.fight($monster`garbage tourist`),
+      do: () => CrepeParachute.fight(getPreferredBarfMonster()),
       combat: new GarboStrategy(() => Macro.meatKill()),
       prepare: () =>
         !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),

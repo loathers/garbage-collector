@@ -197,17 +197,22 @@ export const CockroachSetup: Quest<GarboTask> = {
       },
       do: () => get("_lastPirateRealmIsland", $location`none`),
       outfit: () =>
-        freeFightOutfit({
-          equip: $items`PirateRealm eyepatch`,
-          bonuses: outfitBonuses(),
-          familiar: freeFightFamiliar({
-            canChooseMacro: false,
-            location: get("_lastPirateRealmIsland", $location`none`),
-            allowAttackFamiliars: true,
-            mode: "free",
-          }),
-          avoid: $items`Roman Candelabra`,
-        }),
+        freeFightOutfit(
+          {
+            equip: $items`PirateRealm eyepatch`,
+            bonuses: outfitBonuses(),
+            familiar: freeFightFamiliar(
+              get("_lastPirateRealmIsland", $location`none`),
+              {
+                canChooseMacro: false,
+                allowAttackFamiliars: true,
+                mode: "free",
+              },
+            ),
+            avoid: $items`Roman Candelabra`,
+          },
+          get("_lastPirateRealmIsland", $location`none`),
+        ),
       combat: new GarboStrategy(() =>
         Macro.externalIf(
           mallPrice($item`windicle`) < 3 * get("valueOfAdventure") &&
