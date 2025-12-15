@@ -37,7 +37,7 @@ jobs:
         run: |
           yarn workspace garbo-lib install
           yarn workspace garbo-lib build
-          yarn workspace garbo-lib npm publish
+          cd packages/garbo-lib && npm publish
         env:
           STATUS: ${{ steps.check.outputs.status }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
