@@ -1,7 +1,9 @@
 name: Publish package to NPM
+
 permissions:
   id-token: write # Required for OIDC
   contents: read
+
 on:
   push:
     paths:
@@ -19,6 +21,9 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
+
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Check publish status
         id: check
