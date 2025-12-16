@@ -6,7 +6,7 @@
   "main": "dist/scripts/garbage-collector/garbo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node --no-warnings --loader ts-node/esm/transpile-only ./build.mjs && yarn run copyStatic",
+    "build": "node --import tsx ./build.mjs && yarn run copyStatic",
     "watch": "yarn build --watch",
     "copyStatic": "copyfiles --up 1 \"static/**/*\" dist",
     "check": "tsc",
@@ -26,7 +26,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "garbo-lib": "*",
+    "garbo-lib": "workspace:*",
     "grimoire-kolmafia": "^0.3.29",
     "kolmafia": "^5.28673.0",
     "libram": "^0.11.14"
@@ -48,7 +48,7 @@
     "lint-staged": "^15.2.9",
     "madge": "^8.0.0",
     "prettier": "^3.3.3",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.5.4"
   }
 }

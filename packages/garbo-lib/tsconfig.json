@@ -8,11 +8,10 @@
     "lib": ["ES2020"],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "noEmitOnError": true,
+    "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "pretty": true,
-    "outDir": "dist",
     "strict": true,
     "target": "esnext",
     "skipLibCheck": true

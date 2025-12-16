@@ -6,7 +6,7 @@
   "description": "A library for sequencing turns resource-optimally",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "format": "eslint src --fix && prettier --write .",
     "check": "tsc",
     "lint": "eslint src && prettier --check .",
