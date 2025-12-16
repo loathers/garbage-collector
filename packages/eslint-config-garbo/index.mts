@@ -1,16 +1,17 @@
-// @ts-check
-
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import prettier from "eslint-config-prettier";
-import * as libram from "eslint-plugin-libram";
+import libram, { verifyConstantsSinceRevision } from "eslint-plugin-libram";
+import { defineConfig } from "eslint/config";
 
-export default tseslint.config(
+await verifyConstantsSinceRevision(28804);
+
+export default defineConfig(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
+  ...libram.configs.recommended,
   prettier,
   {
-    plugins: { libram },
     languageOptions: {
       parserOptions: {
         projectService: {

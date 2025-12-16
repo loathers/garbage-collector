@@ -6,7 +6,8 @@
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["ES2020"],
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
@@ -16,6 +17,6 @@
     "target": "esnext",
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "include": ["**/*.ts"],
   "isolatedModules": true
 }
