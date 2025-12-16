@@ -1,10 +1,11 @@
+import { defineConfig } from 'eslint/config';
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import reactRefresh from "eslint-plugin-react-refresh";
 import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 
-export default tseslint.config(
+export default defineConfig(
   {
     ignores: ["dist/", "eslint.config.mjs"],
   },
