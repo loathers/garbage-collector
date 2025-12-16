@@ -1,15 +1,18 @@
-import eslint from "@eslint/js";
+import * as eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import prettier from "eslint-config-prettier";
 import libram, { verifyConstantsSinceRevision } from "eslint-plugin-libram";
 import { defineConfig } from "eslint/config";
 
-await verifyConstantsSinceRevision(28804);
+const VERIFY_CONSTANTS_SINCE = 28804;
 
-export default defineConfig(
+/**
+ * Base ruleset that projects can extend.
+ */
+export const baseConfig = defineConfig(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
-  ...libram.configs.recommended,
+  libram.configs.recommended,
   prettier,
   {
     languageOptions: {
@@ -17,7 +20,6 @@ export default defineConfig(
         projectService: {
           allowDefaultProject: ["*.mjs", "*.js"],
         },
-        tsconfigRootDir: import.meta.dirname,
       },
     },
     rules: {
@@ -39,7 +41,7 @@ export default defineConfig(
       ],
       "spaced-comment": "error",
 
-      // This one needs a fix because TS's rules are different?
+      // Use TS version
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/no-non-null-assertion": "error",
@@ -57,3 +59,16 @@ export default defineConfig(
     },
   },
 );
+
+/**
+ * Factory so projects can:
+ * - set tsconfigRootDir (per repo)
+ * - add/override rules
+ * - add extra config blocks (e.g. ignores, overrides, test rules)
+ * - optionally pin/verify libram constants
+ */
+export async function createConfig() {
+  await verifyConstantsSinceRevision(VERIFY_CONSTANTS_SINCE);
+
+  return defineConfig(baseConfig);
+}
