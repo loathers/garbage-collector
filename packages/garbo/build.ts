@@ -1,7 +1,9 @@
 import esbuild, { Plugin } from "esbuild";
 
 // @ts-expect-error No types for this module
-const babel = (await import("esbuild-plugin-babel")) as () => Plugin;
+const { default: babel } = (await import("esbuild-plugin-babel")) as {
+  default: () => Plugin;
+};
 
 const watch = process.argv.some((arg) => ["--watch", "-w"].includes(arg));
 

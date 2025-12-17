@@ -4,9 +4,10 @@
   "description": "Script for farming meat (and garbage) in 2004 web RPG Kingdom of Loathing.",
   "repository": "https://github.com/loathers/garbage-collector.git",
   "main": "dist/scripts/garbage-collector/garbo.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node --import tsx ./build.mjs && yarn run copyStatic",
+    "build": "node --import tsx ./build.ts && yarn run copyStatic",
     "watch": "yarn build --watch",
     "copyStatic": "copyfiles --up 1 \"static/**/*\" dist",
     "check": "tsc",
