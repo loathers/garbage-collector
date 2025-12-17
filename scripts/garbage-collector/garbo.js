@@ -25071,7 +25071,9 @@ var require_value = __commonJS({
       }], [(0, libram_1.$item)(_templateObject6525 || (_templateObject6525 = _taggedTemplateLiteral157(["fat loot token"]))), currency.apply(void 0, _toConsumableArray78((0, libram_1.$items)(_templateObject6623 || (_templateObject6623 = _taggedTemplateLiteral157(["Boris's key, Jarlsberg's key, Sneaky Pete's key, Boris's ring, Jarlsberg's earring, Sneaky Pete's breath spray, potato sprout, sewing kit, Spellbook: Singer's Faithful Ocelot, Spellbook: Drescher's Annoying Noise, Spellbook: Walberg's Dim Bulb, dried gelatinous cube"])))))], [(0, libram_1.$item)(_templateObject6720 || (_templateObject6720 = _taggedTemplateLiteral157(["inflammable leaf"]))), inflammableLeafCurrency()], [(0, libram_1.$item)(_templateObject6820 || (_templateObject6820 = _taggedTemplateLiteral157(["envelope full of Meat"]))), function() {
         return 5e4;
       }], [(0, libram_1.$item)(_templateObject6919 || (_templateObject6919 = _taggedTemplateLiteral157(["crystalline cheer"]))), currency.apply(void 0, _toConsumableArray78((0, libram_1.$items)(_templateObject7019 || (_templateObject7019 = _taggedTemplateLiteral157(["stale cheer wine, stale Cheer-E-Os, Cheer-Up soda, cheer-o-gram, cheerful antler hat, cheerful Crimbo sweater, cheerful pajama pants"])))))], [(0, libram_1.$item)(_templateObject7151 || (_templateObject7151 = _taggedTemplateLiteral157(["knucklebone"]))), function() {
-        return value((0, libram_1.$item)(_templateObject7223 || (_templateObject7223 = _taggedTemplateLiteral157(["tiny plastic sword"])))) / 2927;
+        return Math.max.apply(Math, _toConsumableArray78((0, libram_1.$items)(_templateObject7223 || (_templateObject7223 = _taggedTemplateLiteral157(["tiny plastic sword, A Crimbo Carol, Ch. 1, Rethinking Candy"], ["tiny plastic sword, A Crimbo Carol\\, Ch. 1, Rethinking Candy"]))).map(function(jar) {
+          return value(jar);
+        }))) / 2687;
       }]], _toConsumableArray78(kolmafia_1.Familiar.all().map(function(f) {
         return (0, kolmafia_1.familiarEquipment)(f);
       }).filter(function(i) {
@@ -31031,7 +31033,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia102.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("71c28f5aa98c92ee3444ad1a8b22a78b50928e82", ")"));
+      (0, import_kolmafia102.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("92b13308a93974a991605c3dc9e573010cea4ba3", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia102.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
