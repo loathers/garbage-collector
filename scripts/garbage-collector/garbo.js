@@ -31033,7 +31033,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia102.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("92b13308a93974a991605c3dc9e573010cea4ba3", ")"));
+      (0, import_kolmafia102.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d1603c8e75ee49ced02f0aa2939641a376dab53e", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia102.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -51803,7 +51803,7 @@ function findDonateMonster(onlyFree) {
   var incomplete = queryEggNetIncomplete();
   var priority = queryEggNetPriority();
   if (incomplete.size === 0) return void 0;
-  var maxMonsterId = 2502;
+  var maxMonsterId = 2505;
   var banned2 = new Set([].concat(_toConsumableArray75($monsters.all().filter(function(x) {
     return x.attributes.includes("BOSS") || x.attributes.includes("NOCOPY") || onlyFree && !x.attributes.includes("FREE");
   })), [
@@ -52841,7 +52841,7 @@ function defaultTarget() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : "";
-  sinceKolmafiaRevision(28777);
+  sinceKolmafiaRevision(28806);
   checkGithubVersion();
   Args.fill(globalOptions, argString);
   if (globalOptions.version) return;
