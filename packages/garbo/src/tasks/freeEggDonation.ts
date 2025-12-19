@@ -93,7 +93,7 @@ function findDonateMonster(
   const incomplete = queryEggNetIncomplete();
   const priority = queryEggNetPriority();
   if (incomplete.size === 0) return undefined;
-  const maxMonsterId = 2505; // Last Update Dec 17 2025
+  const maxMonsterId = 2508; // Last Update Dec 19 2025
   const banned = new Set<Monster>([
     ...$monsters
       .all()
@@ -103,8 +103,6 @@ function findDonateMonster(
           x.attributes.includes("NOCOPY") ||
           (onlyFree && !x.attributes.includes("FREE")),
       ),
-    // Could have special handling
-    $monster`mining grobold`, // 90% hp physical damage on first and every 2 rounds
     // Impossible, cannot use items or skills
     ...$monsters`quadfaerie, cursed villager, plywood cultists, barrow wraith?, Source Agent`,
   ]);
