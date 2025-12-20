@@ -44,7 +44,7 @@
     "esbuild": "^0.23.1",
     "esbuild-plugin-babel": "^0.2.3",
     "eslint": "^9.39.2",
-    "eslint-config-garbo": "^0.0.1",
+    "eslint-config-garbo": "workspace:^",
     "jiti": "^2.6.1",
     "lint-staged": "^15.2.9",
     "madge": "^8.0.0",

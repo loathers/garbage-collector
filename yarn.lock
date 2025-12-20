@@ -4153,7 +4153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-garbo@^0.0.1, eslint-config-garbo@workspace:*, eslint-config-garbo@workspace:packages/eslint-config-garbo":
+"eslint-config-garbo@workspace:^, eslint-config-garbo@workspace:packages/eslint-config-garbo":
   version: 0.0.0-use.local
   resolution: "eslint-config-garbo@workspace:packages/eslint-config-garbo"
   dependencies:
@@ -4638,7 +4638,7 @@ __metadata:
     esbuild: ^0.23.1
     esbuild-plugin-babel: ^0.2.3
     eslint: ^9.39.2
-    eslint-config-garbo: ^0.0.1
+    eslint-config-garbo: "workspace:^"
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.29
     jiti: ^2.6.1
@@ -4657,7 +4657,7 @@ __metadata:
   resolution: "garbo-lib@workspace:packages/garbo-lib"
   dependencies:
     eslint: ^9.39.2
-    eslint-config-garbo: ^0.0.1
+    eslint-config-garbo: "workspace:^"
     jiti: ^2.6.1
     kolmafia: ^5.28673.0
     libram: ^0.11.14
@@ -4709,7 +4709,7 @@ __metadata:
     esbuild: ^0.23.1
     esbuild-plugin-babel: ^0.2.3
     eslint: ^9.39.2
-    eslint-config-garbo: "workspace:*"
+    eslint-config-garbo: "workspace:^"
     garbo-lib: "workspace:*"
     grimoire-kolmafia: ^0.3.29
     jiti: ^2.6.1

@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "eslint": "^9.39.2",
-    "eslint-config-garbo": "^0.0.1",
+    "eslint-config-garbo": "workspace:^",
     "jiti": "^2.6.1",
     "kolmafia": "^5.28673.0",
     "libram": "^0.11.14",
