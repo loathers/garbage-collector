@@ -1,5 +1,4 @@
 import {
-  Effect,
   equippedItem,
   haveEquipped,
   Item,
@@ -134,7 +133,7 @@ function mimicEscape(): ActionSource | undefined {
 
 function shouldDelevel(monster: Monster): boolean {
   return (
-    !$monsters`invader bullet, swamp monster, spooky ghost`.includes(monster) &&
+    !$monsters`invader bullet`.includes(monster) &&
     (monster.attributes.includes("Scale:") ||
       myBuffedstat($stat`Moxie`) < monster.baseAttack + 10 ||
       (have($skill`Hero of the Half-Shell`) &&
@@ -154,12 +153,6 @@ function monsterRequirements(monster: Monster): Requirement {
     preventEquip: $items`carnivorous potted plant, Kramco Sausage-o-Matic™`,
   };
   switch (monster) {
-    case $monster`swamp monster`:
-      maximize.push("100 Stench Resistance");
-      break;
-    case $monster`spooky ghost`:
-      maximize.push("100 Spooky Resistance");
-      break;
     default:
       maximize.push("100 Avoid Attack");
       options.bonusEquip = new Map<Item, number>([
@@ -174,19 +167,6 @@ function monsterRequirements(monster: Monster): Requirement {
       break;
   }
   return new Requirement(maximize, options);
-}
-
-function monsterEffects(monster: Monster): Effect[] {
-  const effects: Effect[] = [];
-  if ($monsters`swamp monster, spooky ghost`.includes(monster)) {
-    if (have($skill`Elemental Saucesphere`)) {
-      effects.push($effect`Elemental Saucesphere`);
-    }
-    if (have($skill`Astral Shell`)) {
-      effects.push($effect`Astral Shell`);
-    }
-  }
-  return effects;
 }
 
 function mimicEggDonation(): GarboTask[] {
@@ -251,7 +231,6 @@ function mimicEggDonation(): GarboTask[] {
         restoreHp(myMaxhp());
         restoreMp(safeRestoreMpTarget());
       },
-      effects: () => monsterEffects(donation.monster),
       limit: { skip: 1 },
       spendsTurn: false,
       sobriety: "sober",
