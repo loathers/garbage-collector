@@ -1,4 +1,5 @@
 import {
+  Effect,
   equippedItem,
   haveEquipped,
   Item,
@@ -169,6 +170,15 @@ function monsterRequirements(monster: Monster): Requirement {
   return new Requirement(maximize, options);
 }
 
+function monsterEffects(monster: Monster): Effect[] {
+  const effects: Effect[] = [];
+  switch (monster) {
+    default:
+      break;
+  }
+  return effects;
+}
+
 function mimicEggDonation(): GarboTask[] {
   const escape = mimicEscape();
   const donation = findDonateMonster(!escape);
@@ -231,6 +241,7 @@ function mimicEggDonation(): GarboTask[] {
         restoreHp(myMaxhp());
         restoreMp(safeRestoreMpTarget());
       },
+      effects: () => monsterEffects(donation.monster),
       limit: { skip: 1 },
       spendsTurn: false,
       sobriety: "sober",
