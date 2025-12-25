@@ -21,7 +21,6 @@ import {
   $familiar,
   $item,
   $items,
-  $monster,
   $monsters,
   $skill,
   $slot,
@@ -134,12 +133,11 @@ function mimicEscape(): ActionSource | undefined {
 
 function shouldDelevel(monster: Monster): boolean {
   return (
-    !$monsters`invader bullet`.includes(monster) &&
-    (monster.attributes.includes("Scale:") ||
-      myBuffedstat($stat`Moxie`) < monster.baseAttack + 10 ||
-      (have($skill`Hero of the Half-Shell`) &&
-        itemType(equippedItem($slot`offhand`)) === "shield" &&
-        myBuffedstat($stat`Muscle`) < monster.baseAttack + 10))
+    monster.attributes.includes("Scale:") ||
+    myBuffedstat($stat`Moxie`) < monster.baseAttack + 10 ||
+    (have($skill`Hero of the Half-Shell`) &&
+      itemType(equippedItem($slot`offhand`)) === "shield" &&
+      myBuffedstat($stat`Muscle`) < monster.baseAttack + 10)
   );
 }
 
@@ -220,8 +218,7 @@ function mimicEggDonation(): GarboTask[] {
               Macro.trySkill($skill`%fn, lay an egg`),
             )
             .externalIf(
-              Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) >
-                2 && donation.monster !== $monster`invader bullet`,
+              Math.min(100 - donation.count, 3 - get("_mimicEggsDonated")) > 2,
               Macro.trySkill($skill`%fn, lay an egg`),
             )
             .externalIf(
