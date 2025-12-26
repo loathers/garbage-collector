@@ -22,6 +22,7 @@ import {
   mallPrice,
   maximize,
   Monster,
+  meatDrop,
   myAdventures,
   myAscensions,
   myBuffedstat,
@@ -2259,6 +2260,7 @@ function killRobortCreaturesForFree() {
   if (
     !Robortender.currentDrinks().includes($item`drive-by shooting`) &&
     availableAmount($item`fish head`) > currentHeads &&
+    (!globalOptions.nobarf || targetingMeat()) &&
     userConfirmDialog(
       "Garbo managed to rustle up a fish head, would you like it to use it to make a drive-by shooting so you can benefit from your robortender? Sorry for flip-flopping on this, life is hard.",
       true,
