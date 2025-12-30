@@ -6,7 +6,7 @@ import {
   Skill,
   Stat,
 } from "kolmafia";
-import { $item, $skill, $stat, BloodCubicZirconia, have } from "libram";
+import { $item, $skill, $stat, BloodCubicZirconia, get, have } from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, mainStatLevel } from "../lib";
 
@@ -28,6 +28,10 @@ function parentStat(sub: Stat | null): Stat {
 
 const BCT_LEVEL_THRESHOLDS = [26, 20, 13];
 export function getBCZStatFloor(skill: Skill): number {
+  const userSelectedStatFloor = get("garbo_bczStatFloor",0);
+  if ( userSelectedStatFloor > 0) {
+    return userSelectedStatFloor;
+  }
   const stat = parentStat(BloodCubicZirconia.substatUsed(skill));
   if (stat !== myPrimestat()) {
     if (stat === $stat`Moxie` && have($item`crumpled felt fedora`)) {
