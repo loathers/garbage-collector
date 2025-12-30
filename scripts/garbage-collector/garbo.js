@@ -26211,7 +26211,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("6a5a85bbc5825508206043c425be4a396bb9cc8a", ")"));
+      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7e8356bfbc3526af3074bd74a7d50b0e3a008afb", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia87.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -35031,20 +35031,21 @@ function parentStat(sub) {
 }
 var BCT_LEVEL_THRESHOLDS = [26, 20, 13];
 function getBCZStatFloor(skill) {
+  var userSelectedStatFloor = get("garbo_bczStatFloor", 0);
   var stat = parentStat(BloodCubicZirconia_exports.substatUsed(skill));
   if (stat !== (0, import_kolmafia118.myPrimestat)()) {
     if (stat === $stat(_templateObject880 || (_templateObject880 = _taggedTemplateLiteral110(["Moxie"]))) && have($item(_templateObject968 || (_templateObject968 = _taggedTemplateLiteral110(["crumpled felt fedora"]))))) {
-      return 200;
+      return clamp(200, userSelectedStatFloor, Infinity);
     }
-    return 100;
+    return clamp(100, userSelectedStatFloor, Infinity);
   }
   var minimumLevel = globalOptions.ascend && (0, import_kolmafia118.myDaycount)() >= 2 ? BCT_LEVEL_THRESHOLDS.find(function(threshold) {
     return (0, import_kolmafia118.myLevel)() > threshold;
   }) : 26;
   if (!minimumLevel) {
-    return (0, import_kolmafia118.myBasestat)(stat);
+    return clamp((0, import_kolmafia118.myBasestat)(stat), userSelectedStatFloor, Infinity);
   }
-  return mainStatLevel(minimumLevel);
+  return clamp(mainStatLevel(minimumLevel), userSelectedStatFloor, Infinity);
 }
 function safeBCZCasts(skill) {
   return BloodCubicZirconia_exports.availableCasts(skill, getBCZStatFloor(skill));
