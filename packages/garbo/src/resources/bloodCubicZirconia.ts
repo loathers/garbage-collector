@@ -6,7 +6,15 @@ import {
   Skill,
   Stat,
 } from "kolmafia";
-import { $item, $skill, $stat, BloodCubicZirconia, have } from "libram";
+import {
+  $item,
+  $skill,
+  $stat,
+  BloodCubicZirconia,
+  clamp,
+  get,
+  have,
+} from "libram";
 import { globalOptions } from "../config";
 import { baseMeat, mainStatLevel } from "../lib";
 
@@ -28,22 +36,23 @@ function parentStat(sub: Stat | null): Stat {
 
 const BCT_LEVEL_THRESHOLDS = [26, 20, 13];
 export function getBCZStatFloor(skill: Skill): number {
+  const userSelectedStatFloor = get("garbo_bczStatFloor", 0);
   const stat = parentStat(BloodCubicZirconia.substatUsed(skill));
   if (stat !== myPrimestat()) {
     if (stat === $stat`Moxie` && have($item`crumpled felt fedora`)) {
-      return 200;
+      return clamp(200, userSelectedStatFloor, Infinity);
     }
-    return 100; // ? is this good?
+    return clamp(100, userSelectedStatFloor, Infinity); // ? is this good?
   }
   const minimumLevel =
     globalOptions.ascend && myDaycount() >= 2
       ? BCT_LEVEL_THRESHOLDS.find((threshold) => myLevel() > threshold)
       : 26;
   if (!minimumLevel) {
-    return myBasestat(stat); // So low level we can't afford to lose exp at all
+    return clamp(myBasestat(stat), userSelectedStatFloor, Infinity); // So low level we can't afford to lose exp at all
   }
 
-  return mainStatLevel(minimumLevel);
+  return clamp(mainStatLevel(minimumLevel), userSelectedStatFloor, Infinity);
 }
 
 function safeBCZCasts(skill: Skill): number {
