@@ -500,6 +500,30 @@ export const wanderSources = [
       draggable: "wanderer",
     },
   ),
+   new CopyTargetFight(
+    "Legendary Seal Clubbing Club",
+    () =>
+      Counter.get("Club 'Em Into Next Week Monster") <= 0 &&
+      get("clubEmNextWeekMonster") === globalOptions.target,
+    () =>
+      (Counter.get("Club 'Em Into Next Week Monster") <= 0 &&
+        get("clubEmNextWeekMonster") === globalOptions.target) ||
+      (have($item`legendary seal-clubbing club`) && get("_clubEmNextWeekUsed") < 5)
+        ? 1
+        : 0,
+    (options: RunOptions) =>
+      withMacro(
+        options.macro,
+        () => use($skill`Club 'Em Into Next Week`),
+        options.useAuto,
+      ),
+    {
+      spec: {
+          equip: $items`legendary seal-clubbing club`.filter((item) => have(item)),
+        },
+      draggable: "wanderer",
+    },
+  ),
 ];
 
 function changeLastAdvLocation(): void {
