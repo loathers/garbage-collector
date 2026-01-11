@@ -874,14 +874,35 @@ const BarfTurnTasks: GarboTask[] = [
     do: $location`The Briny Deeps`,
     outfit: () => meatTargetOutfit({}, $location`The Briny Deeps`),
     combat: new GarboStrategy(
-      () => Macro.item($item`pulled green taffy`).meatKill(),
-      () =>
-        Macro.if_(
-          `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-          Macro.item($item`pulled green taffy`).meatKill(),
+      () => {
+        const digitizeMonster = SourceTerminal.getDigitizeMonster();
+        if (!digitizeMonster) {
+          return Macro.abortWithMsg("No digitize monster found");
+        }
+        const killMacro =
+          digitizeMonster === globalOptions.target
+            ? Macro.item($item`pulled green taffy`).meatKill()
+            : Macro.kill();
+        return Macro.if_(digitizeMonster, killMacro).abortWithMsg(
+          `Expected a digitized ${digitizeMonster}, but encountered something else.`,
+        );
+      },
+      () => {
+        const digitizeMonster = SourceTerminal.getDigitizeMonster();
+        if (!digitizeMonster) {
+          return Macro.abortWithMsg("No digitize monster found");
+        }
+        const killMacro =
+          digitizeMonster === globalOptions.target
+            ? Macro.item($item`pulled green taffy`).meatKill()
+            : Macro.kill();
+        return Macro.if_(
+          `(monsterid ${digitizeMonster.id}) && !gotjump && !(pastround 2)`,
+          killMacro,
         ).abortWithMsg(
-          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
-        ),
+          `Expected a digitized ${digitizeMonster}, but encountered something else.`,
+        );
+      },
     ),
     sobriety: "sober",
     spendsTurn: true,
@@ -920,17 +941,35 @@ const BarfTurnTasks: GarboTask[] = [
         allowEquipment: false,
       }),
     combat: new GarboStrategy(
-      () =>
-        Macro.if_(globalOptions.target, Macro.meatKill()).abortWithMsg(
-          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
-        ),
-      () =>
-        Macro.if_(
-          `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-          Macro.meatKill(),
+      () => {
+        const digitizeMonster = SourceTerminal.getDigitizeMonster();
+        if (!digitizeMonster) {
+          return Macro.abortWithMsg("No digitize monster found");
+        }
+        const killMacro =
+          digitizeMonster === globalOptions.target
+            ? Macro.meatKill()
+            : Macro.kill();
+        return Macro.if_(digitizeMonster, killMacro).abortWithMsg(
+          `Expected a digitized ${digitizeMonster}, but encountered something else.`,
+        );
+      },
+      () => {
+        const digitizeMonster = SourceTerminal.getDigitizeMonster();
+        if (!digitizeMonster) {
+          return Macro.abortWithMsg("No digitize monster found");
+        }
+        const killMacro =
+          digitizeMonster === globalOptions.target
+            ? Macro.meatKill()
+            : Macro.kill();
+        return Macro.if_(
+          `(monsterid ${digitizeMonster.id}) && !gotjump && !(pastround 2)`,
+          killMacro,
         ).abortWithMsg(
-          `Expected a digitized ${SourceTerminal.getDigitizeMonster()}, but encountered something else.`,
-        ),
+          `Expected a digitized ${digitizeMonster}, but encountered something else.`,
+        );
+      },
     ),
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
