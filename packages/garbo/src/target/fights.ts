@@ -519,7 +519,7 @@ export const wanderSources = [
       ),
     {
       spec: {
-          equip: $items`legendary seal-clubbing club`.filter((item) => have(item)),
+          equip: get("_clubEmNextWeekUsed") < 4 ? $items`legendary seal-clubbing club`.filter((item) => have(item)) : undefined,
         },
       draggable: "wanderer",
     },

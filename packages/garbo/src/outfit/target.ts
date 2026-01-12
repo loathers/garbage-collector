@@ -7,6 +7,7 @@ import {
   $location,
   $monster,
   Environment,
+  get,
   Guzzlr,
   have,
 } from "libram";
@@ -29,7 +30,7 @@ import {
   targetingMeat,
 } from "../lib";
 import { globalOptions } from "../config";
-import { Location, meatDrop } from "kolmafia";
+import { Location, meatDrop, Monster } from "kolmafia";
 import { shouldRedigitize } from "../combat";
 
 export function meatTargetOutfit(
@@ -144,6 +145,13 @@ export function meatTargetOutfit(
     !shouldRedigitize()
   ) {
     outfit.equip($item`Roman Candelabra`);
+  }
+
+  if (
+    get("clubEmNextWeekMonster", Monster.none) === Monster.none &&
+    have($item`legendary seal-clubbing club`)
+  ) {
+    outfit.equip($item`legendary seal-clubbing club`);
   }
 
   return outfit;
