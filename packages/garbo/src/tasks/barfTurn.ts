@@ -242,6 +242,36 @@ function shouldGoUnderwater(): boolean {
   return false;
 }
 
+/**
+ * Creates autoattack and postAuto macros for digitize wanderer fights.
+ * @param targetKillMacro - Macro to use when digitize monster is the target
+ * @param nonTargetKillMacro - Macro to use otherwise (defaults to Macro.kill())
+ */
+function digitizeMacros(
+  targetKillMacro: Macro,
+  nonTargetKillMacro: Macro = Macro.kill(),
+): [() => Macro, () => Macro] {
+  const makeMacro =
+    (useAutoattackCondition: boolean): (() => Macro) =>
+    () => {
+      const digitizeMonster = SourceTerminal.getDigitizeMonster();
+      if (!digitizeMonster) {
+        return Macro.abortWithMsg("No digitize monster found");
+      }
+      const killMacro =
+        digitizeMonster === globalOptions.target
+          ? targetKillMacro
+          : nonTargetKillMacro;
+      const condition = useAutoattackCondition
+        ? digitizeMonster
+        : `(monsterid ${digitizeMonster.id}) && !gotjump && !(pastround 2)`;
+      return Macro.if_(condition, killMacro).abortWithMsg(
+        `Expected a digitized ${digitizeMonster}, but encountered something else.`,
+      );
+    };
+  return [makeMacro(true), makeMacro(false)];
+}
+
 const TurnGenTasks: GarboTask[] = [
   {
     name: "Sausage",
@@ -874,35 +904,7 @@ const BarfTurnTasks: GarboTask[] = [
     do: $location`The Briny Deeps`,
     outfit: () => meatTargetOutfit({}, $location`The Briny Deeps`),
     combat: new GarboStrategy(
-      () => {
-        const digitizeMonster = SourceTerminal.getDigitizeMonster();
-        if (!digitizeMonster) {
-          return Macro.abortWithMsg("No digitize monster found");
-        }
-        const killMacro =
-          digitizeMonster === globalOptions.target
-            ? Macro.item($item`pulled green taffy`).meatKill()
-            : Macro.kill();
-        return Macro.if_(digitizeMonster, killMacro).abortWithMsg(
-          `Expected a digitized ${digitizeMonster}, but encountered something else.`,
-        );
-      },
-      () => {
-        const digitizeMonster = SourceTerminal.getDigitizeMonster();
-        if (!digitizeMonster) {
-          return Macro.abortWithMsg("No digitize monster found");
-        }
-        const killMacro =
-          digitizeMonster === globalOptions.target
-            ? Macro.item($item`pulled green taffy`).meatKill()
-            : Macro.kill();
-        return Macro.if_(
-          `(monsterid ${digitizeMonster.id}) && !gotjump && !(pastround 2)`,
-          killMacro,
-        ).abortWithMsg(
-          `Expected a digitized ${digitizeMonster}, but encountered something else.`,
-        );
-      },
+      ...digitizeMacros(Macro.item($item`pulled green taffy`).meatKill()),
     ),
     sobriety: "sober",
     spendsTurn: true,
@@ -940,37 +942,7 @@ const BarfTurnTasks: GarboTask[] = [
         wanderer: "wanderer",
         allowEquipment: false,
       }),
-    combat: new GarboStrategy(
-      () => {
-        const digitizeMonster = SourceTerminal.getDigitizeMonster();
-        if (!digitizeMonster) {
-          return Macro.abortWithMsg("No digitize monster found");
-        }
-        const killMacro =
-          digitizeMonster === globalOptions.target
-            ? Macro.meatKill()
-            : Macro.kill();
-        return Macro.if_(digitizeMonster, killMacro).abortWithMsg(
-          `Expected a digitized ${digitizeMonster}, but encountered something else.`,
-        );
-      },
-      () => {
-        const digitizeMonster = SourceTerminal.getDigitizeMonster();
-        if (!digitizeMonster) {
-          return Macro.abortWithMsg("No digitize monster found");
-        }
-        const killMacro =
-          digitizeMonster === globalOptions.target
-            ? Macro.meatKill()
-            : Macro.kill();
-        return Macro.if_(
-          `(monsterid ${digitizeMonster.id}) && !gotjump && !(pastround 2)`,
-          killMacro,
-        ).abortWithMsg(
-          `Expected a digitized ${digitizeMonster}, but encountered something else.`,
-        );
-      },
-    ),
+    combat: new GarboStrategy(...digitizeMacros(Macro.meatKill())),
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
   },
