@@ -500,7 +500,7 @@ export const wanderSources = [
       draggable: "wanderer",
     },
   ),
-   new CopyTargetFight(
+  new CopyTargetFight(
     "Legendary Seal Clubbing Club",
     () =>
       Counter.get("Club 'Em Into Next Week Monster") <= 0 &&
@@ -508,19 +508,18 @@ export const wanderSources = [
     () =>
       (Counter.get("Club 'Em Into Next Week Monster") <= 0 &&
         get("clubEmNextWeekMonster") === globalOptions.target) ||
-      (have($item`legendary seal-clubbing club`) && get("_clubEmNextWeekUsed") < 5)
-        ? 1
+      (have($item`legendary seal-clubbing club`) &&
+        get("_clubEmNextWeekUsed") < 5)
+        ? clamp(5 - get("_clubEmNextWeekUsed"), 0, 5)
         : 0,
-    (options: RunOptions) =>
-      withMacro(
-        options.macro,
-        () => use($skill`Club 'Em Into Next Week`),
-        options.useAuto,
-      ),
+    (options: RunOptions) => undefined,
     {
       spec: {
-          equip: get("_clubEmNextWeekUsed") < 4 ? $items`legendary seal-clubbing club`.filter((item) => have(item)) : undefined,
-        },
+        equip:
+          get("_clubEmNextWeekUsed") < 5
+            ? $items`legendary seal-clubbing club`
+            : [],
+      },
       draggable: "wanderer",
     },
   ),
