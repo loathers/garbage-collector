@@ -254,10 +254,8 @@ function digitizeMacros(
   const makeMacro =
     (useAutoattackCondition: boolean): (() => Macro) =>
     () => {
-      const digitizeMonster = SourceTerminal.getDigitizeMonster();
-      if (!digitizeMonster) {
-        return Macro.abortWithMsg("No digitize monster found");
-      }
+      const digitizeMonster =
+        SourceTerminal.getDigitizeMonster() ?? $monster.none;
       const killMacro =
         digitizeMonster === globalOptions.target
           ? targetKillMacro
