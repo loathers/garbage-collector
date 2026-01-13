@@ -256,14 +256,17 @@ function digitizeMacros(
     () => {
       const digitizeMonster =
         SourceTerminal.getDigitizeMonster() ?? $monster.none;
-      const killMacro =
-        digitizeMonster === globalOptions.target
-          ? targetKillMacro
-          : nonTargetKillMacro;
       const condition = useAutoattackCondition
         ? digitizeMonster
         : `(monsterid ${digitizeMonster.id}) && !gotjump && !(pastround 2)`;
-      return Macro.if_(condition, killMacro).abortWithMsg(
+      return Macro.if_(
+        condition,
+        Macro.externalIf(
+          digitizeMonster === globalOptions.target,
+          targetKillMacro,
+          nonTargetKillMacro,
+        ),
+      ).abortWithMsg(
         `Expected a digitized ${digitizeMonster}, but encountered something else.`,
       );
     };
