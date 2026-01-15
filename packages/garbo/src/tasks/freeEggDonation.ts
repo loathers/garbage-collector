@@ -1,15 +1,17 @@
 import {
+  Effect,
   equippedItem,
-  getMonsters,
   haveEquipped,
   Item,
-  itemDropsArray,
   itemType,
-  Location,
   Monster,
   myBuffedstat,
+  myDaycount,
+  myId,
   myMaxhp,
   restoreHp,
+  restoreMp,
+  toInt,
   useFamiliar,
   visitUrl,
 } from "kolmafia";
@@ -19,7 +21,6 @@ import {
   $familiar,
   $item,
   $items,
-  $monster,
   $monsters,
   $skill,
   $slot,
@@ -31,15 +32,18 @@ import {
   ensureEffect,
   get,
   have,
+  MaximizeOptions,
   Requirement,
   RetroCape,
-  sum,
 } from "libram";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
-import { garboValue } from "../garboValue";
-import { freeRunConstraints, tryFindFreeRunOrBanish } from "../lib";
+import {
+  freeRunConstraints,
+  safeRestoreMpTarget,
+  tryFindFreeRunOrBanish,
+} from "../lib";
 import { GarboTask } from "./engine";
 
 function queryEggNetIncomplete(): Map<Monster, number> {
@@ -82,27 +86,14 @@ function queryEggNetPriority(): Map<Monster, number> {
   }
 }
 
-function donateMonsterValue(m: Monster): number {
-  const items = itemDropsArray(m).filter((drop) =>
-    ["", "n"].includes(drop.type),
-  );
-  return (
-    (m.minMeat + m.maxMeat) / 2 +
-    sum(items, (drop) => (drop.rate / 100) * garboValue(drop.drop))
-  );
-}
-
 function findDonateMonster(
   onlyFree: boolean,
 ): { monster: Monster; count: number } | undefined {
   const incomplete = queryEggNetIncomplete();
   const priority = queryEggNetPriority();
   if (incomplete.size === 0) return undefined;
-  const maxMonsterId = $monster`time cop`.id; // Last Update Aug 2025
+  const maxMonsterId = 2508; // Last Update Dec 19 2025
   const banned = new Set<Monster>([
-    ...Location.all()
-      .filter((x) => x.zone === "FantasyRealm")
-      .flatMap((x) => getMonsters(x)),
     ...$monsters
       .all()
       .filter(
@@ -111,11 +102,17 @@ function findDonateMonster(
           x.attributes.includes("NOCOPY") ||
           (onlyFree && !x.attributes.includes("FREE")),
       ),
-    ...$monsters`Source Agent`,
+    // Impossible, cannot use items or skills
+    ...$monsters`quadfaerie, cursed villager, plywood cultists, barrow wraith?, Source Agent`,
   ]);
+  // Find the monster that needs the most eggs, adding in a small amount of variance as a tiebreaker
   const monster = CombatLoversLocket.findMonster(
     (m) => m.id <= maxMonsterId && incomplete.has(m) && !banned.has(m),
-    (m) => donateMonsterValue(m) + (priority.get(m) ?? 0) * 10000,
+    (m) =>
+      100 -
+      (incomplete.get(m ?? Monster.none) ?? 0) +
+      (priority.get(m) ?? 0) * 1000 +
+      Math.sin((toInt(myId()) << 5) + myDaycount() + m.id),
   );
   const count = incomplete.get(monster ?? Monster.none) ?? 0;
   return !!monster && monster !== Monster.none && count > 0
@@ -142,6 +139,42 @@ function shouldDelevel(monster: Monster): boolean {
       itemType(equippedItem($slot`offhand`)) === "shield" &&
       myBuffedstat($stat`Muscle`) < monster.baseAttack + 10)
   );
+}
+
+function monsterRequirements(monster: Monster): Requirement {
+  const maximize = [
+    "-100 Thorns",
+    "-100 Sporadic Thorns",
+    "-100 Damage Aura",
+    "-100 Sporadic Damage Aura",
+  ];
+  const options: Partial<MaximizeOptions> = {
+    preventEquip: $items`carnivorous potted plant, Kramco Sausage-o-Matic™`,
+  };
+  switch (monster) {
+    default:
+      maximize.push("100 Avoid Attack");
+      options.bonusEquip = new Map<Item, number>([
+        [$item`unwrapped knock-off retro superhero cape`, 300],
+        [$item`navel ring of navel gazing`, 50],
+        [$item`ancient stone head`, 33],
+        [$item`asteroid belt`, 25],
+        [$item`attorney's badge`, 20],
+        [$item`propeller beanie`, 10],
+        [$item`Mayflower bouquet`, 6.5],
+      ]);
+      break;
+  }
+  return new Requirement(maximize, options);
+}
+
+function monsterEffects(monster: Monster): Effect[] {
+  const effects: Effect[] = [];
+  switch (monster) {
+    default:
+      break;
+  }
+  return effects;
 }
 
 function mimicEggDonation(): GarboTask[] {
@@ -197,35 +230,15 @@ function mimicEggDonation(): GarboTask[] {
       ),
       prepare: () => {
         useFamiliar($familiar`Chest Mimic`);
-        escape?.prepare(
-          new Requirement(
-            [
-              "100 Avoid Attack",
-              "-100 Thorns",
-              "-100 Sporadic Thorns",
-              "-100 Damage Aura",
-              "-100 Sporadic Damage Aura",
-            ],
-            {
-              bonusEquip: new Map<Item, number>([
-                [$item`unwrapped knock-off retro superhero cape`, 300],
-                [$item`navel ring of navel gazing`, 50],
-                [$item`ancient stone head`, 33],
-                [$item`asteroid belt`, 25],
-                [$item`attorney's badge`, 20],
-                [$item`propeller beanie`, 10],
-                [$item`Mayflower bouquet`, 6.5],
-              ]),
-              preventEquip: $items`carnivorous potted plant, Kramco Sausage-o-Matic™`,
-            },
-          ),
-        );
+        escape?.prepare(monsterRequirements(donation.monster));
         if (haveEquipped($item`unwrapped knock-off retro superhero cape`)) {
           RetroCape.set("heck", "hold");
         }
         if (have($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
         restoreHp(myMaxhp());
+        restoreMp(safeRestoreMpTarget());
       },
+      effects: () => monsterEffects(donation.monster),
       limit: { skip: 1 },
       spendsTurn: false,
       sobriety: "sober",

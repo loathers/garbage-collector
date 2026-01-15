@@ -4,6 +4,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $locations,
   $monster,
   clamp,
@@ -54,23 +55,30 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Robortender`,
-    value: (mode) =>
-      Robortender.dropChance() *
-        garboValue(
-          Robortender.dropFrom(
-            mode === "barf"
-              ? $monster`garbage tourist`
-              : mode === "target"
-                ? globalOptions.target
-                : $monster.none,
-          ),
-        ) +
-      (Robortender.currentDrinks().includes($item`Feliz Navidad`)
-        ? felizValue() * 0.25
-        : 0) +
-      (Robortender.currentDrinks().includes($item`Newark`)
-        ? newarkValue() * 0.25
-        : 0),
+    value: (mode) => {
+      const olfactedMonster = get("olfactedMonster");
+      const olfactedIsFromBarf =
+        olfactedMonster &&
+        getMonsters($location`Barf Mountain`).includes(olfactedMonster);
+      return (
+        Robortender.dropChance() *
+          garboValue(
+            Robortender.dropFrom(
+              mode === "barf" && olfactedIsFromBarf
+                ? olfactedMonster
+                : mode === "target"
+                  ? globalOptions.target
+                  : $monster.none,
+            ),
+          ) +
+        (Robortender.currentDrinks().includes($item`Feliz Navidad`)
+          ? felizValue() * 0.25
+          : 0) +
+        (Robortender.currentDrinks().includes($item`Newark`)
+          ? newarkValue() * 0.25
+          : 0)
+      );
+    },
   },
   {
     familiar: $familiar`Twitching Space Critter`,

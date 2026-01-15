@@ -15,3 +15,5 @@ export * from "./leprecondo";
 export * from "./yachtzee";
 export * from "./everfullDarts";
 export * from "./beret";
+export * from "./bloodCubicZirconia";
+export * from "./protonpack";

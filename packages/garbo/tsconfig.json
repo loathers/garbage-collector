@@ -7,7 +7,8 @@
     "declaration": false,
     "forceConsistentCasingInFileNames": true,
     "lib": ["ES2019"],
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
@@ -16,6 +17,6 @@
     "target": "esnext",
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "../standalone/**/*.ts"],
+  "include": ["**/*.ts", "build.ts"],
   "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
 }

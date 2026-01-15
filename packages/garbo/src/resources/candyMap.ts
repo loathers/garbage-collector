@@ -3,6 +3,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   get,
   getSaleValue,
   have,
@@ -194,7 +195,7 @@ export function doCandyTrick(): GarboTask {
           "We thought we had an appropriate hat for tricking, but we did not.",
         );
       }
-      return freeFightOutfit({ hat });
+      return freeFightOutfit({ hat }, $location`Trick-or-Treating`);
     },
     combat: new GarboStrategy(() => Macro.basicCombat()),
     spendsTurn: false,

@@ -1,4 +1,9 @@
 name: Publish package to NPM
+
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+
 on:
   push:
     paths:
@@ -14,8 +19,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "18.x"
+          node-version: "20"
           registry-url: "https://registry.npmjs.org"
+
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Check publish status
         id: check
@@ -29,7 +37,7 @@ jobs:
         run: |
           yarn workspace garbo-lib install
           yarn workspace garbo-lib build
-          yarn workspace garbo-lib npm publish
+          cd packages/garbo-lib && npm publish
         env:
           STATUS: ${{ steps.check.outputs.status }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
