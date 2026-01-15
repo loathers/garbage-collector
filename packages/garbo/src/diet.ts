@@ -627,8 +627,6 @@ function menu(): MenuItem<Note>[] {
     new MenuItem($item`blood-drive sticker`),
     new MenuItem(cheapestItem(standardSpleenItems)),
     new MenuItem(cheapestItem($items`not-a-pipe, glimmering roc feather`)),
-    // eslint-disable-next-line libram/verify-constants
-    new MenuItem($item`baked bone meal`), // Remove after crimbo
 
     // MISC
     ...limitedItems,
