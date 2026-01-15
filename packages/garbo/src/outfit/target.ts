@@ -31,7 +31,7 @@ import {
   targetingMeat,
 } from "../lib";
 import { globalOptions } from "../config";
-import { Location, meatDrop, Monster } from "kolmafia";
+import { Location, meatDrop } from "kolmafia";
 import { shouldRedigitize } from "../combat";
 
 export function meatTargetOutfit(
