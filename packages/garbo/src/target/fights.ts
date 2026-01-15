@@ -512,7 +512,7 @@ export const wanderSources = [
         get("_clubEmNextWeekUsed") < 5)
         ? clamp(5 - get("_clubEmNextWeekUsed"), 0, 5)
         : 0,
-    (options: RunOptions) => undefined,
+    undefined,
     {
       spec: {
         equip:

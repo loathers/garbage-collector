@@ -47,7 +47,8 @@ export function meatTargetOutfit(
 
   if (
     Counter.get("Club 'Em Into Next Week Monster") === Infinity &&
-    have($item`legendary seal-clubbing club`)
+    have($item`legendary seal-clubbing club`) &&
+    get("_clubEmNextWeekUsed") < 5
   ) {
     outfit.equip($item`legendary seal-clubbing club`);
   }
