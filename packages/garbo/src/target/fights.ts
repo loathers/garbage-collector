@@ -504,19 +504,19 @@ export const wanderSources = [
     "Legendary Seal Clubbing Club",
     () =>
       Counter.get("Club 'Em Into Next Week Monster") <= 0 &&
-      get("clubEmNextWeekMonster",$monster.none) === globalOptions.target,
+      get("clubEmNextWeekMonster", $monster.none) === globalOptions.target,
     () =>
       (Counter.get("Club 'Em Into Next Week Monster") <= 0 &&
-        get("clubEmNextWeekMonster",$monster.none) === globalOptions.target) ||
+        get("clubEmNextWeekMonster", $monster.none) === globalOptions.target) ||
       (have($item`legendary seal-clubbing club`) &&
-        get("_clubEmNextWeekUsed",0) < 5)
-        ? clamp(5 - get("_clubEmNextWeekUsed",0), 0, 5)
+        get("_clubEmNextWeekUsed", 0) < 5)
+        ? clamp(5 - get("_clubEmNextWeekUsed", 0), 0, 5)
         : 0,
     undefined,
     {
       spec: {
         equip:
-          get("_clubEmNextWeekUsed",0) < 5
+          get("_clubEmNextWeekUsed", 0) < 5
             ? $items`legendary seal-clubbing club`
             : [],
       },
