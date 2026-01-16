@@ -234,7 +234,7 @@ export class Macro extends StrictMacro {
         );
       case $skill`Club 'Em Into Next Week`:
         return this.externalIf(
-          get("_clubEmNextWeekUsed") < 5 && !get("clubEmNextWeekMonster"),
+          get("_clubEmNextWeekUsed",0) < 5 && !get("clubEmNextWeekMonster"),
           Macro.trySkill(itemOrSkill)
         )
       case $skill`Digitize`:
@@ -867,7 +867,7 @@ export class Macro extends StrictMacro {
         .tryCopier($item`4-d camera`)
         .tryCopier($item`unfinished ice sculpture`)
         .externalIf(
-          get("_clubEmNextWeekUsed") < 5,
+          get("_clubEmNextWeekUsed",0) < 5,
           Macro.tryCopier($skill`Club 'Em Into Next Week`),
         )
         .externalIf(

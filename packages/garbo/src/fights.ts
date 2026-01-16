@@ -214,7 +214,7 @@ const firstChainMacro = () =>
             Macro.tryCopier($item`LOV Enamorang`),
           )
           .externalIf(
-            get("_clubEmNextWeekUsed") < 5,
+            get("_clubEmNextWeekUsed",0) < 5,
             Macro.tryCopier($skill`Club 'Em Into Next Week`),
         ),
       )
@@ -246,7 +246,7 @@ const secondChainMacro = () =>
             Macro.tryCopier($item`LOV Enamorang`),
           )
           .externalIf(
-            get("_clubEmNextWeekUsed") < 5,
+            get("_clubEmNextWeekUsed",0) < 5,
             Macro.tryCopier($skill`Club 'Em Into Next Week`),
           ),
       )
