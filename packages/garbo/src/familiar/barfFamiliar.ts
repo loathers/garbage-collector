@@ -323,7 +323,7 @@ export function barfFamiliar(equipmentForced: boolean): {
   // Ultimately, using our meat familiar all day is the default behavior
   // so any familiar worse than that isn't worth spending any time thinking about
   const viableMenu = fullMenu.filter(
-    (f) => totalFamiliarValue(f) > meatFamiliarValue,
+    (f) => totalFamiliarValue(f) >= meatFamiliarValue,
   );
 
   if (viableMenu.length === 0) {
@@ -342,7 +342,7 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   // Only consider familiars better than our best unlimited familiar
   const finalMenu = viableMenu.filter(
-    (f) => totalFamiliarValue(f) > cruisingFamiliarValue,
+    (f) => totalFamiliarValue(f) >= cruisingFamiliarValue,
   );
 
   // If the shrub beats our cruising familiar, use it
