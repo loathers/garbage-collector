@@ -63,6 +63,7 @@ export function meatMood(
   mood.skill($skill`Blood Bond`);
   mood.skill($skill`Leash of Linguini`);
   mood.skill($skill`Empathy of the Newt`);
+  mood.skill($skill`Only Dogs Love a Drunken Sailor`);
 
   if (have($item`April Shower Thoughts shield`)) {
     mood.effect($effect`Thoughtful Empathy`);
