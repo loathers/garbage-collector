@@ -867,13 +867,10 @@ export class Macro extends StrictMacro {
         .tryCopier($item`4-d camera`)
         .tryCopier($item`unfinished ice sculpture`)
         .externalIf(
-          get("_clubEmNextWeekUsed", 0) < 5,
-          Macro.tryCopier($skill`Club 'Em Into Next Week`),
-        )
-        .externalIf(
           get("_enamorangs") === 0,
           Macro.tryCopier($item`LOV Enamorang`),
         )
+        .tryCopier($skill`Club 'Em Into Next Week`)
         .meatKill(false),
     ).abortWithMsg(
       `Macro for ${action} expected ${globalOptions.target} but encountered something else.`,

@@ -213,10 +213,7 @@ const firstChainMacro = () =>
             get("_enamorangs") === 0,
             Macro.tryCopier($item`LOV Enamorang`),
           )
-          .externalIf(
-            get("_clubEmNextWeekUsed", 0) < 5,
-            Macro.tryCopier($skill`Club 'Em Into Next Week`),
-          ),
+          .tryCopier($skill`Club 'Em Into Next Week`)
       )
       .trySkill($skill`lecture on relativity`)
       .meatKill(false),
@@ -245,10 +242,7 @@ const secondChainMacro = () =>
             get("_enamorangs") === 0,
             Macro.tryCopier($item`LOV Enamorang`),
           )
-          .externalIf(
-            get("_clubEmNextWeekUsed", 0) < 5,
-            Macro.tryCopier($skill`Club 'Em Into Next Week`),
-          ),
+          .tryCopier($skill`Club 'Em Into Next Week`),
       )
       .trySkill($skill`lecture on relativity`)
       .meatKill(false),
