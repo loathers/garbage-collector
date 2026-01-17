@@ -6,7 +6,9 @@ import {
   $items,
   $location,
   $monster,
+  Counter,
   Environment,
+  get,
   Guzzlr,
   have,
 } from "libram";
@@ -42,6 +44,14 @@ export function meatTargetOutfit(
     spec,
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
+
+  if (
+    Counter.get("Club 'Em Into Next Week Monster") === Infinity &&
+    have($item`legendary seal-clubbing club`) &&
+    get("_clubEmNextWeekUsed", 0) < 5
+  ) {
+    outfit.equip($item`legendary seal-clubbing club`);
+  }
 
   if (location === $location`Crab Island`) {
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();

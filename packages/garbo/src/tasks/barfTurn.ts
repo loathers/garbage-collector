@@ -947,6 +947,46 @@ const BarfTurnTasks: GarboTask[] = [
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
   },
+  {
+    name: "Club Into Next Week Monster",
+    completed: () => Counter.get("Club 'Em Into Next Week Monster") > 0,
+    outfit: () =>
+      digitizedTarget()
+        ? meatTargetOutfit(
+            get("_mimicEggsObtained") < 11 &&
+              $familiar`Chest Mimic`.experience >
+                (digitizedMonstersRemaining() === 1
+                  ? 50
+                  : (11 - get("_mimicEggsObtained")) * 50)
+              ? {
+                  familiar: $familiar`Chest Mimic`,
+                  weapon: $item`legendary seal-clubbing club`,
+                }
+              : {},
+            wanderer().getTarget({
+              wanderer: "wanderer",
+              allowEquipment: false,
+            }).location,
+          )
+        : freeFightOutfit(
+            { weapon: $item`legendary seal-clubbing club` },
+            wanderer().getTarget({
+              wanderer: "wanderer",
+              allowEquipment: false,
+            }).location,
+          ),
+    do: () =>
+      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
+        .location,
+    choices: () =>
+      wanderer().getChoices({
+        wanderer: "wanderer",
+        allowEquipment: false,
+      }),
+    combat: new GarboStrategy(() => Macro.target("club 'em into next week")),
+    spendsTurn: () =>
+      !get("clubEmNextWeekMonster", $monster.none).attributes.includes("FREE"),
+  },
   wanderTask(
     "wanderer",
     {

@@ -232,6 +232,11 @@ export class Macro extends StrictMacro {
           get("_enamorangs") < 5 && !get("enamorangMonster"),
           Macro.tryHaveItem(itemOrSkill),
         );
+      case $skill`Club 'Em Into Next Week`:
+        return this.externalIf(
+          get("_clubEmNextWeekUsed", 0) < 5 && !get("clubEmNextWeekMonster"),
+          Macro.trySkill(itemOrSkill),
+        );
       case $skill`Digitize`:
         return this.externalIf(
           SourceTerminal.canDigitize(),
@@ -865,6 +870,7 @@ export class Macro extends StrictMacro {
           get("_enamorangs") === 0,
           Macro.tryCopier($item`LOV Enamorang`),
         )
+        .tryCopier($skill`Club 'Em Into Next Week`)
         .meatKill(false),
     ).abortWithMsg(
       `Macro for ${action} expected ${globalOptions.target} but encountered something else.`,

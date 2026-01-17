@@ -123,7 +123,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28806); // fixed skeleton tracking
+  sinceKolmafiaRevision(28881); // Adding angelbone and devilbone
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
