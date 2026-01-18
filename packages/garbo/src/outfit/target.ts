@@ -31,7 +31,7 @@ import {
 import { globalOptions } from "../config";
 import { meatDrop } from "kolmafia";
 import { shouldRedigitize } from "../combat";
-import { nextWeekReady } from "../resources";
+import { nextWeekReady } from "../resources/sealclub";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
 
 export function meatTargetOutfit(
