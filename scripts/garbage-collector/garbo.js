@@ -26211,7 +26211,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8b58b0e4239e76f08cb57c0c2d45e603be39782f", ")"));
+      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("fbc90168075ee1856e9ddc725b665c6fcbcecbf0", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia87.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -35857,6 +35857,10 @@ function extraValue2(target, meat, jellyfish) {
   var jellyfishValue = jellyfish ? garboValue($item(_templateObject975 || (_templateObject975 = _taggedTemplateLiteral116(["stench jelly"])))) / 20 + familiarAbilityValue(jellyfish.familiar) + jellyfish.outfitValue : 0;
   return Math.max(targetValue - Math.max(meatFamiliarValue, jellyfishValue), 0);
 }
+var familiarPrintout = function(_ref7) {
+  var expectedValue = _ref7.expectedValue, familiar8 = _ref7.familiar, outfitValue = _ref7.outfitValue;
+  return "(expected value of ".concat(expectedValue.toFixed(1), " from familiar drops, ").concat(familiarAbilityValue(familiar8).toFixed(1), " from familiar abilities and ").concat(outfitValue.toFixed(1), " from outfit)");
+};
 function barfFamiliar(equipmentForced) {
   if (timeToMeatify()) {
     return {
@@ -35896,16 +35900,16 @@ function barfFamiliar(equipmentForced) {
     }
     return normal;
   });
-  var meatFamiliarEntry = fullMenu.find(function(_ref7) {
-    var familiar8 = _ref7.familiar;
-    return familiar8 === meat;
+  var meatFamiliarEntry = fullMenu.find(function(_ref8) {
+    var familiar8 = _ref8.familiar, limit = _ref8.limit;
+    return familiar8 === meat && limit !== "cupid";
   });
   if (!meatFamiliarEntry) {
     throw new Error("Something went wrong when initializing familiars!");
   }
   var meatFamiliarValue = totalFamiliarValue(meatFamiliarEntry);
   var viableMenu = fullMenu.filter(function(f) {
-    return totalFamiliarValue(f) > meatFamiliarValue;
+    return totalFamiliarValue(f) >= meatFamiliarValue;
   });
   if (viableMenu.length === 0) {
     return {
@@ -35913,27 +35917,27 @@ function barfFamiliar(equipmentForced) {
       extraValue: 0
     };
   }
-  var unlimitedCruisingFamiliars = viableMenu.filter(function(_ref8) {
-    var limit = _ref8.limit;
+  var unlimitedCruisingFamiliars = viableMenu.filter(function(_ref9) {
+    var limit = _ref9.limit;
     return limit === "none";
   });
   var cruisingFamiliar = unlimitedCruisingFamiliars.length ? maxBy(unlimitedCruisingFamiliars, totalFamiliarValue) : meatFamiliarEntry;
-  var turnsNeeded = sum(viableMenu, turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars));
-  if (turnsNeeded < turnsAvailable()) {
-    var shrubAvailable = viableMenu.some(function(_ref9) {
-      var familiar8 = _ref9.familiar;
-      return familiar8 === $familiar(_templateObject1254 || (_templateObject1254 = _taggedTemplateLiteral116(["Crimbo Shrub"])));
-    });
+  var cruisingFamiliarValue = totalFamiliarValue(cruisingFamiliar);
+  var finalMenu = viableMenu.filter(function(f) {
+    return totalFamiliarValue(f) >= cruisingFamiliarValue;
+  });
+  var shrubAvailable = finalMenu.some(function(_ref10) {
+    var familiar8 = _ref10.familiar;
+    return familiar8 === $familiar(_templateObject1254 || (_templateObject1254 = _taggedTemplateLiteral116(["Crimbo Shrub"])));
+  });
+  if (shrubAvailable) {
     return {
-      familiar: shrubAvailable ? $familiar(_templateObject1353 || (_templateObject1353 = _taggedTemplateLiteral116(["Crimbo Shrub"]))) : cruisingFamiliar.familiar,
+      familiar: $familiar(_templateObject1353 || (_templateObject1353 = _taggedTemplateLiteral116(["Crimbo Shrub"]))),
       extraValue: 0
     };
   }
-  var best = maxBy(viableMenu, totalFamiliarValue);
-  var familiarPrintout = function(_ref10) {
-    var expectedValue = _ref10.expectedValue, familiar8 = _ref10.familiar, outfitValue = _ref10.outfitValue;
-    return "(expected value of ".concat(expectedValue.toFixed(1), " from familiar drops, ").concat(familiarAbilityValue(familiar8).toFixed(1), " from familiar abilities and ").concat(outfitValue.toFixed(1), " from outfit)");
-  };
+  var turnsNeeded = sum(finalMenu, turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars));
+  var best = turnsNeeded < turnsAvailable() ? maxBy(finalMenu, "leprechaunMultiplier") : maxBy(finalMenu, totalFamiliarValue);
   (0, import_kolmafia123.print)("Choosing to use ".concat(best.familiar, " ").concat(familiarPrintout(best), " over ").concat(meatFamiliarEntry.familiar, " ").concat(familiarPrintout(meatFamiliarEntry), "."), HIGHLIGHT);
   var jellyfish = fullMenu.find(function(_ref11) {
     var familiar8 = _ref11.familiar;
