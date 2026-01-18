@@ -213,7 +213,7 @@ const firstChainMacro = () =>
             get("_enamorangs") === 0,
             Macro.tryCopier($item`LOV Enamorang`),
           )
-          .tryCopier($skill`Club 'Em Into Next Week`)
+          .tryCopier($skill`Club 'Em Into Next Week`),
       )
       .trySkill($skill`lecture on relativity`)
       .meatKill(false),

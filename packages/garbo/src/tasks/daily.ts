@@ -73,9 +73,9 @@ import { estimatedAttunementTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 import {
-  wanderingCopytargetsRemaining,
   estimatedGarboTurns,
   highMeatMonsterCount,
+  wanderingCopytargetsRemaining,
 } from "../turns";
 import { GarboTask } from "./engine";
 import { AcquireItem, Quest } from "grimoire-kolmafia";

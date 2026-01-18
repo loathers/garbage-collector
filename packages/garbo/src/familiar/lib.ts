@@ -31,9 +31,9 @@ import {
   turnsToNC,
 } from "../lib";
 import {
-  wanderingCopytargetsRemaining,
   estimatedGarboTurns,
   highMeatMonsterCount,
+  wanderingCopytargetsRemaining,
 } from "../turns";
 import { garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
