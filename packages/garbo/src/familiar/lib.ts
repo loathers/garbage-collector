@@ -31,7 +31,7 @@ import {
   turnsToNC,
 } from "../lib";
 import {
-  digitizedMonstersRemaining,
+  wanderingCopytargetsRemaining,
   estimatedGarboTurns,
   highMeatMonsterCount,
 } from "../turns";
@@ -125,7 +125,7 @@ export function canOpenRedPresent(): boolean {
  */
 export function turnsAvailable(): number {
   const baseTurns = estimatedGarboTurns();
-  const digitizes = digitizedMonstersRemaining();
+  const digitizes = wanderingCopytargetsRemaining();
   const mapTurns = globalOptions.ascend
     ? clamp(
         availableAmount($item`Map to Safety Shelter Grimace Prime`),

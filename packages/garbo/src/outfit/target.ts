@@ -6,9 +6,7 @@ import {
   $items,
   $location,
   $monster,
-  Counter,
   Environment,
-  get,
   Guzzlr,
   have,
 } from "libram";
@@ -31,12 +29,14 @@ import {
   targetingMeat,
 } from "../lib";
 import { globalOptions } from "../config";
-import { Location, meatDrop } from "kolmafia";
+import { meatDrop } from "kolmafia";
 import { shouldRedigitize } from "../combat";
+import { nextWeekReady } from "../resources";
+import { AdventureArgument, toAdventure } from "../garboWanderer";
 
 export function meatTargetOutfit(
   spec: OutfitSpec = {},
-  location?: Location,
+  adventureArgument?: AdventureArgument,
 ): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);
@@ -45,14 +45,8 @@ export function meatTargetOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
-  if (
-    Counter.get("Club 'Em Into Next Week Monster") === Infinity &&
-    have($item`legendary seal-clubbing club`) &&
-    get("_clubEmNextWeekUsed", 0) < 5
-  ) {
-    outfit.equip($item`legendary seal-clubbing club`);
-  }
-
+  if (nextWeekReady()) outfit.equip($item`legendary seal-clubbing club`);
+  const { location } = toAdventure(adventureArgument ?? $location.none);
   if (location === $location`Crab Island`) {
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");

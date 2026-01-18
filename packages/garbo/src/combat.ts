@@ -58,7 +58,7 @@ import {
 } from "libram";
 import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
+import { estimatedGarboTurns, wanderingCopytargetsRemaining } from "./turns";
 import {
   gooseDroneEligible,
   isStrongScaler,
@@ -234,7 +234,7 @@ export class Macro extends StrictMacro {
         );
       case $skill`Club 'Em Into Next Week`:
         return this.externalIf(
-          get("_clubEmNextWeekUsed", 0) < 5 && !get("clubEmNextWeekMonster"),
+          haveEquipped($item`legendary seal-clubbing club`),
           Macro.trySkill(itemOrSkill),
         );
       case $skill`Digitize`:
@@ -326,7 +326,7 @@ export class Macro extends StrictMacro {
         ),
       )
       .externalIf(
-        digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
+        wanderingCopytargetsRemaining() <= 5 - get("_meteorShowerUses") &&
           have($skill`Meteor Lore`) &&
           get("_meteorShowerUses") < 5,
         Macro.if_(globalOptions.target, Macro.trySkill($skill`Meteor Shower`)),

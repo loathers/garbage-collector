@@ -73,7 +73,7 @@ import { estimatedAttunementTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 import {
-  digitizedMonstersRemaining,
+  wanderingCopytargetsRemaining,
   estimatedGarboTurns,
   highMeatMonsterCount,
 } from "../turns";
@@ -216,7 +216,7 @@ function pantogram(): void {
     const expectedBarfTurns = globalOptions.nobarf
       ? 0
       : estimatedGarboTurns() -
-        digitizedMonstersRemaining() -
+        wanderingCopytargetsRemaining() -
         highMeatMonsterCount();
     pantogramValue = 100 * expectedBarfTurns;
   } else {
