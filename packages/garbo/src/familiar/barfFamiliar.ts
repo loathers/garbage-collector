@@ -313,7 +313,9 @@ export function barfFamiliar(equipmentForced: boolean): {
     return normal;
   });
 
-  const meatFamiliarEntry = fullMenu.find(({ familiar }) => familiar === meat);
+  const meatFamiliarEntry = fullMenu.find(
+    ({ familiar, limit }) => familiar === meat && limit !== "cupid",
+  );
 
   if (!meatFamiliarEntry) {
     throw new Error("Something went wrong when initializing familiars!");
