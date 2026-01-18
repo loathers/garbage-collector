@@ -24387,7 +24387,7 @@ function canWanderTypeFreeFight(location) {
   }
   return !backupSkiplist.includes(location) && (location.combatPercent >= 100 || yellowRaySafelist.includes(location));
 }
-var wandererSkiplist = $locations(_templateObject2319 || (_templateObject2319 = _taggedTemplateLiteral67(["The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums, Lair of the Ninja Snowmen"])));
+var wandererSkiplist = $locations(_templateObject2319 || (_templateObject2319 = _taggedTemplateLiteral67(["The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums, Lair of the Ninja Snowmen, The Island Barracks"])));
 function canWanderTypeWander(location) {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
@@ -26211,7 +26211,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("c13b495a95d41835ade5e507baeb9bd5b5fe4379", ")"));
+      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("8b58b0e4239e76f08cb57c0c2d45e603be39782f", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia87.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -29538,7 +29538,7 @@ function cookbookbatPerilBonus() {
   if (!have($item(_templateObject3224 || (_templateObject3224 = _taggedTemplateLiteral85(["Peridot of Peril"])))) || get("_cookbookbatCombatsUntilNewQuest") + 1 > estimatedGarboTurns()) {
     return 0;
   }
-  var canAdvExclusions = $locations(_templateObject3322 || (_templateObject3322 = _taggedTemplateLiteral85(["Fastest Adventurer Contest, Strongest Adventurer Contest, Smartest Adventurer Contest, Smoothest Adventurer Contest, Hottest Adventurer Contest, Coldest Adventurer Contest, Spookiest Adventurer Contest, Stinkiest Adventurer Contest, Sleaziest Adventurer Contest, The Hedge Maze, Tower Level 1, Tower Level 2, Tower Level 3, Tower Level 5, The Naughty Sorceress' Chamber, The Daily Dungeon, An Overgrown Shrine (Northwest), An Overgrown Shrine (Southwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southeast), A Crater Full of Space Beasts, Mt. Molehill, The Red Queen's Garden, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), The Primordial Soup, The Jungles of Ancient Loathing, Seaside Megalopolis, Domed City of Ronaldus, Domed City of Grimacia, Hamburglaris Shield Generator, The X-32-F Combat Training Snowman, The Haiku Dungeon, The Deep Machine Tunnels, The Oasis, Shadow Rift"])));
+  var canAdvExclusions = $locations(_templateObject3322 || (_templateObject3322 = _taggedTemplateLiteral85(["Fastest Adventurer Contest, Strongest Adventurer Contest, Smartest Adventurer Contest, Smoothest Adventurer Contest, Hottest Adventurer Contest, Coldest Adventurer Contest, Spookiest Adventurer Contest, Stinkiest Adventurer Contest, Sleaziest Adventurer Contest, The Hedge Maze, Tower Level 1, Tower Level 2, Tower Level 3, Tower Level 5, The Naughty Sorceress' Chamber, The Daily Dungeon, An Overgrown Shrine (Northwest), An Overgrown Shrine (Southwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southeast), A Crater Full of Space Beasts, Mt. Molehill, The Red Queen's Garden, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), The Primordial Soup, The Jungles of Ancient Loathing, Seaside Megalopolis, Domed City of Ronaldus, Domed City of Grimacia, Hamburglaris Shield Generator, The X-32-F Combat Training Snowman, The Haiku Dungeon, The Deep Machine Tunnels, The Oasis, Shadow Rift, The Island Barracks"])));
   var cookbookbatQuestLocations = locationsWithMonsters.filter(function(l) {
     return canAdventureOrUnlock(l, false) && !canAdvExclusions.includes(l);
   });
