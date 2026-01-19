@@ -86,6 +86,7 @@ import {
   GingerBread,
   have,
   Latte,
+  LegendarySealClubbingClub,
   maxBy,
   PocketProfessor,
   property,
@@ -2171,6 +2172,11 @@ const freeKills: FreeKill[] = [
   {
     macro: $item`replica bat-oomerang`,
     used: () => get("_usedReplicaBatoomerang") >= 3,
+  },
+  {
+    macro: $skill`Club 'Em Back in Time`,
+    used: () => LegendarySealClubbingClub.clubBackInTimeAvailable() <= 0,
+    spec: { weapon: $item`legendary seal-clubbing club` },
   },
 ];
 const canUseSource = ({ spec, macro, used }: FreeKill) =>
