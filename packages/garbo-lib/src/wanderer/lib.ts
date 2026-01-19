@@ -28,12 +28,12 @@ import {
   GingerBread,
   have,
   haveInCampground,
+  NumericProperty,
   questStep,
   realmAvailable,
   sum,
   undelay,
 } from "libram";
-import { NumericProperty } from "libram/dist/propertyTypes";
 
 export const draggableFights = [
   "backup",

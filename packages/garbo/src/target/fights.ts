@@ -39,13 +39,14 @@ import {
   have,
   HeavyRains,
   LegendarySealClubbingClub,
+  MonsterProperty,
+  NumericProperty,
   property,
   set,
   SourceTerminal,
   sum,
   Witchess,
 } from "libram";
-import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
 
 import {
   garboAdventure,
