@@ -947,7 +947,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
   {
     name: "Club Into Next Week Monster",
-    completed: () => Counter.get("Club 'Em Into Next Week Monster") > 0,
+    completed: () => LegendarySealClubbingClub.turnsUntilNextWeekFight() > 0,
     outfit: () =>
       LegendarySealClubbingClub.clubIntoNextWeekMonster() ===
       globalOptions.target
