@@ -35,9 +35,9 @@ import { globalOptions } from "../config";
 import { meatFamiliar } from "../familiar";
 import { BonusEquipMode, targetMeat } from "../lib";
 import {
-  digitizedMonstersRemaining,
   estimatedGarboTurns,
   highMeatMonsterCount,
+  wanderingCopytargetsRemaining,
 } from "../turns";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
@@ -100,7 +100,7 @@ export function useUPCsIfNeeded({ familiar }: Outfit): void {
   const currentWeapon =
     25 * (familiar ? findLeprechaunMultiplier(familiar) : 0);
   const targets = globalOptions.ascend
-    ? Math.min(20, highMeatMonsterCount() || digitizedMonstersRemaining())
+    ? Math.min(20, highMeatMonsterCount() || wanderingCopytargetsRemaining())
     : 20;
 
   const addedValueOfFullSword =

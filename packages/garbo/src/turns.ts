@@ -18,6 +18,7 @@ import {
   targetingMeat,
 } from "./lib";
 import { embezzlerFights, LuckySource } from "./tasks/embezzler";
+import { nextWeekFights } from "./resources/sealclub";
 
 /**
  * Computes the estimated number of turns during which garbo will run
@@ -137,10 +138,12 @@ function potentialNonOrganAdventures(): number {
   return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
 }
 
-export function digitizedMonstersRemaining() {
-  return digitizedMonstersRemainingForTurns(estimatedGarboTurns());
+export function wanderingCopytargetsRemaining() {
+  // Todo: account for not having enough turns to do all your nextweek fights
+  return (
+    digitizedMonstersRemainingForTurns(estimatedGarboTurns()) + nextWeekFights()
+  );
 }
-
 export function highMeatMonsterCount(...excludedEmbezzlers: LuckySource[]) {
   const meatTargets = targetingMeat() ? copyTargetCount() : 0;
   const embezzlers = embezzlerFights(...excludedEmbezzlers);

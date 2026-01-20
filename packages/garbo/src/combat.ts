@@ -58,7 +58,7 @@ import {
 } from "libram";
 import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "./turns";
+import { estimatedGarboTurns, wanderingCopytargetsRemaining } from "./turns";
 import {
   gooseDroneEligible,
   isStrongScaler,
@@ -232,6 +232,11 @@ export class Macro extends StrictMacro {
           get("_enamorangs") < 5 && !get("enamorangMonster"),
           Macro.tryHaveItem(itemOrSkill),
         );
+      case $skill`Club 'Em Into Next Week`:
+        return this.externalIf(
+          haveEquipped($item`legendary seal-clubbing club`),
+          Macro.trySkill(itemOrSkill),
+        );
       case $skill`Digitize`:
         return this.externalIf(
           SourceTerminal.canDigitize(),
@@ -321,7 +326,7 @@ export class Macro extends StrictMacro {
         ),
       )
       .externalIf(
-        digitizedMonstersRemaining() <= 5 - get("_meteorShowerUses") &&
+        wanderingCopytargetsRemaining() <= 5 - get("_meteorShowerUses") &&
           have($skill`Meteor Lore`) &&
           get("_meteorShowerUses") < 5,
         Macro.if_(globalOptions.target, Macro.trySkill($skill`Meteor Shower`)),
@@ -865,6 +870,7 @@ export class Macro extends StrictMacro {
           get("_enamorangs") === 0,
           Macro.tryCopier($item`LOV Enamorang`),
         )
+        .tryCopier($skill`Club 'Em Into Next Week`)
         .meatKill(false),
     ).abortWithMsg(
       `Macro for ${action} expected ${globalOptions.target} but encountered something else.`,
