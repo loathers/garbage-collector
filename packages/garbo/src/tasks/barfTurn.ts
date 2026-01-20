@@ -249,8 +249,8 @@ function shouldGoUnderwater(): boolean {
  * @param nonTargetKillMacro - Macro to use otherwise (defaults to Macro.kill())
  */
 function digitizeMacros(
-  targetKillMacro: Macro,
-  nonTargetKillMacro: Macro = Macro.kill(),
+  targetKillMacro: () => Macro,
+  nonTargetKillMacro: () => Macro = () => Macro.kill(),
 ): [() => Macro, () => Macro] {
   const makeMacro =
     (useAutoattackCondition: boolean): (() => Macro) =>
@@ -264,8 +264,8 @@ function digitizeMacros(
         condition,
         Macro.externalIf(
           digitizeMonster === globalOptions.target,
-          targetKillMacro,
-          nonTargetKillMacro,
+          undelay(targetKillMacro),
+          undelay(nonTargetKillMacro),
         ),
       ).abortWithMsg(
         `Expected a digitized ${digitizeMonster}, but encountered something else.`,
@@ -915,7 +915,7 @@ const BarfTurnTasks: GarboTask[] = [
     do: $location`The Briny Deeps`,
     outfit: () => meatTargetOutfit({}, $location`The Briny Deeps`),
     combat: new GarboStrategy(
-      ...digitizeMacros(Macro.item($item`pulled green taffy`).meatKill()),
+      ...digitizeMacros(() => Macro.item($item`pulled green taffy`).meatKill()),
     ),
     sobriety: "sober",
     spendsTurn: true,
@@ -944,7 +944,7 @@ const BarfTurnTasks: GarboTask[] = [
         wanderer: "wanderer",
         allowEquipment: false,
       }),
-    combat: new GarboStrategy(...digitizeMacros(Macro.meatKill())),
+    combat: new GarboStrategy(...digitizeMacros(() => Macro.meatKill())),
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
   },
