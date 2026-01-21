@@ -24326,7 +24326,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("270a56897318ce31657ffd05b2ebf1d39104ce58", ")"));
+      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("39236e8a9d657896d198b9c55a851a0e6a9c1f47", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia87.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -40627,14 +40627,13 @@ function shouldGoUnderwater() {
   }
   return false;
 }
-function digitizeMacros(targetKillMacro) {
-  var nonTargetKillMacro = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : Macro2.kill();
+function digitizeMacros(prepend) {
   var makeMacro = function(useAutoattackCondition) {
     return function() {
-      var _SourceTerminal$getDi;
+      var _SourceTerminal$getDi, _undelay;
       var digitizeMonster = (_SourceTerminal$getDi = SourceTerminal_exports.getDigitizeMonster()) !== null && _SourceTerminal$getDi !== void 0 ? _SourceTerminal$getDi : $monster.none;
       var condition = useAutoattackCondition ? digitizeMonster : "(monsterid ".concat(digitizeMonster.id, ") && !gotjump && !(pastround 2)");
-      return Macro2.if_(condition, Macro2.externalIf(digitizeMonster === globalOptions.target, targetKillMacro, nonTargetKillMacro)).abortWithMsg("Expected a digitized ".concat(digitizeMonster, ", but encountered something else."));
+      return Macro2.if_(condition, Macro2.externalIf(digitizeMonster === globalOptions.target, ((_undelay = undelay(prepend)) !== null && _undelay !== void 0 ? _undelay : new Macro2()).meatKill(), Macro2.kill())).abortWithMsg("Expected a digitized ".concat(digitizeMonster, ", but encountered something else."));
     };
   };
   return [makeMacro(true), makeMacro(false)];
@@ -41285,7 +41284,7 @@ var BarfTurnTasks = [{
   outfit: function() {
     return meatTargetOutfit({}, $location(_templateObject1306 || (_templateObject1306 = _taggedTemplateLiteral132(["The Briny Deeps"]))));
   },
-  combat: _construct4(GarboStrategy, _toConsumableArray74(digitizeMacros(Macro2.item($item(_templateObject13114 || (_templateObject13114 = _taggedTemplateLiteral132(["pulled green taffy"])))).meatKill()))),
+  combat: _construct4(GarboStrategy, _toConsumableArray74(digitizeMacros(Macro2.item($item(_templateObject13114 || (_templateObject13114 = _taggedTemplateLiteral132(["pulled green taffy"]))))))),
   sobriety: "sober",
   spendsTurn: true
 }, {
@@ -41314,7 +41313,7 @@ var BarfTurnTasks = [{
       allowEquipment: false
     });
   },
-  combat: _construct4(GarboStrategy, _toConsumableArray74(digitizeMacros(Macro2.meatKill()))),
+  combat: _construct4(GarboStrategy, _toConsumableArray74(digitizeMacros())),
   spendsTurn: function() {
     var _SourceTerminal$getDi2;
     return !((_SourceTerminal$getDi2 = SourceTerminal_exports.getDigitizeMonster()) !== null && _SourceTerminal$getDi2 !== void 0 && _SourceTerminal$getDi2.attributes.includes("FREE"));
@@ -41322,7 +41321,7 @@ var BarfTurnTasks = [{
 }, {
   name: "Club Into Next Week Monster",
   completed: function() {
-    return counter_exports.get("Club 'Em Into Next Week Monster") > 0;
+    return LegendarySealClubbingClub_exports.turnsUntilNextWeekFight() > 0;
   },
   outfit: function() {
     return LegendarySealClubbingClub_exports.clubIntoNextWeekMonster() === globalOptions.target ? meatTargetOutfit(mimicSpec(), {
