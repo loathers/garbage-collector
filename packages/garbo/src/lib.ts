@@ -149,7 +149,7 @@ export function modeValueOfItem(mode: BonusEquipMode): number {
 
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
-export const ESTIMATED_OVERDRUNK_TURNS = 40;
+export const ESTIMATED_OVERDRUNK_TURNS = 50;
 export const MEAT_TARGET_MULTIPLIER = (): number =>
   globalOptions.prefs.meatTargetMultiplier;
 
