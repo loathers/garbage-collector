@@ -129,9 +129,9 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       default: false,
     }),
     usepilsners: Args.flag({
-      setting: "",
+      setting: "garbo_usePilsners",
       help: "Use instant pilsners as part of diet",
-      default: false,
+      default: true,
     }),
     halt: Args.string({
       setting: "",
