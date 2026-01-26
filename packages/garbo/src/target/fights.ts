@@ -38,13 +38,15 @@ import {
   getBanishedMonsters,
   have,
   HeavyRains,
+  LegendarySealClubbingClub,
+  MonsterProperty,
+  NumericProperty,
   property,
   set,
   SourceTerminal,
   sum,
   Witchess,
 } from "libram";
-import { MonsterProperty, NumericProperty } from "libram/dist/propertyTypes";
 
 import {
   garboAdventure,
@@ -66,6 +68,7 @@ import {
   equipOrbIfDesired,
   gregReady,
   monsterIsInEggnet,
+  nextWeekFights,
   possibleGregCrystalBall,
   totalGregCharges,
 } from "../resources";
@@ -495,6 +498,18 @@ export const wanderSources = [
       (have($item`LOV Enamorang`) && !get("_enamorangs"))
         ? 1
         : 0,
+    undefined,
+    {
+      draggable: "wanderer",
+    },
+  ),
+  new CopyTargetFight(
+    "Legendary Seal Clubbing Club",
+    () =>
+      Counter.get("Club 'Em Into Next Week Monster") <= 0 &&
+      LegendarySealClubbingClub.clubIntoNextWeekMonster() ===
+        globalOptions.target,
+    nextWeekFights,
     undefined,
     {
       draggable: "wanderer",
