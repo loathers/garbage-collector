@@ -247,6 +247,17 @@ function extraValue(
   return Math.max(targetValue - Math.max(meatFamiliarValue, jellyfishValue), 0);
 }
 
+const familiarPrintout = ({
+  expectedValue,
+  familiar,
+  outfitValue,
+}: MarginalFamiliar) =>
+  `(expected value of ${expectedValue.toFixed(
+    1,
+  )} from familiar drops, ${familiarAbilityValue(familiar).toFixed(
+    1,
+  )} from familiar abilities and ${outfitValue.toFixed(1)} from outfit)`;
+
 export function barfFamiliar(equipmentForced: boolean): {
   familiar: Familiar;
   extraValue: number;
@@ -302,7 +313,9 @@ export function barfFamiliar(equipmentForced: boolean): {
     return normal;
   });
 
-  const meatFamiliarEntry = fullMenu.find(({ familiar }) => familiar === meat);
+  const meatFamiliarEntry = fullMenu.find(
+    ({ familiar, limit }) => familiar === meat && limit !== "cupid",
+  );
 
   if (!meatFamiliarEntry) {
     throw new Error("Something went wrong when initializing familiars!");
@@ -312,7 +325,7 @@ export function barfFamiliar(equipmentForced: boolean): {
   // Ultimately, using our meat familiar all day is the default behavior
   // so any familiar worse than that isn't worth spending any time thinking about
   const viableMenu = fullMenu.filter(
-    (f) => totalFamiliarValue(f) > meatFamiliarValue,
+    (f) => totalFamiliarValue(f) >= meatFamiliarValue,
   );
 
   if (viableMenu.length === 0) {
@@ -327,37 +340,36 @@ export function barfFamiliar(equipmentForced: boolean): {
     ? maxBy(unlimitedCruisingFamiliars, totalFamiliarValue)
     : meatFamiliarEntry;
 
-  const turnsNeeded = sum(
-    viableMenu,
-    turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars),
+  const cruisingFamiliarValue = totalFamiliarValue(cruisingFamiliar);
+
+  // Only consider familiars better than our best unlimited familiar
+  const finalMenu = viableMenu.filter(
+    (f) => totalFamiliarValue(f) >= cruisingFamiliarValue,
   );
 
-  // If there aren't enough turns left in the day to get value out of fams that aren't our "cruising" familiar, just return that
-  // With a special exception for crimbo shrub
-  if (turnsNeeded < turnsAvailable()) {
-    const shrubAvailable = viableMenu.some(
-      ({ familiar }) => familiar === $familiar`Crimbo Shrub`,
-    );
+  // If the shrub beats our cruising familiar, use it
+  const shrubAvailable = finalMenu.some(
+    ({ familiar }) => familiar === $familiar`Crimbo Shrub`,
+  );
+
+  if (shrubAvailable) {
     return {
-      familiar: shrubAvailable
-        ? $familiar`Crimbo Shrub`
-        : cruisingFamiliar.familiar,
+      familiar: $familiar`Crimbo Shrub`,
       extraValue: 0,
     };
   }
 
-  const best = maxBy(viableMenu, totalFamiliarValue);
+  const turnsNeeded = sum(
+    finalMenu,
+    turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars),
+  );
 
-  const familiarPrintout = ({
-    expectedValue,
-    familiar,
-    outfitValue,
-  }: MarginalFamiliar) =>
-    `(expected value of ${expectedValue.toFixed(
-      1,
-    )} from familiar drops, ${familiarAbilityValue(familiar).toFixed(
-      1,
-    )} from familiar abilities and ${outfitValue.toFixed(1)} from outfit)`;
+  // If we have enough turns to get all the drops we need, prioritize by using our best leprechauns first
+  // Otherwise, prioritize by using the most valuable familiar
+  const best =
+    turnsNeeded < turnsAvailable()
+      ? maxBy(finalMenu, "leprechaunMultiplier")
+      : maxBy(finalMenu, totalFamiliarValue);
 
   print(
     `Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${
