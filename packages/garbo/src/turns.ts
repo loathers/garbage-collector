@@ -23,7 +23,10 @@ import { embezzlerFights, LuckySource } from "./tasks/embezzler";
  * Computes the estimated number of turns during which garbo will run
  * @returns A guess of how many runs garbo will run in total
  */
-export function estimatedGarboTurns(estimateEmptyOrgans = true, potions = false): number {
+export function estimatedGarboTurns(
+  estimateEmptyOrgans = true,
+  potions = false,
+): number {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
   const pantsgivingAdventures = have($item`Pantsgiving`)
     ? Math.max(0, 2 - get("_pantsgivingFullness")) * 8
@@ -133,7 +136,7 @@ function potentialNonOrganAdventures(potions: boolean): number {
   const chocolateAdventures =
     ((3 - get("_chocolatesUsed")) * (4 - get("_chocolatesUsed"))) / 2;
 
-    const extraTurns = potions ? 30 : 0;
+  const extraTurns = potions ? 30 : 0;
 
   return borrowedTimeAdventures + chocolateAdventures + extraTurns;
 }

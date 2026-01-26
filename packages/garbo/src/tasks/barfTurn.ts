@@ -1357,7 +1357,8 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       do: () => CrepeParachute.fight(getPreferredBarfMonster()),
       combat: new GarboStrategy(() => Macro.meatKill()),
       prepare: () =>
-        !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns(false, true)),
+        !(totalTurnsPlayed() % 11) &&
+        meatMood().execute(estimatedGarboTurns(false, true)),
       post: () => {
         if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
         completeBarfQuest();

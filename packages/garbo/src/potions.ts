@@ -920,7 +920,10 @@ class VariableMeatPotion {
   }
 
   getOptimalNumberToUse(yachtzees: number, targets: number): number {
-    const barfTurns = Math.max(0, estimatedGarboTurns(false, true) - yachtzees - targets);
+    const barfTurns = Math.max(
+      0,
+      estimatedGarboTurns(false, true) - yachtzees - targets,
+    );
 
     const potionAmountsToConsider: number[] = [];
     const considerSoftcap = [0, this.softcap];

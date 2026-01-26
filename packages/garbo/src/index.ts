@@ -609,7 +609,7 @@ export function main(argString = ""): void {
           // 3. burn turns at barf
           potionSetup(false);
           maximize("MP", false);
-          meatMood().execute(estimatedGarboTurns(false,true));
+          meatMood().execute(estimatedGarboTurns(false, true));
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
           if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
