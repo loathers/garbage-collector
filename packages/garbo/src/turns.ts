@@ -24,7 +24,10 @@ import { nextWeekFights } from "./resources/sealclub";
  * Computes the estimated number of turns during which garbo will run
  * @returns A guess of how many runs garbo will run in total
  */
-export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
+export function estimatedGarboTurns(
+  estimateEmptyOrgans = true,
+  potions = false,
+): number {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
   const pantsgivingAdventures = have($item`Pantsgiving`)
     ? Math.max(0, 2 - get("_pantsgivingFullness")) * 8
@@ -45,7 +48,7 @@ export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
     ? Math.max(
         potentialFullnessAdventures() +
           potentialInebrietyAdventures() +
-          potentialNonOrganAdventures(),
+          potentialNonOrganAdventures(potions),
         0,
       )
     : 0;
@@ -82,11 +85,11 @@ export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
  * Computes the estimated number of turns left that the user will use outside garbo
  * @returns A guess of how many turns will be used outside garbo
  */
-export function remainingUserTurns(): number {
+export function remainingUserTurns(potions = false): number {
   const dietAdventures = Math.max(
     potentialFullnessAdventures() +
       potentialInebrietyAdventures() +
-      potentialNonOrganAdventures(),
+      potentialNonOrganAdventures(potions),
     0,
   );
   const turns =
@@ -128,14 +131,15 @@ function potentialInebrietyAdventures(): number {
   );
 }
 
-function potentialNonOrganAdventures(): number {
+function potentialNonOrganAdventures(potions: boolean): number {
   const borrowedTimeAdventures =
     globalOptions.ascend && !get("_borrowedTimeUsed") ? 20 : 0;
   const chocolateAdventures =
     ((3 - get("_chocolatesUsed")) * (4 - get("_chocolatesUsed"))) / 2;
-  const bufferAdventures = 30; // We don't know if garbo would decide to use melange/voraci tea/sweet tooth to get more adventures
 
-  return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
+  const extraTurns = potions ? 30 : 0;
+
+  return borrowedTimeAdventures + chocolateAdventures + extraTurns;
 }
 
 export function wanderingCopytargetsRemaining() {

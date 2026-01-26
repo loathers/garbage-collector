@@ -1380,7 +1380,8 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       do: () => CrepeParachute.fight(getPreferredBarfMonster()),
       combat: new GarboStrategy(() => Macro.meatKill()),
       prepare: () =>
-        !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
+        !(totalTurnsPlayed() % 11) &&
+        meatMood().execute(estimatedGarboTurns(false, true)),
       post: () => {
         if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
         completeBarfQuest();
@@ -1408,7 +1409,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       prepare: () =>
         !get("dinseyRollercoasterNext") &&
         !(totalTurnsPlayed() % 11) &&
-        meatMood().execute(estimatedGarboTurns()),
+        meatMood().execute(estimatedGarboTurns(false, true)),
       post: () => {
         completeBarfQuest();
         trackMarginalMpa();
