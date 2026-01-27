@@ -604,7 +604,7 @@ export function main(argString = ""): void {
         setDefaultMaximizeOptions({
           forceEquip: globalOptions.overcapped
             ? $items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`
-            : undefined,
+            : [],
           preventEquip: preventEquip,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
