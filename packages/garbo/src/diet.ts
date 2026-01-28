@@ -96,6 +96,7 @@ import {
 } from "./resources";
 import {
   arrayEquals,
+  availableOvercapEquipment,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
   targetingMeat,
@@ -106,6 +107,7 @@ import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { garboValue } from "./garboValue";
+import { Outfit } from "grimoire-kolmafia";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -1457,6 +1459,10 @@ export function runDiet(): void {
         $classes`Turtle Tamer, Accordion Thief`.includes(myClass())
       ) {
         cliExecute("barrelprayer buff");
+      }
+
+      if (globalOptions.overcapped) {
+        Outfit.from({ equip: availableOvercapEquipment })?.dress();
       }
 
       consumeDiet(dietBuilder.diet(), "FULL");

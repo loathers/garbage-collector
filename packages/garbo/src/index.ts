@@ -64,6 +64,7 @@ import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
 import {
+  availableOvercapEquipment,
   bestJuneCleaverOption,
   checkGithubVersion,
   HIGHLIGHT,
@@ -594,8 +595,15 @@ export function main(argString = ""): void {
             ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`,
           );
         }
+        if (!globalOptions.overcapped) {
+          // Avoid equipping organ expanders so that we don't accidentally overcap during incidental diet tasks (pantsgiving, sweatpants)
+          preventEquip.push(
+            ...$items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`,
+          );
+        }
 
         setDefaultMaximizeOptions({
+          forceEquip: globalOptions.overcapped ? availableOvercapEquipment : [],
           preventEquip: preventEquip,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });

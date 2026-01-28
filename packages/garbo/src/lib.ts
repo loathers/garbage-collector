@@ -1208,3 +1208,8 @@ export function mainStatLevel(level: number): number {
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
+
+export const availableOvercapEquipment =
+  $items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`.filter(
+    (i) => have(i),
+  );
