@@ -58,13 +58,13 @@ import {
 import { acquire } from "./acquire";
 import {
   aprilFoolsRufus,
-  availableOvercapEquipment,
   baseMeat,
   bestShadowRift,
   HIGHLIGHT,
   improvesAStat,
   marginalFamWeightValue,
   pillkeeperOpportunityCost,
+  requiredOvercapEquipment,
   targetMeat,
   targetMeatDifferential,
   turnsToNC,
@@ -611,7 +611,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
       const curTurncount = myTurncount();
       if (have($item`Rufus's shadow lodestone`)) {
         if (globalOptions.overcapped) {
-          Outfit.from({ equip: availableOvercapEquipment })?.dress();
+          Outfit.from({ equip: requiredOvercapEquipment })?.dress();
         }
         withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
       }

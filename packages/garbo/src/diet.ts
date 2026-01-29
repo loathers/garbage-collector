@@ -96,9 +96,9 @@ import {
 } from "./resources";
 import {
   arrayEquals,
-  availableOvercapEquipment,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
+  requiredOvercapEquipment,
   targetingMeat,
   targetMeat,
   userConfirmDialog,
@@ -1462,7 +1462,7 @@ export function runDiet(): void {
       }
 
       if (globalOptions.overcapped) {
-        Outfit.from({ equip: availableOvercapEquipment })?.dress();
+        Outfit.from({ equip: requiredOvercapEquipment })?.dress();
       }
 
       consumeDiet(dietBuilder.diet(), "FULL");

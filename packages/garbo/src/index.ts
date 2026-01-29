@@ -64,7 +64,6 @@ import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
 import {
-  availableOvercapEquipment,
   bestJuneCleaverOption,
   checkGithubVersion,
   HIGHLIGHT,
@@ -73,6 +72,7 @@ import {
   printLog,
   propertyManager,
   questStep,
+  requiredOvercapEquipment,
   safeRestore,
   targetingMeat,
   userConfirmDialog,
@@ -603,7 +603,7 @@ export function main(argString = ""): void {
         }
 
         setDefaultMaximizeOptions({
-          forceEquip: globalOptions.overcapped ? availableOvercapEquipment : [],
+          forceEquip: globalOptions.overcapped ? requiredOvercapEquipment : [],
           preventEquip: preventEquip,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
