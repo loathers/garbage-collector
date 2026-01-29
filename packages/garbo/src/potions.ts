@@ -398,7 +398,8 @@ export class Potion {
   ): { name: PotionTier; quantity: number; value: number }[] {
     const startingTurns = haveEffect(this.effect());
     const ascending = globalOptions.ascend;
-    const totalTurns = turns ?? estimatedGarboTurns(false, true);
+    const BUFFER_TURNS = 30;
+    const totalTurns = turns ?? estimatedGarboTurns() + BUFFER_TURNS;
     const values: {
       name: PotionTier;
       quantity: number;
@@ -920,9 +921,10 @@ class VariableMeatPotion {
   }
 
   getOptimalNumberToUse(yachtzees: number, targets: number): number {
+    const BUFFER_TURNS = 30;
     const barfTurns = Math.max(
       0,
-      estimatedGarboTurns(false, true) - yachtzees - targets,
+      estimatedGarboTurns() + BUFFER_TURNS - yachtzees - targets,
     );
 
     const potionAmountsToConsider: number[] = [];
@@ -1077,7 +1079,8 @@ export function effectExtenderValue(
   maximumNumberOfEffects?: number,
 ): number {
   const targets = highMeatMonsterCount();
-  const turns = estimatedGarboTurns(false, true);
+  const BUFFER_TURNS = 30;
+  const turns = estimatedGarboTurns() + BUFFER_TURNS;
   return (
     sum(getActiveEffects(), (effect) => {
       const skill = toSkill(effect);

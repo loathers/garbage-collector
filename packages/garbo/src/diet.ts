@@ -1011,7 +1011,7 @@ function balanceMenu(
     const fullMenu = potionMenu(
       menu,
       baseTargets + targets,
-      estimatedGarboTurns(false, true) + adventures,
+      estimatedGarboTurns(false) + adventures,
     );
     if (iterations <= 0) {
       return fullMenu;
