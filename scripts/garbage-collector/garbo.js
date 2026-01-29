@@ -21720,6 +21720,11 @@ var globalOptions = Args.create("garbo", 'This script is an automated turn-burni
     help: "Use instant karma as part of diet",
     default: false
   }),
+  usepilsners: Args.flag({
+    setting: "garbo_usePilsners",
+    help: "Use instant pilsners as part of diet",
+    default: true
+  }),
   halt: Args.string({
     setting: "",
     help: "Halt after a grimoire task is run that contains this sub-string. If a task is skipped this will not trigger."
@@ -24326,7 +24331,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("39236e8a9d657896d198b9c55a851a0e6a9c1f47", ")"));
+      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7bfbcff50f5c984e17b14d9b681c4ffc5b12b4ef", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia87.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -25729,9 +25734,9 @@ function menu() {
   var boxingDayCareItems = $items(_templateObject8310 || (_templateObject8310 = _taggedTemplateLiteral80(["glass of raw eggs, punch-drunk punch"]))).filter(function(item14) {
     return have(item14);
   });
-  var pilsners = $items(_templateObject8410 || (_templateObject8410 = _taggedTemplateLiteral80(["astral pilsner"]))).filter(function(item14) {
+  var pilsners = globalOptions.usepilsners || globalOptions.ascend ? $items(_templateObject8410 || (_templateObject8410 = _taggedTemplateLiteral80(["astral pilsner"]))).filter(function(item14) {
     return have(item14);
-  });
+  }) : [];
   var instantKarma = globalOptions.usekarma ? $items(_templateObject854 || (_templateObject854 = _taggedTemplateLiteral80(["Instant Karma"]))).filter(function(item14) {
     return have(item14);
   }) : [];
