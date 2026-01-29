@@ -119,8 +119,8 @@ function expandCombinationGroup<N extends number>(
   return [
     ...getAvailableResonances(forbiddenSymbols)
       .filter((resonance) => {
-        const rightmostIndex = Math.max(...group.map(resonanceIndex));
-        return resonanceIndex(resonance) > rightmostIndex;
+        const leftmostIndex = Math.min(...group.map(resonanceIndex));
+        return resonanceIndex(resonance) < leftmostIndex;
       })
       .map(
         (resonance) =>
