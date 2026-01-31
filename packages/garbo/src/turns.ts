@@ -133,9 +133,8 @@ function potentialNonOrganAdventures(): number {
     globalOptions.ascend && !get("_borrowedTimeUsed") ? 20 : 0;
   const chocolateAdventures =
     ((3 - get("_chocolatesUsed")) * (4 - get("_chocolatesUsed"))) / 2;
-  const bufferAdventures = 30; // We don't know if garbo would decide to use melange/voraci tea/sweet tooth to get more adventures
 
-  return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
+  return borrowedTimeAdventures + chocolateAdventures;
 }
 
 export function wanderingCopytargetsRemaining() {

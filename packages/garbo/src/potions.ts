@@ -195,6 +195,8 @@ export const VALUABLE_MODIFIERS = [
   "Item Drop",
 ] as const;
 
+const BUFFER_TURNS = 30;
+
 export class Potion {
   potion: Item;
   providesDoubleDuration?: boolean;
@@ -398,7 +400,8 @@ export class Potion {
   ): { name: PotionTier; quantity: number; value: number }[] {
     const startingTurns = haveEffect(this.effect());
     const ascending = globalOptions.ascend;
-    const totalTurns = turns ?? estimatedGarboTurns();
+    const BUFFER_TURNS = 30;
+    const totalTurns = turns ?? estimatedGarboTurns() + BUFFER_TURNS;
     const values: {
       name: PotionTier;
       quantity: number;
@@ -920,7 +923,10 @@ class VariableMeatPotion {
   }
 
   getOptimalNumberToUse(yachtzees: number, targets: number): number {
-    const barfTurns = Math.max(0, estimatedGarboTurns() - yachtzees - targets);
+    const barfTurns = Math.max(
+      0,
+      estimatedGarboTurns() + BUFFER_TURNS - yachtzees - targets,
+    );
 
     const potionAmountsToConsider: number[] = [];
     const considerSoftcap = [0, this.softcap];
@@ -1074,7 +1080,7 @@ export function effectExtenderValue(
   maximumNumberOfEffects?: number,
 ): number {
   const targets = highMeatMonsterCount();
-  const turns = estimatedGarboTurns();
+  const turns = estimatedGarboTurns() + BUFFER_TURNS;
   return (
     sum(getActiveEffects(), (effect) => {
       const skill = toSkill(effect);
