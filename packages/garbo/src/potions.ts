@@ -195,6 +195,8 @@ export const VALUABLE_MODIFIERS = [
   "Item Drop",
 ] as const;
 
+const BUFFER_TURNS = 30;
+
 export class Potion {
   potion: Item;
   providesDoubleDuration?: boolean;
@@ -921,7 +923,6 @@ class VariableMeatPotion {
   }
 
   getOptimalNumberToUse(yachtzees: number, targets: number): number {
-    const BUFFER_TURNS = 30;
     const barfTurns = Math.max(
       0,
       estimatedGarboTurns() + BUFFER_TURNS - yachtzees - targets,
@@ -1079,7 +1080,6 @@ export function effectExtenderValue(
   maximumNumberOfEffects?: number,
 ): number {
   const targets = highMeatMonsterCount();
-  const BUFFER_TURNS = 30;
   const turns = estimatedGarboTurns() + BUFFER_TURNS;
   return (
     sum(getActiveEffects(), (effect) => {
