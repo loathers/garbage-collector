@@ -11,7 +11,7 @@ on:
 
 env:
   # Default version of Node.js for jobs
-  node-version: "18"
+  node-version: "20"
 
 jobs:
   test-script:
@@ -26,7 +26,7 @@ jobs:
           cache: yarn
       - run: yarn install --immutable --immutable-cache
       - run: yarn workspace garbo-lib build
-      - run: yarn workspace garbo run check
+      - run: yarn check
       #- run: yarn run test TODO: Readd once we have tests
 
   lint-all:
@@ -43,23 +43,9 @@ jobs:
       - run: yarn workspace garbo-lib build
       - run: yarn run lint
 
-  circular-dependencies-all:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.node-version }}
-          cache: yarn
-      - run: yarn install --immutable --immutable-cache
-      - run: yarn workspace garbo-lib build
-      - run: yarn madge
-
   deploy:
     runs-on: ubuntu-latest
-    needs: [test-script, lint-all, circular-dependencies-all]
+    needs: [test-script, lint-all]
     if: github.ref == 'refs/heads/main'
 
     steps:

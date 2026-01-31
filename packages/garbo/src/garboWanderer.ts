@@ -1,13 +1,19 @@
-import { Effect, getMonsters, Location } from "kolmafia";
-import { WandererManager } from "garbo-lib";
+import { getMonsters, Location, Monster } from "kolmafia";
+import { WanderDetails, WandererManager } from "garbo-lib";
 
 import { globalOptions } from "./config";
 import { freeFightFamiliarData } from "./familiar/freeFightFamiliar";
 import { estimatedGarboTurns } from "./turns";
-import { $item, $location, $monsters, get, have } from "libram";
+import {
+  $item,
+  $location,
+  $monsters,
+  AdventureTarget,
+  get,
+  have,
+} from "libram";
 import { garboValue } from "./garboValue";
-import { Potion } from "./potions";
-import { copyTargetCount } from "./embezzler/fights";
+import { effectValue } from "./potions";
 import { digitizedMonstersRemainingForTurns } from "./lib";
 
 let _wanderer: WandererManager | undefined;
@@ -17,11 +23,10 @@ export function wanderer(): WandererManager {
       ascend: globalOptions.ascend,
       estimatedTurns: estimatedGarboTurns,
       itemValue: garboValue,
-      effectValue: (effect: Effect, duration: number) =>
-        new Potion($item.none, { effect, duration }).gross(copyTargetCount()),
+      effectValue,
       prioritizeCappingGuzzlr: get("garbo_prioritizeCappingGuzzlr", false),
       freeFightExtraValue: (location: Location) =>
-        freeFightFamiliarData({ location }).expectedValue,
+        freeFightFamiliarData(location).expectedValue,
       digitzesRemaining: digitizedMonstersRemainingForTurns,
       plentifulMonsters: [
         globalOptions.target,
@@ -30,7 +35,29 @@ export function wanderer(): WandererManager {
           ? $monsters`sausage goblin`
           : []),
       ],
+      valueOfAdventure: get("valueOfAdventure"),
+      takeTurnForProfit: true,
     });
   }
   return _wanderer;
+}
+
+export type Destination = Location | WanderDetails;
+export const destinationToLocation = (destination: Destination): Location =>
+  destination instanceof Location
+    ? destination
+    : wanderer().getTarget(destination).location;
+export type Adventure = { target: AdventureTarget; location: Location };
+export type AdventureArgument =
+  | Monster
+  | Destination
+  | { target: Monster; location: Destination };
+export function toAdventure(arg: AdventureArgument): Adventure {
+  if (arg instanceof Monster) return { target: arg, location: $location.none };
+  if (arg instanceof Location) return { target: arg, location: arg };
+  if (typeof arg === "string" || !("target" in arg)) {
+    const location = wanderer().getTarget(arg).location;
+    return { target: location, location };
+  }
+  return { target: arg.target, location: destinationToLocation(arg.location) };
 }

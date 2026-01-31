@@ -23,7 +23,7 @@ function bestVykeaLevel(): number {
   const vykeaProfit = (vykea: { level: number; dowelCost: number }) => {
     const { level, dowelCost } = vykea;
     return (
-      estimatedGarboTurns() * baseMeat * 0.1 * level -
+      estimatedGarboTurns() * baseMeat() * 0.1 * level -
       (5 * mallPrice($item`VYKEA rail`) +
         dowelCost * mallPrice($item`VYKEA dowel`) +
         5 * mallPrice($item`VYKEA plank`) +

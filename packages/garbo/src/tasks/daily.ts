@@ -13,6 +13,7 @@ import {
   gnomadsAvailable,
   guildStoreAvailable,
   handlingChoice,
+  haveEquipped,
   holiday,
   inebrietyLimit,
   isOnline,
@@ -23,17 +24,15 @@ import {
   myClass,
   myDaycount,
   myHash,
-  myHp,
   myInebriety,
-  myMaxhp,
   myPath,
   myPrimestat,
   print,
   putCloset,
-  restoreHp,
   retrieveItem,
   runChoice,
   toSlot,
+  totalTurnsPlayed,
   toUrl,
   use,
   visitUrl,
@@ -47,13 +46,13 @@ import {
   $items,
   $location,
   $monster,
-  $skill,
   $slot,
   BeachComb,
   Clan,
   findLeprechaunMultiplier,
   get,
   getModifier,
+  getTodaysHolidayWanderers,
   have,
   maxBy,
   Pantogram,
@@ -61,26 +60,37 @@ import {
   realmAvailable,
   SongBoom,
   SourceTerminal,
-  uneffect,
+  sumNumbers,
+  unequip,
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
+import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
-import { estimatedTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT } from "../lib";
+import { estimatedAttunementTentacles } from "../fights";
+import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
-import { digitizedMonstersRemaining, estimatedGarboTurns } from "../turns";
+import {
+  estimatedGarboTurns,
+  highMeatMonsterCount,
+  wanderingCopytargetsRemaining,
+} from "../turns";
 import { GarboTask } from "./engine";
 import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   attemptCompletingBarfQuest,
+  checkAndCorrectLatteMalformation,
   checkBarfQuest,
   checkVolcanoQuest,
 } from "../resources";
+import { Macro } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
+import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
+import { embezzlerFights } from "./embezzler";
 
+const photoBoothItems = $items`Sheriff badge, Sheriff pistol, Sheriff moustache, feather boa, oversized monocle on a stick, fake huge beard`;
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
 const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 
@@ -107,14 +117,14 @@ function voterSetup(): void {
     [
       "Meat Drop: +30",
       0.3 *
-        ((baseMeat + 750) * copyTargetCount() +
-          baseMeat * (estimatedGarboTurns() - copyTargetCount())),
+        ((1000 + songboomMeat()) * embezzlerFights() +
+          targetMeat() * copyTargetCount() +
+          baseMeat() *
+            (estimatedGarboTurns() - copyTargetCount() - embezzlerFights())),
     ],
     [
       "Item Drop: +15",
-      0.15 *
-        (4 * 100 * 0.3 * copyTargetCount() +
-          3 * 200 * 0.15 * (estimatedGarboTurns() - copyTargetCount())),
+      0.15 * (3 * 200 * 0.15 * (estimatedGarboTurns() - copyTargetCount())),
     ],
     ["Adventures: +1", globalOptions.ascend ? 0 : get("valueOfAdventure")],
     ["Familiar Experience: +2", 8],
@@ -206,8 +216,8 @@ function pantogram(): void {
     const expectedBarfTurns = globalOptions.nobarf
       ? 0
       : estimatedGarboTurns() -
-        digitizedMonstersRemaining() -
-        copyTargetCount();
+        wanderingCopytargetsRemaining() -
+        highMeatMonsterCount();
     pantogramValue = 100 * expectedBarfTurns;
   } else {
     const lepMult = findLeprechaunMultiplier(meatFamiliar());
@@ -223,7 +233,7 @@ function pantogram(): void {
     const bestPantsValue = Math.max(0, ...alternativePants);
 
     pantogramValue =
-      (100 + 0.6 * baseMeat - (bestPantsValue * baseMeat) / 100) *
+      (100 + 0.6 * baseMeat() - (bestPantsValue * baseMeat()) / 100) *
       estimatedGarboTurns();
   }
   const cloverPrice = Math.min(
@@ -250,6 +260,11 @@ function pantogram(): void {
 function nepQuest(): void {
   if (!(get("neverendingPartyAlways") || get("_neverendingPartyToday"))) return;
 
+  // Do not enable hard mode
+  if (haveEquipped($item`PARTY HARD T-shirt`)) {
+    unequip($item`PARTY HARD T-shirt`);
+  }
+
   if (get("_questPartyFair") === "unstarted") {
     visitUrl(toUrl($location`The Neverending Party`));
     if (
@@ -263,7 +278,6 @@ function nepQuest(): void {
 
   if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
     print("Gerald/ine quest!", HIGHLIGHT);
-    globalOptions.clarasBellClaimed = true;
   }
 }
 
@@ -315,6 +329,16 @@ export function configureSnojo(): void {
   }
 }
 
+function freddiesProfitable(): boolean {
+  const valuesWithoutFreddy = luckyGoldRingDropValues(false, false);
+  const valuesWithFreddy = luckyGoldRingDropValues(false, true);
+
+  return (
+    sumNumbers(valuesWithFreddy) / valuesWithFreddy.length >
+    sumNumbers(valuesWithoutFreddy) / valuesWithoutFreddy.length
+  );
+}
+
 const DailyTasks: GarboTask[] = [
   {
     name: "Chibi Buddy",
@@ -330,6 +354,7 @@ const DailyTasks: GarboTask[] = [
     completed: () => latteRefreshed,
     do: (): void => {
       visitUrl("main.php?latte=1", false);
+      checkAndCorrectLatteMalformation();
       latteRefreshed = true;
     },
     spendsTurn: false,
@@ -427,7 +452,17 @@ const DailyTasks: GarboTask[] = [
     name: "Bastille Battalion",
     ready: () => have($item`Bastille Battalion control rig`),
     completed: () => get("_bastilleGames") !== 0,
-    do: () => cliExecute("bastille myst brutalist gesture"),
+    do: () => {
+      const potionOptions = [
+        { identifier: "sharks", item: $item`sharkfin gumbo` },
+        { identifier: "lava", item: $item`boiling broth` },
+        { identifier: "truth", item: $item`interrogative elixir` },
+      ];
+      const bestPotionIdentifier = maxBy(potionOptions, (potion) =>
+        garboValue(potion.item),
+      ).identifier;
+      cliExecute(`bastille myst brutalist ${bestPotionIdentifier} gesture`);
+    },
     spendsTurn: false,
   },
   {
@@ -435,6 +470,19 @@ const DailyTasks: GarboTask[] = [
     ready: () => get("hasDetectiveSchool"),
     completed: () => get("_detectiveCasesCompleted") >= 3,
     do: () => cliExecute("Detective Solver.ash"),
+    spendsTurn: false,
+  },
+  {
+    name: "Clan Photo Booth",
+    ready: () =>
+      getClanLounge()["photo booth sized crate"] !== undefined &&
+      photoBoothItems.some((item) => !have(item)),
+    completed: () => get("_photoBoothEquipment") >= 3,
+    do: () =>
+      photoBoothItems.forEach(
+        (item) =>
+          get("_photoBoothEquipment") >= 3 || have(item) || retrieveItem(item),
+      ),
     spendsTurn: false,
   },
   {
@@ -580,7 +628,7 @@ const DailyTasks: GarboTask[] = [
       Clan.with("Bonus Adventures from Hell", () =>
         cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
       );
-      wait(10);
+      if (get("_clanFortuneConsultUses") < 3) wait(10);
     },
     limit: { skip: 3 },
     spendsTurn: false,
@@ -677,7 +725,7 @@ const DailyTasks: GarboTask[] = [
     ready: () =>
       holiday().includes("Generic Summer Holiday") &&
       !have($effect`Eldritch Attunement`) &&
-      estimatedTentacles() * globalOptions.prefs.valueOfFreeFight >
+      estimatedAttunementTentacles() * globalOptions.prefs.valueOfFreeFight >
         get("valueOfAdventure"),
     completed: () => have($effect`Eldritch Attunement`),
     do: () => adv1($location`Generic Summer Holiday Swimming!`),
@@ -689,10 +737,25 @@ const DailyTasks: GarboTask[] = [
         ? {
             offhand: $item`Drunkula's wineglass`,
             acc1: $item`water wings`,
-            avoid: $items`June cleaver`,
+            avoid: $items`June cleaver, cursed magnifying glass, Kramco Sausage-o-Matic™`,
           }
-        : { acc1: $item`water wings`, avoid: $items`June cleaver` },
+        : {
+            acc1: $item`water wings`,
+            avoid: $items`June cleaver, cursed magnifying glass, Kramco Sausage-o-Matic™`,
+          },
     spendsTurn: false,
+    combat: new GarboStrategy(() =>
+      Macro.if_(
+        [
+          $monster`giant rubber spider`,
+          $monster`time-spinner prank`,
+          ...getTodaysHolidayWanderers(),
+        ],
+        Macro.basicCombat(),
+      ).abortWithMsg(
+        "Unexpected combat encounter while attempting to get Eldritch Attunment from Generic Summer Holiday",
+      ),
+    ),
   },
   {
     name: "Check Neverending Party Quest",
@@ -705,8 +768,11 @@ const DailyTasks: GarboTask[] = [
       myInebriety() > inebrietyLimit() &&
       have($item`Drunkula's wineglass`) &&
       canEquip($item`Drunkula's wineglass`)
-        ? { offhand: $item`Drunkula's wineglass`, avoid: $items`June cleaver` }
-        : { avoid: $items`June cleaver` },
+        ? {
+            offhand: $item`Drunkula's wineglass`,
+            avoid: $items`June cleaver, PARTY HARD T-shirt`,
+          }
+        : { avoid: $items`June cleaver, PARTY HARD T-shirt` },
     spendsTurn: false,
   },
   {
@@ -739,10 +805,33 @@ const DailyTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
+    name: "Closet Freddies",
+    ready: () => !freddiesProfitable(),
+    completed: () => itemAmount($item`Freddy Kruegerand`) === 0,
+    do: () =>
+      putCloset(itemAmount($item`Freddy Kruegerand`), $item`Freddy Kruegerand`),
+    spendsTurn: false,
+  },
+  {
     name: "Retrieve Items",
     ready: () => retrieveItems.some((item) => itemAmount(item) === 0),
     completed: () => retrieveItems.every((item) => itemAmount(item) > 0),
     do: () => retrieveItems.forEach((item) => retrieveItem(item)),
+    spendsTurn: false,
+  },
+  {
+    name: "Dispose of Park Garbage",
+    ready: () =>
+      realmAvailable("stench") &&
+      3 * garboValue($item`FunFunds™`) > mallPrice($item`bag of park garbage`),
+    completed: () => get("_dinseyGarbageDisposed"),
+    do: () => {
+      print("Disposing of garbage.", HIGHLIGHT);
+      retrieveItem($item`bag of park garbage`);
+      visitUrl("place.php?whichplace=airport_stench&action=airport3_tunnels");
+      runChoice(6);
+      cliExecute("refresh inv");
+    },
     spendsTurn: false,
   },
   {
@@ -768,18 +857,24 @@ const DailyTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Free Volcano Mining",
-    ready: () => realmAvailable("hot") && have($skill`Unaccompanied Miner`),
-    completed: () => get("_unaccompaniedMinerUsed") >= 5,
-    do: () =>
-      cliExecute(`minevolcano.ash ${5 - get("_unaccompaniedMinerUsed")}`),
-    prepare: () => restoreHp(myMaxhp() * 0.9),
-    post: (): void => {
-      if (have($effect`Beaten Up`)) {
-        uneffect($effect`Beaten Up`);
-      }
-      if (myHp() < myMaxhp() * 0.5) {
-        restoreHp(myMaxhp() * 0.9);
+    name: "Use Walkie Talkie for Ghost",
+    ready: () =>
+      mallPrice($item`almost-dead walkie-talkie`) <
+        globalOptions.prefs.valueOfFreeFight &&
+      get("nextParanormalActivity") <= totalTurnsPlayed(),
+    completed: () =>
+      have($item`protonic accelerator pack`) ||
+      get("questPAGhost") === "started",
+    do: () => {
+      if (
+        acquire(
+          1,
+          $item`almost-dead walkie-talkie`,
+          globalOptions.prefs.valueOfFreeFight,
+          false,
+        )
+      ) {
+        use($item`almost-dead walkie-talkie`);
       }
     },
     spendsTurn: false,

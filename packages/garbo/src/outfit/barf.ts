@@ -9,7 +9,7 @@ import {
   myFury,
   myInebriety,
   retrieveItem,
-  toJson,
+  toSlot,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -18,6 +18,7 @@ import {
   $item,
   $items,
   $skill,
+  $slot,
   Delayed,
   get,
   getKramcoWandererChance,
@@ -26,9 +27,19 @@ import {
 } from "libram";
 import { barfFamiliar } from "../familiar";
 import { chooseBjorn } from "./bjorn";
-import { bonusGear } from "./dropsgear";
-import { bestBjornalike, cleaverCheck, validateGarbageFoldable } from "./lib";
-import { BonusEquipMode, modeValueOfItem, modeValueOfMeat } from "../lib";
+import { bonusGear, toyCupidBow } from "./dropsgear";
+import {
+  applyCheeseBonus,
+  bestBjornalike,
+  cleaverCheck,
+  validateGarbageFoldable,
+} from "./lib";
+import {
+  BonusEquipMode,
+  MEAT_TARGET_MULTIPLIER,
+  modeValueOfItem,
+  modeValueOfMeat,
+} from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
 
 function chooseGun() {
@@ -90,6 +101,10 @@ const POINTER_RING_SPECS: (
     available: true,
     items: $items`Operation Patriot Shield, mafia pointer finger ring`,
   },
+  {
+    available: true,
+    items: $items`left bear arm, right bear arm, mafia pointer finger ring`,
+  },
 ];
 
 const trueInebrietyLimit = () =>
@@ -103,12 +118,24 @@ export function computeBarfOutfit(
   validateGarbageFoldable(spec);
   const outfit = Outfit.from(
     spec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
+    new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
+
+  outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
+  applyCheeseBonus(outfit, BonusEquipMode.BARF);
 
   if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
     outfit.equip($item`LED candle`);
     outfit.setModes({ jillcandle: "ultraviolet" });
+  }
+
+  if (
+    outfit.familiar === $familiar`Chest Mimic` &&
+    $familiar`Chest Mimic`.experience < 550
+  ) {
+    const famExpValue =
+      (MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50;
+    outfit.modifier.push(`${famExpValue} Familiar Experience`);
   }
 
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
@@ -144,7 +171,10 @@ export function computeBarfOutfit(
     outfit.equip($item`Kramco Sausage-o-Matic™`);
   }
 
-  outfit.bonuses = bonusGear(BonusEquipMode.BARF, !sim);
+  if (!sim) {
+    outfit.addBonuses(toyCupidBow(spec.familiar));
+  }
+
   const bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
     outfit.setBonus(bjornalike, bjornChoice.value);
@@ -172,7 +202,12 @@ export function computeBarfOutfit(
 }
 
 export function barfOutfit(spec: OutfitSpec, sim = false): Outfit {
-  const { familiar, extraValue } = barfFamiliar();
+  const { familiar, extraValue } = barfFamiliar(
+    Boolean(
+      spec.famequip ||
+        spec.equip?.some((equipment) => toSlot(equipment) === $slot`familiar`),
+    ),
+  );
   try {
     return computeBarfOutfit({ familiar, ...spec }, sim);
   } finally {

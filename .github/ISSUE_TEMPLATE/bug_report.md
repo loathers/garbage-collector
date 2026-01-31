@@ -26,7 +26,7 @@ Steps to reproduce the behavior:
 A clear and concise description of what you expected to happen.
 
 **Session Log**
-Attach a full KoLMafia session log from the day you encountered the bug. Include details about when in the log the bug occurred to help developers rapidly find the error. Copy and paste any associated red text printed to the gCLI during this error.
+Attach a **full** KoLMafia session log from the day you encountered the bug. Include details about when in the log the bug occurred to help developers rapidly find the error. Copy and paste any associated red text printed to the gCLI during this error. **Bug reports without session logs will be unilaterally closed.**
 
 **Additional context**
 Add any other context about the problem here. Does this always happen post-loop, but never pre-loop? Did this start happening when you got some particular IotM?

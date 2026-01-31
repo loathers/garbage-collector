@@ -1,4 +1,5 @@
 import {
+  canAdventure,
   canEquip,
   haveOutfit,
   itemAmount,
@@ -16,7 +17,7 @@ import {
   maxBy,
 } from "libram";
 import { bestConsumable } from "../diet";
-import { baseMeat } from "../lib";
+import { targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 
 const MIDNIGHTS = [
@@ -34,7 +35,7 @@ const MIDNIGHTS = [
         $items`high-end ginger wine, astral pilsner`,
       );
       const gingerWineValue =
-        (0.5 * 30 * (baseMeat + 750) +
+        (0.5 * 30 * targetMeat() +
           getAverageAdventures($item`high-end ginger wine`) *
             get("valueOfAdventure")) /
         2;
@@ -95,7 +96,9 @@ export function bestMidnightAvailable(): {
   choices: { [x in number]: number };
 } {
   const availableMidnights = [
-    ...MIDNIGHTS.filter(({ available }) => available()),
+    ...MIDNIGHTS.filter(
+      ({ location, available }) => canAdventure(location) && available(),
+    ),
     DEFAULT_MIDNIGHT,
   ];
   return maxBy(availableMidnights, ({ value }) => value());

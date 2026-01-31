@@ -1,0 +1,55 @@
+{
+  "name": "garbo-choice",
+  "version": "1.0.0",
+  "description": "Script for farming meat (and garbage) in 2004 web RPG Kingdom of Loathing.",
+  "repository": "https://github.com/loathers/garbage-collector.git",
+  "main": "dist/scripts/garbage-collector/garbo_choice.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node --import tsx ./build.ts && yarn run copyStatic",
+    "watch": "yarn build --watch",
+    "copyStatic": "copyfiles --up 1 \"static/**/*\" dist",
+    "check": "tsc",
+    "lint": "eslint src && prettier --check .",
+    "format": "eslint src --fix && prettier --write .",
+    "madge": "madge --circular . ./src/index.ts",
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown"
+    ],
+    "src/*": [
+      "eslint --quiet --fix"
+    ]
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "garbo-lib": "*",
+    "grimoire-kolmafia": "^0.3.29",
+    "kolmafia": "^5.28673.0",
+    "libram": "^0.11.16"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.8",
+    "@babel/compat-data": "^7.25.2",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@types/node": "^22.4.1",
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.23.1",
+    "esbuild-plugin-babel": "^0.2.3",
+    "eslint": "^9.39.2",
+    "eslint-config-garbo": "workspace:^",
+    "jiti": "^2.6.1",
+    "lint-staged": "^15.2.9",
+    "madge": "^8.0.0",
+    "prettier": "^3.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.4"
+  }
+}

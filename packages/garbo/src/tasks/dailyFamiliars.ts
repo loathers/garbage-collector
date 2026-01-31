@@ -4,6 +4,7 @@ import {
   equip,
   familiarEquippedEquipment,
   hippyStoneBroken,
+  mallPrice,
   myPrimestat,
   retrieveItem,
   retrievePrice,
@@ -20,61 +21,72 @@ import {
   get,
   have,
   Robortender,
+  ToyCupidBow,
   withProperty,
 } from "libram";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
 import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,
   felizValue,
   garbageTouristRatio,
+  isFree,
   newarkValue,
+  targetMeat,
   tryFeast,
   turnsToNC,
   userConfirmDialog,
 } from "../lib";
-import { estimatedGarboTurns } from "../turns";
+import { estimatedGarboTurns, highMeatMonsterCount } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
+import { amuletCoinValue } from "../familiar/lib";
 
-function drivebyValue(): number {
-  const embezzlers = copyTargetCount();
+function drivebyValue(targetCount = 0): number {
+  const targets = targetCount;
   const tourists =
-    ((estimatedGarboTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
   const meatPercentDelta =
     Math.sqrt(220 * 2 * marginalRoboWeight) -
     Math.sqrt(220 * 2 * marginalRoboWeight) +
     2 * marginalRoboWeight;
   return (
-    (meatPercentDelta / 100) *
-    ((750 + baseMeat) * embezzlers + baseMeat * tourists)
+    (meatPercentDelta / 100) * (targetMeat() * targets + baseMeat() * tourists)
   );
 }
 
-function entendreValue(): number {
-  const embezzlers = copyTargetCount();
+function entendreValue(targetCount = 0): number {
+  const targets = targetCount;
   const tourists =
-    ((estimatedGarboTurns() - embezzlers) * turnsToNC) / (turnsToNC + 1);
+    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
   const marginalRoboWeight = 50;
   const itemPercent =
     Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;
   const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance
-  const meatStackDropRate = 0.3 * 4; // 4 stacks each with a 30% drop chance
   return (
-    (itemPercent / 100) *
-    (meatStackDropRate * embezzlers +
-      garbageBagsDropRate * tourists * garbageTouristRatio)
+    (itemPercent / 100) * (garbageBagsDropRate * tourists * garbageTouristRatio)
+  );
+}
+
+function worthFeedingRobortender(): boolean {
+  if (!globalOptions.nobarf) return true;
+  if (isFree(globalOptions.target)) return false;
+  return (
+    (globalOptions.target.maxMeat + globalOptions.target.minMeat) / 2 >= 300
   );
 }
 
 export function prepRobortender(): void {
   if (!have($familiar`Robortender`)) return;
+  const targetCount = highMeatMonsterCount("Scepter"); // Scepter can cause circular logic
   const roboDrinks = {
-    "Drive-by shooting": { priceCap: drivebyValue(), mandatory: true },
+    "Drive-by shooting": {
+      priceCap: drivebyValue(targetCount),
+      mandatory: true,
+    },
     Newark: {
       priceCap: newarkValue() * 0.25 * estimatedGarboTurns(),
       mandatory: false,
@@ -85,11 +97,14 @@ export function prepRobortender(): void {
     },
     "Bloody Nora": {
       priceCap: get("_envyfishEggUsed")
-        ? (750 + baseMeat) * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
+        ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
         : 0,
       mandatory: false,
     },
-    "Single entendre": { priceCap: entendreValue(), mandatory: false },
+    "Single entendre": {
+      priceCap: entendreValue(targetCount),
+      mandatory: false,
+    },
   };
   for (const [drinkName, { priceCap, mandatory }] of Object.entries(
     roboDrinks,
@@ -128,12 +143,15 @@ const DailyFamiliarTasks: GarboTask[] = [
     completed: () =>
       familiarEquippedEquipment($familiar`Shorter-Order Cook`) ===
       $item`blue plate`,
-    do: () => equip($familiar`Shorter-Order Cook`, $item`blue plate`),
+    do: () => {
+      retrieveItem($item`blue plate`);
+      equip($familiar`Shorter-Order Cook`, $item`blue plate`);
+    },
     spendsTurn: false,
   },
   {
     name: "Prepare Robortender",
-    ready: () => have($familiar`Robortender`),
+    ready: () => have($familiar`Robortender`) && worthFeedingRobortender(),
     completed: () =>
       get("_roboDrinks").toLowerCase().includes("drive-by shooting"),
     do: prepRobortender,
@@ -152,7 +170,10 @@ const DailyFamiliarTasks: GarboTask[] = [
   {
     name: "Acquire amulet coin",
     ready: () =>
-      have($familiar`Cornbeefadon`) && have($item`box of Familiar Jacks`),
+      have($familiar`Cornbeefadon`) &&
+      have($item`box of Familiar Jacks`) &&
+      !ToyCupidBow.have() &&
+      amuletCoinValue() >= mallPrice($item`box of Familiar Jacks`),
     completed: () => have($item`amulet coin`),
     do: (): void => {
       use($item`box of Familiar Jacks`);

@@ -1,13 +1,14 @@
 {
   "name": "garbo-lib",
-  "version": "0.0.6",
+  "version": "1.0.3",
   "license": "MIT",
   "repository": "https://github.com/loathers/garbage-collector.git",
   "description": "A library for sequencing turns resource-optimally",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "format": "eslint src --fix && prettier --write .",
+    "check": "tsc",
     "lint": "eslint src && prettier --check .",
     "madge": "madge --circular . ./src/index.ts",
     "pre-commit": "lint-staged",
@@ -15,25 +16,25 @@
   },
   "lint-staged": {
     "*": [
-      "prettier --write --ignore-unknown",
+      "prettier --write --ignore-unknown"
+    ],
+    "src/*": [
       "eslint --quiet --fix"
     ]
   },
   "peerDependencies": {
-    "kolmafia": "^5.27668.0",
-    "libram": "^0.8.17"
+    "kolmafia": "^5.28389.0",
+    "libram": "^0.11.9"
   },
   "devDependencies": {
-    "eslint": "^8.50.0",
-    "eslint-config-garbo": "^0.0.1",
-    "kolmafia": "^5.27668.0",
-    "libram": "latest",
-    "lint-staged": "^14.0.1",
-    "madge": "^6.1.0",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
-  },
-  "eslintConfig": {
-    "extends": "eslint-config-garbo"
+    "eslint": "^9.39.2",
+    "eslint-config-garbo": "workspace:^",
+    "jiti": "^2.6.1",
+    "kolmafia": "^5.28673.0",
+    "libram": "^0.11.16",
+    "lint-staged": "^15.2.9",
+    "madge": "^8.0.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
   }
 }

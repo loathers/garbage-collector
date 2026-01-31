@@ -36,7 +36,7 @@ function considerAbandon(
       locationSkiplist.includes(location) ||
       !canAdventureOrUnlock(location) || // or the zone is marked as "generally cannot adv"
       (options.ascend &&
-        wandererTurnsAvailableToday(options, location) < remaningTurns)) // or ascending and not enough turns to finish
+        wandererTurnsAvailableToday(options, location, true) < remaningTurns)) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
     Guzzlr.abandon();
@@ -90,11 +90,11 @@ function guzzlrValuePerTurn(
 }
 
 export function guzzlrFactory(
-  _type: DraggableFight,
+  type: DraggableFight,
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (Guzzlr.have()) {
+  if (Guzzlr.have() && type !== "freerun") {
     const buckValue = options.itemValue($item`Guzzlrbuck`);
     acceptGuzzlrQuest(options, locationSkiplist);
     const location = Guzzlr.getLocation();
@@ -109,6 +109,7 @@ export function guzzlrFactory(
               "Guzzlr",
               location,
               guzzlrValuePerTurn(buckValue, Guzzlr.getTier(), guzzlrBooze),
+              undefined,
               () => {
                 if (!guzzlrBooze) {
                   // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze

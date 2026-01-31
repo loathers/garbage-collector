@@ -1,33 +1,15 @@
-import { AscendingQuest } from "./ascending";
-import { BarfTurnQuests } from "./barfTurn";
-import { DailyQuest } from "./daily";
-import { DailyFamiliarsQuest } from "./dailyFamiliars";
-import { DailyItemsQuest } from "./dailyItems";
-import { FreeFightQuest } from "./freeFight";
-import { PostFreeFightQuest } from "./postFreeFight";
-import { SetupEmbezzlerQuest } from "./embezzler";
-import { DailySeaQuest } from "./dailySea";
-import { PostQuest } from "./post";
-import {
-  runGarboQuests,
-  runGarboTasks,
-  runSafeGarboQuests,
-  runSafeGarboTasks,
-} from "./engine";
-
-export {
-  AscendingQuest,
-  BarfTurnQuests,
-  DailyFamiliarsQuest,
-  DailyItemsQuest,
-  DailyQuest,
-  DailySeaQuest,
-  FreeFightQuest,
-  PostFreeFightQuest,
-  SetupEmbezzlerQuest,
-  PostQuest,
-  runSafeGarboTasks,
-  runSafeGarboQuests,
-  runGarboQuests,
-  runGarboTasks,
-};
+export { AscendingQuest } from "./ascending";
+export { BarfTurnQuests } from "./barfTurn";
+export { CockroachSetup } from "./cockroach";
+export { DailyQuest } from "./daily";
+export { DailyFamiliarsQuest } from "./dailyFamiliars";
+export { DailyItemsQuest } from "./dailyItems";
+export { FinishUpQuest } from "./finishUp";
+export { FreeFightQuest } from "./freeFight";
+export { FreeMimicEggDonationQuest } from "./freeEggDonation";
+export { PostFreeFightQuest } from "./postFreeFight";
+export { SetupTargetCopyQuest } from "./target";
+export { DailySeaQuest } from "./dailySea";
+export { PostQuest } from "./post";
+export { runGarboQuests, runSafeGarboQuests } from "./engine";
+export { EmbezzlerFightsQuest } from "./embezzler";

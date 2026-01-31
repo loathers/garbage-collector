@@ -33,7 +33,7 @@ export function eightbitFactory(
 ): WandererTarget[] {
   if (
     have($item`continuum transfunctioner`) &&
-    type !== "backup" &&
+    !["backup", "freerun"].includes(type) &&
     get("8BitScore") < TREASURE_HOUSE_FAT_LOOT_TOKEN_COST
   ) {
     return bonusColor

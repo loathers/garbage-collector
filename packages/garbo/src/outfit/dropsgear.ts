@@ -1,34 +1,37 @@
 import {
   equippedItem,
+  Familiar,
   fullnessLimit,
   getWorkshed,
   haveEffect,
   Item,
   mallPrice,
   myFullness,
-  numericModifier,
-  toSlot,
+  myFury,
+  totalTurnsPlayed,
 } from "kolmafia";
 import {
   $effect,
   $familiar,
   $item,
   $items,
-  $slot,
+  $skill,
   $slots,
+  BatWings,
   BurningLeaves,
   clamp,
   DaylightShavings,
+  DesignerSweatpants,
   get,
   getAverageAdventures,
-  getFoldGroup,
   have,
   JuneCleaver,
   sum,
   sumNumbers,
+  ToyCupidBow,
 } from "libram";
 import { globalOptions } from "../config";
-import { mallMin } from "../diet";
+import { cheapestItem } from "../diet";
 import {
   baseMeat,
   bestJuneCleaverOption,
@@ -36,11 +39,17 @@ import {
   juneCleaverChoiceValues,
   modeUseLimitedDrops,
   modeValueOfMeat,
+  targetPointerRingMeat,
   valueJuneCleaverOption,
 } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { bonusAccessories } from "./dropsgearAccessories";
+import {
+  familiarEquipmentValue,
+  getUsedTcbFamiliars,
+  tcbTurnsLeft,
+} from "../familiar/lib";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -71,7 +80,7 @@ function pantsgiving(mode: BonusEquipMode) {
         expectedSinusTurns,
       )
     : expectedSinusTurns;
-  const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat;
+  const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat();
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
@@ -83,19 +92,26 @@ function pantsgiving(mode: BonusEquipMode) {
 }
 
 function sweatpants(mode: BonusEquipMode) {
-  if (!have($item`designer sweatpants`) || mode === BonusEquipMode.EMBEZZLER) {
+  if (
+    !have($item`designer sweatpants`) ||
+    mode === BonusEquipMode.MEAT_TARGET
+  ) {
     return new Map();
   }
 
   const needSweat =
-    (!globalOptions.ascend && get("sweat") < 75) ||
-    get("sweat") < 25 * (3 - get("_sweatOutSomeBoozeUsed"));
+    (!globalOptions.ascend &&
+      DesignerSweatpants.sweat() <
+        DesignerSweatpants.sweatCost($skill`Sweat Out Some Booze`) * 3) ||
+    DesignerSweatpants.sweat() <
+      DesignerSweatpants.sweatCost($skill`Sweat Out Some Booze`) *
+        DesignerSweatpants.potentialCasts($skill`Sweat Out Some Booze`);
 
   if (!needSweat) return new Map();
 
   const VOA = get("valueOfAdventure");
 
-  const bestPerfectDrink = mallMin(
+  const bestPerfectDrink = cheapestItem(
     $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`,
   );
   const perfectDrinkValuePerDrunk =
@@ -109,37 +125,6 @@ function sweatpants(mode: BonusEquipMode) {
     (Math.max(perfectDrinkValuePerDrunk, splendidMartiniValuePerDrunk) * 2) /
     25;
   return new Map([[$item`designer sweatpants`, bonus]]);
-}
-
-const alternativePants = Item.all()
-  .filter(
-    (item) =>
-      toSlot(item) === $slot`pants` &&
-      have(item) &&
-      numericModifier(item, "Adventures") > 0,
-  )
-  .map((pants) => numericModifier(pants, "Adventures"));
-const bestAdventuresFromPants = Math.max(0, ...alternativePants);
-const haveSomeCheese = getFoldGroup($item`stinky cheese diaper`).some((item) =>
-  have(item),
-);
-function cheeses(mode: BonusEquipMode) {
-  return haveSomeCheese &&
-    !globalOptions.ascend &&
-    get("_stinkyCheeseCount") < 100 &&
-    estimatedGarboTurns() >= 100 - get("_stinkyCheeseCount") &&
-    mode !== BonusEquipMode.EMBEZZLER
-    ? new Map<Item, number>(
-        getFoldGroup($item`stinky cheese diaper`)
-          .filter((item) => toSlot(item) !== $slot`weapon`)
-          .map((item) => [
-            item,
-            get("valueOfAdventure") *
-              (10 - bestAdventuresFromPants) *
-              (1 / 100),
-          ]),
-      )
-    : [];
 }
 
 function pantogramPants() {
@@ -171,7 +156,7 @@ function bagOfManyConfections() {
 }
 
 function snowSuit(mode: BonusEquipMode) {
-  // Ignore for EMBEZZLER
+  // Ignore for MEAT_TARGET
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
   if (
     !have($item`Snow Suit`) ||
@@ -193,7 +178,7 @@ function mayflowerBouquet(mode: BonusEquipMode) {
   // During testing I got 4 drops then the 5th took like 40 more adventures
   // so let's just assume rate drops by 11% with a min of 1% ¯\_(ツ)_/¯
 
-  // Ignore for EMBEZZLER
+  // Ignore for MEAT_TARGET
   // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
   if (!have($item`Mayflower bouquet`) || !modeUseLimitedDrops(mode)) {
     return new Map<Item, number>([]);
@@ -227,18 +212,86 @@ export function magnifyingGlass(): Map<Item, number> {
   ]);
 }
 
+function bindlestocking(mode: BonusEquipMode): Map<Item, number> {
+  // Requires a guaranteed critical hit that does not need the weapon or off-hand slots
+  // Only BARF is supported as it is difficult to always crit elsewhere
+  const canCrit =
+    (have($skill`Furious Wallop`) && myFury() > 0) ||
+    have($skill`Head in the Game`);
+  if (
+    !have($item`bindlestocking`) ||
+    mode !== BonusEquipMode.BARF ||
+    !canCrit
+  ) {
+    return new Map<Item, number>();
+  }
+
+  // TODO: Confirm drop rates with excavator https://excavator.loathers.net/projects/bindlestocking
+  // The only valuable items are fancy chocolate or jawbruiser which probably appear ~1% of the time
+  const value =
+    0.49 *
+      garboAverageValue(
+        ...$items`Angry Farmer candy, Cold Hots candy, Daffy Taffy, Mr. Mediocrebar, Senior Mints, Wint-O-Fresh mint, orange`,
+      ) +
+    0.15 * garboAverageValue(...$items`eggnog, fruitcake, yo-yo`) +
+    0.2 *
+      garboAverageValue(
+        ...$items`candy cane, ball, fancy dress ball, gingerbread bugbear, razor-tipped yo-yo`,
+      ) +
+    0.15 *
+      garboAverageValue(
+        ...$items`buckyball, gyroscope, monomolecular yo-yo, possessed top, top`,
+      ) +
+    0.01 * garboAverageValue(...$items`fancy chocolate, jawbruiser`);
+
+  return new Map<Item, number>([[$item`bindlestocking`, value]]);
+}
+
+function simpleTargetCrits(mode: BonusEquipMode): Map<Item, number> {
+  const canCrit =
+    (have($skill`Furious Wallop`) && myFury() > 0) ||
+    have($skill`Head in the Game`);
+  if (
+    !have($item`mafia pointer finger ring`) ||
+    mode !== BonusEquipMode.MEAT_TARGET ||
+    !canCrit ||
+    globalOptions.target.attributes.includes("FREE")
+  ) {
+    return new Map<Item, number>();
+  }
+  return new Map<Item, number>([
+    [$item`mafia pointer finger ring`, targetPointerRingMeat()],
+  ]);
+}
+
+function batWings(mode: BonusEquipMode): Map<Item, number> {
+  const batWings = $item`bat wings`;
+  if (
+    !BatWings.have() ||
+    mode !== BonusEquipMode.BARF ||
+    BatWings.flapChance() === 0
+  ) {
+    return new Map<Item, number>();
+  }
+  const value = BatWings.flapChance() * get("valueOfAdventure");
+  return new Map<Item, number>([[batWings, value]]);
+}
+
 export function bonusGear(
   mode: BonusEquipMode,
   valueCircumstantialBonus = true,
 ): Map<Item, number> {
   return new Map<Item, number>([
-    ...cheeses(mode),
     ...bonusAccessories(mode),
     ...pantogramPants(),
     ...bagOfManyConfections(),
     ...stickers(mode),
     ...powerGlove(),
     ...sneegleebs(),
+    ...bindlestocking(mode),
+    ...simpleTargetCrits(mode),
+    ...batWings(mode),
+    ...mobius(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...pantsgiving(mode),
@@ -249,9 +302,45 @@ export function bonusGear(
           ...(mode === BonusEquipMode.BARF ? magnifyingGlass() : []),
           ...juneCleaver(mode),
           ...rakeLeaves(mode),
+          ...aviatorGoggles(mode),
+          ...skeletonCane(mode),
         ])
       : []),
   ]);
+}
+
+const encounterMap = [
+  4, // 0
+  7, // 1
+  14, // 2
+  14, // 3
+  25, // 4
+  25, // 5
+  41, // 6
+  41, // 7
+  41, // 8
+  41, // 9
+  41, // 10
+  51, // 11
+  51, // 12
+  51, // 13
+  51, // 14
+  51, // 15
+  51, // 16
+  51, // 17
+  51, // 18
+];
+
+function mobius(mode: BonusEquipMode): Map<Item, number> {
+  if (mode === BonusEquipMode.BARF) {
+    const value =
+      totalTurnsPlayed() - get("_lastMobiusStripTurn", 0) >
+      encounterMap[get("_mobiusStripEncounters", 0)] - 3
+        ? Math.max(mallPrice($item`clock`), get("valueOfAdventure") * 3) / 2
+        : 0;
+    return new Map<Item, number>([[$item`Möbius ring`, value]]);
+  }
+  return new Map();
 }
 
 function shavingBonus(): Map<Item, number> {
@@ -276,7 +365,7 @@ function shavingBonus(): Map<Item, number> {
     return new Map();
   }
 
-  const bonusValue = (baseMeat * 100 + 72 * 50) / 100;
+  const bonusValue = (baseMeat() * 100 + 72 * 50) / 100;
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
 
@@ -331,14 +420,14 @@ function juneCleaver(mode: BonusEquipMode): Map<Item, number> {
   }
 
   const interval =
-    mode === BonusEquipMode.EMBEZZLER ? 30 : JuneCleaver.getInterval();
+    mode === BonusEquipMode.MEAT_TARGET ? 30 : JuneCleaver.getInterval();
   return new Map<Item, number>([
     [$item`June cleaver`, juneCleaverEV / interval],
   ]);
 }
 
 function rakeLeaves(mode: BonusEquipMode): Map<Item, number> {
-  if (mode === BonusEquipMode.EMBEZZLER || !BurningLeaves.have()) {
+  if (mode === BonusEquipMode.MEAT_TARGET || !BurningLeaves.have()) {
     return new Map();
   }
   const rakeValue = garboValue($item`inflammable leaf`) * 1.5;
@@ -348,10 +437,33 @@ function rakeLeaves(mode: BonusEquipMode): Map<Item, number> {
   ]);
 }
 
+function aviatorGoggles(mode: BonusEquipMode): Map<Item, number> {
+  if (mode === BonusEquipMode.MEAT_TARGET || !have($familiar`Mini Kiwi`)) {
+    return new Map();
+  }
+  const goggleValue = garboValue($item`mini kiwi`) * 0.25;
+  return new Map<Item, number>([[$item`aviator goggles`, goggleValue]]);
+}
+
+function skeletonCane(mode: BonusEquipMode): Map<Item, number> {
+  if (
+    mode === BonusEquipMode.MEAT_TARGET ||
+    !have($familiar`Skeleton of Crimbo Past`) ||
+    get("_knuckleboneDrops") >= 100
+  ) {
+    return new Map();
+  }
+  // Cane improves drop rate by 10%
+  const caneValue = garboValue($item`knucklebone`) * 0.1;
+  return new Map<Item, number>([
+    [$item`small peppermint-flavored sugar walking crook`, caneValue],
+  ]);
+}
+
 function stickers(mode: BonusEquipMode): Map<Item, number> {
   // This function represents the _cost_ of using stickers
   // Embezzlers are the best monster to use them on, so there's functionally no cost
-  if (mode === BonusEquipMode.EMBEZZLER) return new Map();
+  if (mode === BonusEquipMode.MEAT_TARGET) return new Map();
 
   const cost = sumNumbers(
     $slots`sticker1, sticker2, sticker3`.map(
@@ -401,4 +513,15 @@ function sneegleebs(): Map<Item, number> {
       ] as const
     ).filter(([item]) => have(item)),
   );
+}
+
+export function toyCupidBow(familiar: Familiar): Map<Item, number> {
+  if (!ToyCupidBow.have()) return new Map();
+  const turns = tcbTurnsLeft(familiar, getUsedTcbFamiliars());
+  if (estimatedGarboTurns() <= turns) {
+    return new Map();
+  }
+  return new Map([
+    [$item`toy Cupid bow`, familiarEquipmentValue(familiar) / turns],
+  ]);
 }

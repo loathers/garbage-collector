@@ -1,11 +1,14 @@
 import {
   autosellPrice,
   Coinmaster,
+  Familiar,
+  familiarEquipment,
   historicalAge,
   historicalPrice,
   Item,
   myClass,
   sellPrice,
+  sellsItem,
   toInt,
 } from "kolmafia";
 import {
@@ -58,6 +61,7 @@ export function makeValue(
       $item`Wal-Mart gift certificate`,
       currency($item`one-day ticket to The Glaciest`),
     ],
+    [$item`cop dollar`, currency($item`shoe gum`)],
     [$item`Rubee™`, currency($item`FantasyRealm guest pass`)],
     [$item`Guzzlrbuck`, currency($item`Never Don't Stop Not Striving`)],
     ...complexCandy(),
@@ -198,6 +202,37 @@ export function makeValue(
       ),
     ],
     [$item`inflammable leaf`, inflammableLeafCurrency()],
+    [$item`envelope full of Meat`, () => 50_000],
+    [
+      $item`crystalline cheer`,
+      currency(
+        ...$items`stale cheer wine, stale Cheer-E-Os, Cheer-Up soda, cheer-o-gram, cheerful antler hat, cheerful Crimbo sweater, cheerful pajama pants`,
+        // ignore the science volumes because some accounts can't acquire them
+      ),
+    ],
+    [
+      $item`knucklebone`,
+      () =>
+        Math.max(
+          ...$items`tiny plastic sword, A Crimbo Carol\, Ch. 1, Rethinking Candy`.map(
+            (jar) => value(jar),
+          ),
+        ) / 2687,
+    ], // use current average "high" tier price
+    ...Familiar.all()
+      .map((f) => familiarEquipment(f))
+      .filter((i) => i !== $item.none && i.tradeable && i.discardable)
+      .map(
+        (i) =>
+          [
+            i,
+            () =>
+              Math.min(
+                saleValue(i, false),
+                value($item`box of Familiar Jacks`),
+              ),
+          ] as const,
+      ),
     ...inputValues,
   ]);
 
@@ -219,11 +254,11 @@ export function makeValue(
 
   function currency(...items: Item[]): () => number {
     const unitCost: [Item, number][] = items.map((i) => {
-      const coinmaster = Coinmaster.all().find((c) => sellPrice(c, i) > 0);
+      const coinmaster = Coinmaster.all().find((c) => sellsItem(c, i));
       if (!coinmaster) {
-        throw `Invalid coinmaster item ${i}`;
+        return [i, Infinity];
       } else {
-        return [i, sellPrice(coinmaster, i)];
+        return [i, sellPrice(coinmaster, i) || Infinity];
       }
     });
     return () =>

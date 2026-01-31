@@ -21,19 +21,24 @@ import {
   $item,
   $items,
   $location,
+  $slot,
   $slots,
   ActionSource,
   findLeprechaunMultiplier,
+  get,
   getFoldGroup,
   have,
   Requirement,
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
 import { meatFamiliar } from "../familiar";
-import { baseMeat } from "../lib";
-import { digitizedMonstersRemaining } from "../turns";
+import { BonusEquipMode, targetMeat } from "../lib";
+import {
+  estimatedGarboTurns,
+  highMeatMonsterCount,
+  wanderingCopytargetsRemaining,
+} from "../turns";
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) =>
@@ -41,6 +46,8 @@ export function bestBjornalike(outfit: Outfit): Item | null {
   );
   if (bjornalikes.length === 0) return null;
   if (bjornalikes.length === 1) return bjornalikes[0];
+
+  if (outfit.bonuses.has($item`bat wings`)) return $item`Crown of Thrones`;
 
   const hasStrongLep = findLeprechaunMultiplier(meatFamiliar()) >= 2;
   const goodRobortHats = $items`crumpled felt fedora`;
@@ -92,12 +99,12 @@ const UPC = $item`scratch 'n' sniff UPC sticker`;
 export function useUPCsIfNeeded({ familiar }: Outfit): void {
   const currentWeapon =
     25 * (familiar ? findLeprechaunMultiplier(familiar) : 0);
-  const embezzlers = globalOptions.ascend
-    ? Math.min(20, copyTargetCount() || digitizedMonstersRemaining())
+  const targets = globalOptions.ascend
+    ? Math.min(20, highMeatMonsterCount() || wanderingCopytargetsRemaining())
     : 20;
 
   const addedValueOfFullSword =
-    (embezzlers * ((75 - currentWeapon) * (750 + baseMeat))) / 100;
+    (targets * ((75 - currentWeapon) * targetMeat())) / 100;
   if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
     const needed =
       3 -
@@ -139,6 +146,8 @@ export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {
     cachedUsingPurse =
       myInebriety() <= inebrietyLimit() &&
+      !have($item`KoL Con 13 snowglobe`) &&
+      !have($item`can of mixed everything`) &&
       (!have($item`latte lovers member's mug`) ||
         (!have($familiar`Robortender`) && !have($familiar`Hobo Monkey`)) ||
         !canAdventure($location`The Black Forest`));
@@ -160,4 +169,34 @@ export function validateGarbageFoldable(spec: OutfitSpec): void {
       break;
     }
   }
+}
+
+let bestPantsAdventures: number;
+const getBestPantsAdventures = () =>
+  (bestPantsAdventures ??= Math.max(
+    0,
+    ...Item.all()
+      .filter(
+        (item) =>
+          toSlot(item) === $slot`pants` &&
+          have(item) &&
+          numericModifier(item, "Adventures") > 0,
+      )
+      .map((pants) => numericModifier(pants, "Adventures")),
+  ));
+
+function cheeseBonus(mode: BonusEquipMode) {
+  if (globalOptions.ascend) return 0;
+  if (mode === BonusEquipMode.MEAT_TARGET) return 0;
+  if (get("_stinkyCheeseCount") >= 100) return 0;
+  if (!getFoldGroup($item`stinky cheese diaper`).some((item) => have(item))) {
+    return 0;
+  }
+  if (estimatedGarboTurns() < 100 - get("_stinkyCheeseCount")) return 0;
+  return get("valueOfAdventure") * (10 - getBestPantsAdventures()) * (1 / 100);
+}
+
+export function applyCheeseBonus(outfit: Outfit, mode: BonusEquipMode) {
+  const bonus = cheeseBonus(mode);
+  if (bonus > 0) outfit.modifier.push(`${bonus.toFixed(2)} stinky cheese`);
 }

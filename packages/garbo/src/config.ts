@@ -1,6 +1,6 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
-import { $item, $items, $monster, get } from "libram";
+import { $item, $items, $monster } from "libram";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -10,7 +10,7 @@ const workshedAliases = [
   },
   { item: $item`Little Geneticist DNA-Splicing Lab`, aliases: ["dnalab"] },
 ];
-const unaliasedSheds = $items`cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
+const unaliasedSheds = $items`TakerSpace letter of Marque, cold medicine cabinet, diabolic pizza cube, portable Mayo Clinic, spinning wheel, warbear auto-anvil, warbear chemistry lab, warbear high-efficiency still, warbear induction oven, warbear jackhammer drill press, warbear LP-ROM burner`;
 const allWorkshedAliases = [
   ...workshedAliases.map(({ item, aliases }) => {
     return { item: item, aliases: [...aliases, item.name.toLowerCase()] };
@@ -80,7 +80,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     }),
     nobarf: Args.flag({
       setting: "",
-      help: "do beginning of the day setup, embezzlers, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
+      help: "do beginning of the day setup, copy target monster, and various daily flags, but will terminate before normal Barf Mountain turns. May close NEP for the day.",
       default: false,
     }),
     nodiet: Args.flag({
@@ -119,10 +119,28 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       default: 0,
     }),
     target: Args.monster({
-      setting: "",
+      setting: "garbo_copyTarget",
       help: "The monster to use all copies on",
-      default: $monster`Knob Goblin Embezzler`,
-      hidden: true,
+      default: $monster.none,
+    }),
+    usekarma: Args.flag({
+      setting: "",
+      help: "Use instant karma as part of diet",
+      default: false,
+    }),
+    usepilsners: Args.flag({
+      setting: "garbo_usePilsners",
+      help: "Use instant pilsners as part of diet",
+      default: true,
+    }),
+    halt: Args.string({
+      setting: "",
+      help: "Halt after a grimoire task is run that contains this sub-string. If a task is skipped this will not trigger.",
+    }),
+    history: Args.flag({
+      setting: "garbo_history",
+      help: "Write grimoire task history to garbo_history_<date>.csv",
+      default: false,
     }),
     version: Args.flag({
       setting: "",
@@ -160,6 +178,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "Set to whatever you estimate the value of a free fight/run to be for you. (Default 2000)",
           default: 2000,
         }),
+        valueOfPvPFight: Args.number({
+          setting: "garbo_valueOfPvPFight",
+          help: "Set to whatever you estimate the value of a PvP fight to be for you. (Default 0)",
+          default: 0,
+        }),
         yachtzeechain: Args.flag({
           setting: "garbo_yachtzeechain",
           help: "only diets after free fights, and attempts to estimate if Yachtzee! chaining is profitable for you - if so, it consumes a specific diet which uses ~0-36 spleen;\
@@ -173,10 +196,15 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           default: false,
           hidden: true,
         }),
-        embezzlerMultiplier: Args.number({
-          setting: "garbo_embezzlerMultiplier",
-          help: "The amount we multiply our valueOfAdventure by when estimating marginal Embezzler profit. (Default 2.5)",
-          default: 2.5,
+        dmtDupeItem: Args.item({
+          setting: "garbo_dmtDupeItem",
+          help: "Item to duplicate in the deep machine tunnel instead of calculating by value. Will be ignored if the item is not in inventory or not able to be duped.",
+          hidden: true,
+        }),
+        meatTargetMultiplier: Args.number({
+          setting: "garbo_meatTargetMultiplier",
+          help: "The amount we multiply our valueOfAdventure by when estimating marginal meat target profit. (Default 1.5)",
+          default: 1.5,
         }),
         stashClan: Args.string({
           setting: "garbo_stashClan",
@@ -196,17 +224,26 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_fightGlitch",
           help: "Set to true to fight the glitch season reward. You need certain skills, see relay for info.",
         }),
+        chargeYeti: Args.boolean({
+          setting: "garbo_chargeYeti",
+          help: "If set, garbo will value Cooler Yeti familiar experience to help you nightcap more effectively",
+          default: false,
+        }),
         buyPass: Args.boolean({
           setting: "garbo_buyPass",
           help: "Set to true to buy a Dinsey day pass with FunFunds at the end of the day, if possible.",
+        }),
+        beSelfish: Args.boolean({
+          setting: "_garbo_beSelfish",
+          help: "Set to true to not spend a small amount of daily resources on community endeavors.",
         }),
         autoUserConfirm: Args.boolean({
           setting: "garbo_autoUserConfirm",
           help: "**WARNING: Experimental** Don't show user confirm dialogs, instead automatically select yes/no in a way that will allow garbo to continue executing. Useful for scripting/headless. Risky and potentially destructive.",
         }),
-        autoUserConfirm_embezzlerInvocationsThreshold: Args.number({
-          setting: "garbo_autoUserConfirm_embezzlerInvocationsThreshold",
-          help: "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source an embezzler for chaining before requesting user interference.",
+        autoUserConfirm_targetInvocationsThreshold: Args.number({
+          setting: "garbo_autoUserConfirm_targetInvocationsThreshold",
+          help: "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source a target monster for chaining before requesting user interference.",
           default: 1,
         }),
         restoreHpTarget: Args.number({
@@ -245,11 +282,10 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       () => false,
       "",
     ),
-    clarasBellClaimed: Args.custom<boolean>(
-      { hidden: true, setting: "_claraBellUsed" },
-      () => get("_claraBellUsed"),
-      "",
-    ),
+    dietCompleted: Args.flag({
+      hidden: true,
+      default: false,
+    }),
   },
   { positionalArgs: ["turns"] },
 );

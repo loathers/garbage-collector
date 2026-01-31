@@ -1,15 +1,16 @@
 import { Args } from "grimoire-kolmafia";
 import {
   abort,
-  availableAmount,
   buy,
   canEquip,
   cliExecute,
   currentRound,
+  equip,
   getCampground,
   getClanName,
   guildStoreAvailable,
   handlingChoice,
+  haveEquipped,
   inebrietyLimit,
   Item,
   logprint,
@@ -33,22 +34,29 @@ import {
 import {
   $class,
   $classes,
-  $coinmaster,
+  $familiars,
   $item,
   $items,
+  $monster,
+  $monsters,
   $skill,
+  $skills,
   $slots,
   Clan,
   examine,
   get,
+  getCombatFlags,
   getFoldGroup,
   have,
   haveInCampground,
   JuneCleaver,
   maxBy,
   set,
+  setCombatFlags,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
+  unequip,
+  withProperty,
 } from "libram";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { globalOptions, isQuickGear } from "./config";
@@ -56,31 +64,41 @@ import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
 import {
-  allMallPrices,
   bestJuneCleaverOption,
   checkGithubVersion,
-  getCombatFlags,
   HIGHLIGHT,
+  isFreeAndCopyable,
   printEventLog,
   printLog,
   propertyManager,
   questStep,
   safeRestore,
-  setCombatFlags,
+  targetingMeat,
   userConfirmDialog,
+  valueDrops,
 } from "./lib";
-import { meatMood, useBuffExtenders } from "./mood";
+import { meatMood } from "./mood";
 import { potionSetup } from "./potions";
 import { endSession, startSession, trackMarginalMpa } from "./session";
 import { estimatedGarboTurns } from "./turns";
-import { yachtzeeChain } from "./yachtzee";
 import { garboAverageValue } from "./garboValue";
 import {
   BarfTurnQuests,
+  CockroachSetup,
+  DailyFamiliarsQuest,
+  EmbezzlerFightsQuest,
+  FinishUpQuest,
   PostQuest,
   runGarboQuests,
-  SetupEmbezzlerQuest,
+  runSafeGarboQuests,
+  SetupTargetCopyQuest,
 } from "./tasks";
+import {
+  BuffExtensionQuest,
+  PostBuffExtensionQuest,
+} from "./tasks/buffExtension";
+import { shouldAffirmationHate } from "./combat";
+import { acquire } from "./acquire";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -92,21 +110,24 @@ function ensureBarfAccess() {
     if (!have(ticket)) buy(1, ticket, TICKET_MAX_PRICE);
     use(ticket);
   }
-  if (!get("_dinseyGarbageDisposed")) {
-    print("Disposing of garbage.", HIGHLIGHT);
-    retrieveItem($item`bag of park garbage`);
-    visitUrl("place.php?whichplace=airport_stench&action=airport3_tunnels");
-    runChoice(6);
-    cliExecute("refresh inv");
+}
+
+function defaultTarget() {
+  if ($skills`Curse of Weaksauce, Saucegeyser`.every((s) => have(s))) {
+    return maxBy(
+      $monsters.all().filter((m) => m.wishable && isFreeAndCopyable(m)),
+      valueDrops,
+    );
   }
+  return $monster`Knob Goblin Elite Guard Captain`;
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(27668);
+  sinceKolmafiaRevision(28881); // Adding angelbone and devilbone
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
-  globalOptions.prefs.yachtzeechain = false;
+  // Instant returns placed before visiting anything.
   if (globalOptions.version) return; // Since we always print the version, all done!
   if (globalOptions.help) {
     Args.showHelp(globalOptions);
@@ -126,7 +147,13 @@ export function main(argString = ""): void {
     );
   }
 
-  allMallPrices();
+  cliExecute("mallcheck.js");
+
+  if (globalOptions.target === $monster.none) {
+    globalOptions.target = defaultTarget();
+  }
+
+  globalOptions.prefs.yachtzeechain = false;
 
   if (globalOptions.turns) {
     if (globalOptions.turns >= 0) {
@@ -166,10 +193,17 @@ export function main(argString = ""): void {
         if (parsedClanIdOrName) {
           Clan.with(parsedClanIdOrName, () => {
             for (const item of [...stashItems]) {
-              if (getFoldGroup(item).some((item) => have(item))) {
+              const equipped = [item, ...getFoldGroup(item)].find((i) =>
+                haveEquipped(i),
+              );
+              if (equipped) unequip(equipped);
+
+              if (getFoldGroup(item).some((i) => have(i))) {
                 cliExecute(`fold ${item}`);
               }
+
               const retrieved = retrieveItem(item);
+
               if (
                 item === $item`Spooky Putty sheet` &&
                 !retrieved &&
@@ -177,6 +211,7 @@ export function main(argString = ""): void {
               ) {
                 continue;
               }
+
               print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
               if (putStash(item, 1)) {
                 stashItems.splice(stashItems.indexOf(item), 1);
@@ -191,13 +226,14 @@ export function main(argString = ""): void {
       if (
         userConfirmDialog(
           "Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?",
-          true,
+          false,
         )
       ) {
         stashItems.splice(0);
       }
     }
   }
+
   if (globalOptions.returnstash) {
     set(
       "garboStashItems",
@@ -249,8 +285,10 @@ export function main(argString = ""): void {
     throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is too low for barf farming to be worthwhile. If you forgot to set it, use "set valueOfAdventure = XXXX" to set it to your marginal turn meat value.`;
   }
   if (
+    !globalOptions.nobarf &&
     globalOptions.prefs.valueOfAdventure &&
-    globalOptions.prefs.valueOfAdventure >= 10000
+    globalOptions.prefs.valueOfAdventure >=
+      (globalOptions.nobarf ? 20_000 : 10_000)
   ) {
     throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is definitely incorrect. Please set it to your reliable marginal turn value.`;
   }
@@ -275,6 +313,7 @@ export function main(argString = ""): void {
   if (!globalOptions.nobarf && !globalOptions.simdiet) {
     ensureBarfAccess();
   }
+
   if (globalOptions.simdiet) {
     propertyManager.set({
       logPreferenceChange: true,
@@ -290,6 +329,7 @@ export function main(argString = ""): void {
       suppressMallPriceCacheMessages: true,
       shadowLabyrinthGoal: "effects",
       lightsOutAutomation: 1,
+      errorOnAmbiguousFold: false,
     });
     runDiet();
     propertyManager.resetAll();
@@ -319,7 +359,7 @@ export function main(argString = ""): void {
     }
   }
 
-  const combatFlags = getCombatFlags("aabosses", "bothcombatinterf");
+  const combatFlags = getCombatFlags(["aabosses", "bothcombatinterf"]);
 
   try {
     print("Collecting garbage!", HIGHLIGHT);
@@ -341,7 +381,7 @@ export function main(argString = ""): void {
 
     setAutoAttack(0);
     setCombatFlags(
-      { flag: "aaBossFlag", value: true },
+      { flag: "aabosses", value: true },
       { flag: "bothcombatinterf", value: false },
     );
 
@@ -376,9 +416,9 @@ export function main(argString = ""): void {
           "libram_savedMacro",
           "maximizerMRUList",
           "testudinalTeachings",
-          "garboEmbezzlerDate",
-          "garboEmbezzlerCount",
-          "garboEmbezzlerSources",
+          "garboTargetDate",
+          "garboTargetCount",
+          "garboTargetSources",
           "spadingData",
         ]),
       ]
@@ -401,7 +441,7 @@ export function main(argString = ""): void {
       mpAutoRecoveryItems: mpItems,
       afterAdventureScript: "",
       betweenBattleScript: "",
-      choiceAdventureScript: "",
+      choiceAdventureScript: "garbo_choice.js",
       counterScript: "",
       familiarScript: "",
       currentMood: "apathetic",
@@ -416,6 +456,8 @@ export function main(argString = ""): void {
       maximizerCombinationLimit: maximizerCombinationLimit,
       allowNegativeTally: true,
       spadingScript: "excavator.js",
+      lastChanceBurn: "",
+      errorOnAmbiguousFold: false,
     });
     let bestHalloweiner = 0;
     if (haveInCampground($item`haunted doghouse`)) {
@@ -456,6 +498,11 @@ export function main(argString = ""): void {
     }
     propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
 
+    const equipmentFamiliars = $familiars`Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow`;
+    for (const familiar of equipmentFamiliars.filter(have)) {
+      equip(familiar, $item.none);
+    }
+
     safeRestore();
 
     if (questStep("questM23Meatsmith") === -1) {
@@ -482,7 +529,7 @@ export function main(argString = ""): void {
     ) {
       visitUrl("guild.php?action=buyskill&skillid=32", true);
     }
-    const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring`;
+    const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring, Mayflower bouquet`;
     if (
       myInebriety() <= inebrietyLimit() &&
       (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`)) &&
@@ -494,9 +541,30 @@ export function main(argString = ""): void {
       stashItems.push($item`origami pasties`);
     }
 
+    // Prepare Daily Affirmation for PvP fights if desired
+    if (shouldAffirmationHate()) {
+      acquire(
+        1,
+        $item`Daily Affirmation: Keep Free Hate in your Heart`,
+        globalOptions.prefs.valueOfPvPFight * 3 * 1.1,
+      );
+    }
+
     // FIXME: Dynamically figure out pointer ring approach.
     withStash(stashItems, () => {
       withVIPClan(() => {
+        // Prepare pirate realm if our copy target is cockroach
+        // How do we handle if garbo was started without enough turns left without dieting to prep?
+        if (
+          globalOptions.target === $monster`cockroach` &&
+          !globalOptions.simdiet
+        ) {
+          if (!globalOptions.nodiet) nonOrganAdventures();
+          runSafeGarboQuests([DailyFamiliarsQuest]); // Prep robortender ahead of time in case it's a giant crab
+          withProperty("removeMalignantEffects", false, () =>
+            runGarboQuests([CockroachSetup]),
+          );
+        }
         // 0. diet stuff.
         if (
           globalOptions.nodiet ||
@@ -532,10 +600,9 @@ export function main(argString = ""): void {
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
-        // 2. do some embezzler stuff
+        // 2. do some target copy stuff
         freeFights();
-        runGarboQuests([SetupEmbezzlerQuest]);
-        yachtzeeChain();
+        runGarboQuests([SetupTargetCopyQuest]);
         dailyFights();
 
         if (!globalOptions.nobarf) {
@@ -543,23 +610,11 @@ export function main(argString = ""): void {
           potionSetup(false);
           maximize("MP", false);
           meatMood().execute(estimatedGarboTurns());
-          useBuffExtenders();
+          runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
+          if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
             runGarboQuests([PostQuest(), ...BarfTurnQuests]);
-
-            // buy one-day tickets with FunFunds if user desires
-            if (
-              globalOptions.prefs.buyPass &&
-              availableAmount($item`FunFunds™`) >= 20 &&
-              !have($item`one-day ticket to Dinseylandfill`)
-            ) {
-              print("Buying a one-day ticket", HIGHLIGHT);
-              buy(
-                $coinmaster`The Dinsey Company Store`,
-                1,
-                $item`one-day ticket to Dinseylandfill`,
-              );
-            }
+            runGarboQuests([FinishUpQuest]);
           } finally {
             setAutoAttack(0);
           }

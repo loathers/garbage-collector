@@ -1,4 +1,6 @@
 import {
+  alliedRadio,
+  booleanModifier,
   cliExecute,
   Effect,
   getWorkshed,
@@ -16,7 +18,6 @@ import {
   $effect,
   $effects,
   $item,
-  $items,
   $skill,
   AsdonMartin,
   get,
@@ -24,9 +25,14 @@ import {
   Mood,
   uneffect,
 } from "libram";
-import { baseMeat, burnLibrams, safeRestoreMpTarget, setChoice } from "./lib";
-import { withStash } from "./clan";
+import {
+  baseMeat as baseMeatFunc,
+  safeRestoreMpTarget,
+  setChoice,
+} from "./lib";
 import { usingPurse } from "./outfit";
+import { effectValue } from "./potions";
+import { acquire } from "./acquire";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -38,7 +44,12 @@ Mood.setDefaultOptions({
   useNativeRestores: true,
 });
 
-export function meatMood(urKels = false, meat = baseMeat): Mood {
+export function meatMood(
+  urKels = false,
+  meat: undefined | number = undefined,
+): Mood {
+  const baseMeat = baseMeatFunc();
+  meat ||= baseMeat;
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
@@ -52,6 +63,14 @@ export function meatMood(urKels = false, meat = baseMeat): Mood {
   mood.skill($skill`Blood Bond`);
   mood.skill($skill`Leash of Linguini`);
   mood.skill($skill`Empathy of the Newt`);
+  mood.skill($skill`Only Dogs Love a Drunken Sailor`);
+
+  if (have($item`April Shower Thoughts shield`)) {
+    mood.effect($effect`Thoughtful Empathy`);
+    mood.effect($effect`Lubricating Sauce`);
+    mood.effect($effect`Tubes of Universal Meat`);
+    mood.effect($effect`Strength of the Tortoise`);
+  }
 
   mood.skill($skill`The Polka of Plenty`);
   mood.skill($skill`Disco Leer`);
@@ -145,9 +164,21 @@ export function meatMood(urKels = false, meat = baseMeat): Mood {
     useSkill($skill`Incredible Self-Esteem`);
   }
 
+  if (!get("_alliedRadioWildsunBoon") && wildsunBoonWorthIt()) {
+    const acquired = acquire(
+      1,
+      $item`handheld Allied radio`,
+      effectValue($effect`Wildsun Boon`, 100),
+      false,
+    );
+    if (!acquired) _wildsunBoonWorthIt = false;
+    alliedRadio("wildsun boon");
+  }
+
   const canRecord =
     getWorkshed() === $item`warbear LP-ROM burner` ||
-    have($item`warbear LP-ROM burner` || get("questG04Nemesis") === "finished");
+    (have($item`warbear LP-ROM burner`) && !get("_workshedItemUsed")) ||
+    get("questG04Nemesis") === "finished";
 
   if (myClass() === $class`Accordion Thief` && myLevel() >= 15 && !canRecord) {
     if (have($skill`The Ballad of Richie Thingfinder`)) {
@@ -195,45 +226,34 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   return mood;
 }
 
-/**
- * Use buff extenders like PYEC and Bag o Tricks
- */
-export function useBuffExtenders(): void {
-  withStash($items`Platinum Yendorian Express Card, Bag o' Tricks`, () => {
-    if (
-      have($item`Platinum Yendorian Express Card`) &&
-      !get("expressCardUsed")
-    ) {
-      burnLibrams();
-      use($item`Platinum Yendorian Express Card`);
-    }
-    if (have($item`Bag o' Tricks`) && !get("_bagOTricksUsed")) {
-      use($item`Bag o' Tricks`);
-    }
-  });
-  if (have($item`License to Chill`) && !get("_licenseToChillUsed")) {
-    burnLibrams();
-    use($item`License to Chill`);
-  }
-}
-
-const stings = [
-  ...$effects`Apoplectic with Rage, Barfpits, Berry Thorny, Biologically Shocked, Bone Homie, Boner Battalion, Coal-Powered, Curse of the Black Pearl Onion, Dizzy with Rage, Drenched With Filth, EVISCERATE!, Fangs and Pangs, Frigidalmatian, Gummi Badass, Haiku State of Mind, It's Electric!, Jabañero Saucesphere, Jalapeño Saucesphere, Little Mouse Skull Buddy, Long Live GORF, Mayeaugh, Permanent Halloween, Psalm of Pointiness, Pygmy Drinking Buddy, Quivering with Rage, Scarysauce, Skeletal Cleric, Skeletal Rogue, Skeletal Warrior, Skeletal Wizard, Smokin', Soul Funk, Spiky Frozen Hair, Stinkybeard, Stuck-Up Hair, Can Has Cyborger, Feeling Nervous`,
-  $effect`Burning, Man`,
-  $effect`Yes, Can Haz`,
-];
-const textAlteringEffects = $effects`Can Has Cyborger, Dis Abled, Haiku State of Mind, Just the Best Anapests, O Hai!, Robocamo`;
-export const teleportEffects = $effects`Teleportitis, Feeling Lost, Funday!`;
-const otherwiseBadEffects = $effects`Temporary Blindness`;
+const damageEffects = Effect.all().filter((x) =>
+  ["Thorns", "Sporadic Thorns", "Damage Aura", "Sporadic Damage Aura"].some(
+    (modifier) => numericModifier(x, modifier) > 0,
+  ),
+);
+const textAlteringEffects = Effect.all().filter((x) =>
+  booleanModifier(x, "Alters Page Text"),
+);
+export const teleportEffects = Effect.all().filter((x) =>
+  booleanModifier(x, "Adventure Randomly"),
+);
+const otherBadEffects = Effect.all().filter(
+  (x) => booleanModifier(x, "Blind") || booleanModifier(x, "Always Fumble"),
+);
 export function shrugBadEffects(...exclude: Effect[]): void {
   [
-    ...stings,
+    ...damageEffects,
     ...textAlteringEffects,
     ...teleportEffects,
-    ...otherwiseBadEffects,
-  ].forEach((effect) => {
-    if (have(effect) && !exclude.includes(effect)) {
-      uneffect(effect);
-    }
-  });
+    ...otherBadEffects,
+  ]
+    .filter((effect) => have(effect) && !exclude.includes(effect))
+    .forEach((effect) => uneffect(effect));
+}
+
+let _wildsunBoonWorthIt: boolean;
+function wildsunBoonWorthIt(): boolean {
+  return (_wildsunBoonWorthIt ??=
+    effectValue($effect`Wildsun Boon`, 100) >
+    mallPrice($item`handheld Allied radio`));
 }

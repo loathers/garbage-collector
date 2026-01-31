@@ -4,8 +4,7 @@ import {
   cliExecute,
   enthroneFamiliar,
   equip,
-  equippedAmount,
-  equippedItem,
+  familiarEquippedEquipment,
   getClanId,
   getClanName,
   handlingChoice,
@@ -15,25 +14,34 @@ import {
   putStash,
   refreshStash,
   retrieveItem,
-  Slot,
   stashAmount,
   takeStash,
   toItem,
+  toSlot,
   visitUrl,
 } from "kolmafia";
 import {
   $familiar,
+  $familiars,
   $item,
-  $items,
+  $monster,
+  $slot,
   Clan,
   get,
+  getAcquirePrice,
   getFoldGroup,
   have,
   set,
+  unequip,
 } from "libram";
 import { Macro } from "./combat";
 import { globalOptions } from "./config";
-import { HIGHLIGHT, userConfirmDialog } from "./lib";
+import {
+  HIGHLIGHT,
+  ULTRA_RARE_MONSTERS,
+  unlimitedFreeRunList,
+  userConfirmDialog,
+} from "./lib";
 
 export const stashItems = get("garboStashItems", "")
   .split(",")
@@ -165,8 +173,16 @@ export class StashManager {
         "In fight, trying to get away to return items to stash...",
         HIGHLIGHT,
       );
-      Macro.if_(globalOptions.target, Macro.attack().repeat())
-        .tryItem(...$items`Louder Than Bomb, divine champagne popper`)
+      Macro.if_(
+        [globalOptions.target, $monster`giant giant crab`],
+        Macro.attack().repeat(),
+      )
+        .if_(ULTRA_RARE_MONSTERS, Macro.abort())
+        .tryItem(
+          ...unlimitedFreeRunList
+            .filter((i) => getAcquirePrice(i) < get("valueOfAdventure"))
+            .sort((a, b) => getAcquirePrice(a) - getAcquirePrice(b)),
+        )
         .step("runaway")
         .submit();
     } else {
@@ -196,9 +212,15 @@ export class StashManager {
             enthroneFamiliar($familiar.none);
           }
 
-          if (equippedAmount(item) > 0) {
-            const slots = Slot.all().filter((s) => equippedItem(s) === item);
-            slots.forEach((s) => equip(s, $item.none));
+          const foldedForms = [item, ...getFoldGroup(item)];
+          for (const fold of foldedForms) unequip(fold);
+
+          if (toSlot(item) === $slot`familiar` && !have(item, count)) {
+            for (const familiar of $familiars.all().filter(have)) {
+              if (familiarEquippedEquipment(familiar) === item) {
+                equip(familiar, $item.none);
+              }
+            }
           }
 
           if (itemAmount(item) >= count && putStash(count, item)) {

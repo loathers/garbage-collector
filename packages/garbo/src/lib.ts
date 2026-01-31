@@ -4,6 +4,8 @@ import {
   choiceFollowsFight,
   cliExecute,
   eat,
+  Effect,
+  effectModifier,
   Familiar,
   familiarWeight,
   fileToBuffer,
@@ -20,8 +22,9 @@ import {
   Item,
   itemAmount,
   itemDropsArray,
+  lastMonster,
   Location,
-  mallPrices,
+  meatDrop,
   meatDropModifier,
   Monster,
   mpCost,
@@ -47,13 +50,12 @@ import {
   rollover,
   runChoice,
   runCombat,
-  sessionStorage,
   setLocation,
   Skill,
   soulsauceCost,
   spleenLimit,
+  Stat,
   todayToString,
-  toSlot,
   totalFreeRests,
   toUrl,
   use,
@@ -61,17 +63,16 @@ import {
   userConfirm,
   useSkill,
   visitUrl,
-  weaponHands,
-  xpath,
+  weightAdjustment,
 } from "kolmafia";
 import {
   $effect,
   $familiar,
   $item,
+  $items,
   $location,
   $monster,
   $skill,
-  $slot,
   $thralls,
   ActionSource,
   bestLibramToCast,
@@ -85,6 +86,7 @@ import {
   get,
   getBanishedMonsters,
   getKramcoWandererChance,
+  getModifier,
   getTodaysHolidayWanderers,
   have,
   JuneCleaver,
@@ -104,6 +106,7 @@ import {
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
+import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -119,7 +122,7 @@ export const eventLog: {
 
 export enum BonusEquipMode {
   FREE,
-  EMBEZZLER,
+  MEAT_TARGET,
   DMT,
   BARF,
 }
@@ -135,7 +138,9 @@ export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
 export function modeValueOfMeat(mode: BonusEquipMode): number {
   return modeIsFree(mode)
     ? 0
-    : (baseMeat + (mode === BonusEquipMode.EMBEZZLER ? 750 : 0)) / 100;
+    : (baseMeat() +
+        (mode === BonusEquipMode.MEAT_TARGET ? targetMeatDifferential() : 0)) /
+        100;
 }
 
 export function modeValueOfItem(mode: BonusEquipMode): number {
@@ -144,30 +149,70 @@ export function modeValueOfItem(mode: BonusEquipMode): number {
 
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
-export const ESTIMATED_OVERDRUNK_TURNS = 60;
-export const EMBEZZLER_MULTIPLIER = (): number =>
-  globalOptions.prefs.embezzlerMultiplier;
+export const ESTIMATED_OVERDRUNK_TURNS = 50;
+export const MEAT_TARGET_MULTIPLIER = (): number =>
+  globalOptions.prefs.meatTargetMultiplier;
 
 export const propertyManager = new PropertiesManager();
 
-export const baseMeat =
+export const songboomMeat = () =>
   SongBoom.have() &&
   (SongBoom.songChangesLeft() > 0 ||
     (SongBoom.song() === "Total Eclipse of Your Meat" &&
       myInebriety() <= inebrietyLimit()))
-    ? 275
-    : 250;
+    ? 25
+    : 0;
 
-export function averageEmbezzlerNet(): number {
-  return ((baseMeat + 750) * meatDropModifier()) / 100;
+// all tourists have a basemeat of 250
+export const baseMeat = () => 250 + songboomMeat();
+export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
+export const basePointerRingMeat = () => 500;
+export const targetPointerRingMeat = () => {
+  if (globalOptions.target.attributes.includes("FREE")) return 0;
+  const meat = targetMeat();
+  if (meat >= 500) {
+    return 700;
+  } else if (meat >= 100) {
+    return 500;
+  } else if (meat >= 1) {
+    return 300;
+  }
+  return 50;
+};
+
+export const targetMeatDifferential = () => {
+  const baseMeatVal = baseMeat();
+  const targetMeatVal = targetMeat();
+
+  return clamp(targetMeatVal - baseMeatVal, 0, targetMeatVal);
+};
+
+export const targetingMeat = () =>
+  !isFree(globalOptions.target) && targetMeat() > baseMeat();
+
+export const targetingItems = () => !targetingMeat();
+
+export const gooseDroneEligible = () =>
+  targetingItems() &&
+  itemDropsArray(globalOptions.target).filter(
+    (item) => !["c", "0", "p", "a"].includes(item.type),
+  ).length === 1 &&
+  have($familiar`Grey Goose`);
+
+export function averageTargetNet(): number {
+  return targetingItems()
+    ? valueDrops(globalOptions.target)
+    : (targetMeat() * meatDropModifier()) / 100;
 }
 
 export function averageTouristNet(): number {
-  return (baseMeat * meatDropModifier()) / 100;
+  return (baseMeat() * meatDropModifier()) / 100;
 }
 
-export function expectedEmbezzlerProfit(): number {
-  return averageEmbezzlerNet() - averageTouristNet();
+export function expectedTargetProfit(): number {
+  return isFreeAndCopyable(globalOptions.target)
+    ? averageTargetNet()
+    : averageTargetNet() - averageTouristNet();
 }
 
 export function safeInterrupt(): void {
@@ -302,24 +347,6 @@ export function ltbRun(): ActionSource {
   return tryFindFreeRunOrBanish(ltbRestraints) ?? ensureFreeRun(ltbRestraints);
 }
 
-export function coinmasterPrice(item: Item): number {
-  // TODO: Get this from coinmasters.txt if more are needed
-  switch (item) {
-    case $item`viral video`:
-      return 20;
-    case $item`plus one`:
-      return 74;
-    case $item`gallon of milk`:
-      return 100;
-    case $item`print screen button`:
-      return 111;
-    case $item`daily dungeon malware`:
-      return 150;
-  }
-
-  return 0;
-}
-
 export function kramcoGuaranteed(): boolean {
   return (
     have($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1
@@ -369,7 +396,7 @@ export function pillkeeperOpportunityCost(): number {
   const alternateUses = [
     {
       can: canTreasury,
-      value: EMBEZZLER_MULTIPLIER() * get("valueOfAdventure"),
+      value: MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure"),
     },
     {
       can: realmAvailable("sleaze"),
@@ -433,10 +460,24 @@ export function safeRestoreMpTarget(): number {
   return Math.min(myMaxmp(), 200);
 }
 
+let _ignoreBeatenUp = false;
+export const ignoreBeatenUp = () => (_ignoreBeatenUp = true);
+export const unignoreBeatenUp = () => (_ignoreBeatenUp = false);
+
 export function safeRestore(): void {
-  if (have($effect`Beaten Up`)) {
+  if (
+    get("_lastCombatLost") &&
+    lastMonster() !== $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
+  ) {
+    set("_lastCombatLost", "false");
+    throw new Error(
+      "You lost your most recent combat! Check to make sure everything is alright before rerunning.",
+    );
+  }
+  if (have($effect`Beaten Up`) && !_ignoreBeatenUp) {
     if (
-      get("lastEncounter") === "Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl"
+      lastMonster() ===
+      $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
     ) {
       uneffect($effect`Beaten Up`);
     } else {
@@ -479,29 +520,32 @@ export function checkGithubVersion(): void {
       gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release")
         .commit;
 
-    // Query GitHub for latest release commit
-    const gitBranches: { name: string; commit: { sha: string } }[] = JSON.parse(
-      visitUrl(
-        `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`,
-      ),
+    const gitData = visitUrl(
+      `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/branches`,
     );
-    const releaseSHA = gitBranches.find(
-      (branchInfo) => branchInfo.name === "release",
-    )?.commit?.sha;
+    if (!gitData) print("Failed to reach github!");
+    else {
+      // Query GitHub for latest release commit
+      const gitBranches: { name: string; commit: { sha: string } }[] =
+        JSON.parse(gitData);
+      const releaseSHA = gitBranches.find(
+        (branchInfo) => branchInfo.name === "release",
+      )?.commit?.sha;
 
-    print(
-      `Local Version: ${localSHA} (built from ${process.env.GITHUB_REF_NAME}@${process.env.GITHUB_SHA})`,
-    );
-    if (releaseSHA === localSHA) {
-      print("Garbo is up to date!", HIGHLIGHT);
-    } else if (releaseSHA === undefined) {
       print(
-        "Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?",
-        HIGHLIGHT,
+        `Local Version: ${localSHA} (built from ${process.env.GITHUB_REF_NAME}@${process.env.GITHUB_SHA})`,
       );
-    } else {
-      print(`Release Version: ${releaseSHA}`);
-      print("Garbo is out of date. Please run 'git update'!", "red");
+      if (releaseSHA === localSHA) {
+        print("Garbo is up to date!", HIGHLIGHT);
+      } else if (releaseSHA === undefined) {
+        print(
+          "Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?",
+          HIGHLIGHT,
+        );
+      } else {
+        print(`Release Version: ${releaseSHA}`);
+        print("Garbo is out of date. Please run 'git update'!", "red");
+      }
     }
   } else {
     print(
@@ -608,28 +652,19 @@ const reservedBanishes = new Map<
   [$item`mafia middle finger ring`, () => true],
 ]);
 
-export function freeRunConstraints(latteActionSource: boolean): {
+export function freeRunConstraints(spec?: OutfitSpec): {
   allowedAction: (action: ActionSource) => boolean;
 } {
   return {
     allowedAction: (action: ActionSource): boolean => {
-      const disallowUsage = reservedBanishes.get(action.source);
-
-      if (!have($item`latte lovers member's mug`) || !latteActionSource) {
-        return !(disallowUsage?.() && getUsingFreeBunnyBanish());
-      }
-
-      const forceEquipsOtherThanLatte = (
-        action?.constraints?.equipmentRequirements?.().maximizeOptions
-          .forceEquip ?? []
-      ).filter((equipment) => equipment !== $item`latte lovers member's mug`);
-      return (
-        forceEquipsOtherThanLatte.every(
-          (equipment) => toSlot(equipment) !== $slot`off-hand`,
-        ) &&
-        sum(forceEquipsOtherThanLatte, weaponHands) < 2 &&
-        !(disallowUsage?.() && getUsingFreeBunnyBanish())
+      const initialActionOutfit = Outfit.from(
+        action.constraints.equipmentRequirements?.() ?? {},
       );
+
+      if (!initialActionOutfit?.equip(spec ?? {})) return false;
+
+      const disallowUsage = reservedBanishes.get(action.source);
+      return !(disallowUsage?.() && getUsingFreeBunnyBanish());
     },
   };
 }
@@ -672,27 +707,30 @@ const JUNE_CLEAVER_ADVENTURES = [
   "Teacher's Pet",
 ] as const;
 
+const VIOLET_FOG_ADVENTURES = [
+  "She's So Unusual",
+  "The Big Scary Place",
+  "The Prince of Wishful Thinking",
+  "Violet Fog",
+] as const;
+
 type LastAdventureOptions = {
   extraEncounters: string[];
+  includeGhostDog: boolean;
   includeHolidayWanderers: boolean;
   includeJuneCleaver: boolean;
-  includeGhostDog: boolean;
+  includeVioletFog: boolean;
 };
-const DEFAULT_LAST_ADVENTURE_OPTIONS = {
-  extraEncounters: [],
-  includeGhostDog: true,
-  includeHolidayWanderers: true,
-  includeJuneCleaver: true,
-} as const;
+
 export function lastAdventureWasWeird(
-  options: Partial<LastAdventureOptions> = {},
+  {
+    extraEncounters = [],
+    includeGhostDog = true,
+    includeHolidayWanderers = true,
+    includeJuneCleaver = true,
+    includeVioletFog = true,
+  } = {} as Partial<LastAdventureOptions>,
 ): boolean {
-  const {
-    extraEncounters,
-    includeGhostDog,
-    includeHolidayWanderers,
-    includeJuneCleaver,
-  } = { ...DEFAULT_LAST_ADVENTURE_OPTIONS, ...options };
   return [
     ...extraEncounters,
     ...(includeGhostDog ? GHOST_DOG_ADVENTURES : []),
@@ -700,6 +738,7 @@ export function lastAdventureWasWeird(
       ? getTodaysHolidayWanderers().map((monster) => monster.name)
       : []),
     ...(includeJuneCleaver ? JUNE_CLEAVER_ADVENTURES : []),
+    ...(includeVioletFog ? VIOLET_FOG_ADVENTURES : []),
   ].includes(get("lastEncounter"));
 }
 
@@ -814,38 +853,48 @@ export function freeRest(): boolean {
     }
   }
 
-  if (get("chateauAvailable")) {
-    visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
-  } else if (get("getawayCampsiteUnlocked")) {
-    visitUrl("place.php?whichplace=campaway&action=campaway_tentclick");
-  } else {
+  if (
+    have($familiar`Skeleton of Crimbo Past`) &&
+    get("_knuckleboneRests", 0) < 5
+  ) {
+    const start = myFamiliar();
+    useFamiliar($familiar`Skeleton of Crimbo Past`);
     visitUrl("campground.php?action=rest");
+    useFamiliar(start);
+  } else {
+    if (get("chateauAvailable")) {
+      visitUrl("place.php?whichplace=chateau&action=chateau_restlabelfree");
+    } else if (get("getawayCampsiteUnlocked")) {
+      visitUrl("place.php?whichplace=campaway&action=campaway_tentclick");
+    } else {
+      visitUrl("campground.php?action=rest");
+    }
   }
 
   return true;
 }
 
 export function printEventLog(): void {
-  if (resetDailyPreference("garboEmbezzlerDate")) {
-    property.set("garboEmbezzlerCount", 0);
-    property.set("garboEmbezzlerSources", "");
+  if (resetDailyPreference("garboTargetDate")) {
+    property.set("garboTargetCount", 0);
+    property.set("garboTargetSources", "");
     property.set("garboYachtzeeCount", 0);
   }
-  const totalEmbezzlers =
-    property.getNumber("garboEmbezzlerCount", 0) +
+  const totalTargetCopies =
+    property.getNumber("garboTargetCount", 0) +
     eventLog.initialCopyTargetsFought +
     eventLog.digitizedCopyTargetsFought;
 
-  const allEmbezzlerSources = property
-    .getString("garboEmbezzlerSources")
+  const allTargetSources = property
+    .getString("garboTargetSources")
     .split(",")
     .filter((source) => source);
-  allEmbezzlerSources.push(...eventLog.copyTargetSources);
+  allTargetSources.push(...eventLog.copyTargetSources);
 
   const yacthzeeCount = get("garboYachtzeeCount", 0) + eventLog.yachtzees;
 
-  property.set("garboEmbezzlerCount", totalEmbezzlers);
-  property.set("garboEmbezzlerSources", allEmbezzlerSources.join(","));
+  property.set("garboTargetCount", totalTargetCopies);
+  property.set("garboTargetSources", allTargetSources.join(","));
   property.set("garboYachtzeeCount", yacthzeeCount);
 
   print(
@@ -853,7 +902,7 @@ export function printEventLog(): void {
     HIGHLIGHT,
   );
   print(
-    `Including this, you have fought ${totalEmbezzlers} across all ascensions today`,
+    `Including this, you have fought ${totalTargetCopies} across all ascensions today`,
     HIGHLIGHT,
   );
   if (yacthzeeCount > 0) {
@@ -938,21 +987,25 @@ function maxCarriedFamiliarDamage(familiar: Familiar): number {
 }
 
 function maxFamiliarDamage(familiar: Familiar): number {
+  const totalFamWeight = familiarWeight(familiar) + weightAdjustment();
   switch (familiar) {
     case $familiar`Cocoabo`:
-      return familiarWeight(familiar) + 3;
+      return totalFamWeight + 3;
     case $familiar`Feather Boa Constrictor`:
       // Double sleaze damage at Barf Mountain
       return (
-        familiarWeight(familiar) +
+        totalFamWeight +
         3 +
         numericModifier("Sleaze Damage") *
           (myLocation() === $location`Barf Mountain` ? 2 : 1)
       );
     case $familiar`Ninja Pirate Zombie Robot`:
-      return Math.floor((familiarWeight(familiar) + 3) * 1.5);
+      return Math.floor((totalFamWeight + 3) * 1.5);
     case $familiar`Jill-of-All-Trades`:
-      return familiarWeight(familiar);
+      return totalFamWeight + 3;
+    // TODO: Unknown rate, assume 2x until properly spaded
+    case $familiar`Adventurous Spelunker`:
+      return Math.floor((totalFamWeight + 3) * 2);
   }
   return 0;
 }
@@ -1015,42 +1068,143 @@ export function candyFactoryValue(): number {
   return garboAverageValue(...getDropsList("trainset"));
 }
 
-export function allMallPrices() {
-  const today = todayToString();
-  if (sessionStorage.getItem("allpricedate") !== today) {
-    mallPrices("allitems");
-    sessionStorage.setItem("allpricedate", today);
-  }
-}
-
-export function getCombatFlags(
-  ...flags: string[]
-): { flag: string; value: boolean }[] {
-  return flags.map((flag) => ({
-    flag,
-    value:
-      xpath(
-        visitUrl("account.php?tab=combat"),
-        `//*[@id="opt_flag_${flag}"]/label/input[@type='checkbox']@checked`,
-      )[0] === "checked",
-  }));
-}
-
-export function setCombatFlags(...flags: { flag: string; value: boolean }[]) {
-  return visitUrl(
-    `account.php?${
-      ([
-        ...flags.map(({ flag }) => `actions[]=flag_${flag}`),
-        ...flags.map(({ flag, value }) => `flag_${flag}=${Number(value)}`),
-        "action=Update",
-      ].join("&"),
-      true)
-    }`,
-  );
-}
-
 export function aprilFoolsRufus() {
   if (holiday().includes("April Fool's Day")) {
     visitUrl("questlog.php?which=7");
   }
 }
+
+type LuckyAdventure = {
+  location: Location;
+  phase: "target" | "yachtzee" | "barf";
+  value: () => number;
+  outfit?: () => Outfit;
+  choices?: () => {
+    [choice: number]: string | number;
+  };
+};
+
+const luckyAdventures: LuckyAdventure[] = [
+  {
+    location: $location`The Castle in the Clouds in the Sky (Top Floor)`,
+    phase: "barf",
+    value: () =>
+      canAdventure($location`The Castle in the Clouds in the Sky (Top Floor)`)
+        ? garboValue($item`Mick's IcyVapoHotness Inhaler`) -
+          get("valueOfAdventure")
+        : 0,
+  },
+  {
+    location: $location`Cobb's Knob Treasury`,
+    phase: "target",
+    value: () =>
+      canAdventure($location`Cobb's Knob Treasury`)
+        ? 3 * get("valueOfAdventure") // Rough estimation, they have 4x the basemeat of barf
+        : 0,
+  },
+];
+
+function determineBestLuckyAdventure(): LuckyAdventure {
+  return maxBy(luckyAdventures, ({ value }) => value());
+}
+
+let bestLuckyAdventure: LuckyAdventure;
+export function getBestLuckyAdventure(): LuckyAdventure {
+  return (bestLuckyAdventure ??= determineBestLuckyAdventure());
+}
+
+const SCALE_PATTERN = /Scale: /;
+const CAP_PATTERN = /Cap: (\d*)/;
+function calculateScalerCap({ attributes }: Monster): number {
+  const scaleMatch = SCALE_PATTERN.test(attributes);
+  if (!scaleMatch) return 0;
+  const capMatch = CAP_PATTERN.exec(attributes);
+  if (!capMatch?.[1]) return Infinity;
+  return Number(capMatch[1]);
+}
+
+const MONSTER_SCALER_CAPS = new Map<Monster, number>();
+export function scalerCap(monster: Monster): number {
+  const cached = MONSTER_SCALER_CAPS.get(monster);
+  if (cached) return cached;
+  const cap = calculateScalerCap(monster);
+  MONSTER_SCALER_CAPS.set(monster, cap);
+  return cap;
+}
+
+const STRONG_SCALER_THRESHOLD = 1_000;
+export const isStrongScaler = (m: Monster) =>
+  scalerCap(m) > STRONG_SCALER_THRESHOLD;
+
+export const isFreeAndCopyable = (monster: Monster) =>
+  monster.copyable && monster.attributes.includes("FREE");
+export const valueDrops = (monster: Monster) =>
+  sum(itemDropsArray(monster), ({ drop, rate, type }) =>
+    !["c", "0", "p", "a"].includes(type) ? (garboValue(drop) * rate) / 100 : 0,
+  );
+export const isFree = (monster: Monster) => monster.attributes.includes("FREE");
+
+export const unlimitedFreeRunList = $items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`;
+
+export function totalModifier(effect: Effect, stat: Stat): number {
+  return (
+    getModifier(stat.toString(), effect) +
+    0.2 * getModifier(`${stat.toString()} Percent`, effect)
+  );
+}
+
+export function asEffect(thing: Item | Effect): Effect {
+  return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
+}
+
+function improvesStat(thing: Item | Effect, stat: Stat): boolean {
+  return totalModifier(asEffect(thing), stat) > 0;
+}
+
+export function improvedStats(thing: Item | Effect): Stat[] {
+  return Stat.all().filter((stat) => improvesStat(thing, stat));
+}
+
+export function improvesAStat(thing: Item | Effect): boolean {
+  return improvedStats(thing).length > 0;
+}
+
+export function willDrunkAdventure() {
+  return have($item`Drunkula's wineglass`) && globalOptions.ascend;
+}
+
+export function freeFishyAvailable(): boolean {
+  return (
+    have($effect`Fishy`) ||
+    (have($item`fishy pipe`) && !get("_fishyPipeUsed")) ||
+    (get("skateParkStatus") === "ice" && !get("_skateBuff1"))
+  );
+}
+
+export const ULTRA_RARE_MONSTERS = Monster.all().filter((m) =>
+  m.attributes.includes("ULTRARARE"),
+);
+
+// Marginal value of familiar weight in % meat drop.
+export function marginalFamWeightValue(): number {
+  const familiarMultiplier = have($familiar`Robortender`)
+    ? 2
+    : have($familiar`Hobo Monkey`)
+      ? 1.25
+      : 1;
+
+  // Assume base weight of 100 pounds. This is off but close enough.
+  const assumedBaseWeight = 100;
+  return (
+    2 * familiarMultiplier +
+    Math.sqrt(220 * familiarMultiplier) / (2 * Math.sqrt(assumedBaseWeight))
+  );
+}
+
+export function mainStatLevel(level: number): number {
+  return (level - 1) ** 2 + 4;
+}
+
+export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
+  ? Partial<T> & { [k in K]: T[K] }
+  : never;

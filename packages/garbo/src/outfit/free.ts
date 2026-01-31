@@ -1,59 +1,98 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Location, toJson } from "kolmafia";
+import { Familiar, Location } from "kolmafia";
 import {
   $familiar,
-  $familiars,
   $item,
   $items,
+  $location,
+  Delayed,
   get,
   Guzzlr,
   SourceTerminal,
+  undelay,
 } from "libram";
-import { WanderDetails } from "garbo-lib";
 
-import { freeFightFamiliar } from "../familiar";
-import { BonusEquipMode } from "../lib";
-import { wanderer } from "../garboWanderer";
+import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
+import { BonusEquipMode, MEAT_TARGET_MULTIPLIER, sober } from "../lib";
+import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
-import { bonusGear } from "./dropsgear";
-import { cleaverCheck, validateGarbageFoldable } from "./lib";
+import { bonusGear, toyCupidBow } from "./dropsgear";
+import { applyCheeseBonus, cleaverCheck, validateGarbageFoldable } from "./lib";
+import {
+  adventuresPerSweat,
+  mimicExperienceNeeded,
+  turnsNeededForNextAdventure,
+} from "../resources";
+import { globalOptions } from "../config";
+import { estimatedGarboTurns } from "../turns";
 
-type MenuOptions = {
-  canChooseMacro?: boolean;
-  location?: Location;
-  includeExperienceFamiliars?: boolean;
-  allowAttackFamiliars?: boolean;
+const famExpValue = new Map<Familiar, Delayed<number>>([
+  [
+    $familiar`Chest Mimic`,
+    () =>
+      $familiar`Chest Mimic`.experience < mimicExperienceNeeded(true)
+        ? (MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50
+        : 0,
+  ],
+  [
+    $familiar`Pocket Professor`,
+    () =>
+      $familiar`Pocket Professor`.experience < 400 &&
+      (!get("_thesisDelivered") || !globalOptions.ascend)
+        ? (11 * get("valueOfAdventure")) / 200
+        : 0,
+  ],
+  [
+    $familiar`Grey Goose`,
+    () =>
+      $familiar`Grey Goose`.experience < 400 &&
+      (!get("_meatifyMatterUsed") || !globalOptions.ascend)
+        ? 15 ** 4 / 400
+        : 0,
+  ],
+]);
+
+export type FreeFightOutfitMenuOptions = {
   duplicate?: boolean;
-  wanderOptions?: WanderDetails;
+  familiarOptions?: FamiliarMenuOptions;
 };
 export function freeFightOutfit(
   spec: OutfitSpec = {},
-  options: MenuOptions = {},
+  adventure: AdventureArgument,
+  options: FreeFightOutfitMenuOptions = {},
 ): Outfit {
   cleaverCheck();
 
-  const computedSpec = computeOutfitSpec(spec, options);
+  const { location } = toAdventure(adventure);
+
+  const computedSpec = computeOutfitSpec(spec, location);
 
   validateGarbageFoldable(computedSpec);
   const outfit = Outfit.from(
     computedSpec,
-    new Error(`Failed to construct outfit from spec ${toJson(spec)}!`),
+    new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
-  outfit.familiar ??= freeFightFamiliar({
-    ...options,
-    allowAttackFamiliars: computeAllowAttackFamiliars(options),
-  });
+  outfit.familiar ??= freeFightFamiliar(
+    adventure,
+    computeFamiliarMenuOptions(
+      options.familiarOptions,
+      options.duplicate ?? false,
+      outfit,
+    ),
+  );
   const mode =
-    outfit.familiar === $familiar`Machine Elf`
+    location === $location`The Deep Machine Tunnels`
       ? BonusEquipMode.DMT
       : BonusEquipMode.FREE;
 
   if (outfit.familiar !== $familiar`Patriotic Eagle`) {
+    const familiarExpValue = undelay(famExpValue.get(outfit.familiar));
+
     outfit.modifier.push(
-      $familiars`Pocket Professor, Grey Goose`.includes(outfit.familiar)
-        ? "Familiar Experience"
+      familiarExpValue
+        ? `${familiarExpValue} Familiar Experience`
         : "Familiar Weight",
     );
   }
@@ -63,14 +102,26 @@ export function freeFightOutfit(
   if (get("_vampyreCloakeFormUses") < 10) {
     outfit.setBonus($item`vampyric cloake`, 500);
   }
-  bonusGear(mode).forEach((value, item) => outfit.addBonus(item, value));
 
-  if (outfit.familiar !== $familiar`Grey Goose`) {
-    outfit.setBonus($item`tiny stillsuit`, 500);
+  outfit.addBonuses(bonusGear(mode));
+  applyCheeseBonus(outfit, mode);
+
+  if (
+    !(globalOptions.ascend && !sober()) &&
+    turnsNeededForNextAdventure() <= estimatedGarboTurns()
+  ) {
+    outfit.setBonus(
+      $item`tiny stillsuit`,
+      get("valueOfAdventure") * 2 * adventuresPerSweat(),
+    );
+  }
+
+  if (mode !== BonusEquipMode.DMT) {
+    outfit.addBonuses(toyCupidBow(outfit.familiar));
   }
 
   if (
-    computeLocation(options) === Guzzlr.getLocation() &&
+    location === Guzzlr.getLocation() &&
     Guzzlr.turnsLeftOnQuest(false) === 1 &&
     Guzzlr.haveBooze()
   ) {
@@ -107,39 +158,28 @@ export function freeFightOutfit(
   return outfit;
 }
 
-function computeOutfitSpec(spec: OutfitSpec, options: MenuOptions): OutfitSpec {
-  if (options.wanderOptions) {
-    return {
-      ...spec,
-      equip: [
-        ...(spec.equip ?? []),
-        ...wanderer().getEquipment(options.wanderOptions),
-      ],
-    };
-  }
-  return spec;
+function computeOutfitSpec(spec: OutfitSpec, location: Location): OutfitSpec {
+  return {
+    ...spec,
+    equip: [...(spec.equip ?? []), ...wanderer().getEquipment(location)],
+  };
 }
 
-function computeLocation(options: MenuOptions): Location | undefined {
-  if (options.location) {
-    return options.location;
-  }
-  if (options.wanderOptions) {
-    return wanderer().getTarget(options.wanderOptions);
-  }
-  return undefined;
-}
-
-function computeAllowAttackFamiliars(
-  options: MenuOptions,
-): boolean | undefined {
-  if (options.allowAttackFamiliars !== undefined) {
-    return options.allowAttackFamiliars;
-  }
-  if (options.duplicate) {
-    return (
-      !SourceTerminal.have() || SourceTerminal.duplicateUsesRemaining() === 0
-    );
-  }
-  return undefined;
+function computeFamiliarMenuOptions(
+  options: FamiliarMenuOptions = {},
+  duplicate: boolean,
+  outfit: Outfit,
+): FamiliarMenuOptions {
+  return {
+    ...options,
+    allowAttackFamiliars:
+      options.allowAttackFamiliars ??
+      !(
+        duplicate &&
+        SourceTerminal.have() &&
+        SourceTerminal.duplicateUsesRemaining() > 0
+      ),
+    equipmentForced:
+      options.equipmentForced || !outfit.canEquip($item`toy Cupid bow`),
+  };
 }

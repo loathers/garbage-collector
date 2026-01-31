@@ -1,20 +1,11 @@
-import {
-  canOpenRedPresent,
-  pocketProfessorLectures,
-  timeToMeatify,
-} from "./lib";
-import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "./meatFamiliar";
-import { barfFamiliar } from "./barfFamiliar";
-import { freeFightFamiliar } from "./freeFightFamiliar";
-import { bestFairy } from "./itemFamiliar";
-
 export {
   canOpenRedPresent,
+  estimatedBarfExperience,
   timeToMeatify,
-  pocketProfessorLectures,
-  meatFamiliar,
-  setBestLeprechaunAsMeatFamiliar,
-  barfFamiliar,
-  freeFightFamiliar,
-  bestFairy,
-};
+} from "./lib";
+export { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "./meatFamiliar";
+export { barfFamiliar } from "./barfFamiliar";
+export { freeFightFamiliar } from "./freeFightFamiliar";
+export { sandwormFamiliar } from "./sandwormFamiliar";
+export type { FamiliarMenuOptions } from "./freeFightFamiliar";
+export { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";

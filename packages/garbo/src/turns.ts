@@ -10,18 +10,21 @@ import { $familiar, $item, clamp, get, have } from "libram";
 import { globalOptions } from "./config";
 // Dumb circular import stuff
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
-import { copyTargetCount } from "./embezzler";
+import { copyTargetCount } from "./target";
 import {
   digitizedMonstersRemainingForTurns,
   ESTIMATED_OVERDRUNK_TURNS,
   howManySausagesCouldIEat,
+  targetingMeat,
 } from "./lib";
+import { embezzlerFights, LuckySource } from "./tasks/embezzler";
+import { nextWeekFights } from "./resources/sealclub";
 
 /**
  * Computes the estimated number of turns during which garbo will run
  * @returns A guess of how many runs garbo will run in total
  */
-export function estimatedGarboTurns(): number {
+export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
   const pantsgivingAdventures = have($item`Pantsgiving`)
     ? Math.max(0, 2 - get("_pantsgivingFullness")) * 8
@@ -37,30 +40,28 @@ export function estimatedGarboTurns(): number {
       : 0;
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
-  // We need to estimate adventures from our organs if we are only dieting after yachtzee chaining
-  const yachtzeeTurns = 30; // guesstimate
-  const adventuresAfterChaining =
-    globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted")
-      ? Math.max(
-          potentialFullnessAdventures() +
-            potentialInebrietyAdventures() +
-            potentialNonOrganAdventures() -
-            yachtzeeTurns,
-          0,
-        )
-      : 0;
+  // Estimate potential adventures from empty organs
+  const unrealizedOrganAdventures = estimateEmptyOrgans
+    ? Math.max(
+        potentialFullnessAdventures() +
+          potentialInebrietyAdventures() +
+          potentialNonOrganAdventures(),
+        0,
+      )
+    : 0;
 
   let turns;
   if (globalOptions.stopTurncount) {
     turns = globalOptions.stopTurncount - myTurncount();
-  } else if (globalOptions.nobarf) turns = copyTargetCount();
-  else if (globalOptions.saveTurns > 0 || !globalOptions.ascend) {
+  } else if (globalOptions.nobarf) {
+    turns = targetingMeat() ? highMeatMonsterCount() : 0;
+  } else if (globalOptions.saveTurns > 0 || !globalOptions.ascend) {
     turns =
       (myAdventures() +
         sausageAdventures +
         pantsgivingAdventures +
         thesisAdventures +
-        adventuresAfterChaining -
+        unrealizedOrganAdventures -
         globalOptions.saveTurns) *
       thumbRingMultiplier;
   } else {
@@ -70,7 +71,7 @@ export function estimatedGarboTurns(): number {
         pantsgivingAdventures +
         nightcapAdventures +
         thesisAdventures +
-        adventuresAfterChaining) *
+        unrealizedOrganAdventures) *
       thumbRingMultiplier;
   }
 
@@ -132,11 +133,18 @@ function potentialNonOrganAdventures(): number {
     globalOptions.ascend && !get("_borrowedTimeUsed") ? 20 : 0;
   const chocolateAdventures =
     ((3 - get("_chocolatesUsed")) * (4 - get("_chocolatesUsed"))) / 2;
-  const bufferAdventures = 30; // We don't know if garbo would decide to use melange/voraci tea/sweet tooth to get more adventures
 
-  return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
+  return borrowedTimeAdventures + chocolateAdventures;
 }
 
-export function digitizedMonstersRemaining() {
-  return digitizedMonstersRemainingForTurns(estimatedGarboTurns());
+export function wanderingCopytargetsRemaining() {
+  // Todo: account for not having enough turns to do all your nextweek fights
+  return (
+    digitizedMonstersRemainingForTurns(estimatedGarboTurns()) + nextWeekFights()
+  );
+}
+export function highMeatMonsterCount(...excludedEmbezzlers: LuckySource[]) {
+  const meatTargets = targetingMeat() ? copyTargetCount() : 0;
+  const embezzlers = embezzlerFights(...excludedEmbezzlers);
+  return meatTargets + embezzlers;
 }

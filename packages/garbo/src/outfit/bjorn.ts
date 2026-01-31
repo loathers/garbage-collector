@@ -54,7 +54,7 @@ export function valueRider(
   rider: CrownOfThrones.FamiliarRider,
 ): number {
   const valueOfDrops =
-    rider.dropPredicate?.() ?? true
+    (rider.dropPredicate?.() ?? true)
       ? rider.probability *
         (typeof rider.drops === "number"
           ? rider.drops

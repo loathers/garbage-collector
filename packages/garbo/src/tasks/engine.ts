@@ -6,22 +6,34 @@ import {
   Quest,
   StrictCombatTask,
 } from "grimoire-kolmafia";
-import { eventLog, safeInterrupt, safeRestore, sober } from "../lib";
+import { eventLog, HIGHLIGHT, safeInterrupt, safeRestore, sober } from "../lib";
 import { wanderer } from "../garboWanderer";
 import {
+  $effect,
   $familiar,
   $item,
   $skill,
   Delayed,
   get,
+  have,
   SourceTerminal,
   undelay,
 } from "libram";
-import { equip, itemAmount, print, totalTurnsPlayed } from "kolmafia";
-import { GarboStrategy } from "../combat";
+import {
+  bufferToFile,
+  equip,
+  fileToBuffer,
+  itemAmount,
+  myFamiliar,
+  print,
+  todayToString,
+  totalTurnsPlayed,
+} from "kolmafia";
+import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
+import { shrugBadEffects } from "../mood";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
@@ -29,11 +41,15 @@ export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   duplicate?: Delayed<boolean>;
 };
 
-function logEmbezzler(encounterType: string) {
+export type AlternateTask = GarboTask & { turns: Delayed<number> };
+
+function logTargetFight(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
-  isDigitize
-    ? eventLog.digitizedCopyTargetsFought++
-    : eventLog.initialCopyTargetsFought++;
+  if (isDigitize) {
+    eventLog.digitizedCopyTargetsFought++;
+  } else {
+    eventLog.initialCopyTargetsFought++;
+  }
   eventLog.copyTargetSources.push(isDigitize ? "Digitize" : "Unknown Source");
 }
 
@@ -41,7 +57,56 @@ function logEmbezzler(encounterType: string) {
  * Runs extra logic before executing all tasks.
  */
 export class BaseGarboEngine extends Engine<never, GarboTask> {
+  static defaultSettings = {
+    ...Engine.defaultSettings,
+    choiceAdventureScript: "garbo_choice.js",
+  };
+
+  history: Array<{ name: string; startTime: number; durationMs: number }> = [];
+
+  constructor(tasks: GarboTask[], options?: EngineOptions | undefined) {
+    const startTime = Date.now();
+    super(tasks, options);
+
+    if (globalOptions.history) {
+      this.history.push({
+        name: "Engine/Construct",
+        startTime,
+        durationMs: Date.now() - startTime,
+      });
+    }
+  }
+
+  printExecutingMessage(task: GarboTask) {
+    print(``);
+    print(`Executing ${task.name}`, HIGHLIGHT);
+  }
+
+  destruct(): void {
+    const startTime = Date.now();
+    super.destruct();
+
+    if (globalOptions.history) {
+      this.history.push({
+        name: "Engine/Destruct",
+        startTime,
+        durationMs: Date.now() - startTime,
+      });
+      const filename = `garbo_history_${todayToString()}.csv`;
+      const buffer = fileToBuffer(filename).trim();
+      const taskArray = [
+        ...buffer.split("\n"),
+        ...this.history.map(
+          (item) =>
+            `${item.startTime},${item.name.replace(",", "")},${item.durationMs}`,
+        ),
+      ];
+      bufferToFile(taskArray.join("\n"), filename);
+    }
+  }
+
   available(task: GarboTask): boolean {
+    safeInterrupt();
     const taskSober = undelay(task.sobriety);
     if (taskSober) {
       return (
@@ -54,9 +119,18 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   }
 
   dress(task: GarboTask, outfit: Outfit) {
+    const duplicate = undelay(task.duplicate);
+    if (duplicate && have($item`pro skateboard`) && !get("_epicMcTwistUsed")) {
+      outfit.equip($item`pro skateboard`);
+    }
     super.dress(task, outfit);
     if (itemAmount($item`tiny stillsuit`) > 0) {
-      equip($familiar`Cornbeefadon`, $item`tiny stillsuit`);
+      equip(
+        myFamiliar() === $familiar`Cornbeefadon`
+          ? $familiar`Mosquito`
+          : $familiar`Cornbeefadon`,
+        $item`tiny stillsuit`,
+      );
     }
   }
 
@@ -66,7 +140,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   }
 
   execute(task: GarboTask): void {
-    safeInterrupt();
+    const startTime = Date.now();
     const spentTurns = totalTurnsPlayed();
     const duplicate = undelay(task.duplicate);
     const before = SourceTerminal.getSkills();
@@ -85,15 +159,37 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
         );
       }
     }
-    const foughtAnEmbezzler =
-      get("lastEncounter") === globalOptions.target.name;
-    if (foughtAnEmbezzler) logEmbezzler(task.name);
+    const foughtATarget = get("lastEncounter") === globalOptions.target.name;
+    if (foughtATarget) logTargetFight(task.name);
+    shrugBadEffects($effect`Feeling Lost`); // We deliberately use Feeling Lost sometimes
     wanderer().clear();
     sessionSinceStart().value(garboValue);
     if (duplicate && SourceTerminal.have()) {
       for (const skill of before) {
         SourceTerminal.educate(skill);
       }
+    }
+
+    if (globalOptions.history) {
+      this.history.push({
+        name: task.name,
+        startTime,
+        durationMs: Date.now() - startTime,
+      });
+    }
+  }
+
+  markAttempt(task: GarboTask): void {
+    super.markAttempt(task);
+    if (
+      !!globalOptions.halt &&
+      task.name.localeCompare(globalOptions.halt, undefined, {
+        sensitivity: "base",
+      }) === 0
+    ) {
+      throw new Error(
+        `Task halt requested for "${task.name}". Stopping Garbage Collector.`,
+      );
     }
   }
 }
@@ -110,8 +206,11 @@ export class SafeGarboEngine extends BaseGarboEngine {
   }
 }
 
-export function runSafeGarboTasks(tasks: GarboTask[]): void {
-  const engine = new SafeGarboEngine(tasks);
+function runQuests<T extends typeof BaseGarboEngine>(
+  quests: Quest<GarboTask>[],
+  garboEngine: T,
+) {
+  const engine = new garboEngine(getTasks(quests));
 
   try {
     engine.run();
@@ -121,19 +220,9 @@ export function runSafeGarboTasks(tasks: GarboTask[]): void {
 }
 
 export function runSafeGarboQuests(quests: Quest<GarboTask>[]): void {
-  runSafeGarboTasks(getTasks(quests));
-}
-
-export function runGarboTasks(tasks: GarboTask[]): void {
-  const engine = new BaseGarboEngine(tasks);
-
-  try {
-    engine.run();
-  } finally {
-    engine.destruct();
-  }
+  runQuests(quests, SafeGarboEngine);
 }
 
 export function runGarboQuests(quests: Quest<GarboTask>[]): void {
-  runGarboTasks(getTasks(quests));
+  runQuests(quests, BaseGarboEngine);
 }

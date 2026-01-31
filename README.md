@@ -15,6 +15,7 @@
     - [`simdiet` flag](#simdiet-flag)
     - [`workshed` arg](#workshed-arg)
     - [`quick` flag](#quick-flag)
+    - [`target` flag](#target-flag)
     - [Turncount](#turncount)
     - [`help` flag](#help-flag)
   - [Frequent Questions](#frequent-questions)
@@ -29,7 +30,7 @@ Garbo is minimally configurable to make things simpler for both the users and th
 
 ## Is Garbo for me?
 
-Probably! Unlike Volcano farming, a stable 3,450 MPA option which takes a few thousand meat to get permanently set up for, Garbo responds well to various shinies at your disposal. However, it is entirely possible to get respectable results on accounts without a single IotM - a Seal Clubber with Transcendent Olfaction, all the relevant +meat% and +item% skills permed, and a suite of aftercore farmable gear plus a mafia pointer finger ring should be able to still pull in about 4,000 MPA once limited-per-day buffs run out. And the shinier you are, the higher this number grows! High-end users report getting in the range of 6,000 MPA in their end-day turns. A solid part of Garbo's daily haul comes from chaining Knob Goblin Embezzlers, and it will happily use any copier or combat replace IotMs you have toward this goal.
+Probably! Unlike Volcano farming, a stable 3,450 MPA option which takes a few thousand meat to get permanently set up for, Garbo responds well to various shinies at your disposal. However, it is entirely possible to get respectable results on accounts without a single IotM - a Seal Clubber with Transcendent Olfaction, all the relevant +meat% and +item% skills permed, and a suite of aftercore farmable gear plus a mafia pointer finger ring should be able to still pull in about 4,000 MPA once limited-per-day buffs run out. And the shinier you are, the higher this number grows! High-end users report getting in the range of 6,000 MPA in their end-day turns. A solid part of Garbo's daily haul comes from chaining valuable target monsters, and it will happily use any copier or combat replace IotMs you have toward this goal.
 
 Consult [this page](ITEMS.md) for a list of various items that are useful to have for Garbo, as well as a list of shinies that it supports and extracts value from. The baseline 4,000 MPA setup is detailed there as well, with a matching spreadsheet.
 
@@ -98,7 +99,7 @@ To invoke Garbage Collector, type `garbo` in the Mafia GCLI. In addition, you ca
 
 ### `nobarf` flag
 
-Running Garbo in `nobarf` mode will not target spending the bulk of your turns at Barf Mountain. Instead, it will just do your daily flag turns, as well as attempt to fight as many Knob Goblin Embezzlers as possible.
+Running Garbo in `nobarf` mode will not target spending the bulk of your turns at Barf Mountain. Instead, it will just do your daily flag turns, as well as attempt to fight as many copied target monsters as possible.
 
 ### `ascend` flag
 
@@ -129,6 +130,17 @@ Garbo will sacrifice some optimal behaviors to run quicker. Estimated and actual
 - Stasis at max 5 rounds, instead of up to 20.
 
 Use `quickgear` to only speed up the maximizer, and `quickcombat` to only speed up combat.
+
+### `target` flag
+
+_EXPERIMENTAL_ Garbo will use all of a user's copies on the provided monster instead of trying to calculate the free, wishable monster with the best item drops.
+
+For example, you may wish to target:
+- a free fight like a sausage goblin, to stock up on extra sausage casings with a bit of meat
+- a turn-taking event monster with rare drops, if you're trying to maximize the number you encounter (e.g. the Moai from 2024's Crimbo Islands)
+- a monster which isn't the Knob Goblin Elite Guard Captain if you don't have Curse of Weaksauce and Saucegeyser but think garbo will be able to kill it anyway
+
+Please note that this feature **will not work** for all users with monsters like the Cockroach (a conditional monster requiring PirateRealm tricks to encounter as a wanderer), the Witchess Queen (an impossibly hard fight that Garbo is not equipped to kill), or various other difficult monsters throughout the game. Use this feature at your own risk. If you put yourself into a bizarre account state because you copied a monster you had no real reason to copy that has strange conditions and you managed to break your account state for a day, it is unlikely that a bug report (or advice in ASS) will be addressed.
 
 ### Turncount
 

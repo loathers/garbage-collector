@@ -10,6 +10,7 @@ import {
   getMonsters,
   inebrietyLimit,
   Item,
+  itemAmount,
   itemDropsArray,
   itemPockets,
   mallPrice,
@@ -21,9 +22,12 @@ import {
   print,
   runChoice,
   scrapPockets,
+  sellPrice,
   sellsItem,
+  toInt,
   toItem,
   use,
+  useFamiliar,
   useSkill,
   visitUrl,
 } from "kolmafia";
@@ -34,6 +38,7 @@ import {
   $location,
   $skill,
   $skills,
+  AprilingBandHelmet,
   BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
@@ -47,8 +52,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
-import { aprilFoolsRufus, coinmasterPrice } from "../lib";
+import { aprilFoolsRufus } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
@@ -56,7 +60,13 @@ import {
   augustSummonTasks,
   candyMapDailyTasks,
   doingGregFight,
+  getBestAprilInstruments,
+  leprecondoTask,
+  mayamCalendarSummon,
 } from "../resources";
+import { meatFamiliar } from "../familiar";
+import getExperienceFamiliars from "../familiar/experienceFamiliars";
+import { highMeatMonsterCount } from "../turns";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
@@ -131,11 +141,67 @@ function pickCargoPocket(): void {
   }
 }
 
+function bestDevilerCandy(): Item {
+  // These are replenishable notrade nodiscard items that we would prefer to use
+  const priorityUntradeableNoDiscardList =
+    $items`sugar shotgun, sugar shillelagh, sugar shank, sugar chapeau, sugar shorts, sugar shield, sugar shirt`.filter(
+      (i) => itemAmount(i) > 1,
+    );
+  if (priorityUntradeableNoDiscardList.length > 0) {
+    return maxBy(priorityUntradeableNoDiscardList, itemAmount);
+  }
+
+  const bestCandyFromMall = maxBy(
+    Item.all().filter((i) => i.candy && i.tradeable),
+    mallPrice,
+    true,
+  );
+  // These are notrade items that have an autosell value that we don't mind using if they are the cheapest
+  const safeUntradeableCandies = $items`Comet Pop, black candy heart, peanut brittle shield`;
+  // Find the best candy from inventory, accounting for value of autosell when mall min
+  const inventoryCandies = Item.all().filter(
+    (i) =>
+      i.candy &&
+      (have(i) && !i.tradeable ? safeUntradeableCandies.includes(i) : true),
+  );
+  const bestInventoryCandy = (() => {
+    if (inventoryCandies.length === 0) return null;
+    const naiveBest = maxBy(inventoryCandies, garboValue, true);
+    return maxBy(
+      inventoryCandies.filter((c) => garboValue(c) === garboValue(naiveBest)),
+      itemAmount,
+    );
+  })();
+
+  return !!bestInventoryCandy &&
+    garboValue(bestInventoryCandy) < mallPrice(bestCandyFromMall)
+    ? bestInventoryCandy
+    : bestCandyFromMall;
+}
+
+let cachedbestDevilerCandy: Item | null = null;
+function getBestDevilerCandy(): Item {
+  if (cachedbestDevilerCandy === null) {
+    cachedbestDevilerCandy = bestDevilerCandy();
+  }
+  return cachedbestDevilerCandy;
+}
+
+const chooseAprilFamiliar = () => {
+  const experienceFamiliars = getExperienceFamiliars("free").filter(
+    ({ familiar }) => familiar.experience <= 360,
+  );
+  if (experienceFamiliars.length) {
+    return maxBy(experienceFamiliars, "expectedValue").familiar;
+  }
+  return meatFamiliar().experience <= 360 ? meatFamiliar() : null;
+};
+
 const SummonTasks: GarboTask[] = [
   ...SummonTomes.map(
     (skill) =>
       <GarboTask>{
-        name: `{skill}`,
+        name: `${skill}`,
         ready: () => have(skill),
         completed: () => skill.dailylimit === 0,
         do: () => useSkill(skill, skill.dailylimit),
@@ -168,8 +234,8 @@ const DailyItemTasks: GarboTask[] = [
     name: "2002 Mr. Store",
     ready: () => have($item`2002 Mr. Store Catalog`),
     completed: () =>
-      get("availableMrStore2002Credits", 0) === 0 &&
-      get("_2002MrStoreCreditsCollected", true),
+      get("availableMrStore2002Credits") === 0 &&
+      get("_2002MrStoreCreditsCollected"),
     do: (): void => {
       const bestItem = maxBy(
         Item.all().filter((i) => sellsItem($coinmaster`Mr. Store 2002`, i)),
@@ -177,9 +243,36 @@ const DailyItemTasks: GarboTask[] = [
       );
       buy(
         $coinmaster`Mr. Store 2002`,
-        get("availableMrStore2002Credits", 0),
+        get("availableMrStore2002Credits"),
         bestItem,
       );
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Spend Sept-Ember Embers",
+    ready: () => have($item`Sept-Ember Censer`) && globalOptions.ascend,
+    completed: () => get("availableSeptEmbers") === 0,
+    do: (): void => {
+      const itemsWithCosts = Item.all()
+        .filter((i) => sellsItem($coinmaster`Sept-Ember Censer`, i))
+        .map((item) => ({
+          item,
+          cost: sellPrice($coinmaster`Sept-Ember Censer`, item),
+          value:
+            garboValue(item) / sellPrice($coinmaster`Sept-Ember Censer`, item),
+        }));
+
+      while (get("availableSeptEmbers") > 0) {
+        const { item, cost } = maxBy(
+          itemsWithCosts.filter(
+            ({ cost }) => cost <= get("availableSeptEmbers"),
+          ),
+          "value",
+        );
+        const toBuy = Math.floor(get("availableSeptEmbers") / cost);
+        buy($coinmaster`Sept-Ember Censer`, toBuy, item);
+      }
     },
     spendsTurn: false,
   },
@@ -240,9 +333,15 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_internetViralVideoBought") ||
       garboValue($item`viral video`) <
-        garboValue($item`BACON`) * coinmasterPrice($item`viral video`),
+        garboValue($item`BACON`) *
+          sellPrice($coinmaster`Internet Meme Shop`, $item`viral video`),
     do: () => buy($coinmaster`Internet Meme Shop`, 1, $item`viral video`),
-    acquire: [{ item: $item`BACON`, num: coinmasterPrice($item`viral video`) }],
+    acquire: [
+      {
+        item: $item`BACON`,
+        num: sellPrice($coinmaster`Internet Meme Shop`, $item`viral video`),
+      },
+    ],
     spendsTurn: false,
   },
   {
@@ -250,9 +349,15 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_internetPlusOneBought") ||
       garboValue($item`plus one`) <
-        garboValue($item`BACON`) * coinmasterPrice($item`plus one`),
+        garboValue($item`BACON`) *
+          sellPrice($coinmaster`Internet Meme Shop`, $item`plus one`),
     do: () => buy($coinmaster`Internet Meme Shop`, 1, $item`plus one`),
-    acquire: [{ item: $item`BACON`, num: coinmasterPrice($item`plus one`) }],
+    acquire: [
+      {
+        item: $item`BACON`,
+        num: sellPrice($coinmaster`Internet Meme Shop`, $item`plus one`),
+      },
+    ],
     spendsTurn: false,
   },
   {
@@ -260,10 +365,14 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_internetGallonOfMilkBought") ||
       garboValue($item`gallon of milk`) <
-        garboValue($item`BACON`) * coinmasterPrice($item`gallon of milk`),
+        garboValue($item`BACON`) *
+          sellPrice($coinmaster`Internet Meme Shop`, $item`gallon of milk`),
     do: () => buy($coinmaster`Internet Meme Shop`, 1, $item`gallon of milk`),
     acquire: [
-      { item: $item`BACON`, num: coinmasterPrice($item`gallon of milk`) },
+      {
+        item: $item`BACON`,
+        num: sellPrice($coinmaster`Internet Meme Shop`, $item`gallon of milk`),
+      },
     ],
     spendsTurn: false,
   },
@@ -272,11 +381,21 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_internetPrintScreenButtonBought") ||
       garboValue($item`print screen button`) <
-        garboValue($item`BACON`) * coinmasterPrice($item`print screen button`),
+        garboValue($item`BACON`) *
+          sellPrice(
+            $coinmaster`Internet Meme Shop`,
+            $item`print screen button`,
+          ),
     do: () =>
       buy($coinmaster`Internet Meme Shop`, 1, $item`print screen button`),
     acquire: [
-      { item: $item`BACON`, num: coinmasterPrice($item`print screen button`) },
+      {
+        item: $item`BACON`,
+        num: sellPrice(
+          $coinmaster`Internet Meme Shop`,
+          $item`print screen button`,
+        ),
+      },
     ],
     spendsTurn: false,
   },
@@ -286,13 +405,19 @@ const DailyItemTasks: GarboTask[] = [
       get("_internetDailyDungeonMalwareBought") ||
       garboValue($item`daily dungeon malware`) <
         garboValue($item`BACON`) *
-          coinmasterPrice($item`daily dungeon malware`),
+          sellPrice(
+            $coinmaster`Internet Meme Shop`,
+            $item`daily dungeon malware`,
+          ),
     do: () =>
       buy($coinmaster`Internet Meme Shop`, 1, $item`daily dungeon malware`),
     acquire: [
       {
         item: $item`BACON`,
-        num: coinmasterPrice($item`daily dungeon malware`),
+        num: sellPrice(
+          $coinmaster`Internet Meme Shop`,
+          $item`daily dungeon malware`,
+        ),
       },
     ],
     spendsTurn: false,
@@ -391,14 +516,6 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Update Garbage Tote",
-    ready: () =>
-      have($item`January's Garbage Tote`) && !get("_garbageItemChanged"),
-    completed: () => get("_garbageItemChanged"),
-    do: () => cliExecute("fold broken champagne bottle"),
-    spendsTurn: false,
-  },
-  {
     name: "Learn About Bugs",
     ready: () => have($item`S.I.T. Course Completion Certificate`),
     completed: () => get("_sitCourseCompleted") || have($skill`Insectologist`),
@@ -445,7 +562,7 @@ const DailyItemTasks: GarboTask[] = [
       (!(myInebriety() > inebrietyLimit()) ||
         (have($item`Drunkula's wineglass`) &&
           canEquip($item`Drunkula's wineglass`))),
-    completed: () => get("_candyCaneSwordOvergrownShrine", true),
+    completed: () => get("_candyCaneSwordOvergrownShrine"),
     do: () => {
       visitUrl("adventure.php?snarfblat=348");
       runChoice(4);
@@ -466,11 +583,11 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
     do: (): void => {
-      const value = rufusPotion.value(copyTargetCount());
+      const value = rufusPotion.value(highMeatMonsterCount());
       const price = rufusPotion.price(false);
       _shouldClearRufusQuest = value.some(
         (value) =>
-          (!globalOptions.nobarf || value.name === "embezzler") &&
+          (!globalOptions.nobarf || value.name === "target") &&
           value.value - price > 0,
       );
       if (_shouldClearRufusQuest) {
@@ -566,6 +683,57 @@ const DailyItemTasks: GarboTask[] = [
   },
   ...augustSummonTasks(),
   ...candyMapDailyTasks(),
+  {
+    name: "Get April Instruments",
+    completed: () => !AprilingBandHelmet.canJoinSection(),
+    do: () =>
+      getBestAprilInstruments().forEach((instrument) =>
+        AprilingBandHelmet.joinSection(instrument),
+      ),
+    spendsTurn: false,
+  },
+  {
+    name: "Play the April piccolo",
+    ready: () => have($item`Apriling band piccolo`),
+    do: () => {
+      let familiar = chooseAprilFamiliar();
+      while (
+        familiar &&
+        AprilingBandHelmet.canPlay($item`Apriling band piccolo`)
+      ) {
+        useFamiliar(familiar);
+        AprilingBandHelmet.play($item`Apriling band piccolo`);
+        familiar = chooseAprilFamiliar();
+      }
+    },
+    completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
+    spendsTurn: false,
+  },
+  mayamCalendarSummon(),
+  {
+    name: "Devil Cheapest Candy",
+    ready: () => have($item`candy egg deviler`), // TODO: Support guild stash
+    completed: () =>
+      get("_candyEggsDeviled") >= 3 ||
+      garboValue($item`deviled candy egg`) < garboValue(getBestDevilerCandy()),
+    do: () => {
+      acquire(
+        1,
+        getBestDevilerCandy(),
+        garboValue($item`deviled candy egg`),
+        true,
+      );
+      print(
+        `${getBestDevilerCandy()} will be deviled for expected profit of ${garboValue($item`deviled candy egg`) - garboValue(getBestDevilerCandy())}`,
+      );
+      visitUrl(`inventory.php?action=eggdevil&pwd`);
+      runChoice(1, `a=${toInt(getBestDevilerCandy())}`);
+      cachedbestDevilerCandy = null;
+    },
+    limit: { skip: 3 },
+    spendsTurn: false,
+  },
+  leprecondoTask(),
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {

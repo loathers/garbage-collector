@@ -24,9 +24,10 @@ export const priceCaps: { [index: string]: number } = {
   "cuppa Sobrie tea": 200000,
   "potion of the field gar": 50000,
   "Special Seasoning": 20000,
+  "mini kiwi aioli": 20000,
   "whet stone": 20000,
   "spice melange": 500000,
-  "mojo filter": 10000,
+  "mojo filter": 20000,
   "Ol' Scratch's salad fork": 200000,
   "Frosty's frosty mug": 200000,
   "sweet tooth": 250000,
@@ -56,7 +57,7 @@ export function acquire(
     "green",
   );
 
-  if (qty * mallPrice(item) > (maxAggregateCost ?? 1000000)) {
+  if (qty * mallPrice(item) > (maxAggregateCost ?? 3000000)) {
     throw new Error("Aggregate cost too high! Probably a bug.");
   }
 

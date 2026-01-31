@@ -31,6 +31,7 @@ import {
   clamp,
   CrystalBall,
   get,
+  getAcquirePrice,
   getBanishedMonsters,
   have,
   Latte,
@@ -47,11 +48,13 @@ import {
   lastAdventureWasWeird,
   ltbRun,
   setChoice,
+  tryFindFreeRunOrBanish,
   userConfirmDialog,
 } from "../lib";
 import { garboAdventure, Macro } from "../combat";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
+import { AdventureArgument } from "../garboWanderer";
 
 const crate = $monster`crate`;
 
@@ -143,17 +146,19 @@ export function expectedGregs(skillSource: "habitat" | "extro"): number[] {
 
 export function doingGregFight(): boolean {
   const extrovermectin =
-    get("beGregariousCharges") > 0 || get("beGregariousFightsLeft") > 0;
+    get("beGregariousCharges") > 0 ||
+    (get("beGregariousFightsLeft") > 0 &&
+      get("beGregariousMonster") === globalOptions.target) ||
+    (!globalOptions.dietCompleted &&
+      !globalOptions.nodiet &&
+      hasMonsterReplacers());
   const habitat =
     have($skill`Just the Facts`) &&
     (get("_monsterHabitatsRecalled") < 3 ||
-      get("_monsterHabitatsFightsLeft") > 0);
+      (get("_monsterHabitatsFightsLeft") > 0 &&
+        get("_monsterHabitatsMonster") === globalOptions.target));
 
-  return (
-    extrovermectin ||
-    habitat ||
-    (globalOptions.prefs.yachtzeechain && !get("_garboYachtzeeChainCompleted"))
-  );
+  return extrovermectin || habitat;
 }
 
 const isOlfacted = (monster: Monster): boolean =>
@@ -195,12 +200,15 @@ export function saberCrateIfSafe(): void {
     have($item`Fourth of May Cosplay Saber`) && get("_saberForceUses") < 5;
   const isSafeToSaber = !gregReady() || get("_saberForceMonsterCount") > 0;
   if (!canSaber || !isSafeToSaber) return;
-  const run = tryFindFreeRun(freeRunConstraints(false)) ?? ltbRun();
+  const run =
+    tryFindFreeRun(
+      freeRunConstraints({ equip: $items`Fourth of May Cosplay Saber` }),
+    ) ?? ltbRun();
 
   do {
     useFamiliar(
       run.constraints.familiar?.() ??
-        freeFightFamiliar({ canChooseMacro: false }),
+        freeFightFamiliar($location`Noob Cave`, { canChooseMacro: false }),
     );
     run.constraints.preparation?.();
     new Requirement([], {
@@ -216,7 +224,7 @@ export function saberCrateIfSafe(): void {
       $location`Noob Cave`,
       Macro.if_(crate, Macro.skill($skill`Use the Force`))
         .if_($monster`sausage goblin`, Macro.kill())
-        .ifHolidayWanderer(run.macro)
+        .ifInnateWanderer(Macro.step(run.macro))
         .abort(),
     );
   } while (lastAdventureWasWeird());
@@ -255,7 +263,15 @@ function initializeCrates(): void {
           (have($item`latte lovers member's mug`) && !isLatted(crate))))
     ) {
       const possibleBanish = ltbRun();
-      const run = tryFindFreeRun(freeRunConstraints(false)) ?? possibleBanish;
+      const run =
+        tryFindFreeRun(
+          freeRunConstraints({
+            equip:
+              $items`latte lovers member's mug, Fourth of May Cosplay Saber`.filter(
+                (item) => have(item),
+              ),
+          }),
+        ) ?? possibleBanish;
 
       setChoice(1387, 2); // use the force, in case we decide to use that
 
@@ -275,7 +291,7 @@ function initializeCrates(): void {
       // Crank up ML to make sure the crate survives several rounds; we may have some passive damage
       useFamiliar(
         run.constraints.familiar?.() ??
-          freeFightFamiliar({ canChooseMacro: false }),
+          freeFightFamiliar($location`Noob Cave`, { canChooseMacro: false }),
       );
       run.constraints.preparation?.();
       new Requirement(["100 Monster Level"], {
@@ -291,14 +307,18 @@ function initializeCrates(): void {
         .maximize();
       garboAdventure(
         $location`Noob Cave`,
-        Macro.if_(crate, sniffrun).ifHolidayWanderer(run.macro).abort(),
+        Macro.if_(crate, sniffrun)
+          .ifInnateWanderer(Macro.step(run.macro))
+          .abort(),
       );
       visitUrl(`desc_effect.php?whicheffect=${$effect`On the Trail`.descid}`);
 
       if (run === possibleBanish && !have($skill`CLEESH`)) {
         useFamiliar(
           run.constraints.familiar?.() ??
-            freeFightFamiliar({ canChooseMacro: false }),
+            freeFightFamiliar($location`The Haunted Kitchen`, {
+              canChooseMacro: false,
+            }),
         );
         run.constraints.preparation?.();
         new Requirement([], {
@@ -365,11 +385,43 @@ type Banish = {
 
 const combatItem = (item: Item, maxPrice?: number): Banish => ({
   name: `${item}`,
-  available: () => mallPrice(item) < (maxPrice ?? MAX_BANISH_PRICE),
+  available: () => getAcquirePrice(item) < (maxPrice ?? MAX_BANISH_PRICE),
   macro: () => Macro.item(item),
-  price: () => mallPrice(item),
+  price: () => getAcquirePrice(item),
   prepare: () => acquire(1, item, maxPrice ?? MAX_BANISH_PRICE), // put a sanity ceiling of 50k on the banish
 });
+
+function springKickBanish(adventure: AdventureArgument): Banish {
+  const run =
+    tryFindFreeRunOrBanish(
+      freeRunConstraints({ equip: $items`spring shoes` }),
+    ) ?? ltbRun();
+  return {
+    name: "Spring Kick",
+    available: () => have($item`spring shoes`),
+    price: () => run.cost(),
+    macro: () => Macro.skill($skill`Spring Kick`).step(run.macro),
+    prepare: () => {
+      useFamiliar(
+        run.constraints.familiar?.() ??
+          freeFightFamiliar(adventure, {
+            canChooseMacro: false,
+            allowAttackFamiliars: false,
+          }),
+      );
+      run.constraints.preparation?.();
+      // To prevent death of both self and monster
+      new Requirement(["100 Monster Level, 100 Muscle"], {
+        preventEquip: $items`carnivorous potted plant, Kramco Sausage-o-Matic™`,
+        forceEquip: [$item`spring shoes`],
+      })
+        .merge(
+          run.constraints.equipmentRequirements?.() ?? new Requirement([], {}),
+        )
+        .maximize();
+    },
+  };
+}
 
 const longBanishes: Banish[] = [
   combatItem($item`human musk`),
@@ -378,6 +430,7 @@ const longBanishes: Banish[] = [
   {
     name: "Batter Up!",
     available: () => myFury() >= 5 && have($skill`Batter Up!`),
+    price: () => get("valueOfAdventure"), // Batter up takes an adventure, cost is slightly higher than this because of effect cost
     macro: () => Macro.skill($skill`Batter Up!`),
     prepare: () => {
       const club = getClub();
@@ -423,6 +476,7 @@ const iceHouseBanish: Banish = {
 const shortBanishes = [
   combatItem($item`Louder Than Bomb`, 10000),
   combatItem($item`tennis ball`, 10000),
+  combatItem($item`handful of split pea soup`, 10000),
 ];
 
 function iceHouseAllowed(): boolean {
@@ -448,6 +502,7 @@ function iceHouseAllowed(): boolean {
 function banishBunny(): void {
   const banishes = [
     ...longBanishes,
+    springKickBanish($location`The Dire Warren`),
     ...(!have($item`miniature crystal ball`) ? shortBanishes : []),
   ].filter((b) => b.available());
 
@@ -459,13 +514,13 @@ function banishBunny(): void {
   const banish = usingIceHouseBanish
     ? iceHouseBanish
     : getUsingFreeBunnyBanish()
-    ? freeBunnyBanish
-    : maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
+      ? freeBunnyBanish
+      : maxBy(banishes, (banish: Banish) => banish.price?.() ?? 0, true);
   do {
     banish.prepare?.();
     garboAdventure(
       $location`The Dire Warren`,
-      Macro.if_($monster`fluffy bunny`, banish.macro()).embezzler(
+      Macro.if_($monster`fluffy bunny`, banish.macro()).target(
         "fluffy bunny banish",
       ),
     );

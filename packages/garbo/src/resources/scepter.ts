@@ -1,5 +1,4 @@
 import {
-  canAdventure,
   canEquip,
   Item,
   myLevel,
@@ -13,7 +12,6 @@ import {
   $familiar,
   $item,
   $items,
-  $location,
   $skill,
   $slot,
   AugustScepter,
@@ -23,11 +21,11 @@ import {
   have,
 } from "libram";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../embezzler";
 import { garboAverageValue, garboValue } from "../garboValue";
-import { EMBEZZLER_MULTIPLIER } from "../lib";
-import { Potion } from "../potions";
+import { getBestLuckyAdventure } from "../lib";
+import { effectValue, Potion } from "../potions";
 import { GarboTask } from "../tasks/engine";
+import { highMeatMonsterCount } from "../turns";
 
 type ScepterSkill = {
   skill: Skill;
@@ -38,10 +36,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
   // August 1 deliberately omitted; does not trigger on monster replacers
   {
     skill: $skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`,
-    value: () =>
-      canAdventure($location`Cobb's Knob Treasury`)
-        ? EMBEZZLER_MULTIPLIER() * get("valueOfAdventure")
-        : 0,
+    value: () => getBestLuckyAdventure().value(),
     type: "special",
   },
   {
@@ -65,11 +60,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
   },
   {
     skill: $skill`Aug. 7th: Lighthouse Day!`,
-    value: () =>
-      new Potion($item`august scepter`, {
-        effect: $effect`Incredibly Well Lit`,
-        duration: 30,
-      }).gross(copyTargetCount()), // TODO: Yachtzee
+    value: () => effectValue($effect`Incredibly Well Lit`, 30),
     type: "buff",
   },
   {
@@ -84,7 +75,7 @@ const SKILL_OPTIONS: ScepterSkill[] = [
         effect: $effect`Offhand Remarkable`,
         duration: 30,
         effectValues: { meatDrop: 80 }, // Half a purse
-      }).gross(copyTargetCount()) +
+      }).gross(highMeatMonsterCount("Scepter")) +
       (globalOptions.ascend
         ? 0
         : (5 + (have($familiar`Left-Hand Man`) ? 5 : 0)) *

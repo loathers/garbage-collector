@@ -4,6 +4,7 @@ import {
   canAdventure,
   cliExecute,
   inebrietyLimit,
+  Item,
   itemAmount,
   mallPrice,
   myAdventures,
@@ -26,40 +27,58 @@ import {
   AutumnAton,
   BurningLeaves,
   CinchoDeMayo,
-  clamp,
+  DesignerSweatpants,
   FloristFriar,
   get,
+  getAcquirePrice,
   getRemainingStomach,
   have,
   JuneCleaver,
+  Leprecondo,
+  maxBy,
   undelay,
+  uneffect,
   withProperty,
 } from "libram";
-import { GarboStrategy, Macro } from "../../combat";
+import { Macro } from "../../combat";
+import { GarboStrategy } from "../../combatStrategy";
 import { globalOptions } from "../../config";
 import { computeDiet, consumeDiet } from "../../diet";
 import {
   bestJuneCleaverOption,
   freeRest,
   juneCleaverChoiceValues,
+  unlimitedFreeRunList,
   valueJuneCleaverOption,
 } from "../../lib";
 import { teleportEffects } from "../../mood";
 import { Quest } from "grimoire-kolmafia";
-import { bestAutumnatonLocation } from "../../resources";
 import { estimatedGarboTurns, remainingUserTurns } from "../../turns";
 import { acquire } from "../../acquire";
 import { garboAverageValue } from "../../garboValue";
 import workshedTasks from "./worksheds";
 import { GarboPostTask } from "./lib";
 import { GarboTask } from "../engine";
+import { hotTubAvailable } from "../../resources/clanVIP";
+import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
+import { autumnAtonManager, leprecondoTask } from "../../resources";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
+const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
+
 function closetStuff(): GarboPostTask {
   return {
     name: "Closet Stuff",
     completed: () => STUFF_TO_CLOSET.every((i) => itemAmount(i) === 0),
     do: () => STUFF_TO_CLOSET.forEach((i) => putCloset(itemAmount(i), i)),
+  };
+}
+
+function useStuff(): GarboPostTask {
+  return {
+    name: "Use Stuff",
+    completed: () => STUFF_TO_USE.every((i) => itemAmount(i) === 0),
+    do: () => STUFF_TO_USE.forEach((i) => use(itemAmount(i), i)),
   };
 }
 
@@ -100,20 +119,28 @@ function fillSweatyLiver(): GarboPostTask {
   return {
     name: "Fill Sweaty Liver",
     ready: () =>
-      have($item`designer sweatpants`) &&
       !globalOptions.nodiet &&
-      get("sweat") >= 25 * clamp(3 - get("_sweatOutSomeBoozeUsed"), 0, 3),
-    completed: () => get("_sweatOutSomeBoozeUsed") >= 3,
+      DesignerSweatpants.canUseSkill($skill`Sweat Out Some Booze`) &&
+      myInebriety() > 0 &&
+      DesignerSweatpants.availableCasts($skill`Sweat Out Some Booze`) ===
+        DesignerSweatpants.potentialCasts($skill`Sweat Out Some Booze`),
+    completed: () =>
+      $skill`Sweat Out Some Booze`.dailylimit === 0 ||
+      myInebriety() -
+        DesignerSweatpants.potentialCasts($skill`Sweat Out Some Booze`) >
+        inebrietyLimit(),
     do: () => {
-      while (get("_sweatOutSomeBoozeUsed") < 3) {
-        useSkill($skill`Sweat Out Some Booze`);
+      while (
+        DesignerSweatpants.canUseSkill($skill`Sweat Out Some Booze`) &&
+        myInebriety() > 0
+      ) {
+        DesignerSweatpants.useSkill($skill`Sweat Out Some Booze`);
       }
       consumeDiet(computeDiet().sweatpants(), "SWEATPANTS");
     },
     available: () =>
-      have($item`designer sweatpants`) &&
       !globalOptions.nodiet &&
-      get("_sweatOutSomeBoozeUsed") < 3,
+      DesignerSweatpants.potentialCasts($skill`Sweat Out Some Booze`) > 0,
   };
 }
 
@@ -201,9 +228,14 @@ function fallbot(): GarboPostTask {
       globalOptions.ascend ||
       AutumnAton.turnsForQuest() < estimatedGarboTurns() + remainingUserTurns(),
     do: () => {
-      AutumnAton.sendTo(bestAutumnatonLocation);
+      AutumnAton.sendTo(autumnAtonManager().bestLocation);
     },
     available: () => AutumnAton.have(),
+    post: () => {
+      if (have($item`autumn-aton`)) {
+        cliExecute("refresh inventory");
+      }
+    },
   };
 }
 
@@ -225,8 +257,7 @@ function refillCinch(): GarboPostTask {
         if (!freeRest()) break;
       }
     },
-    available: () =>
-      CinchoDeMayo.have() && totalFreeRests() > get("timesRested"),
+    available: () => CinchoDeMayo.have(),
   };
 }
 
@@ -291,6 +322,13 @@ function leafResin(): GarboPostTask {
     completed: () => have($effect`Resined`),
     acquire: [{ item: $item`distilled resin` }],
     do: () => use($item`distilled resin`),
+    post: () => {
+      if (!have($effect`Resined`)) {
+        throw new Error(
+          "Did not gain resined after using distilled resin. Mafia bug?",
+        );
+      }
+    },
   };
 }
 
@@ -304,14 +342,69 @@ function wardrobeOMatic(): GarboPostTask {
   };
 }
 
+function handleDrenchedInLava(): GarboPostTask {
+  return {
+    name: "Drenched In Lava Removal",
+    available: () => lavaDogsAccessible(),
+    ready: () => lavaDogsComplete(),
+    completed: () => !have($effect`Drenched in Lava`),
+    do: () => {
+      if (hotTubAvailable()) {
+        cliExecute("hottub");
+      }
+      if (have($effect`Drenched in Lava`)) {
+        uneffect($effect`Drenched in Lava`);
+      }
+    },
+  };
+}
+
+let bestAbortFreeRun: Item | null = null;
+function getBestAbortFreeRun(): Item {
+  if (bestAbortFreeRun === null) {
+    const bestFreeRun = maxBy(unlimitedFreeRunList, getAcquirePrice, true);
+    bestAbortFreeRun =
+      getAcquirePrice(bestFreeRun) < get("valueOfAdventure")
+        ? bestFreeRun
+        : $item.none;
+  }
+  return bestAbortFreeRun;
+}
+
+function acquireAbortFreeRun(): GarboPostTask {
+  return {
+    name: "Acquire Best Free Run in Case of Abort",
+    completed: () =>
+      getBestAbortFreeRun() === $item`none` || have(getBestAbortFreeRun()),
+    do: () => acquire(1, getBestAbortFreeRun(), get("valueOfAdventure"), false),
+  };
+}
+
+function uneffectAttunement(): GarboPostTask {
+  return {
+    name: "Uneffect Eldritch Attunement After 11 Tentacles",
+    ready: () =>
+      get("_eldritchTentaclesFoughtToday") >=
+      (have($skill`Evoke Eldritch Horror`) && !get("_eldritchHorrorEvoked") // Shrug at 10 if we plan to fight Eldritch Horror TODO: Remove this once we grimoirize everything and can re-order and do Eldritch Horror first
+        ? 10
+        : 11),
+    completed: () => !have($effect`Eldritch Attunement`),
+    do: () => uneffect($effect`Eldritch Attunement`), // Shruggable
+  };
+}
+
 export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
   return {
     name: "Postcombat",
     completed,
     tasks: [
+      uneffectAttunement(),
+      acquireAbortFreeRun(),
       ...workshedTasks(),
+      handleDrenchedInLava(),
       fallbot(),
       closetStuff(),
+      useStuff(),
       floristFriars(),
       numberology(),
       juneCleaver(),
@@ -322,6 +415,7 @@ export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
       refillCinch(),
       leafResin(),
       wardrobeOMatic(),
+      { ...leprecondoTask(), available: Leprecondo.have() },
     ]
       .filter(({ available }) => undelay(available ?? true))
       .map((task) => ({ ...task, spendsTurn: false })),

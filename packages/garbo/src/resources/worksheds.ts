@@ -8,17 +8,20 @@ import {
 import {
   $item,
   $items,
+  $monsters,
   arrayEquals,
   get,
   maxBy,
   set,
   sum,
+  TakerSpace,
   TrainSet,
 } from "libram";
 import { globalOptions } from "../config";
 import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns } from "../turns";
+import { copyTargetCount } from "../target";
 
 const GOOD_TRAIN_STATIONS = [
   { piece: TrainSet.Station.GAIN_MEAT, value: () => 900 },
@@ -26,9 +29,12 @@ const GOOD_TRAIN_STATIONS = [
     // Some day this'll be better
     piece: TrainSet.Station.TRACKSIDE_DINER,
     value: () =>
-      garboAverageValue(
-        ...$items`bowl of cottage cheese, hot buttered roll, toast`,
-      ),
+      $monsters`Witchess Knight`.includes(globalOptions.target) &&
+      copyTargetCount() > 0
+        ? garboValue($item`jumping horseradish`)
+        : garboAverageValue(
+            ...$items`bowl of cottage cheese, hot buttered roll, toast`,
+          ),
   },
   { piece: TrainSet.Station.CANDY_FACTORY, value: candyFactoryValue },
   {
@@ -151,4 +157,25 @@ export function grabMedicine(): void {
     runChoice(bestChoice);
   }
   if (handlingChoice()) visitUrl("main.php");
+}
+
+// Silk and Gold are thrice as rare as other ingredients, so we value them thrice as much
+// Yes, it's pretty dumb
+function naiveTakerspaceCost(recipe: TakerSpace.Recipe): number {
+  return sum(
+    [...recipe.entries()],
+    ([amount, index]) => amount * ([4, 5].includes(index) ? 3 : 1),
+  );
+}
+
+export function bestTakerspaceItem(): Item | null {
+  const makeables = [...TakerSpace.allRecipes().entries()].filter(([i]) =>
+    TakerSpace.canMake(i),
+  );
+  return makeables.length
+    ? maxBy(
+        makeables,
+        ([item, recipe]) => garboValue(item) / naiveTakerspaceCost(recipe),
+      )[0]
+    : null;
 }

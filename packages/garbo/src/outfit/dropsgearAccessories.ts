@@ -1,4 +1,12 @@
-import { Item, itemAmount, myClass, setLocation, toSlot } from "kolmafia";
+import {
+  Item,
+  itemAmount,
+  Modifier,
+  myClass,
+  setLocation,
+  stringModifier,
+  toSlot,
+} from "kolmafia";
 import {
   $class,
   $item,
@@ -10,18 +18,21 @@ import {
   getModifier,
   have,
   lgrCurrencies,
+  sum,
   sumNumbers,
 } from "libram";
 import {
   baseMeat,
+  basePointerRingMeat,
   BonusEquipMode,
   felizValue,
   maxPassiveDamage,
   modeIsFree,
   monsterManuelAvailable,
 } from "../lib";
-import { garboValue } from "../garboValue";
+import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
+import { garboValue } from "../garboValue";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -33,12 +44,10 @@ function mafiaThumbRing(mode: BonusEquipMode) {
   ]);
 }
 
-function luckyGoldRing(mode: BonusEquipMode) {
-  // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
-  if (!have($item`lucky gold ring`) || mode === BonusEquipMode.DMT) {
-    return new Map<Item, number>([]);
-  }
-
+export function luckyGoldRingDropValues(
+  includeVolcoino: boolean,
+  includeFreddy: boolean,
+): number[] {
   // Volcoino has a low drop rate which isn't accounted for here
   // Overestimating until it drops is probably fine, don't @ me
   const dropValues = [
@@ -46,18 +55,26 @@ function luckyGoldRing(mode: BonusEquipMode) {
     ...[
       itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
       itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
-      itemAmount($item`Freddy Kruegerand`) > 0
-        ? garboValue($item`Freddy Kruegerand`)
-        : 0,
+      includeFreddy ? garboValue($item`Freddy Kruegerand`) : 0,
       ...lgrCurrencies().map((i) =>
-        i === $item`Volcoino` &&
-        mode === BonusEquipMode.EMBEZZLER &&
-        !globalOptions.nobarf // Volcoino drops once per day
-          ? 0
-          : garboValue(i),
+        i === $item`Volcoino` && !includeVolcoino ? 0 : garboValue(i),
       ),
     ].filter((value) => value > 0),
   ];
+
+  return dropValues;
+}
+
+function luckyGoldRing(mode: BonusEquipMode) {
+  // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
+  if (!have($item`lucky gold ring`) || mode === BonusEquipMode.DMT) {
+    return new Map<Item, number>([]);
+  }
+
+  const dropValues = luckyGoldRingDropValues(
+    !(mode === BonusEquipMode.MEAT_TARGET && !globalOptions.nobarf), // Volcoino drops once per day, only wear during meat targets if nobarf
+    itemAmount($item`Freddy Kruegerand`) > 0,
+  );
 
   // Items drop every ~10 turns
   return new Map<Item, number>([
@@ -65,14 +82,38 @@ function luckyGoldRing(mode: BonusEquipMode) {
   ]);
 }
 
+// Possible drops are any pvpable potion that are not marked as banned by standard in the future,
+// which can be checked with the "Last Available" modifier being unset.
+// Resulting value from this function should be cached to prevent reprocessing
+function calculateMrCheengsSpectaclesBonus() {
+  const lastAvailableModifier = Modifier.get("Last Available");
+  const possibleDrops = Item.all().filter(
+    (i) =>
+      i.tradeable &&
+      i.discardable &&
+      i.potion &&
+      stringModifier(i, lastAvailableModifier) === "",
+  );
+  const dropRate = 0.25; // Items drop every 4 turns
+  const maxPrice = 100_000; // arbitrary, to help avoid outliers
+  return (
+    (sum(possibleDrops, (item) => Math.min(garboValue(item), maxPrice)) /
+      possibleDrops.length) *
+    dropRate
+  );
+}
+
+let mrCheengsBonus: number;
 function mrCheengsSpectacles() {
   if (!have($item`Mr. Cheeng's spectacles`)) {
     return new Map<Item, number>([]);
   }
 
-  // Items drop every 4 turns
-  // TODO: Possible drops are speculated to be any pvpable potion that will never be banned by standard
-  return new Map<Item, number>([[$item`Mr. Cheeng's spectacles`, 220]]);
+  mrCheengsBonus ??= calculateMrCheengsSpectaclesBonus();
+
+  return new Map<Item, number>([
+    [$item`Mr. Cheeng's spectacles`, mrCheengsBonus],
+  ]);
 }
 
 function mrScreegesSpectacles() {
@@ -90,12 +131,11 @@ function cinchoDeMayo(mode: BonusEquipMode) {
     CinchoDeMayo.currentCinch() === 0 ||
     // Ignore for DMT? Requires specific combat stuff, so probably weird there
     mode === BonusEquipMode.DMT ||
-    mode === BonusEquipMode.EMBEZZLER ||
+    mode === BonusEquipMode.MEAT_TARGET ||
     // Require manuel to make sure we don't kill during stasis
     !monsterManuelAvailable() ||
-    // Don't use Cincho if we're planning on doing yachtzees, and haven't completed them yet
-    (!get("_garboYachtzeeChainCompleted") &&
-      globalOptions.prefs.yachtzeechain) ||
+    // If we're doing Yachtzees, only use up excess cincho.
+    maximumPinataCasts() <= 0 ||
     // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
     maxPassiveDamage() >= 50
   ) {
@@ -146,7 +186,7 @@ export function usingThumbRing(): boolean {
       )
       .map(
         (item) =>
-          [item, (getModifier("Meat Drop", item) * baseMeat) / 100] as [
+          [item, (getModifier("Meat Drop", item) * baseMeat()) / 100] as [
             Item,
             number,
           ],
@@ -166,9 +206,13 @@ export function usingThumbRing(): boolean {
         have($item`haiku katana`) ||
         have($item`Operation Patriot Shield`) ||
         have($item`unwrapped knock-off retro superhero cape`) ||
+        have($item`left bear arm`) ||
         have($skill`Head in the Game`))
     ) {
-      accessoryValues.set($item`mafia pointer finger ring`, 500);
+      accessoryValues.set(
+        $item`mafia pointer finger ring`,
+        basePointerRingMeat(),
+      );
     }
     const bestAccessories = [...accessoryValues.entries()]
       .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)

@@ -1,10 +1,14 @@
-import { Familiar, familiarWeight, Item } from "kolmafia";
+import { Familiar, Item } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
+  clamp,
   findLeprechaunMultiplier,
+  get,
   have,
+  totalFamiliarWeight,
 } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GeneralFamiliar } from "./lib";
@@ -14,6 +18,7 @@ type StandardDropFamiliar = {
   expected: number[] | ((index: number) => number);
   drop: Item | Item[];
   additionalValue?: () => number;
+  worksOnFreeRun?: boolean;
 };
 
 function expectedTurnsValue(
@@ -32,6 +37,7 @@ function valueStandardDropFamiliar({
   expected,
   drop,
   additionalValue,
+  worksOnFreeRun = false,
 }: StandardDropFamiliar): GeneralFamiliar {
   const expectedTurns =
     expectedTurnsValue(expected, familiar.dropsToday) || Infinity;
@@ -42,9 +48,11 @@ function valueStandardDropFamiliar({
     expectedValue,
     leprechaunMultiplier: findLeprechaunMultiplier(familiar),
     limit: "drops",
+    worksOnFreeRun,
   };
 }
 
+// Rotating Value familiars are those whose drop rate changes, compare Constant Value familiars
 const rotatingFamiliars: StandardDropFamiliar[] = [
   {
     familiar: $familiar`Fist Turkey`,
@@ -83,7 +91,10 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
   },
   {
     familiar: $familiar`Green Pixie`,
-    expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+    expected: (id) =>
+      have($effect`Absinthe-Minded`)
+        ? Infinity
+        : ([3.03, 3.42, 3.91, 4.52, 5.29][id] ?? Infinity),
     drop: $item`tiny bottle of absinthe`,
   },
   {
@@ -175,7 +186,31 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
     expected: (i) => 3 * Math.pow(20, i),
     drop: $item`map to a candy-rich block`,
     additionalValue: () =>
-      (6 + 4 * familiarWeight($familiar`Jill-of-All-Trades`)) * 0.33,
+      (6 + 4 * totalFamiliarWeight($familiar`Jill-of-All-Trades`)) * 0.33,
+  },
+  {
+    familiar: $familiar`Rockin' Robin`,
+    expected: (i) =>
+      i === $familiar`Rockin' Robin`.dropsToday
+        ? clamp(30 - get("rockinRobinProgress"), 1, 30)
+        : 30,
+    drop: $item`robin's egg`,
+  },
+  {
+    familiar: $familiar`Optimistic Candle`,
+    expected: (i) =>
+      i === $familiar`Optimistic Candle`.dropsToday
+        ? clamp(30 - get("optimisticCandleProgress"), 1, 30)
+        : 30,
+    drop: $item`glob of melted wax`,
+  },
+  {
+    familiar: $familiar`Garbage Fire`,
+    expected: (i) =>
+      i === $familiar`Garbage Fire`.dropsToday
+        ? clamp(30 - get("garbageFireProgress"), 1, 30)
+        : 30,
+    drop: $items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`,
   },
 ];
 
