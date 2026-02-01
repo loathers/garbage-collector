@@ -24065,7 +24065,7 @@ function modeValueOfItem(mode) {
 }
 var WISH_VALUE = 5e4;
 var HIGHLIGHT = (0, import_kolmafia87.isDarkMode)() ? "yellow" : "blue";
-var ESTIMATED_OVERDRUNK_TURNS = 60;
+var ESTIMATED_OVERDRUNK_TURNS = 50;
 var MEAT_TARGET_MULTIPLIER = function() {
   return globalOptions.prefs.meatTargetMultiplier;
 };
@@ -24331,7 +24331,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("7bfbcff50f5c984e17b14d9b681c4ffc5b12b4ef", ")"));
+      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("eaec4969dc31f80958cd3b535fb8e4df28288d64", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia87.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -29780,6 +29780,7 @@ function retrieveUntradeablePrice(it) {
   return (0, import_kolmafia104.retrievePrice)(it, (0, import_kolmafia104.availableAmount)(it) + 1) - (0, import_kolmafia104.autosellPrice)(it) * (0, import_kolmafia104.availableAmount)(it);
 }
 var VALUABLE_MODIFIERS = ["Meat Drop", "Familiar Weight", "Smithsness", "Item Drop"];
+var BUFFER_TURNS = 30;
 var Potion = /* @__PURE__ */ function() {
   function Potion2(potion) {
     var _options$canDouble, _options$acquire;
@@ -29933,7 +29934,8 @@ var Potion = /* @__PURE__ */ function() {
       function value2(targets, turns2, limit) {
         var startingTurns = (0, import_kolmafia104.haveEffect)(this.effect());
         var ascending = globalOptions.ascend;
-        var totalTurns = turns2 !== null && turns2 !== void 0 ? turns2 : estimatedGarboTurns();
+        var BUFFER_TURNS2 = 30;
+        var totalTurns = turns2 !== null && turns2 !== void 0 ? turns2 : estimatedGarboTurns() + BUFFER_TURNS2;
         var values = [];
         var limitFunction = limit ? function(quantity) {
           return clamp(limit - sum(values, "quantity"), 0, quantity);
@@ -30397,7 +30399,7 @@ var VariableMeatPotion = /* @__PURE__ */ function() {
     key: "getOptimalNumberToUse",
     value: function getOptimalNumberToUse(yachtzees, targets) {
       var _this = this;
-      var barfTurns = Math.max(0, estimatedGarboTurns() - yachtzees - targets);
+      var barfTurns = Math.max(0, estimatedGarboTurns() + BUFFER_TURNS - yachtzees - targets);
       var potionAmountsToConsider = [];
       var considerSoftcap = [0, this.softcap];
       var considerTargets = targets > 0 ? [0, targets] : [0];
@@ -30542,7 +30544,7 @@ function effectValue(effect2, duration, maxTurnsWanted) {
 }
 function effectExtenderValue(duration, maximumNumberOfEffects) {
   var targets = highMeatMonsterCount();
-  var turns2 = estimatedGarboTurns();
+  var turns2 = estimatedGarboTurns() + BUFFER_TURNS;
   return sum(getActiveEffects(), function(effect2) {
     var skill = (0, import_kolmafia104.toSkill)(effect2);
     if (skill !== $skill(_templateObject3822 || (_templateObject3822 = _taggedTemplateLiteral97(["none"]))) && have(skill) && skill.dailylimit === -1) {
@@ -32767,9 +32769,9 @@ function valueResonance(combination) {
 function valueCombination(combination) {
   return sum(MayamCalendar_exports.toCombination([combination]), valueSymbol) + valueResonance(combination);
 }
-function getAvailableResonances(forbiddenSymbols) {
-  return MayamCalendar_exports.RESONANCE_KEYS.filter(function(combination) {
-    return !MayamCalendar_exports.toCombination([combination]).some(function(sym) {
+function getAvailableResonances(forbiddenSymbols, indexCap) {
+  return MayamCalendar_exports.RESONANCE_KEYS.filter(function(combination, index) {
+    return index < indexCap && !MayamCalendar_exports.toCombination([combination]).some(function(sym) {
       return forbiddenSymbols.includes(sym);
     });
   });
@@ -32789,10 +32791,7 @@ function expandCombinationGroup(group) {
   var forbiddenSymbols = [].concat(_toConsumableArray60(group.flatMap(function(combinationString) {
     return MayamCalendar_exports.toCombination([combinationString]);
   })), _toConsumableArray60(MayamCalendar_exports.symbolsUsed()));
-  return [].concat(_toConsumableArray60(getAvailableResonances(forbiddenSymbols).filter(function(resonance) {
-    var rightmostIndex = Math.max.apply(Math, _toConsumableArray60(group.map(resonanceIndex)));
-    return resonanceIndex(resonance) > rightmostIndex;
-  }).map(function(resonance) {
+  return [].concat(_toConsumableArray60(getAvailableResonances(forbiddenSymbols, Math.min.apply(Math, _toConsumableArray60(group.map(resonanceIndex)))).map(function(resonance) {
     return [].concat(_toConsumableArray60(group), [resonance]);
   })), [[].concat(_toConsumableArray60(group), [getBestGreedyCombination(forbiddenSymbols)])]);
 }
@@ -33648,8 +33647,7 @@ function potentialInebrietyAdventures() {
 function potentialNonOrganAdventures() {
   var borrowedTimeAdventures = globalOptions.ascend && !get("_borrowedTimeUsed") ? 20 : 0;
   var chocolateAdventures = (3 - get("_chocolatesUsed")) * (4 - get("_chocolatesUsed")) / 2;
-  var bufferAdventures = 30;
-  return borrowedTimeAdventures + chocolateAdventures + bufferAdventures;
+  return borrowedTimeAdventures + chocolateAdventures;
 }
 function wanderingCopytargetsRemaining() {
   return digitizedMonstersRemainingForTurns(estimatedGarboTurns()) + nextWeekFights();
