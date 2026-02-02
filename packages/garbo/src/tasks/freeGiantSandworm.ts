@@ -43,6 +43,7 @@ import { GarboFreeFightTask } from "./freeFight";
 import { sandwormFamiliar } from "../familiar";
 import { sober } from "../lib";
 import { safeSweatBulletCasts } from "../resources";
+import { acquire } from "../acquire";
 
 function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   const outfit = Outfit.from(
@@ -89,6 +90,15 @@ function sandwormOutfit(spec: OutfitSpec = {}): Outfit {
 const DEFAULT_SANDWORM_TASK = {
   // GarboTask
   combat: new GarboStrategy(() => Macro.abort()),
+  prepare: () => {
+    if (!have($item`drum machine`, expectedFreeGiantSandwormQuestFights())) {
+      acquire(
+        expectedFreeGiantSandwormQuestFights(),
+        $item`drum machine`,
+        drumMachineROI() - 1,
+      );
+    }
+  },
   effects: () => [
     ...(have($skill`Emotionally Chipped`) && get("_feelLostUsed") < 3
       ? $effects`Feeling Lost`
