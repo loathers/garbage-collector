@@ -240,7 +240,8 @@ export function canWander(location: Location, type: DraggableFight): boolean {
 export class WandererTarget {
   name: string;
   zoneValue: number;
-  monsterValues: Map<Monster, number>;
+  monsterBonusValues: Map<Monster, number>;
+  monsterItemValues: Map<Monster, number>;
   location: Location;
   prepareTurn: () => boolean;
 
@@ -249,19 +250,22 @@ export class WandererTarget {
    * @param name name of this wanderer - for documentation/logging purposes
    * @param location returns the location to adventure to target this; null only if something goes wrong
    * @param zoneValue value of an encounter existing within a zone, regardless of which monster you fight
-   * @param monsterValues A map of monsters and their expected value from this wanderer for encountering it
+   * @param monsterBonusValues A map of monsters and their expected non-itemdrop bonus value from this wanderer for encountering it
+   * @param monsterItemValues A map of monsters and their expected itemdrop value from this wanderer for encountering it
    * @param prepareTurn attempt to set up, spending meat and or items as necessary
    */
   constructor(
     name: string,
     location: Location,
     zoneValue: number,
-    monsterValues: Map<Monster, number> = new Map<Monster, number>(),
+    monsterBonusValues: Map<Monster, number> = new Map<Monster, number>(),
+    monsterItemValues: Map<Monster, number> = new Map<Monster, number>(),
     prepareTurn: () => boolean = () => true,
   ) {
     this.name = name;
     this.zoneValue = zoneValue;
-    this.monsterValues = monsterValues;
+    this.monsterBonusValues = monsterBonusValues;
+    this.monsterItemValues = monsterItemValues;
     this.location = location;
     this.prepareTurn = prepareTurn;
   }
