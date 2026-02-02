@@ -95,7 +95,7 @@ const DEFAULT_SANDWORM_TASK = {
       acquire(
         expectedFreeGiantSandwormQuestFights(),
         $item`drum machine`,
-        drumMachineROI() - 1,
+        6_000, // magic number
       );
     }
   },
