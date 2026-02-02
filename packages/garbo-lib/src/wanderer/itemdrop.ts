@@ -78,6 +78,7 @@ export function itemDropFactory(
         ),
         l,
         0,
+        undefined,
         monsterValues(l, type === "yellow ray", options),
       );
     });

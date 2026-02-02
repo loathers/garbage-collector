@@ -110,6 +110,7 @@ export function guzzlrFactory(
               location,
               guzzlrValuePerTurn(buckValue, Guzzlr.getTier(), guzzlrBooze),
               undefined,
+              undefined,
               () => {
                 if (!guzzlrBooze) {
                   // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze

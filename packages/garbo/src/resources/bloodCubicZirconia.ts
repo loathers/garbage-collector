@@ -56,7 +56,14 @@ export function getBCZStatFloor(skill: Skill): number {
 }
 
 function safeBCZCasts(skill: Skill): number {
-  return BloodCubicZirconia.availableCasts(skill, getBCZStatFloor(skill));
+  const availableStatFloorCasts = BloodCubicZirconia.availableCasts(
+    skill,
+    getBCZStatFloor(skill),
+  );
+  const availableCheapCasts = 5 - BloodCubicZirconia.timesCast(skill); // First 5 casts are essentially free, even when we're already low stats
+  return availableCheapCasts > availableStatFloorCasts
+    ? availableCheapCasts
+    : availableStatFloorCasts;
 }
 
 export function safeSweatEquityCasts(): number {

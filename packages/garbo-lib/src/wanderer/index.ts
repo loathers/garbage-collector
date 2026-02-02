@@ -97,12 +97,14 @@ type ZoneData = {
   location: Location;
   targets: WandererTarget[];
   zoneValue: number;
-  monsterValues: Map<Monster, number>;
+  monsterBonusValues: Map<Monster, number>;
+  monsterItemValues: Map<Monster, number>;
 };
 
 function updateZoneData(zoneData: ZoneData, wanderer: WandererTarget) {
   zoneData.targets.push(wanderer);
-  addMaps(zoneData.monsterValues, wanderer.monsterValues);
+  addMaps(zoneData.monsterBonusValues, wanderer.monsterBonusValues);
+  addMaps(zoneData.monsterItemValues, wanderer.monsterItemValues);
   zoneData.zoneValue += wanderer.zoneValue;
 }
 
@@ -130,7 +132,8 @@ function bestWander(
           location,
           targets: [],
           zoneValue: 0,
-          monsterValues: new Map<Monster, number>(),
+          monsterBonusValues: new Map<Monster, number>(),
+          monsterItemValues: new Map<Monster, number>(),
         });
         updateZoneData(zoneData, wanderTarget);
       }
@@ -141,7 +144,7 @@ function bestWander(
   const locationMonsterValues = new Map<Location, WandererLocation>();
   for (const [
     location,
-    { targets, zoneValue, monsterValues },
+    { targets, zoneValue, monsterBonusValues, monsterItemValues },
   ] of locationValues) {
     const monsterAverageValue = zoneAverageMonsterValue(
       location,
