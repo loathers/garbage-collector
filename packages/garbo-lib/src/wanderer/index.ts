@@ -109,6 +109,7 @@ function targetedMonsterValue(
 }
 
 function zoneRefractedGazeValue(
+  location: Location,
   monsterBonusValues: Map<Monster, number>,
   monsterItemValues: Map<Monster, number>,
   useFeesh: boolean,
@@ -120,13 +121,23 @@ function zoneRefractedGazeValue(
     return totalItemValue;
   }
   // If we aren't using Feesh, we will get bonuses from one monster, but lose the items from that monster
-  // This math is currently incorrect, it assumes equal chance of all monsters
-  const totalBonusValue = sum([...monsterBonusValues.entries()], (e) => e[1]);
-  const expectedItemValue =
-    totalItemValue * ((monsterItemValues.size - 1) / monsterItemValues.size);
-  const expectedBonusValue = totalBonusValue / monsterItemValues.size;
+  const rates = appearanceRates(location, true);
+  const averageBonusValue = sum(
+    [...monsterBonusValues.entries()],
+    ([monster, value]) => {
+      const rate = rates[monster.name] / 100;
+      return value * rate;
+    },
+  );
+  const averageItemValue = sum(
+    [...monsterItemValues.entries()],
+    ([monster, value]) => {
+      const rate = rates[monster.name] / 100;
+      return value * rate;
+    },
+  );
 
-  return expectedItemValue + expectedBonusValue;
+  return totalItemValue - averageItemValue + averageBonusValue;
 }
 
 type ZoneData = {
@@ -187,7 +198,18 @@ function bestWander(
       monsterBonusValues,
       monsterItemValues,
     );
-    const refractedGazeValue = zoneRefractedGazeValue();
+    const feeshRefractedGazeValue = zoneRefractedGazeValue(
+      location,
+      monsterBonusValues,
+      monsterItemValues,
+      true,
+    );
+    const noFeeshRefractedGazeValue = zoneRefractedGazeValue(
+      location,
+      monsterBonusValues,
+      monsterItemValues,
+      false,
+    );
     const [bestMonster, monsterTargetedValue] = targetedMonsterValue(
       monsterBonusValues,
       monsterItemValues,
