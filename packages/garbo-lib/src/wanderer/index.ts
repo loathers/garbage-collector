@@ -296,8 +296,11 @@ function wanderWhere(
       candidate.peridotMonster !== $monster.none
         ? `, forcing ${candidate.peridotMonster.name},`
         : "";
+    const bczPrintText = candidate.useRefractedGaze
+      ? `, using Refracted Gaze${candidate.useFeesh ? ` with Monodent` : ""},`
+      : "";
     print(
-      `Wandering at ${candidate.location}${peridotPrintText} for expected value ${value} (${targets})`,
+      `Wandering at ${candidate.location}${peridotPrintText}${bczPrintText} for expected value ${value} (${targets})`,
       isDarkMode() ? "yellow" : "blue",
     );
 
@@ -307,6 +310,8 @@ function wanderWhere(
       familiar: candidate.targets.find((t) => t.name.includes(`Cookbookbat`))
         ? $familiar`Cookbookbat`
         : $familiar`none`,
+      useRefractedGaze: candidate.useRefractedGaze ?? false,
+      useFeesh: candidate.useFeesh ?? false,
     };
   }
 }
@@ -322,6 +327,8 @@ export type WanderResult = {
   location: Location;
   peridotMonster: Monster;
   familiar: Familiar;
+  useRefractedGaze: boolean;
+  useFeesh: boolean;
 };
 
 export class WandererManager {
@@ -457,6 +464,8 @@ export class WandererManager {
           location: $location`Drunken Stupor`,
           peridotMonster: $monster.none,
           familiar: $familiar`none`,
+          useRefractedGaze: false,
+          useFeesh: false,
         };
   }
 
