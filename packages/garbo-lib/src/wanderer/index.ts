@@ -21,6 +21,7 @@ import {
   Delayed,
   get,
   getActiveEffects,
+  have,
   maxBy,
   PeridotOfPeril,
   sum,
@@ -210,24 +211,44 @@ function bestWander(
       monsterItemValues,
       false,
     );
+    const shouldFeesh =
+      have($item`Monodent of the Sea`) &&
+      feeshRefractedGazeValue > noFeeshRefractedGazeValue;
+
+    const refractedGazeValue = options.canRefractedGaze
+      ? shouldFeesh
+        ? feeshRefractedGazeValue
+        : noFeeshRefractedGazeValue
+      : 0;
+
     const [bestMonster, monsterTargetedValue] = targetedMonsterValue(
       monsterBonusValues,
       monsterItemValues,
     );
 
+    const shouldRefracted =
+      refractedGazeValue > monsterAverageValue &&
+      refractedGazeValue > monsterTargetedValue;
+
     const shouldPeridot =
       PeridotOfPeril.canImperil(location) &&
       !unperidotableZones.includes(location) &&
+      !shouldRefracted &&
       monsterTargetedValue > monsterAverageValue;
-    const [monster, monsterValue] = shouldPeridot
-      ? [bestMonster, monsterTargetedValue]
-      : [$monster.none, monsterAverageValue];
+
+    const [monster, monsterValue, bcz, feesh] = shouldRefracted
+      ? [$monster.none, refractedGazeValue, true, shouldFeesh]
+      : shouldPeridot
+        ? [bestMonster, monsterTargetedValue, false, false]
+        : [$monster.none, monsterAverageValue, false, false];
 
     locationMonsterValues.set(location, {
       location,
       targets,
       peridotMonster: monster,
       value: zoneValue + monsterValue,
+      useRefractedGaze: bcz,
+      useFeesh: feesh,
     });
   }
 

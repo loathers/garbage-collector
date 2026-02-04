@@ -67,6 +67,7 @@ export type WandererFactoryOptions = {
   digitzesRemaining?: (turns: number) => number;
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
+  canRefractedGaze?: boolean;
 };
 
 export type WandererFactory = (
@@ -79,6 +80,8 @@ export type WandererLocation = {
   targets: WandererTarget[];
   value: number;
   peridotMonster: Monster;
+  useRefractedGaze?: boolean;
+  useFeesh?: boolean;
 };
 
 export const UnlockableZones: UnlockableZone[] = [
