@@ -70,6 +70,10 @@ export function safeSweatEquityCasts(): number {
   return safeBCZCasts($skill`BCZ: Sweat Equity`);
 }
 
+export function safeRefractedCasts(): number {
+  return safeBCZCasts($skill`BCZ: Refracted Gaze`);
+}
+
 export function safeSweatBulletCasts(drumMachineROI: number): number {
   if (sweatEquityROI() > drumMachineROI) return 0;
   return safeBCZCasts($skill`BCZ: Sweat Bullets`);

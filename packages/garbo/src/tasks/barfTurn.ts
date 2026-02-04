@@ -142,6 +142,9 @@ function createWandererOutfit(
 ): Outfit {
   const wanderTarget = wanderer().getTarget(undelay(details));
   const needPeridot = wanderTarget.peridotMonster !== $monster.none;
+  const needBCZ = wanderTarget.useRefractedGaze ?? false;
+  const needMonodent = wanderTarget.useFeesh ?? false;
+
   const sourceOutfit = Outfit.from(
     undelay(spec),
     new Error(
@@ -152,6 +155,8 @@ function createWandererOutfit(
     sourceOutfit.familiar = wanderTarget.familiar;
   }
   if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
+  if (needBCZ) sourceOutfit.equip($item`blood cubic zirconia`);
+  if (needMonodent) sourceOutfit.equip($item`Monodent of the Sea`);
 
   return freeFightOutfit(
     sourceOutfit.spec(),
@@ -1013,6 +1018,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .duplicate()
           .skill($skill`Fondeluge`),
@@ -1030,6 +1036,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .duplicate()
           .skill($skill`Spit jurassic acid`),
@@ -1070,6 +1077,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => have($effect`Everything Looks Red`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .skill($skill`Free-For-All`),
       ),
@@ -1115,6 +1123,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => myLightning() < 20,
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .skill($skill`Lightning Strike`),
       ),
@@ -1130,6 +1139,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => get("shockingLickCharges") === 0,
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .duplicate()
           .skill($skill`Shocking Lick`),
