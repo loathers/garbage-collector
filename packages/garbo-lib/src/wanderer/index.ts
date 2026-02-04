@@ -74,23 +74,59 @@ const wanderFactories: WandererFactory[] = [
 
 function zoneAverageMonsterValue(
   location: Location,
-  monsterValues: Map<Monster, number>,
+  monsterBonusValues: Map<Monster, number>,
+  monsterItemValues: Map<Monster, number>,
 ): number {
   const rates = appearanceRates(location, true);
-  return sum([...monsterValues.entries()], ([monster, value]) => {
-    const rate = rates[monster.name] / 100;
-    return value * rate;
-  });
+  const averageBonusValue = sum(
+    [...monsterBonusValues.entries()],
+    ([monster, value]) => {
+      const rate = rates[monster.name] / 100;
+      return value * rate;
+    },
+  );
+  const averageItemValue = sum(
+    [...monsterItemValues.entries()],
+    ([monster, value]) => {
+      const rate = rates[monster.name] / 100;
+      return value * rate;
+    },
+  );
+  return averageBonusValue + averageItemValue;
 }
 
 function targetedMonsterValue(
-  monsterValues: Map<Monster, number>,
+  monsterBonusValues: Map<Monster, number>,
+  monsterItemValues: Map<Monster, number>,
 ): [Monster, number] {
-  const availableMonsters = [...monsterValues.entries()].filter(
+  const monsterTotalValue = new Map(monsterBonusValues);
+  addMaps(monsterTotalValue, monsterItemValues);
+  const availableMonsters = [...monsterTotalValue.entries()].filter(
     ([m]) => !UNPERIDOTABLE_MONSTERS.has(m),
   );
   if (availableMonsters.length === 0) return [$monster.none, 0];
   return maxBy(availableMonsters, 1);
+}
+
+function zoneRefractedGazeValue(
+  monsterBonusValues: Map<Monster, number>,
+  monsterItemValues: Map<Monster, number>,
+  useFeesh: boolean,
+): number {
+  const totalItemValue = sum([...monsterItemValues.entries()], (e) => e[1]);
+  if (useFeesh) {
+    // If using Feesh, we will not get any monster bonuses from anything in the zone, but we will get all items
+    // Do we want to account for any bonuses from the fish somehow? (perhaps Bofa or others?)
+    return totalItemValue;
+  }
+  // If we aren't using Feesh, we will get bonuses from one monster, but lose the items from that monster
+  // This math is currently incorrect, it assumes equal chance of all monsters
+  const totalBonusValue = sum([...monsterBonusValues.entries()], (e) => e[1]);
+  const expectedItemValue =
+    totalItemValue * ((monsterItemValues.size - 1) / monsterItemValues.size);
+  const expectedBonusValue = totalBonusValue / monsterItemValues.size;
+
+  return expectedItemValue + expectedBonusValue;
 }
 
 type ZoneData = {
@@ -148,10 +184,14 @@ function bestWander(
   ] of locationValues) {
     const monsterAverageValue = zoneAverageMonsterValue(
       location,
-      monsterValues,
+      monsterBonusValues,
+      monsterItemValues,
     );
-    const [bestMonster, monsterTargetedValue] =
-      targetedMonsterValue(monsterValues);
+    const refractedGazeValue = zoneRefractedGazeValue();
+    const [bestMonster, monsterTargetedValue] = targetedMonsterValue(
+      monsterBonusValues,
+      monsterItemValues,
+    );
 
     const shouldPeridot =
       PeridotOfPeril.canImperil(location) &&
