@@ -103,20 +103,15 @@ function zoneRefractedGazeValue(
   location: Location,
   monsterBonusValues: Map<Monster, number>,
   monsterItemValues: Map<Monster, number>,
-  useFeesh: boolean,
-): number {
+): { withFeesh: number; noFeesh: number } {
   const totalItemValue = sumNumbers([...monsterItemValues.values()]);
-  if (useFeesh) {
-    // If using Feesh, we will not get any monster bonuses from anything in the zone, but we will get all items
-    // Do we want to account for any bonuses from the fish somehow? (perhaps Bofa or others?)
-    return totalItemValue;
-  }
+  const withFeesh = totalItemValue;
   // If we aren't using Feesh, we will get bonuses from one monster, but lose the items from that monster
   const rates = appearanceRates(location, true);
   const averageBonusValue = averageMonsterValue(monsterBonusValues, rates);
   const averageItemValue = averageMonsterValue(monsterItemValues, rates);
-
-  return totalItemValue - averageItemValue + averageBonusValue;
+  const noFeesh = totalItemValue - averageItemValue + averageBonusValue;
+  return { withFeesh, noFeesh };
 }
 
 type ZoneData = {
@@ -183,26 +178,17 @@ function bestWander(
       monsterBonusValues,
       monsterItemValues,
     );
-    const feeshRefractedGazeValue = zoneRefractedGazeValue(
+    const { withFeesh, noFeesh } = zoneRefractedGazeValue(
       location,
       monsterBonusValues,
       monsterItemValues,
-      true,
     );
-    const noFeeshRefractedGazeValue = zoneRefractedGazeValue(
-      location,
-      monsterBonusValues,
-      monsterItemValues,
-      false,
-    );
-    const shouldFeesh =
-      have($item`Monodent of the Sea`) &&
-      feeshRefractedGazeValue > noFeeshRefractedGazeValue;
+    const shouldFeesh = have($item`Monodent of the Sea`) && withFeesh > noFeesh;
 
     const refractedGazeValue = options.canRefractedGaze
       ? shouldFeesh
-        ? feeshRefractedGazeValue
-        : noFeeshRefractedGazeValue
+        ? withFeesh
+        : noFeesh
       : 0;
 
     const [bestMonster, monsterTargetedValue] = targetedMonsterValue(
@@ -210,17 +196,17 @@ function bestWander(
       monsterItemValues,
     );
 
-    const shouldRefracted =
+    const shouldRefract =
       refractedGazeValue > monsterAverageValue &&
       refractedGazeValue > monsterTargetedValue;
 
     const shouldPeridot =
       PeridotOfPeril.canImperil(location) &&
       !unperidotableZones.includes(location) &&
-      !shouldRefracted &&
+      !shouldRefract &&
       monsterTargetedValue > monsterAverageValue;
 
-    const [monster, monsterValue, bcz, feesh] = shouldRefracted
+    const [monster, monsterValue, bcz, feesh] = shouldRefract
       ? [$monster.none, refractedGazeValue, true, shouldFeesh]
       : shouldPeridot
         ? [bestMonster, monsterTargetedValue, false, false]
