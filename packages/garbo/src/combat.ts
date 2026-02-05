@@ -99,6 +99,15 @@ export function shouldAffirmationHate(): boolean {
   return true;
 }
 
+function preferMuscleCombat(): boolean {
+  return (
+    myBuffedstat($stat`Muscle`) > 100 &&
+    myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`) &&
+    (currentHitStat() === $stat`Muscle` ||
+      itemType(equippedItem($slot`weapon`)) === "knife")
+  );
+}
+
 export class Macro extends StrictMacro {
   abortWithMsg(errorMessage: string): Macro {
     return this.step(`abort "${errorMessage}"`);
@@ -641,11 +650,9 @@ export class Macro extends StrictMacro {
           Macro.attack(),
         ),
       )
+      .killTarget()
       .externalIf(
-        myBuffedstat($stat`Muscle`) > myBuffedstat($stat`Mysticality`) &&
-          (currentHitStat() === $stat`Muscle` ||
-            itemType(equippedItem($slot`weapon`)) === "knife"),
-
+        preferMuscleCombat(),
         Macro.ifNot(
           $element`Cold`,
           Macro.trySkillRepeat($skill`Northern Explosion`),
@@ -676,6 +683,37 @@ export class Macro extends StrictMacro {
 
   static kill(): Macro {
     return new Macro().kill();
+  }
+
+  // Special handling for resistant targets
+  killTarget(): Macro {
+    if (
+      globalOptions.target.elementalResistance <= 75 &&
+      globalOptions.target.physicalResistance <= 75
+    ) {
+      return this;
+    }
+    return this.if_(
+      globalOptions.target,
+      Macro.externalIf(
+        globalOptions.target.elementalResistance >
+          globalOptions.target.physicalResistance,
+        Macro.externalIf(
+          preferMuscleCombat(),
+          Macro.trySkillRepeat($skill`Lunging Thrust-Smack`),
+          Macro.trySkillRepeat($skill`Weapon of the Pastalord`),
+        ),
+        Macro.externalIf(
+          preferMuscleCombat() &&
+            globalOptions.target.defenseElement !== $element`cold`,
+          Macro.trySkillRepeat($skill`Northern Explosion`),
+        ).trySkillRepeat(
+          $skill`Saucegeyser`,
+          $skill`Wave of Sauce`,
+          $skill`Saucestorm`,
+        ),
+      ),
+    );
   }
 
   basicCombat(): Macro {
