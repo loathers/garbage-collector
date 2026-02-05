@@ -25,6 +25,7 @@ import {
   maxBy,
   PeridotOfPeril,
   sum,
+  sumNumbers,
   undelay,
 } from "libram";
 import { guzzlrFactory } from "./guzzlr";
@@ -113,7 +114,7 @@ function zoneRefractedGazeValue(
   monsterItemValues: Map<Monster, number>,
   useFeesh: boolean,
 ): number {
-  const totalItemValue = sum([...monsterItemValues.entries()], (e) => e[1]);
+  const totalItemValue = sumNumbers([...monsterItemValues.values()]);
   if (useFeesh) {
     // If using Feesh, we will not get any monster bonuses from anything in the zone, but we will get all items
     // Do we want to account for any bonuses from the fish somehow? (perhaps Bofa or others?)
