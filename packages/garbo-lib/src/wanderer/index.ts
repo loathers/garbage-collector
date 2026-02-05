@@ -135,6 +135,46 @@ function updateZoneData(zoneData: ZoneData, wanderer: WandererTarget) {
   zoneData.zoneValue += wanderer.options.zoneValue;
 }
 
+function determineWandererLocationInfo(
+  shouldRefract: boolean,
+  shouldFeesh: boolean,
+  shouldPeridot: boolean,
+  bestMonsterCandidate: Monster,
+  monsterTargetedValue: number,
+  monsterAverageValue: number,
+  refractedGazeValue: number,
+): {
+  bestMonster: Monster;
+  monsterValue: number;
+  shouldBcz: boolean;
+  shouldFeesh: boolean;
+} {
+  if (shouldRefract) {
+    return {
+      bestMonster: $monster.none,
+      monsterValue: refractedGazeValue,
+      shouldBcz: true,
+      shouldFeesh,
+    };
+  }
+
+  if (shouldPeridot) {
+    return {
+      bestMonster: bestMonsterCandidate,
+      monsterValue: monsterTargetedValue,
+      shouldBcz: false,
+      shouldFeesh: false,
+    };
+  }
+
+  return {
+    bestMonster: $monster.none,
+    monsterValue: monsterAverageValue,
+    shouldBcz: false,
+    shouldFeesh: false,
+  };
+}
+
 function bestWander(
   type: DraggableFight,
   locationSkiplist: Location[],
@@ -183,15 +223,16 @@ function bestWander(
       monsterBonusValues,
       monsterItemValues,
     );
-    const shouldFeesh = have($item`Monodent of the Sea`) && withFeesh > noFeesh;
+    const shouldFeeshCandidate =
+      have($item`Monodent of the Sea`) && withFeesh > noFeesh;
 
     const refractedGazeValue = options.canRefractedGaze
-      ? shouldFeesh
+      ? shouldFeeshCandidate
         ? withFeesh
         : noFeesh
       : 0;
 
-    const [bestMonster, monsterTargetedValue] = targetedMonsterValue(
+    const [bestMonsterCandidate, monsterTargetedValue] = targetedMonsterValue(
       monsterBonusValues,
       monsterItemValues,
     );
@@ -206,19 +247,24 @@ function bestWander(
       !shouldRefract &&
       monsterTargetedValue > monsterAverageValue;
 
-    const [monster, monsterValue, bcz, feesh] = shouldRefract
-      ? [$monster.none, refractedGazeValue, true, shouldFeesh]
-      : shouldPeridot
-        ? [bestMonster, monsterTargetedValue, false, false]
-        : [$monster.none, monsterAverageValue, false, false];
+    const { bestMonster, monsterValue, shouldBcz, shouldFeesh } =
+      determineWandererLocationInfo(
+        shouldRefract,
+        shouldFeeshCandidate,
+        shouldPeridot,
+        bestMonsterCandidate,
+        monsterTargetedValue,
+        monsterAverageValue,
+        refractedGazeValue,
+      );
 
     locationMonsterValues.set(location, {
       location,
       targets,
-      peridotMonster: monster,
+      peridotMonster: bestMonster,
       value: zoneValue + monsterValue,
-      useRefractedGaze: bcz,
-      useFeesh: feesh,
+      useRefractedGaze: shouldBcz,
+      useFeesh: shouldFeesh,
     });
   }
 
