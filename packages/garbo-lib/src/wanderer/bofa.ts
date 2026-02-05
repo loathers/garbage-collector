@@ -35,12 +35,12 @@ export function bofaFactory(
         !locationSkiplist.includes(location),
     );
     return [...validLocations].map((l: Location) => {
-      return new WandererTarget(
-        `Book of Facts`,
-        l,
-        0,
-        monsterValues(l, options),
-      );
+      return new WandererTarget({
+        name: `Book of Facts`,
+        location: l,
+        zoneValue: 0,
+        monsterBonusValues: monsterValues(l, options),
+      });
     });
   }
   return [];

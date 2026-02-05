@@ -240,42 +240,55 @@ export function canWander(location: Location, type: DraggableFight): boolean {
   }
 }
 
-export class WandererTarget {
+type WandererTargetOptions = {
   name: string;
-  zoneValue: number;
-  monsterBonusValues: Map<Monster, number>;
-  monsterItemValues: Map<Monster, number>;
   location: Location;
-  prepareTurn: () => boolean;
+  zoneValue: number;
+  monsterBonusValues?: Map<Monster, number>;
+  monsterItemValues?: Map<Monster, number>;
+  prepareTurn?: () => boolean;
+};
+
+export class WandererTarget {
+  options: WandererTargetOptions;
 
   /**
    * Process for determining where to put a wanderer to extract additional value from it
-   * @param name name of this wanderer - for documentation/logging purposes
-   * @param location returns the location to adventure to target this; null only if something goes wrong
-   * @param zoneValue value of an encounter existing within a zone, regardless of which monster you fight
-   * @param monsterBonusValues A map of monsters and their expected non-itemdrop bonus value from this wanderer for encountering it
-   * @param monsterItemValues A map of monsters and their expected itemdrop value from this wanderer for encountering it
-   * @param prepareTurn attempt to set up, spending meat and or items as necessary
+   * @param options An object containing the following  keys:
+   * @param options.name name of this wanderer - for documentation/logging purposes
+   * @param options.location returns the location to adventure to target this; null only if something goes wrong
+   * @param options.zoneValue value of an encounter existing within a zone, regardless of which monster you fight
+   * @param options.monsterBonusValues A map of monsters and their expected non-itemdrop bonus value from this wanderer for encountering it
+   * @param options.monsterItemValues A map of monsters and their expected itemdrop value from this wanderer for encountering it
+   * @param options.prepareTurn attempt to set up, spending meat and or items as necessary
    */
-  constructor(
-    name: string,
-    location: Location,
-    zoneValue: number,
-    monsterBonusValues: Map<Monster, number> = new Map<Monster, number>(),
-    monsterItemValues: Map<Monster, number> = new Map<Monster, number>(),
-    prepareTurn: () => boolean = () => true,
-  ) {
-    this.name = name;
-    this.zoneValue = zoneValue;
-    this.monsterBonusValues = monsterBonusValues;
-    this.monsterItemValues = monsterItemValues;
-    this.location = location;
-    this.prepareTurn = prepareTurn;
+  constructor({
+    name,
+    location,
+    zoneValue,
+    monsterBonusValues = new Map<Monster, number>(),
+    monsterItemValues = new Map<Monster, number>(),
+    prepareTurn = () => true,
+  }: WandererTargetOptions) {
+    this.options = {
+      name,
+      location,
+      zoneValue,
+      monsterBonusValues,
+      monsterItemValues,
+      prepareTurn,
+    };
   }
 }
 
 export function defaultFactory(): WandererTarget[] {
-  return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
+  return [
+    new WandererTarget({
+      name: "Default",
+      location: $location`The Haunted Kitchen`,
+      zoneValue: 0,
+    }),
+  ];
 }
 
 type WanderingSource = {

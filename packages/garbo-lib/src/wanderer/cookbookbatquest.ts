@@ -21,14 +21,14 @@ export function cookbookbatQuestFactory(
     !blackListedLocations.includes(questLocation)
   ) {
     return [
-      new WandererTarget(
-        `Cookbookbat Quest`,
-        questLocation,
-        0,
-        new Map<Monster, number>([
+      new WandererTarget({
+        name: `Cookbookbat Quest`,
+        location: questLocation,
+        zoneValue: 0,
+        monsterBonusValues: new Map<Monster, number>([
           [questMonster, 3 * options.itemValue(questReward)],
         ]),
-      ),
+      }),
     ];
   }
   return [];

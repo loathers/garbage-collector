@@ -151,9 +151,15 @@ type ZoneData = {
 
 function updateZoneData(zoneData: ZoneData, wanderer: WandererTarget) {
   zoneData.targets.push(wanderer);
-  addMaps(zoneData.monsterBonusValues, wanderer.monsterBonusValues);
-  addMaps(zoneData.monsterItemValues, wanderer.monsterItemValues);
-  zoneData.zoneValue += wanderer.zoneValue;
+  addMaps(
+    zoneData.monsterBonusValues,
+    wanderer.options.monsterBonusValues ?? new Map<Monster, number>(),
+  );
+  addMaps(
+    zoneData.monsterItemValues,
+    wanderer.options.monsterItemValues ?? new Map<Monster, number>(),
+  );
+  zoneData.zoneValue += wanderer.options.zoneValue;
 }
 
 function bestWander(
@@ -169,11 +175,11 @@ function bestWander(
     const wanderTargets = wanderFactory(type, locationSkiplist, options);
     for (const wanderTarget of wanderTargets) {
       if (
-        !nameSkiplist.includes(wanderTarget.name) &&
-        !locationSkiplist.includes(wanderTarget.location) &&
-        canWander(wanderTarget.location, type)
+        !nameSkiplist.includes(wanderTarget.options.name) &&
+        !locationSkiplist.includes(wanderTarget.options.location) &&
+        canWander(wanderTarget.options.location, type)
       ) {
-        const { location } = wanderTarget;
+        const { location } = wanderTarget.options;
 
         // Retrieve existing data for location if extant
         const zoneData = ensureMapElement(locationValues, location, {
@@ -273,7 +279,9 @@ function wanderWhere(
   locationSkiplist: Location[] = [],
 ): WanderResult {
   const candidate = bestWander(type, locationSkiplist, nameSkiplist, options);
-  const failed = candidate.targets.filter((target) => !target.prepareTurn());
+  const failed = candidate.targets.filter(
+    (target) => !target.options.prepareTurn?.(),
+  );
 
   const badLocation =
     !canAdventureOrUnlock(candidate.location) ||
@@ -286,11 +294,11 @@ function wanderWhere(
     return wanderWhere(
       options,
       type,
-      [...nameSkiplist, ...failed.map((target) => target.name)],
+      [...nameSkiplist, ...failed.map((target) => target.options.name)],
       [...locationSkiplist, ...badLocation],
     );
   } else {
-    const targets = candidate.targets.map((t) => t.name).join("; ");
+    const targets = candidate.targets.map((t) => t.options.name).join("; ");
     const value = candidate.value.toFixed(2);
     const peridotPrintText =
       candidate.peridotMonster !== $monster.none
@@ -307,7 +315,9 @@ function wanderWhere(
     return {
       location: candidate.location,
       peridotMonster: candidate.peridotMonster,
-      familiar: candidate.targets.find((t) => t.name.includes(`Cookbookbat`))
+      familiar: candidate.targets.find((t) =>
+        t.options.name.includes(`Cookbookbat`),
+      )
         ? $familiar`Cookbookbat`
         : $familiar`none`,
       useRefractedGaze: candidate.useRefractedGaze ?? false,
