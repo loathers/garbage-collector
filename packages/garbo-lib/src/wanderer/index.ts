@@ -31,6 +31,7 @@ import {
 import { guzzlrFactory } from "./guzzlr";
 import {
   addMaps,
+  averageMonsterValue,
   canAdventureOrUnlock,
   canWander,
   defaultFactory,
@@ -74,16 +75,6 @@ const wanderFactories: WandererFactory[] = [
   bofaFactory,
 ];
 
-function averageMonsterValue(
-  monsterValues: Map<Monster, number>,
-  rates: { [monster: string]: number },
-): number {
-  return sum(
-    [...monsterValues.entries()],
-    ([monster, value]) => value * (rates[monster.name] / 100),
-  );
-}
-
 function zoneAverageMonsterValue(
   location: Location,
   monsterBonusValues: Map<Monster, number>,
@@ -122,20 +113,8 @@ function zoneRefractedGazeValue(
   }
   // If we aren't using Feesh, we will get bonuses from one monster, but lose the items from that monster
   const rates = appearanceRates(location, true);
-  const averageBonusValue = sum(
-    [...monsterBonusValues.entries()],
-    ([monster, value]) => {
-      const rate = rates[monster.name] / 100;
-      return value * rate;
-    },
-  );
-  const averageItemValue = sum(
-    [...monsterItemValues.entries()],
-    ([monster, value]) => {
-      const rate = rates[monster.name] / 100;
-      return value * rate;
-    },
-  );
+  const averageBonusValue = averageMonsterValue(monsterBonusValues, rates);
+  const averageItemValue = averageMonsterValue(monsterItemValues, rates);
 
   return totalItemValue - averageItemValue + averageBonusValue;
 }

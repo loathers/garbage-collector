@@ -523,3 +523,13 @@ export const UNPERIDOTABLE_MONSTERS = new Set([
   ...(modifierEval("G") < 4 ? $monsters`alielf, cat-alien, dog-alien` : []),
   ...$monsters`Arizona bark scorpion, swimming pool monster`,
 ]);
+
+export function averageMonsterValue(
+  monsterValues: Map<Monster, number>,
+  rates: { [monster: string]: number },
+): number {
+  return sum(
+    [...monsterValues.entries()],
+    ([monster, value]) => value * (rates[monster.name] / 100),
+  );
+}
