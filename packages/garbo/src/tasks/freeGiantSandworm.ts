@@ -336,9 +336,9 @@ const SandwormTasks: GarboFreeFightTask[] = [
 export function expectedFreeGiantSandwormQuestFights(): number {
   return sum(
     SANDWORM_TASK_DEFINITIONS.filter(
-      t => (t.ready?.() ?? true) && !(t.completed?.() ?? false),
+      (t) => (t.ready?.() ?? true) && !(t.completed?.() ?? false),
     ),
-    t => t.combatCount?.() ?? 0,
+    (t) => t.combatCount?.() ?? 0,
   );
 }
 
@@ -395,4 +395,3 @@ export const FreeGiantSandwormQuest: Quest<GarboTask> = {
   tasks: SandwormTasks,
   ready: () => sober() && hasWorms(),
 };
-
