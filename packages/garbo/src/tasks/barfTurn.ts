@@ -586,7 +586,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
             11 - get("_mimicEggsObtained"),
           )
         : 0,
-    spendsTurn: !globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   },
   {
     name: "Machine Elf Dupe",
