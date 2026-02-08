@@ -250,7 +250,12 @@ type WandererTargetOptions = {
 };
 
 export class WandererTarget {
-  options: WandererTargetOptions;
+  name: string;
+  location: Location;
+  zoneValue: number;
+  monsterBonusValues?: Map<Monster, number>;
+  monsterItemValues?: Map<Monster, number>;
+  prepareTurn?: () => boolean;
 
   /**
    * Process for determining where to put a wanderer to extract additional value from it
@@ -270,14 +275,12 @@ export class WandererTarget {
     monsterItemValues = new Map<Monster, number>(),
     prepareTurn = () => true,
   }: WandererTargetOptions) {
-    this.options = {
-      name,
-      location,
-      zoneValue,
-      monsterBonusValues,
-      monsterItemValues,
-      prepareTurn,
-    };
+    this.name = name;
+    this.location = location;
+    this.zoneValue = zoneValue;
+    this.monsterBonusValues = monsterBonusValues;
+    this.monsterItemValues = monsterItemValues;
+    this.prepareTurn = prepareTurn;
   }
 }
 

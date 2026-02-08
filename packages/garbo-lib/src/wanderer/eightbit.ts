@@ -45,7 +45,7 @@ export function eightbitFactory(
             zoneValue: value(color, options),
           }),
       )
-      .filter((t) => !locationSkiplist.includes(t.options.location));
+      .filter((t) => !locationSkiplist.includes(t.location));
   }
   return [];
 }
