@@ -586,7 +586,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
             11 - get("_mimicEggsObtained"),
           )
         : 0,
-    spendsTurn: true,
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   },
   {
     name: "Machine Elf Dupe",
@@ -1214,7 +1214,7 @@ const BarfTurnTasks: GarboTask[] = [
       HeavyRains.rainMan(globalOptions.target);
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
     outfit: () => meatTargetOutfit(),
   },
   {
@@ -1228,7 +1228,7 @@ const BarfTurnTasks: GarboTask[] = [
       ChestMimic.differentiate(globalOptions.target);
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
     outfit: () => meatTargetOutfit({ familiar: $familiar`Chest Mimic` }),
   },
   {
@@ -1239,7 +1239,7 @@ const BarfTurnTasks: GarboTask[] = [
     do: () => ChestMimic.differentiate(globalOptions.target),
     outfit: () => meatTargetOutfit(),
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   },
   {
     name: "Liana Parachute",
