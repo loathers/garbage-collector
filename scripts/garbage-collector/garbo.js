@@ -24331,7 +24331,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d14ab6a01525378acdea9705b05b1475694253b2", ")"));
+      (0, import_kolmafia87.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4d62fd2388749da152f5a98b6385dc12a51f9614", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia87.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -40954,7 +40954,9 @@ var NonBarfTurnTasks = [{
   turns: function() {
     return globalOptions.ascend ? clamp(Math.floor($familiar(_templateObject7134 || (_templateObject7134 = _taggedTemplateLiteral132(["Chest Mimic"]))).experience / 50) - 1, 1, 11 - get("_mimicEggsObtained")) : 0;
   },
-  spendsTurn: true
+  spendsTurn: function() {
+    return !globalOptions.target.attributes.includes("FREE");
+  }
 }, {
   name: "Machine Elf Dupe",
   ready: function() {
@@ -41593,7 +41595,7 @@ var BarfTurnTasks = [{
     return Macro2.meatKill();
   }),
   spendsTurn: function() {
-    return globalOptions.target.attributes.includes("FREE");
+    return !globalOptions.target.attributes.includes("FREE");
   },
   outfit: function() {
     return meatTargetOutfit();
@@ -41616,7 +41618,7 @@ var BarfTurnTasks = [{
     return Macro2.meatKill();
   }),
   spendsTurn: function() {
-    return globalOptions.target.attributes.includes("FREE");
+    return !globalOptions.target.attributes.includes("FREE");
   },
   outfit: function() {
     return meatTargetOutfit({
@@ -41641,7 +41643,7 @@ var BarfTurnTasks = [{
     return Macro2.meatKill();
   }),
   spendsTurn: function() {
-    return globalOptions.target.attributes.includes("FREE");
+    return !globalOptions.target.attributes.includes("FREE");
   }
 }, {
   name: "Liana Parachute",
