@@ -253,9 +253,9 @@ export class WandererTarget {
   name: string;
   location: Location;
   zoneValue: number;
-  monsterBonusValues?: Map<Monster, number>;
-  monsterItemValues?: Map<Monster, number>;
-  prepareTurn?: () => boolean;
+  monsterBonusValues: Map<Monster, number>;
+  monsterItemValues: Map<Monster, number>;
+  prepareTurn: () => boolean;
 
   /**
    * Process for determining where to put a wanderer to extract additional value from it

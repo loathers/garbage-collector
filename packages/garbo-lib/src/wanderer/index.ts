@@ -124,14 +124,8 @@ type ZoneData = {
 
 function updateZoneData(zoneData: ZoneData, wanderer: WandererTarget) {
   zoneData.targets.push(wanderer);
-  addMaps(
-    zoneData.monsterBonusValues,
-    wanderer.monsterBonusValues ?? new Map<Monster, number>(),
-  );
-  addMaps(
-    zoneData.monsterItemValues,
-    wanderer.monsterItemValues ?? new Map<Monster, number>(),
-  );
+  addMaps(zoneData.monsterBonusValues, wanderer.monsterBonusValues);
+  addMaps(zoneData.monsterItemValues, wanderer.monsterItemValues);
   zoneData.zoneValue += wanderer.zoneValue;
 }
 
@@ -289,7 +283,7 @@ function wanderWhere(
   locationSkiplist: Location[] = [],
 ): WanderResult {
   const candidate = bestWander(type, locationSkiplist, nameSkiplist, options);
-  const failed = candidate.targets.filter((target) => !target.prepareTurn?.());
+  const failed = candidate.targets.filter((target) => !target.prepareTurn());
 
   const badLocation =
     !canAdventureOrUnlock(candidate.location) ||
