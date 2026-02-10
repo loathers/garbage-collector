@@ -155,7 +155,15 @@ If you have issues with this script, please [file a bug report](BUGS.md)!
 
 ### Item Value Overrides
 
-Sometimes you may not be happy with how Garbo values a particular item. For example, the Skeleton of Crimbo Past produces lots of knucklebones, which at some point in the future may be worth a lot of meat, but collecting them now means you could miss out on a lot of short term meat. If you would prefer to priortize liquid meat, you can modify `data/garbo_item_values.json` in your KoLMafia directory, creating a [JSON file](https://en.wikipedia.org/wiki/JSON) with the key being the item and the value being how much you should value that item. For example, if you want to value knucklebones at 1000 meat each:
+- WARNING: This feature can have unexpected side effects for dieting and adventuring. Use with caution!
+
+Sometimes you may not be happy with how Garbo values a particular item. For example, the Skeleton of Crimbo Past produces lots of knucklebones, which at some point in the future may be worth a lot of meat, but collecting them now means you could miss out on a lot of short term meat. If you would prefer to priortize liquid meat, you can instruct garbo to value knucklebones at 1000 meat. To do this, you can run the command:
+
+```
+garbo-price knucklebone 1000
+```
+
+Alternatively, you can modify `data/garbo_item_values.json` in your KoLMafia directory, creating a [JSON file](https://en.wikipedia.org/wiki/JSON) with the key being the item and the value being how much you should value that item. With the same example above:
 
 ```json
 {
