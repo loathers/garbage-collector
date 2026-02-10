@@ -136,6 +136,7 @@ Use `quickgear` to only speed up the maximizer, and `quickcombat` to only speed 
 _EXPERIMENTAL_ Garbo will use all of a user's copies on the provided monster instead of trying to calculate the free, wishable monster with the best item drops.
 
 For example, you may wish to target:
+
 - a free fight like a sausage goblin, to stock up on extra sausage casings with a bit of meat
 - a turn-taking event monster with rare drops, if you're trying to maximize the number you encounter (e.g. the Moai from 2024's Crimbo Islands)
 - a monster which isn't the Knob Goblin Elite Guard Captain if you don't have Curse of Weaksauce and Saucegeyser but think garbo will be able to kill it anyway
@@ -151,6 +152,18 @@ Garbo can run for a specified number of turns, or run until you have a specified
 Running Garbo `help` will print out simple help documentation and not run any turns.
 
 If you have issues with this script, please [file a bug report](BUGS.md)!
+
+### Item Value Overrides
+
+Sometimes you may not be happy with how Garbo values a particular item. For example, the Skeleton of Crimbo Past produces lots of knucklebones, which at some point in the future may be worth a lot of meat, but collecting them now means you could miss out on a lot of short term meat. If you would prefer to priortize liquid meat, you can modify `data/garbo_item_values.json` in your KoLMafia directory, creating a [JSON file](https://en.wikipedia.org/wiki/JSON) with the key being the item and the value being how much you should value that item. For example, if you want to value knucklebones at 1000 meat each:
+
+```json
+{
+  "knucklebone": 1000
+}
+```
+
+This will tell garbo to value knucklebones at 1000 meat and will probably have it pick a meat familiar instead.
 
 ## Frequent Questions
 
