@@ -84,6 +84,25 @@ const luckySourceTasks = [
         ? 1
         : 0,
   },
+  {
+    name: "Heartstone",
+    ready: () => !have($effect`Lucky!`),
+    completed: () =>
+      !have($item`Heartstone`) ||
+      !get("heartstoneLuckUnlocked") ||
+      get("_heartstoneLuckUsed", true),
+    do: () => {
+      useSkill($skill`Heartstone: %luck`);
+      if (!have($effect`Lucky!`)) return;
+    },
+    spendsTurn: false,
+    turns: () =>
+      have($item`Heartstone`) &&
+      get("heartstoneLuckUnlocked") &&
+      !get("_heartstoneLuckUsed", true)
+        ? 1
+        : 0,
+  },
 ] as const satisfies AlternateTask[];
 
 export const EmbezzlerFightsQuest: Quest<AlternateTask> = {
