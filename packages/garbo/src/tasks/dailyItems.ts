@@ -296,8 +296,7 @@ const DailyItemTasks: GarboTask[] = [
     name: "Chateau Mantegna Desk",
     ready: () => ChateauMantegna.have(),
     completed: () => get("_chateauDeskHarvested"),
-    do: () =>
-      visitUrl("place.php?whichplace=chateau&action=chateau_desk2", false),
+    do: () => ChateauMantegna.harvestDesk(),
     spendsTurn: false,
   },
   {
