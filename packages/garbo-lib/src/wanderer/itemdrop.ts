@@ -64,7 +64,7 @@ export function itemDropFactory(
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (type === "yellow ray" || type === "freefight") {
+  if (["yellow ray", "freefight", "conditional freefight"].includes(type)) {
     const validLocations = Location.all().filter(
       (location) =>
         canWander(location, "yellow ray") &&

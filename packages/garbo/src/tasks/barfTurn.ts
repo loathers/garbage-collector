@@ -1046,7 +1046,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
-    "freefight",
+    "freefight (no items)",
     () => ({
       weapon: $item`Sheriff pistol`,
       acc1: $item`Sheriff badge`,
@@ -1086,7 +1086,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
-    "freefight",
+    "conditional freefight",
     {
       offhand:
         guaranteedBullseye() || have($item`spring shoes`)

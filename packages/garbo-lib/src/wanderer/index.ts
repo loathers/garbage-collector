@@ -220,11 +220,12 @@ function bestWander(
     const shouldFeeshCandidate =
       have($item`Monodent of the Sea`) && withFeesh > noFeesh;
 
-    const refractedGazeValue = options.canRefractedGaze
-      ? shouldFeeshCandidate
-        ? withFeesh
-        : noFeesh
-      : 0;
+    const refractedGazeValue =
+      options.canRefractedGaze && type !== "conditional freefight"
+        ? shouldFeeshCandidate
+          ? withFeesh
+          : noFeesh
+        : 0;
 
     const [bestMonsterCandidate, monsterTargetedValue] = targetedMonsterValue(
       monsterBonusValues,

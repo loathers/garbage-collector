@@ -41,6 +41,8 @@ export const draggableFights = [
   "yellow ray",
   "freefight",
   "freerun",
+  "conditional freefight", // This is a free fight that will not always be successful, like Darts Bullseye
+  "freefight (no items)", // This is a free fight that causes you to get no item drops, like Assert your authority
 ] as const;
 export type DraggableFight = (typeof draggableFights)[number];
 export function isDraggableFight<T>(
@@ -239,6 +241,8 @@ export function canWander(location: Location, type: DraggableFight): boolean {
       return canWanderTypeBackup(location);
     case "freefight":
     case "yellow ray":
+    case "conditional freefight":
+    case "freefight (no items)":
       return canWanderTypeFreeFight(location);
     case "wanderer":
       return canWanderTypeWander(location);
@@ -347,6 +351,8 @@ export function wandererTurnsAvailableToday(
     wanderer: canWander(location, "wanderer"),
     "yellow ray": canWander(location, "yellow ray"),
     freefight: canWander(location, "freefight"),
+    "conditional freefight": canWander(location, "conditional freefight"),
+    "freefight (no items)": canWander(location, "freefight (no items)"),
     freerun: canWander(location, "freerun"),
   };
 

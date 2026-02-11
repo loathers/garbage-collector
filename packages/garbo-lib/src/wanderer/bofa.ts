@@ -27,7 +27,14 @@ export function bofaFactory(
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (type === "yellow ray" || type === "freefight") {
+  if (
+    [
+      "yellow ray",
+      "freefight",
+      "conditional freefight",
+      "freefight (no items)",
+    ].includes(type)
+  ) {
     const validLocations = Location.all().filter(
       (location) =>
         canWander(location, "yellow ray") &&
