@@ -90,7 +90,7 @@ const luckySourceTasks = [
     completed: () =>
       !have($item`Heartstone`) ||
       !get("heartstoneLuckUnlocked") ||
-      get("_heartstoneLuckUsed", true),
+      get("_heartstoneLuckUsed"),
     do: () => {
       useSkill($skill`Heartstone: %luck`);
       if (!have($effect`Lucky!`)) return;
@@ -99,7 +99,7 @@ const luckySourceTasks = [
     turns: () =>
       have($item`Heartstone`) &&
       get("heartstoneLuckUnlocked") &&
-      !get("_heartstoneLuckUsed", true)
+      !get("_heartstoneLuckUsed")
         ? 1
         : 0,
   },
