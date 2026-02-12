@@ -8,6 +8,8 @@ import {
   mallPrice,
   myAdventures,
   myInebriety,
+  myMaxhp,
+  restoreHp,
   runChoice,
   Stat,
   useSkill,
@@ -249,7 +251,10 @@ export const CockroachSetup: Quest<GarboTask> = {
         questStep("_questPirateRealm") === 5 &&
         get("_lastPirateRealmIsland") === $location`Crab Island`,
       completed: () => questStep("_questPirateRealm") > 5,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
+      prepare: () => {
+        DebuffPlanner.checkAndFixOvercapStats();
+        restoreHp(myMaxhp());
+      },
       do: $location`Crab Island`,
       outfit: () =>
         meatTargetOutfit(
@@ -266,7 +271,9 @@ export const CockroachSetup: Quest<GarboTask> = {
           $location`Crab Island`,
         ),
       choices: { 1368: 1 }, // fight crab
-      combat: new GarboStrategy(() => Macro.delevel().meatKill()),
+      combat: new GarboStrategy(() =>
+        Macro.tryHaveSkill($skill`Curse of Weaksauce`).meatKill(),
+      ),
       limit: { tries: 1 },
       spendsTurn: true,
     },
