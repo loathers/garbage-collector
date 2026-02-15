@@ -18,7 +18,12 @@ import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
-import { applyCheeseBonus, cleaverCheck, validateGarbageFoldable } from "./lib";
+import {
+  applyCheeseBonus,
+  cleaverCheck,
+  handleBanningTcb,
+  validateGarbageFoldable,
+} from "./lib";
 import {
   adventuresPerSweat,
   mimicExperienceNeeded,
@@ -130,6 +135,8 @@ export function freeFightOutfit(
       Guzzlr.expectedReward(true) - Guzzlr.expectedReward(false),
     );
   }
+
+  handleBanningTcb(outfit);
 
   const bjornalike = $items`Crown of Thrones, Buddy Bjorn`.find((item) =>
     outfit.canEquip(item),
