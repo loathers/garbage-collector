@@ -937,7 +937,10 @@ export class Macro extends StrictMacro {
     return this.externalIf(
       haveEquipped($item`Monodent of the Sea`) &&
         haveEquipped($item`blood cubic zirconia`), // Assume if we have both equipped, we mean to refracted feesh
-      Macro.trySkill($skill`Sea *dent: Talk to Some Fish`),
+      Macro.if_(
+        "!monsterphylum Fish",
+        Macro.trySkill($skill`Sea *dent: Talk to Some Fish`),
+      ),
     ).externalIf(
       haveEquipped($item`blood cubic zirconia`) && safeRefractedCasts() > 0,
       Macro.trySkill($skill`BCZ: Refracted Gaze`),
