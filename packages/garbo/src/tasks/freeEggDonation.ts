@@ -21,6 +21,7 @@ import {
   $familiar,
   $item,
   $items,
+  $monster,
   $monsters,
   $skill,
   $slot,
@@ -92,7 +93,7 @@ function findDonateMonster(
   const incomplete = queryEggNetIncomplete();
   const priority = queryEggNetPriority();
   if (incomplete.size === 0) return undefined;
-  const maxMonsterId = 2508; // Last Update Dec 19 2025
+  const maxMonsterId = $monster`beef bodyguard bat`.id; // Last Update Feb 24 2026
   const banned = new Set<Monster>([
     ...$monsters
       .all()
