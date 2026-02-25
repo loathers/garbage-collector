@@ -5394,6 +5394,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"libram@npm:^0.11.18":
+  version: 0.11.18
+  resolution: "libram@npm:0.11.18"
+  dependencies:
+    core-js: ^3.47.0
+    entities: ^7.0.0
+  peerDependencies:
+    kolmafia: ^5.28100.0
+  checksum: 650c029eca8ab459d84ce4a8553bc635e8c4c9dc7415d48e2204e22c73cff84a31855a19d1b5b3d655b9ae4c5f8672e5acfac5f87349747b60b47582038818f8
+  languageName: node
+  linkType: hard
+
 "lilconfig@npm:~3.1.2":
   version: 3.1.2
   resolution: "lilconfig@npm:3.1.2"
