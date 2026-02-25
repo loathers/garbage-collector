@@ -96,6 +96,7 @@ const DEFAULT_SANDWORM_TASK = {
         expectedFreeGiantSandwormQuestFights(),
         $item`drum machine`,
         sandwormValue() - 1,
+        false,
       );
     }
   },
@@ -311,9 +312,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
       },
     },
   ].map(nonSandwormTask),
-
   ...SANDWORM_TASK_DEFINITIONS.map(sandwormTask),
-
   ...[
     {
       name: "Fold wad of used tape",
@@ -336,14 +335,10 @@ const SandwormTasks: GarboFreeFightTask[] = [
 export function expectedFreeGiantSandwormQuestFights(): number {
   return sum(
     SANDWORM_TASK_DEFINITIONS.filter(
-      (t) => (t.ready?.() ?? true) && !(t.completed?.() ?? false),
+      (t) => (t.ready?.() ?? true) && !t.completed(),
     ),
-    (t) => t.combatCount?.() ?? 0,
+    (t) => t.combatCount(),
   );
-}
-
-export function possibleFreeGiantSandwormQuestTentacleFights(): number {
-  return expectedFreeGiantSandwormQuestFights();
 }
 
 let _hasWorms: boolean;
@@ -353,9 +348,10 @@ function hasWorms(): boolean {
 
 const REJECTION = 1 / 10;
 const BASE_RATE = 1 / 100;
-let _drumMachineROI: number;
 
+let _sandwormValue: number;
 function sandwormValue(): number {
+  if (_sandwormValue) return _sandwormValue;
   sandwormOutfit().dress();
 
   const squint =
@@ -373,17 +369,13 @@ function sandwormValue(): number {
     REJECTION *
     (1 - (1 - dropRate) ** (haveEquipped($item`toy Cupid bow`) ? 2 : 1));
 
-  return (
+  return (_sandwormValue =
     rate * garboValue($item`spice melange`) +
-    globalOptions.prefs.valueOfFreeFight
-  );
+    globalOptions.prefs.valueOfFreeFight);
 }
 
 function drumMachineROI(): number {
-  if (_drumMachineROI === undefined) {
-    _drumMachineROI = sandwormValue() - mallPrice($item`drum machine`);
-  }
-  return _drumMachineROI;
+  return sandwormValue() - mallPrice($item`drum machine`);
 }
 
 function drumMachineWorthIt(): boolean {
