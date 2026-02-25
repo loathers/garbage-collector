@@ -26,6 +26,7 @@ import {
   sellsItem,
   toInt,
   toItem,
+  totalFreeRests,
   use,
   useFamiliar,
   useSkill,
@@ -41,6 +42,7 @@ import {
   AprilingBandHelmet,
   BurningLeaves,
   ChateauMantegna,
+  CinchoDeMayo,
   ClosedCircuitPayphone,
   get,
   have,
@@ -52,7 +54,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { aprilFoolsRufus } from "../lib";
+import { aprilFoolsRufus, felizValue } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
@@ -197,6 +199,20 @@ const chooseAprilFamiliar = () => {
   return meatFamiliar().experience <= 360 ? meatFamiliar() : null;
 };
 
+function chateauFanWorthIt(): boolean {
+  const restsGainedFromFan = Math.max(
+    0,
+    totalFreeRests() +
+      (ChateauMantegna.getCeiling() === "ceiling fan" ? 0 : 5) -
+      get("timesRested"),
+  );
+  if (restsGainedFromFan <= 0) return false;
+
+  // projectile pinata costs 5 cinch and gets us 3 feliz candies, assuming these extra free rests only give 5 cinch each. Fan costs 1500
+  if (restsGainedFromFan * 3 * felizValue() > 1500) return true;
+  return false;
+}
+
 const SummonTasks: GarboTask[] = [
   ...SummonTomes.map(
     (skill) =>
@@ -280,8 +296,17 @@ const DailyItemTasks: GarboTask[] = [
     name: "Chateau Mantegna Desk",
     ready: () => ChateauMantegna.have(),
     completed: () => get("_chateauDeskHarvested"),
-    do: () =>
-      visitUrl("place.php?whichplace=chateau&action=chateau_desk2", false),
+    do: () => ChateauMantegna.harvestDesk(),
+    spendsTurn: false,
+  },
+  {
+    name: "Chateau Mantegna Ceiling",
+    ready: () => ChateauMantegna.have() && CinchoDeMayo.have(),
+    completed: () =>
+      ChateauMantegna.getCeiling() === "ceiling fan" || !chateauFanWorthIt(),
+    do: () => {
+      ChateauMantegna.changeCeiling("ceiling fan");
+    },
     spendsTurn: false,
   },
   {
