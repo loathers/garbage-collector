@@ -4,7 +4,8 @@ import prettier from "eslint-config-prettier";
 import libram, { verifyConstantsSinceRevision } from "eslint-plugin-libram";
 import { defineConfig } from "eslint/config";
 
-const VERIFY_CONSTANTS_SINCE = 28922;
+const VERIFY_CONSTANTS_SINCE = 28934;
+
 
 /**
  * Base ruleset that projects can extend.
