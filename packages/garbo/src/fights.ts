@@ -185,7 +185,6 @@ import { PostQuest } from "./tasks/post";
 import {
   expectedFreeGiantSandwormQuestFights,
   FreeGiantSandwormQuest,
-  possibleFreeGiantSandwormQuestTentacleFights,
 } from "./tasks/freeGiantSandworm";
 import { CopyTargetFight } from "./target/fights";
 import {
@@ -2293,7 +2292,7 @@ export function estimatedAttunementTentacles(): number {
       return typeof avail === "number" ? avail : toInt(avail);
     }) +
     possibleFreeFightQuestTentacleFights() +
-    possibleFreeGiantSandwormQuestTentacleFights();
+    expectedFreeGiantSandwormQuestFights();
   return clamp(
     totalFreeFights,
     0,
