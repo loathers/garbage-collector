@@ -19,13 +19,14 @@ export function ultraRareFactory(
         m.attributes.includes("ULTRARARE"),
       );
 
-      return new WandererTarget(
-        `UltraRare Monster ${ultraRareMonster}`,
-        z,
-        options.itemValue(
-          itemDropsArray(ultraRareMonster ?? $monster.none)[0]?.drop ??
-            $item.none,
-        ) / 500_000_000, // Ultra rares are rare, let's say 1 in 500 million to be conservative
-      );
+      return new WandererTarget({
+        name: `UltraRare Monster ${ultraRareMonster}`,
+        location: z,
+        zoneValue:
+          options.itemValue(
+            itemDropsArray(ultraRareMonster ?? $monster.none)[0]?.drop ??
+              $item.none,
+          ) / 500_000_000, // Ultra rares are rare, let's say 1 in 500 million to be conservative
+      });
     });
 }

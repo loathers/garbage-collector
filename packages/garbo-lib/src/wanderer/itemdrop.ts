@@ -64,7 +64,7 @@ export function itemDropFactory(
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (type === "yellow ray" || type === "freefight") {
+  if (["yellow ray", "freefight", "conditional freefight"].includes(type)) {
     const validLocations = Location.all().filter(
       (location) =>
         canWander(location, "yellow ray") &&
@@ -72,14 +72,14 @@ export function itemDropFactory(
         !locationSkiplist.includes(location),
     );
     return [...validLocations].map((l: Location) => {
-      return new WandererTarget(
-        `Item Drop Values`.concat(
+      return new WandererTarget({
+        name: `Item Drop Values`.concat(
           type === "yellow ray" ? ` (Guaranteed Drops)` : "",
         ),
-        l,
-        0,
-        monsterValues(l, type === "yellow ray", options),
-      );
+        location: l,
+        zoneValue: 0,
+        monsterItemValues: monsterValues(l, type === "yellow ray", options),
+      });
     });
   }
   return [];

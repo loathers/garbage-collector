@@ -69,7 +69,7 @@ import {
 } from "./lib";
 import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
-import { maximumPinataCasts } from "./resources";
+import { maximumPinataCasts, safeRefractedCasts } from "./resources";
 
 export const getPreferredBarfMonster = () =>
   have($familiar`Skeleton of Crimbo Past`) && get("_knuckleboneDrops", 0) < 100
@@ -930,6 +930,24 @@ export class Macro extends StrictMacro {
   }
 
   static duplicate(): Macro {
+    return new Macro().duplicate();
+  }
+
+  refractedGaze(): Macro {
+    return this.externalIf(
+      haveEquipped($item`Monodent of the Sea`) &&
+        haveEquipped($item`blood cubic zirconia`), // Assume if we have both equipped, we mean to refracted feesh
+      Macro.if_(
+        "!monsterphylum Fish",
+        Macro.trySkill($skill`Sea *dent: Talk to Some Fish`),
+      ),
+    ).externalIf(
+      haveEquipped($item`blood cubic zirconia`) && safeRefractedCasts() > 0,
+      Macro.trySkill($skill`BCZ: Refracted Gaze`),
+    );
+  }
+
+  static refractedGaze(): Macro {
     return new Macro().duplicate();
   }
 }
