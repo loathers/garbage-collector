@@ -1208,3 +1208,29 @@ export function mainStatLevel(level: number): number {
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
+
+const availableOvercapEquipment =
+  $items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`.filter(
+    (i) => have(i),
+  );
+
+export const requiredOvercapEquipment = availableOvercapEquipment.filter(
+  (i) => {
+    const drunkEquip = $items`devilbone rosary, angelbone dice`;
+    const availableDrunkExtenders = drunkEquip.filter((i) => have(i));
+    const equippedDrunkExtenders = availableDrunkExtenders.filter((i) =>
+      haveEquipped(i),
+    );
+    const drunkLimitWithoutEquipment =
+      inebrietyLimit() - equippedDrunkExtenders.length;
+    if (
+      drunkEquip.includes(i) &&
+      drunkLimitWithoutEquipment + availableDrunkExtenders.length <
+        myInebriety()
+    ) {
+      // If we are more overdrunk than extenders can handle, there is no need to wear drunkeness extenders since we'll be using drunkula to adventure
+      return false;
+    }
+    return true;
+  },
+);

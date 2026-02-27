@@ -64,6 +64,7 @@ import {
   improvesAStat,
   marginalFamWeightValue,
   pillkeeperOpportunityCost,
+  requiredOvercapEquipment,
   targetMeat,
   targetMeatDifferential,
   turnsToNC,
@@ -78,6 +79,7 @@ import {
   getBCZStatFloor,
   safeSweatEquityCasts,
 } from "./resources";
+import { Outfit } from "grimoire-kolmafia";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -611,6 +613,9 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
       // Grab the buff from the NC
       const curTurncount = myTurncount();
       if (have($item`Rufus's shadow lodestone`)) {
+        if (globalOptions.overcapped) {
+          Outfit.from({ equip: requiredOvercapEquipment })?.dress();
+        }
         withChoice(1500, 2, () => adv1(bestShadowRift(), -1, ""));
       }
       if (myTurncount() > curTurncount) {

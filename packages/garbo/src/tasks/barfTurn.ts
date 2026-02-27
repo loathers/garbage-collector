@@ -722,7 +722,9 @@ const NonBarfTurnTasks: AlternateTask[] = [
   {
     name: "Peridot Fish for UR",
     ready: () =>
-      have($item`Peridot of Peril`) && !(willDrunkAdventure() && sober()),
+      have($item`Peridot of Peril`) &&
+      !(willDrunkAdventure() && sober()) &&
+      !globalOptions.overcapped,
     completed: () => !peridotZone(),
     do: peridotZone,
     outfit: () =>
