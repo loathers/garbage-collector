@@ -123,7 +123,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28922); // equip codpiece for gem skills
+  sinceKolmafiaRevision(28944); // Fix some 302 redirects
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
