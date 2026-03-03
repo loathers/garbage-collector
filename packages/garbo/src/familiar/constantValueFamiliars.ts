@@ -149,7 +149,7 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`XO Skeleton`,
-    value: () => garboAverageValue(...$items`X, O`) / 18,
+    value: () => garboAverageValue(...$items`X, O`) / 9, // counters for X & O are simultaneous but offset by 5
   },
   {
     familiar: $familiar`Mechanical Songbird`,
