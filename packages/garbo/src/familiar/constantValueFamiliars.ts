@@ -147,6 +147,14 @@ const standardFamiliars: ConstantValueFamiliar[] = [
       2,
     worksOnFreeRun: true,
   },
+  {
+    familiar: $familiar`XO Skeleton`,
+    value: () => garboAverageValue(...$items`X, O`) / 18,
+  },
+  {
+    familiar: $familiar`Mechanical Songbird`,
+    value: () => garboValue($item`intricate clockwork egg`) / 150,
+  },
 ];
 
 function peaceTurkeyDropChance(): number {
