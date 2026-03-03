@@ -735,7 +735,7 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   leprecondoTask(),
-  archaeologySpadeTask()
+  archaeologySpadeTask(),
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {

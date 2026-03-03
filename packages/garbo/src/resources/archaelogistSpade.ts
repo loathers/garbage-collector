@@ -1,6 +1,6 @@
-import { $item, clamp, get, have, maxBy } from "libram";
-import { garboValue } from "../garboValue";
-import { Item, runChoice, use, visitUrl } from "kolmafia";
+import { $item, $items, get, have, maxBy } from "libram";
+import { garboAverageValue, garboValue } from "../garboValue";
+import { availableChoiceOptions, runChoice, use, visitUrl } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
 
 export function archaeologySpadeTask(): GarboTask {
@@ -10,34 +10,34 @@ export function archaeologySpadeTask(): GarboTask {
       have($item`Archaeologist's Spade`) && get("_archSpadeDigs", 0) < 11,
     completed: () => get("_archSpadeDigs", 0) >= 11,
     do: () => {
-      const options = [
+      const spadeTargets = [
         {
-          value: garboValue($item`ancient Pork Elf pottery shard`),
+          price: garboAverageValue(
+            ...$items`ancient Pork Elf pottery shard, dinosaur bone fragment, 2015 landfill detritus`,
+          ),
+          tuner: undefined,
+        },
+        {
+          price: garboValue($item`ancient Pork Elf pottery shard`),
           tuner: $item`Pork Elf neti pot`,
-          haveTuner: have($item`Pork Elf neti pot`),
         },
         {
-          value: garboValue($item`dinosaur bone fragment`),
+          price: garboValue($item`dinosaur bone fragment`),
           tuner: $item`giant gnawing bone`,
-          haveTuner: have($item`giant gnawing bone`),
         },
         {
-          value: garboValue($item`2015 landfill detritus`),
+          price: garboValue($item`2015 landfill detritus`),
           tuner: $item`Fleek™ mascara`,
-          haveTuner: have($item`Fleek™ mascara`)
-        }
-      ];
+        },
+      ].filter((t) => !t.tuner || have(t.tuner));
 
-      const best = maxBy(options, o => o.value);
-      if (best) {
-        use(best.tuner);
+      if (spadeTargets.length > 0) {
+        const target = maxBy(spadeTargets, "price");
+        if (target.tuner) use(target.tuner);
       }
 
-      const digs = Math.max(0, 11 - get("_archSpadeDigs", 0));
-      visitUrl(
-        `inv_use.php?which=3&whichitem=${Item.get("archaeologist's spade").id}&pwd`,
-      );
-      for (let i = 0; i < digs; i++) {
+      use($item`Archaeologist's Spade`);
+      while ("2" in availableChoiceOptions()) {
         runChoice(2);
       }
       visitUrl("main.php");
