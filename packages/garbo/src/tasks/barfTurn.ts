@@ -26,7 +26,6 @@ import {
   runChoice,
   totalTurnsPlayed,
   use,
-  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
@@ -37,7 +36,6 @@ import {
   $location,
   $monster,
   $skill,
-  AprilingBandHelmet,
   ChestMimic,
   clamp,
   Counter,
@@ -109,15 +107,18 @@ import {
   mayamCalendarSummon,
   minimumMimicExperience,
   safeToAttemptBullseye,
-  shouldAugustCast,
   shouldFillLatte,
   tryFillLatte,
   willYachtzee,
 } from "../resources";
 import { acquire } from "../acquire";
-import { shouldMakeEgg } from "../resources";
-import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
-import { hotTubAvailable } from "../resources/clanVIP";
+import {
+  hotTubAvailable,
+  lavaDogsAccessible,
+  lavaDogsComplete,
+  luckySourceTasks,
+  shouldMakeEgg,
+} from "../resources";
 import { meatMood } from "../mood";
 import { yachtzeeQuest } from "./yachtzee";
 
@@ -429,70 +430,7 @@ function luckyTasks(
       spendsTurn: true,
       turns: 0, // Turns spent is handled by Lucky Sources
     },
-    {
-      name: `Apriling Band Lucky (${sobriety})`,
-      completed: () =>
-        have($effect`Lucky!`) ||
-        !AprilingBandHelmet.canPlay("Apriling band saxophone"),
-      ready: () =>
-        additionalReady() &&
-        have($item`Apriling band saxophone`) &&
-        getBestLuckyAdventure().phase === "barf" &&
-        getBestLuckyAdventure().value() > get("valueOfAdventure"),
-      do: () => {
-        if (!have($effect`Lucky!`)) {
-          AprilingBandHelmet.play($item`Apriling band saxophone`);
-        }
-      },
-      sobriety,
-      spendsTurn: false,
-      turns: () => $item`Apriling band saxophone`.dailyusesleft,
-    },
-    {
-      name: `August Scepter Lucky (${sobriety})`,
-      completed: () =>
-        have($effect`Lucky!`) ||
-        !shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
-      ready: () =>
-        additionalReady() &&
-        getBestLuckyAdventure().phase === "barf" &&
-        getBestLuckyAdventure().value() > get("valueOfAdventure"),
-      do: () => {
-        if (!have($effect`Lucky!`)) {
-          useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
-          if (!have($effect`Lucky!`)) {
-            set("_aug2Cast", true);
-          }
-        }
-      },
-      sobriety,
-      spendsTurn: false,
-      turns: () =>
-        shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
-          ? 1
-          : 0,
-    },
-    {
-      name: `Pillkeeper Lucky (${sobriety})`,
-      completed: () => have($effect`Lucky!`) || get("_freePillKeeperUsed"),
-      ready: () =>
-        additionalReady() &&
-        have($item`Eight Days a Week Pill Keeper`) &&
-        getBestLuckyAdventure().phase === "barf" &&
-        getBestLuckyAdventure().value() > get("valueOfAdventure"),
-      do: () => {
-        if (!have($effect`Lucky!`)) {
-          retrieveItem($item`Eight Days a Week Pill Keeper`);
-          cliExecute("pillkeeper semirare");
-          if (!have($effect`Lucky!`)) {
-            set("_freePillKeeperUsed", true);
-          }
-        }
-      },
-      sobriety,
-      spendsTurn: false,
-      turns: () => (!get("_freePillKeeperUsed") ? 1 : 0),
-    },
+    ...luckySourceTasks,
   ];
 }
 
