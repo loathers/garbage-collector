@@ -123,7 +123,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28881); // Adding angelbone and devilbone
+  sinceKolmafiaRevision(28944); // Fix some 302 redirects
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
