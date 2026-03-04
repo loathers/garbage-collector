@@ -27,18 +27,19 @@ export function gingerbreadFactory(
         ? GingerBread.minutesToNoon()
         : GingerBread.minutesToMidnight();
     return [
-      new WandererTarget(
-        "Gingerbread Minutes",
-        $location`Gingerbread Civic Center`,
+      new WandererTarget({
+        name: "Gingerbread Minutes",
+        location: $location`Gingerbread Civic Center`,
         // 50 value is arbitrary until we have proper valuation of our options from Midnight and Noons NCs
-        wandererTurnsAvailableToday(
-          options,
-          $location`Gingerbread Civic Center`,
-          false,
-        ) > turnsUntilNextNC
-          ? 50
-          : 0,
-      ),
+        zoneValue:
+          wandererTurnsAvailableToday(
+            options,
+            $location`Gingerbread Civic Center`,
+            false,
+          ) > turnsUntilNextNC
+            ? 50
+            : 0,
+      }),
     ];
   }
   return [];

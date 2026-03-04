@@ -142,6 +142,9 @@ function createWandererOutfit(
 ): Outfit {
   const wanderTarget = wanderer().getTarget(undelay(details));
   const needPeridot = wanderTarget.peridotMonster !== $monster.none;
+  const needBCZ = wanderTarget.useRefractedGaze ?? false;
+  const needMonodent = wanderTarget.useFeesh ?? false;
+
   const sourceOutfit = Outfit.from(
     undelay(spec),
     new Error(
@@ -152,6 +155,8 @@ function createWandererOutfit(
     sourceOutfit.familiar = wanderTarget.familiar;
   }
   if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
+  if (needBCZ) sourceOutfit.equip($item`blood cubic zirconia`);
+  if (needMonodent) sourceOutfit.equip($item`Monodent of the Sea`);
 
   return freeFightOutfit(
     sourceOutfit.spec(),
@@ -586,7 +591,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
             11 - get("_mimicEggsObtained"),
           )
         : 0,
-    spendsTurn: true,
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   },
   {
     name: "Machine Elf Dupe",
@@ -1013,6 +1018,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .duplicate()
           .skill($skill`Fondeluge`),
@@ -1030,6 +1036,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .duplicate()
           .skill($skill`Spit jurassic acid`),
@@ -1039,7 +1046,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
-    "freefight",
+    "freefight (no items)",
     () => ({
       weapon: $item`Sheriff pistol`,
       acc1: $item`Sheriff badge`,
@@ -1070,6 +1077,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => have($effect`Everything Looks Red`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .skill($skill`Free-For-All`),
       ),
@@ -1078,7 +1086,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
-    "freefight",
+    "conditional freefight",
     {
       offhand:
         guaranteedBullseye() || have($item`spring shoes`)
@@ -1115,6 +1123,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => myLightning() < 20,
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .skill($skill`Lightning Strike`),
       ),
@@ -1130,6 +1139,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => get("shockingLickCharges") === 0,
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .duplicate()
           .skill($skill`Shocking Lick`),
@@ -1214,7 +1224,7 @@ const BarfTurnTasks: GarboTask[] = [
       HeavyRains.rainMan(globalOptions.target);
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
     outfit: () => meatTargetOutfit(),
   },
   {
@@ -1228,7 +1238,7 @@ const BarfTurnTasks: GarboTask[] = [
       ChestMimic.differentiate(globalOptions.target);
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
     outfit: () => meatTargetOutfit({ familiar: $familiar`Chest Mimic` }),
   },
   {
@@ -1239,7 +1249,7 @@ const BarfTurnTasks: GarboTask[] = [
     do: () => ChestMimic.differentiate(globalOptions.target),
     outfit: () => meatTargetOutfit(),
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   },
   {
     name: "Liana Parachute",

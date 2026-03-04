@@ -195,6 +195,10 @@ export function meatMood(
     }
   }
 
+  if (have($skill`Heartstone: %pals`)) {
+    useSkill($skill`Heartstone: %pals`, 5 - get("_heartstonePalsUsed"));
+  }
+
   shrugBadEffects();
 
   return mood;

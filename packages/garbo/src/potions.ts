@@ -75,7 +75,6 @@ import { globalOptions } from "./config";
 import {
   beretEffectValue,
   castAugustScepterBuffs,
-  getBCZStatFloor,
   safeSweatEquityCasts,
 } from "./resources";
 
@@ -738,10 +737,8 @@ function sweatEquity() {
     return;
   }
 
-  BloodCubicZirconia.castDownTo(
-    $skill`BCZ: Sweat Equity`,
-    getBCZStatFloor($skill`BCZ: Sweat Equity`),
-  );
+  // TODO Use new libram cast function for this when it's added
+  BloodCubicZirconia.cast($skill`BCZ: Sweat Equity`, safeSweatEquityCasts());
 }
 
 let completedPotionSetup = false;
