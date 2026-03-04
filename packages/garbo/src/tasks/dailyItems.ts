@@ -57,6 +57,7 @@ import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
 import {
+  archaeologySpadeTask,
   augustSummonTasks,
   candyMapDailyTasks,
   doingGregFight,
@@ -734,6 +735,7 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   leprecondoTask(),
+  archaeologySpadeTask(),
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {
