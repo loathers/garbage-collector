@@ -9,12 +9,14 @@ import {
   $location,
   $monsters,
   AdventureTarget,
+  BloodCubicZirconia,
   get,
   have,
 } from "libram";
 import { garboValue } from "./garboValue";
 import { effectValue } from "./potions";
 import { digitizedMonstersRemainingForTurns } from "./lib";
+import { safeRefractedCasts } from "./resources";
 
 let _wanderer: WandererManager | undefined;
 export function wanderer(): WandererManager {
@@ -37,6 +39,7 @@ export function wanderer(): WandererManager {
       ],
       valueOfAdventure: get("valueOfAdventure"),
       takeTurnForProfit: true,
+      canRefractedGaze: BloodCubicZirconia.have() && safeRefractedCasts() > 0,
     });
   }
   return _wanderer;

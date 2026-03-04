@@ -105,12 +105,15 @@ export function guzzlrFactory(
           : Guzzlr.getBooze();
       return guzzlrBooze
         ? [
-            new WandererTarget(
-              "Guzzlr",
-              location,
-              guzzlrValuePerTurn(buckValue, Guzzlr.getTier(), guzzlrBooze),
-              undefined,
-              () => {
+            new WandererTarget({
+              name: "Guzzlr",
+              location: location,
+              zoneValue: guzzlrValuePerTurn(
+                buckValue,
+                Guzzlr.getTier(),
+                guzzlrBooze,
+              ),
+              prepareTurn: () => {
                 if (!guzzlrBooze) {
                   // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze
                   return false;
@@ -130,7 +133,7 @@ export function guzzlrFactory(
                 }
                 return have(guzzlrBooze);
               },
-            ),
+            }),
           ]
         : [];
     }
