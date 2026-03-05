@@ -39,11 +39,11 @@ export function eightbitFactory(
     return bonusColor
       .map(
         (color) =>
-          new WandererTarget(
-            `8-bit (${color})`,
-            locationColor[color],
-            value(color, options),
-          ),
+          new WandererTarget({
+            name: `8-bit (${color})`,
+            location: locationColor[color],
+            zoneValue: value(color, options),
+          }),
       )
       .filter((t) => !locationSkiplist.includes(t.location));
   }
