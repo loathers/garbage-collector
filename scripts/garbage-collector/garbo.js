@@ -24557,7 +24557,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("d08d1390d9b09d09290e54b58d57e88af2b50dfe", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("351bebc36eb821051ba6894b623b5cc7cc7b57d4", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -44600,7 +44600,7 @@ function bestDevilerCandy() {
     return maxBy(priorityUntradeableNoDiscardList, import_kolmafia145.itemAmount);
   }
   var bestCandyFromMall = maxBy(import_kolmafia145.Item.all().filter(function(i) {
-    return i.candy && i.tradeable;
+    return i.candy && i.tradeable && (0, import_kolmafia145.mallPrice)(i) > 0;
   }), import_kolmafia145.mallPrice, true);
   var safeUntradeableCandies = $items(_templateObject1768 || (_templateObject1768 = _taggedTemplateLiteral140(["Comet Pop, black candy heart, peanut brittle shield"])));
   var inventoryCandies = import_kolmafia145.Item.all().filter(function(i) {
