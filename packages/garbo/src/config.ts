@@ -146,6 +146,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "Print the current version and exit.",
     }),
+    overcapped: Args.flag({
+      setting: "",
+      help: "Force equip organ expanding equipment such as angelbone totem while running turns.",
+      default: false,
+    }),
     workshed: Args.custom<Item | null>(
       {
         default: null,
