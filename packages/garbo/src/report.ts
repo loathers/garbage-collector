@@ -11,7 +11,7 @@ const REPORT_RECIPIENT = "Jalen_Arbuckle";
 const DATE_KEY = "garbo_reported_date";
 
 const ALL_KEYS = ["snootee", "microbewery", "jickjar"] as const;
-type ReportKey = typeof ALL_KEYS[number];
+type ReportKey = (typeof ALL_KEYS)[number];
 
 function storageKey(key: ReportKey): string {
   return `garbo_reported_${key}`;
