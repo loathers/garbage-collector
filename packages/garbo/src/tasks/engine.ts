@@ -34,6 +34,7 @@ import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
 import { shrugBadEffects } from "../mood";
+import { checkPrefWatchReports } from "../report";
 
 export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
@@ -169,6 +170,8 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
         SourceTerminal.educate(skill);
       }
     }
+
+    checkPrefWatchReports();
 
     if (globalOptions.history) {
       this.history.push({
