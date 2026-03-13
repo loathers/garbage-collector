@@ -11,7 +11,12 @@ import { Delayed, get, undelay } from "libram";
 
 const REPORT_RECIPIENT = "Jalen_Arbuckle";
 
-const REPORT_KEYS = ["snootee", "microbewery", "jickjar", "votemonster"] as const;
+const REPORT_KEYS = [
+  "snootee",
+  "microbewery",
+  "jickjar",
+  "votemonster",
+] as const;
 type ReportKey = (typeof REPORT_KEYS)[number];
 
 function isReportKey(value: string): value is ReportKey {
