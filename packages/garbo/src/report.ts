@@ -7,11 +7,11 @@ import {
   sessionStorage,
   toInt,
 } from "kolmafia";
-import { get } from "libram";
+import { Delayed, get, undelay } from "libram";
 
 const REPORT_RECIPIENT = "Jalen_Arbuckle";
 
-const REPORT_KEYS = ["snootee", "microbewery", "jickjar"] as const;
+const REPORT_KEYS = ["snootee", "microbewery", "jickjar", "votemonster"] as const;
 type ReportKey = (typeof REPORT_KEYS)[number];
 
 function isReportKey(value: string): value is ReportKey {
@@ -51,7 +51,7 @@ export function reportDaily(key: ReportKey, value: string | number): void {
 type PrefWatcher = {
   pref: string;
   isFilled: (value: string) => boolean;
-  key: () => ReportKey | null;
+  key: Delayed<ReportKey | null>;
   value?: (prefValue: string) => string | number | null;
 };
 
@@ -70,8 +70,13 @@ const PREF_WATCH_REPORTS: PrefWatcher[] = [
   {
     pref: "_jickJarAvailable",
     isFilled: (value) => value !== "unknown",
-    key: () => "jickjar",
+    key: "jickjar",
     value: (prefValue) => (prefValue === "true" ? toInt(myId()) % 23 : null),
+  },
+  {
+    pref: "_voteMonster",
+    isFilled: (value) => value !== "",
+    key: "votemonster",
   },
 ];
 
@@ -82,7 +87,7 @@ const PREF_WATCH_REPORTS: PrefWatcher[] = [
 export function checkPrefWatchReports(): void {
   const reported = getReportedKeys();
   for (const report of PREF_WATCH_REPORTS) {
-    const key = report.key();
+    const key = undelay(report.key);
     if (key === null) continue;
     if (reported.has(key)) continue;
 
