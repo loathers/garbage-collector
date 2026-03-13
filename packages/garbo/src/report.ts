@@ -13,7 +13,7 @@ const REPORT_RECIPIENT = "Jalen_Arbuckle";
 
 const REPORT_KEYS = [
   "snootee",
-  "microbewery",
+  "microbrewery",
   "jickjar",
   "votemonster",
 ] as const;
@@ -55,7 +55,7 @@ export function reportDaily(key: ReportKey, value: string | number): void {
 
 type PrefWatcher = {
   pref: string;
-  isFilled: (value: string) => boolean;
+  emptyValue?: string;
   key: Delayed<ReportKey | null>;
   value?: (prefValue: string) => string | number | null;
 };
@@ -63,24 +63,21 @@ type PrefWatcher = {
 const PREF_WATCH_REPORTS: PrefWatcher[] = [
   {
     pref: "_dailySpecial",
-    isFilled: (value) => value !== "",
     key: () =>
       canadiaAvailable()
         ? "snootee"
         : gnomadsAvailable()
-          ? "microbewery"
+          ? "microbrewery"
           : null,
-    value: (prefValue) => prefValue,
   },
   {
     pref: "_jickJarAvailable",
-    isFilled: (value) => value !== "unknown",
+    emptyValue: "unknown",
     key: "jickjar",
     value: (prefValue) => (prefValue === "true" ? toInt(myId()) % 23 : null),
   },
   {
     pref: "_voteMonster",
-    isFilled: (value) => value !== "",
     key: "votemonster",
   },
 ];
@@ -97,9 +94,9 @@ export function checkPrefWatchReports(): void {
     if (reported.has(key)) continue;
 
     const prefValue = get(report.pref, "");
-    if (!report.isFilled(prefValue)) continue;
+    if (prefValue === (report.emptyValue ?? "")) continue;
 
-    const value = report.value ? report.value?.(prefValue) : prefValue;
+    const value = report.value ? report.value(prefValue) : prefValue;
     if (value === null) continue;
 
     reportDaily(key, value);
