@@ -21590,7 +21590,7 @@ function verifyDependencies(tasks) {
 }
 
 // src/index.ts
-var import_kolmafia152 = require("kolmafia");
+var import_kolmafia153 = require("kolmafia");
 
 // src/clan.ts
 var import_kolmafia129 = require("kolmafia");
@@ -24557,7 +24557,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("351bebc36eb821051ba6894b623b5cc7cc7b57d4", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ac805aafa39a27ba60c3f86206fabc0d6bd0f6d9", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -45989,38 +45989,10 @@ var DailySeaQuest = {
 };
 
 // src/tasks/engine.ts
+var import_kolmafia152 = require("kolmafia");
+
+// src/report.ts
 var import_kolmafia151 = require("kolmafia");
-var _templateObject1201;
-var _templateObject2297;
-var _templateObject3248;
-var _templateObject4191;
-var _templateObject5177;
-var _templateObject6166;
-var _templateObject7149;
-var _templateObject8131;
-var _templateObject9119;
-var _templateObject10103;
-function ownKeys27(e, r) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r && (o = o.filter(function(r2) {
-      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread27(e) {
-  for (var r = 1; r < arguments.length; r++) {
-    var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys27(Object(t), true).forEach(function(r2) {
-      _defineProperty46(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys27(Object(t)).forEach(function(r2) {
-      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-    });
-  }
-  return e;
-}
 function _createForOfIteratorHelper40(r, e) {
   var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
   if (!t) {
@@ -46052,9 +46024,6 @@ function _createForOfIteratorHelper40(r, e) {
     }
   } };
 }
-function _taggedTemplateLiteral146(e, t) {
-  return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
-}
 function _toConsumableArray81(r) {
   return _arrayWithoutHoles81(r) || _iterableToArray81(r) || _unsupportedIterableToArray97(r) || _nonIterableSpread81();
 }
@@ -46075,6 +46044,157 @@ function _arrayWithoutHoles81(r) {
   if (Array.isArray(r)) return _arrayLikeToArray97(r);
 }
 function _arrayLikeToArray97(r, a) {
+  (null == a || a > r.length) && (a = r.length);
+  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+  return n;
+}
+var REPORT_RECIPIENT = "Jalen_Arbuckle";
+var REPORT_KEYS = ["snootee", "microbrewery", "jickjar", "votemonster"];
+function isReportKey(value2) {
+  return REPORT_KEYS.includes(value2);
+}
+function sessionStorageKey() {
+  return "garbo_reported_".concat((0, import_kolmafia151.daycount)());
+}
+function getReportedKeys() {
+  var _sessionStorage$getIt;
+  return new Set(((_sessionStorage$getIt = import_kolmafia151.sessionStorage.getItem(sessionStorageKey())) !== null && _sessionStorage$getIt !== void 0 ? _sessionStorage$getIt : "").split(",").filter(isReportKey));
+}
+function markReported(key) {
+  var reported = getReportedKeys();
+  reported.add(key);
+  import_kolmafia151.sessionStorage.setItem(sessionStorageKey(), _toConsumableArray81(reported).join(","));
+}
+function reportDaily(key, value2) {
+  if (getReportedKeys().has(key)) return;
+  (0, import_kolmafia151.chatPrivate)(REPORT_RECIPIENT, "".concat(key, ":").concat(value2));
+  markReported(key);
+}
+var PREF_WATCH_REPORTS = [{
+  pref: "_dailySpecial",
+  key: function() {
+    return (0, import_kolmafia151.canadiaAvailable)() ? "snootee" : (0, import_kolmafia151.gnomadsAvailable)() ? "microbrewery" : null;
+  }
+}, {
+  pref: "_jickJarAvailable",
+  emptyValue: "unknown",
+  key: "jickjar",
+  value: function(prefValue) {
+    return prefValue === "true" ? (0, import_kolmafia151.toInt)((0, import_kolmafia151.myId)()) % 23 : null;
+  }
+}, {
+  pref: "_voteMonster",
+  key: "votemonster"
+}];
+function checkPrefWatchReports() {
+  var reported = getReportedKeys();
+  var _iterator = _createForOfIteratorHelper40(PREF_WATCH_REPORTS), _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done; ) {
+      var _report$emptyValue;
+      var report = _step.value;
+      var key = undelay(report.key);
+      if (key === null) continue;
+      if (reported.has(key)) continue;
+      var prefValue = get(report.pref, "");
+      if (prefValue === ((_report$emptyValue = report.emptyValue) !== null && _report$emptyValue !== void 0 ? _report$emptyValue : "")) continue;
+      var value2 = report.value ? report.value(prefValue) : prefValue;
+      if (value2 === null) continue;
+      reportDaily(key, value2);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+}
+
+// src/tasks/engine.ts
+var _templateObject1201;
+var _templateObject2297;
+var _templateObject3248;
+var _templateObject4191;
+var _templateObject5177;
+var _templateObject6166;
+var _templateObject7149;
+var _templateObject8131;
+var _templateObject9119;
+var _templateObject10103;
+function ownKeys27(e, r) {
+  var t = Object.keys(e);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e);
+    r && (o = o.filter(function(r2) {
+      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
+    })), t.push.apply(t, o);
+  }
+  return t;
+}
+function _objectSpread27(e) {
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {};
+    r % 2 ? ownKeys27(Object(t), true).forEach(function(r2) {
+      _defineProperty46(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys27(Object(t)).forEach(function(r2) {
+      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
+    });
+  }
+  return e;
+}
+function _createForOfIteratorHelper41(r, e) {
+  var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+  if (!t) {
+    if (Array.isArray(r) || (t = _unsupportedIterableToArray98(r)) || e && r && "number" == typeof r.length) {
+      t && (r = t);
+      var _n = 0, F = function F2() {
+      };
+      return { s: F, n: function n() {
+        return _n >= r.length ? { done: true } : { done: false, value: r[_n++] };
+      }, e: function e2(r2) {
+        throw r2;
+      }, f: F };
+    }
+    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+  var o, a = true, u = false;
+  return { s: function s() {
+    t = t.call(r);
+  }, n: function n() {
+    var r2 = t.next();
+    return a = r2.done, r2;
+  }, e: function e2(r2) {
+    u = true, o = r2;
+  }, f: function f() {
+    try {
+      a || null == t.return || t.return();
+    } finally {
+      if (u) throw o;
+    }
+  } };
+}
+function _taggedTemplateLiteral146(e, t) {
+  return t || (t = e.slice(0)), Object.freeze(Object.defineProperties(e, { raw: { value: Object.freeze(t) } }));
+}
+function _toConsumableArray82(r) {
+  return _arrayWithoutHoles82(r) || _iterableToArray82(r) || _unsupportedIterableToArray98(r) || _nonIterableSpread82();
+}
+function _nonIterableSpread82() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _unsupportedIterableToArray98(r, a) {
+  if (r) {
+    if ("string" == typeof r) return _arrayLikeToArray98(r, a);
+    var t = {}.toString.call(r).slice(8, -1);
+    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray98(r, a) : void 0;
+  }
+}
+function _iterableToArray82(r) {
+  if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r);
+}
+function _arrayWithoutHoles82(r) {
+  if (Array.isArray(r)) return _arrayLikeToArray98(r);
+}
+function _arrayLikeToArray98(r, a) {
   (null == a || a > r.length) && (a = r.length);
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
   return n;
@@ -46192,8 +46312,8 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
   return _createClass33(BaseGarboEngine2, [{
     key: "printExecutingMessage",
     value: function printExecutingMessage(task) {
-      (0, import_kolmafia151.print)("");
-      (0, import_kolmafia151.print)("Executing ".concat(task.name), HIGHLIGHT);
+      (0, import_kolmafia152.print)("");
+      (0, import_kolmafia152.print)("Executing ".concat(task.name), HIGHLIGHT);
     }
   }, {
     key: "destruct",
@@ -46206,12 +46326,12 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
           startTime: startTime,
           durationMs: Date.now() - startTime
         });
-        var filename = "garbo_history_".concat((0, import_kolmafia151.todayToString)(), ".csv");
-        var buffer = (0, import_kolmafia151.fileToBuffer)(filename).trim();
-        var taskArray = [].concat(_toConsumableArray81(buffer.split("\n")), _toConsumableArray81(this.history.map(function(item14) {
+        var filename = "garbo_history_".concat((0, import_kolmafia152.todayToString)(), ".csv");
+        var buffer = (0, import_kolmafia152.fileToBuffer)(filename).trim();
+        var taskArray = [].concat(_toConsumableArray82(buffer.split("\n")), _toConsumableArray82(this.history.map(function(item14) {
           return "".concat(item14.startTime, ",").concat(item14.name.replace(",", ""), ",").concat(item14.durationMs);
         })));
-        (0, import_kolmafia151.bufferToFile)(taskArray.join("\n"), filename);
+        (0, import_kolmafia152.bufferToFile)(taskArray.join("\n"), filename);
       }
     }
   }, {
@@ -46232,8 +46352,8 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
         outfit3.equip($item(_templateObject2297 || (_templateObject2297 = _taggedTemplateLiteral146(["pro skateboard"]))));
       }
       _superPropGet2(BaseGarboEngine2, "dress", this, 3)([task, outfit3]);
-      if ((0, import_kolmafia151.itemAmount)($item(_templateObject3248 || (_templateObject3248 = _taggedTemplateLiteral146(["tiny stillsuit"])))) > 0) {
-        (0, import_kolmafia151.equip)((0, import_kolmafia151.myFamiliar)() === $familiar(_templateObject4191 || (_templateObject4191 = _taggedTemplateLiteral146(["Cornbeefadon"]))) ? $familiar(_templateObject5177 || (_templateObject5177 = _taggedTemplateLiteral146(["Mosquito"]))) : $familiar(_templateObject6166 || (_templateObject6166 = _taggedTemplateLiteral146(["Cornbeefadon"]))), $item(_templateObject7149 || (_templateObject7149 = _taggedTemplateLiteral146(["tiny stillsuit"]))));
+      if ((0, import_kolmafia152.itemAmount)($item(_templateObject3248 || (_templateObject3248 = _taggedTemplateLiteral146(["tiny stillsuit"])))) > 0) {
+        (0, import_kolmafia152.equip)((0, import_kolmafia152.myFamiliar)() === $familiar(_templateObject4191 || (_templateObject4191 = _taggedTemplateLiteral146(["Cornbeefadon"]))) ? $familiar(_templateObject5177 || (_templateObject5177 = _taggedTemplateLiteral146(["Mosquito"]))) : $familiar(_templateObject6166 || (_templateObject6166 = _taggedTemplateLiteral146(["Cornbeefadon"]))), $item(_templateObject7149 || (_templateObject7149 = _taggedTemplateLiteral146(["tiny stillsuit"]))));
       }
     }
   }, {
@@ -46246,16 +46366,16 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
     key: "execute",
     value: function execute(task) {
       var startTime = Date.now();
-      var spentTurns = (0, import_kolmafia151.totalTurnsPlayed)();
+      var spentTurns = (0, import_kolmafia152.totalTurnsPlayed)();
       var duplicate = undelay(task.duplicate);
       var before = SourceTerminal_exports.getSkills();
       if (duplicate && SourceTerminal_exports.have() && SourceTerminal_exports.duplicateUsesRemaining() > 0) {
         SourceTerminal_exports.educate([$skill(_templateObject8131 || (_templateObject8131 = _taggedTemplateLiteral146(["Extract"]))), $skill(_templateObject9119 || (_templateObject9119 = _taggedTemplateLiteral146(["Duplicate"])))]);
       }
       _superPropGet2(BaseGarboEngine2, "execute", this, 3)([task]);
-      if ((0, import_kolmafia151.totalTurnsPlayed)() !== spentTurns) {
+      if ((0, import_kolmafia152.totalTurnsPlayed)() !== spentTurns) {
         if (!undelay(task.spendsTurn)) {
-          (0, import_kolmafia151.print)("Task ".concat(task.name, " spent a turn but was marked as not spending turns"));
+          (0, import_kolmafia152.print)("Task ".concat(task.name, " spent a turn but was marked as not spending turns"));
         }
       }
       var foughtATarget = get("lastEncounter") === globalOptions.target.name;
@@ -46264,7 +46384,7 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
       wanderer().clear();
       sessionSinceStart().value(garboValue);
       if (duplicate && SourceTerminal_exports.have()) {
-        var _iterator = _createForOfIteratorHelper40(before), _step;
+        var _iterator = _createForOfIteratorHelper41(before), _step;
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done; ) {
             var skill = _step.value;
@@ -46276,6 +46396,7 @@ var BaseGarboEngine = /* @__PURE__ */ function(_Engine) {
           _iterator.f();
         }
       }
+      checkPrefWatchReports();
       if (globalOptions.history) {
         this.history.push({
           name: task.name,
@@ -46370,10 +46491,10 @@ var _templateObject3339;
 var _templateObject3437;
 var _templateObject3536;
 var _templateObject3635;
-function _createForOfIteratorHelper41(r, e) {
+function _createForOfIteratorHelper42(r, e) {
   var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
   if (!t) {
-    if (Array.isArray(r) || (t = _unsupportedIterableToArray98(r)) || e && r && "number" == typeof r.length) {
+    if (Array.isArray(r) || (t = _unsupportedIterableToArray99(r)) || e && r && "number" == typeof r.length) {
       t && (r = t);
       var _n = 0, F = function F2() {
       };
@@ -46402,7 +46523,7 @@ function _createForOfIteratorHelper41(r, e) {
   } };
 }
 function _slicedToArray50(r, e) {
-  return _arrayWithHoles50(r) || _iterableToArrayLimit50(r, e) || _unsupportedIterableToArray98(r, e) || _nonIterableRest50();
+  return _arrayWithHoles50(r) || _iterableToArrayLimit50(r, e) || _unsupportedIterableToArray99(r, e) || _nonIterableRest50();
 }
 function _nonIterableRest50() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
@@ -46431,26 +46552,26 @@ function _iterableToArrayLimit50(r, l) {
 function _arrayWithHoles50(r) {
   if (Array.isArray(r)) return r;
 }
-function _toConsumableArray82(r) {
-  return _arrayWithoutHoles82(r) || _iterableToArray82(r) || _unsupportedIterableToArray98(r) || _nonIterableSpread82();
+function _toConsumableArray83(r) {
+  return _arrayWithoutHoles83(r) || _iterableToArray83(r) || _unsupportedIterableToArray99(r) || _nonIterableSpread83();
 }
-function _nonIterableSpread82() {
+function _nonIterableSpread83() {
   throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
-function _unsupportedIterableToArray98(r, a) {
+function _unsupportedIterableToArray99(r, a) {
   if (r) {
-    if ("string" == typeof r) return _arrayLikeToArray98(r, a);
+    if ("string" == typeof r) return _arrayLikeToArray99(r, a);
     var t = {}.toString.call(r).slice(8, -1);
-    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray98(r, a) : void 0;
+    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray99(r, a) : void 0;
   }
 }
-function _iterableToArray82(r) {
+function _iterableToArray83(r) {
   if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r);
 }
-function _arrayWithoutHoles82(r) {
-  if (Array.isArray(r)) return _arrayLikeToArray98(r);
+function _arrayWithoutHoles83(r) {
+  if (Array.isArray(r)) return _arrayLikeToArray99(r);
 }
-function _arrayLikeToArray98(r, a) {
+function _arrayLikeToArray99(r, a) {
   (null == a || a > r.length) && (a = r.length);
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
   return n;
@@ -46462,8 +46583,8 @@ var TICKET_MAX_PRICE = 5e5;
 function ensureBarfAccess() {
   if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
     var ticket = $item(_templateObject1208 || (_templateObject1208 = _taggedTemplateLiteral147(["one-day ticket to Dinseylandfill"])));
-    if (!have(ticket)) (0, import_kolmafia152.buy)(1, ticket, TICKET_MAX_PRICE);
-    (0, import_kolmafia152.use)(ticket);
+    if (!have(ticket)) (0, import_kolmafia153.buy)(1, ticket, TICKET_MAX_PRICE);
+    (0, import_kolmafia153.use)(ticket);
   }
 }
 function defaultTarget() {
@@ -46486,27 +46607,27 @@ function main() {
     Args.showHelp(globalOptions);
     return;
   }
-  (0, import_kolmafia152.visitUrl)("main.php");
-  if ((0, import_kolmafia152.currentRound)() > 0) {
-    (0, import_kolmafia152.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
+  (0, import_kolmafia153.visitUrl)("main.php");
+  if ((0, import_kolmafia153.currentRound)() > 0) {
+    (0, import_kolmafia153.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in combat!");
   }
-  if ((0, import_kolmafia152.handlingChoice)()) {
-    (0, import_kolmafia152.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.");
+  if ((0, import_kolmafia153.handlingChoice)()) {
+    (0, import_kolmafia153.abort)("It seems like you're a bit busy right now. Don't run garbo when you're in the middle of a choice adventure.");
   }
-  (0, import_kolmafia152.cliExecute)("mallcheck.js");
+  (0, import_kolmafia153.cliExecute)("mallcheck.js");
   if (globalOptions.target === $monster.none) {
     globalOptions.target = defaultTarget();
   }
   globalOptions.prefs.yachtzeechain = false;
   if (globalOptions.turns) {
     if (globalOptions.turns >= 0) {
-      globalOptions.stopTurncount = (0, import_kolmafia152.myTurncount)() + globalOptions.turns;
+      globalOptions.stopTurncount = (0, import_kolmafia153.myTurncount)() + globalOptions.turns;
     } else {
       globalOptions.saveTurns = -globalOptions.turns;
     }
   }
   if (globalOptions.prefs.autoUserConfirm) {
-    (0, import_kolmafia152.print)("I have set auto-confirm to true and accept all ramifications that come with that.", "red");
+    (0, import_kolmafia153.print)("I have set auto-confirm to true and accept all ramifications that come with that.", "red");
   }
   if (stashItems.length > 0) {
     if (globalOptions.returnstash || userConfirmDialog("Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ".concat(stashItems.map(function(item14) {
@@ -46518,23 +46639,23 @@ function main() {
         var parsedClanIdOrName = clanIdOrName !== "none" ? clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName : null;
         if (parsedClanIdOrName) {
           Clan.with(parsedClanIdOrName, function() {
-            for (var _i = 0, _arr = _toConsumableArray82(stashItems); _i < _arr.length; _i++) {
+            for (var _i = 0, _arr = _toConsumableArray83(stashItems); _i < _arr.length; _i++) {
               var item14 = _arr[_i];
-              var equipped = [item14].concat(_toConsumableArray82(getFoldGroup(item14))).find(function(i) {
-                return (0, import_kolmafia152.haveEquipped)(i);
+              var equipped = [item14].concat(_toConsumableArray83(getFoldGroup(item14))).find(function(i) {
+                return (0, import_kolmafia153.haveEquipped)(i);
               });
               if (equipped) unequip(equipped);
               if (getFoldGroup(item14).some(function(i) {
                 return have(i);
               })) {
-                (0, import_kolmafia152.cliExecute)("fold ".concat(item14));
+                (0, import_kolmafia153.cliExecute)("fold ".concat(item14));
               }
-              var retrieved = (0, import_kolmafia152.retrieveItem)(item14);
+              var retrieved = (0, import_kolmafia153.retrieveItem)(item14);
               if (item14 === $item(_templateObject4192 || (_templateObject4192 = _taggedTemplateLiteral147(["Spooky Putty sheet"]))) && !retrieved && have($item(_templateObject5178 || (_templateObject5178 = _taggedTemplateLiteral147(["Spooky Putty monster"]))))) {
                 continue;
               }
-              (0, import_kolmafia152.print)("Returning ".concat(item14, " to ").concat((0, import_kolmafia152.getClanName)(), " stash."), HIGHLIGHT);
-              if ((0, import_kolmafia152.putStash)(item14, 1)) {
+              (0, import_kolmafia153.print)("Returning ".concat(item14, " to ").concat((0, import_kolmafia153.getClanName)(), " stash."), HIGHLIGHT);
+              if ((0, import_kolmafia153.putStash)(item14, 1)) {
                 stashItems.splice(stashItems.indexOf(item14), 1);
               }
             }
@@ -46551,24 +46672,24 @@ function main() {
   }
   if (globalOptions.returnstash) {
     _set("garboStashItems", stashItems.map(function(item14) {
-      return (0, import_kolmafia152.toInt)(item14).toFixed(0);
+      return (0, import_kolmafia153.toInt)(item14).toFixed(0);
     }).join(","));
     return;
   }
-  if (!$classes(_templateObject6167 || (_templateObject6167 = _taggedTemplateLiteral147(["Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger, Pig Skinner, Cheese Wizard, Jazz Agent"]))).includes((0, import_kolmafia152.myClass)())) {
+  if (!$classes(_templateObject6167 || (_templateObject6167 = _taggedTemplateLiteral147(["Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger, Pig Skinner, Cheese Wizard, Jazz Agent"]))).includes((0, import_kolmafia153.myClass)())) {
     throw new Error("Garbo does not support this class. It barely supports WOL/SOL avatar classes");
   }
-  if (!get("kingLiberated") || (0, import_kolmafia152.myLevel)() < 13 || import_kolmafia152.Stat.all().some(function(s) {
-    return (0, import_kolmafia152.myBasestat)(s) < 75;
+  if (!get("kingLiberated") || (0, import_kolmafia153.myLevel)() < 13 || import_kolmafia153.Stat.all().some(function(s) {
+    return (0, import_kolmafia153.myBasestat)(s) < 75;
   })) {
     if (globalOptions.prefs.skipAscensionCheck) {
-      (0, import_kolmafia152.logprint)("This player is a silly goose, who ignored our warnings about being underleveled.");
+      (0, import_kolmafia153.logprint)("This player is a silly goose, who ignored our warnings about being underleveled.");
     } else {
       var proceedRegardless = userConfirmDialog("Looks like your ascension may not be done, or you may be severely underleveled. Running garbo in an unintended character state can result in serious injury and even death. Are you sure you want to garbologize?", true);
       if (!proceedRegardless) {
         throw new Error("User interrupt requested. Stopping Garbage Collector.");
       } else {
-        (0, import_kolmafia152.logprint)("This player is a silly goose, who ignored our warnings about being underleveled.");
+        (0, import_kolmafia153.logprint)("This player is a silly goose, who ignored our warnings about being underleveled.");
       }
     }
   }
@@ -46578,7 +46699,7 @@ function main() {
   if (!globalOptions.nobarf && globalOptions.prefs.valueOfAdventure && globalOptions.prefs.valueOfAdventure >= (globalOptions.nobarf ? 2e4 : 1e4)) {
     throw "Your valueOfAdventure is set to ".concat(globalOptions.prefs.valueOfAdventure, ", which is definitely incorrect. Please set it to your reliable marginal turn value.");
   }
-  if ((0, import_kolmafia152.myInebriety)() > (0, import_kolmafia152.inebrietyLimit)() && (!have($item(_templateObject7150 || (_templateObject7150 = _taggedTemplateLiteral147(["Drunkula's wineglass"])))) || !(0, import_kolmafia152.canEquip)($item(_templateObject8132 || (_templateObject8132 = _taggedTemplateLiteral147(["Drunkula's wineglass"])))))) {
+  if ((0, import_kolmafia153.myInebriety)() > (0, import_kolmafia153.inebrietyLimit)() && (!have($item(_templateObject7150 || (_templateObject7150 = _taggedTemplateLiteral147(["Drunkula's wineglass"])))) || !(0, import_kolmafia153.canEquip)($item(_templateObject8132 || (_templateObject8132 = _taggedTemplateLiteral147(["Drunkula's wineglass"])))))) {
     throw new Error("Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it.");
   }
   var completedProperty = "_garboCompleted";
@@ -46611,30 +46732,30 @@ function main() {
   }
   var gardens = $items(_templateObject10104 || (_templateObject10104 = _taggedTemplateLiteral147(["packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds"])));
   var startingGarden = gardens.find(function(garden) {
-    return Object.getOwnPropertyNames((0, import_kolmafia152.getCampground)()).includes(garden.name);
+    return Object.getOwnPropertyNames((0, import_kolmafia153.getCampground)()).includes(garden.name);
   });
-  if (startingGarden && !$items(_templateObject11101 || (_templateObject11101 = _taggedTemplateLiteral147(["packet of tall grass seeds, packet of mushroom spores"]))).includes(startingGarden) && (0, import_kolmafia152.getCampground)()[startingGarden.name] && $items(_templateObject1288 || (_templateObject1288 = _taggedTemplateLiteral147(["packet of tall grass seeds, packet of mushroom spores"]))).some(function(gardenSeed) {
+  if (startingGarden && !$items(_templateObject11101 || (_templateObject11101 = _taggedTemplateLiteral147(["packet of tall grass seeds, packet of mushroom spores"]))).includes(startingGarden) && (0, import_kolmafia153.getCampground)()[startingGarden.name] && $items(_templateObject1288 || (_templateObject1288 = _taggedTemplateLiteral147(["packet of tall grass seeds, packet of mushroom spores"]))).some(function(gardenSeed) {
     return have(gardenSeed);
   })) {
     if (startingGarden === $item(_templateObject1381 || (_templateObject1381 = _taggedTemplateLiteral147(["packet of rock seeds"])))) {
-      (0, import_kolmafia152.visitUrl)("campground.php?action=rgarden1&pwd");
-      (0, import_kolmafia152.visitUrl)("campground.php?action=rgarden2&pwd");
-      (0, import_kolmafia152.visitUrl)("campground.php?action=rgarden3&pwd");
+      (0, import_kolmafia153.visitUrl)("campground.php?action=rgarden1&pwd");
+      (0, import_kolmafia153.visitUrl)("campground.php?action=rgarden2&pwd");
+      (0, import_kolmafia153.visitUrl)("campground.php?action=rgarden3&pwd");
     } else {
-      (0, import_kolmafia152.visitUrl)("campground.php?action=garden&pwd");
+      (0, import_kolmafia153.visitUrl)("campground.php?action=garden&pwd");
     }
   }
   var combatFlags = getCombatFlags(["aabosses", "bothcombatinterf"]);
   try {
-    (0, import_kolmafia152.print)("Collecting garbage!", HIGHLIGHT);
+    (0, import_kolmafia153.print)("Collecting garbage!", HIGHLIGHT);
     if (globalOptions.stopTurncount !== null) {
-      (0, import_kolmafia152.print)("Stopping in ".concat(globalOptions.stopTurncount - (0, import_kolmafia152.myTurncount)()), HIGHLIGHT);
+      (0, import_kolmafia153.print)("Stopping in ".concat(globalOptions.stopTurncount - (0, import_kolmafia153.myTurncount)()), HIGHLIGHT);
     }
-    (0, import_kolmafia152.print)();
-    if (have($item(_templateObject1478 || (_templateObject1478 = _taggedTemplateLiteral147(["packet of tall grass seeds"])))) && (0, import_kolmafia152.myGardenType)() !== "grass" && (0, import_kolmafia152.myGardenType)() !== "mushroom") {
-      (0, import_kolmafia152.use)($item(_templateObject1578 || (_templateObject1578 = _taggedTemplateLiteral147(["packet of tall grass seeds"]))));
+    (0, import_kolmafia153.print)();
+    if (have($item(_templateObject1478 || (_templateObject1478 = _taggedTemplateLiteral147(["packet of tall grass seeds"])))) && (0, import_kolmafia153.myGardenType)() !== "grass" && (0, import_kolmafia153.myGardenType)() !== "mushroom") {
+      (0, import_kolmafia153.use)($item(_templateObject1578 || (_templateObject1578 = _taggedTemplateLiteral147(["packet of tall grass seeds"]))));
     }
-    (0, import_kolmafia152.setAutoAttack)(0);
+    (0, import_kolmafia153.setAutoAttack)(0);
     setCombatFlags({
       flag: "aabosses",
       value: true
@@ -46652,7 +46773,7 @@ function main() {
     }).join(";");
     propertyManager.set({
       logPreferenceChange: true,
-      logPreferenceChangeFilter: _toConsumableArray82(new Set([].concat(_toConsumableArray82(get("logPreferenceChangeFilter").split(",")), ["libram_savedMacro", "maximizerMRUList", "testudinalTeachings", "garboTargetDate", "garboTargetCount", "garboTargetSources", "spadingData"]))).sort().filter(function(a) {
+      logPreferenceChangeFilter: _toConsumableArray83(new Set([].concat(_toConsumableArray83(get("logPreferenceChangeFilter").split(",")), ["libram_savedMacro", "maximizerMRUList", "testudinalTeachings", "garboTargetDate", "garboTargetCount", "garboTargetSources", "spadingData"]))).sort().filter(function(a) {
         return a;
       }).join(","),
       battleAction: "custom combat script",
@@ -46695,7 +46816,7 @@ function main() {
       var halloweinerOptions = [[$items(_templateObject1869 || (_templateObject1869 = _taggedTemplateLiteral147(["bowl of eyeballs, bowl of mummy guts, bowl of maggots"]))), 1], [$items(_templateObject1966 || (_templateObject1966 = _taggedTemplateLiteral147(["blood and blood, Jack-O-Lantern beer, zombie"]))), 2], [$items(_templateObject2061 || (_templateObject2061 = _taggedTemplateLiteral147(["wind-up spider, plastic nightmare troll, Telltale\u2122 rubber heart"]))), 3]].map(function(_ref) {
         var _ref2 = _slicedToArray50(_ref, 2), halloweinerOption = _ref2[0], choiceId = _ref2[1];
         return {
-          price: garboAverageValue.apply(void 0, _toConsumableArray82(halloweinerOption)),
+          price: garboAverageValue.apply(void 0, _toConsumableArray83(halloweinerOption)),
           choiceId: choiceId
         };
       });
@@ -46721,11 +46842,11 @@ function main() {
       shadowLabyrinthGoal: "effects"
     });
     var equipmentFamiliars = $familiars(_templateObject21118 || (_templateObject21118 = _taggedTemplateLiteral147(["Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow"])));
-    var _iterator = _createForOfIteratorHelper41(equipmentFamiliars.filter(have)), _step;
+    var _iterator = _createForOfIteratorHelper42(equipmentFamiliars.filter(have)), _step;
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done; ) {
         var familiar8 = _step.value;
-        (0, import_kolmafia152.equip)(familiar8, $item.none);
+        (0, import_kolmafia153.equip)(familiar8, $item.none);
       }
     } catch (err) {
       _iterator.e(err);
@@ -46734,26 +46855,26 @@ function main() {
     }
     safeRestore();
     if (questStep2("questM23Meatsmith") === -1) {
-      (0, import_kolmafia152.visitUrl)("shop.php?whichshop=meatsmith&action=talk");
-      (0, import_kolmafia152.runChoice)(1);
+      (0, import_kolmafia153.visitUrl)("shop.php?whichshop=meatsmith&action=talk");
+      (0, import_kolmafia153.runChoice)(1);
     }
     if (questStep2("questM24Doc") === -1) {
-      (0, import_kolmafia152.visitUrl)("shop.php?whichshop=doc&action=talk");
-      (0, import_kolmafia152.runChoice)(1);
+      (0, import_kolmafia153.visitUrl)("shop.php?whichshop=doc&action=talk");
+      (0, import_kolmafia153.runChoice)(1);
     }
     if (questStep2("questM25Armorer") === -1) {
-      (0, import_kolmafia152.visitUrl)("shop.php?whichshop=armory&action=talk");
-      (0, import_kolmafia152.runChoice)(1);
+      (0, import_kolmafia153.visitUrl)("shop.php?whichshop=armory&action=talk");
+      (0, import_kolmafia153.runChoice)(1);
     }
-    if ((0, import_kolmafia152.myLevel)() >= 11 && questStep2("questS01OldGuy") === -1) {
-      (0, import_kolmafia152.visitUrl)("place.php?whichplace=sea_oldman&action=oldman_oldman");
+    if ((0, import_kolmafia153.myLevel)() >= 11 && questStep2("questS01OldGuy") === -1) {
+      (0, import_kolmafia153.visitUrl)("place.php?whichplace=sea_oldman&action=oldman_oldman");
     }
-    if ((0, import_kolmafia152.myClass)() === $class(_templateObject2299 || (_templateObject2299 = _taggedTemplateLiteral147(["Seal Clubber"]))) && !have($skill(_templateObject2358 || (_templateObject2358 = _taggedTemplateLiteral147(["Furious Wallop"])))) && (0, import_kolmafia152.guildStoreAvailable)()) {
-      (0, import_kolmafia152.visitUrl)("guild.php?action=buyskill&skillid=32", true);
+    if ((0, import_kolmafia153.myClass)() === $class(_templateObject2299 || (_templateObject2299 = _taggedTemplateLiteral147(["Seal Clubber"]))) && !have($skill(_templateObject2358 || (_templateObject2358 = _taggedTemplateLiteral147(["Furious Wallop"])))) && (0, import_kolmafia153.guildStoreAvailable)()) {
+      (0, import_kolmafia153.visitUrl)("guild.php?action=buyskill&skillid=32", true);
     }
     var _stashItems = $items(_templateObject2456 || (_templateObject2456 = _taggedTemplateLiteral147(["repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring, Mayflower bouquet"])));
-    if ((0, import_kolmafia152.myInebriety)() <= (0, import_kolmafia152.inebrietyLimit)() && ((0, import_kolmafia152.myClass)() !== $class(_templateObject2548 || (_templateObject2548 = _taggedTemplateLiteral147(["Seal Clubber"]))) || !have($skill(_templateObject2648 || (_templateObject2648 = _taggedTemplateLiteral147(["Furious Wallop"]))))) && !have($skill(_templateObject2748 || (_templateObject2748 = _taggedTemplateLiteral147(["Head in the Game"]))))) {
-      _stashItems.push.apply(_stashItems, _toConsumableArray82($items(_templateObject2847 || (_templateObject2847 = _taggedTemplateLiteral147(["haiku katana, Operation Patriot Shield"])))));
+    if ((0, import_kolmafia153.myInebriety)() <= (0, import_kolmafia153.inebrietyLimit)() && ((0, import_kolmafia153.myClass)() !== $class(_templateObject2548 || (_templateObject2548 = _taggedTemplateLiteral147(["Seal Clubber"]))) || !have($skill(_templateObject2648 || (_templateObject2648 = _taggedTemplateLiteral147(["Furious Wallop"]))))) && !have($skill(_templateObject2748 || (_templateObject2748 = _taggedTemplateLiteral147(["Head in the Game"]))))) {
+      _stashItems.push.apply(_stashItems, _toConsumableArray83($items(_templateObject2847 || (_templateObject2847 = _taggedTemplateLiteral147(["haiku katana, Operation Patriot Shield"])))));
     }
     if (!have($item(_templateObject2946 || (_templateObject2946 = _taggedTemplateLiteral147(["Jurassic Parka"])))) && have($skill(_templateObject3043 || (_templateObject3043 = _taggedTemplateLiteral147(["Torso Awareness"]))))) {
       _stashItems.push($item(_templateObject31107 || (_templateObject31107 = _taggedTemplateLiteral147(["origami pasties"]))));
@@ -46771,7 +46892,7 @@ function main() {
           });
         }
         if (globalOptions.nodiet || get("_garboYachtzeeChainCompleted", false)) {
-          (0, import_kolmafia152.print)("We should not be yachtzee chaining", "red");
+          (0, import_kolmafia153.print)("We should not be yachtzee chaining", "red");
           globalOptions.prefs.yachtzeechain = false;
         }
         if (!globalOptions.nodiet && (!globalOptions.prefs.yachtzeechain || get("_garboYachtzeeChainCompleted", false))) {
@@ -46782,7 +46903,7 @@ function main() {
         dailySetup();
         var preventEquip = $items(_templateObject3437 || (_templateObject3437 = _taggedTemplateLiteral147(["broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-m\xE2ch\xE9te, papier-m\xE2chine gun, papier-masque, papier-m\xE2churidars, smoke ball, stinky fannypack, dice-shaped backpack, Amulet of Perpetual Darkness"])));
         if (isQuickGear()) {
-          preventEquip.push.apply(preventEquip, _toConsumableArray82($items(_templateObject3536 || (_templateObject3536 = _taggedTemplateLiteral147(["Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret"])))));
+          preventEquip.push.apply(preventEquip, _toConsumableArray83($items(_templateObject3536 || (_templateObject3536 = _taggedTemplateLiteral147(["Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret"])))));
         }
         setDefaultMaximizeOptions({
           preventEquip: preventEquip,
@@ -46793,27 +46914,27 @@ function main() {
         dailyFights();
         if (!globalOptions.nobarf) {
           potionSetup(false);
-          (0, import_kolmafia152.maximize)("MP", false);
+          (0, import_kolmafia153.maximize)("MP", false);
           meatMood().execute(estimatedGarboTurns());
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
           if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
-            runGarboQuests([PostQuest()].concat(_toConsumableArray82(BarfTurnQuests)));
+            runGarboQuests([PostQuest()].concat(_toConsumableArray83(BarfTurnQuests)));
             runGarboQuests([FinishUpQuest]);
           } finally {
-            (0, import_kolmafia152.setAutoAttack)(0);
+            (0, import_kolmafia153.setAutoAttack)(0);
           }
-        } else (0, import_kolmafia152.setAutoAttack)(0);
+        } else (0, import_kolmafia153.setAutoAttack)(0);
       });
     });
   } finally {
-    (0, import_kolmafia152.cliExecute)("spade autoconfirm");
+    (0, import_kolmafia153.cliExecute)("spade autoconfirm");
     propertyManager.resetAll();
     _set("garboStashItems", stashItems.map(function(item14) {
-      return (0, import_kolmafia152.toInt)(item14).toFixed(0);
+      return (0, import_kolmafia153.toInt)(item14).toFixed(0);
     }).join(","));
-    setCombatFlags.apply(void 0, _toConsumableArray82(combatFlags));
-    if (startingGarden && have(startingGarden)) (0, import_kolmafia152.use)(startingGarden);
+    setCombatFlags.apply(void 0, _toConsumableArray83(combatFlags));
+    if (startingGarden && have(startingGarden)) (0, import_kolmafia153.use)(startingGarden);
     printEventLog();
     endSession();
     printLog(HIGHLIGHT);
