@@ -24557,7 +24557,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("688b20c588d3199f1d69568fc38c69fdfe611fea", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9935a9de4aaab8ce310882511eaad79db648576b", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -46064,7 +46064,7 @@ function _arrayLikeToArray97(r, a) {
   return n;
 }
 var REPORT_RECIPIENT = "Jalen_Arbuckle";
-var REPORT_KEYS = ["snootee", "microbrewery", "jickjar", "votemonster"];
+var REPORT_KEYS = ["snootee", "microbrewery", "jickjar", "votemonster", "g9"];
 function isReportKey(value2) {
   return REPORT_KEYS.includes(value2);
 }
@@ -46100,6 +46100,10 @@ var PREF_WATCH_REPORTS = [{
 }, {
   pref: "_voteMonster",
   key: "votemonster"
+}, {
+  pref: "_g9Effect",
+  emptyValue: "0",
+  key: "g9"
 }];
 function checkPrefWatchReports() {
   var reported = getReportedKeys();
