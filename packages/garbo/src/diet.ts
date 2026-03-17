@@ -620,6 +620,15 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(cheapestItem(complexMushroomWines)),
     new MenuItem(cheapestItem(perfectDrinks)),
     new MenuItem($item`green eggnog`),
+    new MenuItem($item`can of Brütalbräu`, {
+      additionalValue: garboValue($item`fancy tin beer can`),
+    }),
+    new MenuItem($item`can of Drooling Monk`, {
+      additionalValue: garboValue($item`fancy tin beer can`),
+    }),
+    new MenuItem($item`can of Impetuous Scofflaw`, {
+      additionalValue: garboValue($item`fancy tin beer can`),
+    }),
 
     // SPLEEN
     new MenuItem($item`octolus oculus`),
