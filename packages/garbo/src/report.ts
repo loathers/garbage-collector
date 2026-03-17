@@ -16,6 +16,7 @@ const REPORT_KEYS = [
   "microbrewery",
   "jickjar",
   "votemonster",
+  "g9",
 ] as const;
 type ReportKey = (typeof REPORT_KEYS)[number];
 
@@ -79,6 +80,11 @@ const PREF_WATCH_REPORTS: PrefWatcher[] = [
   {
     pref: "_voteMonster",
     key: "votemonster",
+  },
+  {
+    pref: "_g9Effect",
+    emptyValue: "0",
+    key: "g9",
   },
 ];
 
