@@ -26,7 +26,6 @@ import {
   runChoice,
   totalTurnsPlayed,
   use,
-  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
@@ -37,7 +36,6 @@ import {
   $location,
   $monster,
   $skill,
-  AprilingBandHelmet,
   ChestMimic,
   clamp,
   Counter,
@@ -109,15 +107,18 @@ import {
   mayamCalendarSummon,
   minimumMimicExperience,
   safeToAttemptBullseye,
-  shouldAugustCast,
   shouldFillLatte,
   tryFillLatte,
   willYachtzee,
 } from "../resources";
 import { acquire } from "../acquire";
-import { shouldMakeEgg } from "../resources";
-import { lavaDogsAccessible, lavaDogsComplete } from "../resources/doghouse";
-import { hotTubAvailable } from "../resources/clanVIP";
+import {
+  hotTubAvailable,
+  lavaDogsAccessible,
+  lavaDogsComplete,
+  luckySourceTasks,
+  shouldMakeEgg,
+} from "../resources";
 import { meatMood } from "../mood";
 import { yachtzeeQuest } from "./yachtzee";
 
@@ -142,6 +143,9 @@ function createWandererOutfit(
 ): Outfit {
   const wanderTarget = wanderer().getTarget(undelay(details));
   const needPeridot = wanderTarget.peridotMonster !== $monster.none;
+  const needBCZ = wanderTarget.useRefractedGaze ?? false;
+  const needMonodent = wanderTarget.useFeesh ?? false;
+
   const sourceOutfit = Outfit.from(
     undelay(spec),
     new Error(
@@ -152,6 +156,8 @@ function createWandererOutfit(
     sourceOutfit.familiar = wanderTarget.familiar;
   }
   if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
+  if (needBCZ) sourceOutfit.equip($item`blood cubic zirconia`);
+  if (needMonodent) sourceOutfit.equip($item`Monodent of the Sea`);
 
   return freeFightOutfit(
     sourceOutfit.spec(),
@@ -424,70 +430,7 @@ function luckyTasks(
       spendsTurn: true,
       turns: 0, // Turns spent is handled by Lucky Sources
     },
-    {
-      name: `Apriling Band Lucky (${sobriety})`,
-      completed: () =>
-        have($effect`Lucky!`) ||
-        !AprilingBandHelmet.canPlay("Apriling band saxophone"),
-      ready: () =>
-        additionalReady() &&
-        have($item`Apriling band saxophone`) &&
-        getBestLuckyAdventure().phase === "barf" &&
-        getBestLuckyAdventure().value() > get("valueOfAdventure"),
-      do: () => {
-        if (!have($effect`Lucky!`)) {
-          AprilingBandHelmet.play($item`Apriling band saxophone`);
-        }
-      },
-      sobriety,
-      spendsTurn: false,
-      turns: () => $item`Apriling band saxophone`.dailyusesleft,
-    },
-    {
-      name: `August Scepter Lucky (${sobriety})`,
-      completed: () =>
-        have($effect`Lucky!`) ||
-        !shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
-      ready: () =>
-        additionalReady() &&
-        getBestLuckyAdventure().phase === "barf" &&
-        getBestLuckyAdventure().value() > get("valueOfAdventure"),
-      do: () => {
-        if (!have($effect`Lucky!`)) {
-          useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
-          if (!have($effect`Lucky!`)) {
-            set("_aug2Cast", true);
-          }
-        }
-      },
-      sobriety,
-      spendsTurn: false,
-      turns: () =>
-        shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`)
-          ? 1
-          : 0,
-    },
-    {
-      name: `Pillkeeper Lucky (${sobriety})`,
-      completed: () => have($effect`Lucky!`) || get("_freePillKeeperUsed"),
-      ready: () =>
-        additionalReady() &&
-        have($item`Eight Days a Week Pill Keeper`) &&
-        getBestLuckyAdventure().phase === "barf" &&
-        getBestLuckyAdventure().value() > get("valueOfAdventure"),
-      do: () => {
-        if (!have($effect`Lucky!`)) {
-          retrieveItem($item`Eight Days a Week Pill Keeper`);
-          cliExecute("pillkeeper semirare");
-          if (!have($effect`Lucky!`)) {
-            set("_freePillKeeperUsed", true);
-          }
-        }
-      },
-      sobriety,
-      spendsTurn: false,
-      turns: () => (!get("_freePillKeeperUsed") ? 1 : 0),
-    },
+    ...luckySourceTasks,
   ];
 }
 
@@ -586,7 +529,7 @@ const NonBarfTurnTasks: AlternateTask[] = [
             11 - get("_mimicEggsObtained"),
           )
         : 0,
-    spendsTurn: true,
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   },
   {
     name: "Machine Elf Dupe",
@@ -1013,6 +956,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .duplicate()
           .skill($skill`Fondeluge`),
@@ -1030,6 +974,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => have($effect`Everything Looks Yellow`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .duplicate()
           .skill($skill`Spit jurassic acid`),
@@ -1039,7 +984,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
-    "freefight",
+    "freefight (no items)",
     () => ({
       weapon: $item`Sheriff pistol`,
       acc1: $item`Sheriff badge`,
@@ -1070,6 +1015,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => have($effect`Everything Looks Red`),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .skill($skill`Free-For-All`),
       ),
@@ -1078,7 +1024,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   wanderTask(
-    "freefight",
+    "conditional freefight",
     {
       offhand:
         guaranteedBullseye() || have($item`spring shoes`)
@@ -1115,6 +1061,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => myLightning() < 20,
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .skill($skill`Lightning Strike`),
       ),
@@ -1130,6 +1077,7 @@ const BarfTurnTasks: GarboTask[] = [
       completed: () => get("shockingLickCharges") === 0,
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .refractedGaze()
           .familiarActions()
           .duplicate()
           .skill($skill`Shocking Lick`),
@@ -1214,7 +1162,7 @@ const BarfTurnTasks: GarboTask[] = [
       HeavyRains.rainMan(globalOptions.target);
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
     outfit: () => meatTargetOutfit(),
   },
   {
@@ -1228,7 +1176,7 @@ const BarfTurnTasks: GarboTask[] = [
       ChestMimic.differentiate(globalOptions.target);
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
     outfit: () => meatTargetOutfit({ familiar: $familiar`Chest Mimic` }),
   },
   {
@@ -1239,7 +1187,7 @@ const BarfTurnTasks: GarboTask[] = [
     do: () => ChestMimic.differentiate(globalOptions.target),
     outfit: () => meatTargetOutfit(),
     combat: new GarboStrategy(() => Macro.meatKill()),
-    spendsTurn: () => globalOptions.target.attributes.includes("FREE"),
+    spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   },
   {
     name: "Liana Parachute",

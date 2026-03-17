@@ -57,6 +57,7 @@ import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
 import {
+  archaeologySpadeTask,
   augustSummonTasks,
   candyMapDailyTasks,
   doingGregFight,
@@ -152,7 +153,7 @@ function bestDevilerCandy(): Item {
   }
 
   const bestCandyFromMall = maxBy(
-    Item.all().filter((i) => i.candy && i.tradeable),
+    Item.all().filter((i) => i.candy && i.tradeable && mallPrice(i) > 0),
     mallPrice,
     true,
   );
@@ -734,6 +735,7 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   leprecondoTask(),
+  archaeologySpadeTask(),
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {

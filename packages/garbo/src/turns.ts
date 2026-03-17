@@ -17,8 +17,9 @@ import {
   howManySausagesCouldIEat,
   targetingMeat,
 } from "./lib";
-import { embezzlerFights, LuckySource } from "./tasks/embezzler";
+import { embezzlerFights } from "./tasks/embezzler";
 import { nextWeekFights } from "./resources/sealclub";
+import { LuckySource } from "./resources/lucky";
 
 /**
  * Computes the estimated number of turns during which garbo will run
