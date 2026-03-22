@@ -32,6 +32,7 @@ import {
   applyCheeseBonus,
   bestBjornalike,
   cleaverCheck,
+  handleBanningTcb,
   validateGarbageFoldable,
 } from "./lib";
 import {
@@ -174,6 +175,8 @@ export function computeBarfOutfit(
   if (!sim) {
     outfit.addBonuses(toyCupidBow(spec.familiar));
   }
+
+  handleBanningTcb(outfit);
 
   const bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
