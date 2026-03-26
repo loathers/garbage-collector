@@ -413,7 +413,9 @@ function usePorkToilet(): GarboPostTask {
         throw new Error("Using toilet did not reduce our fullness!");
       }
     },
-    available: () => $item`Pork Elf toilet`.name in getCampground(),
+    available: () =>
+      $item`Pork Elf toilet`.name in getCampground() &&
+      (!CinchoDeMayo.have() || totalFreeRests() <= get("timesRested")),
   };
 }
 
