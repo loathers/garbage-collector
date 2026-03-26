@@ -123,7 +123,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28944); // Fix some 302 redirects
+  sinceKolmafiaRevision(28970); // pork elf toilet
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
