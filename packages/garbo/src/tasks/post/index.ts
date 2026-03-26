@@ -3,6 +3,7 @@ import {
   availableChoiceOptions,
   canAdventure,
   cliExecute,
+  getCampground,
   inebrietyLimit,
   Item,
   itemAmount,
@@ -111,11 +112,13 @@ function floristFriars(): GarboPostTask {
 
 function fillPantsgivingFullness(): GarboPostTask {
   return {
-    name: "Fill Pantsgiving Fullness",
+    name: "Fill Pantsgiving/Toilet Fullness",
     ready: () => !globalOptions.nodiet,
     completed: () => getRemainingStomach() <= 0,
     do: () => consumeDiet(computeDiet().pantsgiving(), "PANTSGIVING"),
-    available: () => have($item`Pantsgiving`),
+    available: () =>
+      have($item`Pantsgiving`) ||
+      $item`Pork Elf toilet`.name in getCampground(),
   };
 }
 
