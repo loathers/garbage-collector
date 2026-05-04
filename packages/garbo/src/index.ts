@@ -569,7 +569,7 @@ export function main(argString = ""): void {
         }
 
         // -1. set up Asdon buffs in case we swap to Mayo
-        if(
+        if (
           getWorkshed() === $item`Asdon Martin keyfob (on ring)` &&
           globalOptions.workshed === $item`portable Mayo Clinic`
         ) {
