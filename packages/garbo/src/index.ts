@@ -8,6 +8,7 @@ import {
   equip,
   getCampground,
   getClanName,
+  getWorkshed,
   guildStoreAvailable,
   handlingChoice,
   haveEquipped,
@@ -99,6 +100,7 @@ import {
 } from "./tasks/buffExtension";
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
+import workshedTasks from "./tasks/post/worksheds";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -565,6 +567,15 @@ export function main(argString = ""): void {
             runGarboQuests([CockroachSetup]),
           );
         }
+
+        // -1. set up Asdon buffs in case we swap to Mayo
+        if(
+          getWorkshed() === $item`Asdon Martin keyfob (on ring)` &&
+          globalOptions.workshed === $item`portable Mayo Clinic`
+        ) {
+          workshedTasks();
+        }
+
         // 0. diet stuff.
         if (
           globalOptions.nodiet ||
