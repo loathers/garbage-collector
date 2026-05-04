@@ -65,6 +65,7 @@ import {
   $locations,
   $modifier,
   $skill,
+  AsdonMartin,
   clamp,
   DesignerSweatpants,
   Diet,
@@ -111,6 +112,7 @@ import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
 import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { garboValue } from "./garboValue";
+import workshedTasks from "./tasks/post/worksheds";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -862,7 +864,10 @@ export function potionMenu(
 
     let potion = input instanceof Item ? new Potion(input) : input;
     let mayo: Item | undefined = undefined;
-    if (itemType(potion.potion) === "food" && MayoClinic.installed()) {
+    if (
+      itemType(potion.potion) === "food" &&
+      (MayoClinic.installed() || asdonToMayo())
+    ) {
       potion = potion.doubleDuration();
       mayo = Mayo.zapine;
     }
@@ -1470,6 +1475,10 @@ export function runDiet(): void {
       }
       printDiet(dietBuilder.diet(), "FULL");
     } else {
+      if (asdonToMayo()) {
+        workshedTasks();
+      }
+
       pillCheck();
 
       nonOrganAdventures();
@@ -1495,4 +1504,11 @@ export function runDiet(): void {
     }
   });
   globalOptions.dietCompleted = true;
+}
+
+function asdonToMayo(): boolean {
+  return (
+    AsdonMartin.installed() &&
+    globalOptions.workshed === $item`portable Mayo Clinic`
+  );
 }
