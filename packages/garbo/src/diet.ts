@@ -110,7 +110,11 @@ import {
 } from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
-import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
+import {
+  estimatedGarboTurns,
+  estimatedTurnsTomorrow,
+  highMeatMonsterCount,
+} from "./turns";
 import { garboValue } from "./garboValue";
 import workshedTasks from "./tasks/post/worksheds";
 
@@ -1140,9 +1144,7 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   );
 
   const targets = Math.floor(highMeatMonsterCount() + countCopies(diet));
-  const adventures = Math.floor(
-    estimatedGarboTurns(false) + diet.expectedAdventures(),
-  );
+  const adventures = dietAdventures(diet);
   print(
     `Planning to fight ${targets} ${globalOptions.target} and run ${adventures} adventures`,
   );
@@ -1476,6 +1478,11 @@ export function runDiet(): void {
       printDiet(dietBuilder.diet(), "FULL");
     } else {
       if (asdonToMayo()) {
+        AsdonMartin.drive(
+          $effect`Driving Observantly`,
+          dietAdventures(dietBuilder.diet()) +
+            (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
+        );
         workshedTasks();
       }
 
@@ -1511,4 +1518,8 @@ function asdonToMayo(): boolean {
     AsdonMartin.installed() &&
     globalOptions.workshed === $item`portable Mayo Clinic`
   );
+}
+
+function dietAdventures(diet: Diet<Note>): number {
+  return Math.floor(estimatedGarboTurns(false) + diet.expectedAdventures());
 }
