@@ -24558,7 +24558,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("579de630ffc8be21f27fbb1581a17b1136026229", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("cbb7d6ef6629dfc635e2646bd6024ee015c5c40c", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -44556,6 +44556,7 @@ function _taggedTemplateLiteral140(e, t) {
 var SummonTomes = $skills(_templateObject1098 || (_templateObject1098 = _taggedTemplateLiteral140(["Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness"])));
 var Wads = $items(_templateObject2280 || (_templateObject2280 = _taggedTemplateLiteral140(["twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad"])));
 var _shouldClearRufusQuest = null;
+var smashedBarrels = false;
 function drawBestCards() {
   var cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
   var cardsSeen = get("_deckCardsSeen").toLowerCase();
@@ -45303,7 +45304,25 @@ var DailyItemTasks = [{
     skip: 3
   },
   spendsTurn: false
-}, leprecondoTask(), archaeologySpadeTask()]);
+}, leprecondoTask(), archaeologySpadeTask(), {
+  name: "Smash Barrels",
+  ready: function() {
+    return get("barrelShrineUnlocked");
+  },
+  completed: function() {
+    return smashedBarrels;
+  },
+  do: function() {
+    var page = (0, import_kolmafia145.visitUrl)("barrel.php");
+    var regexp = /<div class="ex">(?!<div class="mimic">!<\/div>)<a class="spot" href="(choice.php\?whichchoice=1099&pwd=[a-f0-9]+&option=1&slot=\d+)"><img title="A barrel"/g;
+    for (var match; match = regexp.exec(page); null) {
+      var url = match[1];
+      (0, import_kolmafia145.visitUrl)(url);
+    }
+    smashedBarrels = true;
+  },
+  spendsTurn: false
+}]);
 var DailyItemsQuest = {
   name: "Daily Items",
   tasks: [].concat(_toConsumableArray79(SummonTasks), _toConsumableArray79(DailyItemTasks))
