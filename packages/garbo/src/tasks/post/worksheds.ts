@@ -88,14 +88,13 @@ export class GarboWorkshed {
       name: `Workshed: ${this.workshed}`,
       completed: () => this.done?.() ?? true,
       ready: () =>
-        getWorkshed() === this.workshed &&
-        this.available() &&
-        !!this.action,
+        getWorkshed() === this.workshed && this.available() && !!this.action,
       do: () => this.use(),
       available: () =>
-        [GarboWorkshed.current?.workshed, GarboWorkshed.next?.workshed].includes(
-          this.workshed,
-        ),
+        [
+          GarboWorkshed.current?.workshed,
+          GarboWorkshed.next?.workshed,
+        ].includes(this.workshed),
     };
   }
 }
@@ -128,14 +127,14 @@ const worksheds = [
       return (
         haveEffect($effect`Driving Observantly`) >=
         estimatedGarboTurns() +
-        (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
+          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
     action: () => {
       AsdonMartin.drive(
         $effect`Driving Observantly`,
         estimatedGarboTurns() +
-        (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
+          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
       );
     },
   }),
@@ -187,7 +186,7 @@ const worksheds = [
   ...$items`warbear chemistry lab, warbear LP-ROM burner`.map(
     (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted }),
   ),
-  ...$items`TakerSpace letter of Marque, snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
+  ...$items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
     (item) => new GarboWorkshed({ workshed: item }),
   ),
 ];
@@ -195,7 +194,7 @@ const worksheds = [
 const SAFETY_TURNS_THRESHOLD = 25;
 export default function workshedTasks(): GarboPostTask[] {
   return [
-    ...worksheds.map(workshed => workshed.task),
+    ...worksheds.map((workshed) => workshed.task),
     {
       name: "Swap Workshed",
       completed: () => get("_workshedItemUsed"),
@@ -206,7 +205,7 @@ export default function workshedTasks(): GarboPostTask[] {
         const enoughTurns =
           !GarboWorkshed.next?.minTurns ||
           GarboWorkshed.next.minTurns + SAFETY_TURNS_THRESHOLD >
-          estimatedGarboTurns();
+            estimatedGarboTurns();
         return canRemove && haveNext && enoughTurns;
       },
       do: () => GarboWorkshed.useNext(),
