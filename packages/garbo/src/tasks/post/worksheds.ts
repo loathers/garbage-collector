@@ -34,7 +34,7 @@ type WorkshedOptions = {
   minTurns?: number;
   available?: () => boolean;
 };
-class GarboWorkshed {
+export class GarboWorkshed {
   workshed: Item;
   done?: () => boolean;
   action?: () => void;
@@ -82,6 +82,22 @@ class GarboWorkshed {
     }
     return GarboWorkshed.current;
   }
+
+  get task(): GarboPostTask {
+    return {
+      name: `Workshed: ${this.workshed}`,
+      completed: () => this.done?.() ?? true,
+      ready: () =>
+        getWorkshed() === this.workshed &&
+        this.available() &&
+        !!this.action,
+      do: () => this.use(),
+      available: () =>
+        [GarboWorkshed.current?.workshed, GarboWorkshed.next?.workshed].includes(
+          this.workshed,
+        ),
+    };
+  }
 }
 
 let _attemptedMakingTonics = false;
@@ -112,14 +128,14 @@ const worksheds = [
       return (
         haveEffect($effect`Driving Observantly`) >=
         estimatedGarboTurns() +
-          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
+        (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
     action: () => {
       AsdonMartin.drive(
         $effect`Driving Observantly`,
         estimatedGarboTurns() +
-          (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
+        (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
       );
     },
   }),
@@ -176,26 +192,10 @@ const worksheds = [
   ),
 ];
 
-function workshedTask(workshed: GarboWorkshed): GarboPostTask {
-  return {
-    name: `Workshed: ${workshed.workshed}`,
-    completed: () => workshed.done?.() ?? true,
-    ready: () =>
-      getWorkshed() === workshed.workshed &&
-      workshed.available() &&
-      !!workshed.action,
-    do: () => workshed.use(),
-    available: () =>
-      [GarboWorkshed.current?.workshed, GarboWorkshed.next?.workshed].includes(
-        workshed.workshed,
-      ),
-  };
-}
-
 const SAFETY_TURNS_THRESHOLD = 25;
 export default function workshedTasks(): GarboPostTask[] {
   return [
-    ...worksheds.map(workshedTask),
+    ...worksheds.map(workshed => workshed.task),
     {
       name: "Swap Workshed",
       completed: () => get("_workshedItemUsed"),
@@ -206,7 +206,7 @@ export default function workshedTasks(): GarboPostTask[] {
         const enoughTurns =
           !GarboWorkshed.next?.minTurns ||
           GarboWorkshed.next.minTurns + SAFETY_TURNS_THRESHOLD >
-            estimatedGarboTurns();
+          estimatedGarboTurns();
         return canRemove && haveNext && enoughTurns;
       },
       do: () => GarboWorkshed.useNext(),
