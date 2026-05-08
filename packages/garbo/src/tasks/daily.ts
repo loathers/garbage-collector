@@ -40,6 +40,7 @@ import {
   wait,
 } from "kolmafia";
 import {
+  $class,
   $effect,
   $familiar,
   $item,
@@ -612,6 +613,14 @@ const DailyTasks: GarboTask[] = [
     ready: () => have($item`portable steam unit`),
     completed: () => get("_portableSteamUnitUsed"),
     do: () => use($item`portable steam unit`),
+    spendsTurn: false,
+  },
+  {
+    name: "Pastamancer Barrel Shrine",
+    ready: () =>
+      get("barrelShrineUnlocked") && myClass() === $class`Pastamancer`,
+    completed: () => get("_barrelPrayer"),
+    do: () => cliExecute("barrelprayer buff"),
     spendsTurn: false,
   },
   {
