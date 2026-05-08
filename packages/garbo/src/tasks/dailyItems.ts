@@ -72,6 +72,7 @@ import { highMeatMonsterCount } from "../turns";
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
 let _shouldClearRufusQuest: boolean | null = null;
+let smashedBarrels = false;
 
 function drawBestCards(): void {
   const cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
@@ -736,6 +737,22 @@ const DailyItemTasks: GarboTask[] = [
   },
   leprecondoTask(),
   archaeologySpadeTask(),
+  {
+    name: "Smash Barrels",
+    ready: () => get("barrelShrineUnlocked"),
+    completed: () => smashedBarrels,
+    do: () => {
+      const page = visitUrl("barrel.php");
+      const regexp =
+        /<div class="ex">(?!<div class="mimic">!<\/div>)<a class="spot" href="(choice.php\?whichchoice=1099&pwd=[a-f0-9]+&option=1&slot=\d+)"><img title="A barrel"/g;
+      for (let match; (match = regexp.exec(page)); null) {
+        const url = match[1];
+        visitUrl(url);
+      }
+      smashedBarrels = true;
+    },
+    spendsTurn: false,
+  },
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {
