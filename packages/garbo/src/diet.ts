@@ -1525,8 +1525,10 @@ export function runDiet(): void {
   globalOptions.dietCompleted = true;
 }
 
-const PRE_DIET_WORKSHEDS: (Item | undefined)[] =
-  $items`Asdon Martin keyfob (on ring), TakerSpace letter of Marque, spinning wheel`;
+const PRE_DIET_WORKSHEDS = [
+  undefined,
+  ...$items`Asdon Martin keyfob (on ring), TakerSpace letter of Marque, spinning wheel`,
+];
 function switchingToMayo(): boolean {
   return (
     (GarboWorkshed.next?.workshed === $item`portable Mayo Clinic` &&
