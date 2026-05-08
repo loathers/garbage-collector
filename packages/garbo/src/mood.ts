@@ -97,7 +97,11 @@ export function meatMood(
   const mpRestorerCost = Math.min(mmjCost, genericManaPotionCost);
 
   if (myClass() !== $class`Pastamancer` && 0.1 * meat * 10 > mpRestorerCost) {
-    mood.skill($skill`Bind Lasagmbie`);
+    mood.effect(
+      have($item`legendary pasta wand`)
+        ? $effect`Legendary Pasta Eyeball`
+        : $effect`Pasta Eyeball`,
+    );
   }
 
   if (getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
