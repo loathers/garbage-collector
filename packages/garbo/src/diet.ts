@@ -1531,9 +1531,9 @@ const PRE_DIET_WORKSHEDS = [
 ];
 function switchingToMayo(): boolean {
   return (
-    (GarboWorkshed.next?.workshed === $item`portable Mayo Clinic` &&
-      PRE_DIET_WORKSHEDS.includes(GarboWorkshed.current?.workshed)) ||
-    !!GarboWorkshed.current?.canRemove()
+    GarboWorkshed.next?.workshed === $item`portable Mayo Clinic` &&
+    (PRE_DIET_WORKSHEDS.includes(GarboWorkshed.current?.workshed) ||
+      !!GarboWorkshed.current?.canRemove())
   );
 }
 
