@@ -2353,6 +2353,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mikro-orm/core@npm:^7.0.14":
+  version: 7.0.15
+  resolution: "@mikro-orm/core@npm:7.0.15"
+  peerDependencies:
+    dataloader: 2.2.3
+  peerDependenciesMeta:
+    dataloader:
+      optional: true
+  checksum: 80c0157fdbf42f6f6aa8f4c26f836e9aa1017782a3e97a30ced42b1c86786b498a4bc0e97d3488938c8baeced84fa382841517e2292af82db691fe527110f900
+  languageName: node
+  linkType: hard
+
+"@mikro-orm/sql@npm:^7.0.14":
+  version: 7.0.15
+  resolution: "@mikro-orm/sql@npm:7.0.15"
+  dependencies:
+    kysely: 0.28.17
+  peerDependencies:
+    "@mikro-orm/core": 7.0.15
+  checksum: 7c8a0b5f95a20b2d9b4494598a5efbc0fb855f5031dff2000e636c22ce4613cdd85f443439d77b3630990c3cfabb75bd9d99a1afe741b4ea54e7ba7cb9cd5635
+  languageName: node
+  linkType: hard
+
 "@nicolo-ribaudo/chokidar-2@npm:2.1.8-no-fsevents.3":
   version: 2.1.8-no-fsevents.3
   resolution: "@nicolo-ribaudo/chokidar-2@npm:2.1.8-no-fsevents.3"
@@ -2513,6 +2536,13 @@ __metadata:
   version: 4.21.0
   resolution: "@rollup/rollup-win32-x64-msvc@npm:4.21.0"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@sqlite.org/sqlite-wasm@npm:~3.51.2-build9":
+  version: 3.51.2-build9
+  resolution: "@sqlite.org/sqlite-wasm@npm:3.51.2-build9"
+  checksum: 4601b9f296baf4e71f2e39327e35417912cfe5c36e284b2390c19631a6870ea2028b4f9a87f987ec4968e46c77aa585b005f5063d5daeefea59e48e51bda15e8
   languageName: node
   linkType: hard
 
@@ -3572,10 +3602,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"data-of-loathing@npm:^2.6.2":
-  version: 2.6.2
-  resolution: "data-of-loathing@npm:2.6.2"
-  checksum: 3a4247abc7626bfa6828a5b821f942d2bce53ba1473d06cb09de3fe75b2538a25f2262c9bf3a8b1f6509ac2d0da2ee9cf5a15c3fab9a2a072ba9470b88cecff1
+"data-of-loathing@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "data-of-loathing@npm:3.2.2"
+  dependencies:
+    "@mikro-orm/core": ^7.0.14
+    "@mikro-orm/sql": ^7.0.14
+    "@sqlite.org/sqlite-wasm": ~3.51.2-build9
+    env-paths: ^4.0.0
+    kysely: ^0.28.17
+  peerDependencies:
+    vite: ">=5.0.0"
+    vite-plugin-node-polyfills: ^0.26.0
+  peerDependenciesMeta:
+    vite:
+      optional: true
+    vite-plugin-node-polyfills:
+      optional: true
+  checksum: 6c2f44d9e86d1eee8c4fef8eb420d481b7cbfbb9ceed8c303ef1a2394f6ec8a0c6b721d9292aa50d19f7584524d23b20ee64b382d61472426ed38b9d03aa987d
   languageName: node
   linkType: hard
 
@@ -3836,6 +3880,15 @@ __metadata:
   version: 2.2.1
   resolution: "env-paths@npm:2.2.1"
   checksum: 65b5df55a8bab92229ab2b40dad3b387fad24613263d103a97f91c9fe43ceb21965cd3392b1ccb5d77088021e525c4e0481adb309625d0cb94ade1d1fb8dc17e
+  languageName: node
+  linkType: hard
+
+"env-paths@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "env-paths@npm:4.0.0"
+  dependencies:
+    is-safe-filename: ^0.1.0
+  checksum: 97a6ef4f7e05e9e7b464645c0539a31889947b8fe14545332af47ea61bb3556ce47f6d17491a5959c098a1ce0605d4f494e4c837f8fbc1f0a60b8201d8b19ce7
   languageName: node
   linkType: hard
 
@@ -4167,7 +4220,7 @@ __metadata:
     "@eslint/js": ^9.39.2
     eslint: ^9.39.2
     eslint-config-prettier: ^10.1.8
-    eslint-plugin-libram: ^0.5.3
+    eslint-plugin-libram: ^0.6.0
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4191,13 +4244,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-libram@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "eslint-plugin-libram@npm:0.5.3"
+"eslint-plugin-libram@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "eslint-plugin-libram@npm:0.6.0"
   dependencies:
-    data-of-loathing: ^2.6.2
+    data-of-loathing: ^3.2.2
     entities: ^7.0.0
-  checksum: 882c806222faa1efcdb0d8118d9544e7cfe66865eff91829ba3f0e8673e72853d7cab856877d8b8e139a67fe01df63a55134a85f45db41253481daa356fb3a57
+  checksum: 3631e0cfa6a3466b514bc2e6e436e4fe8e99b20007828c7e68b8a5509d381507972e426ec009b977648ee62cbfbf08bddfbbe9e4defc68f750aa9b1704d87fe6
   languageName: node
   linkType: hard
 
@@ -4650,7 +4703,7 @@ __metadata:
     grimoire-kolmafia: ^0.3.29
     jiti: ^2.6.1
     kolmafia: ^5.28673.0
-    libram: ^0.11.20
+    libram: ^0.11.22
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4667,7 +4720,7 @@ __metadata:
     eslint-config-garbo: "workspace:^"
     jiti: ^2.6.1
     kolmafia: ^5.28673.0
-    libram: ^0.11.20
+    libram: ^0.11.22
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4721,7 +4774,7 @@ __metadata:
     grimoire-kolmafia: ^0.3.29
     jiti: ^2.6.1
     kolmafia: ^5.28673.0
-    libram: ^0.11.20
+    libram: ^0.11.22
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -5206,6 +5259,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-safe-filename@npm:^0.1.0":
+  version: 0.1.1
+  resolution: "is-safe-filename@npm:0.1.1"
+  checksum: 476f9a523810457df79575566820ddec29354d004d3a8ff02b8df281a56dde22bbb2eecbec2e79bd89ea9303028a22a3db56e00646002169ed9bb25dd3721e86
+  languageName: node
+  linkType: hard
+
 "is-stream@npm:^3.0.0":
   version: 3.0.0
   resolution: "is-stream@npm:3.0.0"
@@ -5372,6 +5432,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kysely@npm:0.28.17, kysely@npm:^0.28.17":
+  version: 0.28.17
+  resolution: "kysely@npm:0.28.17"
+  checksum: 85660b7429b28eaa7142a2ebaaad6f274141a184ba62d2ed2822288bd690e445ce99bc1acf48c12c326ccdb06f2706504d3a48b0593aa2a1dd5e75a44eefccbd
+  languageName: node
+  linkType: hard
+
 "levn@npm:^0.4.1":
   version: 0.4.1
   resolution: "levn@npm:0.4.1"
@@ -5382,15 +5449,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:^0.11.20":
-  version: 0.11.20
-  resolution: "libram@npm:0.11.20"
+"libram@npm:^0.11.22":
+  version: 0.11.22
+  resolution: "libram@npm:0.11.22"
   dependencies:
     core-js: ^3.47.0
     entities: ^7.0.0
   peerDependencies:
     kolmafia: ^5.28100.0
-  checksum: 7f8861a244ab9fc6e326e0bc7ee6bc07d935e31a26b7a2734e4eb8929d7e3075d0ecdd5da176cd5b82ec28aa4ebd1a1a00bd72d5a89b06537686dcb5b500d1c9
+  checksum: ff1f1d7fc74e0526509afc5a3e2a6946beb4ff37750cc082d4f15aaf9505ac72feb550b2de3ee2cf635986942bc66e1a9c28836670b31baed4cbc60cc785f4c3
   languageName: node
   linkType: hard
 
