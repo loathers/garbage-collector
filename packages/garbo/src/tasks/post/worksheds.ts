@@ -34,7 +34,7 @@ type WorkshedOptions = {
   minTurns?: number;
   available?: () => boolean;
 };
-class GarboWorkshed {
+export class GarboWorkshed {
   workshed: Item;
   done?: () => boolean;
   action?: () => void;
@@ -81,6 +81,21 @@ class GarboWorkshed {
       use(next.workshed);
     }
     return GarboWorkshed.current;
+  }
+
+  get task(): GarboPostTask {
+    return {
+      name: `Workshed: ${this.workshed}`,
+      completed: () => this.done?.() ?? true,
+      ready: () =>
+        getWorkshed() === this.workshed && this.available() && !!this.action,
+      do: () => this.use(),
+      available: () =>
+        [
+          GarboWorkshed.current?.workshed,
+          GarboWorkshed.next?.workshed,
+        ].includes(this.workshed),
+    };
   }
 }
 
@@ -171,31 +186,15 @@ const worksheds = [
   ...$items`warbear chemistry lab, warbear LP-ROM burner`.map(
     (item) => new GarboWorkshed({ workshed: item, done: potionSetupCompleted }),
   ),
-  ...$items`TakerSpace letter of Marque, snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
+  ...$items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(
     (item) => new GarboWorkshed({ workshed: item }),
   ),
 ];
 
-function workshedTask(workshed: GarboWorkshed): GarboPostTask {
-  return {
-    name: `Workshed: ${workshed.workshed}`,
-    completed: () => workshed.done?.() ?? true,
-    ready: () =>
-      getWorkshed() === workshed.workshed &&
-      workshed.available() &&
-      !!workshed.action,
-    do: () => workshed.use(),
-    available: () =>
-      [GarboWorkshed.current?.workshed, GarboWorkshed.next?.workshed].includes(
-        workshed.workshed,
-      ),
-  };
-}
-
 const SAFETY_TURNS_THRESHOLD = 25;
 export default function workshedTasks(): GarboPostTask[] {
   return [
-    ...worksheds.map(workshedTask),
+    ...worksheds.map((workshed) => workshed.task),
     {
       name: "Swap Workshed",
       completed: () => get("_workshedItemUsed"),

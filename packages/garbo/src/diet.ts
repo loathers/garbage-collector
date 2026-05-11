@@ -65,6 +65,7 @@ import {
   $locations,
   $modifier,
   $skill,
+  AsdonMartin,
   clamp,
   DesignerSweatpants,
   Diet,
@@ -109,8 +110,13 @@ import {
 } from "./lib";
 import { shrugBadEffects } from "./mood";
 import { Potion, PotionTier } from "./potions";
-import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
+import {
+  estimatedGarboTurns,
+  estimatedTurnsTomorrow,
+  highMeatMonsterCount,
+} from "./turns";
 import { garboValue } from "./garboValue";
+import { GarboWorkshed } from "./tasks/post/worksheds";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -862,7 +868,11 @@ export function potionMenu(
 
     let potion = input instanceof Item ? new Potion(input) : input;
     let mayo: Item | undefined = undefined;
-    if (itemType(potion.potion) === "food" && MayoClinic.installed()) {
+    if (
+      itemType(potion.potion) === "food" &&
+      (GarboWorkshed.current?.workshed === $item`portable Mayo Clinic` ||
+        switchingToMayo())
+    ) {
       potion = potion.doubleDuration();
       mayo = Mayo.zapine;
     }
@@ -1470,6 +1480,24 @@ export function runDiet(): void {
       }
       printDiet(dietBuilder.diet(), "FULL");
     } else {
+      if (switchingToMayo()) {
+        if (
+          GarboWorkshed.current?.workshed ===
+          $item`Asdon Martin keyfob (on ring)`
+        ) {
+          AsdonMartin.drive(
+            $effect`Driving Observantly`,
+            dietAdventures(dietBuilder.diet()) +
+              (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
+          );
+        } else {
+          GarboWorkshed.current?.action?.();
+        }
+
+        if (GarboWorkshed.useNext()?.workshed !== $item`portable Mayo Clinic`) {
+          throw new Error("Failed to switch to portable Mayo clinic");
+        }
+      }
       pillCheck();
 
       nonOrganAdventures();
@@ -1495,4 +1523,20 @@ export function runDiet(): void {
     }
   });
   globalOptions.dietCompleted = true;
+}
+
+const PRE_DIET_WORKSHEDS = [
+  undefined,
+  ...$items`Asdon Martin keyfob (on ring), TakerSpace letter of Marque, spinning wheel`,
+];
+function switchingToMayo(): boolean {
+  return (
+    GarboWorkshed.next?.workshed === $item`portable Mayo Clinic` &&
+    (PRE_DIET_WORKSHEDS.includes(GarboWorkshed.current?.workshed) ||
+      !!GarboWorkshed.current?.canRemove())
+  );
+}
+
+function dietAdventures(diet: Diet<Note>): number {
+  return Math.floor(estimatedGarboTurns(false) + diet.expectedAdventures());
 }
