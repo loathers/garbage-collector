@@ -11,7 +11,7 @@ on:
 
 env:
   # Default version of Node.js for jobs
-  node-version: "20"
+  node-version: "24"
 
 jobs:
   test-script:
