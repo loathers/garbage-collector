@@ -45,8 +45,11 @@ export function meatTargetOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
-  if (nextWeekReady()) outfit.equip($item`legendary seal-clubbing club`);
   const { location } = toAdventure(adventureArgument ?? $location.none);
+  if (nextWeekReady() && location !== $location`Crab Island`) {
+    outfit.equip($item`legendary seal-clubbing club`);
+  }
+
   if (location === $location`Crab Island`) {
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
