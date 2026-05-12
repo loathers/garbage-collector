@@ -46,8 +46,18 @@ export function meatTargetOutfit(
   );
 
   const { location } = toAdventure(adventureArgument ?? $location.none);
-  if (nextWeekReady() && location !== $location`Crab Island`) {
-    outfit.equip($item`legendary seal-clubbing club`);
+  if (location !== $location`Crab Island`) {
+    if (nextWeekReady()) {
+      outfit.equip($item`legendary seal-clubbing club`);
+    }
+
+    if (
+      !have($effect`Everything Looks Purple`) &&
+      location?.environment !== Environment.Underwater &&
+      !shouldRedigitize()
+    ) {
+      outfit.equip($item`Roman Candelabra`);
+    }
   }
 
   if (location === $location`Crab Island`) {
@@ -144,14 +154,6 @@ export function meatTargetOutfit(
     parka: "kachungasaur",
     edpiece: "fish",
   });
-
-  if (
-    !have($effect`Everything Looks Purple`) &&
-    location?.environment !== Environment.Underwater &&
-    !shouldRedigitize()
-  ) {
-    outfit.equip($item`Roman Candelabra`);
-  }
 
   return outfit;
 }
