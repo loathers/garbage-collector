@@ -45,8 +45,21 @@ export function meatTargetOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
-  if (nextWeekReady()) outfit.equip($item`legendary seal-clubbing club`);
   const { location } = toAdventure(adventureArgument ?? $location.none);
+  if (location !== $location`Crab Island`) {
+    if (nextWeekReady()) {
+      outfit.equip($item`legendary seal-clubbing club`);
+    }
+
+    if (
+      !have($effect`Everything Looks Purple`) &&
+      location?.environment !== Environment.Underwater &&
+      !shouldRedigitize()
+    ) {
+      outfit.equip($item`Roman Candelabra`);
+    }
+  }
+
   if (location === $location`Crab Island`) {
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
@@ -141,14 +154,6 @@ export function meatTargetOutfit(
     parka: "kachungasaur",
     edpiece: "fish",
   });
-
-  if (
-    !have($effect`Everything Looks Purple`) &&
-    location?.environment !== Environment.Underwater &&
-    !shouldRedigitize()
-  ) {
-    outfit.equip($item`Roman Candelabra`);
-  }
 
   return outfit;
 }
