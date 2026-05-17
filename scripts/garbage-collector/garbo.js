@@ -24585,7 +24585,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("ccae4dc9cf58fe13949270ba929f3d94adceef2c", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("88cadc4df168ff10cbfdfec83e941a255846f602", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -46640,6 +46640,7 @@ var _templateObject3339;
 var _templateObject3437;
 var _templateObject3536;
 var _templateObject3636;
+var _templateObject3735;
 function _createForOfIteratorHelper42(r, e) {
   var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
   if (!t) {
@@ -47054,9 +47055,10 @@ function main() {
         if (isQuickGear()) {
           preventEquip.push.apply(preventEquip, _toConsumableArray83($items(_templateObject3536 || (_templateObject3536 = _taggedTemplateLiteral147(["Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret"])))));
         }
+        preventEquip.push.apply(preventEquip, _toConsumableArray83($items(_templateObject3636 || (_templateObject3636 = _taggedTemplateLiteral147(["devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice"])))));
         setDefaultMaximizeOptions({
           preventEquip: preventEquip,
-          preventSlot: $slots(_templateObject3636 || (_templateObject3636 = _taggedTemplateLiteral147(["buddy-bjorn, crown-of-thrones"])))
+          preventSlot: $slots(_templateObject3735 || (_templateObject3735 = _taggedTemplateLiteral147(["buddy-bjorn, crown-of-thrones"])))
         });
         freeFights();
         runGarboQuests([SetupTargetCopyQuest]);
