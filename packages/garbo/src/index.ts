@@ -594,6 +594,10 @@ export function main(argString = ""): void {
             ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`,
           );
         }
+        // TODO: Until properly handled ban equipment that expands organs
+        preventEquip.push(
+          ...$items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`,
+        );
 
         setDefaultMaximizeOptions({
           preventEquip: preventEquip,
