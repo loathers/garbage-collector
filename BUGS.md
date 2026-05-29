@@ -38,7 +38,7 @@ We have an issue template to help write your bug report, so you should follow th
 - Bug reports without attached session logs (or without descriptive titles, such as those that just say `[BUG]` with no other details) will be closed.
 - If garbo prints any red text or abort messages to the CLI, we'll need those too. They aren't included in your session log, and they're especially pertinent information that helps us narrow things down much faster. Copy and paste them into your bug report
 - Explain clearly the thing that happened and, if it's not _extremely_ obvious, why that thing is bad.
-- Session logs are hella long--try to let us know the context in which the bug happened, so we can find where in the log it occured. This additional context might also help us identify what the bug is to begin with. It might be helpful to separately share the most relevant portions of the log, but **you should still share a full session log alongside a truncated one**.
+- Session logs are hella long--try to let us know the context in which the bug happened, so we can find where in the log it occurred. This additional context might also help us identify what the bug is to begin with. It might be helpful to separately share the most relevant portions of the log, but **you should still share a full session log alongside a truncated one**.
 - If you don't hear back over the course of the next couple of days, consider reading garbo's [commit history](https://github.com/loathers/garbage-collector/commits/main)--we may have addressed the bug but not responded to the ticket. Sorry!
 
 Alright, it sounds like you're all ready to rock and roll. Submit your bug report [here](https://github.com/loathers/garbage-collector/issues).
