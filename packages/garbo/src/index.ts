@@ -123,7 +123,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28970); // pork elf toilet
+  sinceKolmafiaRevision(29037); // tapion's new custom item, mega helmet
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);

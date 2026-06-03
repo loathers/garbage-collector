@@ -287,6 +287,7 @@ export function bonusGear(
     ...bagOfManyConfections(),
     ...stickers(mode),
     ...powerGlove(),
+    ...tapionHelmet(),
     ...sneegleebs(),
     ...bindlestocking(mode),
     ...simpleTargetCrits(mode),
@@ -489,6 +490,12 @@ function powerGlove(): Map<Item, number> {
         ),
     ],
   ]);
+}
+
+function tapionHelmet(): Map<Item, number> {
+  if (!have($item`mega helmet`)) return new Map();
+
+  return new Map([[$item`mega helmet`, 50_000]]);
 }
 
 const POSSIBLE_SNEEGLEEB_DROPS = Item.all().filter(
