@@ -24585,7 +24585,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e68fec71a08c5b5d8595ae5fb42ab668cd045796", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("100ca365f2aba4238c7a4728508acf18cca419ee", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -36268,7 +36268,9 @@ function fillPantsgivingFullness() {
   return {
     name: "Fill Pantsgiving/Toilet Fullness",
     ready: function() {
-      return !globalOptions.nodiet;
+      return !globalOptions.nodiet && sum($slots.all(), function(slot) {
+        return get2("Stomach Capacity", (0, import_kolmafia132.equippedItem)(slot));
+      }) <= 0;
     },
     completed: function() {
       return getRemainingStomach() <= 0;
@@ -36285,7 +36287,9 @@ function fillSweatyLiver() {
   return {
     name: "Fill Sweaty Liver",
     ready: function() {
-      return !globalOptions.nodiet && DesignerSweatpants_exports.canUseSkill($skill(_templateObject1069 || (_templateObject1069 = _taggedTemplateLiteral127(["Sweat Out Some Booze"])))) && (0, import_kolmafia132.myInebriety)() > 0 && DesignerSweatpants_exports.availableCasts($skill(_templateObject1165 || (_templateObject1165 = _taggedTemplateLiteral127(["Sweat Out Some Booze"])))) === DesignerSweatpants_exports.potentialCasts($skill(_templateObject1260 || (_templateObject1260 = _taggedTemplateLiteral127(["Sweat Out Some Booze"]))));
+      return !globalOptions.nodiet && DesignerSweatpants_exports.canUseSkill($skill(_templateObject1069 || (_templateObject1069 = _taggedTemplateLiteral127(["Sweat Out Some Booze"])))) && (0, import_kolmafia132.myInebriety)() > 0 && DesignerSweatpants_exports.availableCasts($skill(_templateObject1165 || (_templateObject1165 = _taggedTemplateLiteral127(["Sweat Out Some Booze"])))) === DesignerSweatpants_exports.potentialCasts($skill(_templateObject1260 || (_templateObject1260 = _taggedTemplateLiteral127(["Sweat Out Some Booze"])))) && sum($slots.all(), function(slot) {
+        return get2("Liver Capacity", (0, import_kolmafia132.equippedItem)(slot));
+      }) <= 0;
     },
     completed: function() {
       return $skill(_templateObject1358 || (_templateObject1358 = _taggedTemplateLiteral127(["Sweat Out Some Booze"]))).dailylimit === 0 || (0, import_kolmafia132.myInebriety)() - DesignerSweatpants_exports.potentialCasts($skill(_templateObject1455 || (_templateObject1455 = _taggedTemplateLiteral127(["Sweat Out Some Booze"])))) > (0, import_kolmafia132.inebrietyLimit)();
