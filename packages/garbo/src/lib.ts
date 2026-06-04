@@ -839,6 +839,16 @@ export function withLocation<T>(location: Location, action: () => T): T {
 export function freeRest(): boolean {
   if (get("timesRested") >= totalFreeRests()) return false;
 
+  const start = myFamiliar();
+
+  // Switch familiar first, a familiar may be granting max hp/mp
+  if (
+    have($familiar`Skeleton of Crimbo Past`) &&
+    get("_knuckleboneRests", 0) < 5
+  ) {
+    useFamiliar($familiar`Skeleton of Crimbo Past`);
+  }
+
   if (myHp() >= myMaxhp() && myMp() >= myMaxmp()) {
     if (acquire(1, $item`awful poetry journal`, 10000, false)) {
       use($item`awful poetry journal`);
@@ -853,19 +863,14 @@ export function freeRest(): boolean {
     }
   }
 
-  if (
-    have($familiar`Skeleton of Crimbo Past`) &&
-    get("_knuckleboneRests", 0) < 5
-  ) {
-    const start = myFamiliar();
-    useFamiliar($familiar`Skeleton of Crimbo Past`);
-    visitUrl("campground.php?action=rest");
-    useFamiliar(start);
-  } else {
-    visitUrl("campground.php?action=rest");
-  }
+  const timesRested = get("timesRested");
+  visitUrl("campground.php?action=rest");
 
-  return true;
+  if (start !== myFamiliar()) {
+    useFamiliar(start);
+  }
+  // Only return true when a rest was actually used
+  return timesRested < get("timesRested");
 }
 
 export function printEventLog(): void {
