@@ -24585,7 +24585,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("4933a5a3369f7ad8f0d37cf83d0db7ff82aaabeb", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e68fec71a08c5b5d8595ae5fb42ab668cd045796", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -24770,9 +24770,13 @@ function withLocation(location, action) {
 }
 function freeRest() {
   if (get("timesRested") >= (0, import_kolmafia88.totalFreeRests)()) return false;
+  var start = (0, import_kolmafia88.myFamiliar)();
+  if (have($familiar(_templateObject4119 || (_templateObject4119 = _taggedTemplateLiteral78(["Skeleton of Crimbo Past"])))) && get("_knuckleboneRests", 0) < 5) {
+    (0, import_kolmafia88.useFamiliar)($familiar(_templateObject4218 || (_templateObject4218 = _taggedTemplateLiteral78(["Skeleton of Crimbo Past"]))));
+  }
   if ((0, import_kolmafia88.myHp)() >= (0, import_kolmafia88.myMaxhp)() && (0, import_kolmafia88.myMp)() >= (0, import_kolmafia88.myMaxmp)()) {
-    if (acquire(1, $item(_templateObject4119 || (_templateObject4119 = _taggedTemplateLiteral78(["awful poetry journal"]))), 1e4, false)) {
-      (0, import_kolmafia88.use)($item(_templateObject4218 || (_templateObject4218 = _taggedTemplateLiteral78(["awful poetry journal"]))));
+    if (acquire(1, $item(_templateObject4317 || (_templateObject4317 = _taggedTemplateLiteral78(["awful poetry journal"]))), 1e4, false)) {
+      (0, import_kolmafia88.use)($item(_templateObject4416 || (_templateObject4416 = _taggedTemplateLiteral78(["awful poetry journal"]))));
     } else {
       var bestSkill = maxBy(import_kolmafia88.Skill.all().filter(function(sk) {
         return have(sk) && (0, import_kolmafia88.mpCost)(sk) >= 1;
@@ -24782,15 +24786,12 @@ function freeRest() {
       (0, import_kolmafia88.useSkill)(bestSkill);
     }
   }
-  if (have($familiar(_templateObject4317 || (_templateObject4317 = _taggedTemplateLiteral78(["Skeleton of Crimbo Past"])))) && get("_knuckleboneRests", 0) < 5) {
-    var start = (0, import_kolmafia88.myFamiliar)();
-    (0, import_kolmafia88.useFamiliar)($familiar(_templateObject4416 || (_templateObject4416 = _taggedTemplateLiteral78(["Skeleton of Crimbo Past"]))));
-    (0, import_kolmafia88.visitUrl)("campground.php?action=rest");
+  var timesRested = get("timesRested");
+  (0, import_kolmafia88.visitUrl)("campground.php?action=rest");
+  if (start !== (0, import_kolmafia88.myFamiliar)()) {
     (0, import_kolmafia88.useFamiliar)(start);
-  } else {
-    (0, import_kolmafia88.visitUrl)("campground.php?action=rest");
   }
-  return true;
+  return timesRested < get("timesRested");
 }
 function printEventLog() {
   if (resetDailyPreference("garboTargetDate")) {
