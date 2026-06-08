@@ -33,7 +33,6 @@ import {
 } from "kolmafia";
 import {
   $coinmaster,
-  $familiar,
   $item,
   $items,
   $location,
@@ -477,9 +476,7 @@ const DailyItemTasks: GarboTask[] = [
   {
     name: "Acquire Jick Jar",
     ready: () =>
-      (have($item`psychoanalytic jar`, 2) ||
-        (have($item`psychoanalytic jar`) && have($familiar`Angry Jung Man`))) &&
-      get("_jickJarAvailable") === "true",
+      have($item`psychoanalytic jar`, 2) && get("_jickJarAvailable") === "true",
     completed: () => get("_psychoJarFilled"),
     do: () => visitUrl("showplayer.php?who=1&action=jung&whichperson=jick"),
     spendsTurn: false,
