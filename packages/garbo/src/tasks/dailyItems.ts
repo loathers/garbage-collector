@@ -476,7 +476,7 @@ const DailyItemTasks: GarboTask[] = [
   {
     name: "Acquire Jick Jar",
     ready: () =>
-      have($item`psychoanalytic jar`) && get("_jickJarAvailable") === "true",
+      have($item`psychoanalytic jar`, 2) && get("_jickJarAvailable") === "true",
     completed: () => get("_psychoJarFilled"),
     do: () => visitUrl("showplayer.php?who=1&action=jung&whichperson=jick"),
     spendsTurn: false,
