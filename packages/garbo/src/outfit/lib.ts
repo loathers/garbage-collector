@@ -29,6 +29,7 @@ import {
   getFoldGroup,
   have,
   Requirement,
+  ToyCupidBow,
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
@@ -199,4 +200,16 @@ function cheeseBonus(mode: BonusEquipMode) {
 export function applyCheeseBonus(outfit: Outfit, mode: BonusEquipMode) {
   const bonus = cheeseBonus(mode);
   if (bonus > 0) outfit.modifier.push(`${bonus.toFixed(2)} stinky cheese`);
+}
+
+export function handleBanningTcb(outfit: Outfit) {
+  const familiar = outfit.familiar;
+  if (!familiar) return; // This should probably never happen
+  if (!ToyCupidBow.have()) return;
+
+  const currentTcb = ToyCupidBow.currentFamiliar();
+  if (!currentTcb) return;
+  if (currentTcb === familiar) return;
+  if (ToyCupidBow.doneToday(currentTcb)) return;
+  outfit.avoid.push($item`toy Cupid bow`);
 }
