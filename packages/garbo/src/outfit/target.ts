@@ -50,7 +50,7 @@ export function meatTargetOutfit(
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
   } else if (
-    target === $monster`knob goblin embezzler` &&
+    target === $monster`Knob Goblin Embezzler` &&
     have($effect`Lucky!`)
   ) {
     const meat = meatDrop($monster`Knob Goblin Embezzler`) + songboomMeat();

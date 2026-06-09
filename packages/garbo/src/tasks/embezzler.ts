@@ -34,7 +34,7 @@ export const embezzlerFightTask = {
   outfit: () =>
     meatTargetOutfit(sober() ? {} : { equip: $items`Drunkula's wineglass` }, {
       location: $location`Cobb's Knob Treasury`,
-      target: $monster`knob goblin embezzler`,
+      target: $monster`Knob Goblin Embezzler`,
     }),
   ready: () => canAdventure($location`Cobb's Knob Treasury`),
   completed: () => !have($effect`Lucky!`),
