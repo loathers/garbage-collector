@@ -1083,16 +1083,43 @@ type LuckyAdventure = {
   };
 };
 
-const luckyAdventures: LuckyAdventure[] = [
+type LuckyAdventureValue = {
+  location: Location;
+  value: () => number;
+};
+
+const luckyAdventureValues: LuckyAdventureValue[] = [
+  {
+    location: $location`The Limerick Dungeon`,
+    value: () => garboValue($item`cyclops eyedrops`),
+  },
+  {
+    location: $location`Cobb's Knob Menagerie, Level 2`,
+    value: () => garboValue($item`irradiated pet snacks`),
+  },
+  {
+    location: $location`The Sleazy Back Alley`,
+    value: () => 3 * garboValue($item`distilled fortified wine`),
+  },
+  {
+    location: $location`The Haunted Pantry`,
+    value: () => 3 * garboValue($item`tasty tart`),
+  },
+  {
+    location: $location`The Outskirts of Cobb's Knob`,
+    value: () => garboValue($item`Knob Goblin lunchbox`),
+  },
+  {
+    location: $location`Cobb's Knob Harem`,
+    value: () => 3 * garboValue($item`scented massage oil`),
+  },
   {
     location: $location`The Castle in the Clouds in the Sky (Top Floor)`,
-    phase: "barf",
-    value: () =>
-      canAdventure($location`The Castle in the Clouds in the Sky (Top Floor)`)
-        ? garboValue($item`Mick's IcyVapoHotness Inhaler`) -
-          get("valueOfAdventure")
-        : 0,
+    value: () => garboValue($item`Mick's IcyVapoHotness Inhaler`),
   },
+];
+
+const luckyAdventures: LuckyAdventure[] = [
   {
     location: $location`Cobb's Knob Treasury`,
     phase: "target",
@@ -1101,6 +1128,14 @@ const luckyAdventures: LuckyAdventure[] = [
         ? 3 * get("valueOfAdventure") // Rough estimation, they have 4x the basemeat of barf
         : 0,
   },
+  ...luckyAdventureValues.map(
+    ({ location, value }): LuckyAdventure => ({
+      location,
+      phase: "barf",
+      value: () =>
+        canAdventure(location) ? value() - get("valueOfAdventure") : 0,
+    }),
+  ),
 ];
 
 function determineBestLuckyAdventure(): LuckyAdventure {
