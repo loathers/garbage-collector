@@ -24585,7 +24585,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("285f3c3a82d79615fe1bbabad3390c45708111ea", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("cca30525741a8bbf737e271ae9ef68b2c892c3ce", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -27969,7 +27969,7 @@ var import_kolmafia105 = require("kolmafia");
 
 // src/resources/sealclub.ts
 var nextWeekReady = function() {
-  return LegendarySealClubbingClub_exports.turnsUntilNextWeekFight() <= 0 || !LegendarySealClubbingClub_exports.clubIntoNextWeekMonster();
+  return LegendarySealClubbingClub_exports.clubIntoNextWeekAvailable() && (LegendarySealClubbingClub_exports.turnsUntilNextWeekFight() <= 0 || !LegendarySealClubbingClub_exports.clubIntoNextWeekMonster());
 };
 var nextWeekFights = function() {
   return LegendarySealClubbingClub_exports.clubIntoNextWeekAvailable() + (LegendarySealClubbingClub_exports.clubIntoNextWeekMonster() === globalOptions.target ? 1 : 0);
@@ -39280,7 +39280,7 @@ function dailyFights() {
           }
           var profSpec = {
             familiar: $familiar(_templateObject5919 || (_templateObject5919 = _taggedTemplateLiteral131(["Pocket Professor"]))),
-            avoid: $items(_templateObject6018 || (_templateObject6018 = _taggedTemplateLiteral131(["Roman Candelabra"])))
+            avoid: $items(_templateObject6018 || (_templateObject6018 = _taggedTemplateLiteral131(["Roman Candelabra, legendary seal-clubbing club"])))
           };
           if (have(chip)) {
             profSpec.famequip = chip;
