@@ -22567,7 +22567,7 @@ function unlock(loc, value2) {
   if ((0, import_kolmafia77.buy)(1, unlockableZone.unlocker, value2) === 0) return false;
   return (0, import_kolmafia77.use)(unlockableZone.unlocker);
 }
-var backupSkiplist = $locations(_templateObject2142 || (_templateObject2142 = _taggedTemplateLiteral68(["The Mansion of Dr. Weirdeaux, Professor Jacking's Huge-A-Ma-Tron, Your Mushroom Garden"])));
+var backupSkiplist = $locations(_templateObject2142 || (_templateObject2142 = _taggedTemplateLiteral68(["The Mansion of Dr. Weirdeaux, Professor Jacking's Huge-A-Ma-Tron, Your Mushroom Garden, The Island Barracks"])));
 var backupSafelist = $locations(_templateObject2222 || (_templateObject2222 = _taggedTemplateLiteral68(["The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters, The Upper Chamber, The Orcish Frat House"])));
 var yellowRaySafelist = $locations(_templateObject2319 || (_templateObject2319 = _taggedTemplateLiteral68(["Madness Bakery, The Overgrown Lot, The Skeleton Store, The Haunted Gallery, The Haunted Ballroom, The Haunted Library, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters, The Upper Chamber"])));
 function canWanderTypeBackup(location) {
@@ -22579,7 +22579,7 @@ function canWanderTypeFreeFight(location) {
   }
   return !backupSkiplist.includes(location) && (location.combatPercent >= 100 || yellowRaySafelist.includes(location));
 }
-var wandererSkiplist = $locations(_templateObject2518 || (_templateObject2518 = _taggedTemplateLiteral68(["The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums, Lair of the Ninja Snowmen, The Island Barracks"])));
+var wandererSkiplist = $locations(_templateObject2518 || (_templateObject2518 = _taggedTemplateLiteral68(["The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums, Lair of the Ninja Snowmen"])));
 function canWanderTypeWander(location) {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
@@ -24596,7 +24596,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("3ad5101b3808999be637e52c430450a832afd69a", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9eecbf9aa63a7e068e8d39687e1451896cef8b1c", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
