@@ -31,6 +31,7 @@ import {
   myLevel,
   myMaxhp,
   mySpleenUse,
+  myThrall,
   npcPrice,
   numericModifier,
   print,
@@ -65,6 +66,7 @@ import {
   $locations,
   $modifier,
   $skill,
+  $thrall,
   AsdonMartin,
   clamp,
   DesignerSweatpants,
@@ -164,6 +166,14 @@ function eatSafe(qty: number, item: Item) {
   }
   if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
     eat($item`fudge spork`);
+  }
+  if (
+    myClass() === $class`Pastamancer` &&
+    myThrall() !== $thrall`Spice Ghost` &&
+    !get("_legendarySpiceGhostFood") &&
+    $thrall`Spice Ghost`.level + (get("pumpkinSpiceWhorlUsed") ? 3 : 0) >= 11
+  ) {
+    useSkill($skill`Bind Spice Ghost`);
   }
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
   consumeWhileRespectingMoonRestaurant(() => {
