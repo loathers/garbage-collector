@@ -15,6 +15,7 @@ import {
   itemPockets,
   mallPrice,
   meatPockets,
+  myAscensions,
   myInebriety,
   pickedPockets,
   pocketItems,
@@ -229,6 +230,19 @@ const DailyItemTasks: GarboTask[] = [
       if (best !== $item.none) {
         cliExecute(`try; create ${$skill`Summon Clip Art`.dailylimit} ${best}`);
       }
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Defective Game Grid Token",
+    ready: () =>
+      get("lastArcadeAscension") === myAscensions() ||
+      have($item`Game Grid token`) ||
+      have($item`Game Grid ticket`),
+    completed: () => get("_defectiveTokenChecked"),
+    do: (): void => {
+      visitUrl("place.php?whichplace=arcade", false);
+      visitUrl("place.php?whichplace=arcade&action=arcade_plumber", false);
     },
     spendsTurn: false,
   },
