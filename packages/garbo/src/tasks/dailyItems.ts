@@ -20,6 +20,7 @@ import {
   pocketItems,
   pocketMeat,
   print,
+  putCloset,
   runChoice,
   scrapPockets,
   sellPrice,
@@ -497,6 +498,17 @@ const DailyItemTasks: GarboTask[] = [
       get("_timeSpinnerMinutesUsed") <= 8,
     completed: () => get("_timeSpinnerReplicatorUsed"),
     do: () => cliExecute("FarFuture drink"),
+    spendsTurn: false,
+  },
+  {
+    name: $skill`That's Not a Knife`.name,
+    ready: () => have($skill`That's Not a Knife`),
+    completed: () => get("_discoKnife"),
+    do: () => {
+      const knives = $items`boot knife, broken beer bottle, sharpened spoon, candy knife, soap knife`;
+      knives.forEach((item) => putCloset(itemAmount(item), item));
+      useSkill($skill`That's Not a Knife`);
+    },
     spendsTurn: false,
   },
   {
