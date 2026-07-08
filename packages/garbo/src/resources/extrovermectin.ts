@@ -351,7 +351,11 @@ function initializeCrates(): void {
     !isBanished(crate)
   ); // loop until we actually hit a crate
 
-  if (isBanished($monster`crate`)) {
+  if (isBanished($monster`crate`.phylum)) {
+    throw new Error(
+      "Accidentally banished crate phylum! And failed to unbanish.",
+    );
+  } else if (isBanished($monster`crate`)) {
     throw new Error("Accidentally banished crate! And failed to unbanish.");
   }
 }
