@@ -559,6 +559,15 @@ const DailyTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
+    name: "Speakeasy pool table",
+    ready: () => get("ownsSpeakeasy"),
+    completed: () => get("poolSkill") > 0,
+    do: () =>
+      visitUrl("place.php?whichplace=speakeasy&action=olivers_pooltable"),
+    outfit: { modifier: "Pool Skill" },
+    spendsTurn: false,
+  },
+  {
     name: "Clan pool table",
     ready: () => getClanLounge()["Clan pool table"] !== undefined,
     completed: () => get("_poolGames") >= 3,
