@@ -97,6 +97,7 @@ const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 
 let latteRefreshed = false;
 let snojoConfigured = false;
+let speakeasyPoolTableVisited = false;
 
 // For this valuation, we are using the rough approximated value of different
 //   voting initiatives. They are relatively straghtforward:
@@ -561,9 +562,11 @@ const DailyTasks: GarboTask[] = [
   {
     name: "Speakeasy pool table",
     ready: () => get("ownsSpeakeasy"),
-    completed: () => get("poolSkill") > 0,
-    do: () =>
-      visitUrl("place.php?whichplace=speakeasy&action=olivers_pooltable"),
+    completed: () => speakeasyPoolTableVisited,
+    do: () => {
+      visitUrl("place.php?whichplace=speakeasy&action=olivers_pooltable");
+      speakeasyPoolTableVisited = true;
+    },
     outfit: { modifier: "Pool Skill" },
     spendsTurn: false,
   },
