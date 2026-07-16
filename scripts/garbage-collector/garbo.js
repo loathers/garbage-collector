@@ -24596,7 +24596,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e63f85f110d4d51b86f43046dd7a75f60334647b", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("5b635a5af047d0bbe6f90e2bb3aaecc5b3007888", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -43239,6 +43239,7 @@ var closetItems = $items(_templateObject2271 || (_templateObject2271 = _taggedTe
 var retrieveItems = $items(_templateObject3207 || (_templateObject3207 = _taggedTemplateLiteral138(["Half a Purse, seal tooth, The Jokester's gun"])));
 var latteRefreshed = false;
 var snojoConfigured = false;
+var speakeasyPoolTableVisited = false;
 function voterSetup() {
   var initPriority = /* @__PURE__ */ new Map([["Meat Drop: +30", 0.3 * ((1e3 + songboomMeat()) * embezzlerFights() + targetMeat() * copyTargetCount() + baseMeat() * (estimatedGarboTurns() - copyTargetCount() - embezzlerFights()))], ["Item Drop: +15", 0.15 * (3 * 200 * 0.15 * (estimatedGarboTurns() - copyTargetCount()))], ["Adventures: +1", globalOptions.ascend ? 0 : get("valueOfAdventure")], ["Familiar Experience: +2", 8], ["Monster Level: +10", 5], ["".concat((0, import_kolmafia143.myPrimestat)(), " Percent: +25"), 3], ["Experience (".concat((0, import_kolmafia143.myPrimestat)(), "): +4"), 2], ["Meat Drop: -30", -2], ["Item Drop: -15", -2], ["Familiar Experience: -2", -2]]);
   if (!get("voteAlways") && !get("_voteToday")) {
@@ -43681,6 +43682,23 @@ var DailyTasks = [
     },
     do: function() {
       return (0, import_kolmafia143.use)($item(_templateObject6423 || (_templateObject6423 = _taggedTemplateLiteral138(["Glenn's golden dice"]))));
+    },
+    spendsTurn: false
+  },
+  {
+    name: "Speakeasy pool table",
+    ready: function() {
+      return get("ownsSpeakeasy");
+    },
+    completed: function() {
+      return speakeasyPoolTableVisited;
+    },
+    do: function() {
+      (0, import_kolmafia143.visitUrl)("place.php?whichplace=speakeasy&action=olivers_pooltable");
+      speakeasyPoolTableVisited = true;
+    },
+    outfit: {
+      modifier: "Pool Skill"
     },
     spendsTurn: false
   },
