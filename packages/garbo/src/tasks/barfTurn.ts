@@ -63,6 +63,7 @@ import {
 } from "libram";
 import { getTasks, Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
+  availableMonsters,
   canAdventureOrUnlock,
   getAvailableUltraRareZones,
   hasNameCollision,
@@ -1004,11 +1005,20 @@ const BarfTurnTasks: GarboTask[] = [
         have($item`Sheriff moustache`) &&
         romanticMonsterImpossible(),
       completed: () => get("_assertYourAuthorityCast") >= 3,
-      combat: new GarboStrategy(() =>
-        Macro.if_(globalOptions.target, Macro.meatKill())
+      combat: new GarboStrategy(() => {
+        const instakillableMonsters = availableMonsters(
+          wanderer().getTarget("freefight (no items)").location,
+        );
+        return Macro.if_(globalOptions.target, Macro.meatKill())
           .familiarActions()
-          .skill($skill`Assert your Authority`),
-      ),
+          .externalIf(
+            instakillableMonsters.length > 0,
+            Macro.if_(
+              instakillableMonsters,
+              Macro.skill($skill`Assert your Authority`),
+            ),
+          );
+      }),
       sobriety: "sober",
     },
   ),
