@@ -124,7 +124,9 @@ const worksheds = [
   new GarboWorkshed({
     workshed: $item`Asdon Martin keyfob (on ring)`,
     done: () => {
-      const asdonEffect = globalOptions.cowo ? $effect`Driving Waterproofly` : $effect`Driving Observantly`;
+      const asdonEffect = globalOptions.cowo
+        ? $effect`Driving Waterproofly`
+        : $effect`Driving Observantly`;
       return (
         haveEffect(asdonEffect) >=
         estimatedGarboTurns() +
@@ -132,7 +134,9 @@ const worksheds = [
       );
     },
     action: () => {
-      const asdonEffect = globalOptions.cowo ? $effect`Driving Waterproofly` : $effect`Driving Observantly`;
+      const asdonEffect = globalOptions.cowo
+        ? $effect`Driving Waterproofly`
+        : $effect`Driving Observantly`;
       AsdonMartin.drive(
         asdonEffect,
         estimatedGarboTurns() +
