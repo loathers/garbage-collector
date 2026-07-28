@@ -1,8 +1,6 @@
 import { Familiar, Item, Monster, myClass, myFury } from "kolmafia";
 import {
   $class,
-  $effect,
-  $familiar,
   $item,
   $monsters,
   $skill,
