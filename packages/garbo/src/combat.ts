@@ -496,6 +496,10 @@ export class Macro extends StrictMacro {
       stasisRounds = 20;
     }
 
+    if (globalOptions.cowo) {
+      stasisRounds = 5;
+    }
+
     if (isQuickCombat()) {
       // long fights can be very slow
       stasisRounds = Math.min(5, stasisRounds);

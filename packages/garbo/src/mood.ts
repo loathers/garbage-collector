@@ -33,6 +33,7 @@ import {
 import { usingPurse } from "./outfit";
 import { effectValue } from "./potions";
 import { acquire } from "./acquire";
+import { globalOptions } from "./config";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -74,15 +75,17 @@ export function meatMood(
 
   mood.skill($skill`The Polka of Plenty`);
   mood.skill($skill`Disco Leer`);
-  mood.skill(
-    urKels
-      ? $skill`Ur-Kel's Aria of Annoyance`
-      : $skill`Fat Leon's Phat Loot Lyric`,
-  );
   mood.skill($skill`Singer's Faithful Ocelot`);
   mood.skill($skill`The Spirit of Taking`);
-  mood.skill($skill`Drescher's Annoying Noise`);
-  mood.skill($skill`Pride of the Puffin`);
+  if (!globalOptions.cowo) {
+    mood.skill($skill`Drescher's Annoying Noise`);
+    mood.skill($skill`Pride of the Puffin`);
+    mood.skill(
+      urKels
+        ? $skill`Ur-Kel's Aria of Annoyance`
+        : $skill`Fat Leon's Phat Loot Lyric`,
+    );
+  }
   mood.skill($skill`Walk: Leisurely Amble`);
   mood.skill($skill`Call For Backup`);
   mood.skill($skill`Soothing Flute`);
@@ -101,7 +104,11 @@ export function meatMood(
   }
 
   if (getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(AsdonMartin.Driving.Observantly);
+    if (globalOptions.cowo) {
+      mood.drive(AsdonMartin.Driving.Waterproofly);
+    } else {
+      mood.drive(AsdonMartin.Driving.Observantly);
+    }
   }
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
@@ -224,7 +231,10 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(AsdonMartin.Driving.Observantly);
+    const asdonEffect = globalOptions.cowo
+      ? $effect`Driving Waterproofly`
+      : $effect`Driving Observantly`;
+    mood.drive(asdonEffect);
   }
 
   return mood;

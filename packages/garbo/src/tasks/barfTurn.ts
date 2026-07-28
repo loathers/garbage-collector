@@ -122,6 +122,7 @@ import {
 import { meatMood } from "../mood";
 import { yachtzeeQuest } from "./yachtzee";
 import { embezzlerFightTask } from "./embezzler";
+import { CowoTasks } from "./cowo";
 
 const digitizedTarget = () =>
   SourceTerminal.have() &&
@@ -1345,6 +1346,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
     {
       name: "Barf",
       completed: () => myAdventures() === 0,
+      ready: () => !globalOptions.cowo,
       outfit: () => {
         const lubing =
           get("dinseyRollercoasterNext") && have($item`lube-shoes`);
@@ -1369,6 +1371,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       },
       spendsTurn: true,
     },
+    ...CowoTasks(),
   ],
   completed: () => !canContinue(),
 };

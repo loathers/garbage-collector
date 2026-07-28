@@ -146,6 +146,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "Print the current version and exit.",
     }),
+    cowo: Args.flag({
+      setting: "garbo_cowo",
+      help: "Flag to run Cowo instead of Barf",
+      default: false,
+    }),
     workshed: Args.custom<Item | null>(
       {
         default: null,

@@ -1495,8 +1495,11 @@ export function runDiet(): void {
           GarboWorkshed.current?.workshed ===
           $item`Asdon Martin keyfob (on ring)`
         ) {
+          const asdonEffect = globalOptions.cowo
+            ? $effect`Driving Waterproofly`
+            : $effect`Driving Observantly`;
           AsdonMartin.drive(
-            $effect`Driving Observantly`,
+            asdonEffect,
             dietAdventures(dietBuilder.diet()) +
               (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
           );

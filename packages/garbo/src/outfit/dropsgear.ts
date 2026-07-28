@@ -292,6 +292,7 @@ export function bonusGear(
     ...simpleTargetCrits(mode),
     ...batWings(mode),
     ...mobius(mode),
+    ...folderHolder(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
           ...pantsgiving(mode),
@@ -487,6 +488,18 @@ function powerGlove(): Map<Item, number> {
         garboAverageValue(
           ...$items`blue pixel, green pixel, red pixel, white pixel`,
         ),
+    ],
+  ]);
+}
+
+function folderHolder(mode: BonusEquipMode): Map<Item, number> {
+  if (mode !== BonusEquipMode.BARF || !globalOptions.cowo) return new Map();
+
+  return new Map([
+    [
+      $item`over-the-shoulder Folder Holder`,
+      0.3 * 300 + // familiar weight
+        0.3 * 300, // better diver
     ],
   ]);
 }
