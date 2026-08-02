@@ -104,7 +104,10 @@ import { acquire } from "./acquire";
 const TICKET_MAX_PRICE = 500000;
 
 function ensureBarfAccess() {
-  if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
+  if (
+    !(get("stenchAirportAlways") || get("_stenchAirportToday")) &&
+    !globalOptions.cowo
+  ) {
     const ticket = $item`one-day ticket to Dinseylandfill`;
     // TODO: Get better item acquisition logic that e.g. checks own mall store.
     if (!have(ticket)) buy(1, ticket, TICKET_MAX_PRICE);

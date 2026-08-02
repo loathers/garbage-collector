@@ -54,7 +54,6 @@ export function meatMood(
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
-  mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
 
@@ -78,6 +77,7 @@ export function meatMood(
   mood.skill($skill`Singer's Faithful Ocelot`);
   mood.skill($skill`The Spirit of Taking`);
   if (!globalOptions.cowo) {
+    mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
     mood.skill($skill`Drescher's Annoying Noise`);
     mood.skill($skill`Pride of the Puffin`);
     mood.skill(
@@ -85,6 +85,10 @@ export function meatMood(
         ? $skill`Ur-Kel's Aria of Annoyance`
         : $skill`Fat Leon's Phat Loot Lyric`,
     );
+  } else {
+    mood.skill($skill`Donho's Bubbly Ballad`);
+    mood.skill($skill`Ghostly Shell`);
+    mood.skill($skill`shield of the pastalord`);
   }
   mood.skill($skill`Walk: Leisurely Amble`);
   mood.skill($skill`Call For Backup`);

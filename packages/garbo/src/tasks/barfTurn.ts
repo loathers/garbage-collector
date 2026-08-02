@@ -1329,10 +1329,16 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       ready: () =>
         CrepeParachute.have() &&
         shouldCheckParachute() &&
-        myLocation() === $location`Barf Mountain`,
+        myLocation() ===
+          (globalOptions.cowo
+            ? $location`The Coral Corral`
+            : $location`Barf Mountain`),
       completed: () => have($effect`Everything looks Beige`),
       outfit: () => barfOutfit({}),
-      do: () => CrepeParachute.fight(getPreferredBarfMonster()),
+      do: () =>
+        CrepeParachute.fight(
+          globalOptions.cowo ? $monster`sea cow` : getPreferredBarfMonster(),
+        ),
       combat: new GarboStrategy(() => Macro.meatKill()),
       prepare: () =>
         !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),

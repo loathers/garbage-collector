@@ -49,6 +49,7 @@ import {
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
+import { globalOptions } from "../config";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat() / 100;
@@ -276,11 +277,14 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
-  const fullMenu = menu($location`Barf Mountain`, {
-    canChooseMacro: true,
-    includeExperienceFamiliars: true,
-    mode: "barf",
-  }).flatMap((generalFamiliar) => {
+  const fullMenu = menu(
+    globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`,
+    {
+      canChooseMacro: true,
+      includeExperienceFamiliars: true,
+      mode: "barf",
+    },
+  ).flatMap((generalFamiliar) => {
     // Here we do two things:
     // * transform `GeneralFamiliar`s into `MarginalFamiliar`s, which carry with them the total value of the outfit you'd wear
     // * "double up" on familiars for which the toy Cupid bow is available
@@ -417,7 +421,11 @@ function getSpecialFamiliarLimit({
     case $familiar`Skeleton of Crimbo Past`:
       return (
         clamp(100 - get("_knuckleboneDrops"), 0, 100) /
-        SkeletonOfCrimboPast.expectedBones($location`Barf Mountain`)
+        SkeletonOfCrimboPast.expectedBones(
+          globalOptions.cowo
+            ? $location`The Coral Corral`
+            : $location`Barf Mountain`,
+        )
       );
 
     default:
