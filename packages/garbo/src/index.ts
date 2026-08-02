@@ -83,10 +83,10 @@ import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { garboAverageValue } from "./garboValue";
 import {
-  BarfTurnQuests,
   CockroachSetup,
   DailyFamiliarsQuest,
   EmbezzlerFightsQuest,
+  FarmQuests,
   FinishUpQuest,
   PostQuest,
   runGarboQuests,
@@ -617,7 +617,7 @@ export function main(argString = ""): void {
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
           if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
-            runGarboQuests([PostQuest(), ...BarfTurnQuests]);
+            runGarboQuests([PostQuest(), ...FarmQuests]);
             runGarboQuests([FinishUpQuest]);
           } finally {
             setAutoAttack(0);
