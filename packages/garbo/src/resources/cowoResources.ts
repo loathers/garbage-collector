@@ -1,7 +1,8 @@
-import { Familiar, Item, Monster, myClass, myFury } from "kolmafia";
+import { Familiar, Item, mallPrice, Monster, myClass, myFury } from "kolmafia";
 import {
   $class,
   $item,
+  $items,
   $monsters,
   $skill,
   get,
@@ -9,6 +10,7 @@ import {
   have,
   Macro,
 } from "libram";
+import { garboAverageValue } from "../garboValue";
 
 const monsters = $monsters`Mer-kin rustler, sea cowboy`;
 
@@ -93,4 +95,38 @@ export function cowoChooseBanish(): BanishMethod | null {
     }
   }
   return null;
+}
+
+export function redTaffyWorth(): boolean {
+  return (
+    mallPrice($item`pulled red taffy`) <
+    garboAverageValue(
+      $item`Alewife™ Ale`,
+      $item`Bazookafish bubble gum`,
+      $item`beefy fish meat`,
+      $item`dull fish scale`,
+      $item`eel battery`,
+      $item`eel sauce`,
+      $item`glistening fish meat`,
+      $item`high-pressure seltzer bottle`,
+      $item`imitation crab crate`,
+      $item`ink bladder`,
+      $item`live nautical mine`,
+      $item`Mer-kin healscroll`,
+      $item`Mer-kin lunchbox`,
+      $item`Mer-kin thingpouch`,
+      $item`pufferfish spine`,
+      $item`rough fish scale`,
+      $item`salinated mint julep`,
+      $item`sand dollar`,
+      $item`sea lace`,
+      $item`seaweed`,
+      $item`shark cartilage`,
+      $item`slick fish meat`,
+      $item`slug of rum`,
+      $item`slug of shochu`,
+      $item`slug of vodka`,
+      $item`soggy seed packet`,
+    )
+  );
 }

@@ -5,6 +5,7 @@ import { estimatedGarboTurns } from "../turns";
 import {
   cowoChooseBanish,
   getCowoMonstersToBanish,
+  redTaffyWorth,
 } from "../resources/cowoResources";
 import { myAdventures, retrieveItem, toMonster } from "kolmafia";
 import {
@@ -27,6 +28,9 @@ export function CowoTasks(): GarboTask[] {
       name: "Cowo",
       ready: () => globalOptions.cowo,
       prepare: () => {
+        if (redTaffyWorth()) {
+          retrieveItem($item`red taffy`);
+        }
         meatMood().execute(estimatedGarboTurns());
 
         if (getCowoMonstersToBanish().length > 0) {
@@ -67,11 +71,19 @@ export function CowoTasks(): GarboTask[] {
             "I have monsters to banish for cowo, but no banishes are available!",
           );
         }
-
-        return Macro.if_(
-          $monsters`Mer-kin rustler, sea cowboy`,
-          banishMethod?.macro() ?? Macro.abort(),
-        ).meatKill();
+        if (redTaffyWorth()) {
+          return Macro.if_(
+            $monsters`Mer-kin rustler, sea cowboy`,
+            banishMethod?.macro() ?? Macro.abort(),
+          )
+            .tryItem($item`red taffy`)
+            .meatKill();
+        } else {
+          return Macro.if_(
+            $monsters`Mer-kin rustler, sea cowboy`,
+            banishMethod?.macro() ?? Macro.abort(),
+          ).meatKill();
+        }
       }),
       post: () => {
         trackMarginalMpa();
