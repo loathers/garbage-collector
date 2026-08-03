@@ -88,7 +88,7 @@ export function meatMood(
   } else {
     mood.skill($skill`Donho's Bubbly Ballad`);
     mood.skill($skill`Ghostly Shell`);
-    mood.skill($skill`shield of the pastalord`);
+    mood.skill($skill`Shield of the Pastalord`);
   }
   mood.skill($skill`Walk: Leisurely Amble`);
   mood.skill($skill`Call For Backup`);

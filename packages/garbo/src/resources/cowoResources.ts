@@ -2,7 +2,6 @@ import { Familiar, Item, mallPrice, Monster, myClass, myFury } from "kolmafia";
 import {
   $class,
   $item,
-  $items,
   $monsters,
   $skill,
   get,
@@ -102,7 +101,7 @@ export function redTaffyWorth(): boolean {
     mallPrice($item`pulled red taffy`) <
     garboAverageValue(
       $item`Alewife™ Ale`,
-      $item`Bazookafish bubble gum`,
+      $item`bazookafish bubble gum`,
       $item`beefy fish meat`,
       $item`dull fish scale`,
       $item`eel battery`,

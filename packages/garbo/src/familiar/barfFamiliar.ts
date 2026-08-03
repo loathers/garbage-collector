@@ -14,7 +14,6 @@ import {
   $familiar,
   $item,
   $items,
-  $location,
   $slots,
   clamp,
   findLeprechaunMultiplier,
@@ -50,7 +49,6 @@ import {
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
-import { globalOptions } from "../config";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat() / 100;

@@ -10,7 +10,6 @@ import {
 import {
   $class,
   $item,
-  $location,
   $skill,
   $slot,
   CinchoDeMayo,

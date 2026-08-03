@@ -29,7 +29,7 @@ export function CowoTasks(): GarboTask[] {
       ready: () => globalOptions.cowo,
       prepare: () => {
         if (redTaffyWorth()) {
-          retrieveItem($item`red taffy`);
+          retrieveItem($item`pulled red taffy`);
         }
         meatMood().execute(estimatedGarboTurns());
 
@@ -76,7 +76,7 @@ export function CowoTasks(): GarboTask[] {
             $monsters`Mer-kin rustler, sea cowboy`,
             banishMethod?.macro() ?? Macro.abort(),
           )
-            .tryItem($item`red taffy`)
+            .tryItem($item`pulled red taffy`)
             .meatKill();
         } else {
           return Macro.if_(
