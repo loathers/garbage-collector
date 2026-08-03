@@ -75,6 +75,7 @@ import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { wanderer } from "../garboWanderer";
 import {
+  garboFarmLocation,
   getBestLuckyAdventure,
   howManySausagesCouldIEat,
   kramcoGuaranteed,
@@ -1329,10 +1330,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       ready: () =>
         CrepeParachute.have() &&
         shouldCheckParachute() &&
-        myLocation() ===
-          (globalOptions.cowo
-            ? $location`The Coral Corral`
-            : $location`Barf Mountain`),
+        myLocation() === garboFarmLocation(),
       completed: () => have($effect`Everything looks Beige`),
       outfit: () => barfOutfit({}),
       do: () =>

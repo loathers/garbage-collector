@@ -1243,3 +1243,6 @@ export function mainStatLevel(level: number): number {
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
+
+export const garboFarmLocation = () =>
+  globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`;

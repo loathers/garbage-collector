@@ -15,7 +15,7 @@ import {
 } from "libram";
 import { garboValue } from "./garboValue";
 import { effectValue } from "./potions";
-import { digitizedMonstersRemainingForTurns } from "./lib";
+import { digitizedMonstersRemainingForTurns, garboFarmLocation } from "./lib";
 import { safeRefractedCasts } from "./resources";
 
 let _wanderer: WandererManager | undefined;
@@ -32,7 +32,7 @@ export function wanderer(): WandererManager {
       digitzesRemaining: digitizedMonstersRemainingForTurns,
       plentifulMonsters: [
         globalOptions.target,
-        ...(globalOptions.nobarf ? [] : getMonsters($location`Barf Mountain`)),
+        ...(globalOptions.nobarf ? [] : getMonsters(garboFarmLocation())),
         ...(have($item`Kramco Sausage-o-Matic™`)
           ? $monsters`sausage goblin`
           : []),

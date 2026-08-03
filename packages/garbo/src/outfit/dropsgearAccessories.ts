@@ -26,6 +26,7 @@ import {
   basePointerRingMeat,
   BonusEquipMode,
   felizValue,
+  garboFarmLocation,
   maxPassiveDamage,
   modeIsFree,
   monsterManuelAvailable,
@@ -176,7 +177,7 @@ export function usingThumbRing(): boolean {
     const gear = bonusAccessories(BonusEquipMode.BARF);
     const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
-    setLocation($location`Barf Mountain`);
+    setLocation(garboFarmLocation());
     const meatAccessories = Item.all()
       .filter(
         (item) =>

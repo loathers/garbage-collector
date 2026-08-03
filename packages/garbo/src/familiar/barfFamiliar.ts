@@ -31,6 +31,7 @@ import { bonusGear } from "../outfit";
 import {
   baseMeat,
   BonusEquipMode,
+  garboFarmLocation,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
 } from "../lib";
@@ -277,14 +278,11 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
-  const fullMenu = menu(
-    globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`,
-    {
-      canChooseMacro: true,
-      includeExperienceFamiliars: true,
-      mode: "barf",
-    },
-  ).flatMap((generalFamiliar) => {
+  const fullMenu = menu(garboFarmLocation(), {
+    canChooseMacro: true,
+    includeExperienceFamiliars: true,
+    mode: "barf",
+  }).flatMap((generalFamiliar) => {
     // Here we do two things:
     // * transform `GeneralFamiliar`s into `MarginalFamiliar`s, which carry with them the total value of the outfit you'd wear
     // * "double up" on familiars for which the toy Cupid bow is available
@@ -421,11 +419,7 @@ function getSpecialFamiliarLimit({
     case $familiar`Skeleton of Crimbo Past`:
       return (
         clamp(100 - get("_knuckleboneDrops"), 0, 100) /
-        SkeletonOfCrimboPast.expectedBones(
-          globalOptions.cowo
-            ? $location`The Coral Corral`
-            : $location`Barf Mountain`,
-        )
+        SkeletonOfCrimboPast.expectedBones(garboFarmLocation())
       );
 
     default:

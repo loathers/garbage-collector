@@ -53,6 +53,7 @@ import { computeDiet, consumeDiet } from "../../diet";
 import {
   bestJuneCleaverOption,
   freeRest,
+  garboFarmLocation,
   juneCleaverChoiceValues,
   unlimitedFreeRunList,
   valueJuneCleaverOption,
@@ -92,14 +93,13 @@ function useStuff(): GarboPostTask {
   };
 }
 
-const BARF_PLANTS = globalOptions.cowo ?
-  [
-    FloristFriar.Crookweed,
-    FloristFriar.ElectricEelgrass,
-    FloristFriar.Duckweed,
-  ]
-  :
-    [
+const BARF_PLANTS = globalOptions.cowo
+  ? [
+      FloristFriar.Crookweed,
+      FloristFriar.ElectricEelgrass,
+      FloristFriar.Duckweed,
+    ]
+  : [
       FloristFriar.StealingMagnolia,
       FloristFriar.AloeGuvnor,
       FloristFriar.PitcherPlant,
@@ -107,18 +107,18 @@ const BARF_PLANTS = globalOptions.cowo ?
 function floristFriars(): GarboPostTask {
   return {
     name: "Florist Plants",
-    completed: () => FloristFriar.isFull((globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`)),
+    completed: () => FloristFriar.isFull(garboFarmLocation()),
     ready: () =>
-      get("lastAdventure") === (globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`) &&
+      get("lastAdventure") === garboFarmLocation() &&
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available((globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`))),
+      BARF_PLANTS.some((flower) => flower.available(garboFarmLocation())),
     do: () =>
       BARF_PLANTS.filter((flower) =>
-        flower.available((globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`)),
+        flower.available(garboFarmLocation()),
       ).forEach((flower) => flower.plant()),
     available: () =>
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available((globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`))),
+      BARF_PLANTS.some((flower) => flower.available(garboFarmLocation())),
   };
 }
 
