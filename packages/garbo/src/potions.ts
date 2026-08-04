@@ -273,7 +273,10 @@ export class Potion {
   familiarWeight(): number {
     return (
       this.effectValues?.famWeight ??
-      getModifier("Familiar Weight", this.effect())
+      getModifier("Familiar Weight", this.effect()) +
+        (globalOptions.cowo
+          ? getModifier("Hidden Familiar Weight", this.effect())
+          : 0)
     );
   }
 

@@ -21,6 +21,7 @@ import { barfOutfit } from "../outfit";
 import { GarboStrategy } from "../combatStrategy";
 import { Macro } from "../combat";
 import { trackMarginalMpa } from "../session";
+import postCombatActions from "../post";
 
 export function CowoTasks(): GarboTask[] {
   return [
@@ -87,6 +88,7 @@ export function CowoTasks(): GarboTask[] {
       }),
       post: () => {
         trackMarginalMpa();
+        postCombatActions();
 
         if (
           getCowoMonstersToBanish().includes(toMonster(get("lastEncounter")))
