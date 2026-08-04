@@ -1,32 +1,56 @@
-import { GarboTask } from "./engine";
-import { globalOptions } from "../config";
-import { meatMood } from "../mood";
-import { estimatedGarboTurns } from "../turns";
+import { GarboTask } from "../engine";
+import { globalOptions } from "../../config";
+import { meatMood } from "../../mood";
+import { estimatedGarboTurns } from "../../turns";
 import {
   cowoChooseBanish,
   getCowoMonstersToBanish,
   redTaffyWorth,
-} from "../resources/cowoResources";
-import { myAdventures, retrieveItem, toMonster } from "kolmafia";
+} from "../../resources/cowoResources";
+import { myAdventures, myLocation, retrieveItem, toMonster, totalTurnsPlayed } from "kolmafia";
 import {
   $effect,
   $item,
   $location,
+  $monster,
   $monsters,
   AsdonMartin,
+  CrepeParachute,
   FloristFriar,
   get,
   have,
 } from "libram";
-import { barfOutfit } from "../outfit";
-import { GarboStrategy } from "../combatStrategy";
-import { Macro } from "../combat";
-import { trackMarginalMpa } from "../session";
-import postCombatActions from "../post";
-import { garboFarmLocation } from "../lib";
+import { barfOutfit } from "../../outfit";
+import { GarboStrategy } from "../../combatStrategy";
+import { Macro } from "../../combat";
+import { trackMarginalMpa } from "../../session";
+import postCombatActions from "../../post";
+import { garboFarmLocation } from "../../lib";
+import { shouldCheckParachute, updateParachuteFailure } from "./lib";
+import { completeBarfQuest } from "../../resources";
 
 export function CowoTasks(): GarboTask[] {
   return [
+    {
+      name: "Corral Parachute",
+      ready: () =>
+        globalOptions.cowo &&
+        CrepeParachute.have() &&
+        shouldCheckParachute() &&
+        myLocation() === $location`The Coral Corral`,
+      completed: () => have($effect`Everything looks Beige`),
+      outfit: () => barfOutfit({}),
+      do: () => CrepeParachute.fight($monster`sea cow`),
+      combat: new GarboStrategy(() => Macro.meatKill()),
+      prepare: () =>
+        !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
+      post: () => {
+        if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
+        completeBarfQuest();
+        trackMarginalMpa();
+      },
+      spendsTurn: true,
+    },
     {
       name: "Cowo",
       ready: () => globalOptions.cowo,
