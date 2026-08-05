@@ -187,12 +187,16 @@ export interface PotionOptions {
   }>;
 }
 
-export const VALUABLE_MODIFIERS = [
-  "Meat Drop",
-  "Familiar Weight",
-  "Smithsness",
-  "Item Drop",
-] as const;
+export const VALUABLE_MODIFIERS = globalOptions.cowo
+  ? [
+      "Meat Drop",
+      "Familiar Weight",
+      "Smithsness",
+      "Item Drop",
+      "Familiar Weight Hidden",
+      "Meat Drop Penalty",
+    ]
+  : (["Meat Drop", "Familiar Weight", "Smithsness", "Item Drop"] as const);
 
 const BUFFER_TURNS = 30;
 
@@ -266,6 +270,9 @@ export class Potion {
     return (
       this.effectValues?.meatDrop ??
       getModifier("Meat Drop", this.effect()) +
+        (globalOptions.cowo
+          ? getModifier("Meat Drop Penalty", this.effect())
+          : 0) +
         2 * (usingPurse() ? this.smithsness() : 0)
     );
   }
