@@ -157,8 +157,8 @@ function calculateLaughingStockBonus() {
 
   const fruitsDropped = get("_laughingStockFruitDropped", 0);
 
-  // if we have more than 11 fruit drops, it's a 1/50 chance, split to 1/10 classic and 9/10 basic
-  if (fruitsDropped > 11) {
+  // if we have 11 fruit drops, it's a 1/50 chance, split to 1/10 classic and 9/10 basic
+  if (fruitsDropped >= 11) {
     return 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
   }
   // otherwise it's seeded, but we are guaranteed at least 3 classic drops in 9 fights
