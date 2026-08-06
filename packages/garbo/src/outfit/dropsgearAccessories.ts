@@ -163,7 +163,8 @@ function calculateLaughingStockBonus() {
   }
   // otherwise it's seeded, but we are guaranteed at least 3 classic drops in 9 fights
   // and otherwise it's a 1/10 chance of being special
-  return (3.8 * classicFruitValue + 7.2 * basicFruitValue) / 11;
+  // it takes 56 turns to get all the fruit
+  return (3.8 * classicFruitValue + 7.2 * basicFruitValue) / 56;
 }
 
 function portableLaughingStock() {
