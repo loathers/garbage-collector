@@ -10,6 +10,7 @@ import {
 import {
   $class,
   $item,
+  $items,
   $location,
   $skill,
   $slot,
@@ -32,7 +33,7 @@ import {
 } from "../lib";
 import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
-import { garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "../garboValue";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -146,6 +147,38 @@ function cinchoDeMayo(mode: BonusEquipMode) {
   return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
 }
 
+function calculateLaughingStockBonus() {
+  const basicFruitValue = garboAverageValue(
+    ...$items`orange, grapefruit, grapes, lemon, lime, papaya, cranberries, strawberry, cherry, kumquat, tangerine, raspberry, kiwi, blackberry, banana, cactus fruit, plum, pear, peach`,
+  );
+  const classicFruitValue = garboAverageValue(
+    ...$items`classic banana, antique watermelon, quince`,
+  );
+
+  const fruitsDropped = get("_laughingStockFruitDropped", 0);
+
+  // if we have 11 fruit drops, it's a 1/50 chance, split to 1/10 classic and 9/10 basic
+  if (fruitsDropped >= 11) {
+    return 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
+  }
+  // otherwise it's seeded, but we are guaranteed at least 3 classic drops in 9 fights
+  // and otherwise it's a 1/10 chance of being special
+  // it takes 56 turns to get all the fruit
+  return (3.8 * classicFruitValue + 7.2 * basicFruitValue) / 56;
+}
+
+function portableLaughingStock() {
+  if (!have($item`Portable Laughing Stock`)) {
+    return new Map<Item, number>([]);
+  }
+
+  const laughingStockBonus = calculateLaughingStockBonus();
+
+  return new Map<Item, number>([
+    [$item`Portable Laughing Stock`, laughingStockBonus],
+  ]);
+}
+
 /*
 This is separate from bonusGear to prevent circular references
 bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
@@ -156,6 +189,7 @@ export function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
     ...mafiaThumbRing(mode),
     ...luckyGoldRing(mode),
     ...mrCheengsSpectacles(),
+    ...portableLaughingStock(),
     ...mrScreegesSpectacles(),
     ...cinchoDeMayo(mode),
   ]);
