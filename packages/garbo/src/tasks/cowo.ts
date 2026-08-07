@@ -14,6 +14,7 @@ import {
   $location,
   $monsters,
   AsdonMartin,
+  FloristFriar,
   get,
   have,
 } from "libram";
@@ -22,6 +23,7 @@ import { GarboStrategy } from "../combatStrategy";
 import { Macro } from "../combat";
 import { trackMarginalMpa } from "../session";
 import postCombatActions from "../post";
+import { garboFarmLocation } from "../lib";
 
 export function CowoTasks(): GarboTask[] {
   return [
@@ -89,6 +91,17 @@ export function CowoTasks(): GarboTask[] {
       post: () => {
         trackMarginalMpa();
         postCombatActions();
+
+        const BARF_PLANTS = [
+          FloristFriar.Crookweed,
+          FloristFriar.ElectricEelgrass,
+          FloristFriar.Duckweed,
+        ]
+        if (BARF_PLANTS.some((flower) => flower.available($location`The Coral Corral`))) {
+          BARF_PLANTS.filter((flower) =>
+                  flower.available(garboFarmLocation()),
+                ).forEach((flower) => flower.plant());
+        }
 
         if (
           getCowoMonstersToBanish().includes(toMonster(get("lastEncounter")))

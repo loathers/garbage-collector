@@ -685,7 +685,7 @@ export const pawPotions = Array.from(validPawWishes.keys())
       }),
   );
 
-export const farmingPotions = [
+export const farmingPotions = () => [
   ...Item.all()
     .filter(
       (item) =>
@@ -700,12 +700,12 @@ export const farmingPotions = [
 
 export function getFarmingPotions(avoidStats = false): Potion[] {
   return avoidStats
-    ? farmingPotions.filter((potion) => !improvesAStat(potion.effect()))
-    : farmingPotions;
+    ? farmingPotions().filter((potion) => !improvesAStat(potion.effect()))
+    : farmingPotions();
 }
 
 export function doublingPotions(targets: number): Potion[] {
-  return farmingPotions
+  return farmingPotions()
     .filter(
       (potion) =>
         potion.doubleDuration().gross(targets) / potion.price(true) > 0.5,

@@ -682,7 +682,7 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // 30 tourists till NC, with families counting as 3
 // Estimate number of turns till the counter hits 27
 // then estimate the expected number of turns required to hit a counter of >= 30
-export const turnsToNC =
+export const turnsToNC = globalOptions.cowo ? Infinity :
   (27 * barfTourists) /
     (garbageTourists + angryTourists + 3 * touristFamilies) +
   1 * touristFamilyRatio +
