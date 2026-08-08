@@ -8,6 +8,7 @@ import {
   WandererFactoryOptions,
   WandererTarget,
 } from "./lib";
+import { $skill, have } from "libram";
 
 function monsterValues(
   location: Location,
@@ -33,7 +34,8 @@ export function bofaFactory(
       "freefight",
       "conditional freefight",
       "freefight (no items)",
-    ].includes(type)
+    ].includes(type) &&
+    have($skill`Just the Facts`)
   ) {
     const validLocations = Location.all().filter(
       (location) =>
