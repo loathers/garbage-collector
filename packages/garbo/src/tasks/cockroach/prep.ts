@@ -245,6 +245,12 @@ export const CockroachSetup: Quest<GarboTask> = {
               },
             ),
             avoid: $items`Roman Candelabra`,
+            // Every PirateRealm task has to keep all three stats at or under
+            // 100, and DebuffPlanner can only spend potions and effect removal
+            // to get there -- it never considers equipment. The outfit is
+            // dressed before prepare() runs, so any gear the maximizer picks
+            // for its stats is a flat overhead the planner cannot undo.
+            modifier: Stat.all().map((stat) => `-${stat}`),
           },
           get("_lastPirateRealmIsland", $location`none`),
         ),
