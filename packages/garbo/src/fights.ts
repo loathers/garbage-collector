@@ -1870,7 +1870,7 @@ export function deliverThesisIfAble(): void {
     ensureEffect($effect`Triple-Sized`);
     outfit("checkpoint");
   }
-  cliExecute(`gain ${requiredMuscle} muscle`);
+  cliExecute(`try; gain ${requiredMuscle} muscle`);
 
   if (molemanReady()) {
     withMacro(
