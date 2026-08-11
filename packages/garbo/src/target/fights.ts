@@ -985,6 +985,23 @@ export const emergencyChainStarters = [
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
+
+      // WISH_VALUE is both the cost we assume above and the price cap we hand
+      // to acquire() below, so it is an upper bound on what we will actually
+      // pay for the wish -- the realised profit is never worse than `profit`.
+      // That makes `profit` safe to compare against a user threshold without a
+      // human in the loop. Deliberately don't touch askedAboutWish/wishAnswer:
+      // that cache exists to avoid re-prompting a person, and skipping it means
+      // every call re-checks the profit against current copy sources.
+      const autoWishThreshold = globalOptions.prefs.autoWishProfitThreshold;
+      if (autoWishThreshold >= 0 && profit >= autoWishThreshold) {
+        print(
+          `Automatically wishing for ${globalOptions.target}: expected profit of ${Math.round(profit)} meat meets your garbo_autoWishProfitThreshold of ${autoWishThreshold}.`,
+          HIGHLIGHT,
+        );
+        return true;
+      }
+
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = copyTargetConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy a ${
