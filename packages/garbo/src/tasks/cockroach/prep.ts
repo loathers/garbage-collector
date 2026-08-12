@@ -40,7 +40,40 @@ import { globalOptions } from "../../config";
 import { DebuffPlanner } from "./debuffplanner";
 import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
-import { highMeatMonsterCount } from "../../turns";
+import { highMeatMonsterCount, potentialDietAdventures } from "../../turns";
+
+// PirateRealm costs roughly 40 adventures across the day. Only about 17 of them
+// are spent by this quest -- sailing to the first island (up to 8), its combats
+// (up to 8) and its final encounter (1). The rest go on sailing to Trash Island
+// and fighting there, which happens later in the day, after the diet has run.
+const PIRATEREALM_DAY_TURNS = 40;
+const PIRATEREALM_FIRST_LEG_TURNS = 17;
+
+/**
+ * Whether PirateRealm is genuinely unaffordable, as opposed to merely looking
+ * that way because we have not eaten yet.
+ *
+ * This quest deliberately runs before runDiet(). It has to: the copy target it
+ * may change is what diet prices consumables against, and doingGregFight()
+ * leans on `!dietCompleted` to decide we are still going to set up Greg fights,
+ * so running the diet first would flip that off for anyone relying on monster
+ * replacers. That ordering means myAdventures() here is a pre-diet count, and
+ * on its own it says nothing about how many adventures the day will have.
+ *
+ * So compare the whole-day cost against the whole-day supply, and separately
+ * require only the first leg's turns to be in hand right now -- the diet that
+ * pays for the remainder has not run yet, but it will before the remainder is
+ * spent.
+ * @returns Whether to offer to retarget away from cockroach
+ */
+function cannotAffordPirateRealm(): boolean {
+  const dayAdventures =
+    myAdventures() + (globalOptions.nodiet ? 0 : potentialDietAdventures());
+  return (
+    dayAdventures <= PIRATEREALM_DAY_TURNS ||
+    myAdventures() < PIRATEREALM_FIRST_LEG_TURNS
+  );
+}
 
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
@@ -52,12 +85,12 @@ export const CockroachSetup: Quest<GarboTask> = {
   tasks: [
     {
       name: "40 Adventure Failsafe",
-      ready: () => myAdventures() <= 40,
+      ready: () => cannotAffordPirateRealm(),
       completed: () => have($item`PirateRealm eyepatch`),
       do: () => {
         if (
           userConfirmDialog(
-            "You don't have enough adventures to do piraterealm; would you like us to automatically change your copy target to a Knob Goblin Guard? Otherwise, we're going to abort.",
+            `You don't have enough adventures to do piraterealm (${myAdventures()} now, and we need ${PIRATEREALM_FIRST_LEG_TURNS} on hand plus about ${PIRATEREALM_DAY_TURNS} across the day, counting what the diet will provide); would you like us to automatically change your copy target to a Knob Goblin Guard? Otherwise, we're going to abort.`,
             true,
           )
         ) {
