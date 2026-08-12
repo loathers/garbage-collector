@@ -97,8 +97,15 @@ export function prepRobortender(): void {
     },
     "Bloody Nora": {
       priceCap: get("_envyfishEggUsed")
-        ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
-        : 0,
+        ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) +
+          baseMeat() *
+            (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
+            estimatedGarboTurns()
+        : globalOptions.cowo
+          ? baseMeat() *
+            (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
+            estimatedGarboTurns()
+          : 0,
       mandatory: false,
     },
     "Single entendre": {
