@@ -564,6 +564,7 @@ export function main(argString = ""): void {
           withProperty("removeMalignantEffects", false, () =>
             runGarboQuests([CockroachSetup]),
           );
+	maximize("MP", false);
         }
         // 0. diet stuff.
         if (
