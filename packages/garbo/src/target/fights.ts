@@ -264,6 +264,7 @@ export const chainStarters = [
   ),
 ];
 
+const SPINNING_YOUR_TIME_SPINNER = 1195;
 const TRAVEL_TO_A_RECENT_FIGHT = 1196;
 
 /**
@@ -289,9 +290,23 @@ function escapeRefusedTimeSpinner(): void {
     `The Time-Spinner would not travel to a ${globalOptions.target}; it is no longer in the recent-fight list. Backing out of the choice and skipping this source for the rest of the run.`,
     HIGHLIGHT,
   );
-  if (handlingChoice() && lastChoice() === TRAVEL_TO_A_RECENT_FIGHT) {
-    runChoice(2); // Maybe Later
+  // A refusal can leave us on either Time-Spinner page -- in practice it bounces
+  // back to the 1195 menu -- and leaving one lands on the other, so drain them
+  // rather than handling a single hop. 1196 is not in mafia's canWalkFromChoice
+  // table and needs its explicit "Maybe Later"; 1195 is, so any non-choice
+  // request drops it and ChoiceManager clears handlingChoice for us.
+  let attempts = 0;
+  while (handlingChoice() && attempts++ < 3) {
+    const choice = lastChoice();
+    if (choice === TRAVEL_TO_A_RECENT_FIGHT) {
+      runChoice(2); // Maybe Later
+    } else if (choice === SPINNING_YOUR_TIME_SPINNER) {
+      visitUrl("main.php");
+    } else {
+      break;
+    }
   }
+
   if (handlingChoice()) {
     abort(
       `Still stuck in choice ${lastChoice()} after the Time-Spinner refused to fight a ${globalOptions.target}. Resolve it in the relay browser before continuing -- leaving a choice open breaks every later equipment change.`,
