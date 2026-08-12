@@ -88,6 +88,9 @@ function banishMethodInUse(method: BanishMethod): boolean {
 }
 
 export function cowoChooseBanish(): BanishMethod | null {
+  if (getCowoMonstersToBanish().length === 0) {
+    return null;
+  }
   for (const method of banishMethods) {
     if (method.available() && !banishMethodInUse(method)) {
       return method;
