@@ -13,6 +13,7 @@ import {
   equippedItem,
   familiarEquippedEquipment,
   getAutoAttack,
+  handlingChoice,
   haveOutfit,
   inebrietyLimit,
   isBanished,
@@ -186,7 +187,7 @@ import {
   expectedFreeGiantSandwormQuestFights,
   FreeGiantSandwormQuest,
 } from "./tasks/freeGiantSandworm";
-import { CopyTargetFight } from "./target/fights";
+import { CopyTargetFight, escapeRefusedTimeSpinner } from "./target/fights";
 import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
@@ -808,6 +809,14 @@ function molemanReady() {
   return have($item`molehill mountain`) && !get("_molehillMountainUsed");
 }
 
+/**
+ * Whether the Time-Spinner has already declined to travel to a drunk pygmy.
+ *
+ * The bowling alley's `combatQueue` only approximates the Time-Spinner's
+ * recent-fight list, so a pygmy can pass `available()` and still not be on offer.
+ */
+let timeSpinnerRefusedPygmy = false;
+
 const freeFightSources = [
   new FreeFight(
     () => (wantPills() ? 5 - get("_saberForceUses") : 0),
@@ -1037,6 +1046,7 @@ const freeFightSources = [
 
   new FreeFight(
     () =>
+      !timeSpinnerRefusedPygmy &&
       have($item`Time-Spinner`) &&
       !doingGregFight() &&
       $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") &&
@@ -1051,6 +1061,13 @@ const freeFightSources = [
       visitUrl(
         `choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`,
       );
+      // A successful spin puts us in combat. Still sitting in a choice means the
+      // travel was refused, and a refusal does not spend any minutes, so nothing
+      // stops available() offering this again on the same stale queue entry.
+      if (handlingChoice()) {
+        timeSpinnerRefusedPygmy = true;
+        escapeRefusedTimeSpinner($monster`drunk pygmy`);
+      }
     },
     true,
     pygmyOptions(),
