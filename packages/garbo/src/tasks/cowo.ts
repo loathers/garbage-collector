@@ -53,7 +53,7 @@ export function CowoTasks(): GarboTask[] {
           pants: have($effect`Driving Waterproofly`)
             ? undefined
             : $item`really, really nice swimming trunks`,
-          famequip: have($effect`Driving Waterproofly`)
+          famequip: have($effect`Driving Waterproofly`) || barfOutfit({}).familiar?.underwater
             ? undefined
             : $item`das boot`,
         });

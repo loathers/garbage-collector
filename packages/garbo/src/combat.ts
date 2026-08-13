@@ -324,6 +324,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Blow the Purple Candle!`),
         ),
       )
+      .if_($monster`tumbleweed`, Macro.abort())
       .trySingAlong()
       .familiarActions()
       .tryEgg()
