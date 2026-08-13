@@ -809,12 +809,7 @@ function molemanReady() {
   return have($item`molehill mountain`) && !get("_molehillMountainUsed");
 }
 
-/**
- * Whether the Time-Spinner has already declined to travel to a drunk pygmy.
- *
- * The bowling alley's `combatQueue` only approximates the Time-Spinner's
- * recent-fight list, so a pygmy can pass `available()` and still not be on offer.
- */
+/** Whether the Time-Spinner has already declined to travel to a drunk pygmy. */
 let timeSpinnerRefusedPygmy = false;
 
 const freeFightSources = [
@@ -1061,9 +1056,8 @@ const freeFightSources = [
       visitUrl(
         `choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`,
       );
-      // A successful spin puts us in combat. Still sitting in a choice means the
-      // travel was refused, and a refusal does not spend any minutes, so nothing
-      // stops available() offering this again on the same stale queue entry.
+      // Still in a choice means the travel was refused. A refusal spends no
+      // minutes, so latch it off or available() keeps re-offering it.
       if (handlingChoice()) {
         timeSpinnerRefusedPygmy = true;
         escapeRefusedTimeSpinner($monster`drunk pygmy`);

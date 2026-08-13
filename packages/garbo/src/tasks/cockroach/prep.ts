@@ -42,28 +42,17 @@ import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
 import { highMeatMonsterCount, potentialDietAdventures } from "../../turns";
 
-// PirateRealm costs roughly 40 adventures across the day. Only about 17 of them
-// are spent by this quest -- sailing to the first island (up to 8), its combats
-// (up to 8) and its final encounter (1). The rest go on sailing to Trash Island
-// and fighting there, which happens later in the day, after the diet has run.
+// PirateRealm costs ~40 adventures across the day, but only ~17 before this
+// quest stops at Trash Island: 8 sailing, 8 combats and a final encounter.
 const PIRATEREALM_DAY_TURNS = 40;
 const PIRATEREALM_FIRST_LEG_TURNS = 17;
 
 /**
- * Whether PirateRealm is genuinely unaffordable, as opposed to merely looking
- * that way because we have not eaten yet.
+ * Whether PirateRealm is genuinely unaffordable rather than merely pre-diet.
  *
- * This quest deliberately runs before runDiet(). It has to: the copy target it
- * may change is what diet prices consumables against, and doingGregFight()
- * leans on `!dietCompleted` to decide we are still going to set up Greg fights,
- * so running the diet first would flip that off for anyone relying on monster
- * replacers. That ordering means myAdventures() here is a pre-diet count, and
- * on its own it says nothing about how many adventures the day will have.
- *
- * So compare the whole-day cost against the whole-day supply, and separately
- * require only the first leg's turns to be in hand right now -- the diet that
- * pays for the remainder has not run yet, but it will before the remainder is
- * spent.
+ * This runs before runDiet(), so myAdventures() here excludes the day's organ
+ * adventures. Compare whole-day cost against whole-day supply, but still require
+ * the first leg's turns to be in hand now.
  * @returns Whether to offer to retarget away from cockroach
  */
 function cannotAffordPirateRealm(): boolean {
@@ -245,11 +234,8 @@ export const CockroachSetup: Quest<GarboTask> = {
               },
             ),
             avoid: $items`Roman Candelabra`,
-            // Every PirateRealm task has to keep all three stats at or under
-            // 100, and DebuffPlanner can only spend potions and effect removal
-            // to get there -- it never considers equipment. The outfit is
-            // dressed before prepare() runs, so any gear the maximizer picks
-            // for its stats is a flat overhead the planner cannot undo.
+            // Stats must stay at or under 100, and DebuffPlanner only spends
+            // potions to get there -- gear stats are overhead it cannot undo.
             modifier: Stat.all().map((stat) => `-${stat}`),
           },
           get("_lastPirateRealmIsland", $location`none`),

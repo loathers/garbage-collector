@@ -272,9 +272,8 @@ const TIME_SPINNER_LOCATIONS = $locations`Noob Cave, The Dire Warren, The Haunte
 /**
  * Whether the target is in a combat queue the Time-Spinner draws from.
  *
- * `combatQueue` is a "; "-joined list, so match its entries rather than testing
- * for a substring -- a substring test claims a sea cow when only a sea cowboy
- * was fought.
+ * Matches entries exactly: a substring test claims a sea cow when only a sea
+ * cowboy was fought.
  * @returns Whether the target is in one of those queues
  */
 function targetInCombatQueue(): boolean {
@@ -283,22 +282,14 @@ function targetInCombatQueue(): boolean {
   );
 }
 
-/**
- * Whether the Time-Spinner has already declined to travel to our target this run.
- *
- * `combatQueue` is only an approximation of the Time-Spinner's recent-fight list, so
- * the target can pass our `available()` check and still not be on offer. When that
- * happens the game does not start a fight -- it just hands choice 1196 back -- and
- * we would otherwise keep spending the item on a list that will not have our target.
- */
+/** Whether the Time-Spinner has already declined to travel to our target. */
 let timeSpinnerRefusedTarget = false;
 
 /**
  * Leave the Time-Spinner choice after it declined to travel to a monster.
  *
- * This matters well beyond the wasted attempt: mafia cannot change equipment while a
- * choice is open, so an abandoned 1196 surfaces much later as "Failed to maximize
- * properly!" from whichever unrelated task next dresses an outfit.
+ * An open choice blocks every later equipment change, so leaving one surfaces
+ * far away as "Failed to maximize properly!".
  * @param monster The monster the Time-Spinner would not travel to
  */
 export function escapeRefusedTimeSpinner(monster: Monster): void {
@@ -306,11 +297,9 @@ export function escapeRefusedTimeSpinner(monster: Monster): void {
     `The Time-Spinner would not travel to a ${monster}; it is no longer in the recent-fight list. Backing out of the choice.`,
     HIGHLIGHT,
   );
-  // A refusal hands 1196 back, and leaving one Time-Spinner page can land on the
-  // other, so drain both rather than handling a single hop. 1196 is not in
-  // mafia's canWalkFromChoice table and needs its explicit "Maybe Later"; 1195
-  // is, so any non-choice request drops it and ChoiceManager clears
-  // handlingChoice for us.
+  // Leaving one Time-Spinner page can land on the other, so drain both. 1196 is
+  // not in mafia's canWalkFromChoice table and needs its "Maybe Later"; 1195 is,
+  // so any non-choice request drops it.
   let attempts = 0;
   while (handlingChoice() && attempts++ < 3) {
     const choice = lastChoice();
@@ -353,8 +342,7 @@ export const copySources = [
           visitUrl(
             `choice.php?whichchoice=${TRAVEL_TO_A_RECENT_FIGHT}&monid=${globalOptions.target.id}&option=1`,
           );
-          // A successful spin puts us in combat. If we are still sitting in a
-          // choice then the travel was refused and there is no fight to run.
+          // Still in a choice means the travel was refused; there is no fight.
           if (handlingChoice()) {
             timeSpinnerRefusedTarget = true;
             escapeRefusedTimeSpinner(globalOptions.target);
@@ -986,13 +974,10 @@ export const emergencyChainStarters = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
 
-      // WISH_VALUE is both the cost we assume above and the price cap we hand
-      // to acquire() below, so it is an upper bound on what we will actually
-      // pay for the wish -- the realised profit is never worse than `profit`.
-      // That makes `profit` safe to compare against a user threshold without a
-      // human in the loop. Deliberately don't touch askedAboutWish/wishAnswer:
-      // that cache exists to avoid re-prompting a person, and skipping it means
-      // every call re-checks the profit against current copy sources.
+      // WISH_VALUE is both the assumed cost and the price cap given to
+      // acquire(), so realised profit is never worse than `profit` -- safe to
+      // compare against a threshold unattended. askedAboutWish/wishAnswer are
+      // left alone so each call re-checks profit against current copy sources.
       const autoWishThreshold = globalOptions.prefs.autoWishProfitThreshold;
       if (autoWishThreshold >= 0 && profit >= autoWishThreshold) {
         print(

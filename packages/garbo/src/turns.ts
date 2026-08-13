@@ -121,10 +121,7 @@ function potentialInebrietyAdventures(): number {
 /**
  * Computes the adventures we still expect to gain from filling our organs.
  *
- * This is what runDiet() is about to hand us, so it is the difference between
- * the adventures we have at some point during setup and the adventures the day
- * will actually have. Anything deciding whether we can afford a whole-day
- * project before the diet has run needs to add this to myAdventures().
+ * Add this to myAdventures() when judging a whole-day cost before runDiet().
  * @returns Adventures we expect to gain from food, booze and non-organ sources
  */
 export function potentialDietAdventures(): number {
