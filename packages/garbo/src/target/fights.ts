@@ -8,6 +8,7 @@ import {
   itemAmount,
   lastChoice,
   Location,
+  Monster,
   myAdventures,
   myHash,
   myRain,
@@ -266,6 +267,21 @@ export const chainStarters = [
 
 const SPINNING_YOUR_TIME_SPINNER = 1195;
 const TRAVEL_TO_A_RECENT_FIGHT = 1196;
+const TIME_SPINNER_LOCATIONS = $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`;
+
+/**
+ * Whether the target is in a combat queue the Time-Spinner draws from.
+ *
+ * `combatQueue` is a "; "-joined list, so match its entries rather than testing
+ * for a substring -- a substring test claims a sea cow when only a sea cowboy
+ * was fought.
+ * @returns Whether the target is in one of those queues
+ */
+function targetInCombatQueue(): boolean {
+  return TIME_SPINNER_LOCATIONS.some((location) =>
+    location.combatQueue.split("; ").includes(globalOptions.target.name),
+  );
+}
 
 /**
  * Whether the Time-Spinner has already declined to travel to our target this run.
@@ -278,23 +294,23 @@ const TRAVEL_TO_A_RECENT_FIGHT = 1196;
 let timeSpinnerRefusedTarget = false;
 
 /**
- * Leave choice 1196 after the Time-Spinner declined to fight our target.
+ * Leave the Time-Spinner choice after it declined to travel to a monster.
  *
  * This matters well beyond the wasted attempt: mafia cannot change equipment while a
  * choice is open, so an abandoned 1196 surfaces much later as "Failed to maximize
  * properly!" from whichever unrelated task next dresses an outfit.
+ * @param monster The monster the Time-Spinner would not travel to
  */
-function escapeRefusedTimeSpinner(): void {
-  timeSpinnerRefusedTarget = true;
+export function escapeRefusedTimeSpinner(monster: Monster): void {
   print(
-    `The Time-Spinner would not travel to a ${globalOptions.target}; it is no longer in the recent-fight list. Backing out of the choice and skipping this source for the rest of the run.`,
+    `The Time-Spinner would not travel to a ${monster}; it is no longer in the recent-fight list. Backing out of the choice.`,
     HIGHLIGHT,
   );
-  // A refusal can leave us on either Time-Spinner page -- in practice it bounces
-  // back to the 1195 menu -- and leaving one lands on the other, so drain them
-  // rather than handling a single hop. 1196 is not in mafia's canWalkFromChoice
-  // table and needs its explicit "Maybe Later"; 1195 is, so any non-choice
-  // request drops it and ChoiceManager clears handlingChoice for us.
+  // A refusal hands 1196 back, and leaving one Time-Spinner page can land on the
+  // other, so drain both rather than handling a single hop. 1196 is not in
+  // mafia's canWalkFromChoice table and needs its explicit "Maybe Later"; 1195
+  // is, so any non-choice request drops it and ChoiceManager clears
+  // handlingChoice for us.
   let attempts = 0;
   while (handlingChoice() && attempts++ < 3) {
     const choice = lastChoice();
@@ -309,7 +325,7 @@ function escapeRefusedTimeSpinner(): void {
 
   if (handlingChoice()) {
     abort(
-      `Still stuck in choice ${lastChoice()} after the Time-Spinner refused to fight a ${globalOptions.target}. Resolve it in the relay browser before continuing -- leaving a choice open breaks every later equipment change.`,
+      `Still stuck in choice ${lastChoice()} after the Time-Spinner refused to fight a ${monster}. Resolve it in the relay browser before continuing -- leaving a choice open breaks every later equipment change.`,
     );
   }
 }
@@ -320,18 +336,12 @@ export const copySources = [
     () =>
       !timeSpinnerRefusedTarget &&
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) => location.combatQueue.includes(globalOptions.target.name),
-      ) &&
+      targetInCombatQueue() &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
       !timeSpinnerRefusedTarget &&
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) =>
-          location.combatQueue.includes(globalOptions.target.name) ||
-          totalGregCharges(true),
-      )
+      (targetInCombatQueue() || totalGregCharges(true) > 0)
         ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
     (options: RunOptions) => {
@@ -346,7 +356,8 @@ export const copySources = [
           // A successful spin puts us in combat. If we are still sitting in a
           // choice then the travel was refused and there is no fight to run.
           if (handlingChoice()) {
-            escapeRefusedTimeSpinner();
+            timeSpinnerRefusedTarget = true;
+            escapeRefusedTimeSpinner(globalOptions.target);
             return;
           }
           runCombat();
