@@ -41,6 +41,7 @@ import {
   modeValueOfMeat,
 } from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
+import { globalOptions } from "../config";
 
 function chooseGun() {
   if (have($item`love`)) {
@@ -140,6 +141,9 @@ export function computeBarfOutfit(
 
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
 
+  if(globalOptions.cowo) {
+    outfit.modifier.push(`+sea`)
+  }
   outfit.modifier.push(
     `${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`,
     `${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`,

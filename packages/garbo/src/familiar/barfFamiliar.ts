@@ -11,6 +11,7 @@ import {
   weightAdjustment,
 } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
@@ -19,6 +20,7 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  have,
   maxBy,
   SkeletonOfCrimboPast,
   sum,
@@ -49,9 +51,18 @@ import {
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
+import { globalOptions } from "../config";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat() / 100;
+
+function familiarNeedsBoot(familiar: Familiar): boolean {
+  return (
+    globalOptions.cowo &&
+    !have($effect`Driving Waterproofly`) &&
+    !familiar.underwater
+  );
+}
 
 type CachedOutfit = {
   weight: number;
@@ -98,6 +109,8 @@ const outfitCacheKey = (f: Familiar) =>
 function getCachedOutfitValues(fam: Familiar) {
   const cacheKey = outfitCacheKey(fam);
   const currentValue = outfitCache.get(cacheKey);
+
+  const needsBoot = familiarNeedsBoot(fam);
   if (currentValue) return currentValue;
 
   const current = myFamiliar();
@@ -106,6 +119,7 @@ function getCachedOutfitValues(fam: Familiar) {
     computeBarfOutfit(
       {
         familiar: fam,
+        equip: needsBoot ? $items`das boot` : [],
         avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections, bat wings, toy Cupid bow`,
       },
       true,
