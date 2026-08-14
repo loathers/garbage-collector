@@ -187,15 +187,15 @@ export interface PotionOptions {
   }>;
 }
 
-export const VALUABLE_MODIFIERS = globalOptions.cowo
-  ? [
+export const VALUABLE_MODIFIERS = () => globalOptions.cowo
+  ? ([
       "Meat Drop",
       "Familiar Weight",
       "Smithsness",
       "Item Drop",
       "Familiar Weight Hidden",
       "Meat Drop Penalty",
-    ]
+    ] as const)
   : (["Meat Drop", "Familiar Weight", "Smithsness", "Item Drop"] as const);
 
 const BUFFER_TURNS = 30;

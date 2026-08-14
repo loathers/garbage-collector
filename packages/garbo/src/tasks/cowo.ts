@@ -53,9 +53,11 @@ export function CowoTasks(): GarboTask[] {
           pants: have($effect`Driving Waterproofly`)
             ? undefined
             : $item`really, really nice swimming trunks`,
-          famequip: have($effect`Driving Waterproofly`) || barfOutfit({}).familiar?.underwater
-            ? undefined
-            : $item`das boot`,
+          famequip:
+            have($effect`Driving Waterproofly`) ||
+            barfOutfit({}).familiar?.underwater
+              ? undefined
+              : $item`das boot`,
         });
         const banishMethod = cowoChooseBanish();
 
@@ -96,11 +98,15 @@ export function CowoTasks(): GarboTask[] {
           FloristFriar.Crookweed,
           FloristFriar.ElectricEelgrass,
           FloristFriar.Duckweed,
-        ]
-        if (BARF_PLANTS.some((flower) => flower.available($location`The Coral Corral`))) {
+        ];
+        if (
+          BARF_PLANTS.some((flower) =>
+            flower.available($location`The Coral Corral`),
+          )
+        ) {
           BARF_PLANTS.filter((flower) =>
-                  flower.available(garboFarmLocation()),
-                ).forEach((flower) => flower.plant());
+            flower.available(garboFarmLocation()),
+          ).forEach((flower) => flower.plant());
         }
 
         if (
