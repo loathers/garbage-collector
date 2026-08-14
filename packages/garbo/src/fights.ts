@@ -191,7 +191,7 @@ import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
 } from "./tasks/buffExtension";
-import { highMeatMonsterCount } from "./turns";
+import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -578,6 +578,7 @@ type FreeFightOptions = {
   spec?: Delayed<OutfitSpec>;
   noncombat?: () => boolean;
   effects?: () => Effect[];
+  postTask?: () => void;
 
   // Tells us if this fight can reasonably be expected to do familiar
   // actions like meatifying matter, or crimbo shrub red raying.
@@ -1266,6 +1267,11 @@ const priorityFreeRunFightSources = [
       location: canAdventure($location`Barf Mountain`)
         ? $location`Barf Mountain`
         : $location`The Dire Warren`,
+      postTask: () => {
+        if(have($effect`Fishy`, estimatedGarboTurns()) && have($item`Monodent of the Sea`) && !get("_seadentWaveUsed")) {
+          useSkill($skill`Sea *dent: Summon a Wave`)
+        }
+      },
     },
   ),
 ];
