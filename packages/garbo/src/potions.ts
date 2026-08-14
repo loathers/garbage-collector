@@ -193,7 +193,7 @@ export const VALUABLE_MODIFIERS = () => globalOptions.cowo
       "Familiar Weight",
       "Smithsness",
       "Item Drop",
-      "Familiar Weight Hidden",
+      "Hidden Familiar Weight",
       "Meat Drop Penalty",
     ] as const)
   : (["Meat Drop", "Familiar Weight", "Smithsness", "Item Drop"] as const);

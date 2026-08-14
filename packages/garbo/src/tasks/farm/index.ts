@@ -1,5 +1,5 @@
 import { BarfTurnQuest } from "./barfTurn";
-import { CowoTasks } from "./cowo";
+import { CowoQuest } from "./cowo";
 import { DailyExtrasQuest } from "./dailyExtras";
 import { NonBarfTurnQuest } from "./nonBarfTurn";
 import { TurnGenQuest } from "./turnGen";
@@ -10,6 +10,6 @@ export const FarmQuests = [
   DailyExtrasQuest,
   WandererQuest,
   NonBarfTurnQuest,
-  CowoTasks,
+  CowoQuest,
   BarfTurnQuest,
 ];

@@ -7,15 +7,13 @@ import {
   getCowoMonstersToBanish,
   redTaffyWorth,
 } from "../../resources/cowoResources";
-import { myAdventures, myLocation, retrieveItem, toMonster, totalTurnsPlayed } from "kolmafia";
+import { myAdventures, retrieveItem, toMonster } from "kolmafia";
 import {
   $effect,
   $item,
   $location,
-  $monster,
   $monsters,
   AsdonMartin,
-  CrepeParachute,
   FloristFriar,
   get,
   have,
@@ -25,34 +23,13 @@ import { GarboStrategy } from "../../combatStrategy";
 import { Macro } from "../../combat";
 import { trackMarginalMpa } from "../../session";
 import postCombatActions from "../../post";
-import { garboFarmLocation } from "../../lib";
-import { shouldCheckParachute, updateParachuteFailure } from "./lib";
-import { completeBarfQuest } from "../../resources";
+import { Quest } from "grimoire-kolmafia";
 
-export function CowoTasks(): GarboTask[] {
-  return [
+export const CowoQuest: Quest<GarboTask> = {
+   name: "Sea Cow Turn",
+  tasks: [
     {
-      name: "Corral Parachute",
-      ready: () =>
-        globalOptions.cowo &&
-        CrepeParachute.have() &&
-        shouldCheckParachute() &&
-        myLocation() === $location`The Coral Corral`,
-      completed: () => have($effect`Everything looks Beige`),
-      outfit: () => barfOutfit({}),
-      do: () => CrepeParachute.fight($monster`sea cow`),
-      combat: new GarboStrategy(() => Macro.meatKill()),
-      prepare: () =>
-        !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
-      post: () => {
-        if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
-        completeBarfQuest();
-        trackMarginalMpa();
-      },
-      spendsTurn: true,
-    },
-    {
-      name: "Cowo",
+      name: "Coral Corral",
       ready: () => globalOptions.cowo,
       prepare: () => {
         if (redTaffyWorth()) {
@@ -103,14 +80,14 @@ export function CowoTasks(): GarboTask[] {
         if (redTaffyWorth()) {
           return Macro.if_(
             $monsters`Mer-kin rustler, sea cowboy`,
-            banishMethod?.macro() ?? Macro.abort(),
+            banishMethod?.macro ?? Macro.abort(),
           )
             .tryItem($item`pulled red taffy`)
             .meatKill();
         } else {
           return Macro.if_(
             $monsters`Mer-kin rustler, sea cowboy`,
-            banishMethod?.macro() ?? Macro.abort(),
+            banishMethod?.macro ?? Macro.abort(),
           ).meatKill();
         }
       }),
@@ -129,7 +106,7 @@ export function CowoTasks(): GarboTask[] {
           )
         ) {
           BARF_PLANTS.filter((flower) =>
-            flower.available(garboFarmLocation()),
+            flower.available($location`The Coral Corral`),
           ).forEach((flower) => flower.plant());
         }
 
@@ -141,5 +118,5 @@ export function CowoTasks(): GarboTask[] {
       },
       spendsTurn: true,
     },
-  ];
+  ],
 }

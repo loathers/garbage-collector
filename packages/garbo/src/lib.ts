@@ -1245,5 +1245,5 @@ export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
 
-export const garboFarmLocation = () =>
+export const farmLocation = () =>
   globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`;

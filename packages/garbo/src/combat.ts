@@ -60,7 +60,7 @@ import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { estimatedGarboTurns, wanderingCopytargetsRemaining } from "./turns";
 import {
-  garboFarmLocation,
+  farmLocation,
   gooseDroneEligible,
   isStrongScaler,
   maxPassiveDamage,
@@ -511,7 +511,7 @@ export class Macro extends StrictMacro {
     // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
       [
-        ...getMonsters(garboFarmLocation()),
+        ...getMonsters(farmLocation()),
         globalOptions.target,
         $monster`sausage goblin`,
       ],

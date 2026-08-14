@@ -1,4 +1,4 @@
-import { Familiar, Item, mallPrice, Monster, myClass, myFury } from "kolmafia";
+import { Familiar, isBanished, Item, mallPrice, Monster, myClass, myFury } from "kolmafia";
 import {
   $class,
   $item,
@@ -14,14 +14,12 @@ import { garboAverageValue } from "../garboValue";
 const monsters = $monsters`Mer-kin rustler, sea cowboy`;
 
 export function getCowoMonstersToBanish(): Monster[] {
-  const banishedMonsters = getBanishedMonsters();
-  const alreadyBanished = Array.from(banishedMonsters.values());
-  return monsters.filter((monster) => !alreadyBanished.includes(monster));
+  return monsters.filter((monster) => isBanished(monster));
 }
 
 interface BanishMethod {
   available: () => boolean;
-  macro: () => Macro;
+  macro: Macro;
   name: string;
   equip?: Item | Familiar;
 }
@@ -31,13 +29,13 @@ const banishMethods: BanishMethod[] = [
     name: "Monkey Slap",
     available: () =>
       get("_monkeyPawWishesUsed") === 0 && have($item`cursed monkey's paw`),
-    macro: () => Macro.trySkill($skill`Monkey Slap`),
+    macro: Macro.trySkill($skill`Monkey Slap`),
     equip: $item`cursed monkey's paw`,
   },
   {
     name: "Spring Kick",
     available: () => have($item`spring shoes`),
-    macro: () =>
+    macro:
       Macro.trySkill($skill`Spring Kick`)
         .trySkill($skill`Spring Away`)
         .runaway(),
@@ -49,20 +47,20 @@ const banishMethods: BanishMethod[] = [
       myClass() === $class`Seal Clubber` &&
       have($skill`Batter Up!`) &&
       myFury() >= 5,
-    macro: () => Macro.trySkill($skill`Batter Up!`),
+    macro: Macro.trySkill($skill`Batter Up!`),
     equip: $item`seal-clubbing club`,
   },
   {
     name: "human musk",
     available: () => true,
-    macro: () => Macro.tryItem($item`human musk`),
+    macro: Macro.tryItem($item`human musk`),
   },
   {
     name: "Monodent",
     available: () =>
       have($item`Monodent of the Sea`) && get("_seadentLightningUsed", 0) < 11,
     equip: $item`Monodent of the Sea`,
-    macro: () => Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`),
+    macro: Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`),
   },
   /* {
     name: "Unleash Nanites",
