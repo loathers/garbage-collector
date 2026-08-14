@@ -52,8 +52,8 @@ import { globalOptions } from "../../config";
 import { computeDiet, consumeDiet } from "../../diet";
 import {
   bestJuneCleaverOption,
+  farmLocation,
   freeRest,
-  garboFarmLocation,
   juneCleaverChoiceValues,
   unlimitedFreeRunList,
   valueJuneCleaverOption,
@@ -107,18 +107,18 @@ const BARF_PLANTS = globalOptions.cowo
 function floristFriars(): GarboPostTask {
   return {
     name: "Florist Plants",
-    completed: () => FloristFriar.isFull(garboFarmLocation()),
+    completed: () => FloristFriar.isFull(farmLocation()),
     ready: () =>
-      get("lastAdventure") === garboFarmLocation() &&
+      get("lastAdventure") === farmLocation() &&
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available(garboFarmLocation())),
+      BARF_PLANTS.some((flower) => flower.available(farmLocation())),
     do: () =>
       BARF_PLANTS.filter((flower) =>
-        flower.available(garboFarmLocation()),
+        flower.available(farmLocation()),
       ).forEach((flower) => flower.plant()),
     available: () =>
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available(garboFarmLocation())),
+      BARF_PLANTS.some((flower) => flower.available(farmLocation())),
   };
 }
 

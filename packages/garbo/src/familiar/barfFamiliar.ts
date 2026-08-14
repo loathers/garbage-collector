@@ -30,7 +30,7 @@ import { bonusGear } from "../outfit";
 import {
   baseMeat,
   BonusEquipMode,
-  garboFarmLocation,
+  farmLocation,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
 } from "../lib";
@@ -276,7 +276,7 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
-  const fullMenu = menu(garboFarmLocation(), {
+  const fullMenu = menu(farmLocation(), {
     canChooseMacro: true,
     includeExperienceFamiliars: true,
     mode: "barf",
@@ -417,7 +417,7 @@ function getSpecialFamiliarLimit({
     case $familiar`Skeleton of Crimbo Past`:
       return (
         clamp(100 - get("_knuckleboneDrops"), 0, 100) /
-        SkeletonOfCrimboPast.expectedBones(garboFarmLocation())
+        SkeletonOfCrimboPast.expectedBones(farmLocation())
       );
 
     default:
