@@ -14,7 +14,7 @@ import { garboAverageValue } from "../garboValue";
 const monsters = $monsters`Mer-kin rustler, sea cowboy`;
 
 export function getCowoMonstersToBanish(): Monster[] {
-  return monsters.filter((monster) => isBanished(monster));
+  return monsters.filter((monster) => !isBanished(monster));
 }
 
 interface BanishMethod {
