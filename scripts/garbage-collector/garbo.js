@@ -24600,7 +24600,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("e9746add5b485c049fce00f3a3f461b14980628d", ")"));
+      (0, import_kolmafia88.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("b4465d97f9acc646f2a8905e1c8a2f0c004bf01d", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia88.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -44382,7 +44382,7 @@ function luckyTasks(sobriety, additionalReady) {
       return !have($effect(_templateObject2280 || (_templateObject2280 = _taggedTemplateLiteral142(["Lucky!"]))));
     },
     ready: function() {
-      return additionalReady() && getBestLuckyAdventure().phase === "barf" && getBestLuckyAdventure().value() > get("valueOfAdventure");
+      return additionalReady();
     },
     do: function() {
       return getBestLuckyAdventure().location;
@@ -44404,7 +44404,13 @@ function luckyTasks(sobriety, additionalReady) {
     ready: function() {
       return additionalReady() && embezzlerFightTask.ready();
     }
-  })].concat(_toConsumableArray79(luckySourceTasks));
+  })].concat(_toConsumableArray79(luckySourceTasks.map(function(task) {
+    return _objectSpread25(_objectSpread25({}, task), {}, {
+      ready: function() {
+        return additionalReady() && getBestLuckyAdventure().phase === "barf" && getBestLuckyAdventure().value() > get("valueOfAdventure") && task.ready();
+      }
+    });
+  })));
 }
 function vampOut(additionalReady) {
   return {
