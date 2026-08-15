@@ -7,7 +7,7 @@ import {
   getCowoMonstersToBanish,
   redTaffyWorth,
 } from "../../resources/cowoResources";
-import { myAdventures, retrieveItem, toMonster } from "kolmafia";
+import { myAdventures, print, retrieveItem, toMonster } from "kolmafia";
 import {
   $effect,
   $item,
@@ -71,6 +71,9 @@ export const CowoQuest: Quest<GarboTask> = {
       do: $location`The Coral Corral`,
       combat: new GarboStrategy(() => {
         const banishMethod = cowoChooseBanish();
+        if(banishMethod) {
+          print(`Planning to banish using ${banishMethod?.name}`);
+        }
 
         if (banishMethod === null && getCowoMonstersToBanish().length > 0) {
           throw new Error(
@@ -80,14 +83,14 @@ export const CowoQuest: Quest<GarboTask> = {
         if (redTaffyWorth()) {
           return Macro.if_(
             $monsters`Mer-kin rustler, sea cowboy`,
-            banishMethod?.macro ?? Macro.abort(),
+            banishMethod.macro(),
           )
             .tryItem($item`pulled red taffy`)
             .meatKill();
         } else {
           return Macro.if_(
             $monsters`Mer-kin rustler, sea cowboy`,
-            banishMethod?.macro ?? Macro.abort(),
+            banishMethod.macro(),
           ).meatKill();
         }
       }),
