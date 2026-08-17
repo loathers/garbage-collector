@@ -50,16 +50,13 @@ export const CowoQuest: Quest<GarboTask> = {
       },
       completed: () => myAdventures() === 0,
       outfit: () => {
-        const outfit = barfOutfit({
-          pants: have($effect`Driving Waterproofly`)
-            ? undefined
-            : $item`really, really nice swimming trunks`,
-          famequip:
-            have($effect`Driving Waterproofly`) ||
-            barfOutfit({}).familiar?.underwater
-              ? undefined
-              : $item`das boot`,
-        });
+        const outfit =
+          have($effect`Driving Waterproofly`)
+            ? barfOutfit({})
+            :
+          barfOutfit({
+            pants: $item`really, really nice swimming trunks`,
+          });
         const banishMethod = cowoChooseBanish();
 
         if (banishMethod?.equip) {
@@ -83,14 +80,14 @@ export const CowoQuest: Quest<GarboTask> = {
         if (redTaffyWorth()) {
           return Macro.if_(
             $monsters`Mer-kin rustler, sea cowboy`,
-            banishMethod?.macro() ?? Macro.abort(),
+            banishMethod?.macro ?? Macro.abort(),
           )
             .tryItem($item`pulled red taffy`)
             .meatKill();
         } else {
           return Macro.if_(
             $monsters`Mer-kin rustler, sea cowboy`,
-            banishMethod?.macro() ?? Macro.abort(),
+            banishMethod?.macro ?? Macro.abort(),
           ).meatKill();
         }
       }),

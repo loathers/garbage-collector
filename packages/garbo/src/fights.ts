@@ -191,7 +191,7 @@ import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
 } from "./tasks/buffExtension";
-import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
+import { highMeatMonsterCount } from "./turns";
 
 const firstChainMacro = () =>
   Macro.if_(
@@ -1268,7 +1268,7 @@ const priorityFreeRunFightSources = [
         ? $location`Barf Mountain`
         : $location`The Dire Warren`,
       postTask: () => {
-        if(have($effect`Fishy`, estimatedGarboTurns()) && have($item`Monodent of the Sea`) && !get("_seadentWaveUsed")) {
+        if(have($effect`Fishy`, 100) && have($item`Monodent of the Sea`) && !get("_seadentWaveUsed")) {
           useSkill($skill`Sea *dent: Summon a Wave`)
         }
       },
