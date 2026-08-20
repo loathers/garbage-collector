@@ -1,4 +1,12 @@
-import { Familiar, isBanished, Item, mallPrice, Monster, myClass, myFury } from "kolmafia";
+import {
+  Familiar,
+  isBanished,
+  Item,
+  mallPrice,
+  Monster,
+  myClass,
+  myFury,
+} from "kolmafia";
 import {
   $class,
   $item,
@@ -9,7 +17,7 @@ import {
   have,
   Macro,
 } from "libram";
-import { garboAverageValue } from "../garboValue";
+import { garboValue } from "../garboValue";
 
 const monsters = $monsters`Mer-kin rustler, sea cowboy`;
 
@@ -35,9 +43,7 @@ const banishMethods: BanishMethod[] = [
   {
     name: "Spring Kick",
     available: () => have($item`spring shoes`),
-    macro:
-      Macro.trySkill($skill`Spring Kick`)
-        .trySkill($skill`Spring Away`),
+    macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
     equip: $item`spring shoes`,
   },
   {
@@ -96,36 +102,40 @@ export function cowoChooseBanish(): BanishMethod | null {
   return null;
 }
 
+const RED_TAFFY_DROP_WEIGHTS = new Map<Item, number>([
+  [$item`Alewife™ Ale`, 0.03],
+  [$item`bazookafish bubble gum`, 0.03],
+  [$item`beefy fish meat`, 0.03],
+  [$item`dull fish scale`, 0.0925],
+  [$item`eel battery`, 0.03],
+  [$item`eel sauce`, 0.03],
+  [$item`glistening fish meat`, 0.03],
+  [$item`high-pressure seltzer bottle`, 0.03],
+  [$item`imitation crab crate`, 0.03],
+  [$item`ink bladder`, 0.03],
+  [$item`live nautical mine`, 0.03],
+  [$item`Mer-kin healscroll`, 0.03],
+  [$item`Mer-kin lunchbox`, 0.0925],
+  [$item`Mer-kin thingpouch`, 0.03],
+  [$item`pufferfish spine`, 0.03],
+  [$item`rough fish scale`, 0.03],
+  [$item`salinated mint julep`, 0.03],
+  [$item`sand dollar`, 0.125],
+  [$item`sea lace`, 0.03],
+  [$item`seaweed`, 0.03],
+  [$item`shark cartilage`, 0.03],
+  [$item`slick fish meat`, 0.03],
+  [$item`slug of rum`, 0.03],
+  [$item`slug of shochu`, 0.03],
+  [$item`slug of vodka`, 0.03],
+  [$item`soggy seed packet`, 0.03],
+]);
+
 export function redTaffyWorth(): boolean {
-  return (
-    mallPrice($item`pulled red taffy`) <
-    garboAverageValue(
-      $item`Alewife™ Ale`,
-      $item`bazookafish bubble gum`,
-      $item`beefy fish meat`,
-      $item`dull fish scale`,
-      $item`eel battery`,
-      $item`eel sauce`,
-      $item`glistening fish meat`,
-      $item`high-pressure seltzer bottle`,
-      $item`imitation crab crate`,
-      $item`ink bladder`,
-      $item`live nautical mine`,
-      $item`Mer-kin healscroll`,
-      $item`Mer-kin lunchbox`,
-      $item`Mer-kin thingpouch`,
-      $item`pufferfish spine`,
-      $item`rough fish scale`,
-      $item`salinated mint julep`,
-      $item`sand dollar`,
-      $item`sea lace`,
-      $item`seaweed`,
-      $item`shark cartilage`,
-      $item`slick fish meat`,
-      $item`slug of rum`,
-      $item`slug of shochu`,
-      $item`slug of vodka`,
-      $item`soggy seed packet`,
-    )
+  const averageRedTaffyValue = [...RED_TAFFY_DROP_WEIGHTS.entries()].reduce(
+    (total, [item, weight]) => total + garboValue(item) * weight,
+    0,
   );
+
+  return mallPrice($item`pulled red taffy`) < averageRedTaffyValue;
 }
