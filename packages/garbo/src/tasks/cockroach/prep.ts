@@ -40,28 +40,17 @@ import { globalOptions } from "../../config";
 import { DebuffPlanner } from "./debuffplanner";
 import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
-import { highMeatMonsterCount, potentialDietAdventures } from "../../turns";
+import { highMeatMonsterCount } from "../../turns";
 
-// PirateRealm costs ~40 adventures across the day, but only ~17 before this
-// quest stops at Trash Island: 8 sailing, 8 combats and a final encounter.
+// KoL will not start a voyage without this many adventures in hand.
 const PIRATEREALM_DAY_TURNS = 40;
-const PIRATEREALM_FIRST_LEG_TURNS = 17;
 
 /**
- * Whether PirateRealm is genuinely unaffordable rather than merely pre-diet.
- *
- * This runs before runDiet(), so myAdventures() here excludes the day's organ
- * adventures. Compare whole-day cost against whole-day supply, but still require
- * the first leg's turns to be in hand now.
+ * Whether the port will refuse to start a voyage.
  * @returns Whether to offer to retarget away from cockroach
  */
 function cannotAffordPirateRealm(): boolean {
-  const dayAdventures =
-    myAdventures() + (globalOptions.nodiet ? 0 : potentialDietAdventures());
-  return (
-    dayAdventures <= PIRATEREALM_DAY_TURNS ||
-    myAdventures() < PIRATEREALM_FIRST_LEG_TURNS
-  );
+  return myAdventures() <= PIRATEREALM_DAY_TURNS;
 }
 
 export const CockroachSetup: Quest<GarboTask> = {
@@ -79,7 +68,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       do: () => {
         if (
           userConfirmDialog(
-            `You don't have enough adventures to do piraterealm (${myAdventures()} now, and we need ${PIRATEREALM_FIRST_LEG_TURNS} on hand plus about ${PIRATEREALM_DAY_TURNS} across the day, counting what the diet will provide); would you like us to automatically change your copy target to a Knob Goblin Guard? Otherwise, we're going to abort.`,
+            `You don't have enough adventures to do piraterealm (${myAdventures()} now, and we need more than ${PIRATEREALM_DAY_TURNS} in hand); would you like us to automatically change your copy target to a Knob Goblin Guard? Otherwise, we're going to abort.`,
             true,
           )
         ) {
