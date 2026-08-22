@@ -187,7 +187,11 @@ import {
   expectedFreeGiantSandwormQuestFights,
   FreeGiantSandwormQuest,
 } from "./tasks/freeGiantSandworm";
-import { CopyTargetFight, escapeRefusedTimeSpinner } from "./target/fights";
+import {
+  CopyTargetFight,
+  escapeRefusedTimeSpinner,
+  timeSpinnerOffers,
+} from "./target/fights";
 import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
@@ -1053,6 +1057,20 @@ const freeFightSources = [
         .setAutoAttack();
       visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
       runChoice(1);
+      const offered = timeSpinnerOffers($monster`drunk pygmy`);
+      if (offered === false) {
+        // Ground truth says no pygmy is on the list; don't submit a travel
+        // that is certain to be refused.
+        timeSpinnerRefusedPygmy = true;
+        escapeRefusedTimeSpinner($monster`drunk pygmy`);
+        return;
+      }
+      if (offered === null) {
+        print(
+          "Could not find the Time-Spinner's recent-fight list on the page; attempting the travel anyway.",
+          HIGHLIGHT,
+        );
+      }
       visitUrl(
         `choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`,
       );
