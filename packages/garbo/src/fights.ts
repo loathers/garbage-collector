@@ -1268,8 +1268,12 @@ const priorityFreeRunFightSources = [
         ? $location`Barf Mountain`
         : $location`The Dire Warren`,
       postTask: () => {
-        if(have($effect`Fishy`, 100) && have($item`Monodent of the Sea`) && !get("_seadentWaveUsed")) {
-          useSkill($skill`Sea *dent: Summon a Wave`)
+        if (
+          have($effect`Fishy`, 100) &&
+          have($item`Monodent of the Sea`) &&
+          !get("_seadentWaveUsed")
+        ) {
+          useSkill($skill`Sea *dent: Summon a Wave`);
         }
       },
     },

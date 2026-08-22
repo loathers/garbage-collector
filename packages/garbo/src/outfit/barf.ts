@@ -141,8 +141,8 @@ export function computeBarfOutfit(
 
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
 
-  if(globalOptions.cowo) {
-    outfit.modifier.push(`+sea`)
+  if (globalOptions.cowo) {
+    outfit.modifier.push(`+sea`);
   }
   outfit.modifier.push(
     `${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`,

@@ -113,9 +113,9 @@ function floristFriars(): GarboPostTask {
       FloristFriar.have() &&
       BARF_PLANTS.some((flower) => flower.available(farmLocation())),
     do: () =>
-      BARF_PLANTS.filter((flower) =>
-        flower.available(farmLocation()),
-      ).forEach((flower) => flower.plant()),
+      BARF_PLANTS.filter((flower) => flower.available(farmLocation())).forEach(
+        (flower) => flower.plant(),
+      ),
     available: () =>
       FloristFriar.have() &&
       BARF_PLANTS.some((flower) => flower.available(farmLocation())),
