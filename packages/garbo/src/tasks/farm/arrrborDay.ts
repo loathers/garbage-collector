@@ -53,6 +53,7 @@ export function arrrborDayTasks(): AlternateTask[] {
     sobriety: "sober",
     spendsTurn: true,
     turns: 2, // Each task could take up to 2 turns if a sapling was planted last Arrrbor Day
+    limit: { skip: 2 }, // Cannot get another sapling by ascending and will always encounter Plant a Tree, Plant a Tree!
   } satisfies Partial<AlternateTask>;
 
   return [
