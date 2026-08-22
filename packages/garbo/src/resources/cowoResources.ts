@@ -6,18 +6,23 @@ import {
   Monster,
   myClass,
   myFury,
+  toSlot,
+  weaponHands,
+  weaponType,
 } from "kolmafia";
 import {
   $class,
   $item,
   $monsters,
   $skill,
+  $slot,
   get,
   getBanishedMonsters,
   have,
   Macro,
 } from "libram";
 import { garboValue } from "../garboValue";
+import { Outfit } from "grimoire-kolmafia";
 
 const monsters = $monsters`Mer-kin rustler, sea cowboy`;
 
@@ -61,7 +66,7 @@ const banishMethods: BanishMethod[] = [
     macro: Macro.tryItem($item`human musk`),
   },
   {
-    name: "Monodent",
+    name: "Sea *dent: Throw a Lightning Bolt",
     available: () =>
       have($item`Monodent of the Sea`) && get("_seadentLightningUsed", 0) < 11,
     equip: $item`Monodent of the Sea`,
@@ -138,4 +143,40 @@ export function redTaffyWorth(): boolean {
   );
 
   return mallPrice($item`pulled red taffy`) < averageRedTaffyValue;
+}
+
+/**
+ * Equip a banish method's gear without creating an illegal dual-wield.
+ *
+ * KoL refuses an off-hand weapon of a different WeaponType and Outfit.equip()
+ * does not check that, so dress() would fail. When dual-wielding is not legal
+ * the banish item takes the weapon slot, restoring the weapon if it will not go
+ * on.
+ * @param outfit The outfit to add the banish gear to
+ * @param thing The gear the chosen banish method needs equipped
+ * @returns Whether the gear was equipped
+ */
+export function equipBanishGear(
+  outfit: Outfit,
+  thing: Item | Familiar,
+): boolean {
+  if (!(thing instanceof Item) || toSlot(thing) !== $slot`weapon`) {
+    return outfit.equip(thing);
+  }
+
+  const weapon = outfit.equips.get($slot`weapon`);
+  if (!weapon) return outfit.equip(thing, $slot`weapon`);
+
+  const canDualWield =
+    !outfit.equips.has($slot`off-hand`) &&
+    have($skill`Double-Fisted Skull Smashing`) &&
+    weaponHands(weapon) === 1 &&
+    weaponHands(thing) === 1 &&
+    weaponType(weapon) === weaponType(thing);
+  if (canDualWield && outfit.equip(thing, $slot`off-hand`)) return true;
+
+  outfit.equips.delete($slot`weapon`);
+  if (outfit.equip(thing, $slot`weapon`)) return true;
+  outfit.equips.set($slot`weapon`, weapon);
+  return false;
 }

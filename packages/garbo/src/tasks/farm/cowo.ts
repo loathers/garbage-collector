@@ -4,6 +4,7 @@ import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import {
   cowoChooseBanish,
+  equipBanishGear,
   getCowoMonstersToBanish,
   redTaffyWorth,
 } from "../../resources/cowoResources";
@@ -26,7 +27,7 @@ import postCombatActions from "../../post";
 import { Quest } from "grimoire-kolmafia";
 
 export const CowoQuest: Quest<GarboTask> = {
-   name: "Sea Cow Turn",
+  name: "Sea Cow Turn",
   tasks: [
     {
       name: "Coral Corral",
@@ -50,17 +51,20 @@ export const CowoQuest: Quest<GarboTask> = {
       },
       completed: () => myAdventures() === 0,
       outfit: () => {
-        const outfit =
-          have($effect`Driving Waterproofly`)
-            ? barfOutfit({})
-            :
-          barfOutfit({
-            pants: $item`really, really nice swimming trunks`,
-          });
+        const outfit = have($effect`Driving Waterproofly`)
+          ? barfOutfit({})
+          : barfOutfit({
+              pants: $item`really, really nice swimming trunks`,
+            });
         const banishMethod = cowoChooseBanish();
 
-        if (banishMethod?.equip) {
-          outfit.equip(banishMethod.equip);
+        if (
+          banishMethod?.equip &&
+          !equipBanishGear(outfit, banishMethod.equip)
+        ) {
+          throw new Error(
+            `Could not equip ${banishMethod.equip} to banish with ${banishMethod.name}.`,
+          );
         }
 
         return outfit;
@@ -68,7 +72,7 @@ export const CowoQuest: Quest<GarboTask> = {
       do: $location`The Coral Corral`,
       combat: new GarboStrategy(() => {
         const banishMethod = cowoChooseBanish();
-        if(banishMethod) {
+        if (banishMethod) {
           print(`Planning to banish using ${banishMethod?.name}`);
         }
 
@@ -119,4 +123,4 @@ export const CowoQuest: Quest<GarboTask> = {
       spendsTurn: true,
     },
   ],
-}
+};
