@@ -246,6 +246,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "This is used only when autoUserConfirm is true, will automatically use resources (such as pocket wishes, 11-leaf clovers, etc) up to this threshold to source a target monster for chaining before requesting user interference.",
           default: 1,
         }),
+        autoWishProfitThreshold: Args.number({
+          setting: "garbo_autoWishProfitThreshold",
+          help: "If 0 or greater, skip the confirmation dialog and wish for your copy target automatically whenever we have copies banked but no way to start a chain, and the expected profit (in meat, after paying for the wish) is at least this large. Negative values (the default) always ask. Genie fights remain capped at 3 per day.",
+          default: -1,
+        }),
         restoreHpTarget: Args.number({
           setting: "garbo_restoreHpTarget",
           help: "If you're a very high level, what HP threshold should garbo aim to maintain?",

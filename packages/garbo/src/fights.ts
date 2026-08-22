@@ -13,6 +13,7 @@ import {
   equippedItem,
   familiarEquippedEquipment,
   getAutoAttack,
+  handlingChoice,
   haveOutfit,
   inebrietyLimit,
   isBanished,
@@ -186,7 +187,7 @@ import {
   expectedFreeGiantSandwormQuestFights,
   FreeGiantSandwormQuest,
 } from "./tasks/freeGiantSandworm";
-import { CopyTargetFight } from "./target/fights";
+import { CopyTargetFight, escapeRefusedTimeSpinner } from "./target/fights";
 import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
@@ -808,6 +809,9 @@ function molemanReady() {
   return have($item`molehill mountain`) && !get("_molehillMountainUsed");
 }
 
+/** Whether the Time-Spinner has already declined to travel to a drunk pygmy. */
+let timeSpinnerRefusedPygmy = false;
+
 const freeFightSources = [
   new FreeFight(
     () => (wantPills() ? 5 - get("_saberForceUses") : 0),
@@ -1037,6 +1041,7 @@ const freeFightSources = [
 
   new FreeFight(
     () =>
+      !timeSpinnerRefusedPygmy &&
       have($item`Time-Spinner`) &&
       !doingGregFight() &&
       $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") &&
@@ -1051,6 +1056,12 @@ const freeFightSources = [
       visitUrl(
         `choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`,
       );
+      // Still in a choice means the travel was refused. A refusal spends no
+      // minutes, so latch it off or available() keeps re-offering it.
+      if (handlingChoice()) {
+        timeSpinnerRefusedPygmy = true;
+        escapeRefusedTimeSpinner($monster`drunk pygmy`);
+      }
     },
     true,
     pygmyOptions(),

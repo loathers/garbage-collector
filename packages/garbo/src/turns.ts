@@ -43,12 +43,7 @@ export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
 
   // Estimate potential adventures from empty organs
   const unrealizedOrganAdventures = estimateEmptyOrgans
-    ? Math.max(
-        potentialFullnessAdventures() +
-          potentialInebrietyAdventures() +
-          potentialNonOrganAdventures(),
-        0,
-      )
+    ? potentialDietAdventures()
     : 0;
 
   let turns;
@@ -84,15 +79,9 @@ export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
  * @returns A guess of how many turns will be used outside garbo
  */
 export function remainingUserTurns(): number {
-  const dietAdventures = Math.max(
-    potentialFullnessAdventures() +
-      potentialInebrietyAdventures() +
-      potentialNonOrganAdventures(),
-    0,
-  );
   const turns =
     myAdventures() +
-    dietAdventures -
+    potentialDietAdventures() -
     estimatedGarboTurns() +
     globalOptions.saveTurns;
   return turns;
@@ -126,6 +115,21 @@ function potentialInebrietyAdventures(): number {
       sweatSpace +
       shotglassSpace) *
     7
+  );
+}
+
+/**
+ * Computes the adventures we still expect to gain from filling our organs.
+ *
+ * Add this to myAdventures() when judging a whole-day cost before runDiet().
+ * @returns Adventures we expect to gain from food, booze and non-organ sources
+ */
+export function potentialDietAdventures(): number {
+  return Math.max(
+    potentialFullnessAdventures() +
+      potentialInebrietyAdventures() +
+      potentialNonOrganAdventures(),
+    0,
   );
 }
 

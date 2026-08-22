@@ -40,7 +40,29 @@ import { globalOptions } from "../../config";
 import { DebuffPlanner } from "./debuffplanner";
 import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
-import { highMeatMonsterCount } from "../../turns";
+import { highMeatMonsterCount, potentialDietAdventures } from "../../turns";
+
+// PirateRealm costs ~40 adventures across the day, but only ~17 before this
+// quest stops at Trash Island: 8 sailing, 8 combats and a final encounter.
+const PIRATEREALM_DAY_TURNS = 40;
+const PIRATEREALM_FIRST_LEG_TURNS = 17;
+
+/**
+ * Whether PirateRealm is genuinely unaffordable rather than merely pre-diet.
+ *
+ * This runs before runDiet(), so myAdventures() here excludes the day's organ
+ * adventures. Compare whole-day cost against whole-day supply, but still require
+ * the first leg's turns to be in hand now.
+ * @returns Whether to offer to retarget away from cockroach
+ */
+function cannotAffordPirateRealm(): boolean {
+  const dayAdventures =
+    myAdventures() + (globalOptions.nodiet ? 0 : potentialDietAdventures());
+  return (
+    dayAdventures <= PIRATEREALM_DAY_TURNS ||
+    myAdventures() < PIRATEREALM_FIRST_LEG_TURNS
+  );
+}
 
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
@@ -52,12 +74,12 @@ export const CockroachSetup: Quest<GarboTask> = {
   tasks: [
     {
       name: "40 Adventure Failsafe",
-      ready: () => myAdventures() <= 40,
+      ready: () => cannotAffordPirateRealm(),
       completed: () => have($item`PirateRealm eyepatch`),
       do: () => {
         if (
           userConfirmDialog(
-            "You don't have enough adventures to do piraterealm; would you like us to automatically change your copy target to a Knob Goblin Guard? Otherwise, we're going to abort.",
+            `You don't have enough adventures to do piraterealm (${myAdventures()} now, and we need ${PIRATEREALM_FIRST_LEG_TURNS} on hand plus about ${PIRATEREALM_DAY_TURNS} across the day, counting what the diet will provide); would you like us to automatically change your copy target to a Knob Goblin Guard? Otherwise, we're going to abort.`,
             true,
           )
         ) {
@@ -212,6 +234,9 @@ export const CockroachSetup: Quest<GarboTask> = {
               },
             ),
             avoid: $items`Roman Candelabra`,
+            // Stats must stay at or under 100, and DebuffPlanner only spends
+            // potions to get there -- gear stats are overhead it cannot undo.
+            modifier: Stat.all().map((stat) => `-${stat}`),
           },
           get("_lastPirateRealmIsland", $location`none`),
         ),
