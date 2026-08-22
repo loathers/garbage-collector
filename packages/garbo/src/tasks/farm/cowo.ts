@@ -1,5 +1,4 @@
 import { GarboTask } from "../engine";
-import { globalOptions } from "../../config";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import {
@@ -25,13 +24,14 @@ import { Macro } from "../../combat";
 import { trackMarginalMpa } from "../../session";
 import postCombatActions from "../../post";
 import { Quest } from "grimoire-kolmafia";
+import { farmingStrategy } from "../../lib";
 
 export const CowoQuest: Quest<GarboTask> = {
   name: "Sea Cow Turn",
   tasks: [
     {
       name: "Coral Corral",
-      ready: () => globalOptions.cowo,
+      ready: () => farmingStrategy().location() === $location`The Coral Corral`,
       prepare: () => {
         if (redTaffyWorth()) {
           retrieveItem($item`pulled red taffy`);

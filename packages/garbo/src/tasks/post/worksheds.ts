@@ -8,7 +8,6 @@ import {
   visitUrl,
 } from "kolmafia";
 import {
-  $effect,
   $item,
   $items,
   AsdonMartin,
@@ -27,6 +26,7 @@ import {
   trainNeedsRotating,
 } from "../../resources";
 import { GarboPostTask } from "./lib";
+import { farmingStrategy } from "../../lib";
 type WorkshedOptions = {
   workshed: Item;
   done?: () => boolean;
@@ -124,21 +124,15 @@ const worksheds = [
   new GarboWorkshed({
     workshed: $item`Asdon Martin keyfob (on ring)`,
     done: () => {
-      const asdonEffect = globalOptions.cowo
-        ? $effect`Driving Waterproofly`
-        : $effect`Driving Observantly`;
       return (
-        haveEffect(asdonEffect) >=
+        haveEffect(farmingStrategy().asdonEffect()) >=
         estimatedGarboTurns() +
           (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
     action: () => {
-      const asdonEffect = globalOptions.cowo
-        ? $effect`Driving Waterproofly`
-        : $effect`Driving Observantly`;
       AsdonMartin.drive(
-        asdonEffect,
+        farmingStrategy().asdonEffect(),
         estimatedGarboTurns() +
           (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
       );

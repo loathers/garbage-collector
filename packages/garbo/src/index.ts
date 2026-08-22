@@ -68,6 +68,8 @@ import { dailyFights, freeFights } from "./fights";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
+  FarmingMethod,
+  farmingStrategy,
   HIGHLIGHT,
   isFreeAndCopyable,
   printEventLog,
@@ -106,10 +108,7 @@ import { acquire } from "./acquire";
 const TICKET_MAX_PRICE = 500000;
 
 function ensureBarfAccess() {
-  if (
-    !(get("stenchAirportAlways") || get("_stenchAirportToday")) &&
-    !globalOptions.cowo
-  ) {
+  if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
     const ticket = $item`one-day ticket to Dinseylandfill`;
     // TODO: Get better item acquisition logic that e.g. checks own mall store.
     if (!have(ticket)) buy(1, ticket, TICKET_MAX_PRICE);
@@ -141,11 +140,11 @@ export function main(argString = ""): void {
 
   // Cowo is for professionals only
   if (
-    globalOptions.cowo &&
-    (!(effectFact($monster`sea cow`) === $effect`Fishy`) ||
+    globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
+    (effectFact($monster`sea cow`) !== $effect`Fishy` ||
       get("seahorseName") === "")
   ) {
-    globalOptions.cowo = false;
+    globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
 
   // Hit up main.php to get out of easily escapable choices
@@ -324,7 +323,11 @@ export function main(argString = ""): void {
   examine($item`designer sweatpants`);
 
   startSession();
-  if (!globalOptions.nobarf && !globalOptions.simdiet) {
+  if (
+    !globalOptions.nobarf &&
+    !globalOptions.simdiet &&
+    farmingStrategy().ensureBarfAccess()
+  ) {
     ensureBarfAccess();
   }
 

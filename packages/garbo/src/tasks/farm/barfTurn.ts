@@ -18,6 +18,7 @@ import {
   shouldCheckParachute,
   updateParachuteFailure,
 } from "./lib";
+import { farmingStrategy } from "../../lib";
 
 export const BarfTurnQuest: Quest<GarboTask> = {
   name: "Barf Turn",
@@ -28,7 +29,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         CrepeParachute.have() &&
         shouldCheckParachute() &&
         myLocation() === $location`Barf Mountain` &&
-        !globalOptions.cowo,
+        farmingStrategy().location() === $location`Barf Mountain`,
       completed: () => have($effect`Everything looks Beige`),
       outfit: () => barfOutfit({}),
       do: () => CrepeParachute.fight(getPreferredBarfMonster()),
@@ -44,7 +45,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
     },
     {
       name: "Barf",
-      ready: () => !globalOptions.cowo,
+      ready: () => farmingStrategy().location() === $location`Barf Mountain`,
       completed: () => myAdventures() === 0,
       outfit: () => {
         const lubing =

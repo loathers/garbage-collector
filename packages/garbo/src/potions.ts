@@ -60,6 +60,7 @@ import {
   aprilFoolsRufus,
   baseMeat,
   bestShadowRift,
+  farmingStrategy,
   HIGHLIGHT,
   improvesAStat,
   marginalFamWeightValue,
@@ -262,7 +263,7 @@ export class Potion {
     return (
       this.effectValues?.meatDrop ??
       getModifier("Meat Drop", this.effect()) +
-        (globalOptions.cowo
+        (farmingStrategy().underwater()
           ? getModifier("Meat Drop Penalty", this.effect())
           : 0) +
         2 * (usingPurse() ? this.smithsness() : 0)
@@ -273,7 +274,7 @@ export class Potion {
     return (
       this.effectValues?.famWeight ??
       getModifier("Familiar Weight", this.effect()) +
-        (globalOptions.cowo
+        (farmingStrategy().underwater()
           ? getModifier("Hidden Familiar Weight", this.effect())
           : 0)
     );

@@ -36,12 +36,12 @@ import {
 } from "./lib";
 import {
   BonusEquipMode,
+  farmingStrategy,
   MEAT_TARGET_MULTIPLIER,
   modeValueOfItem,
   modeValueOfMeat,
 } from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
-import { globalOptions } from "../config";
 
 function chooseGun() {
   if (have($item`love`)) {
@@ -141,7 +141,7 @@ export function computeBarfOutfit(
 
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
 
-  if (globalOptions.cowo) {
+  if (farmingStrategy().underwater()) {
     outfit.modifier.push(`+sea`);
   }
   outfit.modifier.push(

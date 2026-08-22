@@ -29,6 +29,7 @@ import { globalOptions } from "../config";
 import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,
+  farmingStrategy,
   felizValue,
   garbageTouristRatio,
   isFree,
@@ -101,7 +102,7 @@ export function prepRobortender(): void {
           baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()
-        : globalOptions.cowo
+        : farmingStrategy().underwater()
           ? baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()

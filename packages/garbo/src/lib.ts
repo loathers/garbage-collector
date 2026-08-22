@@ -26,6 +26,7 @@ import {
   Location,
   meatDrop,
   meatDropModifier,
+  Modifier,
   Monster,
   mpCost,
   myBjornedFamiliar,
@@ -67,10 +68,12 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $effects,
   $familiar,
   $item,
   $items,
   $location,
+  $modifiers,
   $monster,
   $skill,
   $thralls,
@@ -127,6 +130,66 @@ export enum BonusEquipMode {
   BARF,
 }
 
+export enum FarmingMethod {
+  BARF_MOUNTAIN,
+  THE_CORAL_CORRAL,
+}
+
+interface FarmingStrategy {
+  stasisRounds(): number;
+  asdonEffect(): Effect;
+  ensureBarfAccess(): boolean;
+  baseMeat(): number;
+  turnsToNC(): number;
+  bonusModifiers(): Modifier[];
+  location(): Location;
+  ensureML(): boolean;
+  bonusEffects(): Effect[];
+  underwater(): boolean;
+}
+
+const BARF_MOUNTAIN: FarmingStrategy = {
+  stasisRounds: () => 20,
+  asdonEffect: () => $effect`Driving Observantly`,
+  ensureBarfAccess: () => true,
+  baseMeat: () => 250,
+  turnsToNC: () =>
+    (27 * barfTourists) /
+      (garbageTourists + angryTourists + 3 * touristFamilies) +
+    1 * touristFamilyRatio +
+    2 * (1 - touristFamilyRatio) * touristFamilyRatio +
+    3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio),
+  bonusModifiers: () => $modifiers``,
+  location: () => $location`Barf Mountain`,
+  ensureML: () => true,
+  bonusEffects: () => $effects`How to Scam Tourists`,
+  underwater: () => false,
+};
+
+const THE_CORAL_CORRAL: FarmingStrategy = {
+  stasisRounds: () => 5,
+  asdonEffect: () => $effect`Driving Waterproofly`,
+  ensureBarfAccess: () => false,
+  baseMeat: () => 300,
+  turnsToNC: () => Infinity,
+  bonusModifiers: () => $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
+  location: () => $location`The Coral Corral`,
+  ensureML: () => false,
+  bonusEffects: () => $effects``,
+  underwater: () => true,
+};
+
+export function farmingStrategy(): FarmingStrategy {
+  switch (globalOptions.prefs.farmingMethod) {
+    case FarmingMethod.THE_CORAL_CORRAL:
+      return THE_CORAL_CORRAL;
+
+    case FarmingMethod.BARF_MOUNTAIN:
+    default:
+      return BARF_MOUNTAIN;
+  }
+}
+
 export function modeIsFree(mode: BonusEquipMode): boolean {
   return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
 }
@@ -164,8 +227,7 @@ export const songboomMeat = () =>
     : 0;
 
 // all tourists have a basemeat of 250
-export const baseMeat = () =>
-  globalOptions.cowo ? 300 + songboomMeat() : 250 + songboomMeat();
+export const baseMeat = () => farmingStrategy().baseMeat() + songboomMeat();
 export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {
@@ -682,13 +744,7 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // 30 tourists till NC, with families counting as 3
 // Estimate number of turns till the counter hits 27
 // then estimate the expected number of turns required to hit a counter of >= 30
-export const turnsToNC = globalOptions.cowo
-  ? Infinity
-  : (27 * barfTourists) /
-      (garbageTourists + angryTourists + 3 * touristFamilies) +
-    1 * touristFamilyRatio +
-    2 * (1 - touristFamilyRatio) * touristFamilyRatio +
-    3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
+export const turnsToNC = farmingStrategy().turnsToNC();
 
 const GHOST_DOG_ADVENTURES = [
   "Puttin' it on Wax",
@@ -1245,5 +1301,4 @@ export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
 
-export const farmLocation = () =>
-  globalOptions.cowo ? $location`The Coral Corral` : $location`Barf Mountain`;
+export const farmLocation = () => farmingStrategy().location();

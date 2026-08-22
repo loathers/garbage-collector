@@ -60,6 +60,7 @@ import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { estimatedGarboTurns, wanderingCopytargetsRemaining } from "./turns";
 import {
+  farmingStrategy,
   farmLocation,
   gooseDroneEligible,
   isStrongScaler,
@@ -495,11 +496,7 @@ export class Macro extends StrictMacro {
       get("_bittycar")
     ) {
       // These things can take a little longer to proc sometimes
-      stasisRounds = 20;
-    }
-
-    if (globalOptions.cowo) {
-      stasisRounds = 5;
+      stasisRounds = farmingStrategy().stasisRounds();
     }
 
     if (isQuickCombat()) {

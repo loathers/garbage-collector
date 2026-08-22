@@ -52,6 +52,7 @@ import { globalOptions } from "../../config";
 import { computeDiet, consumeDiet } from "../../diet";
 import {
   bestJuneCleaverOption,
+  farmingStrategy,
   farmLocation,
   freeRest,
   juneCleaverChoiceValues,
@@ -93,7 +94,7 @@ function useStuff(): GarboPostTask {
   };
 }
 
-const BARF_PLANTS = globalOptions.cowo
+const BARF_PLANTS = farmingStrategy().underwater()
   ? [
       FloristFriar.Crookweed,
       FloristFriar.ElectricEelgrass,

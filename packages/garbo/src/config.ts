@@ -1,6 +1,7 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
 import { $item, $items, $monster } from "libram";
+import { FarmingMethod } from "./lib";
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -261,6 +262,32 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "At how many minutes before Rollover should we terminate to let you get ready for bed?",
           default: 5,
         }),
+        farmingMethod: Args.custom<FarmingMethod>(
+          {
+            default: FarmingMethod.BARF_MOUNTAIN,
+            help: "Select the farming method to use.",
+            options: [
+              [FarmingMethod.BARF_MOUNTAIN, "barf mountain"],
+              [FarmingMethod.THE_CORAL_CORRAL, "sea cows"],
+            ],
+          },
+          (value) => {
+            const normalized = value.toLowerCase();
+
+            switch (normalized) {
+              case "barf":
+              case "barf mountain":
+                return FarmingMethod.BARF_MOUNTAIN;
+
+              case "cowo":
+                return FarmingMethod.THE_CORAL_CORRAL;
+
+              default:
+                throw new Error(`Unknown farming method: ${value}`);
+            }
+          },
+          "Farming Method",
+        ),
       },
     ),
     /*

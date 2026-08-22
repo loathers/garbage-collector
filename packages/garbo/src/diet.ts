@@ -104,6 +104,7 @@ import {
 } from "./resources";
 import {
   arrayEquals,
+  farmingStrategy,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
   targetingMeat,
@@ -1495,9 +1496,7 @@ export function runDiet(): void {
           GarboWorkshed.current?.workshed ===
           $item`Asdon Martin keyfob (on ring)`
         ) {
-          const asdonEffect = globalOptions.cowo
-            ? $effect`Driving Waterproofly`
-            : $effect`Driving Observantly`;
+          const asdonEffect = farmingStrategy().asdonEffect();
           AsdonMartin.drive(
             asdonEffect,
             dietAdventures(dietBuilder.diet()) +

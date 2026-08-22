@@ -32,6 +32,7 @@ import { bonusGear } from "../outfit";
 import {
   baseMeat,
   BonusEquipMode,
+  farmingStrategy,
   farmLocation,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
@@ -51,14 +52,13 @@ import {
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
-import { globalOptions } from "../config";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = baseMeat() / 100;
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
-    globalOptions.cowo &&
+    farmingStrategy().underwater() &&
     !have($effect`Driving Waterproofly`) &&
     !familiar.underwater
   );
