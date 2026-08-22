@@ -1,5 +1,6 @@
 import {
   abort,
+  availableChoiceSelectInputs,
   canAdventure,
   getClanLounge,
   handlingChoice,
@@ -282,6 +283,27 @@ function targetInCombatQueue(): boolean {
   );
 }
 
+/**
+ * From inside choice 1196, whether a monster is on the Time-Spinner's offer
+ * list -- the ground truth that `combatQueue` only approximates.
+ *
+ * Reads mafia's parse of the current choice form rather than the page markup;
+ * the list is a <select name="monid"> whose keys are monster ids (with a "0"
+ * placeholder).
+ * @param monster The monster to look for
+ * @returns Whether the monster is offered, or null if no list was found
+ */
+export function timeSpinnerOffers(monster: Monster): boolean | null {
+  const monids = availableChoiceSelectInputs(1)["monid"];
+  if (!monids || Object.keys(monids).length === 0) return null;
+  if (`${monster.id}` in monids) return true;
+  print(
+    `The Time-Spinner is only offering: ${Object.values(monids).join(", ")}`,
+    HIGHLIGHT,
+  );
+  return false;
+}
+
 /** Whether the Time-Spinner has already declined to travel to our target. */
 let timeSpinnerRefusedTarget = false;
 
@@ -339,6 +361,20 @@ export const copySources = [
         () => {
           directlyUse($item`Time-Spinner`);
           runChoice(1);
+          const offered = timeSpinnerOffers(globalOptions.target);
+          if (offered === false) {
+            // Ground truth says the target is not on the list; don't submit a
+            // travel that is certain to be refused.
+            timeSpinnerRefusedTarget = true;
+            escapeRefusedTimeSpinner(globalOptions.target);
+            return;
+          }
+          if (offered === null) {
+            print(
+              "Could not find the Time-Spinner's recent-fight list on the page; attempting the travel anyway.",
+              HIGHLIGHT,
+            );
+          }
           visitUrl(
             `choice.php?whichchoice=${TRAVEL_TO_A_RECENT_FIGHT}&monid=${globalOptions.target.id}&option=1`,
           );
