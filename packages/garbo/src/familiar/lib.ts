@@ -126,13 +126,14 @@ export function canOpenRedPresent(): boolean {
 export function turnsAvailable(): number {
   const baseTurns = estimatedGarboTurns();
   const digitizes = wanderingCopytargetsRemaining();
-  const mapTurns = globalOptions.ascend
-    ? clamp(
-        availableAmount($item`Map to Safety Shelter Grimace Prime`),
-        0,
-        ESTIMATED_OVERDRUNK_TURNS,
-      )
-    : 0;
+  const mapTurns =
+    globalOptions.ascend && !globalOptions.prefs.skipOverdrunkAdventures
+      ? clamp(
+          availableAmount($item`Map to Safety Shelter Grimace Prime`),
+          0,
+          ESTIMATED_OVERDRUNK_TURNS,
+        )
+      : 0;
 
   const barfTurns = baseTurns - digitizes - mapTurns;
   const barfCombatRate = 1 - 1 / turnsToNC;

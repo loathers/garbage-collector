@@ -220,6 +220,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           setting: "garbo_skipAscensionCheck",
           help: "Set to true to skip verifying that your account has broken the prism, otherwise you will be warned upon starting the script.",
         }),
+        skipOverdrunkAdventures: Args.boolean({
+          setting: "garbo_skipOverdrunkAdventures",
+          help: "Set to true to stop garbo adventuring with Drunkula's wineglass while overdrunk. It still runs everything that does not cost a turn, so the day is finished rather than abandoned.",
+          default: false,
+        }),
         fightGlitch: Args.boolean({
           setting: "garbo_fightGlitch",
           help: "Set to true to fight the glitch season reward. You need certain skills, see relay for info.",
