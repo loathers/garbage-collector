@@ -5,6 +5,7 @@ import {
   canEquip,
   cliExecute,
   currentRound,
+  effectFact,
   equip,
   getCampground,
   getClanName,
@@ -34,6 +35,7 @@ import {
 import {
   $class,
   $classes,
+  $effect,
   $familiars,
   $item,
   $items,
@@ -135,6 +137,15 @@ export function main(argString = ""): void {
   if (globalOptions.help) {
     Args.showHelp(globalOptions);
     return;
+  }
+
+  // Cowo is for professionals only
+  if (
+    globalOptions.cowo &&
+    (!(effectFact($monster`sea cow`) === $effect`Fishy`) ||
+      get("seahorseName") === "")
+  ) {
+    globalOptions.cowo = false;
   }
 
   // Hit up main.php to get out of easily escapable choices
