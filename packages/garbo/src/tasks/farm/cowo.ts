@@ -4,7 +4,6 @@ import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import {
   cowoChooseBanish,
-  equipBanishGear,
   getCowoMonstersToBanish,
   redTaffyWorth,
 } from "../../resources/cowoResources";
@@ -12,6 +11,7 @@ import { myAdventures, print, retrieveItem, toMonster } from "kolmafia";
 import {
   $effect,
   $item,
+  $items,
   $location,
   $monsters,
   AsdonMartin,
@@ -51,23 +51,14 @@ export const CowoQuest: Quest<GarboTask> = {
       },
       completed: () => myAdventures() === 0,
       outfit: () => {
-        const outfit = have($effect`Driving Waterproofly`)
-          ? barfOutfit({})
-          : barfOutfit({
-              pants: $item`really, really nice swimming trunks`,
-            });
-        const banishMethod = cowoChooseBanish();
+        const banishItem = cowoChooseBanish()?.equip;
 
-        if (
-          banishMethod?.equip &&
-          !equipBanishGear(outfit, banishMethod.equip)
-        ) {
-          throw new Error(
-            `Could not equip ${banishMethod.equip} to banish with ${banishMethod.name}.`,
-          );
-        }
-
-        return outfit;
+        return barfOutfit({
+          ...(have($effect`Driving Waterproofly`)
+            ? {}
+            : { pants: $item`really, really nice swimming trunks` }),
+          ...(banishItem ? { equip: $items`${banishItem.name}` } : {}),
+        });
       },
       do: $location`The Coral Corral`,
       combat: new GarboStrategy(() => {
