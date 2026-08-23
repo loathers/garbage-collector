@@ -2,8 +2,8 @@ import { Item } from "kolmafia";
 import { makeValue, ValueFunctions } from "garbo-lib";
 
 import { $item } from "libram";
+import { logMessage } from "./log";
 import { printPriceOverrideWarning, readItemValues } from "./price_garbo";
-import { printLog } from "./lib";
 
 let _valueFunctions: ValueFunctions | undefined;
 function garboValueFunctions(): ValueFunctions {
@@ -12,9 +12,9 @@ function garboValueFunctions(): ValueFunctions {
     const overrideItemValues = readItemValues();
     if (overrideItemValues.size > 0) {
       printPriceOverrideWarning();
-      printLog("GARBO PRICE OVERRIDES");
+      logMessage("GARBO PRICE OVERRIDES");
       overrideItemValues.forEach((value, item) => {
-        printLog(`${item}: ${value}`);
+        logMessage(`${item}: ${value}`);
         itemValues.set(item, value);
       });
     }

@@ -140,7 +140,6 @@ import {
   isStrongScaler,
   kramcoGuaranteed,
   lastAdventureWasWeird,
-  logMessage,
   ltbRun,
   mapMonster,
   maxPassiveDamage,
@@ -157,6 +156,7 @@ import {
   userConfirmDialog,
   valueDrops,
 } from "./lib";
+import { logMessage } from "./log";
 import { freeFightMood, meatMood } from "./mood";
 import {
   freeFightOutfit,
