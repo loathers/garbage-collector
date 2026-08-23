@@ -73,11 +73,6 @@ import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
 import { maximumPinataCasts, safeRefractedCasts } from "./resources";
 
-export const getPreferredBarfMonster = () =>
-  have($familiar`Skeleton of Crimbo Past`) && get("_knuckleboneDrops", 0) < 100
-    ? $monster`angry tourist`
-    : $monster`garbage tourist`;
-
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
   const digitizesRemaining = SourceTerminal.getDigitizeUsesRemaining();
@@ -311,7 +306,7 @@ export class Macro extends StrictMacro {
         pigSkinnerSetup ||
         bearArmsSetup);
 
-    const preferredBarfMonster = getPreferredBarfMonster();
+    const preferredBarfMonster = farmingStrategy().targetMonster();
 
     return this.externalIf(
       shouldRedigitize(),
@@ -496,7 +491,7 @@ export class Macro extends StrictMacro {
       get("_bittycar")
     ) {
       // These things can take a little longer to proc sometimes
-      stasisRounds = farmingStrategy().stasisRounds();
+      stasisRounds = farmingStrategy().stasisRounds;
     }
 
     if (isQuickCombat()) {

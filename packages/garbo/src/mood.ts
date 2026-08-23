@@ -75,7 +75,7 @@ export function meatMood(
   mood.skill($skill`Disco Leer`);
   mood.skill($skill`Singer's Faithful Ocelot`);
   mood.skill($skill`The Spirit of Taking`);
-  if (farmingStrategy().ensureML()) {
+  if (farmingStrategy().ensureML) {
     mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
     mood.skill($skill`Drescher's Annoying Noise`);
     mood.skill($skill`Pride of the Puffin`);
@@ -108,7 +108,7 @@ export function meatMood(
   }
 
   if (getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(farmingStrategy().asdonEffect());
+    mood.drive(farmingStrategy().asdonEffect);
   }
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
@@ -231,7 +231,7 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(farmingStrategy().asdonEffect());
+    mood.drive(farmingStrategy().asdonEffect);
   }
 
   return mood;

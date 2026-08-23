@@ -1,11 +1,8 @@
 import { have } from "libram";
 import { myAdventures, myLocation, totalTurnsPlayed } from "kolmafia";
-import { $effect, $item, $items, $location, CrepeParachute, get } from "libram";
+import { $effect, CrepeParachute } from "libram";
 import { Quest } from "grimoire-kolmafia";
-
-import { getPreferredBarfMonster, Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
-import { globalOptions } from "../../config";
 import { barfOutfit } from "../../outfit";
 import { estimatedGarboTurns } from "../../turns";
 import { completeBarfQuest } from "../../resources";
@@ -19,20 +16,20 @@ import {
   updateParachuteFailure,
 } from "./lib";
 import { farmingStrategy } from "../../lib";
+import { Macro } from "../../combat";
 
 export const BarfTurnQuest: Quest<GarboTask> = {
   name: "Barf Turn",
   tasks: [
     {
-      name: "Barf Parachute",
+      name: "Parachute",
       ready: () =>
         CrepeParachute.have() &&
         shouldCheckParachute() &&
-        myLocation() === $location`Barf Mountain` &&
-        farmingStrategy().location() === $location`Barf Mountain`,
+        myLocation() === farmingStrategy().location,
       completed: () => have($effect`Everything looks Beige`),
       outfit: () => barfOutfit({}),
-      do: () => CrepeParachute.fight(getPreferredBarfMonster()),
+      do: () => CrepeParachute.fight(farmingStrategy().targetMonster()),
       combat: new GarboStrategy(() => Macro.meatKill()),
       prepare: () =>
         !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
@@ -44,31 +41,20 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       spendsTurn: true,
     },
     {
-      name: "Barf",
-      ready: () => farmingStrategy().location() === $location`Barf Mountain`,
+      name: "Farm",
+      ready: () => myLocation() === farmingStrategy().location,
       completed: () => myAdventures() === 0,
-      outfit: () => {
-        const lubing =
-          get("dinseyRollercoasterNext") && have($item`lube-shoes`);
-        return barfOutfit(lubing ? { equip: $items`lube-shoes` } : {});
-      },
-      do: $location`Barf Mountain`,
-      combat: new GarboStrategy(
-        () => Macro.meatKill(),
-        () =>
-          Macro.if_(
-            `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-            Macro.meatKill(),
-          ).abort(),
-      ),
-      prepare: () =>
-        !get("dinseyRollercoasterNext") &&
-        !(totalTurnsPlayed() % 11) &&
-        meatMood().execute(estimatedGarboTurns()),
-      post: () => {
-        completeBarfQuest();
-        trackMarginalMpa();
-      },
+
+      prepare: () => farmingStrategy().prepare(),
+
+      outfit: () => farmingStrategy().outfit(),
+
+      do: () => farmingStrategy().location,
+
+      combat: farmingStrategy().combat(),
+
+      post: () => farmingStrategy().post(),
+
       spendsTurn: true,
     },
   ],

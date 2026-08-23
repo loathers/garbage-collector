@@ -94,7 +94,7 @@ function useStuff(): GarboPostTask {
   };
 }
 
-const BARF_PLANTS = farmingStrategy().underwater()
+const BARF_PLANTS = farmingStrategy().underwater
   ? [
       FloristFriar.Crookweed,
       FloristFriar.ElectricEelgrass,

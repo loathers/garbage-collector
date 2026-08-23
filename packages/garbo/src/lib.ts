@@ -48,6 +48,7 @@ import {
   printHtml,
   restoreHp,
   restoreMp,
+  retrieveItem,
   rollover,
   runChoice,
   runCombat,
@@ -57,7 +58,9 @@ import {
   spleenLimit,
   Stat,
   todayToString,
+  toMonster,
   totalFreeRests,
+  totalTurnsPlayed,
   toUrl,
   use,
   useFamiliar,
@@ -75,9 +78,11 @@ import {
   $location,
   $modifiers,
   $monster,
+  $monsters,
   $skill,
   $thralls,
   ActionSource,
+  AsdonMartin,
   bestLibramToCast,
   ChateauMantegna,
   clamp,
@@ -86,6 +91,7 @@ import {
   Counter,
   ensureFreeRun,
   FindActionSourceConstraints,
+  FloristFriar,
   get,
   getBanishedMonsters,
   getKramcoWandererChance,
@@ -93,7 +99,6 @@ import {
   getTodaysHolidayWanderers,
   have,
   JuneCleaver,
-  Macro,
   maxBy,
   PropertiesManager,
   property,
@@ -110,6 +115,19 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
+import { GarboStrategy } from "./combatStrategy";
+import { meatMood } from "./mood";
+import { estimatedGarboTurns } from "./turns";
+import { barfOutfit } from "./outfit/barf";
+import { Macro } from "./combat";
+import { completeBarfQuest } from "./resources";
+import { trackMarginalMpa } from "./session";
+import {
+  cowoChooseBanish,
+  getCowoMonstersToBanish,
+  redTaffyWorth,
+} from "./resources/banish";
+import postCombatActions from "./post";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -136,47 +154,160 @@ export enum FarmingMethod {
 }
 
 interface FarmingStrategy {
-  stasisRounds(): number;
-  asdonEffect(): Effect;
-  ensureBarfAccess(): boolean;
-  baseMeat(): number;
+  stasisRounds: number;
+  asdonEffect: Effect;
+  ensureBarfAccess: boolean;
+  baseMeat: number;
   turnsToNC(): number;
-  bonusModifiers(): Modifier[];
-  location(): Location;
-  ensureML(): boolean;
-  bonusEffects(): Effect[];
-  underwater(): boolean;
+  bonusModifiers: Modifier[];
+  location: Location;
+  ensureML: boolean;
+  bonusEffects: Effect[];
+  underwater: boolean;
+  monstersToBanish: Monster[];
+  targetMonster: () => Monster;
+
+  prepare(): void;
+  outfit(): Outfit;
+  combat(): GarboStrategy;
+  post(): void;
 }
 
 const BARF_MOUNTAIN: FarmingStrategy = {
-  stasisRounds: () => 20,
-  asdonEffect: () => $effect`Driving Observantly`,
-  ensureBarfAccess: () => true,
-  baseMeat: () => 250,
+  stasisRounds: 20,
+  asdonEffect: $effect`Driving Observantly`,
+  ensureBarfAccess: true,
+  baseMeat: 250,
   turnsToNC: () =>
     (27 * barfTourists) /
       (garbageTourists + angryTourists + 3 * touristFamilies) +
     1 * touristFamilyRatio +
     2 * (1 - touristFamilyRatio) * touristFamilyRatio +
     3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio),
-  bonusModifiers: () => $modifiers``,
-  location: () => $location`Barf Mountain`,
-  ensureML: () => true,
-  bonusEffects: () => $effects`How to Scam Tourists`,
-  underwater: () => false,
+  bonusModifiers: $modifiers``,
+  location: $location`Barf Mountain`,
+  ensureML: true,
+  bonusEffects: $effects`How to Scam Tourists`,
+  underwater: false,
+  monstersToBanish: $monsters``,
+  targetMonster: () =>
+    have($familiar`Skeleton of Crimbo Past`) &&
+    get("_knuckleboneDrops", 0) < 100
+      ? $monster`angry tourist`
+      : $monster`garbage tourist`,
+
+  prepare: () => {
+    if (!get("dinseyRollercoasterNext") && !(totalTurnsPlayed() % 11)) {
+      meatMood().execute(estimatedGarboTurns());
+    }
+  },
+
+  outfit: () => {
+    const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
+
+    return barfOutfit(lubing ? { equip: $items`lube-shoes` } : {});
+  },
+
+  combat: () =>
+    new GarboStrategy(
+      () => Macro.meatKill(),
+      () =>
+        Macro.if_(
+          `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
+          Macro.meatKill(),
+        ).abort(),
+    ),
+
+  post: () => {
+    completeBarfQuest();
+    trackMarginalMpa();
+  },
 };
 
 const THE_CORAL_CORRAL: FarmingStrategy = {
-  stasisRounds: () => 5,
-  asdonEffect: () => $effect`Driving Waterproofly`,
-  ensureBarfAccess: () => false,
-  baseMeat: () => 300,
+  stasisRounds: 5,
+  asdonEffect: $effect`Driving Waterproofly`,
+  ensureBarfAccess: false,
+  baseMeat: 300,
   turnsToNC: () => Infinity,
-  bonusModifiers: () => $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
-  location: () => $location`The Coral Corral`,
-  ensureML: () => false,
-  bonusEffects: () => $effects``,
-  underwater: () => true,
+  bonusModifiers: $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
+  location: $location`The Coral Corral`,
+  ensureML: false,
+  bonusEffects: $effects``,
+  underwater: true,
+  monstersToBanish: $monsters`Mer-kin rustler, sea cowboy`,
+  targetMonster: () => $monster`sea cow`,
+
+  prepare: () => {
+    if (redTaffyWorth()) {
+      retrieveItem($item`pulled red taffy`);
+    }
+    meatMood().execute(estimatedGarboTurns());
+    if (getCowoMonstersToBanish().length > 0) {
+      retrieveItem($item`human musk`);
+    }
+    if (!have($effect`Driving Waterproofly`)) {
+      AsdonMartin.drive($effect`Driving Waterproofly`, estimatedGarboTurns());
+    }
+  },
+
+  outfit: () => {
+    const banishItem = cowoChooseBanish()?.equip;
+    return barfOutfit({
+      ...(have($effect`Driving Waterproofly`)
+        ? {}
+        : { pants: $item`really, really nice swimming trunks` }),
+      ...(banishItem ? { equip: $items`${banishItem.name}` } : {}),
+    });
+  },
+
+  combat: () =>
+    new GarboStrategy(() => {
+      const banishMethod = cowoChooseBanish();
+      if (banishMethod) {
+        print(`Planning to banish using ${banishMethod?.name}`);
+      }
+      if (banishMethod === null && getCowoMonstersToBanish().length > 0) {
+        throw new Error(
+          "I have monsters to banish for cowo, but no banishes are available!",
+        );
+      }
+      if (redTaffyWorth()) {
+        return Macro.if_(
+          $monsters`Mer-kin rustler, sea cowboy`,
+          banishMethod?.macro ?? Macro.abort(),
+        )
+          .tryItem($item`pulled red taffy`)
+          .meatKill();
+      } else {
+        return Macro.if_(
+          $monsters`Mer-kin rustler, sea cowboy`,
+          banishMethod?.macro ?? Macro.abort(),
+        ).meatKill();
+      }
+    }),
+
+  post: () => {
+    trackMarginalMpa();
+    postCombatActions();
+    const BARF_PLANTS = [
+      FloristFriar.Crookweed,
+      FloristFriar.ElectricEelgrass,
+      FloristFriar.Duckweed,
+    ];
+    if (
+      BARF_PLANTS.some((flower) =>
+        flower.available($location`The Coral Corral`),
+      )
+    ) {
+      BARF_PLANTS.filter((flower) =>
+        flower.available($location`The Coral Corral`),
+      ).forEach((flower) => flower.plant());
+    }
+    if (getCowoMonstersToBanish().includes(toMonster(get("lastEncounter")))) {
+      throw "You encountered a banishable monster and didn't banish it, sort your life out!";
+    }
+  },
 };
 
 export function farmingStrategy(): FarmingStrategy {
@@ -227,7 +358,7 @@ export const songboomMeat = () =>
     : 0;
 
 // all tourists have a basemeat of 250
-export const baseMeat = () => farmingStrategy().baseMeat() + songboomMeat();
+export const baseMeat = () => farmingStrategy().baseMeat + songboomMeat();
 export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {
@@ -1301,4 +1432,4 @@ export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
 
-export const farmLocation = () => farmingStrategy().location();
+export const farmLocation = () => farmingStrategy().location;

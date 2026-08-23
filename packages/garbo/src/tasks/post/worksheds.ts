@@ -125,14 +125,14 @@ const worksheds = [
     workshed: $item`Asdon Martin keyfob (on ring)`,
     done: () => {
       return (
-        haveEffect(farmingStrategy().asdonEffect()) >=
+        haveEffect(farmingStrategy().asdonEffect) >=
         estimatedGarboTurns() +
           (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
     action: () => {
       AsdonMartin.drive(
-        farmingStrategy().asdonEffect(),
+        farmingStrategy().asdonEffect,
         estimatedGarboTurns() +
           (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
       );
