@@ -156,7 +156,7 @@ import {
   userConfirmDialog,
   valueDrops,
 } from "./lib";
-import { logMessage } from "./log";
+import { logMessage } from "garbo-lib";
 import { freeFightMood, meatMood } from "./mood";
 import {
   freeFightOutfit,

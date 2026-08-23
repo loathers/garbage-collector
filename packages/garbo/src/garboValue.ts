@@ -1,8 +1,6 @@
 import { Item } from "kolmafia";
-import { makeValue, ValueFunctions } from "garbo-lib";
-
 import { $item } from "libram";
-import { logMessage } from "./log";
+import { logMessage, makeValue, ValueFunctions } from "garbo-lib";
 import { printPriceOverrideWarning, readItemValues } from "./price_garbo";
 
 let _valueFunctions: ValueFunctions | undefined;

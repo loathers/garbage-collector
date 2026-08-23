@@ -19,3 +19,4 @@ export {
 };
 export type { ValueFunctions, WanderOptions, DraggableFight, WanderDetails };
 export * from "./resources";
+export * from "./log";

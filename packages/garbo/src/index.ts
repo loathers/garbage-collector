@@ -63,7 +63,7 @@ import { globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
-import { printLog } from "./log";
+import { printLog } from "garbo-lib";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
