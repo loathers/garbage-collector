@@ -10,7 +10,7 @@ import {
   have,
   totalFamiliarWeight,
 } from "libram";
-import { garboAverageValue, garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 import { GeneralFamiliar } from "./lib";
 
 type StandardDropFamiliar = {

@@ -35,7 +35,7 @@ import {
   highMeatMonsterCount,
   wanderingCopytargetsRemaining,
 } from "../turns";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import { copyTargetCount } from "../target";
 import { canBullseye, safeToAttemptBullseye } from "../resources";
 

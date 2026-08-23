@@ -21,7 +21,7 @@ import {
   have,
 } from "libram";
 import { globalOptions } from "../config";
-import { garboAverageValue, garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 import { getBestLuckyAdventure } from "../lib";
 import { effectValue, Potion } from "../potions";
 import { GarboTask } from "../tasks/engine";

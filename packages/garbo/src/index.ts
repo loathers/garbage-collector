@@ -63,7 +63,7 @@ import { globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
-import { printLog } from "garbo-lib";
+import { garboAverageValue, printLog } from "garbo-lib";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
@@ -81,7 +81,6 @@ import { meatMood } from "./mood";
 import { potionSetup } from "./potions";
 import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
-import { garboAverageValue } from "./garboValue";
 import {
   CockroachSetup,
   DailyFamiliarsQuest,

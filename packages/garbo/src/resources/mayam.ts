@@ -11,7 +11,7 @@ import {
   sum,
   Tuple,
 } from "libram";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import { effectValue } from "../potions";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { felizValue } from "../lib";

@@ -1,6 +1,5 @@
-import { AutumnAtonManager } from "garbo-lib";
+import { AutumnAtonManager, garboAverageValue } from "garbo-lib";
 import { globalOptions } from "../config";
-import { garboAverageValue } from "../garboValue";
 import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../turns";
 
 let _autumnAtonManager: AutumnAtonManager;

@@ -33,7 +33,7 @@ import {
 } from "../lib";
 import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
-import { garboAverageValue, garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {

@@ -42,7 +42,7 @@ import {
   targetPointerRingMeat,
   valueJuneCleaverOption,
 } from "../lib";
-import { garboAverageValue, garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { bonusAccessories } from "./dropsgearAccessories";
 import {

@@ -32,7 +32,7 @@ import {
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import { shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
 

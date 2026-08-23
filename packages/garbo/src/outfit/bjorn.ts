@@ -6,7 +6,7 @@ import {
   sum,
   sumNumbers,
 } from "libram";
-import { garboAverageValue, garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 import {
   BonusEquipMode,
   modeUseLimitedDrops,

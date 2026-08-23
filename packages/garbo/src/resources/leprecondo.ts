@@ -1,6 +1,6 @@
 import { Item } from "kolmafia";
 import { arrayEquals, get, Leprecondo, maxBy, sum, Tuple } from "libram";
-import { garboAverageValue, garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 import { effectValue } from "../potions";
 import { GarboTask } from "../tasks/engine";
 

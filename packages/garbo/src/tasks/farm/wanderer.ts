@@ -43,6 +43,7 @@ import {
 import { Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
   canAdventureOrUnlock,
+  garboValue,
   hasNameCollision,
   unperidotableZones,
   WanderDetails,
@@ -73,8 +74,6 @@ import {
   shouldCheckParachute,
   updateParachuteFailure,
 } from "./lib";
-
-import { garboValue } from "../../garboValue";
 import { wanderingCopytargetsRemaining } from "../../turns";
 import {
   bestMidnightAvailable,

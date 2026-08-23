@@ -61,7 +61,7 @@ import { teleportEffects } from "../../mood";
 import { Quest } from "grimoire-kolmafia";
 import { estimatedGarboTurns, remainingUserTurns } from "../../turns";
 import { acquire } from "../../acquire";
-import { garboAverageValue } from "../../garboValue";
+import { garboAverageValue } from "garbo-lib";
 import workshedTasks from "./worksheds";
 import { GarboPostTask } from "./lib";
 import { GarboTask } from "../engine";

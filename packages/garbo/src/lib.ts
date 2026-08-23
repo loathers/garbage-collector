@@ -105,7 +105,7 @@ import {
 } from "libram";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
-import { garboAverageValue, garboValue } from "./garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 
 export const eventLog: {

@@ -117,7 +117,7 @@ import {
   estimatedTurnsTomorrow,
   highMeatMonsterCount,
 } from "./turns";
-import { garboValue } from "./garboValue";
+import { garboValue } from "garbo-lib";
 import { GarboWorkshed } from "./tasks/post/worksheds";
 
 const MPA = get("valueOfAdventure");

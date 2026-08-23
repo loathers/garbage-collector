@@ -7,7 +7,7 @@ import {
   realmAvailable,
 } from "libram";
 import { globalOptions } from "../config";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import { getBestLuckyAdventure } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { toItem } from "kolmafia";

@@ -18,7 +18,7 @@ import {
 } from "libram";
 import { bestConsumable } from "../diet";
 import { targetMeat } from "../lib";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 
 const MIDNIGHTS = [
   {

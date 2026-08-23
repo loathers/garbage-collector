@@ -56,7 +56,7 @@ import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { aprilFoolsRufus } from "../lib";
 import { rufusPotion } from "../potions";
-import { garboAverageValue, garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 import { GarboTask } from "./engine";
 import {
   archaeologySpadeTask,

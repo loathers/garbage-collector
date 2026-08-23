@@ -25,7 +25,7 @@ import {
   visitUrl,
 } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import { acquire } from "../acquire";
 import { Macro } from "../combat";
 import { freeFightOutfit } from "../outfit";

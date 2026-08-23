@@ -1,5 +1,5 @@
 import { $item, get, maxBy } from "libram";
-import { garboValue } from "../../garboValue";
+import { garboValue } from "garbo-lib";
 
 export function dessertIslandWorthIt(): boolean {
   // estimating value of giant giant crab at 5*VOA, it has 2000 base meat

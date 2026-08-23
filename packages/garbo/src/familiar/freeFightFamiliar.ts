@@ -19,7 +19,7 @@ import {
   sum,
 } from "libram";
 import { canOpenRedPresent } from ".";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";

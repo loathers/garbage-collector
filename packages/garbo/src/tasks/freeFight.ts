@@ -73,7 +73,7 @@ import { acquire } from "../acquire";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import { freeFightOutfit } from "../outfit";
 import { GarboTask } from "./engine";
 import {

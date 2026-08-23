@@ -98,7 +98,7 @@ import {
   undelay,
   withChoice,
 } from "libram";
-import { WanderDetails } from "garbo-lib";
+import { garboValue, logMessage, WanderDetails } from "garbo-lib";
 
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
@@ -156,7 +156,6 @@ import {
   userConfirmDialog,
   valueDrops,
 } from "./lib";
-import { logMessage } from "garbo-lib";
 import { freeFightMood, meatMood } from "./mood";
 import {
   freeFightOutfit,
@@ -167,7 +166,7 @@ import {
 } from "./outfit";
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
-import { garboValue } from "./garboValue";
+
 import { wanderer } from "./garboWanderer";
 import { runTargetFight } from "./target/execution";
 import { TargetFightRunOptions } from "./target/staging";

@@ -17,11 +17,15 @@ import {
   totalFamiliarWeight,
 } from "libram";
 import { baseMeat, felizValue, newarkValue } from "../lib";
-import { garboAverageValue, garboValue } from "../garboValue";
+import {
+  canAdventureOrUnlock,
+  garboAverageValue,
+  garboValue,
+  unperidotableZones,
+} from "garbo-lib";
 import { FamiliarMode, GeneralFamiliar } from "./lib";
 import { effectExtenderValue } from "../potions";
 import { globalOptions } from "../config";
-import { canAdventureOrUnlock, unperidotableZones } from "garbo-lib";
 import { estimatedGarboTurns } from "../turns";
 
 type ConstantValueFamiliar = {

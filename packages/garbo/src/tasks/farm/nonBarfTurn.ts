@@ -33,7 +33,11 @@ import {
   withProperty,
 } from "libram";
 import { getTasks, OutfitSpec, Quest } from "grimoire-kolmafia";
-import { getAvailableUltraRareZones, unperidotableZones } from "garbo-lib";
+import {
+  garboValue,
+  getAvailableUltraRareZones,
+  unperidotableZones,
+} from "garbo-lib";
 
 import { Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
@@ -45,7 +49,6 @@ import { wanderingCopytargetsRemaining } from "../../turns";
 
 import { AlternateTask, GarboTask } from "../engine";
 import { canContinue } from "./lib";
-import { garboValue } from "../../garboValue";
 import { minimumMimicExperience } from "../../resources";
 import { acquire } from "../../acquire";
 import {

@@ -1,5 +1,5 @@
 import { getMonsters, Location, Monster } from "kolmafia";
-import { WanderDetails, WandererManager } from "garbo-lib";
+import { garboValue, WanderDetails, WandererManager } from "garbo-lib";
 
 import { globalOptions } from "./config";
 import { freeFightFamiliarData } from "./familiar/freeFightFamiliar";
@@ -13,7 +13,6 @@ import {
   get,
   have,
 } from "libram";
-import { garboValue } from "./garboValue";
 import { effectValue } from "./potions";
 import { digitizedMonstersRemainingForTurns } from "./lib";
 import { safeRefractedCasts } from "./resources";

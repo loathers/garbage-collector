@@ -68,7 +68,7 @@ import {
   ULTRA_RARE_MONSTERS,
 } from "./lib";
 import { copyTargetCount } from "./target";
-import { garboValue } from "./garboValue";
+import { garboValue } from "garbo-lib";
 import { maximumPinataCasts, safeRefractedCasts } from "./resources";
 
 export const getPreferredBarfMonster = () =>

@@ -1,7 +1,7 @@
 import { create, handlingChoice, runChoice, toInt, useSkill } from "kolmafia";
 import { $item, $items, $skill, freeCrafts, get, have, maxBy } from "libram";
 import { globalOptions } from "../config";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 

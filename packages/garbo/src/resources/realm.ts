@@ -8,7 +8,7 @@ import {
 } from "kolmafia";
 import { $item, get, have, maxBy, property, set, withProperty } from "libram";
 import { globalOptions } from "../config";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import { HIGHLIGHT } from "../lib";
 import { acquire } from "../acquire";
 import { claimClaraVolcoino, willYachtzee } from "./yachtzee";

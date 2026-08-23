@@ -1,5 +1,5 @@
 import { $item, $items, directlyUse, get, have, maxBy } from "libram";
-import { garboAverageValue, garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 import { availableChoiceOptions, runChoice, use, visitUrl } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
 

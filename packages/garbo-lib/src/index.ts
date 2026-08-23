@@ -20,3 +20,10 @@ export {
 export type { ValueFunctions, WanderOptions, DraggableFight, WanderDetails };
 export * from "./resources";
 export * from "./log";
+export {
+  garboValue,
+  garboAverageValue,
+  printPriceOverrideWarning,
+  readItemValues,
+  writeItemValues,
+} from "./garboValue";

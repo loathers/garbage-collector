@@ -19,7 +19,7 @@ import {
 } from "libram";
 import { globalOptions } from "../config";
 import { candyFactoryValue } from "../lib";
-import { garboAverageValue, garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "garbo-lib";
 import { estimatedGarboTurns } from "../turns";
 import { copyTargetCount } from "../target";
 

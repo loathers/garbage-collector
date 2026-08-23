@@ -72,7 +72,7 @@ import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
 import { estimatedAttunementTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
-import { garboValue } from "../garboValue";
+import { garboValue } from "garbo-lib";
 import {
   estimatedGarboTurns,
   highMeatMonsterCount,

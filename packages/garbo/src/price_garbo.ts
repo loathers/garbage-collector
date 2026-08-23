@@ -1,35 +1,15 @@
+import { Item, print, toFloat, toItem } from "kolmafia";
 import {
-  bufferToFile,
-  fileToBuffer,
-  Item,
-  print,
-  toFloat,
-  toItem,
-} from "kolmafia";
-
-const FILE_PATH = "garbo_item_values.json";
+  printPriceOverrideWarning,
+  readItemValues,
+  writeItemValues,
+} from "garbo-lib";
 
 let quiet = false;
 function maybePrint(message: string, color: string | undefined = undefined) {
   if (!quiet) {
     print(message, color);
   }
-}
-
-export function readItemValues(): Map<Item, number> {
-  const itemValuesStr = fileToBuffer(FILE_PATH);
-  if (itemValuesStr.length > 0) {
-    const val: { [item: string]: number } = JSON.parse(itemValuesStr);
-    const parsedItems: [Item, number][] = Object.entries(val).map(
-      ([itemStr, price]) => [toItem(itemStr), price],
-    );
-    return new Map<Item, number>(parsedItems);
-  } else {
-    return new Map<Item, number>();
-  }
-}
-export function writeItemValues(itemValues: Map<Item, number>) {
-  bufferToFile(JSON.stringify(Object.fromEntries(itemValues)), FILE_PATH);
 }
 
 function list(): void {
@@ -48,13 +28,6 @@ function remove(item: Item) {
   maybePrint(`Removing ${item} from your garbo_price_values`);
   map.delete(item);
   writeItemValues(map);
-}
-
-export function printPriceOverrideWarning() {
-  maybePrint(
-    "WARNING: You are using garbo item price overrides. This can have unexpected side effects on dieting and adventuring!",
-    "red",
-  );
 }
 
 export function main(argString = ""): void {
