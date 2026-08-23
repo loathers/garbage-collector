@@ -97,7 +97,7 @@ import {
   PostBuffExtensionQuest,
 } from "./tasks/buffExtension";
 import { shouldAffirmationHate } from "./combat";
-import { acquire } from "./acquire";
+import { acquire } from "garbo-lib";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;

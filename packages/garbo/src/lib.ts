@@ -103,7 +103,7 @@ import {
   tryFindFreeRun,
   uneffect,
 } from "libram";
-import { acquire } from "./acquire";
+import { acquire } from "garbo-lib";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "garbo-lib";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";

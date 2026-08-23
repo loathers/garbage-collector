@@ -93,7 +93,7 @@ import {
   unequip,
   withProperties,
 } from "libram";
-import { acquire, priceCaps } from "./acquire";
+import { acquire, priceCaps } from "garbo-lib";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
 import {

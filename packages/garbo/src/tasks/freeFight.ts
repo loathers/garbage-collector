@@ -69,7 +69,7 @@ import {
   uneffect,
   Witchess,
 } from "libram";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";

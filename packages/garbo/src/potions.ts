@@ -55,7 +55,7 @@ import {
   sumNumbers,
   withChoice,
 } from "libram";
-import { acquire } from "./acquire";
+import { acquire } from "garbo-lib";
 import {
   aprilFoolsRufus,
   baseMeat,

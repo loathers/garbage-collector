@@ -65,7 +65,7 @@ import {
   unequip,
   Witchess,
 } from "libram";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target";

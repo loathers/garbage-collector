@@ -24,7 +24,7 @@ import {
   sum,
   uneffect,
 } from "libram";
-import { acquire } from "../../acquire";
+import { acquire } from "garbo-lib";
 import {
   asEffect,
   ignoreBeatenUp,

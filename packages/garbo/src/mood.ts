@@ -32,7 +32,7 @@ import {
 } from "./lib";
 import { usingPurse } from "./outfit";
 import { effectValue } from "./potions";
-import { acquire } from "./acquire";
+import { acquire } from "garbo-lib";
 
 Mood.setDefaultOptions({
   songSlots: [

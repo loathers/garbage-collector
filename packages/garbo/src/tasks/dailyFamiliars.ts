@@ -41,7 +41,7 @@ import {
 import { estimatedGarboTurns, highMeatMonsterCount } from "../turns";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 import { amuletCoinValue } from "../familiar/lib";
 
 function drivebyValue(targetCount = 0): number {

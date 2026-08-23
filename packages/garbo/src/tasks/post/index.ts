@@ -60,7 +60,7 @@ import {
 import { teleportEffects } from "../../mood";
 import { Quest } from "grimoire-kolmafia";
 import { estimatedGarboTurns, remainingUserTurns } from "../../turns";
-import { acquire } from "../../acquire";
+import { acquire } from "garbo-lib";
 import {
   garboAverageValue,
   hotTubAvailable,

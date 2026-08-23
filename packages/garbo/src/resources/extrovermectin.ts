@@ -52,7 +52,7 @@ import {
   userConfirmDialog,
 } from "../lib";
 import { garboAdventure, Macro } from "../combat";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 import { globalOptions } from "../config";
 import { AdventureArgument } from "../garboWanderer";
 

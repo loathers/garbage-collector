@@ -27,3 +27,4 @@ export {
   readItemValues,
   writeItemValues,
 } from "./garboValue";
+export { acquire, priceCaps } from "./acquire";

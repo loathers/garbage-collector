@@ -52,7 +52,7 @@ import {
   sum,
   withChoice,
 } from "libram";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 import { globalOptions } from "../config";
 import { aprilFoolsRufus } from "../lib";
 import { rufusPotion } from "../potions";

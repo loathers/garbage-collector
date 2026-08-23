@@ -43,7 +43,7 @@ import { GarboFreeFightTask } from "./freeFight";
 import { sandwormFamiliar } from "../familiar";
 import { sober } from "../lib";
 import { safeSweatBulletCasts } from "../resources";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 
 function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   const outfit = Outfit.from(

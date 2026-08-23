@@ -53,7 +53,7 @@ import { wanderingCopytargetsRemaining } from "../../turns";
 import { AlternateTask, GarboTask } from "../engine";
 import { canContinue } from "./lib";
 import { minimumMimicExperience } from "../../resources";
-import { acquire } from "../../acquire";
+import { acquire } from "garbo-lib";
 import { luckySourceTasks } from "../../resources";
 import { yachtzeeQuest } from "../yachtzee";
 import { embezzlerFightTask } from "../embezzler";

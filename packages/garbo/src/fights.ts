@@ -106,7 +106,7 @@ import {
   WanderDetails,
 } from "garbo-lib";
 
-import { acquire } from "./acquire";
+import { acquire } from "garbo-lib";
 import { withStash } from "./clan";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";

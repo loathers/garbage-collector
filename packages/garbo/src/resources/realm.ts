@@ -10,7 +10,7 @@ import { $item, get, have, maxBy, property, set, withProperty } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "garbo-lib";
 import { HIGHLIGHT } from "../lib";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 import { claimClaraVolcoino, willYachtzee } from "./yachtzee";
 
 type VolcanoItem = { quantity: number; item: Item; choice: number };

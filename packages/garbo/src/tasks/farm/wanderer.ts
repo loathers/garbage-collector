@@ -85,7 +85,7 @@ import {
   shouldMakeEgg,
   willYachtzee,
 } from "../../resources";
-import { acquire } from "../../acquire";
+import { acquire } from "garbo-lib";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;

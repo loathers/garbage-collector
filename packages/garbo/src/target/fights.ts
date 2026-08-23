@@ -72,7 +72,7 @@ import {
   possibleGregCrystalBall,
   totalGregCharges,
 } from "../resources";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 import { globalOptions } from "../config";
 
 import {

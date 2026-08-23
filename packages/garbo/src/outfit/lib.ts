@@ -30,7 +30,7 @@ import {
   have,
   Requirement,
 } from "libram";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 import { globalOptions } from "../config";
 import { meatFamiliar } from "../familiar";
 import { BonusEquipMode, targetMeat } from "../lib";

@@ -26,7 +26,7 @@ import {
 } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
 import { garboValue } from "garbo-lib";
-import { acquire } from "../acquire";
+import { acquire } from "garbo-lib";
 import { Macro } from "../combat";
 import { freeFightOutfit } from "../outfit";
 import { globalOptions } from "../config";
