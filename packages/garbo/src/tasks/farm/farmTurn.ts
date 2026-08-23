@@ -1,13 +1,7 @@
 import { have } from "libram";
-import { myAdventures, myLocation, totalTurnsPlayed } from "kolmafia";
+import { myAdventures, myLocation } from "kolmafia";
 import { $effect, CrepeParachute } from "libram";
 import { Quest } from "grimoire-kolmafia";
-import { GarboStrategy } from "../../combatStrategy";
-import { barfOutfit } from "../../outfit";
-import { estimatedGarboTurns } from "../../turns";
-import { completeBarfQuest } from "../../resources";
-import { trackMarginalMpa } from "../../session";
-import { meatMood } from "../../mood";
 
 import { GarboTask } from "../engine";
 import {
@@ -16,7 +10,6 @@ import {
   updateParachuteFailure,
 } from "./lib";
 import { farmingStrategy } from "../../lib";
-import { Macro } from "../../combat";
 
 export const BarfTurnQuest: Quest<GarboTask> = {
   name: "Barf Turn",
@@ -28,15 +21,13 @@ export const BarfTurnQuest: Quest<GarboTask> = {
         shouldCheckParachute() &&
         myLocation() === farmingStrategy().location,
       completed: () => have($effect`Everything looks Beige`),
-      outfit: () => barfOutfit({}),
+      outfit: () => farmingStrategy().outfit(),
       do: () => CrepeParachute.fight(farmingStrategy().targetMonster()),
-      combat: new GarboStrategy(() => Macro.meatKill()),
-      prepare: () =>
-        !(totalTurnsPlayed() % 11) && meatMood().execute(estimatedGarboTurns()),
+      combat: farmingStrategy().combat(),
+      prepare: () => farmingStrategy().prepare(),
       post: () => {
         if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
-        completeBarfQuest();
-        trackMarginalMpa();
+        farmingStrategy().post();
       },
       spendsTurn: true,
     },
