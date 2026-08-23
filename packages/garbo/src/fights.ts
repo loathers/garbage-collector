@@ -98,7 +98,13 @@ import {
   undelay,
   withChoice,
 } from "libram";
-import { garboValue, logMessage, WanderDetails } from "garbo-lib";
+import {
+  garboValue,
+  logMessage,
+  shouldUnlockIngredients,
+  tryFillLatte,
+  WanderDetails,
+} from "garbo-lib";
 
 import { acquire } from "./acquire";
 import { withStash } from "./clan";
@@ -114,8 +120,6 @@ import {
   initializeExtrovermectinZones,
   saberCrateIfSafe,
   shouldClara,
-  shouldUnlockIngredients,
-  tryFillLatte,
   willYachtzee,
 } from "./resources";
 import {

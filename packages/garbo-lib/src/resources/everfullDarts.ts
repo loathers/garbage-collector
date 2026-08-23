@@ -5,7 +5,7 @@ export const guaranteedBullseye = () =>
   get("everfullDartPerks").includes("25% More Accurate bullseye targeting") &&
   get("everfullDartPerks").includes("25% better chance to hit bullseyes");
 
-export const DARTS_KILL_BEFORE_RUN = 5;
+const DARTS_KILL_BEFORE_RUN = 5;
 
 const dartLevelTooHigh = () =>
   get("everfullDartPerks").split(",").length >= DARTS_KILL_BEFORE_RUN;

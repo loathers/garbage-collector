@@ -19,11 +19,8 @@ import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import { applyCheeseBonus, cleaverCheck, validateGarbageFoldable } from "./lib";
-import {
-  adventuresPerSweat,
-  mimicExperienceNeeded,
-  turnsNeededForNextAdventure,
-} from "../resources";
+import { adventuresPerSweat, turnsNeededForNextAdventure } from "garbo-lib";
+import { mimicExperienceNeeded } from "../resources";
 import { globalOptions } from "../config";
 import { estimatedGarboTurns } from "../turns";
 

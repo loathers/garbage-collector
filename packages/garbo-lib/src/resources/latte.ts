@@ -19,6 +19,10 @@ function desirableIngredients() {
     : (["cajun", "rawhide", "carrot"] as const);
 }
 
+/**
+ * Returns whether the latte ingredients should be unlocked based on
+ * the player's skills and available adventure locations.
+ */
 export function shouldUnlockIngredients(): boolean {
   if (!Latte.have()) return false;
   const shouldTryToUnlockIngredients =
@@ -54,7 +58,11 @@ function latteMalformed(): boolean {
   );
 }
 
-// Returns whether the latteUnlocks preference contains the default ingredients
+/**
+ * Checks if the latte has malformed ingredients and corrects them.
+ * Returns true if the latte is properly configured or was corrected,
+ * false if the latte shop is inaccessible and the latte is disabled.
+ */
 export function checkAndCorrectLatteMalformation(): boolean {
   if (!latteMalformed()) return true;
 
@@ -69,6 +77,10 @@ export function checkAndCorrectLatteMalformation(): boolean {
   return false;
 }
 
+/**
+ * Returns whether the latte should be filled based on refill usage,
+ * copy/banish flags, and whether the current ingredients match desired ones.
+ */
 export function shouldFillLatte(): boolean {
   if (
     !have($item`latte lovers member's mug`) ||
@@ -90,6 +102,10 @@ export function shouldFillLatte(): boolean {
   return false;
 }
 
+/**
+ * Fills the latte with desired ingredients if conditions are met.
+ * Returns true if the latte was successfully filled.
+ */
 export function tryFillLatte(): boolean {
   return (
     shouldFillLatte() &&

@@ -36,6 +36,9 @@ import { getTasks, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
   garboValue,
   getAvailableUltraRareZones,
+  hotTubAvailable,
+  lavaDogsAccessible,
+  lavaDogsComplete,
   unperidotableZones,
 } from "garbo-lib";
 
@@ -51,12 +54,7 @@ import { AlternateTask, GarboTask } from "../engine";
 import { canContinue } from "./lib";
 import { minimumMimicExperience } from "../../resources";
 import { acquire } from "../../acquire";
-import {
-  hotTubAvailable,
-  lavaDogsAccessible,
-  lavaDogsComplete,
-  luckySourceTasks,
-} from "../../resources";
+import { luckySourceTasks } from "../../resources";
 import { yachtzeeQuest } from "../yachtzee";
 import { embezzlerFightTask } from "../embezzler";
 

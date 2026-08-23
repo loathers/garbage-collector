@@ -72,7 +72,7 @@ import { copyTargetCount } from "../target";
 import { meatFamiliar } from "../familiar";
 import { estimatedAttunementTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
-import { garboValue } from "garbo-lib";
+import { checkAndCorrectLatteMalformation, garboValue } from "garbo-lib";
 import {
   estimatedGarboTurns,
   highMeatMonsterCount,
@@ -82,7 +82,6 @@ import { GarboTask } from "./engine";
 import { AcquireItem, Quest } from "grimoire-kolmafia";
 import {
   attemptCompletingBarfQuest,
-  checkAndCorrectLatteMalformation,
   checkBarfQuest,
   checkVolcanoQuest,
 } from "../resources";

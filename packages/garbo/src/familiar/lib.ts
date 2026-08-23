@@ -37,7 +37,7 @@ import {
 } from "../turns";
 import { garboValue } from "garbo-lib";
 import { copyTargetCount } from "../target";
-import { canBullseye, safeToAttemptBullseye } from "../resources";
+import { canBullseye, safeToAttemptBullseye } from "garbo-lib";
 
 export type FamiliarMode = "barf" | "free" | "target" | "run";
 

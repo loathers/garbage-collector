@@ -43,8 +43,13 @@ import {
 import { Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
   canAdventureOrUnlock,
+  canBullseye,
   garboValue,
+  guaranteedBullseye,
   hasNameCollision,
+  safeToAttemptBullseye,
+  shouldFillLatte,
+  tryFillLatte,
   unperidotableZones,
   WanderDetails,
 } from "garbo-lib";
@@ -77,12 +82,7 @@ import {
 import { wanderingCopytargetsRemaining } from "../../turns";
 import {
   bestMidnightAvailable,
-  canBullseye,
-  guaranteedBullseye,
-  safeToAttemptBullseye,
-  shouldFillLatte,
   shouldMakeEgg,
-  tryFillLatte,
   willYachtzee,
 } from "../../resources";
 import { acquire } from "../../acquire";
