@@ -28,3 +28,4 @@ export {
   writeItemValues,
 } from "./garboValue";
 export { acquire, priceCaps } from "./acquire";
+export { shuffle } from "./lib";

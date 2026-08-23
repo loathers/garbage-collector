@@ -15,6 +15,5 @@ export * from "./protonpack";
 export * from "./realm";
 export * from "./scepter";
 export * from "./sealclub";
-export * from "./synthesis";
 export * from "./worksheds";
 export * from "./yachtzee";

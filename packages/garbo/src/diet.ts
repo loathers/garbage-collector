@@ -93,15 +93,10 @@ import {
   unequip,
   withProperties,
 } from "libram";
-import { acquire, priceCaps } from "garbo-lib";
+import { acquire, priceCaps, synthesize } from "garbo-lib";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import {
-  beretEffectValue,
-  expectedGregs,
-  shouldAugustCast,
-  synthesize,
-} from "./resources";
+import { beretEffectValue, expectedGregs, shouldAugustCast } from "./resources";
 import {
   arrayEquals,
   HIGHLIGHT,

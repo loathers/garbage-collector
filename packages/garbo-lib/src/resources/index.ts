@@ -13,3 +13,4 @@ export {
   shouldUnlockIngredients,
   tryFillLatte,
 } from "./latte";
+export { synthesize } from "./synthesis";
