@@ -6,6 +6,9 @@ import { makeValue, ValueFunctions } from "./value";
 const FILE_PATH = "garbo_item_values.json";
 
 let _warningPrinted = false;
+/**
+ * Prints a one-time warning that garbo price overrides are being used.
+ */
 export function printPriceOverrideWarning() {
   if (_warningPrinted) return;
   _warningPrinted = true;
@@ -15,6 +18,10 @@ export function printPriceOverrideWarning() {
   );
 }
 
+/**
+ * Reads the garbo item values override file and parses it into a Map.
+ * Returns an empty Map if the file does not exist or is empty.
+ */
 export function readItemValues(): Map<Item, number> {
   const itemValuesStr = fileToBuffer(FILE_PATH);
   if (itemValuesStr.length > 0) {
@@ -28,6 +35,10 @@ export function readItemValues(): Map<Item, number> {
   }
 }
 
+/**
+ * Writes a Map of item values to the garbo item values override file.
+ * @param itemValues - The Map of items to their override prices.
+ */
 export function writeItemValues(itemValues: Map<Item, number>) {
   bufferToFile(JSON.stringify(Object.fromEntries(itemValues)), FILE_PATH);
 }
@@ -52,10 +63,18 @@ function garboValueFunctions(): ValueFunctions {
   return _valueFunctions;
 }
 
+/**
+ * Returns the garbo value of an item, accounting for price overrides.
+ * @param item - The item to get the value of.
+ */
 export function garboValue(item: Item): number {
   return garboValueFunctions().value(item);
 }
 
+/**
+ * Returns the average value of multiple items, accounting for price overrides.
+ * @param items - The items to average the value of.
+ */
 export function garboAverageValue(...items: Item[]): number {
   return garboValueFunctions().averageValue(...items);
 }
