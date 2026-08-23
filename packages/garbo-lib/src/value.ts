@@ -203,6 +203,7 @@ export function makeValue(
     ],
     [$item`inflammable leaf`, inflammableLeafCurrency()],
     [$item`envelope full of Meat`, () => 50_000],
+    [$item`fake hand`, () => 50_000],
     [
       $item`crystalline cheer`,
       currency(

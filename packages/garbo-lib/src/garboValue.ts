@@ -1,5 +1,4 @@
 import { bufferToFile, fileToBuffer, Item, print, toItem } from "kolmafia";
-import { $item } from "libram";
 import { logMessage } from "./log";
 import { makeValue, ValueFunctions } from "./value";
 
@@ -46,18 +45,16 @@ export function writeItemValues(itemValues: Map<Item, number>) {
 let _valueFunctions: ValueFunctions | undefined;
 function garboValueFunctions(): ValueFunctions {
   if (!_valueFunctions) {
-    const itemValues = new Map([[$item`fake hand`, 50_000]]);
     const overrideItemValues = readItemValues();
     if (overrideItemValues.size > 0) {
       printPriceOverrideWarning();
       logMessage("GARBO PRICE OVERRIDES");
       overrideItemValues.forEach((value, item) => {
         logMessage(`${item}: ${value}`);
-        itemValues.set(item, value);
       });
     }
     _valueFunctions = makeValue({
-      itemValues,
+      itemValues: overrideItemValues,
     });
   }
   return _valueFunctions;
