@@ -144,10 +144,7 @@ function luckyTasks(
     {
       name: `Lucky Adventure (${sobriety})`,
       completed: () => !have($effect`Lucky!`),
-      ready: () =>
-        additionalReady() &&
-        getBestLuckyAdventure().phase === "barf" &&
-        getBestLuckyAdventure().value() > get("valueOfAdventure"),
+      ready: () => additionalReady(),
       do: () => getBestLuckyAdventure().location,
       outfit: () =>
         sobriety === "drunk" ? { offhand: $item`Drunkula's wineglass` } : {},
@@ -165,7 +162,14 @@ function luckyTasks(
       name: `Lucky Embezzler (${sobriety})`,
       ready: () => additionalReady() && embezzlerFightTask.ready(),
     },
-    ...luckySourceTasks,
+    ...luckySourceTasks.map((task) => ({
+      ...task,
+      ready: () =>
+        additionalReady() &&
+        getBestLuckyAdventure().phase === "barf" &&
+        getBestLuckyAdventure().value() > get("valueOfAdventure") &&
+        task.ready(),
+    })),
   ];
 }
 
