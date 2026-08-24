@@ -93,17 +93,18 @@ function useStuff(): GarboPostTask {
   };
 }
 
-const BARF_PLANTS = () => farmingStrategy().underwater()
-  ? [
-      FloristFriar.Crookweed,
-      FloristFriar.ElectricEelgrass,
-      FloristFriar.Duckweed,
-    ]
-  : [
-      FloristFriar.StealingMagnolia,
-      FloristFriar.AloeGuvnor,
-      FloristFriar.PitcherPlant,
-    ];
+const BARF_PLANTS = () =>
+  farmingStrategy().underwater()
+    ? [
+        FloristFriar.Crookweed,
+        FloristFriar.ElectricEelgrass,
+        FloristFriar.Duckweed,
+      ]
+    : [
+        FloristFriar.StealingMagnolia,
+        FloristFriar.AloeGuvnor,
+        FloristFriar.PitcherPlant,
+      ];
 function floristFriars(): GarboPostTask {
   return {
     name: "Florist Plants",
@@ -115,9 +116,9 @@ function floristFriars(): GarboPostTask {
         flower.available(farmingStrategy().location()),
       ),
     do: () =>
-      BARF_PLANTS().filter((flower) =>
-        flower.available(farmingStrategy().location()),
-      ).forEach((flower) => flower.plant()),
+      BARF_PLANTS()
+        .filter((flower) => flower.available(farmingStrategy().location()))
+        .forEach((flower) => flower.plant()),
     available: () =>
       FloristFriar.have() &&
       BARF_PLANTS().some((flower) =>
