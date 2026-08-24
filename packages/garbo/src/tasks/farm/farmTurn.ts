@@ -11,7 +11,7 @@ import {
 } from "./lib";
 import { farmingStrategy } from "../../lib";
 
-export const BarfTurnQuest: Quest<GarboTask> = {
+export const FarmTurnQuest: Quest<GarboTask> = {
   name: "Barf Turn",
   tasks: [
     {
@@ -19,7 +19,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
       ready: () =>
         CrepeParachute.have() &&
         shouldCheckParachute() &&
-        myLocation() === farmingStrategy().location,
+        myLocation() === farmingStrategy().location(),
       completed: () => have($effect`Everything looks Beige`),
       outfit: () => farmingStrategy().outfit(),
       do: () => CrepeParachute.fight(farmingStrategy().targetMonster()),
@@ -33,7 +33,7 @@ export const BarfTurnQuest: Quest<GarboTask> = {
     },
     {
       name: "Farm",
-      ready: () => myLocation() === farmingStrategy().location,
+      ready: () => myLocation() === farmingStrategy().location(),
       completed: () => myAdventures() === 0,
 
       prepare: () => farmingStrategy().prepare(),

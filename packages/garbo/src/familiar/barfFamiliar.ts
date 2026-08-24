@@ -33,7 +33,6 @@ import {
   baseMeat,
   BonusEquipMode,
   farmingStrategy,
-  farmLocation,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
 } from "../lib";
@@ -58,7 +57,7 @@ const MEAT_DROP_VALUE = baseMeat() / 100;
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
-    farmingStrategy().underwater &&
+    farmingStrategy().underwater() &&
     !have($effect`Driving Waterproofly`) &&
     !familiar.underwater
   );
@@ -290,7 +289,7 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
-  const fullMenu = menu(farmLocation(), {
+  const fullMenu = menu(farmingStrategy().location(), {
     canChooseMacro: true,
     includeExperienceFamiliars: true,
     mode: "barf",
@@ -431,7 +430,7 @@ function getSpecialFamiliarLimit({
     case $familiar`Skeleton of Crimbo Past`:
       return (
         clamp(100 - get("_knuckleboneDrops"), 0, 100) /
-        SkeletonOfCrimboPast.expectedBones(farmLocation())
+        SkeletonOfCrimboPast.expectedBones(farmingStrategy().location())
       );
 
     default:

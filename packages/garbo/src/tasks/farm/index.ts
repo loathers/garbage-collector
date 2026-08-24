@@ -1,4 +1,4 @@
-import { BarfTurnQuest } from "./farmTurn";
+import { FarmTurnQuest } from "./farmTurn";
 import { DailyExtrasQuest } from "./dailyExtras";
 import { NonBarfTurnQuest } from "./nonBarfTurn";
 import { TurnGenQuest } from "./turnGen";
@@ -9,5 +9,5 @@ export const FarmQuests = [
   DailyExtrasQuest,
   WandererQuest,
   NonBarfTurnQuest,
-  BarfTurnQuest,
+  FarmTurnQuest,
 ];

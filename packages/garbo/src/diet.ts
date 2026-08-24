@@ -1496,7 +1496,7 @@ export function runDiet(): void {
           GarboWorkshed.current?.workshed ===
           $item`Asdon Martin keyfob (on ring)`
         ) {
-          const asdonEffect = farmingStrategy().asdonEffect;
+          const asdonEffect = farmingStrategy().asdonEffect();
           AsdonMartin.drive(
             asdonEffect,
             dietAdventures(dietBuilder.diet()) +

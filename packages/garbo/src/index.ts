@@ -142,7 +142,9 @@ export function main(argString = ""): void {
   if (
     globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
     (effectFact($monster`sea cow`) !== $effect`Fishy` ||
-      get("seahorseName") === "")
+      get("seahorseName") === "" ||
+      !have($item`das boot`) ||
+      !have($item`really, really nice swimming trunks`))
   ) {
     globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
@@ -326,7 +328,7 @@ export function main(argString = ""): void {
   if (
     !globalOptions.nobarf &&
     !globalOptions.simdiet &&
-    farmingStrategy().ensureBarfAccess
+    farmingStrategy().ensureBarfAccess()
   ) {
     ensureBarfAccess();
   }

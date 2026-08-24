@@ -53,7 +53,6 @@ import { computeDiet, consumeDiet } from "../../diet";
 import {
   bestJuneCleaverOption,
   farmingStrategy,
-  farmLocation,
   freeRest,
   juneCleaverChoiceValues,
   unlimitedFreeRunList,
@@ -94,7 +93,7 @@ function useStuff(): GarboPostTask {
   };
 }
 
-const BARF_PLANTS = farmingStrategy().underwater
+const BARF_PLANTS = farmingStrategy().underwater()
   ? [
       FloristFriar.Crookweed,
       FloristFriar.ElectricEelgrass,
@@ -108,18 +107,18 @@ const BARF_PLANTS = farmingStrategy().underwater
 function floristFriars(): GarboPostTask {
   return {
     name: "Florist Plants",
-    completed: () => FloristFriar.isFull(farmLocation()),
+    completed: () => FloristFriar.isFull(farmingStrategy().location()),
     ready: () =>
-      get("lastAdventure") === farmLocation() &&
+      get("lastAdventure") === farmingStrategy().location() &&
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available(farmLocation())),
+      BARF_PLANTS.some((flower) => flower.available(farmingStrategy().location())),
     do: () =>
-      BARF_PLANTS.filter((flower) => flower.available(farmLocation())).forEach(
+      BARF_PLANTS.filter((flower) => flower.available(farmingStrategy().location())).forEach(
         (flower) => flower.plant(),
       ),
     available: () =>
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available(farmLocation())),
+      BARF_PLANTS.some((flower) => flower.available(farmingStrategy().location())),
   };
 }
 

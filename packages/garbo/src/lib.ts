@@ -154,17 +154,17 @@ export enum FarmingMethod {
 }
 
 interface FarmingStrategy {
-  stasisRounds: number;
-  asdonEffect: Effect;
-  ensureBarfAccess: boolean;
-  baseMeat: number;
+  stasisRounds(): number;
+  asdonEffect(): Effect;
+  ensureBarfAccess(): boolean;
+  baseMeat(): number;
   turnsToNC(): number;
-  bonusModifiers: Modifier[];
-  location: Location;
-  ensureML: boolean;
-  bonusEffects: Effect[];
-  underwater: boolean;
-  monstersToBanish: Monster[];
+  bonusModifiers(): Modifier[];
+  location(): Location;
+  ensureML(): boolean;
+  bonusEffects(): Effect[];
+  underwater(): boolean;
+  monstersToBanish(): Monster[];
   targetMonster: () => Monster;
 
   prepare(): void;
@@ -174,22 +174,22 @@ interface FarmingStrategy {
 }
 
 const BARF_MOUNTAIN: FarmingStrategy = {
-  stasisRounds: 20,
-  asdonEffect: $effect`Driving Observantly`,
-  ensureBarfAccess: true,
-  baseMeat: 250,
+  stasisRounds: () => 20,
+  asdonEffect: () => $effect`Driving Observantly`,
+  ensureBarfAccess: () => true,
+  baseMeat: () => 250,
   turnsToNC: () =>
     (27 * barfTourists) /
       (garbageTourists + angryTourists + 3 * touristFamilies) +
     1 * touristFamilyRatio +
     2 * (1 - touristFamilyRatio) * touristFamilyRatio +
     3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio),
-  bonusModifiers: $modifiers``,
-  location: $location`Barf Mountain`,
-  ensureML: true,
-  bonusEffects: $effects`How to Scam Tourists`,
-  underwater: false,
-  monstersToBanish: $monsters``,
+  bonusModifiers: () => $modifiers``,
+  location: () => $location`Barf Mountain`,
+  ensureML: () => true,
+  bonusEffects: () => $effects`How to Scam Tourists`,
+  underwater: () => false,
+  monstersToBanish: () => $monsters``,
   targetMonster: () =>
     have($familiar`Skeleton of Crimbo Past`) &&
     get("_knuckleboneDrops", 0) < 100
@@ -225,17 +225,17 @@ const BARF_MOUNTAIN: FarmingStrategy = {
 };
 
 const THE_CORAL_CORRAL: FarmingStrategy = {
-  stasisRounds: 5,
-  asdonEffect: $effect`Driving Waterproofly`,
-  ensureBarfAccess: false,
-  baseMeat: 300,
+  stasisRounds: () => 5,
+  asdonEffect: () => $effect`Driving Waterproofly`,
+  ensureBarfAccess: () => false,
+  baseMeat: () => 300,
   turnsToNC: () => Infinity,
-  bonusModifiers: $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
-  location: $location`The Coral Corral`,
-  ensureML: false,
-  bonusEffects: $effects``,
-  underwater: true,
-  monstersToBanish: $monsters`Mer-kin rustler, sea cowboy`,
+  bonusModifiers: () => $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
+  location: () => $location`The Coral Corral`,
+  ensureML: () => false,
+  bonusEffects: () => $effects``,
+  underwater: () => true,
+  monstersToBanish: () => $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: () => $monster`sea cow`,
 
   prepare: () => {
@@ -358,7 +358,7 @@ export const songboomMeat = () =>
     : 0;
 
 // all tourists have a basemeat of 250
-export const baseMeat = () => farmingStrategy().baseMeat + songboomMeat();
+export const baseMeat = () => farmingStrategy().baseMeat() + songboomMeat();
 export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {
