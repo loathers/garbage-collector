@@ -111,14 +111,18 @@ function floristFriars(): GarboPostTask {
     ready: () =>
       get("lastAdventure") === farmingStrategy().location() &&
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available(farmingStrategy().location())),
-    do: () =>
-      BARF_PLANTS.filter((flower) => flower.available(farmingStrategy().location())).forEach(
-        (flower) => flower.plant(),
+      BARF_PLANTS.some((flower) =>
+        flower.available(farmingStrategy().location()),
       ),
+    do: () =>
+      BARF_PLANTS.filter((flower) =>
+        flower.available(farmingStrategy().location()),
+      ).forEach((flower) => flower.plant()),
     available: () =>
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available(farmingStrategy().location())),
+      BARF_PLANTS.some((flower) =>
+        flower.available(farmingStrategy().location()),
+      ),
   };
 }
 
