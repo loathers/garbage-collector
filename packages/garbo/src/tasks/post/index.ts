@@ -93,7 +93,7 @@ function useStuff(): GarboPostTask {
   };
 }
 
-const BARF_PLANTS = farmingStrategy().underwater()
+const BARF_PLANTS = () => farmingStrategy().underwater()
   ? [
       FloristFriar.Crookweed,
       FloristFriar.ElectricEelgrass,
@@ -111,16 +111,16 @@ function floristFriars(): GarboPostTask {
     ready: () =>
       get("lastAdventure") === farmingStrategy().location() &&
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) =>
+      BARF_PLANTS().some((flower) =>
         flower.available(farmingStrategy().location()),
       ),
     do: () =>
-      BARF_PLANTS.filter((flower) =>
+      BARF_PLANTS().filter((flower) =>
         flower.available(farmingStrategy().location()),
       ).forEach((flower) => flower.plant()),
     available: () =>
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) =>
+      BARF_PLANTS().some((flower) =>
         flower.available(farmingStrategy().location()),
       ),
   };
