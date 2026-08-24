@@ -32,7 +32,9 @@ export function wanderer(): WandererManager {
       digitzesRemaining: digitizedMonstersRemainingForTurns,
       plentifulMonsters: [
         globalOptions.target,
-        ...(globalOptions.nobarf ? [] : getMonsters(farmingStrategy().location())),
+        ...(globalOptions.nobarf
+          ? []
+          : getMonsters(farmingStrategy().location())),
         ...(have($item`Kramco Sausage-o-Matic™`)
           ? $monsters`sausage goblin`
           : []),
