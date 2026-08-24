@@ -53,7 +53,7 @@ import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
 
 const ITEM_DROP_VALUE = 0.72;
-const MEAT_DROP_VALUE = baseMeat() / 100;
+const MEAT_DROP_VALUE = () => baseMeat() / 100;
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
@@ -180,7 +180,7 @@ function familiarModifier(
 
 function familiarAbilityValue(familiar: Familiar) {
   return (
-    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE +
+    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() +
     familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE
   );
 }
@@ -236,7 +236,7 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfit = getCachedOutfitValues(f.familiar);
   const outfitValue =
     outfit.bonus +
-    outfit.meat * MEAT_DROP_VALUE +
+    outfit.meat * MEAT_DROP_VALUE() +
     outfit.item * ITEM_DROP_VALUE +
     (SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
