@@ -25,7 +25,6 @@ import {
   baseMeat,
   basePointerRingMeat,
   BonusEquipMode,
-  farmingStrategy,
   felizValue,
   maxPassiveDamage,
   modeIsFree,
@@ -34,6 +33,7 @@ import {
 import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
 import { garboAverageValue, garboValue } from "../garboValue";
+import { farmingStrategy } from "../farmingStrategy";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {

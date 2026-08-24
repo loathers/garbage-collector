@@ -61,15 +61,13 @@ import {
   withProperty,
 } from "libram";
 import { stashItems, withStash, withVIPClan } from "./clan";
-import { globalOptions, isQuickGear } from "./config";
+import { FarmingMethod, globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
 import {
   bestJuneCleaverOption,
   checkGithubVersion,
-  FarmingMethod,
-  farmingStrategy,
   HIGHLIGHT,
   isFreeAndCopyable,
   printEventLog,
@@ -103,6 +101,7 @@ import {
 } from "./tasks/buffExtension";
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
+import { farmingStrategy } from "./farmingStrategy";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;

@@ -26,7 +26,8 @@ import {
   trainNeedsRotating,
 } from "../../resources";
 import { GarboPostTask } from "./lib";
-import { farmingStrategy } from "../../lib";
+import { farmingStrategy } from "../../farmingStrategy";
+
 type WorkshedOptions = {
   workshed: Item;
   done?: () => boolean;

@@ -1,5 +1,5 @@
-import { have } from "libram";
-import { myAdventures, myLocation } from "kolmafia";
+import { $item, have } from "libram";
+import { myAdventures, myLocation, retrieveItem } from "kolmafia";
 import { $effect, CrepeParachute } from "libram";
 import { Quest } from "grimoire-kolmafia";
 
@@ -9,7 +9,12 @@ import {
   shouldCheckParachute,
   updateParachuteFailure,
 } from "./lib";
-import { farmingStrategy } from "../../lib";
+import { farmingStrategy } from "../../farmingStrategy";
+import { trackMarginalMpa } from "../../session";
+import postCombatActions from "../../post";
+import { getCowoMonstersToBanish, redTaffyWorth } from "../../resources/banish";
+import { meatMood } from "../../mood";
+import { estimatedGarboTurns } from "../../turns";
 
 export const FarmTurnQuest: Quest<GarboTask> = {
   name: "Barf Turn",
@@ -24,10 +29,10 @@ export const FarmTurnQuest: Quest<GarboTask> = {
       outfit: () => farmingStrategy().outfit(),
       do: () => CrepeParachute.fight(farmingStrategy().targetMonster()),
       combat: farmingStrategy().combat(),
-      prepare: () => farmingStrategy().prepare(),
       post: () => {
         if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
-        farmingStrategy().post();
+        trackMarginalMpa();
+        postCombatActions();
       },
       spendsTurn: true,
     },
@@ -36,15 +41,27 @@ export const FarmTurnQuest: Quest<GarboTask> = {
       ready: () => myLocation() === farmingStrategy().location(),
       completed: () => myAdventures() === 0,
 
-      prepare: () => farmingStrategy().prepare(),
+      prepare: () => {
+          if (redTaffyWorth() && farmingStrategy().location().environment === "underwater") {
+            retrieveItem($item`pulled red taffy`);
+          }
+          meatMood().execute(estimatedGarboTurns());
+
+          if (getCowoMonstersToBanish().length > 0) {
+            retrieveItem($item`human musk`);
+          }
+      },
 
       outfit: () => farmingStrategy().outfit(),
 
-      do: () => farmingStrategy().location,
+      do: () => farmingStrategy().location(),
 
       combat: farmingStrategy().combat(),
 
-      post: () => farmingStrategy().post(),
+      post: () => {
+        trackMarginalMpa();
+        postCombatActions();
+      },
 
       spendsTurn: true,
     },

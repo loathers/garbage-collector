@@ -27,13 +27,13 @@ import {
 } from "libram";
 import {
   baseMeat as baseMeatFunc,
-  farmingStrategy,
   safeRestoreMpTarget,
   setChoice,
 } from "./lib";
 import { usingPurse } from "./outfit";
 import { effectValue } from "./potions";
 import { acquire } from "./acquire";
+import { farmingStrategy } from "./farmingStrategy";
 
 Mood.setDefaultOptions({
   songSlots: [

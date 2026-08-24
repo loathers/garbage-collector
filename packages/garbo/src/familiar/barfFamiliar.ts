@@ -32,7 +32,6 @@ import { bonusGear } from "../outfit";
 import {
   baseMeat,
   BonusEquipMode,
-  farmingStrategy,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
 } from "../lib";
@@ -51,6 +50,7 @@ import {
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
+import { farmingStrategy } from "../farmingStrategy";
 
 const ITEM_DROP_VALUE = 0.72;
 const MEAT_DROP_VALUE = () => baseMeat() / 100;

@@ -1,7 +1,11 @@
 import { Args } from "grimoire-kolmafia";
 import { Item, print } from "kolmafia";
 import { $item, $items, $monster } from "libram";
-import { FarmingMethod } from "./lib";
+
+export enum FarmingMethod {
+  BARF_MOUNTAIN,
+  THE_CORAL_CORRAL,
+}
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -272,18 +276,18 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
             ],
           },
           (value) => {
-            const normalized = value.toLowerCase();
-
-            switch (normalized) {
+            switch (value.toLowerCase()) {
               case "barf":
               case "barf mountain":
                 return FarmingMethod.BARF_MOUNTAIN;
 
               case "cowo":
+              case "sea cows":
+              case "the coral corral":
                 return FarmingMethod.THE_CORAL_CORRAL;
 
               default:
-                throw new Error(`Unknown farming method: ${value}`);
+                return FarmingMethod.BARF_MOUNTAIN;
             }
           },
           "Farming Method",

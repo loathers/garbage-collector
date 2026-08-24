@@ -60,14 +60,12 @@ import {
   aprilFoolsRufus,
   baseMeat,
   bestShadowRift,
-  farmingStrategy,
   HIGHLIGHT,
   improvesAStat,
   marginalFamWeightValue,
   pillkeeperOpportunityCost,
   targetMeat,
   targetMeatDifferential,
-  turnsToNC,
   withLocation,
 } from "./lib";
 import { usingPurse } from "./outfit";
@@ -78,6 +76,7 @@ import {
   castAugustScepterBuffs,
   safeSweatEquityCasts,
 } from "./resources";
+import { farmingStrategy } from "./farmingStrategy";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -310,7 +309,7 @@ export class Potion {
       (bonusMeat / 100) *
       (baseMeat() *
         (duration - targetsApplied) *
-        (turnsToNC / (turnsToNC + 1)) +
+        (farmingStrategy().turnsToNC() / (farmingStrategy().turnsToNC() + 1)) +
         (baseMeat() + targetMeatDifferential()) * targetsApplied)
     );
   }
@@ -981,7 +980,7 @@ class VariableMeatPotion {
   ): number {
     const yachtzeeValue = 2000;
     const targetValue = targetMeat();
-    const barfValue = (baseMeat() * turnsToNC) / 30;
+    const barfValue = (baseMeat() * farmingStrategy().turnsToNC()) / 30;
 
     const totalCosts = retrievePrice(this.potion, n);
     const totalDuration = n * this.duration;

@@ -15,8 +15,9 @@ import {
 } from "libram";
 import { garboValue } from "./garboValue";
 import { effectValue } from "./potions";
-import { digitizedMonstersRemainingForTurns, farmingStrategy } from "./lib";
+import { digitizedMonstersRemainingForTurns } from "./lib";
 import { safeRefractedCasts } from "./resources";
+import { farmingStrategy } from "./farmingStrategy";
 
 let _wanderer: WandererManager | undefined;
 export function wanderer(): WandererManager {

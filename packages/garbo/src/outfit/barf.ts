@@ -36,12 +36,12 @@ import {
 } from "./lib";
 import {
   BonusEquipMode,
-  farmingStrategy,
   MEAT_TARGET_MULTIPLIER,
   modeValueOfItem,
   modeValueOfMeat,
 } from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
+import { farmingStrategy } from "../farmingStrategy";
 
 function chooseGun() {
   if (have($item`love`)) {

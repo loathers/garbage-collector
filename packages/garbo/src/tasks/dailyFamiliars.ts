@@ -29,14 +29,11 @@ import { globalOptions } from "../config";
 import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,
-  farmingStrategy,
   felizValue,
-  garbageTouristRatio,
   isFree,
   newarkValue,
   targetMeat,
   tryFeast,
-  turnsToNC,
   userConfirmDialog,
 } from "../lib";
 import { estimatedGarboTurns, highMeatMonsterCount } from "../turns";
@@ -44,11 +41,12 @@ import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
 import { amuletCoinValue } from "../familiar/lib";
+import { farmingStrategy, garbageTouristRatio } from "../farmingStrategy";
 
 function drivebyValue(targetCount = 0): number {
   const targets = targetCount;
   const tourists =
-    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
+    ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) / (farmingStrategy().turnsToNC() + 1);
   const marginalRoboWeight = 50;
   const meatPercentDelta =
     Math.sqrt(220 * 2 * marginalRoboWeight) -
@@ -62,7 +60,7 @@ function drivebyValue(targetCount = 0): number {
 function entendreValue(targetCount = 0): number {
   const targets = targetCount;
   const tourists =
-    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
+    ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) / (farmingStrategy().turnsToNC() + 1);
   const marginalRoboWeight = 50;
   const itemPercent =
     Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;

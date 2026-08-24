@@ -52,7 +52,6 @@ import { globalOptions } from "../../config";
 import { computeDiet, consumeDiet } from "../../diet";
 import {
   bestJuneCleaverOption,
-  farmingStrategy,
   freeRest,
   juneCleaverChoiceValues,
   unlimitedFreeRunList,
@@ -73,6 +72,7 @@ import {
   lavaDogsComplete,
   leprecondoTask,
 } from "../../resources";
+import { farmingStrategy } from "../../farmingStrategy";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;

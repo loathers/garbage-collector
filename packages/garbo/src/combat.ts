@@ -60,7 +60,6 @@ import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
 import { estimatedGarboTurns, wanderingCopytargetsRemaining } from "./turns";
 import {
-  farmingStrategy,
   gooseDroneEligible,
   isStrongScaler,
   maxPassiveDamage,
@@ -71,6 +70,7 @@ import {
 import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
 import { maximumPinataCasts, safeRefractedCasts } from "./resources";
+import { farmingStrategy } from "./farmingStrategy";
 
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
