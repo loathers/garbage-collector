@@ -46,7 +46,8 @@ import { farmingStrategy, garbageTouristRatio } from "../farmingStrategy";
 function drivebyValue(targetCount = 0): number {
   const targets = targetCount;
   const tourists =
-    ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) / (farmingStrategy().turnsToNC() + 1);
+    ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
+    (farmingStrategy().turnsToNC() + 1);
   const marginalRoboWeight = 50;
   const meatPercentDelta =
     Math.sqrt(220 * 2 * marginalRoboWeight) -
@@ -60,7 +61,8 @@ function drivebyValue(targetCount = 0): number {
 function entendreValue(targetCount = 0): number {
   const targets = targetCount;
   const tourists =
-    ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) / (farmingStrategy().turnsToNC() + 1);
+    ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
+    (farmingStrategy().turnsToNC() + 1);
   const marginalRoboWeight = 50;
   const itemPercent =
     Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;

@@ -1,11 +1,28 @@
 import { Outfit } from "grimoire-kolmafia";
 import { Effect, Location, Modifier, Monster, print } from "kolmafia";
 import { GarboStrategy } from "./combatStrategy";
-import { $effect, $effects, $familiar, $item, $items, $location, $modifiers, $monster, $monsters, $skill, get, have } from "libram";
+import {
+  $effect,
+  $effects,
+  $familiar,
+  $item,
+  $items,
+  $location,
+  $modifiers,
+  $monster,
+  $monsters,
+  $skill,
+  get,
+  have,
+} from "libram";
 import { barfOutfit } from "./outfit";
 import { Macro } from "./combat";
 import { FarmingMethod, globalOptions } from "./config";
-import { cowoChooseBanish, getCowoMonstersToBanish, redTaffyWorth } from "./resources/banish";
+import {
+  cowoChooseBanish,
+  getCowoMonstersToBanish,
+  redTaffyWorth,
+} from "./resources/banish";
 
 const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;
 const gallapagosCopies = have($skill`Gallapagosian Mating Call`) ? 1 : 0;
@@ -18,7 +35,6 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // 30 tourists till NC, with families counting as 3
 // Estimate number of turns till the counter hits 27
 // then estimate the expected number of turns required to hit a counter of >= 30
-
 
 interface FarmingStrategy {
   stasisRounds(): number;

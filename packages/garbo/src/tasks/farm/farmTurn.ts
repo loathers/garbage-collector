@@ -42,14 +42,17 @@ export const FarmTurnQuest: Quest<GarboTask> = {
       completed: () => myAdventures() === 0,
 
       prepare: () => {
-          if (redTaffyWorth() && farmingStrategy().location().environment === "underwater") {
-            retrieveItem($item`pulled red taffy`);
-          }
-          meatMood().execute(estimatedGarboTurns());
+        if (
+          redTaffyWorth() &&
+          farmingStrategy().location().environment === "underwater"
+        ) {
+          retrieveItem($item`pulled red taffy`);
+        }
+        meatMood().execute(estimatedGarboTurns());
 
-          if (getCowoMonstersToBanish().length > 0) {
-            retrieveItem($item`human musk`);
-          }
+        if (getCowoMonstersToBanish().length > 0) {
+          retrieveItem($item`human musk`);
+        }
       },
 
       outfit: () => farmingStrategy().outfit(),
