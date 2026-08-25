@@ -114,8 +114,8 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   outfit: () => {
     const banishItem = cowoChooseBanish()?.equip;
     if (banishItem) {
-        print(`Planning to banish using ${banishItem?.name}`);
-      }
+      print(`Planning to banish using ${banishItem?.name}`);
+    }
 
     return barfOutfit({
       ...(have($effect`Driving Waterproofly`)

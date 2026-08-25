@@ -19,7 +19,9 @@ import { garboValue } from "../garboValue";
 import { farmingStrategy } from "../farmingStrategy";
 
 export function getMonstersToBanish(): Monster[] {
-  return farmingStrategy().monstersToBanish().filter((monster) => !isBanished(monster));
+  return farmingStrategy()
+    .monstersToBanish()
+    .filter((monster) => !isBanished(monster));
 }
 
 interface BanishMethod {
@@ -98,8 +100,6 @@ export function cowoChooseBanish(): BanishMethod | null {
   }
   return null;
 }
-
-
 
 const RED_TAFFY_DROP_WEIGHTS = new Map<Item, number>([
   [$item`Alewife™ Ale`, 0.03],

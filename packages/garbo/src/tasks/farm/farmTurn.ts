@@ -64,7 +64,7 @@ export const FarmTurnQuest: Quest<GarboTask> = {
         trackMarginalMpa();
         postCombatActions();
         if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
-          throw "You encountered a tumbleweed and should not have, resolve your banishes"
+          throw "You encountered a tumbleweed and should not have, resolve your banishes";
         }
         if (getMonstersToBanish().includes(toMonster(get("lastEncounter")))) {
           throw "You encountered a banishable monster and didn't banish it, sort your life out!";
