@@ -41,6 +41,7 @@ interface FarmingStrategy {
   asdonEffect(): Effect;
   ensureBarfAccess(): boolean;
   baseMeat(): number;
+  accountForNC(): boolean;
   turnsToNC(): number;
   bonusModifiers(): Modifier[];
   location(): Location;
@@ -59,6 +60,7 @@ const BARF_MOUNTAIN: FarmingStrategy = {
   asdonEffect: () => $effect`Driving Observantly`,
   ensureBarfAccess: () => true,
   baseMeat: () => 250,
+  accountForNC: () => true,
   turnsToNC: () =>
     (27 * barfTourists) /
       (garbageTourists + angryTourists + 3 * touristFamilies) +
@@ -99,6 +101,7 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   asdonEffect: () => $effect`Driving Waterproofly`,
   ensureBarfAccess: () => false,
   baseMeat: () => 300,
+  accountForNC: () => false,
   turnsToNC: () => Infinity,
   bonusModifiers: () => $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
   location: () => $location`The Coral Corral`,

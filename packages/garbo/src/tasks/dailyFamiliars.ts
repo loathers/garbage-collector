@@ -45,30 +45,43 @@ import { farmingStrategy, garbageTouristRatio } from "../farmingStrategy";
 
 function drivebyValue(targetCount = 0): number {
   const targets = targetCount;
-  const tourists =
-    ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
-    (farmingStrategy().turnsToNC() + 1);
+
+  const tourists = farmingStrategy().accountForNC()
+    ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
+      (farmingStrategy().turnsToNC() + 1)
+    : 0;
+
   const marginalRoboWeight = 50;
+
   const meatPercentDelta =
     Math.sqrt(220 * 2 * marginalRoboWeight) -
     Math.sqrt(220 * 2 * marginalRoboWeight) +
     2 * marginalRoboWeight;
+
   return (
-    (meatPercentDelta / 100) * (targetMeat() * targets + baseMeat() * tourists)
+    (meatPercentDelta / 100) *
+    (targetMeat() * targets + baseMeat() * tourists)
   );
 }
 
 function entendreValue(targetCount = 0): number {
   const targets = targetCount;
-  const tourists =
-    ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
-    (farmingStrategy().turnsToNC() + 1);
+
+  const tourists = farmingStrategy().accountForNC()
+    ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
+      (farmingStrategy().turnsToNC() + 1)
+    : 0;
+
   const marginalRoboWeight = 50;
+
   const itemPercent =
     Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;
+
   const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance
+
   return (
-    (itemPercent / 100) * (garbageBagsDropRate * tourists * garbageTouristRatio)
+    (itemPercent / 100) *
+    (garbageBagsDropRate * tourists * garbageTouristRatio)
   );
 }
 

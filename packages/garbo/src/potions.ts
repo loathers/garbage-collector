@@ -305,12 +305,16 @@ export class Potion {
       0,
     );
 
+    const ncAdjustment = farmingStrategy().accountForNC()
+      ? farmingStrategy().turnsToNC() / (farmingStrategy().turnsToNC() + 1)
+      : 1;
+
     return (
       (bonusMeat / 100) *
-      (baseMeat() *
-        (duration - targetsApplied) *
-        (farmingStrategy().turnsToNC() / (farmingStrategy().turnsToNC() + 1)) +
-        (baseMeat() + targetMeatDifferential()) * targetsApplied)
+      (
+        baseMeat() * (duration - targetsApplied) * ncAdjustment +
+        (baseMeat() + targetMeatDifferential()) * targetsApplied
+      )
     );
   }
 
@@ -980,7 +984,9 @@ class VariableMeatPotion {
   ): number {
     const yachtzeeValue = 2000;
     const targetValue = targetMeat();
-    const barfValue = (baseMeat() * farmingStrategy().turnsToNC()) / 30;
+    const barfValue = farmingStrategy().accountForNC()
+      ? (baseMeat() * farmingStrategy().turnsToNC()) / 30
+      : 0;
 
     const totalCosts = retrievePrice(this.potion, n);
     const totalDuration = n * this.duration;
