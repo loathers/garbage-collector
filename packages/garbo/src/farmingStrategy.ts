@@ -111,7 +111,7 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   outfit: () => {
     const banishItem = chooseBanish()?.equip;
     if (banishItem) {
-      print(`Planning to banish using ${banishItem?.name}`);
+      print(`Planning to banish equipping ${banishItem?.name}`);
     }
 
     return barfOutfit({
@@ -125,27 +125,29 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   combat: () =>
     new GarboStrategy(() => {
       const banishMethod = chooseBanish();
+
       if (banishMethod) {
-        print(`Planning to banish using ${banishMethod?.name}`);
+        print(`Planning to banish using ${banishMethod.name}`);
+
+        const macro = Macro.if_(
+          $monsters`Mer-kin rustler, sea cowboy`,
+          banishMethod.macro,
+        );
+
+        return redTaffyWorth()
+          ? macro.tryItem($item`pulled red taffy`).meatKill()
+          : macro.meatKill();
       }
-      if (banishMethod === null && getMonstersToBanish().length > 0) {
+
+      if (getMonstersToBanish().length > 0) {
         throw new Error(
           "I have monsters to banish for cowo, but no banishes are available!",
         );
       }
-      if (redTaffyWorth()) {
-        return Macro.if_(
-          $monsters`Mer-kin rustler, sea cowboy`,
-          banishMethod?.macro ?? Macro.abort(),
-        )
-          .tryItem($item`pulled red taffy`)
-          .meatKill();
-      } else {
-        return Macro.if_(
-          $monsters`Mer-kin rustler, sea cowboy`,
-          banishMethod?.macro ?? Macro.abort(),
-        ).meatKill();
-      }
+
+      return redTaffyWorth()
+        ? Macro.tryItem($item`pulled red taffy`).meatKill()
+        : Macro.meatKill();
     }),
 };
 

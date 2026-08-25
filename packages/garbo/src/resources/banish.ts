@@ -69,7 +69,7 @@ function banishMethodInUse(method: BanishMethod): boolean {
 
   for (const [sourceItemOrSkill, banishedMonster] of banished.entries()) {
     if (
-      farmingStrategy().monstersToBanish().includes(banishedMonster) && // our critical list
+      farmingStrategy().monstersToBanish().includes(banishedMonster) &&
       (method.name === sourceItemOrSkill.name || // Match by name (item or skill)
         false) // you can extend this if necessary
     ) {
