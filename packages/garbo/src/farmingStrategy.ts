@@ -112,7 +112,6 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
     const banishItem = cowoChooseBanish()?.equip;
 
     return barfOutfit({
-      familiar: $familiar`Comma Chameleon`,
       ...(have($effect`Driving Waterproofly`)
         ? {}
         : { pants: $item`really, really nice swimming trunks` }),
