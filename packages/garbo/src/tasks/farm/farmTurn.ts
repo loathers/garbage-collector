@@ -1,5 +1,5 @@
-import { $item, have } from "libram";
-import { myAdventures, myLocation, retrieveItem } from "kolmafia";
+import { $item, $monster, get, have } from "libram";
+import { myAdventures, myLocation, retrieveItem, toMonster } from "kolmafia";
 import { $effect, CrepeParachute } from "libram";
 import { Quest } from "grimoire-kolmafia";
 
@@ -12,7 +12,7 @@ import {
 import { farmingStrategy } from "../../farmingStrategy";
 import { trackMarginalMpa } from "../../session";
 import postCombatActions from "../../post";
-import { getCowoMonstersToBanish, redTaffyWorth } from "../../resources/banish";
+import { getMonstersToBanish, redTaffyWorth } from "../../resources/banish";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 
@@ -49,7 +49,7 @@ export const FarmTurnQuest: Quest<GarboTask> = {
         }
         meatMood().execute(estimatedGarboTurns());
 
-        if (getCowoMonstersToBanish().length > 0) {
+        if (getMonstersToBanish().length > 0) {
           retrieveItem($item`human musk`);
         }
       },
@@ -63,6 +63,12 @@ export const FarmTurnQuest: Quest<GarboTask> = {
       post: () => {
         trackMarginalMpa();
         postCombatActions();
+        if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
+          throw "You encountered a tumbleweed and should not have, resolve your banishes"
+        }
+        if (getMonstersToBanish().includes(toMonster(get("lastEncounter")))) {
+          throw "You encountered a banishable monster and didn't banish it, sort your life out!";
+        }
       },
 
       spendsTurn: true,

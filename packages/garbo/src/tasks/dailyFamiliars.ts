@@ -59,8 +59,7 @@ function drivebyValue(targetCount = 0): number {
     2 * marginalRoboWeight;
 
   return (
-    (meatPercentDelta / 100) *
-    (targetMeat() * targets + baseMeat() * tourists)
+    (meatPercentDelta / 100) * (targetMeat() * targets + baseMeat() * tourists)
   );
 }
 
@@ -80,8 +79,7 @@ function entendreValue(targetCount = 0): number {
   const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance
 
   return (
-    (itemPercent / 100) *
-    (garbageBagsDropRate * tourists * garbageTouristRatio)
+    (itemPercent / 100) * (garbageBagsDropRate * tourists * garbageTouristRatio)
   );
 }
 

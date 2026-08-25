@@ -9,7 +9,6 @@ import {
 import {
   $class,
   $item,
-  $monsters,
   $skill,
   get,
   getBanishedMonsters,
@@ -17,11 +16,10 @@ import {
   Macro,
 } from "libram";
 import { garboValue } from "../garboValue";
+import { farmingStrategy } from "../farmingStrategy";
 
-const monsters = $monsters`Mer-kin rustler, sea cowboy`;
-
-export function getCowoMonstersToBanish(): Monster[] {
-  return monsters.filter((monster) => !isBanished(monster));
+export function getMonstersToBanish(): Monster[] {
+  return farmingStrategy().monstersToBanish().filter((monster) => !isBanished(monster));
 }
 
 interface BanishMethod {
@@ -79,7 +77,7 @@ function banishMethodInUse(method: BanishMethod): boolean {
 
   for (const [sourceItemOrSkill, banishedMonster] of banished.entries()) {
     if (
-      monsters.includes(banishedMonster) && // our critical list
+      farmingStrategy().monstersToBanish().includes(banishedMonster) && // our critical list
       (method.name === sourceItemOrSkill.name || // Match by name (item or skill)
         false) // you can extend this if necessary
     ) {
@@ -90,7 +88,7 @@ function banishMethodInUse(method: BanishMethod): boolean {
 }
 
 export function cowoChooseBanish(): BanishMethod | null {
-  if (getCowoMonstersToBanish().length === 0) {
+  if (getMonstersToBanish().length === 0) {
     return null;
   }
   for (const method of banishMethods) {
@@ -100,6 +98,8 @@ export function cowoChooseBanish(): BanishMethod | null {
   }
   return null;
 }
+
+
 
 const RED_TAFFY_DROP_WEIGHTS = new Map<Item, number>([
   [$item`Alewife™ Ale`, 0.03],

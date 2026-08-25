@@ -20,7 +20,7 @@ import { Macro } from "./combat";
 import { FarmingMethod, globalOptions } from "./config";
 import {
   cowoChooseBanish,
-  getCowoMonstersToBanish,
+  getMonstersToBanish,
   redTaffyWorth,
 } from "./resources/banish";
 
@@ -113,6 +113,9 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
 
   outfit: () => {
     const banishItem = cowoChooseBanish()?.equip;
+    if (banishItem) {
+        print(`Planning to banish using ${banishItem?.name}`);
+      }
 
     return barfOutfit({
       ...(have($effect`Driving Waterproofly`)
@@ -128,7 +131,7 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
       if (banishMethod) {
         print(`Planning to banish using ${banishMethod?.name}`);
       }
-      if (banishMethod === null && getCowoMonstersToBanish().length > 0) {
+      if (banishMethod === null && getMonstersToBanish().length > 0) {
         throw new Error(
           "I have monsters to banish for cowo, but no banishes are available!",
         );
