@@ -14,6 +14,7 @@ import {
   itemAmount,
   itemType,
   Location,
+  Monster,
   mpCost,
   myBuffedstat,
   myClass,
@@ -305,7 +306,10 @@ export class Macro extends StrictMacro {
         pigSkinnerSetup ||
         bearArmsSetup);
 
-    const preferredBarfMonster = farmingStrategy().targetMonster();
+    const preferredBarfMonster =
+      farmingStrategy().location() === $location`Barf Mountain`
+        ? farmingStrategy().targetMonster()
+        : Monster.none;
 
     return this.externalIf(
       shouldRedigitize(),
