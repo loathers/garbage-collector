@@ -122,13 +122,13 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
     });
   },
 
-  combat: () =>
-    new GarboStrategy(() => {
-      const banishMethod = chooseBanish();
+  combat: () => {
+    const banishMethod = chooseBanish();
 
-      if (banishMethod) {
-        print(`Planning to banish using ${banishMethod.name}`);
+    if (banishMethod) {
+      print(`Planning to banish using ${banishMethod.name}`);
 
+      return new GarboStrategy(() => {
         const macro = Macro.if_(
           $monsters`Mer-kin rustler, sea cowboy`,
           banishMethod.macro,
@@ -137,18 +137,21 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
         return redTaffyWorth()
           ? macro.tryItem($item`pulled red taffy`).meatKill()
           : macro.meatKill();
-      }
+      });
+    }
 
-      if (getMonstersToBanish().length > 0) {
-        throw new Error(
-          "I have monsters to banish for cowo, but no banishes are available!",
-        );
-      }
+    if (getMonstersToBanish().length > 0) {
+      throw new Error(
+        "I have monsters to banish for cowo, but no banishes are available!",
+      );
+    }
 
-      return redTaffyWorth()
+    return new GarboStrategy(() =>
+      redTaffyWorth()
         ? Macro.tryItem($item`pulled red taffy`).meatKill()
-        : Macro.meatKill();
-    }),
+        : Macro.meatKill(),
+    );
+  },
 };
 
 export function farmingStrategy(): FarmingStrategy {
