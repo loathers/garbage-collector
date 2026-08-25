@@ -6,17 +6,10 @@ import {
   myClass,
   myFury,
 } from "kolmafia";
-import {
-  $class,
-  $item,
-  $skill,
-  get,
-  getBanishedMonsters,
-  have,
-  Macro,
-} from "libram";
+import { $class, $item, $skill, get, getBanishedMonsters, have } from "libram";
 import { garboValue } from "../garboValue";
 import { farmingStrategy } from "../farmingStrategy";
+import { Macro } from "../combat";
 
 export function getMonstersToBanish(): Monster[] {
   return farmingStrategy()
@@ -42,7 +35,9 @@ const banishMethods: BanishMethod[] = [
   {
     name: "Spring Kick",
     available: () => have($item`spring shoes`),
-    macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
+    macro: Macro.trySkill($skill`Spring Kick`)
+      .trySkill($skill`Spring Away`)
+      .meatKill(),
     equip: $item`spring shoes`,
   },
   {
