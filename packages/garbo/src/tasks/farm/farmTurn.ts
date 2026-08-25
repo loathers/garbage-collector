@@ -38,7 +38,6 @@ export const FarmTurnQuest: Quest<GarboTask> = {
     },
     {
       name: "Farm",
-      ready: () => myLocation() === farmingStrategy().location(),
       completed: () => myAdventures() === 0,
 
       prepare: () => {
