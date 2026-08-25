@@ -24,50 +24,50 @@ interface BanishMethod {
   equip?: Item;
 }
 
-const banishMethods: BanishMethod[] = [
-  {
-    name: "Monkey Slap",
-    available: () =>
-      get("_monkeyPawWishesUsed") === 0 && have($item`cursed monkey's paw`),
-    macro: Macro.trySkill($skill`Monkey Slap`),
-    equip: $item`cursed monkey's paw`,
-  },
-  {
-    name: "Spring Kick",
-    available: () => have($item`spring shoes`),
-    macro: Macro.trySkill($skill`Spring Kick`)
-      .trySkill($skill`Spring Away`)
-      .meatKill(),
-    equip: $item`spring shoes`,
-  },
-  {
-    name: "Batter Up!",
-    available: () =>
-      myClass() === $class`Seal Clubber` &&
-      have($skill`Batter Up!`) &&
-      myFury() >= 5,
-    macro: Macro.trySkill($skill`Batter Up!`),
-    equip: $item`seal-clubbing club`,
-  },
-  {
-    name: "human musk",
-    available: () => true,
-    macro: Macro.tryItem($item`human musk`),
-  },
-  {
-    name: "Sea *dent: Throw a Lightning Bolt",
-    available: () =>
-      have($item`Monodent of the Sea`) && get("_seadentLightningUsed", 0) < 11,
-    equip: $item`Monodent of the Sea`,
-    macro: Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`),
-  },
-  /* {
-    name: "Unleash Nanites",
-    available: () => have($effect`Nanobrawny`),
-    macro: () => Macro.trySkill($skill`Unleash Nanites`),
-    equip: have($familiar`Nanorhino`) ? $familiar`Nanorhino` : $familiar`Comma Chameleon`
-  }, */
-];
+function banishMethods(): BanishMethod[] {
+  return [
+    {
+      name: "Monkey Slap",
+      available: () =>
+        get("_monkeyPawWishesUsed") === 0 &&
+        have($item`cursed monkey's paw`),
+      macro: Macro.trySkill($skill`Monkey Slap`),
+      equip: $item`cursed monkey's paw`,
+    },
+    {
+      name: "Spring Kick",
+      available: () => have($item`spring shoes`),
+      macro: Macro.trySkill($skill`Spring Kick`).trySkill(
+        $skill`Spring Away`,
+      ),
+      equip: $item`spring shoes`,
+    },
+    {
+      name: "Batter Up!",
+      available: () =>
+        myClass() === $class`Seal Clubber` &&
+        have($skill`Batter Up!`) &&
+        myFury() >= 5,
+      macro: Macro.trySkill($skill`Batter Up!`),
+      equip: $item`seal-clubbing club`,
+    },
+    {
+      name: "human musk",
+      available: () => true,
+      macro: Macro.tryItem($item`human musk`),
+    },
+    {
+      name: "Sea *dent: Throw a Lightning Bolt",
+      available: () =>
+        have($item`Monodent of the Sea`) &&
+        get("_seadentLightningUsed", 0) < 11,
+      equip: $item`Monodent of the Sea`,
+      macro: Macro.trySkill(
+        $skill`Sea *dent: Throw a Lightning Bolt`,
+      ),
+    },
+  ];
+}
 
 function banishMethodInUse(method: BanishMethod): boolean {
   const banished = getBanishedMonsters();
@@ -84,11 +84,11 @@ function banishMethodInUse(method: BanishMethod): boolean {
   return false;
 }
 
-export function cowoChooseBanish(): BanishMethod | null {
+export function chooseBanish(): BanishMethod | null {
   if (getMonstersToBanish().length === 0) {
     return null;
   }
-  for (const method of banishMethods) {
+  for (const method of banishMethods()) {
     if (method.available() && !banishMethodInUse(method)) {
       return method;
     }

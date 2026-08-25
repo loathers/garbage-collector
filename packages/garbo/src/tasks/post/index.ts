@@ -94,7 +94,7 @@ function useStuff(): GarboPostTask {
 }
 
 const BARF_PLANTS = () =>
-  farmingStrategy().underwater()
+  farmingStrategy().location().environment === "underwater"
     ? [
         FloristFriar.Crookweed,
         FloristFriar.ElectricEelgrass,

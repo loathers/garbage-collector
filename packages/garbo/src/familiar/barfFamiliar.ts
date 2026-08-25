@@ -57,7 +57,7 @@ const MEAT_DROP_VALUE = () => baseMeat() / 100;
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
-    farmingStrategy().underwater() &&
+    farmingStrategy().location().environment === "underwater" &&
     !have($effect`Driving Waterproofly`) &&
     !familiar.underwater
   );

@@ -19,7 +19,7 @@ import { barfOutfit } from "./outfit";
 import { Macro } from "./combat";
 import { FarmingMethod, globalOptions } from "./config";
 import {
-  cowoChooseBanish,
+  chooseBanish,
   getMonstersToBanish,
   redTaffyWorth,
 } from "./resources/banish";
@@ -47,7 +47,6 @@ interface FarmingStrategy {
   location(): Location;
   ensureML(): boolean;
   bonusEffects(): Effect[];
-  underwater(): boolean;
   monstersToBanish(): Monster[];
   targetMonster: () => Monster;
 
@@ -71,7 +70,6 @@ const BARF_MOUNTAIN: FarmingStrategy = {
   location: () => $location`Barf Mountain`,
   ensureML: () => true,
   bonusEffects: () => $effects`How to Scam Tourists`,
-  underwater: () => false,
   monstersToBanish: () => $monsters``,
   targetMonster: () =>
     have($familiar`Skeleton of Crimbo Past`) &&
@@ -107,12 +105,11 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   location: () => $location`The Coral Corral`,
   ensureML: () => false,
   bonusEffects: () => $effects``,
-  underwater: () => true,
   monstersToBanish: () => $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: () => $monster`sea cow`,
 
   outfit: () => {
-    const banishItem = cowoChooseBanish()?.equip;
+    const banishItem = chooseBanish()?.equip;
     if (banishItem) {
       print(`Planning to banish using ${banishItem?.name}`);
     }
@@ -127,7 +124,7 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
 
   combat: () =>
     new GarboStrategy(() => {
-      const banishMethod = cowoChooseBanish();
+      const banishMethod = chooseBanish();
       if (banishMethod) {
         print(`Planning to banish using ${banishMethod?.name}`);
       }
