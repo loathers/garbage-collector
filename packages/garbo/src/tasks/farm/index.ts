@@ -4,7 +4,7 @@ import { NonBarfTurnQuest } from "./nonBarfTurn";
 import { TurnGenQuest } from "./turnGen";
 import { WandererQuest } from "./wanderer";
 
-export const FarmQuests = [
+export const FarmQuests = () => [
   TurnGenQuest,
   DailyExtrasQuest,
   WandererQuest,

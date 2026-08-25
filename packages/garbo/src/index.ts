@@ -635,7 +635,7 @@ export function main(argString = ""): void {
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
           if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
-            runGarboQuests([PostQuest(), ...FarmQuests]);
+            runGarboQuests([PostQuest(), ...FarmQuests()]);
             runGarboQuests([FinishUpQuest]);
           } finally {
             setAutoAttack(0);
