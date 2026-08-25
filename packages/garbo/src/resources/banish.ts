@@ -29,17 +29,14 @@ function banishMethods(): BanishMethod[] {
     {
       name: "Monkey Slap",
       available: () =>
-        get("_monkeyPawWishesUsed") === 0 &&
-        have($item`cursed monkey's paw`),
+        get("_monkeyPawWishesUsed") === 0 && have($item`cursed monkey's paw`),
       macro: Macro.trySkill($skill`Monkey Slap`),
       equip: $item`cursed monkey's paw`,
     },
     {
       name: "Spring Kick",
       available: () => have($item`spring shoes`),
-      macro: Macro.trySkill($skill`Spring Kick`).trySkill(
-        $skill`Spring Away`,
-      ),
+      macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
       equip: $item`spring shoes`,
     },
     {
@@ -62,9 +59,7 @@ function banishMethods(): BanishMethod[] {
         have($item`Monodent of the Sea`) &&
         get("_seadentLightningUsed", 0) < 11,
       equip: $item`Monodent of the Sea`,
-      macro: Macro.trySkill(
-        $skill`Sea *dent: Throw a Lightning Bolt`,
-      ),
+      macro: Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`),
     },
   ];
 }
