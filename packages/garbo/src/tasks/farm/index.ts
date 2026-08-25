@@ -9,5 +9,5 @@ export const FarmQuests = () => [
   DailyExtrasQuest,
   WandererQuest,
   NonBarfTurnQuest,
-  FarmTurnQuest,
+  FarmTurnQuest(),
 ];
