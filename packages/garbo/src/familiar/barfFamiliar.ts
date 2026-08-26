@@ -3,6 +3,7 @@ import {
   equippedItem,
   Familiar,
   Item,
+  itemDropsArray,
   myFamiliar,
   numericModifier,
   print,
@@ -17,6 +18,7 @@ import {
   $items,
   $location,
   $slots,
+  adventureTargetToWeightedMap,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -53,7 +55,19 @@ import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
 import { farmingStrategy } from "../farmingStrategy";
 
-const ITEM_DROP_VALUE = 0.72;
+const ITEM_DROP_VALUE = () =>
+  sum(
+    [...adventureTargetToWeightedMap(farmingStrategy().location).entries()],
+    ([monster, monsterWeight]) =>
+      monsterWeight *
+      sum(
+        itemDropsArray(monster),
+        ({ drop, rate }) =>
+          // One 100 because % the other because % improvement
+          (rate / 100 / 100) * garboValue(drop),
+      ),
+  );
+
 const MEAT_DROP_VALUE = () => baseMeat() / 100;
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
@@ -182,7 +196,7 @@ function familiarModifier(
 function familiarAbilityValue(familiar: Familiar) {
   return (
     familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() +
-    familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE
+    familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE()
   );
 }
 
@@ -238,7 +252,7 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfitValue =
     outfit.bonus +
     outfit.meat * MEAT_DROP_VALUE() +
-    outfit.item * ITEM_DROP_VALUE +
+    outfit.item * ITEM_DROP_VALUE() +
     (SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
