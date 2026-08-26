@@ -73,7 +73,7 @@ const BARF_MOUNTAIN: FarmingStrategy = {
   location: () => $location`Barf Mountain`,
   ensureML: () => true,
   bonusEffects: () => $effects`How to Scam Tourists`,
-  monstersToBanish: () => $monsters``,
+  monstersToBanish: () => [],
   targetMonster: () =>
     have($familiar`Skeleton of Crimbo Past`) &&
     get("_knuckleboneDrops", 0) < 100
