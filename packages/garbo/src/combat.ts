@@ -346,7 +346,7 @@ export class Macro extends StrictMacro {
       )
       .externalIf(
         olfactMonster !== Monster.none &&
-        have($skill`Transcendent Olfaction`) &&
+          have($skill`Transcendent Olfaction`) &&
           (get("olfactedMonster") !== olfactMonster ||
             !have($effect`On the Trail`)) &&
           get("_olfactionsUsed") < 3,
@@ -357,7 +357,7 @@ export class Macro extends StrictMacro {
       )
       .externalIf(
         olfactMonster !== Monster.none &&
-        get("_gallapagosMonster") !== olfactMonster &&
+          get("_gallapagosMonster") !== olfactMonster &&
           have($skill`Gallapagosian Mating Call`),
         Macro.if_(
           olfactMonster,
@@ -366,21 +366,21 @@ export class Macro extends StrictMacro {
       )
       .externalIf(
         olfactMonster !== Monster.none &&
-        get("longConMonster") !== olfactMonster &&
+          get("longConMonster") !== olfactMonster &&
           get("_longConUsed") < 5 &&
           have($skill`Long Con`),
         Macro.if_(olfactMonster, Macro.trySkill($skill`Long Con`)),
       )
       .externalIf(
         olfactMonster !== Monster.none &&
-        get("motifMonster") !== olfactMonster &&
+          get("motifMonster") !== olfactMonster &&
           have($skill`Motif`) &&
           !have($effect`Everything Looks Blue`),
         Macro.if_(olfactMonster, Macro.trySkill($skill`Motif`)),
       )
       .externalIf(
         olfactMonster !== Monster.none &&
-        !get("_latteCopyUsed") &&
+          !get("_latteCopyUsed") &&
           (get("_latteMonster") !== olfactMonster ||
             Counter.get("Latte Monster") > 30) &&
           have($item`latte lovers member's mug`),
