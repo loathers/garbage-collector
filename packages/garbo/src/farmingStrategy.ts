@@ -37,7 +37,7 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // Estimate number of turns till the counter hits 27
 // then estimate the expected number of turns required to hit a counter of >= 30
 
-interface FarmingStrategy {
+type FarmingStrategy = {
   stasisRounds(): number;
   asdonEffect(): Effect;
   ensureBarfAccess(): boolean;
