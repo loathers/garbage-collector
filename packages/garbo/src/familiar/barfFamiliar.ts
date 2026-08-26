@@ -86,7 +86,7 @@ type CachedOutfit = {
   bonus: number;
 };
 
-const outfitCache = new Map<number | Familiar, CachedOutfit>();
+const outfitCache = new Map<OutfitCacheKey, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
 const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
@@ -117,8 +117,21 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
   ],
 ]);
 
-const outfitCacheKey = (f: Familiar) =>
-  SPECIAL_FAMILIARS_FOR_CACHING.has(f) ? f : findLeprechaunMultiplier(f);
+type OutfitCacheKey = number | Familiar | string;
+
+function outfitCacheKey(familiar: Familiar): OutfitCacheKey {
+  if (SPECIAL_FAMILIARS_FOR_CACHING.has(familiar)) {
+    return familiar;
+  }
+
+  const lepMultiplier = findLeprechaunMultiplier(familiar);
+
+  if (farmingStrategy().location.environment !== "underwater") {
+    return lepMultiplier;
+  }
+
+  return `${lepMultiplier}:${familiar.underwater}`;
+}
 
 function getCachedOutfitValues(fam: Familiar) {
   const cacheKey = outfitCacheKey(fam);
