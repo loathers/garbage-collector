@@ -122,9 +122,6 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
     }
 
     return barfOutfit({
-      ...(have($effect`Driving Waterproofly`)
-        ? {}
-        : { pants: $item`really, really nice swimming trunks` }),
       ...(banishItem ? { equip: [banishItem] } : {}),
     });
   },
