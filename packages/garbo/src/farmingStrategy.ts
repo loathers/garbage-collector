@@ -37,7 +37,7 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // Estimate number of turns till the counter hits 27
 // then estimate the expected number of turns required to hit a counter of >= 30
 
-interface FarmingStrategy {
+type FarmingStrategy = {
   stasisRounds: number;
   asdonEffect: Effect;
   ensureBarfAccess: boolean;
@@ -55,7 +55,7 @@ interface FarmingStrategy {
   outfit(): Outfit;
   combat(): GarboStrategy;
   post?: () => void;
-}
+};
 
 const BARF_MOUNTAIN: FarmingStrategy = {
   stasisRounds: 20,
@@ -110,7 +110,7 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   bonusModifiers: $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
   location: $location`The Coral Corral`,
   ensureML: false,
-  bonusEffects: $effects``,
+  bonusEffects: [],
   monstersToBanish: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: () => $monster`sea cow`,
   shouldOlfact: false,
