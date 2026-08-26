@@ -327,7 +327,7 @@ export function main(argString = ""): void {
   if (
     !globalOptions.nobarf &&
     !globalOptions.simdiet &&
-    farmingStrategy().ensureBarfAccess()
+    farmingStrategy().ensureBarfAccess
   ) {
     ensureBarfAccess();
   }

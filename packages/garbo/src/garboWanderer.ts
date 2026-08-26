@@ -35,7 +35,7 @@ export function wanderer(): WandererManager {
         globalOptions.target,
         ...(globalOptions.nobarf
           ? []
-          : getMonsters(farmingStrategy().location())),
+          : getMonsters(farmingStrategy().location)),
         ...(have($item`Kramco Sausage-o-Matic™`)
           ? $monsters`sausage goblin`
           : []),

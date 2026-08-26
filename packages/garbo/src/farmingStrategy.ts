@@ -38,19 +38,19 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // then estimate the expected number of turns required to hit a counter of >= 30
 
 interface FarmingStrategy {
-  stasisRounds(): number;
-  asdonEffect(): Effect;
-  ensureBarfAccess(): boolean;
-  baseMeat(): number;
-  accountForNC(): boolean;
+  stasisRounds: number;
+  asdonEffect: Effect;
+  ensureBarfAccess: boolean;
+  baseMeat: number;
+  accountForNC: boolean;
   turnsToNC(): number;
-  bonusModifiers(): Modifier[];
-  location(): Location;
-  ensureML(): boolean;
-  bonusEffects(): Effect[];
-  monstersToBanish(): Monster[];
-  targetMonster: () => Monster;
-  shouldOlfact: () => boolean;
+  bonusModifiers: Modifier[];
+  location: Location;
+  ensureML: boolean;
+  bonusEffects: Effect[];
+  monstersToBanish: Monster[];
+  targetMonster(): Monster;
+  shouldOlfact: boolean;
 
   outfit(): Outfit;
   combat(): GarboStrategy;
@@ -58,28 +58,28 @@ interface FarmingStrategy {
 }
 
 const BARF_MOUNTAIN: FarmingStrategy = {
-  stasisRounds: () => 20,
-  asdonEffect: () => $effect`Driving Observantly`,
-  ensureBarfAccess: () => true,
-  baseMeat: () => 250,
-  accountForNC: () => true,
+  stasisRounds: 20,
+  asdonEffect: $effect`Driving Observantly`,
+  ensureBarfAccess: true,
+  baseMeat: 250,
+  accountForNC: true,
   turnsToNC: () =>
     (27 * barfTourists) /
       (garbageTourists + angryTourists + 3 * touristFamilies) +
     1 * touristFamilyRatio +
     2 * (1 - touristFamilyRatio) * touristFamilyRatio +
     3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio),
-  bonusModifiers: () => $modifiers``,
-  location: () => $location`Barf Mountain`,
-  ensureML: () => true,
-  bonusEffects: () => $effects`How to Scam Tourists`,
-  monstersToBanish: () => [],
+  bonusModifiers: [],
+  location: $location`Barf Mountain`,
+  ensureML: true,
+  bonusEffects: $effects`How to Scam Tourists`,
+  monstersToBanish: [],
   targetMonster: () =>
     have($familiar`Skeleton of Crimbo Past`) &&
     get("_knuckleboneDrops", 0) < 100
       ? $monster`angry tourist`
       : $monster`garbage tourist`,
-  shouldOlfact: () => true,
+  shouldOlfact: true,
 
   outfit: () => {
     const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
@@ -101,19 +101,19 @@ const BARF_MOUNTAIN: FarmingStrategy = {
 };
 
 const THE_CORAL_CORRAL: FarmingStrategy = {
-  stasisRounds: () => 5,
-  asdonEffect: () => $effect`Driving Waterproofly`,
-  ensureBarfAccess: () => false,
-  baseMeat: () => 300,
-  accountForNC: () => false,
+  stasisRounds: 5,
+  asdonEffect: $effect`Driving Waterproofly`,
+  ensureBarfAccess: false,
+  baseMeat: 300,
+  accountForNC: false,
   turnsToNC: () => Infinity,
-  bonusModifiers: () => $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
-  location: () => $location`The Coral Corral`,
-  ensureML: () => false,
-  bonusEffects: () => $effects``,
-  monstersToBanish: () => $monsters`Mer-kin rustler, sea cowboy`,
+  bonusModifiers: $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
+  location: $location`The Coral Corral`,
+  ensureML: false,
+  bonusEffects: $effects``,
+  monstersToBanish: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: () => $monster`sea cow`,
-  shouldOlfact: () => false,
+  shouldOlfact: false,
 
   outfit: () => {
     const banishItem = chooseBanish()?.equip;

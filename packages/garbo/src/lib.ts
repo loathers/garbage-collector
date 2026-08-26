@@ -165,7 +165,7 @@ export const songboomMeat = () =>
     : 0;
 
 // all tourists have a basemeat of 250
-export const baseMeat = () => farmingStrategy().baseMeat() + songboomMeat();
+export const baseMeat = () => farmingStrategy().baseMeat + songboomMeat();
 export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {

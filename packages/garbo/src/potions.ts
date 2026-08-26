@@ -187,8 +187,12 @@ export interface PotionOptions {
   }>;
 }
 
-export const VALUABLE_MODIFIERS = () =>
-  ["Meat Drop", "Familiar Weight", "Smithsness", "Item Drop"] as const;
+export const VALUABLE_MODIFIERS = [
+  "Meat Drop",
+  "Familiar Weight",
+  "Smithsness",
+  "Item Drop",
+] as const;
 
 const BUFFER_TURNS = 30;
 
@@ -262,7 +266,7 @@ export class Potion {
     return (
       this.effectValues?.meatDrop ??
       getModifier("Meat Drop", this.effect()) +
-        (farmingStrategy().location().environment === "underwater"
+        (farmingStrategy().location.environment === "underwater"
           ? getModifier("Meat Drop Penalty", this.effect())
           : 0) +
         2 * (usingPurse() ? this.smithsness() : 0)
@@ -273,7 +277,7 @@ export class Potion {
     return (
       this.effectValues?.famWeight ??
       getModifier("Familiar Weight", this.effect()) +
-        (farmingStrategy().location().environment === "underwater"
+        (farmingStrategy().location.environment === "underwater"
           ? getModifier("Hidden Familiar Weight", this.effect())
           : 0)
     );
@@ -305,7 +309,7 @@ export class Potion {
       0,
     );
 
-    const ncAdjustment = farmingStrategy().accountForNC()
+    const ncAdjustment = farmingStrategy().accountForNC
       ? farmingStrategy().turnsToNC() / (farmingStrategy().turnsToNC() + 1)
       : 1;
 
@@ -982,7 +986,7 @@ class VariableMeatPotion {
   ): number {
     const yachtzeeValue = 2000;
     const targetValue = targetMeat();
-    const barfValue = farmingStrategy().accountForNC()
+    const barfValue = farmingStrategy().accountForNC
       ? (baseMeat() * farmingStrategy().turnsToNC()) / 30
       : 0;
 

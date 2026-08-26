@@ -6,15 +6,23 @@ import {
   myClass,
   myFury,
 } from "kolmafia";
-import { $class, $item, $skill, get, getBanishedMonsters, have } from "libram";
+import {
+  $class,
+  $item,
+  $skill,
+  get,
+  getBanishedMonsters,
+  have,
+  sum,
+} from "libram";
 import { garboValue } from "../garboValue";
 import { farmingStrategy } from "../farmingStrategy";
 import { Macro } from "../combat";
 
 export function getMonstersToBanish(): Monster[] {
-  return farmingStrategy()
-    .monstersToBanish()
-    .filter((monster) => !isBanished(monster));
+  return farmingStrategy().monstersToBanish.filter(
+    (monster) => !isBanished(monster),
+  );
 }
 
 interface BanishMethod {
@@ -69,7 +77,7 @@ function banishMethodInUse(method: BanishMethod): boolean {
 
   for (const [sourceItemOrSkill, banishedMonster] of banished.entries()) {
     if (
-      farmingStrategy().monstersToBanish().includes(banishedMonster) &&
+      farmingStrategy().monstersToBanish.includes(banishedMonster) &&
       (method.name === sourceItemOrSkill.name || // Match by name (item or skill)
         false) // you can extend this if necessary
     ) {
@@ -121,9 +129,9 @@ const RED_TAFFY_DROP_WEIGHTS = new Map<Item, number>([
 ]);
 
 export function redTaffyWorth(): boolean {
-  const averageRedTaffyValue = [...RED_TAFFY_DROP_WEIGHTS.entries()].reduce(
-    (total, [item, weight]) => total + garboValue(item) * weight,
-    0,
+  const averageRedTaffyValue = sum(
+    [...RED_TAFFY_DROP_WEIGHTS.entries()],
+    ([item, weight]) => garboValue(item) * weight,
   );
 
   return mallPrice($item`pulled red taffy`) < averageRedTaffyValue;

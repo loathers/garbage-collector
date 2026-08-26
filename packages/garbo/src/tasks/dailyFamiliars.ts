@@ -46,7 +46,7 @@ import { farmingStrategy, garbageTouristRatio } from "../farmingStrategy";
 function drivebyValue(targetCount = 0): number {
   const targets = targetCount;
 
-  const tourists = farmingStrategy().accountForNC()
+  const tourists = farmingStrategy().accountForNC
     ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
       (farmingStrategy().turnsToNC() + 1)
     : 0;
@@ -66,7 +66,7 @@ function drivebyValue(targetCount = 0): number {
 function entendreValue(targetCount = 0): number {
   const targets = targetCount;
 
-  const tourists = farmingStrategy().accountForNC()
+  const tourists = farmingStrategy().accountForNC
     ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
       (farmingStrategy().turnsToNC() + 1)
     : 0;
@@ -113,7 +113,7 @@ export function prepRobortender(): void {
           baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()
-        : farmingStrategy().location().environment === "underwater"
+        : farmingStrategy().location.environment === "underwater"
           ? baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()

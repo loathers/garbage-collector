@@ -210,7 +210,7 @@ export function usingThumbRing(): boolean {
     const gear = bonusAccessories(BonusEquipMode.BARF);
     const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
-    setLocation(farmingStrategy().location());
+    setLocation(farmingStrategy().location);
     const meatAccessories = Item.all()
       .filter(
         (item) =>

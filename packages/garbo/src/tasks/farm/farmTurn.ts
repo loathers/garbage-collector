@@ -17,15 +17,15 @@ import { estimatedGarboTurns } from "../../turns";
 
 export function FarmTurnQuest(): Quest<GarboTask> {
   return {
-    name: `${farmingStrategy().location()}`,
+    name: `${farmingStrategy().location}`,
     tasks: [
       {
         name: "Parachute",
         ready: () =>
           CrepeParachute.have() &&
           shouldCheckParachute() &&
-          myLocation() === farmingStrategy().location() &&
-          farmingStrategy().shouldOlfact(),
+          myLocation() === farmingStrategy().location &&
+          farmingStrategy().shouldOlfact,
         completed: () =>
           have($effect`Everything looks Beige`) || myAdventures() === 0,
         outfit: () => farmingStrategy().outfit(),
@@ -44,7 +44,7 @@ export function FarmTurnQuest(): Quest<GarboTask> {
         prepare: () => {
           if (
             redTaffyWorth() &&
-            farmingStrategy().location().environment === "underwater"
+            farmingStrategy().location.environment === "underwater"
           ) {
             retrieveItem($item`pulled red taffy`);
           }
@@ -55,7 +55,7 @@ export function FarmTurnQuest(): Quest<GarboTask> {
           }
         },
         outfit: () => farmingStrategy().outfit(),
-        do: () => farmingStrategy().location(),
+        do: () => farmingStrategy().location,
         combat: farmingStrategy().combat(),
         post: () => {
           farmingStrategy().post?.();

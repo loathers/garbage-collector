@@ -67,7 +67,7 @@ export class DebuffPlanner {
 
   private isValuable(thing: Item | Effect): boolean {
     const effect = asEffect(thing);
-    return VALUABLE_MODIFIERS().some(
+    return VALUABLE_MODIFIERS.some(
       (modifier) => getModifier(modifier, effect) > 0,
     );
   }

@@ -306,7 +306,7 @@ export class Macro extends StrictMacro {
         pigSkinnerSetup ||
         bearArmsSetup);
 
-    const olfactMonster = farmingStrategy().shouldOlfact()
+    const olfactMonster = farmingStrategy().shouldOlfact
       ? farmingStrategy().targetMonster()
       : Monster.none;
 
@@ -498,7 +498,7 @@ export class Macro extends StrictMacro {
       get("_bittycar")
     ) {
       // These things can take a little longer to proc sometimes
-      stasisRounds = farmingStrategy().stasisRounds();
+      stasisRounds = farmingStrategy().stasisRounds;
     }
 
     if (isQuickCombat()) {
@@ -510,7 +510,7 @@ export class Macro extends StrictMacro {
     // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
       [
-        ...getMonsters(farmingStrategy().location()),
+        ...getMonsters(farmingStrategy().location),
         globalOptions.target,
         $monster`sausage goblin`,
       ],
