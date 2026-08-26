@@ -23,6 +23,7 @@ import {
   getMonstersToBanish,
   redTaffyWorth,
 } from "./resources/banish";
+import { completeBarfQuest } from "./resources/realm";
 
 const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;
 const gallapagosCopies = have($skill`Gallapagosian Mating Call`) ? 1 : 0;
@@ -53,6 +54,7 @@ interface FarmingStrategy {
 
   outfit(): Outfit;
   combat(): GarboStrategy;
+  post?: () => void;
 }
 
 const BARF_MOUNTAIN: FarmingStrategy = {
@@ -94,6 +96,8 @@ const BARF_MOUNTAIN: FarmingStrategy = {
           Macro.meatKill(),
         ).abort(),
     ),
+
+  post: completeBarfQuest,
 };
 
 const THE_CORAL_CORRAL: FarmingStrategy = {

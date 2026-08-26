@@ -11,7 +11,6 @@ import {
 } from "./lib";
 import { farmingStrategy } from "../../farmingStrategy";
 import { trackMarginalMpa } from "../../session";
-import postCombatActions from "../../post";
 import { getMonstersToBanish, redTaffyWorth } from "../../resources/banish";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
@@ -33,9 +32,9 @@ export function FarmTurnQuest(): Quest<GarboTask> {
         do: () => CrepeParachute.fight(farmingStrategy().targetMonster()),
         combat: farmingStrategy().combat(),
         post: () => {
+          farmingStrategy().post?.();
           if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
           trackMarginalMpa();
-          postCombatActions();
         },
         spendsTurn: true,
       },
@@ -59,8 +58,8 @@ export function FarmTurnQuest(): Quest<GarboTask> {
         do: () => farmingStrategy().location(),
         combat: farmingStrategy().combat(),
         post: () => {
+          farmingStrategy().post?.();
           trackMarginalMpa();
-          postCombatActions();
 
           if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
             throw "You encountered a tumbleweed and should not have, resolve your banishes";
