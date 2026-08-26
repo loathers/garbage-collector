@@ -18,15 +18,17 @@ import { estimatedGarboTurns } from "../../turns";
 
 export function FarmTurnQuest(): Quest<GarboTask> {
   return {
-    name: "Barf Turn",
+    name: `${farmingStrategy().location()}`,
     tasks: [
       {
         name: "Parachute",
         ready: () =>
           CrepeParachute.have() &&
           shouldCheckParachute() &&
-          myLocation() === farmingStrategy().location(),
-        completed: () => have($effect`Everything looks Beige`),
+          myLocation() === farmingStrategy().location() &&
+          farmingStrategy().shouldOlfact(),
+        completed: () =>
+          have($effect`Everything looks Beige`) || myAdventures() === 0,
         outfit: () => farmingStrategy().outfit(),
         do: () => CrepeParachute.fight(farmingStrategy().targetMonster()),
         combat: farmingStrategy().combat(),
@@ -40,7 +42,6 @@ export function FarmTurnQuest(): Quest<GarboTask> {
       {
         name: "Farm",
         completed: () => myAdventures() === 0,
-
         prepare: () => {
           if (
             redTaffyWorth() &&
@@ -54,13 +55,9 @@ export function FarmTurnQuest(): Quest<GarboTask> {
             retrieveItem($item`human musk`);
           }
         },
-
         outfit: () => farmingStrategy().outfit(),
-
         do: () => farmingStrategy().location(),
-
         combat: farmingStrategy().combat(),
-
         post: () => {
           trackMarginalMpa();
           postCombatActions();
@@ -73,7 +70,6 @@ export function FarmTurnQuest(): Quest<GarboTask> {
             throw "You encountered a banishable monster and didn't banish it, sort your life out!";
           }
         },
-
         spendsTurn: true,
       },
     ],

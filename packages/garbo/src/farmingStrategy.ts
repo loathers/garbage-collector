@@ -49,6 +49,7 @@ interface FarmingStrategy {
   bonusEffects(): Effect[];
   monstersToBanish(): Monster[];
   targetMonster: () => Monster;
+  shouldOlfact: () => boolean;
 
   outfit(): Outfit;
   combat(): GarboStrategy;
@@ -76,6 +77,7 @@ const BARF_MOUNTAIN: FarmingStrategy = {
     get("_knuckleboneDrops", 0) < 100
       ? $monster`angry tourist`
       : $monster`garbage tourist`,
+  shouldOlfact: () => true,
 
   outfit: () => {
     const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
@@ -107,6 +109,7 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   bonusEffects: () => $effects``,
   monstersToBanish: () => $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: () => $monster`sea cow`,
+  shouldOlfact: () => false,
 
   outfit: () => {
     const banishItem = chooseBanish()?.equip;

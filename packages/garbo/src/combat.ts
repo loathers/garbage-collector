@@ -306,10 +306,9 @@ export class Macro extends StrictMacro {
         pigSkinnerSetup ||
         bearArmsSetup);
 
-    const preferredBarfMonster =
-      farmingStrategy().location() === $location`Barf Mountain`
-        ? farmingStrategy().targetMonster()
-        : Monster.none;
+    const olfactMonster = farmingStrategy().shouldOlfact()
+      ? farmingStrategy().targetMonster()
+      : Monster.none;
 
     return this.externalIf(
       shouldRedigitize(),
@@ -346,42 +345,47 @@ export class Macro extends StrictMacro {
         Macro.trySkill($skill`Bowl Straight Up`),
       )
       .externalIf(
+        olfactMonster !== Monster.none &&
         have($skill`Transcendent Olfaction`) &&
-          (get("olfactedMonster") !== preferredBarfMonster ||
+          (get("olfactedMonster") !== olfactMonster ||
             !have($effect`On the Trail`)) &&
           get("_olfactionsUsed") < 3,
         Macro.if_(
-          preferredBarfMonster,
+          olfactMonster,
           Macro.trySkill($skill`Transcendent Olfaction`),
         ),
       )
       .externalIf(
-        get("_gallapagosMonster") !== preferredBarfMonster &&
+        olfactMonster !== Monster.none &&
+        get("_gallapagosMonster") !== olfactMonster &&
           have($skill`Gallapagosian Mating Call`),
         Macro.if_(
-          preferredBarfMonster,
+          olfactMonster,
           Macro.trySkill($skill`Gallapagosian Mating Call`),
         ),
       )
       .externalIf(
-        get("longConMonster") !== preferredBarfMonster &&
+        olfactMonster !== Monster.none &&
+        get("longConMonster") !== olfactMonster &&
           get("_longConUsed") < 5 &&
           have($skill`Long Con`),
-        Macro.if_(preferredBarfMonster, Macro.trySkill($skill`Long Con`)),
+        Macro.if_(olfactMonster, Macro.trySkill($skill`Long Con`)),
       )
       .externalIf(
-        get("motifMonster") !== preferredBarfMonster &&
+        olfactMonster !== Monster.none &&
+        get("motifMonster") !== olfactMonster &&
           have($skill`Motif`) &&
           !have($effect`Everything Looks Blue`),
-        Macro.if_(preferredBarfMonster, Macro.trySkill($skill`Motif`)),
+        Macro.if_(olfactMonster, Macro.trySkill($skill`Motif`)),
       )
       .externalIf(
+        olfactMonster !== Monster.none &&
         !get("_latteCopyUsed") &&
-          (get("_latteMonster") !== preferredBarfMonster ||
+          (get("_latteMonster") !== olfactMonster ||
             Counter.get("Latte Monster") > 30) &&
           have($item`latte lovers member's mug`),
         Macro.if_(
-          preferredBarfMonster,
+          olfactMonster,
           Macro.trySkill($skill`Offer Latte to Opponent`),
         ),
       )
