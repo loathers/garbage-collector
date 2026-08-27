@@ -56,6 +56,7 @@ import {
   SongBoom,
   SourceTerminal,
   StrictMacro,
+  undelay,
 } from "libram";
 import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
@@ -306,12 +307,8 @@ export class Macro extends StrictMacro {
         pigSkinnerSetup ||
         bearArmsSetup);
 
-    const strategy = farmingStrategy();
-
-    const olfactMonster = strategy.shouldOlfact
-      ? typeof strategy.targetMonster === "function"
-        ? strategy.targetMonster()
-        : strategy.targetMonster
+    const olfactMonster = farmingStrategy().shouldOlfact
+      ? undelay(farmingStrategy().targetMonster)
       : Monster.none;
 
     return this.externalIf(
