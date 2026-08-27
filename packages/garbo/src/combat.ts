@@ -306,8 +306,12 @@ export class Macro extends StrictMacro {
         pigSkinnerSetup ||
         bearArmsSetup);
 
-    const olfactMonster = farmingStrategy().shouldOlfact
-      ? farmingStrategy().targetMonster()
+    const strategy = farmingStrategy();
+
+    const olfactMonster = strategy.shouldOlfact
+      ? typeof strategy.targetMonster === "function"
+        ? strategy.targetMonster()
+        : strategy.targetMonster
       : Monster.none;
 
     return this.externalIf(

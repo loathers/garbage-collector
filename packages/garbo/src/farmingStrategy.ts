@@ -12,6 +12,7 @@ import {
   $monster,
   $monsters,
   $skill,
+  Delayed,
   get,
   have,
 } from "libram";
@@ -112,7 +113,7 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   ensureML: false,
   bonusEffects: [],
   monstersToBanish: $monsters`Mer-kin rustler, sea cowboy`,
-  targetMonster: () => $monster`sea cow`,
+  targetMonster: $monster`sea cow`,
   shouldOlfact: false,
 
   outfit: () => {
