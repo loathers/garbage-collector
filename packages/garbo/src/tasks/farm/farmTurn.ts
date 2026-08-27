@@ -1,4 +1,4 @@
-import { $item, $monster, get, have } from "libram";
+import { $item, $monster, get, have, undelay } from "libram";
 import { myAdventures, myLocation, retrieveItem, toMonster } from "kolmafia";
 import { $effect, CrepeParachute } from "libram";
 import { Quest } from "grimoire-kolmafia";
@@ -29,7 +29,8 @@ export function FarmTurnQuest(): Quest<GarboTask> {
         completed: () =>
           have($effect`Everything looks Beige`) || myAdventures() === 0,
         outfit: () => farmingStrategy().outfit(),
-        do: () => CrepeParachute.fight(farmingStrategy().targetMonster()),
+        do: () =>
+          CrepeParachute.fight(undelay(farmingStrategy().targetMonster)),
         combat: farmingStrategy().combat(),
         post: () => {
           farmingStrategy().post?.();

@@ -35,13 +35,6 @@ interface BanishMethod {
 function banishMethods(): BanishMethod[] {
   return [
     {
-      name: "Monkey Slap",
-      available: () =>
-        get("_monkeyPawWishesUsed") === 0 && have($item`cursed monkey's paw`),
-      macro: Macro.trySkill($skill`Monkey Slap`),
-      equip: $item`cursed monkey's paw`,
-    },
-    {
       name: "Spring Kick",
       available: () => have($item`spring shoes`),
       macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
