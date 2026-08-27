@@ -49,7 +49,7 @@ type FarmingStrategy = {
   ensureML: boolean;
   bonusEffects: Effect[];
   monstersToBanish: Monster[];
-  targetMonster(): Monster;
+  targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
 
   outfit(): Outfit;
