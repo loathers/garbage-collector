@@ -50,6 +50,12 @@ function banishMethods(): BanishMethod[] {
       equip: $item`seal-clubbing club`,
     },
     {
+      name: "Order a Kneecapping",
+      available: () =>
+        have($skill`Order a Kneecapping`) && !get("_kneecappingOrdered"),
+      macro: Macro.trySkill($skill`Order a Kneecapping`),
+    },
+    {
       name: "human musk",
       available: () => true,
       macro: Macro.tryItem($item`human musk`),
