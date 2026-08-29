@@ -4700,7 +4700,7 @@ __metadata:
     eslint: ^9.39.2
     eslint-config-garbo: "workspace:^"
     garbo-lib: "*"
-    grimoire-kolmafia: ^0.3.29
+    grimoire-kolmafia: ^0.3.33
     jiti: ^2.6.1
     kolmafia: ^5.28673.0
     libram: ^0.11.24
@@ -4771,7 +4771,7 @@ __metadata:
     eslint: ^9.39.2
     eslint-config-garbo: "workspace:^"
     garbo-lib: "workspace:*"
-    grimoire-kolmafia: ^0.3.29
+    grimoire-kolmafia: ^0.3.33
     jiti: ^2.6.1
     kolmafia: ^5.28673.0
     libram: ^0.11.24
@@ -4969,15 +4969,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grimoire-kolmafia@npm:^0.3.29":
-  version: 0.3.29
-  resolution: "grimoire-kolmafia@npm:0.3.29"
+"grimoire-kolmafia@npm:^0.3.33":
+  version: 0.3.33
+  resolution: "grimoire-kolmafia@npm:0.3.33"
   dependencies:
     core-js: ^3.16.4
   peerDependencies:
     kolmafia: ^5.28100.0
     libram: ^0.10.0
-  checksum: 97a54aa7f9b770dddae8d531313013d2544f36df2a0dff5b111cf1834f274e06a46e9053f3ab32f453a8723d2176b2ba7282bb111295574c15ee180f1b172941
+  checksum: 61122ef64b1a11e49255e1ae07655d45e0c9ff0338573ce4f380be2b7f80ea14cddb81ee365ee673faa6b7c2f244bd275426c3a05d9a48feb63a85cc5de610ae
   languageName: node
   linkType: hard
 

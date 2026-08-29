@@ -1,4 +1,4 @@
-import { Outfit } from "grimoire-kolmafia";
+import { OutfitSpec } from "grimoire-kolmafia";
 import { Effect, Location, Modifier, Monster, print } from "kolmafia";
 import { GarboStrategy } from "./combatStrategy";
 import {
@@ -16,15 +16,11 @@ import {
   get,
   have,
 } from "libram";
-import { barfOutfit } from "./outfit";
 import { Macro } from "./combat";
 import { FarmingMethod, globalOptions } from "./config";
-import {
-  chooseBanish,
-  getMonstersToBanish,
-  redTaffyWorth,
-} from "./resources/banish";
+import { getMonstersToBanish, redTaffyWorth } from "./resources/banish";
 import { completeBarfQuest } from "./resources/realm";
+import { GarboContext } from "./tasks/context";
 
 const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;
 const gallapagosCopies = have($skill`Gallapagosian Mating Call`) ? 1 : 0;
@@ -53,8 +49,8 @@ type FarmingStrategy = {
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
 
-  outfit(): Outfit;
-  combat(): GarboStrategy;
+  outfit: (context: GarboContext) => OutfitSpec;
+  combat: GarboStrategy;
   post?: () => void;
 };
 
@@ -82,21 +78,21 @@ const BARF_MOUNTAIN: FarmingStrategy = {
       : $monster`garbage tourist`,
   shouldOlfact: true,
 
-  outfit: () => {
-    const lubing = get("dinseyRollercoasterNext") && have($item`lube-shoes`);
+  outfit: () => ({
+    equip:
+      get("dinseyRollercoasterNext") && have($item`lube-shoes`)
+        ? $items`lube-shoes`
+        : [],
+  }),
 
-    return barfOutfit(lubing ? { equip: $items`lube-shoes` } : {});
-  },
-
-  combat: () =>
-    new GarboStrategy(
-      () => Macro.meatKill(),
-      () =>
-        Macro.if_(
-          `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-          Macro.meatKill(),
-        ).abort(),
-    ),
+  combat: new GarboStrategy(
+    () => Macro.meatKill(),
+    () =>
+      Macro.if_(
+        `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
+        Macro.meatKill(),
+      ).abort(),
+  ),
 
   post: completeBarfQuest,
 };
@@ -116,47 +112,37 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
 
-  outfit: () => {
-    const banishItem = chooseBanish()?.equip;
+  outfit: ({ banish }) => {
+    const banishItem = banish?.equip;
     if (banishItem) {
       print(`Planning to banish equipping ${banishItem?.name}`);
     }
 
-    return barfOutfit({
-      ...(banishItem ? { equip: [banishItem] } : {}),
-    });
+    return banishItem ? { equip: [banishItem] } : {};
   },
 
-  combat: () => {
-    const banishMethod = chooseBanish();
+  combat: new GarboStrategy(({ banish }) => {
+    if (banish) {
+      const macro = Macro.if_(
+        $monsters`Mer-kin rustler, sea cowboy`,
+        banish.macro,
+      );
 
-    if (banishMethod) {
-      print(`Planning to banish using ${banishMethod.name}`);
-
-      return new GarboStrategy(() => {
-        const macro = Macro.if_(
-          $monsters`Mer-kin rustler, sea cowboy`,
-          banishMethod.macro,
-        );
-
-        return redTaffyWorth()
-          ? macro.tryItem($item`pulled red taffy`).meatKill()
-          : macro.meatKill();
-      });
+      return redTaffyWorth()
+        ? macro.tryItem($item`pulled red taffy`).meatKill()
+        : macro.meatKill();
     }
 
-    if (getMonstersToBanish().length > 0) {
+    if (!banish && getMonstersToBanish().length > 0) {
       throw new Error(
         "I have monsters to banish for cowo, but no banishes are available!",
       );
     }
 
-    return new GarboStrategy(() =>
-      redTaffyWorth()
-        ? Macro.tryItem($item`pulled red taffy`).meatKill()
-        : Macro.meatKill(),
-    );
-  },
+    return redTaffyWorth()
+      ? Macro.tryItem($item`pulled red taffy`).meatKill()
+      : Macro.meatKill();
+  }),
 };
 
 export function farmingStrategy(): FarmingStrategy {

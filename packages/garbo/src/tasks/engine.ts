@@ -1,4 +1,5 @@
 import {
+  ContextualEngine,
   Engine,
   EngineOptions,
   getTasks,
@@ -35,8 +36,10 @@ import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
 import { shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
+import { GarboContext } from "./context";
+import { BanishMethod, chooseBanish } from "../resources/banish";
 
-export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
+export type GarboTask = StrictCombatTask<never, GarboContext, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
   spendsTurn: Delayed<boolean>;
   duplicate?: Delayed<boolean>;
@@ -57,15 +60,22 @@ function logTargetFight(encounterType: string) {
 /** A base engine for Garbo!
  * Runs extra logic before executing all tasks.
  */
-export class BaseGarboEngine extends Engine<never, GarboTask> {
+export class BaseGarboEngine extends ContextualEngine<
+  never,
+  GarboContext,
+  GarboTask
+> {
   static defaultSettings = {
     ...Engine.defaultSettings,
     choiceAdventureScript: "garbo_choice.js",
   };
-
+  #banish: BanishMethod | null = null;
   history: Array<{ name: string; startTime: number; durationMs: number }> = [];
 
-  constructor(tasks: GarboTask[], options?: EngineOptions | undefined) {
+  constructor(
+    tasks: GarboTask[],
+    options?: EngineOptions<never, GarboContext, GarboTask> | undefined,
+  ) {
     const startTime = Date.now();
     super(tasks, options);
 
@@ -81,6 +91,15 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   printExecutingMessage(task: GarboTask) {
     print(``);
     print(`Executing ${task.name}`, HIGHLIGHT);
+  }
+
+  getContext() {
+    return { banish: this.#banish };
+  }
+
+  getNextTask(): GarboTask | undefined {
+    this.#banish = chooseBanish();
+    return super.getNextTask();
   }
 
   destruct(): void {
@@ -180,6 +199,8 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
         durationMs: Date.now() - startTime,
       });
     }
+
+    this.#banish = null;
   }
 
   markAttempt(task: GarboTask): void {

@@ -14,6 +14,7 @@ import { trackMarginalMpa } from "../../session";
 import { getMonstersToBanish, redTaffyWorth } from "../../resources/banish";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
+import { barfOutfit } from "../../outfit";
 
 export function FarmTurnQuest(): Quest<GarboTask> {
   return {
@@ -28,10 +29,10 @@ export function FarmTurnQuest(): Quest<GarboTask> {
           farmingStrategy().shouldOlfact,
         completed: () =>
           have($effect`Everything looks Beige`) || myAdventures() === 0,
-        outfit: () => farmingStrategy().outfit(),
+        outfit: (context) => barfOutfit(farmingStrategy().outfit(context)),
         do: () =>
           CrepeParachute.fight(undelay(farmingStrategy().targetMonster)),
-        combat: farmingStrategy().combat(),
+        combat: farmingStrategy().combat,
         post: () => {
           farmingStrategy().post?.();
           if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
@@ -55,9 +56,9 @@ export function FarmTurnQuest(): Quest<GarboTask> {
             retrieveItem($item`human musk`);
           }
         },
-        outfit: () => farmingStrategy().outfit(),
+        outfit: (context) => barfOutfit(farmingStrategy().outfit(context)),
         do: () => farmingStrategy().location,
-        combat: farmingStrategy().combat(),
+        combat: farmingStrategy().combat,
         post: () => {
           farmingStrategy().post?.();
           trackMarginalMpa();

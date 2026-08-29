@@ -5,10 +5,12 @@ import {
   Monster,
   myClass,
   myFury,
+  Skill,
 } from "kolmafia";
 import {
   $class,
   $item,
+  $monster,
   $skill,
   get,
   getBanishedMonsters,
@@ -25,77 +27,65 @@ export function getMonstersToBanish(): Monster[] {
   );
 }
 
-interface BanishMethod {
+export type BanishMethod = {
   available: () => boolean;
   macro: Macro;
-  name: string;
+  source: Skill | Item;
   equip?: Item;
-}
+};
 
-function banishMethods(): BanishMethod[] {
-  return [
-    {
-      name: "Spring Kick",
-      available: () => have($item`spring shoes`),
-      macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
-      equip: $item`spring shoes`,
-    },
-    {
-      name: "Batter Up!",
-      available: () =>
-        myClass() === $class`Seal Clubber` &&
-        have($skill`Batter Up!`) &&
-        myFury() >= 5,
-      macro: Macro.trySkill($skill`Batter Up!`),
-      equip: $item`seal-clubbing club`,
-    },
-    {
-      name: "Order a Kneecapping",
-      available: () =>
-        have($skill`Order a Kneecapping`) && !get("_kneecappingOrdered"),
-      macro: Macro.trySkill($skill`Order a Kneecapping`),
-    },
-    {
-      name: "human musk",
-      available: () => true,
-      macro: Macro.tryItem($item`human musk`),
-    },
-    {
-      name: "Sea *dent: Throw a Lightning Bolt",
-      available: () =>
-        have($item`Monodent of the Sea`) &&
-        get("_seadentLightningUsed", 0) < 11,
-      equip: $item`Monodent of the Sea`,
-      macro: Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`),
-    },
-  ];
-}
-
-function banishMethodInUse(method: BanishMethod): boolean {
-  const banished = getBanishedMonsters();
-
-  for (const [sourceItemOrSkill, banishedMonster] of banished.entries()) {
-    if (
-      farmingStrategy().monstersToBanish.includes(banishedMonster) &&
-      (method.name === sourceItemOrSkill.name || // Match by name (item or skill)
-        false) // you can extend this if necessary
-    ) {
-      return true;
-    }
-  }
-  return false;
-}
+const banishMethods: BanishMethod[] = [
+  {
+    source: $skill`Spring Kick`,
+    available: () => have($item`spring shoes`),
+    macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
+    equip: $item`spring shoes`,
+  },
+  {
+    source: $skill`Batter Up!`,
+    available: () =>
+      myClass() === $class`Seal Clubber` &&
+      have($skill`Batter Up!`) &&
+      myFury() >= 5,
+    macro: Macro.trySkill($skill`Batter Up!`),
+    equip: $item`seal-clubbing club`,
+  },
+  {
+    source: $skill`Order a Kneecapping`,
+    available: () =>
+      have($skill`Order a Kneecapping`) && !get("_kneecappingOrdered"),
+    macro: Macro.trySkill($skill`Order a Kneecapping`),
+  },
+  {
+    source: $item`human musk`,
+    available: () => true,
+    macro: Macro.tryItem($item`human musk`),
+  },
+  {
+    source: $skill`Sea *dent: Throw a Lightning Bolt`,
+    available: () =>
+      have($item`Monodent of the Sea`) && get("_seadentLightningUsed", 0) < 11,
+    equip: $item`Monodent of the Sea`,
+    macro: Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`),
+  },
+];
 
 export function chooseBanish(): BanishMethod | null {
   if (getMonstersToBanish().length === 0) {
     return null;
   }
-  for (const method of banishMethods()) {
-    if (method.available() && !banishMethodInUse(method)) {
-      return method;
-    }
-  }
-  return null;
+
+  const banishedMonsters = getBanishedMonsters();
+
+  return (
+    banishMethods.find(
+      (method) =>
+        method.available() &&
+        !farmingStrategy().monstersToBanish.includes(
+          banishedMonsters.get(method.source) ?? $monster.none,
+        ),
+    ) ?? null
+  );
 }
 
 const RED_TAFFY_DROP_WEIGHTS = new Map<Item, number>([
