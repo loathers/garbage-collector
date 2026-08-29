@@ -27,6 +27,7 @@ import { freeFightOutfit, toSpec } from "../outfit";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { effectExtenderValue } from "../potions";
+import { GarboContext } from "./context";
 
 function getRun(): ActionSource {
   return tryFindFreeRunOrBanish(freeRunConstraints()) ?? ltbRun();
@@ -111,12 +112,12 @@ const PostBuffExtensionTasks: GarboTask[] = [
   // TODO Add Shadow Rift here if we ever grimoirize it
 ];
 
-export const BuffExtensionQuest: Quest<GarboTask> = {
+export const BuffExtensionQuest: Quest<GarboTask, GarboContext> = {
   name: "Buff Extension",
   tasks: BuffExtensionTasks,
 };
 
-export const PostBuffExtensionQuest: Quest<GarboTask> = {
+export const PostBuffExtensionQuest: Quest<GarboTask, GarboContext> = {
   name: "Post Buff Extension",
   tasks: PostBuffExtensionTasks,
 };

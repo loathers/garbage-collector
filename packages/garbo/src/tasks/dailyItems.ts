@@ -70,6 +70,7 @@ import {
 import { meatFamiliar } from "../familiar";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { highMeatMonsterCount } from "../turns";
+import { GarboContext } from "./context";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
@@ -781,7 +782,7 @@ const DailyItemTasks: GarboTask[] = [
   },
 ];
 
-export const DailyItemsQuest: Quest<GarboTask> = {
+export const DailyItemsQuest: Quest<GarboTask, GarboContext> = {
   name: "Daily Items",
   tasks: [...SummonTasks, ...DailyItemTasks],
 };

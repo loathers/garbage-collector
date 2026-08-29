@@ -224,14 +224,14 @@ export class BaseGarboEngine extends ContextualEngine<
  */
 export class SafeGarboEngine extends BaseGarboEngine {
   constructor(tasks: GarboTask[]) {
-    const options = new EngineOptions();
+    const options = new EngineOptions<never, GarboContext>();
     options.default_task_options = { limit: { skip: 1 } };
     super(tasks, options);
   }
 }
 
 function runQuests<T extends typeof BaseGarboEngine>(
-  quests: Quest<GarboTask>[],
+  quests: Quest<GarboTask, GarboContext>[],
   garboEngine: T,
 ) {
   const engine = new garboEngine(getTasks(quests));
@@ -243,10 +243,12 @@ function runQuests<T extends typeof BaseGarboEngine>(
   }
 }
 
-export function runSafeGarboQuests(quests: Quest<GarboTask>[]): void {
+export function runSafeGarboQuests(
+  quests: Quest<GarboTask, GarboContext>[],
+): void {
   runQuests(quests, SafeGarboEngine);
 }
 
-export function runGarboQuests(quests: Quest<GarboTask>[]): void {
+export function runGarboQuests(quests: Quest<GarboTask, GarboContext>[]): void {
   runQuests(quests, BaseGarboEngine);
 }

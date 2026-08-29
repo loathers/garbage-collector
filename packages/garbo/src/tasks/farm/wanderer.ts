@@ -87,6 +87,7 @@ import {
   willYachtzee,
 } from "../../resources";
 import { acquire } from "../../acquire";
+import { GarboContext } from "../context";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
@@ -447,7 +448,7 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => get("_envyfishEggUsed"),
     do: () => use($item`envyfish egg`),
     spendsTurn: true,
-    outfit: meatTargetOutfit,
+    outfit: () => meatTargetOutfit(),
     combat: new GarboStrategy(() => Macro.target("envyfish egg")),
   },
   wanderTask(
@@ -779,7 +780,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
 ];
 
-export const WandererQuest: Quest<GarboTask> = {
+export const WandererQuest: Quest<GarboTask, GarboContext> = {
   name: "Wanderers",
   tasks: BarfTurnTasks,
   completed: () => !canContinue(),

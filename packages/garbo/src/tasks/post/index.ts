@@ -73,6 +73,7 @@ import {
   leprecondoTask,
 } from "../../resources";
 import { farmingStrategy } from "../../farmingStrategy";
+import { GarboContext } from "../context";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
@@ -442,7 +443,9 @@ function usePorkToilet(): GarboPostTask {
   };
 }
 
-export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
+export function PostQuest(
+  completed?: () => boolean,
+): Quest<GarboTask, GarboContext> {
   return {
     name: "Postcombat",
     completed,

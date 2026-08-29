@@ -56,6 +56,7 @@ import {
 } from "../../resources";
 import { yachtzeeQuest } from "../yachtzee";
 import { embezzlerFightTask } from "../embezzler";
+import { EMPTY_CONTEXT, GarboContext } from "../context";
 
 function dailyDungeon(additionalReady: () => boolean) {
   return {
@@ -477,13 +478,15 @@ export const NonBarfTurnTasks: AlternateTask[] = [
 
 export function nonBarfTurns(): number {
   return sum(
-    NonBarfTurnTasks.filter((t) => (t.ready?.() ?? true) && !t.completed()),
+    NonBarfTurnTasks.filter(
+      (t) => (t.ready?.(EMPTY_CONTEXT) ?? true) && !t.completed(EMPTY_CONTEXT),
+    ),
     (t) => undelay(t.turns),
   );
 }
 
 let startedNonBarf: boolean = false;
-export const NonBarfTurnQuest: Quest<GarboTask> = {
+export const NonBarfTurnQuest: Quest<GarboTask, GarboContext> = {
   name: "Non Barf Turn",
   tasks: NonBarfTurnTasks,
   ready: () => {

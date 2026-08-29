@@ -17,6 +17,7 @@ import { getBestLuckyAdventure, sober } from "../lib";
 import { AlternateTask } from "./engine";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
+import { GarboContext } from "./context";
 
 export function embezzlerFights(...exludedLuckySources: LuckySource[]): number {
   return sum(
@@ -45,7 +46,7 @@ export const embezzlerFightTask = {
   turns: 0, // Turns spent are tracked by the lucky sources
 } as const satisfies AlternateTask;
 
-export const EmbezzlerFightsQuest: Quest<AlternateTask> = {
+export const EmbezzlerFightsQuest: Quest<AlternateTask, GarboContext> = {
   name: "Lucky Embezzlers",
   ready: () =>
     getBestLuckyAdventure().phase === "target" &&

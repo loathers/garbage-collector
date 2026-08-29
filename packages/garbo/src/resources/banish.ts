@@ -32,6 +32,7 @@ export type BanishMethod = {
   macro: Macro;
   source: Skill | Item;
   equip?: Item;
+  retrieve?: boolean;
 };
 
 const banishMethods: BanishMethod[] = [
@@ -60,6 +61,7 @@ const banishMethods: BanishMethod[] = [
     source: $item`human musk`,
     available: () => true,
     macro: Macro.tryItem($item`human musk`),
+    retrieve: true,
   },
   {
     source: $skill`Sea *dent: Throw a Lightning Bolt`,

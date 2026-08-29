@@ -1,5 +1,11 @@
 import { $item, $monster, get, have, undelay } from "libram";
-import { myAdventures, myLocation, retrieveItem, toMonster } from "kolmafia";
+import {
+  Item,
+  myAdventures,
+  myLocation,
+  retrieveItem,
+  toMonster,
+} from "kolmafia";
 import { $effect, CrepeParachute } from "libram";
 import { Quest } from "grimoire-kolmafia";
 
@@ -15,8 +21,9 @@ import { getMonstersToBanish, redTaffyWorth } from "../../resources/banish";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit";
+import { GarboContext } from "../context";
 
-export function FarmTurnQuest(): Quest<GarboTask> {
+export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
   return {
     name: `${farmingStrategy().location}`,
     tasks: [
@@ -43,7 +50,7 @@ export function FarmTurnQuest(): Quest<GarboTask> {
       {
         name: "Farm",
         completed: () => myAdventures() === 0,
-        prepare: () => {
+        prepare: (context) => {
           if (
             redTaffyWorth() &&
             farmingStrategy().location.environment === "underwater"
@@ -52,8 +59,11 @@ export function FarmTurnQuest(): Quest<GarboTask> {
           }
           meatMood().execute(estimatedGarboTurns());
 
-          if (getMonstersToBanish().length > 0) {
-            retrieveItem($item`human musk`);
+          if (
+            context.banish?.retrieve &&
+            context.banish.source instanceof Item
+          ) {
+            retrieveItem(context.banish.source);
           }
         },
         outfit: (context) => barfOutfit(farmingStrategy().outfit(context)),

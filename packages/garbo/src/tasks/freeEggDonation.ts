@@ -46,6 +46,7 @@ import {
   tryFindFreeRunOrBanish,
 } from "../lib";
 import { GarboTask } from "./engine";
+import { GarboContext } from "./context";
 
 function queryEggNetIncomplete(): Map<Monster, number> {
   try {
@@ -247,7 +248,9 @@ function mimicEggDonation(): GarboTask[] {
   ];
 }
 
-export const FreeMimicEggDonationQuest: Delayed<Quest<GarboTask>> = () => ({
+export const FreeMimicEggDonationQuest: Delayed<
+  Quest<GarboTask, GarboContext>
+> = () => ({
   name: "Free Mimic Egg Donation",
   tasks: [...mimicEggDonation()],
   ready: () =>

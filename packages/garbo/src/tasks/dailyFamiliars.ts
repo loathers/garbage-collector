@@ -42,6 +42,7 @@ import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
 import { amuletCoinValue } from "../familiar/lib";
 import { farmingStrategy, garbageTouristRatio } from "../farmingStrategy";
+import { GarboContext } from "./context";
 
 function drivebyValue(targetCount = 0): number {
   const targets = targetCount;
@@ -260,7 +261,7 @@ const DailyFamiliarTasks: GarboTask[] = [
   },
 ];
 
-export const DailyFamiliarsQuest: Quest<GarboTask> = {
+export const DailyFamiliarsQuest: Quest<GarboTask, GarboContext> = {
   name: "Daily Familiars",
   tasks: DailyFamiliarTasks,
 };
