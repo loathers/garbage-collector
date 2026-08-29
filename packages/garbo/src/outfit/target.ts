@@ -18,6 +18,7 @@ import {
   bestBjornalike,
   cleaverCheck,
   familiarWaterBreathingEquipment,
+  handleBanningTcb,
   useUPCsIfNeeded,
   validateGarbageFoldable,
   waterBreathingEquipment,
@@ -119,8 +120,6 @@ export function meatTargetOutfit(
 
   if (!targetingMeat()) outfit.addBonuses(toyCupidBow(outfit.familiar));
 
-  const bjornalike = bestBjornalike(outfit);
-
   if (
     location === Guzzlr.getLocation() &&
     Guzzlr.turnsLeftOnQuest(false) === 1 &&
@@ -132,6 +131,9 @@ export function meatTargetOutfit(
     );
   }
 
+  handleBanningTcb(outfit);
+
+  const bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
     outfit.setBonus(bjornalike, bjornChoice.value);
     outfit.equip(bjornalike);
