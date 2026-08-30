@@ -15,9 +15,12 @@ import {
   shouldCheckParachute,
   updateParachuteFailure,
 } from "./lib";
-import { farmingStrategy } from "../../farmingStrategy";
+import {
+  farmingStrategy,
+  getMonstersToBanish,
+  redTaffyWorth,
+} from "../../farmingStrategy";
 import { trackMarginalMpa } from "../../session";
-import { getMonstersToBanish, redTaffyWorth } from "../../resources/banish";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit";
@@ -77,7 +80,11 @@ export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
             throw "You encountered a tumbleweed and should not have, resolve your banishes";
           }
 
-          if (getMonstersToBanish().includes(toMonster(get("lastEncounter")))) {
+          if (
+            getMonstersToBanish(farmingStrategy().monstersToBanish).includes(
+              toMonster(get("lastEncounter")),
+            )
+          ) {
             throw "You encountered a banishable monster and didn't banish it, sort your life out!";
           }
         },
