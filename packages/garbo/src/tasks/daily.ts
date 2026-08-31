@@ -385,7 +385,7 @@ const DailyTasks: GarboTask[] = [
   {
     name: "Check Florist",
     ready: () => get("ownsFloristFriar"),
-    completed: floristAvailable,
+    completed: () => floristAvailable(),
     after: ["Daily/Unlock Woods"],
     do: () => {
       visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
