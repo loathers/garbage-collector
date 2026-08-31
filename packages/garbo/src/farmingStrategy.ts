@@ -2,7 +2,6 @@ import { OutfitSpec } from "grimoire-kolmafia";
 import {
   Effect,
   isBanished,
-  Item,
   Location,
   mallPrice,
   Modifier,
@@ -24,6 +23,7 @@ import {
   Delayed,
   get,
   have,
+  PulledTaffy,
   sum,
 } from "libram";
 import { Macro } from "./combat";
@@ -36,38 +36,9 @@ export function getMonstersToBanish(monstersToBanish: Monster[]): Monster[] {
   return monstersToBanish.filter((monster) => !isBanished(monster));
 }
 
-const RED_TAFFY_DROP_WEIGHTS = new Map<Item, number>([
-  [$item`Alewife™ Ale`, 0.03],
-  [$item`bazookafish bubble gum`, 0.03],
-  [$item`beefy fish meat`, 0.03],
-  [$item`dull fish scale`, 0.0925],
-  [$item`eel battery`, 0.03],
-  [$item`eel sauce`, 0.03],
-  [$item`glistening fish meat`, 0.03],
-  [$item`high-pressure seltzer bottle`, 0.03],
-  [$item`imitation crab crate`, 0.03],
-  [$item`ink bladder`, 0.03],
-  [$item`live nautical mine`, 0.03],
-  [$item`Mer-kin healscroll`, 0.03],
-  [$item`Mer-kin lunchbox`, 0.0925],
-  [$item`Mer-kin thingpouch`, 0.03],
-  [$item`pufferfish spine`, 0.03],
-  [$item`rough fish scale`, 0.03],
-  [$item`salinated mint julep`, 0.03],
-  [$item`sand dollar`, 0.125],
-  [$item`sea lace`, 0.03],
-  [$item`seaweed`, 0.03],
-  [$item`shark cartilage`, 0.03],
-  [$item`slick fish meat`, 0.03],
-  [$item`slug of rum`, 0.03],
-  [$item`slug of shochu`, 0.03],
-  [$item`slug of vodka`, 0.03],
-  [$item`soggy seed packet`, 0.03],
-]);
-
 export function redTaffyWorth(): boolean {
   const averageRedTaffyValue = sum(
-    [...RED_TAFFY_DROP_WEIGHTS.entries()],
+    [...PulledTaffy.RED_TAFFY_DROP_WEIGHTS.entries()],
     ([item, weight]) => garboValue(item) * weight,
   );
 
@@ -183,15 +154,6 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
       return redTaffyWorth()
         ? macro.tryItem($item`pulled red taffy`).meatKill()
         : macro.meatKill();
-    }
-
-    if (
-      !banish &&
-      getMonstersToBanish($monsters`Mer-kin rustler, sea cowboy`).length > 0
-    ) {
-      throw new Error(
-        "I have monsters to banish for cowo, but no banishes are available!",
-      );
     }
 
     return redTaffyWorth()
