@@ -1,4 +1,4 @@
-import { $item, $monster, get, have, undelay } from "libram";
+import { $item, $monster, get, have, set, undelay } from "libram";
 import {
   Item,
   myAdventures,
@@ -69,7 +69,26 @@ export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
             retrieveItem(context.banish.source);
           }
         },
-        outfit: (context) => barfOutfit(farmingStrategy().outfit(context)),
+        outfit: (context) => {
+          if (farmingStrategy().location.environment === "underwater") {
+            if (
+              have($effect`Driving Waterproofly`) &&
+              !get("_checkedWaterproofly", false)
+            ) {
+              set("_checkedWaterproofly", true);
+            }
+            if (
+              have($effect`Driving Waterproofly`) &&
+              get("_checkedWaterproofly", false)
+            ) {
+              const spec = farmingStrategy().outfit(context);
+              spec.equip ??= [];
+              spec.equip.push($item`really, really nice swimming trunks`);
+              return barfOutfit(spec);
+            }
+          }
+          return barfOutfit(farmingStrategy().outfit(context));
+        },
         do: () => farmingStrategy().location,
         combat: farmingStrategy().combat,
         post: () => {
