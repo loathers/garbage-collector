@@ -292,7 +292,7 @@ export function bonusGear(
     ...bindlestocking(mode),
     ...simpleTargetCrits(mode),
     ...batWings(mode),
-    ...cupOfThirteens(),
+    ...cupOfThirteens(mode),
     ...mobius(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
@@ -493,9 +493,14 @@ function powerGlove(): Map<Item, number> {
   ]);
 }
 
+const speakeasyBanList = $items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`;
+
 const POSSIBLE_SNEEGLEEB_DROPS = Item.all().filter(
   (i) =>
-    i.tradeable && i.discardable && (i.inebriety || i.fullness || i.potion),
+    i.tradeable &&
+    i.discardable &&
+    (i.inebriety || i.fullness || i.potion) &&
+    !speakeasyBanList.includes(i),
 );
 let sneegleebBonus: number;
 const SNEEGLEEB_DROP_RATE = 0.13;
@@ -528,18 +533,15 @@ export function toyCupidBow(familiar: Familiar): Map<Item, number> {
   ]);
 }
 
-const speakeasyBanList = $items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`;
-
-const allPossibleCupOfThirteensDrops = Item.all().filter(
-  (item) =>
-    item.tradeable &&
-    item.discardable &&
-    item.inebriety &&
-    !speakeasyBanList.includes(item),
+const CUP_OF_THIRTEENS_DROPS = POSSIBLE_SNEEGLEEB_DROPS.filter(
+  (item) => item.inebriety,
 );
 
-function cupOfThirteens(): Map<Item, number> {
-  if (!CupOfThirteens.have()) {
+function cupOfThirteens(mode: BonusEquipMode): Map<Item, number> {
+  if (
+    !CupOfThirteens.have() ||
+    (mode !== BonusEquipMode.BARF && mode !== BonusEquipMode.FREE)
+  ) {
     return new Map();
   }
 
@@ -558,7 +560,7 @@ function cupOfThirteens(): Map<Item, number> {
           ? ["good", "decent"]
           : ["decent", "crappy"];
 
-  const possibleDrops = allPossibleCupOfThirteensDrops.filter((item) =>
+  const possibleDrops = CUP_OF_THIRTEENS_DROPS.filter((item) =>
     qualities.includes(item.quality),
   );
 
