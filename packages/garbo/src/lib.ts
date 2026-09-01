@@ -75,6 +75,7 @@ import {
   $skill,
   $thralls,
   ActionSource,
+  adventureTargetToWeightedMap,
   bestLibramToCast,
   ChateauMantegna,
   clamp,
@@ -145,7 +146,19 @@ export function modeValueOfMeat(mode: BonusEquipMode): number {
 }
 
 export function modeValueOfItem(mode: BonusEquipMode): number {
-  return mode === BonusEquipMode.BARF ? 0.72 : 0;
+  const ITEM_DROP_VALUE = () =>
+    sum(
+      [...adventureTargetToWeightedMap(farmingStrategy().location).entries()],
+      ([monster, monsterWeight]) =>
+        monsterWeight *
+        sum(
+          itemDropsArray(monster),
+          ({ drop, rate }) =>
+            // One 100 because % the other because % improvement
+            (rate / 100 / 100) * garboValue(drop),
+        ),
+    );
+  return mode === BonusEquipMode.BARF ? ITEM_DROP_VALUE() : 0;
 }
 
 export const WISH_VALUE = 50000;
