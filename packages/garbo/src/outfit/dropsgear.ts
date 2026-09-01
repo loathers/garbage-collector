@@ -531,11 +531,12 @@ export function toyCupidBow(familiar: Familiar): Map<Item, number> {
 const speakeasyBanList = $items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`;
 
 const allPossibleCupOfThirteensDrops = Item.all().filter(
-    (item) =>
-      item.tradeable &&
-      item.discardable &&
-      item.inebriety &&
-      !speakeasyBanList.includes(item));
+  (item) =>
+    item.tradeable &&
+    item.discardable &&
+    item.inebriety &&
+    !speakeasyBanList.includes(item),
+);
 
 function cupOfThirteens(): Map<Item, number> {
   if (!CupOfThirteens.have()) {
@@ -557,7 +558,9 @@ function cupOfThirteens(): Map<Item, number> {
           ? ["good", "decent"]
           : ["decent", "crappy"];
 
-  const possibleDrops = allPossibleCupOfThirteensDrops.filter((item) => qualities.includes(item.quality));
+  const possibleDrops = allPossibleCupOfThirteensDrops.filter((item) =>
+    qualities.includes(item.quality),
+  );
 
   const cupBonus = garboAverageValue(...possibleDrops) / chargeRequired;
 
