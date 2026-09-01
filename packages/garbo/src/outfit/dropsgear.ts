@@ -537,7 +537,7 @@ function cupOfThirteens(): Map<Item, number> {
 
   // A drop occurs at 6 charges if we haven't gotten 3 drops today.
   // Otherwise, the next drop occurs at 10 charges.
-  const chargeRequired = dropsToday < 3 ? 6 : 10;
+  const chargeRequired = dropsToday < 2 ? 6 : 10;
 
   const qualities =
     dropsToday <= 1
