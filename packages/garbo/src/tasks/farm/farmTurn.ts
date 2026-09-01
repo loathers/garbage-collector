@@ -1,4 +1,4 @@
-import { $item, $monster, get, have, set, undelay } from "libram";
+import { $item, $monster, get, have, undelay } from "libram";
 import {
   Item,
   myAdventures,
@@ -69,26 +69,7 @@ export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
             retrieveItem(context.banish.source);
           }
         },
-        outfit: (context) => {
-          if (farmingStrategy().location.environment === "underwater") {
-            if (
-              have($effect`Driving Waterproofly`) &&
-              !get("_checkedWaterproofly", false)
-            ) {
-              set("_checkedWaterproofly", true);
-            }
-            if (
-              have($effect`Driving Waterproofly`) &&
-              get("_checkedWaterproofly", false)
-            ) {
-              const spec = farmingStrategy().outfit(context);
-              spec.equip ??= [];
-              spec.equip.push($item`really, really nice swimming trunks`);
-              return barfOutfit(spec);
-            }
-          }
-          return barfOutfit(farmingStrategy().outfit(context));
-        },
+        outfit: (context) => barfOutfit(farmingStrategy().outfit(context)),
         do: () => farmingStrategy().location,
         combat: farmingStrategy().combat,
         post: () => {
@@ -96,7 +77,9 @@ export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
           trackMarginalMpa();
 
           if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
-            throw "You encountered a tumbleweed and should not have, resolve your banishes";
+            throw new Error(
+              "You encountered a tumbleweed and should not have, resolve your banishes",
+            );
           }
 
           if (
@@ -104,7 +87,9 @@ export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
               toMonster(get("lastEncounter")),
             )
           ) {
-            throw "You encountered a banishable monster and didn't banish it, sort your life out!";
+            throw new Error(
+              "You encountered a banishable monster and didn't banish it, sort your life out!",
+            );
           }
         },
         spendsTurn: true,

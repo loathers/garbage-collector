@@ -14,6 +14,7 @@ import {
   $familiar,
   $item,
   $skill,
+  clearMaximizerCache,
   Delayed,
   get,
   have,
@@ -21,6 +22,7 @@ import {
   undelay,
 } from "libram";
 import {
+  booleanModifier,
   bufferToFile,
   equip,
   fileToBuffer,
@@ -144,6 +146,16 @@ export class BaseGarboEngine extends ContextualEngine<
       outfit.equip($item`pro skateboard`);
     }
     super.dress(task, outfit);
+    const canBreathe = () =>
+      booleanModifier("Familiar Adventure Underwater") &&
+      booleanModifier("Adventure Underwater");
+    if (outfit.modifier.includes("+sea") && !canBreathe()) {
+      clearMaximizerCache();
+      super.dress(task, outfit);
+      if (!canBreathe()) {
+        throw new Error("Can't adventure underwater, figure it out.");
+      }
+    }
     if (itemAmount($item`tiny stillsuit`) > 0) {
       equip(
         myFamiliar() === $familiar`Cornbeefadon`
