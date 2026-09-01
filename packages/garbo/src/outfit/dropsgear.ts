@@ -292,6 +292,7 @@ export function bonusGear(
     ...bindlestocking(mode),
     ...simpleTargetCrits(mode),
     ...batWings(mode),
+    ...cupOfThirteens(),
     ...mobius(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
