@@ -20,6 +20,7 @@ import {
   BatWings,
   BurningLeaves,
   clamp,
+  CupOfThirteens,
   DaylightShavings,
   DesignerSweatpants,
   get,
@@ -524,4 +525,37 @@ export function toyCupidBow(familiar: Familiar): Map<Item, number> {
   return new Map([
     [$item`toy Cupid bow`, familiarEquipmentValue(familiar) / turns],
   ]);
+}
+
+function cupOfThirteens(): Map<Item, number> {
+  if (!CupOfThirteens.have()) {
+    return new Map();
+  }
+
+  const dropsToday = get("_cupOf13sDrops");
+
+  // A drop occurs at 6 charges if we haven't gotten 3 drops today.
+  // Otherwise, the next drop occurs at 10 charges.
+  const chargeRequired = dropsToday < 3 ? 6 : 10;
+
+  const qualities =
+    dropsToday <= 1
+      ? ["EPIC", "Awesome"]
+      : dropsToday <= 3
+        ? ["Awesome", "good"]
+        : dropsToday <= 5
+          ? ["good", "decent"]
+          : ["decent", "crappy"];
+
+  const possibleDrops = Item.all().filter(
+    (item) =>
+      item.tradeable &&
+      item.discardable &&
+      item.inebriety &&
+      qualities.includes(item.quality),
+  );
+
+  const cupBonus = garboAverageValue(...possibleDrops) / chargeRequired;
+
+  return new Map([[$item`Cup of 13s`, cupBonus]]);
 }
