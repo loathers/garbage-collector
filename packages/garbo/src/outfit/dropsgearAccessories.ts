@@ -35,6 +35,7 @@ import {
 import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
 import { garboAverageValue, garboValue } from "../garboValue";
+import { estimatedGarboTurns } from "../turns";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -149,10 +150,15 @@ function cinchoDeMayo(mode: BonusEquipMode) {
 }
 
 function calculateLaughingStockBonus() {
-  const nextFruit = LaughingStock.nextDrop();
+  const allFruit = LaughingStock.expectedDropsToday(estimatedGarboTurns());
 
-  if (nextFruit) {
-    return garboValue(nextFruit[0]) / nextFruit[1];
+  if (allFruit) {
+    const nextFruit = allFruit[0][1];
+
+    const averageHorizon =
+      allFruit.reduce((sum, [, fights]) => sum + fights, 0) / allFruit.length;
+
+    return Math.max(nextFruit, averageHorizon);
   }
 
   const basicFruitValue = garboAverageValue(
