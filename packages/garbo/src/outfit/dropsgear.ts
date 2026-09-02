@@ -559,9 +559,9 @@ function cupOfThirteens(mode: BonusEquipMode): Map<Item, number> {
 
   const qualities =
     dropsToday <= 1
-      ? ["EPIC", "Awesome"]
+      ? ["EPIC", "awesome"]
       : dropsToday <= 3
-        ? ["Awesome", "good"]
+        ? ["awesome", "good"]
         : dropsToday <= 5
           ? ["good", "decent"]
           : ["decent", "crappy"];
