@@ -30,7 +30,6 @@ import {
   felizValue,
   maxPassiveDamage,
   modeIsFree,
-  modeUseLimitedDrops,
   monsterManuelAvailable,
 } from "../lib";
 import { maximumPinataCasts } from "../resources";
