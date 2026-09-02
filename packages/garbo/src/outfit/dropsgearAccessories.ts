@@ -17,6 +17,7 @@ import {
   get,
   getModifier,
   have,
+  LaughingStock,
   lgrCurrencies,
   sum,
   sumNumbers,
@@ -34,6 +35,7 @@ import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { farmingStrategy } from "../farmingStrategy";
+import { estimatedGarboTurns } from "../turns";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -147,7 +149,7 @@ function cinchoDeMayo(mode: BonusEquipMode) {
   return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
 }
 
-function calculateLaughingStockBonus() {
+function calculateLaughingStockBonus(alwaysUseHorizon: boolean) {
   const basicFruitValue = garboAverageValue(
     ...$items`orange, grapefruit, grapes, lemon, lime, papaya, cranberries, strawberry, cherry, kumquat, tangerine, raspberry, kiwi, blackberry, banana, cactus fruit, plum, pear, peach`,
   );
@@ -155,24 +157,29 @@ function calculateLaughingStockBonus() {
     ...$items`classic banana, antique watermelon, quince`,
   );
 
-  const fruitsDropped = get("_laughingStockFruitDropped", 0);
+  const horizonValue = 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
 
-  // if we have 11 fruit drops, it's a 1/50 chance, split to 1/10 classic and 9/10 basic
-  if (fruitsDropped >= 11) {
-    return 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
+  if (alwaysUseHorizon) return horizonValue;
+
+  const nextDrop = LaughingStock.nextDrop();
+
+  if (nextDrop) {
+    const [fruit, fights] = nextDrop;
+    if (fights > estimatedGarboTurns()) return 0;
+    return Math.max(garboValue(fruit) / fights, horizonValue);
   }
-  // otherwise it's seeded, but we are guaranteed at least 3 classic drops in 9 fights
-  // and otherwise it's a 1/10 chance of being special
-  // it takes 56 turns to get all the fruit
-  return (3.8 * classicFruitValue + 7.2 * basicFruitValue) / 56;
+
+  return horizonValue;
 }
 
-function portableLaughingStock() {
-  if (!have($item`Portable Laughing Stock`)) {
+function portableLaughingStock(mode: BonusEquipMode) {
+  if (!have($item`Portable Laughing Stock`) || mode === BonusEquipMode.DMT) {
     return new Map<Item, number>([]);
   }
 
-  const laughingStockBonus = calculateLaughingStockBonus();
+  const laughingStockBonus = calculateLaughingStockBonus(
+    mode !== BonusEquipMode.MEAT_TARGET,
+  );
 
   return new Map<Item, number>([
     [$item`Portable Laughing Stock`, laughingStockBonus],
@@ -189,7 +196,7 @@ export function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
     ...mafiaThumbRing(mode),
     ...luckyGoldRing(mode),
     ...mrCheengsSpectacles(),
-    ...portableLaughingStock(),
+    ...portableLaughingStock(mode),
     ...mrScreegesSpectacles(),
     ...cinchoDeMayo(mode),
   ]);
