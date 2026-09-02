@@ -149,16 +149,21 @@ function cinchoDeMayo(mode: BonusEquipMode) {
   return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
 }
 
+const allFruit = LaughingStock.expectedDropsToday(estimatedGarboTurns());
+
 function calculateLaughingStockBonus() {
-  const allFruit = LaughingStock.expectedDropsToday(estimatedGarboTurns());
-
   if (allFruit) {
-    const nextFruit = allFruit[0][1];
+    const nextFruit = allFruit[0][0];
+    const turnsToNextFruit = allFruit[0][1];
+    const nextFruitValue = garboValue(nextFruit) / turnsToNextFruit;
 
-    const averageHorizon =
+    const fruitItems = allFruit.map(([item]) => item);
+    const averageTurnsToFruit =
       allFruit.reduce((sum, [, fights]) => sum + fights, 0) / allFruit.length;
+    const averageFruitValue =
+      garboAverageValue(...fruitItems) / averageTurnsToFruit;
 
-    return Math.max(nextFruit, averageHorizon);
+    return Math.max(nextFruitValue, averageFruitValue);
   }
 
   const basicFruitValue = garboAverageValue(
