@@ -147,7 +147,8 @@ export class BaseGarboEngine extends ContextualEngine<
     }
     super.dress(task, outfit);
     const canBreathe = () =>
-      booleanModifier("Familiar Adventure Underwater") &&
+      (booleanModifier("Familiar Adventure Underwater") ||
+        have($effect`Driving Waterproofly`)) &&
       booleanModifier("Adventure Underwater");
     if (outfit.modifier.includes("+sea") && !canBreathe()) {
       clearMaximizerCache();
