@@ -149,23 +149,7 @@ function cinchoDeMayo(mode: BonusEquipMode) {
   return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
 }
 
-const allFruit = LaughingStock.expectedDropsToday(estimatedGarboTurns());
-
 function calculateLaughingStockBonus() {
-  if (allFruit) {
-    const nextFruit = allFruit[0][0];
-    const turnsToNextFruit = allFruit[0][1];
-    const nextFruitValue = garboValue(nextFruit) / turnsToNextFruit;
-
-    const fruitItems = allFruit.map(([item]) => item);
-    const averageTurnsToFruit =
-      allFruit.reduce((sum, [, fights]) => sum + fights, 0) / allFruit.length;
-    const averageFruitValue =
-      garboAverageValue(...fruitItems) / averageTurnsToFruit;
-
-    return Math.max(nextFruitValue, averageFruitValue);
-  }
-
   const basicFruitValue = garboAverageValue(
     ...$items`orange, grapefruit, grapes, lemon, lime, papaya, cranberries, strawberry, cherry, kumquat, tangerine, raspberry, kiwi, blackberry, banana, cactus fruit, plum, pear, peach`,
   );
@@ -173,16 +157,17 @@ function calculateLaughingStockBonus() {
     ...$items`classic banana, antique watermelon, quince`,
   );
 
-  const fruitsDropped = get("_laughingStockFruitDropped", 0);
+  const horizonValue = 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
 
-  // if we have 11 fruit drops, it's a 1/50 chance, split to 1/10 classic and 9/10 basic
-  if (fruitsDropped >= 11) {
-    return 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
+  const nextDrop = LaughingStock.nextDrop();
+
+  if (nextDrop) {
+    const [fruit, fights] = nextDrop;
+    if (fights > estimatedGarboTurns()) return 0;
+    return Math.max(garboValue(fruit) / fights, horizonValue);
   }
-  // otherwise it's seeded, but we are guaranteed at least 3 classic drops in 9 fights
-  // and otherwise it's a 1/10 chance of being special
-  // it takes 56 turns to get all the fruit
-  return (3.8 * classicFruitValue + 7.2 * basicFruitValue) / 56;
+
+  return horizonValue;
 }
 
 function portableLaughingStock() {
