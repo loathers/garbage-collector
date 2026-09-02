@@ -564,11 +564,13 @@ function cupOfThirteens(mode: BonusEquipMode): Map<Item, number> {
           ? ["good", "decent"]
           : ["decent", "crappy"];
 
-  const possibleDrops = CUP_OF_THIRTEENS_DROPS.filter((item) =>
-    qualities.includes(item.quality),
-  );
+  if (cupOfThirteensBonus?.[0] !== qualities[0]) {
+    const possibleDrops = CUP_OF_THIRTEENS_DROPS.filter((item) =>
+      qualities.includes(item.quality),
+    );
+    cupOfThirteensBonus = [qualities[0], garboAverageValue(...possibleDrops)];
+  }
 
-  const cupBonus = garboAverageValue(...possibleDrops) / chargeRequired;
-
+  const cupBonus = cupOfThirteensBonus[1] / chargeRequired;
   return new Map([[$item`Cup of 13s`, cupBonus]]);
 }
