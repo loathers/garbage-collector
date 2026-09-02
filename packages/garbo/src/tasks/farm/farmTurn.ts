@@ -1,0 +1,100 @@
+import { $item, $monster, get, have, undelay } from "libram";
+import {
+  Item,
+  myAdventures,
+  myLocation,
+  retrieveItem,
+  toMonster,
+} from "kolmafia";
+import { $effect, CrepeParachute } from "libram";
+import { Quest } from "grimoire-kolmafia";
+
+import { GarboTask } from "../engine";
+import {
+  canContinue,
+  shouldCheckParachute,
+  updateParachuteFailure,
+} from "./lib";
+import {
+  farmingStrategy,
+  getMonstersToBanish,
+  redTaffyWorth,
+} from "../../farmingStrategy";
+import { trackMarginalMpa } from "../../session";
+import { meatMood } from "../../mood";
+import { estimatedGarboTurns } from "../../turns";
+import { barfOutfit } from "../../outfit";
+import { GarboContext } from "../context";
+
+export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
+  return {
+    name: `${farmingStrategy().location}`,
+    tasks: [
+      {
+        name: "Parachute",
+        ready: () =>
+          CrepeParachute.have() &&
+          shouldCheckParachute() &&
+          myLocation() === farmingStrategy().location &&
+          farmingStrategy().shouldOlfact,
+        completed: () =>
+          have($effect`Everything looks Beige`) || myAdventures() === 0,
+        outfit: (context) => barfOutfit(farmingStrategy().outfit(context)),
+        do: () =>
+          CrepeParachute.fight(undelay(farmingStrategy().targetMonster)),
+        combat: farmingStrategy().combat,
+        post: () => {
+          farmingStrategy().post?.();
+          if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
+          trackMarginalMpa();
+        },
+        spendsTurn: true,
+      },
+      {
+        name: "Farm",
+        completed: () => myAdventures() === 0,
+        prepare: (context) => {
+          if (
+            redTaffyWorth() &&
+            farmingStrategy().location.environment === "underwater"
+          ) {
+            retrieveItem($item`pulled red taffy`);
+          }
+          meatMood().execute(estimatedGarboTurns());
+
+          if (
+            context.banish?.retrieve &&
+            context.banish.source instanceof Item
+          ) {
+            retrieveItem(context.banish.source);
+          }
+        },
+        outfit: (context) => barfOutfit(farmingStrategy().outfit(context)),
+        do: () => farmingStrategy().location,
+        combat: farmingStrategy().combat,
+        post: () => {
+          farmingStrategy().post?.();
+          trackMarginalMpa();
+
+          if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
+            throw new Error(
+              "You encountered a tumbleweed and should not have, resolve your banishes",
+            );
+          }
+
+          if (
+            getMonstersToBanish(farmingStrategy().monstersToBanish).includes(
+              toMonster(get("lastEncounter")),
+            )
+          ) {
+            throw new Error(
+              "You encountered a banishable monster and didn't banish it, sort your life out!",
+            );
+          }
+        },
+        spendsTurn: true,
+      },
+    ],
+    completed: () => !canContinue(),
+  };
+}

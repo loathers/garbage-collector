@@ -90,6 +90,7 @@ import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
 import { embezzlerFights } from "./embezzler";
+import { GarboContext } from "./context";
 
 const photoBoothItems = $items`Sheriff badge, Sheriff pistol, Sheriff moustache, feather boa, oversized monocle on a stick, fake huge beard`;
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
@@ -384,7 +385,7 @@ const DailyTasks: GarboTask[] = [
   {
     name: "Check Florist",
     ready: () => get("ownsFloristFriar"),
-    completed: floristAvailable,
+    completed: () => floristAvailable(),
     after: ["Daily/Unlock Woods"],
     do: () => {
       visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
@@ -902,7 +903,7 @@ const DailyTasks: GarboTask[] = [
   },
 ];
 
-export const DailyQuest: Quest<GarboTask> = {
+export const DailyQuest: Quest<GarboTask, GarboContext> = {
   name: "Daily",
   tasks: DailyTasks,
 };

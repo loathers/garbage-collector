@@ -3,6 +3,7 @@ import {
   equippedItem,
   Familiar,
   Item,
+  itemDropsArray,
   myFamiliar,
   numericModifier,
   print,
@@ -11,15 +12,18 @@ import {
   weightAdjustment,
 } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
   $location,
   $slots,
+  adventureTargetToWeightedMap,
   clamp,
   findLeprechaunMultiplier,
   get,
   getModifier,
+  have,
   maxBy,
   SkeletonOfCrimboPast,
   sum,
@@ -49,9 +53,30 @@ import {
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
+import { farmingStrategy } from "../farmingStrategy";
 
-const ITEM_DROP_VALUE = 0.72;
-const MEAT_DROP_VALUE = baseMeat() / 100;
+const ITEM_DROP_VALUE = () =>
+  sum(
+    [...adventureTargetToWeightedMap(farmingStrategy().location).entries()],
+    ([monster, monsterWeight]) =>
+      monsterWeight *
+      sum(
+        itemDropsArray(monster),
+        ({ drop, rate }) =>
+          // One 100 because % the other because % improvement
+          (rate / 100 / 100) * garboValue(drop),
+      ),
+  );
+
+const MEAT_DROP_VALUE = () => baseMeat() / 100;
+
+function familiarNeedsBoot(familiar: Familiar): boolean {
+  return (
+    farmingStrategy().location.environment === "underwater" &&
+    !have($effect`Driving Waterproofly`) &&
+    !familiar.underwater
+  );
+}
 
 type CachedOutfit = {
   weight: number;
@@ -61,7 +86,7 @@ type CachedOutfit = {
   bonus: number;
 };
 
-const outfitCache = new Map<number | Familiar, CachedOutfit>();
+const outfitCache = new Map<OutfitCacheKey, CachedOutfit>();
 const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
 
 const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
@@ -92,12 +117,27 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
   ],
 ]);
 
-const outfitCacheKey = (f: Familiar) =>
-  SPECIAL_FAMILIARS_FOR_CACHING.has(f) ? f : findLeprechaunMultiplier(f);
+type OutfitCacheKey = number | Familiar | string;
+
+function outfitCacheKey(familiar: Familiar): OutfitCacheKey {
+  if (SPECIAL_FAMILIARS_FOR_CACHING.has(familiar)) {
+    return familiar;
+  }
+
+  const lepMultiplier = findLeprechaunMultiplier(familiar);
+
+  if (farmingStrategy().location.environment !== "underwater") {
+    return lepMultiplier;
+  }
+
+  return `${lepMultiplier}:${familiar.underwater}`;
+}
 
 function getCachedOutfitValues(fam: Familiar) {
   const cacheKey = outfitCacheKey(fam);
   const currentValue = outfitCache.get(cacheKey);
+
+  const needsBoot = familiarNeedsBoot(fam);
   if (currentValue) return currentValue;
 
   const current = myFamiliar();
@@ -106,6 +146,7 @@ function getCachedOutfitValues(fam: Familiar) {
     computeBarfOutfit(
       {
         familiar: fam,
+        equip: needsBoot ? $items`das boot` : [],
         avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections, bat wings, toy Cupid bow`,
       },
       true,
@@ -167,8 +208,8 @@ function familiarModifier(
 
 function familiarAbilityValue(familiar: Familiar) {
   return (
-    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE +
-    familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE
+    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() +
+    familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE()
   );
 }
 
@@ -223,8 +264,8 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfit = getCachedOutfitValues(f.familiar);
   const outfitValue =
     outfit.bonus +
-    outfit.meat * MEAT_DROP_VALUE +
-    outfit.item * ITEM_DROP_VALUE +
+    outfit.meat * MEAT_DROP_VALUE() +
+    outfit.item * ITEM_DROP_VALUE() +
     (SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
@@ -238,9 +279,13 @@ function extraValue(
 ) {
   const targetValue = totalFamiliarValue(target);
   const meatFamiliarValue = totalFamiliarValue(meat);
+  const jelly =
+    farmingStrategy().location === $location`Barf Mountain`
+      ? $item`stench jelly`
+      : Item.none;
 
   const jellyfishValue = jellyfish
-    ? garboValue($item`stench jelly`) / 20 +
+    ? garboValue(jelly) / 20 +
       familiarAbilityValue(jellyfish.familiar) +
       jellyfish.outfitValue
     : 0;
@@ -276,7 +321,7 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
-  const fullMenu = menu($location`Barf Mountain`, {
+  const fullMenu = menu(farmingStrategy().location, {
     canChooseMacro: true,
     includeExperienceFamiliars: true,
     mode: "barf",
@@ -417,7 +462,7 @@ function getSpecialFamiliarLimit({
     case $familiar`Skeleton of Crimbo Past`:
       return (
         clamp(100 - get("_knuckleboneDrops"), 0, 100) /
-        SkeletonOfCrimboPast.expectedBones($location`Barf Mountain`)
+        SkeletonOfCrimboPast.expectedBones(farmingStrategy().location)
       );
 
     default:

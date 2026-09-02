@@ -14,6 +14,7 @@ import {
   itemAmount,
   itemType,
   Location,
+  Monster,
   mpCost,
   myBuffedstat,
   myClass,
@@ -55,6 +56,7 @@ import {
   SongBoom,
   SourceTerminal,
   StrictMacro,
+  undelay,
 } from "libram";
 import { globalOptions, isQuickCombat } from "./config";
 import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
@@ -70,11 +72,7 @@ import {
 import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
 import { maximumPinataCasts, safeRefractedCasts } from "./resources";
-
-export const getPreferredBarfMonster = () =>
-  have($familiar`Skeleton of Crimbo Past`) && get("_knuckleboneDrops", 0) < 100
-    ? $monster`angry tourist`
-    : $monster`garbage tourist`;
+import { farmingStrategy } from "./farmingStrategy";
 
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
@@ -309,7 +307,9 @@ export class Macro extends StrictMacro {
         pigSkinnerSetup ||
         bearArmsSetup);
 
-    const preferredBarfMonster = getPreferredBarfMonster();
+    const olfactMonster = farmingStrategy().shouldOlfact
+      ? undelay(farmingStrategy().targetMonster)
+      : Monster.none;
 
     return this.externalIf(
       shouldRedigitize(),
@@ -323,6 +323,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Blow the Purple Candle!`),
         ),
       )
+      .if_($monster`tumbleweed`, Macro.abort())
       .trySingAlong()
       .familiarActions()
       .tryEgg()
@@ -345,42 +346,47 @@ export class Macro extends StrictMacro {
         Macro.trySkill($skill`Bowl Straight Up`),
       )
       .externalIf(
-        have($skill`Transcendent Olfaction`) &&
-          (get("olfactedMonster") !== preferredBarfMonster ||
+        olfactMonster !== Monster.none &&
+          have($skill`Transcendent Olfaction`) &&
+          (get("olfactedMonster") !== olfactMonster ||
             !have($effect`On the Trail`)) &&
           get("_olfactionsUsed") < 3,
         Macro.if_(
-          preferredBarfMonster,
+          olfactMonster,
           Macro.trySkill($skill`Transcendent Olfaction`),
         ),
       )
       .externalIf(
-        get("_gallapagosMonster") !== preferredBarfMonster &&
+        olfactMonster !== Monster.none &&
+          get("_gallapagosMonster") !== olfactMonster &&
           have($skill`Gallapagosian Mating Call`),
         Macro.if_(
-          preferredBarfMonster,
+          olfactMonster,
           Macro.trySkill($skill`Gallapagosian Mating Call`),
         ),
       )
       .externalIf(
-        get("longConMonster") !== preferredBarfMonster &&
+        olfactMonster !== Monster.none &&
+          get("longConMonster") !== olfactMonster &&
           get("_longConUsed") < 5 &&
           have($skill`Long Con`),
-        Macro.if_(preferredBarfMonster, Macro.trySkill($skill`Long Con`)),
+        Macro.if_(olfactMonster, Macro.trySkill($skill`Long Con`)),
       )
       .externalIf(
-        get("motifMonster") !== preferredBarfMonster &&
+        olfactMonster !== Monster.none &&
+          get("motifMonster") !== olfactMonster &&
           have($skill`Motif`) &&
           !have($effect`Everything Looks Blue`),
-        Macro.if_(preferredBarfMonster, Macro.trySkill($skill`Motif`)),
+        Macro.if_(olfactMonster, Macro.trySkill($skill`Motif`)),
       )
       .externalIf(
-        !get("_latteCopyUsed") &&
-          (get("_latteMonster") !== preferredBarfMonster ||
+        olfactMonster !== Monster.none &&
+          !get("_latteCopyUsed") &&
+          (get("_latteMonster") !== olfactMonster ||
             Counter.get("Latte Monster") > 30) &&
           have($item`latte lovers member's mug`),
         Macro.if_(
-          preferredBarfMonster,
+          olfactMonster,
           Macro.trySkill($skill`Offer Latte to Opponent`),
         ),
       )
@@ -493,7 +499,7 @@ export class Macro extends StrictMacro {
       get("_bittycar")
     ) {
       // These things can take a little longer to proc sometimes
-      stasisRounds = 20;
+      stasisRounds = farmingStrategy().stasisRounds;
     }
 
     if (isQuickCombat()) {
@@ -505,7 +511,7 @@ export class Macro extends StrictMacro {
     // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
       [
-        ...getMonsters($location`Barf Mountain`),
+        ...getMonsters(farmingStrategy().location),
         globalOptions.target,
         $monster`sausage goblin`,
       ],

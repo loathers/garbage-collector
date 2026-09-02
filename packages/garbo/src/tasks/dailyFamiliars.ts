@@ -30,12 +30,10 @@ import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
   baseMeat,
   felizValue,
-  garbageTouristRatio,
   isFree,
   newarkValue,
   targetMeat,
   tryFeast,
-  turnsToNC,
   userConfirmDialog,
 } from "../lib";
 import { estimatedGarboTurns, highMeatMonsterCount } from "../turns";
@@ -43,16 +41,24 @@ import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
 import { amuletCoinValue } from "../familiar/lib";
+import { farmingStrategy, garbageTouristRatio } from "../farmingStrategy";
+import { GarboContext } from "./context";
 
 function drivebyValue(targetCount = 0): number {
   const targets = targetCount;
-  const tourists =
-    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
+
+  const tourists = farmingStrategy().accountForNC
+    ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
+      (farmingStrategy().turnsToNC() + 1)
+    : 0;
+
   const marginalRoboWeight = 50;
+
   const meatPercentDelta =
     Math.sqrt(220 * 2 * marginalRoboWeight) -
     Math.sqrt(220 * 2 * marginalRoboWeight) +
     2 * marginalRoboWeight;
+
   return (
     (meatPercentDelta / 100) * (targetMeat() * targets + baseMeat() * tourists)
   );
@@ -60,12 +66,19 @@ function drivebyValue(targetCount = 0): number {
 
 function entendreValue(targetCount = 0): number {
   const targets = targetCount;
-  const tourists =
-    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
+
+  const tourists = farmingStrategy().accountForNC
+    ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
+      (farmingStrategy().turnsToNC() + 1)
+    : 0;
+
   const marginalRoboWeight = 50;
+
   const itemPercent =
     Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;
+
   const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance
+
   return (
     (itemPercent / 100) * (garbageBagsDropRate * tourists * garbageTouristRatio)
   );
@@ -97,8 +110,15 @@ export function prepRobortender(): void {
     },
     "Bloody Nora": {
       priceCap: get("_envyfishEggUsed")
-        ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
-        : 0,
+        ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) +
+          baseMeat() *
+            (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
+            estimatedGarboTurns()
+        : farmingStrategy().location.environment === "underwater"
+          ? baseMeat() *
+            (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
+            estimatedGarboTurns()
+          : 0,
       mandatory: false,
     },
     "Single entendre": {
@@ -241,7 +261,7 @@ const DailyFamiliarTasks: GarboTask[] = [
   },
 ];
 
-export const DailyFamiliarsQuest: Quest<GarboTask> = {
+export const DailyFamiliarsQuest: Quest<GarboTask, GarboContext> = {
   name: "Daily Familiars",
   tasks: DailyFamiliarTasks,
 };

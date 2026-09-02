@@ -3552,17 +3552,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.16.4":
-  version: 3.32.1
-  resolution: "core-js@npm:3.32.1"
-  checksum: e4af91d9c6be7b59235feb3f273d16705126ce09a0b4a787144d131d874f0cd10be3c24fc52e5eea7d7cb03ceabe4be7b255abcd9474b5eb1ff365d2c5611f9a
-  languageName: node
-  linkType: hard
-
 "core-js@npm:^3.47.0":
   version: 3.47.0
   resolution: "core-js@npm:3.47.0"
   checksum: 33ed738fbf1d8596400915ed8ff02538cc89e805d7298e52dbac34b9aecd62400cf84905ce6d5fabd5cc96cb61395907d67d8b89067263f3d7fff8e79a230109
+  languageName: node
+  linkType: hard
+
+"core-js@npm:^3.50.0":
+  version: 3.50.0
+  resolution: "core-js@npm:3.50.0"
+  checksum: 3a3a0330731fbb98bb47fd676d90f9208171d6eacb42f9e0eb962d18f521fee412a5301c8aca533f5c3add550034824517e764d7fd9f6d4269cbca421027c193
   languageName: node
   linkType: hard
 
@@ -4700,7 +4700,7 @@ __metadata:
     eslint: ^9.39.2
     eslint-config-garbo: "workspace:^"
     garbo-lib: "*"
-    grimoire-kolmafia: ^0.3.29
+    grimoire-kolmafia: ^0.3.35
     jiti: ^2.6.1
     kolmafia: ^5.28673.0
     libram: ^0.11.29
@@ -4771,7 +4771,7 @@ __metadata:
     eslint: ^9.39.2
     eslint-config-garbo: "workspace:^"
     garbo-lib: "workspace:*"
-    grimoire-kolmafia: ^0.3.29
+    grimoire-kolmafia: ^0.3.35
     jiti: ^2.6.1
     kolmafia: ^5.28673.0
     libram: ^0.11.29
@@ -4969,15 +4969,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"grimoire-kolmafia@npm:^0.3.29":
-  version: 0.3.29
-  resolution: "grimoire-kolmafia@npm:0.3.29"
+"grimoire-kolmafia@npm:^0.3.35":
+  version: 0.3.35
+  resolution: "grimoire-kolmafia@npm:0.3.35"
   dependencies:
-    core-js: ^3.16.4
+    core-js: ^3.50.0
   peerDependencies:
     kolmafia: ^5.28100.0
-    libram: ^0.10.0
-  checksum: 97a54aa7f9b770dddae8d531313013d2544f36df2a0dff5b111cf1834f274e06a46e9053f3ab32f453a8723d2176b2ba7282bb111295574c15ee180f1b172941
+    libram: ^0.11.0
+  checksum: 598f46088146a721a8885f2bea2368d99eba0a744dba769bdf78e66589cb01ac577f789a5afb5be267c5e7a8aa6f25ded1872c718e3c18f0f62a6b0474401610
   languageName: node
   linkType: hard
 

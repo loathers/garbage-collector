@@ -72,6 +72,8 @@ import {
   lavaDogsComplete,
   leprecondoTask,
 } from "../../resources";
+import { farmingStrategy } from "../../farmingStrategy";
+import { GarboContext } from "../context";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
@@ -92,26 +94,37 @@ function useStuff(): GarboPostTask {
   };
 }
 
-const BARF_PLANTS = [
-  FloristFriar.StealingMagnolia,
-  FloristFriar.AloeGuvnor,
-  FloristFriar.PitcherPlant,
-];
+const BARF_PLANTS = () =>
+  farmingStrategy().location.environment === "underwater"
+    ? [
+        FloristFriar.Crookweed,
+        FloristFriar.ElectricEelgrass,
+        FloristFriar.Duckweed,
+      ]
+    : [
+        FloristFriar.StealingMagnolia,
+        FloristFriar.AloeGuvnor,
+        FloristFriar.PitcherPlant,
+      ];
 function floristFriars(): GarboPostTask {
   return {
     name: "Florist Plants",
-    completed: () => FloristFriar.isFull($location`Barf Mountain`),
+    completed: () => FloristFriar.isFull(farmingStrategy().location),
     ready: () =>
-      get("lastAdventure") === $location`Barf Mountain` &&
+      get("lastAdventure") === farmingStrategy().location &&
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available($location`Barf Mountain`)),
+      BARF_PLANTS().some((flower) =>
+        flower.available(farmingStrategy().location),
+      ),
     do: () =>
-      BARF_PLANTS.filter((flower) =>
-        flower.available($location`Barf Mountain`),
-      ).forEach((flower) => flower.plant()),
+      BARF_PLANTS()
+        .filter((flower) => flower.available(farmingStrategy().location))
+        .forEach((flower) => flower.plant()),
     available: () =>
       FloristFriar.have() &&
-      BARF_PLANTS.some((flower) => flower.available($location`Barf Mountain`)),
+      BARF_PLANTS().some((flower) =>
+        flower.available(farmingStrategy().location),
+      ),
   };
 }
 
@@ -430,7 +443,9 @@ function usePorkToilet(): GarboPostTask {
   };
 }
 
-export function PostQuest(completed?: () => boolean): Quest<GarboTask> {
+export function PostQuest(
+  completed?: () => boolean,
+): Quest<GarboTask, GarboContext> {
   return {
     name: "Postcombat",
     completed,

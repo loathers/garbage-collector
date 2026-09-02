@@ -41,8 +41,9 @@ import { DebuffPlanner } from "./debuffplanner";
 import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
 import { highMeatMonsterCount } from "../../turns";
+import { GarboContext } from "../context";
 
-export const CockroachSetup: Quest<GarboTask> = {
+export const CockroachSetup: Quest<GarboTask, GarboContext> = {
   name: "Setup Cockroach Target",
   ready: () =>
     doingGregFight() &&
