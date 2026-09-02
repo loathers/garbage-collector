@@ -146,10 +146,7 @@ export class BaseGarboEngine extends ContextualEngine<
       outfit.equip($item`pro skateboard`);
     }
     super.dress(task, outfit);
-    const canBreathe = () =>
-      (booleanModifier("Familiar Adventure Underwater") ||
-        have($effect`Driving Waterproofly`)) &&
-      booleanModifier("Adventure Underwater");
+    const canBreathe = () => booleanModifier("Adventure Underwater");
     if (outfit.modifier.includes("+sea") && !canBreathe()) {
       clearMaximizerCache();
       super.dress(task, outfit);
