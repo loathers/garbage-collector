@@ -18,6 +18,7 @@ import {
   get,
   getModifier,
   have,
+  LaughingStock,
   lgrCurrencies,
   sum,
   sumNumbers,
@@ -148,6 +149,12 @@ function cinchoDeMayo(mode: BonusEquipMode) {
 }
 
 function calculateLaughingStockBonus() {
+  const nextFruit = LaughingStock.nextDrop();
+
+  if (nextFruit) {
+    return garboValue(nextFruit[0]) / nextFruit[1];
+  }
+
   const basicFruitValue = garboAverageValue(
     ...$items`orange, grapefruit, grapes, lemon, lime, papaya, cranberries, strawberry, cherry, kumquat, tangerine, raspberry, kiwi, blackberry, banana, cactus fruit, plum, pear, peach`,
   );
