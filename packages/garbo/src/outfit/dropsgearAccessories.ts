@@ -30,6 +30,7 @@ import {
   felizValue,
   maxPassiveDamage,
   modeIsFree,
+  modeUseLimitedDrops,
   monsterManuelAvailable,
 } from "../lib";
 import { maximumPinataCasts } from "../resources";
@@ -149,7 +150,7 @@ function cinchoDeMayo(mode: BonusEquipMode) {
   return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
 }
 
-function calculateLaughingStockBonus() {
+function calculateLaughingStockBonus(alwaysUseHorizon: boolean) {
   const basicFruitValue = garboAverageValue(
     ...$items`orange, grapefruit, grapes, lemon, lime, papaya, cranberries, strawberry, cherry, kumquat, tangerine, raspberry, kiwi, blackberry, banana, cactus fruit, plum, pear, peach`,
   );
@@ -158,6 +159,8 @@ function calculateLaughingStockBonus() {
   );
 
   const horizonValue = 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
+
+  if (alwaysUseHorizon) return horizonValue;
 
   const nextDrop = LaughingStock.nextDrop();
 
@@ -170,12 +173,14 @@ function calculateLaughingStockBonus() {
   return horizonValue;
 }
 
-function portableLaughingStock() {
-  if (!have($item`Portable Laughing Stock`)) {
+function portableLaughingStock(mode: BonusEquipMode) {
+  if (!have($item`Portable Laughing Stock`) || mode === BonusEquipMode.DMT) {
     return new Map<Item, number>([]);
   }
 
-  const laughingStockBonus = calculateLaughingStockBonus();
+  const laughingStockBonus = calculateLaughingStockBonus(
+    mode !== BonusEquipMode.MEAT_TARGET,
+  );
 
   return new Map<Item, number>([
     [$item`Portable Laughing Stock`, laughingStockBonus],
@@ -192,7 +197,7 @@ export function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
     ...mafiaThumbRing(mode),
     ...luckyGoldRing(mode),
     ...mrCheengsSpectacles(),
-    ...portableLaughingStock(),
+    ...portableLaughingStock(mode),
     ...mrScreegesSpectacles(),
     ...cinchoDeMayo(mode),
   ]);
