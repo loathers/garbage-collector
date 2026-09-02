@@ -541,6 +541,8 @@ const CUP_OF_THIRTEENS_DROPS = POSSIBLE_SNEEGLEEB_DROPS.filter(
   (item) => item.inebriety,
 );
 
+let cupOfThirteensBonus: [string, number] | undefined;
+
 function cupOfThirteens(mode: BonusEquipMode): Map<Item, number> {
   if (
     !CupOfThirteens.have() ||
