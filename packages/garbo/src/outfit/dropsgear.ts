@@ -6,8 +6,10 @@ import {
   haveEffect,
   Item,
   mallPrice,
+  Modifier,
   myFullness,
   myFury,
+  stringModifier,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -499,7 +501,9 @@ const POSSIBLE_SNEEGLEEB_DROPS = Item.all().filter(
   (i) =>
     i.tradeable &&
     i.discardable &&
-    (i.inebriety || i.fullness || i.potion) &&
+    (i.inebriety ||
+      i.fullness ||
+      (i.potion && stringModifier(i, Modifier.get("Last Available")) === "")) &&
     !speakeasyBanList.includes(i),
 );
 let sneegleebBonus: number;
