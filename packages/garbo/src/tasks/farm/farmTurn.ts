@@ -24,9 +24,12 @@ import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit";
-import { GarboContext } from "../context";
+import { FarmingContext } from "../context";
 
-export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
+export function FarmTurnQuest(): Quest<
+  GarboTask<FarmingContext>,
+  FarmingContext
+> {
   return {
     name: `${farmingStrategy().location}`,
     tasks: [

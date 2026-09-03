@@ -2,7 +2,6 @@ import { Quest } from "grimoire-kolmafia";
 import { myLevel, runChoice, visitUrl } from "kolmafia";
 import { $familiar, $item, get, have } from "libram";
 import { GarboTask } from "./engine";
-import { GarboContext } from "./context";
 
 const DailySeaTasks: GarboTask[] = [
   {
@@ -31,7 +30,7 @@ const DailySeaTasks: GarboTask[] = [
   },
 ];
 
-export const DailySeaQuest: Quest<GarboTask, GarboContext> = {
+export const DailySeaQuest: Quest<GarboTask> = {
   name: "Daily Sea",
   tasks: DailySeaTasks,
 };

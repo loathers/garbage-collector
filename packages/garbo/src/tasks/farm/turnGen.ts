@@ -12,7 +12,6 @@ import { Quest } from "grimoire-kolmafia";
 import { globalOptions } from "../../config";
 import { computeDiet, consumeDiet } from "../../diet";
 import { howManySausagesCouldIEat } from "../../lib";
-import { GarboContext } from "../context";
 
 const TurnGenTasks: GarboTask[] = [
   {
@@ -55,7 +54,7 @@ const TurnGenTasks: GarboTask[] = [
   },
 ];
 
-export const TurnGenQuest: Quest<GarboTask, GarboContext> = {
+export const TurnGenQuest: Quest<GarboTask, unknown> = {
   name: "Turn Gen",
   tasks: TurnGenTasks,
 };

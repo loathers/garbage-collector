@@ -87,7 +87,6 @@ import {
   willYachtzee,
 } from "../../resources";
 import { acquire } from "../../acquire";
-import { GarboContext } from "../context";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
@@ -780,7 +779,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
 ];
 
-export const WandererQuest: Quest<GarboTask, GarboContext> = {
+export const WandererQuest: Quest<GarboTask, unknown> = {
   name: "Wanderers",
   tasks: BarfTurnTasks,
   completed: () => !canContinue(),
