@@ -1253,8 +1253,9 @@ const priorityFreeRunFightSources = [
         $locations`Barf Mountain, The Fun-Guy Mansion, The Dire Warren`.find(
           (l) => canAdventure(l),
         );
-      if (!location)
-        {throw new Error("Somehow, we can't adventure in the Dire Warren.");}
+      if (!location) {
+        throw new Error("Somehow, we can't adventure in the Dire Warren.");
+      }
       garboAdventure(
         location,
         Macro.skill($skill`%fn, let's pledge allegiance to a Zone`).step(
