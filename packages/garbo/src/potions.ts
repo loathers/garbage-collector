@@ -192,9 +192,7 @@ export const VALUABLE_MODIFIERS = [
   "Familiar Weight",
   "Smithsness",
   "Item Drop",
-  farmingStrategy().location === $location`The Coral Corral`
-    ? "Hidden Familiar Weight"
-    : "",
+  "Hidden Familiar Weight", // How can I add this only if farming strategy is underwater? It's a const
 ] as const;
 
 const BUFFER_TURNS = 30;
