@@ -17,11 +17,12 @@
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*": [
-      "prettier --write --ignore-unknown"
+    "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "eslint --quiet --fix",
+      "prettier --write"
     ],
-    "src/*": [
-      "eslint --quiet --fix"
+    "**/*.{json,md,html,yml}": [
+      "prettier --write --ignore-unknown"
     ]
   },
   "author": "",
