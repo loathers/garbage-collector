@@ -38,6 +38,7 @@ import {
   putCloset,
   retrieveItem,
   retrievePrice,
+  runChoice,
   sellsItem,
   setProperty,
   Slot,
@@ -126,6 +127,8 @@ print(`Using adventure value ${MPA}.`, HIGHLIGHT);
 
 const Mayo = MayoClinic.Mayo;
 type Note = PotionTier | null;
+
+const legendaryPasta = $items`Pesto alla Marziano, Arrattabbattabiata, Frutti di Scatoletta, Orzo di Riso, Pasta Grimavera, Linguini Ubriacapa, Gnocci Domani, Formica e Pepe, Tubetto Gelatto`;
 
 function hasMoonZoneRestaurant(): boolean {
   return $locations`Camp Logging Camp, Thugnderdome`.some((loc) =>
@@ -622,6 +625,7 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(cheapestItem(smallEpics)),
     new MenuItem($item`green hamhock`),
     ...legendaryPizzas.flat(),
+    new MenuItem(cheapestItem(legendaryPasta)),
 
     // BOOZE
     new MenuItem($item`elemental caipiroska`),
@@ -879,6 +883,12 @@ export function potionMenu(
 
     let potion = input instanceof Item ? new Potion(input) : input;
     let mayo: Item | undefined = undefined;
+    const usingLegendaryPasta = baseMenu.some((menuItem) =>
+      legendaryPasta.includes(menuItem.item),
+    );
+    if (usingLegendaryPasta) {
+      potion = potion.doubleDuration();
+    }
     if (
       itemType(potion.potion) === "food" &&
       (GarboWorkshed.current?.workshed === $item`portable Mayo Clinic` ||
@@ -1335,6 +1345,19 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
           MayoClinic.setMayoMinder(menuItem.item, countToConsume);
         },
       ]);
+      const legendaryPastaActions: [Item, ItemAction][] = legendaryPasta.map(
+        (pasta) => [
+          pasta,
+          (countToConsume: number, menuItem: MenuItem<Note>) => {
+            consumeSafe(
+              countToConsume,
+              menuItem.item,
+              menuItem.additionalValue,
+            );
+            runChoice(5); // Handles the choice prompt immediately after eating
+          },
+        ],
+      );
 
       const itemActions = new Map<Item, ItemAction | "skip">([
         [saladFork, elementalResistAction($element`hot`)],
@@ -1377,6 +1400,7 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         ],
         ...mayoActions,
         ...speakeasyDrinks,
+        ...legendaryPastaActions,
         [
           $item`broberry brogurt`,
           (countToConsume: number, menuItem: MenuItem<Note>) => {
