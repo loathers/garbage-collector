@@ -145,20 +145,35 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   },
 
   combat: new GarboStrategy(({ banish }) => {
+    const baseMacro = Macro.externalIf(
+      !get("seahorseName"),
+      Macro.if_(
+        $monster`wild seahorse`,
+        Macro.item($item`sea cowbell`)
+          .item($item`sea cowbell`)
+          .item($item`sea cowbell`)
+          .item($item`sea lasso`)
+          .abortWithMsg("Wild seahorse should have been tamed, what happened?"),
+      ),
+    )
+      // Cows are tough! Let's delevel them to be safe
+      .delevel()
+      .tryHaveItem($item`cow poker`);
+
     if (banish) {
-      const macro = Macro.if_(
+      const banishMacro = baseMacro.if_(
         $monsters`Mer-kin rustler, sea cowboy`,
         banish.macro,
       );
 
       return redTaffyWorth()
-        ? macro.tryItem($item`pulled red taffy`).meatKill()
-        : macro.meatKill();
+        ? banishMacro.tryItem($item`pulled red taffy`).meatKill()
+        : banishMacro.meatKill();
     }
 
     return redTaffyWorth()
-      ? Macro.tryItem($item`pulled red taffy`).meatKill()
-      : Macro.meatKill();
+      ? baseMacro.tryItem($item`pulled red taffy`).meatKill()
+      : baseMacro.meatKill();
   }),
 };
 

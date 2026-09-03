@@ -5,9 +5,11 @@ import {
   Effect,
   getWorkshed,
   haveEffect,
+  inebrietyLimit,
   itemAmount,
   mallPrice,
   myClass,
+  myInebriety,
   myLevel,
   numericModifier,
   use,
@@ -34,6 +36,8 @@ import { usingPurse } from "./outfit";
 import { effectValue } from "./potions";
 import { acquire } from "./acquire";
 import { farmingStrategy } from "./farmingStrategy";
+import { estimatedGarboTurns } from "./turns";
+import { globalOptions } from "./config";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -69,7 +73,7 @@ export function meatMood(
     mood.effect($effect`Thoughtful Empathy`);
     mood.effect($effect`Lubricating Sauce`);
     mood.effect($effect`Tubes of Universal Meat`);
-    mood.effect($effect`Strength of the Tortoise`);
+    mood.effect($effect`Strength of the Tortoise`); // Can we disable this one somehow for when we do Piraterealm?
   }
 
   mood.skill($skill`The Polka of Plenty`);
@@ -87,12 +91,44 @@ export function meatMood(
         ? $skill`Ur-Kel's Aria of Annoyance`
         : $skill`Fat Leon's Phat Loot Lyric`,
     );
-  } else {
-    // This could be optimized a bit better using the new setup
-    mood.skill($skill`Donho's Bubbly Ballad`);
+  }
+
+  if (farmingStrategy().location === $location`The Coral Corral`) {
+    // Cow survivability
+    mood.skill($skill`Ruthless Efficiency`);
     mood.skill($skill`Ghostly Shell`);
     mood.skill($skill`Shield of the Pastalord`);
+    // Better pearl progress
+    mood.skill($skill`Astral Shell`);
+    mood.skill($skill`Elemental Saucesphere`);
+    // Donho's
+    const availableDonhoTurnsFromSkill = 10 * (50 - get("_donhosCasts"));
+    if (get("_donhosCasts") < 50 && !globalOptions.ascend) {
+      useSkill($skill`Donho's Bubbly Ballad`, 50 - get("_donhosCasts"));
+    } else if (
+      get("_donhosCasts") < 50 &&
+      availableDonhoTurnsFromSkill > estimatedGarboTurns()
+    ) {
+      mood.skill($skill`Donho's Bubbly Ballad`);
+    } else {
+      useSkill($skill`Donho's Bubbly Ballad`, 50 - get("_donhosCasts"));
+      mood.potion($item`recording of Donho's Bubbly Ballad`, 0.2 * meat);
+    }
+
+    // Overdrunk survivability
+    if (myInebriety() > inebrietyLimit()) {
+      mood.skill($skill`Get Big`);
+      mood.skill($skill`Song of Bravado`);
+      mood.skill($skill`Rage of the Reindeer`);
+      mood.skill($skill`Disco Fever`);
+      mood.skill($skill`Carol of the Bulls`);
+      mood.skill($skill`Blood Bubble`);
+      mood.skill($skill`Tenacity of the Snapper`);
+      mood.skill($skill`Grease Up`);
+      mood.effect($effect`Disco over Matter`);
+    }
   }
+
   mood.skill($skill`Walk: Leisurely Amble`);
   mood.skill($skill`Call For Backup`);
   mood.skill($skill`Soothing Flute`);

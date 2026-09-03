@@ -47,7 +47,7 @@ import { GarboContext } from "./context";
 function drivebyValue(targetCount = 0): number {
   const targets = targetCount;
 
-  const tourists = farmingStrategy().accountForNC
+  const baseFarmFights = farmingStrategy().accountForNC
     ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
       (farmingStrategy().turnsToNC() + 1)
     : 0;
@@ -60,14 +60,15 @@ function drivebyValue(targetCount = 0): number {
     2 * marginalRoboWeight;
 
   return (
-    (meatPercentDelta / 100) * (targetMeat() * targets + baseMeat() * tourists)
+    (meatPercentDelta / 100) *
+    (targetMeat() * targets + baseMeat() * baseFarmFights)
   );
 }
 
 function entendreValue(targetCount = 0): number {
   const targets = targetCount;
 
-  const tourists = farmingStrategy().accountForNC
+  const baseFarmFights = farmingStrategy().accountForNC
     ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
       (farmingStrategy().turnsToNC() + 1)
     : 0;
@@ -80,7 +81,8 @@ function entendreValue(targetCount = 0): number {
   const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance
 
   return (
-    (itemPercent / 100) * (garbageBagsDropRate * tourists * garbageTouristRatio)
+    (itemPercent / 100) *
+    (garbageBagsDropRate * baseFarmFights * garbageTouristRatio)
   );
 }
 

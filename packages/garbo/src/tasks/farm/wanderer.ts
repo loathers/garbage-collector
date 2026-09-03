@@ -626,6 +626,28 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   {
+    name: "Yachtzee (Cooldown ready)",
+    completed: () => get("encountersUntilYachtzeeChoice") > 0,
+    outfit: () => {
+      const spec: OutfitSpec = {
+        modifier: ["meat"],
+        familiar: bestYachtzeeFamiliar(),
+        avoid: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses, over-the-shoulder Folder Holder`,
+      };
+      if (!sober()) {
+        spec.equip = $items`Drunkula's wineglass`;
+      }
+      return spec;
+    },
+    do: $location`The Sunken Party Yacht`,
+    choices: { 918: 2 },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Hit unexpected combat!"),
+    ),
+    spendsTurn: true,
+    location: $location`The Sunken Party Yacht`,
+  },
+  {
     name: "Gingerbread Noon",
     completed: () => GingerBread.minutesToNoon() !== 0,
     do: $location`Gingerbread Train Station`,

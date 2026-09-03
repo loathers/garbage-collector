@@ -192,6 +192,9 @@ export const VALUABLE_MODIFIERS = [
   "Familiar Weight",
   "Smithsness",
   "Item Drop",
+  farmingStrategy().location === $location`The Coral Corral`
+    ? "Hidden Familiar Weight"
+    : "",
 ] as const;
 
 const BUFFER_TURNS = 30;

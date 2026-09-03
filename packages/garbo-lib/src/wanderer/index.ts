@@ -53,6 +53,8 @@ import { gingerbreadFactory } from "./gingerbreadcity";
 import { ultraRareFactory } from "./ultrarare";
 import { cookbookbatQuestFactory } from "./cookbookbatquest";
 import { bofaFactory } from "./bofa";
+import { pearlFactory } from "./pearl";
+import { yachtzeeFactory } from "./yachtzee";
 
 export type { DraggableFight };
 
@@ -73,6 +75,8 @@ const wanderFactories: WandererFactory[] = [
   ultraRareFactory,
   cookbookbatQuestFactory,
   bofaFactory,
+  pearlFactory,
+  yachtzeeFactory,
 ];
 
 function zoneAverageMonsterValue(
@@ -431,6 +435,29 @@ export class WandererManager {
     [$location`The Skeleton Store`, { 1060: 5 }],
     [$location`The Overgrown Lot`, { 1062: 7 }],
     [$location`The Haunted Billiards Room`, { 1436: 2, 875: 3 }], // Hustle away from the ghost
+    [$location`The Wreck of the Edgar Fitzsimmons`, { 299: 2 }], // Skip Hatch
+    [$location`An Octopus's Garden`, { 298: 2 }], // Skip Garden
+    [$location`Madness Reef`, { 311: 2 }], // Skip Trading scales TODO handle value trading
+    [
+      $location`The Dive Bar`,
+      (options, valueOfTurn) => {
+        return {
+          309: options.itemValue($item`seaode`) > valueOfTurn ? 1 : 2,
+        };
+      },
+    ],
+    [
+      $location`The Marinara Trench`,
+      (options, valueOfTurn) => {
+        return {
+          304:
+            options.itemValue($item`bubbling tempura batter`) > valueOfTurn
+              ? 1
+              : 2,
+          305: 2, // Skip globes of deep sauce
+        };
+      },
+    ],
   ]);
   equipment = new Map<Location, Item[]>([
     ...Location.all()

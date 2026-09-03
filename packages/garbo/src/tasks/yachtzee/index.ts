@@ -26,6 +26,11 @@ import { Outfit, Quest } from "grimoire-kolmafia";
 import { maximumYachtzees, shouldClara, willYachtzee } from "../../resources";
 import { GarboStrategy } from "../../combatStrategy";
 import { GarboContext } from "../context";
+import { barfOutfit } from "../../outfit";
+import { trackMarginalMpa } from "../../session";
+import { estimatedGarboTurns } from "../../turns";
+import { meatMood } from "../../mood";
+import { farmingStrategy } from "../../farmingStrategy";
 
 type AlternateTask = GarboTask & { turns: Delayed<number> };
 
@@ -91,6 +96,47 @@ export const yachtzeeQuest: Quest<AlternateTask, GarboContext>[] = [
         turns: 0,
         sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
         spendsTurn: false,
+      },
+      {
+        name: "Parka Spikes NC Forcer",
+        completed: () => get("noncombatForcerActive"),
+        ready: () =>
+          have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5,
+        outfit: () =>
+          barfOutfit({
+            equip: $items`Jurassic Parka`,
+            modes: { parka: "spikolodon" },
+          }),
+        do: farmingStrategy().location,
+        combat: new GarboStrategy(() =>
+          Macro.skill($skill`Launch spikolodon spikes`).meatKill(),
+        ),
+        prepare: () => meatMood().execute(estimatedGarboTurns()),
+        post: () => {
+          trackMarginalMpa();
+        },
+        turns: () => 2 * Math.max(0, 5 - get("_spikolodonSpikeUses")), // Need one turn to cast the NC, and one to do the yachtzee
+        sobriety: "sober",
+        spendsTurn: true,
+      },
+      {
+        name: "McHugeLarge Avalanche NC Forcer",
+        completed: () => get("noncombatForcerActive"),
+        ready: () =>
+          have($item`McHugeLarge left ski`) &&
+          get("_mcHugeLargeAvalancheUses") < 3,
+        outfit: () => barfOutfit({ equip: $items`McHugeLarge left ski` }),
+        do: farmingStrategy().location,
+        combat: new GarboStrategy(() =>
+          Macro.skill($skill`McHugeLarge Avalanche`).meatKill(),
+        ),
+        prepare: () => meatMood().execute(estimatedGarboTurns()),
+        post: () => {
+          trackMarginalMpa();
+        },
+        turns: () => 2 * Math.max(0, 3 - get("_mcHugeLargeAvalancheUses")), // Need one turn to cast the NC, and one to do the yachtzee
+        sobriety: "sober",
+        spendsTurn: true,
       },
       {
         name: "Apriling Band Tuba Yachtzee NC Force",
