@@ -75,6 +75,7 @@ import {
   $skill,
   $thralls,
   ActionSource,
+  adventureTargetToWeightedMap,
   bestLibramToCast,
   ChateauMantegna,
   clamp,
@@ -90,7 +91,6 @@ import {
   getTodaysHolidayWanderers,
   have,
   JuneCleaver,
-  Macro,
   maxBy,
   PropertiesManager,
   property,
@@ -107,6 +107,8 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
+import { Macro } from "./combat";
+import { farmingStrategy } from "./farmingStrategy";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -144,7 +146,19 @@ export function modeValueOfMeat(mode: BonusEquipMode): number {
 }
 
 export function modeValueOfItem(mode: BonusEquipMode): number {
-  return mode === BonusEquipMode.BARF ? 0.72 : 0;
+  const ITEM_DROP_VALUE = () =>
+    sum(
+      [...adventureTargetToWeightedMap(farmingStrategy().location).entries()],
+      ([monster, monsterWeight]) =>
+        monsterWeight *
+        sum(
+          itemDropsArray(monster),
+          ({ drop, rate }) =>
+            // One 100 because % the other because % improvement
+            (rate / 100 / 100) * garboValue(drop),
+        ),
+    );
+  return mode === BonusEquipMode.BARF ? ITEM_DROP_VALUE() : 0;
 }
 
 export const WISH_VALUE = 50000;
@@ -164,7 +178,7 @@ export const songboomMeat = () =>
     : 0;
 
 // all tourists have a basemeat of 250
-export const baseMeat = () => 250 + songboomMeat();
+export const baseMeat = () => farmingStrategy().baseMeat + songboomMeat();
 export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {
@@ -668,25 +682,6 @@ export function freeRunConstraints(spec?: OutfitSpec): {
     },
   };
 }
-
-// Barf setup info
-const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;
-const gallapagosCopies = have($skill`Gallapagosian Mating Call`) ? 1 : 0;
-const garbageTourists = 1 + olfactionCopies + gallapagosCopies,
-  touristFamilies = 1,
-  angryTourists = 1;
-const barfTourists = garbageTourists + touristFamilies + angryTourists;
-export const garbageTouristRatio = garbageTourists / barfTourists;
-const touristFamilyRatio = touristFamilies / barfTourists;
-// 30 tourists till NC, with families counting as 3
-// Estimate number of turns till the counter hits 27
-// then estimate the expected number of turns required to hit a counter of >= 30
-export const turnsToNC =
-  (27 * barfTourists) /
-    (garbageTourists + angryTourists + 3 * touristFamilies) +
-  1 * touristFamilyRatio +
-  2 * (1 - touristFamilyRatio) * touristFamilyRatio +
-  3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio);
 
 const GHOST_DOG_ADVENTURES = [
   "Puttin' it on Wax",
@@ -1242,3 +1237,5 @@ export function mainStatLevel(level: number): number {
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
+
+export const farmLocation = () => farmingStrategy().location;

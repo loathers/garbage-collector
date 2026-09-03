@@ -66,7 +66,6 @@ import {
   pillkeeperOpportunityCost,
   targetMeat,
   targetMeatDifferential,
-  turnsToNC,
   withLocation,
 } from "./lib";
 import { usingPurse } from "./outfit";
@@ -77,6 +76,7 @@ import {
   castAugustScepterBuffs,
   safeSweatEquityCasts,
 } from "./resources";
+import { farmingStrategy } from "./farmingStrategy";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -266,6 +266,9 @@ export class Potion {
     return (
       this.effectValues?.meatDrop ??
       getModifier("Meat Drop", this.effect()) +
+        (farmingStrategy().location.environment === "underwater"
+          ? getModifier("Meat Drop Penalty", this.effect())
+          : 0) +
         2 * (usingPurse() ? this.smithsness() : 0)
     );
   }
@@ -273,7 +276,10 @@ export class Potion {
   familiarWeight(): number {
     return (
       this.effectValues?.famWeight ??
-      getModifier("Familiar Weight", this.effect())
+      getModifier("Familiar Weight", this.effect()) +
+        (farmingStrategy().location.environment === "underwater"
+          ? getModifier("Hidden Familiar Weight", this.effect())
+          : 0)
     );
   }
 
@@ -303,11 +309,13 @@ export class Potion {
       0,
     );
 
+    const ncAdjustment = farmingStrategy().accountForNC
+      ? farmingStrategy().turnsToNC() / (farmingStrategy().turnsToNC() + 1)
+      : 1;
+
     return (
       (bonusMeat / 100) *
-      (baseMeat() *
-        (duration - targetsApplied) *
-        (turnsToNC / (turnsToNC + 1)) +
+      (baseMeat() * (duration - targetsApplied) * ncAdjustment +
         (baseMeat() + targetMeatDifferential()) * targetsApplied)
     );
   }
@@ -675,7 +683,7 @@ export const pawPotions = Array.from(validPawWishes.keys())
       }),
   );
 
-export const farmingPotions = [
+export const farmingPotions = () => [
   ...Item.all()
     .filter(
       (item) =>
@@ -690,12 +698,12 @@ export const farmingPotions = [
 
 export function getFarmingPotions(avoidStats = false): Potion[] {
   return avoidStats
-    ? farmingPotions.filter((potion) => !improvesAStat(potion.effect()))
-    : farmingPotions;
+    ? farmingPotions().filter((potion) => !improvesAStat(potion.effect()))
+    : farmingPotions();
 }
 
 export function doublingPotions(targets: number): Potion[] {
-  return farmingPotions
+  return farmingPotions()
     .filter(
       (potion) =>
         potion.doubleDuration().gross(targets) / potion.price(true) > 0.5,
@@ -978,7 +986,9 @@ class VariableMeatPotion {
   ): number {
     const yachtzeeValue = 2000;
     const targetValue = targetMeat();
-    const barfValue = (baseMeat() * turnsToNC) / 30;
+    const barfValue = farmingStrategy().accountForNC
+      ? (baseMeat() * farmingStrategy().turnsToNC()) / 30
+      : 0;
 
     const totalCosts = retrievePrice(this.potion, n);
     const totalDuration = n * this.duration;

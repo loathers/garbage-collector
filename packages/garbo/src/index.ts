@@ -5,6 +5,7 @@ import {
   canEquip,
   cliExecute,
   currentRound,
+  effectFact,
   equip,
   getCampground,
   getClanName,
@@ -34,6 +35,7 @@ import {
 import {
   $class,
   $classes,
+  $effect,
   $familiars,
   $item,
   $items,
@@ -59,7 +61,7 @@ import {
   withProperty,
 } from "libram";
 import { stashItems, withStash, withVIPClan } from "./clan";
-import { globalOptions, isQuickGear } from "./config";
+import { FarmingMethod, globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
@@ -83,10 +85,10 @@ import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { garboAverageValue } from "./garboValue";
 import {
-  BarfTurnQuests,
   CockroachSetup,
   DailyFamiliarsQuest,
   EmbezzlerFightsQuest,
+  FarmQuests,
   FinishUpQuest,
   PostQuest,
   runGarboQuests,
@@ -99,6 +101,7 @@ import {
 } from "./tasks/buffExtension";
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
+import { farmingStrategy } from "./farmingStrategy";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -132,6 +135,17 @@ export function main(argString = ""): void {
   if (globalOptions.help) {
     Args.showHelp(globalOptions);
     return;
+  }
+
+  // Cowo is for professionals only
+  if (
+    globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
+    (effectFact($monster`sea cow`) !== $effect`Fishy` ||
+      get("seahorseName") === "" ||
+      !have($item`das boot`) ||
+      !have($item`really, really nice swimming trunks`))
+  ) {
+    globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
 
   // Hit up main.php to get out of easily escapable choices
@@ -310,7 +324,11 @@ export function main(argString = ""): void {
   examine($item`designer sweatpants`);
 
   startSession();
-  if (!globalOptions.nobarf && !globalOptions.simdiet) {
+  if (
+    !globalOptions.nobarf &&
+    !globalOptions.simdiet &&
+    farmingStrategy().ensureBarfAccess
+  ) {
     ensureBarfAccess();
   }
 
@@ -617,7 +635,7 @@ export function main(argString = ""): void {
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
           if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
-            runGarboQuests([PostQuest(), ...BarfTurnQuests]);
+            runGarboQuests([PostQuest(), ...FarmQuests()]);
             runGarboQuests([FinishUpQuest]);
           } finally {
             setAutoAttack(0);

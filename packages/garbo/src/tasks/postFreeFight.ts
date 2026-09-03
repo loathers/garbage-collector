@@ -13,6 +13,7 @@ import { $class, $item, $skill, $thrall, get, have, maxBy } from "libram";
 import { baseMeat } from "../lib";
 import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
+import { GarboContext } from "./context";
 
 function bestVykeaLevel(): number {
   const vykeas = [
@@ -71,7 +72,7 @@ const PostFreeFightTasks: GarboTask[] = [
   },
 ];
 
-export const PostFreeFightQuest: Quest<GarboTask> = {
+export const PostFreeFightQuest: Quest<GarboTask, GarboContext> = {
   name: "Post Free Fight",
   tasks: PostFreeFightTasks,
 };

@@ -1,4 +1,5 @@
 import {
+  ContextualEngine,
   Engine,
   EngineOptions,
   getTasks,
@@ -13,6 +14,7 @@ import {
   $familiar,
   $item,
   $skill,
+  clearMaximizerCache,
   Delayed,
   get,
   have,
@@ -20,6 +22,7 @@ import {
   undelay,
 } from "libram";
 import {
+  booleanModifier,
   bufferToFile,
   equip,
   fileToBuffer,
@@ -35,8 +38,10 @@ import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
 import { shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
+import { GarboContext } from "./context";
+import { BanishMethod, chooseBanish } from "../resources/banish";
 
-export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
+export type GarboTask = StrictCombatTask<never, GarboContext, GarboStrategy> & {
   sobriety?: Delayed<"drunk" | "sober" | undefined>;
   spendsTurn: Delayed<boolean>;
   duplicate?: Delayed<boolean>;
@@ -57,15 +62,22 @@ function logTargetFight(encounterType: string) {
 /** A base engine for Garbo!
  * Runs extra logic before executing all tasks.
  */
-export class BaseGarboEngine extends Engine<never, GarboTask> {
+export class BaseGarboEngine extends ContextualEngine<
+  never,
+  GarboContext,
+  GarboTask
+> {
   static defaultSettings = {
     ...Engine.defaultSettings,
     choiceAdventureScript: "garbo_choice.js",
   };
-
+  #banish: BanishMethod | null = null;
   history: Array<{ name: string; startTime: number; durationMs: number }> = [];
 
-  constructor(tasks: GarboTask[], options?: EngineOptions | undefined) {
+  constructor(
+    tasks: GarboTask[],
+    options?: EngineOptions<never, GarboContext, GarboTask> | undefined,
+  ) {
     const startTime = Date.now();
     super(tasks, options);
 
@@ -81,6 +93,15 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   printExecutingMessage(task: GarboTask) {
     print(``);
     print(`Executing ${task.name}`, HIGHLIGHT);
+  }
+
+  getContext() {
+    return { banish: this.#banish };
+  }
+
+  getNextTask(): GarboTask | undefined {
+    this.#banish = chooseBanish();
+    return super.getNextTask();
   }
 
   destruct(): void {
@@ -125,6 +146,14 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
       outfit.equip($item`pro skateboard`);
     }
     super.dress(task, outfit);
+    const canBreathe = () => booleanModifier("Adventure Underwater");
+    if (outfit.modifier.includes("+sea") && !canBreathe()) {
+      clearMaximizerCache();
+      super.dress(task, outfit);
+      if (!canBreathe()) {
+        throw new Error("Can't adventure underwater, figure it out.");
+      }
+    }
     if (itemAmount($item`tiny stillsuit`) > 0) {
       equip(
         myFamiliar() === $familiar`Cornbeefadon`
@@ -180,6 +209,8 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
         durationMs: Date.now() - startTime,
       });
     }
+
+    this.#banish = null;
   }
 
   markAttempt(task: GarboTask): void {
@@ -203,14 +234,14 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
  */
 export class SafeGarboEngine extends BaseGarboEngine {
   constructor(tasks: GarboTask[]) {
-    const options = new EngineOptions();
+    const options = new EngineOptions<never, GarboContext>();
     options.default_task_options = { limit: { skip: 1 } };
     super(tasks, options);
   }
 }
 
 function runQuests<T extends typeof BaseGarboEngine>(
-  quests: Quest<GarboTask>[],
+  quests: Quest<GarboTask, GarboContext>[],
   garboEngine: T,
 ) {
   const engine = new garboEngine(getTasks(quests));
@@ -222,10 +253,12 @@ function runQuests<T extends typeof BaseGarboEngine>(
   }
 }
 
-export function runSafeGarboQuests(quests: Quest<GarboTask>[]): void {
+export function runSafeGarboQuests(
+  quests: Quest<GarboTask, GarboContext>[],
+): void {
   runQuests(quests, SafeGarboEngine);
 }
 
-export function runGarboQuests(quests: Quest<GarboTask>[]): void {
+export function runGarboQuests(quests: Quest<GarboTask, GarboContext>[]): void {
   runQuests(quests, BaseGarboEngine);
 }

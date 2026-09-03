@@ -10,13 +10,14 @@ import {
 import {
   $class,
   $item,
-  $location,
+  $items,
   $skill,
   $slot,
   CinchoDeMayo,
   get,
   getModifier,
   have,
+  LaughingStock,
   lgrCurrencies,
   sum,
   sumNumbers,
@@ -32,7 +33,9 @@ import {
 } from "../lib";
 import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
-import { garboValue } from "../garboValue";
+import { garboAverageValue, garboValue } from "../garboValue";
+import { farmingStrategy } from "../farmingStrategy";
+import { estimatedGarboTurns } from "../turns";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -146,6 +149,43 @@ function cinchoDeMayo(mode: BonusEquipMode) {
   return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
 }
 
+function calculateLaughingStockBonus(alwaysUseHorizon: boolean) {
+  const basicFruitValue = garboAverageValue(
+    ...$items`orange, grapefruit, grapes, lemon, lime, papaya, cranberries, strawberry, cherry, kumquat, tangerine, raspberry, kiwi, blackberry, banana, cactus fruit, plum, pear, peach`,
+  );
+  const classicFruitValue = garboAverageValue(
+    ...$items`classic banana, antique watermelon, quince`,
+  );
+
+  const horizonValue = 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
+
+  if (alwaysUseHorizon) return horizonValue;
+
+  const nextDrop = LaughingStock.nextDrop();
+
+  if (nextDrop) {
+    const [fruit, fights] = nextDrop;
+    if (fights > estimatedGarboTurns()) return 0;
+    return Math.max(garboValue(fruit) / fights, horizonValue);
+  }
+
+  return horizonValue;
+}
+
+function portableLaughingStock(mode: BonusEquipMode) {
+  if (!have($item`Portable Laughing Stock`) || mode === BonusEquipMode.DMT) {
+    return new Map<Item, number>([]);
+  }
+
+  const laughingStockBonus = calculateLaughingStockBonus(
+    mode !== BonusEquipMode.MEAT_TARGET,
+  );
+
+  return new Map<Item, number>([
+    [$item`Portable Laughing Stock`, laughingStockBonus],
+  ]);
+}
+
 /*
 This is separate from bonusGear to prevent circular references
 bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
@@ -156,6 +196,7 @@ export function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
     ...mafiaThumbRing(mode),
     ...luckyGoldRing(mode),
     ...mrCheengsSpectacles(),
+    ...portableLaughingStock(mode),
     ...mrScreegesSpectacles(),
     ...cinchoDeMayo(mode),
   ]);
@@ -176,7 +217,7 @@ export function usingThumbRing(): boolean {
     const gear = bonusAccessories(BonusEquipMode.BARF);
     const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
-    setLocation($location`Barf Mountain`);
+    setLocation(farmingStrategy().location);
     const meatAccessories = Item.all()
       .filter(
         (item) =>

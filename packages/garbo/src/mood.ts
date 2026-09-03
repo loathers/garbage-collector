@@ -18,8 +18,8 @@ import {
   $effect,
   $effects,
   $item,
+  $location,
   $skill,
-  AsdonMartin,
   get,
   have,
   Mood,
@@ -33,6 +33,7 @@ import {
 import { usingPurse } from "./outfit";
 import { effectValue } from "./potions";
 import { acquire } from "./acquire";
+import { farmingStrategy } from "./farmingStrategy";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -53,7 +54,6 @@ export function meatMood(
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
-  mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
 
@@ -74,15 +74,25 @@ export function meatMood(
 
   mood.skill($skill`The Polka of Plenty`);
   mood.skill($skill`Disco Leer`);
-  mood.skill(
-    urKels
-      ? $skill`Ur-Kel's Aria of Annoyance`
-      : $skill`Fat Leon's Phat Loot Lyric`,
-  );
   mood.skill($skill`Singer's Faithful Ocelot`);
   mood.skill($skill`The Spirit of Taking`);
-  mood.skill($skill`Drescher's Annoying Noise`);
-  mood.skill($skill`Pride of the Puffin`);
+  if (farmingStrategy().location === $location`Barf Mountain`) {
+    mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
+  }
+  if (farmingStrategy().ensureML) {
+    mood.skill($skill`Drescher's Annoying Noise`);
+    mood.skill($skill`Pride of the Puffin`);
+    mood.skill(
+      urKels
+        ? $skill`Ur-Kel's Aria of Annoyance`
+        : $skill`Fat Leon's Phat Loot Lyric`,
+    );
+  } else {
+    // This could be optimized a bit better using the new setup
+    mood.skill($skill`Donho's Bubbly Ballad`);
+    mood.skill($skill`Ghostly Shell`);
+    mood.skill($skill`Shield of the Pastalord`);
+  }
   mood.skill($skill`Walk: Leisurely Amble`);
   mood.skill($skill`Call For Backup`);
   mood.skill($skill`Soothing Flute`);
@@ -101,7 +111,7 @@ export function meatMood(
   }
 
   if (getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(AsdonMartin.Driving.Observantly);
+    mood.drive(farmingStrategy().asdonEffect);
   }
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
@@ -224,7 +234,7 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(AsdonMartin.Driving.Observantly);
+    mood.drive(farmingStrategy().asdonEffect);
   }
 
   return mood;

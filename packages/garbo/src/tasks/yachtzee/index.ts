@@ -25,10 +25,11 @@ import { willDrunkAdventure } from "../../lib";
 import { Outfit, Quest } from "grimoire-kolmafia";
 import { maximumYachtzees, shouldClara, willYachtzee } from "../../resources";
 import { GarboStrategy } from "../../combatStrategy";
+import { GarboContext } from "../context";
 
 type AlternateTask = GarboTask & { turns: Delayed<number> };
 
-export const yachtzeeQuest: Quest<AlternateTask>[] = [
+export const yachtzeeQuest: Quest<AlternateTask, GarboContext>[] = [
   {
     name: "Yachtzee",
     completed: () => !willYachtzee() && !get("noncombatForcerActive"),

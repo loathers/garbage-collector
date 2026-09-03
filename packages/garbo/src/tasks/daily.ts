@@ -90,6 +90,7 @@ import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
 import { embezzlerFights } from "./embezzler";
+import { GarboContext } from "./context";
 
 const photoBoothItems = $items`Sheriff badge, Sheriff pistol, Sheriff moustache, feather boa, oversized monocle on a stick, fake huge beard`;
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
@@ -97,6 +98,7 @@ const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 
 let latteRefreshed = false;
 let snojoConfigured = false;
+let speakeasyPoolTableVisited = false;
 
 // For this valuation, we are using the rough approximated value of different
 //   voting initiatives. They are relatively straghtforward:
@@ -383,7 +385,7 @@ const DailyTasks: GarboTask[] = [
   {
     name: "Check Florist",
     ready: () => get("ownsFloristFriar"),
-    completed: floristAvailable,
+    completed: () => floristAvailable(),
     after: ["Daily/Unlock Woods"],
     do: () => {
       visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
@@ -556,6 +558,17 @@ const DailyTasks: GarboTask[] = [
     ready: () => have($item`Glenn's golden dice`),
     completed: () => get("_glennGoldenDiceUsed"),
     do: () => use($item`Glenn's golden dice`),
+    spendsTurn: false,
+  },
+  {
+    name: "Speakeasy pool table",
+    ready: () => get("ownsSpeakeasy"),
+    completed: () => speakeasyPoolTableVisited,
+    do: () => {
+      visitUrl("place.php?whichplace=speakeasy&action=olivers_pooltable");
+      speakeasyPoolTableVisited = true;
+    },
+    outfit: { modifier: "Pool Skill" },
     spendsTurn: false,
   },
   {
@@ -890,7 +903,7 @@ const DailyTasks: GarboTask[] = [
   },
 ];
 
-export const DailyQuest: Quest<GarboTask> = {
+export const DailyQuest: Quest<GarboTask, GarboContext> = {
   name: "Daily",
   tasks: DailyTasks,
 };

@@ -84,6 +84,7 @@ import {
 } from "../resources";
 import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
 import { AdventureArgument, wanderer } from "../garboWanderer";
+import { EMPTY_CONTEXT, GarboContext } from "./context";
 
 export type GarboFreeFightTask = Extract<
   GarboTask,
@@ -297,7 +298,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
       (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ??
         false),
     completed: ChateauMantegna.paintingFought,
-    do: ChateauMantegna.fightPainting,
+    do: () => ChateauMantegna.fightPainting(),
     outfit: () =>
       freeFightOutfit(
         have($familiar`Robortender`) &&
@@ -991,7 +992,8 @@ const FreeFightTasks = RAW_FIGHTS.map(freeFightTask);
 // Expected free fights, not including tentacles
 export function expectedFreeFightQuestFights(): number {
   const availableFights = FreeFightTasks.filter(
-    (task) => (task.ready?.() ?? true) && !task.completed(),
+    (task) =>
+      (task.ready?.(EMPTY_CONTEXT) ?? true) && !task.completed(EMPTY_CONTEXT),
   );
   return sum(availableFights, ({ combatCount }) => combatCount());
 }
@@ -999,7 +1001,8 @@ export function expectedFreeFightQuestFights(): number {
 // Possible additional free fights from tentacles
 export function possibleFreeFightQuestTentacleFights(): number {
   const availableFights = FreeFightTasks.filter(
-    (task) => (task.ready?.() ?? true) && !task.completed(),
+    (task) =>
+      (task.ready?.(EMPTY_CONTEXT) ?? true) && !task.completed(EMPTY_CONTEXT),
   );
   return sum(
     availableFights,
@@ -1007,7 +1010,7 @@ export function possibleFreeFightQuestTentacleFights(): number {
   );
 }
 
-export const FreeFightQuest: Quest<GarboTask> = {
+export const FreeFightQuest: Quest<GarboTask, GarboContext> = {
   name: "Free Fight",
   tasks: FreeFightTasks,
   ready: () => sober() && !have($effect`Feeling Lost`),

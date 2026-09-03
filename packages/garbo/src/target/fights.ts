@@ -68,10 +68,10 @@ import {
   equipOrbIfDesired,
   gregReady,
   monsterIsInEggnet,
-  nextWeekFights,
   possibleGregCrystalBall,
   totalGregCharges,
 } from "../resources";
+import { nextWeekFights } from "../resources/sealclub";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 
