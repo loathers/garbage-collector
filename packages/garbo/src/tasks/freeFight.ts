@@ -181,14 +181,17 @@ function litLeafMacro(monster: Monster): Macro {
     .basicCombat();
 }
 
-function dmtCommaValuable(): boolean {
+function dmtCommaValuable(basketballThreshold: number, snowglobeThreshold: number): boolean {
   if (!CommaChameleon.have()) return false;
-  const cost =
-    mallPrice($item`Deep Machine Tunnels snowglobe`) +
-    (CommaChameleon.currentFamiliar() === $familiar`Machine Elf`
-      ? 0
-      : mallPrice($item`self-dribbling basketball`));
-  return globalOptions.prefs.valueOfFreeFight * 5 > cost;
+
+  const basketballCost = mallPrice($item`self-dribbling basketball`);
+  if (basketballCost > basketballThreshold) return false;
+  const snowglobeCost = mallPrice($item`Deep Machine Tunnels snowglobe`);
+  if (snowglobeCost > snowglobeThreshold) return false;
+
+  const totalCost = snowglobeCost +
+    (CommaChameleon.currentFamiliar() === $familiar`Machine Elf` ? 0 : basketballCost);
+  return globalOptions.prefs.valueOfFreeFight * 5 > totalCost;
 }
 
 const stunDurations = new Map<Skill | Item, Delayed<number>>([
@@ -735,7 +738,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
   {
     name: "Machine Elf",
     adventure: $location`The Deep Machine Tunnels`,
-    ready: () => have($familiar`Machine Elf`) || dmtCommaValuable(),
+    ready: () => have($familiar`Machine Elf`) || dmtCommaValuable(10000, 2000),
     completed: () => get("_machineTunnelsAdv") >= 5,
     do: $location`The Deep Machine Tunnels`,
     prepare: () => {
