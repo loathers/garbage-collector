@@ -88,6 +88,7 @@ import {
 } from "../../resources";
 import { acquire } from "../../acquire";
 import { GarboContext } from "../context";
+import { bestYachtzeeFamiliar } from "../yachtzee/familiar";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
@@ -645,7 +646,6 @@ const BarfTurnTasks: GarboTask[] = [
       Macro.abortWithMsg("Hit unexpected combat!"),
     ),
     spendsTurn: true,
-    location: $location`The Sunken Party Yacht`,
   },
   {
     name: "Gingerbread Noon",
