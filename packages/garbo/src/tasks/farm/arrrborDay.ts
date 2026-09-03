@@ -6,6 +6,10 @@ import { GarboStrategy } from "../../combatStrategy";
 import { AlternateTask } from "../engine";
 
 export function arrrborDayTasks(): AlternateTask[] {
+  if (!canAdventure($location`The Arrrboretum`)) {
+    return [];
+  }
+
   const arrrborDayOffhand = new Map([
     [
       $item`bag of Crotchety Pine saplings`,
@@ -61,18 +65,13 @@ export function arrrborDayTasks(): AlternateTask[] {
       ...partial,
       name: `Arrrbor Day: Acquire Sapling`,
       completed: () => arrrborDayHaveSapling(),
-      ready: () =>
-        canAdventure($location`The Arrrboretum`) &&
-        !have($item`Underworld acorn`),
+      ready: () => !have($item`Underworld acorn`),
     },
     {
       ...partial,
       name: `Arrrbor Day: Plant Sapling`,
       completed: () => get("_saplingsPlanted") > 0,
-      ready: () =>
-        canAdventure($location`The Arrrboretum`) &&
-        arrrborDayHaveSapling() &&
-        !have($item`Underworld acorn`),
+      ready: () => arrrborDayHaveSapling() && !have($item`Underworld acorn`),
     },
   ];
 }
