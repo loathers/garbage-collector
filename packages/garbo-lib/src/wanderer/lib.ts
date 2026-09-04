@@ -70,6 +70,7 @@ export type WandererFactoryOptions = {
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
   canRefractedGaze?: boolean;
+  underwaterAllowed?: boolean;
 };
 
 export type WandererFactory = (
@@ -152,6 +153,7 @@ const canAdventureOrUnlockSkipList = [
 export function canAdventureOrUnlock(
   loc: Location,
   includeUnlockable = true,
+  underwaterAllowed = false,
 ): boolean {
   const skiplist = [...canAdventureOrUnlockSkipList];
 
@@ -188,7 +190,7 @@ export function canAdventureOrUnlock(
       (z) => loc.zone === z.zone && (z.available() || !z.noInv),
     );
   return (
-    (!underwater(loc) || have($effect`Fishy`)) && // Can we check from wanderer somehow whether our farming strategy is an underwater zone?
+    (!underwater(loc) || (have($effect`Fishy`) && underwaterAllowed)) &&
     !skiplist.includes(loc) &&
     (canAdventure(loc) || canUnlock)
   );

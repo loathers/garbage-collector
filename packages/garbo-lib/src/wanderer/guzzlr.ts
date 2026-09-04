@@ -34,7 +34,7 @@ function considerAbandon(
     // consider abandoning
     (!location || // if mafia failed to track the location correctly
       locationSkiplist.includes(location) ||
-      !canAdventureOrUnlock(location) || // or the zone is marked as "generally cannot adv"
+      !canAdventureOrUnlock(location, true, options.underwaterAllowed) || // or the zone is marked as "generally cannot adv"
       (options.ascend &&
         wandererTurnsAvailableToday(options, location, true) < remaningTurns)) // or ascending and not enough turns to finish
   ) {

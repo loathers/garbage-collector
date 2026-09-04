@@ -761,7 +761,14 @@ const BarfTurnTasks: GarboTask[] = [
       const questMonster = get("_cookbookbatQuestMonster");
       if (!questMonster || hasNameCollision(questMonster)) return false;
       const questLocation = get("_cookbookbatQuestLastLocation");
-      if (!questLocation || !canAdventureOrUnlock(questLocation, false)) {
+      if (
+        !questLocation ||
+        !canAdventureOrUnlock(
+          questLocation,
+          false,
+          FarmingStrategy.isUnderwater(),
+        )
+      ) {
         return false;
       }
       const questReward = get("_cookbookbatQuestIngredient");

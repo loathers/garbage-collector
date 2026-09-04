@@ -38,6 +38,7 @@ import {
   DraggableFight,
   ensureMapElement,
   isDraggableFight,
+  underwater,
   unlock,
   UNPERIDOTABLE_MONSTERS,
   unperidotableZones,
@@ -291,7 +292,11 @@ function wanderWhere(
   const failed = candidate.targets.filter((target) => !target.prepareTurn());
 
   const badLocation =
-    !canAdventureOrUnlock(candidate.location) ||
+    !canAdventureOrUnlock(
+      candidate.location,
+      true,
+      options.underwaterAllowed,
+    ) ||
     !unlock(candidate.location, candidate.value) ||
     !canWander(candidate.location, type)
       ? [candidate.location]
