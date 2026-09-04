@@ -57,12 +57,12 @@ export const nonCinchNCs = () =>
         : 0);
 
 export const combatNCs = () =>
-  have($item`McHugeLarge left ski`)
+  (have($item`McHugeLarge left ski`)
     ? Math.max(0, 3 - get("_mcHugeLargeAvalancheUses"))
-    : 0 +
-      (have($item`Jurassic Parka`)
-        ? Math.max(0, 5 - get("_spikolodonSpikeUses"))
-        : 0);
+    : 0) +
+  (have($item`Jurassic Parka`)
+    ? Math.max(0, 5 - get("_spikolodonSpikeUses"))
+    : 0);
 
 export const cinchNCs = () =>
   Math.min(
