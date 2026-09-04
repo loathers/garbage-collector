@@ -48,14 +48,15 @@ export const farmPrepare = (context: FarmingContext) => {
     acquire(1, $item`sea lasso`, 5000, true);
   }
 
-  if (
-    FarmingStrategy.location === $location`Barf Mountain` &&
-    !get("dinseyRollercoasterNext") &&
-    !(totalTurnsPlayed() % 11)
-  ) {
-    meatMood().execute(estimatedGarboTurns());
-  } else {
-    meatMood().execute(estimatedGarboTurns());
+  // Only re-run mood every so often
+  if (!(totalTurnsPlayed() % 11)) {
+    if (
+      (FarmingStrategy.location === $location`Barf Mountain` &&
+        !get("dinseyRollercoasterNext")) ||
+      FarmingStrategy.location !== $location`Barf Mountain`
+    ) {
+      meatMood().execute(estimatedGarboTurns());
+    }
   }
 
   if (context.banish?.retrieve && context.banish.source instanceof Item) {
