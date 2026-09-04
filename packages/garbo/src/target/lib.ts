@@ -27,7 +27,7 @@ import { Macro } from "../combat";
 import { globalOptions } from "../config";
 import { freeFishyAvailable } from "../lib";
 import { willYachtzee } from "../resources";
-import { farmingStrategy } from "../farmingStrategy";
+import { FarmingStrategy } from "../farmingStrategy";
 
 /**
  * Configure the behavior of the fights in use in different parts of the fight engine
@@ -63,8 +63,7 @@ export function checkUnderwater(): boolean {
     (booleanModifier("Adventure Underwater") ||
       waterBreathingEquipment.some((item) => have(item) && canEquip(item))) &&
     freeFishyAvailable() &&
-    (!willYachtzee() ||
-      farmingStrategy().location === $location`The Coral Corral`)
+    (!willYachtzee() || FarmingStrategy.isUnderwater())
   ) {
     if (
       !have($effect`Fishy`) &&

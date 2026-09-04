@@ -182,10 +182,9 @@ function eatSafe(qty: number, item: Item) {
   }, item);
 }
 
-const EXPENSIVE_SONGS =
-  farmingStrategy().location.environment === "underwater"
-    ? $effects`The Ballad of Richie Thingfinder, Chorale of Companionship, Donho's Bubbly Ballad`
-    : $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
+const EXPENSIVE_SONGS = FarmingStrategy.isUnderwater()
+  ? $effects`The Ballad of Richie Thingfinder, Chorale of Companionship, Donho's Bubbly Ballad`
+  : $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
 const USEFUL_SONGS = $effects`Polka of Plenty, Ur-Kel's Aria of Annoyance, Fat Leon's Phat Loot Lyric`;
 function shrugForOde() {
   const inexpensiveSongs = getActiveSongs().filter(

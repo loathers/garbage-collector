@@ -1,6 +1,5 @@
 import {
   $item,
-  $location,
   AprilingBandHelmet,
   clamp,
   get,
@@ -13,7 +12,7 @@ import { getBestLuckyAdventure } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { toItem } from "kolmafia";
 import { estimatedBarfExperience } from "../familiar";
-import { farmingStrategy } from "../farmingStrategy";
+import { FarmingStrategy } from "../farmingStrategy";
 
 const instruments: {
   instrument: AprilingBandHelmet.Instrument;
@@ -38,8 +37,7 @@ const instruments: {
   {
     instrument: "Apriling band tuba",
     value: () =>
-      realmAvailable("sleaze") &&
-      farmingStrategy().location === $location`The Coral Corral`
+      realmAvailable("sleaze") && FarmingStrategy.isUnderwater()
         ? (20000 - get("valueOfAdventure")) * 3 // Yachtzee
         : 0, // Are there any other valuable NCs?
   },

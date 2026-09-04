@@ -9,11 +9,11 @@ import {
   withChoice,
 } from "libram";
 import { copyTargetCount } from "../target";
-import { farmingStrategy } from "../farmingStrategy";
+import { FarmingStrategy } from "../farmingStrategy";
 
 export function waveDireWarren() {
   if (
-    farmingStrategy().location === $location`The Coral Corral` &&
+    FarmingStrategy.isUnderwater() &&
     have($item`Monodent of the Sea`) &&
     haveEffect($effect`Fishy`) > copyTargetCount() + 50 && // Let's be very careful
     !get("_seadentWaveUsed") &&
