@@ -1,10 +1,7 @@
 import {
   cliExecute,
   inebrietyLimit,
-  Item,
   myInebriety,
-  retrieveItem,
-  toMonster,
   use,
   useSkill,
 } from "kolmafia";
@@ -13,7 +10,6 @@ import {
   $item,
   $items,
   $location,
-  $monster,
   $skill,
   AprilingBandHelmet,
   CinchoDeMayo,
@@ -29,15 +25,9 @@ import { Outfit, Quest } from "grimoire-kolmafia";
 import { maximumYachtzees, shouldClara, willYachtzee } from "../../resources";
 import { GarboStrategy } from "../../combatStrategy";
 import { barfOutfit } from "../../outfit";
-import { meatMood } from "../../mood";
-import { estimatedGarboTurns } from "../../turns";
-import { trackMarginalMpa } from "../../session";
-import {
-  FarmingStrategy,
-  getMonstersToBanish,
-  redTaffyWorth,
-} from "../../farmingStrategy";
+import { FarmingStrategy } from "../../farmingStrategy";
 import { FarmingContext } from "../context";
+import { farmPost, farmPrepare } from "../farm/farmTurn";
 
 export const yachtzeeQuest: Quest<
   AlternateTask<FarmingContext>,
@@ -127,39 +117,8 @@ export const yachtzeeQuest: Quest<
             FarmingStrategy.macro(context),
           ),
         ),
-        prepare: (context) => {
-          if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
-            retrieveItem($item`pulled red taffy`);
-          }
-          meatMood().execute(estimatedGarboTurns());
-
-          if (
-            context.banish?.retrieve &&
-            context.banish.source instanceof Item
-          ) {
-            retrieveItem(context.banish.source);
-          }
-        },
-        post: () => {
-          FarmingStrategy.post?.();
-          trackMarginalMpa();
-
-          if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
-            throw new Error(
-              "You encountered a tumbleweed and should not have, resolve your banishes",
-            );
-          }
-
-          if (
-            getMonstersToBanish(FarmingStrategy.banishMonsters).includes(
-              toMonster(get("lastEncounter")),
-            )
-          ) {
-            throw new Error(
-              "You encountered a banishable monster and didn't banish it, sort your life out!",
-            );
-          }
-        },
+        prepare: farmPrepare,
+        post: farmPost,
         turns: () => 2 * Math.max(0, 5 - get("_spikolodonSpikeUses")), // Need one turn to cast the NC, and one to do the yachtzee
         sobriety: "sober",
         spendsTurn: true,
@@ -177,39 +136,8 @@ export const yachtzeeQuest: Quest<
             FarmingStrategy.macro(context),
           ),
         ),
-        prepare: (context) => {
-          if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
-            retrieveItem($item`pulled red taffy`);
-          }
-          meatMood().execute(estimatedGarboTurns());
-
-          if (
-            context.banish?.retrieve &&
-            context.banish.source instanceof Item
-          ) {
-            retrieveItem(context.banish.source);
-          }
-        },
-        post: () => {
-          FarmingStrategy.post?.();
-          trackMarginalMpa();
-
-          if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
-            throw new Error(
-              "You encountered a tumbleweed and should not have, resolve your banishes",
-            );
-          }
-
-          if (
-            getMonstersToBanish(FarmingStrategy.banishMonsters).includes(
-              toMonster(get("lastEncounter")),
-            )
-          ) {
-            throw new Error(
-              "You encountered a banishable monster and didn't banish it, sort your life out!",
-            );
-          }
-        },
+        prepare: farmPrepare,
+        post: farmPost,
         turns: () => 2 * Math.max(0, 3 - get("_mcHugeLargeAvalancheUses")), // Need one turn to cast the NC, and one to do the yachtzee
         sobriety: "sober",
         spendsTurn: true,

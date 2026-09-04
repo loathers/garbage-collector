@@ -27,6 +27,38 @@ import { barfOutfit } from "../../outfit";
 import { FarmingContext } from "../context";
 import { GarboStrategy } from "../../combatStrategy";
 
+export const farmPrepare = (context: FarmingContext) => {
+  if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
+    retrieveItem($item`pulled red taffy`);
+  }
+  meatMood().execute(estimatedGarboTurns());
+
+  if (context.banish?.retrieve && context.banish.source instanceof Item) {
+    retrieveItem(context.banish.source);
+  }
+};
+
+export const farmPost = () => {
+  FarmingStrategy.post?.();
+  trackMarginalMpa();
+
+  if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
+    throw new Error(
+      "You encountered a tumbleweed and should not have, resolve your banishes",
+    );
+  }
+
+  if (
+    getMonstersToBanish(FarmingStrategy.banishMonsters).includes(
+      toMonster(get("lastEncounter")),
+    )
+  ) {
+    throw new Error(
+      "You encountered a banishable monster and didn't banish it, sort your life out!",
+    );
+  }
+};
+
 export function FarmTurnQuest(): Quest<
   GarboTask<FarmingContext>,
   FarmingContext
@@ -56,42 +88,11 @@ export function FarmTurnQuest(): Quest<
       {
         name: "Farm",
         completed: () => myAdventures() === 0,
-        prepare: (context) => {
-          if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
-            retrieveItem($item`pulled red taffy`);
-          }
-          meatMood().execute(estimatedGarboTurns());
-
-          if (
-            context.banish?.retrieve &&
-            context.banish.source instanceof Item
-          ) {
-            retrieveItem(context.banish.source);
-          }
-        },
+        prepare: farmPrepare,
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
         do: () => FarmingStrategy.location,
         combat: new GarboStrategy((context) => FarmingStrategy.macro(context)),
-        post: () => {
-          FarmingStrategy.post?.();
-          trackMarginalMpa();
-
-          if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
-            throw new Error(
-              "You encountered a tumbleweed and should not have, resolve your banishes",
-            );
-          }
-
-          if (
-            getMonstersToBanish(FarmingStrategy.banishMonsters).includes(
-              toMonster(get("lastEncounter")),
-            )
-          ) {
-            throw new Error(
-              "You encountered a banishable monster and didn't banish it, sort your life out!",
-            );
-          }
-        },
+        post: farmPost,
         spendsTurn: true,
       },
     ],
