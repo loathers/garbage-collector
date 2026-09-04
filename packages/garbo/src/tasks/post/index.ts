@@ -74,8 +74,7 @@ import {
   lavaDogsComplete,
   leprecondoTask,
 } from "../../resources";
-import { farmingStrategy } from "../../farmingStrategy";
-import { GarboContext } from "../context";
+import { FarmingStrategy } from "../../farmingStrategy";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key, sand dollar`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
@@ -98,7 +97,7 @@ function useStuff(): GarboPostTask {
 }
 
 const BARF_PLANTS = () =>
-  farmingStrategy().location.environment === "underwater"
+  FarmingStrategy.isUnderwater()
     ? [
         FloristFriar.Crookweed,
         FloristFriar.ElectricEelgrass,
@@ -110,11 +109,10 @@ const BARF_PLANTS = () =>
         FloristFriar.PitcherPlant,
       ];
 function floristFriars(): GarboPostTask {
-  const primaryLocation = farmingStrategy().location;
+  const primaryLocation = FarmingStrategy.location;
   const secondaryLocation =
-    farmingStrategy().location === $location`The Coral Corral` &&
-    realmAvailable("sleaze")
-      ? $location`The Sunken Party Yacht`
+    FarmingStrategy.isUnderwater() && realmAvailable("sleaze")
+      ? $location`The Sunken Party Yacht` // This doesn't affect the yachtzee NC of course, but it's the most likely location for underwater wanderers to be placed
       : Location.none;
 
   const targetLocation =
@@ -454,9 +452,9 @@ function usePorkToilet(): GarboPostTask {
   };
 }
 
-export function PostQuest(
+export function PostQuest<C = void>(
   completed?: () => boolean,
-): Quest<GarboTask, GarboContext> {
+): Quest<GarboTask<C>, C> {
   return {
     name: "Postcombat",
     completed,

@@ -37,7 +37,7 @@ import {
 import { garboValue } from "../garboValue";
 import { copyTargetCount } from "../target";
 import { canBullseye, safeToAttemptBullseye } from "../resources";
-import { farmingStrategy } from "../farmingStrategy";
+import { FarmingStrategy } from "../farmingStrategy";
 
 export type FamiliarMode = "barf" | "free" | "target" | "run";
 
@@ -135,7 +135,7 @@ export function turnsAvailable(): number {
     : 0;
 
   const barfTurns = baseTurns - digitizes - mapTurns;
-  const barfCombatRate = 1 - 1 / farmingStrategy().turnsToNC();
+  const barfCombatRate = 1 - 1 / FarmingStrategy.turnsToNC();
   return barfTurns * barfCombatRate;
 }
 

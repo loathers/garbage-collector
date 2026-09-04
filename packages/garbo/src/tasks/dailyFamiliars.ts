@@ -41,16 +41,13 @@ import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
 import { amuletCoinValue } from "../familiar/lib";
-import { farmingStrategy, garbageTouristRatio } from "../farmingStrategy";
-import { GarboContext } from "./context";
+import { FarmingStrategy, garbageTouristRatio } from "../farmingStrategy";
 
 function drivebyValue(targetCount = 0): number {
   const targets = targetCount;
 
-  const baseFarmFights = farmingStrategy().accountForNC
-    ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
-      (farmingStrategy().turnsToNC() + 1)
-    : 0;
+  const baseFarmFights =
+    (estimatedGarboTurns() - targets) * FarmingStrategy.ncAdjustment();
 
   const marginalRoboWeight = 50;
 
@@ -68,10 +65,8 @@ function drivebyValue(targetCount = 0): number {
 function entendreValue(targetCount = 0): number {
   const targets = targetCount;
 
-  const baseFarmFights = farmingStrategy().accountForNC
-    ? ((estimatedGarboTurns() - targets) * farmingStrategy().turnsToNC()) /
-      (farmingStrategy().turnsToNC() + 1)
-    : 0;
+  const baseFarmFights =
+    (estimatedGarboTurns() - targets) * FarmingStrategy.ncAdjustment();
 
   const marginalRoboWeight = 50;
 
@@ -116,7 +111,7 @@ export function prepRobortender(): void {
           baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()
-        : farmingStrategy().location.environment === "underwater"
+        : FarmingStrategy.isUnderwater()
           ? baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()
@@ -263,7 +258,7 @@ const DailyFamiliarTasks: GarboTask[] = [
   },
 ];
 
-export const DailyFamiliarsQuest: Quest<GarboTask, GarboContext> = {
+export const DailyFamiliarsQuest: Quest<GarboTask> = {
   name: "Daily Familiars",
   tasks: DailyFamiliarTasks,
 };

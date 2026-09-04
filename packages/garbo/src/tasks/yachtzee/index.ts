@@ -25,16 +25,15 @@ import { willDrunkAdventure } from "../../lib";
 import { Outfit, Quest } from "grimoire-kolmafia";
 import { maximumYachtzees, shouldClara, willYachtzee } from "../../resources";
 import { GarboStrategy } from "../../combatStrategy";
-import { GarboContext } from "../context";
 import { barfOutfit } from "../../outfit";
-import { trackMarginalMpa } from "../../session";
-import { estimatedGarboTurns } from "../../turns";
 import { meatMood } from "../../mood";
-import { farmingStrategy } from "../../farmingStrategy";
+import { estimatedGarboTurns } from "../../turns";
+import { trackMarginalMpa } from "../../session";
+import { FarmingStrategy } from "../../farmingStrategy";
 
 type AlternateTask = GarboTask & { turns: Delayed<number> };
 
-export const yachtzeeQuest: Quest<AlternateTask, GarboContext>[] = [
+export const yachtzeeQuest: Quest<AlternateTask>[] = [
   {
     name: "Yachtzee",
     completed: () => !willYachtzee() && !get("noncombatForcerActive"),
@@ -107,7 +106,7 @@ export const yachtzeeQuest: Quest<AlternateTask, GarboContext>[] = [
             equip: $items`Jurassic Parka`,
             modes: { parka: "spikolodon" },
           }),
-        do: farmingStrategy().location,
+        do: () => FarmingStrategy.location,
         combat: new GarboStrategy(() =>
           Macro.skill($skill`Launch spikolodon spikes`).meatKill(),
         ),
@@ -126,7 +125,7 @@ export const yachtzeeQuest: Quest<AlternateTask, GarboContext>[] = [
           have($item`McHugeLarge left ski`) &&
           get("_mcHugeLargeAvalancheUses") < 3,
         outfit: () => barfOutfit({ equip: $items`McHugeLarge left ski` }),
-        do: farmingStrategy().location,
+        do: () => FarmingStrategy.location,
         combat: new GarboStrategy(() =>
           Macro.skill($skill`McHugeLarge Avalanche`).meatKill(),
         ),

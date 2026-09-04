@@ -35,9 +35,9 @@ import {
 import { usingPurse } from "./outfit";
 import { effectValue } from "./potions";
 import { acquire } from "./acquire";
-import { farmingStrategy } from "./farmingStrategy";
-import { estimatedGarboTurns } from "./turns";
+import { FarmingStrategy } from "./farmingStrategy";
 import { globalOptions } from "./config";
+import { estimatedGarboTurns } from "./turns";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -80,10 +80,10 @@ export function meatMood(
   mood.skill($skill`Disco Leer`);
   mood.skill($skill`Singer's Faithful Ocelot`);
   mood.skill($skill`The Spirit of Taking`);
-  if (farmingStrategy().location === $location`Barf Mountain`) {
+  if (FarmingStrategy.location === $location`Barf Mountain`) {
     mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   }
-  if (farmingStrategy().ensureML) {
+  if (FarmingStrategy.ensureML) {
     mood.skill($skill`Drescher's Annoying Noise`);
     mood.skill($skill`Pride of the Puffin`);
     mood.skill(
@@ -93,7 +93,7 @@ export function meatMood(
     );
   }
 
-  if (farmingStrategy().location === $location`The Coral Corral`) {
+  if (FarmingStrategy.location === $location`The Coral Corral`) {
     // Cow survivability
     mood.skill($skill`Ruthless Efficiency`);
     mood.skill($skill`Ghostly Shell`);
@@ -147,7 +147,7 @@ export function meatMood(
   }
 
   if (getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(farmingStrategy().asdonEffect);
+    mood.drive(FarmingStrategy.asdonEffect);
   }
 
   if (have($item`Kremlin's Greatest Briefcase`)) {
@@ -270,7 +270,7 @@ export function freeFightMood(...additionalEffects: Effect[]): Mood {
   shrugBadEffects(...additionalEffects);
 
   if (getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(farmingStrategy().asdonEffect);
+    mood.drive(FarmingStrategy.asdonEffect);
   }
 
   return mood;

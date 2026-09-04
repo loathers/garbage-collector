@@ -16,7 +16,7 @@ import {
   updateParachuteFailure,
 } from "./lib";
 import {
-  farmingStrategy,
+  FarmingStrategy,
   getMonstersToBanish,
   redTaffyWorth,
 } from "../../farmingStrategy";
@@ -24,27 +24,29 @@ import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit";
-import { GarboContext } from "../context";
+import { FarmingContext } from "../context";
 
-export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
+export function FarmTurnQuest(): Quest<
+  GarboTask<FarmingContext>,
+  FarmingContext
+> {
   return {
-    name: `${farmingStrategy().location}`,
+    name: `${FarmingStrategy.location}`,
     tasks: [
       {
         name: "Parachute",
         ready: () =>
           CrepeParachute.have() &&
           shouldCheckParachute() &&
-          myLocation() === farmingStrategy().location &&
-          farmingStrategy().shouldOlfact,
+          myLocation() === FarmingStrategy.location &&
+          FarmingStrategy.shouldOlfact,
         completed: () =>
           have($effect`Everything looks Beige`) || myAdventures() === 0,
-        outfit: (context) => barfOutfit(farmingStrategy().outfit(context)),
-        do: () =>
-          CrepeParachute.fight(undelay(farmingStrategy().targetMonster)),
-        combat: farmingStrategy().combat,
+        outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
+        do: () => CrepeParachute.fight(undelay(FarmingStrategy.targetMonster)),
+        combat: FarmingStrategy.combat,
         post: () => {
-          farmingStrategy().post?.();
+          FarmingStrategy.post?.();
           if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
           trackMarginalMpa();
         },
@@ -54,10 +56,7 @@ export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
         name: "Farm",
         completed: () => myAdventures() === 0,
         prepare: (context) => {
-          if (
-            redTaffyWorth() &&
-            farmingStrategy().location.environment === "underwater"
-          ) {
+          if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
             retrieveItem($item`pulled red taffy`);
           }
           meatMood().execute(estimatedGarboTurns());
@@ -69,11 +68,11 @@ export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
             retrieveItem(context.banish.source);
           }
         },
-        outfit: (context) => barfOutfit(farmingStrategy().outfit(context)),
-        do: () => farmingStrategy().location,
-        combat: farmingStrategy().combat,
+        outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
+        do: () => FarmingStrategy.location,
+        combat: FarmingStrategy.combat,
         post: () => {
-          farmingStrategy().post?.();
+          FarmingStrategy.post?.();
           trackMarginalMpa();
 
           if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
@@ -83,7 +82,7 @@ export function FarmTurnQuest(): Quest<GarboTask, GarboContext> {
           }
 
           if (
-            getMonstersToBanish(farmingStrategy().monstersToBanish).includes(
+            getMonstersToBanish(FarmingStrategy.banishMonsters).includes(
               toMonster(get("lastEncounter")),
             )
           ) {

@@ -802,7 +802,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
 ];
 
-export const WandererQuest: Quest<GarboTask, GarboContext> = {
+export const WandererQuest: Quest<GarboTask, unknown> = {
   name: "Wanderers",
   tasks: BarfTurnTasks,
   completed: () => !canContinue(),

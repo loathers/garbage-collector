@@ -101,7 +101,8 @@ import {
 } from "./tasks/buffExtension";
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
-import { farmingStrategy } from "./farmingStrategy";
+import { FarmingStrategy } from "./farmingStrategy";
+import { runGarboFarmQuests } from "./tasks/engine";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -327,7 +328,7 @@ export function main(argString = ""): void {
   if (
     !globalOptions.nobarf &&
     !globalOptions.simdiet &&
-    farmingStrategy().ensureBarfAccess
+    FarmingStrategy.ensureBarfAccess
   ) {
     ensureBarfAccess();
   }
@@ -635,7 +636,7 @@ export function main(argString = ""): void {
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
           if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
-            runGarboQuests([PostQuest(), ...FarmQuests()]);
+            runGarboFarmQuests([PostQuest(), ...FarmQuests()]);
             runGarboQuests([FinishUpQuest]);
           } finally {
             setAutoAttack(0);
