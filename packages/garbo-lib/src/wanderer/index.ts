@@ -38,7 +38,6 @@ import {
   DraggableFight,
   ensureMapElement,
   isDraggableFight,
-  underwater,
   unlock,
   UNPERIDOTABLE_MONSTERS,
   unperidotableZones,
