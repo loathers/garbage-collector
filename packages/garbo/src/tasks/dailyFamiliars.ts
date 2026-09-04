@@ -109,7 +109,7 @@ export function prepRobortender(): void {
           baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()
-        : FarmingStrategy.isUnderwater
+        : FarmingStrategy.isUnderwater()
           ? baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()

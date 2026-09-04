@@ -57,7 +57,7 @@ const MEAT_DROP_VALUE = () => baseMeat() / 100;
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
-    FarmingStrategy.isUnderwater &&
+    FarmingStrategy.isUnderwater() &&
     !have($effect`Driving Waterproofly`) &&
     !familiar.underwater
   );
@@ -111,7 +111,7 @@ function outfitCacheKey(familiar: Familiar): OutfitCacheKey {
 
   const lepMultiplier = findLeprechaunMultiplier(familiar);
 
-  if (!FarmingStrategy.isUnderwater) {
+  if (!FarmingStrategy.isUnderwater()) {
     return lepMultiplier;
   }
 

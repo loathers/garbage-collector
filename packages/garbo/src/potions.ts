@@ -266,7 +266,7 @@ export class Potion {
     return (
       this.effectValues?.meatDrop ??
       getModifier("Meat Drop", this.effect()) +
-        (FarmingStrategy.isUnderwater
+        (FarmingStrategy.isUnderwater()
           ? getModifier("Meat Drop Penalty", this.effect())
           : 0) +
         2 * (usingPurse() ? this.smithsness() : 0)
@@ -277,7 +277,7 @@ export class Potion {
     return (
       this.effectValues?.famWeight ??
       getModifier("Familiar Weight", this.effect()) +
-        (FarmingStrategy.isUnderwater
+        (FarmingStrategy.isUnderwater()
           ? getModifier("Hidden Familiar Weight", this.effect())
           : 0)
     );
@@ -984,7 +984,7 @@ class VariableMeatPotion {
   ): number {
     const yachtzeeValue = 2000;
     const targetValue = targetMeat();
-    const barfValue = FarmingStrategy.accountForNC
+    const barfValue = FarmingStrategy.accountForNC()
       ? (baseMeat() * FarmingStrategy.turnsToNC()) / 30
       : 0;
 

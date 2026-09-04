@@ -94,7 +94,7 @@ function useStuff(): GarboPostTask {
 }
 
 const BARF_PLANTS = () =>
-  FarmingStrategy.isUnderwater
+  FarmingStrategy.isUnderwater()
     ? [
         FloristFriar.Crookweed,
         FloristFriar.ElectricEelgrass,

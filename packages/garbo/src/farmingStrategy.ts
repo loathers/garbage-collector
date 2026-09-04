@@ -93,10 +93,10 @@ const DEFAULT_OPTIONS = {
 interface FarmingStrategySkeleton extends Required<FarmingStrategyOptions> {}
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class FarmingStrategySkeleton {
-  get isUnderwater(): boolean {
+  isUnderwater(): boolean {
     return this.location.environment === "underwater";
   }
-  get accountForNC(): boolean {
+  accountForNC(): boolean {
     return !!this.ncTurns;
   }
 
@@ -113,7 +113,7 @@ class FarmingStrategySkeleton {
   }
 
   ncAdjustment(): number {
-    if (!this.accountForNC) return 1;
+    if (!this.accountForNC()) return 1;
     return this.turnsToNC() / (1 + this.turnsToNC());
   }
 
@@ -146,7 +146,10 @@ export const FarmingStrategy = new Proxy(
       ) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const method = (FarmingStrategySkeleton.prototype as any)[prop];
-        return method.bind(receiver);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return function (...args: any[]) {
+          return method.apply(receiver, args);
+        };
       }
 
       const strategyOptions = currentStrategy();
