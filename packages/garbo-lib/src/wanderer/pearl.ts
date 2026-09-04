@@ -1,11 +1,11 @@
-import { Element, Location, numericModifier } from "kolmafia";
+import { Element, Location } from "kolmafia";
 import {
   DraggableFight,
   WandererFactoryOptions,
   WandererTarget,
   wandererTurnsAvailableToday,
 } from "./lib";
-import { $effect, $element, $item, $location, $modifier, get, have } from "libram";
+import { $effect, $element, $item, $location, get, have } from "libram";
 
 type PearlTarget = {
   location: Location;
@@ -22,40 +22,40 @@ const PearlTargets: PearlTarget[] = [
     completionPref: "_unblemishedPearlTheBriniestDeepests",
     progressPref: "_unblemishedPearlTheBriniestDeepestsProgress",
     estimatedProgress: 3.3,
-    maximizeElement: $element`Cold`
+    maximizeElement: $element`Cold`,
   },
   {
     location: $location`Madness Reef`,
     completionPref: "_unblemishedPearlMadnessReef",
     progressPref: "_unblemishedPearlMadnessReefProgress",
     estimatedProgress: 3.3,
-    maximizeElement: $element`Stench`
+    maximizeElement: $element`Stench`,
   },
   {
     location: $location`Anemone Mine`,
     completionPref: "_unblemishedPearlAnemoneMine",
     progressPref: "_unblemishedPearlAnemoneMineProgress",
     estimatedProgress: 3.3,
-    maximizeElement: $element`Spooky`
+    maximizeElement: $element`Spooky`,
   },
   {
     location: $location`The Dive Bar`,
     completionPref: "_unblemishedPearlDiveBar",
     progressPref: "_unblemishedPearlDiveBarProgress",
     estimatedProgress: 3.3,
-    maximizeElement: $element`Sleaze`
+    maximizeElement: $element`Sleaze`,
   },
   {
     location: $location`The Marinara Trench`,
     completionPref: "_unblemishedPearlMarinaraTrench",
     progressPref: "_unblemishedPearlMarinaraTrenchProgress",
     estimatedProgress: 3.3,
-    maximizeElement: $element`Hot`
+    maximizeElement: $element`Hot`,
   },
 ];
 
 // We need to throw this to the maximizer somehow so that we properly value elemental bonuses
-function elementalBonus(element: Element): number {
+/* function elementalBonus(element: Element): number {
   const resistance = numericModifier(
     $modifier`${element.toString()} Resistance`
   );
@@ -67,7 +67,7 @@ function elementalBonus(element: Element): number {
     Math.ceil(1 / progress(resistance));
 
   return get("valueOfAdventure", 4000) * (turns(resistance) - turns(resistance + 1));
-}
+} */
 
 function turnsRemainingToComplete(
   progressPref: string,
