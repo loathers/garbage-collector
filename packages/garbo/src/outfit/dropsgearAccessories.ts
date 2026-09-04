@@ -34,7 +34,7 @@ import {
 import { maximumPinataCasts } from "../resources";
 import { globalOptions } from "../config";
 import { garboAverageValue, garboValue } from "../garboValue";
-import { farmingStrategy } from "../farmingStrategy";
+import { FarmingStrategy } from "../farmingStrategy";
 import { estimatedGarboTurns } from "../turns";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
@@ -217,7 +217,7 @@ export function usingThumbRing(): boolean {
     const gear = bonusAccessories(BonusEquipMode.BARF);
     const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
-    setLocation(farmingStrategy().location);
+    setLocation(FarmingStrategy.location);
     const meatAccessories = Item.all()
       .filter(
         (item) =>

@@ -76,7 +76,7 @@ import {
   castAugustScepterBuffs,
   safeSweatEquityCasts,
 } from "./resources";
-import { farmingStrategy } from "./farmingStrategy";
+import { FarmingStrategy } from "./farmingStrategy";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";
 const banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -266,7 +266,7 @@ export class Potion {
     return (
       this.effectValues?.meatDrop ??
       getModifier("Meat Drop", this.effect()) +
-        (farmingStrategy().location.environment === "underwater"
+        (FarmingStrategy.isUnderwater
           ? getModifier("Meat Drop Penalty", this.effect())
           : 0) +
         2 * (usingPurse() ? this.smithsness() : 0)
@@ -277,7 +277,7 @@ export class Potion {
     return (
       this.effectValues?.famWeight ??
       getModifier("Familiar Weight", this.effect()) +
-        (farmingStrategy().location.environment === "underwater"
+        (FarmingStrategy.isUnderwater
           ? getModifier("Hidden Familiar Weight", this.effect())
           : 0)
     );
@@ -309,13 +309,11 @@ export class Potion {
       0,
     );
 
-    const ncAdjustment = farmingStrategy().accountForNC
-      ? farmingStrategy().turnsToNC() / (farmingStrategy().turnsToNC() + 1)
-      : 1;
-
     return (
       (bonusMeat / 100) *
-      (baseMeat() * (duration - targetsApplied) * ncAdjustment +
+      (baseMeat() *
+        (duration - targetsApplied) *
+        FarmingStrategy.ncAdjustment() +
         (baseMeat() + targetMeatDifferential()) * targetsApplied)
     );
   }
@@ -986,8 +984,8 @@ class VariableMeatPotion {
   ): number {
     const yachtzeeValue = 2000;
     const targetValue = targetMeat();
-    const barfValue = farmingStrategy().accountForNC
-      ? (baseMeat() * farmingStrategy().turnsToNC()) / 30
+    const barfValue = FarmingStrategy.accountForNC
+      ? (baseMeat() * FarmingStrategy.turnsToNC()) / 30
       : 0;
 
     const totalCosts = retrievePrice(this.potion, n);

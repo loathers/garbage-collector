@@ -3,7 +3,6 @@ import {
   equippedItem,
   Familiar,
   Item,
-  itemDropsArray,
   myFamiliar,
   numericModifier,
   print,
@@ -13,12 +12,11 @@ import {
 } from "kolmafia";
 import {
   $effect,
+  $element,
   $familiar,
   $item,
   $items,
-  $location,
   $slots,
-  adventureTargetToWeightedMap,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -53,26 +51,13 @@ import {
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
-import { farmingStrategy } from "../farmingStrategy";
-
-const ITEM_DROP_VALUE = () =>
-  sum(
-    [...adventureTargetToWeightedMap(farmingStrategy().location).entries()],
-    ([monster, monsterWeight]) =>
-      monsterWeight *
-      sum(
-        itemDropsArray(monster),
-        ({ drop, rate }) =>
-          // One 100 because % the other because % improvement
-          (rate / 100 / 100) * garboValue(drop),
-      ),
-  );
+import { FarmingStrategy } from "../farmingStrategy";
 
 const MEAT_DROP_VALUE = () => baseMeat() / 100;
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
-    farmingStrategy().location.environment === "underwater" &&
+    FarmingStrategy.isUnderwater &&
     !have($effect`Driving Waterproofly`) &&
     !familiar.underwater
   );
@@ -126,7 +111,7 @@ function outfitCacheKey(familiar: Familiar): OutfitCacheKey {
 
   const lepMultiplier = findLeprechaunMultiplier(familiar);
 
-  if (farmingStrategy().location.environment !== "underwater") {
+  if (!FarmingStrategy.isUnderwater) {
     return lepMultiplier;
   }
 
@@ -209,7 +194,7 @@ function familiarModifier(
 function familiarAbilityValue(familiar: Familiar) {
   return (
     familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() +
-    familiarModifier(familiar, "Item Drop") * ITEM_DROP_VALUE()
+    familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue()
   );
 }
 
@@ -265,7 +250,7 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfitValue =
     outfit.bonus +
     outfit.meat * MEAT_DROP_VALUE() +
-    outfit.item * ITEM_DROP_VALUE() +
+    outfit.item * FarmingStrategy.itemDropValue() +
     (SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
@@ -279,10 +264,11 @@ function extraValue(
 ) {
   const targetValue = totalFamiliarValue(target);
   const meatFamiliarValue = totalFamiliarValue(meat);
-  const jelly =
-    farmingStrategy().location === $location`Barf Mountain`
-      ? $item`stench jelly`
-      : Item.none;
+  const jelly = FarmingStrategy.monsters().every(
+    (monster) => monster.attackElement === $element`Stench`,
+  )
+    ? $item`stench jelly`
+    : Item.none;
 
   const jellyfishValue = jellyfish
     ? garboValue(jelly) / 20 +
@@ -321,7 +307,7 @@ export function barfFamiliar(equipmentForced: boolean): {
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
 
-  const fullMenu = menu(farmingStrategy().location, {
+  const fullMenu = menu(FarmingStrategy.location, {
     canChooseMacro: true,
     includeExperienceFamiliars: true,
     mode: "barf",
@@ -462,7 +448,7 @@ function getSpecialFamiliarLimit({
     case $familiar`Skeleton of Crimbo Past`:
       return (
         clamp(100 - get("_knuckleboneDrops"), 0, 100) /
-        SkeletonOfCrimboPast.expectedBones(farmingStrategy().location)
+        SkeletonOfCrimboPast.expectedBones(FarmingStrategy.location)
       );
 
     default:

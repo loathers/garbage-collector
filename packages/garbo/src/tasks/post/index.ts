@@ -72,7 +72,7 @@ import {
   lavaDogsComplete,
   leprecondoTask,
 } from "../../resources";
-import { farmingStrategy } from "../../farmingStrategy";
+import { FarmingStrategy } from "../../farmingStrategy";
 
 const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
@@ -94,7 +94,7 @@ function useStuff(): GarboPostTask {
 }
 
 const BARF_PLANTS = () =>
-  farmingStrategy().location.environment === "underwater"
+  FarmingStrategy.isUnderwater
     ? [
         FloristFriar.Crookweed,
         FloristFriar.ElectricEelgrass,
@@ -108,21 +108,21 @@ const BARF_PLANTS = () =>
 function floristFriars(): GarboPostTask {
   return {
     name: "Florist Plants",
-    completed: () => FloristFriar.isFull(farmingStrategy().location),
+    completed: () => FloristFriar.isFull(FarmingStrategy.location),
     ready: () =>
-      get("lastAdventure") === farmingStrategy().location &&
+      get("lastAdventure") === FarmingStrategy.location &&
       FloristFriar.have() &&
       BARF_PLANTS().some((flower) =>
-        flower.available(farmingStrategy().location),
+        flower.available(FarmingStrategy.location),
       ),
     do: () =>
       BARF_PLANTS()
-        .filter((flower) => flower.available(farmingStrategy().location))
+        .filter((flower) => flower.available(FarmingStrategy.location))
         .forEach((flower) => flower.plant()),
     available: () =>
       FloristFriar.have() &&
       BARF_PLANTS().some((flower) =>
-        flower.available(farmingStrategy().location),
+        flower.available(FarmingStrategy.location),
       ),
   };
 }

@@ -1,7 +1,9 @@
 import { OutfitSpec } from "grimoire-kolmafia";
 import {
   Effect,
+  getMonsters,
   isBanished,
+  itemDropsArray,
   Location,
   mallPrice,
   Modifier,
@@ -20,11 +22,13 @@ import {
   $monster,
   $monsters,
   $skill,
+  adventureTargetToWeightedMap,
   Delayed,
   get,
   have,
   PulledTaffy,
   sum,
+  undelay,
 } from "libram";
 import { Macro } from "./combat";
 import { FarmingMethod, globalOptions } from "./config";
@@ -57,43 +61,116 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // Estimate number of turns till the counter hits 27
 // then estimate the expected number of turns required to hit a counter of >= 30
 
-type FarmingStrategy = {
+interface FarmingStrategyOptions {
   stasisRounds: number;
   asdonEffect: Effect;
   ensureBarfAccess: boolean;
   baseMeat: number;
-  accountForNC: boolean;
-  turnsToNC(): number;
-  bonusModifiers: Modifier[];
   location: Location;
   ensureML: boolean;
-  bonusEffects: Effect[];
-  monstersToBanish: Monster[];
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
-
-  outfit: (context: FarmingContext) => OutfitSpec;
   combat: GarboStrategy<FarmingContext>;
-  post?: () => void;
-};
 
-const BARF_MOUNTAIN: FarmingStrategy = {
+  outfit?: (context: FarmingContext) => OutfitSpec;
+  ncTurns?: () => number;
+  bonusEffects?: Effect[];
+  bonusModifiers?: Modifier[];
+  banishMonsters?: Monster[];
+  post?: () => void;
+}
+
+const DEFAULT_OPTIONS = {
+  bonusEffects: [] as Effect[],
+  bonusModifiers: [] as Modifier[],
+  banishMonsters: [] as Monster[],
+  post: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  outfit: (_context: FarmingContext): OutfitSpec => ({}),
+} as const;
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-unsafe-declaration-merging
+interface FarmingStrategySkeleton extends Required<FarmingStrategyOptions> {}
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+class FarmingStrategySkeleton {
+  get isUnderwater(): boolean {
+    return this.location.environment === "underwater";
+  }
+  get accountForNC(): boolean {
+    return !!this.ncTurns;
+  }
+
+  olfactMonster(): Monster | null {
+    return this.shouldOlfact ? undelay(this.targetMonster) : null;
+  }
+
+  monsters(): Monster[] {
+    return getMonsters(this.location);
+  }
+
+  turnsToNC(): number {
+    return this.ncTurns?.() ?? Infinity;
+  }
+
+  ncAdjustment(): number {
+    if (!this.accountForNC) return 1;
+    return this.turnsToNC() / (1 + this.turnsToNC());
+  }
+
+  itemDropValue(): number {
+    return (
+      sum(
+        [...adventureTargetToWeightedMap(this.location).entries()],
+        ([monster, monsterWeight]) =>
+          monsterWeight *
+          sum(
+            itemDropsArray(monster),
+            ({ drop, rate }) =>
+              // One 100 because % the other because % improvement
+              (rate / 100) * garboValue(drop),
+          ),
+      ) / 100
+    );
+  }
+}
+
+const methods = FarmingStrategySkeleton.prototype as unknown as Record<
+  string,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  Function
+>;
+
+export const FarmingStrategy = new Proxy(
+  {} as unknown as Readonly<FarmingStrategySkeleton>,
+  {
+    get(_, prop, receiver) {
+      if (prop in methods) {
+        return methods[prop as keyof typeof methods].bind(receiver);
+      }
+
+      const finalizedOptions = { ...DEFAULT_OPTIONS, ...currentStrategy() };
+
+      if (prop in finalizedOptions) {
+        return finalizedOptions[prop as keyof FarmingStrategyOptions];
+      }
+    },
+  },
+);
+
+const BARF_MOUNTAIN: FarmingStrategyOptions = {
   stasisRounds: 20,
   asdonEffect: $effect`Driving Observantly`,
   ensureBarfAccess: true,
   baseMeat: 250,
-  accountForNC: true,
-  turnsToNC: () =>
+  ncTurns: () =>
     (27 * barfTourists) /
       (garbageTourists + angryTourists + 3 * touristFamilies) +
     1 * touristFamilyRatio +
     2 * (1 - touristFamilyRatio) * touristFamilyRatio +
     3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio),
-  bonusModifiers: [],
   location: $location`Barf Mountain`,
   ensureML: true,
   bonusEffects: $effects`How to Scam Tourists`,
-  monstersToBanish: [],
   targetMonster: () =>
     have($familiar`Skeleton of Crimbo Past`) &&
     get("_knuckleboneDrops", 0) < 100
@@ -120,18 +197,15 @@ const BARF_MOUNTAIN: FarmingStrategy = {
   post: completeBarfQuest,
 };
 
-const THE_CORAL_CORRAL: FarmingStrategy = {
+const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
   baseMeat: 300,
-  accountForNC: false,
-  turnsToNC: () => Infinity,
   bonusModifiers: $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
   location: $location`The Coral Corral`,
   ensureML: false,
-  bonusEffects: [],
-  monstersToBanish: $monsters`Mer-kin rustler, sea cowboy`,
+  banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
 
@@ -162,7 +236,7 @@ const THE_CORAL_CORRAL: FarmingStrategy = {
   }),
 };
 
-export function farmingStrategy(): FarmingStrategy {
+function currentStrategy(): FarmingStrategyOptions {
   switch (globalOptions.prefs.farmingMethod) {
     case FarmingMethod.THE_CORAL_CORRAL:
       return THE_CORAL_CORRAL;
