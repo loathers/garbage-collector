@@ -4,7 +4,6 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
-import { GarboContext } from "./context";
 
 function bestLockPickChoice(): number {
   return (
@@ -58,7 +57,7 @@ const AscendingTasks: GarboTask[] = [
   })),
 ];
 
-export const AscendingQuest: Quest<GarboTask, GarboContext> = {
+export const AscendingQuest: Quest<GarboTask> = {
   name: "Ascend",
   tasks: AscendingTasks,
 };

@@ -29,7 +29,7 @@ import {
 import { Macro } from "./combat";
 import { FarmingMethod, globalOptions } from "./config";
 import { completeBarfQuest } from "./resources/realm";
-import { GarboContext } from "./tasks/context";
+import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
 
 export function getMonstersToBanish(monstersToBanish: Monster[]): Monster[] {
@@ -72,8 +72,8 @@ type FarmingStrategy = {
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
 
-  outfit: (context: GarboContext) => OutfitSpec;
-  combat: GarboStrategy;
+  outfit: (context: FarmingContext) => OutfitSpec;
+  combat: GarboStrategy<FarmingContext>;
   post?: () => void;
 };
 
