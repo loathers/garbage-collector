@@ -9,6 +9,7 @@ import {
 } from "libram";
 import { felizValue } from "../lib";
 import { haveEffect, myAdventures } from "kolmafia";
+import { FarmingStrategy } from "../farmingStrategy";
 
 const CLARA_TARGETS = [
   "volcoino",
@@ -19,6 +20,7 @@ const CLARA_TARGETS = [
 type ClaraTarget = (typeof CLARA_TARGETS)[number];
 
 export const fishyTurns = () =>
+  (FarmingStrategy.isUnderwater() ? 100 : 0) + // If we're farming cows, we should always have some fishy available when we want to yachtzee end of day
   Math.max(haveEffect($effect`Fishy`) - myAdventures(), 0) +
   (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0) +
   (get("skateParkStatus") === "ice" && !get("_skateBuff1") ? 30 : 0);
@@ -54,6 +56,14 @@ export const nonCinchNCs = () =>
         ? $item`Apriling band tuba`.dailyusesleft
         : 0);
 
+export const combatNCs = () =>
+  (have($item`McHugeLarge left ski`)
+    ? Math.max(0, 3 - get("_mcHugeLargeAvalancheUses"))
+    : 0) +
+  (have($item`Jurassic Parka`)
+    ? Math.max(0, 5 - get("_spikolodonSpikeUses"))
+    : 0);
+
 export const cinchNCs = () =>
   Math.min(
     Math.floor(CinchoDeMayo.totalAvailableCinch() / 60),
@@ -61,7 +71,7 @@ export const cinchNCs = () =>
   );
 
 export const maximumYachtzees = () =>
-  clamp(nonCinchNCs() + cinchNCs(), 0, fishyTurns());
+  clamp(nonCinchNCs() + cinchNCs() + combatNCs(), 0, fishyTurns());
 
 export const willYachtzee = () => canYachtzee() && maximumYachtzees() > 0;
 

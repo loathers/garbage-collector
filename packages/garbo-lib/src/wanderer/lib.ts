@@ -70,6 +70,7 @@ export type WandererFactoryOptions = {
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
   canRefractedGaze?: boolean;
+  underwaterAllowed?: boolean;
 };
 
 export type WandererFactory = (
@@ -141,9 +142,9 @@ const ILLEGAL_PARENTS = [
   "A Monorail Station",
   "Memories",
 ];
-const ILLEGAL_ZONES = ["The Drip", "Suburbs"];
+const ILLEGAL_ZONES = ["The Drip", "Suburbs", "The Mer-Kin Deepcity"];
 const canAdventureOrUnlockSkipList = [
-  ...$locations`The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, The Orcish Frat House, Through the Spacegate, Mt. Molehill`,
+  ...$locations`The Skate Park, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, The Orcish Frat House, Through the Spacegate, Mt. Molehill`,
   ...Location.all().filter(
     ({ parent, zone }) =>
       ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone),
@@ -152,6 +153,7 @@ const canAdventureOrUnlockSkipList = [
 export function canAdventureOrUnlock(
   loc: Location,
   includeUnlockable = true,
+  underwaterAllowed = false,
 ): boolean {
   const skiplist = [...canAdventureOrUnlockSkipList];
 
@@ -188,7 +190,7 @@ export function canAdventureOrUnlock(
       (z) => loc.zone === z.zone && (z.available() || !z.noInv),
     );
   return (
-    !underwater(loc) &&
+    (!underwater(loc) || (have($effect`Fishy`) && underwaterAllowed)) &&
     !skiplist.includes(loc) &&
     (canAdventure(loc) || canUnlock)
   );

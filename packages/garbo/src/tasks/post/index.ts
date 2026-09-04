@@ -8,6 +8,7 @@ import {
   inebrietyLimit,
   Item,
   itemAmount,
+  Location,
   mallPrice,
   myAdventures,
   myFullness,
@@ -41,6 +42,7 @@ import {
   JuneCleaver,
   Leprecondo,
   maxBy,
+  realmAvailable,
   sum,
   undelay,
   uneffect,
@@ -74,7 +76,7 @@ import {
 } from "../../resources";
 import { FarmingStrategy } from "../../farmingStrategy";
 
-const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
+const STUFF_TO_CLOSET = $items`bowling ball, funky junk key, sand dollar`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
 
 function closetStuff(): GarboPostTask {
@@ -82,6 +84,7 @@ function closetStuff(): GarboPostTask {
     name: "Closet Stuff",
     completed: () => STUFF_TO_CLOSET.every((i) => itemAmount(i) === 0),
     do: () => STUFF_TO_CLOSET.forEach((i) => putCloset(itemAmount(i), i)),
+    post: () => cliExecute("refresh inventory"),
   };
 }
 
@@ -106,24 +109,31 @@ const BARF_PLANTS = () =>
         FloristFriar.PitcherPlant,
       ];
 function floristFriars(): GarboPostTask {
+  const primaryLocation = FarmingStrategy.location;
+  const secondaryLocation =
+    FarmingStrategy.isUnderwater() && realmAvailable("sleaze")
+      ? $location`The Sunken Party Yacht` // This doesn't affect the yachtzee NC of course, but it's the most likely location for underwater wanderers to be placed
+      : Location.none;
+
+  const targetLocation =
+    secondaryLocation !== Location.none && FloristFriar.isFull(primaryLocation)
+      ? secondaryLocation
+      : primaryLocation;
+
   return {
     name: "Florist Plants",
-    completed: () => FloristFriar.isFull(FarmingStrategy.location),
+    completed: () => FloristFriar.isFull(targetLocation),
     ready: () =>
-      get("lastAdventure") === FarmingStrategy.location &&
+      get("lastAdventure") === targetLocation &&
       FloristFriar.have() &&
-      BARF_PLANTS().some((flower) =>
-        flower.available(FarmingStrategy.location),
-      ),
+      BARF_PLANTS().some((flower) => flower.available(targetLocation)),
     do: () =>
       BARF_PLANTS()
-        .filter((flower) => flower.available(FarmingStrategy.location))
+        .filter((flower) => flower.available(targetLocation))
         .forEach((flower) => flower.plant()),
     available: () =>
       FloristFriar.have() &&
-      BARF_PLANTS().some((flower) =>
-        flower.available(FarmingStrategy.location),
-      ),
+      BARF_PLANTS().some((flower) => flower.available(targetLocation)),
   };
 }
 

@@ -87,6 +87,8 @@ import {
   willYachtzee,
 } from "../../resources";
 import { acquire } from "../../acquire";
+import { bestYachtzeeFamiliar } from "../yachtzee/familiar";
+import { FarmingStrategy } from "../../farmingStrategy";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
@@ -625,6 +627,27 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   {
+    name: "Yachtzee (Cooldown ready)",
+    completed: () => get("encountersUntilYachtzeeChoice") > 0,
+    outfit: () => {
+      const spec: OutfitSpec = {
+        modifier: ["meat"],
+        familiar: bestYachtzeeFamiliar(),
+        avoid: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses, over-the-shoulder Folder Holder`,
+      };
+      if (!sober()) {
+        spec.equip = $items`Drunkula's wineglass`;
+      }
+      return spec;
+    },
+    do: $location`The Sunken Party Yacht`,
+    choices: { 918: 2 },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Hit unexpected combat!"),
+    ),
+    spendsTurn: true,
+  },
+  {
     name: "Gingerbread Noon",
     completed: () => GingerBread.minutesToNoon() !== 0,
     do: $location`Gingerbread Train Station`,
@@ -739,7 +762,14 @@ const BarfTurnTasks: GarboTask[] = [
       const questMonster = get("_cookbookbatQuestMonster");
       if (!questMonster || hasNameCollision(questMonster)) return false;
       const questLocation = get("_cookbookbatQuestLastLocation");
-      if (!questLocation || !canAdventureOrUnlock(questLocation, false)) {
+      if (
+        !questLocation ||
+        !canAdventureOrUnlock(
+          questLocation,
+          false,
+          FarmingStrategy.isUnderwater(),
+        )
+      ) {
         return false;
       }
       const questReward = get("_cookbookbatQuestIngredient");

@@ -68,7 +68,7 @@ export function itemDropFactory(
     const validLocations = Location.all().filter(
       (location) =>
         canWander(location, "yellow ray") &&
-        canAdventureOrUnlock(location) &&
+        canAdventureOrUnlock(location, true, options.underwaterAllowed) &&
         !locationSkiplist.includes(location),
     );
     return [...validLocations].map((l: Location) => {

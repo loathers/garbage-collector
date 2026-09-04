@@ -27,6 +27,7 @@ import { Macro } from "../combat";
 import { globalOptions } from "../config";
 import { freeFishyAvailable } from "../lib";
 import { willYachtzee } from "../resources";
+import { FarmingStrategy } from "../farmingStrategy";
 
 /**
  * Configure the behavior of the fights in use in different parts of the fight engine
@@ -62,7 +63,7 @@ export function checkUnderwater(): boolean {
     (booleanModifier("Adventure Underwater") ||
       waterBreathingEquipment.some((item) => have(item) && canEquip(item))) &&
     freeFishyAvailable() &&
-    !willYachtzee()
+    (!willYachtzee() || FarmingStrategy.isUnderwater())
   ) {
     if (
       !have($effect`Fishy`) &&
