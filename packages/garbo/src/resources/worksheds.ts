@@ -18,10 +18,11 @@ import {
   TrainSet,
 } from "libram";
 import { globalOptions } from "../config";
-import { candyFactoryValue, farmLocation } from "../lib";
+import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns } from "../turns";
 import { copyTargetCount } from "../target";
+import { FarmingStrategy } from "../farmingStrategy";
 
 const GOOD_TRAIN_STATIONS = [
   { piece: TrainSet.Station.GAIN_MEAT, value: () => 900 },
@@ -140,7 +141,7 @@ export function grabMedicine(): void {
   const regexp = /descitem\((\d+)\)/g;
   const itemChoices = new Map<Item, number>();
   if (!globalOptions.nobarf) {
-    switch (farmLocation().environment) {
+    switch (FarmingStrategy.location.environment) {
       case "underground":
         itemChoices.set($item`Breathitin™`, -1);
         break;

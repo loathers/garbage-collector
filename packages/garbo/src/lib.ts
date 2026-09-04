@@ -75,7 +75,6 @@ import {
   $skill,
   $thralls,
   ActionSource,
-  adventureTargetToWeightedMap,
   bestLibramToCast,
   ChateauMantegna,
   clamp,
@@ -108,7 +107,7 @@ import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Macro } from "./combat";
-import { farmingStrategy } from "./farmingStrategy";
+import { FarmingStrategy } from "./farmingStrategy";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -146,19 +145,7 @@ export function modeValueOfMeat(mode: BonusEquipMode): number {
 }
 
 export function modeValueOfItem(mode: BonusEquipMode): number {
-  const ITEM_DROP_VALUE = () =>
-    sum(
-      [...adventureTargetToWeightedMap(farmingStrategy().location).entries()],
-      ([monster, monsterWeight]) =>
-        monsterWeight *
-        sum(
-          itemDropsArray(monster),
-          ({ drop, rate }) =>
-            // One 100 because % the other because % improvement
-            (rate / 100 / 100) * garboValue(drop),
-        ),
-    );
-  return mode === BonusEquipMode.BARF ? ITEM_DROP_VALUE() : 0;
+  return mode === BonusEquipMode.BARF ? FarmingStrategy.itemDropValue() : 0;
 }
 
 export const WISH_VALUE = 50000;
@@ -178,7 +165,7 @@ export const songboomMeat = () =>
     : 0;
 
 // all tourists have a basemeat of 250
-export const baseMeat = () => farmingStrategy().baseMeat + songboomMeat();
+export const baseMeat = () => FarmingStrategy.baseMeat + songboomMeat();
 export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {
@@ -1237,5 +1224,3 @@ export function mainStatLevel(level: number): number {
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
-
-export const farmLocation = () => farmingStrategy().location;

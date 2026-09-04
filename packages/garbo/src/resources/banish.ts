@@ -8,7 +8,7 @@ import {
   getBanishedMonsters,
   have,
 } from "libram";
-import { farmingStrategy, getMonstersToBanish } from "../farmingStrategy";
+import { FarmingStrategy, getMonstersToBanish } from "../farmingStrategy";
 import { Macro } from "../combat";
 
 export type BanishMethod = {
@@ -57,7 +57,7 @@ const banishMethods: BanishMethod[] = [
 ];
 
 export function chooseBanish(): BanishMethod | null {
-  if (getMonstersToBanish(farmingStrategy().monstersToBanish).length === 0) {
+  if (getMonstersToBanish(FarmingStrategy.banishMonsters).length === 0) {
     return null;
   }
 
@@ -67,7 +67,7 @@ export function chooseBanish(): BanishMethod | null {
     banishMethods.find(
       (method) =>
         method.available() &&
-        !farmingStrategy().monstersToBanish.includes(
+        !FarmingStrategy.banishMonsters.includes(
           banishedMonsters.get(method.source) ?? $monster.none,
         ),
     ) ?? null

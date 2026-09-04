@@ -101,7 +101,7 @@ import {
 } from "./tasks/buffExtension";
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
-import { farmingStrategy } from "./farmingStrategy";
+import { FarmingStrategy } from "./farmingStrategy";
 import { runGarboFarmQuests } from "./tasks/engine";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -328,7 +328,7 @@ export function main(argString = ""): void {
   if (
     !globalOptions.nobarf &&
     !globalOptions.simdiet &&
-    farmingStrategy().ensureBarfAccess
+    FarmingStrategy.ensureBarfAccess
   ) {
     ensureBarfAccess();
   }
