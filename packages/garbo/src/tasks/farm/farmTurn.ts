@@ -1,11 +1,5 @@
-import { $item, $monster, get, have, undelay } from "libram";
-import {
-  Item,
-  myAdventures,
-  myLocation,
-  retrieveItem,
-  toMonster,
-} from "kolmafia";
+import { $item, $location, $monster, get, have, undelay } from "libram";
+import { Item, mallPrice, myAdventures, myLocation, toMonster } from "kolmafia";
 import { $effect, CrepeParachute } from "libram";
 import { Quest } from "grimoire-kolmafia";
 
@@ -16,6 +10,7 @@ import {
   updateParachuteFailure,
 } from "./lib";
 import {
+  averageRedTaffyValue,
   FarmingStrategy,
   getMonstersToBanish,
   redTaffyWorth,
@@ -26,15 +21,29 @@ import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit";
 import { FarmingContext } from "../context";
 import { GarboStrategy } from "../../combatStrategy";
+import { acquire } from "../../acquire";
 
 export const farmPrepare = (context: FarmingContext) => {
   if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
-    retrieveItem($item`pulled red taffy`);
+    acquire(
+      estimatedGarboTurns(),
+      $item`pulled red taffy`,
+      averageRedTaffyValue(),
+      false, // It's fine to continue running if there aren't appropriately priced taffies
+    );
+  }
+  if (
+    FarmingStrategy.location === $location`The Coral Corral` &&
+    get("seahorseName") === "" &&
+    get("lassoTrainingCount") >= 20
+  ) {
+    acquire(3, $item`sea cowbell`, 5000, true); // Arbitrary max price
+    acquire(1, $item`sea lasso`, 5000, true);
   }
   meatMood().execute(estimatedGarboTurns());
 
   if (context.banish?.retrieve && context.banish.source instanceof Item) {
-    retrieveItem(context.banish.source);
+    acquire(1, context.banish.source, mallPrice(context.banish.source) * 1.2); // Sanity check on price, 20%
   }
 };
 

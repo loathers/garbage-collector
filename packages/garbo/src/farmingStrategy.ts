@@ -39,13 +39,15 @@ export function getMonstersToBanish(monstersToBanish: Monster[]): Monster[] {
   return monstersToBanish.filter((monster) => !isBanished(monster));
 }
 
-export function redTaffyWorth(): boolean {
-  const averageRedTaffyValue = sum(
+export function averageRedTaffyValue(): number {
+  return sum(
     [...PulledTaffy.RED_TAFFY_DROP_WEIGHTS.entries()],
     ([item, weight]) => garboValue(item) * weight,
   );
+}
 
-  return mallPrice($item`pulled red taffy`) < averageRedTaffyValue;
+export function redTaffyWorth(): boolean {
+  return mallPrice($item`pulled red taffy`) < averageRedTaffyValue();
 }
 
 const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;
