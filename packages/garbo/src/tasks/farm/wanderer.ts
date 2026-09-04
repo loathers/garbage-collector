@@ -88,6 +88,7 @@ import {
 } from "../../resources";
 import { acquire } from "../../acquire";
 import { bestYachtzeeFamiliar } from "../yachtzee/familiar";
+import { FarmingStrategy } from "../../farmingStrategy";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
