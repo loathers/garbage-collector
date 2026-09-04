@@ -73,7 +73,7 @@ interface FarmingStrategyOptions {
   combat: GarboStrategy<FarmingContext>;
 
   outfit?: (context: FarmingContext) => OutfitSpec;
-  ncTurns?: () => number;
+  ncTurns?: Delayed<number>;
   bonusEffects?: Effect[];
   bonusModifiers?: Modifier[];
   banishMonsters?: Monster[];
@@ -84,6 +84,7 @@ const DEFAULT_OPTIONS = {
   bonusEffects: [] as Effect[],
   bonusModifiers: [] as Modifier[],
   banishMonsters: [] as Monster[],
+  ncTurns: Infinity,
   post: () => {},
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   outfit: (_context: FarmingContext): OutfitSpec => ({}),
@@ -97,7 +98,7 @@ class FarmingStrategySkeleton {
     return this.location.environment === "underwater";
   }
   accountForNC(): boolean {
-    return !!this.ncTurns;
+    return this.ncTurns === Infinity;
   }
 
   olfactMonster(): Monster | null {
@@ -109,7 +110,7 @@ class FarmingStrategySkeleton {
   }
 
   turnsToNC(): number {
-    return this.ncTurns?.() ?? Infinity;
+    return undelay(this.ncTurns);
   }
 
   ncAdjustment(): number {
