@@ -5,12 +5,21 @@ import {
   WandererTarget,
   wandererTurnsAvailableToday,
 } from "./lib";
-import { $effect, $element, $item, $location, get, have } from "libram";
+import {
+  $effect,
+  $element,
+  $item,
+  $location,
+  BooleanProperty,
+  get,
+  have,
+  NumericProperty,
+} from "libram";
 
 type PearlTarget = {
   location: Location;
-  completionPref: string;
-  progressPref: string;
+  completionPref: BooleanProperty;
+  progressPref: NumericProperty;
   estimatedProgress: number;
   maximizeElement: Element;
 };
