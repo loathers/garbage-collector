@@ -1,5 +1,12 @@
 import { $item, $location, $monster, get, have, undelay } from "libram";
-import { Item, mallPrice, myAdventures, myLocation, toMonster } from "kolmafia";
+import {
+  Item,
+  mallPrice,
+  myAdventures,
+  myLocation,
+  toMonster,
+  totalTurnsPlayed,
+} from "kolmafia";
 import { $effect, CrepeParachute } from "libram";
 import { Quest } from "grimoire-kolmafia";
 
@@ -40,7 +47,16 @@ export const farmPrepare = (context: FarmingContext) => {
     acquire(3, $item`sea cowbell`, 5000, true); // Arbitrary max price
     acquire(1, $item`sea lasso`, 5000, true);
   }
-  meatMood().execute(estimatedGarboTurns());
+
+  if (
+    FarmingStrategy.location === $location`Barf Mountain` &&
+    !get("dinseyRollercoasterNext") &&
+    !(totalTurnsPlayed() % 11)
+  ) {
+    meatMood().execute(estimatedGarboTurns());
+  } else {
+    meatMood().execute(estimatedGarboTurns());
+  }
 
   if (context.banish?.retrieve && context.banish.source instanceof Item) {
     acquire(1, context.banish.source, mallPrice(context.banish.source) * 1.2); // Sanity check on price, 20%
