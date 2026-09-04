@@ -1,7 +1,10 @@
 import {
   cliExecute,
   inebrietyLimit,
+  Item,
   myInebriety,
+  retrieveItem,
+  toMonster,
   use,
   useSkill,
 } from "kolmafia";
@@ -10,17 +13,17 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   $skill,
   AprilingBandHelmet,
   CinchoDeMayo,
-  Delayed,
   get,
   have,
 } from "libram";
 import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
 import { getBestWaterBreathingEquipment } from "./lib";
 import { Macro } from "../../combat";
-import { GarboTask } from "../engine";
+import { AlternateTask } from "../engine";
 import { willDrunkAdventure } from "../../lib";
 import { Outfit, Quest } from "grimoire-kolmafia";
 import { maximumYachtzees, shouldClara, willYachtzee } from "../../resources";
@@ -29,11 +32,17 @@ import { barfOutfit } from "../../outfit";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import { trackMarginalMpa } from "../../session";
-import { FarmingStrategy } from "../../farmingStrategy";
+import {
+  FarmingStrategy,
+  getMonstersToBanish,
+  redTaffyWorth,
+} from "../../farmingStrategy";
+import { FarmingContext } from "../context";
 
-type AlternateTask = GarboTask & { turns: Delayed<number> };
-
-export const yachtzeeQuest: Quest<AlternateTask>[] = [
+export const yachtzeeQuest: Quest<
+  AlternateTask<FarmingContext>,
+  FarmingContext
+>[] = [
   {
     name: "Yachtzee",
     completed: () => !willYachtzee() && !get("noncombatForcerActive"),
@@ -101,18 +110,55 @@ export const yachtzeeQuest: Quest<AlternateTask>[] = [
         completed: () => get("noncombatForcerActive"),
         ready: () =>
           have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5,
-        outfit: () =>
-          barfOutfit({
-            equip: $items`Jurassic Parka`,
-            modes: { parka: "spikolodon" },
-          }),
+        outfit: (context) => {
+          const baseOutfit = Outfit.from(
+            FarmingStrategy.outfit(context),
+            new Error("Failed to construct outfit"),
+          );
+          if (!baseOutfit.equip($items`Jurassic Parka`)) {
+            throw "Failed to complete outfit";
+          }
+          baseOutfit.setModes({ parka: "spikolodon" });
+          return barfOutfit(baseOutfit.spec());
+        },
         do: () => FarmingStrategy.location,
-        combat: new GarboStrategy(() =>
-          Macro.skill($skill`Launch spikolodon spikes`).meatKill(),
+        combat: new GarboStrategy((context) =>
+          Macro.skill($skill`Launch spikolodon spikes`).step(
+            FarmingStrategy.macro(context),
+          ),
         ),
-        prepare: () => meatMood().execute(estimatedGarboTurns()),
+        prepare: (context) => {
+          if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
+            retrieveItem($item`pulled red taffy`);
+          }
+          meatMood().execute(estimatedGarboTurns());
+
+          if (
+            context.banish?.retrieve &&
+            context.banish.source instanceof Item
+          ) {
+            retrieveItem(context.banish.source);
+          }
+        },
         post: () => {
+          FarmingStrategy.post?.();
           trackMarginalMpa();
+
+          if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
+            throw new Error(
+              "You encountered a tumbleweed and should not have, resolve your banishes",
+            );
+          }
+
+          if (
+            getMonstersToBanish(FarmingStrategy.banishMonsters).includes(
+              toMonster(get("lastEncounter")),
+            )
+          ) {
+            throw new Error(
+              "You encountered a banishable monster and didn't banish it, sort your life out!",
+            );
+          }
         },
         turns: () => 2 * Math.max(0, 5 - get("_spikolodonSpikeUses")), // Need one turn to cast the NC, and one to do the yachtzee
         sobriety: "sober",
@@ -126,12 +172,43 @@ export const yachtzeeQuest: Quest<AlternateTask>[] = [
           get("_mcHugeLargeAvalancheUses") < 3,
         outfit: () => barfOutfit({ equip: $items`McHugeLarge left ski` }),
         do: () => FarmingStrategy.location,
-        combat: new GarboStrategy(() =>
-          Macro.skill($skill`McHugeLarge Avalanche`).meatKill(),
+        combat: new GarboStrategy((context) =>
+          Macro.skill($skill`McHugeLarge Avalanche`).step(
+            FarmingStrategy.macro(context),
+          ),
         ),
-        prepare: () => meatMood().execute(estimatedGarboTurns()),
+        prepare: (context) => {
+          if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
+            retrieveItem($item`pulled red taffy`);
+          }
+          meatMood().execute(estimatedGarboTurns());
+
+          if (
+            context.banish?.retrieve &&
+            context.banish.source instanceof Item
+          ) {
+            retrieveItem(context.banish.source);
+          }
+        },
         post: () => {
+          FarmingStrategy.post?.();
           trackMarginalMpa();
+
+          if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
+            throw new Error(
+              "You encountered a tumbleweed and should not have, resolve your banishes",
+            );
+          }
+
+          if (
+            getMonstersToBanish(FarmingStrategy.banishMonsters).includes(
+              toMonster(get("lastEncounter")),
+            )
+          ) {
+            throw new Error(
+              "You encountered a banishable monster and didn't banish it, sort your life out!",
+            );
+          }
         },
         turns: () => 2 * Math.max(0, 3 - get("_mcHugeLargeAvalancheUses")), // Need one turn to cast the NC, and one to do the yachtzee
         sobriety: "sober",

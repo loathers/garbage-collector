@@ -10,7 +10,6 @@ import {
   Monster,
   print,
 } from "kolmafia";
-import { GarboStrategy } from "./combatStrategy";
 import {
   $effect,
   $effects,
@@ -70,7 +69,7 @@ interface FarmingStrategyOptions {
   ensureML: boolean;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
-  combat: GarboStrategy<FarmingContext>;
+  macro: (context: FarmingContext) => Macro;
 
   outfit?: (context: FarmingContext) => OutfitSpec;
   ncTurns?: Delayed<number>;
@@ -200,14 +199,7 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
         : [],
   }),
 
-  combat: new GarboStrategy(
-    () => Macro.meatKill(),
-    () =>
-      Macro.if_(
-        `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-        Macro.meatKill(),
-      ).abort(),
-  ),
+  macro: () => Macro.meatKill(),
 
   post: completeBarfQuest,
 };
@@ -233,7 +225,7 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
     return banishItem ? { equip: [banishItem] } : {};
   },
 
-  combat: new GarboStrategy(({ banish }) => {
+  macro: ({ banish }) => {
     const baseMacro = Macro.externalIf(
       !get("seahorseName"),
       Macro.if_(
@@ -263,7 +255,7 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
     return redTaffyWorth()
       ? baseMacro.tryItem($item`pulled red taffy`).meatKill()
       : baseMacro.meatKill();
-  }),
+  },
 };
 
 function currentStrategy(): FarmingStrategyOptions {

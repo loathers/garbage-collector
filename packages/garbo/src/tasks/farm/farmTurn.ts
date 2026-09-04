@@ -25,6 +25,7 @@ import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit";
 import { FarmingContext } from "../context";
+import { GarboStrategy } from "../../combatStrategy";
 
 export function FarmTurnQuest(): Quest<
   GarboTask<FarmingContext>,
@@ -44,7 +45,7 @@ export function FarmTurnQuest(): Quest<
           have($effect`Everything looks Beige`) || myAdventures() === 0,
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
         do: () => CrepeParachute.fight(undelay(FarmingStrategy.targetMonster)),
-        combat: FarmingStrategy.combat,
+        combat: new GarboStrategy((context) => FarmingStrategy.macro(context)),
         post: () => {
           FarmingStrategy.post?.();
           if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
@@ -70,7 +71,7 @@ export function FarmTurnQuest(): Quest<
         },
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
         do: () => FarmingStrategy.location,
-        combat: FarmingStrategy.combat,
+        combat: new GarboStrategy((context) => FarmingStrategy.macro(context)),
         post: () => {
           FarmingStrategy.post?.();
           trackMarginalMpa();
