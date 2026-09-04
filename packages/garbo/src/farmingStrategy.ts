@@ -80,7 +80,11 @@ interface FarmingStrategyOptions {
   post?: () => void;
 }
 
-const DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS: Readonly<{
+  [K in keyof FarmingStrategyOptions as undefined extends FarmingStrategyOptions[K]
+    ? K
+    : never]-?: FarmingStrategyOptions[K];
+}> = {
   bonusEffects: [] as Effect[],
   bonusModifiers: [] as Modifier[],
   banishMonsters: [] as Monster[],
