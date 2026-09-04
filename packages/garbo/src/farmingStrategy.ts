@@ -134,25 +134,32 @@ class FarmingStrategySkeleton {
   }
 }
 
-const methods = FarmingStrategySkeleton.prototype as unknown as Record<
-  string,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  Function
->;
-
 export const FarmingStrategy = new Proxy(
-  {} as unknown as Readonly<FarmingStrategySkeleton>,
+  new FarmingStrategySkeleton() as unknown as Readonly<FarmingStrategySkeleton>,
   {
-    get(_, prop, receiver) {
-      if (prop in methods) {
-        return methods[prop as keyof typeof methods].bind(receiver);
+    get: (target, prop, receiver) => {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          FarmingStrategySkeleton.prototype,
+          prop,
+        )
+      ) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const method = (FarmingStrategySkeleton.prototype as any)[prop];
+        return method.bind(receiver);
       }
 
-      const finalizedOptions = { ...DEFAULT_OPTIONS, ...currentStrategy() };
+      const strategyOptions = currentStrategy();
 
-      if (prop in finalizedOptions) {
-        return finalizedOptions[prop as keyof FarmingStrategyOptions];
+      const stringProp = String(prop);
+      if (stringProp in strategyOptions) {
+        return strategyOptions[stringProp as keyof FarmingStrategyOptions];
       }
+      if (stringProp in DEFAULT_OPTIONS) {
+        return DEFAULT_OPTIONS[stringProp as keyof typeof DEFAULT_OPTIONS];
+      }
+      // Fallback to standard target resolution
+      return Reflect.get(target, prop, receiver);
     },
   },
 );
