@@ -238,25 +238,22 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
           .item($item`sea lasso`)
           .abortWithMsg("Wild seahorse should have been tamed, what happened?"),
       ),
-    )
-      // Cows are tough! Let's delevel them to be safe
-      .delevel()
-      .tryHaveItem($item`cow poker`);
+    );
 
     if (banish) {
-      const banishMacro = baseMacro.if_(
-        $monsters`Mer-kin rustler, sea cowboy`,
-        banish.macro,
-      );
-
-      return redTaffyWorth()
-        ? banishMacro.tryItem($item`pulled red taffy`).meatKill()
-        : banishMacro.meatKill();
+      baseMacro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro);
     }
 
-    return redTaffyWorth()
-      ? baseMacro.tryItem($item`pulled red taffy`).meatKill()
-      : baseMacro.meatKill();
+    // Cows are tough! Let's delevel them to be safe
+    baseMacro.delevel().tryHaveItem($item`cow poker`);
+
+    if (redTaffyWorth()) {
+      baseMacro.tryItem($item`pulled red taffy`);
+    }
+
+    baseMacro.meatKill();
+
+    return baseMacro;
   },
 };
 
