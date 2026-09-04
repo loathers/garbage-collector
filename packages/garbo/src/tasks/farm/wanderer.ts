@@ -87,7 +87,6 @@ import {
   willYachtzee,
 } from "../../resources";
 import { acquire } from "../../acquire";
-import { GarboContext } from "../context";
 import { bestYachtzeeFamiliar } from "../yachtzee/familiar";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
