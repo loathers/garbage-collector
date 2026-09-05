@@ -76,9 +76,11 @@ export function meatMood(
   mood.skill($skill`Disco Leer`);
   mood.skill($skill`Singer's Faithful Ocelot`);
   mood.skill($skill`The Spirit of Taking`);
+
   if (FarmingStrategy.location === $location`Barf Mountain`) {
     mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   }
+
   if (FarmingStrategy.ensureML) {
     mood.skill($skill`Drescher's Annoying Noise`);
     mood.skill($skill`Pride of the Puffin`);
@@ -88,11 +90,13 @@ export function meatMood(
         : $skill`Fat Leon's Phat Loot Lyric`,
     );
   } else {
-    // This could be optimized a bit better using the new setup
-    mood.skill($skill`Donho's Bubbly Ballad`);
+    // Assume that if we don't want ML, the fights must be tough enough
     mood.skill($skill`Ghostly Shell`);
     mood.skill($skill`Shield of the Pastalord`);
   }
+
+  if (FarmingStrategy.isUnderwater()) mood.skill($skill`Donho's Bubbly Ballad`);
+
   mood.skill($skill`Walk: Leisurely Amble`);
   mood.skill($skill`Call For Backup`);
   mood.skill($skill`Soothing Flute`);

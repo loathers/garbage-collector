@@ -15,11 +15,7 @@ import {
   shouldCheckParachute,
   updateParachuteFailure,
 } from "./lib";
-import {
-  FarmingStrategy,
-  getMonstersToBanish,
-  redTaffyWorth,
-} from "../../farmingStrategy";
+import { FarmingStrategy, redTaffyWorth } from "../../farmingStrategy";
 import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
@@ -69,7 +65,7 @@ export function FarmTurnQuest(): Quest<
           }
         },
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
-        do: () => FarmingStrategy.location,
+        do: FarmingStrategy.location,
         combat: FarmingStrategy.combat,
         post: () => {
           FarmingStrategy.post?.();
@@ -82,7 +78,7 @@ export function FarmTurnQuest(): Quest<
           }
 
           if (
-            getMonstersToBanish(FarmingStrategy.banishMonsters).includes(
+            FarmingStrategy.monstersToBanish().includes(
               toMonster(get("lastEncounter")),
             )
           ) {

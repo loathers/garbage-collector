@@ -6,7 +6,6 @@ import {
   itemDropsArray,
   Location,
   mallPrice,
-  Modifier,
   Monster,
   print,
 } from "kolmafia";
@@ -18,7 +17,6 @@ import {
   $item,
   $items,
   $location,
-  $modifiers,
   $monster,
   $monsters,
   $skill,
@@ -26,6 +24,7 @@ import {
   Delayed,
   get,
   have,
+  NumericModifier,
   PulledTaffy,
   sum,
   undelay,
@@ -35,10 +34,6 @@ import { FarmingMethod, globalOptions } from "./config";
 import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
-
-export function getMonstersToBanish(monstersToBanish: Monster[]): Monster[] {
-  return monstersToBanish.filter((monster) => !isBanished(monster));
-}
 
 export function redTaffyWorth(): boolean {
   const averageRedTaffyValue = sum(
@@ -75,7 +70,7 @@ interface FarmingStrategyOptions {
   outfit?: (context: FarmingContext) => OutfitSpec;
   ncTurns?: Delayed<number>;
   bonusEffects?: Effect[];
-  bonusModifiers?: Modifier[];
+  bonusModifiers?: NumericModifier[];
   banishMonsters?: Monster[];
   post?: () => void;
 }
@@ -86,7 +81,7 @@ const DEFAULT_OPTIONS: Readonly<{
     : never]-?: FarmingStrategyOptions[K];
 }> = {
   bonusEffects: [] as Effect[],
-  bonusModifiers: [] as Modifier[],
+  bonusModifiers: [] as NumericModifier[],
   banishMonsters: [] as Monster[],
   ncTurns: Infinity,
   post: () => {},
@@ -136,6 +131,23 @@ class FarmingStrategySkeleton {
           ),
       ) / 100
     );
+  }
+
+  valuableModifiers(): NumericModifier[] {
+    return [
+      "Meat Drop",
+      "Familiar Weight",
+      "Smithsness",
+      "Item Drop",
+      ...this.bonusModifiers,
+      ...(this.isUnderwater()
+        ? (["Hidden Familiar Weight", "Meat Drop Penalty"] as const)
+        : []),
+    ];
+  }
+
+  monstersToBanish(): Monster[] {
+    return this.banishMonsters.filter((m) => !isBanished(m));
   }
 }
 
@@ -217,7 +229,6 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
   baseMeat: 300,
-  bonusModifiers: $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
   location: $location`The Coral Corral`,
   ensureML: false,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,

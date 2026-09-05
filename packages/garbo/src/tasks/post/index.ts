@@ -3,6 +3,7 @@ import {
   availableChoiceOptions,
   canAdventure,
   cliExecute,
+  Environment,
   equippedItem,
   getCampground,
   inebrietyLimit,
@@ -93,37 +94,49 @@ function useStuff(): GarboPostTask {
   };
 }
 
-const BARF_PLANTS = () =>
-  FarmingStrategy.isUnderwater()
-    ? [
-        FloristFriar.Crookweed,
-        FloristFriar.ElectricEelgrass,
-        FloristFriar.Duckweed,
-      ]
-    : [
-        FloristFriar.StealingMagnolia,
-        FloristFriar.AloeGuvnor,
-        FloristFriar.PitcherPlant,
-      ];
+type Flower = typeof FloristFriar.AloeGuvnor; // I should export this
+const BARF_PLANTS: Record<Environment, Flower[]> = {
+  unknown: [],
+  none: [],
+  outdoor: [
+    FloristFriar.Rutabeggar,
+    FloristFriar.SeltzerWatercress,
+    FloristFriar.LettuceSpray,
+  ],
+  indoor: [
+    FloristFriar.StealingMagnolia,
+    FloristFriar.Impatiens,
+    FloristFriar.PitcherPlant,
+  ],
+  underground: [
+    FloristFriar.HornOfPlenty,
+    FloristFriar.ShuffleTruffle,
+    FloristFriar.MaxHeadshroom,
+  ],
+  underwater: [
+    FloristFriar.Crookweed,
+    FloristFriar.Snori,
+    FloristFriar.UpSeaDaisy,
+  ],
+};
+
 function floristFriars(): GarboPostTask {
+  const barfPlants = BARF_PLANTS[FarmingStrategy.location.environment];
   return {
     name: "Florist Plants",
-    completed: () => FloristFriar.isFull(FarmingStrategy.location),
+    completed: () =>
+      FloristFriar.isFull(FarmingStrategy.location) || barfPlants.length === 0,
     ready: () =>
       get("lastAdventure") === FarmingStrategy.location &&
       FloristFriar.have() &&
-      BARF_PLANTS().some((flower) =>
-        flower.available(FarmingStrategy.location),
-      ),
+      barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
     do: () =>
-      BARF_PLANTS()
+      barfPlants
         .filter((flower) => flower.available(FarmingStrategy.location))
         .forEach((flower) => flower.plant()),
     available: () =>
       FloristFriar.have() &&
-      BARF_PLANTS().some((flower) =>
-        flower.available(FarmingStrategy.location),
-      ),
+      barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
   };
 }
 

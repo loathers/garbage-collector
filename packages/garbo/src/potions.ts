@@ -187,13 +187,6 @@ export interface PotionOptions {
   }>;
 }
 
-export const VALUABLE_MODIFIERS = [
-  "Meat Drop",
-  "Familiar Weight",
-  "Smithsness",
-  "Item Drop",
-] as const;
-
 const BUFFER_TURNS = 30;
 
 export class Potion {
