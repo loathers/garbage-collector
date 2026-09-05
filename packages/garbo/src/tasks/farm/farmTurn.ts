@@ -65,7 +65,7 @@ export function FarmTurnQuest(): Quest<
           }
         },
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
-        do: () => FarmingStrategy.location,
+        do: FarmingStrategy.location,
         combat: FarmingStrategy.combat,
         post: () => {
           FarmingStrategy.post?.();

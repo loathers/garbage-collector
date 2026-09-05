@@ -506,7 +506,7 @@ export class Macro extends StrictMacro {
     // Delevel the sausage goblins as otherwise they can kind of hurt
     return this.if_(
       [
-        ...getMonsters(FarmingStrategy.location),
+        ...FarmingStrategy.monsters(),
         globalOptions.target,
         $monster`sausage goblin`,
       ],
