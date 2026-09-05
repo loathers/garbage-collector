@@ -35,10 +35,6 @@ import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
 
-export function getMonstersToBanish(monstersToBanish: Monster[]): Monster[] {
-  return monstersToBanish.filter((monster) => !isBanished(monster));
-}
-
 export function redTaffyWorth(): boolean {
   const averageRedTaffyValue = sum(
     [...PulledTaffy.RED_TAFFY_DROP_WEIGHTS.entries()],
@@ -148,6 +144,10 @@ class FarmingStrategySkeleton {
         ? (["Hidden Familiar Weight", "Meat Drop Penalty"] as const)
         : []),
     ];
+  }
+
+  monstersToBanish(): Monster[] {
+    return this.banishMonsters.filter((m) => !isBanished(m));
   }
 }
 
