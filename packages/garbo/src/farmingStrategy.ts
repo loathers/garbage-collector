@@ -144,6 +144,9 @@ class FarmingStrategySkeleton {
       "Smithsness",
       "Item Drop",
       ...this.bonusModifiers,
+      ...(this.isUnderwater()
+        ? (["Hidden Familiar Weight", "Meat Drop Penalty"] as const)
+        : []),
     ];
   }
 }
@@ -226,7 +229,6 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
   baseMeat: 300,
-  bonusModifiers: ["Hidden Familiar Weight", "Meat Drop Penalty"],
   location: $location`The Coral Corral`,
   ensureML: false,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
