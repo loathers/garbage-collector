@@ -32,7 +32,7 @@ import {
   improvesAStat,
   totalModifier,
 } from "../../lib";
-import { VALUABLE_MODIFIERS } from "../../potions";
+import { FarmingStrategy } from "../../farmingStrategy";
 
 type DebuffPlanElement =
   | { type: "potion"; target: Item }
@@ -67,7 +67,7 @@ export class DebuffPlanner {
 
   private isValuable(thing: Item | Effect): boolean {
     const effect = asEffect(thing);
-    return VALUABLE_MODIFIERS.some(
+    return FarmingStrategy.valuableModifiers().some(
       (modifier) => getModifier(modifier, effect) > 0,
     );
   }

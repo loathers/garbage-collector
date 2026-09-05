@@ -6,7 +6,6 @@ import {
   itemDropsArray,
   Location,
   mallPrice,
-  Modifier,
   Monster,
   print,
 } from "kolmafia";
@@ -18,7 +17,6 @@ import {
   $item,
   $items,
   $location,
-  $modifiers,
   $monster,
   $monsters,
   $skill,
@@ -26,6 +24,7 @@ import {
   Delayed,
   get,
   have,
+  NumericModifier,
   PulledTaffy,
   sum,
   undelay,
@@ -75,7 +74,7 @@ interface FarmingStrategyOptions {
   outfit?: (context: FarmingContext) => OutfitSpec;
   ncTurns?: Delayed<number>;
   bonusEffects?: Effect[];
-  bonusModifiers?: Modifier[];
+  bonusModifiers?: NumericModifier[];
   banishMonsters?: Monster[];
   post?: () => void;
 }
@@ -86,7 +85,7 @@ const DEFAULT_OPTIONS: Readonly<{
     : never]-?: FarmingStrategyOptions[K];
 }> = {
   bonusEffects: [] as Effect[],
-  bonusModifiers: [] as Modifier[],
+  bonusModifiers: [] as NumericModifier[],
   banishMonsters: [] as Monster[],
   ncTurns: Infinity,
   post: () => {},
@@ -136,6 +135,16 @@ class FarmingStrategySkeleton {
           ),
       ) / 100
     );
+  }
+
+  valuableModifiers(): NumericModifier[] {
+    return [
+      "Meat Drop",
+      "Familiar Weight",
+      "Smithsness",
+      "Item Drop",
+      ...this.bonusModifiers,
+    ];
   }
 }
 
@@ -217,7 +226,7 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
   baseMeat: 300,
-  bonusModifiers: $modifiers`Hidden Familiar Weight, Meat Drop Penalty`,
+  bonusModifiers: ["Hidden Familiar Weight", "Meat Drop Penalty"],
   location: $location`The Coral Corral`,
   ensureML: false,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
