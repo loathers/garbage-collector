@@ -987,7 +987,7 @@ class VariableMeatPotion {
     const targetValue = targetMeat();
     const barfValue = FarmingStrategy.accountForNC()
       ? (baseMeat() * FarmingStrategy.turnsToNC()) / 30
-      : 0;
+      : baseMeat();
 
     const totalCosts = retrievePrice(this.potion, n);
     const totalDuration = n * this.duration;

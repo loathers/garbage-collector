@@ -103,7 +103,7 @@ class FarmingStrategySkeleton {
     return this.location.environment === "underwater";
   }
   accountForNC(): boolean {
-    return this.ncTurns === Infinity;
+    return this.ncTurns !== Infinity;
   }
 
   olfactMonster(): Monster | null {
