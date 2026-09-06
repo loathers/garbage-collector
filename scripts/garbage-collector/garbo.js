@@ -25201,7 +25201,7 @@ var FarmingStrategySkeleton = /* @__PURE__ */ function() {
   }, {
     key: "accountForNC",
     value: function accountForNC() {
-      return this.ncTurns === Infinity;
+      return this.ncTurns !== Infinity;
     }
   }, {
     key: "olfactMonster",
@@ -25793,7 +25793,7 @@ function checkGithubVersion() {
       var releaseSHA = (_gitBranches$find = gitBranches.find(function(branchInfo) {
         return branchInfo.name === "release";
       })) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      (0, import_kolmafia93.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("9b649e29f7d9e8d039b8f2ff062793d42524a829", ")"));
+      (0, import_kolmafia93.print)("Local Version: ".concat(localSHA, " (built from ").concat("main", "@").concat("79de939871dd2c5e05bbef5240f9163c76a9d534", ")"));
       if (releaseSHA === localSHA) {
         (0, import_kolmafia93.print)("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === void 0) {
@@ -32327,7 +32327,7 @@ var VariableMeatPotion = /* @__PURE__ */ function() {
     value: function valueNPotions(n, yachtzees, targets, barfTurns) {
       var yachtzeeValue = 2e3;
       var targetValue = targetMeat();
-      var barfValue = FarmingStrategy.accountForNC() ? baseMeat() * FarmingStrategy.turnsToNC() / 30 : 0;
+      var barfValue = FarmingStrategy.accountForNC() ? baseMeat() * FarmingStrategy.turnsToNC() / 30 : baseMeat();
       var totalCosts = (0, import_kolmafia111.retrievePrice)(this.potion, n);
       var totalDuration = n * this.duration;
       var cappedDuration = Math.max(0, totalDuration - this.softcap + 1);
