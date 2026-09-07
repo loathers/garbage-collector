@@ -1772,7 +1772,11 @@ export function freeFights(): void {
 
   // TODO: Run grimorized free fights until all are converted
   // TODO: freeFightMood()
-  runGarboQuests([PostQuest(), FreeFightQuest, FreeGiantSandwormQuest]);
+  runGarboQuests([
+    PostQuest<unknown>(),
+    FreeFightQuest,
+    FreeGiantSandwormQuest,
+  ]);
 
   // Run any community endeavors
   runGarboQuests([PostQuest(), undelay(FreeMimicEggDonationQuest)]);

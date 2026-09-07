@@ -1,19 +1,21 @@
 import { CombatStrategy } from "grimoire-kolmafia";
 import { customizeMacro, CustomizeMacroOptions, Macro } from "./combat";
-import { GarboContext } from "./tasks/context";
 
-export class GarboStrategy extends CombatStrategy<never, GarboContext> {
+export class GarboStrategy<Context = unknown> extends CombatStrategy<
+  never,
+  Context
+> {
   constructor(
-    macro: (context: GarboContext) => Macro,
+    macro: (context: Context) => Macro,
     postAuto = macro,
     useAutoAttack = () => true,
     options: Partial<CustomizeMacroOptions> = {},
   ) {
     super();
-    const macroCustom = (context: GarboContext) =>
+    const macroCustom = (context: Context) =>
       customizeMacro(macro(context), options);
     if (useAutoAttack()) {
-      const postAutoCustom = (context: GarboContext) =>
+      const postAutoCustom = (context: Context) =>
         customizeMacro(postAuto(context), options);
       this.autoattack(macroCustom).macro(postAutoCustom);
     } else {

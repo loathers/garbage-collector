@@ -11,7 +11,6 @@ import {
 import { $coinmaster, $item, getModifier, have } from "libram";
 import { globalOptions } from "../config";
 import { GarboTask } from "./engine";
-import { GarboContext } from "./context";
 
 function getAutosellableMeltingJunk(): Item[] {
   return Item.all().filter(
@@ -27,7 +26,7 @@ function getAutosellableMeltingJunk(): Item[] {
   );
 }
 
-export const FinishUpQuest: Quest<GarboTask, GarboContext> = {
+export const FinishUpQuest: Quest<GarboTask> = {
   name: "Finish Up",
   tasks: [
     {
