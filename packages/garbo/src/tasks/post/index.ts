@@ -9,7 +9,6 @@ import {
   inebrietyLimit,
   Item,
   itemAmount,
-  Location,
   mallPrice,
   myAdventures,
   myFullness,
@@ -43,7 +42,6 @@ import {
   JuneCleaver,
   Leprecondo,
   maxBy,
-  realmAvailable,
   sum,
   undelay,
   uneffect,
@@ -130,7 +128,7 @@ function floristFriars(): GarboPostTask {
     completed: () =>
       FloristFriar.isFull(FarmingStrategy.location) || barfPlants.length === 0,
     ready: () =>
-      get("lastAdventure") === targetLocation &&
+      get("lastAdventure") === FarmingStrategy.location &&
       FloristFriar.have() &&
       barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
     do: () =>

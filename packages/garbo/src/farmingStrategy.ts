@@ -9,6 +9,7 @@ import {
   Monster,
   print,
 } from "kolmafia";
+import { GarboStrategy } from "./combatStrategy";
 import {
   $effect,
   $effects,
@@ -34,10 +35,6 @@ import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
 
-export function getMonstersToBanish(monstersToBanish: Monster[]): Monster[] {
-  return monstersToBanish.filter((monster) => !isBanished(monster));
-}
-
 export function averageRedTaffyValue(): number {
   return sum(
     [...PulledTaffy.RED_TAFFY_DROP_WEIGHTS.entries()],
@@ -46,6 +43,7 @@ export function averageRedTaffyValue(): number {
 }
 
 export function redTaffyWorth(): boolean {
+
   return mallPrice($item`pulled red taffy`) < averageRedTaffyValue();
 }
 
@@ -70,7 +68,7 @@ interface FarmingStrategyOptions {
   ensureML: boolean;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
-  macro: (context: FarmingContext) => Macro;
+  combat: GarboStrategy<FarmingContext>;
 
   outfit?: (context: FarmingContext) => OutfitSpec;
   ncTurns?: Delayed<number>;
@@ -217,7 +215,14 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
         : [],
   }),
 
-  macro: () => Macro.meatKill(),
+  combat: new GarboStrategy(
+    () => Macro.meatKill(),
+    () =>
+      Macro.if_(
+        `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
+        Macro.meatKill(),
+      ).abort(),
+  ),
 
   post: completeBarfQuest,
 };
@@ -242,34 +247,22 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
     return banishItem ? { equip: [banishItem] } : {};
   },
 
-  macro: ({ banish }) => {
-    const baseMacro = Macro.externalIf(
-      !get("seahorseName"),
-      Macro.if_(
-        $monster`wild seahorse`,
-        Macro.item($item`sea cowbell`)
-          .item($item`sea cowbell`)
-          .item($item`sea cowbell`)
-          .item($item`sea lasso`)
-          .abortWithMsg("Wild seahorse should have been tamed, what happened?"),
-      ),
-    );
-
+  combat: new GarboStrategy(({ banish }) => {
     if (banish) {
-      baseMacro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro);
+      const macro = Macro.if_(
+        $monsters`Mer-kin rustler, sea cowboy`,
+        banish.macro,
+      );
+
+      return redTaffyWorth()
+        ? macro.tryItem($item`pulled red taffy`).meatKill()
+        : macro.meatKill();
     }
 
-    // Cows are tough! Let's delevel them to be safe
-    baseMacro.delevel().tryHaveItem($item`cow poker`);
-
-    if (redTaffyWorth()) {
-      baseMacro.tryItem($item`pulled red taffy`);
-    }
-
-    baseMacro.meatKill();
-
-    return baseMacro;
-  },
+    return redTaffyWorth()
+      ? Macro.tryItem($item`pulled red taffy`).meatKill()
+      : Macro.meatKill();
+  }),
 };
 
 function currentStrategy(): FarmingStrategyOptions {

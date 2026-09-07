@@ -16,13 +16,12 @@ import {
   shouldCheckParachute,
   updateParachuteFailure,
 } from "./lib";
-import { FarmingStrategy, redTaffyWorth } from "../../farmingStrategy";
+import { averageRedTaffyValue, FarmingStrategy, redTaffyWorth } from "../../farmingStrategy";
 import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit";
 import { FarmingContext } from "../context";
-import { GarboStrategy } from "../../combatStrategy";
 import { acquire } from "../../acquire";
 
 export const farmPrepare = (context: FarmingContext) => {
@@ -59,27 +58,6 @@ export const farmPrepare = (context: FarmingContext) => {
   }
 };
 
-export const farmPost = () => {
-  FarmingStrategy.post?.();
-  trackMarginalMpa();
-
-  if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
-    throw new Error(
-      "You encountered a tumbleweed and should not have, resolve your banishes",
-    );
-  }
-
-  if (
-    getMonstersToBanish(FarmingStrategy.banishMonsters).includes(
-      toMonster(get("lastEncounter")),
-    )
-  ) {
-    throw new Error(
-      "You encountered a banishable monster and didn't banish it, sort your life out!",
-    );
-  }
-};
-
 export function FarmTurnQuest(): Quest<
   GarboTask<FarmingContext>,
   FarmingContext
@@ -98,7 +76,7 @@ export function FarmTurnQuest(): Quest<
           have($effect`Everything looks Beige`) || myAdventures() === 0,
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
         do: () => CrepeParachute.fight(undelay(FarmingStrategy.targetMonster)),
-        combat: new GarboStrategy((context) => FarmingStrategy.macro(context)),
+        combat: FarmingStrategy.combat,
         post: () => {
           FarmingStrategy.post?.();
           if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
