@@ -9,7 +9,6 @@ import {
   Monster,
   print,
 } from "kolmafia";
-import { GarboStrategy } from "./combatStrategy";
 import {
   $effect,
   $effects,
@@ -34,6 +33,7 @@ import { FarmingMethod, globalOptions } from "./config";
 import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
+import { GarboStrategy } from "./combatStrategy";
 
 export function averageRedTaffyValue(): number {
   return sum(
@@ -67,7 +67,7 @@ interface FarmingStrategyOptions {
   ensureML: boolean;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
-  combat: GarboStrategy<FarmingContext>;
+  combat: (context: FarmingContext) => Macro;
 
   outfit?: (context: FarmingContext) => OutfitSpec;
   ncTurns?: Delayed<number>;
@@ -151,6 +151,10 @@ class FarmingStrategySkeleton {
   monstersToBanish(): Monster[] {
     return this.banishMonsters.filter((m) => !isBanished(m));
   }
+
+  strategy(): GarboStrategy<FarmingContext> {
+    return new GarboStrategy(this.combat);
+  }
 }
 
 export const FarmingStrategy = new Proxy(
@@ -214,14 +218,7 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
         : [],
   }),
 
-  combat: new GarboStrategy(
-    () => Macro.meatKill(),
-    () =>
-      Macro.if_(
-        `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-        Macro.meatKill(),
-      ).abort(),
-  ),
+  combat: () => Macro.meatKill(),
 
   post: completeBarfQuest,
 };
@@ -246,22 +243,21 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
     return banishItem ? { equip: [banishItem] } : {};
   },
 
-  combat: new GarboStrategy(({ banish }) => {
-    if (banish) {
-      const macro = Macro.if_(
-        $monsters`Mer-kin rustler, sea cowboy`,
-        banish.macro,
-      );
-
-      return redTaffyWorth()
-        ? macro.tryItem($item`pulled red taffy`).meatKill()
-        : macro.meatKill();
-    }
-
-    return redTaffyWorth()
-      ? Macro.tryItem($item`pulled red taffy`).meatKill()
-      : Macro.meatKill();
-  }),
+  combat: ({ banish }) =>
+    Macro.externalIf(
+      !get("seahorseName"),
+      Macro.if_(
+        $monster`wild seahorse`,
+        Macro.item($item`sea cowbell`)
+          .item($item`sea cowbell`)
+          .item($item`sea cowbell`)
+          .item($item`sea lasso`)
+          .abortWithMsg("Wild seahorse should have been tamed, what happened?"),
+      ),
+    )
+      .farmingBanish(banish)
+      .externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`))
+      .meatKill(),
 };
 
 function currentStrategy(): FarmingStrategyOptions {

@@ -71,6 +71,7 @@ import { copyTargetCount } from "./target";
 import { garboValue } from "./garboValue";
 import { maximumPinataCasts, safeRefractedCasts } from "./resources";
 import { FarmingStrategy } from "./farmingStrategy";
+import { BanishMethod } from "./resources/banish";
 
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
@@ -950,6 +951,11 @@ export class Macro extends StrictMacro {
 
   static refractedGaze(): Macro {
     return new Macro().duplicate();
+  }
+
+  farmingBanish(banish: BanishMethod | null): Macro {
+    if (!banish) return this;
+    return this.if_(FarmingStrategy.banishMonsters, banish.macro);
   }
 }
 
