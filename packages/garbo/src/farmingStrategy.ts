@@ -43,7 +43,6 @@ export function averageRedTaffyValue(): number {
 }
 
 export function redTaffyWorth(): boolean {
-
   return mallPrice($item`pulled red taffy`) < averageRedTaffyValue();
 }
 

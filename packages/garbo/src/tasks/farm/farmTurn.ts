@@ -16,7 +16,11 @@ import {
   shouldCheckParachute,
   updateParachuteFailure,
 } from "./lib";
-import { averageRedTaffyValue, FarmingStrategy, redTaffyWorth } from "../../farmingStrategy";
+import {
+  averageRedTaffyValue,
+  FarmingStrategy,
+  redTaffyWorth,
+} from "../../farmingStrategy";
 import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
