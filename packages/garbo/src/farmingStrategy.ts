@@ -40,8 +40,6 @@ export function getMonstersToBanish(monstersToBanish: Monster[]): Monster[] {
 
 export function averageRedTaffyValue(): number {
   return sum(
-export function redTaffyWorth(): boolean {
-  const averageRedTaffyValue = sum(
     [...PulledTaffy.RED_TAFFY_DROP_WEIGHTS.entries()],
     ([item, weight]) => garboValue(item) * weight,
   );
