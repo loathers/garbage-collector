@@ -187,14 +187,6 @@ export interface PotionOptions {
   }>;
 }
 
-export const VALUABLE_MODIFIERS = [
-  "Meat Drop",
-  "Familiar Weight",
-  "Smithsness",
-  "Item Drop",
-  "Hidden Familiar Weight", // How can I add this only if farming strategy is underwater? It's a const
-] as const;
-
 const BUFFER_TURNS = 30;
 
 export class Potion {

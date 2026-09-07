@@ -16,12 +16,7 @@ import {
   shouldCheckParachute,
   updateParachuteFailure,
 } from "./lib";
-import {
-  averageRedTaffyValue,
-  FarmingStrategy,
-  getMonstersToBanish,
-  redTaffyWorth,
-} from "../../farmingStrategy";
+import { FarmingStrategy, redTaffyWorth } from "../../farmingStrategy";
 import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
@@ -116,9 +111,28 @@ export function FarmTurnQuest(): Quest<
         completed: () => myAdventures() === 0,
         prepare: farmPrepare,
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
-        do: () => FarmingStrategy.location,
-        combat: new GarboStrategy((context) => FarmingStrategy.macro(context)),
-        post: farmPost,
+        do: FarmingStrategy.location,
+        combat: FarmingStrategy.combat,
+        post: () => {
+          FarmingStrategy.post?.();
+          trackMarginalMpa();
+
+          if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {
+            throw new Error(
+              "You encountered a tumbleweed and should not have, resolve your banishes",
+            );
+          }
+
+          if (
+            FarmingStrategy.monstersToBanish().includes(
+              toMonster(get("lastEncounter")),
+            )
+          ) {
+            throw new Error(
+              "You encountered a banishable monster and didn't banish it, sort your life out!",
+            );
+          }
+        },
         spendsTurn: true,
       },
     ],

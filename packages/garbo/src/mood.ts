@@ -80,9 +80,11 @@ export function meatMood(
   mood.skill($skill`Disco Leer`);
   mood.skill($skill`Singer's Faithful Ocelot`);
   mood.skill($skill`The Spirit of Taking`);
+
   if (FarmingStrategy.location === $location`Barf Mountain`) {
     mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
   }
+
   if (FarmingStrategy.ensureML) {
     mood.skill($skill`Drescher's Annoying Noise`);
     mood.skill($skill`Pride of the Puffin`);
@@ -96,6 +98,8 @@ export function meatMood(
   if (FarmingStrategy.location === $location`The Coral Corral`) {
     // Cow survivability
     mood.skill($skill`Ruthless Efficiency`);
+  } else {
+    // Assume that if we don't want ML, the fights must be tough enough
     mood.skill($skill`Ghostly Shell`);
     mood.skill($skill`Shield of the Pastalord`);
     // Better pearl progress
@@ -128,6 +132,8 @@ export function meatMood(
       mood.effect($effect`Disco over Matter`);
     }
   }
+
+  if (FarmingStrategy.isUnderwater()) mood.skill($skill`Donho's Bubbly Ballad`);
 
   mood.skill($skill`Walk: Leisurely Amble`);
   mood.skill($skill`Call For Backup`);
