@@ -8,6 +8,7 @@ import {
   findLeprechaunMultiplier,
   get,
   have,
+  sum,
   totalFamiliarWeight,
 } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -225,12 +226,12 @@ function sWordValue(): number {
   if (!monster || get("_swordOfSWordsKills") >= 100) {
     return 0;
   }
-  return itemDropsArray(monster)
-    .filter(({ type }) => type !== "c")
-    .reduce(
-      (total, { drop, rate }) => total + (rate / 100) * garboValue(drop),
-      0,
-    );
+  return sum(
+    itemDropsArray(monster),
+    ({ drop, rate }) =>
+      // One 100 because % the other because % improvement
+      (rate / 100) * garboValue(drop),
+  );
 }
 
 export default function getDropFamiliars(): GeneralFamiliar[] {
