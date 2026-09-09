@@ -6,6 +6,7 @@ import {
   equippedItem,
   getAutoAttack,
   getMonsters,
+  handlingChoice,
   haveEquipped,
   haveSkill,
   hippyStoneBroken,
@@ -14,6 +15,7 @@ import {
   itemAmount,
   itemType,
   Location,
+  Monster,
   mpCost,
   myBuffedstat,
   myClass,
@@ -22,13 +24,17 @@ import {
   myMp,
   myPath,
   mySoulsauce,
+  myTurncount,
   numericModifier,
   retrieveItem,
+  runChoice,
   runCombat,
   setAutoAttack,
   setCcs,
   Skill,
   toInt,
+  toUrl,
+  useSkill,
   visitUrl,
   writeCcs,
 } from "kolmafia";
@@ -1066,4 +1072,42 @@ export function garboAdventureAuto<M extends StrictMacro>(
   autoMacro.setAutoAttack();
   makeCcs(nextMacro);
   runCombatBy(() => adv1(loc, -1, ""));
+}
+
+export function mapMonster(location: Location, monster: Monster): void {
+  if (
+    haveSkill($skill`Map the Monsters`) &&
+    !get("mappingMonsters") &&
+    get("_monstersMapped") < 3
+  ) {
+    useSkill($skill`Map the Monsters`);
+  }
+
+  if (!get("mappingMonsters")) throw "Failed to setup Map the Monsters.";
+
+  const myTurns = myTurncount();
+  let mapPage = "";
+  // Handle zone intros and holiday wanderers
+  for (let tries = 0; tries < 10; tries++) {
+    mapPage = visitUrl(toUrl(location), false, true);
+    if (mapPage.includes("Leading Yourself Right to Them")) break;
+    // Time-pranks can show up here, annoyingly
+    if (
+      mapPage.includes("<!-- MONSTERID: 1965 -->") ||
+      mapPage.includes("<!-- MONSTERID: 1622  -->")
+    ) {
+      runCombat(Macro.attack().repeat().toString());
+    }
+    if (handlingChoice()) runChoice(-1);
+    if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
+    if (tries === 9) throw `Stuck trying to Map the monsters.`;
+  }
+
+  const fightPage = visitUrl(
+    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`,
+  );
+  if (!fightPage.includes(monster.name)) {
+    throw "Something went wrong starting the fight.";
+  }
+  if (choiceFollowsFight()) runChoice(-1);
 }
