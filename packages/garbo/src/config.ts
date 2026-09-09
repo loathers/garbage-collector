@@ -5,6 +5,7 @@ import { $item, $items, $monster } from "libram";
 export enum FarmingMethod {
   BARF_MOUNTAIN,
   THE_CORAL_CORRAL,
+  UR_FARM,
 }
 
 const workshedAliases = [
@@ -268,6 +269,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
             options: [
               [FarmingMethod.BARF_MOUNTAIN, "barf mountain"],
               [FarmingMethod.THE_CORAL_CORRAL, "sea cows"],
+              [FarmingMethod.UR_FARM, "IDMG"],
             ],
           },
           (value) => {
@@ -275,6 +277,10 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
               case "barf":
               case "barf mountain":
                 return FarmingMethod.BARF_MOUNTAIN;
+
+              case "idmg":
+              case "UR":
+                return FarmingMethod.UR_FARM;
 
               case "cowo":
               case "sea cows":

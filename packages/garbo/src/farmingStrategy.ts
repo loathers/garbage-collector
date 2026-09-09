@@ -264,8 +264,40 @@ function currentStrategy(): FarmingStrategyOptions {
     case FarmingMethod.THE_CORAL_CORRAL:
       return THE_CORAL_CORRAL;
 
+    case FarmingMethod.UR_FARM:
+      return UR_FARM;
+
     case FarmingMethod.BARF_MOUNTAIN:
     default:
       return BARF_MOUNTAIN;
   }
 }
+
+const UR_FARM: FarmingStrategyOptions = {
+  stasisRounds: 20,
+  asdonEffect: $effect`Driving Observantly`,
+  ensureBarfAccess: false,
+  baseMeat: 98,
+  location: $location`Cobb's Knob Treasury`,
+  ensureML: true,
+  targetMonster: $monster`Knob Goblin MBA`,
+  shouldOlfact: false,
+
+  outfit: ({ banish }) => {
+    const banishItem = banish?.equip;
+    if (banishItem) {
+      print(`Planning to banish equipping ${banishItem?.name}`);
+    }
+
+    return banishItem ? { equip: [banishItem] } : {};
+  },
+
+  combat: new GarboStrategy(
+    () => Macro.meatKill(),
+    () =>
+      Macro.if_(
+        `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
+        Macro.meatKill(),
+      ).abort(),
+  ),
+};
