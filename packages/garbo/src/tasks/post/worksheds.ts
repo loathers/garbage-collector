@@ -26,7 +26,7 @@ import {
   trainNeedsRotating,
 } from "../../resources";
 import { GarboPostTask } from "./lib";
-import { farmingStrategy } from "../../farmingStrategy";
+import { FarmingStrategy } from "../../farmingStrategy";
 
 type WorkshedOptions = {
   workshed: Item;
@@ -126,14 +126,14 @@ const worksheds = [
     workshed: $item`Asdon Martin keyfob (on ring)`,
     done: () => {
       return (
-        haveEffect(farmingStrategy().asdonEffect) >=
+        haveEffect(FarmingStrategy.asdonEffect) >=
         estimatedGarboTurns() +
           (globalOptions.ascend ? 0 : estimatedTurnsTomorrow)
       );
     },
     action: () => {
       AsdonMartin.drive(
-        farmingStrategy().asdonEffect,
+        FarmingStrategy.asdonEffect,
         estimatedGarboTurns() +
           (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
       );

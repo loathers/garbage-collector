@@ -44,7 +44,6 @@ import { sandwormFamiliar } from "../familiar";
 import { sober } from "../lib";
 import { safeSweatBulletCasts } from "../resources";
 import { acquire } from "../acquire";
-import { EMPTY_CONTEXT, GarboContext } from "./context";
 
 function sandwormSpec(spec: OutfitSpec = {}): OutfitSpec {
   const outfit = Outfit.from(
@@ -336,7 +335,7 @@ const SandwormTasks: GarboFreeFightTask[] = [
 export function expectedFreeGiantSandwormQuestFights(): number {
   return sum(
     SANDWORM_TASK_DEFINITIONS.filter(
-      (t) => (t.ready?.(EMPTY_CONTEXT) ?? true) && !t.completed(EMPTY_CONTEXT),
+      (t) => (t.ready?.() ?? true) && !t.completed(),
     ),
     (t) => t.combatCount(),
   );
@@ -383,7 +382,7 @@ function drumMachineWorthIt(): boolean {
   return drumMachineROI() > 0;
 }
 
-export const FreeGiantSandwormQuest: Quest<GarboTask, GarboContext> = {
+export const FreeGiantSandwormQuest: Quest<GarboTask<void>, unknown> = {
   name: "Free Giant Sandworm",
   tasks: SandwormTasks,
   ready: () => sober() && hasWorms(),

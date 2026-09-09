@@ -30,9 +30,8 @@ import {
 } from "kolmafia";
 import { globalOptions } from "../config";
 import { amuletCoinValue } from "../familiar/lib";
-import { GarboContext } from "./context";
 
-export const SetupTargetCopyQuest: Quest<GarboTask, GarboContext> = {
+export const SetupTargetCopyQuest: Quest<GarboTask> = {
   name: "SetupTargetCopy",
   ready: () => myInebriety() <= inebrietyLimit(),
   tasks: [

@@ -84,10 +84,9 @@ import {
 } from "../resources";
 import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
 import { AdventureArgument, wanderer } from "../garboWanderer";
-import { EMPTY_CONTEXT, GarboContext } from "./context";
 
 export type GarboFreeFightTask = Extract<
-  GarboTask,
+  GarboTask<void>,
   { combat: GarboStrategy }
 > & {
   combatCount: () => number;
@@ -992,8 +991,7 @@ const FreeFightTasks = RAW_FIGHTS.map(freeFightTask);
 // Expected free fights, not including tentacles
 export function expectedFreeFightQuestFights(): number {
   const availableFights = FreeFightTasks.filter(
-    (task) =>
-      (task.ready?.(EMPTY_CONTEXT) ?? true) && !task.completed(EMPTY_CONTEXT),
+    (task) => (task.ready?.() ?? true) && !task.completed(),
   );
   return sum(availableFights, ({ combatCount }) => combatCount());
 }
@@ -1001,8 +999,7 @@ export function expectedFreeFightQuestFights(): number {
 // Possible additional free fights from tentacles
 export function possibleFreeFightQuestTentacleFights(): number {
   const availableFights = FreeFightTasks.filter(
-    (task) =>
-      (task.ready?.(EMPTY_CONTEXT) ?? true) && !task.completed(EMPTY_CONTEXT),
+    (task) => (task.ready?.() ?? true) && !task.completed(),
   );
   return sum(
     availableFights,
@@ -1010,7 +1007,7 @@ export function possibleFreeFightQuestTentacleFights(): number {
   );
 }
 
-export const FreeFightQuest: Quest<GarboTask, GarboContext> = {
+export const FreeFightQuest: Quest<GarboTask<void>, unknown> = {
   name: "Free Fight",
   tasks: FreeFightTasks,
   ready: () => sober() && !have($effect`Feeling Lost`),
