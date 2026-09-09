@@ -19478,13 +19478,7 @@ var FarmingStrategy = new Proxy(new FarmingStrategySkeleton(), {
     if (Object.prototype.hasOwnProperty.call(FarmingStrategySkeleton.prototype, prop)) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       var method = FarmingStrategySkeleton.prototype[prop];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return function () {
-        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-        return method.apply(receiver, args);
-      };
+      method.bind(receiver);
     }
     var strategyOptions = currentStrategy();
     var stringProp = String(prop);
@@ -19833,7 +19827,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"ef2e6e453c483ce8d9f6b0330beeb14a9e4f8087"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"24eb6d0cbaf62a438779a7c5b78103a516f72ab1"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
