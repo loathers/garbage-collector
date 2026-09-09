@@ -9,7 +9,7 @@ import {
   maxBy,
   totalFamiliarWeight,
 } from "libram";
-import { familiarWaterBreathingEquipment } from "../../outfit";
+import { familiarWaterBreathingEquipment } from "../../outfit/lib";
 
 export function bestFamUnderwaterGear(fam: Familiar): Item {
   // Returns best familiar gear for yachtzee chaining

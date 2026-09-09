@@ -23,7 +23,11 @@ import { Macro } from "../../combat";
 import { GarboTask } from "../engine";
 import { willDrunkAdventure } from "../../lib";
 import { Outfit, Quest } from "grimoire-kolmafia";
-import { maximumYachtzees, shouldClara, willYachtzee } from "../../resources";
+import {
+  maximumYachtzees,
+  shouldClara,
+  willYachtzee,
+} from "../../resources/yachtzee";
 import { GarboStrategy } from "../../combatStrategy";
 
 type AlternateTask = GarboTask & { turns: Delayed<number> };

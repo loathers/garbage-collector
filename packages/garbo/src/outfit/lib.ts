@@ -32,7 +32,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { meatFamiliar } from "../familiar";
+import { meatFamiliar } from "../familiar/meatFamiliar";
 import { BonusEquipMode, targetMeat } from "../lib";
 import {
   estimatedGarboTurns,

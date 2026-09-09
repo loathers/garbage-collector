@@ -11,7 +11,7 @@ import { garboValue } from "../garboValue";
 import { getBestLuckyAdventure } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { toItem } from "kolmafia";
-import { estimatedBarfExperience } from "../familiar";
+import { estimatedBarfExperience } from "../familiar/lib";
 
 const instruments: {
   instrument: AprilingBandHelmet.Instrument;

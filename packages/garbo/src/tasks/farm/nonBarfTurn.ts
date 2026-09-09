@@ -40,20 +40,18 @@ import { GarboStrategy } from "../../combatStrategy";
 import { globalOptions } from "../../config";
 import { wanderer } from "../../garboWanderer";
 import { getBestLuckyAdventure, sober, willDrunkAdventure } from "../../lib";
-import { freeFightOutfit, meatTargetOutfit } from "../../outfit";
+import { freeFightOutfit } from "../../outfit/free";
+import { meatTargetOutfit } from "../../outfit/target";
 import { wanderingCopytargetsRemaining } from "../../turns";
 
 import { AlternateTask, GarboTask } from "../engine";
 import { canContinue } from "./lib";
 import { garboValue } from "../../garboValue";
-import { minimumMimicExperience } from "../../resources";
+import { minimumMimicExperience } from "../../resources/chestMimic";
 import { acquire } from "../../acquire";
-import {
-  hotTubAvailable,
-  lavaDogsAccessible,
-  lavaDogsComplete,
-  luckySourceTasks,
-} from "../../resources";
+import { hotTubAvailable } from "../../resources/clanVIP";
+import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
+import { luckySourceTasks } from "../../resources/lucky";
 import { yachtzeeQuest } from "../yachtzee";
 import { embezzlerFightTask } from "../embezzler";
 import { EMPTY_CONTEXT, FarmingContext } from "../context";

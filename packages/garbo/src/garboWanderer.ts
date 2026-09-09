@@ -16,7 +16,7 @@ import {
 import { garboValue } from "./garboValue";
 import { effectValue } from "./potions";
 import { digitizedMonstersRemainingForTurns } from "./lib";
-import { safeRefractedCasts } from "./resources";
+import { safeRefractedCasts } from "./resources/bloodCubicZirconia";
 import { FarmingStrategy } from "./farmingStrategy";
 
 let _wanderer: WandererManager | undefined;

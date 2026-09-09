@@ -68,8 +68,8 @@ import {
 import { acquire } from "../acquire";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../target";
-import { meatFamiliar } from "../familiar";
+import { copyTargetCount } from "../target/fights";
+import { meatFamiliar } from "../familiar/meatFamiliar";
 import { estimatedAttunementTentacles } from "../fights";
 import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
@@ -80,12 +80,12 @@ import {
 } from "../turns";
 import { GarboTask } from "./engine";
 import { AcquireItem, Quest } from "grimoire-kolmafia";
+import { checkAndCorrectLatteMalformation } from "../resources/latte";
 import {
   attemptCompletingBarfQuest,
-  checkAndCorrectLatteMalformation,
   checkBarfQuest,
   checkVolcanoQuest,
-} from "../resources";
+} from "../resources/realm";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";

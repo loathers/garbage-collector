@@ -22,11 +22,11 @@ import {
 import { DraggableFight } from "garbo-lib";
 import { OutfitSpec } from "grimoire-kolmafia";
 
-import { waterBreathingEquipment } from "../outfit";
+import { waterBreathingEquipment } from "../outfit/lib";
 import { Macro } from "../combat";
 import { globalOptions } from "../config";
 import { freeFishyAvailable } from "../lib";
-import { willYachtzee } from "../resources";
+import { willYachtzee } from "../resources/yachtzee";
 
 /**
  * Configure the behavior of the fights in use in different parts of the fight engine

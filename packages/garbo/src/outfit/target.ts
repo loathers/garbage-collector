@@ -10,7 +10,8 @@ import {
   Guzzlr,
   have,
 } from "libram";
-import { freeFightFamiliar, meatFamiliar } from "../familiar";
+import { freeFightFamiliar } from "../familiar/freeFightFamiliar";
+import { meatFamiliar } from "../familiar/meatFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {

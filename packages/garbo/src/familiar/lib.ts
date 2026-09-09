@@ -35,8 +35,8 @@ import {
   wanderingCopytargetsRemaining,
 } from "../turns";
 import { garboValue } from "../garboValue";
-import { copyTargetCount } from "../target";
-import { canBullseye, safeToAttemptBullseye } from "../resources";
+import { copyTargetCount } from "../target/fights";
+import { canBullseye, safeToAttemptBullseye } from "../resources/everfullDarts";
 import { FarmingStrategy } from "../farmingStrategy";
 
 export type FamiliarMode = "barf" | "free" | "target" | "run";

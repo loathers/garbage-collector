@@ -28,7 +28,7 @@ import { GarboTask } from "../tasks/engine";
 import { garboValue } from "../garboValue";
 import { acquire } from "../acquire";
 import { Macro } from "../combat";
-import { freeFightOutfit } from "../outfit";
+import { freeFightOutfit } from "../outfit/free";
 import { globalOptions } from "../config";
 import { GarboStrategy } from "../combatStrategy";
 

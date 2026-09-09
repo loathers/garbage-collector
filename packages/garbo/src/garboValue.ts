@@ -3,7 +3,7 @@ import { makeValue, ValueFunctions } from "garbo-lib";
 
 import { $item } from "libram";
 import { printPriceOverrideWarning, readItemValues } from "./price_garbo";
-import { printLog } from "./lib";
+import { printLog } from "./log";
 
 let _valueFunctions: ValueFunctions | undefined;
 function garboValueFunctions(): ValueFunctions {
