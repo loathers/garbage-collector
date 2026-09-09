@@ -17,6 +17,6 @@
     "target": "esnext",
     "skipLibCheck": true
   },
-  "include": ["**/*.ts", "build.ts"],
+  "include": ["**/*.ts", "rollup.config.ts"],
   "isolatedModules": true /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
 }
