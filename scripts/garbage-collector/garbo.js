@@ -19358,6 +19358,25 @@ function printPriceOverrideWarning() {
   maybePrint("WARNING: You are using garbo item price overrides. This can have unexpected side effects on dieting and adventuring!", "red");
 }
 
+var log = [];
+function logMessage(message) {
+  log.push(message);
+}
+function printLog(color) {
+  var _iterator = _createForOfIteratorHelper(log),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var message = _step.value;
+      kolmafia.print(message, color);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+}
+
 var _valueFunctions;
 function garboValueFunctions() {
   if (!_valueFunctions) {
@@ -19945,24 +19964,6 @@ function ltbRun() {
 function kramcoGuaranteed() {
   return have$P($item`Kramco Sausage-o-Matic™`) && getKramcoWandererChance() >= 1;
 }
-var log = [];
-function logMessage(message) {
-  log.push(message);
-}
-function printLog(color) {
-  var _iterator = _createForOfIteratorHelper(log),
-    _step;
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var message = _step.value;
-      kolmafia.print(message, color);
-    }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-}
 
 /**
  * Determines the opportunity cost of not using the Pillkeeper to fight an embezzler
@@ -20057,7 +20058,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"73f0012d474af1f90e45a55556d3259cc0a67c1a"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"c1d512236311351152e823ac732b0e429120da6b"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20490,1439 +20491,194 @@ function mainStatLevel(level) {
   return (level - 1) ** 2 + 4;
 }
 
-function valueBjornModifiers(mode, familiar) {
-  var meatValue = modeValueOfMeat(mode);
-  var leprechaunMultiplier = findLeprechaunMultiplier(familiar);
-  var leprechaunCoefficient = meatValue * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier));
-  var itemValue = modeValueOfItem(mode);
-  var fairyMultiplier = findFairyMultiplier(familiar);
-  var fairyCoefficient = itemValue * (fairyMultiplier + Math.sqrt(fairyMultiplier) / 2);
-  return createModifierValueFunction(["Familiar Weight", "Meat Drop", "Item Drop"], {
-    "Familiar Weight": mod => mod * (fairyCoefficient + leprechaunCoefficient),
-    "Item Drop": mod => mod * itemValue,
-    "Meat Drop": mod => mod * meatValue
-  });
-}
-function dropsValueFunction(drops) {
-  return Array.isArray(drops) ? garboAverageValue.apply(void 0, _toConsumableArray(drops)) : sum(_toConsumableArray(drops.entries()), _ref => {
-    var _ref2 = _slicedToArray(_ref, 2),
-      item = _ref2[0],
-      quantity = _ref2[1];
-    return quantity * garboValue(item);
-  }) / sumNumbers(_toConsumableArray(drops.values()));
-}
-function chooseBjorn(mode, familiar) {
-  var sim = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var leprechaunMultiplier = findLeprechaunMultiplier(familiar);
-  var fairyMultiplier = findFairyMultiplier(familiar);
-  var ignoreLimitedDrops = sim || !modeUseLimitedDrops(mode);
-  var key = `Leprechaun:${leprechaunMultiplier.toFixed(2)};Fairy:${fairyMultiplier.toFixed(2)};ignoreLimitedDrops:${ignoreLimitedDrops}`;
-  if (!hasRiderMode(key)) {
-    createRiderMode(key, {
-      ignoreLimitedDrops,
-      modifierValueFunction: valueBjornModifiers(mode, familiar),
-      dropsValueFunction
-    });
+function mafiaThumbRing(mode) {
+  if (!have$P($item`mafia thumb ring`) || modeIsFree(mode)) {
+    return new Map([]);
   }
-  var result = pickRider(key);
-  if (!result) throw new Error(`Unable to choose rider for key ${key}`);
-  return {
-    familiar: result.familiar,
-    value: valueRider(result, valueBjornModifiers(mode, familiar), dropsValueFunction)
-  };
+  return new Map([[$item`mafia thumb ring`, (1 / 0.96 - 1) * get$2("valueOfAdventure")]]);
+}
+function luckyGoldRingDropValues(includeVolcoino, includeFreddy) {
+  // Volcoino has a low drop rate which isn't accounted for here
+  // Overestimating until it drops is probably fine, don't @ me
+  var dropValues = [100].concat(_toConsumableArray([kolmafia.itemAmount($item`hobo nickel`) > 0 ? 100 : 0,
+  // This should be closeted
+  kolmafia.itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0,
+  // This should be closeted
+  includeFreddy ? garboValue($item`Freddy Kruegerand`) : 0].concat(_toConsumableArray(lgrCurrencies().map(i => i === $item`Volcoino` && !includeVolcoino ? 0 : garboValue(i)))).filter(value => value > 0)));
+  return dropValues;
+}
+function luckyGoldRing(mode) {
+  // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
+  if (!have$P($item`lucky gold ring`) || mode === BonusEquipMode.DMT) {
+    return new Map([]);
+  }
+  var dropValues = luckyGoldRingDropValues(!(mode === BonusEquipMode.MEAT_TARGET && !globalOptions.nobarf),
+  // Volcoino drops once per day, only wear during meat targets if nobarf
+  kolmafia.itemAmount($item`Freddy Kruegerand`) > 0);
+
+  // Items drop every ~10 turns
+  return new Map([[$item`lucky gold ring`, sumNumbers(dropValues) / dropValues.length / 10]]);
 }
 
-Mood.setDefaultOptions({
-  songSlots: [$effects`Polka of Plenty`, $effects`Fat Leon's Phat Loot Lyric, Ur-Kel's Aria of Annoyance`, $effects`Chorale of Companionship`, $effects`The Ballad of Richie Thingfinder`],
-  useNativeRestores: true
-});
-function meatMood() {
-  var urKels = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-  var meat = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
-  var baseMeat$1 = baseMeat();
-  meat || (meat = baseMeat$1);
-  // Reserve the amount of MP we try to restore before each fight.
-  var mood = new Mood({
-    reserveMp: safeRestoreMpTarget()
-  });
-  mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat$1);
-  mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
-  var flaskValue = usingPurse() ? 0.3 * baseMeat$1 : 5;
-  mood.potion($item`Flaskfull of Hollow`, flaskValue);
-  mood.skill($skill`Blood Bond`);
-  mood.skill($skill`Leash of Linguini`);
-  mood.skill($skill`Empathy of the Newt`);
-  mood.skill($skill`Only Dogs Love a Drunken Sailor`);
-  if (have$P($item`April Shower Thoughts shield`)) {
-    mood.effect($effect`Thoughtful Empathy`);
-    mood.effect($effect`Lubricating Sauce`);
-    mood.effect($effect`Tubes of Universal Meat`);
-    mood.effect($effect`Strength of the Tortoise`);
-  }
-  mood.skill($skill`The Polka of Plenty`);
-  mood.skill($skill`Disco Leer`);
-  mood.skill($skill`Singer's Faithful Ocelot`);
-  mood.skill($skill`The Spirit of Taking`);
-  if (FarmingStrategy.location === $location`Barf Mountain`) {
-    mood.potion($item`How to Avoid Scams`, 3 * baseMeat$1);
-  }
-  if (FarmingStrategy.ensureML) {
-    mood.skill($skill`Drescher's Annoying Noise`);
-    mood.skill($skill`Pride of the Puffin`);
-    mood.skill(urKels ? $skill`Ur-Kel's Aria of Annoyance` : $skill`Fat Leon's Phat Loot Lyric`);
-  } else {
-    // Assume that if we don't want ML, the fights must be tough enough
-    mood.skill($skill`Ghostly Shell`);
-    mood.skill($skill`Shield of the Pastalord`);
-  }
-  if (FarmingStrategy.isUnderwater()) mood.skill($skill`Donho's Bubbly Ballad`);
-  mood.skill($skill`Walk: Leisurely Amble`);
-  mood.skill($skill`Call For Backup`);
-  mood.skill($skill`Soothing Flute`);
-  var mmjCost = (100 - (have$P($skill`Five Finger Discount`) ? 5 : 0) - (have$P($item`Travoltan trousers`) ? 5 : 0)) * (200 / (1.5 * kolmafia.myLevel() + 5));
-  var genericManaPotionCost = kolmafia.mallPrice($item`generic mana potion`) * (200 / (2.5 * kolmafia.myLevel()));
-  var mpRestorerCost = Math.min(mmjCost, genericManaPotionCost);
-  if (kolmafia.myClass() !== $class`Pastamancer` && 0.1 * meat * 10 > mpRestorerCost) {
-    mood.skill($skill`Bind Lasagmbie`);
-  }
-  if (kolmafia.getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(FarmingStrategy.asdonEffect);
-  }
-  if (have$P($item`Kremlin's Greatest Briefcase`)) {
-    mood.effect($effect`A View to Some Meat`, () => {
-      if (get$2("_kgbClicksUsed") < 22) {
-        var buffTries = Math.ceil((22 - get$2("_kgbClicksUsed")) / 3);
-        kolmafia.cliExecute(`Briefcase buff ${new Array(buffTries).fill("meat").join(" ")}`);
-      }
-    });
-  }
-  if (!get$2("concertVisited") && get$2("sidequestArenaCompleted") === "fratboy") {
-    kolmafia.cliExecute("concert winklered");
-  } else if (!get$2("concertVisited") && get$2("sidequestArenaCompleted") === "hippy") {
-    kolmafia.cliExecute("concert optimist primal");
-  }
-  if (kolmafia.itemAmount($item`Bird-a-Day calendar`) > 0) {
-    if (!have$P($skill`Seek out a Bird`) || !get$2("_canSeekBirds")) {
-      kolmafia.use(1, $item`Bird-a-Day calendar`);
-    }
-    if (have$P($skill`Visit your Favorite Bird`) && !get$2("_favoriteBirdVisited") && (kolmafia.numericModifier($effect`Blessing of your favorite Bird`, "Meat Drop") > 0 || kolmafia.numericModifier($effect`Blessing of your favorite Bird`, "Item Drop") > 0)) {
-      kolmafia.useSkill($skill`Visit your Favorite Bird`);
-    }
-    if (have$P($skill`Seek out a Bird`) && get$2("_birdsSoughtToday") < 6 && (kolmafia.numericModifier($effect`Blessing of the Bird`, "Meat Drop") > 0 || kolmafia.numericModifier($effect`Blessing of the Bird`, "Item Drop") > 0)) {
-      // Ensure we don't get stuck in the choice if the count is wrong
-      setChoice(1399, 2);
-      kolmafia.useSkill($skill`Seek out a Bird`, 6 - get$2("_birdsSoughtToday"));
-    }
-  }
-  if (have$P($skill`Incredible Self-Esteem`) && $effects`Always be Collecting, Work For Hours a Week`.some(effect => have$P(effect)) && !get$2("_incredibleSelfEsteemCast")) {
-    kolmafia.useSkill($skill`Incredible Self-Esteem`);
-  }
-  if (!get$2("_alliedRadioWildsunBoon") && wildsunBoonWorthIt()) {
-    var acquired = acquire(1, $item`handheld Allied radio`, effectValue($effect`Wildsun Boon`, 100), false);
-    if (!acquired) _wildsunBoonWorthIt = false;
-    kolmafia.alliedRadio("wildsun boon");
-  }
-  var canRecord = kolmafia.getWorkshed() === $item`warbear LP-ROM burner` || have$P($item`warbear LP-ROM burner`) && !get$2("_workshedItemUsed") || get$2("questG04Nemesis") === "finished";
-  if (kolmafia.myClass() === $class`Accordion Thief` && kolmafia.myLevel() >= 15 && !canRecord) {
-    if (have$P($skill`The Ballad of Richie Thingfinder`)) {
-      kolmafia.useSkill($skill`The Ballad of Richie Thingfinder`, 10 - get$2("_thingfinderCasts"));
-    }
-    if (have$P($skill`Chorale of Companionship`)) {
-      kolmafia.useSkill($skill`Chorale of Companionship`, 10 - get$2("_companionshipCasts"));
-    }
-  }
-  if (have$P($skill`Heartstone: %pals`)) {
-    kolmafia.useSkill($skill`Heartstone: %pals`, 5 - get$2("_heartstonePalsUsed"));
-  }
-  shrugBadEffects();
-  return mood;
+// Possible drops are any pvpable potion that are not marked as banned by standard in the future,
+// which can be checked with the "Last Available" modifier being unset.
+// Resulting value from this function should be cached to prevent reprocessing
+function calculateMrCheengsSpectaclesBonus() {
+  var lastAvailableModifier = kolmafia.Modifier.get("Last Available");
+  var possibleDrops = kolmafia.Item.all().filter(i => i.tradeable && i.discardable && i.potion && kolmafia.stringModifier(i, lastAvailableModifier) === "");
+  var dropRate = 0.25; // Items drop every 4 turns
+  var maxPrice = 100_000; // arbitrary, to help avoid outliers
+  return sum(possibleDrops, item => Math.min(garboValue(item), maxPrice)) / possibleDrops.length * dropRate;
 }
-function freeFightMood() {
-  var mood = new Mood();
-  for (var _len = arguments.length, additionalEffects = new Array(_len), _key = 0; _key < _len; _key++) {
-    additionalEffects[_key] = arguments[_key];
+var mrCheengsBonus;
+function mrCheengsSpectacles() {
+  if (!have$P($item`Mr. Cheeng's spectacles`)) {
+    return new Map([]);
   }
-  for (var _i = 0, _additionalEffects = additionalEffects; _i < _additionalEffects.length; _i++) {
-    var effect = _additionalEffects[_i];
-    mood.effect(effect);
-  }
-  if (kolmafia.haveEffect($effect`Blue Swayed`) < 50) {
-    kolmafia.use(Math.ceil((50 - kolmafia.haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
-  }
-  mood.potion($item`white candy heart`, 30);
-  mood.skill($skill`Curiosity of Br'er Tarrypin`);
-  shrugBadEffects.apply(void 0, additionalEffects);
-  if (kolmafia.getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
-    mood.drive(FarmingStrategy.asdonEffect);
-  }
-  return mood;
+  mrCheengsBonus ?? (mrCheengsBonus = calculateMrCheengsSpectaclesBonus());
+  return new Map([[$item`Mr. Cheeng's spectacles`, mrCheengsBonus]]);
 }
-var damageEffects = kolmafia.Effect.all().filter(x => ["Thorns", "Sporadic Thorns", "Damage Aura", "Sporadic Damage Aura"].some(modifier => kolmafia.numericModifier(x, modifier) > 0));
-var textAlteringEffects = kolmafia.Effect.all().filter(x => kolmafia.booleanModifier(x, "Alters Page Text"));
-var teleportEffects = kolmafia.Effect.all().filter(x => kolmafia.booleanModifier(x, "Adventure Randomly"));
-var otherBadEffects = kolmafia.Effect.all().filter(x => kolmafia.booleanModifier(x, "Blind") || kolmafia.booleanModifier(x, "Always Fumble"));
-function shrugBadEffects() {
-  for (var _len2 = arguments.length, exclude = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-    exclude[_key2] = arguments[_key2];
-  }
-  [].concat(_toConsumableArray(damageEffects), _toConsumableArray(textAlteringEffects), _toConsumableArray(teleportEffects), _toConsumableArray(otherBadEffects)).filter(effect => have$P(effect) && !exclude.includes(effect)).forEach(effect => uneffect(effect));
-}
-var _wildsunBoonWorthIt;
-function wildsunBoonWorthIt() {
-  return _wildsunBoonWorthIt ?? (_wildsunBoonWorthIt = effectValue($effect`Wildsun Boon`, 100) > kolmafia.mallPrice($item`handheld Allied radio`));
-}
-
-var GarboWorkshed = /*#__PURE__*/function () {
-  function GarboWorkshed(options) {
-    _classCallCheck(this, GarboWorkshed);
-    _defineProperty(this, "available", () => true);
-    this.workshed = options.workshed;
-    if (options.done) this.done = options.done;
-    if (options.action) this.action = options.action;
-    if (options.available) this.available = options.available;
-    this.minTurns = options.minTurns ?? 0;
-  }
-  return _createClass(GarboWorkshed, [{
-    key: "canRemove",
-    value: function canRemove() {
-      var _this$done, _GarboWorkshed$next;
-      return (((_this$done = this.done) === null || _this$done === void 0 ? void 0 : _this$done.call(this)) ?? true) || estimatedGarboTurns() <= (((_GarboWorkshed$next = GarboWorkshed.next) === null || _GarboWorkshed$next === void 0 ? void 0 : _GarboWorkshed$next.minTurns) ?? 0);
-    }
-  }, {
-    key: "use",
-    value: function use() {
-      var _this$done2, _this$action;
-      if (!((_this$done2 = this.done) !== null && _this$done2 !== void 0 && _this$done2.call(this))) (_this$action = this.action) === null || _this$action === void 0 || _this$action.call(this);
-    }
-  }, {
-    key: "task",
-    get: function get() {
-      return {
-        name: `Workshed: ${this.workshed}`,
-        completed: () => {
-          var _this$done3;
-          return ((_this$done3 = this.done) === null || _this$done3 === void 0 ? void 0 : _this$done3.call(this)) ?? true;
-        },
-        ready: () => kolmafia.getWorkshed() === this.workshed && this.available() && !!this.action,
-        do: () => this.use(),
-        available: () => {
-          var _GarboWorkshed$curren, _GarboWorkshed$next2;
-          return [(_GarboWorkshed$curren = GarboWorkshed.current) === null || _GarboWorkshed$curren === void 0 ? void 0 : _GarboWorkshed$curren.workshed, (_GarboWorkshed$next2 = GarboWorkshed.next) === null || _GarboWorkshed$next2 === void 0 ? void 0 : _GarboWorkshed$next2.workshed].includes(this.workshed);
-        }
-      };
-    }
-  }], [{
-    key: "get",
-    value: function get(item) {
-      return worksheds.find(_ref => {
-        var workshed = _ref.workshed;
-        return workshed === item;
-      }) ?? null;
-    }
-  }, {
-    key: "current",
-    get: function get() {
-      return GarboWorkshed.get(kolmafia.getWorkshed());
-    }
-  }, {
-    key: "next",
-    get: function get() {
-      if (get$2("_workshedItemUsed") || kolmafia.getWorkshed() === globalOptions.workshed) {
-        return null;
-      }
-      return GarboWorkshed.get(globalOptions.workshed);
-    }
-  }, {
-    key: "useNext",
-    value: function useNext() {
-      if (get$2("_workshedItemUsed")) return null;
-      var next = GarboWorkshed.next;
-      if (next && have$P(next.workshed)) {
-        kolmafia.use(next.workshed);
-      }
-      return GarboWorkshed.current;
-    }
-  }]);
-}();
-var _attemptedMakingTonics = false;
-var _lastCMCTurn = kolmafia.myTotalTurnsSpent();
-var worksheds = [new GarboWorkshed({
-  workshed: $item`model train set`,
-  // We should always get value from the trainset, so we would never switch from it
-  done: () => false,
-  available: trainNeedsRotating,
-  action: rotateToOptimalCycle
-}), new GarboWorkshed({
-  workshed: $item`cold medicine cabinet`,
-  done: () => get$2("_coldMedicineConsults") >= 5,
-  available: () => get$2("_nextColdMedicineConsult") <= kolmafia.totalTurnsPlayed() && kolmafia.myTotalTurnsSpent() !== _lastCMCTurn,
-  // TODO: Ensure that we have a good expected cmc result
-  action: () => {
-    grabMedicine();
-    _lastCMCTurn = kolmafia.myTotalTurnsSpent();
-  },
-  minTurns: 80
-}), new GarboWorkshed({
-  workshed: $item`Asdon Martin keyfob (on ring)`,
-  done: () => {
-    return kolmafia.haveEffect(FarmingStrategy.asdonEffect) >= estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow);
-  },
-  action: () => {
-    drive(FarmingStrategy.asdonEffect, estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow));
-  }
-}), new GarboWorkshed({
-  workshed: $item`Little Geneticist DNA-Splicing Lab`,
-  done: () => {
-    // This will likely always return true or false for now, depending on the start state of garbo
-    // Since we don't actually support using the syringe in combat at this time, the counter will never change
-    return _attemptedMakingTonics || get$2("_dnaPotionsMade") >= 3;
-  },
-  action: () => {
-    // Just grab whatever tonics for now, since we don't actually have support for DNA
-    if (get$2("dnaSyringe")) makeTonic(3);
-    _attemptedMakingTonics = true;
-  }
-}), new GarboWorkshed({
-  workshed: $item`spinning wheel`,
-  done: () => get$2("_spinningWheel"),
-  action: () => {
-    // We simply assume you will not gain a level while garboing, since we do not do powerlevellings
-    // So we will just use the spinning wheel immediately
-    kolmafia.visitUrl("campground.php?action=spinningwheel");
-  }
-}), new GarboWorkshed({
-  workshed: $item`TakerSpace letter of Marque`,
-  done: () => _toConsumableArray(allRecipes().keys()).every(item => !canMake(item)),
-  action: () => {
-    var best = bestTakerspaceItem();
-    while (best) {
-      make(best);
-      best = bestTakerspaceItem();
-    }
-  },
-  available: () => GarboWorkshed.next && !get$2("_workshedItemUsed") || globalOptions.ascend
-})].concat(_toConsumableArray($items`diabolic pizza cube, portable Mayo Clinic, warbear high-efficiency still, warbear induction oven`.map(item => new GarboWorkshed({
-  workshed: item,
-  done: () => globalOptions.dietCompleted
-}))), _toConsumableArray($items`warbear chemistry lab, warbear LP-ROM burner`.map(item => new GarboWorkshed({
-  workshed: item,
-  done: potionSetupCompleted
-}))), _toConsumableArray($items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(item => new GarboWorkshed({
-  workshed: item
-}))));
-var SAFETY_TURNS_THRESHOLD = 25;
-function workshedTasks() {
-  return [].concat(_toConsumableArray(worksheds.map(workshed => workshed.task)), [{
-    name: "Swap Workshed",
-    completed: () => get$2("_workshedItemUsed"),
-    ready: () => {
-      var _GarboWorkshed$curren2, _GarboWorkshed$next3;
-      var canRemove = ((_GarboWorkshed$curren2 = GarboWorkshed.current) === null || _GarboWorkshed$curren2 === void 0 ? void 0 : _GarboWorkshed$curren2.canRemove()) ?? true;
-      var haveNext = GarboWorkshed.next !== null && have$P(GarboWorkshed.next.workshed);
-      var enoughTurns = !((_GarboWorkshed$next3 = GarboWorkshed.next) !== null && _GarboWorkshed$next3 !== void 0 && _GarboWorkshed$next3.minTurns) || GarboWorkshed.next.minTurns + SAFETY_TURNS_THRESHOLD > estimatedGarboTurns();
-      return canRemove && haveNext && enoughTurns;
-    },
-    do: () => GarboWorkshed.useNext(),
-    available: () => !get$2("_workshedItemUsed") && !!GarboWorkshed.next
-  }]);
-}
-
-var MPA = get$2("valueOfAdventure");
-kolmafia.print(`Using adventure value ${MPA}.`, HIGHLIGHT);
-var Mayo = Mayo$1;
-function hasMoonZoneRestaurant() {
-  return $locations`Camp Logging Camp, Thugnderdome`.some(loc => kolmafia.canAdventure(loc));
-}
-function availableFromMoonZoneRestaurant(item) {
-  return hasMoonZoneRestaurant() && kolmafia.dailySpecial() === item;
-}
-function consumeWhileRespectingMoonRestaurant(command, item) {
-  var usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
-  withProperties({
-    autoSatisfyWithCloset: !usingMoonZoneRestaurant && get$2("autoSatisfyWithCloset"),
-    autoSatisfyWithMall: !usingMoonZoneRestaurant
-  }, command);
-}
-function eatSafe(qty, item) {
-  if (have$P($item`Universal Seasoning`) && $item`Universal Seasoning`.dailyusesleft > 0 && !get$2("universalSeasoningActive")) {
-    kolmafia.use($item`Universal Seasoning`);
-  }
-  if (kolmafia.myLevel() >= 15 && !get$2("_hungerSauceUsed") && kolmafia.mallPrice($item`Hunger™ Sauce`) < 3 * MPA) {
-    acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
-    kolmafia.use($item`Hunger™ Sauce`);
-  }
-  if (kolmafia.mallPrice($item`fudge spork`) < 3 * MPA && !get$2("_fudgeSporkUsed")) {
-    kolmafia.eat($item`fudge spork`);
-  }
-  if (kolmafia.myClass() === $class`Pastamancer` && kolmafia.myThrall() !== $thrall`Spice Ghost` && !get$2("_legendarySpiceGhostFood") && $thrall`Spice Ghost`.level + (get$2("pumpkinSpiceWhorlUsed") ? 3 : 0) >= 11) {
-    kolmafia.useSkill($skill`Bind Spice Ghost`);
-  }
-  useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
-  consumeWhileRespectingMoonRestaurant(() => {
-    if (!kolmafia.eat(qty, item)) throw "Failed to eat safely";
-  }, item);
-}
-var EXPENSIVE_SONGS = $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
-var USEFUL_SONGS = $effects`Polka of Plenty, Ur-Kel's Aria of Annoyance, Fat Leon's Phat Loot Lyric`;
-function shrugForOde() {
-  var inexpensiveSongs = getActiveSongs().filter(e => !EXPENSIVE_SONGS.includes(e));
-  var uselessSongs = inexpensiveSongs.filter(e => !USEFUL_SONGS.includes(e));
-  if (uselessSongs.length >= 1) return uneffect(uselessSongs[0]);
-  if (inexpensiveSongs.length === 1) return uneffect(inexpensiveSongs[0]);
-  return uneffect(maxBy(inexpensiveSongs, e => kolmafia.haveEffect(e) * kolmafia.mpCost(kolmafia.toSkill(e)), true));
-}
-function buskEffectValuer(effect, duration) {
-  if (effect === $effect`Salty Mouth`) return 5 * get$2("valueOfAdventure");
-  if (effect === $effect`Hammertime` && !have$P($effect`Hammertime`) && get$2("_beretBuskingUses") === 0) {
-    return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
-  }
-  return beretEffectValue(effect, duration);
-}
-function canBusk() {
-  return have$c() && get$2("_beretBuskingUses") < 5;
-}
-function buskForSaltyMouth() {
-  if (!canBusk()) return;
-  for (var i = get$2("_beretBuskingUses"); i < 5; i++) {
-    if (have$P($effect`Salty Mouth`)) break;
-    buskFor(buskEffectValuer, {});
-  }
-}
-function drinkSafe(qty, item) {
-  var prevDrunk = kolmafia.myInebriety();
-  if (have$P($skill`The Ode to Booze`)) {
-    if (!have$P($effect`Ode to Booze`) && getSongCount() >= getSongLimit()) {
-      shrugForOde();
-    }
-    var odeTurns = qty * item.inebriety;
-    var castTurns = odeTurns - kolmafia.haveEffect($effect`Ode to Booze`);
-    if (castTurns > 0) {
-      kolmafia.useSkill($skill`The Ode to Booze`, Math.ceil(castTurns / kolmafia.turnsPerCast($skill`The Ode to Booze`)));
-    }
-  }
-  consumeWhileRespectingMoonRestaurant(() => {
-    var _item$notes;
-    if ((_item$notes = item.notes) !== null && _item$notes !== void 0 && _item$notes.includes("BEER") && canBusk()) {
-      for (var i = 0; i < qty; i++) {
-        buskForSaltyMouth();
-        if (!kolmafia.drink(1, item)) throw "Failed to drink safely";
-      }
-    } else if (!kolmafia.drink(qty, item)) throw "Failed to drink safely";
-  }, item);
-  if (item.inebriety === 1 && prevDrunk === qty + kolmafia.myInebriety() - 1) {
-    // sometimes mafia does not track the mime army shotglass property
-    kolmafia.setProperty("_mimeArmyShotglassUsed", "true");
-  }
-}
-function chewSafe(qty, item) {
-  if (!kolmafia.chew(qty, item)) throw "Failed to chew safely";
-}
-function consumeSafe(qty, item, additionalValue, skipAcquire) {
-  var spleenCleaned = spleenCleaners.get(item);
-  if (spleenCleaned && kolmafia.mySpleenUse() < spleenCleaned) {
-    throw "No spleen to clear with this.";
-  }
-  var averageAdventures = getAverageAdventures(item);
-  var usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
-  if (!usingMoonZoneRestaurant) {
-    if (averageAdventures > 0 || additionalValue) {
-      var cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
-      acquire(qty, item, cap, true);
-    } else {
-      acquire(qty, item);
-    }
-  }
-  // When eating the daily special, we need to closet any excess food, since it's much cheaper to eat the special
-  var excessAmount = usingMoonZoneRestaurant ? kolmafia.itemAmount(item) : 0;
-  if (usingMoonZoneRestaurant && kolmafia.itemAmount(item) > 0) {
-    kolmafia.putCloset(item, excessAmount);
-  }
-  if (kolmafia.itemType(item) === "food" || item === saladFork) {
-    eatSafe(qty, item);
-    if (excessAmount > 0) kolmafia.takeCloset(item, excessAmount);
-    return;
-  }
-  if (kolmafia.itemType(item) === "booze" || item === frostyMug) {
-    drinkSafe(qty, item);
-    if (excessAmount > 0) kolmafia.takeCloset(item, excessAmount);
-    return;
-  }
-  if (kolmafia.itemType(item) === "spleen item") {
-    chewSafe(qty, item);
-    return;
-  }
-  kolmafia.use(qty, item);
-}
-function propTrue(prop) {
-  if (typeof prop === "boolean") {
-    return prop;
-  } else {
-    return get$2(prop);
-  }
-}
-function useIfUnused(item, prop, maxPrice) {
-  if (!propTrue(prop)) {
-    if (kolmafia.mallPrice(item) <= maxPrice) {
-      acquire(1, item, maxPrice, false);
-      if (!have$P(item)) return;
-      kolmafia.use(1, item);
-    } else {
-      kolmafia.print(`Skipping ${item.name}; too expensive (${kolmafia.mallPrice(item)} > ${maxPrice}).`);
-    }
-  }
-}
-function nonOrganAdventures() {
-  useIfUnused($item`fancy chocolate car`, get$2("_chocolatesUsed") !== 0, 2 * MPA);
-  while (get$2("_loveChocolatesUsed") < 3) {
-    var price = have$P($item`LOV Extraterrestrial Chocolate`) ? 15000 : 20000;
-    var value = clamp(3 - get$2("_loveChocolatesUsed"), 0, 3) * get$2("valueOfAdventure");
-    if (value < price) break;
-    if (!have$P($item`LOV Extraterrestrial Chocolate`)) {
-      Kmail.send("sellbot", `${$item`LOV Extraterrestrial Chocolate`.name} (1)`, undefined, 20000);
-      kolmafia.wait(11);
-      kolmafia.cliExecute("refresh inventory");
-      if (!have$P($item`LOV Extraterrestrial Chocolate`)) {
-        kolmafia.print("I'm tired of waiting for sellbot to send me some chocolate", "red");
-        break;
-      }
-    }
-    kolmafia.use($item`LOV Extraterrestrial Chocolate`);
-  }
-  var chocos = new Map([[$class`Seal Clubber`, $item`chocolate seal-clubbing club`], [$class`Turtle Tamer`, $item`chocolate turtle totem`], [$class`Pastamancer`, $item`chocolate pasta spoon`], [$class`Sauceror`, $item`chocolate saucepan`], [$class`Accordion Thief`, $item`chocolate stolen accordion`], [$class`Disco Bandit`, $item`chocolate disco ball`]]);
-  var classChoco = chocos.get(kolmafia.myClass());
-  var chocExpVal = (remaining, item) => {
-    var advs = [0, 0, 1, 2, 3][remaining + (item === classChoco ? 1 : 0)];
-    return advs * MPA - kolmafia.mallPrice(item);
-  };
-  var chocosRemaining = clamp(3 - get$2("_chocolatesUsed"), 0, 3);
-  var _loop = function _loop(i) {
-    var chocoVals = _toConsumableArray(chocos.values()).map(choc => {
-      return {
-        choco: choc,
-        value: chocExpVal(i, choc)
-      };
-    });
-    var best = maxBy(chocoVals, "value");
-    if (best.value > 0) {
-      acquire(1, best.choco, best.value + kolmafia.mallPrice(best.choco), false);
-      kolmafia.use(1, best.choco);
-    } else return 1; // break
-  };
-  for (var i = chocosRemaining; i > 0; i--) {
-    if (_loop(i)) break;
-  }
-  useIfUnused($item`fancy chocolate sculpture`, get$2("_chocolateSculpturesUsed") > 0, 5 * MPA + 5000);
-  useIfUnused($item`essential tofu`, "_essentialTofuUsed", 5 * MPA);
-  if (!get$2("_etchedHourglassUsed") && have$P($item`etched hourglass`)) {
-    kolmafia.use(1, $item`etched hourglass`);
-  }
-  if (kolmafia.getProperty("_timesArrowUsed") !== "true" && kolmafia.mallPrice($item`time's arrow`) < 5 * MPA) {
-    acquire(1, $item`time's arrow`, 5 * MPA);
-    kolmafia.cliExecute("csend 1 time's arrow to botticelli");
-    kolmafia.setProperty("_timesArrowUsed", "true");
-  }
-  if (have$P($skill`Ancestral Recall`) && kolmafia.mallPrice($item`blue mana`) < 3 * MPA) {
-    var casts = Math.max(10 - get$2("_ancestralRecallCasts"), 0);
-    acquire(casts, $item`blue mana`, 3 * MPA);
-    kolmafia.useSkill(casts, $skill`Ancestral Recall`);
-  }
-  if (globalOptions.ascend) {
-    useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 20 * MPA);
-  }
-  if (get$2("_extraTimeUsed", 3) < 3) {
-    var extraTimeValue = timesUsed => {
-      var advs = [5, 3, 1][timesUsed];
-      return advs * MPA;
-    };
-    var extraTimeUsed = get$2("_extraTimeUsed", 3);
-    for (var _i = extraTimeUsed; _i < 3; _i++) {
-      if (extraTimeValue(_i) > kolmafia.mallPrice($item`extra time`)) {
-        if (acquire(1, $item`extra time`, extraTimeValue(_i), false)) {
-          kolmafia.use($item`extra time`);
-        }
-      } else break;
-    }
-  }
-  if (get$2("_clocksUsed", 2) < 2) {
-    var clockValue = timesUsed => {
-      var advs = [3, 2][timesUsed];
-      return advs * MPA;
-    };
-    var clocksUsed = get$2("_clocksUsed", 2);
-    for (var _i2 = clocksUsed; _i2 < 2; _i2++) {
-      if (clockValue(_i2) > kolmafia.mallPrice($item`clock`)) {
-        if (acquire(1, $item`clock`, clockValue(_i2), false)) {
-          kolmafia.use($item`clock`);
-        }
-      } else break;
-    }
-  }
-}
-function pillCheck() {
-  if (!get$2("_distentionPillUsed")) {
-    if (!get$2("garbo_skipPillCheck", false) && !have$P($item`distention pill`, 1)) {
-      _set("garbo_skipPillCheck", userConfirmDialog("You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)", false, 15000));
-    }
-  }
-  if (!get$2("_syntheticDogHairPillUsed")) {
-    if (!get$2("garbo_skipPillCheck", false) && !have$P($item`synthetic dog hair pill`, 1)) {
-      _set("garbo_skipPillCheck", userConfirmDialog("You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)", false, 15000));
-    }
-  }
-}
-var saladFork = $item`Ol' Scratch's salad fork`;
-var frostyMug = $item`Frosty's frosty mug`;
-var spleenCleaners = new Map([[$item`extra-greasy slider`, 5], [$item`jar of fermented pickle juice`, 5], [$item`mojo filter`, 1]]);
-var stomachLiverCleaners = new Map([[$item`spice melange`, [-3, -3]], [$item`synthetic dog hair pill`, [0, -1]], [$item`cuppa Sobrie tea`, [0, -1]], [$item`designer sweatpants`, [0, -1]], [$item`august scepter`, [-1, 0]], [$item`Mr. Burnsger`, [4, -2]], [$item`Doc Clock's thyme cocktail`, [-2, 4]], [$item`The Plumber's mushroom stew`, [3, -1]], [$item`The Mad Liquor`, [-1, 3]]]);
-function legendaryPizzaToMenu(pizzas, maker) {
-  if (!globalOptions.ascend) return [];
-  var canCookLegendaryPizza = pizza => {
-    var recipes = [pizza].concat(_toConsumableArray($items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`)).map(i => kolmafia.toInt(i));
-    return !recipes.some(id => get$2(`unknownRecipe${id}`, true));
-  };
-  return pizzas.filter(_ref => {
-    var item = _ref.item,
-      pref = _ref.pref;
-    return !get$2(pref, true) && canCookLegendaryPizza(item);
-  }).map(_ref2 => {
-    var item = _ref2.item;
-    return maker({
-      item,
-      price: 2 * sum($items`Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris`, ingredientCost)
-    });
-  });
-}
-var cheapestItem = items => maxBy(items, MenuItem.defaultPriceFunction, true);
-
-/**
- * Generate a basic menu of high-yield items to consider
- * @returns basic menu
- */
-function menu$1() {
-  var spaghettiBreakfast = have$P($item`spaghetti breakfast`) && kolmafia.myFullness() === 0 && get$2("_timeSpinnerFoodAvailable") === "" && !get$2("_spaghettiBreakfastEaten") ? 1 : 0;
-
-  /*
-   * generated in mafia with an account that has super human cocktail crafting
-   *  > js Item.all().filter((item) => item.inebriety > 0 && item.quality === "EPIC" && getIngredients(item)["mushroom fermenting powder]).join(", ")
-   */
-  var complexMushroomWines = $items`overpowering mushroom wine, complex mushroom wine, smooth mushroom wine, blood-red mushroom wine, buzzing mushroom wine, swirling mushroom wine`;
-  /*
-   * generated in mafia with:
-   *  > js Item.all().filter((item) => item.inebriety > 0 && getIngredients(item)["perfect ice cube"]).join(", ")
-   */
-  var perfectDrinks = $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`;
-  /*
-   * generated in mafia with an account that has Transcendental Noodlecraft
-   *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
-   */
-  var lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
-
-  /*
-   * standardSpleenItem indicates a spleen item of size 4 with an adventure yield of 5-10. Taken from the wiki. They are all functionally equivalent.
-   */
-  var standardSpleenItems = $items`agua de vida, gooey paste, oily paste, ectoplasmic paste, greasy paste, bug paste, hippy paste, orc paste, demonic paste, indescribably horrible paste, fishy paste, goblin paste, pirate paste, chlorophyll paste, strange paste, Mer-kin paste, slimy paste, penguin paste, elemental paste, cosmic paste, hobo paste, Crimbo paste, groose grease, Unconscious Collective Dream Jar, grim fairy tale, powdered gold`;
-  var smallEpics = [].concat(_toConsumableArray($items`meteoreo, ice rice`), [$item`Tea, Earl Grey, Hot`]);
-  var crimboKeyValue = garboValue(kolmafia.toItem(kolmafia.toInt(kolmafia.myId()) % 4 + $item`pirate encryption key alpha`.id));
-  var boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter(item => have$P(item));
-  var pilsners = globalOptions.usepilsners || globalOptions.ascend ? $items`astral pilsner`.filter(item => have$P(item)) : [];
-  var instantKarma = globalOptions.usekarma ? $items`Instant Karma`.filter(item => have$P(item)) : [];
-  var crimboKeyItem = cheapestItem($items`corned beet, pickled bread, salted mutton`);
-  var limitedItems = [].concat(_toConsumableArray(boxingDayCareItems), _toConsumableArray(pilsners), _toConsumableArray(instantKarma)).map(item => new MenuItem(item, {
-    maximum: kolmafia.availableAmount(item)
-  }));
-  var legendaryPizzas = legendaryPizzaToMenu([{
-    item: $item`Calzone of Legend`,
-    pref: "calzoneOfLegendEaten"
-  }, {
-    item: $item`Pizza of Legend`,
-    pref: "pizzaOfLegendEaten"
-  }], out => new MenuItem(out.item, {
-    maximum: 1,
-    priceOverride: out.price
-  }));
-  var dailySpecialItem = hasMoonZoneRestaurant() && get$2("_dailySpecialPrice") < kolmafia.mallPrice(kolmafia.dailySpecial()) ? [new MenuItem(kolmafia.dailySpecial(), {
-    priceOverride: get$2("_dailySpecialPrice")
-  })] : [];
-  return [
-  // FOOD
-  new MenuItem($item`Dreadsylvanian cold pocket`), new MenuItem($item`Dreadsylvanian hot pocket`), new MenuItem($item`Dreadsylvanian sleaze pocket`), new MenuItem($item`Dreadsylvanian stink pocket`), new MenuItem($item`Dreadsylvanian spooky pocket`), new MenuItem($item`tin cup of mulligan stew`), new MenuItem($item`frozen banquet`), new MenuItem($item`deviled egg`), new MenuItem($item`spaghetti breakfast`, {
-    maximum: spaghettiBreakfast
-  }), new MenuItem($item`extra-greasy slider`), new MenuItem(cheapestItem(lasagnas)), new MenuItem(cheapestItem(smallEpics)), new MenuItem($item`green hamhock`)].concat(_toConsumableArray(legendaryPizzas.flat()), [
-  // BOOZE
-  new MenuItem($item`elemental caipiroska`), new MenuItem($item`moreltini`), new MenuItem($item`Dreadsylvanian cold-fashioned`), new MenuItem($item`Dreadsylvanian dank and stormy`), new MenuItem($item`Dreadsylvanian grimlet`), new MenuItem($item`Dreadsylvanian hot toddy`), new MenuItem($item`Dreadsylvanian slithery nipple`), new MenuItem($item`Hodgman's blanket`), new MenuItem($item`Sacramento wine`), new MenuItem($item`iced plum wine`), new MenuItem($item`splendid martini`), new MenuItem($item`low tide martini`), new MenuItem($item`yam martini`), new MenuItem($item`Eye and a Twist`), new MenuItem($item`jar of fermented pickle juice`), new MenuItem(cheapestItem(complexMushroomWines)), new MenuItem(cheapestItem(perfectDrinks)), new MenuItem($item`green eggnog`), new MenuItem($item`can of Brütalbräu`, {
-    additionalValue: garboValue($item`fancy tin beer can`)
-  }), new MenuItem($item`can of Drooling Monk`, {
-    additionalValue: garboValue($item`fancy tin beer can`)
-  }), new MenuItem($item`can of Impetuous Scofflaw`, {
-    additionalValue: garboValue($item`fancy tin beer can`)
-  }),
-  // SPLEEN
-  new MenuItem($item`octolus oculus`), new MenuItem($item`prismatic wad`), new MenuItem($item`transdermal smoke patch`), new MenuItem($item`antimatter wad`), new MenuItem($item`voodoo snuff`), new MenuItem($item`blood-drive sticker`), new MenuItem(cheapestItem(standardSpleenItems)), new MenuItem(cheapestItem($items`not-a-pipe, glimmering roc feather`))], _toConsumableArray(limitedItems), _toConsumableArray(crimboKeyValue >= kolmafia.mallPrice(crimboKeyItem) ? [new MenuItem(crimboKeyItem, {
-    additionalValue: crimboKeyValue,
-    maximum: clamp(
-    // Restrict to a 3rd of our open stomach, capped at 5 to avoid using stomach cleansers
-    Math.floor((kolmafia.fullnessLimit() - kolmafia.myFullness()) / 3), 0, 5)
-  })] : []), dailySpecialItem, [
-  // HELPERS
-  new MenuItem($item`distention pill`), new MenuItem($item`cuppa Voraci tea`), new MenuItem(Mayo.flex), new MenuItem(Mayo.zapine), new MenuItem($item`Special Seasoning`), new MenuItem($item`mini kiwi aioli`), new MenuItem($item`whet stone`), new MenuItem(saladFork), new MenuItem(frostyMug), new MenuItem($item`mojo filter`), new MenuItem($item`pocket wish`, {
-    maximum: 1,
-    effect: $effect`Refined Palate`
-  }), new MenuItem($item`toasted brie`, {
-    maximum: 1
-  }), new MenuItem($item`potion of the field gar`, {
-    maximum: 1
-  })], _toConsumableArray(_toConsumableArray(stomachLiverCleaners.keys()).map(item => new MenuItem(item))), [new MenuItem($item`sweet tooth`, {
-    size: -1,
-    organ: "food",
-    maximum: get$2("_sweetToothUsed") ? 0 : 1
-  }), new MenuItem($item`designer sweatpants`, {
-    size: -1,
-    organ: "booze",
-    maximum: availableCasts$1($skill`Sweat Out Some Booze`)
-  }), new MenuItem($item`august scepter`, {
-    size: -1,
-    organ: "food",
-    maximum: shouldAugustCast($skill`Aug. 16th: Roller Coaster Day!`) ? 1 : 0
-  })]).filter(item => item.price() < Infinity);
-}
-function bestConsumable(organType) {
-  var levelRestrict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  var restrictList = arguments.length > 2 ? arguments[2] : undefined;
-  var maxSize = arguments.length > 3 ? arguments[3] : undefined;
-  var fullMenu = potionMenu(menu$1(), 0, 0);
-  var organMenu = fullMenu.filter(menuItem => kolmafia.itemType(menuItem.item) === organType);
-  if (restrictList) {
-    if (restrictList instanceof kolmafia.Item) {
-      organMenu = organMenu.filter(menuItem => restrictList !== menuItem.item);
-    } else {
-      organMenu = organMenu.filter(menuItem => !restrictList.includes(menuItem.item));
-    }
-  }
-  if (maxSize) {
-    organMenu = organMenu.filter(menuItem => menuItem.size <= maxSize);
-  }
-  if (levelRestrict) {
-    organMenu = organMenu.filter(menuItem => menuItem.item.levelreq <= kolmafia.myLevel());
-  }
-  var organList = organMenu.map(consumable => {
-    var edible = consumable.item;
-    var buffs = get$1("Effect", edible);
-    var turnsPerUse = get$1("Effect Duration", edible);
-    var meatDrop = sum(buffs, buff => get$1("Meat Drop", kolmafia.toEffect(buff)));
-    var famWeight = sum(buffs, buff => get$1("Familiar Weight", kolmafia.toEffect(buff)));
-    var buffValue = (meatDrop + famWeight * 25 / 10) * turnsPerUse * targetMeat() / 100;
-    var advValue = getAverageAdventures(edible) * get$2("valueOfAdventure");
-    var organSpace = consumable.size;
-    return {
-      edible: edible,
-      value: (buffValue + advValue - kolmafia.mallPrice(edible)) / organSpace
-    };
-  });
-  var best = maxBy(organList, "value");
-  return best;
-}
-function gregariousCount() {
-  var gregariousCharges = get$2("beGregariousCharges") + (get$2("beGregariousFightsLeft") > 0 && get$2("beGregariousMonster") === globalOptions.target ? 1 : 0);
-  var gregariousFightsPerCharge = expectedGregs("extro");
-  // remove and preserve the last index - that is the marginal count of gregarious fights
-  var marginalGregariousFights = gregariousFightsPerCharge.splice(gregariousFightsPerCharge.length - 1, 1)[0];
-  var expectedGregariousFights = gregariousFightsPerCharge.slice(gregariousCharges);
-  return {
-    expectedGregariousFights,
-    marginalGregariousFights
-  };
-}
-function copiers() {
-  var targetDifferential = targetingMeat() ? MEAT_TARGET_MULTIPLIER() * MPA : 0;
-  var _gregariousCount = gregariousCount(),
-    expectedGregariousFights = _gregariousCount.expectedGregariousFights,
-    marginalGregariousFights = _gregariousCount.marginalGregariousFights;
-  var extros = kolmafia.myInebriety() > kolmafia.inebrietyLimit() ? [] : [].concat(_toConsumableArray(expectedGregariousFights.map(targets => new MenuItem($item`Extrovermectin™`, {
-    additionalValue: targets * targetDifferential,
-    maximum: 1
-  }))), [new MenuItem($item`Extrovermectin™`, {
-    additionalValue: marginalGregariousFights * targetDifferential
-  })]);
-  return _toConsumableArray(extros);
-}
-function countCopies(diet) {
-  // this only counts the copies not yet realized
-  // any copies already realized will be properly counted by copyTargetCount
-
-  // returns an array of expected counts for number of greg copies to fight per pill use
-  // the last value is how much you expect to fight per pill
-  var extros = sum(diet.entries, _ref3 => {
-    var menuItems = _ref3.menuItems,
-      quantity = _ref3.quantity;
-    return menuItems.some(menuItem => menuItem.item === $item`Extrovermectin™`) ? quantity : 0;
-  });
-  var _gregariousCount2 = gregariousCount(),
-    expectedGregariousFights = _gregariousCount2.expectedGregariousFights,
-    marginalGregariousFights = _gregariousCount2.marginalGregariousFights;
-
-  // slice will never return an array that is bigger than the original array
-  var replaceExtros = sumNumbers(expectedGregariousFights.slice(0, extros));
-  var bonusExtros = clamp(extros - expectedGregariousFights.length, 0, extros) * marginalGregariousFights;
-  return replaceExtros + bonusExtros;
-}
-function ingredientCost(item) {
-  var ingredientMallPrice = kolmafia.mallPrice(item);
-  var ingredientAutosellPrice = kolmafia.autosellPrice(item);
-  if (!have$P(item) || item.tradeable && ingredientMallPrice > Math.max(100, 2 * ingredientAutosellPrice)) {
-    return ingredientMallPrice;
-  }
-  return ingredientAutosellPrice;
-}
-
-/**
- * Generate a potion diet that has entries
- * @param targets number of target monsters expected to be encountered on this day
- * @param turns number of turns total expecte
- */
-function potionMenu(baseMenu, targets, turns) {
-  function limitedPotion(input, limit) {
-    var _GarboWorkshed$curren;
-    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    if (limit === 0) {
-      return [];
-    }
-    var potion = input instanceof kolmafia.Item ? new Potion(input) : input;
-    var mayo = undefined;
-    if (kolmafia.itemType(potion.potion) === "food" && (((_GarboWorkshed$curren = GarboWorkshed.current) === null || _GarboWorkshed$curren === void 0 ? void 0 : _GarboWorkshed$curren.workshed) === $item`portable Mayo Clinic` || switchingToMayo())) {
-      potion = potion.doubleDuration();
-      mayo = Mayo.zapine;
-    }
-    return potion.value(targets, turns, limit).map(tier => new MenuItem(potion.potion, {
-      maximum: tier.quantity,
-      additionalValue: tier.value,
-      priceOverride: options.price,
-      organ: options.organ,
-      size: options.size,
-      data: tier.name,
-      mayo
-    }));
-  }
-  function potion(potion) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    return limitedPotion(potion, undefined, options);
-  }
-  var speakeasy = $item`Clan speakeasy`;
-  var hasSpeakeasy = kolmafia.getClanLounge()[`${speakeasy}`];
-  var twiceHauntedPrice = Math.min(ingredientCost($item`haunted orange`), ingredientCost($item`orange`) + ingredientCost($item`ghostly ectoplasm`)) + Math.min(ingredientCost($item`haunted bottle of vodka`), ingredientCost($item`bottle of vodka`) + ingredientCost($item`ghostly ectoplasm`));
-  var campfireHotdog = get$2("getawayCampsiteUnlocked") ? potion($item`campfire hot dog`, {
-    price: ingredientCost($item`stick of firewood`)
-  }) : [];
-  var foodCone = realmAvailable("stench") || globalOptions.simdiet && !globalOptions.nobarf ? limitedPotion($item`Dinsey food-cone`, Math.floor(kolmafia.availableAmount($item`FunFunds™`) / 2), {
-    price: 2 * garboValue($item`FunFunds™`)
-  }) : [];
-  var borisBread = !get$2("unknownRecipe10978") // this property is true if you don't know the recipe, false if you do
-  ? potion($item`Boris's bread`, {
-    price: 2 * ingredientCost($item`Yeast of Boris`)
-  }) : [];
-  var deepDish = legendaryPizzaToMenu([{
-    item: $item`Deep Dish of Legend`,
-    pref: "deepDishOfLegendEaten"
-  }], out => limitedPotion(out.item, 1, {
-    price: out.price
-  }));
-  return [].concat(_toConsumableArray(baseMenu), _toConsumableArray(copiers()), _toConsumableArray(potion($item`jumping horseradish`)), _toConsumableArray(potion($item`tempura cauliflower`)), _toConsumableArray(potion($item`sea truffle`)), _toConsumableArray(potion($item`tempura broccoli`)), _toConsumableArray(potion($item`Miserable Pie`)), _toConsumableArray(potion($item`Every Day is Like This Sundae`)), _toConsumableArray(potion($item`bowl of mummy guts`)), _toConsumableArray(potion($item`haunted Hell ramen`)), _toConsumableArray(campfireHotdog), _toConsumableArray(foodCone), _toConsumableArray(borisBread), _toConsumableArray(deepDish.flat()), _toConsumableArray(potion($item`dirt julep`)), _toConsumableArray(potion($item`Ambitious Turkey`)), _toConsumableArray(potion($item`Friendly Turkey`)), _toConsumableArray(potion($item`vintage smart drink`)), _toConsumableArray(potion($item`Strikes Again Bigmouth`)), _toConsumableArray(potion($item`Irish Coffee, English Heart`)), _toConsumableArray(potion($item`Jack-O-Lantern beer`)), _toConsumableArray(potion($item`Amnesiac Ale`)), _toConsumableArray(potion($item`mentholated wine`)), _toConsumableArray(potion($item`Feliz Navidad`)), _toConsumableArray(potion($item`broberry brogurt`)), _toConsumableArray(potion($item`haunted martini`)), _toConsumableArray(potion($item`bottle of Greedy Dog`)), _toConsumableArray(potion($item`twice-haunted screwdriver`, {
-    price: twiceHauntedPrice
-  })), _toConsumableArray(limitedPotion($item`high-end ginger wine`, kolmafia.availableAmount($item`high-end ginger wine`))), _toConsumableArray(limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, {
-    price: 5000
-  })), _toConsumableArray(realmAvailable("sleaze") && kolmafia.sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`) ? limitedPotion($item`broberry brogurt`, Math.floor(kolmafia.itemAmount($item`Beach Buck`) / 10), {
-    price: 10 * garboValue($item`Beach Buck`)
-  }) : []), _toConsumableArray(potion($item`cute mushroom`)), _toConsumableArray(potion($item`beggin' cologne`)), _toConsumableArray(potion($item`Knob Goblin nasal spray`)), _toConsumableArray(potion($item`handful of Smithereens`)), _toConsumableArray(potion($item`black striped oyster egg`)), _toConsumableArray(potion($item`black paisley oyster egg`)), _toConsumableArray(potion($item`black polka-dot oyster egg`)), _toConsumableArray(potion($item`lustrous oyster egg`)), _toConsumableArray(potion($item`glimmering buzzard feather`)), _toConsumableArray(potion($item`Knob Goblin pet-buffing spray`)), _toConsumableArray(potion($item`abstraction: joy`)), _toConsumableArray(potion($item`beastly paste`)), _toConsumableArray(potion($item`gleaming oyster egg`)), _toConsumableArray(potion($item`Party-in-a-Can™`)), _toConsumableArray(limitedPotion($item`body spradium`, clamp(kolmafia.availableAmount($item`body spradium`), 0, 1))), _toConsumableArray(have$P($skill`Sweet Synthesis`) ? potion(new Potion($item`Rethinking Candy`, {
-    effect: $effect`Synthesis: Greed`,
-    duration: 30
-  }), {
-    size: 1,
-    organ: "spleen item",
-    price: 0
-  }) : []));
-}
-function balanceMenu(baseMenu, dietPlanner) {
-  var baseTargets = highMeatMonsterCount();
-  function rebalance(menu, iterations, targets, adventures) {
-    var fullMenu = potionMenu(menu, baseTargets + targets, estimatedGarboTurns(false) + adventures);
-    if (iterations <= 0) {
-      return fullMenu;
-    } else {
-      var balancingDiet = dietPlanner(fullMenu);
-      return rebalance(menu, iterations - 1, countCopies(balancingDiet), balancingDiet.expectedAdventures());
-    }
-  }
-  var baseDiet = dietPlanner(baseMenu);
-  return rebalance(baseMenu, 5, 0, baseDiet.expectedAdventures());
-}
-function computeDiet() {
-  kolmafia.print("Calculating diet, please wait...", HIGHLIGHT);
-  // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
-
-  var orEmpty = diet => diet.expectedValue(MPA, "net") < 0 ? new Diet() : diet;
-  var fullDietPlanner = menu => orEmpty(Diet.plan(MPA, menu));
-  var shotglassDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
-    booze: 1
-  }));
-  var pantsgivingDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
-    food: 1
-  }));
-  var sweatpantsDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
-    booze: getRemainingLiver()
-  }));
-  // const shotglassFilter = (menuItem: MenuItem)
-
-  return {
-    diet: () => fullDietPlanner(balanceMenu(menu$1().filter(menuItem => !priceCaps[menuItem.item.name] || priceCaps[menuItem.item.name] >= kolmafia.mallPrice(menuItem.item)), fullDietPlanner)),
-    shotglass: () => shotglassDietPlanner(balanceMenu(menu$1().filter(menuItem => kolmafia.itemType(menuItem.item) === "booze" && menuItem.size === 1), shotglassDietPlanner)),
-    pantsgiving: () => pantsgivingDietPlanner(balanceMenu(menu$1().filter(menuItem => kolmafia.itemType(menuItem.item) === "food" && menuItem.size === 1 || [Mayo.flex, Mayo.zapine, $item`Special Seasoning`, $item`mini kiwi aioli`, $item`whet stone`].includes(menuItem.item)), pantsgivingDietPlanner)),
-    sweatpants: () => sweatpantsDietPlanner(balanceMenu(menu$1().filter(menuItem => kolmafia.itemType(menuItem.item) === "booze" && menuItem.size <= 3), sweatpantsDietPlanner))
-  };
-}
-function printDiet(diet, name) {
-  kolmafia.print(`===== ${name} DIET =====`);
-  if (diet.entries.length === 0) return;
-  diet = diet.copy();
-  diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
-  var targets = Math.floor(highMeatMonsterCount() + countCopies(diet));
-  var adventures = Math.floor(estimatedGarboTurns(false) + diet.expectedAdventures());
-  kolmafia.print(`Planning to fight ${targets} ${globalOptions.target} and run ${adventures} adventures`);
-  var _iterator = _createForOfIteratorHelper(diet.entries),
-    _step;
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var dietEntry = _step.value;
-      if (dietEntry.quantity === 0) continue;
-      var target = dietEntry.target();
-      var datastr = target.data ? `(${target.data})` : "";
-      var maxstr = target.maximum ? ` (max ${target.maximum})` : "";
-      var helpersstr = dietEntry.helpers().length > 0 ? ` helpers: ${dietEntry.helpers().join(", ")}` : "";
-      var addvalstr = target.additionalValue ? ` (additional value: ${target.additionalValue})` : "";
-      var valuestr = `value: ${Math.floor(dietEntry.expectedValue(MPA, diet))}${addvalstr} price: ${Math.floor(dietEntry.expectedPrice())}`;
-      kolmafia.print(`${dietEntry.quantity}${maxstr} ${target}${datastr}${helpersstr} ${valuestr}`);
-    }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-  var totalValue = diet.expectedValue(MPA);
-  var totalCost = diet.expectedPrice();
-  var netValue = totalValue - totalCost;
-  kolmafia.print(`Assuming MPA of ${MPA}, Total Cost ${totalCost}, Total Value ${totalValue}, Net Value ${netValue}`);
-}
-
-// Item priority - higher means we eat it first.
-// Anything that gives a consumption buff should go first (e.g. Refined Palate).
-function itemPriority(menuItems) {
-  // Last menu item is the food itself.
-  var menuItem = menuItems[menuItems.length - 1];
-  if (menuItem === undefined) {
-    throw "Shouldn't have an empty menu item.";
-  }
-  if (menuItem.item === $item`spaghetti breakfast`) return 200;
-  if ($items`pocket wish, toasted brie`.includes(menuItem.item) || spleenCleaners.get(menuItem.item) || stomachLiverCleaners.get(menuItem.item)) {
-    return 100;
-  } else {
-    return 0;
-  }
-}
-function consumeDiet(diet, name) {
-  if (diet.entries.length === 0) return;
-  diet = diet.copy();
-  diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
-  kolmafia.print();
-  printDiet(diet, name);
-  kolmafia.print();
-  var seasoningCount = sum(diet.entries, _ref4 => {
-    var menuItems = _ref4.menuItems,
-      quantity = _ref4.quantity;
-    return menuItems.some(menuItem => menuItem.item === $item`Special Seasoning`) ? quantity : 0;
-  });
-  acquire(seasoningCount, $item`Special Seasoning`, MPA);
-
-  // Fill organs in rounds, making sure we're making progress in each round.
-  var organs = () => [kolmafia.myFullness(), kolmafia.myInebriety(), kolmafia.mySpleenUse()];
-  var lastOrgans = [-1, -1, -1];
-  var capacities = () => [kolmafia.fullnessLimit(), kolmafia.inebrietyLimit(), kolmafia.spleenLimit()];
-  var lastCapacities = [-1, -1, -1];
-  var currentQuantity = sum(diet.entries, "quantity");
-  var lastQuantity = -1;
-  while (currentQuantity > 0) {
-    if (arrayEquals(lastOrgans, organs()) && arrayEquals(lastCapacities, capacities()) && lastQuantity === currentQuantity) {
-      kolmafia.print();
-      printDiet(diet, "REMAINING");
-      kolmafia.print();
-      throw "Failed to consume some diet item.";
-    }
-    lastOrgans = organs();
-    lastCapacities = capacities();
-    lastQuantity = currentQuantity;
-    var _iterator2 = _createForOfIteratorHelper(diet.entries),
-      _step2;
-    try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var dietEntry = _step2.value;
-        var menuItems = dietEntry.menuItems,
-          quantity = dietEntry.quantity;
-        if (quantity === 0) continue;
-        var countToConsume = quantity;
-        var capacity = {
-          food: kolmafia.fullnessLimit() - kolmafia.myFullness(),
-          booze: kolmafia.inebrietyLimit() - kolmafia.myInebriety(),
-          "spleen item": kolmafia.spleenLimit() - kolmafia.mySpleenUse()
-        };
-        var _iterator3 = _createForOfIteratorHelper(menuItems),
-          _step3;
-        try {
-          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-            var _menuItem = _step3.value;
-            kolmafia.logprint(`Considering item ${_menuItem.item}.`);
-            if (_menuItem.organ === "booze" && _menuItem.size === 1 && !get$2("_mimeArmyShotglassUsed")) {
-              countToConsume = 1;
-            } else if (_menuItem.organ && _menuItem.size > 0) {
-              countToConsume = Math.min(countToConsume, Math.floor(capacity[_menuItem.organ] / _menuItem.size));
-            }
-            kolmafia.logprint(`Based on organ size, planning to consume ${countToConsume}.`);
-            var cleaning = stomachLiverCleaners.get(_menuItem.item);
-            if (cleaning) {
-              var _cleaning = _slicedToArray(cleaning, 2),
-                fullness = _cleaning[0],
-                inebriety = _cleaning[1];
-              countToConsume = Math.min(fullness < 0 ? Math.floor(-kolmafia.myFullness() / fullness) : quantity, inebriety < 0 ? Math.floor(-kolmafia.myInebriety() / inebriety) : quantity, countToConsume);
-              kolmafia.logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
-            }
-            var spleenCleaned = spleenCleaners.get(_menuItem.item);
-            if (spleenCleaned) {
-              countToConsume = Math.min(countToConsume, Math.floor(kolmafia.mySpleenUse() / spleenCleaned));
-              kolmafia.logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
-            }
-          }
-        } catch (err) {
-          _iterator3.e(err);
-        } finally {
-          _iterator3.f();
-        }
-        if (countToConsume === 0) continue;
-        var elementalResistAction = element => {
-          return (countToConsume, menuItem) => {
-            if (kolmafia.myMaxhp() < 1000 * (1 - kolmafia.elementalResistance(element) / 100)) {
-              maximizeCached(["0.05 HP", `${element} Resistance`]);
-              if (kolmafia.myMaxhp() < 1000 * (1 - kolmafia.elementalResistance(element) / 100)) {
-                throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
-              }
-            }
-            consumeSafe(countToConsume, menuItem.item);
-          };
-        };
-        var speakeasyDrinks = Object.keys(kolmafia.getClanLounge()).map(s => kolmafia.toItem(s)).filter(i => i.inebriety > 0).map(drink => [drink, (countToConsume, menuItem) => {
-          kolmafia.cliExecute(`drink ${countToConsume} ${menuItem.item}`);
-        }]);
-        var mayoActions = Object.values(Mayo).map(i => [i, (countToConsume, menuItem) => {
-          setMayoMinder(menuItem.item, countToConsume);
-        }]);
-        var itemActions = new Map([[saladFork, elementalResistAction($element`hot`)], [frostyMug, elementalResistAction($element`cold`)], [$item`pocket wish`, (countToConsume, menuItem) => acquire(countToConsume, $item`pocket wish`, 60000) && kolmafia.cliExecute(`genie effect ${menuItem.effect}`)], [$item`campfire hot dog`, (countToConsume, menuItem) => {
-          // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
-          if (!have$P($item`stick of firewood`)) {
-            kolmafia.buy(1, $item`stick of firewood`, ingredientCost($item`stick of firewood`));
-          }
-          consumeSafe(countToConsume, menuItem.item);
-        }], [$item`Special Seasoning`, "skip"], [$item`mini kiwi aioli`, (countToConsume, menuItem) => {
-          kolmafia.retrieveItem(menuItem.item, countToConsume);
-          kolmafia.use(menuItem.item);
-        }], [$item`Rethinking Candy`, (countToConsume, menuItem) => synthesize(countToConsume, menuItem.effect ?? $effect`Synthesis: Greed`)]].concat(_toConsumableArray(mayoActions), _toConsumableArray(speakeasyDrinks), [[$item`broberry brogurt`, (countToConsume, menuItem) => {
-          var amountNeeded = countToConsume - kolmafia.availableAmount($item`broberry brogurt`);
-          if (amountNeeded > 0) {
-            var coinmasterPrice = realmAvailable("sleaze") && kolmafia.sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`) ? 10 * garboValue($item`Beach Buck`) : Infinity;
-            var regularPrice = kolmafia.mallPrice($item`broberry brogurt`);
-            if (coinmasterPrice < regularPrice) {
-              var amountToBuy = Math.min(amountNeeded, Math.floor(kolmafia.itemAmount($item`Beach Buck`)));
-              kolmafia.buy($coinmaster`The Frozen Brogurt Stand`, amountToBuy, $item`broberry brogurt`);
-            }
-            kolmafia.buy(countToConsume - kolmafia.availableAmount($item`broberry brogurt`), $item`broberry brogurt`);
-          }
-          consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
-        }], [$item`designer sweatpants`, countToConsume => {
-          for (var n = 1; n <= countToConsume; n++) {
-            kolmafia.useSkill($skill`Sweat Out Some Booze`);
-          }
-        }], [$item`august scepter`, () => kolmafia.useSkill($skill`Aug. 16th: Roller Coaster Day!`)]]));
-        var _iterator4 = _createForOfIteratorHelper(menuItems),
-          _step4;
-        try {
-          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-            var _menuItem2 = _step4.value;
-            var itemAction = itemActions.get(_menuItem2.item);
-            if (itemAction === "skip") {
-              continue;
-            } else if (itemAction) {
-              itemAction(countToConsume, _menuItem2);
-            } else {
-              consumeSafe(countToConsume, _menuItem2.item, _menuItem2.additionalValue);
-            }
-          }
-        } catch (err) {
-          _iterator4.e(err);
-        } finally {
-          _iterator4.f();
-        }
-        dietEntry.quantity -= countToConsume;
-      }
-    } catch (err) {
-      _iterator2.e(err);
-    } finally {
-      _iterator2.f();
-    }
-    currentQuantity = sum(diet.entries, "quantity");
-  }
-}
-function dailySpecialPrice(item) {
-  if (!hasMoonZoneRestaurant() || item !== get$2("_dailySpecial")) return 0;
-  return get$2("_dailySpecialPrice");
-}
-MenuItem.defaultPriceFunction = item => {
-  var prices = [kolmafia.retrievePrice(item), kolmafia.mallPrice(item), kolmafia.npcPrice(item), dailySpecialPrice(item)].filter(p => p > 0 && p < Number.MAX_SAFE_INTEGER);
-  if (prices.length > 0) {
-    return Math.min.apply(Math, _toConsumableArray(prices));
-  }
-  return !item.tradeable && have$P(item) ? 0 : Infinity;
-};
-function runDiet() {
-  withVIPClan(() => {
-    // Strip organ capacity enhancers to avoid accidental overfilling.
-    if (kolmafia.myFamiliar() === $familiar`Stooper`) {
-      kolmafia.useFamiliar($familiar.none);
-    }
-    var _iterator5 = _createForOfIteratorHelper(kolmafia.Slot.all()),
-      _step5;
-    try {
-      for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-        var slot = _step5.value;
-        var item = kolmafia.equippedItem(slot);
-        if (kolmafia.numericModifier(item, $modifier`stomach capacity`) || kolmafia.numericModifier(item, $modifier`liver capacity`) || kolmafia.numericModifier(item, $modifier`spleen capacity`)) {
-          unequip(slot);
-        }
-      }
-
-      // Compute diet
-    } catch (err) {
-      _iterator5.e(err);
-    } finally {
-      _iterator5.f();
-    }
-    var dietBuilder = computeDiet();
-    if (globalOptions.simdiet) {
-      kolmafia.print("===== SIMULATED DIET =====");
-      if (!get$2("_mimeArmyShotglassUsed") && have$P($item`mime army shotglass`)) {
-        printDiet(dietBuilder.shotglass(), "SHOTGLASS");
-      }
-      printDiet(dietBuilder.diet(), "FULL");
-    } else {
-      if (switchingToMayo()) {
-        var _GarboWorkshed$curren2, _GarboWorkshed$useNex;
-        if (((_GarboWorkshed$curren2 = GarboWorkshed.current) === null || _GarboWorkshed$curren2 === void 0 ? void 0 : _GarboWorkshed$curren2.workshed) === $item`Asdon Martin keyfob (on ring)`) {
-          drive(FarmingStrategy.asdonEffect, dietAdventures(dietBuilder.diet()) + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow));
-        } else {
-          var _GarboWorkshed$curren3, _GarboWorkshed$curren4;
-          (_GarboWorkshed$curren3 = GarboWorkshed.current) === null || _GarboWorkshed$curren3 === void 0 || (_GarboWorkshed$curren4 = _GarboWorkshed$curren3.action) === null || _GarboWorkshed$curren4 === void 0 || _GarboWorkshed$curren4.call(_GarboWorkshed$curren3);
-        }
-        if (((_GarboWorkshed$useNex = GarboWorkshed.useNext()) === null || _GarboWorkshed$useNex === void 0 ? void 0 : _GarboWorkshed$useNex.workshed) !== $item`portable Mayo Clinic`) {
-          throw new Error("Failed to switch to portable Mayo clinic");
-        }
-      }
-      pillCheck();
-      nonOrganAdventures();
-      if (have$P($item`astral six-pack`)) {
-        kolmafia.use($item`astral six-pack`);
-      }
-      if (!get$2("_mimeArmyShotglassUsed") && have$P($item`mime army shotglass`)) {
-        consumeDiet(dietBuilder.shotglass(), "SHOTGLASS");
-      }
-      if (get$2("barrelShrineUnlocked") && !get$2("_barrelPrayer") && $classes`Turtle Tamer, Accordion Thief`.includes(kolmafia.myClass())) {
-        kolmafia.cliExecute("barrelprayer buff");
-      }
-      consumeDiet(dietBuilder.diet(), "FULL");
-      shrugBadEffects();
-    }
-  });
-  globalOptions.dietCompleted = true;
-}
-var PRE_DIET_WORKSHEDS = [undefined].concat(_toConsumableArray($items`Asdon Martin keyfob (on ring), TakerSpace letter of Marque, spinning wheel`));
-function switchingToMayo() {
-  var _GarboWorkshed$next, _GarboWorkshed$curren5, _GarboWorkshed$curren6;
-  return ((_GarboWorkshed$next = GarboWorkshed.next) === null || _GarboWorkshed$next === void 0 ? void 0 : _GarboWorkshed$next.workshed) === $item`portable Mayo Clinic` && (PRE_DIET_WORKSHEDS.includes((_GarboWorkshed$curren5 = GarboWorkshed.current) === null || _GarboWorkshed$curren5 === void 0 ? void 0 : _GarboWorkshed$curren5.workshed) || !!((_GarboWorkshed$curren6 = GarboWorkshed.current) !== null && _GarboWorkshed$curren6 !== void 0 && _GarboWorkshed$curren6.canRemove()));
-}
-function dietAdventures(diet) {
-  return Math.floor(estimatedGarboTurns(false) + diet.expectedAdventures());
-}
-
-var pantsgivingBonuses = new Map();
-function pantsgiving(mode) {
-  if (!have$P($item`Pantsgiving`) || !modeUseLimitedDrops(mode)) {
-    return new Map();
-  }
-  var count = get$2("_pantsgivingCount");
-  var turnArray = [5, 50, 500, 5000];
-  var index = kolmafia.myFullness() === kolmafia.fullnessLimit() ? get$2("_pantsgivingFullness") : turnArray.findIndex(x => count < x);
-  var turns = turnArray[index] || 50000;
-  if (turns - count > estimatedGarboTurns()) return new Map();
-  var cachedBonus = pantsgivingBonuses.get(turns);
-  if (cachedBonus) return new Map([[$item`Pantsgiving`, cachedBonus]]);
-  var expectedSinusTurns = kolmafia.getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
-  var expectedUseableSinusTurns = globalOptions.ascend ? clamp(estimatedGarboTurns() - (turns - count) - kolmafia.haveEffect($effect`Kicked in the Sinuses`), 0, expectedSinusTurns) : expectedSinusTurns;
-  var sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat();
-  var fullnessValue = sinusVal + get$2("valueOfAdventure") * 6.5 - (kolmafia.mallPrice($item`jumping horseradish`) + kolmafia.mallPrice($item`Special Seasoning`));
-  var pantsgivingBonus = fullnessValue / (turns * 0.9);
-  pantsgivingBonuses.set(turns, pantsgivingBonus);
-  return new Map([[$item`Pantsgiving`, pantsgivingBonus]]);
-}
-function sweatpants(mode) {
-  if (!have$P($item`designer sweatpants`) || mode === BonusEquipMode.MEAT_TARGET) {
-    return new Map();
-  }
-  var needSweat = !globalOptions.ascend && sweat() < sweatCost($skill`Sweat Out Some Booze`) * 3 || sweat() < sweatCost($skill`Sweat Out Some Booze`) * potentialCasts($skill`Sweat Out Some Booze`);
-  if (!needSweat) return new Map();
-  var VOA = get$2("valueOfAdventure");
-  var bestPerfectDrink = cheapestItem($items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`);
-  var perfectDrinkValuePerDrunk = ((getAverageAdventures(bestPerfectDrink) + 3) * VOA - kolmafia.mallPrice(bestPerfectDrink)) / 3;
-  var splendidMartiniValuePerDrunk = (getAverageAdventures($item`splendid martini`) + 2) * VOA;
-  var bonus = Math.max(perfectDrinkValuePerDrunk, splendidMartiniValuePerDrunk) * 2 / 25;
-  return new Map([[$item`designer sweatpants`, bonus]]);
-}
-function pantogramPants() {
-  if (!have$P($item`pantogram pants`) || !get$2("_pantogramModifier").includes("Drops Items")) {
+function mrScreegesSpectacles() {
+  if (!have$P($item`Mr. Screege's spectacles`)) {
     return new Map([]);
   }
 
   // TODO: Calculate actual bonus value (good luck!)
-  return new Map([[$item`pantogram pants`, 100]]);
+  return new Map([[$item`Mr. Screege's spectacles`, 180]]);
 }
-function bagOfManyConfections() {
-  if (!have$P($item`bag of many confections`) || !have$P($familiar`Stocking Mimic`)) {
+function cinchoDeMayo(mode) {
+  if (!have$P($item`Cincho de Mayo`) || currentCinch() === 0 ||
+  // Ignore for DMT? Requires specific combat stuff, so probably weird there
+  mode === BonusEquipMode.DMT || mode === BonusEquipMode.MEAT_TARGET ||
+  // Require manuel to make sure we don't kill during stasis
+  !monsterManuelAvailable() ||
+  // If we're doing Yachtzees, only use up excess cincho.
+  maximumPinataCasts() <= 0 ||
+  // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
+  maxPassiveDamage() >= 50) {
     return new Map([]);
   }
-  return new Map([[$item`bag of many confections`, garboAverageValue.apply(void 0, _toConsumableArray($items`Polka Pop, BitterSweetTarts, Piddles`)) / 6]]);
+
+  // Account for a single use of Projectile Pinata, which gives 3x Robortender candies
+  return new Map([[$item`Cincho de Mayo`, 3 * felizValue()]]);
 }
-function snowSuit(mode) {
-  // Ignore for MEAT_TARGET
-  // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!have$P($item`Snow Suit`) || get$2("_carrotNoseDrops") >= 3 || !modeUseLimitedDrops(mode)) {
+function calculateLaughingStockBonus(alwaysUseHorizon) {
+  var basicFruitValue = garboAverageValue.apply(void 0, _toConsumableArray($items`orange, grapefruit, grapes, lemon, lime, papaya, cranberries, strawberry, cherry, kumquat, tangerine, raspberry, kiwi, blackberry, banana, cactus fruit, plum, pear, peach`));
+  var classicFruitValue = garboAverageValue.apply(void 0, _toConsumableArray($items`classic banana, antique watermelon, quince`));
+  var horizonValue = 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
+  if (alwaysUseHorizon) return horizonValue;
+  var nextDrop$1 = nextDrop();
+  if (nextDrop$1) {
+    var _nextDrop = _slicedToArray(nextDrop$1, 2),
+      fruit = _nextDrop[0],
+      fights = _nextDrop[1];
+    if (fights > estimatedGarboTurns()) return 0;
+    return Math.max(garboValue(fruit) / fights, horizonValue);
+  }
+  return horizonValue;
+}
+function portableLaughingStock(mode) {
+  if (!have$P($item`Portable Laughing Stock`) || mode === BonusEquipMode.DMT) {
     return new Map([]);
   }
-  return new Map([[$item`Snow Suit`, garboValue($item`carrot nose`) / 10]]);
+  var laughingStockBonus = calculateLaughingStockBonus(mode !== BonusEquipMode.MEAT_TARGET);
+  return new Map([[$item`Portable Laughing Stock`, laughingStockBonus]]);
 }
-function mayflowerBouquet(mode) {
-  // +40% meat drop 12.5% of the time (effectively 5%)
-  // Drops flowers 50% of the time, wiki says 5-10 a day.
-  // Theorized that flower drop rate drops off but no info on wiki.
-  // During testing I got 4 drops then the 5th took like 40 more adventures
-  // so let's just assume rate drops by 11% with a min of 1% ¯\_(ツ)_/¯
 
-  // Ignore for MEAT_TARGET
-  // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
-  if (!have$P($item`Mayflower bouquet`) || !modeUseLimitedDrops(mode)) {
-    return new Map([]);
-  }
-  var sporadicMeatBonus = 40 * 0.125 * modeValueOfMeat(mode) / 100;
-  var averageFlowerValue = garboAverageValue.apply(void 0, _toConsumableArray($items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`)) * Math.max(0.01, 0.5 - get$2("_mayflowerDrops") * 0.11);
-  return new Map([[$item`Mayflower bouquet`, (get$2("_mayflowerDrops") < 10 ? averageFlowerValue : 0) + sporadicMeatBonus]]);
+/*
+This is separate from bonusGear to prevent circular references
+bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
+If this isn't separated from bonusGear(), usingThumbRing() will call bonusGear(), creating a dangerous loop
+*/
+function bonusAccessories(mode) {
+  return new Map([].concat(_toConsumableArray(mafiaThumbRing(mode)), _toConsumableArray(luckyGoldRing(mode)), _toConsumableArray(mrCheengsSpectacles()), _toConsumableArray(portableLaughingStock(mode)), _toConsumableArray(mrScreegesSpectacles()), _toConsumableArray(cinchoDeMayo(mode))));
 }
-function magnifyingGlass() {
-  if (!have$P($item`cursed magnifying glass`) || get$2("_voidFreeFights") >= 5 || get$2("cursedMagnifyingGlassCount") >= 13) {
-    return new Map();
+var cachedUsingThumbRing = null;
+/**
+ * Calculates whether we expect to be wearing the thumb ring for most of the farming day.
+ * This is used in functions that leverage projected turns; for instance, calculating the
+ * number of turns of sweet synthesis required in our diet calcs or potion costs.
+ * @returns boolean of whether we expect to be wearing the thumb ring for much of the day
+ */
+function usingThumbRing() {
+  if (!have$P($item`mafia thumb ring`)) {
+    return false;
   }
-  return new Map([[$item`cursed magnifying glass`, globalOptions.prefs.valueOfFreeFight / 13]]);
+  if (cachedUsingThumbRing === null) {
+    var gear = bonusAccessories(BonusEquipMode.BARF);
+    var accessoryBonuses = _toConsumableArray(gear.entries()).filter(_ref => {
+      var _ref2 = _slicedToArray(_ref, 1),
+        item = _ref2[0];
+      return have$P(item);
+    });
+    kolmafia.setLocation(FarmingStrategy.location);
+    var meatAccessories = kolmafia.Item.all().filter(item => have$P(item) && kolmafia.toSlot(item) === $slot`acc1` && get$1("Meat Drop", item) > 0).map(item => [item, get$1("Meat Drop", item) * baseMeat() / 100]);
+    var accessoryValues = new Map(accessoryBonuses);
+    var _iterator = _createForOfIteratorHelper(meatAccessories),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _step$value = _slicedToArray(_step.value, 2),
+          accessory = _step$value[0],
+          value = _step$value[1];
+        accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+    if (have$P($item`mafia pointer finger ring`) && (kolmafia.myClass() === $class`Seal Clubber` && have$P($skill`Furious Wallop`) || have$P($item`haiku katana`) || have$P($item`Operation Patriot Shield`) || have$P($item`unwrapped knock-off retro superhero cape`) || have$P($item`left bear arm`) || have$P($skill`Head in the Game`))) {
+      accessoryValues.set($item`mafia pointer finger ring`, basePointerRingMeat());
+    }
+    var bestAccessories = _toConsumableArray(accessoryValues.entries()).sort((_ref3, _ref4) => {
+      var _ref5 = _slicedToArray(_ref3, 2),
+        aBonus = _ref5[1];
+      var _ref6 = _slicedToArray(_ref4, 2),
+        bBonus = _ref6[1];
+      return bBonus - aBonus;
+    }).map(_ref7 => {
+      var _ref8 = _slicedToArray(_ref7, 1),
+        item = _ref8[0];
+      return item;
+    });
+    cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
+  }
+  return cachedUsingThumbRing;
 }
-function bindlestocking(mode) {
-  // Requires a guaranteed critical hit that does not need the weapon or off-hand slots
-  // Only BARF is supported as it is difficult to always crit elsewhere
-  var canCrit = have$P($skill`Furious Wallop`) && kolmafia.myFury() > 0 || have$P($skill`Head in the Game`);
-  if (!have$P($item`bindlestocking`) || mode !== BonusEquipMode.BARF || !canCrit) {
-    return new Map();
-  }
 
-  // TODO: Confirm drop rates with excavator https://excavator.loathers.net/projects/bindlestocking
-  // The only valuable items are fancy chocolate or jawbruiser which probably appear ~1% of the time
-  var value = 0.49 * garboAverageValue.apply(void 0, _toConsumableArray($items`Angry Farmer candy, Cold Hots candy, Daffy Taffy, Mr. Mediocrebar, Senior Mints, Wint-O-Fresh mint, orange`)) + 0.15 * garboAverageValue.apply(void 0, _toConsumableArray($items`eggnog, fruitcake, yo-yo`)) + 0.2 * garboAverageValue.apply(void 0, _toConsumableArray($items`candy cane, ball, fancy dress ball, gingerbread bugbear, razor-tipped yo-yo`)) + 0.15 * garboAverageValue.apply(void 0, _toConsumableArray($items`buckyball, gyroscope, monomolecular yo-yo, possessed top, top`)) + 0.01 * garboAverageValue.apply(void 0, _toConsumableArray($items`fancy chocolate, jawbruiser`));
-  return new Map([[$item`bindlestocking`, value]]);
+var mimicExperienceNeeded = needKickstarterEgg => 50 * (11 - get$2("_mimicEggsObtained")) + (globalOptions.ascend ? needKickstarterEgg && !have$I() && get$2("_mimicEggsObtained") < 11 ? 50 : 0 : 550);
+function shouldChargeMimic(needKickstarterEgg) {
+  /* If we can't make any more eggs tomorrow, don't charge the mimic more */
+  return $familiar`Chest Mimic`.experience < mimicExperienceNeeded(needKickstarterEgg);
 }
-function simpleTargetCrits(mode) {
-  var canCrit = have$P($skill`Furious Wallop`) && kolmafia.myFury() > 0 || have$P($skill`Head in the Game`);
-  if (!have$P($item`mafia pointer finger ring`) || mode !== BonusEquipMode.MEAT_TARGET || !canCrit || globalOptions.target.attributes.includes("FREE")) {
-    return new Map();
-  }
-  return new Map([[$item`mafia pointer finger ring`, targetPointerRingMeat()]]);
+var monsterInEggnet;
+var monsterIsInEggnet = () => monsterInEggnet ?? (monsterInEggnet = getReceivableMonsters().includes(globalOptions.target));
+function shouldMakeEgg(barf) {
+  var needKickstarterEgg = differentiableQuantity(globalOptions.target) <= 0;
+  if (needKickstarterEgg && !monsterIsInEggnet()) return false;
+  var experienceNeeded = 50 * (11 - get$2("_mimicEggsObtained")) + (needKickstarterEgg ? 50 : 0);
+  return $familiar`Chest Mimic`.experience >= experienceNeeded && get$2("_mimicEggsObtained") < 11;
 }
-function batWings(mode) {
-  var batWings = $item`bat wings`;
-  if (!have$h() || mode !== BonusEquipMode.BARF || flapChance() === 0) {
-    return new Map();
-  }
-  var value = flapChance() * get$2("valueOfAdventure");
-  return new Map([[batWings, value]]);
-}
-function bonusGear(mode) {
-  var valueCircumstantialBonus = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-  return new Map([].concat(_toConsumableArray(bonusAccessories(mode)), _toConsumableArray(pantogramPants()), _toConsumableArray(bagOfManyConfections()), _toConsumableArray(stickers(mode)), _toConsumableArray(powerGlove()), _toConsumableArray(sneegleebs()), _toConsumableArray(bindlestocking(mode)), _toConsumableArray(simpleTargetCrits(mode)), _toConsumableArray(batWings(mode)), _toConsumableArray(cupOfThirteens(mode)), _toConsumableArray(mobius(mode)), _toConsumableArray(valueCircumstantialBonus ? new Map([].concat(_toConsumableArray(pantsgiving(mode)), _toConsumableArray(sweatpants(mode)), _toConsumableArray(shavingBonus()), _toConsumableArray(snowSuit(mode)), _toConsumableArray(mayflowerBouquet(mode)), _toConsumableArray(mode === BonusEquipMode.BARF ? magnifyingGlass() : []), _toConsumableArray(juneCleaver$1(mode)), _toConsumableArray(rakeLeaves(mode)), _toConsumableArray(aviatorGoggles(mode)), _toConsumableArray(skeletonCane(mode)))) : [])));
-}
-var encounterMap = [4,
-// 0
-7,
-// 1
-14,
-// 2
-14,
-// 3
-25,
-// 4
-25,
-// 5
-41,
-// 6
-41,
-// 7
-41,
-// 8
-41,
-// 9
-41,
-// 10
-51,
-// 11
-51,
-// 12
-51,
-// 13
-51,
-// 14
-51,
-// 15
-51,
-// 16
-51,
-// 17
-51 // 18
-];
-function mobius(mode) {
-  if (mode === BonusEquipMode.BARF) {
-    var value = kolmafia.totalTurnsPlayed() - get$2("_lastMobiusStripTurn", 0) > encounterMap[get$2("_mobiusStripEncounters", 0)] - 3 ? Math.max(kolmafia.mallPrice($item`clock`), get$2("valueOfAdventure") * 3) / 2 : 0;
-    return new Map([[$item`Möbius ring`, value]]);
-  }
-  return new Map();
-}
-function shavingBonus() {
-  if (!have$v() || buffs.some(buff => have$P(buff, 2))) {
-    return new Map();
-  }
-  var timeToMeatBuff = 11 * (buffsUntil($effect`Friendly Chops`) ?? Infinity);
-  if (globalOptions.ascend && timeToMeatBuff > estimatedGarboTurns()) {
-    return new Map();
-  }
-  if (!globalOptions.ascend && nextBuff() === $effect`Friendly Chops` && estimatedGarboTurns() < 11 * 11) {
-    return new Map();
-  }
-  var bonusValue = (baseMeat() * 100 + 72 * 50) / 100;
-  return new Map([[$item`Daylight Shavings Helmet`, bonusValue]]);
-}
-var juneCleaverEV = null;
-function juneCleaver$1(mode) {
-  var estimatedJuneCleaverTurns = remainingUserTurns() + estimatedGarboTurns();
-  if (!have$P($item`June cleaver`) || get$2("_juneCleaverFightsLeft") > estimatedJuneCleaverTurns || !get$2("_juneCleaverFightsLeft")) {
-    return new Map();
-  }
-  if (!juneCleaverEV) {
-    juneCleaverEV = sum(_toConsumableArray(choices), choice => valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])) / choices.length;
-  }
-  // If we're ascending then the chances of hitting choices in the queue is reduced
-  if (globalOptions.ascend && estimatedJuneCleaverTurns <= 180 && getInterval() === 30) {
-    var availEV = sum(_toConsumableArray(choicesAvailable()), choice => valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])) / choicesAvailable().length;
-    var queueEV = sum(_toConsumableArray(queue()), choice => {
-      var choiceValue = valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]);
-      var cleaverEncountersLeft = Math.floor(estimatedJuneCleaverTurns / 30);
-      var encountersToQueueExit = 1 + queue().indexOf(choice);
-      var chancesLeft = Math.max(0, cleaverEncountersLeft - encountersToQueueExit);
-      var encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
-      return choiceValue * encounterProbability;
-    }) / queue().length;
-    juneCleaverEV = queueEV + availEV;
-  }
-  var interval = mode === BonusEquipMode.MEAT_TARGET ? 30 : getInterval();
-  return new Map([[$item`June cleaver`, juneCleaverEV / interval]]);
-}
-function rakeLeaves(mode) {
-  if (mode === BonusEquipMode.MEAT_TARGET || !have$o()) {
-    return new Map();
-  }
-  var rakeValue = garboValue($item`inflammable leaf`) * 1.5;
-  return new Map([[$item`rake`, rakeValue], [$item`tiny rake`, rakeValue]]);
-}
-function aviatorGoggles(mode) {
-  if (mode === BonusEquipMode.MEAT_TARGET || !have$P($familiar`Mini Kiwi`)) {
-    return new Map();
-  }
-  var goggleValue = garboValue($item`mini kiwi`) * 0.25;
-  return new Map([[$item`aviator goggles`, goggleValue]]);
-}
-function skeletonCane(mode) {
-  if (mode === BonusEquipMode.MEAT_TARGET || !have$P($familiar`Skeleton of Crimbo Past`) || get$2("_knuckleboneDrops") >= 100) {
-    return new Map();
-  }
-  // Cane improves drop rate by 10%
-  var caneValue = garboValue($item`knucklebone`) * 0.1;
-  return new Map([[$item`small peppermint-flavored sugar walking crook`, caneValue]]);
-}
-function stickers(mode) {
-  // This function represents the _cost_ of using stickers
-  // Embezzlers are the best monster to use them on, so there's functionally no cost
-  if (mode === BonusEquipMode.MEAT_TARGET) return new Map();
-  var cost = sumNumbers($slots`sticker1, sticker2, sticker3`.map(s => kolmafia.mallPrice(kolmafia.equippedItem(s)) / 20));
-  return new Map([[$item`scratch 'n' sniff sword`, -1 * cost], [$item`scratch 'n' sniff crossbow`, -1 * cost]]);
-}
-function powerGlove() {
-  if (!have$P($item`Powerful Glove`)) return new Map();
-  // 23% proc rate, according to the wiki
-  // https://kol.coldfront.net/thekolwiki/index.php/Powerful_Glove
-  return new Map([[$item`Powerful Glove`, 0.25 * garboAverageValue.apply(void 0, _toConsumableArray($items`blue pixel, green pixel, red pixel, white pixel`))]]);
-}
-var speakeasyBanList = $items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`;
-var POSSIBLE_SNEEGLEEB_DROPS = kolmafia.Item.all().filter(i => i.tradeable && i.discardable && (i.inebriety || i.fullness || i.potion && kolmafia.stringModifier(i, kolmafia.Modifier.get("Last Available")) === "") && !speakeasyBanList.includes(i));
-var sneegleebBonus;
-var SNEEGLEEB_DROP_RATE = 0.13;
-var MAX_SNEEGLEEB_PRICE = 100_000; // arbitrary, to help avoid outliers
-function sneegleebs() {
-  sneegleebBonus ?? (sneegleebBonus = sum(POSSIBLE_SNEEGLEEB_DROPS, item => Math.min(garboValue(item), MAX_SNEEGLEEB_PRICE)) / POSSIBLE_SNEEGLEEB_DROPS.length * SNEEGLEEB_DROP_RATE);
-  return new Map([[$item`KoL Con 13 snowglobe`, sneegleebBonus], [$item`can of mixed everything`, sneegleebBonus / 2]].filter(_ref => {
-    var _ref2 = _slicedToArray(_ref, 1),
-      item = _ref2[0];
-    return have$P(item);
-  }));
-}
-function toyCupidBow(familiar) {
-  if (!have$f()) return new Map();
-  var turns = tcbTurnsLeft(familiar, getUsedTcbFamiliars());
-  if (estimatedGarboTurns() <= turns) {
-    return new Map();
-  }
-  return new Map([[$item`toy Cupid bow`, familiarEquipmentValue(familiar) / turns]]);
-}
-var CUP_OF_THIRTEENS_DROPS = POSSIBLE_SNEEGLEEB_DROPS.filter(item => item.inebriety);
-var cupOfThirteensBonus;
-function cupOfThirteens(mode) {
-  var _cupOfThirteensBonus;
-  if (!have$8() || mode !== BonusEquipMode.BARF && mode !== BonusEquipMode.FREE) {
-    return new Map();
-  }
-  var dropsToday = get$2("_cupOf13sDrops");
+var minimumMimicExperience = () => 50 + (differentiableQuantity(globalOptions.target) ? 0 : 100);
 
-  // A drop occurs at 6 charges if we haven't gotten a drop today.
-  // Otherwise, the next drop occurs at 10 charges.
-  var chargeRequired = dropsToday === 0 ? 6 : 10;
-  var qualities = dropsToday <= 1 ? ["EPIC", "awesome"] : dropsToday <= 3 ? ["awesome", "good"] : dropsToday <= 5 ? ["good", "decent"] : ["decent", "crappy"];
-  if (((_cupOfThirteensBonus = cupOfThirteensBonus) === null || _cupOfThirteensBonus === void 0 ? void 0 : _cupOfThirteensBonus[0]) !== qualities[0]) {
-    var possibleDrops = CUP_OF_THIRTEENS_DROPS.filter(item => qualities.includes(item.quality));
-    cupOfThirteensBonus = [qualities[0], garboAverageValue.apply(void 0, _toConsumableArray(possibleDrops))];
-  }
-  var cupBonus = cupOfThirteensBonus[1] / chargeRequired;
-  return new Map([[$item`Cup of 13s`, cupBonus]]);
+var fam;
+function findBestLeprechauns() {
+  var validFamiliars = kolmafia.Familiar.all().filter(f => have$P(f) && f !== $familiar`Ghost of Crimbo Commerce`);
+  validFamiliars.sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a));
+  var bestLepMult = findLeprechaunMultiplier(validFamiliars[0]);
+  var firstBadLeprechaun = validFamiliars.findIndex(f => findLeprechaunMultiplier(f) < bestLepMult);
+  if (firstBadLeprechaun === -1) return validFamiliars;
+  return validFamiliars.slice(0, firstBadLeprechaun);
+}
+function findBestLeprechaun() {
+  return maxBy(findBestLeprechauns(), findFairyMultiplier);
+}
+function setBestLeprechaunAsMeatFamiliar() {
+  fam = findBestLeprechaun();
+}
+function meatFamiliar() {
+  return fam ?? (fam = $familiars`Robortender, Jill-of-All-Trades`.find(have$P) ?? findBestLeprechaun());
 }
 
 function bestBjornalike(outfit) {
@@ -22046,1505 +20802,202 @@ function applyCheeseBonus(outfit, mode) {
   if (bonus > 0) outfit.modifier.push(`${bonus.toFixed(2)} stinky cheese`);
 }
 
-var sessions = new Map();
-/**
- * Start a new session, deleting any old session
- */
-function startSession() {
-  sessions.set("full", Session.current());
+function beretEffectValue(effect, duration) {
+  var skill = kolmafia.toSkill(effect);
+  if (skill !== kolmafia.Skill.none && have$P(skill)) return 0;
+  var meatValue = duration * sum([{
+    modifier: "Meat Drop",
+    value: baseMeat() / 100
+  }, {
+    modifier: "Familiar Weight",
+    value: marginalFamWeightValue() * baseMeat() / 100
+  }], _ref => {
+    var modifier = _ref.modifier,
+      value = _ref.value;
+    return value * get$1(modifier, effect);
+  });
+  if (meatValue <= 0) return meatValue;
+  var potionPrices = kolmafia.Item.all().filter(i => i.potion && i.tradeable && kolmafia.effectsModifier(i, "Effect").includes(effect)).map(i => getAcquirePrice(i) * duration / get$1("Effect Duration", i));
+  return Math.min.apply(Math, [meatValue].concat(_toConsumableArray(potionPrices)));
 }
 
-/**
- * Compute the difference between the current drops and starting session (if any)
- * @returns The difference
- */
-function sessionSinceStart() {
-  var session = sessions.get("full");
-  if (session) {
-    return Session.current().diff(session);
-  }
-  return Session.current();
+function sweatEquityROI() {
+  return baseMeat() * 0.4 * 30;
 }
-var extraValue$1 = 0;
-function trackMarginalTurnExtraValue(additionalValue) {
-  extraValue$1 += additionalValue;
-}
-function trackMarginalMpa(remainingTurns) {
-  var barf = sessions.get("barf");
-  var current = Session.current();
-  if (!barf) {
-    sessions.set("barf", Session.current());
-  } else {
-    var turns = barf.diff(current).totalTurns;
-    remainingTurns ?? (remainingTurns = estimatedGarboTurns());
-    // track items if we have run at least 100 turns in barf mountain or we have less than 200 turns left in barf mountain
-    var item = sessions.get("item-start");
-    if (!item && (turns > 100 || estimatedGarboTurns() <= 200)) {
-      sessions.set("item-start", current);
-    }
-    // start tracking meat if there are less than 75 turns left in barf mountain
-    var meatStart = sessions.get("meat-start");
-    if (!meatStart && remainingTurns <= 75) {
-      sessions.set("meat-start", current);
-    }
-
-    // stop tracking meat if there are less than 25 turns left in barf moutain
-    var meatEnd = sessions.get("meat-end");
-    if (!meatEnd && remainingTurns <= 25) {
-      sessions.set("meat-end", current);
-    }
-    var itemEnd = sessions.get("item-end");
-    if (!itemEnd && remainingTurns <= 0) {
-      sessions.set("item-end", current);
-    }
+function parentStat(sub) {
+  switch (sub) {
+    case $stat`subMuscle`:
+      return $stat`Muscle`;
+    case $stat`subMysticality`:
+      return $stat`Mysticality`;
+    case $stat`subMoxie`:
+      return $stat`Moxie`;
   }
+  return $stat`Muscle`;
 }
-var outlierItemList = $items`Extrovermectin™, Volcoino, Poké-Gro fertilizer`;
-function printMarginalSession() {
-  var barf = sessions.get("barf");
-  var meatStart = sessions.get("meat-start");
-  var meatEnd = sessions.get("meat-end");
-  var itemStart = sessions.get("item-start");
-  var itemEnd = sessions.get("item-end");
-
-  // we can only print out marginal items if we've started tracking for marginal value
-  if (barf && meatStart && meatEnd) {
-    var _barf$value = barf.value(garboValue),
-      barfItemDetails = _barf$value.itemDetails;
-    var isOutlier = detail => outlierItemList.includes(detail.item) || detail.quantity === 1 && detail.value >= 5000 && barfItemDetails.some(d => d.item === detail.item && d.quantity <= 2);
-    var meatMpa = Session.computeMPA(meatStart, meatEnd, {
-      value: garboValue,
-      isOutlier
-    });
-    if (itemStart && itemEnd) {
-      // MPA printout including maringal items
-      var itemMpa = Session.computeMPA(itemStart, itemEnd, {
-        value: garboValue,
-        isOutlier,
-        excludeValue: {
-          item: extraValue$1
-        }
-      });
-      kolmafia.print(`Outliers:`, HIGHLIGHT);
-      var _iterator = _createForOfIteratorHelper(itemMpa.outlierItems),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var detail = _step.value;
-          kolmafia.print(`${detail.quantity} ${detail.item} worth ${detail.value.toFixed(0)} total`, HIGHLIGHT);
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-      var effectiveMpa = itemMpa.mpa.effective - itemMpa.mpa.meat + meatMpa.mpa.meat;
-      var totalMpa = itemMpa.mpa.total - itemMpa.mpa.meat + meatMpa.mpa.meat;
-      kolmafia.print(`Marginal MPA: ${formatNumber(Math.round(meatMpa.mpa.meat * 100) / 100)} [raw] + ${formatNumber(Math.round(itemMpa.mpa.items * 100) / 100)} [items] (${formatNumber(Math.round((itemMpa.mpa.total - itemMpa.mpa.effective) * 100) / 100)} [outliers]) = ${formatNumber(Math.round(effectiveMpa * 100) / 100)} [total] (${formatNumber(Math.round(totalMpa * 100) / 100)} [w/ outliers])`, HIGHLIGHT);
-    } else {
-      // MPA printout excluding marginal items
-      kolmafia.print("Warning: Insufficient turns were run, so this estimate is subject to large variance. Be careful when using these values as is.", "red");
-      kolmafia.print(`Marginal MPA: ${formatNumber(Math.round(meatMpa.mpa.meat * 100) / 100)} [raw] + ${formatNumber(Math.round(meatMpa.mpa.items * 100) / 100)} [items] = ${formatNumber(Math.round(meatMpa.mpa.total * 100) / 100)} [total]`, HIGHLIGHT);
+var BCT_LEVEL_THRESHOLDS = [26, 20, 13];
+function getBCZStatFloor(skill) {
+  var userSelectedStatFloor = get$2("garbo_bczStatFloor", 0);
+  var stat = parentStat(substatUsed(skill));
+  if (stat !== kolmafia.myPrimestat()) {
+    if (stat === $stat`Moxie` && have$P($item`crumpled felt fedora`)) {
+      return clamp(200, userSelectedStatFloor, Infinity);
     }
+    return clamp(100, userSelectedStatFloor, Infinity); // ? is this good?
   }
+  var minimumLevel = globalOptions.ascend && kolmafia.myDaycount() >= 2 ? BCT_LEVEL_THRESHOLDS.find(threshold => kolmafia.myLevel() > threshold) : 26;
+  if (!minimumLevel) {
+    return clamp(kolmafia.myBasestat(stat), userSelectedStatFloor, Infinity); // So low level we can't afford to lose exp at all
+  }
+  return clamp(mainStatLevel(minimumLevel), userSelectedStatFloor, Infinity);
 }
-var garboResultsProperties = ["garboResultsMeat", "garboResultsItems", "garboResultsTurns"];
-function getGarboDaily(property) {
-  return get$2(property, 0);
+function safeBCZCasts(skill) {
+  var availableStatFloorCasts = availableCasts(skill, getBCZStatFloor(skill));
+  var availableCheapCasts = 5 - timesCast(skill); // First 5 casts are essentially free, even when we're already low stats
+  return availableCheapCasts > availableStatFloorCasts ? availableCheapCasts : availableStatFloorCasts;
 }
-function setGarboDaily(property, value) {
-  _set(property, value);
+function safeSweatEquityCasts() {
+  return safeBCZCasts($skill`BCZ: Sweat Equity`);
 }
-function resetGarboDaily() {
-  if (resetDailyPreference("garboResultsDate")) {
-    var _iterator2 = _createForOfIteratorHelper(garboResultsProperties),
-      _step2;
-    try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var prop = _step2.value;
-        setGarboDaily(prop, 0);
-      }
-    } catch (err) {
-      _iterator2.e(err);
-    } finally {
-      _iterator2.f();
-    }
-  }
+function safeRefractedCasts() {
+  return safeBCZCasts($skill`BCZ: Refracted Gaze`);
 }
-function endSession() {
-  var printLog = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-  // force marginal mpa to always have a 0 turns remaining calculation
-  trackMarginalMpa(0);
-  resetGarboDaily();
-  var message = (head, turns, meat, items) => kolmafia.print(`${head}, across ${formatNumber(turns)} turns you generated ${formatNumber(meat + items)} meat, with ${formatNumber(meat)} raw meat and ${formatNumber(items)} from items`, HIGHLIGHT);
-  var _sessionSinceStart$va = sessionSinceStart().value(garboValue),
-    meat = _sessionSinceStart$va.meat,
-    items = _sessionSinceStart$va.items,
-    itemDetails = _sessionSinceStart$va.itemDetails,
-    turns = _sessionSinceStart$va.turns;
-  var totalMeat = meat + getGarboDaily("garboResultsMeat");
-  var totalItems = items + getGarboDaily("garboResultsItems");
-  var totalTurns = turns + getGarboDaily("garboResultsTurns");
-  if (printLog) {
-    // list the top 3 gaining and top 3 losing items
-    var losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
-    var winners = itemDetails.reverse().slice(0, 3);
-    kolmafia.print(`Extreme Items:`, HIGHLIGHT);
-    for (var _i = 0, _arr = [].concat(_toConsumableArray(winners), _toConsumableArray(losers)); _i < _arr.length; _i++) {
-      var detail = _arr[_i];
-      kolmafia.print(`${detail.quantity} ${detail.item} worth ${detail.value.toFixed(0)} total`, HIGHLIGHT);
-    }
-  }
-  setGarboDaily("garboResultsMeat", totalMeat);
-  setGarboDaily("garboResultsItems", totalItems);
-  setGarboDaily("garboResultsTurns", totalTurns);
-  if (printLog) {
-    message("This run of garbo", turns, meat, items);
-    message("So far today", totalTurns, totalMeat, totalItems);
-    printMarginalSession();
-  }
-  if (globalOptions.loginvalidwishes) {
-    if (failedWishes.length === 0) {
-      kolmafia.print("No invalid wishes found.");
-    } else {
-      kolmafia.print("Found the following unwishable effects:");
-      failedWishes.forEach(effect => kolmafia.print(`${effect}`));
-    }
-  }
+function safeSweatBulletCasts(drumMachineROI) {
+  if (sweatEquityROI() > drumMachineROI) return 0;
+  return safeBCZCasts($skill`BCZ: Sweat Bullets`);
 }
 
-function chooseGun() {
-  if (have$P($item`love`)) {
-    return $item`love`;
-  }
-  if (!have$P($item`ice nine`)) {
-    kolmafia.cliExecute("refresh inventory");
-    kolmafia.retrieveItem($item`ice nine`);
-  }
-  return have$P($item`ice nine`) ? $item`ice nine` : null;
-}
-function gunSpec(outfit) {
-  if (!outfit.canEquip($item`unwrapped knock-off retro superhero cape`)) {
-    return {
-      available: false,
-      items: []
-    };
-  }
-  var gun = chooseGun();
-  if (!gun) return {
-    available: false,
-    items: []
-  };
-  return {
-    available: true,
-    items: {
-      back: $item`unwrapped knock-off retro superhero cape`,
-      weapon: gun,
-      equip: $items`mafia pointer finger ring`,
-      modes: {
-        retrocape: ["robot", "kill"]
-      }
-    }
-  };
-}
-var POINTER_RING_SPECS = outfit => [{
-  available: have$P($skill`Furious Wallop`) && kolmafia.myFury() > 0,
-  items: $items`mafia pointer finger ring`
+var SKILL_OPTIONS = [
+// August 1 deliberately omitted; does not trigger on monster replacers
+{
+  skill: $skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`,
+  value: () => getBestLuckyAdventure().value(),
+  type: "special"
 }, {
-  available: have$P($skill`Head in the Game`),
-  items: $items`mafia pointer finger ring`
+  skill: $skill`Aug. 3rd: Watermelon Day!`,
+  value: () => garboValue($item`watermelon`),
+  type: "summon"
 }, {
-  available: kolmafia.myClass() === $class`Turtle Tamer`,
-  items: $items`Operation Patriot Shield, mafia pointer finger ring`
+  skill: $skill`Aug. 4th: Water Balloon Day!`,
+  value: () => 3 * garboValue($item`water balloon`),
+  type: "summon"
 }, {
-  available: true,
-  items: $items`haiku katana, mafia pointer finger ring`
-}, () => gunSpec(outfit), {
-  available: true,
-  items: $items`Operation Patriot Shield, mafia pointer finger ring`
+  skill: $skill`Aug. 5th: Oyster Day!`,
+  value: () => 3 * garboAverageValue.apply(void 0, _toConsumableArray($items`brilliant oyster egg, gleaming oyster egg, glistening oyster egg, lustrous oyster egg, magnificent oyster egg, pearlescent oyster egg, scintillating oyster egg`)),
+  type: "summon"
 }, {
-  available: true,
-  items: $items`left bear arm, right bear arm, mafia pointer finger ring`
+  skill: $skill`Aug. 7th: Lighthouse Day!`,
+  value: () => effectValue($effect`Incredibly Well Lit`, 30),
+  type: "buff"
+}, {
+  skill: $skill`Aug. 8th: Cat Day!`,
+  value: () => globalOptions.prefs.valueOfFreeFight,
+  type: "fight"
+}, {
+  skill: $skill`Aug. 13th: Left/Off Hander's Day!`,
+  value: () => new Potion($item`august scepter`, {
+    effect: $effect`Offhand Remarkable`,
+    duration: 30,
+    effectValues: {
+      meatDrop: 80
+    } // Half a purse
+  }).gross(highMeatMonsterCount("Scepter")) + (globalOptions.ascend ? 0 : (5 + (have$P($familiar`Left-Hand Man`) ? 5 : 0)) * get$2("valueOfAdventure")),
+  type: "special" // Don't want to cast right away
+}, {
+  skill: $skill`Aug. 14th: Financial Awareness  Day!`,
+  value: () => Math.min(100 * kolmafia.myLevel(), 1500, kolmafia.myMeat()) / 2,
+  type: "summon"
+}, {
+  skill: $skill`Aug. 16th: Roller Coaster Day!`,
+  value: () => 8 * get$2("valueOfAdventure"),
+  type: "special"
+}, {
+  skill: $skill`Aug. 18th: Serendipity Day!`,
+  value: () => 3000,
+  // Dummy value; we should some day calculate this based on free fight count, careful to avoid circular imports
+  type: "buff"
+}, {
+  skill: $skill`Aug. 22nd: Tooth Fairy Day!`,
+  value: () => globalOptions.prefs.valueOfFreeFight,
+  type: "fight"
+}, {
+  skill: $skill`Aug. 24th: Waffle Day!`,
+  value: () => 3 * garboValue($item`waffle`),
+  type: "summon"
+}, {
+  skill: $skill`Aug. 25th: Banana Split Day!`,
+  value: () => garboValue($item`banana split`),
+  type: "summon"
+}, {
+  skill: $skill`Aug. 26th: Toilet Paper Day!`,
+  value: () => garboValue($item`handful of toilet paper`),
+  type: "summon"
+}, {
+  skill: $skill`Aug. 29th: More Herbs, Less Salt  Day!`,
+  value: () => 3 * garboValue($item`Mrs. Rush`),
+  type: "summon"
+}, {
+  skill: $skill`Aug. 30th: Beach Day!`,
+  value: () => 100 + (globalOptions.ascend ? 0 : clamp(7 - get$1("Adventures", kolmafia.Item.all().filter(i => have$P(i) && kolmafia.toSlot(i) === $slot`acc1` && kolmafia.canEquip(i)).sort((a, b) => get$1("Adventures", b) - get$1("Adventures", a))[2] ?? $item.none), 0, 7) * get$2("valueOfAdventure")),
+  type: "summon"
+}, {
+  skill: $skill`Aug. 31st: Cabernet Sauvignon  Day!`,
+  value: () => 2 * garboValue($item`bottle of Cabernet Sauvignon`),
+  type: "summon"
 }];
-var trueInebrietyLimit = () => kolmafia.inebrietyLimit() - (kolmafia.myFamiliar() === $familiar`Stooper` ? 1 : 0);
-function computeBarfOutfit(spec) {
-  var sim = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  cleaverCheck();
-  validateGarbageFoldable(spec);
-  var outfit = Outfit.from(spec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`));
-  outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
-  applyCheeseBonus(outfit, BonusEquipMode.BARF);
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
-    outfit.equip($item`LED candle`);
-    outfit.setModes({
-      jillcandle: "ultraviolet"
-    });
-  }
-  if (outfit.familiar === $familiar`Chest Mimic` && $familiar`Chest Mimic`.experience < 550) {
-    var famExpValue = MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50;
-    outfit.modifier.push(`${famExpValue} Familiar Experience`);
-  }
-  var bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
-  if (FarmingStrategy.isUnderwater()) {
-    outfit.modifier.push(`+sea`);
-  }
-  outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`, `${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`, "-tie");
-  if (kolmafia.myInebriety() > trueInebrietyLimit()) {
-    if (!outfit.equip($item`Drunkula's wineglass`)) {
-      throw new Error("We're overdrunk but have found ourself unable to equip a wineglass!");
-    }
-  } else {
-    if (have$P($item`protonic accelerator pack`) && get$2("questPAGhost") === "unstarted" && get$2("nextParanormalActivity") <= kolmafia.totalTurnsPlayed()) {
-      outfit.equip($item`protonic accelerator pack`);
-    }
-    var _iterator = _createForOfIteratorHelper(POINTER_RING_SPECS(outfit)),
+var bestScepterSkills = null;
+function getBestScepterSkills() {
+  return bestScepterSkills ?? (bestScepterSkills = SKILL_OPTIONS.filter(_ref => {
+    var skill = _ref.skill;
+    return todaysSkill() !== skill && skill.dailylimit > 0;
+  }).sort((a, b) => b.value() - a.value()).splice(0, clamp(5 - get$2("_augSkillsCast"), 0, 5)));
+}
+function shouldAugustCast(skill) {
+  return have$p() && (getBestScepterSkills().some(s => skill === s.skill) && skill.dailylimit && get$2("_augSkillsCast") < 5 || todaysSkill() === skill && !getTodayCast() && skill.dailylimit >= 1);
+}
+function summonTask(_ref2) {
+  var skill = _ref2.skill;
+  return {
+    name: skill.name,
+    completed: () => !shouldAugustCast(skill),
+    do: () => kolmafia.useSkill(skill),
+    spendsTurn: false
+  };
+}
+function augustSummonTasks() {
+  return have$p() ? SKILL_OPTIONS.filter(_ref3 => {
+    var type = _ref3.type;
+    return type === "summon";
+  }).map(summonTask) : [];
+}
+function castAugustScepterBuffs() {
+  if (have$p()) {
+    var _iterator = _createForOfIteratorHelper(SKILL_OPTIONS.filter(_ref5 => {
+        var skill = _ref5.skill,
+          type = _ref5.type;
+        return shouldAugustCast(skill) && type === "buff";
+      })),
       _step;
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var _spec = _step.value;
-        var _undelay = undelay(_spec),
-          available = _undelay.available,
-          items = _undelay.items;
-        if (available && outfit.tryEquip(items)) break;
+        var skill = _step.value.skill;
+        kolmafia.useSkill(skill);
       }
     } catch (err) {
       _iterator.e(err);
     } finally {
       _iterator.f();
     }
-  }
-  if (getKramcoWandererChance() > 0.05) {
-    outfit.equip($item`Kramco Sausage-o-Matic™`);
-  }
-  if (!sim) {
-    outfit.addBonuses(toyCupidBow(spec.familiar));
-  }
-  var bjornalike = bestBjornalike(outfit);
-  if (bjornalike) {
-    outfit.setBonus(bjornalike, bjornChoice.value);
-    var other = $items`Buddy Bjorn, Crown of Thrones`.filter(i => i !== bjornalike)[0];
-    outfit.avoid.push(other);
-    switch (bjornalike) {
-      case $item`Buddy Bjorn`:
-        outfit.bjornify(bjornChoice.familiar);
-        break;
-      case $item`Crown of Thrones`:
-        outfit.enthrone(bjornChoice.familiar);
-        break;
-    }
-  }
-  outfit.setModes({
-    snowsuit: "nose",
-    parka: "kachungasaur"
-  });
-  return outfit;
-}
-function barfOutfit(spec) {
-  var _spec$equip;
-  var sim = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var _barfFamiliar = barfFamiliar(Boolean(spec.famequip || ((_spec$equip = spec.equip) === null || _spec$equip === void 0 ? void 0 : _spec$equip.some(equipment => kolmafia.toSlot(equipment) === $slot`familiar`)))),
-    familiar = _barfFamiliar.familiar,
-    extraValue = _barfFamiliar.extraValue;
-  try {
-    return computeBarfOutfit(_objectSpread2({
-      familiar
-    }, spec), sim);
-  } finally {
-    trackMarginalTurnExtraValue(extraValue);
-  }
-}
-
-var nextWeekReady = () => clubIntoNextWeekAvailable() && (turnsUntilNextWeekFight() <= 0 || !clubIntoNextWeekMonster());
-var nextWeekFights = () => clubIntoNextWeekAvailable() + (clubIntoNextWeekMonster() === globalOptions.target ? 1 : 0);
-
-var bestAlternative = get$1("Meat Drop", $item`amulet coin`);
-// Constant Value familiars are those that drop items at a constant rate without limit, compare Rotating Value familiars
-var standardFamiliars = [{
-  familiar: $familiar`Obtuse Angel`,
-  value: () => 0.02 * garboValue($item`time's arrow`)
-}, {
-  familiar: $familiar`Stocking Mimic`,
-  value: mode => garboAverageValue.apply(void 0, _toConsumableArray($items`Polka Pop, BitterSweetTarts, Piddles`)) / 6 - (
-  // We can't equip an amulet coin if we equip the bag of many confections
-  mode === "barf" ? bestAlternative * baseMeat() / 100 : 0) + (1 / 3 + (have$P($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) * totalFamiliarWeight($familiar`Stocking Mimic`)
-}, {
-  familiar: $familiar`Shorter-Order Cook`,
-  value: () => garboAverageValue.apply(void 0, _toConsumableArray($items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`)) / 11 // 9 with blue plate
-}, {
-  familiar: $familiar`Robortender`,
-  value: mode => {
-    var olfactedMonster = get$2("olfactedMonster");
-    var olfactedIsFromBarf = olfactedMonster && kolmafia.getMonsters($location`Barf Mountain`).includes(olfactedMonster);
-    return dropChance() * garboValue(dropFrom(mode === "barf" && olfactedIsFromBarf ? olfactedMonster : mode === "target" ? globalOptions.target : $monster.none)) + (currentDrinks().includes($item`Feliz Navidad`) ? felizValue() * 0.25 : 0) + (currentDrinks().includes($item`Newark`) ? newarkValue() * 0.25 : 0);
-  }
-}, {
-  familiar: $familiar`Twitching Space Critter`,
-  // Item is ludicrously overvalued and incredibly low-volume.
-  // We can remove this cap once the price reaches a lower equilibrium
-  // we probably won't, but we can.
-  value: () => Math.min(garboValue($item`twitching space egg`) * 0.0002, 690)
-}, {
-  familiar: $familiar`Hobo Monkey`,
-  value: () => 75
-}, {
-  familiar: $familiar`Trick-or-Treating Tot`,
-  // This is the value of getting a pirate costume over getting an amulet coin or whatever
-  value: mode => have$P($item`li'l pirate costume`) && mode === "barf" ? baseMeat() * (300 - bestAlternative) / 100 : 0
-}, {
-  familiar: $familiar`Cookbookbat`,
-  value: mode => 3 * garboAverageValue.apply(void 0, _toConsumableArray($items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`)) / 11 + (mode === "barf" ? cookbookbatPerilBonus() : 0) // We cannot run the turn spending task during our start of day freefights, so cannot guarantee this value
-}, {
-  familiar: $familiar`Unspeakachu`,
-  value: () => {
-    return effectExtenderValue(5) * 0.5 * 0.05;
-  }
-}, {
-  familiar: $familiar`Patriotic Eagle`,
-  value: () => kolmafia.holiday().includes("Dependence Day") ? 0.05 * garboValue($item`souvenir flag`) : 0,
-  worksOnFreeRun: true
-}, {
-  familiar: $familiar`Mini Kiwi`,
-  value: mode => mode === "barf" ? 0 // Handled in outfit caching code
-  : clamp(totalFamiliarWeight($familiar`Mini Kiwi`) * 0.005, 0, 1) * garboValue($item`mini kiwi`) // faster with aviator goggles
-}, {
-  familiar: $familiar`Quantum Entangler`,
-  value: () => garboValue($item`quantized familiar experience`) / 11
-}, {
-  familiar: $familiar`Peace Turkey`,
-  value: () =>
-  // drops are ~1/2 of the activations, whirled peas are twice as likely to drop
-  garboAverageValue.apply(void 0, _toConsumableArray($items`whirled peas, whirled peas, piece of cake, peace shooter`)) * peaceTurkeyDropChance() / 2,
-  worksOnFreeRun: true
-}, {
-  familiar: $familiar`XO Skeleton`,
-  value: () => garboAverageValue.apply(void 0, _toConsumableArray($items`X, O`)) / 9 // counters for X & O are simultaneous but offset by 5
-}];
-function peaceTurkeyDropChance() {
-  return 0.24 + kolmafia.squareRoot(totalFamiliarWeight($familiar`Peace Turkey`)) / 100;
-}
-function getConstantValueFamiliars(mode) {
-  return standardFamiliars.filter(_ref => {
-    var familiar = _ref.familiar;
-    return have$P(familiar);
-  }).map(_ref2 => {
-    var familiar = _ref2.familiar,
-      value = _ref2.value,
-      _ref2$worksOnFreeRun = _ref2.worksOnFreeRun,
-      worksOnFreeRun = _ref2$worksOnFreeRun === void 0 ? false : _ref2$worksOnFreeRun;
-    return {
-      familiar,
-      worksOnFreeRun,
-      expectedValue: value(mode),
-      leprechaunMultiplier: findLeprechaunMultiplier(familiar),
-      limit: "none"
-    };
-  });
-}
-var locationsWithMonsters = kolmafia.Location.all().filter(l => kolmafia.getMonsters(l).length > 0);
-function cookbookbatPerilBonus() {
-  if (!have$P($item`Peridot of Peril`) || get$2("_cookbookbatCombatsUntilNewQuest") + 1 > estimatedGarboTurns()) {
-    return 0;
-  }
-  // canAdventure includes some zones we need to exclude
-  var canAdvExclusions = $locations`Fastest Adventurer Contest, Strongest Adventurer Contest, Smartest Adventurer Contest, Smoothest Adventurer Contest, Hottest Adventurer Contest, Coldest Adventurer Contest, Spookiest Adventurer Contest, Stinkiest Adventurer Contest, Sleaziest Adventurer Contest, The Hedge Maze, Tower Level 1, Tower Level 2, Tower Level 3, Tower Level 5, The Naughty Sorceress' Chamber, The Daily Dungeon, An Overgrown Shrine (Northwest), An Overgrown Shrine (Southwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southeast), A Crater Full of Space Beasts, Mt. Molehill, The Red Queen's Garden, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), The Primordial Soup, The Jungles of Ancient Loathing, Seaside Megalopolis, Domed City of Ronaldus, Domed City of Grimacia, Hamburglaris Shield Generator, The X-32-F Combat Training Snowman, The Haiku Dungeon, The Deep Machine Tunnels, Shadow Rift, The Island Barracks`;
-  if (!have$P($effect`Ultrahydrated`)) {
-    canAdvExclusions.push($location`The Oasis`);
-  }
-  var cookbookbatQuestLocations = locationsWithMonsters.filter(l => canAdventureOrUnlock(l, false) && !canAdvExclusions.includes(l));
-  var availablePeridotCookbookbatLocations = cookbookbatQuestLocations.filter(l => canImperil(l) && !unperidotableZones.includes(l));
-  var doableQuestChance = availablePeridotCookbookbatLocations.length / cookbookbatQuestLocations.length;
-  var averageCookbookbatRewardValue = 3 * garboAverageValue.apply(void 0, _toConsumableArray($items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`));
-
-  // It takes 5 turns to get a quest, times the chance we hit a zone we can do with peridot. Assume worst case of spending a turn to complete the quest
-  return Math.max(0, (averageCookbookbatRewardValue * doableQuestChance - get$2("valueOfAdventure")) / 5);
-}
-
-function expectedTurnsValue(expected, index) {
-  return Array.isArray(expected) ? expected[index] : expected(index);
-}
-function dropValue(drop) {
-  return drop instanceof kolmafia.Item ? garboValue(drop) : garboAverageValue.apply(void 0, _toConsumableArray(drop));
-}
-function valueStandardDropFamiliar(_ref) {
-  var familiar = _ref.familiar,
-    expected = _ref.expected,
-    drop = _ref.drop,
-    additionalValue = _ref.additionalValue,
-    _ref$worksOnFreeRun = _ref.worksOnFreeRun,
-    worksOnFreeRun = _ref$worksOnFreeRun === void 0 ? false : _ref$worksOnFreeRun;
-  var expectedTurns = expectedTurnsValue(expected, familiar.dropsToday) || Infinity;
-  var expectedValue = dropValue(drop) / expectedTurns + ((additionalValue === null || additionalValue === void 0 ? void 0 : additionalValue()) ?? 0);
-  return {
-    familiar,
-    expectedValue,
-    leprechaunMultiplier: findLeprechaunMultiplier(familiar),
-    limit: "drops",
-    worksOnFreeRun
-  };
-}
-
-// Rotating Value familiars are those whose drop rate changes, compare Constant Value familiars
-var rotatingFamiliars = [{
-  familiar: $familiar`Fist Turkey`,
-  expected: [3.91, 4.52, 4.52, 5.29, 5.29],
-  drop: $item`Ambitious Turkey`
-}, {
-  familiar: $familiar`Llama Lama`,
-  expected: [3.42, 3.91, 4.52, 5.29, 5.29],
-  drop: $item`llama lama gong`
-}, {
-  familiar: $familiar`Astral Badger`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`astral mushroom`
-}, {
-  familiar: $familiar`Li'l Xenomorph`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`transporter transponder`
-}, {
-  familiar: $familiar`Rogue Program`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`Game Grid token`
-}, {
-  familiar: $familiar`Bloovian Groose`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`groose grease`
-}, {
-  familiar: $familiar`Baby Sandworm`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`agua de vida`
-}, {
-  familiar: $familiar`Green Pixie`,
-  expected: id => have$P($effect`Absinthe-Minded`) ? Infinity : [3.03, 3.42, 3.91, 4.52, 5.29][id] ?? Infinity,
-  drop: $item`tiny bottle of absinthe`
-}, {
-  familiar: $familiar`Blavious Kloop`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`devilish folio`
-}, {
-  familiar: $familiar`Galloping Grill`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`hot ashes`
-}, {
-  familiar: $familiar`Grim Brother`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`grim fairy tale`
-}, {
-  familiar: $familiar`Golden Monkey`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`powdered gold`
-}, {
-  familiar: $familiar`Unconscious Collective`,
-  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
-  drop: $item`Unconscious Collective Dream Jar`
-}, {
-  familiar: $familiar`Ms. Puck Man`,
-  expected: Array($familiar`Ms. Puck Man`.dropsLimit).fill(12.85),
-  drop: $item`power pill`,
-  additionalValue: () => garboValue($item`yellow pixel`)
-}, {
-  familiar: $familiar`Puck Man`,
-  expected: Array($familiar`Puck Man`.dropsLimit).fill(12.85),
-  drop: $item`power pill`,
-  additionalValue: () => garboValue($item`yellow pixel`)
-}, {
-  familiar: $familiar`Adventurous Spelunker`,
-  expected: [7.0],
-  drop: $item`Tales of Spelunking`
-}, {
-  familiar: $familiar`Angry Jung Man`,
-  expected: [30.0],
-  drop: $item`psychoanalytic jar`
-}, {
-  familiar: $familiar`Grimstone Golem`,
-  expected: [45.0],
-  drop: $item`grimstone mask`
-}, {
-  familiar: $familiar`Cookbookbat`,
-  expected: [33.0],
-  drop: [$item`Recipe of Before Yore: Deep Dish of Legend`, $item`Recipe of Before Yore: Pizza of Legend`, $item`Recipe of Before Yore: Calzone of Legend`, $item`Recipe of Before Yore: plain calzone`, $item`Recipe of Before Yore: roasted vegetable focaccia`, $item`Recipe of Before Yore: baked veggie ricotta`, $item`Recipe of Before Yore: roasted vegetable of J.`, $item`Recipe of Before Yore: Pete's rich ricotta`, $item`Recipe of Before Yore: Boris's bread`, $item`Recipe of Before Yore: Boris's beer`, $item`Recipe of Before Yore: honey bun of Boris`, $item`Recipe of Before Yore: ratatouille de Jarlsberg`, $item`Recipe of Before Yore: Jarlsberg's vegetable soup`, $item`Recipe of Before Yore: Pete's wily whey bar`, $item`Recipe of Before Yore: St. Pete's sneaky smoothie`],
-  additionalValue: () => 3 * garboAverageValue.apply(void 0, _toConsumableArray($items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`)) / 11
-}, {
-  familiar: $familiar`Hobo in Sheep's Clothing`,
-  expected: i => 10 * i + 10,
-  // faster with half-height cigar
-  drop: $item`grubby wool`
-}, {
-  familiar: $familiar`Jill-of-All-Trades`,
-  expected: i => 3 * Math.pow(20, i),
-  drop: $item`map to a candy-rich block`,
-  additionalValue: () => (6 + 4 * totalFamiliarWeight($familiar`Jill-of-All-Trades`)) * 0.33
-}, {
-  familiar: $familiar`Rockin' Robin`,
-  expected: i => i === $familiar`Rockin' Robin`.dropsToday ? clamp(30 - get$2("rockinRobinProgress"), 1, 30) : 30,
-  drop: $item`robin's egg`
-}, {
-  familiar: $familiar`Optimistic Candle`,
-  expected: i => i === $familiar`Optimistic Candle`.dropsToday ? clamp(30 - get$2("optimisticCandleProgress"), 1, 30) : 30,
-  drop: $item`glob of melted wax`
-}, {
-  familiar: $familiar`Garbage Fire`,
-  expected: i => i === $familiar`Garbage Fire`.dropsToday ? clamp(30 - get$2("garbageFireProgress"), 1, 30) : 30,
-  drop: $items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`
-}];
-function getDropFamiliars() {
-  return rotatingFamiliars.map(valueStandardDropFamiliar).filter(_ref2 => {
-    var familiar = _ref2.familiar,
-      expectedValue = _ref2.expectedValue,
-      leprechaunMultiplier = _ref2.leprechaunMultiplier;
-    return have$P(familiar) && (expectedValue || leprechaunMultiplier);
-  });
-}
-function getAllDrops(fam) {
-  var target = rotatingFamiliars.find(_ref3 => {
-    var familiar = _ref3.familiar;
-    return familiar === fam;
-  });
-  if (!have$P(fam) || !target) return [];
-  var expected = target.expected,
-    drop = target.drop,
-    additionalValue = target.additionalValue;
-  var current = fam.dropsToday;
-  var returnValue = [];
-  var length = Array.isArray(expected) ? expected.length : 11; // 11 seems a reasonable max
-  for (var i = current; i < length; i++) {
-    var turns = expectedTurnsValue(target.expected, i);
-    returnValue.push({
-      expectedValue: dropValue(drop) / turns + ((additionalValue === null || additionalValue === void 0 ? void 0 : additionalValue()) ?? 0),
-      expectedTurns: turns
+    var today = SKILL_OPTIONS.find(_ref4 => {
+      var skill = _ref4.skill,
+        type = _ref4.type;
+      return type === "buff" && skill === todaysSkill();
     });
-  }
-  return returnValue;
-}
-
-var isUsed = (used, mode) => typeof used === "string" ? get$2(used) : used(mode);
-var experienceFamiliars = [{
-  familiar: $familiar`Pocket Professor`,
-  used: "_thesisDelivered",
-  useValue: 11 * get$2("valueOfAdventure"),
-  baseExp: 200
-}, {
-  familiar: $familiar`Grey Goose`,
-  used: "_meatifyMatterUsed",
-  useValue: 15 ** 4,
-  baseExp: 25
-}, {
-  familiar: $familiar`Chest Mimic`,
-  used: mode => !shouldChargeMimic(mode === "barf"),
-  useValue: () => MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure"),
-  baseExp: 0,
-  xpCost: 50,
-  xpLimit: mode => mimicExperienceNeeded(mode === "barf")
-}, {
-  familiar: $familiar`Cooler Yeti`,
-  used: () => {
-    return $familiar`Cooler Yeti`.experience >= 400 || globalOptions.ascend || !globalOptions.prefs.chargeYeti;
-  },
-  // Vintage Smart Drink is 40 adventures
-  useValue: getAverageAdventures($item`vintage smart drink`) * get$2("valueOfAdventure"),
-  baseExp: 0
-}];
-function valueExperienceFamiliar(_ref, mode) {
-  var familiar = _ref.familiar,
-    useValue = _ref.useValue,
-    xpCost = _ref.xpCost,
-    baseExp = _ref.baseExp;
-  var currentExp = familiar.experience || (have$P($familiar`Shorter-Order Cook`) ? 100 : 0);
-  var experienceNeeded = xpCost ?? 400 - (globalOptions.ascend ? currentExp : baseExp);
-  var estimatedExperience = mode === "free" ? 12 : estimatedBarfExperience();
-  return {
-    familiar,
-    expectedValue: undelay(useValue) / (experienceNeeded / estimatedExperience),
-    leprechaunMultiplier: findLeprechaunMultiplier(familiar),
-    limit: "experience",
-    worksOnFreeRun: false
-  };
-}
-function getExperienceFamiliars(mode) {
-  return experienceFamiliars.filter(_ref2 => {
-    var used = _ref2.used,
-      familiar = _ref2.familiar,
-      xpLimit = _ref2.xpLimit;
-    return have$P(familiar) && !isUsed(used, mode) && familiar.experience < ((xpLimit === null || xpLimit === void 0 ? void 0 : xpLimit(mode)) ?? 400);
-  }).map(f => valueExperienceFamiliar(f, mode));
-}
-function getExperienceFamiliarLimit(fam) {
-  var _target$xpLimit;
-  var target = experienceFamiliars.find(_ref3 => {
-    var familiar = _ref3.familiar;
-    return familiar === fam;
-  });
-  if (!have$P(fam) || !target) return 0;
-  return ((((_target$xpLimit = target.xpLimit) === null || _target$xpLimit === void 0 ? void 0 : _target$xpLimit.call(target, "barf")) ?? 400) - fam.experience) / estimatedBarfExperience();
-}
-
-var fam;
-function findBestLeprechauns() {
-  var validFamiliars = kolmafia.Familiar.all().filter(f => have$P(f) && f !== $familiar`Ghost of Crimbo Commerce`);
-  validFamiliars.sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a));
-  var bestLepMult = findLeprechaunMultiplier(validFamiliars[0]);
-  var firstBadLeprechaun = validFamiliars.findIndex(f => findLeprechaunMultiplier(f) < bestLepMult);
-  if (firstBadLeprechaun === -1) return validFamiliars;
-  return validFamiliars.slice(0, firstBadLeprechaun);
-}
-function findBestLeprechaun() {
-  return maxBy(findBestLeprechauns(), findFairyMultiplier);
-}
-function setBestLeprechaunAsMeatFamiliar() {
-  fam = findBestLeprechaun();
-}
-function meatFamiliar() {
-  return fam ?? (fam = $familiars`Robortender, Jill-of-All-Trades`.find(have$P) ?? findBestLeprechaun());
-}
-
-/**
- * Configure the behavior of the fights in use in different parts of the fight engine
- * @interface TargetFightConfigOptions
- * @member {OutfitSpec} spec maximizer requirements to use for this fight (defaults to empty)
- * @member {draggableFight?} draggable if this fight can be pulled into another zone and what kind of draggable it is (defaults to undefined)
- * @member {boolean?} canInitializeWandererCounters if this fight can be used to initialize wanderers (defaults to false)
- * @member {boolean?} gregariousReplace if this is a "monster replacement" fight - pulls another monster from the CSV (defautls to false)
- * @member {boolean?} wrongEncounterName if mafia does not update the lastEncounter properly when doing this fight (defaults to value of gregariousReplace)
- */
-
-function checkUnderwater() {
-  // first check to see if underwater even makes sense
-  if (questStep$1("questS01OldGuy") >= 0 && !(get$2("_envyfishEggUsed") || have$P($item`envyfish egg`)) && (get$2("_garbo_weightChain", false) || !have$P($familiar`Pocket Professor`)) && (kolmafia.booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(item => have$P(item) && kolmafia.canEquip(item))) && freeFishyAvailable() && !willYachtzee()) {
-    if (!have$P($effect`Fishy`) && have$P($item`fishy pipe`) && !get$2("_fishyPipeUsed")) {
-      kolmafia.use($item`fishy pipe`);
-    }
-    if (!have$P($effect`Fishy`) && get$2("skateParkStatus") === "ice" && !get$2("_skateBuff1")) {
-      kolmafia.cliExecute("skate lutz");
-    }
-    return have$P($effect`Fishy`);
-  }
-  return false;
-}
-function getChangeLastAdvLocationMethod() {
-  if (questStep$1("questL11Worship") > 3) {
-    return "hiddencity";
-  } else {
-    return "dailydungeon";
-  }
-}
-
-// for now, return a psuedo task since target fights are not grimoirized
-function changeLastAdvLocationTask() {
-  var base = {
-    ready: () => ponder().get($location`The Dire Warren`) !== globalOptions.target,
-    completed: () => kolmafia.myLocation() !== $location`The Dire Warren`
-  };
-  switch (getChangeLastAdvLocationMethod()) {
-    case "hiddencity":
-      return _objectSpread2(_objectSpread2({}, base), {}, {
-        do: () => withChoice(785, 6, () => kolmafia.adv1($location`An Overgrown Shrine (Northeast)`, -1, ""))
-      });
-    case "dailydungeon":
-      return _objectSpread2(_objectSpread2({}, base), {}, {
-        do: () =>
-        // at this point, we're either at an NC we can walk away from or the whole DD is done
-        // only track the choices we need to walk away since hitting it when it is done does nothing
-        withChoices({
-          692: 8,
-          693: 3
-        }, () => kolmafia.adv1($location`The Daily Dungeon`, -1, ""))
-      });
-  }
-}
-
-var CopyTargetFight = /*#__PURE__*/function () {
-  /**
-   * This is the class that creates all the different ways to fight copy targets
-   * @classdesc Copy Target Fight enc
-   * @prop {string} name The name of the source of this fight, primarily used to identify special cases.
-   * @prop {() => boolean} available Returns whether or not we can do this fight right now (this may change later in the day).
-   * @prop {() => number} potential Returns the number of targets we expect to be able to fight from this source given the current state of hte character
-   *  This is used when computing turns for buffs, so it should be as accurate as possible to the number of KGE we will fight
-   * @prop {(options: RunOptions) => void} execute This runs the combat, optionally using the provided location and macro. Location is used only by draggable fights.
-   *  This is the meat of each fight. How do you initialize the fight? Are there any special considerations?
-   * @prop {TargetFightConfigOptions} options configuration options for this fight. see TargetFightConfigOptions for full details of all available options
-   * @example
-   * // suppose that we wanted to add a fight that will use print screens repeatedly, as long as we have them in our inventory
-   * new CopyTargetFight(
-   *  "Print Screen Monster",
-   *  () => have($item`screencapped monster`) && get('screencappedMonster') === globalOptions.target, // in order to start this fight, a KGE must already be screen capped
-   *  () => availableAmount($item`screencapped monster`) + availableAmount($item`print screen button`) // the total of potential of this fight is the number of already copied KGE + the number of potentially copiable KGE
-   *  () => (options: RunOptions) => {
-   *    const macro = Macro
-   *      .externalIf(have($item`print screen button`), Macro.tryItem($item`print screen button`))
-   *      .step(options.macro); // you should always include the macro passed in via options, as it may have special considerations for this fight
-   *    withMacro(macro, () => useItem($item`screen capped monster`));
-   *  },
-   *  {
-   *    canInitializeWandererCounts: false; // this copy cannot be used to start wanderer counters, since the combats are not adv.php
-   *  }
-   * )
-   */
-  function CopyTargetFight(name, available, potential) {
-    var execute = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : options => {
-      var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
-      adventureFunction(options.location, options.macro, options.macro);
-    };
-    var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
-    _classCallCheck(this, CopyTargetFight);
-    this.name = name;
-    this.available = available;
-    this.potential = potential;
-    this.execute = execute;
-    this.spec = options.spec ?? {};
-    this.draggable = options.draggable;
-    this.canInitializeWandererCounters = options.canInitializeWandererCounters ?? false;
-    this.gregariousReplace = options.gregariousReplace ?? false;
-    this.wrongEncounterName = options.wrongEncounterName ?? this.gregariousReplace;
-    this.location = options.location;
-  }
-  return _createClass(CopyTargetFight, [{
-    key: "run",
-    value: function run(options) {
-      if (!this.available() || !kolmafia.myAdventures()) return;
-      kolmafia.print(`Now running ${globalOptions.target} fight: ${this.name}. Stay tuned for details.`);
-      this.execute(options);
-    }
-  }]);
-}();
-var chainStarters = [new CopyTargetFight("Witchess", () => have$H() && pieces$1.includes(globalOptions.target) && fightsDone() < 5, () => have$H() && pieces$1.includes(globalOptions.target) ? Math.max(5 - fightsDone(), 0) : 0, options => {
-  withMacro(options.macro, () => fightPiece(globalOptions.target), options.useAuto);
-}), new CopyTargetFight("Chateau Painting", () => have$J() && !paintingFought() && paintingMonster() === globalOptions.target, () => have$J() && !paintingFought() && paintingMonster() === globalOptions.target ? 1 : 0, options => {
-  withMacro(options.macro, () => fightPainting(), options.useAuto);
-}), new CopyTargetFight("Combat Lover's Locket", () => canReminisce(globalOptions.target), () => canReminisce(globalOptions.target) ? 1 : 0, options => {
-  withMacro(options.macro, () => reminisce(globalOptions.target), options.useAuto);
-}), new CopyTargetFight("Fax", () => have$P($item`Clan VIP Lounge key`) && !get$2("_photocopyUsed") && have$P($item`photocopied monster`) && get$2("photocopyMonster") === globalOptions.target && kolmafia.getClanLounge()["deluxe fax machine"] !== undefined, () => have$P($item`Clan VIP Lounge key`) && !get$2("_photocopyUsed") && have$P($item`photocopied monster`) && get$2("photocopyMonster") === globalOptions.target && kolmafia.getClanLounge()["deluxe fax machine"] !== undefined ? 1 : 0, options => {
-  withMacro(options.macro, () => kolmafia.use($item`photocopied monster`), options.useAuto);
-}), new CopyTargetFight("Mimic Eggs", () => differentiableQuantity(globalOptions.target) >= 1, () => differentiableQuantity(globalOptions.target) + clamp(Math.floor($familiar`Chest Mimic`.experience / 50), 0, 11 - get$2("_mimicEggsObtained")), options => {
-  withMacro(options.macro, () => differentiate(globalOptions.target), options.useAuto);
-}), new CopyTargetFight("Rain Main", () => have$P($skill`Rain Man`) && kolmafia.myRain() >= 50, () => Math.floor(kolmafia.myRain() / 50), options => {
-  withMacro(options.macro, () => rainMan(globalOptions.target), options.useAuto);
-})];
-var copySources = [new CopyTargetFight("Time-Spinner", () => have$P($item`Time-Spinner`) && $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(location => location.combatQueue.includes(globalOptions.target.name)) && get$2("_timeSpinnerMinutesUsed") <= 7, () => have$P($item`Time-Spinner`) && $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(location => location.combatQueue.includes(globalOptions.target.name) || totalGregCharges()) ? Math.floor((10 - get$2("_timeSpinnerMinutesUsed")) / 3) : 0, options => {
-  withMacro(options.macro, () => {
-    directlyUse($item`Time-Spinner`);
-    kolmafia.runChoice(1);
-    kolmafia.visitUrl(`choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`);
-    kolmafia.runCombat();
-  }, options.useAuto);
-}), new CopyTargetFight("Spooky Putty & Rain-Doh", () => have$P($item`Spooky Putty monster`) && get$2("spookyPuttyMonster") === globalOptions.target || have$P($item`Rain-Doh box full of monster`) && get$2("rainDohMonster") === globalOptions.target, () => {
-  var havePutty = have$P($item`Spooky Putty sheet`);
-  var havePuttyMonster = have$P($item`Spooky Putty monster`);
-  var haveRainDoh = have$P($item`Rain-Doh black box`);
-  var haveRainDohMonster = have$P($item`Rain-Doh box full of monster`);
-  var puttyUsed = get$2("spookyPuttyCopiesMade");
-  var rainDohUsed = get$2("_raindohCopiesMade");
-  var hardLimit = 6 - puttyUsed - rainDohUsed;
-  var monsterCount = 0;
-  var puttyLeft = 5 - puttyUsed;
-  var rainDohLeft = 5 - rainDohUsed;
-  if (!havePutty && !havePuttyMonster) {
-    puttyLeft = 0;
-  }
-  if (!haveRainDoh && !haveRainDohMonster) {
-    rainDohLeft = 0;
-  }
-  if (havePuttyMonster) {
-    if (get$2("spookyPuttyMonster") === globalOptions.target) {
-      monsterCount++;
-    } else {
-      puttyLeft = 0;
+    if (today && !getTodayCast()) kolmafia.useSkill(today.skill);
+    if (globalOptions.ascend && shouldAugustCast($skill`Aug. 13th: Left/Off Hander's Day!`)) {
+      kolmafia.useSkill($skill`Aug. 13th: Left/Off Hander's Day!`);
     }
   }
-  if (haveRainDohMonster) {
-    if (get$2("rainDohMonster") === globalOptions.target) {
-      monsterCount++;
-    } else {
-      rainDohLeft = 0;
-    }
-  }
-  var naiveLimit = Math.min(puttyLeft + rainDohLeft, hardLimit);
-  return naiveLimit + monsterCount;
-}, options => {
-  var macro = options.macro;
-  withMacro(macro, () => {
-    if (have$P($item`Spooky Putty monster`)) {
-      return kolmafia.use($item`Spooky Putty monster`);
-    }
-    return kolmafia.use($item`Rain-Doh box full of monster`);
-  }, options.useAuto);
-}), new CopyTargetFight("4-d Camera", () => have$P($item`shaking 4-d camera`) && get$2("cameraMonster") === globalOptions.target && !get$2("_cameraUsed"), () => have$P($item`shaking 4-d camera`) && get$2("cameraMonster") === globalOptions.target && !get$2("_cameraUsed") ? 1 : 0, options => {
-  withMacro(options.macro, () => kolmafia.use($item`shaking 4-d camera`), options.useAuto);
-}), new CopyTargetFight("Ice Sculpture", () => have$P($item`ice sculpture`) && get$2("iceSculptureMonster") === globalOptions.target && !get$2("_iceSculptureUsed"), () => have$P($item`ice sculpture`) && get$2("iceSculptureMonster") === globalOptions.target && !get$2("_iceSculptureUsed") ? 1 : 0, options => {
-  withMacro(options.macro, () => kolmafia.use($item`ice sculpture`), options.useAuto);
-}), new CopyTargetFight("Green Taffy", () => have$P($item`envyfish egg`) && get$2("envyfishMonster") === globalOptions.target && !get$2("_envyfishEggUsed"), () => have$P($item`envyfish egg`) && get$2("envyfishMonster") === globalOptions.target && !get$2("_envyfishEggUsed") ? 1 : 0, options => {
-  withMacro(options.macro, () => kolmafia.use($item`envyfish egg`), options.useAuto);
-}), new CopyTargetFight("Screencapped Monster", () => have$P($item`screencapped monster`) && get$2("screencappedMonster") === globalOptions.target, () => get$2("screencappedMonster") === globalOptions.target ? kolmafia.itemAmount($item`screencapped monster`) : 0, options => {
-  withMacro(options.macro, () => kolmafia.use($item`screencapped monster`), options.useAuto);
-}), new CopyTargetFight("Sticky Clay Homunculus", () => have$P($item`sticky clay homunculus`) && get$2("crudeMonster") === globalOptions.target, () => get$2("crudeMonster") === globalOptions.target ? kolmafia.itemAmount($item`sticky clay homunculus`) : 0, options => withMacro(options.macro, () => kolmafia.use($item`sticky clay homunculus`), options.useAuto))];
-var wanderSources = [new CopyTargetFight("Lucky!", () => kolmafia.canAdventure($location`Cobb's Knob Treasury`) && have$P($effect`Lucky!`) && globalOptions.target === $monster`Knob Goblin Embezzler`, () => kolmafia.canAdventure($location`Cobb's Knob Treasury`) && have$P($effect`Lucky!`) && globalOptions.target === $monster`Knob Goblin Embezzler` ? 1 : 0, undefined, {
-  location: $location`Cobb's Knob Treasury`
-}), new CopyTargetFight("Digitize", () => get$2("_sourceTerminalDigitizeMonster") === globalOptions.target && get("Digitize Monster") <= 0, () => have$I() && getDigitizeUses() === 0 ? 1 : 0, undefined, {
-  draggable: "wanderer"
-}), new CopyTargetFight("Guaranteed Romantic Monster", () => get$2("_romanticFightsLeft") > 0 && get("Romantic Monster window begin") <= 0 && get("Romantic Monster window end") <= 0, () => 0, undefined, {
-  draggable: "wanderer"
-}), new CopyTargetFight("Enamorang", () => get("Enamorang") <= 0 && get$2("enamorangMonster") === globalOptions.target, () => get("Enamorang") <= 0 && get$2("enamorangMonster") === globalOptions.target || have$P($item`LOV Enamorang`) && !get$2("_enamorangs") ? 1 : 0, undefined, {
-  draggable: "wanderer"
-}), new CopyTargetFight("Legendary Seal Clubbing Club", () => get("Club 'Em Into Next Week Monster") <= 0 && clubIntoNextWeekMonster() === globalOptions.target, nextWeekFights, undefined, {
-  draggable: "wanderer"
-})];
-function changeLastAdvLocation() {
-  var task = changeLastAdvLocationTask();
-  if (task.ready() && !task.completed()) {
-    task.do();
-  }
-  kolmafia.visitUrl("main.php");
-}
-var gregFights = (name, haveCheck, monsterProp, fightsProp, totalCharges) => {
-  function runGregFight(options) {
-    var _run$constraints$prep, _run$constraints;
-    var run = ltbRun();
-    var runMacro = getUsingFreeBunnyBanish() ? Macro.skill($skill`Snokebomb`) : ltbRun().macro;
-    (_run$constraints$prep = (_run$constraints = run.constraints).preparation) === null || _run$constraints$prep === void 0 || _run$constraints$prep.call(_run$constraints);
-    var bunnyIsBanished = kolmafia.isBanished($monster`fluffy bunny`);
-    var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
-    adventureFunction($location`The Dire Warren`, Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro), Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro));
-    if (get$2("lastEncounter") === $monster`fluffy bunny`.name && bunnyIsBanished) {
-      var _find;
-      var bunnyBanish = (_find = _toConsumableArray(getBanishedMonsters().entries()).find(_ref => {
-        var _ref2 = _slicedToArray(_ref, 2),
-          monster = _ref2[1];
-        return monster === $monster`fluffy bunny`;
-      })) === null || _find === void 0 ? void 0 : _find[0];
-      kolmafia.abort(`Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${fightsProp} preference is nonzero and should probably be zero.`);
-    }
-  }
-  var resourceIsOccupied = () => get$2(fightsProp) > 0 && ![null, globalOptions.target].includes(get$2(monsterProp));
-  return [new CopyTargetFight(name, () => haveCheck() && !resourceIsOccupied() && get$2(fightsProp) > (have$P($item`miniature crystal ball`) ? 1 : 0), () => !resourceIsOccupied() ? totalCharges() : 0, options => {
-    runGregFight(options);
-    // reset the crystal ball prediction by staring longingly at toast
-    if (get$2(fightsProp) === 1 && have$P($item`miniature crystal ball`)) {
-      var warrenPrediction = ponder().get($location`The Dire Warren`);
-      if (warrenPrediction !== globalOptions.target) {
-        changeLastAdvLocation();
-      }
-    }
-  }, {
-    canInitializeWandererCounters: true
-  }), new CopyTargetFight(`${name} (Set Up Crystal Ball)`, () => get$2(monsterProp) === globalOptions.target && get$2(fightsProp) === 1 && have$P($item`miniature crystal ball`) && !ponder().get($location`The Dire Warren`), () => get$2(monsterProp) === globalOptions.target && get$2(fightsProp) > 0 || totalCharges() > 0 ? 1 : 0, runGregFight, {
-    spec: {
-      equip: $items`miniature crystal ball`.filter(item => have$P(item))
-    },
-    canInitializeWandererCounters: true
-  })];
-};
-var gregLikeFights = [].concat(_toConsumableArray(gregFights("Be Gregarious", () => true,
-// we can always use extrovermectin
-"beGregariousMonster", "beGregariousFightsLeft", () => get$2("beGregariousCharges") * 3 + get$2("beGregariousFightsLeft"))), _toConsumableArray(gregFights("Habitats Monster", () => have$P($skill`Just the Facts`), "_monsterHabitatsMonster", "_monsterHabitatsFightsLeft", () => have$P($skill`Just the Facts`) ? (3 - get$2("_monsterHabitatsRecalled")) * 5 + get$2("_monsterHabitatsFightsLeft") : 0)));
-
-/**
- * Determines whether we want to do this particular Target fight; if we aren't using orb, should always return true. If we're using orb and it's a crate, we'll have to see!
- * @returns
- */
-function proceedWithOrb() {
-  var strat = crateStrategy();
-  // If we can't possibly use orb, return true
-  if (!have$P($item`miniature crystal ball`) || strat !== "Orb") return true;
-
-  // If we're using orb, we have a KGE prediction, and we can reset it, return false
-  var gregFightNames = ["Macrometeorite", "Powerful Glove", "Habitats Monster", "Be Gregarious", "Orb Prediction"];
-  if (ponder().get($location`Noob Cave`) === globalOptions.target && copyTargetSources.filter(source => !gregFightNames.some(name => source.name.includes(name))).find(source => source.available())) {
-    return false;
-  }
-  return true;
-}
-var conditionalSources = [new CopyTargetFight("Orb Prediction", () => have$P($item`miniature crystal ball`) && !get$2("_garbo_doneGregging", false) && ponder().get($location`The Dire Warren`) === globalOptions.target, () => possibleGregCrystalBall(), options => {
-  kolmafia.visitUrl("inventory.php?ponder=1");
-  if (ponder().get($location`The Dire Warren`) !== globalOptions.target) {
-    return;
-  }
-  var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
-  adventureFunction($location`The Dire Warren`, options.macro, options.macro);
-  changeLastAdvLocation();
-  if (!doingGregFight()) _set("_garbo_doneGregging", true);
-}, {
-  spec: {
-    equip: $items`miniature crystal ball`
-  },
-  canInitializeWandererCounters: true
-}), new CopyTargetFight("Macrometeorite", () => gregReady() && have$P($skill`Meteor Lore`) && get$2("_macrometeoriteUses") < 10 && proceedWithOrb(), () => doingGregFight() && have$P($skill`Meteor Lore`) ? 10 - get$2("_macrometeoriteUses") : 0, options => {
-  equipOrbIfDesired();
-  var crateIsSabered = get$2("_saberForceMonster") === $monster`crate`;
-  var notEnoughCratesSabered = get$2("_saberForceMonsterCount") < 2;
-  var weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
-  setChoice(1387, 2);
-  var macro = Macro.if_($monster`crate`, Macro.externalIf(crateStrategy() !== "Saber" && !have$P($effect`On the Trail`) && get$2("_olfactionsUsed") < 2, Macro.tryHaveSkill($skill`Transcendent Olfaction`)).externalIf(kolmafia.haveEquipped($item`Fourth of May Cosplay Saber`) && weWantToSaberCrates && get$2("_saberForceUses") < 5, Macro.trySkill($skill`Use the Force`)).skill($skill`Macrometeorite`)).step(options.macro);
-  var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
-  adventureFunction($location`Noob Cave`, macro, macro);
-  if (ponder().get($location`Noob Cave`) === globalOptions.target) {
-    changeLastAdvLocation();
-  }
-}, {
-  gregariousReplace: true
-}), new CopyTargetFight("Powerful Glove", () => gregReady() && have$P($item`Powerful Glove`) && get$2("_powerfulGloveBatteryPowerUsed") <= 90 && proceedWithOrb(), () => doingGregFight() && have$P($item`Powerful Glove`) ? Math.min((100 - get$2("_powerfulGloveBatteryPowerUsed")) / 10) : 0, options => {
-  equipOrbIfDesired();
-  var crateIsSabered = get$2("_saberForceMonster") === $monster`crate`;
-  var notEnoughCratesSabered = get$2("_saberForceMonsterCount") < 2;
-  var weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
-  setChoice(1387, 2);
-  var macro = Macro.if_($monster`crate`, Macro.externalIf(crateStrategy() !== "Saber" && !have$P($effect`On the Trail`) && get$2("_olfactionsUsed") < 2, Macro.tryHaveSkill($skill`Transcendent Olfaction`)).externalIf(kolmafia.haveEquipped($item`Fourth of May Cosplay Saber`) && weWantToSaberCrates && get$2("_saberForceUses") < 5, Macro.trySkill($skill`Use the Force`)).skill($skill`CHEAT CODE: Replace Enemy`)).step(options.macro);
-  var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
-  adventureFunction($location`Noob Cave`, macro, macro);
-  if (ponder().get($location`Noob Cave`) === globalOptions.target) {
-    changeLastAdvLocation();
-  }
-}, {
-  spec: {
-    equip: $items`Powerful Glove`
-  },
-  gregariousReplace: true
-})].concat(_toConsumableArray(gregLikeFights), [new CopyTargetFight("Backup", () => get$2("lastCopyableMonster") === globalOptions.target && have$P($item`backup camera`) && get$2("_backUpUses") < 11, () => have$P($item`backup camera`) ? 11 - get$2("_backUpUses") : 0, options => {
-  var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
-  adventureFunction(options.location, Macro.if_(`!monsterid ${globalOptions.target.id}`, Macro.skill($skill`Back-Up to your Last Enemy`)).step(options.macro), Macro.if_(`!monsterid ${globalOptions.target.id}`, Macro.skill($skill`Back-Up to your Last Enemy`)).step(options.macro));
-}, {
-  spec: {
-    equip: $items`backup camera`,
-    modes: {
-      backupcamera: "meat"
-    }
-  },
-  draggable: "backup",
-  wrongEncounterName: true,
-  canInitializeWandererCounters: true
-})]);
-var fakeSources = [new CopyTargetFight("Professor MeatChain", () => false, () => have$P($familiar`Pocket Professor`) && !get$2("_garbo_meatChain", false) ? Math.max(10 - get$2("_pocketProfessorLectures"), 0) : 0, () => {
-  return;
-}), new CopyTargetFight("Professor WeightChain", () => false, () => have$P($familiar`Pocket Professor`) && !get$2("_garbo_weightChain", false) ? Math.min(15 - get$2("_pocketProfessorLectures"), 5) : 0, () => {
-  return;
-})];
-function copyTargetConfirmInvocation(msg) {
-  // If user does not have autoUserConfirm set to true
-  // If the incocatedCount has already reached or exceeded the default limit
-  if (!globalOptions.prefs.autoUserConfirm) {
-    // userConfirmDialog is not called as
-    // 1. If autoUserConfirm is true, it'd make the counter useless as it'll always return the default
-    // 2. If autoUserConfirm is false, then it'll call userConfirm regardless
-    // The user should be consulted about this so that they can either raise the count or decline the option
-    return kolmafia.userConfirm(msg);
-  }
-  var invocatedCount = get$2("_garbo_autoUserConfirm_targetInvocatedCount", 0);
-  if (invocatedCount >= globalOptions.prefs.autoUserConfirm_targetInvocationsThreshold) {
-    return false;
-  }
-  _set("_garbo_autoUserConfirm_targetInvocatedCount", invocatedCount + 1);
-  return true;
-}
-var emergencyChainStarters = [new CopyTargetFight("Mimic Egg (from clinic)", () => have$j() && $familiar`Chest Mimic`.experience >= 100 && monsterIsInEggnet() && get$2("_mimicEggsObtained") < 11, () => 0, options => {
-  receive(globalOptions.target);
-  withMacro(options.macro, () => differentiate(globalOptions.target), options.useAuto);
-}), new CopyTargetFight("Pocket Wish (untapped potential)", () => {
-  if (!globalOptions.target.wishable) return false;
-  var potential = Math.floor(copyTargetCount());
-  if (potential < 1) return false;
-  if (get$2("_genieFightsUsed") >= 3) return false;
-  if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
-  var profit = (potential + 1) * averageTargetNet() - WISH_VALUE;
-  if (profit < 0) return false;
-  kolmafia.print(`You have the following copy target sources untapped right now:`, HIGHLIGHT);
-  copyTargetSources.filter(source => source.potential() > 0).map(source => `${source.potential()} from ${source.name}`).forEach(text => kolmafia.print(text, HIGHLIGHT));
-  globalOptions.askedAboutWish = true;
-  globalOptions.wishAnswer = copyTargetConfirmInvocation(`Garbo has detected you have ${potential} potential ways to copy a ${globalOptions.target}, but no way to start a fight with one. Current ${globalOptions.target} net (before potions) is ${averageTargetNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${globalOptions.target}?`);
-  return globalOptions.wishAnswer;
-}, () => 0, options => {
-  globalOptions.askedAboutWish = false;
-  withMacro(options.macro, () => {
-    acquire(1, $item`pocket wish`, WISH_VALUE);
-    kolmafia.visitUrl(`inv_use.php?pwd=${kolmafia.myHash()}&which=3&whichitem=9537`, false, true);
-    kolmafia.visitUrl(`choice.php?pwd&whichchoice=1267&option=1&wish=to fight a ${globalOptions.target} `, true, true);
-    kolmafia.visitUrl("main.php", false);
-    kolmafia.runCombat();
-    globalOptions.askedAboutWish = false;
-  }, options.useAuto);
-})];
-var copyTargetSources = [].concat(wanderSources, _toConsumableArray(conditionalSources), copySources, chainStarters, emergencyChainStarters, fakeSources);
-function copyTargetCount() {
-  return sum(copyTargetSources, source => source.potential());
-}
-
-/**
- * Gets next available copy target fight. If there is no way to generate a fight, but copies are available,
- * the user is prompted to purchase a pocket wish to start the copy target chain.
- * @returns the next available copy target fight
- */
-function getNextCopyTargetFight() {
-  var wanderer = wanderSources.find(fight => fight.available());
-  if (wanderer) return wanderer;
-  var conditional = conditionalSources.find(fight => fight.available());
-  if (conditional) {
-    var leftoverReplacers = (have$P($skill`Meteor Lore`) ? 10 - get$2("_macrometeoriteUses") : 0) + (have$P($item`Powerful Glove`) ? Math.floor((100 - get$2("_powerfulGloveBatteryPowerUsed")) / 10) : 0);
-    // we don't want to reset our orb with a gregarious fight; that defeats the purpose
-    var skip = conditional.name === "Be Gregarious" && crateStrategy() === "Orb" && leftoverReplacers;
-    if (!skip) return conditional;
-  }
-  var copy = copySources.find(fight => fight.available());
-  if (copy) return copy;
-  var chainStart = chainStarters.find(fight => fight.available());
-  if (chainStart) return chainStart;
-  return conditional ?? emergencyChainStarters.find(fight => fight.available()) ?? null;
-}
-
-var taffyIsWorthIt = () => kolmafia.mallPrice($item`pulled green taffy`) < (targetingMeat() ? MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") : get$2("valueOfAdventure")) && kolmafia.retrieveItem($item`pulled green taffy`);
-var wandererFailsafeMacro = () => Macro.externalIf(kolmafia.haveEquipped($item`backup camera`) && get$2("_backUpUses") < 11 && get$2("lastCopyableMonster") === globalOptions.target, Macro.if_(`!monsterid ${globalOptions.target.id}`, Macro.skill($skill`Back-Up to your Last Enemy`)));
-var _macro = /*#__PURE__*/new WeakMap();
-var _location = /*#__PURE__*/new WeakMap();
-var _useAuto = /*#__PURE__*/new WeakMap();
-var _action = /*#__PURE__*/new WeakMap();
-var TargetFightRunOptions = /*#__PURE__*/function () {
-  function TargetFightRunOptions(configOptions) {
-    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-      macro = _ref.macro,
-      location = _ref.location,
-      useAuto = _ref.useAuto,
-      action = _ref.action;
-    _classCallCheck(this, TargetFightRunOptions);
-    _classPrivateFieldInitSpec(this, _macro, void 0);
-    _classPrivateFieldInitSpec(this, _location, void 0);
-    _classPrivateFieldInitSpec(this, _useAuto, void 0);
-    _classPrivateFieldInitSpec(this, _action, void 0);
-    this.configOptions = configOptions;
-    _classPrivateFieldSet2(_action, this, action);
-    _classPrivateFieldSet2(_macro, this, macro);
-    _classPrivateFieldSet2(_location, this, location);
-    _classPrivateFieldSet2(_useAuto, this, useAuto);
-  }
-  return _createClass(TargetFightRunOptions, [{
-    key: "location",
-    get: function get() {
-      if (this.configOptions.location) return this.configOptions.location;
-      var suggestion = this.configOptions.draggable && !_classPrivateFieldGet2(_location, this) && checkUnderwater() && taffyIsWorthIt() ? $location`The Briny Deeps` : _classPrivateFieldGet2(_location, this);
-      if (this.configOptions.draggable && !suggestion || this.configOptions.draggable === "backup" && suggestion && suggestion.combatPercent < 100) {
-        var wanderOptions = {
-          wanderer: this.configOptions.draggable,
-          allowEquipment: false
-        };
-        var targetLocation = wanderer().getTarget(wanderOptions).location;
-        propertyManager.setChoices(wanderer().getChoices(targetLocation));
-        return targetLocation;
-      }
-      return suggestion ?? $location`Noob Cave`;
-    }
-  }, {
-    key: "macro",
-    get: function get() {
-      var baseMacro = _classPrivateFieldGet2(_macro, this) ?? Macro.target(this.action);
-      return this.configOptions.draggable === "wanderer" ? wandererFailsafeMacro().step(baseMacro) : baseMacro;
-    }
-  }, {
-    key: "useAuto",
-    get: function get() {
-      return _classPrivateFieldGet2(_useAuto, this) ?? true;
-    }
-  }, {
-    key: "action",
-    get: function get() {
-      return _classPrivateFieldGet2(_action, this) ?? "???";
-    }
-  }]);
-}();
-
-// Familiars that should never be introduced as a surprise
-var NO_TCB_FAMILIARS = $familiars`Mini-Hipster, Artistic Goth Kid`;
-function getToyCupidBowFamiliars() {
-  if (!have$f()) return [];
-  var skipFamiliars = getUsedTcbFamiliars();
-  var _iterator = _createForOfIteratorHelper(NO_TCB_FAMILIARS),
-    _step;
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var familiar = _step.value;
-      skipFamiliars.add(familiar);
-    }
-
-    // If there aren't enough turns to run someone to completion, only check for the current cupid familiar
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-  var current = currentFamiliar();
-  if (current && estimatedGarboTurns() < tcbTurnsLeft(current, skipFamiliars)) {
-    var _current = currentFamiliar();
-    if (!_current) return [];
-    if (skipFamiliars.has(_current)) return [];
-    return [{
-      familiar: _current,
-      expectedValue: familiarEquipmentValue(_current) / tcbTurnsLeft(_current, skipFamiliars),
-      worksOnFreeRun: true,
-      limit: "cupid",
-      leprechaunMultiplier: findLeprechaunMultiplier(_current)
-    }];
-  }
-
-  // Otherwise find the best for each leprechaun multiplier
-  var bestFamiliarsByLeprechaunMultiplier = new Map();
-  var _iterator2 = _createForOfIteratorHelper(kolmafia.Familiar.all()),
-    _step2;
-  try {
-    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var _bestFamiliarsByLepre;
-      var _familiar = _step2.value;
-      if (!have$P(_familiar)) continue;
-      if (skipFamiliars.has(_familiar)) continue;
-      if (!kolmafia.familiarEquipment(_familiar).tradeable && _familiar !== $familiar`Cornbeefadon`) {
-        continue;
-      }
-      if (_familiar === $familiar`Mini-Adventurer` && !get$2("miniAdvClass") && !get$2("choiceAdventure768")) {
-        if (globalOptions.ascend) {
-          propertyManager.setChoice(768, 4);
-        } // Littlest identity crisis, sauceror
-        else continue;
-      }
-      if (_familiar === $familiar`Doppelshifter`) continue;
-      var leprechaunMultiplier = findLeprechaunMultiplier(_familiar);
-      var expectedValue = familiarEquipmentValue(_familiar) / tcbTurnsLeft(_familiar, skipFamiliars);
-      var currentBestValue = ((_bestFamiliarsByLepre = bestFamiliarsByLeprechaunMultiplier.get(leprechaunMultiplier)) === null || _bestFamiliarsByLepre === void 0 ? void 0 : _bestFamiliarsByLepre.expectedValue) ?? 0;
-      if (expectedValue > currentBestValue) {
-        bestFamiliarsByLeprechaunMultiplier.set(leprechaunMultiplier, {
-          familiar: _familiar,
-          expectedValue,
-          worksOnFreeRun: true,
-          limit: "cupid",
-          leprechaunMultiplier
-        });
-      }
-    }
-  } catch (err) {
-    _iterator2.e(err);
-  } finally {
-    _iterator2.f();
-  }
-  return _toConsumableArray(bestFamiliarsByLeprechaunMultiplier.values());
-}
-
-function menu(adventure) {
-  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-    _ref$canChooseMacro = _ref.canChooseMacro,
-    canChooseMacro = _ref$canChooseMacro === void 0 ? true : _ref$canChooseMacro,
-    _ref$extraFamiliars = _ref.extraFamiliars,
-    extraFamiliars = _ref$extraFamiliars === void 0 ? [] : _ref$extraFamiliars,
-    _ref$excludeFamiliar = _ref.excludeFamiliar,
-    excludeFamiliar = _ref$excludeFamiliar === void 0 ? [] : _ref$excludeFamiliar,
-    _ref$includeExperienc = _ref.includeExperienceFamiliars,
-    includeExperienceFamiliars = _ref$includeExperienc === void 0 ? true : _ref$includeExperienc,
-    _ref$allowAttackFamil = _ref.allowAttackFamiliars,
-    allowAttackFamiliars = _ref$allowAttackFamil === void 0 ? true : _ref$allowAttackFamil,
-    _ref$mode = _ref.mode,
-    mode = _ref$mode === void 0 ? "free" : _ref$mode;
-  var familiarMenu = [].concat(_toConsumableArray(getConstantValueFamiliars(mode)), _toConsumableArray(getDropFamiliars()), _toConsumableArray(getToyCupidBowFamiliars()), _toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray(extraFamiliars));
-  var _toAdventure = toAdventure(adventure),
-    target = _toAdventure.target;
-  var monsterRates = adventureTargetToWeightedMap(target);
-  if (canChooseMacro && kolmafia.myInebriety() <= kolmafia.inebrietyLimit()) {
-    if (timeToMeatify()) {
-      familiarMenu.push({
-        familiar: $familiar`Grey Goose`,
-        expectedValue: (Math.max(kolmafia.familiarWeight($familiar`Grey Goose`) - 5), 0) ** 4,
-        leprechaunMultiplier: 0,
-        limit: "experience",
-        worksOnFreeRun: false
-      });
-    }
-    if (mode === "target" && gooseDroneEligible() && get$2("gooseDronesRemaining") < copyTargetCount()) {
-      familiarMenu.push({
-        familiar: $familiar`Grey Goose`,
-        expectedValue:
-        // It takes 9 experience to go from level 5 to 6 and emit a drone
-        clamp(get$1("Familiar Experience") / 9, 0,
-        // The limit to how valuable any emission can be is how many drones are actually gonna hit the copyTarget
-        copyTargetCount() - get$2("gooseDronesRemaining")) * valueDrops(globalOptions.target),
-        leprechaunMultiplier: 0,
-        limit: "experience",
-        worksOnFreeRun: false
-      });
-    }
-    if (mode === "target" && have$A()) {
-      familiarMenu.push({
-        familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: snapperValue(),
-        leprechaunMultiplier: 0,
-        limit: "special",
-        worksOnFreeRun: false
-      });
-    }
-    if (canOpenRedPresent()) {
-      familiarMenu.push({
-        familiar: $familiar`Crimbo Shrub`,
-        expectedValue: 2500,
-        leprechaunMultiplier: 0,
-        limit: "special",
-        worksOnFreeRun: true
-      });
-    }
-    if (have$P($familiar`Space Jellyfish`)) {
-      familiarMenu.push({
-        familiar: $familiar`Space Jellyfish`,
-        expectedValue: sum(_toConsumableArray(monsterRates.entries()), _ref2 => {
-          var _ref3 = _slicedToArray(_ref2, 2),
-            monster = _ref3[0],
-            rate = _ref3[1];
-          return monster.defenseElement === $element`Stench` ? rate * garboValue($item`stench jelly`) / (get$2("_spaceJellyfishDrops") < 5 ? get$2("_spaceJellyfishDrops") + 1 : 20) : 0;
-        }),
-        leprechaunMultiplier: 0,
-        limit: "special",
-        worksOnFreeRun: true
-      });
-    }
-  }
-  if (have$a()) {
-    familiarMenu.push({
-      familiar: $familiar`Skeleton of Crimbo Past`,
-      expectedValue: expectedBones(target) * garboValue($item`knucklebone`),
-      leprechaunMultiplier: 0,
-      limit: "special",
-      worksOnFreeRun: false
-    });
-  }
-  var meatFam = meatFamiliar();
-  familiarMenu.push({
-    familiar: meatFam,
-    expectedValue: 0,
-    leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
-    limit: "none",
-    // Because strictly speaking this is better than using no familiar at all
-    worksOnFreeRun: true
-  });
-  return familiarMenu.filter(_ref4 => {
-    var familiar = _ref4.familiar,
-      worksOnFreeRun = _ref4.worksOnFreeRun;
-    return (mode !== "run" || worksOnFreeRun) && (allowAttackFamiliars || !(familiar.physicalDamage || familiar.elementalDamage)) && !excludeFamiliar.some(excludedFamiliar => excludedFamiliar === familiar);
-  });
-}
-function getAllJellyfishDrops() {
-  if (!have$P($familiar`Space Jellyfish`)) {
-    return [{
-      expectedValue: 0,
-      turnsAtValue: 0
-    }];
-  }
-  var current = get$2("_spaceJellyfishDrops");
-  var returnValue = [];
-  for (var dropNumber = clamp(current + 1, 0, 6); dropNumber <= 6; dropNumber++) {
-    returnValue.push({
-      expectedValue: garboValue($item`stench jelly`) / (dropNumber > 5 ? 20 : dropNumber),
-      turnsAtValue: dropNumber > 5 ? Infinity : dropNumber
-    });
-  }
-  return returnValue;
-}
-function freeFightFamiliarData(adventure) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var usedTcbFamiliars = getUsedTcbFamiliars();
-  var compareFamiliars = (a, b) => {
-    if (a === null) return b;
-    var aValue = a.expectedValue + tcbValue(a.familiar, usedTcbFamiliars, options.equipmentForced);
-    var bValue = b.expectedValue + tcbValue(b.familiar, usedTcbFamiliars, options.equipmentForced);
-    if (aValue === bValue) {
-      return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
-    }
-    return aValue > bValue ? a : b;
-  };
-  return menu(adventure, options).reduce(compareFamiliars, {
-    familiar: $familiar.none,
-    expectedValue: 0,
-    leprechaunMultiplier: 0,
-    limit: "none",
-    worksOnFreeRun: true
-  });
-}
-function freeFightFamiliar(target) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  return freeFightFamiliarData(target, options).familiar;
-}
-
-var _wanderer;
-function wanderer() {
-  if (!_wanderer) {
-    _wanderer = new WandererManager({
-      ascend: globalOptions.ascend,
-      estimatedTurns: estimatedGarboTurns,
-      itemValue: garboValue,
-      effectValue,
-      prioritizeCappingGuzzlr: get$2("garbo_prioritizeCappingGuzzlr", false),
-      freeFightExtraValue: location => freeFightFamiliarData(location).expectedValue,
-      digitzesRemaining: digitizedMonstersRemainingForTurns,
-      plentifulMonsters: [globalOptions.target].concat(_toConsumableArray(globalOptions.nobarf ? [] : FarmingStrategy.monsters()), _toConsumableArray(have$P($item`Kramco Sausage-o-Matic™`) ? $monsters`sausage goblin` : [])),
-      valueOfAdventure: get$2("valueOfAdventure"),
-      takeTurnForProfit: true,
-      canRefractedGaze: have$b() && safeRefractedCasts() > 0
-    });
-  }
-  return _wanderer;
-}
-var destinationToLocation = destination => destination instanceof kolmafia.Location ? destination : wanderer().getTarget(destination).location;
-function toAdventure(arg) {
-  if (arg instanceof kolmafia.Monster) return {
-    target: arg,
-    location: $location.none
-  };
-  if (arg instanceof kolmafia.Location) return {
-    target: arg,
-    location: arg
-  };
-  if (typeof arg === "string" || !("target" in arg)) {
-    var location = wanderer().getTarget(arg).location;
-    return {
-      target: location,
-      location
-    };
-  }
-  return {
-    target: arg.target,
-    location: destinationToLocation(arg.location)
-  };
-}
-
-function meatTargetOutfit() {
-  var spec = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var adventureArgument = arguments.length > 1 ? arguments[1] : undefined;
-  cleaverCheck();
-  validateGarbageFoldable(spec);
-  var outfit = Outfit.from(spec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`));
-  var _toAdventure = toAdventure(adventureArgument ?? $location.none),
-    location = _toAdventure.location,
-    target = _toAdventure.target;
-  if (location === $location`Crab Island`) {
-    var meat = kolmafia.meatDrop($monster`giant giant crab`) + songboomMeat();
-    outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
-  } else if (target === $monster`Knob Goblin Embezzler` && have$P($effect`Lucky!`)) {
-    var _meat = kolmafia.meatDrop($monster`Knob Goblin Embezzler`) + songboomMeat();
-    outfit.modifier.push(`${_meat / 100} Meat Drop`, "-tie");
-  } else {
-    if (targetingMeat()) {
-      outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.MEAT_TARGET)} Meat Drop`, "-tie");
-    } else if (globalOptions.target.attributes.includes("FREE")) {
-      outfit.modifier.push("-tie");
-    }
-    if (nextWeekReady()) {
-      outfit.equip($item`legendary seal-clubbing club`);
-    }
-    if (!have$P($effect`Everything Looks Purple`) && (location === null || location === void 0 ? void 0 : location.environment) !== Environment.Underwater && !shouldRedigitize()) {
-      outfit.equip($item`Roman Candelabra`);
-    }
-  }
-  applyCheeseBonus(outfit, targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE);
-  outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
-  outfit.familiar ?? (outfit.familiar = targetingMeat() ? meatFamiliar() : freeFightFamiliar(location ?? globalOptions.target, {
-    equipmentForced: !outfit.canEquip($item`toy Cupid bow`)
-  }));
-  var bjornChoice = chooseBjorn(targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE, outfit.familiar);
-  var underwater = (location === null || location === void 0 ? void 0 : location.environment) === "underwater";
-  if (underwater) {
-    if (!outfit.familiar.underwater) {
-      outfit.equipFirst(familiarWaterBreathingEquipment);
-    }
-    if (!outfit.equipFirst(waterBreathingEquipment)) {
-      outfit.modifier.push("sea");
-    }
-  }
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
-    outfit.equip($item`LED candle`);
-    outfit.setModes({
-      jillcandle: "ultraviolet"
-    });
-  }
-  useUPCsIfNeeded(outfit);
-  outfit.addBonuses(bonusGear(targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE));
-  if (!targetingMeat()) outfit.addBonuses(toyCupidBow(outfit.familiar));
-  var bjornalike = bestBjornalike(outfit);
-  if (location === getLocation() && turnsLeftOnQuest(false) === 1 && haveBooze()) {
-    outfit.addBonus($item`Guzzlr pants`, expectedReward(true) - expectedReward(false));
-  }
-  if (bjornalike) {
-    outfit.setBonus(bjornalike, bjornChoice.value);
-    outfit.equip(bjornalike);
-    var other = $items`Buddy Bjorn, Crown of Thrones`.filter(i => i !== bjornalike)[0];
-    outfit.avoid.push(other);
-    switch (bjornalike) {
-      case $item`Buddy Bjorn`:
-        outfit.bjornify(bjornChoice.familiar);
-        break;
-      case $item`Crown of Thrones`:
-        outfit.enthrone(bjornChoice.familiar);
-        break;
-    }
-  }
-  outfit.setModes({
-    snowsuit: "nose",
-    parka: "kachungasaur",
-    edpiece: "fish"
-  });
-  return outfit;
-}
-
-var famExpValue = new Map([[$familiar`Chest Mimic`, () => $familiar`Chest Mimic`.experience < mimicExperienceNeeded(true) ? MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50 : 0], [$familiar`Pocket Professor`, () => $familiar`Pocket Professor`.experience < 400 && (!get$2("_thesisDelivered") || !globalOptions.ascend) ? 11 * get$2("valueOfAdventure") / 200 : 0], [$familiar`Grey Goose`, () => $familiar`Grey Goose`.experience < 400 && (!get$2("_meatifyMatterUsed") || !globalOptions.ascend) ? 15 ** 4 / 400 : 0]]);
-function freeFightOutfit() {
-  var spec = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var adventure = arguments.length > 1 ? arguments[1] : undefined;
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-  cleaverCheck();
-  var _toAdventure = toAdventure(adventure),
-    location = _toAdventure.location;
-  var computedSpec = computeOutfitSpec(spec, location);
-  validateGarbageFoldable(computedSpec);
-  var outfit = Outfit.from(computedSpec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`));
-  outfit.familiar ?? (outfit.familiar = freeFightFamiliar(adventure, computeFamiliarMenuOptions(options.familiarOptions, options.duplicate ?? false, outfit)));
-  var mode = location === $location`The Deep Machine Tunnels` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
-  if (outfit.familiar !== $familiar`Patriotic Eagle`) {
-    var familiarExpValue = undelay(famExpValue.get(outfit.familiar));
-    outfit.modifier.push(familiarExpValue ? `${familiarExpValue} Familiar Experience` : "Familiar Weight");
-  }
-  var bjornChoice = chooseBjorn(mode, outfit.familiar);
-  if (get$2("_vampyreCloakeFormUses") < 10) {
-    outfit.setBonus($item`vampyric cloake`, 500);
-  }
-  outfit.addBonuses(bonusGear(mode));
-  applyCheeseBonus(outfit, mode);
-  if (!(globalOptions.ascend && !sober()) && turnsNeededForNextAdventure() <= estimatedGarboTurns()) {
-    outfit.setBonus($item`tiny stillsuit`, get$2("valueOfAdventure") * 2 * adventuresPerSweat());
-  }
-  if (mode !== BonusEquipMode.DMT) {
-    outfit.addBonuses(toyCupidBow(outfit.familiar));
-  }
-  if (location === getLocation() && turnsLeftOnQuest(false) === 1 && haveBooze()) {
-    outfit.addBonus($item`Guzzlr pants`, expectedReward(true) - expectedReward(false));
-  }
-  var bjornalike = $items`Crown of Thrones, Buddy Bjorn`.find(item => outfit.canEquip(item));
-  if (bjornalike) {
-    outfit.setBonus(bjornalike, bjornChoice.value);
-    var other = $items`Buddy Bjorn, Crown of Thrones`.filter(i => i !== bjornalike)[0];
-    outfit.avoid.push(other);
-    switch (bjornalike) {
-      case $item`Buddy Bjorn`:
-        outfit.bjornify(bjornChoice.familiar);
-        break;
-      case $item`Crown of Thrones`:
-        outfit.enthrone(bjornChoice.familiar);
-        break;
-    }
-  }
-  outfit.setModes({
-    snowsuit: "nose",
-    parka: "dilophosaur"
-  });
-  return outfit;
-}
-function computeOutfitSpec(spec, location) {
-  return _objectSpread2(_objectSpread2({}, spec), {}, {
-    equip: [].concat(_toConsumableArray(spec.equip ?? []), _toConsumableArray(wanderer().getEquipment(location)))
-  });
-}
-function computeFamiliarMenuOptions() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var duplicate = arguments.length > 1 ? arguments[1] : undefined;
-  var outfit = arguments.length > 2 ? arguments[2] : undefined;
-  return _objectSpread2(_objectSpread2({}, options), {}, {
-    allowAttackFamiliars: options.allowAttackFamiliars ?? !(duplicate && have$I() && duplicateUsesRemaining() > 0),
-    equipmentForced: options.equipmentForced || !outfit.canEquip($item`toy Cupid bow`)
-  });
 }
 
 var banned = $items`Uncle Greenspan's Bathroom Finance Guide`;
@@ -24369,505 +21822,580 @@ function effectExtenderValue(duration, maximumNumberOfEffects) {
   }) * (maximumNumberOfEffects ? Math.min(1, maximumNumberOfEffects / getActiveEffects().length) : 1);
 }
 
-var SKILL_OPTIONS = [
-// August 1 deliberately omitted; does not trigger on monster replacers
-{
-  skill: $skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`,
-  value: () => getBestLuckyAdventure().value(),
-  type: "special"
+var bestAlternative = get$1("Meat Drop", $item`amulet coin`);
+// Constant Value familiars are those that drop items at a constant rate without limit, compare Rotating Value familiars
+var standardFamiliars = [{
+  familiar: $familiar`Obtuse Angel`,
+  value: () => 0.02 * garboValue($item`time's arrow`)
 }, {
-  skill: $skill`Aug. 3rd: Watermelon Day!`,
-  value: () => garboValue($item`watermelon`),
-  type: "summon"
+  familiar: $familiar`Stocking Mimic`,
+  value: mode => garboAverageValue.apply(void 0, _toConsumableArray($items`Polka Pop, BitterSweetTarts, Piddles`)) / 6 - (
+  // We can't equip an amulet coin if we equip the bag of many confections
+  mode === "barf" ? bestAlternative * baseMeat() / 100 : 0) + (1 / 3 + (have$P($effect`Jingle Jangle Jingle`) ? 0.1 : 0)) * totalFamiliarWeight($familiar`Stocking Mimic`)
 }, {
-  skill: $skill`Aug. 4th: Water Balloon Day!`,
-  value: () => 3 * garboValue($item`water balloon`),
-  type: "summon"
+  familiar: $familiar`Shorter-Order Cook`,
+  value: () => garboAverageValue.apply(void 0, _toConsumableArray($items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`)) / 11 // 9 with blue plate
 }, {
-  skill: $skill`Aug. 5th: Oyster Day!`,
-  value: () => 3 * garboAverageValue.apply(void 0, _toConsumableArray($items`brilliant oyster egg, gleaming oyster egg, glistening oyster egg, lustrous oyster egg, magnificent oyster egg, pearlescent oyster egg, scintillating oyster egg`)),
-  type: "summon"
-}, {
-  skill: $skill`Aug. 7th: Lighthouse Day!`,
-  value: () => effectValue($effect`Incredibly Well Lit`, 30),
-  type: "buff"
-}, {
-  skill: $skill`Aug. 8th: Cat Day!`,
-  value: () => globalOptions.prefs.valueOfFreeFight,
-  type: "fight"
-}, {
-  skill: $skill`Aug. 13th: Left/Off Hander's Day!`,
-  value: () => new Potion($item`august scepter`, {
-    effect: $effect`Offhand Remarkable`,
-    duration: 30,
-    effectValues: {
-      meatDrop: 80
-    } // Half a purse
-  }).gross(highMeatMonsterCount("Scepter")) + (globalOptions.ascend ? 0 : (5 + (have$P($familiar`Left-Hand Man`) ? 5 : 0)) * get$2("valueOfAdventure")),
-  type: "special" // Don't want to cast right away
-}, {
-  skill: $skill`Aug. 14th: Financial Awareness  Day!`,
-  value: () => Math.min(100 * kolmafia.myLevel(), 1500, kolmafia.myMeat()) / 2,
-  type: "summon"
-}, {
-  skill: $skill`Aug. 16th: Roller Coaster Day!`,
-  value: () => 8 * get$2("valueOfAdventure"),
-  type: "special"
-}, {
-  skill: $skill`Aug. 18th: Serendipity Day!`,
-  value: () => 3000,
-  // Dummy value; we should some day calculate this based on free fight count, careful to avoid circular imports
-  type: "buff"
-}, {
-  skill: $skill`Aug. 22nd: Tooth Fairy Day!`,
-  value: () => globalOptions.prefs.valueOfFreeFight,
-  type: "fight"
-}, {
-  skill: $skill`Aug. 24th: Waffle Day!`,
-  value: () => 3 * garboValue($item`waffle`),
-  type: "summon"
-}, {
-  skill: $skill`Aug. 25th: Banana Split Day!`,
-  value: () => garboValue($item`banana split`),
-  type: "summon"
-}, {
-  skill: $skill`Aug. 26th: Toilet Paper Day!`,
-  value: () => garboValue($item`handful of toilet paper`),
-  type: "summon"
-}, {
-  skill: $skill`Aug. 29th: More Herbs, Less Salt  Day!`,
-  value: () => 3 * garboValue($item`Mrs. Rush`),
-  type: "summon"
-}, {
-  skill: $skill`Aug. 30th: Beach Day!`,
-  value: () => 100 + (globalOptions.ascend ? 0 : clamp(7 - get$1("Adventures", kolmafia.Item.all().filter(i => have$P(i) && kolmafia.toSlot(i) === $slot`acc1` && kolmafia.canEquip(i)).sort((a, b) => get$1("Adventures", b) - get$1("Adventures", a))[2] ?? $item.none), 0, 7) * get$2("valueOfAdventure")),
-  type: "summon"
-}, {
-  skill: $skill`Aug. 31st: Cabernet Sauvignon  Day!`,
-  value: () => 2 * garboValue($item`bottle of Cabernet Sauvignon`),
-  type: "summon"
-}];
-var bestScepterSkills = null;
-function getBestScepterSkills() {
-  return bestScepterSkills ?? (bestScepterSkills = SKILL_OPTIONS.filter(_ref => {
-    var skill = _ref.skill;
-    return todaysSkill() !== skill && skill.dailylimit > 0;
-  }).sort((a, b) => b.value() - a.value()).splice(0, clamp(5 - get$2("_augSkillsCast"), 0, 5)));
-}
-function shouldAugustCast(skill) {
-  return have$p() && (getBestScepterSkills().some(s => skill === s.skill) && skill.dailylimit && get$2("_augSkillsCast") < 5 || todaysSkill() === skill && !getTodayCast() && skill.dailylimit >= 1);
-}
-function summonTask(_ref2) {
-  var skill = _ref2.skill;
-  return {
-    name: skill.name,
-    completed: () => !shouldAugustCast(skill),
-    do: () => kolmafia.useSkill(skill),
-    spendsTurn: false
-  };
-}
-function augustSummonTasks() {
-  return have$p() ? SKILL_OPTIONS.filter(_ref3 => {
-    var type = _ref3.type;
-    return type === "summon";
-  }).map(summonTask) : [];
-}
-function castAugustScepterBuffs() {
-  if (have$p()) {
-    var _iterator = _createForOfIteratorHelper(SKILL_OPTIONS.filter(_ref5 => {
-        var skill = _ref5.skill,
-          type = _ref5.type;
-        return shouldAugustCast(skill) && type === "buff";
-      })),
-      _step;
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var skill = _step.value.skill;
-        kolmafia.useSkill(skill);
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
-    }
-    var today = SKILL_OPTIONS.find(_ref4 => {
-      var skill = _ref4.skill,
-        type = _ref4.type;
-      return type === "buff" && skill === todaysSkill();
-    });
-    if (today && !getTodayCast()) kolmafia.useSkill(today.skill);
-    if (globalOptions.ascend && shouldAugustCast($skill`Aug. 13th: Left/Off Hander's Day!`)) {
-      kolmafia.useSkill($skill`Aug. 13th: Left/Off Hander's Day!`);
-    }
+  familiar: $familiar`Robortender`,
+  value: mode => {
+    var olfactedMonster = get$2("olfactedMonster");
+    var olfactedIsFromBarf = olfactedMonster && kolmafia.getMonsters($location`Barf Mountain`).includes(olfactedMonster);
+    return dropChance() * garboValue(dropFrom(mode === "barf" && olfactedIsFromBarf ? olfactedMonster : mode === "target" ? globalOptions.target : $monster.none)) + (currentDrinks().includes($item`Feliz Navidad`) ? felizValue() * 0.25 : 0) + (currentDrinks().includes($item`Newark`) ? newarkValue() * 0.25 : 0);
   }
+}, {
+  familiar: $familiar`Twitching Space Critter`,
+  // Item is ludicrously overvalued and incredibly low-volume.
+  // We can remove this cap once the price reaches a lower equilibrium
+  // we probably won't, but we can.
+  value: () => Math.min(garboValue($item`twitching space egg`) * 0.0002, 690)
+}, {
+  familiar: $familiar`Hobo Monkey`,
+  value: () => 75
+}, {
+  familiar: $familiar`Trick-or-Treating Tot`,
+  // This is the value of getting a pirate costume over getting an amulet coin or whatever
+  value: mode => have$P($item`li'l pirate costume`) && mode === "barf" ? baseMeat() * (300 - bestAlternative) / 100 : 0
+}, {
+  familiar: $familiar`Cookbookbat`,
+  value: mode => 3 * garboAverageValue.apply(void 0, _toConsumableArray($items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`)) / 11 + (mode === "barf" ? cookbookbatPerilBonus() : 0) // We cannot run the turn spending task during our start of day freefights, so cannot guarantee this value
+}, {
+  familiar: $familiar`Unspeakachu`,
+  value: () => {
+    return effectExtenderValue(5) * 0.5 * 0.05;
+  }
+}, {
+  familiar: $familiar`Patriotic Eagle`,
+  value: () => kolmafia.holiday().includes("Dependence Day") ? 0.05 * garboValue($item`souvenir flag`) : 0,
+  worksOnFreeRun: true
+}, {
+  familiar: $familiar`Mini Kiwi`,
+  value: mode => mode === "barf" ? 0 // Handled in outfit caching code
+  : clamp(totalFamiliarWeight($familiar`Mini Kiwi`) * 0.005, 0, 1) * garboValue($item`mini kiwi`) // faster with aviator goggles
+}, {
+  familiar: $familiar`Quantum Entangler`,
+  value: () => garboValue($item`quantized familiar experience`) / 11
+}, {
+  familiar: $familiar`Peace Turkey`,
+  value: () =>
+  // drops are ~1/2 of the activations, whirled peas are twice as likely to drop
+  garboAverageValue.apply(void 0, _toConsumableArray($items`whirled peas, whirled peas, piece of cake, peace shooter`)) * peaceTurkeyDropChance() / 2,
+  worksOnFreeRun: true
+}, {
+  familiar: $familiar`XO Skeleton`,
+  value: () => garboAverageValue.apply(void 0, _toConsumableArray($items`X, O`)) / 9 // counters for X & O are simultaneous but offset by 5
+}];
+function peaceTurkeyDropChance() {
+  return 0.24 + kolmafia.squareRoot(totalFamiliarWeight($familiar`Peace Turkey`)) / 100;
 }
-
-var trickHats = $items`invisible bag, witch hat, beholed bedsheet, wolfman mask, pumpkinhead mask, mummy costume`;
-var visitBlock = () => kolmafia.visitUrl(`place.php?whichplace=town&action=town_trickortreat`);
-var visitHouse = house => kolmafia.runChoice(3, `whichhouse=${house.toFixed(0)}`);
-function treatValue(outfit) {
-  return sum(Object.entries(kolmafia.outfitTreats(outfit)), _ref => {
-    var _ref2 = _slicedToArray(_ref, 2),
-      candyName = _ref2[0],
-      probability = _ref2[1];
-    return probability * garboValue(kolmafia.toItem(candyName));
+function getConstantValueFamiliars(mode) {
+  return standardFamiliars.filter(_ref => {
+    var familiar = _ref.familiar;
+    return have$P(familiar);
+  }).map(_ref2 => {
+    var familiar = _ref2.familiar,
+      value = _ref2.value,
+      _ref2$worksOnFreeRun = _ref2.worksOnFreeRun,
+      worksOnFreeRun = _ref2$worksOnFreeRun === void 0 ? false : _ref2$worksOnFreeRun;
+    return {
+      familiar,
+      worksOnFreeRun,
+      expectedValue: value(mode),
+      leprechaunMultiplier: findLeprechaunMultiplier(familiar),
+      limit: "none"
+    };
   });
 }
-function getTreatOutfit() {
-  var availableOutfits = kolmafia.getOutfits().filter(name => kolmafia.outfitPieces(name).every(piece => kolmafia.canEquip(piece)));
-  if (!availableOutfits.length) {
-    kolmafia.print("You don't seem to actually have any trick-or-treating outfits available, my friend!");
+var locationsWithMonsters = kolmafia.Location.all().filter(l => kolmafia.getMonsters(l).length > 0);
+function cookbookbatPerilBonus() {
+  if (!have$P($item`Peridot of Peril`) || get$2("_cookbookbatCombatsUntilNewQuest") + 1 > estimatedGarboTurns()) {
+    return 0;
   }
-  return maxBy(availableOutfits, treatValue);
+  // canAdventure includes some zones we need to exclude
+  var canAdvExclusions = $locations`Fastest Adventurer Contest, Strongest Adventurer Contest, Smartest Adventurer Contest, Smoothest Adventurer Contest, Hottest Adventurer Contest, Coldest Adventurer Contest, Spookiest Adventurer Contest, Stinkiest Adventurer Contest, Sleaziest Adventurer Contest, The Hedge Maze, Tower Level 1, Tower Level 2, Tower Level 3, Tower Level 5, The Naughty Sorceress' Chamber, The Daily Dungeon, An Overgrown Shrine (Northwest), An Overgrown Shrine (Southwest), An Overgrown Shrine (Northeast), An Overgrown Shrine (Southeast), A Crater Full of Space Beasts, Mt. Molehill, The Red Queen's Garden, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), The Primordial Soup, The Jungles of Ancient Loathing, Seaside Megalopolis, Domed City of Ronaldus, Domed City of Grimacia, Hamburglaris Shield Generator, The X-32-F Combat Training Snowman, The Haiku Dungeon, The Deep Machine Tunnels, Shadow Rift, The Island Barracks`;
+  if (!have$P($effect`Ultrahydrated`)) {
+    canAdvExclusions.push($location`The Oasis`);
+  }
+  var cookbookbatQuestLocations = locationsWithMonsters.filter(l => canAdventureOrUnlock(l, false) && !canAdvExclusions.includes(l));
+  var availablePeridotCookbookbatLocations = cookbookbatQuestLocations.filter(l => canImperil(l) && !unperidotableZones.includes(l));
+  var doableQuestChance = availablePeridotCookbookbatLocations.length / cookbookbatQuestLocations.length;
+  var averageCookbookbatRewardValue = 3 * garboAverageValue.apply(void 0, _toConsumableArray($items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`));
+
+  // It takes 5 turns to get a quest, times the chance we hit a zone we can do with peridot. Assume worst case of spending a turn to complete the quest
+  return Math.max(0, (averageCookbookbatRewardValue * doableQuestChance - get$2("valueOfAdventure")) / 5);
 }
-function treatOutfit() {
-  var outfit = new Outfit();
-  var bestTreatOutfit = getTreatOutfit();
-  var pieces = kolmafia.outfitPieces(bestTreatOutfit);
-  var _iterator = _createForOfIteratorHelper(pieces),
+
+function expectedTurnsValue(expected, index) {
+  return Array.isArray(expected) ? expected[index] : expected(index);
+}
+function dropValue(drop) {
+  return drop instanceof kolmafia.Item ? garboValue(drop) : garboAverageValue.apply(void 0, _toConsumableArray(drop));
+}
+function valueStandardDropFamiliar(_ref) {
+  var familiar = _ref.familiar,
+    expected = _ref.expected,
+    drop = _ref.drop,
+    additionalValue = _ref.additionalValue,
+    _ref$worksOnFreeRun = _ref.worksOnFreeRun,
+    worksOnFreeRun = _ref$worksOnFreeRun === void 0 ? false : _ref$worksOnFreeRun;
+  var expectedTurns = expectedTurnsValue(expected, familiar.dropsToday) || Infinity;
+  var expectedValue = dropValue(drop) / expectedTurns + ((additionalValue === null || additionalValue === void 0 ? void 0 : additionalValue()) ?? 0);
+  return {
+    familiar,
+    expectedValue,
+    leprechaunMultiplier: findLeprechaunMultiplier(familiar),
+    limit: "drops",
+    worksOnFreeRun
+  };
+}
+
+// Rotating Value familiars are those whose drop rate changes, compare Constant Value familiars
+var rotatingFamiliars = [{
+  familiar: $familiar`Fist Turkey`,
+  expected: [3.91, 4.52, 4.52, 5.29, 5.29],
+  drop: $item`Ambitious Turkey`
+}, {
+  familiar: $familiar`Llama Lama`,
+  expected: [3.42, 3.91, 4.52, 5.29, 5.29],
+  drop: $item`llama lama gong`
+}, {
+  familiar: $familiar`Astral Badger`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`astral mushroom`
+}, {
+  familiar: $familiar`Li'l Xenomorph`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`transporter transponder`
+}, {
+  familiar: $familiar`Rogue Program`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`Game Grid token`
+}, {
+  familiar: $familiar`Bloovian Groose`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`groose grease`
+}, {
+  familiar: $familiar`Baby Sandworm`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`agua de vida`
+}, {
+  familiar: $familiar`Green Pixie`,
+  expected: id => have$P($effect`Absinthe-Minded`) ? Infinity : [3.03, 3.42, 3.91, 4.52, 5.29][id] ?? Infinity,
+  drop: $item`tiny bottle of absinthe`
+}, {
+  familiar: $familiar`Blavious Kloop`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`devilish folio`
+}, {
+  familiar: $familiar`Galloping Grill`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`hot ashes`
+}, {
+  familiar: $familiar`Grim Brother`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`grim fairy tale`
+}, {
+  familiar: $familiar`Golden Monkey`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`powdered gold`
+}, {
+  familiar: $familiar`Unconscious Collective`,
+  expected: [3.03, 3.42, 3.91, 4.52, 5.29],
+  drop: $item`Unconscious Collective Dream Jar`
+}, {
+  familiar: $familiar`Ms. Puck Man`,
+  expected: Array($familiar`Ms. Puck Man`.dropsLimit).fill(12.85),
+  drop: $item`power pill`,
+  additionalValue: () => garboValue($item`yellow pixel`)
+}, {
+  familiar: $familiar`Puck Man`,
+  expected: Array($familiar`Puck Man`.dropsLimit).fill(12.85),
+  drop: $item`power pill`,
+  additionalValue: () => garboValue($item`yellow pixel`)
+}, {
+  familiar: $familiar`Adventurous Spelunker`,
+  expected: [7.0],
+  drop: $item`Tales of Spelunking`
+}, {
+  familiar: $familiar`Angry Jung Man`,
+  expected: [30.0],
+  drop: $item`psychoanalytic jar`
+}, {
+  familiar: $familiar`Grimstone Golem`,
+  expected: [45.0],
+  drop: $item`grimstone mask`
+}, {
+  familiar: $familiar`Cookbookbat`,
+  expected: [33.0],
+  drop: [$item`Recipe of Before Yore: Deep Dish of Legend`, $item`Recipe of Before Yore: Pizza of Legend`, $item`Recipe of Before Yore: Calzone of Legend`, $item`Recipe of Before Yore: plain calzone`, $item`Recipe of Before Yore: roasted vegetable focaccia`, $item`Recipe of Before Yore: baked veggie ricotta`, $item`Recipe of Before Yore: roasted vegetable of J.`, $item`Recipe of Before Yore: Pete's rich ricotta`, $item`Recipe of Before Yore: Boris's bread`, $item`Recipe of Before Yore: Boris's beer`, $item`Recipe of Before Yore: honey bun of Boris`, $item`Recipe of Before Yore: ratatouille de Jarlsberg`, $item`Recipe of Before Yore: Jarlsberg's vegetable soup`, $item`Recipe of Before Yore: Pete's wily whey bar`, $item`Recipe of Before Yore: St. Pete's sneaky smoothie`],
+  additionalValue: () => 3 * garboAverageValue.apply(void 0, _toConsumableArray($items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`)) / 11
+}, {
+  familiar: $familiar`Hobo in Sheep's Clothing`,
+  expected: i => 10 * i + 10,
+  // faster with half-height cigar
+  drop: $item`grubby wool`
+}, {
+  familiar: $familiar`Jill-of-All-Trades`,
+  expected: i => 3 * Math.pow(20, i),
+  drop: $item`map to a candy-rich block`,
+  additionalValue: () => (6 + 4 * totalFamiliarWeight($familiar`Jill-of-All-Trades`)) * 0.33
+}, {
+  familiar: $familiar`Rockin' Robin`,
+  expected: i => i === $familiar`Rockin' Robin`.dropsToday ? clamp(30 - get$2("rockinRobinProgress"), 1, 30) : 30,
+  drop: $item`robin's egg`
+}, {
+  familiar: $familiar`Optimistic Candle`,
+  expected: i => i === $familiar`Optimistic Candle`.dropsToday ? clamp(30 - get$2("optimisticCandleProgress"), 1, 30) : 30,
+  drop: $item`glob of melted wax`
+}, {
+  familiar: $familiar`Garbage Fire`,
+  expected: i => i === $familiar`Garbage Fire`.dropsToday ? clamp(30 - get$2("garbageFireProgress"), 1, 30) : 30,
+  drop: $items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`
+}];
+function getDropFamiliars() {
+  return rotatingFamiliars.map(valueStandardDropFamiliar).filter(_ref2 => {
+    var familiar = _ref2.familiar,
+      expectedValue = _ref2.expectedValue,
+      leprechaunMultiplier = _ref2.leprechaunMultiplier;
+    return have$P(familiar) && (expectedValue || leprechaunMultiplier);
+  });
+}
+function getAllDrops(fam) {
+  var target = rotatingFamiliars.find(_ref3 => {
+    var familiar = _ref3.familiar;
+    return familiar === fam;
+  });
+  if (!have$P(fam) || !target) return [];
+  var expected = target.expected,
+    drop = target.drop,
+    additionalValue = target.additionalValue;
+  var current = fam.dropsToday;
+  var returnValue = [];
+  var length = Array.isArray(expected) ? expected.length : 11; // 11 seems a reasonable max
+  for (var i = current; i < length; i++) {
+    var turns = expectedTurnsValue(target.expected, i);
+    returnValue.push({
+      expectedValue: dropValue(drop) / turns + ((additionalValue === null || additionalValue === void 0 ? void 0 : additionalValue()) ?? 0),
+      expectedTurns: turns
+    });
+  }
+  return returnValue;
+}
+
+var isUsed = (used, mode) => typeof used === "string" ? get$2(used) : used(mode);
+var experienceFamiliars = [{
+  familiar: $familiar`Pocket Professor`,
+  used: "_thesisDelivered",
+  useValue: 11 * get$2("valueOfAdventure"),
+  baseExp: 200
+}, {
+  familiar: $familiar`Grey Goose`,
+  used: "_meatifyMatterUsed",
+  useValue: 15 ** 4,
+  baseExp: 25
+}, {
+  familiar: $familiar`Chest Mimic`,
+  used: mode => !shouldChargeMimic(mode === "barf"),
+  useValue: () => MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure"),
+  baseExp: 0,
+  xpCost: 50,
+  xpLimit: mode => mimicExperienceNeeded(mode === "barf")
+}, {
+  familiar: $familiar`Cooler Yeti`,
+  used: () => {
+    return $familiar`Cooler Yeti`.experience >= 400 || globalOptions.ascend || !globalOptions.prefs.chargeYeti;
+  },
+  // Vintage Smart Drink is 40 adventures
+  useValue: getAverageAdventures($item`vintage smart drink`) * get$2("valueOfAdventure"),
+  baseExp: 0
+}];
+function valueExperienceFamiliar(_ref, mode) {
+  var familiar = _ref.familiar,
+    useValue = _ref.useValue,
+    xpCost = _ref.xpCost,
+    baseExp = _ref.baseExp;
+  var currentExp = familiar.experience || (have$P($familiar`Shorter-Order Cook`) ? 100 : 0);
+  var experienceNeeded = xpCost ?? 400 - (globalOptions.ascend ? currentExp : baseExp);
+  var estimatedExperience = mode === "free" ? 12 : estimatedBarfExperience();
+  return {
+    familiar,
+    expectedValue: undelay(useValue) / (experienceNeeded / estimatedExperience),
+    leprechaunMultiplier: findLeprechaunMultiplier(familiar),
+    limit: "experience",
+    worksOnFreeRun: false
+  };
+}
+function getExperienceFamiliars(mode) {
+  return experienceFamiliars.filter(_ref2 => {
+    var used = _ref2.used,
+      familiar = _ref2.familiar,
+      xpLimit = _ref2.xpLimit;
+    return have$P(familiar) && !isUsed(used, mode) && familiar.experience < ((xpLimit === null || xpLimit === void 0 ? void 0 : xpLimit(mode)) ?? 400);
+  }).map(f => valueExperienceFamiliar(f, mode));
+}
+function getExperienceFamiliarLimit(fam) {
+  var _target$xpLimit;
+  var target = experienceFamiliars.find(_ref3 => {
+    var familiar = _ref3.familiar;
+    return familiar === fam;
+  });
+  if (!have$P(fam) || !target) return 0;
+  return ((((_target$xpLimit = target.xpLimit) === null || _target$xpLimit === void 0 ? void 0 : _target$xpLimit.call(target, "barf")) ?? 400) - fam.experience) / estimatedBarfExperience();
+}
+
+// Familiars that should never be introduced as a surprise
+var NO_TCB_FAMILIARS = $familiars`Mini-Hipster, Artistic Goth Kid`;
+function getToyCupidBowFamiliars() {
+  if (!have$f()) return [];
+  var skipFamiliars = getUsedTcbFamiliars();
+  var _iterator = _createForOfIteratorHelper(NO_TCB_FAMILIARS),
     _step;
   try {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var piece = _step.value;
-      if (!outfit.equip(piece)) {
-        kolmafia.print(`Could not equip all pieces of trick-or-treating outfit ${bestTreatOutfit}: aborted on ${piece}`);
-      }
+      var familiar = _step.value;
+      skipFamiliars.add(familiar);
     }
+
+    // If there aren't enough turns to run someone to completion, only check for the current cupid familiar
   } catch (err) {
     _iterator.e(err);
   } finally {
     _iterator.f();
   }
-  outfit.equip($familiar`Trick-or-Treating Tot`);
-  return outfit;
-}
-function candyRichBlockValue() {
-  var outfitCandyValue = treatValue(getTreatOutfit());
-  var totOutfitCandyMultiplier = have$P($familiar`Trick-or-Treating Tot`) ? 1.6 : 1;
-  var bowlValue = 1 / 5 * getSaleValue($item`huge bowl of candy`);
-  var prunetsValue = have$P($familiar`Trick-or-Treating Tot`) ? 4 * 0.2 * getSaleValue($item`Prunets`) : 0;
-  var outfitCandyTotal = 3 * outfitCandyValue * totOutfitCandyMultiplier;
-  return outfitCandyTotal + bowlValue + prunetsValue + 5 * globalOptions.prefs.valueOfFreeFight;
-}
-function shouldAcquireCandyMap() {
-  return !kolmafia.holiday().includes("Halloween") && kolmafia.mallPrice($item`map to a candy-rich block`) < 50000 &&
-  // Sanity value to prevent mall shenanigans
-  candyRichBlockValue() > kolmafia.mallPrice($item`map to a candy-rich block`);
-}
-function useCandyMapTask() {
-  return {
-    name: "Acquire Candy Map",
-    ready: () => shouldAcquireCandyMap(),
-    completed: () => get$2("_mapToACandyRichBlockUsed"),
-    do: () => {
-      if (acquire(1, $item`map to a candy-rich block`, candyRichBlockValue() - 1, false)) {
-        withChoice(804, 2, () => kolmafia.use($item`map to a candy-rich block`));
-      }
-    },
-    limit: {
-      skip: 1
-    },
-    spendsTurn: false
-  };
-}
-function doCandyTreat() {
-  return {
-    name: "Treat",
-    completed: () => !["L", "S"].some(house => get$2("_trickOrTreatBlock").includes(house)),
-    ready: () => !kolmafia.holiday().includes("Halloween") && get$2("_mapToACandyRichBlockUsed"),
-    outfit: treatOutfit,
-    do: () => {
-      visitBlock();
-      var houses = _toConsumableArray(get$2("_trickOrTreatBlock").split("").entries()).filter(_ref3 => {
-        var _ref4 = _slicedToArray(_ref3, 2),
-          house = _ref4[1];
-        return ["L", "S"].includes(house);
-      });
-      // We do all treat houses in a row as one task for speed reasons
-      var _iterator2 = _createForOfIteratorHelper(houses),
-        _step2;
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var _step2$value = _slicedToArray(_step2.value, 2),
-            index = _step2$value[0],
-            house = _step2$value[1];
-          if (["L", "S"].includes(house)) {
-            visitHouse(index);
-            if (house === "S") {
-              kolmafia.runChoice(2);
-              visitBlock();
-            }
-          }
-        }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
-      }
-    },
-    spendsTurn: false,
-    combat: new GarboStrategy(() => Macro.abortWithMsg("We were planning on Treating, but we've been Tricked!"))
-  };
-}
-var MAX_HAT_PRICE = 100_000;
-function obtainTrickHat() {
-  return {
-    name: "Obtain Trick Hat",
-    completed: () => trickHats.some(hat => have$P(hat)),
-    ready: () => trickHats.some(hat => kolmafia.mallPrice(hat) < MAX_HAT_PRICE),
-    do: () => {
-      var cheapestHat = maxBy(trickHats, kolmafia.mallPrice, true);
-      acquire(1, cheapestHat, MAX_HAT_PRICE);
-    },
-    spendsTurn: false
-  };
-}
-function candyMapDailyTasks() {
-  return [useCandyMapTask(), doCandyTreat(), obtainTrickHat()];
-}
-function doCandyTrick() {
-  return {
-    name: "Trick",
-    completed: () => !get$2("_trickOrTreatBlock").includes("D"),
-    ready: () => !kolmafia.holiday().includes("Halloween") && get$2("_mapToACandyRichBlockUsed") && trickHats.some(hat => have$P(hat)),
-    do: () => {
-      visitBlock();
-      var houseNumber = get$2("_trickOrTreatBlock").indexOf("D");
-      if (houseNumber < 0) return;
-      visitHouse(houseNumber);
-    },
-    outfit: () => {
-      var hat = trickHats.find(hat => have$P(hat));
-      if (!hat) {
-        throw new Error("We thought we had an appropriate hat for tricking, but we did not.");
-      }
-      return freeFightOutfit({
-        hat
-      }, $location`Trick-or-Treating`);
-    },
-    combat: new GarboStrategy(() => Macro.basicCombat()),
-    spendsTurn: false
-  };
-}
+  var current = currentFamiliar();
+  if (current && estimatedGarboTurns() < tcbTurnsLeft(current, skipFamiliars)) {
+    var _current = currentFamiliar();
+    if (!_current) return [];
+    if (skipFamiliars.has(_current)) return [];
+    return [{
+      familiar: _current,
+      expectedValue: familiarEquipmentValue(_current) / tcbTurnsLeft(_current, skipFamiliars),
+      worksOnFreeRun: true,
+      limit: "cupid",
+      leprechaunMultiplier: findLeprechaunMultiplier(_current)
+    }];
+  }
 
-var MIDNIGHTS = [{
-  location: $location`Gingerbread Upscale Retail District`,
-  choices: {
-    1209: 2,
-    1214: 1
-  },
-  available: () => kolmafia.haveOutfit("gingerbread best") && kolmafia.outfitPieces("gingerbread best").every(piece => kolmafia.canEquip(piece)) && kolmafia.itemAmount($item`high-end ginger wine`) < 11,
-  value: () => {
-    var best = bestConsumable("booze", true, $items`high-end ginger wine, astral pilsner`);
-    var gingerWineValue = (0.5 * 30 * targetMeat() + getAverageAdventures($item`high-end ginger wine`) * get$2("valueOfAdventure")) / 2;
-    var valueDif = gingerWineValue - best.value;
-    return 2 * valueDif;
-  }
-}, {
-  location: $location`Gingerbread Upscale Retail District`,
-  available: () => kolmafia.haveOutfit("gingerbread best") && kolmafia.outfitPieces("gingerbread best").every(piece => kolmafia.canEquip(piece)) && have$P($item`sprinkles`, 300),
-  choices: {
-    1209: 2,
-    1214: 2
-  },
-  value: () => garboValue($item`fancy chocolate sculpture`)
-}, {
-  location: $location`Gingerbread Upscale Retail District`,
-  available: () => kolmafia.haveOutfit("gingerbread best") && kolmafia.outfitPieces("gingerbread best").every(piece => kolmafia.canEquip(piece)) && have$P($item`sprinkles`, 1000),
-  choices: {
-    1209: 2,
-    1214: 3
-  },
-  value: () => garboValue($item`Pop Art: a Guide`)
-}, {
-  location: $location`Gingerbread Upscale Retail District`,
-  available: () => kolmafia.haveOutfit("gingerbread best") && kolmafia.outfitPieces("gingerbread best").every(piece => kolmafia.canEquip(piece)) && have$P($item`sprinkles`, 1000),
-  choices: {
-    1209: 2,
-    1214: 4
-  },
-  value: () => garboValue($item`No Hats as Art`)
-}, {
-  location: $location`Gingerbread Civic Center`,
-  choices: {
-    1203: 2
-  },
-  available: () => have$P($item`sprinkles`, 300) && !canJudgeFudge(),
-  value: () => garboValue($item`counterfeit city`)
-}, {
-  location: $location`Gingerbread Civic Center`,
-  choices: {
-    1203: 4
-  },
-  available: () => have$P($item`sprinkles`, 5) && !canJudgeFudge(),
-  value: () => 5 * garboValue($item`gingerbread cigarette`)
-}];
-var DEFAULT_MIDNIGHT = {
-  location: $location`Gingerbread Train Station`,
-  choices: {
-    1205: 1
-  },
-  value: () => 0
-};
-function bestMidnightAvailable() {
-  var availableMidnights = [].concat(_toConsumableArray(MIDNIGHTS.filter(_ref => {
-    var location = _ref.location,
-      available = _ref.available;
-    return kolmafia.canAdventure(location) && available();
-  })), [DEFAULT_MIDNIGHT]);
-  return maxBy(availableMidnights, _ref2 => {
-    var value = _ref2.value;
-    return value();
-  });
-}
-
-var GOOD_TRAIN_STATIONS = [{
-  piece: Station.GAIN_MEAT,
-  value: () => 900
-}, {
-  // Some day this'll be better
-  piece: Station.TRACKSIDE_DINER,
-  value: () => $monsters`Witchess Knight`.includes(globalOptions.target) && copyTargetCount() > 0 ? garboValue($item`jumping horseradish`) : garboAverageValue.apply(void 0, _toConsumableArray($items`bowl of cottage cheese, hot buttered roll, toast`))
-}, {
-  piece: Station.CANDY_FACTORY,
-  value: candyFactoryValue
-}, {
-  piece: Station.GRAIN_SILO,
-  value: () => 2 * garboAverageValue.apply(void 0, _toConsumableArray($items`bottle of gin, bottle of vodka, bottle of whiskey, bottle of rum, bottle of tequila, boxed wine`))
-}, {
-  piece: Station.ORE_HOPPER,
-  value: () => garboAverageValue.apply(void 0, _toConsumableArray($items`linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore`))
-}];
-var trainCycle;
-function getBestCycle() {
-  if (!trainCycle) {
-    var cycle = [Station.COAL_HOPPER].concat(_toConsumableArray(GOOD_TRAIN_STATIONS.sort((_ref, _ref2) => {
-      var a = _ref.value;
-      var b = _ref2.value;
-      return b() - a();
-    }).map(_ref3 => {
-      var piece = _ref3.piece;
-      return piece;
-    })), [Station.TOWER_FIZZY, Station.VIEWING_PLATFORM]);
-    trainCycle = cycle;
-  }
-  return _toConsumableArray(trainCycle);
-}
-function valueStation(station) {
-  var _GOOD_TRAIN_STATIONS$;
-  if (station === Station.COAL_HOPPER) {
-    return valueStation(getBestCycle()[1]);
-  }
-  return ((_GOOD_TRAIN_STATIONS$ = GOOD_TRAIN_STATIONS.find(_ref4 => {
-    var piece = _ref4.piece;
-    return piece === station;
-  })) === null || _GOOD_TRAIN_STATIONS$ === void 0 ? void 0 : _GOOD_TRAIN_STATIONS$.value()) ?? 0;
-}
-function valueOffset(offset) {
-  var firstFortyTurns = 5 * sum(getBestCycle(), valueStation);
-  var extraTurns = sum(getBestCycle().slice(0, offset - 1), valueStation);
-  return (firstFortyTurns + extraTurns) / (40 + offset);
-}
-var bestOffset = null;
-function getBestOffset() {
-  return bestOffset ?? (bestOffset = maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset));
-}
-function getPrioritizedStations() {
-  return getBestCycle().slice(0, getBestOffset() - 1);
-}
-function getRotatedCycle() {
-  var offset = get$2("trainsetPosition") % 8;
-  var newPieces = [];
-  var defaultPieces = getBestCycle();
-  for (var i = 0; i < 8; i++) {
-    var newPos = (i + offset) % 8;
-    newPieces[newPos] = defaultPieces[i];
-  }
-  return newPieces;
-}
-function trainNeedsRotating() {
-  if (!canConfigure()) return false;
-  if (!get$2("trainsetConfiguration")) {
-    // Visit the workshed to make sure it's actually empty, instead of us having not yet seen it this run
-    kolmafia.visitUrl("campground.php?action=workshed");
-    kolmafia.visitUrl("main.php");
-  }
-  if (!get$2("trainsetConfiguration")) return true;
-  if (arrayEquals$1(getRotatedCycle(), cycle())) return false;
-  if (globalOptions.ascend && estimatedGarboTurns() <= 40) return false;
-  var bestStations = getPrioritizedStations();
-  if (bestStations.includes(next())) return false;
-  return true;
-}
-function rotateToOptimalCycle() {
-  var hasRotated = setConfiguration(getRotatedCycle());
-
-  // If the trainset was not configured but still claims to be configurable
-  if (!hasRotated && canConfigure()) {
-    // Set the trainset configuration to believe it'll be configurable in one turn
-    _set("lastTrainsetConfiguration", get$2("trainsetPosition") - 39);
-  }
-  return hasRotated;
-}
-function grabMedicine() {
-  var options = kolmafia.visitUrl("campground.php?action=workshed");
-  var i = 0;
-  var match;
-  var regexp = /descitem\((\d+)\)/g;
-  var itemChoices = new Map();
-  if (!globalOptions.nobarf) {
-    switch (FarmingStrategy.location.environment) {
-      case "underground":
-        itemChoices.set($item`Breathitin™`, -1);
-        break;
-      case "indoor":
-        itemChoices.set($item`Extrovermectin™`, -1);
-        break;
-      case "outdoor":
-        itemChoices.set($item`Homebodyl™`, -1);
-        break;
-      default:
-        itemChoices.set($item`Fleshazole™`, -1);
-        break;
+  // Otherwise find the best for each leprechaun multiplier
+  var bestFamiliarsByLeprechaunMultiplier = new Map();
+  var _iterator2 = _createForOfIteratorHelper(kolmafia.Familiar.all()),
+    _step2;
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var _bestFamiliarsByLepre;
+      var _familiar = _step2.value;
+      if (!have$P(_familiar)) continue;
+      if (skipFamiliars.has(_familiar)) continue;
+      if (!kolmafia.familiarEquipment(_familiar).tradeable && _familiar !== $familiar`Cornbeefadon`) {
+        continue;
+      }
+      if (_familiar === $familiar`Mini-Adventurer` && !get$2("miniAdvClass") && !get$2("choiceAdventure768")) {
+        if (globalOptions.ascend) {
+          propertyManager.setChoice(768, 4);
+        } // Littlest identity crisis, sauceror
+        else continue;
+      }
+      if (_familiar === $familiar`Doppelshifter`) continue;
+      var leprechaunMultiplier = findLeprechaunMultiplier(_familiar);
+      var expectedValue = familiarEquipmentValue(_familiar) / tcbTurnsLeft(_familiar, skipFamiliars);
+      var currentBestValue = ((_bestFamiliarsByLepre = bestFamiliarsByLeprechaunMultiplier.get(leprechaunMultiplier)) === null || _bestFamiliarsByLepre === void 0 ? void 0 : _bestFamiliarsByLepre.expectedValue) ?? 0;
+      if (expectedValue > currentBestValue) {
+        bestFamiliarsByLeprechaunMultiplier.set(leprechaunMultiplier, {
+          familiar: _familiar,
+          expectedValue,
+          worksOnFreeRun: true,
+          limit: "cupid",
+          leprechaunMultiplier
+        });
+      }
     }
-    // if spending turns at barf, we probably will be able to get an extro so always consider it
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
   }
-  while ((match = regexp.exec(options)) !== null) {
-    i++;
-    var item = kolmafia.descToItem(match[1]);
-    itemChoices.set(item, i);
-  }
-  var bestItem = maxBy(_toConsumableArray(itemChoices.keys()), garboValue);
-  var bestChoice = itemChoices.get(bestItem);
-  if (bestChoice && bestChoice > 0) {
-    kolmafia.visitUrl("campground.php?action=workshed");
-    kolmafia.runChoice(bestChoice);
-  }
-  if (kolmafia.handlingChoice()) kolmafia.visitUrl("main.php");
+  return _toConsumableArray(bestFamiliarsByLeprechaunMultiplier.values());
 }
 
-// Silk and Gold are thrice as rare as other ingredients, so we value them thrice as much
-// Yes, it's pretty dumb
-function naiveTakerspaceCost(recipe) {
-  return sum(_toConsumableArray(recipe.entries()), _ref5 => {
-    var _ref6 = _slicedToArray(_ref5, 2),
-      amount = _ref6[0],
-      index = _ref6[1];
-    return amount * ([4, 5].includes(index) ? 3 : 1);
+var _wanderer;
+function wanderer() {
+  if (!_wanderer) {
+    _wanderer = new WandererManager({
+      ascend: globalOptions.ascend,
+      estimatedTurns: estimatedGarboTurns,
+      itemValue: garboValue,
+      effectValue,
+      prioritizeCappingGuzzlr: get$2("garbo_prioritizeCappingGuzzlr", false),
+      freeFightExtraValue: location => freeFightFamiliarData(location).expectedValue,
+      digitzesRemaining: digitizedMonstersRemainingForTurns,
+      plentifulMonsters: [globalOptions.target].concat(_toConsumableArray(globalOptions.nobarf ? [] : FarmingStrategy.monsters()), _toConsumableArray(have$P($item`Kramco Sausage-o-Matic™`) ? $monsters`sausage goblin` : [])),
+      valueOfAdventure: get$2("valueOfAdventure"),
+      takeTurnForProfit: true,
+      canRefractedGaze: have$b() && safeRefractedCasts() > 0
+    });
+  }
+  return _wanderer;
+}
+var destinationToLocation = destination => destination instanceof kolmafia.Location ? destination : wanderer().getTarget(destination).location;
+function toAdventure(arg) {
+  if (arg instanceof kolmafia.Monster) return {
+    target: arg,
+    location: $location.none
+  };
+  if (arg instanceof kolmafia.Location) return {
+    target: arg,
+    location: arg
+  };
+  if (typeof arg === "string" || !("target" in arg)) {
+    var location = wanderer().getTarget(arg).location;
+    return {
+      target: location,
+      location
+    };
+  }
+  return {
+    target: arg.target,
+    location: destinationToLocation(arg.location)
+  };
+}
+
+function menu$1(adventure) {
+  var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+    _ref$canChooseMacro = _ref.canChooseMacro,
+    canChooseMacro = _ref$canChooseMacro === void 0 ? true : _ref$canChooseMacro,
+    _ref$extraFamiliars = _ref.extraFamiliars,
+    extraFamiliars = _ref$extraFamiliars === void 0 ? [] : _ref$extraFamiliars,
+    _ref$excludeFamiliar = _ref.excludeFamiliar,
+    excludeFamiliar = _ref$excludeFamiliar === void 0 ? [] : _ref$excludeFamiliar,
+    _ref$includeExperienc = _ref.includeExperienceFamiliars,
+    includeExperienceFamiliars = _ref$includeExperienc === void 0 ? true : _ref$includeExperienc,
+    _ref$allowAttackFamil = _ref.allowAttackFamiliars,
+    allowAttackFamiliars = _ref$allowAttackFamil === void 0 ? true : _ref$allowAttackFamil,
+    _ref$mode = _ref.mode,
+    mode = _ref$mode === void 0 ? "free" : _ref$mode;
+  var familiarMenu = [].concat(_toConsumableArray(getConstantValueFamiliars(mode)), _toConsumableArray(getDropFamiliars()), _toConsumableArray(getToyCupidBowFamiliars()), _toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray(extraFamiliars));
+  var _toAdventure = toAdventure(adventure),
+    target = _toAdventure.target;
+  var monsterRates = adventureTargetToWeightedMap(target);
+  if (canChooseMacro && kolmafia.myInebriety() <= kolmafia.inebrietyLimit()) {
+    if (timeToMeatify()) {
+      familiarMenu.push({
+        familiar: $familiar`Grey Goose`,
+        expectedValue: (Math.max(kolmafia.familiarWeight($familiar`Grey Goose`) - 5), 0) ** 4,
+        leprechaunMultiplier: 0,
+        limit: "experience",
+        worksOnFreeRun: false
+      });
+    }
+    if (mode === "target" && gooseDroneEligible() && get$2("gooseDronesRemaining") < copyTargetCount()) {
+      familiarMenu.push({
+        familiar: $familiar`Grey Goose`,
+        expectedValue:
+        // It takes 9 experience to go from level 5 to 6 and emit a drone
+        clamp(get$1("Familiar Experience") / 9, 0,
+        // The limit to how valuable any emission can be is how many drones are actually gonna hit the copyTarget
+        copyTargetCount() - get$2("gooseDronesRemaining")) * valueDrops(globalOptions.target),
+        leprechaunMultiplier: 0,
+        limit: "experience",
+        worksOnFreeRun: false
+      });
+    }
+    if (mode === "target" && have$A()) {
+      familiarMenu.push({
+        familiar: $familiar`Red-Nosed Snapper`,
+        expectedValue: snapperValue(),
+        leprechaunMultiplier: 0,
+        limit: "special",
+        worksOnFreeRun: false
+      });
+    }
+    if (canOpenRedPresent()) {
+      familiarMenu.push({
+        familiar: $familiar`Crimbo Shrub`,
+        expectedValue: 2500,
+        leprechaunMultiplier: 0,
+        limit: "special",
+        worksOnFreeRun: true
+      });
+    }
+    if (have$P($familiar`Space Jellyfish`)) {
+      familiarMenu.push({
+        familiar: $familiar`Space Jellyfish`,
+        expectedValue: sum(_toConsumableArray(monsterRates.entries()), _ref2 => {
+          var _ref3 = _slicedToArray(_ref2, 2),
+            monster = _ref3[0],
+            rate = _ref3[1];
+          return monster.defenseElement === $element`Stench` ? rate * garboValue($item`stench jelly`) / (get$2("_spaceJellyfishDrops") < 5 ? get$2("_spaceJellyfishDrops") + 1 : 20) : 0;
+        }),
+        leprechaunMultiplier: 0,
+        limit: "special",
+        worksOnFreeRun: true
+      });
+    }
+  }
+  if (have$a()) {
+    familiarMenu.push({
+      familiar: $familiar`Skeleton of Crimbo Past`,
+      expectedValue: expectedBones(target) * garboValue($item`knucklebone`),
+      leprechaunMultiplier: 0,
+      limit: "special",
+      worksOnFreeRun: false
+    });
+  }
+  var meatFam = meatFamiliar();
+  familiarMenu.push({
+    familiar: meatFam,
+    expectedValue: 0,
+    leprechaunMultiplier: findLeprechaunMultiplier(meatFam),
+    limit: "none",
+    // Because strictly speaking this is better than using no familiar at all
+    worksOnFreeRun: true
+  });
+  return familiarMenu.filter(_ref4 => {
+    var familiar = _ref4.familiar,
+      worksOnFreeRun = _ref4.worksOnFreeRun;
+    return (mode !== "run" || worksOnFreeRun) && (allowAttackFamiliars || !(familiar.physicalDamage || familiar.elementalDamage)) && !excludeFamiliar.some(excludedFamiliar => excludedFamiliar === familiar);
   });
 }
-function bestTakerspaceItem() {
-  var makeables = _toConsumableArray(allRecipes().entries()).filter(_ref7 => {
-    var _ref8 = _slicedToArray(_ref7, 1),
-      i = _ref8[0];
-    return canMake(i);
+function getAllJellyfishDrops() {
+  if (!have$P($familiar`Space Jellyfish`)) {
+    return [{
+      expectedValue: 0,
+      turnsAtValue: 0
+    }];
+  }
+  var current = get$2("_spaceJellyfishDrops");
+  var returnValue = [];
+  for (var dropNumber = clamp(current + 1, 0, 6); dropNumber <= 6; dropNumber++) {
+    returnValue.push({
+      expectedValue: garboValue($item`stench jelly`) / (dropNumber > 5 ? 20 : dropNumber),
+      turnsAtValue: dropNumber > 5 ? Infinity : dropNumber
+    });
+  }
+  return returnValue;
+}
+function freeFightFamiliarData(adventure) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var usedTcbFamiliars = getUsedTcbFamiliars();
+  var compareFamiliars = (a, b) => {
+    if (a === null) return b;
+    var aValue = a.expectedValue + tcbValue(a.familiar, usedTcbFamiliars, options.equipmentForced);
+    var bValue = b.expectedValue + tcbValue(b.familiar, usedTcbFamiliars, options.equipmentForced);
+    if (aValue === bValue) {
+      return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
+    }
+    return aValue > bValue ? a : b;
+  };
+  return menu$1(adventure, options).reduce(compareFamiliars, {
+    familiar: $familiar.none,
+    expectedValue: 0,
+    leprechaunMultiplier: 0,
+    limit: "none",
+    worksOnFreeRun: true
   });
-  return makeables.length ? maxBy(makeables, _ref9 => {
-    var _ref0 = _slicedToArray(_ref9, 2),
-      item = _ref0[0],
-      recipe = _ref0[1];
-    return garboValue(item) / naiveTakerspaceCost(recipe);
-  })[0] : null;
+}
+function freeFightFamiliar(target) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  return freeFightFamiliarData(target, options).familiar;
 }
 
 var crate = $monster`crate`;
@@ -25182,439 +22710,398 @@ function possibleGregCrystalBall() {
   return 0;
 }
 
-var allowList = $items`Fudgie Roll, peanut brittle shield, sugar shotgun, sugar shillelagh, sugar shank, sugar chapeau, sugar shorts, sugar shield, sugar shirt`;
+var nextWeekReady = () => clubIntoNextWeekAvailable() && (turnsUntilNextWeekFight() <= 0 || !clubIntoNextWeekMonster());
+var nextWeekFights = () => clubIntoNextWeekAvailable() + (clubIntoNextWeekMonster() === globalOptions.target ? 1 : 0);
 
-// For safety, explicitly skip candies that are no longer obtainable or extremely rare
-var blockList = new Set([$item`candied nuts`, $item`candy kneecapping stick`, $item`chocolate cigar`, $item`fancy but probably evil chocolate`, $item`fancy chocolate`, $item`fancy chocolate car`, $item`gummi ammonite`, $item`gummi belemnite`, $item`gummi trilobite`, $item`powdered candy sushi set`, $item`radio button candy`, $item`spiritual candy cane`, $item`Ultra Mega Sour Ball`, $item`vitachoconutriment capsule`]);
-function synthesize(casts, effect) {
-  var saveLimit = 1;
-  var buyableCandies = $items.all().filter(i => i.tradeable && i.candyType === "complex" && !blockList.has(i)).sort((a, b) => kolmafia.mallPrice(a) - kolmafia.mallPrice(b)).slice(0, 50);
-  var shuffledAllowlist = shuffle(allowList);
-  var _iterator = _createForOfIteratorHelper(shuffledAllowlist),
-    _step;
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var untradeable = _step.value;
-      if (kolmafia.availableAmount(untradeable) <= saveLimit) continue;
-      var _iterator2 = _createForOfIteratorHelper(buyableCandies),
-        _step2;
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var buyable = _step2.value;
-          if (kolmafia.sweetSynthesisResult(untradeable, buyable) !== effect) continue;
-          var possibleCasts = kolmafia.availableAmount(untradeable) - saveLimit;
-          var spleen = Math.max(kolmafia.spleenLimit() - kolmafia.mySpleenUse(), 0);
-          var castsToDo = Math.min(possibleCasts, casts, spleen);
-          if (castsToDo === 0) continue;
-          kolmafia.retrieveItem(untradeable, castsToDo);
-          kolmafia.retrieveItem(buyable, castsToDo);
-          if (kolmafia.sweetSynthesis(castsToDo, untradeable, buyable)) casts -= castsToDo;
-          if (casts <= 0) return;
-        }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
-      }
+/**
+ * Configure the behavior of the fights in use in different parts of the fight engine
+ * @interface TargetFightConfigOptions
+ * @member {OutfitSpec} spec maximizer requirements to use for this fight (defaults to empty)
+ * @member {draggableFight?} draggable if this fight can be pulled into another zone and what kind of draggable it is (defaults to undefined)
+ * @member {boolean?} canInitializeWandererCounters if this fight can be used to initialize wanderers (defaults to false)
+ * @member {boolean?} gregariousReplace if this is a "monster replacement" fight - pulls another monster from the CSV (defautls to false)
+ * @member {boolean?} wrongEncounterName if mafia does not update the lastEncounter properly when doing this fight (defaults to value of gregariousReplace)
+ */
+
+function checkUnderwater() {
+  // first check to see if underwater even makes sense
+  if (questStep$1("questS01OldGuy") >= 0 && !(get$2("_envyfishEggUsed") || have$P($item`envyfish egg`)) && (get$2("_garbo_weightChain", false) || !have$P($familiar`Pocket Professor`)) && (kolmafia.booleanModifier("Adventure Underwater") || waterBreathingEquipment.some(item => have$P(item) && kolmafia.canEquip(item))) && freeFishyAvailable() && !willYachtzee()) {
+    if (!have$P($effect`Fishy`) && have$P($item`fishy pipe`) && !get$2("_fishyPipeUsed")) {
+      kolmafia.use($item`fishy pipe`);
     }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
+    if (!have$P($effect`Fishy`) && get$2("skateParkStatus") === "ice" && !get$2("_skateBuff1")) {
+      kolmafia.cliExecute("skate lutz");
+    }
+    return have$P($effect`Fishy`);
   }
-  kolmafia.sweetSynthesis(clamp(casts, 0, kolmafia.spleenLimit() - kolmafia.mySpleenUse()), effect);
-}
-
-function desirableIngredients() {
-  return have$P($skill`Head in the Game`) && have$P($item`mafia pointer finger ring`) ? ["msg", "cajun", "rawhide", "carrot"] : ["cajun", "rawhide", "carrot"];
-}
-function shouldUnlockIngredients() {
-  if (!have$D()) return false;
-  var shouldTryToUnlockIngredients = desirableIngredients().filter(i => ingredientsUnlocked().includes(i) || kolmafia.canAdventure(locationOf(i))).length >= 3;
-  var doneUnlockingIngredients = desirableIngredients().filter(i => ingredientsUnlocked().includes(i)).length >= 3;
-  return shouldTryToUnlockIngredients && !doneUnlockingIngredients;
-}
-function ingredientsToFillWith() {
-  return [].concat(_toConsumableArray(desirableIngredients().filter(i => ingredientsUnlocked().includes(i))), _toConsumableArray(byStat({
-    Muscle: ["vanilla", "pumpkin", "cinnamon"],
-    Moxie: ["cinnamon", "pumpkin", "vanilla"],
-    Mysticality: ["pumpkin", "vanilla", "cinnamon"]
-  }))).splice(0, 3);
-}
-function latteMalformed() {
-  return ["vanilla", "pumpkin", "cinnamon"].some(defaultIngredient => !ingredientsUnlocked().includes(defaultIngredient));
-}
-
-// Returns whether the latteUnlocks preference contains the default ingredients
-function checkAndCorrectLatteMalformation() {
-  if (!latteMalformed()) return true;
-  kolmafia.visitUrl("main.php?latte=1", false);
-  if (!latteMalformed()) return true;
-  kolmafia.print("Can't access Latte Lover's Mug shop, disabling it", "red");
-  _set("_latteBanishUsed", true);
-  _set("_latteCopyUsed", true);
-  _set("_latteRefillsUsed", 3);
   return false;
 }
-function shouldFillLatte() {
-  if (!have$P($item`latte lovers member's mug`) || get$2("_latteRefillsUsed") >= 3) {
+function getChangeLastAdvLocationMethod() {
+  if (questStep$1("questL11Worship") > 3) {
+    return "hiddencity";
+  } else {
+    return "dailydungeon";
+  }
+}
+
+// for now, return a psuedo task since target fights are not grimoirized
+function changeLastAdvLocationTask() {
+  var base = {
+    ready: () => ponder().get($location`The Dire Warren`) !== globalOptions.target,
+    completed: () => kolmafia.myLocation() !== $location`The Dire Warren`
+  };
+  switch (getChangeLastAdvLocationMethod()) {
+    case "hiddencity":
+      return _objectSpread2(_objectSpread2({}, base), {}, {
+        do: () => withChoice(785, 6, () => kolmafia.adv1($location`An Overgrown Shrine (Northeast)`, -1, ""))
+      });
+    case "dailydungeon":
+      return _objectSpread2(_objectSpread2({}, base), {}, {
+        do: () =>
+        // at this point, we're either at an NC we can walk away from or the whole DD is done
+        // only track the choices we need to walk away since hitting it when it is done does nothing
+        withChoices({
+          692: 8,
+          693: 3
+        }, () => kolmafia.adv1($location`The Daily Dungeon`, -1, ""))
+      });
+  }
+}
+
+var CopyTargetFight = /*#__PURE__*/function () {
+  /**
+   * This is the class that creates all the different ways to fight copy targets
+   * @classdesc Copy Target Fight enc
+   * @prop {string} name The name of the source of this fight, primarily used to identify special cases.
+   * @prop {() => boolean} available Returns whether or not we can do this fight right now (this may change later in the day).
+   * @prop {() => number} potential Returns the number of targets we expect to be able to fight from this source given the current state of hte character
+   *  This is used when computing turns for buffs, so it should be as accurate as possible to the number of KGE we will fight
+   * @prop {(options: RunOptions) => void} execute This runs the combat, optionally using the provided location and macro. Location is used only by draggable fights.
+   *  This is the meat of each fight. How do you initialize the fight? Are there any special considerations?
+   * @prop {TargetFightConfigOptions} options configuration options for this fight. see TargetFightConfigOptions for full details of all available options
+   * @example
+   * // suppose that we wanted to add a fight that will use print screens repeatedly, as long as we have them in our inventory
+   * new CopyTargetFight(
+   *  "Print Screen Monster",
+   *  () => have($item`screencapped monster`) && get('screencappedMonster') === globalOptions.target, // in order to start this fight, a KGE must already be screen capped
+   *  () => availableAmount($item`screencapped monster`) + availableAmount($item`print screen button`) // the total of potential of this fight is the number of already copied KGE + the number of potentially copiable KGE
+   *  () => (options: RunOptions) => {
+   *    const macro = Macro
+   *      .externalIf(have($item`print screen button`), Macro.tryItem($item`print screen button`))
+   *      .step(options.macro); // you should always include the macro passed in via options, as it may have special considerations for this fight
+   *    withMacro(macro, () => useItem($item`screen capped monster`));
+   *  },
+   *  {
+   *    canInitializeWandererCounts: false; // this copy cannot be used to start wanderer counters, since the combats are not adv.php
+   *  }
+   * )
+   */
+  function CopyTargetFight(name, available, potential) {
+    var execute = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : options => {
+      var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+      adventureFunction(options.location, options.macro, options.macro);
+    };
+    var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
+    _classCallCheck(this, CopyTargetFight);
+    this.name = name;
+    this.available = available;
+    this.potential = potential;
+    this.execute = execute;
+    this.spec = options.spec ?? {};
+    this.draggable = options.draggable;
+    this.canInitializeWandererCounters = options.canInitializeWandererCounters ?? false;
+    this.gregariousReplace = options.gregariousReplace ?? false;
+    this.wrongEncounterName = options.wrongEncounterName ?? this.gregariousReplace;
+    this.location = options.location;
+  }
+  return _createClass(CopyTargetFight, [{
+    key: "run",
+    value: function run(options) {
+      if (!this.available() || !kolmafia.myAdventures()) return;
+      kolmafia.print(`Now running ${globalOptions.target} fight: ${this.name}. Stay tuned for details.`);
+      this.execute(options);
+    }
+  }]);
+}();
+var chainStarters = [new CopyTargetFight("Witchess", () => have$H() && pieces$1.includes(globalOptions.target) && fightsDone() < 5, () => have$H() && pieces$1.includes(globalOptions.target) ? Math.max(5 - fightsDone(), 0) : 0, options => {
+  withMacro(options.macro, () => fightPiece(globalOptions.target), options.useAuto);
+}), new CopyTargetFight("Chateau Painting", () => have$J() && !paintingFought() && paintingMonster() === globalOptions.target, () => have$J() && !paintingFought() && paintingMonster() === globalOptions.target ? 1 : 0, options => {
+  withMacro(options.macro, () => fightPainting(), options.useAuto);
+}), new CopyTargetFight("Combat Lover's Locket", () => canReminisce(globalOptions.target), () => canReminisce(globalOptions.target) ? 1 : 0, options => {
+  withMacro(options.macro, () => reminisce(globalOptions.target), options.useAuto);
+}), new CopyTargetFight("Fax", () => have$P($item`Clan VIP Lounge key`) && !get$2("_photocopyUsed") && have$P($item`photocopied monster`) && get$2("photocopyMonster") === globalOptions.target && kolmafia.getClanLounge()["deluxe fax machine"] !== undefined, () => have$P($item`Clan VIP Lounge key`) && !get$2("_photocopyUsed") && have$P($item`photocopied monster`) && get$2("photocopyMonster") === globalOptions.target && kolmafia.getClanLounge()["deluxe fax machine"] !== undefined ? 1 : 0, options => {
+  withMacro(options.macro, () => kolmafia.use($item`photocopied monster`), options.useAuto);
+}), new CopyTargetFight("Mimic Eggs", () => differentiableQuantity(globalOptions.target) >= 1, () => differentiableQuantity(globalOptions.target) + clamp(Math.floor($familiar`Chest Mimic`.experience / 50), 0, 11 - get$2("_mimicEggsObtained")), options => {
+  withMacro(options.macro, () => differentiate(globalOptions.target), options.useAuto);
+}), new CopyTargetFight("Rain Main", () => have$P($skill`Rain Man`) && kolmafia.myRain() >= 50, () => Math.floor(kolmafia.myRain() / 50), options => {
+  withMacro(options.macro, () => rainMan(globalOptions.target), options.useAuto);
+})];
+var copySources = [new CopyTargetFight("Time-Spinner", () => have$P($item`Time-Spinner`) && $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(location => location.combatQueue.includes(globalOptions.target.name)) && get$2("_timeSpinnerMinutesUsed") <= 7, () => have$P($item`Time-Spinner`) && $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(location => location.combatQueue.includes(globalOptions.target.name) || totalGregCharges()) ? Math.floor((10 - get$2("_timeSpinnerMinutesUsed")) / 3) : 0, options => {
+  withMacro(options.macro, () => {
+    directlyUse($item`Time-Spinner`);
+    kolmafia.runChoice(1);
+    kolmafia.visitUrl(`choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`);
+    kolmafia.runCombat();
+  }, options.useAuto);
+}), new CopyTargetFight("Spooky Putty & Rain-Doh", () => have$P($item`Spooky Putty monster`) && get$2("spookyPuttyMonster") === globalOptions.target || have$P($item`Rain-Doh box full of monster`) && get$2("rainDohMonster") === globalOptions.target, () => {
+  var havePutty = have$P($item`Spooky Putty sheet`);
+  var havePuttyMonster = have$P($item`Spooky Putty monster`);
+  var haveRainDoh = have$P($item`Rain-Doh black box`);
+  var haveRainDohMonster = have$P($item`Rain-Doh box full of monster`);
+  var puttyUsed = get$2("spookyPuttyCopiesMade");
+  var rainDohUsed = get$2("_raindohCopiesMade");
+  var hardLimit = 6 - puttyUsed - rainDohUsed;
+  var monsterCount = 0;
+  var puttyLeft = 5 - puttyUsed;
+  var rainDohLeft = 5 - rainDohUsed;
+  if (!havePutty && !havePuttyMonster) {
+    puttyLeft = 0;
+  }
+  if (!haveRainDoh && !haveRainDohMonster) {
+    rainDohLeft = 0;
+  }
+  if (havePuttyMonster) {
+    if (get$2("spookyPuttyMonster") === globalOptions.target) {
+      monsterCount++;
+    } else {
+      puttyLeft = 0;
+    }
+  }
+  if (haveRainDohMonster) {
+    if (get$2("rainDohMonster") === globalOptions.target) {
+      monsterCount++;
+    } else {
+      rainDohLeft = 0;
+    }
+  }
+  var naiveLimit = Math.min(puttyLeft + rainDohLeft, hardLimit);
+  return naiveLimit + monsterCount;
+}, options => {
+  var macro = options.macro;
+  withMacro(macro, () => {
+    if (have$P($item`Spooky Putty monster`)) {
+      return kolmafia.use($item`Spooky Putty monster`);
+    }
+    return kolmafia.use($item`Rain-Doh box full of monster`);
+  }, options.useAuto);
+}), new CopyTargetFight("4-d Camera", () => have$P($item`shaking 4-d camera`) && get$2("cameraMonster") === globalOptions.target && !get$2("_cameraUsed"), () => have$P($item`shaking 4-d camera`) && get$2("cameraMonster") === globalOptions.target && !get$2("_cameraUsed") ? 1 : 0, options => {
+  withMacro(options.macro, () => kolmafia.use($item`shaking 4-d camera`), options.useAuto);
+}), new CopyTargetFight("Ice Sculpture", () => have$P($item`ice sculpture`) && get$2("iceSculptureMonster") === globalOptions.target && !get$2("_iceSculptureUsed"), () => have$P($item`ice sculpture`) && get$2("iceSculptureMonster") === globalOptions.target && !get$2("_iceSculptureUsed") ? 1 : 0, options => {
+  withMacro(options.macro, () => kolmafia.use($item`ice sculpture`), options.useAuto);
+}), new CopyTargetFight("Green Taffy", () => have$P($item`envyfish egg`) && get$2("envyfishMonster") === globalOptions.target && !get$2("_envyfishEggUsed"), () => have$P($item`envyfish egg`) && get$2("envyfishMonster") === globalOptions.target && !get$2("_envyfishEggUsed") ? 1 : 0, options => {
+  withMacro(options.macro, () => kolmafia.use($item`envyfish egg`), options.useAuto);
+}), new CopyTargetFight("Screencapped Monster", () => have$P($item`screencapped monster`) && get$2("screencappedMonster") === globalOptions.target, () => get$2("screencappedMonster") === globalOptions.target ? kolmafia.itemAmount($item`screencapped monster`) : 0, options => {
+  withMacro(options.macro, () => kolmafia.use($item`screencapped monster`), options.useAuto);
+}), new CopyTargetFight("Sticky Clay Homunculus", () => have$P($item`sticky clay homunculus`) && get$2("crudeMonster") === globalOptions.target, () => get$2("crudeMonster") === globalOptions.target ? kolmafia.itemAmount($item`sticky clay homunculus`) : 0, options => withMacro(options.macro, () => kolmafia.use($item`sticky clay homunculus`), options.useAuto))];
+var wanderSources = [new CopyTargetFight("Lucky!", () => kolmafia.canAdventure($location`Cobb's Knob Treasury`) && have$P($effect`Lucky!`) && globalOptions.target === $monster`Knob Goblin Embezzler`, () => kolmafia.canAdventure($location`Cobb's Knob Treasury`) && have$P($effect`Lucky!`) && globalOptions.target === $monster`Knob Goblin Embezzler` ? 1 : 0, undefined, {
+  location: $location`Cobb's Knob Treasury`
+}), new CopyTargetFight("Digitize", () => get$2("_sourceTerminalDigitizeMonster") === globalOptions.target && get("Digitize Monster") <= 0, () => have$I() && getDigitizeUses() === 0 ? 1 : 0, undefined, {
+  draggable: "wanderer"
+}), new CopyTargetFight("Guaranteed Romantic Monster", () => get$2("_romanticFightsLeft") > 0 && get("Romantic Monster window begin") <= 0 && get("Romantic Monster window end") <= 0, () => 0, undefined, {
+  draggable: "wanderer"
+}), new CopyTargetFight("Enamorang", () => get("Enamorang") <= 0 && get$2("enamorangMonster") === globalOptions.target, () => get("Enamorang") <= 0 && get$2("enamorangMonster") === globalOptions.target || have$P($item`LOV Enamorang`) && !get$2("_enamorangs") ? 1 : 0, undefined, {
+  draggable: "wanderer"
+}), new CopyTargetFight("Legendary Seal Clubbing Club", () => get("Club 'Em Into Next Week Monster") <= 0 && clubIntoNextWeekMonster() === globalOptions.target, nextWeekFights, undefined, {
+  draggable: "wanderer"
+})];
+function changeLastAdvLocation() {
+  var task = changeLastAdvLocationTask();
+  if (task.ready() && !task.completed()) {
+    task.do();
+  }
+  kolmafia.visitUrl("main.php");
+}
+var gregFights = (name, haveCheck, monsterProp, fightsProp, totalCharges) => {
+  function runGregFight(options) {
+    var _run$constraints$prep, _run$constraints;
+    var run = ltbRun();
+    var runMacro = getUsingFreeBunnyBanish() ? Macro.skill($skill`Snokebomb`) : ltbRun().macro;
+    (_run$constraints$prep = (_run$constraints = run.constraints).preparation) === null || _run$constraints$prep === void 0 || _run$constraints$prep.call(_run$constraints);
+    var bunnyIsBanished = kolmafia.isBanished($monster`fluffy bunny`);
+    var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+    adventureFunction($location`The Dire Warren`, Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro), Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro));
+    if (get$2("lastEncounter") === $monster`fluffy bunny`.name && bunnyIsBanished) {
+      var _find;
+      var bunnyBanish = (_find = _toConsumableArray(getBanishedMonsters().entries()).find(_ref => {
+        var _ref2 = _slicedToArray(_ref, 2),
+          monster = _ref2[1];
+        return monster === $monster`fluffy bunny`;
+      })) === null || _find === void 0 ? void 0 : _find[0];
+      kolmafia.abort(`Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${fightsProp} preference is nonzero and should probably be zero.`);
+    }
+  }
+  var resourceIsOccupied = () => get$2(fightsProp) > 0 && ![null, globalOptions.target].includes(get$2(monsterProp));
+  return [new CopyTargetFight(name, () => haveCheck() && !resourceIsOccupied() && get$2(fightsProp) > (have$P($item`miniature crystal ball`) ? 1 : 0), () => !resourceIsOccupied() ? totalCharges() : 0, options => {
+    runGregFight(options);
+    // reset the crystal ball prediction by staring longingly at toast
+    if (get$2(fightsProp) === 1 && have$P($item`miniature crystal ball`)) {
+      var warrenPrediction = ponder().get($location`The Dire Warren`);
+      if (warrenPrediction !== globalOptions.target) {
+        changeLastAdvLocation();
+      }
+    }
+  }, {
+    canInitializeWandererCounters: true
+  }), new CopyTargetFight(`${name} (Set Up Crystal Ball)`, () => get$2(monsterProp) === globalOptions.target && get$2(fightsProp) === 1 && have$P($item`miniature crystal ball`) && !ponder().get($location`The Dire Warren`), () => get$2(monsterProp) === globalOptions.target && get$2(fightsProp) > 0 || totalCharges() > 0 ? 1 : 0, runGregFight, {
+    spec: {
+      equip: $items`miniature crystal ball`.filter(item => have$P(item))
+    },
+    canInitializeWandererCounters: true
+  })];
+};
+var gregLikeFights = [].concat(_toConsumableArray(gregFights("Be Gregarious", () => true,
+// we can always use extrovermectin
+"beGregariousMonster", "beGregariousFightsLeft", () => get$2("beGregariousCharges") * 3 + get$2("beGregariousFightsLeft"))), _toConsumableArray(gregFights("Habitats Monster", () => have$P($skill`Just the Facts`), "_monsterHabitatsMonster", "_monsterHabitatsFightsLeft", () => have$P($skill`Just the Facts`) ? (3 - get$2("_monsterHabitatsRecalled")) * 5 + get$2("_monsterHabitatsFightsLeft") : 0)));
+
+/**
+ * Determines whether we want to do this particular Target fight; if we aren't using orb, should always return true. If we're using orb and it's a crate, we'll have to see!
+ * @returns
+ */
+function proceedWithOrb() {
+  var strat = crateStrategy();
+  // If we can't possibly use orb, return true
+  if (!have$P($item`miniature crystal ball`) || strat !== "Orb") return true;
+
+  // If we're using orb, we have a KGE prediction, and we can reset it, return false
+  var gregFightNames = ["Macrometeorite", "Powerful Glove", "Habitats Monster", "Be Gregarious", "Orb Prediction"];
+  if (ponder().get($location`Noob Cave`) === globalOptions.target && copyTargetSources.filter(source => !gregFightNames.some(name => source.name.includes(name))).find(source => source.available())) {
     return false;
   }
-  if (get$2("_latteCopyUsed")) return true;
-  if (get$2("_latteBanishUsed")) return true;
-  if (checkAndCorrectLatteMalformation() && !setEqual(currentIngredients(), ingredientsToFillWith())) {
-    return true;
+  return true;
+}
+var conditionalSources = [new CopyTargetFight("Orb Prediction", () => have$P($item`miniature crystal ball`) && !get$2("_garbo_doneGregging", false) && ponder().get($location`The Dire Warren`) === globalOptions.target, () => possibleGregCrystalBall(), options => {
+  kolmafia.visitUrl("inventory.php?ponder=1");
+  if (ponder().get($location`The Dire Warren`) !== globalOptions.target) {
+    return;
   }
-  return false;
-}
-function tryFillLatte() {
-  return shouldFillLatte() && fill.apply(Latte, _toConsumableArray(ingredientsToFillWith())) && checkAndCorrectLatteMalformation();
-}
-
-var instruments = [{
-  instrument: "Apriling band tuba",
-  value: () => realmAvailable("sleaze") ? (20000 - get$2("valueOfAdventure")) * 3 : 0
+  var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+  adventureFunction($location`The Dire Warren`, options.macro, options.macro);
+  changeLastAdvLocation();
+  if (!doingGregFight()) _set("_garbo_doneGregging", true);
 }, {
-  instrument: "Apriling band quad tom",
-  value: () => (globalOptions.prefs.valueOfFreeFight + 0.02 * garboValue($item`spice melange`)) * 3
+  spec: {
+    equip: $items`miniature crystal ball`
+  },
+  canInitializeWandererCounters: true
+}), new CopyTargetFight("Macrometeorite", () => gregReady() && have$P($skill`Meteor Lore`) && get$2("_macrometeoriteUses") < 10 && proceedWithOrb(), () => doingGregFight() && have$P($skill`Meteor Lore`) ? 10 - get$2("_macrometeoriteUses") : 0, options => {
+  equipOrbIfDesired();
+  var crateIsSabered = get$2("_saberForceMonster") === $monster`crate`;
+  var notEnoughCratesSabered = get$2("_saberForceMonsterCount") < 2;
+  var weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+  setChoice(1387, 2);
+  var macro = Macro.if_($monster`crate`, Macro.externalIf(crateStrategy() !== "Saber" && !have$P($effect`On the Trail`) && get$2("_olfactionsUsed") < 2, Macro.tryHaveSkill($skill`Transcendent Olfaction`)).externalIf(kolmafia.haveEquipped($item`Fourth of May Cosplay Saber`) && weWantToSaberCrates && get$2("_saberForceUses") < 5, Macro.trySkill($skill`Use the Force`)).skill($skill`Macrometeorite`)).step(options.macro);
+  var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+  adventureFunction($location`Noob Cave`, macro, macro);
+  if (ponder().get($location`Noob Cave`) === globalOptions.target) {
+    changeLastAdvLocation();
+  }
 }, {
-  instrument: "Apriling band saxophone",
-  value: () => getBestLuckyAdventure().value() * 3
+  gregariousReplace: true
+}), new CopyTargetFight("Powerful Glove", () => gregReady() && have$P($item`Powerful Glove`) && get$2("_powerfulGloveBatteryPowerUsed") <= 90 && proceedWithOrb(), () => doingGregFight() && have$P($item`Powerful Glove`) ? Math.min((100 - get$2("_powerfulGloveBatteryPowerUsed")) / 10) : 0, options => {
+  equipOrbIfDesired();
+  var crateIsSabered = get$2("_saberForceMonster") === $monster`crate`;
+  var notEnoughCratesSabered = get$2("_saberForceMonsterCount") < 2;
+  var weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+  setChoice(1387, 2);
+  var macro = Macro.if_($monster`crate`, Macro.externalIf(crateStrategy() !== "Saber" && !have$P($effect`On the Trail`) && get$2("_olfactionsUsed") < 2, Macro.tryHaveSkill($skill`Transcendent Olfaction`)).externalIf(kolmafia.haveEquipped($item`Fourth of May Cosplay Saber`) && weWantToSaberCrates && get$2("_saberForceUses") < 5, Macro.trySkill($skill`Use the Force`)).skill($skill`CHEAT CODE: Replace Enemy`)).step(options.macro);
+  var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+  adventureFunction($location`Noob Cave`, macro, macro);
+  if (ponder().get($location`Noob Cave`) === globalOptions.target) {
+    changeLastAdvLocation();
+  }
 }, {
-  instrument: "Apriling band piccolo",
-  value: () => Math.max.apply(Math, [0].concat(_toConsumableArray(getExperienceFamiliars("barf").map(_ref => {
-    var familiar = _ref.familiar,
-      expectedValue = _ref.expectedValue;
-    var usesAllowed = clamp(Math.floor((400 - familiar.experience) / 40), 0, 3);
-    return expectedValue / estimatedBarfExperience() * 40 * usesAllowed;
-  }))))
-}];
-function getBestAprilInstruments() {
-  var available = clamp(2 - get$2("_aprilBandInstruments"), 0, 2);
-  return instruments.filter(_ref2 => {
-    var instrument = _ref2.instrument;
-    return !have$P(kolmafia.toItem(instrument));
-  }).sort((a, b) => b.value() - a.value()).splice(0, available).map(_ref3 => {
-    var instrument = _ref3.instrument;
-    return instrument;
-  });
-}
-
-var mimicExperienceNeeded = needKickstarterEgg => 50 * (11 - get$2("_mimicEggsObtained")) + (globalOptions.ascend ? needKickstarterEgg && !have$I() && get$2("_mimicEggsObtained") < 11 ? 50 : 0 : 550);
-function shouldChargeMimic(needKickstarterEgg) {
-  /* If we can't make any more eggs tomorrow, don't charge the mimic more */
-  return $familiar`Chest Mimic`.experience < mimicExperienceNeeded(needKickstarterEgg);
-}
-var monsterInEggnet;
-var monsterIsInEggnet = () => monsterInEggnet ?? (monsterInEggnet = getReceivableMonsters().includes(globalOptions.target));
-function shouldMakeEgg(barf) {
-  var needKickstarterEgg = differentiableQuantity(globalOptions.target) <= 0;
-  if (needKickstarterEgg && !monsterIsInEggnet()) return false;
-  var experienceNeeded = 50 * (11 - get$2("_mimicEggsObtained")) + (needKickstarterEgg ? 50 : 0);
-  return $familiar`Chest Mimic`.experience >= experienceNeeded && get$2("_mimicEggsObtained") < 11;
-}
-var minimumMimicExperience = () => 50 + (differentiableQuantity(globalOptions.target) ? 0 : 100);
-
-// Stats assigned a value of 1, to discern from the Truly Useless
-// MP restore assigned a value of 2, because it's better than stats!
-var MAYAM_RING_VALUES = {
-  yam1: () => garboValue($item`yam`),
-  sword: () => 1,
-  vessel: () => 2,
-  eye: () => effectValue($effect`Big Eyes`, 100),
-  fur: () => Math.max.apply(Math, [0].concat(_toConsumableArray(getExperienceFamiliars("free").map(_ref => {
-    var expectedValue = _ref.expectedValue;
-    return expectedValue / 12;
-  })))) * 100,
-  chair: () => have$n() ? 3 * 5 * felizValue() : 0,
-  // TODO Account for reaching a Yachtzee NC breakpoint
-  yam2: () => garboValue($item`yam`),
-  lightning: () => 1,
-  bottle: () => 0,
-  wood: () => 0,
-  wall: () => 0,
-  cheese: () => garboValue($item`goat cheese`),
-  eyepatch: () => 1,
-  meat: () => clamp(kolmafia.myLevel() * 100, 100, 1500),
-  yam3: () => garboValue($item`yam`),
-  yam4: () => garboValue($item`yam`),
-  explosion: () => 0,
-  clock: () => 5 * get$2("valueOfAdventure")
-};
-function valueSymbol(symbol) {
-  return MAYAM_RING_VALUES[symbol]();
-}
-function valueResonance(combination) {
-  var result = getResonanceResult(combination);
-  if (!result) return 0;
-  if (result instanceof kolmafia.Item) {
-    if (result === $item`yamtility belt`) return 0; // yamtilityValue();
-    return garboValue(result);
-  }
-  return effectValue(result, 30);
-}
-function valueCombination$1(combination) {
-  return sum(toCombination([combination]), valueSymbol) + valueResonance(combination);
-}
-function getAvailableResonances(forbiddenSymbols, indexCap) {
-  return RESONANCE_KEYS.filter((combination, index) => index < indexCap && !toCombination([combination]).some(sym => forbiddenSymbols.includes(sym)));
-}
-function getBestAvailableSymbolFromRing(ring, forbiddenSymbols) {
-  return maxBy(RINGS[ring].filter(sym => !forbiddenSymbols.includes(sym)), valueSymbol);
-}
-function getBestGreedyCombination(forbiddenSymbols) {
-  return toCombinationString([getBestAvailableSymbolFromRing(0, forbiddenSymbols), getBestAvailableSymbolFromRing(1, forbiddenSymbols), getBestAvailableSymbolFromRing(2, forbiddenSymbols), getBestAvailableSymbolFromRing(3, forbiddenSymbols)]);
-}
-var resonanceIndex = resonance => RESONANCE_KEYS.indexOf(resonance);
-function expandCombinationGroup(group) {
-  var forbiddenSymbols = [].concat(_toConsumableArray(group.flatMap(combinationString => toCombination([combinationString]))), _toConsumableArray(symbolsUsed()));
-  return [].concat(_toConsumableArray(getAvailableResonances(forbiddenSymbols, Math.min.apply(Math, _toConsumableArray(group.map(resonanceIndex)))).map(resonance => [].concat(_toConsumableArray(group), [resonance]))), [[].concat(_toConsumableArray(group), [getBestGreedyCombination(forbiddenSymbols)])]);
-}
-function getBestMayamCombinations() {
-  return maxBy(new Array(remainingUses()).fill(null).reduce(acc => acc.flatMap(combinationGroup => expandCombinationGroup(combinationGroup)), [[]]), group => sum(group, valueCombination$1));
-}
-function mayamCalendarSummon() {
-  return {
-    name: "Mayam Summons",
-    completed: () => remainingUses() === 0,
-    ready: () => have$i(),
-    do: () => {
-      var startingFamiliar = kolmafia.myFamiliar();
-      var _iterator = _createForOfIteratorHelper(getBestMayamCombinations()),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var combination = _step.value;
-          if (combination.includes("fur")) {
-            var famList = getExperienceFamiliars("free");
-            var bestFamiliar = famList.length > 0 ? maxBy(famList, "expectedValue").familiar : meatFamiliar();
-            kolmafia.useFamiliar(bestFamiliar);
-          }
-          submit(combination);
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-      kolmafia.useFamiliar(startingFamiliar);
-    },
-    spendsTurn: false
-  };
-}
-
-var _autumnAtonManager;
-var autumnAtonManager = () => _autumnAtonManager ?? (_autumnAtonManager = new AutumnAtonManager({
-  averageItemValue: garboAverageValue,
-  estimatedTurns: estimatedGarboTurns,
-  estimatedTurnsTomorrow: () => globalOptions.ascend ? 0 : estimatedTurnsTomorrow
-}));
-
-var currentAdventures = () => distillateAdventures();
-var nextDistillateSweat = () => Math.ceil((currentAdventures() + 0.5) ** (5 / 2));
-var previousDistillateSweat = () => Math.ceil(Math.max(currentAdventures() - 0.5, 0) ** (5 / 2));
-var adventuresPerSweat = () => 1 / (nextDistillateSweat() - previousDistillateSweat());
-var turnsNeededForNextAdventure = function turnsNeededForNextAdventure() {
-  var equipped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-  return Math.ceil((nextDistillateSweat() - get$2("familiarSweat")) / (equipped ? 3 : 1));
-};
-
-function resultValue(result) {
-  if (result instanceof kolmafia.Item) return garboValue(result);
-  if (Array.isArray(result)) return garboAverageValue.apply(void 0, _toConsumableArray(result));
-  return effectValue(result.effect, result.duration);
-}
-/*
- * @returns Whether `a` is strictly better than `b`
- */
-function strictlyBetterThan(a, b) {
-  return NEEDS.every(need => {
-    var result = b.values[need];
-    if (result === undefined) return true;
-    var other = a.values[need];
-    if (other === undefined) return false;
-    if (other <= result) return false;
-    return true;
-  });
-}
-function getCoveredNeeds(_ref) {
-  var furniture = _ref.furniture;
-  return Object.keys(getStats(furniture));
-}
-function viableFurniture() {
-  var discovered = discoveredFurniture();
-  return [{
-    furniture: "empty",
-    values: {}
-  }].concat(_toConsumableArray(discovered.map(furniture => ({
-    furniture,
-    values: Object.fromEntries(Object.entries(getStats(furniture)).map(_ref2 => {
-      var _ref3 = _slicedToArray(_ref2, 2),
-        need = _ref3[0],
-        result = _ref3[1];
-      return [need, resultValue(result)];
-    }))
-  })).filter((f, index, valuedDiscoveries) => !valuedDiscoveries.slice(index).some(futureFurniture => strictlyBetterThan(futureFurniture, f)))));
-}
-function valueCombination(combo) {
-  var total = combo.reduce((acc, _ref4) => {
-    var values = _ref4.values;
-    return _objectSpread2(_objectSpread2({}, values), acc);
-  }, {});
-  return sum(NEEDS, need => total[need] ?? 0);
-}
-function buildCombination(combinations, furniture) {
-  return combinations.flatMap(combination => {
-    var coveredNeeds = new Set(combination.flatMap(getCoveredNeeds));
-    var plausibleFurniture = furniture.filter(f => getCoveredNeeds(f).some(need => !coveredNeeds.has(need))); // Only furniture that cover at least one presently-uncovered need need apply
-    return (plausibleFurniture.length ? plausibleFurniture : [{
-      furniture: "empty",
-      values: {}
-    }]).map(furniture => [].concat(_toConsumableArray(combination), [furniture]));
-  });
-}
-function getViableCombinations() {
-  var furniture = viableFurniture();
-  return Array(4).fill(null).reduce(acc => buildCombination(acc, furniture), [[]]);
-}
-function findBestCombination() {
-  return maxBy(getViableCombinations(), valueCombination).map(_ref5 => {
-    var furniture = _ref5.furniture;
-    return furniture;
-  });
-}
-var bestCombination;
-var unlocked;
-function getBestLeprecondoCombination() {
-  if (unlocked !== get$2("leprecondoDiscovered")) {
-    unlocked = get$2("leprecondoDiscovered");
-    bestCombination = findBestCombination();
-  }
-  return bestCombination;
-}
-function leprecondoTask() {
-  return {
-    name: "Configure Leprecondo",
-    ready: () => have$e() && rearrangesRemaining() > 0,
-    completed: () => arrayEquals$1(installedFurniture(), getBestLeprecondoCombination()),
-    do: () => setFurniture.apply(Leprecondo, _toConsumableArray(getBestLeprecondoCombination())),
-    spendsTurn: false
-  };
-}
-
-var guaranteedBullseye = () => get$2("everfullDartPerks").includes("25% Better bullseye targeting") && get$2("everfullDartPerks").includes("25% More Accurate bullseye targeting") && get$2("everfullDartPerks").includes("25% better chance to hit bullseyes");
-var DARTS_KILL_BEFORE_RUN = 5;
-var dartLevelTooHigh = () => get$2("everfullDartPerks").split(",").length >= DARTS_KILL_BEFORE_RUN;
-var safeToAttemptBullseye = () => have$P($item`Everfull Dart Holster`) && (guaranteedBullseye() || (have$P($item`spring shoes`) || have$P($item`Roman Candelabra`)) && !dartLevelTooHigh());
-var canBullseye = () => !have$P($effect`Everything Looks Red`) && (guaranteedBullseye() || !have$P($effect`Everything Looks Green`));
-
-function beretEffectValue(effect, duration) {
-  var skill = kolmafia.toSkill(effect);
-  if (skill !== kolmafia.Skill.none && have$P(skill)) return 0;
-  var meatValue = duration * sum([{
-    modifier: "Meat Drop",
-    value: baseMeat() / 100
-  }, {
-    modifier: "Familiar Weight",
-    value: marginalFamWeightValue() * baseMeat() / 100
-  }], _ref => {
-    var modifier = _ref.modifier,
-      value = _ref.value;
-    return value * get$1(modifier, effect);
-  });
-  if (meatValue <= 0) return meatValue;
-  var potionPrices = kolmafia.Item.all().filter(i => i.potion && i.tradeable && kolmafia.effectsModifier(i, "Effect").includes(effect)).map(i => getAcquirePrice(i) * duration / get$1("Effect Duration", i));
-  return Math.min.apply(Math, [meatValue].concat(_toConsumableArray(potionPrices)));
-}
-
-function sweatEquityROI() {
-  return baseMeat() * 0.4 * 30;
-}
-function parentStat(sub) {
-  switch (sub) {
-    case $stat`subMuscle`:
-      return $stat`Muscle`;
-    case $stat`subMysticality`:
-      return $stat`Mysticality`;
-    case $stat`subMoxie`:
-      return $stat`Moxie`;
-  }
-  return $stat`Muscle`;
-}
-var BCT_LEVEL_THRESHOLDS = [26, 20, 13];
-function getBCZStatFloor(skill) {
-  var userSelectedStatFloor = get$2("garbo_bczStatFloor", 0);
-  var stat = parentStat(substatUsed(skill));
-  if (stat !== kolmafia.myPrimestat()) {
-    if (stat === $stat`Moxie` && have$P($item`crumpled felt fedora`)) {
-      return clamp(200, userSelectedStatFloor, Infinity);
+  spec: {
+    equip: $items`Powerful Glove`
+  },
+  gregariousReplace: true
+})].concat(_toConsumableArray(gregLikeFights), [new CopyTargetFight("Backup", () => get$2("lastCopyableMonster") === globalOptions.target && have$P($item`backup camera`) && get$2("_backUpUses") < 11, () => have$P($item`backup camera`) ? 11 - get$2("_backUpUses") : 0, options => {
+  var adventureFunction = options.useAuto ? garboAdventureAuto : garboAdventure;
+  adventureFunction(options.location, Macro.if_(`!monsterid ${globalOptions.target.id}`, Macro.skill($skill`Back-Up to your Last Enemy`)).step(options.macro), Macro.if_(`!monsterid ${globalOptions.target.id}`, Macro.skill($skill`Back-Up to your Last Enemy`)).step(options.macro));
+}, {
+  spec: {
+    equip: $items`backup camera`,
+    modes: {
+      backupcamera: "meat"
     }
-    return clamp(100, userSelectedStatFloor, Infinity); // ? is this good?
+  },
+  draggable: "backup",
+  wrongEncounterName: true,
+  canInitializeWandererCounters: true
+})]);
+var fakeSources = [new CopyTargetFight("Professor MeatChain", () => false, () => have$P($familiar`Pocket Professor`) && !get$2("_garbo_meatChain", false) ? Math.max(10 - get$2("_pocketProfessorLectures"), 0) : 0, () => {
+  return;
+}), new CopyTargetFight("Professor WeightChain", () => false, () => have$P($familiar`Pocket Professor`) && !get$2("_garbo_weightChain", false) ? Math.min(15 - get$2("_pocketProfessorLectures"), 5) : 0, () => {
+  return;
+})];
+function copyTargetConfirmInvocation(msg) {
+  // If user does not have autoUserConfirm set to true
+  // If the incocatedCount has already reached or exceeded the default limit
+  if (!globalOptions.prefs.autoUserConfirm) {
+    // userConfirmDialog is not called as
+    // 1. If autoUserConfirm is true, it'd make the counter useless as it'll always return the default
+    // 2. If autoUserConfirm is false, then it'll call userConfirm regardless
+    // The user should be consulted about this so that they can either raise the count or decline the option
+    return kolmafia.userConfirm(msg);
   }
-  var minimumLevel = globalOptions.ascend && kolmafia.myDaycount() >= 2 ? BCT_LEVEL_THRESHOLDS.find(threshold => kolmafia.myLevel() > threshold) : 26;
-  if (!minimumLevel) {
-    return clamp(kolmafia.myBasestat(stat), userSelectedStatFloor, Infinity); // So low level we can't afford to lose exp at all
+  var invocatedCount = get$2("_garbo_autoUserConfirm_targetInvocatedCount", 0);
+  if (invocatedCount >= globalOptions.prefs.autoUserConfirm_targetInvocationsThreshold) {
+    return false;
   }
-  return clamp(mainStatLevel(minimumLevel), userSelectedStatFloor, Infinity);
+  _set("_garbo_autoUserConfirm_targetInvocatedCount", invocatedCount + 1);
+  return true;
 }
-function safeBCZCasts(skill) {
-  var availableStatFloorCasts = availableCasts(skill, getBCZStatFloor(skill));
-  var availableCheapCasts = 5 - timesCast(skill); // First 5 casts are essentially free, even when we're already low stats
-  return availableCheapCasts > availableStatFloorCasts ? availableCheapCasts : availableStatFloorCasts;
-}
-function safeSweatEquityCasts() {
-  return safeBCZCasts($skill`BCZ: Sweat Equity`);
-}
-function safeRefractedCasts() {
-  return safeBCZCasts($skill`BCZ: Refracted Gaze`);
-}
-function safeSweatBulletCasts(drumMachineROI) {
-  if (sweatEquityROI() > drumMachineROI) return 0;
-  return safeBCZCasts($skill`BCZ: Sweat Bullets`);
+var emergencyChainStarters = [new CopyTargetFight("Mimic Egg (from clinic)", () => have$j() && $familiar`Chest Mimic`.experience >= 100 && monsterIsInEggnet() && get$2("_mimicEggsObtained") < 11, () => 0, options => {
+  receive(globalOptions.target);
+  withMacro(options.macro, () => differentiate(globalOptions.target), options.useAuto);
+}), new CopyTargetFight("Pocket Wish (untapped potential)", () => {
+  if (!globalOptions.target.wishable) return false;
+  var potential = Math.floor(copyTargetCount());
+  if (potential < 1) return false;
+  if (get$2("_genieFightsUsed") >= 3) return false;
+  if (globalOptions.askedAboutWish) return globalOptions.wishAnswer;
+  var profit = (potential + 1) * averageTargetNet() - WISH_VALUE;
+  if (profit < 0) return false;
+  kolmafia.print(`You have the following copy target sources untapped right now:`, HIGHLIGHT);
+  copyTargetSources.filter(source => source.potential() > 0).map(source => `${source.potential()} from ${source.name}`).forEach(text => kolmafia.print(text, HIGHLIGHT));
+  globalOptions.askedAboutWish = true;
+  globalOptions.wishAnswer = copyTargetConfirmInvocation(`Garbo has detected you have ${potential} potential ways to copy a ${globalOptions.target}, but no way to start a fight with one. Current ${globalOptions.target} net (before potions) is ${averageTargetNet()}, so we expect to earn ${profit} meat, after the cost of a wish. Should we wish for ${globalOptions.target}?`);
+  return globalOptions.wishAnswer;
+}, () => 0, options => {
+  globalOptions.askedAboutWish = false;
+  withMacro(options.macro, () => {
+    acquire(1, $item`pocket wish`, WISH_VALUE);
+    kolmafia.visitUrl(`inv_use.php?pwd=${kolmafia.myHash()}&which=3&whichitem=9537`, false, true);
+    kolmafia.visitUrl(`choice.php?pwd&whichchoice=1267&option=1&wish=to fight a ${globalOptions.target} `, true, true);
+    kolmafia.visitUrl("main.php", false);
+    kolmafia.runCombat();
+    globalOptions.askedAboutWish = false;
+  }, options.useAuto);
+})];
+var copyTargetSources = [].concat(wanderSources, _toConsumableArray(conditionalSources), copySources, chainStarters, emergencyChainStarters, fakeSources);
+function copyTargetCount() {
+  return sum(copyTargetSources, source => source.potential());
 }
 
-var ghostLocations = new Map([[$location`Cobb's Knob Treasury`, $monster`The ghost of Ebenoozer Screege`], [$location`The Haunted Conservatory`, $monster`The ghost of Lord Montague Spookyraven`], [$location`The Haunted Gallery`, $monster`The ghost of Waldo the Carpathian`], [$location`The Haunted Kitchen`, $monster`The Icewoman`], [$location`The Haunted Wine Cellar`, $monster`The ghost of Jim Unfortunato`], [$location`The Icy Peak`, $monster`The ghost of Sam McGee`], [$location`Inside the Palindome`, $monster`Emily Koops, a spooky lime`], [$location`Madness Bakery`, $monster`the ghost of Monsieur Baguelle`], [$location`The Old Landfill`, $monster`The ghost of Vanillica "Trashblossom" Gorton`], [$location`The Overgrown Lot`, $monster`the ghost of Oily McBindle`], [$location`The Skeleton Store`, $monster`boneless blobghost`], [$location`The Smut Orc Logging Camp`, $monster`The ghost of Richard Cockingham`], [$location`The Spooky Forest`, $monster`The Headless Horseman`]]);
-function getGhost() {
-  return ghostLocations.get(get$2("ghostLocation") ?? $location.none) ?? null;
-}
-function ghostAdventure() {
-  return {
-    location: get$2("ghostLocation") ?? $location.none,
-    target: getGhost() ?? $monster.none
-  };
-}
-
-function archaeologySpadeTask() {
-  return {
-    name: "Use Archaeologist's Spade",
-    ready: () => have$P($item`Archaeologist's Spade`) && get$2("_archSpadeDigs", 0) < 11,
-    completed: () => get$2("_archSpadeDigs", 0) >= 11,
-    do: () => {
-      var spadeTargets = [{
-        price: garboAverageValue.apply(void 0, _toConsumableArray($items`ancient Pork Elf pottery shard, dinosaur bone fragment, 2015 landfill detritus`)),
-        tuner: undefined
-      }, {
-        price: garboValue($item`ancient Pork Elf pottery shard`),
-        tuner: $item`Pork Elf neti pot`
-      }, {
-        price: garboValue($item`dinosaur bone fragment`),
-        tuner: $item`giant gnawing bone`
-      }, {
-        price: garboValue($item`2015 landfill detritus`),
-        tuner: $item`Fleek™ mascara`
-      }].filter(t => !t.tuner || have$P(t.tuner));
-      if (spadeTargets.length > 0) {
-        var target = maxBy(spadeTargets, "price");
-        if (target.tuner) kolmafia.use(target.tuner);
-      }
-      directlyUse($item`Archaeologist's Spade`);
-      while ("2" in kolmafia.availableChoiceOptions()) {
-        kolmafia.runChoice(2);
-      }
-      kolmafia.visitUrl("main.php");
-    },
-    spendsTurn: false
-  };
+/**
+ * Gets next available copy target fight. If there is no way to generate a fight, but copies are available,
+ * the user is prompted to purchase a pocket wish to start the copy target chain.
+ * @returns the next available copy target fight
+ */
+function getNextCopyTargetFight() {
+  var wanderer = wanderSources.find(fight => fight.available());
+  if (wanderer) return wanderer;
+  var conditional = conditionalSources.find(fight => fight.available());
+  if (conditional) {
+    var leftoverReplacers = (have$P($skill`Meteor Lore`) ? 10 - get$2("_macrometeoriteUses") : 0) + (have$P($item`Powerful Glove`) ? Math.floor((100 - get$2("_powerfulGloveBatteryPowerUsed")) / 10) : 0);
+    // we don't want to reset our orb with a gregarious fight; that defeats the purpose
+    var skip = conditional.name === "Be Gregarious" && crateStrategy() === "Orb" && leftoverReplacers;
+    if (!skip) return conditional;
+  }
+  var copy = copySources.find(fight => fight.available());
+  if (copy) return copy;
+  var chainStart = chainStarters.find(fight => fight.available());
+  if (chainStart) return chainStart;
+  return conditional ?? emergencyChainStarters.find(fight => fight.available()) ?? null;
 }
 
 var luckySourceTasks = [{
@@ -25670,171 +23157,1709 @@ var luckySourceTasks = [{
   turns: () => have$P($item`Heartstone`) && get$2("heartstoneLuckUnlocked") && !get$2("_heartstoneLuckUsed") ? 1 : 0
 }];
 
-function lavaDogsAccessible() {
-  return haveInCampground($item`haunted doghouse`) && !get$2("doghouseBoarded") && realmAvailable("hot");
+function valueBjornModifiers(mode, familiar) {
+  var meatValue = modeValueOfMeat(mode);
+  var leprechaunMultiplier = findLeprechaunMultiplier(familiar);
+  var leprechaunCoefficient = meatValue * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier));
+  var itemValue = modeValueOfItem(mode);
+  var fairyMultiplier = findFairyMultiplier(familiar);
+  var fairyCoefficient = itemValue * (fairyMultiplier + Math.sqrt(fairyMultiplier) / 2);
+  return createModifierValueFunction(["Familiar Weight", "Meat Drop", "Item Drop"], {
+    "Familiar Weight": mod => mod * (fairyCoefficient + leprechaunCoefficient),
+    "Item Drop": mod => mod * itemValue,
+    "Meat Drop": mod => mod * meatValue
+  });
 }
-function lavaDogsComplete() {
-  return get$2("hallowienerVolcoino") || $location`The Bubblin' Caldera`.turnsSpent > 7 || $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs");
+function dropsValueFunction(drops) {
+  return Array.isArray(drops) ? garboAverageValue.apply(void 0, _toConsumableArray(drops)) : sum(_toConsumableArray(drops.entries()), _ref => {
+    var _ref2 = _slicedToArray(_ref, 2),
+      item = _ref2[0],
+      quantity = _ref2[1];
+    return quantity * garboValue(item);
+  }) / sumNumbers(_toConsumableArray(drops.values()));
 }
-
-function hotTubAvailable() {
-  return have$P($item`Clan VIP Lounge key`) && get$2("_hotTubSoaks") < 5;
-}
-
-function mafiaThumbRing(mode) {
-  if (!have$P($item`mafia thumb ring`) || modeIsFree(mode)) {
-    return new Map([]);
+function chooseBjorn(mode, familiar) {
+  var sim = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var leprechaunMultiplier = findLeprechaunMultiplier(familiar);
+  var fairyMultiplier = findFairyMultiplier(familiar);
+  var ignoreLimitedDrops = sim || !modeUseLimitedDrops(mode);
+  var key = `Leprechaun:${leprechaunMultiplier.toFixed(2)};Fairy:${fairyMultiplier.toFixed(2)};ignoreLimitedDrops:${ignoreLimitedDrops}`;
+  if (!hasRiderMode(key)) {
+    createRiderMode(key, {
+      ignoreLimitedDrops,
+      modifierValueFunction: valueBjornModifiers(mode, familiar),
+      dropsValueFunction
+    });
   }
-  return new Map([[$item`mafia thumb ring`, (1 / 0.96 - 1) * get$2("valueOfAdventure")]]);
-}
-function luckyGoldRingDropValues(includeVolcoino, includeFreddy) {
-  // Volcoino has a low drop rate which isn't accounted for here
-  // Overestimating until it drops is probably fine, don't @ me
-  var dropValues = [100].concat(_toConsumableArray([kolmafia.itemAmount($item`hobo nickel`) > 0 ? 100 : 0,
-  // This should be closeted
-  kolmafia.itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0,
-  // This should be closeted
-  includeFreddy ? garboValue($item`Freddy Kruegerand`) : 0].concat(_toConsumableArray(lgrCurrencies().map(i => i === $item`Volcoino` && !includeVolcoino ? 0 : garboValue(i)))).filter(value => value > 0)));
-  return dropValues;
-}
-function luckyGoldRing(mode) {
-  // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
-  if (!have$P($item`lucky gold ring`) || mode === BonusEquipMode.DMT) {
-    return new Map([]);
-  }
-  var dropValues = luckyGoldRingDropValues(!(mode === BonusEquipMode.MEAT_TARGET && !globalOptions.nobarf),
-  // Volcoino drops once per day, only wear during meat targets if nobarf
-  kolmafia.itemAmount($item`Freddy Kruegerand`) > 0);
-
-  // Items drop every ~10 turns
-  return new Map([[$item`lucky gold ring`, sumNumbers(dropValues) / dropValues.length / 10]]);
+  var result = pickRider(key);
+  if (!result) throw new Error(`Unable to choose rider for key ${key}`);
+  return {
+    familiar: result.familiar,
+    value: valueRider(result, valueBjornModifiers(mode, familiar), dropsValueFunction)
+  };
 }
 
-// Possible drops are any pvpable potion that are not marked as banned by standard in the future,
-// which can be checked with the "Last Available" modifier being unset.
-// Resulting value from this function should be cached to prevent reprocessing
-function calculateMrCheengsSpectaclesBonus() {
-  var lastAvailableModifier = kolmafia.Modifier.get("Last Available");
-  var possibleDrops = kolmafia.Item.all().filter(i => i.tradeable && i.discardable && i.potion && kolmafia.stringModifier(i, lastAvailableModifier) === "");
-  var dropRate = 0.25; // Items drop every 4 turns
-  var maxPrice = 100_000; // arbitrary, to help avoid outliers
-  return sum(possibleDrops, item => Math.min(garboValue(item), maxPrice)) / possibleDrops.length * dropRate;
-}
-var mrCheengsBonus;
-function mrCheengsSpectacles() {
-  if (!have$P($item`Mr. Cheeng's spectacles`)) {
-    return new Map([]);
+var allowList = $items`Fudgie Roll, peanut brittle shield, sugar shotgun, sugar shillelagh, sugar shank, sugar chapeau, sugar shorts, sugar shield, sugar shirt`;
+
+// For safety, explicitly skip candies that are no longer obtainable or extremely rare
+var blockList = new Set([$item`candied nuts`, $item`candy kneecapping stick`, $item`chocolate cigar`, $item`fancy but probably evil chocolate`, $item`fancy chocolate`, $item`fancy chocolate car`, $item`gummi ammonite`, $item`gummi belemnite`, $item`gummi trilobite`, $item`powdered candy sushi set`, $item`radio button candy`, $item`spiritual candy cane`, $item`Ultra Mega Sour Ball`, $item`vitachoconutriment capsule`]);
+function synthesize(casts, effect) {
+  var saveLimit = 1;
+  var buyableCandies = $items.all().filter(i => i.tradeable && i.candyType === "complex" && !blockList.has(i)).sort((a, b) => kolmafia.mallPrice(a) - kolmafia.mallPrice(b)).slice(0, 50);
+  var shuffledAllowlist = shuffle(allowList);
+  var _iterator = _createForOfIteratorHelper(shuffledAllowlist),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var untradeable = _step.value;
+      if (kolmafia.availableAmount(untradeable) <= saveLimit) continue;
+      var _iterator2 = _createForOfIteratorHelper(buyableCandies),
+        _step2;
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var buyable = _step2.value;
+          if (kolmafia.sweetSynthesisResult(untradeable, buyable) !== effect) continue;
+          var possibleCasts = kolmafia.availableAmount(untradeable) - saveLimit;
+          var spleen = Math.max(kolmafia.spleenLimit() - kolmafia.mySpleenUse(), 0);
+          var castsToDo = Math.min(possibleCasts, casts, spleen);
+          if (castsToDo === 0) continue;
+          kolmafia.retrieveItem(untradeable, castsToDo);
+          kolmafia.retrieveItem(buyable, castsToDo);
+          if (kolmafia.sweetSynthesis(castsToDo, untradeable, buyable)) casts -= castsToDo;
+          if (casts <= 0) return;
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
   }
-  mrCheengsBonus ?? (mrCheengsBonus = calculateMrCheengsSpectaclesBonus());
-  return new Map([[$item`Mr. Cheeng's spectacles`, mrCheengsBonus]]);
+  kolmafia.sweetSynthesis(clamp(casts, 0, kolmafia.spleenLimit() - kolmafia.mySpleenUse()), effect);
 }
-function mrScreegesSpectacles() {
-  if (!have$P($item`Mr. Screege's spectacles`)) {
+
+Mood.setDefaultOptions({
+  songSlots: [$effects`Polka of Plenty`, $effects`Fat Leon's Phat Loot Lyric, Ur-Kel's Aria of Annoyance`, $effects`Chorale of Companionship`, $effects`The Ballad of Richie Thingfinder`],
+  useNativeRestores: true
+});
+function meatMood() {
+  var urKels = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  var meat = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
+  var baseMeat$1 = baseMeat();
+  meat || (meat = baseMeat$1);
+  // Reserve the amount of MP we try to restore before each fight.
+  var mood = new Mood({
+    reserveMp: safeRestoreMpTarget()
+  });
+  mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat$1);
+  mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
+  var flaskValue = usingPurse() ? 0.3 * baseMeat$1 : 5;
+  mood.potion($item`Flaskfull of Hollow`, flaskValue);
+  mood.skill($skill`Blood Bond`);
+  mood.skill($skill`Leash of Linguini`);
+  mood.skill($skill`Empathy of the Newt`);
+  mood.skill($skill`Only Dogs Love a Drunken Sailor`);
+  if (have$P($item`April Shower Thoughts shield`)) {
+    mood.effect($effect`Thoughtful Empathy`);
+    mood.effect($effect`Lubricating Sauce`);
+    mood.effect($effect`Tubes of Universal Meat`);
+    mood.effect($effect`Strength of the Tortoise`);
+  }
+  mood.skill($skill`The Polka of Plenty`);
+  mood.skill($skill`Disco Leer`);
+  mood.skill($skill`Singer's Faithful Ocelot`);
+  mood.skill($skill`The Spirit of Taking`);
+  if (FarmingStrategy.location === $location`Barf Mountain`) {
+    mood.potion($item`How to Avoid Scams`, 3 * baseMeat$1);
+  }
+  if (FarmingStrategy.ensureML) {
+    mood.skill($skill`Drescher's Annoying Noise`);
+    mood.skill($skill`Pride of the Puffin`);
+    mood.skill(urKels ? $skill`Ur-Kel's Aria of Annoyance` : $skill`Fat Leon's Phat Loot Lyric`);
+  } else {
+    // Assume that if we don't want ML, the fights must be tough enough
+    mood.skill($skill`Ghostly Shell`);
+    mood.skill($skill`Shield of the Pastalord`);
+  }
+  if (FarmingStrategy.isUnderwater()) mood.skill($skill`Donho's Bubbly Ballad`);
+  mood.skill($skill`Walk: Leisurely Amble`);
+  mood.skill($skill`Call For Backup`);
+  mood.skill($skill`Soothing Flute`);
+  var mmjCost = (100 - (have$P($skill`Five Finger Discount`) ? 5 : 0) - (have$P($item`Travoltan trousers`) ? 5 : 0)) * (200 / (1.5 * kolmafia.myLevel() + 5));
+  var genericManaPotionCost = kolmafia.mallPrice($item`generic mana potion`) * (200 / (2.5 * kolmafia.myLevel()));
+  var mpRestorerCost = Math.min(mmjCost, genericManaPotionCost);
+  if (kolmafia.myClass() !== $class`Pastamancer` && 0.1 * meat * 10 > mpRestorerCost) {
+    mood.skill($skill`Bind Lasagmbie`);
+  }
+  if (kolmafia.getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
+    mood.drive(FarmingStrategy.asdonEffect);
+  }
+  if (have$P($item`Kremlin's Greatest Briefcase`)) {
+    mood.effect($effect`A View to Some Meat`, () => {
+      if (get$2("_kgbClicksUsed") < 22) {
+        var buffTries = Math.ceil((22 - get$2("_kgbClicksUsed")) / 3);
+        kolmafia.cliExecute(`Briefcase buff ${new Array(buffTries).fill("meat").join(" ")}`);
+      }
+    });
+  }
+  if (!get$2("concertVisited") && get$2("sidequestArenaCompleted") === "fratboy") {
+    kolmafia.cliExecute("concert winklered");
+  } else if (!get$2("concertVisited") && get$2("sidequestArenaCompleted") === "hippy") {
+    kolmafia.cliExecute("concert optimist primal");
+  }
+  if (kolmafia.itemAmount($item`Bird-a-Day calendar`) > 0) {
+    if (!have$P($skill`Seek out a Bird`) || !get$2("_canSeekBirds")) {
+      kolmafia.use(1, $item`Bird-a-Day calendar`);
+    }
+    if (have$P($skill`Visit your Favorite Bird`) && !get$2("_favoriteBirdVisited") && (kolmafia.numericModifier($effect`Blessing of your favorite Bird`, "Meat Drop") > 0 || kolmafia.numericModifier($effect`Blessing of your favorite Bird`, "Item Drop") > 0)) {
+      kolmafia.useSkill($skill`Visit your Favorite Bird`);
+    }
+    if (have$P($skill`Seek out a Bird`) && get$2("_birdsSoughtToday") < 6 && (kolmafia.numericModifier($effect`Blessing of the Bird`, "Meat Drop") > 0 || kolmafia.numericModifier($effect`Blessing of the Bird`, "Item Drop") > 0)) {
+      // Ensure we don't get stuck in the choice if the count is wrong
+      setChoice(1399, 2);
+      kolmafia.useSkill($skill`Seek out a Bird`, 6 - get$2("_birdsSoughtToday"));
+    }
+  }
+  if (have$P($skill`Incredible Self-Esteem`) && $effects`Always be Collecting, Work For Hours a Week`.some(effect => have$P(effect)) && !get$2("_incredibleSelfEsteemCast")) {
+    kolmafia.useSkill($skill`Incredible Self-Esteem`);
+  }
+  if (!get$2("_alliedRadioWildsunBoon") && wildsunBoonWorthIt()) {
+    var acquired = acquire(1, $item`handheld Allied radio`, effectValue($effect`Wildsun Boon`, 100), false);
+    if (!acquired) _wildsunBoonWorthIt = false;
+    kolmafia.alliedRadio("wildsun boon");
+  }
+  var canRecord = kolmafia.getWorkshed() === $item`warbear LP-ROM burner` || have$P($item`warbear LP-ROM burner`) && !get$2("_workshedItemUsed") || get$2("questG04Nemesis") === "finished";
+  if (kolmafia.myClass() === $class`Accordion Thief` && kolmafia.myLevel() >= 15 && !canRecord) {
+    if (have$P($skill`The Ballad of Richie Thingfinder`)) {
+      kolmafia.useSkill($skill`The Ballad of Richie Thingfinder`, 10 - get$2("_thingfinderCasts"));
+    }
+    if (have$P($skill`Chorale of Companionship`)) {
+      kolmafia.useSkill($skill`Chorale of Companionship`, 10 - get$2("_companionshipCasts"));
+    }
+  }
+  if (have$P($skill`Heartstone: %pals`)) {
+    kolmafia.useSkill($skill`Heartstone: %pals`, 5 - get$2("_heartstonePalsUsed"));
+  }
+  shrugBadEffects();
+  return mood;
+}
+function freeFightMood() {
+  var mood = new Mood();
+  for (var _len = arguments.length, additionalEffects = new Array(_len), _key = 0; _key < _len; _key++) {
+    additionalEffects[_key] = arguments[_key];
+  }
+  for (var _i = 0, _additionalEffects = additionalEffects; _i < _additionalEffects.length; _i++) {
+    var effect = _additionalEffects[_i];
+    mood.effect(effect);
+  }
+  if (kolmafia.haveEffect($effect`Blue Swayed`) < 50) {
+    kolmafia.use(Math.ceil((50 - kolmafia.haveEffect($effect`Blue Swayed`)) / 10), $item`pulled blue taffy`);
+  }
+  mood.potion($item`white candy heart`, 30);
+  mood.skill($skill`Curiosity of Br'er Tarrypin`);
+  shrugBadEffects.apply(void 0, additionalEffects);
+  if (kolmafia.getWorkshed() === $item`Asdon Martin keyfob (on ring)`) {
+    mood.drive(FarmingStrategy.asdonEffect);
+  }
+  return mood;
+}
+var damageEffects = kolmafia.Effect.all().filter(x => ["Thorns", "Sporadic Thorns", "Damage Aura", "Sporadic Damage Aura"].some(modifier => kolmafia.numericModifier(x, modifier) > 0));
+var textAlteringEffects = kolmafia.Effect.all().filter(x => kolmafia.booleanModifier(x, "Alters Page Text"));
+var teleportEffects = kolmafia.Effect.all().filter(x => kolmafia.booleanModifier(x, "Adventure Randomly"));
+var otherBadEffects = kolmafia.Effect.all().filter(x => kolmafia.booleanModifier(x, "Blind") || kolmafia.booleanModifier(x, "Always Fumble"));
+function shrugBadEffects() {
+  for (var _len2 = arguments.length, exclude = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+    exclude[_key2] = arguments[_key2];
+  }
+  [].concat(_toConsumableArray(damageEffects), _toConsumableArray(textAlteringEffects), _toConsumableArray(teleportEffects), _toConsumableArray(otherBadEffects)).filter(effect => have$P(effect) && !exclude.includes(effect)).forEach(effect => uneffect(effect));
+}
+var _wildsunBoonWorthIt;
+function wildsunBoonWorthIt() {
+  return _wildsunBoonWorthIt ?? (_wildsunBoonWorthIt = effectValue($effect`Wildsun Boon`, 100) > kolmafia.mallPrice($item`handheld Allied radio`));
+}
+
+var GOOD_TRAIN_STATIONS = [{
+  piece: Station.GAIN_MEAT,
+  value: () => 900
+}, {
+  // Some day this'll be better
+  piece: Station.TRACKSIDE_DINER,
+  value: () => $monsters`Witchess Knight`.includes(globalOptions.target) && copyTargetCount() > 0 ? garboValue($item`jumping horseradish`) : garboAverageValue.apply(void 0, _toConsumableArray($items`bowl of cottage cheese, hot buttered roll, toast`))
+}, {
+  piece: Station.CANDY_FACTORY,
+  value: candyFactoryValue
+}, {
+  piece: Station.GRAIN_SILO,
+  value: () => 2 * garboAverageValue.apply(void 0, _toConsumableArray($items`bottle of gin, bottle of vodka, bottle of whiskey, bottle of rum, bottle of tequila, boxed wine`))
+}, {
+  piece: Station.ORE_HOPPER,
+  value: () => garboAverageValue.apply(void 0, _toConsumableArray($items`linoleum ore, asbestos ore, chrome ore, teflon ore, vinyl ore, velcro ore, bubblewrap ore, cardboard ore, styrofoam ore`))
+}];
+var trainCycle;
+function getBestCycle() {
+  if (!trainCycle) {
+    var cycle = [Station.COAL_HOPPER].concat(_toConsumableArray(GOOD_TRAIN_STATIONS.sort((_ref, _ref2) => {
+      var a = _ref.value;
+      var b = _ref2.value;
+      return b() - a();
+    }).map(_ref3 => {
+      var piece = _ref3.piece;
+      return piece;
+    })), [Station.TOWER_FIZZY, Station.VIEWING_PLATFORM]);
+    trainCycle = cycle;
+  }
+  return _toConsumableArray(trainCycle);
+}
+function valueStation(station) {
+  var _GOOD_TRAIN_STATIONS$;
+  if (station === Station.COAL_HOPPER) {
+    return valueStation(getBestCycle()[1]);
+  }
+  return ((_GOOD_TRAIN_STATIONS$ = GOOD_TRAIN_STATIONS.find(_ref4 => {
+    var piece = _ref4.piece;
+    return piece === station;
+  })) === null || _GOOD_TRAIN_STATIONS$ === void 0 ? void 0 : _GOOD_TRAIN_STATIONS$.value()) ?? 0;
+}
+function valueOffset(offset) {
+  var firstFortyTurns = 5 * sum(getBestCycle(), valueStation);
+  var extraTurns = sum(getBestCycle().slice(0, offset - 1), valueStation);
+  return (firstFortyTurns + extraTurns) / (40 + offset);
+}
+var bestOffset = null;
+function getBestOffset() {
+  return bestOffset ?? (bestOffset = maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset));
+}
+function getPrioritizedStations() {
+  return getBestCycle().slice(0, getBestOffset() - 1);
+}
+function getRotatedCycle() {
+  var offset = get$2("trainsetPosition") % 8;
+  var newPieces = [];
+  var defaultPieces = getBestCycle();
+  for (var i = 0; i < 8; i++) {
+    var newPos = (i + offset) % 8;
+    newPieces[newPos] = defaultPieces[i];
+  }
+  return newPieces;
+}
+function trainNeedsRotating() {
+  if (!canConfigure()) return false;
+  if (!get$2("trainsetConfiguration")) {
+    // Visit the workshed to make sure it's actually empty, instead of us having not yet seen it this run
+    kolmafia.visitUrl("campground.php?action=workshed");
+    kolmafia.visitUrl("main.php");
+  }
+  if (!get$2("trainsetConfiguration")) return true;
+  if (arrayEquals$1(getRotatedCycle(), cycle())) return false;
+  if (globalOptions.ascend && estimatedGarboTurns() <= 40) return false;
+  var bestStations = getPrioritizedStations();
+  if (bestStations.includes(next())) return false;
+  return true;
+}
+function rotateToOptimalCycle() {
+  var hasRotated = setConfiguration(getRotatedCycle());
+
+  // If the trainset was not configured but still claims to be configurable
+  if (!hasRotated && canConfigure()) {
+    // Set the trainset configuration to believe it'll be configurable in one turn
+    _set("lastTrainsetConfiguration", get$2("trainsetPosition") - 39);
+  }
+  return hasRotated;
+}
+function grabMedicine() {
+  var options = kolmafia.visitUrl("campground.php?action=workshed");
+  var i = 0;
+  var match;
+  var regexp = /descitem\((\d+)\)/g;
+  var itemChoices = new Map();
+  if (!globalOptions.nobarf) {
+    switch (FarmingStrategy.location.environment) {
+      case "underground":
+        itemChoices.set($item`Breathitin™`, -1);
+        break;
+      case "indoor":
+        itemChoices.set($item`Extrovermectin™`, -1);
+        break;
+      case "outdoor":
+        itemChoices.set($item`Homebodyl™`, -1);
+        break;
+      default:
+        itemChoices.set($item`Fleshazole™`, -1);
+        break;
+    }
+    // if spending turns at barf, we probably will be able to get an extro so always consider it
+  }
+  while ((match = regexp.exec(options)) !== null) {
+    i++;
+    var item = kolmafia.descToItem(match[1]);
+    itemChoices.set(item, i);
+  }
+  var bestItem = maxBy(_toConsumableArray(itemChoices.keys()), garboValue);
+  var bestChoice = itemChoices.get(bestItem);
+  if (bestChoice && bestChoice > 0) {
+    kolmafia.visitUrl("campground.php?action=workshed");
+    kolmafia.runChoice(bestChoice);
+  }
+  if (kolmafia.handlingChoice()) kolmafia.visitUrl("main.php");
+}
+
+// Silk and Gold are thrice as rare as other ingredients, so we value them thrice as much
+// Yes, it's pretty dumb
+function naiveTakerspaceCost(recipe) {
+  return sum(_toConsumableArray(recipe.entries()), _ref5 => {
+    var _ref6 = _slicedToArray(_ref5, 2),
+      amount = _ref6[0],
+      index = _ref6[1];
+    return amount * ([4, 5].includes(index) ? 3 : 1);
+  });
+}
+function bestTakerspaceItem() {
+  var makeables = _toConsumableArray(allRecipes().entries()).filter(_ref7 => {
+    var _ref8 = _slicedToArray(_ref7, 1),
+      i = _ref8[0];
+    return canMake(i);
+  });
+  return makeables.length ? maxBy(makeables, _ref9 => {
+    var _ref0 = _slicedToArray(_ref9, 2),
+      item = _ref0[0],
+      recipe = _ref0[1];
+    return garboValue(item) / naiveTakerspaceCost(recipe);
+  })[0] : null;
+}
+
+var GarboWorkshed = /*#__PURE__*/function () {
+  function GarboWorkshed(options) {
+    _classCallCheck(this, GarboWorkshed);
+    _defineProperty(this, "available", () => true);
+    this.workshed = options.workshed;
+    if (options.done) this.done = options.done;
+    if (options.action) this.action = options.action;
+    if (options.available) this.available = options.available;
+    this.minTurns = options.minTurns ?? 0;
+  }
+  return _createClass(GarboWorkshed, [{
+    key: "canRemove",
+    value: function canRemove() {
+      var _this$done, _GarboWorkshed$next;
+      return (((_this$done = this.done) === null || _this$done === void 0 ? void 0 : _this$done.call(this)) ?? true) || estimatedGarboTurns() <= (((_GarboWorkshed$next = GarboWorkshed.next) === null || _GarboWorkshed$next === void 0 ? void 0 : _GarboWorkshed$next.minTurns) ?? 0);
+    }
+  }, {
+    key: "use",
+    value: function use() {
+      var _this$done2, _this$action;
+      if (!((_this$done2 = this.done) !== null && _this$done2 !== void 0 && _this$done2.call(this))) (_this$action = this.action) === null || _this$action === void 0 || _this$action.call(this);
+    }
+  }, {
+    key: "task",
+    get: function get() {
+      return {
+        name: `Workshed: ${this.workshed}`,
+        completed: () => {
+          var _this$done3;
+          return ((_this$done3 = this.done) === null || _this$done3 === void 0 ? void 0 : _this$done3.call(this)) ?? true;
+        },
+        ready: () => kolmafia.getWorkshed() === this.workshed && this.available() && !!this.action,
+        do: () => this.use(),
+        available: () => {
+          var _GarboWorkshed$curren, _GarboWorkshed$next2;
+          return [(_GarboWorkshed$curren = GarboWorkshed.current) === null || _GarboWorkshed$curren === void 0 ? void 0 : _GarboWorkshed$curren.workshed, (_GarboWorkshed$next2 = GarboWorkshed.next) === null || _GarboWorkshed$next2 === void 0 ? void 0 : _GarboWorkshed$next2.workshed].includes(this.workshed);
+        }
+      };
+    }
+  }], [{
+    key: "get",
+    value: function get(item) {
+      return worksheds.find(_ref => {
+        var workshed = _ref.workshed;
+        return workshed === item;
+      }) ?? null;
+    }
+  }, {
+    key: "current",
+    get: function get() {
+      return GarboWorkshed.get(kolmafia.getWorkshed());
+    }
+  }, {
+    key: "next",
+    get: function get() {
+      if (get$2("_workshedItemUsed") || kolmafia.getWorkshed() === globalOptions.workshed) {
+        return null;
+      }
+      return GarboWorkshed.get(globalOptions.workshed);
+    }
+  }, {
+    key: "useNext",
+    value: function useNext() {
+      if (get$2("_workshedItemUsed")) return null;
+      var next = GarboWorkshed.next;
+      if (next && have$P(next.workshed)) {
+        kolmafia.use(next.workshed);
+      }
+      return GarboWorkshed.current;
+    }
+  }]);
+}();
+var _attemptedMakingTonics = false;
+var _lastCMCTurn = kolmafia.myTotalTurnsSpent();
+var worksheds = [new GarboWorkshed({
+  workshed: $item`model train set`,
+  // We should always get value from the trainset, so we would never switch from it
+  done: () => false,
+  available: trainNeedsRotating,
+  action: rotateToOptimalCycle
+}), new GarboWorkshed({
+  workshed: $item`cold medicine cabinet`,
+  done: () => get$2("_coldMedicineConsults") >= 5,
+  available: () => get$2("_nextColdMedicineConsult") <= kolmafia.totalTurnsPlayed() && kolmafia.myTotalTurnsSpent() !== _lastCMCTurn,
+  // TODO: Ensure that we have a good expected cmc result
+  action: () => {
+    grabMedicine();
+    _lastCMCTurn = kolmafia.myTotalTurnsSpent();
+  },
+  minTurns: 80
+}), new GarboWorkshed({
+  workshed: $item`Asdon Martin keyfob (on ring)`,
+  done: () => {
+    return kolmafia.haveEffect(FarmingStrategy.asdonEffect) >= estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow);
+  },
+  action: () => {
+    drive(FarmingStrategy.asdonEffect, estimatedGarboTurns() + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow));
+  }
+}), new GarboWorkshed({
+  workshed: $item`Little Geneticist DNA-Splicing Lab`,
+  done: () => {
+    // This will likely always return true or false for now, depending on the start state of garbo
+    // Since we don't actually support using the syringe in combat at this time, the counter will never change
+    return _attemptedMakingTonics || get$2("_dnaPotionsMade") >= 3;
+  },
+  action: () => {
+    // Just grab whatever tonics for now, since we don't actually have support for DNA
+    if (get$2("dnaSyringe")) makeTonic(3);
+    _attemptedMakingTonics = true;
+  }
+}), new GarboWorkshed({
+  workshed: $item`spinning wheel`,
+  done: () => get$2("_spinningWheel"),
+  action: () => {
+    // We simply assume you will not gain a level while garboing, since we do not do powerlevellings
+    // So we will just use the spinning wheel immediately
+    kolmafia.visitUrl("campground.php?action=spinningwheel");
+  }
+}), new GarboWorkshed({
+  workshed: $item`TakerSpace letter of Marque`,
+  done: () => _toConsumableArray(allRecipes().keys()).every(item => !canMake(item)),
+  action: () => {
+    var best = bestTakerspaceItem();
+    while (best) {
+      make(best);
+      best = bestTakerspaceItem();
+    }
+  },
+  available: () => GarboWorkshed.next && !get$2("_workshedItemUsed") || globalOptions.ascend
+})].concat(_toConsumableArray($items`diabolic pizza cube, portable Mayo Clinic, warbear high-efficiency still, warbear induction oven`.map(item => new GarboWorkshed({
+  workshed: item,
+  done: () => globalOptions.dietCompleted
+}))), _toConsumableArray($items`warbear chemistry lab, warbear LP-ROM burner`.map(item => new GarboWorkshed({
+  workshed: item,
+  done: potionSetupCompleted
+}))), _toConsumableArray($items`snow machine, warbear jackhammer drill press, warbear auto-anvil`.map(item => new GarboWorkshed({
+  workshed: item
+}))));
+var SAFETY_TURNS_THRESHOLD = 25;
+function workshedTasks() {
+  return [].concat(_toConsumableArray(worksheds.map(workshed => workshed.task)), [{
+    name: "Swap Workshed",
+    completed: () => get$2("_workshedItemUsed"),
+    ready: () => {
+      var _GarboWorkshed$curren2, _GarboWorkshed$next3;
+      var canRemove = ((_GarboWorkshed$curren2 = GarboWorkshed.current) === null || _GarboWorkshed$curren2 === void 0 ? void 0 : _GarboWorkshed$curren2.canRemove()) ?? true;
+      var haveNext = GarboWorkshed.next !== null && have$P(GarboWorkshed.next.workshed);
+      var enoughTurns = !((_GarboWorkshed$next3 = GarboWorkshed.next) !== null && _GarboWorkshed$next3 !== void 0 && _GarboWorkshed$next3.minTurns) || GarboWorkshed.next.minTurns + SAFETY_TURNS_THRESHOLD > estimatedGarboTurns();
+      return canRemove && haveNext && enoughTurns;
+    },
+    do: () => GarboWorkshed.useNext(),
+    available: () => !get$2("_workshedItemUsed") && !!GarboWorkshed.next
+  }]);
+}
+
+var MPA = get$2("valueOfAdventure");
+kolmafia.print(`Using adventure value ${MPA}.`, HIGHLIGHT);
+var Mayo = Mayo$1;
+function hasMoonZoneRestaurant() {
+  return $locations`Camp Logging Camp, Thugnderdome`.some(loc => kolmafia.canAdventure(loc));
+}
+function availableFromMoonZoneRestaurant(item) {
+  return hasMoonZoneRestaurant() && kolmafia.dailySpecial() === item;
+}
+function consumeWhileRespectingMoonRestaurant(command, item) {
+  var usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
+  withProperties({
+    autoSatisfyWithCloset: !usingMoonZoneRestaurant && get$2("autoSatisfyWithCloset"),
+    autoSatisfyWithMall: !usingMoonZoneRestaurant
+  }, command);
+}
+function eatSafe(qty, item) {
+  if (have$P($item`Universal Seasoning`) && $item`Universal Seasoning`.dailyusesleft > 0 && !get$2("universalSeasoningActive")) {
+    kolmafia.use($item`Universal Seasoning`);
+  }
+  if (kolmafia.myLevel() >= 15 && !get$2("_hungerSauceUsed") && kolmafia.mallPrice($item`Hunger™ Sauce`) < 3 * MPA) {
+    acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
+    kolmafia.use($item`Hunger™ Sauce`);
+  }
+  if (kolmafia.mallPrice($item`fudge spork`) < 3 * MPA && !get$2("_fudgeSporkUsed")) {
+    kolmafia.eat($item`fudge spork`);
+  }
+  if (kolmafia.myClass() === $class`Pastamancer` && kolmafia.myThrall() !== $thrall`Spice Ghost` && !get$2("_legendarySpiceGhostFood") && $thrall`Spice Ghost`.level + (get$2("pumpkinSpiceWhorlUsed") ? 3 : 0) >= 11) {
+    kolmafia.useSkill($skill`Bind Spice Ghost`);
+  }
+  useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
+  consumeWhileRespectingMoonRestaurant(() => {
+    if (!kolmafia.eat(qty, item)) throw "Failed to eat safely";
+  }, item);
+}
+var EXPENSIVE_SONGS = $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
+var USEFUL_SONGS = $effects`Polka of Plenty, Ur-Kel's Aria of Annoyance, Fat Leon's Phat Loot Lyric`;
+function shrugForOde() {
+  var inexpensiveSongs = getActiveSongs().filter(e => !EXPENSIVE_SONGS.includes(e));
+  var uselessSongs = inexpensiveSongs.filter(e => !USEFUL_SONGS.includes(e));
+  if (uselessSongs.length >= 1) return uneffect(uselessSongs[0]);
+  if (inexpensiveSongs.length === 1) return uneffect(inexpensiveSongs[0]);
+  return uneffect(maxBy(inexpensiveSongs, e => kolmafia.haveEffect(e) * kolmafia.mpCost(kolmafia.toSkill(e)), true));
+}
+function buskEffectValuer(effect, duration) {
+  if (effect === $effect`Salty Mouth`) return 5 * get$2("valueOfAdventure");
+  if (effect === $effect`Hammertime` && !have$P($effect`Hammertime`) && get$2("_beretBuskingUses") === 0) {
+    return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
+  }
+  return beretEffectValue(effect, duration);
+}
+function canBusk() {
+  return have$c() && get$2("_beretBuskingUses") < 5;
+}
+function buskForSaltyMouth() {
+  if (!canBusk()) return;
+  for (var i = get$2("_beretBuskingUses"); i < 5; i++) {
+    if (have$P($effect`Salty Mouth`)) break;
+    buskFor(buskEffectValuer, {});
+  }
+}
+function drinkSafe(qty, item) {
+  var prevDrunk = kolmafia.myInebriety();
+  if (have$P($skill`The Ode to Booze`)) {
+    if (!have$P($effect`Ode to Booze`) && getSongCount() >= getSongLimit()) {
+      shrugForOde();
+    }
+    var odeTurns = qty * item.inebriety;
+    var castTurns = odeTurns - kolmafia.haveEffect($effect`Ode to Booze`);
+    if (castTurns > 0) {
+      kolmafia.useSkill($skill`The Ode to Booze`, Math.ceil(castTurns / kolmafia.turnsPerCast($skill`The Ode to Booze`)));
+    }
+  }
+  consumeWhileRespectingMoonRestaurant(() => {
+    var _item$notes;
+    if ((_item$notes = item.notes) !== null && _item$notes !== void 0 && _item$notes.includes("BEER") && canBusk()) {
+      for (var i = 0; i < qty; i++) {
+        buskForSaltyMouth();
+        if (!kolmafia.drink(1, item)) throw "Failed to drink safely";
+      }
+    } else if (!kolmafia.drink(qty, item)) throw "Failed to drink safely";
+  }, item);
+  if (item.inebriety === 1 && prevDrunk === qty + kolmafia.myInebriety() - 1) {
+    // sometimes mafia does not track the mime army shotglass property
+    kolmafia.setProperty("_mimeArmyShotglassUsed", "true");
+  }
+}
+function chewSafe(qty, item) {
+  if (!kolmafia.chew(qty, item)) throw "Failed to chew safely";
+}
+function consumeSafe(qty, item, additionalValue, skipAcquire) {
+  var spleenCleaned = spleenCleaners.get(item);
+  if (spleenCleaned && kolmafia.mySpleenUse() < spleenCleaned) {
+    throw "No spleen to clear with this.";
+  }
+  var averageAdventures = getAverageAdventures(item);
+  var usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
+  if (!usingMoonZoneRestaurant) {
+    if (averageAdventures > 0 || additionalValue) {
+      var cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
+      acquire(qty, item, cap, true);
+    } else {
+      acquire(qty, item);
+    }
+  }
+  // When eating the daily special, we need to closet any excess food, since it's much cheaper to eat the special
+  var excessAmount = usingMoonZoneRestaurant ? kolmafia.itemAmount(item) : 0;
+  if (usingMoonZoneRestaurant && kolmafia.itemAmount(item) > 0) {
+    kolmafia.putCloset(item, excessAmount);
+  }
+  if (kolmafia.itemType(item) === "food" || item === saladFork) {
+    eatSafe(qty, item);
+    if (excessAmount > 0) kolmafia.takeCloset(item, excessAmount);
+    return;
+  }
+  if (kolmafia.itemType(item) === "booze" || item === frostyMug) {
+    drinkSafe(qty, item);
+    if (excessAmount > 0) kolmafia.takeCloset(item, excessAmount);
+    return;
+  }
+  if (kolmafia.itemType(item) === "spleen item") {
+    chewSafe(qty, item);
+    return;
+  }
+  kolmafia.use(qty, item);
+}
+function propTrue(prop) {
+  if (typeof prop === "boolean") {
+    return prop;
+  } else {
+    return get$2(prop);
+  }
+}
+function useIfUnused(item, prop, maxPrice) {
+  if (!propTrue(prop)) {
+    if (kolmafia.mallPrice(item) <= maxPrice) {
+      acquire(1, item, maxPrice, false);
+      if (!have$P(item)) return;
+      kolmafia.use(1, item);
+    } else {
+      kolmafia.print(`Skipping ${item.name}; too expensive (${kolmafia.mallPrice(item)} > ${maxPrice}).`);
+    }
+  }
+}
+function nonOrganAdventures() {
+  useIfUnused($item`fancy chocolate car`, get$2("_chocolatesUsed") !== 0, 2 * MPA);
+  while (get$2("_loveChocolatesUsed") < 3) {
+    var price = have$P($item`LOV Extraterrestrial Chocolate`) ? 15000 : 20000;
+    var value = clamp(3 - get$2("_loveChocolatesUsed"), 0, 3) * get$2("valueOfAdventure");
+    if (value < price) break;
+    if (!have$P($item`LOV Extraterrestrial Chocolate`)) {
+      Kmail.send("sellbot", `${$item`LOV Extraterrestrial Chocolate`.name} (1)`, undefined, 20000);
+      kolmafia.wait(11);
+      kolmafia.cliExecute("refresh inventory");
+      if (!have$P($item`LOV Extraterrestrial Chocolate`)) {
+        kolmafia.print("I'm tired of waiting for sellbot to send me some chocolate", "red");
+        break;
+      }
+    }
+    kolmafia.use($item`LOV Extraterrestrial Chocolate`);
+  }
+  var chocos = new Map([[$class`Seal Clubber`, $item`chocolate seal-clubbing club`], [$class`Turtle Tamer`, $item`chocolate turtle totem`], [$class`Pastamancer`, $item`chocolate pasta spoon`], [$class`Sauceror`, $item`chocolate saucepan`], [$class`Accordion Thief`, $item`chocolate stolen accordion`], [$class`Disco Bandit`, $item`chocolate disco ball`]]);
+  var classChoco = chocos.get(kolmafia.myClass());
+  var chocExpVal = (remaining, item) => {
+    var advs = [0, 0, 1, 2, 3][remaining + (item === classChoco ? 1 : 0)];
+    return advs * MPA - kolmafia.mallPrice(item);
+  };
+  var chocosRemaining = clamp(3 - get$2("_chocolatesUsed"), 0, 3);
+  var _loop = function _loop(i) {
+    var chocoVals = _toConsumableArray(chocos.values()).map(choc => {
+      return {
+        choco: choc,
+        value: chocExpVal(i, choc)
+      };
+    });
+    var best = maxBy(chocoVals, "value");
+    if (best.value > 0) {
+      acquire(1, best.choco, best.value + kolmafia.mallPrice(best.choco), false);
+      kolmafia.use(1, best.choco);
+    } else return 1; // break
+  };
+  for (var i = chocosRemaining; i > 0; i--) {
+    if (_loop(i)) break;
+  }
+  useIfUnused($item`fancy chocolate sculpture`, get$2("_chocolateSculpturesUsed") > 0, 5 * MPA + 5000);
+  useIfUnused($item`essential tofu`, "_essentialTofuUsed", 5 * MPA);
+  if (!get$2("_etchedHourglassUsed") && have$P($item`etched hourglass`)) {
+    kolmafia.use(1, $item`etched hourglass`);
+  }
+  if (kolmafia.getProperty("_timesArrowUsed") !== "true" && kolmafia.mallPrice($item`time's arrow`) < 5 * MPA) {
+    acquire(1, $item`time's arrow`, 5 * MPA);
+    kolmafia.cliExecute("csend 1 time's arrow to botticelli");
+    kolmafia.setProperty("_timesArrowUsed", "true");
+  }
+  if (have$P($skill`Ancestral Recall`) && kolmafia.mallPrice($item`blue mana`) < 3 * MPA) {
+    var casts = Math.max(10 - get$2("_ancestralRecallCasts"), 0);
+    acquire(casts, $item`blue mana`, 3 * MPA);
+    kolmafia.useSkill(casts, $skill`Ancestral Recall`);
+  }
+  if (globalOptions.ascend) {
+    useIfUnused($item`borrowed time`, "_borrowedTimeUsed", 20 * MPA);
+  }
+  if (get$2("_extraTimeUsed", 3) < 3) {
+    var extraTimeValue = timesUsed => {
+      var advs = [5, 3, 1][timesUsed];
+      return advs * MPA;
+    };
+    var extraTimeUsed = get$2("_extraTimeUsed", 3);
+    for (var _i = extraTimeUsed; _i < 3; _i++) {
+      if (extraTimeValue(_i) > kolmafia.mallPrice($item`extra time`)) {
+        if (acquire(1, $item`extra time`, extraTimeValue(_i), false)) {
+          kolmafia.use($item`extra time`);
+        }
+      } else break;
+    }
+  }
+  if (get$2("_clocksUsed", 2) < 2) {
+    var clockValue = timesUsed => {
+      var advs = [3, 2][timesUsed];
+      return advs * MPA;
+    };
+    var clocksUsed = get$2("_clocksUsed", 2);
+    for (var _i2 = clocksUsed; _i2 < 2; _i2++) {
+      if (clockValue(_i2) > kolmafia.mallPrice($item`clock`)) {
+        if (acquire(1, $item`clock`, clockValue(_i2), false)) {
+          kolmafia.use($item`clock`);
+        }
+      } else break;
+    }
+  }
+}
+function pillCheck() {
+  if (!get$2("_distentionPillUsed")) {
+    if (!get$2("garbo_skipPillCheck", false) && !have$P($item`distention pill`, 1)) {
+      _set("garbo_skipPillCheck", userConfirmDialog("You do not have any distention pills. Continue anyway? (Defaulting to no in 15 seconds)", false, 15000));
+    }
+  }
+  if (!get$2("_syntheticDogHairPillUsed")) {
+    if (!get$2("garbo_skipPillCheck", false) && !have$P($item`synthetic dog hair pill`, 1)) {
+      _set("garbo_skipPillCheck", userConfirmDialog("You do not have any synthetic dog hair pills. Continue anyway? (Defaulting to no in 15 seconds)", false, 15000));
+    }
+  }
+}
+var saladFork = $item`Ol' Scratch's salad fork`;
+var frostyMug = $item`Frosty's frosty mug`;
+var spleenCleaners = new Map([[$item`extra-greasy slider`, 5], [$item`jar of fermented pickle juice`, 5], [$item`mojo filter`, 1]]);
+var stomachLiverCleaners = new Map([[$item`spice melange`, [-3, -3]], [$item`synthetic dog hair pill`, [0, -1]], [$item`cuppa Sobrie tea`, [0, -1]], [$item`designer sweatpants`, [0, -1]], [$item`august scepter`, [-1, 0]], [$item`Mr. Burnsger`, [4, -2]], [$item`Doc Clock's thyme cocktail`, [-2, 4]], [$item`The Plumber's mushroom stew`, [3, -1]], [$item`The Mad Liquor`, [-1, 3]]]);
+function legendaryPizzaToMenu(pizzas, maker) {
+  if (!globalOptions.ascend) return [];
+  var canCookLegendaryPizza = pizza => {
+    var recipes = [pizza].concat(_toConsumableArray($items`roasted vegetable of Jarlsberg, Pete's rich ricotta, Boris's bread`)).map(i => kolmafia.toInt(i));
+    return !recipes.some(id => get$2(`unknownRecipe${id}`, true));
+  };
+  return pizzas.filter(_ref => {
+    var item = _ref.item,
+      pref = _ref.pref;
+    return !get$2(pref, true) && canCookLegendaryPizza(item);
+  }).map(_ref2 => {
+    var item = _ref2.item;
+    return maker({
+      item,
+      price: 2 * sum($items`Vegetable of Jarlsberg, St. Sneaky Pete's Whey, Yeast of Boris`, ingredientCost)
+    });
+  });
+}
+var cheapestItem = items => maxBy(items, MenuItem.defaultPriceFunction, true);
+
+/**
+ * Generate a basic menu of high-yield items to consider
+ * @returns basic menu
+ */
+function menu() {
+  var spaghettiBreakfast = have$P($item`spaghetti breakfast`) && kolmafia.myFullness() === 0 && get$2("_timeSpinnerFoodAvailable") === "" && !get$2("_spaghettiBreakfastEaten") ? 1 : 0;
+
+  /*
+   * generated in mafia with an account that has super human cocktail crafting
+   *  > js Item.all().filter((item) => item.inebriety > 0 && item.quality === "EPIC" && getIngredients(item)["mushroom fermenting powder]).join(", ")
+   */
+  var complexMushroomWines = $items`overpowering mushroom wine, complex mushroom wine, smooth mushroom wine, blood-red mushroom wine, buzzing mushroom wine, swirling mushroom wine`;
+  /*
+   * generated in mafia with:
+   *  > js Item.all().filter((item) => item.inebriety > 0 && getIngredients(item)["perfect ice cube"]).join(", ")
+   */
+  var perfectDrinks = $items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`;
+  /*
+   * generated in mafia with an account that has Transcendental Noodlecraft
+   *  > js Item.all().filter((item) => item.fullness > 0 && item.name.indexOf("lasagna") > 0 && getIngredients(item)["savory dry noodles"]).join(", ")
+   */
+  var lasagnas = $items`fishy fish lasagna, gnat lasagna, long pork lasagna`;
+
+  /*
+   * standardSpleenItem indicates a spleen item of size 4 with an adventure yield of 5-10. Taken from the wiki. They are all functionally equivalent.
+   */
+  var standardSpleenItems = $items`agua de vida, gooey paste, oily paste, ectoplasmic paste, greasy paste, bug paste, hippy paste, orc paste, demonic paste, indescribably horrible paste, fishy paste, goblin paste, pirate paste, chlorophyll paste, strange paste, Mer-kin paste, slimy paste, penguin paste, elemental paste, cosmic paste, hobo paste, Crimbo paste, groose grease, Unconscious Collective Dream Jar, grim fairy tale, powdered gold`;
+  var smallEpics = [].concat(_toConsumableArray($items`meteoreo, ice rice`), [$item`Tea, Earl Grey, Hot`]);
+  var crimboKeyValue = garboValue(kolmafia.toItem(kolmafia.toInt(kolmafia.myId()) % 4 + $item`pirate encryption key alpha`.id));
+  var boxingDayCareItems = $items`glass of raw eggs, punch-drunk punch`.filter(item => have$P(item));
+  var pilsners = globalOptions.usepilsners || globalOptions.ascend ? $items`astral pilsner`.filter(item => have$P(item)) : [];
+  var instantKarma = globalOptions.usekarma ? $items`Instant Karma`.filter(item => have$P(item)) : [];
+  var crimboKeyItem = cheapestItem($items`corned beet, pickled bread, salted mutton`);
+  var limitedItems = [].concat(_toConsumableArray(boxingDayCareItems), _toConsumableArray(pilsners), _toConsumableArray(instantKarma)).map(item => new MenuItem(item, {
+    maximum: kolmafia.availableAmount(item)
+  }));
+  var legendaryPizzas = legendaryPizzaToMenu([{
+    item: $item`Calzone of Legend`,
+    pref: "calzoneOfLegendEaten"
+  }, {
+    item: $item`Pizza of Legend`,
+    pref: "pizzaOfLegendEaten"
+  }], out => new MenuItem(out.item, {
+    maximum: 1,
+    priceOverride: out.price
+  }));
+  var dailySpecialItem = hasMoonZoneRestaurant() && get$2("_dailySpecialPrice") < kolmafia.mallPrice(kolmafia.dailySpecial()) ? [new MenuItem(kolmafia.dailySpecial(), {
+    priceOverride: get$2("_dailySpecialPrice")
+  })] : [];
+  return [
+  // FOOD
+  new MenuItem($item`Dreadsylvanian cold pocket`), new MenuItem($item`Dreadsylvanian hot pocket`), new MenuItem($item`Dreadsylvanian sleaze pocket`), new MenuItem($item`Dreadsylvanian stink pocket`), new MenuItem($item`Dreadsylvanian spooky pocket`), new MenuItem($item`tin cup of mulligan stew`), new MenuItem($item`frozen banquet`), new MenuItem($item`deviled egg`), new MenuItem($item`spaghetti breakfast`, {
+    maximum: spaghettiBreakfast
+  }), new MenuItem($item`extra-greasy slider`), new MenuItem(cheapestItem(lasagnas)), new MenuItem(cheapestItem(smallEpics)), new MenuItem($item`green hamhock`)].concat(_toConsumableArray(legendaryPizzas.flat()), [
+  // BOOZE
+  new MenuItem($item`elemental caipiroska`), new MenuItem($item`moreltini`), new MenuItem($item`Dreadsylvanian cold-fashioned`), new MenuItem($item`Dreadsylvanian dank and stormy`), new MenuItem($item`Dreadsylvanian grimlet`), new MenuItem($item`Dreadsylvanian hot toddy`), new MenuItem($item`Dreadsylvanian slithery nipple`), new MenuItem($item`Hodgman's blanket`), new MenuItem($item`Sacramento wine`), new MenuItem($item`iced plum wine`), new MenuItem($item`splendid martini`), new MenuItem($item`low tide martini`), new MenuItem($item`yam martini`), new MenuItem($item`Eye and a Twist`), new MenuItem($item`jar of fermented pickle juice`), new MenuItem(cheapestItem(complexMushroomWines)), new MenuItem(cheapestItem(perfectDrinks)), new MenuItem($item`green eggnog`), new MenuItem($item`can of Brütalbräu`, {
+    additionalValue: garboValue($item`fancy tin beer can`)
+  }), new MenuItem($item`can of Drooling Monk`, {
+    additionalValue: garboValue($item`fancy tin beer can`)
+  }), new MenuItem($item`can of Impetuous Scofflaw`, {
+    additionalValue: garboValue($item`fancy tin beer can`)
+  }),
+  // SPLEEN
+  new MenuItem($item`octolus oculus`), new MenuItem($item`prismatic wad`), new MenuItem($item`transdermal smoke patch`), new MenuItem($item`antimatter wad`), new MenuItem($item`voodoo snuff`), new MenuItem($item`blood-drive sticker`), new MenuItem(cheapestItem(standardSpleenItems)), new MenuItem(cheapestItem($items`not-a-pipe, glimmering roc feather`))], _toConsumableArray(limitedItems), _toConsumableArray(crimboKeyValue >= kolmafia.mallPrice(crimboKeyItem) ? [new MenuItem(crimboKeyItem, {
+    additionalValue: crimboKeyValue,
+    maximum: clamp(
+    // Restrict to a 3rd of our open stomach, capped at 5 to avoid using stomach cleansers
+    Math.floor((kolmafia.fullnessLimit() - kolmafia.myFullness()) / 3), 0, 5)
+  })] : []), dailySpecialItem, [
+  // HELPERS
+  new MenuItem($item`distention pill`), new MenuItem($item`cuppa Voraci tea`), new MenuItem(Mayo.flex), new MenuItem(Mayo.zapine), new MenuItem($item`Special Seasoning`), new MenuItem($item`mini kiwi aioli`), new MenuItem($item`whet stone`), new MenuItem(saladFork), new MenuItem(frostyMug), new MenuItem($item`mojo filter`), new MenuItem($item`pocket wish`, {
+    maximum: 1,
+    effect: $effect`Refined Palate`
+  }), new MenuItem($item`toasted brie`, {
+    maximum: 1
+  }), new MenuItem($item`potion of the field gar`, {
+    maximum: 1
+  })], _toConsumableArray(_toConsumableArray(stomachLiverCleaners.keys()).map(item => new MenuItem(item))), [new MenuItem($item`sweet tooth`, {
+    size: -1,
+    organ: "food",
+    maximum: get$2("_sweetToothUsed") ? 0 : 1
+  }), new MenuItem($item`designer sweatpants`, {
+    size: -1,
+    organ: "booze",
+    maximum: availableCasts$1($skill`Sweat Out Some Booze`)
+  }), new MenuItem($item`august scepter`, {
+    size: -1,
+    organ: "food",
+    maximum: shouldAugustCast($skill`Aug. 16th: Roller Coaster Day!`) ? 1 : 0
+  })]).filter(item => item.price() < Infinity);
+}
+function bestConsumable(organType) {
+  var levelRestrict = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  var restrictList = arguments.length > 2 ? arguments[2] : undefined;
+  var maxSize = arguments.length > 3 ? arguments[3] : undefined;
+  var fullMenu = potionMenu(menu(), 0, 0);
+  var organMenu = fullMenu.filter(menuItem => kolmafia.itemType(menuItem.item) === organType);
+  if (restrictList) {
+    if (restrictList instanceof kolmafia.Item) {
+      organMenu = organMenu.filter(menuItem => restrictList !== menuItem.item);
+    } else {
+      organMenu = organMenu.filter(menuItem => !restrictList.includes(menuItem.item));
+    }
+  }
+  if (maxSize) {
+    organMenu = organMenu.filter(menuItem => menuItem.size <= maxSize);
+  }
+  if (levelRestrict) {
+    organMenu = organMenu.filter(menuItem => menuItem.item.levelreq <= kolmafia.myLevel());
+  }
+  var organList = organMenu.map(consumable => {
+    var edible = consumable.item;
+    var buffs = get$1("Effect", edible);
+    var turnsPerUse = get$1("Effect Duration", edible);
+    var meatDrop = sum(buffs, buff => get$1("Meat Drop", kolmafia.toEffect(buff)));
+    var famWeight = sum(buffs, buff => get$1("Familiar Weight", kolmafia.toEffect(buff)));
+    var buffValue = (meatDrop + famWeight * 25 / 10) * turnsPerUse * targetMeat() / 100;
+    var advValue = getAverageAdventures(edible) * get$2("valueOfAdventure");
+    var organSpace = consumable.size;
+    return {
+      edible: edible,
+      value: (buffValue + advValue - kolmafia.mallPrice(edible)) / organSpace
+    };
+  });
+  var best = maxBy(organList, "value");
+  return best;
+}
+function gregariousCount() {
+  var gregariousCharges = get$2("beGregariousCharges") + (get$2("beGregariousFightsLeft") > 0 && get$2("beGregariousMonster") === globalOptions.target ? 1 : 0);
+  var gregariousFightsPerCharge = expectedGregs("extro");
+  // remove and preserve the last index - that is the marginal count of gregarious fights
+  var marginalGregariousFights = gregariousFightsPerCharge.splice(gregariousFightsPerCharge.length - 1, 1)[0];
+  var expectedGregariousFights = gregariousFightsPerCharge.slice(gregariousCharges);
+  return {
+    expectedGregariousFights,
+    marginalGregariousFights
+  };
+}
+function copiers() {
+  var targetDifferential = targetingMeat() ? MEAT_TARGET_MULTIPLIER() * MPA : 0;
+  var _gregariousCount = gregariousCount(),
+    expectedGregariousFights = _gregariousCount.expectedGregariousFights,
+    marginalGregariousFights = _gregariousCount.marginalGregariousFights;
+  var extros = kolmafia.myInebriety() > kolmafia.inebrietyLimit() ? [] : [].concat(_toConsumableArray(expectedGregariousFights.map(targets => new MenuItem($item`Extrovermectin™`, {
+    additionalValue: targets * targetDifferential,
+    maximum: 1
+  }))), [new MenuItem($item`Extrovermectin™`, {
+    additionalValue: marginalGregariousFights * targetDifferential
+  })]);
+  return _toConsumableArray(extros);
+}
+function countCopies(diet) {
+  // this only counts the copies not yet realized
+  // any copies already realized will be properly counted by copyTargetCount
+
+  // returns an array of expected counts for number of greg copies to fight per pill use
+  // the last value is how much you expect to fight per pill
+  var extros = sum(diet.entries, _ref3 => {
+    var menuItems = _ref3.menuItems,
+      quantity = _ref3.quantity;
+    return menuItems.some(menuItem => menuItem.item === $item`Extrovermectin™`) ? quantity : 0;
+  });
+  var _gregariousCount2 = gregariousCount(),
+    expectedGregariousFights = _gregariousCount2.expectedGregariousFights,
+    marginalGregariousFights = _gregariousCount2.marginalGregariousFights;
+
+  // slice will never return an array that is bigger than the original array
+  var replaceExtros = sumNumbers(expectedGregariousFights.slice(0, extros));
+  var bonusExtros = clamp(extros - expectedGregariousFights.length, 0, extros) * marginalGregariousFights;
+  return replaceExtros + bonusExtros;
+}
+function ingredientCost(item) {
+  var ingredientMallPrice = kolmafia.mallPrice(item);
+  var ingredientAutosellPrice = kolmafia.autosellPrice(item);
+  if (!have$P(item) || item.tradeable && ingredientMallPrice > Math.max(100, 2 * ingredientAutosellPrice)) {
+    return ingredientMallPrice;
+  }
+  return ingredientAutosellPrice;
+}
+
+/**
+ * Generate a potion diet that has entries
+ * @param targets number of target monsters expected to be encountered on this day
+ * @param turns number of turns total expecte
+ */
+function potionMenu(baseMenu, targets, turns) {
+  function limitedPotion(input, limit) {
+    var _GarboWorkshed$curren;
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    if (limit === 0) {
+      return [];
+    }
+    var potion = input instanceof kolmafia.Item ? new Potion(input) : input;
+    var mayo = undefined;
+    if (kolmafia.itemType(potion.potion) === "food" && (((_GarboWorkshed$curren = GarboWorkshed.current) === null || _GarboWorkshed$curren === void 0 ? void 0 : _GarboWorkshed$curren.workshed) === $item`portable Mayo Clinic` || switchingToMayo())) {
+      potion = potion.doubleDuration();
+      mayo = Mayo.zapine;
+    }
+    return potion.value(targets, turns, limit).map(tier => new MenuItem(potion.potion, {
+      maximum: tier.quantity,
+      additionalValue: tier.value,
+      priceOverride: options.price,
+      organ: options.organ,
+      size: options.size,
+      data: tier.name,
+      mayo
+    }));
+  }
+  function potion(potion) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    return limitedPotion(potion, undefined, options);
+  }
+  var speakeasy = $item`Clan speakeasy`;
+  var hasSpeakeasy = kolmafia.getClanLounge()[`${speakeasy}`];
+  var twiceHauntedPrice = Math.min(ingredientCost($item`haunted orange`), ingredientCost($item`orange`) + ingredientCost($item`ghostly ectoplasm`)) + Math.min(ingredientCost($item`haunted bottle of vodka`), ingredientCost($item`bottle of vodka`) + ingredientCost($item`ghostly ectoplasm`));
+  var campfireHotdog = get$2("getawayCampsiteUnlocked") ? potion($item`campfire hot dog`, {
+    price: ingredientCost($item`stick of firewood`)
+  }) : [];
+  var foodCone = realmAvailable("stench") || globalOptions.simdiet && !globalOptions.nobarf ? limitedPotion($item`Dinsey food-cone`, Math.floor(kolmafia.availableAmount($item`FunFunds™`) / 2), {
+    price: 2 * garboValue($item`FunFunds™`)
+  }) : [];
+  var borisBread = !get$2("unknownRecipe10978") // this property is true if you don't know the recipe, false if you do
+  ? potion($item`Boris's bread`, {
+    price: 2 * ingredientCost($item`Yeast of Boris`)
+  }) : [];
+  var deepDish = legendaryPizzaToMenu([{
+    item: $item`Deep Dish of Legend`,
+    pref: "deepDishOfLegendEaten"
+  }], out => limitedPotion(out.item, 1, {
+    price: out.price
+  }));
+  return [].concat(_toConsumableArray(baseMenu), _toConsumableArray(copiers()), _toConsumableArray(potion($item`jumping horseradish`)), _toConsumableArray(potion($item`tempura cauliflower`)), _toConsumableArray(potion($item`sea truffle`)), _toConsumableArray(potion($item`tempura broccoli`)), _toConsumableArray(potion($item`Miserable Pie`)), _toConsumableArray(potion($item`Every Day is Like This Sundae`)), _toConsumableArray(potion($item`bowl of mummy guts`)), _toConsumableArray(potion($item`haunted Hell ramen`)), _toConsumableArray(campfireHotdog), _toConsumableArray(foodCone), _toConsumableArray(borisBread), _toConsumableArray(deepDish.flat()), _toConsumableArray(potion($item`dirt julep`)), _toConsumableArray(potion($item`Ambitious Turkey`)), _toConsumableArray(potion($item`Friendly Turkey`)), _toConsumableArray(potion($item`vintage smart drink`)), _toConsumableArray(potion($item`Strikes Again Bigmouth`)), _toConsumableArray(potion($item`Irish Coffee, English Heart`)), _toConsumableArray(potion($item`Jack-O-Lantern beer`)), _toConsumableArray(potion($item`Amnesiac Ale`)), _toConsumableArray(potion($item`mentholated wine`)), _toConsumableArray(potion($item`Feliz Navidad`)), _toConsumableArray(potion($item`broberry brogurt`)), _toConsumableArray(potion($item`haunted martini`)), _toConsumableArray(potion($item`bottle of Greedy Dog`)), _toConsumableArray(potion($item`twice-haunted screwdriver`, {
+    price: twiceHauntedPrice
+  })), _toConsumableArray(limitedPotion($item`high-end ginger wine`, kolmafia.availableAmount($item`high-end ginger wine`))), _toConsumableArray(limitedPotion($item`Hot Socks`, hasSpeakeasy ? 3 : 0, {
+    price: 5000
+  })), _toConsumableArray(realmAvailable("sleaze") && kolmafia.sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`) ? limitedPotion($item`broberry brogurt`, Math.floor(kolmafia.itemAmount($item`Beach Buck`) / 10), {
+    price: 10 * garboValue($item`Beach Buck`)
+  }) : []), _toConsumableArray(potion($item`cute mushroom`)), _toConsumableArray(potion($item`beggin' cologne`)), _toConsumableArray(potion($item`Knob Goblin nasal spray`)), _toConsumableArray(potion($item`handful of Smithereens`)), _toConsumableArray(potion($item`black striped oyster egg`)), _toConsumableArray(potion($item`black paisley oyster egg`)), _toConsumableArray(potion($item`black polka-dot oyster egg`)), _toConsumableArray(potion($item`lustrous oyster egg`)), _toConsumableArray(potion($item`glimmering buzzard feather`)), _toConsumableArray(potion($item`Knob Goblin pet-buffing spray`)), _toConsumableArray(potion($item`abstraction: joy`)), _toConsumableArray(potion($item`beastly paste`)), _toConsumableArray(potion($item`gleaming oyster egg`)), _toConsumableArray(potion($item`Party-in-a-Can™`)), _toConsumableArray(limitedPotion($item`body spradium`, clamp(kolmafia.availableAmount($item`body spradium`), 0, 1))), _toConsumableArray(have$P($skill`Sweet Synthesis`) ? potion(new Potion($item`Rethinking Candy`, {
+    effect: $effect`Synthesis: Greed`,
+    duration: 30
+  }), {
+    size: 1,
+    organ: "spleen item",
+    price: 0
+  }) : []));
+}
+function balanceMenu(baseMenu, dietPlanner) {
+  var baseTargets = highMeatMonsterCount();
+  function rebalance(menu, iterations, targets, adventures) {
+    var fullMenu = potionMenu(menu, baseTargets + targets, estimatedGarboTurns(false) + adventures);
+    if (iterations <= 0) {
+      return fullMenu;
+    } else {
+      var balancingDiet = dietPlanner(fullMenu);
+      return rebalance(menu, iterations - 1, countCopies(balancingDiet), balancingDiet.expectedAdventures());
+    }
+  }
+  var baseDiet = dietPlanner(baseMenu);
+  return rebalance(baseMenu, 5, 0, baseDiet.expectedAdventures());
+}
+function computeDiet() {
+  kolmafia.print("Calculating diet, please wait...", HIGHLIGHT);
+  // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
+
+  var orEmpty = diet => diet.expectedValue(MPA, "net") < 0 ? new Diet() : diet;
+  var fullDietPlanner = menu => orEmpty(Diet.plan(MPA, menu));
+  var shotglassDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
+    booze: 1
+  }));
+  var pantsgivingDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
+    food: 1
+  }));
+  var sweatpantsDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
+    booze: getRemainingLiver()
+  }));
+  // const shotglassFilter = (menuItem: MenuItem)
+
+  return {
+    diet: () => fullDietPlanner(balanceMenu(menu().filter(menuItem => !priceCaps[menuItem.item.name] || priceCaps[menuItem.item.name] >= kolmafia.mallPrice(menuItem.item)), fullDietPlanner)),
+    shotglass: () => shotglassDietPlanner(balanceMenu(menu().filter(menuItem => kolmafia.itemType(menuItem.item) === "booze" && menuItem.size === 1), shotglassDietPlanner)),
+    pantsgiving: () => pantsgivingDietPlanner(balanceMenu(menu().filter(menuItem => kolmafia.itemType(menuItem.item) === "food" && menuItem.size === 1 || [Mayo.flex, Mayo.zapine, $item`Special Seasoning`, $item`mini kiwi aioli`, $item`whet stone`].includes(menuItem.item)), pantsgivingDietPlanner)),
+    sweatpants: () => sweatpantsDietPlanner(balanceMenu(menu().filter(menuItem => kolmafia.itemType(menuItem.item) === "booze" && menuItem.size <= 3), sweatpantsDietPlanner))
+  };
+}
+function printDiet(diet, name) {
+  kolmafia.print(`===== ${name} DIET =====`);
+  if (diet.entries.length === 0) return;
+  diet = diet.copy();
+  diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
+  var targets = Math.floor(highMeatMonsterCount() + countCopies(diet));
+  var adventures = Math.floor(estimatedGarboTurns(false) + diet.expectedAdventures());
+  kolmafia.print(`Planning to fight ${targets} ${globalOptions.target} and run ${adventures} adventures`);
+  var _iterator = _createForOfIteratorHelper(diet.entries),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var dietEntry = _step.value;
+      if (dietEntry.quantity === 0) continue;
+      var target = dietEntry.target();
+      var datastr = target.data ? `(${target.data})` : "";
+      var maxstr = target.maximum ? ` (max ${target.maximum})` : "";
+      var helpersstr = dietEntry.helpers().length > 0 ? ` helpers: ${dietEntry.helpers().join(", ")}` : "";
+      var addvalstr = target.additionalValue ? ` (additional value: ${target.additionalValue})` : "";
+      var valuestr = `value: ${Math.floor(dietEntry.expectedValue(MPA, diet))}${addvalstr} price: ${Math.floor(dietEntry.expectedPrice())}`;
+      kolmafia.print(`${dietEntry.quantity}${maxstr} ${target}${datastr}${helpersstr} ${valuestr}`);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  var totalValue = diet.expectedValue(MPA);
+  var totalCost = diet.expectedPrice();
+  var netValue = totalValue - totalCost;
+  kolmafia.print(`Assuming MPA of ${MPA}, Total Cost ${totalCost}, Total Value ${totalValue}, Net Value ${netValue}`);
+}
+
+// Item priority - higher means we eat it first.
+// Anything that gives a consumption buff should go first (e.g. Refined Palate).
+function itemPriority(menuItems) {
+  // Last menu item is the food itself.
+  var menuItem = menuItems[menuItems.length - 1];
+  if (menuItem === undefined) {
+    throw "Shouldn't have an empty menu item.";
+  }
+  if (menuItem.item === $item`spaghetti breakfast`) return 200;
+  if ($items`pocket wish, toasted brie`.includes(menuItem.item) || spleenCleaners.get(menuItem.item) || stomachLiverCleaners.get(menuItem.item)) {
+    return 100;
+  } else {
+    return 0;
+  }
+}
+function consumeDiet(diet, name) {
+  if (diet.entries.length === 0) return;
+  diet = diet.copy();
+  diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
+  kolmafia.print();
+  printDiet(diet, name);
+  kolmafia.print();
+  var seasoningCount = sum(diet.entries, _ref4 => {
+    var menuItems = _ref4.menuItems,
+      quantity = _ref4.quantity;
+    return menuItems.some(menuItem => menuItem.item === $item`Special Seasoning`) ? quantity : 0;
+  });
+  acquire(seasoningCount, $item`Special Seasoning`, MPA);
+
+  // Fill organs in rounds, making sure we're making progress in each round.
+  var organs = () => [kolmafia.myFullness(), kolmafia.myInebriety(), kolmafia.mySpleenUse()];
+  var lastOrgans = [-1, -1, -1];
+  var capacities = () => [kolmafia.fullnessLimit(), kolmafia.inebrietyLimit(), kolmafia.spleenLimit()];
+  var lastCapacities = [-1, -1, -1];
+  var currentQuantity = sum(diet.entries, "quantity");
+  var lastQuantity = -1;
+  while (currentQuantity > 0) {
+    if (arrayEquals(lastOrgans, organs()) && arrayEquals(lastCapacities, capacities()) && lastQuantity === currentQuantity) {
+      kolmafia.print();
+      printDiet(diet, "REMAINING");
+      kolmafia.print();
+      throw "Failed to consume some diet item.";
+    }
+    lastOrgans = organs();
+    lastCapacities = capacities();
+    lastQuantity = currentQuantity;
+    var _iterator2 = _createForOfIteratorHelper(diet.entries),
+      _step2;
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var dietEntry = _step2.value;
+        var menuItems = dietEntry.menuItems,
+          quantity = dietEntry.quantity;
+        if (quantity === 0) continue;
+        var countToConsume = quantity;
+        var capacity = {
+          food: kolmafia.fullnessLimit() - kolmafia.myFullness(),
+          booze: kolmafia.inebrietyLimit() - kolmafia.myInebriety(),
+          "spleen item": kolmafia.spleenLimit() - kolmafia.mySpleenUse()
+        };
+        var _iterator3 = _createForOfIteratorHelper(menuItems),
+          _step3;
+        try {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var _menuItem = _step3.value;
+            kolmafia.logprint(`Considering item ${_menuItem.item}.`);
+            if (_menuItem.organ === "booze" && _menuItem.size === 1 && !get$2("_mimeArmyShotglassUsed")) {
+              countToConsume = 1;
+            } else if (_menuItem.organ && _menuItem.size > 0) {
+              countToConsume = Math.min(countToConsume, Math.floor(capacity[_menuItem.organ] / _menuItem.size));
+            }
+            kolmafia.logprint(`Based on organ size, planning to consume ${countToConsume}.`);
+            var cleaning = stomachLiverCleaners.get(_menuItem.item);
+            if (cleaning) {
+              var _cleaning = _slicedToArray(cleaning, 2),
+                fullness = _cleaning[0],
+                inebriety = _cleaning[1];
+              countToConsume = Math.min(fullness < 0 ? Math.floor(-kolmafia.myFullness() / fullness) : quantity, inebriety < 0 ? Math.floor(-kolmafia.myInebriety() / inebriety) : quantity, countToConsume);
+              kolmafia.logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
+            }
+            var spleenCleaned = spleenCleaners.get(_menuItem.item);
+            if (spleenCleaned) {
+              countToConsume = Math.min(countToConsume, Math.floor(kolmafia.mySpleenUse() / spleenCleaned));
+              kolmafia.logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
+            }
+          }
+        } catch (err) {
+          _iterator3.e(err);
+        } finally {
+          _iterator3.f();
+        }
+        if (countToConsume === 0) continue;
+        var elementalResistAction = element => {
+          return (countToConsume, menuItem) => {
+            if (kolmafia.myMaxhp() < 1000 * (1 - kolmafia.elementalResistance(element) / 100)) {
+              maximizeCached(["0.05 HP", `${element} Resistance`]);
+              if (kolmafia.myMaxhp() < 1000 * (1 - kolmafia.elementalResistance(element) / 100)) {
+                throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
+              }
+            }
+            consumeSafe(countToConsume, menuItem.item);
+          };
+        };
+        var speakeasyDrinks = Object.keys(kolmafia.getClanLounge()).map(s => kolmafia.toItem(s)).filter(i => i.inebriety > 0).map(drink => [drink, (countToConsume, menuItem) => {
+          kolmafia.cliExecute(`drink ${countToConsume} ${menuItem.item}`);
+        }]);
+        var mayoActions = Object.values(Mayo).map(i => [i, (countToConsume, menuItem) => {
+          setMayoMinder(menuItem.item, countToConsume);
+        }]);
+        var itemActions = new Map([[saladFork, elementalResistAction($element`hot`)], [frostyMug, elementalResistAction($element`cold`)], [$item`pocket wish`, (countToConsume, menuItem) => acquire(countToConsume, $item`pocket wish`, 60000) && kolmafia.cliExecute(`genie effect ${menuItem.effect}`)], [$item`campfire hot dog`, (countToConsume, menuItem) => {
+          // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
+          if (!have$P($item`stick of firewood`)) {
+            kolmafia.buy(1, $item`stick of firewood`, ingredientCost($item`stick of firewood`));
+          }
+          consumeSafe(countToConsume, menuItem.item);
+        }], [$item`Special Seasoning`, "skip"], [$item`mini kiwi aioli`, (countToConsume, menuItem) => {
+          kolmafia.retrieveItem(menuItem.item, countToConsume);
+          kolmafia.use(menuItem.item);
+        }], [$item`Rethinking Candy`, (countToConsume, menuItem) => synthesize(countToConsume, menuItem.effect ?? $effect`Synthesis: Greed`)]].concat(_toConsumableArray(mayoActions), _toConsumableArray(speakeasyDrinks), [[$item`broberry brogurt`, (countToConsume, menuItem) => {
+          var amountNeeded = countToConsume - kolmafia.availableAmount($item`broberry brogurt`);
+          if (amountNeeded > 0) {
+            var coinmasterPrice = realmAvailable("sleaze") && kolmafia.sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`) ? 10 * garboValue($item`Beach Buck`) : Infinity;
+            var regularPrice = kolmafia.mallPrice($item`broberry brogurt`);
+            if (coinmasterPrice < regularPrice) {
+              var amountToBuy = Math.min(amountNeeded, Math.floor(kolmafia.itemAmount($item`Beach Buck`)));
+              kolmafia.buy($coinmaster`The Frozen Brogurt Stand`, amountToBuy, $item`broberry brogurt`);
+            }
+            kolmafia.buy(countToConsume - kolmafia.availableAmount($item`broberry brogurt`), $item`broberry brogurt`);
+          }
+          consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+        }], [$item`designer sweatpants`, countToConsume => {
+          for (var n = 1; n <= countToConsume; n++) {
+            kolmafia.useSkill($skill`Sweat Out Some Booze`);
+          }
+        }], [$item`august scepter`, () => kolmafia.useSkill($skill`Aug. 16th: Roller Coaster Day!`)]]));
+        var _iterator4 = _createForOfIteratorHelper(menuItems),
+          _step4;
+        try {
+          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+            var _menuItem2 = _step4.value;
+            var itemAction = itemActions.get(_menuItem2.item);
+            if (itemAction === "skip") {
+              continue;
+            } else if (itemAction) {
+              itemAction(countToConsume, _menuItem2);
+            } else {
+              consumeSafe(countToConsume, _menuItem2.item, _menuItem2.additionalValue);
+            }
+          }
+        } catch (err) {
+          _iterator4.e(err);
+        } finally {
+          _iterator4.f();
+        }
+        dietEntry.quantity -= countToConsume;
+      }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
+    }
+    currentQuantity = sum(diet.entries, "quantity");
+  }
+}
+function dailySpecialPrice(item) {
+  if (!hasMoonZoneRestaurant() || item !== get$2("_dailySpecial")) return 0;
+  return get$2("_dailySpecialPrice");
+}
+MenuItem.defaultPriceFunction = item => {
+  var prices = [kolmafia.retrievePrice(item), kolmafia.mallPrice(item), kolmafia.npcPrice(item), dailySpecialPrice(item)].filter(p => p > 0 && p < Number.MAX_SAFE_INTEGER);
+  if (prices.length > 0) {
+    return Math.min.apply(Math, _toConsumableArray(prices));
+  }
+  return !item.tradeable && have$P(item) ? 0 : Infinity;
+};
+function runDiet() {
+  withVIPClan(() => {
+    // Strip organ capacity enhancers to avoid accidental overfilling.
+    if (kolmafia.myFamiliar() === $familiar`Stooper`) {
+      kolmafia.useFamiliar($familiar.none);
+    }
+    var _iterator5 = _createForOfIteratorHelper(kolmafia.Slot.all()),
+      _step5;
+    try {
+      for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+        var slot = _step5.value;
+        var item = kolmafia.equippedItem(slot);
+        if (kolmafia.numericModifier(item, $modifier`stomach capacity`) || kolmafia.numericModifier(item, $modifier`liver capacity`) || kolmafia.numericModifier(item, $modifier`spleen capacity`)) {
+          unequip(slot);
+        }
+      }
+
+      // Compute diet
+    } catch (err) {
+      _iterator5.e(err);
+    } finally {
+      _iterator5.f();
+    }
+    var dietBuilder = computeDiet();
+    if (globalOptions.simdiet) {
+      kolmafia.print("===== SIMULATED DIET =====");
+      if (!get$2("_mimeArmyShotglassUsed") && have$P($item`mime army shotglass`)) {
+        printDiet(dietBuilder.shotglass(), "SHOTGLASS");
+      }
+      printDiet(dietBuilder.diet(), "FULL");
+    } else {
+      if (switchingToMayo()) {
+        var _GarboWorkshed$curren2, _GarboWorkshed$useNex;
+        if (((_GarboWorkshed$curren2 = GarboWorkshed.current) === null || _GarboWorkshed$curren2 === void 0 ? void 0 : _GarboWorkshed$curren2.workshed) === $item`Asdon Martin keyfob (on ring)`) {
+          drive(FarmingStrategy.asdonEffect, dietAdventures(dietBuilder.diet()) + (globalOptions.ascend ? 0 : estimatedTurnsTomorrow));
+        } else {
+          var _GarboWorkshed$curren3, _GarboWorkshed$curren4;
+          (_GarboWorkshed$curren3 = GarboWorkshed.current) === null || _GarboWorkshed$curren3 === void 0 || (_GarboWorkshed$curren4 = _GarboWorkshed$curren3.action) === null || _GarboWorkshed$curren4 === void 0 || _GarboWorkshed$curren4.call(_GarboWorkshed$curren3);
+        }
+        if (((_GarboWorkshed$useNex = GarboWorkshed.useNext()) === null || _GarboWorkshed$useNex === void 0 ? void 0 : _GarboWorkshed$useNex.workshed) !== $item`portable Mayo Clinic`) {
+          throw new Error("Failed to switch to portable Mayo clinic");
+        }
+      }
+      pillCheck();
+      nonOrganAdventures();
+      if (have$P($item`astral six-pack`)) {
+        kolmafia.use($item`astral six-pack`);
+      }
+      if (!get$2("_mimeArmyShotglassUsed") && have$P($item`mime army shotglass`)) {
+        consumeDiet(dietBuilder.shotglass(), "SHOTGLASS");
+      }
+      if (get$2("barrelShrineUnlocked") && !get$2("_barrelPrayer") && $classes`Turtle Tamer, Accordion Thief`.includes(kolmafia.myClass())) {
+        kolmafia.cliExecute("barrelprayer buff");
+      }
+      consumeDiet(dietBuilder.diet(), "FULL");
+      shrugBadEffects();
+    }
+  });
+  globalOptions.dietCompleted = true;
+}
+var PRE_DIET_WORKSHEDS = [undefined].concat(_toConsumableArray($items`Asdon Martin keyfob (on ring), TakerSpace letter of Marque, spinning wheel`));
+function switchingToMayo() {
+  var _GarboWorkshed$next, _GarboWorkshed$curren5, _GarboWorkshed$curren6;
+  return ((_GarboWorkshed$next = GarboWorkshed.next) === null || _GarboWorkshed$next === void 0 ? void 0 : _GarboWorkshed$next.workshed) === $item`portable Mayo Clinic` && (PRE_DIET_WORKSHEDS.includes((_GarboWorkshed$curren5 = GarboWorkshed.current) === null || _GarboWorkshed$curren5 === void 0 ? void 0 : _GarboWorkshed$curren5.workshed) || !!((_GarboWorkshed$curren6 = GarboWorkshed.current) !== null && _GarboWorkshed$curren6 !== void 0 && _GarboWorkshed$curren6.canRemove()));
+}
+function dietAdventures(diet) {
+  return Math.floor(estimatedGarboTurns(false) + diet.expectedAdventures());
+}
+
+var pantsgivingBonuses = new Map();
+function pantsgiving(mode) {
+  if (!have$P($item`Pantsgiving`) || !modeUseLimitedDrops(mode)) {
+    return new Map();
+  }
+  var count = get$2("_pantsgivingCount");
+  var turnArray = [5, 50, 500, 5000];
+  var index = kolmafia.myFullness() === kolmafia.fullnessLimit() ? get$2("_pantsgivingFullness") : turnArray.findIndex(x => count < x);
+  var turns = turnArray[index] || 50000;
+  if (turns - count > estimatedGarboTurns()) return new Map();
+  var cachedBonus = pantsgivingBonuses.get(turns);
+  if (cachedBonus) return new Map([[$item`Pantsgiving`, cachedBonus]]);
+  var expectedSinusTurns = kolmafia.getWorkshed() === $item`portable Mayo Clinic` ? 100 : 50;
+  var expectedUseableSinusTurns = globalOptions.ascend ? clamp(estimatedGarboTurns() - (turns - count) - kolmafia.haveEffect($effect`Kicked in the Sinuses`), 0, expectedSinusTurns) : expectedSinusTurns;
+  var sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat();
+  var fullnessValue = sinusVal + get$2("valueOfAdventure") * 6.5 - (kolmafia.mallPrice($item`jumping horseradish`) + kolmafia.mallPrice($item`Special Seasoning`));
+  var pantsgivingBonus = fullnessValue / (turns * 0.9);
+  pantsgivingBonuses.set(turns, pantsgivingBonus);
+  return new Map([[$item`Pantsgiving`, pantsgivingBonus]]);
+}
+function sweatpants(mode) {
+  if (!have$P($item`designer sweatpants`) || mode === BonusEquipMode.MEAT_TARGET) {
+    return new Map();
+  }
+  var needSweat = !globalOptions.ascend && sweat() < sweatCost($skill`Sweat Out Some Booze`) * 3 || sweat() < sweatCost($skill`Sweat Out Some Booze`) * potentialCasts($skill`Sweat Out Some Booze`);
+  if (!needSweat) return new Map();
+  var VOA = get$2("valueOfAdventure");
+  var bestPerfectDrink = cheapestItem($items`perfect cosmopolitan, perfect negroni, perfect dark and stormy, perfect mimosa, perfect old-fashioned, perfect paloma`);
+  var perfectDrinkValuePerDrunk = ((getAverageAdventures(bestPerfectDrink) + 3) * VOA - kolmafia.mallPrice(bestPerfectDrink)) / 3;
+  var splendidMartiniValuePerDrunk = (getAverageAdventures($item`splendid martini`) + 2) * VOA;
+  var bonus = Math.max(perfectDrinkValuePerDrunk, splendidMartiniValuePerDrunk) * 2 / 25;
+  return new Map([[$item`designer sweatpants`, bonus]]);
+}
+function pantogramPants() {
+  if (!have$P($item`pantogram pants`) || !get$2("_pantogramModifier").includes("Drops Items")) {
     return new Map([]);
   }
 
   // TODO: Calculate actual bonus value (good luck!)
-  return new Map([[$item`Mr. Screege's spectacles`, 180]]);
+  return new Map([[$item`pantogram pants`, 100]]);
 }
-function cinchoDeMayo(mode) {
-  if (!have$P($item`Cincho de Mayo`) || currentCinch() === 0 ||
-  // Ignore for DMT? Requires specific combat stuff, so probably weird there
-  mode === BonusEquipMode.DMT || mode === BonusEquipMode.MEAT_TARGET ||
-  // Require manuel to make sure we don't kill during stasis
-  !monsterManuelAvailable() ||
-  // If we're doing Yachtzees, only use up excess cincho.
-  maximumPinataCasts() <= 0 ||
-  // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
-  maxPassiveDamage() >= 50) {
+function bagOfManyConfections() {
+  if (!have$P($item`bag of many confections`) || !have$P($familiar`Stocking Mimic`)) {
     return new Map([]);
   }
-
-  // Account for a single use of Projectile Pinata, which gives 3x Robortender candies
-  return new Map([[$item`Cincho de Mayo`, 3 * felizValue()]]);
+  return new Map([[$item`bag of many confections`, garboAverageValue.apply(void 0, _toConsumableArray($items`Polka Pop, BitterSweetTarts, Piddles`)) / 6]]);
 }
-function calculateLaughingStockBonus(alwaysUseHorizon) {
-  var basicFruitValue = garboAverageValue.apply(void 0, _toConsumableArray($items`orange, grapefruit, grapes, lemon, lime, papaya, cranberries, strawberry, cherry, kumquat, tangerine, raspberry, kiwi, blackberry, banana, cactus fruit, plum, pear, peach`));
-  var classicFruitValue = garboAverageValue.apply(void 0, _toConsumableArray($items`classic banana, antique watermelon, quince`));
-  var horizonValue = 0.02 * (0.1 * classicFruitValue + 0.9 * basicFruitValue);
-  if (alwaysUseHorizon) return horizonValue;
-  var nextDrop$1 = nextDrop();
-  if (nextDrop$1) {
-    var _nextDrop = _slicedToArray(nextDrop$1, 2),
-      fruit = _nextDrop[0],
-      fights = _nextDrop[1];
-    if (fights > estimatedGarboTurns()) return 0;
-    return Math.max(garboValue(fruit) / fights, horizonValue);
-  }
-  return horizonValue;
-}
-function portableLaughingStock(mode) {
-  if (!have$P($item`Portable Laughing Stock`) || mode === BonusEquipMode.DMT) {
+function snowSuit(mode) {
+  // Ignore for MEAT_TARGET
+  // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
+  if (!have$P($item`Snow Suit`) || get$2("_carrotNoseDrops") >= 3 || !modeUseLimitedDrops(mode)) {
     return new Map([]);
   }
-  var laughingStockBonus = calculateLaughingStockBonus(mode !== BonusEquipMode.MEAT_TARGET);
-  return new Map([[$item`Portable Laughing Stock`, laughingStockBonus]]);
+  return new Map([[$item`Snow Suit`, garboValue($item`carrot nose`) / 10]]);
+}
+function mayflowerBouquet(mode) {
+  // +40% meat drop 12.5% of the time (effectively 5%)
+  // Drops flowers 50% of the time, wiki says 5-10 a day.
+  // Theorized that flower drop rate drops off but no info on wiki.
+  // During testing I got 4 drops then the 5th took like 40 more adventures
+  // so let's just assume rate drops by 11% with a min of 1% ¯\_(ツ)_/¯
+
+  // Ignore for MEAT_TARGET
+  // Ignore for DMT, assuming mafia might get confused about the drop by the weird combats
+  if (!have$P($item`Mayflower bouquet`) || !modeUseLimitedDrops(mode)) {
+    return new Map([]);
+  }
+  var sporadicMeatBonus = 40 * 0.125 * modeValueOfMeat(mode) / 100;
+  var averageFlowerValue = garboAverageValue.apply(void 0, _toConsumableArray($items`tin magnolia, upsy daisy, lesser grodulated violet, half-orchid, begpwnia`)) * Math.max(0.01, 0.5 - get$2("_mayflowerDrops") * 0.11);
+  return new Map([[$item`Mayflower bouquet`, (get$2("_mayflowerDrops") < 10 ? averageFlowerValue : 0) + sporadicMeatBonus]]);
+}
+function magnifyingGlass() {
+  if (!have$P($item`cursed magnifying glass`) || get$2("_voidFreeFights") >= 5 || get$2("cursedMagnifyingGlassCount") >= 13) {
+    return new Map();
+  }
+  return new Map([[$item`cursed magnifying glass`, globalOptions.prefs.valueOfFreeFight / 13]]);
+}
+function bindlestocking(mode) {
+  // Requires a guaranteed critical hit that does not need the weapon or off-hand slots
+  // Only BARF is supported as it is difficult to always crit elsewhere
+  var canCrit = have$P($skill`Furious Wallop`) && kolmafia.myFury() > 0 || have$P($skill`Head in the Game`);
+  if (!have$P($item`bindlestocking`) || mode !== BonusEquipMode.BARF || !canCrit) {
+    return new Map();
+  }
+
+  // TODO: Confirm drop rates with excavator https://excavator.loathers.net/projects/bindlestocking
+  // The only valuable items are fancy chocolate or jawbruiser which probably appear ~1% of the time
+  var value = 0.49 * garboAverageValue.apply(void 0, _toConsumableArray($items`Angry Farmer candy, Cold Hots candy, Daffy Taffy, Mr. Mediocrebar, Senior Mints, Wint-O-Fresh mint, orange`)) + 0.15 * garboAverageValue.apply(void 0, _toConsumableArray($items`eggnog, fruitcake, yo-yo`)) + 0.2 * garboAverageValue.apply(void 0, _toConsumableArray($items`candy cane, ball, fancy dress ball, gingerbread bugbear, razor-tipped yo-yo`)) + 0.15 * garboAverageValue.apply(void 0, _toConsumableArray($items`buckyball, gyroscope, monomolecular yo-yo, possessed top, top`)) + 0.01 * garboAverageValue.apply(void 0, _toConsumableArray($items`fancy chocolate, jawbruiser`));
+  return new Map([[$item`bindlestocking`, value]]);
+}
+function simpleTargetCrits(mode) {
+  var canCrit = have$P($skill`Furious Wallop`) && kolmafia.myFury() > 0 || have$P($skill`Head in the Game`);
+  if (!have$P($item`mafia pointer finger ring`) || mode !== BonusEquipMode.MEAT_TARGET || !canCrit || globalOptions.target.attributes.includes("FREE")) {
+    return new Map();
+  }
+  return new Map([[$item`mafia pointer finger ring`, targetPointerRingMeat()]]);
+}
+function batWings(mode) {
+  var batWings = $item`bat wings`;
+  if (!have$h() || mode !== BonusEquipMode.BARF || flapChance() === 0) {
+    return new Map();
+  }
+  var value = flapChance() * get$2("valueOfAdventure");
+  return new Map([[batWings, value]]);
+}
+function bonusGear(mode) {
+  var valueCircumstantialBonus = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  return new Map([].concat(_toConsumableArray(bonusAccessories(mode)), _toConsumableArray(pantogramPants()), _toConsumableArray(bagOfManyConfections()), _toConsumableArray(stickers(mode)), _toConsumableArray(powerGlove()), _toConsumableArray(sneegleebs()), _toConsumableArray(bindlestocking(mode)), _toConsumableArray(simpleTargetCrits(mode)), _toConsumableArray(batWings(mode)), _toConsumableArray(cupOfThirteens(mode)), _toConsumableArray(mobius(mode)), _toConsumableArray(valueCircumstantialBonus ? new Map([].concat(_toConsumableArray(pantsgiving(mode)), _toConsumableArray(sweatpants(mode)), _toConsumableArray(shavingBonus()), _toConsumableArray(snowSuit(mode)), _toConsumableArray(mayflowerBouquet(mode)), _toConsumableArray(mode === BonusEquipMode.BARF ? magnifyingGlass() : []), _toConsumableArray(juneCleaver$1(mode)), _toConsumableArray(rakeLeaves(mode)), _toConsumableArray(aviatorGoggles(mode)), _toConsumableArray(skeletonCane(mode)))) : [])));
+}
+var encounterMap = [4,
+// 0
+7,
+// 1
+14,
+// 2
+14,
+// 3
+25,
+// 4
+25,
+// 5
+41,
+// 6
+41,
+// 7
+41,
+// 8
+41,
+// 9
+41,
+// 10
+51,
+// 11
+51,
+// 12
+51,
+// 13
+51,
+// 14
+51,
+// 15
+51,
+// 16
+51,
+// 17
+51 // 18
+];
+function mobius(mode) {
+  if (mode === BonusEquipMode.BARF) {
+    var value = kolmafia.totalTurnsPlayed() - get$2("_lastMobiusStripTurn", 0) > encounterMap[get$2("_mobiusStripEncounters", 0)] - 3 ? Math.max(kolmafia.mallPrice($item`clock`), get$2("valueOfAdventure") * 3) / 2 : 0;
+    return new Map([[$item`Möbius ring`, value]]);
+  }
+  return new Map();
+}
+function shavingBonus() {
+  if (!have$v() || buffs.some(buff => have$P(buff, 2))) {
+    return new Map();
+  }
+  var timeToMeatBuff = 11 * (buffsUntil($effect`Friendly Chops`) ?? Infinity);
+  if (globalOptions.ascend && timeToMeatBuff > estimatedGarboTurns()) {
+    return new Map();
+  }
+  if (!globalOptions.ascend && nextBuff() === $effect`Friendly Chops` && estimatedGarboTurns() < 11 * 11) {
+    return new Map();
+  }
+  var bonusValue = (baseMeat() * 100 + 72 * 50) / 100;
+  return new Map([[$item`Daylight Shavings Helmet`, bonusValue]]);
+}
+var juneCleaverEV = null;
+function juneCleaver$1(mode) {
+  var estimatedJuneCleaverTurns = remainingUserTurns() + estimatedGarboTurns();
+  if (!have$P($item`June cleaver`) || get$2("_juneCleaverFightsLeft") > estimatedJuneCleaverTurns || !get$2("_juneCleaverFightsLeft")) {
+    return new Map();
+  }
+  if (!juneCleaverEV) {
+    juneCleaverEV = sum(_toConsumableArray(choices), choice => valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])) / choices.length;
+  }
+  // If we're ascending then the chances of hitting choices in the queue is reduced
+  if (globalOptions.ascend && estimatedJuneCleaverTurns <= 180 && getInterval() === 30) {
+    var availEV = sum(_toConsumableArray(choicesAvailable()), choice => valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)])) / choicesAvailable().length;
+    var queueEV = sum(_toConsumableArray(queue()), choice => {
+      var choiceValue = valueJuneCleaverOption(juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)]);
+      var cleaverEncountersLeft = Math.floor(estimatedJuneCleaverTurns / 30);
+      var encountersToQueueExit = 1 + queue().indexOf(choice);
+      var chancesLeft = Math.max(0, cleaverEncountersLeft - encountersToQueueExit);
+      var encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
+      return choiceValue * encounterProbability;
+    }) / queue().length;
+    juneCleaverEV = queueEV + availEV;
+  }
+  var interval = mode === BonusEquipMode.MEAT_TARGET ? 30 : getInterval();
+  return new Map([[$item`June cleaver`, juneCleaverEV / interval]]);
+}
+function rakeLeaves(mode) {
+  if (mode === BonusEquipMode.MEAT_TARGET || !have$o()) {
+    return new Map();
+  }
+  var rakeValue = garboValue($item`inflammable leaf`) * 1.5;
+  return new Map([[$item`rake`, rakeValue], [$item`tiny rake`, rakeValue]]);
+}
+function aviatorGoggles(mode) {
+  if (mode === BonusEquipMode.MEAT_TARGET || !have$P($familiar`Mini Kiwi`)) {
+    return new Map();
+  }
+  var goggleValue = garboValue($item`mini kiwi`) * 0.25;
+  return new Map([[$item`aviator goggles`, goggleValue]]);
+}
+function skeletonCane(mode) {
+  if (mode === BonusEquipMode.MEAT_TARGET || !have$P($familiar`Skeleton of Crimbo Past`) || get$2("_knuckleboneDrops") >= 100) {
+    return new Map();
+  }
+  // Cane improves drop rate by 10%
+  var caneValue = garboValue($item`knucklebone`) * 0.1;
+  return new Map([[$item`small peppermint-flavored sugar walking crook`, caneValue]]);
+}
+function stickers(mode) {
+  // This function represents the _cost_ of using stickers
+  // Embezzlers are the best monster to use them on, so there's functionally no cost
+  if (mode === BonusEquipMode.MEAT_TARGET) return new Map();
+  var cost = sumNumbers($slots`sticker1, sticker2, sticker3`.map(s => kolmafia.mallPrice(kolmafia.equippedItem(s)) / 20));
+  return new Map([[$item`scratch 'n' sniff sword`, -1 * cost], [$item`scratch 'n' sniff crossbow`, -1 * cost]]);
+}
+function powerGlove() {
+  if (!have$P($item`Powerful Glove`)) return new Map();
+  // 23% proc rate, according to the wiki
+  // https://kol.coldfront.net/thekolwiki/index.php/Powerful_Glove
+  return new Map([[$item`Powerful Glove`, 0.25 * garboAverageValue.apply(void 0, _toConsumableArray($items`blue pixel, green pixel, red pixel, white pixel`))]]);
+}
+var speakeasyBanList = $items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`;
+var POSSIBLE_SNEEGLEEB_DROPS = kolmafia.Item.all().filter(i => i.tradeable && i.discardable && (i.inebriety || i.fullness || i.potion && kolmafia.stringModifier(i, kolmafia.Modifier.get("Last Available")) === "") && !speakeasyBanList.includes(i));
+var sneegleebBonus;
+var SNEEGLEEB_DROP_RATE = 0.13;
+var MAX_SNEEGLEEB_PRICE = 100_000; // arbitrary, to help avoid outliers
+function sneegleebs() {
+  sneegleebBonus ?? (sneegleebBonus = sum(POSSIBLE_SNEEGLEEB_DROPS, item => Math.min(garboValue(item), MAX_SNEEGLEEB_PRICE)) / POSSIBLE_SNEEGLEEB_DROPS.length * SNEEGLEEB_DROP_RATE);
+  return new Map([[$item`KoL Con 13 snowglobe`, sneegleebBonus], [$item`can of mixed everything`, sneegleebBonus / 2]].filter(_ref => {
+    var _ref2 = _slicedToArray(_ref, 1),
+      item = _ref2[0];
+    return have$P(item);
+  }));
+}
+function toyCupidBow(familiar) {
+  if (!have$f()) return new Map();
+  var turns = tcbTurnsLeft(familiar, getUsedTcbFamiliars());
+  if (estimatedGarboTurns() <= turns) {
+    return new Map();
+  }
+  return new Map([[$item`toy Cupid bow`, familiarEquipmentValue(familiar) / turns]]);
+}
+var CUP_OF_THIRTEENS_DROPS = POSSIBLE_SNEEGLEEB_DROPS.filter(item => item.inebriety);
+var cupOfThirteensBonus;
+function cupOfThirteens(mode) {
+  var _cupOfThirteensBonus;
+  if (!have$8() || mode !== BonusEquipMode.BARF && mode !== BonusEquipMode.FREE) {
+    return new Map();
+  }
+  var dropsToday = get$2("_cupOf13sDrops");
+
+  // A drop occurs at 6 charges if we haven't gotten a drop today.
+  // Otherwise, the next drop occurs at 10 charges.
+  var chargeRequired = dropsToday === 0 ? 6 : 10;
+  var qualities = dropsToday <= 1 ? ["EPIC", "awesome"] : dropsToday <= 3 ? ["awesome", "good"] : dropsToday <= 5 ? ["good", "decent"] : ["decent", "crappy"];
+  if (((_cupOfThirteensBonus = cupOfThirteensBonus) === null || _cupOfThirteensBonus === void 0 ? void 0 : _cupOfThirteensBonus[0]) !== qualities[0]) {
+    var possibleDrops = CUP_OF_THIRTEENS_DROPS.filter(item => qualities.includes(item.quality));
+    cupOfThirteensBonus = [qualities[0], garboAverageValue.apply(void 0, _toConsumableArray(possibleDrops))];
+  }
+  var cupBonus = cupOfThirteensBonus[1] / chargeRequired;
+  return new Map([[$item`Cup of 13s`, cupBonus]]);
 }
 
-/*
-This is separate from bonusGear to prevent circular references
-bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
-If this isn't separated from bonusGear(), usingThumbRing() will call bonusGear(), creating a dangerous loop
-*/
-function bonusAccessories(mode) {
-  return new Map([].concat(_toConsumableArray(mafiaThumbRing(mode)), _toConsumableArray(luckyGoldRing(mode)), _toConsumableArray(mrCheengsSpectacles()), _toConsumableArray(portableLaughingStock(mode)), _toConsumableArray(mrScreegesSpectacles()), _toConsumableArray(cinchoDeMayo(mode))));
-}
-var cachedUsingThumbRing = null;
-/**
- * Calculates whether we expect to be wearing the thumb ring for most of the farming day.
- * This is used in functions that leverage projected turns; for instance, calculating the
- * number of turns of sweet synthesis required in our diet calcs or potion costs.
- * @returns boolean of whether we expect to be wearing the thumb ring for much of the day
- */
-function usingThumbRing() {
-  if (!have$P($item`mafia thumb ring`)) {
-    return false;
-  }
-  if (cachedUsingThumbRing === null) {
-    var gear = bonusAccessories(BonusEquipMode.BARF);
-    var accessoryBonuses = _toConsumableArray(gear.entries()).filter(_ref => {
-      var _ref2 = _slicedToArray(_ref, 1),
-        item = _ref2[0];
-      return have$P(item);
-    });
-    kolmafia.setLocation(FarmingStrategy.location);
-    var meatAccessories = kolmafia.Item.all().filter(item => have$P(item) && kolmafia.toSlot(item) === $slot`acc1` && get$1("Meat Drop", item) > 0).map(item => [item, get$1("Meat Drop", item) * baseMeat() / 100]);
-    var accessoryValues = new Map(accessoryBonuses);
-    var _iterator = _createForOfIteratorHelper(meatAccessories),
-      _step;
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var _step$value = _slicedToArray(_step.value, 2),
-          accessory = _step$value[0],
-          value = _step$value[1];
-        accessoryValues.set(accessory, value + (accessoryValues.get(accessory) ?? 0));
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
+function meatTargetOutfit() {
+  var spec = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var adventureArgument = arguments.length > 1 ? arguments[1] : undefined;
+  cleaverCheck();
+  validateGarbageFoldable(spec);
+  var outfit = Outfit.from(spec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`));
+  var _toAdventure = toAdventure(adventureArgument ?? $location.none),
+    location = _toAdventure.location,
+    target = _toAdventure.target;
+  if (location === $location`Crab Island`) {
+    var meat = kolmafia.meatDrop($monster`giant giant crab`) + songboomMeat();
+    outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
+  } else if (target === $monster`Knob Goblin Embezzler` && have$P($effect`Lucky!`)) {
+    var _meat = kolmafia.meatDrop($monster`Knob Goblin Embezzler`) + songboomMeat();
+    outfit.modifier.push(`${_meat / 100} Meat Drop`, "-tie");
+  } else {
+    if (targetingMeat()) {
+      outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.MEAT_TARGET)} Meat Drop`, "-tie");
+    } else if (globalOptions.target.attributes.includes("FREE")) {
+      outfit.modifier.push("-tie");
     }
-    if (have$P($item`mafia pointer finger ring`) && (kolmafia.myClass() === $class`Seal Clubber` && have$P($skill`Furious Wallop`) || have$P($item`haiku katana`) || have$P($item`Operation Patriot Shield`) || have$P($item`unwrapped knock-off retro superhero cape`) || have$P($item`left bear arm`) || have$P($skill`Head in the Game`))) {
-      accessoryValues.set($item`mafia pointer finger ring`, basePointerRingMeat());
+    if (nextWeekReady()) {
+      outfit.equip($item`legendary seal-clubbing club`);
     }
-    var bestAccessories = _toConsumableArray(accessoryValues.entries()).sort((_ref3, _ref4) => {
-      var _ref5 = _slicedToArray(_ref3, 2),
-        aBonus = _ref5[1];
-      var _ref6 = _slicedToArray(_ref4, 2),
-        bBonus = _ref6[1];
-      return bBonus - aBonus;
-    }).map(_ref7 => {
-      var _ref8 = _slicedToArray(_ref7, 1),
-        item = _ref8[0];
-      return item;
-    });
-    cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
+    if (!have$P($effect`Everything Looks Purple`) && (location === null || location === void 0 ? void 0 : location.environment) !== Environment.Underwater && !shouldRedigitize()) {
+      outfit.equip($item`Roman Candelabra`);
+    }
   }
-  return cachedUsingThumbRing;
+  applyCheeseBonus(outfit, targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE);
+  outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
+  outfit.familiar ?? (outfit.familiar = targetingMeat() ? meatFamiliar() : freeFightFamiliar(location ?? globalOptions.target, {
+    equipmentForced: !outfit.canEquip($item`toy Cupid bow`)
+  }));
+  var bjornChoice = chooseBjorn(targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE, outfit.familiar);
+  var underwater = (location === null || location === void 0 ? void 0 : location.environment) === "underwater";
+  if (underwater) {
+    if (!outfit.familiar.underwater) {
+      outfit.equipFirst(familiarWaterBreathingEquipment);
+    }
+    if (!outfit.equipFirst(waterBreathingEquipment)) {
+      outfit.modifier.push("sea");
+    }
+  }
+  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
+    outfit.equip($item`LED candle`);
+    outfit.setModes({
+      jillcandle: "ultraviolet"
+    });
+  }
+  useUPCsIfNeeded(outfit);
+  outfit.addBonuses(bonusGear(targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE));
+  if (!targetingMeat()) outfit.addBonuses(toyCupidBow(outfit.familiar));
+  var bjornalike = bestBjornalike(outfit);
+  if (location === getLocation() && turnsLeftOnQuest(false) === 1 && haveBooze()) {
+    outfit.addBonus($item`Guzzlr pants`, expectedReward(true) - expectedReward(false));
+  }
+  if (bjornalike) {
+    outfit.setBonus(bjornalike, bjornChoice.value);
+    outfit.equip(bjornalike);
+    var other = $items`Buddy Bjorn, Crown of Thrones`.filter(i => i !== bjornalike)[0];
+    outfit.avoid.push(other);
+    switch (bjornalike) {
+      case $item`Buddy Bjorn`:
+        outfit.bjornify(bjornChoice.familiar);
+        break;
+      case $item`Crown of Thrones`:
+        outfit.enthrone(bjornChoice.familiar);
+        break;
+    }
+  }
+  outfit.setModes({
+    snowsuit: "nose",
+    parka: "kachungasaur",
+    edpiece: "fish"
+  });
+  return outfit;
 }
 
 function embezzlerFights() {
@@ -25930,6 +24955,12 @@ function highMeatMonsterCount() {
   return meatTargets + embezzlers;
 }
 
+var guaranteedBullseye = () => get$2("everfullDartPerks").includes("25% Better bullseye targeting") && get$2("everfullDartPerks").includes("25% More Accurate bullseye targeting") && get$2("everfullDartPerks").includes("25% better chance to hit bullseyes");
+var DARTS_KILL_BEFORE_RUN = 5;
+var dartLevelTooHigh = () => get$2("everfullDartPerks").split(",").length >= DARTS_KILL_BEFORE_RUN;
+var safeToAttemptBullseye = () => have$P($item`Everfull Dart Holster`) && (guaranteedBullseye() || (have$P($item`spring shoes`) || have$P($item`Roman Candelabra`)) && !dartLevelTooHigh());
+var canBullseye = () => !have$P($effect`Everything Looks Red`) && (guaranteedBullseye() || !have$P($effect`Everything Looks Green`));
+
 function timeToMeatify() {
   if (!have$P($familiar`Grey Goose`) || get$2("_meatifyMatterUsed") || kolmafia.myInebriety() > kolmafia.inebrietyLimit()) {
     return false;
@@ -26017,302 +25048,6 @@ function tcbValue(familiar, tcbFamiliars, equipmentForced, includeAmuletCoinOppo
   // Includes a lazy linearization of the value of its leprechaun-pounds
   var amuletCoin = includeAmuletCoinOpportunityCost && have$P($item`amulet coin`) ? (50 + 10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) * baseMeat() / 100 : 0;
   return familiarEquipmentValue(familiar) / tcbTurnsLeft(familiar, tcbFamiliars) - amuletCoin;
-}
-
-var MEAT_DROP_VALUE = () => baseMeat() / 100;
-function familiarNeedsBoot(familiar) {
-  return FarmingStrategy.isUnderwater() && !have$P($effect`Driving Waterproofly`) && !familiar.underwater;
-}
-var outfitCache = new Map();
-var outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
-var SPECIAL_FAMILIARS_FOR_CACHING = new Map([[
-// Derives its value from famexp and requires _much_ more famexp than other exp familiars
-$familiar`Chest Mimic`, {
-  extraValue: _ref => {
-    var famexp = _ref.famexp;
-    return famexp * MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50;
-  }
-}],
-// Uniquely required to equip its fam equip to meaningfully have value
-[$familiar`Jill-of-All-Trades`, {
-  equip: $item`LED candle`
-}],
-// Derives its value irregularly from +famweight
-[$familiar`Mini Kiwi`, {
-  extraValue: _ref2 => {
-    var weight = _ref2.weight;
-    return clamp((weight + totalFamiliarWeight($familiar`Mini Kiwi`, false)) * 0.005, 0, 1) * garboValue($item`mini kiwi`);
-  }
-}]]);
-function outfitCacheKey(familiar) {
-  if (SPECIAL_FAMILIARS_FOR_CACHING.has(familiar)) {
-    return familiar;
-  }
-  var lepMultiplier = findLeprechaunMultiplier(familiar);
-  if (!FarmingStrategy.isUnderwater()) {
-    return lepMultiplier;
-  }
-  return `${lepMultiplier}:${familiar.underwater}`;
-}
-function getCachedOutfitValues(fam) {
-  var cacheKey = outfitCacheKey(fam);
-  var currentValue = outfitCache.get(cacheKey);
-  var needsBoot = familiarNeedsBoot(fam);
-  if (currentValue) return currentValue;
-  var current = kolmafia.myFamiliar();
-  kolmafia.cliExecute("checkpoint");
-  try {
-    computeBarfOutfit({
-      familiar: fam,
-      equip: needsBoot ? $items`das boot` : [],
-      avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections, bat wings, toy Cupid bow`
-    }, true).dress();
-    var outfit = outfitSlots.map(slot => kolmafia.equippedItem(slot));
-    var bonuses = bonusGear(BonusEquipMode.MEAT_TARGET, false);
-    var values = {
-      weight: sum(outfit, eq => get$1("Familiar Weight", eq)),
-      meat: sum(outfit, eq => get$1("Meat Drop", eq)),
-      item: sum(outfit, eq => get$1("Item Drop", eq)),
-      famexp: sum(outfit, eq => get$1("Familiar Experience", eq)),
-      bonus: sum(outfit, eq => bonuses.get(eq) ?? 0)
-    };
-    outfitCache.set(cacheKey, values);
-    return values;
-  } finally {
-    kolmafia.useFamiliar(current);
-    kolmafia.cliExecute("outfit checkpoint");
-  }
-}
-var nonOutfitWeightBonus = () => kolmafia.weightAdjustment() - sum(outfitSlots, slot => get$1("Familiar Weight", kolmafia.equippedItem(slot)));
-function familiarModifier(familiar, modifier) {
-  var cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
-  var totalWeight = totalFamiliarWeight(familiar, false) + nonOutfitWeightBonus() + cachedOutfitWeight;
-  var _ref3 = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {},
-    equip = _ref3.equip;
-  return equip ? kolmafia.numericModifier(familiar, modifier, totalWeight - kolmafia.numericModifier(equip, "Familiar Weight"), equip) : kolmafia.numericModifier(familiar, modifier, totalWeight, $item.none);
-}
-function familiarAbilityValue(familiar) {
-  return familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() + familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue();
-}
-function totalFamiliarValue(_ref4) {
-  var expectedValue = _ref4.expectedValue,
-    outfitValue = _ref4.outfitValue,
-    familiar = _ref4.familiar;
-  return expectedValue + outfitValue + familiarAbilityValue(familiar);
-}
-function turnsNeededFromBaseline(baselineToCompareAgainst, tcbFamiliars) {
-  return _ref5 => {
-    var familiar = _ref5.familiar,
-      limit = _ref5.limit,
-      outfitValue = _ref5.outfitValue,
-      bonusTurns = _ref5.bonusTurns;
-    switch (limit) {
-      case "drops":
-        return sum(getAllDrops(familiar).filter(_ref6 => {
-          var expectedValue = _ref6.expectedValue;
-          return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
-        }), "expectedTurns") - (bonusTurns ?? 0);
-      case "experience":
-        return getExperienceFamiliarLimit(familiar) - (bonusTurns ?? 0);
-      case "none":
-        return 0;
-      case "cupid":
-        return tcbTurnsLeft(familiar, tcbFamiliars) - (bonusTurns ?? 0);
-      case "special":
-        return getSpecialFamiliarLimit({
-          familiar,
-          outfitValue,
-          baselineToCompareAgainst
-        }) - (bonusTurns ?? 0);
-    }
-  };
-}
-function calculateOutfitValue(f) {
-  var _SPECIAL_FAMILIARS_FO, _SPECIAL_FAMILIARS_FO2;
-  var outfit = getCachedOutfitValues(f.familiar);
-  var outfitValue = outfit.bonus + outfit.meat * MEAT_DROP_VALUE() + outfit.item * FarmingStrategy.itemDropValue() + (((_SPECIAL_FAMILIARS_FO = SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)) === null || _SPECIAL_FAMILIARS_FO === void 0 || (_SPECIAL_FAMILIARS_FO2 = _SPECIAL_FAMILIARS_FO.extraValue) === null || _SPECIAL_FAMILIARS_FO2 === void 0 ? void 0 : _SPECIAL_FAMILIARS_FO2.call(_SPECIAL_FAMILIARS_FO, outfit)) ?? 0);
-  var outfitWeight = outfit.weight;
-  return _objectSpread2(_objectSpread2({}, f), {}, {
-    outfitValue,
-    outfitWeight
-  });
-}
-function extraValue(target, meat, jellyfish) {
-  var targetValue = totalFamiliarValue(target);
-  var meatFamiliarValue = totalFamiliarValue(meat);
-  var jelly = FarmingStrategy.monsters().every(monster => monster.attackElement === $element`Stench`) ? $item`stench jelly` : kolmafia.Item.none;
-  var jellyfishValue = jellyfish ? garboValue(jelly) / 20 + familiarAbilityValue(jellyfish.familiar) + jellyfish.outfitValue : 0;
-  return Math.max(targetValue - Math.max(meatFamiliarValue, jellyfishValue), 0);
-}
-var familiarPrintout = _ref7 => {
-  var expectedValue = _ref7.expectedValue,
-    familiar = _ref7.familiar,
-    outfitValue = _ref7.outfitValue;
-  return `(expected value of ${expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(familiar).toFixed(1)} from familiar abilities and ${outfitValue.toFixed(1)} from outfit)`;
-};
-function barfFamiliar(equipmentForced) {
-  // Meatify is basically always the most valuable thing we can do, to the point of not even counting as a marginal familiar
-  if (timeToMeatify()) {
-    return {
-      familiar: $familiar`Grey Goose`,
-      extraValue: 0
-    };
-  }
-
-  // Luddite mode users get off here
-  if (get$2("garbo_IgnoreMarginalFamiliars", false)) {
-    return {
-      familiar: meatFamiliar(),
-      extraValue: 0
-    };
-  }
-  var meat = meatFamiliar();
-  var usedTcbFamiliars = getUsedTcbFamiliars();
-  var fullMenu = menu(FarmingStrategy.location, {
-    canChooseMacro: true,
-    includeExperienceFamiliars: true,
-    mode: "barf"
-  }).flatMap(generalFamiliar => {
-    // Here we do two things:
-    // * transform `GeneralFamiliar`s into `MarginalFamiliar`s, which carry with them the total value of the outfit you'd wear
-    // * "double up" on familiars for which the toy Cupid bow is available
-    var normal = calculateOutfitValue(generalFamiliar);
-    if (normal.limit === "cupid" ||
-    // If we're already dealing with one of our generated toy cupid bow picks
-    equipmentForced ||
-    // If we're unable to equip the toy cupid bow
-    !have$f() ||
-    // If we don't have the toy cupid bow
-    usedTcbFamiliars.has(generalFamiliar.familiar) // If we've already gotten the thing
-    ) {
-      return normal;
-    }
-    var tcb = calculateOutfitValue(_objectSpread2(_objectSpread2({}, generalFamiliar), {}, {
-      expectedValue: generalFamiliar.expectedValue + tcbValue(generalFamiliar.familiar, usedTcbFamiliars, false, true),
-      limit: "cupid"
-    }));
-    if (tcb.expectedValue >= normal.expectedValue) {
-      return [tcb, _objectSpread2(_objectSpread2({}, normal), {}, {
-        // Account for the already-burned TCB turns when calculating the limit for the "normal" entry for the familiar
-        bonusTurns: tcbTurnsLeft(generalFamiliar.familiar, usedTcbFamiliars)
-      })];
-    }
-    return normal;
-  });
-  var meatFamiliarEntry = fullMenu.find(_ref8 => {
-    var familiar = _ref8.familiar,
-      limit = _ref8.limit;
-    return familiar === meat && limit !== "cupid";
-  });
-  if (!meatFamiliarEntry) {
-    throw new Error("Something went wrong when initializing familiars!");
-  }
-  var meatFamiliarValue = totalFamiliarValue(meatFamiliarEntry);
-  // Ultimately, using our meat familiar all day is the default behavior
-  // so any familiar worse than that isn't worth spending any time thinking about
-  var viableMenu = fullMenu.filter(f => totalFamiliarValue(f) >= meatFamiliarValue);
-  if (viableMenu.length === 0) {
-    return {
-      familiar: meat,
-      extraValue: 0
-    };
-  }
-
-  // Determine the baseline for how good a familiar needs to be to be run--either an unlimited familiar, or our meat familiar
-  var unlimitedCruisingFamiliars = viableMenu.filter(_ref9 => {
-    var limit = _ref9.limit;
-    return limit === "none";
-  });
-  var cruisingFamiliar = unlimitedCruisingFamiliars.length ? maxBy(unlimitedCruisingFamiliars, totalFamiliarValue) : meatFamiliarEntry;
-  var cruisingFamiliarValue = totalFamiliarValue(cruisingFamiliar);
-
-  // Only consider familiars better than our best unlimited familiar
-  var finalMenu = viableMenu.filter(f => totalFamiliarValue(f) >= cruisingFamiliarValue);
-
-  // If the shrub beats our cruising familiar, use it
-  var shrubAvailable = finalMenu.some(_ref0 => {
-    var familiar = _ref0.familiar;
-    return familiar === $familiar`Crimbo Shrub`;
-  });
-  if (shrubAvailable) {
-    return {
-      familiar: $familiar`Crimbo Shrub`,
-      extraValue: 0
-    };
-  }
-  var turnsNeeded = sum(finalMenu, turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars));
-
-  // If we have enough turns to get all the drops we need, prioritize by using our best leprechauns first
-  // Otherwise, prioritize by using the most valuable familiar
-  var best = turnsNeeded < turnsAvailable() ? maxBy(finalMenu, "leprechaunMultiplier") : maxBy(finalMenu, totalFamiliarValue);
-  kolmafia.print(`Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${meatFamiliarEntry.familiar} ${familiarPrintout(meatFamiliarEntry)}.`, HIGHLIGHT);
-  var jellyfish = fullMenu.find(_ref1 => {
-    var familiar = _ref1.familiar;
-    return familiar === $familiar`Space Jellyfish`;
-  });
-  return {
-    familiar: best.familiar,
-    extraValue: extraValue(best, meatFamiliarEntry, jellyfish)
-  };
-}
-function getSpecialFamiliarLimit(_ref10) {
-  var familiar = _ref10.familiar,
-    outfitValue = _ref10.outfitValue,
-    baselineToCompareAgainst = _ref10.baselineToCompareAgainst;
-  switch (familiar) {
-    case $familiar`Space Jellyfish`:
-      return sum(getAllJellyfishDrops().filter(_ref11 => {
-        var expectedValue = _ref11.expectedValue;
-        return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
-      }), "turnsAtValue");
-    case $familiar`Crimbo Shrub`:
-      return Math.ceil(estimatedGarboTurns() / 100);
-    case $familiar`Skeleton of Crimbo Past`:
-      return clamp(100 - get$2("_knuckleboneDrops"), 0, 100) / expectedBones(FarmingStrategy.location);
-    default:
-      return 0;
-  }
-}
-
-function sandwormFamiliar() {
-  if (have$P($familiar`Trick-or-Treating Tot`) && have$P($item`li'l ninja costume`) && !have$P($item`toy Cupid bow`)) {
-    return $familiar`Trick-or-Treating Tot`;
-  }
-  var viableFairies = kolmafia.Familiar.all().filter(f => have$P(f) && findFairyMultiplier(f) && f !== $familiar`Steam-Powered Cheerleader` && !f.physicalDamage && !f.elementalDamage);
-  var highestFairyMult = findFairyMultiplier(maxBy(viableFairies, f => f === $familiar`Jill-of-All-Trades` && have$P($item`toy Cupid bow`) ? 1 // Ignore LED candle if we have TCB
-  : findFairyMultiplier(f)));
-  var goodFairies = viableFairies.filter(f => findFairyMultiplier(f) === highestFairyMult);
-  if (have$P($familiar`Reagnimated Gnome`) && !have$P($item`gnomish housemaid's kgnee`) && !get$2("_garbo_triedForKgnee", false)) {
-    var current = kolmafia.myFamiliar();
-    kolmafia.useFamiliar($familiar`Reagnimated Gnome`);
-    kolmafia.visitUrl("arena.php");
-    kolmafia.runChoice(4);
-    kolmafia.useFamiliar(current);
-    _set("_garbo_triedForKgnee", true);
-  }
-  if (have$P($item`gnomish housemaid's kgnee`) && highestFairyMult === 1 && !have$P($item`toy Cupid bow`)) {
-    goodFairies.push($familiar`Reagnimated Gnome`);
-  }
-  var bonuses = [].concat(_toConsumableArray(menu($monster`giant sandworm`, {
-    canChooseMacro: false
-  })), [{
-    familiar: $familiar`Reagnimated Gnome`,
-    expectedValue: get$2("valueOfAdventure") * 70 / 1000,
-    leprechaunMultiplier: 0,
-    limit: "none"
-  }]);
-  var tcbFamiliars = getUsedTcbFamiliars();
-  var bestNonCheerleaderFairy = maxBy(goodFairies, f => {
-    var _bonuses$find;
-    return ((_bonuses$find = bonuses.find(_ref => {
-      var familiar = _ref.familiar;
-      return familiar === f;
-    })) === null || _bonuses$find === void 0 ? void 0 : _bonuses$find.expectedValue) ?? tcbValue(f, tcbFamiliars);
-  });
-  if (have$P($familiar`Steam-Powered Cheerleader`) && findFairyMultiplier($familiar`Steam-Powered Cheerleader`) > findFairyMultiplier(bestNonCheerleaderFairy)) {
-    return $familiar`Steam-Powered Cheerleader`;
-  }
-  return bestNonCheerleaderFairy;
 }
 
 function shouldRedigitize() {
@@ -26984,533 +25719,876 @@ var AscendingQuest = {
   tasks: AscendingTasks
 };
 
-function dessertIslandWorthIt() {
-  // estimating value of giant giant crab at 5*VOA, it has 2000 base meat
-  return garboValue($item`cocoa of youth`) > 5 * get$2("valueOfAdventure");
+var sessions = new Map();
+/**
+ * Start a new session, deleting any old session
+ */
+function startSession() {
+  sessions.set("full", Session.current());
 }
-function crewRoleValue(crewmate) {
-  // Cuisinier is highest value if cocoa of youth is more meat than expected from giant crab
-  if (dessertIslandWorthIt() && crewmate.includes("Cuisinier")) {
-    return 50;
+
+/**
+ * Compute the difference between the current drops and starting session (if any)
+ * @returns The difference
+ */
+function sessionSinceStart() {
+  var session = sessions.get("full");
+  if (session) {
+    return Session.current().diff(session);
   }
-  // Coxswain helps save turns if we run from storms
-  if (crewmate.includes("Coxswain")) return 40;
-  // Harquebusier gives us extra fun from combats
-  if (crewmate.includes("Harquebusier")) return 30;
-  // Crypto, Cuisinier (if cocoa not worth it), and Mixologist have small bonuses we care about less
-  return 0;
+  return Session.current();
 }
-function crewAdjectiveValue(crewmate) {
-  // Wide-Eyed give us bonus fun when counting birds in smooth sailing, and we'll mostly be doing that rather than spending limited grub/grog
-  if (crewmate.includes("Wide-Eyed")) return 5;
-  // Gluttonous can help when running out of grub, even though we usually shouldn't?
-  if (crewmate.includes("Gluttonous")) return 4;
-  // Beligerent, Dipsomaniacal, and Pinch-Fisted don't make much difference
-  return 0;
+var extraValue$1 = 0;
+function trackMarginalTurnExtraValue(additionalValue) {
+  extraValue$1 += additionalValue;
 }
-function bestCrewmate() {
-  return maxBy([1, 2, 3], choiceOption => {
-    var crewmatePref = `_pirateRealmCrewmate${choiceOption}`;
-    var crewmate = get$2(crewmatePref);
-    var roleValue = crewRoleValue(crewmate);
-    var adjectiveValue = crewAdjectiveValue(crewmate);
-    return roleValue + adjectiveValue;
-  });
-}
-function outfitBonuses() {
-  var funPointValue = garboValue($item`PirateRealm guest pass`) / 600;
-  return new Map([[$item`carnivorous potted plant`, get$2("valueOfAdventure") / (20 + get$2("_carnivorousPottedPlantWins"))], [$item`Red Roger's red left foot`, funPointValue], [$item`PirateRealm party hat`, funPointValue]]);
-}
+function trackMarginalMpa(remainingTurns) {
+  var barf = sessions.get("barf");
+  var current = Session.current();
+  if (!barf) {
+    sessions.set("barf", Session.current());
+  } else {
+    var turns = barf.diff(current).totalTurns;
+    remainingTurns ?? (remainingTurns = estimatedGarboTurns());
+    // track items if we have run at least 100 turns in barf mountain or we have less than 200 turns left in barf mountain
+    var item = sessions.get("item-start");
+    if (!item && (turns > 100 || estimatedGarboTurns() <= 200)) {
+      sessions.set("item-start", current);
+    }
+    // start tracking meat if there are less than 75 turns left in barf mountain
+    var meatStart = sessions.get("meat-start");
+    if (!meatStart && remainingTurns <= 75) {
+      sessions.set("meat-start", current);
+    }
 
-var DebuffPlanner = /*#__PURE__*/function () {
-  function DebuffPlanner() {
-    _classCallCheck(this, DebuffPlanner);
-    _defineProperty(this, "plan", []);
-    _defineProperty(this, "itemBanList", $items`pill cup`);
-    _defineProperty(this, "priceCap", 150_000);
-    // Chosen at random by Shiverwarp
-    _defineProperty(this, "sizeCap", 69);
-    // Chosen at random by sweaty bill
-    _defineProperty(this, "possibleDebuffItems", {});
-    this.generateDebuffList();
+    // stop tracking meat if there are less than 25 turns left in barf moutain
+    var meatEnd = sessions.get("meat-end");
+    if (!meatEnd && remainingTurns <= 25) {
+      sessions.set("meat-end", current);
+    }
+    var itemEnd = sessions.get("item-end");
+    if (!itemEnd && remainingTurns <= 0) {
+      sessions.set("item-end", current);
+    }
   }
-  return _createClass(DebuffPlanner, [{
-    key: "buffedStat",
-    value: function buffedStat(stat) {
-      return kolmafia.myBuffedstat(stat) + sum(this.plan, _ref => {
-        var target = _ref.target,
-          type = _ref.type;
-        return (["uneffect", "shrug"].includes(type) ? -1 : 1) * totalModifier(asEffect(target), stat);
-      });
-    }
-  }, {
-    key: "isValuable",
-    value: function isValuable(thing) {
-      var effect = asEffect(thing);
-      return FarmingStrategy.valuableModifiers().some(modifier => get$1(modifier, effect) > 0);
-    }
-  }, {
-    key: "debuffedEnough",
-    value: function debuffedEnough() {
-      return kolmafia.Stat.all().every(stat => this.buffedStat(stat) <= 100);
-    }
-  }, {
-    key: "effectiveDebuffQuantity",
-    value: function effectiveDebuffQuantity(effect, stat, shrugging) {
-      return clamp((shrugging ? -1 : 1) * (get$1(stat.toString(), effect) +
-      // Eyepatch caps you at 20
-      20 / 100 * get$1(`${stat.toString()} Percent`, effect)), 100 - this.buffedStat(stat), 0);
-    }
-  }, {
-    key: "debuffEfficacy",
-    value: function debuffEfficacy(item, effect, stat, shrugging) {
-      return -1 * this.effectiveDebuffQuantity(effect, stat, shrugging) / getAcquirePrice(item);
-    }
-  }, {
-    key: "have",
-    value: function have(effect) {
-      return have$P(effect) ? !this.plan.some(_ref2 => {
-        var type = _ref2.type,
-          target = _ref2.target;
-        return ["shrug", "uneffect"].includes(type) && target === effect;
-      }) : this.plan.some(_ref3 => {
-        var type = _ref3.type,
-          target = _ref3.target;
-        return type === "potion" && asEffect(target) === effect;
-      });
-    }
-  }, {
-    key: "getDebuffItems",
-    value: function getDebuffItems(stat) {
-      var _this$possibleDebuffI, _stat$toString;
-      return ((_this$possibleDebuffI = this.possibleDebuffItems)[_stat$toString = stat.toString()] ?? (_this$possibleDebuffI[_stat$toString] = kolmafia.Item.all().map(item => ({
-        item,
-        effect: asEffect(item)
-      })).filter(_ref4 => {
-        var item = _ref4.item,
-          effect = _ref4.effect;
-        return item.potion && (item.tradeable || have$P(item)) && !this.itemBanList.includes(item) && !improvesAStat(item) && effect !== $effect.none && !have$P(effect) && totalModifier(effect, stat) < 0;
-      }))).filter(_ref5 => {
-        var effect = _ref5.effect;
-        return !this.have(effect);
-      });
-    }
-  }, {
-    key: "getBestDebuffItem",
-    value: function getBestDebuffItem(stat) {
-      var debuffItems = this.getDebuffItems(stat);
-      if (!debuffItems.length) {
-        this.printPlan();
-        kolmafia.abort(`Failed to find a debuff item for ${stat}!`);
-      }
-      var bestPotion = maxBy(debuffItems, _ref6 => {
-        var item = _ref6.item,
-          effect = _ref6.effect;
-        return this.debuffEfficacy(item, effect, stat, false);
-      });
-      var effectsToShrug = getActiveEffects().filter(ef => !kolmafia.isShruggable(ef) && this.shouldRemove(ef));
-      if (!effectsToShrug.length) return bestPotion.item;
-      var bestEffectToShrug = maxBy(effectsToShrug, ef => this.effectiveDebuffQuantity(ef, stat, true), true);
-      return this.effectiveDebuffQuantity(bestEffectToShrug, stat, true) / getAcquirePrice($item`soft green echo eyedrop antidote`) > this.effectiveDebuffQuantity(bestPotion.effect, stat, false) / getAcquirePrice(bestPotion.item) ? bestEffectToShrug : bestPotion.item;
-    }
-  }, {
-    key: "shouldRemove",
-    value: function shouldRemove(effect) {
-      if (!this.have(effect)) return false;
-      // Only shrug effects that buff at least one stat that's too high
-      if (!improvedStats(effect).some(stat => this.buffedStat(stat) >= 100)) {
-        return false;
-      }
-      // Never shrug effects that give meat or whatever
-      if (this.isValuable(effect)) return false;
-      return true;
-    }
+}
+var outlierItemList = $items`Extrovermectin™, Volcoino, Poké-Gro fertilizer`;
+function printMarginalSession() {
+  var barf = sessions.get("barf");
+  var meatStart = sessions.get("meat-start");
+  var meatEnd = sessions.get("meat-end");
+  var itemStart = sessions.get("item-start");
+  var itemEnd = sessions.get("item-end");
 
-    // Just checking for the gummi effects for now, maybe can check other stuff later?
-  }, {
-    key: "generateDebuffList",
-    value: function generateDebuffList() {
-      ignoreBeatenUp();
-      if (this.debuffedEnough()) return;
-
-      // Decorative fountain is both cheap and reusable for -30% muscle, but is not a potion
-      if (this.buffedStat($stat`Muscle`) > 100 && !have$P($effect`Sleepy`) && (have$P($item`decorative fountain`) || getAcquirePrice($item`decorative fountain`) < 500)) {
-        acquire(1, $item`decorative fountain`, 500);
-        kolmafia.use($item`decorative fountain`);
-      }
-      var _iterator = _createForOfIteratorHelper(getActiveEffects()),
+  // we can only print out marginal items if we've started tracking for marginal value
+  if (barf && meatStart && meatEnd) {
+    var _barf$value = barf.value(garboValue),
+      barfItemDetails = _barf$value.itemDetails;
+    var isOutlier = detail => outlierItemList.includes(detail.item) || detail.quantity === 1 && detail.value >= 5000 && barfItemDetails.some(d => d.item === detail.item && d.quantity <= 2);
+    var meatMpa = Session.computeMPA(meatStart, meatEnd, {
+      value: garboValue,
+      isOutlier
+    });
+    if (itemStart && itemEnd) {
+      // MPA printout including maringal items
+      var itemMpa = Session.computeMPA(itemStart, itemEnd, {
+        value: garboValue,
+        isOutlier,
+        excludeValue: {
+          item: extraValue$1
+        }
+      });
+      kolmafia.print(`Outliers:`, HIGHLIGHT);
+      var _iterator = _createForOfIteratorHelper(itemMpa.outlierItems),
         _step;
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var effect = _step.value;
-          if (!kolmafia.isShruggable(effect)) continue;
-          if (!this.shouldRemove(effect)) continue;
-          this.plan.push({
-            type: "shrug",
-            target: effect
-          });
-          if (this.debuffedEnough()) return;
+          var detail = _step.value;
+          kolmafia.print(`${detail.quantity} ${detail.item} worth ${detail.value.toFixed(0)} total`, HIGHLIGHT);
         }
       } catch (err) {
         _iterator.e(err);
       } finally {
         _iterator.f();
       }
-      var debuffItemLoops = 0;
-      while (!this.debuffedEnough()) {
-        if (debuffItemLoops > this.sizeCap) {
-          this.printPlan();
-          kolmafia.abort("Spent too long trying to debuff for PirateRealm!");
-        }
-        debuffItemLoops++;
-        var _iterator2 = _createForOfIteratorHelper(kolmafia.Stat.all()),
-          _step2;
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var stat = _step2.value;
-            if (this.buffedStat(stat) > 100) {
-              var debuff = this.getBestDebuffItem(stat);
-              if (debuff instanceof kolmafia.Item) {
-                this.plan.push({
-                  type: "potion",
-                  target: debuff
-                });
-              } else {
-                this.plan.push({
-                  type: "uneffect",
-                  target: debuff
-                });
-              }
-            }
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-      }
-      if (!this.debuffedEnough()) {
-        this.printPlan();
-        kolmafia.abort("Failed to generate debuff list!");
-      }
+      var effectiveMpa = itemMpa.mpa.effective - itemMpa.mpa.meat + meatMpa.mpa.meat;
+      var totalMpa = itemMpa.mpa.total - itemMpa.mpa.meat + meatMpa.mpa.meat;
+      kolmafia.print(`Marginal MPA: ${formatNumber(Math.round(meatMpa.mpa.meat * 100) / 100)} [raw] + ${formatNumber(Math.round(itemMpa.mpa.items * 100) / 100)} [items] (${formatNumber(Math.round((itemMpa.mpa.total - itemMpa.mpa.effective) * 100) / 100)} [outliers]) = ${formatNumber(Math.round(effectiveMpa * 100) / 100)} [total] (${formatNumber(Math.round(totalMpa * 100) / 100)} [w/ outliers])`, HIGHLIGHT);
+    } else {
+      // MPA printout excluding marginal items
+      kolmafia.print("Warning: Insufficient turns were run, so this estimate is subject to large variance. Be careful when using these values as is.", "red");
+      kolmafia.print(`Marginal MPA: ${formatNumber(Math.round(meatMpa.mpa.meat * 100) / 100)} [raw] + ${formatNumber(Math.round(meatMpa.mpa.items * 100) / 100)} [items] = ${formatNumber(Math.round(meatMpa.mpa.total * 100) / 100)} [total]`, HIGHLIGHT);
     }
-  }, {
-    key: "executeDebuff",
-    value: function executeDebuff(_ref7) {
-      var type = _ref7.type,
-        target = _ref7.target;
-      switch (type) {
-        case "potion":
-          kolmafia.retrieveItem(target);
-          return kolmafia.use(target);
-        case "shrug":
-        case "uneffect":
-          return uneffect(target);
+  }
+}
+var garboResultsProperties = ["garboResultsMeat", "garboResultsItems", "garboResultsTurns"];
+function getGarboDaily(property) {
+  return get$2(property, 0);
+}
+function setGarboDaily(property, value) {
+  _set(property, value);
+}
+function resetGarboDaily() {
+  if (resetDailyPreference("garboResultsDate")) {
+    var _iterator2 = _createForOfIteratorHelper(garboResultsProperties),
+      _step2;
+    try {
+      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+        var prop = _step2.value;
+        setGarboDaily(prop, 0);
       }
+    } catch (err) {
+      _iterator2.e(err);
+    } finally {
+      _iterator2.f();
     }
-  }, {
-    key: "printPlan",
-    value: function printPlan() {
-      var colour = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "green";
-      kolmafia.print("Debuff plan:", colour);
-      var _iterator3 = _createForOfIteratorHelper(this.plan),
-        _step3;
-      try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var _step3$value = _step3.value,
-            target = _step3$value.target,
-            type = _step3$value.type;
-          switch (type) {
-            case "uneffect":
-              kolmafia.print(` - Remove ${target} with a soft green echo eyedrop antidote`, colour);
-              continue;
-            case "potion":
-              kolmafia.print(` - Use a ${target} to get ${asEffect(target)}`, colour);
-              continue;
-            case "shrug":
-              kolmafia.print(` - Shrug ${target}`, colour);
-              continue;
-          }
-        }
-      } catch (err) {
-        _iterator3.e(err);
-      } finally {
-        _iterator3.f();
-      }
+  }
+}
+function endSession() {
+  var printLog = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+  // force marginal mpa to always have a 0 turns remaining calculation
+  trackMarginalMpa(0);
+  resetGarboDaily();
+  var message = (head, turns, meat, items) => kolmafia.print(`${head}, across ${formatNumber(turns)} turns you generated ${formatNumber(meat + items)} meat, with ${formatNumber(meat)} raw meat and ${formatNumber(items)} from items`, HIGHLIGHT);
+  var _sessionSinceStart$va = sessionSinceStart().value(garboValue),
+    meat = _sessionSinceStart$va.meat,
+    items = _sessionSinceStart$va.items,
+    itemDetails = _sessionSinceStart$va.itemDetails,
+    turns = _sessionSinceStart$va.turns;
+  var totalMeat = meat + getGarboDaily("garboResultsMeat");
+  var totalItems = items + getGarboDaily("garboResultsItems");
+  var totalTurns = turns + getGarboDaily("garboResultsTurns");
+  if (printLog) {
+    // list the top 3 gaining and top 3 losing items
+    var losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
+    var winners = itemDetails.reverse().slice(0, 3);
+    kolmafia.print(`Extreme Items:`, HIGHLIGHT);
+    for (var _i = 0, _arr = [].concat(_toConsumableArray(winners), _toConsumableArray(losers)); _i < _arr.length; _i++) {
+      var detail = _arr[_i];
+      kolmafia.print(`${detail.quantity} ${detail.item} worth ${detail.value.toFixed(0)} total`, HIGHLIGHT);
     }
-  }, {
-    key: "checkAndFixOvercapStats",
-    value: function checkAndFixOvercapStats() {
-      if (this.price() >= this.priceCap) {
-        kolmafia.print("Failed to debuff enough to use piraterealm!", "red");
-        this.printPlan();
-        kolmafia.abort("Total price of this debuff plan too great! Consider targeting something other than cockroaches next time.");
-      }
-      var _iterator4 = _createForOfIteratorHelper(this.plan),
-        _step4;
-      try {
-        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-          var debuff = _step4.value;
-          this.executeDebuff(debuff);
-        }
-      } catch (err) {
-        _iterator4.e(err);
-      } finally {
-        _iterator4.f();
-      }
-      if (kolmafia.Stat.all().some(stat => kolmafia.myBuffedstat(stat) > 100)) {
-        kolmafia.abort("Failed to debuff sufficiently for piraterealm!");
-      }
+  }
+  setGarboDaily("garboResultsMeat", totalMeat);
+  setGarboDaily("garboResultsItems", totalItems);
+  setGarboDaily("garboResultsTurns", totalTurns);
+  if (printLog) {
+    message("This run of garbo", turns, meat, items);
+    message("So far today", totalTurns, totalMeat, totalItems);
+    printMarginalSession();
+  }
+  if (globalOptions.loginvalidwishes) {
+    if (failedWishes.length === 0) {
+      kolmafia.print("No invalid wishes found.");
+    } else {
+      kolmafia.print("Found the following unwishable effects:");
+      failedWishes.forEach(effect => kolmafia.print(`${effect}`));
     }
-  }, {
-    key: "price",
-    value: function price() {
-      return sum(this.plan, _ref8 => {
-        var type = _ref8.type,
-          target = _ref8.target;
-        switch (type) {
-          case "potion":
-            return getAcquirePrice(target);
-          case "shrug":
-            return 0;
-          case "uneffect":
-            return getAcquirePrice($item`soft green echo eyedrop antidote`);
-        }
+  }
+}
+
+var REPORT_RECIPIENT = "Jalen_Arbuckle";
+var REPORT_KEYS = ["snootee", "microbrewery", "jickjar", "votemonster", "g9"];
+function isReportKey(value) {
+  return REPORT_KEYS.includes(value);
+}
+function sessionStorageKey() {
+  return `garbo_reported_${kolmafia.daycount()}`;
+}
+function getReportedKeys() {
+  return new Set((kolmafia.sessionStorage.getItem(sessionStorageKey()) ?? "").split(",").filter(isReportKey));
+}
+function markReported(key) {
+  var reported = getReportedKeys();
+  reported.add(key);
+  kolmafia.sessionStorage.setItem(sessionStorageKey(), _toConsumableArray(reported).join(","));
+}
+
+/**
+ * Send a daily report value via private message. Uses sessionStorage
+ * to ensure each key is only reported once per gameday. The storage key
+ * includes the gameday, so old entries are naturally orphaned on rollover.
+ */
+function reportDaily(key, value) {
+  if (getReportedKeys().has(key)) return;
+  kolmafia.chatPrivate(REPORT_RECIPIENT, `${key}:${value}`);
+  markReported(key);
+}
+var PREF_WATCH_REPORTS = [{
+  pref: "_dailySpecial",
+  key: () => kolmafia.canadiaAvailable() ? "snootee" : kolmafia.gnomadsAvailable() ? "microbrewery" : null
+}, {
+  pref: "_jickJarAvailable",
+  emptyValue: "unknown",
+  key: "jickjar",
+  value: prefValue => prefValue === "true" ? kolmafia.toInt(kolmafia.myId()) % 23 : null
+}, {
+  pref: "_voteMonster",
+  key: "votemonster"
+}, {
+  pref: "_g9Effect",
+  emptyValue: "0",
+  key: "g9"
+}];
+
+/**
+ * Check all pref-watch reports and send any that are newly filled.
+ * Call this at any convenient hook point during the run.
+ */
+function checkPrefWatchReports() {
+  var reported = getReportedKeys();
+  var _iterator = _createForOfIteratorHelper(PREF_WATCH_REPORTS),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var report = _step.value;
+      var key = undelay(report.key);
+      if (key === null) continue;
+      if (reported.has(key)) continue;
+      var prefValue = get$2(report.pref, "");
+      if (prefValue === (report.emptyValue ?? "")) continue;
+      var value = report.value ? report.value(prefValue) : prefValue;
+      if (value === null) continue;
+      reportDaily(key, value);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+}
+
+var banishMethods = [{
+  source: $skill`Spring Kick`,
+  available: () => have$P($item`spring shoes`),
+  macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
+  equip: $item`spring shoes`
+}, {
+  source: $skill`Batter Up!`,
+  available: () => kolmafia.myClass() === $class`Seal Clubber` && have$P($skill`Batter Up!`) && kolmafia.myFury() >= 5,
+  macro: Macro.trySkill($skill`Batter Up!`),
+  equip: $item`seal-clubbing club`
+}, {
+  source: $skill`Order a Kneecapping`,
+  available: () => have$P($skill`Order a Kneecapping`) && !get$2("_kneecappingOrdered"),
+  macro: Macro.trySkill($skill`Order a Kneecapping`)
+}, {
+  source: $item`human musk`,
+  available: () => true,
+  macro: Macro.tryItem($item`human musk`),
+  retrieve: true
+}, {
+  source: $skill`Sea *dent: Throw a Lightning Bolt`,
+  available: () => have$P($item`Monodent of the Sea`) && get$2("_seadentLightningUsed", 0) < 11,
+  equip: $item`Monodent of the Sea`,
+  macro: Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`)
+}];
+function chooseBanish() {
+  if (FarmingStrategy.monstersToBanish().length === 0) {
+    return null;
+  }
+  var banishedMonsters = getBanishedMonsters();
+  return banishMethods.find(method => method.available() && !FarmingStrategy.banishMonsters.includes(banishedMonsters.get(method.source) ?? $monster.none)) ?? null;
+}
+
+function logTargetFight(encounterType) {
+  var isDigitize = encounterType.includes("Digitize Wanderer");
+  if (isDigitize) {
+    eventLog.digitizedCopyTargetsFought++;
+  } else {
+    eventLog.initialCopyTargetsFought++;
+  }
+  eventLog.copyTargetSources.push(isDigitize ? "Digitize" : "Unknown Source");
+}
+
+/** A base engine for Garbo!
+ * Runs extra logic before executing all tasks.
+ */
+var BaseGarboContextEngine = /*#__PURE__*/function (_ContextualEngine) {
+  function BaseGarboContextEngine(tasks, options) {
+    var _this;
+    _classCallCheck(this, BaseGarboContextEngine);
+    var startTime = Date.now();
+    _this = _callSuper(this, BaseGarboContextEngine, [tasks, options]);
+    _defineProperty(_this, "history", []);
+    if (globalOptions.history) {
+      _this.history.push({
+        name: "Engine/Construct",
+        startTime,
+        durationMs: Date.now() - startTime
       });
     }
-  }], [{
-    key: "checkAndFixOvercapStats",
-    value: function checkAndFixOvercapStats() {
-      return new DebuffPlanner().checkAndFixOvercapStats();
+    return _this;
+  }
+  _inherits(BaseGarboContextEngine, _ContextualEngine);
+  return _createClass(BaseGarboContextEngine, [{
+    key: "printExecutingMessage",
+    value: function printExecutingMessage(task) {
+      kolmafia.print(``);
+      kolmafia.print(`Executing ${task.name}`, HIGHLIGHT);
+    }
+  }, {
+    key: "destruct",
+    value: function destruct() {
+      var startTime = Date.now();
+      _superPropGet(BaseGarboContextEngine, "destruct", this, 3)([]);
+      if (globalOptions.history) {
+        this.history.push({
+          name: "Engine/Destruct",
+          startTime,
+          durationMs: Date.now() - startTime
+        });
+        var filename = `garbo_history_${kolmafia.todayToString()}.csv`;
+        var buffer = kolmafia.fileToBuffer(filename).trim();
+        var taskArray = [].concat(_toConsumableArray(buffer.split("\n")), _toConsumableArray(this.history.map(item => `${item.startTime},${item.name.replace(",", "")},${item.durationMs}`)));
+        kolmafia.bufferToFile(taskArray.join("\n"), filename);
+      }
+    }
+  }, {
+    key: "available",
+    value: function available(task) {
+      safeInterrupt();
+      var taskSober = undelay(task.sobriety, this.getContext(task));
+      if (taskSober) {
+        return (taskSober === "drunk" && !sober() || taskSober === "sober" && sober()) && _superPropGet(BaseGarboContextEngine, "available", this, 3)([task]);
+      }
+      return _superPropGet(BaseGarboContextEngine, "available", this, 3)([task]);
+    }
+  }, {
+    key: "dress",
+    value: function dress(task, outfit) {
+      var duplicate = undelay(task.duplicate, this.getContext(task));
+      if (duplicate && have$P($item`pro skateboard`) && !get$2("_epicMcTwistUsed")) {
+        outfit.equip($item`pro skateboard`);
+      }
+      _superPropGet(BaseGarboContextEngine, "dress", this, 3)([task, outfit]);
+      var canBreathe = () => kolmafia.booleanModifier("Adventure Underwater");
+      if (outfit.modifier.includes("+sea") && !canBreathe()) {
+        clearMaximizerCache();
+        _superPropGet(BaseGarboContextEngine, "dress", this, 3)([task, outfit]);
+        if (!canBreathe()) {
+          throw new Error("Can't adventure underwater, figure it out.");
+        }
+      }
+      if (kolmafia.itemAmount($item`tiny stillsuit`) > 0) {
+        kolmafia.equip(kolmafia.myFamiliar() === $familiar`Cornbeefadon` ? $familiar`Mosquito` : $familiar`Cornbeefadon`, $item`tiny stillsuit`);
+      }
+    }
+  }, {
+    key: "prepare",
+    value: function prepare(task) {
+      if ("combat" in task) safeRestore();
+      _superPropGet(BaseGarboContextEngine, "prepare", this, 3)([task]);
+    }
+  }, {
+    key: "execute",
+    value: function execute(task) {
+      var startTime = Date.now();
+      var spentTurns = kolmafia.totalTurnsPlayed();
+      var context = this.getContext(task);
+      var duplicate = undelay(task.duplicate, context);
+      var before = getSkills();
+      if (duplicate && have$I() && duplicateUsesRemaining() > 0) {
+        educate([$skill`Extract`, $skill`Duplicate`]);
+      }
+      _superPropGet(BaseGarboContextEngine, "execute", this, 3)([task]);
+      if (kolmafia.totalTurnsPlayed() !== spentTurns) {
+        if (!undelay(task.spendsTurn, context)) {
+          kolmafia.print(`Task ${task.name} spent a turn but was marked as not spending turns`);
+        }
+      }
+      var foughtATarget = get$2("lastEncounter") === globalOptions.target.name;
+      if (foughtATarget) logTargetFight(task.name);
+      shrugBadEffects($effect`Feeling Lost`); // We deliberately use Feeling Lost sometimes
+      wanderer().clear();
+      sessionSinceStart().value(garboValue);
+      if (duplicate && have$I()) {
+        var _iterator = _createForOfIteratorHelper(before),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var skill = _step.value;
+            educate(skill);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      }
+      checkPrefWatchReports();
+      if (globalOptions.history) {
+        this.history.push({
+          name: task.name,
+          startTime,
+          durationMs: Date.now() - startTime
+        });
+      }
+    }
+  }, {
+    key: "markAttempt",
+    value: function markAttempt(task) {
+      _superPropGet(BaseGarboContextEngine, "markAttempt", this, 3)([task]);
+      if (!!globalOptions.halt && task.name.localeCompare(globalOptions.halt, undefined, {
+        sensitivity: "base"
+      }) === 0) {
+        throw new Error(`Task halt requested for "${task.name}". Stopping Garbage Collector.`);
+      }
     }
   }]);
-}();
+}(ContextualEngine);
+_defineProperty(BaseGarboContextEngine, "defaultSettings", _objectSpread2(_objectSpread2({}, Engine.defaultSettings), {}, {
+  choiceAdventureScript: "garbo_choice.js"
+}));
+var BaseGarboEngine = /*#__PURE__*/function (_BaseGarboContextEngi) {
+  function BaseGarboEngine() {
+    _classCallCheck(this, BaseGarboEngine);
+    return _callSuper(this, BaseGarboEngine, arguments);
+  }
+  _inherits(BaseGarboEngine, _BaseGarboContextEngi);
+  return _createClass(BaseGarboEngine, [{
+    key: "getContext",
+    value: function getContext() {
+      // noop
+    }
+  }]);
+}(BaseGarboContextEngine);
+var _banish = /*#__PURE__*/new WeakMap();
+var FarmTurnEngine = /*#__PURE__*/function (_BaseGarboContextEngi2) {
+  function FarmTurnEngine() {
+    var _this2;
+    _classCallCheck(this, FarmTurnEngine);
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    _this2 = _callSuper(this, FarmTurnEngine, [].concat(args));
+    _classPrivateFieldInitSpec(_this2, _banish, null);
+    return _this2;
+  }
+  _inherits(FarmTurnEngine, _BaseGarboContextEngi2);
+  return _createClass(FarmTurnEngine, [{
+    key: "getContext",
+    value: function getContext() {
+      return {
+        banish: _classPrivateFieldGet2(_banish, this)
+      };
+    }
+  }, {
+    key: "getNextTask",
+    value: function getNextTask() {
+      _classPrivateFieldSet2(_banish, this, chooseBanish());
+      return _superPropGet(FarmTurnEngine, "getNextTask", this, 3)([]);
+    }
+  }, {
+    key: "execute",
+    value: function execute(task) {
+      _superPropGet(FarmTurnEngine, "execute", this, 3)([task]);
+      _classPrivateFieldSet2(_banish, this, null);
+    }
+  }]);
+}(BaseGarboContextEngine);
 
-var CockroachSetup = {
-  name: "Setup Cockroach Target",
-  ready: () => doingGregFight() && globalOptions.target === $monster`cockroach` && kolmafia.myInebriety() <= kolmafia.inebrietyLimit(),
-  completed: () => get$2("_lastPirateRealmIsland") === $location`Trash Island`,
-  tasks: [{
-    name: "40 Adventure Failsafe",
-    ready: () => kolmafia.myAdventures() <= 40,
-    completed: () => have$P($item`PirateRealm eyepatch`),
-    do: () => {
-      if (userConfirmDialog("You don't have enough adventures to do piraterealm; would you like us to automatically change your copy target to a Knob Goblin Guard? Otherwise, we're going to abort.", true)) {
-        globalOptions.target = $monster`Knob Goblin Elite Guard Captain`;
-      } else {
-        kolmafia.abort("Unable to start piraterealm but you're hellbent on doing cockroaches!");
+/**
+ * A safe engine for Garbo!
+ * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
+ */
+var SafeGarboContextEngine = /*#__PURE__*/function (_BaseGarboContextEngi3) {
+  function SafeGarboContextEngine(tasks) {
+    _classCallCheck(this, SafeGarboContextEngine);
+    var options = new EngineOptions();
+    options.default_task_options = {
+      limit: {
+        skip: 1
       }
-    },
-    spendsTurn: false
+    };
+    return _callSuper(this, SafeGarboContextEngine, [tasks, options]);
+  }
+  _inherits(SafeGarboContextEngine, _BaseGarboContextEngi3);
+  return _createClass(SafeGarboContextEngine);
+}(BaseGarboContextEngine);
+var SafeGarboEngine = /*#__PURE__*/function (_SafeGarboContextEngi) {
+  function SafeGarboEngine() {
+    _classCallCheck(this, SafeGarboEngine);
+    return _callSuper(this, SafeGarboEngine, arguments);
+  }
+  _inherits(SafeGarboEngine, _SafeGarboContextEngi);
+  return _createClass(SafeGarboEngine, [{
+    key: "getContext",
+    value: function getContext() {
+      // noop
+    }
+  }]);
+}(SafeGarboContextEngine);
+function runQuests(quests,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+garboEngine) {
+  var engine = new garboEngine(getTasks(quests));
+  try {
+    engine.run();
+  } finally {
+    engine.destruct();
+  }
+}
+function runSafeGarboQuests(quests) {
+  runQuests(quests, SafeGarboEngine);
+}
+function runGarboQuests(quests) {
+  runQuests(quests, BaseGarboEngine);
+}
+function runGarboFarmQuests(quests) {
+  runQuests(quests, FarmTurnEngine);
+}
+
+function bestVykeaLevel() {
+  var vykeas = [{
+    level: 1,
+    dowelCost: 0
   }, {
-    name: "Get PirateRealm Eyepatch",
-    completed: () => have$P($item`PirateRealm eyepatch`),
-    do: () => kolmafia.visitUrl("place.php?whichplace=realm_pirate&action=pr_port"),
-    limit: {
-      tries: 1
-    },
-    spendsTurn: false
+    level: 2,
+    dowelCost: 1
   }, {
-    name: "Start PirateRealm Journey",
-    ready: () => have$P($item`PirateRealm eyepatch`),
-    completed: () => questStep$1("_questPirateRealm") > 0,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
-    do: () => {
-      kolmafia.visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
-      kolmafia.runChoice(1); // Head to Groggy's
-      kolmafia.runChoice(bestCrewmate()); // Choose our crew
-      if (!(4 in kolmafia.availableChoiceOptions())) {
-        kolmafia.abort("You need the anemometer unlocked to fight cockroaches in garbo!");
-      }
-      kolmafia.runChoice(4); // Choose anemometer for trash island
-      var bestBoat = get$2("pirateRealmUnlockedClipper") ? 4 : 3; // Swift Clipper or Speedy Caravel
-      kolmafia.runChoice(bestBoat);
-      kolmafia.runChoice(1); // Head for the sea
-    },
-    outfit: {
-      equip: $items`PirateRealm eyepatch`,
-      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
-    },
-    limit: {
-      tries: 1
-    },
-    spendsTurn: false
-  }, {
-    name: "Choose First Island",
-    ready: () => questStep$1("_questPirateRealm") === 1,
-    completed: () => questStep$1("_questPirateRealm") > 1,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
-    do: $location`Sailing the PirateRealm Seas`,
-    outfit: {
-      equip: $items`PirateRealm eyepatch`,
-      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
-    },
-    choices: () => ({
-      1352: dessertIslandWorthIt() && get$2("_pirateRealmCrewmate").includes("Cuisinier") ? 6 : 1
-    }),
-    limit: {
-      tries: 1
-    },
-    spendsTurn: false,
-    combat: new GarboStrategy(() => Macro.abortWithMsg("Hit a combat while sailing the high seas!"))
-  }, {
-    name: "Sail to first Island",
-    ready: () => questStep$1("_questPirateRealm") === 2,
-    completed: () => questStep$1("_questPirateRealm") > 2,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
-    do: $location`Sailing the PirateRealm Seas`,
-    outfit: () => ({
-      equip: $items`PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot`.filter(i => have$P(i)),
-      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
-    }),
-    choices: () => ({
-      1365: 1,
-      1364: 2,
-      1361: 1,
-      1357: get$2("_pirateRealmGold") >= 50 ? 3 : 4,
-      1360: 6,
-      // Will need to add shop handling, perhaps to choice adventure script
-      1356: 3,
-      1362: get$2("_pirateRealmShipSpeed") - get$2("_pirateRealmSailingTurns") >= 2 ? 2 : 1,
-      1363: 2,
-      1359: 1,
-      // Emergency grog adventure, choice one seems more consistent?
-      1358: 1,
-      // Emergency grub adventure, choice one seems more consistent?
-      1367: 1 // Wrecked ship, this uses glue, need a pref for glue to make this not break if we don't have glue
-    }),
-    post: () => {
-      // Escape wrecked ship, if no glue is available
-      if (kolmafia.handlingChoice() && kolmafia.lastChoice() === 1367) {
-        kolmafia.runChoice(2);
-      }
-    },
-    limit: {
-      tries: 8
-    },
-    spendsTurn: true,
-    combat: new GarboStrategy(() => Macro.abortWithMsg("Hit a combat while sailing the high seas!"))
-  }, {
-    name: "Land Ho (First Island)",
-    ready: () => questStep$1("_questPirateRealm") === 3,
-    completed: () => questStep$1("_questPirateRealm") > 3,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
-    do: $location`Sailing the PirateRealm Seas`,
-    combat: new GarboStrategy(() => Macro.abortWithMsg("Expected Land Ho! but hit a combat")),
-    choices: {
-      1355: 1
-    },
-    // Land ho!
-    outfit: {
-      equip: $items`PirateRealm eyepatch`,
-      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
-    },
-    limit: {
-      tries: 1
-    },
-    spendsTurn: false
-  }, {
-    name: "Standard Island Combats (Island 1)",
-    ready: () => questStep$1("_questPirateRealm") === 4,
-    completed: () => questStep$1("_questPirateRealm") > 4,
-    prepare: () => {
-      DebuffPlanner.checkAndFixOvercapStats();
-      if (kolmafia.mallPrice($item`windicle`) < 3 * get$2("valueOfAdventure") && !get$2("_pirateRealmWindicleUsed")) {
-        acquire(1, $item`windicle`, 3 * get$2("valueOfAdventure"), true);
-      }
-    },
-    do: () => get$2("_lastPirateRealmIsland", $location`none`),
-    outfit: () => freeFightOutfit({
-      equip: $items`PirateRealm eyepatch`,
-      bonuses: outfitBonuses(),
-      familiar: freeFightFamiliar(get$2("_lastPirateRealmIsland", $location`none`), {
-        canChooseMacro: false,
-        allowAttackFamiliars: true,
-        mode: "free"
-      }),
-      avoid: $items`Roman Candelabra`
-    }, get$2("_lastPirateRealmIsland", $location`none`)),
-    combat: new GarboStrategy(() => Macro.externalIf(kolmafia.mallPrice($item`windicle`) < 3 * get$2("valueOfAdventure") && !get$2("_pirateRealmWindicleUsed") && get$2("_pirateRealmIslandMonstersDefeated") <= 1, Macro.item($item`windicle`)).basicCombat()),
-    limit: {
-      tries: 8
-    },
-    spendsTurn: true
-  }, {
-    name: "Final Island Encounter (Island 1 (Dessert))",
-    ready: () => questStep$1("_questPirateRealm") === 5 && get$2("_lastPirateRealmIsland") === $location`Dessert Island`,
-    completed: () => questStep$1("_questPirateRealm") > 5,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
-    do: $location`PirateRealm Island`,
-    outfit: () => ({
-      equip: $items`PirateRealm eyepatch`,
-      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
-    }),
-    choices: {
-      1385: 1
-    },
-    // Take cocoa of youth
-    combat: new GarboStrategy(() => Macro.abortWithMsg("Hit a combat when we expected cocoa of youth!")),
-    limit: {
-      tries: 1
-    },
-    spendsTurn: true
-  }, {
-    name: "Final Island Encounter (Island 1 (Giant Giant Crab))",
-    ready: () => questStep$1("_questPirateRealm") === 5 && get$2("_lastPirateRealmIsland") === $location`Crab Island`,
-    completed: () => questStep$1("_questPirateRealm") > 5,
-    prepare: () => {
-      DebuffPlanner.checkAndFixOvercapStats();
-      kolmafia.restoreHp(kolmafia.myMaxhp());
-    },
-    do: $location`Crab Island`,
-    outfit: () => meatTargetOutfit({
-      modifier: ["-Muscle", "-Mysticality", "-Moxie"],
-      equip: $items`PirateRealm eyepatch`,
-      avoid: $items`Roman Candelabra`,
-      beforeDress: [() => meatMood(false, targetMeat()).execute(highMeatMonsterCount()),
-      // meatMood is currently difficult to sort for things that give +stats
-      () => potionSetup(false, true) // run potionSetup while avoiding stats. We do not avoid limited use buffs that may still increase stats like paw wishes or pill keeper.
-      ]
-    }, $location`Crab Island`),
-    choices: {
-      1368: 1
-    },
-    // fight crab
-    combat: new GarboStrategy(() => Macro.tryHaveSkill($skill`Curse of Weaksauce`).meatKill()),
-    limit: {
-      tries: 1
-    },
-    spendsTurn: true
-  }, {
-    name: "Choose Trash Island",
-    ready: () => questStep$1("_questPirateRealm") === 6,
-    completed: () => questStep$1("_questPirateRealm") > 6,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
-    do: $location`Sailing the PirateRealm Seas`,
-    outfit: {
-      equip: $items`PirateRealm eyepatch`
-    },
-    choices: {
-      1353: 5
-    },
-    // Trash Island
-    limit: {
-      tries: 1
-    },
-    spendsTurn: false,
-    combat: new GarboStrategy(() => Macro.abortWithMsg("Hit a combat while sailing the high seas!")),
-    post: () => unequip($item`PirateRealm eyepatch`) // Unequip the eyepatch when we're done, to avoid mana issues during diet etc
-  }, {
-    name: "Stop Being Beaten Up",
-    completed: () => !have$P($effect`Beaten Up`),
-    do: () => kolmafia.useSkill($skill`Tongue of the Walrus`),
-    spendsTurn: false,
-    post: unignoreBeatenUp
-  }]
+    level: 3,
+    dowelCost: 11
+  }]; // excluding 4 and 5 as per bean's suggestion
+  var vykeaProfit = vykea => {
+    var level = vykea.level,
+      dowelCost = vykea.dowelCost;
+    return estimatedGarboTurns() * baseMeat() * 0.1 * level - (5 * kolmafia.mallPrice($item`VYKEA rail`) + dowelCost * kolmafia.mallPrice($item`VYKEA dowel`) + 5 * kolmafia.mallPrice($item`VYKEA plank`) + 1 * kolmafia.mallPrice($item`VYKEA instructions`));
+  };
+  if (vykeas.some(vykea => vykeaProfit(vykea) > 0)) {
+    return maxBy(vykeas, vykeaProfit).level;
+  }
+  return 0;
+}
+var PostFreeFightTasks = [{
+  name: "Configure Vykea",
+  ready: () => get$2("_VYKEACompanionLevel") === 0 && bestVykeaLevel() > 0,
+  completed: () => get$2("_VYKEACompanionLevel") > 0,
+  do: () => kolmafia.cliExecute(`create level ${bestVykeaLevel()} couch`),
+  acquire: [{
+    item: $item`VYKEA hex key`
+  }],
+  spendsTurn: false
+}, {
+  name: "Configure Thrall",
+  ready: () => kolmafia.myClass() === $class`Pastamancer` && have$P($skill`Bind Lasagmbie`),
+  completed: () => kolmafia.myThrall() === $thrall`Lasagmbie`,
+  do: () => kolmafia.useSkill($skill`Bind Lasagmbie`),
+  outfit: () => {
+    if (kolmafia.myMaxmp() >= 200) return {};
+    return {
+      modifier: "MP"
+    };
+  },
+  prepare: () => kolmafia.restoreMp(200),
+  spendsTurn: false
+}, {
+  name: "Level Up Thrall",
+  ready: () => kolmafia.myClass() === $class`Pastamancer` && have$P($item`experimental carbon fiber pasta additive`) && kolmafia.myThrall() !== $thrall.none,
+  completed: () => get$2("_pastaAdditive") || kolmafia.myThrall().level >= 10,
+  do: () => kolmafia.use($item`experimental carbon fiber pasta additive`),
+  spendsTurn: false
+}];
+var PostFreeFightQuest = {
+  name: "Post Free Fight",
+  tasks: PostFreeFightTasks
 };
 
 function postFreeFightDailySetup() {
   runSafeGarboQuests([PostFreeFightQuest]);
+}
+
+var MIDNIGHTS = [{
+  location: $location`Gingerbread Upscale Retail District`,
+  choices: {
+    1209: 2,
+    1214: 1
+  },
+  available: () => kolmafia.haveOutfit("gingerbread best") && kolmafia.outfitPieces("gingerbread best").every(piece => kolmafia.canEquip(piece)) && kolmafia.itemAmount($item`high-end ginger wine`) < 11,
+  value: () => {
+    var best = bestConsumable("booze", true, $items`high-end ginger wine, astral pilsner`);
+    var gingerWineValue = (0.5 * 30 * targetMeat() + getAverageAdventures($item`high-end ginger wine`) * get$2("valueOfAdventure")) / 2;
+    var valueDif = gingerWineValue - best.value;
+    return 2 * valueDif;
+  }
+}, {
+  location: $location`Gingerbread Upscale Retail District`,
+  available: () => kolmafia.haveOutfit("gingerbread best") && kolmafia.outfitPieces("gingerbread best").every(piece => kolmafia.canEquip(piece)) && have$P($item`sprinkles`, 300),
+  choices: {
+    1209: 2,
+    1214: 2
+  },
+  value: () => garboValue($item`fancy chocolate sculpture`)
+}, {
+  location: $location`Gingerbread Upscale Retail District`,
+  available: () => kolmafia.haveOutfit("gingerbread best") && kolmafia.outfitPieces("gingerbread best").every(piece => kolmafia.canEquip(piece)) && have$P($item`sprinkles`, 1000),
+  choices: {
+    1209: 2,
+    1214: 3
+  },
+  value: () => garboValue($item`Pop Art: a Guide`)
+}, {
+  location: $location`Gingerbread Upscale Retail District`,
+  available: () => kolmafia.haveOutfit("gingerbread best") && kolmafia.outfitPieces("gingerbread best").every(piece => kolmafia.canEquip(piece)) && have$P($item`sprinkles`, 1000),
+  choices: {
+    1209: 2,
+    1214: 4
+  },
+  value: () => garboValue($item`No Hats as Art`)
+}, {
+  location: $location`Gingerbread Civic Center`,
+  choices: {
+    1203: 2
+  },
+  available: () => have$P($item`sprinkles`, 300) && !canJudgeFudge(),
+  value: () => garboValue($item`counterfeit city`)
+}, {
+  location: $location`Gingerbread Civic Center`,
+  choices: {
+    1203: 4
+  },
+  available: () => have$P($item`sprinkles`, 5) && !canJudgeFudge(),
+  value: () => 5 * garboValue($item`gingerbread cigarette`)
+}];
+var DEFAULT_MIDNIGHT = {
+  location: $location`Gingerbread Train Station`,
+  choices: {
+    1205: 1
+  },
+  value: () => 0
+};
+function bestMidnightAvailable() {
+  var availableMidnights = [].concat(_toConsumableArray(MIDNIGHTS.filter(_ref => {
+    var location = _ref.location,
+      available = _ref.available;
+    return kolmafia.canAdventure(location) && available();
+  })), [DEFAULT_MIDNIGHT]);
+  return maxBy(availableMidnights, _ref2 => {
+    var value = _ref2.value;
+    return value();
+  });
+}
+
+function desirableIngredients() {
+  return have$P($skill`Head in the Game`) && have$P($item`mafia pointer finger ring`) ? ["msg", "cajun", "rawhide", "carrot"] : ["cajun", "rawhide", "carrot"];
+}
+function shouldUnlockIngredients() {
+  if (!have$D()) return false;
+  var shouldTryToUnlockIngredients = desirableIngredients().filter(i => ingredientsUnlocked().includes(i) || kolmafia.canAdventure(locationOf(i))).length >= 3;
+  var doneUnlockingIngredients = desirableIngredients().filter(i => ingredientsUnlocked().includes(i)).length >= 3;
+  return shouldTryToUnlockIngredients && !doneUnlockingIngredients;
+}
+function ingredientsToFillWith() {
+  return [].concat(_toConsumableArray(desirableIngredients().filter(i => ingredientsUnlocked().includes(i))), _toConsumableArray(byStat({
+    Muscle: ["vanilla", "pumpkin", "cinnamon"],
+    Moxie: ["cinnamon", "pumpkin", "vanilla"],
+    Mysticality: ["pumpkin", "vanilla", "cinnamon"]
+  }))).splice(0, 3);
+}
+function latteMalformed() {
+  return ["vanilla", "pumpkin", "cinnamon"].some(defaultIngredient => !ingredientsUnlocked().includes(defaultIngredient));
+}
+
+// Returns whether the latteUnlocks preference contains the default ingredients
+function checkAndCorrectLatteMalformation() {
+  if (!latteMalformed()) return true;
+  kolmafia.visitUrl("main.php?latte=1", false);
+  if (!latteMalformed()) return true;
+  kolmafia.print("Can't access Latte Lover's Mug shop, disabling it", "red");
+  _set("_latteBanishUsed", true);
+  _set("_latteCopyUsed", true);
+  _set("_latteRefillsUsed", 3);
+  return false;
+}
+function shouldFillLatte() {
+  if (!have$P($item`latte lovers member's mug`) || get$2("_latteRefillsUsed") >= 3) {
+    return false;
+  }
+  if (get$2("_latteCopyUsed")) return true;
+  if (get$2("_latteBanishUsed")) return true;
+  if (checkAndCorrectLatteMalformation() && !setEqual(currentIngredients(), ingredientsToFillWith())) {
+    return true;
+  }
+  return false;
+}
+function tryFillLatte() {
+  return shouldFillLatte() && fill.apply(Latte, _toConsumableArray(ingredientsToFillWith())) && checkAndCorrectLatteMalformation();
+}
+
+var currentAdventures = () => distillateAdventures();
+var nextDistillateSweat = () => Math.ceil((currentAdventures() + 0.5) ** (5 / 2));
+var previousDistillateSweat = () => Math.ceil(Math.max(currentAdventures() - 0.5, 0) ** (5 / 2));
+var adventuresPerSweat = () => 1 / (nextDistillateSweat() - previousDistillateSweat());
+var turnsNeededForNextAdventure = function turnsNeededForNextAdventure() {
+  var equipped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+  return Math.ceil((nextDistillateSweat() - get$2("familiarSweat")) / (equipped ? 3 : 1));
+};
+
+var famExpValue = new Map([[$familiar`Chest Mimic`, () => $familiar`Chest Mimic`.experience < mimicExperienceNeeded(true) ? MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50 : 0], [$familiar`Pocket Professor`, () => $familiar`Pocket Professor`.experience < 400 && (!get$2("_thesisDelivered") || !globalOptions.ascend) ? 11 * get$2("valueOfAdventure") / 200 : 0], [$familiar`Grey Goose`, () => $familiar`Grey Goose`.experience < 400 && (!get$2("_meatifyMatterUsed") || !globalOptions.ascend) ? 15 ** 4 / 400 : 0]]);
+function freeFightOutfit() {
+  var spec = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var adventure = arguments.length > 1 ? arguments[1] : undefined;
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  cleaverCheck();
+  var _toAdventure = toAdventure(adventure),
+    location = _toAdventure.location;
+  var computedSpec = computeOutfitSpec(spec, location);
+  validateGarbageFoldable(computedSpec);
+  var outfit = Outfit.from(computedSpec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`));
+  outfit.familiar ?? (outfit.familiar = freeFightFamiliar(adventure, computeFamiliarMenuOptions(options.familiarOptions, options.duplicate ?? false, outfit)));
+  var mode = location === $location`The Deep Machine Tunnels` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
+  if (outfit.familiar !== $familiar`Patriotic Eagle`) {
+    var familiarExpValue = undelay(famExpValue.get(outfit.familiar));
+    outfit.modifier.push(familiarExpValue ? `${familiarExpValue} Familiar Experience` : "Familiar Weight");
+  }
+  var bjornChoice = chooseBjorn(mode, outfit.familiar);
+  if (get$2("_vampyreCloakeFormUses") < 10) {
+    outfit.setBonus($item`vampyric cloake`, 500);
+  }
+  outfit.addBonuses(bonusGear(mode));
+  applyCheeseBonus(outfit, mode);
+  if (!(globalOptions.ascend && !sober()) && turnsNeededForNextAdventure() <= estimatedGarboTurns()) {
+    outfit.setBonus($item`tiny stillsuit`, get$2("valueOfAdventure") * 2 * adventuresPerSweat());
+  }
+  if (mode !== BonusEquipMode.DMT) {
+    outfit.addBonuses(toyCupidBow(outfit.familiar));
+  }
+  if (location === getLocation() && turnsLeftOnQuest(false) === 1 && haveBooze()) {
+    outfit.addBonus($item`Guzzlr pants`, expectedReward(true) - expectedReward(false));
+  }
+  var bjornalike = $items`Crown of Thrones, Buddy Bjorn`.find(item => outfit.canEquip(item));
+  if (bjornalike) {
+    outfit.setBonus(bjornalike, bjornChoice.value);
+    var other = $items`Buddy Bjorn, Crown of Thrones`.filter(i => i !== bjornalike)[0];
+    outfit.avoid.push(other);
+    switch (bjornalike) {
+      case $item`Buddy Bjorn`:
+        outfit.bjornify(bjornChoice.familiar);
+        break;
+      case $item`Crown of Thrones`:
+        outfit.enthrone(bjornChoice.familiar);
+        break;
+    }
+  }
+  outfit.setModes({
+    snowsuit: "nose",
+    parka: "dilophosaur"
+  });
+  return outfit;
+}
+function computeOutfitSpec(spec, location) {
+  return _objectSpread2(_objectSpread2({}, spec), {}, {
+    equip: [].concat(_toConsumableArray(spec.equip ?? []), _toConsumableArray(wanderer().getEquipment(location)))
+  });
+}
+function computeFamiliarMenuOptions() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var duplicate = arguments.length > 1 ? arguments[1] : undefined;
+  var outfit = arguments.length > 2 ? arguments[2] : undefined;
+  return _objectSpread2(_objectSpread2({}, options), {}, {
+    allowAttackFamiliars: options.allowAttackFamiliars ?? !(duplicate && have$I() && duplicateUsesRemaining() > 0),
+    equipmentForced: options.equipmentForced || !outfit.canEquip($item`toy Cupid bow`)
+  });
+}
+
+var _autumnAtonManager;
+var autumnAtonManager = () => _autumnAtonManager ?? (_autumnAtonManager = new AutumnAtonManager({
+  averageItemValue: garboAverageValue,
+  estimatedTurns: estimatedGarboTurns,
+  estimatedTurnsTomorrow: () => globalOptions.ascend ? 0 : estimatedTurnsTomorrow
+}));
+
+function hotTubAvailable() {
+  return have$P($item`Clan VIP Lounge key`) && get$2("_hotTubSoaks") < 5;
+}
+
+function lavaDogsAccessible() {
+  return haveInCampground($item`haunted doghouse`) && !get$2("doghouseBoarded") && realmAvailable("hot");
+}
+function lavaDogsComplete() {
+  return get$2("hallowienerVolcoino") || $location`The Bubblin' Caldera`.turnsSpent > 7 || $location`The Bubblin' Caldera`.noncombatQueue.includes("Lava Dogs");
+}
+
+function resultValue(result) {
+  if (result instanceof kolmafia.Item) return garboValue(result);
+  if (Array.isArray(result)) return garboAverageValue.apply(void 0, _toConsumableArray(result));
+  return effectValue(result.effect, result.duration);
+}
+/*
+ * @returns Whether `a` is strictly better than `b`
+ */
+function strictlyBetterThan(a, b) {
+  return NEEDS.every(need => {
+    var result = b.values[need];
+    if (result === undefined) return true;
+    var other = a.values[need];
+    if (other === undefined) return false;
+    if (other <= result) return false;
+    return true;
+  });
+}
+function getCoveredNeeds(_ref) {
+  var furniture = _ref.furniture;
+  return Object.keys(getStats(furniture));
+}
+function viableFurniture() {
+  var discovered = discoveredFurniture();
+  return [{
+    furniture: "empty",
+    values: {}
+  }].concat(_toConsumableArray(discovered.map(furniture => ({
+    furniture,
+    values: Object.fromEntries(Object.entries(getStats(furniture)).map(_ref2 => {
+      var _ref3 = _slicedToArray(_ref2, 2),
+        need = _ref3[0],
+        result = _ref3[1];
+      return [need, resultValue(result)];
+    }))
+  })).filter((f, index, valuedDiscoveries) => !valuedDiscoveries.slice(index).some(futureFurniture => strictlyBetterThan(futureFurniture, f)))));
+}
+function valueCombination$1(combo) {
+  var total = combo.reduce((acc, _ref4) => {
+    var values = _ref4.values;
+    return _objectSpread2(_objectSpread2({}, values), acc);
+  }, {});
+  return sum(NEEDS, need => total[need] ?? 0);
+}
+function buildCombination(combinations, furniture) {
+  return combinations.flatMap(combination => {
+    var coveredNeeds = new Set(combination.flatMap(getCoveredNeeds));
+    var plausibleFurniture = furniture.filter(f => getCoveredNeeds(f).some(need => !coveredNeeds.has(need))); // Only furniture that cover at least one presently-uncovered need need apply
+    return (plausibleFurniture.length ? plausibleFurniture : [{
+      furniture: "empty",
+      values: {}
+    }]).map(furniture => [].concat(_toConsumableArray(combination), [furniture]));
+  });
+}
+function getViableCombinations() {
+  var furniture = viableFurniture();
+  return Array(4).fill(null).reduce(acc => buildCombination(acc, furniture), [[]]);
+}
+function findBestCombination() {
+  return maxBy(getViableCombinations(), valueCombination$1).map(_ref5 => {
+    var furniture = _ref5.furniture;
+    return furniture;
+  });
+}
+var bestCombination;
+var unlocked;
+function getBestLeprecondoCombination() {
+  if (unlocked !== get$2("leprecondoDiscovered")) {
+    unlocked = get$2("leprecondoDiscovered");
+    bestCombination = findBestCombination();
+  }
+  return bestCombination;
+}
+function leprecondoTask() {
+  return {
+    name: "Configure Leprecondo",
+    ready: () => have$e() && rearrangesRemaining() > 0,
+    completed: () => arrayEquals$1(installedFurniture(), getBestLeprecondoCombination()),
+    do: () => setFurniture.apply(Leprecondo, _toConsumableArray(getBestLeprecondoCombination())),
+    spendsTurn: false
+  };
 }
 
 var STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
@@ -27780,10 +26858,228 @@ function postCombatActions() {
   safeRestore();
 }
 
+var taffyIsWorthIt = () => kolmafia.mallPrice($item`pulled green taffy`) < (targetingMeat() ? MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") : get$2("valueOfAdventure")) && kolmafia.retrieveItem($item`pulled green taffy`);
+var wandererFailsafeMacro = () => Macro.externalIf(kolmafia.haveEquipped($item`backup camera`) && get$2("_backUpUses") < 11 && get$2("lastCopyableMonster") === globalOptions.target, Macro.if_(`!monsterid ${globalOptions.target.id}`, Macro.skill($skill`Back-Up to your Last Enemy`)));
+var _macro = /*#__PURE__*/new WeakMap();
+var _location = /*#__PURE__*/new WeakMap();
+var _useAuto = /*#__PURE__*/new WeakMap();
+var _action = /*#__PURE__*/new WeakMap();
+var TargetFightRunOptions = /*#__PURE__*/function () {
+  function TargetFightRunOptions(configOptions) {
+    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+      macro = _ref.macro,
+      location = _ref.location,
+      useAuto = _ref.useAuto,
+      action = _ref.action;
+    _classCallCheck(this, TargetFightRunOptions);
+    _classPrivateFieldInitSpec(this, _macro, void 0);
+    _classPrivateFieldInitSpec(this, _location, void 0);
+    _classPrivateFieldInitSpec(this, _useAuto, void 0);
+    _classPrivateFieldInitSpec(this, _action, void 0);
+    this.configOptions = configOptions;
+    _classPrivateFieldSet2(_action, this, action);
+    _classPrivateFieldSet2(_macro, this, macro);
+    _classPrivateFieldSet2(_location, this, location);
+    _classPrivateFieldSet2(_useAuto, this, useAuto);
+  }
+  return _createClass(TargetFightRunOptions, [{
+    key: "location",
+    get: function get() {
+      if (this.configOptions.location) return this.configOptions.location;
+      var suggestion = this.configOptions.draggable && !_classPrivateFieldGet2(_location, this) && checkUnderwater() && taffyIsWorthIt() ? $location`The Briny Deeps` : _classPrivateFieldGet2(_location, this);
+      if (this.configOptions.draggable && !suggestion || this.configOptions.draggable === "backup" && suggestion && suggestion.combatPercent < 100) {
+        var wanderOptions = {
+          wanderer: this.configOptions.draggable,
+          allowEquipment: false
+        };
+        var targetLocation = wanderer().getTarget(wanderOptions).location;
+        propertyManager.setChoices(wanderer().getChoices(targetLocation));
+        return targetLocation;
+      }
+      return suggestion ?? $location`Noob Cave`;
+    }
+  }, {
+    key: "macro",
+    get: function get() {
+      var baseMacro = _classPrivateFieldGet2(_macro, this) ?? Macro.target(this.action);
+      return this.configOptions.draggable === "wanderer" ? wandererFailsafeMacro().step(baseMacro) : baseMacro;
+    }
+  }, {
+    key: "useAuto",
+    get: function get() {
+      return _classPrivateFieldGet2(_useAuto, this) ?? true;
+    }
+  }, {
+    key: "action",
+    get: function get() {
+      return _classPrivateFieldGet2(_action, this) ?? "???";
+    }
+  }]);
+}();
+
 function runTargetFight(fight) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var fullOptions = new TargetFightRunOptions(fight, options);
   fight.run(fullOptions);
+}
+
+var trickHats = $items`invisible bag, witch hat, beholed bedsheet, wolfman mask, pumpkinhead mask, mummy costume`;
+var visitBlock = () => kolmafia.visitUrl(`place.php?whichplace=town&action=town_trickortreat`);
+var visitHouse = house => kolmafia.runChoice(3, `whichhouse=${house.toFixed(0)}`);
+function treatValue(outfit) {
+  return sum(Object.entries(kolmafia.outfitTreats(outfit)), _ref => {
+    var _ref2 = _slicedToArray(_ref, 2),
+      candyName = _ref2[0],
+      probability = _ref2[1];
+    return probability * garboValue(kolmafia.toItem(candyName));
+  });
+}
+function getTreatOutfit() {
+  var availableOutfits = kolmafia.getOutfits().filter(name => kolmafia.outfitPieces(name).every(piece => kolmafia.canEquip(piece)));
+  if (!availableOutfits.length) {
+    kolmafia.print("You don't seem to actually have any trick-or-treating outfits available, my friend!");
+  }
+  return maxBy(availableOutfits, treatValue);
+}
+function treatOutfit() {
+  var outfit = new Outfit();
+  var bestTreatOutfit = getTreatOutfit();
+  var pieces = kolmafia.outfitPieces(bestTreatOutfit);
+  var _iterator = _createForOfIteratorHelper(pieces),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var piece = _step.value;
+      if (!outfit.equip(piece)) {
+        kolmafia.print(`Could not equip all pieces of trick-or-treating outfit ${bestTreatOutfit}: aborted on ${piece}`);
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  outfit.equip($familiar`Trick-or-Treating Tot`);
+  return outfit;
+}
+function candyRichBlockValue() {
+  var outfitCandyValue = treatValue(getTreatOutfit());
+  var totOutfitCandyMultiplier = have$P($familiar`Trick-or-Treating Tot`) ? 1.6 : 1;
+  var bowlValue = 1 / 5 * getSaleValue($item`huge bowl of candy`);
+  var prunetsValue = have$P($familiar`Trick-or-Treating Tot`) ? 4 * 0.2 * getSaleValue($item`Prunets`) : 0;
+  var outfitCandyTotal = 3 * outfitCandyValue * totOutfitCandyMultiplier;
+  return outfitCandyTotal + bowlValue + prunetsValue + 5 * globalOptions.prefs.valueOfFreeFight;
+}
+function shouldAcquireCandyMap() {
+  return !kolmafia.holiday().includes("Halloween") && kolmafia.mallPrice($item`map to a candy-rich block`) < 50000 &&
+  // Sanity value to prevent mall shenanigans
+  candyRichBlockValue() > kolmafia.mallPrice($item`map to a candy-rich block`);
+}
+function useCandyMapTask() {
+  return {
+    name: "Acquire Candy Map",
+    ready: () => shouldAcquireCandyMap(),
+    completed: () => get$2("_mapToACandyRichBlockUsed"),
+    do: () => {
+      if (acquire(1, $item`map to a candy-rich block`, candyRichBlockValue() - 1, false)) {
+        withChoice(804, 2, () => kolmafia.use($item`map to a candy-rich block`));
+      }
+    },
+    limit: {
+      skip: 1
+    },
+    spendsTurn: false
+  };
+}
+function doCandyTreat() {
+  return {
+    name: "Treat",
+    completed: () => !["L", "S"].some(house => get$2("_trickOrTreatBlock").includes(house)),
+    ready: () => !kolmafia.holiday().includes("Halloween") && get$2("_mapToACandyRichBlockUsed"),
+    outfit: treatOutfit,
+    do: () => {
+      visitBlock();
+      var houses = _toConsumableArray(get$2("_trickOrTreatBlock").split("").entries()).filter(_ref3 => {
+        var _ref4 = _slicedToArray(_ref3, 2),
+          house = _ref4[1];
+        return ["L", "S"].includes(house);
+      });
+      // We do all treat houses in a row as one task for speed reasons
+      var _iterator2 = _createForOfIteratorHelper(houses),
+        _step2;
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var _step2$value = _slicedToArray(_step2.value, 2),
+            index = _step2$value[0],
+            house = _step2$value[1];
+          if (["L", "S"].includes(house)) {
+            visitHouse(index);
+            if (house === "S") {
+              kolmafia.runChoice(2);
+              visitBlock();
+            }
+          }
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+    },
+    spendsTurn: false,
+    combat: new GarboStrategy(() => Macro.abortWithMsg("We were planning on Treating, but we've been Tricked!"))
+  };
+}
+var MAX_HAT_PRICE = 100_000;
+function obtainTrickHat() {
+  return {
+    name: "Obtain Trick Hat",
+    completed: () => trickHats.some(hat => have$P(hat)),
+    ready: () => trickHats.some(hat => kolmafia.mallPrice(hat) < MAX_HAT_PRICE),
+    do: () => {
+      var cheapestHat = maxBy(trickHats, kolmafia.mallPrice, true);
+      acquire(1, cheapestHat, MAX_HAT_PRICE);
+    },
+    spendsTurn: false
+  };
+}
+function candyMapDailyTasks() {
+  return [useCandyMapTask(), doCandyTreat(), obtainTrickHat()];
+}
+function doCandyTrick() {
+  return {
+    name: "Trick",
+    completed: () => !get$2("_trickOrTreatBlock").includes("D"),
+    ready: () => !kolmafia.holiday().includes("Halloween") && get$2("_mapToACandyRichBlockUsed") && trickHats.some(hat => have$P(hat)),
+    do: () => {
+      visitBlock();
+      var houseNumber = get$2("_trickOrTreatBlock").indexOf("D");
+      if (houseNumber < 0) return;
+      visitHouse(houseNumber);
+    },
+    outfit: () => {
+      var hat = trickHats.find(hat => have$P(hat));
+      if (!hat) {
+        throw new Error("We thought we had an appropriate hat for tricking, but we did not.");
+      }
+      return freeFightOutfit({
+        hat
+      }, $location`Trick-or-Treating`);
+    },
+    combat: new GarboStrategy(() => Macro.basicCombat()),
+    spendsTurn: false
+  };
+}
+
+var ghostLocations = new Map([[$location`Cobb's Knob Treasury`, $monster`The ghost of Ebenoozer Screege`], [$location`The Haunted Conservatory`, $monster`The ghost of Lord Montague Spookyraven`], [$location`The Haunted Gallery`, $monster`The ghost of Waldo the Carpathian`], [$location`The Haunted Kitchen`, $monster`The Icewoman`], [$location`The Haunted Wine Cellar`, $monster`The ghost of Jim Unfortunato`], [$location`The Icy Peak`, $monster`The ghost of Sam McGee`], [$location`Inside the Palindome`, $monster`Emily Koops, a spooky lime`], [$location`Madness Bakery`, $monster`the ghost of Monsieur Baguelle`], [$location`The Old Landfill`, $monster`The ghost of Vanillica "Trashblossom" Gorton`], [$location`The Overgrown Lot`, $monster`the ghost of Oily McBindle`], [$location`The Skeleton Store`, $monster`boneless blobghost`], [$location`The Smut Orc Logging Camp`, $monster`The ghost of Richard Cockingham`], [$location`The Spooky Forest`, $monster`The Headless Horseman`]]);
+function getGhost() {
+  return ghostLocations.get(get$2("ghostLocation") ?? $location.none) ?? null;
+}
+function ghostAdventure() {
+  return {
+    location: get$2("ghostLocation") ?? $location.none,
+    target: getGhost() ?? $monster.none
+  };
 }
 
 var DEFAULT_FREE_FIGHT_TASK = {
@@ -28379,6 +27675,47 @@ var FreeFightQuest = {
   ready: () => sober() && !have$P($effect`Feeling Lost`)
 };
 
+function sandwormFamiliar() {
+  if (have$P($familiar`Trick-or-Treating Tot`) && have$P($item`li'l ninja costume`) && !have$P($item`toy Cupid bow`)) {
+    return $familiar`Trick-or-Treating Tot`;
+  }
+  var viableFairies = kolmafia.Familiar.all().filter(f => have$P(f) && findFairyMultiplier(f) && f !== $familiar`Steam-Powered Cheerleader` && !f.physicalDamage && !f.elementalDamage);
+  var highestFairyMult = findFairyMultiplier(maxBy(viableFairies, f => f === $familiar`Jill-of-All-Trades` && have$P($item`toy Cupid bow`) ? 1 // Ignore LED candle if we have TCB
+  : findFairyMultiplier(f)));
+  var goodFairies = viableFairies.filter(f => findFairyMultiplier(f) === highestFairyMult);
+  if (have$P($familiar`Reagnimated Gnome`) && !have$P($item`gnomish housemaid's kgnee`) && !get$2("_garbo_triedForKgnee", false)) {
+    var current = kolmafia.myFamiliar();
+    kolmafia.useFamiliar($familiar`Reagnimated Gnome`);
+    kolmafia.visitUrl("arena.php");
+    kolmafia.runChoice(4);
+    kolmafia.useFamiliar(current);
+    _set("_garbo_triedForKgnee", true);
+  }
+  if (have$P($item`gnomish housemaid's kgnee`) && highestFairyMult === 1 && !have$P($item`toy Cupid bow`)) {
+    goodFairies.push($familiar`Reagnimated Gnome`);
+  }
+  var bonuses = [].concat(_toConsumableArray(menu$1($monster`giant sandworm`, {
+    canChooseMacro: false
+  })), [{
+    familiar: $familiar`Reagnimated Gnome`,
+    expectedValue: get$2("valueOfAdventure") * 70 / 1000,
+    leprechaunMultiplier: 0,
+    limit: "none"
+  }]);
+  var tcbFamiliars = getUsedTcbFamiliars();
+  var bestNonCheerleaderFairy = maxBy(goodFairies, f => {
+    var _bonuses$find;
+    return ((_bonuses$find = bonuses.find(_ref => {
+      var familiar = _ref.familiar;
+      return familiar === f;
+    })) === null || _bonuses$find === void 0 ? void 0 : _bonuses$find.expectedValue) ?? tcbValue(f, tcbFamiliars);
+  });
+  if (have$P($familiar`Steam-Powered Cheerleader`) && findFairyMultiplier($familiar`Steam-Powered Cheerleader`) > findFairyMultiplier(bestNonCheerleaderFairy)) {
+    return $familiar`Steam-Powered Cheerleader`;
+  }
+  return bestNonCheerleaderFairy;
+}
+
 function sandwormSpec() {
   var spec = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var outfit = Outfit.from(spec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`));
@@ -28680,6 +28017,120 @@ var PostBuffExtensionQuest = {
   name: "Post Buff Extension",
   tasks: PostBuffExtensionTasks
 };
+
+function queryEggNetIncomplete() {
+  try {
+    var status = JSON.parse(kolmafia.visitUrl("https://eggnet.loathers.net/status"));
+    var lastUpdate = new Date(status.lastUpdate);
+    var daysSince = (Date.now() - lastUpdate.getTime()) / (24 * 60 * 60 * 1000);
+    var max = daysSince < 0.5 ? 100 : 100 - 10 * daysSince;
+    return new Map(Object.entries(status.eggs).filter(entry => entry[1] > 0 && entry[1] < max).map(_ref => {
+      var _ref2 = _slicedToArray(_ref, 2),
+        id = _ref2[0],
+        count = _ref2[1];
+      return [kolmafia.Monster.get(id), count];
+    }));
+  } catch (_unused) {
+    return new Map();
+  }
+}
+function queryEggNetPriority() {
+  try {
+    var monsters = JSON.parse(kolmafia.visitUrl("https://eggnet.loathers.net/monsters"));
+    return new Map(monsters.filter(entry => entry.eggs < 100 && entry.priority > 0).map(entry => [kolmafia.Monster.get(entry.id), entry.priority]));
+  } catch (_unused2) {
+    return new Map();
+  }
+}
+function findDonateMonster(onlyFree) {
+  var incomplete = queryEggNetIncomplete();
+  var priority = queryEggNetPriority();
+  if (incomplete.size === 0) return undefined;
+  var maxMonsterId = $monster`beef bodyguard bat`.id; // Last Update Feb 24 2026
+  var banned = new Set([].concat(_toConsumableArray($monsters.all().filter(x => x.attributes.includes("BOSS") || x.attributes.includes("NOCOPY") || onlyFree && !x.attributes.includes("FREE"))), _toConsumableArray($monsters`quadfaerie, cursed villager, plywood cultists, barrow wraith?, Source Agent`)));
+  // Find the monster that needs the most eggs, adding in a small amount of variance as a tiebreaker
+  var monster = findMonster(m => m.id <= maxMonsterId && incomplete.has(m) && !banned.has(m), m => 100 - (incomplete.get(m ?? kolmafia.Monster.none) ?? 0) + (priority.get(m) ?? 0) * 1000 + Math.sin((kolmafia.toInt(kolmafia.myId()) << 5) + kolmafia.myDaycount() + m.id));
+  var count = incomplete.get(monster ?? kolmafia.Monster.none) ?? 0;
+  return !!monster && monster !== kolmafia.Monster.none && count > 0 ? {
+    monster,
+    count
+  } : undefined;
+}
+function mimicEscape() {
+  var constraints = _objectSpread2(_objectSpread2({}, freeRunConstraints()), {}, {
+    noFamiliar: () => true,
+    maximumCost: () => globalOptions.prefs.valueOfAdventure ?? globalOptions.prefs.valueOfFreeFight
+  });
+  return tryFindFreeRunOrBanish(constraints) ?? undefined;
+}
+function shouldDelevel(monster) {
+  return monster.attributes.includes("Scale:") || kolmafia.myBuffedstat($stat`Moxie`) < monster.baseAttack + 10 || have$P($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < monster.baseAttack + 10;
+}
+function monsterRequirements(monster) {
+  var maximize = ["-100 Thorns", "-100 Sporadic Thorns", "-100 Damage Aura", "-100 Sporadic Damage Aura"];
+  var options = {
+    preventEquip: $items`carnivorous potted plant, Kramco Sausage-o-Matic™`
+  };
+  switch (monster) {
+    default:
+      maximize.push("100 Avoid Attack");
+      options.bonusEquip = new Map([[$item`unwrapped knock-off retro superhero cape`, 300], [$item`navel ring of navel gazing`, 50], [$item`ancient stone head`, 33], [$item`asteroid belt`, 25], [$item`attorney's badge`, 20], [$item`propeller beanie`, 10], [$item`Mayflower bouquet`, 6.5]]);
+      break;
+  }
+  return new Requirement(maximize, options);
+}
+function monsterEffects(monster) {
+  var effects = [];
+  return effects;
+}
+function mimicEggDonation() {
+  var escape = mimicEscape();
+  var donation = findDonateMonster(!escape);
+  if (!donation) {
+    return [];
+  }
+  return [{
+    name: `Donate mimic egg`,
+    ready: () => eggMonsters().has(donation.monster),
+    completed: () => get$2("_mimicEggsDonated") >= 3,
+    outfit: {
+      familiar: $familiar`Chest Mimic`
+    },
+    do: () => donate(donation.monster),
+    limit: {
+      skip: 3
+    },
+    spendsTurn: false
+  }, {
+    name: `Harvest mimic eggs`,
+    ready: () => canReminisce(donation.monster) && (!!escape || donation.monster.attributes.includes("FREE")) && $familiar`Chest Mimic`.experience > 50,
+    completed: () => get$2("_mimicEggsObtained") >= 11 || get$2("_mimicEggsDonated") >= 3 || eggMonsters().has(donation.monster),
+    do: () => reminisce(donation.monster),
+    combat: new GarboStrategy(() => Macro.externalIf(shouldDelevel(donation.monster), Macro.delevel()).externalIf(Math.min(100 - donation.count, 3 - get$2("_mimicEggsDonated")) > 0, Macro.trySkill($skill`%fn, lay an egg`)).externalIf(Math.min(100 - donation.count, 3 - get$2("_mimicEggsDonated")) > 1, Macro.trySkill($skill`%fn, lay an egg`)).externalIf(Math.min(100 - donation.count, 3 - get$2("_mimicEggsDonated")) > 2, Macro.trySkill($skill`%fn, lay an egg`)).externalIf(!!escape && !donation.monster.attributes.includes("FREE"), Macro.step((escape === null || escape === void 0 ? void 0 : escape.macro) ?? "")).kill(), () => Macro.kill()),
+    prepare: () => {
+      kolmafia.useFamiliar($familiar`Chest Mimic`);
+      escape === null || escape === void 0 || escape.prepare(monsterRequirements(donation.monster));
+      if (kolmafia.haveEquipped($item`unwrapped knock-off retro superhero cape`)) {
+        set("heck", "hold");
+      }
+      if (have$P($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
+      kolmafia.restoreHp(kolmafia.myMaxhp());
+      kolmafia.restoreMp(safeRestoreMpTarget());
+    },
+    effects: () => monsterEffects(donation.monster),
+    limit: {
+      skip: 1
+    },
+    spendsTurn: false,
+    sobriety: "sober"
+  }];
+}
+var FreeMimicEggDonationQuest = () => ({
+  name: "Free Mimic Egg Donation",
+  tasks: _toConsumableArray(mimicEggDonation()),
+  ready: () => globalOptions.prefs.beSelfish !== true && have$j() && have$t(),
+  completed: () => get$2("_mimicEggsDonated") >= 3
+});
 
 var firstChainMacro = () => Macro.if_(globalOptions.target, Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel()).if_("hppercentbelow 30", Macro.tryItem($item`New Age healing crystal`)).if_(`!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`, Macro.externalIf(getDigitizeMonster() !== globalOptions.target, Macro.tryCopier($skill`Digitize`)).tryCopier($item`Spooky Putty sheet`).tryCopier($item`Rain-Doh black box`).tryCopier($item`4-d camera`).tryCopier($item`unfinished ice sculpture`).externalIf(get$2("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`)).tryCopier($skill`Club 'Em Into Next Week`)).trySkill($skill`lecture on relativity`).meatKill(false)).abort();
 var secondChainMacro = () => Macro.if_(globalOptions.target, Macro.externalIf(isStrongScaler(globalOptions.target), Macro.delevel()).if_("hppercentbelow 30", Macro.tryItem($item`New Age healing crystal`)).if_(`!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`, Macro.trySkill($skill`Meteor Shower`)).if_(`!${Macro.makeBALLSPredicate($skill`lecture on relativity`)}`, Macro.externalIf(get$2("_sourceTerminalDigitizeMonster") !== globalOptions.target, Macro.tryCopier($skill`Digitize`)).tryCopier($item`Spooky Putty sheet`).tryCopier($item`Rain-Doh black box`).tryCopier($item`4-d camera`).tryCopier($item`unfinished ice sculpture`).externalIf(get$2("_enamorangs") === 0, Macro.tryCopier($item`LOV Enamorang`)).tryCopier($skill`Club 'Em Into Next Week`)).trySkill($skill`lecture on relativity`).meatKill(false)).abort();
@@ -30718,6 +30169,156 @@ var DailyFamiliarsQuest = {
   tasks: DailyFamiliarTasks
 };
 
+var instruments = [{
+  instrument: "Apriling band tuba",
+  value: () => realmAvailable("sleaze") ? (20000 - get$2("valueOfAdventure")) * 3 : 0
+}, {
+  instrument: "Apriling band quad tom",
+  value: () => (globalOptions.prefs.valueOfFreeFight + 0.02 * garboValue($item`spice melange`)) * 3
+}, {
+  instrument: "Apriling band saxophone",
+  value: () => getBestLuckyAdventure().value() * 3
+}, {
+  instrument: "Apriling band piccolo",
+  value: () => Math.max.apply(Math, [0].concat(_toConsumableArray(getExperienceFamiliars("barf").map(_ref => {
+    var familiar = _ref.familiar,
+      expectedValue = _ref.expectedValue;
+    var usesAllowed = clamp(Math.floor((400 - familiar.experience) / 40), 0, 3);
+    return expectedValue / estimatedBarfExperience() * 40 * usesAllowed;
+  }))))
+}];
+function getBestAprilInstruments() {
+  var available = clamp(2 - get$2("_aprilBandInstruments"), 0, 2);
+  return instruments.filter(_ref2 => {
+    var instrument = _ref2.instrument;
+    return !have$P(kolmafia.toItem(instrument));
+  }).sort((a, b) => b.value() - a.value()).splice(0, available).map(_ref3 => {
+    var instrument = _ref3.instrument;
+    return instrument;
+  });
+}
+
+function archaeologySpadeTask() {
+  return {
+    name: "Use Archaeologist's Spade",
+    ready: () => have$P($item`Archaeologist's Spade`) && get$2("_archSpadeDigs", 0) < 11,
+    completed: () => get$2("_archSpadeDigs", 0) >= 11,
+    do: () => {
+      var spadeTargets = [{
+        price: garboAverageValue.apply(void 0, _toConsumableArray($items`ancient Pork Elf pottery shard, dinosaur bone fragment, 2015 landfill detritus`)),
+        tuner: undefined
+      }, {
+        price: garboValue($item`ancient Pork Elf pottery shard`),
+        tuner: $item`Pork Elf neti pot`
+      }, {
+        price: garboValue($item`dinosaur bone fragment`),
+        tuner: $item`giant gnawing bone`
+      }, {
+        price: garboValue($item`2015 landfill detritus`),
+        tuner: $item`Fleek™ mascara`
+      }].filter(t => !t.tuner || have$P(t.tuner));
+      if (spadeTargets.length > 0) {
+        var target = maxBy(spadeTargets, "price");
+        if (target.tuner) kolmafia.use(target.tuner);
+      }
+      directlyUse($item`Archaeologist's Spade`);
+      while ("2" in kolmafia.availableChoiceOptions()) {
+        kolmafia.runChoice(2);
+      }
+      kolmafia.visitUrl("main.php");
+    },
+    spendsTurn: false
+  };
+}
+
+// Stats assigned a value of 1, to discern from the Truly Useless
+// MP restore assigned a value of 2, because it's better than stats!
+var MAYAM_RING_VALUES = {
+  yam1: () => garboValue($item`yam`),
+  sword: () => 1,
+  vessel: () => 2,
+  eye: () => effectValue($effect`Big Eyes`, 100),
+  fur: () => Math.max.apply(Math, [0].concat(_toConsumableArray(getExperienceFamiliars("free").map(_ref => {
+    var expectedValue = _ref.expectedValue;
+    return expectedValue / 12;
+  })))) * 100,
+  chair: () => have$n() ? 3 * 5 * felizValue() : 0,
+  // TODO Account for reaching a Yachtzee NC breakpoint
+  yam2: () => garboValue($item`yam`),
+  lightning: () => 1,
+  bottle: () => 0,
+  wood: () => 0,
+  wall: () => 0,
+  cheese: () => garboValue($item`goat cheese`),
+  eyepatch: () => 1,
+  meat: () => clamp(kolmafia.myLevel() * 100, 100, 1500),
+  yam3: () => garboValue($item`yam`),
+  yam4: () => garboValue($item`yam`),
+  explosion: () => 0,
+  clock: () => 5 * get$2("valueOfAdventure")
+};
+function valueSymbol(symbol) {
+  return MAYAM_RING_VALUES[symbol]();
+}
+function valueResonance(combination) {
+  var result = getResonanceResult(combination);
+  if (!result) return 0;
+  if (result instanceof kolmafia.Item) {
+    if (result === $item`yamtility belt`) return 0; // yamtilityValue();
+    return garboValue(result);
+  }
+  return effectValue(result, 30);
+}
+function valueCombination(combination) {
+  return sum(toCombination([combination]), valueSymbol) + valueResonance(combination);
+}
+function getAvailableResonances(forbiddenSymbols, indexCap) {
+  return RESONANCE_KEYS.filter((combination, index) => index < indexCap && !toCombination([combination]).some(sym => forbiddenSymbols.includes(sym)));
+}
+function getBestAvailableSymbolFromRing(ring, forbiddenSymbols) {
+  return maxBy(RINGS[ring].filter(sym => !forbiddenSymbols.includes(sym)), valueSymbol);
+}
+function getBestGreedyCombination(forbiddenSymbols) {
+  return toCombinationString([getBestAvailableSymbolFromRing(0, forbiddenSymbols), getBestAvailableSymbolFromRing(1, forbiddenSymbols), getBestAvailableSymbolFromRing(2, forbiddenSymbols), getBestAvailableSymbolFromRing(3, forbiddenSymbols)]);
+}
+var resonanceIndex = resonance => RESONANCE_KEYS.indexOf(resonance);
+function expandCombinationGroup(group) {
+  var forbiddenSymbols = [].concat(_toConsumableArray(group.flatMap(combinationString => toCombination([combinationString]))), _toConsumableArray(symbolsUsed()));
+  return [].concat(_toConsumableArray(getAvailableResonances(forbiddenSymbols, Math.min.apply(Math, _toConsumableArray(group.map(resonanceIndex)))).map(resonance => [].concat(_toConsumableArray(group), [resonance]))), [[].concat(_toConsumableArray(group), [getBestGreedyCombination(forbiddenSymbols)])]);
+}
+function getBestMayamCombinations() {
+  return maxBy(new Array(remainingUses()).fill(null).reduce(acc => acc.flatMap(combinationGroup => expandCombinationGroup(combinationGroup)), [[]]), group => sum(group, valueCombination));
+}
+function mayamCalendarSummon() {
+  return {
+    name: "Mayam Summons",
+    completed: () => remainingUses() === 0,
+    ready: () => have$i(),
+    do: () => {
+      var startingFamiliar = kolmafia.myFamiliar();
+      var _iterator = _createForOfIteratorHelper(getBestMayamCombinations()),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var combination = _step.value;
+          if (combination.includes("fur")) {
+            var famList = getExperienceFamiliars("free");
+            var bestFamiliar = famList.length > 0 ? maxBy(famList, "expectedValue").familiar : meatFamiliar();
+            kolmafia.useFamiliar(bestFamiliar);
+          }
+          submit(combination);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      kolmafia.useFamiliar(startingFamiliar);
+    },
+    spendsTurn: false
+  };
+}
+
 var SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 var Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
 var _shouldClearRufusQuest = null;
@@ -31283,12 +30884,970 @@ var DailyItemsQuest = {
   tasks: [].concat(_toConsumableArray(SummonTasks), _toConsumableArray(DailyItemTasks))
 };
 
+var DailySeaTasks = [{
+  name: "Unlock The Sea",
+  ready: () => kolmafia.myLevel() >= 11,
+  completed: () => have$P($item`little bitty bathysphere`),
+  do: () => {
+    kolmafia.visitUrl("place.php?whichplace=sea_oldman");
+    kolmafia.visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+  },
+  spendsTurn: false,
+  limit: {
+    skip: 1
+  }
+}, {
+  name: $item`sea jelly`.name,
+  ready: () => have$P($familiar`Space Jellyfish`) && have$P($item`little bitty bathysphere`),
+  completed: () => get$2("_seaJellyHarvested"),
+  do: () => {
+    kolmafia.visitUrl("place.php?whichplace=thesea&action=thesea_left2");
+    kolmafia.runChoice(1);
+  },
+  outfit: {
+    familiar: $familiar`Space Jellyfish`
+  },
+  spendsTurn: false,
+  limit: {
+    skip: 1
+  }
+}];
+var DailySeaQuest = {
+  name: "Daily Sea",
+  tasks: DailySeaTasks
+};
+
+function dailySetup() {
+  runSafeGarboQuests([DailyFamiliarsQuest, DailyQuest, DailyItemsQuest, DailySeaQuest, AscendingQuest]);
+}
+
+function dessertIslandWorthIt() {
+  // estimating value of giant giant crab at 5*VOA, it has 2000 base meat
+  return garboValue($item`cocoa of youth`) > 5 * get$2("valueOfAdventure");
+}
+function crewRoleValue(crewmate) {
+  // Cuisinier is highest value if cocoa of youth is more meat than expected from giant crab
+  if (dessertIslandWorthIt() && crewmate.includes("Cuisinier")) {
+    return 50;
+  }
+  // Coxswain helps save turns if we run from storms
+  if (crewmate.includes("Coxswain")) return 40;
+  // Harquebusier gives us extra fun from combats
+  if (crewmate.includes("Harquebusier")) return 30;
+  // Crypto, Cuisinier (if cocoa not worth it), and Mixologist have small bonuses we care about less
+  return 0;
+}
+function crewAdjectiveValue(crewmate) {
+  // Wide-Eyed give us bonus fun when counting birds in smooth sailing, and we'll mostly be doing that rather than spending limited grub/grog
+  if (crewmate.includes("Wide-Eyed")) return 5;
+  // Gluttonous can help when running out of grub, even though we usually shouldn't?
+  if (crewmate.includes("Gluttonous")) return 4;
+  // Beligerent, Dipsomaniacal, and Pinch-Fisted don't make much difference
+  return 0;
+}
+function bestCrewmate() {
+  return maxBy([1, 2, 3], choiceOption => {
+    var crewmatePref = `_pirateRealmCrewmate${choiceOption}`;
+    var crewmate = get$2(crewmatePref);
+    var roleValue = crewRoleValue(crewmate);
+    var adjectiveValue = crewAdjectiveValue(crewmate);
+    return roleValue + adjectiveValue;
+  });
+}
+function outfitBonuses() {
+  var funPointValue = garboValue($item`PirateRealm guest pass`) / 600;
+  return new Map([[$item`carnivorous potted plant`, get$2("valueOfAdventure") / (20 + get$2("_carnivorousPottedPlantWins"))], [$item`Red Roger's red left foot`, funPointValue], [$item`PirateRealm party hat`, funPointValue]]);
+}
+
+var DebuffPlanner = /*#__PURE__*/function () {
+  function DebuffPlanner() {
+    _classCallCheck(this, DebuffPlanner);
+    _defineProperty(this, "plan", []);
+    _defineProperty(this, "itemBanList", $items`pill cup`);
+    _defineProperty(this, "priceCap", 150_000);
+    // Chosen at random by Shiverwarp
+    _defineProperty(this, "sizeCap", 69);
+    // Chosen at random by sweaty bill
+    _defineProperty(this, "possibleDebuffItems", {});
+    this.generateDebuffList();
+  }
+  return _createClass(DebuffPlanner, [{
+    key: "buffedStat",
+    value: function buffedStat(stat) {
+      return kolmafia.myBuffedstat(stat) + sum(this.plan, _ref => {
+        var target = _ref.target,
+          type = _ref.type;
+        return (["uneffect", "shrug"].includes(type) ? -1 : 1) * totalModifier(asEffect(target), stat);
+      });
+    }
+  }, {
+    key: "isValuable",
+    value: function isValuable(thing) {
+      var effect = asEffect(thing);
+      return FarmingStrategy.valuableModifiers().some(modifier => get$1(modifier, effect) > 0);
+    }
+  }, {
+    key: "debuffedEnough",
+    value: function debuffedEnough() {
+      return kolmafia.Stat.all().every(stat => this.buffedStat(stat) <= 100);
+    }
+  }, {
+    key: "effectiveDebuffQuantity",
+    value: function effectiveDebuffQuantity(effect, stat, shrugging) {
+      return clamp((shrugging ? -1 : 1) * (get$1(stat.toString(), effect) +
+      // Eyepatch caps you at 20
+      20 / 100 * get$1(`${stat.toString()} Percent`, effect)), 100 - this.buffedStat(stat), 0);
+    }
+  }, {
+    key: "debuffEfficacy",
+    value: function debuffEfficacy(item, effect, stat, shrugging) {
+      return -1 * this.effectiveDebuffQuantity(effect, stat, shrugging) / getAcquirePrice(item);
+    }
+  }, {
+    key: "have",
+    value: function have(effect) {
+      return have$P(effect) ? !this.plan.some(_ref2 => {
+        var type = _ref2.type,
+          target = _ref2.target;
+        return ["shrug", "uneffect"].includes(type) && target === effect;
+      }) : this.plan.some(_ref3 => {
+        var type = _ref3.type,
+          target = _ref3.target;
+        return type === "potion" && asEffect(target) === effect;
+      });
+    }
+  }, {
+    key: "getDebuffItems",
+    value: function getDebuffItems(stat) {
+      var _this$possibleDebuffI, _stat$toString;
+      return ((_this$possibleDebuffI = this.possibleDebuffItems)[_stat$toString = stat.toString()] ?? (_this$possibleDebuffI[_stat$toString] = kolmafia.Item.all().map(item => ({
+        item,
+        effect: asEffect(item)
+      })).filter(_ref4 => {
+        var item = _ref4.item,
+          effect = _ref4.effect;
+        return item.potion && (item.tradeable || have$P(item)) && !this.itemBanList.includes(item) && !improvesAStat(item) && effect !== $effect.none && !have$P(effect) && totalModifier(effect, stat) < 0;
+      }))).filter(_ref5 => {
+        var effect = _ref5.effect;
+        return !this.have(effect);
+      });
+    }
+  }, {
+    key: "getBestDebuffItem",
+    value: function getBestDebuffItem(stat) {
+      var debuffItems = this.getDebuffItems(stat);
+      if (!debuffItems.length) {
+        this.printPlan();
+        kolmafia.abort(`Failed to find a debuff item for ${stat}!`);
+      }
+      var bestPotion = maxBy(debuffItems, _ref6 => {
+        var item = _ref6.item,
+          effect = _ref6.effect;
+        return this.debuffEfficacy(item, effect, stat, false);
+      });
+      var effectsToShrug = getActiveEffects().filter(ef => !kolmafia.isShruggable(ef) && this.shouldRemove(ef));
+      if (!effectsToShrug.length) return bestPotion.item;
+      var bestEffectToShrug = maxBy(effectsToShrug, ef => this.effectiveDebuffQuantity(ef, stat, true), true);
+      return this.effectiveDebuffQuantity(bestEffectToShrug, stat, true) / getAcquirePrice($item`soft green echo eyedrop antidote`) > this.effectiveDebuffQuantity(bestPotion.effect, stat, false) / getAcquirePrice(bestPotion.item) ? bestEffectToShrug : bestPotion.item;
+    }
+  }, {
+    key: "shouldRemove",
+    value: function shouldRemove(effect) {
+      if (!this.have(effect)) return false;
+      // Only shrug effects that buff at least one stat that's too high
+      if (!improvedStats(effect).some(stat => this.buffedStat(stat) >= 100)) {
+        return false;
+      }
+      // Never shrug effects that give meat or whatever
+      if (this.isValuable(effect)) return false;
+      return true;
+    }
+
+    // Just checking for the gummi effects for now, maybe can check other stuff later?
+  }, {
+    key: "generateDebuffList",
+    value: function generateDebuffList() {
+      ignoreBeatenUp();
+      if (this.debuffedEnough()) return;
+
+      // Decorative fountain is both cheap and reusable for -30% muscle, but is not a potion
+      if (this.buffedStat($stat`Muscle`) > 100 && !have$P($effect`Sleepy`) && (have$P($item`decorative fountain`) || getAcquirePrice($item`decorative fountain`) < 500)) {
+        acquire(1, $item`decorative fountain`, 500);
+        kolmafia.use($item`decorative fountain`);
+      }
+      var _iterator = _createForOfIteratorHelper(getActiveEffects()),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var effect = _step.value;
+          if (!kolmafia.isShruggable(effect)) continue;
+          if (!this.shouldRemove(effect)) continue;
+          this.plan.push({
+            type: "shrug",
+            target: effect
+          });
+          if (this.debuffedEnough()) return;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      var debuffItemLoops = 0;
+      while (!this.debuffedEnough()) {
+        if (debuffItemLoops > this.sizeCap) {
+          this.printPlan();
+          kolmafia.abort("Spent too long trying to debuff for PirateRealm!");
+        }
+        debuffItemLoops++;
+        var _iterator2 = _createForOfIteratorHelper(kolmafia.Stat.all()),
+          _step2;
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var stat = _step2.value;
+            if (this.buffedStat(stat) > 100) {
+              var debuff = this.getBestDebuffItem(stat);
+              if (debuff instanceof kolmafia.Item) {
+                this.plan.push({
+                  type: "potion",
+                  target: debuff
+                });
+              } else {
+                this.plan.push({
+                  type: "uneffect",
+                  target: debuff
+                });
+              }
+            }
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+      }
+      if (!this.debuffedEnough()) {
+        this.printPlan();
+        kolmafia.abort("Failed to generate debuff list!");
+      }
+    }
+  }, {
+    key: "executeDebuff",
+    value: function executeDebuff(_ref7) {
+      var type = _ref7.type,
+        target = _ref7.target;
+      switch (type) {
+        case "potion":
+          kolmafia.retrieveItem(target);
+          return kolmafia.use(target);
+        case "shrug":
+        case "uneffect":
+          return uneffect(target);
+      }
+    }
+  }, {
+    key: "printPlan",
+    value: function printPlan() {
+      var colour = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "green";
+      kolmafia.print("Debuff plan:", colour);
+      var _iterator3 = _createForOfIteratorHelper(this.plan),
+        _step3;
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var _step3$value = _step3.value,
+            target = _step3$value.target,
+            type = _step3$value.type;
+          switch (type) {
+            case "uneffect":
+              kolmafia.print(` - Remove ${target} with a soft green echo eyedrop antidote`, colour);
+              continue;
+            case "potion":
+              kolmafia.print(` - Use a ${target} to get ${asEffect(target)}`, colour);
+              continue;
+            case "shrug":
+              kolmafia.print(` - Shrug ${target}`, colour);
+              continue;
+          }
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+    }
+  }, {
+    key: "checkAndFixOvercapStats",
+    value: function checkAndFixOvercapStats() {
+      if (this.price() >= this.priceCap) {
+        kolmafia.print("Failed to debuff enough to use piraterealm!", "red");
+        this.printPlan();
+        kolmafia.abort("Total price of this debuff plan too great! Consider targeting something other than cockroaches next time.");
+      }
+      var _iterator4 = _createForOfIteratorHelper(this.plan),
+        _step4;
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var debuff = _step4.value;
+          this.executeDebuff(debuff);
+        }
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+      if (kolmafia.Stat.all().some(stat => kolmafia.myBuffedstat(stat) > 100)) {
+        kolmafia.abort("Failed to debuff sufficiently for piraterealm!");
+      }
+    }
+  }, {
+    key: "price",
+    value: function price() {
+      return sum(this.plan, _ref8 => {
+        var type = _ref8.type,
+          target = _ref8.target;
+        switch (type) {
+          case "potion":
+            return getAcquirePrice(target);
+          case "shrug":
+            return 0;
+          case "uneffect":
+            return getAcquirePrice($item`soft green echo eyedrop antidote`);
+        }
+      });
+    }
+  }], [{
+    key: "checkAndFixOvercapStats",
+    value: function checkAndFixOvercapStats() {
+      return new DebuffPlanner().checkAndFixOvercapStats();
+    }
+  }]);
+}();
+
+var CockroachSetup = {
+  name: "Setup Cockroach Target",
+  ready: () => doingGregFight() && globalOptions.target === $monster`cockroach` && kolmafia.myInebriety() <= kolmafia.inebrietyLimit(),
+  completed: () => get$2("_lastPirateRealmIsland") === $location`Trash Island`,
+  tasks: [{
+    name: "40 Adventure Failsafe",
+    ready: () => kolmafia.myAdventures() <= 40,
+    completed: () => have$P($item`PirateRealm eyepatch`),
+    do: () => {
+      if (userConfirmDialog("You don't have enough adventures to do piraterealm; would you like us to automatically change your copy target to a Knob Goblin Guard? Otherwise, we're going to abort.", true)) {
+        globalOptions.target = $monster`Knob Goblin Elite Guard Captain`;
+      } else {
+        kolmafia.abort("Unable to start piraterealm but you're hellbent on doing cockroaches!");
+      }
+    },
+    spendsTurn: false
+  }, {
+    name: "Get PirateRealm Eyepatch",
+    completed: () => have$P($item`PirateRealm eyepatch`),
+    do: () => kolmafia.visitUrl("place.php?whichplace=realm_pirate&action=pr_port"),
+    limit: {
+      tries: 1
+    },
+    spendsTurn: false
+  }, {
+    name: "Start PirateRealm Journey",
+    ready: () => have$P($item`PirateRealm eyepatch`),
+    completed: () => questStep$1("_questPirateRealm") > 0,
+    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
+    do: () => {
+      kolmafia.visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
+      kolmafia.runChoice(1); // Head to Groggy's
+      kolmafia.runChoice(bestCrewmate()); // Choose our crew
+      if (!(4 in kolmafia.availableChoiceOptions())) {
+        kolmafia.abort("You need the anemometer unlocked to fight cockroaches in garbo!");
+      }
+      kolmafia.runChoice(4); // Choose anemometer for trash island
+      var bestBoat = get$2("pirateRealmUnlockedClipper") ? 4 : 3; // Swift Clipper or Speedy Caravel
+      kolmafia.runChoice(bestBoat);
+      kolmafia.runChoice(1); // Head for the sea
+    },
+    outfit: {
+      equip: $items`PirateRealm eyepatch`,
+      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
+    },
+    limit: {
+      tries: 1
+    },
+    spendsTurn: false
+  }, {
+    name: "Choose First Island",
+    ready: () => questStep$1("_questPirateRealm") === 1,
+    completed: () => questStep$1("_questPirateRealm") > 1,
+    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
+    do: $location`Sailing the PirateRealm Seas`,
+    outfit: {
+      equip: $items`PirateRealm eyepatch`,
+      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
+    },
+    choices: () => ({
+      1352: dessertIslandWorthIt() && get$2("_pirateRealmCrewmate").includes("Cuisinier") ? 6 : 1
+    }),
+    limit: {
+      tries: 1
+    },
+    spendsTurn: false,
+    combat: new GarboStrategy(() => Macro.abortWithMsg("Hit a combat while sailing the high seas!"))
+  }, {
+    name: "Sail to first Island",
+    ready: () => questStep$1("_questPirateRealm") === 2,
+    completed: () => questStep$1("_questPirateRealm") > 2,
+    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
+    do: $location`Sailing the PirateRealm Seas`,
+    outfit: () => ({
+      equip: $items`PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot`.filter(i => have$P(i)),
+      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
+    }),
+    choices: () => ({
+      1365: 1,
+      1364: 2,
+      1361: 1,
+      1357: get$2("_pirateRealmGold") >= 50 ? 3 : 4,
+      1360: 6,
+      // Will need to add shop handling, perhaps to choice adventure script
+      1356: 3,
+      1362: get$2("_pirateRealmShipSpeed") - get$2("_pirateRealmSailingTurns") >= 2 ? 2 : 1,
+      1363: 2,
+      1359: 1,
+      // Emergency grog adventure, choice one seems more consistent?
+      1358: 1,
+      // Emergency grub adventure, choice one seems more consistent?
+      1367: 1 // Wrecked ship, this uses glue, need a pref for glue to make this not break if we don't have glue
+    }),
+    post: () => {
+      // Escape wrecked ship, if no glue is available
+      if (kolmafia.handlingChoice() && kolmafia.lastChoice() === 1367) {
+        kolmafia.runChoice(2);
+      }
+    },
+    limit: {
+      tries: 8
+    },
+    spendsTurn: true,
+    combat: new GarboStrategy(() => Macro.abortWithMsg("Hit a combat while sailing the high seas!"))
+  }, {
+    name: "Land Ho (First Island)",
+    ready: () => questStep$1("_questPirateRealm") === 3,
+    completed: () => questStep$1("_questPirateRealm") > 3,
+    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
+    do: $location`Sailing the PirateRealm Seas`,
+    combat: new GarboStrategy(() => Macro.abortWithMsg("Expected Land Ho! but hit a combat")),
+    choices: {
+      1355: 1
+    },
+    // Land ho!
+    outfit: {
+      equip: $items`PirateRealm eyepatch`,
+      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
+    },
+    limit: {
+      tries: 1
+    },
+    spendsTurn: false
+  }, {
+    name: "Standard Island Combats (Island 1)",
+    ready: () => questStep$1("_questPirateRealm") === 4,
+    completed: () => questStep$1("_questPirateRealm") > 4,
+    prepare: () => {
+      DebuffPlanner.checkAndFixOvercapStats();
+      if (kolmafia.mallPrice($item`windicle`) < 3 * get$2("valueOfAdventure") && !get$2("_pirateRealmWindicleUsed")) {
+        acquire(1, $item`windicle`, 3 * get$2("valueOfAdventure"), true);
+      }
+    },
+    do: () => get$2("_lastPirateRealmIsland", $location`none`),
+    outfit: () => freeFightOutfit({
+      equip: $items`PirateRealm eyepatch`,
+      bonuses: outfitBonuses(),
+      familiar: freeFightFamiliar(get$2("_lastPirateRealmIsland", $location`none`), {
+        canChooseMacro: false,
+        allowAttackFamiliars: true,
+        mode: "free"
+      }),
+      avoid: $items`Roman Candelabra`
+    }, get$2("_lastPirateRealmIsland", $location`none`)),
+    combat: new GarboStrategy(() => Macro.externalIf(kolmafia.mallPrice($item`windicle`) < 3 * get$2("valueOfAdventure") && !get$2("_pirateRealmWindicleUsed") && get$2("_pirateRealmIslandMonstersDefeated") <= 1, Macro.item($item`windicle`)).basicCombat()),
+    limit: {
+      tries: 8
+    },
+    spendsTurn: true
+  }, {
+    name: "Final Island Encounter (Island 1 (Dessert))",
+    ready: () => questStep$1("_questPirateRealm") === 5 && get$2("_lastPirateRealmIsland") === $location`Dessert Island`,
+    completed: () => questStep$1("_questPirateRealm") > 5,
+    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
+    do: $location`PirateRealm Island`,
+    outfit: () => ({
+      equip: $items`PirateRealm eyepatch`,
+      modifier: kolmafia.Stat.all().map(stat => `-${stat}`)
+    }),
+    choices: {
+      1385: 1
+    },
+    // Take cocoa of youth
+    combat: new GarboStrategy(() => Macro.abortWithMsg("Hit a combat when we expected cocoa of youth!")),
+    limit: {
+      tries: 1
+    },
+    spendsTurn: true
+  }, {
+    name: "Final Island Encounter (Island 1 (Giant Giant Crab))",
+    ready: () => questStep$1("_questPirateRealm") === 5 && get$2("_lastPirateRealmIsland") === $location`Crab Island`,
+    completed: () => questStep$1("_questPirateRealm") > 5,
+    prepare: () => {
+      DebuffPlanner.checkAndFixOvercapStats();
+      kolmafia.restoreHp(kolmafia.myMaxhp());
+    },
+    do: $location`Crab Island`,
+    outfit: () => meatTargetOutfit({
+      modifier: ["-Muscle", "-Mysticality", "-Moxie"],
+      equip: $items`PirateRealm eyepatch`,
+      avoid: $items`Roman Candelabra`,
+      beforeDress: [() => meatMood(false, targetMeat()).execute(highMeatMonsterCount()),
+      // meatMood is currently difficult to sort for things that give +stats
+      () => potionSetup(false, true) // run potionSetup while avoiding stats. We do not avoid limited use buffs that may still increase stats like paw wishes or pill keeper.
+      ]
+    }, $location`Crab Island`),
+    choices: {
+      1368: 1
+    },
+    // fight crab
+    combat: new GarboStrategy(() => Macro.tryHaveSkill($skill`Curse of Weaksauce`).meatKill()),
+    limit: {
+      tries: 1
+    },
+    spendsTurn: true
+  }, {
+    name: "Choose Trash Island",
+    ready: () => questStep$1("_questPirateRealm") === 6,
+    completed: () => questStep$1("_questPirateRealm") > 6,
+    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
+    do: $location`Sailing the PirateRealm Seas`,
+    outfit: {
+      equip: $items`PirateRealm eyepatch`
+    },
+    choices: {
+      1353: 5
+    },
+    // Trash Island
+    limit: {
+      tries: 1
+    },
+    spendsTurn: false,
+    combat: new GarboStrategy(() => Macro.abortWithMsg("Hit a combat while sailing the high seas!")),
+    post: () => unequip($item`PirateRealm eyepatch`) // Unequip the eyepatch when we're done, to avoid mana issues during diet etc
+  }, {
+    name: "Stop Being Beaten Up",
+    completed: () => !have$P($effect`Beaten Up`),
+    do: () => kolmafia.useSkill($skill`Tongue of the Walrus`),
+    spendsTurn: false,
+    post: unignoreBeatenUp
+  }]
+};
+
 function canContinue() {
   return kolmafia.myAdventures() > globalOptions.saveTurns && (globalOptions.stopTurncount === null || kolmafia.myTurncount() < globalOptions.stopTurncount);
 }
 var lastParachuteFailure = 0;
 var shouldCheckParachute = () => kolmafia.totalTurnsPlayed() !== lastParachuteFailure;
 var updateParachuteFailure = () => lastParachuteFailure = kolmafia.totalTurnsPlayed();
+
+var MEAT_DROP_VALUE = () => baseMeat() / 100;
+function familiarNeedsBoot(familiar) {
+  return FarmingStrategy.isUnderwater() && !have$P($effect`Driving Waterproofly`) && !familiar.underwater;
+}
+var outfitCache = new Map();
+var outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
+var SPECIAL_FAMILIARS_FOR_CACHING = new Map([[
+// Derives its value from famexp and requires _much_ more famexp than other exp familiars
+$familiar`Chest Mimic`, {
+  extraValue: _ref => {
+    var famexp = _ref.famexp;
+    return famexp * MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50;
+  }
+}],
+// Uniquely required to equip its fam equip to meaningfully have value
+[$familiar`Jill-of-All-Trades`, {
+  equip: $item`LED candle`
+}],
+// Derives its value irregularly from +famweight
+[$familiar`Mini Kiwi`, {
+  extraValue: _ref2 => {
+    var weight = _ref2.weight;
+    return clamp((weight + totalFamiliarWeight($familiar`Mini Kiwi`, false)) * 0.005, 0, 1) * garboValue($item`mini kiwi`);
+  }
+}]]);
+function outfitCacheKey(familiar) {
+  if (SPECIAL_FAMILIARS_FOR_CACHING.has(familiar)) {
+    return familiar;
+  }
+  var lepMultiplier = findLeprechaunMultiplier(familiar);
+  if (!FarmingStrategy.isUnderwater()) {
+    return lepMultiplier;
+  }
+  return `${lepMultiplier}:${familiar.underwater}`;
+}
+function getCachedOutfitValues(fam) {
+  var cacheKey = outfitCacheKey(fam);
+  var currentValue = outfitCache.get(cacheKey);
+  var needsBoot = familiarNeedsBoot(fam);
+  if (currentValue) return currentValue;
+  var current = kolmafia.myFamiliar();
+  kolmafia.cliExecute("checkpoint");
+  try {
+    computeBarfOutfit({
+      familiar: fam,
+      equip: needsBoot ? $items`das boot` : [],
+      avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections, bat wings, toy Cupid bow`
+    }, true).dress();
+    var outfit = outfitSlots.map(slot => kolmafia.equippedItem(slot));
+    var bonuses = bonusGear(BonusEquipMode.MEAT_TARGET, false);
+    var values = {
+      weight: sum(outfit, eq => get$1("Familiar Weight", eq)),
+      meat: sum(outfit, eq => get$1("Meat Drop", eq)),
+      item: sum(outfit, eq => get$1("Item Drop", eq)),
+      famexp: sum(outfit, eq => get$1("Familiar Experience", eq)),
+      bonus: sum(outfit, eq => bonuses.get(eq) ?? 0)
+    };
+    outfitCache.set(cacheKey, values);
+    return values;
+  } finally {
+    kolmafia.useFamiliar(current);
+    kolmafia.cliExecute("outfit checkpoint");
+  }
+}
+var nonOutfitWeightBonus = () => kolmafia.weightAdjustment() - sum(outfitSlots, slot => get$1("Familiar Weight", kolmafia.equippedItem(slot)));
+function familiarModifier(familiar, modifier) {
+  var cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
+  var totalWeight = totalFamiliarWeight(familiar, false) + nonOutfitWeightBonus() + cachedOutfitWeight;
+  var _ref3 = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {},
+    equip = _ref3.equip;
+  return equip ? kolmafia.numericModifier(familiar, modifier, totalWeight - kolmafia.numericModifier(equip, "Familiar Weight"), equip) : kolmafia.numericModifier(familiar, modifier, totalWeight, $item.none);
+}
+function familiarAbilityValue(familiar) {
+  return familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() + familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue();
+}
+function totalFamiliarValue(_ref4) {
+  var expectedValue = _ref4.expectedValue,
+    outfitValue = _ref4.outfitValue,
+    familiar = _ref4.familiar;
+  return expectedValue + outfitValue + familiarAbilityValue(familiar);
+}
+function turnsNeededFromBaseline(baselineToCompareAgainst, tcbFamiliars) {
+  return _ref5 => {
+    var familiar = _ref5.familiar,
+      limit = _ref5.limit,
+      outfitValue = _ref5.outfitValue,
+      bonusTurns = _ref5.bonusTurns;
+    switch (limit) {
+      case "drops":
+        return sum(getAllDrops(familiar).filter(_ref6 => {
+          var expectedValue = _ref6.expectedValue;
+          return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
+        }), "expectedTurns") - (bonusTurns ?? 0);
+      case "experience":
+        return getExperienceFamiliarLimit(familiar) - (bonusTurns ?? 0);
+      case "none":
+        return 0;
+      case "cupid":
+        return tcbTurnsLeft(familiar, tcbFamiliars) - (bonusTurns ?? 0);
+      case "special":
+        return getSpecialFamiliarLimit({
+          familiar,
+          outfitValue,
+          baselineToCompareAgainst
+        }) - (bonusTurns ?? 0);
+    }
+  };
+}
+function calculateOutfitValue(f) {
+  var _SPECIAL_FAMILIARS_FO, _SPECIAL_FAMILIARS_FO2;
+  var outfit = getCachedOutfitValues(f.familiar);
+  var outfitValue = outfit.bonus + outfit.meat * MEAT_DROP_VALUE() + outfit.item * FarmingStrategy.itemDropValue() + (((_SPECIAL_FAMILIARS_FO = SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)) === null || _SPECIAL_FAMILIARS_FO === void 0 || (_SPECIAL_FAMILIARS_FO2 = _SPECIAL_FAMILIARS_FO.extraValue) === null || _SPECIAL_FAMILIARS_FO2 === void 0 ? void 0 : _SPECIAL_FAMILIARS_FO2.call(_SPECIAL_FAMILIARS_FO, outfit)) ?? 0);
+  var outfitWeight = outfit.weight;
+  return _objectSpread2(_objectSpread2({}, f), {}, {
+    outfitValue,
+    outfitWeight
+  });
+}
+function extraValue(target, meat, jellyfish) {
+  var targetValue = totalFamiliarValue(target);
+  var meatFamiliarValue = totalFamiliarValue(meat);
+  var jelly = FarmingStrategy.monsters().every(monster => monster.attackElement === $element`Stench`) ? $item`stench jelly` : kolmafia.Item.none;
+  var jellyfishValue = jellyfish ? garboValue(jelly) / 20 + familiarAbilityValue(jellyfish.familiar) + jellyfish.outfitValue : 0;
+  return Math.max(targetValue - Math.max(meatFamiliarValue, jellyfishValue), 0);
+}
+var familiarPrintout = _ref7 => {
+  var expectedValue = _ref7.expectedValue,
+    familiar = _ref7.familiar,
+    outfitValue = _ref7.outfitValue;
+  return `(expected value of ${expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(familiar).toFixed(1)} from familiar abilities and ${outfitValue.toFixed(1)} from outfit)`;
+};
+function barfFamiliar(equipmentForced) {
+  // Meatify is basically always the most valuable thing we can do, to the point of not even counting as a marginal familiar
+  if (timeToMeatify()) {
+    return {
+      familiar: $familiar`Grey Goose`,
+      extraValue: 0
+    };
+  }
+
+  // Luddite mode users get off here
+  if (get$2("garbo_IgnoreMarginalFamiliars", false)) {
+    return {
+      familiar: meatFamiliar(),
+      extraValue: 0
+    };
+  }
+  var meat = meatFamiliar();
+  var usedTcbFamiliars = getUsedTcbFamiliars();
+  var fullMenu = menu$1(FarmingStrategy.location, {
+    canChooseMacro: true,
+    includeExperienceFamiliars: true,
+    mode: "barf"
+  }).flatMap(generalFamiliar => {
+    // Here we do two things:
+    // * transform `GeneralFamiliar`s into `MarginalFamiliar`s, which carry with them the total value of the outfit you'd wear
+    // * "double up" on familiars for which the toy Cupid bow is available
+    var normal = calculateOutfitValue(generalFamiliar);
+    if (normal.limit === "cupid" ||
+    // If we're already dealing with one of our generated toy cupid bow picks
+    equipmentForced ||
+    // If we're unable to equip the toy cupid bow
+    !have$f() ||
+    // If we don't have the toy cupid bow
+    usedTcbFamiliars.has(generalFamiliar.familiar) // If we've already gotten the thing
+    ) {
+      return normal;
+    }
+    var tcb = calculateOutfitValue(_objectSpread2(_objectSpread2({}, generalFamiliar), {}, {
+      expectedValue: generalFamiliar.expectedValue + tcbValue(generalFamiliar.familiar, usedTcbFamiliars, false, true),
+      limit: "cupid"
+    }));
+    if (tcb.expectedValue >= normal.expectedValue) {
+      return [tcb, _objectSpread2(_objectSpread2({}, normal), {}, {
+        // Account for the already-burned TCB turns when calculating the limit for the "normal" entry for the familiar
+        bonusTurns: tcbTurnsLeft(generalFamiliar.familiar, usedTcbFamiliars)
+      })];
+    }
+    return normal;
+  });
+  var meatFamiliarEntry = fullMenu.find(_ref8 => {
+    var familiar = _ref8.familiar,
+      limit = _ref8.limit;
+    return familiar === meat && limit !== "cupid";
+  });
+  if (!meatFamiliarEntry) {
+    throw new Error("Something went wrong when initializing familiars!");
+  }
+  var meatFamiliarValue = totalFamiliarValue(meatFamiliarEntry);
+  // Ultimately, using our meat familiar all day is the default behavior
+  // so any familiar worse than that isn't worth spending any time thinking about
+  var viableMenu = fullMenu.filter(f => totalFamiliarValue(f) >= meatFamiliarValue);
+  if (viableMenu.length === 0) {
+    return {
+      familiar: meat,
+      extraValue: 0
+    };
+  }
+
+  // Determine the baseline for how good a familiar needs to be to be run--either an unlimited familiar, or our meat familiar
+  var unlimitedCruisingFamiliars = viableMenu.filter(_ref9 => {
+    var limit = _ref9.limit;
+    return limit === "none";
+  });
+  var cruisingFamiliar = unlimitedCruisingFamiliars.length ? maxBy(unlimitedCruisingFamiliars, totalFamiliarValue) : meatFamiliarEntry;
+  var cruisingFamiliarValue = totalFamiliarValue(cruisingFamiliar);
+
+  // Only consider familiars better than our best unlimited familiar
+  var finalMenu = viableMenu.filter(f => totalFamiliarValue(f) >= cruisingFamiliarValue);
+
+  // If the shrub beats our cruising familiar, use it
+  var shrubAvailable = finalMenu.some(_ref0 => {
+    var familiar = _ref0.familiar;
+    return familiar === $familiar`Crimbo Shrub`;
+  });
+  if (shrubAvailable) {
+    return {
+      familiar: $familiar`Crimbo Shrub`,
+      extraValue: 0
+    };
+  }
+  var turnsNeeded = sum(finalMenu, turnsNeededFromBaseline(cruisingFamiliar, usedTcbFamiliars));
+
+  // If we have enough turns to get all the drops we need, prioritize by using our best leprechauns first
+  // Otherwise, prioritize by using the most valuable familiar
+  var best = turnsNeeded < turnsAvailable() ? maxBy(finalMenu, "leprechaunMultiplier") : maxBy(finalMenu, totalFamiliarValue);
+  kolmafia.print(`Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${meatFamiliarEntry.familiar} ${familiarPrintout(meatFamiliarEntry)}.`, HIGHLIGHT);
+  var jellyfish = fullMenu.find(_ref1 => {
+    var familiar = _ref1.familiar;
+    return familiar === $familiar`Space Jellyfish`;
+  });
+  return {
+    familiar: best.familiar,
+    extraValue: extraValue(best, meatFamiliarEntry, jellyfish)
+  };
+}
+function getSpecialFamiliarLimit(_ref10) {
+  var familiar = _ref10.familiar,
+    outfitValue = _ref10.outfitValue,
+    baselineToCompareAgainst = _ref10.baselineToCompareAgainst;
+  switch (familiar) {
+    case $familiar`Space Jellyfish`:
+      return sum(getAllJellyfishDrops().filter(_ref11 => {
+        var expectedValue = _ref11.expectedValue;
+        return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
+      }), "turnsAtValue");
+    case $familiar`Crimbo Shrub`:
+      return Math.ceil(estimatedGarboTurns() / 100);
+    case $familiar`Skeleton of Crimbo Past`:
+      return clamp(100 - get$2("_knuckleboneDrops"), 0, 100) / expectedBones(FarmingStrategy.location);
+    default:
+      return 0;
+  }
+}
+
+function chooseGun() {
+  if (have$P($item`love`)) {
+    return $item`love`;
+  }
+  if (!have$P($item`ice nine`)) {
+    kolmafia.cliExecute("refresh inventory");
+    kolmafia.retrieveItem($item`ice nine`);
+  }
+  return have$P($item`ice nine`) ? $item`ice nine` : null;
+}
+function gunSpec(outfit) {
+  if (!outfit.canEquip($item`unwrapped knock-off retro superhero cape`)) {
+    return {
+      available: false,
+      items: []
+    };
+  }
+  var gun = chooseGun();
+  if (!gun) return {
+    available: false,
+    items: []
+  };
+  return {
+    available: true,
+    items: {
+      back: $item`unwrapped knock-off retro superhero cape`,
+      weapon: gun,
+      equip: $items`mafia pointer finger ring`,
+      modes: {
+        retrocape: ["robot", "kill"]
+      }
+    }
+  };
+}
+var POINTER_RING_SPECS = outfit => [{
+  available: have$P($skill`Furious Wallop`) && kolmafia.myFury() > 0,
+  items: $items`mafia pointer finger ring`
+}, {
+  available: have$P($skill`Head in the Game`),
+  items: $items`mafia pointer finger ring`
+}, {
+  available: kolmafia.myClass() === $class`Turtle Tamer`,
+  items: $items`Operation Patriot Shield, mafia pointer finger ring`
+}, {
+  available: true,
+  items: $items`haiku katana, mafia pointer finger ring`
+}, () => gunSpec(outfit), {
+  available: true,
+  items: $items`Operation Patriot Shield, mafia pointer finger ring`
+}, {
+  available: true,
+  items: $items`left bear arm, right bear arm, mafia pointer finger ring`
+}];
+var trueInebrietyLimit = () => kolmafia.inebrietyLimit() - (kolmafia.myFamiliar() === $familiar`Stooper` ? 1 : 0);
+function computeBarfOutfit(spec) {
+  var sim = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  cleaverCheck();
+  validateGarbageFoldable(spec);
+  var outfit = Outfit.from(spec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`));
+  outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
+  applyCheeseBonus(outfit, BonusEquipMode.BARF);
+  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
+    outfit.equip($item`LED candle`);
+    outfit.setModes({
+      jillcandle: "ultraviolet"
+    });
+  }
+  if (outfit.familiar === $familiar`Chest Mimic` && $familiar`Chest Mimic`.experience < 550) {
+    var famExpValue = MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50;
+    outfit.modifier.push(`${famExpValue} Familiar Experience`);
+  }
+  var bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
+  if (FarmingStrategy.isUnderwater()) {
+    outfit.modifier.push(`+sea`);
+  }
+  outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`, `${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`, "-tie");
+  if (kolmafia.myInebriety() > trueInebrietyLimit()) {
+    if (!outfit.equip($item`Drunkula's wineglass`)) {
+      throw new Error("We're overdrunk but have found ourself unable to equip a wineglass!");
+    }
+  } else {
+    if (have$P($item`protonic accelerator pack`) && get$2("questPAGhost") === "unstarted" && get$2("nextParanormalActivity") <= kolmafia.totalTurnsPlayed()) {
+      outfit.equip($item`protonic accelerator pack`);
+    }
+    var _iterator = _createForOfIteratorHelper(POINTER_RING_SPECS(outfit)),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _spec = _step.value;
+        var _undelay = undelay(_spec),
+          available = _undelay.available,
+          items = _undelay.items;
+        if (available && outfit.tryEquip(items)) break;
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+  }
+  if (getKramcoWandererChance() > 0.05) {
+    outfit.equip($item`Kramco Sausage-o-Matic™`);
+  }
+  if (!sim) {
+    outfit.addBonuses(toyCupidBow(spec.familiar));
+  }
+  var bjornalike = bestBjornalike(outfit);
+  if (bjornalike) {
+    outfit.setBonus(bjornalike, bjornChoice.value);
+    var other = $items`Buddy Bjorn, Crown of Thrones`.filter(i => i !== bjornalike)[0];
+    outfit.avoid.push(other);
+    switch (bjornalike) {
+      case $item`Buddy Bjorn`:
+        outfit.bjornify(bjornChoice.familiar);
+        break;
+      case $item`Crown of Thrones`:
+        outfit.enthrone(bjornChoice.familiar);
+        break;
+    }
+  }
+  outfit.setModes({
+    snowsuit: "nose",
+    parka: "kachungasaur"
+  });
+  return outfit;
+}
+function barfOutfit(spec) {
+  var _spec$equip;
+  var sim = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var _barfFamiliar = barfFamiliar(Boolean(spec.famequip || ((_spec$equip = spec.equip) === null || _spec$equip === void 0 ? void 0 : _spec$equip.some(equipment => kolmafia.toSlot(equipment) === $slot`familiar`)))),
+    familiar = _barfFamiliar.familiar,
+    extraValue = _barfFamiliar.extraValue;
+  try {
+    return computeBarfOutfit(_objectSpread2({
+      familiar
+    }, spec), sim);
+  } finally {
+    trackMarginalTurnExtraValue(extraValue);
+  }
+}
 
 function FarmTurnQuest() {
   return {
@@ -32227,175 +32786,6 @@ var FinishUpQuest = {
   }]
 };
 
-function queryEggNetIncomplete() {
-  try {
-    var status = JSON.parse(kolmafia.visitUrl("https://eggnet.loathers.net/status"));
-    var lastUpdate = new Date(status.lastUpdate);
-    var daysSince = (Date.now() - lastUpdate.getTime()) / (24 * 60 * 60 * 1000);
-    var max = daysSince < 0.5 ? 100 : 100 - 10 * daysSince;
-    return new Map(Object.entries(status.eggs).filter(entry => entry[1] > 0 && entry[1] < max).map(_ref => {
-      var _ref2 = _slicedToArray(_ref, 2),
-        id = _ref2[0],
-        count = _ref2[1];
-      return [kolmafia.Monster.get(id), count];
-    }));
-  } catch (_unused) {
-    return new Map();
-  }
-}
-function queryEggNetPriority() {
-  try {
-    var monsters = JSON.parse(kolmafia.visitUrl("https://eggnet.loathers.net/monsters"));
-    return new Map(monsters.filter(entry => entry.eggs < 100 && entry.priority > 0).map(entry => [kolmafia.Monster.get(entry.id), entry.priority]));
-  } catch (_unused2) {
-    return new Map();
-  }
-}
-function findDonateMonster(onlyFree) {
-  var incomplete = queryEggNetIncomplete();
-  var priority = queryEggNetPriority();
-  if (incomplete.size === 0) return undefined;
-  var maxMonsterId = $monster`beef bodyguard bat`.id; // Last Update Feb 24 2026
-  var banned = new Set([].concat(_toConsumableArray($monsters.all().filter(x => x.attributes.includes("BOSS") || x.attributes.includes("NOCOPY") || onlyFree && !x.attributes.includes("FREE"))), _toConsumableArray($monsters`quadfaerie, cursed villager, plywood cultists, barrow wraith?, Source Agent`)));
-  // Find the monster that needs the most eggs, adding in a small amount of variance as a tiebreaker
-  var monster = findMonster(m => m.id <= maxMonsterId && incomplete.has(m) && !banned.has(m), m => 100 - (incomplete.get(m ?? kolmafia.Monster.none) ?? 0) + (priority.get(m) ?? 0) * 1000 + Math.sin((kolmafia.toInt(kolmafia.myId()) << 5) + kolmafia.myDaycount() + m.id));
-  var count = incomplete.get(monster ?? kolmafia.Monster.none) ?? 0;
-  return !!monster && monster !== kolmafia.Monster.none && count > 0 ? {
-    monster,
-    count
-  } : undefined;
-}
-function mimicEscape() {
-  var constraints = _objectSpread2(_objectSpread2({}, freeRunConstraints()), {}, {
-    noFamiliar: () => true,
-    maximumCost: () => globalOptions.prefs.valueOfAdventure ?? globalOptions.prefs.valueOfFreeFight
-  });
-  return tryFindFreeRunOrBanish(constraints) ?? undefined;
-}
-function shouldDelevel(monster) {
-  return monster.attributes.includes("Scale:") || kolmafia.myBuffedstat($stat`Moxie`) < monster.baseAttack + 10 || have$P($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < monster.baseAttack + 10;
-}
-function monsterRequirements(monster) {
-  var maximize = ["-100 Thorns", "-100 Sporadic Thorns", "-100 Damage Aura", "-100 Sporadic Damage Aura"];
-  var options = {
-    preventEquip: $items`carnivorous potted plant, Kramco Sausage-o-Matic™`
-  };
-  switch (monster) {
-    default:
-      maximize.push("100 Avoid Attack");
-      options.bonusEquip = new Map([[$item`unwrapped knock-off retro superhero cape`, 300], [$item`navel ring of navel gazing`, 50], [$item`ancient stone head`, 33], [$item`asteroid belt`, 25], [$item`attorney's badge`, 20], [$item`propeller beanie`, 10], [$item`Mayflower bouquet`, 6.5]]);
-      break;
-  }
-  return new Requirement(maximize, options);
-}
-function monsterEffects(monster) {
-  var effects = [];
-  return effects;
-}
-function mimicEggDonation() {
-  var escape = mimicEscape();
-  var donation = findDonateMonster(!escape);
-  if (!donation) {
-    return [];
-  }
-  return [{
-    name: `Donate mimic egg`,
-    ready: () => eggMonsters().has(donation.monster),
-    completed: () => get$2("_mimicEggsDonated") >= 3,
-    outfit: {
-      familiar: $familiar`Chest Mimic`
-    },
-    do: () => donate(donation.monster),
-    limit: {
-      skip: 3
-    },
-    spendsTurn: false
-  }, {
-    name: `Harvest mimic eggs`,
-    ready: () => canReminisce(donation.monster) && (!!escape || donation.monster.attributes.includes("FREE")) && $familiar`Chest Mimic`.experience > 50,
-    completed: () => get$2("_mimicEggsObtained") >= 11 || get$2("_mimicEggsDonated") >= 3 || eggMonsters().has(donation.monster),
-    do: () => reminisce(donation.monster),
-    combat: new GarboStrategy(() => Macro.externalIf(shouldDelevel(donation.monster), Macro.delevel()).externalIf(Math.min(100 - donation.count, 3 - get$2("_mimicEggsDonated")) > 0, Macro.trySkill($skill`%fn, lay an egg`)).externalIf(Math.min(100 - donation.count, 3 - get$2("_mimicEggsDonated")) > 1, Macro.trySkill($skill`%fn, lay an egg`)).externalIf(Math.min(100 - donation.count, 3 - get$2("_mimicEggsDonated")) > 2, Macro.trySkill($skill`%fn, lay an egg`)).externalIf(!!escape && !donation.monster.attributes.includes("FREE"), Macro.step((escape === null || escape === void 0 ? void 0 : escape.macro) ?? "")).kill(), () => Macro.kill()),
-    prepare: () => {
-      kolmafia.useFamiliar($familiar`Chest Mimic`);
-      escape === null || escape === void 0 || escape.prepare(monsterRequirements(donation.monster));
-      if (kolmafia.haveEquipped($item`unwrapped knock-off retro superhero cape`)) {
-        set("heck", "hold");
-      }
-      if (have$P($skill`Blood Bubble`)) ensureEffect($effect`Blood Bubble`);
-      kolmafia.restoreHp(kolmafia.myMaxhp());
-      kolmafia.restoreMp(safeRestoreMpTarget());
-    },
-    effects: () => monsterEffects(donation.monster),
-    limit: {
-      skip: 1
-    },
-    spendsTurn: false,
-    sobriety: "sober"
-  }];
-}
-var FreeMimicEggDonationQuest = () => ({
-  name: "Free Mimic Egg Donation",
-  tasks: _toConsumableArray(mimicEggDonation()),
-  ready: () => globalOptions.prefs.beSelfish !== true && have$j() && have$t(),
-  completed: () => get$2("_mimicEggsDonated") >= 3
-});
-
-function bestVykeaLevel() {
-  var vykeas = [{
-    level: 1,
-    dowelCost: 0
-  }, {
-    level: 2,
-    dowelCost: 1
-  }, {
-    level: 3,
-    dowelCost: 11
-  }]; // excluding 4 and 5 as per bean's suggestion
-  var vykeaProfit = vykea => {
-    var level = vykea.level,
-      dowelCost = vykea.dowelCost;
-    return estimatedGarboTurns() * baseMeat() * 0.1 * level - (5 * kolmafia.mallPrice($item`VYKEA rail`) + dowelCost * kolmafia.mallPrice($item`VYKEA dowel`) + 5 * kolmafia.mallPrice($item`VYKEA plank`) + 1 * kolmafia.mallPrice($item`VYKEA instructions`));
-  };
-  if (vykeas.some(vykea => vykeaProfit(vykea) > 0)) {
-    return maxBy(vykeas, vykeaProfit).level;
-  }
-  return 0;
-}
-var PostFreeFightTasks = [{
-  name: "Configure Vykea",
-  ready: () => get$2("_VYKEACompanionLevel") === 0 && bestVykeaLevel() > 0,
-  completed: () => get$2("_VYKEACompanionLevel") > 0,
-  do: () => kolmafia.cliExecute(`create level ${bestVykeaLevel()} couch`),
-  acquire: [{
-    item: $item`VYKEA hex key`
-  }],
-  spendsTurn: false
-}, {
-  name: "Configure Thrall",
-  ready: () => kolmafia.myClass() === $class`Pastamancer` && have$P($skill`Bind Lasagmbie`),
-  completed: () => kolmafia.myThrall() === $thrall`Lasagmbie`,
-  do: () => kolmafia.useSkill($skill`Bind Lasagmbie`),
-  outfit: () => {
-    if (kolmafia.myMaxmp() >= 200) return {};
-    return {
-      modifier: "MP"
-    };
-  },
-  prepare: () => kolmafia.restoreMp(200),
-  spendsTurn: false
-}, {
-  name: "Level Up Thrall",
-  ready: () => kolmafia.myClass() === $class`Pastamancer` && have$P($item`experimental carbon fiber pasta additive`) && kolmafia.myThrall() !== $thrall.none,
-  completed: () => get$2("_pastaAdditive") || kolmafia.myThrall().level >= 10,
-  do: () => kolmafia.use($item`experimental carbon fiber pasta additive`),
-  spendsTurn: false
-}];
-var PostFreeFightQuest = {
-  name: "Post Free Fight",
-  tasks: PostFreeFightTasks
-};
-
 var SetupTargetCopyQuest = {
   name: "SetupTargetCopy",
   ready: () => kolmafia.myInebriety() <= kolmafia.inebrietyLimit(),
@@ -32538,395 +32928,6 @@ var SetupTargetCopyQuest = {
     spendsTurn: false
   }]
 };
-
-var DailySeaTasks = [{
-  name: "Unlock The Sea",
-  ready: () => kolmafia.myLevel() >= 11,
-  completed: () => have$P($item`little bitty bathysphere`),
-  do: () => {
-    kolmafia.visitUrl("place.php?whichplace=sea_oldman");
-    kolmafia.visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-  },
-  spendsTurn: false,
-  limit: {
-    skip: 1
-  }
-}, {
-  name: $item`sea jelly`.name,
-  ready: () => have$P($familiar`Space Jellyfish`) && have$P($item`little bitty bathysphere`),
-  completed: () => get$2("_seaJellyHarvested"),
-  do: () => {
-    kolmafia.visitUrl("place.php?whichplace=thesea&action=thesea_left2");
-    kolmafia.runChoice(1);
-  },
-  outfit: {
-    familiar: $familiar`Space Jellyfish`
-  },
-  spendsTurn: false,
-  limit: {
-    skip: 1
-  }
-}];
-var DailySeaQuest = {
-  name: "Daily Sea",
-  tasks: DailySeaTasks
-};
-
-var REPORT_RECIPIENT = "Jalen_Arbuckle";
-var REPORT_KEYS = ["snootee", "microbrewery", "jickjar", "votemonster", "g9"];
-function isReportKey(value) {
-  return REPORT_KEYS.includes(value);
-}
-function sessionStorageKey() {
-  return `garbo_reported_${kolmafia.daycount()}`;
-}
-function getReportedKeys() {
-  return new Set((kolmafia.sessionStorage.getItem(sessionStorageKey()) ?? "").split(",").filter(isReportKey));
-}
-function markReported(key) {
-  var reported = getReportedKeys();
-  reported.add(key);
-  kolmafia.sessionStorage.setItem(sessionStorageKey(), _toConsumableArray(reported).join(","));
-}
-
-/**
- * Send a daily report value via private message. Uses sessionStorage
- * to ensure each key is only reported once per gameday. The storage key
- * includes the gameday, so old entries are naturally orphaned on rollover.
- */
-function reportDaily(key, value) {
-  if (getReportedKeys().has(key)) return;
-  kolmafia.chatPrivate(REPORT_RECIPIENT, `${key}:${value}`);
-  markReported(key);
-}
-var PREF_WATCH_REPORTS = [{
-  pref: "_dailySpecial",
-  key: () => kolmafia.canadiaAvailable() ? "snootee" : kolmafia.gnomadsAvailable() ? "microbrewery" : null
-}, {
-  pref: "_jickJarAvailable",
-  emptyValue: "unknown",
-  key: "jickjar",
-  value: prefValue => prefValue === "true" ? kolmafia.toInt(kolmafia.myId()) % 23 : null
-}, {
-  pref: "_voteMonster",
-  key: "votemonster"
-}, {
-  pref: "_g9Effect",
-  emptyValue: "0",
-  key: "g9"
-}];
-
-/**
- * Check all pref-watch reports and send any that are newly filled.
- * Call this at any convenient hook point during the run.
- */
-function checkPrefWatchReports() {
-  var reported = getReportedKeys();
-  var _iterator = _createForOfIteratorHelper(PREF_WATCH_REPORTS),
-    _step;
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var report = _step.value;
-      var key = undelay(report.key);
-      if (key === null) continue;
-      if (reported.has(key)) continue;
-      var prefValue = get$2(report.pref, "");
-      if (prefValue === (report.emptyValue ?? "")) continue;
-      var value = report.value ? report.value(prefValue) : prefValue;
-      if (value === null) continue;
-      reportDaily(key, value);
-    }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-}
-
-var banishMethods = [{
-  source: $skill`Spring Kick`,
-  available: () => have$P($item`spring shoes`),
-  macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
-  equip: $item`spring shoes`
-}, {
-  source: $skill`Batter Up!`,
-  available: () => kolmafia.myClass() === $class`Seal Clubber` && have$P($skill`Batter Up!`) && kolmafia.myFury() >= 5,
-  macro: Macro.trySkill($skill`Batter Up!`),
-  equip: $item`seal-clubbing club`
-}, {
-  source: $skill`Order a Kneecapping`,
-  available: () => have$P($skill`Order a Kneecapping`) && !get$2("_kneecappingOrdered"),
-  macro: Macro.trySkill($skill`Order a Kneecapping`)
-}, {
-  source: $item`human musk`,
-  available: () => true,
-  macro: Macro.tryItem($item`human musk`),
-  retrieve: true
-}, {
-  source: $skill`Sea *dent: Throw a Lightning Bolt`,
-  available: () => have$P($item`Monodent of the Sea`) && get$2("_seadentLightningUsed", 0) < 11,
-  equip: $item`Monodent of the Sea`,
-  macro: Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`)
-}];
-function chooseBanish() {
-  if (FarmingStrategy.monstersToBanish().length === 0) {
-    return null;
-  }
-  var banishedMonsters = getBanishedMonsters();
-  return banishMethods.find(method => method.available() && !FarmingStrategy.banishMonsters.includes(banishedMonsters.get(method.source) ?? $monster.none)) ?? null;
-}
-
-function logTargetFight(encounterType) {
-  var isDigitize = encounterType.includes("Digitize Wanderer");
-  if (isDigitize) {
-    eventLog.digitizedCopyTargetsFought++;
-  } else {
-    eventLog.initialCopyTargetsFought++;
-  }
-  eventLog.copyTargetSources.push(isDigitize ? "Digitize" : "Unknown Source");
-}
-
-/** A base engine for Garbo!
- * Runs extra logic before executing all tasks.
- */
-var BaseGarboContextEngine = /*#__PURE__*/function (_ContextualEngine) {
-  function BaseGarboContextEngine(tasks, options) {
-    var _this;
-    _classCallCheck(this, BaseGarboContextEngine);
-    var startTime = Date.now();
-    _this = _callSuper(this, BaseGarboContextEngine, [tasks, options]);
-    _defineProperty(_this, "history", []);
-    if (globalOptions.history) {
-      _this.history.push({
-        name: "Engine/Construct",
-        startTime,
-        durationMs: Date.now() - startTime
-      });
-    }
-    return _this;
-  }
-  _inherits(BaseGarboContextEngine, _ContextualEngine);
-  return _createClass(BaseGarboContextEngine, [{
-    key: "printExecutingMessage",
-    value: function printExecutingMessage(task) {
-      kolmafia.print(``);
-      kolmafia.print(`Executing ${task.name}`, HIGHLIGHT);
-    }
-  }, {
-    key: "destruct",
-    value: function destruct() {
-      var startTime = Date.now();
-      _superPropGet(BaseGarboContextEngine, "destruct", this, 3)([]);
-      if (globalOptions.history) {
-        this.history.push({
-          name: "Engine/Destruct",
-          startTime,
-          durationMs: Date.now() - startTime
-        });
-        var filename = `garbo_history_${kolmafia.todayToString()}.csv`;
-        var buffer = kolmafia.fileToBuffer(filename).trim();
-        var taskArray = [].concat(_toConsumableArray(buffer.split("\n")), _toConsumableArray(this.history.map(item => `${item.startTime},${item.name.replace(",", "")},${item.durationMs}`)));
-        kolmafia.bufferToFile(taskArray.join("\n"), filename);
-      }
-    }
-  }, {
-    key: "available",
-    value: function available(task) {
-      safeInterrupt();
-      var taskSober = undelay(task.sobriety, this.getContext(task));
-      if (taskSober) {
-        return (taskSober === "drunk" && !sober() || taskSober === "sober" && sober()) && _superPropGet(BaseGarboContextEngine, "available", this, 3)([task]);
-      }
-      return _superPropGet(BaseGarboContextEngine, "available", this, 3)([task]);
-    }
-  }, {
-    key: "dress",
-    value: function dress(task, outfit) {
-      var duplicate = undelay(task.duplicate, this.getContext(task));
-      if (duplicate && have$P($item`pro skateboard`) && !get$2("_epicMcTwistUsed")) {
-        outfit.equip($item`pro skateboard`);
-      }
-      _superPropGet(BaseGarboContextEngine, "dress", this, 3)([task, outfit]);
-      var canBreathe = () => kolmafia.booleanModifier("Adventure Underwater");
-      if (outfit.modifier.includes("+sea") && !canBreathe()) {
-        clearMaximizerCache();
-        _superPropGet(BaseGarboContextEngine, "dress", this, 3)([task, outfit]);
-        if (!canBreathe()) {
-          throw new Error("Can't adventure underwater, figure it out.");
-        }
-      }
-      if (kolmafia.itemAmount($item`tiny stillsuit`) > 0) {
-        kolmafia.equip(kolmafia.myFamiliar() === $familiar`Cornbeefadon` ? $familiar`Mosquito` : $familiar`Cornbeefadon`, $item`tiny stillsuit`);
-      }
-    }
-  }, {
-    key: "prepare",
-    value: function prepare(task) {
-      if ("combat" in task) safeRestore();
-      _superPropGet(BaseGarboContextEngine, "prepare", this, 3)([task]);
-    }
-  }, {
-    key: "execute",
-    value: function execute(task) {
-      var startTime = Date.now();
-      var spentTurns = kolmafia.totalTurnsPlayed();
-      var context = this.getContext(task);
-      var duplicate = undelay(task.duplicate, context);
-      var before = getSkills();
-      if (duplicate && have$I() && duplicateUsesRemaining() > 0) {
-        educate([$skill`Extract`, $skill`Duplicate`]);
-      }
-      _superPropGet(BaseGarboContextEngine, "execute", this, 3)([task]);
-      if (kolmafia.totalTurnsPlayed() !== spentTurns) {
-        if (!undelay(task.spendsTurn, context)) {
-          kolmafia.print(`Task ${task.name} spent a turn but was marked as not spending turns`);
-        }
-      }
-      var foughtATarget = get$2("lastEncounter") === globalOptions.target.name;
-      if (foughtATarget) logTargetFight(task.name);
-      shrugBadEffects($effect`Feeling Lost`); // We deliberately use Feeling Lost sometimes
-      wanderer().clear();
-      sessionSinceStart().value(garboValue);
-      if (duplicate && have$I()) {
-        var _iterator = _createForOfIteratorHelper(before),
-          _step;
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var skill = _step.value;
-            educate(skill);
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-      }
-      checkPrefWatchReports();
-      if (globalOptions.history) {
-        this.history.push({
-          name: task.name,
-          startTime,
-          durationMs: Date.now() - startTime
-        });
-      }
-    }
-  }, {
-    key: "markAttempt",
-    value: function markAttempt(task) {
-      _superPropGet(BaseGarboContextEngine, "markAttempt", this, 3)([task]);
-      if (!!globalOptions.halt && task.name.localeCompare(globalOptions.halt, undefined, {
-        sensitivity: "base"
-      }) === 0) {
-        throw new Error(`Task halt requested for "${task.name}". Stopping Garbage Collector.`);
-      }
-    }
-  }]);
-}(ContextualEngine);
-_defineProperty(BaseGarboContextEngine, "defaultSettings", _objectSpread2(_objectSpread2({}, Engine.defaultSettings), {}, {
-  choiceAdventureScript: "garbo_choice.js"
-}));
-var BaseGarboEngine = /*#__PURE__*/function (_BaseGarboContextEngi) {
-  function BaseGarboEngine() {
-    _classCallCheck(this, BaseGarboEngine);
-    return _callSuper(this, BaseGarboEngine, arguments);
-  }
-  _inherits(BaseGarboEngine, _BaseGarboContextEngi);
-  return _createClass(BaseGarboEngine, [{
-    key: "getContext",
-    value: function getContext() {
-      // noop
-    }
-  }]);
-}(BaseGarboContextEngine);
-var _banish = /*#__PURE__*/new WeakMap();
-var FarmTurnEngine = /*#__PURE__*/function (_BaseGarboContextEngi2) {
-  function FarmTurnEngine() {
-    var _this2;
-    _classCallCheck(this, FarmTurnEngine);
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-    _this2 = _callSuper(this, FarmTurnEngine, [].concat(args));
-    _classPrivateFieldInitSpec(_this2, _banish, null);
-    return _this2;
-  }
-  _inherits(FarmTurnEngine, _BaseGarboContextEngi2);
-  return _createClass(FarmTurnEngine, [{
-    key: "getContext",
-    value: function getContext() {
-      return {
-        banish: _classPrivateFieldGet2(_banish, this)
-      };
-    }
-  }, {
-    key: "getNextTask",
-    value: function getNextTask() {
-      _classPrivateFieldSet2(_banish, this, chooseBanish());
-      return _superPropGet(FarmTurnEngine, "getNextTask", this, 3)([]);
-    }
-  }, {
-    key: "execute",
-    value: function execute(task) {
-      _superPropGet(FarmTurnEngine, "execute", this, 3)([task]);
-      _classPrivateFieldSet2(_banish, this, null);
-    }
-  }]);
-}(BaseGarboContextEngine);
-
-/**
- * A safe engine for Garbo!
- * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
- */
-var SafeGarboContextEngine = /*#__PURE__*/function (_BaseGarboContextEngi3) {
-  function SafeGarboContextEngine(tasks) {
-    _classCallCheck(this, SafeGarboContextEngine);
-    var options = new EngineOptions();
-    options.default_task_options = {
-      limit: {
-        skip: 1
-      }
-    };
-    return _callSuper(this, SafeGarboContextEngine, [tasks, options]);
-  }
-  _inherits(SafeGarboContextEngine, _BaseGarboContextEngi3);
-  return _createClass(SafeGarboContextEngine);
-}(BaseGarboContextEngine);
-var SafeGarboEngine = /*#__PURE__*/function (_SafeGarboContextEngi) {
-  function SafeGarboEngine() {
-    _classCallCheck(this, SafeGarboEngine);
-    return _callSuper(this, SafeGarboEngine, arguments);
-  }
-  _inherits(SafeGarboEngine, _SafeGarboContextEngi);
-  return _createClass(SafeGarboEngine, [{
-    key: "getContext",
-    value: function getContext() {
-      // noop
-    }
-  }]);
-}(SafeGarboContextEngine);
-function runQuests(quests,
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-garboEngine) {
-  var engine = new garboEngine(getTasks(quests));
-  try {
-    engine.run();
-  } finally {
-    engine.destruct();
-  }
-}
-function runSafeGarboQuests(quests) {
-  runQuests(quests, SafeGarboEngine);
-}
-function runGarboQuests(quests) {
-  runQuests(quests, BaseGarboEngine);
-}
-function runGarboFarmQuests(quests) {
-  runQuests(quests, FarmTurnEngine);
-}
-
-function dailySetup() {
-  runSafeGarboQuests([DailyFamiliarsQuest, DailyQuest, DailyItemsQuest, DailySeaQuest, AscendingQuest]);
-}
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 var TICKET_MAX_PRICE = 500000;
