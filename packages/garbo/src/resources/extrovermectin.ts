@@ -55,6 +55,7 @@ import { garboAdventure, Macro } from "../combat";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { AdventureArgument } from "../garboWanderer";
+import { waveDireWarren } from "./seaDent";
 
 const crate = $monster`crate`;
 
@@ -532,6 +533,7 @@ function banishBunny(): void {
     "fluffy bunny" !== get("lastEncounter") &&
     !get("banishedMonsters").includes("fluffy bunny")
   );
+  waveDireWarren();
 }
 
 function getBanishedPhyla(): Map<Skill | Item, Phylum> {

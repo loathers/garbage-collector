@@ -139,8 +139,8 @@ function cinchoDeMayo(mode: BonusEquipMode) {
     !monsterManuelAvailable() ||
     // If we're doing Yachtzees, only use up excess cincho.
     maximumPinataCasts() <= 0 ||
-    // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
-    maxPassiveDamage() >= 50
+    // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying. Cows are tankier though.
+    maxPassiveDamage() >= (FarmingStrategy.isUnderwater() ? 150 : 50)
   ) {
     return new Map<Item, number>([]);
   }

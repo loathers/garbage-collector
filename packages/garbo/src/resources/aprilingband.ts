@@ -12,6 +12,7 @@ import { getBestLuckyAdventure } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { toItem } from "kolmafia";
 import { estimatedBarfExperience } from "../familiar";
+import { FarmingStrategy } from "../farmingStrategy";
 
 const instruments: {
   instrument: AprilingBandHelmet.Instrument;
@@ -32,6 +33,13 @@ const instruments: {
   {
     instrument: "Apriling band saxophone",
     value: () => getBestLuckyAdventure().value() * 3,
+  },
+  {
+    instrument: "Apriling band tuba",
+    value: () =>
+      realmAvailable("sleaze") && FarmingStrategy.isUnderwater()
+        ? (20000 - get("valueOfAdventure")) * 3 // Yachtzee
+        : 0, // Are there any other valuable NCs?
   },
   {
     instrument: "Apriling band piccolo",

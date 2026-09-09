@@ -22,3 +22,4 @@ export * from "./archaelogistSpade";
 export * from "./lucky";
 export * from "./doghouse";
 export * from "./clanVIP";
+export * from "./seaDent";

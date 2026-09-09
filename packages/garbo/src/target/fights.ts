@@ -70,6 +70,7 @@ import {
   monsterIsInEggnet,
   possibleGregCrystalBall,
   totalGregCharges,
+  waveDireWarren,
 } from "../resources";
 import { nextWeekFights } from "../resources/sealclub";
 import { acquire } from "../acquire";
@@ -559,6 +560,7 @@ const gregFights = (
         `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${fightsProp} preference is nonzero and should probably be zero.`,
       );
     }
+    waveDireWarren();
   }
 
   const resourceIsOccupied = () =>

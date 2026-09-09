@@ -277,6 +277,8 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
                 return FarmingMethod.BARF_MOUNTAIN;
 
               case "cowo":
+              case "ranch":
+              case "rancho":
               case "sea cows":
               case "the coral corral":
                 return FarmingMethod.THE_CORAL_CORRAL;
