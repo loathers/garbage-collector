@@ -163,10 +163,7 @@ export const FarmingStrategy = new Proxy(
       ) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const method = (FarmingStrategySkeleton.prototype as any)[prop];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return function (...args: any[]) {
-          return method.apply(receiver, args);
-        };
+        method.bind(receiver);
       }
 
       const strategyOptions = currentStrategy();
