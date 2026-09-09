@@ -1,4 +1,4 @@
-import { Familiar, Item } from "kolmafia";
+import { Familiar, Item, itemDropsArray } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -212,7 +212,26 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
         : 30,
     drop: $items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`,
   },
+  {
+    familiar: $familiar`Sword of S Words`,
+    expected: () => 100 - get("_swordOfSWordsKills"),
+    drop: Item.none,
+    additionalValue: () => sWordValue(),
+  },
 ];
+
+function sWordValue(): number {
+  const monster = get("swordOfSWordsMonster");
+  if (!monster || get("_swordOfSWordsKills") >= 100) {
+    return 0;
+  }
+  return itemDropsArray(monster)
+    .filter(({ type }) => type !== "c")
+    .reduce(
+      (total, { drop, rate }) => total + (rate / 100) * garboValue(drop),
+      0,
+    );
+}
 
 export default function getDropFamiliars(): GeneralFamiliar[] {
   return rotatingFamiliars
