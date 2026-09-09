@@ -105,24 +105,22 @@ import { withStash } from "./clan";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
-import { copyTargetSources, getNextCopyTargetFight } from "./target";
+
 import {
-  bestMidnightAvailable,
   crateStrategy,
   doingGregFight,
   gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
-  shouldClara,
-  shouldUnlockIngredients,
-  tryFillLatte,
-  willYachtzee,
-} from "./resources";
+} from "./resources/extrovermectin";
+import { bestMidnightAvailable } from "./resources/gingerbread";
+import { shouldUnlockIngredients, tryFillLatte } from "./resources/latte";
+import { shouldClara, willYachtzee } from "./resources/yachtzee";
+import { freeFightFamiliar } from "./familiar/freeFightFamiliar";
 import {
-  freeFightFamiliar,
   meatFamiliar,
   setBestLeprechaunAsMeatFamiliar,
-} from "./familiar";
+} from "./familiar/meatFamiliar";
 import {
   aprilFoolsRufus,
   asArray,
@@ -140,7 +138,6 @@ import {
   isStrongScaler,
   kramcoGuaranteed,
   lastAdventureWasWeird,
-  logMessage,
   ltbRun,
   mapMonster,
   maxPassiveDamage,
@@ -157,28 +154,22 @@ import {
   userConfirmDialog,
   valueDrops,
 } from "./lib";
+import { logMessage } from "./log";
 import { freeFightMood, meatMood } from "./mood";
-import {
-  freeFightOutfit,
-  FreeFightOutfitMenuOptions,
-  magnifyingGlass,
-  meatTargetOutfit,
-  toSpec,
-} from "./outfit";
+import { magnifyingGlass } from "./outfit/dropsgear";
+import { freeFightOutfit, FreeFightOutfitMenuOptions } from "./outfit/free";
+import { toSpec } from "./outfit/lib";
+import { meatTargetOutfit } from "./outfit/target";
 import postCombatActions from "./post";
 import { bathroomFinance, potionSetup } from "./potions";
 import { garboValue } from "./garboValue";
 import { wanderer } from "./garboWanderer";
 import { runTargetFight } from "./target/execution";
 import { TargetFightRunOptions } from "./target/staging";
-import {
-  EmbezzlerFightsQuest,
-  FreeFightQuest,
-  FreeMimicEggDonationQuest,
-  runGarboQuests,
-} from "./tasks";
+
 import {
   expectedFreeFightQuestFights,
+  FreeFightQuest,
   possibleFreeFightQuestTentacleFights,
 } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
@@ -186,7 +177,11 @@ import {
   expectedFreeGiantSandwormQuestFights,
   FreeGiantSandwormQuest,
 } from "./tasks/freeGiantSandworm";
-import { CopyTargetFight } from "./target/fights";
+import {
+  CopyTargetFight,
+  copyTargetSources,
+  getNextCopyTargetFight,
+} from "./target/fights";
 import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
@@ -2353,3 +2348,6 @@ function runShadowRiftTurn(): void {
     adv1(bestShadowRift(), -1, ""); // We wanted to use NC forcers, but none are suitable now
   }
 }
+import { EmbezzlerFightsQuest } from "./tasks/embezzler";
+import { runGarboQuests } from "./tasks/engine";
+import { FreeMimicEggDonationQuest } from "./tasks/freeEggDonation";

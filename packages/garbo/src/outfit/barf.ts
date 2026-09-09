@@ -25,7 +25,7 @@ import {
   have,
   undelay,
 } from "libram";
-import { barfFamiliar } from "../familiar";
+import { barfFamiliar } from "../familiar/barfFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {

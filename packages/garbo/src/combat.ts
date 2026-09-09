@@ -57,7 +57,8 @@ import {
   StrictMacro,
 } from "libram";
 import { globalOptions, isQuickCombat } from "./config";
-import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
+import { canOpenRedPresent, timeToMeatify } from "./familiar/lib";
+import { meatFamiliar } from "./familiar/meatFamiliar";
 import { estimatedGarboTurns, wanderingCopytargetsRemaining } from "./turns";
 import {
   gooseDroneEligible,
@@ -67,9 +68,10 @@ import {
   targetingMeat,
   ULTRA_RARE_MONSTERS,
 } from "./lib";
-import { copyTargetCount } from "./target";
+import { copyTargetCount } from "./target/fights";
 import { garboValue } from "./garboValue";
-import { maximumPinataCasts, safeRefractedCasts } from "./resources";
+import { safeRefractedCasts } from "./resources/bloodCubicZirconia";
+import { maximumPinataCasts } from "./resources/yachtzee";
 import { FarmingStrategy } from "./farmingStrategy";
 
 export function shouldRedigitize(): boolean {

@@ -62,15 +62,15 @@ import {
   setChoice,
   WISH_VALUE,
 } from "../lib";
+import { monsterIsInEggnet } from "../resources/chestMimic";
 import {
   crateStrategy,
   doingGregFight,
   equipOrbIfDesired,
   gregReady,
-  monsterIsInEggnet,
   possibleGregCrystalBall,
   totalGregCharges,
-} from "../resources";
+} from "../resources/extrovermectin";
 import { nextWeekFights } from "../resources/sealclub";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";

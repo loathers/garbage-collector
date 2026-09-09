@@ -31,7 +31,7 @@ import {
   modeIsFree,
   monsterManuelAvailable,
 } from "../lib";
-import { maximumPinataCasts } from "../resources";
+import { maximumPinataCasts } from "../resources/yachtzee";
 import { globalOptions } from "../config";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";

@@ -58,16 +58,14 @@ import { aprilFoolsRufus } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
-import {
-  archaeologySpadeTask,
-  augustSummonTasks,
-  candyMapDailyTasks,
-  doingGregFight,
-  getBestAprilInstruments,
-  leprecondoTask,
-  mayamCalendarSummon,
-} from "../resources";
-import { meatFamiliar } from "../familiar";
+import { getBestAprilInstruments } from "../resources/aprilingband";
+import { archaeologySpadeTask } from "../resources/archaelogistSpade";
+import { candyMapDailyTasks } from "../resources/candyMap";
+import { doingGregFight } from "../resources/extrovermectin";
+import { leprecondoTask } from "../resources/leprecondo";
+import { mayamCalendarSummon } from "../resources/mayam";
+import { augustSummonTasks } from "../resources/scepter";
+import { meatFamiliar } from "../familiar/meatFamiliar";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { highMeatMonsterCount } from "../turns";
 

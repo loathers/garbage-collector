@@ -59,13 +59,12 @@ import {
   sober,
   targetingMeat,
 } from "../../lib";
+import { freeFightOutfit, FreeFightOutfitMenuOptions } from "../../outfit/free";
 import {
   familiarWaterBreathingEquipment,
-  freeFightOutfit,
-  FreeFightOutfitMenuOptions,
-  meatTargetOutfit,
   waterBreathingEquipment,
-} from "../../outfit";
+} from "../../outfit/lib";
+import { meatTargetOutfit } from "../../outfit/target";
 import { deliverThesisIfAble } from "../../fights";
 import { GarboTask } from "../engine";
 import {
@@ -76,16 +75,15 @@ import {
 
 import { garboValue } from "../../garboValue";
 import { wanderingCopytargetsRemaining } from "../../turns";
+import { shouldMakeEgg } from "../../resources/chestMimic";
 import {
-  bestMidnightAvailable,
   canBullseye,
   guaranteedBullseye,
   safeToAttemptBullseye,
-  shouldFillLatte,
-  shouldMakeEgg,
-  tryFillLatte,
-  willYachtzee,
-} from "../../resources";
+} from "../../resources/everfullDarts";
+import { bestMidnightAvailable } from "../../resources/gingerbread";
+import { shouldFillLatte, tryFillLatte } from "../../resources/latte";
+import { willYachtzee } from "../../resources/yachtzee";
 import { acquire } from "../../acquire";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;

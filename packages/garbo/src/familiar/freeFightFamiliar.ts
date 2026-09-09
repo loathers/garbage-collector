@@ -18,12 +18,13 @@ import {
   Snapper,
   sum,
 } from "libram";
-import { canOpenRedPresent } from ".";
+
 import { garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import {
+  canOpenRedPresent,
   FamiliarMode,
   GeneralFamiliar,
   getUsedTcbFamiliars,
@@ -34,7 +35,7 @@ import {
 import { meatFamiliar } from "./meatFamiliar";
 import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../target";
+import { copyTargetCount } from "../target/fights";
 import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
 

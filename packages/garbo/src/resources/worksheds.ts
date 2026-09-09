@@ -21,7 +21,7 @@ import { globalOptions } from "../config";
 import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns } from "../turns";
-import { copyTargetCount } from "../target";
+import { copyTargetCount } from "../target/fights";
 import { FarmingStrategy } from "../farmingStrategy";
 
 const GOOD_TRAIN_STATIONS = [

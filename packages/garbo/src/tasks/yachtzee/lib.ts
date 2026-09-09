@@ -7,7 +7,7 @@ import {
   Item,
   toSlot,
 } from "kolmafia";
-import { waterBreathingEquipment } from "../../outfit";
+import { waterBreathingEquipment } from "../../outfit/lib";
 
 export function yachtzeeBuffValue(obj: Item | Effect): number {
   return clamp(

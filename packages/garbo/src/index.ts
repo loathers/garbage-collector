@@ -71,7 +71,6 @@ import {
   HIGHLIGHT,
   isFreeAndCopyable,
   printEventLog,
-  printLog,
   propertyManager,
   questStep,
   safeRestore,
@@ -79,22 +78,13 @@ import {
   userConfirmDialog,
   valueDrops,
 } from "./lib";
+import { printLog } from "./log";
 import { meatMood } from "./mood";
 import { potionSetup } from "./potions";
 import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { garboAverageValue } from "./garboValue";
-import {
-  CockroachSetup,
-  DailyFamiliarsQuest,
-  EmbezzlerFightsQuest,
-  FarmQuests,
-  FinishUpQuest,
-  PostQuest,
-  runGarboQuests,
-  runSafeGarboQuests,
-  SetupTargetCopyQuest,
-} from "./tasks";
+
 import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
@@ -102,7 +92,11 @@ import {
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
 import { FarmingStrategy } from "./farmingStrategy";
-import { runGarboFarmQuests } from "./tasks/engine";
+import {
+  runGarboFarmQuests,
+  runGarboQuests,
+  runSafeGarboQuests,
+} from "./tasks/engine";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -659,3 +653,10 @@ export function main(argString = ""): void {
   }
   set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
 }
+import { CockroachSetup } from "./tasks/cockroach/prep";
+import { DailyFamiliarsQuest } from "./tasks/dailyFamiliars";
+import { EmbezzlerFightsQuest } from "./tasks/embezzler";
+import { FarmQuests } from "./tasks/farm";
+import { FinishUpQuest } from "./tasks/finishUp";
+import { PostQuest } from "./tasks/post";
+import { SetupTargetCopyQuest } from "./tasks/target";

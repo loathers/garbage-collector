@@ -41,7 +41,7 @@ import {
   set,
   tryFindFreeRun,
 } from "libram";
-import { freeFightFamiliar } from "../familiar";
+import { freeFightFamiliar } from "../familiar/freeFightFamiliar";
 import {
   freeRunConstraints,
   getUsingFreeBunnyBanish,

@@ -12,18 +12,21 @@ import {
   undelay,
 } from "libram";
 
-import { FamiliarMenuOptions, freeFightFamiliar } from "../familiar";
+import {
+  FamiliarMenuOptions,
+  freeFightFamiliar,
+} from "../familiar/freeFightFamiliar";
 import { BonusEquipMode, MEAT_TARGET_MULTIPLIER, sober } from "../lib";
 import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import { applyCheeseBonus, cleaverCheck, validateGarbageFoldable } from "./lib";
+import { mimicExperienceNeeded } from "../resources/chestMimic";
 import {
   adventuresPerSweat,
-  mimicExperienceNeeded,
   turnsNeededForNextAdventure,
-} from "../resources";
+} from "../resources/stillsuit";
 import { globalOptions } from "../config";
 import { estimatedGarboTurns } from "../turns";
 
