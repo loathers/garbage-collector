@@ -24,14 +24,14 @@ import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import {
-  canOpenRedPresent,
   FamiliarMode,
   GeneralFamiliar,
   getUsedTcbFamiliars,
   snapperValue,
   tcbValue,
-  timeToMeatify,
 } from "./lib";
+import { canOpenRedPresent } from "./crimboShrub";
+import { timeToMeatify } from "./greyGoose";
 import { meatFamiliar } from "./meatFamiliar";
 import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";

@@ -46,9 +46,9 @@ import {
   getUsedTcbFamiliars,
   tcbTurnsLeft,
   tcbValue,
-  timeToMeatify,
   turnsAvailable,
 } from "./lib";
+import { timeToMeatify } from "./greyGoose";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
