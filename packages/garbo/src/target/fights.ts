@@ -915,9 +915,8 @@ export const emergencyChainStarters = [
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
       // WISH_VALUE is both the assumed cost and the price cap given to
-      // acquire(), so realised profit is never worse than `profit` -- safe to
-      // compare against a threshold unattended. askedAboutWish/wishAnswer are
-      // left alone so each call re-checks profit against current copy sources.
+      // acquire(), so realised profit is never worse than `profit`. Leaving
+      // askedAboutWish alone lets each call re-check against current sources.
       const autoWishThreshold = globalOptions.prefs.autoWishProfitThreshold;
       if (autoWishThreshold >= 0 && profit >= autoWishThreshold) {
         print(
