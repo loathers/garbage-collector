@@ -16,6 +16,7 @@ import {
   ESTIMATED_OVERDRUNK_TURNS,
   howManySausagesCouldIEat,
   targetingMeat,
+  willDrunkAdventure,
 } from "./lib";
 import { embezzlerFights } from "./tasks/embezzler";
 import { nextWeekFights } from "./resources/sealclub";
@@ -34,9 +35,7 @@ export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
   const thesisAdventures =
     have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
   const nightcapAdventures =
-    globalOptions.ascend &&
-    myInebriety() <= inebrietyLimit() &&
-    have($item`Drunkula's wineglass`)
+    willDrunkAdventure() && myInebriety() <= inebrietyLimit()
       ? ESTIMATED_OVERDRUNK_TURNS
       : 0;
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;

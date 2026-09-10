@@ -1174,7 +1174,15 @@ export function improvesAStat(thing: Item | Effect): boolean {
 }
 
 export function willDrunkAdventure() {
-  return have($item`Drunkula's wineglass`) && globalOptions.ascend;
+  return (
+    have($item`Drunkula's wineglass`) &&
+    globalOptions.ascend &&
+    !globalOptions.prefs.skipOverdrunkAdventures
+  );
+}
+
+export function skippingOverdrunkAdventures(): boolean {
+  return globalOptions.prefs.skipOverdrunkAdventures && !sober();
 }
 
 export function freeFishyAvailable(): boolean {

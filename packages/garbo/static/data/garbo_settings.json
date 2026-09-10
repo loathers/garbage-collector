@@ -17,6 +17,11 @@
     "description": "Should skip verifying that your account has broken the prism? Set to true if you want to proceed regardless, and false if you'd like to be warned."
   },
   {
+    "name": "garbo_skipOverdrunkAdventures",
+    "type": "boolean",
+    "description": "Should garbo stop adventuring with Drunkula's wineglass while overdrunk? It still runs everything that does not cost a turn, so the day is finished rather than abandoned."
+  },
+  {
     "name": "garbo_valueOfFreeFight",
     "defaultValue": 2000,
     "description": "What is a free fight\run worth to you? (Default 2000)."

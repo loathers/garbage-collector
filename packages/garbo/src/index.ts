@@ -74,6 +74,7 @@ import {
   propertyManager,
   questStep,
   safeRestore,
+  skippingOverdrunkAdventures,
   targetingMeat,
   userConfirmDialog,
   valueDrops,
@@ -620,7 +621,19 @@ export function main(argString = ""): void {
         runGarboQuests([SetupTargetCopyQuest]);
         dailyFights();
 
-        if (!globalOptions.nobarf) {
+        if (!globalOptions.nobarf && skippingOverdrunkAdventures()) {
+          // 3. overdrunk with the wineglass benched: no turns to buff for, but
+          // the end of day tasks still need to run
+          print(
+            "Overdrunk and garbo_skipOverdrunkAdventures is set, so finishing up without adventuring.",
+            HIGHLIGHT,
+          );
+          try {
+            runGarboQuests([FinishUpQuest]);
+          } finally {
+            setAutoAttack(0);
+          }
+        } else if (!globalOptions.nobarf) {
           // 3. burn turns at barf
           potionSetup(false);
           maximize("MP", false);
