@@ -1,4 +1,4 @@
-import { Familiar, Item } from "kolmafia";
+import { Familiar, Item, itemDropsArray } from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -8,6 +8,7 @@ import {
   findLeprechaunMultiplier,
   get,
   have,
+  sum,
   totalFamiliarWeight,
 } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
@@ -212,7 +213,26 @@ const rotatingFamiliars: StandardDropFamiliar[] = [
         : 30,
     drop: $items`burning newspaper, extra-toasted half sandwich, mulled hobo wine`,
   },
+  {
+    familiar: $familiar`Sword of S Words`,
+    expected: () => 100 - get("_swordOfSWordsKills"),
+    drop: Item.none,
+    additionalValue: () => sWordValue(),
+  },
 ];
+
+function sWordValue(): number {
+  const monster = get("swordOfSWordsMonster");
+  if (!monster || get("_swordOfSWordsKills") >= 100) {
+    return 0;
+  }
+  return sum(
+    itemDropsArray(monster),
+    ({ drop, rate }) =>
+      // One 100 because % the other because % improvement
+      (rate / 100) * garboValue(drop),
+  );
+}
 
 export default function getDropFamiliars(): GeneralFamiliar[] {
   return rotatingFamiliars
