@@ -1,11 +1,15 @@
 import {
   abort,
+  availableChoiceSelectInputs,
   canAdventure,
   getClanLounge,
+  handlingChoice,
   haveEquipped,
   isBanished,
   itemAmount,
+  lastChoice,
   Location,
+  Monster,
   myAdventures,
   myHash,
   myRain,
@@ -262,22 +266,86 @@ export const chainStarters = [
   ),
 ];
 
+const SPINNING_YOUR_TIME_SPINNER = 1195;
+const TRAVEL_TO_A_RECENT_FIGHT = 1196;
+const TIME_SPINNER_LOCATIONS = $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`;
+
+/**
+ * Whether the target is in a combat queue the Time-Spinner draws from.
+ *
+ * Matches entries exactly: a substring test claims a sea cow when only a sea
+ * cowboy was fought.
+ * @returns Whether the target is in one of those queues
+ */
+function targetInCombatQueue(): boolean {
+  return TIME_SPINNER_LOCATIONS.some((location) =>
+    location.combatQueue.split("; ").includes(globalOptions.target.name),
+  );
+}
+
+/**
+ * Whether a monster is on the Time-Spinner's offer list, read from the
+ * <select name="monid"> in choice 1196.
+ * @param monster The monster to look for
+ * @returns Whether the monster is offered, or null if no list was found
+ */
+export function timeSpinnerOffers(monster: Monster): boolean | null {
+  const monids = availableChoiceSelectInputs(1)["monid"];
+  if (!monids || Object.keys(monids).length === 0) return null;
+  if (`${monster.id}` in monids) return true;
+  print(
+    `The Time-Spinner is only offering: ${Object.values(monids).join(", ")}`,
+    HIGHLIGHT,
+  );
+  return false;
+}
+
+/** Whether the Time-Spinner has already declined to travel to our target. */
+let timeSpinnerRefusedTarget = false;
+
+/**
+ * Leave the Time-Spinner choice after a refused travel. An open choice blocks
+ * every later equipment change.
+ * @param monster The monster the Time-Spinner would not travel to
+ */
+export function escapeRefusedTimeSpinner(monster: Monster): void {
+  print(
+    `The Time-Spinner would not travel to a ${monster}; it is no longer in the recent-fight list. Backing out of the choice.`,
+    HIGHLIGHT,
+  );
+  // A refusal can bounce between the two pages, so drain both: 1196 needs its
+  // "Maybe Later" option, 1195 walks away on any non-choice request.
+  let attempts = 0;
+  while (handlingChoice() && attempts++ < 3) {
+    const choice = lastChoice();
+    if (choice === TRAVEL_TO_A_RECENT_FIGHT) {
+      runChoice(2); // Maybe Later
+    } else if (choice === SPINNING_YOUR_TIME_SPINNER) {
+      visitUrl("main.php");
+    } else {
+      break;
+    }
+  }
+
+  if (handlingChoice()) {
+    abort(
+      `Still stuck in choice ${lastChoice()} after the Time-Spinner refused to fight a ${monster}. Resolve it in the relay browser before continuing.`,
+    );
+  }
+}
+
 export const copySources = [
   new CopyTargetFight(
     "Time-Spinner",
     () =>
+      !timeSpinnerRefusedTarget &&
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) => location.combatQueue.includes(globalOptions.target.name),
-      ) &&
+      targetInCombatQueue() &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
+      !timeSpinnerRefusedTarget &&
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) =>
-          location.combatQueue.includes(globalOptions.target.name) ||
-          totalGregCharges(true),
-      )
+      (targetInCombatQueue() || totalGregCharges(true) > 0)
         ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
     (options: RunOptions) => {
@@ -286,9 +354,28 @@ export const copySources = [
         () => {
           directlyUse($item`Time-Spinner`);
           runChoice(1);
+          const offered = timeSpinnerOffers(globalOptions.target);
+          if (offered === false) {
+            // Not on the list; don't submit a travel that will be refused.
+            timeSpinnerRefusedTarget = true;
+            escapeRefusedTimeSpinner(globalOptions.target);
+            return;
+          }
+          if (offered === null) {
+            print(
+              "Could not find the Time-Spinner's recent-fight list on the page; attempting the travel anyway.",
+              HIGHLIGHT,
+            );
+          }
           visitUrl(
-            `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
+            `choice.php?whichchoice=${TRAVEL_TO_A_RECENT_FIGHT}&monid=${globalOptions.target.id}&option=1`,
           );
+          // Still in a choice means the travel was refused; there is no fight.
+          if (handlingChoice()) {
+            timeSpinnerRefusedTarget = true;
+            escapeRefusedTimeSpinner(globalOptions.target);
+            return;
+          }
           runCombat();
         },
         options.useAuto,
@@ -914,6 +1001,7 @@ export const emergencyChainStarters = [
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
+
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = copyTargetConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy a ${
