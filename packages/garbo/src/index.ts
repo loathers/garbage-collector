@@ -136,9 +136,7 @@ export function main(argString = ""): void {
   if (
     globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
     (effectFact($monster`sea cow`) !== $effect`Fishy` ||
-      get("seahorseName") === "" ||
-      !have($item`das boot`) ||
-      !have($item`really, really nice swimming trunks`))
+      get("seahorseName") === "")
   ) {
     globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
