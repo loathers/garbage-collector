@@ -284,12 +284,8 @@ function targetInCombatQueue(): boolean {
 }
 
 /**
- * From inside choice 1196, whether a monster is on the Time-Spinner's offer
- * list -- the ground truth that `combatQueue` only approximates.
- *
- * Reads mafia's parse of the current choice form rather than the page markup;
- * the list is a <select name="monid"> whose keys are monster ids (with a "0"
- * placeholder).
+ * Whether a monster is on the Time-Spinner's offer list, read from the
+ * <select name="monid"> in choice 1196.
  * @param monster The monster to look for
  * @returns Whether the monster is offered, or null if no list was found
  */
@@ -308,10 +304,8 @@ export function timeSpinnerOffers(monster: Monster): boolean | null {
 let timeSpinnerRefusedTarget = false;
 
 /**
- * Leave the Time-Spinner choice after it declined to travel to a monster.
- *
- * An open choice blocks every later equipment change, so leaving one surfaces
- * far away as "Failed to maximize properly!".
+ * Leave the Time-Spinner choice after a refused travel. An open choice blocks
+ * every later equipment change.
  * @param monster The monster the Time-Spinner would not travel to
  */
 export function escapeRefusedTimeSpinner(monster: Monster): void {
@@ -319,9 +313,8 @@ export function escapeRefusedTimeSpinner(monster: Monster): void {
     `The Time-Spinner would not travel to a ${monster}; it is no longer in the recent-fight list. Backing out of the choice.`,
     HIGHLIGHT,
   );
-  // Leaving one Time-Spinner page can land on the other, so drain both. 1196 is
-  // not in mafia's canWalkFromChoice table and needs its "Maybe Later"; 1195 is,
-  // so any non-choice request drops it.
+  // A refusal can bounce between the two pages, so drain both: 1196 needs its
+  // "Maybe Later" option, 1195 walks away on any non-choice request.
   let attempts = 0;
   while (handlingChoice() && attempts++ < 3) {
     const choice = lastChoice();
@@ -336,7 +329,7 @@ export function escapeRefusedTimeSpinner(monster: Monster): void {
 
   if (handlingChoice()) {
     abort(
-      `Still stuck in choice ${lastChoice()} after the Time-Spinner refused to fight a ${monster}. Resolve it in the relay browser before continuing -- leaving a choice open breaks every later equipment change.`,
+      `Still stuck in choice ${lastChoice()} after the Time-Spinner refused to fight a ${monster}. Resolve it in the relay browser before continuing.`,
     );
   }
 }
@@ -363,8 +356,7 @@ export const copySources = [
           runChoice(1);
           const offered = timeSpinnerOffers(globalOptions.target);
           if (offered === false) {
-            // Ground truth says the target is not on the list; don't submit a
-            // travel that is certain to be refused.
+            // Not on the list; don't submit a travel that will be refused.
             timeSpinnerRefusedTarget = true;
             escapeRefusedTimeSpinner(globalOptions.target);
             return;
