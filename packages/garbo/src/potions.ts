@@ -68,14 +68,12 @@ import {
   targetMeatDifferential,
   withLocation,
 } from "./lib";
-import { usingPurse } from "./outfit";
+import { usingPurse } from "./outfit/lib";
 import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { globalOptions } from "./config";
-import {
-  beretEffectValue,
-  castAugustScepterBuffs,
-  safeSweatEquityCasts,
-} from "./resources";
+import { beretEffectValue } from "./resources/beret";
+import { safeSweatEquityCasts } from "./resources/bloodCubicZirconia";
+import { castAugustScepterBuffs } from "./resources/scepter";
 import { FarmingStrategy } from "./farmingStrategy";
 
 export type PotionTier = "target" | "overlap" | "barf" | "ascending";

@@ -24,7 +24,7 @@ import {
   grabMedicine,
   rotateToOptimalCycle,
   trainNeedsRotating,
-} from "../../resources";
+} from "../../resources/worksheds";
 import { GarboPostTask } from "./lib";
 import { FarmingStrategy } from "../../farmingStrategy";
 

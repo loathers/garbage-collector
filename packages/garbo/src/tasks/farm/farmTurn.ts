@@ -19,7 +19,7 @@ import { FarmingStrategy, redTaffyWorth } from "../../farmingStrategy";
 import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
-import { barfOutfit } from "../../outfit";
+import { barfOutfit } from "../../outfit/barf";
 import { FarmingContext } from "../context";
 
 export function FarmTurnQuest(): Quest<

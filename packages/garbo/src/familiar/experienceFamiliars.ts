@@ -13,7 +13,10 @@ import {
 import { globalOptions } from "../config";
 import { estimatedBarfExperience, FamiliarMode, GeneralFamiliar } from "./lib";
 import { MEAT_TARGET_MULTIPLIER } from "../lib";
-import { mimicExperienceNeeded, shouldChargeMimic } from "../resources";
+import {
+  mimicExperienceNeeded,
+  shouldChargeMimic,
+} from "../resources/chestMimic";
 
 type ExperienceFamiliar = {
   familiar: Familiar;

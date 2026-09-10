@@ -74,14 +74,12 @@ import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { freeFightOutfit } from "../outfit";
+import { freeFightOutfit } from "../outfit/free";
 import { GarboTask } from "./engine";
-import {
-  doCandyTrick,
-  doingGregFight,
-  ghostAdventure,
-  shouldAugustCast,
-} from "../resources";
+import { doCandyTrick } from "../resources/candyMap";
+import { doingGregFight } from "../resources/extrovermectin";
+import { ghostAdventure } from "../resources/protonpack";
+import { shouldAugustCast } from "../resources/scepter";
 import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
 import { AdventureArgument, wanderer } from "../garboWanderer";
 

@@ -30,7 +30,7 @@ import {
   safeRestoreMpTarget,
   setChoice,
 } from "./lib";
-import { usingPurse } from "./outfit";
+import { usingPurse } from "./outfit/lib";
 import { effectValue } from "./potions";
 import { acquire } from "./acquire";
 import { FarmingStrategy } from "./farmingStrategy";

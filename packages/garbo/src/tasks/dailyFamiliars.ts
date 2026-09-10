@@ -26,7 +26,10 @@ import {
 } from "libram";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
+import {
+  meatFamiliar,
+  setBestLeprechaunAsMeatFamiliar,
+} from "../familiar/meatFamiliar";
 import {
   baseMeat,
   felizValue,
