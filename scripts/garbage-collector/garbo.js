@@ -20058,7 +20058,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"c1d512236311351152e823ac732b0e429120da6b"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"d06e33aaacbfeb75e723027053feec548bb65077"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -32958,7 +32958,7 @@ function main() {
   }
 
   // Cowo is for professionals only
-  if (globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL && (kolmafia.effectFact($monster`sea cow`) !== $effect`Fishy` || get$2("seahorseName") === "" || !have$P($item`das boot`) || !have$P($item`really, really nice swimming trunks`))) {
+  if (globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL && (kolmafia.effectFact($monster`sea cow`) !== $effect`Fishy` || get$2("seahorseName") === "")) {
     globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
 
