@@ -70,7 +70,14 @@ function escapeRefusal(monster: Monster): void {
  * @returns Whether a fight started, rather than the Time-Spinner refusing
  */
 export function travelToRecentFight(monster: Monster): boolean {
+  // runChoice() sends nothing outside a choice, so check each page is open.
+  if (!handlingChoice() || lastChoice() !== SPINNING_YOUR_TIME_SPINNER) {
+    abort("Using the Time-Spinner did not open its menu.");
+  }
   runChoice(1);
+  if (!handlingChoice() || lastChoice() !== TRAVEL_TO_A_RECENT_FIGHT) {
+    abort("The Time-Spinner menu did not open the recent-fight list.");
+  }
   const offered = offersMonster(monster);
   if (offered === false) {
     escapeRefusal(monster);
