@@ -8,6 +8,7 @@ import {
   runChoice,
   visitUrl,
 } from "kolmafia";
+import { get } from "libram";
 import { HIGHLIGHT } from "../lib";
 
 const SPINNING_YOUR_TIME_SPINNER = 1195;
@@ -73,6 +74,11 @@ export function travelToRecentFight(monster: Monster): boolean {
   // runChoice() sends nothing outside a choice, so check each page is open.
   if (!handlingChoice() || lastChoice() !== SPINNING_YOUR_TIME_SPINNER) {
     abort("Using the Time-Spinner did not open its menu.");
+  }
+  // Opening the menu re-reads the minutes, and a travel costs 3.
+  if (get("_timeSpinnerMinutesUsed") > 7) {
+    visitUrl("main.php");
+    return false;
   }
   runChoice(1);
   if (!handlingChoice() || lastChoice() !== TRAVEL_TO_A_RECENT_FIGHT) {
