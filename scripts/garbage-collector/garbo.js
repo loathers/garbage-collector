@@ -19748,7 +19748,6 @@ var BARF_MOUNTAIN = {
   baseMeat: 250,
   ncTurns: () => 27 * barfTourists / (garbageTourists + angryTourists + 3 * touristFamilies) + 1 * touristFamilyRatio + 2 * (1 - touristFamilyRatio) * touristFamilyRatio + 3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio),
   location: $location`Barf Mountain`,
-  ensureML: true,
   bonusEffects: $effects`How to Scam Tourists`,
   targetMonster: () => have$P($familiar`Skeleton of Crimbo Past`) && get$2("_knuckleboneDrops", 0) < 100 ? $monster`angry tourist` : $monster`garbage tourist`,
   shouldOlfact: true,
@@ -19764,7 +19763,6 @@ var THE_CORAL_CORRAL = {
   ensureBarfAccess: false,
   baseMeat: 300,
   location: $location`The Coral Corral`,
-  ensureML: false,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
@@ -20029,7 +20027,8 @@ function safeRestore() {
       throw new Error("Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.");
     }
   }
-  if (kolmafia.myHp() < Math.min(kolmafia.myMaxhp() * 0.5, get$2("garbo_restoreHpTarget", 2000))) {
+  var lowPercentageHealth = FarmingStrategy.isUnderwater() ? kolmafia.myInebriety() > kolmafia.inebrietyLimit() ? 0.9 : 0.6 : 0.5;
+  if (kolmafia.myHp() < Math.min(kolmafia.myMaxhp() * lowPercentageHealth, get$2("garbo_restoreHpTarget", 2000))) {
     kolmafia.restoreHp(Math.min(kolmafia.myMaxhp() * 0.9, get$2("garbo_restoreHpTarget", 2000)));
   }
   var mpTarget = safeRestoreMpTarget();
@@ -20057,7 +20056,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"f13a5dc140095e0bbac031121dbc821f6924b010"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"aadd89608737bd9b7cabbb0955637fc406e69764"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -23277,14 +23276,26 @@ function meatMood() {
   if (FarmingStrategy.location === $location`Barf Mountain`) {
     mood.potion($item`How to Avoid Scams`, 3 * baseMeat$1);
   }
-  if (FarmingStrategy.ensureML) {
+  if (FarmingStrategy.location.recommendedStat <= 300) {
     mood.skill($skill`Drescher's Annoying Noise`);
     mood.skill($skill`Pride of the Puffin`);
     mood.skill(urKels ? $skill`Ur-Kel's Aria of Annoyance` : $skill`Fat Leon's Phat Loot Lyric`);
-  } else {
-    // Assume that if we don't want ML, the fights must be tough enough
+  }
+  if (FarmingStrategy.location.recommendedStat >= 400) {
+    mood.skill($skill`Ruthless Efficiency`);
     mood.skill($skill`Ghostly Shell`);
     mood.skill($skill`Shield of the Pastalord`);
+    if (kolmafia.myInebriety() > kolmafia.inebrietyLimit()) {
+      mood.skill($skill`Get Big`);
+      mood.skill($skill`Song of Bravado`);
+      mood.skill($skill`Rage of the Reindeer`);
+      mood.skill($skill`Disco Fever`);
+      mood.skill($skill`Carol of the Bulls`);
+      mood.skill($skill`Blood Bubble`);
+      mood.skill($skill`Tenacity of the Snapper`);
+      mood.skill($skill`Grease Up`);
+      mood.effect($effect`Disco over Matter`);
+    }
   }
   if (FarmingStrategy.isUnderwater()) mood.skill($skill`Donho's Bubbly Ballad`);
   mood.skill($skill`Walk: Leisurely Amble`);
