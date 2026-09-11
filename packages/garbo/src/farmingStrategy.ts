@@ -62,7 +62,6 @@ interface FarmingStrategyOptions {
   ensureBarfAccess: boolean;
   baseMeat: number;
   location: Location;
-  ensureML: boolean;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
   combat: GarboStrategy<FarmingContext>;
@@ -193,7 +192,6 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
     2 * (1 - touristFamilyRatio) * touristFamilyRatio +
     3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio),
   location: $location`Barf Mountain`,
-  ensureML: true,
   bonusEffects: $effects`How to Scam Tourists`,
   targetMonster: () =>
     have($familiar`Skeleton of Crimbo Past`) &&
@@ -227,7 +225,6 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   ensureBarfAccess: false,
   baseMeat: 300,
   location: $location`The Coral Corral`,
-  ensureML: false,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
