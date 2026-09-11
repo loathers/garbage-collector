@@ -20016,7 +20016,6 @@ function safeRestoreMpTarget() {
   return Math.min(kolmafia.myMaxmp(), 200);
 }
 var _ignoreBeatenUp = false;
-var ignoreBeatenUp = () => _ignoreBeatenUp = true;
 var unignoreBeatenUp = () => _ignoreBeatenUp = false;
 function safeRestore() {
   if (get$2("_lastCombatLost") && kolmafia.lastMonster() !== $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`) {
@@ -20058,7 +20057,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"d06e33aaacbfeb75e723027053feec548bb65077"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"9076df294e61380c682cb4ef7df599945e45351b"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -30959,270 +30958,6 @@ function outfitBonuses() {
   return new Map([[$item`carnivorous potted plant`, get$2("valueOfAdventure") / (20 + get$2("_carnivorousPottedPlantWins"))], [$item`Red Roger's red left foot`, funPointValue], [$item`PirateRealm party hat`, funPointValue]]);
 }
 
-var DebuffPlanner = /*#__PURE__*/function () {
-  function DebuffPlanner() {
-    _classCallCheck(this, DebuffPlanner);
-    _defineProperty(this, "plan", []);
-    _defineProperty(this, "itemBanList", $items`pill cup`);
-    _defineProperty(this, "priceCap", 150_000);
-    // Chosen at random by Shiverwarp
-    _defineProperty(this, "sizeCap", 69);
-    // Chosen at random by sweaty bill
-    _defineProperty(this, "possibleDebuffItems", {});
-    this.generateDebuffList();
-  }
-  return _createClass(DebuffPlanner, [{
-    key: "buffedStat",
-    value: function buffedStat(stat) {
-      return kolmafia.myBuffedstat(stat) + sum(this.plan, _ref => {
-        var target = _ref.target,
-          type = _ref.type;
-        return (["uneffect", "shrug"].includes(type) ? -1 : 1) * totalModifier(asEffect(target), stat);
-      });
-    }
-  }, {
-    key: "isValuable",
-    value: function isValuable(thing) {
-      var effect = asEffect(thing);
-      return FarmingStrategy.valuableModifiers().some(modifier => get$1(modifier, effect) > 0);
-    }
-  }, {
-    key: "debuffedEnough",
-    value: function debuffedEnough() {
-      return kolmafia.Stat.all().every(stat => this.buffedStat(stat) <= 100);
-    }
-  }, {
-    key: "effectiveDebuffQuantity",
-    value: function effectiveDebuffQuantity(effect, stat, shrugging) {
-      return clamp((shrugging ? -1 : 1) * (get$1(stat.toString(), effect) +
-      // Eyepatch caps you at 20
-      20 / 100 * get$1(`${stat.toString()} Percent`, effect)), 100 - this.buffedStat(stat), 0);
-    }
-  }, {
-    key: "debuffEfficacy",
-    value: function debuffEfficacy(item, effect, stat, shrugging) {
-      return -1 * this.effectiveDebuffQuantity(effect, stat, shrugging) / getAcquirePrice(item);
-    }
-  }, {
-    key: "have",
-    value: function have(effect) {
-      return have$P(effect) ? !this.plan.some(_ref2 => {
-        var type = _ref2.type,
-          target = _ref2.target;
-        return ["shrug", "uneffect"].includes(type) && target === effect;
-      }) : this.plan.some(_ref3 => {
-        var type = _ref3.type,
-          target = _ref3.target;
-        return type === "potion" && asEffect(target) === effect;
-      });
-    }
-  }, {
-    key: "getDebuffItems",
-    value: function getDebuffItems(stat) {
-      var _this$possibleDebuffI, _stat$toString;
-      return ((_this$possibleDebuffI = this.possibleDebuffItems)[_stat$toString = stat.toString()] ?? (_this$possibleDebuffI[_stat$toString] = kolmafia.Item.all().map(item => ({
-        item,
-        effect: asEffect(item)
-      })).filter(_ref4 => {
-        var item = _ref4.item,
-          effect = _ref4.effect;
-        return item.potion && (item.tradeable || have$P(item)) && !this.itemBanList.includes(item) && !improvesAStat(item) && effect !== $effect.none && !have$P(effect) && totalModifier(effect, stat) < 0;
-      }))).filter(_ref5 => {
-        var effect = _ref5.effect;
-        return !this.have(effect);
-      });
-    }
-  }, {
-    key: "getBestDebuffItem",
-    value: function getBestDebuffItem(stat) {
-      var debuffItems = this.getDebuffItems(stat);
-      if (!debuffItems.length) {
-        this.printPlan();
-        kolmafia.abort(`Failed to find a debuff item for ${stat}!`);
-      }
-      var bestPotion = maxBy(debuffItems, _ref6 => {
-        var item = _ref6.item,
-          effect = _ref6.effect;
-        return this.debuffEfficacy(item, effect, stat, false);
-      });
-      var effectsToShrug = getActiveEffects().filter(ef => !kolmafia.isShruggable(ef) && this.shouldRemove(ef));
-      if (!effectsToShrug.length) return bestPotion.item;
-      var bestEffectToShrug = maxBy(effectsToShrug, ef => this.effectiveDebuffQuantity(ef, stat, true), true);
-      return this.effectiveDebuffQuantity(bestEffectToShrug, stat, true) / getAcquirePrice($item`soft green echo eyedrop antidote`) > this.effectiveDebuffQuantity(bestPotion.effect, stat, false) / getAcquirePrice(bestPotion.item) ? bestEffectToShrug : bestPotion.item;
-    }
-  }, {
-    key: "shouldRemove",
-    value: function shouldRemove(effect) {
-      if (!this.have(effect)) return false;
-      // Only shrug effects that buff at least one stat that's too high
-      if (!improvedStats(effect).some(stat => this.buffedStat(stat) >= 100)) {
-        return false;
-      }
-      // Never shrug effects that give meat or whatever
-      if (this.isValuable(effect)) return false;
-      return true;
-    }
-
-    // Just checking for the gummi effects for now, maybe can check other stuff later?
-  }, {
-    key: "generateDebuffList",
-    value: function generateDebuffList() {
-      ignoreBeatenUp();
-      if (this.debuffedEnough()) return;
-
-      // Decorative fountain is both cheap and reusable for -30% muscle, but is not a potion
-      if (this.buffedStat($stat`Muscle`) > 100 && !have$P($effect`Sleepy`) && (have$P($item`decorative fountain`) || getAcquirePrice($item`decorative fountain`) < 500)) {
-        acquire(1, $item`decorative fountain`, 500);
-        kolmafia.use($item`decorative fountain`);
-      }
-      var _iterator = _createForOfIteratorHelper(getActiveEffects()),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var effect = _step.value;
-          if (!kolmafia.isShruggable(effect)) continue;
-          if (!this.shouldRemove(effect)) continue;
-          this.plan.push({
-            type: "shrug",
-            target: effect
-          });
-          if (this.debuffedEnough()) return;
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-      var debuffItemLoops = 0;
-      while (!this.debuffedEnough()) {
-        if (debuffItemLoops > this.sizeCap) {
-          this.printPlan();
-          kolmafia.abort("Spent too long trying to debuff for PirateRealm!");
-        }
-        debuffItemLoops++;
-        var _iterator2 = _createForOfIteratorHelper(kolmafia.Stat.all()),
-          _step2;
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var stat = _step2.value;
-            if (this.buffedStat(stat) > 100) {
-              var debuff = this.getBestDebuffItem(stat);
-              if (debuff instanceof kolmafia.Item) {
-                this.plan.push({
-                  type: "potion",
-                  target: debuff
-                });
-              } else {
-                this.plan.push({
-                  type: "uneffect",
-                  target: debuff
-                });
-              }
-            }
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-      }
-      if (!this.debuffedEnough()) {
-        this.printPlan();
-        kolmafia.abort("Failed to generate debuff list!");
-      }
-    }
-  }, {
-    key: "executeDebuff",
-    value: function executeDebuff(_ref7) {
-      var type = _ref7.type,
-        target = _ref7.target;
-      switch (type) {
-        case "potion":
-          kolmafia.retrieveItem(target);
-          return kolmafia.use(target);
-        case "shrug":
-        case "uneffect":
-          return uneffect(target);
-      }
-    }
-  }, {
-    key: "printPlan",
-    value: function printPlan() {
-      var colour = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "green";
-      kolmafia.print("Debuff plan:", colour);
-      var _iterator3 = _createForOfIteratorHelper(this.plan),
-        _step3;
-      try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var _step3$value = _step3.value,
-            target = _step3$value.target,
-            type = _step3$value.type;
-          switch (type) {
-            case "uneffect":
-              kolmafia.print(` - Remove ${target} with a soft green echo eyedrop antidote`, colour);
-              continue;
-            case "potion":
-              kolmafia.print(` - Use a ${target} to get ${asEffect(target)}`, colour);
-              continue;
-            case "shrug":
-              kolmafia.print(` - Shrug ${target}`, colour);
-              continue;
-          }
-        }
-      } catch (err) {
-        _iterator3.e(err);
-      } finally {
-        _iterator3.f();
-      }
-    }
-  }, {
-    key: "checkAndFixOvercapStats",
-    value: function checkAndFixOvercapStats() {
-      if (this.price() >= this.priceCap) {
-        kolmafia.print("Failed to debuff enough to use piraterealm!", "red");
-        this.printPlan();
-        kolmafia.abort("Total price of this debuff plan too great! Consider targeting something other than cockroaches next time.");
-      }
-      var _iterator4 = _createForOfIteratorHelper(this.plan),
-        _step4;
-      try {
-        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-          var debuff = _step4.value;
-          this.executeDebuff(debuff);
-        }
-      } catch (err) {
-        _iterator4.e(err);
-      } finally {
-        _iterator4.f();
-      }
-      if (kolmafia.Stat.all().some(stat => kolmafia.myBuffedstat(stat) > 100)) {
-        kolmafia.abort("Failed to debuff sufficiently for piraterealm!");
-      }
-    }
-  }, {
-    key: "price",
-    value: function price() {
-      return sum(this.plan, _ref8 => {
-        var type = _ref8.type,
-          target = _ref8.target;
-        switch (type) {
-          case "potion":
-            return getAcquirePrice(target);
-          case "shrug":
-            return 0;
-          case "uneffect":
-            return getAcquirePrice($item`soft green echo eyedrop antidote`);
-        }
-      });
-    }
-  }], [{
-    key: "checkAndFixOvercapStats",
-    value: function checkAndFixOvercapStats() {
-      return new DebuffPlanner().checkAndFixOvercapStats();
-    }
-  }]);
-}();
-
 var CockroachSetup = {
   name: "Setup Cockroach Target",
   ready: () => doingGregFight() && globalOptions.target === $monster`cockroach` && kolmafia.myInebriety() <= kolmafia.inebrietyLimit(),
@@ -31251,7 +30986,6 @@ var CockroachSetup = {
     name: "Start PirateRealm Journey",
     ready: () => have$P($item`PirateRealm eyepatch`),
     completed: () => questStep$1("_questPirateRealm") > 0,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
     do: () => {
       kolmafia.visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
       kolmafia.runChoice(1); // Head to Groggy's
@@ -31276,7 +31010,6 @@ var CockroachSetup = {
     name: "Choose First Island",
     ready: () => questStep$1("_questPirateRealm") === 1,
     completed: () => questStep$1("_questPirateRealm") > 1,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
     do: $location`Sailing the PirateRealm Seas`,
     outfit: {
       equip: $items`PirateRealm eyepatch`,
@@ -31294,7 +31027,6 @@ var CockroachSetup = {
     name: "Sail to first Island",
     ready: () => questStep$1("_questPirateRealm") === 2,
     completed: () => questStep$1("_questPirateRealm") > 2,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
     do: $location`Sailing the PirateRealm Seas`,
     outfit: () => ({
       equip: $items`PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot`.filter(i => have$P(i)),
@@ -31331,7 +31063,6 @@ var CockroachSetup = {
     name: "Land Ho (First Island)",
     ready: () => questStep$1("_questPirateRealm") === 3,
     completed: () => questStep$1("_questPirateRealm") > 3,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
     do: $location`Sailing the PirateRealm Seas`,
     combat: new GarboStrategy(() => Macro.abortWithMsg("Expected Land Ho! but hit a combat")),
     choices: {
@@ -31351,7 +31082,6 @@ var CockroachSetup = {
     ready: () => questStep$1("_questPirateRealm") === 4,
     completed: () => questStep$1("_questPirateRealm") > 4,
     prepare: () => {
-      DebuffPlanner.checkAndFixOvercapStats();
       if (kolmafia.mallPrice($item`windicle`) < 3 * get$2("valueOfAdventure") && !get$2("_pirateRealmWindicleUsed")) {
         acquire(1, $item`windicle`, 3 * get$2("valueOfAdventure"), true);
       }
@@ -31376,7 +31106,6 @@ var CockroachSetup = {
     name: "Final Island Encounter (Island 1 (Dessert))",
     ready: () => questStep$1("_questPirateRealm") === 5 && get$2("_lastPirateRealmIsland") === $location`Dessert Island`,
     completed: () => questStep$1("_questPirateRealm") > 5,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
     do: $location`PirateRealm Island`,
     outfit: () => ({
       equip: $items`PirateRealm eyepatch`,
@@ -31396,7 +31125,6 @@ var CockroachSetup = {
     ready: () => questStep$1("_questPirateRealm") === 5 && get$2("_lastPirateRealmIsland") === $location`Crab Island`,
     completed: () => questStep$1("_questPirateRealm") > 5,
     prepare: () => {
-      DebuffPlanner.checkAndFixOvercapStats();
       kolmafia.restoreHp(kolmafia.myMaxhp());
     },
     do: $location`Crab Island`,
@@ -31422,7 +31150,6 @@ var CockroachSetup = {
     name: "Choose Trash Island",
     ready: () => questStep$1("_questPirateRealm") === 6,
     completed: () => questStep$1("_questPirateRealm") > 6,
-    prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
     do: $location`Sailing the PirateRealm Seas`,
     outfit: {
       equip: $items`PirateRealm eyepatch`
