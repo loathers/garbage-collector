@@ -13,7 +13,6 @@ import {
   equippedItem,
   familiarEquippedEquipment,
   getAutoAttack,
-  handlingChoice,
   haveOutfit,
   inebrietyLimit,
   isBanished,
@@ -181,10 +180,12 @@ import {
 import {
   CopyTargetFight,
   copyTargetSources,
-  escapeRefusedTimeSpinner,
   getNextCopyTargetFight,
-  timeSpinnerOffers,
 } from "./target/fights";
+import {
+  timeSpinnerRefused,
+  travelToRecentFight,
+} from "./resources/timeSpinner";
 import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
@@ -807,9 +808,6 @@ function molemanReady() {
   return have($item`molehill mountain`) && !get("_molehillMountainUsed");
 }
 
-/** Whether the Time-Spinner has already declined to travel to a drunk pygmy. */
-let timeSpinnerRefusedPygmy = false;
-
 const freeFightSources = [
   new FreeFight(
     () => (wantPills() ? 5 - get("_saberForceUses") : 0),
@@ -1039,7 +1037,7 @@ const freeFightSources = [
 
   new FreeFight(
     () =>
-      !timeSpinnerRefusedPygmy &&
+      !timeSpinnerRefused($monster`drunk pygmy`) &&
       have($item`Time-Spinner`) &&
       !doingGregFight() &&
       $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") &&
@@ -1050,28 +1048,7 @@ const freeFightSources = [
         .trySingAlong()
         .setAutoAttack();
       visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
-      runChoice(1);
-      const offered = timeSpinnerOffers($monster`drunk pygmy`);
-      if (offered === false) {
-        // Not on the list; don't submit a travel that will be refused.
-        timeSpinnerRefusedPygmy = true;
-        escapeRefusedTimeSpinner($monster`drunk pygmy`);
-        return;
-      }
-      if (offered === null) {
-        print(
-          "Could not find the Time-Spinner's recent-fight list on the page; attempting the travel anyway.",
-          HIGHLIGHT,
-        );
-      }
-      visitUrl(
-        `choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`,
-      );
-      // Refusals spend no minutes, so latch it off or available() re-offers.
-      if (handlingChoice()) {
-        timeSpinnerRefusedPygmy = true;
-        escapeRefusedTimeSpinner($monster`drunk pygmy`);
-      }
+      travelToRecentFight($monster`drunk pygmy`);
     },
     true,
     pygmyOptions(),
