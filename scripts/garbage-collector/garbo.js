@@ -20057,7 +20057,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"9076df294e61380c682cb4ef7df599945e45351b"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"f13a5dc140095e0bbac031121dbc821f6924b010"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20610,8 +20610,10 @@ function usingThumbRing() {
         item = _ref2[0];
       return have$P(item);
     });
-    kolmafia.setLocation(FarmingStrategy.location);
-    var meatAccessories = kolmafia.Item.all().filter(item => have$P(item) && kolmafia.toSlot(item) === $slot`acc1` && get$1("Meat Drop", item) > 0).map(item => [item, get$1("Meat Drop", item) * baseMeat() / 100]);
+
+    // Mafia resolves env()/zone()/loc() modifiers against the last location
+    // set, so restore it or unrelated gear is priced against this one.
+    var meatAccessories = withLocation(FarmingStrategy.location, () => kolmafia.Item.all().filter(item => have$P(item) && kolmafia.toSlot(item) === $slot`acc1` && get$1("Meat Drop", item) > 0).map(item => [item, get$1("Meat Drop", item) * baseMeat() / 100]));
     var accessoryValues = new Map(accessoryBonuses);
     var _iterator = _createForOfIteratorHelper(meatAccessories),
       _step;
