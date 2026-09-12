@@ -475,7 +475,19 @@ export function safeRestore(): void {
       );
     }
   }
-  if (myHp() < Math.min(myMaxhp() * 0.5, get("garbo_restoreHpTarget", 2000))) {
+  const lowPercentageHealth = FarmingStrategy.isUnderwater()
+    ? myInebriety() > inebrietyLimit()
+      ? 0.9
+      : 0.6
+    : 0.5;
+
+  if (
+    myHp() <
+    Math.min(
+      myMaxhp() * lowPercentageHealth,
+      get("garbo_restoreHpTarget", 2000),
+    )
+  ) {
     restoreHp(Math.min(myMaxhp() * 0.9, get("garbo_restoreHpTarget", 2000)));
   }
   const mpTarget = safeRestoreMpTarget();
