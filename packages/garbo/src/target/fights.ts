@@ -10,7 +10,6 @@ import {
   myHash,
   myRain,
   print,
-  runChoice,
   runCombat,
   use,
   userConfirm,
@@ -62,6 +61,10 @@ import {
   setChoice,
   WISH_VALUE,
 } from "../lib";
+import {
+  timeSpinnerRefused,
+  travelToRecentFight,
+} from "../resources/timeSpinner";
 import { monsterIsInEggnet } from "../resources/chestMimic";
 import {
   crateStrategy,
@@ -262,22 +265,33 @@ export const chainStarters = [
   ),
 ];
 
+const TIME_SPINNER_LOCATIONS = $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`;
+
+/**
+ * Whether the target is in a combat queue the Time-Spinner draws from.
+ *
+ * Matches entries exactly: a substring test claims a sea cow when only a sea
+ * cowboy was fought.
+ * @returns Whether the target is in one of those queues
+ */
+function targetInCombatQueue(): boolean {
+  return TIME_SPINNER_LOCATIONS.some((location) =>
+    location.combatQueue.split("; ").includes(globalOptions.target.name),
+  );
+}
+
 export const copySources = [
   new CopyTargetFight(
     "Time-Spinner",
     () =>
+      !timeSpinnerRefused(globalOptions.target) &&
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) => location.combatQueue.includes(globalOptions.target.name),
-      ) &&
+      targetInCombatQueue() &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
+      !timeSpinnerRefused(globalOptions.target) &&
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) =>
-          location.combatQueue.includes(globalOptions.target.name) ||
-          totalGregCharges(true),
-      )
+      (targetInCombatQueue() || totalGregCharges(true) > 0)
         ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
     (options: RunOptions) => {
@@ -285,11 +299,7 @@ export const copySources = [
         options.macro,
         () => {
           directlyUse($item`Time-Spinner`);
-          runChoice(1);
-          visitUrl(
-            `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
-          );
-          runCombat();
+          if (travelToRecentFight(globalOptions.target)) runCombat();
         },
         options.useAuto,
       );
@@ -914,6 +924,7 @@ export const emergencyChainStarters = [
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
+
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = copyTargetConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy a ${

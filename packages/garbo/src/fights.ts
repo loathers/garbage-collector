@@ -183,6 +183,10 @@ import {
   getNextCopyTargetFight,
 } from "./target/fights";
 import {
+  timeSpinnerRefused,
+  travelToRecentFight,
+} from "./resources/timeSpinner";
+import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
 } from "./tasks/buffExtension";
@@ -1033,6 +1037,7 @@ const freeFightSources = [
 
   new FreeFight(
     () =>
+      !timeSpinnerRefused($monster`drunk pygmy`) &&
       have($item`Time-Spinner`) &&
       !doingGregFight() &&
       $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") &&
@@ -1043,10 +1048,7 @@ const freeFightSources = [
         .trySingAlong()
         .setAutoAttack();
       visitUrl(`inv_use.php?whichitem=${toInt($item`Time-Spinner`)}`);
-      runChoice(1);
-      visitUrl(
-        `choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`,
-      );
+      travelToRecentFight($monster`drunk pygmy`);
     },
     true,
     pygmyOptions(),
