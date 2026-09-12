@@ -20056,7 +20056,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"aadd89608737bd9b7cabbb0955637fc406e69764"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"2f8790c081128fe85de079b96d127a41c9d4534d"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20645,6 +20645,86 @@ function usingThumbRing() {
     cachedUsingThumbRing = bestAccessories.slice(0, 2).includes($item`mafia thumb ring`);
   }
   return cachedUsingThumbRing;
+}
+
+var SPINNING_YOUR_TIME_SPINNER = 1195;
+var TRAVEL_TO_A_RECENT_FIGHT = 1196;
+var refusedMonsterIds = new Set();
+
+/**
+ * Whether the Time-Spinner has declined to travel to a monster this run.
+ * Refusals spend no minutes, so sources must check this or they re-offer.
+ * @param monster The monster to check
+ * @returns Whether a travel to this monster was refused
+ */
+function timeSpinnerRefused(monster) {
+  return refusedMonsterIds.has(monster.id);
+}
+
+/**
+ * Whether a monster is on the <select name="monid"> in choice 1196.
+ * @param monster The monster to look for
+ * @returns Whether the monster is offered, or null if no list was found
+ */
+function offersMonster(monster) {
+  var monids = kolmafia.availableChoiceSelectInputs(1)["monid"];
+  if (!monids || Object.keys(monids).length === 0) return null;
+  if (`${monster.id}` in monids) return true;
+  kolmafia.print(`The Time-Spinner is only offering: ${Object.values(monids).join(", ")}`, HIGHLIGHT);
+  return false;
+}
+
+/**
+ * Record a refused travel and leave the Time-Spinner choice. An open choice
+ * blocks every later equipment change.
+ * @param monster The monster the Time-Spinner would not travel to
+ */
+function escapeRefusal(monster) {
+  refusedMonsterIds.add(monster.id);
+  kolmafia.print(`The Time-Spinner would not travel to a ${monster}; it is no longer in the recent-fight list. Backing out of the choice.`, HIGHLIGHT);
+  // "Maybe Later" returns to 1195, which any non-choice request leaves.
+  if (kolmafia.lastChoice() === TRAVEL_TO_A_RECENT_FIGHT) kolmafia.runChoice(2);
+  if (kolmafia.handlingChoice() && kolmafia.lastChoice() === SPINNING_YOUR_TIME_SPINNER) {
+    kolmafia.visitUrl("main.php");
+  }
+  if (kolmafia.handlingChoice()) {
+    kolmafia.abort(`Still stuck in choice ${kolmafia.lastChoice()} after the Time-Spinner refused to fight a ${monster}. Resolve it in the relay browser before continuing.`);
+  }
+}
+
+/**
+ * From the menu that using the Time-Spinner opens, travel to a recent fight.
+ * @param monster The monster to fight
+ * @returns Whether a fight started, rather than the Time-Spinner refusing
+ */
+function travelToRecentFight(monster) {
+  // runChoice() sends nothing outside a choice, so check each page is open.
+  if (!kolmafia.handlingChoice() || kolmafia.lastChoice() !== SPINNING_YOUR_TIME_SPINNER) {
+    kolmafia.abort("Using the Time-Spinner did not open its menu.");
+  }
+  // Opening the menu re-reads the minutes, and a travel costs 3.
+  if (get$2("_timeSpinnerMinutesUsed") > 7) {
+    kolmafia.visitUrl("main.php");
+    return false;
+  }
+  kolmafia.runChoice(1);
+  if (!kolmafia.handlingChoice() || kolmafia.lastChoice() !== TRAVEL_TO_A_RECENT_FIGHT) {
+    kolmafia.abort("The Time-Spinner menu did not open the recent-fight list.");
+  }
+  var offered = offersMonster(monster);
+  if (offered === false) {
+    escapeRefusal(monster);
+    return false;
+  }
+  if (offered === null) {
+    kolmafia.print("Could not find the Time-Spinner's recent-fight list on the page; attempting the travel anyway.", HIGHLIGHT);
+  }
+  kolmafia.runChoice(1, false, `monid=${monster.id}`);
+  if (kolmafia.handlingChoice()) {
+    escapeRefusal(monster);
+    return false;
+  }
+  return true;
 }
 
 var mimicExperienceNeeded = needKickstarterEgg => 50 * (11 - get$2("_mimicEggsObtained")) + (globalOptions.ascend ? needKickstarterEgg && !have$I() && get$2("_mimicEggsObtained") < 11 ? 50 : 0 : 550);
@@ -22836,12 +22916,22 @@ var chainStarters = [new CopyTargetFight("Witchess", () => have$H() && pieces$1.
 }), new CopyTargetFight("Rain Main", () => have$P($skill`Rain Man`) && kolmafia.myRain() >= 50, () => Math.floor(kolmafia.myRain() / 50), options => {
   withMacro(options.macro, () => rainMan(globalOptions.target), options.useAuto);
 })];
-var copySources = [new CopyTargetFight("Time-Spinner", () => have$P($item`Time-Spinner`) && $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(location => location.combatQueue.includes(globalOptions.target.name)) && get$2("_timeSpinnerMinutesUsed") <= 7, () => have$P($item`Time-Spinner`) && $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(location => location.combatQueue.includes(globalOptions.target.name) || totalGregCharges()) ? Math.floor((10 - get$2("_timeSpinnerMinutesUsed")) / 3) : 0, options => {
+var TIME_SPINNER_LOCATIONS = $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`;
+
+/**
+ * Whether the target is in a combat queue the Time-Spinner draws from.
+ *
+ * Matches entries exactly: a substring test claims a sea cow when only a sea
+ * cowboy was fought.
+ * @returns Whether the target is in one of those queues
+ */
+function targetInCombatQueue() {
+  return TIME_SPINNER_LOCATIONS.some(location => location.combatQueue.split("; ").includes(globalOptions.target.name));
+}
+var copySources = [new CopyTargetFight("Time-Spinner", () => !timeSpinnerRefused(globalOptions.target) && have$P($item`Time-Spinner`) && targetInCombatQueue() && get$2("_timeSpinnerMinutesUsed") <= 7, () => !timeSpinnerRefused(globalOptions.target) && have$P($item`Time-Spinner`) && (targetInCombatQueue() || totalGregCharges() > 0) ? Math.floor((10 - get$2("_timeSpinnerMinutesUsed")) / 3) : 0, options => {
   withMacro(options.macro, () => {
     directlyUse($item`Time-Spinner`);
-    kolmafia.runChoice(1);
-    kolmafia.visitUrl(`choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`);
-    kolmafia.runCombat();
+    if (travelToRecentFight(globalOptions.target)) kolmafia.runCombat();
   }, options.useAuto);
 }), new CopyTargetFight("Spooky Putty & Rain-Doh", () => have$P($item`Spooky Putty monster`) && get$2("spookyPuttyMonster") === globalOptions.target || have$P($item`Rain-Doh box full of monster`) && get$2("rainDohMonster") === globalOptions.target, () => {
   var havePutty = have$P($item`Spooky Putty sheet`);
@@ -28659,12 +28749,11 @@ new FreeFight(() => get$2("questL11Worship") !== "unstarted" && ponder().get($lo
   kolmafia.putCloset(kolmafia.itemAmount($item`bowling ball`), $item`bowling ball`);
   kolmafia.retrieveItem(1, $item`Bowl of Scorpions`);
   garboAdventure($location`The Hidden Bowling Alley`, Macro.if_($monster`drunk pygmy`, pygmyMacro()).abort());
-}, true, pygmyOptions($items`miniature crystal ball`.filter(item => have$P(item)))), new FreeFight(() => have$P($item`Time-Spinner`) && !doingGregFight() && $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") && get$2("_timeSpinnerMinutesUsed") < 8, () => {
+}, true, pygmyOptions($items`miniature crystal ball`.filter(item => have$P(item)))), new FreeFight(() => !timeSpinnerRefused($monster`drunk pygmy`) && have$P($item`Time-Spinner`) && !doingGregFight() && $location`The Hidden Bowling Alley`.combatQueue.includes("drunk pygmy") && get$2("_timeSpinnerMinutesUsed") < 8, () => {
   kolmafia.retrieveItem($item`Bowl of Scorpions`);
   Macro.trySkill($skill`Extract`).trySingAlong().setAutoAttack();
   kolmafia.visitUrl(`inv_use.php?whichitem=${kolmafia.toInt($item`Time-Spinner`)}`);
-  kolmafia.runChoice(1);
-  kolmafia.visitUrl(`choice.php?whichchoice=1196&monid=${$monster`drunk pygmy`.id}&option=1`);
+  travelToRecentFight($monster`drunk pygmy`);
 }, true, pygmyOptions()), new FreeFight(() => get$2("neverendingPartyAlways") && questStep("_questPartyFair") < 999 ? clamp(10 - get$2("_neverendingPartyFreeTurns") - (!molemanReady() && !get$2("_thesisDelivered") && have$P($familiar`Pocket Professor`) ? 1 : 0), 0, 10) : 0, () => {
   var constructedMacro = Macro.tryHaveSkill($skill`Feel Pride`).basicCombat();
   setNepQuestChoicesAndPrepItems();
