@@ -432,8 +432,8 @@ export class Macro extends StrictMacro {
       .kill();
   }
 
-  static meatKill(): Macro {
-    return new Macro().meatKill();
+  static meatKill(delevel = isStrongScaler(globalOptions.target)): Macro {
+    return new Macro().meatKill(delevel);
   }
 
   meatStasis(checkPassive: boolean): Macro {

@@ -1,12 +1,15 @@
 import { OutfitSpec } from "grimoire-kolmafia";
 import {
   Effect,
+  equippedItem,
   getMonsters,
   isBanished,
   itemDropsArray,
+  itemType,
   Location,
   mallPrice,
   Monster,
+  myBuffedstat,
   print,
 } from "kolmafia";
 import { GarboStrategy } from "./combatStrategy";
@@ -20,6 +23,8 @@ import {
   $monster,
   $monsters,
   $skill,
+  $slot,
+  $stat,
   adventureTargetToWeightedMap,
   Delayed,
   get,
@@ -239,20 +244,24 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   },
 
   combat: new GarboStrategy(({ banish }) => {
-    if (banish) {
-      const macro = Macro.if_(
-        $monsters`Mer-kin rustler, sea cowboy`,
-        banish.macro,
-      );
+    const delevel =
+      myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 ||
+      (have($skill`Hero of the Half-Shell`) &&
+        itemType(equippedItem($slot`offhand`)) === "shield" &&
+        myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10);
 
-      return redTaffyWorth()
-        ? macro.tryItem($item`pulled red taffy`).meatKill()
-        : macro.meatKill();
+    const macro = new Macro()
+      .externalIf(delevel, Macro.delevel())
+      .externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`))
+      .meatKill(false);
+
+    if (banish) {
+      Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro).step(
+        macro,
+      );
     }
 
-    return redTaffyWorth()
-      ? Macro.tryItem($item`pulled red taffy`).meatKill()
-      : Macro.meatKill();
+    return macro;
   }),
 };
 
