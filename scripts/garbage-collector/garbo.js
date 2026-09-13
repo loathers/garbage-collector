@@ -19780,11 +19780,12 @@ var THE_CORAL_CORRAL = {
   },
   combat: new GarboStrategy(_ref7 => {
     var banish = _ref7.banish;
+    var delevel = kolmafia.myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 || have$P($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10;
+    var macro = new Macro().externalIf(delevel, Macro.delevel()).externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`)).meatKill(false);
     if (banish) {
-      var macro = Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro);
-      return redTaffyWorth() ? macro.tryItem($item`pulled red taffy`).meatKill() : macro.meatKill();
+      Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro).step(macro);
     }
-    return redTaffyWorth() ? Macro.tryItem($item`pulled red taffy`).meatKill() : Macro.meatKill();
+    return macro;
   })
 };
 function currentStrategy() {
@@ -20058,7 +20059,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"a4e27066400ca185cabf484972ad69254773e576"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"655551e56350e94c4c0f72b9da7a9cb27b86b51e"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -25464,7 +25465,8 @@ var Macro = /*#__PURE__*/function (_StrictMacro) {
   }, {
     key: "meatKill",
     value: function meatKill() {
-      return new Macro().meatKill();
+      var delevel = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : isStrongScaler(globalOptions.target);
+      return new Macro().meatKill(delevel);
     }
   }, {
     key: "meatStasis",
