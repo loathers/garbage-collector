@@ -19782,10 +19782,7 @@ var THE_CORAL_CORRAL = {
     var banish = _ref7.banish;
     var delevel = kolmafia.myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 || have$P($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10;
     var macro = new Macro().externalIf(delevel, Macro.delevel()).externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`)).meatKill(false);
-    if (banish) {
-      Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro).step(macro);
-    }
-    return macro;
+    return banish ? Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro).step(macro) : macro;
   })
 };
 function currentStrategy() {
