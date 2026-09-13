@@ -20049,7 +20049,23 @@ function safeRestore() {
  */
 function checkGithubVersion() {
   {
-    kolmafia.print("Skipping version check for custom build");
+    var localSHA = kolmafia.gitInfo("loathers-garbage-collector-release").commit || kolmafia.gitInfo("Loathing-Associates-Scripting-Society-garbage-collector-release").commit;
+    var gitData = kolmafia.visitUrl(`https://api.github.com/repos/${"loathers/garbage-collector"}/branches`);
+    if (!gitData) kolmafia.print("Failed to reach github!");else {
+      var _gitBranches$find;
+      // Query GitHub for latest release commit
+      var gitBranches = JSON.parse(gitData);
+      var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"655551e56350e94c4c0f72b9da7a9cb27b86b51e"})`);
+      if (releaseSHA === localSHA) {
+        kolmafia.print("Garbo is up to date!", HIGHLIGHT);
+      } else if (releaseSHA === undefined) {
+        kolmafia.print("Garbo may be out of date, unable to query GitHub for latest version. Maybe run 'git update'?", HIGHLIGHT);
+      } else {
+        kolmafia.print(`Release Version: ${releaseSHA}`);
+        kolmafia.print("Garbo is out of date. Please run 'git update'!", "red");
+      }
+    }
   }
 }
 function formatNumber(num) {
