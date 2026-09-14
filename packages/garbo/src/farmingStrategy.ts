@@ -22,6 +22,7 @@ import {
   $location,
   $monster,
   $monsters,
+  $phylum,
   $skill,
   $slot,
   $stat,
@@ -31,6 +32,7 @@ import {
   have,
   NumericModifier,
   PulledTaffy,
+  Snapper,
   sum,
   undelay,
 } from "libram";
@@ -265,10 +267,48 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   }),
 };
 
+const THE_COPPERHEAD_CLUB: FarmingStrategyOptions = {
+  stasisRounds: 20,
+  asdonEffect: $effect`Driving Observantly`,
+  ensureBarfAccess: false,
+  baseMeat: 200, // Mob Penguin Capo
+  location: $location`The Copperhead Club`,
+  banishMonsters: $monsters`fan dancer, Copperhead Club bartender, ninja dressed as a waiter, waiter dressed as a ninja`,
+  targetMonster: $monster`sea cow`,
+  shouldOlfact: false,
+
+  outfit: ({ banish }) => {
+    const banishItem = banish?.equip;
+    if (banishItem) {
+      print(`Planning to banish equipping ${banishItem?.name}`);
+    }
+
+    return banishItem ? { equip: [banishItem] } : {};
+  },
+
+  combat: new GarboStrategy(
+    () => Macro.meatKill(),
+    () =>
+      Macro.if_(
+        `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
+        Macro.meatKill(),
+      ).abort(),
+  ),
+
+  post: () => {
+    if (Snapper.getTrackedPhylum() !== $phylum`Penguin`) {
+      Snapper.trackPhylum($phylum`Penguin`);
+    }
+  },
+};
+
 function currentStrategy(): FarmingStrategyOptions {
   switch (globalOptions.prefs.farmingMethod) {
     case FarmingMethod.THE_CORAL_CORRAL:
       return THE_CORAL_CORRAL;
+
+    case FarmingMethod.THE_COPPERHEAD_CLUB:
+      return THE_COPPERHEAD_CLUB;
 
     case FarmingMethod.BARF_MOUNTAIN:
     default:

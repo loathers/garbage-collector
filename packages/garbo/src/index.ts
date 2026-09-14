@@ -1,4 +1,4 @@
-import { Args } from "grimoire-kolmafia";
+import { Args, step } from "grimoire-kolmafia";
 import {
   abort,
   buy,
@@ -36,6 +36,7 @@ import {
   $class,
   $classes,
   $effect,
+  $familiar,
   $familiars,
   $item,
   $items,
@@ -137,6 +138,13 @@ export function main(argString = ""): void {
     globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
     (effectFact($monster`sea cow`) !== $effect`Fishy` ||
       get("seahorseName") === "")
+  ) {
+    globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
+  }
+
+  if (
+    globalOptions.prefs.farmingMethod === FarmingMethod.THE_COPPERHEAD_CLUB &&
+    (!have($familiar`Red-Nosed Snapper`) || !(step("questL11Shen") === 999))
   ) {
     globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
