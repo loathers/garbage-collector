@@ -121,7 +121,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28970); // pork elf toilet
+  sinceKolmafiaRevision(29250); // lgr limit properties
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);

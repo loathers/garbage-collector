@@ -38,7 +38,6 @@ import { bestCrewmate, dessertIslandWorthIt, outfitBonuses } from "./lib";
 import { doingGregFight } from "../../resources/extrovermectin";
 import { targetMeat, unignoreBeatenUp, userConfirmDialog } from "../../lib";
 import { globalOptions } from "../../config";
-import { DebuffPlanner } from "./debuffplanner";
 import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
 import { highMeatMonsterCount } from "../../turns";
@@ -82,7 +81,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Start PirateRealm Journey",
       ready: () => have($item`PirateRealm eyepatch`),
       completed: () => questStep("_questPirateRealm") > 0,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: () => {
         visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
         runChoice(1); // Head to Groggy's
@@ -108,7 +106,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Choose First Island",
       ready: () => questStep("_questPirateRealm") === 1,
       completed: () => questStep("_questPirateRealm") > 1,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
       outfit: {
         equip: $items`PirateRealm eyepatch`,
@@ -131,7 +128,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Sail to first Island",
       ready: () => questStep("_questPirateRealm") === 2,
       completed: () => questStep("_questPirateRealm") > 2,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
       outfit: () => ({
         equip:
@@ -172,7 +168,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Land Ho (First Island)",
       ready: () => questStep("_questPirateRealm") === 3,
       completed: () => questStep("_questPirateRealm") > 3,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
       combat: new GarboStrategy(() =>
         Macro.abortWithMsg("Expected Land Ho! but hit a combat"),
@@ -190,7 +185,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       ready: () => questStep("_questPirateRealm") === 4,
       completed: () => questStep("_questPirateRealm") > 4,
       prepare: () => {
-        DebuffPlanner.checkAndFixOvercapStats();
         if (
           mallPrice($item`windicle`) < 3 * get("valueOfAdventure") &&
           !get("_pirateRealmWindicleUsed")
@@ -233,7 +227,6 @@ export const CockroachSetup: Quest<GarboTask> = {
         questStep("_questPirateRealm") === 5 &&
         get("_lastPirateRealmIsland") === $location`Dessert Island`,
       completed: () => questStep("_questPirateRealm") > 5,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`PirateRealm Island`,
       outfit: () => ({
         equip: $items`PirateRealm eyepatch`,
@@ -253,7 +246,6 @@ export const CockroachSetup: Quest<GarboTask> = {
         get("_lastPirateRealmIsland") === $location`Crab Island`,
       completed: () => questStep("_questPirateRealm") > 5,
       prepare: () => {
-        DebuffPlanner.checkAndFixOvercapStats();
         restoreHp(myMaxhp());
       },
       do: $location`Crab Island`,
@@ -282,7 +274,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Choose Trash Island",
       ready: () => questStep("_questPirateRealm") === 6,
       completed: () => questStep("_questPirateRealm") > 6,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
       outfit: { equip: $items`PirateRealm eyepatch` },
       choices: { 1353: 5 }, // Trash Island

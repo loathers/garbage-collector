@@ -4449,8 +4449,8 @@ __metadata:
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.35
     jiti: ^2.6.1
-    kolmafia: ^5.28673.0
-    libram: ^0.11.31
+    kolmafia: ^5.29250.0
+    libram: ^0.11.32
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4466,15 +4466,15 @@ __metadata:
     eslint: ^9.39.2
     eslint-config-garbo: "workspace:^"
     jiti: ^2.6.1
-    kolmafia: ^5.28673.0
-    libram: ^0.11.31
+    kolmafia: ^5.29250.0
+    libram: ^0.11.32
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
     typescript: ^5.5.4
   peerDependencies:
-    kolmafia: ^5.28389.0
-    libram: ^0.11.9
+    kolmafia: ^5.29250.0
+    libram: ^0.11.32
   languageName: unknown
   linkType: soft
 
@@ -4522,8 +4522,8 @@ __metadata:
     garbo-lib: "workspace:*"
     grimoire-kolmafia: ^0.3.35
     jiti: ^2.6.1
-    kolmafia: ^5.28673.0
-    libram: ^0.11.31
+    kolmafia: ^5.29250.0
+    libram: ^0.11.32
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -5190,10 +5190,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:^5.28673.0":
-  version: 5.28947.0
-  resolution: "kolmafia@npm:5.28947.0"
-  checksum: d819f6039e2e4f2fdea7d0dc2b712928b73286a168036cb1d316d3d57c4ff97bee285cb554854ae8c9e4cadd8c78aa9407ff48a2d5b41fbd83e31023e69a932c
+"kolmafia@npm:^5.29250.0":
+  version: 5.29257.0
+  resolution: "kolmafia@npm:5.29257.0"
+  checksum: c6b449a80a8668ef2b607e7d7d4a0eb8fef1172cef26fbbed2e28ca864b7b8c475068cdcc812ff07888626da64fbfb3e5861538e689228591698d94bcb3884e6
   languageName: node
   linkType: hard
 
@@ -5214,15 +5214,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:^0.11.31":
-  version: 0.11.31
-  resolution: "libram@npm:0.11.31"
+"libram@npm:^0.11.32":
+  version: 0.11.32
+  resolution: "libram@npm:0.11.32"
   dependencies:
     core-js: ^3.47.0
     entities: ^7.0.0
   peerDependencies:
-    kolmafia: ^5.28100.0
-  checksum: 4f53a52bae0dc34c8448bc6e58060880fd6bc208313345e08295891d91dbac8447dddc656364895c24adfaad020eceb3a2ca4761a8da490c19dde7a866885291
+    kolmafia: ^5.29250.0
+  checksum: daba5a34a4387af5f8cb108db604bc0349545d90167fd1d6b10a3fb93995b9c2017c7707d4baa7d76c0b6bff9b9fe11aec636bec5bba051471bb47ffcf4c2b35
   languageName: node
   linkType: hard
 

@@ -3,7 +3,6 @@ import {
   itemAmount,
   Modifier,
   myClass,
-  setLocation,
   stringModifier,
   toSlot,
 } from "kolmafia";
@@ -30,6 +29,7 @@ import {
   maxPassiveDamage,
   modeIsFree,
   monsterManuelAvailable,
+  withLocation,
 } from "../lib";
 import { maximumPinataCasts } from "../resources/yachtzee";
 import { globalOptions } from "../config";
@@ -217,21 +217,24 @@ export function usingThumbRing(): boolean {
     const gear = bonusAccessories(BonusEquipMode.BARF);
     const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
 
-    setLocation(FarmingStrategy.location);
-    const meatAccessories = Item.all()
-      .filter(
-        (item) =>
-          have(item) &&
-          toSlot(item) === $slot`acc1` &&
-          getModifier("Meat Drop", item) > 0,
-      )
-      .map(
-        (item) =>
-          [item, (getModifier("Meat Drop", item) * baseMeat()) / 100] as [
-            Item,
-            number,
-          ],
-      );
+    // Mafia resolves env()/zone()/loc() modifiers against the last location
+    // set, so restore it or unrelated gear is priced against this one.
+    const meatAccessories = withLocation(FarmingStrategy.location, () =>
+      Item.all()
+        .filter(
+          (item) =>
+            have(item) &&
+            toSlot(item) === $slot`acc1` &&
+            getModifier("Meat Drop", item) > 0,
+        )
+        .map(
+          (item) =>
+            [item, (getModifier("Meat Drop", item) * baseMeat()) / 100] as [
+              Item,
+              number,
+            ],
+        ),
+    );
 
     const accessoryValues = new Map<Item, number>(accessoryBonuses);
     for (const [accessory, value] of meatAccessories) {
