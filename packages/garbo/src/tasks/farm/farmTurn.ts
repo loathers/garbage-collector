@@ -1,6 +1,7 @@
 import { $item, $monster, get, have, undelay } from "libram";
 import {
   Item,
+  itemAmount,
   myAdventures,
   myLocation,
   retrieveItem,
@@ -15,12 +16,17 @@ import {
   shouldCheckParachute,
   updateParachuteFailure,
 } from "./lib";
-import { FarmingStrategy, redTaffyWorth } from "../../farmingStrategy";
+import {
+  averageRedTaffyValue,
+  FarmingStrategy,
+  redTaffyWorth,
+} from "../../farmingStrategy";
 import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit/barf";
 import { FarmingContext } from "../context";
+import { acquire } from "../../acquire";
 
 export function FarmTurnQuest(): Quest<
   GarboTask<FarmingContext>,
@@ -52,8 +58,12 @@ export function FarmTurnQuest(): Quest<
         name: "Farm",
         completed: () => myAdventures() === 0,
         prepare: (context) => {
-          if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
-            retrieveItem($item`pulled red taffy`);
+          if (
+            FarmingStrategy.isUnderwater() &&
+            redTaffyWorth() &&
+            itemAmount($item`pulled red taffy`) === 0
+          ) {
+            acquire(1, $item`pulled red taffy`, averageRedTaffyValue(), false);
           }
           meatMood().execute(estimatedGarboTurns());
 
