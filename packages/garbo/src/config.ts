@@ -5,6 +5,7 @@ import { $item, $items, $monster } from "libram";
 export enum FarmingMethod {
   BARF_MOUNTAIN,
   THE_CORAL_CORRAL,
+  THE_COPPERHEAD_CLUB,
 }
 
 const workshedAliases = [
@@ -280,6 +281,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
               case "sea cows":
               case "the coral corral":
                 return FarmingMethod.THE_CORAL_CORRAL;
+
+              case "copperhead":
+              case "envelope":
+              case "snappo":
+                return FarmingMethod.THE_COPPERHEAD_CLUB;
 
               default:
                 return FarmingMethod.BARF_MOUNTAIN;
