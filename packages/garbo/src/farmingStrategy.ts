@@ -255,13 +255,11 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
       .externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`))
       .meatKill(false);
 
-    if (banish) {
-      Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro).step(
-        macro,
-      );
-    }
-
-    return macro;
+    return banish
+      ? Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro).step(
+          macro,
+        )
+      : macro;
   }),
 };
 
