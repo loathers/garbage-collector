@@ -1,6 +1,7 @@
-import { OutfitSpec } from "grimoire-kolmafia";
+import { OutfitSpec, step } from "grimoire-kolmafia";
 import {
   Effect,
+  effectFact,
   equippedItem,
   getMonsters,
   isBanished,
@@ -64,9 +65,10 @@ const touristFamilyRatio = touristFamilies / barfTourists;
 // then estimate the expected number of turns required to hit a counter of >= 30
 
 interface FarmingStrategyOptions {
-  stasisRounds: number;
-  asdonEffect: Effect;
-  ensureBarfAccess: boolean;
+  isAvailable?: boolean;
+  stasisRounds?: number;
+  asdonEffect?: Effect;
+  ensureBarfAccess?: boolean;
   baseMeat: number;
   location: Location;
   targetMonster: Delayed<Monster>;
@@ -86,6 +88,10 @@ const DEFAULT_OPTIONS: Readonly<{
     ? K
     : never]-?: FarmingStrategyOptions[K];
 }> = {
+  isAvailable: true,
+  stasisRounds: 20,
+  asdonEffect: $effect`Driving Observantly`,
+  ensureBarfAccess: false,
   bonusEffects: [] as Effect[],
   bonusModifiers: [] as NumericModifier[],
   banishMonsters: [] as Monster[],
@@ -169,7 +175,10 @@ export const FarmingStrategy = new Proxy(
       ) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const method = (FarmingStrategySkeleton.prototype as any)[prop];
-        method.bind(receiver);
+
+        if (typeof method === "function") {
+          return method.bind(receiver);
+        }
       }
 
       const strategyOptions = currentStrategy();
@@ -181,15 +190,13 @@ export const FarmingStrategy = new Proxy(
       if (stringProp in DEFAULT_OPTIONS) {
         return DEFAULT_OPTIONS[stringProp as keyof typeof DEFAULT_OPTIONS];
       }
-      // Fallback to standard target resolution
+
       return Reflect.get(target, prop, receiver);
     },
   },
 );
 
 const BARF_MOUNTAIN: FarmingStrategyOptions = {
-  stasisRounds: 20,
-  asdonEffect: $effect`Driving Observantly`,
   ensureBarfAccess: true,
   baseMeat: 250,
   ncTurns: () =>
@@ -227,9 +234,11 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
 };
 
 const THE_CORAL_CORRAL: FarmingStrategyOptions = {
+  isAvailable:
+    effectFact($monster`sea cow`) === $effect`Fishy` &&
+    !(get("seahorseName") === ""),
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
-  ensureBarfAccess: false,
   baseMeat: 300,
   location: $location`The Coral Corral`,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
@@ -257,24 +266,21 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
       .externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`))
       .meatKill(false);
 
-    if (banish) {
-      Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro).step(
-        macro,
-      );
-    }
-
-    return macro;
+    return banish
+      ? Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro).step(
+          macro,
+        )
+      : macro;
   }),
 };
 
 const THE_COPPERHEAD_CLUB: FarmingStrategyOptions = {
-  stasisRounds: 20,
-  asdonEffect: $effect`Driving Observantly`,
-  ensureBarfAccess: false,
+  isAvailable:
+    have($familiar`Red-Nosed Snapper`) && !(step("questL11Shen") === 999),
   baseMeat: 200, // Mob Penguin Capo
   location: $location`The Copperhead Club`,
   banishMonsters: $monsters`fan dancer, Copperhead Club bartender, ninja dressed as a waiter, waiter dressed as a ninja`,
-  targetMonster: $monster`sea cow`,
+  targetMonster: $monster`Mob Penguin Capo`,
   shouldOlfact: false,
 
   outfit: ({ banish }) => {
@@ -286,14 +292,16 @@ const THE_COPPERHEAD_CLUB: FarmingStrategyOptions = {
     return banishItem ? { equip: [banishItem] } : {};
   },
 
-  combat: new GarboStrategy(
-    () => Macro.meatKill(),
-    () =>
-      Macro.if_(
-        `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-        Macro.meatKill(),
-      ).abort(),
-  ),
+  combat: new GarboStrategy(({ banish }) => {
+    const macro = new Macro().meatKill(false);
+
+    return banish
+      ? Macro.if_(
+          $monsters`fan dancer, Copperhead Club bartender, ninja dressed as a waiter, waiter dressed as a ninja`,
+          banish.macro,
+        ).step(macro)
+      : macro;
+  }),
 
   post: () => {
     if (Snapper.getTrackedPhylum() !== $phylum`Penguin`) {
@@ -303,15 +311,22 @@ const THE_COPPERHEAD_CLUB: FarmingStrategyOptions = {
 };
 
 function currentStrategy(): FarmingStrategyOptions {
+  let strategy: FarmingStrategyOptions;
+
   switch (globalOptions.prefs.farmingMethod) {
     case FarmingMethod.THE_CORAL_CORRAL:
-      return THE_CORAL_CORRAL;
+      strategy = THE_CORAL_CORRAL;
+      break;
 
     case FarmingMethod.THE_COPPERHEAD_CLUB:
-      return THE_COPPERHEAD_CLUB;
+      strategy = THE_COPPERHEAD_CLUB;
+      break;
 
     case FarmingMethod.BARF_MOUNTAIN:
     default:
-      return BARF_MOUNTAIN;
+      strategy = BARF_MOUNTAIN;
+      break;
   }
+
+  return strategy.isAvailable === false ? BARF_MOUNTAIN : strategy;
 }

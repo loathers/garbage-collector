@@ -1,11 +1,10 @@
-import { Args, step } from "grimoire-kolmafia";
+import { Args } from "grimoire-kolmafia";
 import {
   abort,
   buy,
   canEquip,
   cliExecute,
   currentRound,
-  effectFact,
   equip,
   getCampground,
   getClanName,
@@ -35,8 +34,6 @@ import {
 import {
   $class,
   $classes,
-  $effect,
-  $familiar,
   $familiars,
   $item,
   $items,
@@ -62,7 +59,7 @@ import {
   withProperty,
 } from "libram";
 import { stashItems, withStash, withVIPClan } from "./clan";
-import { FarmingMethod, globalOptions, isQuickGear } from "./config";
+import { globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
@@ -131,22 +128,6 @@ export function main(argString = ""): void {
   if (globalOptions.help) {
     Args.showHelp(globalOptions);
     return;
-  }
-
-  // Cowo is for professionals only
-  if (
-    globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
-    (effectFact($monster`sea cow`) !== $effect`Fishy` ||
-      get("seahorseName") === "")
-  ) {
-    globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
-  }
-
-  if (
-    globalOptions.prefs.farmingMethod === FarmingMethod.THE_COPPERHEAD_CLUB &&
-    (!have($familiar`Red-Nosed Snapper`) || !(step("questL11Shen") === 999))
-  ) {
-    globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
 
   // Hit up main.php to get out of easily escapable choices
