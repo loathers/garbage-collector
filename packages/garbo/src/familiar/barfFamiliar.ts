@@ -104,9 +104,12 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
 
 type OutfitCacheKey = number | Familiar | string;
 
-function outfitCacheKey(familiar: Familiar): OutfitCacheKey {
+function outfitCacheKey(
+  familiar: Familiar,
+  needsBoot: boolean,
+): OutfitCacheKey {
   if (SPECIAL_FAMILIARS_FOR_CACHING.has(familiar)) {
-    return familiar;
+    return `${familiar}:${needsBoot}`;
   }
 
   const lepMultiplier = findLeprechaunMultiplier(familiar);
@@ -119,10 +122,10 @@ function outfitCacheKey(familiar: Familiar): OutfitCacheKey {
 }
 
 function getCachedOutfitValues(fam: Familiar) {
-  const cacheKey = outfitCacheKey(fam);
+  const needsBoot = familiarNeedsBoot(fam);
+  const cacheKey = outfitCacheKey(fam, needsBoot);
   const currentValue = outfitCache.get(cacheKey);
 
-  const needsBoot = familiarNeedsBoot(fam);
   if (currentValue) return currentValue;
 
   const current = myFamiliar();
