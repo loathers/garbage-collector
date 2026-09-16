@@ -19627,14 +19627,16 @@ function checkBarfQuest() {
   return;
 }
 
-function redTaffyWorth() {
-  var averageRedTaffyValue = sum(_toConsumableArray(RED_TAFFY_DROP_WEIGHTS.entries()), _ref => {
+function averageRedTaffyValue() {
+  return sum(_toConsumableArray(RED_TAFFY_DROP_WEIGHTS.entries()), _ref => {
     var _ref2 = _slicedToArray(_ref, 2),
       item = _ref2[0],
       weight = _ref2[1];
     return garboValue(item) * weight;
   });
-  return kolmafia.mallPrice($item`pulled red taffy`) < averageRedTaffyValue;
+}
+function redTaffyWorth() {
+  return kolmafia.mallPrice($item`pulled red taffy`) < averageRedTaffyValue();
 }
 var olfactionCopies = have$P($skill`Transcendent Olfaction`) ? 3 : 0;
 var gallapagosCopies = have$P($skill`Gallapagosian Mating Call`) ? 1 : 0;
@@ -20056,7 +20058,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"79114f5d1a6fb56a6b354d68214ae04bc211ebb3"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"8fd8c1b2eed08033e505e1bfc0944ab0453df164"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -31701,8 +31703,8 @@ function FarmTurnQuest() {
       completed: () => kolmafia.myAdventures() === 0,
       prepare: context => {
         var _context$banish;
-        if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
-          kolmafia.retrieveItem($item`pulled red taffy`);
+        if (FarmingStrategy.isUnderwater() && redTaffyWorth() && kolmafia.itemAmount($item`pulled red taffy`) === 0) {
+          acquire(1, $item`pulled red taffy`, averageRedTaffyValue(), false);
         }
         meatMood().execute(estimatedGarboTurns());
         if ((_context$banish = context.banish) !== null && _context$banish !== void 0 && _context$banish.retrieve && context.banish.source instanceof kolmafia.Item) {
