@@ -1,5 +1,4 @@
 import {
-  buy,
   craftType,
   Item,
   Location,
@@ -7,7 +6,7 @@ import {
   print,
   retrieveItem,
 } from "kolmafia";
-import { $item, freeCrafts, get, Guzzlr, have } from "libram";
+import { $item, freeCrafts, get, Guzzlr, have, withProperty } from "libram";
 import {
   canAdventureOrUnlock,
   DraggableFight,
@@ -128,7 +127,11 @@ export function guzzlrFactory(
                   ) {
                     retrieveItem(guzzlrBooze);
                   } else if (guzzlrBooze) {
-                    buy(1, guzzlrBooze, buckValue * Guzzlr.expectedReward());
+                    withProperty(
+                      "autoBuyPriceLimit",
+                      buckValue * Guzzlr.expectedReward(),
+                      () => retrieveItem(guzzlrBooze, 1),
+                    );
                   }
                 }
                 return have(guzzlrBooze);

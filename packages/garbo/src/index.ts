@@ -1,7 +1,6 @@
 import { Args } from "grimoire-kolmafia";
 import {
   abort,
-  buy,
   canEquip,
   cliExecute,
   currentRound,
@@ -104,8 +103,7 @@ const TICKET_MAX_PRICE = 500000;
 function ensureBarfAccess() {
   if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
     const ticket = $item`one-day ticket to Dinseylandfill`;
-    // TODO: Get better item acquisition logic that e.g. checks own mall store.
-    if (!have(ticket)) buy(1, ticket, TICKET_MAX_PRICE);
+    acquire(1, ticket, TICKET_MAX_PRICE, true);
     use(ticket);
   }
 }

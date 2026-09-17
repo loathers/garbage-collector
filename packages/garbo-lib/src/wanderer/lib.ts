@@ -1,6 +1,5 @@
 import {
   appearanceRates,
-  buy,
   canAdventure,
   Effect,
   effectFact,
@@ -11,6 +10,7 @@ import {
   modifierEval,
   Monster,
   numericFact,
+  retrieveItem,
   toItem,
   use,
 } from "kolmafia";
@@ -33,6 +33,7 @@ import {
   realmAvailable,
   sum,
   undelay,
+  withProperty,
 } from "libram";
 
 export const draggableFights = [
@@ -198,7 +199,10 @@ export function unlock(loc: Location, value: number): boolean {
   const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone);
   if (!unlockableZone) return canAdventure(loc);
   if (unlockableZone.available()) return true;
-  if (buy(1, unlockableZone.unlocker, value) === 0) return false;
+  withProperty("autoBuyPriceLimit", value, () =>
+    retrieveItem(unlockableZone.unlocker, 1),
+  );
+  if (!have(unlockableZone.unlocker)) return false;
   return use(unlockableZone.unlocker);
 }
 

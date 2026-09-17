@@ -1,5 +1,4 @@
 import {
-  buy,
   cliExecute,
   closetAmount,
   Coinmaster,
@@ -16,8 +15,9 @@ import {
   takeShop,
   takeStorage,
 } from "kolmafia";
-import { get, withProperty } from "libram";
+import { get, withProperties } from "libram";
 import { garboValue } from "./garboValue";
+import { Properties } from "libram/dist/property";
 
 export const priceCaps: { [index: string]: number } = {
   "cuppa Voraci tea": 200000,
@@ -91,15 +91,17 @@ export function acquire(
     if (!takeShop(getMall, item) && throwOnFail) logError(item, "shop");
   }
   remaining -= getMall;
+  const retrieveProperties: Properties = {
+    autoBuyPriceLimit: maxPrice,
+  };
   const coinmaster = Coinmaster.all().find((cm) => sellsItem(cm, item));
-  const coinmasterPrice = coinmaster
-    ? garboValue(coinmaster.item) * sellPrice(coinmaster, item)
-    : 0;
-  if (coinmaster && coinmasterPrice > mallPrice(item)) {
-    buy(item, remaining, maxPrice);
-  } else {
-    withProperty("autoBuyPriceLimit", maxPrice, () => retrieveItem(item, qty));
+  if (coinmaster) {
+    const coinmasterPrice =
+      garboValue(coinmaster.item) * sellPrice(coinmaster, item);
+    retrieveProperties.autoSatisfyWithCoinmasters =
+      coinmasterPrice <= mallPrice(item) && coinmasterPrice <= maxPrice;
   }
+  withProperties(retrieveProperties, () => retrieveItem(item, qty));
   if (itemAmount(item) < qty && throwOnFail) {
     throw new Error(
       `Failed to purchase sufficient quantities of ${item} from the mall.`,
