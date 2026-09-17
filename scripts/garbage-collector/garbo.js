@@ -18264,7 +18264,8 @@ function unlock(loc, value) {
   var unlockableZone = UnlockableZones.find(z => z.zone === loc.zone);
   if (!unlockableZone) return kolmafia.canAdventure(loc);
   if (unlockableZone.available()) return true;
-  if (kolmafia.buy(1, unlockableZone.unlocker, value) === 0) return false;
+  withProperty("autoBuyPriceLimit", value, () => kolmafia.retrieveItem(unlockableZone.unlocker, 1));
+  if (!have$P(unlockableZone.unlocker)) return false;
   return kolmafia.use(unlockableZone.unlocker);
 }
 var backupSkiplist = $locations`The Mansion of Dr. Weirdeaux, Professor Jacking's Huge-A-Ma-Tron, Your Mushroom Garden, The Island Barracks`;
@@ -18595,7 +18596,7 @@ function guzzlrFactory(type, locationSkiplist, options) {
             if (guzzlrBooze && (!fancy || fancy && freeCrafts("booze") > 0)) {
               kolmafia.retrieveItem(guzzlrBooze);
             } else if (guzzlrBooze) {
-              kolmafia.buy(1, guzzlrBooze, buckValue * expectedReward());
+              withProperty("autoBuyPriceLimit", buckValue * expectedReward(), () => kolmafia.retrieveItem(guzzlrBooze, 1));
             }
           }
           return have$P(guzzlrBooze);
@@ -19457,13 +19458,15 @@ function acquire(qty, item, maxPrice) {
     if (!kolmafia.takeShop(getMall, item) && throwOnFail) logError(item, "shop");
   }
   remaining -= getMall;
+  var retrieveProperties = {
+    autoBuyPriceLimit: maxPrice
+  };
   var coinmaster = kolmafia.Coinmaster.all().find(cm => kolmafia.sellsItem(cm, item));
-  var coinmasterPrice = coinmaster ? garboValue(coinmaster.item) * kolmafia.sellPrice(coinmaster, item) : 0;
-  if (coinmaster && coinmasterPrice > kolmafia.mallPrice(item)) {
-    kolmafia.buy(item, remaining, maxPrice);
-  } else {
-    withProperty("autoBuyPriceLimit", maxPrice, () => kolmafia.retrieveItem(item, qty));
+  if (coinmaster) {
+    var coinmasterPrice = garboValue(coinmaster.item) * kolmafia.sellPrice(coinmaster, item);
+    retrieveProperties.autoSatisfyWithCoinmasters = coinmasterPrice <= kolmafia.mallPrice(item) && coinmasterPrice <= maxPrice;
   }
+  withProperties(retrieveProperties, () => kolmafia.retrieveItem(item, qty));
   if (kolmafia.itemAmount(item) < qty && throwOnFail) {
     throw new Error(`Failed to purchase sufficient quantities of ${item} from the mall.`);
   }
@@ -20058,7 +20061,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"8fd8c1b2eed08033e505e1bfc0944ab0453df164"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"6407183a62bec4fde640057e112730ace6904aa8"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -29307,9 +29310,7 @@ var itemStealZones = [{
   openCost: () => !have$P($effect`Absinthe-Minded`) ? kolmafia.mallPrice($item`tiny bottle of absinthe`) : 0,
   preReq: () => {
     if (!have$P($effect`Absinthe-Minded`)) {
-      if (!have$P($item`tiny bottle of absinthe`)) {
-        kolmafia.buy(1, $item`tiny bottle of absinthe`);
-      }
+      acquire(1, $item`tiny bottle of absinthe`, kolmafia.mallPrice($item`tiny bottle of absinthe`) * 2, true);
       kolmafia.use($item`tiny bottle of absinthe`);
     }
   }
@@ -32766,8 +32767,7 @@ var TICKET_MAX_PRICE = 500000;
 function ensureBarfAccess() {
   if (!(get$2("stenchAirportAlways") || get$2("_stenchAirportToday"))) {
     var ticket = $item`one-day ticket to Dinseylandfill`;
-    // TODO: Get better item acquisition logic that e.g. checks own mall store.
-    if (!have$P(ticket)) kolmafia.buy(1, ticket, TICKET_MAX_PRICE);
+    acquire(1, ticket, TICKET_MAX_PRICE, true);
     kolmafia.use(ticket);
   }
 }
