@@ -99,7 +99,7 @@ export function acquire(
     const coinmasterPrice =
       garboValue(coinmaster.item) * sellPrice(coinmaster, item);
     retrieveProperties.autoSatisfyWithCoinmasters =
-      coinmasterPrice <= mallPrice(item);
+      coinmasterPrice <= mallPrice(item) && coinmasterPrice <= maxPrice;
   }
   withProperties(retrieveProperties, () => retrieveItem(item, qty));
   if (itemAmount(item) < qty && throwOnFail) {
