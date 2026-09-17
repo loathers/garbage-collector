@@ -2,7 +2,6 @@ import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
   adv1,
   availableAmount,
-  buy,
   canAdventure,
   canEquip,
   cliExecute,
@@ -2007,9 +2006,12 @@ const itemStealZones = [
         : 0,
     preReq: () => {
       if (!have($effect`Absinthe-Minded`)) {
-        if (!have($item`tiny bottle of absinthe`)) {
-          buy(1, $item`tiny bottle of absinthe`);
-        }
+        acquire(
+          1,
+          $item`tiny bottle of absinthe`,
+          mallPrice($item`tiny bottle of absinthe`) * 2,
+          true,
+        );
         use($item`tiny bottle of absinthe`);
       }
     },
