@@ -17787,8 +17787,8 @@ function verifyDependencies(tasks) {
 }
 
 var FarmingMethod = /*#__PURE__*/function (FarmingMethod) {
-  FarmingMethod[FarmingMethod["BARF_MOUNTAIN"] = 0] = "BARF_MOUNTAIN";
-  FarmingMethod[FarmingMethod["THE_CORAL_CORRAL"] = 1] = "THE_CORAL_CORRAL";
+  FarmingMethod["BARF_MOUNTAIN"] = "Barf Mountain";
+  FarmingMethod["THE_CORAL_CORRAL"] = "The Coral Corral";
   return FarmingMethod;
 }({});
 var workshedAliases = [{
@@ -17815,6 +17815,26 @@ var allWorkshedAliases = [].concat(_toConsumableArray(workshedAliases.map(_ref =
     aliases: [item.name.toLowerCase()]
   };
 })));
+var farmingStrategyAliases = {
+  [FarmingMethod.BARF_MOUNTAIN]: {
+    location: $location`Barf Mountain`,
+    aliases: ["barf", "tourists", "barfmountain", "dinsey"]
+  },
+  [FarmingMethod.THE_CORAL_CORRAL]: {
+    location: $location`The Coral Corral`,
+    aliases: ["cowo", "corral", "ranch", "coolranch", "coral", "cows"]
+  }
+};
+function stringToFarmingMethod(s) {
+  var _Object$entries$find;
+  return ((_Object$entries$find = Object.entries(farmingStrategyAliases).find(_ref2 => {
+    var _ref3 = _slicedToArray(_ref2, 2),
+      _ref3$ = _ref3[1],
+      location = _ref3$.location,
+      aliases = _ref3$.aliases;
+    return kolmafia.toLocation(s) === location || aliases.includes(s.toLowerCase());
+  })) === null || _Object$entries$find === void 0 ? void 0 : _Object$entries$find[0]) ?? kolmafia.abort(`Invalid farming location: ${s}`);
+}
 function toInitials(s) {
   var initials = s.split(" ").map(term => term[0]).join("");
   return initials.length >= 3 ? initials : "";
@@ -17829,9 +17849,9 @@ function stringToWorkshedItem(s) {
   if (s === "") return null;
   var lowerCaseWorkshed = s.toLowerCase();
   var strippedWorkshed = stripString(lowerCaseWorkshed);
-  var validWorksheds = allWorkshedAliases.filter(_ref2 => {
-    var item = _ref2.item,
-      aliases = _ref2.aliases;
+  var validWorksheds = allWorkshedAliases.filter(_ref4 => {
+    var item = _ref4.item,
+      aliases = _ref4.aliases;
     return toInitials(item.name.toLowerCase()) === lowerCaseWorkshed || item.name.toLowerCase().includes(lowerCaseWorkshed) || stripString(item.name.toLowerCase()).includes(strippedWorkshed) || aliases.some(alias => alias === lowerCaseWorkshed);
   });
 
@@ -17839,8 +17859,8 @@ function stringToWorkshedItem(s) {
   // so throw new Error(text) would result in the text not getting printed.
   if (validWorksheds.length > 1) {
     kolmafia.print(`Invalid Workshed: ${s} matches multiple worksheds! Matched:`, "red");
-    validWorksheds.forEach(_ref3 => {
-      var item = _ref3.item;
+    validWorksheds.forEach(_ref5 => {
+      var item = _ref5.item;
       return kolmafia.print(`${item}`, "red");
     });
     throw new Error();
@@ -17933,9 +17953,9 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
   workshed: Args.custom({
     default: null,
     help: "Intelligently switch into the workshed whose item name you give us. Also accepts substrings of the item name (e.g. dna, trainset), certain shorthand aliases (e.g. car) and initials of length >= 3 (e.g. cmc).",
-    options: [].concat(_toConsumableArray(allWorkshedAliases.map(_ref4 => {
-      var item = _ref4.item,
-        aliases = _ref4.aliases;
+    options: [].concat(_toConsumableArray(allWorkshedAliases.map(_ref6 => {
+      var item = _ref6.item,
+        aliases = _ref6.aliases;
       return [item, `${[].concat(_toConsumableArray(aliases), [toInitials(item.name.toLowerCase())]).filter(alias => alias !== "").join(", ")}`];
     })), [[null, "leave this field blank"]])
   }, stringToWorkshedItem, "Item"),
@@ -18030,20 +18050,15 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
     farmingMethod: Args.custom({
       default: FarmingMethod.BARF_MOUNTAIN,
       help: "Select the farming method to use.",
-      options: [[FarmingMethod.BARF_MOUNTAIN, "barf mountain"], [FarmingMethod.THE_CORAL_CORRAL, "sea cows"]]
-    }, value => {
-      switch (value.toLowerCase()) {
-        case "barf":
-        case "barf mountain":
-          return FarmingMethod.BARF_MOUNTAIN;
-        case "cowo":
-        case "sea cows":
-        case "the coral corral":
-          return FarmingMethod.THE_CORAL_CORRAL;
-        default:
-          return FarmingMethod.BARF_MOUNTAIN;
-      }
-    }, "Farming Method")
+      options: _toConsumableArray(Object.entries(farmingStrategyAliases).map(_ref7 => {
+        var _ref8 = _slicedToArray(_ref7, 2),
+          method = _ref8[0],
+          _ref8$ = _ref8[1],
+          location = _ref8$.location,
+          aliases = _ref8$.aliases;
+        return [method, [location.toString()].concat(_toConsumableArray(aliases)).join(", ")];
+      }))
+    }, stringToFarmingMethod, "Farming Method")
   }),
   /*
     Hidden preferences, CLI input ignored
@@ -20064,7 +20079,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"2490bf84f232da89f055e614309d0f33b4b3c182"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"fdc7413b85dc66a72a6925ec569ca6b40b40c21c"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
