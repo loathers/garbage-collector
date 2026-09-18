@@ -60,16 +60,16 @@ export function menu(
     mode = "free",
   } = {} as FamiliarMenuOptions,
 ): GeneralFamiliar[] {
+  const { target } = toAdventure(adventure);
+  const monsterRates = adventureTargetToWeightedMap(target);
+
   const familiarMenu = [
-    ...getConstantValueFamiliars(mode),
+    ...getConstantValueFamiliars(mode, monsterRates),
     ...getDropFamiliars(),
     ...getToyCupidBowFamiliars(),
     ...(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []),
     ...extraFamiliars,
   ];
-
-  const { target } = toAdventure(adventure);
-  const monsterRates = adventureTargetToWeightedMap(target);
 
   if (canChooseMacro && myInebriety() <= inebrietyLimit()) {
     if (timeToMeatify()) {
