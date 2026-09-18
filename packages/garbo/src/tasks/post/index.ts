@@ -146,6 +146,7 @@ function floristFriars(): GarboPostTask[] {
       completed: () => FloristFriar.isFull($location`The Sunken Party Yacht`),
       ready: () =>
         get("lastAdventure") === $location`The Sunken Party Yacht` &&
+        FloristFriar.isFull(FarmingStrategy.location) &&
         yachtPlants.some((flower) =>
           flower.available($location`The Sunken Party Yacht`),
         ),
