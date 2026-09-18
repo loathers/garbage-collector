@@ -20064,7 +20064,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"8be72f03bf5207ff698caae4de29be748ff46315"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"2490bf84f232da89f055e614309d0f33b4b3c182"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -31720,8 +31720,8 @@ function FarmTurnQuest() {
       completed: () => kolmafia.myAdventures() === 0,
       prepare: context => {
         var _context$banish;
-        if (FarmingStrategy.isUnderwater() && redTaffyWorth() && kolmafia.itemAmount($item`pulled red taffy`) === 0) {
-          acquire(1, $item`pulled red taffy`, averageRedTaffyValue(), false);
+        if (FarmingStrategy.isUnderwater() && redTaffyWorth()) {
+          acquire(estimatedGarboTurns(), $item`pulled red taffy`, averageRedTaffyValue() - 1, false);
         }
         meatMood().execute(estimatedGarboTurns());
         if ((_context$banish = context.banish) !== null && _context$banish !== void 0 && _context$banish.retrieve && context.banish.source instanceof kolmafia.Item) {
