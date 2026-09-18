@@ -18250,14 +18250,15 @@ function underwater(location) {
   return location.environment === "underwater";
 }
 var ILLEGAL_PARENTS = ["Clan Basement", "Psychoses", "PirateRealm", "A Monorail Station", "Memories"];
-var ILLEGAL_ZONES = ["The Drip", "Suburbs"];
-var canAdventureOrUnlockSkipList = [].concat(_toConsumableArray($locations`The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, The Orcish Frat House, Through the Spacegate, Mt. Molehill`), _toConsumableArray(kolmafia.Location.all().filter(_ref => {
+var ILLEGAL_ZONES = ["The Drip", "Suburbs", "The Mer-Kin Deepcity"];
+var canAdventureOrUnlockSkipList = [].concat(_toConsumableArray($locations`The Skate Park, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, The Orcish Frat House, Through the Spacegate, Mt. Molehill`), _toConsumableArray(kolmafia.Location.all().filter(_ref => {
   var parent = _ref.parent,
     zone = _ref.zone;
   return ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone);
 })));
 function canAdventureOrUnlock(loc) {
   var includeUnlockable = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+  var underwaterAllowed = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var skiplist = _toConsumableArray(canAdventureOrUnlockSkipList);
   if (!have$P($effect`Ultrahydrated`)) {
     skiplist.push($location`The Oasis`);
@@ -18273,7 +18274,7 @@ function canAdventureOrUnlock(loc) {
     skiplist.push($location`Pandamonium Slums`);
   }
   var canUnlock = includeUnlockable && UnlockableZones.some(z => loc.zone === z.zone && (z.available() || !z.noInv));
-  return !underwater(loc) && !skiplist.includes(loc) && (kolmafia.canAdventure(loc) || canUnlock);
+  return !(underwater(loc) || have$P($effect`Fishy`) && underwaterAllowed) && !skiplist.includes(loc) && (kolmafia.canAdventure(loc) || canUnlock);
 }
 function unlock(loc, value) {
   var unlockableZone = UnlockableZones.find(z => z.zone === loc.zone);
@@ -18490,8 +18491,6 @@ function hasNameCollision(monster) {
   nameCollisionCache.set(monster, false);
   return false;
 }
-// TODO These seem to be bugged peridot zones. Can remove if they get fixed.
-var unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber, The Haunted Billiards Room`;
 /**
  * Retrieve an element from a map if it exists; setting a value for the given key if it doesn't.
  * @param map The map in question.
@@ -18552,7 +18551,7 @@ function considerAbandon(options, locationSkiplist) {
   // consider abandoning
   !location ||
   // if mafia failed to track the location correctly
-  locationSkiplist.includes(location) || !canAdventureOrUnlock(location) ||
+  locationSkiplist.includes(location) || !canAdventureOrUnlock(location, true, options.underwaterAllowed) ||
   // or the zone is marked as "generally cannot adv"
   options.ascend && wandererTurnsAvailableToday(options, location, true) < remaningTurns) // or ascending and not enough turns to finish
   ) {
@@ -18764,7 +18763,7 @@ function monsterValues(location, options) {
 }
 function bofaFactory(type, locationSkiplist, options) {
   if (["yellow ray", "freefight", "conditional freefight", "freefight (no items)"].includes(type) && have$P($skill`Just the Facts`)) {
-    var validLocations = kolmafia.Location.all().filter(location => canWander(location, "yellow ray") && canAdventureOrUnlock(location) && !locationSkiplist.includes(location));
+    var validLocations = kolmafia.Location.all().filter(location => canWander(location, "yellow ray") && canAdventureOrUnlock(location, true, options.underwaterAllowed) && !locationSkiplist.includes(location));
     return _toConsumableArray(validLocations).map(l => {
       return new WandererTarget({
         name: `Book of Facts`,
@@ -18895,7 +18894,7 @@ function bestWander(type, locationSkiplist, nameSkiplist, options) {
         bestMonsterCandidate = _targetedMonsterValue2[0],
         monsterTargetedValue = _targetedMonsterValue2[1];
       var shouldRefract = refractedGazeValue > monsterAverageValue && refractedGazeValue > monsterTargetedValue;
-      var shouldPeridot = canImperil(_location) && !unperidotableZones.includes(_location) && !shouldRefract && monsterTargetedValue > monsterAverageValue;
+      var shouldPeridot = canImperil(_location) && !shouldRefract && monsterTargetedValue > monsterAverageValue;
       var _determineWandererLoc = determineWandererLocationInfo(shouldRefract, shouldFeeshCandidate, shouldPeridot, bestMonsterCandidate, monsterTargetedValue, monsterAverageValue, refractedGazeValue),
         bestMonster = _determineWandererLoc.bestMonster,
         monsterValue = _determineWandererLoc.monsterValue,
@@ -18932,7 +18931,7 @@ function wanderWhere(options, type) {
   var locationSkiplist = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
   var candidate = bestWander(type, locationSkiplist, nameSkiplist, options);
   var failed = candidate.targets.filter(target => !target.prepareTurn());
-  var badLocation = !canAdventureOrUnlock(candidate.location) || !unlock(candidate.location, candidate.value) || !canWander(candidate.location, type) ? [candidate.location] : [];
+  var badLocation = !canAdventureOrUnlock(candidate.location, true, options.underwaterAllowed) || !unlock(candidate.location, candidate.value) || !canWander(candidate.location, type) ? [candidate.location] : [];
   if (failed.length > 0 || badLocation.length > 0) {
     return wanderWhere(options, type, [].concat(_toConsumableArray(nameSkiplist), _toConsumableArray(failed.map(target => target.name))), [].concat(_toConsumableArray(locationSkiplist), badLocation));
   } else {
@@ -20079,7 +20078,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"fdc7413b85dc66a72a6925ec569ca6b40b40c21c"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"c206ba48025198b47e4613fe59773aba58669471"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -22018,8 +22017,8 @@ function cookbookbatPerilBonus() {
   if (!have$P($effect`Ultrahydrated`)) {
     canAdvExclusions.push($location`The Oasis`);
   }
-  var cookbookbatQuestLocations = locationsWithMonsters.filter(l => canAdventureOrUnlock(l, false) && !canAdvExclusions.includes(l));
-  var availablePeridotCookbookbatLocations = cookbookbatQuestLocations.filter(l => canImperil(l) && !unperidotableZones.includes(l));
+  var cookbookbatQuestLocations = locationsWithMonsters.filter(l => canAdventureOrUnlock(l, false, FarmingStrategy.isUnderwater()) && !canAdvExclusions.includes(l));
+  var availablePeridotCookbookbatLocations = cookbookbatQuestLocations.filter(l => canImperil(l));
   var doableQuestChance = availablePeridotCookbookbatLocations.length / cookbookbatQuestLocations.length;
   var averageCookbookbatRewardValue = 3 * garboAverageValue.apply(void 0, _toConsumableArray($items`Vegetable of Jarlsberg, Yeast of Boris, St. Sneaky Pete's Whey`));
 
@@ -22333,7 +22332,8 @@ function wanderer() {
       plentifulMonsters: [globalOptions.target].concat(_toConsumableArray(globalOptions.nobarf ? [] : FarmingStrategy.monsters()), _toConsumableArray(have$P($item`Kramco Sausage-o-Matic™`) ? $monsters`sausage goblin` : [])),
       valueOfAdventure: get$2("valueOfAdventure"),
       takeTurnForProfit: true,
-      canRefractedGaze: have$b() && safeRefractedCasts() > 0
+      canRefractedGaze: have$b() && safeRefractedCasts() > 0,
+      underwaterAllowed: FarmingStrategy.isUnderwater()
     });
   }
   return _wanderer;
@@ -32005,7 +32005,7 @@ function canForceNoncombat() {
 function canGetFusedFuse() {
   return realmAvailable("hot") && [1, 2, 3].some(it => get$2(`_volcanoItem${it}`) === $item`fused fuse`.id) && canForceNoncombat();
 }
-var peridotZone = () => getAvailableUltraRareZones().find(l => canImperil(l) && !unperidotableZones.includes(l));
+var peridotZone = () => getAvailableUltraRareZones().find(l => canImperil(l));
 var NonBarfTurnTasks = [{
   name: "Make Mimic Eggs (whatever we can)",
   ready: () => have$P($familiar`Chest Mimic`),
@@ -32593,7 +32593,7 @@ var BarfTurnTasks = [{
     var questMonster = get$2("_cookbookbatQuestMonster");
     if (!questMonster || hasNameCollision(questMonster)) return false;
     var questLocation = get$2("_cookbookbatQuestLastLocation");
-    if (!questLocation || !canAdventureOrUnlock(questLocation, false)) {
+    if (!questLocation || !canAdventureOrUnlock(questLocation, false, FarmingStrategy.isUnderwater())) {
       return false;
     }
     var questReward = get$2("_cookbookbatQuestIngredient");
@@ -32601,7 +32601,7 @@ var BarfTurnTasks = [{
   },
   completed: () => {
     var questLocation = get$2("_cookbookbatQuestLastLocation");
-    return !questLocation || !canImperil(questLocation) || unperidotableZones.includes(questLocation);
+    return !questLocation || !canImperil(questLocation);
   },
   choices: () => {
     var _get;
