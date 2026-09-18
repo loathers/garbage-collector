@@ -57,11 +57,13 @@ export function FarmTurnQuest(): Quest<
         name: "Farm",
         completed: () => myAdventures() === 0,
         prepare: (context) => {
-          if (
-            FarmingStrategy.isUnderwater() &&
-            redTaffyWorth()
-          ) {
-            acquire(estimatedGarboTurns(), $item`pulled red taffy`, averageRedTaffyValue() - 1, false);
+          if (FarmingStrategy.isUnderwater() && redTaffyWorth()) {
+            acquire(
+              estimatedGarboTurns(),
+              $item`pulled red taffy`,
+              averageRedTaffyValue() - 1,
+              false,
+            );
           }
           meatMood().execute(estimatedGarboTurns());
 
