@@ -20078,7 +20078,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"11413c2983957b8ab2a1ada928d132a54f37dbf5"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"796f19889a5551de20b8f6353dc62c889ed52330"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -26755,13 +26755,20 @@ var BARF_PLANTS = {
 };
 function floristFriars() {
   var barfPlants = BARF_PLANTS[FarmingStrategy.location.environment];
-  return {
+  var yachtPlants = BARF_PLANTS[$location`The Sunken Party Yacht`.environment];
+  return [{
     name: "Florist Plants",
     completed: () => isFull(FarmingStrategy.location) || barfPlants.length === 0,
     ready: () => get$2("lastAdventure") === FarmingStrategy.location && have$L() && barfPlants.some(flower => flower.available(FarmingStrategy.location)),
     do: () => barfPlants.filter(flower => flower.available(FarmingStrategy.location)).forEach(flower => flower.plant()),
     available: () => have$L() && barfPlants.some(flower => flower.available(FarmingStrategy.location))
-  };
+  }, {
+    name: "Florist Plants (Secondary Location)",
+    completed: () => isFull($location`The Sunken Party Yacht`),
+    ready: () => get$2("lastAdventure") === $location`The Sunken Party Yacht` && isFull(FarmingStrategy.location) && yachtPlants.some(flower => flower.available($location`The Sunken Party Yacht`)),
+    do: () => yachtPlants.filter(flower => flower.available($location`The Sunken Party Yacht`)).forEach(flower => flower.plant()),
+    available: () => realmAvailable("sleaze") && have$L() && yachtPlants.some(flower => flower.available($location`The Sunken Party Yacht`))
+  }];
 }
 function fillPantsgivingFullness() {
   return {
@@ -26979,7 +26986,7 @@ function PostQuest(completed) {
   return {
     name: "Postcombat",
     completed,
-    tasks: [uneffectAttunement(), acquireAbortFreeRun()].concat(_toConsumableArray(workshedTasks()), [handleDrenchedInLava(), fallbot(), closetStuff(), useStuff(), floristFriars(), numberology(), juneCleaver(), fillPantsgivingFullness(), fillSweatyLiver(), funGuySpores(), eightBitFatLoot(), refillCinch(), usePorkToilet(), leafResin(), wardrobeOMatic(), _objectSpread2(_objectSpread2({}, leprecondoTask()), {}, {
+    tasks: [uneffectAttunement(), acquireAbortFreeRun()].concat(_toConsumableArray(workshedTasks()), [handleDrenchedInLava(), fallbot(), closetStuff(), useStuff()], _toConsumableArray(floristFriars()), [numberology(), juneCleaver(), fillPantsgivingFullness(), fillSweatyLiver(), funGuySpores(), eightBitFatLoot(), refillCinch(), usePorkToilet(), leafResin(), wardrobeOMatic(), _objectSpread2(_objectSpread2({}, leprecondoTask()), {}, {
       available: have$e()
     })]).filter(_ref => {
       var available = _ref.available;
