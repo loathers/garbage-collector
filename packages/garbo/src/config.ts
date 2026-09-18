@@ -3,8 +3,8 @@ import { abort, Item, Location, print } from "kolmafia";
 import { $item, $items, $location, $monster } from "libram";
 
 export enum FarmingMethod {
-  BARF_MOUNTAIN,
-  THE_CORAL_CORRAL,
+  BARF_MOUNTAIN = "Barf Mountain",
+  THE_CORAL_CORRAL = "The Coral Corral",
 }
 
 const workshedAliases = [
