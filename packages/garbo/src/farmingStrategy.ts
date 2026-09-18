@@ -161,35 +161,32 @@ class FarmingStrategySkeleton {
   }
 }
 
-export const FarmingStrategy = new Proxy(
-  new FarmingStrategySkeleton() as unknown as Readonly<FarmingStrategySkeleton>,
-  {
-    get: (target, prop, receiver) => {
-      if (
-        Object.prototype.hasOwnProperty.call(
-          FarmingStrategySkeleton.prototype,
-          prop,
-        )
-      ) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const method = (FarmingStrategySkeleton.prototype as any)[prop];
-        method.bind(receiver);
-      }
+export const FarmingStrategy = new Proxy(new FarmingStrategySkeleton(), {
+  get: (target, prop, receiver) => {
+    if (
+      Object.prototype.hasOwnProperty.call(
+        FarmingStrategySkeleton.prototype,
+        prop,
+      )
+    ) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const method = (FarmingStrategySkeleton.prototype as any)[prop];
+      method.bind(receiver);
+    }
 
-      const strategyOptions = currentStrategy();
+    const strategyOptions = currentStrategy();
 
-      const stringProp = String(prop);
-      if (stringProp in strategyOptions) {
-        return strategyOptions[stringProp as keyof FarmingStrategyOptions];
-      }
-      if (stringProp in DEFAULT_OPTIONS) {
-        return DEFAULT_OPTIONS[stringProp as keyof typeof DEFAULT_OPTIONS];
-      }
-      // Fallback to standard target resolution
-      return Reflect.get(target, prop, receiver);
-    },
+    const stringProp = String(prop);
+    if (stringProp in strategyOptions) {
+      return strategyOptions[stringProp as keyof FarmingStrategyOptions];
+    }
+    if (stringProp in DEFAULT_OPTIONS) {
+      return DEFAULT_OPTIONS[stringProp as keyof typeof DEFAULT_OPTIONS];
+    }
+    // Fallback to standard target resolution
+    return Reflect.get(target, prop, receiver);
   },
-);
+});
 
 const BARF_MOUNTAIN: FarmingStrategyOptions = {
   stasisRounds: 20,

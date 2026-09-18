@@ -43,8 +43,7 @@ function stringToFarmingMethod(s: string): FarmingMethod {
   return (Object.entries(farmingStrategyAliases).find(
     ([, { location, aliases }]) =>
       toLocation(s) === location || aliases.includes(s.toLowerCase()),
-  )?.[0] ??
-    abort(`Invalid farming location: ${s}`)) as unknown as FarmingMethod;
+  )?.[0] ?? abort(`Invalid farming location: ${s}`)) as FarmingMethod;
 }
 
 function toInitials(s: string): string {
