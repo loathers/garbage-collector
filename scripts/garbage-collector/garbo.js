@@ -19727,6 +19727,11 @@ var FarmingStrategySkeleton = /*#__PURE__*/function () {
     value: function monstersToBanish() {
       return this.banishMonsters.filter(m => !kolmafia.isBanished(m));
     }
+  }, {
+    key: "strategy",
+    value: function strategy() {
+      return new GarboStrategy(this.combat);
+    }
   }]);
 }();
 var FarmingStrategy = new Proxy(new FarmingStrategySkeleton(), {
@@ -19761,7 +19766,7 @@ var BARF_MOUNTAIN = {
   outfit: () => ({
     equip: get$2("dinseyRollercoasterNext") && have$P($item`lube-shoes`) ? $items`lube-shoes` : []
   }),
-  combat: new GarboStrategy(() => Macro.meatKill(), () => Macro.if_(`(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`, Macro.meatKill()).abort()),
+  combat: () => Macro.meatKill(),
   post: completeBarfQuest
 };
 var THE_CORAL_CORRAL = {
@@ -19783,12 +19788,10 @@ var THE_CORAL_CORRAL = {
       equip: [banishItem]
     } : {};
   },
-  combat: new GarboStrategy(_ref7 => {
+  combat: _ref7 => {
     var banish = _ref7.banish;
-    var delevel = kolmafia.myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 || have$P($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10;
-    var macro = new Macro().externalIf(delevel, Macro.delevel()).externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`)).meatKill(false);
-    return banish ? Macro.if_($monsters`Mer-kin rustler, sea cowboy`, banish.macro).step(macro) : macro;
-  })
+    return Macro.externalIf(!get$2("seahorseName"), Macro.if_($monster`wild seahorse`, Macro.item($item`sea cowbell`).item($item`sea cowbell`).item($item`sea cowbell`).item($item`sea lasso`).abortWithMsg("Wild seahorse should have been tamed, what happened?"))).farmingBanish(banish).externalIf(kolmafia.myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 || have$P($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10, Macro.delevel()).externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`)).meatKill();
+  }
 };
 function currentStrategy() {
   switch (globalOptions.prefs.farmingMethod) {
@@ -20061,7 +20064,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"f55e71627987d21db6a9d060ded2b4312f7832e4"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"8be72f03bf5207ff698caae4de29be748ff46315"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -25423,6 +25426,12 @@ var Macro = /*#__PURE__*/function (_StrictMacro) {
       // Assume if we have both equipped, we mean to refracted feesh
       Macro.if_("!monsterphylum Fish", Macro.trySkill($skill`Sea *dent: Talk to Some Fish`))).externalIf(kolmafia.haveEquipped($item`blood cubic zirconia`) && safeRefractedCasts() > 0, Macro.trySkill($skill`BCZ: Refracted Gaze`));
     }
+  }, {
+    key: "farmingBanish",
+    value: function farmingBanish(banish) {
+      if (!banish || !FarmingStrategy.banishMonsters.length) return this;
+      return this.if_(FarmingStrategy.banishMonsters, banish.macro);
+    }
   }], [{
     key: "abortWithMsg",
     value: function abortWithMsg(errorMessage) {
@@ -25519,6 +25528,11 @@ var Macro = /*#__PURE__*/function (_StrictMacro) {
     key: "refractedGaze",
     value: function refractedGaze() {
       return new Macro().duplicate();
+    }
+  }, {
+    key: "farmingBanish",
+    value: function farmingBanish(banish) {
+      return new Macro().farmingBanish(banish);
     }
   }]);
 }(StrictMacro);
@@ -31693,7 +31707,7 @@ function FarmTurnQuest() {
       completed: () => have$P($effect`Everything looks Beige`) || kolmafia.myAdventures() === 0,
       outfit: context => barfOutfit(FarmingStrategy.outfit(context)),
       do: () => fight(undelay(FarmingStrategy.targetMonster)),
-      combat: FarmingStrategy.combat,
+      combat: FarmingStrategy.strategy(),
       post: () => {
         var _FarmingStrategy$post;
         (_FarmingStrategy$post = FarmingStrategy.post) === null || _FarmingStrategy$post === void 0 || _FarmingStrategy$post.call(FarmingStrategy);
@@ -31716,7 +31730,7 @@ function FarmTurnQuest() {
       },
       outfit: context => barfOutfit(FarmingStrategy.outfit(context)),
       do: FarmingStrategy.location,
-      combat: FarmingStrategy.combat,
+      combat: FarmingStrategy.strategy(),
       post: () => {
         var _FarmingStrategy$post2;
         (_FarmingStrategy$post2 = FarmingStrategy.post) === null || _FarmingStrategy$post2 === void 0 || _FarmingStrategy$post2.call(FarmingStrategy);
