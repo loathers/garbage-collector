@@ -33,7 +33,7 @@ import {
   withProperty,
 } from "libram";
 import { getTasks, OutfitSpec, Quest } from "grimoire-kolmafia";
-import { getAvailableUltraRareZones, unperidotableZones } from "garbo-lib";
+import { getAvailableUltraRareZones } from "garbo-lib";
 
 import { Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
@@ -240,9 +240,7 @@ function canGetFusedFuse() {
 }
 
 const peridotZone = () =>
-  getAvailableUltraRareZones().find(
-    (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l),
-  );
+  getAvailableUltraRareZones().find((l) => PeridotOfPeril.canImperil(l));
 
 export const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
   {

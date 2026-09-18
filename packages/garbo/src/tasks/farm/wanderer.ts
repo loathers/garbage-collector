@@ -44,7 +44,6 @@ import { Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
   canAdventureOrUnlock,
   hasNameCollision,
-  unperidotableZones,
   WanderDetails,
 } from "garbo-lib";
 
@@ -85,6 +84,7 @@ import { bestMidnightAvailable } from "../../resources/gingerbread";
 import { shouldFillLatte, tryFillLatte } from "../../resources/latte";
 import { willYachtzee } from "../../resources/yachtzee";
 import { acquire } from "../../acquire";
+import { FarmingStrategy } from "../../farmingStrategy";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
@@ -737,7 +737,14 @@ const BarfTurnTasks: GarboTask[] = [
       const questMonster = get("_cookbookbatQuestMonster");
       if (!questMonster || hasNameCollision(questMonster)) return false;
       const questLocation = get("_cookbookbatQuestLastLocation");
-      if (!questLocation || !canAdventureOrUnlock(questLocation, false)) {
+      if (
+        !questLocation ||
+        !canAdventureOrUnlock(
+          questLocation,
+          false,
+          FarmingStrategy.isUnderwater(),
+        )
+      ) {
         return false;
       }
       const questReward = get("_cookbookbatQuestIngredient");
@@ -749,11 +756,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     completed: () => {
       const questLocation = get("_cookbookbatQuestLastLocation");
-      return (
-        !questLocation ||
-        !PeridotOfPeril.canImperil(questLocation) ||
-        unperidotableZones.includes(questLocation)
-      );
+      return !questLocation || !PeridotOfPeril.canImperil(questLocation);
     },
     choices: () => ({
       1557: `1&bandersnatch=${get("_cookbookbatQuestMonster")?.id ?? 0}`,
