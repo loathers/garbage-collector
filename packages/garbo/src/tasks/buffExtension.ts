@@ -107,6 +107,7 @@ const PostBuffExtensionTasks: GarboTask[] = [
     ready: () => realmAvailable("hot"),
     completed: () => Mining.countFreeMines() <= 0,
     do: () => cliExecute("oreo 0"),
+    sobriety: "sober",
     spendsTurn: false,
   },
   // TODO Add Shadow Rift here if we ever grimoirize it
