@@ -1,5 +1,5 @@
 import { Args } from "grimoire-kolmafia";
-import { abort, Item, Location, print } from "kolmafia";
+import { abort, Item, Location, print, toLocation } from "kolmafia";
 import { $item, $items, $location, $monster } from "libram";
 
 export enum FarmingMethod {
@@ -42,7 +42,7 @@ const farmingStrategyAliases: Record<
 function stringToFarmingMethod(s: string): FarmingMethod {
   return (Object.entries(farmingStrategyAliases).find(
     ([, { location, aliases }]) =>
-      Location.get(s) === location || aliases.includes(s.toLowerCase()),
+      toLocation(s) === location || aliases.includes(s.toLowerCase()),
   )?.[0] ??
     abort(`Invalid farming location: ${s}`)) as unknown as FarmingMethod;
 }
@@ -290,7 +290,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
             options: [
               ...Object.entries(farmingStrategyAliases).map(
                 ([method, { location, aliases }]): [FarmingMethod, string] => [
-                  method as unknown as FarmingMethod,
+                  method as FarmingMethod,
                   [location.toString(), ...aliases].join(", "),
                 ],
               ),
