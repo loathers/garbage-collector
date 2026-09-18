@@ -46,7 +46,7 @@ export function FarmTurnQuest(): Quest<
           have($effect`Everything looks Beige`) || myAdventures() === 0,
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
         do: () => CrepeParachute.fight(undelay(FarmingStrategy.targetMonster)),
-        combat: FarmingStrategy.combat,
+        combat: FarmingStrategy.strategy(),
         post: () => {
           FarmingStrategy.post?.();
           if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
@@ -76,7 +76,7 @@ export function FarmTurnQuest(): Quest<
         },
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
         do: FarmingStrategy.location,
-        combat: FarmingStrategy.combat,
+        combat: FarmingStrategy.strategy(),
         post: () => {
           FarmingStrategy.post?.();
           trackMarginalMpa();
