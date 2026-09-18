@@ -35,7 +35,7 @@ import {
   undelay,
 } from "libram";
 import { Macro } from "./combat";
-import { FarmingMethod, globalOptions } from "./config";
+import { globalOptions } from "./config";
 import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
@@ -265,13 +265,13 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
       .meatKill(),
 };
 
-function currentStrategy(): FarmingStrategyOptions {
-  switch (globalOptions.prefs.farmingMethod) {
-    case FarmingMethod.THE_CORAL_CORRAL:
-      return THE_CORAL_CORRAL;
+const strategyMap = new Map(
+  [THE_CORAL_CORRAL, BARF_MOUNTAIN].map((strategy) => [
+    strategy.location,
+    strategy,
+  ]),
+);
 
-    case FarmingMethod.BARF_MOUNTAIN:
-    default:
-      return BARF_MOUNTAIN;
-  }
+function currentStrategy(): FarmingStrategyOptions {
+  return strategyMap.get(globalOptions.prefs.farmingMethod) ?? BARF_MOUNTAIN;
 }

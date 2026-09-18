@@ -1,6 +1,6 @@
 import { Args } from "grimoire-kolmafia";
-import { Item, print } from "kolmafia";
-import { $item, $items, $monster } from "libram";
+import { abort, Item, Location, print } from "kolmafia";
+import { $item, $items, $location, $monster } from "libram";
 
 export enum FarmingMethod {
   BARF_MOUNTAIN,
@@ -24,6 +24,26 @@ const allWorkshedAliases = [
     return { item: item, aliases: [item.name.toLowerCase()] };
   }),
 ];
+
+const farmingStrategyAliases = [
+  {
+    location: $location`Barf Mountain`,
+    aliases: ["barf", "tourists", "barfmountain", "dinsey"],
+  },
+  {
+    location: $location`The Coral Corral`,
+    aliases: ["cowo", "corral", "ranch", "coolranch", "coral", "cows"],
+  },
+];
+
+function stringToFarmingLocation(s: string): Location {
+  return (
+    farmingStrategyAliases.find(
+      ({ location, aliases }) =>
+        Location.get(s) === location || aliases.includes(s.toLowerCase()),
+    )?.location ?? abort(`Invalid farming location: ${s}`)
+  );
+}
 
 function toInitials(s: string): string {
   const initials = s
@@ -157,7 +177,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
         help: "Intelligently switch into the workshed whose item name you give us. Also accepts substrings of the item name (e.g. dna, trainset), certain shorthand aliases (e.g. car) and initials of length >= 3 (e.g. cmc).",
         options: [
           ...allWorkshedAliases.map(
-            ({ item, aliases }) =>
+            ({ item, aliases }): [Item, string] =>
               [
                 item,
                 `${[...aliases, toInitials(item.name.toLowerCase())]
@@ -261,30 +281,20 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "At how many minutes before Rollover should we terminate to let you get ready for bed?",
           default: 5,
         }),
-        farmingMethod: Args.custom<FarmingMethod>(
+        farmingMethod: Args.custom<Location>(
           {
-            default: FarmingMethod.BARF_MOUNTAIN,
+            default: $location`Barf Mountain`,
             help: "Select the farming method to use.",
             options: [
-              [FarmingMethod.BARF_MOUNTAIN, "barf mountain"],
-              [FarmingMethod.THE_CORAL_CORRAL, "sea cows"],
+              ...farmingStrategyAliases.map(
+                ({ location, aliases }): [Location, string] => [
+                  location,
+                  aliases.join(", "),
+                ],
+              ),
             ],
           },
-          (value) => {
-            switch (value.toLowerCase()) {
-              case "barf":
-              case "barf mountain":
-                return FarmingMethod.BARF_MOUNTAIN;
-
-              case "cowo":
-              case "sea cows":
-              case "the coral corral":
-                return FarmingMethod.THE_CORAL_CORRAL;
-
-              default:
-                return FarmingMethod.BARF_MOUNTAIN;
-            }
-          },
+          stringToFarmingLocation,
           "Farming Method",
         ),
       },
