@@ -13,7 +13,6 @@ import {
   familiarEquippedEquipment,
   getAutoAttack,
   haveOutfit,
-  inebrietyLimit,
   isBanished,
   Item,
   itemAmount,
@@ -26,7 +25,6 @@ import {
   myBuffedstat,
   myClass,
   myFamiliar,
-  myInebriety,
   myLevel,
   myThrall,
   myTurncount,
@@ -147,6 +145,7 @@ import {
   romanticMonsterImpossible,
   safeRestore,
   setChoice,
+  sober,
   targetingMeat,
   targetMeat,
   tryFindFreeRunOrBanish,
@@ -408,7 +407,7 @@ function familiarSpec(underwater: boolean, fight: CopyTargetFight): OutfitSpec {
 }
 
 export function dailyFights(): void {
-  if (myInebriety() > inebrietyLimit()) return;
+  if (!sober()) return;
 
   if (copyTargetSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
@@ -1717,7 +1716,7 @@ function targetCopiesInProgress(): boolean {
 }
 
 export function freeRunFights(): void {
-  if (myInebriety() > inebrietyLimit()) return;
+  if (!sober()) return;
   if (targetCopiesInProgress()) return;
 
   propertyManager.setChoices({
@@ -1748,7 +1747,8 @@ export function freeRunFights(): void {
 }
 
 export function freeFights(): void {
-  if (myInebriety() > inebrietyLimit()) return;
+  // These fights change familiars, so exclude Stooper's extra capacity.
+  if (!sober()) return;
   if (targetCopiesInProgress()) return;
 
   propertyManager.setChoices({
