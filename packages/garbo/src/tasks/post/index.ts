@@ -42,6 +42,7 @@ import {
   JuneCleaver,
   Leprecondo,
   maxBy,
+  realmAvailable,
   sum,
   undelay,
   uneffect,
@@ -117,24 +118,50 @@ const BARF_PLANTS: Record<Environment, Flower[]> = {
   ],
 };
 
-function floristFriars(): GarboPostTask {
+function floristFriars(): GarboPostTask[] {
   const barfPlants = BARF_PLANTS[FarmingStrategy.location.environment];
-  return {
-    name: "Florist Plants",
-    completed: () =>
-      FloristFriar.isFull(FarmingStrategy.location) || barfPlants.length === 0,
-    ready: () =>
-      get("lastAdventure") === FarmingStrategy.location &&
-      FloristFriar.have() &&
-      barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
-    do: () =>
-      barfPlants
-        .filter((flower) => flower.available(FarmingStrategy.location))
-        .forEach((flower) => flower.plant()),
-    available: () =>
-      FloristFriar.have() &&
-      barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
-  };
+  const yachtPlants =
+    BARF_PLANTS[$location`The Sunken Party Yacht`.environment];
+  return [
+    {
+      name: "Florist Plants",
+      completed: () =>
+        FloristFriar.isFull(FarmingStrategy.location) ||
+        barfPlants.length === 0,
+      ready: () =>
+        get("lastAdventure") === FarmingStrategy.location &&
+        FloristFriar.have() &&
+        barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
+      do: () =>
+        barfPlants
+          .filter((flower) => flower.available(FarmingStrategy.location))
+          .forEach((flower) => flower.plant()),
+      available: () =>
+        realmAvailable("sleaze") &&
+        FloristFriar.have() &&
+        barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
+    },
+    {
+      name: "Florist Plants (Secondary Location)",
+      completed: () => FloristFriar.isFull($location`The Sunken Party Yacht`),
+      ready: () =>
+        get("lastAdventure") === $location`The Sunken Party Yacht` &&
+        yachtPlants.some((flower) =>
+          flower.available($location`The Sunken Party Yacht`),
+        ),
+      do: () =>
+        yachtPlants
+          .filter((flower) =>
+            flower.available($location`The Sunken Party Yacht`),
+          )
+          .forEach((flower) => flower.plant()),
+      available: () =>
+        FloristFriar.have() &&
+        yachtPlants.some((flower) =>
+          flower.available($location`The Sunken Party Yacht`),
+        ),
+    },
+  ];
 }
 
 function fillPantsgivingFullness(): GarboPostTask {
@@ -466,7 +493,7 @@ export function PostQuest<C = void>(
       fallbot(),
       closetStuff(),
       useStuff(),
-      floristFriars(),
+      ...floristFriars(),
       numberology(),
       juneCleaver(),
       fillPantsgivingFullness(),
