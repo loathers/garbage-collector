@@ -21,8 +21,9 @@ import { garboAverageValue, garboValue } from "../garboValue";
 import { FamiliarMode, GeneralFamiliar } from "./lib";
 import { effectExtenderValue } from "../potions";
 import { globalOptions } from "../config";
-import { canAdventureOrUnlock, unperidotableZones } from "garbo-lib";
+import { canAdventureOrUnlock } from "garbo-lib";
 import { estimatedGarboTurns } from "../turns";
+import { FarmingStrategy } from "../farmingStrategy";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
@@ -190,10 +191,12 @@ function cookbookbatPerilBonus(): number {
   }
 
   const cookbookbatQuestLocations = locationsWithMonsters.filter(
-    (l) => canAdventureOrUnlock(l, false) && !canAdvExclusions.includes(l),
+    (l) =>
+      canAdventureOrUnlock(l, false, FarmingStrategy.isUnderwater()) &&
+      !canAdvExclusions.includes(l),
   );
   const availablePeridotCookbookbatLocations = cookbookbatQuestLocations.filter(
-    (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l),
+    (l) => PeridotOfPeril.canImperil(l),
   );
   const doableQuestChance =
     availablePeridotCookbookbatLocations.length /

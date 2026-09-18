@@ -40,7 +40,6 @@ import {
   isDraggableFight,
   unlock,
   UNPERIDOTABLE_MONSTERS,
-  unperidotableZones,
   WandererFactory,
   WandererFactoryOptions,
   WandererLocation,
@@ -238,7 +237,6 @@ function bestWander(
 
     const shouldPeridot =
       PeridotOfPeril.canImperil(location) &&
-      !unperidotableZones.includes(location) &&
       !shouldRefract &&
       monsterTargetedValue > monsterAverageValue;
 
@@ -287,7 +285,11 @@ function wanderWhere(
   const failed = candidate.targets.filter((target) => !target.prepareTurn());
 
   const badLocation =
-    !canAdventureOrUnlock(candidate.location) ||
+    !canAdventureOrUnlock(
+      candidate.location,
+      true,
+      options.underwaterAllowed,
+    ) ||
     !unlock(candidate.location, candidate.value) ||
     !canWander(candidate.location, type)
       ? [candidate.location]
