@@ -1,10 +1,10 @@
 import { Args } from "grimoire-kolmafia";
-import { Item, print } from "kolmafia";
-import { $item, $items, $monster } from "libram";
+import { abort, Item, Location, print, toLocation } from "kolmafia";
+import { $item, $items, $location, $monster } from "libram";
 
 export enum FarmingMethod {
-  BARF_MOUNTAIN,
-  THE_CORAL_CORRAL,
+  BARF_MOUNTAIN = "Barf Mountain",
+  THE_CORAL_CORRAL = "The Coral Corral",
 }
 
 const workshedAliases = [
@@ -24,6 +24,28 @@ const allWorkshedAliases = [
     return { item: item, aliases: [item.name.toLowerCase()] };
   }),
 ];
+
+const farmingStrategyAliases: Record<
+  FarmingMethod,
+  { location: Location; aliases: string[] }
+> = {
+  [FarmingMethod.BARF_MOUNTAIN]: {
+    location: $location`Barf Mountain`,
+    aliases: ["barf", "tourists", "barfmountain", "dinsey"],
+  },
+  [FarmingMethod.THE_CORAL_CORRAL]: {
+    location: $location`The Coral Corral`,
+    aliases: ["cowo", "corral", "ranch", "coolranch", "coral", "cows"],
+  },
+};
+
+function stringToFarmingMethod(s: string): FarmingMethod {
+  return (Object.entries(farmingStrategyAliases).find(
+    ([, { location, aliases }]) =>
+      toLocation(s) === location || aliases.includes(s.toLowerCase()),
+  )?.[0] ??
+    abort(`Invalid farming location: ${s}`)) as unknown as FarmingMethod;
+}
 
 function toInitials(s: string): string {
   const initials = s
@@ -157,7 +179,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
         help: "Intelligently switch into the workshed whose item name you give us. Also accepts substrings of the item name (e.g. dna, trainset), certain shorthand aliases (e.g. car) and initials of length >= 3 (e.g. cmc).",
         options: [
           ...allWorkshedAliases.map(
-            ({ item, aliases }) =>
+            ({ item, aliases }): [Item, string] =>
               [
                 item,
                 `${[...aliases, toInitials(item.name.toLowerCase())]
@@ -266,25 +288,15 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
             default: FarmingMethod.BARF_MOUNTAIN,
             help: "Select the farming method to use.",
             options: [
-              [FarmingMethod.BARF_MOUNTAIN, "barf mountain"],
-              [FarmingMethod.THE_CORAL_CORRAL, "sea cows"],
+              ...Object.entries(farmingStrategyAliases).map(
+                ([method, { location, aliases }]): [FarmingMethod, string] => [
+                  method as FarmingMethod,
+                  [location.toString(), ...aliases].join(", "),
+                ],
+              ),
             ],
           },
-          (value) => {
-            switch (value.toLowerCase()) {
-              case "barf":
-              case "barf mountain":
-                return FarmingMethod.BARF_MOUNTAIN;
-
-              case "cowo":
-              case "sea cows":
-              case "the coral corral":
-                return FarmingMethod.THE_CORAL_CORRAL;
-
-              default:
-                return FarmingMethod.BARF_MOUNTAIN;
-            }
-          },
+          stringToFarmingMethod,
           "Farming Method",
         ),
       },
