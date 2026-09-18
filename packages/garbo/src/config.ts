@@ -25,24 +25,26 @@ const allWorkshedAliases = [
   }),
 ];
 
-const farmingStrategyAliases = [
-  {
+const farmingStrategyAliases: Record<
+  FarmingMethod,
+  { location: Location; aliases: string[] }
+> = {
+  [FarmingMethod.BARF_MOUNTAIN]: {
     location: $location`Barf Mountain`,
     aliases: ["barf", "tourists", "barfmountain", "dinsey"],
   },
-  {
+  [FarmingMethod.THE_CORAL_CORRAL]: {
     location: $location`The Coral Corral`,
     aliases: ["cowo", "corral", "ranch", "coolranch", "coral", "cows"],
   },
-];
+};
 
-function stringToFarmingLocation(s: string): Location {
-  return (
-    farmingStrategyAliases.find(
-      ({ location, aliases }) =>
-        Location.get(s) === location || aliases.includes(s.toLowerCase()),
-    )?.location ?? abort(`Invalid farming location: ${s}`)
-  );
+function stringToFarmingMethod(s: string): FarmingMethod {
+  return (Object.entries(farmingStrategyAliases).find(
+    ([, { location, aliases }]) =>
+      Location.get(s) === location || aliases.includes(s.toLowerCase()),
+  )?.[0] ??
+    abort(`Invalid farming location: ${s}`)) as unknown as FarmingMethod;
 }
 
 function toInitials(s: string): string {
@@ -281,20 +283,20 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "At how many minutes before Rollover should we terminate to let you get ready for bed?",
           default: 5,
         }),
-        farmingMethod: Args.custom<Location>(
+        farmingMethod: Args.custom<FarmingMethod>(
           {
-            default: $location`Barf Mountain`,
+            default: FarmingMethod.BARF_MOUNTAIN,
             help: "Select the farming method to use.",
             options: [
-              ...farmingStrategyAliases.map(
-                ({ location, aliases }): [Location, string] => [
-                  location,
-                  aliases.join(", "),
+              ...Object.entries(farmingStrategyAliases).map(
+                ([method, { location, aliases }]): [FarmingMethod, string] => [
+                  method as unknown as FarmingMethod,
+                  [location.toString(), ...aliases].join(", "),
                 ],
               ),
             ],
           },
-          stringToFarmingLocation,
+          stringToFarmingMethod,
           "Farming Method",
         ),
       },
