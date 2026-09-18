@@ -1,7 +1,6 @@
 import { $item, $monster, get, have, undelay } from "libram";
 import {
   Item,
-  itemAmount,
   myAdventures,
   myLocation,
   retrieveItem,
@@ -58,12 +57,13 @@ export function FarmTurnQuest(): Quest<
         name: "Farm",
         completed: () => myAdventures() === 0,
         prepare: (context) => {
-          if (
-            FarmingStrategy.isUnderwater() &&
-            redTaffyWorth() &&
-            itemAmount($item`pulled red taffy`) === 0
-          ) {
-            acquire(1, $item`pulled red taffy`, averageRedTaffyValue(), false);
+          if (FarmingStrategy.isUnderwater() && redTaffyWorth()) {
+            acquire(
+              estimatedGarboTurns(),
+              $item`pulled red taffy`,
+              averageRedTaffyValue() - 1,
+              false,
+            );
           }
           meatMood().execute(estimatedGarboTurns());
 
