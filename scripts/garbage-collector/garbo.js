@@ -20078,7 +20078,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"796f19889a5551de20b8f6353dc62c889ed52330"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"cd4b66e63460ce49bf41b5c5d54a702de9a0fc11"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -21939,10 +21939,13 @@ var standardFamiliars = [{
   value: () => garboAverageValue.apply(void 0, _toConsumableArray($items`short beer, short stack of pancakes, short stick of butter, short glass of water, short white`)) / 11 // 9 with blue plate
 }, {
   familiar: $familiar`Robortender`,
-  value: mode => {
-    var olfactedMonster = get$2("olfactedMonster");
-    var olfactedIsFromBarf = olfactedMonster && kolmafia.getMonsters($location`Barf Mountain`).includes(olfactedMonster);
-    return dropChance() * garboValue(dropFrom(mode === "barf" && olfactedIsFromBarf ? olfactedMonster : mode === "target" ? globalOptions.target : $monster.none)) + (currentDrinks().includes($item`Feliz Navidad`) ? felizValue() * 0.25 : 0) + (currentDrinks().includes($item`Newark`) ? newarkValue() * 0.25 : 0);
+  value: (_, rates) => {
+    return dropChance() * sum(_toConsumableArray(rates.entries()), _ref => {
+      var _ref2 = _slicedToArray(_ref, 2),
+        monster = _ref2[0],
+        rate = _ref2[1];
+      return rate * garboValue(dropFrom(monster));
+    }) + (currentDrinks().includes($item`Feliz Navidad`) ? felizValue() * 0.25 : 0) + (currentDrinks().includes($item`Newark`) ? newarkValue() * 0.25 : 0);
   }
 }, {
   familiar: $familiar`Twitching Space Critter`,
@@ -21989,19 +21992,19 @@ var standardFamiliars = [{
 function peaceTurkeyDropChance() {
   return 0.24 + kolmafia.squareRoot(totalFamiliarWeight($familiar`Peace Turkey`)) / 100;
 }
-function getConstantValueFamiliars(mode) {
-  return standardFamiliars.filter(_ref => {
-    var familiar = _ref.familiar;
+function getConstantValueFamiliars(mode, monsterRates) {
+  return standardFamiliars.filter(_ref3 => {
+    var familiar = _ref3.familiar;
     return have$P(familiar);
-  }).map(_ref2 => {
-    var familiar = _ref2.familiar,
-      value = _ref2.value,
-      _ref2$worksOnFreeRun = _ref2.worksOnFreeRun,
-      worksOnFreeRun = _ref2$worksOnFreeRun === void 0 ? false : _ref2$worksOnFreeRun;
+  }).map(_ref4 => {
+    var familiar = _ref4.familiar,
+      value = _ref4.value,
+      _ref4$worksOnFreeRun = _ref4.worksOnFreeRun,
+      worksOnFreeRun = _ref4$worksOnFreeRun === void 0 ? false : _ref4$worksOnFreeRun;
     return {
       familiar,
       worksOnFreeRun,
-      expectedValue: value(mode),
+      expectedValue: value(mode, monsterRates),
       leprechaunMultiplier: findLeprechaunMultiplier(familiar),
       limit: "none"
     };
@@ -22375,10 +22378,10 @@ function menu$1(adventure) {
     allowAttackFamiliars = _ref$allowAttackFamil === void 0 ? true : _ref$allowAttackFamil,
     _ref$mode = _ref.mode,
     mode = _ref$mode === void 0 ? "free" : _ref$mode;
-  var familiarMenu = [].concat(_toConsumableArray(getConstantValueFamiliars(mode)), _toConsumableArray(getDropFamiliars()), _toConsumableArray(getToyCupidBowFamiliars()), _toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray(extraFamiliars));
   var _toAdventure = toAdventure(adventure),
     target = _toAdventure.target;
   var monsterRates = adventureTargetToWeightedMap(target);
+  var familiarMenu = [].concat(_toConsumableArray(getConstantValueFamiliars(mode, monsterRates)), _toConsumableArray(getDropFamiliars()), _toConsumableArray(getToyCupidBowFamiliars()), _toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray(extraFamiliars));
   if (canChooseMacro && kolmafia.myInebriety() <= kolmafia.inebrietyLimit()) {
     if (timeToMeatify()) {
       familiarMenu.push({
