@@ -20061,7 +20061,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"6407183a62bec4fde640057e112730ace6904aa8"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"f55e71627987d21db6a9d060ded2b4312f7832e4"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -28113,6 +28113,7 @@ var PostBuffExtensionTasks = [{
   ready: () => realmAvailable("hot"),
   completed: () => countFreeMines() <= 0,
   do: () => kolmafia.cliExecute("oreo 0"),
+  sobriety: "sober",
   spendsTurn: false
 }
 // TODO Add Shadow Rift here if we ever grimoirize it
@@ -28360,7 +28361,7 @@ function familiarSpec(underwater, fight) {
   };
 }
 function dailyFights() {
-  if (kolmafia.myInebriety() > kolmafia.inebrietyLimit()) return;
+  if (!sober()) return;
   if (copyTargetSources.some(source => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
       // check if user wants to wish for the copy target before doing setup
@@ -29076,7 +29077,7 @@ function targetCopiesInProgress() {
   return get$2("beGregariousFightsLeft") > 0 || get$2("_monsterHabitatsFightsLeft") > 0 || !romanticMonsterImpossible() || get("Digitize Monster") <= 0;
 }
 function freeRunFights() {
-  if (kolmafia.myInebriety() > kolmafia.inebrietyLimit()) return;
+  if (!sober()) return;
   if (targetCopiesInProgress()) return;
   propertyManager.setChoices({
     1387: 2,
@@ -29115,7 +29116,8 @@ function freeRunFights() {
   });
 }
 function freeFights() {
-  if (kolmafia.myInebriety() > kolmafia.inebrietyLimit()) return;
+  // These fights change familiars, so exclude Stooper's extra capacity.
+  if (!sober()) return;
   if (targetCopiesInProgress()) return;
   propertyManager.setChoices({
     1387: 2,
