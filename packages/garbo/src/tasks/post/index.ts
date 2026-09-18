@@ -137,7 +137,6 @@ function floristFriars(): GarboPostTask[] {
           .filter((flower) => flower.available(FarmingStrategy.location))
           .forEach((flower) => flower.plant()),
       available: () =>
-        realmAvailable("sleaze") &&
         FloristFriar.have() &&
         barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
     },
@@ -157,6 +156,7 @@ function floristFriars(): GarboPostTask[] {
           )
           .forEach((flower) => flower.plant()),
       available: () =>
+        realmAvailable("sleaze") &&
         FloristFriar.have() &&
         yachtPlants.some((flower) =>
           flower.available($location`The Sunken Party Yacht`),
