@@ -73,6 +73,7 @@ import { garboValue } from "./garboValue";
 import { safeRefractedCasts } from "./resources/bloodCubicZirconia";
 import { maximumPinataCasts } from "./resources/yachtzee";
 import { FarmingStrategy } from "./farmingStrategy";
+import { BanishMethod } from "./resources/banish";
 
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
@@ -952,6 +953,15 @@ export class Macro extends StrictMacro {
 
   static refractedGaze(): Macro {
     return new Macro().duplicate();
+  }
+
+  farmingBanish(banish: BanishMethod | null): Macro {
+    if (!banish || !FarmingStrategy.banishMonsters.length) return this;
+    return this.if_(FarmingStrategy.banishMonsters, banish.macro);
+  }
+
+  static farmingBanish(banish: BanishMethod | null): Macro {
+    return new Macro().farmingBanish(banish);
   }
 }
 
