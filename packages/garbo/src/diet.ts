@@ -67,6 +67,7 @@ import {
   $modifier,
   $skill,
   $thrall,
+  arrayEquals,
   AsdonMartin,
   clamp,
   DesignerSweatpants,
@@ -101,7 +102,6 @@ import { expectedGregs } from "./resources/extrovermectin";
 import { shouldAugustCast } from "./resources/scepter";
 import { synthesize } from "./resources/synthesis";
 import {
-  arrayEquals,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
   targetingMeat,
