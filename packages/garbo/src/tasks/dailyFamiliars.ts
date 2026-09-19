@@ -89,7 +89,7 @@ function worthFeedingRobortender(): boolean {
   return meatDrop(globalOptions.target) >= 300;
 }
 
-export function prepRobortender(): void {
+function prepRobortender(): void {
   if (!have($familiar`Robortender`)) return;
   const targetCount = highMeatMonsterCount("Scepter"); // Scepter can cause circular logic
   const roboDrinks = {

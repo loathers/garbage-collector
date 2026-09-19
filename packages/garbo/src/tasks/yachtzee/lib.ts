@@ -9,7 +9,7 @@ import {
 } from "kolmafia";
 import { waterBreathingEquipment } from "../../outfit/lib";
 
-export function yachtzeeBuffValue(obj: Item | Effect): number {
+function yachtzeeBuffValue(obj: Item | Effect): number {
   return clamp(
     (2000 *
       (getModifier("Meat Drop", obj) +

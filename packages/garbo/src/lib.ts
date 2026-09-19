@@ -188,7 +188,7 @@ export const targetMeatDifferential = () => {
 export const targetingMeat = () =>
   !isFree(globalOptions.target) && targetMeat() > baseMeat();
 
-export const targetingItems = () => !targetingMeat();
+const targetingItems = () => !targetingMeat();
 
 export const gooseDroneEligible = () =>
   targetingItems() &&
@@ -203,7 +203,7 @@ export function averageTargetNet(): number {
     : (targetMeat() * meatDropModifier()) / 100;
 }
 
-export function averageTouristNet(): number {
+function averageTouristNet(): number {
   return (baseMeat() * meatDropModifier()) / 100;
 }
 
@@ -724,7 +724,7 @@ export function sober(): boolean {
   );
 }
 
-export type GarboItemLists = {
+type GarboItemLists = {
   Newark: string[];
   "Feliz Navidad": string[];
   trainset: string[];
@@ -1094,7 +1094,7 @@ function calculateScalerCap({ attributes }: Monster): number {
 }
 
 const MONSTER_SCALER_CAPS = new Map<Monster, number>();
-export function scalerCap(monster: Monster): number {
+function scalerCap(monster: Monster): number {
   const cached = MONSTER_SCALER_CAPS.get(monster);
   if (cached) return cached;
   const cap = calculateScalerCap(monster);
@@ -1116,14 +1116,14 @@ export const isFree = (monster: Monster) => monster.attributes.includes("FREE");
 
 export const unlimitedFreeRunList = $items`handful of split pea soup, tennis ball, Louder Than Bomb, divine champagne popper`;
 
-export function totalModifier(effect: Effect, stat: Stat): number {
+function totalModifier(effect: Effect, stat: Stat): number {
   return (
     getModifier(stat.toString(), effect) +
     0.2 * getModifier(`${stat.toString()} Percent`, effect)
   );
 }
 
-export function asEffect(thing: Item | Effect): Effect {
+function asEffect(thing: Item | Effect): Effect {
   return thing instanceof Effect ? thing : effectModifier(thing, "Effect");
 }
 
@@ -1131,7 +1131,7 @@ function improvesStat(thing: Item | Effect, stat: Stat): boolean {
   return totalModifier(asEffect(thing), stat) > 0;
 }
 
-export function improvedStats(thing: Item | Effect): Stat[] {
+function improvedStats(thing: Item | Effect): Stat[] {
   return Stat.all().filter((stat) => improvesStat(thing, stat));
 }
 

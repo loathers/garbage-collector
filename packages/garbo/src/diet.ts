@@ -857,7 +857,7 @@ function ingredientCost(item: Item): number {
  * @param targets number of target monsters expected to be encountered on this day
  * @param turns number of turns total expecte
  */
-export function potionMenu(
+function potionMenu(
   baseMenu: MenuItem<Note>[],
   targets: number,
   turns: number,

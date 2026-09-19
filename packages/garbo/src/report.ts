@@ -47,7 +47,7 @@ function markReported(key: ReportKey): void {
  * to ensure each key is only reported once per gameday. The storage key
  * includes the gameday, so old entries are naturally orphaned on rollover.
  */
-export function reportDaily(key: ReportKey, value: string | number): void {
+function reportDaily(key: ReportKey, value: string | number): void {
   if (getReportedKeys().has(key)) return;
 
   chatPrivate(REPORT_RECIPIENT, `${key}:${value}`);

@@ -1714,7 +1714,7 @@ function targetCopiesInProgress(): boolean {
   );
 }
 
-export function freeRunFights(): void {
+function freeRunFights(): void {
   if (!sober()) return;
   if (targetCopiesInProgress()) return;
 
@@ -1890,7 +1890,7 @@ export function deliverThesisIfAble(): void {
   postCombatActions();
 }
 
-export function doSausage(): void {
+function doSausage(): void {
   if (!kramcoGuaranteed()) {
     return;
   }

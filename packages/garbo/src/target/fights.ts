@@ -158,7 +158,7 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
   }
 }
 
-export const chainStarters = [
+const chainStarters = [
   new CopyTargetFight(
     "Witchess",
     () =>
@@ -280,7 +280,7 @@ function targetInCombatQueue(): boolean {
   );
 }
 
-export const copySources = [
+const copySources = [
   new CopyTargetFight(
     "Time-Spinner",
     () =>
@@ -455,7 +455,7 @@ export const copySources = [
   ),
 ];
 
-export const wanderSources = [
+const wanderSources = [
   new CopyTargetFight(
     "Lucky!",
     () =>
@@ -622,7 +622,7 @@ const gregFights = (
   ];
 };
 
-export const gregLikeFights = [
+const gregLikeFights = [
   ...gregFights(
     "Be Gregarious",
     () => true, // we can always use extrovermectin
@@ -674,7 +674,7 @@ function proceedWithOrb(): boolean {
   return true;
 }
 
-export const conditionalSources = [
+const conditionalSources = [
   new CopyTargetFight(
     "Orb Prediction",
     () =>
@@ -839,7 +839,7 @@ export const conditionalSources = [
   ),
 ];
 
-export const fakeSources = [
+const fakeSources = [
   new CopyTargetFight(
     "Professor MeatChain",
     () => false,
@@ -888,7 +888,7 @@ function copyTargetConfirmInvocation(msg: string): boolean {
   return true;
 }
 
-export const emergencyChainStarters = [
+const emergencyChainStarters = [
   new CopyTargetFight(
     "Mimic Egg (from clinic)",
     () =>

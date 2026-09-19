@@ -283,7 +283,7 @@ function nepQuest(): void {
   }
 }
 
-export function configureSnojo(): void {
+function configureSnojo(): void {
   if (snojoConfigured) return;
 
   // if we're ascending, pick whichever consumable has the best price

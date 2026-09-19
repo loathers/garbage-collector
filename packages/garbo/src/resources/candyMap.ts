@@ -45,7 +45,7 @@ function treatValue(outfit: string): number {
   );
 }
 
-export function getTreatOutfit(): string {
+function getTreatOutfit(): string {
   const availableOutfits = getOutfits().filter((name) =>
     outfitPieces(name).every((piece) => canEquip(piece)),
   );
@@ -57,7 +57,7 @@ export function getTreatOutfit(): string {
   return maxBy(availableOutfits, treatValue);
 }
 
-export function treatOutfit(): Outfit {
+function treatOutfit(): Outfit {
   const outfit = new Outfit();
   const bestTreatOutfit = getTreatOutfit();
   const pieces = outfitPieces(bestTreatOutfit);
@@ -73,7 +73,7 @@ export function treatOutfit(): Outfit {
   return outfit;
 }
 
-export function candyRichBlockValue(): number {
+function candyRichBlockValue(): number {
   const outfitCandyValue = treatValue(getTreatOutfit());
   const totOutfitCandyMultiplier = have($familiar`Trick-or-Treating Tot`)
     ? 1.6

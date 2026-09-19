@@ -91,7 +91,7 @@ function getBestOffset(): number {
   return (bestOffset ??= maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset));
 }
 
-export function getPrioritizedStations(): TrainSet.Station[] {
+function getPrioritizedStations(): TrainSet.Station[] {
   return getBestCycle().slice(0, getBestOffset() - 1);
 }
 

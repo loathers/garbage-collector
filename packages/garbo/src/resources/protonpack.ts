@@ -2,7 +2,7 @@ import { Location, Monster } from "kolmafia";
 import { $location, $monster, get } from "libram";
 import { AdventureArgument } from "../garboWanderer";
 
-export const ghostLocations: Map<Location, Monster> = new Map([
+const ghostLocations: Map<Location, Monster> = new Map([
   [$location`Cobb's Knob Treasury`, $monster`The ghost of Ebenoozer Screege`],
   [
     $location`The Haunted Conservatory`,
@@ -27,7 +27,7 @@ export const ghostLocations: Map<Location, Monster> = new Map([
   [$location`The Spooky Forest`, $monster`The Headless Horseman`],
 ]);
 
-export function getGhost(): Monster | null {
+function getGhost(): Monster | null {
   return ghostLocations.get(get("ghostLocation") ?? $location.none) ?? null;
 }
 

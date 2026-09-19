@@ -185,7 +185,7 @@ export function crateStrategy(): "Sniff" | "Saber" | "Orb" | null {
   return null;
 }
 
-export function hasMonsterReplacers(): boolean {
+function hasMonsterReplacers(): boolean {
   return (
     (have($skill`Meteor Lore`) && get("_macrometeoriteUses") < 10) ||
     (have($item`Powerful Glove`) && get("_powerfulGloveBatteryPowerUsed") < 90)
@@ -547,7 +547,7 @@ function getBanishedPhyla(): Map<Skill | Item, Phylum> {
   return phylumBanish;
 }
 
-export function initializeDireWarren(): void {
+function initializeDireWarren(): void {
   visitUrl("museum.php?action=icehouse");
 
   const banishedMonsters = getBanishedMonsters();
