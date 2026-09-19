@@ -85,6 +85,7 @@ import { shouldFillLatte, tryFillLatte } from "../../resources/latte";
 import { willYachtzee } from "../../resources/yachtzee";
 import { acquire } from "../../acquire";
 import { FarmingStrategy } from "../../farmingStrategy";
+import { bestYachtzeeFamiliar } from "../yachtzee/familiar";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
@@ -622,6 +623,27 @@ const BarfTurnTasks: GarboTask[] = [
       },
     },
   ),
+  {
+    name: "Yachtzee (Cooldown ready)",
+    completed: () => get("encountersUntilYachtzeeChoice") > 0,
+    outfit: () => {
+      const spec: OutfitSpec = {
+        modifier: ["meat"],
+        familiar: bestYachtzeeFamiliar(),
+        avoid: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses, over-the-shoulder Folder Holder`,
+      };
+      if (!sober()) {
+        spec.equip = $items`Drunkula's wineglass`;
+      }
+      return spec;
+    },
+    do: $location`The Sunken Party Yacht`,
+    choices: { 918: 2 },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Hit unexpected combat!"),
+    ),
+    spendsTurn: true,
+  },
   {
     name: "Gingerbread Noon",
     completed: () => GingerBread.minutesToNoon() !== 0,

@@ -353,7 +353,7 @@ export function pillkeeperOpportunityCost(): number {
     },
     {
       can: realmAvailable("sleaze"),
-      value: 40000,
+      value: 20000 - get("valueOfAdventure"),
     },
   ].filter((x) => x.can);
 
