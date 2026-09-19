@@ -191,7 +191,7 @@ export function canAdventureOrUnlock(
       (z) => loc.zone === z.zone && (z.available() || !z.noInv),
     );
   return (
-    !(underwater(loc) || (have($effect`Fishy`) && underwaterAllowed)) &&
+    !(underwater(loc) && !(have($effect`Fishy`) && underwaterAllowed)) &&
     !skiplist.includes(loc) &&
     (canAdventure(loc) || canUnlock)
   );
