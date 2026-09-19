@@ -4505,11 +4505,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "garbo@workspace:packages/garbo"
   dependencies:
-    "@babel/cli": ^7.29.7
-    "@babel/compat-data": ^7.29.7
     "@babel/core": ^7.29.7
-    "@babel/preset-env": ^7.29.7
-    "@babel/preset-typescript": ^7.29.7
     "@rollup/plugin-babel": ^7.1.0
     "@rollup/plugin-commonjs": ^29.0.3
     "@rollup/plugin-node-resolve": ^16.0.3
