@@ -86,7 +86,7 @@ const mutuallyExclusiveList: Effect[][] = [
   $effects`Broken Heart, Fiery Heart, Cold Hearted, Sweet Heart, Withered Heart, Lustful Heart`,
   $effects`Coldform, Hotform, Sleazeform, Spookyform, Stenchform`,
 ];
-export const mutuallyExclusive = new Map<Effect, Effect[]>();
+const mutuallyExclusive = new Map<Effect, Effect[]>();
 for (const effectGroup of mutuallyExclusiveList) {
   for (const effect of effectGroup) {
     mutuallyExclusive.set(effect, [
@@ -621,7 +621,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   },
 });
 
-export const wishPotions = wishableEffects.map(
+const wishPotions = wishableEffects.map(
   (effect) =>
     new Potion($item`pocket wish`, {
       effect,
@@ -637,7 +637,7 @@ export const wishPotions = wishableEffects.map(
     }),
 );
 
-export const pawPotions = Array.from(validPawWishes.keys())
+const pawPotions = Array.from(validPawWishes.keys())
   .filter((effect) => numericModifier(effect, "Meat Drop") >= 100)
   .map(
     (effect) =>
@@ -672,7 +672,7 @@ export const pawPotions = Array.from(validPawWishes.keys())
       }),
   );
 
-export const farmingPotions = () => [
+const farmingPotions = () => [
   ...Item.all()
     .filter(
       (item) =>
@@ -685,13 +685,13 @@ export const farmingPotions = () => [
   ...(have($item`closed-circuit pay phone`) ? [rufusPotion] : []),
 ];
 
-export function getFarmingPotions(avoidStats = false): Potion[] {
+function getFarmingPotions(avoidStats = false): Potion[] {
   return avoidStats
     ? farmingPotions().filter((potion) => !improvesAStat(potion.effect()))
     : farmingPotions();
 }
 
-export function doublingPotions(targets: number): Potion[] {
+function doublingPotions(targets: number): Potion[] {
   return farmingPotions()
     .filter(
       (potion) =>
@@ -704,9 +704,7 @@ export function doublingPotions(targets: number): Potion[] {
     .map((pair) => pair.potion);
 }
 
-export function usePawWishes(
-  singleUseValuation: (potion: Potion) => number,
-): void {
+function usePawWishes(singleUseValuation: (potion: Potion) => number): void {
   while (CursedMonkeyPaw.wishes() > 0) {
     // Sort the paw potions by the profits of a single wish, then use the best one
     const madeValidWish = pawPotions
@@ -1008,7 +1006,7 @@ class VariableMeatPotion {
   }
 }
 
-export function variableMeatPotionsSetup(
+function variableMeatPotionsSetup(
   yachtzees: number,
   targets: number,
   avoidStats = false,

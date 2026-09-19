@@ -67,6 +67,7 @@ import {
   $modifier,
   $skill,
   $thrall,
+  arrayEquals,
   AsdonMartin,
   clamp,
   DesignerSweatpants,
@@ -101,7 +102,6 @@ import { expectedGregs } from "./resources/extrovermectin";
 import { shouldAugustCast } from "./resources/scepter";
 import { synthesize } from "./resources/synthesis";
 import {
-  arrayEquals,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
   targetingMeat,
@@ -857,7 +857,7 @@ function ingredientCost(item: Item): number {
  * @param targets number of target monsters expected to be encountered on this day
  * @param turns number of turns total expecte
  */
-export function potionMenu(
+function potionMenu(
   baseMenu: MenuItem<Note>[],
   targets: number,
   turns: number,

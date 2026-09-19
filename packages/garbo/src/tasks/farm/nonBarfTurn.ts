@@ -242,7 +242,7 @@ function canGetFusedFuse() {
 const peridotZone = () =>
   getAvailableUltraRareZones().find((l) => PeridotOfPeril.canImperil(l));
 
-export const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
+const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
   {
     name: "Make Mimic Eggs (whatever we can)",
     ready: () => have($familiar`Chest Mimic`),
@@ -472,7 +472,7 @@ export const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
   },
 ];
 
-export function nonBarfTurns(): number {
+function nonBarfTurns(): number {
   return sum(
     NonBarfTurnTasks.filter(
       (t) => (t.ready?.(EMPTY_CONTEXT) ?? true) && !t.completed(EMPTY_CONTEXT),

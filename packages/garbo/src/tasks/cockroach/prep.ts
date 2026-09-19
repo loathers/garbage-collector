@@ -12,11 +12,9 @@ import {
   restoreHp,
   runChoice,
   Stat,
-  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
-  $effect,
   $item,
   $items,
   $location,
@@ -36,7 +34,7 @@ import { meatTargetOutfit } from "../../outfit/target";
 import { GarboTask } from "../engine";
 import { bestCrewmate, dessertIslandWorthIt, outfitBonuses } from "./lib";
 import { doingGregFight } from "../../resources/extrovermectin";
-import { targetMeat, unignoreBeatenUp, userConfirmDialog } from "../../lib";
+import { targetMeat, userConfirmDialog } from "../../lib";
 import { globalOptions } from "../../config";
 import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
@@ -283,13 +281,6 @@ export const CockroachSetup: Quest<GarboTask> = {
         Macro.abortWithMsg("Hit a combat while sailing the high seas!"),
       ),
       post: () => unequip($item`PirateRealm eyepatch`), // Unequip the eyepatch when we're done, to avoid mana issues during diet etc
-    },
-    {
-      name: "Stop Being Beaten Up",
-      completed: () => !have($effect`Beaten Up`),
-      do: () => useSkill($skill`Tongue of the Walrus`),
-      spendsTurn: false,
-      post: unignoreBeatenUp,
     },
   ],
 };

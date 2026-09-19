@@ -48,22 +48,6 @@ function dropsValueFunction(drops: Item[] | Map<Item, number>): number {
       ) / sumNumbers([...drops.values()]);
 }
 
-export function valueRider(
-  mode: BonusEquipMode,
-  familiar: Familiar,
-  rider: CrownOfThrones.FamiliarRider,
-): number {
-  const valueOfDrops =
-    (rider.dropPredicate?.() ?? true)
-      ? rider.probability *
-        (typeof rider.drops === "number"
-          ? rider.drops
-          : dropsValueFunction(rider.drops))
-      : 0;
-  const valueOfModifier = valueBjornModifiers(mode, familiar)(rider.familiar);
-  return valueOfDrops + valueOfModifier;
-}
-
 export function chooseBjorn(
   mode: BonusEquipMode,
   familiar: Familiar,

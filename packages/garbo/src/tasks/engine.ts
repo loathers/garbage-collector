@@ -221,13 +221,13 @@ abstract class BaseGarboContextEngine<
   }
 }
 
-export class BaseGarboEngine extends BaseGarboContextEngine<void> {
+class BaseGarboEngine extends BaseGarboContextEngine<void> {
   getContext() {
     // noop
   }
 }
 
-export class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
+class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
   #banish: BanishMethod | null = null;
 
   getContext() {
@@ -259,7 +259,7 @@ abstract class SafeGarboContextEngine<
   }
 }
 
-export class SafeGarboEngine extends SafeGarboContextEngine<void> {
+class SafeGarboEngine extends SafeGarboContextEngine<void> {
   getContext() {
     // noop
   }

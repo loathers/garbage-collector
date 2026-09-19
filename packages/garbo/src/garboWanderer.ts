@@ -47,8 +47,8 @@ export function wanderer(): WandererManager {
   return _wanderer;
 }
 
-export type Destination = Location | WanderDetails;
-export const destinationToLocation = (destination: Destination): Location =>
+type Destination = Location | WanderDetails;
+const destinationToLocation = (destination: Destination): Location =>
   destination instanceof Location
     ? destination
     : wanderer().getTarget(destination).location;

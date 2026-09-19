@@ -1,4 +1,4 @@
-import { itemDropsArray, Location, Monster } from "kolmafia";
+import { itemDropsArray, Location, meatDrop, Monster } from "kolmafia";
 import { $item, clamp, get, have, SourceTerminal, sum } from "libram";
 import {
   availableMonsters,
@@ -27,15 +27,15 @@ function valueMonster(
     : 1;
 
   // TODO: this should consider unbuffed meat drop and unbuffed item drop, probably
-  const meatDrop = clamp((m.minMeat + m.maxMeat) / 2, 0, 1000);
-  const itemDrop =
+  const meat = clamp(meatDrop(m) / 2, 0, 1000);
+  const itemValue =
     duplicateFactor *
     sum(items, (drop) => {
       const yrRate =
         (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
       return yrRate * options.itemValue(drop.drop);
     });
-  return itemDrop + meatDrop;
+  return itemValue + meat;
 }
 
 function monsterValues(

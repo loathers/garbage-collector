@@ -983,14 +983,6 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
 
 const FreeFightTasks = RAW_FIGHTS.map(freeFightTask);
 
-// Expected free fights, not including tentacles
-export function expectedFreeFightQuestFights(): number {
-  const availableFights = FreeFightTasks.filter(
-    (task) => (task.ready?.() ?? true) && !task.completed(),
-  );
-  return sum(availableFights, ({ combatCount }) => combatCount());
-}
-
 // Possible additional free fights from tentacles
 export function possibleFreeFightQuestTentacleFights(): number {
   const availableFights = FreeFightTasks.filter(
