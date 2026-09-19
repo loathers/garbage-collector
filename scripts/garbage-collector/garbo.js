@@ -1852,7 +1852,7 @@ function tuple() {
  * @param right The other array to compare
  * @returns Whether the two arrays are shallowly equal
  */
-function arrayEquals$1(left, right) {
+function arrayEquals(left, right) {
   if (left.length !== right.length) return false;
   return left.every((element, index) => element === right[index]);
 }
@@ -6368,7 +6368,7 @@ var Skills = {
  */
 function educate(skills) {
   var skillsArray = Array.isArray(skills) ? skills.slice(0, 2) : [skills];
-  if (arrayEquals$1(skillsArray, getSkills())) return true;
+  if (arrayEquals(skillsArray, getSkills())) return true;
   var _iterator = _createForOfIteratorHelper(skillsArray),
     _step;
   try {
@@ -9428,7 +9428,7 @@ function setFurniture() {
   if (new Set(nonemptyFurniture).size !== nonemptyFurniture.length) return false;
   directlyUse($item`Leprecondo`);
   kolmafia.runChoice(1, furniture.map((piece, index) => `r${3 - index}=${FURNITURE_PIECES.indexOf(piece)}`).join("&"));
-  return arrayEquals$1(installedFurniture(), furniture);
+  return arrayEquals(installedFurniture(), furniture);
 }
 /**
  * @param furniture The set of furniture to examine; defaults to currently installed furniture. Reads furniture from most important (bottom right) to least important (top left)
@@ -18654,12 +18654,12 @@ function valueMonster(m, forceItemDrops, options) {
   var items = kolmafia.itemDropsArray(m).filter(drop => ["", "n"].includes(drop.type));
   var duplicateFactor = !m.attributes.includes("NOCOPY") ? possibleDuplicateFactor : 1;
   // TODO: this should consider unbuffed meat drop and unbuffed item drop, probably
-  var meatDrop = clamp((m.minMeat + m.maxMeat) / 2, 0, 1000);
-  var itemDrop = duplicateFactor * sum(items, drop => {
+  var meat = clamp(kolmafia.meatDrop(m) / 2, 0, 1000);
+  var itemValue = duplicateFactor * sum(items, drop => {
     var yrRate = (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
     return yrRate * options.itemValue(drop.drop);
   });
-  return itemDrop + meatDrop;
+  return itemValue + meat;
 }
 function monsterValues$1(location, forceItemDrops, options) {
   var monsters = availableMonsters(location);
@@ -19837,7 +19837,10 @@ function modeUseLimitedDrops(mode) {
   return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
 }
 function modeValueOfMeat(mode) {
-  return modeIsFree(mode) ? 0 : (baseMeat() + (mode === BonusEquipMode.MEAT_TARGET ? targetMeatDifferential() : 0)) / 100;
+  if (modeIsFree(mode)) return 0;
+  if (mode === BonusEquipMode.BARF) return baseMeat() / 100;
+  if (mode === BonusEquipMode.MEAT_TARGET) return targetMeat() / 100;
+  return 0;
 }
 function modeValueOfItem(mode) {
   return mode === BonusEquipMode.BARF ? FarmingStrategy.itemDropValue() : 0;
@@ -19945,15 +19948,6 @@ function mapMonster(location, monster) {
   }
   if (kolmafia.choiceFollowsFight()) kolmafia.runChoice(-1);
 }
-
-/**
- * Returns true if the arguments have all elements equal.
- * @param array1 First array.
- * @param array2 Second array.
- */
-function arrayEquals(array1, array2) {
-  return array1.length === array2.length && array1.every((element, index) => element === array2[index]);
-}
 function questStep(questName) {
   var stringStep = getString(questName);
   if (stringStep === "unstarted" || stringStep === "") return -1;else if (stringStep === "started") return 0;else if (stringStep === "finished") return 999;else {
@@ -20035,19 +20029,14 @@ function safeRestoreMpTarget() {
   }
   return Math.min(kolmafia.myMaxmp(), 200);
 }
-var _ignoreBeatenUp = false;
-var unignoreBeatenUp = () => _ignoreBeatenUp = false;
 function safeRestore() {
-  if (get$2("_lastCombatLost") && kolmafia.lastMonster() !== $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`) {
+  if (kolmafia.lastMonster() === $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`) {
+    if (have$P($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
+  } else if (get$2("_lastCombatLost")) {
     _set("_lastCombatLost", "false");
     throw new Error("You lost your most recent combat! Check to make sure everything is alright before rerunning.");
-  }
-  if (have$P($effect`Beaten Up`) && !_ignoreBeatenUp) {
-    if (kolmafia.lastMonster() === $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`) {
-      uneffect($effect`Beaten Up`);
-    } else {
-      throw new Error("Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.");
-    }
+  } else if (have$P($effect`Beaten Up`)) {
+    throw new Error("Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.");
   }
   var lowPercentageHealth = FarmingStrategy.isUnderwater() ? kolmafia.myInebriety() > kolmafia.inebrietyLimit() ? 0.9 : 0.6 : 0.5;
   if (kolmafia.myHp() < Math.min(kolmafia.myMaxhp() * lowPercentageHealth, get$2("garbo_restoreHpTarget", 2000))) {
@@ -20078,7 +20067,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"cd4b66e63460ce49bf41b5c5d54a702de9a0fc11"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"3f7b0df0a55717d302a1a5105074dd4180344b92"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20148,17 +20137,17 @@ var GHOST_DOG_ADVENTURES = ["Puttin' it on Wax", "Wooof! Wooooooof!", "Playing F
 var JUNE_CLEAVER_ADVENTURES = ["Aunts not Ants", "Bath Time", "Beware of Aligator", "Delicious Sprouts", "Hypnotic Master", "Lost and Found", "Poetic Justice", "Summer Days", "Teacher's Pet"];
 var VIOLET_FOG_ADVENTURES = ["She's So Unusual", "The Big Scary Place", "The Prince of Wishful Thinking", "Violet Fog"];
 function lastAdventureWasWeird() {
-  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-    _ref2$extraEncounters = _ref2.extraEncounters,
-    extraEncounters = _ref2$extraEncounters === void 0 ? [] : _ref2$extraEncounters,
-    _ref2$includeGhostDog = _ref2.includeGhostDog,
-    includeGhostDog = _ref2$includeGhostDog === void 0 ? true : _ref2$includeGhostDog,
-    _ref2$includeHolidayW = _ref2.includeHolidayWanderers,
-    includeHolidayWanderers = _ref2$includeHolidayW === void 0 ? true : _ref2$includeHolidayW,
-    _ref2$includeJuneClea = _ref2.includeJuneCleaver,
-    includeJuneCleaver = _ref2$includeJuneClea === void 0 ? true : _ref2$includeJuneClea,
-    _ref2$includeVioletFo = _ref2.includeVioletFog,
-    includeVioletFog = _ref2$includeVioletFo === void 0 ? true : _ref2$includeVioletFo;
+  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+    _ref$extraEncounters = _ref.extraEncounters,
+    extraEncounters = _ref$extraEncounters === void 0 ? [] : _ref$extraEncounters,
+    _ref$includeGhostDog = _ref.includeGhostDog,
+    includeGhostDog = _ref$includeGhostDog === void 0 ? true : _ref$includeGhostDog,
+    _ref$includeHolidayWa = _ref.includeHolidayWanderers,
+    includeHolidayWanderers = _ref$includeHolidayWa === void 0 ? true : _ref$includeHolidayWa,
+    _ref$includeJuneCleav = _ref.includeJuneCleaver,
+    includeJuneCleaver = _ref$includeJuneCleav === void 0 ? true : _ref$includeJuneCleav,
+    _ref$includeVioletFog = _ref.includeVioletFog,
+    includeVioletFog = _ref$includeVioletFog === void 0 ? true : _ref$includeVioletFog;
   return [].concat(_toConsumableArray(extraEncounters), _toConsumableArray(includeGhostDog ? GHOST_DOG_ADVENTURES : []), _toConsumableArray(includeHolidayWanderers ? getTodaysHolidayWanderers().map(monster => monster.name) : []), _toConsumableArray(includeJuneCleaver ? JUNE_CLEAVER_ADVENTURES : []), _toConsumableArray(includeVioletFog ? VIOLET_FOG_ADVENTURES : [])).includes(get$2("lastEncounter"));
 }
 var juneCleaverChoiceValues = {
@@ -20231,9 +20220,9 @@ function bestShadowRift() {
         // so we don't really need to compute the actual outfit (or the dropModifier for that matter actually)
         var dropModifier = 1 + kolmafia.numericModifier("Item Drop") / 100;
         return sum(kolmafia.getMonsters(l), m => {
-          return sum(kolmafia.itemDropsArray(m), _ref3 => {
-            var drop = _ref3.drop,
-              rate = _ref3.rate;
+          return sum(kolmafia.itemDropsArray(m), _ref2 => {
+            var drop = _ref2.drop,
+              rate = _ref2.rate;
             return garboValue(drop) * clamp(rate * dropModifier / 100, 0, 1);
           });
         });
@@ -20428,9 +20417,9 @@ var luckyAdventures = [{
   phase: "target",
   value: () => kolmafia.canAdventure($location`Cobb's Knob Treasury`) ? 3 * get$2("valueOfAdventure") // Rough estimation, they have 4x the basemeat of barf
   : 0
-}].concat(_toConsumableArray(luckyAdventureValues.map(_ref4 => {
-  var location = _ref4.location,
-    _value = _ref4.value;
+}].concat(_toConsumableArray(luckyAdventureValues.map(_ref3 => {
+  var location = _ref3.location,
+    _value = _ref3.value;
   return {
     location,
     phase: "barf",
@@ -20438,8 +20427,8 @@ var luckyAdventures = [{
   };
 })));
 function determineBestLuckyAdventure() {
-  return maxBy(luckyAdventures, _ref5 => {
-    var value = _ref5.value;
+  return maxBy(luckyAdventures, _ref4 => {
+    var value = _ref4.value;
     return value();
   });
 }
@@ -20449,8 +20438,8 @@ function getBestLuckyAdventure() {
 }
 var SCALE_PATTERN = /Scale: /;
 var CAP_PATTERN = /Cap: (\d*)/;
-function calculateScalerCap(_ref6) {
-  var attributes = _ref6.attributes;
+function calculateScalerCap(_ref5) {
+  var attributes = _ref5.attributes;
   var scaleMatch = SCALE_PATTERN.test(attributes);
   if (!scaleMatch) return 0;
   var capMatch = CAP_PATTERN.exec(attributes);
@@ -20468,10 +20457,10 @@ function scalerCap(monster) {
 var STRONG_SCALER_THRESHOLD = 1_000;
 var isStrongScaler = m => scalerCap(m) > STRONG_SCALER_THRESHOLD;
 var isFreeAndCopyable = monster => monster.copyable && monster.attributes.includes("FREE");
-var valueDrops = monster => sum(kolmafia.itemDropsArray(monster), _ref7 => {
-  var drop = _ref7.drop,
-    rate = _ref7.rate,
-    type = _ref7.type;
+var valueDrops = monster => sum(kolmafia.itemDropsArray(monster), _ref6 => {
+  var drop = _ref6.drop,
+    rate = _ref6.rate,
+    type = _ref6.type;
   return !["c", "0", "p", "a"].includes(type) ? garboValue(drop) * rate / 100 : 0;
 });
 var isFree = monster => monster.attributes.includes("FREE");
@@ -23582,7 +23571,7 @@ function trainNeedsRotating() {
     kolmafia.visitUrl("main.php");
   }
   if (!get$2("trainsetConfiguration")) return true;
-  if (arrayEquals$1(getRotatedCycle(), cycle())) return false;
+  if (arrayEquals(getRotatedCycle(), cycle())) return false;
   if (globalOptions.ascend && estimatedGarboTurns() <= 40) return false;
   var bestStations = getPrioritizedStations();
   if (bestStations.includes(next())) return false;
@@ -26326,7 +26315,6 @@ var FarmTurnEngine = /*#__PURE__*/function (_BaseGarboContextEngi2) {
     }
   }]);
 }(BaseGarboContextEngine);
-
 /**
  * A safe engine for Garbo!
  * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
@@ -26725,7 +26713,7 @@ function leprecondoTask() {
   return {
     name: "Configure Leprecondo",
     ready: () => have$e() && rearrangesRemaining() > 0,
-    completed: () => arrayEquals$1(installedFurniture(), getBestLeprecondoCombination()),
+    completed: () => arrayEquals(installedFurniture(), getBestLeprecondoCombination()),
     do: () => setFurniture.apply(Leprecondo, _toConsumableArray(getBestLeprecondoCombination())),
     spendsTurn: false
   };
@@ -27807,12 +27795,12 @@ var FreeFightTasks = RAW_FIGHTS.map(freeFightTask);
 // Possible additional free fights from tentacles
 function possibleFreeFightQuestTentacleFights() {
   var availableFights = FreeFightTasks.filter(task => {
-    var _task$ready2;
-    return (((_task$ready2 = task.ready) === null || _task$ready2 === void 0 ? void 0 : _task$ready2.call(task)) ?? true) && !task.completed();
+    var _task$ready;
+    return (((_task$ready = task.ready) === null || _task$ready === void 0 ? void 0 : _task$ready.call(task)) ?? true) && !task.completed();
   });
-  return sum(availableFights, _ref7 => {
-    var combatCount = _ref7.combatCount,
-      tentacle = _ref7.tentacle;
+  return sum(availableFights, _ref6 => {
+    var combatCount = _ref6.combatCount,
+      tentacle = _ref6.tentacle;
     return combatCount() * (tentacle ? 1 : 0);
   });
 }
@@ -30167,7 +30155,7 @@ function entendreValue() {
 function worthFeedingRobortender() {
   if (!globalOptions.nobarf) return true;
   if (isFree(globalOptions.target)) return false;
-  return (globalOptions.target.maxMeat + globalOptions.target.minMeat) / 2 >= 300;
+  return kolmafia.meatDrop(globalOptions.target) >= 300;
 }
 function prepRobortender() {
   if (!have$P($familiar`Robortender`)) return;
@@ -31311,12 +31299,6 @@ var CockroachSetup = {
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.abortWithMsg("Hit a combat while sailing the high seas!")),
     post: () => unequip($item`PirateRealm eyepatch`) // Unequip the eyepatch when we're done, to avoid mana issues during diet etc
-  }, {
-    name: "Stop Being Beaten Up",
-    completed: () => !have$P($effect`Beaten Up`),
-    do: () => kolmafia.useSkill($skill`Tongue of the Walrus`),
-    spendsTurn: false,
-    post: unignoreBeatenUp
   }]
 };
 
