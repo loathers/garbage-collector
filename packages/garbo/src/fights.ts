@@ -166,7 +166,6 @@ import { runTargetFight } from "./target/execution";
 import { TargetFightRunOptions } from "./target/staging";
 
 import {
-  expectedFreeFightQuestFights,
   FreeFightQuest,
   possibleFreeFightQuestTentacleFights,
 } from "./tasks/freeFight";
@@ -2278,18 +2277,6 @@ function killRobortCreaturesForFree() {
     Robortender.feed($item`drive-by shooting`);
     setBestLeprechaunAsMeatFamiliar();
   }
-}
-
-// Expected free fights, not including tentacles
-export function estimatedFreeFights(): number {
-  return (
-    sum(freeFightSources, (source: FreeFight) => {
-      const avail = source.available();
-      return typeof avail === "number" ? avail : toInt(avail);
-    }) +
-    expectedFreeFightQuestFights() +
-    expectedFreeGiantSandwormQuestFights()
-  );
 }
 
 // Possible additional free fights from Eldritch Attunement

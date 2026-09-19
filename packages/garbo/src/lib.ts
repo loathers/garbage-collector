@@ -1,5 +1,4 @@
 import {
-  availableChoiceOptions,
   canAdventure,
   choiceFollowsFight,
   cliExecute,
@@ -44,7 +43,6 @@ import {
   myTurncount,
   numericModifier,
   print,
-  printHtml,
   restoreHp,
   restoreMp,
   rollover,
@@ -137,11 +135,10 @@ export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
 }
 
 export function modeValueOfMeat(mode: BonusEquipMode): number {
-  return modeIsFree(mode)
-    ? 0
-    : (baseMeat() +
-        (mode === BonusEquipMode.MEAT_TARGET ? targetMeatDifferential() : 0)) /
-        100;
+  if (modeIsFree(mode)) return 0;
+  if (mode === BonusEquipMode.BARF) return baseMeat() / 100;
+  if (mode === BonusEquipMode.MEAT_TARGET) return targetMeat() / 100;
+  return 0;
 }
 
 export function modeValueOfItem(mode: BonusEquipMode): number {
@@ -355,27 +352,6 @@ export function kramcoGuaranteed(): boolean {
 }
 
 /**
- * Prints Garbo's help menu to the GCLI.
- */
-export function printHelpMenu(): void {
-  type tableData = { tableItem: string; description: string };
-  const helpData: tableData[] = JSON.parse(fileToBuffer("garbo_help.json"));
-  const tableMaxCharWidth = 82;
-  const tableRows = helpData.map(({ tableItem, description }) => {
-    const croppedDescription =
-      description.length > tableMaxCharWidth
-        ? description.replace(/(.{82}\s)/g, `$&\n`)
-        : description;
-    return `<tr><td width=200><pre> ${tableItem}</pre></td><td width=600><pre>${croppedDescription}</pre></td></tr>`;
-  });
-  printHtml(
-    `<table border=2 width=800 style="font-family:monospace;">${tableRows.join(
-      ``,
-    )}</table>`,
-  );
-}
-
-/**
  * Determines the opportunity cost of not using the Pillkeeper to fight an embezzler
  * @returns The expected value of using a pillkeeper charge to fight an embezzler
  */
@@ -449,32 +425,22 @@ export function safeRestoreMpTarget(): number {
   return Math.min(myMaxmp(), 200);
 }
 
-let _ignoreBeatenUp = false;
-export const ignoreBeatenUp = () => (_ignoreBeatenUp = true);
-export const unignoreBeatenUp = () => (_ignoreBeatenUp = false);
-
 export function safeRestore(): void {
   if (
-    get("_lastCombatLost") &&
-    lastMonster() !== $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
+    lastMonster() === $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
   ) {
+    if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
+  } else if (get("_lastCombatLost")) {
     set("_lastCombatLost", "false");
     throw new Error(
       "You lost your most recent combat! Check to make sure everything is alright before rerunning.",
     );
+  } else if (have($effect`Beaten Up`)) {
+    throw new Error(
+      "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.",
+    );
   }
-  if (have($effect`Beaten Up`) && !_ignoreBeatenUp) {
-    if (
-      lastMonster() ===
-      $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
-    ) {
-      uneffect($effect`Beaten Up`);
-    } else {
-      throw new Error(
-        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.",
-      );
-    }
-  }
+
   const lowPercentageHealth = FarmingStrategy.isUnderwater()
     ? myInebriety() > inebrietyLimit()
       ? 0.9
@@ -558,18 +524,6 @@ export function checkGithubVersion(): void {
 
 export function formatNumber(num: number): string {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-}
-
-export function getChoiceOption(partialText: string): number {
-  if (handlingChoice()) {
-    const findResults = Object.entries(availableChoiceOptions()).find(
-      (value) => value[1].indexOf(partialText) > -1,
-    );
-    if (findResults) {
-      return parseInt(findResults[0]);
-    }
-  }
-  return -1;
 }
 
 /**
