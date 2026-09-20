@@ -180,7 +180,9 @@ function eatSafe(qty: number, item: Item) {
   }, item);
 }
 
-const EXPENSIVE_SONGS = $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
+const EXPENSIVE_SONGS = FarmingStrategy.isUnderwater()
+  ? $effects`The Ballad of Richie Thingfinder, Chorale of Companionship, Donho's Bubbly Ballad`
+  : $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
 const USEFUL_SONGS = $effects`Polka of Plenty, Ur-Kel's Aria of Annoyance, Fat Leon's Phat Loot Lyric`;
 function shrugForOde() {
   const inexpensiveSongs = getActiveSongs().filter(
@@ -227,6 +229,9 @@ function drinkSafe(qty: number, item: Item) {
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
+      if (getActiveSongs().length >= 4 && !have($effect`Ode to Booze`)) {
+        throw new Error("Unable to make a song slot for Ode to Booze!");
+      }
       useSkill(
         $skill`The Ode to Booze`,
         Math.ceil(castTurns / turnsPerCast($skill`The Ode to Booze`)),
