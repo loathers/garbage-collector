@@ -2213,6 +2213,17 @@ function getSongCount() {
   return getActiveSongs().length;
 }
 /**
+ * Determine whether player can remember another Accordion Thief song
+ *
+ * @category General
+ * @param quantity Number of songs to test the space for
+ * @returns Whether player can remember another song
+ */
+function canRememberSong() {
+  var quantity = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+  return getSongLimit() - getSongCount() >= quantity;
+}
+/**
  * Determine the player's remaining liver space
  *
  * @category General
@@ -20168,7 +20179,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"92c4444d9bc4a535949764c505de5c10f22e9255"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"b76713c02c7656a108514e4db6173b74fb6313cd"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -23503,7 +23514,17 @@ function meatMood() {
       mood.effect($effect`Disco over Matter`);
     }
   }
-  if (FarmingStrategy.isUnderwater()) mood.skill($skill`Donho's Bubbly Ballad`);
+  if (FarmingStrategy.isUnderwater()) {
+    var availableDonhoTurnsFromSkill = 10 * (50 - get$2("_donhosCasts"));
+    if (get$2("_donhosCasts") < 50 && !globalOptions.ascend) {
+      kolmafia.useSkill($skill`Donho's Bubbly Ballad`, 50 - get$2("_donhosCasts"));
+    } else if (get$2("_donhosCasts") < 50 && availableDonhoTurnsFromSkill > estimatedGarboTurns()) {
+      mood.skill($skill`Donho's Bubbly Ballad`);
+    } else {
+      kolmafia.useSkill($skill`Donho's Bubbly Ballad`, 50 - get$2("_donhosCasts"));
+      mood.potion($item`recording of Donho's Bubbly Ballad`, 0.2 * meat);
+    }
+  }
   mood.skill($skill`Walk: Leisurely Amble`);
   mood.skill($skill`Call For Backup`);
   mood.skill($skill`Soothing Flute`);
@@ -23939,7 +23960,7 @@ function eatSafe(qty, item) {
     if (!kolmafia.eat(qty, item)) throw "Failed to eat safely";
   }, item);
 }
-var EXPENSIVE_SONGS = $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
+var EXPENSIVE_SONGS = FarmingStrategy.isUnderwater() ? $effects`The Ballad of Richie Thingfinder, Chorale of Companionship, Donho's Bubbly Ballad` : $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
 var USEFUL_SONGS = $effects`Polka of Plenty, Ur-Kel's Aria of Annoyance, Fat Leon's Phat Loot Lyric`;
 function shrugForOde() {
   var inexpensiveSongs = getActiveSongs().filter(e => !EXPENSIVE_SONGS.includes(e));
@@ -23974,6 +23995,9 @@ function drinkSafe(qty, item) {
     var odeTurns = qty * item.inebriety;
     var castTurns = odeTurns - kolmafia.haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
+      if (canRememberSong() && !have$P($effect`Ode to Booze`)) {
+        throw new Error("Unable to make a song slot for Ode to Booze!");
+      }
       kolmafia.useSkill($skill`The Ode to Booze`, Math.ceil(castTurns / kolmafia.turnsPerCast($skill`The Ode to Booze`)));
     }
   }
