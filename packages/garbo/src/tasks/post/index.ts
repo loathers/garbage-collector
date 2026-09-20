@@ -73,7 +73,7 @@ import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
 import { leprecondoTask } from "../../resources/leprecondo";
 import { FarmingStrategy } from "../../farmingStrategy";
 
-const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
+const STUFF_TO_CLOSET = $items`bowling ball, funky junk key, sand dollar`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
 
 function closetStuff(): GarboPostTask {
@@ -81,6 +81,7 @@ function closetStuff(): GarboPostTask {
     name: "Closet Stuff",
     completed: () => STUFF_TO_CLOSET.every((i) => itemAmount(i) === 0),
     do: () => STUFF_TO_CLOSET.forEach((i) => putCloset(itemAmount(i), i)),
+    post: () => cliExecute("refresh inventory"),
   };
 }
 

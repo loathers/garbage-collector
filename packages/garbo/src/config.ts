@@ -35,7 +35,15 @@ const farmingStrategyAliases: Record<
   },
   [FarmingMethod.THE_CORAL_CORRAL]: {
     location: $location`The Coral Corral`,
-    aliases: ["cowo", "corral", "ranch", "coolranch", "coral", "cows"],
+    aliases: [
+      "cowo",
+      "corral",
+      "ranch",
+      "rancho",
+      "coolranch",
+      "coral",
+      "cows",
+    ],
   },
 };
 

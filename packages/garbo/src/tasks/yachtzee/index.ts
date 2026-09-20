@@ -2,6 +2,7 @@ import {
   cliExecute,
   inebrietyLimit,
   myInebriety,
+  setLocation,
   use,
   useSkill,
 } from "kolmafia";
@@ -13,14 +14,13 @@ import {
   $skill,
   AprilingBandHelmet,
   CinchoDeMayo,
-  Delayed,
   get,
   have,
 } from "libram";
 import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
 import { getBestWaterBreathingEquipment } from "./lib";
 import { Macro } from "../../combat";
-import { GarboTask } from "../engine";
+import { AlternateTask } from "../engine";
 import { willDrunkAdventure } from "../../lib";
 import { Outfit, Quest } from "grimoire-kolmafia";
 import {
@@ -29,10 +29,15 @@ import {
   willYachtzee,
 } from "../../resources/yachtzee";
 import { GarboStrategy } from "../../combatStrategy";
+import { FarmingContext } from "../context";
+import { FarmingStrategy } from "../../farmingStrategy";
+import { barfOutfit } from "../../outfit/barf";
+import { farmPrepare } from "../farm/farmTurn";
 
-type AlternateTask = GarboTask & { turns: Delayed<number> };
-
-export const yachtzeeQuest: Quest<AlternateTask>[] = [
+export const yachtzeeQuest: Quest<
+  AlternateTask<FarmingContext>,
+  FarmingContext
+>[] = [
   {
     name: "Yachtzee",
     completed: () => !willYachtzee() && !get("noncombatForcerActive"),
@@ -44,6 +49,7 @@ export const yachtzeeQuest: Quest<AlternateTask>[] = [
         choices: { 918: 2 },
         do: $location`The Sunken Party Yacht`,
         outfit: () => {
+          setLocation($location`The Sunken Party Yacht`);
           const outfit = new Outfit();
           const overdrunk = myInebriety() > inebrietyLimit();
           const yachtzeeFamiliar = bestYachtzeeFamiliar();
@@ -94,6 +100,62 @@ export const yachtzeeQuest: Quest<AlternateTask>[] = [
         turns: 0,
         sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
         spendsTurn: false,
+      },
+      {
+        name: "Parka Spikes NC Forcer",
+        completed: () => get("noncombatForcerActive"),
+        ready: () =>
+          have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5,
+        outfit: (context) => {
+          const baseOutfit = Outfit.from(
+            FarmingStrategy.outfit(context),
+            new Error("Failed to construct outfit"),
+          );
+          if (!baseOutfit.equip($items`Jurassic Parka`)) {
+            throw "Failed to complete outfit";
+          }
+          baseOutfit.setModes({ parka: "spikolodon" });
+          return barfOutfit(baseOutfit.spec());
+        },
+        do: () => FarmingStrategy.location,
+        combat: new GarboStrategy((context) =>
+          Macro.skill($skill`Launch spikolodon spikes`).step(
+            FarmingStrategy.combat(context),
+          ),
+        ),
+        prepare: farmPrepare,
+        post: () => FarmingStrategy.post?.(),
+        turns: () => 2 * Math.max(0, 5 - get("_spikolodonSpikeUses")), // Need one turn to cast the NC, and one to do the yachtzee
+        sobriety: "sober",
+        spendsTurn: true,
+      },
+      {
+        name: "McHugeLarge Avalanche NC Forcer",
+        completed: () => get("noncombatForcerActive"),
+        ready: () =>
+          have($item`McHugeLarge left ski`) &&
+          get("_mcHugeLargeAvalancheUses") < 3,
+        outfit: (context) => {
+          const baseOutfit = Outfit.from(
+            FarmingStrategy.outfit(context),
+            new Error("Failed to construct outfit"),
+          );
+          if (!baseOutfit.equip($items`McHugeLarge left ski`)) {
+            throw "Failed to complete outfit";
+          }
+          return barfOutfit(baseOutfit.spec());
+        },
+        do: () => FarmingStrategy.location,
+        combat: new GarboStrategy((context) =>
+          Macro.skill($skill`McHugeLarge Avalanche`).step(
+            FarmingStrategy.combat(context),
+          ),
+        ),
+        prepare: farmPrepare,
+        post: () => FarmingStrategy.post?.(),
+        turns: () => 2 * Math.max(0, 3 - get("_mcHugeLargeAvalancheUses")), // Need one turn to cast the NC, and one to do the yachtzee
+        sobriety: "sober",
+        spendsTurn: true,
       },
       {
         name: "Apriling Band Tuba Yachtzee NC Force",

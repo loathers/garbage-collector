@@ -106,7 +106,6 @@ import { postFreeFightDailySetup } from "./dailiespost";
 import {
   crateStrategy,
   doingGregFight,
-  gregReady,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
 } from "./resources/extrovermectin";
@@ -134,8 +133,6 @@ import {
   isFreeAndCopyable,
   isStrongScaler,
   kramcoGuaranteed,
-  lastAdventureWasWeird,
-  ltbRun,
   mapMonster,
   maxPassiveDamage,
   monsterManuelAvailable,
@@ -293,57 +290,6 @@ function meatTargetSetup() {
   }
 }
 
-function startWandererCounter() {
-  const nextFight = getNextCopyTargetFight();
-  if (
-    !nextFight ||
-    nextFight.canInitializeWandererCounters ||
-    nextFight.draggable
-  ) {
-    return;
-  }
-  const digitizeNeedsStarting =
-    Counter.get("Digitize Monster") === Infinity &&
-    SourceTerminal.getDigitizeUses() !== 0;
-  const romanceNeedsStarting =
-    get("_romanticFightsLeft") > 0 &&
-    Counter.get("Romantic Monster window begin") === Infinity &&
-    Counter.get("Romantic Monster window end") === Infinity;
-  if (digitizeNeedsStarting || romanceNeedsStarting) {
-    if (digitizeNeedsStarting) {
-      print("Starting digitize counter by visiting the Haunted Kitchen!");
-    }
-    if (romanceNeedsStarting) {
-      print("Starting romance counter by visiting the Haunted Kitchen!");
-    }
-    do {
-      let run: ActionSource;
-      if (gregReady()) {
-        print(
-          "You still have gregs active, so we're going to wear your meat outfit.",
-        );
-        run = ltbRun();
-        run.constraints.preparation?.();
-        meatTargetOutfit().dress();
-      } else {
-        print("You do not have gregs active, so this is a regular free run.");
-        run = tryFindFreeRunOrBanish(freeRunConstraints()) ?? ltbRun();
-        run.constraints.preparation?.();
-        freeFightOutfit(toSpec(run), $location`The Haunted Kitchen`).dress();
-      }
-      garboAdventure(
-        $location`The Haunted Kitchen`,
-        Macro.if_(globalOptions.target, Macro.target("wanderer")).step(
-          run.macro,
-        ),
-      );
-    } while (
-      get("lastCopyableMonster") === $monster`Government agent` ||
-      lastAdventureWasWeird({ extraEncounters: ["Lights Out in the Kitchen"] })
-    );
-  }
-}
-
 function pygmyOptions(equip: Item[] = []): FreeFightOptions {
   return {
     spec: () => ({
@@ -422,7 +368,11 @@ export function dailyFights(): void {
             shouldDo: targetingMeat(),
             property: "_garbo_meatChain",
             macro: firstChainMacro,
-            goalMaximize: (spec: OutfitSpec) => meatTargetOutfit(spec).dress(),
+            goalMaximize: (spec: OutfitSpec, location: Location) =>
+              meatTargetOutfit(spec, {
+                location,
+                target: globalOptions.target,
+              }).dress(),
           },
           {
             shouldDo: true,
@@ -472,7 +422,10 @@ export function dailyFights(): void {
             profSpec.famequip = chip;
           }
 
-          goalMaximize({ ...profSpec, ...fightSource.spec });
+          goalMaximize(
+            { ...profSpec, ...fightSource.spec },
+            fightSource.location ?? $location.none,
+          );
 
           if (
             get("_pocketProfessorLectures") <
@@ -498,7 +451,6 @@ export function dailyFights(): void {
           const predictedNextFight = getNextCopyTargetFight();
           if (!predictedNextFight?.draggable) doSausage();
           doGhost();
-          startWandererCounter();
         }
       }
 
@@ -563,7 +515,6 @@ export function dailyFights(): void {
           doSausage();
         }
         doGhost();
-        startWandererCounter();
       }
     });
   }
