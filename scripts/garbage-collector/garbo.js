@@ -20179,7 +20179,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"6e4e802e2543ff7ad220ffa12d7a9fc91b145358"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"26a1d6eb4cc8e38c705371a6ca8b51841cdaecd7"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -23995,7 +23995,7 @@ function drinkSafe(qty, item) {
     var odeTurns = qty * item.inebriety;
     var castTurns = odeTurns - kolmafia.haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
-      if (canRememberSong() && !have$P($effect`Ode to Booze`)) {
+      if (!canRememberSong() && !have$P($effect`Ode to Booze`)) {
         throw new Error("Unable to make a song slot for Ode to Booze!");
       }
       kolmafia.useSkill($skill`The Ode to Booze`, Math.ceil(castTurns / kolmafia.turnsPerCast($skill`The Ode to Booze`)));
