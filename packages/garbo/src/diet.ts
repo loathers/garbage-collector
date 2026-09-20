@@ -69,6 +69,7 @@ import {
   $thrall,
   arrayEquals,
   AsdonMartin,
+  canRememberSong,
   clamp,
   DesignerSweatpants,
   Diet,
@@ -229,7 +230,7 @@ function drinkSafe(qty: number, item: Item) {
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
-      if (getActiveSongs().length >= 4 && !have($effect`Ode to Booze`)) {
+      if (canRememberSong() && !have($effect`Ode to Booze`)) {
         throw new Error("Unable to make a song slot for Ode to Booze!");
       }
       useSkill(
