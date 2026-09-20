@@ -230,7 +230,7 @@ function drinkSafe(qty: number, item: Item) {
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
-      if (canRememberSong() && !have($effect`Ode to Booze`)) {
+      if (!canRememberSong() && !have($effect`Ode to Booze`)) {
         throw new Error("Unable to make a song slot for Ode to Booze!");
       }
       useSkill(
