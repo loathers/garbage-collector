@@ -20067,7 +20067,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"1dd4420b0e1e45574bd0d76438f901b1f0af1ab8"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"46480e9dcd739b7be3045315aecd6177b1d3f507"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20563,8 +20563,8 @@ function cinchoDeMayo(mode) {
   !monsterManuelAvailable() ||
   // If we're doing Yachtzees, only use up excess cincho.
   maximumPinataCasts() <= 0 ||
-  // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying
-  maxPassiveDamage() >= 50) {
+  // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying.  Cows are tankier though.
+  maxPassiveDamage() >= (FarmingStrategy.isUnderwater() ? 150 : 50)) {
     return new Map([]);
   }
 
