@@ -36,6 +36,8 @@ import { usingPurse } from "./outfit/lib";
 import { effectValue } from "./potions";
 import { acquire } from "./acquire";
 import { FarmingStrategy } from "./farmingStrategy";
+import { globalOptions } from "./config";
+import { estimatedGarboTurns } from "./turns";
 
 Mood.setDefaultOptions({
   songSlots: [
@@ -111,7 +113,20 @@ export function meatMood(
     }
   }
 
-  if (FarmingStrategy.isUnderwater()) mood.skill($skill`Donho's Bubbly Ballad`);
+  if (FarmingStrategy.isUnderwater()) {
+    const availableDonhoTurnsFromSkill = 10 * (50 - get("_donhosCasts"));
+    if (get("_donhosCasts") < 50 && !globalOptions.ascend) {
+      useSkill($skill`Donho's Bubbly Ballad`, 50 - get("_donhosCasts"));
+    } else if (
+      get("_donhosCasts") < 50 &&
+      availableDonhoTurnsFromSkill > estimatedGarboTurns()
+    ) {
+      mood.skill($skill`Donho's Bubbly Ballad`);
+    } else {
+      useSkill($skill`Donho's Bubbly Ballad`, 50 - get("_donhosCasts"));
+      mood.potion($item`recording of Donho's Bubbly Ballad`, 0.2 * meat);
+    }
+  }
 
   mood.skill($skill`Walk: Leisurely Amble`);
   mood.skill($skill`Call For Backup`);
