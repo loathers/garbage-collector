@@ -16,6 +16,7 @@ export function waveDireWarren() {
     FarmingStrategy.isUnderwater() &&
     have($item`Monodent of the Sea`) &&
     haveEffect($effect`Fishy`) > copyTargetCount() + 50 && // Let's be very careful
+    haveEffect($effect`Driving Waterproofly`) > copyTargetCount() + 50 && // If we're forced to use other underwater breathing this could be a net negative
     !get("_seadentWaveUsed") &&
     get("_seadentWaveZone") !== $location`The Dire Warren` &&
     get("lastAdventure") === $location`The Dire Warren`
