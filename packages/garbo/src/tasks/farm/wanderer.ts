@@ -255,7 +255,10 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => totalTurnsPlayed() === get("lastLightsOutTurn"),
     do: () => get("nextSpookyravenStephenRoom") as Location,
     outfit: () =>
-      meatTargetOutfit(sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+      meatTargetOutfit(
+        sober() ? {} : { offhand: $item`Drunkula's wineglass` },
+        get("nextSpookyravenStephenRoom") ?? $location.none,
+      ),
     spendsTurn: isSteve,
     combat: new GarboStrategy(() =>
       Macro.if_(
@@ -447,7 +450,7 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => get("_envyfishEggUsed"),
     do: () => use($item`envyfish egg`),
     spendsTurn: true,
-    outfit: () => meatTargetOutfit(),
+    outfit: () => meatTargetOutfit({}, $location.none),
     combat: new GarboStrategy(() => Macro.target("envyfish egg")),
   },
   wanderTask(
@@ -688,7 +691,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
-    outfit: () => meatTargetOutfit(),
+    outfit: () => meatTargetOutfit({}, $location.none),
   },
   {
     name: "Make Mimic Eggs (maximum eggs)",
@@ -702,7 +705,8 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
-    outfit: () => meatTargetOutfit({ familiar: $familiar`Chest Mimic` }),
+    outfit: () =>
+      meatTargetOutfit({ familiar: $familiar`Chest Mimic` }, $location.none),
   },
   {
     name: "Fight Mimic Eggs",
@@ -710,7 +714,7 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () =>
       ChestMimic.differentiableQuantity(globalOptions.target) === 0,
     do: () => ChestMimic.differentiate(globalOptions.target),
-    outfit: () => meatTargetOutfit(),
+    outfit: () => meatTargetOutfit({}, $location.none),
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   },

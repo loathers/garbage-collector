@@ -36,8 +36,8 @@ import { nextWeekReady } from "../resources/sealclub";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
 
 export function meatTargetOutfit(
-  spec: OutfitSpec = {},
-  adventureArgument?: AdventureArgument,
+  spec: OutfitSpec,
+  adventureArgument: AdventureArgument,
 ): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);

@@ -255,7 +255,8 @@ const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
       }
       ChestMimic.differentiate(globalOptions.target);
     },
-    outfit: () => meatTargetOutfit({ familiar: $familiar`Chest Mimic` }),
+    outfit: () =>
+      meatTargetOutfit({ familiar: $familiar`Chest Mimic` }, $location.none),
     combat: new GarboStrategy(() => Macro.meatKill()),
     turns: () =>
       globalOptions.ascend
