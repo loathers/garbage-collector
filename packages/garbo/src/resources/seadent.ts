@@ -17,13 +17,13 @@ export function waveDireWarren() {
     have($item`Monodent of the Sea`) &&
     haveEffect($effect`Fishy`) > copyTargetCount() + 50 && // Let's be very careful
     !get("_seadentWaveUsed") &&
-    get("_seadentWaveZone") !== "The Dire Warren" &&
+    get("_seadentWaveZone") !== $location`The Dire Warren` &&
     get("lastAdventure") === $location`The Dire Warren`
   ) {
     withChoice(1566, 1, () => {
       useSkill($skill`Sea *dent: Summon a Wave`);
     });
-    if (get("_seadentWaveZone") !== "The Dire Warren") {
+    if (get("_seadentWaveZone") !== $location`The Dire Warren`) {
       abort("Something went wrong while waving Dire Warren");
     }
   }
