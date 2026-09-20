@@ -129,7 +129,16 @@ export const yachtzeeQuest: Quest<
         ready: () =>
           have($item`McHugeLarge left ski`) &&
           get("_mcHugeLargeAvalancheUses") < 3,
-        outfit: () => barfOutfit({ equip: $items`McHugeLarge left ski` }),
+        outfit: (context) => {
+          const baseOutfit = Outfit.from(
+            FarmingStrategy.outfit(context),
+            new Error("Failed to construct outfit"),
+          );
+          if (!baseOutfit.equip($items`McHugeLarge left ski`)) {
+            throw "Failed to complete outfit";
+          }
+          return barfOutfit(baseOutfit.spec());
+        },
         do: () => FarmingStrategy.location,
         combat: FarmingStrategy.strategy(),
         prepare: farmPrepare,
