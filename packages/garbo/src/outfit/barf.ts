@@ -9,6 +9,7 @@ import {
   myFury,
   myInebriety,
   retrieveItem,
+  setLocation,
   toSlot,
   totalTurnsPlayed,
 } from "kolmafia";
@@ -121,6 +122,8 @@ export function computeBarfOutfit(
     spec,
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
+
+  setLocation(FarmingStrategy.location);
 
   outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
   applyCheeseBonus(outfit, BonusEquipMode.BARF);

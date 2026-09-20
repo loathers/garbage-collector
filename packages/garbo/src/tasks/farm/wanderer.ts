@@ -11,6 +11,7 @@ import {
   myLightning,
   myRain,
   outfitPieces,
+  setLocation,
   totalTurnsPlayed,
   use,
   visitUrl,
@@ -627,6 +628,7 @@ const BarfTurnTasks: GarboTask[] = [
     name: "Yachtzee (Cooldown ready)",
     completed: () => get("encountersUntilYachtzeeChoice") > 0,
     outfit: () => {
+      setLocation($location`The Sunken Party Yacht`);
       const spec: OutfitSpec = {
         modifier: ["meat", "sea"],
         familiar: bestYachtzeeFamiliar(),

@@ -2,6 +2,7 @@ import {
   cliExecute,
   inebrietyLimit,
   myInebriety,
+  setLocation,
   use,
   useSkill,
 } from "kolmafia";
@@ -48,6 +49,7 @@ export const yachtzeeQuest: Quest<
         choices: { 918: 2 },
         do: $location`The Sunken Party Yacht`,
         outfit: () => {
+          setLocation($location`The Sunken Party Yacht`);
           const outfit = new Outfit();
           const overdrunk = myInebriety() > inebrietyLimit();
           const yachtzeeFamiliar = bestYachtzeeFamiliar();
@@ -122,7 +124,7 @@ export const yachtzeeQuest: Quest<
           ),
         ),
         prepare: farmPrepare,
-        post: FarmingStrategy.post,
+        post: () => FarmingStrategy.post?.(),
         turns: () => 2 * Math.max(0, 5 - get("_spikolodonSpikeUses")), // Need one turn to cast the NC, and one to do the yachtzee
         sobriety: "sober",
         spendsTurn: true,
@@ -150,7 +152,7 @@ export const yachtzeeQuest: Quest<
           ),
         ),
         prepare: farmPrepare,
-        post: FarmingStrategy.post,
+        post: () => FarmingStrategy.post?.(),
         turns: () => 2 * Math.max(0, 3 - get("_mcHugeLargeAvalancheUses")), // Need one turn to cast the NC, and one to do the yachtzee
         sobriety: "sober",
         spendsTurn: true,

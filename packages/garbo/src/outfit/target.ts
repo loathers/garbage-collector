@@ -30,7 +30,7 @@ import {
   targetingMeat,
 } from "../lib";
 import { globalOptions } from "../config";
-import { meatDrop } from "kolmafia";
+import { meatDrop, setLocation } from "kolmafia";
 import { shouldRedigitize } from "../combat";
 import { nextWeekReady } from "../resources/sealclub";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
@@ -47,6 +47,7 @@ export function meatTargetOutfit(
   );
 
   const { location, target } = toAdventure(adventureArgument ?? $location.none);
+  setLocation(location);
   if (location === $location`Crab Island`) {
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
