@@ -20179,7 +20179,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"b76713c02c7656a108514e4db6173b74fb6313cd"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"6e4e802e2543ff7ad220ffa12d7a9fc91b145358"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -25026,15 +25026,14 @@ function cupOfThirteens(mode) {
   return new Map([[$item`Cup of 13s`, cupBonus]]);
 }
 
-function meatTargetOutfit() {
-  var spec = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var adventureArgument = arguments.length > 1 ? arguments[1] : undefined;
+function meatTargetOutfit(spec, adventureArgument) {
   cleaverCheck();
   validateGarbageFoldable(spec);
   var outfit = Outfit.from(spec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`));
   var _toAdventure = toAdventure(adventureArgument ?? $location.none),
     location = _toAdventure.location,
     target = _toAdventure.target;
+  kolmafia.setLocation(location);
   if (location === $location`Crab Island`) {
     var meat = kolmafia.meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
@@ -26684,6 +26683,7 @@ function freeFightOutfit() {
   cleaverCheck();
   var _toAdventure = toAdventure(adventure),
     location = _toAdventure.location;
+  kolmafia.setLocation(location);
   var computedSpec = computeOutfitSpec(spec, location);
   validateGarbageFoldable(computedSpec);
   var outfit = Outfit.from(computedSpec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`));
@@ -26844,13 +26844,14 @@ function leprecondoTask() {
   };
 }
 
-var STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
+var STUFF_TO_CLOSET = $items`bowling ball, funky junk key, sand dollar`;
 var STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
 function closetStuff() {
   return {
     name: "Closet Stuff",
     completed: () => STUFF_TO_CLOSET.every(i => kolmafia.itemAmount(i) === 0),
-    do: () => STUFF_TO_CLOSET.forEach(i => kolmafia.putCloset(kolmafia.itemAmount(i), i))
+    do: () => STUFF_TO_CLOSET.forEach(i => kolmafia.putCloset(kolmafia.itemAmount(i), i)),
+    post: () => kolmafia.cliExecute("refresh inventory")
   };
 }
 function useStuff() {
@@ -28424,41 +28425,6 @@ function meatTargetSetup() {
     initializeExtrovermectinZones();
   }
 }
-function startWandererCounter() {
-  var nextFight = getNextCopyTargetFight();
-  if (!nextFight || nextFight.canInitializeWandererCounters || nextFight.draggable) {
-    return;
-  }
-  var digitizeNeedsStarting = get("Digitize Monster") === Infinity && getDigitizeUses() !== 0;
-  var romanceNeedsStarting = get$2("_romanticFightsLeft") > 0 && get("Romantic Monster window begin") === Infinity && get("Romantic Monster window end") === Infinity;
-  if (digitizeNeedsStarting || romanceNeedsStarting) {
-    if (digitizeNeedsStarting) {
-      kolmafia.print("Starting digitize counter by visiting the Haunted Kitchen!");
-    }
-    if (romanceNeedsStarting) {
-      kolmafia.print("Starting romance counter by visiting the Haunted Kitchen!");
-    }
-    do {
-      var run = void 0;
-      if (gregReady()) {
-        var _run$constraints$prep, _run$constraints;
-        kolmafia.print("You still have gregs active, so we're going to wear your meat outfit.");
-        run = ltbRun();
-        (_run$constraints$prep = (_run$constraints = run.constraints).preparation) === null || _run$constraints$prep === void 0 || _run$constraints$prep.call(_run$constraints);
-        meatTargetOutfit().dress();
-      } else {
-        var _run$constraints$prep2, _run$constraints2;
-        kolmafia.print("You do not have gregs active, so this is a regular free run.");
-        run = tryFindFreeRunOrBanish(freeRunConstraints()) ?? ltbRun();
-        (_run$constraints$prep2 = (_run$constraints2 = run.constraints).preparation) === null || _run$constraints$prep2 === void 0 || _run$constraints$prep2.call(_run$constraints2);
-        freeFightOutfit(toSpec(run), $location`The Haunted Kitchen`).dress();
-      }
-      garboAdventure($location`The Haunted Kitchen`, Macro.if_(globalOptions.target, Macro.target("wanderer")).step(run.macro));
-    } while (get$2("lastCopyableMonster") === $monster`Government agent` || lastAdventureWasWeird({
-      extraEncounters: ["Lights Out in the Kitchen"]
-    }));
-  }
-}
 function pygmyOptions() {
   var equip = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   return {
@@ -28527,7 +28493,10 @@ function dailyFights() {
           shouldDo: targetingMeat(),
           property: "_garbo_meatChain",
           macro: firstChainMacro,
-          goalMaximize: spec => meatTargetOutfit(spec).dress()
+          goalMaximize: (spec, location) => meatTargetOutfit(spec, {
+            location,
+            target: globalOptions.target
+          }).dress()
         }, {
           shouldDo: true,
           property: "_garbo_weightChain",
@@ -28570,7 +28539,7 @@ function dailyFights() {
           if (have$P(chip)) {
             profSpec.famequip = chip;
           }
-          goalMaximize(_objectSpread2(_objectSpread2({}, profSpec), fightSource.spec));
+          goalMaximize(_objectSpread2(_objectSpread2({}, profSpec), fightSource.spec), fightSource.location ?? $location.none);
           if (get$2("_pocketProfessorLectures") < totalAvailableLectures()) {
             var _eventLog$copyTargetS;
             var startLectures = get$2("_pocketProfessorLectures");
@@ -28588,7 +28557,6 @@ function dailyFights() {
           var predictedNextFight = getNextCopyTargetFight();
           if (!(predictedNextFight !== null && predictedNextFight !== void 0 && predictedNextFight.draggable)) doSausage();
           doGhost();
-          startWandererCounter();
         }
       }
       kolmafia.useFamiliar(meatFamiliar());
@@ -28629,7 +28597,6 @@ function dailyFights() {
           doSausage();
         }
         doGhost();
-        startWandererCounter();
       }
     });
   }
@@ -31752,6 +31719,7 @@ function computeBarfOutfit(spec) {
   cleaverCheck();
   validateGarbageFoldable(spec);
   var outfit = Outfit.from(spec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`));
+  kolmafia.setLocation(FarmingStrategy.location);
   outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
   applyCheeseBonus(outfit, BonusEquipMode.BARF);
   if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
@@ -31954,6 +31922,7 @@ var yachtzeeQuest = [{
     do: $location`The Sunken Party Yacht`,
     outfit: () => {
       var _outfit$avoid;
+      kolmafia.setLocation($location`The Sunken Party Yacht`);
       var outfit = new Outfit();
       var overdrunk = kolmafia.myInebriety() > kolmafia.inebrietyLimit();
       var yachtzeeFamiliar = bestYachtzeeFamiliar();
@@ -32009,7 +31978,10 @@ var yachtzeeQuest = [{
     do: () => FarmingStrategy.location,
     combat: new GarboStrategy(context => Macro.skill($skill`Launch spikolodon spikes`).step(FarmingStrategy.combat(context))),
     prepare: farmPrepare,
-    post: FarmingStrategy.post,
+    post: () => {
+      var _FarmingStrategy$post;
+      return (_FarmingStrategy$post = FarmingStrategy.post) === null || _FarmingStrategy$post === void 0 ? void 0 : _FarmingStrategy$post.call(FarmingStrategy);
+    },
     turns: () => 2 * Math.max(0, 5 - get$2("_spikolodonSpikeUses")),
     // Need one turn to cast the NC, and one to do the yachtzee
     sobriety: "sober",
@@ -32028,7 +32000,10 @@ var yachtzeeQuest = [{
     do: () => FarmingStrategy.location,
     combat: new GarboStrategy(context => Macro.skill($skill`McHugeLarge Avalanche`).step(FarmingStrategy.combat(context))),
     prepare: farmPrepare,
-    post: FarmingStrategy.post,
+    post: () => {
+      var _FarmingStrategy$post2;
+      return (_FarmingStrategy$post2 = FarmingStrategy.post) === null || _FarmingStrategy$post2 === void 0 ? void 0 : _FarmingStrategy$post2.call(FarmingStrategy);
+    },
     turns: () => 2 * Math.max(0, 3 - get$2("_mcHugeLargeAvalancheUses")),
     // Need one turn to cast the NC, and one to do the yachtzee
     sobriety: "sober",
@@ -32192,7 +32167,7 @@ var NonBarfTurnTasks = [{
   },
   outfit: () => meatTargetOutfit({
     familiar: $familiar`Chest Mimic`
-  }),
+  }, $location.none),
   combat: new GarboStrategy(() => Macro.meatKill()),
   turns: () => globalOptions.ascend ? clamp(Math.floor($familiar`Chest Mimic`.experience / 50) - 1, 1, 11 - get$2("_mimicEggsObtained")) : 0,
   spendsTurn: () => !globalOptions.target.attributes.includes("FREE")
@@ -32478,7 +32453,7 @@ var BarfTurnTasks = [{
   do: () => get$2("nextSpookyravenStephenRoom"),
   outfit: () => meatTargetOutfit(sober() ? {} : {
     offhand: $item`Drunkula's wineglass`
-  }),
+  }, get$2("nextSpookyravenStephenRoom") ?? $location.none),
   spendsTurn: isSteve,
   combat: new GarboStrategy(() => Macro.if_($monster`Stephen Spookyraven`, Macro.basicCombat()).abortWithMsg("Expected to fight Stephen Spookyraven, but didn't!"))
 }, {
@@ -32602,7 +32577,7 @@ var BarfTurnTasks = [{
   completed: () => get$2("_envyfishEggUsed"),
   do: () => kolmafia.use($item`envyfish egg`),
   spendsTurn: true,
-  outfit: () => meatTargetOutfit(),
+  outfit: () => meatTargetOutfit({}, $location.none),
   combat: new GarboStrategy(() => Macro.target("envyfish egg"))
 }, wanderTask("yellow ray", {}, {
   name: "Cheese Wizard Fondeluge",
@@ -32682,6 +32657,7 @@ var BarfTurnTasks = [{
   name: "Yachtzee (Cooldown ready)",
   completed: () => get$2("encountersUntilYachtzeeChoice") > 0,
   outfit: () => {
+    kolmafia.setLocation($location`The Sunken Party Yacht`);
     var spec = {
       modifier: ["meat", "sea"],
       familiar: bestYachtzeeFamiliar(),
@@ -32730,7 +32706,7 @@ var BarfTurnTasks = [{
   },
   combat: new GarboStrategy(() => Macro.meatKill()),
   spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
-  outfit: () => meatTargetOutfit()
+  outfit: () => meatTargetOutfit({}, $location.none)
 }, {
   name: "Make Mimic Eggs (maximum eggs)",
   ready: () => shouldMakeEgg(),
@@ -32745,13 +32721,13 @@ var BarfTurnTasks = [{
   spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   outfit: () => meatTargetOutfit({
     familiar: $familiar`Chest Mimic`
-  })
+  }, $location.none)
 }, {
   name: "Fight Mimic Eggs",
   ready: () => globalOptions.ascend,
   completed: () => differentiableQuantity(globalOptions.target) === 0,
   do: () => differentiate(globalOptions.target),
-  outfit: () => meatTargetOutfit(),
+  outfit: () => meatTargetOutfit({}, $location.none),
   combat: new GarboStrategy(() => Macro.meatKill()),
   spendsTurn: () => !globalOptions.target.attributes.includes("FREE")
 }, {
