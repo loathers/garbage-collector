@@ -1,5 +1,5 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Familiar, Location } from "kolmafia";
+import { Familiar, Location, setLocation } from "kolmafia";
 import {
   $familiar,
   $item,
@@ -68,6 +68,7 @@ export function freeFightOutfit(
   cleaverCheck();
 
   const { location } = toAdventure(adventure);
+  setLocation(location);
 
   const computedSpec = computeOutfitSpec(spec, location);
 
