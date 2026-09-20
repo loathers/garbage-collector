@@ -628,7 +628,7 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => get("encountersUntilYachtzeeChoice") > 0,
     outfit: () => {
       const spec: OutfitSpec = {
-        modifier: ["meat"],
+        modifier: ["meat", "sea"],
         familiar: bestYachtzeeFamiliar(),
         avoid: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses, over-the-shoulder Folder Holder`,
       };
