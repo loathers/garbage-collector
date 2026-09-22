@@ -28,6 +28,7 @@ import {
   setLocation,
   toSkill,
   use,
+  yamBatteryEffects,
 } from "kolmafia";
 import {
   $effect,
@@ -736,6 +737,19 @@ function sweatEquity() {
   BloodCubicZirconia.cast($skill`BCZ: Sweat Equity`, safeSweatEquityCasts());
 }
 
+const yamBatteryRelevant = Object.keys(yamBatteryEffects()).some(
+  (effect) =>
+    getModifier("Meat Drop", effect) !== 0 ||
+    getModifier("Familiar Weight", effect) !== 0,
+);
+
+function yamBattery() {
+  if (!have($item`yam battery`) || !yamBatteryRelevant) {
+    return;
+  }
+  use($item`yam battery`);
+}
+
 let completedPotionSetup = false;
 export function potionSetupCompleted(): boolean {
   return completedPotionSetup;
@@ -748,6 +762,7 @@ export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
   castAugustScepterBuffs();
   useBusks();
   sweatEquity();
+  yamBattery();
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {

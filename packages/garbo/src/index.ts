@@ -119,7 +119,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(29250); // lgr limit properties
+  sinceKolmafiaRevision(29288); // ASH method for predicting Portable Laughing Stock drops
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
