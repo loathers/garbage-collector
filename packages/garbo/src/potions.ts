@@ -737,10 +737,10 @@ function sweatEquity() {
   BloodCubicZirconia.cast($skill`BCZ: Sweat Equity`, safeSweatEquityCasts());
 }
 
-const yamBatteryRelevant = Object.keys(yamBatteryEffects()).some(
-  (effect) =>
-    getModifier("Meat Drop", effect) !== 0 ||
-    getModifier("Familiar Weight", effect) !== 0,
+const yamBatteryRelevant = Object.keys(yamBatteryEffects()).some((effect) =>
+  FarmingStrategy.valuableModifiers().some(
+    (modifier) => getModifier(modifier, effect) !== 0,
+  ),
 );
 
 function yamBattery() {
