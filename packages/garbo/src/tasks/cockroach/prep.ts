@@ -6,12 +6,12 @@ import {
   inebrietyLimit,
   lastChoice,
   mallPrice,
+  maximize,
   myAdventures,
   myInebriety,
   myMaxhp,
   restoreHp,
   runChoice,
-  Stat,
   visitUrl,
 } from "kolmafia";
 import {
@@ -34,7 +34,7 @@ import { meatTargetOutfit } from "../../outfit/target";
 import { GarboTask } from "../engine";
 import { bestCrewmate, dessertIslandWorthIt, outfitBonuses } from "./lib";
 import { doingGregFight } from "../../resources/extrovermectin";
-import { targetMeat, userConfirmDialog } from "../../lib";
+import { burnLibrams, targetMeat, userConfirmDialog } from "../../lib";
 import { globalOptions } from "../../config";
 import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
@@ -46,7 +46,7 @@ export const CockroachSetup: Quest<GarboTask> = {
     doingGregFight() &&
     globalOptions.target === $monster`cockroach` &&
     myInebriety() <= inebrietyLimit(),
-  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+  completed: () => questStep("_questPirateRealm") > 4,
   tasks: [
     {
       name: "40 Adventure Failsafe",
@@ -95,7 +95,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       },
       outfit: {
         equip: $items`PirateRealm eyepatch`,
-        modifier: Stat.all().map((stat) => `-${stat}`),
+        beforeDress: [() => burnLibrams(100)], // Burn our extra mana before we lose it all equipping eyepatch
       },
       limit: { tries: 1 },
       spendsTurn: false,
@@ -107,7 +107,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       do: $location`Sailing the PirateRealm Seas`,
       outfit: {
         equip: $items`PirateRealm eyepatch`,
-        modifier: Stat.all().map((stat) => `-${stat}`),
       },
       choices: () => ({
         1352:
@@ -132,7 +131,6 @@ export const CockroachSetup: Quest<GarboTask> = {
           $items`PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot`.filter(
             (i) => have(i),
           ),
-        modifier: Stat.all().map((stat) => `-${stat}`),
       }),
       choices: () => ({
         1365: 1,
@@ -173,7 +171,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       choices: { 1355: 1 }, // Land ho!
       outfit: {
         equip: $items`PirateRealm eyepatch`,
-        modifier: Stat.all().map((stat) => `-${stat}`),
       },
       limit: { tries: 1 },
       spendsTurn: false,
@@ -219,6 +216,17 @@ export const CockroachSetup: Quest<GarboTask> = {
       limit: { tries: 8 },
       spendsTurn: true,
     },
+  ],
+};
+
+export const CockroachFinish: Quest<GarboTask> = {
+  name: "Finish Setup Cockroach Target",
+  ready: () =>
+    doingGregFight() &&
+    globalOptions.target === $monster`cockroach` &&
+    myInebriety() <= inebrietyLimit(),
+  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+  tasks: [
     {
       name: "Final Island Encounter (Island 1 (Dessert))",
       ready: () =>
@@ -228,7 +236,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       do: $location`PirateRealm Island`,
       outfit: () => ({
         equip: $items`PirateRealm eyepatch`,
-        modifier: Stat.all().map((stat) => `-${stat}`),
       }),
       choices: { 1385: 1 }, // Take cocoa of youth
       combat: new GarboStrategy(() =>
@@ -250,13 +257,13 @@ export const CockroachSetup: Quest<GarboTask> = {
       outfit: () =>
         meatTargetOutfit(
           {
-            modifier: ["-Muscle", "-Mysticality", "-Moxie"],
             equip: $items`PirateRealm eyepatch`,
             avoid: $items`Roman Candelabra`,
             beforeDress: [
+              () => maximize("MP", false), // Equip some MP stuff while we buff here since our myst was lowered while wearing eyepatch
               () =>
                 meatMood(false, targetMeat()).execute(highMeatMonsterCount()), // meatMood is currently difficult to sort for things that give +stats
-              () => potionSetup(false, true), // run potionSetup while avoiding stats. We do not avoid limited use buffs that may still increase stats like paw wishes or pill keeper.
+              () => potionSetup(false), // run potionSetup while avoiding stats. We do not avoid limited use buffs that may still increase stats like paw wishes or pill keeper.
             ],
           },
           $location`Crab Island`,
