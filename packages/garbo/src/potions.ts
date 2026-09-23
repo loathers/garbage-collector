@@ -5,6 +5,7 @@ import {
   canAdventure,
   canEquip,
   cliExecute,
+  daycount,
   Effect,
   effectModifier,
   equip,
@@ -742,15 +743,31 @@ function yamBattery() {
     return;
   }
 
-  const yamBatteryRelevant = Object.keys(yamBatteryEffects()).some((effect) =>
-    FarmingStrategy.valuableModifiers().some(
-      (modifier) => getModifier(modifier, effect) > 0,
-    ),
-  );
+  const valuableModifiers = FarmingStrategy.valuableModifiers();
 
-  if (!yamBatteryRelevant) {
+  const score = (day: number) =>
+    Object.keys(yamBatteryEffects(day)).reduce((total, effect) => {
+      return (
+        total +
+        valuableModifiers.reduce(
+          (sum, modifier) => sum + Math.max(0, getModifier(modifier, effect)),
+          0,
+        )
+      );
+    }, 0);
+
+  const scoreToday = score(daycount());
+
+  if (scoreToday <= 0) {
     return;
   }
+
+  for (let day = daycount() + 1; day <= daycount() + 30; day++) {
+    if (score(day) > scoreToday) {
+      return;
+    }
+  }
+
   use($item`yam battery`);
 }
 
