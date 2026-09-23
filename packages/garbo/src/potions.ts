@@ -737,14 +737,18 @@ function sweatEquity() {
   BloodCubicZirconia.cast($skill`BCZ: Sweat Equity`, safeSweatEquityCasts());
 }
 
-const yamBatteryRelevant = Object.keys(yamBatteryEffects()).some((effect) =>
-  FarmingStrategy.valuableModifiers().some(
-    (modifier) => getModifier(modifier, effect) !== 0,
-  ),
-);
-
 function yamBattery() {
-  if (!have($item`yam battery`) || !yamBatteryRelevant) {
+  if (!have($item`yam battery`)) {
+    return;
+  }
+
+  const yamBatteryRelevant = Object.keys(yamBatteryEffects()).some((effect) =>
+    FarmingStrategy.valuableModifiers().some(
+      (modifier) => getModifier(modifier, effect) > 0,
+    ),
+  );
+
+  if (!yamBatteryRelevant) {
     return;
   }
   use($item`yam battery`);
