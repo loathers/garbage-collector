@@ -262,8 +262,8 @@ export const CockroachFinish: Quest<GarboTask> = {
             beforeDress: [
               () => maximize("MP", false), // Equip some MP stuff while we buff here since our myst was lowered while wearing eyepatch
               () =>
-                meatMood(false, targetMeat()).execute(highMeatMonsterCount()), // meatMood is currently difficult to sort for things that give +stats
-              () => potionSetup(false), // run potionSetup while avoiding stats. We do not avoid limited use buffs that may still increase stats like paw wishes or pill keeper.
+                meatMood(false, targetMeat()).execute(highMeatMonsterCount()),
+              () => potionSetup(false),
             ],
           },
           $location`Crab Island`,
