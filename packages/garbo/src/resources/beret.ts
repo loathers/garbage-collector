@@ -1,33 +1,13 @@
 import { Effect, effectsModifier, Item, Skill, toSkill } from "kolmafia";
-import {
-  getAcquirePrice,
-  getModifier,
-  have,
-  NumericModifier,
-  sum,
-} from "libram";
-import { baseMeat, marginalFamWeightValue } from "../lib";
+import { getAcquirePrice, getModifier, have } from "libram";
+import { effectValue } from "../potions";
 
 export function beretEffectValue(effect: Effect, duration: number) {
   const skill = toSkill(effect);
   if (skill !== Skill.none && have(skill)) return 0;
-  const meatValue =
-    duration *
-    sum(
-      [
-        {
-          modifier: "Meat Drop",
-          value: baseMeat() / 100,
-        },
-        {
-          modifier: "Familiar Weight",
-          value: (marginalFamWeightValue() * baseMeat()) / 100,
-        },
-      ],
-      ({ modifier, value }: { modifier: NumericModifier; value: number }) =>
-        value * getModifier(modifier, effect),
-    );
-  if (meatValue <= 0) return meatValue;
+  const value = effectValue(effect, duration);
+
+  if (value <= 0) return value;
   const potionPrices = Item.all()
     .filter(
       (i) =>
@@ -39,5 +19,5 @@ export function beretEffectValue(effect: Effect, duration: number) {
       (i) =>
         (getAcquirePrice(i) * duration) / getModifier("Effect Duration", i),
     );
-  return Math.min(meatValue, ...potionPrices);
+  return Math.min(value, ...potionPrices);
 }
