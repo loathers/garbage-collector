@@ -62,10 +62,11 @@ function valueSymbol(symbol: MayamCalendar.Glyph): number {
 }
 
 function yamBatteryScorer(day: number): number {
-  return Object.entries(yamBatteryEffects(day)).reduce(
-    (total, [effect, duration]) =>
-      total + effectValue(toEffect(effect), duration),
-    0,
+  return sum(
+    Object.entries(yamBatteryEffects(day)).map(([effect, duration]) => ({
+      value: effectValue(toEffect(effect), duration),
+    })),
+    "value",
   );
 }
 
