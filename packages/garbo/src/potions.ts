@@ -5,7 +5,6 @@ import {
   canAdventure,
   canEquip,
   cliExecute,
-  daycount,
   Effect,
   effectModifier,
   equip,
@@ -29,7 +28,6 @@ import {
   setLocation,
   toSkill,
   use,
-  yamBatteryEffects,
 } from "kolmafia";
 import {
   $effect,
@@ -738,39 +736,6 @@ function sweatEquity() {
   BloodCubicZirconia.cast($skill`BCZ: Sweat Equity`, safeSweatEquityCasts());
 }
 
-function yamBattery() {
-  if (!have($item`yam battery`)) {
-    return;
-  }
-
-  const valuableModifiers = FarmingStrategy.valuableModifiers();
-
-  const score = (day: number) =>
-    Object.keys(yamBatteryEffects(day)).reduce((total, effect) => {
-      return (
-        total +
-        valuableModifiers.reduce(
-          (sum, modifier) => sum + Math.max(0, getModifier(modifier, effect)),
-          0,
-        )
-      );
-    }, 0);
-
-  const scoreToday = score(daycount());
-
-  if (scoreToday <= 0) {
-    return;
-  }
-
-  for (let day = daycount() + 1; day <= daycount() + 30; day++) {
-    if (score(day) > scoreToday) {
-      return;
-    }
-  }
-
-  use($item`yam battery`);
-}
-
 let completedPotionSetup = false;
 export function potionSetupCompleted(): boolean {
   return completedPotionSetup;
@@ -783,7 +748,6 @@ export function potionSetup(targetsOnly: boolean, avoidStats = false): void {
   castAugustScepterBuffs();
   useBusks();
   sweatEquity();
-  yamBattery();
   // TODO: Count PYEC.
   // TODO: Count free fights (25 meat each for most).
   withLocation($location.none, () => {
