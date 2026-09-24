@@ -6,6 +6,7 @@ import {
   inebrietyLimit,
   lastChoice,
   mallPrice,
+  maximize,
   myAdventures,
   myInebriety,
   myMaxhp,
@@ -259,6 +260,7 @@ export const CockroachFinish: Quest<GarboTask> = {
             equip: $items`PirateRealm eyepatch`,
             avoid: $items`Roman Candelabra`,
             beforeDress: [
+              () => maximize("MP", false), // Equip some MP stuff while we buff here since our myst was lowered while wearing eyepatch
               () =>
                 meatMood(false, targetMeat()).execute(highMeatMonsterCount()),
               () => potionSetup(false),
