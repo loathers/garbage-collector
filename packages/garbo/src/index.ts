@@ -569,6 +569,7 @@ export function main(argString = ""): void {
           if (get("_lastPirateRealmIsland") === $location`Dessert Island`) {
             runGarboQuests([CockroachFinish]); // If it's Dessert island, no need to buff beforehand
           }
+          maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
         }
         // 0. diet stuff.
         if (
@@ -610,6 +611,7 @@ export function main(argString = ""): void {
         });
 
         runGarboQuests([CockroachFinish]); // Fight the giant giant crab after we've dieted for some extra buffs
+        maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
 
         // 2. do some target copy stuff
         freeFights();
