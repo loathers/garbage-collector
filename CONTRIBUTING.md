@@ -1,7 +1,7 @@
 # Welcome to Garbo, a place where PRs are welcome, items are meat, and meat is a skill.
 
 Garbo is structured as a monorepo that contains several distinct packages:
-- The relatively scant `esling-config-garbo`, which is pretty much what it says on the tin
+- The relatively scant `eslint-config-garbo`, which is pretty much what it says on the tin
 - `garbo-lib`, a library that was created to generalize and expose some of garbo's more complicated and widely-applicable subsystems (such as wanderer code)
 - `garbo-choice`, the choice adventure script used by garbo--a vast majority of choice adventure logic is handled by grimoire's "just set the choiceAdventureXXXX property" paradigm, but a few require complex, bespoke handling
 - `garbo-relay`, a relay script used to help configure garbo's settings that I really should update more
