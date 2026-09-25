@@ -276,7 +276,7 @@ function consumeSafe(
   if (!skipAcquire && !usingMoonZoneRestaurant) {
     if (averageAdventures > 0 || additionalValue) {
       const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
-      acquire(qty, item, cap, true);
+      acquire(qty, item, cap, true, undefined, true);
     } else {
       acquire(qty, item);
     }
