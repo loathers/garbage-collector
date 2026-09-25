@@ -610,11 +610,10 @@ export function main(argString = ""): void {
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
         });
 
-        runGarboQuests([CockroachFinish]); // Fight the giant giant crab after we've dieted for some extra buffs
-        maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
-
         // 2. do some target copy stuff
         freeFights();
+        runGarboQuests([CockroachFinish]); // Fight the giant giant crab after we've dieted for some extra buffs
+        maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
         runGarboQuests([SetupTargetCopyQuest]);
         dailyFights();
 
