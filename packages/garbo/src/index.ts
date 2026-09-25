@@ -134,7 +134,7 @@ export function main(argString = ""): void {
   if (
     globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
     (effectFact($monster`sea cow`) !== $effect`Fishy` ||
-      get("seahorseName") === "")
+      (get("seahorseName") === "" && get("lassoTrainingCount") < 20))
   ) {
     globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }

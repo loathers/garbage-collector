@@ -39,7 +39,7 @@ export function bofaFactory(
   ) {
     const validLocations = Location.all().filter(
       (location) =>
-        canWander(location, "yellow ray") &&
+        canWander(location, "yellow ray", options.underwaterAllowed) &&
         canAdventureOrUnlock(location, true, options.underwaterAllowed) &&
         !locationSkiplist.includes(location),
     );
