@@ -18313,8 +18313,8 @@ var wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratb
 function canWanderTypeWander(location) {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
-function canWander(location, type) {
-  if (underwater(location)) return false;
+function canWander(location, type, underwaterAllowed) {
+  if (underwater(location) && !underwaterAllowed) return false;
   switch (type) {
     case "backup":
     case "freerun":
@@ -18397,13 +18397,13 @@ var WanderingSources = [{
 }];
 function wandererTurnsAvailableToday(options, location, requiresMonsterKill) {
   var canWanderCache = {
-    backup: canWander(location, "backup"),
-    wanderer: canWander(location, "wanderer"),
-    "yellow ray": canWander(location, "yellow ray"),
-    freefight: canWander(location, "freefight"),
-    "conditional freefight": canWander(location, "conditional freefight"),
-    "freefight (no items)": canWander(location, "freefight (no items)"),
-    freerun: canWander(location, "freerun")
+    backup: canWander(location, "backup", options.underwaterAllowed),
+    wanderer: canWander(location, "wanderer", options.underwaterAllowed),
+    "yellow ray": canWander(location, "yellow ray", options.underwaterAllowed),
+    freefight: canWander(location, "freefight", options.underwaterAllowed),
+    "conditional freefight": canWander(location, "conditional freefight", options.underwaterAllowed),
+    "freefight (no items)": canWander(location, "freefight (no items)", options.underwaterAllowed),
+    freerun: canWander(location, "freerun", options.underwaterAllowed)
   };
   var digitize = canWanderCache["backup"] && options.digitzesRemaining ? options.digitzesRemaining(options.estimatedTurns()) : 0;
   var pigSkinnerRay = canWanderCache["backup"] && have$P($skill`Free-For-All`) ? Math.floor(options.estimatedTurns() / 25) : 0;
@@ -18685,7 +18685,7 @@ function monsterValues$1(location, forceItemDrops, options) {
 // Monster item drop values
 function itemDropFactory(type, locationSkiplist, options) {
   if (["yellow ray", "freefight", "conditional freefight"].includes(type)) {
-    var validLocations = kolmafia.Location.all().filter(location => canWander(location, "yellow ray") && canAdventureOrUnlock(location) && !locationSkiplist.includes(location));
+    var validLocations = kolmafia.Location.all().filter(location => canWander(location, "yellow ray", options.underwaterAllowed) && canAdventureOrUnlock(location) && !locationSkiplist.includes(location));
     return _toConsumableArray(validLocations).map(l => {
       return new WandererTarget({
         name: `Item Drop Values`.concat(type === "yellow ray" ? ` (Guaranteed Drops)` : ""),
@@ -18774,7 +18774,7 @@ function monsterValues(location, options) {
 }
 function bofaFactory(type, locationSkiplist, options) {
   if (["yellow ray", "freefight", "conditional freefight", "freefight (no items)"].includes(type) && have$P($skill`Just the Facts`)) {
-    var validLocations = kolmafia.Location.all().filter(location => canWander(location, "yellow ray") && canAdventureOrUnlock(location, true, options.underwaterAllowed) && !locationSkiplist.includes(location));
+    var validLocations = kolmafia.Location.all().filter(location => canWander(location, "yellow ray", options.underwaterAllowed) && canAdventureOrUnlock(location, true, options.underwaterAllowed) && !locationSkiplist.includes(location));
     return _toConsumableArray(validLocations).map(l => {
       return new WandererTarget({
         name: `Book of Facts`,
@@ -18938,7 +18938,7 @@ function bestWander(type, locationSkiplist, nameSkiplist, options) {
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
         var wanderTarget = _step.value;
-        if (!nameSkiplist.includes(wanderTarget.name) && !locationSkiplist.includes(wanderTarget.location) && canWander(wanderTarget.location, type)) {
+        if (!nameSkiplist.includes(wanderTarget.name) && !locationSkiplist.includes(wanderTarget.location) && canWander(wanderTarget.location, type, options.underwaterAllowed)) {
           var location = wanderTarget.location;
           // Retrieve existing data for location if extant
           var zoneData = ensureMapElement(locationValues, location, {
@@ -19018,7 +19018,7 @@ function wanderWhere(options, type) {
   var locationSkiplist = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
   var candidate = bestWander(type, locationSkiplist, nameSkiplist, options);
   var failed = candidate.targets.filter(target => !target.prepareTurn());
-  var badLocation = !canAdventureOrUnlock(candidate.location, true, options.underwaterAllowed) || !unlock(candidate.location, candidate.value) || !canWander(candidate.location, type) ? [candidate.location] : [];
+  var badLocation = !canAdventureOrUnlock(candidate.location, true, options.underwaterAllowed) || !unlock(candidate.location, candidate.value) || !canWander(candidate.location, type, options.underwaterAllowed) ? [candidate.location] : [];
   if (failed.length > 0 || badLocation.length > 0) {
     return wanderWhere(options, type, [].concat(_toConsumableArray(nameSkiplist), _toConsumableArray(failed.map(target => target.name))), [].concat(_toConsumableArray(locationSkiplist), badLocation));
   } else {
@@ -20179,7 +20179,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"26a1d6eb4cc8e38c705371a6ca8b51841cdaecd7"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"28131ada0ce3ea25a79a80cc1fbb1425ce3cf437"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -32991,7 +32991,7 @@ function main() {
   }
 
   // Cowo is for professionals only
-  if (globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL && (kolmafia.effectFact($monster`sea cow`) !== $effect`Fishy` || get$2("seahorseName") === "")) {
+  if (globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL && (kolmafia.effectFact($monster`sea cow`) !== $effect`Fishy` || get$2("seahorseName") === "" && get$2("lassoTrainingCount") < 20)) {
     globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
 
