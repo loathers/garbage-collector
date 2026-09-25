@@ -239,8 +239,12 @@ function canWanderTypeWander(location: Location): boolean {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
 
-export function canWander(location: Location, type: DraggableFight): boolean {
-  if (underwater(location)) return false;
+export function canWander(
+  location: Location,
+  type: DraggableFight,
+  underwaterAllowed = false,
+): boolean {
+  if (underwater(location) && !underwaterAllowed) return false;
   switch (type) {
     case "backup":
     case "freerun":
@@ -353,13 +357,21 @@ export function wandererTurnsAvailableToday(
   requiresMonsterKill: boolean,
 ): number {
   const canWanderCache: Record<DraggableFight, boolean> = {
-    backup: canWander(location, "backup"),
-    wanderer: canWander(location, "wanderer"),
-    "yellow ray": canWander(location, "yellow ray"),
-    freefight: canWander(location, "freefight"),
-    "conditional freefight": canWander(location, "conditional freefight"),
-    "freefight (no items)": canWander(location, "freefight (no items)"),
-    freerun: canWander(location, "freerun"),
+    backup: canWander(location, "backup", options.underwaterAllowed),
+    wanderer: canWander(location, "wanderer", options.underwaterAllowed),
+    "yellow ray": canWander(location, "yellow ray", options.underwaterAllowed),
+    freefight: canWander(location, "freefight", options.underwaterAllowed),
+    "conditional freefight": canWander(
+      location,
+      "conditional freefight",
+      options.underwaterAllowed,
+    ),
+    "freefight (no items)": canWander(
+      location,
+      "freefight (no items)",
+      options.underwaterAllowed,
+    ),
+    freerun: canWander(location, "freerun", options.underwaterAllowed),
   };
 
   const digitize =
