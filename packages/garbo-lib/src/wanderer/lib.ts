@@ -67,11 +67,11 @@ export type WandererFactoryOptions = {
   effectValue: (effect: Effect, duration: number) => number;
   plentifulMonsters: Monster[];
   prioritizeCappingGuzzlr: boolean;
+  underwaterAllowed: boolean;
   digitzesRemaining?: (turns: number) => number;
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
   canRefractedGaze?: boolean;
-  underwaterAllowed?: boolean;
 };
 
 export type WandererFactory = (
@@ -242,7 +242,7 @@ function canWanderTypeWander(location: Location): boolean {
 export function canWander(
   location: Location,
   type: DraggableFight,
-  underwaterAllowed = false,
+  underwaterAllowed: boolean,
 ): boolean {
   if (underwater(location) && !underwaterAllowed) return false;
   switch (type) {
