@@ -18,7 +18,6 @@ import {
   applyCheeseBonus,
   bestBjornalike,
   cleaverCheck,
-  familiarWaterBreathingEquipment,
   useUPCsIfNeeded,
   validateGarbageFoldable,
   waterBreathingEquipment,
@@ -98,7 +97,7 @@ export function meatTargetOutfit(
   const underwater = location?.environment === "underwater";
   if (underwater) {
     if (!outfit.familiar.underwater && !have($effect`Driving Waterproofly`)) {
-      outfit.equipFirst(familiarWaterBreathingEquipment);
+      outfit.modifier.push("sea");
     }
 
     if (!outfit.equipFirst(waterBreathingEquipment)) {
