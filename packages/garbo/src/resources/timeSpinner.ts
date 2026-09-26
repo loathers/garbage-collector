@@ -6,6 +6,7 @@ import {
   Monster,
   print,
   runChoice,
+  toMonster,
   visitUrl,
 } from "kolmafia";
 import { get } from "libram";
@@ -34,7 +35,12 @@ export function timeSpinnerRefused(monster: Monster): boolean {
 function offersMonster(monster: Monster): boolean | null {
   const monids = availableChoiceSelectInputs(1)["monid"];
   if (!monids || Object.keys(monids).length === 0) return null;
-  if (`${monster.id}` in monids) return true;
+  if (
+    Object.keys(monids)
+      .map((id) => toMonster(id))
+      .includes(monster)
+  )
+    return true;
   print(
     `The Time-Spinner is only offering: ${Object.values(monids).join(", ")}`,
     HIGHLIGHT,
@@ -101,4 +107,12 @@ export function travelToRecentFight(monster: Monster): boolean {
     return false;
   }
   return true;
+}
+
+export function resetSpinnerCache(monster?: Monster) {
+  if (monster) {
+    refusedMonsterIds.delete(monster.id);
+  } else {
+    refusedMonsterIds.clear();
+  }
 }
