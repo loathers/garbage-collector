@@ -83,6 +83,7 @@ import {
   TargetFightConfigOptions as CopyTargetFightConfigOptions,
   RunOptions,
 } from "./lib";
+import { waveDireWarren } from "../resources/seadent";
 
 export class CopyTargetFight implements CopyTargetFightConfigOptions {
   name: string;
@@ -569,6 +570,7 @@ const gregFights = (
         `Fluffy bunny is supposedly banished by ${bunnyBanish}, but this appears not to be the case; the most likely issue is that your ${fightsProp} preference is nonzero and should probably be zero.`,
       );
     }
+    waveDireWarren();
   }
 
   const resourceIsOccupied = () =>

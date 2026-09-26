@@ -608,6 +608,7 @@ export function main(argString = ""): void {
         setDefaultMaximizeOptions({
           preventEquip: preventEquip,
           preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
+          updateOnLocationChange: true,
         });
 
         // 2. do some target copy stuff
