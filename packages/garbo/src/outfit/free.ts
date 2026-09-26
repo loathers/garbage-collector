@@ -78,6 +78,8 @@ export function freeFightOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
+  if (location.environment === "underwater") outfit.modifier.push("+sea");
+
   outfit.familiar ??= freeFightFamiliar(
     adventure,
     computeFamiliarMenuOptions(
