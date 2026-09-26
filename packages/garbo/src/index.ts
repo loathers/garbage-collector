@@ -38,6 +38,7 @@ import {
   $familiars,
   $item,
   $items,
+  $location,
   $monster,
   $monsters,
   $skill,
@@ -57,7 +58,6 @@ import {
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
   unequip,
-  withProperty,
 } from "libram";
 import { stashItems, withStash, withVIPClan } from "./clan";
 import { FarmingMethod, globalOptions, isQuickGear } from "./config";
@@ -91,11 +91,7 @@ import {
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
 import { FarmingStrategy } from "./farmingStrategy";
-import {
-  runGarboFarmQuests,
-  runGarboQuests,
-  runSafeGarboQuests,
-} from "./tasks/engine";
+import { runGarboFarmQuests, runGarboQuests } from "./tasks/engine";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -134,7 +130,7 @@ export function main(argString = ""): void {
   if (
     globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
     (effectFact($monster`sea cow`) !== $effect`Fishy` ||
-      get("seahorseName") === "")
+      (get("seahorseName") === "" && get("lassoTrainingCount") < 20))
   ) {
     globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
@@ -569,10 +565,11 @@ export function main(argString = ""): void {
           !globalOptions.simdiet
         ) {
           if (!globalOptions.nodiet) nonOrganAdventures();
-          runSafeGarboQuests([DailyFamiliarsQuest]); // Prep robortender ahead of time in case it's a giant crab
-          withProperty("removeMalignantEffects", false, () =>
-            runGarboQuests([CockroachSetup]),
-          );
+          runGarboQuests([CockroachSetup]); // Set up piraterealm up until the final encounter for island 1
+          if (get("_lastPirateRealmIsland") === $location`Dessert Island`) {
+            runGarboQuests([CockroachFinish]); // If it's Dessert island, no need to buff beforehand
+          }
+          maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
         }
         // 0. diet stuff.
         if (
@@ -616,6 +613,8 @@ export function main(argString = ""): void {
 
         // 2. do some target copy stuff
         freeFights();
+        runGarboQuests([CockroachFinish]); // Fight the giant giant crab after we've dieted for some extra buffs
+        maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
         runGarboQuests([SetupTargetCopyQuest]);
         dailyFights();
 
@@ -650,8 +649,7 @@ export function main(argString = ""): void {
   }
   set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
 }
-import { CockroachSetup } from "./tasks/cockroach/prep";
-import { DailyFamiliarsQuest } from "./tasks/dailyFamiliars";
+import { CockroachFinish, CockroachSetup } from "./tasks/cockroach/prep";
 import { EmbezzlerFightsQuest } from "./tasks/embezzler";
 import { FarmQuests } from "./tasks/farm";
 import { FinishUpQuest } from "./tasks/finishUp";

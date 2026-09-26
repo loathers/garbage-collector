@@ -187,7 +187,7 @@ function bestWander(
       if (
         !nameSkiplist.includes(wanderTarget.name) &&
         !locationSkiplist.includes(wanderTarget.location) &&
-        canWander(wanderTarget.location, type)
+        canWander(wanderTarget.location, type, options.underwaterAllowed)
       ) {
         const { location } = wanderTarget;
 
@@ -295,7 +295,7 @@ function wanderWhere(
       options.underwaterAllowed,
     ) ||
     !unlock(candidate.location, candidate.value) ||
-    !canWander(candidate.location, type)
+    !canWander(candidate.location, type, options.underwaterAllowed)
       ? [candidate.location]
       : [];
 

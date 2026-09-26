@@ -67,7 +67,7 @@ export function itemDropFactory(
   if (["yellow ray", "freefight", "conditional freefight"].includes(type)) {
     const validLocations = Location.all().filter(
       (location) =>
-        canWander(location, "yellow ray") &&
+        canWander(location, "yellow ray", options.underwaterAllowed) &&
         canAdventureOrUnlock(location) &&
         !locationSkiplist.includes(location),
     );
