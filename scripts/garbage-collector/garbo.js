@@ -20179,7 +20179,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"46729b27c40df8881f4ab5453b958c42be60ae84"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"0fb34f19732a1f507ace15ff5dc6cde3ec669395"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -23936,7 +23936,7 @@ function consumeWhileRespectingMoonRestaurant(command, item) {
   var usingMoonZoneRestaurant = availableFromMoonZoneRestaurant(item);
   withProperties({
     autoSatisfyWithCloset: !usingMoonZoneRestaurant && get$2("autoSatisfyWithCloset"),
-    autoSatisfyWithMall: !usingMoonZoneRestaurant
+    autoSatisfyWithMall: false
   }, command);
 }
 function eatSafe(qty, item) {
@@ -24014,7 +24014,9 @@ function drinkSafe(qty, item) {
   }
 }
 function chewSafe(qty, item) {
-  if (!kolmafia.chew(qty, item)) throw "Failed to chew safely";
+  withProperty("autoSatisfyWithMall", false, () => {
+    if (!kolmafia.chew(qty, item)) throw "Failed to chew safely";
+  });
 }
 function consumeSafe(qty, item, additionalValue, skipAcquire) {
   var spleenCleaned = spleenCleaners.get(item);
@@ -24026,7 +24028,7 @@ function consumeSafe(qty, item, additionalValue, skipAcquire) {
   if (!usingMoonZoneRestaurant) {
     if (averageAdventures > 0 || additionalValue) {
       var cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
-      acquire(qty, item, cap, true);
+      acquire(qty, item, cap, true, undefined, true);
     } else {
       acquire(qty, item);
     }
@@ -26680,6 +26682,7 @@ function freeFightOutfit() {
   var computedSpec = computeOutfitSpec(spec, location);
   validateGarbageFoldable(computedSpec);
   var outfit = Outfit.from(computedSpec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`));
+  if (location.environment === "underwater") outfit.modifier.push("+sea");
   outfit.familiar ?? (outfit.familiar = freeFightFamiliar(adventure, computeFamiliarMenuOptions(options.familiarOptions, options.duplicate ?? false, outfit)));
   var mode = location === $location`The Deep Machine Tunnels` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   if (outfit.familiar !== $familiar`Patriotic Eagle`) {
