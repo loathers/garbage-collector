@@ -481,6 +481,22 @@ function usePorkToilet(): GarboPostTask {
   };
 }
 
+function waterBalloonChampion(): GarboPostTask {
+  return {
+    name: "Claim Water Balloon Champion",
+    ready: () => get("_waterBalloonTossStreak", 0) >= 111,
+    completed: () => get("_waterBalloonBuffGranted", true),
+    do: () => {
+      visitUrl("council.php");
+      if (!have($effect`Water Balloon Champion`)) {
+        throw new Error(
+          "We expected to get Water Balloon Champion but we didn't! Please report. Manually set _waterBalloonBuffGranted to true to rerun garbo",
+        );
+      }
+    },
+  };
+}
+
 export function PostQuest<C = void>(
   completed?: () => boolean,
 ): Quest<GarboTask<C>, C> {
@@ -504,6 +520,7 @@ export function PostQuest<C = void>(
       eightBitFatLoot(),
       refillCinch(),
       usePorkToilet(),
+      waterBalloonChampion(),
       leafResin(),
       wardrobeOMatic(),
       { ...leprecondoTask(), available: Leprecondo.have() },
