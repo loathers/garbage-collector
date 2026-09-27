@@ -5,6 +5,7 @@ import {
   haveEquipped,
   isBanished,
   itemAmount,
+  lastMonster,
   Location,
   myAdventures,
   myHash,
@@ -62,6 +63,7 @@ import {
   WISH_VALUE,
 } from "../lib";
 import {
+  resetSpinnerCache,
   timeSpinnerRefused,
   travelToRecentFight,
 } from "../resources/timeSpinner";
@@ -557,6 +559,8 @@ const gregFights = (
       Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
       Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
     );
+
+    resetSpinnerCache(lastMonster());
 
     if (
       get("lastEncounter") === $monster`fluffy bunny`.name &&
