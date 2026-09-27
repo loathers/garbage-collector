@@ -28,7 +28,7 @@ import {
   targetingMeat,
 } from "../lib";
 import { globalOptions } from "../config";
-import { meatDrop, setLocation } from "kolmafia";
+import { booleanModifier, meatDrop, setLocation } from "kolmafia";
 import { shouldRedigitize } from "../combat";
 import { nextWeekReady } from "../resources/sealclub";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
@@ -98,7 +98,15 @@ export function meatTargetOutfit(
     outfit.modifier.push("sea");
   }
 
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
+  const familiarSlotNeededForBreathing =
+    underwater &&
+    !outfit.familiar.underwater &&
+    !booleanModifier("Underwater Familiar");
+
+  if (
+    outfit.familiar === $familiar`Jill-of-All-Trades` &&
+    !familiarSlotNeededForBreathing
+  ) {
     outfit.equip($item`LED candle`);
     outfit.setModes({ jillcandle: "ultraviolet" });
   }
