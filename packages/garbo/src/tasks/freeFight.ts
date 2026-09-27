@@ -161,7 +161,6 @@ function litLeafMacro(monster: Monster): Macro {
     [$monster`flaming monstera`, $item`tied-up flaming monstera`],
     [$monster`leaviathan`, $item`tied-up leaviathan`],
   ]).get(monster);
-
   // Only convert lassos if we can funksling as the combat counts as a free loss
   return Macro.externalIf(
     haveEquipped($item`tearaway pants`),
@@ -738,7 +737,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
   {
     name: "Machine Elf",
     adventure: $location`The Deep Machine Tunnels`,
-    ready: () => have($familiar`Machine Elf`) || 
+    ready: () => have($familiar`Machine Elf`) ||
       dmtCommaValuable(MAX_SELF_DRIBBLING_BASKETBALL_PRICE, MAX_DMT_SNOWGLOBE_PRICE),
     completed: () => get("_machineTunnelsAdv") >= 5,
     do: $location`The Deep Machine Tunnels`,
