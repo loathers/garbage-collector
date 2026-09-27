@@ -1,4 +1,4 @@
-import { getMonsters, Location, Monster } from "kolmafia";
+import { Location, Monster } from "kolmafia";
 import { WanderDetails, WandererManager } from "garbo-lib";
 
 import { globalOptions } from "./config";
@@ -17,6 +17,7 @@ import { garboValue } from "./garboValue";
 import { effectValue } from "./potions";
 import { digitizedMonstersRemainingForTurns } from "./lib";
 import { safeRefractedCasts } from "./resources";
+import { FarmingStrategy } from "./farmingStrategy";
 
 let _wanderer: WandererManager | undefined;
 export function wanderer(): WandererManager {
@@ -32,7 +33,7 @@ export function wanderer(): WandererManager {
       digitzesRemaining: digitizedMonstersRemainingForTurns,
       plentifulMonsters: [
         globalOptions.target,
-        ...(globalOptions.nobarf ? [] : getMonsters($location`Barf Mountain`)),
+        ...(globalOptions.nobarf ? [] : FarmingStrategy.monsters()),
         ...(have($item`Kramco Sausage-o-Matic™`)
           ? $monsters`sausage goblin`
           : []),

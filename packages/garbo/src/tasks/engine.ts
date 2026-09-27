@@ -1,4 +1,5 @@
 import {
+  ContextualEngine,
   Engine,
   EngineOptions,
   getTasks,
@@ -13,6 +14,7 @@ import {
   $familiar,
   $item,
   $skill,
+  clearMaximizerCache,
   Delayed,
   get,
   have,
@@ -20,6 +22,7 @@ import {
   undelay,
 } from "libram";
 import {
+  booleanModifier,
   bufferToFile,
   equip,
   fileToBuffer,
@@ -35,14 +38,22 @@ import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
 import { shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
+import { FarmingContext } from "./context";
+import { BanishMethod, chooseBanish } from "../resources/banish";
 
-export type GarboTask = StrictCombatTask<never, GarboStrategy> & {
-  sobriety?: Delayed<"drunk" | "sober" | undefined>;
-  spendsTurn: Delayed<boolean>;
-  duplicate?: Delayed<boolean>;
+export type GarboTask<Context = unknown> = StrictCombatTask<
+  never,
+  Context,
+  GarboStrategy<Context>
+> & {
+  sobriety?: Delayed<"drunk" | "sober" | undefined, [Context]>;
+  spendsTurn: Delayed<boolean, [Context]>;
+  duplicate?: Delayed<boolean, [Context]>;
 };
 
-export type AlternateTask = GarboTask & { turns: Delayed<number> };
+export type AlternateTask<Context = unknown> = GarboTask<Context> & {
+  turns: Delayed<number>;
+};
 
 function logTargetFight(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
@@ -57,15 +68,19 @@ function logTargetFight(encounterType: string) {
 /** A base engine for Garbo!
  * Runs extra logic before executing all tasks.
  */
-export class BaseGarboEngine extends Engine<never, GarboTask> {
+abstract class BaseGarboContextEngine<
+  Context = unknown,
+> extends ContextualEngine<never, Context, GarboTask<Context>> {
   static defaultSettings = {
     ...Engine.defaultSettings,
     choiceAdventureScript: "garbo_choice.js",
   };
-
   history: Array<{ name: string; startTime: number; durationMs: number }> = [];
 
-  constructor(tasks: GarboTask[], options?: EngineOptions | undefined) {
+  constructor(
+    tasks: GarboTask<Context>[],
+    options?: EngineOptions<never, Context, GarboTask<Context>> | undefined,
+  ) {
     const startTime = Date.now();
     super(tasks, options);
 
@@ -78,7 +93,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     }
   }
 
-  printExecutingMessage(task: GarboTask) {
+  printExecutingMessage(task: GarboTask<Context>) {
     print(``);
     print(`Executing ${task.name}`, HIGHLIGHT);
   }
@@ -106,9 +121,9 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     }
   }
 
-  available(task: GarboTask): boolean {
+  available(task: GarboTask<Context>): boolean {
     safeInterrupt();
-    const taskSober = undelay(task.sobriety);
+    const taskSober = undelay(task.sobriety, this.getContext(task));
     if (taskSober) {
       return (
         ((taskSober === "drunk" && !sober()) ||
@@ -119,12 +134,20 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     return super.available(task);
   }
 
-  dress(task: GarboTask, outfit: Outfit) {
-    const duplicate = undelay(task.duplicate);
+  dress(task: GarboTask<Context>, outfit: Outfit) {
+    const duplicate = undelay(task.duplicate, this.getContext(task));
     if (duplicate && have($item`pro skateboard`) && !get("_epicMcTwistUsed")) {
       outfit.equip($item`pro skateboard`);
     }
     super.dress(task, outfit);
+    const canBreathe = () => booleanModifier("Adventure Underwater");
+    if (outfit.modifier.includes("+sea") && !canBreathe()) {
+      clearMaximizerCache();
+      super.dress(task, outfit);
+      if (!canBreathe()) {
+        throw new Error("Can't adventure underwater, figure it out.");
+      }
+    }
     if (itemAmount($item`tiny stillsuit`) > 0) {
       equip(
         myFamiliar() === $familiar`Cornbeefadon`
@@ -135,15 +158,16 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     }
   }
 
-  prepare(task: GarboTask): void {
+  prepare(task: GarboTask<Context>): void {
     if ("combat" in task) safeRestore();
     super.prepare(task);
   }
 
-  execute(task: GarboTask): void {
+  execute(task: GarboTask<Context>): void {
     const startTime = Date.now();
     const spentTurns = totalTurnsPlayed();
-    const duplicate = undelay(task.duplicate);
+    const context = this.getContext(task);
+    const duplicate = undelay(task.duplicate, context);
     const before = SourceTerminal.getSkills();
     if (
       duplicate &&
@@ -154,7 +178,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     }
     super.execute(task);
     if (totalTurnsPlayed() !== spentTurns) {
-      if (!undelay(task.spendsTurn)) {
+      if (!undelay(task.spendsTurn, context)) {
         print(
           `Task ${task.name} spent a turn but was marked as not spending turns`,
         );
@@ -182,7 +206,7 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
     }
   }
 
-  markAttempt(task: GarboTask): void {
+  markAttempt(task: GarboTask<Context>): void {
     super.markAttempt(task);
     if (
       !!globalOptions.halt &&
@@ -197,21 +221,54 @@ export class BaseGarboEngine extends Engine<never, GarboTask> {
   }
 }
 
+export class BaseGarboEngine extends BaseGarboContextEngine<void> {
+  getContext() {
+    // noop
+  }
+}
+
+export class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
+  #banish: BanishMethod | null = null;
+
+  getContext() {
+    return { banish: this.#banish };
+  }
+
+  getNextTask() {
+    this.#banish = chooseBanish();
+    return super.getNextTask();
+  }
+
+  execute(task: GarboTask<FarmingContext>) {
+    super.execute(task);
+    this.#banish = null;
+  }
+}
+
 /**
  * A safe engine for Garbo!
  * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
  */
-export class SafeGarboEngine extends BaseGarboEngine {
-  constructor(tasks: GarboTask[]) {
-    const options = new EngineOptions();
+abstract class SafeGarboContextEngine<
+  Context = unknown,
+> extends BaseGarboContextEngine<Context> {
+  constructor(tasks: GarboTask<Context>[]) {
+    const options = new EngineOptions<never, Context>();
     options.default_task_options = { limit: { skip: 1 } };
     super(tasks, options);
   }
 }
 
-function runQuests<T extends typeof BaseGarboEngine>(
-  quests: Quest<GarboTask>[],
-  garboEngine: T,
+export class SafeGarboEngine extends SafeGarboContextEngine<void> {
+  getContext() {
+    // noop
+  }
+}
+
+function runQuests<Context, T extends BaseGarboContextEngine<Context>>(
+  quests: Quest<GarboTask<Context>, Context>[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  garboEngine: new (...args: any[]) => T,
 ) {
   const engine = new garboEngine(getTasks(quests));
 
@@ -222,10 +279,16 @@ function runQuests<T extends typeof BaseGarboEngine>(
   }
 }
 
-export function runSafeGarboQuests(quests: Quest<GarboTask>[]): void {
+export function runSafeGarboQuests(quests: Quest<GarboTask<void>>[]): void {
   runQuests(quests, SafeGarboEngine);
 }
 
-export function runGarboQuests(quests: Quest<GarboTask>[]): void {
+export function runGarboQuests(quests: Quest<GarboTask<void>>[]): void {
   runQuests(quests, BaseGarboEngine);
+}
+
+export function runGarboFarmQuests(
+  quests: Quest<GarboTask<FarmingContext>, FarmingContext>[],
+): void {
+  runQuests(quests, FarmTurnEngine);
 }

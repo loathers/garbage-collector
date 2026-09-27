@@ -1,9 +1,9 @@
 export { AscendingQuest } from "./ascending";
-export { BarfTurnQuests } from "./barfTurn";
 export { CockroachSetup } from "./cockroach";
 export { DailyQuest } from "./daily";
 export { DailyFamiliarsQuest } from "./dailyFamiliars";
 export { DailyItemsQuest } from "./dailyItems";
+export { FarmQuests } from "./farm";
 export { FinishUpQuest } from "./finishUp";
 export { FreeFightQuest } from "./freeFight";
 export { FreeMimicEggDonationQuest } from "./freeEggDonation";

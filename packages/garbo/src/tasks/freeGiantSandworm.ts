@@ -109,7 +109,7 @@ const DEFAULT_SANDWORM_TASK = {
       : []),
   ],
   do: () => use($item`drum machine`),
-  outfit: sandwormOutfit,
+  outfit: () => sandwormOutfit(),
   spendsTurn: false,
   tentacle: true,
 };
@@ -382,7 +382,7 @@ function drumMachineWorthIt(): boolean {
   return drumMachineROI() > 0;
 }
 
-export const FreeGiantSandwormQuest: Quest<GarboTask> = {
+export const FreeGiantSandwormQuest: Quest<GarboTask<void>, unknown> = {
   name: "Free Giant Sandworm",
   tasks: SandwormTasks,
   ready: () => sober() && hasWorms(),

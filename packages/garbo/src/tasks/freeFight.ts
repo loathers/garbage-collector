@@ -86,7 +86,7 @@ import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
 import { AdventureArgument, wanderer } from "../garboWanderer";
 
 export type GarboFreeFightTask = Extract<
-  GarboTask,
+  GarboTask<void>,
   { combat: GarboStrategy }
 > & {
   combatCount: () => number;
@@ -300,7 +300,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
       (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ??
         false),
     completed: ChateauMantegna.paintingFought,
-    do: ChateauMantegna.fightPainting,
+    do: () => ChateauMantegna.fightPainting(),
     outfit: () =>
       freeFightOutfit(
         have($familiar`Robortender`) &&
@@ -1011,7 +1011,7 @@ export function possibleFreeFightQuestTentacleFights(): number {
   );
 }
 
-export const FreeFightQuest: Quest<GarboTask> = {
+export const FreeFightQuest: Quest<GarboTask<void>, unknown> = {
   name: "Free Fight",
   tasks: FreeFightTasks,
   ready: () => sober() && !have($effect`Feeling Lost`),
