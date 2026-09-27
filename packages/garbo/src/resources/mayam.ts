@@ -1,10 +1,21 @@
-import { Item, myFamiliar, myLevel, useFamiliar } from "kolmafia";
+import {
+  daycount,
+  Item,
+  itemAmount,
+  myFamiliar,
+  myLevel,
+  toEffect,
+  use,
+  useFamiliar,
+  yamBatteryEffects,
+} from "kolmafia";
 import {
   $effect,
   $item,
   CinchoDeMayo,
   clamp,
   get,
+  have,
   maxBy,
   MayamCalendar,
   Range,
@@ -50,11 +61,42 @@ function valueSymbol(symbol: MayamCalendar.Glyph): number {
   return MAYAM_RING_VALUES[symbol]();
 }
 
+function yamBatteryScorer(day: number): number {
+  return sum(
+    Object.entries(yamBatteryEffects(day)).map(([effect, duration]) => ({
+      value: effectValue(toEffect(effect), duration),
+    })),
+    "value",
+  );
+}
+
+function useYamBattery() {
+  if (!have($item`yam battery`) || get("_yamBatteryUsed")) {
+    return;
+  }
+
+  const scoreToday = yamBatteryScorer(daycount());
+
+  if (scoreToday <= 0) {
+    return;
+  }
+  if (itemAmount($item`yam battery`) < 30) {
+    for (let day = daycount() + 1; day <= daycount() + 30; day++) {
+      if (yamBatteryScorer(day) > scoreToday) {
+        return;
+      }
+    }
+  }
+
+  use($item`yam battery`);
+}
+
 function valueResonance(combination: MayamCalendar.CombinationString): number {
   const result = MayamCalendar.getResonanceResult(combination);
   if (!result) return 0;
   if (result instanceof Item) {
     if (result === $item`yamtility belt`) return 0; // yamtilityValue();
+    if (result === $item`yam battery`) return yamBatteryScorer(daycount());
     return garboValue(result);
   }
   return effectValue(result, 30);
@@ -163,6 +205,7 @@ export function mayamCalendarSummon(): GarboTask {
         MayamCalendar.submit(combination);
       }
       useFamiliar(startingFamiliar);
+      useYamBattery();
     },
     spendsTurn: false,
   };
