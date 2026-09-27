@@ -101,6 +101,9 @@ const DEFAULT_FREE_FIGHT_TASK = {
   combatCount: () => 1,
 };
 
+const MAX_DMT_SNOWGLOBE_PRICE = 2_000;
+const MAX_SELF_DRIBBLING_BASKETBALL_PRICE = 10_000;
+
 function freeFightTask(
   fragment: Omit<
     GarboFreeFightTask,
@@ -737,22 +740,23 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
   {
     name: "Machine Elf",
     adventure: $location`The Deep Machine Tunnels`,
-    ready: () => have($familiar`Machine Elf`) || dmtCommaValuable(10000, 2000),
+    ready: () => have($familiar`Machine Elf`) || 
+      dmtCommaValuable(MAX_SELF_DRIBBLING_BASKETBALL_PRICE, MAX_DMT_SNOWGLOBE_PRICE),
     completed: () => get("_machineTunnelsAdv") >= 5,
     do: $location`The Deep Machine Tunnels`,
     prepare: () => {
       if (myFamiliar() === $familiar`Comma Chameleon`) {
         if (CommaChameleon.currentFamiliar() !== $familiar`Machine Elf`) {
-          acquire(1, $item`self-dribbling basketball`, 10000);
+          acquire(1, $item`self-dribbling basketball`, MAX_SELF_DRIBBLING_BASKETBALL_PRICE);
           CommaChameleon.transform($familiar`Machine Elf`);
         }
 
         if (!canAdventure($location`The Deep Machine Tunnels`)) {
-          acquire(1, $item`Deep Machine Tunnels snowglobe`, 2000);
+          acquire(1, $item`Deep Machine Tunnels snowglobe`, MAX_DMT_SNOWGLOBE_PRICE);
           use($item`Deep Machine Tunnels snowglobe`);
         }
       }
-      // We need an else here because if we're using Comma we don't get to convert items.
+      // Both comma & machine elf are allowed to convert abstractions, so the below is shared between them.
       if (
         garboValue($item`abstraction: certainty`) >=
         garboValue($item`abstraction: thought`)
