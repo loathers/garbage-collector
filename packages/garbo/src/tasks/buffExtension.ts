@@ -23,7 +23,8 @@ import {
   tryFindFreeRunOrBanish,
 } from "../lib";
 import { globalOptions } from "../config";
-import { freeFightOutfit, toSpec } from "../outfit";
+import { freeFightOutfit } from "../outfit/free";
+import { toSpec } from "../outfit/lib";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { effectExtenderValue } from "../potions";
@@ -106,6 +107,7 @@ const PostBuffExtensionTasks: GarboTask[] = [
     ready: () => realmAvailable("hot"),
     completed: () => Mining.countFreeMines() <= 0,
     do: () => cliExecute("oreo 0"),
+    sobriety: "sober",
     spendsTurn: false,
   },
   // TODO Add Shadow Rift here if we ever grimoirize it

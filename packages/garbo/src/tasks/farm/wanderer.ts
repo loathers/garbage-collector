@@ -11,6 +11,7 @@ import {
   myLightning,
   myRain,
   outfitPieces,
+  setLocation,
   totalTurnsPlayed,
   use,
   visitUrl,
@@ -44,7 +45,6 @@ import { Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
   canAdventureOrUnlock,
   hasNameCollision,
-  unperidotableZones,
   WanderDetails,
 } from "garbo-lib";
 
@@ -59,13 +59,12 @@ import {
   sober,
   targetingMeat,
 } from "../../lib";
+import { freeFightOutfit, FreeFightOutfitMenuOptions } from "../../outfit/free";
 import {
   familiarWaterBreathingEquipment,
-  freeFightOutfit,
-  FreeFightOutfitMenuOptions,
-  meatTargetOutfit,
   waterBreathingEquipment,
-} from "../../outfit";
+} from "../../outfit/lib";
+import { meatTargetOutfit } from "../../outfit/target";
 import { deliverThesisIfAble } from "../../fights";
 import { GarboTask } from "../engine";
 import {
@@ -76,17 +75,18 @@ import {
 
 import { garboValue } from "../../garboValue";
 import { wanderingCopytargetsRemaining } from "../../turns";
+import { shouldMakeEgg } from "../../resources/chestMimic";
 import {
-  bestMidnightAvailable,
   canBullseye,
   guaranteedBullseye,
   safeToAttemptBullseye,
-  shouldFillLatte,
-  shouldMakeEgg,
-  tryFillLatte,
-  willYachtzee,
-} from "../../resources";
+} from "../../resources/everfullDarts";
+import { bestMidnightAvailable } from "../../resources/gingerbread";
+import { shouldFillLatte, tryFillLatte } from "../../resources/latte";
+import { willYachtzee } from "../../resources/yachtzee";
 import { acquire } from "../../acquire";
+import { FarmingStrategy } from "../../farmingStrategy";
+import { bestYachtzeeFamiliar } from "../yachtzee/familiar";
 
 const isGhost = () => get("_voteMonster") === $monster`angry ghost`;
 const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
@@ -255,7 +255,10 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => totalTurnsPlayed() === get("lastLightsOutTurn"),
     do: () => get("nextSpookyravenStephenRoom") as Location,
     outfit: () =>
-      meatTargetOutfit(sober() ? {} : { offhand: $item`Drunkula's wineglass` }),
+      meatTargetOutfit(
+        sober() ? {} : { offhand: $item`Drunkula's wineglass` },
+        get("nextSpookyravenStephenRoom") ?? $location.none,
+      ),
     spendsTurn: isSteve,
     combat: new GarboStrategy(() =>
       Macro.if_(
@@ -447,7 +450,7 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () => get("_envyfishEggUsed"),
     do: () => use($item`envyfish egg`),
     spendsTurn: true,
-    outfit: () => meatTargetOutfit(),
+    outfit: () => meatTargetOutfit({}, $location.none),
     combat: new GarboStrategy(() => Macro.target("envyfish egg")),
   },
   wanderTask(
@@ -625,6 +628,28 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   {
+    name: "Yachtzee (Cooldown ready)",
+    completed: () => get("encountersUntilYachtzeeChoice") > 0,
+    outfit: () => {
+      setLocation($location`The Sunken Party Yacht`);
+      const spec: OutfitSpec = {
+        modifier: ["meat", "sea"],
+        familiar: bestYachtzeeFamiliar(),
+        avoid: $items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses, over-the-shoulder Folder Holder`,
+      };
+      if (!sober()) {
+        spec.equip = $items`Drunkula's wineglass`;
+      }
+      return spec;
+    },
+    do: $location`The Sunken Party Yacht`,
+    choices: { 918: 2 },
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Hit unexpected combat!"),
+    ),
+    spendsTurn: true,
+  },
+  {
     name: "Gingerbread Noon",
     completed: () => GingerBread.minutesToNoon() !== 0,
     do: $location`Gingerbread Train Station`,
@@ -666,7 +691,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
-    outfit: () => meatTargetOutfit(),
+    outfit: () => meatTargetOutfit({}, $location.none),
   },
   {
     name: "Make Mimic Eggs (maximum eggs)",
@@ -680,7 +705,8 @@ const BarfTurnTasks: GarboTask[] = [
     },
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
-    outfit: () => meatTargetOutfit({ familiar: $familiar`Chest Mimic` }),
+    outfit: () =>
+      meatTargetOutfit({ familiar: $familiar`Chest Mimic` }, $location.none),
   },
   {
     name: "Fight Mimic Eggs",
@@ -688,7 +714,7 @@ const BarfTurnTasks: GarboTask[] = [
     completed: () =>
       ChestMimic.differentiableQuantity(globalOptions.target) === 0,
     do: () => ChestMimic.differentiate(globalOptions.target),
-    outfit: () => meatTargetOutfit(),
+    outfit: () => meatTargetOutfit({}, $location.none),
     combat: new GarboStrategy(() => Macro.meatKill()),
     spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
   },
@@ -739,7 +765,14 @@ const BarfTurnTasks: GarboTask[] = [
       const questMonster = get("_cookbookbatQuestMonster");
       if (!questMonster || hasNameCollision(questMonster)) return false;
       const questLocation = get("_cookbookbatQuestLastLocation");
-      if (!questLocation || !canAdventureOrUnlock(questLocation, false)) {
+      if (
+        !questLocation ||
+        !canAdventureOrUnlock(
+          questLocation,
+          false,
+          FarmingStrategy.isUnderwater(),
+        )
+      ) {
         return false;
       }
       const questReward = get("_cookbookbatQuestIngredient");
@@ -751,11 +784,7 @@ const BarfTurnTasks: GarboTask[] = [
     },
     completed: () => {
       const questLocation = get("_cookbookbatQuestLastLocation");
-      return (
-        !questLocation ||
-        !PeridotOfPeril.canImperil(questLocation) ||
-        unperidotableZones.includes(questLocation)
-      );
+      return !questLocation || !PeridotOfPeril.canImperil(questLocation);
     },
     choices: () => ({
       1557: `1&bandersnatch=${get("_cookbookbatQuestMonster")?.id ?? 0}`,

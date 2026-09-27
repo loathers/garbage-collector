@@ -16,7 +16,7 @@ import { effectValue } from "../potions";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { felizValue } from "../lib";
 import { GarboTask } from "../tasks/engine";
-import { meatFamiliar } from "../familiar";
+import { meatFamiliar } from "../familiar/meatFamiliar";
 // Stats assigned a value of 1, to discern from the Truly Useless
 // MP restore assigned a value of 2, because it's better than stats!
 const MAYAM_RING_VALUES = {

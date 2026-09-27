@@ -16,7 +16,7 @@ import {
 import { garboValue } from "./garboValue";
 import { effectValue } from "./potions";
 import { digitizedMonstersRemainingForTurns } from "./lib";
-import { safeRefractedCasts } from "./resources";
+import { safeRefractedCasts } from "./resources/bloodCubicZirconia";
 import { FarmingStrategy } from "./farmingStrategy";
 
 let _wanderer: WandererManager | undefined;
@@ -41,13 +41,14 @@ export function wanderer(): WandererManager {
       valueOfAdventure: get("valueOfAdventure"),
       takeTurnForProfit: true,
       canRefractedGaze: BloodCubicZirconia.have() && safeRefractedCasts() > 0,
+      underwaterAllowed: FarmingStrategy.isUnderwater(),
     });
   }
   return _wanderer;
 }
 
-export type Destination = Location | WanderDetails;
-export const destinationToLocation = (destination: Destination): Location =>
+type Destination = Location | WanderDetails;
+const destinationToLocation = (destination: Destination): Location =>
   destination instanceof Location
     ? destination
     : wanderer().getTarget(destination).location;

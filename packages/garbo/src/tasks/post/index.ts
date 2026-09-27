@@ -42,6 +42,7 @@ import {
   JuneCleaver,
   Leprecondo,
   maxBy,
+  realmAvailable,
   sum,
   undelay,
   uneffect,
@@ -66,16 +67,13 @@ import { garboAverageValue } from "../../garboValue";
 import workshedTasks from "./worksheds";
 import { GarboPostTask } from "./lib";
 import { GarboTask } from "../engine";
-import {
-  autumnAtonManager,
-  hotTubAvailable,
-  lavaDogsAccessible,
-  lavaDogsComplete,
-  leprecondoTask,
-} from "../../resources";
+import { autumnAtonManager } from "../../resources/autumnaton";
+import { hotTubAvailable } from "../../resources/clanVIP";
+import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
+import { leprecondoTask } from "../../resources/leprecondo";
 import { FarmingStrategy } from "../../farmingStrategy";
 
-const STUFF_TO_CLOSET = $items`bowling ball, funky junk key`;
+const STUFF_TO_CLOSET = $items`bowling ball, funky junk key, sand dollar`;
 const STUFF_TO_USE = $items`Armory keycard, bottle-opener keycard, SHAWARMA Initiative Keycard`;
 
 function closetStuff(): GarboPostTask {
@@ -83,6 +81,7 @@ function closetStuff(): GarboPostTask {
     name: "Closet Stuff",
     completed: () => STUFF_TO_CLOSET.every((i) => itemAmount(i) === 0),
     do: () => STUFF_TO_CLOSET.forEach((i) => putCloset(itemAmount(i), i)),
+    post: () => cliExecute("refresh inventory"),
   };
 }
 
@@ -120,24 +119,51 @@ const BARF_PLANTS: Record<Environment, Flower[]> = {
   ],
 };
 
-function floristFriars(): GarboPostTask {
+function floristFriars(): GarboPostTask[] {
   const barfPlants = BARF_PLANTS[FarmingStrategy.location.environment];
-  return {
-    name: "Florist Plants",
-    completed: () =>
-      FloristFriar.isFull(FarmingStrategy.location) || barfPlants.length === 0,
-    ready: () =>
-      get("lastAdventure") === FarmingStrategy.location &&
-      FloristFriar.have() &&
-      barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
-    do: () =>
-      barfPlants
-        .filter((flower) => flower.available(FarmingStrategy.location))
-        .forEach((flower) => flower.plant()),
-    available: () =>
-      FloristFriar.have() &&
-      barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
-  };
+  const yachtPlants =
+    BARF_PLANTS[$location`The Sunken Party Yacht`.environment];
+  return [
+    {
+      name: "Florist Plants",
+      completed: () =>
+        FloristFriar.isFull(FarmingStrategy.location) ||
+        barfPlants.length === 0,
+      ready: () =>
+        get("lastAdventure") === FarmingStrategy.location &&
+        FloristFriar.have() &&
+        barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
+      do: () =>
+        barfPlants
+          .filter((flower) => flower.available(FarmingStrategy.location))
+          .forEach((flower) => flower.plant()),
+      available: () =>
+        FloristFriar.have() &&
+        barfPlants.some((flower) => flower.available(FarmingStrategy.location)),
+    },
+    {
+      name: "Florist Plants (Secondary Location)",
+      completed: () => FloristFriar.isFull($location`The Sunken Party Yacht`),
+      ready: () =>
+        get("lastAdventure") === $location`The Sunken Party Yacht` &&
+        FloristFriar.isFull(FarmingStrategy.location) &&
+        yachtPlants.some((flower) =>
+          flower.available($location`The Sunken Party Yacht`),
+        ),
+      do: () =>
+        yachtPlants
+          .filter((flower) =>
+            flower.available($location`The Sunken Party Yacht`),
+          )
+          .forEach((flower) => flower.plant()),
+      available: () =>
+        realmAvailable("sleaze") &&
+        FloristFriar.have() &&
+        yachtPlants.some((flower) =>
+          flower.available($location`The Sunken Party Yacht`),
+        ),
+    },
+  ];
 }
 
 function fillPantsgivingFullness(): GarboPostTask {
@@ -469,7 +495,7 @@ export function PostQuest<C = void>(
       fallbot(),
       closetStuff(),
       useStuff(),
-      floristFriars(),
+      ...floristFriars(),
       numberology(),
       juneCleaver(),
       fillPantsgivingFullness(),

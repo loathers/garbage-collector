@@ -9,6 +9,7 @@ import {
   myFury,
   myInebriety,
   retrieveItem,
+  setLocation,
   toSlot,
   totalTurnsPlayed,
 } from "kolmafia";
@@ -25,7 +26,7 @@ import {
   have,
   undelay,
 } from "libram";
-import { barfFamiliar } from "../familiar";
+import { barfFamiliar } from "../familiar/barfFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
@@ -121,6 +122,8 @@ export function computeBarfOutfit(
     spec,
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
+
+  setLocation(FarmingStrategy.location);
 
   outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
   applyCheeseBonus(outfit, BonusEquipMode.BARF);

@@ -12,7 +12,7 @@ import {
 import { luckySourceTasks } from "../resources/lucky";
 import type { LuckySource } from "../resources/lucky";
 import { canAdventure, canEquip } from "kolmafia";
-import { meatTargetOutfit } from "../outfit";
+import { meatTargetOutfit } from "../outfit/target";
 import { getBestLuckyAdventure, sober } from "../lib";
 import { AlternateTask } from "./engine";
 import { Macro } from "../combat";

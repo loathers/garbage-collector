@@ -5,6 +5,7 @@ import {
   familiarEquippedEquipment,
   hippyStoneBroken,
   mallPrice,
+  meatDrop,
   myPrimestat,
   retrieveItem,
   retrievePrice,
@@ -26,7 +27,10 @@ import {
 } from "libram";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
+import {
+  meatFamiliar,
+  setBestLeprechaunAsMeatFamiliar,
+} from "../familiar/meatFamiliar";
 import {
   baseMeat,
   felizValue,
@@ -82,12 +86,10 @@ function entendreValue(targetCount = 0): number {
 function worthFeedingRobortender(): boolean {
   if (!globalOptions.nobarf) return true;
   if (isFree(globalOptions.target)) return false;
-  return (
-    (globalOptions.target.maxMeat + globalOptions.target.minMeat) / 2 >= 300
-  );
+  return meatDrop(globalOptions.target) >= 300;
 }
 
-export function prepRobortender(): void {
+function prepRobortender(): void {
   if (!have($familiar`Robortender`)) return;
   const targetCount = highMeatMonsterCount("Scepter"); // Scepter can cause circular logic
   const roboDrinks = {

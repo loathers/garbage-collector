@@ -29,7 +29,7 @@ import {
   ToyCupidBow,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
-import { bonusGear } from "../outfit";
+import { bonusGear } from "../outfit/dropsgear";
 import {
   baseMeat,
   BonusEquipMode,

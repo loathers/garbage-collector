@@ -89,7 +89,7 @@ function withClan<T>(clanIdOrName: string | number, action: () => T): T {
   }
 }
 
-export class StashManager {
+class StashManager {
   clanIdOrName: string | number;
   enabled: boolean;
   taken = new Map<Item, number>();

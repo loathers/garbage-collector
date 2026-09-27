@@ -1,4 +1,11 @@
-import { Familiar, getMonsters, holiday, Location, squareRoot } from "kolmafia";
+import {
+  Familiar,
+  getMonsters,
+  holiday,
+  Location,
+  Monster,
+  squareRoot,
+} from "kolmafia";
 import {
   $effect,
   $familiar,
@@ -6,7 +13,6 @@ import {
   $items,
   $location,
   $locations,
-  $monster,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -14,19 +20,20 @@ import {
   have,
   PeridotOfPeril,
   Robortender,
+  sum,
   totalFamiliarWeight,
 } from "libram";
 import { baseMeat, felizValue, newarkValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { FamiliarMode, GeneralFamiliar } from "./lib";
 import { effectExtenderValue } from "../potions";
-import { globalOptions } from "../config";
-import { canAdventureOrUnlock, unperidotableZones } from "garbo-lib";
+import { canAdventureOrUnlock } from "garbo-lib";
 import { estimatedGarboTurns } from "../turns";
+import { FarmingStrategy } from "../farmingStrategy";
 
 type ConstantValueFamiliar = {
   familiar: Familiar;
-  value: (_mode: FamiliarMode) => number;
+  value: (mode: FamiliarMode, rates: Map<Monster, number>) => number;
   worksOnFreeRun?: boolean;
 };
 
@@ -55,21 +62,13 @@ const standardFamiliars: ConstantValueFamiliar[] = [
   },
   {
     familiar: $familiar`Robortender`,
-    value: (mode) => {
-      const olfactedMonster = get("olfactedMonster");
-      const olfactedIsFromBarf =
-        olfactedMonster &&
-        getMonsters($location`Barf Mountain`).includes(olfactedMonster);
+    value: (_, rates) => {
       return (
         Robortender.dropChance() *
-          garboValue(
-            Robortender.dropFrom(
-              mode === "barf" && olfactedIsFromBarf
-                ? olfactedMonster
-                : mode === "target"
-                  ? globalOptions.target
-                  : $monster.none,
-            ),
+          sum(
+            [...rates.entries()],
+            ([monster, rate]) =>
+              rate * garboValue(Robortender.dropFrom(monster)),
           ) +
         (Robortender.currentDrinks().includes($item`Feliz Navidad`)
           ? felizValue() * 0.25
@@ -159,13 +158,14 @@ function peaceTurkeyDropChance(): number {
 
 export default function getConstantValueFamiliars(
   mode: FamiliarMode,
+  monsterRates: Map<Monster, number>,
 ): GeneralFamiliar[] {
   return standardFamiliars
     .filter(({ familiar }) => have(familiar))
     .map(({ familiar, value, worksOnFreeRun = false }) => ({
       familiar,
       worksOnFreeRun,
-      expectedValue: value(mode),
+      expectedValue: value(mode, monsterRates),
       leprechaunMultiplier: findLeprechaunMultiplier(familiar),
       limit: "none",
     }));
@@ -190,10 +190,12 @@ function cookbookbatPerilBonus(): number {
   }
 
   const cookbookbatQuestLocations = locationsWithMonsters.filter(
-    (l) => canAdventureOrUnlock(l, false) && !canAdvExclusions.includes(l),
+    (l) =>
+      canAdventureOrUnlock(l, false, FarmingStrategy.isUnderwater()) &&
+      !canAdvExclusions.includes(l),
   );
   const availablePeridotCookbookbatLocations = cookbookbatQuestLocations.filter(
-    (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l),
+    (l) => PeridotOfPeril.canImperil(l),
   );
   const doableQuestChance =
     availablePeridotCookbookbatLocations.length /

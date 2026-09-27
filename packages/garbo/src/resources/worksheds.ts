@@ -21,7 +21,7 @@ import { globalOptions } from "../config";
 import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns } from "../turns";
-import { copyTargetCount } from "../target";
+import { copyTargetCount } from "../target/fights";
 import { FarmingStrategy } from "../farmingStrategy";
 
 const GOOD_TRAIN_STATIONS = [
@@ -91,7 +91,7 @@ function getBestOffset(): number {
   return (bestOffset ??= maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset));
 }
 
-export function getPrioritizedStations(): TrainSet.Station[] {
+function getPrioritizedStations(): TrainSet.Station[] {
   return getBestCycle().slice(0, getBestOffset() - 1);
 }
 

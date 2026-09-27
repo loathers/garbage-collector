@@ -1,6 +1,5 @@
 import {
   appearanceRates,
-  buy,
   canAdventure,
   Effect,
   effectFact,
@@ -11,6 +10,7 @@ import {
   modifierEval,
   Monster,
   numericFact,
+  retrieveItem,
   toItem,
   use,
 } from "kolmafia";
@@ -33,6 +33,7 @@ import {
   realmAvailable,
   sum,
   undelay,
+  withProperty,
 } from "libram";
 
 export const draggableFights = [
@@ -66,6 +67,7 @@ export type WandererFactoryOptions = {
   effectValue: (effect: Effect, duration: number) => number;
   plentifulMonsters: Monster[];
   prioritizeCappingGuzzlr: boolean;
+  underwaterAllowed: boolean;
   digitzesRemaining?: (turns: number) => number;
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
@@ -141,9 +143,9 @@ const ILLEGAL_PARENTS = [
   "A Monorail Station",
   "Memories",
 ];
-const ILLEGAL_ZONES = ["The Drip", "Suburbs"];
+const ILLEGAL_ZONES = ["The Drip", "Suburbs", "The Mer-Kin Deepcity"];
 const canAdventureOrUnlockSkipList = [
-  ...$locations`The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, The Orcish Frat House, Through the Spacegate, Mt. Molehill`,
+  ...$locations`The Skate Park, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, The Orcish Frat House, Through the Spacegate, Mt. Molehill`,
   ...Location.all().filter(
     ({ parent, zone }) =>
       ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone),
@@ -152,6 +154,7 @@ const canAdventureOrUnlockSkipList = [
 export function canAdventureOrUnlock(
   loc: Location,
   includeUnlockable = true,
+  underwaterAllowed = false,
 ): boolean {
   const skiplist = [...canAdventureOrUnlockSkipList];
 
@@ -188,7 +191,7 @@ export function canAdventureOrUnlock(
       (z) => loc.zone === z.zone && (z.available() || !z.noInv),
     );
   return (
-    !underwater(loc) &&
+    !(underwater(loc) && !(have($effect`Fishy`) && underwaterAllowed)) &&
     !skiplist.includes(loc) &&
     (canAdventure(loc) || canUnlock)
   );
@@ -198,7 +201,10 @@ export function unlock(loc: Location, value: number): boolean {
   const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone);
   if (!unlockableZone) return canAdventure(loc);
   if (unlockableZone.available()) return true;
-  if (buy(1, unlockableZone.unlocker, value) === 0) return false;
+  withProperty("autoBuyPriceLimit", value, () =>
+    retrieveItem(unlockableZone.unlocker, 1),
+  );
+  if (!have(unlockableZone.unlocker)) return false;
   return use(unlockableZone.unlocker);
 }
 
@@ -233,8 +239,12 @@ function canWanderTypeWander(location: Location): boolean {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
 
-export function canWander(location: Location, type: DraggableFight): boolean {
-  if (underwater(location)) return false;
+export function canWander(
+  location: Location,
+  type: DraggableFight,
+  underwaterAllowed: boolean,
+): boolean {
+  if (underwater(location) && !underwaterAllowed) return false;
   switch (type) {
     case "backup":
     case "freerun":
@@ -347,13 +357,21 @@ export function wandererTurnsAvailableToday(
   requiresMonsterKill: boolean,
 ): number {
   const canWanderCache: Record<DraggableFight, boolean> = {
-    backup: canWander(location, "backup"),
-    wanderer: canWander(location, "wanderer"),
-    "yellow ray": canWander(location, "yellow ray"),
-    freefight: canWander(location, "freefight"),
-    "conditional freefight": canWander(location, "conditional freefight"),
-    "freefight (no items)": canWander(location, "freefight (no items)"),
-    freerun: canWander(location, "freerun"),
+    backup: canWander(location, "backup", options.underwaterAllowed),
+    wanderer: canWander(location, "wanderer", options.underwaterAllowed),
+    "yellow ray": canWander(location, "yellow ray", options.underwaterAllowed),
+    freefight: canWander(location, "freefight", options.underwaterAllowed),
+    "conditional freefight": canWander(
+      location,
+      "conditional freefight",
+      options.underwaterAllowed,
+    ),
+    "freefight (no items)": canWander(
+      location,
+      "freefight (no items)",
+      options.underwaterAllowed,
+    ),
+    freerun: canWander(location, "freerun", options.underwaterAllowed),
   };
 
   const digitize =
@@ -487,9 +505,6 @@ export function hasNameCollision(monster: Monster): boolean {
   nameCollisionCache.set(monster, false);
   return false;
 }
-
-// TODO These seem to be bugged peridot zones. Can remove if they get fixed.
-export const unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber, The Haunted Billiards Room`;
 
 /**
  * Retrieve an element from a map if it exists; setting a value for the given key if it doesn't.

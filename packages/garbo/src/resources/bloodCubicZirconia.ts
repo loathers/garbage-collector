@@ -35,7 +35,7 @@ function parentStat(sub: Stat | null): Stat {
 }
 
 const BCT_LEVEL_THRESHOLDS = [26, 20, 13];
-export function getBCZStatFloor(skill: Skill): number {
+function getBCZStatFloor(skill: Skill): number {
   const userSelectedStatFloor = get("garbo_bczStatFloor", 0);
   const stat = parentStat(BloodCubicZirconia.substatUsed(skill));
   if (stat !== myPrimestat()) {

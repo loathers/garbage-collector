@@ -32,7 +32,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { meatFamiliar } from "../familiar";
+import { meatFamiliar } from "../familiar/meatFamiliar";
 import { BonusEquipMode, targetMeat } from "../lib";
 import {
   estimatedGarboTurns,
@@ -71,7 +71,7 @@ export function cleaverCheck(): void {
   if (availableAmount($item`June cleaver`) > 1) cliExecute("refresh inventory");
 }
 
-export function useUPCs(): void {
+function useUPCs(): void {
   const UPC = $item`scratch 'n' sniff UPC sticker`;
   if (
     $items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`.every(

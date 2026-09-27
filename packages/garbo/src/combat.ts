@@ -57,7 +57,8 @@ import {
   StrictMacro,
 } from "libram";
 import { globalOptions, isQuickCombat } from "./config";
-import { canOpenRedPresent, meatFamiliar, timeToMeatify } from "./familiar";
+import { canOpenRedPresent, timeToMeatify } from "./familiar/lib";
+import { meatFamiliar } from "./familiar/meatFamiliar";
 import { estimatedGarboTurns, wanderingCopytargetsRemaining } from "./turns";
 import {
   gooseDroneEligible,
@@ -67,10 +68,12 @@ import {
   targetingMeat,
   ULTRA_RARE_MONSTERS,
 } from "./lib";
-import { copyTargetCount } from "./target";
+import { copyTargetCount } from "./target/fights";
 import { garboValue } from "./garboValue";
-import { maximumPinataCasts, safeRefractedCasts } from "./resources";
+import { safeRefractedCasts } from "./resources/bloodCubicZirconia";
+import { maximumPinataCasts } from "./resources/yachtzee";
 import { FarmingStrategy } from "./farmingStrategy";
+import { BanishMethod } from "./resources/banish";
 
 export function shouldRedigitize(): boolean {
   if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
@@ -430,8 +433,8 @@ export class Macro extends StrictMacro {
       .kill();
   }
 
-  static meatKill(): Macro {
-    return new Macro().meatKill();
+  static meatKill(delevel = isStrongScaler(globalOptions.target)): Macro {
+    return new Macro().meatKill(delevel);
   }
 
   meatStasis(checkPassive: boolean): Macro {
@@ -950,6 +953,15 @@ export class Macro extends StrictMacro {
 
   static refractedGaze(): Macro {
     return new Macro().duplicate();
+  }
+
+  farmingBanish(banish: BanishMethod | null): Macro {
+    if (!banish || !FarmingStrategy.banishMonsters.length) return this;
+    return this.if_(FarmingStrategy.banishMonsters, banish.macro);
+  }
+
+  static farmingBanish(banish: BanishMethod | null): Macro {
+    return new Macro().farmingBanish(banish);
   }
 }
 

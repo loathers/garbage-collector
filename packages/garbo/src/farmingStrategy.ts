@@ -1,12 +1,15 @@
 import { OutfitSpec } from "grimoire-kolmafia";
 import {
   Effect,
+  equippedItem,
   getMonsters,
   isBanished,
   itemDropsArray,
+  itemType,
   Location,
   mallPrice,
   Monster,
+  myBuffedstat,
   print,
 } from "kolmafia";
 import { GarboStrategy } from "./combatStrategy";
@@ -20,6 +23,8 @@ import {
   $monster,
   $monsters,
   $skill,
+  $slot,
+  $stat,
   adventureTargetToWeightedMap,
   Delayed,
   get,
@@ -35,13 +40,15 @@ import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
 
-export function redTaffyWorth(): boolean {
-  const averageRedTaffyValue = sum(
+export function averageRedTaffyValue(): number {
+  return sum(
     [...PulledTaffy.RED_TAFFY_DROP_WEIGHTS.entries()],
     ([item, weight]) => garboValue(item) * weight,
   );
+}
 
-  return mallPrice($item`pulled red taffy`) < averageRedTaffyValue;
+export function redTaffyWorth(): boolean {
+  return mallPrice($item`pulled red taffy`) < averageRedTaffyValue();
 }
 
 const olfactionCopies = have($skill`Transcendent Olfaction`) ? 3 : 0;
@@ -62,10 +69,9 @@ interface FarmingStrategyOptions {
   ensureBarfAccess: boolean;
   baseMeat: number;
   location: Location;
-  ensureML: boolean;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
-  combat: GarboStrategy<FarmingContext>;
+  combat: (context: FarmingContext) => Macro;
 
   outfit?: (context: FarmingContext) => OutfitSpec;
   ncTurns?: Delayed<number>;
@@ -149,40 +155,38 @@ class FarmingStrategySkeleton {
   monstersToBanish(): Monster[] {
     return this.banishMonsters.filter((m) => !isBanished(m));
   }
+
+  strategy(): GarboStrategy<FarmingContext> {
+    return new GarboStrategy(this.combat);
+  }
 }
 
-export const FarmingStrategy = new Proxy(
-  new FarmingStrategySkeleton() as unknown as Readonly<FarmingStrategySkeleton>,
-  {
-    get: (target, prop, receiver) => {
-      if (
-        Object.prototype.hasOwnProperty.call(
-          FarmingStrategySkeleton.prototype,
-          prop,
-        )
-      ) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const method = (FarmingStrategySkeleton.prototype as any)[prop];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return function (...args: any[]) {
-          return method.apply(receiver, args);
-        };
-      }
+export const FarmingStrategy = new Proxy(new FarmingStrategySkeleton(), {
+  get: (target, prop, receiver) => {
+    if (
+      Object.prototype.hasOwnProperty.call(
+        FarmingStrategySkeleton.prototype,
+        prop,
+      )
+    ) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const method = (FarmingStrategySkeleton.prototype as any)[prop];
+      method.bind(receiver);
+    }
 
-      const strategyOptions = currentStrategy();
+    const strategyOptions = currentStrategy();
 
-      const stringProp = String(prop);
-      if (stringProp in strategyOptions) {
-        return strategyOptions[stringProp as keyof FarmingStrategyOptions];
-      }
-      if (stringProp in DEFAULT_OPTIONS) {
-        return DEFAULT_OPTIONS[stringProp as keyof typeof DEFAULT_OPTIONS];
-      }
-      // Fallback to standard target resolution
-      return Reflect.get(target, prop, receiver);
-    },
+    const stringProp = String(prop);
+    if (stringProp in strategyOptions) {
+      return strategyOptions[stringProp as keyof FarmingStrategyOptions];
+    }
+    if (stringProp in DEFAULT_OPTIONS) {
+      return DEFAULT_OPTIONS[stringProp as keyof typeof DEFAULT_OPTIONS];
+    }
+    // Fallback to standard target resolution
+    return Reflect.get(target, prop, receiver);
   },
-);
+});
 
 const BARF_MOUNTAIN: FarmingStrategyOptions = {
   stasisRounds: 20,
@@ -196,7 +200,6 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
     2 * (1 - touristFamilyRatio) * touristFamilyRatio +
     3 * (1 - touristFamilyRatio) * (1 - touristFamilyRatio),
   location: $location`Barf Mountain`,
-  ensureML: true,
   bonusEffects: $effects`How to Scam Tourists`,
   targetMonster: () =>
     have($familiar`Skeleton of Crimbo Past`) &&
@@ -212,15 +215,7 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
         : [],
   }),
 
-  combat: new GarboStrategy(
-    () => Macro.meatKill(),
-    () =>
-      Macro.if_(
-        `(monsterid ${globalOptions.target.id}) && !gotjump && !(pastround 2)`,
-        Macro.meatKill(),
-      ).abort(),
-  ),
-
+  combat: () => Macro.meatKill(),
   post: completeBarfQuest,
 };
 
@@ -230,7 +225,6 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   ensureBarfAccess: false,
   baseMeat: 300,
   location: $location`The Coral Corral`,
-  ensureML: false,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
@@ -244,22 +238,28 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
     return banishItem ? { equip: [banishItem] } : {};
   },
 
-  combat: new GarboStrategy(({ banish }) => {
-    if (banish) {
-      const macro = Macro.if_(
-        $monsters`Mer-kin rustler, sea cowboy`,
-        banish.macro,
-      );
-
-      return redTaffyWorth()
-        ? macro.tryItem($item`pulled red taffy`).meatKill()
-        : macro.meatKill();
-    }
-
-    return redTaffyWorth()
-      ? Macro.tryItem($item`pulled red taffy`).meatKill()
-      : Macro.meatKill();
-  }),
+  combat: ({ banish }) =>
+    Macro.externalIf(
+      !get("seahorseName"),
+      Macro.if_(
+        $monster`wild seahorse`,
+        Macro.item($item`sea cowbell`)
+          .item($item`sea cowbell`)
+          .item($item`sea cowbell`)
+          .item($item`sea lasso`)
+          .abortWithMsg("Wild seahorse should have been tamed, what happened?"),
+      ),
+    )
+      .farmingBanish(banish)
+      .externalIf(
+        myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 ||
+          (have($skill`Hero of the Half-Shell`) &&
+            itemType(equippedItem($slot`offhand`)) === "shield" &&
+            myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10),
+        Macro.delevel(),
+      )
+      .externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`))
+      .meatKill(),
 };
 
 function currentStrategy(): FarmingStrategyOptions {

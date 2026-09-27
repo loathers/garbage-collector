@@ -5,12 +5,12 @@ import {
   haveEquipped,
   isBanished,
   itemAmount,
+  lastMonster,
   Location,
   myAdventures,
   myHash,
   myRain,
   print,
-  runChoice,
   runCombat,
   use,
   userConfirm,
@@ -63,14 +63,19 @@ import {
   WISH_VALUE,
 } from "../lib";
 import {
+  resetSpinnerCache,
+  timeSpinnerRefused,
+  travelToRecentFight,
+} from "../resources/timeSpinner";
+import { monsterIsInEggnet } from "../resources/chestMimic";
+import {
   crateStrategy,
   doingGregFight,
   equipOrbIfDesired,
   gregReady,
-  monsterIsInEggnet,
   possibleGregCrystalBall,
   totalGregCharges,
-} from "../resources";
+} from "../resources/extrovermectin";
 import { nextWeekFights } from "../resources/sealclub";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
@@ -155,7 +160,7 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
   }
 }
 
-export const chainStarters = [
+const chainStarters = [
   new CopyTargetFight(
     "Witchess",
     () =>
@@ -262,22 +267,33 @@ export const chainStarters = [
   ),
 ];
 
-export const copySources = [
+const TIME_SPINNER_LOCATIONS = $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`;
+
+/**
+ * Whether the target is in a combat queue the Time-Spinner draws from.
+ *
+ * Matches entries exactly: a substring test claims a sea cow when only a sea
+ * cowboy was fought.
+ * @returns Whether the target is in one of those queues
+ */
+function targetInCombatQueue(): boolean {
+  return TIME_SPINNER_LOCATIONS.some((location) =>
+    location.combatQueue.split("; ").includes(globalOptions.target.name),
+  );
+}
+
+const copySources = [
   new CopyTargetFight(
     "Time-Spinner",
     () =>
+      !timeSpinnerRefused(globalOptions.target) &&
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) => location.combatQueue.includes(globalOptions.target.name),
-      ) &&
+      targetInCombatQueue() &&
       get("_timeSpinnerMinutesUsed") <= 7,
     () =>
+      !timeSpinnerRefused(globalOptions.target) &&
       have($item`Time-Spinner`) &&
-      $locations`Noob Cave, The Dire Warren, The Haunted Kitchen`.some(
-        (location) =>
-          location.combatQueue.includes(globalOptions.target.name) ||
-          totalGregCharges(true),
-      )
+      (targetInCombatQueue() || totalGregCharges(true) > 0)
         ? Math.floor((10 - get("_timeSpinnerMinutesUsed")) / 3)
         : 0,
     (options: RunOptions) => {
@@ -285,11 +301,7 @@ export const copySources = [
         options.macro,
         () => {
           directlyUse($item`Time-Spinner`);
-          runChoice(1);
-          visitUrl(
-            `choice.php?whichchoice=1196&monid=${globalOptions.target.id}&option=1`,
-          );
-          runCombat();
+          if (travelToRecentFight(globalOptions.target)) runCombat();
         },
         options.useAuto,
       );
@@ -445,7 +457,7 @@ export const copySources = [
   ),
 ];
 
-export const wanderSources = [
+const wanderSources = [
   new CopyTargetFight(
     "Lucky!",
     () =>
@@ -548,6 +560,8 @@ const gregFights = (
       Macro.if_($monster`fluffy bunny`, runMacro).step(options.macro),
     );
 
+    resetSpinnerCache(lastMonster());
+
     if (
       get("lastEncounter") === $monster`fluffy bunny`.name &&
       bunnyIsBanished
@@ -612,7 +626,7 @@ const gregFights = (
   ];
 };
 
-export const gregLikeFights = [
+const gregLikeFights = [
   ...gregFights(
     "Be Gregarious",
     () => true, // we can always use extrovermectin
@@ -664,7 +678,7 @@ function proceedWithOrb(): boolean {
   return true;
 }
 
-export const conditionalSources = [
+const conditionalSources = [
   new CopyTargetFight(
     "Orb Prediction",
     () =>
@@ -829,7 +843,7 @@ export const conditionalSources = [
   ),
 ];
 
-export const fakeSources = [
+const fakeSources = [
   new CopyTargetFight(
     "Professor MeatChain",
     () => false,
@@ -878,7 +892,7 @@ function copyTargetConfirmInvocation(msg: string): boolean {
   return true;
 }
 
-export const emergencyChainStarters = [
+const emergencyChainStarters = [
   new CopyTargetFight(
     "Mimic Egg (from clinic)",
     () =>
@@ -914,6 +928,7 @@ export const emergencyChainStarters = [
         .filter((source) => source.potential() > 0)
         .map((source) => `${source.potential()} from ${source.name}`)
         .forEach((text) => print(text, HIGHLIGHT));
+
       globalOptions.askedAboutWish = true;
       globalOptions.wishAnswer = copyTargetConfirmInvocation(
         `Garbo has detected you have ${potential} potential ways to copy a ${

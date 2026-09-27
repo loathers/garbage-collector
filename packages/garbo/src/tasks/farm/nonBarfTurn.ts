@@ -33,27 +33,25 @@ import {
   withProperty,
 } from "libram";
 import { getTasks, OutfitSpec, Quest } from "grimoire-kolmafia";
-import { getAvailableUltraRareZones, unperidotableZones } from "garbo-lib";
+import { getAvailableUltraRareZones } from "garbo-lib";
 
 import { Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
 import { globalOptions } from "../../config";
 import { wanderer } from "../../garboWanderer";
 import { getBestLuckyAdventure, sober, willDrunkAdventure } from "../../lib";
-import { freeFightOutfit, meatTargetOutfit } from "../../outfit";
+import { freeFightOutfit } from "../../outfit/free";
+import { meatTargetOutfit } from "../../outfit/target";
 import { wanderingCopytargetsRemaining } from "../../turns";
 
 import { AlternateTask, GarboTask } from "../engine";
 import { canContinue } from "./lib";
 import { garboValue } from "../../garboValue";
-import { minimumMimicExperience } from "../../resources";
+import { minimumMimicExperience } from "../../resources/chestMimic";
 import { acquire } from "../../acquire";
-import {
-  hotTubAvailable,
-  lavaDogsAccessible,
-  lavaDogsComplete,
-  luckySourceTasks,
-} from "../../resources";
+import { hotTubAvailable } from "../../resources/clanVIP";
+import { lavaDogsAccessible, lavaDogsComplete } from "../../resources/doghouse";
+import { luckySourceTasks } from "../../resources/lucky";
 import { yachtzeeQuest } from "../yachtzee";
 import { embezzlerFightTask } from "../embezzler";
 import { EMPTY_CONTEXT, FarmingContext } from "../context";
@@ -242,11 +240,9 @@ function canGetFusedFuse() {
 }
 
 const peridotZone = () =>
-  getAvailableUltraRareZones().find(
-    (l) => PeridotOfPeril.canImperil(l) && !unperidotableZones.includes(l),
-  );
+  getAvailableUltraRareZones().find((l) => PeridotOfPeril.canImperil(l));
 
-export const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
+const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
   {
     name: "Make Mimic Eggs (whatever we can)",
     ready: () => have($familiar`Chest Mimic`),
@@ -259,7 +255,8 @@ export const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
       }
       ChestMimic.differentiate(globalOptions.target);
     },
-    outfit: () => meatTargetOutfit({ familiar: $familiar`Chest Mimic` }),
+    outfit: () =>
+      meatTargetOutfit({ familiar: $familiar`Chest Mimic` }, $location.none),
     combat: new GarboStrategy(() => Macro.meatKill()),
     turns: () =>
       globalOptions.ascend
@@ -476,7 +473,7 @@ export const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
   },
 ];
 
-export function nonBarfTurns(): number {
+function nonBarfTurns(): number {
   return sum(
     NonBarfTurnTasks.filter(
       (t) => (t.ready?.(EMPTY_CONTEXT) ?? true) && !t.completed(EMPTY_CONTEXT),
