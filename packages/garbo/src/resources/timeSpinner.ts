@@ -39,8 +39,9 @@ function offersMonster(monster: Monster): boolean | null {
     Object.keys(monids)
       .map((id) => toMonster(id))
       .includes(monster)
-  )
+  ) {
     return true;
+  }
   print(
     `The Time-Spinner is only offering: ${Object.values(monids).join(", ")}`,
     HIGHLIGHT,
