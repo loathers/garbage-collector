@@ -20179,7 +20179,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"cf5558f5b4b5498ca234136104f25404a926bb5c"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"13822d94b073a67c86f77147107a20bd37815cfe"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -26269,12 +26269,18 @@ var banishMethods = [{
   equip: $item`Monodent of the Sea`,
   macro: Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`)
 }];
+var banishAvailable = method => method.available() && !FarmingStrategy.banishMonsters.includes(getBanishedMonsters().get(method.source) ?? $monster.none);
 function chooseBanish() {
   if (FarmingStrategy.monstersToBanish().length === 0) {
     return null;
   }
   var banishedMonsters = getBanishedMonsters();
-  return banishMethods.find(method => method.available() && !FarmingStrategy.banishMonsters.includes(banishedMonsters.get(method.source) ?? $monster.none)) ?? null;
+  var targetMonster = FarmingStrategy.targetMonster;
+
+  // If a preceding script banished our target, reuse that banish first.
+  return banishMethods.find(method => banishAvailable(method) && banishedMonsters.get(method.source) === targetMonster) ??
+  // Otherwise use FIFO.
+  banishMethods.find(banishAvailable) ?? null;
 }
 
 function logTargetFight(encounterType) {
