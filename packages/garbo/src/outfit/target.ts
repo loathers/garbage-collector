@@ -11,13 +11,17 @@ import {
   have,
 } from "libram";
 import { freeFightFamiliar } from "../familiar/freeFightFamiliar";
-import { meatFamiliar } from "../familiar/meatFamiliar";
+import {
+  meatFamiliar,
+  meatFamiliarIgnoringEquipment,
+} from "../familiar/meatFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   applyCheeseBonus,
   bestBjornalike,
   cleaverCheck,
+  familiarSlotNeededForBreathing,
   useUPCsIfNeeded,
   validateGarbageFoldable,
 } from "./lib";
@@ -28,7 +32,7 @@ import {
   targetingMeat,
 } from "../lib";
 import { globalOptions } from "../config";
-import { booleanModifier, meatDrop, setLocation } from "kolmafia";
+import { meatDrop, setLocation } from "kolmafia";
 import { shouldRedigitize } from "../combat";
 import { nextWeekReady } from "../resources/sealclub";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
@@ -82,10 +86,14 @@ export function meatTargetOutfit(
     targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
   );
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
+  const familiarNeedsToBreathe = familiarSlotNeededForBreathing(location);
   outfit.familiar ??= targetingMeat()
-    ? meatFamiliar()
+    ? familiarNeedsToBreathe
+      ? meatFamiliarIgnoringEquipment()
+      : meatFamiliar()
     : freeFightFamiliar(location ?? globalOptions.target, {
-        equipmentForced: !outfit.canEquip($item`toy Cupid bow`),
+        equipmentForced:
+          familiarNeedsToBreathe || !outfit.canEquip($item`toy Cupid bow`),
       });
 
   const bjornChoice = chooseBjorn(
@@ -98,14 +106,9 @@ export function meatTargetOutfit(
     outfit.modifier.push("sea");
   }
 
-  const familiarSlotNeededForBreathing =
-    underwater &&
-    !outfit.familiar.underwater &&
-    !booleanModifier("Underwater Familiar");
-
   if (
     outfit.familiar === $familiar`Jill-of-All-Trades` &&
-    !familiarSlotNeededForBreathing
+    !familiarSlotNeededForBreathing(location, outfit.familiar)
   ) {
     outfit.equip($item`LED candle`);
     outfit.setModes({ jillcandle: "ultraviolet" });

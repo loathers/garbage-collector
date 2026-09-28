@@ -1,12 +1,15 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
   availableAmount,
+  booleanModifier,
   canAdventure,
   canEquip,
   cliExecute,
   equippedItem,
+  Familiar,
   inebrietyLimit,
   Item,
+  Location,
   mallPrice,
   myClass,
   myInebriety,
@@ -116,6 +119,17 @@ export function useUPCsIfNeeded({ familiar }: Outfit): void {
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
+
+export function familiarSlotNeededForBreathing(
+  location: Location,
+  familiar?: Familiar,
+): boolean {
+  return (
+    location.environment === "underwater" &&
+    !familiar?.underwater &&
+    !booleanModifier("Underwater Familiar")
+  );
+}
 
 export function toSpec(source?: ActionSource | Requirement): OutfitSpec {
   if (!source) return {};

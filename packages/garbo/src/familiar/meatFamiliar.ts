@@ -10,10 +10,14 @@ import {
 
 let fam: Familiar;
 
-function findBestLeprechauns(): Familiar[] {
+function findBestLeprechauns(excludedFamiliars: Familiar[] = []): Familiar[] {
   const validFamiliars = Familiar.all().filter(
-    (f) => have(f) && f !== $familiar`Ghost of Crimbo Commerce`,
+    (f) =>
+      have(f) &&
+      f !== $familiar`Ghost of Crimbo Commerce` &&
+      !excludedFamiliars.includes(f),
   );
+  if (!validFamiliars.length) return [];
 
   validFamiliars.sort(
     (a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a),
@@ -28,8 +32,11 @@ function findBestLeprechauns(): Familiar[] {
   return validFamiliars.slice(0, firstBadLeprechaun);
 }
 
-function findBestLeprechaun(): Familiar {
-  return maxBy(findBestLeprechauns(), findFairyMultiplier);
+function findBestLeprechaun(excludedFamiliars: Familiar[] = []): Familiar {
+  const candidates = findBestLeprechauns(excludedFamiliars);
+  return candidates.length > 0
+    ? maxBy(candidates, findFairyMultiplier)
+    : $familiar.none;
 }
 
 export function setBestLeprechaunAsMeatFamiliar(): void {
@@ -40,4 +47,13 @@ export function meatFamiliar(): Familiar {
   return (fam ??=
     $familiars`Robortender, Jill-of-All-Trades`.find(have) ??
     findBestLeprechaun());
+}
+
+const familiarsThatNeedEquipment = $familiars`Jill-of-All-Trades`;
+
+export function meatFamiliarIgnoringEquipment(): Familiar {
+  const fam = meatFamiliar();
+  if (!familiarsThatNeedEquipment.includes(fam)) return fam;
+  const best = findBestLeprechaun(familiarsThatNeedEquipment);
+  return best === $familiar.none ? fam : best;
 }
