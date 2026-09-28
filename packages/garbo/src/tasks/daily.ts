@@ -650,7 +650,10 @@ const DailyTasks: GarboTask[] = [
       ),
     completed: () => get("_clanFortuneConsultUses") >= 3,
     do: (): void => {
-      checkCurrentClanWhitelist("Bonus Adventures from Hell");
+      checkCurrentClanWhitelist(
+        "Bonus Adventures from Hell",
+        "To stop garbo using the fortune teller, remove your Bonus Adventures from Hell whitelist.",
+      );
       Clan.with("Bonus Adventures from Hell", () =>
         cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
       );

@@ -197,7 +197,10 @@ export function main(argString = ""): void {
             : null;
 
         if (parsedClanIdOrName) {
-          checkCurrentClanWhitelist(parsedClanIdOrName);
+          checkCurrentClanWhitelist(
+            parsedClanIdOrName,
+            "Return the stash items manually, then run garbo again.",
+          );
           Clan.with(parsedClanIdOrName, () => {
             for (const item of [...stashItems]) {
               const equipped = [item, ...getFoldGroup(item)].find((i) =>
