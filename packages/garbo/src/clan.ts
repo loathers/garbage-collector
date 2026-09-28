@@ -99,6 +99,8 @@ export function checkCurrentClanWhitelist(
   }
 
   if (!getWhitelistedClans().some((clan) => clan.id === clanId)) {
+    // Cleared so the next run picks up any whitelist the user adds to fix this
+    sessionStorage.removeItem("garbo_clanWhitelists");
     throw new Error(
       `You are not whitelisted to your current clan '${clanName}' (#${clanId}). Garbo will not switch clans, as you would be unable to return. ${disableHint}`,
     );
