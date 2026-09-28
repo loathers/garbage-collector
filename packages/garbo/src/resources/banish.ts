@@ -57,10 +57,10 @@ const banishMethods: BanishMethod[] = [
 ];
 
 const banishAvailable = (method: BanishMethod) =>
-    method.available() &&
-    !FarmingStrategy.banishMonsters.includes(
-      getBanishedMonsters().get(method.source) ?? $monster.none,
-    );
+  method.available() &&
+  !FarmingStrategy.banishMonsters.includes(
+    getBanishedMonsters().get(method.source) ?? $monster.none,
+  );
 
 export function chooseBanish(): BanishMethod | null {
   if (FarmingStrategy.monstersToBanish().length === 0) {
