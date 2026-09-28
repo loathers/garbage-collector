@@ -117,12 +117,13 @@ function hpCheck(
   // Sixgun shots want 40 more monster HP
   // Cincho's projectile pinata wants 50 more monster HP
   // Balloons take two rounds, because they need to be thrown back
-  const passiveDamage =
-    maxPassiveDamage() +
-    5 +
-    (checkType === "sixgun" ? 40 : 0) +
-    (checkType === "cincho" ? 50 : 0) +
-    (checkType === "balloon" ? maxPassiveDamage() : 0);
+  const damageAmounts = {
+    base: 0,
+    sixgun: 40,
+    cincho: 50,
+    balloon: maxPassiveDamage(),
+  };
+  const passiveDamage = maxPassiveDamage() + 5 + damageAmounts[checkType];
 
   return checkPassive
     ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage}`
