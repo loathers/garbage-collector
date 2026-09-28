@@ -1,8 +1,21 @@
-import { $item, $location, $monster, get, have, undelay } from "libram";
 import {
+  $class,
+  $item,
+  $items,
+  $location,
+  $monster,
+  $skill,
+  get,
+  have,
+  undelay,
+} from "libram";
+import {
+  inebrietyLimit,
   Item,
   mallPrice,
   myAdventures,
+  myClass,
+  myInebriety,
   myLocation,
   toMonster,
   totalTurnsPlayed,
@@ -27,6 +40,10 @@ import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit/barf";
 import { FarmingContext } from "../context";
 import { acquire } from "../../acquire";
+import { freeFightOutfit } from "../../outfit/free";
+import { freeFightFamiliar } from "../../familiar/freeFightFamiliar";
+import { GarboStrategy } from "../../combatStrategy";
+import { Macro } from "../../combat";
 
 export const farmPrepare = (context: FarmingContext) => {
   if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
@@ -86,6 +103,33 @@ export function FarmTurnQuest(): Quest<
           if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
           trackMarginalMpa();
         },
+        spendsTurn: true,
+      },
+      {
+        name: "Emergency Fishy",
+        ready: () =>
+          FarmingStrategy.location.environment === "underwater" &&
+          myClass() === $class`Seal Clubber` &&
+          myInebriety() <= inebrietyLimit(),
+        completed: () => have($effect`Fishy`, estimatedGarboTurns()),
+        outfit: () =>
+          freeFightOutfit(
+            {
+              equip: $items`Monodent of the Sea`,
+              familiar: freeFightFamiliar(FarmingStrategy.location, {
+                canChooseMacro: myInebriety() <= inebrietyLimit(),
+                allowAttackFamiliars: true,
+                mode: "free",
+              }),
+            },
+            FarmingStrategy.location,
+          ),
+        do: FarmingStrategy.location,
+        combat: new GarboStrategy((context) =>
+          Macro.trySkill($skill`Sea *dent: Talk to Some Fish`).step(
+            FarmingStrategy.combat(context),
+          ),
+        ),
         spendsTurn: true,
       },
       {

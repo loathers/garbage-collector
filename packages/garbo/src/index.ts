@@ -134,10 +134,12 @@ export function main(argString = ""): void {
   // Cowo is for professionals only
   if (
     globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
-    (effectFact($monster`sea cow`) !== $effect`Fishy` ||
+    ((effectFact($monster`sea cow`) !== $effect`Fishy` && !have($effect`Fishy`, 100)) ||
       (get("seahorseName") === "" && get("lassoTrainingCount") < 20))
   ) {
-    globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
+    abort(
+      "You failed the test for sea cows; figure your life out."
+    );
   }
 
   // Hit up main.php to get out of easily escapable choices
