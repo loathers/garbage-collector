@@ -1061,6 +1061,10 @@ function balanceMenu(
     if (iterations <= 0) {
       return fullMenu;
     } else {
+      print(
+        `Calculating diet, please wait${".....".slice(0, iterations)}`,
+        HIGHLIGHT,
+      );
       const balancingDiet = dietPlanner(fullMenu);
       return rebalance(
         menu,
@@ -1080,7 +1084,6 @@ export function computeDiet(): {
   pantsgiving: () => Diet<Note>;
   sweatpants: () => Diet<Note>;
 } {
-  print("Calculating diet, please wait...", HIGHLIGHT);
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
   const orEmpty = (diet: Diet<Note>) =>
