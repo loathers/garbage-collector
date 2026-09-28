@@ -992,10 +992,11 @@ export class Macro extends StrictMacro {
         `!pastround 24 && ${hpCheck(true, "balloon")}`,
         Macro.item($item`water balloon`).while_(
           `!(pastround 24 && match "Before doing anything else, your foe gently tosses back your water balloon") && ${hpCheck(true, "balloon")}`,
-          Macro.beginif(
+          Macro.if_(
             `match "Before doing anything else, your foe gently tosses back your water balloon" && ${hpCheck(true, "balloon")}`,
             Macro.item($item`water balloon`),
-          ).else(Macro.item(stasisItem())),
+            Macro.item(stasisItem()),
+          ),
         ),
       ),
     );
