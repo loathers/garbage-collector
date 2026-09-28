@@ -20179,7 +20179,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"5704ec4e724632b91d4aca132cee04eb3992fcdc"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"cf5558f5b4b5498ca234136104f25404a926bb5c"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -24458,6 +24458,7 @@ function balanceMenu(baseMenu, dietPlanner) {
     if (iterations <= 0) {
       return fullMenu;
     } else {
+      kolmafia.print(`Calculating diet, please wait${".....".slice(0, iterations)}`, HIGHLIGHT);
       var balancingDiet = dietPlanner(fullMenu);
       return rebalance(menu, iterations - 1, countCopies(balancingDiet), balancingDiet.expectedAdventures());
     }
@@ -24466,7 +24467,6 @@ function balanceMenu(baseMenu, dietPlanner) {
   return rebalance(baseMenu, 5, 0, baseDiet.expectedAdventures());
 }
 function computeDiet() {
-  kolmafia.print("Calculating diet, please wait...", HIGHLIGHT);
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
   var orEmpty = diet => diet.expectedValue(MPA, "net") < 0 ? new Diet() : diet;
