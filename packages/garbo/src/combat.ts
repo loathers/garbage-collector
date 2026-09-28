@@ -471,7 +471,7 @@ export class Macro extends StrictMacro {
     return new Macro().meatKill(delevel);
   }
 
-  meatStasis(checkPassive: boolean): Macro {
+  meatStasis(checkPassive: boolean, canCombatTrack = true): Macro {
     // We can't stasis without manuel's monsterhpabove if we want to crit
     if (checkPassive && !monsterManuelAvailable()) {
       return this;
@@ -558,7 +558,7 @@ export class Macro extends StrictMacro {
           ),
         )
         .externalIf(
-          haveEquipped($item`Cincho de Mayo`) && canPinata,
+          canCombatTrack && haveEquipped($item`Cincho de Mayo`) && canPinata,
           Macro.while_(
             `!times ${maximumPinataCasts()} && ${hpCheck(checkPassive, "cincho")} && ${Macro.makeBALLSPredicate(
               $skill`Cincho: Projectile Piñata`,
@@ -566,7 +566,7 @@ export class Macro extends StrictMacro {
             Macro.trySkill($skill`Cincho: Projectile Piñata`),
           ),
         )
-        .waterBalloonStasis()
+        .waterBalloonStasis(canCombatTrack)
         .externalIf(
           have($item`porquoise-handled sixgun`),
           Macro.if_(
@@ -647,7 +647,7 @@ export class Macro extends StrictMacro {
     return new Macro().startCombat();
   }
 
-  kill(): Macro {
+  kill(canCombatTrack = true): Macro {
     const riftId = toInt($location`Shadow Rift`);
     const canPinata =
       haveEquipped($item`Cincho de Mayo`) && CinchoDeMayo.currentCinch() >= 5;
@@ -656,7 +656,7 @@ export class Macro extends StrictMacro {
       Macro.trySkill($skill`Curse of Weaksauce`),
     )
       .externalIf(
-        canPinata,
+        canPinata && canCombatTrack,
         Macro.while_(
           `!times ${maximumPinataCasts()} && ${Macro.makeBALLSPredicate(
             $skill`Cincho: Projectile Piñata`,
@@ -664,7 +664,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Cincho: Projectile Piñata`),
         ),
       )
-      .waterBalloonStasis()
+      .waterBalloonStasis(canCombatTrack)
       .tryHaveSkill($skill`Become a Wolf`)
       .externalIf(
         !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
@@ -739,12 +739,12 @@ export class Macro extends StrictMacro {
     );
   }
 
-  basicCombat(): Macro {
-    return this.startCombat().kill();
+  basicCombat(canCombatTrack = true): Macro {
+    return this.startCombat().kill(canCombatTrack);
   }
 
-  static basicCombat(): Macro {
-    return new Macro().basicCombat();
+  static basicCombat(canCombatTrack = true): Macro {
+    return new Macro().basicCombat(canCombatTrack);
   }
 
   ghostBustin(): Macro {
@@ -983,10 +983,11 @@ export class Macro extends StrictMacro {
     return new Macro().farmingBanish(banish);
   }
 
-  waterBalloonStasis(): Macro {
+  waterBalloonStasis(canCombatTrack: boolean): Macro {
     // How can we be sure we're in a standard aftercore with access to normal council?
     return this.externalIf(
-      have($item`water balloon`) &&
+      canCombatTrack &&
+        have($item`water balloon`) &&
         !get("_waterBalloonBuffGranted", true) &&
         !(get("_waterBalloonTossStreak", 111) >= 111),
       Macro.if_(
@@ -1003,8 +1004,8 @@ export class Macro extends StrictMacro {
     );
   }
 
-  static waterBalloonStasis(): Macro {
-    return new Macro().waterBalloonStasis();
+  static waterBalloonStasis(canCombatTrack: boolean): Macro {
+    return new Macro().waterBalloonStasis(canCombatTrack);
   }
 }
 
