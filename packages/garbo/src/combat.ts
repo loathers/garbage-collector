@@ -991,9 +991,9 @@ export class Macro extends StrictMacro {
         !get("_waterBalloonBuffGranted", true) &&
         !(get("_waterBalloonTossStreak", 111) >= 111),
       Macro.if_(
-        `!pastround 24 && ${hpCheck(true, "balloon")}`,
+        `!pastround 15 && ${hpCheck(true, "balloon")}`,
         Macro.item($item`water balloon`).while_(
-          `!(pastround 24 && match "Before doing anything else, your foe gently tosses back your water balloon") && ${hpCheck(true, "balloon")}`,
+          `!(pastround 15 && match "Before doing anything else, your foe gently tosses back your water balloon") && ${hpCheck(true, "balloon")}`,
           Macro.if_(
             `match "Before doing anything else, your foe gently tosses back your water balloon" && ${hpCheck(true, "balloon")}`,
             Macro.item($item`water balloon`),
