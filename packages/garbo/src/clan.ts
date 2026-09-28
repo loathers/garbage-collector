@@ -84,6 +84,8 @@ export function withVIPClan<T>(action: () => T): T {
   );
 }
 
+const SESSION_WHITELISTED_CLANS = "garbo_clanWhitelists";
+
 export function checkCurrentClanWhitelist(
   targetClanIdOrName: string | number,
   disableHint: string,
@@ -100,7 +102,7 @@ export function checkCurrentClanWhitelist(
 
   if (!getWhitelistedClans().some((clan) => clan.id === clanId)) {
     // Cleared so the next run picks up any whitelist the user adds to fix this
-    sessionStorage.removeItem("garbo_clanWhitelists");
+    sessionStorage.removeItem(SESSION_WHITELISTED_CLANS);
     throw new Error(
       `You are not whitelisted to your current clan '${clanName}' (#${clanId}). Garbo will not switch clans, as you would be unable to return. ${disableHint}`,
     );
@@ -108,11 +110,11 @@ export function checkCurrentClanWhitelist(
 }
 
 export function getWhitelistedClans(): { id: number; name: string }[] {
-  const cached = sessionStorage.getItem("garbo_clanWhitelists");
+  const cached = sessionStorage.getItem(SESSION_WHITELISTED_CLANS);
   if (cached !== null) return JSON.parse(cached);
 
   const clans = Clan.getWhitelisted().map(({ id, name }) => ({ id, name }));
-  sessionStorage.setItem("garbo_clanWhitelists", JSON.stringify(clans));
+  sessionStorage.setItem(SESSION_WHITELISTED_CLANS, JSON.stringify(clans));
   return clans;
 }
 
