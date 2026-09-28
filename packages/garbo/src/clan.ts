@@ -14,6 +14,7 @@ import {
   putStash,
   refreshStash,
   retrieveItem,
+  sessionStorage,
   stashAmount,
   takeStash,
   toItem,
@@ -79,7 +80,37 @@ export function withVIPClan<T>(action: () => T): T {
   return withClan(clanIdOrName || getClanId(), action);
 }
 
+export function checkCurrentClanWhitelist(
+  targetClanIdOrName: string | number,
+): void {
+  const clanId = getClanId();
+  const clanName = getClanName();
+  if (
+    clanId < 0 ||
+    targetClanIdOrName === clanId ||
+    `${targetClanIdOrName}`.toLowerCase() === clanName.toLowerCase()
+  ) {
+    return;
+  }
+
+  if (!getWhitelistedClanIds().includes(clanId)) {
+    throw new Error(
+      `You are not whitelisted to your current clan ${clanName} (#${clanId}). Garbo will not switch clans, as you would be unable to return.`,
+    );
+  }
+}
+
+function getWhitelistedClanIds(): number[] {
+  const cached = sessionStorage.getItem("garbo_clanWhitelists");
+  if (cached !== null) return cached.split(",").filter(Boolean).map(Number);
+
+  const clanIds = Clan.getWhitelisted().map((clan) => clan.id);
+  sessionStorage.setItem("garbo_clanWhitelists", clanIds.join(","));
+  return clanIds;
+}
+
 function withClan<T>(clanIdOrName: string | number, action: () => T): T {
+  checkCurrentClanWhitelist(clanIdOrName);
   const startingClanId = getClanId();
   Clan.join(clanIdOrName);
   try {

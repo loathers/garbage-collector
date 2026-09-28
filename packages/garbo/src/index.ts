@@ -59,7 +59,12 @@ import {
   sinceKolmafiaRevision,
   unequip,
 } from "libram";
-import { stashItems, withStash, withVIPClan } from "./clan";
+import {
+  checkCurrentClanWhitelist,
+  stashItems,
+  withStash,
+  withVIPClan,
+} from "./clan";
 import { FarmingMethod, globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
@@ -192,6 +197,7 @@ export function main(argString = ""): void {
             : null;
 
         if (parsedClanIdOrName) {
+          checkCurrentClanWhitelist(parsedClanIdOrName);
           Clan.with(parsedClanIdOrName, () => {
             for (const item of [...stashItems]) {
               const equipped = [item, ...getFoldGroup(item)].find((i) =>

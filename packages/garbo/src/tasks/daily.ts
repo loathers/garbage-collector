@@ -66,7 +66,7 @@ import {
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
-import { withStash } from "../clan";
+import { checkCurrentClanWhitelist, withStash } from "../clan";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { meatFamiliar } from "../familiar/meatFamiliar";
@@ -646,6 +646,7 @@ const DailyTasks: GarboTask[] = [
       ) !== undefined,
     completed: () => get("_clanFortuneConsultUses") >= 3,
     do: (): void => {
+      checkCurrentClanWhitelist("Bonus Adventures from Hell");
       Clan.with("Bonus Adventures from Hell", () =>
         cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
       );
