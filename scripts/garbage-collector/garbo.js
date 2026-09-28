@@ -20179,7 +20179,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"e50d1b9c0caa6766f5e3a3c14f7262d5d29f6de4"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"5704ec4e724632b91d4aca132cee04eb3992fcdc"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -25764,9 +25764,37 @@ function withVIPClan(action) {
       _set("garbo_vipClan", clanIdOrName);
     }
   }
-  return withClan(clanIdOrName || kolmafia.getClanId(), action);
+  return withClan(clanIdOrName || kolmafia.getClanId(), "To stop garbo switching to a VIP clan, set 'garbo_vipClan' to your current clan.", action);
 }
-function withClan(clanIdOrName, action) {
+var SESSION_WHITELISTED_CLANS = "garbo_clanWhitelists";
+function checkCurrentClanWhitelist(targetClanIdOrName, disableHint) {
+  var clanId = kolmafia.getClanId();
+  var clanName = kolmafia.getClanName();
+  if (clanId < 0 || targetClanIdOrName === clanId || `${targetClanIdOrName}`.toLowerCase() === clanName.toLowerCase()) {
+    return;
+  }
+  if (!getWhitelistedClans().some(clan => clan.id === clanId)) {
+    // Cleared so the next run picks up any whitelist the user adds to fix this
+    kolmafia.sessionStorage.removeItem(SESSION_WHITELISTED_CLANS);
+    throw new Error(`You are not whitelisted to your current clan '${clanName}' (#${clanId}). Garbo will not switch clans, as you would be unable to return. ${disableHint}`);
+  }
+}
+function getWhitelistedClans() {
+  var cached = kolmafia.sessionStorage.getItem(SESSION_WHITELISTED_CLANS);
+  if (cached !== null) return JSON.parse(cached);
+  var clans = Clan.getWhitelisted().map(_ref => {
+    var id = _ref.id,
+      name = _ref.name;
+    return {
+      id,
+      name
+    };
+  });
+  kolmafia.sessionStorage.setItem(SESSION_WHITELISTED_CLANS, JSON.stringify(clans));
+  return clans;
+}
+function withClan(clanIdOrName, disableHint, action) {
+  checkCurrentClanWhitelist(clanIdOrName, disableHint);
   var startingClanId = kolmafia.getClanId();
   Clan.join(clanIdOrName);
   try {
@@ -25775,6 +25803,7 @@ function withClan(clanIdOrName, action) {
     Clan.join(startingClanId);
   }
 }
+var STASH_CLAN_DISABLE_HINT = "To stop garbo borrowing from a clan stash, set 'garbo_stashClan' to 'none'.";
 var StashManager = /*#__PURE__*/function () {
   function StashManager() {
     _classCallCheck(this, StashManager);
@@ -25796,7 +25825,7 @@ var StashManager = /*#__PURE__*/function () {
         kolmafia.print(`Stash access is disabled. Ignoring request to borrow "${items.map(value => value.name).join(", ")}" from clan stash.`, HIGHLIGHT);
         return;
       }
-      withClan(this.clanIdOrName, () => {
+      withClan(this.clanIdOrName, STASH_CLAN_DISABLE_HINT, () => {
         for (var _i = 0, _items = items; _i < _items.length; _i++) {
           var item = _items[_i];
           if (have$P(item)) continue;
@@ -25867,7 +25896,7 @@ var StashManager = /*#__PURE__*/function () {
           items.forEach(item => kolmafia.print(`${item.name},`, "red"));
         }
       }
-      withClan(this.clanIdOrName, () => {
+      withClan(this.clanIdOrName, STASH_CLAN_DISABLE_HINT, () => {
         for (var _i2 = 0, _items2 = items; _i2 < _items2.length; _i2++) {
           var item = _items2[_i2];
           var count = this.taken.get(item) ?? 0;
@@ -30038,9 +30067,10 @@ var DailyTasks = [{
   spendsTurn: false
 }, {
   name: "Clan Fortune Consults",
-  ready: () => have$P($item`Clan VIP Lounge key`) && kolmafia.getClanLounge()["Clan Carnival Game"] !== undefined && kolmafia.isOnline("OnlyFax") && Clan.getWhitelisted().find(c => c.name === "Bonus Adventures from Hell") !== undefined,
+  ready: () => have$P($item`Clan VIP Lounge key`) && kolmafia.getClanLounge()["Clan Carnival Game"] !== undefined && kolmafia.isOnline("OnlyFax") && getWhitelistedClans().some(c => c.name === "Bonus Adventures from Hell"),
   completed: () => get$2("_clanFortuneConsultUses") >= 3,
   do: () => {
+    checkCurrentClanWhitelist("Bonus Adventures from Hell", "To stop garbo using the fortune teller, remove your 'Bonus Adventures from Hell' whitelist.");
     Clan.with("Bonus Adventures from Hell", () => kolmafia.cliExecute(`fortune ${kolmafia.getPlayerId("OnlyFax")}`));
     if (get$2("_clanFortuneConsultUses") < 3) kolmafia.wait(10);
   },
@@ -33031,6 +33061,7 @@ function main() {
         var clanIdOrName = globalOptions.prefs.stashClan;
         var parsedClanIdOrName = clanIdOrName !== "none" ? clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName : null;
         if (parsedClanIdOrName) {
+          checkCurrentClanWhitelist(parsedClanIdOrName, "Return the stash items manually, then run garbo again.");
           Clan.with(parsedClanIdOrName, () => {
             for (var _i = 0, _arr = _toConsumableArray(stashItems); _i < _arr.length; _i++) {
               var item = _arr[_i];
