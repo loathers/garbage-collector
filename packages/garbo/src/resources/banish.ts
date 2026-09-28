@@ -56,6 +56,12 @@ const banishMethods: BanishMethod[] = [
   },
 ];
 
+const banishAvailable = (method: BanishMethod) =>
+    method.available() &&
+    !FarmingStrategy.banishMonsters.includes(
+      getBanishedMonsters().get(method.source) ?? $monster.none,
+    );
+
 export function chooseBanish(): BanishMethod | null {
   if (FarmingStrategy.monstersToBanish().length === 0) {
     return null;
@@ -64,21 +70,15 @@ export function chooseBanish(): BanishMethod | null {
   const banishedMonsters = getBanishedMonsters();
   const targetMonster = FarmingStrategy.targetMonster;
 
-  const available = (method: BanishMethod) =>
-    method.available() &&
-    !FarmingStrategy.banishMonsters.includes(
-      banishedMonsters.get(method.source) ?? $monster.none,
-    );
-
   // If a preceding script banished our target, reuse that banish first.
   return (
     banishMethods.find(
       (method) =>
-        available(method) &&
+        banishAvailable(method) &&
         banishedMonsters.get(method.source) === targetMonster,
     ) ??
     // Otherwise use FIFO.
-    banishMethods.find(available) ??
+    banishMethods.find(banishAvailable) ??
     null
   );
 }
