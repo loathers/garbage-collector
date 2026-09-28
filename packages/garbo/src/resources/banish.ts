@@ -73,7 +73,9 @@ export function chooseBanish(): BanishMethod | null {
   // If a preceding script banished our target, reuse that banish first.
   return (
     banishMethods.find(
-      (method) => available(method) && banishedMonsters.get(method.source) === targetMonster,
+      (method) =>
+        available(method) &&
+        banishedMonsters.get(method.source) === targetMonster,
     ) ??
     // Otherwise use FIFO.
     banishMethods.find(available) ??
