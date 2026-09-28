@@ -79,7 +79,7 @@ export function withVIPClan<T>(action: () => T): T {
   }
   return withClan(
     clanIdOrName || getClanId(),
-    "To stop garbo switching to a VIP clan, set garbo_vipClan to your current clan.",
+    "To stop garbo switching to a VIP clan, set 'garbo_vipClan' to your current clan.",
     action,
   );
 }
@@ -100,7 +100,7 @@ export function checkCurrentClanWhitelist(
 
   if (!getWhitelistedClans().some((clan) => clan.id === clanId)) {
     throw new Error(
-      `You are not whitelisted to your current clan ${clanName} (#${clanId}). Garbo will not switch clans, as you would be unable to return. ${disableHint}`,
+      `You are not whitelisted to your current clan '${clanName}' (#${clanId}). Garbo will not switch clans, as you would be unable to return. ${disableHint}`,
     );
   }
 }
@@ -130,7 +130,7 @@ function withClan<T>(
 }
 
 const STASH_CLAN_DISABLE_HINT =
-  "To stop garbo borrowing from a clan stash, set garbo_stashClan to none.";
+  "To stop garbo borrowing from a clan stash, set 'garbo_stashClan' to 'none'.";
 
 class StashManager {
   clanIdOrName: string | number;
