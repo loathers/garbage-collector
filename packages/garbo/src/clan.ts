@@ -93,20 +93,20 @@ export function checkCurrentClanWhitelist(
     return;
   }
 
-  if (!getWhitelistedClanIds().includes(clanId)) {
+  if (!getWhitelistedClans().some((clan) => clan.id === clanId)) {
     throw new Error(
       `You are not whitelisted to your current clan ${clanName} (#${clanId}). Garbo will not switch clans, as you would be unable to return.`,
     );
   }
 }
 
-function getWhitelistedClanIds(): number[] {
+export function getWhitelistedClans(): { id: number; name: string }[] {
   const cached = sessionStorage.getItem("garbo_clanWhitelists");
-  if (cached !== null) return cached.split(",").filter(Boolean).map(Number);
+  if (cached !== null) return JSON.parse(cached);
 
-  const clanIds = Clan.getWhitelisted().map((clan) => clan.id);
-  sessionStorage.setItem("garbo_clanWhitelists", clanIds.join(","));
-  return clanIds;
+  const clans = Clan.getWhitelisted().map(({ id, name }) => ({ id, name }));
+  sessionStorage.setItem("garbo_clanWhitelists", JSON.stringify(clans));
+  return clans;
 }
 
 function withClan<T>(clanIdOrName: string | number, action: () => T): T {

@@ -66,7 +66,11 @@ import {
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
-import { checkCurrentClanWhitelist, withStash } from "../clan";
+import {
+  checkCurrentClanWhitelist,
+  getWhitelistedClans,
+  withStash,
+} from "../clan";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { meatFamiliar } from "../familiar/meatFamiliar";
@@ -641,9 +645,9 @@ const DailyTasks: GarboTask[] = [
       have($item`Clan VIP Lounge key`) &&
       getClanLounge()["Clan Carnival Game"] !== undefined &&
       isOnline("OnlyFax") &&
-      Clan.getWhitelisted().find(
+      getWhitelistedClans().some(
         (c) => c.name === "Bonus Adventures from Hell",
-      ) !== undefined,
+      ),
     completed: () => get("_clanFortuneConsultUses") >= 3,
     do: (): void => {
       checkCurrentClanWhitelist("Bonus Adventures from Hell");
