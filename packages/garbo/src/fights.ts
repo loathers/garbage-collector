@@ -1239,7 +1239,14 @@ const priorityFreeRunFightSources = [
       spec: {
         familiar: $familiar`Meat Shield Maiden`,
         famequip: $items`can of shield tenderizer`,
-        modifier: ["100 ML", "-Moxie", "HP", "-DR", "-DA"],
+        modifier: [
+          "100 ML",
+          "10 Moxie", // Because it's scaling apparently this is good?
+          "HP",
+          "-DR",
+          "-100 DA",
+          "-Sleaze resistance",
+        ],
         avoid: $items`Drunkula's wineglass`,
       },
       location: $location`Sloppy Seconds Diner`,
