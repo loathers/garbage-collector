@@ -484,8 +484,8 @@ function usePorkToilet(): GarboPostTask {
 function waterBalloonChampion(): GarboPostTask {
   return {
     name: "Claim Water Balloon Champion",
-    ready: () => get("_waterBalloonTossStreak", 0) >= 111,
-    completed: () => get("_waterBalloonBuffGranted", true),
+    ready: () => get("_waterBalloonTossStreak") >= 111,
+    completed: () => get("_waterBalloonBuffGranted"),
     do: () => {
       visitUrl("council.php");
       if (!have($effect`Water Balloon Champion`)) {
@@ -494,7 +494,7 @@ function waterBalloonChampion(): GarboPostTask {
         );
       }
     },
-    available: () => !get("_waterBalloonBuffGranted", true),
+    available: () => !get("_waterBalloonBuffGranted"),
   };
 }
 

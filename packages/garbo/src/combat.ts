@@ -988,8 +988,8 @@ export class Macro extends StrictMacro {
     return this.externalIf(
       canCombatTrack &&
         have($item`water balloon`) &&
-        !get("_waterBalloonBuffGranted", true) &&
-        !(get("_waterBalloonTossStreak", 111) >= 111),
+        !get("_waterBalloonBuffGranted") &&
+        !(get("_waterBalloonTossStreak") >= 111),
       Macro.if_(
         `!pastround 15 && ${hpCheck(true, "balloon")}`,
         Macro.item($item`water balloon`).while_(
