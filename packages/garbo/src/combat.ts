@@ -107,6 +107,40 @@ function preferMuscleCombat(): boolean {
   );
 }
 
+// Construct the monster HP component of the stasis condition
+function hpCheck(
+  checkPassive: boolean,
+  checkType: "base" | "sixgun" | "cincho" | "balloon",
+): string {
+  // Are we aiming to crit? If so, we need to respect the passive damage
+  // Also we need to respect our health total
+  // Sixgun shots want 40 more monster HP
+  // Cincho's projectile pinata wants 50 more monster HP
+  // Balloons take two rounds, because they need to be thrown back
+  const damageAmounts = {
+    base: 0,
+    sixgun: 40,
+    cincho: 50,
+    balloon: maxPassiveDamage(),
+  };
+  const passiveDamage = maxPassiveDamage() + 5 + damageAmounts[checkType];
+
+  return checkPassive
+    ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage}`
+    : "!hppercentbelow 25";
+}
+
+const checkGet = (i: Item) => have(i) && (itemAmount(i) > 0 || retrieveItem(i));
+const stasisItem = () => {
+  const chosenStasisItem =
+    $items`facsimile dictionary, dictionary, seal tooth`.find(checkGet);
+  // We retrieve a seal tooth at the start of the day, so this is just to make sure nothing has gone awry.
+  if (!chosenStasisItem) {
+    throw new Error("Acquire a seal tooth and run garbo again.");
+  }
+  return chosenStasisItem;
+};
+
 export class Macro extends StrictMacro {
   abortWithMsg(errorMessage: string): Macro {
     return this.step(`abort "${errorMessage}"`);
@@ -437,43 +471,17 @@ export class Macro extends StrictMacro {
     return new Macro().meatKill(delevel);
   }
 
-  meatStasis(checkPassive: boolean): Macro {
+  meatStasis(checkPassive: boolean, canCombatTrack = true): Macro {
     // We can't stasis without manuel's monsterhpabove if we want to crit
     if (checkPassive && !monsterManuelAvailable()) {
       return this;
     }
 
-    const checkGet = (i: Item) =>
-      have(i) && (itemAmount(i) > 0 || retrieveItem(i));
-    const stasisItem =
-      $items`facsimile dictionary, dictionary, seal tooth`.find(checkGet);
     const pinataCastsAvailable = Math.floor(CinchoDeMayo.currentCinch() / 5);
     const canPinata =
       CinchoDeMayo.have() &&
       pinataCastsAvailable > 0 &&
       monsterManuelAvailable();
-
-    // We retrieve a seal tooth at the start of the day, so this is just to make sure nothing has gone awry.
-    if (!stasisItem) {
-      throw new Error("Acquire a seal tooth and run garbo again.");
-    }
-
-    // Construct the monster HP component of the stasis condition
-    // Evaluate the passive damage
-    const passiveDamage = maxPassiveDamage() + 5;
-    // Are we aiming to crit? If so, we need to respect the passive damage
-    // Also we need to respect our health total
-    const hpCheck = checkPassive
-      ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage}`
-      : "!hppercentbelow 25";
-    // Same story but for the sixgun shot, which wants 40 more HP if possible
-    const hpCheckSixgun = checkPassive
-      ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage + 40}`
-      : "!hppercentbelow 25";
-    // Same story but for Cincho's projectile pinata, which wants 50 more HP if possible
-    const hpCheckCincho = checkPassive
-      ? `!hppercentbelow 25 && monsterhpabove ${passiveDamage + 50}`
-      : "!hppercentbelow 25";
 
     // Determine how long we'll be stasising for
     // By default there's no reason to stasis
@@ -516,49 +524,59 @@ export class Macro extends StrictMacro {
       Macro.externalIf(
         have($item`Time-Spinner`),
         Macro.if_(
-          `${hpCheck} && monstername sausage goblin`,
+          `${hpCheck(checkPassive, "base")} && monstername sausage goblin`,
           Macro.tryHaveItem($item`Time-Spinner`),
         ),
       )
         .externalIf(
           have($skill`Meteor Lore`),
           Macro.if_(
-            `${hpCheck} && monstername sausage goblin`,
+            `${hpCheck(checkPassive, "base")} && monstername sausage goblin`,
             Macro.tryHaveSkill($skill`Micrometeorite`),
           ),
         )
         .externalIf(
           haveEquipped($item`Pantsgiving`),
-          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Pocket Crumbs`)),
+          Macro.if_(
+            `${hpCheck(checkPassive, "base")}`,
+            Macro.trySkill($skill`Pocket Crumbs`),
+          ),
         )
         .externalIf(
           SourceTerminal.getSkills().includes($skill`Extract`),
-          Macro.if_(`${hpCheck}`, Macro.trySkill($skill`Extract`)),
+          Macro.if_(
+            `${hpCheck(checkPassive, "base")}`,
+            Macro.trySkill($skill`Extract`),
+          ),
         )
         .externalIf(
           haveEquipped($item`vampyric cloake`) &&
             get("_vampyreCloakeFormUses") < 10,
-          Macro.if_(`${hpCheck}`, Macro.tryHaveSkill($skill`Become a Wolf`)),
+          Macro.if_(
+            `${hpCheck(checkPassive, "base")}`,
+            Macro.tryHaveSkill($skill`Become a Wolf`),
+          ),
         )
         .externalIf(
-          haveEquipped($item`Cincho de Mayo`) && canPinata,
+          canCombatTrack && haveEquipped($item`Cincho de Mayo`) && canPinata,
           Macro.while_(
-            `!times ${maximumPinataCasts()} && ${hpCheckCincho} && ${Macro.makeBALLSPredicate(
+            `!times ${maximumPinataCasts()} && ${hpCheck(checkPassive, "cincho")} && ${Macro.makeBALLSPredicate(
               $skill`Cincho: Projectile Piñata`,
             )}`,
             Macro.trySkill($skill`Cincho: Projectile Piñata`),
           ),
         )
+        .waterBalloonStasis(canCombatTrack)
         .externalIf(
           have($item`porquoise-handled sixgun`),
           Macro.if_(
-            `${hpCheckSixgun}`,
+            `${hpCheck(checkPassive, "sixgun")}`,
             Macro.tryItem($item`porquoise-handled sixgun`),
           ),
         )
         .while_(
-          `${hpCheck} && !pastround ${stasisRounds}`,
-          Macro.item(stasisItem),
+          `${hpCheck(checkPassive, "base")} && !pastround ${stasisRounds}`,
+          Macro.item(stasisItem()),
         ),
     );
   }
@@ -629,7 +647,7 @@ export class Macro extends StrictMacro {
     return new Macro().startCombat();
   }
 
-  kill(): Macro {
+  kill(canCombatTrack = true): Macro {
     const riftId = toInt($location`Shadow Rift`);
     const canPinata =
       haveEquipped($item`Cincho de Mayo`) && CinchoDeMayo.currentCinch() >= 5;
@@ -638,7 +656,7 @@ export class Macro extends StrictMacro {
       Macro.trySkill($skill`Curse of Weaksauce`),
     )
       .externalIf(
-        canPinata,
+        canPinata && canCombatTrack,
         Macro.while_(
           `!times ${maximumPinataCasts()} && ${Macro.makeBALLSPredicate(
             $skill`Cincho: Projectile Piñata`,
@@ -646,6 +664,7 @@ export class Macro extends StrictMacro {
           Macro.trySkill($skill`Cincho: Projectile Piñata`),
         ),
       )
+      .waterBalloonStasis(canCombatTrack)
       .tryHaveSkill($skill`Become a Wolf`)
       .externalIf(
         !(myClass() === $class`Sauceror` && have($skill`Curse of Weaksauce`)),
@@ -720,12 +739,12 @@ export class Macro extends StrictMacro {
     );
   }
 
-  basicCombat(): Macro {
-    return this.startCombat().kill();
+  basicCombat(canCombatTrack = true): Macro {
+    return this.startCombat().kill(canCombatTrack);
   }
 
-  static basicCombat(): Macro {
-    return new Macro().basicCombat();
+  static basicCombat(canCombatTrack = true): Macro {
+    return new Macro().basicCombat(canCombatTrack);
   }
 
   ghostBustin(): Macro {
@@ -962,6 +981,31 @@ export class Macro extends StrictMacro {
 
   static farmingBanish(banish: BanishMethod | null): Macro {
     return new Macro().farmingBanish(banish);
+  }
+
+  waterBalloonStasis(canCombatTrack: boolean): Macro {
+    // How can we be sure we're in a standard aftercore with access to normal council?
+    return this.externalIf(
+      canCombatTrack &&
+        have($item`water balloon`) &&
+        !get("_waterBalloonBuffGranted") &&
+        !(get("_waterBalloonTossStreak") >= 111),
+      Macro.if_(
+        `!pastround 15 && ${hpCheck(true, "balloon")}`,
+        Macro.item($item`water balloon`).while_(
+          `!(pastround 15 && match "Before doing anything else, your foe gently tosses back your water balloon") && ${hpCheck(true, "balloon")}`,
+          Macro.if_(
+            `match "Before doing anything else, your foe gently tosses back your water balloon" && ${hpCheck(true, "balloon")}`,
+            Macro.item($item`water balloon`),
+            Macro.item(stasisItem()),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static waterBalloonStasis(canCombatTrack: boolean): Macro {
+    return new Macro().waterBalloonStasis(canCombatTrack);
   }
 }
 
