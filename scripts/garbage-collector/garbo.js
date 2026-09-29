@@ -19587,7 +19587,7 @@ function acquire(qty, item, maxPrice) {
   var coinmaster = kolmafia.Coinmaster.all().find(cm => kolmafia.sellsItem(cm, item));
   if (coinmaster) {
     var coinmasterPrice = garboValue(coinmaster.item) * kolmafia.sellPrice(coinmaster, item);
-    retrieveProperties.autoSatisfyWithCoinmasters = coinmasterPrice <= kolmafia.mallPrice(item) && coinmasterPrice <= maxPrice;
+    retrieveProperties.autoSatisfyWithCoinmasters = coinmasterPrice <= (kolmafia.mallPrice(item) || Infinity) && coinmasterPrice <= maxPrice;
   }
   withProperties(retrieveProperties, () => kolmafia.retrieveItem(item, qty));
   if (kolmafia.itemAmount(item) < qty && throwOnFail) {
@@ -20179,7 +20179,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"13822d94b073a67c86f77147107a20bd37815cfe"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"8badfdf348607a5872cdd7f39dc8de8af6918fb8"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
