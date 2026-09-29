@@ -1,7 +1,6 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
   availableAmount,
-  booleanModifier,
   canAdventure,
   canEquip,
   cliExecute,
@@ -35,7 +34,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { meatFamiliar } from "../familiar/meatFamiliar";
+import { familiarCanBreathe, meatFamiliar } from "../familiar/meatFamiliar";
 import { BonusEquipMode, targetMeat } from "../lib";
 import {
   estimatedGarboTurns,
@@ -124,11 +123,7 @@ export function familiarSlotNeededForBreathing(
   location: Location,
   familiar?: Familiar,
 ): boolean {
-  return (
-    location.environment === "underwater" &&
-    !familiar?.underwater &&
-    !booleanModifier("Underwater Familiar")
-  );
+  return location.environment === "underwater" && !familiarCanBreathe(familiar);
 }
 
 export function toSpec(source?: ActionSource | Requirement): OutfitSpec {

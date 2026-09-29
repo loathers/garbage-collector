@@ -11,10 +11,7 @@ import {
   have,
 } from "libram";
 import { freeFightFamiliar } from "../familiar/freeFightFamiliar";
-import {
-  meatFamiliar,
-  meatFamiliarIgnoringEquipment,
-} from "../familiar/meatFamiliar";
+import { meatFamiliar, underwaterMeatFamiliar } from "../familiar/meatFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
@@ -89,7 +86,7 @@ export function meatTargetOutfit(
   const familiarNeedsToBreathe = familiarSlotNeededForBreathing(location);
   outfit.familiar ??= targetingMeat()
     ? familiarNeedsToBreathe
-      ? meatFamiliarIgnoringEquipment()
+      ? underwaterMeatFamiliar()
       : meatFamiliar()
     : freeFightFamiliar(location ?? globalOptions.target, {
         equipmentForced:
