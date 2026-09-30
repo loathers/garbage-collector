@@ -1,22 +1,18 @@
-import {
-  booleanModifier,
-  equippedItem,
-  Familiar,
-  Item,
-  numericModifier,
-} from "kolmafia";
+import { Familiar, Item, numericModifier } from "kolmafia";
 import {
   $familiar,
   $familiars,
   $item,
   $items,
-  $slot,
   findFairyMultiplier,
   findLeprechaunMultiplier,
   have,
   maxBy,
 } from "libram";
-import { equipmentlessFamiliarWeight } from "./weight";
+import {
+  equipmentlessFamiliarWeight,
+  familiarCanBreathe,
+} from "./familiarHelpers";
 
 let fam: Familiar;
 
@@ -58,15 +54,6 @@ export function meatFamiliar(): Familiar {
 
 const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
 
-export function familiarCanBreathe(familiar?: Familiar): boolean {
-  return (
-    (familiar?.underwater ?? false) ||
-    // `booleanModifier("Underwater Familiar")` covers us for unusual breathing strategies
-    // like the asdon martin's Driving Waterproofly effect
-    (booleanModifier("Underwater Familiar") &&
-      !booleanModifier(equippedItem($slot`familiar`), "Underwater Familiar"))
-  );
-}
 function meatDropWithEquipment(familiar: Familiar, equip: Item): number {
   return numericModifier(
     familiar,

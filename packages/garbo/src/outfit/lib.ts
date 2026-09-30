@@ -34,7 +34,8 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { familiarCanBreathe, meatFamiliar } from "../familiar/meatFamiliar";
+import { familiarCanBreathe } from "../familiar/familiarHelpers";
+import { meatFamiliar } from "../familiar/meatFamiliar";
 import { BonusEquipMode, targetMeat } from "../lib";
 import {
   estimatedGarboTurns,

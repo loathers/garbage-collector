@@ -7,7 +7,7 @@ import {
   have,
   maxBy,
 } from "libram";
-import { equipmentlessFamiliarWeight } from "../../familiar/weight";
+import { equipmentlessFamiliarWeight } from "../../familiar/familiarHelpers";
 import { familiarWaterBreathingEquipment } from "../../outfit/lib";
 
 export function bestFamUnderwaterGear(fam: Familiar): Item {
