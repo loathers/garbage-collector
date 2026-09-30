@@ -68,11 +68,21 @@ export function familiarCanBreathe(familiar?: Familiar): boolean {
   );
 }
 
+
+// Workaround to get buffed familiar weight (since it affects expected meat buff) without equipment
+// (as it might be overridden by breathing gear)
+function equipmentlessFamiliarWeight(familiar: Familiar): number {
+  return (
+    totalFamiliarWeight(familiar, true) -
+    numericModifier(equippedItem($slot`familiar`), "Familiar Weight")
+  );
+}
+
 function meatDropWithEquipment(familiar: Familiar, equip: Item): number {
   return numericModifier(
     familiar,
     "Meat Drop",
-    totalFamiliarWeight(familiar, false),
+    equipmentlessFamiliarWeight(familiar),
     equip,
   );
 }
