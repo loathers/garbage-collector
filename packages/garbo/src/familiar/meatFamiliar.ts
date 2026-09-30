@@ -99,10 +99,7 @@ export function underwaterMeatFamiliar(): Familiar {
 
   const familiarValue = (familiar: Familiar) =>
     familiarCanBreathe(familiar)
-      ? meatDropWithEquipment(
-          familiar,
-          assumedFreeSlotEquipment,
-        )
+      ? meatDropWithEquipment(familiar, assumedFreeSlotEquipment)
       : Math.max(
           ...breathingEquipment.map((equip) =>
             meatDropWithEquipment(familiar, equip),
