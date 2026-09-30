@@ -2,12 +2,8 @@ import {
   booleanModifier,
   equippedItem,
   Familiar,
-  familiarEquippedEquipment,
-  familiarWeight,
   Item,
-  myFamiliar,
   numericModifier,
-  weightAdjustment,
 } from "kolmafia";
 import {
   $familiar,
@@ -19,6 +15,7 @@ import {
   findLeprechaunMultiplier,
   have,
   maxBy,
+  totalFamiliarWeight,
 } from "libram";
 
 let fam: Familiar;
@@ -74,12 +71,11 @@ export function familiarCanBreathe(familiar?: Familiar): boolean {
 function meatDropWithEquipment(
   familiar: Familiar,
   equip: Item,
-  externalWeight: number,
 ): number {
   return numericModifier(
     familiar,
     "Meat Drop",
-    familiarWeight(familiar) + externalWeight,
+    totalFamiliarWeight(familiar, false),
     equip,
   );
 }
@@ -97,10 +93,6 @@ export function underwaterMeatFamiliar(): Familiar {
   const breathingEquipment = familiarWaterBreathingEquipment.filter(have);
   if (!breathingEquipment.length) return fallback;
 
-  const externalWeight =
-    weightAdjustment() -
-    numericModifier(familiarEquippedEquipment(myFamiliar()), "Familiar Weight");
-
   const assumedFreeSlotEquipment = have($item`amulet coin`)
     ? $item`amulet coin`
     : $item.none;
@@ -110,11 +102,10 @@ export function underwaterMeatFamiliar(): Familiar {
       ? meatDropWithEquipment(
           familiar,
           assumedFreeSlotEquipment,
-          externalWeight,
         )
       : Math.max(
           ...breathingEquipment.map((equip) =>
-            meatDropWithEquipment(familiar, equip, externalWeight),
+            meatDropWithEquipment(familiar, equip),
           ),
         );
 
