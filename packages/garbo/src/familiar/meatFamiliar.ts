@@ -68,10 +68,7 @@ export function familiarCanBreathe(familiar?: Familiar): boolean {
   );
 }
 
-function meatDropWithEquipment(
-  familiar: Familiar,
-  equip: Item,
-): number {
+function meatDropWithEquipment(familiar: Familiar, equip: Item): number {
   return numericModifier(
     familiar,
     "Meat Drop",
