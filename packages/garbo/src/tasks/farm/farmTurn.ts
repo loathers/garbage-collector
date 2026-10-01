@@ -35,10 +35,10 @@ import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit/barf";
 import { FarmingContext } from "../context";
 import { acquire } from "../../acquire";
-import { singlePhylaInFarmingStrategyZone } from "../../lib";
 
 export const farmPrepare = (context: FarmingContext) => {
-  const farmZoneMonsterPhylum = singlePhylaInFarmingStrategyZone();
+  const farmZoneMonsterPhylum =
+    FarmingStrategy.singlePhylaInFarmingStrategyZone();
   if (
     farmZoneMonsterPhylum &&
     Snapper.getTrackedPhylum() !== farmZoneMonsterPhylum
