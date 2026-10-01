@@ -42,6 +42,7 @@ import {
   myThrall,
   myTurncount,
   numericModifier,
+  Phylum,
   print,
   restoreHp,
   restoreMp,
@@ -54,7 +55,6 @@ import {
   spleenLimit,
   Stat,
   todayToString,
-  toMonster,
   totalFreeRests,
   toUrl,
   use,
@@ -1168,15 +1168,15 @@ export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
 
-export function singleMonsterInCombatQueue(
-  location: Location,
-): Monster | false {
-  const monsters = location.combatQueue
-    .split(";")
-    .map((monster) => monster.trim())
-    .filter(Boolean);
+export function singlePhylaInFarmingStrategyZone(): Phylum | false {
+  const monsters = getMonsters(FarmingStrategy.location);
+  const samePhylum = monsters.every(
+    (monster) => monster.phylum === monsters[0].phylum,
+  );
 
-  const uniqueMonsters = [...new Set(monsters)];
+  if (!samePhylum) {
+    return false;
+  }
 
-  return uniqueMonsters.length === 1 ? toMonster(uniqueMonsters[0]) : false;
+  return monsters[0].phylum;
 }

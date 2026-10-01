@@ -35,17 +35,15 @@ import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit/barf";
 import { FarmingContext } from "../context";
 import { acquire } from "../../acquire";
-import { singleMonsterInCombatQueue } from "../../lib";
+import { singlePhylaInFarmingStrategyZone } from "../../lib";
 
 export const farmPrepare = (context: FarmingContext) => {
-  const combatQueueMonster = singleMonsterInCombatQueue(
-    FarmingStrategy.location,
-  );
+  const farmZoneMonsterPhylum = singlePhylaInFarmingStrategyZone();
   if (
-    combatQueueMonster &&
-    Snapper.getTrackedPhylum() !== combatQueueMonster.phylum
+    farmZoneMonsterPhylum &&
+    Snapper.getTrackedPhylum() !== farmZoneMonsterPhylum
   ) {
-    Snapper.trackPhylum(combatQueueMonster.phylum);
+    Snapper.trackPhylum(farmZoneMonsterPhylum);
   }
   if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
     acquire(

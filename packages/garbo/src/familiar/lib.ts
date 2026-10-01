@@ -28,7 +28,7 @@ import {
   baseMeat,
   ESTIMATED_OVERDRUNK_TURNS,
   isFree,
-  singleMonsterInCombatQueue,
+  singlePhylaInFarmingStrategyZone,
   targetMeat,
 } from "../lib";
 import {
@@ -161,9 +161,7 @@ export function estimatedBarfExperience(): number {
 }
 
 export function snapperValue(mode: FamiliarMode): number {
-  const combatQueueMonster = singleMonsterInCombatQueue(
-    FarmingStrategy.location,
-  );
+  const combatQueueMonster = singlePhylaInFarmingStrategyZone();
   if (mode === "barf" && !combatQueueMonster) {
     return 0;
   }
@@ -171,7 +169,7 @@ export function snapperValue(mode: FamiliarMode): number {
     mode === "target"
       ? globalOptions.target.phylum
       : combatQueueMonster
-        ? combatQueueMonster.phylum
+        ? combatQueueMonster
         : Phylum.none;
 
   const item = Snapper.phylumItem.get(phylum);
@@ -255,9 +253,7 @@ export function snapperReasonable(mode: FamiliarMode): boolean {
   if (mode === "target") {
     return true;
   }
-  const combatQueueMonster = singleMonsterInCombatQueue(
-    FarmingStrategy.location,
-  );
+  const combatQueueMonster = singlePhylaInFarmingStrategyZone();
   if (mode === "barf" && combatQueueMonster) {
     return true;
   }
