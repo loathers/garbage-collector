@@ -1,5 +1,6 @@
 import {
   $class,
+  $familiar,
   $item,
   $items,
   $location,
@@ -7,6 +8,7 @@ import {
   $skill,
   get,
   have,
+  Snapper,
   undelay,
 } from "libram";
 import {
@@ -41,11 +43,15 @@ import { barfOutfit } from "../../outfit/barf";
 import { FarmingContext } from "../context";
 import { acquire } from "../../acquire";
 import { freeFightOutfit } from "../../outfit/free";
-import { freeFightFamiliar } from "../../familiar/freeFightFamiliar";
 import { GarboStrategy } from "../../combatStrategy";
 import { Macro } from "../../combat";
+import { singleMonsterInCombatQueue } from "../../lib";
 
 export const farmPrepare = (context: FarmingContext) => {
+  const combatQueueMonster = singleMonsterInCombatQueue(FarmingStrategy.location);
+  if (combatQueueMonster) {
+    Snapper.trackPhylum(combatQueueMonster.phylum)
+  }
   if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
     acquire(
       estimatedGarboTurns(),
@@ -116,19 +122,13 @@ export function FarmTurnQuest(): Quest<
           freeFightOutfit(
             {
               equip: $items`Monodent of the Sea`,
-              familiar: freeFightFamiliar(FarmingStrategy.location, {
-                canChooseMacro: myInebriety() <= inebrietyLimit(),
-                allowAttackFamiliars: true,
-                mode: "free",
-              }),
+              familiar: $familiar`Sword of S Words`,
             },
             FarmingStrategy.location,
           ),
-        do: FarmingStrategy.location,
-        combat: new GarboStrategy((context) =>
-          Macro.trySkill($skill`Sea *dent: Talk to Some Fish`).step(
-            FarmingStrategy.combat(context),
-          ),
+        do: $location`Pandamonium Slums`,
+        combat: new GarboStrategy(() =>
+          Macro.if_(`!monsterphylum fish`, Macro.trySkill($skill`Sea *dent: Talk to Some Fish`)).meatKill(),
         ),
         spendsTurn: true,
       },
