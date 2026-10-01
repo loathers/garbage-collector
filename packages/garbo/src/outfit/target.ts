@@ -11,13 +11,14 @@ import {
   have,
 } from "libram";
 import { freeFightFamiliar } from "../familiar/freeFightFamiliar";
-import { meatFamiliar } from "../familiar/meatFamiliar";
+import { meatFamiliar, underwaterMeatFamiliar } from "../familiar/meatFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   applyCheeseBonus,
   bestBjornalike,
   cleaverCheck,
+  familiarSlotNeededForBreathing,
   useUPCsIfNeeded,
   validateGarbageFoldable,
 } from "./lib";
@@ -82,10 +83,14 @@ export function meatTargetOutfit(
     targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
   );
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
+  const familiarNeedsToBreathe = familiarSlotNeededForBreathing(location);
   outfit.familiar ??= targetingMeat()
-    ? meatFamiliar()
+    ? familiarNeedsToBreathe
+      ? underwaterMeatFamiliar()
+      : meatFamiliar()
     : freeFightFamiliar(location ?? globalOptions.target, {
-        equipmentForced: !outfit.canEquip($item`toy Cupid bow`),
+        equipmentForced:
+          familiarNeedsToBreathe || !outfit.canEquip($item`toy Cupid bow`),
       });
 
   const bjornChoice = chooseBjorn(
@@ -98,7 +103,10 @@ export function meatTargetOutfit(
     outfit.modifier.push("sea");
   }
 
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
+  if (
+    outfit.familiar === $familiar`Jill-of-All-Trades` &&
+    !familiarSlotNeededForBreathing(location, outfit.familiar)
+  ) {
     outfit.equip($item`LED candle`);
     outfit.setModes({ jillcandle: "ultraviolet" });
   }
