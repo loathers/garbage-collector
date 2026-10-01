@@ -111,9 +111,9 @@ class FarmingStrategySkeleton {
     return this.shouldOlfact ? undelay(this.targetMonster) : null;
   }
 
-  singlePhylaInFarmingStrategyZone(): Phylum | null {
-    const monsters = getMonsters(FarmingStrategy.location).filter(
-      (m) => !FarmingStrategy.banishMonsters.includes(m),
+  singlePhylaInZone(): Phylum | null {
+    const monsters = this.monsters().filter(
+      (m) => !this.banishMonsters.includes(m),
     );
 
     const phyla = new Set(monsters.map((m) => m.phylum));

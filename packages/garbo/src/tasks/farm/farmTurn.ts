@@ -37,8 +37,7 @@ import { FarmingContext } from "../context";
 import { acquire } from "../../acquire";
 
 export const farmPrepare = (context: FarmingContext) => {
-  const farmZoneMonsterPhylum =
-    FarmingStrategy.singlePhylaInFarmingStrategyZone();
+  const farmZoneMonsterPhylum = FarmingStrategy.singlePhylaInZone();
   if (
     farmZoneMonsterPhylum &&
     Snapper.getTrackedPhylum() !== farmZoneMonsterPhylum

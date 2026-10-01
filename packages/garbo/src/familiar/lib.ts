@@ -253,7 +253,7 @@ export function snapperReasonable(mode: FamiliarMode): boolean {
   if (mode === "target") {
     return true;
   }
-  const combatQueueMonster = FarmingStrategy.singlePhylaInFarmingStrategyZone();
+  const combatQueueMonster = FarmingStrategy.singlePhylaInZone();
   if (mode === "barf" && combatQueueMonster) {
     return true;
   }
