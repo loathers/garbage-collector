@@ -20178,7 +20178,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"f8870beb5bfbafc37191184c3ef9f9fac8bd0836"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"bb4267fc874ce1f31396f31a78be070827683b0d"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20873,9 +20873,21 @@ function shouldMakeEgg(barf) {
 }
 var minimumMimicExperience = () => 50 + (differentiableQuantity(globalOptions.target) ? 0 : 100);
 
+// Workaround to get buffed familiar weight without equipment, since e.g. breathing gear may override it.
+function equipmentlessFamiliarWeight(familiar) {
+  return totalFamiliarWeight(familiar, true) - kolmafia.numericModifier(kolmafia.equippedItem($slot`familiar`), "Familiar Weight");
+}
+function familiarCanBreathe(familiar) {
+  return ((familiar === null || familiar === void 0 ? void 0 : familiar.underwater) ?? false) ||
+  // `booleanModifier("Underwater Familiar")` covers us for unusual breathing strategies
+  // like the asdon martin's Driving Waterproofly effect
+  kolmafia.booleanModifier("Underwater Familiar") && !kolmafia.booleanModifier(kolmafia.equippedItem($slot`familiar`), "Underwater Familiar");
+}
+
 var fam;
 function findBestLeprechauns() {
   var validFamiliars = kolmafia.Familiar.all().filter(f => have$P(f) && f !== $familiar`Ghost of Crimbo Commerce`);
+  if (!validFamiliars.length) return [];
   validFamiliars.sort((a, b) => findLeprechaunMultiplier(b) - findLeprechaunMultiplier(a));
   var bestLepMult = findLeprechaunMultiplier(validFamiliars[0]);
   var firstBadLeprechaun = validFamiliars.findIndex(f => findLeprechaunMultiplier(f) < bestLepMult);
@@ -20883,13 +20895,35 @@ function findBestLeprechauns() {
   return validFamiliars.slice(0, firstBadLeprechaun);
 }
 function findBestLeprechaun() {
-  return maxBy(findBestLeprechauns(), findFairyMultiplier);
+  var candidates = findBestLeprechauns();
+  return candidates.length > 0 ? maxBy(candidates, findFairyMultiplier) : $familiar.none;
 }
 function setBestLeprechaunAsMeatFamiliar() {
   fam = findBestLeprechaun();
 }
 function meatFamiliar() {
   return fam ?? (fam = $familiars`Robortender, Jill-of-All-Trades`.find(have$P) ?? findBestLeprechaun());
+}
+var familiarWaterBreathingEquipment$1 = $items`das boot, little bitty bathysphere`;
+function meatDropWithEquipment(familiar, equip) {
+  return kolmafia.numericModifier(familiar, "Meat Drop", equipmentlessFamiliarWeight(familiar), equip);
+}
+
+/**
+ * Primarily a workaround for Jill-of-All-Trades; `meatFamiliar` assumes she always has LED
+ * candle, but underwater, barring effects like Drive Waterproofly, she needs das boot or equivalent.
+ *
+ * This should be used during cowo/underwater wanderer/etc fights
+ */
+function underwaterMeatFamiliar() {
+  var fallback = meatFamiliar();
+  if (familiarCanBreathe(fallback)) return fallback;
+  var breathingEquipment = familiarWaterBreathingEquipment$1.filter(have$P);
+  if (!breathingEquipment.length) return fallback;
+  var assumedFreeSlotEquipment = have$P($item`amulet coin`) ? $item`amulet coin` : $item.none;
+  var familiarValue = familiar => familiarCanBreathe(familiar) ? meatDropWithEquipment(familiar, assumedFreeSlotEquipment) : Math.max.apply(Math, _toConsumableArray(breathingEquipment.map(equip => meatDropWithEquipment(familiar, equip))));
+  var candidates = kolmafia.Familiar.all().filter(familiar => have$P(familiar) && familiar !== $familiar`Ghost of Crimbo Commerce`);
+  return candidates.length ? maxBy(candidates, familiarValue) : fallback;
 }
 
 function bestBjornalike(outfit) {
@@ -20944,6 +20978,9 @@ function useUPCsIfNeeded(_ref) {
 }
 var waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 var familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
+function familiarSlotNeededForBreathing(location, familiar) {
+  return location.environment === "underwater" && !familiarCanBreathe(familiar);
+}
 function toSpec(source) {
   if (!source) return {};
   if (source instanceof Requirement) {
@@ -25064,15 +25101,16 @@ function meatTargetOutfit(spec, adventureArgument) {
   }
   applyCheeseBonus(outfit, targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE);
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
-  outfit.familiar ?? (outfit.familiar = targetingMeat() ? meatFamiliar() : freeFightFamiliar(location ?? globalOptions.target, {
-    equipmentForced: !outfit.canEquip($item`toy Cupid bow`)
+  var familiarNeedsToBreathe = familiarSlotNeededForBreathing(location);
+  outfit.familiar ?? (outfit.familiar = targetingMeat() ? familiarNeedsToBreathe ? underwaterMeatFamiliar() : meatFamiliar() : freeFightFamiliar(location ?? globalOptions.target, {
+    equipmentForced: familiarNeedsToBreathe || !outfit.canEquip($item`toy Cupid bow`)
   }));
   var bjornChoice = chooseBjorn(targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE, outfit.familiar);
   var underwater = (location === null || location === void 0 ? void 0 : location.environment) === "underwater";
   if (underwater) {
     outfit.modifier.push("sea");
   }
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
+  if (outfit.familiar === $familiar`Jill-of-All-Trades` && !familiarSlotNeededForBreathing(location, outfit.familiar)) {
     outfit.equip($item`LED candle`);
     outfit.setModes({
       jillcandle: "ultraviolet"
@@ -28515,7 +28553,7 @@ function familiarSpec(underwater, fight) {
     };
   }
   return {
-    familiar: meatFamiliar()
+    familiar: underwater ? underwaterMeatFamiliar() : meatFamiliar()
   };
 }
 function dailyFights() {
@@ -31913,9 +31951,6 @@ var DailyExtrasQuest = {
 function bestFamUnderwaterGear(fam) {
   // Returns best familiar gear for yachtzee chaining
   return fam.underwater || have$P($effect`Driving Waterproofly`) || have$P($effect`Wet Willied`) ? have$P($item`amulet coin`) ? $item`amulet coin` : $item`filthy child leash` : have$P($item`das boot`) ? $item`das boot` : $item`little bitty bathysphere`;
-}
-function equipmentlessFamiliarWeight(fam) {
-  return totalFamiliarWeight(fam, true) - kolmafia.numericModifier(kolmafia.equippedItem($slot`familiar`), "Familiar Weight");
 }
 function bestYachtzeeFamiliar() {
   var haveUnderwaterFamEquipment = familiarWaterBreathingEquipment.some(item => have$P(item));
