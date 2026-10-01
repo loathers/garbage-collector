@@ -42,7 +42,6 @@ import {
   myThrall,
   myTurncount,
   numericModifier,
-  Phylum,
   print,
   restoreHp,
   restoreMp,
@@ -1167,18 +1166,3 @@ export function mainStatLevel(level: number): number {
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
-
-export function singlePhylaInFarmingStrategyZone(): Phylum | false {
-  const monsters = getMonsters(FarmingStrategy.location).filter(
-    (m) => ![...getBanishedMonsters().values()].includes(m),
-  );
-  const samePhylum = monsters.every(
-    (monster) => monster.phylum === monsters[0].phylum,
-  );
-
-  if (!samePhylum) {
-    return false;
-  }
-
-  return monsters[0].phylum;
-}
