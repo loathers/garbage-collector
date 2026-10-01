@@ -1,4 +1,12 @@
-import { $item, $location, $monster, get, have, undelay } from "libram";
+import {
+  $item,
+  $location,
+  $monster,
+  get,
+  have,
+  Snapper,
+  undelay,
+} from "libram";
 import {
   Item,
   mallPrice,
@@ -27,8 +35,18 @@ import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit/barf";
 import { FarmingContext } from "../context";
 import { acquire } from "../../acquire";
+import { singleMonsterInCombatQueue } from "../../lib";
 
 export const farmPrepare = (context: FarmingContext) => {
+  const combatQueueMonster = singleMonsterInCombatQueue(
+    FarmingStrategy.location,
+  );
+  if (
+    combatQueueMonster &&
+    Snapper.getTrackedPhylum() !== combatQueueMonster.phylum
+  ) {
+    Snapper.trackPhylum(combatQueueMonster.phylum);
+  }
   if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
     acquire(
       estimatedGarboTurns(),

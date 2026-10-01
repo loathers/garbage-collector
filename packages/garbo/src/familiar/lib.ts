@@ -27,6 +27,7 @@ import {
   baseMeat,
   ESTIMATED_OVERDRUNK_TURNS,
   isFree,
+  singleMonsterInCombatQueue,
   targetMeat,
 } from "../lib";
 import {
@@ -158,18 +159,38 @@ export function estimatedBarfExperience(): number {
   return sumNumbers(sources);
 }
 
-export function snapperValue(): number {
-  const item = Snapper.phylumItem.get(globalOptions.target.phylum);
-  if (!item) return 0;
+export function snapperValue(mode: FamiliarMode): number {
+  let item;
+  const combatQueueMonster = singleMonsterInCombatQueue(
+    FarmingStrategy.location,
+  );
+  if (mode === "target") {
+    item = Snapper.phylumItem.get(globalOptions.target.phylum);
+  }
+  if (combatQueueMonster) {
+    item = Snapper.phylumItem.get(combatQueueMonster.phylum);
+  }
 
-  const denominator =
-    11 -
-    (Snapper.getTrackedPhylum() === globalOptions.target.phylum
-      ? Snapper.getProgress()
-      : 0);
-  if (denominator > copyTargetCount()) return 0;
+  if (!item || !combatQueueMonster) return 0;
 
-  return garboValue(item) / denominator;
+  if (mode === "target") {
+    const denominator =
+      11 -
+      (Snapper.getTrackedPhylum() === globalOptions.target.phylum
+        ? Snapper.getProgress()
+        : 0);
+    if (denominator > copyTargetCount()) return 0;
+
+    return garboValue(item) / denominator;
+  } else {
+    const denominator =
+      11 -
+      (Snapper.getTrackedPhylum() === combatQueueMonster.phylum
+        ? Snapper.getProgress()
+        : 0);
+    if (denominator > estimatedGarboTurns()) return 0;
+    return garboValue(item) / denominator;
+  }
 }
 
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
@@ -230,4 +251,18 @@ export function tcbValue(
     familiarEquipmentValue(familiar) / tcbTurnsLeft(familiar, tcbFamiliars) -
     amuletCoin
   );
+}
+
+export function snapperReasonable(mode: FamiliarMode): boolean {
+  if (!Snapper.have()) return false;
+  if (mode === "target") {
+    return true;
+  }
+  const combatQueueMonster = singleMonsterInCombatQueue(
+    FarmingStrategy.location,
+  );
+  if (mode === "barf" && combatQueueMonster) {
+    return true;
+  }
+  return false;
 }

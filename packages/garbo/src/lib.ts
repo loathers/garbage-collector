@@ -54,6 +54,7 @@ import {
   spleenLimit,
   Stat,
   todayToString,
+  toMonster,
   totalFreeRests,
   toUrl,
   use,
@@ -1166,3 +1167,16 @@ export function mainStatLevel(level: number): number {
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
+
+export function singleMonsterInCombatQueue(
+  location: Location,
+): Monster | false {
+  const monsters = location.combatQueue
+    .split(";")
+    .map((monster) => monster.trim())
+    .filter(Boolean);
+
+  const uniqueMonsters = [...new Set(monsters)];
+
+  return uniqueMonsters.length === 1 ? toMonster(uniqueMonsters[0]) : false;
+}
