@@ -1169,7 +1169,9 @@ export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   : never;
 
 export function singlePhylaInFarmingStrategyZone(): Phylum | false {
-  const monsters = getMonsters(FarmingStrategy.location);
+  const monsters = getMonsters(FarmingStrategy.location).filter(
+    (m) => ![...getBanishedMonsters().values()].includes(m),
+  );
   const samePhylum = monsters.every(
     (monster) => monster.phylum === monsters[0].phylum,
   );
