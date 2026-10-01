@@ -6,6 +6,7 @@ import {
   mallPrice,
   myAdventures,
   myInebriety,
+  Phylum,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -160,37 +161,33 @@ export function estimatedBarfExperience(): number {
 }
 
 export function snapperValue(mode: FamiliarMode): number {
-  let item;
   const combatQueueMonster = singleMonsterInCombatQueue(
     FarmingStrategy.location,
   );
-  if (mode === "target") {
-    item = Snapper.phylumItem.get(globalOptions.target.phylum);
+  if (mode === "barf" && !combatQueueMonster) {
+    return 0;
   }
-  if (combatQueueMonster) {
-    item = Snapper.phylumItem.get(combatQueueMonster.phylum);
-  }
+  const phylum =
+    mode === "target"
+      ? globalOptions.target.phylum
+      : combatQueueMonster
+        ? combatQueueMonster.phylum
+        : Phylum.none;
 
-  if (!item || !combatQueueMonster) return 0;
+  const item = Snapper.phylumItem.get(phylum);
 
+  if (!item) return 0;
+
+  const denominator =
+    11 - (Snapper.getTrackedPhylum() === phylum ? Snapper.getProgress() : 0);
   if (mode === "target") {
-    const denominator =
-      11 -
-      (Snapper.getTrackedPhylum() === globalOptions.target.phylum
-        ? Snapper.getProgress()
-        : 0);
     if (denominator > copyTargetCount()) return 0;
-
-    return garboValue(item) / denominator;
-  } else {
-    const denominator =
-      11 -
-      (Snapper.getTrackedPhylum() === combatQueueMonster.phylum
-        ? Snapper.getProgress()
-        : 0);
-    if (denominator > estimatedGarboTurns()) return 0;
-    return garboValue(item) / denominator;
   }
+  if (mode === "barf") {
+    if (denominator > estimatedGarboTurns()) return 0;
+  }
+
+  return garboValue(item) / denominator;
 }
 
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
