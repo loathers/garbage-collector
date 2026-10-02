@@ -159,33 +159,29 @@ export function estimatedBarfExperience(): number {
   return sumNumbers(sources);
 }
 
-export function snapperValue(mode: FamiliarMode): number {
-  if (mode === "run" || mode === "free") return 0;
-  const combatQueueMonster = FarmingStrategy.singlePhylumInZone();
-  if (mode === "barf" && !combatQueueMonster) {
-    return 0;
-  }
-  const phylum =
-    mode === "target"
-      ? globalOptions.target.phylum
-      : combatQueueMonster
-        ? combatQueueMonster
-        : Phylum.none;
-
+function valueSnapperPhylum(phylum: Phylum, turns: number) {
   const item = Snapper.phylumItem.get(phylum);
-
   if (!item) return 0;
-
-  const denominator =
+  const remainingTurns =
     11 - (Snapper.getTrackedPhylum() === phylum ? Snapper.getProgress() : 0);
-  if (mode === "target") {
-    if (denominator > copyTargetCount()) return 0;
-  }
-  if (mode === "barf") {
-    if (denominator > estimatedGarboTurns()) return 0;
-  }
+  if (remainingTurns > turns) return 0;
+  return garboValue(item) / 11;
+}
 
-  return garboValue(item) / denominator;
+export function snapperValue(mode: FamiliarMode): number {
+  switch (mode) {
+    case "target": {
+      return valueSnapperPhylum(globalOptions.target.phylum, copyTargetCount());
+    }
+    case "barf": {
+      const phylum = FarmingStrategy.singlePhylumInZone();
+      if (!phylum) return 0;
+      return valueSnapperPhylum(phylum, estimatedGarboTurns());
+    }
+    default:
+      // Consider adding value for free fights when they match our already-tracked phylum
+      return 0;
+  }
 }
 
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
