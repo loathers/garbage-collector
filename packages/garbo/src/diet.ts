@@ -1539,7 +1539,14 @@ export function runDiet(): void {
       }
 
       consumeDiet(dietBuilder.diet(), "FULL");
-
+      const organChecks = [
+        { current: myInebriety, max: inebrietyLimit },
+        { current: mySpleenUse, max: spleenLimit },
+        { current: myFullness, max: fullnessLimit },
+      ];
+      if (organChecks.some(({ current, max }) => current() < max())) {
+        throw new Error("Tried to fill our organs but couldn't!");
+      }
       shrugBadEffects();
     }
   });
