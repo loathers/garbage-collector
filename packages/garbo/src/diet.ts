@@ -1545,7 +1545,7 @@ export function runDiet(): void {
         { current: myFullness, max: fullnessLimit },
       ];
       if (organChecks.some(({ current, max }) => current() < max())) {
-        throw new Error("Failed to properly diet!");
+        throw new Error("Tried to fill our organs but couldn't!");
       }
       shrugBadEffects();
     }
