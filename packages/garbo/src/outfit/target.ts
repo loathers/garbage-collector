@@ -7,6 +7,7 @@ import {
   $location,
   $monster,
   Environment,
+  getActiveEffects,
   Guzzlr,
   have,
 } from "libram";
@@ -20,6 +21,7 @@ import {
   cleaverCheck,
   useUPCsIfNeeded,
   validateGarbageFoldable,
+  waterBreathingEquipment,
 } from "./lib";
 import {
   BonusEquipMode,
@@ -28,7 +30,7 @@ import {
   targetingMeat,
 } from "../lib";
 import { globalOptions } from "../config";
-import { meatDrop, setLocation } from "kolmafia";
+import { booleanModifier, meatDrop, setLocation } from "kolmafia";
 import { shouldRedigitize } from "../combat";
 import { nextWeekReady } from "../resources/sealclub";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
@@ -95,6 +97,14 @@ export function meatTargetOutfit(
 
   const underwater = location?.environment === "underwater";
   if (underwater) {
+    // The bjornalike is force-equipped below, so claim the hat or back slot for breathing gear first
+    if (
+      !getActiveEffects().some((e) =>
+        booleanModifier(e, "Adventure Underwater"),
+      )
+    ) {
+      outfit.equipFirst(waterBreathingEquipment);
+    }
     outfit.modifier.push("sea");
   }
 
