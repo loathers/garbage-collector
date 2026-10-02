@@ -20178,7 +20178,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"bb4267fc874ce1f31396f31a78be070827683b0d"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"8d3986ed6b17bc4264776fe69e255c0a908693b9"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -24788,6 +24788,23 @@ function runDiet() {
         kolmafia.cliExecute("barrelprayer buff");
       }
       consumeDiet(dietBuilder.diet(), "FULL");
+      var organChecks = [{
+        current: kolmafia.myInebriety,
+        max: kolmafia.inebrietyLimit
+      }, {
+        current: kolmafia.mySpleenUse,
+        max: kolmafia.spleenLimit
+      }, {
+        current: kolmafia.myFullness,
+        max: kolmafia.fullnessLimit
+      }];
+      if (organChecks.some(_ref5 => {
+        var current = _ref5.current,
+          max = _ref5.max;
+        return current() < max();
+      })) {
+        throw new Error("Tried to fill our organs but couldn't!");
+      }
       shrugBadEffects();
     }
   });
