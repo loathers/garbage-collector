@@ -161,7 +161,7 @@ export function estimatedBarfExperience(): number {
 
 export function snapperValue(mode: FamiliarMode): number {
   if (mode === "run" || mode === "free") return 0;
-  const combatQueueMonster = FarmingStrategy.singlePhylaInZone();
+  const combatQueueMonster = FarmingStrategy.singlePhylumInZone();
   if (mode === "barf" && !combatQueueMonster) {
     return 0;
   }
@@ -253,7 +253,7 @@ export function snapperReasonable(mode: FamiliarMode): boolean {
   if (mode === "target") {
     return true;
   }
-  const combatQueueMonster = FarmingStrategy.singlePhylaInZone();
+  const combatQueueMonster = FarmingStrategy.singlePhylumInZone();
   if (mode === "barf" && combatQueueMonster) {
     return true;
   }

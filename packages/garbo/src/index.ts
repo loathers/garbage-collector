@@ -134,7 +134,7 @@ export function main(argString = ""): void {
   // Cowo is for professionals only
   if (
     globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
-    (effectFact($monster`sea cow`) !== $effect`Fishy` ||
+    ((effectFact($monster`sea cow`) !== $effect`Fishy` && !have($effect`Fishy`, 400)) ||
       (get("seahorseName") === "" && get("lassoTrainingCount") < 20))
   ) {
     globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
