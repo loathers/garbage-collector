@@ -15,10 +15,8 @@ import {
   getModifier,
   have,
   SkeletonOfCrimboPast,
-  Snapper,
   sum,
 } from "libram";
-
 import { garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
@@ -28,6 +26,7 @@ import {
   FamiliarMode,
   GeneralFamiliar,
   getUsedTcbFamiliars,
+  snapperReasonable,
   snapperValue,
   tcbValue,
   timeToMeatify,
@@ -104,10 +103,10 @@ export function menu(
       });
     }
 
-    if (mode === "target" && Snapper.have()) {
+    if (snapperReasonable(mode)) {
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: snapperValue(),
+        expectedValue: snapperValue(mode),
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: false,
