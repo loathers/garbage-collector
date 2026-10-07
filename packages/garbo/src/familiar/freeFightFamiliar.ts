@@ -2,6 +2,8 @@ import {
   Familiar,
   familiarWeight,
   inebrietyLimit,
+  itemDropsArray,
+  Monster,
   myInebriety,
 } from "kolmafia";
 import {
@@ -17,6 +19,7 @@ import {
   SkeletonOfCrimboPast,
   Snapper,
   sum,
+  undelay,
 } from "libram";
 
 import { garboValue } from "../garboValue";
@@ -38,6 +41,7 @@ import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
+import { FarmingStrategy } from "../farmingStrategy";
 
 export type FamiliarMenuOptions = Partial<{
   canChooseMacro: boolean;
@@ -108,6 +112,30 @@ export function menu(
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
         expectedValue: snapperValue(),
+        leprechaunMultiplier: 0,
+        limit: "special",
+        worksOnFreeRun: false,
+      });
+    }
+
+    const swordMonster = get("swordOfSWordsMonster");
+
+    const expectedDropValue = (monster: Monster) =>
+      sum(
+        itemDropsArray(monster),
+        ({ drop, rate }) => (rate / 100) * garboValue(drop),
+      );
+
+    if (mode === "barf" && have($familiar`Sword of S Words`) && swordMonster) {
+      familiarMenu.push({
+        familiar: $familiar`Sword of S Words`,
+        expectedValue:
+          expectedDropValue(swordMonster) -
+          expectedDropValue(
+            typeof FarmingStrategy.targetMonster === "function"
+              ? undelay(FarmingStrategy.targetMonster())
+              : FarmingStrategy.targetMonster,
+          ),
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: false,

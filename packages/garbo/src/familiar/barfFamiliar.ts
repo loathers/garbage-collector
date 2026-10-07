@@ -451,6 +451,9 @@ function getSpecialFamiliarLimit({
         SkeletonOfCrimboPast.expectedBones(FarmingStrategy.location)
       );
 
+    case $familiar`Sword of S Words`:
+      return clamp(100 - get("_swordOfSWordsKills"), 0, 100);
+
     default:
       return 0;
   }
