@@ -7,6 +7,7 @@ import {
   get,
   getBanishedMonsters,
   have,
+  undelay,
 } from "libram";
 import { FarmingStrategy } from "../farmingStrategy";
 import { Macro } from "../combat";
@@ -68,7 +69,7 @@ export function chooseBanish(): BanishMethod | null {
   }
 
   const banishedMonsters = getBanishedMonsters();
-  const targetMonster = FarmingStrategy.targetMonster;
+  const targetMonster = undelay(FarmingStrategy.targetMonster);
 
   // If a preceding script banished our target, reuse that banish first.
   return (
