@@ -20144,7 +20144,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"81c4d30d916d0d704a700603d527dd6024878847"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"9ceb6bb9ec8a12862c93c680cd5a52c8cb095b4d"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -33171,7 +33171,7 @@ function main() {
     propertyManager.resetAll();
     return;
   }
-  var gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds`;
+  var gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds, black garden rose`;
   var startingGarden = gardens.find(garden => Object.getOwnPropertyNames(kolmafia.getCampground()).includes(garden.name));
   if (startingGarden && !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) && kolmafia.getCampground()[startingGarden.name] && $items`packet of tall grass seeds, packet of mushroom spores`.some(gardenSeed => have$P(gardenSeed))) {
     if (startingGarden === $item`packet of rock seeds`) {
