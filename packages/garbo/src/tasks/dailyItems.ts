@@ -305,19 +305,25 @@ const DailyItemTasks: GarboTask[] = [
     completed: () =>
       itemAmount($item`Interesting Coin`) < cheapestInterestingCoinItemCost(),
     do: (): void => {
-      const itemsWithCosts = Item.all()
-        .filter((i) => sellsItem($coinmaster`Interesting Coin`, i))
-        .map((item) => ({
-          item,
-          cost: sellPrice($coinmaster`Interesting Coin`, item),
-          value:
-            garboValue(item) / sellPrice($coinmaster`Interesting Coin`, item),
-        }));
+      while (itemAmount($item`Interesting Coin`) >= 0) {
+        const itemsWithCosts = Item.all()
+          .filter(
+            (i) =>
+              sellsItem($coinmaster`Interesting Coin`, i) &&
+              sellPrice($coinmaster`Interesting Coin`, i) <=
+                itemAmount($item`Interesting Coin`),
+          )
+          .map((item) => ({
+            item,
+            cost: sellPrice($coinmaster`Interesting Coin`, item),
+            value:
+              garboValue(item) / sellPrice($coinmaster`Interesting Coin`, item),
+          }));
 
-      while (
-        itemAmount($item`Interesting Coin`) >=
-        Math.min(...itemsWithCosts.map(({ cost }) => cost))
-      ) {
+        if (itemsWithCosts.length === 0) {
+          break;
+        }
+
         const { item, cost } = maxBy(
           itemsWithCosts.filter(
             ({ cost }) => cost <= itemAmount($item`Interesting Coin`),
