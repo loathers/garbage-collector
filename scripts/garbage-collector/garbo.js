@@ -20144,7 +20144,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"9ceb6bb9ec8a12862c93c680cd5a52c8cb095b4d"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"1c77410b603c7564a0096045bb1ee6bbd5b71e71"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -25091,6 +25091,10 @@ function meatTargetOutfit(spec, adventureArgument) {
   var bjornChoice = chooseBjorn(targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE, outfit.familiar);
   var underwater = (location === null || location === void 0 ? void 0 : location.environment) === "underwater";
   if (underwater) {
+    // The bjornalike is force-equipped below, so claim the hat or back slot for breathing gear first
+    if (!getActiveEffects().some(e => kolmafia.booleanModifier(e, "Adventure Underwater"))) {
+      outfit.equipFirst(waterBreathingEquipment);
+    }
     outfit.modifier.push("sea");
   }
   if (outfit.familiar === $familiar`Jill-of-All-Trades` && !familiarSlotNeededForBreathing(location, outfit.familiar)) {
