@@ -235,7 +235,7 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
       print(`Planning to banish equipping ${banishItem?.name}`);
     }
 
-    return banishItem ? { equip: [banishItem] } : {};
+    return banishItem ? { equip: [banishItem], familiar: $familiar`Red-Nosed Snapper` } : {familiar: $familiar`Red-Nosed Snapper`};
   },
 
   combat: ({ banish }) =>
