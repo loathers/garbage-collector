@@ -17,7 +17,6 @@ import {
   SkeletonOfCrimboPast,
   Snapper,
   sum,
-  undelay,
 } from "libram";
 
 import { garboValue } from "../garboValue";
@@ -39,7 +38,6 @@ import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
-import { FarmingStrategy } from "../farmingStrategy";
 
 export type FamiliarMenuOptions = Partial<{
   canChooseMacro: boolean;
@@ -123,7 +121,10 @@ export function menu(
         familiar: $familiar`Sword of S Words`,
         expectedValue:
           expectedDropValue(swordMonster) -
-          expectedDropValue(undelay(FarmingStrategy.targetMonster)),
+          sum(
+            [...monsterRates.entries()],
+            ([monster, rate]) => rate * expectedDropValue(monster),
+          ),
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: false,
