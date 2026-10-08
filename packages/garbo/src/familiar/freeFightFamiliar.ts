@@ -2,8 +2,6 @@ import {
   Familiar,
   familiarWeight,
   inebrietyLimit,
-  itemDropsArray,
-  Monster,
   myInebriety,
 } from "kolmafia";
 import {
@@ -36,7 +34,7 @@ import {
   timeToMeatify,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
-import { gooseDroneEligible, valueDrops } from "../lib";
+import { expectedDropValue, gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
@@ -120,22 +118,12 @@ export function menu(
 
     const swordMonster = get("swordOfSWordsMonster");
 
-    const expectedDropValue = (monster: Monster) =>
-      sum(
-        itemDropsArray(monster),
-        ({ drop, rate }) => (rate / 100) * garboValue(drop),
-      );
-
     if (mode === "barf" && have($familiar`Sword of S Words`) && swordMonster) {
       familiarMenu.push({
         familiar: $familiar`Sword of S Words`,
         expectedValue:
           expectedDropValue(swordMonster) -
-          expectedDropValue(
-            typeof FarmingStrategy.targetMonster === "function"
-              ? undelay(FarmingStrategy.targetMonster())
-              : FarmingStrategy.targetMonster,
-          ),
+          expectedDropValue(undelay(FarmingStrategy.targetMonster)),
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: false,
