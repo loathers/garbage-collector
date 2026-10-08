@@ -20144,7 +20144,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"1c77410b603c7564a0096045bb1ee6bbd5b71e71"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"b7b55ed661fe27a070eeaa3d2fae13306d91574b"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -28373,7 +28373,7 @@ function findDonateMonster(onlyFree) {
   var incomplete = queryEggNetIncomplete();
   var priority = queryEggNetPriority();
   if (incomplete.size === 0) return undefined;
-  var maxMonsterId = $monster`beef bodyguard bat`.id; // Last Update Feb 24 2026
+  var maxMonsterId = $monster`rose garden ghost`.id; // Last Update Oct 8 2026
   var banned = new Set([].concat(_toConsumableArray($monsters.all().filter(x => x.attributes.includes("BOSS") || x.attributes.includes("NOCOPY") || onlyFree && !x.attributes.includes("FREE"))), _toConsumableArray($monsters`quadfaerie, cursed villager, plywood cultists, barrow wraith?, Source Agent`)));
   // Find the monster that needs the most eggs, adding in a small amount of variance as a tiebreaker
   var monster = findMonster(m => m.id <= maxMonsterId && incomplete.has(m) && !banned.has(m), m => 100 - (incomplete.get(m ?? kolmafia.Monster.none) ?? 0) + (priority.get(m) ?? 0) * 1000 + Math.sin((kolmafia.toInt(kolmafia.myId()) << 5) + kolmafia.myDaycount() + m.id));
