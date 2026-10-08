@@ -212,6 +212,14 @@ const SummonTasks: GarboTask[] = [
   ),
 ];
 
+function cheapestInterestingCoinItemCost(): number {
+  return Math.min(
+    ...Item.all()
+      .filter((item) => sellsItem($coinmaster`Interesting Coin`, item))
+      .map((item) => sellPrice($coinmaster`Interesting Coin`, item)),
+  );
+}
+
 let triedForest = false;
 const DailyItemTasks: GarboTask[] = [
   {
@@ -287,6 +295,37 @@ const DailyItemTasks: GarboTask[] = [
         );
         const toBuy = Math.floor(get("availableSeptEmbers") / cost);
         buy($coinmaster`Sept-Ember Censer`, toBuy, item);
+      }
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Spend Sept-Ember Embers",
+    ready: () => have($item`Interesting Coin`) && globalOptions.ascend,
+    completed: () =>
+      itemAmount($item`Interesting Coin`) < cheapestInterestingCoinItemCost(),
+    do: (): void => {
+      const itemsWithCosts = Item.all()
+        .filter((i) => sellsItem($coinmaster`Interesting Coin`, i))
+        .map((item) => ({
+          item,
+          cost: sellPrice($coinmaster`Interesting Coin`, item),
+          value:
+            garboValue(item) / sellPrice($coinmaster`Interesting Coin`, item),
+        }));
+
+      while (
+        itemAmount($item`Interesting Coin`) >=
+        Math.min(...itemsWithCosts.map(({ cost }) => cost))
+      ) {
+        const { item, cost } = maxBy(
+          itemsWithCosts.filter(
+            ({ cost }) => cost <= itemAmount($item`Interesting Coin`),
+          ),
+          "value",
+        );
+        const toBuy = Math.floor(itemAmount($item`Interesting Coin`) / cost);
+        buy($coinmaster`Interesting Coin`, toBuy, item);
       }
     },
     spendsTurn: false,
