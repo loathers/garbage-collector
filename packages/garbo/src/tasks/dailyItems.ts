@@ -300,7 +300,7 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
-    name: "Spend Sept-Ember Embers",
+    name: "Spend Interesting Coins",
     ready: () => have($item`Interesting Coin`) && globalOptions.ascend,
     completed: () =>
       itemAmount($item`Interesting Coin`) < cheapestInterestingCoinItemCost(),
