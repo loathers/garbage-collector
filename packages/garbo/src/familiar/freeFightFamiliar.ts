@@ -124,7 +124,8 @@ export function menu(
           sum(
             [...monsterRates.entries()],
             ([monster, rate]) => rate * expectedDropValue(monster),
-          ),
+          ) /
+            monsterRates.size,
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: false,
