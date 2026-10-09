@@ -324,14 +324,8 @@ const DailyItemTasks: GarboTask[] = [
           break;
         }
 
-        const { item, cost } = maxBy(
-          itemsWithCosts.filter(
-            ({ cost }) => cost <= itemAmount($item`Interesting Coin`),
-          ),
-          "value",
-        );
-        const toBuy = Math.floor(itemAmount($item`Interesting Coin`) / cost);
-        buy($coinmaster`Interesting Coin`, toBuy, item);
+        const { item } = maxBy(itemsWithCosts, "value");
+        buy($coinmaster`Interesting Coin`, 1, item);
       }
     },
     spendsTurn: false,
