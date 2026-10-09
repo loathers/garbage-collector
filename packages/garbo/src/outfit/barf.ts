@@ -163,7 +163,7 @@ export function computeBarfOutfit(
       itemDropsArray(swordMonster),
       ({ drop }) => garboValue(drop),
     );
-    const maxItemDrop = Math.ceil(100 / maxValueItemRate - 100);
+    const maxItemDrop = Math.ceil(100 / maxValueItemRate - 1);
     outfit.modifier.push(`${valueOfItem} Item Drop ${maxItemDrop} Max`);
   } else {
     outfit.modifier.push(`${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`);
