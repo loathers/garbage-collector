@@ -3,6 +3,7 @@ import {
   equippedItem,
   Familiar,
   Item,
+  itemDropsArray,
   myFamiliar,
   numericModifier,
   print,
@@ -450,6 +451,18 @@ function getSpecialFamiliarLimit({
         clamp(100 - get("_knuckleboneDrops"), 0, 100) /
         SkeletonOfCrimboPast.expectedBones(FarmingStrategy.location)
       );
+
+    case $familiar`Sword of S Words`: {
+      const sWordMonster = get("swordOfSWordsMonster");
+      if (!sWordMonster) {
+        return 0;
+      } else {
+        return (
+          clamp(100 - get("_swordOfSWordsKills"), 0, 100) /
+          sum(itemDropsArray(sWordMonster), ({ rate }) => rate)
+        );
+      }
+    }
 
     default:
       return 0;
