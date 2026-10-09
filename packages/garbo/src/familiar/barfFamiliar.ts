@@ -101,6 +101,24 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
         ) * garboValue($item`mini kiwi`),
     },
   ],
+  [
+    $familiar`Sword of S Words`,
+    {
+      extraValue: ({ item }) => {
+        const sWordMonster = get("swordOfSWordsMonster");
+        if (!sWordMonster) return 0;
+        return (
+          sum(
+            itemDropsArray(sWordMonster),
+            ({ rate, drop }) =>
+              (clamp((rate * (100 + item)) / 100, 0, 100) * garboValue(drop)) /
+              100,
+          ) -
+          item * FarmingStrategy.itemDropValue()
+        );
+      },
+    },
+  ],
 ]);
 
 type OutfitCacheKey = number | Familiar | string;
