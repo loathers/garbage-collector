@@ -20149,7 +20149,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"dd18ac4c41e0d6f4b22fd5f62a3774e78ced2dd1"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"d6149f9f41775bf6469ce0b4400ab7dc6a337eca"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -30785,6 +30785,9 @@ var SummonTasks = _toConsumableArray(SummonTomes.map(skill => ({
   do: () => kolmafia.useSkill(skill, skill.dailylimit),
   spendsTurn: false
 })));
+function cheapestInterestingCoinItemCost() {
+  return Math.min.apply(Math, _toConsumableArray(kolmafia.Item.all().filter(item => kolmafia.sellsItem($coinmaster`Interesting Coin`, item)).map(item => kolmafia.sellPrice($coinmaster`Interesting Coin`, item))));
+}
 var triedForest = false;
 var DailyItemTasks = [{
   name: "Summon Clip Art",
@@ -30840,6 +30843,28 @@ var DailyItemTasks = [{
         cost = _maxBy.cost;
       var toBuy = Math.floor(get$2("availableSeptEmbers") / cost);
       kolmafia.buy($coinmaster`Sept-Ember Censer`, toBuy, item);
+    }
+  },
+  spendsTurn: false
+}, {
+  name: "Spend Interesting Coins",
+  ready: () => have$P($item`Interesting Coin`) && globalOptions.ascend,
+  completed: () => kolmafia.itemAmount($item`Interesting Coin`) < cheapestInterestingCoinItemCost(),
+  do: () => {
+    while (kolmafia.itemAmount($item`Interesting Coin`) >= 0) {
+      // We visit URL to reset new shop prices
+      kolmafia.visitUrl("shop.php?whichshop=interesting");
+      var itemsWithCosts = kolmafia.Item.all().filter(i => kolmafia.sellsItem($coinmaster`Interesting Coin`, i) && kolmafia.sellPrice($coinmaster`Interesting Coin`, i) <= kolmafia.itemAmount($item`Interesting Coin`)).map(item => ({
+        item,
+        cost: kolmafia.sellPrice($coinmaster`Interesting Coin`, item),
+        value: garboValue(item) / kolmafia.sellPrice($coinmaster`Interesting Coin`, item)
+      }));
+      if (itemsWithCosts.length === 0) {
+        break;
+      }
+      var _maxBy2 = maxBy(itemsWithCosts, "value"),
+        item = _maxBy2.item;
+      kolmafia.buy($coinmaster`Interesting Coin`, 1, item);
     }
   },
   spendsTurn: false
