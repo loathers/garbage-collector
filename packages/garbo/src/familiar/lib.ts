@@ -6,6 +6,7 @@ import {
   mallPrice,
   myAdventures,
   myInebriety,
+  Phylum,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -158,18 +159,29 @@ export function estimatedBarfExperience(): number {
   return sumNumbers(sources);
 }
 
-export function snapperValue(): number {
-  const item = Snapper.phylumItem.get(globalOptions.target.phylum);
+function valueSnapperPhylum(phylum: Phylum, turns: number) {
+  const item = Snapper.phylumItem.get(phylum);
   if (!item) return 0;
+  const remainingTurns =
+    11 - (Snapper.getTrackedPhylum() === phylum ? Snapper.getProgress() : 0);
+  if (remainingTurns > turns) return 0;
+  return garboValue(item) / 11;
+}
 
-  const denominator =
-    11 -
-    (Snapper.getTrackedPhylum() === globalOptions.target.phylum
-      ? Snapper.getProgress()
-      : 0);
-  if (denominator > copyTargetCount()) return 0;
-
-  return garboValue(item) / denominator;
+export function snapperValue(mode: FamiliarMode): number {
+  switch (mode) {
+    case "target": {
+      return valueSnapperPhylum(globalOptions.target.phylum, copyTargetCount());
+    }
+    case "barf": {
+      const phylum = FarmingStrategy.singlePhylumInZone();
+      if (!phylum) return 0;
+      return valueSnapperPhylum(phylum, estimatedGarboTurns());
+    }
+    default:
+      // Consider adding value for free fights when they match our already-tracked phylum
+      return 0;
+  }
 }
 
 export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
@@ -230,4 +242,16 @@ export function tcbValue(
     familiarEquipmentValue(familiar) / tcbTurnsLeft(familiar, tcbFamiliars) -
     amuletCoin
   );
+}
+
+export function snapperReasonable(mode: FamiliarMode): boolean {
+  if (!Snapper.have()) return false;
+  if (mode === "target") {
+    return true;
+  }
+  const combatQueueMonster = FarmingStrategy.singlePhylumInZone();
+  if (mode === "barf" && combatQueueMonster) {
+    return true;
+  }
+  return false;
 }
