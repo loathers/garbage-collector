@@ -989,7 +989,8 @@ export class Macro extends StrictMacro {
       canCombatTrack &&
         have($item`water balloon`) &&
         !get("_waterBalloonBuffGranted") &&
-        !(get("_waterBalloonTossStreak") >= 111),
+        !(get("_waterBalloonTossStreak") >= 111) &&
+        !myFamiliar().block, // If our familiar blocks, it can prevent the monster throwing back the balloon in time
       Macro.if_(
         `!pastround 15 && ${hpCheck(true, "balloon")}`,
         Macro.item($item`water balloon`).while_(
