@@ -212,14 +212,6 @@ const SummonTasks: GarboTask[] = [
   ),
 ];
 
-function cheapestInterestingCoinItemCost(): number {
-  return Math.min(
-    ...Item.all()
-      .filter((item) => sellsItem($coinmaster`Interesting Coin`, item))
-      .map((item) => sellPrice($coinmaster`Interesting Coin`, item)),
-  );
-}
-
 let triedForest = false;
 const DailyItemTasks: GarboTask[] = [
   {
@@ -295,39 +287,6 @@ const DailyItemTasks: GarboTask[] = [
         );
         const toBuy = Math.floor(get("availableSeptEmbers") / cost);
         buy($coinmaster`Sept-Ember Censer`, toBuy, item);
-      }
-    },
-    spendsTurn: false,
-  },
-  {
-    name: "Spend Interesting Coins",
-    ready: () => have($item`Interesting Coin`) && globalOptions.ascend,
-    completed: () =>
-      itemAmount($item`Interesting Coin`) < cheapestInterestingCoinItemCost(),
-    do: (): void => {
-      while (itemAmount($item`Interesting Coin`) >= 0) {
-        // We visit URL to reset new shop prices
-        visitUrl("shop.php?whichshop=interesting");
-        const itemsWithCosts = Item.all()
-          .filter(
-            (i) =>
-              sellsItem($coinmaster`Interesting Coin`, i) &&
-              sellPrice($coinmaster`Interesting Coin`, i) <=
-                itemAmount($item`Interesting Coin`),
-          )
-          .map((item) => ({
-            item,
-            cost: sellPrice($coinmaster`Interesting Coin`, item),
-            value:
-              garboValue(item) / sellPrice($coinmaster`Interesting Coin`, item),
-          }));
-
-        if (itemsWithCosts.length === 0) {
-          break;
-        }
-
-        const { item } = maxBy(itemsWithCosts, "value");
-        buy($coinmaster`Interesting Coin`, 1, item);
       }
     },
     spendsTurn: false,
