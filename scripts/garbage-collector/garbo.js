@@ -19771,6 +19771,11 @@ var FarmingStrategySkeleton = /*#__PURE__*/function () {
       return this.ncTurns !== Infinity;
     }
   }, {
+    key: "primaryMonster",
+    value: function primaryMonster() {
+      return undelay(this.targetMonster);
+    }
+  }, {
     key: "olfactMonster",
     value: function olfactMonster() {
       return this.shouldOlfact ? undelay(this.targetMonster) : null;
@@ -20144,7 +20149,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"b7b55ed661fe27a070eeaa3d2fae13306d91574b"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"dd18ac4c41e0d6f4b22fd5f62a3774e78ced2dd1"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20576,6 +20581,11 @@ function marginalFamWeightValue() {
 function mainStatLevel(level) {
   return (level - 1) ** 2 + 4;
 }
+var expectedDropValue = monster => sum(kolmafia.itemDropsArray(monster), _ref7 => {
+  var drop = _ref7.drop,
+    rate = _ref7.rate;
+  return rate / 100 * garboValue(drop);
+});
 
 function mafiaThumbRing(mode) {
   if (!have$P($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -22524,6 +22534,21 @@ function menu$1(adventure) {
         worksOnFreeRun: false
       });
     }
+    var swordMonster = get$2("swordOfSWordsMonster");
+    if (mode === "barf" && have$P($familiar`Sword of S Words`) && swordMonster) {
+      familiarMenu.push({
+        familiar: $familiar`Sword of S Words`,
+        expectedValue: expectedDropValue(swordMonster) - sum(_toConsumableArray(monsterRates.entries()), _ref2 => {
+          var _ref3 = _slicedToArray(_ref2, 2),
+            monster = _ref3[0],
+            rate = _ref3[1];
+          return rate * expectedDropValue(monster);
+        }) / monsterRates.size,
+        leprechaunMultiplier: 0,
+        limit: "special",
+        worksOnFreeRun: false
+      });
+    }
     if (canOpenRedPresent()) {
       familiarMenu.push({
         familiar: $familiar`Crimbo Shrub`,
@@ -22536,10 +22561,10 @@ function menu$1(adventure) {
     if (have$P($familiar`Space Jellyfish`)) {
       familiarMenu.push({
         familiar: $familiar`Space Jellyfish`,
-        expectedValue: sum(_toConsumableArray(monsterRates.entries()), _ref2 => {
-          var _ref3 = _slicedToArray(_ref2, 2),
-            monster = _ref3[0],
-            rate = _ref3[1];
+        expectedValue: sum(_toConsumableArray(monsterRates.entries()), _ref4 => {
+          var _ref5 = _slicedToArray(_ref4, 2),
+            monster = _ref5[0],
+            rate = _ref5[1];
           return monster.defenseElement === $element`Stench` ? rate * garboValue($item`stench jelly`) / (get$2("_spaceJellyfishDrops") < 5 ? get$2("_spaceJellyfishDrops") + 1 : 20) : 0;
         }),
         leprechaunMultiplier: 0,
@@ -22566,9 +22591,9 @@ function menu$1(adventure) {
     // Because strictly speaking this is better than using no familiar at all
     worksOnFreeRun: true
   });
-  return familiarMenu.filter(_ref4 => {
-    var familiar = _ref4.familiar,
-      worksOnFreeRun = _ref4.worksOnFreeRun;
+  return familiarMenu.filter(_ref6 => {
+    var familiar = _ref6.familiar,
+      worksOnFreeRun = _ref6.worksOnFreeRun;
     return (mode !== "run" || worksOnFreeRun) && (allowAttackFamiliars || !(familiar.physicalDamage || familiar.elementalDamage)) && !excludeFamiliar.some(excludedFamiliar => excludedFamiliar === familiar);
   });
 }
@@ -26299,7 +26324,7 @@ function chooseBanish() {
     return null;
   }
   var banishedMonsters = getBanishedMonsters();
-  var targetMonster = FarmingStrategy.targetMonster;
+  var targetMonster = FarmingStrategy.primaryMonster();
 
   // If a preceding script banished our target, reuse that banish first.
   return banishMethods.find(method => banishAvailable(method) && banishedMonsters.get(method.source) === targetMonster) ??
@@ -31721,6 +31746,18 @@ function getSpecialFamiliarLimit(_ref10) {
       return Math.ceil(estimatedGarboTurns() / 100);
     case $familiar`Skeleton of Crimbo Past`:
       return clamp(100 - get$2("_knuckleboneDrops"), 0, 100) / expectedBones(FarmingStrategy.location);
+    case $familiar`Sword of S Words`:
+      {
+        var sWordMonster = get$2("swordOfSWordsMonster");
+        if (!sWordMonster) {
+          return 0;
+        } else {
+          return clamp(100 - get$2("_swordOfSWordsKills"), 0, 100) / sum(kolmafia.itemDropsArray(sWordMonster), _ref12 => {
+            var rate = _ref12.rate;
+            return rate;
+          });
+        }
+      }
     default:
       return 0;
   }
@@ -31897,7 +31934,7 @@ function FarmTurnQuest() {
       ready: () => have$g() && shouldCheckParachute() && kolmafia.myLocation() === FarmingStrategy.location && FarmingStrategy.shouldOlfact,
       completed: () => have$P($effect`Everything looks Beige`) || kolmafia.myAdventures() === 0,
       outfit: context => barfOutfit(FarmingStrategy.outfit(context)),
-      do: () => fight(undelay(FarmingStrategy.targetMonster)),
+      do: () => fight(FarmingStrategy.primaryMonster()),
       combat: FarmingStrategy.strategy(),
       post: () => {
         var _FarmingStrategy$post;
