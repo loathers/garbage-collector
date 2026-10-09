@@ -4,7 +4,6 @@ import {
   equippedItem,
   getMonsters,
   isBanished,
-  itemDropsArray,
   itemType,
   Location,
   mallPrice,
@@ -39,7 +38,7 @@ import { FarmingMethod, globalOptions } from "./config";
 import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
-import { songboomMeat } from "./lib";
+import { expectedDropValue, songboomMeat } from "./lib";
 
 export function averageRedTaffyValue(): number {
   return sum(
@@ -138,13 +137,7 @@ class FarmingStrategySkeleton {
       sum(
         [...adventureTargetToWeightedMap(this.location).entries()],
         ([monster, monsterWeight]) =>
-          monsterWeight *
-          sum(
-            itemDropsArray(monster),
-            ({ drop, rate }) =>
-              // One 100 because % the other because % improvement
-              (rate / 100) * garboValue(drop),
-          ),
+          monsterWeight * expectedDropValue(monster),
       ) / 100
     );
   }
