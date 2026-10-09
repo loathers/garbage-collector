@@ -306,6 +306,8 @@ const DailyItemTasks: GarboTask[] = [
       itemAmount($item`Interesting Coin`) < cheapestInterestingCoinItemCost(),
     do: (): void => {
       while (itemAmount($item`Interesting Coin`) >= 0) {
+        // We visit URL to reset new shop prices
+        visitUrl("shop.php?whichshop=interesting");
         const itemsWithCosts = Item.all()
           .filter(
             (i) =>
