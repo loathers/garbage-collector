@@ -7,7 +7,8 @@ import {
   Quest,
   StrictCombatTask,
 } from "grimoire-kolmafia";
-import { eventLog, HIGHLIGHT, safeInterrupt, safeRestore, sober } from "../lib";
+import { eventLog, HIGHLIGHT, safeInterrupt, sober } from "../lib";
+import { safeRestore } from "../restore";
 import { wanderer } from "../garboWanderer";
 import {
   $effect,

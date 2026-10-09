@@ -40,11 +40,8 @@ import {
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
-import {
-  freeRunConstraints,
-  safeRestoreMpTarget,
-  tryFindFreeRunOrBanish,
-} from "../lib";
+import { freeRunConstraints, tryFindFreeRunOrBanish } from "../lib";
+import { safeRestoreMpTarget } from "../restore";
 import { GarboTask } from "./engine";
 
 function queryEggNetIncomplete(): Map<Monster, number> {

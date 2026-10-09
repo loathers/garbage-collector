@@ -6,7 +6,8 @@ import {
   NumericModifier,
   sum,
 } from "libram";
-import { baseMeat, marginalFamWeightValue } from "../lib";
+import { marginalFamWeightValue } from "../lib";
+import { FarmingStrategy } from "../farmingStrategy";
 
 export function beretEffectValue(effect: Effect, duration: number) {
   const skill = toSkill(effect);
@@ -17,11 +18,11 @@ export function beretEffectValue(effect: Effect, duration: number) {
       [
         {
           modifier: "Meat Drop",
-          value: baseMeat() / 100,
+          value: FarmingStrategy.meat() / 100,
         },
         {
           modifier: "Familiar Weight",
-          value: (marginalFamWeightValue() * baseMeat()) / 100,
+          value: (marginalFamWeightValue() * FarmingStrategy.meat()) / 100,
         },
       ],
       ({ modifier, value }: { modifier: NumericModifier; value: number }) =>

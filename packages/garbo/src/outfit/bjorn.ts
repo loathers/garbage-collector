@@ -12,7 +12,7 @@ import {
   modeUseLimitedDrops,
   modeValueOfItem,
   modeValueOfMeat,
-} from "../lib";
+} from "./lib";
 
 function valueBjornModifiers(
   mode: BonusEquipMode,

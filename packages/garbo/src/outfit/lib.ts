@@ -36,12 +36,39 @@ import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { familiarCanBreathe } from "../familiar/familiarHelpers";
 import { meatFamiliar } from "../familiar/meatFamiliar";
-import { BonusEquipMode, targetMeat } from "../lib";
+import { targetMeat } from "../lib";
 import {
   estimatedGarboTurns,
   highMeatMonsterCount,
   wanderingCopytargetsRemaining,
 } from "../turns";
+import { FarmingStrategy } from "../farmingStrategy";
+
+export enum BonusEquipMode {
+  FREE,
+  MEAT_TARGET,
+  DMT,
+  BARF,
+}
+
+export function modeIsFree(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
+}
+
+export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
+}
+
+export function modeValueOfMeat(mode: BonusEquipMode): number {
+  if (modeIsFree(mode)) return 0;
+  if (mode === BonusEquipMode.BARF) return FarmingStrategy.meat() / 100;
+  if (mode === BonusEquipMode.MEAT_TARGET) return targetMeat() / 100;
+  return 0;
+}
+
+export function modeValueOfItem(mode: BonusEquipMode): number {
+  return mode === BonusEquipMode.BARF ? FarmingStrategy.itemDropValue() : 0;
+}
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) =>

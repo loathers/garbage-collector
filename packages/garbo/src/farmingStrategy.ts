@@ -39,6 +39,7 @@ import { FarmingMethod, globalOptions } from "./config";
 import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
+import { songboomMeat } from "./lib";
 
 export function averageRedTaffyValue(): number {
   return sum(
@@ -102,8 +103,13 @@ class FarmingStrategySkeleton {
   isUnderwater(): boolean {
     return this.location.environment === "underwater";
   }
+
   accountForNC(): boolean {
     return this.ncTurns !== Infinity;
+  }
+
+  meat(): number {
+    return this.baseMeat + songboomMeat();
   }
 
   primaryMonster(): Monster {

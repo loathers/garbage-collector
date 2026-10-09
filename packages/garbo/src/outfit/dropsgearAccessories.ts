@@ -22,12 +22,9 @@ import {
   sumNumbers,
 } from "libram";
 import {
-  baseMeat,
   basePointerRingMeat,
-  BonusEquipMode,
   felizValue,
   maxPassiveDamage,
-  modeIsFree,
   monsterManuelAvailable,
   withLocation,
 } from "../lib";
@@ -36,6 +33,7 @@ import { globalOptions } from "../config";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
 import { estimatedGarboTurns } from "../turns";
+import { BonusEquipMode, modeIsFree } from "./lib";
 
 function mafiaThumbRing(mode: BonusEquipMode) {
   if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
@@ -229,10 +227,10 @@ export function usingThumbRing(): boolean {
         )
         .map(
           (item) =>
-            [item, (getModifier("Meat Drop", item) * baseMeat()) / 100] as [
-              Item,
-              number,
-            ],
+            [
+              item,
+              (getModifier("Meat Drop", item) * FarmingStrategy.meat()) / 100,
+            ] as [Item, number],
         ),
     );
 

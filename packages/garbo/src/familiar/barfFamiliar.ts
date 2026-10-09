@@ -31,12 +31,7 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit/dropsgear";
-import {
-  baseMeat,
-  BonusEquipMode,
-  HIGHLIGHT,
-  MEAT_TARGET_MULTIPLIER,
-} from "../lib";
+import { HIGHLIGHT, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -53,8 +48,9 @@ import {
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
+import { BonusEquipMode } from "../outfit/lib";
 
-const MEAT_DROP_VALUE = () => baseMeat() / 100;
+const MEAT_DROP_VALUE = () => FarmingStrategy.meat() / 100;
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (

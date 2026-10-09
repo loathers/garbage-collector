@@ -75,7 +75,7 @@ import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { meatFamiliar } from "../familiar/meatFamiliar";
 import { estimatedAttunementTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
+import { HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 import {
   estimatedGarboTurns,
@@ -94,6 +94,7 @@ import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
 import { embezzlerFights } from "./embezzler";
+import { FarmingStrategy } from "../farmingStrategy";
 
 const photoBoothItems = $items`Sheriff badge, Sheriff pistol, Sheriff moustache, feather boa, oversized monocle on a stick, fake huge beard`;
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
@@ -125,7 +126,7 @@ function voterSetup(): void {
       0.3 *
         ((1000 + songboomMeat()) * embezzlerFights() +
           targetMeat() * copyTargetCount() +
-          baseMeat() *
+          FarmingStrategy.meat() *
             (estimatedGarboTurns() - copyTargetCount() - embezzlerFights())),
     ],
     [
@@ -239,7 +240,9 @@ function pantogram(): void {
     const bestPantsValue = Math.max(0, ...alternativePants);
 
     pantogramValue =
-      (100 + 0.6 * baseMeat() - (bestPantsValue * baseMeat()) / 100) *
+      (100 +
+        0.6 * FarmingStrategy.meat() -
+        (bestPantsValue * FarmingStrategy.meat()) / 100) *
       estimatedGarboTurns();
   }
   const cloverPrice = Math.min(
