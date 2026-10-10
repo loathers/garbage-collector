@@ -117,7 +117,8 @@ export function menu(
     if (
       mode === "barf" &&
       have($familiar`Sword of S Words`) &&
-      get("swordOfSWordsMonster")
+      get("swordOfSWordsMonster") &&
+      get("_swordOfSWordsKills") < 100
     ) {
       familiarMenu.push({
         familiar: $familiar`Sword of S Words`,
