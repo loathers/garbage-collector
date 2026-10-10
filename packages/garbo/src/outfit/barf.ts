@@ -36,13 +36,11 @@ import {
   bestBjornalike,
   BonusEquipMode,
   cleaverCheck,
-  expectedDropValue,
-  MEAT_TARGET_MULTIPLIER,
   modeValueOfItem,
   modeValueOfMeat,
   validateGarbageFoldable,
 } from "./lib";
-import { MEAT_TARGET_MULTIPLIER } from "../lib";
+import { expectedDropValue, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
 import { FarmingStrategy } from "../farmingStrategy";
 import { garboValue } from "../garboValue";
