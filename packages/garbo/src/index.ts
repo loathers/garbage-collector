@@ -52,6 +52,8 @@ import {
   have,
   haveInCampground,
   JuneCleaver,
+  logger,
+  LogLevels,
   maxBy,
   set,
   setCombatFlags,
@@ -130,7 +132,9 @@ export function main(argString = ""): void {
     Args.showHelp(globalOptions);
     return;
   }
-
+  if (globalOptions.debug) {
+    logger.setLevel(LogLevels.DEBUG);
+  }
   // Cowo is for professionals only
   if (
     globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&

@@ -107,6 +107,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       help: "operate under the assumption that you're ascending after running it, rather than experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.",
       default: false,
     }),
+    debug: Args.flag({
+      setting: "",
+      help: "Turn on libram debugging.",
+      hidden: true,
+    }),
     loginvalidwishes: Args.flag({
       setting: "",
       help: "Logs any invalid wishes at the end of the day.",
