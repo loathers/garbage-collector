@@ -1221,59 +1221,57 @@ function itemPriority<T>(menuItems: MenuItem<T>[] | readonly MenuItem<T>[]) {
 }
 
 /**
- * A single, distinct dieting action: how to consume (or otherwise act on) a menu item.
+ * A single, distinct dieting action. A diet is turned into an array of these,
+ * sorted by priority, and then performed by iterating over the array in order.
  */
-type DietTask = {
+interface DietTask {
   name: string;
-  items: Item[];
-  perform: (countToConsume: number, menuItem: MenuItem<Note>) => void;
-};
-
-/** Fallback for any menu item that no other DietTask claims. */
-const consumeTask: DietTask = {
-  name: "Consume",
-  items: [],
-  perform: (countToConsume, menuItem) =>
-    consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue),
-};
-
-function elementalResistTask(item: Item, element: Element): DietTask {
-  return {
-    name: `${item} (${element} resistance)`,
-    items: [item],
-    perform: (countToConsume, menuItem) => {
-      if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
-        maximizeCached(["0.05 HP", `${element} Resistance`]);
-        if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
-          throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
-        }
-      }
-      consumeSafe(countToConsume, menuItem.item);
-    },
-  };
+  /** Higher priority tasks are performed first. */
+  priority: number;
+  /** How much of this task is still left to do. */
+  remaining(): number;
+  /** Do as much of this task as is currently possible. */
+  perform(): void;
 }
 
+type ItemAction = (countToConsume: number, menuItem: MenuItem<Note>) => void;
+
+const consumeAction: ItemAction = (countToConsume, menuItem) =>
+  consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+
+const elementalResistAction =
+  (element: Element): ItemAction =>
+  (countToConsume, menuItem) => {
+    if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
+      maximizeCached(["0.05 HP", `${element} Resistance`]);
+      if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
+        throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
+      }
+    }
+    consumeSafe(countToConsume, menuItem.item);
+  };
+
 /**
- * The dieting actions that need special handling, checked in order.
- * Menu items not claimed by any of these are handled by `consumeTask`.
+ * Menu items that need something other than `consumeAction`.
  */
-function dietTasks(): DietTask[] {
-  return [
-    elementalResistTask(saladFork, $element`hot`),
-    elementalResistTask(frostyMug, $element`cold`),
-    {
-      name: "Pocket Wish",
-      items: [$item`pocket wish`],
-      perform: (countToConsume, menuItem) => {
+function specialItemActions(): Map<Item, ItemAction> {
+  const speakeasyDrinks = Object.keys(getClanLounge())
+    .map((s) => toItem(s))
+    .filter((i) => i.inebriety > 0);
+  return new Map<Item, ItemAction>([
+    [saladFork, elementalResistAction($element`hot`)],
+    [frostyMug, elementalResistAction($element`cold`)],
+    [
+      $item`pocket wish`,
+      (countToConsume, menuItem) => {
         if (acquire(countToConsume, $item`pocket wish`, 60000)) {
           cliExecute(`genie effect ${menuItem.effect}`);
         }
       },
-    },
-    {
-      name: "Campfire Hot Dog",
-      items: [$item`campfire hot dog`],
-      perform: (countToConsume, menuItem) => {
+    ],
+    [
+      $item`campfire hot dog`,
+      (countToConsume, menuItem) => {
         // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
         if (!have($item`stick of firewood`)) {
           buy(
@@ -1284,50 +1282,39 @@ function dietTasks(): DietTask[] {
         }
         consumeSafe(countToConsume, menuItem.item);
       },
-    },
-    {
-      // Special Seasoning is acquired up front and used automatically
-      name: "Special Seasoning",
-      items: [$item`Special Seasoning`],
-      perform: () => {},
-    },
-    {
-      name: "Mini Kiwi Aioli",
-      items: [$item`mini kiwi aioli`],
-      perform: (countToConsume, menuItem) => {
+    ],
+    // Special Seasoning is acquired by its own task and used automatically
+    [$item`Special Seasoning`, () => {}],
+    [
+      $item`mini kiwi aioli`,
+      (countToConsume, menuItem) => {
         retrieveItem(menuItem.item, countToConsume);
         use(menuItem.item);
       },
-    },
-    {
-      name: "Sweet Synthesis",
-      items: [$item`Rethinking Candy`],
-      perform: (countToConsume, menuItem) => {
+    ],
+    [
+      $item`Rethinking Candy`,
+      (countToConsume, menuItem) => {
         synthesize(
           countToConsume,
           menuItem.effect ?? $effect`Synthesis: Greed`,
         );
       },
-    },
-    {
-      name: "Mayo Minder",
-      items: Object.values(Mayo),
-      perform: (countToConsume, menuItem) =>
+    ],
+    ...Object.values(Mayo).map((mayo): [Item, ItemAction] => [
+      mayo,
+      (countToConsume, menuItem) =>
         MayoClinic.setMayoMinder(menuItem.item, countToConsume),
-    },
-    {
-      name: "Speakeasy",
-      items: Object.keys(getClanLounge())
-        .map((s) => toItem(s))
-        .filter((i) => i.inebriety > 0),
-      perform: (countToConsume, menuItem) => {
+    ]),
+    ...speakeasyDrinks.map((drink): [Item, ItemAction] => [
+      drink,
+      (countToConsume, menuItem) => {
         cliExecute(`drink ${countToConsume} ${menuItem.item}`);
       },
-    },
-    {
-      name: "Broberry Brogurt",
-      items: [$item`broberry brogurt`],
-      perform: (countToConsume, menuItem) => {
+    ]),
+    [
+      $item`broberry brogurt`,
+      (countToConsume, menuItem) => {
         const amountNeeded =
           countToConsume - availableAmount($item`broberry brogurt`);
         if (amountNeeded > 0) {
@@ -1358,69 +1345,59 @@ function dietTasks(): DietTask[] {
         }
         consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
       },
-    },
-    {
-      name: "Sweat Out Some Booze",
-      items: [$item`designer sweatpants`],
-      perform: (countToConsume) => {
+    ],
+    [
+      $item`designer sweatpants`,
+      (countToConsume) => {
         for (let n = 1; n <= countToConsume; n++) {
           useSkill($skill`Sweat Out Some Booze`);
         }
       },
-    },
-    {
-      name: "Roller Coaster Day",
-      items: [$item`august scepter`],
-      perform: () => useSkill($skill`Aug. 16th: Roller Coaster Day!`),
-    },
-  ];
+    ],
+    [
+      $item`august scepter`,
+      () => useSkill($skill`Aug. 16th: Roller Coaster Day!`),
+    ],
+  ]);
 }
 
-export function consumeDiet(diet: Diet<Note>, name: DietName): void {
-  if (diet.entries.length === 0) return;
-  diet = diet.copy();
-  diet.entries.sort(
-    (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
-  );
+function acquireSeasoningTask(diet: Diet<Note>): DietTask {
+  let done = false;
+  return {
+    name: "Acquire Special Seasoning",
+    priority: 300,
+    remaining: () => (done ? 0 : 1),
+    perform: () => {
+      const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
+        menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`)
+          ? quantity
+          : 0,
+      );
+      acquire(seasoningCount, $item`Special Seasoning`, MPA);
+      done = true;
+    },
+  };
+}
 
-  print();
-  printDiet(diet, name);
-  print();
-
-  const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
-    menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`)
-      ? quantity
-      : 0,
-  );
-  acquire(seasoningCount, $item`Special Seasoning`, MPA);
-
-  const tasks = dietTasks();
-
-  // Fill organs in rounds, making sure we're making progress in each round.
-  const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
-  let lastOrgans = [-1, -1, -1];
-  const capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
-  let lastCapacities = [-1, -1, -1];
-  let currentQuantity = sum(diet.entries, "quantity");
-  let lastQuantity = -1;
-  while (currentQuantity > 0) {
-    if (
-      arrayEquals(lastOrgans, organs()) &&
-      arrayEquals(lastCapacities, capacities()) &&
-      lastQuantity === currentQuantity
-    ) {
-      print();
-      printDiet(diet, "REMAINING");
-      print();
-      throw "Failed to consume some diet item.";
-    }
-    lastOrgans = organs();
-    lastCapacities = capacities();
-    lastQuantity = currentQuantity;
-
-    for (const dietEntry of diet.entries) {
-      const { menuItems, quantity } = dietEntry;
-      if (quantity === 0) continue;
+/**
+ * Consume a diet entry: the food, booze, or spleen item along with any helpers.
+ */
+function dietEntryTask(
+  dietEntry: Diet<Note>["entries"][number],
+  actions: Map<Item, ItemAction>,
+): DietTask {
+  const { menuItems } = dietEntry;
+  const steps = menuItems.map((menuItem) => ({
+    menuItem,
+    action: actions.get(menuItem.item) ?? consumeAction,
+  }));
+  return {
+    name: `${dietEntry.target()}`,
+    priority: itemPriority(menuItems),
+    remaining: () => dietEntry.quantity,
+    perform: () => {
+      const { quantity } = dietEntry;
+      if (quantity === 0) return;
 
       let countToConsume = quantity;
 
@@ -1470,15 +1447,68 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
         }
       }
 
-      if (countToConsume === 0) continue;
+      if (countToConsume === 0) return;
 
-      for (const menuItem of menuItems) {
-        const task = tasks.find((task) => task.items.includes(menuItem.item));
-        (task ?? consumeTask).perform(countToConsume, menuItem);
+      for (const { menuItem, action } of steps) {
+        action(countToConsume, menuItem);
       }
       dietEntry.quantity -= countToConsume;
+    },
+  };
+}
+
+/**
+ * Turn a diet into the array of tasks that carry it out, sorted so that the
+ * array can be performed in order.
+ */
+function dietTasks(diet: Diet<Note>): DietTask[] {
+  const actions = specialItemActions();
+  return [
+    acquireSeasoningTask(diet),
+    ...diet.entries.map((dietEntry) => dietEntryTask(dietEntry, actions)),
+  ].sort((a, b) => b.priority - a.priority);
+}
+
+export function consumeDiet(diet: Diet<Note>, name: DietName): void {
+  if (diet.entries.length === 0) return;
+  diet = diet.copy();
+  diet.entries.sort(
+    (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
+  );
+
+  print();
+  printDiet(diet, name);
+  print();
+
+  const tasks = dietTasks(diet);
+  const remaining = () => sum(tasks, (task) => task.remaining());
+
+  // Perform the tasks in rounds, making sure we're making progress in each round.
+  const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
+  let lastOrgans = [-1, -1, -1];
+  const capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
+  let lastCapacities = [-1, -1, -1];
+  let currentRemaining = remaining();
+  let lastRemaining = -1;
+  while (currentRemaining > 0) {
+    if (
+      arrayEquals(lastOrgans, organs()) &&
+      arrayEquals(lastCapacities, capacities()) &&
+      lastRemaining === currentRemaining
+    ) {
+      print();
+      printDiet(diet, "REMAINING");
+      print();
+      throw "Failed to consume some diet item.";
     }
-    currentQuantity = sum(diet.entries, "quantity");
+    lastOrgans = organs();
+    lastCapacities = capacities();
+    lastRemaining = currentRemaining;
+
+    for (const task of tasks) {
+      if (task.remaining() > 0) task.perform();
+    }
+    currentRemaining = remaining();
   }
 }
 
