@@ -19765,6 +19765,7 @@ var DEFAULT_OPTIONS = {
   banishMonsters: [],
   ncTurns: Infinity,
   post: () => {},
+  available: true,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   outfit: _context => ({})
 };
@@ -19889,6 +19890,7 @@ var THE_CORAL_CORRAL = {
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
+  available: kolmafia.effectFact($monster`sea cow`) === $effect`Fishy` && (!get$2("seahorseName") || get$2("lassoTrainingCount") >= 20),
   outfit: _ref6 => {
     var banish = _ref6.banish;
     var banishItem = banish === null || banish === void 0 ? void 0 : banish.equip;
@@ -20164,7 +20166,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"1f4c967021dbb81df59e66654a78a5aa94706d5a"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"fb8977df847c78e7e403339ec863b94a298f4f98"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -31647,9 +31649,11 @@ function turnsNeededFromBaseline(baselineToCompareAgainst, tcbFamiliars) {
 function calculateOutfitValue(f) {
   var _SPECIAL_FAMILIARS_FO, _SPECIAL_FAMILIARS_FO2;
   var outfit = getCachedOutfitValues(f.familiar);
-  var outfitValue = outfit.bonus + outfit.meat * MEAT_DROP_VALUE() + outfit.item * FarmingStrategy.itemDropValue() + (((_SPECIAL_FAMILIARS_FO = SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)) === null || _SPECIAL_FAMILIARS_FO === void 0 || (_SPECIAL_FAMILIARS_FO2 = _SPECIAL_FAMILIARS_FO.extraValue) === null || _SPECIAL_FAMILIARS_FO2 === void 0 ? void 0 : _SPECIAL_FAMILIARS_FO2.call(_SPECIAL_FAMILIARS_FO, outfit)) ?? 0);
+  var outfitValue = outfit.bonus + outfit.meat * MEAT_DROP_VALUE() + outfit.item * FarmingStrategy.itemDropValue();
+  var expectedValue = f.expectedValue + (((_SPECIAL_FAMILIARS_FO = SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)) === null || _SPECIAL_FAMILIARS_FO === void 0 || (_SPECIAL_FAMILIARS_FO2 = _SPECIAL_FAMILIARS_FO.extraValue) === null || _SPECIAL_FAMILIARS_FO2 === void 0 ? void 0 : _SPECIAL_FAMILIARS_FO2.call(_SPECIAL_FAMILIARS_FO, outfit)) ?? 0);
   var outfitWeight = outfit.weight;
   return _objectSpread2(_objectSpread2({}, f), {}, {
+    expectedValue,
     outfitValue,
     outfitWeight
   });
@@ -33129,12 +33133,11 @@ function main() {
     Args.showHelp(globalOptions);
     return;
   }
+  if (!FarmingStrategy.available) {
+    throw new Error(`Farming strategy not available: ${globalOptions.prefs.farmingMethod}`);
+  }
   if (globalOptions.debug) {
     logger.setLevel(LogLevels.DEBUG);
-  }
-  // Cowo is for professionals only
-  if (globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL && (kolmafia.effectFact($monster`sea cow`) !== $effect`Fishy` || get$2("seahorseName") === "" && get$2("lassoTrainingCount") < 20)) {
-    globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
   }
 
   // Hit up main.php to get out of easily escapable choices
