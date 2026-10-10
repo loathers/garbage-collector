@@ -50,8 +50,6 @@ import { garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
 import { BonusEquipMode } from "../outfit/lib";
 
-const MEAT_DROP_VALUE = () => FarmingStrategy.baseMeat() / 100;
-
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
     FarmingStrategy.isUnderwater() &&
@@ -211,7 +209,7 @@ function familiarModifier(
 
 function familiarAbilityValue(familiar: Familiar) {
   return (
-    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() +
+    familiarModifier(familiar, "Meat Drop") * FarmingStrategy.meatDropValue() +
     familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue()
   );
 }
@@ -267,7 +265,7 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfit = getCachedOutfitValues(f.familiar);
   const outfitValue =
     outfit.bonus +
-    outfit.meat * MEAT_DROP_VALUE() +
+    outfit.meat * FarmingStrategy.meatDropValue() +
     outfit.item * FarmingStrategy.itemDropValue();
   const expectedValue =
     f.expectedValue +

@@ -18,7 +18,7 @@ export function beretEffectValue(effect: Effect, duration: number) {
       [
         {
           modifier: "Meat Drop",
-          value: FarmingStrategy.baseMeat() / 100,
+          value: FarmingStrategy.meatDropValue(),
         },
         {
           modifier: "Familiar Weight",

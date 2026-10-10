@@ -145,6 +145,10 @@ class FarmingStrategySkeleton {
     );
   }
 
+  meatDropValue(): number {
+    return this.baseMeat() / 100;
+  }
+
   valuableModifiers(): NumericModifier[] {
     return [
       "Meat Drop",

@@ -61,7 +61,7 @@ export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
 
 export function modeValueOfMeat(mode: BonusEquipMode): number {
   if (modeIsFree(mode)) return 0;
-  if (mode === BonusEquipMode.BARF) return FarmingStrategy.baseMeat() / 100;
+  if (mode === BonusEquipMode.BARF) return FarmingStrategy.meatDropValue();
   if (mode === BonusEquipMode.MEAT_TARGET) return targetMeat() / 100;
   return 0;
 }
