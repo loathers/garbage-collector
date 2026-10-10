@@ -474,14 +474,10 @@ function getSpecialFamiliarLimit({
       );
 
     case $familiar`Sword of S Words`: {
-      const sWordMonster = get("swordOfSWordsMonster");
-      if (!sWordMonster) {
+      if (!get("swordOfSWordsMonster")) {
         return 0;
       } else {
-        return (
-          clamp(100 - get("_swordOfSWordsKills"), 0, 100) /
-          sum(itemDropsArray(sWordMonster), ({ rate }) => rate)
-        );
+        return clamp(100 - get("_swordOfSWordsKills"), 0, 100);
       }
     }
 
