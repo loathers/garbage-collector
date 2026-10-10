@@ -229,7 +229,8 @@ export function usingThumbRing(): boolean {
           (item) =>
             [
               item,
-              (getModifier("Meat Drop", item) * FarmingStrategy.meat()) / 100,
+              (getModifier("Meat Drop", item) * FarmingStrategy.baseMeat()) /
+                100,
             ] as [Item, number],
         ),
     );

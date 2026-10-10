@@ -126,7 +126,7 @@ function voterSetup(): void {
       0.3 *
         ((1000 + songboomMeat()) * embezzlerFights() +
           targetMeat() * copyTargetCount() +
-          FarmingStrategy.meat() *
+          FarmingStrategy.baseMeat() *
             (estimatedGarboTurns() - copyTargetCount() - embezzlerFights())),
     ],
     [
@@ -241,8 +241,8 @@ function pantogram(): void {
 
     pantogramValue =
       (100 +
-        0.6 * FarmingStrategy.meat() -
-        (bestPantsValue * FarmingStrategy.meat()) / 100) *
+        0.6 * FarmingStrategy.baseMeat() -
+        (bestPantsValue * FarmingStrategy.baseMeat()) / 100) *
       estimatedGarboTurns();
   }
   const cloverPrice = Math.min(

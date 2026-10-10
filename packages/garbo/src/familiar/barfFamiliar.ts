@@ -50,7 +50,7 @@ import { garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
 import { BonusEquipMode } from "../outfit/lib";
 
-const MEAT_DROP_VALUE = () => FarmingStrategy.meat() / 100;
+const MEAT_DROP_VALUE = () => FarmingStrategy.baseMeat() / 100;
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (

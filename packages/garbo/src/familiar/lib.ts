@@ -74,7 +74,7 @@ export function timeToMeatify(): boolean {
     have($item`cursed magnifying glass`) &&
     get("_voidFreeFights") < 5 &&
     globalOptions.prefs.valueOfFreeFight / 13 >
-      FarmingStrategy.meat() * (usingLatte ? 0.75 : 0.6)
+      FarmingStrategy.baseMeat() * (usingLatte ? 0.75 : 0.6)
       ? -get("cursedMagnifyingGlassCount") % 13
       : Infinity;
 
@@ -183,7 +183,7 @@ export const amuletCoinValue = () => {
         const copies = highMeatMonsterCount();
         return [copies, estimatedGarboTurns() - copies];
       })();
-  return 0.5 * (barf * FarmingStrategy.meat() + copies * targetMeat());
+  return 0.5 * (barf * FarmingStrategy.baseMeat() + copies * targetMeat());
 };
 
 export const familiarEquipmentValue = (f: Familiar) => {
@@ -218,7 +218,7 @@ export function tcbValue(
     includeAmuletCoinOpportunityCost && have($item`amulet coin`)
       ? ((50 +
           10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) *
-          FarmingStrategy.meat()) /
+          FarmingStrategy.baseMeat()) /
         100
       : 0;
   return (

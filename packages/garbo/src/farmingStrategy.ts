@@ -68,7 +68,7 @@ interface FarmingStrategyOptions {
   stasisRounds: number;
   asdonEffect: Effect;
   ensureBarfAccess: boolean;
-  baseMeat: number;
+  meatDrop: number;
   location: Location;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
@@ -110,8 +110,8 @@ class FarmingStrategySkeleton {
     return this.ncTurns !== Infinity;
   }
 
-  meat(): number {
-    return this.baseMeat + songboomMeat();
+  baseMeat(): number {
+    return this.meatDrop + songboomMeat();
   }
 
   primaryMonster(): Monster {
@@ -198,7 +198,7 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
   stasisRounds: 20,
   asdonEffect: $effect`Driving Observantly`,
   ensureBarfAccess: true,
-  baseMeat: 250,
+  meatDrop: 250,
   ncTurns: () =>
     (27 * barfTourists) /
       (garbageTourists + angryTourists + 3 * touristFamilies) +
@@ -229,7 +229,7 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
-  baseMeat: 300,
+  meatDrop: 300,
   location: $location`The Coral Corral`,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,

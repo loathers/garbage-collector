@@ -61,7 +61,7 @@ function drivebyValue(targetCount = 0): number {
 
   return (
     (meatPercentDelta / 100) *
-    (targetMeat() * targets + FarmingStrategy.meat() * tourists)
+    (targetMeat() * targets + FarmingStrategy.baseMeat() * tourists)
   );
 }
 
@@ -108,11 +108,11 @@ function prepRobortender(): void {
     "Bloody Nora": {
       priceCap: get("_envyfishEggUsed")
         ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) +
-          FarmingStrategy.meat() *
+          FarmingStrategy.baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()
         : FarmingStrategy.isUnderwater()
-          ? FarmingStrategy.meat() *
+          ? FarmingStrategy.baseMeat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()
           : 0,

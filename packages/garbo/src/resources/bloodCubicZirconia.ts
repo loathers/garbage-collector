@@ -20,7 +20,7 @@ import { mainStatLevel } from "../lib";
 import { FarmingStrategy } from "../farmingStrategy";
 
 function sweatEquityROI(): number {
-  return FarmingStrategy.meat() * 0.4 * 30;
+  return FarmingStrategy.baseMeat() * 0.4 * 30;
 }
 
 function parentStat(sub: Stat | null): Stat {

@@ -300,7 +300,7 @@ export class Potion {
 
     return (
       (bonusMeat / 100) *
-      (FarmingStrategy.meat() *
+      (FarmingStrategy.baseMeat() *
         (duration - targetsApplied) *
         FarmingStrategy.ncAdjustment() +
         targetMeat() * targetsApplied)
@@ -851,7 +851,7 @@ export function bathroomFinance(targets: number): void {
 
   // Average meat % for tourists is sum of arithmetic series, 2 * sum(targets + 1 -> 100)
   const averageTouristGross =
-    (FarmingStrategy.meat() * 2 * (100 + targets + 1)) / 2 / 100;
+    (FarmingStrategy.baseMeat() * 2 * (100 + targets + 1)) / 2 / 100;
   const touristGross = averageTouristGross * tourists;
 
   const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
@@ -973,8 +973,8 @@ class VariableMeatPotion {
     const yachtzeeValue = 2000;
     const targetValue = targetMeat();
     const barfValue = FarmingStrategy.accountForNC()
-      ? (FarmingStrategy.meat() * FarmingStrategy.turnsToNC()) / 30
-      : FarmingStrategy.meat();
+      ? (FarmingStrategy.baseMeat() * FarmingStrategy.turnsToNC()) / 30
+      : FarmingStrategy.baseMeat();
 
     const totalCosts = retrievePrice(this.potion, n);
     const totalDuration = n * this.duration;

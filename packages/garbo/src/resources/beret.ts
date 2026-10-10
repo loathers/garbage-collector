@@ -18,11 +18,11 @@ export function beretEffectValue(effect: Effect, duration: number) {
       [
         {
           modifier: "Meat Drop",
-          value: FarmingStrategy.meat() / 100,
+          value: FarmingStrategy.baseMeat() / 100,
         },
         {
           modifier: "Familiar Weight",
-          value: (marginalFamWeightValue() * FarmingStrategy.meat()) / 100,
+          value: (marginalFamWeightValue() * FarmingStrategy.baseMeat()) / 100,
         },
       ],
       ({ modifier, value }: { modifier: NumericModifier; value: number }) =>

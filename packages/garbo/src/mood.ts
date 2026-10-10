@@ -46,7 +46,10 @@ Mood.setDefaultOptions({
   useNativeRestores: true,
 });
 
-export function meatMood(urKels = false, meat = FarmingStrategy.meat()): Mood {
+export function meatMood(
+  urKels = false,
+  meat = FarmingStrategy.baseMeat(),
+): Mood {
   // Reserve the amount of MP we try to restore before each fight.
   const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
 
