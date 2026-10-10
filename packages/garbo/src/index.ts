@@ -50,6 +50,8 @@ import {
   have,
   haveInCampground,
   JuneCleaver,
+  logger,
+  LogLevels,
   maxBy,
   set,
   setCombatFlags,
@@ -133,6 +135,10 @@ export function main(argString = ""): void {
     throw new Error(
       `Farming strategy not available: ${globalOptions.prefs.farmingMethod}`,
     );
+  }
+
+  if (globalOptions.debug) {
+    logger.setLevel(LogLevels.DEBUG);
   }
 
   // Hit up main.php to get out of easily escapable choices
