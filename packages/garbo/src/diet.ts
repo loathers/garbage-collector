@@ -1041,40 +1041,39 @@ function potionMenu(
 interface DietPlanner {
   (menu: MenuItem<Note>[]): Diet<Note>;
 }
-function balanceMenu(
+/**
+ * Plan a diet, rebalancing the potion menu against the number of targets and
+ * adventures the diet itself is expected to produce. Stops early once an
+ * iteration produces the same targets and adventures it was planned with,
+ * since every later iteration would plan the same diet again.
+ */
+function planBalancedDiet(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
-): MenuItem<Note>[] {
+): Diet<Note> {
   const baseTargets = highMeatMonsterCount();
-  function rebalance(
-    menu: MenuItem<Note>[],
-    iterations: number,
-    targets: number,
-    adventures: number,
-  ): MenuItem<Note>[] {
-    const fullMenu = potionMenu(
-      menu,
-      baseTargets + targets,
-      estimatedGarboTurns(false) + adventures,
+  const baseTurns = estimatedGarboTurns(false);
+  let targets = 0;
+  let adventures = dietPlanner(baseMenu).expectedAdventures();
+  for (let iterations = 5; iterations > 0; iterations--) {
+    print(
+      `Calculating diet, please wait${".....".slice(0, iterations)}`,
+      HIGHLIGHT,
     );
-    if (iterations <= 0) {
-      return fullMenu;
-    } else {
-      print(
-        `Calculating diet, please wait${".....".slice(0, iterations)}`,
-        HIGHLIGHT,
-      );
-      const balancingDiet = dietPlanner(fullMenu);
-      return rebalance(
-        menu,
-        iterations - 1,
-        countCopies(balancingDiet),
-        balancingDiet.expectedAdventures(),
-      );
+    const balancingDiet = dietPlanner(
+      potionMenu(baseMenu, baseTargets + targets, baseTurns + adventures),
+    );
+    const nextTargets = countCopies(balancingDiet);
+    const nextAdventures = balancingDiet.expectedAdventures();
+    if (nextTargets === targets && nextAdventures === adventures) {
+      return balancingDiet;
     }
+    targets = nextTargets;
+    adventures = nextAdventures;
   }
-  const baseDiet = dietPlanner(baseMenu);
-  return rebalance(baseMenu, 5, 0, baseDiet.expectedAdventures());
+  return dietPlanner(
+    potionMenu(baseMenu, baseTargets + targets, baseTurns + adventures),
+  );
 }
 
 export function computeDiet(): {
@@ -1099,52 +1098,44 @@ export function computeDiet(): {
 
   return {
     diet: () =>
-      fullDietPlanner(
-        balanceMenu(
-          menu().filter(
-            (menuItem) =>
-              !priceCaps[menuItem.item.name] ||
-              priceCaps[menuItem.item.name] >= mallPrice(menuItem.item),
-          ),
-          fullDietPlanner,
+      planBalancedDiet(
+        menu().filter(
+          (menuItem) =>
+            !priceCaps[menuItem.item.name] ||
+            priceCaps[menuItem.item.name] >= mallPrice(menuItem.item),
         ),
+        fullDietPlanner,
       ),
     shotglass: () =>
-      shotglassDietPlanner(
-        balanceMenu(
-          menu().filter(
-            (menuItem) =>
-              itemType(menuItem.item) === "booze" && menuItem.size === 1,
-          ),
-          shotglassDietPlanner,
+      planBalancedDiet(
+        menu().filter(
+          (menuItem) =>
+            itemType(menuItem.item) === "booze" && menuItem.size === 1,
         ),
+        shotglassDietPlanner,
       ),
     pantsgiving: () =>
-      pantsgivingDietPlanner(
-        balanceMenu(
-          menu().filter(
-            (menuItem) =>
-              (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
-              [
-                Mayo.flex,
-                Mayo.zapine,
-                $item`Special Seasoning`,
-                $item`mini kiwi aioli`,
-                $item`whet stone`,
-              ].includes(menuItem.item),
-          ),
-          pantsgivingDietPlanner,
+      planBalancedDiet(
+        menu().filter(
+          (menuItem) =>
+            (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
+            [
+              Mayo.flex,
+              Mayo.zapine,
+              $item`Special Seasoning`,
+              $item`mini kiwi aioli`,
+              $item`whet stone`,
+            ].includes(menuItem.item),
         ),
+        pantsgivingDietPlanner,
       ),
     sweatpants: () =>
-      sweatpantsDietPlanner(
-        balanceMenu(
-          menu().filter(
-            (menuItem) =>
-              itemType(menuItem.item) === "booze" && menuItem.size <= 3,
-          ),
-          sweatpantsDietPlanner,
+      planBalancedDiet(
+        menu().filter(
+          (menuItem) =>
+            itemType(menuItem.item) === "booze" && menuItem.size <= 3,
         ),
+        sweatpantsDietPlanner,
       ),
   };
 }
