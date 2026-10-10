@@ -67,7 +67,6 @@ import {
   $modifier,
   $skill,
   $thrall,
-  arrayEquals,
   AsdonMartin,
   canRememberSong,
   clamp,
@@ -1150,12 +1149,7 @@ export function computeDiet(): {
   };
 }
 
-type DietName =
-  | "FULL"
-  | "SHOTGLASS"
-  | "PANTSGIVING"
-  | "REMAINING"
-  | "SWEATPANTS";
+type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "SWEATPANTS";
 
 function printDiet(diet: Diet<Note>, name: DietName) {
   print(`===== ${name} DIET =====`);
@@ -1222,15 +1216,11 @@ function itemPriority<T>(menuItems: MenuItem<T>[] | readonly MenuItem<T>[]) {
 
 /**
  * A single, distinct dieting action. A diet is turned into an array of these,
- * sorted by priority, and then performed by iterating over the array in order.
+ * ordered so that every task fits in our organs when its turn comes, and then
+ * performed by iterating over the array once.
  */
 interface DietTask {
   name: string;
-  /** Higher priority tasks are performed first. */
-  priority: number;
-  /** How much of this task is still left to do. */
-  remaining(): number;
-  /** Do as much of this task as is currently possible. */
   perform(): void;
 }
 
@@ -1362,154 +1352,169 @@ function specialItemActions(): Map<Item, ItemAction> {
 }
 
 function acquireSeasoningTask(diet: Diet<Note>): DietTask {
-  let done = false;
+  const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
+    menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`)
+      ? quantity
+      : 0,
+  );
   return {
-    name: "Acquire Special Seasoning",
-    priority: 300,
-    remaining: () => (done ? 0 : 1),
-    perform: () => {
-      const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
-        menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`)
-          ? quantity
-          : 0,
-      );
-      acquire(seasoningCount, $item`Special Seasoning`, MPA);
-      done = true;
-    },
+    name: `Acquire ${seasoningCount} Special Seasoning`,
+    perform: () => acquire(seasoningCount, $item`Special Seasoning`, MPA),
   };
 }
 
+type Organ = "food" | "booze" | "spleen item";
+type OrganAmounts = Record<Organ, number>;
+const ORGANS: Organ[] = ["food", "booze", "spleen item"];
+const noOrgans = (): OrganAmounts => ({ food: 0, booze: 0, "spleen item": 0 });
+
 /**
- * Consume a diet entry: the food, booze, or spleen item along with any helpers.
+ * The organ space one unit of a diet entry takes up (or frees, if negative),
+ * and how much organ use it cleans. Cleaning can only happen when we have at
+ * least that much organ use to clean.
+ */
+function organEffects(menuItems: readonly MenuItem<Note>[]): {
+  fills: OrganAmounts;
+  cleans: OrganAmounts;
+} {
+  const fills = noOrgans();
+  const cleans = noOrgans();
+  for (const menuItem of menuItems) {
+    const cleaning = stomachLiverCleaners.get(menuItem.item);
+    const spleenCleaned = spleenCleaners.get(menuItem.item);
+    if (cleaning) {
+      const [fullness, inebriety] = cleaning;
+      if (fullness < 0) cleans.food -= fullness;
+      else fills.food += fullness;
+      if (inebriety < 0) cleans.booze -= inebriety;
+      else fills.booze += inebriety;
+    } else if (
+      menuItem.organ &&
+      !(spleenCleaned && menuItem.organ === "spleen item")
+    ) {
+      fills[menuItem.organ] += menuItem.size;
+    }
+    if (spleenCleaned) cleans["spleen item"] += spleenCleaned;
+  }
+  return { fills, cleans };
+}
+
+/**
+ * Consume `countToConsume` of a diet entry: the food, booze, or spleen item
+ * along with its helpers.
  */
 function dietEntryTask(
   dietEntry: Diet<Note>["entries"][number],
+  countToConsume: number,
   actions: Map<Item, ItemAction>,
 ): DietTask {
-  const { menuItems } = dietEntry;
-  const steps = menuItems.map((menuItem) => ({
+  const steps = dietEntry.menuItems.map((menuItem) => ({
     menuItem,
     action: actions.get(menuItem.item) ?? consumeAction,
   }));
   return {
-    name: `${dietEntry.target()}`,
-    priority: itemPriority(menuItems),
-    remaining: () => dietEntry.quantity,
+    name: `${countToConsume} ${dietEntry.target()}`,
     perform: () => {
-      const { quantity } = dietEntry;
-      if (quantity === 0) return;
-
-      let countToConsume = quantity;
-
-      const capacity = {
-        food: fullnessLimit() - myFullness(),
-        booze: inebrietyLimit() - myInebriety(),
-        "spleen item": spleenLimit() - mySpleenUse(),
-      };
-      for (const menuItem of menuItems) {
-        logprint(`Considering item ${menuItem.item}.`);
-        if (
-          menuItem.organ === "booze" &&
-          menuItem.size === 1 &&
-          !get("_mimeArmyShotglassUsed")
-        ) {
-          countToConsume = 1;
-        } else if (menuItem.organ && menuItem.size > 0) {
-          countToConsume = Math.min(
-            countToConsume,
-            Math.floor(capacity[menuItem.organ] / menuItem.size),
-          );
-        }
-        logprint(`Based on organ size, planning to consume ${countToConsume}.`);
-
-        const cleaning = stomachLiverCleaners.get(menuItem.item);
-        if (cleaning) {
-          const [fullness, inebriety] = cleaning;
-          countToConsume = Math.min(
-            fullness < 0 ? Math.floor(-myFullness() / fullness) : quantity,
-            inebriety < 0 ? Math.floor(-myInebriety() / inebriety) : quantity,
-            countToConsume,
-          );
-          logprint(
-            `Based on organ-cleaning, planning to consume ${countToConsume}.`,
-          );
-        }
-
-        const spleenCleaned = spleenCleaners.get(menuItem.item);
-        if (spleenCleaned) {
-          countToConsume = Math.min(
-            countToConsume,
-            Math.floor(mySpleenUse() / spleenCleaned),
-          );
-          logprint(
-            `Based on organ-cleaning, planning to consume ${countToConsume}.`,
-          );
-        }
-      }
-
-      if (countToConsume === 0) return;
-
       for (const { menuItem, action } of steps) {
         action(countToConsume, menuItem);
       }
-      dietEntry.quantity -= countToConsume;
     },
   };
 }
 
 /**
- * Turn a diet into the array of tasks that carry it out, sorted so that the
- * array can be performed in order.
+ * Turn a diet into the array of tasks that carry it out, in the order to
+ * perform them. Entries are sorted by priority, then scheduled by simulating
+ * our organs, so organ cleaners are scheduled once there is something for them
+ * to clean and the items they make room for are scheduled after them. Throws
+ * before anything is consumed if there is no order that fits.
  */
 function dietTasks(diet: Diet<Note>): DietTask[] {
   const actions = specialItemActions();
-  return [
-    acquireSeasoningTask(diet),
-    ...diet.entries.map((dietEntry) => dietEntryTask(dietEntry, actions)),
-  ].sort((a, b) => b.priority - a.priority);
+  const tasks = [acquireSeasoningTask(diet)];
+
+  const used: OrganAmounts = {
+    food: myFullness(),
+    booze: myInebriety(),
+    "spleen item": mySpleenUse(),
+  };
+  const capacity: OrganAmounts = {
+    food: fullnessLimit(),
+    booze: inebrietyLimit(),
+    "spleen item": spleenLimit(),
+  };
+  let shotglassAvailable =
+    !get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`);
+
+  const pending = [...diet.entries]
+    .sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems))
+    .map((dietEntry) => ({
+      dietEntry,
+      remaining: dietEntry.quantity,
+      ...organEffects(dietEntry.menuItems),
+    }));
+
+  // How many of an entry we can consume right now, and whether the first one goes in the shotglass
+  const fit = (entry: (typeof pending)[number]) => {
+    const { fills, cleans } = entry;
+    const usesShotglass =
+      shotglassAvailable &&
+      entry.dietEntry.menuItems.some(
+        (menuItem) => menuItem.organ === "booze" && menuItem.size === 1,
+      );
+    const fill = (organ: Organ) =>
+      usesShotglass && organ === "booze" ? 0 : fills[organ];
+    let count = usesShotglass ? 1 : entry.remaining;
+    for (const organ of ORGANS) {
+      if (fill(organ) > 0) {
+        count = Math.min(
+          count,
+          Math.floor((capacity[organ] - used[organ]) / fill(organ)),
+        );
+      }
+      if (cleans[organ] > 0) {
+        count = Math.min(count, Math.floor(used[organ] / cleans[organ]));
+      }
+    }
+    return { count, usesShotglass, fill };
+  };
+
+  // Always schedule the highest priority entry that fits, so that space freed by
+  // a cleaner goes to the entries that were waiting on it.
+  while (pending.some(({ remaining }) => remaining > 0)) {
+    const next = pending
+      .filter(({ remaining }) => remaining > 0)
+      .map((entry) => ({ entry, ...fit(entry) }))
+      .find(({ count }) => count > 0);
+    if (!next) {
+      const stuck = pending
+        .filter(({ remaining }) => remaining > 0)
+        .map(
+          ({ dietEntry, remaining }) => `${remaining} ${dietEntry.target()}`,
+        );
+      throw `Unable to find an order to consume this diet; could not fit ${stuck.join(", ")}.`;
+    }
+    const { entry, count, usesShotglass, fill } = next;
+    for (const organ of ORGANS) {
+      used[organ] += count * (fill(organ) - entry.cleans[organ]);
+    }
+    if (usesShotglass) shotglassAvailable = false;
+    entry.remaining -= count;
+    tasks.push(dietEntryTask(entry.dietEntry, count, actions));
+  }
+  return tasks;
 }
 
 export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   if (diet.entries.length === 0) return;
-  diet = diet.copy();
-  diet.entries.sort(
-    (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
-  );
 
   print();
   printDiet(diet, name);
   print();
 
   const tasks = dietTasks(diet);
-  const remaining = () => sum(tasks, (task) => task.remaining());
-
-  // Perform the tasks in rounds, making sure we're making progress in each round.
-  const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
-  let lastOrgans = [-1, -1, -1];
-  const capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
-  let lastCapacities = [-1, -1, -1];
-  let currentRemaining = remaining();
-  let lastRemaining = -1;
-  while (currentRemaining > 0) {
-    if (
-      arrayEquals(lastOrgans, organs()) &&
-      arrayEquals(lastCapacities, capacities()) &&
-      lastRemaining === currentRemaining
-    ) {
-      print();
-      printDiet(diet, "REMAINING");
-      print();
-      throw "Failed to consume some diet item.";
-    }
-    lastOrgans = organs();
-    lastCapacities = capacities();
-    lastRemaining = currentRemaining;
-
-    for (const task of tasks) {
-      if (task.remaining() > 0) task.perform();
-    }
-    currentRemaining = remaining();
-  }
+  logprint(`Diet order: ${tasks.map((task) => task.name).join(", ")}`);
+  for (const task of tasks) task.perform();
 }
 
 function dailySpecialPrice(item: Item) {
