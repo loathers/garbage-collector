@@ -22,7 +22,7 @@ export function beretEffectValue(effect: Effect, duration: number) {
         },
         {
           modifier: "Familiar Weight",
-          value: (marginalFamWeightValue() * FarmingStrategy.baseMeat()) / 100,
+          value: marginalFamWeightValue() * FarmingStrategy.meatDropValue(),
         },
       ],
       ({ modifier, value }: { modifier: NumericModifier; value: number }) =>

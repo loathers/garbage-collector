@@ -106,16 +106,15 @@ function prepRobortender(): void {
       mandatory: false,
     },
     "Bloody Nora": {
-      priceCap: get("_envyfishEggUsed")
-        ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) +
-          FarmingStrategy.baseMeat() *
-            (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
+      priceCap:
+        (get("_envyfishEggUsed")
+          ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
+          : 0) +
+        (FarmingStrategy.isUnderwater()
+          ? FarmingStrategy.meatDropValue() *
+            (0.5 + (4 + Math.sqrt(110 / 100)) * 30) *
             estimatedGarboTurns()
-        : FarmingStrategy.isUnderwater()
-          ? FarmingStrategy.baseMeat() *
-            (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
-            estimatedGarboTurns()
-          : 0,
+          : 0),
       mandatory: false,
     },
     "Single entendre": {

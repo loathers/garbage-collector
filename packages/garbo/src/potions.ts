@@ -299,8 +299,8 @@ export class Potion {
     );
 
     return (
-      (bonusMeat / 100) *
-      (FarmingStrategy.baseMeat() *
+      bonusMeat *
+      (FarmingStrategy.meatDropValue() *
         (duration - targetsApplied) *
         FarmingStrategy.ncAdjustment() +
         targetMeat() * targetsApplied)

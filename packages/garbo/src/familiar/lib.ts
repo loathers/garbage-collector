@@ -216,10 +216,9 @@ export function tcbValue(
   // Includes a lazy linearization of the value of its leprechaun-pounds
   const amuletCoin =
     includeAmuletCoinOpportunityCost && have($item`amulet coin`)
-      ? ((50 +
+      ? (50 +
           10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) *
-          FarmingStrategy.baseMeat()) /
-        100
+        FarmingStrategy.meatDropValue()
       : 0;
   return (
     familiarEquipmentValue(familiar) / tcbTurnsLeft(familiar, tcbFamiliars) -
