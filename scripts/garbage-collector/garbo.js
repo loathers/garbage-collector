@@ -20166,7 +20166,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"fb8977df847c78e7e403339ec863b94a298f4f98"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"b1b50f9e7549242a552b45b50b2c35d99fc8dbf7"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -22551,16 +22551,11 @@ function menu$1(adventure) {
         worksOnFreeRun: false
       });
     }
-    var swordMonster = get$2("swordOfSWordsMonster");
-    if (mode === "barf" && have$P($familiar`Sword of S Words`) && swordMonster) {
+    if (mode === "barf" && have$P($familiar`Sword of S Words`) && get$2("swordOfSWordsMonster") && get$2("_swordOfSWordsKills") < 100) {
       familiarMenu.push({
         familiar: $familiar`Sword of S Words`,
-        expectedValue: expectedDropValue(swordMonster) - sum(_toConsumableArray(monsterRates.entries()), _ref2 => {
-          var _ref3 = _slicedToArray(_ref2, 2),
-            monster = _ref3[0],
-            rate = _ref3[1];
-          return rate * expectedDropValue(monster);
-        }) / monsterRates.size,
+        expectedValue: 0,
+        // handled in barf cache
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: false
@@ -22578,10 +22573,10 @@ function menu$1(adventure) {
     if (have$P($familiar`Space Jellyfish`)) {
       familiarMenu.push({
         familiar: $familiar`Space Jellyfish`,
-        expectedValue: sum(_toConsumableArray(monsterRates.entries()), _ref4 => {
-          var _ref5 = _slicedToArray(_ref4, 2),
-            monster = _ref5[0],
-            rate = _ref5[1];
+        expectedValue: sum(_toConsumableArray(monsterRates.entries()), _ref2 => {
+          var _ref3 = _slicedToArray(_ref2, 2),
+            monster = _ref3[0],
+            rate = _ref3[1];
           return monster.defenseElement === $element`Stench` ? rate * garboValue($item`stench jelly`) / (get$2("_spaceJellyfishDrops") < 5 ? get$2("_spaceJellyfishDrops") + 1 : 20) : 0;
         }),
         leprechaunMultiplier: 0,
@@ -22608,9 +22603,9 @@ function menu$1(adventure) {
     // Because strictly speaking this is better than using no familiar at all
     worksOnFreeRun: true
   });
-  return familiarMenu.filter(_ref6 => {
-    var familiar = _ref6.familiar,
-      worksOnFreeRun = _ref6.worksOnFreeRun;
+  return familiarMenu.filter(_ref4 => {
+    var familiar = _ref4.familiar,
+      worksOnFreeRun = _ref4.worksOnFreeRun;
     return (mode !== "run" || worksOnFreeRun) && (allowAttackFamiliars || !(familiar.physicalDamage || familiar.elementalDamage)) && !excludeFamiliar.some(excludedFamiliar => excludedFamiliar === familiar);
   });
 }
@@ -31562,6 +31557,18 @@ $familiar`Chest Mimic`, {
     var weight = _ref2.weight;
     return clamp((weight + totalFamiliarWeight($familiar`Mini Kiwi`, false)) * 0.005, 0, 1) * garboValue($item`mini kiwi`);
   }
+}], [$familiar`Sword of S Words`, {
+  extraValue: _ref3 => {
+    var item = _ref3.item;
+    var sWordMonster = get$2("swordOfSWordsMonster");
+    if (!sWordMonster) return 0;
+    var totalItem = item + familiarModifier($familiar`Sword of S Words`, "Item Drop");
+    return sum(kolmafia.itemDropsArray(sWordMonster), _ref4 => {
+      var rate = _ref4.rate,
+        drop = _ref4.drop;
+      return clamp(rate * (100 + totalItem) / 100, 0, 100) * garboValue(drop) / 100;
+    }) - totalItem * FarmingStrategy.itemDropValue();
+  }
 }]]);
 function outfitCacheKey(familiar) {
   if (SPECIAL_FAMILIARS_FOR_CACHING.has(familiar)) {
@@ -31606,29 +31613,29 @@ var nonOutfitWeightBonus = () => kolmafia.weightAdjustment() - sum(outfitSlots, 
 function familiarModifier(familiar, modifier) {
   var cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
   var totalWeight = totalFamiliarWeight(familiar, false) + nonOutfitWeightBonus() + cachedOutfitWeight;
-  var _ref3 = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {},
-    equip = _ref3.equip;
+  var _ref5 = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {},
+    equip = _ref5.equip;
   return equip ? kolmafia.numericModifier(familiar, modifier, totalWeight - kolmafia.numericModifier(equip, "Familiar Weight"), equip) : kolmafia.numericModifier(familiar, modifier, totalWeight, $item.none);
 }
 function familiarAbilityValue(familiar) {
   return familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() + familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue();
 }
-function totalFamiliarValue(_ref4) {
-  var expectedValue = _ref4.expectedValue,
-    outfitValue = _ref4.outfitValue,
-    familiar = _ref4.familiar;
+function totalFamiliarValue(_ref6) {
+  var expectedValue = _ref6.expectedValue,
+    outfitValue = _ref6.outfitValue,
+    familiar = _ref6.familiar;
   return expectedValue + outfitValue + familiarAbilityValue(familiar);
 }
 function turnsNeededFromBaseline(baselineToCompareAgainst, tcbFamiliars) {
-  return _ref5 => {
-    var familiar = _ref5.familiar,
-      limit = _ref5.limit,
-      outfitValue = _ref5.outfitValue,
-      bonusTurns = _ref5.bonusTurns;
+  return _ref7 => {
+    var familiar = _ref7.familiar,
+      limit = _ref7.limit,
+      outfitValue = _ref7.outfitValue,
+      bonusTurns = _ref7.bonusTurns;
     switch (limit) {
       case "drops":
-        return sum(getAllDrops(familiar).filter(_ref6 => {
-          var expectedValue = _ref6.expectedValue;
+        return sum(getAllDrops(familiar).filter(_ref8 => {
+          var expectedValue = _ref8.expectedValue;
           return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
         }), "expectedTurns") - (bonusTurns ?? 0);
       case "experience":
@@ -31665,10 +31672,10 @@ function extraValue(target, meat, jellyfish) {
   var jellyfishValue = jellyfish ? garboValue(jelly) / 20 + familiarAbilityValue(jellyfish.familiar) + jellyfish.outfitValue : 0;
   return Math.max(targetValue - Math.max(meatFamiliarValue, jellyfishValue), 0);
 }
-var familiarPrintout = _ref7 => {
-  var expectedValue = _ref7.expectedValue,
-    familiar = _ref7.familiar,
-    outfitValue = _ref7.outfitValue;
+var familiarPrintout = _ref9 => {
+  var expectedValue = _ref9.expectedValue,
+    familiar = _ref9.familiar,
+    outfitValue = _ref9.outfitValue;
   return `(expected value of ${expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(familiar).toFixed(1)} from familiar abilities and ${outfitValue.toFixed(1)} from outfit)`;
 };
 function barfFamiliar(equipmentForced) {
@@ -31720,9 +31727,9 @@ function barfFamiliar(equipmentForced) {
     }
     return normal;
   });
-  var meatFamiliarEntry = fullMenu.find(_ref8 => {
-    var familiar = _ref8.familiar,
-      limit = _ref8.limit;
+  var meatFamiliarEntry = fullMenu.find(_ref0 => {
+    var familiar = _ref0.familiar,
+      limit = _ref0.limit;
     return familiar === meat && limit !== "cupid";
   });
   if (!meatFamiliarEntry) {
@@ -31740,8 +31747,8 @@ function barfFamiliar(equipmentForced) {
   }
 
   // Determine the baseline for how good a familiar needs to be to be run--either an unlimited familiar, or our meat familiar
-  var unlimitedCruisingFamiliars = viableMenu.filter(_ref9 => {
-    var limit = _ref9.limit;
+  var unlimitedCruisingFamiliars = viableMenu.filter(_ref1 => {
+    var limit = _ref1.limit;
     return limit === "none";
   });
   var cruisingFamiliar = unlimitedCruisingFamiliars.length ? maxBy(unlimitedCruisingFamiliars, totalFamiliarValue) : meatFamiliarEntry;
@@ -31751,8 +31758,8 @@ function barfFamiliar(equipmentForced) {
   var finalMenu = viableMenu.filter(f => totalFamiliarValue(f) >= cruisingFamiliarValue);
 
   // If the shrub beats our cruising familiar, use it
-  var shrubAvailable = finalMenu.some(_ref0 => {
-    var familiar = _ref0.familiar;
+  var shrubAvailable = finalMenu.some(_ref10 => {
+    var familiar = _ref10.familiar;
     return familiar === $familiar`Crimbo Shrub`;
   });
   if (shrubAvailable) {
@@ -31767,8 +31774,8 @@ function barfFamiliar(equipmentForced) {
   // Otherwise, prioritize by using the most valuable familiar
   var best = turnsNeeded < turnsAvailable() ? maxBy(finalMenu, "leprechaunMultiplier") : maxBy(finalMenu, totalFamiliarValue);
   kolmafia.print(`Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${meatFamiliarEntry.familiar} ${familiarPrintout(meatFamiliarEntry)}.`, HIGHLIGHT);
-  var jellyfish = fullMenu.find(_ref1 => {
-    var familiar = _ref1.familiar;
+  var jellyfish = fullMenu.find(_ref11 => {
+    var familiar = _ref11.familiar;
     return familiar === $familiar`Space Jellyfish`;
   });
   return {
@@ -31776,14 +31783,14 @@ function barfFamiliar(equipmentForced) {
     extraValue: extraValue(best, meatFamiliarEntry, jellyfish)
   };
 }
-function getSpecialFamiliarLimit(_ref10) {
-  var familiar = _ref10.familiar,
-    outfitValue = _ref10.outfitValue,
-    baselineToCompareAgainst = _ref10.baselineToCompareAgainst;
+function getSpecialFamiliarLimit(_ref12) {
+  var familiar = _ref12.familiar,
+    outfitValue = _ref12.outfitValue,
+    baselineToCompareAgainst = _ref12.baselineToCompareAgainst;
   switch (familiar) {
     case $familiar`Space Jellyfish`:
-      return sum(getAllJellyfishDrops().filter(_ref11 => {
-        var expectedValue = _ref11.expectedValue;
+      return sum(getAllJellyfishDrops().filter(_ref13 => {
+        var expectedValue = _ref13.expectedValue;
         return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
       }), "turnsAtValue");
     case $familiar`Crimbo Shrub`:
@@ -31792,14 +31799,10 @@ function getSpecialFamiliarLimit(_ref10) {
       return clamp(100 - get$2("_knuckleboneDrops"), 0, 100) / expectedBones(FarmingStrategy.location);
     case $familiar`Sword of S Words`:
       {
-        var sWordMonster = get$2("swordOfSWordsMonster");
-        if (!sWordMonster) {
+        if (!get$2("swordOfSWordsMonster")) {
           return 0;
         } else {
-          return clamp(100 - get$2("_swordOfSWordsKills"), 0, 100) / sum(kolmafia.itemDropsArray(sWordMonster), _ref12 => {
-            var rate = _ref12.rate;
-            return rate;
-          });
+          return clamp(100 - get$2("_swordOfSWordsKills"), 0, 100);
         }
       }
     default:
@@ -31883,7 +31886,20 @@ function computeBarfOutfit(spec) {
   if (FarmingStrategy.isUnderwater()) {
     outfit.modifier.push(`+sea`);
   }
-  outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`, `${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`, "-tie");
+  outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`, "-tie");
+  var swordMonster = get$2("swordOfSWordsMonster");
+  if (swordMonster && outfit.familiar === $familiar`Sword of S Words`) {
+    var valueOfItem = expectedDropValue(swordMonster);
+    var _maxBy = maxBy(kolmafia.itemDropsArray(swordMonster), _ref => {
+        var drop = _ref.drop;
+        return garboValue(drop);
+      }),
+      maxValueItemRate = _maxBy.rate;
+    var maxItemDrop = Math.ceil(100 * (100 / maxValueItemRate - 1));
+    outfit.modifier.push(`${valueOfItem} Item Drop ${maxItemDrop} Max`);
+  } else {
+    outfit.modifier.push(`${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`);
+  }
   if (kolmafia.myInebriety() > trueInebrietyLimit()) {
     if (!outfit.equip($item`Drunkula's wineglass`)) {
       throw new Error("We're overdrunk but have found ourself unable to equip a wineglass!");
