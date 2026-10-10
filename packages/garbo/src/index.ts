@@ -129,10 +129,11 @@ export function main(argString = ""): void {
     return;
   }
 
-  if (!FarmingStrategy.available)
+  if (!FarmingStrategy.available) {
     throw new Error(
       `Farming strategy not available: ${globalOptions.prefs.farmingMethod}`,
     );
+  }
 
   // Hit up main.php to get out of easily escapable choices
   visitUrl("main.php");
