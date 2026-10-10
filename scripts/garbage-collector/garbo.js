@@ -17853,6 +17853,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
     help: "operate under the assumption that you're ascending after running it, rather than experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.",
     default: false
   }),
+  debug: Args.flag({
+    setting: "",
+    help: "Turn on libram debugging.",
+    hidden: true
+  }),
   loginvalidwishes: Args.flag({
     setting: "",
     help: "Logs any invalid wishes at the end of the day.",
@@ -20149,7 +20154,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"d6149f9f41775bf6469ce0b4400ab7dc6a337eca"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"f1e466df883cf3c61703c0e3de2b24d467e19321"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -33114,7 +33119,9 @@ function main() {
     Args.showHelp(globalOptions);
     return;
   }
-
+  if (globalOptions.debug) {
+    logger.setLevel(LogLevels.DEBUG);
+  }
   // Cowo is for professionals only
   if (globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL && (kolmafia.effectFact($monster`sea cow`) !== $effect`Fishy` || get$2("seahorseName") === "" && get$2("lassoTrainingCount") < 20)) {
     globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
