@@ -251,11 +251,18 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfitValue =
     outfit.bonus +
     outfit.meat * MEAT_DROP_VALUE() +
-    outfit.item * FarmingStrategy.itemDropValue() +
+    outfit.item * FarmingStrategy.itemDropValue();
+  const expectedValue =
+    f.expectedValue +
     (SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
-  return { ...f, outfitValue, outfitWeight };
+  return {
+    ...f,
+    expectedValue,
+    outfitValue,
+    outfitWeight,
+  };
 }
 
 function extraValue(
