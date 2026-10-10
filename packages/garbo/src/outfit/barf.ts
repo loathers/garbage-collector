@@ -4,6 +4,7 @@ import {
   Familiar,
   inebrietyLimit,
   Item,
+  itemDropsArray,
   myClass,
   myFamiliar,
   myFury,
@@ -24,6 +25,7 @@ import {
   get,
   getKramcoWandererChance,
   have,
+  maxBy,
   undelay,
 } from "libram";
 import { barfFamiliar } from "../familiar/barfFamiliar";
@@ -34,6 +36,8 @@ import {
   bestBjornalike,
   BonusEquipMode,
   cleaverCheck,
+  expectedDropValue,
+  MEAT_TARGET_MULTIPLIER,
   modeValueOfItem,
   modeValueOfMeat,
   validateGarbageFoldable,
@@ -41,6 +45,7 @@ import {
 import { MEAT_TARGET_MULTIPLIER } from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
 import { FarmingStrategy } from "../farmingStrategy";
+import { garboValue } from "../garboValue";
 
 function chooseGun() {
   if (have($item`love`)) {
@@ -147,9 +152,21 @@ export function computeBarfOutfit(
   }
   outfit.modifier.push(
     `${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`,
-    `${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`,
     "-tie",
   );
+
+  const swordMonster = get("swordOfSWordsMonster");
+  if (swordMonster && outfit.familiar === $familiar`Sword of S Words`) {
+    const valueOfItem = expectedDropValue(swordMonster);
+    const { rate: maxValueItemRate } = maxBy(
+      itemDropsArray(swordMonster),
+      ({ drop }) => garboValue(drop),
+    );
+    const maxItemDrop = Math.ceil(100 * (100 / maxValueItemRate - 1));
+    outfit.modifier.push(`${valueOfItem} Item Drop ${maxItemDrop} Max`);
+  } else {
+    outfit.modifier.push(`${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`);
+  }
 
   if (myInebriety() > trueInebrietyLimit()) {
     if (!outfit.equip($item`Drunkula's wineglass`)) {
