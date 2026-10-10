@@ -1076,6 +1076,121 @@ function planBalancedDiet(
   );
 }
 
+/**
+ * Items libram's planner treats as touching both stomach and liver, with their
+ * fullness and inebriety. The planner re-runs its knapsack with and without
+ * each of these, so every one left on the menu doubles the planning time.
+ */
+const crossOrganItems = new Map<Item, [number, number]>([
+  [$item`spice melange`, [-3, -3]],
+  [$item`Ultra Mega Sour Ball`, [-3, -3]],
+  [$item`The Plumber's mushroom stew`, [3, -1]],
+  [$item`The Mad Liquor`, [-1, 3]],
+  [$item`Doc Clock's thyme cocktail`, [-2, 4]],
+  [$item`Mr. Burnsger`, [4, -2]],
+]);
+
+/**
+ * An upper bound on the adventures libram's planner can credit to a menu item,
+ * applying every adventure bonus it knows about at once.
+ */
+function maxAdventures(menuItem: MenuItem<Note>): number {
+  const { adventures, fullness } = menuItem.item;
+  if (!adventures) return 0;
+  const range = adventures.match(/^(-?\d+)(?:-(-?\d+))?$/);
+  if (!range) return Infinity;
+  const max = Number(range[2] ?? range[1]);
+  // fork/mug, then saucemaven and gar-ish
+  let result = Math.floor(max * 1.5) + 5 + 5;
+  // refined palate, pinky ring, tuxedo shirt
+  result = Math.ceil(Math.floor(result * 1.25) * 1.125) + 2;
+  if (menuItem.itemType() === "food") {
+    // mayoflex, seasoning, aioli, whet stone
+    result += 1 + 1 + fullness + 1;
+  }
+  return result;
+}
+
+/**
+ * Remove cross-organ items from the menu when they can't possibly be part of
+ * the planned diet, so the planner doesn't have to try them.
+ *
+ * libram only plans a cross-organ item when its own value plus the value of
+ * the organ space it frees beats the plan without it. The extra value of `c`
+ * units of organ space is at most `c` times the best value per unit of space,
+ * plus the value of one item (the knapsack's integrality gap). If even that
+ * is negative, the planner would never choose the item.
+ */
+function withoutHopelessCrossOrganItems(
+  menu: MenuItem<Note>[],
+): MenuItem<Note>[] {
+  // An overfull organ makes the planner's "without" case invalid; don't guess.
+  if (myFullness() > fullnessLimit() || myInebriety() > inebrietyLimit()) {
+    return menu;
+  }
+
+  const valueUpperBound = (menuItem: MenuItem<Note>) =>
+    maxAdventures(menuItem) * MPA +
+    (menuItem.additionalValue ?? 0) -
+    menuItem.price();
+
+  const ratioAndValue = (organ: Organ) => {
+    let ratio = 0;
+    let value = 0;
+    for (const menuItem of menu) {
+      if (menuItem.organ !== organ || crossOrganItems.has(menuItem.item)) {
+        continue;
+      }
+      // Negative-size items are planned as "not using them", worth -value
+      const itemValue =
+        menuItem.size > 0
+          ? valueUpperBound(menuItem) +
+            ($items`jar of fermented pickle juice, extra-greasy slider`.includes(
+              menuItem.item,
+            )
+              ? 5 * spleenRatio
+              : 0)
+          : ["food", "booze"].includes(menuItem.itemType())
+            ? Infinity
+            : menuItem.price() - (menuItem.additionalValue ?? 0);
+      if (menuItem.size === 0 || itemValue <= 0) continue;
+      ratio = Math.max(ratio, itemValue / Math.abs(menuItem.size));
+      value = Math.max(value, itemValue);
+    }
+    return { ratio, value };
+  };
+
+  const spleenRatio = Math.max(
+    0,
+    ...menu
+      .filter(
+        (menuItem) => menuItem.organ === "spleen item" && menuItem.size > 0,
+      )
+      .map((menuItem) => valueUpperBound(menuItem) / menuItem.size),
+  );
+  const food = ratioAndValue("food");
+  const booze = ratioAndValue("booze");
+  const freedSpaceValue = (size: number, { ratio, value }: typeof food) =>
+    size < 0 ? -size * ratio + value : 0;
+
+  return menu.filter((menuItem) => {
+    const sizes = crossOrganItems.get(menuItem.item);
+    if (!sizes || (menuItem.maximum !== undefined && menuItem.maximum <= 0)) {
+      return true;
+    }
+    const [fullness, inebriety] = sizes;
+    const bestCase =
+      valueUpperBound(menuItem) +
+      freedSpaceValue(fullness, food) +
+      freedSpaceValue(inebriety, booze);
+    if (bestCase < 0) {
+      logprint(`Not considering ${menuItem.item} for diet; it can't pay off.`);
+      return false;
+    }
+    return true;
+  });
+}
+
 export function computeDiet(): {
   diet: () => Diet<Note>;
   shotglass: () => Diet<Note>;
@@ -1086,14 +1201,20 @@ export function computeDiet(): {
 
   const orEmpty = (diet: Diet<Note>) =>
     diet.expectedValue(MPA, "net") < 0 ? new Diet<Note>() : diet;
-  const fullDietPlanner = (menu: MenuItem<Note>[]) =>
-    orEmpty(Diet.plan(MPA, menu));
+  const plan = (
+    menu: MenuItem<Note>[],
+    organCapacities?: Parameters<typeof Diet.plan>[2],
+  ) =>
+    orEmpty(
+      Diet.plan(MPA, withoutHopelessCrossOrganItems(menu), organCapacities),
+    );
+  const fullDietPlanner = (menu: MenuItem<Note>[]) => plan(menu);
   const shotglassDietPlanner = (menu: MenuItem<Note>[]) =>
-    orEmpty(Diet.plan(MPA, menu, { booze: 1 }));
+    plan(menu, { booze: 1 });
   const pantsgivingDietPlanner = (menu: MenuItem<Note>[]) =>
-    orEmpty(Diet.plan(MPA, menu, { food: 1 }));
+    plan(menu, { food: 1 });
   const sweatpantsDietPlanner = (menu: MenuItem<Note>[]) =>
-    orEmpty(Diet.plan(MPA, menu, { booze: getRemainingLiver() }));
+    plan(menu, { booze: getRemainingLiver() });
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
