@@ -16,10 +16,11 @@ import {
   have,
 } from "libram";
 import { globalOptions } from "../config";
-import { baseMeat, mainStatLevel } from "../lib";
+import { mainStatLevel } from "../lib";
+import { FarmingStrategy } from "../farmingStrategy";
 
 function sweatEquityROI(): number {
-  return baseMeat() * 0.4 * 30;
+  return FarmingStrategy.meat() * 0.4 * 30;
 }
 
 function parentStat(sub: Stat | null): Stat {

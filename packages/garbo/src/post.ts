@@ -1,4 +1,4 @@
-import { safeRestore } from "./lib";
+import { safeRestore } from "./restore";
 import { runGarboQuests } from "./tasks/engine";
 import { PostQuest } from "./tasks/post";
 

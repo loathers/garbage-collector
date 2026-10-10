@@ -10,9 +10,9 @@ import {
   useSkill,
 } from "kolmafia";
 import { $class, $item, $skill, $thrall, get, have, maxBy } from "libram";
-import { baseMeat } from "../lib";
 import { estimatedGarboTurns } from "../turns";
 import { GarboTask } from "./engine";
+import { FarmingStrategy } from "../farmingStrategy";
 
 function bestVykeaLevel(): number {
   const vykeas = [
@@ -23,7 +23,7 @@ function bestVykeaLevel(): number {
   const vykeaProfit = (vykea: { level: number; dowelCost: number }) => {
     const { level, dowelCost } = vykea;
     return (
-      estimatedGarboTurns() * baseMeat() * 0.1 * level -
+      estimatedGarboTurns() * FarmingStrategy.meat() * 0.1 * level -
       (5 * mallPrice($item`VYKEA rail`) +
         dowelCost * mallPrice($item`VYKEA dowel`) +
         5 * mallPrice($item`VYKEA plank`) +

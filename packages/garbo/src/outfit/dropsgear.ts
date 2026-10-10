@@ -36,12 +36,8 @@ import {
 import { globalOptions } from "../config";
 import { cheapestItem } from "../diet";
 import {
-  baseMeat,
   bestJuneCleaverOption,
-  BonusEquipMode,
   juneCleaverChoiceValues,
-  modeUseLimitedDrops,
-  modeValueOfMeat,
   targetPointerRingMeat,
   valueJuneCleaverOption,
 } from "../lib";
@@ -53,6 +49,8 @@ import {
   getUsedTcbFamiliars,
   tcbTurnsLeft,
 } from "../familiar/lib";
+import { FarmingStrategy } from "../farmingStrategy";
+import { BonusEquipMode, modeUseLimitedDrops, modeValueOfMeat } from "./lib";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -83,7 +81,7 @@ function pantsgiving(mode: BonusEquipMode) {
         expectedSinusTurns,
       )
     : expectedSinusTurns;
-  const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat();
+  const sinusVal = expectedUseableSinusTurns * 1.0 * FarmingStrategy.meat();
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
@@ -369,7 +367,7 @@ function shavingBonus(): Map<Item, number> {
     return new Map();
   }
 
-  const bonusValue = (baseMeat() * 100 + 72 * 50) / 100;
+  const bonusValue = (FarmingStrategy.meat() * 100 + 72 * 50) / 100;
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
 

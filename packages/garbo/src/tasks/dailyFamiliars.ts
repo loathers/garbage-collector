@@ -32,7 +32,6 @@ import {
   setBestLeprechaunAsMeatFamiliar,
 } from "../familiar/meatFamiliar";
 import {
-  baseMeat,
   felizValue,
   isFree,
   newarkValue,
@@ -61,7 +60,8 @@ function drivebyValue(targetCount = 0): number {
     2 * marginalRoboWeight;
 
   return (
-    (meatPercentDelta / 100) * (targetMeat() * targets + baseMeat() * tourists)
+    (meatPercentDelta / 100) *
+    (targetMeat() * targets + FarmingStrategy.meat() * tourists)
   );
 }
 
@@ -108,11 +108,11 @@ function prepRobortender(): void {
     "Bloody Nora": {
       priceCap: get("_envyfishEggUsed")
         ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) +
-          baseMeat() *
+          FarmingStrategy.meat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()
         : FarmingStrategy.isUnderwater()
-          ? baseMeat() *
+          ? FarmingStrategy.meat() *
             (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100) *
             estimatedGarboTurns()
           : 0,
