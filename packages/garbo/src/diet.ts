@@ -1220,6 +1220,162 @@ function itemPriority<T>(menuItems: MenuItem<T>[] | readonly MenuItem<T>[]) {
   }
 }
 
+/**
+ * A single, distinct dieting action: how to consume (or otherwise act on) a menu item.
+ */
+type DietTask = {
+  name: string;
+  items: Item[];
+  perform: (countToConsume: number, menuItem: MenuItem<Note>) => void;
+};
+
+/** Fallback for any menu item that no other DietTask claims. */
+const consumeTask: DietTask = {
+  name: "Consume",
+  items: [],
+  perform: (countToConsume, menuItem) =>
+    consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue),
+};
+
+function elementalResistTask(item: Item, element: Element): DietTask {
+  return {
+    name: `${item} (${element} resistance)`,
+    items: [item],
+    perform: (countToConsume, menuItem) => {
+      if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
+        maximizeCached(["0.05 HP", `${element} Resistance`]);
+        if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
+          throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
+        }
+      }
+      consumeSafe(countToConsume, menuItem.item);
+    },
+  };
+}
+
+/**
+ * The dieting actions that need special handling, checked in order.
+ * Menu items not claimed by any of these are handled by `consumeTask`.
+ */
+function dietTasks(): DietTask[] {
+  return [
+    elementalResistTask(saladFork, $element`hot`),
+    elementalResistTask(frostyMug, $element`cold`),
+    {
+      name: "Pocket Wish",
+      items: [$item`pocket wish`],
+      perform: (countToConsume, menuItem) => {
+        if (acquire(countToConsume, $item`pocket wish`, 60000)) {
+          cliExecute(`genie effect ${menuItem.effect}`);
+        }
+      },
+    },
+    {
+      name: "Campfire Hot Dog",
+      items: [$item`campfire hot dog`],
+      perform: (countToConsume, menuItem) => {
+        // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
+        if (!have($item`stick of firewood`)) {
+          buy(
+            1,
+            $item`stick of firewood`,
+            ingredientCost($item`stick of firewood`),
+          );
+        }
+        consumeSafe(countToConsume, menuItem.item);
+      },
+    },
+    {
+      // Special Seasoning is acquired up front and used automatically
+      name: "Special Seasoning",
+      items: [$item`Special Seasoning`],
+      perform: () => {},
+    },
+    {
+      name: "Mini Kiwi Aioli",
+      items: [$item`mini kiwi aioli`],
+      perform: (countToConsume, menuItem) => {
+        retrieveItem(menuItem.item, countToConsume);
+        use(menuItem.item);
+      },
+    },
+    {
+      name: "Sweet Synthesis",
+      items: [$item`Rethinking Candy`],
+      perform: (countToConsume, menuItem) => {
+        synthesize(
+          countToConsume,
+          menuItem.effect ?? $effect`Synthesis: Greed`,
+        );
+      },
+    },
+    {
+      name: "Mayo Minder",
+      items: Object.values(Mayo),
+      perform: (countToConsume, menuItem) =>
+        MayoClinic.setMayoMinder(menuItem.item, countToConsume),
+    },
+    {
+      name: "Speakeasy",
+      items: Object.keys(getClanLounge())
+        .map((s) => toItem(s))
+        .filter((i) => i.inebriety > 0),
+      perform: (countToConsume, menuItem) => {
+        cliExecute(`drink ${countToConsume} ${menuItem.item}`);
+      },
+    },
+    {
+      name: "Broberry Brogurt",
+      items: [$item`broberry brogurt`],
+      perform: (countToConsume, menuItem) => {
+        const amountNeeded =
+          countToConsume - availableAmount($item`broberry brogurt`);
+        if (amountNeeded > 0) {
+          const coinmasterPrice =
+            realmAvailable("sleaze") &&
+            sellsItem(
+              $coinmaster`The Frozen Brogurt Stand`,
+              $item`broberry brogurt`,
+            )
+              ? 10 * garboValue($item`Beach Buck`)
+              : Infinity;
+          const regularPrice = mallPrice($item`broberry brogurt`);
+          if (coinmasterPrice < regularPrice) {
+            const amountToBuy = Math.min(
+              amountNeeded,
+              Math.floor(itemAmount($item`Beach Buck`)),
+            );
+            buy(
+              $coinmaster`The Frozen Brogurt Stand`,
+              amountToBuy,
+              $item`broberry brogurt`,
+            );
+          }
+          buy(
+            countToConsume - availableAmount($item`broberry brogurt`),
+            $item`broberry brogurt`,
+          );
+        }
+        consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+      },
+    },
+    {
+      name: "Sweat Out Some Booze",
+      items: [$item`designer sweatpants`],
+      perform: (countToConsume) => {
+        for (let n = 1; n <= countToConsume; n++) {
+          useSkill($skill`Sweat Out Some Booze`);
+        }
+      },
+    },
+    {
+      name: "Roller Coaster Day",
+      items: [$item`august scepter`],
+      perform: () => useSkill($skill`Aug. 16th: Roller Coaster Day!`),
+    },
+  ];
+}
+
 export function consumeDiet(diet: Diet<Note>, name: DietName): void {
   if (diet.entries.length === 0) return;
   diet = diet.copy();
@@ -1237,6 +1393,8 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
       : 0,
   );
   acquire(seasoningCount, $item`Special Seasoning`, MPA);
+
+  const tasks = dietTasks();
 
   // Fill organs in rounds, making sure we're making progress in each round.
   const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
@@ -1314,140 +1472,9 @@ export function consumeDiet(diet: Diet<Note>, name: DietName): void {
 
       if (countToConsume === 0) continue;
 
-      type ItemAction = (
-        countToConsume: number,
-        menuItem: MenuItem<Note>,
-      ) => void;
-      const elementalResistAction = (element: Element): ItemAction => {
-        return (countToConsume: number, menuItem: MenuItem<Note>) => {
-          if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
-            maximizeCached(["0.05 HP", `${element} Resistance`]);
-            if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
-              throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
-            }
-          }
-          consumeSafe(countToConsume, menuItem.item);
-        };
-      };
-
-      const speakeasyDrinks: [Item, ItemAction][] = Object.keys(getClanLounge())
-        .map((s) => toItem(s))
-        .filter((i) => i.inebriety > 0)
-        .map((drink) => [
-          drink,
-          (countToConsume: number, menuItem: MenuItem<Note>) => {
-            cliExecute(`drink ${countToConsume} ${menuItem.item}`);
-          },
-        ]);
-      const mayoActions: [Item, ItemAction][] = Object.values(Mayo).map((i) => [
-        i,
-        (countToConsume: number, menuItem: MenuItem<Note>) => {
-          MayoClinic.setMayoMinder(menuItem.item, countToConsume);
-        },
-      ]);
-
-      const itemActions = new Map<Item, ItemAction | "skip">([
-        [saladFork, elementalResistAction($element`hot`)],
-        [frostyMug, elementalResistAction($element`cold`)],
-        [
-          $item`pocket wish`,
-          (countToConsume: number, menuItem: MenuItem<Note>) =>
-            acquire(countToConsume, $item`pocket wish`, 60000) &&
-            cliExecute(`genie effect ${menuItem.effect}`),
-        ],
-        [
-          $item`campfire hot dog`,
-          (countToConsume: number, menuItem: MenuItem<Note>) => {
-            // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
-            if (!have($item`stick of firewood`)) {
-              buy(
-                1,
-                $item`stick of firewood`,
-                ingredientCost($item`stick of firewood`),
-              );
-            }
-            consumeSafe(countToConsume, menuItem.item);
-          },
-        ],
-        [$item`Special Seasoning`, "skip"],
-        [
-          $item`mini kiwi aioli`,
-          (countToConsume: number, menuItem: MenuItem<Note>) => {
-            retrieveItem(menuItem.item, countToConsume);
-            use(menuItem.item);
-          },
-        ],
-        [
-          $item`Rethinking Candy`,
-          (countToConsume: number, menuItem: MenuItem<Note>) =>
-            synthesize(
-              countToConsume,
-              menuItem.effect ?? $effect`Synthesis: Greed`,
-            ),
-        ],
-        ...mayoActions,
-        ...speakeasyDrinks,
-        [
-          $item`broberry brogurt`,
-          (countToConsume: number, menuItem: MenuItem<Note>) => {
-            const amountNeeded =
-              countToConsume - availableAmount($item`broberry brogurt`);
-            if (amountNeeded > 0) {
-              const coinmasterPrice =
-                realmAvailable("sleaze") &&
-                sellsItem(
-                  $coinmaster`The Frozen Brogurt Stand`,
-                  $item`broberry brogurt`,
-                )
-                  ? 10 * garboValue($item`Beach Buck`)
-                  : Infinity;
-              const regularPrice = mallPrice($item`broberry brogurt`);
-              if (coinmasterPrice < regularPrice) {
-                const amountToBuy = Math.min(
-                  amountNeeded,
-                  Math.floor(itemAmount($item`Beach Buck`)),
-                );
-                buy(
-                  $coinmaster`The Frozen Brogurt Stand`,
-                  amountToBuy,
-                  $item`broberry brogurt`,
-                );
-              }
-              buy(
-                countToConsume - availableAmount($item`broberry brogurt`),
-                $item`broberry brogurt`,
-              );
-            }
-            consumeSafe(
-              countToConsume,
-              menuItem.item,
-              menuItem.additionalValue,
-            );
-          },
-        ],
-        [
-          $item`designer sweatpants`,
-          (countToConsume: number) => {
-            for (let n = 1; n <= countToConsume; n++) {
-              useSkill($skill`Sweat Out Some Booze`);
-            }
-          },
-        ],
-        [
-          $item`august scepter`,
-          () => useSkill($skill`Aug. 16th: Roller Coaster Day!`),
-        ],
-      ]);
-
       for (const menuItem of menuItems) {
-        const itemAction = itemActions.get(menuItem.item);
-        if (itemAction === "skip") {
-          continue;
-        } else if (itemAction) {
-          itemAction(countToConsume, menuItem);
-        } else {
-          consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
-        }
+        const task = tasks.find((task) => task.items.includes(menuItem.item));
+        (task ?? consumeTask).perform(countToConsume, menuItem);
       }
       dietEntry.quantity -= countToConsume;
     }
