@@ -107,14 +107,17 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
       extraValue: ({ item }) => {
         const sWordMonster = get("swordOfSWordsMonster");
         if (!sWordMonster) return 0;
+        const totalItem =
+          item + familiarModifier($familiar`Sword of S Words`, "Item Drop");
         return (
           sum(
             itemDropsArray(sWordMonster),
             ({ rate, drop }) =>
-              (clamp((rate * (100 + item)) / 100, 0, 100) * garboValue(drop)) /
+              (clamp((rate * (100 + totalItem)) / 100, 0, 100) *
+                garboValue(drop)) /
               100,
           ) -
-          item * FarmingStrategy.itemDropValue()
+          totalItem * FarmingStrategy.itemDropValue()
         );
       },
     },
