@@ -1,6 +1,7 @@
 import { OutfitSpec } from "grimoire-kolmafia";
 import {
   Effect,
+  effectFact,
   equippedItem,
   getMonsters,
   isBanished,
@@ -72,7 +73,8 @@ interface FarmingStrategyOptions {
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
   combat: (context: FarmingContext) => Macro;
-
+  // These all need a default
+  available?: boolean;
   outfit?: (context: FarmingContext) => OutfitSpec;
   ncTurns?: Delayed<number>;
   bonusEffects?: Effect[];
@@ -91,6 +93,7 @@ const DEFAULT_OPTIONS: Readonly<{
   banishMonsters: [] as Monster[],
   ncTurns: Infinity,
   post: () => {},
+  available: true,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   outfit: (_context: FarmingContext): OutfitSpec => ({}),
 } as const;
@@ -232,7 +235,9 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
-
+  available:
+    effectFact($monster`sea cow`) === $effect`Fishy` &&
+    (!get("seahorseName") || get("lassoTrainingCount") >= 20),
   outfit: ({ banish }) => {
     const banishItem = banish?.equip;
     if (banishItem) {
