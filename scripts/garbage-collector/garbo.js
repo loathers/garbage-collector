@@ -20166,7 +20166,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"b1b50f9e7549242a552b45b50b2c35d99fc8dbf7"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"de08962471b027d14a3817434a6297288e17d3f9"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -31890,13 +31890,19 @@ function computeBarfOutfit(spec) {
   var swordMonster = get$2("swordOfSWordsMonster");
   if (swordMonster && outfit.familiar === $familiar`Sword of S Words`) {
     var valueOfItem = expectedDropValue(swordMonster);
-    var _maxBy = maxBy(kolmafia.itemDropsArray(swordMonster), _ref => {
-        var drop = _ref.drop;
-        return garboValue(drop);
-      }),
-      maxValueItemRate = _maxBy.rate;
-    var maxItemDrop = Math.ceil(100 * (100 / maxValueItemRate - 1));
-    outfit.modifier.push(`${valueOfItem} Item Drop ${maxItemDrop} Max`);
+    var drops = kolmafia.itemDropsArray(swordMonster).filter(_ref => {
+      var rate = _ref.rate;
+      return rate > 0;
+    });
+    if (drops.length) {
+      var _maxBy = maxBy(drops, _ref2 => {
+          var drop = _ref2.drop;
+          return garboValue(drop);
+        }),
+        maxValueItemRate = _maxBy.rate;
+      var maxItemDrop = Math.ceil(100 * (100 / maxValueItemRate - 1));
+      outfit.modifier.push(`${valueOfItem} Item Drop ${maxItemDrop} Max`);
+    }
   } else {
     outfit.modifier.push(`${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`);
   }
