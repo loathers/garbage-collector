@@ -651,7 +651,7 @@ const DailyItemTasks: GarboTask[] = [
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
     do: (): void => {
       const value = rufusPotion.value(highMeatMonsterCount());
-      const price = rufusPotion.price(false);
+      const price = rufusPotion.price();
       _shouldClearRufusQuest = value.some(
         (value) =>
           (!globalOptions.nobarf || value.name === "target") &&
