@@ -5,7 +5,6 @@ import {
   equippedItem,
   getMonsters,
   isBanished,
-  itemDropsArray,
   itemType,
   Location,
   mallPrice,
@@ -40,6 +39,7 @@ import { FarmingMethod, globalOptions } from "./config";
 import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
+import { expectedDropValue, songboomMeat } from "./lib";
 
 export function averageRedTaffyValue(): number {
   return sum(
@@ -68,7 +68,7 @@ interface FarmingStrategyOptions {
   stasisRounds: number;
   asdonEffect: Effect;
   ensureBarfAccess: boolean;
-  baseMeat: number;
+  meatDrop: number;
   location: Location;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
@@ -105,8 +105,13 @@ class FarmingStrategySkeleton {
   isUnderwater(): boolean {
     return this.location.environment === "underwater";
   }
+
   accountForNC(): boolean {
     return this.ncTurns !== Infinity;
+  }
+
+  baseMeat(): number {
+    return this.meatDrop + songboomMeat();
   }
 
   primaryMonster(): Monster {
@@ -135,15 +140,13 @@ class FarmingStrategySkeleton {
       sum(
         [...adventureTargetToWeightedMap(this.location).entries()],
         ([monster, monsterWeight]) =>
-          monsterWeight *
-          sum(
-            itemDropsArray(monster),
-            ({ drop, rate }) =>
-              // One 100 because % the other because % improvement
-              (rate / 100) * garboValue(drop),
-          ),
+          monsterWeight * expectedDropValue(monster),
       ) / 100
     );
+  }
+
+  meatDropValue(): number {
+    return this.baseMeat() / 100;
   }
 
   valuableModifiers(): NumericModifier[] {
@@ -199,7 +202,7 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
   stasisRounds: 20,
   asdonEffect: $effect`Driving Observantly`,
   ensureBarfAccess: true,
-  baseMeat: 250,
+  meatDrop: 250,
   ncTurns: () =>
     (27 * barfTourists) /
       (garbageTourists + angryTourists + 3 * touristFamilies) +
@@ -230,7 +233,7 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
-  baseMeat: 300,
+  meatDrop: 300,
   location: $location`The Coral Corral`,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,

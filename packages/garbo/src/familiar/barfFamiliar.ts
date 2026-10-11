@@ -31,12 +31,7 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit/dropsgear";
-import {
-  baseMeat,
-  BonusEquipMode,
-  HIGHLIGHT,
-  MEAT_TARGET_MULTIPLIER,
-} from "../lib";
+import { HIGHLIGHT, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -53,8 +48,7 @@ import {
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
-
-const MEAT_DROP_VALUE = () => baseMeat() / 100;
+import { BonusEquipMode } from "../outfit/lib";
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
@@ -215,7 +209,7 @@ function familiarModifier(
 
 function familiarAbilityValue(familiar: Familiar) {
   return (
-    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() +
+    familiarModifier(familiar, "Meat Drop") * FarmingStrategy.meatDropValue() +
     familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue()
   );
 }
@@ -271,7 +265,7 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfit = getCachedOutfitValues(f.familiar);
   const outfitValue =
     outfit.bonus +
-    outfit.meat * MEAT_DROP_VALUE() +
+    outfit.meat * FarmingStrategy.meatDropValue() +
     outfit.item * FarmingStrategy.itemDropValue();
   const expectedValue =
     f.expectedValue +

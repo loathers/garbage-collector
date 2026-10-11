@@ -77,7 +77,6 @@ import {
   printEventLog,
   propertyManager,
   questStep,
-  safeRestore,
   targetingMeat,
   userConfirmDialog,
   valueDrops,
@@ -88,6 +87,7 @@ import { potionSetup } from "./potions";
 import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { garboAverageValue } from "./garboValue";
+import { safeRestore } from "./restore";
 
 import {
   BuffExtensionQuest,
