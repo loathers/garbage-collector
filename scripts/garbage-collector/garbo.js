@@ -19763,7 +19763,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"4a6abec80084e30aebe9c01dd09763a6f344dab8"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"98ef71de2ccda3ae38a4945570d1e1f119d5f099"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -21327,27 +21327,25 @@ var Potion = /*#__PURE__*/function () {
       var duration = clamp(durationOverride ?? Infinity, this.effectDuration(), 0);
       // Number of meat targets this will actually be in effect for.
       var targetsApplied = Math.max(Math.min(duration, targets - kolmafia.haveEffect(this.effect())), 0);
-      return bonusMeat * (FarmingStrategy.meatDropValue() * (duration - targetsApplied) * FarmingStrategy.ncAdjustment() + targetMeat() * targetsApplied);
+      return bonusMeat / 100 * (FarmingStrategy.baseMeat() * (duration - targetsApplied) * FarmingStrategy.ncAdjustment() + targetMeat() * targetsApplied);
     }
   }, {
     key: "price",
-    value: function price(historical) {
-      if (this.priceOverride) return this.priceOverride(historical);
+    value: function price() {
+      if (this.priceOverride) return this.priceOverride();
       // If asked for historical, and age < 14 days, use historical.
       // If potion is not tradeable, use retrievePrice instead
-      return this.potion.tradeable ? historical && kolmafia.historicalAge(this.potion) < 14 ? kolmafia.historicalPrice(this.potion) : kolmafia.mallPrice(this.potion) : retrieveUntradeablePrice(this.potion);
+      return this.potion.tradeable ? getAcquirePrice(this.potion) : retrieveUntradeablePrice(this.potion);
     }
   }, {
     key: "net",
     value: function net(targets) {
-      var historical = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      return this.gross(targets) - this.price(historical);
+      return this.gross(targets) - this.price();
     }
   }, {
     key: "doublingValue",
     value: function doublingValue(targets) {
-      var historical = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-      return Math.min(Math.max(this.doubleDuration().net(targets, historical), 0) - Math.max(this.net(targets, historical), 0), this.price(true));
+      return Math.min(Math.max(this.doubleDuration().net(targets), 0) - Math.max(this.net(targets), 0), this.price());
     }
   }, {
     key: "usesToCover",
@@ -21474,14 +21472,12 @@ var Potion = /*#__PURE__*/function () {
   }, {
     key: "net",
     value: function net(item, targets) {
-      var historical = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      return new Potion(item).net(targets, historical);
+      return new Potion(item).net(targets);
     }
   }, {
     key: "doublingValue",
     value: function doublingValue(item, targets) {
-      var historical = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      return new Potion(item).doublingValue(targets, historical);
+      return new Potion(item).doublingValue(targets);
     }
   }, {
     key: "usesToCover",
@@ -21497,7 +21493,7 @@ var Potion = /*#__PURE__*/function () {
 }();
 function useAsValuable(potion, targets, targetsOnly) {
   var value = potion.value(targets);
-  var price = potion.price(false);
+  var price = potion.price();
   var amountsAcquired = value.map(value => value.value - price > 0 ? potion.acquire(value.quantity, potion.potion, value.value, false, undefined, true) : 0);
   var total = sumNumbers(amountsAcquired);
   if (total > 0) {
@@ -21532,7 +21528,7 @@ var rufusPotion = new Potion($item`closed-circuit pay phone`, {
   canDouble: false,
   effect: $effect`Shadow Waters`,
   duration: 30,
-  price: historical => {
+  price: () => {
     if (!have$P($item`closed-circuit pay phone`)) return Infinity;
     var target = rufusTarget();
     var haveItemQuest = get$2("rufusQuestType") === "items" && target instanceof kolmafia.Item;
@@ -21550,7 +21546,7 @@ var rufusPotion = new Potion($item`closed-circuit pay phone`, {
 
     // We consider the average price of the shadow items to not get gated behind an expensive one
     var shadowItems = $items`shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar`;
-    var averagePrice = sum(shadowItems, it => historical && kolmafia.historicalAge(it) < 14 ? kolmafia.historicalPrice(it) : kolmafia.mallPrice(it)) / shadowItems.length;
+    var averagePrice = sum(shadowItems, getAcquirePrice) / shadowItems.length;
     return 3 * averagePrice;
   },
   acquire: qty => {
@@ -21604,7 +21600,8 @@ var wishPotions = wishableEffects.map(effect => new Potion($item`pocket wish`, {
       if (!madeValidWish) return false;
     }
     return true;
-  }
+  },
+  price: () => 50_000
 }));
 var pawPotions = Array.from(validPawWishes.keys()).filter(effect => kolmafia.numericModifier(effect, "Meat Drop") >= 100).map(effect => new Potion($item`cursed monkey's paw`, {
   effect,
@@ -21631,7 +21628,7 @@ function getFarmingPotions() {
   return avoidStats ? farmingPotions().filter(potion => !improvesAStat(potion.effect())) : farmingPotions();
 }
 function doublingPotions(targets) {
-  return farmingPotions().filter(potion => potion.doubleDuration().gross(targets) / potion.price(true) > 0.5).map(potion => {
+  return farmingPotions().filter(potion => potion.doubleDuration().gross(targets) / potion.price() > 0.5).map(potion => {
     return {
       potion: potion,
       value: potion.doublingValue(targets)
@@ -21690,7 +21687,7 @@ function potionSetup(targetsOnly) {
     }
 
     // Only test potions which are reasonably close to being profitable using historical price.
-    var testPotions = getFarmingPotions().filter(potion => potion.gross(targets) / potion.price(true) > 0.5);
+    var testPotions = getFarmingPotions().filter(potion => potion.gross(targets) / potion.price() > 0.5);
     var nonWishTestPotions = testPotions.filter(potion => potion.potion !== $item`pocket wish`);
     nonWishTestPotions.sort((a, b) => b.net(targets) - a.net(targets));
     var excludedEffects = new Set();
@@ -25113,6 +25110,11 @@ function meatTargetOutfit(spec, adventureArgument) {
     // The bjornalike is force-equipped below, so claim the hat or back slot for breathing gear first
     if (!getActiveEffects().some(e => kolmafia.booleanModifier(e, "Adventure Underwater"))) {
       outfit.equipFirst(waterBreathingEquipment);
+      if (outfit.haveEquipped($item`The Crown of Ed the Undying`)) {
+        outfit.setModes({
+          edpiece: "fish"
+        });
+      }
     }
     outfit.modifier.push("sea");
   }
@@ -31112,7 +31114,7 @@ var DailyItemTasks = [{
   completed: () => get$2("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
   do: () => {
     var value = rufusPotion.value(highMeatMonsterCount());
-    var price = rufusPotion.price(false);
+    var price = rufusPotion.price();
     _shouldClearRufusQuest = value.some(value => (!globalOptions.nobarf || value.name === "target") && value.value - price > 0);
     if (_shouldClearRufusQuest) {
       var target = rufusTarget();
