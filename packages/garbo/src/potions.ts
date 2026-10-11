@@ -168,7 +168,7 @@ export interface PotionOptions {
   canDouble?: boolean;
   effect?: Effect;
   duration?: number;
-  price?: (historical: boolean) => number;
+  price?: () => number;
   use?: (quantity: number) => boolean;
   acquire?: (
     qty: number,
@@ -193,7 +193,7 @@ export class Potion {
   canDouble: boolean;
   overrideEffect?: Effect;
   overrideDuration?: number;
-  priceOverride?: (historical: boolean) => number;
+  priceOverride?: () => number;
   useOverride?: (quantity: number) => boolean;
   acquire: (
     qty: number,
@@ -301,8 +301,8 @@ export class Potion {
     );
 
     return (
-      bonusMeat *
-      (FarmingStrategy.meatDropValue() *
+      (bonusMeat / 100) *
+      (FarmingStrategy.baseMeat() *
         (duration - targetsApplied) *
         FarmingStrategy.ncAdjustment() +
         targetMeat() * targetsApplied)
@@ -313,39 +313,33 @@ export class Potion {
     return new Potion(item).gross(targets);
   }
 
-  price(historical: boolean): number {
-    if (this.priceOverride) return this.priceOverride(historical);
+  price(): number {
+    if (this.priceOverride) return this.priceOverride();
     // If asked for historical, and age < 14 days, use historical.
     // If potion is not tradeable, use retrievePrice instead
     return this.potion.tradeable
-      ? historical && historicalAge(this.potion) < 14
-        ? historicalPrice(this.potion)
-        : mallPrice(this.potion)
+      ? getAcquirePrice(this.potion)
       : retrieveUntradeablePrice(this.potion);
   }
 
-  net(targets: number, historical = false): number {
-    return this.gross(targets) - this.price(historical);
+  net(targets: number): number {
+    return this.gross(targets) - this.price();
   }
 
-  static net(item: Item, targets: number, historical = false): number {
-    return new Potion(item).net(targets, historical);
+  static net(item: Item, targets: number): number {
+    return new Potion(item).net(targets);
   }
 
-  doublingValue(targets: number, historical = false): number {
+  doublingValue(targets: number): number {
     return Math.min(
-      Math.max(this.doubleDuration().net(targets, historical), 0) -
-        Math.max(this.net(targets, historical), 0),
-      this.price(true),
+      Math.max(this.doubleDuration().net(targets), 0) -
+        Math.max(this.net(targets), 0),
+      this.price(),
     );
   }
 
-  static doublingValue(
-    item: Item,
-    targets: number,
-    historical = false,
-  ): number {
-    return new Potion(item).doublingValue(targets, historical);
+  static doublingValue(item: Item, targets: number): number {
+    return new Potion(item).doublingValue(targets);
   }
 
   /**
@@ -498,7 +492,7 @@ function useAsValuable(
   targetsOnly: boolean,
 ): number {
   const value = potion.value(targets);
-  const price = potion.price(false);
+  const price = potion.price();
   const amountsAcquired = value.map((value) =>
     (!targetsOnly || value.name === "target") && value.value - price > 0
       ? potion.acquire(
@@ -536,7 +530,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
   canDouble: false,
   effect: $effect`Shadow Waters`,
   duration: 30,
-  price: (historical: boolean) => {
+  price: () => {
     if (!have($item`closed-circuit pay phone`)) return Infinity;
 
     const target = ClosedCircuitPayphone.rufusTarget();
@@ -570,12 +564,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
 
     // We consider the average price of the shadow items to not get gated behind an expensive one
     const shadowItems = $items`shadow brick, shadow ice, shadow sinew, shadow glass, shadow stick, shadow skin, shadow flame, shadow fluid, shadow sausage, shadow bread, shadow venom, shadow nectar`;
-    const averagePrice =
-      sum(shadowItems, (it) =>
-        historical && historicalAge(it) < 14
-          ? historicalPrice(it)
-          : mallPrice(it),
-      ) / shadowItems.length;
+    const averagePrice = sum(shadowItems, getAcquirePrice) / shadowItems.length;
 
     return 3 * averagePrice;
   },
@@ -634,6 +623,7 @@ const wishPotions = wishableEffects.map(
         }
         return true;
       },
+      price: () => 50_000,
     }),
 );
 
@@ -694,8 +684,7 @@ function getFarmingPotions(avoidStats = false): Potion[] {
 function doublingPotions(targets: number): Potion[] {
   return farmingPotions()
     .filter(
-      (potion) =>
-        potion.doubleDuration().gross(targets) / potion.price(true) > 0.5,
+      (potion) => potion.doubleDuration().gross(targets) / potion.price() > 0.5,
     )
     .map((potion) => {
       return { potion: potion, value: potion.doublingValue(targets) };
@@ -782,7 +771,7 @@ export function potionSetup(targetsOnly: boolean): void {
 
     // Only test potions which are reasonably close to being profitable using historical price.
     const testPotions = getFarmingPotions().filter(
-      (potion) => potion.gross(targets) / potion.price(true) > 0.5,
+      (potion) => potion.gross(targets) / potion.price() > 0.5,
     );
     const nonWishTestPotions = testPotions.filter(
       (potion) => potion.potion !== $item`pocket wish`,
