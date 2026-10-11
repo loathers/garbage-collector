@@ -723,7 +723,7 @@ function useBusks() {
     return;
   }
   for (let i = get("_beretBuskingUses"); i < 5; i++) {
-    PrismaticBeret.buskFor(beretEffectValue, {});
+    PrismaticBeret.buskFor(effectValueWithOpportunityCost, {});
   }
 }
 
@@ -1037,7 +1037,10 @@ function variableMeatPotionsSetup(yachtzees: number, targets: number): void {
   }
 }
 
-export function beretEffectValue(effect: Effect, duration: number) {
+export function effectValueWithOpportunityCost(
+  effect: Effect,
+  duration: number,
+) {
   const value = effectValue(effect, duration);
 
   if (value <= 0) return value;
