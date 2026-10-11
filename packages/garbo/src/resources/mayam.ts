@@ -1,7 +1,5 @@
 import {
-  daycount,
   Item,
-  itemAmount,
   myFamiliar,
   myLevel,
   toEffect,
@@ -61,34 +59,10 @@ function valueSymbol(symbol: MayamCalendar.Glyph): number {
   return MAYAM_RING_VALUES[symbol]();
 }
 
-function yamBatteryScorer(day: number): number {
-  return sum(
-    Object.entries(yamBatteryEffects(day)).map(([effect, duration]) => ({
-      value: effectValue(toEffect(effect), duration),
-    })),
-    "value",
+function yamBatteryValue(): number {
+  return sum(Object.entries(yamBatteryEffects()), ([effect, duration]) =>
+    effectValue(toEffect(effect), duration),
   );
-}
-
-function useYamBattery() {
-  if (!have($item`yam battery`) || get("_yamBatteryUsed")) {
-    return;
-  }
-
-  const scoreToday = yamBatteryScorer(daycount());
-
-  if (scoreToday <= 0) {
-    return;
-  }
-  if (itemAmount($item`yam battery`) < 30) {
-    for (let day = daycount() + 1; day <= daycount() + 30; day++) {
-      if (yamBatteryScorer(day) > scoreToday) {
-        return;
-      }
-    }
-  }
-
-  use($item`yam battery`);
 }
 
 function valueResonance(combination: MayamCalendar.CombinationString): number {
@@ -96,7 +70,7 @@ function valueResonance(combination: MayamCalendar.CombinationString): number {
   if (!result) return 0;
   if (result instanceof Item) {
     if (result === $item`yamtility belt`) return 0; // yamtilityValue();
-    if (result === $item`yam battery`) return yamBatteryScorer(daycount());
+    if (result === $item`yam battery`) return yamBatteryValue();
     return garboValue(result);
   }
   return effectValue(result, 30);
@@ -186,27 +160,43 @@ function getBestMayamCombinations(): MayamCalendar.CombinationString[] {
   );
 }
 
-export function mayamCalendarSummon(): GarboTask {
-  return {
-    name: "Mayam Summons",
-    completed: () => MayamCalendar.remainingUses() === 0,
-    ready: () => MayamCalendar.have(),
-    do: () => {
-      const startingFamiliar = myFamiliar();
-      for (const combination of getBestMayamCombinations()) {
-        if (combination.includes("fur")) {
-          const famList = getExperienceFamiliars("free");
-          const bestFamiliar =
-            famList.length > 0
-              ? maxBy(famList, "expectedValue").familiar
-              : meatFamiliar();
-          useFamiliar(bestFamiliar);
+export function mayamCalendarSummon(): GarboTask[] {
+  return [
+    {
+      name: "Mayam Summons",
+      completed: () => MayamCalendar.remainingUses() === 0,
+      ready: () => MayamCalendar.have(),
+      do: () => {
+        const startingFamiliar = myFamiliar();
+        for (const combination of getBestMayamCombinations()) {
+          if (combination.includes("fur")) {
+            const famList = getExperienceFamiliars("free");
+            const bestFamiliar =
+              famList.length > 0
+                ? maxBy(famList, "expectedValue").familiar
+                : meatFamiliar();
+            useFamiliar(bestFamiliar);
+          }
+          MayamCalendar.submit(combination);
+          if (
+            MayamCalendar.getResonanceResult(combination) ===
+              $item`yam battery` &&
+            !get("_yamBatteryUsed") &&
+            yamBatteryValue() > 50
+          ) {
+            use($item`yam battery`);
+          }
+          useFamiliar(startingFamiliar);
         }
-        MayamCalendar.submit(combination);
-      }
-      useFamiliar(startingFamiliar);
-      useYamBattery();
+      },
+      spendsTurn: false,
     },
-    spendsTurn: false,
-  };
+    {
+      name: "Yam Battery (potion)",
+      completed: () => get("_yamBatteryUsed"),
+      ready: () => have($item`yam battery`, 30) && yamBatteryValue() > 50,
+      do: () => use($item`yam battery`),
+      spendsTurn: false,
+    },
+  ];
 }
