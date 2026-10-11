@@ -156,12 +156,14 @@ export function computeBarfOutfit(
   const swordMonster = get("swordOfSWordsMonster");
   if (swordMonster && outfit.familiar === $familiar`Sword of S Words`) {
     const valueOfItem = expectedDropValue(swordMonster);
-    const { rate: maxValueItemRate } = maxBy(
-      itemDropsArray(swordMonster),
-      ({ drop }) => garboValue(drop),
-    );
-    const maxItemDrop = Math.ceil(100 * (100 / maxValueItemRate - 1));
-    outfit.modifier.push(`${valueOfItem} Item Drop ${maxItemDrop} Max`);
+    const drops = itemDropsArray(swordMonster).filter(({ rate }) => rate > 0);
+    if (drops.length) {
+      const { rate: maxValueItemRate } = maxBy(drops, ({ drop }) =>
+        garboValue(drop),
+      );
+      const maxItemDrop = Math.ceil(100 * (100 / maxValueItemRate - 1));
+      outfit.modifier.push(`${valueOfItem} Item Drop ${maxItemDrop} Max`);
+    }
   } else {
     outfit.modifier.push(`${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`);
   }
