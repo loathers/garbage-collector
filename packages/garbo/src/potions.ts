@@ -7,6 +7,7 @@ import {
   cliExecute,
   Effect,
   effectModifier,
+  effectsModifier,
   equip,
   getMonsters,
   haveEffect,
@@ -26,6 +27,7 @@ import {
   print,
   retrievePrice,
   setLocation,
+  Skill,
   toSkill,
   use,
 } from "kolmafia";
@@ -42,6 +44,7 @@ import {
   ClosedCircuitPayphone,
   CursedMonkeyPaw,
   get,
+  getAcquirePrice,
   getActiveEffects,
   getActiveSongs,
   getModifier,
@@ -71,7 +74,6 @@ import {
 import { usingPurse } from "./outfit/lib";
 import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
 import { globalOptions } from "./config";
-import { beretEffectValue } from "./resources/beret";
 import { safeSweatEquityCasts } from "./resources/bloodCubicZirconia";
 import { castAugustScepterBuffs } from "./resources/scepter";
 import { FarmingStrategy } from "./farmingStrategy";
@@ -1036,6 +1038,24 @@ function variableMeatPotionsSetup(yachtzees: number, targets: number): void {
   }
 }
 
+export function beretEffectValue(effect: Effect, duration: number) {
+  const value = effectValue(effect, duration);
+
+  if (value <= 0) return value;
+  const potionPrices = Item.all()
+    .filter(
+      (i) =>
+        i.potion &&
+        i.tradeable &&
+        effectsModifier(i, "Effect").includes(effect),
+    )
+    .map(
+      (i) =>
+        (getAcquirePrice(i) * duration) / getModifier("Effect Duration", i),
+    );
+  return Math.min(value, ...potionPrices);
+}
+
 /**
  * WARNING: Expensive
  */
@@ -1056,6 +1076,9 @@ export function effectValue(
   const durationOverride = maxTurnsWanted
     ? clamp(maxTurnsWanted - haveEffect(effect), 0, duration)
     : undefined;
+
+  const skill = toSkill(effect);
+  if (skill !== Skill.none && have(skill)) return 0;
 
   return new Potion($item.none, { duration, effect }).gross(
     targets,

@@ -99,7 +99,6 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { beretEffectValue } from "./resources/beret";
 import { expectedGregs } from "./resources/extrovermectin";
 import { shouldAugustCast } from "./resources/scepter";
 import { synthesize } from "./resources/synthesis";
@@ -111,7 +110,7 @@ import {
   userConfirmDialog,
 } from "./lib";
 import { shrugBadEffects } from "./mood";
-import { Potion, PotionTier } from "./potions";
+import { beretEffectValue, Potion, PotionTier } from "./potions";
 import {
   estimatedGarboTurns,
   estimatedTurnsTomorrow,
