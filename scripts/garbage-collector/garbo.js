@@ -20166,7 +20166,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"de08962471b027d14a3817434a6297288e17d3f9"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"598d3a92d7348f6a7c65c23297a93cb0383c30e5"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -21041,25 +21041,6 @@ function cheeseBonus(mode) {
 function applyCheeseBonus(outfit, mode) {
   var bonus = cheeseBonus(mode);
   if (bonus > 0) outfit.modifier.push(`${bonus.toFixed(2)} stinky cheese`);
-}
-
-function beretEffectValue(effect, duration) {
-  var skill = kolmafia.toSkill(effect);
-  if (skill !== kolmafia.Skill.none && have$P(skill)) return 0;
-  var meatValue = duration * sum([{
-    modifier: "Meat Drop",
-    value: baseMeat() / 100
-  }, {
-    modifier: "Familiar Weight",
-    value: marginalFamWeightValue() * baseMeat() / 100
-  }], _ref => {
-    var modifier = _ref.modifier,
-      value = _ref.value;
-    return value * get$1(modifier, effect);
-  });
-  if (meatValue <= 0) return meatValue;
-  var potionPrices = kolmafia.Item.all().filter(i => i.potion && i.tradeable && kolmafia.effectsModifier(i, "Effect").includes(effect)).map(i => getAcquirePrice(i) * duration / get$1("Effect Duration", i));
-  return Math.min.apply(Math, [meatValue].concat(_toConsumableArray(potionPrices)));
 }
 
 function sweatEquityROI() {
@@ -22031,6 +22012,12 @@ function variableMeatPotionsSetup(yachtzees, targets) {
     _iterator10.f();
   }
 }
+function beretEffectValue(effect, duration) {
+  var value = effectValue(effect, duration);
+  if (value <= 0) return value;
+  var potionPrices = kolmafia.Item.all().filter(i => i.potion && i.tradeable && kolmafia.effectsModifier(i, "Effect").includes(effect)).map(i => getAcquirePrice(i) * duration / get$1("Effect Duration", i));
+  return Math.min.apply(Math, [value].concat(_toConsumableArray(potionPrices)));
+}
 
 /**
  * WARNING: Expensive
@@ -22044,6 +22031,8 @@ function effectValue(effect, duration, maxTurnsWanted) {
     return 3400 * duration; // 70s Mining is 3400 VoA, which will always be higher than the meat% in current climate
   }
   var durationOverride = maxTurnsWanted ? clamp(maxTurnsWanted - kolmafia.haveEffect(effect), 0, duration) : undefined;
+  var skill = kolmafia.toSkill(effect);
+  if (skill !== kolmafia.Skill.none && have$P(skill)) return 0;
   return new Potion($item.none, {
     duration,
     effect
