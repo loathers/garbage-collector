@@ -1166,3 +1166,9 @@ export function mainStatLevel(level: number): number {
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
+
+export const expectedDropValue = (monster: Monster) =>
+  sum(
+    itemDropsArray(monster),
+    ({ drop, rate }) => (rate / 100) * garboValue(drop),
+  );

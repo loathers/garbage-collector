@@ -4,7 +4,6 @@ import {
   canEquip,
   cliExecute,
   currentRound,
-  effectFact,
   equip,
   getCampground,
   getClanName,
@@ -34,7 +33,6 @@ import {
 import {
   $class,
   $classes,
-  $effect,
   $familiars,
   $item,
   $items,
@@ -52,6 +50,8 @@ import {
   have,
   haveInCampground,
   JuneCleaver,
+  logger,
+  LogLevels,
   maxBy,
   set,
   setCombatFlags,
@@ -59,8 +59,13 @@ import {
   sinceKolmafiaRevision,
   unequip,
 } from "libram";
-import { stashItems, withStash, withVIPClan } from "./clan";
-import { FarmingMethod, globalOptions, isQuickGear } from "./config";
+import {
+  checkCurrentClanWhitelist,
+  stashItems,
+  withStash,
+  withVIPClan,
+} from "./clan";
+import { globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
@@ -126,13 +131,14 @@ export function main(argString = ""): void {
     return;
   }
 
-  // Cowo is for professionals only
-  if (
-    globalOptions.prefs.farmingMethod === FarmingMethod.THE_CORAL_CORRAL &&
-    (effectFact($monster`sea cow`) !== $effect`Fishy` ||
-      (get("seahorseName") === "" && get("lassoTrainingCount") < 20))
-  ) {
-    globalOptions.prefs.farmingMethod = FarmingMethod.BARF_MOUNTAIN;
+  if (!FarmingStrategy.available) {
+    throw new Error(
+      `Farming strategy not available: ${globalOptions.prefs.farmingMethod}`,
+    );
+  }
+
+  if (globalOptions.debug) {
+    logger.setLevel(LogLevels.DEBUG);
   }
 
   // Hit up main.php to get out of easily escapable choices
@@ -192,6 +198,10 @@ export function main(argString = ""): void {
             : null;
 
         if (parsedClanIdOrName) {
+          checkCurrentClanWhitelist(
+            parsedClanIdOrName,
+            "Return the stash items manually, then run garbo again.",
+          );
           Clan.with(parsedClanIdOrName, () => {
             for (const item of [...stashItems]) {
               const equipped = [item, ...getFoldGroup(item)].find((i) =>
@@ -341,7 +351,7 @@ export function main(argString = ""): void {
     return;
   }
 
-  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds`;
+  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds, black garden rose`;
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name),
   );

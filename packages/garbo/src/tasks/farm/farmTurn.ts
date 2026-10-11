@@ -1,4 +1,4 @@
-import { $item, $location, $monster, get, have, undelay } from "libram";
+import { $item, $location, $monster, get, have } from "libram";
 import {
   Item,
   mallPrice,
@@ -79,7 +79,7 @@ export function FarmTurnQuest(): Quest<
         completed: () =>
           have($effect`Everything looks Beige`) || myAdventures() === 0,
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
-        do: () => CrepeParachute.fight(undelay(FarmingStrategy.targetMonster)),
+        do: () => CrepeParachute.fight(FarmingStrategy.primaryMonster()),
         combat: FarmingStrategy.strategy(),
         post: () => {
           FarmingStrategy.post?.();

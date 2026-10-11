@@ -5,8 +5,10 @@ import {
   canEquip,
   cliExecute,
   equippedItem,
+  Familiar,
   inebrietyLimit,
   Item,
+  Location,
   mallPrice,
   myClass,
   myInebriety,
@@ -32,6 +34,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
+import { familiarCanBreathe } from "../familiar/familiarHelpers";
 import { meatFamiliar } from "../familiar/meatFamiliar";
 import { BonusEquipMode, targetMeat } from "../lib";
 import {
@@ -116,6 +119,13 @@ export function useUPCsIfNeeded({ familiar }: Outfit): void {
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
+
+export function familiarSlotNeededForBreathing(
+  location: Location,
+  familiar?: Familiar,
+): boolean {
+  return location.environment === "underwater" && !familiarCanBreathe(familiar);
+}
 
 export function toSpec(source?: ActionSource | Requirement): OutfitSpec {
   if (!source) return {};

@@ -116,6 +116,7 @@ import { freeFightFamiliar } from "./familiar/freeFightFamiliar";
 import {
   meatFamiliar,
   setBestLeprechaunAsMeatFamiliar,
+  underwaterMeatFamiliar,
 } from "./familiar/meatFamiliar";
 import {
   aprilFoolsRufus,
@@ -348,7 +349,9 @@ function familiarSpec(underwater: boolean, fight: CopyTargetFight): OutfitSpec {
     };
   }
 
-  return { familiar: meatFamiliar() };
+  return {
+    familiar: underwater ? underwaterMeatFamiliar() : meatFamiliar(),
+  };
 }
 
 export function dailyFights(): void {

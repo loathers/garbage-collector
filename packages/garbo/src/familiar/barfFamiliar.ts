@@ -3,6 +3,7 @@ import {
   equippedItem,
   Familiar,
   Item,
+  itemDropsArray,
   myFamiliar,
   numericModifier,
   print,
@@ -98,6 +99,27 @@ const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
           0,
           1,
         ) * garboValue($item`mini kiwi`),
+    },
+  ],
+  [
+    $familiar`Sword of S Words`,
+    {
+      extraValue: ({ item }) => {
+        const sWordMonster = get("swordOfSWordsMonster");
+        if (!sWordMonster) return 0;
+        const totalItem =
+          item + familiarModifier($familiar`Sword of S Words`, "Item Drop");
+        return (
+          sum(
+            itemDropsArray(sWordMonster),
+            ({ rate, drop }) =>
+              (clamp((rate * (100 + totalItem)) / 100, 0, 100) *
+                garboValue(drop)) /
+              100,
+          ) -
+          totalItem * FarmingStrategy.itemDropValue()
+        );
+      },
     },
   ],
 ]);
@@ -250,11 +272,18 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfitValue =
     outfit.bonus +
     outfit.meat * MEAT_DROP_VALUE() +
-    outfit.item * FarmingStrategy.itemDropValue() +
+    outfit.item * FarmingStrategy.itemDropValue();
+  const expectedValue =
+    f.expectedValue +
     (SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
-  return { ...f, outfitValue, outfitWeight };
+  return {
+    ...f,
+    expectedValue,
+    outfitValue,
+    outfitWeight,
+  };
 }
 
 function extraValue(
@@ -450,6 +479,14 @@ function getSpecialFamiliarLimit({
         clamp(100 - get("_knuckleboneDrops"), 0, 100) /
         SkeletonOfCrimboPast.expectedBones(FarmingStrategy.location)
       );
+
+    case $familiar`Sword of S Words`: {
+      if (!get("swordOfSWordsMonster")) {
+        return 0;
+      } else {
+        return clamp(100 - get("_swordOfSWordsKills"), 0, 100);
+      }
+    }
 
     default:
       return 0;

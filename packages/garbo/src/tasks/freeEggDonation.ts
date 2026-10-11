@@ -93,7 +93,7 @@ function findDonateMonster(
   const incomplete = queryEggNetIncomplete();
   const priority = queryEggNetPriority();
   if (incomplete.size === 0) return undefined;
-  const maxMonsterId = $monster`beef bodyguard bat`.id; // Last Update Feb 24 2026
+  const maxMonsterId = $monster`rose garden ghost`.id; // Last Update Oct 8 2026
   const banned = new Set<Monster>([
     ...$monsters
       .all()
