@@ -19763,7 +19763,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"75f845b9b5d37b246eaa50afd1c5a58007380859"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"4a6abec80084e30aebe9c01dd09763a6f344dab8"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -21651,7 +21651,7 @@ function useBusks() {
     return;
   }
   for (var i = get$2("_beretBuskingUses"); i < 5; i++) {
-    buskFor(beretEffectValue, {});
+    buskFor(effectValueWithOpportunityCost, {});
   }
 }
 function sweatEquity() {
@@ -21974,7 +21974,7 @@ function variableMeatPotionsSetup(yachtzees, targets) {
     _iterator10.f();
   }
 }
-function beretEffectValue(effect, duration) {
+function effectValueWithOpportunityCost(effect, duration) {
   var value = effectValue(effect, duration);
   if (value <= 0) return value;
   var potionPrices = kolmafia.Item.all().filter(i => i.potion && i.tradeable && kolmafia.effectsModifier(i, "Effect").includes(effect)).map(i => getAcquirePrice(i) * duration / get$1("Effect Duration", i));
@@ -22416,7 +22416,7 @@ function wanderer() {
       ascend: globalOptions.ascend,
       estimatedTurns: estimatedGarboTurns,
       itemValue: garboValue,
-      effectValue,
+      effectValue: effectValueWithOpportunityCost,
       prioritizeCappingGuzzlr: get$2("garbo_prioritizeCappingGuzzlr", false),
       freeFightExtraValue: location => freeFightFamiliarData(location).expectedValue,
       digitzesRemaining: digitizedMonstersRemainingForTurns,
@@ -24003,7 +24003,7 @@ function buskEffectValuer(effect, duration) {
   if (effect === $effect`Hammertime` && !have$P($effect`Hammertime`) && get$2("_beretBuskingUses") === 0) {
     return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
   }
-  return beretEffectValue(effect, duration);
+  return effectValueWithOpportunityCost(effect, duration);
 }
 function canBusk() {
   return have$c() && get$2("_beretBuskingUses") < 5;
@@ -30575,11 +30575,20 @@ var MAYAM_RING_VALUES = {
 function valueSymbol(symbol) {
   return MAYAM_RING_VALUES[symbol]();
 }
+function yamBatteryValue() {
+  return sum(Object.entries(kolmafia.yamBatteryEffects()), _ref2 => {
+    var _ref3 = _slicedToArray(_ref2, 2),
+      effect = _ref3[0],
+      duration = _ref3[1];
+    return effectValueWithOpportunityCost(kolmafia.toEffect(effect), duration);
+  });
+}
 function valueResonance(combination) {
   var result = getResonanceResult(combination);
   if (!result) return 0;
   if (result instanceof kolmafia.Item) {
     if (result === $item`yamtility belt`) return 0; // yamtilityValue();
+    if (result === $item`yam battery`) return yamBatteryValue();
     return garboValue(result);
   }
   return effectValue(result, 30);
@@ -30605,7 +30614,7 @@ function getBestMayamCombinations() {
   return maxBy(new Array(remainingUses()).fill(null).reduce(acc => acc.flatMap(combinationGroup => expandCombinationGroup(combinationGroup)), [[]]), group => sum(group, valueCombination));
 }
 function mayamCalendarSummon() {
-  return {
+  return [{
     name: "Mayam Summons",
     completed: () => remainingUses() === 0,
     ready: () => have$i(),
@@ -30622,16 +30631,25 @@ function mayamCalendarSummon() {
             kolmafia.useFamiliar(bestFamiliar);
           }
           submit(combination);
+          if (getResonanceResult(combination) === $item`yam battery` && !get$2("_yamBatteryUsed") && yamBatteryValue() > 50) {
+            kolmafia.use($item`yam battery`);
+          }
+          kolmafia.useFamiliar(startingFamiliar);
         }
       } catch (err) {
         _iterator.e(err);
       } finally {
         _iterator.f();
       }
-      kolmafia.useFamiliar(startingFamiliar);
     },
     spendsTurn: false
-  };
+  }, {
+    name: "Yam Battery (potion)",
+    completed: () => get$2("_yamBatteryUsed"),
+    ready: () => have$P($item`yam battery`, 30) && yamBatteryValue() > 50,
+    do: () => kolmafia.use($item`yam battery`),
+    spendsTurn: false
+  }];
 }
 
 var SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
@@ -31188,7 +31206,7 @@ var DailyItemTasks = [{
   },
   completed: () => !canPlay($item`Apriling band piccolo`),
   spendsTurn: false
-}, mayamCalendarSummon(), {
+}], _toConsumableArray(mayamCalendarSummon()), [{
   name: "Devil Cheapest Candy",
   ready: () => have$P($item`candy egg deviler`),
   // TODO: Support guild stash
@@ -32016,7 +32034,7 @@ function FarmTurnQuest() {
 
 var DailyExtrasQuest = {
   name: "Daily Extras",
-  tasks: [mayamCalendarSummon()]
+  tasks: _toConsumableArray(mayamCalendarSummon())
 };
 
 function bestFamUnderwaterGear(fam) {
@@ -33127,7 +33145,7 @@ function defaultTarget() {
 }
 function main() {
   var argString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
-  sinceKolmafiaRevision(29250); // lgr limit properties
+  sinceKolmafiaRevision(29288); // ASH method for predicting Portable Laughing Stock drops
   checkGithubVersion();
   Args.fill(globalOptions, argString);
   // Instant returns placed before visiting anything.
