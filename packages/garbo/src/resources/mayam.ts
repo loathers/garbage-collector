@@ -21,7 +21,7 @@ import {
   Tuple,
 } from "libram";
 import { garboValue } from "../garboValue";
-import { effectValue } from "../potions";
+import { effectValue, effectValueWithOpportunityCost } from "../potions";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { felizValue } from "../lib";
 import { GarboTask } from "../tasks/engine";
@@ -61,7 +61,7 @@ function valueSymbol(symbol: MayamCalendar.Glyph): number {
 
 function yamBatteryValue(): number {
   return sum(Object.entries(yamBatteryEffects()), ([effect, duration]) =>
-    effectValue(toEffect(effect), duration),
+    effectValueWithOpportunityCost(toEffect(effect), duration),
   );
 }
 
