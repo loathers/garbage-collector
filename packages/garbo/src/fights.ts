@@ -141,7 +141,6 @@ import {
   questStep,
   RequireAtLeastOne,
   romanticMonsterImpossible,
-  safeRestore,
   setChoice,
   sober,
   targetingMeat,
@@ -151,6 +150,7 @@ import {
   valueDrops,
 } from "./lib";
 import { logMessage } from "./log";
+import { safeRestore } from "./restore";
 import { freeFightMood, meatMood } from "./mood";
 import { magnifyingGlass } from "./outfit/dropsgear";
 import { freeFightOutfit, FreeFightOutfitMenuOptions } from "./outfit/free";

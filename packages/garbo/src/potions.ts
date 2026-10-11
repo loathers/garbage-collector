@@ -61,14 +61,12 @@ import {
 import { acquire } from "./acquire";
 import {
   aprilFoolsRufus,
-  baseMeat,
   bestShadowRift,
   HIGHLIGHT,
   improvesAStat,
   marginalFamWeightValue,
   pillkeeperOpportunityCost,
   targetMeat,
-  targetMeatDifferential,
   withLocation,
 } from "./lib";
 import { usingPurse } from "./outfit/lib";
@@ -303,11 +301,11 @@ export class Potion {
     );
 
     return (
-      (bonusMeat / 100) *
-      (baseMeat() *
+      bonusMeat *
+      (FarmingStrategy.meatDropValue() *
         (duration - targetsApplied) *
         FarmingStrategy.ncAdjustment() +
-        (baseMeat() + targetMeatDifferential()) * targetsApplied)
+        targetMeat() * targetsApplied)
     );
   }
 
@@ -854,7 +852,8 @@ export function bathroomFinance(targets: number): void {
   const tourists = 100 - targets;
 
   // Average meat % for tourists is sum of arithmetic series, 2 * sum(targets + 1 -> 100)
-  const averageTouristGross = (baseMeat() * 2 * (100 + targets + 1)) / 2 / 100;
+  const averageTouristGross =
+    (FarmingStrategy.baseMeat() * 2 * (100 + targets + 1)) / 2 / 100;
   const touristGross = averageTouristGross * tourists;
 
   const greenspan = $item`Uncle Greenspan's Bathroom Finance Guide`;
@@ -976,8 +975,8 @@ class VariableMeatPotion {
     const yachtzeeValue = 2000;
     const targetValue = targetMeat();
     const barfValue = FarmingStrategy.accountForNC()
-      ? (baseMeat() * FarmingStrategy.turnsToNC()) / 30
-      : baseMeat();
+      ? (FarmingStrategy.baseMeat() * FarmingStrategy.turnsToNC()) / 30
+      : FarmingStrategy.baseMeat();
 
     const totalCosts = retrievePrice(this.potion, n);
     const totalDuration = n * this.duration;

@@ -34,16 +34,13 @@ import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   applyCheeseBonus,
   bestBjornalike,
-  cleaverCheck,
-  validateGarbageFoldable,
-} from "./lib";
-import {
   BonusEquipMode,
-  expectedDropValue,
-  MEAT_TARGET_MULTIPLIER,
+  cleaverCheck,
   modeValueOfItem,
   modeValueOfMeat,
-} from "../lib";
+  validateGarbageFoldable,
+} from "./lib";
+import { expectedDropValue, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
 import { FarmingStrategy } from "../farmingStrategy";
 import { garboValue } from "../garboValue";
