@@ -106,6 +106,9 @@ export function meatTargetOutfit(
       )
     ) {
       outfit.equipFirst(waterBreathingEquipment);
+      if (outfit.haveEquipped($item`The Crown of Ed the Undying`)) {
+        outfit.setModes({ edpiece: "fish" });
+      }
     }
     outfit.modifier.push("sea");
   }
