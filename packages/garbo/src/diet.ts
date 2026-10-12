@@ -1205,6 +1205,96 @@ function withoutHopelessItems(menu: MenuItem<Note>[]): MenuItem<Note>[] {
   );
 }
 
+/**
+ * Keep only the unlimited items that could be the planner's choice at their
+ * organ size.
+ *
+ * The knapsack solver expands each unlimited item into one copy per unit of
+ * organ space it could fill, but at any one size it only ever takes the most
+ * valuable unlimited item. Items with a maximum are left alone: the planner
+ * uses them until they run out, then falls back to the best unlimited item.
+ *
+ * Which unlimited item is best can change with a fork or mug, Refined Palate,
+ * and Gar-ish, so we keep the best item for every combination of those.
+ */
+function withoutDominatedItems(menu: MenuItem<Note>[]): MenuItem<Note>[] {
+  const isCandidate = (menuItem: MenuItem<Note>) =>
+    menuItem.maximum === undefined &&
+    menuItem.size > 0 &&
+    (["food", "booze", "spleen item"] as (Organ | undefined)[]).includes(
+      menuItem.organ,
+    ) &&
+    menuItem.additionalValue === undefined &&
+    menuItem.effect === undefined &&
+    menuItem.mayo === undefined &&
+    menuItem.data === undefined &&
+    menuItem.item.levelreq <= myLevel() &&
+    !crossOrganItems.has(menuItem.item) &&
+    !stomachLiverCleaners.has(menuItem.item) &&
+    !spleenCleaners.has(menuItem.item);
+
+  const seasoning = menu.find(
+    (menuItem) => menuItem.item === $item`Special Seasoning`,
+  );
+  const forkMug = (menuItem: MenuItem<Note>) =>
+    menuItem.organ === "food"
+      ? new MenuItem<Note>(saladFork)
+      : menuItem.organ === "booze"
+        ? new MenuItem<Note>(frostyMug)
+        : undefined;
+  // Zero-quantity entries switch on the diet-wide effects without adding adventures
+  const palate = new MenuItem<Note>($item`toasted brie`);
+  const garish = new MenuItem<Note>($item`potion of the field gar`);
+  const scenarios = [false, true].flatMap((useForkMug) =>
+    [[], [palate], [garish], [palate, garish]].map((modifiers) => ({
+      useForkMug,
+      modifiers,
+    })),
+  );
+
+  const value = (
+    menuItem: MenuItem<Note>,
+    { useForkMug, modifiers }: (typeof scenarios)[number],
+  ): number => {
+    const helper = useForkMug ? forkMug(menuItem) : undefined;
+    const helperSets = [helper ? [helper] : []];
+    if (seasoning && menuItem.organ === "food") {
+      helperSets.push([...helperSets[0], seasoning]);
+    }
+    return Math.max(
+      ...helperSets.map((helpers) => {
+        const adventures = Diet.from<Note>([
+          [[...helpers, menuItem], 1],
+          ...modifiers.map((modifier): [MenuItem<Note>[], number] => [
+            [modifier],
+            0,
+          ]),
+        ]).expectedAdventures();
+        const helperCost = helpers.includes(seasoning as MenuItem<Note>)
+          ? (seasoning as MenuItem<Note>).price()
+          : 0;
+        return adventures * MPA - menuItem.price() - helperCost;
+      }),
+    );
+  };
+
+  const groups = new Map<string, MenuItem<Note>[]>();
+  for (const menuItem of menu.filter(isCandidate)) {
+    const key = `${menuItem.organ}:${menuItem.size}`;
+    groups.set(key, [...(groups.get(key) ?? []), menuItem]);
+  }
+  const kept = new Set<MenuItem<Note>>();
+  for (const group of groups.values()) {
+    for (const scenario of scenarios) {
+      kept.add(maxBy(group, (menuItem) => value(menuItem, scenario)));
+    }
+  }
+
+  return menu.filter(
+    (menuItem) => !isCandidate(menuItem) || kept.has(menuItem),
+  );
+}
+
 export function computeDiet(): {
   diet: () => Diet<Note>;
   shotglass: () => Diet<Note>;
@@ -1218,7 +1308,14 @@ export function computeDiet(): {
   const plan = (
     menu: MenuItem<Note>[],
     organCapacities?: Parameters<typeof Diet.plan>[2],
-  ) => orEmpty(Diet.plan(MPA, withoutHopelessItems(menu), organCapacities));
+  ) =>
+    orEmpty(
+      Diet.plan(
+        MPA,
+        withoutDominatedItems(withoutHopelessItems(menu)),
+        organCapacities,
+      ),
+    );
   const fullDietPlanner = (menu: MenuItem<Note>[]) => plan(menu);
   const shotglassDietPlanner = (menu: MenuItem<Note>[]) =>
     plan(menu, { booze: 1 });
