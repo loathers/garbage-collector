@@ -1051,28 +1051,43 @@ function planBalancedDiet(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
 ): Diet<Note> {
+  const start = Date.now();
+  let passes = 0;
+  const timedPlanner = (menu: MenuItem<Note>[]) => {
+    const passStart = Date.now();
+    const diet = dietPlanner(menu);
+    passes++;
+    print(`Diet pass ${passes} took ${Date.now() - passStart}ms.`);
+    return diet;
+  };
+  const finish = (diet: Diet<Note>) => {
+    print(`Diet planned in ${Date.now() - start}ms over ${passes} passes.`);
+    return diet;
+  };
   const baseTargets = highMeatMonsterCount();
   const baseTurns = estimatedGarboTurns(false);
   let targets = 0;
-  let adventures = dietPlanner(baseMenu).expectedAdventures();
+  let adventures = timedPlanner(baseMenu).expectedAdventures();
   for (let iterations = 5; iterations > 0; iterations--) {
     print(
       `Calculating diet, please wait${".....".slice(0, iterations)}`,
       HIGHLIGHT,
     );
-    const balancingDiet = dietPlanner(
+    const balancingDiet = timedPlanner(
       potionMenu(baseMenu, baseTargets + targets, baseTurns + adventures),
     );
     const nextTargets = countCopies(balancingDiet);
     const nextAdventures = balancingDiet.expectedAdventures();
     if (nextTargets === targets && nextAdventures === adventures) {
-      return balancingDiet;
+      return finish(balancingDiet);
     }
     targets = nextTargets;
     adventures = nextAdventures;
   }
-  return dietPlanner(
-    potionMenu(baseMenu, baseTargets + targets, baseTurns + adventures),
+  return finish(
+    timedPlanner(
+      potionMenu(baseMenu, baseTargets + targets, baseTurns + adventures),
+    ),
   );
 }
 
