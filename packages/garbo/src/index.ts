@@ -123,7 +123,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28881); // Adding angelbone and devilbone
+  sinceKolmafiaRevision(28922); // equip codpiece for gem skills
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
