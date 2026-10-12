@@ -15,11 +15,13 @@ import {
   itemPockets,
   mallPrice,
   meatPockets,
+  myAscensions,
   myInebriety,
   pickedPockets,
   pocketItems,
   pocketMeat,
   print,
+  putCloset,
   runChoice,
   scrapPockets,
   sellPrice,
@@ -58,21 +60,21 @@ import { aprilFoolsRufus, felizValue } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
-import {
-  augustSummonTasks,
-  candyMapDailyTasks,
-  doingGregFight,
-  getBestAprilInstruments,
-  leprecondoTask,
-  mayamCalendarSummon,
-} from "../resources";
-import { meatFamiliar } from "../familiar";
+import { getBestAprilInstruments } from "../resources/aprilingband";
+import { archaeologySpadeTask } from "../resources/archaelogistSpade";
+import { candyMapDailyTasks } from "../resources/candyMap";
+import { doingGregFight } from "../resources/extrovermectin";
+import { leprecondoTask } from "../resources/leprecondo";
+import { mayamCalendarSummon } from "../resources/mayam";
+import { augustSummonTasks } from "../resources/scepter";
+import { meatFamiliar } from "../familiar/meatFamiliar";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { highMeatMonsterCount } from "../turns";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
 let _shouldClearRufusQuest: boolean | null = null;
+let smashedBarrels = false;
 
 function drawBestCards(): void {
   const cardsLeft = Math.floor(3 - get("_deckCardsDrawn") / 5);
@@ -154,7 +156,7 @@ function bestDevilerCandy(): Item {
   }
 
   const bestCandyFromMall = maxBy(
-    Item.all().filter((i) => i.candy && i.tradeable),
+    Item.all().filter((i) => i.candy && i.tradeable && mallPrice(i) > 0),
     mallPrice,
     true,
   );
@@ -206,10 +208,10 @@ function chateauFanWorthIt(): boolean {
     (ChateauMantegna.getCeiling() === "ceiling fan" ? 0 : 5) -
     get("timesRested");
 
-  const restsGainedFromFan = Math.max(
-    0,
-    restsAvailableWithFan - currentRestsAvailable,
-  );
+  const restsGainedFromFan =
+    restsAvailableWithFan > 0
+      ? Math.max(0, restsAvailableWithFan - currentRestsAvailable)
+      : 0;
   if (restsGainedFromFan <= 0) return false;
 
   // projectile pinata costs 5 cinch and gets us 3 feliz candies, assuming these extra free rests only give 5 cinch each. Fan costs 1500
@@ -230,6 +232,14 @@ const SummonTasks: GarboTask[] = [
   ),
 ];
 
+function cheapestInterestingCoinItemCost(): number {
+  return Math.min(
+    ...Item.all()
+      .filter((item) => sellsItem($coinmaster`Interesting Coin`, item))
+      .map((item) => sellPrice($coinmaster`Interesting Coin`, item)),
+  );
+}
+
 let triedForest = false;
 const DailyItemTasks: GarboTask[] = [
   {
@@ -247,6 +257,19 @@ const DailyItemTasks: GarboTask[] = [
       if (best !== $item.none) {
         cliExecute(`try; create ${$skill`Summon Clip Art`.dailylimit} ${best}`);
       }
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Defective Game Grid Token",
+    ready: () =>
+      get("lastArcadeAscension") === myAscensions() ||
+      have($item`Game Grid token`) ||
+      have($item`Game Grid ticket`),
+    completed: () => get("_defectiveTokenChecked"),
+    do: (): void => {
+      visitUrl("place.php?whichplace=arcade", false);
+      visitUrl("place.php?whichplace=arcade&action=arcade_plumber", false);
     },
     spendsTurn: false,
   },
@@ -292,6 +315,39 @@ const DailyItemTasks: GarboTask[] = [
         );
         const toBuy = Math.floor(get("availableSeptEmbers") / cost);
         buy($coinmaster`Sept-Ember Censer`, toBuy, item);
+      }
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Spend Interesting Coins",
+    ready: () => have($item`Interesting Coin`) && globalOptions.ascend,
+    completed: () =>
+      itemAmount($item`Interesting Coin`) < cheapestInterestingCoinItemCost(),
+    do: (): void => {
+      while (itemAmount($item`Interesting Coin`) >= 0) {
+        // We visit URL to reset new shop prices
+        visitUrl("shop.php?whichshop=interesting");
+        const itemsWithCosts = Item.all()
+          .filter(
+            (i) =>
+              sellsItem($coinmaster`Interesting Coin`, i) &&
+              sellPrice($coinmaster`Interesting Coin`, i) <=
+                itemAmount($item`Interesting Coin`),
+          )
+          .map((item) => ({
+            item,
+            cost: sellPrice($coinmaster`Interesting Coin`, item),
+            value:
+              garboValue(item) / sellPrice($coinmaster`Interesting Coin`, item),
+          }));
+
+        if (itemsWithCosts.length === 0) {
+          break;
+        }
+
+        const { item } = maxBy(itemsWithCosts, "value");
+        buy($coinmaster`Interesting Coin`, 1, item);
       }
     },
     spendsTurn: false,
@@ -503,7 +559,7 @@ const DailyItemTasks: GarboTask[] = [
   {
     name: "Acquire Jick Jar",
     ready: () =>
-      have($item`psychoanalytic jar`) && get("_jickJarAvailable") === "true",
+      have($item`psychoanalytic jar`, 2) && get("_jickJarAvailable") === "true",
     completed: () => get("_psychoJarFilled"),
     do: () => visitUrl("showplayer.php?who=1&action=jung&whichperson=jick"),
     spendsTurn: false,
@@ -524,6 +580,17 @@ const DailyItemTasks: GarboTask[] = [
       get("_timeSpinnerMinutesUsed") <= 8,
     completed: () => get("_timeSpinnerReplicatorUsed"),
     do: () => cliExecute("FarFuture drink"),
+    spendsTurn: false,
+  },
+  {
+    name: $skill`That's Not a Knife`.name,
+    ready: () => have($skill`That's Not a Knife`),
+    completed: () => get("_discoKnife"),
+    do: () => {
+      const knives = $items`boot knife, broken beer bottle, sharpened spoon, candy knife, soap knife`;
+      knives.forEach((item) => putCloset(itemAmount(item), item));
+      useSkill($skill`That's Not a Knife`);
+    },
     spendsTurn: false,
   },
   {
@@ -613,7 +680,7 @@ const DailyItemTasks: GarboTask[] = [
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
     do: (): void => {
       const value = rufusPotion.value(highMeatMonsterCount());
-      const price = rufusPotion.price(false);
+      const price = rufusPotion.price();
       _shouldClearRufusQuest = value.some(
         (value) =>
           (!globalOptions.nobarf || value.name === "target") &&
@@ -738,7 +805,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
     spendsTurn: false,
   },
-  mayamCalendarSummon(),
+  ...mayamCalendarSummon(),
   {
     name: "Devil Cheapest Candy",
     ready: () => have($item`candy egg deviler`), // TODO: Support guild stash
@@ -763,6 +830,23 @@ const DailyItemTasks: GarboTask[] = [
     spendsTurn: false,
   },
   leprecondoTask(),
+  archaeologySpadeTask(),
+  {
+    name: "Smash Barrels",
+    ready: () => get("barrelShrineUnlocked"),
+    completed: () => smashedBarrels,
+    do: () => {
+      const page = visitUrl("barrel.php");
+      const regexp =
+        /<div class="ex">(?!<div class="mimic">!<\/div>)<a class="spot" href="(choice.php\?whichchoice=1099&pwd=[a-f0-9]+&option=1&slot=\d+)"><img title="A barrel"/g;
+      for (let match; (match = regexp.exec(page)); null) {
+        const url = match[1];
+        visitUrl(url);
+      }
+      smashedBarrels = true;
+    },
+    spendsTurn: false,
+  },
 ];
 
 export const DailyItemsQuest: Quest<GarboTask> = {

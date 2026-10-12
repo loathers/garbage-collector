@@ -74,19 +74,17 @@ import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { freeFightOutfit } from "../outfit";
+import { freeFightOutfit } from "../outfit/free";
 import { GarboTask } from "./engine";
-import {
-  doCandyTrick,
-  doingGregFight,
-  ghostAdventure,
-  shouldAugustCast,
-} from "../resources";
+import { doCandyTrick } from "../resources/candyMap";
+import { doingGregFight } from "../resources/extrovermectin";
+import { ghostAdventure } from "../resources/protonpack";
+import { shouldAugustCast } from "../resources/scepter";
 import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
 import { AdventureArgument, wanderer } from "../garboWanderer";
 
 export type GarboFreeFightTask = Extract<
-  GarboTask,
+  GarboTask<void>,
   { combat: GarboStrategy }
 > & {
   combatCount: () => number;
@@ -294,7 +292,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
       (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ??
         false),
     completed: ChateauMantegna.paintingFought,
-    do: ChateauMantegna.fightPainting,
+    do: () => ChateauMantegna.fightPainting(),
     outfit: () =>
       freeFightOutfit(
         have($familiar`Robortender`) &&
@@ -985,14 +983,6 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
 
 const FreeFightTasks = RAW_FIGHTS.map(freeFightTask);
 
-// Expected free fights, not including tentacles
-export function expectedFreeFightQuestFights(): number {
-  const availableFights = FreeFightTasks.filter(
-    (task) => (task.ready?.() ?? true) && !task.completed(),
-  );
-  return sum(availableFights, ({ combatCount }) => combatCount());
-}
-
 // Possible additional free fights from tentacles
 export function possibleFreeFightQuestTentacleFights(): number {
   const availableFights = FreeFightTasks.filter(
@@ -1004,7 +994,7 @@ export function possibleFreeFightQuestTentacleFights(): number {
   );
 }
 
-export const FreeFightQuest: Quest<GarboTask> = {
+export const FreeFightQuest: Quest<GarboTask<void>, unknown> = {
   name: "Free Fight",
   tasks: FreeFightTasks,
   ready: () => sober() && !have($effect`Feeling Lost`),

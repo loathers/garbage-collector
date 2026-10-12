@@ -30,11 +30,11 @@ export function lovebugsFactory(
   if (get("lovebugsUnlocked") && type !== "freerun") {
     return LovebugTargets.filter((t) => realmAvailable(t.element)).map(
       (t) =>
-        new WandererTarget(
-          `Lovebugs`,
-          t.location,
-          options.itemValue(t.currency) * 0.05,
-        ),
+        new WandererTarget({
+          name: `Lovebugs`,
+          location: t.location,
+          zoneValue: options.itemValue(t.currency) * 0.05,
+        }),
     );
   }
   return [];

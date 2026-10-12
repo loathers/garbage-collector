@@ -15,23 +15,24 @@
     "prepublishOnly": "yarn run build"
   },
   "lint-staged": {
-    "*": [
-      "prettier --write --ignore-unknown"
+    "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "eslint --quiet --fix",
+      "prettier --write"
     ],
-    "src/*": [
-      "eslint --quiet --fix"
+    "**/*.{json,md,html,yml}": [
+      "prettier --write --ignore-unknown"
     ]
   },
   "peerDependencies": {
-    "kolmafia": "^5.28389.0",
-    "libram": "^0.11.9"
+    "kolmafia": "^5.29250.0",
+    "libram": "^0.11.32"
   },
   "devDependencies": {
     "eslint": "^9.39.2",
     "eslint-config-garbo": "workspace:^",
     "jiti": "^2.6.1",
-    "kolmafia": "^5.28673.0",
-    "libram": "^0.11.18",
+    "kolmafia": "^5.29250.0",
+    "libram": "^0.11.37",
     "lint-staged": "^15.2.9",
     "madge": "^8.0.0",
     "prettier": "^3.3.3",

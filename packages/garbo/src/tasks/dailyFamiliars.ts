@@ -5,6 +5,7 @@ import {
   familiarEquippedEquipment,
   hippyStoneBroken,
   mallPrice,
+  meatDrop,
   myPrimestat,
   retrieveItem,
   retrievePrice,
@@ -26,16 +27,16 @@ import {
 } from "libram";
 import { withStash } from "../clan";
 import { globalOptions } from "../config";
-import { meatFamiliar, setBestLeprechaunAsMeatFamiliar } from "../familiar";
 import {
-  baseMeat,
+  meatFamiliar,
+  setBestLeprechaunAsMeatFamiliar,
+} from "../familiar/meatFamiliar";
+import {
   felizValue,
-  garbageTouristRatio,
   isFree,
   newarkValue,
   targetMeat,
   tryFeast,
-  turnsToNC,
   userConfirmDialog,
 } from "../lib";
 import { estimatedGarboTurns, highMeatMonsterCount } from "../turns";
@@ -43,29 +44,40 @@ import { GarboTask } from "./engine";
 import { Quest } from "grimoire-kolmafia";
 import { acquire } from "../acquire";
 import { amuletCoinValue } from "../familiar/lib";
+import { FarmingStrategy, garbageTouristRatio } from "../farmingStrategy";
 
 function drivebyValue(targetCount = 0): number {
   const targets = targetCount;
+
   const tourists =
-    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
+    (estimatedGarboTurns() - targets) * FarmingStrategy.ncAdjustment();
+
   const marginalRoboWeight = 50;
+
   const meatPercentDelta =
     Math.sqrt(220 * 2 * marginalRoboWeight) -
     Math.sqrt(220 * 2 * marginalRoboWeight) +
     2 * marginalRoboWeight;
+
   return (
-    (meatPercentDelta / 100) * (targetMeat() * targets + baseMeat() * tourists)
+    (meatPercentDelta / 100) *
+    (targetMeat() * targets + FarmingStrategy.baseMeat() * tourists)
   );
 }
 
 function entendreValue(targetCount = 0): number {
   const targets = targetCount;
+
   const tourists =
-    ((estimatedGarboTurns() - targets) * turnsToNC) / (turnsToNC + 1);
+    (estimatedGarboTurns() - targets) * FarmingStrategy.ncAdjustment();
+
   const marginalRoboWeight = 50;
+
   const itemPercent =
     Math.sqrt(55 * marginalRoboWeight) + marginalRoboWeight - 3;
+
   const garbageBagsDropRate = 0.15 * 3; // 3 bags each with a 15% drop chance
+
   return (
     (itemPercent / 100) * (garbageBagsDropRate * tourists * garbageTouristRatio)
   );
@@ -74,12 +86,10 @@ function entendreValue(targetCount = 0): number {
 function worthFeedingRobortender(): boolean {
   if (!globalOptions.nobarf) return true;
   if (isFree(globalOptions.target)) return false;
-  return (
-    (globalOptions.target.maxMeat + globalOptions.target.minMeat) / 2 >= 300
-  );
+  return meatDrop(globalOptions.target) >= 300;
 }
 
-export function prepRobortender(): void {
+function prepRobortender(): void {
   if (!have($familiar`Robortender`)) return;
   const targetCount = highMeatMonsterCount("Scepter"); // Scepter can cause circular logic
   const roboDrinks = {
@@ -96,9 +106,15 @@ export function prepRobortender(): void {
       mandatory: false,
     },
     "Bloody Nora": {
-      priceCap: get("_envyfishEggUsed")
-        ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
-        : 0,
+      priceCap:
+        (get("_envyfishEggUsed")
+          ? targetMeat() * (0.5 + ((4 + Math.sqrt(110 / 100)) * 30) / 100)
+          : 0) +
+        (FarmingStrategy.isUnderwater()
+          ? FarmingStrategy.meatDropValue() *
+            (0.5 + (4 + Math.sqrt(110 / 100)) * 30) *
+            estimatedGarboTurns()
+          : 0),
       mandatory: false,
     },
     "Single entendre": {

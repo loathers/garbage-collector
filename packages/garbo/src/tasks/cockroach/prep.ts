@@ -6,17 +6,15 @@ import {
   inebrietyLimit,
   lastChoice,
   mallPrice,
+  maximize,
   myAdventures,
   myInebriety,
   myMaxhp,
   restoreHp,
   runChoice,
-  Stat,
-  useSkill,
   visitUrl,
 } from "kolmafia";
 import {
-  $effect,
   $item,
   $items,
   $location,
@@ -30,14 +28,14 @@ import {
 import { acquire } from "../../acquire";
 import { Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
-import { freeFightFamiliar } from "../../familiar";
-import { freeFightOutfit, meatTargetOutfit } from "../../outfit";
+import { freeFightFamiliar } from "../../familiar/freeFightFamiliar";
+import { freeFightOutfit } from "../../outfit/free";
+import { meatTargetOutfit } from "../../outfit/target";
 import { GarboTask } from "../engine";
 import { bestCrewmate, dessertIslandWorthIt, outfitBonuses } from "./lib";
-import { doingGregFight } from "../../resources";
-import { targetMeat, unignoreBeatenUp, userConfirmDialog } from "../../lib";
+import { doingGregFight } from "../../resources/extrovermectin";
+import { burnLibrams, targetMeat, userConfirmDialog } from "../../lib";
 import { globalOptions } from "../../config";
-import { DebuffPlanner } from "./debuffplanner";
 import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
 import { highMeatMonsterCount } from "../../turns";
@@ -48,7 +46,7 @@ export const CockroachSetup: Quest<GarboTask> = {
     doingGregFight() &&
     globalOptions.target === $monster`cockroach` &&
     myInebriety() <= inebrietyLimit(),
-  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+  completed: () => questStep("_questPirateRealm") > 4,
   tasks: [
     {
       name: "40 Adventure Failsafe",
@@ -81,7 +79,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Start PirateRealm Journey",
       ready: () => have($item`PirateRealm eyepatch`),
       completed: () => questStep("_questPirateRealm") > 0,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: () => {
         visitUrl("place.php?whichplace=realm_pirate&action=pr_port");
         runChoice(1); // Head to Groggy's
@@ -98,7 +95,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       },
       outfit: {
         equip: $items`PirateRealm eyepatch`,
-        modifier: Stat.all().map((stat) => `-${stat}`),
+        beforeDress: [() => burnLibrams(100)], // Burn our extra mana before we lose it all equipping eyepatch
       },
       limit: { tries: 1 },
       spendsTurn: false,
@@ -107,11 +104,9 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Choose First Island",
       ready: () => questStep("_questPirateRealm") === 1,
       completed: () => questStep("_questPirateRealm") > 1,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
       outfit: {
         equip: $items`PirateRealm eyepatch`,
-        modifier: Stat.all().map((stat) => `-${stat}`),
       },
       choices: () => ({
         1352:
@@ -130,14 +125,12 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Sail to first Island",
       ready: () => questStep("_questPirateRealm") === 2,
       completed: () => questStep("_questPirateRealm") > 2,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
       outfit: () => ({
         equip:
           $items`PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot`.filter(
             (i) => have(i),
           ),
-        modifier: Stat.all().map((stat) => `-${stat}`),
       }),
       choices: () => ({
         1365: 1,
@@ -171,7 +164,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Land Ho (First Island)",
       ready: () => questStep("_questPirateRealm") === 3,
       completed: () => questStep("_questPirateRealm") > 3,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
       combat: new GarboStrategy(() =>
         Macro.abortWithMsg("Expected Land Ho! but hit a combat"),
@@ -179,7 +171,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       choices: { 1355: 1 }, // Land ho!
       outfit: {
         equip: $items`PirateRealm eyepatch`,
-        modifier: Stat.all().map((stat) => `-${stat}`),
       },
       limit: { tries: 1 },
       spendsTurn: false,
@@ -189,7 +180,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       ready: () => questStep("_questPirateRealm") === 4,
       completed: () => questStep("_questPirateRealm") > 4,
       prepare: () => {
-        DebuffPlanner.checkAndFixOvercapStats();
         if (
           mallPrice($item`windicle`) < 3 * get("valueOfAdventure") &&
           !get("_pirateRealmWindicleUsed")
@@ -226,17 +216,26 @@ export const CockroachSetup: Quest<GarboTask> = {
       limit: { tries: 8 },
       spendsTurn: true,
     },
+  ],
+};
+
+export const CockroachFinish: Quest<GarboTask> = {
+  name: "Finish Setup Cockroach Target",
+  ready: () =>
+    doingGregFight() &&
+    globalOptions.target === $monster`cockroach` &&
+    myInebriety() <= inebrietyLimit(),
+  completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
+  tasks: [
     {
       name: "Final Island Encounter (Island 1 (Dessert))",
       ready: () =>
         questStep("_questPirateRealm") === 5 &&
         get("_lastPirateRealmIsland") === $location`Dessert Island`,
       completed: () => questStep("_questPirateRealm") > 5,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`PirateRealm Island`,
       outfit: () => ({
         equip: $items`PirateRealm eyepatch`,
-        modifier: Stat.all().map((stat) => `-${stat}`),
       }),
       choices: { 1385: 1 }, // Take cocoa of youth
       combat: new GarboStrategy(() =>
@@ -252,20 +251,19 @@ export const CockroachSetup: Quest<GarboTask> = {
         get("_lastPirateRealmIsland") === $location`Crab Island`,
       completed: () => questStep("_questPirateRealm") > 5,
       prepare: () => {
-        DebuffPlanner.checkAndFixOvercapStats();
         restoreHp(myMaxhp());
       },
       do: $location`Crab Island`,
       outfit: () =>
         meatTargetOutfit(
           {
-            modifier: ["-Muscle", "-Mysticality", "-Moxie"],
             equip: $items`PirateRealm eyepatch`,
             avoid: $items`Roman Candelabra`,
             beforeDress: [
+              () => maximize("MP", false), // Equip some MP stuff while we buff here since our myst was lowered while wearing eyepatch
               () =>
-                meatMood(false, targetMeat()).execute(highMeatMonsterCount()), // meatMood is currently difficult to sort for things that give +stats
-              () => potionSetup(false, true), // run potionSetup while avoiding stats. We do not avoid limited use buffs that may still increase stats like paw wishes or pill keeper.
+                meatMood(false, targetMeat()).execute(highMeatMonsterCount()),
+              () => potionSetup(false),
             ],
           },
           $location`Crab Island`,
@@ -281,7 +279,6 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Choose Trash Island",
       ready: () => questStep("_questPirateRealm") === 6,
       completed: () => questStep("_questPirateRealm") > 6,
-      prepare: () => DebuffPlanner.checkAndFixOvercapStats(),
       do: $location`Sailing the PirateRealm Seas`,
       outfit: { equip: $items`PirateRealm eyepatch` },
       choices: { 1353: 5 }, // Trash Island
@@ -291,13 +288,6 @@ export const CockroachSetup: Quest<GarboTask> = {
         Macro.abortWithMsg("Hit a combat while sailing the high seas!"),
       ),
       post: () => unequip($item`PirateRealm eyepatch`), // Unequip the eyepatch when we're done, to avoid mana issues during diet etc
-    },
-    {
-      name: "Stop Being Beaten Up",
-      completed: () => !have($effect`Beaten Up`),
-      do: () => useSkill($skill`Tongue of the Walrus`),
-      spendsTurn: false,
-      post: unignoreBeatenUp,
     },
   ],
 };

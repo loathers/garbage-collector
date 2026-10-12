@@ -1,4 +1,4 @@
-import { itemDropsArray, Location, Monster } from "kolmafia";
+import { itemDropsArray, Location, meatDrop, Monster } from "kolmafia";
 import { $item, clamp, get, have, SourceTerminal, sum } from "libram";
 import {
   availableMonsters,
@@ -27,15 +27,15 @@ function valueMonster(
     : 1;
 
   // TODO: this should consider unbuffed meat drop and unbuffed item drop, probably
-  const meatDrop = clamp((m.minMeat + m.maxMeat) / 2, 0, 1000);
-  const itemDrop =
+  const meat = clamp(meatDrop(m) / 2, 0, 1000);
+  const itemValue =
     duplicateFactor *
     sum(items, (drop) => {
       const yrRate =
         (drop.type === "" && forceItemDrops ? 100 : drop.rate) / 100;
       return yrRate * options.itemValue(drop.drop);
     });
-  return itemDrop + meatDrop;
+  return itemValue + meat;
 }
 
 function monsterValues(
@@ -64,22 +64,22 @@ export function itemDropFactory(
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (type === "yellow ray" || type === "freefight") {
+  if (["yellow ray", "freefight", "conditional freefight"].includes(type)) {
     const validLocations = Location.all().filter(
       (location) =>
-        canWander(location, "yellow ray") &&
+        canWander(location, "yellow ray", options.underwaterAllowed) &&
         canAdventureOrUnlock(location) &&
         !locationSkiplist.includes(location),
     );
     return [...validLocations].map((l: Location) => {
-      return new WandererTarget(
-        `Item Drop Values`.concat(
+      return new WandererTarget({
+        name: `Item Drop Values`.concat(
           type === "yellow ray" ? ` (Guaranteed Drops)` : "",
         ),
-        l,
-        0,
-        monsterValues(l, type === "yellow ray", options),
-      );
+        location: l,
+        zoneValue: 0,
+        monsterItemValues: monsterValues(l, type === "yellow ray", options),
+      });
     });
   }
   return [];

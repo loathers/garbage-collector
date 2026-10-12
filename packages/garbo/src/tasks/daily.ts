@@ -40,6 +40,7 @@ import {
   wait,
 } from "kolmafia";
 import {
+  $class,
   $effect,
   $familiar,
   $item,
@@ -65,12 +66,16 @@ import {
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
-import { withStash } from "../clan";
+import {
+  checkCurrentClanWhitelist,
+  getWhitelistedClans,
+  withStash,
+} from "../clan";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../target";
-import { meatFamiliar } from "../familiar";
+import { copyTargetCount } from "../target/fights";
+import { meatFamiliar } from "../familiar/meatFamiliar";
 import { estimatedAttunementTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
+import { HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 import {
   estimatedGarboTurns,
@@ -79,16 +84,17 @@ import {
 } from "../turns";
 import { GarboTask } from "./engine";
 import { AcquireItem, Quest } from "grimoire-kolmafia";
+import { checkAndCorrectLatteMalformation } from "../resources/latte";
 import {
   attemptCompletingBarfQuest,
-  checkAndCorrectLatteMalformation,
   checkBarfQuest,
   checkVolcanoQuest,
-} from "../resources";
+} from "../resources/realm";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
 import { embezzlerFights } from "./embezzler";
+import { FarmingStrategy } from "../farmingStrategy";
 
 const photoBoothItems = $items`Sheriff badge, Sheriff pistol, Sheriff moustache, feather boa, oversized monocle on a stick, fake huge beard`;
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
@@ -96,6 +102,7 @@ const retrieveItems = $items`Half a Purse, seal tooth, The Jokester's gun`;
 
 let latteRefreshed = false;
 let snojoConfigured = false;
+let speakeasyPoolTableVisited = false;
 
 // For this valuation, we are using the rough approximated value of different
 //   voting initiatives. They are relatively straghtforward:
@@ -119,7 +126,7 @@ function voterSetup(): void {
       0.3 *
         ((1000 + songboomMeat()) * embezzlerFights() +
           targetMeat() * copyTargetCount() +
-          baseMeat() *
+          FarmingStrategy.baseMeat() *
             (estimatedGarboTurns() - copyTargetCount() - embezzlerFights())),
     ],
     [
@@ -233,7 +240,9 @@ function pantogram(): void {
     const bestPantsValue = Math.max(0, ...alternativePants);
 
     pantogramValue =
-      (100 + 0.6 * baseMeat() - (bestPantsValue * baseMeat()) / 100) *
+      (100 +
+        0.6 * FarmingStrategy.baseMeat() -
+        (bestPantsValue * FarmingStrategy.baseMeat()) / 100) *
       estimatedGarboTurns();
   }
   const cloverPrice = Math.min(
@@ -281,7 +290,7 @@ function nepQuest(): void {
   }
 }
 
-export function configureSnojo(): void {
+function configureSnojo(): void {
   if (snojoConfigured) return;
 
   // if we're ascending, pick whichever consumable has the best price
@@ -382,7 +391,7 @@ const DailyTasks: GarboTask[] = [
   {
     name: "Check Florist",
     ready: () => get("ownsFloristFriar"),
-    completed: floristAvailable,
+    completed: () => floristAvailable(),
     after: ["Daily/Unlock Woods"],
     do: () => {
       visitUrl("woods.php"); // Without visiting woods, other visitUrls will not register woods as being unlocked.
@@ -558,6 +567,17 @@ const DailyTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
+    name: "Speakeasy pool table",
+    ready: () => get("ownsSpeakeasy"),
+    completed: () => speakeasyPoolTableVisited,
+    do: () => {
+      visitUrl("place.php?whichplace=speakeasy&action=olivers_pooltable");
+      speakeasyPoolTableVisited = true;
+    },
+    outfit: { modifier: "Pool Skill" },
+    spendsTurn: false,
+  },
+  {
     name: "Clan pool table",
     ready: () => getClanLounge()["Clan pool table"] !== undefined,
     completed: () => get("_poolGames") >= 3,
@@ -615,16 +635,28 @@ const DailyTasks: GarboTask[] = [
     spendsTurn: false,
   },
   {
+    name: "Pastamancer Barrel Shrine",
+    ready: () =>
+      get("barrelShrineUnlocked") && myClass() === $class`Pastamancer`,
+    completed: () => get("_barrelPrayer"),
+    do: () => cliExecute("barrelprayer buff"),
+    spendsTurn: false,
+  },
+  {
     name: "Clan Fortune Consults",
     ready: () =>
       have($item`Clan VIP Lounge key`) &&
       getClanLounge()["Clan Carnival Game"] !== undefined &&
       isOnline("OnlyFax") &&
-      Clan.getWhitelisted().find(
+      getWhitelistedClans().some(
         (c) => c.name === "Bonus Adventures from Hell",
-      ) !== undefined,
+      ),
     completed: () => get("_clanFortuneConsultUses") >= 3,
     do: (): void => {
+      checkCurrentClanWhitelist(
+        "Bonus Adventures from Hell",
+        "To stop garbo using the fortune teller, remove your 'Bonus Adventures from Hell' whitelist.",
+      );
       Clan.with("Bonus Adventures from Hell", () =>
         cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
       );

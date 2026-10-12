@@ -8,6 +8,7 @@ import {
   WandererFactoryOptions,
   WandererTarget,
 } from "./lib";
+import { $skill, have } from "libram";
 
 function monsterValues(
   location: Location,
@@ -27,20 +28,28 @@ export function bofaFactory(
   locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
-  if (type === "yellow ray" || type === "freefight") {
+  if (
+    [
+      "yellow ray",
+      "freefight",
+      "conditional freefight",
+      "freefight (no items)",
+    ].includes(type) &&
+    have($skill`Just the Facts`)
+  ) {
     const validLocations = Location.all().filter(
       (location) =>
-        canWander(location, "yellow ray") &&
-        canAdventureOrUnlock(location) &&
+        canWander(location, "yellow ray", options.underwaterAllowed) &&
+        canAdventureOrUnlock(location, true, options.underwaterAllowed) &&
         !locationSkiplist.includes(location),
     );
     return [...validLocations].map((l: Location) => {
-      return new WandererTarget(
-        `Book of Facts`,
-        l,
-        0,
-        monsterValues(l, options),
-      );
+      return new WandererTarget({
+        name: `Book of Facts`,
+        location: l,
+        zoneValue: 0,
+        monsterBonusValues: monsterValues(l, options),
+      });
     });
   }
   return [];

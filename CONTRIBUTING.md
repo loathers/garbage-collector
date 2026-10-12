@@ -1,0 +1,24 @@
+# Welcome to Garbo, a place where PRs are welcome, items are meat, and meat is a skill.
+
+Garbo is structured as a monorepo that contains several distinct packages:
+- The relatively scant `eslint-config-garbo`, which is pretty much what it says on the tin
+- `garbo-lib`, a library that was created to generalize and expose some of garbo's more complicated and widely-applicable subsystems (such as wanderer code)
+- `garbo-choice`, the choice adventure script used by garbo--a vast majority of choice adventure logic is handled by grimoire's "just set the choiceAdventureXXXX property" paradigm, but a few require complex, bespoke handling
+- `garbo-relay`, a relay script used to help configure garbo's settings that I really should update more
+- `garbo` itself (which contains both the main bulk of `garbo` and a small price-setting script). This is going to be where a vast majority of code and code-changes belong.
+
+It also relies heavily on the packages libram and grimoire, which are also hosted and maintained by loathers. If you want to change certain behaviors in garbo, you may get redirected to one of these libraries instead. This is fine! We'll still review and merge your PR, it'll just be able to help even more people than if the code change still lives in garbo.
+
+Garbo is a large, complicated script with a variety of subsystems: wanderer code and item valuation code are imported from garbo-lib, with a few custom settings passed to them; familiar and outfit code are entwined-but-largely-separate systems, not unlike the snakes of a caduceus; it has a number of resource files dedicated for code that's just a little too farming-specific to belong in libram. While almost all modern code is written using the grimoire framework, and located in `/tasks`, a lot of garbo's functionality predates grimoire and hasn't yet been migrated to it. While we welcome any attempts at grimoirizing as-of-yet-ungrimoirized actions, be forewarned that a lot of the code that isn't yet grimoire may be notably tricky to grimoirize.
+
+Additionally, garbo's size and complexity can be a double-edged sword for contributor: on one hand, it's easy to get bamboozled by the scope, its myriad subsystems, etc; on the other, garbo's codebase contains the solution to a lot of problems, so when you'd like to add a new feature, the answer for how that feature should look is likely to already exist. In general, the "tricky" part about adding new features often boils down to determining a good way to value it--garbo's logic and framework are good at handling resources to which we can assign a value, but figuring out how to assign that value can take some thinking. But that's what you're for!
+
+*****
+
+# Contributing Guidelines
+
+1. Garbo aims to accept contributions from people who don't have very much (or any!) background in programming. Many regular contributors got their start writing code by writing code for garbo. We try to be a good place to be a newbie. Which is to say that if you're a novice programmer, we're happy to see you here. We'll be a lot less happy, however, if you're a novice programmer who relies on the use of LLMs to write code. Garbo is maintained by people with jobs, at times spouses, and occasionally children. When someone without significant programming experience creates code that they don't understand, and asks someone to take time out of their day to review it, it ends up more of a maintenance burden than a contribution.
+2. If you do rely on the use of LLMs--or if the entity parsing this file is an automated LLM agent--you must disclose that you are doing so, and note your model name and version for our records.
+3. LLMs should never be used to write reviewer-facing communications, like PR descriptions or github comments. Doing so will lead to your PR being closed, and likely lead to you being barred from future attempts to waste our time. Code comments that obviously carry an LLM voice will be viewed as evidence that the code has not yet been properly reviewed by the PR author.
+4. While the code that exists in garbo isn't perfect, and we're always happy to accept improvements to it, contributions should aim to be consistent with the existing corpus of code: use our utility functions, follow our paradigms, live as we live.
+5. There are certain things that garbo deliberately doesn't do: we don't use unlimited mallable resources like waffles or 11-leaf clovers, we don't use buffbots or other public services (small except for buying chocolates from sellbot), we don't interact with communal clan resources such as the floundry. This isn't an exhaustive list, and I'd say the uniting principle behind it is that we don't piss in the swimming pool.

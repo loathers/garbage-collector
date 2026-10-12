@@ -16,10 +16,11 @@ import {
   have,
 } from "libram";
 import { globalOptions } from "../config";
-import { baseMeat, mainStatLevel } from "../lib";
+import { mainStatLevel } from "../lib";
+import { FarmingStrategy } from "../farmingStrategy";
 
 function sweatEquityROI(): number {
-  return baseMeat() * 0.4 * 30;
+  return FarmingStrategy.baseMeat() * 0.4 * 30;
 }
 
 function parentStat(sub: Stat | null): Stat {
@@ -35,7 +36,7 @@ function parentStat(sub: Stat | null): Stat {
 }
 
 const BCT_LEVEL_THRESHOLDS = [26, 20, 13];
-export function getBCZStatFloor(skill: Skill): number {
+function getBCZStatFloor(skill: Skill): number {
   const userSelectedStatFloor = get("garbo_bczStatFloor", 0);
   const stat = parentStat(BloodCubicZirconia.substatUsed(skill));
   if (stat !== myPrimestat()) {
@@ -56,11 +57,22 @@ export function getBCZStatFloor(skill: Skill): number {
 }
 
 function safeBCZCasts(skill: Skill): number {
-  return BloodCubicZirconia.availableCasts(skill, getBCZStatFloor(skill));
+  const availableStatFloorCasts = BloodCubicZirconia.availableCasts(
+    skill,
+    getBCZStatFloor(skill),
+  );
+  const availableCheapCasts = 5 - BloodCubicZirconia.timesCast(skill); // First 5 casts are essentially free, even when we're already low stats
+  return availableCheapCasts > availableStatFloorCasts
+    ? availableCheapCasts
+    : availableStatFloorCasts;
 }
 
 export function safeSweatEquityCasts(): number {
   return safeBCZCasts($skill`BCZ: Sweat Equity`);
+}
+
+export function safeRefractedCasts(): number {
+  return safeBCZCasts($skill`BCZ: Refracted Gaze`);
 }
 
 export function safeSweatBulletCasts(drumMachineROI: number): number {

@@ -1,15 +1,14 @@
-import { equippedItem, Familiar, Item, numericModifier, print } from "kolmafia";
+import { Familiar, Item, numericModifier, print } from "kolmafia";
 import {
   $effect,
   $familiar,
   $item,
-  $slot,
   findLeprechaunMultiplier,
   have,
   maxBy,
-  totalFamiliarWeight,
 } from "libram";
-import { familiarWaterBreathingEquipment } from "../../outfit";
+import { equipmentlessFamiliarWeight } from "../../familiar/familiarHelpers";
+import { familiarWaterBreathingEquipment } from "../../outfit/lib";
 
 export function bestFamUnderwaterGear(fam: Familiar): Item {
   // Returns best familiar gear for yachtzee chaining
@@ -22,13 +21,6 @@ export function bestFamUnderwaterGear(fam: Familiar): Item {
     : have($item`das boot`)
       ? $item`das boot`
       : $item`little bitty bathysphere`;
-}
-
-function equipmentlessFamiliarWeight(fam: Familiar): number {
-  return (
-    totalFamiliarWeight(fam, true) -
-    numericModifier(equippedItem($slot`familiar`), "Familiar Weight")
-  );
 }
 
 export function bestYachtzeeFamiliar(): Familiar {

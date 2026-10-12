@@ -6,7 +6,6 @@ import {
   canAdventureOrUnlock,
   getAvailableUltraRareZones,
   hasNameCollision,
-  unperidotableZones,
 } from "./wanderer/lib";
 
 export {
@@ -15,7 +14,6 @@ export {
   canAdventureOrUnlock,
   getAvailableUltraRareZones,
   hasNameCollision,
-  unperidotableZones,
 };
 export type { ValueFunctions, WanderOptions, DraggableFight, WanderDetails };
 export * from "./resources";

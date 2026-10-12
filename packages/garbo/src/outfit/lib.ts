@@ -5,8 +5,10 @@ import {
   canEquip,
   cliExecute,
   equippedItem,
+  Familiar,
   inebrietyLimit,
   Item,
+  Location,
   mallPrice,
   myClass,
   myInebriety,
@@ -32,13 +34,41 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { meatFamiliar } from "../familiar";
-import { BonusEquipMode, targetMeat } from "../lib";
+import { familiarCanBreathe } from "../familiar/familiarHelpers";
+import { meatFamiliar } from "../familiar/meatFamiliar";
+import { targetMeat } from "../lib";
 import {
   estimatedGarboTurns,
   highMeatMonsterCount,
   wanderingCopytargetsRemaining,
 } from "../turns";
+import { FarmingStrategy } from "../farmingStrategy";
+
+export enum BonusEquipMode {
+  FREE,
+  MEAT_TARGET,
+  DMT,
+  BARF,
+}
+
+export function modeIsFree(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
+}
+
+export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
+  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
+}
+
+export function modeValueOfMeat(mode: BonusEquipMode): number {
+  if (modeIsFree(mode)) return 0;
+  if (mode === BonusEquipMode.BARF) return FarmingStrategy.meatDropValue();
+  if (mode === BonusEquipMode.MEAT_TARGET) return targetMeat() / 100;
+  return 0;
+}
+
+export function modeValueOfItem(mode: BonusEquipMode): number {
+  return mode === BonusEquipMode.BARF ? FarmingStrategy.itemDropValue() : 0;
+}
 
 export function bestBjornalike(outfit: Outfit): Item | null {
   const bjornalikes = $items`Buddy Bjorn, Crown of Thrones`.filter((item) =>
@@ -71,7 +101,7 @@ export function cleaverCheck(): void {
   if (availableAmount($item`June cleaver`) > 1) cliExecute("refresh inventory");
 }
 
-export function useUPCs(): void {
+function useUPCs(): void {
   const UPC = $item`scratch 'n' sniff UPC sticker`;
   if (
     $items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`.every(
@@ -116,6 +146,13 @@ export function useUPCsIfNeeded({ familiar }: Outfit): void {
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
 export const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
+
+export function familiarSlotNeededForBreathing(
+  location: Location,
+  familiar?: Familiar,
+): boolean {
+  return location.environment === "underwater" && !familiarCanBreathe(familiar);
+}
 
 export function toSpec(source?: ActionSource | Requirement): OutfitSpec {
   if (!source) return {};

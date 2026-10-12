@@ -9,6 +9,7 @@ import {
 } from "libram";
 import { felizValue } from "../lib";
 import { haveEffect, myAdventures } from "kolmafia";
+import { FarmingStrategy } from "../farmingStrategy";
 
 const CLARA_TARGETS = [
   "volcoino",
@@ -18,12 +19,13 @@ const CLARA_TARGETS = [
 ] as const;
 type ClaraTarget = (typeof CLARA_TARGETS)[number];
 
-export const fishyTurns = () =>
+const fishyTurns = () =>
+  (FarmingStrategy.isUnderwater() ? 100 : 0) + // If we're farming cows, we should always have some fishy available when we want to yachtzee end of day
   Math.max(haveEffect($effect`Fishy`) - myAdventures(), 0) +
   (have($item`fishy pipe`) && !get("_fishyPipeUsed") ? 10 : 0) +
   (get("skateParkStatus") === "ice" && !get("_skateBuff1") ? 30 : 0);
 
-export function canYachtzee(): boolean {
+function canYachtzee(): boolean {
   return (
     fishyTurns() > 0 &&
     realmAvailable("sleaze") &&
@@ -33,7 +35,7 @@ export function canYachtzee(): boolean {
 
 let _claraIsVolcoino = false;
 export const claimClaraVolcoino = () => (_claraIsVolcoino = true);
-export const claraTarget = () =>
+const claraTarget = () =>
   _claraIsVolcoino
     ? "volcoino"
     : canYachtzee()
@@ -46,7 +48,7 @@ export const shouldClara = (target: ClaraTarget) =>
   !get("_claraBellUsed") &&
   CLARA_TARGETS.indexOf(claraTarget()) >= CLARA_TARGETS.indexOf(target);
 
-export const nonCinchNCs = () =>
+const nonCinchNCs = () =>
   shouldClara("yachtzee")
     ? 1
     : 0 +
@@ -54,18 +56,26 @@ export const nonCinchNCs = () =>
         ? $item`Apriling band tuba`.dailyusesleft
         : 0);
 
-export const cinchNCs = () =>
+export const combatNCs = () =>
+  (have($item`McHugeLarge left ski`)
+    ? Math.max(0, 3 - get("_mcHugeLargeAvalancheUses"))
+    : 0) +
+  (have($item`Jurassic Parka`)
+    ? Math.max(0, 5 - get("_spikolodonSpikeUses"))
+    : 0);
+
+const cinchNCs = () =>
   Math.min(
     Math.floor(CinchoDeMayo.totalAvailableCinch() / 60),
     Math.max(fishyTurns() - nonCinchNCs(), 0),
   );
 
 export const maximumYachtzees = () =>
-  clamp(nonCinchNCs() + cinchNCs(), 0, fishyTurns());
+  clamp(nonCinchNCs() + cinchNCs() + combatNCs(), 0, fishyTurns());
 
 export const willYachtzee = () => canYachtzee() && maximumYachtzees() > 0;
 
-export function cinchYachtzeeProfitable(): boolean {
+function cinchYachtzeeProfitable(): boolean {
   // A yachtzee costs a turn and gives us 20k meat for 60 cinch, projectile pinata costs 5 cinch and gets us 3 feliz candies
   return 20000 - get("valueOfAdventure") > 12 * 3 * felizValue();
 }

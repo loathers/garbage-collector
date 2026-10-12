@@ -10,15 +10,16 @@ import { $familiar, $item, clamp, get, have } from "libram";
 import { globalOptions } from "./config";
 // Dumb circular import stuff
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
-import { copyTargetCount } from "./target";
+import { copyTargetCount } from "./target/fights";
 import {
   digitizedMonstersRemainingForTurns,
   ESTIMATED_OVERDRUNK_TURNS,
   howManySausagesCouldIEat,
   targetingMeat,
 } from "./lib";
-import { embezzlerFights, LuckySource } from "./tasks/embezzler";
+import { embezzlerFights } from "./tasks/embezzler";
 import { nextWeekFights } from "./resources/sealclub";
+import { LuckySource } from "./resources/lucky";
 
 /**
  * Computes the estimated number of turns during which garbo will run

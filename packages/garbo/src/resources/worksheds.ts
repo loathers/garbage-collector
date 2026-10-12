@@ -21,7 +21,8 @@ import { globalOptions } from "../config";
 import { candyFactoryValue } from "../lib";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { estimatedGarboTurns } from "../turns";
-import { copyTargetCount } from "../target";
+import { copyTargetCount } from "../target/fights";
+import { FarmingStrategy } from "../farmingStrategy";
 
 const GOOD_TRAIN_STATIONS = [
   { piece: TrainSet.Station.GAIN_MEAT, value: () => 900 },
@@ -90,7 +91,7 @@ function getBestOffset(): number {
   return (bestOffset ??= maxBy([2, 3, 4, 5, 6, 7, 8], valueOffset));
 }
 
-export function getPrioritizedStations(): TrainSet.Station[] {
+function getPrioritizedStations(): TrainSet.Station[] {
   return getBestCycle().slice(0, getBestOffset() - 1);
 }
 
@@ -140,8 +141,21 @@ export function grabMedicine(): void {
   const regexp = /descitem\((\d+)\)/g;
   const itemChoices = new Map<Item, number>();
   if (!globalOptions.nobarf) {
+    switch (FarmingStrategy.location.environment) {
+      case "underground":
+        itemChoices.set($item`Breathitin™`, -1);
+        break;
+      case "indoor":
+        itemChoices.set($item`Extrovermectin™`, -1);
+        break;
+      case "outdoor":
+        itemChoices.set($item`Homebodyl™`, -1);
+        break;
+      default:
+        itemChoices.set($item`Fleshazole™`, -1);
+        break;
+    }
     // if spending turns at barf, we probably will be able to get an extro so always consider it
-    itemChoices.set($item`Extrovermectin™`, -1);
   }
 
   while ((match = regexp.exec(options)) !== null) {

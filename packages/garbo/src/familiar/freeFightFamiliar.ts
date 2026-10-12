@@ -18,12 +18,13 @@ import {
   Snapper,
   sum,
 } from "libram";
-import { canOpenRedPresent } from ".";
+
 import { garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
 import {
+  canOpenRedPresent,
   FamiliarMode,
   GeneralFamiliar,
   getUsedTcbFamiliars,
@@ -34,7 +35,7 @@ import {
 import { meatFamiliar } from "./meatFamiliar";
 import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
-import { copyTargetCount } from "../target";
+import { copyTargetCount } from "../target/fights";
 import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
 
@@ -59,16 +60,16 @@ export function menu(
     mode = "free",
   } = {} as FamiliarMenuOptions,
 ): GeneralFamiliar[] {
+  const { target } = toAdventure(adventure);
+  const monsterRates = adventureTargetToWeightedMap(target);
+
   const familiarMenu = [
-    ...getConstantValueFamiliars(mode),
+    ...getConstantValueFamiliars(mode, monsterRates),
     ...getDropFamiliars(),
     ...getToyCupidBowFamiliars(),
     ...(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []),
     ...extraFamiliars,
   ];
-
-  const { target } = toAdventure(adventure);
-  const monsterRates = adventureTargetToWeightedMap(target);
 
   if (canChooseMacro && myInebriety() <= inebrietyLimit()) {
     if (timeToMeatify()) {
@@ -107,6 +108,21 @@ export function menu(
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
         expectedValue: snapperValue(),
+        leprechaunMultiplier: 0,
+        limit: "special",
+        worksOnFreeRun: false,
+      });
+    }
+
+    if (
+      mode === "barf" &&
+      have($familiar`Sword of S Words`) &&
+      get("swordOfSWordsMonster") &&
+      get("_swordOfSWordsKills") < 100
+    ) {
+      familiarMenu.push({
+        familiar: $familiar`Sword of S Words`,
+        expectedValue: 0, // handled in barf cache
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: false,

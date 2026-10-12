@@ -1,7 +1,6 @@
 import { Args } from "grimoire-kolmafia";
 import {
   abort,
-  buy,
   canEquip,
   cliExecute,
   currentRound,
@@ -37,6 +36,7 @@ import {
   $familiars,
   $item,
   $items,
+  $location,
   $monster,
   $monsters,
   $skill,
@@ -50,15 +50,21 @@ import {
   have,
   haveInCampground,
   JuneCleaver,
+  logger,
+  LogLevels,
   maxBy,
   set,
   setCombatFlags,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
   unequip,
-  withProperty,
 } from "libram";
-import { stashItems, withStash, withVIPClan } from "./clan";
+import {
+  checkCurrentClanWhitelist,
+  stashItems,
+  withStash,
+  withVIPClan,
+} from "./clan";
 import { globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
@@ -69,36 +75,28 @@ import {
   HIGHLIGHT,
   isFreeAndCopyable,
   printEventLog,
-  printLog,
   propertyManager,
   questStep,
-  safeRestore,
   targetingMeat,
   userConfirmDialog,
   valueDrops,
 } from "./lib";
+import { printLog } from "./log";
 import { meatMood } from "./mood";
 import { potionSetup } from "./potions";
 import { endSession, startSession } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { garboAverageValue } from "./garboValue";
-import {
-  BarfTurnQuests,
-  CockroachSetup,
-  DailyFamiliarsQuest,
-  EmbezzlerFightsQuest,
-  FinishUpQuest,
-  PostQuest,
-  runGarboQuests,
-  runSafeGarboQuests,
-  SetupTargetCopyQuest,
-} from "./tasks";
+import { safeRestore } from "./restore";
+
 import {
   BuffExtensionQuest,
   PostBuffExtensionQuest,
 } from "./tasks/buffExtension";
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
+import { FarmingStrategy } from "./farmingStrategy";
+import { runGarboFarmQuests, runGarboQuests } from "./tasks/engine";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
 const TICKET_MAX_PRICE = 500000;
@@ -106,8 +104,7 @@ const TICKET_MAX_PRICE = 500000;
 function ensureBarfAccess() {
   if (!(get("stenchAirportAlways") || get("_stenchAirportToday"))) {
     const ticket = $item`one-day ticket to Dinseylandfill`;
-    // TODO: Get better item acquisition logic that e.g. checks own mall store.
-    if (!have(ticket)) buy(1, ticket, TICKET_MAX_PRICE);
+    acquire(1, ticket, TICKET_MAX_PRICE, true);
     use(ticket);
   }
 }
@@ -123,7 +120,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(28922); // equip codpiece for gem skills
+  sinceKolmafiaRevision(29288); // ASH method for predicting Portable Laughing Stock drops
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
@@ -132,6 +129,16 @@ export function main(argString = ""): void {
   if (globalOptions.help) {
     Args.showHelp(globalOptions);
     return;
+  }
+
+  if (!FarmingStrategy.available) {
+    throw new Error(
+      `Farming strategy not available: ${globalOptions.prefs.farmingMethod}`,
+    );
+  }
+
+  if (globalOptions.debug) {
+    logger.setLevel(LogLevels.DEBUG);
   }
 
   // Hit up main.php to get out of easily escapable choices
@@ -191,6 +198,10 @@ export function main(argString = ""): void {
             : null;
 
         if (parsedClanIdOrName) {
+          checkCurrentClanWhitelist(
+            parsedClanIdOrName,
+            "Return the stash items manually, then run garbo again.",
+          );
           Clan.with(parsedClanIdOrName, () => {
             for (const item of [...stashItems]) {
               const equipped = [item, ...getFoldGroup(item)].find((i) =>
@@ -310,7 +321,11 @@ export function main(argString = ""): void {
   examine($item`designer sweatpants`);
 
   startSession();
-  if (!globalOptions.nobarf && !globalOptions.simdiet) {
+  if (
+    !globalOptions.nobarf &&
+    !globalOptions.simdiet &&
+    FarmingStrategy.ensureBarfAccess
+  ) {
     ensureBarfAccess();
   }
 
@@ -336,7 +351,7 @@ export function main(argString = ""): void {
     return;
   }
 
-  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds`;
+  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds, black garden rose`;
   const startingGarden = gardens.find((garden) =>
     Object.getOwnPropertyNames(getCampground()).includes(garden.name),
   );
@@ -560,10 +575,11 @@ export function main(argString = ""): void {
           !globalOptions.simdiet
         ) {
           if (!globalOptions.nodiet) nonOrganAdventures();
-          runSafeGarboQuests([DailyFamiliarsQuest]); // Prep robortender ahead of time in case it's a giant crab
-          withProperty("removeMalignantEffects", false, () =>
-            runGarboQuests([CockroachSetup]),
-          );
+          runGarboQuests([CockroachSetup]); // Set up piraterealm up until the final encounter for island 1
+          if (get("_lastPirateRealmIsland") === $location`Dessert Island`) {
+            runGarboQuests([CockroachFinish]); // If it's Dessert island, no need to buff beforehand
+          }
+          maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
         }
         // 0. diet stuff.
         if (
@@ -594,6 +610,10 @@ export function main(argString = ""): void {
             ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`,
           );
         }
+        // TODO: Until properly handled ban equipment that expands organs
+        preventEquip.push(
+          ...$items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`,
+        );
 
         setDefaultMaximizeOptions({
           preventEquip: preventEquip,
@@ -602,6 +622,8 @@ export function main(argString = ""): void {
 
         // 2. do some target copy stuff
         freeFights();
+        runGarboQuests([CockroachFinish]); // Fight the giant giant crab after we've dieted for some extra buffs
+        maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
         runGarboQuests([SetupTargetCopyQuest]);
         dailyFights();
 
@@ -613,7 +635,7 @@ export function main(argString = ""): void {
           runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
           if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
           try {
-            runGarboQuests([PostQuest(), ...BarfTurnQuests]);
+            runGarboFarmQuests([PostQuest(), ...FarmQuests()]);
             runGarboQuests([FinishUpQuest]);
           } finally {
             setAutoAttack(0);
@@ -636,3 +658,9 @@ export function main(argString = ""): void {
   }
   set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
 }
+import { CockroachFinish, CockroachSetup } from "./tasks/cockroach/prep";
+import { EmbezzlerFightsQuest } from "./tasks/embezzler";
+import { FarmQuests } from "./tasks/farm";
+import { FinishUpQuest } from "./tasks/finishUp";
+import { PostQuest } from "./tasks/post";
+import { SetupTargetCopyQuest } from "./tasks/target";

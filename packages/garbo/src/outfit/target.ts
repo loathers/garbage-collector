@@ -7,36 +7,35 @@ import {
   $location,
   $monster,
   Environment,
+  getActiveEffects,
   Guzzlr,
   have,
 } from "libram";
-import { freeFightFamiliar, meatFamiliar } from "../familiar";
+import { freeFightFamiliar } from "../familiar/freeFightFamiliar";
+import { meatFamiliar, underwaterMeatFamiliar } from "../familiar/meatFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   applyCheeseBonus,
   bestBjornalike,
+  BonusEquipMode,
   cleaverCheck,
-  familiarWaterBreathingEquipment,
+  familiarSlotNeededForBreathing,
+  modeValueOfMeat,
   useUPCsIfNeeded,
   validateGarbageFoldable,
   waterBreathingEquipment,
 } from "./lib";
-import {
-  BonusEquipMode,
-  modeValueOfMeat,
-  songboomMeat,
-  targetingMeat,
-} from "../lib";
+import { songboomMeat, targetingMeat } from "../lib";
 import { globalOptions } from "../config";
-import { meatDrop } from "kolmafia";
+import { booleanModifier, meatDrop, setLocation } from "kolmafia";
 import { shouldRedigitize } from "../combat";
 import { nextWeekReady } from "../resources/sealclub";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
 
 export function meatTargetOutfit(
-  spec: OutfitSpec = {},
-  adventureArgument?: AdventureArgument,
+  spec: OutfitSpec,
+  adventureArgument: AdventureArgument,
 ): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);
@@ -45,34 +44,52 @@ export function meatTargetOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
-  if (nextWeekReady()) outfit.equip($item`legendary seal-clubbing club`);
-  const { location } = toAdventure(adventureArgument ?? $location.none);
+  const { location, target } = toAdventure(adventureArgument ?? $location.none);
+  setLocation(location);
   if (location === $location`Crab Island`) {
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
   } else if (
-    location === $location`Cobb's Knob Treasury` &&
+    target === $monster`Knob Goblin Embezzler` &&
     have($effect`Lucky!`)
   ) {
     const meat = meatDrop($monster`Knob Goblin Embezzler`) + songboomMeat();
     outfit.modifier.push(`${meat / 100} Meat Drop`, "-tie");
-  } else if (targetingMeat()) {
-    outfit.modifier.push(
-      `${modeValueOfMeat(BonusEquipMode.MEAT_TARGET)} Meat Drop`,
-      "-tie",
-    );
-  } else if (globalOptions.target.attributes.includes("FREE")) {
-    outfit.modifier.push("-tie");
+  } else {
+    if (targetingMeat()) {
+      outfit.modifier.push(
+        `${modeValueOfMeat(BonusEquipMode.MEAT_TARGET)} Meat Drop`,
+        "-tie",
+      );
+    } else if (globalOptions.target.attributes.includes("FREE")) {
+      outfit.modifier.push("-tie");
+    }
+    if (nextWeekReady()) {
+      outfit.equip($item`legendary seal-clubbing club`);
+    }
+
+    if (
+      !have($effect`Everything Looks Purple`) &&
+      location?.environment !== Environment.Underwater &&
+      !shouldRedigitize()
+    ) {
+      outfit.equip($item`Roman Candelabra`);
+    }
   }
+
   applyCheeseBonus(
     outfit,
     targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
   );
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
+  const familiarNeedsToBreathe = familiarSlotNeededForBreathing(location);
   outfit.familiar ??= targetingMeat()
-    ? meatFamiliar()
+    ? familiarNeedsToBreathe
+      ? underwaterMeatFamiliar()
+      : meatFamiliar()
     : freeFightFamiliar(location ?? globalOptions.target, {
-        equipmentForced: !outfit.canEquip($item`toy Cupid bow`),
+        equipmentForced:
+          familiarNeedsToBreathe || !outfit.canEquip($item`toy Cupid bow`),
       });
 
   const bjornChoice = chooseBjorn(
@@ -82,16 +99,24 @@ export function meatTargetOutfit(
 
   const underwater = location?.environment === "underwater";
   if (underwater) {
-    if (!outfit.familiar.underwater) {
-      outfit.equipFirst(familiarWaterBreathingEquipment);
+    // The bjornalike is force-equipped below, so claim the hat or back slot for breathing gear first
+    if (
+      !getActiveEffects().some((e) =>
+        booleanModifier(e, "Adventure Underwater"),
+      )
+    ) {
+      outfit.equipFirst(waterBreathingEquipment);
+      if (outfit.haveEquipped($item`The Crown of Ed the Undying`)) {
+        outfit.setModes({ edpiece: "fish" });
+      }
     }
-
-    if (!outfit.equipFirst(waterBreathingEquipment)) {
-      outfit.modifier.push("sea");
-    }
+    outfit.modifier.push("sea");
   }
 
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
+  if (
+    outfit.familiar === $familiar`Jill-of-All-Trades` &&
+    !familiarSlotNeededForBreathing(location, outfit.familiar)
+  ) {
     outfit.equip($item`LED candle`);
     outfit.setModes({ jillcandle: "ultraviolet" });
   }
@@ -141,14 +166,6 @@ export function meatTargetOutfit(
     parka: "kachungasaur",
     edpiece: "fish",
   });
-
-  if (
-    !have($effect`Everything Looks Purple`) &&
-    location?.environment !== Environment.Underwater &&
-    !shouldRedigitize()
-  ) {
-    outfit.equip($item`Roman Candelabra`);
-  }
 
   return outfit;
 }

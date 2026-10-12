@@ -1,6 +1,5 @@
 import {
   appearanceRates,
-  buy,
   canAdventure,
   Effect,
   effectFact,
@@ -11,6 +10,7 @@ import {
   modifierEval,
   Monster,
   numericFact,
+  retrieveItem,
   toItem,
   use,
 } from "kolmafia";
@@ -33,6 +33,7 @@ import {
   realmAvailable,
   sum,
   undelay,
+  withProperty,
 } from "libram";
 
 export const draggableFights = [
@@ -41,6 +42,8 @@ export const draggableFights = [
   "yellow ray",
   "freefight",
   "freerun",
+  "conditional freefight", // This is a free fight that will not always be successful, like Darts Bullseye
+  "freefight (no items)", // This is a free fight that causes you to get no item drops, like Assert your authority
 ] as const;
 export type DraggableFight = (typeof draggableFights)[number];
 export function isDraggableFight<T>(
@@ -64,9 +67,11 @@ export type WandererFactoryOptions = {
   effectValue: (effect: Effect, duration: number) => number;
   plentifulMonsters: Monster[];
   prioritizeCappingGuzzlr: boolean;
+  underwaterAllowed: boolean;
   digitzesRemaining?: (turns: number) => number;
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
+  canRefractedGaze?: boolean;
 };
 
 export type WandererFactory = (
@@ -79,6 +84,8 @@ export type WandererLocation = {
   targets: WandererTarget[];
   value: number;
   peridotMonster: Monster;
+  useRefractedGaze?: boolean;
+  useFeesh?: boolean;
 };
 
 export const UnlockableZones: UnlockableZone[] = [
@@ -136,9 +143,9 @@ const ILLEGAL_PARENTS = [
   "A Monorail Station",
   "Memories",
 ];
-const ILLEGAL_ZONES = ["The Drip", "Suburbs"];
+const ILLEGAL_ZONES = ["The Drip", "Suburbs", "The Mer-Kin Deepcity"];
 const canAdventureOrUnlockSkipList = [
-  ...$locations`The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, The Orcish Frat House, Through the Spacegate, Mt. Molehill`,
+  ...$locations`The Skate Park, The Bubblin' Caldera, Barrrney's Barrr, The F'c'le, The Poop Deck, Belowdecks, The Secret Government Laboratory, The Dire Warren, Inside the Palindome, The Haiku Dungeon, An Incredibly Strange Place (Bad Trip), An Incredibly Strange Place (Mediocre Trip), An Incredibly Strange Place (Great Trip), El Vibrato Island, The Daily Dungeon, Trick-or-Treating, Seaside Megalopolis, The Orcish Frat House, Through the Spacegate, Mt. Molehill`,
   ...Location.all().filter(
     ({ parent, zone }) =>
       ILLEGAL_PARENTS.includes(parent) || ILLEGAL_ZONES.includes(zone),
@@ -147,6 +154,7 @@ const canAdventureOrUnlockSkipList = [
 export function canAdventureOrUnlock(
   loc: Location,
   includeUnlockable = true,
+  underwaterAllowed = false,
 ): boolean {
   const skiplist = [...canAdventureOrUnlockSkipList];
 
@@ -183,7 +191,7 @@ export function canAdventureOrUnlock(
       (z) => loc.zone === z.zone && (z.available() || !z.noInv),
     );
   return (
-    !underwater(loc) &&
+    !(underwater(loc) && !(have($effect`Fishy`) && underwaterAllowed)) &&
     !skiplist.includes(loc) &&
     (canAdventure(loc) || canUnlock)
   );
@@ -193,11 +201,14 @@ export function unlock(loc: Location, value: number): boolean {
   const unlockableZone = UnlockableZones.find((z) => z.zone === loc.zone);
   if (!unlockableZone) return canAdventure(loc);
   if (unlockableZone.available()) return true;
-  if (buy(1, unlockableZone.unlocker, value) === 0) return false;
+  withProperty("autoBuyPriceLimit", value, () =>
+    retrieveItem(unlockableZone.unlocker, 1),
+  );
+  if (!have(unlockableZone.unlocker)) return false;
   return use(unlockableZone.unlocker);
 }
 
-const backupSkiplist = $locations`The Mansion of Dr. Weirdeaux, Professor Jacking's Huge-A-Ma-Tron, Your Mushroom Garden`;
+const backupSkiplist = $locations`The Mansion of Dr. Weirdeaux, Professor Jacking's Huge-A-Ma-Tron, Your Mushroom Garden, The Island Barracks`;
 
 // These are locations where all non-combats have skips or lead to a combat.
 const backupSafelist = $locations`The Haunted Gallery, The Haunted Ballroom, The Haunted Library, The Penultimate Fantasy Airship, Cobb's Knob Barracks, The Castle in the Clouds in the Sky (Basement), The Castle in the Clouds in the Sky (Ground Floor), The Castle in the Clouds in the Sky (Top Floor), The Haiku Dungeon, Twin Peak, A Mob of Zeppelin Protesters, The Upper Chamber, The Orcish Frat House`;
@@ -223,57 +234,83 @@ function canWanderTypeFreeFight(location: Location): boolean {
   );
 }
 
-const wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums, Lair of the Ninja Snowmen, The Island Barracks`;
+const wandererSkiplist = $locations`The Smut Orc Logging Camp, The Batrat and Ratbat Burrow, Guano Junction, The Beanbat Chamber, A-Boo Peak, The Mouldering Mansion, The Rogue Windmill, The Stately Pleasure Dome, Pandamonium Slums, Lair of the Ninja Snowmen`;
 function canWanderTypeWander(location: Location): boolean {
   return !wandererSkiplist.includes(location) && location.wanderers;
 }
 
-export function canWander(location: Location, type: DraggableFight): boolean {
-  if (underwater(location)) return false;
+export function canWander(
+  location: Location,
+  type: DraggableFight,
+  underwaterAllowed: boolean,
+): boolean {
+  if (underwater(location) && !underwaterAllowed) return false;
   switch (type) {
     case "backup":
     case "freerun":
       return canWanderTypeBackup(location);
     case "freefight":
     case "yellow ray":
+    case "conditional freefight":
+    case "freefight (no items)":
       return canWanderTypeFreeFight(location);
     case "wanderer":
       return canWanderTypeWander(location);
   }
 }
 
+type WandererTargetOptions = {
+  name: string;
+  location: Location;
+  zoneValue: number;
+  monsterBonusValues?: Map<Monster, number>;
+  monsterItemValues?: Map<Monster, number>;
+  prepareTurn?: () => boolean;
+};
+
 export class WandererTarget {
   name: string;
-  zoneValue: number;
-  monsterValues: Map<Monster, number>;
   location: Location;
+  zoneValue: number;
+  monsterBonusValues: Map<Monster, number>;
+  monsterItemValues: Map<Monster, number>;
   prepareTurn: () => boolean;
 
   /**
    * Process for determining where to put a wanderer to extract additional value from it
-   * @param name name of this wanderer - for documentation/logging purposes
-   * @param location returns the location to adventure to target this; null only if something goes wrong
-   * @param zoneValue value of an encounter existing within a zone, regardless of which monster you fight
-   * @param monsterValues A map of monsters and their expected value from this wanderer for encountering it
-   * @param prepareTurn attempt to set up, spending meat and or items as necessary
+   * @param options An object containing the following  keys:
+   * @param options.name name of this wanderer - for documentation/logging purposes
+   * @param options.location returns the location to adventure to target this; null only if something goes wrong
+   * @param options.zoneValue value of an encounter existing within a zone, regardless of which monster you fight
+   * @param options.monsterBonusValues A map of monsters and their expected non-itemdrop bonus value from this wanderer for encountering it
+   * @param options.monsterItemValues A map of monsters and their expected itemdrop value from this wanderer for encountering it
+   * @param options.prepareTurn attempt to set up, spending meat and or items as necessary
    */
-  constructor(
-    name: string,
-    location: Location,
-    zoneValue: number,
-    monsterValues: Map<Monster, number> = new Map<Monster, number>(),
-    prepareTurn: () => boolean = () => true,
-  ) {
+  constructor({
+    name,
+    location,
+    zoneValue,
+    monsterBonusValues = new Map<Monster, number>(),
+    monsterItemValues = new Map<Monster, number>(),
+    prepareTurn = () => true,
+  }: WandererTargetOptions) {
     this.name = name;
-    this.zoneValue = zoneValue;
-    this.monsterValues = monsterValues;
     this.location = location;
+    this.zoneValue = zoneValue;
+    this.monsterBonusValues = monsterBonusValues;
+    this.monsterItemValues = monsterItemValues;
     this.prepareTurn = prepareTurn;
   }
 }
 
 export function defaultFactory(): WandererTarget[] {
-  return [new WandererTarget("Default", $location`The Haunted Kitchen`, 0)];
+  return [
+    new WandererTarget({
+      name: "Default",
+      location: $location`The Haunted Kitchen`,
+      zoneValue: 0,
+    }),
+  ];
 }
 
 type WanderingSource = {
@@ -320,11 +357,21 @@ export function wandererTurnsAvailableToday(
   requiresMonsterKill: boolean,
 ): number {
   const canWanderCache: Record<DraggableFight, boolean> = {
-    backup: canWander(location, "backup"),
-    wanderer: canWander(location, "wanderer"),
-    "yellow ray": canWander(location, "yellow ray"),
-    freefight: canWander(location, "freefight"),
-    freerun: canWander(location, "freerun"),
+    backup: canWander(location, "backup", options.underwaterAllowed),
+    wanderer: canWander(location, "wanderer", options.underwaterAllowed),
+    "yellow ray": canWander(location, "yellow ray", options.underwaterAllowed),
+    freefight: canWander(location, "freefight", options.underwaterAllowed),
+    "conditional freefight": canWander(
+      location,
+      "conditional freefight",
+      options.underwaterAllowed,
+    ),
+    "freefight (no items)": canWander(
+      location,
+      "freefight (no items)",
+      options.underwaterAllowed,
+    ),
+    freerun: canWander(location, "freerun", options.underwaterAllowed),
   };
 
   const digitize =
@@ -459,9 +506,6 @@ export function hasNameCollision(monster: Monster): boolean {
   return false;
 }
 
-// TODO These seem to be bugged peridot zones. Can remove if they get fixed.
-export const unperidotableZones = $locations`A Mob of Zeppelin Protesters, The Upper Chamber, The Haunted Billiards Room`;
-
 /**
  * Retrieve an element from a map if it exists; setting a value for the given key if it doesn't.
  * @param map The map in question.
@@ -508,3 +552,13 @@ export const UNPERIDOTABLE_MONSTERS = new Set([
   ...(modifierEval("G") < 4 ? $monsters`alielf, cat-alien, dog-alien` : []),
   ...$monsters`Arizona bark scorpion, swimming pool monster`,
 ]);
+
+export function averageMonsterValue(
+  monsterValues: Map<Monster, number>,
+  rates: { [monster: string]: number },
+): number {
+  return sum(
+    [...monsterValues.entries()],
+    ([monster, value]) => value * (rates[monster.name] / 100),
+  );
+}

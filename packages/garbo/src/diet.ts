@@ -11,6 +11,7 @@ import {
   Effect,
   Element,
   elementalResistance,
+  equippedItem,
   fullnessLimit,
   getClanLounge,
   getProperty,
@@ -30,13 +31,16 @@ import {
   myLevel,
   myMaxhp,
   mySpleenUse,
+  myThrall,
   npcPrice,
+  numericModifier,
   print,
   putCloset,
   retrieveItem,
   retrievePrice,
   sellsItem,
   setProperty,
+  Slot,
   spleenLimit,
   takeCloset,
   toEffect,
@@ -60,7 +64,12 @@ import {
   $item,
   $items,
   $locations,
+  $modifier,
   $skill,
+  $thrall,
+  arrayEquals,
+  AsdonMartin,
+  canRememberSong,
   clamp,
   DesignerSweatpants,
   Diet,
@@ -83,19 +92,17 @@ import {
   sum,
   sumNumbers,
   uneffect,
+  unequip,
   withProperties,
+  withProperty,
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
+import { expectedGregs } from "./resources/extrovermectin";
+import { shouldAugustCast } from "./resources/scepter";
+import { synthesize } from "./resources/synthesis";
 import {
-  beretEffectValue,
-  expectedGregs,
-  shouldAugustCast,
-  synthesize,
-} from "./resources";
-import {
-  arrayEquals,
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
   targetingMeat,
@@ -103,9 +110,15 @@ import {
   userConfirmDialog,
 } from "./lib";
 import { shrugBadEffects } from "./mood";
-import { Potion, PotionTier } from "./potions";
-import { estimatedGarboTurns, highMeatMonsterCount } from "./turns";
+import { effectValueWithOpportunityCost, Potion, PotionTier } from "./potions";
+import {
+  estimatedGarboTurns,
+  estimatedTurnsTomorrow,
+  highMeatMonsterCount,
+} from "./turns";
 import { garboValue } from "./garboValue";
+import { GarboWorkshed } from "./tasks/post/worksheds";
+import { FarmingStrategy } from "./farmingStrategy";
 
 const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
@@ -129,7 +142,7 @@ function consumeWhileRespectingMoonRestaurant(command: () => void, item: Item) {
     {
       autoSatisfyWithCloset:
         !usingMoonZoneRestaurant && get("autoSatisfyWithCloset"),
-      autoSatisfyWithMall: !usingMoonZoneRestaurant,
+      autoSatisfyWithMall: false,
     },
     command,
   );
@@ -154,13 +167,23 @@ function eatSafe(qty: number, item: Item) {
   if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
     eat($item`fudge spork`);
   }
+  if (
+    myClass() === $class`Pastamancer` &&
+    myThrall() !== $thrall`Spice Ghost` &&
+    !get("_legendarySpiceGhostFood") &&
+    $thrall`Spice Ghost`.level + (get("pumpkinSpiceWhorlUsed") ? 3 : 0) >= 11
+  ) {
+    useSkill($skill`Bind Spice Ghost`);
+  }
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
   consumeWhileRespectingMoonRestaurant(() => {
     if (!eat(qty, item)) throw "Failed to eat safely";
   }, item);
 }
 
-const EXPENSIVE_SONGS = $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
+const EXPENSIVE_SONGS = FarmingStrategy.isUnderwater()
+  ? $effects`The Ballad of Richie Thingfinder, Chorale of Companionship, Donho's Bubbly Ballad`
+  : $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
 const USEFUL_SONGS = $effects`Polka of Plenty, Ur-Kel's Aria of Annoyance, Fat Leon's Phat Loot Lyric`;
 function shrugForOde() {
   const inexpensiveSongs = getActiveSongs().filter(
@@ -185,7 +208,7 @@ function buskEffectValuer(effect: Effect, duration: number): number {
   ) {
     return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
   }
-  return beretEffectValue(effect, duration);
+  return effectValueWithOpportunityCost(effect, duration);
 }
 function canBusk() {
   return PrismaticBeret.have() && get("_beretBuskingUses") < 5;
@@ -207,6 +230,9 @@ function drinkSafe(qty: number, item: Item) {
     const odeTurns = qty * item.inebriety;
     const castTurns = odeTurns - haveEffect($effect`Ode to Booze`);
     if (castTurns > 0) {
+      if (!canRememberSong() && !have($effect`Ode to Booze`)) {
+        throw new Error("Unable to make a song slot for Ode to Booze!");
+      }
       useSkill(
         $skill`The Ode to Booze`,
         Math.ceil(castTurns / turnsPerCast($skill`The Ode to Booze`)),
@@ -229,7 +255,9 @@ function drinkSafe(qty: number, item: Item) {
 }
 
 function chewSafe(qty: number, item: Item) {
-  if (!chew(qty, item)) throw "Failed to chew safely";
+  withProperty("autoSatisfyWithMall", false, () => {
+    if (!chew(qty, item)) throw "Failed to chew safely";
+  });
 }
 
 function consumeSafe(
@@ -247,7 +275,7 @@ function consumeSafe(
   if (!skipAcquire && !usingMoonZoneRestaurant) {
     if (averageAdventures > 0 || additionalValue) {
       const cap = Math.max(0, averageAdventures * MPA) + (additionalValue ?? 0);
-      acquire(qty, item, cap, true);
+      acquire(qty, item, cap, true, undefined, true);
     } else {
       acquire(qty, item);
     }
@@ -620,6 +648,15 @@ function menu(): MenuItem<Note>[] {
     new MenuItem(cheapestItem(complexMushroomWines)),
     new MenuItem(cheapestItem(perfectDrinks)),
     new MenuItem($item`green eggnog`),
+    new MenuItem($item`can of Brütalbräu`, {
+      additionalValue: garboValue($item`fancy tin beer can`),
+    }),
+    new MenuItem($item`can of Drooling Monk`, {
+      additionalValue: garboValue($item`fancy tin beer can`),
+    }),
+    new MenuItem($item`can of Impetuous Scofflaw`, {
+      additionalValue: garboValue($item`fancy tin beer can`),
+    }),
 
     // SPLEEN
     new MenuItem($item`octolus oculus`),
@@ -828,7 +865,7 @@ function ingredientCost(item: Item): number {
  * @param targets number of target monsters expected to be encountered on this day
  * @param turns number of turns total expecte
  */
-export function potionMenu(
+function potionMenu(
   baseMenu: MenuItem<Note>[],
   targets: number,
   turns: number,
@@ -848,7 +885,11 @@ export function potionMenu(
 
     let potion = input instanceof Item ? new Potion(input) : input;
     let mayo: Item | undefined = undefined;
-    if (itemType(potion.potion) === "food" && MayoClinic.installed()) {
+    if (
+      itemType(potion.potion) === "food" &&
+      (GarboWorkshed.current?.workshed === $item`portable Mayo Clinic` ||
+        switchingToMayo())
+    ) {
       potion = potion.doubleDuration();
       mayo = Mayo.zapine;
     }
@@ -1019,6 +1060,10 @@ function balanceMenu(
     if (iterations <= 0) {
       return fullMenu;
     } else {
+      print(
+        `Calculating diet, please wait${".....".slice(0, iterations)}`,
+        HIGHLIGHT,
+      );
       const balancingDiet = dietPlanner(fullMenu);
       return rebalance(
         menu,
@@ -1038,7 +1083,6 @@ export function computeDiet(): {
   pantsgiving: () => Diet<Note>;
   sweatpants: () => Diet<Note>;
 } {
-  print("Calculating diet, please wait...", HIGHLIGHT);
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
   const orEmpty = (diet: Diet<Note>) =>
@@ -1430,10 +1474,23 @@ MenuItem.defaultPriceFunction = (item: Item) => {
 
 export function runDiet(): void {
   withVIPClan(() => {
+    // Strip organ capacity enhancers to avoid accidental overfilling.
     if (myFamiliar() === $familiar`Stooper`) {
       useFamiliar($familiar.none);
     }
 
+    for (const slot of Slot.all()) {
+      const item = equippedItem(slot);
+      if (
+        numericModifier(item, $modifier`stomach capacity`) ||
+        numericModifier(item, $modifier`liver capacity`) ||
+        numericModifier(item, $modifier`spleen capacity`)
+      ) {
+        unequip(slot);
+      }
+    }
+
+    // Compute diet
     const dietBuilder = computeDiet();
 
     if (globalOptions.simdiet) {
@@ -1443,6 +1500,24 @@ export function runDiet(): void {
       }
       printDiet(dietBuilder.diet(), "FULL");
     } else {
+      if (switchingToMayo()) {
+        if (
+          GarboWorkshed.current?.workshed ===
+          $item`Asdon Martin keyfob (on ring)`
+        ) {
+          AsdonMartin.drive(
+            FarmingStrategy.asdonEffect,
+            dietAdventures(dietBuilder.diet()) +
+              (globalOptions.ascend ? 0 : estimatedTurnsTomorrow),
+          );
+        } else {
+          GarboWorkshed.current?.action?.();
+        }
+
+        if (GarboWorkshed.useNext()?.workshed !== $item`portable Mayo Clinic`) {
+          throw new Error("Failed to switch to portable Mayo clinic");
+        }
+      }
       pillCheck();
 
       nonOrganAdventures();
@@ -1463,9 +1538,32 @@ export function runDiet(): void {
       }
 
       consumeDiet(dietBuilder.diet(), "FULL");
-
+      const organChecks = [
+        { current: myInebriety, max: inebrietyLimit },
+        { current: mySpleenUse, max: spleenLimit },
+        { current: myFullness, max: fullnessLimit },
+      ];
+      if (organChecks.some(({ current, max }) => current() < max())) {
+        throw new Error("Tried to fill our organs but couldn't!");
+      }
       shrugBadEffects();
     }
   });
   globalOptions.dietCompleted = true;
+}
+
+const PRE_DIET_WORKSHEDS = [
+  undefined,
+  ...$items`Asdon Martin keyfob (on ring), TakerSpace letter of Marque, spinning wheel`,
+];
+function switchingToMayo(): boolean {
+  return (
+    GarboWorkshed.next?.workshed === $item`portable Mayo Clinic` &&
+    (PRE_DIET_WORKSHEDS.includes(GarboWorkshed.current?.workshed) ||
+      !!GarboWorkshed.current?.canRemove())
+  );
+}
+
+function dietAdventures(diet: Diet<Note>): number {
+  return Math.floor(estimatedGarboTurns(false) + diet.expectedAdventures());
 }

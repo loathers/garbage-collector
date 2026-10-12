@@ -1,6 +1,11 @@
 import { Args } from "grimoire-kolmafia";
-import { Item, print } from "kolmafia";
-import { $item, $items, $monster } from "libram";
+import { abort, Item, Location, print, toLocation } from "kolmafia";
+import { $item, $items, $location, $monster } from "libram";
+
+export enum FarmingMethod {
+  BARF_MOUNTAIN = "Barf Mountain",
+  THE_CORAL_CORRAL = "The Coral Corral",
+}
 
 const workshedAliases = [
   { item: $item`model train set`, aliases: ["trainrealm"] },
@@ -19,6 +24,35 @@ const allWorkshedAliases = [
     return { item: item, aliases: [item.name.toLowerCase()] };
   }),
 ];
+
+const farmingStrategyAliases: Record<
+  FarmingMethod,
+  { location: Location; aliases: string[] }
+> = {
+  [FarmingMethod.BARF_MOUNTAIN]: {
+    location: $location`Barf Mountain`,
+    aliases: ["barf", "tourists", "barfmountain", "dinsey"],
+  },
+  [FarmingMethod.THE_CORAL_CORRAL]: {
+    location: $location`The Coral Corral`,
+    aliases: [
+      "cowo",
+      "corral",
+      "ranch",
+      "rancho",
+      "coolranch",
+      "coral",
+      "cows",
+    ],
+  },
+};
+
+function stringToFarmingMethod(s: string): FarmingMethod {
+  return (Object.entries(farmingStrategyAliases).find(
+    ([, { location, aliases }]) =>
+      toLocation(s) === location || aliases.includes(s.toLowerCase()),
+  )?.[0] ?? abort(`Invalid farming location: ${s}`)) as FarmingMethod;
+}
 
 function toInitials(s: string): string {
   const initials = s
@@ -72,6 +106,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "operate under the assumption that you're ascending after running it, rather than experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.",
       default: false,
+    }),
+    debug: Args.flag({
+      setting: "",
+      help: "Turn on libram debugging.",
+      hidden: true,
     }),
     loginvalidwishes: Args.flag({
       setting: "",
@@ -152,7 +191,7 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
         help: "Intelligently switch into the workshed whose item name you give us. Also accepts substrings of the item name (e.g. dna, trainset), certain shorthand aliases (e.g. car) and initials of length >= 3 (e.g. cmc).",
         options: [
           ...allWorkshedAliases.map(
-            ({ item, aliases }) =>
+            ({ item, aliases }): [Item, string] =>
               [
                 item,
                 `${[...aliases, toInitials(item.name.toLowerCase())]
@@ -256,6 +295,22 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
           help: "At how many minutes before Rollover should we terminate to let you get ready for bed?",
           default: 5,
         }),
+        farmingMethod: Args.custom<FarmingMethod>(
+          {
+            default: FarmingMethod.BARF_MOUNTAIN,
+            help: "Select the farming method to use.",
+            options: [
+              ...Object.entries(farmingStrategyAliases).map(
+                ([method, { location, aliases }]): [FarmingMethod, string] => [
+                  method as FarmingMethod,
+                  [location.toString(), ...aliases].join(", "),
+                ],
+              ),
+            ],
+          },
+          stringToFarmingMethod,
+          "Farming Method",
+        ),
       },
     ),
     /*

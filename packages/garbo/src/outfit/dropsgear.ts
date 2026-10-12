@@ -6,8 +6,10 @@ import {
   haveEffect,
   Item,
   mallPrice,
+  Modifier,
   myFullness,
   myFury,
+  stringModifier,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -20,6 +22,7 @@ import {
   BatWings,
   BurningLeaves,
   clamp,
+  CupOfThirteens,
   DaylightShavings,
   DesignerSweatpants,
   get,
@@ -33,12 +36,8 @@ import {
 import { globalOptions } from "../config";
 import { cheapestItem } from "../diet";
 import {
-  baseMeat,
   bestJuneCleaverOption,
-  BonusEquipMode,
   juneCleaverChoiceValues,
-  modeUseLimitedDrops,
-  modeValueOfMeat,
   targetPointerRingMeat,
   valueJuneCleaverOption,
 } from "../lib";
@@ -50,6 +49,8 @@ import {
   getUsedTcbFamiliars,
   tcbTurnsLeft,
 } from "../familiar/lib";
+import { FarmingStrategy } from "../farmingStrategy";
+import { BonusEquipMode, modeUseLimitedDrops, modeValueOfMeat } from "./lib";
 
 const pantsgivingBonuses = new Map<number, number>();
 function pantsgiving(mode: BonusEquipMode) {
@@ -80,7 +81,7 @@ function pantsgiving(mode: BonusEquipMode) {
         expectedSinusTurns,
       )
     : expectedSinusTurns;
-  const sinusVal = expectedUseableSinusTurns * 1.0 * baseMeat();
+  const sinusVal = expectedUseableSinusTurns * 1.0 * FarmingStrategy.baseMeat();
   const fullnessValue =
     sinusVal +
     get("valueOfAdventure") * 6.5 -
@@ -291,6 +292,7 @@ export function bonusGear(
     ...bindlestocking(mode),
     ...simpleTargetCrits(mode),
     ...batWings(mode),
+    ...cupOfThirteens(mode),
     ...mobius(mode),
     ...(valueCircumstantialBonus
       ? new Map<Item, number>([
@@ -365,7 +367,7 @@ function shavingBonus(): Map<Item, number> {
     return new Map();
   }
 
-  const bonusValue = (baseMeat() * 100 + 72 * 50) / 100;
+  const bonusValue = (FarmingStrategy.baseMeat() * 100 + 72 * 50) / 100;
   return new Map<Item, number>([[$item`Daylight Shavings Helmet`, bonusValue]]);
 }
 
@@ -491,9 +493,16 @@ function powerGlove(): Map<Item, number> {
   ]);
 }
 
+const speakeasyBanList = $items`glass of "milk", cup of "tea", thermos of "whiskey", Lucky Lindy, Bee's Knees, Sockdollager, Ish Kabibble, Hot Socks, Phonus Balonus, Flivver, Sloppy Jalopy`;
+
 const POSSIBLE_SNEEGLEEB_DROPS = Item.all().filter(
   (i) =>
-    i.tradeable && i.discardable && (i.inebriety || i.fullness || i.potion),
+    i.tradeable &&
+    i.discardable &&
+    (i.inebriety ||
+      i.fullness ||
+      (i.potion && stringModifier(i, Modifier.get("Last Available")) === "")) &&
+    !speakeasyBanList.includes(i),
 );
 let sneegleebBonus: number;
 const SNEEGLEEB_DROP_RATE = 0.13;
@@ -524,4 +533,44 @@ export function toyCupidBow(familiar: Familiar): Map<Item, number> {
   return new Map([
     [$item`toy Cupid bow`, familiarEquipmentValue(familiar) / turns],
   ]);
+}
+
+const CUP_OF_THIRTEENS_DROPS = POSSIBLE_SNEEGLEEB_DROPS.filter(
+  (item) => item.inebriety,
+);
+
+let cupOfThirteensBonus: [string, number] | undefined;
+
+function cupOfThirteens(mode: BonusEquipMode): Map<Item, number> {
+  if (
+    !CupOfThirteens.have() ||
+    (mode !== BonusEquipMode.BARF && mode !== BonusEquipMode.FREE)
+  ) {
+    return new Map();
+  }
+
+  const dropsToday = get("_cupOf13sDrops");
+
+  // A drop occurs at 6 charges if we haven't gotten a drop today.
+  // Otherwise, the next drop occurs at 10 charges.
+  const chargeRequired = dropsToday === 0 ? 6 : 10;
+
+  const qualities =
+    dropsToday <= 1
+      ? ["EPIC", "awesome"]
+      : dropsToday <= 3
+        ? ["awesome", "good"]
+        : dropsToday <= 5
+          ? ["good", "decent"]
+          : ["decent", "crappy"];
+
+  if (cupOfThirteensBonus?.[0] !== qualities[0]) {
+    const possibleDrops = CUP_OF_THIRTEENS_DROPS.filter((item) =>
+      qualities.includes(item.quality),
+    );
+    cupOfThirteensBonus = [qualities[0], garboAverageValue(...possibleDrops)];
+  }
+
+  const cupBonus = cupOfThirteensBonus[1] / chargeRequired;
+  return new Map([[$item`Cup of 13s`, cupBonus]]);
 }
