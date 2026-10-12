@@ -200,11 +200,15 @@ const chooseAprilFamiliar = () => {
 };
 
 function chateauFanWorthIt(): boolean {
+  const currentRestsAvailable = totalFreeRests() - get("timesRested"); // It's okay for this to be negative
+  const restsAvailableWithFan =
+    totalFreeRests() +
+    (ChateauMantegna.getCeiling() === "ceiling fan" ? 0 : 5) -
+    get("timesRested");
+
   const restsGainedFromFan = Math.max(
     0,
-    totalFreeRests() +
-      (ChateauMantegna.getCeiling() === "ceiling fan" ? 0 : 5) -
-      get("timesRested"),
+    restsAvailableWithFan - currentRestsAvailable,
   );
   if (restsGainedFromFan <= 0) return false;
 
