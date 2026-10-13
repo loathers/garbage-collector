@@ -33,9 +33,9 @@ import {
   getFoldGroup,
   have,
   set,
+  StrictMacro,
   unequip,
 } from "libram";
-import { Macro } from "./combat";
 import { globalOptions } from "./config";
 import {
   HIGHLIGHT,
@@ -220,11 +220,11 @@ class StashManager {
         "In fight, trying to get away to return items to stash...",
         HIGHLIGHT,
       );
-      Macro.if_(
+      StrictMacro.if_(
         [globalOptions.target, $monster`giant giant crab`],
-        Macro.attack().repeat(),
+        StrictMacro.attack().repeat(),
       )
-        .if_(ULTRA_RARE_MONSTERS, Macro.abort())
+        .if_(ULTRA_RARE_MONSTERS, StrictMacro.abort())
         .tryItem(
           ...unlimitedFreeRunList
             .filter((i) => getAcquirePrice(i) < get("valueOfAdventure"))
