@@ -31,7 +31,7 @@ import {
 import { GarboStrategy } from "../../combatStrategy";
 import { FarmingContext } from "../context";
 import { FarmingStrategy } from "../../farmingStrategy";
-import { barfOutfit } from "../../outfit/barf";
+import { barfOutfit } from "../../outfit/barfOutfit";
 import { farmPrepare } from "../farm/farmTurn";
 
 export const yachtzeeQuest: Quest<

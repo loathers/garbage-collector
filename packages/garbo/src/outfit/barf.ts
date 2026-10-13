@@ -11,7 +11,6 @@ import {
   myInebriety,
   retrieveItem,
   setLocation,
-  toSlot,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -20,7 +19,6 @@ import {
   $item,
   $items,
   $skill,
-  $slot,
   Delayed,
   get,
   getKramcoWandererChance,
@@ -28,7 +26,6 @@ import {
   maxBy,
   undelay,
 } from "libram";
-import { barfFamiliar } from "../familiar/barfFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
@@ -41,7 +38,6 @@ import {
   validateGarbageFoldable,
 } from "./lib";
 import { expectedDropValue, MEAT_TARGET_MULTIPLIER } from "../lib";
-import { trackMarginalTurnExtraValue } from "../session";
 import { FarmingStrategy } from "../farmingStrategy";
 import { garboValue } from "../garboValue";
 
@@ -221,18 +217,4 @@ export function computeBarfOutfit(
   });
 
   return outfit;
-}
-
-export function barfOutfit(spec: OutfitSpec, sim = false): Outfit {
-  const { familiar, extraValue } = barfFamiliar(
-    Boolean(
-      spec.famequip ||
-        spec.equip?.some((equipment) => toSlot(equipment) === $slot`familiar`),
-    ),
-  );
-  try {
-    return computeBarfOutfit({ familiar, ...spec }, sim);
-  } finally {
-    trackMarginalTurnExtraValue(extraValue);
-  }
 }
