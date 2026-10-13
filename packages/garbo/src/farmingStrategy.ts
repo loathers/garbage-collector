@@ -2,17 +2,13 @@ import { OutfitSpec } from "grimoire-kolmafia";
 import {
   Effect,
   effectFact,
-  equippedItem,
   getMonsters,
   isBanished,
-  itemType,
   Location,
   mallPrice,
   Monster,
-  myBuffedstat,
   print,
 } from "kolmafia";
-import { GarboStrategy } from "./combatStrategy";
 import {
   $effect,
   $effects,
@@ -23,8 +19,6 @@ import {
   $monster,
   $monsters,
   $skill,
-  $slot,
-  $stat,
   adventureTargetToWeightedMap,
   Delayed,
   get,
@@ -34,9 +28,7 @@ import {
   sum,
   undelay,
 } from "libram";
-import { Macro } from "./combat";
 import { FarmingMethod, globalOptions } from "./config";
-import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
 import { expectedDropValue, songboomMeat } from "./lib";
@@ -72,7 +64,6 @@ interface FarmingStrategyOptions {
   location: Location;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
-  combat: (context: FarmingContext) => Macro;
   // These all need a default
   available?: boolean;
   outfit?: (context: FarmingContext) => OutfitSpec;
@@ -80,7 +71,6 @@ interface FarmingStrategyOptions {
   bonusEffects?: Effect[];
   bonusModifiers?: NumericModifier[];
   banishMonsters?: Monster[];
-  post?: () => void;
 }
 
 const DEFAULT_OPTIONS: Readonly<{
@@ -92,7 +82,6 @@ const DEFAULT_OPTIONS: Readonly<{
   bonusModifiers: [] as NumericModifier[],
   banishMonsters: [] as Monster[],
   ncTurns: Infinity,
-  post: () => {},
   available: true,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   outfit: (_context: FarmingContext): OutfitSpec => ({}),
@@ -165,10 +154,6 @@ class FarmingStrategySkeleton {
   monstersToBanish(): Monster[] {
     return this.banishMonsters.filter((m) => !isBanished(m));
   }
-
-  strategy(): GarboStrategy<FarmingContext> {
-    return new GarboStrategy(this.combat);
-  }
 }
 
 export const FarmingStrategy = new Proxy(new FarmingStrategySkeleton(), {
@@ -224,9 +209,6 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
         ? $items`lube-shoes`
         : [],
   }),
-
-  combat: () => Macro.meatKill(),
-  post: completeBarfQuest,
 };
 
 const THE_CORAL_CORRAL: FarmingStrategyOptions = {
@@ -249,29 +231,6 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
 
     return banishItem ? { equip: [banishItem] } : {};
   },
-
-  combat: ({ banish }) =>
-    Macro.externalIf(
-      !get("seahorseName"),
-      Macro.if_(
-        $monster`wild seahorse`,
-        Macro.item($item`sea cowbell`)
-          .item($item`sea cowbell`)
-          .item($item`sea cowbell`)
-          .item($item`sea lasso`)
-          .abortWithMsg("Wild seahorse should have been tamed, what happened?"),
-      ),
-    )
-      .farmingBanish(banish)
-      .externalIf(
-        myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 ||
-          (have($skill`Hero of the Half-Shell`) &&
-            itemType(equippedItem($slot`offhand`)) === "shield" &&
-            myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10),
-        Macro.delevel(),
-      )
-      .externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`))
-      .meatKill(),
 };
 
 function currentStrategy(): FarmingStrategyOptions {

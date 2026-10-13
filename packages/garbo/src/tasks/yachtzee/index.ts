@@ -31,6 +31,7 @@ import {
 import { GarboStrategy } from "../../combatStrategy";
 import { FarmingContext } from "../context";
 import { FarmingStrategy } from "../../farmingStrategy";
+import { FarmingCombat } from "../../farmingCombat";
 import { barfOutfit } from "../../outfit/barfOutfit";
 import { farmPrepare } from "../farm/farmTurn";
 
@@ -121,11 +122,11 @@ export const yachtzeeQuest: Quest<
         do: () => FarmingStrategy.location,
         combat: new GarboStrategy((context) =>
           Macro.skill($skill`Launch spikolodon spikes`).step(
-            FarmingStrategy.combat(context),
+            FarmingCombat.combat(context),
           ),
         ),
         prepare: farmPrepare,
-        post: () => FarmingStrategy.post?.(),
+        post: () => FarmingCombat.post(),
         turns: () => 2 * Math.max(0, 5 - get("_spikolodonSpikeUses")), // Need one turn to cast the NC, and one to do the yachtzee
         sobriety: "sober",
         spendsTurn: true,
@@ -149,11 +150,11 @@ export const yachtzeeQuest: Quest<
         do: () => FarmingStrategy.location,
         combat: new GarboStrategy((context) =>
           Macro.skill($skill`McHugeLarge Avalanche`).step(
-            FarmingStrategy.combat(context),
+            FarmingCombat.combat(context),
           ),
         ),
         prepare: farmPrepare,
-        post: () => FarmingStrategy.post?.(),
+        post: () => FarmingCombat.post(),
         turns: () => 2 * Math.max(0, 3 - get("_mcHugeLargeAvalancheUses")), // Need one turn to cast the NC, and one to do the yachtzee
         sobriety: "sober",
         spendsTurn: true,
