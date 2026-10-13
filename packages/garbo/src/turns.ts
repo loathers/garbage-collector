@@ -17,9 +17,8 @@ import {
   howManySausagesCouldIEat,
   targetingMeat,
 } from "./lib";
-import { embezzlerFights } from "./tasks/embezzler";
 import { nextWeekFights } from "./resources/sealclub";
-import { LuckySource } from "./resources/lucky";
+import { embezzlerLuckyFights, LuckySource } from "./resources/lucky";
 
 /**
  * Computes the estimated number of turns during which garbo will run
@@ -146,6 +145,6 @@ export function wanderingCopytargetsRemaining() {
 }
 export function highMeatMonsterCount(...excludedEmbezzlers: LuckySource[]) {
   const meatTargets = targetingMeat() ? copyTargetCount() : 0;
-  const embezzlers = embezzlerFights(...excludedEmbezzlers);
+  const embezzlers = embezzlerLuckyFights(...excludedEmbezzlers);
   return meatTargets + embezzlers;
 }
