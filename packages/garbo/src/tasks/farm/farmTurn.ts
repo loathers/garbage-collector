@@ -25,7 +25,7 @@ import { FarmingCombat } from "../../farmingCombat";
 import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
-import { barfOutfit } from "../../outfit/barfOutfit";
+import { barfOutfit } from "../../outfit/barf";
 import { FarmingContext } from "../context";
 import { acquire } from "../../acquire";
 
