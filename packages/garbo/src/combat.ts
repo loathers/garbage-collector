@@ -57,7 +57,7 @@ import {
   StrictMacro,
 } from "libram";
 import { globalOptions, isQuickCombat } from "./config";
-import { canOpenRedPresent, timeToMeatify } from "./familiar/lib";
+import { canOpenRedPresent, timeToMeatify } from "./familiar/familiarHelpers";
 import { meatFamiliar } from "./familiar/meatFamiliar";
 import { estimatedGarboTurns, wanderingCopytargetsRemaining } from "./turns";
 import {

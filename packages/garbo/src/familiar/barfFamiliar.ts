@@ -37,12 +37,12 @@ import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
+import { timeToMeatify } from "./familiarHelpers";
 import {
   GeneralFamiliar,
   getUsedTcbFamiliars,
   tcbTurnsLeft,
   tcbValue,
-  timeToMeatify,
   turnsAvailable,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
