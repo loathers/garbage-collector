@@ -21,12 +21,8 @@ import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
-import {
-  applyCheeseBonus,
-  BonusEquipMode,
-  cleaverCheck,
-  validateGarbageFoldable,
-} from "./lib";
+import { applyCheeseBonus } from "./cheese";
+import { BonusEquipMode, cleaverCheck, validateGarbageFoldable } from "./lib";
 import { mimicExperienceNeeded } from "../resources/chestMimic";
 import {
   adventuresPerSweat,

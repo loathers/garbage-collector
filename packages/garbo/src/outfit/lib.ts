@@ -4,18 +4,13 @@ import {
   canAdventure,
   canEquip,
   cliExecute,
-  equippedItem,
   Familiar,
   inebrietyLimit,
   Item,
   Location,
-  mallPrice,
   myClass,
   myInebriety,
   numericModifier,
-  toInt,
-  toSlot,
-  visitUrl,
 } from "kolmafia";
 import {
   $class,
@@ -23,25 +18,15 @@ import {
   $item,
   $items,
   $location,
-  $slot,
-  $slots,
   ActionSource,
   findLeprechaunMultiplier,
-  get,
   getFoldGroup,
   have,
   Requirement,
 } from "libram";
-import { acquire } from "../acquire";
-import { globalOptions } from "../config";
 import { familiarCanBreathe } from "../familiar/familiarHelpers";
 import { meatFamiliar } from "../familiar/meatFamiliar";
 import { targetMeat } from "../lib";
-import {
-  estimatedGarboTurns,
-  highMeatMonsterCount,
-  wanderingCopytargetsRemaining,
-} from "../turns";
 import { FarmingStrategy } from "../farmingStrategy";
 
 export enum BonusEquipMode {
@@ -99,49 +84,6 @@ export function bestBjornalike(outfit: Outfit): Item | null {
 
 export function cleaverCheck(): void {
   if (availableAmount($item`June cleaver`) > 1) cliExecute("refresh inventory");
-}
-
-function useUPCs(): void {
-  const UPC = $item`scratch 'n' sniff UPC sticker`;
-  if (
-    $items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`.every(
-      (i) => !have(i),
-    )
-  ) {
-    visitUrl(`bedazzle.php?action=juststick&sticker=${toInt(UPC)}&pwd`);
-  }
-  for (let slotNumber = 1; slotNumber <= 3; slotNumber++) {
-    const slot = toSlot(`sticker${slotNumber}`);
-    const sticker = equippedItem(slot);
-    if (sticker === UPC) continue;
-    visitUrl("bedazzle.php");
-    if (sticker !== $item.none) {
-      visitUrl(`bedazzle.php?action=peel&pwd&slot=${slotNumber}`);
-    }
-    visitUrl(
-      `bedazzle.php?action=stick&pwd&slot=${slotNumber}&sticker=${toInt(UPC)}`,
-    );
-  }
-}
-
-const stickerSlots = $slots`sticker1, sticker2, sticker3`;
-const UPC = $item`scratch 'n' sniff UPC sticker`;
-export function useUPCsIfNeeded({ familiar }: Outfit): void {
-  const currentWeapon =
-    25 * (familiar ? findLeprechaunMultiplier(familiar) : 0);
-  const targets = globalOptions.ascend
-    ? Math.min(20, highMeatMonsterCount() || wanderingCopytargetsRemaining())
-    : 20;
-
-  const addedValueOfFullSword =
-    (targets * ((75 - currentWeapon) * targetMeat())) / 100;
-  if (addedValueOfFullSword > 3 * mallPrice(UPC)) {
-    const needed =
-      3 -
-      stickerSlots.filter((sticker) => equippedItem(sticker) === UPC).length;
-    if (needed) acquire(needed, UPC, addedValueOfFullSword / 3, false);
-    useUPCs();
-  }
 }
 
 export const waterBreathingEquipment = $items`The Crown of Ed the Undying, aerated diving helmet, crappy Mer-kin mask, Mer-kin gladiator mask, Mer-kin scholar mask, old SCUBA tank`;
@@ -206,34 +148,4 @@ export function validateGarbageFoldable(spec: OutfitSpec): void {
       break;
     }
   }
-}
-
-let bestPantsAdventures: number;
-const getBestPantsAdventures = () =>
-  (bestPantsAdventures ??= Math.max(
-    0,
-    ...Item.all()
-      .filter(
-        (item) =>
-          toSlot(item) === $slot`pants` &&
-          have(item) &&
-          numericModifier(item, "Adventures") > 0,
-      )
-      .map((pants) => numericModifier(pants, "Adventures")),
-  ));
-
-function cheeseBonus(mode: BonusEquipMode) {
-  if (globalOptions.ascend) return 0;
-  if (mode === BonusEquipMode.MEAT_TARGET) return 0;
-  if (get("_stinkyCheeseCount") >= 100) return 0;
-  if (!getFoldGroup($item`stinky cheese diaper`).some((item) => have(item))) {
-    return 0;
-  }
-  if (estimatedGarboTurns() < 100 - get("_stinkyCheeseCount")) return 0;
-  return get("valueOfAdventure") * (10 - getBestPantsAdventures()) * (1 / 100);
-}
-
-export function applyCheeseBonus(outfit: Outfit, mode: BonusEquipMode) {
-  const bonus = cheeseBonus(mode);
-  if (bonus > 0) outfit.modifier.push(`${bonus.toFixed(2)} stinky cheese`);
 }

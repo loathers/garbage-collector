@@ -28,8 +28,8 @@ import {
 } from "libram";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
+import { applyCheeseBonus } from "./cheese";
 import {
-  applyCheeseBonus,
   bestBjornalike,
   BonusEquipMode,
   cleaverCheck,
