@@ -33,7 +33,7 @@ import { freeFightOutfit } from "../../outfit/free";
 import { meatTargetOutfit } from "../../outfit/target";
 import { GarboTask } from "../engine";
 import { bestCrewmate, dessertIslandWorthIt, outfitBonuses } from "./lib";
-import { doingGregFight } from "../../resources/extrovermectin";
+import { doingGregFight } from "../../resources/gregarious";
 import { burnLibrams, targetMeat, userConfirmDialog } from "../../lib";
 import { globalOptions } from "../../config";
 import { meatMood } from "../../mood";

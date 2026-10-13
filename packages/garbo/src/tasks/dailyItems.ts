@@ -61,7 +61,7 @@ import { GarboTask } from "./engine";
 import { getBestAprilInstruments } from "../resources/aprilingband";
 import { archaeologySpadeTask } from "../resources/archaelogistSpade";
 import { candyMapDailyTasks } from "../resources/candyMap";
-import { doingGregFight } from "../resources/extrovermectin";
+import { doingGregFight } from "../resources/gregarious";
 import { leprecondoTask } from "../resources/leprecondo";
 import { mayamCalendarSummon } from "../resources/mayam";
 import { augustSummonTasks } from "../resources/scepter";

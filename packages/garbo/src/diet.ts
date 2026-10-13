@@ -99,7 +99,7 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { expectedGregs } from "./resources/extrovermectin";
+import { expectedGregs } from "./resources/gregarious";
 import { shouldAugustCast } from "./resources/scepter";
 import { synthesize } from "./resources/synthesis";
 import {
