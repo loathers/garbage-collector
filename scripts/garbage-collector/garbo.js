@@ -19763,7 +19763,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"98ef71de2ccda3ae38a4945570d1e1f119d5f099"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"cca3010ecf2896639d2f2148f1d80d382c3fa22b"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -25111,6 +25111,7 @@ function meatTargetOutfit(spec, adventureArgument) {
     if (!getActiveEffects().some(e => kolmafia.booleanModifier(e, "Adventure Underwater"))) {
       outfit.equipFirst(waterBreathingEquipment);
       if (outfit.haveEquipped($item`The Crown of Ed the Undying`)) {
+        outfit.beforeDress(() => kolmafia.cliExecute("edpiece fish"));
         outfit.setModes({
           edpiece: "fish"
         });
@@ -32102,6 +32103,7 @@ var yachtzeeQuest = [{
       if (overdrunk) outfit.equip($item`Drunkula's wineglass`);
       (_outfit$avoid = outfit.avoid).push.apply(_outfit$avoid, _toConsumableArray($items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`));
       if (outfit.haveEquipped($item`The Crown of Ed the Undying`)) {
+        outfit.beforeDress(() => kolmafia.cliExecute("edpiece fish"));
         outfit.setModes({
           edpiece: "fish"
         });
