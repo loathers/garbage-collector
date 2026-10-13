@@ -651,7 +651,7 @@ const DailyItemTasks: GarboTask[] = [
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
     do: (): void => {
       const value = rufusPotion.value(highMeatMonsterCount());
-      const price = rufusPotion.price(false);
+      const price = rufusPotion.price();
       _shouldClearRufusQuest = value.some(
         (value) =>
           (!globalOptions.nobarf || value.name === "target") &&
@@ -776,7 +776,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
     spendsTurn: false,
   },
-  mayamCalendarSummon(),
+  ...mayamCalendarSummon(),
   {
     name: "Devil Cheapest Candy",
     ready: () => have($item`candy egg deviler`), // TODO: Support guild stash

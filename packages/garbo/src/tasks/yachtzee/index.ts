@@ -70,6 +70,7 @@ export const yachtzeeQuest: Quest<
             ...$items`anemoney clip, cursed magnifying glass, Kramco Sausage-o-Matic™, cheap sunglasses`,
           );
           if (outfit.haveEquipped($item`The Crown of Ed the Undying`)) {
+            outfit.beforeDress(() => cliExecute("edpiece fish"));
             outfit.setModes({ edpiece: "fish" });
           }
           outfit.familiar = yachtzeeFamiliar;

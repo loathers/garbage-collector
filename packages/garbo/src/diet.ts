@@ -98,7 +98,6 @@ import {
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { beretEffectValue } from "./resources/beret";
 import { expectedGregs } from "./resources/extrovermectin";
 import { shouldAugustCast } from "./resources/scepter";
 import { synthesize } from "./resources/synthesis";
@@ -110,7 +109,7 @@ import {
   userConfirmDialog,
 } from "./lib";
 import { shrugBadEffects } from "./mood";
-import { Potion, PotionTier } from "./potions";
+import { effectValueWithOpportunityCost, Potion, PotionTier } from "./potions";
 import {
   estimatedGarboTurns,
   estimatedTurnsTomorrow,
@@ -208,7 +207,7 @@ function buskEffectValuer(effect: Effect, duration: number): number {
   ) {
     return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
   }
-  return beretEffectValue(effect, duration);
+  return effectValueWithOpportunityCost(effect, duration);
 }
 function canBusk() {
   return PrismaticBeret.have() && get("_beretBuskingUses") < 5;

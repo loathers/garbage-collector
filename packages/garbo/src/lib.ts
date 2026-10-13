@@ -2,7 +2,6 @@ import {
   canAdventure,
   choiceFollowsFight,
   cliExecute,
-  eat,
   Effect,
   effectModifier,
   Familiar,
@@ -21,7 +20,6 @@ import {
   Item,
   itemAmount,
   itemDropsArray,
-  lastMonster,
   Location,
   meatDrop,
   meatDropModifier,
@@ -37,20 +35,16 @@ import {
   myMaxhp,
   myMaxmp,
   myMp,
-  mySoulsauce,
   mySpleenUse,
   myThrall,
   myTurncount,
   numericModifier,
   print,
-  restoreHp,
-  restoreMp,
   rollover,
   runChoice,
   runCombat,
   setLocation,
   Skill,
-  soulsauceCost,
   spleenLimit,
   Stat,
   todayToString,
@@ -98,14 +92,12 @@ import {
   sum,
   tryFindBanish,
   tryFindFreeRun,
-  uneffect,
 } from "libram";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Macro } from "./combat";
-import { FarmingStrategy } from "./farmingStrategy";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -118,32 +110,6 @@ export const eventLog: {
   copyTargetSources: [],
   yachtzees: 0,
 };
-
-export enum BonusEquipMode {
-  FREE,
-  MEAT_TARGET,
-  DMT,
-  BARF,
-}
-
-export function modeIsFree(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
-}
-
-export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
-}
-
-export function modeValueOfMeat(mode: BonusEquipMode): number {
-  if (modeIsFree(mode)) return 0;
-  if (mode === BonusEquipMode.BARF) return baseMeat() / 100;
-  if (mode === BonusEquipMode.MEAT_TARGET) return targetMeat() / 100;
-  return 0;
-}
-
-export function modeValueOfItem(mode: BonusEquipMode): number {
-  return mode === BonusEquipMode.BARF ? FarmingStrategy.itemDropValue() : 0;
-}
 
 export const WISH_VALUE = 50000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
@@ -162,7 +128,6 @@ export const songboomMeat = () =>
     : 0;
 
 // all tourists have a basemeat of 250
-export const baseMeat = () => FarmingStrategy.baseMeat + songboomMeat();
 export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {
@@ -178,15 +143,8 @@ export const targetPointerRingMeat = () => {
   return 50;
 };
 
-export const targetMeatDifferential = () => {
-  const baseMeatVal = baseMeat();
-  const targetMeatVal = targetMeat();
-
-  return clamp(targetMeatVal - baseMeatVal, 0, targetMeatVal);
-};
-
 export const targetingMeat = () =>
-  !isFree(globalOptions.target) && targetMeat() > baseMeat();
+  !isFree(globalOptions.target) && targetMeat() > 250;
 
 const targetingItems = () => !targetingMeat();
 
@@ -203,14 +161,12 @@ export function averageTargetNet(): number {
     : (targetMeat() * meatDropModifier()) / 100;
 }
 
-function averageTouristNet(): number {
-  return (baseMeat() * meatDropModifier()) / 100;
-}
-
 export function expectedTargetProfit(): number {
-  return isFreeAndCopyable(globalOptions.target)
-    ? averageTargetNet()
-    : averageTargetNet() - averageTouristNet();
+  return (
+    (MEAT_TARGET_MULTIPLIER() +
+      (isFreeAndCopyable(globalOptions.target) ? -1 : 0)) *
+    get("valueOfAdventure")
+  );
 }
 
 export function safeInterrupt(): void {
@@ -403,64 +359,6 @@ export function howManySausagesCouldIEat() {
     itemAmount($item`magical sausage`) +
       itemAmount($item`magical sausage casing`),
   );
-}
-
-export function safeRestoreMpTarget(): number {
-  //  If our max MP is close to 200, we could be restoring every turn even if we don't need to, avoid that case.
-  if (Math.abs(myMaxmp() - 200) < 40) {
-    return Math.min(myMaxmp(), 100);
-  }
-  return Math.min(myMaxmp(), 200);
-}
-
-export function safeRestore(): void {
-  if (
-    lastMonster() === $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
-  ) {
-    if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
-  } else if (get("_lastCombatLost")) {
-    set("_lastCombatLost", "false");
-    throw new Error(
-      "You lost your most recent combat! Check to make sure everything is alright before rerunning.",
-    );
-  } else if (have($effect`Beaten Up`)) {
-    throw new Error(
-      "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.",
-    );
-  }
-
-  const lowPercentageHealth = FarmingStrategy.isUnderwater()
-    ? myInebriety() > inebrietyLimit()
-      ? 0.9
-      : 0.6
-    : 0.5;
-
-  if (
-    myHp() <
-    Math.min(
-      myMaxhp() * lowPercentageHealth,
-      get("garbo_restoreHpTarget", 2000),
-    )
-  ) {
-    restoreHp(Math.min(myMaxhp() * 0.9, get("garbo_restoreHpTarget", 2000)));
-  }
-  const mpTarget = safeRestoreMpTarget();
-  const shouldRestoreMp = () => myMp() < mpTarget;
-
-  if (shouldRestoreMp() && howManySausagesCouldIEat() > 0) {
-    eat($item`magical sausage`);
-  }
-
-  const soulFoodCasts = Math.floor(
-    mySoulsauce() / soulsauceCost($skill`Soul Food`),
-  );
-  if (shouldRestoreMp() && soulFoodCasts > 0) {
-    useSkill(soulFoodCasts, $skill`Soul Food`);
-  }
-
-  if (shouldRestoreMp()) restoreMp(mpTarget);
-
-  burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
 
 /**
