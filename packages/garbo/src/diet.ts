@@ -1431,9 +1431,7 @@ function itemPriority<T>(menuItems: MenuItem<T>[] | readonly MenuItem<T>[]) {
 }
 
 /**
- * A single, distinct dieting action. A diet is turned into an array of these,
- * ordered so that every task fits in our organs when its turn comes, and then
- * performed by iterating over the array once.
+ * A representation of a single diet step (eating, drinking, using, etc.)
  */
 interface DietTask {
   name: string;
