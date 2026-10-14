@@ -28,9 +28,16 @@ import { toSpec } from "../outfit/lib";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { effectExtenderValue } from "../potions";
+import { meatMood } from "../mood";
+import { estimatedGarboTurns } from "../turns";
 
 function getRun(): ActionSource {
   return tryFindFreeRunOrBanish(freeRunConstraints()) ?? ltbRun();
+}
+
+function burnMp() {
+  meatMood().execute(estimatedGarboTurns());
+  burnLibrams();
 }
 
 const BuffExtensionTasks: GarboTask[] = [
@@ -40,13 +47,15 @@ const BuffExtensionTasks: GarboTask[] = [
     do: () => {
       withStash($items`Platinum Yendorian Express Card`, () => {
         if (have($item`Platinum Yendorian Express Card`)) {
-          burnLibrams();
+          burnMp();
           use($item`Platinum Yendorian Express Card`);
+          burnMp();
         }
       });
     },
     spendsTurn: false,
     limit: { skip: 1 },
+    outfit: { modifier: ["MP"] },
   },
   {
     name: "Bag o' Tricks",
@@ -66,11 +75,13 @@ const BuffExtensionTasks: GarboTask[] = [
     ready: () => have($item`License to Chill`),
     completed: () => get("_licenseToChillUsed"),
     do: () => {
-      burnLibrams();
+      burnMp();
       use($item`License to Chill`);
+      burnMp();
     },
     spendsTurn: false,
     limit: { skip: 1 },
+    outfit: { modifier: ["MP"] },
   },
   {
     name: "Such Great Heights",
