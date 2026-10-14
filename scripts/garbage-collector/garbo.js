@@ -19763,7 +19763,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"cca3010ecf2896639d2f2148f1d80d382c3fa22b"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"29a6e762d372bbd6eb8ba204a2527f902a44de39"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -24469,42 +24469,232 @@ function potionMenu(baseMenu, targets, turns) {
     price: 0
   }) : []));
 }
-function balanceMenu(baseMenu, dietPlanner) {
+/**
+ * Plan a diet, iteratively re-balancing it to account for potion duration and copytarget fights.
+ * Early exits when it reaches a stable state; otherwise does 5 iterations.
+ */
+function planBalancedDiet(baseMenu, dietPlanner) {
+  var start = Date.now();
+  var passes = 0;
+  var timedPlanner = menu => {
+    var passStart = Date.now();
+    var diet = dietPlanner(menu);
+    passes++;
+    kolmafia.print(`Diet pass ${passes} took ${Date.now() - passStart}ms.`);
+    return diet;
+  };
+  var finish = diet => {
+    kolmafia.print(`Diet planned in ${Date.now() - start}ms over ${passes} passes.`);
+    return diet;
+  };
   var baseTargets = highMeatMonsterCount();
-  function rebalance(menu, iterations, targets, adventures) {
-    var fullMenu = potionMenu(menu, baseTargets + targets, estimatedGarboTurns(false) + adventures);
-    if (iterations <= 0) {
-      return fullMenu;
-    } else {
-      kolmafia.print(`Calculating diet, please wait${".....".slice(0, iterations)}`, HIGHLIGHT);
-      var balancingDiet = dietPlanner(fullMenu);
-      return rebalance(menu, iterations - 1, countCopies(balancingDiet), balancingDiet.expectedAdventures());
+  var baseTurns = estimatedGarboTurns(false);
+  var targets = 0;
+  var adventures = timedPlanner(baseMenu).expectedAdventures();
+  for (var iterations = 5; iterations > 0; iterations--) {
+    kolmafia.print(`Calculating diet, please wait${".....".slice(0, iterations)}`, HIGHLIGHT);
+    var balancingDiet = timedPlanner(potionMenu(baseMenu, baseTargets + targets, baseTurns + adventures));
+    var nextTargets = countCopies(balancingDiet);
+    var nextAdventures = balancingDiet.expectedAdventures();
+    if (nextTargets === targets && nextAdventures === adventures) {
+      return finish(balancingDiet);
     }
+    targets = nextTargets;
+    adventures = nextAdventures;
   }
-  var baseDiet = dietPlanner(baseMenu);
-  return rebalance(baseMenu, 5, 0, baseDiet.expectedAdventures());
+  return finish(timedPlanner(potionMenu(baseMenu, baseTargets + targets, baseTurns + adventures)));
+}
+
+/**
+ * Items that affect both stomach and liver, as [fullness, inebriety]; negative values clean.
+ * These double diet planning time, because the knapsack is run with and without each of them.
+ */
+var crossOrganItems = new Map([[$item`spice melange`, [-3, -3]], [$item`Ultra Mega Sour Ball`, [-3, -3]], [$item`The Plumber's mushroom stew`, [3, -1]], [$item`The Mad Liquor`, [-1, 3]], [$item`Doc Clock's thyme cocktail`, [-2, 4]], [$item`Mr. Burnsger`, [4, -2]]]);
+
+/**
+ * An upper bound on the adventures from an item, including all possible bonuses.
+ * Used to find items whose best case is still negative, so we can prune them from the menu.
+ */
+function maxAdventures(menuItem) {
+  var _menuItem$item = menuItem.item,
+    adventures = _menuItem$item.adventures,
+    fullness = _menuItem$item.fullness;
+  if (!adventures) return 0;
+  var range = adventures.match(/^(-?\d+)(?:-(-?\d+))?$/);
+  if (!range) return Infinity;
+  var max = Number(range[2] ?? range[1]);
+  // fork/mug, then saucemaven and gar-ish
+  var result = Math.floor(max * 1.5) + 5 + 5;
+  // refined palate, pinky ring, tuxedo shirt
+  result = Math.ceil(Math.floor(result * 1.25) * 1.125) + 2;
+  if (menuItem.itemType() === "food") {
+    // mayoflex, seasoning, aioli, whet stone
+    result += 1 + 1 + fullness + 1;
+  }
+  return result;
+}
+
+/**
+ * Prune items that can't possibly be in our planned diet (i.e., items with negative value).
+ * Accounts for cross-organ items by assuming that we fill the cleaned space with
+ * optimal choices.
+ */
+function withoutHopelessItems(menu) {
+  var valueUpperBound = menuItem => maxAdventures(menuItem) * MPA + (menuItem.additionalValue ?? 0) - menuItem.price();
+  var spleenRatio = Math.max.apply(Math, [0].concat(_toConsumableArray(menu.filter(menuItem => menuItem.organ === "spleen item" && menuItem.size > 0).map(menuItem => valueUpperBound(menuItem) / menuItem.size))));
+  var spleenCleaningValue = menuItem => $items`jar of fermented pickle juice, extra-greasy slider`.includes(menuItem.item) ? 5 * spleenRatio : 0;
+  var ratioAndValue = organ => {
+    var ratio = 0;
+    var value = 0;
+    var _iterator = _createForOfIteratorHelper(menu),
+      _step;
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var _menuItem = _step.value;
+        if (_menuItem.organ !== organ || crossOrganItems.has(_menuItem.item)) {
+          continue;
+        }
+        // Negative-size items are planned as "not using them", worth -value
+        var itemValue = _menuItem.size > 0 ? valueUpperBound(_menuItem) + spleenCleaningValue(_menuItem) : ["food", "booze"].includes(_menuItem.itemType()) ? Infinity : _menuItem.price() - (_menuItem.additionalValue ?? 0);
+        if (_menuItem.size === 0 || itemValue <= 0) continue;
+        ratio = Math.max(ratio, itemValue / Math.abs(_menuItem.size));
+        value = Math.max(value, itemValue);
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+    return {
+      ratio,
+      value
+    };
+  };
+  var food = ratioAndValue("food");
+  var booze = ratioAndValue("booze");
+  var freedSpaceValue = (size, _ref4) => {
+    var ratio = _ref4.ratio,
+      value = _ref4.value;
+    return size < 0 ? -size * ratio + value : 0;
+  };
+  // An overfull organ makes the planner's "without" case invalid; don't guess.
+  var overfull = kolmafia.myFullness() > kolmafia.fullnessLimit() || kolmafia.myInebriety() > kolmafia.inebrietyLimit();
+
+  // Items whose value depends on the rest of the diet, like Refined Palate
+  var modifierItems = $items`pocket wish, toasted brie, potion of the field gar`;
+  var bestCase = menuItem => {
+    var sizes = crossOrganItems.get(menuItem.item);
+    if (sizes) {
+      if (overfull) return Infinity;
+      var _sizes = _slicedToArray(sizes, 2),
+        fullness = _sizes[0],
+        inebriety = _sizes[1];
+      return valueUpperBound(menuItem) + freedSpaceValue(fullness, food) + freedSpaceValue(inebriety, booze);
+    }
+    if (menuItem.organ && menuItem.size > 0 && !modifierItems.includes(menuItem.item)) {
+      return valueUpperBound(menuItem) + spleenCleaningValue(menuItem);
+    }
+    // Helpers, organ expanders, and cleaners are valued by the planner in context
+    return Infinity;
+  };
+  return menu.filter(menuItem => menuItem.maximum !== undefined && menuItem.maximum <= 0 || !(bestCase(menuItem) < 0));
+}
+
+/**
+ * Prune out any unlimited item that is strictly surpassed by another unlimited item.
+ * Accounts for forks, mugs, refined palate, etc; doesn't account for proper divisors
+ * of the organ-size (e.g., a size-6 item will not be obsoleted by a stronger size-3 item).
+ */
+function withoutDominatedItems(menu) {
+  var isCandidate = menuItem => menuItem.maximum === undefined && menuItem.size > 0 && ["food", "booze", "spleen item"].includes(menuItem.organ) && menuItem.additionalValue === undefined && menuItem.effect === undefined && menuItem.mayo === undefined && menuItem.data === undefined && menuItem.item.levelreq <= kolmafia.myLevel() && !crossOrganItems.has(menuItem.item) && !stomachLiverCleaners.has(menuItem.item) && !spleenCleaners.has(menuItem.item);
+  var seasoning = menu.find(menuItem => menuItem.item === $item`Special Seasoning`);
+  var forkMug = menuItem => menuItem.organ === "food" ? new MenuItem(saladFork) : menuItem.organ === "booze" ? new MenuItem(frostyMug) : undefined;
+  // Zero-quantity entries switch on the diet-wide effects without adding adventures
+  var palate = new MenuItem($item`toasted brie`);
+  var garish = new MenuItem($item`potion of the field gar`);
+  var scenarios = [false, true].flatMap(useForkMug => [[], [palate], [garish], [palate, garish]].map(modifiers => ({
+    useForkMug,
+    modifiers
+  })));
+  var value = (menuItem, _ref5) => {
+    var useForkMug = _ref5.useForkMug,
+      modifiers = _ref5.modifiers;
+    var helper = useForkMug ? forkMug(menuItem) : undefined;
+    var helperSets = [helper ? [helper] : []];
+    if (seasoning && menuItem.organ === "food") {
+      helperSets.push([].concat(_toConsumableArray(helperSets[0]), [seasoning]));
+    }
+    return Math.max.apply(Math, _toConsumableArray(helperSets.map(helpers => {
+      var adventures = Diet.from([[[].concat(_toConsumableArray(helpers), [menuItem]), 1]].concat(_toConsumableArray(modifiers.map(modifier => [[modifier], 0])))).expectedAdventures();
+      var helperCost = helpers.includes(seasoning) ? seasoning.price() : 0;
+      return adventures * MPA - menuItem.price() - helperCost;
+    })));
+  };
+  var groups = new Map();
+  var _iterator2 = _createForOfIteratorHelper(menu.filter(isCandidate)),
+    _step2;
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var _menuItem2 = _step2.value;
+      var key = `${_menuItem2.organ}:${_menuItem2.size}`;
+      groups.set(key, [].concat(_toConsumableArray(groups.get(key) ?? []), [_menuItem2]));
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+  var kept = new Set();
+  var _iterator3 = _createForOfIteratorHelper(groups.values()),
+    _step3;
+  try {
+    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+      var group = _step3.value;
+      var _iterator4 = _createForOfIteratorHelper(scenarios),
+        _step4;
+      try {
+        var _loop2 = function _loop2() {
+          var scenario = _step4.value;
+          kept.add(maxBy(group, menuItem => value(menuItem, scenario)));
+        };
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          _loop2();
+        }
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+    }
+  } catch (err) {
+    _iterator3.e(err);
+  } finally {
+    _iterator3.f();
+  }
+  return menu.filter(menuItem => !isCandidate(menuItem) || kept.has(menuItem));
 }
 function computeDiet() {
   // Handle spleen manually, as the diet planner doesn't support synth. Only fill food and booze.
 
   var orEmpty = diet => diet.expectedValue(MPA, "net") < 0 ? new Diet() : diet;
-  var fullDietPlanner = menu => orEmpty(Diet.plan(MPA, menu));
-  var shotglassDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
+  var plan = (menu, organCapacities) => orEmpty(Diet.plan(MPA, withoutDominatedItems(withoutHopelessItems(menu)), organCapacities));
+  var fullDietPlanner = menu => plan(menu);
+  var shotglassDietPlanner = menu => plan(menu, {
     booze: 1
-  }));
-  var pantsgivingDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
+  });
+  var pantsgivingDietPlanner = menu => plan(menu, {
     food: 1
-  }));
-  var sweatpantsDietPlanner = menu => orEmpty(Diet.plan(MPA, menu, {
+  });
+  var sweatpantsDietPlanner = menu => plan(menu, {
     booze: getRemainingLiver()
-  }));
+  });
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
-    diet: () => fullDietPlanner(balanceMenu(menu().filter(menuItem => !priceCaps[menuItem.item.name] || priceCaps[menuItem.item.name] >= kolmafia.mallPrice(menuItem.item)), fullDietPlanner)),
-    shotglass: () => shotglassDietPlanner(balanceMenu(menu().filter(menuItem => kolmafia.itemType(menuItem.item) === "booze" && menuItem.size === 1), shotglassDietPlanner)),
-    pantsgiving: () => pantsgivingDietPlanner(balanceMenu(menu().filter(menuItem => kolmafia.itemType(menuItem.item) === "food" && menuItem.size === 1 || [Mayo.flex, Mayo.zapine, $item`Special Seasoning`, $item`mini kiwi aioli`, $item`whet stone`].includes(menuItem.item)), pantsgivingDietPlanner)),
-    sweatpants: () => sweatpantsDietPlanner(balanceMenu(menu().filter(menuItem => kolmafia.itemType(menuItem.item) === "booze" && menuItem.size <= 3), sweatpantsDietPlanner))
+    diet: () => planBalancedDiet(menu().filter(menuItem => !priceCaps[menuItem.item.name] || priceCaps[menuItem.item.name] >= kolmafia.mallPrice(menuItem.item)), fullDietPlanner),
+    shotglass: () => planBalancedDiet(menu().filter(menuItem => kolmafia.itemType(menuItem.item) === "booze" && menuItem.size === 1), shotglassDietPlanner),
+    pantsgiving: () => planBalancedDiet(menu().filter(menuItem => kolmafia.itemType(menuItem.item) === "food" && menuItem.size === 1 || [Mayo.flex, Mayo.zapine, $item`Special Seasoning`, $item`mini kiwi aioli`, $item`whet stone`].includes(menuItem.item)), pantsgivingDietPlanner),
+    sweatpants: () => planBalancedDiet(menu().filter(menuItem => kolmafia.itemType(menuItem.item) === "booze" && menuItem.size <= 3), sweatpantsDietPlanner)
   };
 }
 function printDiet(diet, name) {
@@ -24515,11 +24705,11 @@ function printDiet(diet, name) {
   var targets = Math.floor(highMeatMonsterCount() + countCopies(diet));
   var adventures = Math.floor(estimatedGarboTurns(false) + diet.expectedAdventures());
   kolmafia.print(`Planning to fight ${targets} ${globalOptions.target} and run ${adventures} adventures`);
-  var _iterator = _createForOfIteratorHelper(diet.entries),
-    _step;
+  var _iterator5 = _createForOfIteratorHelper(diet.entries),
+    _step5;
   try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var dietEntry = _step.value;
+    for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+      var dietEntry = _step5.value;
       if (dietEntry.quantity === 0) continue;
       var target = dietEntry.target();
       var datastr = target.data ? `(${target.data})` : "";
@@ -24530,9 +24720,9 @@ function printDiet(diet, name) {
       kolmafia.print(`${dietEntry.quantity}${maxstr} ${target}${datastr}${helpersstr} ${valuestr}`);
     }
   } catch (err) {
-    _iterator.e(err);
+    _iterator5.e(err);
   } finally {
-    _iterator.f();
+    _iterator5.f();
   }
   var totalValue = diet.expectedValue(MPA);
   var totalCost = diet.expectedPrice();
@@ -24555,153 +24745,269 @@ function itemPriority(menuItems) {
     return 0;
   }
 }
+
+/**
+ * A representation of a single diet step (eating, drinking, using, etc.)
+ */
+
+var consumeAction = (countToConsume, menuItem) => consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+var elementalResistAction = element => (countToConsume, menuItem) => {
+  if (kolmafia.myMaxhp() < 1000 * (1 - kolmafia.elementalResistance(element) / 100)) {
+    maximizeCached(["0.05 HP", `${element} Resistance`]);
+    if (kolmafia.myMaxhp() < 1000 * (1 - kolmafia.elementalResistance(element) / 100)) {
+      throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
+    }
+  }
+  consumeSafe(countToConsume, menuItem.item);
+};
+
+/**
+ * Menu items that need something other than `consumeAction`.
+ */
+function specialItemActions() {
+  var speakeasyDrinks = Object.keys(kolmafia.getClanLounge()).map(s => kolmafia.toItem(s)).filter(i => i.inebriety > 0);
+  return new Map([[saladFork, elementalResistAction($element`hot`)], [frostyMug, elementalResistAction($element`cold`)], [$item`pocket wish`, (countToConsume, menuItem) => {
+    if (acquire(countToConsume, $item`pocket wish`, 60000)) {
+      kolmafia.cliExecute(`genie effect ${menuItem.effect}`);
+    }
+  }], [$item`campfire hot dog`, (countToConsume, menuItem) => {
+    // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
+    if (!have$P($item`stick of firewood`)) {
+      kolmafia.buy(1, $item`stick of firewood`, ingredientCost($item`stick of firewood`));
+    }
+    consumeSafe(countToConsume, menuItem.item);
+  }],
+  // Special Seasoning is acquired by its own task and used automatically
+  [$item`Special Seasoning`, () => {}], [$item`mini kiwi aioli`, (countToConsume, menuItem) => {
+    kolmafia.retrieveItem(menuItem.item, countToConsume);
+    kolmafia.use(menuItem.item);
+  }], [$item`Rethinking Candy`, (countToConsume, menuItem) => {
+    synthesize(countToConsume, menuItem.effect ?? $effect`Synthesis: Greed`);
+  }]].concat(_toConsumableArray(Object.values(Mayo).map(mayo => [mayo, (countToConsume, menuItem) => setMayoMinder(menuItem.item, countToConsume)])), _toConsumableArray(speakeasyDrinks.map(drink => [drink, (countToConsume, menuItem) => {
+    kolmafia.cliExecute(`drink ${countToConsume} ${menuItem.item}`);
+  }])), [[$item`broberry brogurt`, (countToConsume, menuItem) => {
+    var amountNeeded = countToConsume - kolmafia.availableAmount($item`broberry brogurt`);
+    if (amountNeeded > 0) {
+      var coinmasterPrice = realmAvailable("sleaze") && kolmafia.sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`) ? 10 * garboValue($item`Beach Buck`) : Infinity;
+      var regularPrice = kolmafia.mallPrice($item`broberry brogurt`);
+      if (coinmasterPrice < regularPrice) {
+        var amountToBuy = Math.min(amountNeeded, Math.floor(kolmafia.itemAmount($item`Beach Buck`)));
+        kolmafia.buy($coinmaster`The Frozen Brogurt Stand`, amountToBuy, $item`broberry brogurt`);
+      }
+      kolmafia.buy(countToConsume - kolmafia.availableAmount($item`broberry brogurt`), $item`broberry brogurt`);
+    }
+    consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+  }], [$item`designer sweatpants`, countToConsume => {
+    for (var n = 1; n <= countToConsume; n++) {
+      kolmafia.useSkill($skill`Sweat Out Some Booze`);
+    }
+  }], [$item`august scepter`, () => kolmafia.useSkill($skill`Aug. 16th: Roller Coaster Day!`)]]));
+}
+function acquireSeasoningTask(diet) {
+  var seasoningCount = sum(diet.entries, _ref6 => {
+    var menuItems = _ref6.menuItems,
+      quantity = _ref6.quantity;
+    return menuItems.some(menuItem => menuItem.item === $item`Special Seasoning`) ? quantity : 0;
+  });
+  return {
+    name: `Acquire ${seasoningCount} Special Seasoning`,
+    perform: () => acquire(seasoningCount, $item`Special Seasoning`, MPA)
+  };
+}
+var ORGANS = ["food", "booze", "spleen item"];
+var noOrgans = () => ({
+  food: 0,
+  booze: 0,
+  "spleen item": 0
+});
+
+/**
+ * Determine the total organ-filling and organ-cleansing of a given item.
+ * We only ever want to eat a cleanser if it can actually cleanse, so we need
+ * to sequence our diet using this information.
+ */
+function organEffects(menuItems) {
+  var fills = noOrgans();
+  var cleans = noOrgans();
+  var _iterator6 = _createForOfIteratorHelper(menuItems),
+    _step6;
+  try {
+    for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+      var _menuItem3 = _step6.value;
+      var cleaning = stomachLiverCleaners.get(_menuItem3.item);
+      var spleenCleaned = spleenCleaners.get(_menuItem3.item);
+      if (cleaning) {
+        var _cleaning = _slicedToArray(cleaning, 2),
+          fullness = _cleaning[0],
+          inebriety = _cleaning[1];
+        if (fullness < 0) cleans.food -= fullness;else fills.food += fullness;
+        if (inebriety < 0) cleans.booze -= inebriety;else fills.booze += inebriety;
+      } else if (_menuItem3.organ && !(spleenCleaned && _menuItem3.organ === "spleen item")) {
+        fills[_menuItem3.organ] += _menuItem3.size;
+      }
+      if (spleenCleaned) cleans["spleen item"] += spleenCleaned;
+    }
+  } catch (err) {
+    _iterator6.e(err);
+  } finally {
+    _iterator6.f();
+  }
+  return {
+    fills,
+    cleans
+  };
+}
+
+/**
+ * Creates a `DietTask` for a given `DietEntry` and `countToConsume`.
+ */
+function dietEntryTask(dietEntry, countToConsume, actions) {
+  var steps = dietEntry.menuItems.map(menuItem => ({
+    menuItem,
+    action: actions.get(menuItem.item) ?? consumeAction
+  }));
+  return {
+    name: `${countToConsume} ${dietEntry.target()}`,
+    perform: () => {
+      var _iterator7 = _createForOfIteratorHelper(steps),
+        _step7;
+      try {
+        for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+          var _step7$value = _step7.value,
+            _menuItem4 = _step7$value.menuItem,
+            action = _step7$value.action;
+          action(countToConsume, _menuItem4);
+        }
+      } catch (err) {
+        _iterator7.e(err);
+      } finally {
+        _iterator7.f();
+      }
+    }
+  };
+}
+
+/**
+ * Transform a diet into an array of diet tasks that can be carried out in order.
+ * For example, cleansers are sequenced after there is filled organ space for them to clear.
+ * Throws before anything is consumed if there is no order that fits.
+ */
+function dietTasks(diet) {
+  var actions = specialItemActions();
+  var tasks = [acquireSeasoningTask(diet)];
+  var used = {
+    food: kolmafia.myFullness(),
+    booze: kolmafia.myInebriety(),
+    "spleen item": kolmafia.mySpleenUse()
+  };
+  var capacity = {
+    food: kolmafia.fullnessLimit(),
+    booze: kolmafia.inebrietyLimit(),
+    "spleen item": kolmafia.spleenLimit()
+  };
+  var shotglassAvailable = !get$2("_mimeArmyShotglassUsed") && have$P($item`mime army shotglass`);
+  var pending = _toConsumableArray(diet.entries).sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems)).map(dietEntry => _objectSpread2({
+    dietEntry,
+    remaining: dietEntry.quantity
+  }, organEffects(dietEntry.menuItems)));
+
+  // How many of an entry we can consume right now, and whether the first one goes in the shotglass
+  var fit = entry => {
+    var fills = entry.fills,
+      cleans = entry.cleans;
+    var usesShotglass = shotglassAvailable && entry.dietEntry.menuItems.some(menuItem => menuItem.organ === "booze" && menuItem.size === 1);
+    var fill = organ => usesShotglass && organ === "booze" ? 0 : fills[organ];
+    var count = usesShotglass ? 1 : entry.remaining;
+    var _iterator8 = _createForOfIteratorHelper(ORGANS),
+      _step8;
+    try {
+      for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+        var organ = _step8.value;
+        if (fill(organ) > 0) {
+          count = Math.min(count, Math.floor((capacity[organ] - used[organ]) / fill(organ)));
+        }
+        if (cleans[organ] > 0) {
+          count = Math.min(count, Math.floor(used[organ] / cleans[organ]));
+        }
+      }
+    } catch (err) {
+      _iterator8.e(err);
+    } finally {
+      _iterator8.f();
+    }
+    return {
+      count,
+      usesShotglass,
+      fill
+    };
+  };
+
+  // Always schedule the highest priority entry that fits, so that space freed by
+  // a cleaner goes to the entries that were waiting on it.
+  while (pending.some(_ref7 => {
+    var remaining = _ref7.remaining;
+    return remaining > 0;
+  })) {
+    var next = pending.filter(_ref8 => {
+      var remaining = _ref8.remaining;
+      return remaining > 0;
+    }).map(entry => _objectSpread2({
+      entry
+    }, fit(entry))).find(_ref9 => {
+      var count = _ref9.count;
+      return count > 0;
+    });
+    if (!next) {
+      var stuck = pending.filter(_ref0 => {
+        var remaining = _ref0.remaining;
+        return remaining > 0;
+      }).map(_ref1 => {
+        var dietEntry = _ref1.dietEntry,
+          remaining = _ref1.remaining;
+        return `${remaining} ${dietEntry.target()}`;
+      });
+      throw `Unable to find an order to consume this diet; could not fit ${stuck.join(", ")}.`;
+    }
+    var entry = next.entry,
+      count = next.count,
+      usesShotglass = next.usesShotglass,
+      fill = next.fill;
+    var _iterator9 = _createForOfIteratorHelper(ORGANS),
+      _step9;
+    try {
+      for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+        var organ = _step9.value;
+        used[organ] += count * (fill(organ) - entry.cleans[organ]);
+      }
+    } catch (err) {
+      _iterator9.e(err);
+    } finally {
+      _iterator9.f();
+    }
+    if (usesShotglass) shotglassAvailable = false;
+    entry.remaining -= count;
+    tasks.push(dietEntryTask(entry.dietEntry, count, actions));
+  }
+  return tasks;
+}
 function consumeDiet(diet, name) {
   if (diet.entries.length === 0) return;
-  diet = diet.copy();
-  diet.entries.sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems));
   kolmafia.print();
   printDiet(diet, name);
   kolmafia.print();
-  var seasoningCount = sum(diet.entries, _ref4 => {
-    var menuItems = _ref4.menuItems,
-      quantity = _ref4.quantity;
-    return menuItems.some(menuItem => menuItem.item === $item`Special Seasoning`) ? quantity : 0;
-  });
-  acquire(seasoningCount, $item`Special Seasoning`, MPA);
-
-  // Fill organs in rounds, making sure we're making progress in each round.
-  var organs = () => [kolmafia.myFullness(), kolmafia.myInebriety(), kolmafia.mySpleenUse()];
-  var lastOrgans = [-1, -1, -1];
-  var capacities = () => [kolmafia.fullnessLimit(), kolmafia.inebrietyLimit(), kolmafia.spleenLimit()];
-  var lastCapacities = [-1, -1, -1];
-  var currentQuantity = sum(diet.entries, "quantity");
-  var lastQuantity = -1;
-  while (currentQuantity > 0) {
-    if (arrayEquals(lastOrgans, organs()) && arrayEquals(lastCapacities, capacities()) && lastQuantity === currentQuantity) {
-      kolmafia.print();
-      printDiet(diet, "REMAINING");
-      kolmafia.print();
-      throw "Failed to consume some diet item.";
+  var tasks = dietTasks(diet);
+  kolmafia.logprint(`Diet order: ${tasks.map(task => task.name).join(", ")}`);
+  var _iterator0 = _createForOfIteratorHelper(tasks),
+    _step0;
+  try {
+    for (_iterator0.s(); !(_step0 = _iterator0.n()).done;) {
+      var task = _step0.value;
+      task.perform();
     }
-    lastOrgans = organs();
-    lastCapacities = capacities();
-    lastQuantity = currentQuantity;
-    var _iterator2 = _createForOfIteratorHelper(diet.entries),
-      _step2;
-    try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var dietEntry = _step2.value;
-        var menuItems = dietEntry.menuItems,
-          quantity = dietEntry.quantity;
-        if (quantity === 0) continue;
-        var countToConsume = quantity;
-        var capacity = {
-          food: kolmafia.fullnessLimit() - kolmafia.myFullness(),
-          booze: kolmafia.inebrietyLimit() - kolmafia.myInebriety(),
-          "spleen item": kolmafia.spleenLimit() - kolmafia.mySpleenUse()
-        };
-        var _iterator3 = _createForOfIteratorHelper(menuItems),
-          _step3;
-        try {
-          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-            var _menuItem = _step3.value;
-            kolmafia.logprint(`Considering item ${_menuItem.item}.`);
-            if (_menuItem.organ === "booze" && _menuItem.size === 1 && !get$2("_mimeArmyShotglassUsed")) {
-              countToConsume = 1;
-            } else if (_menuItem.organ && _menuItem.size > 0) {
-              countToConsume = Math.min(countToConsume, Math.floor(capacity[_menuItem.organ] / _menuItem.size));
-            }
-            kolmafia.logprint(`Based on organ size, planning to consume ${countToConsume}.`);
-            var cleaning = stomachLiverCleaners.get(_menuItem.item);
-            if (cleaning) {
-              var _cleaning = _slicedToArray(cleaning, 2),
-                fullness = _cleaning[0],
-                inebriety = _cleaning[1];
-              countToConsume = Math.min(fullness < 0 ? Math.floor(-kolmafia.myFullness() / fullness) : quantity, inebriety < 0 ? Math.floor(-kolmafia.myInebriety() / inebriety) : quantity, countToConsume);
-              kolmafia.logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
-            }
-            var spleenCleaned = spleenCleaners.get(_menuItem.item);
-            if (spleenCleaned) {
-              countToConsume = Math.min(countToConsume, Math.floor(kolmafia.mySpleenUse() / spleenCleaned));
-              kolmafia.logprint(`Based on organ-cleaning, planning to consume ${countToConsume}.`);
-            }
-          }
-        } catch (err) {
-          _iterator3.e(err);
-        } finally {
-          _iterator3.f();
-        }
-        if (countToConsume === 0) continue;
-        var elementalResistAction = element => {
-          return (countToConsume, menuItem) => {
-            if (kolmafia.myMaxhp() < 1000 * (1 - kolmafia.elementalResistance(element) / 100)) {
-              maximizeCached(["0.05 HP", `${element} Resistance`]);
-              if (kolmafia.myMaxhp() < 1000 * (1 - kolmafia.elementalResistance(element) / 100)) {
-                throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
-              }
-            }
-            consumeSafe(countToConsume, menuItem.item);
-          };
-        };
-        var speakeasyDrinks = Object.keys(kolmafia.getClanLounge()).map(s => kolmafia.toItem(s)).filter(i => i.inebriety > 0).map(drink => [drink, (countToConsume, menuItem) => {
-          kolmafia.cliExecute(`drink ${countToConsume} ${menuItem.item}`);
-        }]);
-        var mayoActions = Object.values(Mayo).map(i => [i, (countToConsume, menuItem) => {
-          setMayoMinder(menuItem.item, countToConsume);
-        }]);
-        var itemActions = new Map([[saladFork, elementalResistAction($element`hot`)], [frostyMug, elementalResistAction($element`cold`)], [$item`pocket wish`, (countToConsume, menuItem) => acquire(countToConsume, $item`pocket wish`, 60000) && kolmafia.cliExecute(`genie effect ${menuItem.effect}`)], [$item`campfire hot dog`, (countToConsume, menuItem) => {
-          // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
-          if (!have$P($item`stick of firewood`)) {
-            kolmafia.buy(1, $item`stick of firewood`, ingredientCost($item`stick of firewood`));
-          }
-          consumeSafe(countToConsume, menuItem.item);
-        }], [$item`Special Seasoning`, "skip"], [$item`mini kiwi aioli`, (countToConsume, menuItem) => {
-          kolmafia.retrieveItem(menuItem.item, countToConsume);
-          kolmafia.use(menuItem.item);
-        }], [$item`Rethinking Candy`, (countToConsume, menuItem) => synthesize(countToConsume, menuItem.effect ?? $effect`Synthesis: Greed`)]].concat(_toConsumableArray(mayoActions), _toConsumableArray(speakeasyDrinks), [[$item`broberry brogurt`, (countToConsume, menuItem) => {
-          var amountNeeded = countToConsume - kolmafia.availableAmount($item`broberry brogurt`);
-          if (amountNeeded > 0) {
-            var coinmasterPrice = realmAvailable("sleaze") && kolmafia.sellsItem($coinmaster`The Frozen Brogurt Stand`, $item`broberry brogurt`) ? 10 * garboValue($item`Beach Buck`) : Infinity;
-            var regularPrice = kolmafia.mallPrice($item`broberry brogurt`);
-            if (coinmasterPrice < regularPrice) {
-              var amountToBuy = Math.min(amountNeeded, Math.floor(kolmafia.itemAmount($item`Beach Buck`)));
-              kolmafia.buy($coinmaster`The Frozen Brogurt Stand`, amountToBuy, $item`broberry brogurt`);
-            }
-            kolmafia.buy(countToConsume - kolmafia.availableAmount($item`broberry brogurt`), $item`broberry brogurt`);
-          }
-          consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
-        }], [$item`designer sweatpants`, countToConsume => {
-          for (var n = 1; n <= countToConsume; n++) {
-            kolmafia.useSkill($skill`Sweat Out Some Booze`);
-          }
-        }], [$item`august scepter`, () => kolmafia.useSkill($skill`Aug. 16th: Roller Coaster Day!`)]]));
-        var _iterator4 = _createForOfIteratorHelper(menuItems),
-          _step4;
-        try {
-          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-            var _menuItem2 = _step4.value;
-            var itemAction = itemActions.get(_menuItem2.item);
-            if (itemAction === "skip") {
-              continue;
-            } else if (itemAction) {
-              itemAction(countToConsume, _menuItem2);
-            } else {
-              consumeSafe(countToConsume, _menuItem2.item, _menuItem2.additionalValue);
-            }
-          }
-        } catch (err) {
-          _iterator4.e(err);
-        } finally {
-          _iterator4.f();
-        }
-        dietEntry.quantity -= countToConsume;
-      }
-    } catch (err) {
-      _iterator2.e(err);
-    } finally {
-      _iterator2.f();
-    }
-    currentQuantity = sum(diet.entries, "quantity");
+  } catch (err) {
+    _iterator0.e(err);
+  } finally {
+    _iterator0.f();
   }
 }
 function dailySpecialPrice(item) {
@@ -24721,11 +25027,11 @@ function runDiet() {
     if (kolmafia.myFamiliar() === $familiar`Stooper`) {
       kolmafia.useFamiliar($familiar.none);
     }
-    var _iterator5 = _createForOfIteratorHelper(kolmafia.Slot.all()),
-      _step5;
+    var _iterator1 = _createForOfIteratorHelper(kolmafia.Slot.all()),
+      _step1;
     try {
-      for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-        var slot = _step5.value;
+      for (_iterator1.s(); !(_step1 = _iterator1.n()).done;) {
+        var slot = _step1.value;
         var item = kolmafia.equippedItem(slot);
         if (kolmafia.numericModifier(item, $modifier`stomach capacity`) || kolmafia.numericModifier(item, $modifier`liver capacity`) || kolmafia.numericModifier(item, $modifier`spleen capacity`)) {
           unequip(slot);
@@ -24734,9 +25040,9 @@ function runDiet() {
 
       // Compute diet
     } catch (err) {
-      _iterator5.e(err);
+      _iterator1.e(err);
     } finally {
-      _iterator5.f();
+      _iterator1.f();
     }
     var dietBuilder = computeDiet();
     if (globalOptions.simdiet) {
@@ -24780,9 +25086,9 @@ function runDiet() {
         current: kolmafia.myFullness,
         max: kolmafia.fullnessLimit
       }];
-      if (organChecks.some(_ref5 => {
-        var current = _ref5.current,
-          max = _ref5.max;
+      if (organChecks.some(_ref10 => {
+        var current = _ref10.current,
+          max = _ref10.max;
         return current() < max();
       })) {
         throw new Error("Tried to fill our organs but couldn't!");
