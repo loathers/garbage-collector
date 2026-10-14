@@ -40,6 +40,10 @@ function burnMp() {
   burnLibrams();
 }
 
+const MP_OUTFIT = {
+  modifier: ["MP", "+switch disembodied hand", "+switch left-hand man"],
+};
+
 const BuffExtensionTasks: GarboTask[] = [
   {
     name: "Platinum Yendorian Express Card",
@@ -55,7 +59,7 @@ const BuffExtensionTasks: GarboTask[] = [
     },
     spendsTurn: false,
     limit: { skip: 1 },
-    outfit: { modifier: ["MP"] },
+    outfit: MP_OUTFIT,
   },
   {
     name: "Bag o' Tricks",
@@ -81,7 +85,7 @@ const BuffExtensionTasks: GarboTask[] = [
     },
     spendsTurn: false,
     limit: { skip: 1 },
-    outfit: { modifier: ["MP"] },
+    outfit: MP_OUTFIT,
   },
   {
     name: "Such Great Heights",
