@@ -5,6 +5,7 @@ import { $item, $items, $location, $monster } from "libram";
 export enum FarmingMethod {
   BARF_MOUNTAIN = "Barf Mountain",
   THE_CORAL_CORRAL = "The Coral Corral",
+  THE_MARINARA_TRENCH = "The Marinara Trench",
 }
 
 const workshedAliases = [
@@ -44,6 +45,10 @@ const farmingStrategyAliases: Record<
       "coral",
       "cows",
     ],
+  },
+  [FarmingMethod.THE_MARINARA_TRENCH]: {
+    location: $location`The Marinara Trench`,
+    aliases: ["trench", "marinara", "inko", "squido", "ATTheSea"],
   },
 };
 
