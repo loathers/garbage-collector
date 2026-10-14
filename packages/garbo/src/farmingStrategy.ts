@@ -40,6 +40,7 @@ import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
 import { expectedDropValue, songboomMeat } from "./lib";
+import { BanishMethod } from "./resources/banish";
 
 export function averageRedTaffyValue(): number {
   return sum(
@@ -229,6 +230,15 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
   post: completeBarfQuest,
 };
 
+const banishItem = (banish: BanishMethod) => {
+  const banishItem = banish?.equip;
+  if (banishItem) {
+    print(`Planning to banish equipping ${banishItem?.name}`);
+  }
+
+  return banishItem ? { equip: [banishItem] } : {};
+};
+
 const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
@@ -242,12 +252,11 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
     effectFact($monster`sea cow`) === $effect`Fishy` &&
     (!get("seahorseName") || get("lassoTrainingCount") >= 20),
   outfit: ({ banish }) => {
-    const banishItem = banish?.equip;
-    if (banishItem) {
-      print(`Planning to banish equipping ${banishItem?.name}`);
+    if (banish) {
+      return banishItem(banish);
+    } else {
+      return {};
     }
-
-    return banishItem ? { equip: [banishItem] } : {};
   },
 
   combat: ({ banish }) =>
@@ -285,21 +294,21 @@ const THE_MARINARA_TRENCH: FarmingStrategyOptions = {
   shouldOlfact: false,
   available: effectFact($monster`giant squid`) === $effect`Fishy`,
   outfit: ({ banish }) => {
-    const banishItem = banish?.equip;
-    if (banishItem) {
-      print(`Planning to banish equipping ${banishItem?.name}`);
+    if (banish) {
+      return banishItem(banish);
+    } else {
+      return {};
     }
-
-    return banishItem ? { equip: [banishItem] } : {};
   },
 
   combat: ({ banish }) =>
     Macro.farmingBanish(banish)
       .externalIf(
-        myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 ||
+        myBuffedstat($stat`Moxie`) < $monster`giant squid`.baseAttack + 10 ||
           (have($skill`Hero of the Half-Shell`) &&
             itemType(equippedItem($slot`offhand`)) === "shield" &&
-            myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10),
+            myBuffedstat($stat`Muscle`) <
+              $monster`giant squid`.baseAttack + 10),
         Macro.delevel(),
       )
       .externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`))
