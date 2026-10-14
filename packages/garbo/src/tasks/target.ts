@@ -15,7 +15,7 @@ import { GarboTask } from "./engine";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { getChangeLastAdvLocationMethod } from "../target/lib";
-import { doingGregFight } from "../resources/extrovermectin";
+import { doingGregFight } from "../resources/gregarious";
 import { freeFightOutfit } from "../outfit/free";
 import {
   canFaxbot,

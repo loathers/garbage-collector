@@ -15,17 +15,17 @@ import { freeFightFamiliar } from "../familiar/freeFightFamiliar";
 import { meatFamiliar, underwaterMeatFamiliar } from "../familiar/meatFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
+import { applyCheeseBonus } from "./cheese";
 import {
-  applyCheeseBonus,
   bestBjornalike,
   BonusEquipMode,
   cleaverCheck,
   familiarSlotNeededForBreathing,
   modeValueOfMeat,
-  useUPCsIfNeeded,
   validateGarbageFoldable,
   waterBreathingEquipment,
 } from "./lib";
+import { useUPCsIfNeeded } from "./upc";
 import { songboomMeat, targetingMeat } from "../lib";
 import { globalOptions } from "../config";
 import { booleanModifier, cliExecute, meatDrop, setLocation } from "kolmafia";

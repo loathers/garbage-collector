@@ -89,6 +89,7 @@ import {
   set,
   SongBoom,
   SourceTerminal,
+  StrictMacro,
   sum,
   tryFindBanish,
   tryFindFreeRun,
@@ -97,7 +98,6 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Macro } from "./combat";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -237,7 +237,7 @@ export function mapMonster(location: Location, monster: Monster): void {
       mapPage.includes("<!-- MONSTERID: 1965 -->") ||
       mapPage.includes("<!-- MONSTERID: 1622  -->")
     ) {
-      runCombat(Macro.attack().repeat().toString());
+      runCombat(StrictMacro.attack().repeat().toString());
     }
     if (handlingChoice()) runChoice(-1);
     if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;

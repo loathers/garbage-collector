@@ -32,17 +32,17 @@ import {
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit/dropsgear";
 import { HIGHLIGHT, MEAT_TARGET_MULTIPLIER } from "../lib";
-import { computeBarfOutfit } from "../outfit/barf";
+import { computeBarfOutfit } from "../outfit/computeBarfOutfit";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
+import { timeToMeatify } from "./familiarHelpers";
 import {
   GeneralFamiliar,
   getUsedTcbFamiliars,
   tcbTurnsLeft,
   tcbValue,
-  timeToMeatify,
   turnsAvailable,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";

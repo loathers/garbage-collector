@@ -21,6 +21,7 @@ import {
   FarmingStrategy,
   redTaffyWorth,
 } from "../../farmingStrategy";
+import { FarmingCombat } from "../../farmingCombat";
 import { trackMarginalMpa } from "../../session";
 import { meatMood } from "../../mood";
 import { estimatedGarboTurns } from "../../turns";
@@ -80,9 +81,9 @@ export function FarmTurnQuest(): Quest<
           have($effect`Everything looks Beige`) || myAdventures() === 0,
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
         do: () => CrepeParachute.fight(FarmingStrategy.primaryMonster()),
-        combat: FarmingStrategy.strategy(),
+        combat: FarmingCombat.strategy(),
         post: () => {
-          FarmingStrategy.post?.();
+          FarmingCombat.post();
           if (!have($effect`Everything looks Beige`)) updateParachuteFailure();
           trackMarginalMpa();
         },
@@ -94,9 +95,9 @@ export function FarmTurnQuest(): Quest<
         prepare: farmPrepare,
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
         do: FarmingStrategy.location,
-        combat: FarmingStrategy.strategy(),
+        combat: FarmingCombat.strategy(),
         post: () => {
-          FarmingStrategy.post?.();
+          FarmingCombat.post();
           trackMarginalMpa();
 
           if (toMonster(get("lastEncounter")) === $monster`tumbleweed`) {

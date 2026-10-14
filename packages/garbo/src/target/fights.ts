@@ -75,7 +75,7 @@ import {
   gregReady,
   possibleGregCrystalBall,
   totalGregCharges,
-} from "../resources/extrovermectin";
+} from "../resources/gregarious";
 import { nextWeekFights } from "../resources/sealclub";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";

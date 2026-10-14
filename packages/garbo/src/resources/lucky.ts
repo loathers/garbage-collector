@@ -7,6 +7,8 @@ import {
   get,
   have,
   set,
+  sum,
+  undelay,
 } from "libram";
 import { AlternateTask } from "../tasks/engine";
 import { shouldAugustCast } from "./scepter";
@@ -83,3 +85,17 @@ export const luckySourceTasks = [
         : 0,
   },
 ] as const satisfies AlternateTask[];
+
+export function embezzlerLuckyFights(
+  ...exludedLuckySources: LuckySource[]
+): number {
+  return sum(
+    luckySourceTasks.filter(
+      (t) =>
+        !exludedLuckySources.includes(t.name) &&
+        (t.ready?.() ?? true) &&
+        !t.completed(),
+    ),
+    (t) => undelay(t.turns),
+  );
+}

@@ -1,34 +1,12 @@
 import { Quest } from "grimoire-kolmafia";
-import {
-  $effect,
-  $item,
-  $items,
-  $location,
-  $monster,
-  have,
-  sum,
-  undelay,
-} from "libram";
+import { $effect, $item, $items, $location, $monster, have } from "libram";
 import { luckySourceTasks } from "../resources/lucky";
-import type { LuckySource } from "../resources/lucky";
 import { canAdventure, canEquip } from "kolmafia";
 import { meatTargetOutfit } from "../outfit/target";
 import { getBestLuckyAdventure, sober } from "../lib";
 import { AlternateTask } from "./engine";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
-
-export function embezzlerFights(...exludedLuckySources: LuckySource[]): number {
-  return sum(
-    luckySourceTasks.filter(
-      (t) =>
-        !exludedLuckySources.includes(t.name) &&
-        (t.ready?.() ?? true) &&
-        !t.completed(),
-    ),
-    (t) => undelay(t.turns),
-  );
-}
 
 export const embezzlerFightTask = {
   name: "Fight Lucky Embezzler",

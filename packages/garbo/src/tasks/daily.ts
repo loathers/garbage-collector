@@ -93,7 +93,7 @@ import {
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
-import { embezzlerFights } from "./embezzler";
+import { embezzlerLuckyFights } from "../resources/lucky";
 import { FarmingStrategy } from "../farmingStrategy";
 
 const photoBoothItems = $items`Sheriff badge, Sheriff pistol, Sheriff moustache, feather boa, oversized monocle on a stick, fake huge beard`;
@@ -124,10 +124,12 @@ function voterSetup(): void {
     [
       "Meat Drop: +30",
       0.3 *
-        ((1000 + songboomMeat()) * embezzlerFights() +
+        ((1000 + songboomMeat()) * embezzlerLuckyFights() +
           targetMeat() * copyTargetCount() +
           FarmingStrategy.baseMeat() *
-            (estimatedGarboTurns() - copyTargetCount() - embezzlerFights())),
+            (estimatedGarboTurns() -
+              copyTargetCount() -
+              embezzlerLuckyFights())),
     ],
     [
       "Item Drop: +15",

@@ -77,7 +77,7 @@ import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit/free";
 import { GarboTask } from "./engine";
 import { doCandyTrick } from "../resources/candyMap";
-import { doingGregFight } from "../resources/extrovermectin";
+import { doingGregFight } from "../resources/gregarious";
 import { ghostAdventure } from "../resources/protonpack";
 import { shouldAugustCast } from "../resources/scepter";
 import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";

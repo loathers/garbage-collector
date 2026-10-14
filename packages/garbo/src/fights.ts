@@ -104,11 +104,10 @@ import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
 
 import {
-  crateStrategy,
-  doingGregFight,
   initializeExtrovermectinZones,
   saberCrateIfSafe,
 } from "./resources/extrovermectin";
+import { crateStrategy, doingGregFight } from "./resources/gregarious";
 import { bestMidnightAvailable } from "./resources/gingerbread";
 import { shouldUnlockIngredients, tryFillLatte } from "./resources/latte";
 import { shouldClara, willYachtzee } from "./resources/yachtzee";
