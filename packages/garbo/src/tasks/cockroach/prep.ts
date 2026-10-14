@@ -262,7 +262,9 @@ export const CockroachFinish: Quest<GarboTask> = {
             beforeDress: [
               () => maximize("MP", false), // Equip some MP stuff while we buff here since our myst was lowered while wearing eyepatch
               () =>
-                meatMood(false, targetMeat()).execute(highMeatMonsterCount()),
+                meatMood({ meat: targetMeat() }).execute(
+                  highMeatMonsterCount(),
+                ),
               () => potionSetup(false),
             ],
           },

@@ -36,7 +36,7 @@ function getRun(): ActionSource {
 }
 
 function burnMp() {
-  meatMood().execute(estimatedGarboTurns());
+  meatMood({ useNativeRestores: false }).execute(estimatedGarboTurns());
   burnLibrams();
 }
 
