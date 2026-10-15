@@ -808,7 +808,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
             Macro.tryItem($item`abstraction: sensation`),
           ),
         )
-        .basicCombat(),
+        .basicCombat(false),
     ),
     outfit: () =>
       freeFightOutfit(
