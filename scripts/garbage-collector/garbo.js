@@ -17775,6 +17775,7 @@ function verifyDependencies(tasks) {
 var FarmingMethod = /*#__PURE__*/function (FarmingMethod) {
   FarmingMethod["BARF_MOUNTAIN"] = "Barf Mountain";
   FarmingMethod["THE_CORAL_CORRAL"] = "The Coral Corral";
+  FarmingMethod["THE_MARINARA_TRENCH"] = "The Marinara Trench";
   return FarmingMethod;
 }({});
 var workshedAliases = [{
@@ -17809,6 +17810,10 @@ var farmingStrategyAliases = {
   [FarmingMethod.THE_CORAL_CORRAL]: {
     location: $location`The Coral Corral`,
     aliases: ["cowo", "corral", "ranch", "rancho", "coolranch", "coral", "cows"]
+  },
+  [FarmingMethod.THE_MARINARA_TRENCH]: {
+    location: $location`The Marinara Trench`,
+    aliases: ["trench", "marinara", "inko", "squido", "ATTheSea"]
   }
 };
 function stringToFarmingMethod(s) {
@@ -19763,7 +19768,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"41bb9c378bfbfe35f4a0b743b5a0ce5692cb7c8c"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"c099534284c1508a307a67c6c83af0285f162b85"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20484,6 +20489,12 @@ var BARF_MOUNTAIN = {
   combat: () => Macro.meatKill(),
   post: completeBarfQuest
 };
+var underwaterOutfit = _ref5 => {
+  var banish = _ref5.banish;
+  return banish !== null && banish !== void 0 && banish.equip ? {
+    equip: [banish.equip]
+  } : {};
+};
 var THE_CORAL_CORRAL = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
@@ -20494,25 +20505,34 @@ var THE_CORAL_CORRAL = {
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
   available: kolmafia.effectFact($monster`sea cow`) === $effect`Fishy` && (!get$2("seahorseName") || get$2("lassoTrainingCount") >= 20),
-  outfit: _ref5 => {
-    var banish = _ref5.banish;
-    var banishItem = banish === null || banish === void 0 ? void 0 : banish.equip;
-    if (banishItem) {
-      kolmafia.print(`Planning to banish equipping ${banishItem === null || banishItem === void 0 ? void 0 : banishItem.name}`);
-    }
-    return banishItem ? {
-      equip: [banishItem]
-    } : {};
-  },
+  outfit: underwaterOutfit,
   combat: _ref6 => {
     var banish = _ref6.banish;
     return Macro.externalIf(!get$2("seahorseName"), Macro.if_($monster`wild seahorse`, Macro.item($item`sea cowbell`).item($item`sea cowbell`).item($item`sea cowbell`).item($item`sea lasso`).abortWithMsg("Wild seahorse should have been tamed, what happened?"))).farmingBanish(banish).externalIf(kolmafia.myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 || have$P($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10, Macro.delevel()).externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`)).meatKill();
+  }
+};
+var THE_MARINARA_TRENCH = {
+  stasisRounds: 5,
+  asdonEffect: $effect`Driving Waterproofly`,
+  ensureBarfAccess: false,
+  meatDrop: 300,
+  location: $location`The Marinara Trench`,
+  banishMonsters: $monsters`diving belle, fisherfish, Mer-kin diver`,
+  targetMonster: $monster`giant squid`,
+  shouldOlfact: false,
+  available: kolmafia.effectFact($monster`giant squid`) === $effect`Fishy`,
+  outfit: underwaterOutfit,
+  combat: _ref7 => {
+    var banish = _ref7.banish;
+    return Macro.farmingBanish(banish).externalIf(kolmafia.myBuffedstat($stat`Moxie`) < $monster`giant squid`.baseAttack + 10 || have$P($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < $monster`giant squid`.baseAttack + 10, Macro.delevel()).externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`)).meatKill();
   }
 };
 function currentStrategy() {
   switch (globalOptions.prefs.farmingMethod) {
     case FarmingMethod.THE_CORAL_CORRAL:
       return THE_CORAL_CORRAL;
+    case FarmingMethod.THE_MARINARA_TRENCH:
+      return THE_MARINARA_TRENCH;
     case FarmingMethod.BARF_MOUNTAIN:
     default:
       return BARF_MOUNTAIN;
