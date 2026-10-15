@@ -43,15 +43,18 @@ Mood.setDefaultOptions({
     $effects`Chorale of Companionship`,
     $effects`The Ballad of Richie Thingfinder`,
   ],
-  useNativeRestores: true,
 });
 
-export function meatMood(
+export function meatMood({
   urKels = false,
   meat = FarmingStrategy.baseMeat(),
-): Mood {
+  useNativeRestores = true,
+} = {}): Mood {
   // Reserve the amount of MP we try to restore before each fight.
-  const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
+  const mood = new Mood({
+    reserveMp: safeRestoreMpTarget(),
+    useNativeRestores,
+  });
 
   mood.potion($item`resolution: be wealthier`, 0.3 * meat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);

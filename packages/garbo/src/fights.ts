@@ -245,7 +245,9 @@ function meatTargetSetup() {
   setLocation($location`Friar Ceremony Location`);
   potionSetup(false);
   maximize("MP", false);
-  meatMood(true, targetMeat()).execute(highMeatMonsterCount());
+  meatMood({ urKels: true, meat: targetMeat() }).execute(
+    highMeatMonsterCount(),
+  );
   safeRestore();
   freeFightMood().execute(50);
   runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
