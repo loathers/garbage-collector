@@ -99,6 +99,9 @@ const DEFAULT_FREE_FIGHT_TASK = {
   combatCount: () => 1,
 };
 
+const MAX_DMT_SNOWGLOBE_PRICE = 2_000;
+const MAX_SELF_DRIBBLING_BASKETBALL_PRICE = 10_000;
+
 function freeFightTask(
   fragment: Omit<
     GarboFreeFightTask,
@@ -158,7 +161,6 @@ function litLeafMacro(monster: Monster): Macro {
     [$monster`flaming monstera`, $item`tied-up flaming monstera`],
     [$monster`leaviathan`, $item`tied-up leaviathan`],
   ]).get(monster);
-
   // Only convert lassos if we can funksling as the combat counts as a free loss
   return Macro.externalIf(
     haveEquipped($item`tearaway pants`),
@@ -178,14 +180,23 @@ function litLeafMacro(monster: Monster): Macro {
     .basicCombat();
 }
 
-function dmtCommaValuable(): boolean {
+function dmtCommaValuable(
+  basketballThreshold: number,
+  snowglobeThreshold: number,
+): boolean {
   if (!CommaChameleon.have()) return false;
-  const cost =
-    mallPrice($item`Deep Machine Tunnels snowglobe`) +
+
+  const basketballCost = mallPrice($item`self-dribbling basketball`);
+  if (basketballCost > basketballThreshold) return false;
+  const snowglobeCost = mallPrice($item`Deep Machine Tunnels snowglobe`);
+  if (snowglobeCost > snowglobeThreshold) return false;
+
+  const totalCost =
+    snowglobeCost +
     (CommaChameleon.currentFamiliar() === $familiar`Machine Elf`
       ? 0
-      : mallPrice($item`self-dribbling basketball`));
-  return globalOptions.prefs.valueOfFreeFight * 5 > cost;
+      : basketballCost);
+  return globalOptions.prefs.valueOfFreeFight * 5 > totalCost;
 }
 
 const stunDurations = new Map<Skill | Item, Delayed<number>>([
@@ -732,22 +743,35 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
   {
     name: "Machine Elf",
     adventure: $location`The Deep Machine Tunnels`,
-    ready: () => have($familiar`Machine Elf`) || dmtCommaValuable(),
+    ready: () =>
+      have($familiar`Machine Elf`) ||
+      dmtCommaValuable(
+        MAX_SELF_DRIBBLING_BASKETBALL_PRICE,
+        MAX_DMT_SNOWGLOBE_PRICE,
+      ),
     completed: () => get("_machineTunnelsAdv") >= 5,
     do: $location`The Deep Machine Tunnels`,
     prepare: () => {
       if (myFamiliar() === $familiar`Comma Chameleon`) {
         if (CommaChameleon.currentFamiliar() !== $familiar`Machine Elf`) {
-          acquire(1, $item`self-dribbling basketball`, 10000);
+          acquire(
+            1,
+            $item`self-dribbling basketball`,
+            MAX_SELF_DRIBBLING_BASKETBALL_PRICE,
+          );
           CommaChameleon.transform($familiar`Machine Elf`);
         }
 
         if (!canAdventure($location`The Deep Machine Tunnels`)) {
-          acquire(1, $item`Deep Machine Tunnels snowglobe`, 2000);
+          acquire(
+            1,
+            $item`Deep Machine Tunnels snowglobe`,
+            MAX_DMT_SNOWGLOBE_PRICE,
+          );
           use($item`Deep Machine Tunnels snowglobe`);
         }
       }
-      // We need an else here because if we're using Comma we don't get to convert items.
+      // Both comma & machine elf are allowed to convert abstractions, so the below is shared between them.
       if (
         garboValue($item`abstraction: certainty`) >=
         garboValue($item`abstraction: thought`)
