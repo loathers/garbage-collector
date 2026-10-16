@@ -11,7 +11,6 @@ import {
   Monster,
   myBuffedstat,
   Phylum,
-  print,
 } from "kolmafia";
 import { GarboStrategy } from "./combatStrategy";
 import {
