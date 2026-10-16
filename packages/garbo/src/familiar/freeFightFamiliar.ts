@@ -33,7 +33,7 @@ import {
   timeToMeatify,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
-import { expectedDropValue, gooseDroneEligible, valueDrops } from "../lib";
+import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
@@ -114,18 +114,15 @@ export function menu(
       });
     }
 
-    const swordMonster = get("swordOfSWordsMonster");
-
-    if (mode === "barf" && have($familiar`Sword of S Words`) && swordMonster) {
+    if (
+      mode === "barf" &&
+      have($familiar`Sword of S Words`) &&
+      get("swordOfSWordsMonster") &&
+      get("_swordOfSWordsKills") < 100
+    ) {
       familiarMenu.push({
         familiar: $familiar`Sword of S Words`,
-        expectedValue:
-          expectedDropValue(swordMonster) -
-          sum(
-            [...monsterRates.entries()],
-            ([monster, rate]) => rate * expectedDropValue(monster),
-          ) /
-            monsterRates.size,
+        expectedValue: 0, // handled in barf cache
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: false,

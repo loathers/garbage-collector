@@ -14,7 +14,7 @@ import {
   have,
 } from "libram";
 import { garboValue } from "./garboValue";
-import { effectValue } from "./potions";
+import { effectValueWithOpportunityCost } from "./potions";
 import { digitizedMonstersRemainingForTurns } from "./lib";
 import { safeRefractedCasts } from "./resources/bloodCubicZirconia";
 import { FarmingStrategy } from "./farmingStrategy";
@@ -26,7 +26,7 @@ export function wanderer(): WandererManager {
       ascend: globalOptions.ascend,
       estimatedTurns: estimatedGarboTurns,
       itemValue: garboValue,
-      effectValue,
+      effectValue: effectValueWithOpportunityCost,
       prioritizeCappingGuzzlr: get("garbo_prioritizeCappingGuzzlr", false),
       freeFightExtraValue: (location: Location) =>
         freeFightFamiliarData(location).expectedValue,
