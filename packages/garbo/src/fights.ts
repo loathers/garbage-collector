@@ -363,7 +363,7 @@ export function dailyFights(): void {
     withStash($items`Spooky Putty sheet`, () => {
       // check if user wants to wish for the copy target before doing setup
       if (!getNextCopyTargetFight()) {
-        set("_garboDoneCopyTargetFights", true);
+        set("_garbo_doneCopyTargetFights", true);
         return;
       }
       meatTargetSetup();
