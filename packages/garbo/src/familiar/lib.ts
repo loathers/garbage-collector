@@ -239,7 +239,7 @@ export function tcbValue(
 }
 
 export function snapperReasonable(mode: FamiliarMode): boolean {
-  if (!get("_garboDoneCopyTargetFights")) return false;
+  if (!get("_garbo_doneCopyTargetFights")) return false;
   if (!Snapper.have()) return false;
   if (mode === "target") {
     return true;
