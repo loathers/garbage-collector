@@ -1,8 +1,17 @@
-import { $item, $location, $monster, get, have } from "libram";
+import {
+  $familiar,
+  $item,
+  $location,
+  $monster,
+  get,
+  have,
+  Snapper,
+} from "libram";
 import {
   Item,
   mallPrice,
   myAdventures,
+  myFamiliar,
   myLocation,
   toMonster,
   totalTurnsPlayed,
@@ -29,6 +38,11 @@ import { FarmingContext } from "../context";
 import { acquire } from "../../acquire";
 
 export const farmPrepare = (context: FarmingContext) => {
+  if (myFamiliar() === $familiar`Red-Nosed Snapper`) {
+    const phylum = FarmingStrategy.singlePhylumInZone();
+    if (phylum) Snapper.trackPhylum(phylum);
+  }
+
   if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
     acquire(
       estimatedGarboTurns(),
@@ -37,6 +51,7 @@ export const farmPrepare = (context: FarmingContext) => {
       false, // It's fine to continue running if there aren't appropriately priced taffies
     );
   }
+
   if (
     FarmingStrategy.location === $location`The Coral Corral` &&
     get("seahorseName") === "" &&
