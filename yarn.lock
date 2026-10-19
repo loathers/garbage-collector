@@ -4449,7 +4449,7 @@ __metadata:
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.35
     jiti: ^2.6.1
-    kolmafia: ^5.29250.0
+    kolmafia: ^5.29376.0
     libram: ^0.11.38
     lint-staged: ^15.2.9
     madge: ^8.0.0
@@ -4466,7 +4466,7 @@ __metadata:
     eslint: ^9.39.2
     eslint-config-garbo: "workspace:^"
     jiti: ^2.6.1
-    kolmafia: ^5.29250.0
+    kolmafia: ^5.29376.0
     libram: ^0.11.38
     lint-staged: ^15.2.9
     madge: ^8.0.0
@@ -4522,7 +4522,7 @@ __metadata:
     garbo-lib: "workspace:*"
     grimoire-kolmafia: ^0.3.35
     jiti: ^2.6.1
-    kolmafia: ^5.29250.0
+    kolmafia: ^5.29376.0
     libram: ^0.11.38
     lint-staged: ^15.2.9
     madge: ^8.0.0
@@ -5190,10 +5190,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:^5.29250.0":
-  version: 5.29360.0
-  resolution: "kolmafia@npm:5.29360.0"
-  checksum: 0e21a2920a4930444449e09578951ef3627162ab69e5a4771a1dafebfbde5596bf171933666ec81a406a0e210cc6be65e3095f6c535ccfbec8b0809bfbaac6d9
+"kolmafia@npm:^5.29376.0":
+  version: 5.29376.0
+  resolution: "kolmafia@npm:5.29376.0"
+  checksum: ce865e88889bcf816314ebbab86ac5a23708784a3d341887286034223d6333bf4b55dd51cbce63b6d5300f4d98516153b7abf0ddef24f69fdad2024836ea6286
   languageName: node
   linkType: hard
 
