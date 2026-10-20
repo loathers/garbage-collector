@@ -1,5 +1,17 @@
-import { availableChoiceExtras, Effect, Item, itemAmount, Monster, myGardenType, myMeat, runChoice, runCombat, toMonster, visitUrl } from "kolmafia";
+import { availableChoiceExtras, Effect, Item, itemAmount, Monster, myGardenType, myMeat, runChoice, runCombat, toEffect, toMonster, visitUrl } from "kolmafia";
 import { $effect, $item, clamp, CombatParams, get, have as have_, haveInCampground } from "libram";
+
+export const FOUNTAIN_OPTIONS = Object.freeze([
+  "Black Rosacea",
+  "Black Rose Guardin'",
+  "Lucky!",
+] as const);
+
+export const FOUNTAIN_EFFECTS = Object.freeze(
+  FOUNTAIN_OPTIONS.map((ef) => toEffect(ef)),
+);
+
+export type FountainEffect = (typeof FOUNTAIN_EFFECTS)[number];
 
 /**
  * @returns whether you have the rose garden
@@ -19,25 +31,25 @@ export function installed(): boolean {
 }
 
 /**
- * @returns whether you successfull retrieved all free rose garden items
- */
-export function getItems(): boolean {
-  if (!have() && !installed()) return false;
-
-  for (const [decision, choice] of getRoseChoices()) {
-    if (!choice.text.startsWith("Take the ")) continue;
-
-    runChoice(decision, choice.extras);
-  }
-
-  return true;
-}
-
-/**
  * @returns how many partial tombstone free kills you have remaining
  */
 export function freeKillsRemaining(): number {
-  return clamp(11 - get("_partialTombstonesUsed",0), 0, 11);
+  return clamp(11 - get("_partialTombstonesUsed"), 0, 11);
+}
+
+/**
+ * @returns whether you successfully retrieved all free rose garden items
+ */
+export function obtainItems(): boolean {
+  if (!have() && !installed()) return false;
+
+  for (const { decision, extras, text } of getChoices()) {
+    if (!text.startsWith("Take the ")) continue;
+
+    runChoice(decision, extras);
+  }
+
+  return true;
 }
 
 type FountainOption = {
@@ -74,58 +86,56 @@ const fountainBuffs = new Map<Effect, FountainOption>([
  * @param effect the fountain effect you want to gain
  * @returns whether you successfully gained the effect
  */
-export function useBloodFountain(effect: Effect): boolean {
+export function useBloodFountain(effect: FountainEffect): boolean {
   if (!have() || !installed()) return false;
 
   const buff = fountainBuffs.get(effect);
   if (!buff || !buff.canAcquire()) return false;
 
-  const fountain = [...getRoseChoices()].find(([, choice]) =>
+  const fountain = getChoices().find((choice) =>
     choice.text.startsWith("Drink from the blood fountain"),
   );
 
   if (!fountain) return false;
 
-  const [decision, choice] = fountain;
-  runChoice(decision, `${choice.extras}&option=${buff.option}`);
+  runChoice(fountain.decision, `${fountain.extras}&option=${buff.option}`);
 
-  return have_(effect);
+  return have_(toEffect(effect.name));
 }
 
 type RoseChoice = {
+  decision: number;
   extras: string;
   text: string;
   monster?: Monster;
 };
 
-function getRoseChoices(): Map<number, RoseChoice> {
+function getChoices(): RoseChoice[] {
   visitUrl("campground.php?action=rosegarden&pwd");
 
-  const choices = new Map<number, RoseChoice>();
+  return Object.values(availableChoiceExtras()).map(
+    ({ decision, extras_joined, label }) => {
+      const monsterText = label.match(/^Fight (.+) at position \d+,\d+$/);
 
-  for (const { decision, extras_joined, label } of Object.values(
-    availableChoiceExtras(),
-  )) {
-    const monsterText = label.match(/^Fight (.+) at position \d+,\d+$/);
-
-    choices.set(decision, {
-      text: label,
-      extras: extras_joined,
-      ...(monsterText ? { monster: toMonster(monsterText[1]) } : {}),
-    });
-  }
-
-  return choices;
+      return {
+        decision,
+        extras: extras_joined,
+        text: label,
+        ...(monsterText ? { monster: toMonster(monsterText[1]) } : {}),
+      };
+    },
+  );
 }
 
 /**
  * @returns the Monsters currently available to fight in the Rose Garden
  */
-export function availableRoseMonsters(): Monster[] {
+export function availableMonsters(): Monster[] {
   if (!have() || !installed()) return [];
 
-  return [...getRoseChoices().values()]
-    .flatMap((choice) => (choice.monster ? [choice.monster] : []));
+  return getChoices().flatMap((choice) =>
+    choice.monster ? [choice.monster] : [],
+  );
 }
 
 /**
@@ -135,20 +145,17 @@ export function availableRoseMonsters(): Monster[] {
  * @param combatParams Any parameters to pass to runCombat
  * @returns Whether the monster was available and the fight was initiated
  */
-export function fightRoseMonster(
+export function fightMonster(
   monster: Monster,
   ...combatParams: CombatParams
 ): boolean {
   if (!have() || !installed()) return false;
 
-  const toFight = [...getRoseChoices().entries()].find(
-    ([, choice]) => choice.monster === monster,
-  );
+  const choice = getChoices().find((choice) => choice.monster === monster);
 
-  if (!toFight) return false;
+  if (!choice) return false;
 
-  const [decision, choice] = toFight;
-  runChoice(decision, choice.extras);
+  runChoice(choice.decision, choice.extras);
   runCombat(...combatParams);
 
   return true;

@@ -831,7 +831,7 @@ const DailyItemTasks: GarboTask[] = [
       if (currentGarden !== "black_rose") {
         use($item`black garden rose`);
       }
-      if (BlackRose.getItems()) {
+      if (BlackRose.obtainItems()) {
         set("_blackRoseLooted", true);
       }
       if (currentGarden !== "black_rose") {

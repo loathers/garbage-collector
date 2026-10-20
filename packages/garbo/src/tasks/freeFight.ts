@@ -993,9 +993,9 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
       if (currentGarden !== "black_rose") {
         use($item`black garden rose`);
       }
-      const fights = BlackRose.availableRoseMonsters();
+      const fights = BlackRose.availableMonsters();
       fights.forEach((f) => {
-        BlackRose.fightRoseMonster(f);
+        BlackRose.fightMonster(f);
       });
       if (currentGarden !== "black_rose") {
         use(GARDEN_ITEMS[currentGarden]);
