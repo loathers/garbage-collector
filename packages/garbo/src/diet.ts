@@ -203,7 +203,14 @@ function eatSafe(qty: number, item: Item) {
     acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
     use($item`Hunger™ Sauce`);
   }
-  if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
+  // KoL won't serve a pasta of legend with a fudge spork, and Scratch's fork takes the
+  // utensil slot itself, so save the spork for the next other food
+  if (
+    itemType(item) === "food" &&
+    !legendaryNoodleDishes.includes(item) &&
+    mallPrice($item`fudge spork`) < 3 * MPA &&
+    !get("_fudgeSporkUsed")
+  ) {
     eat($item`fudge spork`);
   }
   if (
