@@ -906,15 +906,35 @@ function ingredientCost(item: Item): number {
   return ingredientAutosellPrice;
 }
 
+/** How many of each food a diet eats */
+function foodCounts(diet: Diet<Note>): Map<Item, number> {
+  const counts = new Map<Item, number>();
+  for (const { menuItems, quantity } of diet.entries) {
+    const food = menuItems[menuItems.length - 1]?.item;
+    if (food && itemType(food) === "food") {
+      counts.set(food, (counts.get(food) ?? 0) + quantity);
+    }
+  }
+  return counts;
+}
+
+function sameCounts(a: Map<Item, number>, b: Map<Item, number>): boolean {
+  return (
+    a.size === b.size && [...a].every(([item, count]) => b.get(item) === count)
+  );
+}
+
 /**
  * Generate a potion diet that has entries
  * @param targets number of target monsters expected to be encountered on this day
  * @param turns number of turns total expecte
+ * @param plannedFoods foods the previous plan eats, which noodle dish charges can double
  */
 function potionMenu(
   baseMenu: MenuItem<Note>[],
   targets: number,
   turns: number,
+  plannedFoods = new Map<Item, number>(),
 ): MenuItem<Note>[] {
   type PotionOptions = {
     price?: number;
@@ -981,8 +1001,10 @@ function potionMenu(
   /**
    * Assign Legendary Digestion charges, existing and from noodle dishes we own, to the
    * food potions that gain the most from doubling (on top of any mayo doubling).
-   * Existing charges become noodle-doubled tiers; the gain from a dish's charges is
-   * credited to the dish itself, since the planner can't tie the two together.
+   * Existing charges become noodle-doubled tiers, so the planner decides whether to eat
+   * them. The gain from a dish's charges is credited to the dish itself, since the
+   * planner can't tie the two together, so dish charges only go to food potions the
+   * previous plan already eats. Charges left over double nothing and earn the dish nothing.
    */
   function noodleMenu(): MenuItem<Note>[] {
     const dishes = legendaryNoodleDishes.flatMap((dish) =>
@@ -1006,13 +1028,38 @@ function potionMenu(
       .filter(({ gain }) => gain > 0)
       .sort((a, b) => b.gain - a.gain);
     const charges: typeof ranked = [];
-    for (const entry of ranked) {
-      const uses = Math.min(
-        entry.foodPotion.limit ?? Infinity,
-        totalCharges - charges.length,
-      );
-      for (let i = 0; i < uses; i++) charges.push(entry);
-    }
+    const assignCharges = (
+      count: number,
+      available: (entry: (typeof ranked)[number]) => number,
+    ) => {
+      const end = charges.length + count;
+      for (const entry of ranked) {
+        const assigned = charges.filter((charge) => charge === entry).length;
+        const uses = Math.min(
+          available(entry) - assigned,
+          end - charges.length,
+        );
+        for (let i = 0; i < uses; i++) charges.push(entry);
+      }
+    };
+    assignCharges(existing, (entry) => entry.foodPotion.limit ?? Infinity);
+    // Planned eats of each food, shared between food potions of the same item
+    const unclaimed = new Map(plannedFoods);
+    const plannedUses = new Map(
+      ranked.map((entry) => {
+        const item = entry.foodPotion.potion.potion;
+        const uses = Math.min(
+          entry.foodPotion.limit ?? Infinity,
+          unclaimed.get(item) ?? 0,
+        );
+        unclaimed.set(item, (unclaimed.get(item) ?? 0) - uses);
+        return [entry, uses];
+      }),
+    );
+    assignCharges(
+      totalCharges - existing,
+      (entry) => plannedUses.get(entry) ?? 0,
+    );
 
     const potionItems = foodPotions.flatMap((foodPotion) => {
       const { potion, limit, options, mayo } = foodPotion;
@@ -1209,26 +1256,44 @@ function planBalancedDiet(
   const baseTargets = highMeatMonsterCount();
   const baseTurns = estimatedGarboTurns(false);
   let targets = 0;
-  let adventures = timedPlanner(baseMenu).expectedAdventures();
+  const baseDiet = timedPlanner(baseMenu);
+  let adventures = baseDiet.expectedAdventures();
+  let foods = foodCounts(baseDiet);
   for (let iterations = 5; iterations > 0; iterations--) {
     print(
       `Calculating diet, please wait${".....".slice(0, iterations)}`,
       HIGHLIGHT,
     );
     const balancingDiet = timedPlanner(
-      potionMenu(baseMenu, baseTargets + targets, baseTurns + adventures),
+      potionMenu(
+        baseMenu,
+        baseTargets + targets,
+        baseTurns + adventures,
+        foods,
+      ),
     );
     const nextTargets = countCopies(balancingDiet);
     const nextAdventures = balancingDiet.expectedAdventures();
-    if (nextTargets === targets && nextAdventures === adventures) {
+    const nextFoods = foodCounts(balancingDiet);
+    if (
+      nextTargets === targets &&
+      nextAdventures === adventures &&
+      sameCounts(nextFoods, foods)
+    ) {
       return finish(balancingDiet);
     }
     targets = nextTargets;
     adventures = nextAdventures;
+    foods = nextFoods;
   }
   return finish(
     timedPlanner(
-      potionMenu(baseMenu, baseTargets + targets, baseTurns + adventures),
+      potionMenu(
+        baseMenu,
+        baseTargets + targets,
+        baseTurns + adventures,
+        foods,
+      ),
     ),
   );
 }
