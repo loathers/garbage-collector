@@ -997,6 +997,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
       fights.forEach((f) => {
         BlackRose.fightMonster(f);
       });
+      runChoice(2);
       visitUrl("main.php");
       set("_blackRoseFightsDone", true);
       if (currentGarden !== "black_rose") {
