@@ -16,6 +16,7 @@ import {
   mallPrice,
   meatPockets,
   myAscensions,
+  myGardenType,
   myInebriety,
   pickedPockets,
   pocketItems,
@@ -48,6 +49,7 @@ import {
   have,
   maxBy,
   questStep,
+  set,
   SourceTerminal,
   sum,
   withChoice,
@@ -68,6 +70,8 @@ import { augustSummonTasks } from "../resources/scepter";
 import { meatFamiliar } from "../familiar/meatFamiliar";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { highMeatMonsterCount } from "../turns";
+import * as BlackRose from "../resources/blackrose";
+import { GARDEN_ITEMS } from "../resources/blackrose";
 
 const SummonTomes = $skills`Summon Snowcones, Summon Stickers, Summon Sugar Sheets, Summon Rad Libs, Summon Smithsness`;
 const Wads = $items`twinkly wad, cold wad, stench wad, hot wad, sleaze wad, spooky wad`;
@@ -815,6 +819,24 @@ const DailyItemTasks: GarboTask[] = [
         visitUrl(url);
       }
       smashedBarrels = true;
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Rose Garden Items",
+    ready: () => BlackRose.have(),
+    completed: () => get("_blackRoseLooted", false),
+    do: () => {
+      const currentGarden = myGardenType();
+      if (currentGarden !== "black_rose") {
+        use($item`black garden rose`);
+      }
+      if (BlackRose.obtainItems()) {
+        set("_blackRoseLooted", true);
+      }
+      if (currentGarden !== "black_rose") {
+        use(GARDEN_ITEMS[currentGarden]);
+      }
     },
     spendsTurn: false,
   },

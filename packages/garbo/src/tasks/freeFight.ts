@@ -17,11 +17,13 @@ import {
   itemAmount,
   itemDropsArray,
   itemType,
+  Location,
   mallPrice,
   Monster,
   myBuffedstat,
   myClass,
   myFamiliar,
+  myGardenType,
   myInebriety,
   myMaxhp,
   mySoulsauce,
@@ -82,6 +84,8 @@ import { ghostAdventure } from "../resources/protonpack";
 import { shouldAugustCast } from "../resources/scepter";
 import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
 import { AdventureArgument, wanderer } from "../garboWanderer";
+import * as BlackRose from "../resources/blackrose";
+import { GARDEN_ITEMS } from "../resources/blackrose";
 
 export type GarboFreeFightTask = Extract<
   GarboTask<void>,
@@ -978,6 +982,29 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
       ).basicCombat(),
     ),
     combatCount: () => clamp(10 - get("_cyberFreeFights"), 0, 10),
+  },
+  {
+    name: "Black Rose Garden Fights",
+    adventure: Location.none,
+    ready: () => BlackRose.have(),
+    completed: () => get("_blackRoseFightsDone", false),
+    do: () => {
+      const currentGarden = myGardenType();
+      if (currentGarden !== "black_rose") {
+        use($item`black garden rose`);
+      }
+      const fights = BlackRose.availableMonsters();
+      fights.forEach((f) => {
+        BlackRose.fightMonster(f);
+      });
+      runChoice(2);
+      visitUrl("main.php");
+      set("_blackRoseFightsDone", true);
+      if (currentGarden !== "black_rose") {
+        use(GARDEN_ITEMS[currentGarden]);
+      }
+    },
+    tentacle: false,
   },
 ];
 
