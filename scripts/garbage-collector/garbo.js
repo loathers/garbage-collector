@@ -19768,7 +19768,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"c43838597cf456c3879c221bc49400f6ac261e12"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"4b25f3aab1c5d981f44958055126a1fda51450fb"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -26412,7 +26412,7 @@ function trackMarginalMpa(remainingTurns) {
   if (!barf) {
     sessions.set("barf", Session.current());
   } else {
-    var turns = barf.diff(current).totalTurns;
+    var turns = current.diff(barf).totalTurns;
     remainingTurns ?? (remainingTurns = estimatedGarboTurns());
     // track items if we have run at least 100 turns in barf mountain or we have less than 200 turns left in barf mountain
     var item = sessions.get("item-start");
