@@ -16,7 +16,6 @@ import {
   mallPrice,
   meatPockets,
   myAscensions,
-  myGardenType,
   myInebriety,
   pickedPockets,
   pocketItems,
@@ -46,7 +45,6 @@ import {
   BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
-  GARDEN_ITEMS,
   get,
   have,
   maxBy,
@@ -825,17 +823,22 @@ const DailyItemTasks: GarboTask[] = [
   {
     name: "Rose Garden Items",
     ready: () => BlackRose.have(),
-    completed: () => get("_blackRoseLooted", false),
-    do: () => {
-      const currentGarden = myGardenType();
-      if (currentGarden !== "black_rose") {
+    completed: () => get("_garbo_roseGardenLooted", false),
+    prepare: () => {
+      if (have($item`black garden rose`)) {
         use($item`black garden rose`);
       }
-      if (BlackRose.obtainItems()) {
-        set("_blackRoseLooted", true);
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
-      if (currentGarden !== "black_rose") {
-        use(GARDEN_ITEMS[currentGarden]);
+    },
+    do: () => {
+      BlackRose.obtainItems();
+      set("_garbo_roseGardenLooted", true);
+    },
+    post: () => {
+      if (have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
       }
     },
     spendsTurn: false,

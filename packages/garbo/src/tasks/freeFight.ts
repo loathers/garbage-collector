@@ -23,7 +23,6 @@ import {
   myBuffedstat,
   myClass,
   myFamiliar,
-  myGardenType,
   myInebriety,
   myMaxhp,
   mySoulsauce,
@@ -60,7 +59,6 @@ import {
   Counter,
   Delayed,
   ensureEffect,
-  GARDEN_ITEMS,
   get,
   have,
   maxBy,
@@ -988,20 +986,26 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
     adventure: Location.none,
     ready: () => BlackRose.have(),
     completed: () => get("_blackRoseFightsDone", false),
-    do: () => {
-      const currentGarden = myGardenType();
-      if (currentGarden !== "black_rose") {
+    prepare: () => {
+      if (have($item`black garden rose`)) {
         use($item`black garden rose`);
       }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: () => {
       const fights = BlackRose.availableMonsters();
       fights.forEach((f) => {
         BlackRose.fightMonster(f);
       });
       runChoice(2);
       visitUrl("main.php");
-      set("_blackRoseFightsDone", true);
-      if (currentGarden !== "black_rose") {
-        use(GARDEN_ITEMS[currentGarden]);
+      set("_garbo_blackRoseFightsDone", true);
+    },
+    post: () => {
+      if (have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
       }
     },
     tentacle: false,
