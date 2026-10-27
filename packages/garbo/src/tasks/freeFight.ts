@@ -51,6 +51,7 @@ import {
   $skill,
   $slot,
   $stat,
+  BlackRose,
   BurningLeaves,
   ChateauMantegna,
   clamp,
@@ -59,6 +60,7 @@ import {
   Counter,
   Delayed,
   ensureEffect,
+  GARDEN_ITEMS,
   get,
   have,
   maxBy,
@@ -84,8 +86,6 @@ import { ghostAdventure } from "../resources/protonpack";
 import { shouldAugustCast } from "../resources/scepter";
 import { isFreeAndCopyable, kramcoGuaranteed, sober, valueDrops } from "../lib";
 import { AdventureArgument, wanderer } from "../garboWanderer";
-import * as BlackRose from "../resources/blackrose";
-import { GARDEN_ITEMS } from "../resources/blackrose";
 
 export type GarboFreeFightTask = Extract<
   GarboTask<void>,
