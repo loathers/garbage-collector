@@ -141,7 +141,9 @@ const PostBuffExtensionTasks: GarboTask[] = [
         throw new Error("Could not restore HP before free mining.");
       }
       if (!cliExecute("oreo 0 survive=true")) {
-        throw new Error("Free mining failed; check Oreo's error before continuing.");
+        throw new Error(
+          "Free mining failed; check Oreo's error before continuing.",
+        );
       }
     },
     sobriety: "sober",
