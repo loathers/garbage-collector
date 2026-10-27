@@ -15,11 +15,13 @@ import {
   fullnessLimit,
   getClanLounge,
   getProperty,
+  handlingChoice,
   haveEffect,
   inebrietyLimit,
   Item,
   itemAmount,
   itemType,
+  lastChoice,
   logprint,
   mallPrice,
   mpCost,
@@ -38,6 +40,7 @@ import {
   putCloset,
   retrieveItem,
   retrievePrice,
+  runChoice,
   sellsItem,
   setProperty,
   Slot,
@@ -63,6 +66,7 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
   $locations,
   $modifier,
   $skill,
@@ -92,6 +96,7 @@ import {
   sumNumbers,
   uneffect,
   unequip,
+  withChoice,
   withProperties,
   withProperty,
 } from "libram";
@@ -123,7 +128,43 @@ const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
 
 const Mayo = MayoClinic.Mayo;
-type Note = PotionTier | null;
+type NoodleTier = `${PotionTier} (noodle-doubled)`;
+type Note = PotionTier | NoodleTier | null;
+
+/**
+ * Pastas of legend (dishes cooked with legendary noodles) lead to Legendary Digestion
+ * when eaten. Its stomach option doubles the effect durations of the next three foods,
+ * stacking multiplicatively with Mayozapine. Eating a dish while that is active spends
+ * a charge, so back-to-back dishes add only two charges each after the first.
+ */
+const LEGENDARY_DIGESTION = 1599;
+const LEGENDARY_DIGESTION_STOMACH = 5;
+const legendaryNoodleDishes = [
+  "Frutti di Scatoletta",
+  "Pesto alla Marziano",
+  "Arrattabbattabiata",
+  "Orzo di Riso",
+  "Pasta Grimavera",
+  "Linguini Ubriacapa",
+  "Gnocci Domani",
+  "Formica e Pepe",
+  "Tubetto Gelatto",
+]
+  .map((name) => toItem(name))
+  .filter((item) => item !== $item.none);
+
+const isNoodleTier = (data: Note | undefined): data is NoodleTier =>
+  !!data?.endsWith("(noodle-doubled)");
+
+/** Foods already set to have their effects doubled by Legendary Digestion */
+function existingNoodleCharges(): number {
+  return get("legendaryNoodlesStomach", 0);
+}
+
+/** Doubled foods gained from the nth noodle dish, eaten back-to-back */
+function noodleDishCharges(index: number): number {
+  return index === 0 ? 3 : 2;
+}
 
 function hasMoonZoneRestaurant(): boolean {
   return $locations`Camp Logging Camp, Thugnderdome`.some((loc) =>
@@ -163,7 +204,14 @@ function eatSafe(qty: number, item: Item) {
     acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
     use($item`Hunger™ Sauce`);
   }
-  if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
+  // KoL won't serve a pasta of legend with a fudge spork, and Scratch's fork takes the
+  // utensil slot itself, so save the spork for the next other food
+  if (
+    itemType(item) === "food" &&
+    !legendaryNoodleDishes.includes(item) &&
+    mallPrice($item`fudge spork`) < 3 * MPA &&
+    !get("_fudgeSporkUsed")
+  ) {
     eat($item`fudge spork`);
   }
   if (
@@ -180,13 +228,16 @@ function eatSafe(qty: number, item: Item) {
   }, item);
 }
 
-const EXPENSIVE_SONGS = FarmingStrategy.isUnderwater()
-  ? $effects`The Ballad of Richie Thingfinder, Chorale of Companionship, Donho's Bubbly Ballad`
-  : $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
+// Evaluated lazily: FarmingStrategy may not be initialized yet when this module loads
+const expensiveSongs = () =>
+  FarmingStrategy.isUnderwater()
+    ? $effects`The Ballad of Richie Thingfinder, Chorale of Companionship, Donho's Bubbly Ballad`
+    : $effects`The Ballad of Richie Thingfinder, Chorale of Companionship`;
 const USEFUL_SONGS = $effects`Polka of Plenty, Ur-Kel's Aria of Annoyance, Fat Leon's Phat Loot Lyric`;
 function shrugForOde() {
+  const expensive = expensiveSongs();
   const inexpensiveSongs = getActiveSongs().filter(
-    (e) => !EXPENSIVE_SONGS.includes(e),
+    (e) => !expensive.includes(e),
   );
   const uselessSongs = inexpensiveSongs.filter(
     (e) => !USEFUL_SONGS.includes(e),
@@ -869,41 +920,138 @@ function potionMenu(
   targets: number,
   turns: number,
 ): MenuItem<Note>[] {
+  type PotionOptions = {
+    price?: number;
+    organ?: "spleen item" | "booze" | "food";
+    size?: number;
+  };
+  // Food potions are deferred, so that Legendary Digestion charges can go to the best of them
+  const foodPotions: {
+    potion: Potion;
+    limit?: number;
+    options: PotionOptions;
+    mayo?: Item;
+  }[] = [];
+
+  function potionTiers(
+    potion: Potion,
+    limit: number | undefined,
+    options: PotionOptions,
+    mayo: Item | undefined,
+    noodleDoubled = false,
+  ): MenuItem<Note>[] {
+    if (limit === 0) return [];
+    return potion.value(targets, turns, limit).map(
+      (tier) =>
+        new MenuItem<Note>(potion.potion, {
+          maximum: tier.quantity,
+          additionalValue: tier.value,
+          priceOverride: options.price,
+          organ: options.organ,
+          size: options.size,
+          data: noodleDoubled
+            ? (`${tier.name} (noodle-doubled)` as const)
+            : tier.name,
+          mayo,
+        }),
+    );
+  }
+
   function limitedPotion(
     input: Item | Potion,
     limit?: number,
-    options: {
-      price?: number;
-      organ?: "spleen item" | "booze" | "food";
-      size?: number;
-    } = {},
+    options: PotionOptions = {},
   ): MenuItem<Note>[] {
     if (limit === 0) {
       return [];
     }
 
     let potion = input instanceof Item ? new Potion(input) : input;
+    if (itemType(potion.potion) !== "food") {
+      return potionTiers(potion, limit, options, undefined);
+    }
     let mayo: Item | undefined = undefined;
     if (
-      itemType(potion.potion) === "food" &&
-      (GarboWorkshed.current?.workshed === $item`portable Mayo Clinic` ||
-        switchingToMayo())
+      GarboWorkshed.current?.workshed === $item`portable Mayo Clinic` ||
+      switchingToMayo()
     ) {
       potion = potion.doubleDuration();
       mayo = Mayo.zapine;
     }
-    return potion.value(targets, turns, limit).map(
-      (tier) =>
-        new MenuItem(potion.potion, {
-          maximum: tier.quantity,
-          additionalValue: tier.value,
-          priceOverride: options.price,
-          organ: options.organ,
-          size: options.size,
-          data: tier.name,
-          mayo,
-        }),
+    foodPotions.push({ potion, limit, options, mayo });
+    return [];
+  }
+
+  /**
+   * Assign Legendary Digestion charges, existing and from noodle dishes we own, to the
+   * food potions that gain the most from doubling (on top of any mayo doubling).
+   * Existing charges become noodle-doubled tiers; the gain from a dish's charges is
+   * credited to the dish itself, since the planner can't tie the two together.
+   */
+  function noodleMenu(): MenuItem<Note>[] {
+    const dishes = legendaryNoodleDishes.flatMap((dish) =>
+      new Array<Item>(availableAmount(dish)).fill(dish),
     );
+    const existing = existingNoodleCharges();
+    const totalCharges =
+      existing + sumNumbers(dishes.map((_, index) => noodleDishCharges(index)));
+
+    const bestValue = (potion: Potion) =>
+      potion.value(targets, turns, 1)[0]?.value ?? 0;
+    const ranked = foodPotions
+      .map((foodPotion) => {
+        const doubled = bestValue(foodPotion.potion.doubleDuration());
+        const price = foodPotion.options.price ?? foodPotion.potion.price();
+        return {
+          foodPotion,
+          gain: doubled > price ? doubled - bestValue(foodPotion.potion) : -1,
+        };
+      })
+      .filter(({ gain }) => gain > 0)
+      .sort((a, b) => b.gain - a.gain);
+    const charges: typeof ranked = [];
+    for (const entry of ranked) {
+      const uses = Math.min(
+        entry.foodPotion.limit ?? Infinity,
+        totalCharges - charges.length,
+      );
+      for (let i = 0; i < uses; i++) charges.push(entry);
+    }
+
+    const potionItems = foodPotions.flatMap((foodPotion) => {
+      const { potion, limit, options, mayo } = foodPotion;
+      const doubledUses = charges
+        .slice(0, existing)
+        .filter((charge) => charge.foodPotion === foodPotion).length;
+      if (doubledUses === 0) return potionTiers(potion, limit, options, mayo);
+      return [
+        ...potionTiers(
+          potion.doubleDuration(),
+          doubledUses,
+          options,
+          mayo,
+          true,
+        ),
+        ...potionTiers(
+          potion,
+          limit === undefined ? undefined : limit - doubledUses,
+          options,
+          mayo,
+        ),
+      ];
+    });
+
+    let used = existing;
+    const dishItems = dishes.map((dish, index) => {
+      const dishCharges = charges.slice(used, used + noodleDishCharges(index));
+      used += noodleDishCharges(index);
+      return new MenuItem<Note>(dish, {
+        maximum: 1,
+        additionalValue: sum(dishCharges, "gain"),
+      });
+    });
+
+    return [...potionItems, ...dishItems];
   }
   function potion(potion: Item | Potion, options = {}): MenuItem<Note>[] {
     return limitedPotion(potion, undefined, options);
@@ -930,7 +1078,9 @@ function potionMenu(
     : [];
 
   const foodCone =
-    realmAvailable("stench") || (globalOptions.simdiet && !globalOptions.nobarf)
+    realmAvailable("stench") ||
+    // simdiet runs before we'd buy a Dinsey ticket, so assume we will if we're farming in Dinseylandfill
+    (globalOptions.simdiet && FarmingStrategy.location === $location`Barf Mountain`)
       ? limitedPotion(
           $item`Dinsey food-cone`,
           Math.floor(availableAmount($item`FunFunds™`) / 2),
@@ -952,7 +1102,7 @@ function potionMenu(
       limitedPotion(out.item, 1, { price: out.price }),
   );
 
-  return [
+  const menuItems = [
     ...baseMenu,
     ...copiers(),
 
@@ -1035,6 +1185,7 @@ function potionMenu(
         )
       : []),
   ];
+  return [...menuItems, ...noodleMenu()];
 }
 
 interface DietPlanner {
@@ -1371,8 +1522,11 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   print(`===== ${name} DIET =====`);
   if (diet.entries.length === 0) return;
   diet = diet.copy();
+  const noodleDoubling = usesNoodleDoubling(diet);
   diet.entries.sort(
-    (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
+    (a, b) =>
+      itemPriority(b.menuItems, noodleDoubling) -
+      itemPriority(a.menuItems, noodleDoubling),
   );
 
   const targets = Math.floor(highMeatMonsterCount() + countCopies(diet));
@@ -1410,15 +1564,42 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   );
 }
 
+/**
+ * Whether this diet uses Legendary Digestion charges, so its food potions should be
+ * eaten before other foods spend the charges.
+ */
+function usesNoodleDoubling(diet: Diet<Note>): boolean {
+  return (
+    existingNoodleCharges() > 0 ||
+    diet.entries.some(
+      ({ menuItems, quantity }) =>
+        quantity > 0 &&
+        menuItems.some((menuItem) =>
+          legendaryNoodleDishes.includes(menuItem.item),
+        ),
+    )
+  );
+}
+
 // Item priority - higher means we eat it first.
 // Anything that gives a consumption buff should go first (e.g. Refined Palate).
-function itemPriority<T>(menuItems: MenuItem<T>[] | readonly MenuItem<T>[]) {
+// With Legendary Digestion charges, use existing charges, then eat noodle dishes,
+// then food potions, so the charges double the potions rather than other food.
+function itemPriority(
+  menuItems: MenuItem<Note>[] | readonly MenuItem<Note>[],
+  noodleDoubling = false,
+) {
   // Last menu item is the food itself.
   const menuItem = menuItems[menuItems.length - 1];
   if (menuItem === undefined) {
     throw "Shouldn't have an empty menu item.";
   }
   if (menuItem.item === $item`spaghetti breakfast`) return 200;
+  if (noodleDoubling) {
+    if (isNoodleTier(menuItem.data)) return 170;
+    if (legendaryNoodleDishes.includes(menuItem.item)) return 160;
+    if (menuItem.data && menuItem.itemType() === "food") return 150;
+  }
   if (
     $items`pocket wish, toasted brie`.includes(menuItem.item) ||
     spleenCleaners.get(menuItem.item) ||
@@ -1562,6 +1743,20 @@ function specialItemActions(): Map<Item, ItemAction> {
       $item`august scepter`,
       () => useSkill($skill`Aug. 16th: Roller Coaster Day!`),
     ],
+    ...legendaryNoodleDishes.map((dish): [Item, ItemAction] => [
+      dish,
+      (countToConsume, menuItem) => {
+        // One at a time, since each leads to Legendary Digestion
+        for (let i = 0; i < countToConsume; i++) {
+          withChoice(LEGENDARY_DIGESTION, LEGENDARY_DIGESTION_STOMACH, () =>
+            consumeSafe(1, menuItem.item, menuItem.additionalValue),
+          );
+          if (handlingChoice() && lastChoice() === LEGENDARY_DIGESTION) {
+            runChoice(LEGENDARY_DIGESTION_STOMACH);
+          }
+        }
+      },
+    ]),
   ]);
 }
 
@@ -1657,8 +1852,13 @@ function dietTasks(diet: Diet<Note>): DietTask[] {
   let shotglassAvailable =
     !get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`);
 
+  const noodleDoubling = usesNoodleDoubling(diet);
   const pending = [...diet.entries]
-    .sort((a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems))
+    .sort(
+      (a, b) =>
+        itemPriority(b.menuItems, noodleDoubling) -
+        itemPriority(a.menuItems, noodleDoubling),
+    )
     .map((dietEntry) => ({
       dietEntry,
       remaining: dietEntry.quantity,
