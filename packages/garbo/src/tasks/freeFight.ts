@@ -17,7 +17,6 @@ import {
   itemAmount,
   itemDropsArray,
   itemType,
-  Location,
   mallPrice,
   Monster,
   myBuffedstat,
@@ -983,7 +982,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
   },
   {
     name: "Black Rose Garden Fights",
-    adventure: Location.none,
+    adventure: nextBlackGardenRoseFight(),
     ready: () => BlackRose.have(),
     completed: () => get("_blackRoseFightsDone", false),
     prepare: () => {
@@ -995,13 +994,10 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
       }
     },
     do: () => {
-      const fights = BlackRose.availableMonsters();
-      fights.forEach((f) => {
-        BlackRose.fightMonster(f);
-      });
-      runChoice(2);
-      visitUrl("main.php");
-      set("_garbo_blackRoseFightsDone", true);
+      BlackRose.fightMonster(nextBlackGardenRoseFight());
+      if (nextBlackGardenRoseFight() === Monster.none) {
+        set("_garbo_blackRoseFightsDone", true);
+      }
     },
     post: () => {
       if (have($item`packet of tall grass seeds`)) {
@@ -1011,6 +1007,11 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
     tentacle: false,
   },
 ];
+
+function nextBlackGardenRoseFight(): Monster {
+  const monsters = BlackRose.availableMonsters();
+  return monsters ? monsters[0] : Monster.none;
+}
 
 const FreeFightTasks = RAW_FIGHTS.map(freeFightTask);
 
