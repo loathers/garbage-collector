@@ -112,6 +112,7 @@ export const eventLog: {
 };
 
 export const WISH_VALUE = 50000;
+export const YACHTZEE_VALUE = 20_000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 export const ESTIMATED_OVERDRUNK_TURNS = 50;
 export const MEAT_TARGET_MULTIPLIER = (): number =>
@@ -309,7 +310,7 @@ export function pillkeeperOpportunityCost(): number {
     },
     {
       can: realmAvailable("sleaze"),
-      value: 20000 - get("valueOfAdventure"),
+      value: YACHTZEE_VALUE - get("valueOfAdventure"),
     },
   ].filter((x) => x.can);
 

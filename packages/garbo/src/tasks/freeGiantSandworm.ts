@@ -39,7 +39,7 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit/free";
 import { GarboTask } from "./engine";
-import { GarboFreeFightTask } from "./freeFight";
+import { GarboFreeFightTask } from "./freeFight/lib";
 import { sandwormFamiliar } from "../familiar/sandwormFamiliar";
 import { sober } from "../lib";
 import { safeSweatBulletCasts } from "../resources/bloodCubicZirconia";

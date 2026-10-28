@@ -37,7 +37,7 @@ import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
-import { shrugBadEffects } from "../mood";
+import { freeFightMood, shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
 import { FarmingContext } from "./context";
 import { BanishMethod, chooseBanish } from "../resources/banish";
@@ -228,6 +228,32 @@ class BaseGarboEngine extends BaseGarboContextEngine<void> {
   }
 }
 
+class FreeFightEngine extends BaseGarboEngine {
+  private consecutiveNonFreeFights = 0;
+
+  acquireEffects(task: GarboTask<void>): void {
+    if ("combat" in task) {
+      freeFightMood(...(undelay(task.effects) ?? [])).execute();
+    }
+    super.acquireEffects(task);
+  }
+
+  execute(task: GarboTask<void>): void {
+    const before = totalTurnsPlayed();
+    const expectsFreeCombat = "combat" in task && !undelay(task.spendsTurn);
+    super.execute(task);
+    if (!expectsFreeCombat) return;
+    if (totalTurnsPlayed() > before) {
+      this.consecutiveNonFreeFights++;
+    } else {
+      this.consecutiveNonFreeFights = 0;
+    }
+    if (this.consecutiveNonFreeFights >= 5) {
+      throw new Error("The last 5 free fights spent turns!");
+    }
+  }
+}
+
 class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
   #banish: BanishMethod | null = null;
 
@@ -286,6 +312,12 @@ export function runSafeGarboQuests(quests: Quest<GarboTask<void>>[]): void {
 
 export function runGarboQuests(quests: Quest<GarboTask<void>>[]): void {
   runQuests(quests, BaseGarboEngine);
+}
+
+export function runGarboFreeFightQuests(
+  quests: Quest<GarboTask<void>>[],
+): void {
+  runQuests(quests, FreeFightEngine);
 }
 
 export function runGarboFarmQuests(
