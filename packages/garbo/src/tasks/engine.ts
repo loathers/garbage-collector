@@ -1,4 +1,4 @@
-import { returnExhaustedStashItems } from "../resources/stash";
+import { returnExhaustedStashItems } from "../stash";
 import {
   ContextualEngine,
   Engine,
