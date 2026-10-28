@@ -12,12 +12,13 @@
     "copyStatic": "copyfiles --up 1 \"static/**/*\" dist",
     "check": "tsc",
     "lint": "eslint src && prettier --check .",
-    "format": "eslint src --fix && prettier --write .",
+    "format": "prettier --write . && eslint src --fix && prettier --write .",
     "madge": "madge --circular . ./src/index.ts",
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "prettier --write",
       "eslint --quiet --fix",
       "prettier --write"
     ],
