@@ -18693,7 +18693,7 @@ var locationColor = {
   red: $location`The Fungus Plains`
 };
 function value(color, options) {
-  var denominator = options.ascend ? get$2("8BitScore") - TREASURE_HOUSE_FAT_LOOT_TOKEN_COST : TREASURE_HOUSE_FAT_LOOT_TOKEN_COST;
+  var denominator = options.ascend ? TREASURE_HOUSE_FAT_LOOT_TOKEN_COST - get$2("8BitScore") : TREASURE_HOUSE_FAT_LOOT_TOKEN_COST;
   return options.itemValue($item`fat loot token`) * kolmafia.eightBitPoints(locationColor[color]) / denominator;
 }
 function eightbitFactory(type, locationSkiplist, options) {
@@ -19768,7 +19768,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"4b25f3aab1c5d981f44958055126a1fda51450fb"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"9d0859a364c34bb74808229dad5fa887621977bb"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
