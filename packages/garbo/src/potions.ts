@@ -164,7 +164,11 @@ function retrieveUntradeablePrice(it: Item) {
 }
 
 export interface PotionOptions {
-  providesDoubleDuration?: boolean;
+  /**
+   * Multiplier on the potion's effect duration. Doublers stack multiplicatively,
+   * e.g. Mayozapine plus Legendary Digestion quadruples a food's effects.
+   */
+  durationMultiplier?: number;
   canDouble?: boolean;
   effect?: Effect;
   duration?: number;
@@ -189,7 +193,7 @@ const BUFFER_TURNS = 30;
 
 export class Potion {
   potion: Item;
-  providesDoubleDuration?: boolean;
+  durationMultiplier: number;
   canDouble: boolean;
   overrideEffect?: Effect;
   overrideDuration?: number;
@@ -211,7 +215,7 @@ export class Potion {
 
   constructor(potion: Item, options: PotionOptions = {}) {
     this.potion = potion;
-    this.providesDoubleDuration = options.providesDoubleDuration;
+    this.durationMultiplier = options.durationMultiplier ?? 1;
     this.canDouble = options.canDouble ?? true;
     this.overrideDuration = options.duration;
     this.overrideEffect = options.effect;
@@ -224,7 +228,7 @@ export class Potion {
   doubleDuration(): Potion {
     if (this.canDouble) {
       return new Potion(this.potion, {
-        providesDoubleDuration: true,
+        durationMultiplier: 2 * this.durationMultiplier,
         canDouble: this.canDouble,
         duration: this.overrideDuration,
         effect: this.overrideEffect,
@@ -243,7 +247,7 @@ export class Potion {
   effectDuration(): number {
     return (
       (this.overrideDuration ?? getModifier("Effect Duration", this.potion)) *
-      (this.providesDoubleDuration ? 2 : 1)
+      this.durationMultiplier
     );
   }
 
@@ -413,49 +417,42 @@ export class Potion {
       value: targetValue,
     });
 
-    // compute the number of meat targets missed before, and their value (along with barf unless nobarf)
+    // compute the number of meat targets missed before, and their value (along with farming turns, if we farm)
     const overlapTargets = -this.overage(targetTurns, targetQuantity);
 
     if (overlapTargets > 0) {
       values.push({
         name: "overlap",
         quantity: limitFunction(1),
-        value: this.gross(
-          overlapTargets,
-          globalOptions.nobarf ? overlapTargets : undefined,
-        ),
+        value: this.gross(overlapTargets),
       });
     }
 
     const targetCoverage =
       targetQuantity + (overlapTargets > 0 ? 1 : 0) * this.effectDuration();
 
-    if (!globalOptions.nobarf) {
-      // unless nobarf, compute the value of barf turns
-      // if ascending, break those turns that are not fully covered by a potion into their own value
-      const remainingTurns = Math.max(
+    const remainingTurns = Math.max(
+      0,
+      totalTurns - targetCoverage - startingTurns,
+    );
+
+    const barfQuantity = this.usesToCover(remainingTurns, !ascending);
+    values.push({
+      name: "barf",
+      quantity: limitFunction(barfQuantity),
+      value: this.gross(0),
+    });
+
+    if (ascending && this.overage(remainingTurns, barfQuantity) < 0) {
+      const ascendingTurns = Math.max(
         0,
-        totalTurns - targetCoverage - startingTurns,
+        remainingTurns - barfQuantity * this.effectDuration(),
       );
-
-      const barfQuantity = this.usesToCover(remainingTurns, !ascending);
       values.push({
-        name: "barf",
-        quantity: limitFunction(barfQuantity),
-        value: this.gross(0),
+        name: "ascending",
+        quantity: limitFunction(1),
+        value: this.gross(0, ascendingTurns),
       });
-
-      if (ascending && this.overage(remainingTurns, barfQuantity) < 0) {
-        const ascendingTurns = Math.max(
-          0,
-          remainingTurns - barfQuantity * this.effectDuration(),
-        );
-        values.push({
-          name: "ascending",
-          quantity: limitFunction(1),
-          value: this.gross(0, ascendingTurns),
-        });
-      }
     }
 
     return values.filter((tier) => tier.quantity > 0);
@@ -526,7 +523,6 @@ function useAsValuable(
 }
 
 export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
-  providesDoubleDuration: false,
   canDouble: false,
   effect: $effect`Shadow Waters`,
   duration: 30,
@@ -731,7 +727,7 @@ export function potionSetupCompleted(): boolean {
 }
 /**
  * Determines if potions are worth using by comparing against meat-equilibrium. Considers using pillkeeper to double them. Accounts for non-wanderer targets. Does not account for PYEC/LTC, or running out of turns with the ascend flag.
- * @param targetsOnly Are we valuing the potions only for meat targets (noBarf)?
+ * @param targetsOnly Are we valuing the potions only for meat targets (no farming turns)?
  */
 export function potionSetup(targetsOnly: boolean): void {
   castAugustScepterBuffs();
@@ -942,9 +938,8 @@ class VariableMeatPotion {
         "blue",
       );
       const ascendingOverlap =
-        globalOptions.ascend || globalOptions.nobarf
-          ? 0
-          : this.softcap / this.duration;
+        // The extra overlap only matters if we farm turns and aren't ascending
+        globalOptions.ascend ? 0 : this.softcap / this.duration;
       const potionsToUse =
         bestOption.quantity +
         ascendingOverlap -
