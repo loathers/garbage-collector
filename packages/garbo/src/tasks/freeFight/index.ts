@@ -1,5 +1,6 @@
 import { getTasks, OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
+  adv1,
   availableAmount,
   canadiaAvailable,
   canAdventure,
@@ -301,6 +302,8 @@ const FreeFightTasks = [
         $location`Domed City of Grimacia`,
         $monster`grizzled survivor`,
       );
+      runCombat();
+      if (handlingChoice()) runChoice(-1);
     },
     combat: new GarboStrategy(
       () => new Macro(),
@@ -319,7 +322,10 @@ const FreeFightTasks = [
         retrieveItem($item`divine champagne popper`);
       }
     },
-    do: $location`Domed City of Grimacia`,
+    do: (): void => {
+      adv1($location`Domed City of Grimacia`, -1, "");
+      if (handlingChoice()) runChoice(-1);
+    },
     combat: new GarboStrategy(
       () =>
         Macro.if_(

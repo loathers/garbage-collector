@@ -1,11 +1,14 @@
 import {
+  adv1,
   closetAmount,
+  handlingChoice,
   itemAmount,
   mallPrice,
   myAscensions,
   putCloset,
   retrieveItem,
   retrievePrice,
+  runChoice,
   takeCloset,
   use,
   visitUrl,
@@ -211,6 +214,10 @@ export const PygmyFightTasks = [
   }),
   pygmyTask({
     name: "Drunk Pygmies (Saber Friends)",
+    do: (): void => {
+      adv1(alley, -1, "");
+      if (handlingChoice()) runChoice(-1);
+    },
     ready: () =>
       pygmiesReady() &&
       have(saber) &&
