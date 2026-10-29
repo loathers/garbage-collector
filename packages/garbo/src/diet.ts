@@ -14,6 +14,7 @@ import {
   equippedItem,
   fullnessLimit,
   getClanLounge,
+  getIngredients,
   getProperty,
   handlingChoice,
   haveEffect,
@@ -163,6 +164,39 @@ function existingNoodleCharges(): number {
 /** Doubled foods gained from the nth noodle dish, eaten back-to-back */
 function noodleDishCharges(index: number): number {
   return index === 0 ? 3 : 2;
+}
+
+type NoodleDish = { dish: Item; price: number; owned: boolean };
+const legendaryNoodles = toItem("legendary noodles");
+
+/** What it costs to get a noodle dish: cooking it, or buying it if that's cheaper */
+function noodleDishPrice(dish: Item, ownNoodles: boolean): number {
+  const cost = (item: Item) =>
+    (ownNoodles || item !== legendaryNoodles) && have(item)
+      ? ingredientCost(item)
+      : mallPrice(item) || Infinity;
+  const cookPrice = sumNumbers(
+    Object.entries(getIngredients(dish)).map(
+      ([name, quantity]) => quantity * cost(toItem(name)),
+    ),
+  );
+  return Math.min(cookPrice, mallPrice(dish) || Infinity);
+}
+
+/** The noodle dish worth the most to make, with or without the noodles we own */
+function bestNoodleDishToMake(ownNoodles: boolean): NoodleDish | null {
+  const options = legendaryNoodleDishes
+    .map((dish) => ({
+      dish,
+      price: noodleDishPrice(dish, ownNoodles),
+      owned: false,
+    }))
+    .filter(({ price }) => Number.isFinite(price));
+  if (options.length === 0) return null;
+  return maxBy(
+    options,
+    ({ dish, price }) => getAverageAdventures(dish) * MPA - price,
+  );
 }
 
 function hasMoonZoneRestaurant(): boolean {
@@ -999,20 +1033,18 @@ function potionMenu(
   }
 
   /**
-   * Assign Legendary Digestion charges, existing and from noodle dishes we own, to the
-   * food potions that gain the most from doubling (on top of any mayo doubling).
+   * Assign Legendary Digestion charges, existing and from noodle dishes, to the food
+   * potions that gain the most from doubling (on top of any mayo doubling).
    * Existing charges become noodle-doubled tiers, so the planner decides whether to eat
    * them. The gain from a dish's charges is credited to the dish itself, since the
    * planner can't tie the two together, so dish charges only go to food potions the
    * previous plan already eats. Charges left over double nothing and earn the dish nothing.
+   * Dishes we own are joined by ones we could cook from legendary noodles we own, then
+   * by ones bought or made from the mall, each priced at what it costs to get. The
+   * cheapest dishes come first, so the ones the planner eats are the ones credited.
    */
   function noodleMenu(): MenuItem<Note>[] {
-    const dishes = legendaryNoodleDishes.flatMap((dish) =>
-      new Array<Item>(availableAmount(dish)).fill(dish),
-    );
     const existing = existingNoodleCharges();
-    const totalCharges =
-      existing + sumNumbers(dishes.map((_, index) => noodleDishCharges(index)));
 
     const bestValue = (potion: Potion) =>
       potion.value(targets, turns, 1)[0]?.value ?? 0;
@@ -1056,6 +1088,28 @@ function potionMenu(
         return [entry, uses];
       }),
     );
+
+    // Enough dishes to double every planned eat, beyond the ones we own
+    const plannedCharges = sumNumbers([...plannedUses.values()]);
+    const dishes = [
+      ...legendaryNoodleDishes.flatMap((dish) =>
+        new Array<NoodleDish>(availableAmount(dish)).fill({
+          dish,
+          price: MenuItem.defaultPriceFunction(dish),
+          owned: true,
+        }),
+      ),
+      ...new Array<NoodleDish | null>(availableAmount(legendaryNoodles)).fill(
+        bestNoodleDishToMake(true),
+      ),
+      ...new Array<NoodleDish | null>(Math.ceil(plannedCharges / 2)).fill(
+        bestNoodleDishToMake(false),
+      ),
+    ]
+      .filter((dish): dish is NoodleDish => dish !== null)
+      .sort((a, b) => a.price - b.price);
+    const totalCharges =
+      existing + sumNumbers(dishes.map((_, index) => noodleDishCharges(index)));
     assignCharges(
       totalCharges - existing,
       (entry) => plannedUses.get(entry) ?? 0,
@@ -1085,12 +1139,16 @@ function potionMenu(
     });
 
     let used = existing;
-    const dishItems = dishes.map((dish, index) => {
+    const dishItems = dishes.flatMap(({ dish, price, owned }, index) => {
       const dishCharges = charges.slice(used, used + noodleDishCharges(index));
       used += noodleDishCharges(index);
+      const additionalValue = sum(dishCharges, "gain");
+      // A dish we'd have to make is only worth offering for the charges it adds
+      if (!owned && additionalValue <= 0) return [];
       return new MenuItem<Note>(dish, {
         maximum: 1,
-        additionalValue: sum(dishCharges, "gain"),
+        additionalValue,
+        priceOverride: price,
       });
     });
 
