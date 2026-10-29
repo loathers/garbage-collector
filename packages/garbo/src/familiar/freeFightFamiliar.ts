@@ -15,7 +15,6 @@ import {
   getModifier,
   have,
   SkeletonOfCrimboPast,
-  Snapper,
   sum,
 } from "libram";
 
@@ -28,6 +27,7 @@ import {
   FamiliarMode,
   GeneralFamiliar,
   getUsedTcbFamiliars,
+  snapperReasonable,
   snapperValue,
   tcbValue,
   timeToMeatify,
@@ -104,12 +104,12 @@ export function menu(
       });
     }
 
-    if (mode === "target" && Snapper.have()) {
+    if (snapperReasonable(mode)) {
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: snapperValue(),
+        expectedValue: snapperValue(mode),
         leprechaunMultiplier: 0,
-        limit: "special",
+        limit: "none",
         worksOnFreeRun: false,
       });
     }

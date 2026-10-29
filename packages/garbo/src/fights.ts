@@ -362,7 +362,10 @@ export function dailyFights(): void {
   if (copyTargetSources.some((source) => source.potential())) {
     withStash($items`Spooky Putty sheet`, () => {
       // check if user wants to wish for the copy target before doing setup
-      if (!getNextCopyTargetFight()) return;
+      if (!getNextCopyTargetFight()) {
+        set("_garbo_doneCopyTargetFights", true);
+        return;
+      }
       meatTargetSetup();
       if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
 
