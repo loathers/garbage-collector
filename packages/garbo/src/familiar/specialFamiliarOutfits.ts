@@ -46,7 +46,6 @@ function familiarWeightWithOutfit(familiar: Familiar, outfitWeight: number) {
   );
 }
 
-/** Evaluate a familiar ability using predicted outfit weight and required equipment. */
 export function familiarModifierWithOutfit(
   familiar: Familiar,
   modifier: NumericModifier,
@@ -65,24 +64,21 @@ export function familiarModifierWithOutfit(
 }
 
 type SpecialFamiliarOutfit = {
-  /** Equipment required for the familiar's modeled abilities. */
   equip?: Item;
-  /** Applied to both simulated and live farming outfits. */
   configureOutfit?: (outfit: Outfit) => void;
   itemDropObjective?: (farmingItemDropValue: number) => {
     valuePerItemDrop: number;
     maximumItemDrop?: number;
   };
-  /** Value beyond the familiar's ordinary Meat and Item Drop abilities. */
+  // Drops/whatever, not just lep/fairy stuff
   extraValue?: (outfit: CachedOutfit) => number;
 };
 
 const mimicExperienceValue = () =>
   (MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50;
 
-// These familiars need their own cache entries because their outfit requirements
-// or valuations cannot be described by their leprechaun multiplier alone.
-// Keep this module independent of the familiar selector and outfit builder.
+// These familiars have special outfit requirements that make them not fit under
+// their leprechaun multiplier's cache entry.
 export const specialFamiliarOutfits = new Map<Familiar, SpecialFamiliarOutfit>([
   [
     $familiar`Chest Mimic`,
