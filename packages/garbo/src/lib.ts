@@ -1,6 +1,5 @@
 import {
   canAdventure,
-  choiceFollowsFight,
   cliExecute,
   Effect,
   effectModifier,
@@ -11,9 +10,7 @@ import {
   getLocketMonsters,
   getMonsters,
   gitInfo,
-  handlingChoice,
   haveEquipped,
-  haveSkill,
   holiday,
   inebrietyLimit,
   isDarkMode,
@@ -37,19 +34,15 @@ import {
   myMp,
   mySpleenUse,
   myThrall,
-  myTurncount,
   numericModifier,
   print,
   rollover,
-  runChoice,
-  runCombat,
   setLocation,
   Skill,
   spleenLimit,
   Stat,
   todayToString,
   totalFreeRests,
-  toUrl,
   use,
   useFamiliar,
   userConfirm,
@@ -68,6 +61,7 @@ import {
   $thralls,
   ActionSource,
   bestLibramToCast,
+  Cartography,
   ChateauMantegna,
   clamp,
   ClosedCircuitPayphone,
@@ -97,7 +91,6 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Macro } from "./combat";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -217,41 +210,9 @@ export function shuffle<T>(array: T[]): T[] {
 }
 
 export function mapMonster(location: Location, monster: Monster): void {
-  if (
-    haveSkill($skill`Map the Monsters`) &&
-    !get("mappingMonsters") &&
-    get("_monstersMapped") < 3
-  ) {
-    useSkill($skill`Map the Monsters`);
+  if (!Cartography.mapMonster(location, monster)) {
+    throw new Error(`Failed to map ${monster} in ${location}`);
   }
-
-  if (!get("mappingMonsters")) throw "Failed to setup Map the Monsters.";
-
-  const myTurns = myTurncount();
-  let mapPage = "";
-  // Handle zone intros and holiday wanderers
-  for (let tries = 0; tries < 10; tries++) {
-    mapPage = visitUrl(toUrl(location), false, true);
-    if (mapPage.includes("Leading Yourself Right to Them")) break;
-    // Time-pranks can show up here, annoyingly
-    if (
-      mapPage.includes("<!-- MONSTERID: 1965 -->") ||
-      mapPage.includes("<!-- MONSTERID: 1622  -->")
-    ) {
-      runCombat(Macro.attack().repeat().toString());
-    }
-    if (handlingChoice()) runChoice(-1);
-    if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
-    if (tries === 9) throw `Stuck trying to Map the monsters.`;
-  }
-
-  const fightPage = visitUrl(
-    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`,
-  );
-  if (!fightPage.includes(monster.name)) {
-    throw "Something went wrong starting the fight.";
-  }
-  if (choiceFollowsFight()) runChoice(-1);
 }
 
 export function questStep(questName: string): number {

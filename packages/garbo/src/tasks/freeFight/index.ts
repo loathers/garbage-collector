@@ -239,6 +239,42 @@ const remainingPartyFights = () =>
     10,
   );
 
+const prepareGrimacia = () => {
+  if (have($familiar`Red-Nosed Snapper`)) cliExecute("snapper dude");
+};
+const GRIMACIA_TASK = {
+  adventure: $location`Domed City of Grimacia`,
+  completed: () => get("_saberForceUses") >= 5,
+  effects: [$effect`Transpondent`],
+  choices: { 1387: 3 },
+  outfit: () => {
+    const canPickPocket =
+      myClass() === $class`Accordion Thief` ||
+      myClass() === $class`Disco Bandit`;
+    const bestPickpocketItem =
+      $items`tiny black hole, mime army infiltration glove`.find(
+        (item) => have(item) && canEquip(item),
+      );
+    const spec: OutfitSpec = {
+      modifier: ["1000 Pickpocket Chance"],
+      equip: $items`Fourth of May Cosplay Saber`,
+    };
+    if (have($familiar`Red-Nosed Snapper`)) {
+      spec.familiar = $familiar`Red-Nosed Snapper`;
+    }
+    if (!canPickPocket && bestPickpocketItem) {
+      spec.equip?.push(bestPickpocketItem);
+    }
+
+    return freeFightOutfit(spec, $location`Domed City of Grimacia`, {
+      familiarOptions: { canChooseMacro: false },
+    });
+  },
+  tentacle: false,
+  combatCount: () => clamp(5 - get("_saberForceUses"), 0, 5),
+  prepare: prepareGrimacia,
+};
+
 const FreeFightTasks = [
   freeFightTask({
     name: "Cursed Magnifying Glass",
@@ -257,85 +293,56 @@ const FreeFightTasks = [
   ThesisTask,
   UnlockHiddenTavernTask,
   freeFightTask({
+    ...GRIMACIA_TASK,
+    name: "Grimacia Shelter Maps (Cartography)",
+    ready: () => wantPills() && canMap(),
+    do: (): void => {
+      mapMonster(
+        $location`Domed City of Grimacia`,
+        $monster`grizzled survivor`,
+      );
+    },
+    combat: new GarboStrategy(
+      () => new Macro(),
+      () => Macro.skill($skill`Use the Force`),
+    ),
+  }),
+  freeFightTask({
+    ...GRIMACIA_TASK,
     name: "Grimacia Shelter Maps",
-    adventure: $location`Domed City of Grimacia`,
-    ready: wantPills,
-    completed: () => get("_saberForceUses") >= 5,
-    effects: [$effect`Transpondent`],
-    choices: { 1387: 3 },
+    ready: () => wantPills() && !canMap(),
     prepare: () => {
-      if (have($familiar`Red-Nosed Snapper`)) cliExecute("snapper dude");
-      if (
-        !canMap() &&
-        numericModifier($item`Grimacite guayabera`, "Monster Level") < 40
-      ) {
+      prepareGrimacia();
+      if (numericModifier($item`Grimacite guayabera`, "Monster Level") < 40) {
         retrieveItem($item`tennis ball`);
         retrieveItem($item`handful of split pea soup`);
         retrieveItem($item`divine champagne popper`);
       }
     },
-    do: () => {
-      if (canMap()) {
-        mapMonster(
-          $location`Domed City of Grimacia`,
-          $monster`grizzled survivor`,
-        );
-        runCombat();
-        runChoice(-1);
-        return;
-      }
-      return $location`Domed City of Grimacia`;
-    },
-    combat: new GarboStrategy(() =>
-      canMap()
-        ? Macro.skill($skill`Use the Force`)
-        : Macro.if_(
-            $monster`alielf`,
-            Macro.trySkill(
-              $skill`Asdon Martin: Spring-Loaded Front Bumper`,
-            ).tryItem($item`handful of split pea soup`),
+    do: $location`Domed City of Grimacia`,
+    combat: new GarboStrategy(
+      () =>
+        Macro.if_(
+          $monster`alielf`,
+          Macro.trySkill(
+            $skill`Asdon Martin: Spring-Loaded Front Bumper`,
+          ).tryItem($item`handful of split pea soup`),
+        )
+          .if_(
+            $monster`cat-alien`,
+            get("_snokebombUsed") < (getUsingFreeBunnyBanish() ? 1 : 3)
+              ? Macro.trySkill($skill`Snokebomb`).item($item`tennis ball`)
+              : Macro.item($item`tennis ball`),
           )
-            .if_(
-              $monster`cat-alien`,
-              get("_snokebombUsed") < (getUsingFreeBunnyBanish() ? 1 : 3)
-                ? Macro.trySkill($skill`Snokebomb`).item($item`tennis ball`)
-                : Macro.item($item`tennis ball`),
-            )
-            .if_(
-              $monster`dog-alien`,
-              Macro.trySkill($skill`Feel Hatred`).tryItem(
-                $item`divine champagne popper`,
-              ),
-            )
-            .step("pickpocket")
-            .skill($skill`Use the Force`),
+          .if_(
+            $monster`dog-alien`,
+            Macro.trySkill($skill`Feel Hatred`).tryItem(
+              $item`divine champagne popper`,
+            ),
+          )
+          .step("pickpocket"),
+      () => Macro.skill($skill`Use the Force`),
     ),
-    outfit: () => {
-      const canPickPocket =
-        myClass() === $class`Accordion Thief` ||
-        myClass() === $class`Disco Bandit`;
-      const bestPickpocketItem =
-        $items`tiny black hole, mime army infiltration glove`.find(
-          (item) => have(item) && canEquip(item),
-        );
-      const spec: OutfitSpec = {
-        modifier: ["1000 Pickpocket Chance"],
-        equip: $items`Fourth of May Cosplay Saber`,
-      };
-      if (have($familiar`Red-Nosed Snapper`)) {
-        spec.familiar = $familiar`Red-Nosed Snapper`;
-      }
-      if (!canPickPocket && bestPickpocketItem) {
-        spec.equip?.push(bestPickpocketItem);
-      }
-
-      return freeFightOutfit(spec, $location`Domed City of Grimacia`, {
-        familiarOptions: { canChooseMacro: false },
-      });
-    },
-
-    tentacle: false,
-    combatCount: () => clamp(5 - get("_saberForceUses"), 0, 5),
   }),
   freeFightTask({
     name: $item`protonic accelerator pack`.name,

@@ -232,8 +232,10 @@ export const PygmyFightTasks = [
         takeCloset(closetAmount(bowl), bowl);
       } else retrieveItem(bowl);
     },
-    combat: new GarboStrategy(() =>
-      saberFriends() ? Macro.skill($skill`Use the Force`) : pygmyMacro(),
+    combat: new GarboStrategy(
+      () => (saberFriends() ? new Macro() : pygmyMacro()),
+      () =>
+        saberFriends() ? Macro.skill($skill`Use the Force`) : pygmyMacro(),
     ),
     choices: { 1387: 2 },
     equip: [saber],
