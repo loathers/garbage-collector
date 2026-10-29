@@ -103,11 +103,10 @@ Running Garbo in `nobarf` mode will not target spending the bulk of your turns a
 
 ### `ascend` flag
 
-Garbo operates under the assumption that you plan on staying in this run over rollover. It will, by default, avoid using borrowed time, charge stinky cheese equipment, and hopefully do other stuff that hinges on this assumption. If that assumption is incorrect, you can call `garbo ascend` instead of the classic `garbo`, and it will then operate under the assumption that you do plan to ascend.
-
-`garbo ascend` will collect Safety Maps to Grimace Prime and will use your overdrunk turns to gain distention pills and synthetic dog hair pills. Simply run `garbo ascend` again after your nightcap, before you ascend, and it will spend as many turns farming with Drunkula's Wineglass if you have one, and then use remaining turns on maps for pills. Garbo won't obtain more than 100 of each pill, so don't worry about getting too many.
-
-As time goes on, we expect more and more features to pay attention to the ascend flag, so it's good to get in the habit of doing so.
+Garbo operates under the assumption that you plan on staying in this run over rollover. It will, by default, avoid using borrowed time, charge stinky cheese equipment, and hopefully do other stuff that hinges on this assumption. If that assumption is incorrect, you can call `garbo ascend` instead of the classic `garbo`, and it will then operate under the assumption that you do plan to ascend. This manifests in a few different ways:
+ - If you own a wineglass, it'll assume that you're running overdrunk turns, and defer end-of-day activities until you're drunk
+ - It'll avoid trying to reserve resources for tomorrow, and will cash out on stuff that disappears on ascension (e.g., embers, interesting coins)
+ - It'll stop valuing overflowing buffs
 
 ### `nodiet` flag
 
