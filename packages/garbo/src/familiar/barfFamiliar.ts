@@ -3,13 +3,9 @@ import {
   equippedItem,
   Familiar,
   Item,
-  itemDropsArray,
   myFamiliar,
-  numericModifier,
   print,
-  Slot,
   useFamiliar,
-  weightAdjustment,
 } from "kolmafia";
 import {
   $effect,
@@ -17,7 +13,6 @@ import {
   $familiar,
   $item,
   $items,
-  $slots,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -26,12 +21,11 @@ import {
   maxBy,
   SkeletonOfCrimboPast,
   sum,
-  totalFamiliarWeight,
   ToyCupidBow,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit/dropsgear";
-import { HIGHLIGHT, MEAT_TARGET_MULTIPLIER } from "../lib";
+import { HIGHLIGHT } from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -49,6 +43,12 @@ import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
 import { BonusEquipMode } from "../outfit/lib";
+import {
+  CachedOutfit,
+  familiarModifierWithOutfit,
+  familiarOutfitSlots,
+  specialFamiliarOutfits,
+} from "./specialFamiliarOutfits";
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
@@ -58,73 +58,12 @@ function familiarNeedsBoot(familiar: Familiar): boolean {
   );
 }
 
-type CachedOutfit = {
-  weight: number;
-  meat: number;
-  item: number;
-  famexp: number;
-  bonus: number;
-};
-
 const outfitCache = new Map<OutfitCacheKey, CachedOutfit>();
-const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
-
-const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
-  Familiar,
-  { equip?: Item; extraValue?: (outfit: CachedOutfit) => number }
->([
-  [
-    // Derives its value from famexp and requires _much_ more famexp than other exp familiars
-    $familiar`Chest Mimic`,
-    {
-      extraValue: ({ famexp }) =>
-        (famexp * MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
-    },
-  ],
-  // Uniquely required to equip its fam equip to meaningfully have value
-  [$familiar`Jill-of-All-Trades`, { equip: $item`LED candle` }],
-  // Derives its value irregularly from +famweight
-  [
-    $familiar`Mini Kiwi`,
-    {
-      extraValue: ({ weight }) =>
-        clamp(
-          (weight +
-            totalFamiliarWeight($familiar`Mini Kiwi`, false) +
-            nonOutfitWeightBonus()) *
-            0.005,
-          0,
-          1,
-        ) * garboValue($item`mini kiwi`),
-    },
-  ],
-  [
-    $familiar`Sword of S Words`,
-    {
-      extraValue: ({ item }) => {
-        const sWordMonster = get("swordOfSWordsMonster");
-        if (!sWordMonster) return 0;
-        const totalItem =
-          item + familiarModifier($familiar`Sword of S Words`, "Item Drop");
-        return (
-          sum(
-            itemDropsArray(sWordMonster),
-            ({ rate, drop }) =>
-              (clamp((rate * (100 + totalItem)) / 100, 0, 100) *
-                garboValue(drop)) /
-              100,
-          ) -
-          totalItem * FarmingStrategy.itemDropValue()
-        );
-      },
-    },
-  ],
-]);
 
 type OutfitCacheKey = number | Familiar | string;
 
 function outfitCacheKey(familiar: Familiar): OutfitCacheKey {
-  if (SPECIAL_FAMILIARS_FOR_CACHING.has(familiar)) {
+  if (specialFamiliarOutfits.has(familiar)) {
     return familiar;
   }
 
@@ -156,7 +95,7 @@ function getCachedOutfitValues(fam: Familiar) {
       true,
     ).dress();
 
-    const outfit = outfitSlots.map((slot) => equippedItem(slot));
+    const outfit = familiarOutfitSlots.map((slot) => equippedItem(slot));
     const bonuses = bonusGear(BonusEquipMode.MEAT_TARGET, false);
 
     const values = {
@@ -183,31 +122,15 @@ type MarginalFamiliar = GeneralFamiliar & {
   bonusTurns?: number;
 };
 
-const nonOutfitWeightBonus = () =>
-  weightAdjustment() -
-  sum(outfitSlots, (slot: Slot) =>
-    getModifier("Familiar Weight", equippedItem(slot)),
-  );
-
 function familiarModifier(
   familiar: Familiar,
   modifier: NumericModifier,
 ): number {
-  const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
-  const totalWeight =
-    totalFamiliarWeight(familiar, false) +
-    nonOutfitWeightBonus() +
-    cachedOutfitWeight;
-  const { equip } = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {};
-
-  return equip
-    ? numericModifier(
-        familiar,
-        modifier,
-        totalWeight - numericModifier(equip, "Familiar Weight"),
-        equip,
-      )
-    : numericModifier(familiar, modifier, totalWeight, $item.none);
+  return familiarModifierWithOutfit(
+    familiar,
+    modifier,
+    getCachedOutfitValues(familiar).weight,
+  );
 }
 
 function familiarAbilityValue(familiar: Familiar) {
@@ -272,7 +195,7 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
     outfit.item * FarmingStrategy.itemDropValue();
   const expectedValue =
     f.expectedValue +
-    (SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)?.extraValue?.(outfit) ?? 0);
+    (specialFamiliarOutfits.get(f.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
   return {
