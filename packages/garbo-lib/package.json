@@ -7,7 +7,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "format": "eslint src --fix && prettier --write .",
+    "format": "prettier --write . && eslint src --fix && prettier --write .",
     "check": "tsc",
     "lint": "eslint src && prettier --check .",
     "madge": "madge --circular . ./src/index.ts",
@@ -16,6 +16,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "prettier --write",
       "eslint --quiet --fix",
       "prettier --write"
     ],
