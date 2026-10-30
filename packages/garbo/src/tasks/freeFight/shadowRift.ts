@@ -275,7 +275,7 @@ function shadowRiftTasks(): MappingTask[] {
       choices: commonChoices,
       do: riftLocation,
       tentacle: true,
-      combatCount: () => haveEffect(affinity),
+      combatCount: remainingShadowRiftFights,
       post: () => {
         if (!have(affinity)) setLocation($location.none);
       },
@@ -312,7 +312,8 @@ export function shadowRiftQuest(): Quest<MappingTask> {
   };
 }
 
-export function expectedShadowRiftTentacles(): number {
+export function remainingShadowRiftFights(): number {
   if (!ClosedCircuitPayphone.have()) return 0;
+  // Accepting today's first quest grants Affinity after the tasks are constructed.
   return haveEffect(affinity) + (!get("_shadowAffinityToday") ? 11 : 0);
 }

@@ -101,7 +101,7 @@ import { PygmyFightTasks, UnlockHiddenTavernTask } from "./pygmy";
 import { molemanReady, ThesisTask } from "../thesis";
 
 import { getBestItemStealZone } from "../itemSteal/lib";
-import { expectedShadowRiftTentacles, shadowRiftQuest } from "./shadowRift";
+import { remainingShadowRiftFights, shadowRiftQuest } from "./shadowRift";
 
 function bestWitchessPiece() {
   return maxBy(Witchess.pieces, (monster) =>
@@ -1062,7 +1062,7 @@ const FreeFightTasks = [
       ),
     tentacle: true,
     combatCount: () =>
-      clamp(3 - CombatLoversLocket.reminiscesLeft() - locketsToSave(), 0, 3),
+      clamp(CombatLoversLocket.reminiscesLeft() - locketsToSave(), 0, 3),
   }),
   freeFightTask({
     ...doCandyTrick(),
@@ -1238,7 +1238,7 @@ export function possibleFreeFightQuestTentacleFights(): number {
     (task) => task.tentacle && (task.ready?.() ?? true) && !task.completed(),
   );
   return (
-    expectedShadowRiftTentacles() +
+    remainingShadowRiftFights() +
     sum(availableFights, (task) => task.combatCount())
   );
 }
@@ -1287,6 +1287,7 @@ export function mappingRecoveryQuest(): Quest<MappingTask> {
           ),
         combat: new GarboStrategy(() => Macro.basicCombat()),
         spendsTurn: true,
+        // Stop a stuck mapping flag from repeatedly spending adventures on recovery.
         limit: { tries: 10 },
       },
     ],
