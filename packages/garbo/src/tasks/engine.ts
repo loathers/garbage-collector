@@ -1,3 +1,4 @@
+import { returnExhaustedStashItems } from "../stash";
 import {
   ContextualEngine,
   Engine,
@@ -178,6 +179,7 @@ abstract class BaseGarboContextEngine<
       SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
     }
     super.execute(task);
+    returnExhaustedStashItems();
     if (totalTurnsPlayed() !== spentTurns) {
       if (!undelay(task.spendsTurn, context)) {
         print(
