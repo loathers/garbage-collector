@@ -5,6 +5,7 @@ import {
   Item,
   itemAmount,
   myAdventures,
+  print,
   setLocation,
   use,
   useSkill,
@@ -49,10 +50,11 @@ import { freeFightTask } from "./lib";
 const lodestone = $item`Rufus's shadow lodestone`;
 const affinity = $effect`Shadow Affinity`;
 
-function shadowWatersWorth(cost: number) {
-  return rufusPotion
-    .value(highMeatMonsterCount())
-    .some((tier) => tier.value > cost);
+function shadowWatersValue() {
+  return Math.max(
+    0,
+    ...rufusPotion.value(highMeatMonsterCount()).map((tier) => tier.value),
+  );
 }
 
 type RiftForcer = {
@@ -151,6 +153,7 @@ const commonChoices = { 1500: 2 }; // Shadow Waters
 
 function shadowRiftTasks(): MappingTask[] {
   let acceptedItemQuest = false;
+  let itemPurchaseFailed = false;
   return [
     {
       name: "Submit Rufus Quest",
@@ -177,15 +180,16 @@ function shadowRiftTasks(): MappingTask[] {
         (!get("_shadowAffinityToday") ||
           have(affinity) ||
           artifactCost() === 0 ||
-          shadowWatersWorth(artifactCost())),
+          shadowWatersValue() > artifactCost()),
       completed: () => ClosedCircuitPayphone.rufusTarget() !== null,
       do: () => {
+        itemPurchaseFailed = false;
         ClosedCircuitPayphone.chooseQuest(({ items }) => {
           const itemCost = 3 * getAcquirePrice(items);
           acceptedItemQuest =
             items !== $item.none &&
             itemCost < artifactCost() &&
-            shadowWatersWorth(itemCost);
+            shadowWatersValue() > itemCost;
           return acceptedItemQuest ? 3 : 2;
         });
         aprilFoolsRufus();
@@ -199,9 +203,10 @@ function shadowRiftTasks(): MappingTask[] {
         const target = ClosedCircuitPayphone.rufusTarget();
         return (
           get("rufusQuestType") === "items" &&
+          !itemPurchaseFailed &&
           target instanceof Item &&
           (acceptedItemQuest || !have(affinity)) &&
-          shadowWatersWorth(3 * getAcquirePrice(target))
+          shadowWatersValue() > 3 * getAcquirePrice(target)
         );
       },
       completed: () => {
@@ -213,7 +218,13 @@ function shadowRiftTasks(): MappingTask[] {
         if (!(target instanceof Item)) {
           throw new Error("Rufus no longer wants items");
         }
-        acquire(3, target, getAcquirePrice(target));
+        acquire(3, target, Math.ceil(shadowWatersValue() / 3) - 1, false);
+        itemPurchaseFailed = itemAmount(target) < 3;
+        if (itemPurchaseFailed) {
+          print(
+            `Unable to acquire enough ${target}; continuing without buying more for this quest.`,
+          );
+        }
       },
       spendsTurn: false,
     },
@@ -236,7 +247,7 @@ function shadowRiftTasks(): MappingTask[] {
           !get("noncombatForcerActive") &&
           forcer.available() &&
           bestForcer() === forcer &&
-          shadowWatersWorth(forcer.cost()),
+          shadowWatersValue() > forcer.cost(),
         completed: () => questStep("questRufus") === 1,
         choices: commonChoices,
         outfit: () => {
