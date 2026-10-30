@@ -6,10 +6,10 @@ import { Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
 import { AdventureArgument } from "../../garboWanderer";
 import { freeFightOutfit } from "../../outfit/free";
-import { GarboTask } from "../engine";
+import { MappingTask } from "../engine";
 
 export type GarboFreeFightTask = Extract<
-  GarboTask<void>,
+  MappingTask,
   { combat: GarboStrategy }
 > & {
   combatCount: () => number;

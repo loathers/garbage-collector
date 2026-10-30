@@ -29,6 +29,7 @@ import {
   myMaxhp,
   mySoulsauce,
   numericModifier,
+  print,
   restoreHp,
   retrieveItem,
   runChoice,
@@ -79,7 +80,7 @@ import { GarboStrategy } from "../../combatStrategy";
 import { globalOptions } from "../../config";
 import { garboValue } from "../../garboValue";
 import { freeFightOutfit } from "../../outfit/free";
-import { GarboTask } from "../engine";
+import { MappingTask } from "../engine";
 import { doCandyTrick } from "../../resources/candyMap";
 import { crateStrategy, doingGregFight } from "../../resources/extrovermectin";
 import { ghostAdventure } from "../../resources/protonpack";
@@ -89,7 +90,6 @@ import {
   getUsingFreeBunnyBanish,
   isFreeAndCopyable,
   kramcoGuaranteed,
-  mapMonster,
   questStep,
   sober,
   valueDrops,
@@ -224,8 +224,14 @@ function wantPills(): boolean {
 const reserveCartography = () =>
   getBestItemStealZone(true) !== null && get("_fireExtinguisherCharge") >= 10;
 const canMap = () =>
-  have($skill`Comprehensive Cartography`) &&
-  get("_monstersMapped") < (reserveCartography() ? 2 : 3);
+  get("mappingMonsters") ||
+  (have($skill`Comprehensive Cartography`) &&
+    get("_monstersMapped") < (reserveCartography() ? 2 : 3));
+
+function prepareMapping(): void {
+  if (!get("mappingMonsters")) useSkill($skill`Map the Monsters`);
+  if (!get("mappingMonsters")) throw new Error("Failed to start mapping.");
+}
 
 const remainingPartyFights = () =>
   clamp(
@@ -279,6 +285,7 @@ const GRIMACIA_TASK = {
 const FreeFightTasks = [
   freeFightTask({
     name: "Cursed Magnifying Glass",
+    mapSafe: true,
     adventure: "wanderer",
     ready: () =>
       have($item`cursed magnifying glass`) &&
@@ -291,18 +298,68 @@ const FreeFightTasks = [
     tentacle: false,
     combatCount: () => Math.max(0, 5 - get("_voidFreeFights")),
   }),
+  freeFightTask({
+    name: $item`protonic accelerator pack`.name,
+    mapSafe: true,
+    adventure: ghostAdventure,
+    ready: () => get("ghostLocation") !== null,
+    completed: () => get("questPAGhost") === "unstarted",
+    choices: () =>
+      wanderer().getChoices(get("ghostLocation") ?? $location.none),
+    do: () => get("ghostLocation") ?? $location.none,
+    combat: new GarboStrategy(() =>
+      have($item`protonic accelerator pack`)
+        ? Macro.ghostBustin()
+        : Macro.basicCombat(),
+    ),
+    outfit: () =>
+      freeFightOutfit(
+        {
+          back: have($item`protonic accelerator pack`)
+            ? $item`protonic accelerator pack`
+            : [],
+        },
+        get("ghostLocation") ?? $location.none,
+      ),
+    tentacle: true,
+  }),
+  freeFightTask({
+    name: "Kramco",
+    mapSafe: true,
+    adventure: { target: $monster`sausage goblin`, location: "wanderer" },
+    ready: () => have($item`Kramco Sausage-o-Matic™`),
+    completed: () => !kramcoGuaranteed(),
+    do: () =>
+      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
+        .location,
+    outfit: () =>
+      freeFightOutfit(
+        { offhand: $item`Kramco Sausage-o-Matic™` },
+        { target: $monster`sausage goblin`, location: "wanderer" },
+      ),
+    choices: () =>
+      wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
+    combat: new GarboStrategy(() => Macro.basicCombat()),
+    combatCount: () => clamp(1 - get("_sausageFights"), 0, 1),
+    tentacle: true,
+  }),
   ThesisTask,
   UnlockHiddenTavernTask,
   freeFightTask({
     ...GRIMACIA_TASK,
     name: "Grimacia Shelter Maps (Cartography)",
+    mapSafe: true,
     ready: () => wantPills() && canMap(),
+    prepare: () => {
+      prepareGrimacia();
+      prepareMapping();
+    },
+    choices: {
+      ...GRIMACIA_TASK.choices,
+      1435: `1&heyscriptswhatsupwinkwink=${$monster`grizzled survivor`.id}`,
+    },
     do: (): void => {
-      mapMonster(
-        $location`Domed City of Grimacia`,
-        $monster`grizzled survivor`,
-      );
-      runCombat();
+      adv1($location`Domed City of Grimacia`, -1, "");
       if (handlingChoice()) runChoice(-1);
     },
     combat: new GarboStrategy(
@@ -351,31 +408,8 @@ const FreeFightTasks = [
     ),
   }),
   freeFightTask({
-    name: $item`protonic accelerator pack`.name,
-    adventure: ghostAdventure,
-    ready: () => get("ghostLocation") !== null,
-    completed: () => get("questPAGhost") === "unstarted",
-    choices: () =>
-      wanderer().getChoices(get("ghostLocation") ?? $location.none),
-    do: () => get("ghostLocation") ?? $location.none,
-    combat: new GarboStrategy(() =>
-      have($item`protonic accelerator pack`)
-        ? Macro.ghostBustin()
-        : Macro.basicCombat(),
-    ),
-    outfit: () =>
-      freeFightOutfit(
-        {
-          back: have($item`protonic accelerator pack`)
-            ? $item`protonic accelerator pack`
-            : [],
-        },
-        get("ghostLocation") ?? $location.none,
-      ),
-    tentacle: true,
-  }),
-  freeFightTask({
     name: $item`molehill mountain`.name,
+    mapSafe: true,
     adventure: $monster`Moleman`,
     ready: () =>
       have($item`molehill mountain`) &&
@@ -386,6 +420,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: $skill`Aug. 8th: Cat Day!`.name,
+    mapSafe: true,
     adventure: $monster.none, // TODO
     ready: () => shouldAugustCast($skill`Aug. 8th: Cat Day!`),
     completed: () => $skill`Aug. 8th: Cat Day!`.timescast > 0,
@@ -394,6 +429,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: $skill`Aug. 22nd: Tooth Fairy Day!`.name,
+    mapSafe: true,
     adventure: $monster`Tooth Golem`,
     ready: () => shouldAugustCast($skill`Aug. 22nd: Tooth Fairy Day!`),
     completed: () => $skill`Aug. 22nd: Tooth Fairy Day!`.timescast > 0,
@@ -417,6 +453,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "Chateau Mantegna",
+    mapSafe: true,
     adventure: () => ChateauMantegna.paintingMonster() ?? $monster.none,
     ready: () =>
       ChateauMantegna.have() &&
@@ -438,6 +475,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "Eldritch Tentacle",
+    mapSafe: true,
     adventure: $monster`Eldritch Tentacle`,
     ready: () => get("questL02Larva") !== "unstarted",
     completed: () =>
@@ -453,6 +491,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: $skill`Evoke Eldritch Horror`.name,
+    mapSafe: true,
     adventure: $monster`Eldritch Tentacle`,
     ready: () => have($skill`Evoke Eldritch Horror`),
     completed: () =>
@@ -503,6 +542,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: $item`lynyrd snare`.name,
+    mapSafe: true,
     adventure: $monster`lynyrd`,
     ready: () =>
       mallPrice($item`lynyrd snare`) <= globalOptions.prefs.valueOfFreeFight,
@@ -514,6 +554,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "[glitch season reward name]: retrocape edition",
+    mapSafe: true,
     adventure: $monster`%monster%`,
     ready: () =>
       (globalOptions.prefs.fightGlitch ?? false) &&
@@ -581,6 +622,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "[glitch season reward name]",
+    mapSafe: true,
     ready: () => globalOptions.prefs.fightGlitch ?? false,
     adventure: $monster`%monster%`,
     completed: () => !!get("_glitchMonsterFights"),
@@ -645,6 +687,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "Seal Clubbing",
+    mapSafe: true,
     ready: () => myClass() === $class`Seal Clubber`,
     completed: () =>
       sealsAvailable() <= 0 || get("_sealsSummoned") >= maxSealsAvailable(),
@@ -692,6 +735,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "BRICKO",
+    mapSafe: true,
     adventure: $monster`BRICKO ooze`,
     ready: () =>
       mallPrice($item`BRICKO eye brick`) + 2 * mallPrice($item`BRICKO brick`) <=
@@ -705,25 +749,6 @@ const FreeFightTasks = [
     combat: new GarboStrategy(() => Macro.basicCombat()),
     combatCount: () => clamp(10 - get("_brickoFights"), 0, 10),
     tentacle: false,
-  }),
-  freeFightTask({
-    name: "Kramco",
-    adventure: { target: $monster`sausage goblin`, location: "wanderer" },
-    ready: () => have($item`Kramco Sausage-o-Matic™`),
-    completed: () => !kramcoGuaranteed(),
-    do: () =>
-      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
-        .location,
-    outfit: () =>
-      freeFightOutfit(
-        { offhand: $item`Kramco Sausage-o-Matic™` },
-        { target: $monster`sausage goblin`, location: "wanderer" },
-      ),
-    choices: () =>
-      wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
-    combat: new GarboStrategy(() => Macro.basicCombat()),
-    combatCount: () => clamp(1 - get("_sausageFights"), 0, 1),
-    tentacle: true,
   }),
   ...PygmyFightTasks,
   freeFightTask({
@@ -830,6 +855,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "God Lobster",
+    mapSafe: true,
     adventure: $monster`God Lobster`,
     ready: () => have($familiar`God Lobster`),
     completed: () => get("_godLobsterFights") >= 3,
@@ -953,6 +979,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "Witchess",
+    mapSafe: true,
     adventure: bestWitchessPiece,
     ready: () => Witchess.have(),
     completed: () =>
@@ -1017,6 +1044,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: $item`combat lover's locket`.name,
+    mapSafe: true,
     adventure: () => locketMonster() ?? $monster.none,
     ready: () => CombatLoversLocket.have() && locketMonster() !== null,
     completed: () => CombatLoversLocket.reminiscesLeft() <= locketsToSave(),
@@ -1038,12 +1066,14 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     ...doCandyTrick(),
+    mapSafe: true,
     adventure: $location`Trick-or-Treating`,
     combatCount: () => 5,
     tentacle: true,
   }),
   freeFightTask({
     name: "Burning Leaves Flaming Leaflet Fight",
+    mapSafe: true,
     adventure: $monster`flaming leaflet`,
     ready: () =>
       BurningLeaves.have() &&
@@ -1065,6 +1095,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: $item`tied-up flaming leaflet`.name,
+    mapSafe: true,
     adventure: $monster`flaming leaflet`,
     ready: () =>
       mallPrice($item`tied-up flaming leaflet`) <=
@@ -1086,6 +1117,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: $item`tied-up flaming monstera`.name,
+    mapSafe: true,
     adventure: $monster`flaming monstera`,
     ready: () =>
       mallPrice($item`tied-up flaming monstera`) <=
@@ -1131,6 +1163,7 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "Ninja Costume (Cartography)",
+    mapSafe: true,
     adventure: {
       location: $location`The Haiku Dungeon`,
       target: $monster`amateur ninja`,
@@ -1141,12 +1174,14 @@ const FreeFightTasks = [
       !get("_firedJokestersGun") &&
       have($item`The Jokester's gun`) &&
       canEquip($item`The Jokester's gun`) &&
-      Cartography.availableMaps() > 0,
+      (get("mappingMonsters") || Cartography.availableMaps() > 0),
     completed: () =>
       have($item`li'l ninja costume`) || get("_firedJokestersGun"),
-    do: () => {
-      mapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`);
+    prepare: prepareMapping,
+    choices: {
+      1435: `1&heyscriptswhatsupwinkwink=${$monster`amateur ninja`.id}`,
     },
+    do: $location`The Haiku Dungeon`,
     outfit: () =>
       freeFightOutfit(
         { equip: $items`The Jokester's gun` },
@@ -1208,10 +1243,52 @@ export function possibleFreeFightQuestTentacleFights(): number {
   );
 }
 
-export function freeFightQuest(): Quest<GarboTask<void>, unknown> {
+export function freeFightQuest(): Quest<MappingTask> {
   return {
     name: "Free Fight",
     tasks: [...FreeFightTasks, ...getTasks([shadowRiftQuest()])],
     ready: () => sober() && myAdventures() > 0 && !have($effect`Feeling Lost`),
+  };
+}
+
+export function mappingRecoveryQuest(): Quest<MappingTask> {
+  return {
+    name: "Mapping Recovery",
+    tasks: [
+      {
+        name: "Consume Pending Map",
+        mapSafe: true,
+        ready: () =>
+          get("mappingMonsters") &&
+          sober() &&
+          myAdventures() > 0 &&
+          canAdventure($location`The Haunted Kitchen`),
+        completed: () => !get("mappingMonsters"),
+        prepare: () => {
+          print(
+            `WARNING: Mapping is still active with no regular mapping task available (${get("_saberForceUses")}/5 Force uses, ${get("_monstersMapped")}/3 maps started). Recovering by fighting a possessed silverware drawer in the Haunted Kitchen; this may spend an adventure.`,
+            "red",
+          );
+        },
+        choices: {
+          1435: `1&heyscriptswhatsupwinkwink=${$monster`possessed silverware drawer`.id}`,
+        },
+        do: (): void => {
+          adv1($location`The Haunted Kitchen`, -1, "");
+          if (handlingChoice()) runChoice(-1);
+        },
+        outfit: () =>
+          freeFightOutfit(
+            {},
+            {
+              location: $location`The Haunted Kitchen`,
+              target: $monster`possessed silverware drawer`,
+            },
+          ),
+        combat: new GarboStrategy(() => Macro.basicCombat()),
+        spendsTurn: true,
+        limit: { tries: 10 },
+      },
+    ],
   };
 }

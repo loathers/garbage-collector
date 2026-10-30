@@ -27,7 +27,7 @@ import { questStep, sober } from "../lib";
 import { freeFightOutfit } from "../outfit/free";
 import { doingGregFight } from "../resources/extrovermectin";
 import { prepareParty } from "./freeFight/lib";
-import { GarboTask, runGarboQuests } from "./engine";
+import { MappingTask, runGarboQuests } from "./engine";
 import { PostQuest } from "./post";
 
 export function molemanReady() {
@@ -60,6 +60,7 @@ function thesisPlan() {
 
 export const ThesisTask = {
   name: "Deliver Thesis",
+  mapSafe: molemanReady,
   ready: () =>
     sober() &&
     myAdventures() > 0 &&
@@ -106,7 +107,7 @@ export const ThesisTask = {
   combat: new GarboStrategy(() => Macro.skill($skill`deliver your thesis!`)),
   spendsTurn: () => !molemanReady(),
   limit: { tries: 5 },
-} satisfies GarboTask<void>;
+} satisfies MappingTask;
 
 /** Run the same task from callers that have not migrated to Grimoire. */
 export function deliverThesisIfAble(): void {

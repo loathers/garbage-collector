@@ -135,6 +135,7 @@ import { TargetFightRunOptions } from "./target/staging";
 
 import {
   freeFightQuest,
+  mappingRecoveryQuest,
   possibleFreeFightQuestTentacleFights,
 } from "./tasks/freeFight";
 import { PostQuest } from "./tasks/post";
@@ -1169,9 +1170,10 @@ export function freeFights(): void {
   killRobortCreaturesForFree();
 
   runGarboFreeFightQuests([
-    PostQuest<unknown>(),
+    PostQuest(),
     freeFightQuest(),
     FreeGiantSandwormQuest,
+    mappingRecoveryQuest(),
   ]);
 
   // Run any community endeavors

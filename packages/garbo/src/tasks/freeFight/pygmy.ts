@@ -41,7 +41,7 @@ import {
   timeSpinnerRefused,
   travelToRecentFight,
 } from "../../resources/timeSpinner";
-import { GarboTask } from "../engine";
+import { MappingTask } from "../engine";
 import { freeFightTask } from "./lib";
 
 const pygmyBanishHandlers = [
@@ -108,8 +108,9 @@ const closetBalls = () =>
 const scorpionsAvailable = () =>
   get("hiddenTavernUnlock") === myAscensions() || mallPrice(bowl) < 1000;
 
-export const UnlockHiddenTavernTask: GarboTask<void> = {
+export const UnlockHiddenTavernTask: MappingTask = {
   name: "Unlock Hidden Tavern for Scorpions",
+  mapSafe: true,
   ready: () => pygmiesReady() && get("_drunkPygmyBanishes") < 9,
   completed: () =>
     get("hiddenTavernUnlock") === myAscensions() ||
@@ -264,6 +265,7 @@ export const PygmyFightTasks = [
   }),
   pygmyTask({
     name: "Drunk Pygmies (Time-Spinner)",
+    mapSafe: true,
     ready: () =>
       !timeSpinnerRefused(drunk) &&
       have($item`Time-Spinner`) &&

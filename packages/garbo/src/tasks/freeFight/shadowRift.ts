@@ -43,7 +43,7 @@ import {
   willYachtzee,
 } from "../../resources/yachtzee";
 import { highMeatMonsterCount } from "../../turns";
-import { GarboTask } from "../engine";
+import { MappingTask } from "../engine";
 import { freeFightTask } from "./lib";
 
 const lodestone = $item`Rufus's shadow lodestone`;
@@ -149,11 +149,12 @@ const riftTask = (
 
 const commonChoices = { 1500: 2 }; // Shadow Waters
 
-function shadowRiftTasks(): GarboTask<void>[] {
+function shadowRiftTasks(): MappingTask[] {
   let acceptedItemQuest = false;
   return [
     {
       name: "Submit Rufus Quest",
+      mapSafe: true,
       completed: () => questStep("questRufus") !== 1,
       do: () => {
         ClosedCircuitPayphone.submitQuest();
@@ -170,6 +171,7 @@ function shadowRiftTasks(): GarboTask<void>[] {
     }),
     {
       name: "Accept Rufus Quest",
+      mapSafe: true,
       ready: () =>
         !ClosedCircuitPayphone.rufusTarget() &&
         (!get("_shadowAffinityToday") ||
@@ -192,6 +194,7 @@ function shadowRiftTasks(): GarboTask<void>[] {
     },
     {
       name: "Acquire Rufus Quest Items",
+      mapSafe: true,
       ready: () => {
         const target = ClosedCircuitPayphone.rufusTarget();
         return (
@@ -280,7 +283,7 @@ function shadowRiftTasks(): GarboTask<void>[] {
   ];
 }
 
-export function shadowRiftQuest(): Quest<GarboTask<void>> {
+export function shadowRiftQuest(): Quest<MappingTask> {
   // Read counts after daily setup, which may have granted Shadow Affinity.
   const questBudget =
     sum(rufusPotion.value(highMeatMonsterCount()), "quantity") +

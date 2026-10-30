@@ -89,6 +89,7 @@ function sandwormOutfit(spec: OutfitSpec = {}): Outfit {
 }
 
 const DEFAULT_SANDWORM_TASK = {
+  mapSafe: true,
   combat: new GarboStrategy(() => Macro.abort()),
   prepare: () => {
     if (!have($item`drum machine`, expectedFreeGiantSandwormQuestFights())) {
@@ -123,6 +124,7 @@ function sandwormTask(
 }
 
 const NON_SANDWORM_TASK = {
+  mapSafe: true,
   combat: new GarboStrategy(() => Macro.abort()),
   outfit: () => new Outfit(),
   spendsTurn: false,

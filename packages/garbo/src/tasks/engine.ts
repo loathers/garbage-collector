@@ -56,6 +56,11 @@ export type AlternateTask<Context = unknown> = GarboTask<Context> & {
   turns: Delayed<number>;
 };
 
+export type MappingTask<Context = void> = GarboTask<Context> & {
+  // Safe to execute with an active map, whether preserving or consuming it.
+  mapSafe?: Delayed<boolean, [Context]>;
+};
+
 function logTargetFight(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
   if (isDigitize) {
@@ -231,6 +236,23 @@ class BaseGarboEngine extends BaseGarboContextEngine<void> {
 class FreeFightEngine extends BaseGarboEngine {
   private consecutiveNonFreeFights = 0;
 
+  available(task: MappingTask): boolean {
+    return (
+      (!get("mappingMonsters") || undelay(task.mapSafe) === true) &&
+      super.available(task)
+    );
+  }
+
+  getNextTask() {
+    const task = super.getNextTask();
+    if (!task && get("mappingMonsters")) {
+      throw new Error(
+        "Mapping is still active, but no map-safe free-fight task is available. Resolve the pending map before continuing.",
+      );
+    }
+    return task;
+  }
+
   acquireEffects(task: GarboTask<void>): void {
     if ("combat" in task) {
       freeFightMood(...(undelay(task.effects) ?? [])).execute();
@@ -292,10 +314,11 @@ class SafeGarboEngine extends SafeGarboContextEngine<void> {
   }
 }
 
-function runQuests<Context, T extends BaseGarboContextEngine<Context>>(
+function runQuests<Context>(
   quests: Quest<GarboTask<Context>, Context>[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  garboEngine: new (...args: any[]) => T,
+  garboEngine: new (
+    tasks: GarboTask<Context>[],
+  ) => BaseGarboContextEngine<Context>,
 ) {
   const engine = new garboEngine(getTasks(quests));
 
@@ -314,9 +337,7 @@ export function runGarboQuests(quests: Quest<GarboTask<void>>[]): void {
   runQuests(quests, BaseGarboEngine);
 }
 
-export function runGarboFreeFightQuests(
-  quests: Quest<GarboTask<void>>[],
-): void {
+export function runGarboFreeFightQuests(quests: Quest<MappingTask>[]): void {
   runQuests(quests, FreeFightEngine);
 }
 
