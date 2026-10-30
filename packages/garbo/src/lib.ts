@@ -613,7 +613,6 @@ export function sober(): boolean {
 type GarboItemLists = {
   Newark: string[];
   "Feliz Navidad": string[];
-  trainset: string[];
 };
 
 export const asArray = <T>(singleOrArray: T | T[]): T[] =>
@@ -883,10 +882,6 @@ export function felizValue(): number {
 
 export function newarkValue(): number {
   return garboAverageValue(...getDropsList("Newark"));
-}
-
-export function candyFactoryValue(): number {
-  return garboAverageValue(...getDropsList("trainset"));
 }
 
 export function aprilFoolsRufus() {
