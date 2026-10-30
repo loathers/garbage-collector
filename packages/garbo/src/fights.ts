@@ -205,8 +205,8 @@ const firstChainMacro = () =>
             Macro.tryCopier($item`LOV Enamorang`),
           )
           .tryCopier($skill`Club 'Em Into Next Week`),
+        Macro.skill($skill`lecture on relativity`),
       )
-      .trySkill($skill`lecture on relativity`)
       .meatKill(false),
   ).abort();
 
@@ -234,8 +234,8 @@ const secondChainMacro = () =>
             Macro.tryCopier($item`LOV Enamorang`),
           )
           .tryCopier($skill`Club 'Em Into Next Week`),
+        Macro.skill($skill`lecture on relativity`),
       )
-      .trySkill($skill`lecture on relativity`)
       .meatKill(false),
   ).abort();
 
