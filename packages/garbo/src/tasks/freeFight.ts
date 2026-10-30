@@ -984,7 +984,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
     name: "Black Rose Garden Fights",
     adventure: nextBlackGardenRoseFight,
     ready: () => BlackRoseGarden.have(),
-    completed: () => get("_blackRoseFightsDone", false),
+    completed: () => get("_garbo_blackRoseFightsDone", false),
     prepare: () => {
       if (have($item`black garden rose`)) {
         use($item`black garden rose`);
@@ -1010,7 +1010,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
 
 function nextBlackGardenRoseFight(): Monster {
   const monsters = BlackRoseGarden.availableMonsters();
-  return monsters ? monsters[0] : Monster.none;
+  return monsters[0] ?? Monster.none;
 }
 
 const FreeFightTasks = RAW_FIGHTS.map(freeFightTask);
