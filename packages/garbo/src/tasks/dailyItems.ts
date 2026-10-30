@@ -190,9 +190,11 @@ function getBestDevilerCandy(): Item {
 }
 
 const chooseAprilFamiliar = () => {
-  const experienceFamiliars = getExperienceFamiliars("free", 40).filter(
-    ({ familiar }) => familiar.experience <= 360,
-  );
+  const experienceFamiliars = getExperienceFamiliars(
+    "free",
+    40,
+    "award",
+  ).filter(({ familiar }) => familiar.experience <= 360);
   if (experienceFamiliars.length) {
     return maxBy(experienceFamiliars, "expectedValue").familiar;
   }

@@ -42,6 +42,7 @@ const instruments: {
           "free",
           (familiar) =>
             40 * clamp(Math.floor((400 - familiar.experience) / 40), 0, 3),
+          "award",
         ).map(({ expectedValue }) => expectedValue),
       ),
   },

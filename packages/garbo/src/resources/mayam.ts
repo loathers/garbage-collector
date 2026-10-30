@@ -36,7 +36,7 @@ const MAYAM_RING_VALUES = {
   fur: () =>
     Math.max(
       0,
-      ...getExperienceFamiliars("free", 100).map(
+      ...getExperienceFamiliars("free", 100, "award").map(
         ({ expectedValue }) => expectedValue,
       ),
     ),
@@ -180,7 +180,7 @@ export function mayamCalendarSummon(): GarboTask[] {
         const startingFamiliar = myFamiliar();
         for (const combination of getBestMayamCombinations()) {
           if (combination.includes("fur")) {
-            const famList = getExperienceFamiliars("free", 100);
+            const famList = getExperienceFamiliars("free", 100, "award");
             const bestFamiliar =
               famList.length > 0
                 ? maxBy(famList, "expectedValue").familiar
