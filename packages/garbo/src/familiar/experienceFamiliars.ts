@@ -71,17 +71,20 @@ const experienceFamiliars: ExperienceFamiliar[] = [
 ];
 
 function valueExperienceFamiliar(
-  { familiar, useValue, xpCost, baseExp }: ExperienceFamiliar,
+  { familiar, useValue, xpCost, baseExp, xpLimit }: ExperienceFamiliar,
   mode: FamiliarMode,
+  experience: number,
 ): GeneralFamiliar {
   const currentExp =
     familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0);
   const experienceNeeded =
     xpCost ?? 400 - (globalOptions.ascend ? currentExp : baseExp);
-  const estimatedExperience = mode === "free" ? 12 : estimatedBarfExperience();
+  const usefulExperience = globalOptions.ascend
+    ? Math.min(experience, Math.max(0, (xpLimit?.(mode) ?? 400) - currentExp))
+    : experience;
   return {
     familiar,
-    expectedValue: undelay(useValue) / (experienceNeeded / estimatedExperience),
+    expectedValue: (undelay(useValue) * usefulExperience) / experienceNeeded,
     leprechaunMultiplier: findLeprechaunMultiplier(familiar),
     limit: "experience",
     worksOnFreeRun: false,
@@ -90,6 +93,7 @@ function valueExperienceFamiliar(
 
 export default function getExperienceFamiliars(
   mode: FamiliarMode,
+  experience = mode === "free" ? 12 : estimatedBarfExperience(),
 ): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(
@@ -98,7 +102,7 @@ export default function getExperienceFamiliars(
         !isUsed(used, mode) &&
         familiar.experience < (xpLimit?.(mode) ?? 400),
     )
-    .map((f) => valueExperienceFamiliar(f, mode));
+    .map((f) => valueExperienceFamiliar(f, mode, experience));
 }
 
 export function getExperienceFamiliarLimit(fam: Familiar): number {
