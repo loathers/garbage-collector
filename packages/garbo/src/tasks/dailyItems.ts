@@ -41,7 +41,7 @@ import {
   $skill,
   $skills,
   AprilingBandHelmet,
-  BlackRose,
+  BlackRoseGarden,
   BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
@@ -822,7 +822,7 @@ const DailyItemTasks: GarboTask[] = [
   },
   {
     name: "Rose Garden Items",
-    ready: () => BlackRose.have(),
+    ready: () => BlackRoseGarden.have(),
     completed: () => get("_garbo_roseGardenLooted", false),
     prepare: () => {
       if (have($item`black garden rose`)) {
@@ -833,7 +833,7 @@ const DailyItemTasks: GarboTask[] = [
       }
     },
     do: () => {
-      BlackRose.obtainItems();
+      BlackRoseGarden.obtainItems();
       set("_garbo_roseGardenLooted", true);
     },
     post: () => {

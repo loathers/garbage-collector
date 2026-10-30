@@ -49,7 +49,7 @@ import {
   $skill,
   $slot,
   $stat,
-  BlackRose,
+  BlackRoseGarden,
   BurningLeaves,
   ChateauMantegna,
   clamp,
@@ -983,7 +983,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
   {
     name: "Black Rose Garden Fights",
     adventure: nextBlackGardenRoseFight(),
-    ready: () => BlackRose.have(),
+    ready: () => BlackRoseGarden.have(),
     completed: () => get("_blackRoseFightsDone", false),
     prepare: () => {
       if (have($item`black garden rose`)) {
@@ -994,7 +994,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
       }
     },
     do: () => {
-      BlackRose.fightMonster(nextBlackGardenRoseFight());
+      BlackRoseGarden.fightMonster(nextBlackGardenRoseFight());
       if (nextBlackGardenRoseFight() === Monster.none) {
         set("_garbo_blackRoseFightsDone", true);
       }
@@ -1009,7 +1009,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
 ];
 
 function nextBlackGardenRoseFight(): Monster {
-  const monsters = BlackRose.availableMonsters();
+  const monsters = BlackRoseGarden.availableMonsters();
   return monsters ? monsters[0] : Monster.none;
 }
 

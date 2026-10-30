@@ -32,7 +32,7 @@
     "eslint-config-garbo": "workspace:^",
     "jiti": "^2.6.1",
     "kolmafia": "^5.29376.0",
-    "libram": "^0.11.39",
+    "libram": "^0.11.40",
     "lint-staged": "^15.2.9",
     "madge": "^8.0.0",
     "prettier": "^3.3.3",
