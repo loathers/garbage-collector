@@ -110,7 +110,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(29288); // ASH method for predicting Portable Laughing Stock drops
+  sinceKolmafiaRevision(29376); // Add gCLI button to mobile topmenu by
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);

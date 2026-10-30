@@ -49,6 +49,7 @@ import {
   $skill,
   $slot,
   $stat,
+  BlackRoseGarden,
   BurningLeaves,
   ChateauMantegna,
   clamp,
@@ -979,7 +980,38 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
     ),
     combatCount: () => clamp(10 - get("_cyberFreeFights"), 0, 10),
   },
+  {
+    name: "Black Rose Garden Fights",
+    adventure: nextBlackGardenRoseFight,
+    ready: () => BlackRoseGarden.have(),
+    completed: () => get("_garbo_blackRoseFightsDone", false),
+    prepare: () => {
+      if (have($item`black garden rose`)) {
+        use($item`black garden rose`);
+      }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: () => {
+      BlackRoseGarden.fightMonster(nextBlackGardenRoseFight());
+      if (nextBlackGardenRoseFight() === Monster.none) {
+        set("_garbo_blackRoseFightsDone", true);
+      }
+    },
+    post: () => {
+      if (have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
+      }
+    },
+    tentacle: false,
+  },
 ];
+
+function nextBlackGardenRoseFight(): Monster {
+  const monsters = BlackRoseGarden.availableMonsters();
+  return monsters[0] ?? Monster.none;
+}
 
 const FreeFightTasks = RAW_FIGHTS.map(freeFightTask);
 
