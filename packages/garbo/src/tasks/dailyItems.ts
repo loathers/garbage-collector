@@ -190,7 +190,7 @@ function getBestDevilerCandy(): Item {
 }
 
 const chooseAprilFamiliar = () => {
-  const experienceFamiliars = getExperienceFamiliars("free").filter(
+  const experienceFamiliars = getExperienceFamiliars("free", 40).filter(
     ({ familiar }) => familiar.experience <= 360,
   );
   if (experienceFamiliars.length) {

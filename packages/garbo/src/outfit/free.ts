@@ -56,7 +56,7 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
     () =>
       $familiar`Grey Goose`.experience < 400 &&
       (!get("_meatifyMatterUsed") || !globalOptions.ascend)
-        ? 15 ** 4 / 400
+        ? 15 ** 4 / 375
         : 0,
   ],
 ]);
