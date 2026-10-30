@@ -982,7 +982,7 @@ const RAW_FIGHTS: Parameters<typeof freeFightTask>[0][] = [
   },
   {
     name: "Black Rose Garden Fights",
-    adventure: nextBlackGardenRoseFight(),
+    adventure: nextBlackGardenRoseFight,
     ready: () => BlackRoseGarden.have(),
     completed: () => get("_blackRoseFightsDone", false),
     prepare: () => {
