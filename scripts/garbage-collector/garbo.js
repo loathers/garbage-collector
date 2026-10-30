@@ -16261,7 +16261,7 @@ var CombatResources = /*#__PURE__*/function () {
 var FORCE_REFRESH_REQUIREMENT = new Requirement([], {
   forceUpdate: true
 });
-var outfitSlots$1 = ["hat", "back", "weapon", "offhand", "shirt", "pants", "acc1", "acc2", "acc3", "famequip"];
+var outfitSlots = ["hat", "back", "weapon", "offhand", "shirt", "pants", "acc1", "acc2", "acc3", "famequip"];
 var weaponHands = i => i ? kolmafia.weaponHands(i) : 0;
 var modeableCommands = ["backupcamera", "umbrella", "snowsuit", "edpiece", "retrocape", "parka", "jillcandle"];
 var Outfit = /*#__PURE__*/function () {
@@ -16523,7 +16523,7 @@ var Outfit = /*#__PURE__*/function () {
       var _this$avoid;
       var _a, _b, _c, _d, _e, _f;
       var succeeded = true;
-      for (var _i = 0, _outfitSlots = outfitSlots$1; _i < _outfitSlots.length; _i++) {
+      for (var _i = 0, _outfitSlots = outfitSlots; _i < _outfitSlots.length; _i++) {
         var slotName = _outfitSlots[_i];
         var slot = (_a = new Map([["famequip", $slot`familiar`], ["offhand", $slot`off-hand`]]).get(slotName)) !== null && _a !== void 0 ? _a : kolmafia.toSlot(slotName);
         var itemOrItems = spec[slotName];
@@ -16998,7 +16998,7 @@ var Outfit = /*#__PURE__*/function () {
       };
       if (this.familiar) result.familiar = this.familiar;
       // Add all equipment forced in a particular slot
-      for (var _i5 = 0, _outfitSlots2 = outfitSlots$1; _i5 < _outfitSlots2.length; _i5++) {
+      for (var _i5 = 0, _outfitSlots2 = outfitSlots; _i5 < _outfitSlots2.length; _i5++) {
         var slotName = _outfitSlots2[_i5];
         var entry = this.equips.get((_a = new Map([["famequip", $slot`familiar`], ["offhand", $slot`off-hand`]]).get(slotName)) !== null && _a !== void 0 ? _a : kolmafia.toSlot(slotName));
         if (entry) result[slotName] = entry;
@@ -17023,7 +17023,7 @@ var Outfit = /*#__PURE__*/function () {
       if (outfit.equip(familiar)) {
         throw `Failed to create outfit from current state (expected: familiar ${familiar})`;
       }
-      for (var _i6 = 0, _outfitSlots3 = outfitSlots$1; _i6 < _outfitSlots3.length; _i6++) {
+      for (var _i6 = 0, _outfitSlots3 = outfitSlots; _i6 < _outfitSlots3.length; _i6++) {
         var slotName = _outfitSlots3[_i6];
         var slot = (_a = new Map([["famequip", $slot`familiar`], ["offhand", $slot`off-hand`]]).get(slotName)) !== null && _a !== void 0 ? _a : kolmafia.toSlot(slotName);
         var item = kolmafia.equippedItem(slot);
@@ -19768,7 +19768,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"46ffdcfb916688f54493978f090bc981f23906a1"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"4adda434b3f226bf9abb01d53694893a6e7fbf12"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20564,6 +20564,589 @@ function maximumPinataCasts() {
   ? Math.max(0, Math.floor((totalAvailableCinch() - cinchNCs() * 60) / 5)) : 30;
 }
 
+var DISABLE_HINT = "To stop garbo borrowing from a clan stash, set 'garbo_stashClan' to 'none'.";
+function forms(item) {
+  return _toConsumableArray(new Set([item].concat(_toConsumableArray(getFoldGroup(item)))));
+}
+function canonicalItem(item) {
+  return maxBy(forms(item), "id", true);
+}
+function readLedger() {
+  var stored = get$2("garboStashItems", '{"version":1,"loans":[]}').trim();
+  if (!stored.startsWith("{")) return stored.split(",").map(id => kolmafia.toItem(id));
+  var ledger = JSON.parse(stored);
+  if (ledger.version !== 1 || !Array.isArray(ledger.loans) || !ledger.loans.every(loan => loan !== null && ["clanId", "itemId", "quantity"].every(key => key in loan) && Object.values(loan).every(value => Number.isInteger(value) && value > 0) && kolmafia.toItem(loan.itemId) !== $item.none)) {
+    throw new Error("Invalid garboStashItems ledger!");
+  }
+  return {
+    version: ledger.version,
+    loans: ledger.loans.map(_ref => {
+      var clanId = _ref.clanId,
+        itemId = _ref.itemId,
+        quantity = _ref.quantity;
+      return {
+        clanId,
+        item: canonicalItem(kolmafia.toItem(itemId)),
+        quantity
+      };
+    })
+  };
+}
+function groupLoansByClan(loans) {
+  var loansByClan = new Map();
+  var _iterator = _createForOfIteratorHelper(loans),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var _step$value = _step.value,
+        clanId = _step$value.clanId,
+        item = _step$value.item,
+        quantity = _step$value.quantity;
+      var clanLoans = loansByClan.get(clanId) ?? new Map();
+      clanLoans.set(item, (clanLoans.get(item) ?? 0) + quantity);
+      loansByClan.set(clanId, clanLoans);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return loansByClan;
+}
+function legacyClanId() {
+  var preference = get$2("garbo_stashClan", "");
+  if (["", "0", "none"].includes(preference)) {
+    throw new Error("Garbo found items still out of the stash from a previous run, but does not know which clan they came from. Set 'garbo_stashClan' to that clan, then run garbo again.");
+  }
+  if (/^\d+$/.test(preference)) return Number(preference);
+  if (preference.toLowerCase() === kolmafia.getClanName().toLowerCase()) {
+    return kolmafia.getClanId();
+  }
+  var clan = Clan.getWhitelisted().find(_ref2 => {
+    var name = _ref2.name;
+    return name.toLowerCase() === preference.toLowerCase();
+  });
+  if (!clan) {
+    throw new Error(`Could not find stash clan '${preference}' on your whitelist. Check 'garbo_stashClan', then run garbo again.`);
+  }
+  return clan.id;
+}
+var StashManager = /*#__PURE__*/function () {
+  function StashManager() {
+    _classCallCheck(this, StashManager);
+    this.loansByClan = this.loadLedger();
+  }
+  return _createClass(StashManager, [{
+    key: "loadLedger",
+    value: function loadLedger() {
+      var ledger = readLedger();
+      if (!Array.isArray(ledger)) return groupLoansByClan(ledger.loans);
+
+      // Old model doesn't list clan, and just assumes it matches your stashClan
+      if (ledger.some(item => item === $item.none)) {
+        throw new Error("Invalid legacy garboStashItems!");
+      }
+      var counts = arrayToCountedMap(ledger.map(canonicalItem));
+      var clanId = legacyClanId();
+      var loans = _toConsumableArray(counts).map(_ref3 => {
+        var _ref4 = _slicedToArray(_ref3, 2),
+          item = _ref4[0],
+          quantity = _ref4[1];
+        return {
+          clanId,
+          item,
+          quantity
+        };
+      });
+      this.saveLedger(loans);
+      return groupLoansByClan(loans);
+    }
+  }, {
+    key: "borrowingClan",
+    value: function borrowingClan() {
+      var preference = globalOptions.prefs.stashClan;
+      if (["", "0", "none"].includes(preference)) return null;
+      return /^\d+$/.test(preference) ? Number(preference) : preference;
+    }
+  }, {
+    key: "saveLedger",
+    value: function saveLedger() {
+      var loans = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.outstandingLoans();
+      var ledger = {
+        version: 1,
+        loans: loans.map(_ref5 => {
+          var clanId = _ref5.clanId,
+            item = _ref5.item,
+            quantity = _ref5.quantity;
+          return {
+            clanId,
+            itemId: item.id,
+            quantity
+          };
+        })
+      };
+      _set("garboStashItems", JSON.stringify(ledger));
+    }
+  }, {
+    key: "getLoans",
+    value: function getLoans(clanId) {
+      var currentValue = this.loansByClan.get(clanId);
+      if (!currentValue) {
+        var loans = new Map();
+        this.loansByClan.set(clanId, loans);
+        return loans;
+      }
+      return currentValue;
+    }
+  }, {
+    key: "adjustLoan",
+    value: function adjustLoan(clanId, item, amountChange) {
+      var clanLoans = this.getLoans(clanId);
+      var amount = (clanLoans.get(item) ?? 0) + amountChange;
+      if (amount > 0) {
+        clanLoans.set(item, amount);
+      } else {
+        clanLoans.delete(item);
+        if (clanLoans.size === 0) this.loansByClan.delete(clanId);
+      }
+      this.saveLedger();
+    }
+  }, {
+    key: "outstandingLoans",
+    value: function outstandingLoans() {
+      return _toConsumableArray(this.loansByClan).flatMap(_ref6 => {
+        var _ref7 = _slicedToArray(_ref6, 2),
+          clanId = _ref7[0],
+          clanLoans = _ref7[1];
+        return _toConsumableArray(clanLoans).map(_ref8 => {
+          var _ref9 = _slicedToArray(_ref8, 2),
+            item = _ref9[0],
+            quantity = _ref9[1];
+          return {
+            clanId,
+            item,
+            quantity
+          };
+        });
+      });
+    }
+
+    // How many the player owns, deliberately excluding loans
+  }, {
+    key: "amountOwned",
+    value: function amountOwned(item) {
+      var loanItem = canonicalItem(item);
+      var amountBorrowed = sum(_toConsumableArray(this.loansByClan.values()), clanLoans => clanLoans.get(loanItem) ?? 0);
+      var amountAvailable = this.amountAvailable(item);
+      return Math.max(0, amountAvailable - amountBorrowed);
+    }
+
+    // Total across all forms
+  }, {
+    key: "amountAvailable",
+    value: function amountAvailable(item) {
+      return sum(forms(item), form => this.amountInForm(form));
+    }
+  }, {
+    key: "amountInForm",
+    value: function amountInForm(item) {
+      var familiarAmount = $familiars.all().filter(familiar => have$P(familiar) && familiar !== kolmafia.myFamiliar() && kolmafia.familiarEquippedEquipment(familiar) === item).length;
+      return kolmafia.itemAmount(item) + kolmafia.closetAmount(item) + kolmafia.equippedAmount(item) + familiarAmount;
+    }
+  }, {
+    key: "request",
+    value: function request(items) {
+      return this.borrow(items);
+    }
+  }, {
+    key: "borrow",
+    value: function borrow(items) {
+      var loansToReturn = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+      var requestedItems = arrayToCountedMap(items);
+      var _iterator2 = _createForOfIteratorHelper(requestedItems.values()),
+        _step2;
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var quantity = _step2.value;
+          if (!Number.isInteger(quantity) || quantity < 0) {
+            throw new Error(`Invalid stash request quantity: ${quantity}`);
+          }
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+      var clan = this.borrowingClan();
+      if (clan === null) {
+        return {
+          missingItems: this.itemsNeeded(requestedItems)
+        };
+      }
+      withClan(clan, DISABLE_HINT, () => this.borrowItems(requestedItems, loansToReturn));
+      this.foldRequestedItems(requestedItems);
+      return {
+        missingItems: this.itemsNeeded(requestedItems)
+      };
+    }
+  }, {
+    key: "borrowItems",
+    value: function borrowItems(requestedItems, loansToReturn) {
+      var requestedFamilies = new Map();
+      var _iterator3 = _createForOfIteratorHelper(requestedItems),
+        _step3;
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var _step3$value = _slicedToArray(_step3.value, 2),
+            item = _step3$value[0],
+            quantity = _step3$value[1];
+          var family = canonicalItem(item);
+          requestedFamilies.set(family, (requestedFamilies.get(family) ?? 0) + quantity);
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+      kolmafia.refreshStash();
+      var _iterator4 = _createForOfIteratorHelper(requestedFamilies),
+        _step4;
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var _step4$value = _slicedToArray(_step4.value, 2),
+            _item = _step4$value[0],
+            _quantity = _step4$value[1];
+          var _iterator5 = _createForOfIteratorHelper(forms(_item)),
+            _step5;
+          try {
+            for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+              var form = _step5.value;
+              var amountNeeded = Math.max(0, _quantity - this.amountAvailable(_item));
+              var count = Math.min(amountNeeded, kolmafia.stashAmount(form));
+              if (count === 0) continue;
+              this.borrowItem(form, count, loansToReturn);
+            }
+          } catch (err) {
+            _iterator5.e(err);
+          } finally {
+            _iterator5.f();
+          }
+        }
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+    }
+  }, {
+    key: "borrowItem",
+    value: function borrowItem(item, quantity, loansToReturn) {
+      var before = kolmafia.itemAmount(item);
+      try {
+        kolmafia.takeStash(quantity, item);
+      } catch (error) {
+        kolmafia.print(`Could not borrow ${item.name}: ${error}`, "red");
+      } finally {
+        var taken = Math.max(0, kolmafia.itemAmount(item) - before);
+        if (taken > 0) {
+          var loan = {
+            clanId: kolmafia.getClanId(),
+            item: canonicalItem(item),
+            quantity: taken
+          };
+          this.adjustLoan(loan.clanId, loan.item, taken);
+          loansToReturn.push(loan);
+          kolmafia.print(`Took ${taken} ${item.name} from ${kolmafia.getClanName()} stash.`, HIGHLIGHT);
+        }
+      }
+    }
+  }, {
+    key: "foldRequestedItems",
+    value: function foldRequestedItems(requestedItems) {
+      var _this = this;
+      // Only fold copies beyond the amount requested in their current form.
+      var _iterator6 = _createForOfIteratorHelper(requestedItems),
+        _step6;
+      try {
+        var _loop = function _loop() {
+          var _step6$value = _slicedToArray(_step6.value, 2),
+            item = _step6$value[0],
+            quantity = _step6$value[1];
+          var amountNeeded = () => Math.max(0, quantity - _this.amountInForm(item));
+          var _iterator7 = _createForOfIteratorHelper(forms(item).filter(form => form !== item)),
+            _step7;
+          try {
+            for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+              var form = _step7.value;
+              var spare = Math.max(0, _this.amountInForm(form) - (requestedItems.get(form) ?? 0));
+              var count = Math.min(amountNeeded(), spare);
+              for (var i = 0; i < count; i++) {
+                if (!_this.foldOne(form, item)) break;
+              }
+            }
+          } catch (err) {
+            _iterator7.e(err);
+          } finally {
+            _iterator7.f();
+          }
+        };
+        for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+          _loop();
+        }
+      } catch (err) {
+        _iterator6.e(err);
+      } finally {
+        _iterator6.f();
+      }
+    }
+  }, {
+    key: "itemsNeeded",
+    value: function itemsNeeded(requestedItems) {
+      var missingItems = new Map();
+      var _iterator8 = _createForOfIteratorHelper(requestedItems),
+        _step8;
+      try {
+        for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+          var _step8$value = _slicedToArray(_step8.value, 2),
+            item = _step8$value[0],
+            quantity = _step8$value[1];
+          var shortfall = quantity - this.amountInForm(item);
+          if (shortfall > 0) missingItems.set(item, shortfall);
+        }
+      } catch (err) {
+        _iterator8.e(err);
+      } finally {
+        _iterator8.f();
+      }
+      return missingItems;
+    }
+  }, {
+    key: "foldOne",
+    value: function foldOne(source, target) {
+      this.prepareInventory(source, 1);
+      if (kolmafia.itemAmount(source) === 0) return false;
+      var before = kolmafia.itemAmount(target);
+      var group = getFoldGroup(target);
+      // CLI fold command stops when you get only one; we need to be able to obtain multiple
+      var cyclic = [$item`Spooky Putty sheet`, $item`origami pasties`, $item`stinky cheese diaper`, $item`ice baby`, $item`liar's pants`].some(item => group.includes(item));
+      if (cyclic) {
+        var sourceIndex = group.indexOf(source);
+        var orderedForms = [].concat(_toConsumableArray(group.slice(sourceIndex)), _toConsumableArray(group.slice(0, sourceIndex)));
+        var _iterator9 = _createForOfIteratorHelper(orderedForms),
+          _step9;
+        try {
+          for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+            var form = _step9.value;
+            if (form === target) break;
+            if (kolmafia.itemAmount(form) === 0 || !kolmafia.restoreHp(Math.floor(kolmafia.myMaxhp() * 0.05) + 2)) {
+              return false;
+            }
+            if (!kolmafia.use(1, form)) return false;
+          }
+        } catch (err) {
+          _iterator9.e(err);
+        } finally {
+          _iterator9.f();
+        }
+      } else {
+        kolmafia.cliExecute(`fold ${target.name}`);
+      }
+      return kolmafia.itemAmount(target) > before;
+    }
+  }, {
+    key: "prepareReturn",
+    value: function prepareReturn(item, quantity) {
+      if (this.amountInForm(item) === 0) return;
+      if (item === $item`Buddy Bjorn`) {
+        examine(item);
+        kolmafia.bjornifyFamiliar($familiar.none);
+      } else if (item === $item`Crown of Thrones`) {
+        examine(item);
+        kolmafia.enthroneFamiliar($familiar.none);
+      }
+      this.prepareInventory(item, quantity);
+    }
+  }, {
+    key: "prepareInventory",
+    value: function prepareInventory(item, quantity) {
+      var closeted = Math.min(kolmafia.closetAmount(item), Math.max(0, quantity - kolmafia.itemAmount(item)));
+      if (closeted > 0) kolmafia.takeCloset(closeted, item);
+      var _iterator0 = _createForOfIteratorHelper($slots.all()),
+        _step0;
+      try {
+        for (_iterator0.s(); !(_step0 = _iterator0.n()).done;) {
+          var slot = _step0.value;
+          if (kolmafia.itemAmount(item) >= quantity) break;
+          if (kolmafia.equippedItem(slot) === item) unequip(slot);
+        }
+      } catch (err) {
+        _iterator0.e(err);
+      } finally {
+        _iterator0.f();
+      }
+      var _iterator1 = _createForOfIteratorHelper($familiars.all().filter(have$P)),
+        _step1;
+      try {
+        for (_iterator1.s(); !(_step1 = _iterator1.n()).done;) {
+          var familiar = _step1.value;
+          if (kolmafia.itemAmount(item) >= quantity) break;
+          if (kolmafia.familiarEquippedEquipment(familiar) === item) {
+            kolmafia.equip(familiar, $item.none);
+          }
+        }
+      } catch (err) {
+        _iterator1.e(err);
+      } finally {
+        _iterator1.f();
+      }
+    }
+  }, {
+    key: "returnItem",
+    value: function returnItem(loan, item, quantity) {
+      var deposited = 0;
+      try {
+        this.prepareReturn(item, quantity);
+        var count = Math.min(quantity, kolmafia.itemAmount(item));
+        if (count === 0) return 0;
+        var before = kolmafia.itemAmount(item);
+        try {
+          kolmafia.putStash(count, item);
+        } finally {
+          deposited = Math.min(count, Math.max(0, before - kolmafia.itemAmount(item)));
+          if (deposited > 0) {
+            this.adjustLoan(loan.clanId, loan.item, -deposited);
+            kolmafia.print(`Returned ${deposited} ${item.name} to ${kolmafia.getClanName()} stash.`, HIGHLIGHT);
+          }
+        }
+      } catch (error) {
+        kolmafia.print(`Could not return ${item.name}: ${error}`, "red");
+      }
+      return deposited;
+    }
+  }, {
+    key: "returnLoan",
+    value: function returnLoan(loan) {
+      var _this$loansByClan$get;
+      var amountOwed = ((_this$loansByClan$get = this.loansByClan.get(loan.clanId)) === null || _this$loansByClan$get === void 0 ? void 0 : _this$loansByClan$get.get(loan.item)) ?? 0;
+      var quantity = Math.min(loan.quantity, amountOwed);
+      var remaining = quantity;
+      var _iterator10 = _createForOfIteratorHelper(forms(loan.item).filter(form => form.tradeable)),
+        _step10;
+      try {
+        for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
+          var form = _step10.value;
+          if (remaining === 0) break;
+          remaining -= this.returnItem(loan, form, remaining);
+        }
+      } catch (err) {
+        _iterator10.e(err);
+      } finally {
+        _iterator10.f();
+      }
+      if (remaining > 0) {
+        kolmafia.print(`Still owe ${remaining} ${loan.item.name} to clan #${loan.clanId}.`, "red");
+      }
+      return quantity - remaining;
+    }
+  }, {
+    key: "returnClanLoans",
+    value: function returnClanLoans(clanId, loans) {
+      var returnedLoans = [];
+      try {
+        withClan(clanId, "Outstanding stash loans will remain recorded until returned.", () => {
+          var _iterator11 = _createForOfIteratorHelper(loans),
+            _step11;
+          try {
+            for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
+              var _step11$value = _slicedToArray(_step11.value, 2),
+                item = _step11$value[0],
+                amount = _step11$value[1];
+              var loan = {
+                clanId,
+                item,
+                quantity: amount
+              };
+              var quantity = this.returnLoan(loan);
+              if (quantity > 0) returnedLoans.push(_objectSpread2(_objectSpread2({}, loan), {}, {
+                quantity
+              }));
+            }
+          } catch (err) {
+            _iterator11.e(err);
+          } finally {
+            _iterator11.f();
+          }
+        });
+      } catch (error) {
+        kolmafia.print(`Stash return interrupted: ${error}`, "red");
+      }
+      return returnedLoans;
+    }
+  }, {
+    key: "returnLoans",
+    value: function returnLoans(loansToReturn) {
+      var returnedLoans = [];
+      if (loansToReturn.length > 0 && prepareForCleanup()) {
+        var _iterator12 = _createForOfIteratorHelper(groupLoansByClan(loansToReturn)),
+          _step12;
+        try {
+          for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
+            var _step12$value = _slicedToArray(_step12.value, 2),
+              clanId = _step12$value[0],
+              loans = _step12$value[1];
+            returnedLoans.push.apply(returnedLoans, _toConsumableArray(this.returnClanLoans(clanId, loans)));
+          }
+        } catch (err) {
+          _iterator12.e(err);
+        } finally {
+          _iterator12.f();
+        }
+      }
+      return {
+        returnedLoans,
+        remainingLoans: this.outstandingLoans()
+      };
+    }
+  }, {
+    key: "done",
+    value: function done() {
+      for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
+        items[_key] = arguments[_key];
+      }
+      var families = new Set(items.map(canonicalItem));
+      return this.returnLoans(this.outstandingLoans().filter(loan => families.has(loan.item)));
+    }
+  }, {
+    key: "returnAll",
+    value: function returnAll() {
+      return this.returnLoans(this.outstandingLoans());
+    }
+  }, {
+    key: "with",
+    value: function _with(items, action) {
+      var loansToReturn = [];
+      try {
+        this.borrow(items, loansToReturn);
+        return action();
+      } finally {
+        this.returnLoans(loansToReturn);
+      }
+    }
+  }]);
+}();
+var stash = new StashManager();
+function returnExhaustedStashItems() {
+  if (get$2("_navelRunaways") >= 3) {
+    stash.done($item`navel ring of navel gazing`, $item`Greatest American Pants`);
+  }
+  if (get$2("spookyPuttyCopiesMade") + Math.max(1, get$2("_raindohCopiesMade")) >= 6 && !have$P($item`Spooky Putty monster`)) {
+    stash.done($item`Spooky Putty sheet`);
+  }
+  if (get$2("_stinkyCheeseCount") >= 100) {
+    stash.done($item`stinky cheese diaper`);
+  }
+}
+
 // Workaround to get buffed familiar weight without equipment, since e.g. breathing gear may override it.
 function equipmentlessFamiliarWeight(familiar) {
   return totalFamiliarWeight(familiar, true) - kolmafia.numericModifier(kolmafia.equippedItem($slot`familiar`), "Familiar Weight");
@@ -20752,7 +21335,7 @@ function cheeseBonus(mode) {
   if (globalOptions.ascend) return 0;
   if (mode === BonusEquipMode.MEAT_TARGET) return 0;
   if (get$2("_stinkyCheeseCount") >= 100) return 0;
-  if (!getFoldGroup($item`stinky cheese diaper`).some(item => have$P(item))) {
+  if (stash.amountOwned($item`stinky cheese diaper`) === 0) {
     return 0;
   }
   if (estimatedGarboTurns() < 100 - get$2("_stinkyCheeseCount")) return 0;
@@ -26121,16 +26704,22 @@ function garboAdventureAuto(loc, autoMacro) {
   runCombatBy(() => kolmafia.adv1(loc, -1, ""));
 }
 
-var stashItems = get$2("garboStashItems", "").split(",").filter(x => x.trim().length > 0).map(id => kolmafia.toItem(id));
-function withStash(itemsToTake, action) {
-  var manager = new StashManager();
-  try {
-    manager.take.apply(manager, _toConsumableArray(itemsToTake));
-    return action();
-  } finally {
-    manager.putBackAll();
+// Get out of fights, combats, etc, so we can return stash items and otherwise clean up.
+function prepareForCleanup() {
+  if (kolmafia.currentRound() > 0) {
+    var _Macro$if_$if_;
+    kolmafia.print("In fight, trying to get away before cleanup...", HIGHLIGHT);
+    (_Macro$if_$if_ = Macro.if_([globalOptions.target, $monster`giant giant crab`], Macro.attack().repeat()).if_(ULTRA_RARE_MONSTERS, Macro.abort())).tryItem.apply(_Macro$if_$if_, _toConsumableArray(unlimitedFreeRunList.filter(item => getAcquirePrice(item) < get$2("valueOfAdventure")).sort((a, b) => getAcquirePrice(a) - getAcquirePrice(b)))).step("runaway").submit();
+    if (kolmafia.currentRound() > 0) return false;
   }
+  kolmafia.visitUrl("main.php");
+  if (kolmafia.handlingChoice()) {
+    kolmafia.print("Stuck in a choice, can't return stash items.", "red");
+    return false;
+  }
+  return true;
 }
+
 function withVIPClan(action) {
   var clanIdOrNameString = globalOptions.prefs.vipClan;
   var clanIdOrName = clanIdOrNameString.match(/^\d+$/) ? parseInt(clanIdOrNameString) : clanIdOrNameString;
@@ -26177,168 +26766,9 @@ function withClan(clanIdOrName, disableHint, action) {
   try {
     return action();
   } finally {
-    Clan.join(startingClanId);
+    if (prepareForCleanup()) Clan.join(startingClanId);
   }
 }
-var STASH_CLAN_DISABLE_HINT = "To stop garbo borrowing from a clan stash, set 'garbo_stashClan' to 'none'.";
-var StashManager = /*#__PURE__*/function () {
-  function StashManager() {
-    _classCallCheck(this, StashManager);
-    _defineProperty(this, "taken", new Map());
-    var clanIdOrName = globalOptions.prefs.stashClan;
-    this.clanIdOrName = clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName;
-    this.enabled = ![0, "", "none"].some(id => id === this.clanIdOrName);
-  }
-  return _createClass(StashManager, [{
-    key: "take",
-    value: function take() {
-      for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
-        items[_key] = arguments[_key];
-      }
-      if (items.length === 0) {
-        return;
-      }
-      if (!this.enabled) {
-        kolmafia.print(`Stash access is disabled. Ignoring request to borrow "${items.map(value => value.name).join(", ")}" from clan stash.`, HIGHLIGHT);
-        return;
-      }
-      withClan(this.clanIdOrName, STASH_CLAN_DISABLE_HINT, () => {
-        for (var _i = 0, _items = items; _i < _items.length; _i++) {
-          var item = _items[_i];
-          if (have$P(item)) continue;
-          if (getFoldGroup(item).some(fold => have$P(fold))) {
-            kolmafia.cliExecute(`fold ${item.name}`);
-            continue;
-          }
-          var foldArray = [item].concat(_toConsumableArray(getFoldGroup(item)));
-          kolmafia.refreshStash();
-          var _iterator = _createForOfIteratorHelper(foldArray),
-            _step;
-          try {
-            for (_iterator.s(); !(_step = _iterator.n()).done;) {
-              var fold = _step.value;
-              if (kolmafia.stashAmount(fold) > 0) {
-                try {
-                  if (kolmafia.takeStash(1, fold)) {
-                    kolmafia.print(`Took ${fold.name} from stash in ${kolmafia.getClanName()}.`, HIGHLIGHT);
-                    if (fold !== item) kolmafia.cliExecute(`fold ${item.name}`);
-                    this.taken.set(item, (this.taken.get(item) ?? 0) + 1);
-                    stashItems.push(fold);
-                    break;
-                  } else {
-                    kolmafia.print(`Failed to take ${fold.name} from the stash. Do you have stash access in ${kolmafia.getClanName()}?`, "red");
-                  }
-                } catch (_unused) {
-                  kolmafia.print(`Failed to take ${fold.name} from stash in ${kolmafia.getClanName()}.`, "red");
-                }
-              }
-            }
-          } catch (err) {
-            _iterator.e(err);
-          } finally {
-            _iterator.f();
-          }
-          if (have$P(item)) continue;
-        }
-      });
-    }
-
-    /**
-     * Ensure at least one of each of {items} in inventory.
-     * @param items Items to take from the stash.
-     */
-  }, {
-    key: "ensure",
-    value: function ensure() {
-      for (var _len2 = arguments.length, items = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        items[_key2] = arguments[_key2];
-      }
-      this.take.apply(this, _toConsumableArray(items.filter(item => kolmafia.availableAmount(item) === 0)));
-    }
-  }, {
-    key: "putBack",
-    value: function putBack() {
-      for (var _len3 = arguments.length, items = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-        items[_key3] = arguments[_key3];
-      }
-      if (items.length === 0) return;
-      if (kolmafia.visitUrl("fight.php").includes("You're fighting")) {
-        var _Macro$if_$if_;
-        kolmafia.print("In fight, trying to get away to return items to stash...", HIGHLIGHT);
-        (_Macro$if_$if_ = Macro.if_([globalOptions.target, $monster`giant giant crab`], Macro.attack().repeat()).if_(ULTRA_RARE_MONSTERS, Macro.abort())).tryItem.apply(_Macro$if_$if_, _toConsumableArray(unlimitedFreeRunList.filter(i => getAcquirePrice(i) < get$2("valueOfAdventure")).sort((a, b) => getAcquirePrice(a) - getAcquirePrice(b)))).step("runaway").submit();
-      } else {
-        kolmafia.visitUrl("main.php");
-        if (kolmafia.handlingChoice()) {
-          kolmafia.print(`I'm stuck in a choice, unfortunately, but were I not, I'd like to return the following items to your clan stash:`, "red");
-          items.forEach(item => kolmafia.print(`${item.name},`, "red"));
-        }
-      }
-      withClan(this.clanIdOrName, STASH_CLAN_DISABLE_HINT, () => {
-        for (var _i2 = 0, _items2 = items; _i2 < _items2.length; _i2++) {
-          var item = _items2[_i2];
-          var count = this.taken.get(item) ?? 0;
-          if (count > 0) {
-            kolmafia.retrieveItem(count, item);
-            if (item === $item`Buddy Bjorn`) {
-              kolmafia.visitUrl(`desc_item.php?whichitem=${$item`Buddy Bjorn`.descid}`);
-              kolmafia.bjornifyFamiliar($familiar.none);
-            }
-            if (item === $item`Crown of Thrones`) {
-              kolmafia.visitUrl(`desc_item.php?whichitem=${$item`Crown of Thrones`.descid}`);
-              kolmafia.enthroneFamiliar($familiar.none);
-            }
-            var foldedForms = [item].concat(_toConsumableArray(getFoldGroup(item)));
-            var _iterator2 = _createForOfIteratorHelper(foldedForms),
-              _step2;
-            try {
-              for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-                var fold = _step2.value;
-                unequip(fold);
-              }
-            } catch (err) {
-              _iterator2.e(err);
-            } finally {
-              _iterator2.f();
-            }
-            if (kolmafia.toSlot(item) === $slot`familiar` && !have$P(item, count)) {
-              var _iterator3 = _createForOfIteratorHelper($familiars.all().filter(have$P)),
-                _step3;
-              try {
-                for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-                  var familiar = _step3.value;
-                  if (kolmafia.familiarEquippedEquipment(familiar) === item) {
-                    kolmafia.equip(familiar, $item.none);
-                  }
-                }
-              } catch (err) {
-                _iterator3.e(err);
-              } finally {
-                _iterator3.f();
-              }
-            }
-            if (kolmafia.itemAmount(item) >= count && kolmafia.putStash(count, item)) {
-              var index = stashItems.indexOf(item);
-              if (index >= 0) stashItems.splice(stashItems.indexOf(item), 1);
-              kolmafia.print(`Returned ${item.name} to stash in ${kolmafia.getClanName()}.`, HIGHLIGHT);
-              this.taken.delete(item);
-            } else {
-              throw `Failed to return ${item.name} to stash.`;
-            }
-          }
-        }
-      });
-    }
-
-    /**
-     * Put all items back in the stash.
-     */
-  }, {
-    key: "putBackAll",
-    value: function putBackAll() {
-      this.putBack.apply(this, _toConsumableArray(this.taken.keys()));
-    }
-  }]);
-}();
 
 function bestLockPickChoice() {
   return 1 + kolmafia.toInt(maxBy($items`Boris's key lime, Jarlsberg's key lime, Sneaky Pete's key lime`, garboValue)) - kolmafia.toInt($item`Boris's key lime`);
@@ -26761,6 +27191,7 @@ var BaseGarboContextEngine = /*#__PURE__*/function (_ContextualEngine) {
         educate([$skill`Extract`, $skill`Duplicate`]);
       }
       _superPropGet(BaseGarboContextEngine, "execute", this, 3)([task]);
+      returnExhaustedStashItems();
       if (kolmafia.totalTurnsPlayed() !== spentTurns) {
         if (!undelay(task.spendsTurn, context)) {
           kolmafia.print(`Task ${task.name} spent a turn but was marked as not spending turns`);
@@ -27534,6 +27965,7 @@ function PostQuest(completed) {
 
 function postCombatActions() {
   runGarboQuests([PostQuest()]);
+  returnExhaustedStashItems();
   safeRestore();
 }
 
@@ -28630,7 +29062,7 @@ var BuffExtensionTasks = [{
   name: "Platinum Yendorian Express Card",
   completed: () => get$2("expressCardUsed"),
   do: () => {
-    withStash($items`Platinum Yendorian Express Card`, () => {
+    stash.with($items`Platinum Yendorian Express Card`, () => {
       if (have$P($item`Platinum Yendorian Express Card`)) {
         burnMp();
         kolmafia.use($item`Platinum Yendorian Express Card`);
@@ -28647,7 +29079,7 @@ var BuffExtensionTasks = [{
   name: "Bag o' Tricks",
   completed: () => get$2("_bagOTricksUsed"),
   do: () => {
-    withStash($items`Bag o' Tricks`, () => {
+    stash.with($items`Bag o' Tricks`, () => {
       if (have$P($item`Bag o' Tricks`)) {
         kolmafia.use($item`Bag o' Tricks`);
       }
@@ -28915,125 +29347,130 @@ function familiarSpec(underwater, fight) {
 function dailyFights() {
   if (!sober()) return;
   if (copyTargetSources.some(source => source.potential())) {
-    withStash($items`Spooky Putty sheet`, () => {
-      // check if user wants to wish for the copy target before doing setup
-      if (!getNextCopyTargetFight()) return;
-      meatTargetSetup();
-      if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
+    // check if user wants to wish for the copy target before doing setup
+    if (!getNextCopyTargetFight()) {
+      stash.done($item`Spooky Putty sheet`);
+      return;
+    }
+    meatTargetSetup();
+    if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
 
-      // PROFESSOR COPIES
-      if (have$P($familiar`Pocket Professor`)) {
-        var potentialPocketProfessorLectures = [{
-          shouldDo: targetingMeat(),
-          property: "_garbo_meatChain",
-          macro: firstChainMacro,
-          goalMaximize: (spec, location) => meatTargetOutfit(spec, {
-            location,
-            target: globalOptions.target
-          }).dress()
-        }, {
-          shouldDo: true,
-          property: "_garbo_weightChain",
-          macro: secondChainMacro,
-          goalMaximize: spec => Outfit.from(_objectSpread2(_objectSpread2({}, spec), {}, {
-            modifier: ["Familiar Weight"]
-          }), new Error(`Unable to build outfit for weight chain!`)).dress()
-        }];
-        for (var _i = 0, _potentialPocketProfe = potentialPocketProfessorLectures; _i < _potentialPocketProfe.length; _i++) {
-          var potentialLecture = _potentialPocketProfe[_i];
-          var _property = potentialLecture.property,
-            macro = potentialLecture.macro,
-            goalMaximize = potentialLecture.goalMaximize,
-            shouldDo = potentialLecture.shouldDo;
-          if (!shouldDo) continue;
-          var fightSource = getNextCopyTargetFight();
-          if (!fightSource) return;
-          if (get$2(_property, false)) continue;
-          if (fightSource.gregariousReplace) {
-            var crateIsSabered = get$2("_saberForceMonster") === $monster`crate`;
-            var notEnoughCratesSabered = get$2("_saberForceMonsterCount") < 2;
-            var weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
-            if (weWantToSaberCrates) saberCrateIfSafe();
-          }
-          var chip = $item`Pocket Professor memory chip`;
-          var jacks = $item`box of Familiar Jacks`;
-          kolmafia.useFamiliar($familiar`Pocket Professor`);
-          if (!have$P(chip)) {
-            if (kolmafia.mallPrice(jacks) < kolmafia.mallPrice(chip)) {
-              kolmafia.retrieveItem(jacks);
-              kolmafia.use(jacks);
-            } else {
-              kolmafia.retrieveItem(chip);
-            }
-          }
-          var profSpec = {
-            familiar: $familiar`Pocket Professor`,
-            avoid: $items`Roman Candelabra, legendary seal-clubbing club`
-          };
-          if (have$P(chip)) {
-            profSpec.famequip = chip;
-          }
-          goalMaximize(_objectSpread2(_objectSpread2({}, profSpec), fightSource.spec), fightSource.location ?? $location.none);
-          if (get$2("_pocketProfessorLectures") < totalAvailableLectures()) {
-            var _eventLog$copyTargetS;
-            var startLectures = get$2("_pocketProfessorLectures");
-            runTargetFight(fightSource, {
-              macro: macro(),
-              useAuto: false,
-              action: "Pocket Professor"
-            });
-            eventLog.initialCopyTargetsFought += 1 + get$2("_pocketProfessorLectures") - startLectures;
-            eventLog.copyTargetSources.push(fightSource.name);
-            (_eventLog$copyTargetS = eventLog.copyTargetSources).push.apply(_eventLog$copyTargetS, _toConsumableArray(new Array(get$2("_pocketProfessorLectures") - startLectures).fill("Pocket Professor")));
-          }
-          _set(_property, true);
-          postCombatActions();
-          var predictedNextFight = getNextCopyTargetFight();
-          if (!(predictedNextFight !== null && predictedNextFight !== void 0 && predictedNextFight.draggable)) doSausage();
-          doGhost();
+    // PROFESSOR COPIES
+    if (have$P($familiar`Pocket Professor`)) {
+      var potentialPocketProfessorLectures = [{
+        shouldDo: targetingMeat(),
+        property: "_garbo_meatChain",
+        macro: firstChainMacro,
+        goalMaximize: (spec, location) => meatTargetOutfit(spec, {
+          location,
+          target: globalOptions.target
+        }).dress()
+      }, {
+        shouldDo: true,
+        property: "_garbo_weightChain",
+        macro: secondChainMacro,
+        goalMaximize: spec => Outfit.from(_objectSpread2(_objectSpread2({}, spec), {}, {
+          modifier: ["Familiar Weight"]
+        }), new Error(`Unable to build outfit for weight chain!`)).dress()
+      }];
+      for (var _i = 0, _potentialPocketProfe = potentialPocketProfessorLectures; _i < _potentialPocketProfe.length; _i++) {
+        var potentialLecture = _potentialPocketProfe[_i];
+        var _property = potentialLecture.property,
+          macro = potentialLecture.macro,
+          goalMaximize = potentialLecture.goalMaximize,
+          shouldDo = potentialLecture.shouldDo;
+        if (!shouldDo) continue;
+        var fightSource = getNextCopyTargetFight();
+        if (!fightSource) {
+          stash.done($item`Spooky Putty sheet`);
+          return;
         }
-      }
-      kolmafia.useFamiliar(meatFamiliar());
-
-      // REMAINING TARGET MONSTER FIGHTS
-      var nextFight = getNextCopyTargetFight();
-      while (nextFight !== null && kolmafia.myAdventures()) {
-        kolmafia.print(`Running fight ${nextFight.name}`);
-        var startTurns = kolmafia.totalTurnsPlayed();
-        if (nextFight.draggable === "backup" && have$P($skill`Musk of the Moose`) && !have$P($effect`Musk of the Moose`)) {
-          kolmafia.useSkill($skill`Musk of the Moose`);
+        if (get$2(_property, false)) continue;
+        if (fightSource.gregariousReplace) {
+          var crateIsSabered = get$2("_saberForceMonster") === $monster`crate`;
+          var notEnoughCratesSabered = get$2("_saberForceMonsterCount") < 2;
+          var weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+          if (weWantToSaberCrates) saberCrateIfSafe();
         }
-        if (nextFight.gregariousReplace) {
-          var _crateIsSabered = get$2("_saberForceMonster") === $monster`crate`;
-          var _notEnoughCratesSabered = get$2("_saberForceMonsterCount") < 2;
-          var _weWantToSaberCrates = !_crateIsSabered || _notEnoughCratesSabered;
-          if (_weWantToSaberCrates) saberCrateIfSafe();
+        var chip = $item`Pocket Professor memory chip`;
+        var jacks = $item`box of Familiar Jacks`;
+        kolmafia.useFamiliar($familiar`Pocket Professor`);
+        if (!have$P(chip)) {
+          if (kolmafia.mallPrice(jacks) < kolmafia.mallPrice(chip)) {
+            kolmafia.retrieveItem(jacks);
+            kolmafia.use(jacks);
+          } else {
+            kolmafia.retrieveItem(chip);
+          }
         }
-        var location = new TargetFightRunOptions(nextFight).location;
-        var underwater = location.environment === "underwater";
-        var famSpec = familiarSpec(underwater, nextFight);
-        if (famSpec.familiar === $familiar`Red-Nosed Snapper` && getTrackedPhylum() !== globalOptions.target.phylum) {
-          trackPhylum(globalOptions.target.phylum);
+        var profSpec = {
+          familiar: $familiar`Pocket Professor`,
+          avoid: $items`Roman Candelabra, legendary seal-clubbing club`
+        };
+        if (have$P(chip)) {
+          profSpec.famequip = chip;
         }
-        kolmafia.setLocation(location);
-        meatTargetOutfit(_objectSpread2(_objectSpread2({}, nextFight.spec), famSpec), location).dress();
-        runTargetFight(nextFight, {
-          action: nextFight.name
-        });
+        goalMaximize(_objectSpread2(_objectSpread2({}, profSpec), fightSource.spec), fightSource.location ?? $location.none);
+        if (get$2("_pocketProfessorLectures") < totalAvailableLectures()) {
+          var _eventLog$copyTargetS;
+          var startLectures = get$2("_pocketProfessorLectures");
+          runTargetFight(fightSource, {
+            macro: macro(),
+            useAuto: false,
+            action: "Pocket Professor"
+          });
+          eventLog.initialCopyTargetsFought += 1 + get$2("_pocketProfessorLectures") - startLectures;
+          eventLog.copyTargetSources.push(fightSource.name);
+          (_eventLog$copyTargetS = eventLog.copyTargetSources).push.apply(_eventLog$copyTargetS, _toConsumableArray(new Array(get$2("_pocketProfessorLectures") - startLectures).fill("Pocket Professor")));
+        }
+        _set(_property, true);
         postCombatActions();
-        kolmafia.print(`Finished ${nextFight.name}`);
-        if (kolmafia.totalTurnsPlayed() - startTurns === 1 && get$2("lastCopyableMonster") === globalOptions.target && (nextFight.wrongEncounterName || get$2("lastEncounter") === globalOptions.target.name)) {
-          eventLog.initialCopyTargetsFought++;
-          eventLog.copyTargetSources.push(nextFight.name);
-        }
-        nextFight = getNextCopyTargetFight();
-        if (romanticMonsterImpossible() && (!nextFight || !nextFight.draggable)) {
-          doSausage();
-        }
+        var predictedNextFight = getNextCopyTargetFight();
+        if (!(predictedNextFight !== null && predictedNextFight !== void 0 && predictedNextFight.draggable)) doSausage();
         doGhost();
       }
-    });
+    }
+    kolmafia.useFamiliar(meatFamiliar());
+
+    // REMAINING TARGET MONSTER FIGHTS
+    var nextFight = getNextCopyTargetFight();
+    while (nextFight !== null && kolmafia.myAdventures()) {
+      kolmafia.print(`Running fight ${nextFight.name}`);
+      var startTurns = kolmafia.totalTurnsPlayed();
+      if (nextFight.draggable === "backup" && have$P($skill`Musk of the Moose`) && !have$P($effect`Musk of the Moose`)) {
+        kolmafia.useSkill($skill`Musk of the Moose`);
+      }
+      if (nextFight.gregariousReplace) {
+        var _crateIsSabered = get$2("_saberForceMonster") === $monster`crate`;
+        var _notEnoughCratesSabered = get$2("_saberForceMonsterCount") < 2;
+        var _weWantToSaberCrates = !_crateIsSabered || _notEnoughCratesSabered;
+        if (_weWantToSaberCrates) saberCrateIfSafe();
+      }
+      var location = new TargetFightRunOptions(nextFight).location;
+      var underwater = location.environment === "underwater";
+      var famSpec = familiarSpec(underwater, nextFight);
+      if (famSpec.familiar === $familiar`Red-Nosed Snapper` && getTrackedPhylum() !== globalOptions.target.phylum) {
+        trackPhylum(globalOptions.target.phylum);
+      }
+      kolmafia.setLocation(location);
+      meatTargetOutfit(_objectSpread2(_objectSpread2({}, nextFight.spec), famSpec), location).dress();
+      runTargetFight(nextFight, {
+        action: nextFight.name
+      });
+      postCombatActions();
+      kolmafia.print(`Finished ${nextFight.name}`);
+      if (kolmafia.totalTurnsPlayed() - startTurns === 1 && get$2("lastCopyableMonster") === globalOptions.target && (nextFight.wrongEncounterName || get$2("lastEncounter") === globalOptions.target.name)) {
+        eventLog.initialCopyTargetsFought++;
+        eventLog.copyTargetSources.push(nextFight.name);
+      }
+      nextFight = getNextCopyTargetFight();
+      if (romanticMonsterImpossible() && (!nextFight || !nextFight.draggable)) {
+        doSausage();
+      }
+      doGhost();
+    }
   }
+  stash.done($item`Spooky Putty sheet`);
 }
 var consecutiveNonFreeFights = 0;
 var FreeFight = /*#__PURE__*/function () {
@@ -29638,35 +30075,32 @@ function freeRunFights() {
     1324: 5 // Fight a random partier
   });
   var onlyPriorityRuns = globalOptions.prefs.yachtzeechain && !get$2("_garboYachtzeeChainCompleted", false);
-  var stashRun = kolmafia.stashAmount($item`navel ring of navel gazing`) ? $items`navel ring of navel gazing` : kolmafia.stashAmount($item`Greatest American Pants`) ? $items`Greatest American Pants` : [];
-  kolmafia.refreshStash();
-  withStash(stashRun, () => {
-    var _iterator = _createForOfIteratorHelper(priorityFreeRunFightSources),
-      _step;
-    try {
-      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        var priorityRunFight = _step.value;
-        priorityRunFight.runAll();
-      }
-    } catch (err) {
-      _iterator.e(err);
-    } finally {
-      _iterator.f();
+  var _iterator = _createForOfIteratorHelper(priorityFreeRunFightSources),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var priorityRunFight = _step.value;
+      priorityRunFight.runAll();
     }
-    if (onlyPriorityRuns) return;
-    var _iterator2 = _createForOfIteratorHelper(freeRunFightSources),
-      _step2;
-    try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var freeRunFightSource = _step2.value;
-        freeRunFightSource.runAll();
-      }
-    } catch (err) {
-      _iterator2.e(err);
-    } finally {
-      _iterator2.f();
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  if (onlyPriorityRuns) return;
+  var _iterator2 = _createForOfIteratorHelper(freeRunFightSources),
+    _step2;
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var freeRunFightSource = _step2.value;
+      freeRunFightSource.runAll();
     }
-  });
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+  stash.done.apply(stash, _toConsumableArray($items`navel ring of navel gazing, Greatest American Pants`));
 }
 function freeFights() {
   // These fights change familiars, so exclude Stooper's extra capacity.
@@ -29677,6 +30111,12 @@ function freeFights() {
     // "You will go find two friends and meet me here."
     1324: 5 // Fight a random partier
   });
+  if (get$2("_navelRunaways") < 3 && !have$P($item`navel ring of navel gazing`) && !have$P($item`Greatest American Pants`)) {
+    stash.request($items`navel ring of navel gazing`);
+    if (!have$P($item`navel ring of navel gazing`)) {
+      stash.request($items`Greatest American Pants`);
+    }
+  }
   freeRunFights();
   killRobortCreaturesForFree();
 
@@ -30387,7 +30827,7 @@ var DailyTasks = [{
 }, {
   name: $item`defective Game Grid token`.name,
   completed: () => get$2("_defectiveTokenUsed"),
-  do: () => withStash([$item`defective Game Grid token`], () => kolmafia.use(1, $item`defective Game Grid token`)),
+  do: () => stash.with([$item`defective Game Grid token`], () => kolmafia.use(1, $item`defective Game Grid token`)),
   spendsTurn: false
 }, {
   name: $item`Glenn's golden dice`.name,
@@ -30469,8 +30909,7 @@ var DailyTasks = [{
   ready: () => have$P($item`Clan VIP Lounge key`) && kolmafia.getClanLounge()["Clan Carnival Game"] !== undefined && kolmafia.isOnline("OnlyFax") && getWhitelistedClans().some(c => c.name === "Bonus Adventures from Hell"),
   completed: () => get$2("_clanFortuneConsultUses") >= 3,
   do: () => {
-    checkCurrentClanWhitelist("Bonus Adventures from Hell", "To stop garbo using the fortune teller, remove your 'Bonus Adventures from Hell' whitelist.");
-    Clan.with("Bonus Adventures from Hell", () => kolmafia.cliExecute(`fortune ${kolmafia.getPlayerId("OnlyFax")}`));
+    withClan("Bonus Adventures from Hell", "To stop garbo using the fortune teller, remove your 'Bonus Adventures from Hell' whitelist.", () => kolmafia.cliExecute(`fortune ${kolmafia.getPlayerId("OnlyFax")}`));
     if (get$2("_clanFortuneConsultUses") < 3) kolmafia.wait(10);
   },
   limit: {
@@ -30536,13 +30975,13 @@ var DailyTasks = [{
   name: "Use BittyCar MeatCart",
   ready: () => get$2("_bittycar") !== "meatcar",
   completed: () => get$2("_bittycar") === "meatcar",
-  do: () => withStash([$item`BittyCar MeatCar`], () => kolmafia.use(1, $item`BittyCar MeatCar`)),
+  do: () => stash.with([$item`BittyCar MeatCar`], () => kolmafia.use(1, $item`BittyCar MeatCar`)),
   spendsTurn: false
 }, {
   name: "Use BittyCar SoulCar",
   ready: () => get$2("_bittycar") !== "meatcar" && get$2("_bittycar") !== "soulcar",
   completed: () => get$2("_bittycar") === "soulcar",
-  do: () => withStash([$item`BittyCar SoulCar`], () => kolmafia.use(1, $item`BittyCar SoulCar`)),
+  do: () => stash.with([$item`BittyCar SoulCar`], () => kolmafia.use(1, $item`BittyCar SoulCar`)),
   spendsTurn: false
 }, {
   name: "Holiday Eldritch Attunement",
@@ -30817,7 +31256,7 @@ var DailyFamiliarTasks = [{
   ready: () => have$P($item`moveable feast`) || globalOptions.prefs.stashClan !== "none",
   completed: () => get$2("_feastUsed") > 0,
   do: () => {
-    withStash($items`moveable feast`, () => {
+    stash.with($items`moveable feast`, () => {
       if (have$P($item`moveable feast`)) {
         [].concat(_toConsumableArray($familiars`Pocket Professor, Frumious Bandersnatch, Pair of Stomping Boots`), [meatFamiliar()]).forEach(tryFeast);
       }
@@ -31885,44 +32324,93 @@ var lastParachuteFailure = 0;
 var shouldCheckParachute = () => kolmafia.totalTurnsPlayed() !== lastParachuteFailure;
 var updateParachuteFailure = () => lastParachuteFailure = kolmafia.totalTurnsPlayed();
 
+function swordItemDropObjective(farmingItemDropValue) {
+  var copiedMonster = get$2("swordOfSWordsMonster");
+  if (!copiedMonster) return {
+    valuePerItemDrop: farmingItemDropValue
+  };
+  var positiveRateDrops = kolmafia.itemDropsArray(copiedMonster).filter(_ref => {
+    var rate = _ref.rate;
+    return rate > 0;
+  });
+  if (!positiveRateDrops.length) return {
+    valuePerItemDrop: 0
+  };
+  var _maxBy = maxBy(positiveRateDrops, _ref2 => {
+      var drop = _ref2.drop;
+      return garboValue(drop);
+    }),
+    mostValuableItemRate = _maxBy.rate;
+  return {
+    valuePerItemDrop: expectedDropValue(copiedMonster),
+    maximumItemDrop: Math.ceil(100 * (100 / mostValuableItemRate - 1))
+  };
+}
+function swordDropValue(itemDrop) {
+  var copiedMonster = get$2("swordOfSWordsMonster");
+  if (!copiedMonster) return 0;
+  return sum(kolmafia.itemDropsArray(copiedMonster), _ref3 => {
+    var rate = _ref3.rate,
+      drop = _ref3.drop;
+    return clamp(rate * (100 + itemDrop) / 100, 0, 100) * garboValue(drop) / 100;
+  });
+}
+
+var familiarOutfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
+function familiarWeightWithOutfit(familiar, outfitWeight) {
+  var nonOutfitWeightBonus = kolmafia.weightAdjustment() - sum(familiarOutfitSlots, slot => get$1("Familiar Weight", kolmafia.equippedItem(slot)));
+  return totalFamiliarWeight(familiar, false) + nonOutfitWeightBonus + outfitWeight;
+}
+function familiarModifierWithOutfit(familiar, modifier, outfitWeight) {
+  var totalWeight = familiarWeightWithOutfit(familiar, outfitWeight);
+  var _ref = specialFamiliarOutfits.get(familiar) ?? {},
+    equip = _ref.equip;
+  return equip ? kolmafia.numericModifier(familiar, modifier, totalWeight - kolmafia.numericModifier(equip, "Familiar Weight"), equip) : kolmafia.numericModifier(familiar, modifier, totalWeight, $item.none);
+}
+var mimicExperienceValue = () => MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50;
+
+// These familiars have special outfit requirements that make them not fit under
+// their leprechaun multiplier's cache entry.
+var specialFamiliarOutfits = new Map([[$familiar`Chest Mimic`, {
+  configureOutfit: outfit => {
+    if ($familiar`Chest Mimic`.experience < 550) {
+      outfit.modifier.push(`${mimicExperienceValue()} Familiar Experience`);
+    }
+  },
+  extraValue: _ref2 => {
+    var famexp = _ref2.famexp;
+    return famexp * mimicExperienceValue();
+  }
+}], [$familiar`Jill-of-All-Trades`, {
+  equip: $item`LED candle`,
+  configureOutfit: outfit => {
+    outfit.setModes({
+      jillcandle: "ultraviolet"
+    });
+  }
+}], [$familiar`Mini Kiwi`, {
+  extraValue: _ref3 => {
+    var weight = _ref3.weight;
+    return clamp(familiarWeightWithOutfit($familiar`Mini Kiwi`, weight) * 0.005, 0, 1) * garboValue($item`mini kiwi`);
+  }
+}], [$familiar`Sword of S Words`, {
+  itemDropObjective: swordItemDropObjective,
+  extraValue: _ref4 => {
+    var item = _ref4.item,
+      weight = _ref4.weight;
+    var monster = get$2("swordOfSWordsMonster");
+    if (!monster) return 0;
+    var totalItem = item + familiarModifierWithOutfit($familiar`Sword of S Words`, "Item Drop", weight);
+    return swordDropValue(totalItem) - totalItem * FarmingStrategy.itemDropValue();
+  }
+}]]);
+
 function familiarNeedsBoot(familiar) {
   return FarmingStrategy.isUnderwater() && !have$P($effect`Driving Waterproofly`) && !familiar.underwater;
 }
 var outfitCache = new Map();
-var outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
-var SPECIAL_FAMILIARS_FOR_CACHING = new Map([[
-// Derives its value from famexp and requires _much_ more famexp than other exp familiars
-$familiar`Chest Mimic`, {
-  extraValue: _ref => {
-    var famexp = _ref.famexp;
-    return famexp * MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50;
-  }
-}],
-// Uniquely required to equip its fam equip to meaningfully have value
-[$familiar`Jill-of-All-Trades`, {
-  equip: $item`LED candle`
-}],
-// Derives its value irregularly from +famweight
-[$familiar`Mini Kiwi`, {
-  extraValue: _ref2 => {
-    var weight = _ref2.weight;
-    return clamp((weight + totalFamiliarWeight($familiar`Mini Kiwi`, false)) * 0.005, 0, 1) * garboValue($item`mini kiwi`);
-  }
-}], [$familiar`Sword of S Words`, {
-  extraValue: _ref3 => {
-    var item = _ref3.item;
-    var sWordMonster = get$2("swordOfSWordsMonster");
-    if (!sWordMonster) return 0;
-    var totalItem = item + familiarModifier($familiar`Sword of S Words`, "Item Drop");
-    return sum(kolmafia.itemDropsArray(sWordMonster), _ref4 => {
-      var rate = _ref4.rate,
-        drop = _ref4.drop;
-      return clamp(rate * (100 + totalItem) / 100, 0, 100) * garboValue(drop) / 100;
-    }) - totalItem * FarmingStrategy.itemDropValue();
-  }
-}]]);
 function outfitCacheKey(familiar) {
-  if (SPECIAL_FAMILIARS_FOR_CACHING.has(familiar)) {
+  if (specialFamiliarOutfits.has(familiar)) {
     return familiar;
   }
   var lepMultiplier = findLeprechaunMultiplier(familiar);
@@ -31944,7 +32432,7 @@ function getCachedOutfitValues(fam) {
       equip: needsBoot ? $items`das boot` : [],
       avoid: $items`Kramco Sausage-o-Matic™, cursed magnifying glass, protonic accelerator pack, "I Voted!" sticker, li'l pirate costume, bag of many confections, bat wings, toy Cupid bow`
     }, true).dress();
-    var outfit = outfitSlots.map(slot => kolmafia.equippedItem(slot));
+    var outfit = familiarOutfitSlots.map(slot => kolmafia.equippedItem(slot));
     var bonuses = bonusGear(BonusEquipMode.MEAT_TARGET, false);
     var values = {
       weight: sum(outfit, eq => get$1("Familiar Weight", eq)),
@@ -31960,33 +32448,28 @@ function getCachedOutfitValues(fam) {
     kolmafia.cliExecute("outfit checkpoint");
   }
 }
-var nonOutfitWeightBonus = () => kolmafia.weightAdjustment() - sum(outfitSlots, slot => get$1("Familiar Weight", kolmafia.equippedItem(slot)));
 function familiarModifier(familiar, modifier) {
-  var cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
-  var totalWeight = totalFamiliarWeight(familiar, false) + nonOutfitWeightBonus() + cachedOutfitWeight;
-  var _ref5 = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {},
-    equip = _ref5.equip;
-  return equip ? kolmafia.numericModifier(familiar, modifier, totalWeight - kolmafia.numericModifier(equip, "Familiar Weight"), equip) : kolmafia.numericModifier(familiar, modifier, totalWeight, $item.none);
+  return familiarModifierWithOutfit(familiar, modifier, getCachedOutfitValues(familiar).weight);
 }
 function familiarAbilityValue(familiar) {
   return familiarModifier(familiar, "Meat Drop") * FarmingStrategy.meatDropValue() + familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue();
 }
-function totalFamiliarValue(_ref6) {
-  var expectedValue = _ref6.expectedValue,
-    outfitValue = _ref6.outfitValue,
-    familiar = _ref6.familiar;
+function totalFamiliarValue(_ref) {
+  var expectedValue = _ref.expectedValue,
+    outfitValue = _ref.outfitValue,
+    familiar = _ref.familiar;
   return expectedValue + outfitValue + familiarAbilityValue(familiar);
 }
 function turnsNeededFromBaseline(baselineToCompareAgainst, tcbFamiliars) {
-  return _ref7 => {
-    var familiar = _ref7.familiar,
-      limit = _ref7.limit,
-      outfitValue = _ref7.outfitValue,
-      bonusTurns = _ref7.bonusTurns;
+  return _ref2 => {
+    var familiar = _ref2.familiar,
+      limit = _ref2.limit,
+      outfitValue = _ref2.outfitValue,
+      bonusTurns = _ref2.bonusTurns;
     switch (limit) {
       case "drops":
-        return sum(getAllDrops(familiar).filter(_ref8 => {
-          var expectedValue = _ref8.expectedValue;
+        return sum(getAllDrops(familiar).filter(_ref3 => {
+          var expectedValue = _ref3.expectedValue;
           return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
         }), "expectedTurns") - (bonusTurns ?? 0);
       case "experience":
@@ -32005,10 +32488,10 @@ function turnsNeededFromBaseline(baselineToCompareAgainst, tcbFamiliars) {
   };
 }
 function calculateOutfitValue(f) {
-  var _SPECIAL_FAMILIARS_FO, _SPECIAL_FAMILIARS_FO2;
+  var _specialFamiliarOutfi, _specialFamiliarOutfi2;
   var outfit = getCachedOutfitValues(f.familiar);
   var outfitValue = outfit.bonus + outfit.meat * FarmingStrategy.meatDropValue() + outfit.item * FarmingStrategy.itemDropValue();
-  var expectedValue = f.expectedValue + (((_SPECIAL_FAMILIARS_FO = SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)) === null || _SPECIAL_FAMILIARS_FO === void 0 || (_SPECIAL_FAMILIARS_FO2 = _SPECIAL_FAMILIARS_FO.extraValue) === null || _SPECIAL_FAMILIARS_FO2 === void 0 ? void 0 : _SPECIAL_FAMILIARS_FO2.call(_SPECIAL_FAMILIARS_FO, outfit)) ?? 0);
+  var expectedValue = f.expectedValue + (((_specialFamiliarOutfi = specialFamiliarOutfits.get(f.familiar)) === null || _specialFamiliarOutfi === void 0 || (_specialFamiliarOutfi2 = _specialFamiliarOutfi.extraValue) === null || _specialFamiliarOutfi2 === void 0 ? void 0 : _specialFamiliarOutfi2.call(_specialFamiliarOutfi, outfit)) ?? 0);
   var outfitWeight = outfit.weight;
   return _objectSpread2(_objectSpread2({}, f), {}, {
     expectedValue,
@@ -32023,10 +32506,10 @@ function extraValue(target, meat, jellyfish) {
   var jellyfishValue = jellyfish ? garboValue(jelly) / 20 + familiarAbilityValue(jellyfish.familiar) + jellyfish.outfitValue : 0;
   return Math.max(targetValue - Math.max(meatFamiliarValue, jellyfishValue), 0);
 }
-var familiarPrintout = _ref9 => {
-  var expectedValue = _ref9.expectedValue,
-    familiar = _ref9.familiar,
-    outfitValue = _ref9.outfitValue;
+var familiarPrintout = _ref4 => {
+  var expectedValue = _ref4.expectedValue,
+    familiar = _ref4.familiar,
+    outfitValue = _ref4.outfitValue;
   return `(expected value of ${expectedValue.toFixed(1)} from familiar drops, ${familiarAbilityValue(familiar).toFixed(1)} from familiar abilities and ${outfitValue.toFixed(1)} from outfit)`;
 };
 function barfFamiliar(equipmentForced) {
@@ -32078,9 +32561,9 @@ function barfFamiliar(equipmentForced) {
     }
     return normal;
   });
-  var meatFamiliarEntry = fullMenu.find(_ref0 => {
-    var familiar = _ref0.familiar,
-      limit = _ref0.limit;
+  var meatFamiliarEntry = fullMenu.find(_ref5 => {
+    var familiar = _ref5.familiar,
+      limit = _ref5.limit;
     return familiar === meat && limit !== "cupid";
   });
   if (!meatFamiliarEntry) {
@@ -32098,8 +32581,8 @@ function barfFamiliar(equipmentForced) {
   }
 
   // Determine the baseline for how good a familiar needs to be to be run--either an unlimited familiar, or our meat familiar
-  var unlimitedCruisingFamiliars = viableMenu.filter(_ref1 => {
-    var limit = _ref1.limit;
+  var unlimitedCruisingFamiliars = viableMenu.filter(_ref6 => {
+    var limit = _ref6.limit;
     return limit === "none";
   });
   var cruisingFamiliar = unlimitedCruisingFamiliars.length ? maxBy(unlimitedCruisingFamiliars, totalFamiliarValue) : meatFamiliarEntry;
@@ -32109,8 +32592,8 @@ function barfFamiliar(equipmentForced) {
   var finalMenu = viableMenu.filter(f => totalFamiliarValue(f) >= cruisingFamiliarValue);
 
   // If the shrub beats our cruising familiar, use it
-  var shrubAvailable = finalMenu.some(_ref10 => {
-    var familiar = _ref10.familiar;
+  var shrubAvailable = finalMenu.some(_ref7 => {
+    var familiar = _ref7.familiar;
     return familiar === $familiar`Crimbo Shrub`;
   });
   if (shrubAvailable) {
@@ -32125,8 +32608,8 @@ function barfFamiliar(equipmentForced) {
   // Otherwise, prioritize by using the most valuable familiar
   var best = turnsNeeded < turnsAvailable() ? maxBy(finalMenu, "leprechaunMultiplier") : maxBy(finalMenu, totalFamiliarValue);
   kolmafia.print(`Choosing to use ${best.familiar} ${familiarPrintout(best)} over ${meatFamiliarEntry.familiar} ${familiarPrintout(meatFamiliarEntry)}.`, HIGHLIGHT);
-  var jellyfish = fullMenu.find(_ref11 => {
-    var familiar = _ref11.familiar;
+  var jellyfish = fullMenu.find(_ref8 => {
+    var familiar = _ref8.familiar;
     return familiar === $familiar`Space Jellyfish`;
   });
   return {
@@ -32134,14 +32617,14 @@ function barfFamiliar(equipmentForced) {
     extraValue: extraValue(best, meatFamiliarEntry, jellyfish)
   };
 }
-function getSpecialFamiliarLimit(_ref12) {
-  var familiar = _ref12.familiar,
-    outfitValue = _ref12.outfitValue,
-    baselineToCompareAgainst = _ref12.baselineToCompareAgainst;
+function getSpecialFamiliarLimit(_ref9) {
+  var familiar = _ref9.familiar,
+    outfitValue = _ref9.outfitValue,
+    baselineToCompareAgainst = _ref9.baselineToCompareAgainst;
   switch (familiar) {
     case $familiar`Space Jellyfish`:
-      return sum(getAllJellyfishDrops().filter(_ref13 => {
-        var expectedValue = _ref13.expectedValue;
+      return sum(getAllJellyfishDrops().filter(_ref0 => {
+        var expectedValue = _ref0.expectedValue;
         return outfitValue + familiarAbilityValue(familiar) + expectedValue > totalFamiliarValue(baselineToCompareAgainst);
       }), "turnsAtValue");
     case $familiar`Crimbo Shrub`:
@@ -32216,6 +32699,7 @@ var POINTER_RING_SPECS = outfit => [{
 }];
 var trueInebrietyLimit = () => kolmafia.inebrietyLimit() - (kolmafia.myFamiliar() === $familiar`Stooper` ? 1 : 0);
 function computeBarfOutfit(spec) {
+  var _specialFamiliar$conf, _specialFamiliar$item;
   var sim = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   cleaverCheck();
   validateGarbageFoldable(spec);
@@ -32223,40 +32707,21 @@ function computeBarfOutfit(spec) {
   kolmafia.setLocation(FarmingStrategy.location);
   outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
   applyCheeseBonus(outfit, BonusEquipMode.BARF);
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
-    outfit.equip($item`LED candle`);
-    outfit.setModes({
-      jillcandle: "ultraviolet"
-    });
-  }
-  if (outfit.familiar === $familiar`Chest Mimic` && $familiar`Chest Mimic`.experience < 550) {
-    var famExpValue = MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50;
-    outfit.modifier.push(`${famExpValue} Familiar Experience`);
-  }
+  var specialFamiliar = specialFamiliarOutfits.get(spec.familiar);
+  if (specialFamiliar !== null && specialFamiliar !== void 0 && specialFamiliar.equip) outfit.equip(specialFamiliar.equip);
+  specialFamiliar === null || specialFamiliar === void 0 || (_specialFamiliar$conf = specialFamiliar.configureOutfit) === null || _specialFamiliar$conf === void 0 || _specialFamiliar$conf.call(specialFamiliar, outfit);
   var bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
   if (FarmingStrategy.isUnderwater()) {
     outfit.modifier.push(`+sea`);
   }
   outfit.modifier.push(`${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`, "-tie");
-  var swordMonster = get$2("swordOfSWordsMonster");
-  if (swordMonster && outfit.familiar === $familiar`Sword of S Words`) {
-    var valueOfItem = expectedDropValue(swordMonster);
-    var drops = kolmafia.itemDropsArray(swordMonster).filter(_ref => {
-      var rate = _ref.rate;
-      return rate > 0;
-    });
-    if (drops.length) {
-      var _maxBy = maxBy(drops, _ref2 => {
-          var drop = _ref2.drop;
-          return garboValue(drop);
-        }),
-        maxValueItemRate = _maxBy.rate;
-      var maxItemDrop = Math.ceil(100 * (100 / maxValueItemRate - 1));
-      outfit.modifier.push(`${valueOfItem} Item Drop ${maxItemDrop} Max`);
-    }
-  } else {
-    outfit.modifier.push(`${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`);
-  }
+  var farmingItemDropValue = modeValueOfItem(BonusEquipMode.BARF);
+  var _ref = (specialFamiliar === null || specialFamiliar === void 0 || (_specialFamiliar$item = specialFamiliar.itemDropObjective) === null || _specialFamiliar$item === void 0 ? void 0 : _specialFamiliar$item.call(specialFamiliar, farmingItemDropValue)) ?? {
+      valuePerItemDrop: farmingItemDropValue
+    },
+    valuePerItemDrop = _ref.valuePerItemDrop,
+    maximumItemDrop = _ref.maximumItemDrop;
+  outfit.modifier.push(`${valuePerItemDrop} Item Drop${maximumItemDrop === undefined ? "" : ` ${maximumItemDrop} Max`}`);
   if (kolmafia.myInebriety() > trueInebrietyLimit()) {
     if (!outfit.equip($item`Drunkula's wineglass`)) {
       throw new Error("We're overdrunk but have found ourself unable to equip a wineglass!");
@@ -33537,46 +34002,16 @@ function main() {
   if (globalOptions.prefs.autoUserConfirm) {
     kolmafia.print("I have set auto-confirm to true and accept all ramifications that come with that.", "red");
   }
-  if (stashItems.length > 0) {
-    if (globalOptions.returnstash || userConfirmDialog(`Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems.map(item => item.name).join(", ")}. Would you like us to return these to the stash now?`, true)) {
-      startSession();
-      try {
-        var clanIdOrName = globalOptions.prefs.stashClan;
-        var parsedClanIdOrName = clanIdOrName !== "none" ? clanIdOrName.match(/^\d+$/) ? parseInt(clanIdOrName) : clanIdOrName : null;
-        if (parsedClanIdOrName) {
-          checkCurrentClanWhitelist(parsedClanIdOrName, "Return the stash items manually, then run garbo again.");
-          Clan.with(parsedClanIdOrName, () => {
-            for (var _i = 0, _arr = _toConsumableArray(stashItems); _i < _arr.length; _i++) {
-              var item = _arr[_i];
-              var equipped = [item].concat(_toConsumableArray(getFoldGroup(item))).find(i => kolmafia.haveEquipped(i));
-              if (equipped) unequip(equipped);
-              if (getFoldGroup(item).some(i => have$P(i))) {
-                kolmafia.cliExecute(`fold ${item}`);
-              }
-              var retrieved = kolmafia.retrieveItem(item);
-              if (item === $item`Spooky Putty sheet` && !retrieved && have$P($item`Spooky Putty monster`)) {
-                continue;
-              }
-              kolmafia.print(`Returning ${item} to ${kolmafia.getClanName()} stash.`, HIGHLIGHT);
-              if (kolmafia.putStash(item, 1)) {
-                stashItems.splice(stashItems.indexOf(item), 1);
-              }
-            }
-          });
-        } else throw new Error("Error: No garbo_stashClan set.");
-      } finally {
-        endSession(false);
-      }
-    } else {
-      if (userConfirmDialog("Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?", false)) {
-        stashItems.splice(0);
-      }
+  var outstanding = stash.outstandingLoans();
+  if (outstanding.length > 0 && (globalOptions.returnstash || userConfirmDialog(`Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${outstanding.map(loan => `${loan.quantity} ${loan.item.name} (clan #${loan.clanId})`).join(", ")}. Would you like us to return these to the stash now?`, true))) {
+    startSession();
+    try {
+      stash.returnAll();
+    } finally {
+      endSession(false);
     }
   }
-  if (globalOptions.returnstash) {
-    _set("garboStashItems", stashItems.map(item => kolmafia.toInt(item).toFixed(0)).join(","));
-    return;
-  }
+  if (globalOptions.returnstash) return;
   if (!$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger, Pig Skinner, Cheese Wizard, Jazz Agent`.includes(kolmafia.myClass())) {
     throw new Error("Garbo does not support this class. It barely supports WOL/SOL avatar classes");
   }
@@ -33643,6 +34078,7 @@ function main() {
     }
   }
   var combatFlags = getCombatFlags(["aabosses", "bothcombatinterf"]);
+  var cleanupCompleted = false;
   try {
     kolmafia.print("Collecting garbage!", HIGHLIGHT);
     if (globalOptions.stopTurncount !== null) {
@@ -33766,12 +34202,12 @@ function main() {
     if (kolmafia.myClass() === $class`Seal Clubber` && !have$P($skill`Furious Wallop`) && kolmafia.guildStoreAvailable()) {
       kolmafia.visitUrl("guild.php?action=buyskill&skillid=32", true);
     }
-    var _stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring, Mayflower bouquet`;
+    var stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring, Mayflower bouquet`;
     if (kolmafia.myInebriety() <= kolmafia.inebrietyLimit() && (kolmafia.myClass() !== $class`Seal Clubber` || !have$P($skill`Furious Wallop`)) && !have$P($skill`Head in the Game`)) {
-      _stashItems.push.apply(_stashItems, _toConsumableArray($items`haiku katana, Operation Patriot Shield`));
+      stashItems.push.apply(stashItems, _toConsumableArray($items`haiku katana, Operation Patriot Shield`));
     }
     if (!have$P($item`Jurassic Parka`) && have$P($skill`Torso Awareness`)) {
-      _stashItems.push($item`origami pasties`);
+      stashItems.push($item`origami pasties`);
     }
 
     // Prepare Daily Affirmation for PvP fights if desired
@@ -33780,76 +34216,86 @@ function main() {
     }
 
     // FIXME: Dynamically figure out pointer ring approach.
-    withStash(_stashItems, () => {
-      withVIPClan(() => {
-        // Prepare pirate realm if our copy target is cockroach
-        // How do we handle if garbo was started without enough turns left without dieting to prep?
-        if (globalOptions.target === $monster`cockroach` && !globalOptions.simdiet) {
-          if (!globalOptions.nodiet) nonOrganAdventures();
-          runGarboQuests([CockroachSetup]); // Set up piraterealm up until the final encounter for island 1
-          if (get$2("_lastPirateRealmIsland") === $location`Dessert Island`) {
-            runGarboQuests([CockroachFinish]); // If it's Dessert island, no need to buff beforehand
-          }
-          kolmafia.maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
+    stash.request(stashItems);
+    if (!globalOptions.ascend && get$2("_stinkyCheeseCount") < 100 && estimatedGarboTurns() >= 100 - get$2("_stinkyCheeseCount") && stash.amountOwned($item`stinky cheese diaper`) > 0) {
+      stash.request($items`stinky cheese diaper, stinky cheese wheel, stinky cheese eye, stinky cheese sword`);
+    }
+    withVIPClan(() => {
+      // Prepare pirate realm if our copy target is cockroach
+      // How do we handle if garbo was started without enough turns left without dieting to prep?
+      if (globalOptions.target === $monster`cockroach` && !globalOptions.simdiet) {
+        if (!globalOptions.nodiet) nonOrganAdventures();
+        runGarboQuests([CockroachSetup]); // Set up piraterealm up until the final encounter for island 1
+        if (get$2("_lastPirateRealmIsland") === $location`Dessert Island`) {
+          runGarboQuests([CockroachFinish]); // If it's Dessert island, no need to buff beforehand
         }
-        // 0. diet stuff.
-        if (globalOptions.nodiet || get$2("_garboYachtzeeChainCompleted", false)) {
-          kolmafia.print("We should not be yachtzee chaining", "red");
-          globalOptions.prefs.yachtzeechain = false;
-        }
-        if (!globalOptions.nodiet && (!globalOptions.prefs.yachtzeechain || get$2("_garboYachtzeeChainCompleted", false))) {
-          runDiet();
-        } else if (!globalOptions.simdiet) {
-          nonOrganAdventures();
-        }
-
-        // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
-        dailySetup();
-        var preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack, dice-shaped backpack, Amulet of Perpetual Darkness`;
-        if (isQuickGear()) {
-          // Brimstone equipment explodes the number of maximize combinations
-          preventEquip.push.apply(preventEquip, _toConsumableArray($items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`));
-        }
-        // TODO: Until properly handled ban equipment that expands organs
-        preventEquip.push.apply(preventEquip, _toConsumableArray($items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`));
-        setDefaultMaximizeOptions({
-          preventEquip: preventEquip,
-          preventSlot: $slots`buddy-bjorn, crown-of-thrones`
-        });
-
-        // 2. do some target copy stuff
-        freeFights();
-        runGarboQuests([CockroachFinish]); // Fight the giant giant crab after we've dieted for some extra buffs
         kolmafia.maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
-        runGarboQuests([SetupTargetCopyQuest]);
-        dailyFights();
-        if (!globalOptions.nobarf) {
-          // 3. burn turns at barf
-          potionSetup(false);
-          kolmafia.maximize("MP", false);
-          meatMood().execute(estimatedGarboTurns());
-          runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
-          if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
-          try {
-            runGarboFarmQuests([PostQuest()].concat(_toConsumableArray(FarmQuests())));
-            runGarboQuests([FinishUpQuest]);
-          } finally {
-            kolmafia.setAutoAttack(0);
-          }
-        } else kolmafia.setAutoAttack(0);
+      }
+      // 0. diet stuff.
+      if (globalOptions.nodiet || get$2("_garboYachtzeeChainCompleted", false)) {
+        kolmafia.print("We should not be yachtzee chaining", "red");
+        globalOptions.prefs.yachtzeechain = false;
+      }
+      if (!globalOptions.nodiet && (!globalOptions.prefs.yachtzeechain || get$2("_garboYachtzeeChainCompleted", false))) {
+        runDiet();
+      } else if (!globalOptions.simdiet) {
+        nonOrganAdventures();
+      }
+
+      // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+      dailySetup();
+      var preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack, dice-shaped backpack, Amulet of Perpetual Darkness`;
+      if (isQuickGear()) {
+        // Brimstone equipment explodes the number of maximize combinations
+        preventEquip.push.apply(preventEquip, _toConsumableArray($items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`));
+      }
+      // TODO: Until properly handled ban equipment that expands organs
+      preventEquip.push.apply(preventEquip, _toConsumableArray($items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`));
+      setDefaultMaximizeOptions({
+        preventEquip: preventEquip,
+        preventSlot: $slots`buddy-bjorn, crown-of-thrones`
       });
+
+      // 2. do some target copy stuff
+      freeFights();
+      runGarboQuests([CockroachFinish]); // Fight the giant giant crab after we've dieted for some extra buffs
+      kolmafia.maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
+      if (sober() && !have$P($item`Spooky Putty monster`) && get$2("spookyPuttyCopiesMade") + Math.max(1, get$2("_raindohCopiesMade")) < 6) {
+        stash.request($items`Spooky Putty sheet`);
+      }
+      runGarboQuests([SetupTargetCopyQuest]);
+      dailyFights();
+      if (!globalOptions.nobarf) {
+        // 3. burn turns at barf
+        potionSetup(false);
+        kolmafia.maximize("MP", false);
+        meatMood().execute(estimatedGarboTurns());
+        runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
+        if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
+        try {
+          runGarboFarmQuests([PostQuest()].concat(_toConsumableArray(FarmQuests())));
+          runGarboQuests([FinishUpQuest]);
+        } finally {
+          kolmafia.setAutoAttack(0);
+        }
+      } else kolmafia.setAutoAttack(0);
     });
   } finally {
-    kolmafia.cliExecute("spade autoconfirm");
-    propertyManager.resetAll();
-    _set("garboStashItems", stashItems.map(item => kolmafia.toInt(item).toFixed(0)).join(","));
-    setCombatFlags.apply(void 0, _toConsumableArray(combatFlags));
-    if (startingGarden && have$P(startingGarden)) kolmafia.use(startingGarden);
-    printEventLog();
-    endSession();
-    printLog(HIGHLIGHT);
+    if (prepareForCleanup()) {
+      stash.returnAll();
+      kolmafia.cliExecute("spade autoconfirm");
+      propertyManager.resetAll();
+      setCombatFlags.apply(void 0, _toConsumableArray(combatFlags));
+      if (startingGarden && have$P(startingGarden)) kolmafia.use(startingGarden);
+      printEventLog();
+      endSession();
+      printLog(HIGHLIGHT);
+      cleanupCompleted = true;
+    }
   }
-  _set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
+  if (cleanupCompleted) {
+    _set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
+  }
 }
 
 exports.main = main;
