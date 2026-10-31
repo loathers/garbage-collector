@@ -110,7 +110,7 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(29376); // Add gCLI button to mobile topmenu by
+  sinceKolmafiaRevision(29401); // Track daily Black Rose Garden swaps.
   checkGithubVersion();
 
   Args.fill(globalOptions, argString);
