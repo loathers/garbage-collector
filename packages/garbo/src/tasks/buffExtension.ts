@@ -1,5 +1,12 @@
 import { Quest } from "grimoire-kolmafia";
-import { cliExecute, mallPrice, myAscensions, use } from "kolmafia";
+import {
+  cliExecute,
+  mallPrice,
+  myAscensions,
+  myMaxhp,
+  restoreHp,
+  use,
+} from "kolmafia";
 import {
   $effect,
   $item,
@@ -12,6 +19,7 @@ import {
   Mining,
   questStep,
   realmAvailable,
+  uneffect,
 } from "libram";
 import { GarboTask } from "./engine";
 import { stash } from "../stash";
@@ -121,7 +129,23 @@ const PostBuffExtensionTasks: GarboTask[] = [
     name: "Free 70s Mining",
     ready: () => realmAvailable("hot"),
     completed: () => Mining.countFreeMines() <= 0,
-    do: () => cliExecute("oreo 0"),
+    do: () => {
+      // Mining is not a combat task, so the engine does not call safeRestore.
+      if (have($effect`Beaten Up`)) {
+        uneffect($effect`Beaten Up`);
+        if (have($effect`Beaten Up`)) {
+          throw new Error("Could not remove Beaten Up before free mining.");
+        }
+      }
+      if (!restoreHp(myMaxhp())) {
+        throw new Error("Could not restore HP before free mining.");
+      }
+      if (!cliExecute("oreo 0 survive=true")) {
+        throw new Error(
+          "Free mining failed; check Oreo's error before continuing.",
+        );
+      }
+    },
     sobriety: "sober",
     spendsTurn: false,
   },
