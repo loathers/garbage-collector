@@ -7,7 +7,7 @@ import {
   have,
   realmAvailable,
 } from "libram";
-import { felizValue } from "../lib";
+import { felizValue, YACHTZEE_VALUE } from "../lib";
 import { haveEffect, myAdventures } from "kolmafia";
 import { FarmingStrategy } from "../farmingStrategy";
 
@@ -29,7 +29,7 @@ function canYachtzee(): boolean {
   return (
     fishyTurns() > 0 &&
     realmAvailable("sleaze") &&
-    get("valueOfAdventure") < 20_000
+    get("valueOfAdventure") < YACHTZEE_VALUE
   ); // Can we check for "value of doing the taffy copier"?
 }
 
@@ -75,9 +75,12 @@ export const maximumYachtzees = () =>
 
 export const willYachtzee = () => canYachtzee() && maximumYachtzees() > 0;
 
+export const noncombatForcerOpportunityCost = () =>
+  willYachtzee() ? Math.max(0, YACHTZEE_VALUE - get("valueOfAdventure")) : 0;
+
 function cinchYachtzeeProfitable(): boolean {
   // A yachtzee costs a turn and gives us 20k meat for 60 cinch, projectile pinata costs 5 cinch and gets us 3 feliz candies
-  return 20000 - get("valueOfAdventure") > 12 * 3 * felizValue();
+  return YACHTZEE_VALUE - get("valueOfAdventure") > 12 * 3 * felizValue();
 }
 
 export function maximumPinataCasts() {

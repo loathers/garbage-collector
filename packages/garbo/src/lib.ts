@@ -1,6 +1,5 @@
 import {
   canAdventure,
-  choiceFollowsFight,
   cliExecute,
   Effect,
   effectModifier,
@@ -11,9 +10,7 @@ import {
   getLocketMonsters,
   getMonsters,
   gitInfo,
-  handlingChoice,
   haveEquipped,
-  haveSkill,
   holiday,
   inebrietyLimit,
   isDarkMode,
@@ -37,19 +34,15 @@ import {
   myMp,
   mySpleenUse,
   myThrall,
-  myTurncount,
   numericModifier,
   print,
   rollover,
-  runChoice,
-  runCombat,
   setLocation,
   Skill,
   spleenLimit,
   Stat,
   todayToString,
   totalFreeRests,
-  toUrl,
   use,
   useFamiliar,
   userConfirm,
@@ -68,6 +61,7 @@ import {
   $thralls,
   ActionSource,
   bestLibramToCast,
+  Cartography,
   ChateauMantegna,
   clamp,
   ClosedCircuitPayphone,
@@ -97,7 +91,6 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Macro } from "./combat";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -112,6 +105,7 @@ export const eventLog: {
 };
 
 export const WISH_VALUE = 50000;
+export const YACHTZEE_VALUE = 20_000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 export const ESTIMATED_OVERDRUNK_TURNS = 50;
 export const MEAT_TARGET_MULTIPLIER = (): number =>
@@ -216,41 +210,9 @@ export function shuffle<T>(array: T[]): T[] {
 }
 
 export function mapMonster(location: Location, monster: Monster): void {
-  if (
-    haveSkill($skill`Map the Monsters`) &&
-    !get("mappingMonsters") &&
-    get("_monstersMapped") < 3
-  ) {
-    useSkill($skill`Map the Monsters`);
+  if (!Cartography.mapMonster(location, monster)) {
+    throw new Error(`Failed to map ${monster} in ${location}`);
   }
-
-  if (!get("mappingMonsters")) throw "Failed to setup Map the Monsters.";
-
-  const myTurns = myTurncount();
-  let mapPage = "";
-  // Handle zone intros and holiday wanderers
-  for (let tries = 0; tries < 10; tries++) {
-    mapPage = visitUrl(toUrl(location), false, true);
-    if (mapPage.includes("Leading Yourself Right to Them")) break;
-    // Time-pranks can show up here, annoyingly
-    if (
-      mapPage.includes("<!-- MONSTERID: 1965 -->") ||
-      mapPage.includes("<!-- MONSTERID: 1622  -->")
-    ) {
-      runCombat(Macro.attack().repeat().toString());
-    }
-    if (handlingChoice()) runChoice(-1);
-    if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
-    if (tries === 9) throw `Stuck trying to Map the monsters.`;
-  }
-
-  const fightPage = visitUrl(
-    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`,
-  );
-  if (!fightPage.includes(monster.name)) {
-    throw "Something went wrong starting the fight.";
-  }
-  if (choiceFollowsFight()) runChoice(-1);
 }
 
 export function questStep(questName: string): number {
@@ -309,7 +271,7 @@ export function pillkeeperOpportunityCost(): number {
     },
     {
       can: realmAvailable("sleaze"),
-      value: 20000 - get("valueOfAdventure"),
+      value: YACHTZEE_VALUE - get("valueOfAdventure"),
     },
   ].filter((x) => x.can);
 
@@ -613,7 +575,6 @@ export function sober(): boolean {
 type GarboItemLists = {
   Newark: string[];
   "Feliz Navidad": string[];
-  trainset: string[];
 };
 
 export const asArray = <T>(singleOrArray: T | T[]): T[] =>
@@ -738,16 +699,41 @@ export function printEventLog(): void {
   }
 }
 
-function untangleDigitizes(turnCount: number, chunks: number): number {
-  const turnsPerChunk = turnCount / chunks;
-  const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
-  return Math.round(chunks * monstersPerChunk);
+function digitizeTurnsForMonsters(monsters: number): number {
+  return monsters === 0 ? 0 : monsters * (monsters + 1) * 5 - 3;
+}
+
+function untangleDigitizes(
+  turnCount: number,
+  chunks: number,
+  currentChainMonsters = 0,
+): number {
+  if (chunks <= 0 || turnCount <= 0) return 0;
+
+  const monstersPerChunk = Math.floor(
+    Math.sqrt((turnCount / chunks + 3) / 5 + 1 / 4) - 1 / 2,
+  );
+  // Encounters already assigned to the current chain cannot be redistributed.
+  if (monstersPerChunk < currentChainMonsters) {
+    return (
+      currentChainMonsters +
+      untangleDigitizes(
+        turnCount - digitizeTurnsForMonsters(currentChainMonsters),
+        chunks - 1,
+      )
+    );
+  }
+
+  const remainingTurns =
+    turnCount - chunks * digitizeTurnsForMonsters(monstersPerChunk);
+  const nextInterval = monstersPerChunk === 0 ? 7 : 10 * (monstersPerChunk + 1);
+  return chunks * monstersPerChunk + Math.floor(remainingTurns / nextInterval);
 }
 
 export function digitizedMonstersRemainingForTurns(
   estimatedTurns: number,
 ): number {
-  if (!SourceTerminal.have()) return 0;
+  if (!SourceTerminal.have() || estimatedTurns <= 0) return 0;
 
   const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
   if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
@@ -763,9 +749,9 @@ export function digitizedMonstersRemainingForTurns(
     estimatedTurns - Counter.get("Digitize Monster");
   if (turnsLeftAtNextMonster <= 0) return 0;
   const turnsAtLastDigitize =
-    turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
+    turnsLeftAtNextMonster + digitizeTurnsForMonsters(monsterCount);
   return (
-    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
+    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1, monsterCount) -
     SourceTerminal.getDigitizeMonsterCount()
   );
 }
@@ -883,10 +869,6 @@ export function felizValue(): number {
 
 export function newarkValue(): number {
   return garboAverageValue(...getDropsList("Newark"));
-}
-
-export function candyFactoryValue(): number {
-  return garboAverageValue(...getDropsList("trainset"));
 }
 
 export function aprilFoolsRufus() {

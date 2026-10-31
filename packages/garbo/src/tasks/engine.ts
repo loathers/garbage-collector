@@ -38,7 +38,7 @@ import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
-import { shrugBadEffects } from "../mood";
+import { freeFightMood, shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
 import { FarmingContext } from "./context";
 import { BanishMethod, chooseBanish } from "../resources/banish";
@@ -55,6 +55,11 @@ export type GarboTask<Context = unknown> = StrictCombatTask<
 
 export type AlternateTask<Context = unknown> = GarboTask<Context> & {
   turns: Delayed<number>;
+};
+
+export type MappingTask<Context = void> = GarboTask<Context> & {
+  // Safe to execute with an active map, whether preserving or consuming it.
+  mapSafe?: Delayed<boolean, [Context]>;
 };
 
 function logTargetFight(encounterType: string) {
@@ -230,6 +235,49 @@ class BaseGarboEngine extends BaseGarboContextEngine<void> {
   }
 }
 
+class FreeFightEngine extends BaseGarboEngine {
+  private consecutiveNonFreeFights = 0;
+
+  available(task: MappingTask): boolean {
+    return (
+      (!get("mappingMonsters") || undelay(task.mapSafe) === true) &&
+      super.available(task)
+    );
+  }
+
+  getNextTask() {
+    const task = super.getNextTask();
+    if (!task && get("mappingMonsters")) {
+      throw new Error(
+        "Mapping is still active, but no map-safe free-fight task is available. Resolve the pending map before continuing.",
+      );
+    }
+    return task;
+  }
+
+  acquireEffects(task: GarboTask<void>): void {
+    if ("combat" in task) {
+      freeFightMood(...(undelay(task.effects) ?? [])).execute();
+    }
+    super.acquireEffects(task);
+  }
+
+  execute(task: GarboTask<void>): void {
+    const before = totalTurnsPlayed();
+    const expectsFreeCombat = "combat" in task && !undelay(task.spendsTurn);
+    super.execute(task);
+    if (!expectsFreeCombat) return;
+    if (totalTurnsPlayed() > before) {
+      this.consecutiveNonFreeFights++;
+    } else {
+      this.consecutiveNonFreeFights = 0;
+    }
+    if (this.consecutiveNonFreeFights >= 5) {
+      throw new Error("The last 5 free fights spent turns!");
+    }
+  }
+}
+
 class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
   #banish: BanishMethod | null = null;
 
@@ -268,10 +316,11 @@ class SafeGarboEngine extends SafeGarboContextEngine<void> {
   }
 }
 
-function runQuests<Context, T extends BaseGarboContextEngine<Context>>(
+function runQuests<Context>(
   quests: Quest<GarboTask<Context>, Context>[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  garboEngine: new (...args: any[]) => T,
+  garboEngine: new (
+    tasks: GarboTask<Context>[],
+  ) => BaseGarboContextEngine<Context>,
 ) {
   const engine = new garboEngine(getTasks(quests));
 
@@ -288,6 +337,10 @@ export function runSafeGarboQuests(quests: Quest<GarboTask<void>>[]): void {
 
 export function runGarboQuests(quests: Quest<GarboTask<void>>[]): void {
   runQuests(quests, BaseGarboEngine);
+}
+
+export function runGarboFreeFightQuests(quests: Quest<MappingTask>[]): void {
+  runQuests(quests, FreeFightEngine);
 }
 
 export function runGarboFarmQuests(
