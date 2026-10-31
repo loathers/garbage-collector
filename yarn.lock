@@ -4449,8 +4449,8 @@ __metadata:
     garbo-lib: "*"
     grimoire-kolmafia: ^0.3.35
     jiti: ^2.6.1
-    kolmafia: ^5.29250.0
-    libram: ^0.11.38
+    kolmafia: ^5.29376.0
+    libram: ^0.11.40
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4466,8 +4466,8 @@ __metadata:
     eslint: ^9.39.2
     eslint-config-garbo: "workspace:^"
     jiti: ^2.6.1
-    kolmafia: ^5.29250.0
-    libram: ^0.11.38
+    kolmafia: ^5.29376.0
+    libram: ^0.11.40
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -4522,8 +4522,8 @@ __metadata:
     garbo-lib: "workspace:*"
     grimoire-kolmafia: ^0.3.35
     jiti: ^2.6.1
-    kolmafia: ^5.29250.0
-    libram: ^0.11.38
+    kolmafia: ^5.29376.0
+    libram: ^0.11.40
     lint-staged: ^15.2.9
     madge: ^8.0.0
     prettier: ^3.3.3
@@ -5190,10 +5190,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kolmafia@npm:^5.29250.0":
-  version: 5.29360.0
-  resolution: "kolmafia@npm:5.29360.0"
-  checksum: 0e21a2920a4930444449e09578951ef3627162ab69e5a4771a1dafebfbde5596bf171933666ec81a406a0e210cc6be65e3095f6c535ccfbec8b0809bfbaac6d9
+"kolmafia@npm:^5.29376.0":
+  version: 5.29376.0
+  resolution: "kolmafia@npm:5.29376.0"
+  checksum: ce865e88889bcf816314ebbab86ac5a23708784a3d341887286034223d6333bf4b55dd51cbce63b6d5300f4d98516153b7abf0ddef24f69fdad2024836ea6286
   languageName: node
   linkType: hard
 
@@ -5214,15 +5214,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:^0.11.38":
-  version: 0.11.38
-  resolution: "libram@npm:0.11.38"
+"libram@npm:^0.11.40":
+  version: 0.11.40
+  resolution: "libram@npm:0.11.40"
   dependencies:
     core-js: ^3.47.0
     entities: ^7.0.0
   peerDependencies:
     kolmafia: ^5.29250.0
-  checksum: 83511be00e45ca8eaca646e28a728fff8467ee9defe7b1f2f98a4a35a21ae6551bbd569ce17c238675ed28773ba2603be6936f349204d5034d4a9785a43f39ea
+  checksum: 2cf227e21cd42fde720bbc3ce187be01d7f1d3219857d556de107b6434f3efa1149dcf2f0662f1bf08a489e60ab3931e3515e69bb10aa502b597ea00cacf2ada
   languageName: node
   linkType: hard
 

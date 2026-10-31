@@ -41,6 +41,7 @@ import {
   $skill,
   $skills,
   AprilingBandHelmet,
+  BlackRoseGarden,
   BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
@@ -48,6 +49,7 @@ import {
   have,
   maxBy,
   questStep,
+  set,
   SourceTerminal,
   sum,
   withChoice,
@@ -815,6 +817,29 @@ const DailyItemTasks: GarboTask[] = [
         visitUrl(url);
       }
       smashedBarrels = true;
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Rose Garden Items",
+    ready: () => BlackRoseGarden.have(),
+    completed: () => get("_garbo_roseGardenLooted", false),
+    prepare: () => {
+      if (have($item`black garden rose`)) {
+        use($item`black garden rose`);
+      }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: () => {
+      BlackRoseGarden.obtainItems();
+      set("_garbo_roseGardenLooted", true);
+    },
+    post: () => {
+      if (have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
+      }
     },
     spendsTurn: false,
   },

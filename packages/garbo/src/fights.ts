@@ -31,13 +31,11 @@ import {
   myTurncount,
   outfit,
   print,
-  refreshStash,
   retrieveItem,
   runCombat,
   setAutoAttack,
   setLocation,
   Skill,
-  stashAmount,
   totalTurnsPlayed,
   use,
   useFamiliar,
@@ -78,7 +76,7 @@ import {
 } from "libram";
 import { WanderDetails } from "garbo-lib";
 
-import { withStash } from "./clan";
+import { stash } from "./stash";
 import { garboAdventure, garboAdventureAuto, Macro, withMacro } from "./combat";
 import { globalOptions } from "./config";
 import { postFreeFightDailySetup } from "./dailiespost";
@@ -177,8 +175,8 @@ const firstChainMacro = () =>
             Macro.tryCopier($item`LOV Enamorang`),
           )
           .tryCopier($skill`Club 'Em Into Next Week`),
+        Macro.skill($skill`lecture on relativity`),
       )
-      .trySkill($skill`lecture on relativity`)
       .meatKill(false),
   ).abort();
 
@@ -206,8 +204,8 @@ const secondChainMacro = () =>
             Macro.tryCopier($item`LOV Enamorang`),
           )
           .tryCopier($skill`Club 'Em Into Next Week`),
+        Macro.skill($skill`lecture on relativity`),
       )
-      .trySkill($skill`lecture on relativity`)
       .meatKill(false),
   ).abort();
 
@@ -317,169 +315,169 @@ export function dailyFights(): void {
   if (!sober()) return;
 
   if (copyTargetSources.some((source) => source.potential())) {
-    withStash($items`Spooky Putty sheet`, () => {
-      // check if user wants to wish for the copy target before doing setup
-      if (!getNextCopyTargetFight()) return;
-      meatTargetSetup();
-      if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
+    // check if user wants to wish for the copy target before doing setup
+    if (!getNextCopyTargetFight()) {
+      stash.done($item`Spooky Putty sheet`);
+      return;
+    }
+    meatTargetSetup();
+    if (targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
 
-      // PROFESSOR COPIES
-      if (have($familiar`Pocket Professor`)) {
-        const potentialPocketProfessorLectures = [
-          {
-            shouldDo: targetingMeat(),
-            property: "_garbo_meatChain",
-            macro: firstChainMacro,
-            goalMaximize: (spec: OutfitSpec, location: Location) =>
-              meatTargetOutfit(spec, {
-                location,
-                target: globalOptions.target,
-              }).dress(),
-          },
-          {
-            shouldDo: true,
-            property: "_garbo_weightChain",
-            macro: secondChainMacro,
-            goalMaximize: (spec: OutfitSpec) =>
-              Outfit.from(
-                { ...spec, modifier: ["Familiar Weight"] },
-                new Error(`Unable to build outfit for weight chain!`),
-              ).dress(),
-          },
-        ];
+    // PROFESSOR COPIES
+    if (have($familiar`Pocket Professor`)) {
+      const potentialPocketProfessorLectures = [
+        {
+          shouldDo: targetingMeat(),
+          property: "_garbo_meatChain",
+          macro: firstChainMacro,
+          goalMaximize: (spec: OutfitSpec, location: Location) =>
+            meatTargetOutfit(spec, {
+              location,
+              target: globalOptions.target,
+            }).dress(),
+        },
+        {
+          shouldDo: true,
+          property: "_garbo_weightChain",
+          macro: secondChainMacro,
+          goalMaximize: (spec: OutfitSpec) =>
+            Outfit.from(
+              { ...spec, modifier: ["Familiar Weight"] },
+              new Error(`Unable to build outfit for weight chain!`),
+            ).dress(),
+        },
+      ];
 
-        for (const potentialLecture of potentialPocketProfessorLectures) {
-          const { property, macro, goalMaximize, shouldDo } = potentialLecture;
-          if (!shouldDo) continue;
-          const fightSource = getNextCopyTargetFight();
-          if (!fightSource) return;
-          if (get(property, false)) continue;
-
-          if (fightSource.gregariousReplace) {
-            const crateIsSabered =
-              get("_saberForceMonster") === $monster`crate`;
-            const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
-            const weWantToSaberCrates =
-              !crateIsSabered || notEnoughCratesSabered;
-            if (weWantToSaberCrates) saberCrateIfSafe();
-          }
-
-          const chip = $item`Pocket Professor memory chip`;
-          const jacks = $item`box of Familiar Jacks`;
-          useFamiliar($familiar`Pocket Professor`);
-          if (!have(chip)) {
-            if (mallPrice(jacks) < mallPrice(chip)) {
-              retrieveItem(jacks);
-              use(jacks);
-            } else {
-              retrieveItem(chip);
-            }
-          }
-
-          const profSpec: OutfitSpec = {
-            familiar: $familiar`Pocket Professor`,
-            avoid: $items`Roman Candelabra, legendary seal-clubbing club`,
-          };
-          if (have(chip)) {
-            profSpec.famequip = chip;
-          }
-
-          goalMaximize(
-            { ...profSpec, ...fightSource.spec },
-            fightSource.location ?? $location.none,
-          );
-
-          if (
-            get("_pocketProfessorLectures") <
-            PocketProfessor.totalAvailableLectures()
-          ) {
-            const startLectures = get("_pocketProfessorLectures");
-            runTargetFight(fightSource, {
-              macro: macro(),
-              useAuto: false,
-              action: "Pocket Professor",
-            });
-            eventLog.initialCopyTargetsFought +=
-              1 + get("_pocketProfessorLectures") - startLectures;
-            eventLog.copyTargetSources.push(fightSource.name);
-            eventLog.copyTargetSources.push(
-              ...new Array<string>(
-                get("_pocketProfessorLectures") - startLectures,
-              ).fill("Pocket Professor"),
-            );
-          }
-          set(property, true);
-          postCombatActions();
-          const predictedNextFight = getNextCopyTargetFight();
-          if (!predictedNextFight?.draggable) doSausage();
-          doGhost();
+      for (const potentialLecture of potentialPocketProfessorLectures) {
+        const { property, macro, goalMaximize, shouldDo } = potentialLecture;
+        if (!shouldDo) continue;
+        const fightSource = getNextCopyTargetFight();
+        if (!fightSource) {
+          stash.done($item`Spooky Putty sheet`);
+          return;
         }
-      }
+        if (get(property, false)) continue;
 
-      useFamiliar(meatFamiliar());
-
-      // REMAINING TARGET MONSTER FIGHTS
-      let nextFight = getNextCopyTargetFight();
-      while (nextFight !== null && myAdventures()) {
-        print(`Running fight ${nextFight.name}`);
-        const startTurns = totalTurnsPlayed();
-
-        if (
-          nextFight.draggable === "backup" &&
-          have($skill`Musk of the Moose`) &&
-          !have($effect`Musk of the Moose`)
-        ) {
-          useSkill($skill`Musk of the Moose`);
-        }
-
-        if (nextFight.gregariousReplace) {
+        if (fightSource.gregariousReplace) {
           const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
           const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
           const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
           if (weWantToSaberCrates) saberCrateIfSafe();
         }
 
-        const location = new TargetFightRunOptions(nextFight).location;
-        const underwater = location.environment === "underwater";
-
-        const famSpec = familiarSpec(underwater, nextFight);
-
-        if (
-          famSpec.familiar === $familiar`Red-Nosed Snapper` &&
-          Snapper.getTrackedPhylum() !== globalOptions.target.phylum
-        ) {
-          Snapper.trackPhylum(globalOptions.target.phylum);
+        const chip = $item`Pocket Professor memory chip`;
+        const jacks = $item`box of Familiar Jacks`;
+        useFamiliar($familiar`Pocket Professor`);
+        if (!have(chip)) {
+          if (mallPrice(jacks) < mallPrice(chip)) {
+            retrieveItem(jacks);
+            use(jacks);
+          } else {
+            retrieveItem(chip);
+          }
         }
 
-        setLocation(location);
-        meatTargetOutfit({ ...nextFight.spec, ...famSpec }, location).dress();
+        const profSpec: OutfitSpec = {
+          familiar: $familiar`Pocket Professor`,
+          avoid: $items`Roman Candelabra, legendary seal-clubbing club`,
+        };
+        if (have(chip)) {
+          profSpec.famequip = chip;
+        }
 
-        runTargetFight(nextFight, { action: nextFight.name });
+        goalMaximize(
+          { ...profSpec, ...fightSource.spec },
+          fightSource.location ?? $location.none,
+        );
+
+        if (
+          get("_pocketProfessorLectures") <
+          PocketProfessor.totalAvailableLectures()
+        ) {
+          const startLectures = get("_pocketProfessorLectures");
+          runTargetFight(fightSource, {
+            macro: macro(),
+            useAuto: false,
+            action: "Pocket Professor",
+          });
+          eventLog.initialCopyTargetsFought +=
+            1 + get("_pocketProfessorLectures") - startLectures;
+          eventLog.copyTargetSources.push(fightSource.name);
+          eventLog.copyTargetSources.push(
+            ...new Array<string>(
+              get("_pocketProfessorLectures") - startLectures,
+            ).fill("Pocket Professor"),
+          );
+        }
+        set(property, true);
         postCombatActions();
-
-        print(`Finished ${nextFight.name}`);
-        if (
-          totalTurnsPlayed() - startTurns === 1 &&
-          get("lastCopyableMonster") === globalOptions.target &&
-          (nextFight.wrongEncounterName ||
-            get("lastEncounter") === globalOptions.target.name)
-        ) {
-          eventLog.initialCopyTargetsFought++;
-          eventLog.copyTargetSources.push(nextFight.name);
-        }
-
-        nextFight = getNextCopyTargetFight();
-
-        if (
-          romanticMonsterImpossible() &&
-          (!nextFight || !nextFight.draggable)
-        ) {
-          doSausage();
-        }
+        const predictedNextFight = getNextCopyTargetFight();
+        if (!predictedNextFight?.draggable) doSausage();
         doGhost();
       }
-    });
+    }
+
+    useFamiliar(meatFamiliar());
+
+    // REMAINING TARGET MONSTER FIGHTS
+    let nextFight = getNextCopyTargetFight();
+    while (nextFight !== null && myAdventures()) {
+      print(`Running fight ${nextFight.name}`);
+      const startTurns = totalTurnsPlayed();
+
+      if (
+        nextFight.draggable === "backup" &&
+        have($skill`Musk of the Moose`) &&
+        !have($effect`Musk of the Moose`)
+      ) {
+        useSkill($skill`Musk of the Moose`);
+      }
+
+      if (nextFight.gregariousReplace) {
+        const crateIsSabered = get("_saberForceMonster") === $monster`crate`;
+        const notEnoughCratesSabered = get("_saberForceMonsterCount") < 2;
+        const weWantToSaberCrates = !crateIsSabered || notEnoughCratesSabered;
+        if (weWantToSaberCrates) saberCrateIfSafe();
+      }
+
+      const location = new TargetFightRunOptions(nextFight).location;
+      const underwater = location.environment === "underwater";
+
+      const famSpec = familiarSpec(underwater, nextFight);
+
+      if (
+        famSpec.familiar === $familiar`Red-Nosed Snapper` &&
+        Snapper.getTrackedPhylum() !== globalOptions.target.phylum
+      ) {
+        Snapper.trackPhylum(globalOptions.target.phylum);
+      }
+
+      setLocation(location);
+      meatTargetOutfit({ ...nextFight.spec, ...famSpec }, location).dress();
+
+      runTargetFight(nextFight, { action: nextFight.name });
+      postCombatActions();
+
+      print(`Finished ${nextFight.name}`);
+      if (
+        totalTurnsPlayed() - startTurns === 1 &&
+        get("lastCopyableMonster") === globalOptions.target &&
+        (nextFight.wrongEncounterName ||
+          get("lastEncounter") === globalOptions.target.name)
+      ) {
+        eventLog.initialCopyTargetsFought++;
+        eventLog.copyTargetSources.push(nextFight.name);
+      }
+
+      nextFight = getNextCopyTargetFight();
+
+      if (romanticMonsterImpossible() && (!nextFight || !nextFight.draggable)) {
+        doSausage();
+      }
+      doGhost();
+    }
   }
+  stash.done($item`Spooky Putty sheet`);
 }
 
 type FreeFightOptions = {
@@ -1137,22 +1135,14 @@ function freeRunFights(): void {
     globalOptions.prefs.yachtzeechain &&
     !get("_garboYachtzeeChainCompleted", false);
 
-  const stashRun = stashAmount($item`navel ring of navel gazing`)
-    ? $items`navel ring of navel gazing`
-    : stashAmount($item`Greatest American Pants`)
-      ? $items`Greatest American Pants`
-      : [];
-  refreshStash();
-
-  withStash(stashRun, () => {
-    for (const priorityRunFight of priorityFreeRunFightSources) {
-      priorityRunFight.runAll();
-    }
-    if (onlyPriorityRuns) return;
-    for (const freeRunFightSource of freeRunFightSources) {
-      freeRunFightSource.runAll();
-    }
-  });
+  for (const priorityRunFight of priorityFreeRunFightSources) {
+    priorityRunFight.runAll();
+  }
+  if (onlyPriorityRuns) return;
+  for (const freeRunFightSource of freeRunFightSources) {
+    freeRunFightSource.runAll();
+  }
+  stash.done(...$items`navel ring of navel gazing, Greatest American Pants`);
 }
 
 export function freeFights(): void {
@@ -1165,6 +1155,16 @@ export function freeFights(): void {
     1324: 5, // Fight a random partier
   });
 
+  if (
+    get("_navelRunaways") < 3 &&
+    !have($item`navel ring of navel gazing`) &&
+    !have($item`Greatest American Pants`)
+  ) {
+    stash.request($items`navel ring of navel gazing`);
+    if (!have($item`navel ring of navel gazing`)) {
+      stash.request($items`Greatest American Pants`);
+    }
+  }
   freeRunFights();
 
   killRobortCreaturesForFree();
