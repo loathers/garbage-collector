@@ -86,6 +86,7 @@ import { MappingTask } from "../engine";
 import { doCandyTrick } from "../../resources/candyMap";
 import { crateStrategy, doingGregFight } from "../../resources/extrovermectin";
 import { ghostAdventure } from "../../resources/protonpack";
+import { canSwapGarden } from "../../resources/garden";
 import { shouldAugustCast } from "../../resources/scepter";
 import {
   ESTIMATED_OVERDRUNK_TURNS,
@@ -778,8 +779,9 @@ const FreeFightTasks = [
     name: "Mushroom garden",
     adventure: $location`Your Mushroom Garden`,
     ready: () =>
-      have($item`packet of mushroom spores`) ||
-      getCampground()["packet of mushroom spores"] !== undefined,
+      canSwapGarden() &&
+      (have($item`packet of mushroom spores`) ||
+        getCampground()["packet of mushroom spores"] !== undefined),
     completed: () => get("_mushroomGardenFights") > 0,
     prepare: () => {
       if (have($item`packet of mushroom spores`)) {
@@ -814,6 +816,7 @@ const FreeFightTasks = [
     name: "Portscan + Macrometeorite + Mushroom garden",
     adventure: $location`Your Mushroom Garden`,
     ready: () =>
+      canSwapGarden() &&
       (have($item`packet of mushroom spores`) ||
         getCampground()["packet of mushroom spores"] !== undefined) &&
       !doingGregFight() &&
@@ -1225,14 +1228,13 @@ const FreeFightTasks = [
   freeFightTask({
     name: "Black Rose Garden Fights",
     adventure: nextBlackGardenRoseFight,
-    ready: () => BlackRoseGarden.have(),
+    ready: () =>
+      (canSwapGarden() && BlackRoseGarden.have()) ||
+      BlackRoseGarden.installed(),
     completed: () => get("_garbo_blackRoseFightsDone", false),
     prepare: () => {
       if (have($item`black garden rose`)) {
         use($item`black garden rose`);
-      }
-      if (SourceTerminal.have()) {
-        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
     },
     do: () => {
@@ -1242,7 +1244,7 @@ const FreeFightTasks = [
       }
     },
     post: () => {
-      if (have($item`packet of tall grass seeds`)) {
+      if (canSwapGarden() && have($item`packet of tall grass seeds`)) {
         use($item`packet of tall grass seeds`);
       }
     },
