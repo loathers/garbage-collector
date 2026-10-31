@@ -7,6 +7,7 @@ import {
   Item,
   toSlot,
 } from "kolmafia";
+import { YACHTZEE_VALUE } from "../../lib";
 import { waterBreathingEquipment } from "../../outfit/lib";
 
 function yachtzeeBuffValue(obj: Item | Effect): number {
@@ -16,7 +17,7 @@ function yachtzeeBuffValue(obj: Item | Effect): number {
         getModifier("Familiar Weight", obj) * 2.5)) /
       100,
     0,
-    20000,
+    YACHTZEE_VALUE,
   );
 }
 
