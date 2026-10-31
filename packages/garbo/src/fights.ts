@@ -1223,6 +1223,38 @@ const priorityFreeRunFightSources = [
         : $location`The Dire Warren`,
     },
   ),
+  new FreeRunFight(
+    () =>
+      have($familiar`Meat Shield Maiden`) &&
+      !get("_blessingShieldSleazeReceived", true) &&
+      canAdventure($location`Sloppy Seconds Diner`),
+    (runSource: ActionSource) => {
+      if (!have($effect`Singing of your Prowess`)) {
+        useSkill($skill`%fn, sing a song of my prowess`);
+      }
+      safeRestore();
+      garboAdventure(
+        $location`Sloppy Seconds Diner`,
+        Macro.skill($skill`%fn, protect me!`).step(runSource.macro),
+      );
+    },
+    {
+      spec: {
+        familiar: $familiar`Meat Shield Maiden`,
+        famequip: $items`can of shield tenderizer`,
+        modifier: [
+          "100 ML",
+          "10 Moxie", // Because it's scaling apparently this is good?
+          "HP",
+          "-DR",
+          "-100 DA",
+          "-Sleaze resistance",
+        ],
+        avoid: $items`Drunkula's wineglass`,
+      },
+      location: $location`Sloppy Seconds Diner`,
+    },
+  ),
 ];
 
 function latteFight(
