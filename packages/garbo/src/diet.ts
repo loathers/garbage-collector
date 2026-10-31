@@ -89,6 +89,7 @@ import {
   maximizeCached,
   MayoClinic,
   MenuItem,
+  notNull,
   PrismaticBeret,
   realmAvailable,
   set,
@@ -132,44 +133,26 @@ type NoodleTier = `${PotionTier} (noodle-doubled)`;
 type Note = PotionTier | NoodleTier | null;
 
 /**
- * Pastas of legend (dishes cooked with legendary noodles) lead to Legendary Digestion
- * when eaten. Its stomach option doubles the effect durations of the next three foods,
- * stacking multiplicatively with Mayozapine. Eating a dish while that is active spends
- * a charge, so back-to-back dishes add only two charges each after the first.
+ * Pastas of legend lead to Legendary Digestion when eaten; we'll have to handle the choice.
  */
-const LEGENDARY_DIGESTION = 1599;
+const LEGENDARY_DIGESTION_CHOICE_ID = 1599;
 const LEGENDARY_DIGESTION_STOMACH = 5;
-const legendaryNoodleDishes = [
-  "Frutti di Scatoletta",
-  "Pesto alla Marziano",
-  "Arrattabbattabiata",
-  "Orzo di Riso",
-  "Pasta Grimavera",
-  "Linguini Ubriacapa",
-  "Gnocci Domani",
-  "Formica e Pepe",
-  "Tubetto Gelatto",
-]
-  .map((name) => toItem(name))
-  .filter((item) => item !== $item.none);
+const legendaryNoodleDishes = $items`Frutti di Scatoletta, Pesto alla Marziano, Arrattabbattabiata, Orzo di Riso, Pasta Grimavera, Linguini Ubriacapa, Gnocci Domani, Formica e Pepe, Tubetto Gelatto`;
 
 const isNoodleTier = (data: Note | undefined): data is NoodleTier =>
   !!data?.endsWith("(noodle-doubled)");
 
-/** Foods already set to have their effects doubled by Legendary Digestion */
 function existingNoodleCharges(): number {
-  return get("legendaryNoodlesStomach", 0);
+  return get("legendaryNoodlesStomach");
 }
 
-/** Doubled foods gained from the nth noodle dish, eaten back-to-back */
 function noodleDishCharges(index: number): number {
   return index === 0 ? 3 : 2;
 }
 
 type NoodleDish = { dish: Item; price: number; owned: boolean };
-const legendaryNoodles = toItem("legendary noodles");
+const legendaryNoodles = $item`legendary noodles`;
 
-/** What it costs to get a noodle dish: cooking it, or buying it if that's cheaper */
 function noodleDishPrice(dish: Item, ownNoodles: boolean): number {
   const cost = (item: Item) =>
     (ownNoodles || item !== legendaryNoodles) && have(item)
@@ -183,7 +166,6 @@ function noodleDishPrice(dish: Item, ownNoodles: boolean): number {
   return Math.min(cookPrice, mallPrice(dish) || Infinity);
 }
 
-/** The noodle dish worth the most to make, with or without the noodles we own */
 function bestNoodleDishToMake(ownNoodles: boolean): NoodleDish | null {
   const options = legendaryNoodleDishes
     .map((dish) => ({
@@ -237,8 +219,7 @@ function eatSafe(qty: number, item: Item) {
     acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
     use($item`Hunger™ Sauce`);
   }
-  // KoL won't serve a pasta of legend with a fudge spork, and Scratch's fork takes the
-  // utensil slot itself, so save the spork for the next other food
+  // can't use fudge spork with legendary pasta
   if (
     itemType(item) === "food" &&
     !legendaryNoodleDishes.includes(item) &&
@@ -940,7 +921,6 @@ function ingredientCost(item: Item): number {
   return ingredientAutosellPrice;
 }
 
-/** How many of each food a diet eats */
 function foodCounts(diet: Diet<Note>): Map<Item, number> {
   const counts = new Map<Item, number>();
   for (const { menuItems, quantity } of diet.entries) {
@@ -975,7 +955,8 @@ function potionMenu(
     organ?: "spleen item" | "booze" | "food";
     size?: number;
   };
-  // Food potions are deferred, so that Legendary Digestion charges can go to the best of them
+  // Food potions don't get added directly to the big menu array
+  // we accumulate them here to put them into the noodlemenu.
   const foodPotions: {
     potion: Potion;
     limit?: number;
@@ -1032,22 +1013,13 @@ function potionMenu(
     return [];
   }
 
-  /**
-   * Assign Legendary Digestion charges, existing and from noodle dishes, to the food
-   * potions that gain the most from doubling (on top of any mayo doubling).
-   * Existing charges become noodle-doubled tiers, so the planner decides whether to eat
-   * them. The gain from a dish's charges is credited to the dish itself, since the
-   * planner can't tie the two together, so dish charges only go to food potions the
-   * previous plan already eats. Charges left over double nothing and earn the dish nothing.
-   * Dishes we own are joined by ones we could cook from legendary noodles we own, then
-   * by ones bought or made from the mall, each priced at what it costs to get. The
-   * cheapest dishes come first, so the ones the planner eats are the ones credited.
-   */
   function noodleMenu(): MenuItem<Note>[] {
     const existing = existingNoodleCharges();
 
     const bestValue = (potion: Potion) =>
       potion.value(targets, turns, 1)[0]?.value ?? 0;
+
+    // Determine the highest-value food potions to double.
     const ranked = foodPotions
       .map((foodPotion) => {
         const doubled = bestValue(foodPotion.potion.doubleDuration());
@@ -1060,6 +1032,7 @@ function potionMenu(
       .filter(({ gain }) => gain > 0)
       .sort((a, b) => b.gain - a.gain);
     const charges: typeof ranked = [];
+
     const assignCharges = (
       count: number,
       available: (entry: (typeof ranked)[number]) => number,
@@ -1074,8 +1047,11 @@ function potionMenu(
         for (let i = 0; i < uses; i++) charges.push(entry);
       }
     };
+
     assignCharges(existing, (entry) => entry.foodPotion.limit ?? Infinity);
-    // Planned eats of each food, shared between food potions of the same item
+
+    // A single item might map to multiple foodPotion entries, each with their own limits;
+    // distribute the planned consumption to not exceed any limits.
     const unclaimed = new Map(plannedFoods);
     const plannedUses = new Map(
       ranked.map((entry) => {
@@ -1099,6 +1075,8 @@ function potionMenu(
           owned: true,
         }),
       ),
+      // If noodles are mallmin, we value ones you own cheaper than ones you buy.
+      // Double up on entries to account for both.
       ...new Array<NoodleDish | null>(availableAmount(legendaryNoodles)).fill(
         bestNoodleDishToMake(true),
       ),
@@ -1106,15 +1084,20 @@ function potionMenu(
         bestNoodleDishToMake(false),
       ),
     ]
-      .filter((dish): dish is NoodleDish => dish !== null)
+      .filter(notNull)
       .sort((a, b) => a.price - b.price);
+
     const totalCharges =
       existing + sumNumbers(dishes.map((_, index) => noodleDishCharges(index)));
+
+    // Value charges from eating pasta against foods in the previous plan,
+    // so pasta doesn't get credit for doubling food we don't expect to eat.
     assignCharges(
       totalCharges - existing,
       (entry) => plannedUses.get(entry) ?? 0,
     );
 
+    // Add the value of existing noodle charges directly to food potions, because there's no noodle dish to claim it.
     const potionItems = foodPotions.flatMap((foodPotion) => {
       const { potion, limit, options, mayo } = foodPotion;
       const doubledUses = charges
@@ -1139,11 +1122,12 @@ function potionMenu(
     });
 
     let used = existing;
+    // The planner can't make a food's doubling conditional on eating pasta, so credit
+    // that benefit to the pasta instead. Unassigned charges contribute nothing.
     const dishItems = dishes.flatMap(({ dish, price, owned }, index) => {
       const dishCharges = charges.slice(used, used + noodleDishCharges(index));
       used += noodleDishCharges(index);
       const additionalValue = sum(dishCharges, "gain");
-      // A dish we'd have to make is only worth offering for the charges it adds
       if (!owned && additionalValue <= 0) return [];
       return new MenuItem<Note>(dish, {
         maximum: 1,
@@ -1681,10 +1665,6 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   );
 }
 
-/**
- * Whether this diet uses Legendary Digestion charges, so its food potions should be
- * eaten before other foods spend the charges.
- */
 function usesNoodleDoubling(diet: Diet<Note>): boolean {
   return (
     existingNoodleCharges() > 0 ||
@@ -1865,10 +1845,15 @@ function specialItemActions(): Map<Item, ItemAction> {
       (countToConsume, menuItem) => {
         // One at a time, since each leads to Legendary Digestion
         for (let i = 0; i < countToConsume; i++) {
-          withChoice(LEGENDARY_DIGESTION, LEGENDARY_DIGESTION_STOMACH, () =>
-            consumeSafe(1, menuItem.item, menuItem.additionalValue),
+          withChoice(
+            LEGENDARY_DIGESTION_CHOICE_ID,
+            LEGENDARY_DIGESTION_STOMACH,
+            () => consumeSafe(1, menuItem.item, menuItem.additionalValue),
           );
-          if (handlingChoice() && lastChoice() === LEGENDARY_DIGESTION) {
+          if (
+            handlingChoice() &&
+            lastChoice() === LEGENDARY_DIGESTION_CHOICE_ID
+          ) {
             runChoice(LEGENDARY_DIGESTION_STOMACH);
           }
         }
