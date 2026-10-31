@@ -375,56 +375,53 @@ let juneCleaverEV: number | null = null;
 function juneCleaver(mode: BonusEquipMode): Map<Item, number> {
   const estimatedJuneCleaverTurns =
     remainingUserTurns() + estimatedGarboTurns();
+  const fightsLeft = get("_juneCleaverFightsLeft");
   if (
     !have($item`June cleaver`) ||
-    get("_juneCleaverFightsLeft") > estimatedJuneCleaverTurns ||
-    !get("_juneCleaverFightsLeft")
+    fightsLeft > estimatedJuneCleaverTurns ||
+    !fightsLeft
   ) {
     return new Map();
   }
-  if (!juneCleaverEV) {
-    juneCleaverEV =
-      sum([...JuneCleaver.choices], (choice) =>
-        valueJuneCleaverOption(
-          juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)],
-        ),
-      ) / JuneCleaver.choices.length;
-  }
-  // If we're ascending then the chances of hitting choices in the queue is reduced
+  const valueChoice = (choice: (typeof JuneCleaver.choices)[number]) =>
+    valueJuneCleaverOption(
+      juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)],
+    );
+  juneCleaverEV ??=
+    sum([...JuneCleaver.choices], valueChoice) / JuneCleaver.choices.length;
+  let expectedValue = juneCleaverEV;
+
   if (
     globalOptions.ascend &&
     estimatedJuneCleaverTurns <= 180 &&
     JuneCleaver.getInterval() === 30
   ) {
-    const availEV =
-      sum([...JuneCleaver.choicesAvailable()], (choice) =>
-        valueJuneCleaverOption(
-          juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)],
-        ),
-      ) / JuneCleaver.choicesAvailable().length;
-    const queueEV =
-      sum([...JuneCleaver.queue()], (choice) => {
-        const choiceValue = valueJuneCleaverOption(
-          juneCleaverChoiceValues[choice][bestJuneCleaverOption(choice)],
-        );
-        const cleaverEncountersLeft = Math.floor(
-          estimatedJuneCleaverTurns / 30,
-        );
-        const encountersToQueueExit = 1 + JuneCleaver.queue().indexOf(choice);
-        const chancesLeft = Math.max(
-          0,
-          cleaverEncountersLeft - encountersToQueueExit,
-        );
-        const encounterProbability = 1 - Math.pow(2 / 3, chancesLeft);
-        return choiceValue * encounterProbability;
-      }) / JuneCleaver.queue().length;
-    juneCleaverEV = queueEV + availEV;
+    const cleaverEncountersLeft =
+      1 + Math.floor((estimatedJuneCleaverTurns - fightsLeft) / 30);
+    const totalChoiceValue = juneCleaverEV * JuneCleaver.choices.length; // un-average it
+
+    const queueValues = JuneCleaver.queue().map(valueChoice);
+    const encounterValues: number[] = [];
+
+    for (let i = 0; i < cleaverEncountersLeft; i++) {
+      const valueOfAvailableChoices =
+        totalChoiceValue - sumNumbers(queueValues);
+      const totalAvailableChoices =
+        JuneCleaver.choices.length - queueValues.length;
+
+      const nextValue = valueOfAvailableChoices / totalAvailableChoices;
+
+      encounterValues.push(nextValue);
+      queueValues.push(nextValue);
+      if (queueValues.length > 6) queueValues.shift();
+    }
+    expectedValue = sumNumbers(encounterValues) / cleaverEncountersLeft;
   }
 
   const interval =
     mode === BonusEquipMode.MEAT_TARGET ? 30 : JuneCleaver.getInterval();
   return new Map<Item, number>([
-    [$item`June cleaver`, juneCleaverEV / interval],
+    [$item`June cleaver`, expectedValue / interval],
   ]);
 }
 
