@@ -63,7 +63,7 @@ export function chooseBjorn(
     });
   }
 
-  const result = CrownOfThrones.pickRider(key);
+  const result = CrownOfThrones.pickRider(key, familiar);
 
   if (!result) {
     throw new Error(`Unable to choose rider for key ${key}`);

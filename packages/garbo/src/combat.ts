@@ -76,14 +76,7 @@ import { FarmingStrategy } from "./farmingStrategy";
 import { BanishMethod } from "./resources/banish";
 
 export function shouldRedigitize(): boolean {
-  if (!SourceTerminal.have() || !SourceTerminal.canDigitize()) return false;
-  const digitizesRemaining = SourceTerminal.getDigitizeUsesRemaining();
-  const digitizeChunks = 1 + digitizesRemaining;
-  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
-  // triangular number * 10 - 3
-  const digitizeAdventuresUsed = monsterCount * (monsterCount + 1) * 5 - 3;
-  // Redigitize if we've spent too many turns in this "chunk" of our digitize day
-  return estimatedGarboTurns() / digitizeChunks < digitizeAdventuresUsed;
+  return SourceTerminal.shouldRedigitize(estimatedGarboTurns());
 }
 
 export function shouldAffirmationHate(): boolean {

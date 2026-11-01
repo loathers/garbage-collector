@@ -699,63 +699,6 @@ export function printEventLog(): void {
   }
 }
 
-function digitizeTurnsForMonsters(monsters: number): number {
-  return monsters === 0 ? 0 : monsters * (monsters + 1) * 5 - 3;
-}
-
-function untangleDigitizes(
-  turnCount: number,
-  chunks: number,
-  currentChainMonsters = 0,
-): number {
-  if (chunks <= 0 || turnCount <= 0) return 0;
-
-  const monstersPerChunk = Math.floor(
-    Math.sqrt((turnCount / chunks + 3) / 5 + 1 / 4) - 1 / 2,
-  );
-  // Encounters already assigned to the current chain cannot be redistributed.
-  if (monstersPerChunk < currentChainMonsters) {
-    return (
-      currentChainMonsters +
-      untangleDigitizes(
-        turnCount - digitizeTurnsForMonsters(currentChainMonsters),
-        chunks - 1,
-      )
-    );
-  }
-
-  const remainingTurns =
-    turnCount - chunks * digitizeTurnsForMonsters(monstersPerChunk);
-  const nextInterval = monstersPerChunk === 0 ? 7 : 10 * (monstersPerChunk + 1);
-  return chunks * monstersPerChunk + Math.floor(remainingTurns / nextInterval);
-}
-
-export function digitizedMonstersRemainingForTurns(
-  estimatedTurns: number,
-): number {
-  if (!SourceTerminal.have() || estimatedTurns <= 0) return 0;
-
-  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
-  if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
-    return untangleDigitizes(
-      estimatedTurns,
-      SourceTerminal.getMaximumDigitizeUses(),
-    );
-  }
-
-  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
-
-  const turnsLeftAtNextMonster =
-    estimatedTurns - Counter.get("Digitize Monster");
-  if (turnsLeftAtNextMonster <= 0) return 0;
-  const turnsAtLastDigitize =
-    turnsLeftAtNextMonster + digitizeTurnsForMonsters(monsterCount);
-  return (
-    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1, monsterCount) -
-    SourceTerminal.getDigitizeMonsterCount()
-  );
-}
-
 function maxCarriedFamiliarDamage(familiar: Familiar): number {
   // Only considering familiars we reasonably may carry
   switch (familiar) {

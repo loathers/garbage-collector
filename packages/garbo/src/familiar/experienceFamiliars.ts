@@ -9,6 +9,7 @@ import {
   GreyGoose,
   have,
   propertyTypes,
+  ShorterOrderCook,
   undelay,
 } from "libram";
 import { globalOptions } from "../config";
@@ -24,7 +25,6 @@ type ExperienceFamiliar = {
   used: propertyTypes.BooleanProperty | ((mode: FamiliarMode) => boolean);
   experienceValue: (experience: number) => number;
   cashout?: boolean;
-  currentExperience?: () => number;
   xpLimit?: (mode: FamiliarMode) => number;
 };
 
@@ -48,7 +48,6 @@ const experienceFamiliars: ExperienceFamiliar[] = [
     experienceValue: (experience) =>
       GreyGoose.expectedMeat(Math.floor(Math.sqrt(experience))),
     cashout: true,
-    currentExperience: GreyGoose.currentExperience,
   },
   {
     familiar: $familiar`Chest Mimic`,
@@ -75,21 +74,17 @@ const experienceFamiliars: ExperienceFamiliar[] = [
   },
 ];
 
+function currentExperience(familiar: Familiar): number {
+  return familiar.experience + ShorterOrderCook.pendingExperience(familiar);
+}
+
 function valueExperienceFamiliar(
-  {
-    familiar,
-    experienceValue,
-    cashout,
-    currentExperience,
-    xpLimit,
-  }: ExperienceFamiliar,
+  { familiar, experienceValue, cashout, xpLimit }: ExperienceFamiliar,
   mode: FamiliarMode,
   experience: number,
   purpose: ExperiencePurpose,
 ): GeneralFamiliar {
-  const currentExp =
-    currentExperience?.() ??
-    (familiar.experience || (have($familiar`Shorter-Order Cook`) ? 100 : 0));
+  const currentExp = currentExperience(familiar);
   const limit = xpLimit?.(mode) ?? 400;
   const remainingExperience = Math.max(0, limit - currentExp);
   const usefulExperience =
@@ -135,11 +130,10 @@ export default function getExperienceFamiliars(
 ): GeneralFamiliar[] {
   return experienceFamiliars
     .filter(
-      ({ used, familiar, xpLimit, currentExperience }) =>
+      ({ used, familiar, xpLimit }) =>
         have(familiar) &&
         !isUsed(used, mode) &&
-        (currentExperience?.() ?? familiar.experience) <
-          (xpLimit?.(mode) ?? 400),
+        currentExperience(familiar) < (xpLimit?.(mode) ?? 400),
     )
     .map((f) =>
       valueExperienceFamiliar(
@@ -155,8 +149,9 @@ export function getExperienceFamiliarLimit(fam: Familiar): number {
   const target = experienceFamiliars.find(({ familiar }) => familiar === fam);
   if (!have(fam) || !target) return 0;
 
-  const experience = target.currentExperience?.() ?? fam.experience;
-  return (
-    ((target.xpLimit?.("barf") ?? 400) - experience) / estimatedBarfExperience()
+  return Math.max(
+    0,
+    ((target.xpLimit?.("barf") ?? 400) - currentExperience(fam)) /
+      estimatedBarfExperience(),
   );
 }
