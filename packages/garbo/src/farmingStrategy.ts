@@ -68,6 +68,7 @@ interface FarmingStrategyOptions {
   stasisRounds: number;
   asdonEffect: Effect;
   ensureBarfAccess: boolean;
+  meatDrop: number;
   location: Location;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
@@ -110,11 +111,7 @@ class FarmingStrategySkeleton {
   }
 
   baseMeat(): number {
-    return this.meatDrop() + songboomMeat();
-  }
-
-  meatDrop(): number {
-    return (undelay(this.targetMonster).maxMeat + undelay(this.targetMonster).minMeat) / 2;
+    return this.meatDrop + songboomMeat();
   }
 
   primaryMonster(): Monster {
@@ -205,6 +202,7 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
   stasisRounds: 20,
   asdonEffect: $effect`Driving Observantly`,
   ensureBarfAccess: true,
+  meatDrop: 250,
   ncTurns: () =>
     (27 * barfTourists) /
       (garbageTourists + angryTourists + 3 * touristFamilies) +
@@ -262,6 +260,7 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
+  meatDrop: 300,
   location: $location`The Coral Corral`,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,
@@ -298,6 +297,7 @@ const THE_MARINARA_TRENCH: FarmingStrategyOptions = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
+  meatDrop: 300,
   location: $location`The Marinara Trench`,
   banishMonsters: $monsters`diving belle, fisherfish, Mer-kin diver`,
   targetMonster: $monster`giant squid`,
@@ -322,11 +322,13 @@ const THE_SUNKEN_YACHT: FarmingStrategyOptions = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
+  meatDrop: 300,
   location: $location`The Sunken Party Yacht`,
   banishMonsters: $monsters`cocktail shrimp, wild girl, broctopus`,
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
-  available: // have($item`legendary acorndion`) &&
+  // eslint-disable-next-line libram/verify-constants
+  available: have($item`legendary acorndion`) &&
     effectFact($monster`sea cow`) === $effect`Fishy`,
   outfit: (context) =>
     yachtSetupDone()
