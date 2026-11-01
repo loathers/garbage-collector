@@ -2314,7 +2314,7 @@ var Wanderer;
   Wanderer["Romantic"] = "Romantic Monster";
   Wanderer["Vote"] = "Vote Monster";
 })(Wanderer || (Wanderer = {}));
-({
+var GARDEN_ITEMS = {
   pumpkin: $item`packet of pumpkin seeds`,
   peppermint: $item`Peppermint Pip Packet`,
   skeleton: $item`packet of dragon's teeth`,
@@ -2325,7 +2325,7 @@ var Wanderer;
   mushroom: $item`packet of mushroom spores`,
   rock: $item`packet of rock seeds`,
   black_rose: $item`black garden rose`
-});
+};
 var deterministicWanderers = [Wanderer.Digitize, Wanderer.Portscan];
 /**
  * Determine whether the player has the specified counter
@@ -10310,6 +10310,12 @@ function fightMonster(monster) {
     kolmafia.runCombat.apply(void 0, combatParams);
     return true;
   });
+}
+/**
+ * @returns Whether you've swapped out the Bblack Rose Garden today.
+ */
+function swappedToday() {
+  return get$2("_blackRoseGardenReset");
 }
 
 var summonSkill$5 = $skill`Summon Candy Heart`;
@@ -20086,7 +20092,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"c5693997fd940c6060ad335390a9bde191b659b2"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"680ff098509fa32299cdd12fbf3be741969c3f2a"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -28984,6 +28990,35 @@ function ghostAdventure() {
   };
 }
 
+// Capture this before any tasks run: temporarily planting roses must not lock us in.
+var startingGarden = Object.values(GARDEN_ITEMS).find(garden => haveInCampground(garden));
+function canSwapGarden() {
+  if (get$2("_blackRoseGardenToday")) return true;
+  if (globalOptions.ascend) return true;
+  if (swappedToday()) return true;
+  return startingGarden !== $item`black garden rose`;
+}
+function setupGarden() {
+  if (!canSwapGarden()) return;
+  if (startingGarden && !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) && kolmafia.getCampground()[startingGarden.name] && $items`packet of tall grass seeds, packet of mushroom spores`.some(gardenSeed => have$Q(gardenSeed))) {
+    if (startingGarden === $item`packet of rock seeds`) {
+      kolmafia.visitUrl("campground.php?action=rgarden1&pwd");
+      kolmafia.visitUrl("campground.php?action=rgarden2&pwd");
+      kolmafia.visitUrl("campground.php?action=rgarden3&pwd");
+    } else {
+      kolmafia.visitUrl("campground.php?action=garden&pwd");
+    }
+  }
+  if (have$Q($item`packet of tall grass seeds`) && kolmafia.myGardenType() !== "grass" && kolmafia.myGardenType() !== "mushroom") {
+    kolmafia.use($item`packet of tall grass seeds`);
+  }
+}
+function restoreGarden() {
+  if (canSwapGarden() && startingGarden && have$Q(startingGarden)) {
+    kolmafia.use(startingGarden);
+  }
+}
+
 var DEFAULT_FREE_FIGHT_TASK = {
   // GarboTask
   combat: new GarboStrategy(() => Macro.basicCombat()),
@@ -29887,7 +29922,7 @@ var FreeFightTasks = [freeFightTask({
 }), freeFightTask({
   name: "Mushroom garden",
   adventure: $location`Your Mushroom Garden`,
-  ready: () => have$Q($item`packet of mushroom spores`) || kolmafia.getCampground()["packet of mushroom spores"] !== undefined,
+  ready: () => canSwapGarden() && (have$Q($item`packet of mushroom spores`) || kolmafia.getCampground()["packet of mushroom spores"] !== undefined),
   completed: () => get$2("_mushroomGardenFights") > 0,
   prepare: () => {
     if (have$Q($item`packet of mushroom spores`)) {
@@ -29910,7 +29945,7 @@ var FreeFightTasks = [freeFightTask({
 }), freeFightTask({
   name: "Portscan + Macrometeorite + Mushroom garden",
   adventure: $location`Your Mushroom Garden`,
-  ready: () => (have$Q($item`packet of mushroom spores`) || kolmafia.getCampground()["packet of mushroom spores"] !== undefined) && !doingGregFight() && have$Q($skill`Macrometeorite`) && get$2("_macrometeoriteUses") < 10,
+  ready: () => canSwapGarden() && (have$Q($item`packet of mushroom spores`) || kolmafia.getCampground()["packet of mushroom spores"] !== undefined) && !doingGregFight() && have$Q($skill`Macrometeorite`) && get$2("_macrometeoriteUses") < 10,
   completed: () => !exists("portscan.edu"),
   prepare: () => {
     if (have$Q($item`packet of mushroom spores`)) {
@@ -30171,14 +30206,11 @@ var FreeFightTasks = [freeFightTask({
 }), freeFightTask({
   name: "Black Rose Garden Fights",
   adventure: nextBlackGardenRoseFight,
-  ready: () => have$6(),
+  ready: () => canSwapGarden() && have$6() || installed(),
   completed: () => get$2("_garbo_blackRoseFightsDone", false),
   prepare: () => {
     if (have$Q($item`black garden rose`)) {
       kolmafia.use($item`black garden rose`);
-    }
-    if (have$J()) {
-      educate([$skill`Extract`, $skill`Portscan`]);
     }
   },
   do: () => {
@@ -30188,7 +30220,7 @@ var FreeFightTasks = [freeFightTask({
     }
   },
   post: () => {
-    if (have$Q($item`packet of tall grass seeds`)) {
+    if (canSwapGarden() && have$Q($item`packet of tall grass seeds`)) {
       kolmafia.use($item`packet of tall grass seeds`);
     }
   },
@@ -32876,7 +32908,7 @@ var DailyItemTasks = [{
   spendsTurn: false
 }, {
   name: "Rose Garden Items",
-  ready: () => have$6(),
+  ready: () => canSwapGarden() && have$6() || installed(),
   completed: () => get$2("_garbo_roseGardenLooted", false),
   prepare: () => {
     if (have$Q($item`black garden rose`)) {
@@ -32891,7 +32923,7 @@ var DailyItemTasks = [{
     _set("_garbo_roseGardenLooted", true);
   },
   post: () => {
-    if (have$Q($item`packet of tall grass seeds`)) {
+    if (canSwapGarden() && have$Q($item`packet of tall grass seeds`)) {
       kolmafia.use($item`packet of tall grass seeds`);
     }
   },
@@ -34933,17 +34965,6 @@ function main() {
     propertyManager.resetAll();
     return;
   }
-  var gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds, black garden rose`;
-  var startingGarden = gardens.find(garden => Object.getOwnPropertyNames(kolmafia.getCampground()).includes(garden.name));
-  if (startingGarden && !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) && kolmafia.getCampground()[startingGarden.name] && $items`packet of tall grass seeds, packet of mushroom spores`.some(gardenSeed => have$Q(gardenSeed))) {
-    if (startingGarden === $item`packet of rock seeds`) {
-      kolmafia.visitUrl("campground.php?action=rgarden1&pwd");
-      kolmafia.visitUrl("campground.php?action=rgarden2&pwd");
-      kolmafia.visitUrl("campground.php?action=rgarden3&pwd");
-    } else {
-      kolmafia.visitUrl("campground.php?action=garden&pwd");
-    }
-  }
   var combatFlags = getCombatFlags(["aabosses", "bothcombatinterf"]);
   var cleanupCompleted = false;
   try {
@@ -34952,9 +34973,7 @@ function main() {
       kolmafia.print(`Stopping in ${globalOptions.stopTurncount - kolmafia.myTurncount()}`, HIGHLIGHT);
     }
     kolmafia.print();
-    if (have$Q($item`packet of tall grass seeds`) && kolmafia.myGardenType() !== "grass" && kolmafia.myGardenType() !== "mushroom") {
-      kolmafia.use($item`packet of tall grass seeds`);
-    }
+    setupGarden();
     kolmafia.setAutoAttack(0);
     setCombatFlags({
       flag: "aabosses",
@@ -35153,7 +35172,7 @@ function main() {
       kolmafia.cliExecute("spade autoconfirm");
       propertyManager.resetAll();
       setCombatFlags.apply(void 0, _toConsumableArray(combatFlags));
-      if (startingGarden && have$Q(startingGarden)) kolmafia.use(startingGarden);
+      restoreGarden();
       printEventLog();
       endSession();
       printLog(HIGHLIGHT);
