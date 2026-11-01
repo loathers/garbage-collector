@@ -8,7 +8,7 @@ import {
 } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { getBestLuckyAdventure } from "../lib";
+import { getBestLuckyAdventure, YACHTZEE_VALUE } from "../lib";
 import getExperienceFamiliars from "../familiar/experienceFamiliars";
 import { toItem } from "kolmafia";
 import { FarmingStrategy } from "../farmingStrategy";
@@ -20,7 +20,9 @@ const instruments: {
   {
     instrument: "Apriling band tuba",
     value: () =>
-      realmAvailable("sleaze") ? (20000 - get("valueOfAdventure")) * 3 : 0,
+      realmAvailable("sleaze")
+        ? (YACHTZEE_VALUE - get("valueOfAdventure")) * 3
+        : 0,
   },
   {
     instrument: "Apriling band quad tom",
@@ -50,7 +52,7 @@ const instruments: {
     instrument: "Apriling band tuba",
     value: () =>
       realmAvailable("sleaze") && FarmingStrategy.isUnderwater()
-        ? (20000 - get("valueOfAdventure")) * 3 // Yachtzee
+        ? (YACHTZEE_VALUE - get("valueOfAdventure")) * 3 // Yachtzee
         : 0, // Are there any other valuable NCs?
   },
 ];

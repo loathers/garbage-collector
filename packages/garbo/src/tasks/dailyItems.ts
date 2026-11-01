@@ -41,6 +41,7 @@ import {
   $skill,
   $skills,
   AprilingBandHelmet,
+  BlackRoseGarden,
   BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
@@ -48,6 +49,7 @@ import {
   have,
   maxBy,
   questStep,
+  set,
   SourceTerminal,
   sum,
   withChoice,
@@ -62,6 +64,7 @@ import { getBestAprilInstruments } from "../resources/aprilingband";
 import { archaeologySpadeTask } from "../resources/archaelogistSpade";
 import { candyMapDailyTasks } from "../resources/candyMap";
 import { doingGregFight } from "../resources/extrovermectin";
+import { canSwapGarden } from "../resources/garden";
 import { leprecondoTask } from "../resources/leprecondo";
 import { mayamCalendarSummon } from "../resources/mayam";
 import { augustSummonTasks } from "../resources/scepter";
@@ -817,6 +820,31 @@ const DailyItemTasks: GarboTask[] = [
         visitUrl(url);
       }
       smashedBarrels = true;
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Rose Garden Items",
+    ready: () =>
+      (canSwapGarden() && BlackRoseGarden.have()) ||
+      BlackRoseGarden.installed(),
+    completed: () => get("_garbo_roseGardenLooted", false),
+    prepare: () => {
+      if (have($item`black garden rose`)) {
+        use($item`black garden rose`);
+      }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: () => {
+      BlackRoseGarden.obtainItems();
+      set("_garbo_roseGardenLooted", true);
+    },
+    post: () => {
+      if (canSwapGarden() && have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
+      }
     },
     spendsTurn: false,
   },
