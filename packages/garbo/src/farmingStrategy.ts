@@ -26,6 +26,7 @@ import {
   $stat,
   adventureTargetToWeightedMap,
   Delayed,
+  examine,
   get,
   have,
   NumericModifier,
@@ -67,7 +68,6 @@ interface FarmingStrategyOptions {
   stasisRounds: number;
   asdonEffect: Effect;
   ensureBarfAccess: boolean;
-  meatDrop: number;
   location: Location;
   targetMonster: Delayed<Monster>;
   shouldOlfact: boolean;
@@ -110,7 +110,11 @@ class FarmingStrategySkeleton {
   }
 
   baseMeat(): number {
-    return this.meatDrop + songboomMeat();
+    return this.meatDrop() + songboomMeat();
+  }
+
+  meatDrop(): number {
+    return (undelay(this.targetMonster).maxMeat + undelay(this.targetMonster).minMeat) / 2;
   }
 
   primaryMonster(): Monster {
@@ -201,7 +205,6 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
   stasisRounds: 20,
   asdonEffect: $effect`Driving Observantly`,
   ensureBarfAccess: true,
-  meatDrop: 250,
   ncTurns: () =>
     (27 * barfTourists) /
       (garbageTourists + angryTourists + 3 * touristFamilies) +
@@ -231,11 +234,34 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
 const underwaterOutfit: FarmingStrategyOptions["outfit"] = ({ banish }) =>
   banish?.equip ? { equip: [banish.equip] } : {};
 
+export function yachtSetupDone(): boolean {
+  // eslint-disable-next-line libram/verify-constants
+    const description = examine($item`legendary acorndion`)
+    .replace(/<[^>]*>/g, "")
+    .replace(/&#37;/g, "%")
+    .replace(/\s+/g, " ");
+
+  const yachtEffects = [
+    "Sea cows will appear",
+    "Occasionally find sea fruit after fights",
+    "Underwater pressure -30%",
+  ];
+
+  const yachtEffectsActive =
+    description.includes("The Sunken Party Yacht") &&
+    yachtEffects.every((effect) => description.includes(effect));
+
+  const allAcornsGenerated = /12 of 12 acorns generated today/.test(
+    description,
+  );
+
+  return yachtEffectsActive || allAcornsGenerated;
+}
+
 const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
-  meatDrop: 300,
   location: $location`The Coral Corral`,
   banishMonsters: $monsters`Mer-kin rustler, sea cowboy`,
   targetMonster: $monster`sea cow`,
@@ -272,7 +298,6 @@ const THE_MARINARA_TRENCH: FarmingStrategyOptions = {
   stasisRounds: 5,
   asdonEffect: $effect`Driving Waterproofly`,
   ensureBarfAccess: false,
-  meatDrop: 300,
   location: $location`The Marinara Trench`,
   banishMonsters: $monsters`diving belle, fisherfish, Mer-kin diver`,
   targetMonster: $monster`giant squid`,
@@ -293,6 +318,36 @@ const THE_MARINARA_TRENCH: FarmingStrategyOptions = {
       .meatKill(),
 };
 
+const THE_SUNKEN_YACHT: FarmingStrategyOptions = {
+  stasisRounds: 5,
+  asdonEffect: $effect`Driving Waterproofly`,
+  ensureBarfAccess: false,
+  location: $location`The Sunken Party Yacht`,
+  banishMonsters: $monsters`cocktail shrimp, wild girl, broctopus`,
+  targetMonster: $monster`sea cow`,
+  shouldOlfact: false,
+  available: // have($item`legendary acorndion`) &&
+    effectFact($monster`sea cow`) === $effect`Fishy`,
+  outfit: (context) =>
+    yachtSetupDone()
+      ? underwaterOutfit(context)
+      : {
+          ...underwaterOutfit(context),
+          // eslint-disable-next-line libram/verify-constants
+          weapon: $item`legendary acorndion`,
+        },
+  combat: (context) => {
+    const combat = FarmingStrategy.combat(context);
+
+    if (yachtSetupDone()) return combat;
+
+    return Macro.trySkill($skill`Bawdy Refrain`)
+      .trySkill($skill`Cadenza`)
+      .trySkill($skill`Cone of Zydeco`)
+      .step(combat);
+  },
+}
+
 function currentStrategy(): FarmingStrategyOptions {
   switch (globalOptions.prefs.farmingMethod) {
     case FarmingMethod.THE_CORAL_CORRAL:
@@ -300,6 +355,9 @@ function currentStrategy(): FarmingStrategyOptions {
 
     case FarmingMethod.THE_MARINARA_TRENCH:
       return THE_MARINARA_TRENCH;
+
+    case FarmingMethod.THE_SUNKEN_YACHT:
+      return THE_SUNKEN_YACHT
 
     case FarmingMethod.BARF_MOUNTAIN:
     default:

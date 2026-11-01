@@ -6,6 +6,7 @@ export enum FarmingMethod {
   BARF_MOUNTAIN = "Barf Mountain",
   THE_CORAL_CORRAL = "The Coral Corral",
   THE_MARINARA_TRENCH = "The Marinara Trench",
+  THE_SUNKEN_YACHT = "The Sunken Party Yacht"
 }
 
 const workshedAliases = [
@@ -50,6 +51,10 @@ const farmingStrategyAliases: Record<
     location: $location`The Marinara Trench`,
     aliases: ["trench", "marinara", "inko", "squido", "ATTheSea"],
   },
+  [FarmingMethod.THE_SUNKEN_YACHT]: {
+    location: $location`The Sunken Party Yacht`,
+    aliases: ["yachto", "yacht", "yachtzeeplus"]
+  }
 };
 
 function stringToFarmingMethod(s: string): FarmingMethod {
