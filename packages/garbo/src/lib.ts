@@ -575,7 +575,6 @@ export function sober(): boolean {
 type GarboItemLists = {
   Newark: string[];
   "Feliz Navidad": string[];
-  trainset: string[];
 };
 
 export const asArray = <T>(singleOrArray: T | T[]): T[] =>
@@ -700,38 +699,6 @@ export function printEventLog(): void {
   }
 }
 
-function untangleDigitizes(turnCount: number, chunks: number): number {
-  const turnsPerChunk = turnCount / chunks;
-  const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
-  return Math.round(chunks * monstersPerChunk);
-}
-
-export function digitizedMonstersRemainingForTurns(
-  estimatedTurns: number,
-): number {
-  if (!SourceTerminal.have()) return 0;
-
-  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
-  if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
-    return untangleDigitizes(
-      estimatedTurns,
-      SourceTerminal.getMaximumDigitizeUses(),
-    );
-  }
-
-  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
-
-  const turnsLeftAtNextMonster =
-    estimatedTurns - Counter.get("Digitize Monster");
-  if (turnsLeftAtNextMonster <= 0) return 0;
-  const turnsAtLastDigitize =
-    turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
-  return (
-    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
-    SourceTerminal.getDigitizeMonsterCount()
-  );
-}
-
 function maxCarriedFamiliarDamage(familiar: Familiar): number {
   // Only considering familiars we reasonably may carry
   switch (familiar) {
@@ -845,10 +812,6 @@ export function felizValue(): number {
 
 export function newarkValue(): number {
   return garboAverageValue(...getDropsList("Newark"));
-}
-
-export function candyFactoryValue(): number {
-  return garboAverageValue(...getDropsList("trainset"));
 }
 
 export function aprilFoolsRufus() {

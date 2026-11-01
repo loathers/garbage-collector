@@ -12,10 +12,10 @@ import {
   BloodCubicZirconia,
   get,
   have,
+  SourceTerminal,
 } from "libram";
 import { garboValue } from "./garboValue";
 import { effectValueWithOpportunityCost } from "./potions";
-import { digitizedMonstersRemainingForTurns } from "./lib";
 import { safeRefractedCasts } from "./resources/bloodCubicZirconia";
 import { FarmingStrategy } from "./farmingStrategy";
 
@@ -30,7 +30,7 @@ export function wanderer(): WandererManager {
       prioritizeCappingGuzzlr: get("garbo_prioritizeCappingGuzzlr", false),
       freeFightExtraValue: (location: Location) =>
         freeFightFamiliarData(location).expectedValue,
-      digitzesRemaining: digitizedMonstersRemainingForTurns,
+      digitzesRemaining: SourceTerminal.digitizedMonstersRemainingForTurns,
       plentifulMonsters: [
         globalOptions.target,
         ...(globalOptions.nobarf ? [] : FarmingStrategy.monsters()),

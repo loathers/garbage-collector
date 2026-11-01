@@ -72,7 +72,7 @@ import {
 import { printLog } from "./log";
 import { meatMood } from "./mood";
 import { potionSetup } from "./potions";
-import { endSession, startSession } from "./session";
+import { endSession, startSession, trackMarginalMpa } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { garboAverageValue } from "./garboValue";
 import { safeRestore } from "./restore";
@@ -567,6 +567,7 @@ export function main(argString = ""): void {
     });
   } finally {
     if (prepareForCleanup()) {
+      trackMarginalMpa(0);
       stash.returnAll();
       cliExecute("spade autoconfirm");
       propertyManager.resetAll();

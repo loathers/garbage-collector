@@ -19,12 +19,8 @@ import {
 import { globalOptions } from "../../config";
 import { potionSetupCompleted } from "../../potions";
 import { estimatedGarboTurns, estimatedTurnsTomorrow } from "../../turns";
-import {
-  bestTakerspaceItem,
-  grabMedicine,
-  rotateToOptimalCycle,
-  trainNeedsRotating,
-} from "../../resources/worksheds";
+import { bestTakerspaceItem, grabMedicine } from "../../resources/worksheds";
+import { trainSetManager } from "../../resources/trainset";
 import { GarboPostTask } from "./lib";
 import { FarmingStrategy } from "../../farmingStrategy";
 
@@ -107,8 +103,8 @@ const worksheds = [
     workshed: $item`model train set`,
     // We should always get value from the trainset, so we would never switch from it
     done: () => false,
-    available: trainNeedsRotating,
-    action: rotateToOptimalCycle,
+    available: () => trainSetManager().needsRotating(),
+    action: () => trainSetManager().rotateToOptimalCycle(),
   }),
   new GarboWorkshed({
     workshed: $item`cold medicine cabinet`,
