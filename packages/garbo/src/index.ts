@@ -422,7 +422,9 @@ export function main(argString = ""): void {
     propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
 
     const equipmentFamiliars = $familiars`Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow`;
-    for (const familiar of equipmentFamiliars.filter(have)) {
+    for (const familiar of equipmentFamiliars.filter((familiar) =>
+      have(familiar),
+    )) {
       equip(familiar, $item.none);
     }
 
