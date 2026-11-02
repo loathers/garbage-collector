@@ -54,7 +54,7 @@ export function setupGarden(): void {
 }
 
 function blackRoseWillGrow(): boolean {
-  return myGardenType() === "black_rose" && !BlackRoseGarden.swappedToday;
+  return myGardenType() === "black_rose" && !BlackRoseGarden.swappedToday();
 }
 
 export function restoreGarden(): void {
