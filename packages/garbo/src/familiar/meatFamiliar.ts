@@ -73,7 +73,9 @@ export function underwaterMeatFamiliar(): Familiar {
   const fallback = meatFamiliar();
   if (familiarCanBreathe(fallback)) return fallback;
 
-  const breathingEquipment = familiarWaterBreathingEquipment.filter(have);
+  const breathingEquipment = familiarWaterBreathingEquipment.filter((item) =>
+    have(item),
+  );
   if (!breathingEquipment.length) return fallback;
 
   const assumedFreeSlotEquipment = have($item`amulet coin`)
