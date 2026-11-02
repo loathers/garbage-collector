@@ -29278,7 +29278,7 @@ var PygmyFightTasks = [pygmyTask({
   name: "Drunk Pygmy (Tenth, Save Orb Prediction)",
   ready: () => pygmiesReady() && get$2("_drunkPygmyBanishes") === 9,
   completed: () => get$2("_drunkPygmyBanishes") >= 10,
-  equip: () => $items`miniature crystal ball`.filter(have$R)
+  equip: () => $items`miniature crystal ball`.filter(item => have$R(item))
 }), pygmyTask({
   name: "Drunk Pygmy (Eleventh, Without Saber)",
   ready: () => pygmiesReady() && get$2("_drunkPygmyBanishes") === 10 && (!have$R(saber) || crateStrategy() === "Saber"),
@@ -29309,7 +29309,7 @@ var PygmyFightTasks = [pygmyTask({
   name: "Drunk Pygmy (Release Orb Prediction)",
   ready: () => pygmiesReady() && get$2("_drunkPygmyBanishes") >= 11 && ponder().get(alley) === drunk,
   completed: () => ponder().get(alley) !== drunk,
-  equip: () => $items`miniature crystal ball`.filter(have$R),
+  equip: () => $items`miniature crystal ball`.filter(item => have$R(item)),
   combat: new GarboStrategy(() => Macro.if_(drunk, pygmyMacro()).abort())
 }), pygmyTask({
   name: "Drunk Pygmies (Time-Spinner)",
