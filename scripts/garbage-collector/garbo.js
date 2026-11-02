@@ -20271,7 +20271,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"a666e6f773f9d0bd27928c3110ce460ea6163a29"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"84cc956523d2e38e0efa99d960aaefeee3ab572e"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -29102,8 +29102,11 @@ function setupGarden() {
     kolmafia.use($item`packet of tall grass seeds`);
   }
 }
+function blackRoseWillGrow() {
+  return kolmafia.myGardenType() === "black_rose" && !swappedToday();
+}
 function restoreGarden() {
-  if (canSwapGarden() && startingGarden && have$R(startingGarden)) {
+  if (canSwapGarden() && startingGarden && have$R(startingGarden) && !blackRoseWillGrow()) {
     kolmafia.use(startingGarden);
   }
 }
@@ -29278,7 +29281,7 @@ var PygmyFightTasks = [pygmyTask({
   name: "Drunk Pygmy (Tenth, Save Orb Prediction)",
   ready: () => pygmiesReady() && get$2("_drunkPygmyBanishes") === 9,
   completed: () => get$2("_drunkPygmyBanishes") >= 10,
-  equip: () => $items`miniature crystal ball`.filter(have$R)
+  equip: () => $items`miniature crystal ball`.filter(item => have$R(item))
 }), pygmyTask({
   name: "Drunk Pygmy (Eleventh, Without Saber)",
   ready: () => pygmiesReady() && get$2("_drunkPygmyBanishes") === 10 && (!have$R(saber) || crateStrategy() === "Saber"),
@@ -29309,7 +29312,7 @@ var PygmyFightTasks = [pygmyTask({
   name: "Drunk Pygmy (Release Orb Prediction)",
   ready: () => pygmiesReady() && get$2("_drunkPygmyBanishes") >= 11 && ponder().get(alley) === drunk,
   completed: () => ponder().get(alley) !== drunk,
-  equip: () => $items`miniature crystal ball`.filter(have$R),
+  equip: () => $items`miniature crystal ball`.filter(item => have$R(item)),
   combat: new GarboStrategy(() => Macro.if_(drunk, pygmyMacro()).abort())
 }), pygmyTask({
   name: "Drunk Pygmies (Time-Spinner)",
