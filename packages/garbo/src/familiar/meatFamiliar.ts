@@ -48,8 +48,9 @@ export function setBestLeprechaunAsMeatFamiliar(): void {
 
 export function meatFamiliar(): Familiar {
   return (fam ??=
-    $familiars`Robortender, Jill-of-All-Trades`.find(have) ??
-    findBestLeprechaun());
+    $familiars`Robortender, Jill-of-All-Trades`.find((familiar) =>
+      have(familiar),
+    ) ?? findBestLeprechaun());
 }
 
 const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;

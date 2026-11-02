@@ -444,7 +444,9 @@ class StashManager {
       if (equippedItem(slot) === item) unequip(slot);
     }
 
-    for (const familiar of $familiars.all().filter(have)) {
+    for (const familiar of $familiars
+      .all()
+      .filter((familiar) => have(familiar))) {
       if (itemAmount(item) >= quantity) break;
       if (familiarEquippedEquipment(familiar) === item) {
         equip(familiar, $item.none);
