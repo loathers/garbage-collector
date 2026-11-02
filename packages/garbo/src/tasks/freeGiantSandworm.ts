@@ -253,6 +253,21 @@ const SANDWORM_TASK_DEFINITIONS: readonly SandwormTask[] = [
     acquire: () => [{ item: $item`shadow brick`, price: drumMachineROI() }],
   },
   {
+    name: $item`partial tombstone`.name,
+    ready: () => drumMachineROI() > mallPrice($item`partial tombstone`),
+    completed: () => get("_partialTombstonesUsed") >= 11,
+    combat: new GarboStrategy(() =>
+      sandwormMacro().tryItem($item`partial tombstone`),
+    ),
+    combatCount: () =>
+      drumMachineROI() > mallPrice($item`partial tombstone`)
+        ? clamp(11 - get("_partialTombstonesUsed"), 0, 11)
+        : 0,
+    acquire: () => [
+      { item: $item`partial tombstone`, price: drumMachineROI() },
+    ],
+  },
+  {
     name: $skill`BCZ: Sweat Bullets`.name,
     ready: () =>
       have($item`blood cubic zirconia`) &&
