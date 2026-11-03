@@ -8,7 +8,6 @@ import {
   lastMonster,
   Location,
   myAdventures,
-  myHash,
   myRain,
   print,
   runCombat,
@@ -46,6 +45,7 @@ import {
   SourceTerminal,
   sum,
   Witchess,
+  withChoice,
 } from "libram";
 
 import {
@@ -948,16 +948,10 @@ const emergencyChainStarters = [
         options.macro,
         () => {
           acquire(1, $item`pocket wish`, WISH_VALUE);
-          visitUrl(
-            `inv_use.php?pwd=${myHash()}&which=3&whichitem=9537`,
-            false,
-            true,
+          withChoice(1267, `1&wish=to fight a ${globalOptions.target}`, () =>
+            use($item`pocket wish`),
           );
-          visitUrl(
-            `choice.php?pwd&whichchoice=1267&option=1&wish=to fight a ${globalOptions.target} `,
-            true,
-            true,
-          );
+          // Combat wishes show a Fight! link instead of redirecting to combat.
           visitUrl("main.php", false);
           runCombat();
           globalOptions.askedAboutWish = false;
