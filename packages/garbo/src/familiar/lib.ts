@@ -5,6 +5,7 @@ import {
   inebrietyLimit,
   mallPrice,
   myAdventures,
+  myFamiliar,
   myInebriety,
   Phylum,
   totalTurnsPlayed,
@@ -163,19 +164,40 @@ function valueSnapperPhylum(phylum: Phylum, turns: number) {
   return garboValue(item) / 11;
 }
 
-export function snapperValue(mode: FamiliarMode): number {
+function snapperPhylum(mode: FamiliarMode): Phylum | null {
   switch (mode) {
     case "target": {
-      return valueSnapperPhylum(globalOptions.target.phylum, copyTargetCount());
+      // Once farming starts, target fights may use the existing tuning but
+      // must not undo a switch to the farming phylum.
+      return !globalOptions.farmingStarted ||
+        Snapper.getTrackedPhylum() === globalOptions.target.phylum
+        ? globalOptions.target.phylum
+        : null;
     }
-    case "barf": {
-      const phylum = FarmingStrategy.singlePhylumInZone();
-      if (!phylum) return 0;
-      return valueSnapperPhylum(phylum, estimatedGarboTurns());
-    }
+    case "barf":
+      return FarmingStrategy.singlePhylumInZone();
     default:
-      // Consider adding value for free fights when they match our already-tracked phylum
-      return 0;
+      return null;
+  }
+}
+
+export function snapperValue(mode: FamiliarMode): number {
+  const phylum = snapperPhylum(mode);
+  if (!phylum) return 0;
+  const farmingPhylum = FarmingStrategy.singlePhylumInZone();
+  const turns =
+    mode === "barf" ||
+    (globalOptions.farmingStarted && phylum === farmingPhylum)
+      ? estimatedGarboTurns()
+      : copyTargetCount();
+  return valueSnapperPhylum(phylum, turns);
+}
+
+export function tuneSnapper(mode: FamiliarMode): void {
+  if (myFamiliar() !== $familiar`Red-Nosed Snapper`) return;
+  const phylum = snapperPhylum(mode);
+  if (phylum && phylum !== Snapper.getTrackedPhylum()) {
+    Snapper.trackPhylum(phylum);
   }
 }
 
@@ -239,14 +261,5 @@ export function tcbValue(
 }
 
 export function snapperReasonable(mode: FamiliarMode): boolean {
-  if (!get("_garbo_doneCopyTargetFights")) return false;
-  if (!Snapper.have()) return false;
-  if (mode === "target") {
-    return true;
-  }
-  const combatQueueMonster = FarmingStrategy.singlePhylumInZone();
-  if (mode === "barf" && combatQueueMonster) {
-    return true;
-  }
-  return false;
+  return Snapper.have() && snapperPhylum(mode) !== null;
 }

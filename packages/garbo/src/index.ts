@@ -554,6 +554,7 @@ export function main(argString = ""): void {
 
       if (!globalOptions.nobarf) {
         // 3. burn turns at barf
+        globalOptions.farmingStarted = true;
         potionSetup(false);
         maximize("MP", false);
         meatMood().execute(estimatedGarboTurns());

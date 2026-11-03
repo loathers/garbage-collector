@@ -1,17 +1,8 @@
-import {
-  $familiar,
-  $item,
-  $location,
-  $monster,
-  get,
-  have,
-  Snapper,
-} from "libram";
+import { $item, $location, $monster, get, have } from "libram";
 import {
   Item,
   mallPrice,
   myAdventures,
-  myFamiliar,
   myLocation,
   toMonster,
   totalTurnsPlayed,
@@ -36,12 +27,10 @@ import { estimatedGarboTurns } from "../../turns";
 import { barfOutfit } from "../../outfit/barf";
 import { FarmingContext } from "../context";
 import { acquire } from "../../acquire";
+import { tuneSnapper } from "../../familiar/lib";
 
 export const farmPrepare = (context: FarmingContext) => {
-  if (myFamiliar() === $familiar`Red-Nosed Snapper`) {
-    const phylum = FarmingStrategy.singlePhylumInZone();
-    if (phylum) Snapper.trackPhylum(phylum);
-  }
+  tuneSnapper("barf");
 
   if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
     acquire(
@@ -93,6 +82,7 @@ export function FarmTurnQuest(): Quest<
           FarmingStrategy.shouldOlfact,
         completed: () =>
           have($effect`Everything looks Beige`) || myAdventures() === 0,
+        prepare: () => tuneSnapper("barf"),
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
         do: () => CrepeParachute.fight(FarmingStrategy.primaryMonster()),
         combat: FarmingStrategy.strategy(),
