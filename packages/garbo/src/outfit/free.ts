@@ -85,6 +85,9 @@ export function freeFightOutfit(
   );
 
   if (location.environment === "underwater") outfit.modifier.push("+sea");
+  if (get("_seadentWaveZone") === location) {
+    outfit.equip($item`Monodent of the Sea`);
+  }
 
   outfit.familiar ??= freeFightFamiliar(
     adventure,
