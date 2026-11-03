@@ -1,6 +1,7 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Familiar, Location, setLocation } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
@@ -8,6 +9,7 @@ import {
   Delayed,
   get,
   Guzzlr,
+  have,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -85,7 +87,11 @@ export function freeFightOutfit(
   );
 
   if (location.environment === "underwater") outfit.modifier.push("+sea");
-  if (get("_seadentWaveUsed") && get("_seadentWaveZone") === location) {
+  if (
+    get("_seadentWaveUsed") &&
+    get("_seadentWaveZone") === location &&
+    !have($effect`Fishy`)
+  ) {
     outfit.equip($item`Monodent of the Sea`);
   }
 
