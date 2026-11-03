@@ -32,17 +32,15 @@ import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   applyCheeseBonus,
   bestBjornalike,
-  cleaverCheck,
-  validateGarbageFoldable,
-} from "./lib";
-import {
   BonusEquipMode,
-  MEAT_TARGET_MULTIPLIER,
+  cleaverCheck,
   modeValueOfItem,
   modeValueOfMeat,
-} from "../lib";
+  validateGarbageFoldable,
+} from "./lib";
 import { trackMarginalTurnExtraValue } from "../session";
 import { FarmingStrategy } from "../farmingStrategy";
+import { specialFamiliarOutfits } from "../familiar/specialFamiliarOutfits";
 
 function chooseGun() {
   if (have($item`love`)) {
@@ -128,19 +126,9 @@ export function computeBarfOutfit(
   outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
   applyCheeseBonus(outfit, BonusEquipMode.BARF);
 
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
-    outfit.equip($item`LED candle`);
-    outfit.setModes({ jillcandle: "ultraviolet" });
-  }
-
-  if (
-    outfit.familiar === $familiar`Chest Mimic` &&
-    $familiar`Chest Mimic`.experience < 550
-  ) {
-    const famExpValue =
-      (MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50;
-    outfit.modifier.push(`${famExpValue} Familiar Experience`);
-  }
+  const specialFamiliar = specialFamiliarOutfits.get(spec.familiar);
+  if (specialFamiliar?.equip) outfit.equip(specialFamiliar.equip);
+  specialFamiliar?.configureOutfit?.(outfit);
 
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
 
@@ -149,8 +137,18 @@ export function computeBarfOutfit(
   }
   outfit.modifier.push(
     `${modeValueOfMeat(BonusEquipMode.BARF)} Meat Drop`,
-    `${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`,
     "-tie",
+  );
+
+  const farmingItemDropValue = modeValueOfItem(BonusEquipMode.BARF);
+  const { valuePerItemDrop, maximumItemDrop } =
+    specialFamiliar?.itemDropObjective?.(farmingItemDropValue) ?? {
+      valuePerItemDrop: farmingItemDropValue,
+    };
+  outfit.modifier.push(
+    `${valuePerItemDrop} Item Drop${
+      maximumItemDrop === undefined ? "" : ` ${maximumItemDrop} Max`
+    }`,
   );
 
   if (myInebriety() > trueInebrietyLimit()) {

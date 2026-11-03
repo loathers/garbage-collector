@@ -5,6 +5,7 @@ import { $item, $items, $location, $monster } from "libram";
 export enum FarmingMethod {
   BARF_MOUNTAIN = "Barf Mountain",
   THE_CORAL_CORRAL = "The Coral Corral",
+  THE_MARINARA_TRENCH = "The Marinara Trench",
 }
 
 const workshedAliases = [
@@ -44,6 +45,10 @@ const farmingStrategyAliases: Record<
       "coral",
       "cows",
     ],
+  },
+  [FarmingMethod.THE_MARINARA_TRENCH]: {
+    location: $location`The Marinara Trench`,
+    aliases: ["trench", "marinara", "inko", "squido", "ATTheSea"],
   },
 };
 
@@ -106,6 +111,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       setting: "",
       help: "operate under the assumption that you're ascending after running it, rather than experiencing rollover. It will use borrowed time, it won't charge stinky cheese items, etc.",
       default: false,
+    }),
+    debug: Args.flag({
+      setting: "",
+      help: "Turn on libram debugging.",
+      hidden: true,
     }),
     loginvalidwishes: Args.flag({
       setting: "",

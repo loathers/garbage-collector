@@ -68,7 +68,7 @@ export function chooseBanish(): BanishMethod | null {
   }
 
   const banishedMonsters = getBanishedMonsters();
-  const targetMonster = FarmingStrategy.targetMonster;
+  const targetMonster = FarmingStrategy.primaryMonster();
 
   // If a preceding script banished our target, reuse that banish first.
   return (

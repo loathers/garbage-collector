@@ -1,8 +1,6 @@
 import {
   canAdventure,
-  choiceFollowsFight,
   cliExecute,
-  eat,
   Effect,
   effectModifier,
   Familiar,
@@ -12,16 +10,13 @@ import {
   getLocketMonsters,
   getMonsters,
   gitInfo,
-  handlingChoice,
   haveEquipped,
-  haveSkill,
   holiday,
   inebrietyLimit,
   isDarkMode,
   Item,
   itemAmount,
   itemDropsArray,
-  lastMonster,
   Location,
   meatDrop,
   meatDropModifier,
@@ -37,25 +32,17 @@ import {
   myMaxhp,
   myMaxmp,
   myMp,
-  mySoulsauce,
   mySpleenUse,
   myThrall,
-  myTurncount,
   numericModifier,
   print,
-  restoreHp,
-  restoreMp,
   rollover,
-  runChoice,
-  runCombat,
   setLocation,
   Skill,
-  soulsauceCost,
   spleenLimit,
   Stat,
   todayToString,
   totalFreeRests,
-  toUrl,
   use,
   useFamiliar,
   userConfirm,
@@ -74,6 +61,7 @@ import {
   $thralls,
   ActionSource,
   bestLibramToCast,
+  Cartography,
   ChateauMantegna,
   clamp,
   ClosedCircuitPayphone,
@@ -98,14 +86,11 @@ import {
   sum,
   tryFindBanish,
   tryFindFreeRun,
-  uneffect,
 } from "libram";
 import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Macro } from "./combat";
-import { FarmingStrategy } from "./farmingStrategy";
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -119,33 +104,8 @@ export const eventLog: {
   yachtzees: 0,
 };
 
-export enum BonusEquipMode {
-  FREE,
-  MEAT_TARGET,
-  DMT,
-  BARF,
-}
-
-export function modeIsFree(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
-}
-
-export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
-}
-
-export function modeValueOfMeat(mode: BonusEquipMode): number {
-  if (modeIsFree(mode)) return 0;
-  if (mode === BonusEquipMode.BARF) return baseMeat() / 100;
-  if (mode === BonusEquipMode.MEAT_TARGET) return targetMeat() / 100;
-  return 0;
-}
-
-export function modeValueOfItem(mode: BonusEquipMode): number {
-  return mode === BonusEquipMode.BARF ? FarmingStrategy.itemDropValue() : 0;
-}
-
 export const WISH_VALUE = 50000;
+export const YACHTZEE_VALUE = 20_000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 export const ESTIMATED_OVERDRUNK_TURNS = 50;
 export const MEAT_TARGET_MULTIPLIER = (): number =>
@@ -162,7 +122,6 @@ export const songboomMeat = () =>
     : 0;
 
 // all tourists have a basemeat of 250
-export const baseMeat = () => FarmingStrategy.baseMeat + songboomMeat();
 export const targetMeat = () => meatDrop(globalOptions.target) + songboomMeat();
 export const basePointerRingMeat = () => 500;
 export const targetPointerRingMeat = () => {
@@ -178,15 +137,8 @@ export const targetPointerRingMeat = () => {
   return 50;
 };
 
-export const targetMeatDifferential = () => {
-  const baseMeatVal = baseMeat();
-  const targetMeatVal = targetMeat();
-
-  return clamp(targetMeatVal - baseMeatVal, 0, targetMeatVal);
-};
-
 export const targetingMeat = () =>
-  !isFree(globalOptions.target) && targetMeat() > baseMeat();
+  !isFree(globalOptions.target) && targetMeat() > 250;
 
 const targetingItems = () => !targetingMeat();
 
@@ -203,14 +155,12 @@ export function averageTargetNet(): number {
     : (targetMeat() * meatDropModifier()) / 100;
 }
 
-function averageTouristNet(): number {
-  return (baseMeat() * meatDropModifier()) / 100;
-}
-
 export function expectedTargetProfit(): number {
-  return isFreeAndCopyable(globalOptions.target)
-    ? averageTargetNet()
-    : averageTargetNet() - averageTouristNet();
+  return (
+    (MEAT_TARGET_MULTIPLIER() +
+      (isFreeAndCopyable(globalOptions.target) ? -1 : 0)) *
+    get("valueOfAdventure")
+  );
 }
 
 export function safeInterrupt(): void {
@@ -260,41 +210,9 @@ export function shuffle<T>(array: T[]): T[] {
 }
 
 export function mapMonster(location: Location, monster: Monster): void {
-  if (
-    haveSkill($skill`Map the Monsters`) &&
-    !get("mappingMonsters") &&
-    get("_monstersMapped") < 3
-  ) {
-    useSkill($skill`Map the Monsters`);
+  if (!Cartography.mapMonster(location, monster)) {
+    throw new Error(`Failed to map ${monster} in ${location}`);
   }
-
-  if (!get("mappingMonsters")) throw "Failed to setup Map the Monsters.";
-
-  const myTurns = myTurncount();
-  let mapPage = "";
-  // Handle zone intros and holiday wanderers
-  for (let tries = 0; tries < 10; tries++) {
-    mapPage = visitUrl(toUrl(location), false, true);
-    if (mapPage.includes("Leading Yourself Right to Them")) break;
-    // Time-pranks can show up here, annoyingly
-    if (
-      mapPage.includes("<!-- MONSTERID: 1965 -->") ||
-      mapPage.includes("<!-- MONSTERID: 1622  -->")
-    ) {
-      runCombat(Macro.attack().repeat().toString());
-    }
-    if (handlingChoice()) runChoice(-1);
-    if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
-    if (tries === 9) throw `Stuck trying to Map the monsters.`;
-  }
-
-  const fightPage = visitUrl(
-    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`,
-  );
-  if (!fightPage.includes(monster.name)) {
-    throw "Something went wrong starting the fight.";
-  }
-  if (choiceFollowsFight()) runChoice(-1);
 }
 
 export function questStep(questName: string): number {
@@ -353,7 +271,7 @@ export function pillkeeperOpportunityCost(): number {
     },
     {
       can: realmAvailable("sleaze"),
-      value: 20000 - get("valueOfAdventure"),
+      value: YACHTZEE_VALUE - get("valueOfAdventure"),
     },
   ].filter((x) => x.can);
 
@@ -403,64 +321,6 @@ export function howManySausagesCouldIEat() {
     itemAmount($item`magical sausage`) +
       itemAmount($item`magical sausage casing`),
   );
-}
-
-export function safeRestoreMpTarget(): number {
-  //  If our max MP is close to 200, we could be restoring every turn even if we don't need to, avoid that case.
-  if (Math.abs(myMaxmp() - 200) < 40) {
-    return Math.min(myMaxmp(), 100);
-  }
-  return Math.min(myMaxmp(), 200);
-}
-
-export function safeRestore(): void {
-  if (
-    lastMonster() === $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
-  ) {
-    if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
-  } else if (get("_lastCombatLost")) {
-    set("_lastCombatLost", "false");
-    throw new Error(
-      "You lost your most recent combat! Check to make sure everything is alright before rerunning.",
-    );
-  } else if (have($effect`Beaten Up`)) {
-    throw new Error(
-      "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.",
-    );
-  }
-
-  const lowPercentageHealth = FarmingStrategy.isUnderwater()
-    ? myInebriety() > inebrietyLimit()
-      ? 0.9
-      : 0.6
-    : 0.5;
-
-  if (
-    myHp() <
-    Math.min(
-      myMaxhp() * lowPercentageHealth,
-      get("garbo_restoreHpTarget", 2000),
-    )
-  ) {
-    restoreHp(Math.min(myMaxhp() * 0.9, get("garbo_restoreHpTarget", 2000)));
-  }
-  const mpTarget = safeRestoreMpTarget();
-  const shouldRestoreMp = () => myMp() < mpTarget;
-
-  if (shouldRestoreMp() && howManySausagesCouldIEat() > 0) {
-    eat($item`magical sausage`);
-  }
-
-  const soulFoodCasts = Math.floor(
-    mySoulsauce() / soulsauceCost($skill`Soul Food`),
-  );
-  if (shouldRestoreMp() && soulFoodCasts > 0) {
-    useSkill(soulFoodCasts, $skill`Soul Food`);
-  }
-
-  if (shouldRestoreMp()) restoreMp(mpTarget);
-
-  burnLibrams(mpTarget * 2); // Leave a mp buffer when burning
 }
 
 /**
@@ -715,7 +575,6 @@ export function sober(): boolean {
 type GarboItemLists = {
   Newark: string[];
   "Feliz Navidad": string[];
-  trainset: string[];
 };
 
 export const asArray = <T>(singleOrArray: T | T[]): T[] =>
@@ -840,38 +699,6 @@ export function printEventLog(): void {
   }
 }
 
-function untangleDigitizes(turnCount: number, chunks: number): number {
-  const turnsPerChunk = turnCount / chunks;
-  const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
-  return Math.round(chunks * monstersPerChunk);
-}
-
-export function digitizedMonstersRemainingForTurns(
-  estimatedTurns: number,
-): number {
-  if (!SourceTerminal.have()) return 0;
-
-  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
-  if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
-    return untangleDigitizes(
-      estimatedTurns,
-      SourceTerminal.getMaximumDigitizeUses(),
-    );
-  }
-
-  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
-
-  const turnsLeftAtNextMonster =
-    estimatedTurns - Counter.get("Digitize Monster");
-  if (turnsLeftAtNextMonster <= 0) return 0;
-  const turnsAtLastDigitize =
-    turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
-  return (
-    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
-    SourceTerminal.getDigitizeMonsterCount()
-  );
-}
-
 function maxCarriedFamiliarDamage(familiar: Familiar): number {
   // Only considering familiars we reasonably may carry
   switch (familiar) {
@@ -985,10 +812,6 @@ export function felizValue(): number {
 
 export function newarkValue(): number {
   return garboAverageValue(...getDropsList("Newark"));
-}
-
-export function candyFactoryValue(): number {
-  return garboAverageValue(...getDropsList("trainset"));
 }
 
 export function aprilFoolsRufus() {
@@ -1166,3 +989,9 @@ export function mainStatLevel(level: number): number {
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;
+
+export const expectedDropValue = (monster: Monster) =>
+  sum(
+    itemDropsArray(monster),
+    ({ drop, rate }) => (rate / 100) * garboValue(drop),
+  );

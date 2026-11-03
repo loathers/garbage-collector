@@ -17,7 +17,7 @@ const locationColor: Record<BonusColor, Location> = {
 
 function value(color: BonusColor, options: WandererFactoryOptions) {
   const denominator = options.ascend
-    ? get("8BitScore") - TREASURE_HOUSE_FAT_LOOT_TOKEN_COST
+    ? TREASURE_HOUSE_FAT_LOOT_TOKEN_COST - get("8BitScore")
     : TREASURE_HOUSE_FAT_LOOT_TOKEN_COST;
   return (
     (options.itemValue($item`fat loot token`) *

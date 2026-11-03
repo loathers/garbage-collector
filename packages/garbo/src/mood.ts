@@ -27,11 +27,8 @@ import {
   Mood,
   uneffect,
 } from "libram";
-import {
-  baseMeat as baseMeatFunc,
-  safeRestoreMpTarget,
-  setChoice,
-} from "./lib";
+import { setChoice } from "./lib";
+import { safeRestoreMpTarget } from "./restore";
 import { usingPurse } from "./outfit/lib";
 import { effectValue } from "./potions";
 import { acquire } from "./acquire";
@@ -46,22 +43,23 @@ Mood.setDefaultOptions({
     $effects`Chorale of Companionship`,
     $effects`The Ballad of Richie Thingfinder`,
   ],
-  useNativeRestores: true,
 });
 
-export function meatMood(
+export function meatMood({
   urKels = false,
-  meat: undefined | number = undefined,
-): Mood {
-  const baseMeat = baseMeatFunc();
-  meat ||= baseMeat;
+  meat = FarmingStrategy.baseMeat(),
+  useNativeRestores = true,
+} = {}): Mood {
   // Reserve the amount of MP we try to restore before each fight.
-  const mood = new Mood({ reserveMp: safeRestoreMpTarget() });
+  const mood = new Mood({
+    reserveMp: safeRestoreMpTarget(),
+    useNativeRestores,
+  });
 
-  mood.potion($item`resolution: be wealthier`, 0.3 * baseMeat);
+  mood.potion($item`resolution: be wealthier`, 0.3 * meat);
   mood.potion($item`resolution: be happier`, 0.15 * 0.45 * 0.8 * 200);
 
-  const flaskValue = usingPurse() ? 0.3 * baseMeat : 5;
+  const flaskValue = usingPurse() ? 0.3 * meat : 5;
   mood.potion($item`Flaskfull of Hollow`, flaskValue);
 
   mood.skill($skill`Blood Bond`);
@@ -82,7 +80,7 @@ export function meatMood(
   mood.skill($skill`The Spirit of Taking`);
 
   if (FarmingStrategy.location === $location`Barf Mountain`) {
-    mood.potion($item`How to Avoid Scams`, 3 * baseMeat);
+    mood.potion($item`How to Avoid Scams`, 3 * meat);
   }
 
   if (FarmingStrategy.location.recommendedStat <= 300) {

@@ -1,3 +1,4 @@
+import { stash } from "../stash";
 import {
   adv1,
   canadiaAvailable,
@@ -49,7 +50,6 @@ import {
   $monster,
   $slot,
   BeachComb,
-  Clan,
   findLeprechaunMultiplier,
   get,
   getModifier,
@@ -66,16 +66,12 @@ import {
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
-import {
-  checkCurrentClanWhitelist,
-  getWhitelistedClans,
-  withStash,
-} from "../clan";
+import { getWhitelistedClans, withClan } from "../clan";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { meatFamiliar } from "../familiar/meatFamiliar";
 import { estimatedAttunementTentacles } from "../fights";
-import { baseMeat, HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
+import { HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 import {
   estimatedGarboTurns,
@@ -94,6 +90,7 @@ import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
 import { embezzlerFights } from "./embezzler";
+import { FarmingStrategy } from "../farmingStrategy";
 
 const photoBoothItems = $items`Sheriff badge, Sheriff pistol, Sheriff moustache, feather boa, oversized monocle on a stick, fake huge beard`;
 const closetItems = $items`4-d camera, sand dollar, unfinished ice sculpture`;
@@ -125,7 +122,7 @@ function voterSetup(): void {
       0.3 *
         ((1000 + songboomMeat()) * embezzlerFights() +
           targetMeat() * copyTargetCount() +
-          baseMeat() *
+          FarmingStrategy.baseMeat() *
             (estimatedGarboTurns() - copyTargetCount() - embezzlerFights())),
     ],
     [
@@ -239,7 +236,9 @@ function pantogram(): void {
     const bestPantsValue = Math.max(0, ...alternativePants);
 
     pantogramValue =
-      (100 + 0.6 * baseMeat() - (bestPantsValue * baseMeat()) / 100) *
+      (100 +
+        0.6 * FarmingStrategy.baseMeat() -
+        (bestPantsValue * FarmingStrategy.baseMeat()) / 100) *
       estimatedGarboTurns();
   }
   const cloverPrice = Math.min(
@@ -551,7 +550,7 @@ const DailyTasks: GarboTask[] = [
     name: $item`defective Game Grid token`.name,
     completed: () => get("_defectiveTokenUsed"),
     do: () =>
-      withStash([$item`defective Game Grid token`], () =>
+      stash.with([$item`defective Game Grid token`], () =>
         use(1, $item`defective Game Grid token`),
       ),
     spendsTurn: false,
@@ -650,12 +649,10 @@ const DailyTasks: GarboTask[] = [
       ),
     completed: () => get("_clanFortuneConsultUses") >= 3,
     do: (): void => {
-      checkCurrentClanWhitelist(
+      withClan(
         "Bonus Adventures from Hell",
         "To stop garbo using the fortune teller, remove your 'Bonus Adventures from Hell' whitelist.",
-      );
-      Clan.with("Bonus Adventures from Hell", () =>
-        cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
+        () => cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
       );
       if (get("_clanFortuneConsultUses") < 3) wait(10);
     },
@@ -733,7 +730,7 @@ const DailyTasks: GarboTask[] = [
     ready: () => get("_bittycar") !== "meatcar",
     completed: () => get("_bittycar") === "meatcar",
     do: () =>
-      withStash([$item`BittyCar MeatCar`], () =>
+      stash.with([$item`BittyCar MeatCar`], () =>
         use(1, $item`BittyCar MeatCar`),
       ),
     spendsTurn: false,
@@ -744,7 +741,7 @@ const DailyTasks: GarboTask[] = [
       get("_bittycar") !== "meatcar" && get("_bittycar") !== "soulcar",
     completed: () => get("_bittycar") === "soulcar",
     do: () =>
-      withStash([$item`BittyCar SoulCar`], () =>
+      stash.with([$item`BittyCar SoulCar`], () =>
         use(1, $item`BittyCar SoulCar`),
       ),
     spendsTurn: false,

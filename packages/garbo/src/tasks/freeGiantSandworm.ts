@@ -39,7 +39,7 @@ import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
 import { freeFightOutfit } from "../outfit/free";
 import { GarboTask } from "./engine";
-import { GarboFreeFightTask } from "./freeFight";
+import { GarboFreeFightTask } from "./freeFight/lib";
 import { sandwormFamiliar } from "../familiar/sandwormFamiliar";
 import { sober } from "../lib";
 import { safeSweatBulletCasts } from "../resources/bloodCubicZirconia";
@@ -89,6 +89,7 @@ function sandwormOutfit(spec: OutfitSpec = {}): Outfit {
 }
 
 const DEFAULT_SANDWORM_TASK = {
+  mapSafe: true,
   combat: new GarboStrategy(() => Macro.abort()),
   prepare: () => {
     if (!have($item`drum machine`, expectedFreeGiantSandwormQuestFights())) {
@@ -123,6 +124,7 @@ function sandwormTask(
 }
 
 const NON_SANDWORM_TASK = {
+  mapSafe: true,
   combat: new GarboStrategy(() => Macro.abort()),
   outfit: () => new Outfit(),
   spendsTurn: false,
@@ -249,6 +251,21 @@ const SANDWORM_TASK_DEFINITIONS: readonly SandwormTask[] = [
         ? clamp(13 - get("_shadowBricksUsed"), 0, 13)
         : 0,
     acquire: () => [{ item: $item`shadow brick`, price: drumMachineROI() }],
+  },
+  {
+    name: $item`partial tombstone`.name,
+    ready: () => drumMachineROI() > mallPrice($item`partial tombstone`),
+    completed: () => get("_partialTombstonesUsed") >= 11,
+    combat: new GarboStrategy(() =>
+      sandwormMacro().tryItem($item`partial tombstone`),
+    ),
+    combatCount: () =>
+      drumMachineROI() > mallPrice($item`partial tombstone`)
+        ? clamp(11 - get("_partialTombstonesUsed"), 0, 11)
+        : 0,
+    acquire: () => [
+      { item: $item`partial tombstone`, price: drumMachineROI() },
+    ],
   },
   {
     name: $skill`BCZ: Sweat Bullets`.name,

@@ -14,12 +14,15 @@ import {
   equippedItem,
   fullnessLimit,
   getClanLounge,
+  getIngredients,
   getProperty,
+  handlingChoice,
   haveEffect,
   inebrietyLimit,
   Item,
   itemAmount,
   itemType,
+  lastChoice,
   logprint,
   mallPrice,
   mpCost,
@@ -38,6 +41,7 @@ import {
   putCloset,
   retrieveItem,
   retrievePrice,
+  runChoice,
   sellsItem,
   setProperty,
   Slot,
@@ -67,7 +71,6 @@ import {
   $modifier,
   $skill,
   $thrall,
-  arrayEquals,
   AsdonMartin,
   canRememberSong,
   clamp,
@@ -86,6 +89,7 @@ import {
   maximizeCached,
   MayoClinic,
   MenuItem,
+  notNull,
   PrismaticBeret,
   realmAvailable,
   set,
@@ -93,13 +97,13 @@ import {
   sumNumbers,
   uneffect,
   unequip,
+  withChoice,
   withProperties,
   withProperty,
 } from "libram";
 import { acquire, priceCaps } from "./acquire";
 import { withVIPClan } from "./clan";
 import { globalOptions } from "./config";
-import { beretEffectValue } from "./resources/beret";
 import { expectedGregs } from "./resources/extrovermectin";
 import { shouldAugustCast } from "./resources/scepter";
 import { synthesize } from "./resources/synthesis";
@@ -111,7 +115,7 @@ import {
   userConfirmDialog,
 } from "./lib";
 import { shrugBadEffects } from "./mood";
-import { Potion, PotionTier } from "./potions";
+import { effectValueWithOpportunityCost, Potion, PotionTier } from "./potions";
 import {
   estimatedGarboTurns,
   estimatedTurnsTomorrow,
@@ -125,7 +129,57 @@ const MPA = get("valueOfAdventure");
 print(`Using adventure value ${MPA}.`, HIGHLIGHT);
 
 const Mayo = MayoClinic.Mayo;
-type Note = PotionTier | null;
+type NoodleTier = `${PotionTier} (noodle-doubled)`;
+type Note = PotionTier | NoodleTier | null;
+
+/**
+ * Pastas of legend lead to Legendary Digestion when eaten; we'll have to handle the choice.
+ */
+const LEGENDARY_DIGESTION_CHOICE_ID = 1599;
+const LEGENDARY_DIGESTION_STOMACH = 5;
+const legendaryNoodleDishes = $items`Frutti di Scatoletta, Pesto alla Marziano, Arrattabbattabiata, Orzo di Riso, Pasta Grimavera, Linguini Ubriacapa, Gnocci Domani, Formica e Pepe, Tubetto Gelatto`;
+
+const isNoodleTier = (data: Note | undefined): data is NoodleTier =>
+  !!data?.endsWith("(noodle-doubled)");
+
+function existingNoodleCharges(): number {
+  return get("legendaryNoodlesStomach");
+}
+
+function noodleDishCharges(index: number): number {
+  return index === 0 ? 3 : 2;
+}
+
+type NoodleDish = { dish: Item; price: number; owned: boolean };
+const legendaryNoodles = $item`legendary noodles`;
+
+function noodleDishPrice(dish: Item, ownNoodles: boolean): number {
+  const cost = (item: Item) =>
+    (ownNoodles || item !== legendaryNoodles) && have(item)
+      ? ingredientCost(item)
+      : mallPrice(item) || Infinity;
+  const cookPrice = sumNumbers(
+    Object.entries(getIngredients(dish)).map(
+      ([name, quantity]) => quantity * cost(toItem(name)),
+    ),
+  );
+  return Math.min(cookPrice, mallPrice(dish) || Infinity);
+}
+
+function bestNoodleDishToMake(ownNoodles: boolean): NoodleDish | null {
+  const options = legendaryNoodleDishes
+    .map((dish) => ({
+      dish,
+      price: noodleDishPrice(dish, ownNoodles),
+      owned: false,
+    }))
+    .filter(({ price }) => Number.isFinite(price));
+  if (options.length === 0) return null;
+  return maxBy(
+    options,
+    ({ dish, price }) => getAverageAdventures(dish) * MPA - price,
+  );
+}
 
 function hasMoonZoneRestaurant(): boolean {
   return $locations`Camp Logging Camp, Thugnderdome`.some((loc) =>
@@ -165,7 +219,13 @@ function eatSafe(qty: number, item: Item) {
     acquire(1, $item`Hunger™ Sauce`, 3 * MPA);
     use($item`Hunger™ Sauce`);
   }
-  if (mallPrice($item`fudge spork`) < 3 * MPA && !get("_fudgeSporkUsed")) {
+  // can't use fudge spork with legendary pasta
+  if (
+    itemType(item) === "food" &&
+    !legendaryNoodleDishes.includes(item) &&
+    mallPrice($item`fudge spork`) < 3 * MPA &&
+    !get("_fudgeSporkUsed")
+  ) {
     eat($item`fudge spork`);
   }
   if (
@@ -209,7 +269,7 @@ function buskEffectValuer(effect: Effect, duration: number): number {
   ) {
     return 1_000; // Arbitrary value, assume it will give upcoming busks more value if it's our first busk
   }
-  return beretEffectValue(effect, duration);
+  return effectValueWithOpportunityCost(effect, duration);
 }
 function canBusk() {
   return PrismaticBeret.have() && get("_beretBuskingUses") < 5;
@@ -861,51 +921,222 @@ function ingredientCost(item: Item): number {
   return ingredientAutosellPrice;
 }
 
+function foodCounts(diet: Diet<Note>): Map<Item, number> {
+  const counts = new Map<Item, number>();
+  for (const { menuItems, quantity } of diet.entries) {
+    const food = menuItems[menuItems.length - 1]?.item;
+    if (food && itemType(food) === "food") {
+      counts.set(food, (counts.get(food) ?? 0) + quantity);
+    }
+  }
+  return counts;
+}
+
+function sameCounts(a: Map<Item, number>, b: Map<Item, number>): boolean {
+  return (
+    a.size === b.size && [...a].every(([item, count]) => b.get(item) === count)
+  );
+}
+
 /**
  * Generate a potion diet that has entries
  * @param targets number of target monsters expected to be encountered on this day
  * @param turns number of turns total expecte
+ * @param plannedFoods foods the previous plan eats, which noodle dish charges can double
  */
 function potionMenu(
   baseMenu: MenuItem<Note>[],
   targets: number,
   turns: number,
+  plannedFoods = new Map<Item, number>(),
 ): MenuItem<Note>[] {
+  type PotionOptions = {
+    price?: number;
+    organ?: "spleen item" | "booze" | "food";
+    size?: number;
+  };
+  // Food potions don't get added directly to the big menu array
+  // we accumulate them here to put them into the noodlemenu.
+  const foodPotions: {
+    potion: Potion;
+    limit?: number;
+    options: PotionOptions;
+    mayo?: Item;
+  }[] = [];
+
+  function potionTiers(
+    potion: Potion,
+    limit: number | undefined,
+    options: PotionOptions,
+    mayo: Item | undefined,
+    noodleDoubled = false,
+  ): MenuItem<Note>[] {
+    if (limit === 0) return [];
+    return potion.value(targets, turns, limit).map(
+      (tier) =>
+        new MenuItem<Note>(potion.potion, {
+          maximum: tier.quantity,
+          additionalValue: tier.value,
+          priceOverride: options.price,
+          organ: options.organ,
+          size: options.size,
+          data: noodleDoubled
+            ? (`${tier.name} (noodle-doubled)` as const)
+            : tier.name,
+          mayo,
+        }),
+    );
+  }
+
   function limitedPotion(
     input: Item | Potion,
     limit?: number,
-    options: {
-      price?: number;
-      organ?: "spleen item" | "booze" | "food";
-      size?: number;
-    } = {},
+    options: PotionOptions = {},
   ): MenuItem<Note>[] {
     if (limit === 0) {
       return [];
     }
 
     let potion = input instanceof Item ? new Potion(input) : input;
+    if (itemType(potion.potion) !== "food") {
+      return potionTiers(potion, limit, options, undefined);
+    }
     let mayo: Item | undefined = undefined;
     if (
-      itemType(potion.potion) === "food" &&
-      (GarboWorkshed.current?.workshed === $item`portable Mayo Clinic` ||
-        switchingToMayo())
+      GarboWorkshed.current?.workshed === $item`portable Mayo Clinic` ||
+      switchingToMayo()
     ) {
       potion = potion.doubleDuration();
       mayo = Mayo.zapine;
     }
-    return potion.value(targets, turns, limit).map(
-      (tier) =>
-        new MenuItem(potion.potion, {
-          maximum: tier.quantity,
-          additionalValue: tier.value,
-          priceOverride: options.price,
-          organ: options.organ,
-          size: options.size,
-          data: tier.name,
-          mayo,
-        }),
+    foodPotions.push({ potion, limit, options, mayo });
+    return [];
+  }
+
+  function noodleMenu(): MenuItem<Note>[] {
+    const existing = existingNoodleCharges();
+
+    const bestValue = (potion: Potion) =>
+      potion.value(targets, turns, 1)[0]?.value ?? 0;
+
+    // Determine the highest-value food potions to double.
+    const ranked = foodPotions
+      .map((foodPotion) => {
+        const doubled = bestValue(foodPotion.potion.doubleDuration());
+        const price = foodPotion.options.price ?? foodPotion.potion.price();
+        return {
+          foodPotion,
+          gain: doubled > price ? doubled - bestValue(foodPotion.potion) : -1,
+        };
+      })
+      .filter(({ gain }) => gain > 0)
+      .sort((a, b) => b.gain - a.gain);
+    const charges: typeof ranked = [];
+
+    const assignCharges = (
+      count: number,
+      available: (entry: (typeof ranked)[number]) => number,
+    ) => {
+      const end = charges.length + count;
+      for (const entry of ranked) {
+        const assigned = charges.filter((charge) => charge === entry).length;
+        const uses = Math.min(
+          available(entry) - assigned,
+          end - charges.length,
+        );
+        for (let i = 0; i < uses; i++) charges.push(entry);
+      }
+    };
+
+    assignCharges(existing, (entry) => entry.foodPotion.limit ?? Infinity);
+
+    // A single item might map to multiple foodPotion entries, each with their own limits;
+    // distribute the planned consumption to not exceed any limits.
+    const unclaimed = new Map(plannedFoods);
+    const plannedUses = new Map(
+      ranked.map((entry) => {
+        const item = entry.foodPotion.potion.potion;
+        const uses = Math.min(
+          entry.foodPotion.limit ?? Infinity,
+          unclaimed.get(item) ?? 0,
+        );
+        unclaimed.set(item, (unclaimed.get(item) ?? 0) - uses);
+        return [entry, uses];
+      }),
     );
+
+    // Enough dishes to double every planned eat, beyond the ones we own
+    const plannedCharges = sumNumbers([...plannedUses.values()]);
+    const dishes = [
+      ...legendaryNoodleDishes.flatMap((dish) =>
+        new Array<NoodleDish>(availableAmount(dish)).fill({
+          dish,
+          price: MenuItem.defaultPriceFunction(dish),
+          owned: true,
+        }),
+      ),
+      // If noodles are mallmin, we value ones you own cheaper than ones you buy.
+      // Double up on entries to account for both.
+      ...new Array<NoodleDish | null>(availableAmount(legendaryNoodles)).fill(
+        bestNoodleDishToMake(true),
+      ),
+      ...new Array<NoodleDish | null>(Math.ceil(plannedCharges / 2)).fill(
+        bestNoodleDishToMake(false),
+      ),
+    ]
+      .filter(notNull)
+      .sort((a, b) => a.price - b.price);
+
+    const totalCharges =
+      existing + sumNumbers(dishes.map((_, index) => noodleDishCharges(index)));
+
+    // Value charges from eating pasta against foods in the previous plan,
+    // so pasta doesn't get credit for doubling food we don't expect to eat.
+    assignCharges(
+      totalCharges - existing,
+      (entry) => plannedUses.get(entry) ?? 0,
+    );
+
+    // Add the value of existing noodle charges directly to food potions, because there's no noodle dish to claim it.
+    const potionItems = foodPotions.flatMap((foodPotion) => {
+      const { potion, limit, options, mayo } = foodPotion;
+      const doubledUses = charges
+        .slice(0, existing)
+        .filter((charge) => charge.foodPotion === foodPotion).length;
+      if (doubledUses === 0) return potionTiers(potion, limit, options, mayo);
+      return [
+        ...potionTiers(
+          potion.doubleDuration(),
+          doubledUses,
+          options,
+          mayo,
+          true,
+        ),
+        ...potionTiers(
+          potion,
+          limit === undefined ? undefined : limit - doubledUses,
+          options,
+          mayo,
+        ),
+      ];
+    });
+
+    let used = existing;
+    // The planner can't make a food's doubling conditional on eating pasta, so credit
+    // that benefit to the pasta instead. Unassigned charges contribute nothing.
+    const dishItems = dishes.flatMap(({ dish, price, owned }, index) => {
+      const dishCharges = charges.slice(used, used + noodleDishCharges(index));
+      used += noodleDishCharges(index);
+      const additionalValue = sum(dishCharges, "gain");
+      if (!owned && additionalValue <= 0) return [];
+      return new MenuItem<Note>(dish, {
+        maximum: 1,
+        additionalValue,
+        priceOverride: price,
+      });
+    });
+
+    return [...potionItems, ...dishItems];
   }
   function potion(potion: Item | Potion, options = {}): MenuItem<Note>[] {
     return limitedPotion(potion, undefined, options);
@@ -954,7 +1185,7 @@ function potionMenu(
       limitedPotion(out.item, 1, { price: out.price }),
   );
 
-  return [
+  const menuItems = [
     ...baseMenu,
     ...copiers(),
 
@@ -1037,45 +1268,279 @@ function potionMenu(
         )
       : []),
   ];
+  return [...menuItems, ...noodleMenu()];
 }
 
 interface DietPlanner {
   (menu: MenuItem<Note>[]): Diet<Note>;
 }
-function balanceMenu(
+/**
+ * Plan a diet, iteratively re-balancing it to account for potion duration and copytarget fights.
+ * Early exits when it reaches a stable state; otherwise does 5 iterations.
+ */
+function planBalancedDiet(
   baseMenu: MenuItem<Note>[],
   dietPlanner: DietPlanner,
-): MenuItem<Note>[] {
+): Diet<Note> {
+  const start = Date.now();
+  let passes = 0;
+  const timedPlanner = (menu: MenuItem<Note>[]) => {
+    const passStart = Date.now();
+    const diet = dietPlanner(menu);
+    passes++;
+    print(`Diet pass ${passes} took ${Date.now() - passStart}ms.`);
+    return diet;
+  };
+  const finish = (diet: Diet<Note>) => {
+    print(`Diet planned in ${Date.now() - start}ms over ${passes} passes.`);
+    return diet;
+  };
   const baseTargets = highMeatMonsterCount();
-  function rebalance(
-    menu: MenuItem<Note>[],
-    iterations: number,
-    targets: number,
-    adventures: number,
-  ): MenuItem<Note>[] {
-    const fullMenu = potionMenu(
-      menu,
-      baseTargets + targets,
-      estimatedGarboTurns(false) + adventures,
+  const baseTurns = estimatedGarboTurns(false);
+  let targets = 0;
+  const baseDiet = timedPlanner(baseMenu);
+  let adventures = baseDiet.expectedAdventures();
+  let foods = foodCounts(baseDiet);
+  for (let iterations = 5; iterations > 0; iterations--) {
+    print(
+      `Calculating diet, please wait${".....".slice(0, iterations)}`,
+      HIGHLIGHT,
     );
-    if (iterations <= 0) {
-      return fullMenu;
-    } else {
-      print(
-        `Calculating diet, please wait${".....".slice(0, iterations)}`,
-        HIGHLIGHT,
-      );
-      const balancingDiet = dietPlanner(fullMenu);
-      return rebalance(
-        menu,
-        iterations - 1,
-        countCopies(balancingDiet),
-        balancingDiet.expectedAdventures(),
+    const balancingDiet = timedPlanner(
+      potionMenu(
+        baseMenu,
+        baseTargets + targets,
+        baseTurns + adventures,
+        foods,
+      ),
+    );
+    const nextTargets = countCopies(balancingDiet);
+    const nextAdventures = balancingDiet.expectedAdventures();
+    const nextFoods = foodCounts(balancingDiet);
+    if (
+      nextTargets === targets &&
+      nextAdventures === adventures &&
+      sameCounts(nextFoods, foods)
+    ) {
+      return finish(balancingDiet);
+    }
+    targets = nextTargets;
+    adventures = nextAdventures;
+    foods = nextFoods;
+  }
+  return finish(
+    timedPlanner(
+      potionMenu(
+        baseMenu,
+        baseTargets + targets,
+        baseTurns + adventures,
+        foods,
+      ),
+    ),
+  );
+}
+
+/**
+ * Items that affect both stomach and liver, as [fullness, inebriety]; negative values clean.
+ * These double diet planning time, because the knapsack is run with and without each of them.
+ */
+const crossOrganItems = new Map<Item, [number, number]>([
+  [$item`spice melange`, [-3, -3]],
+  [$item`Ultra Mega Sour Ball`, [-3, -3]],
+  [$item`The Plumber's mushroom stew`, [3, -1]],
+  [$item`The Mad Liquor`, [-1, 3]],
+  [$item`Doc Clock's thyme cocktail`, [-2, 4]],
+  [$item`Mr. Burnsger`, [4, -2]],
+]);
+
+/**
+ * An upper bound on the adventures from an item, including all possible bonuses.
+ * Used to find items whose best case is still negative, so we can prune them from the menu.
+ */
+function maxAdventures(menuItem: MenuItem<Note>): number {
+  const { adventures, fullness } = menuItem.item;
+  if (!adventures) return 0;
+  const range = adventures.match(/^(-?\d+)(?:-(-?\d+))?$/);
+  if (!range) return Infinity;
+  const max = Number(range[2] ?? range[1]);
+  // fork/mug, then saucemaven and gar-ish
+  let result = Math.floor(max * 1.5) + 5 + 5;
+  // refined palate, pinky ring, tuxedo shirt
+  result = Math.ceil(Math.floor(result * 1.25) * 1.125) + 2;
+  if (menuItem.itemType() === "food") {
+    // mayoflex, seasoning, aioli, whet stone
+    result += 1 + 1 + fullness + 1;
+  }
+  return result;
+}
+
+/**
+ * Prune items that can't possibly be in our planned diet (i.e., items with negative value).
+ * Accounts for cross-organ items by assuming that we fill the cleaned space with
+ * optimal choices.
+ */
+function withoutHopelessItems(menu: MenuItem<Note>[]): MenuItem<Note>[] {
+  const valueUpperBound = (menuItem: MenuItem<Note>) =>
+    maxAdventures(menuItem) * MPA +
+    (menuItem.additionalValue ?? 0) -
+    menuItem.price();
+
+  const spleenRatio = Math.max(
+    0,
+    ...menu
+      .filter(
+        (menuItem) => menuItem.organ === "spleen item" && menuItem.size > 0,
+      )
+      .map((menuItem) => valueUpperBound(menuItem) / menuItem.size),
+  );
+  const spleenCleaningValue = (menuItem: MenuItem<Note>) =>
+    $items`jar of fermented pickle juice, extra-greasy slider`.includes(
+      menuItem.item,
+    )
+      ? 5 * spleenRatio
+      : 0;
+
+  const ratioAndValue = (organ: Organ) => {
+    let ratio = 0;
+    let value = 0;
+    for (const menuItem of menu) {
+      if (menuItem.organ !== organ || crossOrganItems.has(menuItem.item)) {
+        continue;
+      }
+      // Negative-size items are planned as "not using them", worth -value
+      const itemValue =
+        menuItem.size > 0
+          ? valueUpperBound(menuItem) + spleenCleaningValue(menuItem)
+          : ["food", "booze"].includes(menuItem.itemType())
+            ? Infinity
+            : menuItem.price() - (menuItem.additionalValue ?? 0);
+      if (menuItem.size === 0 || itemValue <= 0) continue;
+      ratio = Math.max(ratio, itemValue / Math.abs(menuItem.size));
+      value = Math.max(value, itemValue);
+    }
+    return { ratio, value };
+  };
+  const food = ratioAndValue("food");
+  const booze = ratioAndValue("booze");
+  const freedSpaceValue = (size: number, { ratio, value }: typeof food) =>
+    size < 0 ? -size * ratio + value : 0;
+  // An overfull organ makes the planner's "without" case invalid; don't guess.
+  const overfull =
+    myFullness() > fullnessLimit() || myInebriety() > inebrietyLimit();
+
+  // Items whose value depends on the rest of the diet, like Refined Palate
+  const modifierItems = $items`pocket wish, toasted brie, potion of the field gar`;
+
+  const bestCase = (menuItem: MenuItem<Note>): number => {
+    const sizes = crossOrganItems.get(menuItem.item);
+    if (sizes) {
+      if (overfull) return Infinity;
+      const [fullness, inebriety] = sizes;
+      return (
+        valueUpperBound(menuItem) +
+        freedSpaceValue(fullness, food) +
+        freedSpaceValue(inebriety, booze)
       );
     }
+    if (
+      menuItem.organ &&
+      menuItem.size > 0 &&
+      !modifierItems.includes(menuItem.item)
+    ) {
+      return valueUpperBound(menuItem) + spleenCleaningValue(menuItem);
+    }
+    // Helpers, organ expanders, and cleaners are valued by the planner in context
+    return Infinity;
+  };
+
+  return menu.filter(
+    (menuItem) =>
+      (menuItem.maximum !== undefined && menuItem.maximum <= 0) ||
+      !(bestCase(menuItem) < 0),
+  );
+}
+
+/**
+ * Prune out any unlimited item that is strictly surpassed by another unlimited item.
+ * Accounts for forks, mugs, refined palate, etc; doesn't account for proper divisors
+ * of the organ-size (e.g., a size-6 item will not be obsoleted by a stronger size-3 item).
+ */
+function withoutDominatedItems(menu: MenuItem<Note>[]): MenuItem<Note>[] {
+  const isCandidate = (menuItem: MenuItem<Note>) =>
+    menuItem.maximum === undefined &&
+    menuItem.size > 0 &&
+    (["food", "booze", "spleen item"] as (Organ | undefined)[]).includes(
+      menuItem.organ,
+    ) &&
+    menuItem.additionalValue === undefined &&
+    menuItem.effect === undefined &&
+    menuItem.mayo === undefined &&
+    menuItem.data === undefined &&
+    menuItem.item.levelreq <= myLevel() &&
+    !crossOrganItems.has(menuItem.item) &&
+    !stomachLiverCleaners.has(menuItem.item) &&
+    !spleenCleaners.has(menuItem.item);
+
+  const seasoning = menu.find(
+    (menuItem) => menuItem.item === $item`Special Seasoning`,
+  );
+  const forkMug = (menuItem: MenuItem<Note>) =>
+    menuItem.organ === "food"
+      ? new MenuItem<Note>(saladFork)
+      : menuItem.organ === "booze"
+        ? new MenuItem<Note>(frostyMug)
+        : undefined;
+  // Zero-quantity entries switch on the diet-wide effects without adding adventures
+  const palate = new MenuItem<Note>($item`toasted brie`);
+  const garish = new MenuItem<Note>($item`potion of the field gar`);
+  const scenarios = [false, true].flatMap((useForkMug) =>
+    [[], [palate], [garish], [palate, garish]].map((modifiers) => ({
+      useForkMug,
+      modifiers,
+    })),
+  );
+
+  const value = (
+    menuItem: MenuItem<Note>,
+    { useForkMug, modifiers }: (typeof scenarios)[number],
+  ): number => {
+    const helper = useForkMug ? forkMug(menuItem) : undefined;
+    const helperSets = [helper ? [helper] : []];
+    if (seasoning && menuItem.organ === "food") {
+      helperSets.push([...helperSets[0], seasoning]);
+    }
+    return Math.max(
+      ...helperSets.map((helpers) => {
+        const adventures = Diet.from<Note>([
+          [[...helpers, menuItem], 1],
+          ...modifiers.map((modifier): [MenuItem<Note>[], number] => [
+            [modifier],
+            0,
+          ]),
+        ]).expectedAdventures();
+        const helperCost = helpers.includes(seasoning as MenuItem<Note>)
+          ? (seasoning as MenuItem<Note>).price()
+          : 0;
+        return adventures * MPA - menuItem.price() - helperCost;
+      }),
+    );
+  };
+
+  const groups = new Map<string, MenuItem<Note>[]>();
+  for (const menuItem of menu.filter(isCandidate)) {
+    const key = `${menuItem.organ}:${menuItem.size}`;
+    groups.set(key, [...(groups.get(key) ?? []), menuItem]);
   }
-  const baseDiet = dietPlanner(baseMenu);
-  return rebalance(baseMenu, 5, 0, baseDiet.expectedAdventures());
+  const kept = new Set<MenuItem<Note>>();
+  for (const group of groups.values()) {
+    for (const scenario of scenarios) {
+      kept.add(maxBy(group, (menuItem) => value(menuItem, scenario)));
+    }
+  }
+
+  return menu.filter(
+    (menuItem) => !isCandidate(menuItem) || kept.has(menuItem),
+  );
 }
 
 export function computeDiet(): {
@@ -1088,81 +1553,81 @@ export function computeDiet(): {
 
   const orEmpty = (diet: Diet<Note>) =>
     diet.expectedValue(MPA, "net") < 0 ? new Diet<Note>() : diet;
-  const fullDietPlanner = (menu: MenuItem<Note>[]) =>
-    orEmpty(Diet.plan(MPA, menu));
+  const plan = (
+    menu: MenuItem<Note>[],
+    organCapacities?: Parameters<typeof Diet.plan>[2],
+  ) =>
+    orEmpty(
+      Diet.plan(
+        MPA,
+        withoutDominatedItems(withoutHopelessItems(menu)),
+        organCapacities,
+      ),
+    );
+  const fullDietPlanner = (menu: MenuItem<Note>[]) => plan(menu);
   const shotglassDietPlanner = (menu: MenuItem<Note>[]) =>
-    orEmpty(Diet.plan(MPA, menu, { booze: 1 }));
+    plan(menu, { booze: 1 });
   const pantsgivingDietPlanner = (menu: MenuItem<Note>[]) =>
-    orEmpty(Diet.plan(MPA, menu, { food: 1 }));
+    plan(menu, { food: 1 });
   const sweatpantsDietPlanner = (menu: MenuItem<Note>[]) =>
-    orEmpty(Diet.plan(MPA, menu, { booze: getRemainingLiver() }));
+    plan(menu, { booze: getRemainingLiver() });
   // const shotglassFilter = (menuItem: MenuItem)
 
   return {
     diet: () =>
-      fullDietPlanner(
-        balanceMenu(
-          menu().filter(
-            (menuItem) =>
-              !priceCaps[menuItem.item.name] ||
-              priceCaps[menuItem.item.name] >= mallPrice(menuItem.item),
-          ),
-          fullDietPlanner,
+      planBalancedDiet(
+        menu().filter(
+          (menuItem) =>
+            !priceCaps[menuItem.item.name] ||
+            priceCaps[menuItem.item.name] >= mallPrice(menuItem.item),
         ),
+        fullDietPlanner,
       ),
     shotglass: () =>
-      shotglassDietPlanner(
-        balanceMenu(
-          menu().filter(
-            (menuItem) =>
-              itemType(menuItem.item) === "booze" && menuItem.size === 1,
-          ),
-          shotglassDietPlanner,
+      planBalancedDiet(
+        menu().filter(
+          (menuItem) =>
+            itemType(menuItem.item) === "booze" && menuItem.size === 1,
         ),
+        shotglassDietPlanner,
       ),
     pantsgiving: () =>
-      pantsgivingDietPlanner(
-        balanceMenu(
-          menu().filter(
-            (menuItem) =>
-              (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
-              [
-                Mayo.flex,
-                Mayo.zapine,
-                $item`Special Seasoning`,
-                $item`mini kiwi aioli`,
-                $item`whet stone`,
-              ].includes(menuItem.item),
-          ),
-          pantsgivingDietPlanner,
+      planBalancedDiet(
+        menu().filter(
+          (menuItem) =>
+            (itemType(menuItem.item) === "food" && menuItem.size === 1) ||
+            [
+              Mayo.flex,
+              Mayo.zapine,
+              $item`Special Seasoning`,
+              $item`mini kiwi aioli`,
+              $item`whet stone`,
+            ].includes(menuItem.item),
         ),
+        pantsgivingDietPlanner,
       ),
     sweatpants: () =>
-      sweatpantsDietPlanner(
-        balanceMenu(
-          menu().filter(
-            (menuItem) =>
-              itemType(menuItem.item) === "booze" && menuItem.size <= 3,
-          ),
-          sweatpantsDietPlanner,
+      planBalancedDiet(
+        menu().filter(
+          (menuItem) =>
+            itemType(menuItem.item) === "booze" && menuItem.size <= 3,
         ),
+        sweatpantsDietPlanner,
       ),
   };
 }
 
-type DietName =
-  | "FULL"
-  | "SHOTGLASS"
-  | "PANTSGIVING"
-  | "REMAINING"
-  | "SWEATPANTS";
+type DietName = "FULL" | "SHOTGLASS" | "PANTSGIVING" | "SWEATPANTS";
 
 function printDiet(diet: Diet<Note>, name: DietName) {
   print(`===== ${name} DIET =====`);
   if (diet.entries.length === 0) return;
   diet = diet.copy();
+  const noodleDoubling = usesNoodleDoubling(diet);
   diet.entries.sort(
-    (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
+    (a, b) =>
+      itemPriority(b.menuItems, noodleDoubling) -
+      itemPriority(a.menuItems, noodleDoubling),
   );
 
   const targets = Math.floor(highMeatMonsterCount() + countCopies(diet));
@@ -1200,15 +1665,38 @@ function printDiet(diet: Diet<Note>, name: DietName) {
   );
 }
 
+function usesNoodleDoubling(diet: Diet<Note>): boolean {
+  return (
+    existingNoodleCharges() > 0 ||
+    diet.entries.some(
+      ({ menuItems, quantity }) =>
+        quantity > 0 &&
+        menuItems.some((menuItem) =>
+          legendaryNoodleDishes.includes(menuItem.item),
+        ),
+    )
+  );
+}
+
 // Item priority - higher means we eat it first.
 // Anything that gives a consumption buff should go first (e.g. Refined Palate).
-function itemPriority<T>(menuItems: MenuItem<T>[] | readonly MenuItem<T>[]) {
+// With Legendary Digestion charges, use existing charges, then eat noodle dishes,
+// then food potions, so the charges double the potions rather than other food.
+function itemPriority(
+  menuItems: MenuItem<Note>[] | readonly MenuItem<Note>[],
+  noodleDoubling = false,
+) {
   // Last menu item is the food itself.
   const menuItem = menuItems[menuItems.length - 1];
   if (menuItem === undefined) {
     throw "Shouldn't have an empty menu item.";
   }
   if (menuItem.item === $item`spaghetti breakfast`) return 200;
+  if (noodleDoubling) {
+    if (isNoodleTier(menuItem.data)) return 170;
+    if (legendaryNoodleDishes.includes(menuItem.item)) return 160;
+    if (menuItem.data && menuItem.itemType() === "food") return 150;
+  }
   if (
     $items`pocket wish, toasted brie`.includes(menuItem.item) ||
     spleenCleaners.get(menuItem.item) ||
@@ -1220,239 +1708,326 @@ function itemPriority<T>(menuItems: MenuItem<T>[] | readonly MenuItem<T>[]) {
   }
 }
 
-export function consumeDiet(diet: Diet<Note>, name: DietName): void {
-  if (diet.entries.length === 0) return;
-  diet = diet.copy();
-  diet.entries.sort(
-    (a, b) => itemPriority(b.menuItems) - itemPriority(a.menuItems),
-  );
+/**
+ * A representation of a single diet step (eating, drinking, using, etc.)
+ */
+interface DietTask {
+  name: string;
+  perform(): void;
+}
 
-  print();
-  printDiet(diet, name);
-  print();
+type ItemAction = (countToConsume: number, menuItem: MenuItem<Note>) => void;
 
+const consumeAction: ItemAction = (countToConsume, menuItem) =>
+  consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+
+const elementalResistAction =
+  (element: Element): ItemAction =>
+  (countToConsume, menuItem) => {
+    if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
+      maximizeCached(["0.05 HP", `${element} Resistance`]);
+      if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
+        throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
+      }
+    }
+    consumeSafe(countToConsume, menuItem.item);
+  };
+
+/**
+ * Menu items that need something other than `consumeAction`.
+ */
+function specialItemActions(): Map<Item, ItemAction> {
+  const speakeasyDrinks = Object.keys(getClanLounge())
+    .map((s) => toItem(s))
+    .filter((i) => i.inebriety > 0);
+  return new Map<Item, ItemAction>([
+    [saladFork, elementalResistAction($element`hot`)],
+    [frostyMug, elementalResistAction($element`cold`)],
+    [
+      $item`pocket wish`,
+      (countToConsume, menuItem) => {
+        if (acquire(countToConsume, $item`pocket wish`, 60000)) {
+          cliExecute(`genie effect ${menuItem.effect}`);
+        }
+      },
+    ],
+    [
+      $item`campfire hot dog`,
+      (countToConsume, menuItem) => {
+        // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
+        if (!have($item`stick of firewood`)) {
+          buy(
+            1,
+            $item`stick of firewood`,
+            ingredientCost($item`stick of firewood`),
+          );
+        }
+        consumeSafe(countToConsume, menuItem.item);
+      },
+    ],
+    // Special Seasoning is acquired by its own task and used automatically
+    [$item`Special Seasoning`, () => {}],
+    [
+      $item`mini kiwi aioli`,
+      (countToConsume, menuItem) => {
+        retrieveItem(menuItem.item, countToConsume);
+        use(menuItem.item);
+      },
+    ],
+    [
+      $item`Rethinking Candy`,
+      (countToConsume, menuItem) => {
+        synthesize(
+          countToConsume,
+          menuItem.effect ?? $effect`Synthesis: Greed`,
+        );
+      },
+    ],
+    ...Object.values(Mayo).map((mayo): [Item, ItemAction] => [
+      mayo,
+      (countToConsume, menuItem) =>
+        MayoClinic.setMayoMinder(menuItem.item, countToConsume),
+    ]),
+    ...speakeasyDrinks.map((drink): [Item, ItemAction] => [
+      drink,
+      (countToConsume, menuItem) => {
+        cliExecute(`drink ${countToConsume} ${menuItem.item}`);
+      },
+    ]),
+    [
+      $item`broberry brogurt`,
+      (countToConsume, menuItem) => {
+        const amountNeeded =
+          countToConsume - availableAmount($item`broberry brogurt`);
+        if (amountNeeded > 0) {
+          const coinmasterPrice =
+            realmAvailable("sleaze") &&
+            sellsItem(
+              $coinmaster`The Frozen Brogurt Stand`,
+              $item`broberry brogurt`,
+            )
+              ? 10 * garboValue($item`Beach Buck`)
+              : Infinity;
+          const regularPrice = mallPrice($item`broberry brogurt`);
+          if (coinmasterPrice < regularPrice) {
+            const amountToBuy = Math.min(
+              amountNeeded,
+              Math.floor(itemAmount($item`Beach Buck`)),
+            );
+            buy(
+              $coinmaster`The Frozen Brogurt Stand`,
+              amountToBuy,
+              $item`broberry brogurt`,
+            );
+          }
+          buy(
+            countToConsume - availableAmount($item`broberry brogurt`),
+            $item`broberry brogurt`,
+          );
+        }
+        consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
+      },
+    ],
+    [
+      $item`designer sweatpants`,
+      (countToConsume) => {
+        for (let n = 1; n <= countToConsume; n++) {
+          useSkill($skill`Sweat Out Some Booze`);
+        }
+      },
+    ],
+    [
+      $item`august scepter`,
+      () => useSkill($skill`Aug. 16th: Roller Coaster Day!`),
+    ],
+    ...legendaryNoodleDishes.map((dish): [Item, ItemAction] => [
+      dish,
+      (countToConsume, menuItem) => {
+        // One at a time, since each leads to Legendary Digestion
+        for (let i = 0; i < countToConsume; i++) {
+          withChoice(
+            LEGENDARY_DIGESTION_CHOICE_ID,
+            LEGENDARY_DIGESTION_STOMACH,
+            () => consumeSafe(1, menuItem.item, menuItem.additionalValue),
+          );
+          if (
+            handlingChoice() &&
+            lastChoice() === LEGENDARY_DIGESTION_CHOICE_ID
+          ) {
+            runChoice(LEGENDARY_DIGESTION_STOMACH);
+          }
+        }
+      },
+    ]),
+  ]);
+}
+
+function acquireSeasoningTask(diet: Diet<Note>): DietTask {
   const seasoningCount = sum(diet.entries, ({ menuItems, quantity }) =>
     menuItems.some((menuItem) => menuItem.item === $item`Special Seasoning`)
       ? quantity
       : 0,
   );
-  acquire(seasoningCount, $item`Special Seasoning`, MPA);
+  return {
+    name: `Acquire ${seasoningCount} Special Seasoning`,
+    perform: () => acquire(seasoningCount, $item`Special Seasoning`, MPA),
+  };
+}
 
-  // Fill organs in rounds, making sure we're making progress in each round.
-  const organs = () => [myFullness(), myInebriety(), mySpleenUse()];
-  let lastOrgans = [-1, -1, -1];
-  const capacities = () => [fullnessLimit(), inebrietyLimit(), spleenLimit()];
-  let lastCapacities = [-1, -1, -1];
-  let currentQuantity = sum(diet.entries, "quantity");
-  let lastQuantity = -1;
-  while (currentQuantity > 0) {
-    if (
-      arrayEquals(lastOrgans, organs()) &&
-      arrayEquals(lastCapacities, capacities()) &&
-      lastQuantity === currentQuantity
+type Organ = "food" | "booze" | "spleen item";
+type OrganAmounts = Record<Organ, number>;
+const ORGANS: Organ[] = ["food", "booze", "spleen item"];
+const noOrgans = (): OrganAmounts => ({ food: 0, booze: 0, "spleen item": 0 });
+
+/**
+ * Determine the total organ-filling and organ-cleansing of a given item.
+ * We only ever want to eat a cleanser if it can actually cleanse, so we need
+ * to sequence our diet using this information.
+ */
+function organEffects(menuItems: readonly MenuItem<Note>[]): {
+  fills: OrganAmounts;
+  cleans: OrganAmounts;
+} {
+  const fills = noOrgans();
+  const cleans = noOrgans();
+  for (const menuItem of menuItems) {
+    const cleaning = stomachLiverCleaners.get(menuItem.item);
+    const spleenCleaned = spleenCleaners.get(menuItem.item);
+    if (cleaning) {
+      const [fullness, inebriety] = cleaning;
+      if (fullness < 0) cleans.food -= fullness;
+      else fills.food += fullness;
+      if (inebriety < 0) cleans.booze -= inebriety;
+      else fills.booze += inebriety;
+    } else if (
+      menuItem.organ &&
+      !(spleenCleaned && menuItem.organ === "spleen item")
     ) {
-      print();
-      printDiet(diet, "REMAINING");
-      print();
-      throw "Failed to consume some diet item.";
+      fills[menuItem.organ] += menuItem.size;
     }
-    lastOrgans = organs();
-    lastCapacities = capacities();
-    lastQuantity = currentQuantity;
-
-    for (const dietEntry of diet.entries) {
-      const { menuItems, quantity } = dietEntry;
-      if (quantity === 0) continue;
-
-      let countToConsume = quantity;
-
-      const capacity = {
-        food: fullnessLimit() - myFullness(),
-        booze: inebrietyLimit() - myInebriety(),
-        "spleen item": spleenLimit() - mySpleenUse(),
-      };
-      for (const menuItem of menuItems) {
-        logprint(`Considering item ${menuItem.item}.`);
-        if (
-          menuItem.organ === "booze" &&
-          menuItem.size === 1 &&
-          !get("_mimeArmyShotglassUsed")
-        ) {
-          countToConsume = 1;
-        } else if (menuItem.organ && menuItem.size > 0) {
-          countToConsume = Math.min(
-            countToConsume,
-            Math.floor(capacity[menuItem.organ] / menuItem.size),
-          );
-        }
-        logprint(`Based on organ size, planning to consume ${countToConsume}.`);
-
-        const cleaning = stomachLiverCleaners.get(menuItem.item);
-        if (cleaning) {
-          const [fullness, inebriety] = cleaning;
-          countToConsume = Math.min(
-            fullness < 0 ? Math.floor(-myFullness() / fullness) : quantity,
-            inebriety < 0 ? Math.floor(-myInebriety() / inebriety) : quantity,
-            countToConsume,
-          );
-          logprint(
-            `Based on organ-cleaning, planning to consume ${countToConsume}.`,
-          );
-        }
-
-        const spleenCleaned = spleenCleaners.get(menuItem.item);
-        if (spleenCleaned) {
-          countToConsume = Math.min(
-            countToConsume,
-            Math.floor(mySpleenUse() / spleenCleaned),
-          );
-          logprint(
-            `Based on organ-cleaning, planning to consume ${countToConsume}.`,
-          );
-        }
-      }
-
-      if (countToConsume === 0) continue;
-
-      type ItemAction = (
-        countToConsume: number,
-        menuItem: MenuItem<Note>,
-      ) => void;
-      const elementalResistAction = (element: Element): ItemAction => {
-        return (countToConsume: number, menuItem: MenuItem<Note>) => {
-          if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
-            maximizeCached(["0.05 HP", `${element} Resistance`]);
-            if (myMaxhp() < 1000 * (1 - elementalResistance(element) / 100)) {
-              throw `Could not achieve enough ${element} resistance for ${menuItem.item}.`;
-            }
-          }
-          consumeSafe(countToConsume, menuItem.item);
-        };
-      };
-
-      const speakeasyDrinks: [Item, ItemAction][] = Object.keys(getClanLounge())
-        .map((s) => toItem(s))
-        .filter((i) => i.inebriety > 0)
-        .map((drink) => [
-          drink,
-          (countToConsume: number, menuItem: MenuItem<Note>) => {
-            cliExecute(`drink ${countToConsume} ${menuItem.item}`);
-          },
-        ]);
-      const mayoActions: [Item, ItemAction][] = Object.values(Mayo).map((i) => [
-        i,
-        (countToConsume: number, menuItem: MenuItem<Note>) => {
-          MayoClinic.setMayoMinder(menuItem.item, countToConsume);
-        },
-      ]);
-
-      const itemActions = new Map<Item, ItemAction | "skip">([
-        [saladFork, elementalResistAction($element`hot`)],
-        [frostyMug, elementalResistAction($element`cold`)],
-        [
-          $item`pocket wish`,
-          (countToConsume: number, menuItem: MenuItem<Note>) =>
-            acquire(countToConsume, $item`pocket wish`, 60000) &&
-            cliExecute(`genie effect ${menuItem.effect}`),
-        ],
-        [
-          $item`campfire hot dog`,
-          (countToConsume: number, menuItem: MenuItem<Note>) => {
-            // mafia does not support retrieveItem on campfire hot dog because it does not work on stick of firewood
-            if (!have($item`stick of firewood`)) {
-              buy(
-                1,
-                $item`stick of firewood`,
-                ingredientCost($item`stick of firewood`),
-              );
-            }
-            consumeSafe(countToConsume, menuItem.item);
-          },
-        ],
-        [$item`Special Seasoning`, "skip"],
-        [
-          $item`mini kiwi aioli`,
-          (countToConsume: number, menuItem: MenuItem<Note>) => {
-            retrieveItem(menuItem.item, countToConsume);
-            use(menuItem.item);
-          },
-        ],
-        [
-          $item`Rethinking Candy`,
-          (countToConsume: number, menuItem: MenuItem<Note>) =>
-            synthesize(
-              countToConsume,
-              menuItem.effect ?? $effect`Synthesis: Greed`,
-            ),
-        ],
-        ...mayoActions,
-        ...speakeasyDrinks,
-        [
-          $item`broberry brogurt`,
-          (countToConsume: number, menuItem: MenuItem<Note>) => {
-            const amountNeeded =
-              countToConsume - availableAmount($item`broberry brogurt`);
-            if (amountNeeded > 0) {
-              const coinmasterPrice =
-                realmAvailable("sleaze") &&
-                sellsItem(
-                  $coinmaster`The Frozen Brogurt Stand`,
-                  $item`broberry brogurt`,
-                )
-                  ? 10 * garboValue($item`Beach Buck`)
-                  : Infinity;
-              const regularPrice = mallPrice($item`broberry brogurt`);
-              if (coinmasterPrice < regularPrice) {
-                const amountToBuy = Math.min(
-                  amountNeeded,
-                  Math.floor(itemAmount($item`Beach Buck`)),
-                );
-                buy(
-                  $coinmaster`The Frozen Brogurt Stand`,
-                  amountToBuy,
-                  $item`broberry brogurt`,
-                );
-              }
-              buy(
-                countToConsume - availableAmount($item`broberry brogurt`),
-                $item`broberry brogurt`,
-              );
-            }
-            consumeSafe(
-              countToConsume,
-              menuItem.item,
-              menuItem.additionalValue,
-            );
-          },
-        ],
-        [
-          $item`designer sweatpants`,
-          (countToConsume: number) => {
-            for (let n = 1; n <= countToConsume; n++) {
-              useSkill($skill`Sweat Out Some Booze`);
-            }
-          },
-        ],
-        [
-          $item`august scepter`,
-          () => useSkill($skill`Aug. 16th: Roller Coaster Day!`),
-        ],
-      ]);
-
-      for (const menuItem of menuItems) {
-        const itemAction = itemActions.get(menuItem.item);
-        if (itemAction === "skip") {
-          continue;
-        } else if (itemAction) {
-          itemAction(countToConsume, menuItem);
-        } else {
-          consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
-        }
-      }
-      dietEntry.quantity -= countToConsume;
-    }
-    currentQuantity = sum(diet.entries, "quantity");
+    if (spleenCleaned) cleans["spleen item"] += spleenCleaned;
   }
+  return { fills, cleans };
+}
+
+/**
+ * Creates a `DietTask` for a given `DietEntry` and `countToConsume`.
+ */
+function dietEntryTask(
+  dietEntry: Diet<Note>["entries"][number],
+  countToConsume: number,
+  actions: Map<Item, ItemAction>,
+): DietTask {
+  const steps = dietEntry.menuItems.map((menuItem) => ({
+    menuItem,
+    action: actions.get(menuItem.item) ?? consumeAction,
+  }));
+  return {
+    name: `${countToConsume} ${dietEntry.target()}`,
+    perform: () => {
+      for (const { menuItem, action } of steps) {
+        action(countToConsume, menuItem);
+      }
+    },
+  };
+}
+
+/**
+ * Transform a diet into an array of diet tasks that can be carried out in order.
+ * For example, cleansers are sequenced after there is filled organ space for them to clear.
+ * Throws before anything is consumed if there is no order that fits.
+ */
+function dietTasks(diet: Diet<Note>): DietTask[] {
+  const actions = specialItemActions();
+  const tasks = [acquireSeasoningTask(diet)];
+
+  const used: OrganAmounts = {
+    food: myFullness(),
+    booze: myInebriety(),
+    "spleen item": mySpleenUse(),
+  };
+  const capacity: OrganAmounts = {
+    food: fullnessLimit(),
+    booze: inebrietyLimit(),
+    "spleen item": spleenLimit(),
+  };
+  let shotglassAvailable =
+    !get("_mimeArmyShotglassUsed") && have($item`mime army shotglass`);
+
+  const noodleDoubling = usesNoodleDoubling(diet);
+  const pending = [...diet.entries]
+    .sort(
+      (a, b) =>
+        itemPriority(b.menuItems, noodleDoubling) -
+        itemPriority(a.menuItems, noodleDoubling),
+    )
+    .map((dietEntry) => ({
+      dietEntry,
+      remaining: dietEntry.quantity,
+      ...organEffects(dietEntry.menuItems),
+    }));
+
+  // How many of an entry we can consume right now, and whether the first one goes in the shotglass
+  const fit = (entry: (typeof pending)[number]) => {
+    const { fills, cleans } = entry;
+    const usesShotglass =
+      shotglassAvailable &&
+      entry.dietEntry.menuItems.some(
+        (menuItem) => menuItem.organ === "booze" && menuItem.size === 1,
+      );
+    const fill = (organ: Organ) =>
+      usesShotglass && organ === "booze" ? 0 : fills[organ];
+    let count = usesShotglass ? 1 : entry.remaining;
+    for (const organ of ORGANS) {
+      if (fill(organ) > 0) {
+        count = Math.min(
+          count,
+          Math.floor((capacity[organ] - used[organ]) / fill(organ)),
+        );
+      }
+      if (cleans[organ] > 0) {
+        count = Math.min(count, Math.floor(used[organ] / cleans[organ]));
+      }
+    }
+    return { count, usesShotglass, fill };
+  };
+
+  // Always schedule the highest priority entry that fits, so that space freed by
+  // a cleaner goes to the entries that were waiting on it.
+  while (pending.some(({ remaining }) => remaining > 0)) {
+    const next = pending
+      .filter(({ remaining }) => remaining > 0)
+      .map((entry) => ({ entry, ...fit(entry) }))
+      .find(({ count }) => count > 0);
+    if (!next) {
+      const stuck = pending
+        .filter(({ remaining }) => remaining > 0)
+        .map(
+          ({ dietEntry, remaining }) => `${remaining} ${dietEntry.target()}`,
+        );
+      throw `Unable to find an order to consume this diet; could not fit ${stuck.join(", ")}.`;
+    }
+    const { entry, count, usesShotglass, fill } = next;
+    for (const organ of ORGANS) {
+      used[organ] += count * (fill(organ) - entry.cleans[organ]);
+    }
+    if (usesShotglass) shotglassAvailable = false;
+    entry.remaining -= count;
+    tasks.push(dietEntryTask(entry.dietEntry, count, actions));
+  }
+  return tasks;
+}
+
+export function consumeDiet(diet: Diet<Note>, name: DietName): void {
+  if (diet.entries.length === 0) return;
+
+  print();
+  printDiet(diet, name);
+  print();
+
+  const tasks = dietTasks(diet);
+  logprint(`Diet order: ${tasks.map((task) => task.name).join(", ")}`);
+  for (const task of tasks) task.perform();
 }
 
 function dailySpecialPrice(item: Item) {
@@ -1539,7 +2114,14 @@ export function runDiet(): void {
       }
 
       consumeDiet(dietBuilder.diet(), "FULL");
-
+      const organChecks = [
+        { current: myInebriety, max: inebrietyLimit },
+        { current: mySpleenUse, max: spleenLimit },
+        { current: myFullness, max: fullnessLimit },
+      ];
+      if (organChecks.some(({ current, max }) => current() < max())) {
+        throw new Error("Tried to fill our organs but couldn't!");
+      }
       shrugBadEffects();
     }
   });

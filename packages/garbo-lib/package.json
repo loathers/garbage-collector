@@ -7,7 +7,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "format": "eslint src --fix && prettier --write .",
+    "format": "prettier --write . && eslint src --fix && prettier --write .",
     "check": "tsc",
     "lint": "eslint src && prettier --check .",
     "madge": "madge --circular . ./src/index.ts",
@@ -16,6 +16,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "prettier --write",
       "eslint --quiet --fix",
       "prettier --write"
     ],
@@ -31,8 +32,8 @@
     "eslint": "^9.39.2",
     "eslint-config-garbo": "workspace:^",
     "jiti": "^2.6.1",
-    "kolmafia": "^5.29250.0",
-    "libram": "^0.11.33",
+    "kolmafia": "^5.29376.0",
+    "libram": "^0.11.41",
     "lint-staged": "^15.2.9",
     "madge": "^8.0.0",
     "prettier": "^3.3.3",

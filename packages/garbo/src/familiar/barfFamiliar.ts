@@ -4,11 +4,8 @@ import {
   Familiar,
   Item,
   myFamiliar,
-  numericModifier,
   print,
-  Slot,
   useFamiliar,
-  weightAdjustment,
 } from "kolmafia";
 import {
   $effect,
@@ -16,7 +13,6 @@ import {
   $familiar,
   $item,
   $items,
-  $slots,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -25,17 +21,11 @@ import {
   maxBy,
   SkeletonOfCrimboPast,
   sum,
-  totalFamiliarWeight,
   ToyCupidBow,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit/dropsgear";
-import {
-  baseMeat,
-  BonusEquipMode,
-  HIGHLIGHT,
-  MEAT_TARGET_MULTIPLIER,
-} from "../lib";
+import { HIGHLIGHT } from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -52,8 +42,13 @@ import {
 import { meatFamiliar } from "./meatFamiliar";
 import { garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
-
-const MEAT_DROP_VALUE = () => baseMeat() / 100;
+import { BonusEquipMode } from "../outfit/lib";
+import {
+  CachedOutfit,
+  familiarModifierWithOutfit,
+  familiarOutfitSlots,
+  specialFamiliarOutfits,
+} from "./specialFamiliarOutfits";
 
 function familiarNeedsBoot(familiar: Familiar): boolean {
   return (
@@ -63,49 +58,12 @@ function familiarNeedsBoot(familiar: Familiar): boolean {
   );
 }
 
-type CachedOutfit = {
-  weight: number;
-  meat: number;
-  item: number;
-  famexp: number;
-  bonus: number;
-};
-
 const outfitCache = new Map<OutfitCacheKey, CachedOutfit>();
-const outfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
-
-const SPECIAL_FAMILIARS_FOR_CACHING = new Map<
-  Familiar,
-  { equip?: Item; extraValue?: (outfit: CachedOutfit) => number }
->([
-  [
-    // Derives its value from famexp and requires _much_ more famexp than other exp familiars
-    $familiar`Chest Mimic`,
-    {
-      extraValue: ({ famexp }) =>
-        (famexp * MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50,
-    },
-  ],
-  // Uniquely required to equip its fam equip to meaningfully have value
-  [$familiar`Jill-of-All-Trades`, { equip: $item`LED candle` }],
-  // Derives its value irregularly from +famweight
-  [
-    $familiar`Mini Kiwi`,
-    {
-      extraValue: ({ weight }) =>
-        clamp(
-          (weight + totalFamiliarWeight($familiar`Mini Kiwi`, false)) * 0.005,
-          0,
-          1,
-        ) * garboValue($item`mini kiwi`),
-    },
-  ],
-]);
 
 type OutfitCacheKey = number | Familiar | string;
 
 function outfitCacheKey(familiar: Familiar): OutfitCacheKey {
-  if (SPECIAL_FAMILIARS_FOR_CACHING.has(familiar)) {
+  if (specialFamiliarOutfits.has(familiar)) {
     return familiar;
   }
 
@@ -137,7 +95,7 @@ function getCachedOutfitValues(fam: Familiar) {
       true,
     ).dress();
 
-    const outfit = outfitSlots.map((slot) => equippedItem(slot));
+    const outfit = familiarOutfitSlots.map((slot) => equippedItem(slot));
     const bonuses = bonusGear(BonusEquipMode.MEAT_TARGET, false);
 
     const values = {
@@ -164,36 +122,20 @@ type MarginalFamiliar = GeneralFamiliar & {
   bonusTurns?: number;
 };
 
-const nonOutfitWeightBonus = () =>
-  weightAdjustment() -
-  sum(outfitSlots, (slot: Slot) =>
-    getModifier("Familiar Weight", equippedItem(slot)),
-  );
-
 function familiarModifier(
   familiar: Familiar,
   modifier: NumericModifier,
 ): number {
-  const cachedOutfitWeight = getCachedOutfitValues(familiar).weight;
-  const totalWeight =
-    totalFamiliarWeight(familiar, false) +
-    nonOutfitWeightBonus() +
-    cachedOutfitWeight;
-  const { equip } = SPECIAL_FAMILIARS_FOR_CACHING.get(familiar) ?? {};
-
-  return equip
-    ? numericModifier(
-        familiar,
-        modifier,
-        totalWeight - numericModifier(equip, "Familiar Weight"),
-        equip,
-      )
-    : numericModifier(familiar, modifier, totalWeight, $item.none);
+  return familiarModifierWithOutfit(
+    familiar,
+    modifier,
+    getCachedOutfitValues(familiar).weight,
+  );
 }
 
 function familiarAbilityValue(familiar: Familiar) {
   return (
-    familiarModifier(familiar, "Meat Drop") * MEAT_DROP_VALUE() +
+    familiarModifier(familiar, "Meat Drop") * FarmingStrategy.meatDropValue() +
     familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue()
   );
 }
@@ -249,12 +191,19 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
   const outfit = getCachedOutfitValues(f.familiar);
   const outfitValue =
     outfit.bonus +
-    outfit.meat * MEAT_DROP_VALUE() +
-    outfit.item * FarmingStrategy.itemDropValue() +
-    (SPECIAL_FAMILIARS_FOR_CACHING.get(f.familiar)?.extraValue?.(outfit) ?? 0);
+    outfit.meat * FarmingStrategy.meatDropValue() +
+    outfit.item * FarmingStrategy.itemDropValue();
+  const expectedValue =
+    f.expectedValue +
+    (specialFamiliarOutfits.get(f.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
-  return { ...f, outfitValue, outfitWeight };
+  return {
+    ...f,
+    expectedValue,
+    outfitValue,
+    outfitWeight,
+  };
 }
 
 function extraValue(
@@ -450,6 +399,14 @@ function getSpecialFamiliarLimit({
         clamp(100 - get("_knuckleboneDrops"), 0, 100) /
         SkeletonOfCrimboPast.expectedBones(FarmingStrategy.location)
       );
+
+    case $familiar`Sword of S Words`: {
+      if (!get("swordOfSWordsMonster")) {
+        return 0;
+      } else {
+        return clamp(100 - get("_swordOfSWordsKills"), 0, 100);
+      }
+    }
 
     default:
       return 0;

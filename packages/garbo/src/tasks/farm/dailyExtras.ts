@@ -4,5 +4,5 @@ import { Quest } from "grimoire-kolmafia";
 
 export const DailyExtrasQuest: Quest<GarboTask, unknown> = {
   name: "Daily Extras",
-  tasks: [mayamCalendarSummon()],
+  tasks: [...mayamCalendarSummon()],
 };

@@ -9,7 +9,7 @@ import {
 import { $item, get, have, maxBy, property, set, withProperty } from "libram";
 import { globalOptions } from "../config";
 import { garboValue } from "../garboValue";
-import { HIGHLIGHT } from "../lib";
+import { HIGHLIGHT, YACHTZEE_VALUE } from "../lib";
 import { acquire } from "../acquire";
 import { claimClaraVolcoino, willYachtzee } from "./yachtzee";
 
@@ -20,7 +20,9 @@ function volcanoQuestItemCost({ quantity, item }: VolcanoItem): number {
     // Check if clara's bell is available and unused
     if (!have($item`Clara's bell`) || get("_claraBellUsed")) return Infinity;
     if (willYachtzee()) {
-      return garboValue($item`Volcoino`) - (20000 - get("valueOfAdventure"));
+      return (
+        garboValue($item`Volcoino`) - (YACHTZEE_VALUE - get("valueOfAdventure"))
+      );
     }
     return quantity * get("valueOfAdventure");
   }

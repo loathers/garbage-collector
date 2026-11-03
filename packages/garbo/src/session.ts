@@ -44,7 +44,7 @@ export function trackMarginalMpa(remainingTurns?: number) {
   if (!barf) {
     sessions.set("barf", Session.current());
   } else {
-    const turns = barf.diff(current).totalTurns;
+    const turns = current.diff(barf).totalTurns;
     remainingTurns ??= estimatedGarboTurns();
     // track items if we have run at least 100 turns in barf mountain or we have less than 200 turns left in barf mountain
     const item = sessions.get("item-start");
@@ -199,7 +199,10 @@ export function endSession(printLog = true): void {
 
   if (printLog) {
     // list the top 3 gaining and top 3 losing items
-    const losers = itemDetails.sort((a, b) => a.value - b.value).slice(0, 3);
+    // Rhino treats a comparator's -0 as negative, which can make sorting fail.
+    const losers = itemDetails
+      .sort((a, b) => a.value - b.value || 0)
+      .slice(0, 3);
     const winners = itemDetails.reverse().slice(0, 3);
     print(`Extreme Items:`, HIGHLIGHT);
     for (const detail of [...winners, ...losers]) {

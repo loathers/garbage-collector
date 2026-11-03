@@ -14,7 +14,7 @@ import {
   realmAvailable,
 } from "libram";
 import { GarboTask } from "./engine";
-import { withStash } from "../clan";
+import { stash } from "../stash";
 import {
   burnLibrams,
   freeRunConstraints,
@@ -28,31 +28,44 @@ import { toSpec } from "../outfit/lib";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
 import { effectExtenderValue } from "../potions";
+import { meatMood } from "../mood";
+import { estimatedGarboTurns } from "../turns";
 
 function getRun(): ActionSource {
   return tryFindFreeRunOrBanish(freeRunConstraints()) ?? ltbRun();
 }
+
+function burnMp() {
+  meatMood({ useNativeRestores: false }).execute(estimatedGarboTurns());
+  burnLibrams();
+}
+
+const MP_OUTFIT = {
+  modifier: ["MP", "+switch disembodied hand", "+switch left-hand man"],
+};
 
 const BuffExtensionTasks: GarboTask[] = [
   {
     name: "Platinum Yendorian Express Card",
     completed: () => get("expressCardUsed"),
     do: () => {
-      withStash($items`Platinum Yendorian Express Card`, () => {
+      stash.with($items`Platinum Yendorian Express Card`, () => {
         if (have($item`Platinum Yendorian Express Card`)) {
-          burnLibrams();
+          burnMp();
           use($item`Platinum Yendorian Express Card`);
+          burnMp();
         }
       });
     },
     spendsTurn: false,
     limit: { skip: 1 },
+    outfit: MP_OUTFIT,
   },
   {
     name: "Bag o' Tricks",
     completed: () => get("_bagOTricksUsed"),
     do: () => {
-      withStash($items`Bag o' Tricks`, () => {
+      stash.with($items`Bag o' Tricks`, () => {
         if (have($item`Bag o' Tricks`)) {
           use($item`Bag o' Tricks`);
         }
@@ -66,11 +79,13 @@ const BuffExtensionTasks: GarboTask[] = [
     ready: () => have($item`License to Chill`),
     completed: () => get("_licenseToChillUsed"),
     do: () => {
-      burnLibrams();
+      burnMp();
       use($item`License to Chill`);
+      burnMp();
     },
     spendsTurn: false,
     limit: { skip: 1 },
+    outfit: MP_OUTFIT,
   },
   {
     name: "Such Great Heights",

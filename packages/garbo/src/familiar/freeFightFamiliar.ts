@@ -1,9 +1,4 @@
-import {
-  Familiar,
-  familiarWeight,
-  inebrietyLimit,
-  myInebriety,
-} from "kolmafia";
+import { Familiar, inebrietyLimit, myInebriety } from "kolmafia";
 import {
   $element,
   $familiar,
@@ -13,6 +8,7 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  GreyGoose,
   have,
   SkeletonOfCrimboPast,
   Snapper,
@@ -75,8 +71,7 @@ export function menu(
     if (timeToMeatify()) {
       familiarMenu.push({
         familiar: $familiar`Grey Goose`,
-        expectedValue:
-          (Math.max(familiarWeight($familiar`Grey Goose`) - 5), 0) ** 4,
+        expectedValue: GreyGoose.expectedMeat(),
         leprechaunMultiplier: 0,
         limit: "experience",
         worksOnFreeRun: false,
@@ -108,6 +103,21 @@ export function menu(
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
         expectedValue: snapperValue(),
+        leprechaunMultiplier: 0,
+        limit: "special",
+        worksOnFreeRun: false,
+      });
+    }
+
+    if (
+      mode === "barf" &&
+      have($familiar`Sword of S Words`) &&
+      get("swordOfSWordsMonster") &&
+      get("_swordOfSWordsKills") < 100
+    ) {
+      familiarMenu.push({
+        familiar: $familiar`Sword of S Words`,
+        expectedValue: 0, // handled in barf cache
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: false,

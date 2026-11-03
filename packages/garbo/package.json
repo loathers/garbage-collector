@@ -12,12 +12,13 @@
     "copyStatic": "copyfiles --up 1 \"static/**/*\" dist",
     "check": "tsc",
     "lint": "eslint src && prettier --check .",
-    "format": "eslint src --fix && prettier --write .",
+    "format": "prettier --write . && eslint src --fix && prettier --write .",
     "madge": "madge --circular . ./src/index.ts",
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css}": [
+      "prettier --write",
       "eslint --quiet --fix",
       "prettier --write"
     ],
@@ -30,8 +31,8 @@
   "dependencies": {
     "garbo-lib": "workspace:*",
     "grimoire-kolmafia": "^0.3.35",
-    "kolmafia": "^5.29250.0",
-    "libram": "^0.11.33"
+    "kolmafia": "^5.29376.0",
+    "libram": "^0.11.41"
   },
   "devDependencies": {
     "@babel/cli": "^7.29.7",

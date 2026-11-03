@@ -41,6 +41,7 @@ import {
   $skill,
   $skills,
   AprilingBandHelmet,
+  BlackRoseGarden,
   BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
@@ -48,6 +49,7 @@ import {
   have,
   maxBy,
   questStep,
+  set,
   SourceTerminal,
   sum,
   withChoice,
@@ -62,6 +64,7 @@ import { getBestAprilInstruments } from "../resources/aprilingband";
 import { archaeologySpadeTask } from "../resources/archaelogistSpade";
 import { candyMapDailyTasks } from "../resources/candyMap";
 import { doingGregFight } from "../resources/extrovermectin";
+import { canSwapGarden } from "../resources/garden";
 import { leprecondoTask } from "../resources/leprecondo";
 import { mayamCalendarSummon } from "../resources/mayam";
 import { augustSummonTasks } from "../resources/scepter";
@@ -190,9 +193,11 @@ function getBestDevilerCandy(): Item {
 }
 
 const chooseAprilFamiliar = () => {
-  const experienceFamiliars = getExperienceFamiliars("free").filter(
-    ({ familiar }) => familiar.experience <= 360,
-  );
+  const experienceFamiliars = getExperienceFamiliars(
+    "free",
+    40,
+    "award",
+  ).filter(({ familiar }) => familiar.experience <= 360);
   if (experienceFamiliars.length) {
     return maxBy(experienceFamiliars, "expectedValue").familiar;
   }
@@ -211,6 +216,14 @@ const SummonTasks: GarboTask[] = [
       },
   ),
 ];
+
+function cheapestInterestingCoinItemCost(): number {
+  return Math.min(
+    ...Item.all()
+      .filter((item) => sellsItem($coinmaster`Interesting Coin`, item))
+      .map((item) => sellPrice($coinmaster`Interesting Coin`, item)),
+  );
+}
 
 let triedForest = false;
 const DailyItemTasks: GarboTask[] = [
@@ -287,6 +300,39 @@ const DailyItemTasks: GarboTask[] = [
         );
         const toBuy = Math.floor(get("availableSeptEmbers") / cost);
         buy($coinmaster`Sept-Ember Censer`, toBuy, item);
+      }
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Spend Interesting Coins",
+    ready: () => have($item`Interesting Coin`) && globalOptions.ascend,
+    completed: () =>
+      itemAmount($item`Interesting Coin`) < cheapestInterestingCoinItemCost(),
+    do: (): void => {
+      while (itemAmount($item`Interesting Coin`) >= 0) {
+        // We visit URL to reset new shop prices
+        visitUrl("shop.php?whichshop=interesting");
+        const itemsWithCosts = Item.all()
+          .filter(
+            (i) =>
+              sellsItem($coinmaster`Interesting Coin`, i) &&
+              sellPrice($coinmaster`Interesting Coin`, i) <=
+                itemAmount($item`Interesting Coin`),
+          )
+          .map((item) => ({
+            item,
+            cost: sellPrice($coinmaster`Interesting Coin`, item),
+            value:
+              garboValue(item) / sellPrice($coinmaster`Interesting Coin`, item),
+          }));
+
+        if (itemsWithCosts.length === 0) {
+          break;
+        }
+
+        const { item } = maxBy(itemsWithCosts, "value");
+        buy($coinmaster`Interesting Coin`, 1, item);
       }
     },
     spendsTurn: false,
@@ -610,7 +656,7 @@ const DailyItemTasks: GarboTask[] = [
       get("_shadowAffinityToday") || _shouldClearRufusQuest !== null,
     do: (): void => {
       const value = rufusPotion.value(highMeatMonsterCount());
-      const price = rufusPotion.price(false);
+      const price = rufusPotion.price();
       _shouldClearRufusQuest = value.some(
         (value) =>
           (!globalOptions.nobarf || value.name === "target") &&
@@ -735,7 +781,7 @@ const DailyItemTasks: GarboTask[] = [
     completed: () => !AprilingBandHelmet.canPlay($item`Apriling band piccolo`),
     spendsTurn: false,
   },
-  mayamCalendarSummon(),
+  ...mayamCalendarSummon(),
   {
     name: "Devil Cheapest Candy",
     ready: () => have($item`candy egg deviler`), // TODO: Support guild stash
@@ -774,6 +820,31 @@ const DailyItemTasks: GarboTask[] = [
         visitUrl(url);
       }
       smashedBarrels = true;
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Rose Garden Items",
+    ready: () =>
+      (canSwapGarden() && BlackRoseGarden.have()) ||
+      BlackRoseGarden.installed(),
+    completed: () => get("_garbo_roseGardenLooted", false),
+    prepare: () => {
+      if (have($item`black garden rose`)) {
+        use($item`black garden rose`);
+      }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: () => {
+      BlackRoseGarden.obtainItems();
+      set("_garbo_roseGardenLooted", true);
+    },
+    post: () => {
+      if (canSwapGarden() && have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
+      }
     },
     spendsTurn: false,
   },
