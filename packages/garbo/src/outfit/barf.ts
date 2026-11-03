@@ -4,7 +4,6 @@ import {
   Familiar,
   inebrietyLimit,
   Item,
-  itemDropsArray,
   myClass,
   myFamiliar,
   myFury,
@@ -25,7 +24,6 @@ import {
   get,
   getKramcoWandererChance,
   have,
-  maxBy,
   undelay,
 } from "libram";
 import { barfFamiliar } from "../familiar/barfFamiliar";
@@ -40,10 +38,9 @@ import {
   modeValueOfMeat,
   validateGarbageFoldable,
 } from "./lib";
-import { expectedDropValue, MEAT_TARGET_MULTIPLIER } from "../lib";
 import { trackMarginalTurnExtraValue } from "../session";
 import { FarmingStrategy } from "../farmingStrategy";
-import { garboValue } from "../garboValue";
+import { specialFamiliarOutfits } from "../familiar/specialFamiliarOutfits";
 
 function chooseGun() {
   if (have($item`love`)) {
@@ -129,19 +126,9 @@ export function computeBarfOutfit(
   outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
   applyCheeseBonus(outfit, BonusEquipMode.BARF);
 
-  if (outfit.familiar === $familiar`Jill-of-All-Trades`) {
-    outfit.equip($item`LED candle`);
-    outfit.setModes({ jillcandle: "ultraviolet" });
-  }
-
-  if (
-    outfit.familiar === $familiar`Chest Mimic` &&
-    $familiar`Chest Mimic`.experience < 550
-  ) {
-    const famExpValue =
-      (MEAT_TARGET_MULTIPLIER() * get("valueOfAdventure")) / 50;
-    outfit.modifier.push(`${famExpValue} Familiar Experience`);
-  }
+  const specialFamiliar = specialFamiliarOutfits.get(spec.familiar);
+  if (specialFamiliar?.equip) outfit.equip(specialFamiliar.equip);
+  specialFamiliar?.configureOutfit?.(outfit);
 
   const bjornChoice = chooseBjorn(BonusEquipMode.BARF, spec.familiar, sim);
 
@@ -153,20 +140,16 @@ export function computeBarfOutfit(
     "-tie",
   );
 
-  const swordMonster = get("swordOfSWordsMonster");
-  if (swordMonster && outfit.familiar === $familiar`Sword of S Words`) {
-    const valueOfItem = expectedDropValue(swordMonster);
-    const drops = itemDropsArray(swordMonster).filter(({ rate }) => rate > 0);
-    if (drops.length) {
-      const { rate: maxValueItemRate } = maxBy(drops, ({ drop }) =>
-        garboValue(drop),
-      );
-      const maxItemDrop = Math.ceil(100 * (100 / maxValueItemRate - 1));
-      outfit.modifier.push(`${valueOfItem} Item Drop ${maxItemDrop} Max`);
-    }
-  } else {
-    outfit.modifier.push(`${modeValueOfItem(BonusEquipMode.BARF)} Item Drop`);
-  }
+  const farmingItemDropValue = modeValueOfItem(BonusEquipMode.BARF);
+  const { valuePerItemDrop, maximumItemDrop } =
+    specialFamiliar?.itemDropObjective?.(farmingItemDropValue) ?? {
+      valuePerItemDrop: farmingItemDropValue,
+    };
+  outfit.modifier.push(
+    `${valuePerItemDrop} Item Drop${
+      maximumItemDrop === undefined ? "" : ` ${maximumItemDrop} Max`
+    }`,
+  );
 
   if (myInebriety() > trueInebrietyLimit()) {
     if (!outfit.equip($item`Drunkula's wineglass`)) {

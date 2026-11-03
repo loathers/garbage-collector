@@ -78,6 +78,16 @@ const wanderFactories: WandererFactory[] = [
   yachtzeeFactory,
 ];
 
+/**
+ * Register an additional source of wander targets, alongside the built-in ones.
+ * For example, a script that quests and farms on the same day can offer quest
+ * zones where a wandering fight also makes quest progress.
+ * @param factory Produces candidate targets for a given type of draggable fight
+ */
+export function addWanderFactory(factory: WandererFactory): void {
+  if (!wanderFactories.includes(factory)) wanderFactories.push(factory);
+}
+
 function zoneAverageMonsterValue(
   location: Location,
   monsterBonusValues: Map<Monster, number>,

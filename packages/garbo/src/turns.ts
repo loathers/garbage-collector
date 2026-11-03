@@ -6,13 +6,12 @@ import {
   myInebriety,
   myTurncount,
 } from "kolmafia";
-import { $familiar, $item, clamp, get, have } from "libram";
+import { $familiar, $item, clamp, get, have, SourceTerminal } from "libram";
 import { globalOptions } from "./config";
 // Dumb circular import stuff
 import { usingThumbRing } from "./outfit/dropsgearAccessories";
 import { copyTargetCount } from "./target/fights";
 import {
-  digitizedMonstersRemainingForTurns,
   ESTIMATED_OVERDRUNK_TURNS,
   howManySausagesCouldIEat,
   targetingMeat,
@@ -141,7 +140,8 @@ function potentialNonOrganAdventures(): number {
 export function wanderingCopytargetsRemaining() {
   // Todo: account for not having enough turns to do all your nextweek fights
   return (
-    digitizedMonstersRemainingForTurns(estimatedGarboTurns()) + nextWeekFights()
+    SourceTerminal.digitizedMonstersRemainingForTurns(estimatedGarboTurns()) +
+    nextWeekFights()
   );
 }
 export function highMeatMonsterCount(...excludedEmbezzlers: LuckySource[]) {

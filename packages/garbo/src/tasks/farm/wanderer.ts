@@ -65,7 +65,7 @@ import {
   waterBreathingEquipment,
 } from "../../outfit/lib";
 import { meatTargetOutfit } from "../../outfit/target";
-import { deliverThesisIfAble } from "../../fights";
+import { ThesisTask } from "../thesis";
 import { GarboTask } from "../engine";
 import {
   canContinue,
@@ -343,15 +343,10 @@ const BarfTurnTasks: GarboTask[] = [
     },
   ),
   {
+    ...ThesisTask,
     name: "Thesis",
     ready: () =>
-      have($familiar`Pocket Professor`) &&
-      myAdventures() === 1 + globalOptions.saveTurns &&
-      $familiar`Pocket Professor`.experience >= 400,
-    completed: () => get("_thesisDelivered"),
-    do: () => deliverThesisIfAble(),
-    sobriety: "sober",
-    spendsTurn: true,
+      ThesisTask.ready() && myAdventures() === 1 + globalOptions.saveTurns,
   },
   {
     name: "Digitize Wanderer (Underwater, for Green Taffy)",

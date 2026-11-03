@@ -14,7 +14,7 @@ import {
   realmAvailable,
 } from "libram";
 import { GarboTask } from "./engine";
-import { withStash } from "../clan";
+import { stash } from "../stash";
 import {
   burnLibrams,
   freeRunConstraints,
@@ -49,7 +49,7 @@ const BuffExtensionTasks: GarboTask[] = [
     name: "Platinum Yendorian Express Card",
     completed: () => get("expressCardUsed"),
     do: () => {
-      withStash($items`Platinum Yendorian Express Card`, () => {
+      stash.with($items`Platinum Yendorian Express Card`, () => {
         if (have($item`Platinum Yendorian Express Card`)) {
           burnMp();
           use($item`Platinum Yendorian Express Card`);
@@ -65,7 +65,7 @@ const BuffExtensionTasks: GarboTask[] = [
     name: "Bag o' Tricks",
     completed: () => get("_bagOTricksUsed"),
     do: () => {
-      withStash($items`Bag o' Tricks`, () => {
+      stash.with($items`Bag o' Tricks`, () => {
         if (have($item`Bag o' Tricks`)) {
           use($item`Bag o' Tricks`);
         }
