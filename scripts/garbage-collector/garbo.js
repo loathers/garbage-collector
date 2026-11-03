@@ -20271,7 +20271,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"84cc956523d2e38e0efa99d960aaefeee3ab572e"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"77975740e9ded33f4e69c7f59a1587ea3256ed65"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -21468,7 +21468,7 @@ var StashManager = /*#__PURE__*/function () {
       } finally {
         _iterator0.f();
       }
-      var _iterator1 = _createForOfIteratorHelper($familiars.all().filter(have$R)),
+      var _iterator1 = _createForOfIteratorHelper($familiars.all().filter(familiar => have$R(familiar))),
         _step1;
       try {
         for (_iterator1.s(); !(_step1 = _iterator1.n()).done;) {
@@ -21660,7 +21660,7 @@ function setBestLeprechaunAsMeatFamiliar() {
   fam = findBestLeprechaun();
 }
 function meatFamiliar() {
-  return fam ?? (fam = $familiars`Robortender, Jill-of-All-Trades`.find(have$R) ?? findBestLeprechaun());
+  return fam ?? (fam = $familiars`Robortender, Jill-of-All-Trades`.find(familiar => have$R(familiar)) ?? findBestLeprechaun());
 }
 var familiarWaterBreathingEquipment$1 = $items`das boot, little bitty bathysphere`;
 function meatDropWithEquipment(familiar, equip) {
@@ -21676,7 +21676,7 @@ function meatDropWithEquipment(familiar, equip) {
 function underwaterMeatFamiliar() {
   var fallback = meatFamiliar();
   if (familiarCanBreathe(fallback)) return fallback;
-  var breathingEquipment = familiarWaterBreathingEquipment$1.filter(have$R);
+  var breathingEquipment = familiarWaterBreathingEquipment$1.filter(item => have$R(item));
   if (!breathingEquipment.length) return fallback;
   var assumedFreeSlotEquipment = have$R($item`amulet coin`) ? $item`amulet coin` : $item.none;
   var familiarValue = familiar => familiarCanBreathe(familiar) ? meatDropWithEquipment(familiar, assumedFreeSlotEquipment) : Math.max.apply(Math, _toConsumableArray(breathingEquipment.map(equip => meatDropWithEquipment(familiar, equip))));
@@ -30543,6 +30543,16 @@ var SANDWORM_TASK_DEFINITIONS = [{
     price: drumMachineROI()
   }]
 }, {
+  name: $item`partial tombstone`.name,
+  ready: () => drumMachineROI() > kolmafia.mallPrice($item`partial tombstone`),
+  completed: () => get$2("_partialTombstonesUsed") >= 11,
+  combat: new GarboStrategy(() => sandwormMacro().tryItem($item`partial tombstone`)),
+  combatCount: () => drumMachineROI() > kolmafia.mallPrice($item`partial tombstone`) ? clamp(11 - get$2("_partialTombstonesUsed"), 0, 11) : 0,
+  acquire: () => [{
+    item: $item`partial tombstone`,
+    price: drumMachineROI()
+  }]
+}, {
   name: $skill`BCZ: Sweat Bullets`.name,
   ready: () => have$R($item`blood cubic zirconia`) && safeSweatBulletCasts(drumMachineROI()) >= 0,
   completed: () => safeSweatBulletCasts(drumMachineROI()) <= 0,
@@ -35142,7 +35152,7 @@ function main() {
     }); // Automate Shadow Labyrinth Quest
 
     var equipmentFamiliars = $familiars`Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow`;
-    var _iterator = _createForOfIteratorHelper(equipmentFamiliars.filter(have$R)),
+    var _iterator = _createForOfIteratorHelper(equipmentFamiliars.filter(familiar => have$R(familiar))),
       _step;
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
