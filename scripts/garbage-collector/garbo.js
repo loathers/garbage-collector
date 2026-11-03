@@ -20271,7 +20271,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"77975740e9ded33f4e69c7f59a1587ea3256ed65"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"88f0cb74a7bd6b671e386758c1ed15c4d70cb15b"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -29601,6 +29601,8 @@ function remainingShadowRiftFights() {
   return kolmafia.haveEffect(affinity) + (!get$2("_shadowAffinityToday") ? 11 : 0);
 }
 
+var MAX_DMT_SNOWGLOBE_PRICE = 2_000;
+var MAX_SELF_DRIBBLING_BASKETBALL_PRICE = 10_000;
 function bestWitchessPiece() {
   return maxBy(pieces$1, monster => sum(kolmafia.itemDropsArray(monster), _ref => {
     var drop = _ref.drop;
@@ -29625,14 +29627,17 @@ var tearawayPantsFreeFightOutfit = adventure => () => freeFightOutfit({
 });
 function litLeafMacro(monster) {
   var tiedUpItem = new Map([[$monster`flaming leaflet`, $item`tied-up flaming leaflet`], [$monster`flaming monstera`, $item`tied-up flaming monstera`], [$monster`leaviathan`, $item`tied-up leaviathan`]]).get(monster);
-
   // Only convert lassos if we can funksling as the combat counts as a free loss
   return Macro.externalIf(kolmafia.haveEquipped($item`tearaway pants`), Macro.if_(monster, Macro.trySkill($skill`Tear Away your Pants!`))).externalIf(tiedUpItem !== undefined && kolmafia.itemAmount($item`lit leaf lasso`) >= 2 && have$R($skill`Ambidextrous Funkslinging`) && (garboValue(tiedUpItem) - kolmafia.mallPrice($item`lit leaf lasso`)) * 2 >= globalOptions.prefs.valueOfFreeFight, Macro.if_(monster, Macro.tryItem([$item`lit leaf lasso`, $item`lit leaf lasso`]))).basicCombat();
 }
-function dmtCommaValuable() {
+function dmtCommaValuable(basketballThreshold, snowglobeThreshold) {
   if (!have$O()) return false;
-  var cost = kolmafia.mallPrice($item`Deep Machine Tunnels snowglobe`) + (currentFamiliar$1() === $familiar`Machine Elf` ? 0 : kolmafia.mallPrice($item`self-dribbling basketball`));
-  return globalOptions.prefs.valueOfFreeFight * 5 > cost;
+  var basketballCost = kolmafia.mallPrice($item`self-dribbling basketball`);
+  if (basketballCost > basketballThreshold) return false;
+  var snowglobeCost = kolmafia.mallPrice($item`Deep Machine Tunnels snowglobe`);
+  if (snowglobeCost > snowglobeThreshold) return false;
+  var totalCost = snowglobeCost + (currentFamiliar$1() === $familiar`Machine Elf` ? 0 : basketballCost);
+  return globalOptions.prefs.valueOfFreeFight * 5 > totalCost;
 }
 var stunDurations = new Map([[$skill`Blood Bubble`, 1], [$skill`Entangling Noodles`, () => kolmafia.myClass() === $class`Pastamancer` && !have$R($skill`Shadow Noodles`) ? 1 : 0], [$skill`Frost Bite`, 1], [$skill`Shadow Noodles`, 2], [$skill`Shell Up`, () => {
   if (kolmafia.myClass() !== $class`Turtle Tamer`) return 0;
@@ -30083,21 +30088,21 @@ var FreeFightTasks = [freeFightTask({
 }), freeFightTask({
   name: "Machine Elf",
   adventure: $location`The Deep Machine Tunnels`,
-  ready: () => have$R($familiar`Machine Elf`) || dmtCommaValuable(),
+  ready: () => have$R($familiar`Machine Elf`) || dmtCommaValuable(MAX_SELF_DRIBBLING_BASKETBALL_PRICE, MAX_DMT_SNOWGLOBE_PRICE),
   completed: () => get$2("_machineTunnelsAdv") >= 5,
   do: $location`The Deep Machine Tunnels`,
   prepare: () => {
     if (kolmafia.myFamiliar() === $familiar`Comma Chameleon`) {
       if (currentFamiliar$1() !== $familiar`Machine Elf`) {
-        acquire(1, $item`self-dribbling basketball`, 10000);
+        acquire(1, $item`self-dribbling basketball`, MAX_SELF_DRIBBLING_BASKETBALL_PRICE);
         transform($familiar`Machine Elf`);
       }
       if (!kolmafia.canAdventure($location`The Deep Machine Tunnels`)) {
-        acquire(1, $item`Deep Machine Tunnels snowglobe`, 2000);
+        acquire(1, $item`Deep Machine Tunnels snowglobe`, MAX_DMT_SNOWGLOBE_PRICE);
         kolmafia.use($item`Deep Machine Tunnels snowglobe`);
       }
     }
-    // We need an else here because if we're using Comma we don't get to convert items.
+    // Both comma & machine elf are allowed to convert abstractions, so the below is shared between them.
     if (garboValue($item`abstraction: certainty`) >= garboValue($item`abstraction: thought`)) {
       acquire(1, $item`abstraction: thought`, garboValue($item`abstraction: certainty`), false);
     }
