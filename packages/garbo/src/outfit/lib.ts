@@ -32,6 +32,7 @@ import {
   getFoldGroup,
   have,
   Requirement,
+  ToyCupidBow,
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
@@ -44,6 +45,28 @@ import {
   wanderingCopytargetsRemaining,
 } from "../turns";
 import { FarmingStrategy } from "../farmingStrategy";
+import { CupidBowAction } from "../familiar/lib";
+
+export function applyCupidBowChoice(
+  outfit: Outfit,
+  choice: CupidBowAction,
+): void {
+  const cupidBow = $item`toy Cupid bow`;
+  // Explicit requirements (notably sandworm item rerolls) take precedence.
+  if (outfit.haveEquipped(cupidBow)) return;
+  if (choice === "equip") {
+    if (!outfit.equip(cupidBow)) {
+      throw new Error(
+        "Selected a Cupid bow familiar without being able to equip its bow.",
+      );
+    }
+  } else if (
+    choice === "avoid" &&
+    outfit.familiar !== ToyCupidBow.currentFamiliar()
+  ) {
+    outfit.avoid.push(cupidBow);
+  }
+}
 
 export enum BonusEquipMode {
   FREE,

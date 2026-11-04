@@ -11,12 +11,14 @@ import {
   Guzzlr,
   have,
 } from "libram";
-import { freeFightFamiliar } from "../familiar/freeFightFamiliar";
+import { freeFightFamiliarData } from "../familiar/freeFightFamiliar";
+import { barfCupidBowResetCost } from "../familiar/barfFamiliar";
 import { meatFamiliar, underwaterMeatFamiliar } from "../familiar/meatFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   applyCheeseBonus,
+  applyCupidBowChoice,
   bestBjornalike,
   BonusEquipMode,
   cleaverCheck,
@@ -83,14 +85,30 @@ export function meatTargetOutfit(
   );
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
   const familiarNeedsToBreathe = familiarSlotNeededForBreathing(location);
-  outfit.familiar ??= targetingMeat()
-    ? familiarNeedsToBreathe
+  if (targetingMeat()) {
+    outfit.familiar ??= familiarNeedsToBreathe
       ? underwaterMeatFamiliar()
-      : meatFamiliar()
-    : freeFightFamiliar(location ?? globalOptions.target, {
+      : meatFamiliar();
+
+    applyCupidBowChoice(
+      outfit,
+      barfCupidBowResetCost() > 0 ? "avoid" : "allow",
+    );
+  } else {
+    const familiarChoice = freeFightFamiliarData(
+      location ?? globalOptions.target,
+      {
+        forcedFamiliar: outfit.familiar,
         equipmentForced:
           familiarNeedsToBreathe || !outfit.canEquip($item`toy Cupid bow`),
-      });
+        canEquipCupidBow: (familiar) =>
+          outfit.canEquip({ familiar, equip: $items`toy Cupid bow` }),
+      },
+    );
+
+    outfit.familiar = familiarChoice.familiar;
+    applyCupidBowChoice(outfit, familiarChoice.cupidBow);
+  }
 
   const bjornChoice = chooseBjorn(
     targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,
@@ -116,6 +134,7 @@ export function meatTargetOutfit(
 
   if (
     outfit.familiar === $familiar`Jill-of-All-Trades` &&
+    !outfit.haveEquipped($item`toy Cupid bow`) &&
     !familiarSlotNeededForBreathing(location, outfit.familiar)
   ) {
     outfit.equip($item`LED candle`);

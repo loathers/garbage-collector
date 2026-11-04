@@ -13,8 +13,8 @@ import {
 } from "libram";
 
 import {
-  FamiliarMenuOptions,
-  freeFightFamiliar,
+  FamiliarSelectionOptions,
+  freeFightFamiliarData,
 } from "../familiar/freeFightFamiliar";
 import { MEAT_TARGET_MULTIPLIER, sober } from "../lib";
 import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
@@ -23,6 +23,7 @@ import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   applyCheeseBonus,
+  applyCupidBowChoice,
   BonusEquipMode,
   cleaverCheck,
   validateGarbageFoldable,
@@ -64,7 +65,7 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
 
 export type FreeFightOutfitMenuOptions = {
   duplicate?: boolean;
-  familiarOptions?: FamiliarMenuOptions;
+  familiarOptions?: FamiliarSelectionOptions;
 };
 export function freeFightOutfit(
   spec: OutfitSpec = {},
@@ -86,18 +87,24 @@ export function freeFightOutfit(
 
   if (location.environment === "underwater") outfit.modifier.push("+sea");
 
-  outfit.familiar ??= freeFightFamiliar(
-    adventure,
-    computeFamiliarMenuOptions(
-      options.familiarOptions,
-      options.duplicate ?? false,
-      outfit,
-    ),
-  );
   const mode =
     location === $location`The Deep Machine Tunnels`
       ? BonusEquipMode.DMT
       : BonusEquipMode.FREE;
+
+  const familiarChoice = freeFightFamiliarData(adventure, {
+    ...computeFamiliarSelectionOptions(
+      options.familiarOptions,
+      options.duplicate ?? false,
+      outfit,
+      mode,
+    ),
+    forcedFamiliar: outfit.familiar,
+    canEquipCupidBow: (familiar) =>
+      outfit.canEquip({ familiar, equip: $items`toy Cupid bow` }),
+  });
+  outfit.familiar = familiarChoice.familiar;
+  applyCupidBowChoice(outfit, familiarChoice.cupidBow);
 
   if (outfit.familiar !== $familiar`Patriotic Eagle`) {
     const familiarExpValue = undelay(famExpValue.get(outfit.familiar));
@@ -177,11 +184,12 @@ function computeOutfitSpec(spec: OutfitSpec, location: Location): OutfitSpec {
   };
 }
 
-function computeFamiliarMenuOptions(
-  options: FamiliarMenuOptions = {},
+function computeFamiliarSelectionOptions(
+  options: FamiliarSelectionOptions = {},
   duplicate: boolean,
   outfit: Outfit,
-): FamiliarMenuOptions {
+  mode: BonusEquipMode,
+): FamiliarSelectionOptions {
   return {
     ...options,
     allowAttackFamiliars:
@@ -192,6 +200,8 @@ function computeFamiliarMenuOptions(
         SourceTerminal.duplicateUsesRemaining() > 0
       ),
     equipmentForced:
-      options.equipmentForced || !outfit.canEquip($item`toy Cupid bow`),
+      mode === BonusEquipMode.DMT ||
+      options.equipmentForced ||
+      !outfit.canEquip($item`toy Cupid bow`),
   };
 }

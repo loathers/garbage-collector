@@ -26,11 +26,13 @@ import {
   have,
   undelay,
 } from "libram";
-import { barfFamiliar } from "../familiar/barfFamiliar";
+import { barfCupidBowResetCost, barfFamiliar } from "../familiar/barfFamiliar";
+import { CupidBowAction } from "../familiar/lib";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
   applyCheeseBonus,
+  applyCupidBowChoice,
   bestBjornalike,
   BonusEquipMode,
   cleaverCheck,
@@ -113,6 +115,7 @@ const trueInebrietyLimit = () =>
 export function computeBarfOutfit(
   spec: OutfitSpec & { familiar: Familiar },
   sim = false,
+  cupidBow?: CupidBowAction,
 ): Outfit {
   cleaverCheck();
   validateGarbageFoldable(spec);
@@ -177,6 +180,10 @@ export function computeBarfOutfit(
   }
 
   if (!sim) {
+    applyCupidBowChoice(
+      outfit,
+      cupidBow ?? (barfCupidBowResetCost() > 0 ? "avoid" : "allow"),
+    );
     outfit.addBonuses(toyCupidBow(spec.familiar));
   }
 
@@ -207,14 +214,19 @@ export function computeBarfOutfit(
 }
 
 export function barfOutfit(spec: OutfitSpec, sim = false): Outfit {
-  const { familiar, extraValue } = barfFamiliar(
+  const { familiar, extraValue, cupidBow } = barfFamiliar(
     Boolean(
       spec.famequip ||
+        spec.avoid?.includes($item`toy Cupid bow`) ||
         spec.equip?.some((equipment) => toSlot(equipment) === $slot`familiar`),
     ),
   );
   try {
-    return computeBarfOutfit({ familiar, ...spec }, sim);
+    return computeBarfOutfit(
+      { familiar, ...spec },
+      sim,
+      spec.familiar ? undefined : cupidBow,
+    );
   } finally {
     trackMarginalTurnExtraValue(extraValue);
   }

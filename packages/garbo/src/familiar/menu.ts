@@ -30,7 +30,6 @@ import { meatFamiliar } from "./meatFamiliar";
 import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
-import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
 
 export type FamiliarMenuOptions = Partial<{
@@ -40,8 +39,18 @@ export type FamiliarMenuOptions = Partial<{
   includeExperienceFamiliars: boolean;
   allowAttackFamiliars: boolean;
   mode: FamiliarMode;
-  equipmentForced: boolean;
 }>;
+
+export function familiarAllowed(
+  familiar: Familiar,
+  { allowAttackFamiliars = true, excludeFamiliar = [] }: FamiliarMenuOptions,
+): boolean {
+  return (
+    (allowAttackFamiliars ||
+      !(familiar.physicalDamage || familiar.elementalDamage)) &&
+    !excludeFamiliar.includes(familiar)
+  );
+}
 
 export function menu(
   adventure: AdventureArgument,
@@ -60,7 +69,6 @@ export function menu(
   const familiarMenu = [
     ...getConstantValueFamiliars(mode, monsterRates),
     ...getDropFamiliars(),
-    ...getToyCupidBowFamiliars(),
     ...(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []),
     ...extraFamiliars,
   ];
@@ -176,11 +184,7 @@ export function menu(
   return familiarMenu.filter(
     ({ familiar, worksOnFreeRun }) =>
       (mode !== "run" || worksOnFreeRun) &&
-      (allowAttackFamiliars ||
-        !(familiar.physicalDamage || familiar.elementalDamage)) &&
-      !excludeFamiliar.some(
-        (excludedFamiliar) => excludedFamiliar === familiar,
-      ),
+      familiarAllowed(familiar, { allowAttackFamiliars, excludeFamiliar }),
   );
 }
 

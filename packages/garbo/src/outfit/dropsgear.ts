@@ -524,7 +524,7 @@ function sneegleebs(): Map<Item, number> {
 export function toyCupidBow(familiar: Familiar): Map<Item, number> {
   if (!ToyCupidBow.have()) return new Map();
   const turns = tcbTurnsLeft(familiar, getUsedTcbFamiliars());
-  if (estimatedGarboTurns() <= turns) {
+  if (Math.max(estimatedGarboTurns(), 1) < turns) {
     return new Map();
   }
   return new Map([

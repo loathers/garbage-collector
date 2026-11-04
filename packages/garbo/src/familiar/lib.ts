@@ -18,6 +18,7 @@ import {
   findLeprechaunMultiplier,
   get,
   have,
+  maxBy,
   Snapper,
   sumNumbers,
   ToyCupidBow,
@@ -34,13 +35,15 @@ import { copyTargetCount } from "../target/fights";
 import { canBullseye, safeToAttemptBullseye } from "../resources/everfullDarts";
 import { FarmingStrategy } from "../farmingStrategy";
 
+export type CupidBowAction = "equip" | "avoid" | "allow";
+
 export type FamiliarMode = "barf" | "free" | "target" | "run";
 
 export type GeneralFamiliar = {
   familiar: Familiar;
   expectedValue: number;
   leprechaunMultiplier: number;
-  limit: "drops" | "experience" | "none" | "special" | "cupid";
+  limit: "drops" | "experience" | "none" | "special";
   worksOnFreeRun: boolean;
 };
 
@@ -211,17 +214,32 @@ export function tcbValue(
   if (equipmentForced) return 0;
   if (!ToyCupidBow.have()) return 0;
   if (tcbFamiliars.has(familiar)) return 0;
-  const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
-  // This is only used during barf so we can just use basemeat
-  // Includes a lazy linearization of the value of its leprechaun-pounds
-  const amuletCoin =
-    includeAmuletCoinOpportunityCost && have($item`amulet coin`)
-      ? (50 +
-          10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) *
-        FarmingStrategy.meatDropValue()
-      : 0;
+  const amuletCoin = includeAmuletCoinOpportunityCost
+    ? amuletCoinOpportunityCost(familiar)
+    : 0;
   return (
     familiarEquipmentValue(familiar) / tcbTurnsLeft(familiar, tcbFamiliars) -
     amuletCoin
+  );
+}
+
+export function amuletCoinOpportunityCost(familiar: Familiar): number {
+  if (!have($item`amulet coin`)) return 0;
+  const multiplier = findLeprechaunMultiplier(familiar);
+  // Linear approximation of the Meat lost by replacing an amulet coin during farming.
+  return (
+    (50 + 10 * (2 * multiplier + Math.sqrt(multiplier))) *
+    FarmingStrategy.meatDropValue()
+  );
+}
+
+export function bestFamiliarChoice<T extends GeneralFamiliar>(
+  choices: T[],
+  value: (candidate: T) => number = ({ expectedValue }) => expectedValue,
+): T {
+  const bestValue = value(maxBy(choices, value));
+  return maxBy(
+    choices.filter((choice) => value(choice) === bestValue),
+    "leprechaunMultiplier",
   );
 }
