@@ -10,7 +10,6 @@ import {
 } from "kolmafia";
 import {
   $effect,
-  $element,
   $familiar,
   $item,
   $items,
@@ -42,7 +41,6 @@ import {
   turnsAvailable,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
-import { garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
 import { globalOptions } from "../config";
 import {
@@ -205,27 +203,6 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
     outfitValue,
     outfitWeight,
   };
-}
-
-function extraValue(
-  target: MarginalFamiliar,
-  meat: MarginalFamiliar,
-  jellyfish: MarginalFamiliar | undefined,
-) {
-  const targetValue = totalFamiliarValue(target);
-  const meatFamiliarValue = totalFamiliarValue(meat);
-  const jelly = FarmingStrategy.monsters().every(
-    (monster) => monster.attackElement === $element`Stench`,
-  )
-    ? $item`stench jelly`
-    : Item.none;
-
-  const jellyfishValue = jellyfish
-    ? garboValue(jelly) / 20 +
-      familiarAbilityValue(jellyfish.familiar) +
-      jellyfish.outfitValue
-    : 0;
-  return Math.max(targetValue - Math.max(meatFamiliarValue, jellyfishValue), 0);
 }
 
 const familiarPrintout = ({
@@ -432,12 +409,13 @@ export function barfFamiliar(equipmentForced: boolean): {
     `Choosing to use ${selectedFamiliar.familiar} ${familiarPrintout(selectedFamiliar)} over ${meatFamiliarEntry.familiar} ${familiarPrintout(meatFamiliarEntry)}.`,
     HIGHLIGHT,
   );
-  const jellyfish = ordinary.find(
-    ({ familiar }) => familiar === $familiar`Space Jellyfish`,
-  );
   return {
     familiar: selectedFamiliar.familiar,
-    extraValue: extraValue(selectedFamiliar, meatFamiliarEntry, jellyfish),
+    extraValue: Math.max(
+      totalFamiliarValue(selectedFamiliar) -
+        totalFamiliarValue(meatFamiliarEntry),
+      0,
+    ),
     cupidBow: selectedFamiliar.cupidBow,
   };
 }
