@@ -30,10 +30,12 @@ const harvestableGardens: HarvestableGarden[] = [
   },
 ];
 
+function currentGarden(): Item | undefined {
+  return Object.values(GARDEN_ITEMS).find((garden) => haveInCampground(garden));
+}
+
 // Capture this before any tasks run: temporarily planting roses must not lock us in.
-const startingGarden = Object.values(GARDEN_ITEMS).find((garden) =>
-  haveInCampground(garden),
-);
+const startingGarden = currentGarden();
 
 export function canSwapGarden(): boolean {
   if (get("_blackRoseGardenToday")) return true;
@@ -43,7 +45,7 @@ export function canSwapGarden(): boolean {
 }
 
 export function harvestGarden(): void {
-  if (startingGarden === $item`packet of rock seeds`) {
+  if (currentGarden() === $item`packet of rock seeds`) {
     visitUrl("campground.php?action=rgarden1&pwd");
     visitUrl("campground.php?action=rgarden2&pwd");
     visitUrl("campground.php?action=rgarden3&pwd");
