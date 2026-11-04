@@ -15,7 +15,7 @@ import {
   maxBy,
   set,
 } from "libram";
-import { menu } from "./freeFightFamiliar";
+import { menu } from "./menu";
 import { getUsedTcbFamiliars, tcbValue } from "./lib";
 
 export function sandwormFamiliar(): Familiar {

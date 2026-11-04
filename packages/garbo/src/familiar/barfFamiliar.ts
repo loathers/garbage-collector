@@ -30,7 +30,7 @@ import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
-import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
+import { getAllJellyfishDrops, menu } from "./menu";
 import {
   GeneralFamiliar,
   getUsedTcbFamiliars,
