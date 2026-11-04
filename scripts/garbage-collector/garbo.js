@@ -20271,7 +20271,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"88f0cb74a7bd6b671e386758c1ed15c4d70cb15b"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"a85933a4d7498a04e110bc053245ff0d0149f70f"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -28422,6 +28422,9 @@ function freeFightOutfit() {
   validateGarbageFoldable(computedSpec);
   var outfit = Outfit.from(computedSpec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`));
   if (location.environment === "underwater") outfit.modifier.push("+sea");
+  if (get$2("_seadentWaveZone") === location && !have$R($effect`Fishy`)) {
+    outfit.equip($item`Monodent of the Sea`);
+  }
   outfit.familiar ?? (outfit.familiar = freeFightFamiliar(adventure, computeFamiliarMenuOptions(options.familiarOptions, options.duplicate ?? false, outfit)));
   var mode = location === $location`The Deep Machine Tunnels` ? BonusEquipMode.DMT : BonusEquipMode.FREE;
   if (outfit.familiar !== $familiar`Patriotic Eagle`) {
