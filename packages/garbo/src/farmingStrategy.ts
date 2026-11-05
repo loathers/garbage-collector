@@ -186,32 +186,19 @@ class FarmingStrategySkeleton {
   }
 }
 
-export const FarmingStrategy = new Proxy(new FarmingStrategySkeleton(), {
-  get: (target, prop, receiver) => {
-    if (
-      Object.prototype.hasOwnProperty.call(
-        FarmingStrategySkeleton.prototype,
-        prop,
-      )
-    ) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const method = (FarmingStrategySkeleton.prototype as any)[prop];
-      method.bind(receiver);
-    }
-
-    const strategyOptions = currentStrategy();
-
-    const stringProp = String(prop);
-    if (stringProp in strategyOptions) {
-      return strategyOptions[stringProp as keyof FarmingStrategyOptions];
-    }
-    if (stringProp in DEFAULT_OPTIONS) {
-      return DEFAULT_OPTIONS[stringProp as keyof typeof DEFAULT_OPTIONS];
-    }
-    // Fallback to standard target resolution
-    return Reflect.get(target, prop, receiver);
+export const FarmingStrategy: Readonly<FarmingStrategySkeleton> = new Proxy(
+  new FarmingStrategySkeleton(),
+  {
+    get: (target, prop) => {
+      const strategyOptions = currentStrategy();
+      // Rhino 1.9.1 ignores receivers; class getters cannot read proxied options.
+      return Reflect.get(prop in target ? target : strategyOptions, prop);
+    },
+    set: () => {
+      throw new TypeError("FarmingStrategy is read-only");
+    },
   },
-});
+);
 
 const BARF_MOUNTAIN: FarmingStrategyOptions = {
   stasisRounds: 20,
@@ -308,16 +295,27 @@ const THE_MARINARA_TRENCH: FarmingStrategyOptions = {
       .meatKill(),
 };
 
-function currentStrategy(): FarmingStrategyOptions {
-  switch (globalOptions.prefs.farmingMethod) {
-    case FarmingMethod.THE_CORAL_CORRAL:
-      return THE_CORAL_CORRAL;
-
-    case FarmingMethod.THE_MARINARA_TRENCH:
-      return THE_MARINARA_TRENCH;
-
-    case FarmingMethod.BARF_MOUNTAIN:
-    default:
-      return BARF_MOUNTAIN;
+let cachedStrategy: Required<FarmingStrategyOptions> | undefined;
+function currentStrategy(): Required<FarmingStrategyOptions> {
+  if (!globalOptions.argsFilled) {
+    throw new Error("FarmingStrategy accessed before Args.fill completed");
   }
+  if (!cachedStrategy) {
+    let strategyOptions: FarmingStrategyOptions;
+    switch (globalOptions.prefs.farmingMethod) {
+      case FarmingMethod.THE_CORAL_CORRAL:
+        strategyOptions = THE_CORAL_CORRAL;
+        break;
+
+      case FarmingMethod.THE_MARINARA_TRENCH:
+        strategyOptions = THE_MARINARA_TRENCH;
+        break;
+
+      case FarmingMethod.BARF_MOUNTAIN:
+      default:
+        strategyOptions = BARF_MOUNTAIN;
+    }
+    cachedStrategy = { ...DEFAULT_OPTIONS, ...strategyOptions };
+  }
+  return cachedStrategy;
 }
