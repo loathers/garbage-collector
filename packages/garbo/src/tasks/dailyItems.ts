@@ -66,6 +66,7 @@ import { candyMapDailyTasks } from "../resources/candyMap";
 import { doingGregFight } from "../resources/extrovermectin";
 import {
   bestHarvestSwap,
+  blackRoseWillGrow,
   canSwapGarden,
   harvestGarden,
 } from "../resources/garden";
@@ -854,7 +855,11 @@ const DailyItemTasks: GarboTask[] = [
   },
   {
     name: "Swap Garden and Harvest",
-    ready: () => BlackRoseGarden.installed() && have(bestHarvestSwap()), // Is this the only time we can swap a garden and still harvest?
+    ready: () =>
+      // Is this the only time we can swap a garden and still harvest?
+      BlackRoseGarden.installed() &&
+      !blackRoseWillGrow() &&
+      have(bestHarvestSwap()),
     completed: () => !canSwapGarden(),
     do: () => {
       use(bestHarvestSwap());
