@@ -48,11 +48,11 @@ export function wanderer(): WandererManager {
 }
 
 type Destination = Location | WanderDetails;
-const destinationToLocation = (destination: Destination): Location =>
-  destination instanceof Location
-    ? destination
-    : wanderer().getTarget(destination).location;
-export type Adventure = { target: AdventureTarget; location: Location };
+export type Adventure = {
+  target: AdventureTarget;
+  location: Location;
+  wanderTarget?: ReturnType<WandererManager["getTarget"]>;
+};
 export type AdventureArgument =
   | Monster
   | Destination
@@ -61,8 +61,12 @@ export function toAdventure(arg: AdventureArgument): Adventure {
   if (arg instanceof Monster) return { target: arg, location: $location.none };
   if (arg instanceof Location) return { target: arg, location: arg };
   if (typeof arg === "string" || !("target" in arg)) {
-    const location = wanderer().getTarget(arg).location;
-    return { target: location, location };
+    const wanderTarget = wanderer().getTarget(arg);
+    return {
+      target: wanderTarget.location,
+      location: wanderTarget.location,
+      wanderTarget,
+    };
   }
-  return { target: arg.target, location: destinationToLocation(arg.location) };
+  return { ...toAdventure(arg.location), target: arg.target };
 }

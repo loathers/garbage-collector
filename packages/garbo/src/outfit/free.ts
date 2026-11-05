@@ -6,6 +6,7 @@ import {
   $item,
   $items,
   $location,
+  $monster,
   Delayed,
   get,
   Guzzlr,
@@ -75,16 +76,29 @@ export function freeFightOutfit(
 ): Outfit {
   cleaverCheck();
 
-  const { location } = toAdventure(adventure);
+  const { location, wanderTarget } = toAdventure(adventure);
   setLocation(location);
 
   const computedSpec = computeOutfitSpec(spec, location);
+  if (wanderTarget && wanderTarget.familiar !== $familiar.none) {
+    computedSpec.familiar = wanderTarget.familiar;
+  }
 
   validateGarbageFoldable(computedSpec);
   const outfit = Outfit.from(
     computedSpec,
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
+
+  if (wanderTarget) {
+    if (wanderTarget.peridotMonster !== $monster.none) {
+      outfit.equip($item`Peridot of Peril`);
+    }
+    if (wanderTarget.useRefractedGaze) {
+      outfit.equip($item`blood cubic zirconia`);
+    }
+    if (wanderTarget.useFeesh) outfit.equip($item`Monodent of the Sea`);
+  }
 
   if (location.environment === "underwater") outfit.modifier.push("+sea");
   if (MonodentOfTheSea.waveZone() === location && !have($effect`Fishy`)) {

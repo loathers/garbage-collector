@@ -35,7 +35,7 @@ export function freeFightTask(
       adventure: Delayed<AdventureArgument>;
     },
 ) {
-  const outfit = () => freeFightOutfit({}, undelay(fragment.adventure)); // Todo: account for wanderers
+  const outfit = () => freeFightOutfit({}, undelay(fragment.adventure));
   return { outfit, ...DEFAULT_FREE_FIGHT_TASK, ...fragment };
 }
 
