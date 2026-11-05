@@ -41,6 +41,7 @@ import {
 import { trackMarginalTurnExtraValue } from "../session";
 import { FarmingStrategy } from "../farmingStrategy";
 import { specialFamiliarOutfits } from "../familiar/specialFamiliarOutfits";
+import { stillsuitBonus } from "../resources/stillsuit";
 
 function chooseGun() {
   if (have($item`love`)) {
@@ -177,6 +178,7 @@ export function computeBarfOutfit(
   }
 
   if (!sim) {
+    outfit.setBonus($item`tiny stillsuit`, stillsuitBonus());
     outfit.addBonuses(toyCupidBow(outfit));
   }
 

@@ -18,7 +18,7 @@ import {
   FamiliarMenuOptions,
   freeFightFamiliar,
 } from "../familiar/freeFightFamiliar";
-import { MEAT_TARGET_MULTIPLIER, sober } from "../lib";
+import { MEAT_TARGET_MULTIPLIER } from "../lib";
 import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
@@ -30,12 +30,8 @@ import {
   validateGarbageFoldable,
 } from "./lib";
 import { mimicExperienceNeeded } from "../resources/chestMimic";
-import {
-  adventuresPerSweat,
-  turnsNeededForNextAdventure,
-} from "../resources/stillsuit";
+import { stillsuitBonus } from "../resources/stillsuit";
 import { globalOptions } from "../config";
-import { estimatedGarboTurns } from "../turns";
 import { experienceChargingValue } from "../familiar/experienceFamiliars";
 import { shouldAvoidTemporaryCupidBowSwap } from "../familiar/toyCupidBowValue";
 
@@ -126,15 +122,7 @@ export function freeFightOutfit(
   outfit.addBonuses(bonusGear(mode));
   applyCheeseBonus(outfit, mode);
 
-  if (
-    !(globalOptions.ascend && !sober()) &&
-    turnsNeededForNextAdventure() <= estimatedGarboTurns()
-  ) {
-    outfit.setBonus(
-      $item`tiny stillsuit`,
-      get("valueOfAdventure") * 2 * adventuresPerSweat(),
-    );
-  }
+  outfit.setBonus($item`tiny stillsuit`, stillsuitBonus());
 
   if (mode !== BonusEquipMode.DMT) {
     if (
