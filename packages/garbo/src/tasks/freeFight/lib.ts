@@ -36,12 +36,7 @@ export function freeFightTask(
     },
 ) {
   const outfit = () => freeFightOutfit({}, undelay(fragment.adventure)); // Todo: account for wanderers
-  const fullTask = { outfit, ...DEFAULT_FREE_FIGHT_TASK, ...fragment };
-  // Give us some padding
-  return {
-    ...fullTask,
-    limit: fullTask.limit ?? { skip: 5 + fullTask.combatCount() },
-  };
+  return { outfit, ...DEFAULT_FREE_FIGHT_TASK, ...fragment };
 }
 
 export function prepareParty() {
