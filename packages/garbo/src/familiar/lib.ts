@@ -1,7 +1,6 @@
 import {
   availableAmount,
   Familiar,
-  familiarEquipment,
   inebrietyLimit,
   mallPrice,
   myAdventures,
@@ -11,16 +10,13 @@ import {
 import {
   $effect,
   $familiar,
-  $familiars,
   $item,
   $skill,
   clamp,
-  findLeprechaunMultiplier,
   get,
   have,
   Snapper,
   sumNumbers,
-  ToyCupidBow,
 } from "libram";
 import { globalOptions } from "../config";
 import { ESTIMATED_OVERDRUNK_TURNS, isFree, targetMeat } from "../lib";
@@ -167,15 +163,6 @@ export function snapperValue(): number {
   return garboValue(item) / denominator;
 }
 
-export const getUsedTcbFamiliars = () => new Set(ToyCupidBow.familiarsToday());
-
-export const tcbTurnsLeft = (f: Familiar, used: Set<Familiar>) =>
-  used.has(f)
-    ? Infinity
-    : ToyCupidBow.currentFamiliar() === f
-      ? clamp(5 - get("cupidBowFights"), 1, 5)
-      : 5;
-
 export const amuletCoinValue = () => {
   const [copies, barf] = isFree(globalOptions.target)
     ? [0, estimatedGarboTurns()]
@@ -185,43 +172,3 @@ export const amuletCoinValue = () => {
       })();
   return 0.5 * (barf * FarmingStrategy.baseMeat() + copies * targetMeat());
 };
-
-export const familiarEquipmentValue = (f: Familiar) => {
-  if (f === $familiar`Cornbeefadon`) {
-    return have($item`amulet coin`) ? 0 : amuletCoinValue();
-  }
-
-  if (
-    $familiars`Frozen Gravy Fairy, Flaming Gravy Fairy, Sleazy Gravy Fairy, Spooky Gravy Fairy, Stinky Gravy Fairy`.includes(
-      f,
-    )
-  ) {
-    return garboValue($item`lead necklace`);
-  }
-
-  return garboValue(familiarEquipment(f));
-};
-
-export function tcbValue(
-  familiar: Familiar,
-  tcbFamiliars: Set<Familiar>,
-  equipmentForced?: boolean,
-  includeAmuletCoinOpportunityCost?: boolean,
-): number {
-  if (equipmentForced) return 0;
-  if (!ToyCupidBow.have()) return 0;
-  if (tcbFamiliars.has(familiar)) return 0;
-  const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
-  // This is only used during barf so we can just use basemeat
-  // Includes a lazy linearization of the value of its leprechaun-pounds
-  const amuletCoin =
-    includeAmuletCoinOpportunityCost && have($item`amulet coin`)
-      ? (50 +
-          10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) *
-        FarmingStrategy.meatDropValue()
-      : 0;
-  return (
-    familiarEquipmentValue(familiar) / tcbTurnsLeft(familiar, tcbFamiliars) -
-    amuletCoin
-  );
-}

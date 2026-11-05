@@ -177,7 +177,7 @@ export function computeBarfOutfit(
   }
 
   if (!sim) {
-    outfit.addBonuses(toyCupidBow(spec.familiar));
+    outfit.addBonuses(toyCupidBow(outfit));
   }
 
   const bjornalike = bestBjornalike(outfit);

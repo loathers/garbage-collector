@@ -134,7 +134,7 @@ export function freeFightOutfit(
   }
 
   if (mode !== BonusEquipMode.DMT) {
-    outfit.addBonuses(toyCupidBow(outfit.familiar));
+    outfit.addBonuses(toyCupidBow(outfit, adventure));
   }
 
   if (
