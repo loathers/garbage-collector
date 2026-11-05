@@ -39,6 +39,22 @@ export const tcbTurnsLeft = (
       ? clamp(5 - get("cupidBowFights"), 1, 5)
       : 5;
 
+export function shouldAvoidTemporaryCupidBowSwap(
+  familiar: Familiar,
+  combatCount: number,
+): boolean {
+  if (!ToyCupidBow.have() || combatCount >= 5) return false;
+  const currentFamiliar = ToyCupidBow.currentFamiliar();
+
+  // Keep progress if we aren't switching long enough to actually get the drop
+  return (
+    currentFamiliar !== null &&
+    currentFamiliar !== familiar &&
+    get("cupidBowFights") > 0 &&
+    !ToyCupidBow.doneToday(currentFamiliar)
+  );
+}
+
 export function familiarEquipmentValue(familiar: Familiar): number {
   if (familiar === $familiar`Cornbeefadon`) {
     return have($item`amulet coin`) ? 0 : amuletCoinValue();

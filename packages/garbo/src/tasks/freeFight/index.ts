@@ -119,6 +119,8 @@ const locketMonster = () =>
   CombatLoversLocket.findMonster(isFreeAndCopyable, valueDrops);
 const locketsToSave = () =>
   CombatLoversLocket.canReminisce(globalOptions.target) ? 1 : 0;
+const remainingLocketFights = () =>
+  clamp(CombatLoversLocket.reminiscesLeft() - locketsToSave(), 0, 3);
 
 const maxSealsAvailable = () =>
   retrieveItem(1, $item`Claw of the Infernal Seal`) ? 10 : 5;
@@ -479,6 +481,7 @@ const FreeFightTasks = [
           ? { familiar: $familiar`Robortender` }
           : {},
         ChateauMantegna.paintingMonster() ?? $monster.none,
+        { combatCount: 1 },
       ),
     tentacle: true,
   }),
@@ -1083,10 +1086,10 @@ const FreeFightTasks = [
           ? { familiar: $familiar`Robortender` }
           : {},
         locketMonster() ?? $monster.none,
+        { combatCount: remainingLocketFights() },
       ),
     tentacle: true,
-    combatCount: () =>
-      clamp(CombatLoversLocket.reminiscesLeft() - locketsToSave(), 0, 3),
+    combatCount: remainingLocketFights,
   }),
   freeFightTask({
     ...doCandyTrick(),

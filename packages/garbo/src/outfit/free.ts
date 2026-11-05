@@ -37,6 +37,7 @@ import {
 import { globalOptions } from "../config";
 import { estimatedGarboTurns } from "../turns";
 import { experienceChargingValue } from "../familiar/experienceFamiliars";
+import { shouldAvoidTemporaryCupidBowSwap } from "../familiar/toyCupidBowValue";
 
 const famExpValue = new Map<Familiar, Delayed<number>>([
   [
@@ -67,6 +68,8 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
 export type FreeFightOutfitMenuOptions = {
   duplicate?: boolean;
   familiarOptions?: FamiliarMenuOptions;
+  // Remaining fights in a stint that requires the explicitly supplied familiar.
+  combatCount?: number;
 };
 export function freeFightOutfit(
   spec: OutfitSpec = {},
@@ -134,7 +137,16 @@ export function freeFightOutfit(
   }
 
   if (mode !== BonusEquipMode.DMT) {
-    outfit.addBonuses(toyCupidBow(outfit, adventure));
+    if (
+      spec.familiar &&
+      options.combatCount !== undefined &&
+      !outfit.haveEquipped($item`toy Cupid bow`) &&
+      shouldAvoidTemporaryCupidBowSwap(spec.familiar, options.combatCount)
+    ) {
+      outfit.avoid.push($item`toy Cupid bow`);
+    } else {
+      outfit.addBonuses(toyCupidBow(outfit, adventure));
+    }
   }
 
   if (
