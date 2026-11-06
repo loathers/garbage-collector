@@ -23,7 +23,6 @@ import {
   maxBy,
   SkeletonOfCrimboPast,
   sum,
-  ToyCupidBow,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit/dropsgear";
@@ -33,14 +32,13 @@ import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
+import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import {
-  GeneralFamiliar,
+  amuletCoinOpportunityCost,
+  getCupidBowValues,
   getUsedTcbFamiliars,
   tcbTurnsLeft,
-  tcbValue,
-  timeToMeatify,
-  turnsAvailable,
-} from "./lib";
+} from "./toyCupidBowValue";
 import { meatFamiliar } from "./meatFamiliar";
 import { garboKnuckleboneValue, garboValue } from "../garboValue";
 import { expectedBarfMonsterRates, FarmingStrategy } from "../farmingStrategy";
@@ -193,21 +191,21 @@ function turnsNeededFromBaseline(
 }
 
 function calculateOutfitValue(
-  f: GeneralFamiliar,
+  candidate: GeneralFamiliar,
   itemDropValue = FarmingStrategy.itemDropValue(),
 ): MarginalFamiliar {
-  const outfit = getCachedOutfitValues(f.familiar);
+  const outfit = getCachedOutfitValues(candidate.familiar);
   const outfitValue =
     outfit.bonus +
     outfit.meat * FarmingStrategy.meatDropValue() +
     outfit.item * itemDropValue;
   const expectedValue =
-    f.expectedValue +
-    (specialFamiliarOutfits.get(f.familiar)?.extraValue?.(outfit) ?? 0);
+    candidate.expectedValue +
+    (specialFamiliarOutfits.get(candidate.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
   return {
-    ...f,
+    ...candidate,
     expectedValue,
     outfitValue,
     outfitWeight,
@@ -313,42 +311,47 @@ export function barfFamiliar(equipmentForced: boolean): {
   const meat = meatFamiliar();
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
+  const cupidBowValues = equipmentForced
+    ? new Map<Familiar, number>()
+    : getCupidBowValues(FarmingStrategy.location);
 
   const fullMenu = menu(FarmingStrategy.location, {
     canChooseMacro: true,
     includeExperienceFamiliars: true,
     mode: "barf",
+    cupidBowValues,
   }).flatMap((generalFamiliar) => {
     // Here we do two things:
     // * transform `GeneralFamiliar`s into `MarginalFamiliar`s, which carry with them the total value of the outfit you'd wear
     // * "double up" on familiars for which the toy Cupid bow is available
-    const normal = calculateOutfitValue(generalFamiliar);
+    const familiarOutfit = calculateOutfitValue(generalFamiliar);
     if (
-      normal.limit === "cupid" || // If we're already dealing with one of our generated toy cupid bow picks
+      familiarOutfit.limit === "cupid" || // If we're already dealing with one of our generated toy cupid bow picks
       equipmentForced || // If we're unable to equip the toy cupid bow
-      !ToyCupidBow.have() || // If we don't have the toy cupid bow
+      !cupidBowValues.has(generalFamiliar.familiar) ||
       usedTcbFamiliars.has(generalFamiliar.familiar) // If we've already gotten the thing
     ) {
-      return normal;
+      return familiarOutfit;
     }
-    const tcb = calculateOutfitValue({
+    const cupidBowOutfit = calculateOutfitValue({
       ...generalFamiliar,
       expectedValue:
         generalFamiliar.expectedValue +
-        tcbValue(generalFamiliar.familiar, usedTcbFamiliars, false, true),
+        (cupidBowValues.get(generalFamiliar.familiar) ?? 0) -
+        amuletCoinOpportunityCost(generalFamiliar.familiar),
       limit: "cupid",
     });
-    if (tcb.expectedValue >= normal.expectedValue) {
+    if (cupidBowOutfit.expectedValue > familiarOutfit.expectedValue) {
       return [
-        tcb,
+        cupidBowOutfit,
         {
-          ...normal,
+          ...familiarOutfit,
           // Account for the already-burned TCB turns when calculating the limit for the "normal" entry for the familiar
           bonusTurns: tcbTurnsLeft(generalFamiliar.familiar, usedTcbFamiliars),
         },
       ];
     }
-    return normal;
+    return familiarOutfit;
   });
 
   const meatFamiliarEntry = fullMenu.find(

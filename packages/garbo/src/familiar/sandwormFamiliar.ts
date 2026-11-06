@@ -16,7 +16,7 @@ import {
   set,
 } from "libram";
 import { menu } from "./freeFightFamiliar";
-import { getUsedTcbFamiliars, tcbValue } from "./lib";
+import { getCupidBowValues } from "./toyCupidBowValue";
 
 export function sandwormFamiliar(): Familiar {
   if (
@@ -68,9 +68,11 @@ export function sandwormFamiliar(): Familiar {
     goodFairies.push($familiar`Reagnimated Gnome`);
   }
 
-  const bonuses = [
+  const cupidBowValues = getCupidBowValues($monster`giant sandworm`);
+  const familiarBonuses = [
     ...menu($monster`giant sandworm`, {
       canChooseMacro: false,
+      cupidBowValues,
     }),
     {
       familiar: $familiar`Reagnimated Gnome`,
@@ -80,14 +82,17 @@ export function sandwormFamiliar(): Familiar {
     },
   ];
 
-  const tcbFamiliars = getUsedTcbFamiliars();
-
-  const bestNonCheerleaderFairy = maxBy(
-    goodFairies,
-    (f) =>
-      bonuses.find(({ familiar }) => familiar === f)?.expectedValue ??
-      tcbValue(f, tcbFamiliars),
-  );
+  const bestNonCheerleaderFairy = maxBy(goodFairies, (fairy) => {
+    const familiarBonus = familiarBonuses.find(
+      ({ familiar }) => familiar === fairy,
+    );
+    // The bow is required for sandworm rerolls, so a reset penalty applies
+    // even if this fairy also has an ordinary drop or experience benefit.
+    return (
+      (familiarBonus?.expectedValue ?? 0) +
+      (familiarBonus?.limit === "cupid" ? 0 : (cupidBowValues.get(fairy) ?? 0))
+    );
+  });
 
   if (
     have($familiar`Steam-Powered Cheerleader`) &&

@@ -18,7 +18,7 @@ import {
   FamiliarMenuOptions,
   freeFightFamiliar,
 } from "../familiar/freeFightFamiliar";
-import { MEAT_TARGET_MULTIPLIER, sober } from "../lib";
+import { MEAT_TARGET_MULTIPLIER } from "../lib";
 import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
@@ -30,13 +30,10 @@ import {
   validateGarbageFoldable,
 } from "./lib";
 import { mimicExperienceNeeded } from "../resources/chestMimic";
-import {
-  adventuresPerSweat,
-  turnsNeededForNextAdventure,
-} from "../resources/stillsuit";
+import { stillsuitBonus } from "../resources/stillsuit";
 import { globalOptions } from "../config";
-import { estimatedGarboTurns } from "../turns";
 import { experienceChargingValue } from "../familiar/experienceFamiliars";
+import { shouldAvoidTemporaryCupidBowSwap } from "../familiar/toyCupidBowValue";
 
 const famExpValue = new Map<Familiar, Delayed<number>>([
   [
@@ -67,6 +64,8 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
 export type FreeFightOutfitMenuOptions = {
   duplicate?: boolean;
   familiarOptions?: FamiliarMenuOptions;
+  // Remaining fights in a stint that requires the explicitly supplied familiar.
+  combatCount?: number;
 };
 export function freeFightOutfit(
   spec: OutfitSpec = {},
@@ -123,18 +122,19 @@ export function freeFightOutfit(
   outfit.addBonuses(bonusGear(mode));
   applyCheeseBonus(outfit, mode);
 
-  if (
-    !(globalOptions.ascend && !sober()) &&
-    turnsNeededForNextAdventure() <= estimatedGarboTurns()
-  ) {
-    outfit.setBonus(
-      $item`tiny stillsuit`,
-      get("valueOfAdventure") * 2 * adventuresPerSweat(),
-    );
-  }
+  outfit.setBonus($item`tiny stillsuit`, stillsuitBonus());
 
   if (mode !== BonusEquipMode.DMT) {
-    outfit.addBonuses(toyCupidBow(outfit.familiar));
+    if (
+      spec.familiar &&
+      options.combatCount !== undefined &&
+      !outfit.haveEquipped($item`toy Cupid bow`) &&
+      shouldAvoidTemporaryCupidBowSwap(spec.familiar, options.combatCount)
+    ) {
+      outfit.avoid.push($item`toy Cupid bow`);
+    } else {
+      outfit.addBonuses(toyCupidBow(outfit, adventure));
+    }
   }
 
   if (
