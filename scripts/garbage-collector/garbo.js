@@ -19670,9 +19670,6 @@ var WandererManager = /*#__PURE__*/function () {
     _defineProperty(this, "options", void 0);
     this.options = _options;
   }
-  /**
-   * Cached computation of optimal wanderer target; clear cache with the `.clear()` method.
-   */
   return _createClass(WandererManager, [{
     key: "getTarget",
     value: function getTarget(wanderer) {
@@ -19693,23 +19690,8 @@ var WandererManager = /*#__PURE__*/function () {
       var newKey = `${kolmafia.myTotalTurnsSpent()};${kolmafia.totalTurnsPlayed()};${get$2("familiarSweat")}`;
       if (this.cacheKey !== newKey) this.clear();
       this.cacheKey = newKey;
-      return sober$1() || !drunkSafe ? (_this$targets = this.targets)[_ref4 = `${draggableFight}:${allowEquipment}`] ?? (_this$targets[_ref4] = this.resolveTarget(wanderer)) : this.resolveTarget(wanderer);
-    }
-    /**
-     * Uncached computation of optimal wanderer target.
-     */
-  }, {
-    key: "resolveTarget",
-    value: function resolveTarget(wanderer) {
-      var _ref5 = isDraggableFight(wanderer) ? {
-          wanderer
-        } : wanderer,
-        draggableFight = _ref5.wanderer,
-        _ref5$drunkSafe = _ref5.drunkSafe,
-        drunkSafe = _ref5$drunkSafe === void 0 ? true : _ref5$drunkSafe,
-        _ref5$allowEquipment = _ref5.allowEquipment,
-        allowEquipment = _ref5$allowEquipment === void 0 ? false : _ref5$allowEquipment;
-      return sober$1() || !drunkSafe ? wanderWhere(this.options, draggableFight, [], allowEquipment ? [] : _toConsumableArray(this.equipment.keys())) : {
+      var locationSkipList = allowEquipment ? [] : _toConsumableArray(this.equipment.keys());
+      return sober$1() || !drunkSafe ? (_this$targets = this.targets)[_ref4 = `${draggableFight}:${allowEquipment}`] ?? (_this$targets[_ref4] = wanderWhere(this.options, draggableFight, [], locationSkipList)) : {
         location: $location`Drunken Stupor`,
         peridotMonster: $monster.none,
         familiar: $familiar`none`,
@@ -19717,22 +19699,21 @@ var WandererManager = /*#__PURE__*/function () {
         useFeesh: false
       };
     }
+    /**
+     * Get choice map for the upcoming wander
+     * @param target Description of the wander or location in which to wander
+     * @param takeTurnForProfit Should the choices include any that would make a profit from your valueOfAdventure
+     * @returns Map of choice numbers to decisions
+     */
   }, {
     key: "getChoices",
     value: function getChoices(target) {
       var takeTurnForProfit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.options.takeTurnForProfit;
-      // A resolved target keeps Peridot choices tied to the same monster the
-      // outfit was built for, even if preparing that outfit changes game state.
-      var _ref6 = target instanceof kolmafia.Location ? {
-          location: target,
-          peridotMonster: $monster.none
-        } : typeof target === "object" && "location" in target ? target : this.getTarget(target),
-        location = _ref6.location,
-        peridotMonster = _ref6.peridotMonster;
+      var location = target instanceof kolmafia.Location ? target : this.getTarget(target).location;
       var valueOfTurn = takeTurnForProfit ? (this.options.valueOfAdventure ?? 0) + sum(getActiveEffects(), e => this.options.effectValue(e, 1)) : Infinity;
       var baseChoices = this.unsupportedChoices.get(location) ?? {};
-      if (peridotMonster !== $monster.none) {
-        var peridotChoice = getChoiceObject(peridotMonster);
+      if (!(target instanceof kolmafia.Location) && this.getTarget(target).peridotMonster !== $monster.none) {
+        var peridotChoice = getChoiceObject(this.getTarget(target).peridotMonster);
         var newChoices = Object.assign(peridotChoice, baseChoices);
         return undelay(newChoices, this.options, valueOfTurn);
       }
@@ -20367,7 +20348,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"2410cb6313fde24dde46f2110edc89f0e0d7a3c6"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"8f7552787eff7a9883bcad894fcf270ef6a28254"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -28310,7 +28291,6 @@ var FreeFightEngine = /*#__PURE__*/function (_BaseGarboEngine) {
   }]);
 }(BaseGarboEngine);
 var _banish = /*#__PURE__*/new WeakMap();
-var _contexts = /*#__PURE__*/new WeakMap();
 var FarmTurnEngine = /*#__PURE__*/function (_BaseGarboContextEngi2) {
   function FarmTurnEngine() {
     var _this3;
@@ -28320,50 +28300,27 @@ var FarmTurnEngine = /*#__PURE__*/function (_BaseGarboContextEngi2) {
     }
     _this3 = _callSuper(this, FarmTurnEngine, [].concat(args));
     _classPrivateFieldInitSpec(_this3, _banish, null);
-    _classPrivateFieldInitSpec(_this3, _contexts, new Map());
     return _this3;
   }
   _inherits(FarmTurnEngine, _BaseGarboContextEngi2);
   return _createClass(FarmTurnEngine, [{
     key: "getContext",
-    value: function getContext(task) {
-      var cachedContext = _classPrivateFieldGet2(_contexts, this).get(task);
-      if (cachedContext) return cachedContext;
-      var wanderTarget;
-      var context = {
-        banish: _classPrivateFieldGet2(_banish, this),
-        get wanderTarget() {
-          if (wanderTarget) return wanderTarget;
-          if (!task.wanderer) {
-            throw new Error("This task did not declare a wanderer type");
-          }
-          var target = wanderer().resolveTarget(undelay(task.wanderer));
-          wanderTarget = _objectSpread2(_objectSpread2({}, target), {}, {
-            choices: wanderer().getChoices(target)
-          });
-          return wanderTarget;
-        }
+    value: function getContext() {
+      return {
+        banish: _classPrivateFieldGet2(_banish, this)
       };
-      _classPrivateFieldGet2(_contexts, this).set(task, context);
-      return context;
     }
   }, {
     key: "getNextTask",
     value: function getNextTask() {
-      _classPrivateFieldGet2(_contexts, this).clear();
       _classPrivateFieldSet2(_banish, this, chooseBanish());
       return _superPropGet(FarmTurnEngine, "getNextTask", this, 3)([]);
     }
   }, {
     key: "execute",
     value: function execute(task) {
-      _classPrivateFieldGet2(_contexts, this).clear();
-      try {
-        _superPropGet(FarmTurnEngine, "execute", this, 3)([task]);
-      } finally {
-        _classPrivateFieldSet2(_banish, this, null);
-        _classPrivateFieldGet2(_contexts, this).clear();
-      }
+      _superPropGet(FarmTurnEngine, "execute", this, 3)([task]);
+      _classPrivateFieldSet2(_banish, this, null);
     }
   }]);
 }(BaseGarboContextEngine);
@@ -34324,10 +34281,7 @@ var yachtzeeQuest = [{
 }];
 
 var EMPTY_CONTEXT = {
-  banish: null,
-  get wanderTarget() {
-    throw new Error("No wanderer target is available outside the farming engine");
-  }
+  banish: null
 };
 
 function dailyDungeon(additionalReady) {
@@ -34655,8 +34609,8 @@ var TurnGenQuest = {
 var isGhost = () => get$2("_voteMonster") === $monster`angry ghost`;
 var isMutant = () => get$2("_voteMonster") === $monster`terrible mutant`;
 var isSteve = () => get$2("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`;
-function createWandererOutfit(context, spec, additionalOutfitOptions) {
-  var wanderTarget = context.wanderTarget;
+function createWandererOutfit(details, spec, additionalOutfitOptions) {
+  var wanderTarget = wanderer().getTarget(undelay(details));
   var needPeridot = wanderTarget.peridotMonster !== $monster.none;
   var needBCZ = wanderTarget.useRefractedGaze ?? false;
   var needMonodent = wanderTarget.useFeesh ?? false;
@@ -34667,21 +34621,14 @@ function createWandererOutfit(context, spec, additionalOutfitOptions) {
   if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
   if (needBCZ) sourceOutfit.equip($item`blood cubic zirconia`);
   if (needMonodent) sourceOutfit.equip($item`Monodent of the Sea`);
-  return freeFightOutfit(sourceOutfit.spec(), wanderTarget.location, additionalOutfitOptions);
+  return freeFightOutfit(sourceOutfit.spec(), undelay(details), additionalOutfitOptions);
 }
 function wanderTask(details, spec, base) {
   var additionalOutfitOptions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
   return _objectSpread2({
-    wanderer: details,
-    do: _ref => {
-      var wanderTarget = _ref.wanderTarget;
-      return wanderTarget.location;
-    },
-    choices: _ref2 => {
-      var wanderTarget = _ref2.wanderTarget;
-      return wanderTarget.choices;
-    },
-    outfit: context => createWandererOutfit(context, spec, additionalOutfitOptions),
+    do: () => wanderer().getTarget(undelay(details)).location,
+    choices: () => wanderer().getChoices(undelay(details)),
+    outfit: () => createWandererOutfit(details, spec, additionalOutfitOptions),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat())
   }, base);
@@ -34807,23 +34754,22 @@ var BarfTurnTasks = [{
   spendsTurn: true
 }, {
   name: "Digitize Wanderer",
-  wanderer: {
+  completed: () => get("Digitize Monster") > 0,
+  outfit: () => digitizedTarget() ? meatTargetOutfit(mimicSpec(), {
     wanderer: "wanderer",
     allowEquipment: false
-  },
-  completed: () => get("Digitize Monster") > 0,
-  outfit: _ref3 => {
-    var wanderTarget = _ref3.wanderTarget;
-    return digitizedTarget() ? meatTargetOutfit(mimicSpec(), wanderTarget.location) : freeFightOutfit(undefined, wanderTarget.location);
-  },
-  do: _ref4 => {
-    var wanderTarget = _ref4.wanderTarget;
-    return wanderTarget.location;
-  },
-  choices: _ref5 => {
-    var wanderTarget = _ref5.wanderTarget;
-    return wanderTarget.choices;
-  },
+  }) : freeFightOutfit(undefined, wanderer().getTarget({
+    wanderer: "wanderer",
+    allowEquipment: false
+  }).location),
+  do: () => wanderer().getTarget({
+    wanderer: "wanderer",
+    allowEquipment: false
+  }).location,
+  choices: () => wanderer().getChoices({
+    wanderer: "wanderer",
+    allowEquipment: false
+  }),
   combat: _construct(GarboStrategy, _toConsumableArray(digitizeMacros())),
   spendsTurn: () => {
     var _SourceTerminal$getDi;
@@ -34831,23 +34777,22 @@ var BarfTurnTasks = [{
   }
 }, {
   name: "Club Into Next Week Monster",
-  wanderer: {
+  completed: () => turnsUntilNextWeekFight() > 0,
+  outfit: () => clubIntoNextWeekMonster() === globalOptions.target ? meatTargetOutfit(mimicSpec(), {
     wanderer: "wanderer",
     allowEquipment: false
-  },
-  completed: () => turnsUntilNextWeekFight() > 0,
-  outfit: _ref6 => {
-    var wanderTarget = _ref6.wanderTarget;
-    return clubIntoNextWeekMonster() === globalOptions.target ? meatTargetOutfit(mimicSpec(), wanderTarget.location) : freeFightOutfit({}, wanderTarget.location);
-  },
-  do: _ref7 => {
-    var wanderTarget = _ref7.wanderTarget;
-    return wanderTarget.location;
-  },
-  choices: _ref8 => {
-    var wanderTarget = _ref8.wanderTarget;
-    return wanderTarget.choices;
-  },
+  }) : freeFightOutfit({}, {
+    wanderer: "wanderer",
+    allowEquipment: false
+  }),
+  do: () => wanderer().getTarget({
+    wanderer: "wanderer",
+    allowEquipment: false
+  }).location,
+  choices: () => wanderer().getChoices({
+    wanderer: "wanderer",
+    allowEquipment: false
+  }),
   combat: new GarboStrategy(() => Macro.target("club 'em into next week")),
   spendsTurn: () => {
     var _LegendarySealClubbin;
