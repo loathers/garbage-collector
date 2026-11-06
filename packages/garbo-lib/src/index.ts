@@ -20,4 +20,5 @@ export {
 };
 export type { WandererFactory } from "./wanderer/lib";
 export type { ValueFunctions, WanderOptions, DraggableFight, WanderDetails };
+export { makeKnuckleboneValue } from "./knucklebones";
 export * from "./resources";

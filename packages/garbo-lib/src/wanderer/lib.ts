@@ -25,11 +25,13 @@ import {
   clamp,
   Delayed,
   get,
+  getStep,
   GingerBread,
   have,
   haveInCampground,
   NumericProperty,
-  questStep,
+  QuestProperty,
+  QuestState,
   realmAvailable,
   sum,
   undelay,
@@ -433,18 +435,25 @@ export function bofaValue(
 }
 
 function questBetween(
-  quest: string,
+  quest: QuestProperty,
   lower: number,
   upper: number,
   inclusive = true,
 ): boolean {
-  const step = questStep(quest);
+  const step = getStep(quest, QuestState.FINISHED);
   return inclusive
     ? step >= lower && step <= upper
     : step > lower && step < upper;
 }
 
-const goingPostalSafe = () => !questBetween("questM11Postal", -1, 999, false); // Going Postal tracking is not especially granular
+// Going Postal tracking is not especially granular.
+const goingPostalSafe = () =>
+  !questBetween(
+    "questM11Postal",
+    QuestState.UNSTARTED,
+    QuestState.FINISHED,
+    false,
+  );
 
 const alwaysSafeUltraRares = $locations`The Cola Wars Battlefield, The Icy Peak, Cobb's Knob Treasury, Cobb's Knob Menagerie\, Level 1, The Dungeons of Doom, A Mob of Zeppelin Protesters, Camp Logging Camp`;
 export function getAvailableUltraRareZones(): Location[] {
@@ -453,8 +462,8 @@ export function getAvailableUltraRareZones(): Location[] {
   if ($location`The Haunted Billiards Room`.turnsSpent > 0) {
     zones.push($location`The Haunted Billiards Room`); // no better check for pool cue adventure
   }
-  if (questStep("questG03Ego") !== 0) {
-    if (!questBetween("questG04Nemesis", 0, 2)) {
+  if (getStep("questG03Ego") !== QuestState.STARTED) {
+    if (!questBetween("questG04Nemesis", QuestState.STARTED, 2)) {
       zones.push($location`The Unquiet Garves`);
     }
     if (goingPostalSafe()) zones.push($location`The VERY Unquiet Garves`);
@@ -462,8 +471,8 @@ export function getAvailableUltraRareZones(): Location[] {
   if (
     have($item`the Slug Lord's map`) && // Quest not tracked, but certainly if you currently own the map you aren't going to get it again
     goingPostalSafe() &&
-    questStep("questG08Moxie") !== 0 &&
-    questStep("questM02Artist") !== 0
+    getStep("questG08Moxie") !== QuestState.STARTED &&
+    getStep("questM02Artist") !== QuestState.STARTED
   ) {
     zones.push($location`The Sleazy Back Alley`);
   }

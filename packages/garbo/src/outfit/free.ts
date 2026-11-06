@@ -1,13 +1,17 @@
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import { Familiar, Location, setLocation } from "kolmafia";
 import {
+  $effect,
   $familiar,
   $item,
   $items,
   $location,
+  $monster,
   Delayed,
   get,
   Guzzlr,
+  have,
+  MonodentOfTheSea,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -16,7 +20,7 @@ import {
   FamiliarMenuOptions,
   freeFightFamiliar,
 } from "../familiar/freeFightFamiliar";
-import { MEAT_TARGET_MULTIPLIER, sober } from "../lib";
+import { MEAT_TARGET_MULTIPLIER } from "../lib";
 import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
@@ -28,13 +32,10 @@ import {
   validateGarbageFoldable,
 } from "./lib";
 import { mimicExperienceNeeded } from "../resources/chestMimic";
-import {
-  adventuresPerSweat,
-  turnsNeededForNextAdventure,
-} from "../resources/stillsuit";
+import { stillsuitBonus } from "../resources/stillsuit";
 import { globalOptions } from "../config";
-import { estimatedGarboTurns } from "../turns";
 import { experienceChargingValue } from "../familiar/experienceFamiliars";
+import { shouldAvoidTemporaryCupidBowSwap } from "../familiar/toyCupidBowValue";
 
 const famExpValue = new Map<Familiar, Delayed<number>>([
   [
@@ -65,6 +66,8 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
 export type FreeFightOutfitMenuOptions = {
   duplicate?: boolean;
   familiarOptions?: FamiliarMenuOptions;
+  // Remaining fights in a stint that requires a familiar from the spec or wanderer plan.
+  combatCount?: number;
 };
 export function freeFightOutfit(
   spec: OutfitSpec = {},
@@ -73,10 +76,13 @@ export function freeFightOutfit(
 ): Outfit {
   cleaverCheck();
 
-  const { location } = toAdventure(adventure);
+  const { location, wanderTarget } = toAdventure(adventure);
   setLocation(location);
 
   const computedSpec = computeOutfitSpec(spec, location);
+  if (wanderTarget && wanderTarget.familiar !== $familiar.none) {
+    computedSpec.familiar = wanderTarget.familiar;
+  }
 
   validateGarbageFoldable(computedSpec);
   const outfit = Outfit.from(
@@ -84,8 +90,22 @@ export function freeFightOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}!`),
   );
 
-  if (location.environment === "underwater") outfit.modifier.push("+sea");
+  if (wanderTarget) {
+    if (wanderTarget.peridotMonster !== $monster.none) {
+      outfit.equip($item`Peridot of Peril`);
+    }
+    if (wanderTarget.useRefractedGaze) {
+      outfit.equip($item`blood cubic zirconia`);
+    }
+    if (wanderTarget.useFeesh) outfit.equip($item`Monodent of the Sea`);
+  }
 
+  if (location.environment === "underwater") outfit.modifier.push("+sea");
+  if (MonodentOfTheSea.waveZone() === location && !have($effect`Fishy`)) {
+    outfit.equip($item`Monodent of the Sea`);
+  }
+
+  const requiredFamiliar = outfit.familiar;
   outfit.familiar ??= freeFightFamiliar(
     adventure,
     computeFamiliarMenuOptions(
@@ -118,18 +138,19 @@ export function freeFightOutfit(
   outfit.addBonuses(bonusGear(mode));
   applyCheeseBonus(outfit, mode);
 
-  if (
-    !(globalOptions.ascend && !sober()) &&
-    turnsNeededForNextAdventure() <= estimatedGarboTurns()
-  ) {
-    outfit.setBonus(
-      $item`tiny stillsuit`,
-      get("valueOfAdventure") * 2 * adventuresPerSweat(),
-    );
-  }
+  outfit.setBonus($item`tiny stillsuit`, stillsuitBonus());
 
   if (mode !== BonusEquipMode.DMT) {
-    outfit.addBonuses(toyCupidBow(outfit.familiar));
+    if (
+      requiredFamiliar &&
+      options.combatCount !== undefined &&
+      !outfit.haveEquipped($item`toy Cupid bow`) &&
+      shouldAvoidTemporaryCupidBowSwap(requiredFamiliar, options.combatCount)
+    ) {
+      outfit.avoid.push($item`toy Cupid bow`);
+    } else {
+      outfit.addBonuses(toyCupidBow(outfit, adventure));
+    }
   }
 
   if (

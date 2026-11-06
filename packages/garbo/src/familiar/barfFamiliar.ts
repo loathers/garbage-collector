@@ -13,6 +13,8 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
+  $monster,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -21,27 +23,25 @@ import {
   maxBy,
   SkeletonOfCrimboPast,
   sum,
-  ToyCupidBow,
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit/dropsgear";
-import { HIGHLIGHT } from "../lib";
+import { expectedDropValue, HIGHLIGHT } from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
 import { getExperienceFamiliarLimit } from "./experienceFamiliars";
 import { getAllJellyfishDrops, menu } from "./freeFightFamiliar";
+import { GeneralFamiliar, timeToMeatify, turnsAvailable } from "./lib";
 import {
-  GeneralFamiliar,
+  amuletCoinOpportunityCost,
+  getCupidBowValues,
   getUsedTcbFamiliars,
   tcbTurnsLeft,
-  tcbValue,
-  timeToMeatify,
-  turnsAvailable,
-} from "./lib";
+} from "./toyCupidBowValue";
 import { meatFamiliar } from "./meatFamiliar";
-import { garboValue } from "../garboValue";
-import { FarmingStrategy } from "../farmingStrategy";
+import { garboKnuckleboneValue, garboValue } from "../garboValue";
+import { expectedBarfMonsterRates, FarmingStrategy } from "../farmingStrategy";
 import { BonusEquipMode } from "../outfit/lib";
 import {
   CachedOutfit,
@@ -133,10 +133,13 @@ function familiarModifier(
   );
 }
 
-function familiarAbilityValue(familiar: Familiar) {
+function familiarAbilityValue(
+  familiar: Familiar,
+  itemDropValue = FarmingStrategy.itemDropValue(),
+) {
   return (
     familiarModifier(familiar, "Meat Drop") * FarmingStrategy.meatDropValue() +
-    familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue()
+    familiarModifier(familiar, "Item Drop") * itemDropValue
   );
 }
 
@@ -187,23 +190,76 @@ function turnsNeededFromBaseline(
   };
 }
 
-function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
-  const outfit = getCachedOutfitValues(f.familiar);
+function calculateOutfitValue(
+  candidate: GeneralFamiliar,
+  itemDropValue = FarmingStrategy.itemDropValue(),
+): MarginalFamiliar {
+  const outfit = getCachedOutfitValues(candidate.familiar);
   const outfitValue =
     outfit.bonus +
     outfit.meat * FarmingStrategy.meatDropValue() +
-    outfit.item * FarmingStrategy.itemDropValue();
+    outfit.item * itemDropValue;
   const expectedValue =
-    f.expectedValue +
-    (specialFamiliarOutfits.get(f.familiar)?.extraValue?.(outfit) ?? 0);
+    candidate.expectedValue +
+    (specialFamiliarOutfits.get(candidate.familiar)?.extraValue?.(outfit) ?? 0);
   const outfitWeight = outfit.weight;
 
   return {
-    ...f,
+    ...candidate,
     expectedValue,
     outfitValue,
     outfitWeight,
   };
+}
+
+/** Decide once farming buffs are active, before choosing Barf's sniff target. */
+export function shouldTargetAngryTourists(): boolean {
+  if (
+    FarmingStrategy.location !== $location`Barf Mountain` ||
+    !SkeletonOfCrimboPast.have() ||
+    get("_knuckleboneDrops") >= 100 ||
+    get("garbo_IgnoreMarginalFamiliars", false) ||
+    garboKnuckleboneValue() <= 0
+  ) {
+    return false;
+  }
+
+  // Evaluate the prospective sniff explicitly, so the current sniff cannot
+  // determine whether the familiar that benefits from changing it is worthwhile.
+  const monsterRates = expectedBarfMonsterRates($monster`angry tourist`);
+  const itemDropValue =
+    sum(
+      [...monsterRates.entries()],
+      ([monster, rate]) => rate * expectedDropValue(monster),
+    ) / 100;
+  const familiars = menu(
+    { target: monsterRates, location: $location`Barf Mountain` },
+    { mode: "barf", cupidBowValues: new Map() },
+  )
+    .filter(
+      ({ familiar, limit }) =>
+        limit === "none" ||
+        (familiar === $familiar`Skeleton of Crimbo Past` &&
+          limit === "special"),
+    )
+    .map((familiar) => calculateOutfitValue(familiar, itemDropValue));
+
+  const skeleton = familiars.find(
+    ({ familiar, limit }) =>
+      familiar === $familiar`Skeleton of Crimbo Past` && limit === "special",
+  );
+  if (!skeleton) return false;
+
+  const value = (familiar: MarginalFamiliar) =>
+    familiar.expectedValue +
+    familiar.outfitValue +
+    familiarAbilityValue(familiar.familiar, itemDropValue);
+  // The menu always includes our meat familiar as an unlimited option.
+  const cruisingFamiliar = maxBy(
+    familiars.filter(({ limit }) => limit === "none"),
+    value,
+  );
+  return value(skeleton) > value(cruisingFamiliar);
 }
 
 function extraValue(
@@ -255,42 +311,47 @@ export function barfFamiliar(equipmentForced: boolean): {
   const meat = meatFamiliar();
 
   const usedTcbFamiliars = getUsedTcbFamiliars();
+  const cupidBowValues = equipmentForced
+    ? new Map<Familiar, number>()
+    : getCupidBowValues(FarmingStrategy.location);
 
   const fullMenu = menu(FarmingStrategy.location, {
     canChooseMacro: true,
     includeExperienceFamiliars: true,
     mode: "barf",
+    cupidBowValues,
   }).flatMap((generalFamiliar) => {
     // Here we do two things:
     // * transform `GeneralFamiliar`s into `MarginalFamiliar`s, which carry with them the total value of the outfit you'd wear
     // * "double up" on familiars for which the toy Cupid bow is available
-    const normal = calculateOutfitValue(generalFamiliar);
+    const familiarOutfit = calculateOutfitValue(generalFamiliar);
     if (
-      normal.limit === "cupid" || // If we're already dealing with one of our generated toy cupid bow picks
+      familiarOutfit.limit === "cupid" || // If we're already dealing with one of our generated toy cupid bow picks
       equipmentForced || // If we're unable to equip the toy cupid bow
-      !ToyCupidBow.have() || // If we don't have the toy cupid bow
+      !cupidBowValues.has(generalFamiliar.familiar) ||
       usedTcbFamiliars.has(generalFamiliar.familiar) // If we've already gotten the thing
     ) {
-      return normal;
+      return familiarOutfit;
     }
-    const tcb = calculateOutfitValue({
+    const cupidBowOutfit = calculateOutfitValue({
       ...generalFamiliar,
       expectedValue:
         generalFamiliar.expectedValue +
-        tcbValue(generalFamiliar.familiar, usedTcbFamiliars, false, true),
+        (cupidBowValues.get(generalFamiliar.familiar) ?? 0) -
+        amuletCoinOpportunityCost(generalFamiliar.familiar),
       limit: "cupid",
     });
-    if (tcb.expectedValue >= normal.expectedValue) {
+    if (cupidBowOutfit.expectedValue > familiarOutfit.expectedValue) {
       return [
-        tcb,
+        cupidBowOutfit,
         {
-          ...normal,
+          ...familiarOutfit,
           // Account for the already-burned TCB turns when calculating the limit for the "normal" entry for the familiar
           bonusTurns: tcbTurnsLeft(generalFamiliar.familiar, usedTcbFamiliars),
         },
       ];
     }
-    return normal;
+    return familiarOutfit;
   });
 
   const meatFamiliarEntry = fullMenu.find(

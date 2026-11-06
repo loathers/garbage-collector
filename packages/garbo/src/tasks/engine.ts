@@ -42,6 +42,7 @@ import { freeFightMood, shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
 import { FarmingContext } from "./context";
 import { BanishMethod, chooseBanish } from "../resources/banish";
+import { WanderDetails } from "garbo-lib";
 
 export type GarboTask<Context = unknown> = StrictCombatTask<
   never,
@@ -60,6 +61,10 @@ export type AlternateTask<Context = unknown> = GarboTask<Context> & {
 export type MappingTask<Context = void> = GarboTask<Context> & {
   // Safe to execute with an active map, whether preserving or consuming it.
   mapSafe?: Delayed<boolean, [Context]>;
+};
+
+export type FarmingTask = GarboTask<FarmingContext> & {
+  wanderer?: Delayed<WanderDetails>;
 };
 
 function logTargetFight(encounterType: string) {
@@ -238,6 +243,16 @@ class BaseGarboEngine extends BaseGarboContextEngine<void> {
 class FreeFightEngine extends BaseGarboEngine {
   private consecutiveNonFreeFights = 0;
 
+  constructor(tasks: (GarboTask<void> & { combatCount?: () => number })[]) {
+    super(
+      tasks.map((task) => {
+        if (task.limit || !task.combatCount) return task;
+        // Snapshot the padded attempt budget when the engine starts.
+        return { ...task, limit: { skip: 5 + task.combatCount() } };
+      }),
+    );
+  }
+
   available(task: MappingTask): boolean {
     return (
       (!get("mappingMonsters") || undelay(task.mapSafe) === true) &&
@@ -280,19 +295,49 @@ class FreeFightEngine extends BaseGarboEngine {
 
 class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
   #banish: BanishMethod | null = null;
+  #contexts = new Map<FarmingTask, FarmingContext>();
 
-  getContext() {
-    return { banish: this.#banish };
+  getContext(task: FarmingTask): FarmingContext {
+    const cachedContext = this.#contexts.get(task);
+    if (cachedContext) return cachedContext;
+
+    let wanderTarget: FarmingContext["wanderTarget"] | undefined;
+
+    const context: FarmingContext = {
+      banish: this.#banish,
+      get wanderTarget() {
+        if (wanderTarget) return wanderTarget;
+
+        if (!task.wanderer) {
+          throw new Error("This task did not declare a wanderer type");
+        }
+
+        const target = wanderer().resolveTarget(undelay(task.wanderer));
+        wanderTarget = {
+          ...target,
+          choices: wanderer().getChoices(target),
+        };
+        return wanderTarget;
+      },
+    };
+    this.#contexts.set(task, context);
+    return context;
   }
 
   getNextTask() {
+    this.#contexts.clear();
     this.#banish = chooseBanish();
     return super.getNextTask();
   }
 
   execute(task: GarboTask<FarmingContext>) {
-    super.execute(task);
-    this.#banish = null;
+    this.#contexts.clear();
+    try {
+      super.execute(task);
+    } finally {
+      this.#banish = null;
+      this.#contexts.clear();
+    }
   }
 }
 

@@ -1,6 +1,6 @@
+import type { Outfit } from "grimoire-kolmafia";
 import {
   equippedItem,
-  Familiar,
   fullnessLimit,
   getWorkshed,
   haveEffect,
@@ -41,14 +41,15 @@ import {
   targetPointerRingMeat,
   valueJuneCleaverOption,
 } from "../lib";
-import { garboAverageValue, garboValue } from "../garboValue";
+import {
+  garboAverageValue,
+  garboKnuckleboneValue,
+  garboValue,
+} from "../garboValue";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { bonusAccessories } from "./dropsgearAccessories";
-import {
-  familiarEquipmentValue,
-  getUsedTcbFamiliars,
-  tcbTurnsLeft,
-} from "../familiar/lib";
+import { getCupidBowValues } from "../familiar/toyCupidBowValue";
+import { AdventureArgument } from "../garboWanderer";
 import { FarmingStrategy } from "../farmingStrategy";
 import { BonusEquipMode, modeUseLimitedDrops, modeValueOfMeat } from "./lib";
 
@@ -453,7 +454,7 @@ function skeletonCane(mode: BonusEquipMode): Map<Item, number> {
     return new Map();
   }
   // Cane improves drop rate by 10%
-  const caneValue = garboValue($item`knucklebone`) * 0.1;
+  const caneValue = garboKnuckleboneValue() * 0.1;
   return new Map<Item, number>([
     [$item`small peppermint-flavored sugar walking crook`, caneValue],
   ]);
@@ -521,15 +522,26 @@ function sneegleebs(): Map<Item, number> {
   );
 }
 
-export function toyCupidBow(familiar: Familiar): Map<Item, number> {
-  if (!ToyCupidBow.have()) return new Map();
-  const turns = tcbTurnsLeft(familiar, getUsedTcbFamiliars());
-  if (estimatedGarboTurns() <= turns) {
+export function toyCupidBow(
+  outfit: Outfit,
+  adventure: AdventureArgument = FarmingStrategy.location,
+): Map<Item, number> {
+  const { familiar } = outfit;
+  if (!familiar || !ToyCupidBow.have()) return new Map();
+  // After the drop, only the bow's familiar experience can justify wearing it.
+  if (
+    ToyCupidBow.doneToday(familiar) &&
+    (!outfit.modifier.some((modifier) =>
+      /familiar exp|famexp/i.test(modifier),
+    ) ||
+      ToyCupidBow.turnsLeft() >= 5)
+  ) {
     return new Map();
   }
-  return new Map([
-    [$item`toy Cupid bow`, familiarEquipmentValue(familiar) / turns],
-  ]);
+  const cupidBowValue = getCupidBowValues(adventure).get(familiar);
+  return cupidBowValue === undefined
+    ? new Map()
+    : new Map([[$item`toy Cupid bow`, cupidBowValue]]);
 }
 
 const CUP_OF_THIRTEENS_DROPS = POSSIBLE_SNEEGLEEB_DROPS.filter(

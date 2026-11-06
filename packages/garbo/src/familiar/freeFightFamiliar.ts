@@ -10,11 +10,12 @@ import {
   getModifier,
   GreyGoose,
   have,
+  maxBy,
   SkeletonOfCrimboPast,
   sum,
 } from "libram";
 
-import { garboValue } from "../garboValue";
+import { garboKnuckleboneValue, garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
@@ -22,10 +23,8 @@ import {
   canOpenRedPresent,
   FamiliarMode,
   GeneralFamiliar,
-  getUsedTcbFamiliars,
   snapperReasonable,
   snapperValue,
-  tcbValue,
   timeToMeatify,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
@@ -33,6 +32,7 @@ import { gooseDroneEligible, valueDrops } from "../lib";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { getToyCupidBowFamiliars } from "./toyCupidBowFamiliar";
+import { getCupidBowValues } from "./toyCupidBowValue";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
 
 export type FamiliarMenuOptions = Partial<{
@@ -43,6 +43,7 @@ export type FamiliarMenuOptions = Partial<{
   allowAttackFamiliars: boolean;
   mode: FamiliarMode;
   equipmentForced: boolean;
+  cupidBowValues: ReadonlyMap<Familiar, number>;
 }>;
 
 export function menu(
@@ -54,6 +55,8 @@ export function menu(
     includeExperienceFamiliars = true,
     allowAttackFamiliars = true,
     mode = "free",
+    equipmentForced = false,
+    cupidBowValues = equipmentForced ? new Map() : getCupidBowValues(adventure),
   } = {} as FamiliarMenuOptions,
 ): GeneralFamiliar[] {
   const { target } = toAdventure(adventure);
@@ -62,7 +65,7 @@ export function menu(
   const familiarMenu = [
     ...getConstantValueFamiliars(mode, monsterRates),
     ...getDropFamiliars(),
-    ...getToyCupidBowFamiliars(),
+    ...getToyCupidBowFamiliars(cupidBowValues, mode),
     ...(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []),
     ...extraFamiliars,
   ];
@@ -156,8 +159,7 @@ export function menu(
     familiarMenu.push({
       familiar: $familiar`Skeleton of Crimbo Past`,
       expectedValue:
-        SkeletonOfCrimboPast.expectedBones(target) *
-        garboValue($item`knucklebone`),
+        SkeletonOfCrimboPast.expectedBones(target) * garboKnuckleboneValue(),
       leprechaunMultiplier: 0,
       limit: "special",
       worksOnFreeRun: false,
@@ -214,30 +216,36 @@ export function getAllJellyfishDrops(): {
 
 export function freeFightFamiliarData(
   adventure: AdventureArgument,
-  options: Partial<FamiliarMenuOptions> = {},
+  options: FamiliarMenuOptions = {},
 ): GeneralFamiliar {
-  const usedTcbFamiliars = getUsedTcbFamiliars();
-  const compareFamiliars = (a: GeneralFamiliar, b: GeneralFamiliar) => {
-    if (a === null) return b;
-    const aValue =
-      a.expectedValue +
-      tcbValue(a.familiar, usedTcbFamiliars, options.equipmentForced);
-    const bValue =
-      b.expectedValue +
-      tcbValue(b.familiar, usedTcbFamiliars, options.equipmentForced);
-    if (aValue === bValue) {
-      return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
-    }
-    return aValue > bValue ? a : b;
-  };
-
-  return menu(adventure, options).reduce(compareFamiliars, {
-    familiar: $familiar.none,
-    expectedValue: 0,
-    leprechaunMultiplier: 0,
-    limit: "none",
-    worksOnFreeRun: true,
-  });
+  const cupidBowValues = options.equipmentForced
+    ? new Map<Familiar, number>()
+    : (options.cupidBowValues ?? getCupidBowValues(adventure));
+  const familiarCandidates = [
+    ...menu(adventure, { ...options, cupidBowValues }),
+    {
+      familiar: $familiar.none,
+      expectedValue: 0,
+      leprechaunMultiplier: 0,
+      limit: "none" as const,
+      worksOnFreeRun: true,
+    },
+  ];
+  const valueWithCupidBow = (candidate: GeneralFamiliar) =>
+    candidate.expectedValue +
+    // Bow-only entries already include this bonus; other familiars can forgo it.
+    (candidate.limit === "cupid"
+      ? 0
+      : Math.max(0, cupidBowValues.get(candidate.familiar) ?? 0));
+  const highestFamiliarValue = valueWithCupidBow(
+    maxBy(familiarCandidates, valueWithCupidBow),
+  );
+  return maxBy(
+    familiarCandidates.filter(
+      (candidate) => valueWithCupidBow(candidate) === highestFamiliarValue,
+    ),
+    "leprechaunMultiplier",
+  );
 }
 
 export function freeFightFamiliar(

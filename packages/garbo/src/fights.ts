@@ -1297,6 +1297,10 @@ function killRobortCreaturesForFree() {
   if (!have($familiar`Robortender`)) return;
 
   const currentHeads = availableAmount($item`fish head`);
+  const remainingLocketFights = () =>
+    CombatLoversLocket.have()
+      ? Math.max(0, CombatLoversLocket.reminiscesLeft() - 1)
+      : 0;
   let freeKill = findFreeKill();
   while (
     freeKill &&
@@ -1316,6 +1320,10 @@ function killRobortCreaturesForFree() {
         location: $location`The Copperhead Club`,
         target: $monster`Mob Penguin Capo`,
       },
+      {
+        // The locket fights immediately follow the maps in the same Robortender stint.
+        combatCount: Cartography.availableMaps() + remainingLocketFights(),
+      },
     ).dress();
     withMacro(
       freeKill.macro instanceof Item
@@ -1330,11 +1338,7 @@ function killRobortCreaturesForFree() {
     freeKill = findFreeKill();
   }
 
-  while (
-    freeKill &&
-    CombatLoversLocket.have() &&
-    CombatLoversLocket.reminiscesLeft() > 1
-  ) {
+  while (freeKill && remainingLocketFights() > 0) {
     const roboTarget = CombatLoversLocket.findMonster(
       (monster: Monster) => !BAD_CLL_MONSTERS.includes(monster),
       (monster: Monster) =>
@@ -1347,18 +1351,21 @@ function killRobortCreaturesForFree() {
       (monster: Monster) => !BAD_CLL_MONSTERS.includes(monster),
       valueDrops,
     );
-    const familiar =
-      regularTarget === roboTarget
-        ? freeFightFamiliar(regularTarget, {
-            canChooseMacro: roboTarget.attributes.includes("FREE"),
-          })
-        : $familiar`Robortender`;
+    const requiresRobortender = regularTarget !== roboTarget;
+    const familiar = requiresRobortender
+      ? $familiar`Robortender`
+      : freeFightFamiliar(regularTarget, {
+          canChooseMacro: roboTarget.attributes.includes("FREE"),
+        });
 
     freeFightOutfit(
       roboTarget.attributes.includes("FREE")
         ? { familiar }
         : { ...freeKill.spec, familiar },
       roboTarget,
+      {
+        combatCount: requiresRobortender ? remainingLocketFights() : undefined,
+      },
     ).dress();
     withMacro(
       isFree(roboTarget)

@@ -14,8 +14,9 @@ import {
   $location,
   CrystalBall,
   get,
+  getStep,
   have,
-  questStep,
+  QuestState,
   withChoice,
   withChoices,
 } from "libram";
@@ -57,7 +58,7 @@ export interface RunOptions {
 export function checkUnderwater(): boolean {
   // first check to see if underwater even makes sense
   if (
-    questStep("questS01OldGuy") >= 0 &&
+    getStep("questS01OldGuy") >= QuestState.STARTED &&
     !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
     (get("_garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
     (booleanModifier("Adventure Underwater") ||
@@ -88,7 +89,7 @@ export function checkUnderwater(): boolean {
 
 type ChangeLastAdvLocationMethod = "hiddencity" | "dailydungeon";
 export function getChangeLastAdvLocationMethod(): ChangeLastAdvLocationMethod {
-  if (questStep("questL11Worship") > 3) {
+  if (getStep("questL11Worship") > 3) {
     return "hiddencity";
   } else {
     return "dailydungeon";

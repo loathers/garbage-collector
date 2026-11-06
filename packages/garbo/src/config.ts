@@ -321,6 +321,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
     /*
       Hidden preferences, CLI input ignored
     */
+    argsFilled: Args.custom<boolean>(
+      { hidden: true, default: false },
+      () => false,
+      "",
+    ),
     stopTurncount: Args.custom<number | null>(
       { hidden: true, default: null },
       () => null,
@@ -347,6 +352,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       () => false,
       "",
     ),
+    targetAngryTourists: Args.custom<boolean>(
+      { hidden: true, default: false },
+      () => false,
+      "",
+    ),
     dietCompleted: Args.flag({
       hidden: true,
       default: false,
@@ -354,6 +364,12 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
   },
   { positionalArgs: ["turns"] },
 );
+
+export function fillArgs(argString: string): void {
+  globalOptions.argsFilled = false;
+  Args.fill(globalOptions, argString);
+  globalOptions.argsFilled = true;
+}
 
 export function isQuickGear(): boolean {
   return globalOptions.quick || globalOptions.quickgear;

@@ -21,6 +21,7 @@ import {
   sum,
   undelay,
 } from "libram";
+import { makeKnuckleboneValue } from "./knucklebones";
 
 type ItemQuantity = {
   item: Item;
@@ -210,15 +211,7 @@ export function makeValue(
         // ignore the science volumes because some accounts can't acquire them
       ),
     ],
-    [
-      $item`knucklebone`,
-      () =>
-        Math.max(
-          ...$items`tiny plastic sword, A Crimbo Carol\, Ch. 1, Rethinking Candy`.map(
-            (jar) => value(jar),
-          ),
-        ) / 2687,
-    ], // use current average "high" tier price
+    [$item`knucklebone`, makeKnuckleboneValue(value)],
     ...Familiar.all()
       .map((f) => familiarEquipment(f))
       .filter((i) => i !== $item.none && i.tradeable && i.discardable)

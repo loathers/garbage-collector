@@ -38,12 +38,14 @@ import {
   examine,
   get,
   getCombatFlags,
+  getStep,
   have,
   haveInCampground,
   JuneCleaver,
   logger,
   LogLevels,
   maxBy,
+  QuestState,
   set,
   setCombatFlags,
   setDefaultMaximizeOptions,
@@ -52,7 +54,7 @@ import {
 import { withVIPClan } from "./clan";
 import { stash } from "./stash";
 import { prepareForCleanup } from "./cleanup";
-import { globalOptions, isQuickGear } from "./config";
+import { fillArgs, globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
@@ -63,7 +65,6 @@ import {
   isFreeAndCopyable,
   printEventLog,
   propertyManager,
-  questStep,
   sober,
   targetingMeat,
   userConfirmDialog,
@@ -85,6 +86,7 @@ import {
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
 import { FarmingStrategy } from "./farmingStrategy";
+import { shouldTargetAngryTourists } from "./familiar/barfFamiliar";
 import { runGarboFarmQuests, runGarboQuests } from "./tasks/engine";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -112,7 +114,7 @@ export function main(argString = ""): void {
   sinceKolmafiaRevision(29401); // Track daily Black Rose Garden swaps.
   checkGithubVersion();
 
-  Args.fill(globalOptions, argString);
+  fillArgs(argString);
   // Instant returns placed before visiting anything.
   if (globalOptions.version) return; // Since we always print the version, all done!
   if (globalOptions.help) {
@@ -430,21 +432,29 @@ export function main(argString = ""): void {
 
     safeRestore();
 
-    if (questStep("questM23Meatsmith") === -1) {
+    if (
+      getStep("questM23Meatsmith", QuestState.UNSTARTED) ===
+      QuestState.UNSTARTED
+    ) {
       visitUrl("shop.php?whichshop=meatsmith&action=talk");
       runChoice(1);
     }
-    if (questStep("questM24Doc") === -1) {
+    if (getStep("questM24Doc", QuestState.UNSTARTED) === QuestState.UNSTARTED) {
       visitUrl("shop.php?whichshop=doc&action=talk");
       runChoice(1);
     }
-    if (questStep("questM25Armorer") === -1) {
+    if (
+      getStep("questM25Armorer", QuestState.UNSTARTED) === QuestState.UNSTARTED
+    ) {
       visitUrl("shop.php?whichshop=armory&action=talk");
       runChoice(1);
     }
 
     // unlock the sea
-    if (myLevel() >= 11 && questStep("questS01OldGuy") === -1) {
+    if (
+      myLevel() >= 11 &&
+      getStep("questS01OldGuy", QuestState.UNSTARTED) === QuestState.UNSTARTED
+    ) {
       visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
     }
     if (
@@ -560,6 +570,7 @@ export function main(argString = ""): void {
         meatMood().execute(estimatedGarboTurns());
         runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
         if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
+        globalOptions.targetAngryTourists = shouldTargetAngryTourists();
         try {
           runGarboFarmQuests([PostQuest(), ...FarmQuests()]);
           runGarboQuests([FinishUpQuest]);

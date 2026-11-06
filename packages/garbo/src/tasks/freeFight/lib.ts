@@ -1,7 +1,7 @@
 import { print, toItem } from "kolmafia";
-import { HIGHLIGHT, questStep, setChoice } from "../../lib";
+import { HIGHLIGHT, setChoice } from "../../lib";
 import { logMessage } from "../../log";
-import { Delayed, get, undelay } from "libram";
+import { Delayed, get, getStep, QuestState, undelay } from "libram";
 import { Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
 import { AdventureArgument } from "../../garboWanderer";
@@ -35,20 +35,15 @@ export function freeFightTask(
       adventure: Delayed<AdventureArgument>;
     },
 ) {
-  const outfit = () => freeFightOutfit({}, undelay(fragment.adventure)); // Todo: account for wanderers
-  const fullTask = { outfit, ...DEFAULT_FREE_FIGHT_TASK, ...fragment };
-  // Give us some padding
-  return {
-    ...fullTask,
-    limit: fullTask.limit ?? { skip: 5 + fullTask.combatCount() },
-  };
+  const outfit = () => freeFightOutfit({}, undelay(fragment.adventure));
+  return { outfit, ...DEFAULT_FREE_FIGHT_TASK, ...fragment };
 }
 
 export function prepareParty() {
   const quest = get("_questPartyFairQuest");
 
   if (quest === "food") {
-    if (!questStep("_questPartyFair")) {
+    if (getStep("_questPartyFair") === QuestState.STARTED) {
       setChoice(1324, 2); // Check out the kitchen
       setChoice(1326, 3); // Talk to the woman
     } else if (get("choiceAdventure1324") !== 5) {
@@ -63,7 +58,7 @@ export function prepareParty() {
       );
     }
   } else if (quest === "booze") {
-    if (!questStep("_questPartyFair")) {
+    if (getStep("_questPartyFair") === QuestState.STARTED) {
       setChoice(1324, 3); // Go to the back yard
       setChoice(1327, 3); // Find Gerald
     } else if (get("choiceAdventure1324") !== 5) {

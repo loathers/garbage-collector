@@ -34,7 +34,6 @@ import {
   runChoice,
   toSlot,
   totalTurnsPlayed,
-  toUrl,
   use,
   visitUrl,
   votingBoothInitiatives,
@@ -53,11 +52,12 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  getStep,
   getTodaysHolidayWanderers,
   have,
   maxBy,
   Pantogram,
-  questStep,
+  QuestState,
   realmAvailable,
   SongBoom,
   SourceTerminal,
@@ -271,14 +271,7 @@ function nepQuest(): void {
   }
 
   if (get("_questPartyFair") === "unstarted") {
-    visitUrl(toUrl($location`The Neverending Party`));
-    if (
-      ["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))
-    ) {
-      runChoice(1); // Accept quest
-    } else {
-      runChoice(2); // Decline quest
-    }
+    adv1($location`The Neverending Party`);
   }
 
   if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
@@ -611,7 +604,8 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Friar's Blessing",
-    ready: () => questStep("questL06Friar") === 999,
+    ready: () =>
+      getStep("questL06Friar", QuestState.FINISHED) === QuestState.FINISHED,
     completed: () => get("friarsBlessingReceived"),
     do: () => cliExecute("friars familiar"),
     spendsTurn: false,
