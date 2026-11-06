@@ -52,6 +52,7 @@ import {
   getTodaysHolidayWanderers,
   have,
   HeavyRains,
+  MonodentOfTheSea,
   SongBoom,
   SourceTerminal,
   StrictMacro,
@@ -936,7 +937,7 @@ export class Macro extends StrictMacro {
         haveEquipped($item`blood cubic zirconia`), // Assume if we have both equipped, we mean to refracted feesh
       Macro.if_(
         "!monsterphylum Fish",
-        Macro.trySkill($skill`Sea *dent: Talk to Some Fish`),
+        Macro.trySkill(MonodentOfTheSea.skills.TalkToSomeFish),
       ),
     ).externalIf(
       haveEquipped($item`blood cubic zirconia`) && safeRefractedCasts() > 0,

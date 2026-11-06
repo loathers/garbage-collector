@@ -52,11 +52,12 @@ import {
   findLeprechaunMultiplier,
   get,
   getModifier,
+  getStep,
   getTodaysHolidayWanderers,
   have,
   maxBy,
   Pantogram,
-  questStep,
+  QuestState,
   realmAvailable,
   SongBoom,
   SourceTerminal,
@@ -603,7 +604,8 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Friar's Blessing",
-    ready: () => questStep("questL06Friar") === 999,
+    ready: () =>
+      getStep("questL06Friar", QuestState.FINISHED) === QuestState.FINISHED,
     completed: () => get("friarsBlessingReceived"),
     do: () => cliExecute("friars familiar"),
     spendsTurn: false,

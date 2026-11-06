@@ -10,6 +10,7 @@ import {
   get,
   Guzzlr,
   have,
+  MonodentOfTheSea,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -86,7 +87,7 @@ export function freeFightOutfit(
   );
 
   if (location.environment === "underwater") outfit.modifier.push("+sea");
-  if (get("_seadentWaveZone") === location && !have($effect`Fishy`)) {
+  if (MonodentOfTheSea.waveZone() === location && !have($effect`Fishy`)) {
     outfit.equip($item`Monodent of the Sea`);
   }
 

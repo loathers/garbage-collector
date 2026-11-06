@@ -7,6 +7,7 @@ import {
   get,
   getBanishedMonsters,
   have,
+  MonodentOfTheSea,
 } from "libram";
 import { FarmingStrategy } from "../farmingStrategy";
 import { Macro } from "../combat";
@@ -48,11 +49,10 @@ const banishMethods: BanishMethod[] = [
     retrieve: true,
   },
   {
-    source: $skill`Sea *dent: Throw a Lightning Bolt`,
-    available: () =>
-      have($item`Monodent of the Sea`) && get("_seadentLightningUsed", 0) < 11,
+    source: MonodentOfTheSea.skills.ThrowALightningBolt,
+    available: () => MonodentOfTheSea.lightningBoltsRemaining() > 0,
     equip: $item`Monodent of the Sea`,
-    macro: Macro.trySkill($skill`Sea *dent: Throw a Lightning Bolt`),
+    macro: Macro.trySkill(MonodentOfTheSea.skills.ThrowALightningBolt),
   },
 ];
 

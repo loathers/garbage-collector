@@ -38,12 +38,14 @@ import {
   examine,
   get,
   getCombatFlags,
+  getStep,
   have,
   haveInCampground,
   JuneCleaver,
   logger,
   LogLevels,
   maxBy,
+  QuestState,
   set,
   setCombatFlags,
   setDefaultMaximizeOptions,
@@ -63,7 +65,6 @@ import {
   isFreeAndCopyable,
   printEventLog,
   propertyManager,
-  questStep,
   sober,
   targetingMeat,
   userConfirmDialog,
@@ -431,21 +432,29 @@ export function main(argString = ""): void {
 
     safeRestore();
 
-    if (questStep("questM23Meatsmith") === -1) {
+    if (
+      getStep("questM23Meatsmith", QuestState.UNSTARTED) ===
+      QuestState.UNSTARTED
+    ) {
       visitUrl("shop.php?whichshop=meatsmith&action=talk");
       runChoice(1);
     }
-    if (questStep("questM24Doc") === -1) {
+    if (getStep("questM24Doc", QuestState.UNSTARTED) === QuestState.UNSTARTED) {
       visitUrl("shop.php?whichshop=doc&action=talk");
       runChoice(1);
     }
-    if (questStep("questM25Armorer") === -1) {
+    if (
+      getStep("questM25Armorer", QuestState.UNSTARTED) === QuestState.UNSTARTED
+    ) {
       visitUrl("shop.php?whichshop=armory&action=talk");
       runChoice(1);
     }
 
     // unlock the sea
-    if (myLevel() >= 11 && questStep("questS01OldGuy") === -1) {
+    if (
+      myLevel() >= 11 &&
+      getStep("questS01OldGuy", QuestState.UNSTARTED) === QuestState.UNSTARTED
+    ) {
       visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
     }
     if (

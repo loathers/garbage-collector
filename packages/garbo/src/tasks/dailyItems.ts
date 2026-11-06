@@ -46,9 +46,9 @@ import {
   ChateauMantegna,
   ClosedCircuitPayphone,
   get,
+  getStep,
   have,
   maxBy,
-  questStep,
   set,
   SourceTerminal,
   sum,
@@ -732,7 +732,7 @@ const DailyItemTasks: GarboTask[] = [
   },
   {
     name: "Turn In Rufus Quest for Forest",
-    ready: () => questStep("questRufus") === 1,
+    ready: () => getStep("questRufus") === 1,
     completed: () =>
       get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`),
     do: () => ClosedCircuitPayphone.submitQuest(),

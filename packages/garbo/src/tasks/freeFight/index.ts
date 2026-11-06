@@ -65,8 +65,10 @@ import {
   Delayed,
   ensureEffect,
   get,
+  getStep,
   have,
   maxBy,
+  QuestState,
   set,
   SourceTerminal,
   sum,
@@ -93,7 +95,6 @@ import {
   getUsingFreeBunnyBanish,
   isFreeAndCopyable,
   kramcoGuaranteed,
-  questStep,
   sober,
   valueDrops,
 } from "../../lib";
@@ -1028,8 +1029,10 @@ const FreeFightTasks = [
   freeFightTask({
     name: "Neverending Party",
     adventure: $location`The Neverending Party`,
+    // Declining the quest leaves the party open; only completing it closes it.
     ready: () =>
-      get("neverendingPartyAlways") && questStep("_questPartyFair") < 999,
+      get("neverendingPartyAlways") &&
+      getStep("_questPartyFair") !== QuestState.FINISHED,
     completed: () => remainingPartyFights() === 0,
     prepare: prepareParty,
     do: $location`The Neverending Party`,
@@ -1173,7 +1176,7 @@ const FreeFightTasks = [
       !get("_firedJokestersGun") &&
       have($item`The Jokester's gun`) &&
       canEquip($item`The Jokester's gun`) &&
-      questStep("questL08Trapper") >= 2,
+      getStep("questL08Trapper", QuestState.UNSTARTED) >= 2,
     completed: () =>
       have($item`li'l ninja costume`) || get("_firedJokestersGun"),
     do: $location`Lair of the Ninja Snowmen`,
