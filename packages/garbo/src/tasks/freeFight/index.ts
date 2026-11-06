@@ -50,7 +50,6 @@ import {
   $location,
   $monster,
   $monsters,
-  $phyla,
   $skill,
   $slot,
   $stat,
@@ -301,6 +300,223 @@ const GRIMACIA_TASK = {
 };
 
 const FreeFightTasks = [
+  // Keep Robortender-friendly fights together, immediately after the Robortender
+  // free kills in freeFights(), before starting other toy Cupid bow projects.
+  // Prioritize required Robortender use, then phylum/menu incentives, then
+  // conditional targets such as the Chateau painting.
+  freeFightTask({
+    name: $item`combat lover's locket`.name,
+    mapSafe: true,
+    adventure: () => locketMonster() ?? $monster.none,
+    ready: () => CombatLoversLocket.have() && locketMonster() !== null,
+    completed: () => CombatLoversLocket.reminiscesLeft() <= locketsToSave(),
+    do: () => {
+      const monster = locketMonster();
+      if (!monster) return;
+      CombatLoversLocket.reminisce(monster);
+    },
+    outfit: () =>
+      freeFightOutfit(
+        have($familiar`Robortender`)
+          ? { familiar: $familiar`Robortender` }
+          : {},
+        locketMonster() ?? $monster.none,
+        { combatCount: remainingLocketFights() },
+      ),
+    tentacle: true,
+    combatCount: remainingLocketFights,
+  }),
+  freeFightTask({
+    name: "Mushroom garden",
+    adventure: $location`Your Mushroom Garden`,
+    ready: () =>
+      canSwapGarden() &&
+      (have($item`packet of mushroom spores`) ||
+        getCampground()["packet of mushroom spores"] !== undefined),
+    completed: () => get("_mushroomGardenFights") > 0,
+    prepare: () => {
+      if (have($item`packet of mushroom spores`)) {
+        use($item`packet of mushroom spores`);
+      }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: () => $location`Your Mushroom Garden`,
+    post: () => {
+      if (have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
+      }
+    },
+    outfit: tearawayPantsFreeFightOutfit($location`Your Mushroom Garden`),
+    combat: new GarboStrategy(() =>
+      Macro.externalIf(
+        !doingGregFight(),
+        Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
+      )
+        .externalIf(
+          haveEquipped($item`tearaway pants`),
+          Macro.trySkill($skill`Tear Away your Pants!`),
+        )
+        .basicCombat(),
+    ),
+    combatCount: () => clamp(1 - get("_mushroomGardenFights"), 0, 1),
+    tentacle: true,
+  }),
+  freeFightTask({
+    name: "Portscan + Macrometeorite + Mushroom garden",
+    adventure: $location`Your Mushroom Garden`,
+    ready: () =>
+      canSwapGarden() &&
+      (have($item`packet of mushroom spores`) ||
+        getCampground()["packet of mushroom spores"] !== undefined) &&
+      !doingGregFight() &&
+      have($skill`Macrometeorite`) &&
+      get("_macrometeoriteUses") < 10,
+    completed: () => !Counter.exists("portscan.edu"),
+    prepare: () => {
+      if (have($item`packet of mushroom spores`)) {
+        use($item`packet of mushroom spores`);
+      }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: $location`Your Mushroom Garden`,
+    post: () => {
+      if (have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
+      }
+    },
+    outfit: tearawayPantsFreeFightOutfit($location`Your Mushroom Garden`),
+    combat: new GarboStrategy(() =>
+      Macro.if_($monster`Government agent`, Macro.skill($skill`Macrometeorite`))
+        .if_(
+          $monster`piranha plant`,
+          Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
+        )
+        .externalIf(
+          haveEquipped($item`tearaway pants`),
+          Macro.trySkill($skill`Tear Away your Pants!`),
+        )
+        .basicCombat(),
+    ),
+    combatCount: () => clamp(10 - get("_macrometeoriteUses"), 0, 10),
+    tentacle: true,
+  }),
+  freeFightTask({
+    name: "Burning Leaves Flaming Leaflet Fight",
+    mapSafe: true,
+    adventure: $monster`flaming leaflet`,
+    ready: () =>
+      BurningLeaves.have() &&
+      BurningLeaves.numberOfLeaves() >=
+        (BurningLeaves.burnFor.get($monster`flaming leaflet`) ?? Infinity),
+    completed: () => get("_leafMonstersFought") >= 5,
+    do: () => {
+      const lassoCount = itemAmount($item`lit leaf lasso`);
+      const result = BurningLeaves.burnSpecialLeaves($monster`flaming leaflet`);
+      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
+        set("_lastCombatLost", "false");
+      }
+      return result;
+    },
+    tentacle: true,
+    combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
+    outfit: tearawayPantsFreeFightOutfit($monster`flaming leaflet`),
+    combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
+  }),
+  freeFightTask({
+    name: $item`tied-up flaming leaflet`.name,
+    mapSafe: true,
+    adventure: $monster`flaming leaflet`,
+    ready: () =>
+      mallPrice($item`tied-up flaming leaflet`) <=
+      globalOptions.prefs.valueOfFreeFight,
+    completed: () => get("_tiedUpFlamingLeafletFought"),
+    acquire: () => [{ item: $item`tied-up flaming leaflet` }],
+    do: () => {
+      const lassoCount = itemAmount($item`lit leaf lasso`);
+      const result = use($item`tied-up flaming leaflet`);
+      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
+        set("_lastCombatLost", "false");
+      }
+      return result;
+    },
+    tentacle: true,
+    combatCount: () => (get("_tiedUpFlamingLeafletFought") ? 0 : 1),
+    outfit: tearawayPantsFreeFightOutfit($monster`flaming leaflet`),
+    combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
+  }),
+  freeFightTask({
+    name: $item`tied-up flaming monstera`.name,
+    mapSafe: true,
+    adventure: $monster`flaming monstera`,
+    ready: () =>
+      mallPrice($item`tied-up flaming monstera`) <=
+      globalOptions.prefs.valueOfFreeFight,
+    completed: () => get("_tiedUpFlamingMonsteraFought"),
+    acquire: () => [{ item: $item`tied-up flaming monstera` }],
+    do: () => {
+      const lassoCount = itemAmount($item`lit leaf lasso`);
+      const result = use($item`tied-up flaming monstera`);
+      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
+        set("_lastCombatLost", "false");
+      }
+      return result;
+    },
+    tentacle: true,
+    combatCount: () => (get("_tiedUpFlamingMonsteraFought") ? 0 : 1),
+    outfit: tearawayPantsFreeFightOutfit($monster`flaming monstera`),
+    combat: new GarboStrategy(() => litLeafMacro($monster`flaming monstera`)),
+  }),
+  freeFightTask({
+    name: "An Unusually Quiet Barroom Brawl",
+    adventure: $location`An Unusually Quiet Barroom Brawl`,
+    ready: () => get("ownsSpeakeasy"),
+    completed: () => get("_speakeasyFreeFights") >= 3,
+    do: $location`An Unusually Quiet Barroom Brawl`,
+    tentacle: true,
+    combatCount: () => clamp(3 - get("_speakeasyFreeFights"), 0, 3),
+  }),
+  freeFightTask({
+    name: "Glark Cable",
+    adventure: $location`The Red Zeppelin`,
+    ready: () =>
+      canAdventure($location`The Red Zeppelin`) &&
+      get("questL11Ron") === "finished" &&
+      myInebriety() <= inebrietyLimit() &&
+      mallPrice($item`glark cable`) <= globalOptions.prefs.valueOfFreeFight,
+    completed: () => get("_glarkCableUses") >= 5,
+    do: $location`The Red Zeppelin`,
+    outfit: () =>
+      freeFightOutfit({}, $location`The Red Zeppelin`, {
+        familiarOptions: {
+          canChooseMacro: false,
+          allowAttackFamiliars: false,
+        },
+      }),
+    acquire: [{ item: $item`glark cable` }],
+    combatCount: () => clamp(5 - get("_glarkCableUses"), 0, 5),
+    combat: new GarboStrategy(() =>
+      Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
+        .item($item`glark cable`)
+        .abort(),
+    ),
+    tentacle: true,
+  }),
+  freeFightTask({
+    name: "Chateau Mantegna",
+    mapSafe: true,
+    adventure: () => ChateauMantegna.paintingMonster() ?? $monster.none,
+    ready: () =>
+      ChateauMantegna.have() &&
+      (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ??
+        false),
+    completed: ChateauMantegna.paintingFought,
+    do: () => ChateauMantegna.fightPainting(),
+    tentacle: true,
+  }),
   freeFightTask({
     name: "Cursed Magnifying Glass",
     mapSafe: true,
@@ -462,29 +678,6 @@ const FreeFightTasks = [
     // TODO: Get drops
     combatCount: () => 3,
     tentacle: false,
-  }),
-  freeFightTask({
-    name: "Chateau Mantegna",
-    mapSafe: true,
-    adventure: () => ChateauMantegna.paintingMonster() ?? $monster.none,
-    ready: () =>
-      ChateauMantegna.have() &&
-      (ChateauMantegna.paintingMonster()?.attributes?.includes("FREE") ??
-        false),
-    completed: ChateauMantegna.paintingFought,
-    do: () => ChateauMantegna.fightPainting(),
-    outfit: () =>
-      freeFightOutfit(
-        have($familiar`Robortender`) &&
-          $phyla`elf, fish, hobo, penguin, constellation`.some(
-            (phylum) => phylum === ChateauMantegna.paintingMonster()?.phylum,
-          )
-          ? { familiar: $familiar`Robortender` }
-          : {},
-        ChateauMantegna.paintingMonster() ?? $monster.none,
-        { combatCount: 1 },
-      ),
-    tentacle: true,
   }),
   freeFightTask({
     name: "Eldritch Tentacle",
@@ -765,110 +958,6 @@ const FreeFightTasks = [
   }),
   ...PygmyFightTasks,
   freeFightTask({
-    name: "Glark Cable",
-    adventure: $location`The Red Zeppelin`,
-    ready: () =>
-      canAdventure($location`The Red Zeppelin`) &&
-      get("questL11Ron") === "finished" &&
-      myInebriety() <= inebrietyLimit() &&
-      mallPrice($item`glark cable`) <= globalOptions.prefs.valueOfFreeFight,
-    completed: () => get("_glarkCableUses") >= 5,
-    do: $location`The Red Zeppelin`,
-    outfit: () =>
-      freeFightOutfit({}, $location`The Red Zeppelin`, {
-        familiarOptions: {
-          canChooseMacro: false,
-          allowAttackFamiliars: false,
-        },
-      }),
-    acquire: [{ item: $item`glark cable` }],
-    combatCount: () => clamp(5 - get("_glarkCableUses"), 0, 5),
-    combat: new GarboStrategy(() =>
-      Macro.if_($monster`Eldritch Tentacle`, Macro.basicCombat())
-        .item($item`glark cable`)
-        .abort(),
-    ),
-    tentacle: true,
-  }),
-  freeFightTask({
-    name: "Mushroom garden",
-    adventure: $location`Your Mushroom Garden`,
-    ready: () =>
-      canSwapGarden() &&
-      (have($item`packet of mushroom spores`) ||
-        getCampground()["packet of mushroom spores"] !== undefined),
-    completed: () => get("_mushroomGardenFights") > 0,
-    prepare: () => {
-      if (have($item`packet of mushroom spores`)) {
-        use($item`packet of mushroom spores`);
-      }
-      if (SourceTerminal.have()) {
-        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
-      }
-    },
-    do: () => $location`Your Mushroom Garden`,
-    post: () => {
-      if (have($item`packet of tall grass seeds`)) {
-        use($item`packet of tall grass seeds`);
-      }
-    },
-    outfit: tearawayPantsFreeFightOutfit($location`Your Mushroom Garden`),
-    combat: new GarboStrategy(() =>
-      Macro.externalIf(
-        !doingGregFight(),
-        Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
-      )
-        .externalIf(
-          haveEquipped($item`tearaway pants`),
-          Macro.trySkill($skill`Tear Away your Pants!`),
-        )
-        .basicCombat(),
-    ),
-    combatCount: () => clamp(1 - get("_mushroomGardenFights"), 0, 1),
-    tentacle: true,
-  }),
-  freeFightTask({
-    name: "Portscan + Macrometeorite + Mushroom garden",
-    adventure: $location`Your Mushroom Garden`,
-    ready: () =>
-      canSwapGarden() &&
-      (have($item`packet of mushroom spores`) ||
-        getCampground()["packet of mushroom spores"] !== undefined) &&
-      !doingGregFight() &&
-      have($skill`Macrometeorite`) &&
-      get("_macrometeoriteUses") < 10,
-    completed: () => !Counter.exists("portscan.edu"),
-    prepare: () => {
-      if (have($item`packet of mushroom spores`)) {
-        use($item`packet of mushroom spores`);
-      }
-      if (SourceTerminal.have()) {
-        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
-      }
-    },
-    do: $location`Your Mushroom Garden`,
-    post: () => {
-      if (have($item`packet of tall grass seeds`)) {
-        use($item`packet of tall grass seeds`);
-      }
-    },
-    outfit: tearawayPantsFreeFightOutfit($location`Your Mushroom Garden`),
-    combat: new GarboStrategy(() =>
-      Macro.if_($monster`Government agent`, Macro.skill($skill`Macrometeorite`))
-        .if_(
-          $monster`piranha plant`,
-          Macro.if_($skill`Macrometeorite`, Macro.trySkill($skill`Portscan`)),
-        )
-        .externalIf(
-          haveEquipped($item`tearaway pants`),
-          Macro.trySkill($skill`Tear Away your Pants!`),
-        )
-        .basicCombat(),
-    ),
-    combatCount: () => clamp(10 - get("_macrometeoriteUses"), 0, 10),
-    tentacle: true,
-  }),
-  freeFightTask({
     name: "God Lobster",
     mapSafe: true,
     adventure: $monster`God Lobster`,
@@ -1064,108 +1153,11 @@ const FreeFightTasks = [
     combatCount: remainingPartyFights,
   }),
   freeFightTask({
-    name: "An Unusually Quiet Barroom Brawl",
-    adventure: $location`An Unusually Quiet Barroom Brawl`,
-    ready: () => get("ownsSpeakeasy"),
-    completed: () => get("_speakeasyFreeFights") >= 3,
-    do: $location`An Unusually Quiet Barroom Brawl`,
-    tentacle: true,
-    combatCount: () => clamp(3 - get("_speakeasyFreeFights"), 0, 3),
-  }),
-  freeFightTask({
-    name: $item`combat lover's locket`.name,
-    mapSafe: true,
-    adventure: () => locketMonster() ?? $monster.none,
-    ready: () => CombatLoversLocket.have() && locketMonster() !== null,
-    completed: () => CombatLoversLocket.reminiscesLeft() <= locketsToSave(),
-    do: () => {
-      const monster = locketMonster();
-      if (!monster) return;
-      CombatLoversLocket.reminisce(monster);
-    },
-    outfit: () =>
-      freeFightOutfit(
-        have($familiar`Robortender`)
-          ? { familiar: $familiar`Robortender` }
-          : {},
-        locketMonster() ?? $monster.none,
-        { combatCount: remainingLocketFights() },
-      ),
-    tentacle: true,
-    combatCount: remainingLocketFights,
-  }),
-  freeFightTask({
     ...doCandyTrick(),
     mapSafe: true,
     adventure: $location`Trick-or-Treating`,
     combatCount: () => 5,
     tentacle: true,
-  }),
-  freeFightTask({
-    name: "Burning Leaves Flaming Leaflet Fight",
-    mapSafe: true,
-    adventure: $monster`flaming leaflet`,
-    ready: () =>
-      BurningLeaves.have() &&
-      BurningLeaves.numberOfLeaves() >=
-        (BurningLeaves.burnFor.get($monster`flaming leaflet`) ?? Infinity),
-    completed: () => get("_leafMonstersFought") >= 5,
-    do: () => {
-      const lassoCount = itemAmount($item`lit leaf lasso`);
-      const result = BurningLeaves.burnSpecialLeaves($monster`flaming leaflet`);
-      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
-        set("_lastCombatLost", "false");
-      }
-      return result;
-    },
-    tentacle: true,
-    combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
-    outfit: tearawayPantsFreeFightOutfit($monster`flaming leaflet`),
-    combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
-  }),
-  freeFightTask({
-    name: $item`tied-up flaming leaflet`.name,
-    mapSafe: true,
-    adventure: $monster`flaming leaflet`,
-    ready: () =>
-      mallPrice($item`tied-up flaming leaflet`) <=
-      globalOptions.prefs.valueOfFreeFight,
-    completed: () => get("_tiedUpFlamingLeafletFought"),
-    acquire: () => [{ item: $item`tied-up flaming leaflet` }],
-    do: () => {
-      const lassoCount = itemAmount($item`lit leaf lasso`);
-      const result = use($item`tied-up flaming leaflet`);
-      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
-        set("_lastCombatLost", "false");
-      }
-      return result;
-    },
-    tentacle: true,
-    combatCount: () => (get("_tiedUpFlamingLeafletFought") ? 0 : 1),
-    outfit: tearawayPantsFreeFightOutfit($monster`flaming leaflet`),
-    combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
-  }),
-  freeFightTask({
-    name: $item`tied-up flaming monstera`.name,
-    mapSafe: true,
-    adventure: $monster`flaming monstera`,
-    ready: () =>
-      mallPrice($item`tied-up flaming monstera`) <=
-      globalOptions.prefs.valueOfFreeFight,
-    completed: () => get("_tiedUpFlamingMonsteraFought"),
-    acquire: () => [{ item: $item`tied-up flaming monstera` }],
-    do: () => {
-      const lassoCount = itemAmount($item`lit leaf lasso`);
-      const result = use($item`tied-up flaming monstera`);
-      if (lassoCount > itemAmount($item`lit leaf lasso`)) {
-        set("_lastCombatLost", "false");
-      }
-      return result;
-    },
-    tentacle: true,
-    combatCount: () => (get("_tiedUpFlamingMonsteraFought") ? 0 : 1),
-    outfit: tearawayPantsFreeFightOutfit($monster`flaming monstera`),
-    combat: new GarboStrategy(() => litLeafMacro($monster`flaming monstera`)),
   }),
   freeFightTask({
     name: "Ninja Costume (Lair)",
