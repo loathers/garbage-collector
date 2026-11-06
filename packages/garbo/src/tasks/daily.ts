@@ -88,7 +88,7 @@ import {
 } from "../resources/realm";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
-import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
+import { luckyGoldRingDropValues } from "../outfit/dropsgear";
 import { embezzlerFights } from "./embezzler";
 import { FarmingStrategy } from "../farmingStrategy";
 

@@ -9,7 +9,7 @@ import {
 import { garboAverageValue, garboValue } from "../garboValue";
 import {
   BonusEquipMode,
-  modeUseLimitedDrops,
+  LIMITED_DROP_MODES,
   modeValueOfItem,
   modeValueOfMeat,
 } from "./lib";
@@ -30,7 +30,7 @@ export function chooseBjorn(
 ): { familiar: Familiar; value: number } {
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   const fairyMultiplier = findFairyMultiplier(familiar);
-  const ignoreLimitedDrops = sim || !modeUseLimitedDrops(mode);
+  const ignoreLimitedDrops = sim || !LIMITED_DROP_MODES.includes(mode);
   const meatValue = modeValueOfMeat(mode);
   const itemValue = modeValueOfItem(mode);
   const [weightCoefficient, meatCoefficient, itemCoefficient] = [

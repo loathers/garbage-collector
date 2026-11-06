@@ -3,9 +3,11 @@ import {
   canAdventure,
   canEquip,
   cliExecute,
+  getFuel,
   getWorkshed,
   Location,
   mallPrice,
+  Monster,
   myAdventures,
   myLevel,
   myLightning,
@@ -24,10 +26,13 @@ import {
   $location,
   $monster,
   $skill,
+  adventureTargetToWeightedMap,
+  AsdonMartin,
   ChestMimic,
   Counter,
   CrepeParachute,
   Delayed,
+  EverfullDarts,
   get,
   getModifier,
   getStep,
@@ -82,7 +87,9 @@ import {
   canBullseye,
   guaranteedBullseye,
   safeToAttemptBullseye,
+  shouldBumperBullseye,
 } from "../../resources/everfullDarts";
+import { BUMPER_FUEL } from "../../resources/asdonMartin";
 import { bestMidnightAvailable } from "../../resources/gingerbread";
 import { shouldFillLatte, tryFillLatte } from "../../resources/latte";
 import { willYachtzee } from "../../resources/yachtzee";
@@ -99,20 +106,51 @@ function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
   base: Omit<FarmingTask, "outfit" | "do" | "choices" | "spendsTurn"> & {
-    combat?: GarboStrategy;
+    combat?: GarboStrategy<FarmingContext>;
   },
-  additionalOutfitOptions: FreeFightOutfitMenuOptions = {},
+  additionalOutfitOptions: Delayed<FreeFightOutfitMenuOptions> = {},
 ): FarmingTask {
   return {
     wanderer: details,
     do: ({ wanderTarget }) => wanderTarget.location,
     choices: ({ wanderTarget }) => wanderTarget.choices,
     outfit: ({ wanderTarget }) =>
-      freeFightOutfit(undelay(spec), wanderTarget, additionalOutfitOptions),
+      freeFightOutfit(
+        undelay(spec),
+        wanderTarget,
+        undelay(additionalOutfitOptions),
+      ),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat()),
     ...base,
   };
+}
+
+function bumperBullseyeMonsters({
+  location,
+  peridotMonster,
+}: FarmingContext["wanderTarget"]): Monster[] {
+  const monsters = [
+    ...adventureTargetToWeightedMap(
+      peridotMonster !== $monster.none ? peridotMonster : location,
+    ).keys(),
+  ];
+  const protectedMonsters = [
+    globalOptions.target,
+    ...FarmingStrategy.monsters().filter(
+      (monster) => !FarmingStrategy.banishMonsters.includes(monster),
+    ),
+  ];
+  // A random encounter must be safe too; don't merely remove it from our prediction.
+  return monsters.every(
+    (monster) =>
+      !protectedMonsters.includes(monster) &&
+      !["BOSS", "NOBANISH", "NOINSTAKILL", "FREE", "LUCKY", "ULTRARARE"].some(
+        (attribute) => monster.attributes.includes(attribute),
+      ),
+  )
+    ? monsters
+    : [];
 }
 
 function shouldGoUnderwater(): boolean {
@@ -485,7 +523,7 @@ const BarfTurnTasks: FarmingTask[] = [
   ),
   wanderTask(
     "conditional freefight",
-    {
+    () => ({
       offhand:
         guaranteedBullseye() || have($item`spring shoes`)
           ? []
@@ -496,7 +534,7 @@ const BarfTurnTasks: FarmingTask[] = [
           ? []
           : $item`spring shoes`,
       modifier: guaranteedBullseye() ? [] : "Monster Level",
-    },
+    }),
     {
       name: "Darts: Bullseye",
       ready: safeToAttemptBullseye,
@@ -510,6 +548,11 @@ const BarfTurnTasks: FarmingTask[] = [
       ),
       sobriety: "sober",
       duplicate: true,
+    },
+    () => {
+      const bullseyeChance = EverfullDarts.bullseyeChance();
+      // A missed dart falls through to a freerun.
+      return { outcomes: { win: bullseyeChance, run: 1 - bullseyeChance } };
     },
   ),
   wanderTask(
@@ -579,6 +622,48 @@ const BarfTurnTasks: FarmingTask[] = [
       familiarOptions: {
         mode: "run",
       },
+    },
+  ),
+  wanderTask(
+    "conditional freefight",
+    { acc1: $item`Everfull Dart Holster`, modifier: "Monster Level" },
+    {
+      // Spend other available kills and rays before temporarily banishing a valuable target.
+      name: "Darts: Bullseye (Asdon bumper)",
+      ready: (context) =>
+        shouldBumperBullseye() &&
+        romanticMonsterImpossible() &&
+        bumperBullseyeMonsters(context.wanderTarget).length > 0,
+      completed: () => !shouldBumperBullseye(),
+      prepare: () => {
+        if (getFuel() < BUMPER_FUEL && !AsdonMartin.fillTo(BUMPER_FUEL)) {
+          throw new Error(
+            "Unable to fuel the Asdon bumper for a missed Bullseye.",
+          );
+        }
+      },
+      combat: new GarboStrategy<FarmingContext>(({ wanderTarget }) =>
+        Macro.if_(globalOptions.target, Macro.meatKill())
+          .if_(
+            bumperBullseyeMonsters(wanderTarget),
+            Macro.familiarActions()
+              .skill($skill`Darts: Aim for the Bullseye`)
+              .skill($skill`Asdon Martin: Spring-Loaded Front Bumper`),
+          )
+          .abortWithMsg(
+            "Expected an eligible Bullseye target and an available Asdon bumper.",
+          ),
+      ),
+      sobriety: "sober",
+      duplicate: true,
+    },
+    () => {
+      const bullseyeChance = EverfullDarts.bullseyeChance();
+      return {
+        outcomes: { win: bullseyeChance, run: 1 - bullseyeChance },
+        // Opening a red present would consume the cooldown reserved for Bullseye.
+        familiarOptions: { excludeFamiliar: [$familiar`Crimbo Shrub`] },
+      };
     },
   ),
   {

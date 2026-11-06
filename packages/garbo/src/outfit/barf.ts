@@ -124,7 +124,7 @@ export function computeBarfOutfit(
 
   setLocation(FarmingStrategy.location);
 
-  outfit.addBonuses(bonusGear(BonusEquipMode.BARF, !sim));
+  outfit.addBonuses(bonusGear(BonusEquipMode.BARF, { simulate: sim }));
   applyCheeseBonus(outfit, BonusEquipMode.BARF);
 
   const specialFamiliar = specialFamiliarOutfits.get(spec.familiar);
