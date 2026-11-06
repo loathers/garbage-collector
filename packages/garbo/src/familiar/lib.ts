@@ -4,7 +4,9 @@ import {
   inebrietyLimit,
   mallPrice,
   myAdventures,
+  myFamiliar,
   myInebriety,
+  Phylum,
   totalTurnsPlayed,
 } from "kolmafia";
 import {
@@ -149,18 +151,50 @@ export function estimatedBarfExperience(): number {
   return sumNumbers(sources);
 }
 
-export function snapperValue(): number {
-  const item = Snapper.phylumItem.get(globalOptions.target.phylum);
+function valueSnapperPhylum(phylum: Phylum, turns: number) {
+  const item = Snapper.phylumItem.get(phylum);
   if (!item) return 0;
+  const remainingTurns =
+    11 - (Snapper.getTrackedPhylum() === phylum ? Snapper.getProgress() : 0);
+  if (remainingTurns > turns) return 0;
+  return garboValue(item) / 11;
+}
 
-  const denominator =
-    11 -
-    (Snapper.getTrackedPhylum() === globalOptions.target.phylum
-      ? Snapper.getProgress()
-      : 0);
-  if (denominator > copyTargetCount()) return 0;
+function snapperPhylum(mode: FamiliarMode): Phylum | null {
+  switch (mode) {
+    case "target": {
+      // Once farming starts, target fights may use the existing tuning but
+      // must not undo a switch to the farming phylum.
+      return !globalOptions.farmingStarted ||
+        Snapper.getTrackedPhylum() === globalOptions.target.phylum
+        ? globalOptions.target.phylum
+        : null;
+    }
+    case "barf":
+      return FarmingStrategy.singlePhylumInZone();
+    default:
+      return null;
+  }
+}
 
-  return garboValue(item) / denominator;
+export function snapperValue(mode: FamiliarMode): number {
+  const phylum = snapperPhylum(mode);
+  if (!phylum) return 0;
+  const farmingPhylum = FarmingStrategy.singlePhylumInZone();
+  const turns =
+    mode === "barf" ||
+    (globalOptions.farmingStarted && phylum === farmingPhylum)
+      ? estimatedGarboTurns()
+      : copyTargetCount();
+  return valueSnapperPhylum(phylum, turns);
+}
+
+export function tuneSnapper(mode: FamiliarMode): void {
+  if (myFamiliar() !== $familiar`Red-Nosed Snapper`) return;
+  const phylum = snapperPhylum(mode);
+  if (phylum && phylum !== Snapper.getTrackedPhylum()) {
+    Snapper.trackPhylum(phylum);
+  }
 }
 
 export const amuletCoinValue = () => {
@@ -172,3 +206,7 @@ export const amuletCoinValue = () => {
       })();
   return 0.5 * (barf * FarmingStrategy.baseMeat() + copies * targetMeat());
 };
+
+export function snapperReasonable(mode: FamiliarMode): boolean {
+  return Snapper.have() && snapperPhylum(mode) !== null;
+}

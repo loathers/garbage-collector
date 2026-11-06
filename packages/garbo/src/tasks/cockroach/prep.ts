@@ -269,7 +269,10 @@ export const CockroachFinish: Quest<GarboTask> = {
               () => potionSetup(false),
             ],
           },
-          $location`Crab Island`,
+          {
+            location: $location`Crab Island`,
+            target: $monster`giant giant crab`,
+          },
         ),
       choices: { 1368: 1 }, // fight crab
       combat: new GarboStrategy(() =>

@@ -12,6 +12,7 @@ import {
   have,
 } from "libram";
 import { freeFightFamiliar } from "../familiar/freeFightFamiliar";
+import { tuneSnapper } from "../familiar/lib";
 import { meatFamiliar, underwaterMeatFamiliar } from "../familiar/meatFamiliar";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
@@ -28,7 +29,13 @@ import {
 } from "./lib";
 import { songboomMeat, targetingMeat } from "../lib";
 import { globalOptions } from "../config";
-import { booleanModifier, cliExecute, meatDrop, setLocation } from "kolmafia";
+import {
+  booleanModifier,
+  cliExecute,
+  meatDrop,
+  Monster,
+  setLocation,
+} from "kolmafia";
 import { shouldRedigitize } from "../combat";
 import { nextWeekReady } from "../resources/sealclub";
 import { AdventureArgument, toAdventure } from "../garboWanderer";
@@ -44,7 +51,12 @@ export function meatTargetOutfit(
     new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`),
   );
 
-  const { location, target } = toAdventure(adventureArgument ?? $location.none);
+  const { location, target: parsedTarget } = toAdventure(
+    adventureArgument ?? $location.none,
+  );
+  const target =
+    parsedTarget instanceof Monster ? parsedTarget : globalOptions.target;
+  const isCopyTarget = target === globalOptions.target;
   setLocation(location);
   if (location === $location`Crab Island`) {
     const meat = meatDrop($monster`giant giant crab`) + songboomMeat();
@@ -87,10 +99,16 @@ export function meatTargetOutfit(
     ? familiarNeedsToBreathe
       ? underwaterMeatFamiliar()
       : meatFamiliar()
-    : freeFightFamiliar(location ?? globalOptions.target, {
-        equipmentForced:
-          familiarNeedsToBreathe || !outfit.canEquip($item`toy Cupid bow`),
-      });
+    : freeFightFamiliar(
+        { location, target },
+        {
+          mode: isCopyTarget ? "target" : "free",
+          equipmentForced:
+            familiarNeedsToBreathe || !outfit.canEquip($item`toy Cupid bow`),
+        },
+      );
+
+  if (isCopyTarget) outfit.afterDress(() => tuneSnapper("target"));
 
   const bjornChoice = chooseBjorn(
     targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE,

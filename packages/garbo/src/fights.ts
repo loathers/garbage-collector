@@ -70,7 +70,6 @@ import {
   property,
   Robortender,
   set,
-  Snapper,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -331,10 +330,7 @@ export function dailyFights(): void {
           property: "_garbo_meatChain",
           macro: firstChainMacro,
           goalMaximize: (spec: OutfitSpec, location: Location) =>
-            meatTargetOutfit(spec, {
-              location,
-              target: globalOptions.target,
-            }).dress(),
+            meatTargetOutfit(spec, location).dress(),
         },
         {
           shouldDo: true,
@@ -444,13 +440,6 @@ export function dailyFights(): void {
       const underwater = location.environment === "underwater";
 
       const famSpec = familiarSpec(underwater, nextFight);
-
-      if (
-        famSpec.familiar === $familiar`Red-Nosed Snapper` &&
-        Snapper.getTrackedPhylum() !== globalOptions.target.phylum
-      ) {
-        Snapper.trackPhylum(globalOptions.target.phylum);
-      }
 
       setLocation(location);
       meatTargetOutfit({ ...nextFight.spec, ...famSpec }, location).dress();
