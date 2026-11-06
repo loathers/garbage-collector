@@ -89,7 +89,7 @@ const forcers: RiftForcer[] = [
       while (CinchoDeMayo.currentCinch() < 60) {
         if (!freeRest()) throw new Error("We are out of free rests!");
       }
-      useSkill($skill`Cincho: Fiesta Exit`);
+      useSkill(1, $skill`Cincho: Fiesta Exit`);
     },
   },
   {
