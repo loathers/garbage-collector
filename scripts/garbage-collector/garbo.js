@@ -20464,7 +20464,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"7866a468cd84e4a8b0710d52747debd2934e045c"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"e3c98b9fd78f6da81e6d3e94af6a0be36b436730"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -29524,36 +29524,66 @@ function ghostAdventure() {
   };
 }
 
+// These are only for day 1 swapping after doing black rose (or any other similar garden)
+var harvestableGardens = [{
+  seedPacket: $item`packet of rock seeds`,
+  harvestables: $items`groveling gravel, milestone, whet stone`
+}, {
+  seedPacket: $item`packet of pumpkin seeds`,
+  harvestables: $items`pumpkin`
+}];
+function currentGarden() {
+  return Object.values(GARDEN_ITEMS).find(garden => haveInCampground(garden));
+}
+
 // Capture this before any tasks run: temporarily planting roses must not lock us in.
-var startingGarden = Object.values(GARDEN_ITEMS).find(garden => haveInCampground(garden));
+var startingGarden = currentGarden();
 function canSwapGarden() {
   if (get$2("_blackRoseGardenToday")) return true;
   if (globalOptions.ascend) return true;
   if (swappedToday()) return true;
   return startingGarden !== $item`black garden rose`;
 }
+function harvestGarden() {
+  if (currentGarden() === $item`packet of rock seeds`) {
+    kolmafia.visitUrl("campground.php?action=rgarden1&pwd");
+    kolmafia.visitUrl("campground.php?action=rgarden2&pwd");
+    kolmafia.visitUrl("campground.php?action=rgarden3&pwd");
+  } else {
+    kolmafia.visitUrl("campground.php?action=garden&pwd");
+  }
+}
 function setupGarden() {
   if (!canSwapGarden()) return;
   if (startingGarden && !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) && kolmafia.getCampground()[startingGarden.name] && $items`packet of tall grass seeds, packet of mushroom spores`.some(gardenSeed => have$T(gardenSeed))) {
-    if (startingGarden === $item`packet of rock seeds`) {
-      kolmafia.visitUrl("campground.php?action=rgarden1&pwd");
-      kolmafia.visitUrl("campground.php?action=rgarden2&pwd");
-      kolmafia.visitUrl("campground.php?action=rgarden3&pwd");
-    } else {
-      kolmafia.visitUrl("campground.php?action=garden&pwd");
-    }
+    harvestGarden();
   }
   if (have$T($item`packet of tall grass seeds`) && kolmafia.myGardenType() !== "grass" && kolmafia.myGardenType() !== "mushroom") {
     kolmafia.use($item`packet of tall grass seeds`);
   }
 }
 function blackRoseWillGrow() {
-  return kolmafia.myGardenType() === "black_rose" && !swappedToday();
+  return kolmafia.myGardenType() === "black_rose" && !swappedToday() && !globalOptions.ascend;
 }
 function restoreGarden() {
   if (canSwapGarden() && startingGarden && have$T(startingGarden) && !blackRoseWillGrow()) {
     kolmafia.use(startingGarden);
   }
+}
+var cachedbestHarvestSwap = null;
+function bestHarvestSwap() {
+  if (cachedbestHarvestSwap === null) {
+    var ownedGardens = harvestableGardens.filter(garden => have$T(garden.seedPacket));
+    if (ownedGardens.length <= 0) {
+      cachedbestHarvestSwap = kolmafia.Item.none;
+    } else {
+      cachedbestHarvestSwap = maxBy(ownedGardens, garden => {
+        var value = sum(garden.harvestables, garboValue);
+        return value;
+      }).seedPacket;
+    }
+  }
+  return cachedbestHarvestSwap;
 }
 
 var DEFAULT_FREE_FIGHT_TASK = {
@@ -33477,6 +33507,17 @@ var DailyItemTasks = [{
     if (canSwapGarden() && have$T($item`packet of tall grass seeds`)) {
       kolmafia.use($item`packet of tall grass seeds`);
     }
+  },
+  spendsTurn: false
+}, {
+  name: "Swap Garden and Harvest",
+  ready: () =>
+  // Is this the only time we can swap a garden and still harvest?
+  installed() && !blackRoseWillGrow() && have$T(bestHarvestSwap()),
+  completed: () => !canSwapGarden(),
+  do: () => {
+    kolmafia.use(bestHarvestSwap());
+    harvestGarden();
   },
   spendsTurn: false
 }]);
