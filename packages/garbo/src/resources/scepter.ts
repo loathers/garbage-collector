@@ -180,7 +180,7 @@ function summonTask({ skill }: ScepterSkill): GarboTask {
   return {
     name: skill.name,
     completed: () => !shouldAugustCast(skill),
-    do: () => useSkill(skill),
+    do: () => useSkill(1, skill),
     spendsTurn: false,
   };
 }
@@ -196,20 +196,20 @@ export function castAugustScepterBuffs() {
     for (const { skill } of SKILL_OPTIONS.filter(
       ({ skill, type }) => shouldAugustCast(skill) && type === "buff",
     )) {
-      useSkill(skill);
+      useSkill(1, skill);
     }
 
     const today = SKILL_OPTIONS.find(
       ({ skill, type }) =>
         type === "buff" && skill === AugustScepter.todaysSkill(),
     );
-    if (today && !AugustScepter.getTodayCast()) useSkill(today.skill);
+    if (today && !AugustScepter.getTodayCast()) useSkill(1, today.skill);
 
     if (
       globalOptions.ascend &&
       shouldAugustCast($skill`Aug. 13th: Left/Off Hander's Day!`)
     ) {
-      useSkill($skill`Aug. 13th: Left/Off Hander's Day!`);
+      useSkill(1, $skill`Aug. 13th: Left/Off Hander's Day!`);
     }
   }
 }

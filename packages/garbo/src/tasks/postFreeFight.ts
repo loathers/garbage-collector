@@ -51,7 +51,7 @@ const PostFreeFightTasks: GarboTask[] = [
     ready: () =>
       myClass() === $class`Pastamancer` && have($skill`Bind Lasagmbie`),
     completed: () => myThrall() === $thrall`Lasagmbie`,
-    do: () => useSkill($skill`Bind Lasagmbie`),
+    do: () => useSkill(1, $skill`Bind Lasagmbie`),
     outfit: (): OutfitSpec => {
       if (myMaxmp() >= 200) return {};
       return { modifier: "MP" };

@@ -426,7 +426,7 @@ export function dailyFights(): void {
         have($skill`Musk of the Moose`) &&
         !have($effect`Musk of the Moose`)
       ) {
-        useSkill($skill`Musk of the Moose`);
+        useSkill(1, $skill`Musk of the Moose`);
       }
 
       if (nextFight.gregariousReplace) {
@@ -709,7 +709,9 @@ const freeRunFightSources = [
       const monsters = asArray(best.monster);
       if (best.preReq) best.preReq();
       const hasXO = myFamiliar() === $familiar`XO Skeleton`;
-      if (myThrall() !== $thrall.none) useSkill($skill`Dismiss Pasta Thrall`);
+      if (myThrall() !== $thrall.none) {
+        useSkill(1, $skill`Dismiss Pasta Thrall`);
+      }
       withMacro(
         Macro.if_(
           monsters.map((m) => `!monsterid ${m.id}`).join(" && "),

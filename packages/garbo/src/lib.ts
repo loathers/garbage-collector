@@ -287,7 +287,7 @@ export function pillkeeperOpportunityCost(): number {
 export function burnLibrams(mpTarget = 0): void {
   let libramToCast = bestLibramToCast();
   while (libramToCast && mpCost(libramToCast) <= myMp() - mpTarget) {
-    useSkill(libramToCast);
+    useSkill(1, libramToCast);
     libramToCast = bestLibramToCast();
   }
   if (mpTarget > 0) {
@@ -629,7 +629,7 @@ export function freeRest(): boolean {
         (sk) => -mpCost(sk),
       ); // are there any other skills that cost mana which we should blacklist?
       // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
-      useSkill(bestSkill);
+      useSkill(1, bestSkill);
     }
   }
 

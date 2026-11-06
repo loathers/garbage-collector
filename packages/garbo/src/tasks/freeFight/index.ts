@@ -436,7 +436,7 @@ const FreeFightTasks = [
     adventure: $monster.none, // TODO
     ready: () => shouldAugustCast($skill`Aug. 8th: Cat Day!`),
     completed: () => $skill`Aug. 8th: Cat Day!`.timescast > 0,
-    do: () => useSkill($skill`Aug. 8th: Cat Day!`),
+    do: () => useSkill(1, $skill`Aug. 8th: Cat Day!`),
     tentacle: true,
   }),
   freeFightTask({
@@ -445,7 +445,7 @@ const FreeFightTasks = [
     adventure: $monster`Tooth Golem`,
     ready: () => shouldAugustCast($skill`Aug. 22nd: Tooth Fairy Day!`),
     completed: () => $skill`Aug. 22nd: Tooth Fairy Day!`.timescast > 0,
-    do: () => useSkill($skill`Aug. 22nd: Tooth Fairy Day!`),
+    do: () => useSkill(1, $skill`Aug. 22nd: Tooth Fairy Day!`),
     tentacle: true,
   }),
   freeFightTask({
@@ -511,7 +511,7 @@ const FreeFightTasks = [
       get("_eldritchHorrorEvoked") ||
       get("_eldritchTentaclesFoughtToday") >= 11,
     do: () => {
-      useSkill($skill`Evoke Eldritch Horror`);
+      useSkill(1, $skill`Evoke Eldritch Horror`);
       if (have($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
     },
     effects: () =>

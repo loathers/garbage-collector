@@ -234,7 +234,7 @@ function eatSafe(qty: number, item: Item) {
     !get("_legendarySpiceGhostFood") &&
     $thrall`Spice Ghost`.level + (get("pumpkinSpiceWhorlUsed") ? 3 : 0) >= 11
   ) {
-    useSkill($skill`Bind Spice Ghost`);
+    useSkill(1, $skill`Bind Spice Ghost`);
   }
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
   consumeWhileRespectingMoonRestaurant(() => {
@@ -1832,13 +1832,13 @@ function specialItemActions(): Map<Item, ItemAction> {
       $item`designer sweatpants`,
       (countToConsume) => {
         for (let n = 1; n <= countToConsume; n++) {
-          useSkill($skill`Sweat Out Some Booze`);
+          useSkill(1, $skill`Sweat Out Some Booze`);
         }
       },
     ],
     [
       $item`august scepter`,
-      () => useSkill($skill`Aug. 16th: Roller Coaster Day!`),
+      () => useSkill(1, $skill`Aug. 16th: Roller Coaster Day!`),
     ],
     ...legendaryNoodleDishes.map((dish): [Item, ItemAction] => [
       dish,

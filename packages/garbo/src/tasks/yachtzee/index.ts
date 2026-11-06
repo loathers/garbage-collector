@@ -185,7 +185,7 @@ export const yachtzeeQuest: Quest<
         name: "Cincho Yachtzee NC Force",
         completed: () => get("noncombatForcerActive"),
         ready: () => CinchoDeMayo.currentCinch() >= 60 && have($effect`Fishy`),
-        do: () => useSkill($skill`Cincho: Fiesta Exit`),
+        do: () => useSkill(1, $skill`Cincho: Fiesta Exit`),
         turns: 0,
         sobriety: () => (willDrunkAdventure() ? "drunk" : "sober"),
         spendsTurn: false,
