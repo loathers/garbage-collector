@@ -20440,7 +20440,7 @@ function burnLibrams() {
   var mpTarget = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   var libramToCast = bestLibramToCast();
   while (libramToCast && kolmafia.mpCost(libramToCast) <= kolmafia.myMp() - mpTarget) {
-    kolmafia.useSkill(libramToCast);
+    kolmafia.useSkill(1, libramToCast);
     libramToCast = bestLibramToCast();
   }
   if (mpTarget > 0) {
@@ -20468,7 +20468,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"6704a6deda12c6e03f9f3a7b440b0d15a709a0ca"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"9cf3af583113d2b90b148785a662c59eb24016c8"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -20659,7 +20659,7 @@ function freeRest() {
       // burn some mp so that we can rest
       var bestSkill = maxBy(kolmafia.Skill.all().filter(sk => have$T(sk) && kolmafia.mpCost(sk) >= 1), sk => -kolmafia.mpCost(sk)); // are there any other skills that cost mana which we should blacklist?
       // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
-      kolmafia.useSkill(bestSkill);
+      kolmafia.useSkill(1, bestSkill);
     }
   }
   var timesRested = get$2("timesRested");
@@ -22444,7 +22444,7 @@ function summonTask(_ref2) {
   return {
     name: skill.name,
     completed: () => !shouldAugustCast(skill),
-    do: () => kolmafia.useSkill(skill),
+    do: () => kolmafia.useSkill(1, skill),
     spendsTurn: false
   };
 }
@@ -22465,7 +22465,7 @@ function castAugustScepterBuffs() {
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
         var skill = _step.value.skill;
-        kolmafia.useSkill(skill);
+        kolmafia.useSkill(1, skill);
       }
     } catch (err) {
       _iterator.e(err);
@@ -22477,9 +22477,9 @@ function castAugustScepterBuffs() {
         type = _ref4.type;
       return type === "buff" && skill === todaysSkill();
     });
-    if (today && !getTodayCast()) kolmafia.useSkill(today.skill);
+    if (today && !getTodayCast()) kolmafia.useSkill(1, today.skill);
     if (globalOptions.ascend && shouldAugustCast($skill`Aug. 13th: Left/Off Hander's Day!`)) {
-      kolmafia.useSkill($skill`Aug. 13th: Left/Off Hander's Day!`);
+      kolmafia.useSkill(1, $skill`Aug. 13th: Left/Off Hander's Day!`);
     }
   }
 }
@@ -24275,7 +24275,7 @@ function initializeCrates() {
 }
 function getClub() {
   if (have$T($skill`Iron Palm Technique`) && !have$T($effect`Iron Palms`)) {
-    kolmafia.useSkill($skill`Iron Palm Technique`);
+    kolmafia.useSkill(1, $skill`Iron Palm Technique`);
   }
   var availableClub = kolmafia.Item.all().find(i => have$T(i) && kolmafia.canEquip(i) && kolmafia.weaponHands(i) === 2 && (kolmafia.itemType(i) === "club" || have$T($effect`Iron Palms`) && kolmafia.itemType(i) === "sword")) ?? $item`amok putter`;
   kolmafia.retrieveItem(availableClub);
@@ -24840,7 +24840,7 @@ var luckySourceTasks = [{
   ready: () => !have$T($effect`Lucky!`),
   completed: () => !shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
   do: () => {
-    kolmafia.useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
+    kolmafia.useSkill(1, $skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
     if (!have$T($effect`Lucky!`)) {
       _set("_aug2Cast", true);
     }
@@ -24878,7 +24878,7 @@ var luckySourceTasks = [{
   ready: () => !have$T($effect`Lucky!`),
   completed: () => !have$T($item`Heartstone`) || !get$2("heartstoneLuckUnlocked") || get$2("_heartstoneLuckUsed"),
   do: () => {
-    kolmafia.useSkill($skill`Heartstone: %luck`);
+    kolmafia.useSkill(1, $skill`Heartstone: %luck`);
     if (!have$T($effect`Lucky!`)) return;
   },
   spendsTurn: false,
@@ -25103,7 +25103,7 @@ function meatMood() {
       kolmafia.use(1, $item`Bird-a-Day calendar`);
     }
     if (have$T($skill`Visit your Favorite Bird`) && !get$2("_favoriteBirdVisited") && (kolmafia.numericModifier($effect`Blessing of your favorite Bird`, "Meat Drop") > 0 || kolmafia.numericModifier($effect`Blessing of your favorite Bird`, "Item Drop") > 0)) {
-      kolmafia.useSkill($skill`Visit your Favorite Bird`);
+      kolmafia.useSkill(1, $skill`Visit your Favorite Bird`);
     }
     if (have$T($skill`Seek out a Bird`) && get$2("_birdsSoughtToday") < 6 && (kolmafia.numericModifier($effect`Blessing of the Bird`, "Meat Drop") > 0 || kolmafia.numericModifier($effect`Blessing of the Bird`, "Item Drop") > 0)) {
       // Ensure we don't get stuck in the choice if the count is wrong
@@ -25112,7 +25112,7 @@ function meatMood() {
     }
   }
   if (have$T($skill`Incredible Self-Esteem`) && $effects`Always be Collecting, Work For Hours a Week`.some(effect => have$T(effect)) && !get$2("_incredibleSelfEsteemCast")) {
-    kolmafia.useSkill($skill`Incredible Self-Esteem`);
+    kolmafia.useSkill(1, $skill`Incredible Self-Esteem`);
   }
   if (!get$2("_alliedRadioWildsunBoon") && wildsunBoonWorthIt()) {
     var acquired = acquire(1, $item`handheld Allied radio`, effectValue($effect`Wildsun Boon`, 100), false);
@@ -25462,7 +25462,7 @@ function eatSafe(qty, item) {
     kolmafia.eat($item`fudge spork`);
   }
   if (kolmafia.myClass() === $class`Pastamancer` && kolmafia.myThrall() !== $thrall`Spice Ghost` && !get$2("_legendarySpiceGhostFood") && $thrall`Spice Ghost`.level + (get$2("pumpkinSpiceWhorlUsed") ? 3 : 0) >= 11) {
-    kolmafia.useSkill($skill`Bind Spice Ghost`);
+    kolmafia.useSkill(1, $skill`Bind Spice Ghost`);
   }
   useIfUnused($item`milk of magnesium`, "_milkOfMagnesiumUsed", 5 * MPA);
   consumeWhileRespectingMoonRestaurant(() => {
@@ -26446,9 +26446,9 @@ function specialItemActions() {
     consumeSafe(countToConsume, menuItem.item, menuItem.additionalValue);
   }], [$item`designer sweatpants`, countToConsume => {
     for (var n = 1; n <= countToConsume; n++) {
-      kolmafia.useSkill($skill`Sweat Out Some Booze`);
+      kolmafia.useSkill(1, $skill`Sweat Out Some Booze`);
     }
-  }], [$item`august scepter`, () => kolmafia.useSkill($skill`Aug. 16th: Roller Coaster Day!`)]], _toConsumableArray(legendaryNoodleDishes.map(dish => [dish, (countToConsume, menuItem) => {
+  }], [$item`august scepter`, () => kolmafia.useSkill(1, $skill`Aug. 16th: Roller Coaster Day!`)]], _toConsumableArray(legendaryNoodleDishes.map(dish => [dish, (countToConsume, menuItem) => {
     // One at a time, since each leads to Legendary Digestion
     for (var i = 0; i < countToConsume; i++) {
       withChoice(LEGENDARY_DIGESTION_CHOICE_ID, LEGENDARY_DIGESTION_STOMACH, () => consumeSafe(1, menuItem.item, menuItem.additionalValue));
@@ -27843,7 +27843,7 @@ var AscendingTasks = [{
   ready: () => have$T($skill`Lock Picking`) && globalOptions.ascend,
   completed: () => get$2("lockPicked"),
   do: () => {
-    kolmafia.useSkill($skill`Lock Picking`);
+    kolmafia.useSkill(1, $skill`Lock Picking`);
     if (kolmafia.handlingChoice()) kolmafia.runChoice(-1);
   },
   choices: () => ({
@@ -28726,7 +28726,7 @@ var PostFreeFightTasks = [{
   name: "Configure Thrall",
   ready: () => kolmafia.myClass() === $class`Pastamancer` && have$T($skill`Bind Lasagmbie`),
   completed: () => kolmafia.myThrall() === $thrall`Lasagmbie`,
-  do: () => kolmafia.useSkill($skill`Bind Lasagmbie`),
+  do: () => kolmafia.useSkill(1, $skill`Bind Lasagmbie`),
   outfit: () => {
     if (kolmafia.myMaxmp() >= 200) return {};
     return {
@@ -29176,7 +29176,7 @@ function juneCleaver() {
     available: () => have$u(),
     post: () => {
       if (["Poetic Justice", "Lost and Found"].includes(get$2("lastEncounter")) && have$T($effect`Beaten Up`)) {
-        kolmafia.useSkill($skill`Tongue of the Walrus`);
+        kolmafia.useSkill(1, $skill`Tongue of the Walrus`);
       }
     }
   };
@@ -29949,7 +29949,7 @@ var forcers = [{
     while (currentCinch() < 60) {
       if (!freeRest()) throw new Error("We are out of free rests!");
     }
-    kolmafia.useSkill($skill`Cincho: Fiesta Exit`);
+    kolmafia.useSkill(1, $skill`Cincho: Fiesta Exit`);
   }
 }, {
   name: "Spikolodon",
@@ -30314,7 +30314,7 @@ var FreeFightTasks = [freeFightTask({
   // TODO
   ready: () => shouldAugustCast($skill`Aug. 8th: Cat Day!`),
   completed: () => $skill`Aug. 8th: Cat Day!`.timescast > 0,
-  do: () => kolmafia.useSkill($skill`Aug. 8th: Cat Day!`),
+  do: () => kolmafia.useSkill(1, $skill`Aug. 8th: Cat Day!`),
   tentacle: true
 }), freeFightTask({
   name: $skill`Aug. 22nd: Tooth Fairy Day!`.name,
@@ -30322,7 +30322,7 @@ var FreeFightTasks = [freeFightTask({
   adventure: $monster`Tooth Golem`,
   ready: () => shouldAugustCast($skill`Aug. 22nd: Tooth Fairy Day!`),
   completed: () => $skill`Aug. 22nd: Tooth Fairy Day!`.timescast > 0,
-  do: () => kolmafia.useSkill($skill`Aug. 22nd: Tooth Fairy Day!`),
+  do: () => kolmafia.useSkill(1, $skill`Aug. 22nd: Tooth Fairy Day!`),
   tentacle: true
 }), freeFightTask({
   name: "Tunnel of Love",
@@ -30372,7 +30372,7 @@ var FreeFightTasks = [freeFightTask({
   ready: () => have$T($skill`Evoke Eldritch Horror`),
   completed: () => get$2("_eldritchHorrorEvoked") || get$2("_eldritchTentaclesFoughtToday") >= 11,
   do: () => {
-    kolmafia.useSkill($skill`Evoke Eldritch Horror`);
+    kolmafia.useSkill(1, $skill`Evoke Eldritch Horror`);
     if (have$T($effect`Beaten Up`)) uneffect($effect`Beaten Up`);
   },
   effects: () => 11 / 200 * garboValue($item`eldritch ichor`) > kolmafia.mallPrice($item`crappy waiter disguise`) ? [$effect`Crappily Disguised as a Waiter`] : [],
@@ -31428,7 +31428,7 @@ function dailyFights() {
       kolmafia.print(`Running fight ${nextFight.name}`);
       var startTurns = kolmafia.totalTurnsPlayed();
       if (nextFight.draggable === "backup" && have$T($skill`Musk of the Moose`) && !have$T($effect`Musk of the Moose`)) {
-        kolmafia.useSkill($skill`Musk of the Moose`);
+        kolmafia.useSkill(1, $skill`Musk of the Moose`);
       }
       if (nextFight.gregariousReplace) {
         var _crateIsSabered = get$2("_saberForceMonster") === $monster`crate`;
@@ -31622,7 +31622,9 @@ getBestItemStealZone() !== null, runSource => {
   var monsters = asArray(best.monster);
   if (best.preReq) best.preReq();
   var hasXO = kolmafia.myFamiliar() === $familiar`XO Skeleton`;
-  if (kolmafia.myThrall() !== $thrall.none) kolmafia.useSkill($skill`Dismiss Pasta Thrall`);
+  if (kolmafia.myThrall() !== $thrall.none) {
+    kolmafia.useSkill(1, $skill`Dismiss Pasta Thrall`);
+  }
   withMacro(Macro.if_(monsters.map(m => `!monsterid ${m.id}`).join(" && "), runSource.macro).externalIf(hasXO && get$2("_xoHugsUsed") < 11, Macro.skill($skill`Hugs and Kisses!`)).externalIf(!best.requireMapTheMonsters && hasXO && get$2("_xoHugsUsed") < 10, Macro.step(itemStealOlfact(best))).trySkillRepeat($skill`Fire Extinguisher: Polar Vortex`, $skill`Perpetrate Mild Evil`, $skill`Swoop like a Bat`).step(runSource.macro), () => {
     if (mappingMonster) {
       mapMonster(best.location, monsters[0]);
@@ -33276,7 +33278,7 @@ var DailyItemTasks = [{
   name: "Request Sandwich",
   ready: () => have$T($skill`Request Sandwich`),
   completed: () => get$2("_requestSandwichSucceeded"),
-  do: () => kolmafia.useSkill($skill`Request Sandwich`),
+  do: () => kolmafia.useSkill(1, $skill`Request Sandwich`),
   limit: {
     skip: 10
   },
@@ -33285,7 +33287,7 @@ var DailyItemTasks = [{
   name: "Demand Sandwich",
   ready: () => have$T($skill`Demand Sandwich`),
   completed: () => get$2("_demandSandwich") > 0,
-  do: () => kolmafia.useSkill($skill`Demand Sandwich`),
+  do: () => kolmafia.useSkill(1, $skill`Demand Sandwich`),
   spendsTurn: false
 }, {
   name: "Tea Tree",
@@ -33330,7 +33332,7 @@ var DailyItemTasks = [{
   do: () => {
     var knives = $items`boot knife, broken beer bottle, sharpened spoon, candy knife, soap knife`;
     knives.forEach(item => kolmafia.putCloset(kolmafia.itemAmount(item), item));
-    kolmafia.useSkill($skill`That's Not a Knife`);
+    kolmafia.useSkill(1, $skill`That's Not a Knife`);
   },
   spendsTurn: false
 }, {
@@ -34519,7 +34521,7 @@ var yachtzeeQuest = [{
     name: "Cincho Yachtzee NC Force",
     completed: () => get$2("noncombatForcerActive"),
     ready: () => currentCinch() >= 60 && have$T($effect`Fishy`),
-    do: () => kolmafia.useSkill($skill`Cincho: Fiesta Exit`),
+    do: () => kolmafia.useSkill(1, $skill`Cincho: Fiesta Exit`),
     turns: 0,
     sobriety: () => willDrunkAdventure() ? "drunk" : "sober",
     spendsTurn: false
