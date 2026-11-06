@@ -66,7 +66,7 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
 export type FreeFightOutfitMenuOptions = {
   duplicate?: boolean;
   familiarOptions?: FamiliarMenuOptions;
-  // Remaining fights in a stint that requires the explicitly supplied familiar.
+  // Remaining fights in a stint that requires a familiar from the spec or wanderer plan.
   combatCount?: number;
 };
 export function freeFightOutfit(
@@ -105,6 +105,7 @@ export function freeFightOutfit(
     outfit.equip($item`Monodent of the Sea`);
   }
 
+  const requiredFamiliar = outfit.familiar;
   outfit.familiar ??= freeFightFamiliar(
     adventure,
     computeFamiliarMenuOptions(
@@ -141,10 +142,10 @@ export function freeFightOutfit(
 
   if (mode !== BonusEquipMode.DMT) {
     if (
-      spec.familiar &&
+      requiredFamiliar &&
       options.combatCount !== undefined &&
       !outfit.haveEquipped($item`toy Cupid bow`) &&
-      shouldAvoidTemporaryCupidBowSwap(spec.familiar, options.combatCount)
+      shouldAvoidTemporaryCupidBowSwap(requiredFamiliar, options.combatCount)
     ) {
       outfit.avoid.push($item`toy Cupid bow`);
     } else {

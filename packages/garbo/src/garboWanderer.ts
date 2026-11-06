@@ -47,11 +47,12 @@ export function wanderer(): WandererManager {
   return _wanderer;
 }
 
-type Destination = Location | WanderDetails;
+type WanderResult = ReturnType<WandererManager["resolveTarget"]>;
+type Destination = Location | WanderDetails | WanderResult;
 export type Adventure = {
   target: AdventureTarget;
   location: Location;
-  wanderTarget?: ReturnType<WandererManager["getTarget"]>;
+  wanderTarget?: WanderResult;
 };
 export type AdventureArgument =
   | Monster
@@ -60,6 +61,9 @@ export type AdventureArgument =
 export function toAdventure(arg: AdventureArgument): Adventure {
   if (arg instanceof Monster) return { target: arg, location: $location.none };
   if (arg instanceof Location) return { target: arg, location: arg };
+  if (typeof arg !== "string" && "peridotMonster" in arg) {
+    return { target: arg.location, location: arg.location, wanderTarget: arg };
+  }
   if (typeof arg === "string" || !("target" in arg)) {
     const wanderTarget = wanderer().getTarget(arg);
     return {
