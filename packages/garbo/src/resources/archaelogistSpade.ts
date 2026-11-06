@@ -1,6 +1,6 @@
-import { $item, $items, directlyUse, get, have, maxBy } from "libram";
+import { $item, $items, get, have, maxBy } from "libram";
 import { garboAverageValue, garboValue } from "../garboValue";
-import { availableChoiceOptions, runChoice, use, visitUrl } from "kolmafia";
+import { use } from "kolmafia";
 import { GarboTask } from "../tasks/engine";
 
 export function archaeologySpadeTask(): GarboTask {
@@ -36,12 +36,9 @@ export function archaeologySpadeTask(): GarboTask {
         if (target.tuner) use(target.tuner);
       }
 
-      directlyUse($item`Archaeologist's Spade`);
-      while ("2" in availableChoiceOptions()) {
-        runChoice(2);
-      }
-      visitUrl("main.php");
+      use($item`Archaeologist's Spade`);
     },
+    choices: { 1596: 2 },
     spendsTurn: false,
   };
 }
