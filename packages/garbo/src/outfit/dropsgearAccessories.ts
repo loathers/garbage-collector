@@ -33,17 +33,18 @@ import { globalOptions } from "../config";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { FarmingStrategy } from "../farmingStrategy";
 import { estimatedGarboTurns } from "../turns";
-import { BonusEquipMode, modeIsFree } from "./lib";
+import {
+  BonusEquipMode,
+  BonusGear,
+  bonusGearValues,
+  LIMITED_DROP_MODES,
+} from "./lib";
 
-function mafiaThumbRing(mode: BonusEquipMode) {
-  if (!have($item`mafia thumb ring`) || modeIsFree(mode)) {
-    return new Map<Item, number>([]);
-  }
-
-  return new Map<Item, number>([
-    [$item`mafia thumb ring`, (1 / 0.96 - 1) * get("valueOfAdventure")],
-  ]);
-}
+const mafiaThumbRing = new BonusGear($item`mafia thumb ring`, {
+  worksOnRun: false,
+  modes: [BonusEquipMode.MEAT_TARGET, BonusEquipMode.BARF],
+  value: () => (1 / 0.96 - 1) * get("valueOfAdventure"),
+});
 
 export function luckyGoldRingDropValues(
   includeVolcoino: boolean,
@@ -66,27 +67,22 @@ export function luckyGoldRingDropValues(
   return dropValues;
 }
 
-function luckyGoldRing(mode: BonusEquipMode) {
-  // Ignore for DMT, assuming mafia might get confused about the volcoino drop by the weird combats
-  if (!have($item`lucky gold ring`) || mode === BonusEquipMode.DMT) {
-    return new Map<Item, number>([]);
-  }
+const luckyGoldRing = new BonusGear($item`lucky gold ring`, {
+  worksOnRun: false,
+  modes: [...LIMITED_DROP_MODES, BonusEquipMode.MEAT_TARGET],
+  value: (mode) => {
+    const dropValues = luckyGoldRingDropValues(
+      !(mode === BonusEquipMode.MEAT_TARGET && !globalOptions.nobarf), // Volcoino drops once per day, only wear during meat targets if nobarf
+      itemAmount($item`Freddy Kruegerand`) > 0,
+    );
 
-  const dropValues = luckyGoldRingDropValues(
-    !(mode === BonusEquipMode.MEAT_TARGET && !globalOptions.nobarf), // Volcoino drops once per day, only wear during meat targets if nobarf
-    itemAmount($item`Freddy Kruegerand`) > 0,
-  );
+    // Items drop every ~10 turns
+    return sumNumbers(dropValues) / dropValues.length / 10;
+  },
+});
 
-  // Items drop every ~10 turns
-  return new Map<Item, number>([
-    [$item`lucky gold ring`, sumNumbers(dropValues) / dropValues.length / 10],
-  ]);
-}
-
-// Possible drops are any pvpable potion that are not marked as banned by standard in the future,
-// which can be checked with the "Last Available" modifier being unset.
-// Resulting value from this function should be cached to prevent reprocessing
 function calculateMrCheengsSpectaclesBonus() {
+  // Eligible potions are PvP-stealable and not banned by a future Standard season.
   const lastAvailableModifier = Modifier.get("Last Available");
   const possibleDrops = Item.all().filter(
     (i) =>
@@ -105,47 +101,31 @@ function calculateMrCheengsSpectaclesBonus() {
 }
 
 let mrCheengsBonus: number;
-function mrCheengsSpectacles() {
-  if (!have($item`Mr. Cheeng's spectacles`)) {
-    return new Map<Item, number>([]);
-  }
+const mrCheengsSpectacles = new BonusGear($item`Mr. Cheeng's spectacles`, {
+  worksOnRun: false,
+  value: () => (mrCheengsBonus ??= calculateMrCheengsSpectaclesBonus()),
+});
 
-  mrCheengsBonus ??= calculateMrCheengsSpectaclesBonus();
+const mrScreegesSpectacles = new BonusGear($item`Mr. Screege's spectacles`, {
+  worksOnRun: false,
+  value: 180,
+});
 
-  return new Map<Item, number>([
-    [$item`Mr. Cheeng's spectacles`, mrCheengsBonus],
-  ]);
-}
-
-function mrScreegesSpectacles() {
-  if (!have($item`Mr. Screege's spectacles`)) {
-    return new Map<Item, number>([]);
-  }
-
-  // TODO: Calculate actual bonus value (good luck!)
-  return new Map<Item, number>([[$item`Mr. Screege's spectacles`, 180]]);
-}
-
-function cinchoDeMayo(mode: BonusEquipMode) {
-  if (
-    !have($item`Cincho de Mayo`) ||
-    CinchoDeMayo.currentCinch() === 0 ||
-    // Ignore for DMT? Requires specific combat stuff, so probably weird there
-    mode === BonusEquipMode.DMT ||
-    mode === BonusEquipMode.MEAT_TARGET ||
-    // Require manuel to make sure we don't kill during stasis
-    !monsterManuelAvailable() ||
-    // If we're doing Yachtzees, only use up excess cincho.
-    maximumPinataCasts() <= 0 ||
-    // If we have more than 50 passive damage, we'll never be able to cast projectile pinata without risking the monster dying.  Cows are tankier though.
-    maxPassiveDamage() >= (FarmingStrategy.isUnderwater() ? 150 : 50)
-  ) {
-    return new Map<Item, number>([]);
-  }
-
-  // Account for a single use of Projectile Pinata, which gives 3x Robortender candies
-  return new Map<Item, number>([[$item`Cincho de Mayo`, 3 * felizValue()]]);
-}
+const cinchoDeMayo = new BonusGear($item`Cincho de Mayo`, {
+  worksOnRun: true,
+  modes: LIMITED_DROP_MODES,
+  available: () =>
+    CinchoDeMayo.currentCinch() !== 0 &&
+    // Manuel and passive damage estimates keep stasis from killing the monster.
+    monsterManuelAvailable() &&
+    // Reserve cinch for Yachtzees, when applicable.
+    maximumPinataCasts() > 0 &&
+    maxPassiveDamage() < (FarmingStrategy.isUnderwater() ? 150 : 50),
+  value: () => {
+    // One Projectile Pinata yields three Robortender candies before combat ends.
+    return 3 * felizValue();
+  },
+});
 
 function calculateLaughingStockBonus(alwaysUseHorizon: boolean) {
   const basicFruitValue = garboAverageValue(
@@ -170,43 +150,30 @@ function calculateLaughingStockBonus(alwaysUseHorizon: boolean) {
   return horizonValue;
 }
 
-function portableLaughingStock(mode: BonusEquipMode) {
-  if (!have($item`Portable Laughing Stock`) || mode === BonusEquipMode.DMT) {
-    return new Map<Item, number>([]);
-  }
+const portableLaughingStock = new BonusGear($item`Portable Laughing Stock`, {
+  worksOnRun: false,
+  modes: [...LIMITED_DROP_MODES, BonusEquipMode.MEAT_TARGET],
+  value: (mode) =>
+    calculateLaughingStockBonus(mode !== BonusEquipMode.MEAT_TARGET),
+});
 
-  const laughingStockBonus = calculateLaughingStockBonus(
-    mode !== BonusEquipMode.MEAT_TARGET,
-  );
-
-  return new Map<Item, number>([
-    [$item`Portable Laughing Stock`, laughingStockBonus],
-  ]);
-}
-
-/*
-This is separate from bonusGear to prevent circular references
-bonusGear() calls pantsgiving(), which calls estimatedGarboTurns(), which calls usingThumbRing()
-If this isn't separated from bonusGear(), usingThumbRing() will call bonusGear(), creating a dangerous loop
-*/
 export function bonusAccessories(mode: BonusEquipMode): Map<Item, number> {
-  return new Map<Item, number>([
-    ...mafiaThumbRing(mode),
-    ...luckyGoldRing(mode),
-    ...mrCheengsSpectacles(),
-    ...portableLaughingStock(mode),
-    ...mrScreegesSpectacles(),
-    ...cinchoDeMayo(mode),
-  ]);
+  // Keep this separate: turn estimates call usingThumbRing(), while Pantsgiving
+  // itself needs a turn estimate. Including it here would recurse.
+  return bonusGearValues(
+    [
+      mafiaThumbRing,
+      luckyGoldRing,
+      mrCheengsSpectacles,
+      portableLaughingStock,
+      mrScreegesSpectacles,
+      cinchoDeMayo,
+    ],
+    mode,
+  );
 }
 
 let cachedUsingThumbRing: boolean | null = null;
-/**
- * Calculates whether we expect to be wearing the thumb ring for most of the farming day.
- * This is used in functions that leverage projected turns; for instance, calculating the
- * number of turns of sweet synthesis required in our diet calcs or potion costs.
- * @returns boolean of whether we expect to be wearing the thumb ring for much of the day
- */
 export function usingThumbRing(): boolean {
   if (!have($item`mafia thumb ring`)) {
     return false;

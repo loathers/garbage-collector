@@ -27,11 +27,13 @@ import {
   $slot,
   $slots,
   ActionSource,
+  Delayed,
   findLeprechaunMultiplier,
   get,
   getFoldGroup,
   have,
   Requirement,
+  undelay,
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
@@ -52,16 +54,65 @@ export enum BonusEquipMode {
   BARF,
 }
 
-export function modeIsFree(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
+export const FREE_MODES: readonly BonusEquipMode[] = [
+  BonusEquipMode.FREE,
+  BonusEquipMode.DMT,
+];
+
+export const LIMITED_DROP_MODES: readonly BonusEquipMode[] = [
+  BonusEquipMode.FREE,
+  BonusEquipMode.BARF,
+];
+
+type BonusGearOptions = {
+  worksOnRun: boolean;
+  requireOwned?: boolean;
+  modes?: readonly BonusEquipMode[];
+  available?: Delayed<boolean, [mode: BonusEquipMode]>;
+  value: Delayed<number | null, [mode: BonusEquipMode]>;
+};
+
+export class BonusGear {
+  readonly worksOnRun: boolean;
+
+  constructor(
+    readonly item: Item,
+    private readonly options: BonusGearOptions,
+  ) {
+    this.worksOnRun = options.worksOnRun;
+  }
+
+  value(mode: BonusEquipMode): number | null {
+    if (this.options.modes && !this.options.modes.includes(mode)) {
+      return null;
+    }
+    if (
+      (this.options.requireOwned !== false && !have(this.item)) ||
+      !undelay(this.options.available ?? true, mode)
+    ) {
+      return null;
+    }
+
+    // State and price reads must wait until valuation, after startup setup.
+    return undelay(this.options.value, mode);
+  }
 }
 
-export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
+export function bonusGearValues(
+  gear: readonly BonusGear[],
+  mode: BonusEquipMode,
+): Map<Item, number> {
+  return new Map(
+    gear.flatMap((bonusGear) => {
+      const value = bonusGear.value(mode);
+      // An explicit zero or negative bonus still matters to the outfit.
+      return value === null ? [] : [[bonusGear.item, value] as const];
+    }),
+  );
 }
 
 export function modeValueOfMeat(mode: BonusEquipMode): number {
-  if (modeIsFree(mode)) return 0;
+  if (FREE_MODES.includes(mode)) return 0;
   if (mode === BonusEquipMode.BARF) return FarmingStrategy.meatDropValue();
   if (mode === BonusEquipMode.MEAT_TARGET) return targetMeat() / 100;
   return 0;
