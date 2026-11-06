@@ -234,7 +234,7 @@ export function shouldTargetAngryTourists(): boolean {
     ) / 100;
   const familiars = menu(
     { target: monsterRates, location: $location`Barf Mountain` },
-    { mode: "barf" },
+    { mode: "barf", cupidBowValues: new Map() },
   )
     .filter(
       ({ familiar, limit }) =>
