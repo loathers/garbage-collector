@@ -66,7 +66,8 @@ import {
 } from "../../outfit/lib";
 import { meatTargetOutfit } from "../../outfit/target";
 import { ThesisTask } from "../thesis";
-import { GarboTask } from "../engine";
+import { FarmingTask } from "../engine";
+import { FarmingContext } from "../context";
 import {
   canContinue,
   shouldCheckParachute,
@@ -94,11 +95,11 @@ const isSteve = () =>
   get("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`;
 
 function createWandererOutfit(
-  details: Delayed<WanderDetails>,
+  context: FarmingContext,
   spec: Delayed<OutfitSpec>,
-  additionalOutfitOptions: Omit<FreeFightOutfitMenuOptions, "wanderOptions">,
+  additionalOutfitOptions: FreeFightOutfitMenuOptions,
 ): Outfit {
-  const wanderTarget = wanderer().getTarget(undelay(details));
+  const wanderTarget = context.wanderTarget;
   const needPeridot = wanderTarget.peridotMonster !== $monster.none;
   const needBCZ = wanderTarget.useRefractedGaze ?? false;
   const needMonodent = wanderTarget.useFeesh ?? false;
@@ -118,7 +119,7 @@ function createWandererOutfit(
 
   return freeFightOutfit(
     sourceOutfit.spec(),
-    undelay(details),
+    wanderTarget.location,
     additionalOutfitOptions,
   );
 }
@@ -126,18 +127,17 @@ function createWandererOutfit(
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
-  base: Omit<GarboTask, "outfit" | "do" | "choices" | "spendsTurn"> & {
+  base: Omit<FarmingTask, "outfit" | "do" | "choices" | "spendsTurn"> & {
     combat?: GarboStrategy;
   },
-  additionalOutfitOptions: Omit<
-    FreeFightOutfitMenuOptions,
-    "wanderOptions"
-  > = {},
-): GarboTask {
+  additionalOutfitOptions: FreeFightOutfitMenuOptions = {},
+): FarmingTask {
   return {
-    do: () => wanderer().getTarget(undelay(details)).location,
-    choices: () => wanderer().getChoices(undelay(details)),
-    outfit: () => createWandererOutfit(details, spec, additionalOutfitOptions),
+    wanderer: details,
+    do: ({ wanderTarget }) => wanderTarget.location,
+    choices: ({ wanderTarget }) => wanderTarget.choices,
+    outfit: (context) =>
+      createWandererOutfit(context, spec, additionalOutfitOptions),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat()),
     ...base,
@@ -239,7 +239,7 @@ const digitizedTarget = () =>
   SourceTerminal.have() &&
   SourceTerminal.getDigitizeMonster() === globalOptions.target;
 
-const BarfTurnTasks: GarboTask[] = [
+const BarfTurnTasks: FarmingTask[] = [
   {
     name: "Latte",
     completed: () => !shouldFillLatte(),
@@ -363,51 +363,29 @@ const BarfTurnTasks: GarboTask[] = [
   },
   {
     name: "Digitize Wanderer",
+    wanderer: { wanderer: "wanderer", allowEquipment: false },
     completed: () => Counter.get("Digitize Monster") > 0,
-    outfit: () =>
+    outfit: ({ wanderTarget }) =>
       digitizedTarget()
-        ? meatTargetOutfit(mimicSpec(), {
-            wanderer: "wanderer",
-            allowEquipment: false,
-          })
-        : freeFightOutfit(
-            undefined,
-            wanderer().getTarget({
-              wanderer: "wanderer",
-              allowEquipment: false,
-            }).location,
-          ),
-    do: () =>
-      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
-        .location,
-    choices: () =>
-      wanderer().getChoices({
-        wanderer: "wanderer",
-        allowEquipment: false,
-      }),
+        ? meatTargetOutfit(mimicSpec(), wanderTarget.location)
+        : freeFightOutfit(undefined, wanderTarget.location),
+    do: ({ wanderTarget }) => wanderTarget.location,
+    choices: ({ wanderTarget }) => wanderTarget.choices,
     combat: new GarboStrategy(...digitizeMacros()),
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
   },
   {
     name: "Club Into Next Week Monster",
+    wanderer: { wanderer: "wanderer", allowEquipment: false },
     completed: () => LegendarySealClubbingClub.turnsUntilNextWeekFight() > 0,
-    outfit: () =>
+    outfit: ({ wanderTarget }) =>
       LegendarySealClubbingClub.clubIntoNextWeekMonster() ===
       globalOptions.target
-        ? meatTargetOutfit(mimicSpec(), {
-            wanderer: "wanderer",
-            allowEquipment: false,
-          })
-        : freeFightOutfit({}, { wanderer: "wanderer", allowEquipment: false }),
-    do: () =>
-      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
-        .location,
-    choices: () =>
-      wanderer().getChoices({
-        wanderer: "wanderer",
-        allowEquipment: false,
-      }),
+        ? meatTargetOutfit(mimicSpec(), wanderTarget.location)
+        : freeFightOutfit({}, wanderTarget.location),
+    do: ({ wanderTarget }) => wanderTarget.location,
+    choices: ({ wanderTarget }) => wanderTarget.choices,
     combat: new GarboStrategy(() => Macro.target("club 'em into next week")),
     spendsTurn: () =>
       !LegendarySealClubbingClub.clubIntoNextWeekMonster()?.attributes.includes(
@@ -803,7 +781,7 @@ const BarfTurnTasks: GarboTask[] = [
   },
 ];
 
-export const WandererQuest: Quest<GarboTask, unknown> = {
+export const WandererQuest: Quest<FarmingTask, FarmingContext> = {
   name: "Wanderers",
   tasks: BarfTurnTasks,
   completed: () => !canContinue(),
