@@ -8186,7 +8186,7 @@ function currentUpgrades() {
 /**
  * @returns The number of turns remaining in your current autumn-aton quest. This number may be negative for any number of reasons.
  */
-function turnsLeft() {
+function turnsLeft$1() {
   return get$2("autumnatonQuestTurn") - kolmafia.totalTurnsPlayed();
 }
 /**
@@ -8680,14 +8680,6 @@ function next() {
  */
 function have$r() {
   return have$R($item`tiny stillsuit`);
-}
-/**
- * @returns the expected adventures from drinking stillsuit distillate
- */
-function distillateAdventures() {
-  if (!have$r()) return 0;
-  var sweat = get$2("familiarSweat");
-  return Math.round(sweat ** 0.4);
 }
 
 /**
@@ -9398,6 +9390,25 @@ function currentFamiliar() {
  */
 function familiarsToday() {
   return get$2("_cupidBowFamiliars").split(";").map(id => kolmafia.toFamiliar(Number(id)));
+}
+/**
+ * Determine whether you've obtained the equipment of a given familiar with the TCB today
+ * @param familiar The familiar in question
+ * @returns Whether you've obtained the equipment from that familiar via the TCB today
+ */
+function doneToday(familiar) {
+  return RegExp(`(?:^|;)${familiar.id}(?:$|;)`).test(get$2("_cupidBowFamiliars"));
+}
+/**
+ * Calculate the number of fights needed to get a drop
+ * @param familiar The familiar in question; defaults to the one currently charged by your bow
+ * @returns The number of turns necessary to get this familiar's drop; Infinity if you can't get it today
+ */
+function turnsLeft() {
+  var familiar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : currentFamiliar();
+  if (familiarsToday().includes(familiar)) return Infinity;
+  if (currentFamiliar() !== familiar) return 5;
+  return clamp(5 - get$2("cupidBowFights"), 1, 5);
 }
 
 /**
@@ -19659,6 +19670,9 @@ var WandererManager = /*#__PURE__*/function () {
     _defineProperty(this, "options", void 0);
     this.options = _options;
   }
+  /**
+   * Cached computation of optimal wanderer target; clear cache with the `.clear()` method.
+   */
   return _createClass(WandererManager, [{
     key: "getTarget",
     value: function getTarget(wanderer) {
@@ -19679,8 +19693,23 @@ var WandererManager = /*#__PURE__*/function () {
       var newKey = `${kolmafia.myTotalTurnsSpent()};${kolmafia.totalTurnsPlayed()};${get$2("familiarSweat")}`;
       if (this.cacheKey !== newKey) this.clear();
       this.cacheKey = newKey;
-      var locationSkipList = allowEquipment ? [] : _toConsumableArray(this.equipment.keys());
-      return sober$1() || !drunkSafe ? (_this$targets = this.targets)[_ref4 = `${draggableFight}:${allowEquipment}`] ?? (_this$targets[_ref4] = wanderWhere(this.options, draggableFight, [], locationSkipList)) : {
+      return sober$1() || !drunkSafe ? (_this$targets = this.targets)[_ref4 = `${draggableFight}:${allowEquipment}`] ?? (_this$targets[_ref4] = this.resolveTarget(wanderer)) : this.resolveTarget(wanderer);
+    }
+    /**
+     * Uncached computation of optimal wanderer target.
+     */
+  }, {
+    key: "resolveTarget",
+    value: function resolveTarget(wanderer) {
+      var _ref5 = isDraggableFight(wanderer) ? {
+          wanderer
+        } : wanderer,
+        draggableFight = _ref5.wanderer,
+        _ref5$drunkSafe = _ref5.drunkSafe,
+        drunkSafe = _ref5$drunkSafe === void 0 ? true : _ref5$drunkSafe,
+        _ref5$allowEquipment = _ref5.allowEquipment,
+        allowEquipment = _ref5$allowEquipment === void 0 ? false : _ref5$allowEquipment;
+      return sober$1() || !drunkSafe ? wanderWhere(this.options, draggableFight, [], allowEquipment ? [] : _toConsumableArray(this.equipment.keys())) : {
         location: $location`Drunken Stupor`,
         peridotMonster: $monster.none,
         familiar: $familiar`none`,
@@ -19688,21 +19717,22 @@ var WandererManager = /*#__PURE__*/function () {
         useFeesh: false
       };
     }
-    /**
-     * Get choice map for the upcoming wander
-     * @param target Description of the wander or location in which to wander
-     * @param takeTurnForProfit Should the choices include any that would make a profit from your valueOfAdventure
-     * @returns Map of choice numbers to decisions
-     */
   }, {
     key: "getChoices",
     value: function getChoices(target) {
       var takeTurnForProfit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.options.takeTurnForProfit;
-      var location = target instanceof kolmafia.Location ? target : this.getTarget(target).location;
+      // A resolved target keeps Peridot choices tied to the same monster the
+      // outfit was built for, even if preparing that outfit changes game state.
+      var _ref6 = target instanceof kolmafia.Location ? {
+          location: target,
+          peridotMonster: $monster.none
+        } : typeof target === "object" && "location" in target ? target : this.getTarget(target),
+        location = _ref6.location,
+        peridotMonster = _ref6.peridotMonster;
       var valueOfTurn = takeTurnForProfit ? (this.options.valueOfAdventure ?? 0) + sum(getActiveEffects(), e => this.options.effectValue(e, 1)) : Infinity;
       var baseChoices = this.unsupportedChoices.get(location) ?? {};
-      if (!(target instanceof kolmafia.Location) && this.getTarget(target).peridotMonster !== $monster.none) {
-        var peridotChoice = getChoiceObject(this.getTarget(target).peridotMonster);
+      if (peridotMonster !== $monster.none) {
+        var peridotChoice = getChoiceObject(peridotMonster);
         var newChoices = Object.assign(peridotChoice, baseChoices);
         return undelay(newChoices, this.options, valueOfTurn);
       }
@@ -19811,7 +19841,7 @@ var AutumnAtonManager = /*#__PURE__*/function () {
     value: function expectedRemainingExpeditions() {
       var legs$1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : legs();
       // Better estimate upgrade value if not ascending
-      var availableAutumnatonTurns = this.estimatedTurns() - turnsLeft() + this.estimatedTurnsTomorrow();
+      var availableAutumnatonTurns = this.estimatedTurns() - turnsLeft$1() + this.estimatedTurnsTomorrow();
       var quests = get$2("_autumnatonQuests");
       var legOffsetFactor = 11 * Math.max(quests - legs$1 - 1, 0);
       return Math.floor(Math.sqrt(quests ** 2 + 2 * (availableAutumnatonTurns - legOffsetFactor) / 11));
@@ -20337,7 +20367,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"ff474d1ec05f0baf745e101de3f4bb2279622b65"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"2410cb6313fde24dde46f2110edc89f0e0d7a3c6"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -23502,9 +23532,220 @@ function getExperienceFamiliarLimit(fam) {
   return Math.max(0, ((((_target$xpLimit = target.xpLimit) === null || _target$xpLimit === void 0 ? void 0 : _target$xpLimit.call(target, "barf")) ?? 400) - currentExperience(fam)) / estimatedBarfExperience());
 }
 
+function swordItemDropObjective(farmingItemDropValue) {
+  var copiedMonster = get$2("swordOfSWordsMonster");
+  if (!copiedMonster) return {
+    valuePerItemDrop: farmingItemDropValue
+  };
+  var positiveRateDrops = kolmafia.itemDropsArray(copiedMonster).filter(_ref => {
+    var rate = _ref.rate;
+    return rate > 0;
+  });
+  if (!positiveRateDrops.length) return {
+    valuePerItemDrop: 0
+  };
+  var _maxBy = maxBy(positiveRateDrops, _ref2 => {
+      var drop = _ref2.drop;
+      return garboValue(drop);
+    }),
+    mostValuableItemRate = _maxBy.rate;
+  return {
+    valuePerItemDrop: expectedDropValue(copiedMonster),
+    maximumItemDrop: Math.ceil(100 * (100 / mostValuableItemRate - 1))
+  };
+}
+function swordDropValue(itemDrop) {
+  var copiedMonster = get$2("swordOfSWordsMonster");
+  if (!copiedMonster) return 0;
+  return sum(kolmafia.itemDropsArray(copiedMonster), _ref3 => {
+    var rate = _ref3.rate,
+      drop = _ref3.drop;
+    return clamp(rate * (100 + itemDrop) / 100, 0, 100) * garboValue(drop) / 100;
+  });
+}
+
+var familiarOutfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
+function familiarWeightWithOutfit(familiar, outfitWeight) {
+  var nonOutfitWeightBonus = kolmafia.weightAdjustment() - sum(familiarOutfitSlots, slot => get$1("Familiar Weight", kolmafia.equippedItem(slot)));
+  return totalFamiliarWeight(familiar, false) + nonOutfitWeightBonus + outfitWeight;
+}
+function familiarModifierWithOutfit(familiar, modifier, outfitWeight) {
+  var totalWeight = familiarWeightWithOutfit(familiar, outfitWeight);
+  var _ref = specialFamiliarOutfits.get(familiar) ?? {},
+    equip = _ref.equip;
+  return equip ? kolmafia.numericModifier(familiar, modifier, totalWeight - kolmafia.numericModifier(equip, "Familiar Weight"), equip) : kolmafia.numericModifier(familiar, modifier, totalWeight, $item.none);
+}
+var mimicExperienceValue = () => MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50;
+
+// These familiars have special outfit requirements that make them not fit under
+// their leprechaun multiplier's cache entry.
+var specialFamiliarOutfits = new Map([[$familiar`Chest Mimic`, {
+  configureOutfit: outfit => {
+    if ($familiar`Chest Mimic`.experience < 550) {
+      outfit.modifier.push(`${mimicExperienceValue()} Familiar Experience`);
+    }
+  },
+  extraValue: _ref2 => {
+    var famexp = _ref2.famexp;
+    return famexp * mimicExperienceValue();
+  }
+}], [$familiar`Jill-of-All-Trades`, {
+  equip: $item`LED candle`,
+  configureOutfit: outfit => {
+    outfit.setModes({
+      jillcandle: "ultraviolet"
+    });
+  }
+}], [$familiar`Mini Kiwi`, {
+  extraValue: _ref3 => {
+    var weight = _ref3.weight;
+    return clamp(familiarWeightWithOutfit($familiar`Mini Kiwi`, weight) * 0.005, 0, 1) * garboValue($item`mini kiwi`);
+  }
+}], [$familiar`Sword of S Words`, {
+  itemDropObjective: swordItemDropObjective,
+  extraValue: _ref4 => {
+    var item = _ref4.item,
+      weight = _ref4.weight;
+    var monster = get$2("swordOfSWordsMonster");
+    if (!monster) return 0;
+    var totalItem = item + familiarModifierWithOutfit($familiar`Sword of S Words`, "Item Drop", weight);
+    return swordDropValue(totalItem) - totalItem * FarmingStrategy.itemDropValue();
+  }
+}]]);
+
+var getUsedTcbFamiliars = () => new Set(familiarsToday());
+var tcbTurnsLeft = (familiar, usedFamiliars) => usedFamiliars.has(familiar) ? Infinity : currentFamiliar() === familiar ? clamp(5 - get$2("cupidBowFights"), 1, 5) : 5;
+function shouldAvoidTemporaryCupidBowSwap(familiar, combatCount) {
+  if (!have$g() || combatCount >= 5) return false;
+  var currentFamiliar$1 = currentFamiliar();
+
+  // Keep progress if we aren't switching long enough to actually get the drop
+  return currentFamiliar$1 !== null && currentFamiliar$1 !== familiar && get$2("cupidBowFights") > 0 && !doneToday(currentFamiliar$1);
+}
+function familiarEquipmentValue(familiar) {
+  if (familiar === $familiar`Cornbeefadon`) {
+    return have$R($item`amulet coin`) ? 0 : amuletCoinValue();
+  }
+  if ($familiars`Frozen Gravy Fairy, Flaming Gravy Fairy, Sleazy Gravy Fairy, Spooky Gravy Fairy, Stinky Gravy Fairy`.includes(familiar)) {
+    return garboValue($item`lead necklace`);
+  }
+  return garboValue(kolmafia.familiarEquipment(familiar));
+}
+function amuletCoinOpportunityCost(familiar) {
+  if (!have$R($item`amulet coin`)) return 0;
+  var leprechaunMultiplier = findLeprechaunMultiplier(familiar);
+  // Approximate the Meat lost from the coin's Meat Drop and familiar weight.
+  return (50 + 10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) * FarmingStrategy.meatDropValue();
+}
+function calculateCupidBowResetCost(equipmentValue, fightsLeft, fightsAvailable, opportunityCost) {
+  if (fightsLeft >= 5 || fightsLeft > fightsAvailable) return 0;
+  var costPerFight = Math.max(0, opportunityCost);
+  var profitFromFinishing = Math.max(0, equipmentValue - fightsLeft * costPerFight);
+  // With enough fights left, resetting need not forfeit the whole drop.
+  var profitFromRestarting = fightsAvailable >= 5 ? Math.max(0, equipmentValue - 5 * costPerFight) : 0;
+  return profitFromFinishing - profitFromRestarting;
+}
+function farmingFamiliarValue(_ref) {
+  var _specialFamiliarOutfi;
+  var familiar = _ref.familiar,
+    expectedValue = _ref.expectedValue;
+  // Use current buffed weight for this estimate. Building farming outfits here
+  // would populate their cache before farming buffs are ready.
+  var weight = totalFamiliarWeight(familiar);
+  var equipment = ((_specialFamiliarOutfi = specialFamiliarOutfits.get(familiar)) === null || _specialFamiliarOutfi === void 0 ? void 0 : _specialFamiliarOutfi.equip) ?? $item.none;
+  return expectedValue + kolmafia.numericModifier(familiar, "Meat Drop", weight, equipment) * FarmingStrategy.meatDropValue() + kolmafia.numericModifier(familiar, "Item Drop", weight, equipment) * FarmingStrategy.itemDropValue();
+}
+function farmingResetCost(currentFamiliar, equipmentValue, fightsLeft) {
+  var _specialFamiliarOutfi2;
+  if (globalOptions.nobarf || get$2("garbo_IgnoreMarginalFamiliars", false) || (_specialFamiliarOutfi2 = specialFamiliarOutfits.get(currentFamiliar)) !== null && _specialFamiliarOutfi2 !== void 0 && _specialFamiliarOutfi2.equip || FarmingStrategy.isUnderwater() && !have$R($effect`Driving Waterproofly`) && !currentFamiliar.underwater) {
+    return 0;
+  }
+  return withLocation(FarmingStrategy.location, () => {
+    var farmingFamiliars = menu$1(FarmingStrategy.location, {
+      mode: "barf",
+      cupidBowValues: new Map()
+    });
+    var cruisingFamiliar = maxBy(farmingFamiliars.filter(_ref2 => {
+      var limit = _ref2.limit;
+      return limit === "none";
+    }), farmingFamiliarValue);
+    var currentCandidates = farmingFamiliars.filter(_ref3 => {
+      var familiar = _ref3.familiar;
+      return familiar === currentFamiliar;
+    });
+    var currentValue = currentCandidates.length ? farmingFamiliarValue(maxBy(currentCandidates, farmingFamiliarValue)) : farmingFamiliarValue({
+      familiar: currentFamiliar,
+      expectedValue: 0
+    });
+    return calculateCupidBowResetCost(equipmentValue, fightsLeft, turnsAvailable(), farmingFamiliarValue(cruisingFamiliar) - currentValue + amuletCoinOpportunityCost(currentFamiliar));
+  });
+}
+function cupidBowResetCost(adventure, dropBonuses, fightsAvailable, usedFamiliars) {
+  var currentFamiliar$1 = currentFamiliar();
+  if (!currentFamiliar$1) return 0;
+  var fightsLeft = tcbTurnsLeft(currentFamiliar$1, usedFamiliars);
+  if (fightsLeft >= 5 || fightsLeft > fightsAvailable) return 0;
+  var equipmentValue = (dropBonuses.get(currentFamiliar$1) ?? 0) * fightsLeft;
+  if (!equipmentValue) return 0;
+
+  // Exclude bow income when measuring the cost of spending fights on this
+  // familiar. The empty map also prevents recursive reset-cost valuation.
+  var freeFightFamiliars = menu$1(adventure, {
+    cupidBowValues: new Map()
+  });
+  var currentCandidates = freeFightFamiliars.filter(_ref4 => {
+    var familiar = _ref4.familiar;
+    return familiar === currentFamiliar$1;
+  });
+  var currentValue = currentCandidates.length ? maxBy(currentCandidates, "expectedValue").expectedValue : 0;
+  var freeFightResetCost = calculateCupidBowResetCost(equipmentValue, fightsLeft, fightsAvailable, maxBy(freeFightFamiliars, "expectedValue").expectedValue - currentValue);
+  var runFamiliarValue = _ref5 => {
+    var familiar = _ref5.familiar,
+      expectedValue = _ref5.expectedValue,
+      worksOnFreeRun = _ref5.worksOnFreeRun;
+    return (worksOnFreeRun ? expectedValue : 0) + (dropBonuses.get(familiar) ?? 0);
+  };
+  var runAlternatives = [].concat(_toConsumableArray(freeFightFamiliars), _toConsumableArray(_toConsumableArray(dropBonuses.keys()).map(familiar => ({
+    familiar,
+    expectedValue: 0,
+    worksOnFreeRun: true
+  })))).filter(_ref6 => {
+    var familiar = _ref6.familiar;
+    return familiar !== currentFamiliar$1;
+  });
+  var currentRunCandidates = currentCandidates.filter(_ref7 => {
+    var worksOnFreeRun = _ref7.worksOnFreeRun;
+    return worksOnFreeRun;
+  });
+  // Runs can advance the bow even when they cannot earn the familiar's normal
+  // benefit, and competing bow drops still occupy those fights.
+  var freeRunResetCost = calculateCupidBowResetCost(equipmentValue, fightsLeft, fightsAvailable, (runAlternatives.length ? runFamiliarValue(maxBy(runAlternatives, runFamiliarValue)) : 0) - (currentRunCandidates.length ? maxBy(currentRunCandidates, "expectedValue").expectedValue : 0));
+  return Math.max(farmingResetCost(currentFamiliar$1, equipmentValue, fightsLeft), freeFightResetCost, freeRunResetCost);
+}
+function getCupidBowValues() {
+  var adventure = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : FarmingStrategy.location;
+  if (!have$g()) return new Map();
+  var fightsAvailable = Math.max(estimatedGarboTurns(), 1);
+  var usedFamiliars = getUsedTcbFamiliars();
+  var equippableFamiliars = kolmafia.Familiar.all().filter(familiar => have$R(familiar) && kolmafia.canEquip(familiar, $item`toy Cupid bow`));
+  var dropBonuses = new Map(equippableFamiliars.filter(familiar => !usedFamiliars.has(familiar)).map(familiar => {
+    var fightsLeft = tcbTurnsLeft(familiar, usedFamiliars);
+    return [familiar, fightsLeft <= fightsAvailable ? Math.max(0, familiarEquipmentValue(familiar)) / fightsLeft : 0];
+  }));
+  var resetCost = cupidBowResetCost(adventure, dropBonuses, fightsAvailable, usedFamiliars);
+  var currentFamiliar$1 = currentFamiliar();
+  return new Map(equippableFamiliars.map(familiar => {
+    var dropBonus = dropBonuses.get(familiar) ?? 0;
+    // A new drop spreads the reset cost over its remaining fights. Without
+    // an attainable drop, wearing the bow incurs the whole reset penalty.
+    var resetPenalty = familiar === currentFamiliar$1 ? 0 : dropBonus > 0 ? resetCost / tcbTurnsLeft(familiar, usedFamiliars) : resetCost;
+    return [familiar, dropBonus - resetPenalty];
+  }));
+}
+
 // Familiars that should never be introduced as a surprise
 var NO_TCB_FAMILIARS = $familiars`Mini-Hipster, Artistic Goth Kid`;
-function getToyCupidBowFamiliars() {
+function getToyCupidBowFamiliars(cupidBowValues, mode) {
   if (!have$g()) return [];
   var skipFamiliars = getUsedTcbFamiliars();
   var _iterator = _createForOfIteratorHelper(NO_TCB_FAMILIARS),
@@ -23515,36 +23756,24 @@ function getToyCupidBowFamiliars() {
       skipFamiliars.add(familiar);
     }
 
-    // If there aren't enough turns to run someone to completion, only check for the current cupid familiar
+    // Limit extra candidates to the most profitable drop at each multiplier.
   } catch (err) {
     _iterator.e(err);
   } finally {
     _iterator.f();
   }
-  var current = currentFamiliar();
-  if (current && estimatedGarboTurns() < tcbTurnsLeft(current, skipFamiliars)) {
-    var _current = currentFamiliar();
-    if (!_current) return [];
-    if (skipFamiliars.has(_current)) return [];
-    return [{
-      familiar: _current,
-      expectedValue: familiarEquipmentValue(_current) / tcbTurnsLeft(_current, skipFamiliars),
-      worksOnFreeRun: true,
-      limit: "cupid",
-      leprechaunMultiplier: findLeprechaunMultiplier(_current)
-    }];
-  }
-
-  // Otherwise find the best for each leprechaun multiplier
   var bestFamiliarsByLeprechaunMultiplier = new Map();
-  var _iterator2 = _createForOfIteratorHelper(kolmafia.Familiar.all()),
+  var _iterator2 = _createForOfIteratorHelper(cupidBowValues),
     _step2;
   try {
     for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
       var _bestFamiliarsByLepre;
-      var _familiar = _step2.value;
-      if (!have$R(_familiar)) continue;
+      var _step2$value = _slicedToArray(_step2.value, 2),
+        _familiar = _step2$value[0],
+        cupidBowValue = _step2$value[1];
       if (skipFamiliars.has(_familiar)) continue;
+      var expectedValue = cupidBowValue - (mode === "barf" ? amuletCoinOpportunityCost(_familiar) : 0);
+      if (expectedValue <= 0) continue;
       if (!kolmafia.familiarEquipment(_familiar).tradeable && _familiar !== $familiar`Cornbeefadon`) {
         continue;
       }
@@ -23556,7 +23785,6 @@ function getToyCupidBowFamiliars() {
       }
       if (_familiar === $familiar`Doppelshifter`) continue;
       var leprechaunMultiplier = findLeprechaunMultiplier(_familiar);
-      var expectedValue = familiarEquipmentValue(_familiar) / tcbTurnsLeft(_familiar, skipFamiliars);
       var currentBestValue = ((_bestFamiliarsByLepre = bestFamiliarsByLeprechaunMultiplier.get(leprechaunMultiplier)) === null || _bestFamiliarsByLepre === void 0 ? void 0 : _bestFamiliarsByLepre.expectedValue) ?? 0;
       if (expectedValue > currentBestValue) {
         bestFamiliarsByLeprechaunMultiplier.set(leprechaunMultiplier, {
@@ -23632,11 +23860,15 @@ function menu$1(adventure) {
     _ref$allowAttackFamil = _ref.allowAttackFamiliars,
     allowAttackFamiliars = _ref$allowAttackFamil === void 0 ? true : _ref$allowAttackFamil,
     _ref$mode = _ref.mode,
-    mode = _ref$mode === void 0 ? "free" : _ref$mode;
+    mode = _ref$mode === void 0 ? "free" : _ref$mode,
+    _ref$equipmentForced = _ref.equipmentForced,
+    equipmentForced = _ref$equipmentForced === void 0 ? false : _ref$equipmentForced,
+    _ref$cupidBowValues = _ref.cupidBowValues,
+    cupidBowValues = _ref$cupidBowValues === void 0 ? equipmentForced ? new Map() : getCupidBowValues(adventure) : _ref$cupidBowValues;
   var _toAdventure = toAdventure(adventure),
     target = _toAdventure.target;
   var monsterRates = adventureTargetToWeightedMap(target);
-  var familiarMenu = [].concat(_toConsumableArray(getConstantValueFamiliars(mode, monsterRates)), _toConsumableArray(getDropFamiliars()), _toConsumableArray(getToyCupidBowFamiliars()), _toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray(extraFamiliars));
+  var familiarMenu = [].concat(_toConsumableArray(getConstantValueFamiliars(mode, monsterRates)), _toConsumableArray(getDropFamiliars()), _toConsumableArray(getToyCupidBowFamiliars(cupidBowValues, mode)), _toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray(extraFamiliars));
   if (canChooseMacro && kolmafia.myInebriety() <= kolmafia.inebrietyLimit()) {
     if (timeToMeatify()) {
       familiarMenu.push({
@@ -23746,23 +23978,21 @@ function getAllJellyfishDrops() {
 }
 function freeFightFamiliarData(adventure) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var usedTcbFamiliars = getUsedTcbFamiliars();
-  var compareFamiliars = (a, b) => {
-    if (a === null) return b;
-    var aValue = a.expectedValue + tcbValue(a.familiar, usedTcbFamiliars, options.equipmentForced);
-    var bValue = b.expectedValue + tcbValue(b.familiar, usedTcbFamiliars, options.equipmentForced);
-    if (aValue === bValue) {
-      return a.leprechaunMultiplier > b.leprechaunMultiplier ? a : b;
-    }
-    return aValue > bValue ? a : b;
-  };
-  return menu$1(adventure, options).reduce(compareFamiliars, {
+  var cupidBowValues = options.equipmentForced ? new Map() : options.cupidBowValues ?? getCupidBowValues(adventure);
+  var familiarCandidates = [].concat(_toConsumableArray(menu$1(adventure, _objectSpread2(_objectSpread2({}, options), {}, {
+    cupidBowValues
+  }))), [{
     familiar: $familiar.none,
     expectedValue: 0,
     leprechaunMultiplier: 0,
     limit: "none",
     worksOnFreeRun: true
-  });
+  }]);
+  var valueWithCupidBow = candidate => candidate.expectedValue + (
+  // Bow-only entries already include this bonus; other familiars can forgo it.
+  candidate.limit === "cupid" ? 0 : Math.max(0, cupidBowValues.get(candidate.familiar) ?? 0));
+  var highestFamiliarValue = valueWithCupidBow(maxBy(familiarCandidates, valueWithCupidBow));
+  return maxBy(familiarCandidates.filter(candidate => valueWithCupidBow(candidate) === highestFamiliarValue), "leprechaunMultiplier");
 }
 function freeFightFamiliar(target) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -26662,13 +26892,16 @@ function sneegleebs() {
     return have$R(item);
   }));
 }
-function toyCupidBow(familiar) {
-  if (!have$g()) return new Map();
-  var turns = tcbTurnsLeft(familiar, getUsedTcbFamiliars());
-  if (estimatedGarboTurns() <= turns) {
+function toyCupidBow(outfit) {
+  var adventure = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : FarmingStrategy.location;
+  var familiar = outfit.familiar;
+  if (!familiar || !have$g()) return new Map();
+  // After the drop, only the bow's familiar experience can justify wearing it.
+  if (doneToday(familiar) && (!outfit.modifier.some(modifier => /familiar exp|famexp/i.test(modifier)) || turnsLeft() >= 5)) {
     return new Map();
   }
-  return new Map([[$item`toy Cupid bow`, familiarEquipmentValue(familiar) / turns]]);
+  var cupidBowValue = getCupidBowValues(adventure).get(familiar);
+  return cupidBowValue === undefined ? new Map() : new Map([[$item`toy Cupid bow`, cupidBowValue]]);
 }
 var CUP_OF_THIRTEENS_DROPS = POSSIBLE_SNEEGLEEB_DROPS.filter(item => item.inebriety);
 var cupOfThirteensBonus;
@@ -26747,7 +26980,7 @@ function meatTargetOutfit(spec, adventureArgument) {
   }
   useUPCsIfNeeded(outfit);
   outfit.addBonuses(bonusGear(targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE));
-  if (!targetingMeat()) outfit.addBonuses(toyCupidBow(outfit.familiar));
+  outfit.addBonuses(toyCupidBow(outfit, adventureArgument));
   var bjornalike = bestBjornalike(outfit);
   if (location === getLocation() && turnsLeftOnQuest(false) === 1 && haveBooze()) {
     outfit.addBonus($item`Guzzlr pants`, expectedReward(true) - expectedReward(false));
@@ -26930,8 +27163,6 @@ function snapperValue() {
   if (denominator > copyTargetCount()) return 0;
   return garboValue(item) / denominator;
 }
-var getUsedTcbFamiliars = () => new Set(familiarsToday());
-var tcbTurnsLeft = (f, used) => used.has(f) ? Infinity : currentFamiliar() === f ? clamp(5 - get$2("cupidBowFights"), 1, 5) : 5;
 var amuletCoinValue = () => {
   var _ref = isFree(globalOptions.target) ? [0, estimatedGarboTurns()] : (() => {
       var copies = highMeatMonsterCount();
@@ -26942,25 +27173,6 @@ var amuletCoinValue = () => {
     barf = _ref2[1];
   return 0.5 * (barf * FarmingStrategy.baseMeat() + copies * targetMeat());
 };
-var familiarEquipmentValue = f => {
-  if (f === $familiar`Cornbeefadon`) {
-    return have$R($item`amulet coin`) ? 0 : amuletCoinValue();
-  }
-  if ($familiars`Frozen Gravy Fairy, Flaming Gravy Fairy, Sleazy Gravy Fairy, Spooky Gravy Fairy, Stinky Gravy Fairy`.includes(f)) {
-    return garboValue($item`lead necklace`);
-  }
-  return garboValue(kolmafia.familiarEquipment(f));
-};
-function tcbValue(familiar, tcbFamiliars, equipmentForced, includeAmuletCoinOpportunityCost) {
-  if (equipmentForced) return 0;
-  if (!have$g()) return 0;
-  if (tcbFamiliars.has(familiar)) return 0;
-  var leprechaunMultiplier = findLeprechaunMultiplier(familiar);
-  // This is only used during barf so we can just use basemeat
-  // Includes a lazy linearization of the value of its leprechaun-pounds
-  var amuletCoin = includeAmuletCoinOpportunityCost && have$R($item`amulet coin`) ? (50 + 10 * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier))) * FarmingStrategy.meatDropValue() : 0;
-  return familiarEquipmentValue(familiar) / tcbTurnsLeft(familiar, tcbFamiliars) - amuletCoin;
-}
 
 function shouldRedigitize() {
   return shouldRedigitize$1(estimatedGarboTurns());
@@ -28098,6 +28310,7 @@ var FreeFightEngine = /*#__PURE__*/function (_BaseGarboEngine) {
   }]);
 }(BaseGarboEngine);
 var _banish = /*#__PURE__*/new WeakMap();
+var _contexts = /*#__PURE__*/new WeakMap();
 var FarmTurnEngine = /*#__PURE__*/function (_BaseGarboContextEngi2) {
   function FarmTurnEngine() {
     var _this3;
@@ -28107,27 +28320,50 @@ var FarmTurnEngine = /*#__PURE__*/function (_BaseGarboContextEngi2) {
     }
     _this3 = _callSuper(this, FarmTurnEngine, [].concat(args));
     _classPrivateFieldInitSpec(_this3, _banish, null);
+    _classPrivateFieldInitSpec(_this3, _contexts, new Map());
     return _this3;
   }
   _inherits(FarmTurnEngine, _BaseGarboContextEngi2);
   return _createClass(FarmTurnEngine, [{
     key: "getContext",
-    value: function getContext() {
-      return {
-        banish: _classPrivateFieldGet2(_banish, this)
+    value: function getContext(task) {
+      var cachedContext = _classPrivateFieldGet2(_contexts, this).get(task);
+      if (cachedContext) return cachedContext;
+      var wanderTarget;
+      var context = {
+        banish: _classPrivateFieldGet2(_banish, this),
+        get wanderTarget() {
+          if (wanderTarget) return wanderTarget;
+          if (!task.wanderer) {
+            throw new Error("This task did not declare a wanderer type");
+          }
+          var target = wanderer().resolveTarget(undelay(task.wanderer));
+          wanderTarget = _objectSpread2(_objectSpread2({}, target), {}, {
+            choices: wanderer().getChoices(target)
+          });
+          return wanderTarget;
+        }
       };
+      _classPrivateFieldGet2(_contexts, this).set(task, context);
+      return context;
     }
   }, {
     key: "getNextTask",
     value: function getNextTask() {
+      _classPrivateFieldGet2(_contexts, this).clear();
       _classPrivateFieldSet2(_banish, this, chooseBanish());
       return _superPropGet(FarmTurnEngine, "getNextTask", this, 3)([]);
     }
   }, {
     key: "execute",
     value: function execute(task) {
-      _superPropGet(FarmTurnEngine, "execute", this, 3)([task]);
-      _classPrivateFieldSet2(_banish, this, null);
+      _classPrivateFieldGet2(_contexts, this).clear();
+      try {
+        _superPropGet(FarmTurnEngine, "execute", this, 3)([task]);
+      } finally {
+        _classPrivateFieldSet2(_banish, this, null);
+        _classPrivateFieldGet2(_contexts, this).clear();
+      }
     }
   }]);
 }(BaseGarboContextEngine);
@@ -28473,14 +28709,21 @@ function tryFillLatte() {
   return shouldFillLatte() && fill.apply(Latte, _toConsumableArray(ingredientsToFillWith())) && checkAndCorrectLatteMalformation();
 }
 
-var currentAdventures = () => distillateAdventures();
-var nextDistillateSweat = () => Math.ceil((currentAdventures() + 0.5) ** (5 / 2));
-var previousDistillateSweat = () => Math.ceil(Math.max(currentAdventures() - 0.5, 0) ** (5 / 2));
-var adventuresPerSweat = () => 1 / (nextDistillateSweat() - previousDistillateSweat());
-var turnsNeededForNextAdventure = function turnsNeededForNextAdventure() {
-  var equipped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-  return Math.ceil((nextDistillateSweat() - get$2("familiarSweat")) / (equipped ? 3 : 1));
-};
+function stillsuitBonus() {
+  if (!have$r() || globalOptions.ascend && !sober()) return 0;
+  var remainingTurns = Math.max(estimatedGarboTurns(), 0);
+  var currentSweat = get$2("familiarSweat");
+
+  // Worst case scenario this guy is still in the terrarium all day.
+  var projectedSweat = currentSweat + remainingTurns;
+  var projectedAdventures = Math.round(projectedSweat ** 0.4);
+  var nextSweatThreshold = Math.ceil((projectedAdventures + 0.5) ** (5 / 2));
+
+  // If we can't get another adventure today, this is worthless.
+  if (projectedSweat + 2 * remainingTurns < nextSweatThreshold) return 0;
+  var previousSweatThreshold = Math.ceil(Math.max(projectedAdventures - 0.5, 0) ** (5 / 2));
+  return get$2("valueOfAdventure") * 2 / (nextSweatThreshold - previousSweatThreshold);
+}
 
 var famExpValue = new Map([[$familiar`Chest Mimic`, () => $familiar`Chest Mimic`.experience < mimicExperienceNeeded(true) ? MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50 : 0], [$familiar`Pocket Professor`, () => $familiar`Pocket Professor`.experience < 400 && (!get$2("_thesisDelivered") || !globalOptions.ascend) ? 11 * get$2("valueOfAdventure") / 200 : 0], [$familiar`Grey Goose`, () => $familiar`Grey Goose`.experience < 400 && (!get$2("_meatifyMatterUsed") || !globalOptions.ascend) ? experienceChargingValue($familiar`Grey Goose`, "free") : 0]]);
 function freeFightOutfit() {
@@ -28510,11 +28753,13 @@ function freeFightOutfit() {
   }
   outfit.addBonuses(bonusGear(mode));
   applyCheeseBonus(outfit, mode);
-  if (!(globalOptions.ascend && !sober()) && turnsNeededForNextAdventure() <= estimatedGarboTurns()) {
-    outfit.setBonus($item`tiny stillsuit`, get$2("valueOfAdventure") * 2 * adventuresPerSweat());
-  }
+  outfit.setBonus($item`tiny stillsuit`, stillsuitBonus());
   if (mode !== BonusEquipMode.DMT) {
-    outfit.addBonuses(toyCupidBow(outfit.familiar));
+    if (spec.familiar && options.combatCount !== undefined && !outfit.haveEquipped($item`toy Cupid bow`) && shouldAvoidTemporaryCupidBowSwap(spec.familiar, options.combatCount)) {
+      outfit.avoid.push($item`toy Cupid bow`);
+    } else {
+      outfit.addBonuses(toyCupidBow(outfit, adventure));
+    }
   }
   if (location === getLocation() && turnsLeftOnQuest(false) === 1 && haveBooze()) {
     outfit.addBonus($item`Guzzlr pants`, expectedReward(true) - expectedReward(false));
@@ -29687,6 +29932,7 @@ function bestWitchessPiece() {
 }
 var locketMonster = () => findMonster(isFreeAndCopyable, valueDrops);
 var locketsToSave = () => canReminisce(globalOptions.target) ? 1 : 0;
+var remainingLocketFights = () => clamp(reminiscesLeft() - locketsToSave(), 0, 3);
 var maxSealsAvailable = () => kolmafia.retrieveItem(1, $item`Claw of the Infernal Seal`) ? 10 : 5;
 function sealsAvailable() {
   var max = maxSealsAvailable();
@@ -29905,7 +30151,9 @@ var FreeFightTasks = [freeFightTask({
     return phylum === ((_ChateauMantegna$pain2 = paintingMonster()) === null || _ChateauMantegna$pain2 === void 0 ? void 0 : _ChateauMantegna$pain2.phylum);
   }) ? {
     familiar: $familiar`Robortender`
-  } : {}, paintingMonster() ?? $monster.none),
+  } : {}, paintingMonster() ?? $monster.none, {
+    combatCount: 1
+  }),
   tentacle: true
 }), freeFightTask({
   name: "Eldritch Tentacle",
@@ -30252,9 +30500,11 @@ var FreeFightTasks = [freeFightTask({
   },
   outfit: () => freeFightOutfit(have$R($familiar`Robortender`) ? {
     familiar: $familiar`Robortender`
-  } : {}, locketMonster() ?? $monster.none),
+  } : {}, locketMonster() ?? $monster.none, {
+    combatCount: remainingLocketFights()
+  }),
   tentacle: true,
-  combatCount: () => clamp(reminiscesLeft() - locketsToSave(), 0, 3)
+  combatCount: remainingLocketFights
 }), freeFightTask(_objectSpread2(_objectSpread2({}, doCandyTrick()), {}, {
   mapSafe: true,
   adventure: $location`Trick-or-Treating`,
@@ -30462,21 +30712,24 @@ function sandwormFamiliar() {
   if (have$R($item`gnomish housemaid's kgnee`) && highestFairyMult === 1 && !have$R($item`toy Cupid bow`)) {
     goodFairies.push($familiar`Reagnimated Gnome`);
   }
-  var bonuses = [].concat(_toConsumableArray(menu$1($monster`giant sandworm`, {
-    canChooseMacro: false
+  var cupidBowValues = getCupidBowValues($monster`giant sandworm`);
+  var familiarBonuses = [].concat(_toConsumableArray(menu$1($monster`giant sandworm`, {
+    canChooseMacro: false,
+    cupidBowValues
   })), [{
     familiar: $familiar`Reagnimated Gnome`,
     expectedValue: get$2("valueOfAdventure") * 70 / 1000,
     leprechaunMultiplier: 0,
     limit: "none"
   }]);
-  var tcbFamiliars = getUsedTcbFamiliars();
-  var bestNonCheerleaderFairy = maxBy(goodFairies, f => {
-    var _bonuses$find;
-    return ((_bonuses$find = bonuses.find(_ref => {
+  var bestNonCheerleaderFairy = maxBy(goodFairies, fairy => {
+    var familiarBonus = familiarBonuses.find(_ref => {
       var familiar = _ref.familiar;
-      return familiar === f;
-    })) === null || _bonuses$find === void 0 ? void 0 : _bonuses$find.expectedValue) ?? tcbValue(f, tcbFamiliars);
+      return familiar === fairy;
+    });
+    // The bow is required for sandworm rerolls, so a reset penalty applies
+    // even if this fairy also has an ordinary drop or experience benefit.
+    return ((familiarBonus === null || familiarBonus === void 0 ? void 0 : familiarBonus.expectedValue) ?? 0) + ((familiarBonus === null || familiarBonus === void 0 ? void 0 : familiarBonus.limit) === "cupid" ? 0 : cupidBowValues.get(fairy) ?? 0);
   });
   if (have$R($familiar`Steam-Powered Cheerleader`) && findFairyMultiplier($familiar`Steam-Powered Cheerleader`) > findFairyMultiplier(bestNonCheerleaderFairy)) {
     return $familiar`Steam-Powered Cheerleader`;
@@ -31516,6 +31769,7 @@ function findFreeKill() {
 function killRobortCreaturesForFree() {
   if (!have$R($familiar`Robortender`)) return;
   var currentHeads = kolmafia.availableAmount($item`fish head`);
+  var remainingLocketFights = () => have$u() ? Math.max(0, reminiscesLeft() - 1) : 0;
   var freeKill = findFreeKill();
   while (freeKill && kolmafia.canAdventure($location`The Copperhead Club`) && availableMaps() > 0) {
     if (have$R($effect`Crappily Disguised as a Waiter`)) {
@@ -31527,6 +31781,9 @@ function killRobortCreaturesForFree() {
     }), {
       location: $location`The Copperhead Club`,
       target: $monster`Mob Penguin Capo`
+    }, {
+      // The locket fights immediately follow the maps in the same Robortender stint.
+      combatCount: availableMaps() + remainingLocketFights()
     }).dress();
     withMacro(freeKill.macro instanceof kolmafia.Item ? Macro.item(freeKill.macro) : Macro.skill(freeKill.macro), () => {
       mapMonster($location`The Copperhead Club`, $monster`Mob Penguin Capo`);
@@ -31538,18 +31795,21 @@ function killRobortCreaturesForFree() {
     var roboTarget = findMonster(monster => !BAD_CLL_MONSTERS.includes(monster), monster => valueDrops(monster) + garboValue(dropFrom(monster)) * dropChance());
     if (!roboTarget) return 1; // break
     var regularTarget = findMonster(monster => !BAD_CLL_MONSTERS.includes(monster), valueDrops);
-    var familiar = regularTarget === roboTarget ? freeFightFamiliar(regularTarget, {
+    var requiresRobortender = regularTarget !== roboTarget;
+    var familiar = requiresRobortender ? $familiar`Robortender` : freeFightFamiliar(regularTarget, {
       canChooseMacro: roboTarget.attributes.includes("FREE")
-    }) : $familiar`Robortender`;
+    });
     freeFightOutfit(roboTarget.attributes.includes("FREE") ? {
       familiar
     } : _objectSpread2(_objectSpread2({}, freeKill.spec), {}, {
       familiar
-    }), roboTarget).dress();
+    }), roboTarget, {
+      combatCount: requiresRobortender ? remainingLocketFights() : undefined
+    }).dress();
     withMacro(isFree(roboTarget) ? Macro.basicCombat() : freeKill.macro instanceof kolmafia.Item ? Macro.item(freeKill.macro) : Macro.skill(freeKill.macro), () => reminisce(roboTarget), true);
     freeKill = findFreeKill();
   };
-  while (freeKill && have$u() && reminiscesLeft() > 1) {
+  while (freeKill && remainingLocketFights() > 0) {
     if (_loop2()) break;
   }
   if (!currentDrinks().includes($item`drive-by shooting`) && kolmafia.availableAmount($item`fish head`) > currentHeads && (!globalOptions.nobarf || targetingMeat()) && userConfirmDialog("Garbo managed to rustle up a fish head, would you like it to use it to make a drive-by shooting so you can benefit from your robortender? Sorry for flip-flopping on this, life is hard.", true)) {
@@ -33149,87 +33409,6 @@ function dailySetup() {
   runSafeGarboQuests([DailyFamiliarsQuest, DailyQuest, DailyItemsQuest, DailySeaQuest, AscendingQuest]);
 }
 
-function swordItemDropObjective(farmingItemDropValue) {
-  var copiedMonster = get$2("swordOfSWordsMonster");
-  if (!copiedMonster) return {
-    valuePerItemDrop: farmingItemDropValue
-  };
-  var positiveRateDrops = kolmafia.itemDropsArray(copiedMonster).filter(_ref => {
-    var rate = _ref.rate;
-    return rate > 0;
-  });
-  if (!positiveRateDrops.length) return {
-    valuePerItemDrop: 0
-  };
-  var _maxBy = maxBy(positiveRateDrops, _ref2 => {
-      var drop = _ref2.drop;
-      return garboValue(drop);
-    }),
-    mostValuableItemRate = _maxBy.rate;
-  return {
-    valuePerItemDrop: expectedDropValue(copiedMonster),
-    maximumItemDrop: Math.ceil(100 * (100 / mostValuableItemRate - 1))
-  };
-}
-function swordDropValue(itemDrop) {
-  var copiedMonster = get$2("swordOfSWordsMonster");
-  if (!copiedMonster) return 0;
-  return sum(kolmafia.itemDropsArray(copiedMonster), _ref3 => {
-    var rate = _ref3.rate,
-      drop = _ref3.drop;
-    return clamp(rate * (100 + itemDrop) / 100, 0, 100) * garboValue(drop) / 100;
-  });
-}
-
-var familiarOutfitSlots = $slots`hat, back, shirt, weapon, off-hand, pants, acc1, acc2, acc3, familiar`;
-function familiarWeightWithOutfit(familiar, outfitWeight) {
-  var nonOutfitWeightBonus = kolmafia.weightAdjustment() - sum(familiarOutfitSlots, slot => get$1("Familiar Weight", kolmafia.equippedItem(slot)));
-  return totalFamiliarWeight(familiar, false) + nonOutfitWeightBonus + outfitWeight;
-}
-function familiarModifierWithOutfit(familiar, modifier, outfitWeight) {
-  var totalWeight = familiarWeightWithOutfit(familiar, outfitWeight);
-  var _ref = specialFamiliarOutfits.get(familiar) ?? {},
-    equip = _ref.equip;
-  return equip ? kolmafia.numericModifier(familiar, modifier, totalWeight - kolmafia.numericModifier(equip, "Familiar Weight"), equip) : kolmafia.numericModifier(familiar, modifier, totalWeight, $item.none);
-}
-var mimicExperienceValue = () => MEAT_TARGET_MULTIPLIER() * get$2("valueOfAdventure") / 50;
-
-// These familiars have special outfit requirements that make them not fit under
-// their leprechaun multiplier's cache entry.
-var specialFamiliarOutfits = new Map([[$familiar`Chest Mimic`, {
-  configureOutfit: outfit => {
-    if ($familiar`Chest Mimic`.experience < 550) {
-      outfit.modifier.push(`${mimicExperienceValue()} Familiar Experience`);
-    }
-  },
-  extraValue: _ref2 => {
-    var famexp = _ref2.famexp;
-    return famexp * mimicExperienceValue();
-  }
-}], [$familiar`Jill-of-All-Trades`, {
-  equip: $item`LED candle`,
-  configureOutfit: outfit => {
-    outfit.setModes({
-      jillcandle: "ultraviolet"
-    });
-  }
-}], [$familiar`Mini Kiwi`, {
-  extraValue: _ref3 => {
-    var weight = _ref3.weight;
-    return clamp(familiarWeightWithOutfit($familiar`Mini Kiwi`, weight) * 0.005, 0, 1) * garboValue($item`mini kiwi`);
-  }
-}], [$familiar`Sword of S Words`, {
-  itemDropObjective: swordItemDropObjective,
-  extraValue: _ref4 => {
-    var item = _ref4.item,
-      weight = _ref4.weight;
-    var monster = get$2("swordOfSWordsMonster");
-    if (!monster) return 0;
-    var totalItem = item + familiarModifierWithOutfit($familiar`Sword of S Words`, "Item Drop", weight);
-    return swordDropValue(totalItem) - totalItem * FarmingStrategy.itemDropValue();
-  }
-}]]);
-
 function chooseGun() {
   if (have$R($item`love`)) {
     return $item`love`;
@@ -33336,7 +33515,8 @@ function computeBarfOutfit(spec) {
     outfit.equip($item`Kramco Sausage-o-Matic™`);
   }
   if (!sim) {
-    outfit.addBonuses(toyCupidBow(spec.familiar));
+    outfit.setBonus($item`tiny stillsuit`, stillsuitBonus());
+    outfit.addBonuses(toyCupidBow(outfit));
   }
   var bjornalike = bestBjornalike(outfit);
   if (bjornalike) {
@@ -33456,14 +33636,14 @@ function turnsNeededFromBaseline(baselineToCompareAgainst, tcbFamiliars) {
     }
   };
 }
-function calculateOutfitValue(f) {
+function calculateOutfitValue(candidate) {
   var _specialFamiliarOutfi, _specialFamiliarOutfi2;
   var itemDropValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : FarmingStrategy.itemDropValue();
-  var outfit = getCachedOutfitValues(f.familiar);
+  var outfit = getCachedOutfitValues(candidate.familiar);
   var outfitValue = outfit.bonus + outfit.meat * FarmingStrategy.meatDropValue() + outfit.item * itemDropValue;
-  var expectedValue = f.expectedValue + (((_specialFamiliarOutfi = specialFamiliarOutfits.get(f.familiar)) === null || _specialFamiliarOutfi === void 0 || (_specialFamiliarOutfi2 = _specialFamiliarOutfi.extraValue) === null || _specialFamiliarOutfi2 === void 0 ? void 0 : _specialFamiliarOutfi2.call(_specialFamiliarOutfi, outfit)) ?? 0);
+  var expectedValue = candidate.expectedValue + (((_specialFamiliarOutfi = specialFamiliarOutfits.get(candidate.familiar)) === null || _specialFamiliarOutfi === void 0 || (_specialFamiliarOutfi2 = _specialFamiliarOutfi.extraValue) === null || _specialFamiliarOutfi2 === void 0 ? void 0 : _specialFamiliarOutfi2.call(_specialFamiliarOutfi, outfit)) ?? 0);
   var outfitWeight = outfit.weight;
-  return _objectSpread2(_objectSpread2({}, f), {}, {
+  return _objectSpread2(_objectSpread2({}, candidate), {}, {
     expectedValue,
     outfitValue,
     outfitWeight
@@ -33540,36 +33720,36 @@ function barfFamiliar(equipmentForced) {
   }
   var meat = meatFamiliar();
   var usedTcbFamiliars = getUsedTcbFamiliars();
+  var cupidBowValues = equipmentForced ? new Map() : getCupidBowValues(FarmingStrategy.location);
   var fullMenu = menu$1(FarmingStrategy.location, {
     canChooseMacro: true,
     includeExperienceFamiliars: true,
-    mode: "barf"
+    mode: "barf",
+    cupidBowValues
   }).flatMap(generalFamiliar => {
     // Here we do two things:
     // * transform `GeneralFamiliar`s into `MarginalFamiliar`s, which carry with them the total value of the outfit you'd wear
     // * "double up" on familiars for which the toy Cupid bow is available
-    var normal = calculateOutfitValue(generalFamiliar);
-    if (normal.limit === "cupid" ||
+    var familiarOutfit = calculateOutfitValue(generalFamiliar);
+    if (familiarOutfit.limit === "cupid" ||
     // If we're already dealing with one of our generated toy cupid bow picks
     equipmentForced ||
     // If we're unable to equip the toy cupid bow
-    !have$g() ||
-    // If we don't have the toy cupid bow
-    usedTcbFamiliars.has(generalFamiliar.familiar) // If we've already gotten the thing
+    !cupidBowValues.has(generalFamiliar.familiar) || usedTcbFamiliars.has(generalFamiliar.familiar) // If we've already gotten the thing
     ) {
-      return normal;
+      return familiarOutfit;
     }
-    var tcb = calculateOutfitValue(_objectSpread2(_objectSpread2({}, generalFamiliar), {}, {
-      expectedValue: generalFamiliar.expectedValue + tcbValue(generalFamiliar.familiar, usedTcbFamiliars, false, true),
+    var cupidBowOutfit = calculateOutfitValue(_objectSpread2(_objectSpread2({}, generalFamiliar), {}, {
+      expectedValue: generalFamiliar.expectedValue + (cupidBowValues.get(generalFamiliar.familiar) ?? 0) - amuletCoinOpportunityCost(generalFamiliar.familiar),
       limit: "cupid"
     }));
-    if (tcb.expectedValue >= normal.expectedValue) {
-      return [tcb, _objectSpread2(_objectSpread2({}, normal), {}, {
+    if (cupidBowOutfit.expectedValue > familiarOutfit.expectedValue) {
+      return [cupidBowOutfit, _objectSpread2(_objectSpread2({}, familiarOutfit), {}, {
         // Account for the already-burned TCB turns when calculating the limit for the "normal" entry for the familiar
         bonusTurns: tcbTurnsLeft(generalFamiliar.familiar, usedTcbFamiliars)
       })];
     }
-    return normal;
+    return familiarOutfit;
   });
   var meatFamiliarEntry = fullMenu.find(_ref0 => {
     var familiar = _ref0.familiar,
@@ -34144,7 +34324,10 @@ var yachtzeeQuest = [{
 }];
 
 var EMPTY_CONTEXT = {
-  banish: null
+  banish: null,
+  get wanderTarget() {
+    throw new Error("No wanderer target is available outside the farming engine");
+  }
 };
 
 function dailyDungeon(additionalReady) {
@@ -34472,8 +34655,8 @@ var TurnGenQuest = {
 var isGhost = () => get$2("_voteMonster") === $monster`angry ghost`;
 var isMutant = () => get$2("_voteMonster") === $monster`terrible mutant`;
 var isSteve = () => get$2("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`;
-function createWandererOutfit(details, spec, additionalOutfitOptions) {
-  var wanderTarget = wanderer().getTarget(undelay(details));
+function createWandererOutfit(context, spec, additionalOutfitOptions) {
+  var wanderTarget = context.wanderTarget;
   var needPeridot = wanderTarget.peridotMonster !== $monster.none;
   var needBCZ = wanderTarget.useRefractedGaze ?? false;
   var needMonodent = wanderTarget.useFeesh ?? false;
@@ -34484,14 +34667,21 @@ function createWandererOutfit(details, spec, additionalOutfitOptions) {
   if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
   if (needBCZ) sourceOutfit.equip($item`blood cubic zirconia`);
   if (needMonodent) sourceOutfit.equip($item`Monodent of the Sea`);
-  return freeFightOutfit(sourceOutfit.spec(), undelay(details), additionalOutfitOptions);
+  return freeFightOutfit(sourceOutfit.spec(), wanderTarget.location, additionalOutfitOptions);
 }
 function wanderTask(details, spec, base) {
   var additionalOutfitOptions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
   return _objectSpread2({
-    do: () => wanderer().getTarget(undelay(details)).location,
-    choices: () => wanderer().getChoices(undelay(details)),
-    outfit: () => createWandererOutfit(details, spec, additionalOutfitOptions),
+    wanderer: details,
+    do: _ref => {
+      var wanderTarget = _ref.wanderTarget;
+      return wanderTarget.location;
+    },
+    choices: _ref2 => {
+      var wanderTarget = _ref2.wanderTarget;
+      return wanderTarget.choices;
+    },
+    outfit: context => createWandererOutfit(context, spec, additionalOutfitOptions),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat())
   }, base);
@@ -34617,22 +34807,23 @@ var BarfTurnTasks = [{
   spendsTurn: true
 }, {
   name: "Digitize Wanderer",
+  wanderer: {
+    wanderer: "wanderer",
+    allowEquipment: false
+  },
   completed: () => get("Digitize Monster") > 0,
-  outfit: () => digitizedTarget() ? meatTargetOutfit(mimicSpec(), {
-    wanderer: "wanderer",
-    allowEquipment: false
-  }) : freeFightOutfit(undefined, wanderer().getTarget({
-    wanderer: "wanderer",
-    allowEquipment: false
-  }).location),
-  do: () => wanderer().getTarget({
-    wanderer: "wanderer",
-    allowEquipment: false
-  }).location,
-  choices: () => wanderer().getChoices({
-    wanderer: "wanderer",
-    allowEquipment: false
-  }),
+  outfit: _ref3 => {
+    var wanderTarget = _ref3.wanderTarget;
+    return digitizedTarget() ? meatTargetOutfit(mimicSpec(), wanderTarget.location) : freeFightOutfit(undefined, wanderTarget.location);
+  },
+  do: _ref4 => {
+    var wanderTarget = _ref4.wanderTarget;
+    return wanderTarget.location;
+  },
+  choices: _ref5 => {
+    var wanderTarget = _ref5.wanderTarget;
+    return wanderTarget.choices;
+  },
   combat: _construct(GarboStrategy, _toConsumableArray(digitizeMacros())),
   spendsTurn: () => {
     var _SourceTerminal$getDi;
@@ -34640,22 +34831,23 @@ var BarfTurnTasks = [{
   }
 }, {
   name: "Club Into Next Week Monster",
+  wanderer: {
+    wanderer: "wanderer",
+    allowEquipment: false
+  },
   completed: () => turnsUntilNextWeekFight() > 0,
-  outfit: () => clubIntoNextWeekMonster() === globalOptions.target ? meatTargetOutfit(mimicSpec(), {
-    wanderer: "wanderer",
-    allowEquipment: false
-  }) : freeFightOutfit({}, {
-    wanderer: "wanderer",
-    allowEquipment: false
-  }),
-  do: () => wanderer().getTarget({
-    wanderer: "wanderer",
-    allowEquipment: false
-  }).location,
-  choices: () => wanderer().getChoices({
-    wanderer: "wanderer",
-    allowEquipment: false
-  }),
+  outfit: _ref6 => {
+    var wanderTarget = _ref6.wanderTarget;
+    return clubIntoNextWeekMonster() === globalOptions.target ? meatTargetOutfit(mimicSpec(), wanderTarget.location) : freeFightOutfit({}, wanderTarget.location);
+  },
+  do: _ref7 => {
+    var wanderTarget = _ref7.wanderTarget;
+    return wanderTarget.location;
+  },
+  choices: _ref8 => {
+    var wanderTarget = _ref8.wanderTarget;
+    return wanderTarget.choices;
+  },
   combat: new GarboStrategy(() => Macro.target("club 'em into next week")),
   spendsTurn: () => {
     var _LegendarySealClubbin;
