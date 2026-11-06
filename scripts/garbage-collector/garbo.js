@@ -20464,7 +20464,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"38333a2cb5f2e35549aac764fdafdc2e0ca098bb"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"7866a468cd84e4a8b0710d52747debd2934e045c"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -33782,7 +33782,8 @@ function shouldTargetAngryTourists() {
     target: monsterRates,
     location: $location`Barf Mountain`
   }, {
-    mode: "barf"
+    mode: "barf",
+    cupidBowValues: new Map()
   }).filter(_ref6 => {
     var familiar = _ref6.familiar,
       limit = _ref6.limit;
