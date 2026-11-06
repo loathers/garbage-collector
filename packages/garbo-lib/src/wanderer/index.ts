@@ -490,6 +490,9 @@ export class WandererManager {
     this.options = options;
   }
 
+  /**
+   * Cached computation of optimal wanderer target; clear cache with the `.clear()` method.
+   */
   getTarget(wanderer: WanderDetails): WanderResult {
     const { draggableFight, options } = isDraggableFight(wanderer)
       ? { draggableFight: wanderer, options: {} }
@@ -501,15 +504,29 @@ export class WandererManager {
     if (this.cacheKey !== newKey) this.clear();
     this.cacheKey = newKey;
 
-    const locationSkipList = allowEquipment ? [] : [...this.equipment.keys()];
+    return sober() || !drunkSafe
+      ? (this.targets[`${draggableFight}:${allowEquipment}`] ??=
+          this.resolveTarget(wanderer))
+      : this.resolveTarget(wanderer);
+  }
+
+  /**
+   * Uncached computation of optimal wanderer target.
+   */
+  resolveTarget(wanderer: WanderDetails): WanderResult {
+    const {
+      wanderer: draggableFight,
+      drunkSafe = true,
+      allowEquipment = false,
+    } = isDraggableFight(wanderer) ? { wanderer } : wanderer;
 
     return sober() || !drunkSafe
-      ? (this.targets[`${draggableFight}:${allowEquipment}`] ??= wanderWhere(
+      ? wanderWhere(
           this.options,
           draggableFight,
           [],
-          locationSkipList,
-        ))
+          allowEquipment ? [] : [...this.equipment.keys()],
+        )
       : {
           location: $location`Drunken Stupor`,
           peridotMonster: $monster.none,
@@ -519,32 +536,27 @@ export class WandererManager {
         };
   }
 
-  /**
-   * Get choice map for the upcoming wander
-   * @param target Description of the wander or location in which to wander
-   * @param takeTurnForProfit Should the choices include any that would make a profit from your valueOfAdventure
-   * @returns Map of choice numbers to decisions
-   */
   getChoices(
-    target: WanderDetails | Location,
+    target: WanderDetails | Location | WanderResult,
     takeTurnForProfit = this.options.takeTurnForProfit,
   ): {
     [choice: number]: string | number;
   } {
-    const location =
-      target instanceof Location ? target : this.getTarget(target).location;
+    // A resolved target keeps Peridot choices tied to the same monster the
+    // outfit was built for, even if preparing that outfit changes game state.
+    const { location, peridotMonster } =
+      target instanceof Location
+        ? { location: target, peridotMonster: $monster.none }
+        : typeof target === "object" && "location" in target
+          ? target
+          : this.getTarget(target);
     const valueOfTurn = takeTurnForProfit
       ? (this.options.valueOfAdventure ?? 0) +
         sum(getActiveEffects(), (e) => this.options.effectValue(e, 1))
       : Infinity;
     const baseChoices = this.unsupportedChoices.get(location) ?? {};
-    if (
-      !(target instanceof Location) &&
-      this.getTarget(target).peridotMonster !== $monster.none
-    ) {
-      const peridotChoice = PeridotOfPeril.getChoiceObject(
-        this.getTarget(target).peridotMonster,
-      );
+    if (peridotMonster !== $monster.none) {
+      const peridotChoice = PeridotOfPeril.getChoiceObject(peridotMonster);
       const newChoices = Object.assign(peridotChoice, baseChoices);
       return undelay(newChoices, this.options, valueOfTurn);
     }
