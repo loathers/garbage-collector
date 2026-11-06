@@ -66,7 +66,12 @@ import { getBestAprilInstruments } from "../resources/aprilingband";
 import { archaeologySpadeTask } from "../resources/archaelogistSpade";
 import { candyMapDailyTasks } from "../resources/candyMap";
 import { doingGregFight } from "../resources/extrovermectin";
-import { canSwapGarden } from "../resources/garden";
+import {
+  bestHarvestSwap,
+  blackRoseWillGrow,
+  canSwapGarden,
+  harvestGarden,
+} from "../resources/garden";
 import { leprecondoTask } from "../resources/leprecondo";
 import { mayamCalendarSummon } from "../resources/mayam";
 import { augustSummonTasks } from "../resources/scepter";
@@ -847,6 +852,20 @@ const DailyItemTasks: GarboTask[] = [
       if (canSwapGarden() && have($item`packet of tall grass seeds`)) {
         use($item`packet of tall grass seeds`);
       }
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Swap Garden and Harvest",
+    ready: () =>
+      // Is this the only time we can swap a garden and still harvest?
+      BlackRoseGarden.installed() &&
+      !blackRoseWillGrow() &&
+      have(bestHarvestSwap()),
+    completed: () => !canSwapGarden(),
+    do: () => {
+      use(bestHarvestSwap());
+      harvestGarden();
     },
     spendsTurn: false,
   },
