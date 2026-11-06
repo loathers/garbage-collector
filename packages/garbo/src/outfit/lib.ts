@@ -14,6 +14,7 @@ import {
   myClass,
   myInebriety,
   numericModifier,
+  Slot,
   toInt,
   toSlot,
   visitUrl,
@@ -66,6 +67,7 @@ export const LIMITED_DROP_MODES: readonly BonusEquipMode[] = [
 
 type BonusGearOptions = {
   worksOnRun: boolean;
+  circumstantial?: boolean;
   requireOwned?: boolean;
   modes?: readonly BonusEquipMode[];
   available?: Delayed<boolean, [mode: BonusEquipMode]>;
@@ -74,12 +76,14 @@ type BonusGearOptions = {
 
 export class BonusGear {
   readonly worksOnRun: boolean;
+  readonly circumstantial: boolean;
 
   constructor(
     readonly item: Item,
     private readonly options: BonusGearOptions,
   ) {
     this.worksOnRun = options.worksOnRun;
+    this.circumstantial = options.circumstantial ?? false;
   }
 
   value(mode: BonusEquipMode): number | null {
@@ -98,16 +102,28 @@ export class BonusGear {
   }
 }
 
+export type BonusGearSelection = {
+  simulate?: boolean;
+  slot?: Slot;
+};
+
 export function bonusGearValues(
   gear: readonly BonusGear[],
   mode: BonusEquipMode,
+  options: BonusGearSelection = {},
 ): Map<Item, number> {
   return new Map(
-    gear.flatMap((bonusGear) => {
-      const value = bonusGear.value(mode);
-      // An explicit zero or negative bonus still matters to the outfit.
-      return value === null ? [] : [[bonusGear.item, value] as const];
-    }),
+    gear
+      .filter(
+        (bonusGear) =>
+          (!options.simulate || !bonusGear.circumstantial) &&
+          (!options.slot || toSlot(bonusGear.item) === options.slot),
+      )
+      .flatMap((bonusGear) => {
+        const value = bonusGear.value(mode);
+        // An explicit zero or negative bonus still matters to the outfit.
+        return value === null ? [] : [[bonusGear.item, value] as const];
+      }),
   );
 }
 
