@@ -42,7 +42,7 @@ import {
   undelay,
   withChoice,
 } from "libram";
-import { Outfit, OutfitSpec, Quest } from "grimoire-kolmafia";
+import { OutfitSpec, Quest } from "grimoire-kolmafia";
 import {
   canAdventureOrUnlock,
   hasNameCollision,
@@ -95,36 +95,6 @@ const isMutant = () => get("_voteMonster") === $monster`terrible mutant`;
 const isSteve = () =>
   get("nextSpookyravenStephenRoom") === $location`The Haunted Laboratory`;
 
-function createWandererOutfit(
-  context: FarmingContext,
-  spec: Delayed<OutfitSpec>,
-  additionalOutfitOptions: FreeFightOutfitMenuOptions,
-): Outfit {
-  const wanderTarget = context.wanderTarget;
-  const needPeridot = wanderTarget.peridotMonster !== $monster.none;
-  const needBCZ = wanderTarget.useRefractedGaze ?? false;
-  const needMonodent = wanderTarget.useFeesh ?? false;
-
-  const sourceOutfit = Outfit.from(
-    undelay(spec),
-    new Error(
-      `Failed to build outfit for Wanderer from ${JSON.stringify(undelay(spec))}`,
-    ),
-  );
-  if (wanderTarget.familiar !== $familiar`none`) {
-    sourceOutfit.familiar = wanderTarget.familiar;
-  }
-  if (needPeridot) sourceOutfit.equip($item`Peridot of Peril`);
-  if (needBCZ) sourceOutfit.equip($item`blood cubic zirconia`);
-  if (needMonodent) sourceOutfit.equip($item`Monodent of the Sea`);
-
-  return freeFightOutfit(
-    sourceOutfit.spec(),
-    wanderTarget.location,
-    additionalOutfitOptions,
-  );
-}
-
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
@@ -137,8 +107,8 @@ function wanderTask(
     wanderer: details,
     do: ({ wanderTarget }) => wanderTarget.location,
     choices: ({ wanderTarget }) => wanderTarget.choices,
-    outfit: (context) =>
-      createWandererOutfit(context, spec, additionalOutfitOptions),
+    outfit: ({ wanderTarget }) =>
+      freeFightOutfit(undelay(spec), wanderTarget, additionalOutfitOptions),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.basicCombat()),
     ...base,

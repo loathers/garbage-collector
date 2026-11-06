@@ -243,6 +243,16 @@ class BaseGarboEngine extends BaseGarboContextEngine<void> {
 class FreeFightEngine extends BaseGarboEngine {
   private consecutiveNonFreeFights = 0;
 
+  constructor(tasks: (GarboTask<void> & { combatCount?: () => number })[]) {
+    super(
+      tasks.map((task) => {
+        if (task.limit || !task.combatCount) return task;
+        // Snapshot the padded attempt budget when the engine starts.
+        return { ...task, limit: { skip: 5 + task.combatCount() } };
+      }),
+    );
+  }
+
   available(task: MappingTask): boolean {
     return (
       (!get("mappingMonsters") || undelay(task.mapSafe) === true) &&

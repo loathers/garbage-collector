@@ -54,7 +54,7 @@ import {
 import { withVIPClan } from "./clan";
 import { stash } from "./stash";
 import { prepareForCleanup } from "./cleanup";
-import { globalOptions, isQuickGear } from "./config";
+import { fillArgs, globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
@@ -114,7 +114,7 @@ export function main(argString = ""): void {
   sinceKolmafiaRevision(29401); // Track daily Black Rose Garden swaps.
   checkGithubVersion();
 
-  Args.fill(globalOptions, argString);
+  fillArgs(argString);
   // Instant returns placed before visiting anything.
   if (globalOptions.version) return; // Since we always print the version, all done!
   if (globalOptions.help) {
