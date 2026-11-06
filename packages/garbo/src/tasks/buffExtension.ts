@@ -8,9 +8,10 @@ import {
   ActionSource,
   ensureEffect,
   get,
+  getStep,
   have,
   Mining,
-  questStep,
+  QuestState,
   realmAvailable,
 } from "libram";
 import { GarboTask } from "./engine";
@@ -93,7 +94,7 @@ const BuffExtensionTasks: GarboTask[] = [
       globalOptions.ascend &&
       sober() &&
       !have($effect`Lucky!`) &&
-      questStep("questM16Temple") > 0 &&
+      getStep("questM16Temple") > QuestState.STARTED &&
       mallPrice($item`stone wool`) <
         3 * get("valueOfAdventure") + effectExtenderValue(3, 10) &&
       !!getRun(),

@@ -18,12 +18,14 @@ import {
   $stat,
   ensureEffect,
   get,
+  getStep,
   have,
+  QuestState,
 } from "libram";
 import { acquire } from "../acquire";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
-import { questStep, sober } from "../lib";
+import { sober } from "../lib";
 import { freeFightOutfit } from "../outfit/free";
 import { doingGregFight } from "../resources/extrovermectin";
 import { prepareParty } from "./freeFight/lib";
@@ -41,7 +43,7 @@ function thesisPlan() {
   }
   if (
     (get("neverendingPartyAlways") || get("_neverEndingPartyToday")) &&
-    questStep("_questPartyFair") < 999 &&
+    getStep("_questPartyFair") !== QuestState.FINISHED &&
     !get("_partyHard")
   ) {
     return {

@@ -30,12 +30,13 @@ import {
   Delayed,
   get,
   getModifier,
+  getStep,
   GingerBread,
   have,
   HeavyRains,
   LegendarySealClubbingClub,
   PeridotOfPeril,
-  questStep,
+  QuestState,
   SourceTerminal,
   TrainSet,
   undelay,
@@ -148,7 +149,7 @@ function shouldGoUnderwater(): boolean {
   if (!sober()) return false;
   if (myLevel() < 11) return false;
 
-  if (questStep("questS01OldGuy") === -1) {
+  if (getStep("questS01OldGuy") === QuestState.UNSTARTED) {
     visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
   }
 
@@ -699,7 +700,7 @@ const BarfTurnTasks: FarmingTask[] = [
           canEquip($item`Drunkula's wineglass`))) &&
       CrepeParachute.have() &&
       shouldCheckParachute() &&
-      questStep("questL11Worship") > 3 &&
+      getStep("questL11Worship") > 3 &&
       have($item`antique machete`), // TODO Support other machete's
     completed: () => have($effect`Everything looks Beige`),
     outfit: () =>

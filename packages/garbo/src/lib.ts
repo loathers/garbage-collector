@@ -215,19 +215,6 @@ export function mapMonster(location: Location, monster: Monster): void {
   }
 }
 
-export function questStep(questName: string): number {
-  const stringStep = property.getString(questName);
-  if (stringStep === "unstarted" || stringStep === "") return -1;
-  else if (stringStep === "started") return 0;
-  else if (stringStep === "finished") return 999;
-  else {
-    if (stringStep.substring(0, 4) !== "step") {
-      throw "Quest state parsing error.";
-    }
-    return parseInt(stringStep.substring(4), 10);
-  }
-}
-
 export function tryFeast(familiar: Familiar): void {
   if (have(familiar)) {
     useFamiliar(familiar);

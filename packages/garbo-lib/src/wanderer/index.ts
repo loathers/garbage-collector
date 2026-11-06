@@ -21,8 +21,8 @@ import {
   Delayed,
   get,
   getActiveEffects,
-  have,
   maxBy,
+  MonodentOfTheSea,
   PeridotOfPeril,
   sum,
   sumNumbers,
@@ -118,12 +118,22 @@ function zoneRefractedGazeValue(
   monsterItemValues: Map<Monster, number>,
 ): { withFeesh: number; noFeesh: number } {
   const totalItemValue = sumNumbers([...monsterItemValues.values()]);
-  const withFeesh = totalItemValue;
   // If we aren't using Feesh, we will get bonuses from one monster, but lose the items from that monster
   const rates = appearanceRates(location, true);
   const averageBonusValue = averageMonsterValue(monsterBonusValues, rates);
   const averageItemValue = averageMonsterValue(monsterItemValues, rates);
   const noFeesh = totalItemValue - averageItemValue + averageBonusValue;
+  // Monsters that cannot become fish still contribute the ordinary Gaze value.
+  const unconvertedRates = Object.fromEntries(
+    Object.entries(rates).map(([name, rate]) => [
+      name,
+      MonodentOfTheSea.canFishify(Monster.get(name)) ? 0 : rate,
+    ]),
+  );
+  const withFeesh =
+    totalItemValue -
+    averageMonsterValue(monsterItemValues, unconvertedRates) +
+    averageMonsterValue(monsterBonusValues, unconvertedRates);
   return { withFeesh, noFeesh };
 }
 
@@ -230,8 +240,7 @@ function bestWander(
       monsterBonusValues,
       monsterItemValues,
     );
-    const shouldFeeshCandidate =
-      have($item`Monodent of the Sea`) && withFeesh > noFeesh;
+    const shouldFeeshCandidate = MonodentOfTheSea.have() && withFeesh > noFeesh;
 
     const refractedGazeValue =
       options.canRefractedGaze && type !== "conditional freefight"
