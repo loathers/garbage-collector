@@ -18600,6 +18600,10 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"', {
     hidden: true,
     default: 0
   }, () => 0, ""),
+  farmingStarted: Args.custom({
+    hidden: true,
+    default: false
+  }, () => false, ""),
   askedAboutWish: Args.custom({
     hidden: true,
     default: false
@@ -20464,7 +20468,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"730028c3ca1b3955500989c1036d00d174a2abf0"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"6704a6deda12c6e03f9f3a7b440b0d15a709a0ca"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -21088,6 +21092,13 @@ var FarmingStrategySkeleton = /*#__PURE__*/function () {
     key: "olfactMonster",
     value: function olfactMonster() {
       return this.shouldOlfact ? undelay(this.targetMonster) : null;
+    }
+  }, {
+    key: "singlePhylumInZone",
+    value: function singlePhylumInZone() {
+      var monsters = this.monsters().filter(m => !this.banishMonsters.includes(m));
+      var phyla = new Set(monsters.map(m => m.phylum));
+      return phyla.size === 1 ? monsters[0].phylum : null;
     }
   }, {
     key: "monsters",
@@ -23997,12 +24008,12 @@ function menu$1(adventure) {
         worksOnFreeRun: false
       });
     }
-    if (mode === "target" && have$E()) {
+    if (snapperReasonable(mode)) {
       familiarMenu.push({
         familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: snapperValue(),
+        expectedValue: snapperValue(mode),
         leprechaunMultiplier: 0,
-        limit: "special",
+        limit: "none",
         worksOnFreeRun: false
       });
     }
@@ -27035,7 +27046,9 @@ function meatTargetOutfit(spec, adventureArgument) {
   var outfit = Outfit.from(spec, new Error(`Failed to construct outfit from spec ${JSON.stringify(spec)}`));
   var _toAdventure = toAdventure(adventureArgument ?? $location.none),
     location = _toAdventure.location,
-    target = _toAdventure.target;
+    parsedTarget = _toAdventure.target;
+  var target = parsedTarget instanceof kolmafia.Monster ? parsedTarget : globalOptions.target;
+  var isCopyTarget = target === globalOptions.target;
   kolmafia.setLocation(location);
   if (location === $location`Crab Island`) {
     var meat = kolmafia.meatDrop($monster`giant giant crab`) + songboomMeat();
@@ -27059,9 +27072,14 @@ function meatTargetOutfit(spec, adventureArgument) {
   applyCheeseBonus(outfit, targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE);
   outfit.avoid.push($item`cheap sunglasses`); // Even if we're adventuring in Barf Mountain itself, these are bad
   var familiarNeedsToBreathe = familiarSlotNeededForBreathing(location);
-  outfit.familiar ?? (outfit.familiar = targetingMeat() ? familiarNeedsToBreathe ? underwaterMeatFamiliar() : meatFamiliar() : freeFightFamiliar(location ?? globalOptions.target, {
+  outfit.familiar ?? (outfit.familiar = targetingMeat() ? familiarNeedsToBreathe ? underwaterMeatFamiliar() : meatFamiliar() : freeFightFamiliar({
+    location,
+    target
+  }, {
+    mode: isCopyTarget ? "target" : "free",
     equipmentForced: familiarNeedsToBreathe || !outfit.canEquip($item`toy Cupid bow`)
   }));
+  if (isCopyTarget) outfit.afterDress(() => tuneSnapper("target"));
   var bjornChoice = chooseBjorn(targetingMeat() ? BonusEquipMode.MEAT_TARGET : BonusEquipMode.FREE, outfit.familiar);
   var underwater = (location === null || location === void 0 ? void 0 : location.environment) === "underwater";
   if (underwater) {
@@ -27261,12 +27279,40 @@ function estimatedBarfExperience() {
   if (voter) sources.push(Number(voter));
   return sumNumbers(sources);
 }
-function snapperValue() {
-  var item = phylumItem.get(globalOptions.target.phylum);
+function valueSnapperPhylum(phylum, turns) {
+  var item = phylumItem.get(phylum);
   if (!item) return 0;
-  var denominator = 11 - (getTrackedPhylum() === globalOptions.target.phylum ? getProgress() : 0);
-  if (denominator > copyTargetCount()) return 0;
-  return garboValue(item) / denominator;
+  var remainingTurns = 11 - (getTrackedPhylum() === phylum ? getProgress() : 0);
+  if (remainingTurns > turns) return 0;
+  return garboValue(item) / 11;
+}
+function snapperPhylum(mode) {
+  switch (mode) {
+    case "target":
+      {
+        // Once farming starts, target fights may use the existing tuning but
+        // must not undo a switch to the farming phylum.
+        return !globalOptions.farmingStarted || getTrackedPhylum() === globalOptions.target.phylum ? globalOptions.target.phylum : null;
+      }
+    case "barf":
+      return FarmingStrategy.singlePhylumInZone();
+    default:
+      return null;
+  }
+}
+function snapperValue(mode) {
+  var phylum = snapperPhylum(mode);
+  if (!phylum) return 0;
+  var farmingPhylum = FarmingStrategy.singlePhylumInZone();
+  var turns = mode === "barf" || globalOptions.farmingStarted && phylum === farmingPhylum ? estimatedGarboTurns() : copyTargetCount();
+  return valueSnapperPhylum(phylum, turns);
+}
+function tuneSnapper(mode) {
+  if (kolmafia.myFamiliar() !== $familiar`Red-Nosed Snapper`) return;
+  var phylum = snapperPhylum(mode);
+  if (phylum && phylum !== getTrackedPhylum()) {
+    trackPhylum(phylum);
+  }
 }
 var amuletCoinValue = () => {
   var _ref = isFree(globalOptions.target) ? [0, estimatedGarboTurns()] : (() => {
@@ -27278,6 +27324,9 @@ var amuletCoinValue = () => {
     barf = _ref2[1];
   return 0.5 * (barf * FarmingStrategy.baseMeat() + copies * targetMeat());
 };
+function snapperReasonable(mode) {
+  return have$E() && snapperPhylum(mode) !== null;
+}
 
 function shouldRedigitize() {
   return shouldRedigitize$1(estimatedGarboTurns());
@@ -31305,10 +31354,7 @@ function dailyFights() {
         shouldDo: targetingMeat(),
         property: "_garbo_meatChain",
         macro: firstChainMacro,
-        goalMaximize: (spec, location) => meatTargetOutfit(spec, {
-          location,
-          target: globalOptions.target
-        }).dress()
+        goalMaximize: (spec, location) => meatTargetOutfit(spec, location).dress()
       }, {
         shouldDo: true,
         property: "_garbo_weightChain",
@@ -31393,9 +31439,6 @@ function dailyFights() {
       var location = new TargetFightRunOptions(nextFight).location;
       var underwater = location.environment === "underwater";
       var famSpec = familiarSpec(underwater, nextFight);
-      if (famSpec.familiar === $familiar`Red-Nosed Snapper` && getTrackedPhylum() !== globalOptions.target.phylum) {
-        trackPhylum(globalOptions.target.phylum);
-      }
       kolmafia.setLocation(location);
       meatTargetOutfit(_objectSpread2(_objectSpread2({}, nextFight.spec), famSpec), location).dress();
       runTargetFight(nextFight, {
@@ -34207,7 +34250,10 @@ var CockroachFinish = {
       () => meatMood({
         meat: targetMeat()
       }).execute(highMeatMonsterCount()), () => potionSetup(false)]
-    }, $location`Crab Island`),
+    }, {
+      location: $location`Crab Island`,
+      target: $monster`giant giant crab`
+    }),
     choices: {
       1368: 1
     },
@@ -34247,6 +34293,7 @@ var updateParachuteFailure = () => lastParachuteFailure = kolmafia.totalTurnsPla
 
 var farmPrepare = context => {
   var _context$banish;
+  tuneSnapper("barf");
   if (redTaffyWorth() && FarmingStrategy.isUnderwater()) {
     acquire(estimatedGarboTurns(), $item`pulled red taffy`, averageRedTaffyValue(), false // It's fine to continue running if there aren't appropriately priced taffies
     );
@@ -34273,6 +34320,7 @@ function FarmTurnQuest() {
       name: "Parachute",
       ready: () => have$i() && shouldCheckParachute() && kolmafia.myLocation() === FarmingStrategy.location && FarmingStrategy.shouldOlfact,
       completed: () => have$T($effect`Everything looks Beige`) || kolmafia.myAdventures() === 0,
+      prepare: () => tuneSnapper("barf"),
       outfit: context => barfOutfit(FarmingStrategy.outfit(context)),
       do: () => fight(FarmingStrategy.primaryMonster()),
       combat: FarmingStrategy.strategy(),
@@ -34893,7 +34941,10 @@ var BarfTurnTasks = [{
   do: () => get$2("nextSpookyravenStephenRoom"),
   outfit: () => meatTargetOutfit(sober() ? {} : {
     offhand: $item`Drunkula's wineglass`
-  }, get$2("nextSpookyravenStephenRoom") ?? $location.none),
+  }, {
+    location: get$2("nextSpookyravenStephenRoom") ?? $location.none,
+    target: $monster`Stephen Spookyraven`
+  }),
   spendsTurn: isSteve,
   combat: new GarboStrategy(() => Macro.if_($monster`Stephen Spookyraven`, Macro.basicCombat()).abortWithMsg("Expected to fight Stephen Spookyraven, but didn't!"))
 }, {
@@ -34945,7 +34996,10 @@ var BarfTurnTasks = [{
     item: $item`pulled green taffy`
   }],
   do: $location`The Briny Deeps`,
-  outfit: () => meatTargetOutfit({}, $location`The Briny Deeps`),
+  outfit: () => meatTargetOutfit({}, {
+    location: $location`The Briny Deeps`,
+    target: getDigitizeMonster() ?? $monster.none
+  }),
   combat: _construct(GarboStrategy, _toConsumableArray(digitizeMacros(Macro.item($item`pulled green taffy`)))),
   sobriety: "sober",
   spendsTurn: true
@@ -35710,6 +35764,7 @@ function main() {
       dailyFights();
       if (!globalOptions.nobarf) {
         // 3. burn turns at barf
+        globalOptions.farmingStarted = true;
         potionSetup(false);
         kolmafia.maximize("MP", false);
         meatMood().execute(estimatedGarboTurns());
