@@ -56,7 +56,7 @@ export type Adventure = { target: AdventureTarget; location: Location };
 export type AdventureArgument =
   | Monster
   | Destination
-  | { target: Monster; location: Destination };
+  | { target: AdventureTarget; location: Destination };
 export function toAdventure(arg: AdventureArgument): Adventure {
   if (arg instanceof Monster) return { target: arg, location: $location.none };
   if (arg instanceof Location) return { target: arg, location: arg };

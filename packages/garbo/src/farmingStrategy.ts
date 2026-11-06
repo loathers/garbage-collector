@@ -15,7 +15,6 @@ import { GarboStrategy } from "./combatStrategy";
 import {
   $effect,
   $effects,
-  $familiar,
   $item,
   $items,
   $location,
@@ -59,6 +58,23 @@ const garbageTourists = 1 + olfactionCopies + gallapagosCopies,
 const barfTourists = garbageTourists + touristFamilies + angryTourists;
 export const garbageTouristRatio = garbageTourists / barfTourists;
 const touristFamilyRatio = touristFamilies / barfTourists;
+
+// Uses the same olfaction/mating code as the barf NC
+// TODO: Make a queue-aware predictor in libram or expose it in mafia somehow
+export function expectedBarfMonsterRates(
+  target: Monster,
+): Map<Monster, number> {
+  return new Map(
+    $monsters`angry tourist, garbage tourist, horrible tourist family`.map(
+      (monster) => [
+        monster,
+        (1 + (monster === target ? olfactionCopies + gallapagosCopies : 0)) /
+          barfTourists,
+      ],
+    ),
+  );
+}
+
 // 30 tourists till NC, with families counting as 3
 // Estimate number of turns till the counter hits 27
 // then estimate the expected number of turns required to hit a counter of >= 30
@@ -211,8 +227,7 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
   location: $location`Barf Mountain`,
   bonusEffects: $effects`How to Scam Tourists`,
   targetMonster: () =>
-    have($familiar`Skeleton of Crimbo Past`) &&
-    get("_knuckleboneDrops", 0) < 100
+    globalOptions.targetAngryTourists && get("_knuckleboneDrops", 0) < 100
       ? $monster`angry tourist`
       : $monster`garbage tourist`,
   shouldOlfact: true,
