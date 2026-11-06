@@ -490,6 +490,9 @@ export class WandererManager {
     this.options = options;
   }
 
+  /**
+   * Cached computation of optimal wanderer target; clear cache with the `.clear()` method.
+   */
   getTarget(wanderer: WanderDetails): WanderResult {
     const { draggableFight, options } = isDraggableFight(wanderer)
       ? { draggableFight: wanderer, options: {} }
@@ -507,14 +510,16 @@ export class WandererManager {
       : this.resolveTarget(wanderer);
   }
 
+  /**
+   * Uncached computation of optimal wanderer target.
+   */
   resolveTarget(wanderer: WanderDetails): WanderResult {
     const {
       wanderer: draggableFight,
       drunkSafe = true,
       allowEquipment = false,
     } = isDraggableFight(wanderer) ? { wanderer } : wanderer;
-    // Engines that manage their own execution lifetime can resolve a fresh
-    // target without depending on this manager's state-based cache key.
+
     return sober() || !drunkSafe
       ? wanderWhere(
           this.options,
