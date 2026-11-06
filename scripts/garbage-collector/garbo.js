@@ -20464,7 +20464,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"e3c98b9fd78f6da81e6d3e94af6a0be36b436730"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"730028c3ca1b3955500989c1036d00d174a2abf0"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -35093,6 +35093,7 @@ var BarfTurnTasks = [{
   }
 }), {
   name: "Yachtzee (Cooldown ready)",
+  ready: () => romanticMonsterImpossible(),
   completed: () => get$2("encountersUntilYachtzeeChoice") > 0,
   outfit: () => {
     kolmafia.setLocation($location`The Sunken Party Yacht`);
