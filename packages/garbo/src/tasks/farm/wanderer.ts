@@ -573,6 +573,7 @@ const BarfTurnTasks: FarmingTask[] = [
   ),
   {
     name: "Yachtzee (Cooldown ready)",
+    ready: () => romanticMonsterImpossible(),
     completed: () => get("encountersUntilYachtzeeChoice") > 0,
     outfit: () => {
       setLocation($location`The Sunken Party Yacht`);
