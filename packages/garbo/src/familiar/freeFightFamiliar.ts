@@ -15,7 +15,7 @@ import {
   sum,
 } from "libram";
 
-import { garboValue } from "../garboValue";
+import { garboKnuckleboneValue, garboValue } from "../garboValue";
 import getConstantValueFamiliars from "./constantValueFamiliars";
 import getDropFamiliars from "./dropFamiliars";
 import getExperienceFamiliars from "./experienceFamiliars";
@@ -156,8 +156,7 @@ export function menu(
     familiarMenu.push({
       familiar: $familiar`Skeleton of Crimbo Past`,
       expectedValue:
-        SkeletonOfCrimboPast.expectedBones(target) *
-        garboValue($item`knucklebone`),
+        SkeletonOfCrimboPast.expectedBones(target) * garboKnuckleboneValue(),
       leprechaunMultiplier: 0,
       limit: "special",
       worksOnFreeRun: false,

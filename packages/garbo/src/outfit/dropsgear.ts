@@ -41,7 +41,11 @@ import {
   targetPointerRingMeat,
   valueJuneCleaverOption,
 } from "../lib";
-import { garboAverageValue, garboValue } from "../garboValue";
+import {
+  garboAverageValue,
+  garboKnuckleboneValue,
+  garboValue,
+} from "../garboValue";
 import { estimatedGarboTurns, remainingUserTurns } from "../turns";
 import { bonusAccessories } from "./dropsgearAccessories";
 import {
@@ -453,7 +457,7 @@ function skeletonCane(mode: BonusEquipMode): Map<Item, number> {
     return new Map();
   }
   // Cane improves drop rate by 10%
-  const caneValue = garboValue($item`knucklebone`) * 0.1;
+  const caneValue = garboKnuckleboneValue() * 0.1;
   return new Map<Item, number>([
     [$item`small peppermint-flavored sugar walking crook`, caneValue],
   ]);
