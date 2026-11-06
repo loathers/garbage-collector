@@ -40,7 +40,12 @@ import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { familiarCanBreathe } from "../familiar/familiarHelpers";
 import { meatFamiliar } from "../familiar/meatFamiliar";
-import { targetMeat } from "../lib";
+import {
+  CombatOutcome,
+  CombatOutcomes,
+  combatOutcomeWeight,
+  targetMeat,
+} from "../lib";
 import {
   estimatedGarboTurns,
   highMeatMonsterCount,
@@ -66,7 +71,7 @@ export const LIMITED_DROP_MODES: readonly BonusEquipMode[] = [
 ];
 
 type BonusGearOptions = {
-  worksOnRun: boolean;
+  outcomes?: readonly CombatOutcome[];
   circumstantial?: boolean;
   requireOwned?: boolean;
   modes?: readonly BonusEquipMode[];
@@ -75,18 +80,16 @@ type BonusGearOptions = {
 };
 
 export class BonusGear {
-  readonly worksOnRun: boolean;
   readonly circumstantial: boolean;
 
   constructor(
     readonly item: Item,
     private readonly options: BonusGearOptions,
   ) {
-    this.worksOnRun = options.worksOnRun;
     this.circumstantial = options.circumstantial ?? false;
   }
 
-  value(mode: BonusEquipMode): number | null {
+  value(mode: BonusEquipMode, outcomes: CombatOutcomes = "win"): number | null {
     if (this.options.modes && !this.options.modes.includes(mode)) {
       return null;
     }
@@ -98,13 +101,18 @@ export class BonusGear {
     }
 
     // State and price reads must wait until valuation, after startup setup.
-    return undelay(this.options.value, mode);
+    const value = undelay(this.options.value, mode);
+    // Weight after valuation so cached base values stay independent of the outcome mix.
+    return value === null
+      ? null
+      : value * combatOutcomeWeight(outcomes, this.options.outcomes ?? ["win"]);
   }
 }
 
 export type BonusGearSelection = {
   simulate?: boolean;
   slot?: Slot;
+  outcomes?: CombatOutcomes;
 };
 
 export function bonusGearValues(
@@ -120,7 +128,7 @@ export function bonusGearValues(
           (!options.slot || toSlot(bonusGear.item) === options.slot),
       )
       .flatMap((bonusGear) => {
-        const value = bonusGear.value(mode);
+        const value = bonusGear.value(mode, options.outcomes);
         // An explicit zero or negative bonus still matters to the outfit.
         return value === null ? [] : [[bonusGear.item, value] as const];
       }),

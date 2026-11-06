@@ -68,7 +68,6 @@ import {
 } from "./lib";
 
 const mafiaThumbRing = new BonusGear($item`mafia thumb ring`, {
-  worksOnRun: false,
   modes: [BonusEquipMode.MEAT_TARGET, BonusEquipMode.BARF],
   value: () => (1 / 0.96 - 1) * get("valueOfAdventure"),
 });
@@ -95,7 +94,6 @@ export function luckyGoldRingDropValues(
 }
 
 const luckyGoldRing = new BonusGear($item`lucky gold ring`, {
-  worksOnRun: false,
   modes: [...LIMITED_DROP_MODES, BonusEquipMode.MEAT_TARGET],
   value: (mode) => {
     const dropValues = luckyGoldRingDropValues(
@@ -129,17 +127,15 @@ function calculateMrCheengsSpectaclesBonus() {
 
 let mrCheengsBonus: number;
 const mrCheengsSpectacles = new BonusGear($item`Mr. Cheeng's spectacles`, {
-  worksOnRun: false,
   value: () => (mrCheengsBonus ??= calculateMrCheengsSpectaclesBonus()),
 });
 
 const mrScreegesSpectacles = new BonusGear($item`Mr. Screege's spectacles`, {
-  worksOnRun: false,
   value: 180,
 });
 
 const cinchoDeMayo = new BonusGear($item`Cincho de Mayo`, {
-  worksOnRun: true,
+  outcomes: ["win", "run"],
   modes: LIMITED_DROP_MODES,
   available: () =>
     CinchoDeMayo.currentCinch() !== 0 &&
@@ -178,7 +174,6 @@ function calculateLaughingStockBonus(alwaysUseHorizon: boolean) {
 }
 
 const portableLaughingStock = new BonusGear($item`Portable Laughing Stock`, {
-  worksOnRun: false,
   modes: [...LIMITED_DROP_MODES, BonusEquipMode.MEAT_TARGET],
   value: (mode) =>
     calculateLaughingStockBonus(mode !== BonusEquipMode.MEAT_TARGET),
@@ -186,7 +181,7 @@ const portableLaughingStock = new BonusGear($item`Portable Laughing Stock`, {
 
 const pantsgivingBonuses = new Map<number, number>();
 const pantsgiving = new BonusGear($item`Pantsgiving`, {
-  worksOnRun: true,
+  outcomes: ["win", "run"],
   circumstantial: true,
   modes: LIMITED_DROP_MODES,
   value: () => {
@@ -228,7 +223,7 @@ const pantsgiving = new BonusGear($item`Pantsgiving`, {
 });
 
 const sweatpants = new BonusGear($item`designer sweatpants`, {
-  worksOnRun: true,
+  outcomes: ["win", "run"],
   circumstantial: true,
   modes: [...FREE_MODES, BonusEquipMode.BARF],
   value: () => {
@@ -262,21 +257,18 @@ const sweatpants = new BonusGear($item`designer sweatpants`, {
 });
 
 const pantogramPants = new BonusGear($item`pantogram pants`, {
-  worksOnRun: false,
   available: () => get("_pantogramModifier").includes("Drops Items"),
   // TODO: Calculate the actual expected drop value.
   value: 100,
 });
 
 const bagOfManyConfections = new BonusGear($item`bag of many confections`, {
-  worksOnRun: false,
   available: () => have($familiar`Stocking Mimic`),
   value: () =>
     garboAverageValue(...$items`Polka Pop, BitterSweetTarts, Piddles`) / 6,
 });
 
 const snowSuit = new BonusGear($item`Snow Suit`, {
-  worksOnRun: false,
   circumstantial: true,
   modes: LIMITED_DROP_MODES,
   available: () => get("_carrotNoseDrops") < 3,
@@ -284,7 +276,6 @@ const snowSuit = new BonusGear($item`Snow Suit`, {
 });
 
 const mayflowerBouquet = new BonusGear($item`Mayflower bouquet`, {
-  worksOnRun: false,
   circumstantial: true,
   modes: LIMITED_DROP_MODES,
   value: (mode) => {
@@ -306,7 +297,6 @@ const mayflowerBouquet = new BonusGear($item`Mayflower bouquet`, {
 });
 
 export const magnifyingGlass = new BonusGear($item`cursed magnifying glass`, {
-  worksOnRun: false,
   circumstantial: true,
   available: () =>
     get("_voidFreeFights") < 5 && get("cursedMagnifyingGlassCount") < 13,
@@ -314,7 +304,7 @@ export const magnifyingGlass = new BonusGear($item`cursed magnifying glass`, {
 });
 
 const bindlestocking = new BonusGear($item`bindlestocking`, {
-  worksOnRun: true,
+  outcomes: ["win", "run"],
   modes: [BonusEquipMode.BARF],
   available: () =>
     // A guaranteed critical hit must leave the weapon and off-hand slots free.
@@ -344,7 +334,6 @@ const bindlestocking = new BonusGear($item`bindlestocking`, {
 });
 
 const simpleTargetCrits = new BonusGear($item`mafia pointer finger ring`, {
-  worksOnRun: false,
   modes: [BonusEquipMode.MEAT_TARGET],
   available: () =>
     ((have($skill`Furious Wallop`) && myFury() > 0) ||
@@ -354,7 +343,6 @@ const simpleTargetCrits = new BonusGear($item`mafia pointer finger ring`, {
 });
 
 const batWings = new BonusGear($item`bat wings`, {
-  worksOnRun: false,
   modes: [BonusEquipMode.BARF],
   available: () => BatWings.flapChance() !== 0,
   value: () => BatWings.flapChance() * get("valueOfAdventure"),
@@ -383,7 +371,7 @@ const encounterMap = [
 ];
 
 const mobius = new BonusGear($item`Möbius ring`, {
-  worksOnRun: true,
+  outcomes: ["win", "run"],
   // Its cooldown advances unequipped; the current bonus prices a short visit,
   // and the later cooldowns are not fully known for a long-term average.
   circumstantial: true,
@@ -397,7 +385,6 @@ const mobius = new BonusGear($item`Möbius ring`, {
 });
 
 const shavingBonus = new BonusGear($item`Daylight Shavings Helmet`, {
-  worksOnRun: false,
   circumstantial: true,
   available: () => !DaylightShavings.buffs.some((buff) => have(buff, 2)),
   value: () => {
@@ -422,7 +409,7 @@ const shavingBonus = new BonusGear($item`Daylight Shavings Helmet`, {
 
 let juneCleaverEV: number | null = null;
 const juneCleaver = new BonusGear($item`June cleaver`, {
-  worksOnRun: true,
+  outcomes: ["win", "run"],
   circumstantial: true,
   value: (mode) => {
     const estimatedJuneCleaverTurns =
@@ -475,7 +462,7 @@ const juneCleaver = new BonusGear($item`June cleaver`, {
 const rakes = $items`rake, tiny rake`.map(
   (item) =>
     new BonusGear(item, {
-      worksOnRun: true,
+      outcomes: ["win", "run"],
       circumstantial: true,
       requireOwned: false,
       modes: [...FREE_MODES, BonusEquipMode.BARF],
@@ -485,7 +472,6 @@ const rakes = $items`rake, tiny rake`.map(
 );
 
 const aviatorGoggles = new BonusGear($item`aviator goggles`, {
-  worksOnRun: false,
   circumstantial: true,
   requireOwned: false,
   modes: [...FREE_MODES, BonusEquipMode.BARF],
@@ -496,7 +482,6 @@ const aviatorGoggles = new BonusGear($item`aviator goggles`, {
 const skeletonCane = new BonusGear(
   $item`small peppermint-flavored sugar walking crook`,
   {
-    worksOnRun: false,
     circumstantial: true,
     requireOwned: false,
     modes: [...FREE_MODES, BonusEquipMode.BARF],
@@ -511,7 +496,7 @@ const stickerWeapons =
   $items`scratch 'n' sniff sword, scratch 'n' sniff crossbow`.map(
     (item) =>
       new BonusGear(item, {
-        worksOnRun: true,
+        outcomes: ["win", "run"],
         requireOwned: false,
         modes: [...FREE_MODES, BonusEquipMode.BARF],
         value: () => {
@@ -525,7 +510,6 @@ const stickerWeapons =
   );
 
 const powerGlove = new BonusGear($item`Powerful Glove`, {
-  worksOnRun: false,
   value: () =>
     0.25 *
     garboAverageValue(
@@ -550,7 +534,6 @@ const MAX_SNEEGLEEB_PRICE = 100_000; // arbitrary, to help avoid outliers
 const sneegleebs = $items`KoL Con 13 snowglobe, can of mixed everything`.map(
   (item) =>
     new BonusGear(item, {
-      worksOnRun: false,
       value: () => {
         sneegleebBonus ??=
           (sum(POSSIBLE_SNEEGLEEB_DROPS, (item) =>
@@ -594,7 +577,6 @@ const CUP_OF_THIRTEENS_DROPS = POSSIBLE_SNEEGLEEB_DROPS.filter(
 let cupOfThirteensBonus: [string, number] | undefined;
 
 const cupOfThirteens = new BonusGear($item`Cup of 13s`, {
-  worksOnRun: false,
   modes: LIMITED_DROP_MODES,
   value: () => {
     const dropsToday = get("_cupOf13sDrops");
