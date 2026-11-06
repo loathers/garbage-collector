@@ -342,6 +342,11 @@ You can use multiple options in conjunction, e.g. "garbo nobarf ascend"',
       () => false,
       "",
     ),
+    targetAngryTourists: Args.custom<boolean>(
+      { hidden: true, default: false },
+      () => false,
+      "",
+    ),
     dietCompleted: Args.flag({
       hidden: true,
       default: false,

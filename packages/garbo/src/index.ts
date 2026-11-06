@@ -85,6 +85,7 @@ import {
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
 import { FarmingStrategy } from "./farmingStrategy";
+import { shouldTargetAngryTourists } from "./familiar/barfFamiliar";
 import { runGarboFarmQuests, runGarboQuests } from "./tasks/engine";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -559,6 +560,7 @@ export function main(argString = ""): void {
         meatMood().execute(estimatedGarboTurns());
         runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
         if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
+        globalOptions.targetAngryTourists = shouldTargetAngryTourists();
         try {
           runGarboFarmQuests([PostQuest(), ...FarmQuests()]);
           runGarboQuests([FinishUpQuest]);

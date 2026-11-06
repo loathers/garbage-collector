@@ -13,6 +13,8 @@ import {
   $familiar,
   $item,
   $items,
+  $location,
+  $monster,
   clamp,
   findLeprechaunMultiplier,
   get,
@@ -25,7 +27,7 @@ import {
 } from "libram";
 import { NumericModifier } from "libram/dist/modifierTypes";
 import { bonusGear } from "../outfit/dropsgear";
-import { HIGHLIGHT } from "../lib";
+import { expectedDropValue, HIGHLIGHT } from "../lib";
 import { computeBarfOutfit } from "../outfit/barf";
 import { estimatedGarboTurns } from "../turns";
 import { getAllDrops } from "./dropFamiliars";
@@ -40,8 +42,8 @@ import {
   turnsAvailable,
 } from "./lib";
 import { meatFamiliar } from "./meatFamiliar";
-import { garboValue } from "../garboValue";
-import { FarmingStrategy } from "../farmingStrategy";
+import { garboKnuckleboneValue, garboValue } from "../garboValue";
+import { expectedBarfMonsterRates, FarmingStrategy } from "../farmingStrategy";
 import { BonusEquipMode } from "../outfit/lib";
 import {
   CachedOutfit,
@@ -133,10 +135,13 @@ function familiarModifier(
   );
 }
 
-function familiarAbilityValue(familiar: Familiar) {
+function familiarAbilityValue(
+  familiar: Familiar,
+  itemDropValue = FarmingStrategy.itemDropValue(),
+) {
   return (
     familiarModifier(familiar, "Meat Drop") * FarmingStrategy.meatDropValue() +
-    familiarModifier(familiar, "Item Drop") * FarmingStrategy.itemDropValue()
+    familiarModifier(familiar, "Item Drop") * itemDropValue
   );
 }
 
@@ -187,12 +192,15 @@ function turnsNeededFromBaseline(
   };
 }
 
-function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
+function calculateOutfitValue(
+  f: GeneralFamiliar,
+  itemDropValue = FarmingStrategy.itemDropValue(),
+): MarginalFamiliar {
   const outfit = getCachedOutfitValues(f.familiar);
   const outfitValue =
     outfit.bonus +
     outfit.meat * FarmingStrategy.meatDropValue() +
-    outfit.item * FarmingStrategy.itemDropValue();
+    outfit.item * itemDropValue;
   const expectedValue =
     f.expectedValue +
     (specialFamiliarOutfits.get(f.familiar)?.extraValue?.(outfit) ?? 0);
@@ -204,6 +212,56 @@ function calculateOutfitValue(f: GeneralFamiliar): MarginalFamiliar {
     outfitValue,
     outfitWeight,
   };
+}
+
+/** Decide once farming buffs are active, before choosing Barf's sniff target. */
+export function shouldTargetAngryTourists(): boolean {
+  if (
+    FarmingStrategy.location !== $location`Barf Mountain` ||
+    !SkeletonOfCrimboPast.have() ||
+    get("_knuckleboneDrops") >= 100 ||
+    get("garbo_IgnoreMarginalFamiliars", false) ||
+    garboKnuckleboneValue() <= 0
+  ) {
+    return false;
+  }
+
+  // Evaluate the prospective sniff explicitly, so the current sniff cannot
+  // determine whether the familiar that benefits from changing it is worthwhile.
+  const monsterRates = expectedBarfMonsterRates($monster`angry tourist`);
+  const itemDropValue =
+    sum(
+      [...monsterRates.entries()],
+      ([monster, rate]) => rate * expectedDropValue(monster),
+    ) / 100;
+  const familiars = menu(
+    { target: monsterRates, location: $location`Barf Mountain` },
+    { mode: "barf" },
+  )
+    .filter(
+      ({ familiar, limit }) =>
+        limit === "none" ||
+        (familiar === $familiar`Skeleton of Crimbo Past` &&
+          limit === "special"),
+    )
+    .map((familiar) => calculateOutfitValue(familiar, itemDropValue));
+
+  const skeleton = familiars.find(
+    ({ familiar, limit }) =>
+      familiar === $familiar`Skeleton of Crimbo Past` && limit === "special",
+  );
+  if (!skeleton) return false;
+
+  const value = (familiar: MarginalFamiliar) =>
+    familiar.expectedValue +
+    familiar.outfitValue +
+    familiarAbilityValue(familiar.familiar, itemDropValue);
+  // The menu always includes our meat familiar as an unlimited option.
+  const cruisingFamiliar = maxBy(
+    familiars.filter(({ limit }) => limit === "none"),
+    value,
+  );
+  return value(skeleton) > value(cruisingFamiliar);
 }
 
 function extraValue(
