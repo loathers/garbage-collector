@@ -36,12 +36,12 @@ const dailySpecials = new Map<PriceTier, Item[]>([
 
 /**
  * Value the next knucklebone after reserving enough for two of each better
- * daily special. Two purchases assume one ascension on the day it is offered.
- * Prices are evaluated lazily and cached; the bone balance is read on each call.
+ * daily special. Prices are evaluated lazily and cached; current bone balance
+ * is read on each call.
  * This models one rotation of the special pool, without forecasting future drops.
  *
- * @param value The value of a tradeable reward.
- * @returns A marginal Meat/bone valuation, optionally at a supplied bone balance.
+ * @param value Value function for a tradeable reward.
+ * @returns A knucklebone valuation function, with an optional arg for available bones.
  */
 export function makeKnuckleboneValue(
   value: (item: Item) => number,
