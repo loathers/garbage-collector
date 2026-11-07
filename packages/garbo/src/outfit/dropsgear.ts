@@ -84,9 +84,13 @@ export function luckyGoldRingDropValues(
       itemAmount($item`hobo nickel`) > 0 ? 100 : 0, // This should be closeted
       itemAmount($item`sand dollar`) > 0 ? garboValue($item`sand dollar`) : 0, // This should be closeted
       includeFreddy ? garboValue($item`Freddy Kruegerand`) : 0,
-      ...lgrCurrencies().map((i) =>
-        i === $item`Volcoino` && !includeVolcoino ? 0 : garboValue(i),
-      ),
+      ...lgrCurrencies().map((i) => {
+        if (i === $item`Volcoino` && !includeVolcoino) return 0;
+
+        // Libram only includes the 0.
+        if (i === $item`0`) return garboAverageValue(...$items`0, 1`);
+        return garboValue(i);
+      }),
     ].filter((value) => value > 0),
   ];
 
@@ -97,7 +101,7 @@ const luckyGoldRing = new BonusGear($item`lucky gold ring`, {
   modes: [...LIMITED_DROP_MODES, BonusEquipMode.MEAT_TARGET],
   value: (mode) => {
     const dropValues = luckyGoldRingDropValues(
-      !(mode === BonusEquipMode.MEAT_TARGET && !globalOptions.nobarf), // Volcoino drops once per day, only wear during meat targets if nobarf
+      !(mode === BonusEquipMode.MEAT_TARGET && !globalOptions.nobarf), // Save the two daily Volcoinos for lower-Meat fights unless nobarf
       itemAmount($item`Freddy Kruegerand`) > 0,
     );
 
