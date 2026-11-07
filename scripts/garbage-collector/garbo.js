@@ -20468,7 +20468,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"c2ea74fb8beeffd656aa4013ec81295212735ea7"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"5058569f3e4bae2c13c839302d623f079597c9f6"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -29576,10 +29576,25 @@ function ghostAdventure() {
 // These are only for day 1 swapping after doing black rose (or any other similar garden)
 var harvestableGardens = [{
   seedPacket: $item`packet of rock seeds`,
-  harvestables: $items`groveling gravel, milestone, whet stone`
+  harvestables: [[$item`groveling gravel`, 1], [$item`milestone`, 1], [$item`whet stone`, 1]]
 }, {
   seedPacket: $item`packet of pumpkin seeds`,
-  harvestables: $items`pumpkin`
+  harvestables: [[$item`pumpkin`, 1]]
+}, {
+  seedPacket: $item`Peppermint Pip Packet`,
+  harvestables: [[$item`peppermint sprout`, 3]]
+}, {
+  seedPacket: $item`packet of dragon's teeth`,
+  harvestables: [[$item`skeleton`, 5]]
+}, {
+  seedPacket: $item`packet of beer seeds`,
+  harvestables: [[$item`handful of barley`, 3], [$item`cluster of hops`, 3]]
+}, {
+  seedPacket: $item`packet of winter seeds`,
+  harvestables: [[$item`snow berries`, 3], [$item`ice harvest`, 3]]
+}, {
+  seedPacket: $item`packet of thanksgarden seeds`,
+  harvestables: [[$item`cornucopia`, 1]]
 }];
 function currentGarden() {
   return Object.values(GARDEN_ITEMS).find(garden => haveInCampground(garden));
@@ -29626,10 +29641,12 @@ function bestHarvestSwap() {
     if (ownedGardens.length <= 0) {
       cachedbestHarvestSwap = kolmafia.Item.none;
     } else {
-      cachedbestHarvestSwap = maxBy(ownedGardens, garden => {
-        var value = sum(garden.harvestables, garboValue);
-        return value;
-      }).seedPacket;
+      cachedbestHarvestSwap = maxBy(ownedGardens, garden => sum(garden.harvestables, _ref => {
+        var _ref2 = _slicedToArray(_ref, 2),
+          item = _ref2[0],
+          quantity = _ref2[1];
+        return quantity * garboValue(item);
+      })).seedPacket;
     }
   }
   return cachedbestHarvestSwap;
