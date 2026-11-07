@@ -264,9 +264,7 @@ function familiarSpec(underwater: boolean, fight: CopyTargetFight): OutfitSpec {
   if (
     ChestMimic.have() &&
     $familiar`Chest Mimic`.experience >= 50 &&
-    get("_mimicEggsObtained") < 11 &&
-    // switchmonster doesn't apply ML, meaning the target monsters die too quickly to get multiple eggs in
-    !["Macrometeorite", "Powerful Glove", "Backup"].includes(fight.name)
+    get("_mimicEggsObtained") < 11
   ) {
     return { familiar: $familiar`Chest Mimic` };
   }
