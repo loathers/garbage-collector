@@ -20,7 +20,11 @@ import {
   FamiliarMenuOptions,
   freeFightFamiliar,
 } from "../familiar/freeFightFamiliar";
-import { MEAT_TARGET_MULTIPLIER } from "../lib";
+import {
+  CombatOutcomes,
+  combatOutcomeWeight,
+  MEAT_TARGET_MULTIPLIER,
+} from "../lib";
 import { AdventureArgument, toAdventure, wanderer } from "../garboWanderer";
 
 import { chooseBjorn } from "./bjorn";
@@ -65,7 +69,8 @@ const famExpValue = new Map<Familiar, Delayed<number>>([
 
 export type FreeFightOutfitMenuOptions = {
   duplicate?: boolean;
-  familiarOptions?: FamiliarMenuOptions;
+  outcomes?: CombatOutcomes;
+  familiarOptions?: Omit<FamiliarMenuOptions, "outcomes">;
   // Remaining fights in a stint that requires a familiar from the spec or wanderer plan.
   combatCount?: number;
 };
@@ -106,10 +111,14 @@ export function freeFightOutfit(
   }
 
   const requiredFamiliar = outfit.familiar;
+  const outcomes =
+    options.outcomes ??
+    (options.familiarOptions?.mode === "run" ? "run" : "win");
+  const winWeight = combatOutcomeWeight(outcomes, ["win"]);
   outfit.familiar ??= freeFightFamiliar(
     adventure,
     computeFamiliarMenuOptions(
-      options.familiarOptions,
+      { ...options.familiarOptions, outcomes },
       options.duplicate ?? false,
       outfit,
     ),
@@ -120,7 +129,8 @@ export function freeFightOutfit(
       : BonusEquipMode.FREE;
 
   if (outfit.familiar !== $familiar`Patriotic Eagle`) {
-    const familiarExpValue = undelay(famExpValue.get(outfit.familiar));
+    const familiarExpValue =
+      (undelay(famExpValue.get(outfit.familiar)) ?? 0) * winWeight;
 
     outfit.modifier.push(
       familiarExpValue
@@ -135,7 +145,7 @@ export function freeFightOutfit(
     outfit.setBonus($item`vampyric cloake`, 500);
   }
 
-  outfit.addBonuses(bonusGear(mode));
+  outfit.addBonuses(bonusGear(mode, { outcomes }));
   applyCheeseBonus(outfit, mode);
 
   outfit.setBonus($item`tiny stillsuit`, stillsuitBonus());
@@ -160,7 +170,7 @@ export function freeFightOutfit(
   ) {
     outfit.addBonus(
       $item`Guzzlr pants`,
-      Guzzlr.expectedReward(true) - Guzzlr.expectedReward(false),
+      (Guzzlr.expectedReward(true) - Guzzlr.expectedReward(false)) * winWeight,
     );
   }
 
@@ -168,7 +178,7 @@ export function freeFightOutfit(
     outfit.canEquip(item),
   );
   if (bjornalike) {
-    outfit.setBonus(bjornalike, bjornChoice.value);
+    outfit.setBonus(bjornalike, bjornChoice.value * winWeight);
     const other = $items`Buddy Bjorn, Crown of Thrones`.filter(
       (i) => i !== bjornalike,
     )[0];

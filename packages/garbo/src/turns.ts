@@ -1,29 +1,107 @@
 import {
   fullnessLimit,
   inebrietyLimit,
+  Item,
   myAdventures,
+  myClass,
   myFullness,
   myInebriety,
   myTurncount,
+  toSlot,
 } from "kolmafia";
-import { $familiar, $item, clamp, get, have, SourceTerminal } from "libram";
+import {
+  $class,
+  $familiar,
+  $item,
+  $skill,
+  $slot,
+  clamp,
+  get,
+  getModifier,
+  have,
+  SourceTerminal,
+} from "libram";
 import { globalOptions } from "./config";
-// Dumb circular import stuff
-import { usingThumbRing } from "./outfit/dropsgearAccessories";
+import { bonusGear } from "./outfit/dropsgear";
+import { BonusEquipMode } from "./outfit/lib";
+import { FarmingStrategy } from "./farmingStrategy";
 import { copyTargetCount } from "./target/fights";
 import {
+  basePointerRingMeat,
   ESTIMATED_OVERDRUNK_TURNS,
   howManySausagesCouldIEat,
   targetingMeat,
+  withLocation,
 } from "./lib";
 import { embezzlerFights } from "./tasks/embezzler";
 import { nextWeekFights } from "./resources/sealclub";
 import { LuckySource } from "./resources/lucky";
 
-/**
- * Computes the estimated number of turns during which garbo will run
- * @returns A guess of how many runs garbo will run in total
- */
+let cachedUsingThumbRing: boolean | null = null;
+function usingThumbRing(): boolean {
+  if (!have($item`mafia thumb ring`)) {
+    return false;
+  }
+  if (cachedUsingThumbRing === null) {
+    // Select accessories before valuation: Pantsgiving and other gear ask for
+    // this turn estimate themselves. Use stable bonuses for the all-day forecast.
+    const gear = bonusGear(BonusEquipMode.BARF, {
+      slot: $slot`acc1`,
+      simulate: true,
+    });
+    const accessoryBonuses = [...gear.entries()].filter(([item]) => have(item));
+
+    // Mafia resolves env()/zone()/loc() modifiers against the last location
+    // set, so restore it or unrelated gear is priced against this one.
+    const meatAccessories = withLocation(FarmingStrategy.location, () =>
+      Item.all()
+        .filter(
+          (item) =>
+            have(item) &&
+            toSlot(item) === $slot`acc1` &&
+            getModifier("Meat Drop", item) > 0,
+        )
+        .map(
+          (item) =>
+            [
+              item,
+              getModifier("Meat Drop", item) * FarmingStrategy.meatDropValue(),
+            ] as [Item, number],
+        ),
+    );
+
+    const accessoryValues = new Map<Item, number>(accessoryBonuses);
+    for (const [accessory, value] of meatAccessories) {
+      accessoryValues.set(
+        accessory,
+        value + (accessoryValues.get(accessory) ?? 0),
+      );
+    }
+
+    if (
+      have($item`mafia pointer finger ring`) &&
+      ((myClass() === $class`Seal Clubber` && have($skill`Furious Wallop`)) ||
+        have($item`haiku katana`) ||
+        have($item`Operation Patriot Shield`) ||
+        have($item`unwrapped knock-off retro superhero cape`) ||
+        have($item`left bear arm`) ||
+        have($skill`Head in the Game`))
+    ) {
+      accessoryValues.set(
+        $item`mafia pointer finger ring`,
+        basePointerRingMeat(),
+      );
+    }
+    const bestAccessories = [...accessoryValues.entries()]
+      .sort(([, aBonus], [, bBonus]) => bBonus - aBonus)
+      .map(([item]) => item);
+    cachedUsingThumbRing = bestAccessories
+      .slice(0, 2)
+      .includes($item`mafia thumb ring`);
+  }
+  return cachedUsingThumbRing;
+}
+
 export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
   // Assume roughly 2 fullness from pantsgiving and 8 adventures/fullness.
   const pantsgivingAdventures = have($item`Pantsgiving`)

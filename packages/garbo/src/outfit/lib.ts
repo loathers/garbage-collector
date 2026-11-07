@@ -14,6 +14,7 @@ import {
   myClass,
   myInebriety,
   numericModifier,
+  Slot,
   toInt,
   toSlot,
   visitUrl,
@@ -27,17 +28,24 @@ import {
   $slot,
   $slots,
   ActionSource,
+  Delayed,
   findLeprechaunMultiplier,
   get,
   getFoldGroup,
   have,
   Requirement,
+  undelay,
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
 import { familiarCanBreathe } from "../familiar/familiarHelpers";
 import { meatFamiliar } from "../familiar/meatFamiliar";
-import { targetMeat } from "../lib";
+import {
+  CombatOutcome,
+  CombatOutcomes,
+  combatOutcomeWeight,
+  targetMeat,
+} from "../lib";
 import {
   estimatedGarboTurns,
   highMeatMonsterCount,
@@ -52,16 +60,83 @@ export enum BonusEquipMode {
   BARF,
 }
 
-export function modeIsFree(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.FREE, BonusEquipMode.DMT].includes(mode);
+export const FREE_MODES: readonly BonusEquipMode[] = [
+  BonusEquipMode.FREE,
+  BonusEquipMode.DMT,
+];
+
+export const LIMITED_DROP_MODES: readonly BonusEquipMode[] = [
+  BonusEquipMode.FREE,
+  BonusEquipMode.BARF,
+];
+
+type BonusGearOptions = {
+  outcomes?: readonly CombatOutcome[];
+  circumstantial?: boolean;
+  requireOwned?: boolean;
+  modes?: readonly BonusEquipMode[];
+  available?: Delayed<boolean, [mode: BonusEquipMode]>;
+  value: Delayed<number | null, [mode: BonusEquipMode]>;
+};
+
+export class BonusGear {
+  readonly circumstantial: boolean;
+
+  constructor(
+    readonly item: Item,
+    private readonly options: BonusGearOptions,
+  ) {
+    this.circumstantial = options.circumstantial ?? false;
+  }
+
+  value(mode: BonusEquipMode, outcomes: CombatOutcomes = "win"): number | null {
+    if (this.options.modes && !this.options.modes.includes(mode)) {
+      return null;
+    }
+    if (
+      (this.options.requireOwned !== false && !have(this.item)) ||
+      !undelay(this.options.available ?? true, mode)
+    ) {
+      return null;
+    }
+
+    // State and price reads must wait until valuation, after startup setup.
+    const value = undelay(this.options.value, mode);
+    // Weight after valuation so cached base values stay independent of the outcome mix.
+    return value === null
+      ? null
+      : value * combatOutcomeWeight(outcomes, this.options.outcomes ?? ["win"]);
+  }
 }
 
-export function modeUseLimitedDrops(mode: BonusEquipMode): boolean {
-  return [BonusEquipMode.BARF, BonusEquipMode.FREE].includes(mode);
+export type BonusGearSelection = {
+  simulate?: boolean;
+  slot?: Slot;
+  outcomes?: CombatOutcomes;
+};
+
+export function bonusGearValues(
+  gear: readonly BonusGear[],
+  mode: BonusEquipMode,
+  options: BonusGearSelection = {},
+): Map<Item, number> {
+  return new Map(
+    gear
+      .filter(
+        (bonusGear) =>
+          (!options.simulate || !bonusGear.circumstantial) &&
+          (!options.slot || toSlot(bonusGear.item) === options.slot),
+      )
+      .flatMap((bonusGear) => {
+        const value = bonusGear.value(mode, options.outcomes);
+        // An explicit zero or negative bonus still matters to the outfit.
+        return value === null ? [] : [[bonusGear.item, value] as const];
+      }),
+  );
 }
 
 export function modeValueOfMeat(mode: BonusEquipMode): number {
-  if (modeIsFree(mode)) return 0;
+  if (FREE_MODES.includes(mode)) return 0;
   if (mode === BonusEquipMode.BARF) return FarmingStrategy.meatDropValue();
   if (mode === BonusEquipMode.MEAT_TARGET) return targetMeat() / 100;
   return 0;

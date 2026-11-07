@@ -35,6 +35,7 @@ import { GarboStrategy } from "../../combatStrategy";
 import { globalOptions } from "../../config";
 import { getUsingFreeBunnyBanish } from "../../lib";
 import { magnifyingGlass } from "../../outfit/dropsgear";
+import { BonusEquipMode, bonusGearValues } from "../../outfit/lib";
 import { freeFightOutfit } from "../../outfit/free";
 import { crateStrategy, doingGregFight } from "../../resources/extrovermectin";
 import {
@@ -152,7 +153,7 @@ function pygmyTask({
           avoid: $items`Staff of Queso Escusado, stinky cheese sword`,
           bonuses: new Map([
             [$item`garbage sticker`, 100],
-            ...magnifyingGlass(),
+            ...bonusGearValues([magnifyingGlass], BonusEquipMode.FREE),
           ]),
         },
         { location: alley, target: drunk },

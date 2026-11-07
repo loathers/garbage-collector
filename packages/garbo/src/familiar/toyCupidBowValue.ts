@@ -64,7 +64,7 @@ export function familiarEquipmentValue(familiar: Familiar): number {
       familiar,
     )
   ) {
-    return garboValue($item`lead necklace`);
+    return garboValue($item`heart necklace`);
   }
   return garboValue(familiarEquipment(familiar));
 }
@@ -232,7 +232,11 @@ export function getCupidBowValues(
   );
   const dropBonuses = new Map(
     equippableFamiliars
-      .filter((familiar) => !usedFamiliars.has(familiar))
+      // Don't want to equip doppel by accident
+      .filter(
+        (familiar) =>
+          !usedFamiliars.has(familiar) && familiar !== $familiar`Doppelshifter`,
+      )
       .map((familiar) => {
         const fightsLeft = tcbTurnsLeft(familiar, usedFamiliars);
         return [
