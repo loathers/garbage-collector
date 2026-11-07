@@ -15,18 +15,48 @@ import { garboValue } from "../garboValue";
 
 export type HarvestableGarden = {
   seedPacket: Item;
-  harvestables: Item[];
+  harvestables: [Item, number][];
 };
 
 // These are only for day 1 swapping after doing black rose (or any other similar garden)
 const harvestableGardens: HarvestableGarden[] = [
   {
     seedPacket: $item`packet of rock seeds`,
-    harvestables: $items`groveling gravel, milestone, whet stone`,
+    harvestables: [
+      [$item`groveling gravel`, 1],
+      [$item`milestone`, 1],
+      [$item`whet stone`, 1],
+    ],
   },
   {
     seedPacket: $item`packet of pumpkin seeds`,
-    harvestables: $items`pumpkin`,
+    harvestables: [[$item`pumpkin`, 1]],
+  },
+  {
+    seedPacket: $item`Peppermint Pip Packet`,
+    harvestables: [[$item`peppermint sprout`, 3]],
+  },
+  {
+    seedPacket: $item`packet of dragon's teeth`,
+    harvestables: [[$item`skeleton`, 5]],
+  },
+  {
+    seedPacket: $item`packet of beer seeds`,
+    harvestables: [
+      [$item`handful of barley`, 3],
+      [$item`cluster of hops`, 3],
+    ],
+  },
+  {
+    seedPacket: $item`packet of winter seeds`,
+    harvestables: [
+      [$item`snow berries`, 3],
+      [$item`ice harvest`, 3],
+    ],
+  },
+  {
+    seedPacket: $item`packet of thanksgarden seeds`,
+    harvestables: [[$item`cornucopia`, 1]],
   },
 ];
 
@@ -107,10 +137,12 @@ export function bestHarvestSwap(): Item {
     if (ownedGardens.length <= 0) {
       cachedbestHarvestSwap = Item.none;
     } else {
-      cachedbestHarvestSwap = maxBy(ownedGardens, (garden) => {
-        const value = sum(garden.harvestables, garboValue);
-        return value;
-      }).seedPacket;
+      cachedbestHarvestSwap = maxBy(ownedGardens, (garden) =>
+        sum(
+          garden.harvestables,
+          ([item, quantity]) => quantity * garboValue(item),
+        ),
+      ).seedPacket;
     }
   }
   return cachedbestHarvestSwap;
