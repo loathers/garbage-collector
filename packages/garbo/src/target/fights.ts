@@ -93,7 +93,6 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
   execute: (options: RunOptions) => void;
   spec: OutfitSpec;
   draggable?: DraggableFight;
-  canInitializeWandererCounters: boolean;
   wrongEncounterName: boolean;
   gregariousReplace: boolean;
   location?: Location;
@@ -120,9 +119,6 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
    *      .step(options.macro); // you should always include the macro passed in via options, as it may have special considerations for this fight
    *    withMacro(macro, () => useItem($item`screen capped monster`));
    *  },
-   *  {
-   *    canInitializeWandererCounts: false; // this copy cannot be used to start wanderer counters, since the combats are not adv.php
-   *  }
    * )
    */
   constructor(
@@ -143,8 +139,6 @@ export class CopyTargetFight implements CopyTargetFightConfigOptions {
     this.execute = execute;
     this.spec = options.spec ?? {};
     this.draggable = options.draggable;
-    this.canInitializeWandererCounters =
-      options.canInitializeWandererCounters ?? false;
     this.gregariousReplace = options.gregariousReplace ?? false;
     this.wrongEncounterName =
       options.wrongEncounterName ?? this.gregariousReplace;
@@ -599,9 +593,6 @@ const gregFights = (
           }
         }
       },
-      {
-        canInitializeWandererCounters: true,
-      },
     ),
     new CopyTargetFight(
       `${name} (Set Up Crystal Ball)`,
@@ -620,7 +611,6 @@ const gregFights = (
         spec: {
           equip: $items`miniature crystal ball`.filter((item) => have(item)),
         },
-        canInitializeWandererCounters: true,
       },
     ),
   ];
@@ -708,7 +698,6 @@ const conditionalSources = [
     },
     {
       spec: { equip: $items`miniature crystal ball` },
-      canInitializeWandererCounters: true,
     },
   ),
   new CopyTargetFight(
@@ -838,7 +827,6 @@ const conditionalSources = [
       spec: { equip: $items`backup camera`, modes: { backupcamera: "meat" } },
       draggable: "backup",
       wrongEncounterName: true,
-      canInitializeWandererCounters: true,
     },
   ),
 ];
