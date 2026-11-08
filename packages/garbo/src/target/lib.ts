@@ -14,8 +14,9 @@ import {
   $location,
   CrystalBall,
   get,
+  getStep,
   have,
-  questStep,
+  QuestState,
   withChoice,
   withChoices,
 } from "libram";
@@ -34,14 +35,12 @@ import { FarmingStrategy } from "../farmingStrategy";
  * @interface TargetFightConfigOptions
  * @member {OutfitSpec} spec maximizer requirements to use for this fight (defaults to empty)
  * @member {draggableFight?} draggable if this fight can be pulled into another zone and what kind of draggable it is (defaults to undefined)
- * @member {boolean?} canInitializeWandererCounters if this fight can be used to initialize wanderers (defaults to false)
  * @member {boolean?} gregariousReplace if this is a "monster replacement" fight - pulls another monster from the CSV (defautls to false)
  * @member {boolean?} wrongEncounterName if mafia does not update the lastEncounter properly when doing this fight (defaults to value of gregariousReplace)
  */
 export interface TargetFightConfigOptions {
   spec?: OutfitSpec;
   draggable?: DraggableFight;
-  canInitializeWandererCounters?: boolean;
   wrongEncounterName?: boolean;
   gregariousReplace?: boolean;
   location?: Location;
@@ -57,7 +56,7 @@ export interface RunOptions {
 export function checkUnderwater(): boolean {
   // first check to see if underwater even makes sense
   if (
-    questStep("questS01OldGuy") >= 0 &&
+    getStep("questS01OldGuy") >= QuestState.STARTED &&
     !(get("_envyfishEggUsed") || have($item`envyfish egg`)) &&
     (get("_garbo_weightChain", false) || !have($familiar`Pocket Professor`)) &&
     (booleanModifier("Adventure Underwater") ||
@@ -88,7 +87,7 @@ export function checkUnderwater(): boolean {
 
 type ChangeLastAdvLocationMethod = "hiddencity" | "dailydungeon";
 export function getChangeLastAdvLocationMethod(): ChangeLastAdvLocationMethod {
-  if (questStep("questL11Worship") > 3) {
+  if (getStep("questL11Worship") > 3) {
     return "hiddencity";
   } else {
     return "dailydungeon";

@@ -48,8 +48,9 @@ export function setBestLeprechaunAsMeatFamiliar(): void {
 
 export function meatFamiliar(): Familiar {
   return (fam ??=
-    $familiars`Robortender, Jill-of-All-Trades`.find(have) ??
-    findBestLeprechaun());
+    $familiars`Robortender, Jill-of-All-Trades`.find((familiar) =>
+      have(familiar),
+    ) ?? findBestLeprechaun());
 }
 
 const familiarWaterBreathingEquipment = $items`das boot, little bitty bathysphere`;
@@ -73,7 +74,9 @@ export function underwaterMeatFamiliar(): Familiar {
   const fallback = meatFamiliar();
   if (familiarCanBreathe(fallback)) return fallback;
 
-  const breathingEquipment = familiarWaterBreathingEquipment.filter(have);
+  const breathingEquipment = familiarWaterBreathingEquipment.filter((item) =>
+    have(item),
+  );
   if (!breathingEquipment.length) return fallback;
 
   const assumedFreeSlotEquipment = have($item`amulet coin`)

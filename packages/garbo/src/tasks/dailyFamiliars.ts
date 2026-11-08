@@ -25,7 +25,7 @@ import {
   ToyCupidBow,
   withProperty,
 } from "libram";
-import { withStash } from "../clan";
+import { stash } from "../stash";
 import { globalOptions } from "../config";
 import {
   meatFamiliar,
@@ -244,7 +244,7 @@ const DailyFamiliarTasks: GarboTask[] = [
       have($item`moveable feast`) || globalOptions.prefs.stashClan !== "none",
     completed: () => get("_feastUsed") > 0,
     do: (): void => {
-      withStash($items`moveable feast`, () => {
+      stash.with($items`moveable feast`, () => {
         if (have($item`moveable feast`)) {
           [
             ...$familiars`Pocket Professor, Frumious Bandersnatch, Pair of Stomping Boots`,

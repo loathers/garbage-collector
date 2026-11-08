@@ -1,6 +1,5 @@
 import {
   canAdventure,
-  choiceFollowsFight,
   cliExecute,
   Effect,
   effectModifier,
@@ -11,9 +10,7 @@ import {
   getLocketMonsters,
   getMonsters,
   gitInfo,
-  handlingChoice,
   haveEquipped,
-  haveSkill,
   holiday,
   inebrietyLimit,
   isDarkMode,
@@ -37,19 +34,15 @@ import {
   myMp,
   mySpleenUse,
   myThrall,
-  myTurncount,
   numericModifier,
   print,
   rollover,
-  runChoice,
-  runCombat,
   setLocation,
   Skill,
   spleenLimit,
   Stat,
   todayToString,
   totalFreeRests,
-  toUrl,
   use,
   useFamiliar,
   userConfirm,
@@ -68,6 +61,7 @@ import {
   $thralls,
   ActionSource,
   bestLibramToCast,
+  Cartography,
   ChateauMantegna,
   clamp,
   ClosedCircuitPayphone,
@@ -90,6 +84,7 @@ import {
   SongBoom,
   SourceTerminal,
   sum,
+  sumNumbers,
   tryFindBanish,
   tryFindFreeRun,
 } from "libram";
@@ -97,7 +92,36 @@ import { acquire } from "./acquire";
 import { globalOptions } from "./config";
 import { garboAverageValue, garboValue } from "./garboValue";
 import { Outfit, OutfitSpec } from "grimoire-kolmafia";
-import { Macro } from "./combat";
+
+export type CombatOutcome = "win" | "run";
+export type CombatOutcomes =
+  | CombatOutcome
+  | Partial<Record<CombatOutcome, number>>;
+
+export function combatOutcomeWeight(
+  outcomes: CombatOutcomes,
+  rewardedOutcomes: readonly CombatOutcome[],
+): number {
+  if (typeof outcomes === "string") {
+    return rewardedOutcomes.includes(outcomes) ? 1 : 0;
+  }
+
+  const weights = Object.values(outcomes);
+  const totalWeight = sumNumbers(weights);
+  if (
+    weights.some((weight) => !Number.isFinite(weight) || weight < 0) ||
+    totalWeight <= 0
+  ) {
+    throw new Error(
+      "Combat outcome weights must be nonnegative and have a positive total.",
+    );
+  }
+
+  // Accept relative weights as well as probabilities that already sum to one.
+  return (
+    sum(rewardedOutcomes, (outcome) => outcomes[outcome] ?? 0) / totalWeight
+  );
+}
 
 export const eventLog: {
   initialCopyTargetsFought: number;
@@ -112,6 +136,7 @@ export const eventLog: {
 };
 
 export const WISH_VALUE = 50000;
+export const YACHTZEE_VALUE = 20_000;
 export const HIGHLIGHT = isDarkMode() ? "yellow" : "blue";
 export const ESTIMATED_OVERDRUNK_TURNS = 50;
 export const MEAT_TARGET_MULTIPLIER = (): number =>
@@ -216,53 +241,8 @@ export function shuffle<T>(array: T[]): T[] {
 }
 
 export function mapMonster(location: Location, monster: Monster): void {
-  if (
-    haveSkill($skill`Map the Monsters`) &&
-    !get("mappingMonsters") &&
-    get("_monstersMapped") < 3
-  ) {
-    useSkill($skill`Map the Monsters`);
-  }
-
-  if (!get("mappingMonsters")) throw "Failed to setup Map the Monsters.";
-
-  const myTurns = myTurncount();
-  let mapPage = "";
-  // Handle zone intros and holiday wanderers
-  for (let tries = 0; tries < 10; tries++) {
-    mapPage = visitUrl(toUrl(location), false, true);
-    if (mapPage.includes("Leading Yourself Right to Them")) break;
-    // Time-pranks can show up here, annoyingly
-    if (
-      mapPage.includes("<!-- MONSTERID: 1965 -->") ||
-      mapPage.includes("<!-- MONSTERID: 1622  -->")
-    ) {
-      runCombat(Macro.attack().repeat().toString());
-    }
-    if (handlingChoice()) runChoice(-1);
-    if (myTurncount() > myTurns + 1) throw `Map the monsters unsuccessful?`;
-    if (tries === 9) throw `Stuck trying to Map the monsters.`;
-  }
-
-  const fightPage = visitUrl(
-    `choice.php?pwd&whichchoice=1435&option=1&heyscriptswhatsupwinkwink=${monster.id}`,
-  );
-  if (!fightPage.includes(monster.name)) {
-    throw "Something went wrong starting the fight.";
-  }
-  if (choiceFollowsFight()) runChoice(-1);
-}
-
-export function questStep(questName: string): number {
-  const stringStep = property.getString(questName);
-  if (stringStep === "unstarted" || stringStep === "") return -1;
-  else if (stringStep === "started") return 0;
-  else if (stringStep === "finished") return 999;
-  else {
-    if (stringStep.substring(0, 4) !== "step") {
-      throw "Quest state parsing error.";
-    }
-    return parseInt(stringStep.substring(4), 10);
+  if (!Cartography.mapMonster(location, monster)) {
+    throw new Error(`Failed to map ${monster} in ${location}`);
   }
 }
 
@@ -309,7 +289,7 @@ export function pillkeeperOpportunityCost(): number {
     },
     {
       can: realmAvailable("sleaze"),
-      value: 20000 - get("valueOfAdventure"),
+      value: YACHTZEE_VALUE - get("valueOfAdventure"),
     },
   ].filter((x) => x.can);
 
@@ -338,7 +318,7 @@ export function pillkeeperOpportunityCost(): number {
 export function burnLibrams(mpTarget = 0): void {
   let libramToCast = bestLibramToCast();
   while (libramToCast && mpCost(libramToCast) <= myMp() - mpTarget) {
-    useSkill(libramToCast);
+    useSkill(1, libramToCast);
     libramToCast = bestLibramToCast();
   }
   if (mpTarget > 0) {
@@ -613,7 +593,6 @@ export function sober(): boolean {
 type GarboItemLists = {
   Newark: string[];
   "Feliz Navidad": string[];
-  trainset: string[];
 };
 
 export const asArray = <T>(singleOrArray: T | T[]): T[] =>
@@ -681,7 +660,7 @@ export function freeRest(): boolean {
         (sk) => -mpCost(sk),
       ); // are there any other skills that cost mana which we should blacklist?
       // Facial expressions? But this usually won't be an issue since all *NORMAL* classes have access to a level1 1mp skill
-      useSkill(bestSkill);
+      useSkill(1, bestSkill);
     }
   }
 
@@ -736,38 +715,6 @@ export function printEventLog(): void {
       HIGHLIGHT,
     );
   }
-}
-
-function untangleDigitizes(turnCount: number, chunks: number): number {
-  const turnsPerChunk = turnCount / chunks;
-  const monstersPerChunk = Math.sqrt((turnsPerChunk + 3) / 5 + 1 / 4) - 1 / 2;
-  return Math.round(chunks * monstersPerChunk);
-}
-
-export function digitizedMonstersRemainingForTurns(
-  estimatedTurns: number,
-): number {
-  if (!SourceTerminal.have()) return 0;
-
-  const digitizesLeft = SourceTerminal.getDigitizeUsesRemaining();
-  if (digitizesLeft === SourceTerminal.getMaximumDigitizeUses()) {
-    return untangleDigitizes(
-      estimatedTurns,
-      SourceTerminal.getMaximumDigitizeUses(),
-    );
-  }
-
-  const monsterCount = SourceTerminal.getDigitizeMonsterCount() + 1;
-
-  const turnsLeftAtNextMonster =
-    estimatedTurns - Counter.get("Digitize Monster");
-  if (turnsLeftAtNextMonster <= 0) return 0;
-  const turnsAtLastDigitize =
-    turnsLeftAtNextMonster + ((monsterCount + 1) * monsterCount * 5 - 3);
-  return (
-    untangleDigitizes(turnsAtLastDigitize, digitizesLeft + 1) -
-    SourceTerminal.getDigitizeMonsterCount()
-  );
 }
 
 function maxCarriedFamiliarDamage(familiar: Familiar): number {
@@ -883,10 +830,6 @@ export function felizValue(): number {
 
 export function newarkValue(): number {
   return garboAverageValue(...getDropsList("Newark"));
-}
-
-export function candyFactoryValue(): number {
-  return garboAverageValue(...getDropsList("trainset"));
 }
 
 export function aprilFoolsRufus() {

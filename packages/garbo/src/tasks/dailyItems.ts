@@ -41,13 +41,15 @@ import {
   $skill,
   $skills,
   AprilingBandHelmet,
+  BlackRoseGarden,
   BurningLeaves,
   ChateauMantegna,
   ClosedCircuitPayphone,
   get,
+  getStep,
   have,
   maxBy,
-  questStep,
+  set,
   SourceTerminal,
   sum,
   withChoice,
@@ -58,10 +60,18 @@ import { aprilFoolsRufus } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
+import { Macro } from "../combat";
+import { GarboStrategy } from "../combatStrategy";
 import { getBestAprilInstruments } from "../resources/aprilingband";
 import { archaeologySpadeTask } from "../resources/archaelogistSpade";
 import { candyMapDailyTasks } from "../resources/candyMap";
 import { doingGregFight } from "../resources/extrovermectin";
+import {
+  bestHarvestSwap,
+  blackRoseWillGrow,
+  canSwapGarden,
+  harvestGarden,
+} from "../resources/garden";
 import { leprecondoTask } from "../resources/leprecondo";
 import { mayamCalendarSummon } from "../resources/mayam";
 import { augustSummonTasks } from "../resources/scepter";
@@ -190,9 +200,11 @@ function getBestDevilerCandy(): Item {
 }
 
 const chooseAprilFamiliar = () => {
-  const experienceFamiliars = getExperienceFamiliars("free").filter(
-    ({ familiar }) => familiar.experience <= 360,
-  );
+  const experienceFamiliars = getExperienceFamiliars(
+    "free",
+    40,
+    "award",
+  ).filter(({ familiar }) => familiar.experience <= 360);
   if (experienceFamiliars.length) {
     return maxBy(experienceFamiliars, "expectedValue").familiar;
   }
@@ -496,7 +508,7 @@ const DailyItemTasks: GarboTask[] = [
     name: "Request Sandwich",
     ready: () => have($skill`Request Sandwich`),
     completed: () => get("_requestSandwichSucceeded"),
-    do: () => useSkill($skill`Request Sandwich`),
+    do: () => useSkill(1, $skill`Request Sandwich`),
     limit: { skip: 10 },
     spendsTurn: false,
   },
@@ -504,7 +516,7 @@ const DailyItemTasks: GarboTask[] = [
     name: "Demand Sandwich",
     ready: () => have($skill`Demand Sandwich`),
     completed: () => get("_demandSandwich") > 0,
-    do: () => useSkill($skill`Demand Sandwich`),
+    do: () => useSkill(1, $skill`Demand Sandwich`),
     spendsTurn: false,
   },
   {
@@ -560,7 +572,7 @@ const DailyItemTasks: GarboTask[] = [
     do: () => {
       const knives = $items`boot knife, broken beer bottle, sharpened spoon, candy knife, soap knife`;
       knives.forEach((item) => putCloset(itemAmount(item), item));
-      useSkill($skill`That's Not a Knife`);
+      useSkill(1, $skill`That's Not a Knife`);
     },
     spendsTurn: false,
   },
@@ -630,11 +642,8 @@ const DailyItemTasks: GarboTask[] = [
         (have($item`Drunkula's wineglass`) &&
           canEquip($item`Drunkula's wineglass`))),
     completed: () => get("_candyCaneSwordOvergrownShrine"),
-    do: () => {
-      visitUrl("adventure.php?snarfblat=348");
-      runChoice(4);
-      runChoice(6);
-    },
+    do: $location`An Overgrown Shrine (Northeast)`,
+    choices: { 785: 4 },
     outfit: () => ({
       weapon: $item`candy cane sword cane`,
       offhand:
@@ -642,6 +651,9 @@ const DailyItemTasks: GarboTask[] = [
           ? $item`Drunkula's wineglass`
           : undefined,
     }),
+    combat: new GarboStrategy(() =>
+      Macro.abortWithMsg("Unexpected combat while collecting shrine Meat!"),
+    ),
     limit: { skip: 3 },
     spendsTurn: false,
   },
@@ -725,7 +737,7 @@ const DailyItemTasks: GarboTask[] = [
   },
   {
     name: "Turn In Rufus Quest for Forest",
-    ready: () => questStep("questRufus") === 1,
+    ready: () => getStep("questRufus") === 1,
     completed: () =>
       get("_shadowForestLooted") || have($item`Rufus's shadow lodestone`),
     do: () => ClosedCircuitPayphone.submitQuest(),
@@ -815,6 +827,45 @@ const DailyItemTasks: GarboTask[] = [
         visitUrl(url);
       }
       smashedBarrels = true;
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Rose Garden Items",
+    ready: () =>
+      (canSwapGarden() && BlackRoseGarden.have()) ||
+      BlackRoseGarden.installed(),
+    completed: () => get("_garbo_roseGardenLooted", false),
+    prepare: () => {
+      if (have($item`black garden rose`)) {
+        use($item`black garden rose`);
+      }
+      if (SourceTerminal.have()) {
+        SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
+      }
+    },
+    do: () => {
+      BlackRoseGarden.obtainItems();
+      set("_garbo_roseGardenLooted", true);
+    },
+    post: () => {
+      if (canSwapGarden() && have($item`packet of tall grass seeds`)) {
+        use($item`packet of tall grass seeds`);
+      }
+    },
+    spendsTurn: false,
+  },
+  {
+    name: "Swap Garden and Harvest",
+    ready: () =>
+      // Is this the only time we can swap a garden and still harvest?
+      BlackRoseGarden.installed() &&
+      !blackRoseWillGrow() &&
+      have(bestHarvestSwap()),
+    completed: () => !canSwapGarden(),
+    do: () => {
+      use(bestHarvestSwap());
+      harvestGarden();
     },
     spendsTurn: false,
   },

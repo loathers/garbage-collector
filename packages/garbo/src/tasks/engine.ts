@@ -1,3 +1,4 @@
+import { returnExhaustedStashItems } from "../stash";
 import {
   ContextualEngine,
   Engine,
@@ -37,10 +38,11 @@ import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
-import { shrugBadEffects } from "../mood";
+import { freeFightMood, shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
 import { FarmingContext } from "./context";
 import { BanishMethod, chooseBanish } from "../resources/banish";
+import { WanderDetails } from "garbo-lib";
 
 export type GarboTask<Context = unknown> = StrictCombatTask<
   never,
@@ -54,6 +56,15 @@ export type GarboTask<Context = unknown> = StrictCombatTask<
 
 export type AlternateTask<Context = unknown> = GarboTask<Context> & {
   turns: Delayed<number>;
+};
+
+export type MappingTask<Context = void> = GarboTask<Context> & {
+  // Safe to execute with an active map, whether preserving or consuming it.
+  mapSafe?: Delayed<boolean, [Context]>;
+};
+
+export type FarmingTask = GarboTask<FarmingContext> & {
+  wanderer?: Delayed<WanderDetails>;
 };
 
 function logTargetFight(encounterType: string) {
@@ -178,6 +189,7 @@ abstract class BaseGarboContextEngine<
       SourceTerminal.educate([$skill`Extract`, $skill`Duplicate`]);
     }
     super.execute(task);
+    returnExhaustedStashItems();
     if (totalTurnsPlayed() !== spentTurns) {
       if (!undelay(task.spendsTurn, context)) {
         print(
@@ -228,21 +240,104 @@ class BaseGarboEngine extends BaseGarboContextEngine<void> {
   }
 }
 
-class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
-  #banish: BanishMethod | null = null;
+class FreeFightEngine extends BaseGarboEngine {
+  private consecutiveNonFreeFights = 0;
 
-  getContext() {
-    return { banish: this.#banish };
+  constructor(tasks: (GarboTask<void> & { combatCount?: () => number })[]) {
+    super(
+      tasks.map((task) => {
+        if (task.limit || !task.combatCount) return task;
+        // Snapshot the padded attempt budget when the engine starts.
+        return { ...task, limit: { skip: 5 + task.combatCount() } };
+      }),
+    );
+  }
+
+  available(task: MappingTask): boolean {
+    return (
+      (!get("mappingMonsters") || undelay(task.mapSafe) === true) &&
+      super.available(task)
+    );
   }
 
   getNextTask() {
+    const task = super.getNextTask();
+    if (!task && get("mappingMonsters")) {
+      throw new Error(
+        "Mapping is still active, but no map-safe free-fight task is available. Resolve the pending map before continuing.",
+      );
+    }
+    return task;
+  }
+
+  acquireEffects(task: GarboTask<void>): void {
+    if ("combat" in task) {
+      freeFightMood(...(undelay(task.effects) ?? [])).execute();
+    }
+    super.acquireEffects(task);
+  }
+
+  execute(task: GarboTask<void>): void {
+    const before = totalTurnsPlayed();
+    const expectsFreeCombat = "combat" in task && !undelay(task.spendsTurn);
+    super.execute(task);
+    if (!expectsFreeCombat) return;
+    if (totalTurnsPlayed() > before) {
+      this.consecutiveNonFreeFights++;
+    } else {
+      this.consecutiveNonFreeFights = 0;
+    }
+    if (this.consecutiveNonFreeFights >= 5) {
+      throw new Error("The last 5 free fights spent turns!");
+    }
+  }
+}
+
+class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
+  #banish: BanishMethod | null = null;
+  #contexts = new Map<FarmingTask, FarmingContext>();
+
+  getContext(task: FarmingTask): FarmingContext {
+    const cachedContext = this.#contexts.get(task);
+    if (cachedContext) return cachedContext;
+
+    let wanderTarget: FarmingContext["wanderTarget"] | undefined;
+
+    const context: FarmingContext = {
+      banish: this.#banish,
+      get wanderTarget() {
+        if (wanderTarget) return wanderTarget;
+
+        if (!task.wanderer) {
+          throw new Error("This task did not declare a wanderer type");
+        }
+
+        const target = wanderer().resolveTarget(undelay(task.wanderer));
+        wanderTarget = {
+          ...target,
+          choices: wanderer().getChoices(target),
+        };
+        return wanderTarget;
+      },
+    };
+    this.#contexts.set(task, context);
+    return context;
+  }
+
+  getNextTask() {
+    this.#contexts.clear();
     this.#banish = chooseBanish();
     return super.getNextTask();
   }
 
   execute(task: GarboTask<FarmingContext>) {
-    super.execute(task);
-    this.#banish = null;
+    this.#contexts.clear();
+    try {
+      super.execute(task);
+    } finally {
+      this.#banish = null;
+      this.#contexts.clear();
+    }
   }
 }
 
@@ -266,10 +361,11 @@ class SafeGarboEngine extends SafeGarboContextEngine<void> {
   }
 }
 
-function runQuests<Context, T extends BaseGarboContextEngine<Context>>(
+function runQuests<Context>(
   quests: Quest<GarboTask<Context>, Context>[],
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  garboEngine: new (...args: any[]) => T,
+  garboEngine: new (
+    tasks: GarboTask<Context>[],
+  ) => BaseGarboContextEngine<Context>,
 ) {
   const engine = new garboEngine(getTasks(quests));
 
@@ -286,6 +382,10 @@ export function runSafeGarboQuests(quests: Quest<GarboTask<void>>[]): void {
 
 export function runGarboQuests(quests: Quest<GarboTask<void>>[]): void {
   runQuests(quests, BaseGarboEngine);
+}
+
+export function runGarboFreeFightQuests(quests: Quest<MappingTask>[]): void {
+  runQuests(quests, FreeFightEngine);
 }
 
 export function runGarboFarmQuests(

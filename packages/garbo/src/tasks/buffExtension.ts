@@ -15,14 +15,15 @@ import {
   ActionSource,
   ensureEffect,
   get,
+  getStep,
   have,
   Mining,
-  questStep,
+  QuestState,
   realmAvailable,
   uneffect,
 } from "libram";
 import { GarboTask } from "./engine";
-import { withStash } from "../clan";
+import { stash } from "../stash";
 import {
   burnLibrams,
   freeRunConstraints,
@@ -57,7 +58,7 @@ const BuffExtensionTasks: GarboTask[] = [
     name: "Platinum Yendorian Express Card",
     completed: () => get("expressCardUsed"),
     do: () => {
-      withStash($items`Platinum Yendorian Express Card`, () => {
+      stash.with($items`Platinum Yendorian Express Card`, () => {
         if (have($item`Platinum Yendorian Express Card`)) {
           burnMp();
           use($item`Platinum Yendorian Express Card`);
@@ -73,7 +74,7 @@ const BuffExtensionTasks: GarboTask[] = [
     name: "Bag o' Tricks",
     completed: () => get("_bagOTricksUsed"),
     do: () => {
-      withStash($items`Bag o' Tricks`, () => {
+      stash.with($items`Bag o' Tricks`, () => {
         if (have($item`Bag o' Tricks`)) {
           use($item`Bag o' Tricks`);
         }
@@ -101,7 +102,7 @@ const BuffExtensionTasks: GarboTask[] = [
       globalOptions.ascend &&
       sober() &&
       !have($effect`Lucky!`) &&
-      questStep("questM16Temple") > 0 &&
+      getStep("questM16Temple") > QuestState.STARTED &&
       mallPrice($item`stone wool`) <
         3 * get("valueOfAdventure") + effectExtenderValue(3, 10) &&
       !!getRun(),

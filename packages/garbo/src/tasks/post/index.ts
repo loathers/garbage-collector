@@ -32,6 +32,7 @@ import {
   AutumnAton,
   BurningLeaves,
   CinchoDeMayo,
+  Counter,
   DesignerSweatpants,
   FloristFriar,
   get,
@@ -262,6 +263,7 @@ function juneCleaver(): GarboPostTask {
     ready: () =>
       JuneCleaver.have() &&
       teleportEffects.every((e) => !have(e)) &&
+      !Counter.exists("portscan.edu") &&
       myAdventures() > 0,
     completed: () => get("_juneCleaverFightsLeft") > 0,
     do: () => {
@@ -284,7 +286,7 @@ function juneCleaver(): GarboPostTask {
         ["Poetic Justice", "Lost and Found"].includes(get("lastEncounter")) &&
         have($effect`Beaten Up`)
       ) {
-        useSkill($skill`Tongue of the Walrus`);
+        useSkill(1, $skill`Tongue of the Walrus`);
       }
     },
   };

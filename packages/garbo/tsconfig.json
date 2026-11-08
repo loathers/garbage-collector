@@ -7,6 +7,7 @@
     "declaration": false,
     "forceConsistentCasingInFileNames": true,
     "lib": ["ES2019"],
+    "types": ["node"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmitOnError": true,

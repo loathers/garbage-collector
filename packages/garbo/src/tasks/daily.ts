@@ -1,3 +1,4 @@
+import { stash } from "../stash";
 import {
   adv1,
   canadiaAvailable,
@@ -33,7 +34,6 @@ import {
   runChoice,
   toSlot,
   totalTurnsPlayed,
-  toUrl,
   use,
   visitUrl,
   votingBoothInitiatives,
@@ -49,15 +49,15 @@ import {
   $monster,
   $slot,
   BeachComb,
-  Clan,
   findLeprechaunMultiplier,
   get,
   getModifier,
+  getStep,
   getTodaysHolidayWanderers,
   have,
   maxBy,
   Pantogram,
-  questStep,
+  QuestState,
   realmAvailable,
   SongBoom,
   SourceTerminal,
@@ -66,11 +66,7 @@ import {
   Witchess,
 } from "libram";
 import { acquire } from "../acquire";
-import {
-  checkCurrentClanWhitelist,
-  getWhitelistedClans,
-  withStash,
-} from "../clan";
+import { getWhitelistedClans, withClan } from "../clan";
 import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { meatFamiliar } from "../familiar/meatFamiliar";
@@ -92,7 +88,7 @@ import {
 } from "../resources/realm";
 import { Macro } from "../combat";
 import { GarboStrategy } from "../combatStrategy";
-import { luckyGoldRingDropValues } from "../outfit/dropsgearAccessories";
+import { luckyGoldRingDropValues } from "../outfit/dropsgear";
 import { embezzlerFights } from "./embezzler";
 import { FarmingStrategy } from "../farmingStrategy";
 
@@ -275,14 +271,7 @@ function nepQuest(): void {
   }
 
   if (get("_questPartyFair") === "unstarted") {
-    visitUrl(toUrl($location`The Neverending Party`));
-    if (
-      ["food", "booze", "trash", "dj"].includes(get("_questPartyFairQuest"))
-    ) {
-      runChoice(1); // Accept quest
-    } else {
-      runChoice(2); // Decline quest
-    }
+    adv1($location`The Neverending Party`);
   }
 
   if (["food", "booze"].includes(get("_questPartyFairQuest"))) {
@@ -554,7 +543,7 @@ const DailyTasks: GarboTask[] = [
     name: $item`defective Game Grid token`.name,
     completed: () => get("_defectiveTokenUsed"),
     do: () =>
-      withStash([$item`defective Game Grid token`], () =>
+      stash.with([$item`defective Game Grid token`], () =>
         use(1, $item`defective Game Grid token`),
       ),
     spendsTurn: false,
@@ -615,7 +604,8 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Friar's Blessing",
-    ready: () => questStep("questL06Friar") === 999,
+    ready: () =>
+      getStep("questL06Friar", QuestState.FINISHED) === QuestState.FINISHED,
     completed: () => get("friarsBlessingReceived"),
     do: () => cliExecute("friars familiar"),
     spendsTurn: false,
@@ -653,12 +643,10 @@ const DailyTasks: GarboTask[] = [
       ),
     completed: () => get("_clanFortuneConsultUses") >= 3,
     do: (): void => {
-      checkCurrentClanWhitelist(
+      withClan(
         "Bonus Adventures from Hell",
         "To stop garbo using the fortune teller, remove your 'Bonus Adventures from Hell' whitelist.",
-      );
-      Clan.with("Bonus Adventures from Hell", () =>
-        cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
+        () => cliExecute(`fortune ${getPlayerId("OnlyFax")}`),
       );
       if (get("_clanFortuneConsultUses") < 3) wait(10);
     },
@@ -736,7 +724,7 @@ const DailyTasks: GarboTask[] = [
     ready: () => get("_bittycar") !== "meatcar",
     completed: () => get("_bittycar") === "meatcar",
     do: () =>
-      withStash([$item`BittyCar MeatCar`], () =>
+      stash.with([$item`BittyCar MeatCar`], () =>
         use(1, $item`BittyCar MeatCar`),
       ),
     spendsTurn: false,
@@ -747,7 +735,7 @@ const DailyTasks: GarboTask[] = [
       get("_bittycar") !== "meatcar" && get("_bittycar") !== "soulcar",
     completed: () => get("_bittycar") === "soulcar",
     do: () =>
-      withStash([$item`BittyCar SoulCar`], () =>
+      stash.with([$item`BittyCar SoulCar`], () =>
         use(1, $item`BittyCar SoulCar`),
       ),
     spendsTurn: false,

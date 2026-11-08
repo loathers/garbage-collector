@@ -5,28 +5,21 @@ import {
   cliExecute,
   currentRound,
   equip,
-  getCampground,
-  getClanName,
   guildStoreAvailable,
   handlingChoice,
-  haveEquipped,
   inebrietyLimit,
   Item,
   logprint,
   maximize,
   myBasestat,
   myClass,
-  myGardenType,
   myInebriety,
   myLevel,
   myTurncount,
   print,
-  putStash,
-  retrieveItem,
   runChoice,
   setAutoAttack,
   Stat,
-  toInt,
   use,
   visitUrl,
 } from "kolmafia";
@@ -42,30 +35,25 @@ import {
   $skill,
   $skills,
   $slots,
-  Clan,
   examine,
   get,
-  getCombatFlags,
-  getFoldGroup,
+  getStep,
   have,
   haveInCampground,
   JuneCleaver,
   logger,
   LogLevels,
   maxBy,
+  QuestState,
   set,
-  setCombatFlags,
   setDefaultMaximizeOptions,
   sinceKolmafiaRevision,
-  unequip,
+  withCombatFlags,
 } from "libram";
-import {
-  checkCurrentClanWhitelist,
-  stashItems,
-  withStash,
-  withVIPClan,
-} from "./clan";
-import { globalOptions, isQuickGear } from "./config";
+import { withVIPClan } from "./clan";
+import { stash } from "./stash";
+import { prepareForCleanup } from "./cleanup";
+import { fillArgs, globalOptions, isQuickGear } from "./config";
 import { dailySetup } from "./dailies";
 import { nonOrganAdventures, runDiet } from "./diet";
 import { dailyFights, freeFights } from "./fights";
@@ -76,7 +64,7 @@ import {
   isFreeAndCopyable,
   printEventLog,
   propertyManager,
-  questStep,
+  sober,
   targetingMeat,
   userConfirmDialog,
   valueDrops,
@@ -84,10 +72,11 @@ import {
 import { printLog } from "./log";
 import { meatMood } from "./mood";
 import { potionSetup } from "./potions";
-import { endSession, startSession } from "./session";
+import { endSession, startSession, trackMarginalMpa } from "./session";
 import { estimatedGarboTurns } from "./turns";
 import { garboAverageValue } from "./garboValue";
 import { safeRestore } from "./restore";
+import { restoreGarden, setupGarden } from "./resources/garden";
 
 import {
   BuffExtensionQuest,
@@ -96,6 +85,7 @@ import {
 import { shouldAffirmationHate } from "./combat";
 import { acquire } from "./acquire";
 import { FarmingStrategy } from "./farmingStrategy";
+import { shouldTargetAngryTourists } from "./familiar/barfFamiliar";
 import { runGarboFarmQuests, runGarboQuests } from "./tasks/engine";
 
 // Max price for tickets. You should rethink whether Barf is the best place if they're this expensive.
@@ -120,10 +110,10 @@ function defaultTarget() {
 }
 
 export function main(argString = ""): void {
-  sinceKolmafiaRevision(29288); // ASH method for predicting Portable Laughing Stock drops
+  sinceKolmafiaRevision(29401); // Track daily Black Rose Garden swaps.
   checkGithubVersion();
 
-  Args.fill(globalOptions, argString);
+  fillArgs(argString);
   // Instant returns placed before visiting anything.
   if (globalOptions.version) return; // Since we always print the version, all done!
   if (globalOptions.help) {
@@ -177,81 +167,28 @@ export function main(argString = ""): void {
     );
   }
 
-  if (stashItems.length > 0) {
-    if (
-      globalOptions.returnstash ||
+  const outstanding = stash.outstandingLoans();
+  if (
+    outstanding.length > 0 &&
+    (globalOptions.returnstash ||
       userConfirmDialog(
-        `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${stashItems
-          .map((item) => item.name)
+        `Garbo has detected that you have the following items still out of the stash from a previous run of garbo: ${outstanding
+          .map(
+            (loan) =>
+              `${loan.quantity} ${loan.item.name} (clan #${loan.clanId})`,
+          )
           .join(", ")}. Would you like us to return these to the stash now?`,
         true,
-      )
-    ) {
-      startSession();
-      try {
-        const clanIdOrName = globalOptions.prefs.stashClan;
-        const parsedClanIdOrName =
-          clanIdOrName !== "none"
-            ? clanIdOrName.match(/^\d+$/)
-              ? parseInt(clanIdOrName)
-              : clanIdOrName
-            : null;
-
-        if (parsedClanIdOrName) {
-          checkCurrentClanWhitelist(
-            parsedClanIdOrName,
-            "Return the stash items manually, then run garbo again.",
-          );
-          Clan.with(parsedClanIdOrName, () => {
-            for (const item of [...stashItems]) {
-              const equipped = [item, ...getFoldGroup(item)].find((i) =>
-                haveEquipped(i),
-              );
-              if (equipped) unequip(equipped);
-
-              if (getFoldGroup(item).some((i) => have(i))) {
-                cliExecute(`fold ${item}`);
-              }
-
-              const retrieved = retrieveItem(item);
-
-              if (
-                item === $item`Spooky Putty sheet` &&
-                !retrieved &&
-                have($item`Spooky Putty monster`)
-              ) {
-                continue;
-              }
-
-              print(`Returning ${item} to ${getClanName()} stash.`, HIGHLIGHT);
-              if (putStash(item, 1)) {
-                stashItems.splice(stashItems.indexOf(item), 1);
-              }
-            }
-          });
-        } else throw new Error("Error: No garbo_stashClan set.");
-      } finally {
-        endSession(false);
-      }
-    } else {
-      if (
-        userConfirmDialog(
-          "Are you a responsible friend who has already returned their stash clan items, or promise to do so manually at a later time?",
-          false,
-        )
-      ) {
-        stashItems.splice(0);
-      }
+      ))
+  ) {
+    startSession();
+    try {
+      stash.returnAll();
+    } finally {
+      endSession(false);
     }
   }
-
-  if (globalOptions.returnstash) {
-    set(
-      "garboStashItems",
-      stashItems.map((item) => toInt(item).toFixed(0)).join(","),
-    );
-    return;
-  }
+  if (globalOptions.returnstash) return;
 
   if (
     !$classes`Seal Clubber, Turtle Tamer, Pastamancer, Sauceror, Disco Bandit, Accordion Thief, Cow Puncher, Snake Oiler, Beanslinger, Pig Skinner, Cheese Wizard, Jazz Agent`.includes(
@@ -351,312 +288,326 @@ export function main(argString = ""): void {
     return;
   }
 
-  const gardens = $items`packet of pumpkin seeds, Peppermint Pip Packet, packet of dragon's teeth, packet of beer seeds, packet of winter seeds, packet of thanksgarden seeds, packet of tall grass seeds, packet of mushroom spores, packet of rock seeds, black garden rose`;
-  const startingGarden = gardens.find((garden) =>
-    Object.getOwnPropertyNames(getCampground()).includes(garden.name),
-  );
-  if (
-    startingGarden &&
-    !$items`packet of tall grass seeds, packet of mushroom spores`.includes(
-      startingGarden,
-    ) &&
-    getCampground()[startingGarden.name] &&
-    $items`packet of tall grass seeds, packet of mushroom spores`.some(
-      (gardenSeed) => have(gardenSeed),
-    )
-  ) {
-    if (startingGarden === $item`packet of rock seeds`) {
-      visitUrl("campground.php?action=rgarden1&pwd");
-      visitUrl("campground.php?action=rgarden2&pwd");
-      visitUrl("campground.php?action=rgarden3&pwd");
-    } else {
-      visitUrl("campground.php?action=garden&pwd");
-    }
-  }
+  let cleanupCompleted = false;
 
-  const combatFlags = getCombatFlags(["aabosses", "bothcombatinterf"]);
-
-  try {
-    print("Collecting garbage!", HIGHLIGHT);
-    if (globalOptions.stopTurncount !== null) {
-      print(
-        `Stopping in ${globalOptions.stopTurncount - myTurncount()}`,
-        HIGHLIGHT,
-      );
-    }
-    print();
-
-    if (
-      have($item`packet of tall grass seeds`) &&
-      myGardenType() !== "grass" &&
-      myGardenType() !== "mushroom"
-    ) {
-      use($item`packet of tall grass seeds`);
-    }
-
-    setAutoAttack(0);
-    setCombatFlags(
-      { flag: "aabosses", value: true },
-      { flag: "bothcombatinterf", value: false },
-    );
-
-    const maximizerCombinationLimit = isQuickGear()
-      ? 100000
-      : get("maximizerCombinationLimit");
-
-    const bannedAutoRestorers = have($item`Cincho de Mayo`)
-      ? [
-          "sleep on your clan sofa",
-          "rest in your campaway tent",
-          "rest at the chateau",
-          "rest at your campground",
-          "free rest",
-        ]
-      : [];
-
-    const hpItems = get("hpAutoRecoveryItems")
-      .split(";")
-      .filter((s) => !bannedAutoRestorers.includes(s))
-      .join(";");
-    const mpItems = get("mpAutoRecoveryItems")
-      .split(";")
-      .filter((s) => !bannedAutoRestorers.includes(s))
-      .join(";");
-
-    propertyManager.set({
-      logPreferenceChange: true,
-      logPreferenceChangeFilter: [
-        ...new Set([
-          ...get("logPreferenceChangeFilter").split(","),
-          "libram_savedMacro",
-          "maximizerMRUList",
-          "testudinalTeachings",
-          "garboTargetDate",
-          "garboTargetCount",
-          "garboTargetSources",
-          "spadingData",
-        ]),
-      ]
-        .sort()
-        .filter((a) => a)
-        .join(","),
-      battleAction: "custom combat script",
-      customCombatScript: "garbo",
-      autoSatisfyWithMall: true,
-      autoSatisfyWithNPCs: true,
-      autoSatisfyWithCoinmasters: true,
-      autoSatisfyWithStash: false,
-      dontStopForCounters: true,
-      maximizerFoldables: true,
-      hpAutoRecovery: -0.05,
-      hpAutoRecoveryTarget: 0.0,
-      mpAutoRecovery: -0.05,
-      mpAutoRecoveryTarget: 0.0,
-      hpAutoRecoveryItems: hpItems,
-      mpAutoRecoveryItems: mpItems,
-      afterAdventureScript: "",
-      betweenBattleScript: "",
-      choiceAdventureScript: "garbo_choice.js",
-      counterScript: "",
-      familiarScript: "",
-      currentMood: "apathetic",
-      autoTuxedo: true,
-      autoPinkyRing: true,
-      autoGarish: true,
-      allowNonMoodBurning: !globalOptions.ascend,
-      allowSummonBurning: true,
-      libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
-      valueOfInventory: 2,
-      suppressMallPriceCacheMessages: true,
-      maximizerCombinationLimit: maximizerCombinationLimit,
-      allowNegativeTally: true,
-      spadingScript: "excavator.js",
-      lastChanceBurn: "",
-      errorOnAmbiguousFold: false,
-    });
-    let bestHalloweiner = 0;
-    if (haveInCampground($item`haunted doghouse`)) {
-      const halloweinerOptions: { price: number; choiceId: number }[] = (
-        [
-          [$items`bowl of eyeballs, bowl of mummy guts, bowl of maggots`, 1],
-          [$items`blood and blood, Jack-O-Lantern beer, zombie`, 2],
-          [
-            $items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`,
-            3,
-          ],
-        ] as [Item[], number][]
-      ).map(([halloweinerOption, choiceId]) => {
-        return {
-          price: garboAverageValue(...halloweinerOption),
-          choiceId: choiceId,
-        };
-      });
-      bestHalloweiner = maxBy(halloweinerOptions, "price").choiceId;
-    }
-    propertyManager.setChoices({
-      1106: 3, // Ghost Dog Chow
-      1107: 1, // tennis ball
-      1108: bestHalloweiner,
-      1340: 1, // Accept the doctor quest
-      1341: 1, // Cure her poison
-    });
-
-    if (JuneCleaver.have()) {
-      propertyManager.setChoices(
-        Object.fromEntries(
-          JuneCleaver.choices.map((choice) => [
-            choice,
-            bestJuneCleaverOption(choice),
-          ]),
-        ),
-      );
-    }
-    propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
-
-    const equipmentFamiliars = $familiars`Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow`;
-    for (const familiar of equipmentFamiliars.filter(have)) {
-      equip(familiar, $item.none);
-    }
-
-    safeRestore();
-
-    if (questStep("questM23Meatsmith") === -1) {
-      visitUrl("shop.php?whichshop=meatsmith&action=talk");
-      runChoice(1);
-    }
-    if (questStep("questM24Doc") === -1) {
-      visitUrl("shop.php?whichshop=doc&action=talk");
-      runChoice(1);
-    }
-    if (questStep("questM25Armorer") === -1) {
-      visitUrl("shop.php?whichshop=armory&action=talk");
-      runChoice(1);
-    }
-
-    // unlock the sea
-    if (myLevel() >= 11 && questStep("questS01OldGuy") === -1) {
-      visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
-    }
-    if (
-      myClass() === $class`Seal Clubber` &&
-      !have($skill`Furious Wallop`) &&
-      guildStoreAvailable()
-    ) {
-      visitUrl("guild.php?action=buyskill&skillid=32", true);
-    }
-    const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring, Mayflower bouquet`;
-    if (
-      myInebriety() <= inebrietyLimit() &&
-      (myClass() !== $class`Seal Clubber` || !have($skill`Furious Wallop`)) &&
-      !have($skill`Head in the Game`)
-    ) {
-      stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
-    }
-    if (!have($item`Jurassic Parka`) && have($skill`Torso Awareness`)) {
-      stashItems.push($item`origami pasties`);
-    }
-
-    // Prepare Daily Affirmation for PvP fights if desired
-    if (shouldAffirmationHate()) {
-      acquire(
-        1,
-        $item`Daily Affirmation: Keep Free Hate in your Heart`,
-        globalOptions.prefs.valueOfPvPFight * 3 * 1.1,
-      );
-    }
-
-    // FIXME: Dynamically figure out pointer ring approach.
-    withStash(stashItems, () => {
-      withVIPClan(() => {
-        // Prepare pirate realm if our copy target is cockroach
-        // How do we handle if garbo was started without enough turns left without dieting to prep?
-        if (
-          globalOptions.target === $monster`cockroach` &&
-          !globalOptions.simdiet
-        ) {
-          if (!globalOptions.nodiet) nonOrganAdventures();
-          runGarboQuests([CockroachSetup]); // Set up piraterealm up until the final encounter for island 1
-          if (get("_lastPirateRealmIsland") === $location`Dessert Island`) {
-            runGarboQuests([CockroachFinish]); // If it's Dessert island, no need to buff beforehand
-          }
-          maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
-        }
-        // 0. diet stuff.
-        if (
-          globalOptions.nodiet ||
-          get("_garboYachtzeeChainCompleted", false)
-        ) {
-          print("We should not be yachtzee chaining", "red");
-          globalOptions.prefs.yachtzeechain = false;
-        }
-
-        if (
-          !globalOptions.nodiet &&
-          (!globalOptions.prefs.yachtzeechain ||
-            get("_garboYachtzeeChainCompleted", false))
-        ) {
-          runDiet();
-        } else if (!globalOptions.simdiet) {
-          nonOrganAdventures();
-        }
-
-        // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
-        dailySetup();
-
-        const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack, dice-shaped backpack, Amulet of Perpetual Darkness`;
-        if (isQuickGear()) {
-          // Brimstone equipment explodes the number of maximize combinations
-          preventEquip.push(
-            ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`,
+  withCombatFlags(
+    () => {
+      try {
+        print("Collecting garbage!", HIGHLIGHT);
+        if (globalOptions.stopTurncount !== null) {
+          print(
+            `Stopping in ${globalOptions.stopTurncount - myTurncount()}`,
+            HIGHLIGHT,
           );
         }
-        // TODO: Until properly handled ban equipment that expands organs
-        preventEquip.push(
-          ...$items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`,
-        );
+        print();
 
-        setDefaultMaximizeOptions({
-          preventEquip: preventEquip,
-          preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
+        setupGarden();
+
+        setAutoAttack(0);
+        const maximizerCombinationLimit = isQuickGear()
+          ? 100000
+          : get("maximizerCombinationLimit");
+
+        const bannedAutoRestorers = have($item`Cincho de Mayo`)
+          ? [
+              "sleep on your clan sofa",
+              "rest in your campaway tent",
+              "rest at the chateau",
+              "rest at your campground",
+              "free rest",
+            ]
+          : [];
+
+        const hpItems = get("hpAutoRecoveryItems")
+          .split(";")
+          .filter((s) => !bannedAutoRestorers.includes(s))
+          .join(";");
+        const mpItems = get("mpAutoRecoveryItems")
+          .split(";")
+          .filter((s) => !bannedAutoRestorers.includes(s))
+          .join(";");
+
+        propertyManager.set({
+          logPreferenceChange: true,
+          logPreferenceChangeFilter: [
+            ...new Set([
+              ...get("logPreferenceChangeFilter").split(","),
+              "libram_savedMacro",
+              "maximizerMRUList",
+              "testudinalTeachings",
+              "garboTargetDate",
+              "garboTargetCount",
+              "garboTargetSources",
+              "spadingData",
+            ]),
+          ]
+            .sort()
+            .filter((a) => a)
+            .join(","),
+          battleAction: "custom combat script",
+          customCombatScript: "garbo",
+          autoSatisfyWithMall: true,
+          autoSatisfyWithNPCs: true,
+          autoSatisfyWithCoinmasters: true,
+          autoSatisfyWithStash: false,
+          dontStopForCounters: true,
+          maximizerFoldables: true,
+          hpAutoRecovery: -0.05,
+          hpAutoRecoveryTarget: 0.0,
+          mpAutoRecovery: -0.05,
+          mpAutoRecoveryTarget: 0.0,
+          hpAutoRecoveryItems: hpItems,
+          mpAutoRecoveryItems: mpItems,
+          afterAdventureScript: "",
+          betweenBattleScript: "",
+          choiceAdventureScript: "garbo_choice.js",
+          counterScript: "",
+          familiarScript: "",
+          currentMood: "apathetic",
+          autoTuxedo: true,
+          autoPinkyRing: true,
+          autoGarish: true,
+          allowNonMoodBurning: !globalOptions.ascend,
+          allowSummonBurning: true,
+          libramSkillsSoftcore: "none", // Don't cast librams when mana burning, handled manually based on sale price
+          valueOfInventory: 2,
+          suppressMallPriceCacheMessages: true,
+          maximizerCombinationLimit: maximizerCombinationLimit,
+          allowNegativeTally: true,
+          spadingScript: "excavator.js",
+          lastChanceBurn: "",
+          errorOnAmbiguousFold: false,
+        });
+        let bestHalloweiner = 0;
+        if (haveInCampground($item`haunted doghouse`)) {
+          const halloweinerOptions: { price: number; choiceId: number }[] = (
+            [
+              [
+                $items`bowl of eyeballs, bowl of mummy guts, bowl of maggots`,
+                1,
+              ],
+              [$items`blood and blood, Jack-O-Lantern beer, zombie`, 2],
+              [
+                $items`wind-up spider, plastic nightmare troll, Telltale™ rubber heart`,
+                3,
+              ],
+            ] as [Item[], number][]
+          ).map(([halloweinerOption, choiceId]) => {
+            return {
+              price: garboAverageValue(...halloweinerOption),
+              choiceId: choiceId,
+            };
+          });
+          bestHalloweiner = maxBy(halloweinerOptions, "price").choiceId;
+        }
+        propertyManager.setChoices({
+          1106: 3, // Ghost Dog Chow
+          1107: 1, // tennis ball
+          1108: bestHalloweiner,
+          1340: 1, // Accept the doctor quest
+          1341: 1, // Cure her poison
         });
 
-        // 2. do some target copy stuff
-        freeFights();
-        runGarboQuests([CockroachFinish]); // Fight the giant giant crab after we've dieted for some extra buffs
-        maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
-        runGarboQuests([SetupTargetCopyQuest]);
-        dailyFights();
+        if (JuneCleaver.have()) {
+          propertyManager.setChoices(
+            Object.fromEntries(
+              JuneCleaver.choices.map((choice) => [
+                choice,
+                bestJuneCleaverOption(choice),
+              ]),
+            ),
+          );
+        }
+        propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
 
-        if (!globalOptions.nobarf) {
-          // 3. burn turns at barf
-          potionSetup(false);
-          maximize("MP", false);
-          meatMood().execute(estimatedGarboTurns());
-          runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
-          if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
-          try {
-            runGarboFarmQuests([PostQuest(), ...FarmQuests()]);
-            runGarboQuests([FinishUpQuest]);
-          } finally {
-            setAutoAttack(0);
+        const equipmentFamiliars = $familiars`Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow`;
+        for (const familiar of equipmentFamiliars.filter((familiar) =>
+          have(familiar),
+        )) {
+          equip(familiar, $item.none);
+        }
+
+        safeRestore();
+
+        if (
+          getStep("questM23Meatsmith", QuestState.UNSTARTED) ===
+          QuestState.UNSTARTED
+        ) {
+          visitUrl("shop.php?whichshop=meatsmith&action=talk");
+          runChoice(1);
+        }
+        if (
+          getStep("questM24Doc", QuestState.UNSTARTED) === QuestState.UNSTARTED
+        ) {
+          visitUrl("shop.php?whichshop=doc&action=talk");
+          runChoice(1);
+        }
+        if (
+          getStep("questM25Armorer", QuestState.UNSTARTED) ===
+          QuestState.UNSTARTED
+        ) {
+          visitUrl("shop.php?whichshop=armory&action=talk");
+          runChoice(1);
+        }
+
+        // unlock the sea
+        if (
+          myLevel() >= 11 &&
+          getStep("questS01OldGuy", QuestState.UNSTARTED) ===
+            QuestState.UNSTARTED
+        ) {
+          visitUrl("place.php?whichplace=sea_oldman&action=oldman_oldman");
+        }
+        if (
+          myClass() === $class`Seal Clubber` &&
+          !have($skill`Furious Wallop`) &&
+          guildStoreAvailable()
+        ) {
+          visitUrl("guild.php?action=buyskill&skillid=32", true);
+        }
+        const stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring, Mayflower bouquet`;
+        if (
+          myInebriety() <= inebrietyLimit() &&
+          (myClass() !== $class`Seal Clubber` ||
+            !have($skill`Furious Wallop`)) &&
+          !have($skill`Head in the Game`)
+        ) {
+          stashItems.push(...$items`haiku katana, Operation Patriot Shield`);
+        }
+        if (!have($item`Jurassic Parka`) && have($skill`Torso Awareness`)) {
+          stashItems.push($item`origami pasties`);
+        }
+
+        // Prepare Daily Affirmation for PvP fights if desired
+        if (shouldAffirmationHate()) {
+          acquire(
+            1,
+            $item`Daily Affirmation: Keep Free Hate in your Heart`,
+            globalOptions.prefs.valueOfPvPFight * 3 * 1.1,
+          );
+        }
+
+        // FIXME: Dynamically figure out pointer ring approach.
+        stash.request(stashItems);
+        if (
+          !globalOptions.ascend &&
+          get("_stinkyCheeseCount") < 100 &&
+          estimatedGarboTurns() >= 100 - get("_stinkyCheeseCount") &&
+          stash.amountOwned($item`stinky cheese diaper`) > 0
+        ) {
+          stash.request(
+            $items`stinky cheese diaper, stinky cheese wheel, stinky cheese eye, stinky cheese sword`,
+          );
+        }
+        withVIPClan(() => {
+          // Prepare pirate realm if our copy target is cockroach
+          // How do we handle if garbo was started without enough turns left without dieting to prep?
+          if (
+            globalOptions.target === $monster`cockroach` &&
+            !globalOptions.simdiet
+          ) {
+            if (!globalOptions.nodiet) nonOrganAdventures();
+            runGarboQuests([CockroachSetup]); // Set up piraterealm up until the final encounter for island 1
+            if (get("_lastPirateRealmIsland") === $location`Dessert Island`) {
+              runGarboQuests([CockroachFinish]); // If it's Dessert island, no need to buff beforehand
+            }
+            maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
           }
-        } else setAutoAttack(0);
-      });
-    });
-  } finally {
-    cliExecute("spade autoconfirm");
-    propertyManager.resetAll();
-    set(
-      "garboStashItems",
-      stashItems.map((item) => toInt(item).toFixed(0)).join(","),
-    );
-    setCombatFlags(...combatFlags);
-    if (startingGarden && have(startingGarden)) use(startingGarden);
-    printEventLog();
-    endSession();
-    printLog(HIGHLIGHT);
+          // 0. diet stuff.
+          if (
+            globalOptions.nodiet ||
+            get("_garboYachtzeeChainCompleted", false)
+          ) {
+            print("We should not be yachtzee chaining", "red");
+            globalOptions.prefs.yachtzeechain = false;
+          }
+
+          if (
+            !globalOptions.nodiet &&
+            (!globalOptions.prefs.yachtzeechain ||
+              get("_garboYachtzeeChainCompleted", false))
+          ) {
+            runDiet();
+          } else if (!globalOptions.simdiet) {
+            nonOrganAdventures();
+          }
+
+          // 1. make an outfit (amulet coin, pantogram, etc), misc other stuff (VYKEA, songboom, robortender drinks)
+          dailySetup();
+
+          const preventEquip = $items`broken champagne bottle, Spooky Putty snake, Spooky Putty mitre, Spooky Putty leotard, Spooky Putty ball, papier-mitre, papier-mâchéte, papier-mâchine gun, papier-masque, papier-mâchuridars, smoke ball, stinky fannypack, dice-shaped backpack, Amulet of Perpetual Darkness, fiberglass foil`;
+          if (isQuickGear()) {
+            // Brimstone equipment explodes the number of maximize combinations
+            preventEquip.push(
+              ...$items`Brimstone Bludgeon, Brimstone Bunker, Brimstone Brooch, Brimstone Bracelet, Brimstone Boxers, Brimstone Beret`,
+            );
+          }
+          // TODO: Until properly handled ban equipment that expands organs
+          preventEquip.push(
+            ...$items`devilbone rosary, devilbone greaves, devilbone corset, angelbone totem, angelbone chopsticks, angelbone dice`,
+          );
+
+          setDefaultMaximizeOptions({
+            preventEquip: preventEquip,
+            preventSlot: $slots`buddy-bjorn, crown-of-thrones`,
+          });
+
+          // 2. do some target copy stuff
+          freeFights();
+          runGarboQuests([CockroachFinish]); // Fight the giant giant crab after we've dieted for some extra buffs
+          maximize("MP", false); // Remove our piraterealm eyepatch after we leave piraterealm
+          if (
+            sober() &&
+            !have($item`Spooky Putty monster`) &&
+            get("spookyPuttyCopiesMade") +
+              Math.max(1, get("_raindohCopiesMade")) <
+              6
+          ) {
+            stash.request($items`Spooky Putty sheet`);
+          }
+          runGarboQuests([SetupTargetCopyQuest]);
+          dailyFights();
+
+          if (!globalOptions.nobarf) {
+            // 3. burn turns at barf
+            globalOptions.farmingStarted = true;
+            potionSetup(false);
+            maximize("MP", false);
+            meatMood().execute(estimatedGarboTurns());
+            runGarboQuests([BuffExtensionQuest, PostBuffExtensionQuest]);
+            if (!targetingMeat()) runGarboQuests([EmbezzlerFightsQuest]);
+            globalOptions.targetAngryTourists = shouldTargetAngryTourists();
+            try {
+              runGarboFarmQuests([PostQuest(), ...FarmQuests()]);
+              runGarboQuests([FinishUpQuest]);
+            } finally {
+              setAutoAttack(0);
+            }
+          } else setAutoAttack(0);
+        });
+      } finally {
+        if (prepareForCleanup()) {
+          trackMarginalMpa(0);
+          stash.returnAll();
+          cliExecute("spade autoconfirm");
+          propertyManager.resetAll();
+          restoreGarden();
+          printEventLog();
+          endSession();
+          printLog(HIGHLIGHT);
+          cleanupCompleted = true;
+        }
+      }
+    },
+    { flag: "aabosses", value: true },
+    { flag: "bothcombatinterf", value: false },
+    { flag: "disablefacts", value: false },
+    { flag: "disablemeteor", value: false },
+  );
+  if (cleanupCompleted) {
+    set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
   }
-  set(completedProperty, ["garbo", argString].filter(Boolean).join(" "));
 }
 import { CockroachFinish, CockroachSetup } from "./tasks/cockroach/prep";
 import { EmbezzlerFightsQuest } from "./tasks/embezzler";

@@ -21,7 +21,7 @@ export const luckySourceTasks = [
     completed: () =>
       !shouldAugustCast($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`),
     do: () => {
-      useSkill($skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
+      useSkill(1, $skill`Aug. 2nd: Find an Eleven-Leaf Clover Day`);
       if (!have($effect`Lucky!`)) {
         set("_aug2Cast", true);
       }
@@ -71,7 +71,7 @@ export const luckySourceTasks = [
       !get("heartstoneLuckUnlocked") ||
       get("_heartstoneLuckUsed"),
     do: () => {
-      useSkill($skill`Heartstone: %luck`);
+      useSkill(1, $skill`Heartstone: %luck`);
       if (!have($effect`Lucky!`)) return;
     },
     spendsTurn: false,

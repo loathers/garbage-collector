@@ -9,35 +9,10 @@ import {
 import { garboAverageValue, garboValue } from "../garboValue";
 import {
   BonusEquipMode,
-  modeUseLimitedDrops,
+  LIMITED_DROP_MODES,
   modeValueOfItem,
   modeValueOfMeat,
 } from "./lib";
-
-function valueBjornModifiers(
-  mode: BonusEquipMode,
-  familiar: Familiar,
-): (ridingFamiliar: Familiar) => number {
-  const meatValue = modeValueOfMeat(mode);
-  const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
-  const leprechaunCoefficient =
-    meatValue * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier));
-
-  const itemValue = modeValueOfItem(mode);
-  const fairyMultiplier = findFairyMultiplier(familiar);
-  const fairyCoefficient =
-    itemValue * (fairyMultiplier + Math.sqrt(fairyMultiplier) / 2);
-
-  return CrownOfThrones.createModifierValueFunction(
-    ["Familiar Weight", "Meat Drop", "Item Drop"],
-    {
-      "Familiar Weight": (mod) =>
-        mod * (fairyCoefficient + leprechaunCoefficient),
-      "Item Drop": (mod) => mod * itemValue,
-      "Meat Drop": (mod) => mod * meatValue,
-    },
-  );
-}
 
 function dropsValueFunction(drops: Item[] | Map<Item, number>): number {
   return Array.isArray(drops)
@@ -55,32 +30,52 @@ export function chooseBjorn(
 ): { familiar: Familiar; value: number } {
   const leprechaunMultiplier = findLeprechaunMultiplier(familiar);
   const fairyMultiplier = findFairyMultiplier(familiar);
-  const ignoreLimitedDrops = sim || !modeUseLimitedDrops(mode);
+  const ignoreLimitedDrops = sim || !LIMITED_DROP_MODES.includes(mode);
+  const meatValue = modeValueOfMeat(mode);
+  const itemValue = modeValueOfItem(mode);
+  const [weightCoefficient, meatCoefficient, itemCoefficient] = [
+    meatValue * (2 * leprechaunMultiplier + Math.sqrt(leprechaunMultiplier)) +
+      itemValue * (fairyMultiplier + Math.sqrt(fairyMultiplier) / 2),
+    meatValue,
+    itemValue,
+  ].map((value) => Math.round(value * 1000) / 1000);
+  const modifierValueFunction = CrownOfThrones.createModifierValueFunction(
+    ["Familiar Weight", "Meat Drop", "Item Drop"],
+    {
+      "Familiar Weight": (mod) => mod * weightCoefficient,
+      "Meat Drop": (mod) => mod * meatCoefficient,
+      "Item Drop": (mod) => mod * itemCoefficient,
+    },
+  );
 
-  const key = `Leprechaun:${leprechaunMultiplier.toFixed(
-    2,
-  )};Fairy:${fairyMultiplier.toFixed(
-    2,
-  )};ignoreLimitedDrops:${ignoreLimitedDrops}`;
+  const key = [
+    weightCoefficient,
+    meatCoefficient,
+    itemCoefficient,
+    ignoreLimitedDrops,
+  ].join(":");
 
   if (!CrownOfThrones.hasRiderMode(key)) {
     CrownOfThrones.createRiderMode(key, {
       ignoreLimitedDrops,
-      modifierValueFunction: valueBjornModifiers(mode, familiar),
+      modifierValueFunction,
       dropsValueFunction,
     });
   }
 
-  const result = CrownOfThrones.pickRider(key);
+  const result = CrownOfThrones.pickRider(key, familiar);
 
-  if (!result) throw new Error(`Unable to choose rider for key ${key}`);
+  if (!result) {
+    throw new Error(`Unable to choose rider for key ${key}`);
+  }
 
   return {
     familiar: result.familiar,
     value: CrownOfThrones.valueRider(
       result,
-      valueBjornModifiers(mode, familiar),
+      modifierValueFunction,
       dropsValueFunction,
+      ignoreLimitedDrops,
     ),
   };
 }
