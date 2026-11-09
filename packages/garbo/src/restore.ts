@@ -34,7 +34,7 @@ export function safeRestoreMpTarget(): number {
   return Math.min(myMaxmp(), 200);
 }
 
-export function safeRestore(): void {
+export function safeRestore(removeBeatenUp = false): void {
   if (
     lastMonster() === $monster`Sssshhsssblllrrggghsssssggggrrgglsssshhssslblgl`
   ) {
@@ -45,9 +45,12 @@ export function safeRestore(): void {
       "You lost your most recent combat! Check to make sure everything is alright before rerunning.",
     );
   } else if (have($effect`Beaten Up`)) {
-    throw new Error(
-      "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.",
-    );
+    if (removeBeatenUp) uneffect($effect`Beaten Up`);
+    if (have($effect`Beaten Up`)) {
+      throw new Error(
+        "Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.",
+      );
+    }
   }
 
   const lowPercentageHealth = FarmingStrategy.isUnderwater()
