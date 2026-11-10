@@ -918,13 +918,25 @@ export class Macro extends StrictMacro {
   }
 
   duplicate(): Macro {
-    return this.externalIf(
-      haveEquipped($item`pro skateboard`) && !get("_epicMcTwistUsed"),
-      Macro.trySkill($skill`Do an epic McTwist!`),
-    ).externalIf(
-      SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0,
-      Macro.trySkill($skill`Duplicate`),
-    );
+    const twist =
+      haveEquipped($item`pro skateboard`) && !get("_epicMcTwistUsed");
+    const duplicate =
+      SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
+    if (!twist && !duplicate) return this;
+
+    // Set up a multi-round stun to protect setup rounds:
+    // Shadow Noodles does this for all classes;
+    // Entangling Noodles only does if Pastamancer
+    const stun =
+      myClass() === $class`Pastamancer` && have($skill`Entangling Noodles`)
+        ? $skill`Entangling Noodles`
+        : $skill`Shadow Noodles`;
+    const sufficientMP =
+      myMp() >= mpCost(stun) + (duplicate ? mpCost($skill`Duplicate`) : 0);
+
+    return this.externalIf(have(stun) && sufficientMP, Macro.trySkill(stun))
+      .externalIf(twist, Macro.trySkill($skill`Do an epic McTwist!`))
+      .externalIf(duplicate, Macro.trySkill($skill`Duplicate`));
   }
 
   static duplicate(): Macro {
