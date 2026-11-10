@@ -924,8 +924,9 @@ export class Macro extends StrictMacro {
       SourceTerminal.have() && SourceTerminal.duplicateUsesRemaining() > 0;
     if (!twist && !duplicate) return this;
 
-    // Try a multi-round stun before setup; copying does not require one.
-    // Shadow Noodles works for all classes; Entangling Noodles only does for Pastamancers.
+    // Set up a multi-round stun to protect setup rounds:
+    // Shadow Noodles does this for all classes;
+    // Entangling Noodles only does if Pastamancer
     const stun =
       myClass() === $class`Pastamancer` && have($skill`Entangling Noodles`)
         ? $skill`Entangling Noodles`
