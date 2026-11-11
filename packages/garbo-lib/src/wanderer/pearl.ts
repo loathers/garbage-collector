@@ -103,8 +103,8 @@ export function pearlFactory(
           name: `${t.location} Pearl`,
           location: t.location,
           zoneValue:
-            options.itemValue($item`unblemished pearl`) *
-            (t.estimatedProgress / 100),
+            options.itemValue($item`unblemished pearl`) /
+            turnsRemainingToComplete(t.progressPref, t.estimatedProgress),
         }),
     );
   }

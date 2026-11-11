@@ -15,7 +15,7 @@ export function yachtzeeFactory(
   if (
     realmAvailable("sleaze") &&
     have($effect`Fishy`) &&
-    get("encountersUntilYachtzeeChoice") !== 0 &&
+    get("encountersUntilYachtzeeChoice") > 0 &&
     [
       "backup",
       "wanderer",
@@ -29,18 +29,18 @@ export function yachtzeeFactory(
   ) {
     const canFinishDelay =
       wandererTurnsAvailableToday(
-        options,
+        // Collecting Yachtzee costs a paid turn after finishing the countdown.
+        { ...options, estimatedTurns: () => options.estimatedTurns() - 1 },
         $location`The Sunken Party Yacht`,
         false,
-      ) > get("encountersUntilYachtzeeChoice");
+      ) >= get("encountersUntilYachtzeeChoice");
+
     return [
       new WandererTarget({
         name: "Yachtzee Countdown",
         location: $location`The Sunken Party Yacht`,
-        zoneValue:
-          options.ascend && !canFinishDelay // If we're ascending and don't have wanderer turns to finish delay, just use fallback value
-            ? 20
-            : (20000 - get("valueOfAdventure")) / 19,
+        // End-of-day NC forcers reset this progress even when we aren't ascending.
+        zoneValue: canFinishDelay ? (20000 - get("valueOfAdventure")) / 19 : 0,
       }),
     ];
   }

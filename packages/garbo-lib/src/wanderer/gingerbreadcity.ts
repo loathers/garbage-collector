@@ -18,7 +18,7 @@ export function gingerbreadFactory(
     GingerBread.minutesToMidnight() !== 0 &&
     GingerBread.minutesToNoon() !== 0 &&
     ((GingerBread.minutesToMidnight() > 0 &&
-      (availableAmount($item`sprinkles`) > 5 ||
+      (availableAmount($item`sprinkles`) >= 5 ||
         haveOutfit("gingerbread best"))) ||
       GingerBread.minutesToNoon() > 0)
   ) {
@@ -36,7 +36,7 @@ export function gingerbreadFactory(
             options,
             $location`Gingerbread Civic Center`,
             false,
-          ) > turnsUntilNextNC
+          ) >= turnsUntilNextNC
             ? 50
             : 0,
       }),

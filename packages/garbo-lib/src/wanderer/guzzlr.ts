@@ -15,15 +15,19 @@ import {
   wandererTurnsAvailableToday,
 } from "./lib";
 
+function guzzlrTurnsRemaining(): number {
+  return Math.ceil(
+    (100 - get("guzzlrDeliveryProgress")) /
+      Math.max(3, 10 - get("_guzzlrDeliveries")),
+  );
+}
+
 function considerAbandon(
   options: WandererFactoryOptions,
   locationSkiplist: Location[],
 ) {
   const location = Guzzlr.getLocation();
-  const remainingTurns = Math.ceil(
-    (100 - get("guzzlrDeliveryProgress")) /
-      Math.max(3, 10 - get("_guzzlrDeliveries")),
-  );
+  const remainingTurns = guzzlrTurnsRemaining();
 
   print(
     `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remainingTurns}`,
@@ -98,7 +102,12 @@ export function guzzlrFactory(
     const buckValue = options.itemValue($item`Guzzlrbuck`);
     acceptGuzzlrQuest(options, locationSkiplist);
     const location = Guzzlr.getLocation();
-    if (location !== null) {
+    if (
+      location !== null &&
+      (!options.ascend ||
+        wandererTurnsAvailableToday(options, location, true) >=
+          guzzlrTurnsRemaining())
+    ) {
       const guzzlrBooze =
         Guzzlr.getTier() === "platinum"
           ? Guzzlr.getCheapestPlatinumCocktail()
