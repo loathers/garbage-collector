@@ -12,12 +12,12 @@ import {
   BloodCubicZirconia,
   get,
   have,
-  SourceTerminal,
 } from "libram";
 import { garboValue } from "./garboValue";
 import { effectValueWithOpportunityCost } from "./potions";
 import { safeRefractedCasts } from "./resources/bloodCubicZirconia";
 import { FarmingStrategy } from "./farmingStrategy";
+import { forecastGarboDartFishing } from "./resources/dartForecast";
 
 let _wanderer: WandererManager | undefined;
 export function wanderer(): WandererManager {
@@ -30,7 +30,11 @@ export function wanderer(): WandererManager {
       prioritizeCappingGuzzlr: get("garbo_prioritizeCappingGuzzlr", false),
       freeFightExtraValue: (location: Location) =>
         freeFightFamiliarData(location).expectedValue,
-      digitzesRemaining: SourceTerminal.digitizedMonstersRemainingForTurns,
+      wandererSources: (sources) =>
+        sources.override(
+          ["Everything Looks Red", "Everything Looks Green"],
+          forecastGarboDartFishing,
+        ),
       plentifulMonsters: [
         globalOptions.target,
         ...(globalOptions.nobarf ? [] : FarmingStrategy.monsters()),

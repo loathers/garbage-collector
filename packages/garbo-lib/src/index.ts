@@ -1,7 +1,12 @@
 import { makeValue } from "./value";
 import type { ValueFunctions } from "./value";
 import { addWanderFactory, WandererManager } from "./wanderer";
-import type { DraggableFight, WanderDetails, WanderOptions } from "./wanderer";
+import type {
+  DraggableFight,
+  WanderDetails,
+  WandererManagerOptions,
+  WanderOptions,
+} from "./wanderer";
 import {
   canAdventureOrUnlock,
   getAvailableUltraRareZones,
@@ -19,6 +24,18 @@ export {
   hasNameCollision,
 };
 export type { WandererFactory } from "./wanderer/lib";
-export type { ValueFunctions, WanderOptions, DraggableFight, WanderDetails };
+export { defaultForecasters } from "./wanderer/forecast";
+export { cooldownUses, WandererForecasters } from "./wanderer/forecasters";
+export type {
+  WandererSourceForecast,
+  WandererSourceForecaster,
+} from "./wanderer/forecasters";
+export type {
+  ValueFunctions,
+  WanderOptions,
+  DraggableFight,
+  WanderDetails,
+  WandererManagerOptions,
+};
 export { makeKnuckleboneValue } from "./knucklebones";
 export * from "./resources";

@@ -54,6 +54,8 @@ import { cookbookbatQuestFactory } from "./cookbookbatquest";
 import { bofaFactory } from "./bofa";
 import { pearlFactory } from "./pearl";
 import { yachtzeeFactory } from "./yachtzee";
+import { defaultForecasters, forecastDigitize } from "./forecast";
+import type { WandererForecasters } from "./forecasters";
 
 export type { DraggableFight };
 
@@ -367,6 +369,22 @@ export type WanderResult = {
   useFeesh: boolean;
 };
 
+export type WandererManagerOptions = Omit<
+  WandererFactoryOptions,
+  "wandererSources"
+> & {
+  /** @deprecated Override the Digitize resource in wandererSources instead. */
+  digitzesRemaining?: (turns: number) => number;
+  /**
+   * Transform the default source configuration once when constructing the manager.
+   * The legacy Digitize override, if supplied, is already applied.
+   * The returned forecasters are evaluated against current game state on each forecast.
+   */
+  wandererSources?: (
+    sources: typeof defaultForecasters,
+  ) => WandererForecasters<string>;
+};
+
 export class WandererManager {
   private unsupportedChoices = new Map<
     Location,
@@ -495,8 +513,21 @@ export class WandererManager {
     {};
   options: WandererFactoryOptions;
 
-  constructor(options: WandererFactoryOptions) {
-    this.options = options;
+  constructor({
+    digitzesRemaining,
+    wandererSources,
+    ...options
+  }: WandererManagerOptions) {
+    const sources = digitzesRemaining
+      ? defaultForecasters.override(["Digitize"], (turns) =>
+          forecastDigitize(turns, digitzesRemaining),
+        )
+      : defaultForecasters;
+
+    this.options = {
+      ...options,
+      wandererSources: wandererSources?.(sources) ?? sources,
+    };
   }
 
   /**

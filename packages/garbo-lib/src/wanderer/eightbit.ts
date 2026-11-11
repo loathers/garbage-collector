@@ -1,5 +1,11 @@
 import { eightBitPoints, Location } from "kolmafia";
-import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
+import {
+  DraggableFight,
+  draggableFights,
+  WandererFactoryOptions,
+  WandererTarget,
+  wandererTurnsAvailableToday,
+} from "./lib";
 import { $item, $location, get, have } from "libram";
 
 export const bonusColor = ["black", "blue", "green", "red"] as const;
@@ -14,6 +20,10 @@ const locationColor: Record<BonusColor, Location> = {
   green: $location`Hero's Field`,
   red: $location`The Fungus Plains`,
 };
+
+const progressTypes: readonly DraggableFight[] = draggableFights.filter(
+  (type) => type !== "backup" && type !== "freerun",
+);
 
 function value(color: BonusColor, options: WandererFactoryOptions) {
   const denominator = options.ascend
@@ -33,19 +43,38 @@ export function eightbitFactory(
 ): WandererTarget[] {
   if (
     have($item`continuum transfunctioner`) &&
-    !["backup", "freerun"].includes(type) &&
+    progressTypes.includes(type) &&
     get("8BitScore") < TREASURE_HOUSE_FAT_LOOT_TOKEN_COST
   ) {
-    return bonusColor
-      .map(
+    const colors = bonusColor.filter(
+      (color) => !locationSkiplist.includes(locationColor[color]),
+    );
+    // Optimistically use the best currently available scoring zone throughout
+    // the horizon. Allocation between projects is a separate decision.
+    if (
+      options.ascend &&
+      !colors.some(
         (color) =>
-          new WandererTarget({
-            name: `8-bit (${color})`,
-            location: locationColor[color],
-            zoneValue: value(color, options),
-          }),
+          wandererTurnsAvailableToday(
+            options,
+            locationColor[color],
+            true,
+            progressTypes,
+          ) *
+            eightBitPoints(locationColor[color]) >=
+          TREASURE_HOUSE_FAT_LOOT_TOKEN_COST - get("8BitScore"),
       )
-      .filter((t) => !locationSkiplist.includes(t.location));
+    ) {
+      return [];
+    }
+    return colors.map(
+      (color) =>
+        new WandererTarget({
+          name: `8-bit (${color})`,
+          location: locationColor[color],
+          zoneValue: value(color, options),
+        }),
+    );
   }
   return [];
 }

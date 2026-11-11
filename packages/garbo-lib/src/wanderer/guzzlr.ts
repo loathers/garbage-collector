@@ -20,12 +20,13 @@ function considerAbandon(
   locationSkiplist: Location[],
 ) {
   const location = Guzzlr.getLocation();
-  const remaningTurns = Math.ceil(
-    (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries")),
+  const remainingTurns = Math.ceil(
+    (100 - get("guzzlrDeliveryProgress")) /
+      Math.max(3, 10 - get("_guzzlrDeliveries")),
   );
 
   print(
-    `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`,
+    `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remainingTurns}`,
   );
 
   if (
@@ -35,7 +36,7 @@ function considerAbandon(
       locationSkiplist.includes(location) ||
       !canAdventureOrUnlock(location, true, options.underwaterAllowed) || // or the zone is marked as "generally cannot adv"
       (options.ascend &&
-        wandererTurnsAvailableToday(options, location, true) < remaningTurns)) // or ascending and not enough turns to finish
+        wandererTurnsAvailableToday(options, location, true) < remainingTurns)) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
     Guzzlr.abandon();

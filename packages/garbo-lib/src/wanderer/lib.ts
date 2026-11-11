@@ -21,15 +21,12 @@ import {
   $location,
   $locations,
   $monsters,
-  $skill,
-  clamp,
   Delayed,
   get,
   getStep,
   GingerBread,
   have,
   haveInCampground,
-  NumericProperty,
   QuestProperty,
   QuestState,
   realmAvailable,
@@ -37,6 +34,8 @@ import {
   undelay,
   withProperty,
 } from "libram";
+import { defaultForecasters } from "./forecast";
+import { WandererForecasters } from "./forecasters";
 
 export const draggableFights = [
   "backup",
@@ -70,7 +69,8 @@ export type WandererFactoryOptions = {
   plentifulMonsters: Monster[];
   prioritizeCappingGuzzlr: boolean;
   underwaterAllowed: boolean;
-  digitzesRemaining?: (turns: number) => number;
+  /** Resolved source forecasts, including any atomic overrides of the defaults. */
+  wandererSources?: WandererForecasters<string>;
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
   canRefractedGaze?: boolean;
@@ -315,93 +315,30 @@ export function defaultFactory(): WandererTarget[] {
   ];
 }
 
-type WanderingSource = {
-  name: string;
-  item: Item;
-  max: number;
-  property: NumericProperty;
-  type: DraggableFight;
-};
-const WanderingSources: WanderingSource[] = [
-  {
-    name: "CMG",
-    item: $item`cursed magnifying glass`,
-    max: 3,
-    property: "_voidFreeFights",
-    type: "wanderer",
-  },
-  {
-    name: "Voter",
-    item: $item`"I Voted!" sticker`,
-    max: 3,
-    property: "_voteFreeFights",
-    type: "wanderer",
-  },
-  {
-    name: "Voter",
-    item: $item`"I Voted!" sticker`,
-    max: 3,
-    property: "_voteFreeFights",
-    type: "wanderer",
-  },
-  {
-    name: "Backup",
-    item: $item`backup camera`,
-    max: 11,
-    property: "_backUpUses",
-    type: "backup",
-  },
-];
-
+/**
+ * Expected compatible encounters, before allocating them between destinations.
+ * Kill-based projects receive only the winning fraction of conditional fights.
+ * @param options Caller forecasts and location constraints
+ * @param location Destination whose encounter eligibility should be checked
+ * @param requiresMonsterKill Whether free runs fail to advance this project
+ * @param types Fight types that can advance this project
+ * @returns Expected available progress encounters in the caller's horizon
+ */
 export function wandererTurnsAvailableToday(
   options: WandererFactoryOptions,
   location: Location,
   requiresMonsterKill: boolean,
+  types: readonly DraggableFight[] = draggableFights,
 ): number {
-  const canWanderCache: Record<DraggableFight, boolean> = {
-    backup: canWander(location, "backup", options.underwaterAllowed),
-    wanderer: canWander(location, "wanderer", options.underwaterAllowed),
-    "yellow ray": canWander(location, "yellow ray", options.underwaterAllowed),
-    freefight: canWander(location, "freefight", options.underwaterAllowed),
-    "conditional freefight": canWander(
-      location,
-      "conditional freefight",
-      options.underwaterAllowed,
-    ),
-    "freefight (no items)": canWander(
-      location,
-      "freefight (no items)",
-      options.underwaterAllowed,
-    ),
-    freerun: canWander(location, "freerun", options.underwaterAllowed),
-  };
+  const turns = Math.max(0, Math.floor(options.estimatedTurns()));
+  const forecasters = options.wandererSources ?? defaultForecasters;
 
-  const digitize =
-    canWanderCache["backup"] && options.digitzesRemaining
-      ? options.digitzesRemaining(options.estimatedTurns())
-      : 0;
-  const pigSkinnerRay =
-    canWanderCache["backup"] && have($skill`Free-For-All`)
-      ? Math.floor(options.estimatedTurns() / 25)
-      : 0;
-  const yellowRayCooldown = have($skill`Fondeluge`) ? 50 : 100;
-  const yellowRay = canWanderCache["yellow ray"]
-    ? Math.floor(options.estimatedTurns() / yellowRayCooldown)
-    : 0;
-  const wanderers = sum(WanderingSources, (source) =>
-    canWanderCache[source.type] && have(source.item)
-      ? clamp(get(source.property), 0, source.max)
+  return sum(forecasters.forecast(turns), (source) =>
+    types.includes(source.type) &&
+    canWander(location, source.type, options.underwaterAllowed)
+      ? source.expectedFights * (requiresMonsterKill ? source.winChance : 1)
       : 0,
   );
-  // This is the ELG cooldown for spring shoes
-  const freeRun =
-    !requiresMonsterKill &&
-    canWanderCache["freerun"] &&
-    have($item`spring shoes`)
-      ? Math.floor(options.estimatedTurns() / 30)
-      : 0;
-
-  return digitize + pigSkinnerRay + yellowRay + wanderers + freeRun;
 }
 
 const LIMITED_BOFA_DROPS = $items`pocket wish, tattered scrap of paper`;
