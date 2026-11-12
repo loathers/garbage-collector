@@ -1,10 +1,6 @@
+import { wandererTurnsAvailableToday } from "./availability";
 import { availableAmount, haveOutfit, Location } from "kolmafia";
-import {
-  DraggableFight,
-  WandererFactoryOptions,
-  WandererTarget,
-  wandererTurnsAvailableToday,
-} from "./lib";
+import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
 import { $item, $location, GingerBread } from "libram";
 
 export function gingerbreadFactory(

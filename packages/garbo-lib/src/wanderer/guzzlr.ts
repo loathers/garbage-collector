@@ -1,3 +1,4 @@
+import { wandererTurnsAvailableToday } from "./availability";
 import {
   craftType,
   Item,
@@ -12,7 +13,6 @@ import {
   DraggableFight,
   WandererFactoryOptions,
   WandererTarget,
-  wandererTurnsAvailableToday,
 } from "./lib";
 
 function guzzlrTurnsRemaining(): number {

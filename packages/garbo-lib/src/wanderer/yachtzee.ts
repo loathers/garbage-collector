@@ -1,11 +1,7 @@
+import { wandererTurnsAvailableToday } from "./availability";
 import { Location } from "kolmafia";
 import { $effect, $location, get, have, realmAvailable } from "libram";
-import {
-  DraggableFight,
-  WandererFactoryOptions,
-  WandererTarget,
-  wandererTurnsAvailableToday,
-} from "./lib";
+import { DraggableFight, WandererFactoryOptions, WandererTarget } from "./lib";
 
 export function yachtzeeFactory(
   type: DraggableFight,

@@ -1,10 +1,10 @@
+import { wandererTurnsAvailableToday } from "./availability";
 import { eightBitPoints, Location } from "kolmafia";
 import {
   DraggableFight,
   draggableFights,
   WandererFactoryOptions,
   WandererTarget,
-  wandererTurnsAvailableToday,
 } from "./lib";
 import { $item, $location, get, have } from "libram";
 
