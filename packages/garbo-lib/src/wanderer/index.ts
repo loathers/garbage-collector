@@ -1,5 +1,4 @@
 import {
-  appearanceRates,
   Familiar,
   inebrietyLimit,
   isDarkMode,
@@ -22,28 +21,21 @@ import {
   get,
   getActiveEffects,
   maxBy,
-  MonodentOfTheSea,
   PeridotOfPeril,
   sum,
-  sumNumbers,
   undelay,
 } from "libram";
 import { guzzlrFactory } from "./guzzlr";
 import {
-  addMaps,
-  averageMonsterValue,
   canAdventureOrUnlock,
   canWander,
   defaultFactory,
   DraggableFight,
-  ensureMapElement,
   isDraggableFight,
   unlock,
-  UNPERIDOTABLE_MONSTERS,
   WandererFactory,
   WandererFactoryOptions,
   WandererLocation,
-  WandererTarget,
 } from "./lib";
 import { lovebugsFactory } from "./lovebugs";
 import { itemDropFactory } from "./itemdrop";
@@ -54,6 +46,9 @@ import { cookbookbatQuestFactory } from "./cookbookbatquest";
 import { bofaFactory } from "./bofa";
 import { pearlFactory } from "./pearl";
 import { yachtzeeFactory } from "./yachtzee";
+import { defaultForecasters, forecastDigitize } from "./forecast";
+import type { WandererForecasters } from "./forecasters";
+import { valueWandererTargets } from "./value";
 
 export type { DraggableFight };
 
@@ -88,207 +83,27 @@ export function addWanderFactory(factory: WandererFactory): void {
   if (!wanderFactories.includes(factory)) wanderFactories.push(factory);
 }
 
-function zoneAverageMonsterValue(
-  location: Location,
-  monsterBonusValues: Map<Monster, number>,
-  monsterItemValues: Map<Monster, number>,
-): number {
-  const rates = appearanceRates(location, true);
-  const averageBonusValue = averageMonsterValue(monsterBonusValues, rates);
-  const averageItemValue = averageMonsterValue(monsterItemValues, rates);
-  return averageBonusValue + averageItemValue;
-}
-
-function targetedMonsterValue(
-  monsterBonusValues: Map<Monster, number>,
-  monsterItemValues: Map<Monster, number>,
-): [Monster, number] {
-  const monsterTotalValue = new Map(monsterBonusValues);
-  addMaps(monsterTotalValue, monsterItemValues);
-  const availableMonsters = [...monsterTotalValue.entries()].filter(
-    ([m]) => !UNPERIDOTABLE_MONSTERS.has(m),
-  );
-  if (availableMonsters.length === 0) return [$monster.none, 0];
-  return maxBy(availableMonsters, 1);
-}
-
-function zoneRefractedGazeValue(
-  location: Location,
-  monsterBonusValues: Map<Monster, number>,
-  monsterItemValues: Map<Monster, number>,
-): { withFeesh: number; noFeesh: number } {
-  const totalItemValue = sumNumbers([...monsterItemValues.values()]);
-  // If we aren't using Feesh, we will get bonuses from one monster, but lose the items from that monster
-  const rates = appearanceRates(location, true);
-  const averageBonusValue = averageMonsterValue(monsterBonusValues, rates);
-  const averageItemValue = averageMonsterValue(monsterItemValues, rates);
-  const noFeesh = totalItemValue - averageItemValue + averageBonusValue;
-  // Monsters that cannot become fish still contribute the ordinary Gaze value.
-  const unconvertedRates = Object.fromEntries(
-    Object.entries(rates).map(([name, rate]) => [
-      name,
-      MonodentOfTheSea.canFishify(Monster.get(name)) ? 0 : rate,
-    ]),
-  );
-  const withFeesh =
-    totalItemValue -
-    averageMonsterValue(monsterItemValues, unconvertedRates) +
-    averageMonsterValue(monsterBonusValues, unconvertedRates);
-  return { withFeesh, noFeesh };
-}
-
-type ZoneData = {
-  location: Location;
-  targets: WandererTarget[];
-  zoneValue: number;
-  monsterBonusValues: Map<Monster, number>;
-  monsterItemValues: Map<Monster, number>;
-};
-
-function updateZoneData(zoneData: ZoneData, wanderer: WandererTarget) {
-  zoneData.targets.push(wanderer);
-  addMaps(zoneData.monsterBonusValues, wanderer.monsterBonusValues);
-  addMaps(zoneData.monsterItemValues, wanderer.monsterItemValues);
-  zoneData.zoneValue += wanderer.zoneValue;
-}
-
-function determineWandererLocationInfo(
-  shouldRefract: boolean,
-  shouldFeesh: boolean,
-  shouldPeridot: boolean,
-  bestMonsterCandidate: Monster,
-  monsterTargetedValue: number,
-  monsterAverageValue: number,
-  refractedGazeValue: number,
-): {
-  bestMonster: Monster;
-  monsterValue: number;
-  shouldBcz: boolean;
-  shouldFeesh: boolean;
-} {
-  if (shouldRefract) {
-    return {
-      bestMonster: $monster.none,
-      monsterValue: refractedGazeValue,
-      shouldBcz: true,
-      shouldFeesh,
-    };
-  }
-
-  if (shouldPeridot) {
-    return {
-      bestMonster: bestMonsterCandidate,
-      monsterValue: monsterTargetedValue,
-      shouldBcz: false,
-      shouldFeesh: false,
-    };
-  }
-
-  return {
-    bestMonster: $monster.none,
-    monsterValue: monsterAverageValue,
-    shouldBcz: false,
-    shouldFeesh: false,
-  };
-}
-
 function bestWander(
   type: DraggableFight,
   locationSkiplist: Location[],
   nameSkiplist: string[],
   options: WandererFactoryOptions,
 ): WandererLocation {
-  const locationValues = new Map<Location, ZoneData>();
+  const targets = wanderFactories.flatMap((factory) =>
+    factory(type, locationSkiplist, options).filter(
+      (target) =>
+        !nameSkiplist.includes(target.name) &&
+        !locationSkiplist.includes(target.location) &&
+        canWander(target.location, type, options.underwaterAllowed),
+    ),
+  );
+  const locations = valueWandererTargets(targets, type, options);
 
-  // Create data for zone/monster values from all factories
-  for (const wanderFactory of wanderFactories) {
-    const wanderTargets = wanderFactory(type, locationSkiplist, options);
-    for (const wanderTarget of wanderTargets) {
-      if (
-        !nameSkiplist.includes(wanderTarget.name) &&
-        !locationSkiplist.includes(wanderTarget.location) &&
-        canWander(wanderTarget.location, type, options.underwaterAllowed)
-      ) {
-        const { location } = wanderTarget;
-
-        // Retrieve existing data for location if extant
-        const zoneData = ensureMapElement(locationValues, location, {
-          location,
-          targets: [],
-          zoneValue: 0,
-          monsterBonusValues: new Map<Monster, number>(),
-          monsterItemValues: new Map<Monster, number>(),
-        });
-        updateZoneData(zoneData, wanderTarget);
-      }
-    }
-  }
-
-  // Determine combined values, and whether best forced target is better than the best average location drops
-  const locationMonsterValues = new Map<Location, WandererLocation>();
-  for (const [
-    location,
-    { targets, zoneValue, monsterBonusValues, monsterItemValues },
-  ] of locationValues) {
-    const monsterAverageValue = zoneAverageMonsterValue(
-      location,
-      monsterBonusValues,
-      monsterItemValues,
-    );
-    const { withFeesh, noFeesh } = zoneRefractedGazeValue(
-      location,
-      monsterBonusValues,
-      monsterItemValues,
-    );
-    const shouldFeeshCandidate = MonodentOfTheSea.have() && withFeesh > noFeesh;
-
-    const refractedGazeValue =
-      options.canRefractedGaze && type !== "conditional freefight"
-        ? shouldFeeshCandidate
-          ? withFeesh
-          : noFeesh
-        : 0;
-
-    const [bestMonsterCandidate, monsterTargetedValue] = targetedMonsterValue(
-      monsterBonusValues,
-      monsterItemValues,
-    );
-
-    const shouldRefract =
-      refractedGazeValue > monsterAverageValue &&
-      refractedGazeValue > monsterTargetedValue;
-
-    const shouldPeridot =
-      PeridotOfPeril.canImperil(location) &&
-      !shouldRefract &&
-      monsterTargetedValue > monsterAverageValue;
-
-    const { bestMonster, monsterValue, shouldBcz, shouldFeesh } =
-      determineWandererLocationInfo(
-        shouldRefract,
-        shouldFeeshCandidate,
-        shouldPeridot,
-        bestMonsterCandidate,
-        monsterTargetedValue,
-        monsterAverageValue,
-        refractedGazeValue,
-      );
-
-    locationMonsterValues.set(location, {
-      location,
-      targets,
-      peridotMonster: bestMonster,
-      value: zoneValue + monsterValue,
-      useRefractedGaze: shouldBcz,
-      useFeesh: shouldFeesh,
-    });
-  }
-
-  if (locationMonsterValues.size === 0) {
+  if (locations.length === 0) {
     throw "Could not determine a wander target!";
   }
 
-  return maxBy([...locationMonsterValues.values()], "value");
+  return maxBy(locations, "value");
 }
 
 /**
@@ -365,6 +180,22 @@ export type WanderResult = {
   familiar: Familiar;
   useRefractedGaze: boolean;
   useFeesh: boolean;
+};
+
+export type WandererManagerOptions = Omit<
+  WandererFactoryOptions,
+  "wandererSources"
+> & {
+  /** @deprecated Override the Digitize resource in wandererSources instead. */
+  digitzesRemaining?: (turns: number) => number;
+  /**
+   * Transform the default source configuration once when constructing the manager.
+   * The legacy Digitize override, if supplied, is already applied.
+   * The returned forecasters are evaluated against current game state on each forecast.
+   */
+  wandererSources?: (
+    sources: typeof defaultForecasters,
+  ) => WandererForecasters<string>;
 };
 
 export class WandererManager {
@@ -495,8 +326,21 @@ export class WandererManager {
     {};
   options: WandererFactoryOptions;
 
-  constructor(options: WandererFactoryOptions) {
-    this.options = options;
+  constructor({
+    digitzesRemaining,
+    wandererSources,
+    ...options
+  }: WandererManagerOptions) {
+    const sources = digitzesRemaining
+      ? defaultForecasters.override(["Digitize"], (turns) =>
+          forecastDigitize(turns, digitzesRemaining),
+        )
+      : defaultForecasters;
+
+    this.options = {
+      ...options,
+      wandererSources: wandererSources?.(sources) ?? sources,
+    };
   }
 
   /**
