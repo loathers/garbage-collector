@@ -25,6 +25,11 @@ export {
 };
 export type { WandererFactory } from "./wanderer/lib";
 export { defaultForecasters } from "./wanderer/forecast";
+export { defaultWandererAllocation } from "./wanderer/allocation";
+export type {
+  WandererAllocationContext,
+  WandererAllocator,
+} from "./wanderer/allocation";
 export { cooldownUses, WandererForecasters } from "./wanderer/forecasters";
 export type {
   WandererSourceForecast,

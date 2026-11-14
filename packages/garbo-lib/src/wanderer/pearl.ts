@@ -84,15 +84,19 @@ function turnsRemainingToComplete(
 
 export function pearlFactory(
   type: DraggableFight,
-  _locationSkiplist: Location[],
+  locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
   if (have($effect`Fishy`) && type !== "freerun") {
     return PearlTargets.filter(
       (t) =>
         !get(t.completionPref) &&
-        wandererTurnsAvailableToday(options, t.location, true) >=
-          turnsRemainingToComplete(t.progressPref, t.estimatedProgress),
+        wandererTurnsAvailableToday(options, t.location, true, {
+          locationSkiplist,
+          value:
+            options.itemValue($item`unblemished pearl`) /
+            turnsRemainingToComplete(t.progressPref, t.estimatedProgress),
+        }) >= turnsRemainingToComplete(t.progressPref, t.estimatedProgress),
     ).map(
       (t) =>
         new WandererTarget({

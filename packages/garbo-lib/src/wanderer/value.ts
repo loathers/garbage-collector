@@ -5,6 +5,7 @@ import {
   MonodentOfTheSea,
   PeridotOfPeril,
   sumNumbers,
+  undelay,
 } from "libram";
 import {
   addMaps,
@@ -146,6 +147,9 @@ export function valueWandererTargets(
   }
 
   // Determine combined values, and whether best forced target is better than the best average location drops
+  const canRefract =
+    type !== "conditional freefight" &&
+    undelay(options.canRefractedGaze ?? false);
   const locationMonsterValues = new Map<Location, WandererLocation>();
   for (const [
     location,
@@ -163,12 +167,11 @@ export function valueWandererTargets(
     );
     const shouldFeeshCandidate = MonodentOfTheSea.have() && withFeesh > noFeesh;
 
-    const refractedGazeValue =
-      options.canRefractedGaze && type !== "conditional freefight"
-        ? shouldFeeshCandidate
-          ? withFeesh
-          : noFeesh
-        : 0;
+    const refractedGazeValue = canRefract
+      ? shouldFeeshCandidate
+        ? withFeesh
+        : noFeesh
+      : 0;
 
     const [bestMonsterCandidate, monsterTargetedValue] = targetedMonsterValue(
       monsterBonusValues,

@@ -5,7 +5,7 @@ import { $item, $location, GingerBread } from "libram";
 
 export function gingerbreadFactory(
   type: DraggableFight,
-  _locationSkiplist: Location[],
+  locationSkiplist: Location[],
   options: WandererFactoryOptions,
 ): WandererTarget[] {
   if (
@@ -32,6 +32,7 @@ export function gingerbreadFactory(
             options,
             $location`Gingerbread Civic Center`,
             false,
+            { value: 50, locationSkiplist },
           ) >= turnsUntilNextNC
             ? 50
             : 0,

@@ -55,12 +55,11 @@ export function eightbitFactory(
       options.ascend &&
       !colors.some(
         (color) =>
-          wandererTurnsAvailableToday(
-            options,
-            locationColor[color],
-            true,
-            progressTypes,
-          ) *
+          wandererTurnsAvailableToday(options, locationColor[color], true, {
+            types: progressTypes,
+            value: value(color, options),
+            locationSkiplist,
+          }) *
             eightBitPoints(locationColor[color]) >=
           TREASURE_HOUSE_FAT_LOOT_TOKEN_COST - get("8BitScore"),
       )

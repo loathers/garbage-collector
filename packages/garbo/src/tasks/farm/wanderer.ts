@@ -489,7 +489,7 @@ const BarfTurnTasks: FarmingTask[] = [
     },
   ),
   wanderTask(
-    "conditional freefight",
+    () => (guaranteedBullseye() ? "freefight" : "conditional freefight"),
     () => ({
       offhand:
         guaranteedBullseye() || have($item`spring shoes`)
@@ -508,6 +508,7 @@ const BarfTurnTasks: FarmingTask[] = [
       completed: () => !canBullseye(),
       combat: new GarboStrategy(() =>
         Macro.if_(globalOptions.target, Macro.meatKill())
+          .externalIf(guaranteedBullseye(), Macro.refractedGaze())
           .familiarActions()
           .skill($skill`Darts: Aim for the Bullseye`)
           .trySkill($skill`Spring Away`)

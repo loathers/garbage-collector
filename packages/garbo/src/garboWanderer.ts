@@ -44,7 +44,8 @@ export function wanderer(): WandererManager {
       ],
       valueOfAdventure: get("valueOfAdventure"),
       takeTurnForProfit: true,
-      canRefractedGaze: BloodCubicZirconia.have() && safeRefractedCasts() > 0,
+      canRefractedGaze: () =>
+        BloodCubicZirconia.have() && safeRefractedCasts() > 0,
       underwaterAllowed: FarmingStrategy.isUnderwater(),
     });
   }

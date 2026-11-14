@@ -120,7 +120,7 @@ export function forecastGarboDartFishing(
     },
     {
       name: "Darts: Bullseye",
-      type: "conditional freefight",
+      type: bullseyeChance === 1 ? "freefight" : "conditional freefight",
       expectedFights: darts,
       winChance: bullseyeChance,
     },

@@ -29,6 +29,7 @@ export function yachtzeeFactory(
         { ...options, estimatedTurns: () => options.estimatedTurns() - 1 },
         $location`The Sunken Party Yacht`,
         false,
+        { value: (20000 - get("valueOfAdventure")) / 19, locationSkiplist },
       ) >= get("encountersUntilYachtzeeChoice");
 
     return [

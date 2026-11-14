@@ -35,6 +35,7 @@ import {
   withProperty,
 } from "libram";
 import { WandererForecasters } from "./forecasters";
+import type { WandererAllocator } from "./allocation";
 
 export const draggableFights = [
   "backup",
@@ -70,9 +71,17 @@ export type WandererFactoryOptions = {
   underwaterAllowed: boolean;
   /** Resolved source forecasts, including any atomic overrides of the defaults. */
   wandererSources?: WandererForecasters<string>;
+  /**
+   * Allocate compatible forecasts to a project on each availability check.
+   * Defaults to reserving all yellow rays for item drops. Use
+   * defaultWandererAllocation to extend that policy, or sources => sources
+   * to count all compatible supply.
+   */
+  wandererAllocation?: WandererAllocator;
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
-  canRefractedGaze?: boolean;
+  /** Whether another cast is affordable, evaluated when valuing destinations. */
+  canRefractedGaze?: Delayed<boolean>;
 };
 
 export type WandererFactory = (

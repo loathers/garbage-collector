@@ -87,7 +87,7 @@ function forecastRedCooldown(turns: number): WandererSourceForecast[] {
   return [
     {
       name: freeForAll ? "Free-For-All" : "Darts: Bullseye",
-      type: freeForAll ? "freefight" : "conditional freefight",
+      type: "freefight",
       expectedFights:
         freeForAll || guaranteedBullseye
           ? cooldownUses(

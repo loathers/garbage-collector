@@ -40,7 +40,10 @@ function considerAbandon(
       locationSkiplist.includes(location) ||
       !canAdventureOrUnlock(location, true, options.underwaterAllowed) || // or the zone is marked as "generally cannot adv"
       (options.ascend &&
-        wandererTurnsAvailableToday(options, location, true) < remainingTurns)) // or ascending and not enough turns to finish
+        wandererTurnsAvailableToday(options, location, true, {
+          value: guzzlrQuest(options).value,
+          locationSkiplist,
+        }) < remainingTurns)) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
     Guzzlr.abandon();
@@ -93,6 +96,24 @@ function guzzlrValuePerTurn(
   }
 }
 
+function guzzlrQuest(options: WandererFactoryOptions): {
+  booze: Item | null;
+  value: number;
+} {
+  const tier = Guzzlr.getTier();
+  const booze =
+    tier === "platinum"
+      ? Guzzlr.getCheapestPlatinumCocktail()
+      : Guzzlr.getBooze();
+
+  return {
+    booze,
+    value: booze
+      ? guzzlrValuePerTurn(options.itemValue($item`Guzzlrbuck`), tier, booze)
+      : 0,
+  };
+}
+
 export function guzzlrFactory(
   type: DraggableFight,
   locationSkiplist: Location[],
@@ -102,26 +123,22 @@ export function guzzlrFactory(
     const buckValue = options.itemValue($item`Guzzlrbuck`);
     acceptGuzzlrQuest(options, locationSkiplist);
     const location = Guzzlr.getLocation();
+    const { booze: guzzlrBooze, value } = guzzlrQuest(options);
+
     if (
       location !== null &&
       (!options.ascend ||
-        wandererTurnsAvailableToday(options, location, true) >=
-          guzzlrTurnsRemaining())
+        wandererTurnsAvailableToday(options, location, true, {
+          value,
+          locationSkiplist,
+        }) >= guzzlrTurnsRemaining())
     ) {
-      const guzzlrBooze =
-        Guzzlr.getTier() === "platinum"
-          ? Guzzlr.getCheapestPlatinumCocktail()
-          : Guzzlr.getBooze();
       return guzzlrBooze
         ? [
             new WandererTarget({
               name: "Guzzlr",
               location: location,
-              zoneValue: guzzlrValuePerTurn(
-                buckValue,
-                Guzzlr.getTier(),
-                guzzlrBooze,
-              ),
+              zoneValue: value,
               prepareTurn: () => {
                 if (!guzzlrBooze) {
                   // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze
