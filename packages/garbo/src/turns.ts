@@ -30,6 +30,7 @@ import {
   basePointerRingMeat,
   ESTIMATED_OVERDRUNK_TURNS,
   howManySausagesCouldIEat,
+  sober,
   targetingMeat,
   withLocation,
 } from "./lib";
@@ -111,9 +112,7 @@ export function estimatedGarboTurns(estimateEmptyOrgans = true): number {
   const thesisAdventures =
     have($familiar`Pocket Professor`) && !get("_thesisDelivered") ? 11 : 0;
   const nightcapAdventures =
-    globalOptions.ascend &&
-    myInebriety() <= inebrietyLimit() &&
-    have($item`Drunkula's wineglass`)
+    globalOptions.ascend && sober() && have($item`Drunkula's wineglass`)
       ? ESTIMATED_OVERDRUNK_TURNS
       : 0;
   const thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;

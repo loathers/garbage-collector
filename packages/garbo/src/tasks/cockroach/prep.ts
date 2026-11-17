@@ -3,12 +3,10 @@ import {
   abort,
   availableChoiceOptions,
   handlingChoice,
-  inebrietyLimit,
   lastChoice,
   mallPrice,
   maximize,
   myAdventures,
-  myInebriety,
   myMaxhp,
   restoreHp,
   runChoice,
@@ -35,7 +33,7 @@ import { meatTargetOutfit } from "../../outfit/target";
 import { GarboTask } from "../engine";
 import { bestCrewmate, dessertIslandWorthIt, outfitBonuses } from "./lib";
 import { doingGregFight } from "../../resources/extrovermectin";
-import { burnLibrams, targetMeat, userConfirmDialog } from "../../lib";
+import { burnLibrams, sober, targetMeat, userConfirmDialog } from "../../lib";
 import { globalOptions } from "../../config";
 import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
@@ -44,9 +42,7 @@ import { highMeatMonsterCount } from "../../turns";
 export const CockroachSetup: Quest<GarboTask> = {
   name: "Setup Cockroach Target",
   ready: () =>
-    doingGregFight() &&
-    globalOptions.target === $monster`cockroach` &&
-    myInebriety() <= inebrietyLimit(),
+    doingGregFight() && globalOptions.target === $monster`cockroach` && sober(),
   completed: () => getStep("_questPirateRealm") > 4,
   tasks: [
     {
@@ -223,9 +219,7 @@ export const CockroachSetup: Quest<GarboTask> = {
 export const CockroachFinish: Quest<GarboTask> = {
   name: "Finish Setup Cockroach Target",
   ready: () =>
-    doingGregFight() &&
-    globalOptions.target === $monster`cockroach` &&
-    myInebriety() <= inebrietyLimit(),
+    doingGregFight() && globalOptions.target === $monster`cockroach` && sober(),
   completed: () => get("_lastPirateRealmIsland") === $location`Trash Island`,
   tasks: [
     {

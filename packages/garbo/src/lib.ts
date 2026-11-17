@@ -147,8 +147,7 @@ export const propertyManager = new PropertiesManager();
 export const songboomMeat = () =>
   SongBoom.have() &&
   (SongBoom.songChangesLeft() > 0 ||
-    (SongBoom.song() === "Total Eclipse of Your Meat" &&
-      myInebriety() <= inebrietyLimit()))
+    (SongBoom.song() === "Total Eclipse of Your Meat" && sober()))
     ? 25
     : 0;
 
