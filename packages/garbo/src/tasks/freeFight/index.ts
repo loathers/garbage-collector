@@ -14,7 +14,6 @@ import {
   guildStoreAvailable,
   handlingChoice,
   haveEquipped,
-  inebrietyLimit,
   Item,
   itemAmount,
   itemDropsArray,
@@ -26,7 +25,6 @@ import {
   myBuffedstat,
   myClass,
   myFamiliar,
-  myInebriety,
   myMaxhp,
   mySoulsauce,
   numericModifier,
@@ -485,7 +483,7 @@ const FreeFightTasks = [
     ready: () =>
       canAdventure($location`The Red Zeppelin`) &&
       get("questL11Ron") === "finished" &&
-      myInebriety() <= inebrietyLimit() &&
+      sober() &&
       mallPrice($item`glark cable`) <= globalOptions.prefs.valueOfFreeFight,
     completed: () => get("_glarkCableUses") >= 5,
     do: $location`The Red Zeppelin`,

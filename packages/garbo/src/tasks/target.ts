@@ -22,18 +22,17 @@ import {
   cliExecute,
   faxbot,
   getClanLounge,
-  inebrietyLimit,
   mallPrice,
-  myInebriety,
   use,
   wait,
 } from "kolmafia";
 import { globalOptions } from "../config";
 import { amuletCoinValue } from "../familiar/lib";
+import { sober } from "../lib";
 
 export const SetupTargetCopyQuest: Quest<GarboTask> = {
   name: "SetupTargetCopy",
-  ready: () => myInebriety() <= inebrietyLimit(),
+  ready: () => sober(),
   tasks: [
     {
       // Need the daily dungeon to either be totally finished or to be on a NC we can walk away from
