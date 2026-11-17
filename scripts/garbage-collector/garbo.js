@@ -20340,7 +20340,7 @@ var HIGHLIGHT = kolmafia.isDarkMode() ? "yellow" : "blue";
 var ESTIMATED_OVERDRUNK_TURNS = 50;
 var MEAT_TARGET_MULTIPLIER = () => globalOptions.prefs.meatTargetMultiplier;
 var propertyManager = new PropertiesManager();
-var songboomMeat = () => have$E() && (songChangesLeft() > 0 || song() === "Total Eclipse of Your Meat" && kolmafia.myInebriety() <= kolmafia.inebrietyLimit()) ? 25 : 0;
+var songboomMeat = () => have$E() && (songChangesLeft() > 0 || song() === "Total Eclipse of Your Meat" && sober()) ? 25 : 0;
 
 // all tourists have a basemeat of 250
 var targetMeat = () => kolmafia.meatDrop(globalOptions.target) + songboomMeat();
@@ -20487,7 +20487,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"27c85f0684b161828d9204e08d6990077a6d72ce"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"1433f84789d8ff07e85a614244b02270bbd3c8ba"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -22049,7 +22049,7 @@ function toSpec(source) {
 var cachedUsingPurse = null;
 function usingPurse() {
   if (cachedUsingPurse === null) {
-    cachedUsingPurse = kolmafia.myInebriety() <= kolmafia.inebrietyLimit() && !have$R($item`KoL Con 13 snowglobe`) && !have$R($item`can of mixed everything`) && (!have$R($item`latte lovers member's mug`) || !have$R($familiar`Robortender`) && !have$R($familiar`Hobo Monkey`) || !kolmafia.canAdventure($location`The Black Forest`));
+    cachedUsingPurse = sober() && !have$R($item`KoL Con 13 snowglobe`) && !have$R($item`can of mixed everything`) && (!have$R($item`latte lovers member's mug`) || !have$R($familiar`Robortender`) && !have$R($familiar`Hobo Monkey`) || !kolmafia.canAdventure($location`The Black Forest`));
   }
   return cachedUsingPurse;
 }
@@ -22625,7 +22625,7 @@ var rufusPotion = new Potion($item`closed-circuit pay phone`, {
     }
 
     // If we are overdrunk, we will need to be able to grab the NC (with a wineglass)
-    if (kolmafia.myInebriety() > kolmafia.inebrietyLimit() && (!have$R($item`Drunkula's wineglass`) || !kolmafia.canEquip($item`Drunkula's wineglass`))) {
+    if (!sober() && (!have$R($item`Drunkula's wineglass`) || !kolmafia.canEquip($item`Drunkula's wineglass`))) {
       return Infinity;
     }
 
@@ -22635,7 +22635,7 @@ var rufusPotion = new Potion($item`closed-circuit pay phone`, {
     return 3 * averagePrice;
   },
   acquire: qty => {
-    if (kolmafia.myInebriety() > kolmafia.inebrietyLimit()) {
+    if (!sober()) {
       kolmafia.equip($slot`weapon`, $item.none);
       kolmafia.equip($slot`off-hand`, $item`Drunkula's wineglass`);
     }
@@ -24275,7 +24275,7 @@ function menu$1(adventure) {
   var monsterRates = adventureTargetToWeightedMap(target);
   var winWeight = combatOutcomeWeight(outcomes, ["win"]);
   var familiarMenu = [].concat(_toConsumableArray(getConstantValueFamiliars(mode, monsterRates)), _toConsumableArray(getDropFamiliars()), _toConsumableArray(getToyCupidBowFamiliars(cupidBowValues, mode)), _toConsumableArray(includeExperienceFamiliars ? getExperienceFamiliars(mode) : []), _toConsumableArray(extraFamiliars));
-  if (canChooseMacro && kolmafia.myInebriety() <= kolmafia.inebrietyLimit()) {
+  if (canChooseMacro && sober()) {
     if (timeToMeatify()) {
       familiarMenu.push({
         familiar: $familiar`Grey Goose`,
@@ -24295,25 +24295,6 @@ function menu$1(adventure) {
         copyTargetCount() - get$2("gooseDronesRemaining")) * valueDrops(globalOptions.target),
         leprechaunMultiplier: 0,
         limit: "experience",
-        worksOnFreeRun: false
-      });
-    }
-    if (snapperReasonable(mode)) {
-      familiarMenu.push({
-        familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: snapperValue(mode),
-        leprechaunMultiplier: 0,
-        limit: "none",
-        worksOnFreeRun: false
-      });
-    }
-    if (mode === "barf" && have$R($familiar`Sword of S Words`) && get$2("swordOfSWordsMonster") && get$2("_swordOfSWordsKills") < 100) {
-      familiarMenu.push({
-        familiar: $familiar`Sword of S Words`,
-        expectedValue: 0,
-        // handled in barf cache
-        leprechaunMultiplier: 0,
-        limit: "special",
         worksOnFreeRun: false
       });
     }
@@ -24338,6 +24319,25 @@ function menu$1(adventure) {
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: true
+      });
+    }
+    if (snapperReasonable(mode)) {
+      familiarMenu.push({
+        familiar: $familiar`Red-Nosed Snapper`,
+        expectedValue: snapperValue(mode),
+        leprechaunMultiplier: 0,
+        limit: "none",
+        worksOnFreeRun: false
+      });
+    }
+    if (mode === "barf" && have$R($familiar`Sword of S Words`) && get$2("swordOfSWordsMonster") && get$2("_swordOfSWordsKills") < 100) {
+      familiarMenu.push({
+        familiar: $familiar`Sword of S Words`,
+        expectedValue: 0,
+        // handled in barf cache
+        leprechaunMultiplier: 0,
+        limit: "special",
+        worksOnFreeRun: false
       });
     }
   }
@@ -24783,7 +24783,7 @@ function safeRestore() {
       throw new Error("Hey, you're beaten up, and that's a bad thing. Lick your wounds, handle your problems, and run me again when you feel ready.");
     }
   }
-  var lowPercentageHealth = FarmingStrategy.isUnderwater() ? kolmafia.myInebriety() > kolmafia.inebrietyLimit() ? 0.9 : 0.6 : 0.5;
+  var lowPercentageHealth = FarmingStrategy.isUnderwater() ? !sober() ? 0.9 : 0.6 : 0.5;
   if (kolmafia.myHp() < Math.min(kolmafia.myMaxhp() * lowPercentageHealth, get$2("garbo_restoreHpTarget", 2000))) {
     kolmafia.restoreHp(Math.min(kolmafia.myMaxhp() * 0.9, get$2("garbo_restoreHpTarget", 2000)));
   }
@@ -24846,7 +24846,7 @@ function meatMood() {
     mood.skill($skill`Ruthless Efficiency`);
     mood.skill($skill`Ghostly Shell`);
     mood.skill($skill`Shield of the Pastalord`);
-    if (kolmafia.myInebriety() > kolmafia.inebrietyLimit()) {
+    if (!sober()) {
       mood.skill($skill`Get Big`);
       mood.skill($skill`Song of Bravado`);
       mood.skill($skill`Rage of the Reindeer`);
@@ -25645,7 +25645,7 @@ function copiers() {
   var _gregariousCount = gregariousCount(),
     expectedGregariousFights = _gregariousCount.expectedGregariousFights,
     marginalGregariousFights = _gregariousCount.marginalGregariousFights;
-  var extros = kolmafia.myInebriety() > kolmafia.inebrietyLimit() ? [] : [].concat(_toConsumableArray(expectedGregariousFights.map(targets => new MenuItem($item`Extrovermectin™`, {
+  var extros = !sober() ? [] : [].concat(_toConsumableArray(expectedGregariousFights.map(targets => new MenuItem($item`Extrovermectin™`, {
     additionalValue: targets * targetDifferential,
     maximum: 1
   }))), [new MenuItem($item`Extrovermectin™`, {
@@ -27187,7 +27187,7 @@ function estimatedGarboTurns() {
   var pantsgivingAdventures = have$R($item`Pantsgiving`) ? Math.max(0, 2 - get$2("_pantsgivingFullness")) * 8 : 0;
   var sausageAdventures = howManySausagesCouldIEat();
   var thesisAdventures = have$R($familiar`Pocket Professor`) && !get$2("_thesisDelivered") ? 11 : 0;
-  var nightcapAdventures = globalOptions.ascend && kolmafia.myInebriety() <= kolmafia.inebrietyLimit() && have$R($item`Drunkula's wineglass`) ? ESTIMATED_OVERDRUNK_TURNS : 0;
+  var nightcapAdventures = globalOptions.ascend && sober() && have$R($item`Drunkula's wineglass`) ? ESTIMATED_OVERDRUNK_TURNS : 0;
   var thumbRingMultiplier = usingThumbRing() ? 1 / 0.96 : 1;
 
   // Estimate potential adventures from empty organs
@@ -27247,7 +27247,7 @@ var safeToAttemptBullseye = () => have$i() && (guaranteedBullseye() || (have$R($
 var canBullseye = () => !have$R($effect`Everything Looks Red`) && (guaranteedBullseye() || !have$R($effect`Everything Looks Green`));
 
 function timeToMeatify() {
-  if (!have$R($familiar`Grey Goose`) || get$2("_meatifyMatterUsed") || kolmafia.myInebriety() > kolmafia.inebrietyLimit()) {
+  if (!have$R($familiar`Grey Goose`) || get$2("_meatifyMatterUsed") || !sober()) {
     return false;
   } else if ($familiar`Grey Goose`.experience >= 400) return true;else if (!globalOptions.ascend || kolmafia.myAdventures() > 50) return false;
 
@@ -27270,7 +27270,7 @@ function timeToMeatify() {
   return false;
 }
 function canOpenRedPresent() {
-  return have$R($familiar`Crimbo Shrub`) && !have$R($effect`Everything Looks Red`) && !have$R($skill`Free-For-All`) && !(safeToAttemptBullseye() && canBullseye()) && get$2("shrubGifts") === "meat" && kolmafia.myInebriety() <= kolmafia.inebrietyLimit();
+  return have$R($familiar`Crimbo Shrub`) && !have$R($effect`Everything Looks Red`) && !have$R($skill`Free-For-All`) && !(safeToAttemptBullseye() && canBullseye()) && get$2("shrubGifts") === "meat" && sober();
 }
 
 /**
@@ -30405,7 +30405,7 @@ freeFightTask({
 }), freeFightTask({
   name: "Glark Cable",
   adventure: $location`The Red Zeppelin`,
-  ready: () => kolmafia.canAdventure($location`The Red Zeppelin`) && get$2("questL11Ron") === "finished" && kolmafia.myInebriety() <= kolmafia.inebrietyLimit() && kolmafia.mallPrice($item`glark cable`) <= globalOptions.prefs.valueOfFreeFight,
+  ready: () => kolmafia.canAdventure($location`The Red Zeppelin`) && get$2("questL11Ron") === "finished" && sober() && kolmafia.mallPrice($item`glark cable`) <= globalOptions.prefs.valueOfFreeFight,
   completed: () => get$2("_glarkCableUses") >= 5,
   do: $location`The Red Zeppelin`,
   outfit: () => freeFightOutfit({}, $location`The Red Zeppelin`, {
@@ -32505,13 +32505,13 @@ var DailyTasks = [{
   spendsTurn: false
 }, {
   name: "SongBoom Buff",
-  ready: () => have$E() && songChangesLeft() > 0 && kolmafia.myInebriety() <= kolmafia.inebrietyLimit(),
+  ready: () => have$E() && songChangesLeft() > 0 && sober(),
   completed: () => song() === "Total Eclipse of Your Meat",
   do: () => setSong("Total Eclipse of Your Meat"),
   spendsTurn: false
 }, {
   name: "SongBoom Buff (Drunk)",
-  ready: () => have$E() && songChangesLeft() > 0 && kolmafia.myInebriety() > kolmafia.inebrietyLimit(),
+  ready: () => have$E() && songChangesLeft() > 0 && !sober(),
   completed: () => song() === "Food Vibrations",
   do: () => setSong("Food Vibrations"),
   spendsTurn: false
@@ -32547,7 +32547,7 @@ var DailyTasks = [{
   acquire: [{
     item: $item`water wings`
   }],
-  outfit: () => kolmafia.myInebriety() > kolmafia.inebrietyLimit() && have$R($item`Drunkula's wineglass`) && kolmafia.canEquip($item`Drunkula's wineglass`) ? {
+  outfit: () => !sober() && have$R($item`Drunkula's wineglass`) && kolmafia.canEquip($item`Drunkula's wineglass`) ? {
     offhand: $item`Drunkula's wineglass`,
     acc1: $item`water wings`,
     avoid: $items`June cleaver, cursed magnifying glass, Kramco Sausage-o-Matic™`
@@ -32562,7 +32562,7 @@ var DailyTasks = [{
   ready: () => (get$2("neverendingPartyAlways") || get$2("_neverendingPartyToday")) && get$2("_questPartyFair") === "unstarted",
   completed: () => get$2("_questPartyFair") !== "unstarted",
   do: nepQuest,
-  outfit: () => kolmafia.myInebriety() > kolmafia.inebrietyLimit() && have$R($item`Drunkula's wineglass`) && kolmafia.canEquip($item`Drunkula's wineglass`) ? {
+  outfit: () => !sober() && have$R($item`Drunkula's wineglass`) && kolmafia.canEquip($item`Drunkula's wineglass`) ? {
     offhand: $item`Drunkula's wineglass`,
     avoid: $items`June cleaver, PARTY HARD T-shirt`
   } : {
@@ -33431,7 +33431,7 @@ var DailyItemTasks = [{
   spendsTurn: false
 }, {
   name: "Candy cane sword cane Shrine Meat",
-  ready: () => have$R($item`candy cane sword cane`) && kolmafia.canAdventure($location`An Overgrown Shrine (Northeast)`) && (!(kolmafia.myInebriety() > kolmafia.inebrietyLimit()) || have$R($item`Drunkula's wineglass`) && kolmafia.canEquip($item`Drunkula's wineglass`)),
+  ready: () => have$R($item`candy cane sword cane`) && kolmafia.canAdventure($location`An Overgrown Shrine (Northeast)`) && (sober() || have$R($item`Drunkula's wineglass`) && kolmafia.canEquip($item`Drunkula's wineglass`)),
   completed: () => get$2("_candyCaneSwordOvergrownShrine"),
   do: $location`An Overgrown Shrine (Northeast)`,
   choices: {
@@ -33439,7 +33439,7 @@ var DailyItemTasks = [{
   },
   outfit: () => ({
     weapon: $item`candy cane sword cane`,
-    offhand: kolmafia.myInebriety() > kolmafia.inebrietyLimit() ? $item`Drunkula's wineglass` : undefined
+    offhand: !sober() ? $item`Drunkula's wineglass` : undefined
   }),
   combat: new GarboStrategy(() => Macro.abortWithMsg("Unexpected combat while collecting shrine Meat!")),
   limit: {
@@ -33704,7 +33704,6 @@ var POINTER_RING_SPECS = outfit => [{
   available: true,
   items: $items`left bear arm, right bear arm, mafia pointer finger ring`
 }];
-var trueInebrietyLimit = () => kolmafia.inebrietyLimit() - (kolmafia.myFamiliar() === $familiar`Stooper` ? 1 : 0);
 function computeBarfOutfit(spec) {
   var _specialFamiliar$conf, _specialFamiliar$item;
   var sim = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -33731,7 +33730,7 @@ function computeBarfOutfit(spec) {
     valuePerItemDrop = _ref.valuePerItemDrop,
     maximumItemDrop = _ref.maximumItemDrop;
   outfit.modifier.push(`${valuePerItemDrop} Item Drop${maximumItemDrop === undefined ? "" : ` ${maximumItemDrop} Max`}`);
-  if (kolmafia.myInebriety() > trueInebrietyLimit()) {
+  if (!sober()) {
     if (!outfit.equip($item`Drunkula's wineglass`)) {
       throw new Error("We're overdrunk but have found ourself unable to equip a wineglass!");
     }
@@ -34121,7 +34120,7 @@ function outfitBonuses() {
 
 var CockroachSetup = {
   name: "Setup Cockroach Target",
-  ready: () => doingGregFight() && globalOptions.target === $monster`cockroach` && kolmafia.myInebriety() <= kolmafia.inebrietyLimit(),
+  ready: () => doingGregFight() && globalOptions.target === $monster`cockroach` && sober(),
   completed: () => getStep("_questPirateRealm") > 4,
   tasks: [{
     name: "40 Adventure Failsafe",
@@ -34264,7 +34263,7 @@ var CockroachSetup = {
 };
 var CockroachFinish = {
   name: "Finish Setup Cockroach Target",
-  ready: () => doingGregFight() && globalOptions.target === $monster`cockroach` && kolmafia.myInebriety() <= kolmafia.inebrietyLimit(),
+  ready: () => doingGregFight() && globalOptions.target === $monster`cockroach` && sober(),
   completed: () => get$2("_lastPirateRealmIsland") === $location`Trash Island`,
   tasks: [{
     name: "Final Island Encounter (Island 1 (Dessert))",
@@ -34461,7 +34460,7 @@ var yachtzeeQuest = [{
       var _outfit$avoid;
       kolmafia.setLocation($location`The Sunken Party Yacht`);
       var outfit = new Outfit();
-      var overdrunk = kolmafia.myInebriety() > kolmafia.inebrietyLimit();
+      var overdrunk = !sober();
       var yachtzeeFamiliar = bestYachtzeeFamiliar();
       outfit.modifier.push("20 Meat Drop", "-tie");
       if (!(yachtzeeFamiliar.underwater || have$R($effect`Driving Waterproofly`) || have$R($effect`Wet Willied`))) {
@@ -35373,7 +35372,7 @@ var FinishUpQuest = {
 
 var SetupTargetCopyQuest = {
   name: "SetupTargetCopy",
-  ready: () => kolmafia.myInebriety() <= kolmafia.inebrietyLimit(),
+  ready: () => sober(),
   tasks: [{
     // Need the daily dungeon to either be totally finished or to be on a NC we can walk away from
     name: "Setup Daily Dungeon",
@@ -35601,7 +35600,7 @@ function main() {
   if (!globalOptions.nobarf && globalOptions.prefs.valueOfAdventure && globalOptions.prefs.valueOfAdventure >= (globalOptions.nobarf ? 20_000 : 10_000)) {
     throw `Your valueOfAdventure is set to ${globalOptions.prefs.valueOfAdventure}, which is definitely incorrect. Please set it to your reliable marginal turn value.`;
   }
-  if (kolmafia.myInebriety() > kolmafia.inebrietyLimit() && (!have$R($item`Drunkula's wineglass`) || !kolmafia.canEquip($item`Drunkula's wineglass`))) {
+  if (!sober() && (!have$R($item`Drunkula's wineglass`) || !kolmafia.canEquip($item`Drunkula's wineglass`))) {
     throw new Error("Go home, you're drunk. And don't own (or can't equip) Drunkula's wineglass. Consider either being sober or owning Drunkula's wineglass and being able to equip it.");
   }
   var completedProperty = "_garboCompleted";
@@ -35751,7 +35750,7 @@ function main() {
         kolmafia.visitUrl("guild.php?action=buyskill&skillid=32", true);
       }
       var stashItems = $items`repaid diaper, Buddy Bjorn, Crown of Thrones, Pantsgiving, mafia pointer finger ring, Mayflower bouquet`;
-      if (kolmafia.myInebriety() <= kolmafia.inebrietyLimit() && (kolmafia.myClass() !== $class`Seal Clubber` || !have$R($skill`Furious Wallop`)) && !have$R($skill`Head in the Game`)) {
+      if (sober() && (kolmafia.myClass() !== $class`Seal Clubber` || !have$R($skill`Furious Wallop`)) && !have$R($skill`Head in the Game`)) {
         stashItems.push.apply(stashItems, _toConsumableArray($items`haiku katana, Operation Patriot Shield`));
       }
       if (!have$R($item`Jurassic Parka`) && have$R($skill`Torso Awareness`)) {
