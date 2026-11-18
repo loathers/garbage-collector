@@ -1,11 +1,4 @@
-import {
-  cliExecute,
-  inebrietyLimit,
-  myInebriety,
-  setLocation,
-  use,
-  useSkill,
-} from "kolmafia";
+import { cliExecute, setLocation, use, useSkill } from "kolmafia";
 import {
   $effect,
   $item,
@@ -21,7 +14,7 @@ import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
 import { getBestWaterBreathingEquipment } from "./lib";
 import { Macro } from "../../combat";
 import { AlternateTask } from "../engine";
-import { willDrunkAdventure } from "../../lib";
+import { sober, willDrunkAdventure } from "../../lib";
 import { Outfit, Quest } from "grimoire-kolmafia";
 import {
   maximumYachtzees,
@@ -51,7 +44,7 @@ export const yachtzeeQuest: Quest<
         outfit: () => {
           setLocation($location`The Sunken Party Yacht`);
           const outfit = new Outfit();
-          const overdrunk = myInebriety() > inebrietyLimit();
+          const overdrunk = !sober();
           const yachtzeeFamiliar = bestYachtzeeFamiliar();
           outfit.modifier.push("20 Meat Drop", "-tie");
           if (

@@ -1,4 +1,4 @@
-import { Familiar, inebrietyLimit, myInebriety } from "kolmafia";
+import { Familiar } from "kolmafia";
 import {
   $element,
   $familiar,
@@ -32,6 +32,7 @@ import {
   CombatOutcomes,
   combatOutcomeWeight,
   gooseDroneEligible,
+  sober,
   valueDrops,
 } from "../lib";
 import { globalOptions } from "../config";
@@ -78,7 +79,7 @@ export function menu(
     ...extraFamiliars,
   ];
 
-  if (canChooseMacro && myInebriety() <= inebrietyLimit()) {
+  if (canChooseMacro && sober()) {
     if (timeToMeatify()) {
       familiarMenu.push({
         familiar: $familiar`Grey Goose`,
@@ -110,31 +111,6 @@ export function menu(
       });
     }
 
-    if (snapperReasonable(mode)) {
-      familiarMenu.push({
-        familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: snapperValue(mode),
-        leprechaunMultiplier: 0,
-        limit: "none",
-        worksOnFreeRun: false,
-      });
-    }
-
-    if (
-      mode === "barf" &&
-      have($familiar`Sword of S Words`) &&
-      get("swordOfSWordsMonster") &&
-      get("_swordOfSWordsKills") < 100
-    ) {
-      familiarMenu.push({
-        familiar: $familiar`Sword of S Words`,
-        expectedValue: 0, // handled in barf cache
-        leprechaunMultiplier: 0,
-        limit: "special",
-        worksOnFreeRun: false,
-      });
-    }
-
     if (canOpenRedPresent()) {
       familiarMenu.push({
         familiar: $familiar`Crimbo Shrub`,
@@ -159,6 +135,30 @@ export function menu(
         leprechaunMultiplier: 0,
         limit: "special",
         worksOnFreeRun: true,
+      });
+    }
+    if (snapperReasonable(mode)) {
+      familiarMenu.push({
+        familiar: $familiar`Red-Nosed Snapper`,
+        expectedValue: snapperValue(mode),
+        leprechaunMultiplier: 0,
+        limit: "none",
+        worksOnFreeRun: false,
+      });
+    }
+
+    if (
+      mode === "barf" &&
+      have($familiar`Sword of S Words`) &&
+      get("swordOfSWordsMonster") &&
+      get("_swordOfSWordsKills") < 100
+    ) {
+      familiarMenu.push({
+        familiar: $familiar`Sword of S Words`,
+        expectedValue: 0, // handled in barf cache
+        leprechaunMultiplier: 0,
+        limit: "special",
+        worksOnFreeRun: false,
       });
     }
   }

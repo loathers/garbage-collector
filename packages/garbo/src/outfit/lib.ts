@@ -7,12 +7,10 @@ import {
   cliExecute,
   equippedItem,
   Familiar,
-  inebrietyLimit,
   Item,
   Location,
   mallPrice,
   myClass,
-  myInebriety,
   numericModifier,
   Slot,
   toInt,
@@ -44,6 +42,7 @@ import {
   CombatOutcome,
   CombatOutcomes,
   combatOutcomeWeight,
+  sober,
   targetMeat,
 } from "../lib";
 import {
@@ -258,7 +257,7 @@ let cachedUsingPurse: boolean | null = null;
 export function usingPurse(): boolean {
   if (cachedUsingPurse === null) {
     cachedUsingPurse =
-      myInebriety() <= inebrietyLimit() &&
+      sober() &&
       !have($item`KoL Con 13 snowglobe`) &&
       !have($item`can of mixed everything`) &&
       (!have($item`latte lovers member's mug`) ||

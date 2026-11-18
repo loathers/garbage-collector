@@ -8,7 +8,6 @@ import {
   getCampground,
   getClanLounge,
   getMonsters,
-  inebrietyLimit,
   Item,
   itemAmount,
   itemDropsArray,
@@ -16,7 +15,6 @@ import {
   mallPrice,
   meatPockets,
   myAscensions,
-  myInebriety,
   pickedPockets,
   pocketItems,
   pocketMeat,
@@ -56,7 +54,7 @@ import {
 } from "libram";
 import { acquire } from "../acquire";
 import { globalOptions } from "../config";
-import { aprilFoolsRufus } from "../lib";
+import { aprilFoolsRufus, sober } from "../lib";
 import { rufusPotion } from "../potions";
 import { garboAverageValue, garboValue } from "../garboValue";
 import { GarboTask } from "./engine";
@@ -638,7 +636,7 @@ const DailyItemTasks: GarboTask[] = [
     ready: () =>
       have($item`candy cane sword cane`) &&
       canAdventure($location`An Overgrown Shrine (Northeast)`) &&
-      (!(myInebriety() > inebrietyLimit()) ||
+      (sober() ||
         (have($item`Drunkula's wineglass`) &&
           canEquip($item`Drunkula's wineglass`))),
     completed: () => get("_candyCaneSwordOvergrownShrine"),
@@ -646,10 +644,7 @@ const DailyItemTasks: GarboTask[] = [
     choices: { 785: 4 },
     outfit: () => ({
       weapon: $item`candy cane sword cane`,
-      offhand:
-        myInebriety() > inebrietyLimit()
-          ? $item`Drunkula's wineglass`
-          : undefined,
+      offhand: !sober() ? $item`Drunkula's wineglass` : undefined,
     }),
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg("Unexpected combat while collecting shrine Meat!"),

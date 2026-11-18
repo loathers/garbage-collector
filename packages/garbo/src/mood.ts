@@ -5,11 +5,9 @@ import {
   Effect,
   getWorkshed,
   haveEffect,
-  inebrietyLimit,
   itemAmount,
   mallPrice,
   myClass,
-  myInebriety,
   myLevel,
   numericModifier,
   use,
@@ -27,7 +25,7 @@ import {
   Mood,
   uneffect,
 } from "libram";
-import { setChoice } from "./lib";
+import { setChoice, sober } from "./lib";
 import { safeRestoreMpTarget } from "./restore";
 import { usingPurse } from "./outfit/lib";
 import { effectValue } from "./potions";
@@ -98,7 +96,7 @@ export function meatMood({
     mood.skill($skill`Ghostly Shell`);
     mood.skill($skill`Shield of the Pastalord`);
 
-    if (myInebriety() > inebrietyLimit()) {
+    if (!sober()) {
       mood.skill($skill`Get Big`);
       mood.skill($skill`Song of Bravado`);
       mood.skill($skill`Rage of the Reindeer`);
