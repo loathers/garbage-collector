@@ -20487,7 +20487,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"1433f84789d8ff07e85a614244b02270bbd3c8ba"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"bd3d76356ad7beee7dfa1263a61072324b4bdb39"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -34710,7 +34710,10 @@ var NonBarfTurnTasks = [{
   }, $location.none),
   combat: new GarboStrategy(() => Macro.meatKill()),
   turns: () => globalOptions.ascend ? clamp(Math.floor($familiar`Chest Mimic`.experience / 50) - 1, 1, 11 - get$2("_mimicEggsObtained")) : 0,
-  spendsTurn: () => !globalOptions.target.attributes.includes("FREE")
+  spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
+  limit: {
+    tries: 11
+  }
 }, {
   name: "Machine Elf Dupe",
   ready: () => have$R($familiar`Machine Elf`) &&
