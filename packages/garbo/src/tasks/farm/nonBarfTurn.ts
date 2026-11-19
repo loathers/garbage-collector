@@ -46,6 +46,7 @@ import { wanderingCopytargetsRemaining } from "../../turns";
 
 import { AlternateTask, GarboTask } from "../engine";
 import { canContinue } from "./lib";
+import { arrrborDayTasks } from "./arrrborDay";
 import { garboValue } from "../../garboValue";
 import { minimumMimicExperience } from "../../resources/chestMimic";
 import { acquire } from "../../acquire";
@@ -375,6 +376,7 @@ const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
     spendsTurn: true,
     choices: { 1091: 7 },
   },
+  ...arrrborDayTasks(),
   ...luckyTasks("sober", () => !willDrunkAdventure()),
   ...luckyTasks("drunk", () => willDrunkAdventure()),
   {
