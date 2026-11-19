@@ -1268,6 +1268,7 @@ const FreeFightTasks = [
         use($item`packet of tall grass seeds`);
       }
     },
+    combatCount: () => 11,
     tentacle: false,
   }),
 ];
