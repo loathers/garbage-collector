@@ -419,6 +419,8 @@ export function main(argString = ""): void {
         }
         propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
 
+        propertyManager.setChoices({855: 4}) // Mallprice of 5-6 items always exceeds 500 meat
+
         const equipmentFamiliars = $familiars`Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow`;
         for (const familiar of equipmentFamiliars.filter((familiar) =>
           have(familiar),

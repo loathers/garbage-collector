@@ -1,5 +1,6 @@
 import { OutfitSpec } from "grimoire-kolmafia";
 import {
+  canAdventure,
   Effect,
   effectFact,
   equippedItem,
@@ -241,7 +242,7 @@ const BARF_MOUNTAIN: FarmingStrategyOptions = {
   post: completeBarfQuest,
 };
 
-const underwaterOutfit: FarmingStrategyOptions["outfit"] = ({ banish }) =>
+const banishOutfit: FarmingStrategyOptions["outfit"] = ({ banish }) =>
   banish?.equip ? { equip: [banish.equip] } : {};
 
 const THE_CORAL_CORRAL: FarmingStrategyOptions = {
@@ -256,7 +257,7 @@ const THE_CORAL_CORRAL: FarmingStrategyOptions = {
   available:
     effectFact($monster`sea cow`) === $effect`Fishy` &&
     (!get("seahorseName") || get("lassoTrainingCount") >= 20),
-  outfit: underwaterOutfit,
+  outfit: banishOutfit,
   combat: ({ banish }) =>
     Macro.externalIf(
       !get("seahorseName"),
@@ -291,7 +292,7 @@ const THE_MARINARA_TRENCH: FarmingStrategyOptions = {
   targetMonster: $monster`giant squid`,
   shouldOlfact: false,
   available: effectFact($monster`giant squid`) === $effect`Fishy`,
-  outfit: underwaterOutfit,
+  outfit: banishOutfit,
   combat: ({ banish }) =>
     Macro.farmingBanish(banish)
       .externalIf(
@@ -304,6 +305,20 @@ const THE_MARINARA_TRENCH: FarmingStrategyOptions = {
       )
       .externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`))
       .meatKill(),
+};
+
+const MOB_PENGUIN_CAPO: FarmingStrategyOptions = {
+  stasisRounds: 20,
+  asdonEffect: $effect`Driving Observantly`,
+  ensureBarfAccess: false,
+  meatDrop: 200,
+  location: $location`The Copperhead Club`,
+  banishMonsters: $monsters`Copperhead Club bartender, fan dancer, ninja dressed as a waiter, waiter dressed as a ninja`,
+  targetMonster: $monster`Mob Penguin Capo`,
+  shouldOlfact: false,
+  available: canAdventure($location`The Copperhead Club`),
+  outfit: banishOutfit,
+  combat: ({ banish }) => Macro.farmingBanish(banish).meatKill(),
 };
 
 let cachedStrategy: Required<FarmingStrategyOptions> | undefined;
@@ -320,6 +335,10 @@ function currentStrategy(): Required<FarmingStrategyOptions> {
 
       case FarmingMethod.THE_MARINARA_TRENCH:
         strategyOptions = THE_MARINARA_TRENCH;
+        break;
+
+      case FarmingMethod.MOB_PENGUIN_CAPO:
+        strategyOptions = MOB_PENGUIN_CAPO;
         break;
 
       case FarmingMethod.BARF_MOUNTAIN:
