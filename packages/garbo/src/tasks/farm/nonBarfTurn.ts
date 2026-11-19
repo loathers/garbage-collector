@@ -267,6 +267,7 @@ const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
           )
         : 0,
     spendsTurn: () => !globalOptions.target.attributes.includes("FREE"),
+    limit: { tries: 11 },
   },
   {
     name: "Machine Elf Dupe",
