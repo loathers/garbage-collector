@@ -66,6 +66,7 @@ import {
   improvesAStat,
   marginalFamWeightValue,
   pillkeeperOpportunityCost,
+  sober,
   targetMeat,
   withLocation,
 } from "./lib";
@@ -558,7 +559,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
 
     // If we are overdrunk, we will need to be able to grab the NC (with a wineglass)
     if (
-      myInebriety() > inebrietyLimit() &&
+      !sober() &&
       (!have($item`Drunkula's wineglass`) ||
         !canEquip($item`Drunkula's wineglass`))
     ) {
@@ -572,7 +573,7 @@ export const rufusPotion = new Potion($item`closed-circuit pay phone`, {
     return 3 * averagePrice;
   },
   acquire: (qty: number) => {
-    if (myInebriety() > inebrietyLimit()) {
+    if (!sober()) {
       equip($slot`weapon`, $item.none);
       equip($slot`off-hand`, $item`Drunkula's wineglass`);
     }

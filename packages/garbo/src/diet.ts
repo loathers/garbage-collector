@@ -110,6 +110,7 @@ import { synthesize } from "./resources/synthesis";
 import {
   HIGHLIGHT,
   MEAT_TARGET_MULTIPLIER,
+  sober,
   targetingMeat,
   targetMeat,
   userConfirmDialog,
@@ -866,21 +867,20 @@ function copiers(): MenuItem<Note>[] {
     : 0;
   const { expectedGregariousFights, marginalGregariousFights } =
     gregariousCount();
-  const extros =
-    myInebriety() > inebrietyLimit()
-      ? []
-      : [
-          ...expectedGregariousFights.map(
-            (targets) =>
-              new MenuItem<Note>($item`Extrovermectin™`, {
-                additionalValue: targets * targetDifferential,
-                maximum: 1,
-              }),
-          ),
-          new MenuItem<Note>($item`Extrovermectin™`, {
-            additionalValue: marginalGregariousFights * targetDifferential,
-          }),
-        ];
+  const extros = !sober()
+    ? []
+    : [
+        ...expectedGregariousFights.map(
+          (targets) =>
+            new MenuItem<Note>($item`Extrovermectin™`, {
+              additionalValue: targets * targetDifferential,
+              maximum: 1,
+            }),
+        ),
+        new MenuItem<Note>($item`Extrovermectin™`, {
+          additionalValue: marginalGregariousFights * targetDifferential,
+        }),
+      ];
   return [...extros];
 }
 

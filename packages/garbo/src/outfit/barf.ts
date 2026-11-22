@@ -2,12 +2,9 @@ import { Outfit, OutfitSpec } from "grimoire-kolmafia";
 import {
   cliExecute,
   Familiar,
-  inebrietyLimit,
   Item,
   myClass,
-  myFamiliar,
   myFury,
-  myInebriety,
   retrieveItem,
   setLocation,
   toSlot,
@@ -15,7 +12,6 @@ import {
 } from "kolmafia";
 import {
   $class,
-  $familiar,
   $item,
   $items,
   $skill,
@@ -27,6 +23,7 @@ import {
   undelay,
 } from "libram";
 import { barfFamiliar } from "../familiar/barfFamiliar";
+import { sober } from "../lib";
 import { chooseBjorn } from "./bjorn";
 import { bonusGear, toyCupidBow } from "./dropsgear";
 import {
@@ -108,9 +105,6 @@ const POINTER_RING_SPECS: (
   },
 ];
 
-const trueInebrietyLimit = () =>
-  inebrietyLimit() - (myFamiliar() === $familiar`Stooper` ? 1 : 0);
-
 export function computeBarfOutfit(
   spec: OutfitSpec & { familiar: Familiar },
   sim = false,
@@ -152,7 +146,7 @@ export function computeBarfOutfit(
     }`,
   );
 
-  if (myInebriety() > trueInebrietyLimit()) {
+  if (!sober()) {
     if (!outfit.equip($item`Drunkula's wineglass`)) {
       throw new Error(
         "We're overdrunk but have found ourself unable to equip a wineglass!",

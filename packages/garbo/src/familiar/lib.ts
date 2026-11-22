@@ -1,11 +1,9 @@
 import {
   availableAmount,
   Familiar,
-  inebrietyLimit,
   mallPrice,
   myAdventures,
   myFamiliar,
-  myInebriety,
   Phylum,
   totalTurnsPlayed,
 } from "kolmafia";
@@ -21,7 +19,7 @@ import {
   sumNumbers,
 } from "libram";
 import { globalOptions } from "../config";
-import { ESTIMATED_OVERDRUNK_TURNS, isFree, targetMeat } from "../lib";
+import { ESTIMATED_OVERDRUNK_TURNS, isFree, sober, targetMeat } from "../lib";
 import {
   estimatedGarboTurns,
   highMeatMonsterCount,
@@ -43,11 +41,7 @@ export type GeneralFamiliar = {
 };
 
 export function timeToMeatify(): boolean {
-  if (
-    !have($familiar`Grey Goose`) ||
-    get("_meatifyMatterUsed") ||
-    myInebriety() > inebrietyLimit()
-  ) {
+  if (!have($familiar`Grey Goose`) || get("_meatifyMatterUsed") || !sober()) {
     return false;
   } else if ($familiar`Grey Goose`.experience >= 400) return true;
   else if (!globalOptions.ascend || myAdventures() > 50) return false;
@@ -108,7 +102,7 @@ export function canOpenRedPresent(): boolean {
     !have($skill`Free-For-All`) &&
     !(safeToAttemptBullseye() && canBullseye()) &&
     get("shrubGifts") === "meat" &&
-    myInebriety() <= inebrietyLimit()
+    sober()
   );
 }
 
