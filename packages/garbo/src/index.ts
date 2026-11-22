@@ -119,7 +119,7 @@ export function main(argString = ""): void {
     return;
   }
 
-  if (!FarmingStrategy.available) {
+  if (!FarmingStrategy.isAvailable()) {
     throw new Error(
       `Farming strategy not available: ${globalOptions.prefs.farmingMethod}`,
     );
@@ -419,7 +419,7 @@ export function main(argString = ""): void {
         }
         propertyManager.set({ shadowLabyrinthGoal: "effects" }); // Automate Shadow Labyrinth Quest
 
-        propertyManager.setChoices({855: 4}) // Mallprice of 5-6 items always exceeds 500 meat
+        propertyManager.setChoices({ 855: 4 }); // Mallprice of 5-6 items always exceeds 500 meat
 
         const equipmentFamiliars = $familiars`Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow`;
         for (const familiar of equipmentFamiliars.filter((familiar) =>

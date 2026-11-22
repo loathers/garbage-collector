@@ -40,6 +40,7 @@ import { completeBarfQuest } from "./resources/realm";
 import { FarmingContext } from "./tasks/context";
 import { garboValue } from "./garboValue";
 import { expectedDropValue, songboomMeat } from "./lib";
+import { haveEnoughBanishes } from "./resources/banish";
 
 export function averageRedTaffyValue(): number {
   return sum(
@@ -91,7 +92,7 @@ interface FarmingStrategyOptions {
   shouldOlfact: boolean;
   combat: (context: FarmingContext) => Macro;
   // These all need a default
-  available?: boolean;
+  available?: Delayed<boolean>;
   outfit?: (context: FarmingContext) => OutfitSpec;
   ncTurns?: Delayed<number>;
   bonusEffects?: Effect[];
@@ -119,6 +120,10 @@ const DEFAULT_OPTIONS: Readonly<{
 interface FarmingStrategySkeleton extends Required<FarmingStrategyOptions> {}
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class FarmingStrategySkeleton {
+  isAvailable(): boolean {
+    return undelay(this.available) && haveEnoughBanishes(this.banishMonsters);
+  }
+
   isUnderwater(): boolean {
     return this.location.environment === "underwater";
   }

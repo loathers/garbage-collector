@@ -1,4 +1,4 @@
-import { Item, myClass, myFury, Skill } from "kolmafia";
+import { isBanished, Item, Monster, myClass, myFury, Skill } from "kolmafia";
 import {
   $class,
   $item,
@@ -8,13 +8,12 @@ import {
   getBanishedMonsters,
   have,
   MonodentOfTheSea,
+  StrictMacro,
 } from "libram";
-import { FarmingStrategy } from "../farmingStrategy";
-import { Macro } from "../combat";
 
 export type BanishMethod = {
   available: () => boolean;
-  macro: Macro;
+  macro: StrictMacro;
   source: Skill | Item;
   equip?: Item;
   retrieve?: boolean;
@@ -24,7 +23,9 @@ const banishMethods: BanishMethod[] = [
   {
     source: $skill`Spring Kick`,
     available: () => have($item`spring shoes`),
-    macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
+    macro: StrictMacro.trySkill($skill`Spring Kick`).trySkill(
+      $skill`Spring Away`,
+    ),
     equip: $item`spring shoes`,
   },
   {
@@ -33,52 +34,65 @@ const banishMethods: BanishMethod[] = [
       myClass() === $class`Seal Clubber` &&
       have($skill`Batter Up!`) &&
       myFury() >= 5,
-    macro: Macro.trySkill($skill`Batter Up!`),
+    macro: StrictMacro.trySkill($skill`Batter Up!`),
     equip: $item`seal-clubbing club`,
   },
   {
     source: $skill`Order a Kneecapping`,
     available: () =>
       have($skill`Order a Kneecapping`) && !get("_kneecappingOrdered"),
-    macro: Macro.trySkill($skill`Order a Kneecapping`),
+    macro: StrictMacro.trySkill($skill`Order a Kneecapping`),
   },
   {
     source: $item`human musk`,
     available: () => true,
-    macro: Macro.tryItem($item`human musk`),
+    macro: StrictMacro.tryItem($item`human musk`),
     retrieve: true,
   },
   {
     source: MonodentOfTheSea.skills.ThrowALightningBolt,
     available: () => MonodentOfTheSea.lightningBoltsRemaining() > 0,
     equip: $item`Monodent of the Sea`,
-    macro: Macro.trySkill(MonodentOfTheSea.skills.ThrowALightningBolt),
+    macro: StrictMacro.trySkill(MonodentOfTheSea.skills.ThrowALightningBolt),
   },
 ];
 
-const banishAvailable = (method: BanishMethod) =>
-  method.available() &&
-  !FarmingStrategy.banishMonsters.includes(
-    getBanishedMonsters().get(method.source) ?? $monster.none,
-  );
-
-export function chooseBanish(): BanishMethod | null {
-  if (FarmingStrategy.monstersToBanish().length === 0) {
-    return null;
-  }
-
+function availableBanishes(banishMonsters: readonly Monster[]): BanishMethod[] {
   const banishedMonsters = getBanishedMonsters();
-  const targetMonster = FarmingStrategy.primaryMonster();
+  return banishMethods.filter(
+    (method) =>
+      method.available() &&
+      !banishMonsters.includes(
+        banishedMonsters.get(method.source) ?? $monster.none,
+      ),
+  );
+}
+
+export function haveEnoughBanishes(
+  banishMonsters: readonly Monster[],
+): boolean {
+  return (
+    availableBanishes(banishMonsters).length >=
+    banishMonsters.filter((monster) => !isBanished(monster)).length
+  );
+}
+
+export function chooseBanish(
+  banishMonsters: readonly Monster[],
+  targetMonster: Monster,
+): BanishMethod | null {
+  if (banishMonsters.every((monster) => isBanished(monster))) return null;
+
+  const available = availableBanishes(banishMonsters);
+  const banishedMonsters = getBanishedMonsters();
 
   // If a preceding script banished our target, reuse that banish first.
   return (
-    banishMethods.find(
-      (method) =>
-        banishAvailable(method) &&
-        banishedMonsters.get(method.source) === targetMonster,
+    available.find(
+      (method) => banishedMonsters.get(method.source) === targetMonster,
     ) ??
     // Otherwise use FIFO.
-    banishMethods.find(banishAvailable) ??
+    available[0] ??
     null
   );
 }
