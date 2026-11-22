@@ -137,30 +137,31 @@ export function menu(
         worksOnFreeRun: true,
       });
     }
-    if (snapperReasonable(mode)) {
-      familiarMenu.push({
-        familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: snapperValue(mode),
-        leprechaunMultiplier: 0,
-        limit: "none",
-        worksOnFreeRun: false,
-      });
-    }
+  }
 
-    if (
-      mode === "barf" &&
-      have($familiar`Sword of S Words`) &&
-      get("swordOfSWordsMonster") &&
-      get("_swordOfSWordsKills") < 100
-    ) {
-      familiarMenu.push({
-        familiar: $familiar`Sword of S Words`,
-        expectedValue: 0, // handled in barf cache
-        leprechaunMultiplier: 0,
-        limit: "special",
-        worksOnFreeRun: false,
-      });
-    }
+  if (snapperReasonable(mode)) {
+    familiarMenu.push({
+      familiar: $familiar`Red-Nosed Snapper`,
+      expectedValue: snapperValue(mode),
+      leprechaunMultiplier: 0,
+      limit: "none",
+      worksOnFreeRun: false,
+    });
+  }
+
+  if (
+    mode === "barf" &&
+    have($familiar`Sword of S Words`) &&
+    get("swordOfSWordsMonster") &&
+    get("_swordOfSWordsKills") < 100
+  ) {
+    familiarMenu.push({
+      familiar: $familiar`Sword of S Words`,
+      expectedValue: 0, // handled in barf cache
+      leprechaunMultiplier: 0,
+      limit: "special",
+      worksOnFreeRun: false,
+    });
   }
 
   if (SkeletonOfCrimboPast.have()) {

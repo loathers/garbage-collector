@@ -42,6 +42,7 @@ import { freeFightMood, shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
 import { FarmingContext } from "./context";
 import { BanishMethod, chooseBanish } from "../resources/banish";
+import { FarmingStrategy } from "../farmingStrategy";
 import { WanderDetails } from "garbo-lib";
 
 export type GarboTask<Context = unknown> = StrictCombatTask<
@@ -326,7 +327,10 @@ class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
 
   getNextTask() {
     this.#contexts.clear();
-    this.#banish = chooseBanish();
+    this.#banish = chooseBanish(
+      FarmingStrategy.banishMonsters,
+      FarmingStrategy.primaryMonster(),
+    );
     return super.getNextTask();
   }
 
