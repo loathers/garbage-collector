@@ -21,7 +21,7 @@ type ForecastOverride<Resource extends string> = {
 };
 
 type ResourceGroup<Resource extends string> = {
-  resources: readonly [Resource, ...Resource[]];
+  resources?: readonly Resource[];
   forecast: WandererSourceForecaster;
 };
 
@@ -61,8 +61,8 @@ export class WandererForecasters<Resource extends string> {
 
   /**
    * Introduce one or more new resources and assign their forecast atomically.
-   * A function covers all new resources. A group can also cover existing resources,
-   * but must include every new key and cannot overlap another explicit assignment.
+   * New resources are included automatically. A group can also cover existing
+   * resources, but cannot overlap another explicit assignment.
    * @param resources New resource name or nonempty list of new names
    * @param forecast Forecast function or an explicit group with its forecast
    * @returns A new configuration whose resource keys include the new names
@@ -78,7 +78,7 @@ export class WandererForecasters<Resource extends string> {
       ...new Set(typeof resources === "string" ? [resources] : resources),
     ];
     if (added.length === 0) {
-      throw new Error("At least one new resource must be declared.");
+      throw new Error("withResource() was passed an empty list of resources.");
     }
 
     const known = new Set<string>([
@@ -87,25 +87,17 @@ export class WandererForecasters<Resource extends string> {
     ]);
     const existing = added.filter((resource) => known.has(resource));
     if (existing.length > 0) {
-      throw new Error(`Resources already registered: ${existing.join(", ")}`);
-    }
-
-    const group =
-      typeof forecast === "function"
-        ? { resources: added, forecast }
-        : forecast;
-    const covered = new Set<string>(group.resources);
-    const missing = added.filter((resource) => !covered.has(resource));
-    if (missing.length > 0) {
       throw new Error(
-        `Forecast group must include new resources: ${missing.join(", ")}`,
+        `withResource() was passed already-extant resources: ${existing.join(", ")}.`,
       );
     }
+
+    const group = typeof forecast === "function" ? { forecast } : forecast;
 
     return new WandererForecasters<Resource | NewResource>(
       this.defaults,
       this.overrides,
-    ).assign(group.resources, group.forecast);
+    ).assign([...(group.resources ?? []), ...added], group.forecast);
   }
 
   /**
@@ -127,7 +119,7 @@ export class WandererForecasters<Resource extends string> {
     forecaster: WandererSourceForecaster,
   ): WandererForecasters<Resource> {
     if (resources.length === 0) {
-      throw new Error("A forecast override must own at least one resource.");
+      throw new Error("override() was passed an empty list of resources.");
     }
 
     const group = [...new Set(resources)];
@@ -135,7 +127,7 @@ export class WandererForecasters<Resource extends string> {
       this.overrides.some((override) => override.resources.includes(resource)),
     );
     if (conflicts.length > 0) {
-      throw new Error(`Resources already overridden: ${conflicts.join(", ")}`);
+      throw new Error(`Cannot reuse resources: ${conflicts.join(", ")}`);
     }
 
     return new WandererForecasters(this.defaults, [
