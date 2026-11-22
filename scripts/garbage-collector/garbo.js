@@ -20487,7 +20487,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"bd3d76356ad7beee7dfa1263a61072324b4bdb39"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"eba9f5e56810fb2803970871c5863f22f50b9030"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -30883,6 +30883,7 @@ freeFightTask({
       kolmafia.use($item`packet of tall grass seeds`);
     }
   },
+  combatCount: () => 11,
   tentacle: false
 })]);
 function nextBlackGardenRoseFight() {
