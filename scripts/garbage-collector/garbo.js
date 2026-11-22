@@ -18311,6 +18311,7 @@ var FarmingMethod = /*#__PURE__*/function (FarmingMethod) {
   FarmingMethod["BARF_MOUNTAIN"] = "Barf Mountain";
   FarmingMethod["THE_CORAL_CORRAL"] = "The Coral Corral";
   FarmingMethod["THE_MARINARA_TRENCH"] = "The Marinara Trench";
+  FarmingMethod["MOB_PENGUIN_CAPO"] = "The Copperhead Club";
   return FarmingMethod;
 }({});
 var workshedAliases = [{
@@ -18349,6 +18350,10 @@ var farmingStrategyAliases = {
   [FarmingMethod.THE_MARINARA_TRENCH]: {
     location: $location`The Marinara Trench`,
     aliases: ["trench", "marinara", "inko", "squido", "ATTheSea"]
+  },
+  [FarmingMethod.MOB_PENGUIN_CAPO]: {
+    location: $location`The Copperhead Club`,
+    aliases: ["pingu", "copperhead", "fish head", "envelope"]
   }
 };
 function stringToFarmingMethod(s) {
@@ -20487,7 +20492,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"eba9f5e56810fb2803970871c5863f22f50b9030"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"911d7a47840e417b8dd075e82a1fb954bd9c0b48"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -21702,6 +21707,49 @@ function checkBarfQuest() {
   return;
 }
 
+var banishMethods = [{
+  source: $skill`Spring Kick`,
+  available: () => have$R($item`spring shoes`),
+  macro: StrictMacro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
+  equip: $item`spring shoes`
+}, {
+  source: $skill`Batter Up!`,
+  available: () => kolmafia.myClass() === $class`Seal Clubber` && have$R($skill`Batter Up!`) && kolmafia.myFury() >= 5,
+  macro: StrictMacro.trySkill($skill`Batter Up!`),
+  equip: $item`seal-clubbing club`
+}, {
+  source: $skill`Order a Kneecapping`,
+  available: () => have$R($skill`Order a Kneecapping`) && !get$2("_kneecappingOrdered"),
+  macro: StrictMacro.trySkill($skill`Order a Kneecapping`)
+}, {
+  source: $item`human musk`,
+  available: () => true,
+  macro: StrictMacro.tryItem($item`human musk`),
+  retrieve: true
+}, {
+  source: skills.ThrowALightningBolt,
+  available: () => lightningBoltsRemaining() > 0,
+  equip: $item`Monodent of the Sea`,
+  macro: StrictMacro.trySkill(skills.ThrowALightningBolt)
+}];
+function availableBanishes(banishMonsters) {
+  var banishedMonsters = getBanishedMonsters();
+  return banishMethods.filter(method => method.available() && !banishMonsters.includes(banishedMonsters.get(method.source) ?? $monster.none));
+}
+function haveEnoughBanishes(banishMonsters) {
+  return availableBanishes(banishMonsters).length >= banishMonsters.filter(monster => !kolmafia.isBanished(monster)).length;
+}
+function chooseBanish(banishMonsters, targetMonster) {
+  if (banishMonsters.every(monster => kolmafia.isBanished(monster))) return null;
+  var available = availableBanishes(banishMonsters);
+  var banishedMonsters = getBanishedMonsters();
+
+  // If a preceding script banished our target, reuse that banish first.
+  return available.find(method => banishedMonsters.get(method.source) === targetMonster) ??
+  // Otherwise use FIFO.
+  available[0] ?? null;
+}
+
 function averageRedTaffyValue() {
   return sum(_toConsumableArray(RED_TAFFY_DROP_WEIGHTS.entries()), _ref => {
     var _ref2 = _slicedToArray(_ref, 2),
@@ -21750,6 +21798,11 @@ var FarmingStrategySkeleton = /*#__PURE__*/function () {
     _classCallCheck(this, FarmingStrategySkeleton);
   }
   return _createClass(FarmingStrategySkeleton, [{
+    key: "isAvailable",
+    value: function isAvailable() {
+      return undelay(this.available) && haveEnoughBanishes(this.banishMonsters);
+    }
+  }, {
     key: "isUnderwater",
     value: function isUnderwater() {
       return this.location.environment === "underwater";
@@ -21855,7 +21908,7 @@ var BARF_MOUNTAIN = {
   combat: () => Macro.meatKill(),
   post: completeBarfQuest
 };
-var underwaterOutfit = _ref5 => {
+var banishOutfit = _ref5 => {
   var banish = _ref5.banish;
   return banish !== null && banish !== void 0 && banish.equip ? {
     equip: [banish.equip]
@@ -21871,7 +21924,7 @@ var THE_CORAL_CORRAL = {
   targetMonster: $monster`sea cow`,
   shouldOlfact: false,
   available: kolmafia.effectFact($monster`sea cow`) === $effect`Fishy` && (!get$2("seahorseName") || get$2("lassoTrainingCount") >= 20),
-  outfit: underwaterOutfit,
+  outfit: banishOutfit,
   combat: _ref6 => {
     var banish = _ref6.banish;
     return Macro.externalIf(!get$2("seahorseName"), Macro.if_($monster`wild seahorse`, Macro.item($item`sea cowbell`).item($item`sea cowbell`).item($item`sea cowbell`).item($item`sea lasso`).abortWithMsg("Wild seahorse should have been tamed, what happened?"))).farmingBanish(banish).externalIf(kolmafia.myBuffedstat($stat`Moxie`) < $monster`sea cow`.baseAttack + 10 || have$R($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < $monster`sea cow`.baseAttack + 10, Macro.delevel()).externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`)).meatKill();
@@ -21887,10 +21940,26 @@ var THE_MARINARA_TRENCH = {
   targetMonster: $monster`giant squid`,
   shouldOlfact: false,
   available: kolmafia.effectFact($monster`giant squid`) === $effect`Fishy`,
-  outfit: underwaterOutfit,
+  outfit: banishOutfit,
   combat: _ref7 => {
     var banish = _ref7.banish;
     return Macro.farmingBanish(banish).externalIf(kolmafia.myBuffedstat($stat`Moxie`) < $monster`giant squid`.baseAttack + 10 || have$R($skill`Hero of the Half-Shell`) && kolmafia.itemType(kolmafia.equippedItem($slot`offhand`)) === "shield" && kolmafia.myBuffedstat($stat`Muscle`) < $monster`giant squid`.baseAttack + 10, Macro.delevel()).externalIf(redTaffyWorth(), Macro.tryItem($item`pulled red taffy`)).meatKill();
+  }
+};
+var MOB_PENGUIN_CAPO = {
+  stasisRounds: 20,
+  asdonEffect: $effect`Driving Observantly`,
+  ensureBarfAccess: false,
+  meatDrop: 200,
+  location: $location`The Copperhead Club`,
+  banishMonsters: $monsters`Copperhead Club bartender, fan dancer, ninja dressed as a waiter, waiter dressed as a ninja`,
+  targetMonster: $monster`Mob Penguin Capo`,
+  shouldOlfact: false,
+  available: kolmafia.canAdventure($location`The Copperhead Club`),
+  outfit: banishOutfit,
+  combat: _ref8 => {
+    var banish = _ref8.banish;
+    return Macro.farmingBanish(banish).meatKill();
   }
 };
 var cachedStrategy;
@@ -21906,6 +21975,9 @@ function currentStrategy() {
         break;
       case FarmingMethod.THE_MARINARA_TRENCH:
         strategyOptions = THE_MARINARA_TRENCH;
+        break;
+      case FarmingMethod.MOB_PENGUIN_CAPO:
+        strategyOptions = MOB_PENGUIN_CAPO;
         break;
       case FarmingMethod.BARF_MOUNTAIN:
       default:
@@ -24321,25 +24393,25 @@ function menu$1(adventure) {
         worksOnFreeRun: true
       });
     }
-    if (snapperReasonable(mode)) {
-      familiarMenu.push({
-        familiar: $familiar`Red-Nosed Snapper`,
-        expectedValue: snapperValue(mode),
-        leprechaunMultiplier: 0,
-        limit: "none",
-        worksOnFreeRun: false
-      });
-    }
-    if (mode === "barf" && have$R($familiar`Sword of S Words`) && get$2("swordOfSWordsMonster") && get$2("_swordOfSWordsKills") < 100) {
-      familiarMenu.push({
-        familiar: $familiar`Sword of S Words`,
-        expectedValue: 0,
-        // handled in barf cache
-        leprechaunMultiplier: 0,
-        limit: "special",
-        worksOnFreeRun: false
-      });
-    }
+  }
+  if (snapperReasonable(mode)) {
+    familiarMenu.push({
+      familiar: $familiar`Red-Nosed Snapper`,
+      expectedValue: snapperValue(mode),
+      leprechaunMultiplier: 0,
+      limit: "none",
+      worksOnFreeRun: false
+    });
+  }
+  if (mode === "barf" && have$R($familiar`Sword of S Words`) && get$2("swordOfSWordsMonster") && get$2("_swordOfSWordsKills") < 100) {
+    familiarMenu.push({
+      familiar: $familiar`Sword of S Words`,
+      expectedValue: 0,
+      // handled in barf cache
+      leprechaunMultiplier: 0,
+      limit: "special",
+      worksOnFreeRun: false
+    });
   }
   if (have$a()) {
     familiarMenu.push({
@@ -28226,45 +28298,6 @@ function checkPrefWatchReports() {
   }
 }
 
-var banishMethods = [{
-  source: $skill`Spring Kick`,
-  available: () => have$R($item`spring shoes`),
-  macro: Macro.trySkill($skill`Spring Kick`).trySkill($skill`Spring Away`),
-  equip: $item`spring shoes`
-}, {
-  source: $skill`Batter Up!`,
-  available: () => kolmafia.myClass() === $class`Seal Clubber` && have$R($skill`Batter Up!`) && kolmafia.myFury() >= 5,
-  macro: Macro.trySkill($skill`Batter Up!`),
-  equip: $item`seal-clubbing club`
-}, {
-  source: $skill`Order a Kneecapping`,
-  available: () => have$R($skill`Order a Kneecapping`) && !get$2("_kneecappingOrdered"),
-  macro: Macro.trySkill($skill`Order a Kneecapping`)
-}, {
-  source: $item`human musk`,
-  available: () => true,
-  macro: Macro.tryItem($item`human musk`),
-  retrieve: true
-}, {
-  source: skills.ThrowALightningBolt,
-  available: () => lightningBoltsRemaining() > 0,
-  equip: $item`Monodent of the Sea`,
-  macro: Macro.trySkill(skills.ThrowALightningBolt)
-}];
-var banishAvailable = method => method.available() && !FarmingStrategy.banishMonsters.includes(getBanishedMonsters().get(method.source) ?? $monster.none);
-function chooseBanish() {
-  if (FarmingStrategy.monstersToBanish().length === 0) {
-    return null;
-  }
-  var banishedMonsters = getBanishedMonsters();
-  var targetMonster = FarmingStrategy.primaryMonster();
-
-  // If a preceding script banished our target, reuse that banish first.
-  return banishMethods.find(method => banishAvailable(method) && banishedMonsters.get(method.source) === targetMonster) ??
-  // Otherwise use FIFO.
-  banishMethods.find(banishAvailable) ?? null;
-}
-
 function logTargetFight(encounterType) {
   var isDigitize = encounterType.includes("Digitize Wanderer");
   if (isDigitize) {
@@ -28527,7 +28560,7 @@ var FarmTurnEngine = /*#__PURE__*/function (_BaseGarboContextEngi2) {
     key: "getNextTask",
     value: function getNextTask() {
       _classPrivateFieldGet2(_contexts, this).clear();
-      _classPrivateFieldSet2(_banish, this, chooseBanish());
+      _classPrivateFieldSet2(_banish, this, chooseBanish(FarmingStrategy.banishMonsters, FarmingStrategy.primaryMonster()));
       return _superPropGet(FarmTurnEngine, "getNextTask", this, 3)([]);
     }
   }, {
@@ -35543,7 +35576,7 @@ function main() {
     Args.showHelp(globalOptions);
     return;
   }
-  if (!FarmingStrategy.available) {
+  if (!FarmingStrategy.isAvailable()) {
     throw new Error(`Farming strategy not available: ${globalOptions.prefs.farmingMethod}`);
   }
   if (globalOptions.debug) {
@@ -35718,6 +35751,10 @@ function main() {
       propertyManager.set({
         shadowLabyrinthGoal: "effects"
       }); // Automate Shadow Labyrinth Quest
+
+      propertyManager.setChoices({
+        855: 4
+      }); // Mallprice of 5-6 items always exceeds 500 meat
 
       var equipmentFamiliars = $familiars`Left-Hand Man, Disembodied Hand, Mad Hatrack, Fancypants Scarecrow`;
       var _iterator = _createForOfIteratorHelper(equipmentFamiliars.filter(familiar => have$R(familiar))),
