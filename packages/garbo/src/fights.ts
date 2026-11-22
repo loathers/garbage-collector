@@ -86,6 +86,7 @@ import {
   saberCrateIfSafe,
 } from "./resources/extrovermectin";
 import { bestMidnightAvailable } from "./resources/gingerbread";
+import { refreshBlackRoseGardenMonsters } from "./resources/garden";
 import { shouldUnlockIngredients, tryFillLatte } from "./resources/latte";
 import { freeFightFamiliar } from "./familiar/freeFightFamiliar";
 import {
@@ -1160,6 +1161,7 @@ export function freeFights(): void {
 
   killRobortCreaturesForFree();
 
+  refreshBlackRoseGardenMonsters();
   runGarboFreeFightQuests([
     PostQuest(),
     freeFightQuest(),

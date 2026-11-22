@@ -85,7 +85,11 @@ import { MappingTask } from "../engine";
 import { doCandyTrick } from "../../resources/candyMap";
 import { crateStrategy, doingGregFight } from "../../resources/extrovermectin";
 import { ghostAdventure } from "../../resources/protonpack";
-import { canSwapGarden } from "../../resources/garden";
+import {
+  blackRoseGardenMonsters,
+  canSwapGarden,
+  refreshBlackRoseGardenMonsters,
+} from "../../resources/garden";
 import { shouldAugustCast } from "../../resources/scepter";
 import {
   ESTIMATED_OVERDRUNK_TURNS,
@@ -1259,6 +1263,7 @@ const FreeFightTasks = [
     },
     do: () => {
       BlackRoseGarden.fightMonster(nextBlackGardenRoseFight());
+      refreshBlackRoseGardenMonsters();
       if (nextBlackGardenRoseFight() === Monster.none) {
         set("_garbo_blackRoseFightsDone", true);
       }
@@ -1268,14 +1273,13 @@ const FreeFightTasks = [
         use($item`packet of tall grass seeds`);
       }
     },
-    combatCount: () => 11,
+    combatCount: () => blackRoseGardenMonsters().length,
     tentacle: false,
   }),
 ];
 
 function nextBlackGardenRoseFight(): Monster {
-  const monsters = BlackRoseGarden.availableMonsters();
-  return monsters[0] ?? Monster.none;
+  return blackRoseGardenMonsters()[0] ?? Monster.none;
 }
 
 export function possibleFreeFightQuestTentacleFights(): number {

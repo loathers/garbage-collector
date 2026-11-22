@@ -1,4 +1,11 @@
-import { getCampground, Item, myGardenType, use, visitUrl } from "kolmafia";
+import {
+  getCampground,
+  Item,
+  Monster,
+  myGardenType,
+  use,
+  visitUrl,
+} from "kolmafia";
 import {
   $item,
   $items,
@@ -72,6 +79,40 @@ export function canSwapGarden(): boolean {
   if (globalOptions.ascend) return true;
   if (BlackRoseGarden.swappedToday()) return true;
   return startingGarden !== $item`black garden rose`;
+}
+
+let cachedBlackRoseGardenMonsters: Monster[] | null = null;
+
+export function blackRoseGardenMonsters(): Monster[] {
+  if (cachedBlackRoseGardenMonsters === null) {
+    throw new Error("Black Rose Garden monsters have not been loaded.");
+  }
+  return cachedBlackRoseGardenMonsters;
+}
+
+export function refreshBlackRoseGardenMonsters(): void {
+  if (
+    get("_garbo_blackRoseFightsDone", false) ||
+    !(
+      BlackRoseGarden.installed() ||
+      (canSwapGarden() && BlackRoseGarden.have())
+    )
+  ) {
+    cachedBlackRoseGardenMonsters = [];
+    return;
+  }
+
+  const previousGarden = currentGarden();
+  if (!BlackRoseGarden.installed() && !use($item`black garden rose`)) {
+    throw new Error("Failed to plant the Black Rose Garden.");
+  }
+  try {
+    cachedBlackRoseGardenMonsters = BlackRoseGarden.availableMonsters();
+  } finally {
+    if (previousGarden && previousGarden !== $item`black garden rose`) {
+      use(previousGarden);
+    }
+  }
 }
 
 export function harvestGarden(): void {
