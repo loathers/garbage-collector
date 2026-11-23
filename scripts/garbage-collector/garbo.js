@@ -17399,6 +17399,16 @@ var Outfit = /*#__PURE__*/function () {
         return value;
       }).length > 0) {
         var allRequirements = [new Requirement(this.modifier, {
+          forceEquip: _toConsumableArray(this.equips).filter(_ref7 => {
+            var _ref8 = _slicedToArray(_ref7, 2),
+              slot = _ref8[0],
+              item = _ref8[1];
+            return item !== $item.none && (slot !== $slot`familiar` || $slots`familiar, off-hand`.includes(kolmafia.toSlot(item)));
+          }).map(_ref9 => {
+            var _ref0 = _slicedToArray(_ref9, 2),
+              item = _ref0[1];
+            return item;
+          }),
           preventSlot: _toConsumableArray(usedSlots),
           preventEquip: this.avoid,
           modes: modes,
@@ -17589,9 +17599,9 @@ var Outfit = /*#__PURE__*/function () {
           result.modes = convertFromLibramModes(spec.maximizeOptions.modes);
         }
         // Not sure if this is necessary
-        var cleanedResult = Object.fromEntries(_toConsumableArray(Object.entries(result)).filter(_ref7 => {
-          var _ref8 = _slicedToArray(_ref7, 2),
-            v = _ref8[1];
+        var cleanedResult = Object.fromEntries(_toConsumableArray(Object.entries(result)).filter(_ref1 => {
+          var _ref10 = _slicedToArray(_ref1, 2),
+            v = _ref10[1];
           return v !== undefined;
         }));
         return Outfit.from(cleanedResult);
@@ -20492,7 +20502,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"911d7a47840e417b8dd075e82a1fb954bd9c0b48"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"eaa1455551c8a5ab114fa6942b2e3c9eaa186978"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -28872,6 +28882,109 @@ function bestMidnightAvailable() {
   });
 }
 
+// These are only for day 1 swapping after doing black rose (or any other similar garden)
+var harvestableGardens = [{
+  seedPacket: $item`packet of rock seeds`,
+  harvestables: [[$item`groveling gravel`, 1], [$item`milestone`, 1], [$item`whet stone`, 1]]
+}, {
+  seedPacket: $item`packet of pumpkin seeds`,
+  harvestables: [[$item`pumpkin`, 1]]
+}, {
+  seedPacket: $item`Peppermint Pip Packet`,
+  harvestables: [[$item`peppermint sprout`, 3]]
+}, {
+  seedPacket: $item`packet of dragon's teeth`,
+  harvestables: [[$item`skeleton`, 5]]
+}, {
+  seedPacket: $item`packet of beer seeds`,
+  harvestables: [[$item`handful of barley`, 3], [$item`cluster of hops`, 3]]
+}, {
+  seedPacket: $item`packet of winter seeds`,
+  harvestables: [[$item`snow berries`, 3], [$item`ice harvest`, 3]]
+}, {
+  seedPacket: $item`packet of thanksgarden seeds`,
+  harvestables: [[$item`cornucopia`, 1]]
+}];
+function currentGarden() {
+  return Object.values(GARDEN_ITEMS).find(garden => haveInCampground(garden));
+}
+
+// Capture this before any tasks run: temporarily planting roses must not lock us in.
+var startingGarden = currentGarden();
+function canSwapGarden() {
+  if (get$2("_blackRoseGardenToday")) return true;
+  if (globalOptions.ascend) return true;
+  if (swappedToday()) return true;
+  return startingGarden !== $item`black garden rose`;
+}
+var cachedBlackRoseGardenMonsters = null;
+function blackRoseGardenMonsters() {
+  if (cachedBlackRoseGardenMonsters === null) {
+    throw new Error("Black Rose Garden monsters have not been loaded.");
+  }
+  return cachedBlackRoseGardenMonsters;
+}
+function refreshBlackRoseGardenMonsters() {
+  if (get$2("_garbo_blackRoseFightsDone", false) || !(installed() || canSwapGarden() && have$6())) {
+    cachedBlackRoseGardenMonsters = [];
+    return;
+  }
+  var previousGarden = currentGarden();
+  if (!installed() && !kolmafia.use($item`black garden rose`)) {
+    throw new Error("Failed to plant the Black Rose Garden.");
+  }
+  try {
+    cachedBlackRoseGardenMonsters = availableMonsters$1();
+  } finally {
+    if (previousGarden && previousGarden !== $item`black garden rose`) {
+      kolmafia.use(previousGarden);
+    }
+  }
+}
+function harvestGarden() {
+  if (currentGarden() === $item`packet of rock seeds`) {
+    kolmafia.visitUrl("campground.php?action=rgarden1&pwd");
+    kolmafia.visitUrl("campground.php?action=rgarden2&pwd");
+    kolmafia.visitUrl("campground.php?action=rgarden3&pwd");
+  } else {
+    kolmafia.visitUrl("campground.php?action=garden&pwd");
+  }
+}
+function setupGarden() {
+  if (!canSwapGarden()) return;
+  if (startingGarden && !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) && kolmafia.getCampground()[startingGarden.name] && $items`packet of tall grass seeds, packet of mushroom spores`.some(gardenSeed => have$R(gardenSeed))) {
+    harvestGarden();
+  }
+  if (have$R($item`packet of tall grass seeds`) && kolmafia.myGardenType() !== "grass" && kolmafia.myGardenType() !== "mushroom") {
+    kolmafia.use($item`packet of tall grass seeds`);
+  }
+}
+function blackRoseWillGrow() {
+  return kolmafia.myGardenType() === "black_rose" && !swappedToday() && !globalOptions.ascend;
+}
+function restoreGarden() {
+  if (canSwapGarden() && startingGarden && have$R(startingGarden) && !blackRoseWillGrow()) {
+    kolmafia.use(startingGarden);
+  }
+}
+var cachedbestHarvestSwap = null;
+function bestHarvestSwap() {
+  if (cachedbestHarvestSwap === null) {
+    var ownedGardens = harvestableGardens.filter(garden => have$R(garden.seedPacket));
+    if (ownedGardens.length <= 0) {
+      cachedbestHarvestSwap = kolmafia.Item.none;
+    } else {
+      cachedbestHarvestSwap = maxBy(ownedGardens, garden => sum(garden.harvestables, _ref => {
+        var _ref2 = _slicedToArray(_ref, 2),
+          item = _ref2[0],
+          quantity = _ref2[1];
+        return quantity * garboValue(item);
+      })).seedPacket;
+    }
+  }
+  return cachedbestHarvestSwap;
+}
+
 function desirableIngredients() {
   return have$R($skill`Head in the Game`) && have$R($item`mafia pointer finger ring`) ? ["msg", "cajun", "rawhide", "carrot"] : ["cajun", "rawhide", "carrot"];
 }
@@ -29628,85 +29741,6 @@ function ghostAdventure() {
     location: get$2("ghostLocation") ?? $location.none,
     target: getGhost() ?? $monster.none
   };
-}
-
-// These are only for day 1 swapping after doing black rose (or any other similar garden)
-var harvestableGardens = [{
-  seedPacket: $item`packet of rock seeds`,
-  harvestables: [[$item`groveling gravel`, 1], [$item`milestone`, 1], [$item`whet stone`, 1]]
-}, {
-  seedPacket: $item`packet of pumpkin seeds`,
-  harvestables: [[$item`pumpkin`, 1]]
-}, {
-  seedPacket: $item`Peppermint Pip Packet`,
-  harvestables: [[$item`peppermint sprout`, 3]]
-}, {
-  seedPacket: $item`packet of dragon's teeth`,
-  harvestables: [[$item`skeleton`, 5]]
-}, {
-  seedPacket: $item`packet of beer seeds`,
-  harvestables: [[$item`handful of barley`, 3], [$item`cluster of hops`, 3]]
-}, {
-  seedPacket: $item`packet of winter seeds`,
-  harvestables: [[$item`snow berries`, 3], [$item`ice harvest`, 3]]
-}, {
-  seedPacket: $item`packet of thanksgarden seeds`,
-  harvestables: [[$item`cornucopia`, 1]]
-}];
-function currentGarden() {
-  return Object.values(GARDEN_ITEMS).find(garden => haveInCampground(garden));
-}
-
-// Capture this before any tasks run: temporarily planting roses must not lock us in.
-var startingGarden = currentGarden();
-function canSwapGarden() {
-  if (get$2("_blackRoseGardenToday")) return true;
-  if (globalOptions.ascend) return true;
-  if (swappedToday()) return true;
-  return startingGarden !== $item`black garden rose`;
-}
-function harvestGarden() {
-  if (currentGarden() === $item`packet of rock seeds`) {
-    kolmafia.visitUrl("campground.php?action=rgarden1&pwd");
-    kolmafia.visitUrl("campground.php?action=rgarden2&pwd");
-    kolmafia.visitUrl("campground.php?action=rgarden3&pwd");
-  } else {
-    kolmafia.visitUrl("campground.php?action=garden&pwd");
-  }
-}
-function setupGarden() {
-  if (!canSwapGarden()) return;
-  if (startingGarden && !$items`packet of tall grass seeds, packet of mushroom spores`.includes(startingGarden) && kolmafia.getCampground()[startingGarden.name] && $items`packet of tall grass seeds, packet of mushroom spores`.some(gardenSeed => have$R(gardenSeed))) {
-    harvestGarden();
-  }
-  if (have$R($item`packet of tall grass seeds`) && kolmafia.myGardenType() !== "grass" && kolmafia.myGardenType() !== "mushroom") {
-    kolmafia.use($item`packet of tall grass seeds`);
-  }
-}
-function blackRoseWillGrow() {
-  return kolmafia.myGardenType() === "black_rose" && !swappedToday() && !globalOptions.ascend;
-}
-function restoreGarden() {
-  if (canSwapGarden() && startingGarden && have$R(startingGarden) && !blackRoseWillGrow()) {
-    kolmafia.use(startingGarden);
-  }
-}
-var cachedbestHarvestSwap = null;
-function bestHarvestSwap() {
-  if (cachedbestHarvestSwap === null) {
-    var ownedGardens = harvestableGardens.filter(garden => have$R(garden.seedPacket));
-    if (ownedGardens.length <= 0) {
-      cachedbestHarvestSwap = kolmafia.Item.none;
-    } else {
-      cachedbestHarvestSwap = maxBy(ownedGardens, garden => sum(garden.harvestables, _ref => {
-        var _ref2 = _slicedToArray(_ref, 2),
-          item = _ref2[0],
-          quantity = _ref2[1];
-        return quantity * garboValue(item);
-      })).seedPacket;
-    }
-  }
-  return cachedbestHarvestSwap;
 }
 
 var DEFAULT_FREE_FIGHT_TASK = {
@@ -30907,6 +30941,7 @@ freeFightTask({
   },
   do: () => {
     fightMonster(nextBlackGardenRoseFight());
+    refreshBlackRoseGardenMonsters();
     if (nextBlackGardenRoseFight() === kolmafia.Monster.none) {
       _set("_garbo_blackRoseFightsDone", true);
     }
@@ -30916,12 +30951,11 @@ freeFightTask({
       kolmafia.use($item`packet of tall grass seeds`);
     }
   },
-  combatCount: () => 11,
+  combatCount: () => blackRoseGardenMonsters().length,
   tentacle: false
 })]);
 function nextBlackGardenRoseFight() {
-  var monsters = availableMonsters$1();
-  return monsters[0] ?? kolmafia.Monster.none;
+  return blackRoseGardenMonsters()[0] ?? kolmafia.Monster.none;
 }
 function possibleFreeFightQuestTentacleFights() {
   var availableFights = FreeFightTasks.filter(task => "combatCount" in task && "tentacle" in task).filter(task => {
@@ -31938,6 +31972,7 @@ function freeFights() {
   }
   freeRunFights();
   killRobortCreaturesForFree();
+  refreshBlackRoseGardenMonsters();
   runGarboFreeFightQuests([PostQuest(), freeFightQuest(), FreeGiantSandwormQuest, mappingRecoveryQuest()]);
 
   // Run any community endeavors
