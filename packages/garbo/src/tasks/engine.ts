@@ -17,6 +17,7 @@ import {
   clearMaximizerCache,
   get,
   have,
+  SongBoom,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -39,6 +40,10 @@ import { checkPrefWatchReports } from "../report";
 import { AdventureContext, adventureContext, FarmingContext } from "./context";
 import { BanishMethod, chooseBanish } from "../resources/banish";
 import { FarmingStrategy } from "../farmingStrategy";
+import {
+  shouldCollectSongBoomSeasoning,
+  shouldRestoreSongBoomMeat,
+} from "../resources/songBoom";
 
 import {
   AdaptedTask,
@@ -330,6 +335,23 @@ class FreeFightEngine extends BaseGarboEngine {
 
 class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
   #banish: BanishMethod | null = null;
+
+  dress(task: AdaptedTask<FarmingContext>, outfit: Outfit) {
+    super.dress(task, outfit);
+    if (!task.combat) return;
+
+    const context = this.getContext(task);
+    if (!undelay(task.spendsTurn, context)) return;
+
+    const { target } = context.adventure;
+
+    // SongBoom decisions should be made after building & equipping the outfit, but before compiling the macros.
+    if (shouldRestoreSongBoomMeat(target)) {
+      SongBoom.setSong("Total Eclipse of Your Meat");
+    } else if (shouldCollectSongBoomSeasoning(target)) {
+      SongBoom.setSong("Food Vibrations");
+    }
+  }
 
   protected createContext(task: AdaptedTask<FarmingContext>): FarmingContext {
     const context = this.createAdventureContext(task);
