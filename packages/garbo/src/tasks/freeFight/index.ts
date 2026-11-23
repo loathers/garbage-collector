@@ -82,6 +82,7 @@ import { globalOptions } from "../../config";
 import { garboValue } from "../../garboValue";
 import { freeFightOutfit } from "../../outfit/free";
 import { MappingTask } from "../engine";
+import { AdventureContext } from "../context";
 import { doCandyTrick } from "../../resources/candyMap";
 import { crateStrategy, doingGregFight } from "../../resources/extrovermectin";
 import { ghostAdventure } from "../../resources/protonpack";
@@ -99,7 +100,6 @@ import {
   sober,
   valueDrops,
 } from "../../lib";
-import { AdventureArgument, wanderer } from "../../garboWanderer";
 
 import { freeFightTask, GarboFreeFightTask, prepareParty } from "./lib";
 import { PygmyFightTasks, UnlockHiddenTavernTask } from "./pygmy";
@@ -135,7 +135,7 @@ function sealsAvailable(): number {
   return Math.min(max, available);
 }
 
-const tearawayPantsFreeFightOutfit = (adventure: AdventureArgument) => () =>
+const tearawayPantsFreeFightOutfit = ({ adventure }: AdventureContext) =>
   freeFightOutfit(
     {
       bonuses: new Map<Item, number>([
@@ -273,7 +273,7 @@ const GRIMACIA_TASK = {
   completed: () => get("_saberForceUses") >= 5,
   effects: [$effect`Transpondent`],
   choices: { 1387: 3 },
-  outfit: () => {
+  outfit: ({ adventure }: AdventureContext) => {
     const canPickPocket =
       myClass() === $class`Accordion Thief` ||
       myClass() === $class`Disco Bandit`;
@@ -292,7 +292,7 @@ const GRIMACIA_TASK = {
       spec.equip?.push(bestPickpocketItem);
     }
 
-    return freeFightOutfit(spec, $location`Domed City of Grimacia`, {
+    return freeFightOutfit(spec, adventure, {
       familiarOptions: { canChooseMacro: false },
     });
   },
@@ -312,17 +312,18 @@ const FreeFightTasks = [
     adventure: () => locketMonster() ?? $monster.none,
     ready: () => CombatLoversLocket.have() && locketMonster() !== null,
     completed: () => CombatLoversLocket.reminiscesLeft() <= locketsToSave(),
-    do: () => {
-      const monster = locketMonster();
-      if (!monster) return;
-      CombatLoversLocket.reminisce(monster);
+    do: ({ adventure }) => {
+      if (!(adventure.target instanceof Monster)) {
+        throw new Error("Expected a locket monster");
+      }
+      CombatLoversLocket.reminisce(adventure.target);
     },
-    outfit: () =>
+    outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit(
         have($familiar`Robortender`)
           ? { familiar: $familiar`Robortender` }
           : {},
-        locketMonster() ?? $monster.none,
+        adventure,
         { combatCount: remainingLocketFights() },
       ),
     tentacle: true,
@@ -350,7 +351,7 @@ const FreeFightTasks = [
         use($item`packet of tall grass seeds`);
       }
     },
-    outfit: tearawayPantsFreeFightOutfit($location`Your Mushroom Garden`),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() =>
       Macro.externalIf(
         !doingGregFight(),
@@ -367,7 +368,6 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "Portscan + Macrometeorite + Mushroom garden",
-    adventure: $location`Your Mushroom Garden`,
     ready: () =>
       canSwapGarden() &&
       (have($item`packet of mushroom spores`) ||
@@ -390,7 +390,7 @@ const FreeFightTasks = [
         use($item`packet of tall grass seeds`);
       }
     },
-    outfit: tearawayPantsFreeFightOutfit($location`Your Mushroom Garden`),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() =>
       Macro.if_($monster`Government agent`, Macro.skill($skill`Macrometeorite`))
         .if_(
@@ -425,7 +425,7 @@ const FreeFightTasks = [
     },
     tentacle: true,
     combatCount: () => clamp(5 - get("_leafMonstersFought"), 0, 5),
-    outfit: tearawayPantsFreeFightOutfit($monster`flaming leaflet`),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   }),
   freeFightTask({
@@ -447,7 +447,7 @@ const FreeFightTasks = [
     },
     tentacle: true,
     combatCount: () => (get("_tiedUpFlamingLeafletFought") ? 0 : 1),
-    outfit: tearawayPantsFreeFightOutfit($monster`flaming leaflet`),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming leaflet`)),
   }),
   freeFightTask({
@@ -469,12 +469,11 @@ const FreeFightTasks = [
     },
     tentacle: true,
     combatCount: () => (get("_tiedUpFlamingMonsteraFought") ? 0 : 1),
-    outfit: tearawayPantsFreeFightOutfit($monster`flaming monstera`),
+    outfit: tearawayPantsFreeFightOutfit,
     combat: new GarboStrategy(() => litLeafMacro($monster`flaming monstera`)),
   }),
   freeFightTask({
     name: "An Unusually Quiet Barroom Brawl",
-    adventure: $location`An Unusually Quiet Barroom Brawl`,
     ready: () => get("ownsSpeakeasy"),
     completed: () => get("_speakeasyFreeFights") >= 3,
     do: $location`An Unusually Quiet Barroom Brawl`,
@@ -483,7 +482,6 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "Glark Cable",
-    adventure: $location`The Red Zeppelin`,
     ready: () =>
       canAdventure($location`The Red Zeppelin`) &&
       get("questL11Ron") === "finished" &&
@@ -491,8 +489,8 @@ const FreeFightTasks = [
       mallPrice($item`glark cable`) <= globalOptions.prefs.valueOfFreeFight,
     completed: () => get("_glarkCableUses") >= 5,
     do: $location`The Red Zeppelin`,
-    outfit: () =>
-      freeFightOutfit({}, $location`The Red Zeppelin`, {
+    outfit: ({ adventure }: AdventureContext) =>
+      freeFightOutfit({}, adventure, {
         familiarOptions: {
           canChooseMacro: false,
           allowAttackFamiliars: false,
@@ -527,10 +525,10 @@ const FreeFightTasks = [
       have($item`cursed magnifying glass`) &&
       get("cursedMagnifyingGlassCount") >= 13,
     completed: () => get("_voidFreeFights") >= 5,
-    do: () => wanderer().getTarget("wanderer").location,
-    choices: () => wanderer().getChoices("wanderer"),
-    outfit: () =>
-      freeFightOutfit({ equip: $items`cursed magnifying glass` }, "wanderer"),
+    do: ({ adventure }) => adventure.location,
+    choices: ({ adventure }) => adventure.choices,
+    outfit: ({ adventure }: AdventureContext) =>
+      freeFightOutfit({ equip: $items`cursed magnifying glass` }, adventure),
     tentacle: false,
     combatCount: () => Math.max(0, 5 - get("_voidFreeFights")),
   }),
@@ -540,22 +538,21 @@ const FreeFightTasks = [
     adventure: ghostAdventure,
     ready: () => get("ghostLocation") !== null,
     completed: () => get("questPAGhost") === "unstarted",
-    choices: () =>
-      wanderer().getChoices(get("ghostLocation") ?? $location.none),
-    do: () => get("ghostLocation") ?? $location.none,
+    choices: ({ adventure }) => adventure.choices,
+    do: ({ adventure }) => adventure.location,
     combat: new GarboStrategy(() =>
       have($item`protonic accelerator pack`)
         ? Macro.ghostBustin()
         : Macro.basicCombat(),
     ),
-    outfit: () =>
+    outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit(
         {
           back: have($item`protonic accelerator pack`)
             ? $item`protonic accelerator pack`
             : [],
         },
-        get("ghostLocation") ?? $location.none,
+        adventure,
       ),
     tentacle: true,
   }),
@@ -565,16 +562,10 @@ const FreeFightTasks = [
     adventure: { target: $monster`sausage goblin`, location: "wanderer" },
     ready: () => have($item`Kramco Sausage-o-Matic™`),
     completed: () => !kramcoGuaranteed(),
-    do: () =>
-      wanderer().getTarget({ wanderer: "wanderer", allowEquipment: false })
-        .location,
-    outfit: () =>
-      freeFightOutfit(
-        { offhand: $item`Kramco Sausage-o-Matic™` },
-        { target: $monster`sausage goblin`, location: "wanderer" },
-      ),
-    choices: () =>
-      wanderer().getChoices({ wanderer: "wanderer", allowEquipment: false }),
+    do: ({ adventure }) => adventure.location,
+    outfit: ({ adventure }: AdventureContext) =>
+      freeFightOutfit({ offhand: $item`Kramco Sausage-o-Matic™` }, adventure),
+    choices: ({ adventure }) => adventure.choices,
     combat: new GarboStrategy(() => Macro.basicCombat()),
     combatCount: () => clamp(1 - get("_sausageFights"), 0, 1),
     tentacle: true,
@@ -714,7 +705,7 @@ const FreeFightTasks = [
       mallPrice($item`crappy waiter disguise`)
         ? [$effect`Crappily Disguised as a Waiter`]
         : [],
-    outfit: () =>
+    outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit(
         {
           bonuses: new Map<Item, number>(
@@ -726,7 +717,7 @@ const FreeFightTasks = [
             ),
           ),
         },
-        $monster`Eldritch Tentacle`,
+        adventure,
         { familiarOptions: { canChooseMacro: false } },
       ),
     combat: new GarboStrategy(() =>
@@ -787,7 +778,7 @@ const FreeFightTasks = [
         .skill($skill`Blow a Robo-Kiss`)
         .repeat(),
     ),
-    outfit: () =>
+    outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit(
         {
           back: $items`unwrapped knock-off retro superhero cape`,
@@ -798,7 +789,7 @@ const FreeFightTasks = [
               ? "-7 Monster Level"
               : "-Monster Level", // Above 50 ML, monsters resist stuns.
         },
-        $monster`%monster%`,
+        adventure,
         {
           familiarOptions: {
             canChooseMacro: false,
@@ -864,13 +855,13 @@ const FreeFightTasks = [
         .trySkill($skill`Frost Bite`)
         .kill(),
     ),
-    outfit: () =>
+    outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit(
         {
           modifier: ["1000 mainstat"],
           avoid: $items`mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`,
         },
-        $monster`%monster%`,
+        adventure,
         { familiarOptions: { canChooseMacro: false } },
       ),
     prepare: () => {
@@ -911,7 +902,7 @@ const FreeFightTasks = [
       retrieveItem(candlesNeeded, $item`seal-blubber candle`);
       use(figurine);
     },
-    outfit: () => {
+    outfit: ({ adventure }: AdventureContext) => {
       const clubs = Item.all().filter(
         (i) => have(i) && canEquip(i) && itemType(i) === "club",
       );
@@ -920,12 +911,7 @@ const FreeFightTasks = [
         clubs.find((i) => weaponHands(i) === 2) ??
         $item`seal-clubbing club`;
       retrieveItem(club);
-      return freeFightOutfit(
-        { weapon: club },
-        guildStoreAvailable()
-          ? $monster`Spawn of Wally`
-          : $monster`hermetic seal`,
-      );
+      return freeFightOutfit({ weapon: club }, adventure);
     },
     combat: new GarboStrategy(() =>
       Macro.startCombat()
@@ -950,8 +936,8 @@ const FreeFightTasks = [
       globalOptions.prefs.valueOfFreeFight,
     completed: () => get("_brickoFights") >= 10,
     do: () => use($item`BRICKO ooze`),
-    outfit: () =>
-      freeFightOutfit({}, $monster`BRICKO ooze`, {
+    outfit: ({ adventure }: AdventureContext) =>
+      freeFightOutfit({}, adventure, {
         familiarOptions: { canChooseMacro: false },
       }),
     combat: new GarboStrategy(() => Macro.basicCombat()),
@@ -973,7 +959,7 @@ const FreeFightTasks = [
       if (handlingChoice()) runChoice(-1);
     },
     choices: () => ({ 1310: !have($item`God Lobster's Crown`) ? 1 : 2 }), // god lob equipment, then stats
-    outfit: () =>
+    outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit(
         {
           familiar: $familiar`God Lobster`,
@@ -985,14 +971,13 @@ const FreeFightTasks = [
             [$item`God Lobster's Crown`, 5000],
           ]),
         },
-        $monster`God Lobster`,
+        adventure,
       ),
     combatCount: () => clamp(3 - get("_godLobsterFights"), 0, 3),
     tentacle: false,
   }),
   freeFightTask({
     name: "Machine Elf",
-    adventure: $location`The Deep Machine Tunnels`,
     ready: () =>
       have($familiar`Machine Elf`) ||
       dmtCommaValuable(
@@ -1084,14 +1069,14 @@ const FreeFightTasks = [
         )
         .basicCombat(),
     ),
-    outfit: () =>
+    outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit(
         {
           familiar: have($familiar`Machine Elf`)
             ? $familiar`Machine Elf`
             : $familiar`Comma Chameleon`,
         },
-        $location`The Deep Machine Tunnels`,
+        adventure,
       ),
     tentacle: false, // Marked like this as 2 DMT fights get overriden by tentacles (could add +1 combat)
     combatCount: () => clamp(5 - get("_machineTunnelsAdv"), 0, 5),
@@ -1104,13 +1089,17 @@ const FreeFightTasks = [
     completed: () =>
       Witchess.fightsDone() >= 5 ||
       Witchess.pieces.includes(globalOptions.target),
-    do: () => Witchess.fightPiece(bestWitchessPiece()),
+    do: ({ adventure }) => {
+      if (!(adventure.target instanceof Monster)) {
+        throw new Error("Expected a Witchess piece");
+      }
+      Witchess.fightPiece(adventure.target);
+    },
     tentacle: true,
     combatCount: () => clamp(5 - Witchess.fightsDone(), 0, 5),
   }),
   freeFightTask({
     name: "The X-32-F Combat Training Snowman",
-    adventure: $location`The X-32-F Combat Training Snowman`,
     ready: () => get("snojoAvailable"),
     completed: () => get("_snojoFreeFights") >= 10,
     do: $location`The X-32-F Combat Training Snowman`,
@@ -1119,7 +1108,6 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "Neverending Party",
-    adventure: $location`The Neverending Party`,
     // Declining the quest leaves the party open; only completing it closes it.
     ready: () =>
       get("neverendingPartyAlways") &&
@@ -1130,7 +1118,7 @@ const FreeFightTasks = [
     combat: new GarboStrategy(() =>
       Macro.tryHaveSkill($skill`Feel Pride`).basicCombat(),
     ),
-    outfit: () =>
+    outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit(
         {
           modifier:
@@ -1149,7 +1137,7 @@ const FreeFightTasks = [
               ? $items`makeshift garbage shirt`
               : [],
         },
-        $location`The Neverending Party`,
+        adventure,
       ),
     tentacle: true,
     combatCount: remainingPartyFights,
@@ -1163,7 +1151,6 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "Ninja Costume (Lair)",
-    adventure: $location`Lair of the Ninja Snowmen`,
     ready: () =>
       !have($item`li'l ninja costume`) &&
       have($familiar`Trick-or-Treating Tot`) &&
@@ -1174,12 +1161,10 @@ const FreeFightTasks = [
     completed: () =>
       have($item`li'l ninja costume`) || get("_firedJokestersGun"),
     do: $location`Lair of the Ninja Snowmen`,
-    outfit: () =>
-      freeFightOutfit(
-        { equip: $items`The Jokester's gun` },
-        $location`Lair of the Ninja Snowmen`,
-        { familiarOptions: { canChooseMacro: false } },
-      ),
+    outfit: ({ adventure }: AdventureContext) =>
+      freeFightOutfit({ equip: $items`The Jokester's gun` }, adventure, {
+        familiarOptions: { canChooseMacro: false },
+      }),
     combat: new GarboStrategy(() =>
       Macro.skill($skill`Fire the Jokester's Gun`).abort(),
     ),
@@ -1203,15 +1188,10 @@ const FreeFightTasks = [
       have($item`li'l ninja costume`) || get("_firedJokestersGun"),
     do: () =>
       tryMapMonster($location`The Haiku Dungeon`, $monster`amateur ninja`),
-    outfit: () =>
-      freeFightOutfit(
-        { equip: $items`The Jokester's gun` },
-        {
-          location: $location`The Haiku Dungeon`,
-          target: $monster`amateur ninja`,
-        },
-        { familiarOptions: { canChooseMacro: false } },
-      ),
+    outfit: ({ adventure }: AdventureContext) =>
+      freeFightOutfit({ equip: $items`The Jokester's gun` }, adventure, {
+        familiarOptions: { canChooseMacro: false },
+      }),
     combat: new GarboStrategy(() =>
       Macro.skill($skill`Fire the Jokester's Gun`).abort(),
     ),
@@ -1219,7 +1199,6 @@ const FreeFightTasks = [
   }),
   freeFightTask({
     name: "CyberRealm Overclock Fights",
-    adventure: $location`Cyberzone 1`,
     ready: () =>
       canAdventure($location`Cyberzone 1`) &&
       have($item`zero-trust tanktop`) &&
@@ -1229,7 +1208,7 @@ const FreeFightTasks = [
     do: $location`Cyberzone 1`, // TODO Support other zones with better equipment and valuing hacker drops
     tentacle: false,
     choices: { 1545: 1 }, // Take damage, get 0's
-    outfit: () =>
+    outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit(
         {
           bonuses: new Map<Item, number>([
@@ -1239,7 +1218,7 @@ const FreeFightTasks = [
           ]),
           shirt: $item`zero-trust tanktop`,
         },
-        $location`Cyberzone 1`,
+        adventure,
       ),
     combat: new GarboStrategy(() =>
       Macro.if_(
@@ -1249,20 +1228,26 @@ const FreeFightTasks = [
     ),
     combatCount: () => clamp(10 - get("_cyberFreeFights"), 0, 10),
   }),
+  {
+    name: "Plant Black Rose Garden",
+    mapSafe: true,
+    ready: () => canSwapGarden() && have($item`black garden rose`),
+    completed: () =>
+      BlackRoseGarden.installed() || get("_garbo_blackRoseFightsDone", false),
+    do: () => use($item`black garden rose`),
+    spendsTurn: false,
+    limit: { guard: () => BlackRoseGarden.installed },
+  },
   freeFightTask({
     name: "Black Rose Garden Fights",
     adventure: nextBlackGardenRoseFight,
-    ready: () =>
-      (canSwapGarden() && BlackRoseGarden.have()) ||
-      BlackRoseGarden.installed(),
+    ready: BlackRoseGarden.installed,
     completed: () => get("_garbo_blackRoseFightsDone", false),
-    prepare: () => {
-      if (have($item`black garden rose`)) {
-        use($item`black garden rose`);
+    do: ({ adventure }) => {
+      if (!(adventure.target instanceof Monster)) {
+        throw new Error("Expected a garden monster");
       }
-    },
-    do: () => {
-      BlackRoseGarden.fightMonster(nextBlackGardenRoseFight());
+      BlackRoseGarden.fightMonster(adventure.target);
       refreshBlackRoseGardenMonsters();
       if (nextBlackGardenRoseFight() === Monster.none) {
         set("_garbo_blackRoseFightsDone", true);
@@ -1284,7 +1269,7 @@ function nextBlackGardenRoseFight(): Monster {
 
 export function possibleFreeFightQuestTentacleFights(): number {
   const availableFights = FreeFightTasks.filter(
-    (task): task is GarboFreeFightTask =>
+    (task): task is GarboFreeFightTask<AdventureContext> =>
       "combatCount" in task && "tentacle" in task,
   ).filter(
     (task) => task.tentacle && (task.ready?.() ?? true) && !task.completed(),
@@ -1295,7 +1280,10 @@ export function possibleFreeFightQuestTentacleFights(): number {
   );
 }
 
-export function freeFightQuest(): Quest<MappingTask> {
+export function freeFightQuest(): Quest<
+  MappingTask<AdventureContext>,
+  AdventureContext
+> {
   return {
     name: "Free Fight",
     tasks: [...FreeFightTasks, ...getTasks([shadowRiftQuest()])],
@@ -1303,12 +1291,19 @@ export function freeFightQuest(): Quest<MappingTask> {
   };
 }
 
-export function mappingRecoveryQuest(): Quest<MappingTask> {
+export function mappingRecoveryQuest(): Quest<
+  MappingTask<AdventureContext>,
+  AdventureContext
+> {
   return {
     name: "Mapping Recovery",
     tasks: [
       {
         name: "Consume Pending Map",
+        adventure: {
+          location: $location`The Haunted Kitchen`,
+          target: $monster`possessed silverware drawer`,
+        },
         mapSafe: true,
         ready: () =>
           get("mappingMonsters") &&
@@ -1327,14 +1322,8 @@ export function mappingRecoveryQuest(): Quest<MappingTask> {
             $location`The Haunted Kitchen`,
             $monster`possessed silverware drawer`,
           ),
-        outfit: () =>
-          freeFightOutfit(
-            {},
-            {
-              location: $location`The Haunted Kitchen`,
-              target: $monster`possessed silverware drawer`,
-            },
-          ),
+        outfit: ({ adventure }: AdventureContext) =>
+          freeFightOutfit({}, adventure),
         combat: new GarboStrategy(() => Macro.basicCombat()),
         spendsTurn: true,
         // Stop a stuck mapping flag from repeatedly spending adventures on recovery.

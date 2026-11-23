@@ -97,6 +97,7 @@ export const yachtzeeQuest: Quest<
       },
       {
         name: "Parka Spikes NC Forcer",
+        adventure: () => FarmingStrategy.location,
         completed: () => get("noncombatForcerActive"),
         ready: () =>
           have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5,
@@ -125,6 +126,7 @@ export const yachtzeeQuest: Quest<
       },
       {
         name: "McHugeLarge Avalanche NC Forcer",
+        adventure: () => FarmingStrategy.location,
         completed: () => get("noncombatForcerActive"),
         ready: () =>
           have($item`McHugeLarge left ski`) &&

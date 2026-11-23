@@ -75,6 +75,10 @@ export function FarmTurnQuest(): Quest<
     tasks: [
       {
         name: "Parachute",
+        adventure: () => ({
+          target: FarmingStrategy.primaryMonster(),
+          location: FarmingStrategy.location,
+        }),
         ready: () =>
           CrepeParachute.have() &&
           shouldCheckParachute() &&

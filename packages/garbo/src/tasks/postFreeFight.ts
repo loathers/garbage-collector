@@ -71,7 +71,7 @@ const PostFreeFightTasks: GarboTask[] = [
   },
 ];
 
-export const PostFreeFightQuest: Quest<GarboTask> = {
+export const PostFreeFightQuest: Quest<GarboTask, unknown> = {
   name: "Post Free Fight",
   tasks: PostFreeFightTasks,
 };

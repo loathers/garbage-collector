@@ -128,10 +128,11 @@ export const UnlockHiddenTavernTask: MappingTask = {
 type FreeFightFragment = Parameters<typeof freeFightTask>[0];
 type PygmyTaskFragment = Omit<
   FreeFightFragment,
-  "adventure" | "do" | "tentacle"
+  "adventure" | "do" | "prepare" | "tentacle"
 > &
   Partial<Pick<FreeFightFragment, "do" | "tentacle">> & {
     equip?: Delayed<OutfitSpec["equip"]>;
+    prepare?: () => void;
   };
 
 function pygmyTask({
@@ -146,7 +147,7 @@ function pygmyTask({
     do: alley,
     tentacle: true,
     combat: new GarboStrategy(pygmyMacro),
-    outfit: () =>
+    outfit: ({ adventure }) =>
       freeFightOutfit(
         {
           equip: undelay(equip),
@@ -156,7 +157,7 @@ function pygmyTask({
             ...bonusGearValues([magnifyingGlass], BonusEquipMode.FREE),
           ]),
         },
-        { location: alley, target: drunk },
+        adventure,
         { familiarOptions: { canChooseMacro: false } },
       ),
     prepare: () => {

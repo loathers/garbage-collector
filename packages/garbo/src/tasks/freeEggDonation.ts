@@ -12,7 +12,6 @@ import {
   restoreHp,
   restoreMp,
   toInt,
-  useFamiliar,
   visitUrl,
 } from "kolmafia";
 import { Quest } from "grimoire-kolmafia";
@@ -43,6 +42,7 @@ import { globalOptions } from "../config";
 import { freeRunConstraints, tryFindFreeRunOrBanish } from "../lib";
 import { safeRestoreMpTarget } from "../restore";
 import { GarboTask } from "./engine";
+import { freeFightOutfit } from "../outfit/free";
 
 function queryEggNetIncomplete(): Map<Monster, number> {
   try {
@@ -195,6 +195,9 @@ function mimicEggDonation(): GarboTask[] {
     },
     {
       name: `Harvest mimic eggs`,
+      adventure: donation.monster,
+      outfit: () =>
+        freeFightOutfit({ familiar: $familiar`Chest Mimic` }, donation.monster),
       ready: () =>
         CombatLoversLocket.canReminisce(donation.monster) &&
         (!!escape || donation.monster.attributes.includes("FREE")) &&
@@ -227,7 +230,6 @@ function mimicEggDonation(): GarboTask[] {
         () => Macro.kill(),
       ),
       prepare: () => {
-        useFamiliar($familiar`Chest Mimic`);
         escape?.prepare(monsterRequirements(donation.monster));
         if (haveEquipped($item`unwrapped knock-off retro superhero cape`)) {
           RetroCape.set("heck", "hold");
@@ -244,7 +246,9 @@ function mimicEggDonation(): GarboTask[] {
   ];
 }
 
-export const FreeMimicEggDonationQuest: Delayed<Quest<GarboTask>> = () => ({
+export const FreeMimicEggDonationQuest: Delayed<
+  Quest<GarboTask, unknown>
+> = () => ({
   name: "Free Mimic Egg Donation",
   tasks: [...mimicEggDonation()],
   ready: () =>

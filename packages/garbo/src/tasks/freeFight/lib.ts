@@ -1,17 +1,19 @@
 import { print, toItem } from "kolmafia";
-import { HIGHLIGHT, setChoice } from "../../lib";
+import { DistributiveOmit, HIGHLIGHT, setChoice } from "../../lib";
 import { logMessage } from "../../log";
-import { Delayed, get, getStep, QuestState, undelay } from "libram";
+import { get, getStep, QuestState } from "libram";
 import { Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
-import { AdventureArgument } from "../../garboWanderer";
 import { freeFightOutfit } from "../../outfit/free";
 import { MappingTask } from "../engine";
+import { AdventureContext } from "../context";
 
-export type GarboFreeFightTask = Extract<
-  MappingTask,
-  { combat: GarboStrategy }
+export type GarboFreeFightTask<Context = unknown> = DistributiveOmit<
+  Extract<MappingTask<Context>, { combat: GarboStrategy<Context> }>,
+  "ready" | "completed"
 > & {
+  ready?: () => boolean;
+  completed: () => boolean;
   combatCount: () => number;
   tentacle: boolean; // if a tentacle fight can follow
 };
@@ -24,18 +26,17 @@ const DEFAULT_FREE_FIGHT_TASK = {
   combatCount: () => 1,
 };
 
-export function freeFightTask(
-  fragment: Omit<
-    GarboFreeFightTask,
-    keyof typeof DEFAULT_FREE_FIGHT_TASK | "outfit"
-  > &
-    Partial<
-      Pick<GarboFreeFightTask, keyof typeof DEFAULT_FREE_FIGHT_TASK | "outfit">
-    > & {
-      adventure: Delayed<AdventureArgument>;
-    },
-) {
-  const outfit = () => freeFightOutfit({}, undelay(fragment.adventure));
+type FreeFightFragment<Context, Task = GarboFreeFightTask<Context>> =
+  Task extends GarboFreeFightTask<Context>
+    ? Omit<Task, keyof typeof DEFAULT_FREE_FIGHT_TASK | "outfit"> &
+        Partial<Pick<Task, keyof typeof DEFAULT_FREE_FIGHT_TASK | "outfit">>
+    : never;
+
+export function freeFightTask<
+  Context extends AdventureContext = AdventureContext,
+>(fragment: FreeFightFragment<Context>) {
+  const outfit = ({ adventure }: AdventureContext) =>
+    freeFightOutfit({}, adventure);
   return { outfit, ...DEFAULT_FREE_FIGHT_TASK, ...fragment };
 }
 

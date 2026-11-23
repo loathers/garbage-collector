@@ -26,7 +26,7 @@ function getAutosellableMeltingJunk(): Item[] {
   );
 }
 
-export const FinishUpQuest: Quest<GarboTask> = {
+export const FinishUpQuest: Quest<GarboTask, unknown> = {
   name: "Finish Up",
   tasks: [
     {

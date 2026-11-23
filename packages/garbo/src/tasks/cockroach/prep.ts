@@ -39,7 +39,7 @@ import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
 import { highMeatMonsterCount } from "../../turns";
 
-export const CockroachSetup: Quest<GarboTask> = {
+export const CockroachSetup: Quest<GarboTask, unknown> = {
   name: "Setup Cockroach Target",
   ready: () =>
     doingGregFight() && globalOptions.target === $monster`cockroach` && sober(),
@@ -174,6 +174,7 @@ export const CockroachSetup: Quest<GarboTask> = {
     },
     {
       name: "Standard Island Combats (Island 1)",
+      adventure: () => get("_lastPirateRealmIsland", $location`none`),
       ready: () => getStep("_questPirateRealm") === 4,
       completed: () => getStep("_questPirateRealm") > 4,
       prepare: () => {
@@ -216,7 +217,7 @@ export const CockroachSetup: Quest<GarboTask> = {
   ],
 };
 
-export const CockroachFinish: Quest<GarboTask> = {
+export const CockroachFinish: Quest<GarboTask, unknown> = {
   name: "Finish Setup Cockroach Target",
   ready: () =>
     doingGregFight() && globalOptions.target === $monster`cockroach` && sober(),

@@ -38,7 +38,6 @@ import { getAvailableUltraRareZones } from "garbo-lib";
 import { Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
 import { globalOptions } from "../../config";
-import { wanderer } from "../../garboWanderer";
 import { getBestLuckyAdventure, sober, willDrunkAdventure } from "../../lib";
 import { freeFightOutfit } from "../../outfit/free";
 import { meatTargetOutfit } from "../../outfit/target";
@@ -142,6 +141,7 @@ function luckyTasks(
   return [
     {
       name: `Lucky Adventure (${sobriety})`,
+      adventure: () => getBestLuckyAdventure().location,
       completed: () => !have($effect`Lucky!`),
       ready: () => additionalReady(),
       do: () => getBestLuckyAdventure().location,
@@ -245,6 +245,7 @@ const peridotZone = () =>
 const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
   {
     name: "Make Mimic Eggs (whatever we can)",
+    adventure: () => globalOptions.target,
     ready: () => have($familiar`Chest Mimic`),
     completed: () =>
       get("_mimicEggsObtained") >= 11 ||
@@ -402,11 +403,12 @@ const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
   },
   {
     name: "Peridot Fish for UR",
+    adventure: () => peridotZone() ?? Location.none,
     ready: () =>
       have($item`Peridot of Peril`) && !(willDrunkAdventure() && sober()),
     completed: () => !peridotZone(),
-    do: peridotZone,
-    outfit: () =>
+    do: ({ adventure }) => adventure.location,
+    outfit: ({ adventure }) =>
       freeFightOutfit(
         sober()
           ? { acc1: $item`Peridot of Peril` }
@@ -414,13 +416,13 @@ const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
               acc1: $item`Peridot of Peril`,
               offhand: $item`Drunkula's wineglass`,
             },
-        peridotZone() ?? Location.none,
+        adventure,
       ),
     turns: () => (peridotZone() ? 1 : 0),
     spendsTurn: false,
     combat: new GarboStrategy(() => Macro.kill()),
-    choices: () => ({
-      ...wanderer().getChoices(peridotZone() ?? $location.none),
+    choices: ({ adventure }) => ({
+      ...adventure.choices,
       1557: 2,
     }),
   },

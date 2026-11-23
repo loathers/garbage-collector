@@ -58,19 +58,33 @@ export type AdventureArgument =
   | Monster
   | Destination
   | { target: AdventureTarget; location: Destination };
-export function toAdventure(arg: AdventureArgument): Adventure {
-  if (arg instanceof Monster) return { target: arg, location: $location.none };
+export function toAdventure(
+  arg: AdventureArgument,
+  useCache = true,
+): Adventure {
+  if (arg instanceof Monster) {
+    return { target: arg, location: $location.none };
+  }
   if (arg instanceof Location) return { target: arg, location: arg };
+  if (
+    typeof arg !== "string" &&
+    "target" in arg &&
+    arg.location instanceof Location
+  ) {
+    return { ...arg, location: arg.location };
+  }
   if (typeof arg !== "string" && "peridotMonster" in arg) {
     return { target: arg.location, location: arg.location, wanderTarget: arg };
   }
   if (typeof arg === "string" || !("target" in arg)) {
-    const wanderTarget = wanderer().getTarget(arg);
+    const wanderTarget = useCache
+      ? wanderer().getTarget(arg)
+      : wanderer().resolveTarget(arg);
     return {
       target: wanderTarget.location,
       location: wanderTarget.location,
       wanderTarget,
     };
   }
-  return { ...toAdventure(arg.location), target: arg.target };
+  return { ...toAdventure(arg.location, useCache), target: arg.target };
 }

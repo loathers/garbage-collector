@@ -125,6 +125,7 @@ function useCandyMapTask(): GarboTask {
 function doCandyTreat(): GarboTask {
   return {
     name: "Treat",
+    adventure: $location`Trick-or-Treating`,
     completed: () =>
       !["L", "S"].some((house) => get("_trickOrTreatBlock").includes(house)),
     ready: () =>
@@ -174,9 +175,10 @@ export function candyMapDailyTasks(): GarboTask[] {
   return [useCandyMapTask(), doCandyTreat(), obtainTrickHat()];
 }
 
-export function doCandyTrick(): GarboTask {
+export function doCandyTrick() {
   return {
     name: "Trick",
+    adventure: $location`Trick-or-Treating`,
     completed: () => !get("_trickOrTreatBlock").includes("D"),
     ready: () =>
       !holiday().includes("Halloween") &&
@@ -199,5 +201,5 @@ export function doCandyTrick(): GarboTask {
     },
     combat: new GarboStrategy(() => Macro.basicCombat()),
     spendsTurn: false,
-  };
+  } satisfies GarboTask;
 }

@@ -53,7 +53,6 @@ import {
 import { Macro } from "../../combat";
 import { GarboStrategy } from "../../combatStrategy";
 import { globalOptions } from "../../config";
-import { wanderer } from "../../garboWanderer";
 import {
   kramcoGuaranteed,
   MEAT_TARGET_MULTIPLIER,
@@ -88,6 +87,7 @@ import { bestMidnightAvailable } from "../../resources/gingerbread";
 import { shouldFillLatte, tryFillLatte } from "../../resources/latte";
 import { willYachtzee } from "../../resources/yachtzee";
 import { acquire } from "../../acquire";
+import { ghostAdventure } from "../../resources/protonpack";
 import { FarmingStrategy } from "../../farmingStrategy";
 import { bestYachtzeeFamiliar } from "../yachtzee/familiar";
 
@@ -99,19 +99,23 @@ const isSteve = () =>
 function wanderTask(
   details: Delayed<WanderDetails>,
   spec: Delayed<OutfitSpec>,
-  base: Omit<FarmingTask, "outfit" | "do" | "choices" | "spendsTurn"> & {
+  base: Omit<
+    Extract<FarmingTask, { combat: GarboStrategy<FarmingContext> }>,
+    "adventure" | "combat" | "outfit" | "do" | "choices" | "spendsTurn"
+  > & {
     combat?: GarboStrategy;
+    adventure?: FarmingTask["adventure"];
   },
   additionalOutfitOptions: Delayed<FreeFightOutfitMenuOptions> = {},
 ): FarmingTask {
   return {
-    wanderer: details,
-    do: ({ wanderTarget }) => wanderTarget.location,
-    choices: ({ wanderTarget }) => wanderTarget.choices,
-    outfit: ({ wanderTarget }) =>
+    adventure: () => undelay(details),
+    do: ({ adventure }) => adventure.location,
+    choices: ({ adventure }) => adventure.choices,
+    outfit: ({ adventure }) =>
       freeFightOutfit(
         undelay(spec),
-        wanderTarget,
+        adventure,
         undelay(additionalOutfitOptions),
       ),
     spendsTurn: false,
@@ -224,6 +228,10 @@ const BarfTurnTasks: FarmingTask[] = [
   },
   {
     name: "Lights Out",
+    adventure: () => ({
+      target: $monster`Stephen Spookyraven`,
+      location: get("nextSpookyravenStephenRoom") ?? $location.none,
+    }),
     ready: () =>
       canAdventure(get("nextSpookyravenStephenRoom") ?? $location`none`) &&
       get("nextSpookyravenStephenRoom") !== get("ghostLocation") &&
@@ -272,10 +280,11 @@ const BarfTurnTasks: FarmingTask[] = [
   },
   {
     name: "Proton Ghost",
+    adventure: ghostAdventure,
     ready: () => !!get("ghostLocation"),
     completed: () => get("questPAGhost") === "unstarted",
-    do: () => get("ghostLocation") as Location,
-    outfit: () =>
+    do: ({ adventure }) => adventure.location,
+    outfit: ({ adventure }) =>
       freeFightOutfit(
         {
           modifier:
@@ -286,10 +295,9 @@ const BarfTurnTasks: FarmingTask[] = [
             ? $item`protonic accelerator pack`
             : [],
         },
-        get("ghostLocation") as Location,
+        adventure,
       ),
-    choices: () =>
-      wanderer().getChoices(get("ghostLocation") ?? $location.none),
+    choices: ({ adventure }) => adventure.choices,
     combat: new GarboStrategy(() =>
       have($item`protonic accelerator pack`)
         ? Macro.ghostBustin()
@@ -332,15 +340,12 @@ const BarfTurnTasks: FarmingTask[] = [
     completed: () => Counter.get("Digitize Monster") > 0,
     ready: shouldGoUnderwater,
     acquire: () => [{ item: $item`pulled green taffy` }],
+    adventure: () => ({
+      location: $location`The Briny Deeps`,
+      target: SourceTerminal.getDigitizeMonster() ?? $monster.none,
+    }),
     do: $location`The Briny Deeps`,
-    outfit: () =>
-      meatTargetOutfit(
-        {},
-        {
-          location: $location`The Briny Deeps`,
-          target: SourceTerminal.getDigitizeMonster() ?? $monster.none,
-        },
-      ),
+    outfit: ({ adventure }) => meatTargetOutfit({}, adventure),
     combat: new GarboStrategy(
       ...digitizeMacros(Macro.item($item`pulled green taffy`)),
     ),
@@ -349,29 +354,36 @@ const BarfTurnTasks: FarmingTask[] = [
   },
   {
     name: "Digitize Wanderer",
-    wanderer: { wanderer: "wanderer", allowEquipment: false },
+    adventure: () => ({
+      location: { wanderer: "wanderer", allowEquipment: false },
+      target: SourceTerminal.getDigitizeMonster() ?? $monster.none,
+    }),
     completed: () => Counter.get("Digitize Monster") > 0,
-    outfit: ({ wanderTarget }) =>
+    outfit: ({ adventure }) =>
       digitizedTarget()
-        ? meatTargetOutfit(mimicSpec(), wanderTarget.location)
-        : freeFightOutfit(undefined, wanderTarget.location),
-    do: ({ wanderTarget }) => wanderTarget.location,
-    choices: ({ wanderTarget }) => wanderTarget.choices,
+        ? meatTargetOutfit(mimicSpec(), adventure)
+        : freeFightOutfit(undefined, adventure),
+    do: ({ adventure }) => adventure.location,
+    choices: ({ adventure }) => adventure.choices,
     combat: new GarboStrategy(...digitizeMacros()),
     spendsTurn: () =>
       !SourceTerminal.getDigitizeMonster()?.attributes.includes("FREE"),
   },
   {
     name: "Club Into Next Week Monster",
-    wanderer: { wanderer: "wanderer", allowEquipment: false },
+    adventure: () => ({
+      location: { wanderer: "wanderer", allowEquipment: false },
+      target:
+        LegendarySealClubbingClub.clubIntoNextWeekMonster() ?? $monster.none,
+    }),
     completed: () => LegendarySealClubbingClub.turnsUntilNextWeekFight() > 0,
-    outfit: ({ wanderTarget }) =>
+    outfit: ({ adventure }) =>
       LegendarySealClubbingClub.clubIntoNextWeekMonster() ===
       globalOptions.target
-        ? meatTargetOutfit(mimicSpec(), wanderTarget.location)
-        : freeFightOutfit({}, wanderTarget.location),
-    do: ({ wanderTarget }) => wanderTarget.location,
-    choices: ({ wanderTarget }) => wanderTarget.choices,
+        ? meatTargetOutfit(mimicSpec(), adventure)
+        : freeFightOutfit({}, adventure),
+    do: ({ adventure }) => adventure.location,
+    choices: ({ adventure }) => adventure.choices,
     combat: new GarboStrategy(() => Macro.target("club 'em into next week")),
     spendsTurn: () =>
       !LegendarySealClubbingClub.clubIntoNextWeekMonster()?.attributes.includes(
@@ -403,6 +415,7 @@ const BarfTurnTasks: FarmingTask[] = [
   ),
   {
     name: "Envyfish Egg",
+    adventure: () => globalOptions.target,
     ready: () =>
       have($item`envyfish egg`) &&
       get("envyfishMonster") === globalOptions.target,
@@ -629,6 +642,7 @@ const BarfTurnTasks: FarmingTask[] = [
   },
   {
     name: "Gingerbread Midnight",
+    adventure: () => bestMidnightAvailable().location,
     completed: () => GingerBread.minutesToMidnight() !== 0,
     do: () => bestMidnightAvailable().location,
     choices: () => bestMidnightAvailable().choices,
@@ -649,6 +663,7 @@ const BarfTurnTasks: FarmingTask[] = [
   },
   {
     name: "Rain Man",
+    adventure: () => globalOptions.target,
     ready: () => myRain() >= 50 && have($skill`Rain Man`),
     completed: () => myRain() < 50,
     do: () => {
@@ -660,6 +675,7 @@ const BarfTurnTasks: FarmingTask[] = [
   },
   {
     name: "Make Mimic Eggs (maximum eggs)",
+    adventure: () => globalOptions.target,
     ready: () => shouldMakeEgg(true),
     completed: () => get("_mimicEggsObtained") >= 11,
     do: () => {
@@ -675,6 +691,7 @@ const BarfTurnTasks: FarmingTask[] = [
   },
   {
     name: "Fight Mimic Eggs",
+    adventure: () => globalOptions.target,
     ready: () => globalOptions.ascend,
     completed: () =>
       ChestMimic.differentiableQuantity(globalOptions.target) === 0,
@@ -685,6 +702,7 @@ const BarfTurnTasks: FarmingTask[] = [
   },
   {
     name: "Liana Parachute",
+    adventure: $monster`dense liana`,
     ready: () =>
       (sober() ||
         (have($item`Drunkula's wineglass`) &&
@@ -726,6 +744,10 @@ const BarfTurnTasks: FarmingTask[] = [
   },
   {
     name: "Fight Cookbookbat Quest Target",
+    adventure: () => ({
+      target: get("_cookbookbatQuestMonster") ?? $monster.none,
+      location: get("_cookbookbatQuestLastLocation") ?? $location.none,
+    }),
     ready: () => {
       const questMonster = get("_cookbookbatQuestMonster");
       if (!questMonster || hasNameCollision(questMonster)) return false;
@@ -751,13 +773,11 @@ const BarfTurnTasks: FarmingTask[] = [
       const questLocation = get("_cookbookbatQuestLastLocation");
       return !questLocation || !PeridotOfPeril.canImperil(questLocation);
     },
-    choices: () => ({
+    choices: ({ adventure }) => ({
       1557: `1&bandersnatch=${get("_cookbookbatQuestMonster")?.id ?? 0}`,
-      ...wanderer().getChoices(
-        get("_cookbookbatQuestLastLocation") ?? $location.none,
-      ),
+      ...adventure.choices,
     }),
-    outfit: () =>
+    outfit: ({ adventure }) =>
       freeFightOutfit(
         {
           equip: sober()
@@ -765,9 +785,9 @@ const BarfTurnTasks: FarmingTask[] = [
             : $items`Peridot of Peril, Drunkula's wineglass`,
           familiar: $familiar`Cookbookbat`,
         },
-        get("_cookbookbatQuestLastLocation") ?? Location.none,
+        adventure,
       ),
-    do: () => get("_cookbookbatQuestLastLocation"),
+    do: ({ adventure }) => adventure.location,
     combat: new GarboStrategy(() => Macro.basicCombat()),
     spendsTurn: true,
   },

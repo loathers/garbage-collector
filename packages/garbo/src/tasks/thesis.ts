@@ -62,6 +62,7 @@ function thesisPlan() {
 
 export const ThesisTask = {
   name: "Deliver Thesis",
+  adventure: () => (molemanReady() ? $monster`Moleman` : thesisPlan().location),
   mapSafe: molemanReady,
   ready: () =>
     sober() &&

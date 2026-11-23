@@ -137,12 +137,12 @@ const PostBuffExtensionTasks: GarboTask[] = [
   // TODO Add Shadow Rift here if we ever grimoirize it
 ];
 
-export const BuffExtensionQuest: Quest<GarboTask> = {
+export const BuffExtensionQuest: Quest<GarboTask, unknown> = {
   name: "Buff Extension",
   tasks: BuffExtensionTasks,
 };
 
-export const PostBuffExtensionQuest: Quest<GarboTask> = {
+export const PostBuffExtensionQuest: Quest<GarboTask, unknown> = {
   name: "Post Buff Extension",
   tasks: PostBuffExtensionTasks,
 };

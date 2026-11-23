@@ -866,7 +866,7 @@ const DailyItemTasks: GarboTask[] = [
   },
 ];
 
-export const DailyItemsQuest: Quest<GarboTask> = {
+export const DailyItemsQuest: Quest<GarboTask, unknown> = {
   name: "Daily Items",
   tasks: [...SummonTasks, ...DailyItemTasks],
 };

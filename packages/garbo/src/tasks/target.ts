@@ -30,7 +30,7 @@ import { globalOptions } from "../config";
 import { amuletCoinValue } from "../familiar/lib";
 import { sober } from "../lib";
 
-export const SetupTargetCopyQuest: Quest<GarboTask> = {
+export const SetupTargetCopyQuest: Quest<GarboTask, unknown> = {
   name: "SetupTargetCopy",
   ready: () => sober(),
   tasks: [
