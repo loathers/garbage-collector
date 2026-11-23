@@ -620,7 +620,7 @@ const BarfTurnTasks: FarmingTask[] = [
       }
       return spec;
     },
-    do: $location`The Sunken Party Yacht`,
+    adventure: $location`The Sunken Party Yacht`,
     choices: { 918: 2 },
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg("Hit unexpected combat!"),
@@ -630,7 +630,7 @@ const BarfTurnTasks: FarmingTask[] = [
   {
     name: "Gingerbread Noon",
     completed: () => GingerBread.minutesToNoon() !== 0,
-    do: $location`Gingerbread Train Station`,
+    adventure: $location`Gingerbread Train Station`,
     choices: { 1204: 1 },
     combat: new GarboStrategy(() =>
       Macro.abortWithMsg(

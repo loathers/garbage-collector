@@ -1,4 +1,5 @@
-import { getTasks, OutfitSpec, Quest } from "grimoire-kolmafia";
+import { OutfitSpec, Quest } from "grimoire-kolmafia";
+import { getGarboTasks } from "../task";
 import {
   adv1,
   availableAmount,
@@ -384,7 +385,7 @@ const FreeFightTasks = [
         SourceTerminal.educate([$skill`Extract`, $skill`Portscan`]);
       }
     },
-    do: $location`Your Mushroom Garden`,
+    adventure: $location`Your Mushroom Garden`,
     post: () => {
       if (have($item`packet of tall grass seeds`)) {
         use($item`packet of tall grass seeds`);
@@ -476,7 +477,7 @@ const FreeFightTasks = [
     name: "An Unusually Quiet Barroom Brawl",
     ready: () => get("ownsSpeakeasy"),
     completed: () => get("_speakeasyFreeFights") >= 3,
-    do: $location`An Unusually Quiet Barroom Brawl`,
+    adventure: $location`An Unusually Quiet Barroom Brawl`,
     tentacle: true,
     combatCount: () => clamp(3 - get("_speakeasyFreeFights"), 0, 3),
   }),
@@ -488,7 +489,7 @@ const FreeFightTasks = [
       sober() &&
       mallPrice($item`glark cable`) <= globalOptions.prefs.valueOfFreeFight,
     completed: () => get("_glarkCableUses") >= 5,
-    do: $location`The Red Zeppelin`,
+    adventure: $location`The Red Zeppelin`,
     outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit({}, adventure, {
         familiarOptions: {
@@ -525,8 +526,6 @@ const FreeFightTasks = [
       have($item`cursed magnifying glass`) &&
       get("cursedMagnifyingGlassCount") >= 13,
     completed: () => get("_voidFreeFights") >= 5,
-    do: ({ adventure }) => adventure.location,
-    choices: ({ adventure }) => adventure.choices,
     outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit({ equip: $items`cursed magnifying glass` }, adventure),
     tentacle: false,
@@ -985,7 +984,7 @@ const FreeFightTasks = [
         MAX_DMT_SNOWGLOBE_PRICE,
       ),
     completed: () => get("_machineTunnelsAdv") >= 5,
-    do: $location`The Deep Machine Tunnels`,
+    adventure: $location`The Deep Machine Tunnels`,
     prepare: () => {
       if (myFamiliar() === $familiar`Comma Chameleon`) {
         if (CommaChameleon.currentFamiliar() !== $familiar`Machine Elf`) {
@@ -1102,7 +1101,7 @@ const FreeFightTasks = [
     name: "The X-32-F Combat Training Snowman",
     ready: () => get("snojoAvailable"),
     completed: () => get("_snojoFreeFights") >= 10,
-    do: $location`The X-32-F Combat Training Snowman`,
+    adventure: $location`The X-32-F Combat Training Snowman`,
     tentacle: false,
     combatCount: () => clamp(10 - get("_snojoFreeFights"), 0, 10),
   }),
@@ -1114,7 +1113,7 @@ const FreeFightTasks = [
       getStep("_questPartyFair") !== QuestState.FINISHED,
     completed: () => remainingPartyFights() === 0,
     prepare: prepareParty,
-    do: $location`The Neverending Party`,
+    adventure: $location`The Neverending Party`,
     combat: new GarboStrategy(() =>
       Macro.tryHaveSkill($skill`Feel Pride`).basicCombat(),
     ),
@@ -1160,7 +1159,7 @@ const FreeFightTasks = [
       getStep("questL08Trapper", QuestState.UNSTARTED) >= 2,
     completed: () =>
       have($item`li'l ninja costume`) || get("_firedJokestersGun"),
-    do: $location`Lair of the Ninja Snowmen`,
+    adventure: $location`Lair of the Ninja Snowmen`,
     outfit: ({ adventure }: AdventureContext) =>
       freeFightOutfit({ equip: $items`The Jokester's gun` }, adventure, {
         familiarOptions: { canChooseMacro: false },
@@ -1205,7 +1204,7 @@ const FreeFightTasks = [
       have($skill`Torso Awareness`) &&
       have($skill`OVERCLOCK(10)`),
     completed: () => get("_cyberFreeFights") >= 10,
-    do: $location`Cyberzone 1`, // TODO Support other zones with better equipment and valuing hacker drops
+    adventure: $location`Cyberzone 1`, // TODO Support other zones with better equipment and valuing hacker drops
     tentacle: false,
     choices: { 1545: 1 }, // Take damage, get 0's
     outfit: ({ adventure }: AdventureContext) =>
@@ -1286,7 +1285,7 @@ export function freeFightQuest(): Quest<
 > {
   return {
     name: "Free Fight",
-    tasks: [...FreeFightTasks, ...getTasks([shadowRiftQuest()])],
+    tasks: [...FreeFightTasks, ...getGarboTasks([shadowRiftQuest()])],
     ready: () => sober() && myAdventures() > 0 && !have($effect`Feeling Lost`),
   };
 }

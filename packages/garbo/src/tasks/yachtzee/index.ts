@@ -40,7 +40,7 @@ export const yachtzeeQuest: Quest<
         completed: () => !get("noncombatForcerActive"),
         ready: () => have($effect`Fishy`),
         choices: { 918: 2 },
-        do: $location`The Sunken Party Yacht`,
+        adventure: $location`The Sunken Party Yacht`,
         outfit: () => {
           setLocation($location`The Sunken Party Yacht`);
           const outfit = new Outfit();

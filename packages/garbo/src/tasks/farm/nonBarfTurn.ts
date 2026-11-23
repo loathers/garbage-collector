@@ -32,7 +32,7 @@ import {
   undelay,
   withProperty,
 } from "libram";
-import { getTasks, OutfitSpec, Quest } from "grimoire-kolmafia";
+import { OutfitSpec, Quest } from "grimoire-kolmafia";
 import { getAvailableUltraRareZones } from "garbo-lib";
 
 import { Macro } from "../../combat";
@@ -44,6 +44,7 @@ import { meatTargetOutfit } from "../../outfit/target";
 import { wanderingCopytargetsRemaining } from "../../turns";
 
 import { AlternateTask, GarboTask } from "../engine";
+import { getGarboTasks } from "../task";
 import { canContinue } from "./lib";
 import { garboValue } from "../../garboValue";
 import { minimumMimicExperience } from "../../resources/chestMimic";
@@ -78,7 +79,7 @@ function dailyDungeon(additionalReady: () => boolean) {
       $items`ring of Detect Boring Doors, eleven-foot pole, Pick-O-Matic lockpicks`.map(
         (i) => ({ item: i }),
       ),
-    do: $location`The Daily Dungeon`,
+    adventure: $location`The Daily Dungeon`,
     combat: new GarboStrategy(() => Macro.kill()),
     turns: () => clamp(15 - get("_lastDailyDungeonRoom"), 0, 3),
     outfit: { equip: $items`candy cane sword cane` },
@@ -115,7 +116,7 @@ function lavaDogs(additionalReady: () => boolean, baseSpec: OutfitSpec) {
         acquire(1, $item`heat-resistant sheet metal`, metalValue);
       }
     },
-    do: $location`The Bubblin' Caldera`,
+    adventure: $location`The Bubblin' Caldera`,
     outfit: () => {
       const avoid = $items`carnivorous potted plant, mutant crown, mutant arm, mutant legs, shield of the Skeleton Lord`;
       if (!have($effect`Drenched in Lava`)) return baseSpec;
@@ -279,7 +280,7 @@ const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
       get("encountersUntilDMTChoice") === 0 &&
       garboValue(getBestDupeItem()) > get("valueOfAdventure"),
     completed: () => get("lastDMTDuplication") === myAscensions(),
-    do: $location`The Deep Machine Tunnels`,
+    adventure: $location`The Deep Machine Tunnels`,
     prepare: () => {
       if (itemAmount(getBestDupeItem()) === 0) {
         withProperty("autoSatisfyWithMall", false, () =>
@@ -316,7 +317,7 @@ const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
     ...lavaDogs(() => !willDrunkAdventure(), {}),
     sobriety: "sober",
   },
-  ...getTasks(yachtzeeQuest), // Use NC forces and adventure to get the Yachtzee NC
+  ...getGarboTasks(yachtzeeQuest), // Use NC forces and adventure to get the Yachtzee NC
   {
     name: "Daily Dungeon (drunk)",
     ...dailyDungeon(() => willDrunkAdventure()),
@@ -356,7 +357,7 @@ const NonBarfTurnTasks: AlternateTask<FarmingContext>[] = [
     name: "Fused Fuse",
     completed: () => get("_volcanoItemRedeemed"),
     ready: canGetFusedFuse,
-    do: $location`LavaCo™ Lamp Factory`,
+    adventure: $location`LavaCo™ Lamp Factory`,
     prepare: () => get("noncombatForcerActive") || use($item`Clara's bell`),
     post: () => {
       visitUrl("place.php?whichplace=airport_hot&action=airport4_questhub");

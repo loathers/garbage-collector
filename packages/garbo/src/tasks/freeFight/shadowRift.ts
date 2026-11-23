@@ -147,7 +147,6 @@ const riftTask = (fragment: Omit<FreeFightFragment, "adventure" | "do">) =>
   freeFightTask({
     ...fragment,
     adventure: riftLocation,
-    do: ({ adventure }) => adventure.location,
   });
 
 const commonChoices = { 1500: 2 }; // Shadow Waters

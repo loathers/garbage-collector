@@ -136,7 +136,10 @@ const NON_SANDWORM_TASK = {
 };
 
 function nonSandwormTask(
-  fragment: Omit<GarboFreeFightTask, keyof typeof NON_SANDWORM_TASK> &
+  fragment: Omit<
+    Extract<GarboFreeFightTask, { do: unknown }>,
+    keyof typeof NON_SANDWORM_TASK
+  > &
     Partial<Pick<GarboFreeFightTask, keyof typeof NON_SANDWORM_TASK>>,
 ) {
   const fullTask = { ...NON_SANDWORM_TASK, ...fragment };

@@ -62,7 +62,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask, unknown> = {
         ["It's Almost Certainly a Trap", "I Wanna Be a Door"].includes(
           get("_lastDailyDungeonEncounter"),
         ),
-      do: $location`The Daily Dungeon`,
+      adventure: $location`The Daily Dungeon`,
       post: () => set("_lastDailyDungeonEncounter", get("lastEncounter")),
       spendsTurn: true,
       combat: new GarboStrategy(() => Macro.kill()),
