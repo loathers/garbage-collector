@@ -57,6 +57,7 @@ import {
   bestJuneCleaverOption,
   freeRest,
   juneCleaverChoiceValues,
+  sober,
   unlimitedFreeRunList,
   valueJuneCleaverOption,
 } from "../../lib";
@@ -260,6 +261,8 @@ const juneCleaverChoices = () =>
 function juneCleaver(): GarboPostTask {
   return {
     name: "June Cleaver",
+    adventure: () =>
+      sober() ? $location`Noob Cave` : $location`Drunken Stupor`,
     ready: () =>
       JuneCleaver.have() &&
       teleportEffects.every((e) => !have(e)) &&
@@ -267,10 +270,9 @@ function juneCleaver(): GarboPostTask {
       myAdventures() > 0,
     completed: () => get("_juneCleaverFightsLeft") > 0,
     do: () => {
-      const location =
-        myInebriety() > inebrietyLimit()
-          ? $location`Drunken Stupor`
-          : $location`Noob Cave`;
+      const location = sober()
+        ? $location`Noob Cave`
+        : $location`Drunken Stupor`;
       withProperty("recoveryScript", "", () => adv1(location, 1));
     },
     outfit: { weapon: $item`June cleaver` },
@@ -483,7 +485,7 @@ function usePorkToilet(): GarboPostTask {
   };
 }
 
-export function PostQuest<C = void>(
+export function PostQuest<C = unknown>(
   completed?: () => boolean,
 ): Quest<GarboTask<C>, C> {
   return {

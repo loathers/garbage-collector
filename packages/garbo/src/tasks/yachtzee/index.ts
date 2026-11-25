@@ -40,7 +40,7 @@ export const yachtzeeQuest: Quest<
         completed: () => !get("noncombatForcerActive"),
         ready: () => have($effect`Fishy`),
         choices: { 918: 2 },
-        do: $location`The Sunken Party Yacht`,
+        adventure: $location`The Sunken Party Yacht`,
         outfit: () => {
           setLocation($location`The Sunken Party Yacht`);
           const outfit = new Outfit();
@@ -97,6 +97,7 @@ export const yachtzeeQuest: Quest<
       },
       {
         name: "Parka Spikes NC Forcer",
+        adventure: () => FarmingStrategy.location,
         completed: () => get("noncombatForcerActive"),
         ready: () =>
           have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5,
@@ -125,6 +126,7 @@ export const yachtzeeQuest: Quest<
       },
       {
         name: "McHugeLarge Avalanche NC Forcer",
+        adventure: () => FarmingStrategy.location,
         completed: () => get("noncombatForcerActive"),
         ready: () =>
           have($item`McHugeLarge left ski`) &&

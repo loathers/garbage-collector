@@ -640,7 +640,7 @@ const DailyItemTasks: GarboTask[] = [
         (have($item`Drunkula's wineglass`) &&
           canEquip($item`Drunkula's wineglass`))),
     completed: () => get("_candyCaneSwordOvergrownShrine"),
-    do: $location`An Overgrown Shrine (Northeast)`,
+    adventure: $location`An Overgrown Shrine (Northeast)`,
     choices: { 785: 4 },
     outfit: () => ({
       weapon: $item`candy cane sword cane`,
@@ -866,7 +866,7 @@ const DailyItemTasks: GarboTask[] = [
   },
 ];
 
-export const DailyItemsQuest: Quest<GarboTask> = {
+export const DailyItemsQuest: Quest<GarboTask, unknown> = {
   name: "Daily Items",
   tasks: [...SummonTasks, ...DailyItemTasks],
 };

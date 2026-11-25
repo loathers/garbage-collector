@@ -21,6 +21,7 @@ import {
   $familiar,
   $item,
   $items,
+  $monster,
   $path,
   $skill,
   AprilingBandHelmet,
@@ -89,6 +90,7 @@ function sandwormOutfit(spec: OutfitSpec = {}): Outfit {
 }
 
 const DEFAULT_SANDWORM_TASK = {
+  adventure: $monster`giant sandworm`,
   mapSafe: true,
   combat: new GarboStrategy(() => Macro.abort()),
   prepare: () => {
@@ -124,6 +126,7 @@ function sandwormTask(
 }
 
 const NON_SANDWORM_TASK = {
+  adventure: $monster.none,
   mapSafe: true,
   combat: new GarboStrategy(() => Macro.abort()),
   outfit: () => new Outfit(),
@@ -133,7 +136,10 @@ const NON_SANDWORM_TASK = {
 };
 
 function nonSandwormTask(
-  fragment: Omit<GarboFreeFightTask, keyof typeof NON_SANDWORM_TASK> &
+  fragment: Omit<
+    Extract<GarboFreeFightTask, { do: unknown }>,
+    keyof typeof NON_SANDWORM_TASK
+  > &
     Partial<Pick<GarboFreeFightTask, keyof typeof NON_SANDWORM_TASK>>,
 ) {
   const fullTask = { ...NON_SANDWORM_TASK, ...fragment };
@@ -144,7 +150,7 @@ const sandwormMacro = () => Macro.trySingAlong().tryHaveSkill($skill`Otoscope`);
 
 type SandwormTask = Parameters<typeof sandwormTask>[0];
 
-const SANDWORM_TASK_DEFINITIONS: readonly SandwormTask[] = [
+const SANDWORM_TASK_DEFINITIONS = [
   {
     name: $skill`Chest X-Ray`.name,
     ready: () => drumMachineWorthIt() && have($item`Lil' Doctor™ bag`),
@@ -303,7 +309,7 @@ const SANDWORM_TASK_DEFINITIONS: readonly SandwormTask[] = [
       ),
     combatCount: () => (!have($effect`Everything Looks Yellow`) ? 1 : 0),
   },
-] as const;
+] as const satisfies readonly SandwormTask[];
 
 const SandwormTasks: GarboFreeFightTask[] = [
   ...[
@@ -399,7 +405,7 @@ function drumMachineWorthIt(): boolean {
   return drumMachineROI() > 0;
 }
 
-export const FreeGiantSandwormQuest: Quest<GarboTask<void>, unknown> = {
+export const FreeGiantSandwormQuest: Quest<GarboTask, unknown> = {
   name: "Free Giant Sandworm",
   tasks: SandwormTasks,
   ready: () => sober() && hasWorms(),

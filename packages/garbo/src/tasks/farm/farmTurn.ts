@@ -75,6 +75,10 @@ export function FarmTurnQuest(): Quest<
     tasks: [
       {
         name: "Parachute",
+        adventure: () => ({
+          target: FarmingStrategy.primaryMonster(),
+          location: FarmingStrategy.location,
+        }),
         ready: () =>
           CrepeParachute.have() &&
           shouldCheckParachute() &&
@@ -98,7 +102,7 @@ export function FarmTurnQuest(): Quest<
         completed: () => myAdventures() === 0,
         prepare: farmPrepare,
         outfit: (context) => barfOutfit(FarmingStrategy.outfit(context)),
-        do: FarmingStrategy.location,
+        adventure: FarmingStrategy.location,
         combat: FarmingStrategy.strategy(),
         post: () => {
           FarmingStrategy.post?.();

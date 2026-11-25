@@ -30,7 +30,7 @@ import { globalOptions } from "../config";
 import { amuletCoinValue } from "../familiar/lib";
 import { sober } from "../lib";
 
-export const SetupTargetCopyQuest: Quest<GarboTask> = {
+export const SetupTargetCopyQuest: Quest<GarboTask, unknown> = {
   name: "SetupTargetCopy",
   ready: () => sober(),
   tasks: [
@@ -62,7 +62,7 @@ export const SetupTargetCopyQuest: Quest<GarboTask> = {
         ["It's Almost Certainly a Trap", "I Wanna Be a Door"].includes(
           get("_lastDailyDungeonEncounter"),
         ),
-      do: $location`The Daily Dungeon`,
+      adventure: $location`The Daily Dungeon`,
       post: () => set("_lastDailyDungeonEncounter", get("lastEncounter")),
       spendsTurn: true,
       combat: new GarboStrategy(() => Macro.kill()),

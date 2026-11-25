@@ -57,7 +57,7 @@ const AscendingTasks: GarboTask[] = [
   })),
 ];
 
-export const AscendingQuest: Quest<GarboTask> = {
+export const AscendingQuest: Quest<GarboTask, unknown> = {
   name: "Ascend",
   tasks: AscendingTasks,
 };

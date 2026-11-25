@@ -1003,6 +1003,10 @@ export function mainStatLevel(level: number): number {
   return (level - 1) ** 2 + 4;
 }
 
+export type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
 export type RequireAtLeastOne<T, K = keyof T> = K extends keyof T
   ? Partial<T> & { [k in K]: T[K] }
   : never;

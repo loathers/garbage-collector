@@ -39,7 +39,7 @@ import { meatMood } from "../../mood";
 import { potionSetup } from "../../potions";
 import { highMeatMonsterCount } from "../../turns";
 
-export const CockroachSetup: Quest<GarboTask> = {
+export const CockroachSetup: Quest<GarboTask, unknown> = {
   name: "Setup Cockroach Target",
   ready: () =>
     doingGregFight() && globalOptions.target === $monster`cockroach` && sober(),
@@ -101,7 +101,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Choose First Island",
       ready: () => getStep("_questPirateRealm") === 1,
       completed: () => getStep("_questPirateRealm") > 1,
-      do: $location`Sailing the PirateRealm Seas`,
+      adventure: $location`Sailing the PirateRealm Seas`,
       outfit: {
         equip: $items`PirateRealm eyepatch`,
       },
@@ -122,7 +122,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Sail to first Island",
       ready: () => getStep("_questPirateRealm") === 2,
       completed: () => getStep("_questPirateRealm") > 2,
-      do: $location`Sailing the PirateRealm Seas`,
+      adventure: $location`Sailing the PirateRealm Seas`,
       outfit: () => ({
         equip:
           $items`PirateRealm eyepatch, PirateRealm party hat, Red Roger's red right foot`.filter(
@@ -161,7 +161,7 @@ export const CockroachSetup: Quest<GarboTask> = {
       name: "Land Ho (First Island)",
       ready: () => getStep("_questPirateRealm") === 3,
       completed: () => getStep("_questPirateRealm") > 3,
-      do: $location`Sailing the PirateRealm Seas`,
+      adventure: $location`Sailing the PirateRealm Seas`,
       combat: new GarboStrategy(() =>
         Macro.abortWithMsg("Expected Land Ho! but hit a combat"),
       ),
@@ -174,6 +174,7 @@ export const CockroachSetup: Quest<GarboTask> = {
     },
     {
       name: "Standard Island Combats (Island 1)",
+      adventure: () => get("_lastPirateRealmIsland", $location`none`),
       ready: () => getStep("_questPirateRealm") === 4,
       completed: () => getStep("_questPirateRealm") > 4,
       prepare: () => {
@@ -216,7 +217,7 @@ export const CockroachSetup: Quest<GarboTask> = {
   ],
 };
 
-export const CockroachFinish: Quest<GarboTask> = {
+export const CockroachFinish: Quest<GarboTask, unknown> = {
   name: "Finish Setup Cockroach Target",
   ready: () =>
     doingGregFight() && globalOptions.target === $monster`cockroach` && sober(),
@@ -228,7 +229,7 @@ export const CockroachFinish: Quest<GarboTask> = {
         getStep("_questPirateRealm") === 5 &&
         get("_lastPirateRealmIsland") === $location`Dessert Island`,
       completed: () => getStep("_questPirateRealm") > 5,
-      do: $location`PirateRealm Island`,
+      adventure: $location`PirateRealm Island`,
       outfit: () => ({
         equip: $items`PirateRealm eyepatch`,
       }),
@@ -248,7 +249,7 @@ export const CockroachFinish: Quest<GarboTask> = {
       prepare: () => {
         restoreHp(myMaxhp());
       },
-      do: $location`Crab Island`,
+      adventure: $location`Crab Island`,
       outfit: () =>
         meatTargetOutfit(
           {
@@ -279,7 +280,7 @@ export const CockroachFinish: Quest<GarboTask> = {
       name: "Choose Trash Island",
       ready: () => getStep("_questPirateRealm") === 6,
       completed: () => getStep("_questPirateRealm") > 6,
-      do: $location`Sailing the PirateRealm Seas`,
+      adventure: $location`Sailing the PirateRealm Seas`,
       outfit: { equip: $items`PirateRealm eyepatch` },
       choices: { 1353: 5 }, // Trash Island
       limit: { tries: 1 },

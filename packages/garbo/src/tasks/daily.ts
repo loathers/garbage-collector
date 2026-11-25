@@ -734,6 +734,7 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Holiday Eldritch Attunement",
+    adventure: $location`Generic Summer Holiday Swimming!`,
     ready: () =>
       holiday().includes("Generic Summer Holiday") &&
       !have($effect`Eldritch Attunement`) &&
@@ -893,7 +894,7 @@ const DailyTasks: GarboTask[] = [
   },
 ];
 
-export const DailyQuest: Quest<GarboTask> = {
+export const DailyQuest: Quest<GarboTask, unknown> = {
   name: "Daily",
   tasks: DailyTasks,
 };

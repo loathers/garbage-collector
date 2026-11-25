@@ -104,7 +104,7 @@ const BuffExtensionTasks: GarboTask[] = [
       getRun().constraints.preparation?.();
       ensureEffect($effect`Stone-Faced`);
     },
-    do: $location`The Hidden Temple`,
+    adventure: $location`The Hidden Temple`,
     combat: new GarboStrategy(() =>
       Macro.step(getRun().macro).abortWithMsg(
         "Failed to freerun while attempting to reach Such Great Heights for buff extension",
@@ -137,12 +137,12 @@ const PostBuffExtensionTasks: GarboTask[] = [
   // TODO Add Shadow Rift here if we ever grimoirize it
 ];
 
-export const BuffExtensionQuest: Quest<GarboTask> = {
+export const BuffExtensionQuest: Quest<GarboTask, unknown> = {
   name: "Buff Extension",
   tasks: BuffExtensionTasks,
 };
 
-export const PostBuffExtensionQuest: Quest<GarboTask> = {
+export const PostBuffExtensionQuest: Quest<GarboTask, unknown> = {
   name: "Post Buff Extension",
   tasks: PostBuffExtensionTasks,
 };
