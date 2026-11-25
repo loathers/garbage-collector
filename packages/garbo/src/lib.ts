@@ -1,5 +1,6 @@
 import {
   canAdventure,
+  canEquip,
   cliExecute,
   Effect,
   effectModifier,
@@ -968,7 +969,11 @@ export function improvesAStat(thing: Item | Effect): boolean {
 }
 
 export function willDrunkAdventure() {
-  return have($item`Drunkula's wineglass`) && globalOptions.ascend;
+  return (
+    have($item`Drunkula's wineglass`) &&
+    canEquip($item`Drunkula's wineglass`) &&
+    (globalOptions.ascend || !sober())
+  );
 }
 
 export function freeFishyAvailable(): boolean {
