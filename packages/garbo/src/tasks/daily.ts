@@ -16,7 +16,6 @@ import {
   handlingChoice,
   haveEquipped,
   holiday,
-  inebrietyLimit,
   isOnline,
   Item,
   itemAmount,
@@ -25,7 +24,6 @@ import {
   myClass,
   myDaycount,
   myHash,
-  myInebriety,
   myPath,
   myPrimestat,
   print,
@@ -71,7 +69,7 @@ import { globalOptions } from "../config";
 import { copyTargetCount } from "../target/fights";
 import { meatFamiliar } from "../familiar/meatFamiliar";
 import { estimatedAttunementTentacles } from "../fights";
-import { HIGHLIGHT, songboomMeat, targetMeat } from "../lib";
+import { HIGHLIGHT, sober, songboomMeat, targetMeat } from "../lib";
 import { garboValue } from "../garboValue";
 import {
   estimatedGarboTurns,
@@ -686,20 +684,14 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "SongBoom Buff",
-    ready: () =>
-      SongBoom.have() &&
-      SongBoom.songChangesLeft() > 0 &&
-      myInebriety() <= inebrietyLimit(),
+    ready: () => SongBoom.have() && SongBoom.songChangesLeft() > 0 && sober(),
     completed: () => SongBoom.song() === "Total Eclipse of Your Meat",
     do: () => SongBoom.setSong("Total Eclipse of Your Meat"),
     spendsTurn: false,
   },
   {
     name: "SongBoom Buff (Drunk)",
-    ready: () =>
-      SongBoom.have() &&
-      SongBoom.songChangesLeft() > 0 &&
-      myInebriety() > inebrietyLimit(),
+    ready: () => SongBoom.have() && SongBoom.songChangesLeft() > 0 && !sober(),
     completed: () => SongBoom.song() === "Food Vibrations",
     do: () => SongBoom.setSong("Food Vibrations"),
     spendsTurn: false,
@@ -742,6 +734,7 @@ const DailyTasks: GarboTask[] = [
   },
   {
     name: "Holiday Eldritch Attunement",
+    adventure: $location`Generic Summer Holiday Swimming!`,
     ready: () =>
       holiday().includes("Generic Summer Holiday") &&
       !have($effect`Eldritch Attunement`) &&
@@ -751,7 +744,7 @@ const DailyTasks: GarboTask[] = [
     do: () => adv1($location`Generic Summer Holiday Swimming!`),
     acquire: [{ item: $item`water wings` }],
     outfit: () =>
-      myInebriety() > inebrietyLimit() &&
+      !sober() &&
       have($item`Drunkula's wineglass`) &&
       canEquip($item`Drunkula's wineglass`)
         ? {
@@ -785,7 +778,7 @@ const DailyTasks: GarboTask[] = [
     completed: () => get("_questPartyFair") !== "unstarted",
     do: nepQuest,
     outfit: () =>
-      myInebriety() > inebrietyLimit() &&
+      !sober() &&
       have($item`Drunkula's wineglass`) &&
       canEquip($item`Drunkula's wineglass`)
         ? {
@@ -901,7 +894,7 @@ const DailyTasks: GarboTask[] = [
   },
 ];
 
-export const DailyQuest: Quest<GarboTask> = {
+export const DailyQuest: Quest<GarboTask, unknown> = {
   name: "Daily",
   tasks: DailyTasks,
 };

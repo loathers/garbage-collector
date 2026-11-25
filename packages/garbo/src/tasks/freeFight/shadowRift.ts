@@ -45,6 +45,7 @@ import {
 } from "../../resources/yachtzee";
 import { highMeatMonsterCount } from "../../turns";
 import { MappingTask } from "../engine";
+import { AdventureContext } from "../context";
 import { freeFightTask } from "./lib";
 
 const lodestone = $item`Rufus's shadow lodestone`;
@@ -140,18 +141,17 @@ function riftLocation() {
   return bestShadowRift();
 }
 
-const riftTask = (
-  fragment: Omit<Parameters<typeof freeFightTask>[0], "adventure">,
-) =>
+type FreeFightFragment = Parameters<typeof freeFightTask>[0];
+
+const riftTask = (fragment: Omit<FreeFightFragment, "adventure" | "do">) =>
   freeFightTask({
-    adventure: riftLocation,
-    outfit: () => freeFightOutfit({}, riftLocation()),
     ...fragment,
+    adventure: riftLocation,
   });
 
 const commonChoices = { 1500: 2 }; // Shadow Waters
 
-function shadowRiftTasks(): MappingTask[] {
+function shadowRiftTasks(): MappingTask<AdventureContext>[] {
   let acceptedItemQuest = false;
   let itemPurchaseFailed = false;
   return [
@@ -169,7 +169,6 @@ function shadowRiftTasks(): MappingTask[] {
       ready: () => have(lodestone),
       completed: () => !have(lodestone),
       choices: commonChoices,
-      do: riftLocation,
       tentacle: false,
     }),
     {
@@ -235,7 +234,6 @@ function shadowRiftTasks(): MappingTask[] {
         (get("encountersUntilSRChoice") === 0 || get("noncombatForcerActive")),
       completed: () =>
         get("encountersUntilSRChoice") > 0 && !get("noncombatForcerActive"),
-      do: riftLocation,
       tentacle: false,
     }),
     ...forcers.map((forcer) =>
@@ -250,14 +248,13 @@ function shadowRiftTasks(): MappingTask[] {
           shadowWatersValue() > forcer.cost(),
         completed: () => getStep("questRufus") === 1,
         choices: commonChoices,
-        outfit: () => {
-          const outfit = freeFightOutfit(forcer.spec, riftLocation());
+        outfit: ({ adventure }) => {
+          const outfit = freeFightOutfit(forcer.spec, adventure);
           // freeFightOutfit defaults the parka to dilophosaur.
           outfit.setModes(forcer.spec.modes ?? {});
           return outfit;
         },
         prepare: forcer.prepare,
-        do: riftLocation,
         combat: new GarboStrategy(
           () => forcer.macro?.() ?? Macro.basicCombat(),
         ),
@@ -284,7 +281,6 @@ function shadowRiftTasks(): MappingTask[] {
         !(get("rufusQuestType") === "entity" && get("noncombatForcerActive")),
       completed: () => !have(affinity),
       choices: commonChoices,
-      do: riftLocation,
       tentacle: true,
       combatCount: remainingShadowRiftFights,
       post: () => {
@@ -294,7 +290,10 @@ function shadowRiftTasks(): MappingTask[] {
   ];
 }
 
-export function shadowRiftQuest(): Quest<MappingTask> {
+export function shadowRiftQuest(): Quest<
+  MappingTask<AdventureContext>,
+  AdventureContext
+> {
   // Read counts after daily setup, which may have granted Shadow Affinity.
   const questBudget =
     sum(rufusPotion.value(highMeatMonsterCount()), "quantity") +

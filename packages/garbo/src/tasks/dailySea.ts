@@ -30,7 +30,7 @@ const DailySeaTasks: GarboTask[] = [
   },
 ];
 
-export const DailySeaQuest: Quest<GarboTask> = {
+export const DailySeaQuest: Quest<GarboTask, unknown> = {
   name: "Daily Sea",
   tasks: DailySeaTasks,
 };

@@ -39,13 +39,13 @@ export const embezzlerFightTask = {
     }),
   ready: () => canAdventure($location`Cobb's Knob Treasury`),
   completed: () => !have($effect`Lucky!`),
-  do: $location`Cobb's Knob Treasury`,
+  adventure: $location`Cobb's Knob Treasury`,
   spendsTurn: true,
   combat: new GarboStrategy(() => Macro.meatKill()),
   turns: 0, // Turns spent are tracked by the lucky sources
 } as const satisfies AlternateTask;
 
-export const EmbezzlerFightsQuest: Quest<AlternateTask> = {
+export const EmbezzlerFightsQuest: Quest<AlternateTask, unknown> = {
   name: "Lucky Embezzlers",
   ready: () =>
     getBestLuckyAdventure().phase === "target" &&

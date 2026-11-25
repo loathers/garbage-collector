@@ -950,7 +950,7 @@ export class Macro extends StrictMacro {
   }
 
   farmingBanish(banish: BanishMethod | null): Macro {
-    if (!banish || !FarmingStrategy.banishMonsters.length) return this;
+    if (!banish) return this;
     return this.if_(FarmingStrategy.banishMonsters, banish.macro);
   }
 

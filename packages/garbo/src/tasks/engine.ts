@@ -3,10 +3,8 @@ import {
   ContextualEngine,
   Engine,
   EngineOptions,
-  getTasks,
   Outfit,
   Quest,
-  StrictCombatTask,
 } from "grimoire-kolmafia";
 import { eventLog, HIGHLIGHT, safeInterrupt, sober } from "../lib";
 import { safeRestore } from "../restore";
@@ -17,9 +15,9 @@ import {
   $item,
   $skill,
   clearMaximizerCache,
-  Delayed,
   get,
   have,
+  SongBoom,
   SourceTerminal,
   undelay,
 } from "libram";
@@ -34,38 +32,32 @@ import {
   todayToString,
   totalTurnsPlayed,
 } from "kolmafia";
-import { GarboStrategy } from "../combatStrategy";
 import { globalOptions } from "../config";
 import { sessionSinceStart } from "../session";
 import { garboValue } from "../garboValue";
 import { freeFightMood, shrugBadEffects } from "../mood";
 import { checkPrefWatchReports } from "../report";
-import { FarmingContext } from "./context";
+import { AdventureContext, adventureContext, FarmingContext } from "./context";
 import { BanishMethod, chooseBanish } from "../resources/banish";
-import { WanderDetails } from "garbo-lib";
+import { FarmingStrategy } from "../farmingStrategy";
+import {
+  shouldCollectSongBoomSeasoning,
+  shouldRestoreSongBoomMeat,
+} from "../resources/songBoom";
 
-export type GarboTask<Context = unknown> = StrictCombatTask<
-  never,
-  Context,
-  GarboStrategy<Context>
-> & {
-  sobriety?: Delayed<"drunk" | "sober" | undefined, [Context]>;
-  spendsTurn: Delayed<boolean, [Context]>;
-  duplicate?: Delayed<boolean, [Context]>;
-};
-
-export type AlternateTask<Context = unknown> = GarboTask<Context> & {
-  turns: Delayed<number>;
-};
-
-export type MappingTask<Context = void> = GarboTask<Context> & {
-  // Safe to execute with an active map, whether preserving or consuming it.
-  mapSafe?: Delayed<boolean, [Context]>;
-};
-
-export type FarmingTask = GarboTask<FarmingContext> & {
-  wanderer?: Delayed<WanderDetails>;
-};
+import {
+  AdaptedTask,
+  adaptTask,
+  GarboTask,
+  getGarboTasks,
+  MappingTask,
+} from "./task";
+export type {
+  AlternateTask,
+  FarmingTask,
+  GarboTask,
+  MappingTask,
+} from "./task";
 
 function logTargetFight(encounterType: string) {
   const isDigitize = encounterType.includes("Digitize Wanderer");
@@ -81,20 +73,51 @@ function logTargetFight(encounterType: string) {
  * Runs extra logic before executing all tasks.
  */
 abstract class BaseGarboContextEngine<
-  Context = unknown,
-> extends ContextualEngine<never, Context, GarboTask<Context>> {
+  Context extends AdventureContext,
+> extends ContextualEngine<never, Context, AdaptedTask<Context>> {
   static defaultSettings = {
     ...Engine.defaultSettings,
     choiceAdventureScript: "garbo_choice.js",
   };
   history: Array<{ name: string; startTime: number; durationMs: number }> = [];
+  #contexts = new Map<AdaptedTask<Context>, Context>();
+
+  protected abstract createContext(task: AdaptedTask<Context>): Context;
+
+  protected createAdventureContext(
+    task: AdaptedTask<Context>,
+  ): AdventureContext {
+    return adventureContext(() => {
+      if (task.adventure !== undefined) {
+        return undelay(task.adventure, this.getContext(task));
+      }
+      throw new Error(`Task ${task.name} has no adventure`);
+    });
+  }
+
+  getContext(task: AdaptedTask<Context>): Context {
+    const cached = this.#contexts.get(task);
+    if (cached) return cached;
+
+    const context = this.createContext(task);
+    this.#contexts.set(task, context);
+    return context;
+  }
+
+  getNextTask() {
+    this.#contexts.clear();
+    return super.getNextTask();
+  }
 
   constructor(
     tasks: GarboTask<Context>[],
-    options?: EngineOptions<never, Context, GarboTask<Context>> | undefined,
+    options?: EngineOptions<never, Context, AdaptedTask<Context>> | undefined,
   ) {
     const startTime = Date.now();
-    super(tasks, options);
+    super(
+      tasks.map((task) => adaptTask<Context, GarboTask<Context>>(task)),
+      options,
+    );
 
     if (globalOptions.history) {
       this.history.push({
@@ -105,7 +128,7 @@ abstract class BaseGarboContextEngine<
     }
   }
 
-  printExecutingMessage(task: GarboTask<Context>) {
+  printExecutingMessage(task: AdaptedTask<Context>) {
     print(``);
     print(`Executing ${task.name}`, HIGHLIGHT);
   }
@@ -133,7 +156,7 @@ abstract class BaseGarboContextEngine<
     }
   }
 
-  available(task: GarboTask<Context>): boolean {
+  available(task: AdaptedTask<Context>): boolean {
     safeInterrupt();
     const taskSober = undelay(task.sobriety, this.getContext(task));
     if (taskSober) {
@@ -146,7 +169,7 @@ abstract class BaseGarboContextEngine<
     return super.available(task);
   }
 
-  dress(task: GarboTask<Context>, outfit: Outfit) {
+  dress(task: AdaptedTask<Context>, outfit: Outfit) {
     const duplicate = undelay(task.duplicate, this.getContext(task));
     if (duplicate && have($item`pro skateboard`) && !get("_epicMcTwistUsed")) {
       outfit.equip($item`pro skateboard`);
@@ -170,12 +193,21 @@ abstract class BaseGarboContextEngine<
     }
   }
 
-  prepare(task: GarboTask<Context>): void {
+  prepare(task: AdaptedTask<Context>): void {
     if ("combat" in task) safeRestore();
     super.prepare(task);
   }
 
-  execute(task: GarboTask<Context>): void {
+  execute(task: AdaptedTask<Context>): void {
+    this.#contexts.clear();
+    try {
+      this.executeWithContext(task);
+    } finally {
+      this.#contexts.clear();
+    }
+  }
+
+  private executeWithContext(task: AdaptedTask<Context>): void {
     const startTime = Date.now();
     const spentTurns = totalTurnsPlayed();
     const context = this.getContext(task);
@@ -219,7 +251,7 @@ abstract class BaseGarboContextEngine<
     }
   }
 
-  markAttempt(task: GarboTask<Context>): void {
+  markAttempt(task: AdaptedTask<Context>): void {
     super.markAttempt(task);
     if (
       !!globalOptions.halt &&
@@ -234,16 +266,18 @@ abstract class BaseGarboContextEngine<
   }
 }
 
-class BaseGarboEngine extends BaseGarboContextEngine<void> {
-  getContext() {
-    // noop
+class BaseGarboEngine extends BaseGarboContextEngine<AdventureContext> {
+  protected createContext(task: AdaptedTask<AdventureContext>) {
+    return this.createAdventureContext(task);
   }
 }
 
 class FreeFightEngine extends BaseGarboEngine {
   private consecutiveNonFreeFights = 0;
 
-  constructor(tasks: (GarboTask<void> & { combatCount?: () => number })[]) {
+  constructor(
+    tasks: (GarboTask<AdventureContext> & { combatCount?: () => number })[],
+  ) {
     super(
       tasks.map((task) => {
         if (task.limit || !task.combatCount) return task;
@@ -253,9 +287,12 @@ class FreeFightEngine extends BaseGarboEngine {
     );
   }
 
-  available(task: MappingTask): boolean {
+  available(
+    task: AdaptedTask<AdventureContext, MappingTask<AdventureContext>>,
+  ): boolean {
     return (
-      (!get("mappingMonsters") || undelay(task.mapSafe) === true) &&
+      (!get("mappingMonsters") ||
+        undelay(task.mapSafe, this.getContext(task)) === true) &&
       super.available(task)
     );
   }
@@ -270,16 +307,19 @@ class FreeFightEngine extends BaseGarboEngine {
     return task;
   }
 
-  acquireEffects(task: GarboTask<void>): void {
+  acquireEffects(task: AdaptedTask<AdventureContext>): void {
     if ("combat" in task) {
-      freeFightMood(...(undelay(task.effects) ?? [])).execute();
+      freeFightMood(
+        ...(undelay(task.effects, this.getContext(task)) ?? []),
+      ).execute();
     }
     super.acquireEffects(task);
   }
 
-  execute(task: GarboTask<void>): void {
+  execute(task: AdaptedTask<AdventureContext>): void {
     const before = totalTurnsPlayed();
-    const expectsFreeCombat = "combat" in task && !undelay(task.spendsTurn);
+    const expectsFreeCombat =
+      !!task.combat && !undelay(task.spendsTurn, this.getContext(task));
     super.execute(task);
     if (!expectsFreeCombat) return;
     if (totalTurnsPlayed() > before) {
@@ -295,48 +335,47 @@ class FreeFightEngine extends BaseGarboEngine {
 
 class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
   #banish: BanishMethod | null = null;
-  #contexts = new Map<FarmingTask, FarmingContext>();
 
-  getContext(task: FarmingTask): FarmingContext {
-    const cachedContext = this.#contexts.get(task);
-    if (cachedContext) return cachedContext;
+  dress(task: AdaptedTask<FarmingContext>, outfit: Outfit) {
+    super.dress(task, outfit);
+    if (!task.combat) return;
 
-    let wanderTarget: FarmingContext["wanderTarget"] | undefined;
+    const context = this.getContext(task);
+    if (!undelay(task.spendsTurn, context)) return;
 
-    const context: FarmingContext = {
+    const { target } = context.adventure;
+
+    // SongBoom decisions should be made after building & equipping the outfit, but before compiling the macros.
+    if (shouldRestoreSongBoomMeat(target)) {
+      SongBoom.setSong("Total Eclipse of Your Meat");
+    } else if (shouldCollectSongBoomSeasoning(target)) {
+      SongBoom.setSong("Food Vibrations");
+    }
+  }
+
+  protected createContext(task: AdaptedTask<FarmingContext>): FarmingContext {
+    const context = this.createAdventureContext(task);
+    return {
       banish: this.#banish,
-      get wanderTarget() {
-        if (wanderTarget) return wanderTarget;
-
-        if (!task.wanderer) {
-          throw new Error("This task did not declare a wanderer type");
-        }
-
-        const target = wanderer().resolveTarget(undelay(task.wanderer));
-        wanderTarget = {
-          ...target,
-          choices: wanderer().getChoices(target),
-        };
-        return wanderTarget;
+      get adventure() {
+        return context.adventure;
       },
     };
-    this.#contexts.set(task, context);
-    return context;
   }
 
   getNextTask() {
-    this.#contexts.clear();
-    this.#banish = chooseBanish();
+    this.#banish = chooseBanish(
+      FarmingStrategy.banishMonsters,
+      FarmingStrategy.primaryMonster(),
+    );
     return super.getNextTask();
   }
 
-  execute(task: GarboTask<FarmingContext>) {
-    this.#contexts.clear();
+  execute(task: AdaptedTask<FarmingContext>) {
     try {
       super.execute(task);
     } finally {
       this.#banish = null;
-      this.#contexts.clear();
     }
   }
 }
@@ -346,28 +385,28 @@ class FarmTurnEngine extends BaseGarboContextEngine<FarmingContext> {
  * Treats soft limits as tasks that should be skipped, with a default max of one attempt for any task.
  */
 abstract class SafeGarboContextEngine<
-  Context = unknown,
+  Context extends AdventureContext,
 > extends BaseGarboContextEngine<Context> {
   constructor(tasks: GarboTask<Context>[]) {
-    const options = new EngineOptions<never, Context>();
+    const options = new EngineOptions<never, Context, AdaptedTask<Context>>();
     options.default_task_options = { limit: { skip: 1 } };
     super(tasks, options);
   }
 }
 
-class SafeGarboEngine extends SafeGarboContextEngine<void> {
-  getContext() {
-    // noop
+class SafeGarboEngine extends SafeGarboContextEngine<AdventureContext> {
+  protected createContext(task: AdaptedTask<AdventureContext>) {
+    return this.createAdventureContext(task);
   }
 }
 
-function runQuests<Context>(
+function runQuests<Context extends AdventureContext>(
   quests: Quest<GarboTask<Context>, Context>[],
-  garboEngine: new (
+  EngineClass: new (
     tasks: GarboTask<Context>[],
   ) => BaseGarboContextEngine<Context>,
 ) {
-  const engine = new garboEngine(getTasks(quests));
+  const engine = new EngineClass(getGarboTasks(quests));
 
   try {
     engine.run();
@@ -376,15 +415,21 @@ function runQuests<Context>(
   }
 }
 
-export function runSafeGarboQuests(quests: Quest<GarboTask<void>>[]): void {
+export function runSafeGarboQuests(
+  quests: Quest<GarboTask<AdventureContext>, AdventureContext>[],
+): void {
   runQuests(quests, SafeGarboEngine);
 }
 
-export function runGarboQuests(quests: Quest<GarboTask<void>>[]): void {
+export function runGarboQuests(
+  quests: Quest<GarboTask<AdventureContext>, AdventureContext>[],
+): void {
   runQuests(quests, BaseGarboEngine);
 }
 
-export function runGarboFreeFightQuests(quests: Quest<MappingTask>[]): void {
+export function runGarboFreeFightQuests(
+  quests: Quest<MappingTask<AdventureContext>, AdventureContext>[],
+): void {
   runQuests(quests, FreeFightEngine);
 }
 

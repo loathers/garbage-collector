@@ -1,11 +1,4 @@
-import {
-  cliExecute,
-  inebrietyLimit,
-  myInebriety,
-  setLocation,
-  use,
-  useSkill,
-} from "kolmafia";
+import { cliExecute, setLocation, use, useSkill } from "kolmafia";
 import {
   $effect,
   $item,
@@ -21,7 +14,7 @@ import { bestFamUnderwaterGear, bestYachtzeeFamiliar } from "./familiar";
 import { getBestWaterBreathingEquipment } from "./lib";
 import { Macro } from "../../combat";
 import { AlternateTask } from "../engine";
-import { willDrunkAdventure } from "../../lib";
+import { sober, willDrunkAdventure } from "../../lib";
 import { Outfit, Quest } from "grimoire-kolmafia";
 import {
   maximumYachtzees,
@@ -47,11 +40,11 @@ export const yachtzeeQuest: Quest<
         completed: () => !get("noncombatForcerActive"),
         ready: () => have($effect`Fishy`),
         choices: { 918: 2 },
-        do: $location`The Sunken Party Yacht`,
+        adventure: $location`The Sunken Party Yacht`,
         outfit: () => {
           setLocation($location`The Sunken Party Yacht`);
           const outfit = new Outfit();
-          const overdrunk = myInebriety() > inebrietyLimit();
+          const overdrunk = !sober();
           const yachtzeeFamiliar = bestYachtzeeFamiliar();
           outfit.modifier.push("20 Meat Drop", "-tie");
           if (
@@ -104,6 +97,7 @@ export const yachtzeeQuest: Quest<
       },
       {
         name: "Parka Spikes NC Forcer",
+        adventure: () => FarmingStrategy.location,
         completed: () => get("noncombatForcerActive"),
         ready: () =>
           have($item`Jurassic Parka`) && get("_spikolodonSpikeUses") < 5,
@@ -132,6 +126,7 @@ export const yachtzeeQuest: Quest<
       },
       {
         name: "McHugeLarge Avalanche NC Forcer",
+        adventure: () => FarmingStrategy.location,
         completed: () => get("noncombatForcerActive"),
         ready: () =>
           have($item`McHugeLarge left ski`) &&

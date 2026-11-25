@@ -257,7 +257,7 @@ const DailyFamiliarTasks: GarboTask[] = [
   },
 ];
 
-export const DailyFamiliarsQuest: Quest<GarboTask> = {
+export const DailyFamiliarsQuest: Quest<GarboTask, unknown> = {
   name: "Daily Familiars",
   tasks: DailyFamiliarTasks,
 };
