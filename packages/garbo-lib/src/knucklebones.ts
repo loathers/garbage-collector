@@ -26,7 +26,7 @@ const dailySpecials = new Map<PriceTier, Item[]>([
   ],
   [
     PriceTier.Two,
-    $items`A Crimbo Carol\, Ch. 1, A Crimbo Carol\, Ch. 2, A Crimbo Carol\, Ch. 3, A Crimbo Carol\, Ch. 4, A Crimbo Carol\, Ch. 5, A Crimbo Carol\, Ch. 6, CRIMBCO Employee Handbook (chapter 1), CRIMBCO Employee Handbook (chapter 2), CRIMBCO Employee Handbook (chapter 3), CRIMBCO Employee Handbook (chapter 4), CRIMBCO Employee Handbook (chapter 5), Hanukkimbo dreidl, Jackass Plumber home game, Lil' Snowball Factory, Mini-Crimbot crate, The Big Book of Communism, Trivial Avocations board game, barrel-aged eggnog, deactivated mini-Trainbot, deluxe fax machine, festive egg sac, pet anchor, pet bad vibe, portable photocopier, robotronic egg, sturdy Crimbo crate, warehouse key, yule pup`,
+    $items`A Crimbo Carol\, Ch. 1, A Crimbo Carol\, Ch. 2, A Crimbo Carol\, Ch. 3, A Crimbo Carol\, Ch. 4, A Crimbo Carol\, Ch. 5, A Crimbo Carol\, Ch. 6, CRIMBCO Employee Handbook (chapter 1), CRIMBCO Employee Handbook (chapter 2), CRIMBCO Employee Handbook (chapter 3), CRIMBCO Employee Handbook (chapter 4), CRIMBCO Employee Handbook (chapter 5), Hanukkimbo dreidl, Jackass Plumber home game, Lil' Snowball Factory, Mini-Crimbot crate, The Big Book of Communism, Trivial Avocations board game, barrel-aged eggnog, deactivated mini-Trainbot, deluxe fax machine, festive egg sac, pet anchor, pet bad vibe, portable photocopier, robotronic egg, sturdy Crimbo crate, warehouse key, yule pup, Lump-Stacking for Beginners`,
   ],
   [
     PriceTier.One,
