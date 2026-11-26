@@ -30,7 +30,7 @@ export function arrrborDayTasks(): AlternateTask[] {
   }
 
   const partial = {
-    do: () => $location`The Arrrboretum`,
+    adventure: $location`The Arrrboretum`,
     outfit: () => {
       return {
         modifier: "MP Regen",
