@@ -1,1 +1,4 @@
 dist
+
+# Generated reward data keeps one item per line.
+src/knuckleboneRewards.ts
