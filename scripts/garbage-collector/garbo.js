@@ -20511,7 +20511,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"ddcd882b68ee831cd7e82fc3cbb3d539dd7884c1"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"84e7a5abb34e75238c7866b2a6b9a037ca6623f5"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
@@ -34707,6 +34707,57 @@ var DailyExtrasQuest = {
   tasks: _toConsumableArray(mayamCalendarSummon())
 };
 
+function arrrborDayTasks() {
+  if (!kolmafia.canAdventure($location`The Arrrboretum`)) {
+    return [];
+  }
+  var arrrborDayOffhand = new Map([[$item`bag of Crotchety Pine saplings`, $item`handful of Crotchety Pine needles`], [$item`bag of Saccharine Maple saplings`, $item`lump of Saccharine Maple sap`], [$item`bag of Laughing Willow saplings`, $item`handful of Laughing Willow bark`]]);
+  function arrrborDayHaveSapling() {
+    return _toConsumableArray(arrrborDayOffhand.keys()).some(i => have$R(i));
+  }
+  var partial = {
+    adventure: $location`The Arrrboretum`,
+    outfit: () => {
+      return {
+        modifier: "MP Regen",
+        bonuses: new Map(_toConsumableArray(arrrborDayOffhand.entries()).map(_ref => {
+          var _ref2 = _slicedToArray(_ref, 2),
+            key = _ref2[0],
+            value = _ref2[1];
+          return [key, garboValue(value)];
+        }))
+      };
+    },
+    choices: () => {
+      var bestOffhand = maxBy(_toConsumableArray(arrrborDayOffhand.keys()), i => have$R(i) ? 0 : garboValue(arrrborDayOffhand.get(i) ?? kolmafia.Item.none));
+      var choice = _toConsumableArray(arrrborDayOffhand.keys()).indexOf(bestOffhand) + 1;
+      return {
+        209: choice,
+        210: 1,
+        438: 1,
+        458: 1
+      };
+    },
+    combat: new GarboStrategy(() => Macro.abortWithMsg("Unexpected combat while attempting The Arrrboretum adventure")),
+    sobriety: "sober",
+    spendsTurn: true,
+    turns: 2,
+    // Each task could take up to 2 turns if a sapling was planted last Arrrbor Day
+    limit: {
+      skip: 2
+    } // Cannot get another sapling by ascending and will always encounter Plant a Tree, Plant a Tree!
+  };
+  return [_objectSpread2(_objectSpread2({}, partial), {}, {
+    name: `Arrrbor Day: Acquire Sapling`,
+    completed: () => arrrborDayHaveSapling(),
+    ready: () => !have$R($item`Underworld acorn`)
+  }), _objectSpread2(_objectSpread2({}, partial), {}, {
+    name: `Arrrbor Day: Plant Sapling`,
+    completed: () => get$2("_saplingsPlanted") > 0,
+    ready: () => arrrborDayHaveSapling() && !have$R($item`Underworld acorn`)
+  })];
+}
+
 function bestFamUnderwaterGear(fam) {
   // Returns best familiar gear for yachtzee chaining
   return fam.underwater || have$R($effect`Driving Waterproofly`) || have$R($effect`Wet Willied`) ? have$R($item`amulet coin`) ? $item`amulet coin` : $item`filthy child leash` : have$R($item`das boot`) ? $item`das boot` : $item`little bitty bathysphere`;
@@ -35093,7 +35144,7 @@ _objectSpread2(_objectSpread2({
   choices: {
     1091: 7
   }
-}], _toConsumableArray(luckyTasks("sober", () => !willDrunkAdventure())), _toConsumableArray(luckyTasks("drunk", () => willDrunkAdventure())), [{
+}], _toConsumableArray(arrrborDayTasks()), _toConsumableArray(luckyTasks("sober", () => !willDrunkAdventure())), _toConsumableArray(luckyTasks("drunk", () => willDrunkAdventure())), [{
   name: "Map for Pills",
   completed: () => kolmafia.availableAmount($item`Map to Safety Shelter Grimace Prime`) === 0,
   choices: () => ({
