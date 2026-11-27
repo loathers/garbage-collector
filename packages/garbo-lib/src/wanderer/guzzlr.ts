@@ -1,3 +1,4 @@
+import { wandererTurnsAvailableToday } from "./availability";
 import {
   craftType,
   Item,
@@ -12,20 +13,24 @@ import {
   DraggableFight,
   WandererFactoryOptions,
   WandererTarget,
-  wandererTurnsAvailableToday,
 } from "./lib";
+
+function guzzlrTurnsRemaining(): number {
+  return Math.ceil(
+    (100 - get("guzzlrDeliveryProgress")) /
+      Math.max(3, 10 - get("_guzzlrDeliveries")),
+  );
+}
 
 function considerAbandon(
   options: WandererFactoryOptions,
   locationSkiplist: Location[],
 ) {
   const location = Guzzlr.getLocation();
-  const remaningTurns = Math.ceil(
-    (100 - get("guzzlrDeliveryProgress")) / (10 - get("_guzzlrDeliveries")),
-  );
+  const remainingTurns = guzzlrTurnsRemaining();
 
   print(
-    `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remaningTurns}`,
+    `Got guzzlr quest ${Guzzlr.getTier()} at ${Guzzlr.getLocation()} with remaining turns ${remainingTurns}`,
   );
 
   if (
@@ -35,7 +40,10 @@ function considerAbandon(
       locationSkiplist.includes(location) ||
       !canAdventureOrUnlock(location, true, options.underwaterAllowed) || // or the zone is marked as "generally cannot adv"
       (options.ascend &&
-        wandererTurnsAvailableToday(options, location, true) < remaningTurns)) // or ascending and not enough turns to finish
+        wandererTurnsAvailableToday(options, location, true, {
+          value: guzzlrQuest(options).value,
+          locationSkiplist,
+        }) < remainingTurns)) // or ascending and not enough turns to finish
   ) {
     print("Abandoning...");
     Guzzlr.abandon();
@@ -88,6 +96,24 @@ function guzzlrValuePerTurn(
   }
 }
 
+function guzzlrQuest(options: WandererFactoryOptions): {
+  booze: Item | null;
+  value: number;
+} {
+  const tier = Guzzlr.getTier();
+  const booze =
+    tier === "platinum"
+      ? Guzzlr.getCheapestPlatinumCocktail()
+      : Guzzlr.getBooze();
+
+  return {
+    booze,
+    value: booze
+      ? guzzlrValuePerTurn(options.itemValue($item`Guzzlrbuck`), tier, booze)
+      : 0,
+  };
+}
+
 export function guzzlrFactory(
   type: DraggableFight,
   locationSkiplist: Location[],
@@ -97,21 +123,22 @@ export function guzzlrFactory(
     const buckValue = options.itemValue($item`Guzzlrbuck`);
     acceptGuzzlrQuest(options, locationSkiplist);
     const location = Guzzlr.getLocation();
-    if (location !== null) {
-      const guzzlrBooze =
-        Guzzlr.getTier() === "platinum"
-          ? Guzzlr.getCheapestPlatinumCocktail()
-          : Guzzlr.getBooze();
+    const { booze: guzzlrBooze, value } = guzzlrQuest(options);
+
+    if (
+      location !== null &&
+      (!options.ascend ||
+        wandererTurnsAvailableToday(options, location, true, {
+          value,
+          locationSkiplist,
+        }) >= guzzlrTurnsRemaining())
+    ) {
       return guzzlrBooze
         ? [
             new WandererTarget({
               name: "Guzzlr",
               location: location,
-              zoneValue: guzzlrValuePerTurn(
-                buckValue,
-                Guzzlr.getTier(),
-                guzzlrBooze,
-              ),
+              zoneValue: value,
               prepareTurn: () => {
                 if (!guzzlrBooze) {
                   // this is an error state - accepted a guzzlr quest but mafia doesn't know the booze

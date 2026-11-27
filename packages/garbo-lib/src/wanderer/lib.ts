@@ -21,15 +21,12 @@ import {
   $location,
   $locations,
   $monsters,
-  $skill,
-  clamp,
   Delayed,
   get,
   getStep,
   GingerBread,
   have,
   haveInCampground,
-  NumericProperty,
   QuestProperty,
   QuestState,
   realmAvailable,
@@ -37,6 +34,8 @@ import {
   undelay,
   withProperty,
 } from "libram";
+import { WandererForecasters } from "./forecasters";
+import type { WandererAllocator } from "./allocation";
 
 export const draggableFights = [
   "backup",
@@ -70,10 +69,19 @@ export type WandererFactoryOptions = {
   plentifulMonsters: Monster[];
   prioritizeCappingGuzzlr: boolean;
   underwaterAllowed: boolean;
-  digitzesRemaining?: (turns: number) => number;
+  /** Resolved source forecasts, including any atomic overrides of the defaults. */
+  wandererSources?: WandererForecasters<string>;
+  /**
+   * Allocate compatible forecasts to a project on each availability check.
+   * Defaults to reserving all yellow rays for item drops. Use
+   * defaultWandererAllocation to extend that policy, or sources => sources
+   * to count all compatible supply.
+   */
+  wandererAllocation?: WandererAllocator;
   valueOfAdventure?: number;
   takeTurnForProfit?: boolean;
-  canRefractedGaze?: boolean;
+  /** Whether another cast is affordable, evaluated when valuing destinations. */
+  canRefractedGaze?: Delayed<boolean>;
 };
 
 export type WandererFactory = (
@@ -313,95 +321,6 @@ export function defaultFactory(): WandererTarget[] {
       zoneValue: 0,
     }),
   ];
-}
-
-type WanderingSource = {
-  name: string;
-  item: Item;
-  max: number;
-  property: NumericProperty;
-  type: DraggableFight;
-};
-const WanderingSources: WanderingSource[] = [
-  {
-    name: "CMG",
-    item: $item`cursed magnifying glass`,
-    max: 3,
-    property: "_voidFreeFights",
-    type: "wanderer",
-  },
-  {
-    name: "Voter",
-    item: $item`"I Voted!" sticker`,
-    max: 3,
-    property: "_voteFreeFights",
-    type: "wanderer",
-  },
-  {
-    name: "Voter",
-    item: $item`"I Voted!" sticker`,
-    max: 3,
-    property: "_voteFreeFights",
-    type: "wanderer",
-  },
-  {
-    name: "Backup",
-    item: $item`backup camera`,
-    max: 11,
-    property: "_backUpUses",
-    type: "backup",
-  },
-];
-
-export function wandererTurnsAvailableToday(
-  options: WandererFactoryOptions,
-  location: Location,
-  requiresMonsterKill: boolean,
-): number {
-  const canWanderCache: Record<DraggableFight, boolean> = {
-    backup: canWander(location, "backup", options.underwaterAllowed),
-    wanderer: canWander(location, "wanderer", options.underwaterAllowed),
-    "yellow ray": canWander(location, "yellow ray", options.underwaterAllowed),
-    freefight: canWander(location, "freefight", options.underwaterAllowed),
-    "conditional freefight": canWander(
-      location,
-      "conditional freefight",
-      options.underwaterAllowed,
-    ),
-    "freefight (no items)": canWander(
-      location,
-      "freefight (no items)",
-      options.underwaterAllowed,
-    ),
-    freerun: canWander(location, "freerun", options.underwaterAllowed),
-  };
-
-  const digitize =
-    canWanderCache["backup"] && options.digitzesRemaining
-      ? options.digitzesRemaining(options.estimatedTurns())
-      : 0;
-  const pigSkinnerRay =
-    canWanderCache["backup"] && have($skill`Free-For-All`)
-      ? Math.floor(options.estimatedTurns() / 25)
-      : 0;
-  const yellowRayCooldown = have($skill`Fondeluge`) ? 50 : 100;
-  const yellowRay = canWanderCache["yellow ray"]
-    ? Math.floor(options.estimatedTurns() / yellowRayCooldown)
-    : 0;
-  const wanderers = sum(WanderingSources, (source) =>
-    canWanderCache[source.type] && have(source.item)
-      ? clamp(get(source.property), 0, source.max)
-      : 0,
-  );
-  // This is the ELG cooldown for spring shoes
-  const freeRun =
-    !requiresMonsterKill &&
-    canWanderCache["freerun"] &&
-    have($item`spring shoes`)
-      ? Math.floor(options.estimatedTurns() / 30)
-      : 0;
-
-  return digitize + pigSkinnerRay + yellowRay + wanderers + freeRun;
 }
 
 const LIMITED_BOFA_DROPS = $items`pocket wish, tattered scrap of paper`;

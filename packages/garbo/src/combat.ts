@@ -946,7 +946,7 @@ export class Macro extends StrictMacro {
   }
 
   static refractedGaze(): Macro {
-    return new Macro().duplicate();
+    return new Macro().refractedGaze();
   }
 
   farmingBanish(banish: BanishMethod | null): Macro {
