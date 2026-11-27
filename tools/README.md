@@ -17,7 +17,7 @@ The reward-data migration must be merged into `main` first.
 | `--dry-run`         | Report the proposed addition without creating a branch.                                        |
 | `--write`           | Edit the checked-out data file for the workflow; requires latest `main` and a clean data file. |
 | `--remote NAME`     | Remote containing `main`; defaults to `origin`.                                                |
-| `--date YYYY-MM-DD` | Check the KoL game day corresponding to this calendar date.                                      |
+| `--date YYYY-MM-DD` | Check the KoL game day corresponding to this calendar date.                                    |
 | `--help`, `-h`      | Show usage.                                                                                    |
 
 `--dry-run` and `--write` are mutually exclusive.
