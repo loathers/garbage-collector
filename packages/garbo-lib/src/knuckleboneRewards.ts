@@ -1,5 +1,5 @@
 /** Reward data maintained by tools/updateSocp.mts. */
-// SoCP drop list updated 26 November 2026
+// SoCP drop list updated 28 November 2026
 export const dailySpecials = {
   "Five": {
     "min": 10,
@@ -149,7 +149,8 @@ export const dailySpecials = {
       "The Journal of Mime Science Vol. 6",
       "Tickle-Me Emilio",
       "tiny plastic sword",
-      "warbear requisition box"
+      "warbear requisition box",
+      "Elf Guard temporary (permanent) tattoo"
     ]
   }
 };
