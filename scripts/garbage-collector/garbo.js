@@ -18669,16 +18669,36 @@ function isQuickCombat() {
   return globalOptions.quick || globalOptions.quickcombat;
 }
 
-// SoCP drop list updated 5 November 2026
-var PriceTier;
-(function (PriceTier) {
-  PriceTier[PriceTier["One"] = 2750] = "One";
-  PriceTier[PriceTier["Two"] = 2000.5] = "Two";
-  PriceTier[PriceTier["Three"] = 1000.5] = "Three";
-  PriceTier[PriceTier["Four"] = 300.5] = "Four";
-  PriceTier[PriceTier["Five"] = 55] = "Five";
-})(PriceTier || (PriceTier = {}));
-var dailySpecials = new Map([[PriceTier.Five, $items`Crimbo salad, aspirin, bark rootbeer, bottle of bubbles, bubble-wrap simulator, drive-thru burger, elven moonshine, industrially-crushed ice, laser-broiled pear, paperclip, steamed oyster, stuffed doppelshifter, stuffed gray blob`], [PriceTier.Four, $items`"caramel" orange, BittyCar HotCar, Crimbeau de toilette, Crimbo Factory surprise box, Crimboysters Rockefeller, Elf Guard safety bear, Uncle Greenspan's Bathroom Finance Guide, battered Crimbo Crate, bottle of Crimbognac, cheap elven gloves, cloning kit, clovermint, cyborg stompin' boot, elven socks, iron chain, penguin thesaurus, peppermint-scented socks, pine cone, reindeer hammer, stuffed kraken`], [PriceTier.Three, $items`C.B.F.G., ChibiBuddy™ (off), Crimbuccaneer premium booty sack, Crimbuccaneer squirtblunderbuss, Elf Guard honor present, Elf Guard squirtgun, Fuzzby, Satan hat, antique nutcracker beard, antique nutcracker boots, antique nutcracker cape, antique nutcracker drumstick, antique nutcracker epaulets, antique nutcracker hat, antique nutcracker pants, antique nutcracker sword, antique nutcracker waistcoat, augmented-reality shades, biomechanical crimborg helmet, biomechanical crimborg leg armor, candy egg deviler, cheerful Crimbo sweater, cheerful pajama pants, crystal belt buckle, depleted Crimbonium football helmet, dusty Crimbo crate, electronic dulcimer pants, elven tambourine, fitness wristband, golden fleece, lucky napkin, miniature goose mask, nylon Christmas stockings, portable steam unit, roboduck-on-a-string, saffron antaravasaka, snow belly, snow hat, snow pants, sucker hakama, sucker kabuto, sucker tachi, tinsel orb`], [PriceTier.Two, $items`A Crimbo Carol\, Ch. 1, A Crimbo Carol\, Ch. 2, A Crimbo Carol\, Ch. 3, A Crimbo Carol\, Ch. 4, A Crimbo Carol\, Ch. 5, A Crimbo Carol\, Ch. 6, CRIMBCO Employee Handbook (chapter 1), CRIMBCO Employee Handbook (chapter 2), CRIMBCO Employee Handbook (chapter 3), CRIMBCO Employee Handbook (chapter 4), CRIMBCO Employee Handbook (chapter 5), Hanukkimbo dreidl, Jackass Plumber home game, Lil' Snowball Factory, Mini-Crimbot crate, The Big Book of Communism, Trivial Avocations board game, barrel-aged eggnog, deactivated mini-Trainbot, deluxe fax machine, festive egg sac, pet anchor, pet bad vibe, portable photocopier, robotronic egg, sturdy Crimbo crate, warehouse key, yule pup, Lump-Stacking for Beginners`], [PriceTier.One, $items`Carol of the Bulls, Carol of the Hells, Carol of the Thrills, Crimbot ROM: Mathematical Precision, Crimbot ROM: Rapid Prototyping, Crimbot ROM: Ruthless Efficiency, Rethinking Candy, The Journal of Mime Science Vol. 1, The Journal of Mime Science Vol. 2, The Journal of Mime Science Vol. 3, The Journal of Mime Science Vol. 4, The Journal of Mime Science Vol. 5, The Journal of Mime Science Vol. 6, Tickle-Me Emilio, tiny plastic sword, warbear requisition box`]]);
+/** Reward data maintained by tools/updateSocp.mts. */
+// SoCP drop list updated 26 November 2026
+var dailySpecials = {
+  "Five": {
+    "min": 10,
+    "max": 100,
+    "items": ["Crimbo salad", "aspirin", "bark rootbeer", "bottle of bubbles", "bubble-wrap simulator", "drive-thru burger", "elven moonshine", "industrially-crushed ice", "laser-broiled pear", "paperclip", "steamed oyster", "stuffed doppelshifter", "stuffed gray blob"]
+  },
+  "Four": {
+    "min": 101,
+    "max": 500,
+    "items": ["\"caramel\" orange", "BittyCar HotCar", "Crimbeau de toilette", "Crimbo Factory surprise box", "Crimboysters Rockefeller", "Elf Guard safety bear", "Uncle Greenspan's Bathroom Finance Guide", "battered Crimbo Crate", "bottle of Crimbognac", "cheap elven gloves", "cloning kit", "clovermint", "cyborg stompin' boot", "elven socks", "iron chain", "penguin thesaurus", "peppermint-scented socks", "pine cone", "reindeer hammer", "stuffed kraken"]
+  },
+  "Three": {
+    "min": 501,
+    "max": 1500,
+    "items": ["C.B.F.G.", "ChibiBuddy™ (off)", "Crimbuccaneer premium booty sack", "Crimbuccaneer squirtblunderbuss", "Elf Guard honor present", "Elf Guard squirtgun", "Fuzzby", "Satan hat", "antique nutcracker beard", "antique nutcracker boots", "antique nutcracker cape", "antique nutcracker drumstick", "antique nutcracker epaulets", "antique nutcracker hat", "antique nutcracker pants", "antique nutcracker sword", "antique nutcracker waistcoat", "augmented-reality shades", "biomechanical crimborg helmet", "biomechanical crimborg leg armor", "candy egg deviler", "cheerful Crimbo sweater", "cheerful pajama pants", "crystal belt buckle", "depleted Crimbonium football helmet", "dusty Crimbo crate", "electronic dulcimer pants", "elven tambourine", "fitness wristband", "golden fleece", "lucky napkin", "miniature goose mask", "nylon Christmas stockings", "portable steam unit", "roboduck-on-a-string", "saffron antaravasaka", "snow belly", "snow hat", "snow pants", "sucker hakama", "sucker kabuto", "sucker tachi", "tinsel orb"]
+  },
+  "Two": {
+    "min": 1501,
+    "max": 2500,
+    "items": ["A Crimbo Carol, Ch. 1", "A Crimbo Carol, Ch. 2", "A Crimbo Carol, Ch. 3", "A Crimbo Carol, Ch. 4", "A Crimbo Carol, Ch. 5", "A Crimbo Carol, Ch. 6", "CRIMBCO Employee Handbook (chapter 1)", "CRIMBCO Employee Handbook (chapter 2)", "CRIMBCO Employee Handbook (chapter 3)", "CRIMBCO Employee Handbook (chapter 4)", "CRIMBCO Employee Handbook (chapter 5)", "Hanukkimbo dreidl", "Jackass Plumber home game", "Lil' Snowball Factory", "Mini-Crimbot crate", "The Big Book of Communism", "Trivial Avocations board game", "barrel-aged eggnog", "deactivated mini-Trainbot", "deluxe fax machine", "festive egg sac", "pet anchor", "pet bad vibe", "portable photocopier", "robotronic egg", "sturdy Crimbo crate", "warehouse key", "yule pup", "Lump-Stacking for Beginners"]
+  },
+  "One": {
+    "min": 2501,
+    "max": 3000,
+    "items": ["Carol of the Bulls", "Carol of the Hells", "Carol of the Thrills", "Crimbot ROM: Mathematical Precision", "Crimbot ROM: Rapid Prototyping", "Crimbot ROM: Ruthless Efficiency", "Rethinking Candy", "The Journal of Mime Science Vol. 1", "The Journal of Mime Science Vol. 2", "The Journal of Mime Science Vol. 3", "The Journal of Mime Science Vol. 4", "The Journal of Mime Science Vol. 5", "The Journal of Mime Science Vol. 6", "Tickle-Me Emilio", "tiny plastic sword", "warbear requisition box"]
+  }
+};
+
 /**
  * Value the next knucklebone after reserving enough for two of each better
  * daily special. Prices are evaluated lazily and cached; current bone balance
@@ -18692,16 +18712,17 @@ function makeKnuckleboneValue(value) {
   var rewards;
   return function () {
     var bones = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : kolmafia.itemAmount($item`knucklebone`) + kolmafia.closetAmount($item`knucklebone`) + kolmafia.storageAmount($item`knucklebone`);
-    rewards ?? (rewards = _toConsumableArray(dailySpecials.entries()).flatMap(_ref => {
-      var _ref2 = _slicedToArray(_ref, 2),
-        cost = _ref2[0],
-        items = _ref2[1];
-      return items.filter(item => item.tradeable).map(item => ({
+    rewards ?? (rewards = Object.values(dailySpecials).flatMap(_ref => {
+      var min = _ref.min,
+        max = _ref.max,
+        items = _ref.items;
+      var cost = (min + max) / 2;
+      return kolmafia.Item.get(items).filter(item => item.tradeable).map(item => ({
         cost,
         meatPerBone: value(item) / cost
       }));
-    }).filter(_ref3 => {
-      var meatPerBone = _ref3.meatPerBone;
+    }).filter(_ref2 => {
+      var meatPerBone = _ref2.meatPerBone;
       return meatPerBone > 0;
     }).sort((a, b) => b.meatPerBone - a.meatPerBone));
     var _iterator = _createForOfIteratorHelper(rewards),
@@ -20511,7 +20532,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"84e7a5abb34e75238c7866b2a6b9a037ca6623f5"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"b24ae1d8f870a9d941ef4ae417618cd7b3113a46"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
