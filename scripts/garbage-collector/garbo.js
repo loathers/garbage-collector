@@ -18670,7 +18670,7 @@ function isQuickCombat() {
 }
 
 /** Reward data maintained by tools/updateSocp.mts. */
-// SoCP drop list updated 26 November 2026
+// SoCP drop list updated 28 November 2026
 var dailySpecials = {
   "Five": {
     "min": 10,
@@ -18695,7 +18695,7 @@ var dailySpecials = {
   "One": {
     "min": 2501,
     "max": 3000,
-    "items": ["Carol of the Bulls", "Carol of the Hells", "Carol of the Thrills", "Crimbot ROM: Mathematical Precision", "Crimbot ROM: Rapid Prototyping", "Crimbot ROM: Ruthless Efficiency", "Rethinking Candy", "The Journal of Mime Science Vol. 1", "The Journal of Mime Science Vol. 2", "The Journal of Mime Science Vol. 3", "The Journal of Mime Science Vol. 4", "The Journal of Mime Science Vol. 5", "The Journal of Mime Science Vol. 6", "Tickle-Me Emilio", "tiny plastic sword", "warbear requisition box"]
+    "items": ["Carol of the Bulls", "Carol of the Hells", "Carol of the Thrills", "Crimbot ROM: Mathematical Precision", "Crimbot ROM: Rapid Prototyping", "Crimbot ROM: Ruthless Efficiency", "Rethinking Candy", "The Journal of Mime Science Vol. 1", "The Journal of Mime Science Vol. 2", "The Journal of Mime Science Vol. 3", "The Journal of Mime Science Vol. 4", "The Journal of Mime Science Vol. 5", "The Journal of Mime Science Vol. 6", "Tickle-Me Emilio", "tiny plastic sword", "warbear requisition box", "Elf Guard temporary (permanent) tattoo"]
   }
 };
 
@@ -20532,7 +20532,7 @@ function checkGithubVersion() {
       // Query GitHub for latest release commit
       var gitBranches = JSON.parse(gitData);
       var releaseSHA = (_gitBranches$find = gitBranches.find(branchInfo => branchInfo.name === "release")) === null || _gitBranches$find === void 0 || (_gitBranches$find = _gitBranches$find.commit) === null || _gitBranches$find === void 0 ? void 0 : _gitBranches$find.sha;
-      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"b24ae1d8f870a9d941ef4ae417618cd7b3113a46"})`);
+      kolmafia.print(`Local Version: ${localSHA} (built from ${"main"}@${"af288edc905ef9fd2096a16ecdf6b3e4fb78ce9e"})`);
       if (releaseSHA === localSHA) {
         kolmafia.print("Garbo is up to date!", HIGHLIGHT);
       } else if (releaseSHA === undefined) {
