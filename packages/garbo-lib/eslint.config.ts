@@ -5,6 +5,9 @@ const garboConfig = await createConfig();
 
 export default defineConfig([
   {
+    ignores: ["src/knuckleboneRewards.ts"],
+  },
+  {
     ignores: ["dist", "**/*.js"],
     languageOptions: {
       parserOptions: {

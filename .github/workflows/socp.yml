@@ -1,0 +1,57 @@
+name: Update SoCP rewards
+
+on:
+  schedule:
+    # 10:45 PM EST / 11:45 PM EDT, after KoL's fixed 03:30–03:35 UTC rollover.
+    - cron: "45 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: socp-update
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'loathers/garbage-collector'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Test updater
+        run: yarn checkTools && yarn testSocp
+      - name: Update today's SoCP reward from calendar and data-of-loathing
+        id: socp
+        run: yarn updateSocp --write
+      - name: Validate the updated valuations
+        if: steps.socp.outputs.changed == 'true'
+        run: |
+          yarn workspace garbo-lib build
+          yarn check
+          yarn workspace garbo-lib lint
+      - name: Create Pull Request
+        if: steps.socp.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "new socp item: ${{ steps.socp.outputs.item_name }}"
+          title: "new socp item: ${{ steps.socp.outputs.item_name }}"
+          body: |
+            Automatically adds ${{ steps.socp.outputs.item_name }} (#${{ steps.socp.outputs.item_id }}) to tier ${{ steps.socp.outputs.tier }}.
+
+            Observed price: ${{ steps.socp.outputs.price }} knucklebones. Item identity and tradeability were checked against data-of-loathing.
+
+            [Calendar data](https://calendar.loathers.net/api/calendar?from=${{ steps.socp.outputs.gameday }}&to=${{ steps.socp.outputs.gameday }})
+          branch: socp-${{ steps.socp.outputs.item_id }}
+          base: main
+          add-paths: packages/garbo-lib/src/knuckleboneRewards.ts

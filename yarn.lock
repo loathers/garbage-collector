@@ -3523,6 +3523,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"data-of-loathing@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "data-of-loathing@npm:4.3.2"
+  dependencies:
+    "@mikro-orm/core": ^7.0.14
+    "@mikro-orm/sql": ^7.0.14
+    "@sqlite.org/sqlite-wasm": ~3.51.2-build9
+    env-paths: ^4.0.0
+    kysely: ^0.28.17
+  peerDependencies:
+    vite: ">=5.0.0"
+    vite-plugin-node-polyfills: ^0.26.0
+  peerDependenciesMeta:
+    vite:
+      optional: true
+    vite-plugin-node-polyfills:
+      optional: true
+  checksum: 34e2299ccc3ffdb89bd0be40f6eb62b82f21a103013f276ec15c9d91a801d7e4eaf7a4d0cfd793859743741c6ad9460b3b84dbd457b5435d0c0452bef4fc3596
+  languageName: node
+  linkType: hard
+
 "debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.3.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
@@ -4419,7 +4440,10 @@ __metadata:
   resolution: "garbage-collector@workspace:."
   dependencies:
     "@eslint/js": ^9.39.2
+    "@types/node": ^22.4.1
     copyfiles: ^2.4.1
+    data-of-loathing: ^4.3.2
+    entities: ^7.0.0
     eslint: ^9.39.2
     husky: ^9.1.5
     prettier: ^3.3.3
